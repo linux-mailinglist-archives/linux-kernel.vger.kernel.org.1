@@ -2,226 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCA123D91B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A6223D91F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729318AbgHFKH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 06:07:58 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:22903 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729028AbgHFKHs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 06:07:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596708467; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=GyyGr/JOFuGlAnvIiYAe0ifvybfJPXEKySOZwuEQVuY=;
- b=H6OeDMtteOKsWjwTGyj/3JDtyH6gZnQUjFs5A+nI1aPLi9V6Q1BlHUD3Stz7IWP/Z5DFHKQN
- USOJksSCvQu2I0EnRKdXC/CsGv1KPHi+JOq66F14t6fo/xwWMo2FYOhO8M2nclK7NGjVPsbv
- 6n7+c/CwWQGqoth5jvfyozNi7ZM=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n11.prod.us-west-2.postgun.com with SMTP id
- 5f2bd66b2889723bf8306740 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 Aug 2020 10:07:39
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 36AC6C433A0; Thu,  6 Aug 2020 10:07:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9A208C433C6;
-        Thu,  6 Aug 2020 10:07:37 +0000 (UTC)
+        id S1729297AbgHFKJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 06:09:50 -0400
+Received: from mail-eopbgr20045.outbound.protection.outlook.com ([40.107.2.45]:55175
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729120AbgHFKJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 06:09:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BLWYDMiqTiD8QdJJ8rsHR7e7yPsyymdNFDVsPWbIcTJQxuwB+mc64j1bfqdcRIVHzYJSxzd+I4nRQfrqDY79Sv/J+4bNt4wu7LhR6eN7LCKiOIqIkio55BddfjtxJy8jUQJZg67sploYiAG7sbha2nP+R2ocIMSTL9N4dcCj1jj6Ht2JcTySv4MePmruDzLfPtfl4plp9WTKeC/goOVmwDLqmUSpjwO29BYY+pSSUc1nkr7c3RzKE2dD8senaJ1UQ56CWvB+EK+jeCeC0IDakKfD3MQwsQPHDTm3iKI7yLEnw26QN8waaKBfdtCLTvYEgzMP1dz8EuzXFjn7EnEwUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A40D78dl5W0DQmLSEXDvpeLJhkMUoqqrwkFnVtJWXok=;
+ b=UTcob4/0sSWDjBQOV9eDewAVARqSGharqIYPkbJuvOeV0u5z7Id1XfahfCrfY15wP5oL5Xp/8EdVv/hNOHXBMEpl0vr4bmurTu72tWUhLBUgBVf7sXIXOHyzIY9rCUNmN6z4DrXXHA9xIRm56FKvPzC9lManEWYLG5/dHIxs5vyLkiA2wWiSkRfQWMARCUJ9XYdVWVLjyfXwcqxZsxh3FmCaEB6JMFas/nWn2OpHd1zAzM3dbLBc9Tysfn95r+oWCl8VnBE4lyOIJ6gnftzoCew3h2zxY4aj3Jol/qNvL0T+EkClp9Q+VPzULU3Q2NtIiUOIeGIyK+VnRkz0Dc9oJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A40D78dl5W0DQmLSEXDvpeLJhkMUoqqrwkFnVtJWXok=;
+ b=Vetr8OK9Uz4dc25udX5TpLbOs0c6vkSybqH8Hpn4mfAGT6g4+9catRz0uZY4yKZYFmVv6eAPqcDyGf/9t2Jpd4sovxKkfn0dStViKEH1URafKfmVQMSsnKcf2T3ecO7BUi+FYm+FnCBv/ceZVnGaHDZ0a17SwC3LQqLQegMP0FU=
+Received: from VI1PR0402MB3824.eurprd04.prod.outlook.com
+ (2603:10a6:803:22::18) by VI1PR04MB7167.eurprd04.prod.outlook.com
+ (2603:10a6:800:12a::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16; Thu, 6 Aug
+ 2020 10:09:36 +0000
+Received: from VI1PR0402MB3824.eurprd04.prod.outlook.com
+ ([fe80::167:b586:586e:e024]) by VI1PR0402MB3824.eurprd04.prod.outlook.com
+ ([fe80::167:b586:586e:e024%5]) with mapi id 15.20.3261.018; Thu, 6 Aug 2020
+ 10:09:36 +0000
+From:   Jason Liu <jason.hui.liu@nxp.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+CC:     Marc Zyngier <maz@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "sashal@kernel.org" <sashal@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH 1/1] arm64: kexec: no need to do irq_chip->irq_mask if it
+ already masked
+Thread-Topic: [PATCH 1/1] arm64: kexec: no need to do irq_chip->irq_mask if it
+ already masked
+Thread-Index: AQHWaj3ZMAA/XWH8SkmG3qCWNnZEoaknx/iAgAALMQCAAQxYoIAAVj6AgAGoCSA=
+Date:   Thu, 6 Aug 2020 10:09:36 +0000
+Message-ID: <VI1PR0402MB38245CE471A2BB33CE27C33FAE480@VI1PR0402MB3824.eurprd04.prod.outlook.com>
+References: <20200804085657.10776-1-jason.hui.liu@nxp.com>
+ <b4444c737f9d6fd8fd99dbb809d35a0f@kernel.org> <20200804113850.GB15199@bogus>
+ <VI1PR0402MB38243230C51FDB1C3F490853AE4B0@VI1PR0402MB3824.eurprd04.prod.outlook.com>
+ <20200805084748.GA4818@bogus>
+In-Reply-To: <20200805084748.GA4818@bogus>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 5143661b-12b7-4fd3-facf-08d839f0d31e
+x-ms-traffictypediagnostic: VI1PR04MB7167:
+x-microsoft-antispam-prvs: <VI1PR04MB7167F8DFE7602B4EE122E836AE480@VI1PR04MB7167.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xqET+pK/xbF7g4Klvj24VZ2RU67ADtPZOZxyAztxSXRR47/JiD9D02i0oYOvOSywosb7v9CSL9zjEtC+19AOHOpw8VRqdPzFp9cmF1qA2T4tMa3sX9Zht6xrzkkYMNPQmmhgeEXd+vprz8TpY3OrcMV6pkN5KP2DE5KQO94lqdwxiWi/PQquU132SfcN6ZNxx6oJgGkPvJtuD+MPefUVW5hteeiznLYoDdJB7g2FnEOTkr7qRsEY01tru1nR1TtaJcVIUiDPHWY6x4yyvPVEezy8WdMh0iJfwYkXFMTxPnTvgi5gYqLFMSnO9vW7PvpCf6tFtWeVBWpUUIXiGBtC9g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3824.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(366004)(376002)(346002)(136003)(66476007)(316002)(54906003)(6506007)(8676002)(76116006)(8936002)(7696005)(66946007)(53546011)(55016002)(9686003)(5660300002)(83380400001)(33656002)(66556008)(2906002)(52536014)(4326008)(6916009)(64756008)(71200400001)(26005)(66446008)(186003)(86362001)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 2NER6oGy4jrk0JJ1t4NUN4IshvXeiQc2WmI9ZLvvnwtZoxgliSp9Naq24i6HpdPYuPBY7L9d1Nfyv/nTZDAN37oClygSpHf6+TNSVir6iAmQNwGdOApfxhwIe3UyeebA95kVGR6pVTdquu4jXrY3qsr+ZRAPoe5VDQvMxcIAV3ZNMaZwgIZqBHQgaJGmC7g2Vo3XIziIZgaQWfHQtuv55x4cSNHQGwHntPjXiUfJpXf6W9cTN5PVnxWy9tok/X2p3ya8yzddzmUSKy5Uedyb5P/wznrgp/f3uXDLE41osZ+KvviSrTnqfHzC4N3fezrK8zJGpfX2PsC2CmM4ZmKzlOFpFEa3457fJ1kiu7VxX5PKdUs0Cdx4NXsIQLFkJU1nW6coJq2TvhkdvdNDJOkIraApkhRyuDK47lOMM5BpLo7s0pLDVB5x6BkNZq4TlwntciYl3Zuji8LpWHEyCfBRPF4CpoSCqK5yzwH4In0lb6hhZ6i2EVDf7qjZyYOX7m6Cg+bZvy2rsyFPBhf06kDdmCf+TwyVXl+6x9ePLJdNLoz2f/2hrxodeUOt8M9U29qthTAV9b44Nvor9x6hvykfeS5alhwTlr7lCZoiTFUqCIv56ox4iQhRFeKc1ZvsIt4RdB6H5L2Lsc3jKLesKOVO1g==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 06 Aug 2020 18:07:37 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] scsi: ufs: no need to send one Abort Task TM in case
- the task in DB was cleared
-In-Reply-To: <871fdbc1719d7a3c469bf857071aa2c6bd71ddaf.camel@gmail.com>
-References: <20200804123534.29104-1-huobean@gmail.com>
- <a68a1bdf74bdf8ada29808537290b35b@codeaurora.org>
- <871fdbc1719d7a3c469bf857071aa2c6bd71ddaf.camel@gmail.com>
-Message-ID: <5ad1dbd76a0d5d476641a01bfb8bd435@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3824.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5143661b-12b7-4fd3-facf-08d839f0d31e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Aug 2020 10:09:36.9642
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ot0a5D7qZpWaif2UptQ1rRN0+KEYkMigH8sSi2HtNRi987tz5ReARgiKnhfZi77aUBV6K7pWh8kd1A8HgDWWLw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7167
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bean,
-
-On 2020-08-06 17:50, Bean Huo wrote:
->> 
->> Please check Stanley's recent change to ufshcd_abort, you may
->> want to rebase your change on his and do goto cleanup here.
->> @Stanley correct me if I am wrong.
->> 
->> But even if you do a goto cleanup here, we still lost the
->> chances to dump host infos/regs like it does in the old code.
->> If a cmd was completed but without a notifying intr, this is
->> kind of a problem that we/host should look into, because it's
->> pasted at least 30 sec since the cmd was sent, so those dumps
->> are necessary to debug the problem. How about moving blow prints
->> in front of this part?
->> 
->> Thanks,
->> 
->> Can Guo.
->> 
->> >  	}
->> >
->> >  	/* Print Transfer Request of aborted task */
-> 
-> Hi Can
-> 
-> Thanks, do you mean that change to like this:
-> 
-> 
-> Author: Bean Huo <beanhuo@micron.com>
-> Date:   Thu Aug 6 11:34:45 2020 +0200
-> 
->     scsi: ufs: no need to send one Abort Task TM in case the task in
->   was cleared
-> 
->     If the bit corresponds to a task in the Doorbell register has been
->     cleared, no need to poll the status of the task on the device side
->     and to send an Abort Task TM.
->     This patch also deletes dispensable dev_err() in case of the task
->     already completed.
-> 
->     Signed-off-by: Bean Huo <beanhuo@micron.com>
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 307622284239..f7c91ce9e294 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -6425,23 +6425,9 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->                 return ufshcd_eh_host_reset_handler(cmd);
-> 
->         ufshcd_hold(hba, false);
-> -       reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
->         /* If command is already aborted/completed, return SUCCESS */
-> -       if (!(test_bit(tag, &hba->outstanding_reqs))) {
-> -               dev_err(hba->dev,
-> -                       "%s: cmd at tag %d already completed,
-> outstanding=0x%lx, doorbell=0x%x\n",
-> -                       __func__, tag, hba->outstanding_reqs, reg);
-> +       if (!(test_bit(tag, &hba->outstanding_reqs)))
->                 goto out;
-> -       }
-> -
-> -       if (!(reg & (1 << tag))) {
-> -               dev_err(hba->dev,
-> -               "%s: cmd was completed, but without a notifying intr,
-> tag = %d",
-> -               __func__, tag);
-> -       }
-> -
-> -       /* Print Transfer Request of aborted task */
-> -       dev_err(hba->dev, "%s: Device abort task at tag %d\n",
-> __func__, tag);
-> 
->         /*
->          * Print detailed info about aborted request.
-> @@ -6462,6 +6448,17 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->         }
->         hba->req_abort_count++;
-> 
-> +       reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
-> +       if (!(reg & (1 << tag))) {
-> +               dev_err(hba->dev,
-> +               "%s: cmd was completed, but without a notifying intr,
-> tag = %d",
-> +               __func__, tag);
-> +               goto cleanup;
-> +       }
-> +
-> +       /* Print Transfer Request of aborted task */
-> +       dev_err(hba->dev, "%s: Device abort task at tag %d\n",
-> __func__, tag);
-> +
-
-The rest looks good but let below two lines stay where they were.
-
-        /* Print Transfer Request of aborted task */
-        dev_err(hba->dev, "%s: Device abort task at tag %d\n",
-__func__, tag);
 
 
-Thanks,
+> -----Original Message-----
+> From: Sudeep Holla <sudeep.holla@arm.com>
+> Sent: Wednesday, August 5, 2020 4:48 PM
+> To: Jason Liu <jason.hui.liu@nxp.com>
+> Cc: Marc Zyngier <maz@kernel.org>; catalin.marinas@arm.com;
+> will@kernel.org; sashal@kernel.org; linux-kernel@vger.kernel.org; Sudeep
+> Holla <sudeep.holla@arm.com>; linux-arm-kernel@lists.infradead.org
+> Subject: Re: [PATCH 1/1] arm64: kexec: no need to do irq_chip->irq_mask i=
+f it
+> already masked
+>=20
+> On Wed, Aug 05, 2020 at 06:31:20AM +0000, Jason Liu wrote:
+> > >
+> > > Indeed, the runtime PM ops in that driver looks dodgy. Any calls to
+> > > mask_irq from drivers or anywhere with irqchip suspended with just
+> > > blows up the system.
+> >
+> > If you look at the chip->irq_mask implementation on different
+> > platforms, almost all with directly access the register of the irqchip =
+including
+> irqsteer.
+> > There are fine due to driver will use the common mask_irq API.
+> >
+>=20
+> That still doesn't explain how you can prevent system from blowing up if
+> chip->irq_mask gets called with irqchip suspended ?
 
-Can Guo.
+Do you mean driver, the driver will not call chip->irq_mask when irqchip wa=
+s in suspend.
+if it does, it will be big BUG. I believe we don't do that in the driver.
 
->         /* Skip task abort in case previous aborts failed and report
-> failure */
->         if (lrbp->req_abort_skip) {
->                 err = -EIO;
-> @@ -6526,6 +6523,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->                 goto out;
->         }
-> 
-> +cleanup:
->         scsi_dma_unmap(cmd);
-> 
->         spin_lock_irqsave(host->host_lock, flags);
-> 
-> 
-> 
-> 
-> 
-> Author: Stanley Chu <stanley.chu@mediatek.com>
-> Date:   Thu Aug 6 11:48:00 2020 +0200
-> 
->     scsi: ufs: Cleanup completed request without interrupt notification
-> 
->     If somehow no interrupt notification is raised for a completed
-> request
->     and its doorbell bit is cleared by host, UFS driver needs to
-> cleanup
->     its outstanding bit in ufshcd_abort(). Otherwise, system may behave
->     abnormally by below flow:
-> 
->     After ufshcd_abort() returns, this request will be requeued by SCSI
->     layer with its outstanding bit set. Any future completed request
->     will trigger ufshcd_transfer_req_compl() to handle all "completed
->     outstanding bits". In this time, the "abnormal outstanding bit"
->     will be detected and the "requeued request" will be chosen to
-> execute
->     request post-processing flow. This is wrong because this request is
->     still "alive".
-> 
->     Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index f7c91ce9e294..29d5e5e5d0e0 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -6489,7 +6489,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->                         /* command completed already */
->                         dev_err(hba->dev, "%s: cmd at tag %d
-> successfully cleared from DB.\n",
->                                 __func__, tag);
-> -                       goto out;
-> +                       goto cleanup;
->                 } else {
->                         dev_err(hba->dev,
->                                 "%s: no response from device. tag = %d,
-> err %d\n",
+>=20
+> --
+> Regards,
+> Sudeep
