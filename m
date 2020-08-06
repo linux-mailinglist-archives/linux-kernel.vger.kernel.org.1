@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E681423E419
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 00:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0432B23E41C
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 00:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726167AbgHFWjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 18:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40790 "EHLO
+        id S1726250AbgHFWjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 18:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgHFWjB (ORCPT
+        with ESMTP id S1726027AbgHFWjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 18:39:01 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B9F4C061574;
-        Thu,  6 Aug 2020 15:39:01 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id l204so190990oib.3;
-        Thu, 06 Aug 2020 15:39:01 -0700 (PDT)
+        Thu, 6 Aug 2020 18:39:46 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54B0C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 15:39:46 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id v13so142232oiv.13
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 15:39:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ne1iYZprPZsaiWqWZFllfuyUnxnmRkcPCgewhYs7+po=;
-        b=oWwFoqGba2t65iV+0hVJvoo34WVzexMPem5bmNrBL2po0vMgi7NmTYQnYyI/pK9BPL
-         JEeCUzLouqqweosS1VJ3yAv/DIUZ58V2TeGJV+2vBVGcGw5DgK0PIliW/SRbGaYI69RM
-         aw/fTT5Kwv9QtuMRO1O32xkqGq6citRBosNGQc1Fkf8vgCgxzsXc+iuZfcjFVa+9W9mJ
-         P95qUCukRV+2zlroNs8CYWd8S7AuoLWQns9qNS/q4DiPOzzAg9r3uSEah1PBfRMaEVw8
-         xHHv0C9s3+5LRHBRnuAQDkWMUPjzLeV5xx9lgb8J1li9YC6gpmudNnGNnS7ByakiCOH6
-         MafQ==
+        bh=QYyChGMYepRNLD8UKgj7thBgwQob2Oa7/EK/gPsMnyo=;
+        b=E2q1p0JO2XvfW4MMncIYFDARtHPyS+Dcb3O71GCXktM+fV9+klnIKIxDdRHgU8QHRr
+         l7X7JmWn9GB+naSfiniANoD7LR6lGKLMk5kpKOJWxfeJQffooRC0T6skmfrGEC1AMHne
+         yKbq2NmQL6q9ywbDwSPKDUz/etM/TXSWury+bF/GcssilJLmAiftBdZFjsPbW9rUAfP+
+         /X3iDgd1HOlYlLaINt0FDbT3U2C2Nks5KEEvO3bLUtsyWVHpvQfouOR9Zj9RrV5LhyCL
+         Ghy+AmHJ2iZQF63/YcvknmUTlSDTrBqwC41c7/rEggVDsauU9MQ+kT+MyOWnLhLqZ+EL
+         IwXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ne1iYZprPZsaiWqWZFllfuyUnxnmRkcPCgewhYs7+po=;
-        b=qUm2jD7p7OgbeKqYkM8m+uiyc0ASrxRykyyPX4qUfoLaq6ydsHcI8rOpFQxu1xqQgV
-         cB8+AUIXWC2gVLHFVuyydBCnPhjxrVKWcjVoomC2jjSHttrxGeWgHHMesjwLNfirMYg+
-         2UvlBB7KOiWfAD7bV8HXY8KehYMgKkr+COl47Usqt+rXqzNNmgyASdGbOvAMAwrQPKhD
-         htmrpplY4UuJRtWAh1uBvriJVCVGR2lTGLHKOpKN3HK2qWytfmOm5RewCkUZ1LnfVvhM
-         Y/ncV+wZIwUqIUPxT8Yl2MuEbtc2OPwUYTNbIie3qno0RKnI2jEhVuNFJIe+Ca64iCge
-         vpvg==
-X-Gm-Message-State: AOAM533MjdhcnFheyJMQlCuSrFli8N7pevcbgHBgrNzhzloVTQvpN7/V
-        lRz2eXgPt6K2Q3cXTPbYVk2tzJ22z/BkGhUxIn0=
-X-Google-Smtp-Source: ABdhPJw24FLE0cOWVKOoxoFIzofMAQlqhvnejmnRS9N4YG08WW27U7QHzTUC4wI/BCAaa2dgO3tta2o3+MD5w0Lq8pI=
-X-Received: by 2002:aca:2306:: with SMTP id e6mr9080081oie.108.1596753539610;
- Thu, 06 Aug 2020 15:38:59 -0700 (PDT)
+        bh=QYyChGMYepRNLD8UKgj7thBgwQob2Oa7/EK/gPsMnyo=;
+        b=JIaFu6PLJ11IfXy7aPOZjY84BazIAM6cobX7qCt4qmDLAC7dMMVFLm41x60V1nU1Zk
+         L4Jh2ugBFvqbtlmTQWigUzuBzNj8LLzM4NcqhCG5x/ulvQWsccXqHp9KGgrgqkL0d7Mh
+         gOA5F/Qdxjsf0ztVRVY6dm9+TA+uPpPQpmRKJXidiAMumI6eIyZsZtm4EOVDJrGbl1oj
+         3C7yQCOi+ywpjVEXfjBJE8W1zmcAN8BNXqbRfUxyQicfCqNQmOVZOgzVq0nPoRwr0zv4
+         PvWeCIvrTKKbV+L2xxW0aIftgRueNylynMgTkLfyjPhzieATuEPivAU4I8P2HV30tauu
+         ZkVA==
+X-Gm-Message-State: AOAM530p1+tLfI7e1ZhhNhjizOIJe82bB3Gho+kiQ5NJYGsL5AU8pcba
+        1vaqqiTe5k3sM6KKvi15xIGfnuO8ubzZBlEEl1Y=
+X-Google-Smtp-Source: ABdhPJxgRVHE+w66qKr8NvAura05izXsDohZP4qj6OUjgNalYTkqSJnvf7KROxLkFiU/XGIePEi/yKZRmmb+OQ1qMho=
+X-Received: by 2002:a54:4512:: with SMTP id l18mr8807675oil.148.1596753585500;
+ Thu, 06 Aug 2020 15:39:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200730205112.2099429-1-ndesaulniers@google.com> <20200730205112.2099429-3-ndesaulniers@google.com>
-In-Reply-To: <20200730205112.2099429-3-ndesaulniers@google.com>
+References: <20200730205112.2099429-1-ndesaulniers@google.com> <20200730205112.2099429-4-ndesaulniers@google.com>
+In-Reply-To: <20200730205112.2099429-4-ndesaulniers@google.com>
 From:   Nathan Huckleberry <nhuck15@gmail.com>
-Date:   Thu, 6 Aug 2020 17:38:46 -0500
-Message-ID: <CAN=-Rxty=Ux5rj-VQSZH-ryj1RiNJvy7mRE7uyx_YAndGtcq7Q@mail.gmail.com>
-Subject: Re: [PATCH 2/4] ARM: backtrace-clang: add fixup for lr dereference
+Date:   Thu, 6 Aug 2020 17:39:33 -0500
+Message-ID: <CAN=-RxstJBjJUcOf9iuAxEcxYUhJTdF9JhPVWwQuefnE+3s52w@mail.gmail.com>
+Subject: Re: [PATCH 3/4] ARM: backtrace-clang: give labels more descriptive names
 To:     Nick Desaulniers <ndesaulniers@google.com>
 Cc:     Russell King <linux@armlinux.org.uk>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -61,7 +61,7 @@ Cc:     Russell King <linux@armlinux.org.uk>,
         linux-mediatek@lists.infradead.org,
         Lvqiang Huang <lvqiang.huang@unisoc.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Miles Chen <miles.chen@mediatek.com>, stable@vger.kernel.org,
+        Miles Chen <miles.chen@mediatek.com>,
         Nathan Huckleberry <nhuck@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
@@ -69,72 +69,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mostly looks good to me. Just a minor nit.
+The style cleanup looks great. I just have one extra thing that
+can probably be thrown into this patch.
 
 On Thu, Jul 30, 2020 at 3:51 PM Nick Desaulniers
 <ndesaulniers@google.com> wrote:
 >
-> If the value of the link register is not correct (tail call from asm
-> that didn't set it, stack corruption, memory no longer mapped), then
-> using it for an address calculation may trigger an exception.  Without a
-> fixup handler, this will lead to a panic, which will unwind, which will
-> trigger the fault repeatedly in an infinite loop.
+> Removes the 1004 label; it was neither a control flow target, nor an
+> instruction we expect to produce a fault.
 >
-> We don't observe such failures currently, but we have. Just to be safe,
-> add a fixup handler here so that at least we don't have an infinite
-> loop.
+> Gives the labels slightly more readable names. The `b` suffixes are
+> handy to disambiguate between labels of the same identifier when there's
+> more than one. Since these labels are unique, let's just give them
+> names.
 >
-> Cc: stable@vger.kernel.org
-> Fixes: commit 6dc5fd93b2f1 ("ARM: 8900/1: UNWINDER_FRAME_POINTER implementation for Clang")
-> Reported-by: Miles Chen <miles.chen@mediatek.com>
 > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 > ---
->  arch/arm/lib/backtrace-clang.S | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
+>  arch/arm/lib/backtrace-clang.S | 22 ++++++++++------------
+>  1 file changed, 10 insertions(+), 12 deletions(-)
 >
 > diff --git a/arch/arm/lib/backtrace-clang.S b/arch/arm/lib/backtrace-clang.S
-> index 5388ac664c12..40eb2215eaf4 100644
+> index 40eb2215eaf4..7dad2a6843a5 100644
 > --- a/arch/arm/lib/backtrace-clang.S
 > +++ b/arch/arm/lib/backtrace-clang.S
-> @@ -146,7 +146,7 @@ for_each_frame:     tst     frame, mask             @ Check for address exceptions
+> @@ -121,8 +121,8 @@ for_each_frame:     tst     frame, mask             @ Check for address exceptions
+>   * start. This value gets updated to be the function start later if it is
+>   * possible.
+>   */
+> -1001:          ldr     sv_pc, [frame, #4]      @ get saved 'pc'
+> -1002:          ldr     sv_fp, [frame, #0]      @ get saved fp
+> +load_pc:       ldr     sv_pc, [frame, #4]      @ get saved 'pc'
+> +load_fp:       ldr     sv_fp, [frame, #0]      @ get saved fp
+>
+>                 teq     sv_fp, mask             @ make sure next frame exists
+>                 beq     no_frame
+> @@ -142,7 +142,7 @@ for_each_frame:     tst     frame, mask             @ Check for address exceptions
+>   * registers for the current function, but the stacktrace is still printed
+>   * properly.
+>   */
+> -1003:          ldr     sv_lr, [sv_fp, #4]      @ get saved lr from next frame
+> +load_lr:       ldr     sv_lr, [sv_fp, #4]      @ get saved lr from next frame
 >
 >                 tst     sv_lr, #0               @ If there's no previous lr,
 >                 beq     finished_setup          @ we're done.
-> -               ldr     r0, [sv_lr, #-4]        @ get call instruction
-> +prev_call:     ldr     r0, [sv_lr, #-4]        @ get call instruction
->                 ldr     r3, .Lopcode+4
->                 and     r2, r3, r0              @ is this a bl call
->                 teq     r2, r3
-> @@ -206,6 +206,13 @@ finished_setup:
+> @@ -166,8 +166,7 @@ finished_setup:
+>  /*
+>   * Print the function (sv_pc) and where it was called from (sv_lr).
+>   */
+> -1004:          mov     r0, sv_pc
+> -
+> +               mov     r0, sv_pc
+>                 mov     r1, sv_lr
+>                 mov     r2, frame
+>                 bic     r1, r1, mask            @ mask PC/LR for the mode
+> @@ -182,7 +181,7 @@ finished_setup:
+>   * pointer the comparison will fail and no registers will print. Unwinding will
+>   * continue as if there had been no registers stored in this frame.
+>   */
+> -1005:          ldr     r1, [sv_pc, #0]         @ if stmfd sp!, {..., fp, lr}
+> +load_stmfd:    ldr     r1, [sv_pc, #0]         @ if stmfd sp!, {..., fp, lr}
+>                 ldr     r3, .Lopcode            @ instruction exists,
+>                 teq     r3, r1, lsr #11
+>                 ldr     r0, [frame]             @ locals are stored in
+> @@ -201,7 +200,7 @@ finished_setup:
+>                 mov     frame, sv_fp            @ above the current frame
+>                 bhi     for_each_frame
+>
+> -1006:          adr     r0, .Lbad
+> +bad_frame:     adr     r0, .Lbad
+>                 mov     r1, loglvl
 >                 mov     r2, frame
 >                 bl      printk
->  no_frame:      ldmfd   sp!, {r4 - r9, fp, pc}
-> +/*
-> + * Accessing the address pointed to by the link register triggered an
-> + * exception, don't try to unwind through it.
-> + */
-> +bad_lr:                mov     sv_fp, #0
-
-It might be nice to emit a warning here since we'll
-only hit this case if something fishy is going on
-with the saved lr.
-
-> +               mov     sv_lr, #0
-> +               b       finished_setup
+> @@ -216,11 +215,10 @@ bad_lr:           mov     sv_fp, #0
 >  ENDPROC(c_backtrace)
 >                 .pushsection __ex_table,"a"
 >                 .align  3
-> @@ -214,6 +221,7 @@ ENDPROC(c_backtrace)
->                 .long   1003b, 1006b
->                 .long   1004b, 1006b
->                 .long   1005b, 1006b
-> +               .long   prev_call, bad_lr
+> -               .long   1001b, 1006b
+> -               .long   1002b, 1006b
+> -               .long   1003b, 1006b
+> -               .long   1004b, 1006b
+> -               .long   1005b, 1006b
+> +               .long   load_pc, bad_frame
+> +               .long   load_fp, bad_frame
+> +               .long   load_lr, bad_frame
+> +               .long   load_stmfd, bad_frame
+
+Load_stmfd should get its own fixup
+handler since it should emit errors about a bad
+pc, not a bad frame pointer.
+
+>                 .long   prev_call, bad_lr
 >                 .popsection
 >
->  .Lbad:         .asciz  "%sBacktrace aborted due to bad frame pointer <%p>\n"
 > --
 > 2.28.0.163.g6104cc2f0b6-goog
 >
-
-Thanks,
-Huck
