@@ -2,287 +2,734 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9A823E1DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C808723E1F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728858AbgHFTHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 15:07:12 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:55196 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726577AbgHFTHK (ORCPT
+        id S1728339AbgHFTQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 15:16:49 -0400
+Received: from 14.mo3.mail-out.ovh.net ([188.165.43.98]:47981 "EHLO
+        14.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727971AbgHFTQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 15:07:10 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076D2NLW005852;
-        Thu, 6 Aug 2020 13:13:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=S15tYa3c//T2CmRl28NbdPwxaeeKPP3A7zXXBkj1DbE=;
- b=IjFaOu/kJbYSSbaCqdGEgOKERCBW6L6UieYN4Ea7t9IKLLCj5QtNdi1VFN8f1C+1Jy/X
- 0aXeFQt34/VUKfbO0ERplG5hOBq5/aYIXCDSWIg0gtxQN2nBhcRnxtvdzlzZw3OhtjXT
- jgv+A4UtS0pwR6aIV8XyLQeiJzNGxnWAyo2Pcsv0wKc/MWE89pJMnsENxgDS9FAmN1wk
- BorfPUv0RwQwxXU4cwOQm4EsosVM9prx0EQrvlN2lxRAHjYxZjxFzQIENSqY5wjULvHd
- 6ci1fLLaWjTXBkiUWcsRdxlY0Ji0okhF5VQO1iA8OP+a6j8dVjd9B5J5eBiJ4+Q4RNqN zA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 32r6fxjtb5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 06 Aug 2020 13:13:39 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076Cx8CY151634;
-        Thu, 6 Aug 2020 13:13:38 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 32qy8nbwn5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Aug 2020 13:13:38 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 076DDYCB019275;
-        Thu, 6 Aug 2020 13:13:34 GMT
-Received: from starbug-mbp.localdomain (/79.97.215.145)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Aug 2020 06:13:34 -0700
-Received: by starbug-mbp.localdomain (Postfix, from userid 501)
-        id CE325F047EA; Thu,  6 Aug 2020 14:13:28 +0100 (IST)
-From:   Darren Kenny <darren.kenny@oracle.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v36 01/24] x86/cpufeatures: x86/msr: Add Intel SGX
- hardware bits
-In-Reply-To: <20200716135303.276442-2-jarkko.sakkinen@linux.intel.com>
-References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
- <20200716135303.276442-2-jarkko.sakkinen@linux.intel.com>
-Date:   Thu, 06 Aug 2020 14:13:28 +0100
-Message-ID: <m2ft8zsyrr.fsf@oracle.com>
+        Thu, 6 Aug 2020 15:16:48 -0400
+X-Greylist: delayed 4180 seconds by postgrey-1.27 at vger.kernel.org; Thu, 06 Aug 2020 15:16:43 EDT
+Received: from player787.ha.ovh.net (unknown [10.110.115.229])
+        by mo3.mail-out.ovh.net (Postfix) with ESMTP id 0C70D25815B
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 18:17:01 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player787.ha.ovh.net (Postfix) with ESMTPSA id 6B4AC153DDFC7;
+        Thu,  6 Aug 2020 16:16:56 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-103G005ebd5d218-b482-4ccf-aed0-089f45a1c0de,
+                    9D5F4B8471F7AF6BEF45141B8B52B4DEEC6DEFE4) smtp.auth=steve@sk2.org
+From:   Stephen Kitt <steve@sk2.org>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Kitt <steve@sk2.org>
+Subject: [PATCH] hwmon/pmbus: use simple i2c probe function
+Date:   Thu,  6 Aug 2020 18:16:45 +0200
+Message-Id: <20200806161645.9437-1-steve@sk2.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- spamscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008060094
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0 adultscore=0
- bulkscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 suspectscore=1 spamscore=0 clxscore=1011 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060094
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 3241747309955337486
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrkedtgddutdduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeetgedugfelkeeikeetgeegteevfeeufeetuefgudeiiedthfehtdeffeekvdeffeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeekjedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 2020-07-16 at 16:52:40 +03, Jarkko Sakkinen wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->
-> Add X86_FEATURE_SGX from CPUID.(EAX=3D7, ECX=3D1), which informs whether =
-the
-> CPU has SGX.
->
-> Add X86_FEATURE_SGX1 and X86_FEATURE_SGX2 from CPUID.(EAX=3D12H, ECX=3D0),
-> which describe the level of SGX support available [1].
->
-> Add IA32_FEATURE_CONTROL.SGX_ENABLE. BIOS can use this bit to opt-in SGX
-> before locking the feature control MSR [2].
->
-> [1] Intel SDM: 36.7.2 Intel=C2=AE SGX Resource Enumeration Leaves
-> [2] Intel SDM: 36.7.1 Intel=C2=AE SGX Opt-In Configuration
->
-> Reviewed-by: Borislav Petkov <bp@alien8.de>
-> Acked-by: Jethro Beekman <jethro@fortanix.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+pmbus_do_probe doesn't use the id information provided in its second
+argument, so this can be removed, which then allows using the
+single-parameter i2c probe function ("probe_new") for probes which
+don't use the id information either.
 
-Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+This avoids scanning the identifier tables during probes.
 
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->  arch/x86/include/asm/cpufeature.h        |  5 +++--
->  arch/x86/include/asm/cpufeatures.h       |  7 ++++++-
->  arch/x86/include/asm/disabled-features.h | 18 +++++++++++++++---
->  arch/x86/include/asm/msr-index.h         |  1 +
->  arch/x86/include/asm/required-features.h |  2 +-
->  arch/x86/kernel/cpu/common.c             |  4 ++++
->  6 files changed, 30 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpu=
-feature.h
-> index 59bf91c57aa8..efbdba5170a3 100644
-> --- a/arch/x86/include/asm/cpufeature.h
-> +++ b/arch/x86/include/asm/cpufeature.h
-> @@ -30,6 +30,7 @@ enum cpuid_leafs
->  	CPUID_7_ECX,
->  	CPUID_8000_0007_EBX,
->  	CPUID_7_EDX,
-> +	CPUID_12_EAX,
->  };
->=20=20
->  #ifdef CONFIG_X86_FEATURE_NAMES
-> @@ -89,7 +90,7 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
->  	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 17, feature_bit) ||	\
->  	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 18, feature_bit) ||	\
->  	   REQUIRED_MASK_CHECK					  ||	\
-> -	   BUILD_BUG_ON_ZERO(NCAPINTS !=3D 19))
-> +	   BUILD_BUG_ON_ZERO(NCAPINTS !=3D 20))
->=20=20
->  #define DISABLED_MASK_BIT_SET(feature_bit)				\
->  	 ( CHECK_BIT_IN_MASK_WORD(DISABLED_MASK,  0, feature_bit) ||	\
-> @@ -112,7 +113,7 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
->  	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 17, feature_bit) ||	\
->  	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 18, feature_bit) ||	\
->  	   DISABLED_MASK_CHECK					  ||	\
-> -	   BUILD_BUG_ON_ZERO(NCAPINTS !=3D 19))
-> +	   BUILD_BUG_ON_ZERO(NCAPINTS !=3D 20))
->=20=20
->  #define cpu_has(c, bit)							\
->  	(__builtin_constant_p(bit) && REQUIRED_MASK_BIT_SET(bit) ? 1 :	\
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cp=
-ufeatures.h
-> index 02dabc9e77b0..545ac3e0e269 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -13,7 +13,7 @@
->  /*
->   * Defines x86 CPU feature bits
->   */
-> -#define NCAPINTS			19	   /* N 32-bit words worth of info */
-> +#define NCAPINTS			20	   /* N 32-bit words worth of info */
->  #define NBUGINTS			1	   /* N 32-bit bug flags */
->=20=20
->  /*
-> @@ -238,6 +238,7 @@
->  /* Intel-defined CPU features, CPUID level 0x00000007:0 (EBX), word 9 */
->  #define X86_FEATURE_FSGSBASE		( 9*32+ 0) /* RDFSBASE, WRFSBASE, RDGSBASE=
-, WRGSBASE instructions*/
->  #define X86_FEATURE_TSC_ADJUST		( 9*32+ 1) /* TSC adjustment MSR 0x3B */
-> +#define X86_FEATURE_SGX			( 9*32+ 2) /* Software Guard Extensions */
->  #define X86_FEATURE_BMI1		( 9*32+ 3) /* 1st group bit manipulation exten=
-sions */
->  #define X86_FEATURE_HLE			( 9*32+ 4) /* Hardware Lock Elision */
->  #define X86_FEATURE_AVX2		( 9*32+ 5) /* AVX2 instructions */
-> @@ -373,6 +374,10 @@
->  #define X86_FEATURE_CORE_CAPABILITIES	(18*32+30) /* "" IA32_CORE_CAPABIL=
-ITIES MSR */
->  #define X86_FEATURE_SPEC_CTRL_SSBD	(18*32+31) /* "" Speculative Store By=
-pass Disable */
->=20=20
-> +/* Intel-defined SGX features, CPUID level 0x00000012:0 (EAX), word 19 */
-> +#define X86_FEATURE_SGX1		(19*32+ 0) /* SGX1 leaf functions */
-> +#define X86_FEATURE_SGX2		(19*32+ 1) /* SGX2 leaf functions */
-> +
->  /*
->   * BUG word(s)
->   */
-> diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/=
-asm/disabled-features.h
-> index 4ea8584682f9..dbe534d5153f 100644
-> --- a/arch/x86/include/asm/disabled-features.h
-> +++ b/arch/x86/include/asm/disabled-features.h
-> @@ -28,13 +28,18 @@
->  # define DISABLE_CYRIX_ARR	(1<<(X86_FEATURE_CYRIX_ARR & 31))
->  # define DISABLE_CENTAUR_MCR	(1<<(X86_FEATURE_CENTAUR_MCR & 31))
->  # define DISABLE_PCID		0
-> +# define DISABLE_SGX1		0
-> +# define DISABLE_SGX2		0
->  #else
->  # define DISABLE_VME		0
->  # define DISABLE_K6_MTRR	0
->  # define DISABLE_CYRIX_ARR	0
->  # define DISABLE_CENTAUR_MCR	0
->  # define DISABLE_PCID		(1<<(X86_FEATURE_PCID & 31))
-> -#endif /* CONFIG_X86_64 */
-> +# define DISABLE_SGX1		(1<<(X86_FEATURE_SGX1 & 31))
-> +# define DISABLE_SGX2		(1<<(X86_FEATURE_SGX2 & 31))
-> + #endif /* CONFIG_X86_64 */
-> +
->=20=20
->  #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
->  # define DISABLE_PKU		0
-> @@ -56,6 +61,12 @@
->  # define DISABLE_PTI		(1 << (X86_FEATURE_PTI & 31))
->  #endif
->=20=20
-> +#ifdef CONFIG_INTEL_SGX
-> +# define DISABLE_SGX	0
-> +#else
-> +# define DISABLE_SGX	(1 << (X86_FEATURE_SGX & 31))
-> +#endif
-> +
->  /*
->   * Make sure to add features to the correct mask
->   */
-> @@ -68,7 +79,7 @@
->  #define DISABLED_MASK6	0
->  #define DISABLED_MASK7	(DISABLE_PTI)
->  #define DISABLED_MASK8	0
-> -#define DISABLED_MASK9	(DISABLE_SMAP)
-> +#define DISABLED_MASK9	(DISABLE_SMAP|DISABLE_SGX)
->  #define DISABLED_MASK10	0
->  #define DISABLED_MASK11	0
->  #define DISABLED_MASK12	0
-> @@ -78,6 +89,7 @@
->  #define DISABLED_MASK16	(DISABLE_PKU|DISABLE_OSPKE|DISABLE_LA57|DISABLE_=
-UMIP)
->  #define DISABLED_MASK17	0
->  #define DISABLED_MASK18	0
-> -#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS !=3D 19)
-> +#define DISABLED_MASK19	(DISABLE_SGX1|DISABLE_SGX2)
-> +#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS !=3D 20)
->=20=20
->  #endif /* _ASM_X86_DISABLED_FEATURES_H */
-> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-=
-index.h
-> index e8370e64a155..18e08da19f16 100644
-> --- a/arch/x86/include/asm/msr-index.h
-> +++ b/arch/x86/include/asm/msr-index.h
-> @@ -582,6 +582,7 @@
->  #define FEAT_CTL_LOCKED				BIT(0)
->  #define FEAT_CTL_VMX_ENABLED_INSIDE_SMX		BIT(1)
->  #define FEAT_CTL_VMX_ENABLED_OUTSIDE_SMX	BIT(2)
-> +#define FEAT_CTL_SGX_ENABLED			BIT(18)
->  #define FEAT_CTL_LMCE_ENABLED			BIT(20)
->=20=20
->  #define MSR_IA32_TSC_ADJUST             0x0000003b
-> diff --git a/arch/x86/include/asm/required-features.h b/arch/x86/include/=
-asm/required-features.h
-> index 6847d85400a8..039e58be2fe6 100644
-> --- a/arch/x86/include/asm/required-features.h
-> +++ b/arch/x86/include/asm/required-features.h
-> @@ -101,6 +101,6 @@
->  #define REQUIRED_MASK16	0
->  #define REQUIRED_MASK17	0
->  #define REQUIRED_MASK18	0
-> -#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS !=3D 19)
-> +#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS !=3D 20)
->=20=20
->  #endif /* _ASM_X86_REQUIRED_FEATURES_H */
-> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-> index 95c090a45b4b..7aecf5d07c70 100644
-> --- a/arch/x86/kernel/cpu/common.c
-> +++ b/arch/x86/kernel/cpu/common.c
-> @@ -914,6 +914,10 @@ void get_cpu_cap(struct cpuinfo_x86 *c)
->  		c->x86_capability[CPUID_D_1_EAX] =3D eax;
->  	}
->=20=20
-> +	/* Additional Intel-defined SGX flags: level 0x00000012 */
-> +	if (c->cpuid_level >=3D 0x00000012)
-> +		c->x86_capability[CPUID_12_EAX] =3D cpuid_eax(0x00000012);
-> +
->  	/* AMD-defined flags: level 0x80000001 */
->  	eax =3D cpuid_eax(0x80000000);
->  	c->extended_cpuid_level =3D eax;
-> --=20
-> 2.25.1
+Additionally, in cases where the id information (driver_data) isn't
+used, the corresponding declarations are removed from the id_table,
+and .name is specified explicitly.
+
+Signed-off-by: Stephen Kitt <steve@sk2.org>
+---
+ drivers/hwmon/pmbus/bel-pfe.c      |  2 +-
+ drivers/hwmon/pmbus/ibm-cffps.c    |  2 +-
+ drivers/hwmon/pmbus/inspur-ipsps.c |  9 ++++-----
+ drivers/hwmon/pmbus/ir35221.c      |  9 ++++-----
+ drivers/hwmon/pmbus/ir38064.c      |  9 ++++-----
+ drivers/hwmon/pmbus/irps5401.c     |  9 ++++-----
+ drivers/hwmon/pmbus/isl68137.c     |  2 +-
+ drivers/hwmon/pmbus/lm25066.c      |  2 +-
+ drivers/hwmon/pmbus/ltc2978.c      |  2 +-
+ drivers/hwmon/pmbus/ltc3815.c      |  9 ++++-----
+ drivers/hwmon/pmbus/max16064.c     |  9 ++++-----
+ drivers/hwmon/pmbus/max16601.c     |  9 ++++-----
+ drivers/hwmon/pmbus/max20730.c     |  2 +-
+ drivers/hwmon/pmbus/max20751.c     |  9 ++++-----
+ drivers/hwmon/pmbus/max31785.c     | 13 ++++++-------
+ drivers/hwmon/pmbus/max34440.c     |  2 +-
+ drivers/hwmon/pmbus/max8688.c      |  9 ++++-----
+ drivers/hwmon/pmbus/pmbus.c        |  2 +-
+ drivers/hwmon/pmbus/pmbus.h        |  3 +--
+ drivers/hwmon/pmbus/pmbus_core.c   |  3 +--
+ drivers/hwmon/pmbus/pxe1610.c      | 13 ++++++-------
+ drivers/hwmon/pmbus/tps40422.c     |  9 ++++-----
+ drivers/hwmon/pmbus/tps53679.c     |  2 +-
+ drivers/hwmon/pmbus/ucd9000.c      |  2 +-
+ drivers/hwmon/pmbus/ucd9200.c      |  2 +-
+ drivers/hwmon/pmbus/xdpe12284.c    | 11 +++++------
+ drivers/hwmon/pmbus/zl6100.c       |  2 +-
+ 27 files changed, 71 insertions(+), 86 deletions(-)
+
+diff --git a/drivers/hwmon/pmbus/bel-pfe.c b/drivers/hwmon/pmbus/bel-pfe.c
+index f236e18f45a5..240d86043d75 100644
+--- a/drivers/hwmon/pmbus/bel-pfe.c
++++ b/drivers/hwmon/pmbus/bel-pfe.c
+@@ -104,7 +104,7 @@ static int pfe_pmbus_probe(struct i2c_client *client,
+ 		i2c_smbus_write_byte_data(client, PMBUS_PAGE, 0);
+ 	}
+ 
+-	return pmbus_do_probe(client, id, &pfe_driver_info[model]);
++	return pmbus_do_probe(client, &pfe_driver_info[model]);
+ }
+ 
+ static const struct i2c_device_id pfe_device_id[] = {
+diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
+index 7d300f2f338d..0215e792ec7e 100644
+--- a/drivers/hwmon/pmbus/ibm-cffps.c
++++ b/drivers/hwmon/pmbus/ibm-cffps.c
+@@ -519,7 +519,7 @@ static int ibm_cffps_probe(struct i2c_client *client,
+ 	}
+ 
+ 	client->dev.platform_data = &ibm_cffps_pdata;
+-	rc = pmbus_do_probe(client, id, &ibm_cffps_info[vs]);
++	rc = pmbus_do_probe(client, &ibm_cffps_info[vs]);
+ 	if (rc)
+ 		return rc;
+ 
+diff --git a/drivers/hwmon/pmbus/inspur-ipsps.c b/drivers/hwmon/pmbus/inspur-ipsps.c
+index 42e01549184a..b97848e05ae2 100644
+--- a/drivers/hwmon/pmbus/inspur-ipsps.c
++++ b/drivers/hwmon/pmbus/inspur-ipsps.c
+@@ -190,15 +190,14 @@ static struct pmbus_platform_data ipsps_pdata = {
+ 	.flags = PMBUS_SKIP_STATUS_CHECK,
+ };
+ 
+-static int ipsps_probe(struct i2c_client *client,
+-		       const struct i2c_device_id *id)
++static int ipsps_probe(struct i2c_client *client)
+ {
+ 	client->dev.platform_data = &ipsps_pdata;
+-	return pmbus_do_probe(client, id, &ipsps_info);
++	return pmbus_do_probe(client, &ipsps_info);
+ }
+ 
+ static const struct i2c_device_id ipsps_id[] = {
+-	{ "ipsps1", 0 },
++	{ .name = "ipsps1" },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(i2c, ipsps_id);
+@@ -216,7 +215,7 @@ static struct i2c_driver ipsps_driver = {
+ 		.name = "inspur-ipsps",
+ 		.of_match_table = of_match_ptr(ipsps_of_match),
+ 	},
+-	.probe = ipsps_probe,
++	.probe_new = ipsps_probe,
+ 	.remove = pmbus_do_remove,
+ 	.id_table = ipsps_id,
+ };
+diff --git a/drivers/hwmon/pmbus/ir35221.c b/drivers/hwmon/pmbus/ir35221.c
+index 3eea3e006a96..e7fabafca2f1 100644
+--- a/drivers/hwmon/pmbus/ir35221.c
++++ b/drivers/hwmon/pmbus/ir35221.c
+@@ -67,8 +67,7 @@ static int ir35221_read_word_data(struct i2c_client *client, int page,
+ 	return ret;
+ }
+ 
+-static int ir35221_probe(struct i2c_client *client,
+-			 const struct i2c_device_id *id)
++static int ir35221_probe(struct i2c_client *client)
+ {
+ 	struct pmbus_driver_info *info;
+ 	u8 buf[I2C_SMBUS_BLOCK_MAX];
+@@ -123,11 +122,11 @@ static int ir35221_probe(struct i2c_client *client,
+ 		| PMBUS_HAVE_STATUS_INPUT | PMBUS_HAVE_STATUS_TEMP;
+ 	info->func[1] = info->func[0];
+ 
+-	return pmbus_do_probe(client, id, info);
++	return pmbus_do_probe(client, info);
+ }
+ 
+ static const struct i2c_device_id ir35221_id[] = {
+-	{"ir35221", 0},
++	{ .name = "ir35221" },
+ 	{}
+ };
+ 
+@@ -137,7 +136,7 @@ static struct i2c_driver ir35221_driver = {
+ 	.driver = {
+ 		.name	= "ir35221",
+ 	},
+-	.probe		= ir35221_probe,
++	.probe_new	= ir35221_probe,
+ 	.remove		= pmbus_do_remove,
+ 	.id_table	= ir35221_id,
+ };
+diff --git a/drivers/hwmon/pmbus/ir38064.c b/drivers/hwmon/pmbus/ir38064.c
+index 1820f5077f66..a36ab6cc21d7 100644
+--- a/drivers/hwmon/pmbus/ir38064.c
++++ b/drivers/hwmon/pmbus/ir38064.c
+@@ -35,14 +35,13 @@ static struct pmbus_driver_info ir38064_info = {
+ 	    | PMBUS_HAVE_POUT,
+ };
+ 
+-static int ir38064_probe(struct i2c_client *client,
+-			 const struct i2c_device_id *id)
++static int ir38064_probe(struct i2c_client *client)
+ {
+-	return pmbus_do_probe(client, id, &ir38064_info);
++	return pmbus_do_probe(client, &ir38064_info);
+ }
+ 
+ static const struct i2c_device_id ir38064_id[] = {
+-	{"ir38064", 0},
++	{ .name = "ir38064" },
+ 	{}
+ };
+ 
+@@ -53,7 +52,7 @@ static struct i2c_driver ir38064_driver = {
+ 	.driver = {
+ 		   .name = "ir38064",
+ 		   },
+-	.probe = ir38064_probe,
++	.probe_new = ir38064_probe,
+ 	.remove = pmbus_do_remove,
+ 	.id_table = ir38064_id,
+ };
+diff --git a/drivers/hwmon/pmbus/irps5401.c b/drivers/hwmon/pmbus/irps5401.c
+index d37daa001fb3..828b91567137 100644
+--- a/drivers/hwmon/pmbus/irps5401.c
++++ b/drivers/hwmon/pmbus/irps5401.c
+@@ -38,14 +38,13 @@ static struct pmbus_driver_info irps5401_info = {
+ 	.func[4] = IRPS5401_LDO_FUNC,
+ };
+ 
+-static int irps5401_probe(struct i2c_client *client,
+-			  const struct i2c_device_id *id)
++static int irps5401_probe(struct i2c_client *client)
+ {
+-	return pmbus_do_probe(client, id, &irps5401_info);
++	return pmbus_do_probe(client, &irps5401_info);
+ }
+ 
+ static const struct i2c_device_id irps5401_id[] = {
+-	{"irps5401", 0},
++	{ .name = "irps5401" },
+ 	{}
+ };
+ 
+@@ -55,7 +54,7 @@ static struct i2c_driver irps5401_driver = {
+ 	.driver = {
+ 		   .name = "irps5401",
+ 		   },
+-	.probe = irps5401_probe,
++	.probe_new = irps5401_probe,
+ 	.remove = pmbus_do_remove,
+ 	.id_table = irps5401_id,
+ };
+diff --git a/drivers/hwmon/pmbus/isl68137.c b/drivers/hwmon/pmbus/isl68137.c
+index 0c622711ef7e..2d626ccbc11d 100644
+--- a/drivers/hwmon/pmbus/isl68137.c
++++ b/drivers/hwmon/pmbus/isl68137.c
+@@ -262,7 +262,7 @@ static int isl68137_probe(struct i2c_client *client,
+ 		return -ENODEV;
+ 	}
+ 
+-	return pmbus_do_probe(client, id, info);
++	return pmbus_do_probe(client, info);
+ }
+ 
+ static const struct i2c_device_id raa_dmpvr_id[] = {
+diff --git a/drivers/hwmon/pmbus/lm25066.c b/drivers/hwmon/pmbus/lm25066.c
+index 9e4cf0800186..2d28cddc365f 100644
+--- a/drivers/hwmon/pmbus/lm25066.c
++++ b/drivers/hwmon/pmbus/lm25066.c
+@@ -487,7 +487,7 @@ static int lm25066_probe(struct i2c_client *client,
+ 		info->b[PSC_POWER] = coeff[PSC_POWER].b;
+ 	}
+ 
+-	return pmbus_do_probe(client, id, info);
++	return pmbus_do_probe(client, info);
+ }
+ 
+ static const struct i2c_device_id lm25066_id[] = {
+diff --git a/drivers/hwmon/pmbus/ltc2978.c b/drivers/hwmon/pmbus/ltc2978.c
+index 7b0e6b37e247..da6832094676 100644
+--- a/drivers/hwmon/pmbus/ltc2978.c
++++ b/drivers/hwmon/pmbus/ltc2978.c
+@@ -832,7 +832,7 @@ static int ltc2978_probe(struct i2c_client *client,
+ 	}
+ #endif
+ 
+-	return pmbus_do_probe(client, id, info);
++	return pmbus_do_probe(client, info);
+ }
+ 
+ 
+diff --git a/drivers/hwmon/pmbus/ltc3815.c b/drivers/hwmon/pmbus/ltc3815.c
+index 3036263e0a66..0a02fbac127a 100644
+--- a/drivers/hwmon/pmbus/ltc3815.c
++++ b/drivers/hwmon/pmbus/ltc3815.c
+@@ -143,7 +143,7 @@ static int ltc3815_write_word_data(struct i2c_client *client, int page,
+ }
+ 
+ static const struct i2c_device_id ltc3815_id[] = {
+-	{"ltc3815", 0},
++	{ .name = "ltc3815" },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, ltc3815_id);
+@@ -178,8 +178,7 @@ static struct pmbus_driver_info ltc3815_info = {
+ 	.write_word_data = ltc3815_write_word_data,
+ };
+ 
+-static int ltc3815_probe(struct i2c_client *client,
+-			 const struct i2c_device_id *id)
++static int ltc3815_probe(struct i2c_client *client)
+ {
+ 	int chip_id;
+ 
+@@ -193,14 +192,14 @@ static int ltc3815_probe(struct i2c_client *client,
+ 	if ((chip_id & LTC3815_ID_MASK) != LTC3815_ID)
+ 		return -ENODEV;
+ 
+-	return pmbus_do_probe(client, id, &ltc3815_info);
++	return pmbus_do_probe(client, &ltc3815_info);
+ }
+ 
+ static struct i2c_driver ltc3815_driver = {
+ 	.driver = {
+ 		   .name = "ltc3815",
+ 		   },
+-	.probe = ltc3815_probe,
++	.probe_new = ltc3815_probe,
+ 	.remove = pmbus_do_remove,
+ 	.id_table = ltc3815_id,
+ };
+diff --git a/drivers/hwmon/pmbus/max16064.c b/drivers/hwmon/pmbus/max16064.c
+index 288e93f74c28..e0efc7f6879d 100644
+--- a/drivers/hwmon/pmbus/max16064.c
++++ b/drivers/hwmon/pmbus/max16064.c
+@@ -85,14 +85,13 @@ static struct pmbus_driver_info max16064_info = {
+ 	.write_word_data = max16064_write_word_data,
+ };
+ 
+-static int max16064_probe(struct i2c_client *client,
+-			  const struct i2c_device_id *id)
++static int max16064_probe(struct i2c_client *client)
+ {
+-	return pmbus_do_probe(client, id, &max16064_info);
++	return pmbus_do_probe(client, &max16064_info);
+ }
+ 
+ static const struct i2c_device_id max16064_id[] = {
+-	{"max16064", 0},
++	{ .name = "max16064" },
+ 	{}
+ };
+ 
+@@ -103,7 +102,7 @@ static struct i2c_driver max16064_driver = {
+ 	.driver = {
+ 		   .name = "max16064",
+ 		   },
+-	.probe = max16064_probe,
++	.probe_new = max16064_probe,
+ 	.remove = pmbus_do_remove,
+ 	.id_table = max16064_id,
+ };
+diff --git a/drivers/hwmon/pmbus/max16601.c b/drivers/hwmon/pmbus/max16601.c
+index 51cdfaf9023c..0d4049c29f9c 100644
+--- a/drivers/hwmon/pmbus/max16601.c
++++ b/drivers/hwmon/pmbus/max16601.c
+@@ -239,8 +239,7 @@ static void max16601_remove(void *_data)
+ 	i2c_unregister_device(data->vsa);
+ }
+ 
+-static int max16601_probe(struct i2c_client *client,
+-			  const struct i2c_device_id *id)
++static int max16601_probe(struct i2c_client *client)
+ {
+ 	struct device *dev = &client->dev;
+ 	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
+@@ -288,11 +287,11 @@ static int max16601_probe(struct i2c_client *client,
+ 
+ 	data->info = max16601_info;
+ 
+-	return pmbus_do_probe(client, id, &data->info);
++	return pmbus_do_probe(client, &data->info);
+ }
+ 
+ static const struct i2c_device_id max16601_id[] = {
+-	{"max16601", 0},
++	{ .name = "max16601" },
+ 	{}
+ };
+ 
+@@ -302,7 +301,7 @@ static struct i2c_driver max16601_driver = {
+ 	.driver = {
+ 		   .name = "max16601",
+ 		   },
+-	.probe = max16601_probe,
++	.probe_new = max16601_probe,
+ 	.remove = pmbus_do_remove,
+ 	.id_table = max16601_id,
+ };
+diff --git a/drivers/hwmon/pmbus/max20730.c b/drivers/hwmon/pmbus/max20730.c
+index c0bb05487e0e..0abcef2ac649 100644
+--- a/drivers/hwmon/pmbus/max20730.c
++++ b/drivers/hwmon/pmbus/max20730.c
+@@ -335,7 +335,7 @@ static int max20730_probe(struct i2c_client *client,
+ 		return ret;
+ 	data->mfr_devset1 = ret;
+ 
+-	return pmbus_do_probe(client, id, &data->info);
++	return pmbus_do_probe(client, &data->info);
+ }
+ 
+ static const struct i2c_device_id max20730_id[] = {
+diff --git a/drivers/hwmon/pmbus/max20751.c b/drivers/hwmon/pmbus/max20751.c
+index da3c38cb9a5c..8ab666969a77 100644
+--- a/drivers/hwmon/pmbus/max20751.c
++++ b/drivers/hwmon/pmbus/max20751.c
+@@ -26,14 +26,13 @@ static struct pmbus_driver_info max20751_info = {
+ 		PMBUS_HAVE_POUT,
+ };
+ 
+-static int max20751_probe(struct i2c_client *client,
+-			  const struct i2c_device_id *id)
++static int max20751_probe(struct i2c_client *client)
+ {
+-	return pmbus_do_probe(client, id, &max20751_info);
++	return pmbus_do_probe(client, &max20751_info);
+ }
+ 
+ static const struct i2c_device_id max20751_id[] = {
+-	{"max20751", 0},
++	{ .name = "max20751" },
+ 	{}
+ };
+ 
+@@ -43,7 +42,7 @@ static struct i2c_driver max20751_driver = {
+ 	.driver = {
+ 		   .name = "max20751",
+ 		   },
+-	.probe = max20751_probe,
++	.probe_new = max20751_probe,
+ 	.remove = pmbus_do_remove,
+ 	.id_table = max20751_id,
+ };
+diff --git a/drivers/hwmon/pmbus/max31785.c b/drivers/hwmon/pmbus/max31785.c
+index d9aa5c873d21..3e77c79f3f42 100644
+--- a/drivers/hwmon/pmbus/max31785.c
++++ b/drivers/hwmon/pmbus/max31785.c
+@@ -324,8 +324,7 @@ static int max31785_configure_dual_tach(struct i2c_client *client,
+ 	return 0;
+ }
+ 
+-static int max31785_probe(struct i2c_client *client,
+-			  const struct i2c_device_id *id)
++static int max31785_probe(struct i2c_client *client)
+ {
+ 	struct device *dev = &client->dev;
+ 	struct pmbus_driver_info *info;
+@@ -354,7 +353,7 @@ static int max31785_probe(struct i2c_client *client,
+ 	if (ret == MAX31785A) {
+ 		dual_tach = true;
+ 	} else if (ret == MAX31785) {
+-		if (!strcmp("max31785a", id->name))
++		if (!strcmp("max31785a", client->name))
+ 			dev_warn(dev, "Expected max3175a, found max31785: cannot provide secondary tachometer readings\n");
+ 	} else {
+ 		return -ENODEV;
+@@ -366,12 +365,12 @@ static int max31785_probe(struct i2c_client *client,
+ 			return ret;
+ 	}
+ 
+-	return pmbus_do_probe(client, id, info);
++	return pmbus_do_probe(client, info);
+ }
+ 
+ static const struct i2c_device_id max31785_id[] = {
+-	{ "max31785", 0 },
+-	{ "max31785a", 0 },
++	{ .name = "max31785" },
++	{ .name = "max31785a" },
+ 	{ },
+ };
+ 
+@@ -390,7 +389,7 @@ static struct i2c_driver max31785_driver = {
+ 		.name = "max31785",
+ 		.of_match_table = max31785_of_match,
+ 	},
+-	.probe = max31785_probe,
++	.probe_new = max31785_probe,
+ 	.remove = pmbus_do_remove,
+ 	.id_table = max31785_id,
+ };
+diff --git a/drivers/hwmon/pmbus/max34440.c b/drivers/hwmon/pmbus/max34440.c
+index 18b4e071067f..0205983bd51f 100644
+--- a/drivers/hwmon/pmbus/max34440.c
++++ b/drivers/hwmon/pmbus/max34440.c
+@@ -480,7 +480,7 @@ static int max34440_probe(struct i2c_client *client,
+ 			return rv;
+ 	}
+ 
+-	return pmbus_do_probe(client, id, &data->info);
++	return pmbus_do_probe(client, &data->info);
+ }
+ 
+ static const struct i2c_device_id max34440_id[] = {
+diff --git a/drivers/hwmon/pmbus/max8688.c b/drivers/hwmon/pmbus/max8688.c
+index 643ccfc05106..2efce192e6af 100644
+--- a/drivers/hwmon/pmbus/max8688.c
++++ b/drivers/hwmon/pmbus/max8688.c
+@@ -165,14 +165,13 @@ static struct pmbus_driver_info max8688_info = {
+ 	.write_word_data = max8688_write_word_data,
+ };
+ 
+-static int max8688_probe(struct i2c_client *client,
+-			 const struct i2c_device_id *id)
++static int max8688_probe(struct i2c_client *client)
+ {
+-	return pmbus_do_probe(client, id, &max8688_info);
++	return pmbus_do_probe(client, &max8688_info);
+ }
+ 
+ static const struct i2c_device_id max8688_id[] = {
+-	{"max8688", 0},
++	{ .name = "max8688" },
+ 	{ }
+ };
+ 
+@@ -183,7 +182,7 @@ static struct i2c_driver max8688_driver = {
+ 	.driver = {
+ 		   .name = "max8688",
+ 		   },
+-	.probe = max8688_probe,
++	.probe_new = max8688_probe,
+ 	.remove = pmbus_do_remove,
+ 	.id_table = max8688_id,
+ };
+diff --git a/drivers/hwmon/pmbus/pmbus.c b/drivers/hwmon/pmbus/pmbus.c
+index 6d384e8ee1db..7742ce83c99f 100644
+--- a/drivers/hwmon/pmbus/pmbus.c
++++ b/drivers/hwmon/pmbus/pmbus.c
+@@ -185,7 +185,7 @@ static int pmbus_probe(struct i2c_client *client,
+ 	info->identify = pmbus_identify;
+ 	dev->platform_data = pdata;
+ 
+-	return pmbus_do_probe(client, id, info);
++	return pmbus_do_probe(client, info);
+ }
+ 
+ static const struct pmbus_device_info pmbus_info_one = {
+diff --git a/drivers/hwmon/pmbus/pmbus.h b/drivers/hwmon/pmbus/pmbus.h
+index 18e06fc6c53f..1ff5314287cb 100644
+--- a/drivers/hwmon/pmbus/pmbus.h
++++ b/drivers/hwmon/pmbus/pmbus.h
+@@ -476,8 +476,7 @@ int pmbus_update_byte_data(struct i2c_client *client, int page, u8 reg,
+ void pmbus_clear_faults(struct i2c_client *client);
+ bool pmbus_check_byte_register(struct i2c_client *client, int page, int reg);
+ bool pmbus_check_word_register(struct i2c_client *client, int page, int reg);
+-int pmbus_do_probe(struct i2c_client *client, const struct i2c_device_id *id,
+-		   struct pmbus_driver_info *info);
++int pmbus_do_probe(struct i2c_client *client, struct pmbus_driver_info *info);
+ int pmbus_do_remove(struct i2c_client *client);
+ const struct pmbus_driver_info *pmbus_get_driver_info(struct i2c_client
+ 						      *client);
+diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+index 2191575a448b..065a81f6545d 100644
+--- a/drivers/hwmon/pmbus/pmbus_core.c
++++ b/drivers/hwmon/pmbus/pmbus_core.c
+@@ -2492,8 +2492,7 @@ static int pmbus_init_debugfs(struct i2c_client *client,
+ }
+ #endif	/* IS_ENABLED(CONFIG_DEBUG_FS) */
+ 
+-int pmbus_do_probe(struct i2c_client *client, const struct i2c_device_id *id,
+-		   struct pmbus_driver_info *info)
++int pmbus_do_probe(struct i2c_client *client, struct pmbus_driver_info *info)
+ {
+ 	struct device *dev = &client->dev;
+ 	const struct pmbus_platform_data *pdata = dev_get_platdata(dev);
+diff --git a/drivers/hwmon/pmbus/pxe1610.c b/drivers/hwmon/pmbus/pxe1610.c
+index 517584cff3de..732958b2f6b7 100644
+--- a/drivers/hwmon/pmbus/pxe1610.c
++++ b/drivers/hwmon/pmbus/pxe1610.c
+@@ -78,8 +78,7 @@ static struct pmbus_driver_info pxe1610_info = {
+ 	.identify = pxe1610_identify,
+ };
+ 
+-static int pxe1610_probe(struct i2c_client *client,
+-			  const struct i2c_device_id *id)
++static int pxe1610_probe(struct i2c_client *client)
+ {
+ 	struct pmbus_driver_info *info;
+ 	u8 buf[I2C_SMBUS_BLOCK_MAX];
+@@ -115,13 +114,13 @@ static int pxe1610_probe(struct i2c_client *client,
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+-	return pmbus_do_probe(client, id, info);
++	return pmbus_do_probe(client, info);
+ }
+ 
+ static const struct i2c_device_id pxe1610_id[] = {
+-	{"pxe1610", 0},
+-	{"pxe1110", 0},
+-	{"pxm1310", 0},
++	{ .name = "pxe1610" },
++	{ .name = "pxe1110" },
++	{ .name = "pxm1310" },
+ 	{}
+ };
+ 
+@@ -131,7 +130,7 @@ static struct i2c_driver pxe1610_driver = {
+ 	.driver = {
+ 			.name = "pxe1610",
+ 			},
+-	.probe = pxe1610_probe,
++	.probe_new = pxe1610_probe,
+ 	.remove = pmbus_do_remove,
+ 	.id_table = pxe1610_id,
+ };
+diff --git a/drivers/hwmon/pmbus/tps40422.c b/drivers/hwmon/pmbus/tps40422.c
+index 2b83dcda964a..d265178c7689 100644
+--- a/drivers/hwmon/pmbus/tps40422.c
++++ b/drivers/hwmon/pmbus/tps40422.c
+@@ -25,14 +25,13 @@ static struct pmbus_driver_info tps40422_info = {
+ 		| PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT,
+ };
+ 
+-static int tps40422_probe(struct i2c_client *client,
+-			  const struct i2c_device_id *id)
++static int tps40422_probe(struct i2c_client *client)
+ {
+-	return pmbus_do_probe(client, id, &tps40422_info);
++	return pmbus_do_probe(client, &tps40422_info);
+ }
+ 
+ static const struct i2c_device_id tps40422_id[] = {
+-	{"tps40422", 0},
++	{ .name = "tps40422" },
+ 	{}
+ };
+ 
+@@ -43,7 +42,7 @@ static struct i2c_driver tps40422_driver = {
+ 	.driver = {
+ 		   .name = "tps40422",
+ 		   },
+-	.probe = tps40422_probe,
++	.probe_new = tps40422_probe,
+ 	.remove = pmbus_do_remove,
+ 	.id_table = tps40422_id,
+ };
+diff --git a/drivers/hwmon/pmbus/tps53679.c b/drivers/hwmon/pmbus/tps53679.c
+index 157c99ffb52b..30832d71102f 100644
+--- a/drivers/hwmon/pmbus/tps53679.c
++++ b/drivers/hwmon/pmbus/tps53679.c
+@@ -220,7 +220,7 @@ static int tps53679_probe(struct i2c_client *client,
+ 		return -ENODEV;
+ 	}
+ 
+-	return pmbus_do_probe(client, id, info);
++	return pmbus_do_probe(client, info);
+ }
+ 
+ static const struct i2c_device_id tps53679_id[] = {
+diff --git a/drivers/hwmon/pmbus/ucd9000.c b/drivers/hwmon/pmbus/ucd9000.c
+index 81f4c4f166cd..d4c74e21c9d2 100644
+--- a/drivers/hwmon/pmbus/ucd9000.c
++++ b/drivers/hwmon/pmbus/ucd9000.c
+@@ -603,7 +603,7 @@ static int ucd9000_probe(struct i2c_client *client,
+ 
+ 	ucd9000_probe_gpio(client, mid, data);
+ 
+-	ret = pmbus_do_probe(client, mid, info);
++	ret = pmbus_do_probe(client, info);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/hwmon/pmbus/ucd9200.c b/drivers/hwmon/pmbus/ucd9200.c
+index 7c04745a9709..58633bb495fb 100644
+--- a/drivers/hwmon/pmbus/ucd9200.c
++++ b/drivers/hwmon/pmbus/ucd9200.c
+@@ -192,7 +192,7 @@ static int ucd9200_probe(struct i2c_client *client,
+ 	if (mid->driver_data == ucd9240)
+ 		info->func[0] |= PMBUS_HAVE_FAN12 | PMBUS_HAVE_STATUS_FAN12;
+ 
+-	return pmbus_do_probe(client, mid, info);
++	return pmbus_do_probe(client, info);
+ }
+ 
+ /* This is the driver that will be inserted */
+diff --git a/drivers/hwmon/pmbus/xdpe12284.c b/drivers/hwmon/pmbus/xdpe12284.c
+index d5103fc9e269..c05bc13552a7 100644
+--- a/drivers/hwmon/pmbus/xdpe12284.c
++++ b/drivers/hwmon/pmbus/xdpe12284.c
+@@ -127,8 +127,7 @@ static struct pmbus_driver_info xdpe122_info = {
+ 	.read_word_data = xdpe122_read_word_data,
+ };
+ 
+-static int xdpe122_probe(struct i2c_client *client,
+-			 const struct i2c_device_id *id)
++static int xdpe122_probe(struct i2c_client *client)
+ {
+ 	struct pmbus_driver_info *info;
+ 
+@@ -137,12 +136,12 @@ static int xdpe122_probe(struct i2c_client *client,
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+-	return pmbus_do_probe(client, id, info);
++	return pmbus_do_probe(client, info);
+ }
+ 
+ static const struct i2c_device_id xdpe122_id[] = {
+-	{"xdpe12254", 0},
+-	{"xdpe12284", 0},
++	{ .name = "xdpe12254" },
++	{ .name = "xdpe12284" },
+ 	{}
+ };
+ 
+@@ -160,7 +159,7 @@ static struct i2c_driver xdpe122_driver = {
+ 		.name = "xdpe12284",
+ 		.of_match_table = of_match_ptr(xdpe122_of_match),
+ 	},
+-	.probe = xdpe122_probe,
++	.probe_new = xdpe122_probe,
+ 	.remove = pmbus_do_remove,
+ 	.id_table = xdpe122_id,
+ };
+diff --git a/drivers/hwmon/pmbus/zl6100.c b/drivers/hwmon/pmbus/zl6100.c
+index 3a827d0a881d..24b1b0f46a40 100644
+--- a/drivers/hwmon/pmbus/zl6100.c
++++ b/drivers/hwmon/pmbus/zl6100.c
+@@ -389,7 +389,7 @@ static int zl6100_probe(struct i2c_client *client,
+ 	info->write_word_data = zl6100_write_word_data;
+ 	info->write_byte = zl6100_write_byte;
+ 
+-	return pmbus_do_probe(client, mid, info);
++	return pmbus_do_probe(client, info);
+ }
+ 
+ static struct i2c_driver zl6100_driver = {
+
+base-commit: bcf876870b95592b52519ed4aafcf9d95999bc9c
+-- 
+2.25.4
+
