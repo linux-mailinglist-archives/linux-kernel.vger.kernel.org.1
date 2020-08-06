@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A8023DF8E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9DB723DFC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730557AbgHFRt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:49:29 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50454 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728381AbgHFQeJ (ORCPT
+        id S1728798AbgHFRxY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 6 Aug 2020 13:53:24 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:8047 "EHLO
+        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728389AbgHFQbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:34:09 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1k3esI-0004GH-HC; Thu, 06 Aug 2020 12:19:58 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ath6kl: fix spelling mistake "initilisation" -> "initialization"
-Date:   Thu,  6 Aug 2020 13:19:58 +0100
-Message-Id: <20200806121958.60700-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 6 Aug 2020 12:31:16 -0400
+Subject: Re: [PATCH 2/2] selinux: add attributes to avc tracepoint
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
+        Paul Moore <paul@paul-moore.com>
+CC:     Nick Kralevich <nnk@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>
+References: <20200806080358.3124505-1-tweek@google.com>
+ <20200806080358.3124505-2-tweek@google.com>
+ <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <8627d780-0e19-6755-0de5-c686deb0f5de@sony.com>
+Date:   Thu, 6 Aug 2020 14:24:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=frmim2wf c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=IkcTkHD0fZMA:10 a=y4yBn9ojGxQA:10 a=z6gsHLkEAAAA:8 a=6V6ZJp-5uwDIHVc_4FwA:9 a=QEXdDO2ut3YA:10 a=d-OLMTCWyvARjPbQ-enb:22
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 8/6/20 2:11 PM, Stephen Smalley wrote:
+> On 8/6/20 4:03 AM, Thiébaud Weksteen wrote:
+>
+>> From: Peter Enderborg <peter.enderborg@sony.com>
+>>
+>> Add further attributes to filter the trace events from AVC.
+>
+> Please include sample usage and output in the description.
+>
+>
+Im not sure where you want it to be.
 
-There is a spelling mistake in an ath6kl_err error message. Fix it.
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/ath/ath6kl/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath6kl/init.c b/drivers/net/wireless/ath/ath6kl/init.c
-index 811fad6d60c0..39bf19686175 100644
---- a/drivers/net/wireless/ath/ath6kl/init.c
-+++ b/drivers/net/wireless/ath/ath6kl/init.c
-@@ -1752,7 +1752,7 @@ static int __ath6kl_init_hw_start(struct ath6kl *ar)
- 
- 	ret = ath6kl_init_service_ep(ar);
- 	if (ret) {
--		ath6kl_err("Endpoint service initilisation failed: %d\n", ret);
-+		ath6kl_err("Endpoint service initialization failed: %d\n", ret);
- 		goto err_cleanup_scatter;
- 	}
- 
--- 
-2.27.0
+In the commit message or in a Documentation/trace/events-avc.rst ?
 
