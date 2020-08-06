@@ -2,182 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2342323D98B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 13:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65E523D9D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 13:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729399AbgHFLAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 07:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729394AbgHFKhV (ORCPT
+        id S1725812AbgHFLRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 07:17:00 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20456 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726490AbgHFLNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 06:37:21 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91335C0617A5
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 03:36:08 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id v6so33784003iow.11
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 03:36:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Hj3R0tIfcIkpZhk/MOW24yuwzJti3fMgCq+xlKWe23s=;
-        b=any6vJdFKrdkd+a4fKkNab188WSeW3kDjNjijmxdqJ1Y4AwYn4FLR/iQrpMyExolkK
-         66mFi0t5w16+fsEhYOsaXPC7OJVlsPhTg+WoYRWPK0FdQfP7YIvZg6ds7gMUG92eJGlf
-         QR/wHYZ3/YvNbqgsC9Df7dIJZMcVh4kmPbXY766NOOS+giXcztD5zCFd1TqLjGdL+pVO
-         Rk1DiDsxHshnBfVWwBD5pTA0mCuqTXK04NlevzeDQqxbwa63QWFviu1CKXtu3YJ1qgJr
-         2x+ZNON385FtWrcjVdXr3Pb9gwapMQ9nHVmz2lZTKPRtnV0lpchJrHtdsXLPNJk1IEsU
-         K8Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Hj3R0tIfcIkpZhk/MOW24yuwzJti3fMgCq+xlKWe23s=;
-        b=M39EbJGJCLTIpZHT78Xw3CI0nFBPA4BhYsh1gEIJm80hQ+PEfMHBbgFq29RDrdbB/2
-         2/dN2KN+Yk5OYuvJldP2B0nPrTOQ26JytiknZuHTLZAk2uKXlGlWJ41sPoCbTJxG2grh
-         zEnkdPovD2f+y6+r6VufYodeG1z4uwW3Z4x468u6jEBkwejNfMRQzIaQhKL+gfIny4u2
-         sAv3+E7wj5ruzUYdY9eeRqgM6djldz12sJ9RvfXznHg1IXFdAwliPZ4dql5URdLnRW/n
-         TwLcqhGRZetXnu8+CXLEr+h8dccUpqraGbQj5EZK0I/PO0s1fjR7zP5/ylBb11RK3cec
-         qVQw==
-X-Gm-Message-State: AOAM531fCcoM9zcrZpY+VN/IKTBvHb3RpyZCbzy/fpLRAcA83ZhOKVVV
-        FxD4ydPG7bEYTnyl+ckAG23GJkWONfU084JfcpSZvw==
-X-Google-Smtp-Source: ABdhPJzHUTWPq7F01xZd1/4hqfefGb4XRem0zi/X7ZLbxaLwgnPaMNDxLcsPytmk4P8gwPB+ZN1V8Vf8ZJycfMty5SQ=
-X-Received: by 2002:a5e:d519:: with SMTP id e25mr9126780iom.36.1596710167873;
- Thu, 06 Aug 2020 03:36:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200805153507.005753845@linuxfoundation.org>
-In-Reply-To: <20200805153507.005753845@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 6 Aug 2020 16:05:56 +0530
-Message-ID: <CA+G9fYs3szBM=oz5f-zJudALL0Um_X9xR0cQKzq_HQXqrdut-w@mail.gmail.com>
-Subject: Re: [PATCH 4.14 0/8] 4.14.193-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
+        Thu, 6 Aug 2020 07:13:51 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 076AX2Zk023945;
+        Thu, 6 Aug 2020 07:10:47 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32rdt2n6mc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 07:10:47 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 076AeeeC049571;
+        Thu, 6 Aug 2020 07:10:46 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32rdt2n6ht-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 07:10:46 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 076B7Jv2015021;
+        Thu, 6 Aug 2020 11:10:44 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 32mynh5cuj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 11:10:44 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 076BAf3t30736750
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 6 Aug 2020 11:10:41 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C2F7CAE05A;
+        Thu,  6 Aug 2020 11:10:41 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7CDD7AE063;
+        Thu,  6 Aug 2020 11:10:38 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.24.39])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu,  6 Aug 2020 11:10:38 +0000 (GMT)
+Date:   Thu, 6 Aug 2020 14:10:36 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v3 1/6] mm: add definition of PMD_PAGE_ORDER
+Message-ID: <20200806111036.GJ163101@linux.ibm.com>
+References: <20200804095035.18778-1-rppt@kernel.org>
+ <20200804095035.18778-2-rppt@kernel.org>
+ <20200806101112.bjw4mxu2odpsg2hh@box>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806101112.bjw4mxu2odpsg2hh@box>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-06_06:2020-08-06,2020-08-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 malwarescore=0 adultscore=0
+ mlxlogscore=997 clxscore=1011 suspectscore=1 spamscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008060075
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 Aug 2020 at 21:23, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.193 release.
-> There are 8 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 07 Aug 2020 15:34:53 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.193-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Thu, Aug 06, 2020 at 01:11:12PM +0300, Kirill A. Shutemov wrote:
+> On Tue, Aug 04, 2020 at 12:50:30PM +0300, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > The definition of PMD_PAGE_ORDER denoting the number of base pages in the
+> > second-level leaf page is already used by DAX and maybe handy in other
+> > cases as well.
+> > 
+> > Several architectures already have definition of PMD_ORDER as the size of
+> > second level page table, so to avoid conflict with these definitions use
+> > PMD_PAGE_ORDER name and update DAX respectively.
+> > 
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > ---
+> >  fs/dax.c                | 10 +++++-----
+> >  include/linux/pgtable.h |  3 +++
+> >  2 files changed, 8 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/fs/dax.c b/fs/dax.c
+> > index 11b16729b86f..b91d8c8dda45 100644
+> > --- a/fs/dax.c
+> > +++ b/fs/dax.c
+> > @@ -50,7 +50,7 @@ static inline unsigned int pe_order(enum page_entry_size pe_size)
+> >  #define PG_PMD_NR	(PMD_SIZE >> PAGE_SHIFT)
+> >  
+> >  /* The order of a PMD entry */
+> > -#define PMD_ORDER	(PMD_SHIFT - PAGE_SHIFT)
+> > +#define PMD_PAGE_ORDER	(PMD_SHIFT - PAGE_SHIFT)
+> 
+> Hm. Wouldn't it conflict with definition in pgtable.h? Or should we
+> include it instead?
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Actually I meant to remove it here and keep only the definition in
+pgtable.h.
+Will fix.
 
-Summary
-------------------------------------------------------------------------
+> > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> > index 56c1e8eb7bb0..79f8443609e7 100644
+> > --- a/include/linux/pgtable.h
+> > +++ b/include/linux/pgtable.h
+> > @@ -28,6 +28,9 @@
+> >  #define USER_PGTABLES_CEILING	0UL
+> >  #endif
+> >  
+> > +/* Number of base pages in a second level leaf page */
+> > +#define PMD_PAGE_ORDER	(PMD_SHIFT - PAGE_SHIFT)
+> > +
+> >  /*
+> >   * A page table page can be thought of an array like this: pXd_t[PTRS_PER_PxD]
+> >   *
+> 
+> -- 
+>  Kirill A. Shutemov
 
-kernel: 4.14.193-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: e8ffd3efac224a0f72ae9ddffc0522f6b2e169ba
-git describe: v4.14.192-9-ge8ffd3efac22
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.14-oe/bu=
-ild/v4.14.192-9-ge8ffd3efac22
-
-
-No regressions (compared to build v4.14.191-57-ge8ffd3efac22)
-
-
-No fixes (compared to build v4.14.191-57-ge8ffd3efac22)
-
-Ran 25279 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* install-android-platform-tools-r2800
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* kselftest/net
-* libhugetlbfs
-* linux-log-parser
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* v4l2-compliance
-* kvm-unit-tests
-* ltp-cap_bounds-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* perf
-* ltp-open-posix-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-native/drivers
-* kselftest-vsyscall-mode-native/filesystems
-* kselftest-vsyscall-mode-native/net
-* kselftest-vsyscall-mode-none
-* kselftest-vsyscall-mode-none/drivers
-* kselftest-vsyscall-mode-none/filesystems
-* kselftest-vsyscall-mode-none/net
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Sincerely yours,
+Mike.
