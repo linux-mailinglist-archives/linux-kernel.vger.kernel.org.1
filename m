@@ -2,88 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B8023D954
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A7323D971
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729403AbgHFKkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 06:40:43 -0400
-Received: from [115.28.160.31] ([115.28.160.31]:34530 "EHLO
-        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1729371AbgHFKgY (ORCPT
+        id S1729365AbgHFKvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 06:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729408AbgHFKkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 06:36:24 -0400
-Received: from hanazono.local (unknown [58.33.27.210])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 460476006D;
-        Thu,  6 Aug 2020 18:26:53 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1596709613; bh=72yqEUWNLfVUrnKtkeWf6AZaFSEy3MP5VW3cQu6vR04=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=GwQrlQeGEejtXKU5Qk/mhYtlA2KK7TdnpScCU8cMr1Omj1iuTp94+NJ1d0HaT05aT
-         eA7C1G6GdKEe+vc8Eso6p9kku115jscJqASE2e4kiK9pIyUn0J+90DefZs1E3KldGK
-         It8k1NB8L4UNdOQjbVeNQQ05/9LcpN/46fKeogSg=
-Subject: Re: [PATCH v2] MIPS: Provide Kconfig option for default IEEE 754
- conformance mode
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     WANG Xuerui <git@xen0n.name>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Zhou Yanjie <zhouyanjie@zoho.com>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-References: <20200801061147.1412187-1-jiaxun.yang@flygoat.com>
- <d03a350c-842c-c041-f11b-017ec68e3de4@flygoat.com>
-From:   WANG Xuerui <kernel@xen0n.name>
-Message-ID: <9823ab9b-1f02-c8af-7d62-80a1d24aaaa3@xen0n.name>
-Date:   Thu, 6 Aug 2020 18:26:52 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:81.0)
- Gecko/20100101 Thunderbird/81.0a1
-MIME-Version: 1.0
-In-Reply-To: <d03a350c-842c-c041-f11b-017ec68e3de4@flygoat.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        Thu, 6 Aug 2020 06:40:20 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDDBC0617A3;
+        Thu,  6 Aug 2020 03:28:53 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id o23so22289128ejr.1;
+        Thu, 06 Aug 2020 03:28:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LlvslduPzOtH0DRIKETCIQxDIw610HLROiARW0lqIBE=;
+        b=LX/2tKPPbErTdpK+WcwSwgM956ZhidIL8F7d+Kmm18goixA3u5hIHit1IMmm0l+SqS
+         hk1MhFxIG/bc1IJlRErwqjC5g65XccRMkDi8KOJjEkbO3MwK4ccbtStkiuSGGalwOhcJ
+         hVTcdAqojXNuNYgDMFdoQGLxKqRLPC+mSiejjkP7/tQVqaxBC6yjj29T/h2z/tWdMHir
+         N5fGI4QO62LZzgLNYoTxV9RIkVeC5A8J/TsAwFXWInXFut/7VrkbXJTUr7khHufrF6k6
+         Jd6CptnlpuCtd8imCDIVsFpJn0scZT/6BXx4VzJ8DoBLbqpYILE65LOSXzsdanB7Y7Lu
+         YPRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LlvslduPzOtH0DRIKETCIQxDIw610HLROiARW0lqIBE=;
+        b=YNnHDZh1EDZbJ07vHcBsveR2GlGRMi74kGTrjs99hb+OWExJT6raRPaOb1bPJ3VBgr
+         bVcqRDsNA4mXj600/k3yDYt0NA5Rf47BuBIDMbjzXc2uRMabvmh2LBGcFmqECQ8/W2lu
+         NUCXQAP6IDs3wNXaaUs0H+JKOnRBtPLQF1mPgBWg/uNgjFgwuUUCCitIZ01dFQWZKVZ3
+         Lo+pvwC+BaCVB56Z0npnnIiKJWXXAw4r/iGG4Js+CEIMoE4keoKDW8R2hOyJXEOCYdXg
+         68mGr9nHEwwzNMTW1bhj8gKY3Yfbzw9/7jqWuepakGZvqS6YeJmm6SiNIt41rxrHGZJp
+         U/Hg==
+X-Gm-Message-State: AOAM530Ru9f9TzFvhoST0IoapT+RUNVWQqS66ZfdXjoBb/VCoonnZNlp
+        iWt3bmfU1K6C0OgCF1q2KF4=
+X-Google-Smtp-Source: ABdhPJzv7grcfpFLMn19O+RYJNHGjYc2TXrIbgMb3k5DJPBXbgVvWbPFTlWSAsih5qL5mY6i/OnJRw==
+X-Received: by 2002:a17:906:dbcb:: with SMTP id yc11mr3409762ejb.399.1596709731947;
+        Thu, 06 Aug 2020 03:28:51 -0700 (PDT)
+Received: from ubuntu-laptop ([2a01:598:b906:f0c9:15b9:533b:62ba:b5b3])
+        by smtp.googlemail.com with ESMTPSA id dm5sm3252153edb.32.2020.08.06.03.28.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 06 Aug 2020 03:28:50 -0700 (PDT)
+Message-ID: <e3aba7fba7c208ac58c638139bd615c871d2e52e.camel@gmail.com>
+Subject: Re: [PATCH v8 0/4] scsi: ufs: Add Host Performance Booster Support
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Date:   Thu, 06 Aug 2020 12:28:48 +0200
+In-Reply-To: <SN6PR04MB4640210D586CBA053F56DCF0FC480@SN6PR04MB4640.namprd04.prod.outlook.com>
+References: <CGME20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d@epcms2p6>
+         <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
+         <7c59c7abf7b00c368228b3096e1bea8c9e2b2e80.camel@gmail.com>
+         <SN6PR04MB4640CE297AAB3CF4D37EE002FC480@SN6PR04MB4640.namprd04.prod.outlook.com>
+         <39c546268abead68f4c00f17dc47c1597f3e0273.camel@gmail.com>
+         <SN6PR04MB4640210D586CBA053F56DCF0FC480@SN6PR04MB4640.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiaxun,
+On Thu, 2020-08-06 at 10:12 +0000, Avri Altman wrote:
+> > > 
+> > 
+> > we didn't see you Acked-by in the pathwork, would you like to add
+> > them?
+> > Just for reminding us that you have agreed to mainline this series
+> > patchset.
+> 
+> I acked it - https://www.spinics.net/lists/linux-scsi/msg144660.html
+> And asked Martin to move forward - 
+> https://www.spinics.net/lists/linux-scsi/msg144738.html
+> Which he did, and got some sparse errors: 
+> https://www.spinics.net/lists/linux-scsi/msg144977.html
+> Which I asked Daejun to fix - 
+> https://www.spinics.net/lists/linux-scsi/msg144987.html
+> 
+> For the next chain of events I guess you can follow by yourself.
+> 
+> Thanks,
+> Avri
 
+Avri
+Sorry for making you confusing. yes, I knew that, and following.
+I mean Acked-by tag in the patchset, then we see your acked in the
+patchwork, and let others know that you acked it, rather than going
+backtrack history email.
 
-On 2020/8/5 21:59, Jiaxun Yang wrote:
->
->
-> ÔÚ 2020/8/1 14:11, Jiaxun Yang Ð´µÀ:
->> Requested by downstream distros, a Kconfig option for default
->> IEEE 754 conformance mode allows them to set their mode to
->> relaxed by default.
->>
->> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
->> Reviewed-by: WANG Xuerui <git@xen0n.name>
->> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
->> Reviewed-by: Huacai Chen <chenhc@lemote.com>
->>
->> -- 
->> v2: Reword according to Xuerui's suggestion.
->> ---
-> Hi Thomas,
->
-> Is it possible to get this patch into 5.9 merge window?
-> I think it have got enough review tag, and the config option was
-> requested
-> by a Debian developer. The next Debian release will take 5.9 lts
-> kernel and
-> they don't want to ship a non-bootable kernel in a major release.
+Hi Daejun
+I think you can add Avri's Acked-by tag in your patchset, just for
+quickly moving forward and reminding.
 
-I have an idea. Can the downstream packagers make use of the builtin
-command line config options, to inject the "ieee754=relaxed" or whatever
-option necessary? If it is acceptable this patch should not be necessary
-in the short term.
+thanks,
+Bean
 
->
-> Thanks.
->
-> - Jiaxun
