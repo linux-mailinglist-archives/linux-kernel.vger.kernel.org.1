@@ -2,92 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA7423D5D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 05:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE0E23D5D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 05:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731827AbgHFDht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 23:37:49 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:35717 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731694AbgHFDhs (ORCPT
+        id S1728618AbgHFDpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 23:45:23 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:48070 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727077AbgHFDpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 23:37:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596685066;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y0/VXs+49Tf/58Sjz8LOy4NeNinqvStP7kb/YaGK0P8=;
-        b=Oh+3rFcXKl3/aq6Q7vUJsfKOGpD6nn980qNj/yiK/UprZv6AqzjyPql1lUgQTsXWs+oGjI
-        kYwqYogVdDSRf3W2jGHPRuBMCvKTamkD6Mxl1pFsp16ZslVqlj6pT0B8yAQKqqJB9IBITj
-        AMjC4xk6brWAM/k2hnbz2gRum7/yhu0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-414-Jy2ewWUWMiOChdw0cmnpfw-1; Wed, 05 Aug 2020 23:37:45 -0400
-X-MC-Unique: Jy2ewWUWMiOChdw0cmnpfw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 517661005510;
-        Thu,  6 Aug 2020 03:37:44 +0000 (UTC)
-Received: from [10.72.13.140] (ovpn-13-140.pek2.redhat.com [10.72.13.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 38BBC65C6D;
-        Thu,  6 Aug 2020 03:37:39 +0000 (UTC)
-Subject: Re: [PATCH v2 03/24] virtio: allow __virtioXX, __leXX in config space
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20200803205814.540410-1-mst@redhat.com>
- <20200803205814.540410-4-mst@redhat.com>
- <ce85a206-45a6-da3d-45a7-06f068f3bad7@redhat.com>
- <20200805074434-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <4aa65ad6-5324-0a8c-0fa6-0d8e680f0706@redhat.com>
-Date:   Thu, 6 Aug 2020 11:37:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200805074434-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Wed, 5 Aug 2020 23:45:22 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 05 Aug 2020 20:45:22 -0700
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 05 Aug 2020 20:45:20 -0700
+Received: from c-mansur-linux.qualcomm.com ([10.204.90.208])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 06 Aug 2020 09:15:08 +0530
+Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
+        id 090D921C5C; Thu,  6 Aug 2020 09:15:06 +0530 (IST)
+From:   Mansur Alisha Shaik <mansur@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+Subject: [PATCH V2] venus: core: add shutdown callback for venus
+Date:   Thu,  6 Aug 2020 09:15:01 +0530
+Message-Id: <1596685501-4392-1-git-send-email-mansur@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+After the SMMU translation is disabled in the
+arm-smmu shutdown callback during reboot, if
+any subsystem are still alive then IOVAs they
+are using will become PAs on bus, which may
+lead to crash.
 
-On 2020/8/5 下午7:45, Michael S. Tsirkin wrote:
->>>    #define virtio_cread(vdev, structname, member, ptr)			\
->>>    	do {								\
->>>    		might_sleep();						\
->>>    		/* Must match the member's type, and be integer */	\
->>> -		if (!typecheck(typeof((((structname*)0)->member)), *(ptr))) \
->>> +		if (!__virtio_typecheck(structname, member, *(ptr)))	\
->>>    			(*ptr) = 1;					\
->> A silly question,  compare to using set()/get() directly, what's the value
->> of the accessors macro here?
->>
->> Thanks
-> get/set don't convert to the native endian, I guess that's why
-> drivers use cread/cwrite. It is also nice that there's type
-> safety, checking the correct integer width is used.
+Below are the consumers of smmu from venus
+arm-smmu: consumer: aa00000.video-codec supplier=15000000.iommu
+arm-smmu: consumer: video-firmware.0 supplier=15000000.iommu
 
+So implemented shutdown callback, which detach iommu maps.
 
-Yes, but this is simply because a macro is used here, how about just 
-doing things similar like virtio_cread_bytes():
+Change-Id: I0f0f331056e0b84b92f1d86f66618d4b1caaa24a
+Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+---
+ drivers/media/platform/qcom/venus/core.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-static inline void virtio_cread(struct virtio_device *vdev,
-                       unsigned int offset,
-                       void *buf, size_t len)
-
-
-And do the endian conversion inside?
-
-Thanks
-
-
->
+diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+index 203c653..92aac06 100644
+--- a/drivers/media/platform/qcom/venus/core.c
++++ b/drivers/media/platform/qcom/venus/core.c
+@@ -341,6 +341,16 @@ static int venus_remove(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
++static void venus_core_shutdown(struct platform_device *pdev)
++{
++	struct venus_core *core = platform_get_drvdata(pdev);
++	int ret;
++
++	ret = venus_remove(pdev);
++	if(ret)
++		dev_warn(core->dev, "shutdown failed \n", ret);
++}
++
+ static __maybe_unused int venus_runtime_suspend(struct device *dev)
+ {
+ 	struct venus_core *core = dev_get_drvdata(dev);
+@@ -592,6 +602,7 @@ static struct platform_driver qcom_venus_driver = {
+ 		.of_match_table = venus_dt_match,
+ 		.pm = &venus_pm_ops,
+ 	},
++	.shutdown = venus_core_shutdown,
+ };
+ module_platform_driver(qcom_venus_driver);
+ 
+-- 
+2.7.4
 
