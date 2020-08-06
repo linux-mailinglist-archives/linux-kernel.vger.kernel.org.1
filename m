@@ -2,116 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC58523DC0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A16023DC53
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729190AbgHFQpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:45:05 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33558 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728720AbgHFQo3 (ORCPT
+        id S1729540AbgHFQt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:49:27 -0400
+Received: from mail.efficios.com ([167.114.26.124]:56714 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728618AbgHFQm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:44:29 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 076Cm3kU143057;
-        Thu, 6 Aug 2020 08:53:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=kLXKmSnVlmdtUZjHTj796ycXcVrQoTJVvUMMwy3L9uQ=;
- b=QUJyF20PNAG4Ka4uAR7bLNxR0pMVq3Z1fVJpqLDi83iBffcGSb7gFtX72O/tEvMITdFV
- Es5cXi44KlzbCrzbSb+ceiuskAjUSlk2EZyvorzfrB800X/Mkz1jHB0LkrhE4i/K2UAa
- 6/7shZVjkrBDIG6yiAf3h7neuGDQlqbvvK2F9d6fv/5QE0/QXL6Jjc+aJLIinzalruX7
- 0xIC3aLpBGJSOE+7MKp9tempq+kfGBcgT3o7B1N1srVeVZqOEK5Nc6NFWANVtL2ybgcT
- Gc1JGFIwSPC3sbzUUgnjJCjdWPglA2dfzDj5NWB4/I8GPyqUlOQ61fWi5ZltO/y/gKrs Fg== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32rgnf3335-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 08:53:53 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 076CiKeN019063;
-        Thu, 6 Aug 2020 12:53:51 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 32n0185fhe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 12:53:50 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 076CrmrX53412194
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 6 Aug 2020 12:53:48 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 719F7A4060;
-        Thu,  6 Aug 2020 12:53:48 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 162FCA405B;
-        Thu,  6 Aug 2020 12:53:46 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Thu,  6 Aug 2020 12:53:45 +0000 (GMT)
-Date:   Thu, 6 Aug 2020 18:23:45 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     peterz@infradead.org
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-Subject: Re: [PATCH 1/2] sched/topology: Allow archs to override cpu_smt_mask
-Message-ID: <20200806125345.GB31068@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20200804033307.76111-1-srikar@linux.vnet.ibm.com>
- <20200804104520.GB2657@hirez.programming.kicks-ass.net>
- <20200804121007.GJ24375@linux.vnet.ibm.com>
- <20200804124755.GJ2674@hirez.programming.kicks-ass.net>
- <87ft90z6dy.fsf@mpe.ellerman.id.au>
- <20200806085429.GX2674@hirez.programming.kicks-ass.net>
+        Thu, 6 Aug 2020 12:42:26 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 5C1BA2999C7;
+        Thu,  6 Aug 2020 08:57:53 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id fsCxb9mpDnGb; Thu,  6 Aug 2020 08:57:53 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 05E1F299AAB;
+        Thu,  6 Aug 2020 08:57:53 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 05E1F299AAB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1596718673;
+        bh=TbqNDc8HvZfMw4xy6HohFyxAGK7CmqP9uVfXuSYcTEo=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=fWIiJ3CZMC0VGeFt+gt31xwIRcKYU1wWXjRSmn3ZvYv56MbCGMrecWFbmZhBIjbEa
+         9hUunaoqhq+HrnnNubXDBZiVi4JDsijeqcBrHUuUvfutd2x3jM5glxvA02/r5mIeSS
+         UkfP2yRB7ZUCB0oJGbAZgb7JElT9xUL6eF44y2UpePHUBcTBQB9uLBbIjFDJFaz6OO
+         liuZYhov9y1cJoqTnLsskvcdVrz1vG77xwO1nI+RuPkZQpGBoNU+MfQ4otxKhl9r/P
+         pMrn5hsotHkzCmh6J2RSOyKhsbr32n/7Q/FVXaI8SvSjodzMJpOnyqfnoc3ca11n9N
+         DOcvvF0xQEQMg==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id WslYZSdaxtTR; Thu,  6 Aug 2020 08:57:52 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id EAEF1299907;
+        Thu,  6 Aug 2020 08:57:52 -0400 (EDT)
+Date:   Thu, 6 Aug 2020 08:57:52 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        paulmck <paulmck@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <457267869.1379.1596718672867.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200806080351.GA31889@willie-the-truck>
+References: <20200728160010.3314-1-mathieu.desnoyers@efficios.com> <20200728160010.3314-2-mathieu.desnoyers@efficios.com> <20200804145145.GM2657@hirez.programming.kicks-ass.net> <1708074166.39992.1596553173337.JavaMail.zimbra@efficios.com> <20200804170153.GO2657@hirez.programming.kicks-ass.net> <20200805105920.GB35926@hirez.programming.kicks-ass.net> <498869868.209.1596640956570.JavaMail.zimbra@efficios.com> <20200806080351.GA31889@willie-the-truck>
+Subject: Re: [RFC PATCH 2/2] sched: membarrier: cover kthread_use_mm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20200806085429.GX2674@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-06_06:2020-08-06,2020-08-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 mlxlogscore=999 malwarescore=0 adultscore=0 mlxscore=0
- phishscore=0 suspectscore=1 clxscore=1015 impostorscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008060091
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3959 (ZimbraWebClient - FF79 (Linux)/8.8.15_GA_3953)
+Thread-Topic: sched: membarrier: cover kthread_use_mm
+Thread-Index: Rd2eLbM7vipz4MRqPtD9G/KI60o4cg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* peterz@infradead.org <peterz@infradead.org> [2020-08-06 10:54:29]:
+----- On Aug 6, 2020, at 8:13 AM, Will Deacon will@kernel.org wrote:
 
-> On Thu, Aug 06, 2020 at 03:32:25PM +1000, Michael Ellerman wrote:
+> On Wed, Aug 05, 2020 at 11:22:36AM -0400, Mathieu Desnoyers wrote:
+>> ----- On Aug 5, 2020, at 6:59 AM, Peter Zijlstra peterz@infradead.org wrote:
+>> > On Tue, Aug 04, 2020 at 07:01:53PM +0200, peterz@infradead.org wrote:
+>> >> On Tue, Aug 04, 2020 at 10:59:33AM -0400, Mathieu Desnoyers wrote:
+>> >> > ----- On Aug 4, 2020, at 10:51 AM, Peter Zijlstra peterz@infradead.org wrote:
+>> >> > > On Tue, Jul 28, 2020 at 12:00:10PM -0400, Mathieu Desnoyers wrote:
+>> >> > >>  	task_lock(tsk);
+>> >> > >> +	/*
+>> >> > >> +	 * When a kthread stops operating on an address space, the loop
+>> >> > >> +	 * in membarrier_{private,global}_expedited() may not observe
+>> >> > >> +	 * that tsk->mm, and not issue an IPI. Membarrier requires a
+>> >> > >> +	 * memory barrier after accessing user-space memory, before
+>> >> > >> +	 * clearing tsk->mm.
+>> >> > >> +	 */
+>> >> > >> +	smp_mb();
+>> >> > >>  	sync_mm_rss(mm);
+>> >> > >>  	local_irq_disable();
+>> >> > > 
+>> >> > > Would it make sense to put the smp_mb() inside the IRQ disable region?
+>> >> > 
+>> >> > I've initially placed it right after task_lock so we could eventually
+>> >> > have a smp_mb__after_non_raw_spinlock or something with a much better naming,
+>> >> > which would allow removing the extra barrier when it is implied by the
+>> >> > spinlock.
+>> >> 
+>> >> Oh, right, fair enough. I'll go think about if smp_mb__after_spinlock()
+>> >> will work for mutexes too.
+>> >> 
+>> >> It basically needs to upgrade atomic*_acquire() to smp_mb(). So that's
+>> >> all architectures that have their own _acquire() and an actual
+>> >> smp_mb__after_atomic().
+>> >> 
+>> >> Which, from the top of my head are only arm64, power and possibly riscv.
+>> >> And if I then git-grep smp_mb__after_spinlock, all those seem to be
+>> >> covered.
+>> >> 
+>> >> But let me do a better audit..
+>> > 
+>> > All I could find is csky, which, afaict, defines a superfluous
+>> > smp_mb__after_spinlock.
+>> > 
+>> > The relevant architectures are indeed power, arm64 and riscv, they all
+>> > have custom acquire/release and all define smp_mb__after_spinlock()
+>> > appropriately.
+>> > 
+>> > Should we rename it to smp_mb__after_acquire() ?
+>> 
+>> As discussed over IRC, smp_mb__after_atomic_acquire() would be better, because
+>> load_acquire and spin_lock have different semantic.
 > 
-> > That brings with it a bunch of problems, such as existing software that
-> > has been developed/configured for Power8 and expects to see SMT8.
-> > 
-> > We also allow LPARs to be live migrated from Power8 to Power9 (and back), so
-> > maintaining the illusion of SMT8 is considered a requirement to make that work.
-> 
-> So how does that work if the kernel booted on P9 and demuxed the SMT8
-> into 2xSMT4? If you migrate that state onto a P8 with actual SMT8 you're
-> toast again.
-> 
+> Just to clarify here, are you talking about acquire on atomic RMW operations
+> being different to non-RMW operations, or are you talking about
+> atomic_read_acquire() being different to smp_load_acquire() (which I don't
+> think is the case, but wanted to check)?
 
-To add to what Michael already said, the reason we don't expose the demux of
-SMT8 into 2xSMT4 to userspace, is to make the userspace believe they are on
-a SMT8. When the kernel is live migrated from P8 to P9, till the time of reboot
-they would only have the older P8 topology. After reboot the kernel topology
-would change, but the userspace is made to believe that they are running on
-SMT8 core by way of keeping the sibling_cpumask at SMT8 core level.
+I was referring to the two following APIs:
+
+- spin_lock()
+- smp_load_acquire()
+
+on x86, spin_lock() happens to be implemented with an atomic instruction, which
+implies a full memory barrier. However, its smp_load_acquire() does not provide
+a full memory barrier. Therefore, if we implement a smp_mb__after_acquire() as
+proposed by Peter, we could expect it to cover both APIs, which is tricky to do
+efficiently without adding a superfluous barrier.
+
+Hence the discussion about make its naming more specific, so it does not cover
+smp_load_acquire.
+
+> 
+> We need to write this stuff down.
+> 
+>> We could keep a define of smp_mb__after_spinlock to smp_mb__after_atomic_acquire
+>> to make the transition simpler.
+> 
+> I'm not sure I really see the benefit of the rename, to be honest with you,
+> especially if smp_mb__after_spinlock() doesn't disappear at the same time.
+> The only reason you'd use this barrier is because the atomic is hidden away
+> behind a locking API, otherwise you'd just have used the full-barrier variant
+> of the atomic op to start with, wouldn't you?
+
+Good point.
+
+As long as we can state that smp_mb__after_spinlock applies both to raw_spinlock
+and non-raw spinlock (which AFAIU are mutexes on RT), I think it would suffice for
+our immediate needs.
+
+Thanks,
+
+Mathieu
+
 
 -- 
-Thanks and Regards
-Srikar Dronamraju
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
