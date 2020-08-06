@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BEB223E0CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DECF023E07A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729363AbgHFSig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:38:36 -0400
-Received: from gate.crashing.org ([63.228.1.57]:59882 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728053AbgHFSeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:34:22 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 076IXI7v018034;
-        Thu, 6 Aug 2020 13:33:18 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 076IXGtc018033;
-        Thu, 6 Aug 2020 13:33:16 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Thu, 6 Aug 2020 13:33:16 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, nathanl@linux.ibm.com,
-        linux-arch@vger.kernel.org, arnd@arndb.de,
-        linux-kernel@vger.kernel.org,
-        Tulio Magno Quites Machado Filho <tuliom@linux.ibm.com>,
-        luto@kernel.org, tglx@linutronix.de, vincenzo.frascino@arm.com,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v8 5/8] powerpc/vdso: Prepare for switching VDSO to generic C implementation.
-Message-ID: <20200806183316.GV6753@gate.crashing.org>
-References: <cover.1588079622.git.christophe.leroy@c-s.fr> <2a67c333893454868bbfda773ba4b01c20272a5d.1588079622.git.christophe.leroy@c-s.fr> <878sflvbad.fsf@mpe.ellerman.id.au> <65fd7823-cc9d-c05a-0816-c34882b5d55a@csgroup.eu> <87wo2dy5in.fsf@mpe.ellerman.id.au> <20200805133505.GN6753@gate.crashing.org> <87r1sky1hm.fsf@mpe.ellerman.id.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87r1sky1hm.fsf@mpe.ellerman.id.au>
-User-Agent: Mutt/1.4.2.3i
+        id S1725927AbgHFSew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728343AbgHFSeC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 14:34:02 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA116C0617A2
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 11:34:00 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id qc22so36598241ejb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 11:34:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6Lwo0h1UUt/TkFfE8EDJeJnCBcomQmQ6I+GLf07iiXg=;
+        b=bgSPmGpCYS5e5FW3E8UqQvh0DrBkVffrlqEPzxjQ13CfvimfhTStK2fLoQVOYd9W2w
+         1f6gndjCwBqLRVnufF94mWiG+N80jMFrUzBIoHEFmw/O5M1BxMiSmJU+FsIMbeM1ZZ8m
+         B1DOF1T+PwYCGXan6+xPmqtgc3jSc4lGG9rjT1dMfhKIMkixlBv3AJWf+Kd4+fU0DRj4
+         mhZxQKFBp7vrNdEkcGJxFELeOpKh7KjxGwP6RgEP7Rzkxxp7enGlVMq/pZSwDTiofbVL
+         o4Gn3Sn9KJpfg8ZpNjspxEkq6zTvwgSbaYyp1KpP8KbMF5n4z1blX7BVt4aylgklE54o
+         mn4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6Lwo0h1UUt/TkFfE8EDJeJnCBcomQmQ6I+GLf07iiXg=;
+        b=V2cKehBEZkTJx+dlJ/PMWy7cckMS/gddzVlIcU+Uq5b8qOdQZWt84auoMVYZV3L6pJ
+         ppisdnkH5TkRteLJ4KLFJpS4Q5Y5i9T7V02resul1U7xZ/cCJsjg97JcupfPWmYSV/uF
+         S8+jTCqPfde+NjzJ/7NVZocX12wFoapbgr8p8HE2w/LokzDWosreKvRCQPidV1lyEswA
+         /buo0Sf3n3PCBIJnG1jjYngXAMj3L+qKIx0+gbgLDZK4YIbyvm7OZuVxOAKNkynTDGYU
+         SrSl6ERhsCg9fvfmxrmi+9NrUl7diuCackLQr8v3KGgA2mi6JUhYKeJUZgS/OB9ePRuQ
+         lglQ==
+X-Gm-Message-State: AOAM533jF2KAWyOzswvHAPLKZILfp5yXHn/gSRcqzM0pxA7qAABVkscr
+        /yNIUhquOBXwhBrZjA/l/TgTKPlCOI8Vxwcz2PNHduCquA==
+X-Google-Smtp-Source: ABdhPJxMQZuQY3avDUyZx56UT2rDq0X/QFpraARHLo6LAMfX3Rh5oyf19noACgmf5bDruxn2zfaSliNFW2ds+o0adCE=
+X-Received: by 2002:a17:906:1403:: with SMTP id p3mr5592371ejc.106.1596738839416;
+ Thu, 06 Aug 2020 11:33:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200803123439.83400-1-jbi.octave@gmail.com> <20200803123439.83400-2-jbi.octave@gmail.com>
+In-Reply-To: <20200803123439.83400-2-jbi.octave@gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 6 Aug 2020 14:33:48 -0400
+Message-ID: <CAHC9VhR1-=veLYGeRiF9MAi3QxrGy_z-q+B1DD9t-foPPRJmbA@mail.gmail.com>
+Subject: Re: [RESEND PATCH 1/2] audit: change unnecessary globals into statics
+To:     Jules Irenge <jbi.octave@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Eric Paris <eparis@redhat.com>,
+        "moderated list:AUDIT SUBSYSTEM" <linux-audit@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Mon, Aug 3, 2020 at 8:35 AM Jules Irenge <jbi.octave@gmail.com> wrote:
+>
+> Variables sig_pid, audit_sig_uid and audit_sig_sid
+> are only used in the audit.c file across the kernel
+> Hence it appears no reason for declaring them as globals
+> This patch removes their global declarations from the .h file
+> and change them into static in the .c file.
+>
+> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+> ---
+>  kernel/audit.c | 6 +++---
+>  kernel/audit.h | 4 ----
+>  2 files changed, 3 insertions(+), 7 deletions(-)
 
-On Thu, Aug 06, 2020 at 12:03:33PM +1000, Michael Ellerman wrote:
-> Segher Boessenkool <segher@kernel.crashing.org> writes:
-> > On Wed, Aug 05, 2020 at 04:24:16PM +1000, Michael Ellerman wrote:
-> >> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> >> > Indeed, 32-bit doesn't have a redzone, so I believe it needs a stack 
-> >> > frame whenever it has anything to same.
+Thanks Jules, this looks reasonable although I'm not going to merge
+them into audit/next until after the merge window closes.  I'll send
+another reply once this has been merged.
 
-^^^
-
-> >> >     fbb60:	94 21 ff e0 	stwu    r1,-32(r1)
-> >
-> > This is the *only* place where you can use a negative offset from r1:
-> > in the stwu to extend the stack (set up a new stack frame, or make the
-> > current one bigger).
-> 
-> (You're talking about 32-bit code here right?)
-
-The "SYSV" ELF binding, yeah, which is used for 32-bit on Linux (give or
-take, ho hum).
-
-The ABIs that have a red zone are much nicer here (but less simple) :-)
-
-> >> At the same time it's much safer for us to just save/restore r2, and
-> >> probably in the noise performance wise.
-> >
-> > If you want a function to be able to work with ABI-compliant code safely
-> > (in all cases), you'll have to make it itself ABI-compliant as well,
-> > yes :-)
-> 
-> True. Except this is the VDSO which has previously been a bit wild west
-> as far as ABI goes :)
-
-It could get away with many things because it was guaranteed to be a
-leaf function.  Some of those things even violate the ABIs, but you can
-get away with it easily, much reduced scope.  Now if this is generated
-code, violating the rules will catch up with you sooner rather than
-later ;-)
-
-
-Segher
+-- 
+paul moore
+www.paul-moore.com
