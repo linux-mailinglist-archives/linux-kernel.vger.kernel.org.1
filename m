@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C052123D592
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 04:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1A023D58D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 04:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbgHFCl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 22:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54064 "EHLO
+        id S1727037AbgHFClf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 22:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726360AbgHFClY (ORCPT
+        with ESMTP id S1726524AbgHFClb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 22:41:24 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C90C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 19:41:24 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ha11so5726356pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 19:41:24 -0700 (PDT)
+        Wed, 5 Aug 2020 22:41:31 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27C0C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 19:41:28 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id r4so16118067pls.2
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 19:41:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=f4z8ELSFv5RMm4AHUiR4uM0G/VxLU19rLEUo8R7pEyk=;
-        b=dVtG4KMgSAFdsCPPK15OWZ2yG1gHEu0HadSg0c+0e+EFVAcpXYdzq43bu7A0w9oi16
-         kQcXys1j5RPxPLpowAhmsreKqqDgX/1JBiCr7c6Bmcjoqv2rCRdw+wvnXQF1zuK+VcVy
-         JLEQdAo0MXZ4SRFMfVzxx9CV3yh4rpTJNLL9cRZkELzB/hRPY0Zg/pXtAljoHp276poV
-         5HUK8qblQpub8v3xzyvRM1CrlRfXj4osqzGVe+/YswgS9OWWFvZtyC5/ixW1UfLsa6z6
-         a7N93j9ipkbZZZTcZke3csID+h8CK+kCWKl+vJ58KfQZed4jfb6p8vMejUeu2nm5l2KB
-         9GFQ==
+        bh=RU78NQx1PS87rKw1B6pRtoGaZl6+eAt/ZvZRlGLVgEU=;
+        b=Nz5onXxrAvvNXl9MYRVLc5oWix8hwJRMynO82htQPDFtDWcmQIJeCTNwe8uEOHbEbo
+         x7uufxE8LgnvkREPzyyJnhBEwyifBUEhGRbv72lVNGUx6aaZUYVU3KaE9TD5oBZ/VsyB
+         PKY/X40J33gydDranVCIr/MMEpnR9541vdIafgGn20JMmJJNl90mr+j/fpvotp7mCeYY
+         0b7S3VA4bfUvZKg40meJeW9r8UEDx8sIjh2uuHr1OhsEcm3J0V5SGPa6uXWq86rsFZyd
+         +BkvhVpPiKqkbt2rXf9K5fKnA+Fw8r+ck61IstHykT+5hEdaiScZUInGArRs1TlrnI2i
+         4zFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=f4z8ELSFv5RMm4AHUiR4uM0G/VxLU19rLEUo8R7pEyk=;
-        b=ePG78E7My8HiCr32tbvxbvqmvG0XNpkcN5Ji33E9oIpmmnqqHC4U/fcPPP4kHwijmx
-         6NwyJ8DD0znPoNuKWPUB6RJ1Xlp8cYQnjPX0He7GhKflhvtX3TKgd5ctCacNnNkdgpDK
-         x21APEFWa8wqRLz8kyOCWM1ziXL0h49BbX4Rmg+A8PiQfWfDALiWJEAK2fL/iEQTygMH
-         edBsvpP6/trAIZ6BjxcGBfpEOcbUQGGb2xyv29xDk+n8nn01Eh7bmFEJ0A22gKbtAziO
-         X/G75mD3uPW9jAvwtHF3upLKLYGd2l7cLbI7VhJ1xbIoywnvDTI3QcaUvpbyy5y/lWRl
-         ePnw==
-X-Gm-Message-State: AOAM531LyIe1TZJk3Hiv8Lnqm5ha8SMwv69Ow/Cp3724X1We10f17VW/
-        8RIXEZFAFz8p2xqHDmtHpgYMYA==
-X-Google-Smtp-Source: ABdhPJzfNkMM9pXrDCDtvMw7Kgtx23ax8AYGKOodRvZQWjpFqVa7Guf18rodtdePdV3ogG4NB9qR0Q==
-X-Received: by 2002:a17:90a:4b8c:: with SMTP id i12mr6466937pjh.83.1596681683755;
-        Wed, 05 Aug 2020 19:41:23 -0700 (PDT)
+        bh=RU78NQx1PS87rKw1B6pRtoGaZl6+eAt/ZvZRlGLVgEU=;
+        b=JoH4XqOcV8icnmWs2Y1T0q6LVZ4LjyLacPduu+J+pA0oAuOVZOJQVmJE1ZOlCbvU2v
+         zN3ANN0rei3rtEVRqoLR7i1HrnDo2AWTuzM9oaVPiNiDB2kqGgKrvqXQolc9aQTgPCwW
+         NvLx8WoqJIhApgZWKx3aNE8RvPXw8Tfz2Tyr/7J9d5WAGLNYlYYLgDYI9Gy3KZvhkBvR
+         mUBm4e53eTSF4afrtgHgoNqSveFawLvNAb1kc4dNxG5l7H918QCdm/cX4fAXTQGkKEqz
+         pQ3mhtzF2/L1YMk8sbhimfotNsY3wKIIXXM1uIr4UNrgQB60w+Q8d9gfCjxgLO+DcDQ2
+         hyiQ==
+X-Gm-Message-State: AOAM533H4zaypGiQfbKC0I+1UIdomHFoGpVnQ7QBZdSx2h5fSgSSgioz
+        cOjLCRnlQHqoGSBKeGotquZACg==
+X-Google-Smtp-Source: ABdhPJxNuI3ERXYRpnzr4/J9SjxQvf1b67HRFwVVZg0gBjAMx+QRNYNKMmLZQSvV0Y5q015fJ9moDw==
+X-Received: by 2002:a17:90a:2224:: with SMTP id c33mr5954377pje.56.1596681688127;
+        Wed, 05 Aug 2020 19:41:28 -0700 (PDT)
 Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id a13sm5385530pfo.49.2020.08.05.19.41.23
+        by smtp.gmail.com with ESMTPSA id r28sm5279479pfg.158.2020.08.05.19.41.27
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 05 Aug 2020 19:41:23 -0700 (PDT)
+        Wed, 05 Aug 2020 19:41:27 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>,
@@ -64,9 +64,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Al Grant <Al.Grant@arm.com>, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 04/11] perf mem: Only initialize memory event for recording
-Date:   Thu,  6 Aug 2020 10:40:34 +0800
-Message-Id: <20200806024041.27475-5-leo.yan@linaro.org>
+Subject: [PATCH v1 05/11] perf mem: Support AUX trace
+Date:   Thu,  6 Aug 2020 10:40:35 +0800
+Message-Id: <20200806024041.27475-6-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200806024041.27475-1-leo.yan@linaro.org>
 References: <20200806024041.27475-1-leo.yan@linaro.org>
@@ -75,44 +75,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's needless to initialize memory events for perf reporting, so only
-initialize memory event for perf recording.  This change allows to parse
-perf data on cross platforms, e.g. perf tool can output reports even the
-machine doesn't enable any memory events.
+Perf memory profiling doesn't support aux trace data so the tool cannot
+receive the synthesized samples from hardware tracing data.  On the
+Arm64 platform, though it doesn't support PMU events for memory load and
+store, but Armv8's SPE is a good candidate for memory profiling, the
+hardware tracer can record memory accessing operations with physical
+address and virtual address for different cache level and it also stats
+the memory operations for remote access and TLB.
+
+To allow the perf memory tool to support AUX trace, this patches adds
+the aux callbacks for session structure.  It passes the predefined synth
+options (like llc, flc, remote_access, tlb, etc) so this notifies the
+tracing decoder to generate corresponding samples.  This patch also
+invokes the standard API perf_event__process_attr() to register sample
+IDs into evlist.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/builtin-mem.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ tools/perf/builtin-mem.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
 diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
-index bd4229ca3685..a7204634893c 100644
+index a7204634893c..6c8b5e956a4a 100644
 --- a/tools/perf/builtin-mem.c
 +++ b/tools/perf/builtin-mem.c
-@@ -78,6 +78,11 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
- 	OPT_END()
- 	};
+@@ -7,6 +7,7 @@
+ #include "perf.h"
  
-+	if (perf_mem_events__init()) {
-+		pr_err("failed: memory events not supported\n");
-+		return -1;
-+	}
+ #include <subcmd/parse-options.h>
++#include "util/auxtrace.h"
+ #include "util/trace-event.h"
+ #include "util/tool.h"
+ #include "util/session.h"
+@@ -249,6 +250,15 @@ static int process_sample_event(struct perf_tool *tool,
+ 
+ static int report_raw_events(struct perf_mem *mem)
+ {
++	struct itrace_synth_opts itrace_synth_opts = {
++		.set = true,
++		.flc = true,		/* First level cache samples */
++		.llc = true,		/* Last level cache samples */
++		.tlb = true,		/* TLB samples */
++		.remote_access = true,	/* Remote access samples */
++		.default_no_sample = true,
++	};
 +
- 	argc = parse_options(argc, argv, options, record_mem_usage,
- 			     PARSE_OPT_KEEP_UNKNOWN);
+ 	struct perf_data data = {
+ 		.path  = input_name,
+ 		.mode  = PERF_DATA_MODE_READ,
+@@ -261,6 +271,8 @@ static int report_raw_events(struct perf_mem *mem)
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
  
-@@ -436,11 +441,6 @@ int cmd_mem(int argc, const char **argv)
- 		NULL
- 	};
++	session->itrace_synth_opts = &itrace_synth_opts;
++
+ 	if (mem->cpu_list) {
+ 		ret = perf_session__cpu_bitmap(session, mem->cpu_list,
+ 					       mem->cpu_bitmap);
+@@ -394,6 +406,19 @@ parse_mem_ops(const struct option *opt, const char *str, int unset)
+ 	return ret;
+ }
  
--	if (perf_mem_events__init()) {
--		pr_err("failed: memory events not supported\n");
--		return -1;
--	}
--
- 	argc = parse_options_subcommand(argc, argv, mem_options, mem_subcommands,
- 					mem_usage, PARSE_OPT_KEEP_UNKNOWN);
- 
++static int process_attr(struct perf_tool *tool __maybe_unused,
++			union perf_event *event,
++			struct evlist **pevlist)
++{
++	int err;
++
++	err = perf_event__process_attr(tool, event, pevlist);
++	if (err)
++		return err;
++
++	return 0;
++}
++
+ int cmd_mem(int argc, const char **argv)
+ {
+ 	struct stat st;
+@@ -405,8 +430,12 @@ int cmd_mem(int argc, const char **argv)
+ 			.comm		= perf_event__process_comm,
+ 			.lost		= perf_event__process_lost,
+ 			.fork		= perf_event__process_fork,
++			.attr		= process_attr,
+ 			.build_id	= perf_event__process_build_id,
+ 			.namespaces	= perf_event__process_namespaces,
++			.auxtrace_info  = perf_event__process_auxtrace_info,
++			.auxtrace       = perf_event__process_auxtrace,
++			.auxtrace_error = perf_event__process_auxtrace_error,
+ 			.ordered_events	= true,
+ 		},
+ 		.input_name		 = "perf.data",
 -- 
 2.17.1
 
