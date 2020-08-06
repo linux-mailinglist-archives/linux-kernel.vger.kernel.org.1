@@ -2,44 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3331123DD73
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CA923DDAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730194AbgHFRJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730025AbgHFRGB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:06:01 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1251C061A12;
-        Thu,  6 Aug 2020 04:59:36 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k3eYF-00ATgJ-TW; Thu, 06 Aug 2020 11:59:15 +0000
-Date:   Thu, 6 Aug 2020 12:59:15 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     linmiaohe <linmiaohe@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] net: Set fput_needed iff FDPUT_FPUT is set
-Message-ID: <20200806115915.GO1236603@ZenIV.linux.org.uk>
-References: <1596714796-25298-1-git-send-email-linmiaohe@huawei.com>
+        id S1730394AbgHFRMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:12:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:45656 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730159AbgHFRMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:12:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D8001FB;
+        Thu,  6 Aug 2020 05:01:13 -0700 (PDT)
+Received: from gaia (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1D4243F99C;
+        Thu,  6 Aug 2020 05:01:12 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 13:01:09 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Will Deacon <will@kernel.org>, Zhenyu Ye <yezhenyu2@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] arm64: tlb: fix ARM64_TLB_RANGE with LLVM's integrated
+ assembler
+Message-ID: <20200806120109.GD23785@gaia>
+References: <20200805181920.4013059-1-samitolvanen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1596714796-25298-1-git-send-email-linmiaohe@huawei.com>
+In-Reply-To: <20200805181920.4013059-1-samitolvanen@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 07:53:16PM +0800, linmiaohe wrote:
-> From: Miaohe Lin <linmiaohe@huawei.com>
-> 
-> We should fput() file iff FDPUT_FPUT is set. So we should set fput_needed
-> accordingly.
-> 
-> Fixes: 00e188ef6a7e ("sockfd_lookup_light(): switch to fdget^W^Waway from fget_light")
+On Wed, Aug 05, 2020 at 11:19:20AM -0700, Sami Tolvanen wrote:
+> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
+> index d493174415db..66c2aab5e9cb 100644
+> --- a/arch/arm64/include/asm/tlbflush.h
+> +++ b/arch/arm64/include/asm/tlbflush.h
+> @@ -16,6 +16,16 @@
+>  #include <asm/cputype.h>
+>  #include <asm/mmu.h>
+>  
+> +/*
+> + * Enable ARMv8.4-TLBI instructions with ARM64_TLB_RANGE. Note that binutils
+> + * doesn't support .arch_extension tlb-rmi, so use .arch armv8.4-a instead.
+> + */
+> +#ifdef CONFIG_ARM64_TLB_RANGE
+> +#define __TLBI_PREAMBLE	".arch armv8.4-a\n"
+> +#else
+> +#define __TLBI_PREAMBLE
+> +#endif
+> +
+>  /*
+>   * Raw TLBI operations.
+>   *
+> @@ -28,14 +38,16 @@
+>   * not. The macros handles invoking the asm with or without the
+>   * register argument as appropriate.
+>   */
+> -#define __TLBI_0(op, arg) asm ("tlbi " #op "\n"				       \
+> +#define __TLBI_0(op, arg) asm (__TLBI_PREAMBLE				       \
+> +			       "tlbi " #op "\n"				       \
+>  		   ALTERNATIVE("nop\n			nop",		       \
+>  			       "dsb ish\n		tlbi " #op,	       \
+>  			       ARM64_WORKAROUND_REPEAT_TLBI,		       \
+>  			       CONFIG_ARM64_WORKAROUND_REPEAT_TLBI)	       \
+>  			    : : )
+>  
+> -#define __TLBI_1(op, arg) asm ("tlbi " #op ", %0\n"			       \
+> +#define __TLBI_1(op, arg) asm (__TLBI_PREAMBLE				       \
+> +			       "tlbi " #op ", %0\n"			       \
+>  		   ALTERNATIVE("nop\n			nop",		       \
+>  			       "dsb ish\n		tlbi " #op ", %0",     \
+>  			       ARM64_WORKAROUND_REPEAT_TLBI,		       \
 
-Explain, please.  We are getting it from fdget(); what else can we get in flags there?
+A potential problem here is that for gas (not sure about the integrated
+assembler), .arch overrides any other .arch. So if we end up with two
+preambles included in the same generated .S files in the future, it will
+lead to some random behaviour.
+
+Does the LLVM integrated assembler have the same behaviour on .arch
+overriding a prior .arch?
+
+Maybe a better solution is for all inline asm on arm64 to have a
+standard preamble which is the maximum supported architecture version.
+We can add individual .arch_extension as those are not overriding.
+
+-- 
+Catalin
