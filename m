@@ -2,348 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A59423D8A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5913C23D87F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729154AbgHFJXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:23:47 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:12035 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729037AbgHFJXE (ORCPT
+        id S1729034AbgHFJWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:22:02 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59218 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729128AbgHFJUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:23:04 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200806092302epoutp019ba1a05dd9d2e816a13629f032080d1a~oo3MLUf1e0308503085epoutp011
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:23:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200806092302epoutp019ba1a05dd9d2e816a13629f032080d1a~oo3MLUf1e0308503085epoutp011
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1596705782;
-        bh=bQeZ6Y+7CBCceoyI2BeoMjkmmZIPFsL4/CyH5T7S6rs=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=DQdj1tjc1Bcj4mwYPgrp2cS3/U5fWtbpWPa6K0iTF89LyuqJh7QJ+yd8JrTDBJ4hx
-         Iz9wucguoTIwv8TofAlAwsuudxqzAur3xgc6ldD21wclCAPLG63kLavD8hUhiD8+xq
-         ibUSroAqHu6GRyV2iVAxg1vKk1Gz7PJoQtQxxD2E=
-Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p4.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200806092301epcas1p43cb0a7feb28c09dc05efaa3e7564085e~oo3LpKc_D2694626946epcas1p4P;
-        Thu,  6 Aug 2020 09:23:01 +0000 (GMT)
-Mime-Version: 1.0
-Subject: [PATCH v8 4/4] scsi: ufs: Prepare HPB read for cached sub-region
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <336371513.41596705485601.JavaMail.epsvc@epcpadp2>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <231786897.01596705781817.JavaMail.epsvc@epcpadp2>
-Date:   Thu, 06 Aug 2020 18:18:41 +0900
-X-CMS-MailID: 20200806091841epcms2p355597c0048155035eea805fd0951abd5
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d
-References: <336371513.41596705485601.JavaMail.epsvc@epcpadp2>
-        <231786897.01596705302142.JavaMail.epsvc@epcpadp1>
-        <231786897.01596705001840.JavaMail.epsvc@epcpadp1>
-        <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
-        <CGME20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d@epcms2p3>
+        Thu, 6 Aug 2020 05:20:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596705599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qbng0KIuhjnrRqPApXRDER8ey72aYykcRLaK9qO7KvA=;
+        b=cEoQlBQEuqu+qCJvvxQttxVJScTJXz19QmuG29oAhVIiZESCVvIfHPT+4/zb9KMBnse6lQ
+        RH0nCF4bcz5tZREwAz7At8ycBx9+vsrCtw+3qCWj5aMuIoxtpemKWEHl4IX4XxfpTg9X0B
+        uR6Ij5yZiIc7K9CIDtucwRsPgzQW2AE=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-33-MweavDV1P1Kqq0QdmHwjGA-1; Thu, 06 Aug 2020 05:19:58 -0400
+X-MC-Unique: MweavDV1P1Kqq0QdmHwjGA-1
+Received: by mail-ej1-f71.google.com with SMTP id y10so18403534ejd.1
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 02:19:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=Qbng0KIuhjnrRqPApXRDER8ey72aYykcRLaK9qO7KvA=;
+        b=SfiwPJCPPTzQbDp9vMdM7EqYoWQpis6DWXz3CmlhwnKK66rYTzlZaVv7Y60Uc09RHJ
+         QWNGNNiVABuryUrcHzWnHQsHgTf+T1csLGj7E9QpiX0czNEi32I1ipApRmt5DtfOHfT2
+         BzOEHTnBhdhU0AmnE6vMTOeImnotaZOApF/iYDzyL6U6rDzfMjeQ4n/2UAhBZW//OOli
+         1pbeDVFe8dx1B0RdrBRllVDGWnkjpjEzscTchiEYQnG3Tft6TfJIpvlA8clqGnXf1xQs
+         A2Upoo4+Std6SCPD1baxpOFcKQvR7j3zCfQBMTZA2Xn41VTP9zSoyCyTf6vTif+t2l/b
+         /GPQ==
+X-Gm-Message-State: AOAM532fznKM/UVeQvgnn/7SKHbIeuVlnkLsgU8X+3uj8s86lq3F4Fg5
+        bhlYMP5LjqzCt3kCaGMrZBYHPlHdjgsf+UBShR+pepE0sarpigFSjgUlgY2wNaKJdIPQaCYcNMC
+        hDVE0E+Yc198nqgGZ7eu8QNqC
+X-Received: by 2002:a17:906:c1c3:: with SMTP id bw3mr3607430ejb.8.1596705596998;
+        Thu, 06 Aug 2020 02:19:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxuRhDEaObKZG/m3SESq3Y56+cff+sBnsRhNDN/4SkNQ35QaOrvvNAQiLpZKC54ekRuuLKNEA==
+X-Received: by 2002:a17:906:c1c3:: with SMTP id bw3mr3607421ejb.8.1596705596800;
+        Thu, 06 Aug 2020 02:19:56 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id i9sm3312397ejb.48.2020.08.06.02.19.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 02:19:56 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
+In-Reply-To: <20200805201851-mutt-send-email-mst@kernel.org>
+References: <20200728143741.2718593-1-vkuznets@redhat.com> <20200805201851-mutt-send-email-mst@kernel.org>
+Date:   Thu, 06 Aug 2020 11:19:55 +0200
+Message-ID: <873650p1vo.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch changes the read I/O to the HPB read I/O.
+"Michael S. Tsirkin" <mst@redhat.com> writes:
 
-If the logical address of the read I/O belongs to active sub-region, the
-HPB driver modifies the read I/O command to HPB read. It modifies the UPIU
-command of UFS instead of modifying the existing SCSI command.
+> On Tue, Jul 28, 2020 at 04:37:38PM +0200, Vitaly Kuznetsov wrote:
+>> This is a continuation of "[PATCH RFC 0/5] KVM: x86: KVM_MEM_ALLONES
+>> memory" work: 
+>> https://lore.kernel.org/kvm/20200514180540.52407-1-vkuznets@redhat.com/
+>> and pairs with Julia's "x86/PCI: Use MMCONFIG by default for KVM guests":
+>> https://lore.kernel.org/linux-pci/20200722001513.298315-1-jusual@redhat.com/
+>> 
+>> PCIe config space can (depending on the configuration) be quite big but
+>> usually is sparsely populated. Guest may scan it by accessing individual
+>> device's page which, when device is missing, is supposed to have 'pci
+>> hole' semantics: reads return '0xff' and writes get discarded.
+>> 
+>> When testing Linux kernel boot with QEMU q35 VM and direct kernel boot
+>> I observed 8193 accesses to PCI hole memory. When such exit is handled
+>> in KVM without exiting to userspace, it takes roughly 0.000001 sec.
+>> Handling the same exit in userspace is six times slower (0.000006 sec) so
+>> the overal; difference is 0.04 sec. This may be significant for 'microvm'
+>> ideas.
+>> 
+>> Note, the same speed can already be achieved by using KVM_MEM_READONLY
+>> but doing this would require allocating real memory for all missing
+>> devices and e.g. 8192 pages gives us 32mb. This will have to be allocated
+>> for each guest separately and for 'microvm' use-cases this is likely
+>> a no-go.
+>> 
+>> Introduce special KVM_MEM_PCI_HOLE memory: userspace doesn't need to
+>> back it with real memory, all reads from it are handled inside KVM and
+>> return '0xff'. Writes still go to userspace but these should be extremely
+>> rare.
+>> 
+>> The original 'KVM_MEM_ALLONES' idea had additional optimizations: KVM
+>> was mapping all 'PCI hole' pages to a single read-only page stuffed with
+>> 0xff. This is omitted in this submission as the benefits are unclear:
+>> KVM will have to allocate SPTEs (either on demand or aggressively) and
+>> this also consumes time/memory.
+>
+> Curious about this: if we do it aggressively on the 1st fault,
+> how long does it take to allocate 256 huge page SPTEs?
+> And the amount of memory seems pretty small then, right?
 
-In the HPB version 1.0, the maximum read I/O size that can be converted to
-HPB read is 4KB.
+Right, this could work but we'll need a 2M region (one per KVM host of
+course) filled with 0xff-s instead of a single 4k page.
 
-The dirty map of the active sub-region prevents an incorrect HPB read that
-has stale physical page number which is updated by previous write I/O.
+Generally, I'd like to reach an agreement on whether this feature (and
+the corresponding Julia's patch addding PV feature bit) is worthy. In
+case it is (meaning it gets merged in this simplest form), we can
+suggest further improvements. It would also help if firmware (SeaBIOS,
+OVMF) would start recognizing the PV feature bit too, this way we'll be
+seeing even bigger improvement and this may or may not be a deal-breaker
+when it comes to the 'aggressive PTE mapping' idea.
 
-Tested-by: Bean Huo <beanhuo@micron.com>
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- drivers/scsi/ufs/ufshpb.c | 227 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 227 insertions(+)
-
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 25cd7153f102..fe24b2277621 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -46,6 +46,22 @@ static inline int ufshpb_is_valid_srgn(struct ufshpb_region *rgn,
- 		srgn->srgn_state == HPB_SRGN_VALID;
- }
- 
-+static inline bool ufshpb_is_read_cmd(struct scsi_cmnd *cmd)
-+{
-+	return req_op(cmd->request) == REQ_OP_READ;
-+}
-+
-+static inline bool ufshpb_is_write_discard_cmd(struct scsi_cmnd *cmd)
-+{
-+	return op_is_write(req_op(cmd->request)) ||
-+	       op_is_discard(req_op(cmd->request));
-+}
-+
-+static inline bool ufshpb_is_support_chunk(int transfer_len)
-+{
-+	return transfer_len <= HPB_MULTI_CHUNK_HIGH;
-+}
-+
- static inline bool ufshpb_is_general_lun(int lun)
- {
- 	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
-@@ -112,8 +128,219 @@ static inline void ufshpb_set_state(struct ufshpb_lu *hpb, int state)
- 	atomic_set(&hpb->hpb_state, state);
- }
- 
-+static inline u32 ufshpb_get_lpn(struct scsi_cmnd *cmnd)
-+{
-+	return blk_rq_pos(cmnd->request) >>
-+		(ilog2(cmnd->device->sector_size) - 9);
-+}
-+
-+static inline unsigned int ufshpb_get_len(struct scsi_cmnd *cmnd)
-+{
-+	return blk_rq_sectors(cmnd->request) >>
-+		(ilog2(cmnd->device->sector_size) - 9);
-+}
-+
-+static void ufshpb_set_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
-+			     int srgn_idx, int srgn_offset, int cnt)
-+{
-+	struct ufshpb_region *rgn;
-+	struct ufshpb_subregion *srgn;
-+	int set_bit_len;
-+	int bitmap_len = hpb->entries_per_srgn;
-+
-+next_srgn:
-+	rgn = hpb->rgn_tbl + rgn_idx;
-+	srgn = rgn->srgn_tbl + srgn_idx;
-+
-+	if ((srgn_offset + cnt) > bitmap_len)
-+		set_bit_len = bitmap_len - srgn_offset;
-+	else
-+		set_bit_len = cnt;
-+
-+	if (rgn->rgn_state != HPB_RGN_INACTIVE &&
-+	    srgn->srgn_state == HPB_SRGN_VALID)
-+		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
-+
-+	srgn_offset = 0;
-+	if (++srgn_idx == hpb->srgns_per_rgn) {
-+		srgn_idx = 0;
-+		rgn_idx++;
-+	}
-+
-+	cnt -= set_bit_len;
-+	if (cnt > 0)
-+		goto next_srgn;
-+
-+	WARN_ON(cnt < 0);
-+}
-+
-+static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
-+				   int srgn_idx, int srgn_offset, int cnt)
-+{
-+	struct ufshpb_region *rgn;
-+	struct ufshpb_subregion *srgn;
-+	int bitmap_len = hpb->entries_per_srgn;
-+	int bit_len;
-+
-+next_srgn:
-+	rgn = hpb->rgn_tbl + rgn_idx;
-+	srgn = rgn->srgn_tbl + srgn_idx;
-+
-+	if (!ufshpb_is_valid_srgn(rgn, srgn))
-+		return true;
-+
-+	/*
-+	 * If the region state is active, mctx must be allocated.
-+	 * In this case, check whether the region is evicted or
-+	 * mctx allcation fail.
-+	 */
-+	WARN_ON(!srgn->mctx);
-+
-+	if ((srgn_offset + cnt) > bitmap_len)
-+		bit_len = bitmap_len - srgn_offset;
-+	else
-+		bit_len = cnt;
-+
-+	if (find_next_bit(srgn->mctx->ppn_dirty,
-+			  bit_len, srgn_offset) >= srgn_offset)
-+		return true;
-+
-+	srgn_offset = 0;
-+	if (++srgn_idx == hpb->srgns_per_rgn) {
-+		srgn_idx = 0;
-+		rgn_idx++;
-+	}
-+
-+	cnt -= bit_len;
-+	if (cnt > 0)
-+		goto next_srgn;
-+
-+	return false;
-+}
-+
-+static u64 ufshpb_get_ppn(struct ufshpb_lu *hpb,
-+			  struct ufshpb_map_ctx *mctx, int pos, int *error)
-+{
-+	u64 *ppn_table;
-+	struct page *page;
-+	int index, offset;
-+
-+	index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
-+	offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
-+
-+	page = mctx->m_page[index];
-+	if (unlikely(!page)) {
-+		*error = -ENOMEM;
-+		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-+			"error. cannot find page in mctx\n");
-+		return 0;
-+	}
-+
-+	ppn_table = page_address(page);
-+	if (unlikely(!ppn_table)) {
-+		*error = -ENOMEM;
-+		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-+			"error. cannot get ppn_table\n");
-+		return 0;
-+	}
-+
-+	return ppn_table[offset];
-+}
-+
-+static inline void
-+ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int *rgn_idx,
-+			int *srgn_idx, int *offset)
-+{
-+	int rgn_offset;
-+
-+	*rgn_idx = lpn >> hpb->entries_per_rgn_shift;
-+	rgn_offset = lpn & hpb->entries_per_rgn_mask;
-+	*srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
-+	*offset = rgn_offset & hpb->entries_per_srgn_mask;
-+}
-+
-+static void
-+ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb *lrbp,
-+				  u32 lpn, u64 ppn,  unsigned int transfer_len)
-+{
-+	unsigned char *cdb = lrbp->ucd_req_ptr->sc.cdb;
-+
-+	cdb[0] = UFSHPB_READ;
-+
-+	put_unaligned_be64(ppn, &cdb[6]);
-+	cdb[14] = transfer_len;
-+}
-+
-+/* routine : READ10 -> HPB_READ  */
- void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- {
-+	struct ufshpb_lu *hpb;
-+	struct ufshpb_region *rgn;
-+	struct ufshpb_subregion *srgn;
-+	struct scsi_cmnd *cmd = lrbp->cmd;
-+	u32 lpn;
-+	u64 ppn;
-+	unsigned long flags;
-+	int transfer_len, rgn_idx, srgn_idx, srgn_offset;
-+	int err = 0;
-+
-+	hpb = ufshpb_get_hpb_data(cmd);
-+	if (!hpb)
-+		return;
-+
-+	WARN_ON(hpb->lun != cmd->device->lun);
-+	if (!ufshpb_is_write_discard_cmd(cmd) &&
-+	    !ufshpb_is_read_cmd(cmd))
-+		return;
-+
-+	transfer_len = ufshpb_get_len(cmd);
-+	if (unlikely(!transfer_len))
-+		return;
-+
-+	lpn = ufshpb_get_lpn(cmd);
-+	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
-+	rgn = hpb->rgn_tbl + rgn_idx;
-+	srgn = rgn->srgn_tbl + srgn_idx;
-+
-+	/* If command type is WRITE or DISCARD, set bitmap as drity */
-+	if (ufshpb_is_write_discard_cmd(cmd)) {
-+		spin_lock_irqsave(&hpb->hpb_state_lock, flags);
-+		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
-+				 transfer_len);
-+		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
-+		return;
-+	}
-+
-+	WARN_ON(!ufshpb_is_read_cmd(cmd));
-+
-+	if (!ufshpb_is_support_chunk(transfer_len))
-+		return;
-+
-+	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
-+	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
-+				   transfer_len)) {
-+		atomic_inc(&hpb->stats.miss_cnt);
-+		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
-+		return;
-+	}
-+
-+	ppn = ufshpb_get_ppn(hpb, srgn->mctx, srgn_offset, &err);
-+	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
-+	if (unlikely(err)) {
-+		/*
-+		 * In this case, the region state is active,
-+		 * but the ppn table is not allocated.
-+		 * Make sure that ppn table must be allocated on
-+		 * active state.
-+		 */
-+		WARN_ON(true);
-+		dev_err(hba->dev, "ufshpb_get_ppn failed. err %d\n", err);
-+		return;
-+	}
-+
-+	ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
-+
-+	atomic_inc(&hpb->stats.hit_cnt);
- }
- 
- static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
 -- 
-2.17.1
-
+Vitaly
 
