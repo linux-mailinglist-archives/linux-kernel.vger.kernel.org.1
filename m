@@ -2,117 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453ED23DF86
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D486B23DEFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729564AbgHFRsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728848AbgHFQfQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:35:16 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0123C0A893B
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 08:07:19 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1k3hU1-0007Dk-6y; Thu, 06 Aug 2020 17:07:05 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1k3hU0-0000Qq-1B; Thu, 06 Aug 2020 17:07:04 +0200
-Date:   Thu, 6 Aug 2020 17:07:03 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org,
-        Thorsten Scherer <t.scherer@eckelmann.de>,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH] gpio: siox: indicate exclusive support of threaded IRQs
-Message-ID: <20200806150703.sdg6cfh7pxqzf4wl@pengutronix.de>
-References: <20200804091603.541-1-a.fatoum@pengutronix.de>
- <20200805061753.5o63zu4ionhgjab4@pengutronix.de>
- <871rkkhy7v.fsf@nanos.tec.linutronix.de>
+        id S1730629AbgHFRfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:35:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729339AbgHFRfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:35:23 -0400
+Received: from localhost (c-67-169-218-210.hsd1.or.comcast.net [67.169.218.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D180823131;
+        Thu,  6 Aug 2020 15:07:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596726464;
+        bh=iNFLlgEhiYwp8ZRVI4J6gnGFP+JhjSTOqd0S/pIkyto=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Y05pH6hS7jyZT5I8hGUXIH6dhp6PsUwz5DjbgHn90eVss5blosSYAtqvXLAZi0cru
+         f/6d9Z2uXGUfy8Dt/nLbxnBREXGcOJF2eIAY58tqgMl8+/8KY3/bfqo+hawGgia2CQ
+         XCtAqh4Tnn0mF+9oROVTrcDvkJ111VpXtBDsG5RA=
+Date:   Thu, 6 Aug 2020 08:07:43 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, riteshh@linux.ibm.com,
+        rgoldwyn@suse.de, agruenba@redhat.com, linux-btrfs@vger.kernel.org
+Subject: [GIT PULL v2] iomap: new code for 5.9-rc1
+Message-ID: <20200806150743.GC6090@magnolia>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lzux2txe2ee3mov4"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <871rkkhy7v.fsf@nanos.tec.linutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
---lzux2txe2ee3mov4
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Please pull these new changes to the iomap code for 5.9.  The most
+notable changes are:
 
-On Thu, Aug 06, 2020 at 12:20:52PM +0200, Thomas Gleixner wrote:
-> Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de> writes:
-> > On Tue, Aug 04, 2020 at 11:16:03AM +0200, Ahmad Fatoum wrote:
-> >> Generic GPIO consumers like gpio-keys use request_any_context_irq()
-> >> to request a threaded handler if irq_settings_is_nested_thread() =3D=3D
-> >> true or a hardirq handler otherwise.
-> >>=20
-> >> Drivers using handle_nested_irq() must be sure that the nested
-> >> IRQs were requested with threaded handlers, because the IRQ
-> >> is handled by calling action->thread_fn().
-> >>=20
-> >> The gpio-siox driver dispatches IRQs via handle_nested_irq,
-> >> but has irq_settings_is_nested_thread() =3D=3D false.
-> >>=20
-> >> Set gpio_irq_chip::threaded to remedy this.
-> >
-> > Sounds reasonable, but I have to keep this for others to judge if this
-> > is indeed how the irq stuff works.
->=20
-> handle_nested_irq() documentation clearly says: "Handle a nested irq
-> from a irq thread". As a consequence the caller of this function must
-> run in an interrupt thread. This is an optimization to spare tons of
-> interrupt threads and context switches.
->=20
-> So the solution for this driver is either to make the dispatch handler
-> threaded or use the hard interrupt variant of dispatching the
-> demultiplexed GPIO interrupts.
+1) iomap no longer invalidate the page cache when performing a direct
+read, since doing so is unnecessary and the old directio code doesn't do
+that either.
 
-The action item isn't entirely clear for me. There is no "parent" irq, I
-have for siox a kthread that does some IO and looks that the resulting
-data which effectively reports the current state of the GPIO line. And
-if this GPIO is configured to trigger an irq and the matching transition
-(or state) is seen, I want to trigger the irq action. So the caller has
-neither hard nor threaded irq context.
+2) iomap embraced the use of returning ENOTBLK from a direct write to
+trigger falling back to a buffered write since ext4 already did this and
+btrfs wants it for their port.
 
-Best regards
-Uwe
+3) iomap falls back to buffered writes if we're doing a direct write and
+the page cache invalidation after the flush fails; this was necessary to
+handle a corner case in the btrfs port.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+4) Remove email virus scanner detritus that was accidentally included in
+yesterday's pull request.  Clearly I need(ed) to update my git branch
+checker scripts. :(
 
---lzux2txe2ee3mov4
-Content-Type: application/pgp-signature; name="signature.asc"
+The branch merges cleanly with your HEAD branch as of a few minutes ago.
+Please let me know if there are any strange problems.
 
------BEGIN PGP SIGNATURE-----
+--D
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8sHJQACgkQwfwUeK3K
-7AkI/wf9GZzob+b46rdJPCPCVEzRsIex8OnlFy3GV0KS3r3AClT0vH2LvDDVJZnE
-+3yqHMZnClgGPlzgm8wGK1IF0TLH5gmeX45gYbMtgagRTB//0M2F+hO61x82jfV3
-CyelBa52f0dft48p8wCXvya+g7+9iY/zgHKLcJnynU3HSgufTWxkzqzrOD/H7/Rq
-GCWpVxxQW2Oa2U0kX3BpJ/3T5G5CXz0JIEc7jE3lVzhSuWlL7mzePYyvFq02g/dD
-jU0h2Aor2T0ntvRw6hr0w65y+inmM4T2CTB8Ktch8oyo9ErRjjGPwVxG8Rm63bP0
-SDX6JMRwQZKjUPwuSwxRSVmIhEyoOQ==
-=krGx
------END PGP SIGNATURE-----
+The following changes since commit dcb7fd82c75ee2d6e6f9d8cc71c52519ed52e258:
 
---lzux2txe2ee3mov4--
+  Linux 5.8-rc4 (2020-07-05 16:20:22 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.9-merge-5
+
+for you to fetch changes up to 60263d5889e6dc5987dc51b801be4955ff2e4aa7:
+
+  iomap: fall back to buffered writes for invalidation failures (2020-08-05 09:24:16 -0700)
+
+----------------------------------------------------------------
+New code for 5.9:
+- Make sure we call ->iomap_end with a failure code if ->iomap_begin
+  failed in any way; some filesystems need to try to undo things.
+- Don't invalidate the page cache during direct reads since we already
+  sync'd the cache with disk.
+- Make direct writes fall back to the page cache if the pre-write
+  cache invalidation fails.  This avoids a cache coherency problem.
+- Fix some idiotic virus scanner warning bs in the previous tag.
+
+----------------------------------------------------------------
+Andreas Gruenbacher (1):
+      iomap: Make sure iomap_end is called after iomap_begin
+
+Christoph Hellwig (2):
+      xfs: use ENOTBLK for direct I/O to buffered I/O fallback
+      iomap: fall back to buffered writes for invalidation failures
+
+Dave Chinner (1):
+      iomap: Only invalidate page cache pages on direct IO writes
+
+ fs/ext4/file.c       |  2 ++
+ fs/gfs2/file.c       |  3 ++-
+ fs/iomap/apply.c     | 13 +++++++++----
+ fs/iomap/direct-io.c | 37 +++++++++++++++++++++----------------
+ fs/iomap/trace.h     |  1 +
+ fs/xfs/xfs_file.c    |  8 ++++----
+ fs/zonefs/super.c    |  7 +++++--
+ 7 files changed, 44 insertions(+), 27 deletions(-)
