@@ -2,285 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472F223DFFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F1623DED2
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729521AbgHFR4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:56:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43152 "EHLO mail.kernel.org"
+        id S1730398AbgHFRcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:32:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726050AbgHFQSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:18:25 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1730000AbgHFRcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:32:05 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0512722CF7;
-        Thu,  6 Aug 2020 12:33:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AAE6A22DA9;
+        Thu,  6 Aug 2020 12:36:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596717219;
-        bh=Ko6EMrokn2zl/9MuT100PIK32SrkIjcyEGTGRbhmZas=;
-        h=Date:From:To:Cc:Subject:From;
-        b=P8pL3q4gr0T4k1UEo4RGdqG35VLYWLP7A7oysMfbW+7EtEENrJHhoCvnu1t7gv495
-         KwPJhXw+HCTcV+ZsKk5z2CIPlxkfs9S+kwk9eCpjBxBsNoYE+Ri5PoGzU6mFHDqpjO
-         WDv5yZCXX/b5z+0OPCoYi7IUgqgEpmafzIfeITt4=
-Date:   Thu, 6 Aug 2020 14:33:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jiri Slaby <jslaby@suse.cz>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [GIT PULL] TTY/Serial driver patches for 5.9-rc1
-Message-ID: <20200806123354.GA2858200@kroah.com>
+        s=default; t=1596717375;
+        bh=V1PSRo4eX8swYDgWsq71j+ws4CVRQUFXtfzrKm6Cs7g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YdOifq+YBdCEaRBYC/2UMY89UncYsccDHOtl9ip82PBoV1QXbyBcyhdkRqstYBDmg
+         92q4c79+Ym+cezlho5R9ZueuW9+3ku53CLnyxnaK6Hmfo/4TjYbuwT7zj4nE4Jg1Eh
+         2QRQZeKN1Hs73+lNjjbMFygLq9kJDYH7ZujeajtM=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1k3f82-000H6F-3e; Thu, 06 Aug 2020 13:36:14 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Thu, 06 Aug 2020 13:36:14 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
+        tglx@linutronix.de, jason@lakedaemon.net,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Willy Tarreau <w@1wt.eu>,
+        mark-pk.tsai@mediatek.com
+Subject: Re: [PATCH 2/3] irqchip: mstar: msc313-intc interrupt controller
+ driver
+In-Reply-To: <CAFr9PXmzZmHWv+DWppaXOih9p5pJK=3JYCCC+-XrnQ+S7sV+fw@mail.gmail.com>
+References: <20200805110052.2655487-1-daniel@0x0f.com>
+ <20200805110052.2655487-3-daniel@0x0f.com>
+ <a2ac8875d67ce7afe1b28f01683e0c9d@kernel.org>
+ <CAFr9PXmzZmHWv+DWppaXOih9p5pJK=3JYCCC+-XrnQ+S7sV+fw@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.5
+Message-ID: <3e177112a804b54589464853ff8ac8ad@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: daniel@0x0f.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, tglx@linutronix.de, jason@lakedaemon.net, robh+dt@kernel.org, arnd@arndb.de, w@1wt.eu, mark-pk.tsai@mediatek.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 92ed301919932f777713b9172e525674157e983d:
+On 2020-08-06 11:03, Daniel Palmer wrote:
+> Hi Marc,
+> 
+> On Thu, 6 Aug 2020 at 01:26, Marc Zyngier <maz@kernel.org> wrote:
+>> > +struct msc313_intc {
+>> > +     struct irq_domain *domain;
+>> > +     void __iomem *base;
+>> > +     struct irq_chip irqchip;
+>> 
+>> Why do you need to embed the irq_chip on a per-controller basis?
+> 
+> Current chips have 1 instance of each type of controller but some of 
+> the
+> newer ones seem to have an extra copy of the non-FIQ version with 
+> different
+> offset to the GIC.
 
-  Linux 5.8-rc7 (2020-07-26 14:14:06 -0700)
+It is much better to have an irqchip structure per irqchip type,
+rather than one per instance, as you can then make the irqchip const.
+It also saves memory when you have more than a single instance.
 
-are available in the Git repository at:
+The only case where it doesn't work is when PM gets involved, as the
+parent_device pointer is stupidly stored in the irqchip device.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.9-rc1
+> 
+>> > +};
+>> > +
+>> > +static void msc313_intc_maskunmask(struct msc313_intc *intc, int
+>> > hwirq, bool mask)
+>> > +{
+>> > +     int regoff = REGOFF(hwirq);
+>> > +     void __iomem *addr = intc->base + REGOFF_MASK + regoff;
+>> > +     u16 bit = IRQBIT(hwirq);
+>> > +     u16 reg = readw_relaxed(addr);
+>> > +
+>> > +     if (mask)
+>> > +             reg |= bit;
+>> > +     else
+>> > +             reg &= ~bit;
+>> > +
+>> > +     writew_relaxed(reg, addr);
+>> 
+>> RMW on a shared MMIO register. Not going to end well. This is valid
+>> for all the callbacks, I believe.
+> 
+> Do you have any suggestions on how to resolve that? It seems usually
+> an interrupt controller has set and clear registers to get around this.
+> Would defining a spinlock at the top of the driver and using that 
+> around
+> the read and modify sequences be good enough?
 
-for you to fetch changes up to f6c6eb2fe8223f8e64babcdaad2838ba6ede277d:
+Yes, a spinlock is the conventional way to solve it. Make sure
+you use the irqsave/irqrestore versions, as mask/unmask can
+also occur whilst in interrupt context.
 
-  MAINTAINERS: enlist Greg formally for console stuff (2020-08-04 09:41:22 +0200)
+> 
+>> > +
+>> > +     if (flow_type & (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_LEVEL_HIGH))
+>> > +             reg &= ~bit;
+>> > +     else
+>> > +             reg |= bit;
+>> 
+>> I don't follow grasp the logic here. What happens on EDGE_BOTH, for
+>> example?
+> 
+> To be honest I don't quite remember. I'll check and rewrite this.
+> 
+>> This driver has a massive feeling of dÃ©ja-vu. It is almost
+>> a copy of the one posted at [1], which I reviewed early
+>> this week. The issues are the exact same, and I'm 98%
+>> sure this is the same IP block used by two SoC vendors.
+> 
+> This would make a lot of sense considering MediaTek bought MStar
+> for their TV SoCs. The weirdness with only using 16 bits in a register
+> suggests they've inherited the shared ARM/8051 bus that the MStar
+> chips have. Thanks for the tip off.
 
-----------------------------------------------------------------
-TTY/Serial patches for 5.9-rc1
+It is indeed the 16bit accesses that reminded me of the MTK
+code, as that's very unusual.
 
-Here is the large set of TTY and Serial driver patches for 5.9-rc1.
+Hopefully you can work with the MTK guys to resolve this quickly.
 
-Lots of bugfixes in here, thanks to syzbot fuzzing for serial and vt and
-console code.
-
-Other highlights include:
-	- much needed vt/vc code cleanup from Jiri Slaby
-	- 8250 driver fixes and additions
-	- various serial driver updates and feature enhancements
-	- locking cleanup for serial/console initializations
-	- other minor cleanups
-
-All of these have been in linux-next with no reported issues.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Ahmad Fatoum (1):
-      serial: imx: use hrtimers for rs485 delays
-
-Alexander A. Klimov (4):
-      tty: vt: Replace HTTP links with HTTPS ones
-      tty: serial: Replace HTTP links with HTTPS ones
-      tty: serial: uartlite: Replace HTTP links with HTTPS ones
-      serial: altera_jtaguart: Replace HTTP links with HTTPS ones
-
-Alexey Kardashevskiy (1):
-      tty/vt: Do not warn when huge selection requested
-
-Andy Shevchenko (12):
-      serial: 8250_em: Switch to use platform_get_irq()
-      serial: 8250_omap: Switch to use platform_get_irq()
-      serial: 8250_pxa: Switch to use platform_get_irq()
-      serial: 8250_ingenic: Switch to use platform_get_irq()
-      serial: 8250_mtk: Switch to use platform_get_irq()
-      Revert "serial: sunhv: Initialize lock for non-registered console"
-      Revert "serial: amba-pl011: Make sure we initialize the port.lock spinlock"
-      Revert "tty: serial: add missing spin_lock_init for SiFive serial console"
-      Revert "serial: imx: Initialize lock for non-registered console"
-      Revert "serial: sh-sci: Initialize spinlock for uart console"
-      serial: 8250: Let serial core initialise spin lock
-      Revert "serial: 8250: Let serial core initialise spin lock"
-
-Christoph Hellwig (1):
-      tty/synclink: remove leftover bits of non-PCI card support
-
-Dan Carpenter (1):
-      tty: serial: qcom_geni_serial: Clean up an ARRAY_SIZE() vs sizeof()
-
-Daniel Vetter (1):
-      MAINTAINERS: enlist Greg formally for console stuff
-
-Denis Efremov (1):
-      tty/vt: check allocation size in con_set_unimap()
-
-Douglas Anderson (1):
-      serial: kgdboc: Fix bad line wrapping in comment
-
-Erwan Le Ray (2):
-      dt-bindings: serial: add generic DT binding for announcing RTS/CTS lines
-      serial: stm32: Use generic DT binding for announcing RTS/CTS lines
-
-Flavio Suligoi (1):
-      tty: fix spelling mistake
-
-Fugang Duan (2):
-      tty: serial: imx: enable imx serial console port as module
-      tty: serial: imx: add imx earlycon driver
-
-Greg Kroah-Hartman (2):
-      Merge 5.8-rc6 into tty-next
-      Merge 5.8-rc7 into tty-next
-
-Gustavo A. R. Silva (3):
-      tty: Avoid the use of one-element arrays
-      tty: Fix identation issues in struct serial_struct32
-      tty: Use the preferred form for passing the size of a structure type
-
-Jiri Slaby (41):
-      um: line, remove put_char
-      vc: separate state
-      vt: introduce enum vc_intensity for intensity
-      vc: switch state to bool
-      vt: deduplicate setGx code
-      vt: switch G0/1_charset to an array
-      vt: convert vc_tab_stop to bitmap
-      vt: remove 25 years stale comment
-      vt: use tty_insert_flip_string in respond_string
-      vt: get rid of VT10.ID macros
-      vt: move vc_translate to vt.c and rename it
-      vt: use modern types in do_con_write
-      vt: separate unicode handling into vc_translate_unicode
-      vt: rearrange vc_translate_unicode
-      vt: extract attribute inversion to vc_invert_attr
-      vt: move rescan_last_byte label earlier
-      vc: move translation out of do_con_write
-      vc: introduce struct vc_draw_region
-      vc: extract detecting control characters from do_con_write
-      vc: move normal char processing from do_con_write
-      vc: simplify condition in vc_con_write_normal
-      vt: simplify vc_attr handling in vc_con_write_normal
-      vt: make tc write more obvious in vc_con_write_normal
-      vt: synchronize types and use min in csi_X
-      vt: whitespace and paren cleanup in add_softcursor
-      vt: redefine world of cursor macros
-      vt: use newly defined CUR_* macros
-      vt: remove superfluous parens in invert_screen and build_attr
-      vt: simplify noncolor attributes in build_attr
-      vt_ioctl: eliminate ret & breaks in vt_ioctl
-      vt_ioctl: eliminate use of uival and ucval
-      vt_ioctl: move K* ioctls to a separate function
-      vt_ioctl: move io ioctls to a separate function
-      vt_ioctl: move vt_setactivate out of vt_ioctl
-      vt_ioctl: move vt_reldisp out of vt_ioctl
-      vt_ioctl: move vt_resizex out of vt_ioctl
-      vt_ioctl: move vt_io_fontreset out of vt_io_ioctl
-      vt_ioctl: move vt_kdsetmode out of vt_k_ioctl
-      vt_ioctl: move perm checks level up
-      newport_con: vc_color is now in state
-      tty: keyboard, do not speculate on func_table index
-
-Johan Hovold (3):
-      serial: core: drop unnecessary gpio include
-      serial: pmac_zilog: add sparse context annotation
-      serial: msm_serial: add sparse context annotation
-
-Krzysztof Kozlowski (1):
-      serial: samsung: Minor whitespace cleanups
-
-Marek Vasut (1):
-      serial: stm32: Add RS485 RTS GPIO control
-
-Pavel Machek (1):
-      8250-men-mcb: fix signed/unsigned confusion
-
-Randolph Maaßen (1):
-      serial: serial-tegra: reduce irq-latency after rx errors
-
-Serge Semin (4):
-      serial: 8250: Add 8250 port clock update method
-      serial: 8250_dw: Simplify the ref clock rate setting procedure
-      serial: 8250_dw: Pass the same rate to the clk round and set rate methods
-      serial: 8250_dw: Fix common clocks usage race condition
-
-Tamseel Shams (2):
-      serial: samsung: fix spelling mistake
-      serial: core: Fix Coding Style
-
-Tiezhu Yang (1):
-      serial: Remove duplicated macro definition of port type
-
-Uwe Kleine-König (1):
-      serial: imx: implement rts delaying for rs485
-
-Vabhav Sharma (1):
-      tty: serial: fsl_lpuart: minimum baud rate support
-
-Vaibhav Gupta (1):
-      serial: pch_uart: use generic power management
-
-Yunhai Zhang (1):
-      vgacon: Fix for missing check in scrollback handling
-
- .../devicetree/bindings/serial/st,stm32-uart.yaml  |    4 +-
- Documentation/driver-api/serial/n_gsm.rst          |    2 +-
- MAINTAINERS                                        |    6 +
- arch/um/drivers/line.c                             |    5 -
- arch/um/drivers/line.h                             |    1 -
- arch/um/drivers/ssl.c                              |    1 -
- arch/um/drivers/stdio_console.c                    |    1 -
- drivers/accessibility/braille/braille_console.c    |   10 +-
- drivers/staging/speakup/main.c                     |   28 +-
- drivers/tty/moxa.h                                 |    2 +-
- drivers/tty/serial/8250/8250_dw.c                  |  120 ++-
- drivers/tty/serial/8250/8250_em.c                  |   16 +-
- drivers/tty/serial/8250/8250_ingenic.c             |   16 +-
- drivers/tty/serial/8250/8250_men_mcb.c             |    4 +-
- drivers/tty/serial/8250/8250_mtk.c                 |   16 +-
- drivers/tty/serial/8250/8250_omap.c                |   16 +-
- drivers/tty/serial/8250/8250_port.c                |   41 +
- drivers/tty/serial/8250/8250_pxa.c                 |   14 +-
- drivers/tty/serial/8250/Kconfig                    |    4 +-
- drivers/tty/serial/Kconfig                         |   17 +-
- drivers/tty/serial/altera_jtaguart.c               |    2 +-
- drivers/tty/serial/amba-pl011.c                    |    1 -
- drivers/tty/serial/fsl_lpuart.c                    |    3 +
- drivers/tty/serial/imx.c                           |  207 ++--
- drivers/tty/serial/imx_earlycon.c                  |   50 +
- drivers/tty/serial/jsm/jsm_driver.c                |    2 +-
- drivers/tty/serial/kgdboc.c                        |    3 +-
- drivers/tty/serial/msm_serial.c                    |    2 +
- drivers/tty/serial/pch_uart.c                      |   34 +-
- drivers/tty/serial/pmac_zilog.c                    |    1 +
- drivers/tty/serial/qcom_geni_serial.c              |    2 +-
- drivers/tty/serial/samsung_tty.c                   |   24 +-
- drivers/tty/serial/serial-tegra.c                  |    6 +-
- drivers/tty/serial/serial_core.c                   |    5 +-
- drivers/tty/serial/sh-sci.c                        |    3 -
- drivers/tty/serial/sifive.c                        |    1 -
- drivers/tty/serial/stm32-usart.c                   |   13 +-
- drivers/tty/serial/sunhv.c                         |    3 -
- drivers/tty/serial/uartlite.c                      |    2 +-
- drivers/tty/synclink.c                             |  350 ++----
- drivers/tty/tty_io.c                               |   52 +-
- drivers/tty/vt/consolemap.c                        |    2 +-
- drivers/tty/vt/keyboard.c                          |    3 +-
- drivers/tty/vt/selection.c                         |    2 +-
- drivers/tty/vt/vt.c                                |  982 +++++++++--------
- drivers/tty/vt/vt_ioctl.c                          | 1109 ++++++++++----------
- drivers/usb/misc/sisusbvga/sisusb_con.c            |   11 +-
- drivers/video/console/mdacon.c                     |   20 +-
- drivers/video/console/newport_con.c                |   10 +-
- drivers/video/console/sticon.c                     |   14 +-
- drivers/video/console/vgacon.c                     |   40 +-
- drivers/video/fbdev/core/bitblit.c                 |   10 +-
- drivers/video/fbdev/core/fbcon.c                   |   10 +-
- drivers/video/fbdev/core/fbcon_ccw.c               |    8 +-
- drivers/video/fbdev/core/fbcon_cw.c                |    8 +-
- drivers/video/fbdev/core/fbcon_ud.c                |    8 +-
- drivers/video/fbdev/core/tileblit.c                |    6 +-
- include/linux/console.h                            |   13 +-
- include/linux/console_struct.h                     |   93 +-
- include/linux/serial_8250.h                        |    2 +
- include/linux/serial_core.h                        |    2 +-
- include/linux/vt_kern.h                            |    3 -
- include/uapi/linux/serial_core.h                   |   14 -
- 63 files changed, 1847 insertions(+), 1613 deletions(-)
- create mode 100644 drivers/tty/serial/imx_earlycon.c
+         M.
+-- 
+Jazz is not dead. It just smells funny...
