@@ -2,118 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1F623DFDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2067B23DFC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729825AbgHFRyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
+        id S1728350AbgHFRxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728166AbgHFQaX (ORCPT
+        with ESMTP id S1728314AbgHFQbD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:30:23 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF464C002176
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:16:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=SfddbmLFlUQ0+2CTU0mFNxT8HQmZBOw2XCU66BDvkhs=; b=D1Q6EoCdlM8ll41mrAcZKGhTm
-        pVW2jMOhfFTnt2JXtVqIaZ+mZQW6opyRTrizzkANylnv5MBDdHdW045799Oo0VejOaxfXeh0s2vNd
-        63Vdl8ja/0pFIHKfux22Yh2UgYpCxDbjilE755ube/ntYMY9SPWjs2XxcanigYvmnY8fVxreZ/7+B
-        tQqdbXuLK5y+BOvELwtrNI/s2rcrRf7b78FyRgbFYxHUYMAUZ5OI0N6rGSXClGfh5vRNciXOUhtCY
-        1XaQo+LRdyfIT4nvvZoll6dJEWXe6yA3HnJzA5K1AIlxqsP5qlKEoAdMJs5BbgtPReWFVub/SwLGf
-        kskdKohPQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49130)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1k3iZW-0004re-CI; Thu, 06 Aug 2020 17:16:50 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1k3iZV-0006Jp-NZ; Thu, 06 Aug 2020 17:16:49 +0100
-Date:   Thu, 6 Aug 2020 17:16:49 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Pratyush Anand <panand@redhat.com>,
-        Pavel Labath <labath@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kazuhiro Inaba <kinaba@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] ARM: hw_breakpoint: Handle inexact watchpoint addresses
-Message-ID: <20200806161649.GB1605@shell.armlinux.org.uk>
-References: <20191019111216.1.I82eae759ca6dc28a245b043f485ca490e3015321@changeid>
- <20191120191813.GD4799@willie-the-truck>
- <CAD=FV=Wntf0TCwdtNNvPY-CXX1VL_SZK8Y8yw1r=UfeayHfwgw@mail.gmail.com>
- <CAD=FV=WgoVN-scgT41R=6Toif2Zrskb3rNzZn_xbP_-ByZC1MA@mail.gmail.com>
- <20200806154144.GD1551@shell.armlinux.org.uk>
+        Thu, 6 Aug 2020 12:31:03 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C80C002179
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:17:32 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id f9so6812763pju.4
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:17:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zvufMbgkHBSjZokNTrohW1HBR5GWTEJLiYyoeQKMQoc=;
+        b=Pf6FFYC0wPxL6d8QETsIOkfOlxIwRY/C0AqdyI90hPQRstfaU9+B998DLapMl1WGNB
+         WqNSPX1Ws7YGgGUmETWrVvIdqQE+KZKu7Ow4fEGNh7jS9vd1PbSjEQxo8NGLOIbGkQnR
+         oSHKePrXKpHzckubyhQ7X72KnBZun5DiYD0CXDtPtXREXrLySRCC75b7GpvHOrtOcKt6
+         PbtvmEzLWaCG3aBEKBJSVfX28GZPbZcsQxlpYrMWr01bo5XGkJXagMq5c9Uhp15tjooh
+         GESXpv1yOSShPFWP37VfgRm+CD9yuOHPXAo8Pv868sTLAK/hmBknx2rTL5Gyent1nS+0
+         uyHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zvufMbgkHBSjZokNTrohW1HBR5GWTEJLiYyoeQKMQoc=;
+        b=k2HfWF/tg7UN1hkOcChJq4rc6ABSsB8jvWG/2DQFjZm89zl5CM5P6QOylMgZm/esBe
+         Q+i+d5+4muEKbwsfUxyrmmpLpsQbnzBECVijNUHafpDpXlbToce1CWoOT29fMlipoJ+2
+         5qQoK3uqwYyQmHwdRIlVj7W7kR5A01bgM54qDofrvMGEP8jmD9MpTBwzfYjGVMNSzPXf
+         bFEUZR7shykjitDCaIHLk/KRpUyYXtnTqiekhszrT627ULlHBwUO0Y2lQreSTkNXesxq
+         ZM47A8IFiTK+tXPSpEiR261vpSeMkNhl1+GWDhf4qojI+blz2aZk5pAoykZodczXi5bJ
+         pJSA==
+X-Gm-Message-State: AOAM530OGRyEYNVV3yt2SntPkK7vS7wqTkFUI5lqao5JdiNqbIe/iga0
+        KMUnOfQdL6CNWc7VBF021eI=
+X-Google-Smtp-Source: ABdhPJyL9VQsbyt/WHVXcimDWPjM4C/e72yvdlI9/2OSl5YId8/LBG90edfhPfoQPbfaX1tEPA/pOQ==
+X-Received: by 2002:a17:902:b495:: with SMTP id y21mr8136734plr.116.1596730652080;
+        Thu, 06 Aug 2020 09:17:32 -0700 (PDT)
+Received: from gmail.com (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
+        by smtp.gmail.com with ESMTPSA id z15sm4352201pjz.12.2020.08.06.09.17.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 06 Aug 2020 09:17:31 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 21:47:25 +0530
+From:   Vaibhav Agarwal <vaibhav.sr@gmail.com>
+To:     Alex Elder <elder@ieee.org>
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Greer <mgreer@animalcreek.com>,
+        greybus-dev@lists.linaro.org,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: issue with uninitialized value used in a comparison in
+ gbcodec_mixer_dapm_ctl_put
+Message-ID: <20200806161723.GA6927@gmail.com>
+References: <7da6363c-9423-2b9f-029a-395cc8a932d7@canonical.com>
+ <07ad3809-de73-9a66-0e4f-3a49f395a98a@ieee.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200806154144.GD1551@shell.armlinux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <07ad3809-de73-9a66-0e4f-3a49f395a98a@ieee.org>
+User-Agent: Mutt/1.10.1+3 (f9293d646485) (2018-09-22)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 04:41:44PM +0100, Russell King - ARM Linux admin wrote:
-> On Thu, Aug 06, 2020 at 08:05:10AM -0700, Doug Anderson wrote:
-> > Yet if I go check mainline the patch is not there.  This came to my
-> > attention since we had my patch picked to the Chrome OS 4.19 tree and
-> > suddenly recently got a stable merge conflict with "ARM: 8986/1:
-> > hw_breakpoint: Don't invoke overflow handler on uaccess watchpoints".
-> > 
-> > Anyone know what happened here?
-> 
-> Yes.  Stephen Rothwell raised a complaint against it, which you were
-> copied with:
-> 
-> > Hi all,
-> > 
-> > Commit
-> > 
-> >   116375be0461 ("ARM: 8944/1: hw_breakpoint: Handle inexact watchpoint addresses")
-> > 
-> > is missing a Signed-off-by from its author.
-> 
-> My reply to Stephen's email was:
-> 
-> > Thanks Stephen, patch dropped.
-> > 
-> > It looks like Doug used his "m.disordat.com" address to submit the
-> > patch through the web interface, and there was no From: in the patch
-> > itself, so that was used as the patch author.  However, as you spotted,
-> > it was signed off using Doug's "chromium.org" address.
-> > 
-> > I think it's time to make the patch system a bit more strict, checking
-> > that the submission address is mentioned in a signed-off-by tag
-> > somewhere in the commit message.
-> > 
-> > Doug, the patch system does have your "chromium.org" address, if that's
-> > the one you want to use as the author, please submit using that instead.
-> > Thanks.
-> > 
-> > Russell.
-> 
-> Neither email got a response from you, so the patch was dropped and
-> nothing further happened.
+On Wed, Aug 05, 2020 at 08:35:15AM -0500, Alex Elder wrote:
 
-I should've also said, there's two ways to avoid that problem:
+<snip>
 
-1. Provide a From: line in the standard way to tell the patch system
-   who the author of the patch is (the author defaults to the known
-   login email address.)
+> 
+> I think the fix is to add a call to this:
+> 
+>         ret = gb_audio_gb_get_control(module->mgmt_connection, data->ctl_id,
+>                                       GB_AUDIO_INVALID_INDEX, &gbvalue);
+> 
+> before the field within gbvalue is used.
+> 
+> Looking at gbcodec_mixer_dapm_ctl_get() defined just above that, it
+> seems that the call to gb_audio_gb_get_control() should be preceded
+> by a call to gb_pm_runtime_get_sync().  And given that duplication,
+> I suggest this call and the PM runtime wrapper functions should be
+> placed in a new helper function.
+> 
+> I know that Vaibhav said he would be fixing this, so I guess my
+> comments are directed at him.  Thanks for sending the patch Colin.
+> 
+> 					-Alex
 
-2. Update your login email address in the system to the one you
-   normally author patches.
+Thanks Alex. I'll share a patch with the proposed fix.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+--
+vaibhav
+
+> 
+> 
+> > Colin
+> > 
+> > 
+> 
