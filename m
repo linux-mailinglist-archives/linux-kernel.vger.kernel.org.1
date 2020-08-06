@@ -2,251 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 658E323E211
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5E423E219
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726201AbgHFTZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 15:25:03 -0400
-Received: from mga12.intel.com ([192.55.52.136]:35473 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725272AbgHFTZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 15:25:03 -0400
-IronPort-SDR: +X/sFRIIiqa4fROpFfNeHDxaYVm/AtAHwlOuKEn8buZEzpglfFPgU0dt98RggZd4VZ7518BOQP
- ee6Be0lxaSxg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9705"; a="132461178"
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="132461178"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 12:25:02 -0700
-IronPort-SDR: IhZ+OmZJvoHu0nRl894FD1fpUugxCkPCwBxfLQI7HR2oL7YK69RhEB67/hDZvmTIx2Hs+PQpi1
- N1PyiQEWmoqg==
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="293409049"
-Received: from kcaccard-mobl.amr.corp.intel.com (HELO kcaccard-mobl1.jf.intel.com) ([10.212.166.190])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 12:25:00 -0700
-Message-ID: <df539dc3a4791d0f873aec9b303f49b64237a6e8.camel@linux.intel.com>
-Subject: Re: [PATCH v4 00/10] Function Granular KASLR
-From:   Kristen Carlson Accardi <kristen@linux.intel.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     keescook@chromium.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, arjan@linux.intel.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        rick.p.edgecombe@intel.com
-Date:   Thu, 06 Aug 2020 12:24:58 -0700
-In-Reply-To: <20200806153258.GB2131635@gmail.com>
-References: <20200717170008.5949-1-kristen@linux.intel.com>
-         <20200806153258.GB2131635@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+        id S1726294AbgHFTZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 15:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725272AbgHFTZ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 15:25:26 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959EDC061574;
+        Thu,  6 Aug 2020 12:25:25 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id d6so37708767ejr.5;
+        Thu, 06 Aug 2020 12:25:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7jVwnXfyUDIWvKJ1IvnWj3XFejD3cmlEaNN5rkbj01Y=;
+        b=j1YGcJOrlCx12S2/u9y1lwQC6QC0RvQ1N/LWinIdJBaERrp8+HWF1adDxm1KGOGhJn
+         t1MNmPLUvhRP8S10NF3B4YXK7AYRXTSY3IfqahPVl4bahprHbAcIwDz8CI77ZuFdVvYN
+         PjqE6AVCaZbEdGHDUfr0dkP6tgOeMUF12mDstHDMB6hvWrm0UKn0x11PWUkch8st2EV1
+         milBRW+DtIRW+XZHFvl7/+Xnje4LsSWT17wu98CSUN6vjpgn1BVT38Prbrswp4C3W71l
+         8nhRUlXCqJPv/ax2VzwctjLXWoS9tvJjIrXsvWHeejaxdbJwSwiOJABfKhwBQ1Y1PEBB
+         jLrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7jVwnXfyUDIWvKJ1IvnWj3XFejD3cmlEaNN5rkbj01Y=;
+        b=RNFY9+yZYGxxXXp2Sw0XD6hY2AuFtbAz+HtQs+y0LZh4lTyqsTq6KvFB8VsxLVZ3GQ
+         4VZ1pMCslJQoshqNak+t0Xoj6kQmMXEu7FlkM5sZG3TyNGMJ3F3jwdzJ8JC6sCV3udC0
+         sosROQG+lAkvhhEIaBTzh1ciEgTsPqGyXaGHnghaEJUoss33xXPRq8s06w47A0co/8un
+         2mksPzNHds4/KGCnxgjYrGtZyD0X+dUd9Sn5a6jP3pPjPmX0c5u8cDnUxZKwJiX5bwHQ
+         V+9zdT1fxe5fbLe8nZMHYzMeiwD1I1Voeh+oGb68Edj+NRCF78Hu5EjQ9HitUFWunRsC
+         SkPA==
+X-Gm-Message-State: AOAM532KUdFyuwrbkdl2P8XiTzP0NPl51hNiG3AnY+NNIQkx1Lo638e7
+        JlqukOwZYIO1I6xOI46QrkI=
+X-Google-Smtp-Source: ABdhPJwwGeqSWHegNz5iETTFvyjQkDlTTMaYqwPsp1MBVYv3O7KsNk0D3J/dFC3k9LolfYo+BwM0Qw==
+X-Received: by 2002:a17:906:3291:: with SMTP id 17mr6119918ejw.370.1596741924280;
+        Thu, 06 Aug 2020 12:25:24 -0700 (PDT)
+Received: from skbuf ([188.26.57.97])
+        by smtp.gmail.com with ESMTPSA id p3sm4014962edx.75.2020.08.06.12.25.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 12:25:23 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 22:25:21 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: net: dsa: sja1105: use detected device id instead of DT one on
+ mismatch
+Message-ID: <20200806192521.hhr34kuh3y44vehk@skbuf>
+References: <60d2d8f9-1376-2047-b958-7bdbbde1538e@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <60d2d8f9-1376-2047-b958-7bdbbde1538e@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mingo, thanks for taking a look, I am glad you like the idea. Some
-replies below:
+On Thu, Aug 06, 2020 at 05:27:11PM +0100, Colin Ian King wrote:
+> Hi,
+> 
+> Static analysis with Coverity has detected a potential issue with the
+> following commit:
+> 
+> commit 0b0e299720bb99428892a23ecbd2b4b7f61ccf6d
+> Author: Vladimir Oltean <olteanv@gmail.com>
+> Date:   Mon Aug 3 19:48:23 2020 +0300
+> 
+>     net: dsa: sja1105: use detected device id instead of DT one on mismatch
+> 
+> The analysis is as follows:
+> 
+> Array compared against 0 (NO_EFFECT)array_null: Comparing an array to
+> null is not useful: match->compatible, since the test will always
+> evaluate as true.
+> 
+>     Was match->compatible formerly declared as a pointer?
+> 
+> 3418        for (match = sja1105_dt_ids; match->compatible; match++) {
+> 3419                const struct sja1105_info *info = match->data;
+> 3420
+> 
+> I'm not sure what the original intention was, so I was unable to fix
+> this hence I'm sending this report as I think it needs addressing.
+> 
+> Colin
 
-On Thu, 2020-08-06 at 17:32 +0200, Ingo Molnar wrote:
-> * Kristen Carlson Accardi <kristen@linux.intel.com> wrote:
-> 
-> > Function Granular Kernel Address Space Layout Randomization
-> > (fgkaslr)
-> > -----------------------------------------------------------------
-> > ----
-> > 
-> > This patch set is an implementation of finer grained kernel address
-> > space
-> > randomization. It rearranges your kernel code at load time 
-> > on a per-function level granularity, with only around a second
-> > added to
-> > boot time.
-> 
-> This is a very nice feature IMO, and it should be far more effective 
-> at randomizing the kernel, due to the sheer number of randomization 
-> bits that kernel function granular randomization presents.
-> 
-> If this is a good approximation of fg-kaslr randomization depth:
-> 
->   thule:~/tip> grep ' [tT] ' /proc/kallsyms  | wc -l
->   88488
-> 
-> ... then that's 80K bits of randomization instead of the mere
-> handful 
-> of kaslr bits we have today. Very nice!
-> 
-> > In order to hide our new layout, symbols reported through 
-> > /proc/kallsyms will be displayed in a random order.
-> 
-> Neat. :-)
-> 
-> > Performance Impact
-> > ------------------
-> > * Run time
-> > The performance impact at run-time of function reordering varies by
-> > workload.
-> > Using kcbench, a kernel compilation benchmark, the performance of a
-> > kernel
-> > build with finer grained KASLR was about 1% slower than a kernel
-> > with standard
-> > KASLR. Analysis with perf showed a slightly higher percentage of 
-> > L1-icache-load-misses. Other workloads were examined as well, with
-> > varied
-> > results. Some workloads performed significantly worse under
-> > FGKASLR, while
-> > others stayed the same or were mysteriously better. In general, it
-> > will
-> > depend on the code flow whether or not finer grained KASLR will
-> > impact
-> > your workload, and how the underlying code was designed. Because
-> > the layout
-> > changes per boot, each time a system is rebooted the performance of
-> > a workload
-> > may change.
-> 
-> I'd guess that the biggest performance impact comes from tearing
-> apart 
-> 'groups' of functions that particular workloads are using.
-> 
-> In that sense it might be worthwile to add a '__kaslr_group'
-> function 
-> tag to key functions, which would keep certain performance critical 
-> functions next to each other.
-> 
-> This shouldn't really be a problem, as even with generous amount of 
-> grouping the number of randomization bits is incredibly large.
+The intention was to loop through sja1105_dt_ids and stop at the
+sentinel:
 
-So my strategy so far was to try to get a very basic non-performance
-optimized fgkaslr mode merged first, then add performance optimized
-options as a next step. For example, a user might pass in
-fgkaslr="group" to the fgkaslr kernel parameter to select a layout
-which groups some things by whatever criteria we want to mitigate some
-of the performance impact of full randomization, or they might chose
-fgkaslr="full", which just randomizes everything (the current
-implementation). If people think it's worth adding the performance
-optimizations for the initial merge, I can certainly work on those, but
-i thought it might be better to keep it super simple at first.
+static const struct of_device_id sja1105_dt_ids[] = {
+	{ .compatible = "nxp,sja1105e", .data = &sja1105e_info },
+	{ .compatible = "nxp,sja1105t", .data = &sja1105t_info },
+	{ .compatible = "nxp,sja1105p", .data = &sja1105p_info },
+	{ .compatible = "nxp,sja1105q", .data = &sja1105q_info },
+	{ .compatible = "nxp,sja1105r", .data = &sja1105r_info },
+	{ .compatible = "nxp,sja1105s", .data = &sja1105s_info },
+	{ /* sentinel */ },
+};
 
-> 
-> > Future work could identify hot areas that may not be randomized and
-> > either
-> > leave them in the .text section or group them together into a
-> > single section
-> > that may be randomized. If grouping things together helps, one
-> > other thing to
-> > consider is that if we could identify text blobs that should be
-> > grouped together
-> > to benefit a particular code flow, it could be interesting to
-> > explore
-> > whether this security feature could be also be used as a
-> > performance
-> > feature if you are interested in optimizing your kernel layout for
-> > a
-> > particular workload at boot time. Optimizing function layout for a
-> > particular
-> > workload has been researched and proven effective - for more
-> > information
-> > read the Facebook paper "Optimizing Function Placement for Large-
-> > Scale
-> > Data-Center Applications" (see references section below).
-> 
-> I'm pretty sure the 'grouping' solution would address any real 
-> slowdowns.
-> 
-> I'd also suggest allowing the passing in of a boot-time pseudo-
-> random 
-> generator seed number, which would allow the creation of a 
-> pseudo-randomized but repeatable layout across reboots.
+I should have looked at the definition of struct of_device_id:
 
-We talked during the RFC stage of porting the chacha20 code to this
-early boot stage to use as a prand generator. Ultimately, this means
-you now have a secret you have to protect (the seed), and so I've
-dropped this for now. I could see maybe having this as a debug option?
-I certainly use a prand myself even now when I'm still debugging
-functional issues (although the one I use for my own debugging isn't
-suitable for merging).
+/*
+ * Struct used for matching a device
+ */
+struct of_device_id {
+	char	name[32];
+	char	type[32];
+	char	compatible[128];
+	const void *data;
+};
 
-> 
-> > Image Size
-> > ----------
-> > Adding additional section headers as a result of compiling with
-> > -ffunction-sections will increase the size of the vmlinux ELF file.
-> > With a standard distro config, the resulting vmlinux was increased
-> > by
-> > about 3%. The compressed image is also increased due to the header
-> > files,
-> > as well as the extra relocations that must be added. You can expect
-> > fgkaslr
-> > to increase the size of the compressed image by about 15%.
-> 
-> What is the increase of the resulting raw kernel image? Additional 
-> relocations might increase its size (unless I'm missing something) - 
-> it would be nice to measure this effect. I'd expect this to be
-> really 
-> low.
+Honestly, I had thought it's "const char *compatible" rather than "char
+compatible[128]". I'm still not 100% clear why it isn't doing just that,
+though, I think it has to do with some weird usage patterns such as this
+one in UIO:
 
-By raw kernel image, do you mean just what eventually gets copied into
-memory after decompression minus the relocation table? If so, this is
-almost no difference - the only difference is that there is a little
-bit of change in the padding between sections vs what the non-
-randomized kernel is because of alignment differences with the new
-layout. so you wind up with a few extra bytes give or take.
+static struct of_device_id uio_of_genirq_match[] = {
+	{ /* This is filled with module_parm */ },
+	{ /* Sentinel */ },
+};
+MODULE_DEVICE_TABLE(of, uio_of_genirq_match);
+module_param_string(of_id, uio_of_genirq_match[0].compatible, 128, 0);
+MODULE_PARM_DESC(of_id, "Openfirmware id of the device to be handled by uio");
 
-> 
-> vmlinux or compressed kernel size doesn't really matter on x86-64, 
-> it's a boot time only expense well within typical system resource 
-> limits.
-> 
-> > Disabling
-> > ---------
-> > Disabling normal KASLR using the nokaslr command line option also
-> > disables
-> > fgkaslr. It is also possible to disable fgkaslr separately by
-> > booting with
-> > fgkaslr=off on the commandline.
-> 
-> I'd suggest to also add a 'nofgkaslr' boot option if it doesn't yet 
-> exist, to keep usage symmetric with kaslr.
-> 
-> Likewise, there should probably be a 'kaslr=off' option as well.
-> 
-> The less random our user interfaces are, the better ...
-> 
-> >  arch/x86/boot/compressed/Makefile             |   9 +-
-> >  arch/x86/boot/compressed/fgkaslr.c            | 811
-> > ++++++++++++++++++
-> >  arch/x86/boot/compressed/kaslr.c              |   4 -
-> >  arch/x86/boot/compressed/misc.c               | 157 +++-
-> >  arch/x86/boot/compressed/misc.h               |  30 +
-> >  arch/x86/boot/compressed/utils.c              |  11 +
-> >  arch/x86/boot/compressed/vmlinux.symbols      |  17 +
-> >  arch/x86/include/asm/boot.h                   |  15 +-
-> >  arch/x86/kernel/vmlinux.lds.S                 |  17 +-
-> >  arch/x86/lib/kaslr.c                          |  18 +-
-> >  arch/x86/tools/relocs.c                       | 143 ++-
-> >  arch/x86/tools/relocs.h                       |   4 +-
-> >  arch/x86/tools/relocs_common.c                |  15 +-
-> >  include/asm-generic/vmlinux.lds.h             |  18 +-
-> >  include/linux/decompress/mm.h                 |  12 +-
-> >  include/uapi/linux/elf.h                      |   1 +
-> >  init/Kconfig                                  |  26 +
-> >  kernel/kallsyms.c                             | 163 +++-
-> >  kernel/module.c                               |  81 ++
-> >  tools/objtool/elf.c                           |   8 +-
-> >  26 files changed, 1670 insertions(+), 85 deletions(-)
-> >  create mode 100644 Documentation/security/fgkaslr.rst
-> >  create mode 100644 arch/x86/boot/compressed/fgkaslr.c
-> >  create mode 100644 arch/x86/boot/compressed/utils.c
-> >  create mode 100644 arch/x86/boot/compressed/vmlinux.symbols
-> 
-> This looks surprisingly lean overall.
+So I had 2 options for this patch: either break the loop on
+match->compatible, or on match->data. And it looks like I made the wrong
+one.
 
-Most of the changes outside of fgkaslr.c, module.c, and kallsyms.c were
-little tweaks here and there to accommodate using -ffunction-sections
-and handling >64K elf sections, otherwise yes, I tried to keep it very
-self contained and non-invasive.
-
-
+Thanks,
+-Vladimif
