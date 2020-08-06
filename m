@@ -2,112 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF1E23D6D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 08:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE9F23D6E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 08:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbgHFGaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 02:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726051AbgHFGa3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 02:30:29 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA40C061574;
-        Wed,  5 Aug 2020 23:30:29 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f7so42865215wrw.1;
-        Wed, 05 Aug 2020 23:30:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=TGBk281x4usHvdNF4g8zlmo5D8Bhv5Q8McyHFyF9+HM=;
-        b=S9i0qvlyIu7dYtrctjS8zURJfTNuaHUJFmsq4RntwuztGPv3fezc0gZ2Inj8VFKNBP
-         4rhI8IZMOrILBx/Nbiu+ecCVYOd6XKJ4IIXi84lO/jr0ffXbsSPR8BVfOXcKV+7zVLPv
-         5lQyCgYIBncfg0vVH+zfq4RCtq4+YpON6IY+zrQI0YuRYdezFn4PU8pDKr4sX20MPbR6
-         iO36Y7WznBJxbke2ec0xKTU746X/WAqFqCAY5rM1p/koUVFiGPSoZEyXvJKrKc8Nd69L
-         6j+pSMvOmWkc9u17AydlJuDf+u2HEQLwt1/sWDZjwKMIlzOfkgzmIOW7+l5pz6QcMiri
-         A/9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TGBk281x4usHvdNF4g8zlmo5D8Bhv5Q8McyHFyF9+HM=;
-        b=tWZm01VGgzcptqn4kiDBEGyvnaOeCxCzwmkDgKpbLdRMt20qTjAbnv6IJoRi9jkgdM
-         gXt0LOKZV5TN1G0lGly+XpNb7egoZu8nj09SsZ10e+gvvQwu+cq2bfpIqMaHYozP6t4i
-         ZQw5Qac8CyZv/PGDCHCCVF92HWBDfovO35kA1YHh8jje36SHlcCwV7cOn075ZahCU0Tj
-         9pHnSiLVjBiAdd40Miyzq0i2W1tuMZUdFbty5kADInUU2pjSCwrGNGYO6YpciXYcnb4d
-         4TyMIRItiohezjZHWlxtx1PXSK7tdRw/Jzm7YXhb2CdMqYVDcTdkBv3gAX0mNKmnRjX9
-         QFvA==
-X-Gm-Message-State: AOAM533NP/V2xhE4ny9TTZS+GH+g68gqnvKAaW7eLY7T7Sr35McsX2xV
-        twAHMdpj4XgrPnr09P/tRVs=
-X-Google-Smtp-Source: ABdhPJz3fQId2Mfvo2IM9cPHd13bLT4jFeUUbQi44lKhwcEHOz/i4+jVOl9dhB1/oKwPNdmuXVjHIA==
-X-Received: by 2002:adf:b1ca:: with SMTP id r10mr6294501wra.150.1596695427645;
-        Wed, 05 Aug 2020 23:30:27 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.117.232])
-        by smtp.gmail.com with ESMTPSA id t11sm4967586wrs.66.2020.08.05.23.30.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 23:30:26 -0700 (PDT)
-Subject: Re: [PATCH v3 0/4] add i2c support for mt8192
-To:     wsa@the-dreams.de, Qii Wang <qii.wang@mediatek.com>,
-        robh+dt@kernel.org, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        srv_heupstream@mediatek.com
-References: <1596624742-14727-1-git-send-email-qii.wang@mediatek.com>
- <20200805214242.GA2182@kunai>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <249df8b3-6125-6ebd-2835-ab703f05b85a@gmail.com>
-Date:   Thu, 6 Aug 2020 08:30:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200805214242.GA2182@kunai>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1728262AbgHFGiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 02:38:05 -0400
+Received: from m12-15.163.com ([220.181.12.15]:33391 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726051AbgHFGiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 02:38:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=PtRFGMacX+QscZqfbZ
+        +Lu5FxPAgj+Rd4K44h0HnDPoQ=; b=a3YFdVFvhVRmHICzbfsIWhBZQD/rgvhTWF
+        QqabZ3we7Z8X5pN69cI6TvMH1VIjmZR24IqQUE1PQZ6UUsGIgQVv/D8llXC6y/zg
+        PcYOV6m9LG0jEZU2WJ5hxBgFM89l2A2GItkWczwvO75skBqUglVeD0sJvnjbohyj
+        fEJhsVyNM=
+Received: from localhost.localdomain (unknown [58.33.126.62])
+        by smtp11 (Coremail) with SMTP id D8CowADnbcp1oStf0rT5EQ--.55997S2;
+        Thu, 06 Aug 2020 14:21:45 +0800 (CST)
+From:   Grant Feng <von81@163.com>
+To:     von81@163.com, jacek.anaszewski@gmail.com, pavel@ucw.cz,
+        dmurphy@ti.com, robh+dt@kernel.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] leds: is31fl319x: Add sdb pin and generate a 5ms low pulse when startup
+Date:   Thu,  6 Aug 2020 14:21:29 +0800
+Message-Id: <20200806062130.25187-1-von81@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: D8CowADnbcp1oStf0rT5EQ--.55997S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7AF17try8JrWDGr18ur48WFg_yoW8GF4UpF
+        1DCFyrZFW3J3y2g3WfZFW7u345ta18KrZrJrWxXa4Sv3WkK3Wvga4ktFnIvF13XFWxuay5
+        ZanxtFW8Gr4vyw7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j73kZUUUUU=
+X-Originating-IP: [58.33.126.62]
+X-CM-SenderInfo: xyrqmii6rwjhhfrp/1tbiRBp4OlSIgamPWgAAs9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+generate a 5ms low pulse on sdb pin when startup, then the chip
+becomes more stable in the complex EM environment.
+
+Signed-off-by: Grant Feng <von81@163.com>
+---
+ drivers/leds/leds-is31fl319x.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/leds/leds-is31fl319x.c b/drivers/leds/leds-is31fl319x.c
+index ca6634b8683c..b4f70002cec9 100644
+--- a/drivers/leds/leds-is31fl319x.c
++++ b/drivers/leds/leds-is31fl319x.c
+@@ -16,6 +16,8 @@
+ #include <linux/of_device.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
+ 
+ /* register numbers */
+ #define IS31FL319X_SHUTDOWN		0x00
+@@ -61,6 +63,7 @@
+ struct is31fl319x_chip {
+ 	const struct is31fl319x_chipdef *cdef;
+ 	struct i2c_client               *client;
++	struct gpio_desc		*sdb_pin;
+ 	struct regmap                   *regmap;
+ 	struct mutex                    lock;
+ 	u32                             audio_gain_db;
+@@ -265,6 +268,15 @@ static int is31fl319x_parse_dt(struct device *dev,
+ 		is31->audio_gain_db = min(is31->audio_gain_db,
+ 					  IS31FL319X_AUDIO_GAIN_DB_MAX);
+ 
++	is31->sdb_pin = gpiod_get(dev, "sdb", GPIOD_ASIS);
++	if (IS_ERR(is31->sdb_pin)) {
++		dev_warn(dev, "failed to get gpio_sdb, try default\r\n");
++	} else {
++		gpiod_direction_output(is31->sdb_pin, 0);
++		mdelay(5);
++		gpiod_direction_output(is31->sdb_pin, 1);
++	}
++
+ 	return 0;
+ 
+ put_child_node:
+-- 
+2.17.1
 
 
-On 05/08/2020 23:42, wsa@the-dreams.de wrote:
-> On Wed, Aug 05, 2020 at 06:52:18PM +0800, Qii Wang wrote:
->> This series are based on 5.8-rc1 and we provide four i2c patches
->> to support mt8192 SoC.
->>
->> Main changes compared to v2:
->> --delete unused I2C_DMA_4G_MODE
->>
->> Main changes compared to v1:
->> --modify the commit with access more than 8GB dram
->> --add Reviewed-by and Acked-by from Yingjoe, Matthias and Rob
->>
->> Qii Wang (4):
->>    i2c: mediatek: Add apdma sync in i2c driver
->>    i2c: mediatek: Add access to more than 8GB dram in i2c driver
->>    dt-bindings: i2c: update bindings for MT8192 SoC
->>    i2c: mediatek: Add i2c compatible for MediaTek MT8192
->>
->>   .../devicetree/bindings/i2c/i2c-mt65xx.txt         |  1 +
-> 
-> Applied to for-next, thanks!
-> 
-> Sidenote: I get these warnings when compiling the driver:
-> 
-> drivers/i2c/busses/i2c-mt65xx.c:267: warning: Function parameter or member 'min_low_ns' not described in 'i2c_spec_values'
-> drivers/i2c/busses/i2c-mt65xx.c:267: warning: Function parameter or member 'min_high_ns' not described in 'i2c_spec_values'
-> drivers/i2c/busses/i2c-mt65xx.c:267: warning: Function parameter or member 'min_su_sta_ns' not described in 'i2c_spec_values'
-> drivers/i2c/busses/i2c-mt65xx.c:267: warning: Function parameter or member 'max_hd_dat_ns' not described in 'i2c_spec_values'
-> drivers/i2c/busses/i2c-mt65xx.c:267: warning: Function parameter or member 'min_su_dat_ns' not described in 'i2c_spec_values'
-> 
-> Is someone interested to fix these?
-> 
-
-I just send a fix for that.
-
-Regards,
-Matthias
