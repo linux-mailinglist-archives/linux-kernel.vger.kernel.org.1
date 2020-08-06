@@ -2,231 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFE823E0E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA8323E0F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729876AbgHFSjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60290 "EHLO
+        id S1729911AbgHFSjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728431AbgHFSjE (ORCPT
+        with ESMTP id S1729472AbgHFSjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:39:04 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567E4C061574;
-        Thu,  6 Aug 2020 11:39:04 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id l17so50643173iok.7;
-        Thu, 06 Aug 2020 11:39:04 -0700 (PDT)
+        Thu, 6 Aug 2020 14:39:21 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA633C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 11:39:20 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id j187so45848161qke.11
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 11:39:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GL3TKI9RGqTkRYjAtmDHCYyxcqr3PHgkwqSzQbwkm0M=;
-        b=dF5oGek43ef27jbrXZKchR302KjjUZ6kdwDChDS98FOmymm2DDgexZ05AvipGa9Wzk
-         8fJ3KFcznJ426qICF8mkjNVEYw4bc6NVjZs8KiklcivqawtfnpxsHQ97MSZAcMQv8Kar
-         P63SyEpp4xQRElTHkieUq8VTWyn/RNpjY4HpKr3fY2kJi5fqAtCBd0d8PXMdjNxGZuqH
-         aIRmZSHOSrkWBvkf26n36Pr3xBlCw93w1Kc4kFnWT1E5/v9/p2E6IdclAnihPLukq0PZ
-         Yp5NZ+i7eRYpOZZR0L4MdNCb1L331EVQkI21LtGycsDTF1k7btR74O5KQQN27d9eZnrQ
-         6V7A==
+        bh=bEB+eFbcq/8iHsVmYFS7GFD4Ork+qLK5d/Ky4s3qseI=;
+        b=Q2tp+5P1jjX7ju+lu4QjZLIHjUwFBSVpdKRx5cHBtE2mbipB6yjkGx9HczVww/9HMu
+         LOTPafsEWgRWDVZeJjKFyKzI/KoRVSMHwKlbrI/HuNMmFOvFq6PZYJsrvzRcHIjLk4LE
+         hEmBbV28IrEOAXwhWtCYJFBJCR+/gAUYzJTvA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GL3TKI9RGqTkRYjAtmDHCYyxcqr3PHgkwqSzQbwkm0M=;
-        b=bs58eNCY6e12cekBCdX9gjF0f/kBGpi4xz5RNcMperiDN60ZKoSB+s2TwQVe3Z7MaS
-         OrMRraWTiNJhAi5w5g1PPyiDccFbBXquZZ5aYML9ouFTmpaleBvuBvi0P1HNbRvhPOx6
-         1cHzgqcFWj1W8KIRlcNsH8kdGhdt0+BMyfV0NoxI/4fFwX3jW7D03zECe72eWO/0idKO
-         nmLT5moRJjHV1KLHKRlrttksFXtZYWAnsy2sGw10K9E1YWcdUnd4KX58cVMToW0ngyAQ
-         YuyJEBJQZETEM2g/TwJVx+/7vxe3eDYubKH4c53X2yY5xHs3tYJ9Q/5+SVnu4A3mq90L
-         evEg==
-X-Gm-Message-State: AOAM532HMgQqnCMmmZR5kLfbAOVwzMM0uqV0SnoWn1pjch3OTQuulFc+
-        zBHV0EH9I+WjHeWMlv23UWYDfL7GqFxqXibp/sY=
-X-Google-Smtp-Source: ABdhPJwXHO422p4gzANjaG/gMNuqq8scXHgdNB7m1S9n5BFVNSNjHtFhldjhzn2chf4sZVLTGRYCRNmUDh8fDqXJCRk=
-X-Received: by 2002:a6b:da0d:: with SMTP id x13mr360684iob.138.1596739143271;
- Thu, 06 Aug 2020 11:39:03 -0700 (PDT)
+        bh=bEB+eFbcq/8iHsVmYFS7GFD4Ork+qLK5d/Ky4s3qseI=;
+        b=qu0PB2CeMYdxFNPrwA+H97B5rVS1lsRDy35Wy2xUske0cMwkdJZGMC4j12jIr0oKXx
+         m2HcKBWGVL6E9p2M7i/ah5BL64xIatqieD0svfSwjtaYZXjnDx3BZFMDEYaUG5cmX7JO
+         okIJnlf3q8uHhS1QfijvIzvb97ePBxLP8+FJZAxtfcEFoyyruCGGML7yJjuzD7s/QUIf
+         NItQ7Y3o8k7NCnMbUvA7eISbDnpNmtqlxmbGAh0FG4u6wRXHAxRRt9fxhtqlWMhgdplq
+         DZ+fWQ5UKE9UdLnFKC5Fz4QJu0/E4HKoLXFybQ9YohqC4wEUFhdnuMCJl3tjuee8DAYr
+         fXgA==
+X-Gm-Message-State: AOAM530g6vJ2HRpd4RZxKYTGHV74MukYYn1t/LeeObRSm/ITnQ3OMXhP
+        hCHPq0Q0+KKpzrusGBe5thr0Djs3dZ2IUxtPh3RwRg==
+X-Google-Smtp-Source: ABdhPJzFzzFbqbRQyoOETbw3G8FdBFxzF/Y39ZK/3j5jMz8+Kj+aqclKQnQvhWeswXsGDvrdXC9xQLyanNW3umXpEZI=
+X-Received: by 2002:a37:e01:: with SMTP id 1mr9696836qko.128.1596739159829;
+ Thu, 06 Aug 2020 11:39:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com> <1595681998-19193-15-git-send-email-alex.shi@linux.alibaba.com>
-In-Reply-To: <1595681998-19193-15-git-send-email-alex.shi@linux.alibaba.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 6 Aug 2020 11:38:50 -0700
-Message-ID: <CAKgT0UcbBv=QBK9ErqLKXoNLYxFz52L4fiiHy4h6zKdBs=YPOg@mail.gmail.com>
-Subject: Re: [PATCH v17 14/21] mm/compaction: do page isolation first in compaction
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Rong Chen <rong.a.chen@intel.com>
+References: <20200730225609.7395-1-azhar.shaikh@intel.com> <20200730225609.7395-3-azhar.shaikh@intel.com>
+ <20200730230238.GD3145664@google.com> <MWHPR11MB1518178C5B2335FC02CD36AE91710@MWHPR11MB1518.namprd11.prod.outlook.com>
+ <20200730232504.GG3145664@google.com> <MWHPR11MB151867DF25664C80E99A326D914B0@MWHPR11MB1518.namprd11.prod.outlook.com>
+ <CACeCKaf6WuW6XbFBQoVEW55w=OHfaVmmDn1xepiYYeRyMzZFrA@mail.gmail.com> <20200806113907.GX883641@kuha.fi.intel.com>
+In-Reply-To: <20200806113907.GX883641@kuha.fi.intel.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Thu, 6 Aug 2020 11:39:08 -0700
+Message-ID: <CACeCKaeLmVudhssvnYrQGmnJiD-byW8jOas1QKyQj4gg0=sC4A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Avoid setting usb
+ role during disconnect
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     "Shaikh, Azhar" <azhar.shaikh@intel.com>,
+        "bleung@chromium.org" <bleung@chromium.org>,
+        "enric.balletbo@collabora.com" <enric.balletbo@collabora.com>,
+        "groeck@chromium.org" <groeck@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Patel, Utkarsh H" <utkarsh.h.patel@intel.com>,
+        "Bowman, Casey G" <casey.g.bowman@intel.com>,
+        "Mani, Rajmohan" <rajmohan.mani@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 25, 2020 at 6:00 AM Alex Shi <alex.shi@linux.alibaba.com> wrote:
->
-> Currently, compaction would get the lru_lock and then do page isolation
-> which works fine with pgdat->lru_lock, since any page isoltion would
-> compete for the lru_lock. If we want to change to memcg lru_lock, we
-> have to isolate the page before getting lru_lock, thus isoltion would
-> block page's memcg change which relay on page isoltion too. Then we
-> could safely use per memcg lru_lock later.
->
-> The new page isolation use previous introduced TestClearPageLRU() +
-> pgdat lru locking which will be changed to memcg lru lock later.
->
-> Hugh Dickins <hughd@google.com> fixed following bugs in this patch's
-> early version:
->
-> Fix lots of crashes under compaction load: isolate_migratepages_block()
-> must clean up appropriately when rejecting a page, setting PageLRU again
-> if it had been cleared; and a put_page() after get_page_unless_zero()
-> cannot safely be done while holding locked_lruvec - it may turn out to
-> be the final put_page(), which will take an lruvec lock when PageLRU.
-> And move __isolate_lru_page_prepare back after get_page_unless_zero to
-> make trylock_page() safe:
-> trylock_page() is not safe to use at this time: its setting PG_locked
-> can race with the page being freed or allocated ("Bad page"), and can
-> also erase flags being set by one of those "sole owners" of a freshly
-> allocated page who use non-atomic __SetPageFlag().
->
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> ---
->  include/linux/swap.h |  2 +-
->  mm/compaction.c      | 42 +++++++++++++++++++++++++++++++++---------
->  mm/vmscan.c          | 46 ++++++++++++++++++++++++++--------------------
->  3 files changed, 60 insertions(+), 30 deletions(-)
->
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index 2c29399b29a0..6d23d3beeff7 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -358,7 +358,7 @@ extern void lru_cache_add_active_or_unevictable(struct page *page,
->  extern unsigned long zone_reclaimable_pages(struct zone *zone);
->  extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
->                                         gfp_t gfp_mask, nodemask_t *mask);
-> -extern int __isolate_lru_page(struct page *page, isolate_mode_t mode);
-> +extern int __isolate_lru_page_prepare(struct page *page, isolate_mode_t mode);
->  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
->                                                   unsigned long nr_pages,
->                                                   gfp_t gfp_mask,
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index f14780fc296a..2da2933fe56b 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -869,6 +869,7 @@ static bool too_many_isolated(pg_data_t *pgdat)
->                 if (!valid_page && IS_ALIGNED(low_pfn, pageblock_nr_pages)) {
->                         if (!cc->ignore_skip_hint && get_pageblock_skip(page)) {
->                                 low_pfn = end_pfn;
-> +                               page = NULL;
->                                 goto isolate_abort;
->                         }
->                         valid_page = page;
-> @@ -950,6 +951,21 @@ static bool too_many_isolated(pg_data_t *pgdat)
->                 if (!(cc->gfp_mask & __GFP_FS) && page_mapping(page))
->                         goto isolate_fail;
->
-> +               /*
-> +                * Be careful not to clear PageLRU until after we're
-> +                * sure the page is not being freed elsewhere -- the
-> +                * page release code relies on it.
-> +                */
-> +               if (unlikely(!get_page_unless_zero(page)))
-> +                       goto isolate_fail;
-> +
-> +               if (__isolate_lru_page_prepare(page, isolate_mode) != 0)
-> +                       goto isolate_fail_put;
-> +
-> +               /* Try isolate the page */
-> +               if (!TestClearPageLRU(page))
-> +                       goto isolate_fail_put;
-> +
->                 /* If we already hold the lock, we can skip some rechecking */
->                 if (!locked) {
->                         locked = compact_lock_irqsave(&pgdat->lru_lock,
-> @@ -962,10 +978,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
->                                         goto isolate_abort;
->                         }
->
-> -                       /* Recheck PageLRU and PageCompound under lock */
-> -                       if (!PageLRU(page))
-> -                               goto isolate_fail;
-> -
->                         /*
->                          * Page become compound since the non-locked check,
->                          * and it's on LRU. It can only be a THP so the order
-> @@ -973,16 +985,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
->                          */
->                         if (unlikely(PageCompound(page) && !cc->alloc_contig)) {
->                                 low_pfn += compound_nr(page) - 1;
-> -                               goto isolate_fail;
-> +                               SetPageLRU(page);
-> +                               goto isolate_fail_put;
->                         }
->                 }
->
->                 lruvec = mem_cgroup_page_lruvec(page, pgdat);
->
-> -               /* Try isolate the page */
-> -               if (__isolate_lru_page(page, isolate_mode) != 0)
-> -                       goto isolate_fail;
-> -
->                 /* The whole page is taken off the LRU; skip the tail pages. */
->                 if (PageCompound(page))
->                         low_pfn += compound_nr(page) - 1;
-> @@ -1011,6 +1020,15 @@ static bool too_many_isolated(pg_data_t *pgdat)
->                 }
->
->                 continue;
-> +
-> +isolate_fail_put:
-> +               /* Avoid potential deadlock in freeing page under lru_lock */
-> +               if (locked) {
-> +                       spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> +                       locked = false;
-> +               }
-> +               put_page(page);
-> +
->  isolate_fail:
->                 if (!skip_on_failure)
->                         continue;
-> @@ -1047,9 +1065,15 @@ static bool too_many_isolated(pg_data_t *pgdat)
->         if (unlikely(low_pfn > end_pfn))
->                 low_pfn = end_pfn;
->
-> +       page = NULL;
-> +
->  isolate_abort:
->         if (locked)
->                 spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> +       if (page) {
-> +               SetPageLRU(page);
-> +               put_page(page);
-> +       }
->
->         /*
->          * Updated the cached scanner pfn once the pageblock has been scanned
+Hi Heikki,
 
-We should probably be calling SetPageLRU before we release the lru
-lock instead of before. It might make sense to just call it before we
-get here, similar to how you did in the isolate_fail_put case a few
-lines later. Otherwise this seems to violate the rules you had set up
-earlier where we were only going to be setting the LRU bit while
-holding the LRU lock.
+On Thu, Aug 6, 2020 at 4:39 AM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> On Wed, Aug 05, 2020 at 12:37:14PM -0700, Prashant Malani wrote:
+> > Hi Azhar,
+> >
+> >
+> > On Wed, Aug 5, 2020 at 12:22 PM Shaikh, Azhar <azhar.shaikh@intel.com> wrote:
+> > >
+> > > Hi Prashant,
+> > >
+> > > > Is this documented anywhere? Kindly provide the links to that if so. I wasn't
+> > > > aware of any ordering requirements (but I may be missing something).
+> > >
+> > > The configuration of the connector should always happen in the order defined in the
+> > > USB Type-C specification. Check ch. 2.3 (USB Type-C Spec R2.0). So that will basically give you:
+> > >
+> > > 1. orientation
+> > > 2. role(s)
+> > > 3. the rest.
+> >
+> > Thanks for the link. Are you referring to Section 2.3 (Configuration
+> > Process) ? I couldn't find anything there which
+> > implied any required ordering (I'm reading Release 2.0, Aug 2019, so I
+> > don't know if something has been added since).
+> > Could you kindly point me to the appropriate subsection?
+>
+> Please check the section 4.5.1.2 (Connecting Sources and Sinks). Check
+> the typical flow. You can also check the Connection State Machine
+> Requirements. The order should be clear from those as well.
+
+Thanks for sending the section info.
+
+>
+> 1. Source/sink detection
+> 2. Orientation
+> 3. Data role
+> 4. VCONN
+> 5. VBUS (USB Type-C currents)
+> 6. The connector is now configured. We can start the PD communication
+>    that should lead into configuration of the mux if we enter a mode.
+
+The cros-ec-typec driver only receives a USB_PD_MUX_INFO [1] host
+command after we've
+already entered the mode as far as PD communication is concerned
+(steps 1-5 and even PD communication
+to enter the mode is already done by the time cros-ec-typec receives
+PD_MUX_INFO).
+There is no further PD communication to be done in this case (for a
+particular mode), at least nothing that
+is triggered by the AP.
+
+>
+> The data role, the thing that we are talking about here, really should
+> be set before the mux is configured.
+
+I apologize but I still didn't see anything there enforcing an
+ordering for those on any AP switches. The state
+machine you're referring to ((I assume you are referring to Figure
+4-12 to Figure Figure 4-18)
+is already implemented in the TCPM in the Chrome EC for the Chrome OS
+Platform [2]
+
+Perhaps we can take that discussion off-mailing list if necessary ?
+(I'd like to avoid blasting the large mailing list
+with more discussion email, but also happy to continue here if that's
+the preference).
+
+To be clear, all these comments are limited to the only Chrome OS platform.
+>
+> > Additionally, I think any ordering requirements there are already
+> > handled by the TCPM in the Chrome OS EC.
+>
+> The TCPM does not execute the steps that configure the port on this
+> platform. The OS is the part that actually executes the steps.
+
+My response was w.r.t section 2.3 (the section which was originally
+quoted) which deals
+with things like:
+"
+- Source-to-Sink attach/detach detection
+- Plug orientation/cable twist detection
+- Detect if cable requires Vconn
+"
+etc.
+
+All these things are performed by the Chrome OS EC (via TCPM or the TCPC).
+For the items listed in Section 4.5.1.2, AFAIK those steps are
+performed by the Chrome OS EC (via
+a combination of the TCPM and TCPC).
+
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git/tree/include/linux/platform_data/cros_ec_commands.h?h=for-kernelci#n5214
+[2]: https://source.corp.google.com/chromeos_public/src/platform/ec/common/usbc/
+
+>
+> That is one reason (but not the only one) why it is important that
+> both parts follow the order that is proposed in the spec. Otherwise we
+> may endup negotiating things with the partner in one order but then
+> actually executing those steps in some other.
+
+I agree with this, but since the role of TCPM is performed by the
+Chrome EC, I'm not convinced this patch is
+addressing any spec related ordering requirements.
+
+As I mentioned above, the Chrome OS EC is following the state machine
+as well as the section
+of the spec you referred to.
+
+I would suggest:
+- Merging Patch 1 (role set correction) and Patch 2 (moving the
+usb_role_switch_set_role() inside cros_typec_configure_mux()
+*but* keep it at the end to preserve existing ordering) into 1 patch.
+- Add another patch which re-orders the calls and which in the commit
+message lists out all the reasons why this re-ordering
+needs to be done.
+
+Doing the above will help keep better track of why the changes were made.
+
+BR,
+
+-Prashant
+>
+>
+> thanks,
+
+>
+> --
+> heikki
