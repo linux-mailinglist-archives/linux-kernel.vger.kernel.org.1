@@ -2,68 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B42523DF52
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F11B23DF77
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730180AbgHFRpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:45:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728878AbgHFRbQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:31:16 -0400
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1461623128;
-        Thu,  6 Aug 2020 14:15:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596723354;
-        bh=h9yr92Fex5ltfMP+qZOHpzmYyhnDbgztEcO9IPRg14o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SQDMiQDH41Bduy8zoYbVAfI1ioXwch+Hw8pNUzKqCX2MjAD2ryIr5Gl8Ixh5iSDGF
-         hzbKHCaBI82bn+gUycQq5cVNgIHMjRL/jLOD/6Nvabu7cFfTYtBxRAlfrvBst0NzEr
-         TdnUI0Ffg11czHV29VkAyY6GqIDi43LPD7H3JqL8=
-Received: by mail-oi1-f181.google.com with SMTP id a24so22463317oia.6;
-        Thu, 06 Aug 2020 07:15:53 -0700 (PDT)
-X-Gm-Message-State: AOAM532lI08zG8zLUVbGfN/KshGLOClfA9MXa/abph4tWBHvPgwfFX/5
-        W9MeNwKUGtJpgILszFJKKDCUUEH/FeIYiv788Q==
-X-Google-Smtp-Source: ABdhPJxA2Sjm3IZPFJP0zjMdosn8kZNNtfiDvPae0/2S8FhdH5gX0PWIZLExsEmKzhoQ6UqOVM42ZrqnCy1Ja5rnJmA=
-X-Received: by 2002:aca:c3d8:: with SMTP id t207mr7387578oif.152.1596723353187;
- Thu, 06 Aug 2020 07:15:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200805110052.2655487-1-daniel@0x0f.com> <20200805110052.2655487-2-daniel@0x0f.com>
-In-Reply-To: <20200805110052.2655487-2-daniel@0x0f.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 6 Aug 2020 08:15:42 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqK5YWe71HU+bSMG2uNZOgFN85x4zatuiS-fkUYKXHDs-w@mail.gmail.com>
-Message-ID: <CAL_JsqK5YWe71HU+bSMG2uNZOgFN85x4zatuiS-fkUYKXHDs-w@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt: bindings: interrupt-controller: Add binding
- description for msc313-intc
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729893AbgHFRsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:48:17 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21210 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728935AbgHFQfp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:35:45 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 076E296Q092894;
+        Thu, 6 Aug 2020 10:23:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references; s=pp1;
+ bh=cK+IFbwDsM2m9d21mk++qrDlBgGZFvrkkmzPVkYIzkw=;
+ b=Wy/DxXqmIU1/ZqRoHZPqLu9oj7ath30Pv4e1FvQ7vq46Ful0fvenpSQOtpq0EmuF7yqi
+ lXH6qTHYc2W4pkoa2gm56Eb0kse8bu7mNntp3WKrKsnk8yILFR4LvmBRKgfoWc2NRK8+
+ iD+vzfe4NuI2f+VDseLvdF7i1/njOKnOjE4WU2tZpJ5YNElm5ItAAmqdidGABGuO7xqR
+ Td632cBQQ5WLo7ceohtcYfRcu/HvGe8qSBiJW/AeT+umrvjkCO0BTpjRd5Eewudh88Kw
+ pAeYb2wxa/w9KxTe/Fy7K0GB0lA3cmUkmrg5BMWSliJX77Rac9FcabcnNJKiWzlWqbDI eQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32qu0w8xkc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 10:23:12 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 076E38m9098055;
+        Thu, 6 Aug 2020 10:23:11 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32qu0w8xjb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 10:23:11 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 076EGXgN027832;
+        Thu, 6 Aug 2020 14:23:08 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 32n018bda0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 14:23:08 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 076EN59J27721984
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 6 Aug 2020 14:23:05 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7AEA6AE053;
+        Thu,  6 Aug 2020 14:23:05 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E8AE7AE04D;
+        Thu,  6 Aug 2020 14:23:04 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.149.70])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  6 Aug 2020 14:23:04 +0000 (GMT)
+From:   Pierre Morel <pmorel@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     pasic@linux.ibm.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        mst@redhat.com, jasowang@redhat.com, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH v1 1/1] s390: virtio-ccw: PV needs VIRTIO I/O device protection
+Date:   Thu,  6 Aug 2020 16:23:02 +0200
+Message-Id: <1596723782-12798-2-git-send-email-pmorel@linux.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1596723782-12798-1-git-send-email-pmorel@linux.ibm.com>
+References: <1596723782-12798-1-git-send-email-pmorel@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-06_09:2020-08-06,2020-08-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ clxscore=1015 impostorscore=0 lowpriorityscore=0 suspectscore=3
+ phishscore=0 mlxscore=0 bulkscore=0 priorityscore=1501 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008060096
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 5, 2020 at 5:01 AM Daniel Palmer <daniel@0x0f.com> wrote:
->
-> Adds a YAML description of the binding for the msc313-intc.
->
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-> ---
->  .../mstar,msc313-intc.yaml                    | 79 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 80 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mstar,msc313-intc.yaml
+If protected virtualization is active on s390, the virtio queues are
+not accessible to the host, unless VIRTIO_F_IOMMU_PLATFORM has been
+negotiated. Use ccw_transport_features() to fail feature negociation
+and consequently probe if that's not the case, preventing a host
+error on access attempt.
 
-Why are you sending another version? You ignored the errors and my
-questions on the RFC.
+Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+---
+ drivers/s390/virtio/virtio_ccw.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
-Rob
+diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
+index 5730572b52cd..cc8d8064c6c4 100644
+--- a/drivers/s390/virtio/virtio_ccw.c
++++ b/drivers/s390/virtio/virtio_ccw.c
+@@ -803,11 +803,23 @@ static u64 virtio_ccw_get_features(struct virtio_device *vdev)
+ 	return rc;
+ }
+ 
+-static void ccw_transport_features(struct virtio_device *vdev)
++static int ccw_transport_features(struct virtio_device *vdev)
+ {
+-	/*
+-	 * Currently nothing to do here.
+-	 */
++	if (!is_prot_virt_guest())
++		return 0;
++
++	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1)) {
++		dev_warn(&vdev->dev,
++			 "device must provide VIRTIO_F_VERSION_1\n");
++		return -ENODEV;
++	}
++
++	if (!virtio_has_feature(vdev, VIRTIO_F_IOMMU_PLATFORM)) {
++		dev_warn(&vdev->dev,
++			 "device must provide VIRTIO_F_IOMMU_PLATFORM\n");
++		return -ENODEV;
++	}
++	return 0;
+ }
+ 
+ static int virtio_ccw_finalize_features(struct virtio_device *vdev)
+@@ -837,7 +849,9 @@ static int virtio_ccw_finalize_features(struct virtio_device *vdev)
+ 	vring_transport_features(vdev);
+ 
+ 	/* Give virtio_ccw a chance to accept features. */
+-	ccw_transport_features(vdev);
++	ret = ccw_transport_features(vdev);
++	if (ret)
++		goto out_free;
+ 
+ 	features->index = 0;
+ 	features->features = cpu_to_le32((u32)vdev->features);
+-- 
+2.25.1
+
