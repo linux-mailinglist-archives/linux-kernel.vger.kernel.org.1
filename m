@@ -2,83 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB23623D48F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 02:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4368023D492
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 02:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgHFAau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 20:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgHFAas (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 20:30:48 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F60C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 17:30:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=k9ZUUoVT/rC8cRMVNQlujKR+wnRdpm96UsegNSVO9/A=; b=wFJLq5LHslH58jU71H4rejyAM
-        4BSHcOUv4cOu16/dnhsitej9zJ/2bIvYV7mx0AaxxldC8llbrfQfDj/9AbDeHSHAedxg7zsA6ngPM
-        U0Hy1G9c3XvprYmrBpkjTDXrmEVptIxf3uzx7EG3xu3Wyx9ff5xWigyDxyKQ3fpgbQvWmRCrzDgPM
-        0ZwxZdKIBvh1F0/9ugKpCj2rVlV6lWWlgra7Zm9TZu8/WvyaVBeQ1Zw069zRVchaNv+eIJrlOHkej
-        WBk75kLTC/iUjlSSwQkCbEFFArRbc34oXZ1bOVACOCgfauSU8Tb0oAfdXx0gxpqVTTSvGze4ceeNg
-        R5JwVCoTw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48850)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1k3Tnx-00042b-Lt; Thu, 06 Aug 2020 01:30:45 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1k3Tnu-0005b9-Ji; Thu, 06 Aug 2020 01:30:42 +0100
-Date:   Thu, 6 Aug 2020 01:30:42 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Norbert Lange <nolange79@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Petr Malat <oss@malat.biz>, Kees Cook <keescook@chromium.org>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Terrell <terrelln@fb.com>
-Subject: Re: [PATCH] arm: Add support for ZSTD compressed kernel
-Message-ID: <20200806003042.GB1551@shell.armlinux.org.uk>
-References: <20200805230555.84214-1-nolange79@gmail.com>
+        id S1726634AbgHFAcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 20:32:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726514AbgHFAb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 20:31:57 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 741DB2173E;
+        Thu,  6 Aug 2020 00:31:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596673917;
+        bh=COlM6ZwpJBn0yZ7U5zGmwKi2QBKcTNFY6uKqQQLWL9I=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=NyYpl8j7GnE0b6Kl9PfXT74TEaVjbKcJZhVIYLuCXYezr42vioZTRPEVqIghVq1F4
+         zNIZU0xHD6nN48uda830HuH8BpUcKUyC/m9qlBIBKXRrYYuT+KwRh1A+dNmzWkX2Ye
+         KUyGv5thzFRaFuJCm0Wn0WY0Ymm34tc/mAb9/oes=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805230555.84214-1-nolange79@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1595413915-17867-2-git-send-email-rohitkr@codeaurora.org>
+References: <1595413915-17867-1-git-send-email-rohitkr@codeaurora.org> <1595413915-17867-2-git-send-email-rohitkr@codeaurora.org>
+Subject: Re: [PATCH v4 01/12] ASoC: qcom: Add common array to initialize soc based core clocks
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Ajit Pandey <ajitp@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>
+To:     Rohit kumar <rohitkr@codeaurora.org>, agross@kernel.org,
+        alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+        bjorn.andersson@linaro.org, broonie@kernel.org,
+        devicetree@vger.kernel.org, lgirdwood@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        perex@perex.cz, plai@codeaurora.org, robh+dt@kernel.org,
+        srinivas.kandagatla@linaro.org, tiwai@suse.com
+Date:   Wed, 05 Aug 2020 17:31:56 -0700
+Message-ID: <159667391634.1360974.15763918681460437981@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 01:05:55AM +0200, Norbert Lange wrote:
-> diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
-> index 434a16982e34..1af01bfe6638 100644
-> --- a/arch/arm/boot/compressed/head.S
-> +++ b/arch/arm/boot/compressed/head.S
-> @@ -614,7 +614,11 @@ not_relocated:	mov	r0, #0
->   */
->  		mov	r0, r4
->  		mov	r1, sp			@ malloc space above stack
-> +#if defined(CONFIG_KERNEL_ZSTD)
-> +		add	r2, sp, #0x30000	@ Context needs ~160K
+Quoting Rohit kumar (2020-07-22 03:31:44)
+> From: Ajit Pandey <ajitp@codeaurora.org>
+>=20
+> LPASS variants have their own soc specific clocks that needs to be
+> enabled for MI2S audio support. Added a common variable in drvdata to
+> initialize such clocks using bulk clk api. Such clock names is
+> defined in variants specific data and needs to fetched during init.
 
-That's going to mess up kexec:
-
-        /*
-         * The zImage length does not include its stack (4k) or its
-         * malloc space (64k).  Include this.
-         */
-        len += 0x11000;
-
-I guess we need to add this to the information provided to kexec.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Why not just get all the clks and not even care about the names of them?
+Use devm_clk_bulk_get_all() for that, unless some clks need to change
+rates?
