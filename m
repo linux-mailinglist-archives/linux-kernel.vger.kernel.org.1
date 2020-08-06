@@ -2,125 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F5D23D72A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 09:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5AC23D72F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 09:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbgHFHIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 03:08:20 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:51737 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727028AbgHFHII (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 03:08:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1596697688; x=1628233688;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=i6ILggSoaj8v+P+32X8VOpmr3H4b2DO0DSnanQJVCC0=;
-  b=e7ojmdTQ/O9vIKxkm2fUQS9x1wxIqOcopg9kAFubDhU+6BFJwIlRVjco
-   dPRMVLh36E00NZUUAmuDpxf0zV3c37pHIN3TSOdMuiDTF0fZwfmdvHF35
-   ERNlWX+w5QQgarX652cbiosiOjgf5TlcCW+O/X6POHWpyflgaEe5TPOEg
-   rhg8IsTtJVyTtVtrbZtYLMtBM+BIcG3AAwJPJo9Ml2lKZOi3//kvoXdPv
-   uJgGzPgX+L895YWJhEBrq4r/Y5q59iAqeW1qvKOyWtXXWblvPjuN2tk/J
-   h36T+1/kOvjjX6M3HoInj/eWZnO1CNKHT8FByRzhlsXtACK+nUsWqDaEB
-   A==;
-IronPort-SDR: NOVNs/GY3mIuw41Gn/c6of4WA6AVXxzo56tEZrJ2kxET437SZqlSRLsKy0Xqel0ofbnVSWRg4l
- iSchgpEHjfBh2FbvR49jbMRcaPI9r3ARF99dOsS2E0h/FjHqkc4AyY6jc0AyVbyae5c0bzLA5F
- be1pUF30aSY65XfoZQ0yL/Rz7nR/89b02rUF4Ukv1pQa6L+AP8kiqaJcmrz4P5AFsEQcVUV0Il
- UXBmoDW/uivHRBN2RccovCv7AtcMJsk5lN4NRjl+WNSUigrQPJtnTtNclivfNHYvKleakdQK4H
- f20=
-X-IronPort-AV: E=Sophos;i="5.75,440,1589212800"; 
-   d="scan'208";a="148590151"
-Received: from mail-dm6nam10lp2102.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.102])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Aug 2020 15:08:07 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ell9rZxyJYRHgdnCUsnzgQHZwMUnzhLQtt5jJ2AupYck8F8mZoLWebWTfRzL000gkZI0cvuoswV7PCbFaaDbtATYo2wUJGLbUN65zzUSb7gzCESSdzHoSMqSsB1kZuLcvlzgnBCLJG5zmsnxBCTPPGTmRmWyZBUB5MQGmn/fxyt0zYgAsDohujzGMmsAD4eqKrxg4O23EbxB9RvUIyZAb7PgrN5WVl9YrVE6Ase0tR2KbAi+VsBWZht4rv9xXkXdfdGuZT58O+k5HI+ksY6/WgW1c6evkwYMqUnAdaDWzGdoTuZ9hluh0DGxNKqGcPOGkzUIc9YMdOgkSGphOiSdlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i6ILggSoaj8v+P+32X8VOpmr3H4b2DO0DSnanQJVCC0=;
- b=UKaJSY4P4BmNhU9iStgT8ZOvo4GmgdM2Ald10/0lWrnjGIEnMAxH0edpHQEJN918NjAIXHjKEplv0BbxlLovVSIk0W3cvX9LLiifvmPb5QNMYcAYNrIBbLk3p9QvUSziIB1NRmZCIFWN0s4j1itYY/tjhJVxsZSvpL/0Th0A0mV1Ix9M3pFI2cy+pDXvhCkP8hVQOV+5wkvtWpV/5y2vl5sspPMC4MHUDBz5EV14vWeK84AaQFTPb455UszJidqnr16Irf5P8ve1khRDGoq8e7S0hmOQwXkvOL2u4ZA5L9ANzBW5QfkK3NpOETYfcyWKUUwazRUkZbaAFhlofhlKDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i6ILggSoaj8v+P+32X8VOpmr3H4b2DO0DSnanQJVCC0=;
- b=Gif9B6D4fewqjJbwPCaTy3+o06DnN0dH9zSkg5SlOYFBy/ML3fsWiVJGbJeGwQPJXfRe0RqTGqBaBZNgq6ma06+kJ+WCNOwlqQLAd4FrF0QoUKPJUknSt6l22vXCkPkRYXibm2TymuM7MHw7z9xa0EmYiSoiqXBPpYXTBbR6tUo=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN4PR0401MB3632.namprd04.prod.outlook.com (2603:10b6:803:46::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.20; Thu, 6 Aug
- 2020 07:08:06 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::1c80:dad0:4a83:2ef2]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::1c80:dad0:4a83:2ef2%4]) with mapi id 15.20.3239.022; Thu, 6 Aug 2020
- 07:08:06 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "vigneshr@ti.com" <vigneshr@ti.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] scsi: ufs: ti-j721e-ufs: Fix error return in
- ti_j721e_ufs_probe()
-Thread-Topic: [PATCH v2] scsi: ufs: ti-j721e-ufs: Fix error return in
- ti_j721e_ufs_probe()
-Thread-Index: AQHWa78US7jgK0oOakiuuLwn+3qzRakqqPlg
-Date:   Thu, 6 Aug 2020 07:08:06 +0000
-Message-ID: <SN6PR04MB4640BBD412F95CE2A1E28942FC480@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <20200806070135.67797-1-jingxiangfeng@huawei.com>
-In-Reply-To: <20200806070135.67797-1-jingxiangfeng@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: e29a1af5-db84-4ee0-db5f-08d839d777b5
-x-ms-traffictypediagnostic: SN4PR0401MB3632:
-x-microsoft-antispam-prvs: <SN4PR0401MB3632945E2F53E4A3F503662AFC480@SN4PR0401MB3632.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1247;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: K7t/cDt5GvDig3hqYCE/Zv9nF2Dv6NQMX76HYzzDm4UJb45v4cZvdChAq+L1rqlVVs4c1ulrl0UHsQRmtp2SnlrmwBc+yT4CCIN6RJFYTgZY30a3CutdryP6uQShNbOlUX+ovKRqznIQ7KGe73E2X5uoXpd21hpcCiEdATwShwtMC2DDU4zcGM2AiH9TJcqAegR7eLOrQ7qpHx6b3tcdxAqKZMrrUIr7eSISQ3+0VdF7WZU0HOMDw4xHbGaHPA1ATH6KCW3yieZJCQvvpV3slWfB2xO9vx48xIctKdG89PJLqfzLGey6OBMi8OBeflCy
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(396003)(366004)(376002)(39860400002)(136003)(52536014)(8936002)(71200400001)(76116006)(33656002)(478600001)(5660300002)(26005)(86362001)(186003)(110136005)(7696005)(2906002)(8676002)(9686003)(558084003)(66446008)(55016002)(64756008)(316002)(4326008)(66556008)(6506007)(54906003)(66946007)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 70IOZBX+cMUjTNgQvd7fyKf65W6UampALIpqFvK4/iJLHqq8xY73gEEuA8yiqmyOUq0hi+VcWIOwHQt1o03Bly9hH0A30o/QF9I/JyoITMSFmcuS0i44aK49xJfsqLeYQl1drboRRJLfenAuktq4OwxuBWOIJcI89HA+bLjG6Nfs2q88PNAGSmQhfBmKZesvuKdXCJsejzTlZEW/NKZzuJzNdAymhygwm4Q7/7f3CDqD2r2D4oX0mZV0vZw9/zqLjrZDBnvkwLrYQxsJPMyGz1FiN9trJvtX060/E0s+jI8+kOzU+Lfy36O7hYz39WGLE6XIxkqmcXdKaMxST0DsoBqikKGxVl30GJWI0mRKfrJZQBE809Lf5c3LHOHlW/NqxOnXUabW1D8OKJpw3vnSS6ud2BXl01+ydNz/8ByyD2IFLhLj9lLKfuVu8CSqp8ScdkV/IVBID847/IbOiIODTqcjUPmnKqtMPDu2dc6ktFtUdOfxAEuPyIGO2Qaf4U5zJ5drynJLHc1EXqom9Acr6Pxsyo6Sv4vjlxXqew8L3tSWCxETWpojjHLgWatBcGmjA6iREhLHZ/+MQOyvQha5XFFxXYke5nU11nf3/Hvi8Bc5Ut/n8J6WeX82hDc9UJkEMfge1dySMnO5D+60tGx+Vw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR04MB4640.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e29a1af5-db84-4ee0-db5f-08d839d777b5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Aug 2020 07:08:06.1064
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rTQTgR8EP0cyvjF/SaztC9kuY1BjPBfzyrxcgI/B+g8oPJ//QBeTRgrYehMdSfQuodc2ueDZjJ/hvFGwhLiYkw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3632
+        id S1728554AbgHFHJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 03:09:28 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:47006 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728443AbgHFHJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 03:09:16 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP9yNrCtfsTgFAA--.866S2;
+        Thu, 06 Aug 2020 15:09:05 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: Introduce cmdline argument writecombine=
+Date:   Thu,  6 Aug 2020 15:09:01 +0800
+Message-Id: <1596697741-3561-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxP9yNrCtfsTgFAA--.866S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFWUGFyrtw1ftr47CF48JFb_yoW5XrW7pF
+        4qk3Z7Gr4Fgw1vyF9xAr1jgrW5Zrn5AFZxJr4UCw18Zas0qr4kKFnaqrWaqF48XFyxJa48
+        tFWruFyUKw1Iy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyqb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCF
+        x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
+        v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
+        67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
+        IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
+        xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUy75rDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=20
->=20
-> Fix to return error code PTR_ERR() from the error handling case instead
-> of 0.
->=20
-> Fixes: 22617e216331 ("scsi: ufs: ti-j721e-ufs: Fix unwinding of pm_runtim=
-e
-> changes")
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Loongson processors have a writecombine issue that maybe failed to
+write back framebuffer used with ATI Radeon or AMD GPU at times,
+after commit 8a08e50cee66 ("drm: Permit video-buffers writecombine
+mapping for MIPS"), there exists some errors such as blurred screen
+and lockup, and so on.
+
+With this patch, disable writecombine by default for Loongson64 to
+work well with ATI Radeon or AMD GPU, and it has no influence on the
+other platforms due to writecombine is enabled by default.
+
+Additionally, if it is necessary, writecombine=on can be set manually
+in the cmdline to enhance the performance for Loongson LS7A integrated
+graphics in the future.
+
+[   60.958721] radeon 0000:03:00.0: ring 0 stalled for more than 10079msec
+[   60.965315] radeon 0000:03:00.0: GPU lockup (current fence id 0x0000000000000112 last fence id 0x000000000000011d on ring 0)
+[   60.976525] radeon 0000:03:00.0: ring 3 stalled for more than 10086msec
+[   60.983156] radeon 0000:03:00.0: GPU lockup (current fence id 0x0000000000000374 last fence id 0x00000000000003a8 on ring 3)
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/include/asm/pgtable.h |  4 ++++
+ arch/mips/kernel/cpu-probe.c    | 19 +++++++++++++++++++
+ 2 files changed, 23 insertions(+)
+
+diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
+index dd7a0f5..34869f7 100644
+--- a/arch/mips/include/asm/pgtable.h
++++ b/arch/mips/include/asm/pgtable.h
+@@ -473,6 +473,10 @@ static inline pgprot_t pgprot_noncached(pgprot_t _prot)
+ static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
+ {
+ 	unsigned long prot = pgprot_val(_prot);
++	extern bool mips_writecombine;
++
++	if (!mips_writecombine)
++		return pgprot_noncached(_prot);
+ 
+ 	/* cpu_data[0].writecombine is already shifted by _CACHE_SHIFT */
+ 	prot = (prot & ~_CACHE_MASK) | cpu_data[0].writecombine;
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index e2955f1..98777ca 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -459,6 +459,25 @@ static int __init ftlb_disable(char *s)
+ 
+ __setup("noftlb", ftlb_disable);
+ 
++#ifdef CONFIG_MACH_LOONGSON64
++bool mips_writecombine; /* initialise to false by default */
++#else
++bool mips_writecombine = true;
++#endif
++EXPORT_SYMBOL(mips_writecombine);
++
++static int __init writecombine_setup(char *str)
++{
++	if (strcmp(str, "on") == 0)
++		mips_writecombine = true;
++	else if (strcmp(str, "off") == 0)
++		mips_writecombine = false;
++
++	return 1;
++}
++
++__setup("writecombine=", writecombine_setup);
++
+ /*
+  * Check if the CPU has per tc perf counters
+  */
+-- 
+2.1.0
+
