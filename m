@@ -2,60 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267FE23DBD6
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7588223DD13
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728808AbgHFQeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:34:20 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50371 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728721AbgHFQdZ (ORCPT
+        id S1729934AbgHFQ7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729015AbgHFQkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:33:25 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1k3dUk-00067j-86; Thu, 06 Aug 2020 10:51:34 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: usb: fix spelling mistake "buss" -> "bus"
-Date:   Thu,  6 Aug 2020 11:51:34 +0100
-Message-Id: <20200806105134.46447-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 6 Aug 2020 12:40:40 -0400
+Received: from mail-pj1-x1048.google.com (mail-pj1-x1048.google.com [IPv6:2607:f8b0:4864:20::1048])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ECEC0086BF
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 08:40:09 -0700 (PDT)
+Received: by mail-pj1-x1048.google.com with SMTP id s4so7928629pjq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 08:40:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=656dnNAuUUnD/k18gLmyRR/+raciy1Oyj/NPSnNG5xk=;
+        b=Qb9x6kSybloGsaxZ5zVWPFw7GBTOWjDT7Onj6xNESz+uV3WQz0HuI+a9I/HP4YbIzk
+         FwL8gNu2aGWqnMbYtPk1jHNAM6sS2MJF7B7efXCNcrDQ4UqJfR0AY8jXMCbsnqJKP36r
+         wj8tjRolORRljI8XJKVHzKZSxTBGDFz7AkNFQdh+WrEtUB/FuMJ0k3/9YFl65FV1NT4F
+         WIb17Fj9F6fF0rdr1qjcSYF95ofzVhCdzxLPtQCcnZUiaWo48/8ikLZqwtLu6HpuZc35
+         ZvHh57AjelK01KPedxVMLdFUSNOk2UvcGzm+1plbBto3u6mSkdYMAAFc2ShdbixM6C2W
+         StqQ==
+X-Gm-Message-State: AOAM530b5VT2n4Pqk5pjdKZMkhS85woEqBwfbejTuDT+bVdQA7NWf3O8
+        bEoyXc8yBKvEau+HL7gXiqZfYnpfqv2B6jWjNkoC8yqhYpWQ
+X-Google-Smtp-Source: ABdhPJwcAiTy/wffzoJCdETIFtbVqx/gf0LyEU7YnrR+t22WgktHp0EA2zFRLzq4BhmxgcgX5gUlZD0bRSKQNpJblmn7VpzbFmVA
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:9106:: with SMTP id t6mr10728891ild.105.1596712744169;
+ Thu, 06 Aug 2020 04:19:04 -0700 (PDT)
+Date:   Thu, 06 Aug 2020 04:19:04 -0700
+In-Reply-To: <0000000000006925ea05a69d5bfb@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ecb92805ac33a761@google.com>
+Subject: Re: WARNING in binder_transaction_buffer_release (2)
+From:   syzbot <syzbot+e113a0b970b7b3f394ba@syzkaller.appspotmail.com>
+To:     arve@android.com, christian@brauner.io, devel@driverdev.osuosl.org,
+        gregkh@linuxfoundation.org, jannh@google.com,
+        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        maco@android.com, syzkaller-bugs@googlegroups.com,
+        tkjos@android.com, tkjos@google.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+syzbot suspects this issue was fixed by commit:
 
-There is a spelling mistake in a usb_audio_dbg debug message. Also
-replace "param" with "parameter".  Fix these.
+commit 4b836a1426cb0f1ef2a6e211d7e553221594f8fc
+Author: Jann Horn <jannh@google.com>
+Date:   Mon Jul 27 12:04:24 2020 +0000
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/usb/mixer_us16x08.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+    binder: Prevent context manager from incrementing ref 0
 
-diff --git a/sound/usb/mixer_us16x08.c b/sound/usb/mixer_us16x08.c
-index 986145fd2ce0..a4d4d71db55b 100644
---- a/sound/usb/mixer_us16x08.c
-+++ b/sound/usb/mixer_us16x08.c
-@@ -329,7 +329,7 @@ static int snd_us16x08_bus_put(struct snd_kcontrol *kcontrol,
- 		elem->cached |= 1;
- 		elem->cache_val[0] = val;
- 	} else {
--		usb_audio_dbg(chip, "Failed to set buss param, err:%d\n", err);
-+		usb_audio_dbg(chip, "Failed to set bus parameter, err:%d\n", err);
- 	}
- 
- 	return err > 0 ? 1 : 0;
--- 
-2.27.0
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10c84dec900000
+start commit:   9cb1fd0e Linux 5.7-rc7
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cca7550d53ffa599
+dashboard link: https://syzkaller.appspot.com/bug?extid=e113a0b970b7b3f394ba
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1230353c100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17fd535e100000
 
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: binder: Prevent context manager from incrementing ref 0
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
