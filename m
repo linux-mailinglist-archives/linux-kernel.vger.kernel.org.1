@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E7623D479
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 02:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DDC23D47B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 02:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgHFAPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 20:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59808 "EHLO
+        id S1726958AbgHFAPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 20:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726726AbgHFAOx (ORCPT
+        with ESMTP id S1726630AbgHFAOt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 20:14:53 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041DFC0617A3
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 17:14:50 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id y30so5983421qvy.9
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 17:14:49 -0700 (PDT)
+        Wed, 5 Aug 2020 20:14:49 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F93C0617A0
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 17:14:48 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id d26so26401548yba.20
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 17:14:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=O7nU7lYRfe2R9ziGF333WHlsyARaR/Q4/HWduypodHg=;
-        b=P2x3PctwOJH5TuP9RSIAld4PsP/j3XNf0AvQXQ/DodKu083Iwcspo5T0atbcBDsOrJ
-         0muuNfCGfJv2UYZs4THq+0JJHbABbX5/d+U9rXKBjhLAcqh/qA9l+wDxBWI5FlGn48GT
-         n//FasAVkPn21NR0+MvA0EQn1nxFbtKy6fABVAr7Mp1OMARjoHZ8T/jsqEcUhx3bj6/2
-         V+ADQDg90iYizGu72GdVwVjhB0p43nWwLP9qqQSCMCjudSGp4lbe1Y6GvsMCowNuzxah
-         1ljHzyW2xnvEJmsBpWAhJgQzacZvfeFe36VRxoG3XAwexV99oPDYkDxdZgV3+aIYp2vJ
-         VEbw==
+        bh=iVslrzv4xFzBXNEn359Z/Whm6d2iMTLeHC3W31lAdWA=;
+        b=C/SP0oGOW1Or0jT1oy8iTM7UpU1UdLCVB8XtXPbbhM8nUGF/k9zuT96H8/k1S2BPKz
+         GH5kyP4tdhCcsLhgn8rcadoYQlTO83PD9GurtMSGz+82arCK0ifyqSXg8TZyHvUT4g+e
+         +k4VMFJphoSzYgDTwtYuYzosOEyZMlvPAM+opXYtnM/8i5eXMcqXDWbrgHh3H4hgN6ur
+         5ydu82s+kCbf12Ocmgq1tZDBYQzWVBiShHlJEbsTOnLSQmCiDniGXpO2VNiZGWV5aQ+5
+         K8kUk72cHvQAzLwAVzFnwSI06Ek+xEWFPcxTlNM8G7BoLXXbXC4tSuIo7jY5To7ZNcVV
+         QcsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=O7nU7lYRfe2R9ziGF333WHlsyARaR/Q4/HWduypodHg=;
-        b=CJvkahFqeZC+JuLNJOCsi2HhwN7j5uu4CORKwneMJyhUqoVHoRaRv7E65XBTuKVr7y
-         JPOUguaH6raBuGUSiH9MBVlW0Va+qkJ4OYcAh5VkYYozx1MLHS4FwDVvEaUYEqgSFADt
-         QGuZVZWIEiX8J7B5AFWuUrM1k2teakOuKjKb72a2Xr8b8DyOLQufl25fcKgdM1k2yfTp
-         aJup5COkR0DUOd0RjwpelFddxDXJoMRYEmjGV9JLCm+0SQMiZo/MnN6jjpbADfef2z+3
-         11+GfGEiVhAUGEOHz/rKH6zMysCnEIB/rI/NBKoSBRlG6jr7rtk4MP89aiHEx8yCCkpA
-         tK0w==
-X-Gm-Message-State: AOAM5333s0ISD5G/TpJY1UrQ6gfT8RObRSX1VsqnE54K5Us8ijdvywkY
-        ewVscl2sKu5jP+EG2DlqPa6POZfh2XHjWD7o6VzFexyEWEuLkqxIeOWj+dJITBRWRciBsoUF827
-        epju0O54QCxjFWvKALtozDgXjw2oVgIWH8z232vdFxz/4lxqDc6p0cKmEUszaerDCig5ep1c=
-X-Google-Smtp-Source: ABdhPJwdyTprB9qz0EIRwUGruGxBVFwvWVEzapoGVgGGJXsE7/AA/AyXt0lpcFDiRYIFwQKbOSD1eVkGKwTK
-X-Received: by 2002:ad4:4ea5:: with SMTP id ed5mr6415961qvb.130.1596672885491;
- Wed, 05 Aug 2020 17:14:45 -0700 (PDT)
-Date:   Wed,  5 Aug 2020 17:14:28 -0700
+        bh=iVslrzv4xFzBXNEn359Z/Whm6d2iMTLeHC3W31lAdWA=;
+        b=PStpmtNG5l0gOnfJPDVsPqCZ5KvS2xEyyF23/3eFo1LfrwpQXXf9D9oDDidXE563qX
+         siy/FDzDXdMS5BciTB4aYCglov6wJqikOd3A1p1aYc1QxqUcyKpPXsMFisLtxpd548kW
+         PCTcQkRUEM/Q0JqoELXGTILcLARH8hJhGgMgM870DU5qTpwAXheBITAlzzyIF8K647pf
+         ktdGJCzwEM0Q9q+iO+RhXZEduJp3OifzJLt4FGpDfs6t+UoOdbrQRadJ4WSHNnWkfnrU
+         abtupGPn8wpfn+sSOFNcQGP7m0q5OooABS2XU80YxtNLJRbDiOAART3Owy3ucWCdqv7l
+         2ZQQ==
+X-Gm-Message-State: AOAM532gbKHL4AgmXF7NP0mMJj2TqZg5XNslX+el+660RJjo2HSWPDqI
+        9SvSi74sPc0qyfFdx9+2U2XNahd3hdSLSiPQ0aeEHmM53OzhuJD4J6rqUN2IfEWfysxi11pngq8
+        mG8clfhBGvfF29L7oTk0f/pz9NwRqq2O9sR5eT2rECZQjxnlLJ1Cfmwc9c8ZRawPQyP2K1xg=
+X-Google-Smtp-Source: ABdhPJySwxnkEmF4OtYZyg3Lz9Wk5GKLTOnJhkx2H+LHVcgdTtgb++K+3ddPPhSTVHbV3Od9xyNUGIbZg7Zb
+X-Received: by 2002:a25:32d6:: with SMTP id y205mr9190286yby.77.1596672887452;
+ Wed, 05 Aug 2020 17:14:47 -0700 (PDT)
+Date:   Wed,  5 Aug 2020 17:14:29 -0700
 In-Reply-To: <20200806001431.2072150-1-jwadams@google.com>
-Message-Id: <20200806001431.2072150-5-jwadams@google.com>
+Message-Id: <20200806001431.2072150-6-jwadams@google.com>
 Mime-Version: 1.0
 References: <20200806001431.2072150-1-jwadams@google.com>
 X-Mailer: git-send-email 2.28.0.236.gb10cc79966-goog
-Subject: [RFC PATCH 4/7] core/metricfs: expose softirq information through metricfs
+Subject: [RFC PATCH 5/7] core/metricfs: expose scheduler stat information
+ through metricfs
 From:   Jonathan Adams <jwadams@google.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
@@ -64,11 +65,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add metricfs support for displaying percpu softirq counters.  The
-top directory is /sys/kernel/debug/metricfs/softirq.  Then there
-is a subdirectory for each softirq type.  For example:
+Add metricfs support for displaying percpu scheduler counters.
+The top directory is /sys/kernel/debug/metricfs/stat (analogous
+to /proc/stat).  Then there is a subdirectory for each scheduler
+stat.  For example:
 
-    cat /sys/kernel/debug/metricfs/softirq/NET_RX/values
+    cat /sys/kernel/debug/metricfs/stat/user/values
 
 Signed-off-by: Jonathan Adams <jwadams@google.com>
 
@@ -79,67 +81,79 @@ jwadams@google.com: rebased to 5.8-pre6
 	google, who would rather not have their name associated with this
 	patchset. They're okay with me sending it under my name.
 ---
- kernel/softirq.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ fs/proc/stat.c | 57 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 57 insertions(+)
 
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index c4201b7f42b1..1ae3a540b789 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -25,6 +25,8 @@
- #include <linux/smpboot.h>
+diff --git a/fs/proc/stat.c b/fs/proc/stat.c
+index 46b3293015fe..deb378507b0b 100644
+--- a/fs/proc/stat.c
++++ b/fs/proc/stat.c
+@@ -13,6 +13,7 @@
+ #include <linux/irqnr.h>
+ #include <linux/sched/cputime.h>
  #include <linux/tick.h>
- #include <linux/irq.h>
-+#include <linux/jump_label.h>
 +#include <linux/metricfs.h>
  
- #define CREATE_TRACE_POINTS
- #include <trace/events/irq.h>
-@@ -738,3 +740,46 @@ unsigned int __weak arch_dynirq_lower_bound(unsigned int from)
- {
- 	return from;
+ #ifndef arch_irq_stat_cpu
+ #define arch_irq_stat_cpu(cpu) 0
+@@ -237,3 +238,59 @@ static int __init proc_stat_init(void)
+ 	return 0;
  }
+ fs_initcall(proc_stat_init);
 +
 +#ifdef CONFIG_METRICFS
-+
-+#define METRICFS_ITEM(name) \
++#define METRICFS_ITEM(name, field, desc) \
 +static void \
 +metricfs_##name(struct metric_emitter *e, int cpu) \
 +{ \
-+	int64_t v = kstat_softirqs_cpu(name##_SOFTIRQ, cpu); \
++	int64_t v = kcpustat_field(&kcpustat_cpu(cpu), field, cpu); \
 +	METRIC_EMIT_PERCPU_INT(e, cpu, v); \
 +} \
-+METRIC_EXPORT_PERCPU_COUNTER(name, #name " softirq", metricfs_##name)
++METRIC_EXPORT_PERCPU_COUNTER(name, desc, metricfs_##name)
 +
-+METRICFS_ITEM(HI);
-+METRICFS_ITEM(TIMER);
-+METRICFS_ITEM(NET_TX);
-+METRICFS_ITEM(NET_RX);
-+METRICFS_ITEM(BLOCK);
-+METRICFS_ITEM(IRQ_POLL);
-+METRICFS_ITEM(TASKLET);
-+METRICFS_ITEM(SCHED);
-+METRICFS_ITEM(HRTIMER);
-+METRICFS_ITEM(RCU);
++#define METRICFS_FUNC_ITEM(name, func, desc) \
++static void \
++metricfs_##name(struct metric_emitter *e, int cpu) \
++{ \
++	struct kernel_cpustat cpustat; \
++	int64_t v; \
++	kcpustat_cpu_fetch(&cpustat, cpu); \
++	v = func(&cpustat, cpu); \
++	METRIC_EMIT_PERCPU_INT(e, cpu, v); \
++} \
++METRIC_EXPORT_PERCPU_COUNTER(name, desc, metricfs_##name)
 +
-+static int __init init_softirq_metricfs(void)
++METRICFS_ITEM(user, CPUTIME_USER, "time in user mode (nsec)");
++METRICFS_ITEM(nice, CPUTIME_NICE, "time in user mode niced (nsec)");
++METRICFS_ITEM(system, CPUTIME_SYSTEM, "time in system calls (nsec)");
++METRICFS_ITEM(irq, CPUTIME_IRQ, "time in interrupts (nsec)");
++METRICFS_ITEM(softirq, CPUTIME_SOFTIRQ, "time in softirqs (nsec)");
++METRICFS_ITEM(steal, CPUTIME_STEAL, "time in involuntary wait (nsec)");
++METRICFS_ITEM(guest, CPUTIME_GUEST, "time in guest mode (nsec)");
++METRICFS_ITEM(guest_nice, CPUTIME_GUEST_NICE,
++	"time in guest mode niced (nsec)");
++METRICFS_FUNC_ITEM(idle, get_idle_time, "time in idle (nsec)");
++METRICFS_FUNC_ITEM(iowait, get_iowait_time, "time in iowait (nsec)");
++
++static int __init init_stat_metricfs(void)
 +{
 +	struct metricfs_subsys *subsys;
 +
-+	subsys = metricfs_create_subsys("softirq", NULL);
-+	metric_init_HI(subsys);
-+	metric_init_TIMER(subsys);
-+	metric_init_NET_TX(subsys);
-+	metric_init_NET_RX(subsys);
-+	metric_init_BLOCK(subsys);
-+	metric_init_IRQ_POLL(subsys);
-+	metric_init_TASKLET(subsys);
-+	metric_init_SCHED(subsys);
-+	metric_init_RCU(subsys);
++	subsys = metricfs_create_subsys("stat", NULL);
++	metric_init_user(subsys);
++	metric_init_nice(subsys);
++	metric_init_system(subsys);
++	metric_init_irq(subsys);
++	metric_init_softirq(subsys);
++	metric_init_steal(subsys);
++	metric_init_guest(subsys);
++	metric_init_guest_nice(subsys);
++	metric_init_idle(subsys);
++	metric_init_iowait(subsys);
 +
 +	return 0;
 +}
-+module_init(init_softirq_metricfs);
++module_init(init_stat_metricfs);
 +
 +#endif
 -- 
