@@ -2,75 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F274523DD3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C466323DE87
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730061AbgHFRGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:06:46 -0400
-Received: from m15111.mail.126.com ([220.181.15.111]:50497 "EHLO
-        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729995AbgHFRFl (ORCPT
+        id S1729896AbgHFR0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729830AbgHFRB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:05:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=+kkkBx1bxSHF0cNmAc
-        mdtGqYc15xx5yDg7pnYwZu2X0=; b=frS1DJFLGX4fnq8DPpkPzrzBNlUdQF0oAl
-        OByLZL/oh0uRwQOqWrbf1nOSNUXkqdCAH3q5tAuTs/FpHF95mdaDf5Y2jRIDQgn/
-        Yhnm4ye5dHSqkaNpPT7U5g3xKULcl3LE4qSzaHuBJf9t8RWQDJ1TLxUWh3YO+iAI
-        h+F4QZKqE=
-Received: from 192.168.137.131 (unknown [112.10.84.202])
-        by smtp1 (Coremail) with SMTP id C8mowAB3NEaiCyxfR1tJIQ--.29658S3;
-        Thu, 06 Aug 2020 21:54:44 +0800 (CST)
-From:   Xianting Tian <xianting_tian@126.com>
-To:     tj@kernel.org, axboe@kernel.dk
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] blkcg: add plugging support for punt bio
-Date:   Thu,  6 Aug 2020 09:54:42 -0400
-Message-Id: <1596722082-31817-1-git-send-email-xianting_tian@126.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: C8mowAB3NEaiCyxfR1tJIQ--.29658S3
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZw1kKFy5Kr47JF4UZw4xZwb_yoWfZrg_Gr
-        yqyFykGF1DCa1Fkws09F93ArZYkws5XF1qg34rK34fXF18Ja1qkr13Xw4qq34rCFyxuFy3
-        WanrZry8Crs3KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0dMaUUUUUU==
-X-Originating-IP: [112.10.84.202]
-X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbi7Ql4pFpD-JPV9AAAsv
+        Thu, 6 Aug 2020 13:01:58 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD2BC0A54D7
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:59:20 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id l13so16052675qvt.10
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 06:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=aDhJ3BwsHEwEzPKPkJxFBX4MNurIU5lO4LLSrBoplxs=;
+        b=pXQv1rb1LDMT9p5PJKkN34fCIy1Nuuyoj0JXb3dtmNH2cYyfiVSD29lea9Qm6P09OM
+         69lJrSspkIqY4nar32A/byyQSbLt2PndQGSD67O0bv4UWATkrowXoLo5TziSpMTc1suy
+         XrTYTDszMCn/26jfkCmkQn0b4AOEH/9Y/MCYs8dnvafufaVE8CAK+LYCSDg/MN9RLYp3
+         MXK8H/k8lbl6s0KHZLek+gFJw7vKxecHM7L7XwSCvuMpDQoaOHiuQRE742w8cpj/D0I4
+         tlbAxj8WHqGCBSxuqUrIBpl3RvhdSNa/fQqptXS3Vj7BkdFIHq/FgcZo5N3/KwjokQTs
+         gYpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=aDhJ3BwsHEwEzPKPkJxFBX4MNurIU5lO4LLSrBoplxs=;
+        b=LlMW1SKkgcqLfMx/5DJ0wGSwXMJ+/keRBqpNZsVV7Yl757AzdTDzh5tjTtkVVZcYel
+         t8IhncfoIjDv8ldsRSHmzA5/cg6HlxYOUSEFDRgKYsUGfY8t1bqZkQQgwRwiL2xdu4A1
+         q5mKiBFEv6lVbs3uh317r81Gwt4+ePa3laD25lhA7f7kOkQqQjzSnADXzTJa/b3XvBUk
+         +EZCG0aE2qk1sFlcLUAa9W8o/d0H6/Ue/eLYB4N13iAFRq7/N2XWkxCanbCXBu6gm57O
+         30eG7g+PKLw/SBIpLiVIGlDlWEGcSGn5E7gBVmdZTmj8z1jiPCpbo/Es05q+8OSWSkKL
+         dLFQ==
+X-Gm-Message-State: AOAM533Ak5il+rkpyjhcORBzvZ/osXvif3pbIwnGfhTJPXdXatiUgjSZ
+        4lE38OMvrXyQ5F5x7eQcug9F+w==
+X-Google-Smtp-Source: ABdhPJzFT3bBn7kvSmKrN3dp/BXM9RBI6m1pRrSjKba4KzSAlrw7TW+cwxJLIBiJb6w/1qG7dlkDyg==
+X-Received: by 2002:a0c:b60d:: with SMTP id f13mr6793580qve.38.1596722352707;
+        Thu, 06 Aug 2020 06:59:12 -0700 (PDT)
+Received: from localhost.localdomain.com (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id r6sm4489285qkc.43.2020.08.06.06.59.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 06:59:11 -0700 (PDT)
+From:   Qian Cai <cai@lca.pw>
+To:     torvalds@linux-foundation.org
+Cc:     daniel.diaz@linaro.org, linux@roeck-us.net, tytso@mit.edu,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Qian Cai <cai@lca.pw>
+Subject: [PATCH] random: fix a compilation error on arm64
+Date:   Thu,  6 Aug 2020 09:58:36 -0400
+Message-Id: <20200806135836.31736-1-cai@lca.pw>
+X-Mailer: git-send-email 2.18.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Try to merge continuous bio to current task's plug fisrt.
+linux-next failed to compile using this .config,
+https://gitlab.com/cailca/linux-mm/-/blob/master/arm64.config
 
-Signed-off-by: Xianting Tian <xianting_tian@126.com>
+arch/arm64/kernel/kaslr.c: In function 'kaslr_early_init':
+arch/arm64/kernel/kaslr.c:128:6: error: implicit declaration of function
+'__early_cpu_has_rndr'; did you mean '__early_pfn_to_nid'?
+[-Werror=implicit-function-declaration]
+  if (__early_cpu_has_rndr()) {
+      ^~~~~~~~~~~~~~~~~~~~
+      __early_pfn_to_nid
+arch/arm64/kernel/kaslr.c:131:7: error: implicit declaration of function
+'__arm64_rndr' [-Werror=implicit-function-declaration]
+   if (__arm64_rndr(&raw))
+       ^~~~~~~~~~~~
+cc1: some warnings being treated as errors
+
+Fixes: 585524081ecd ("random: random.h should include archrandom.h, not the other way around")
+Signed-off-by: Qian Cai <cai@lca.pw>
 ---
- block/blk-cgroup.c | 3 +++
- 1 file changed, 3 insertions(+)
+ include/linux/random.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 0ecc897..fe5d361 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -122,6 +122,7 @@ static void blkg_async_bio_workfn(struct work_struct *work)
- 					     async_bio_work);
- 	struct bio_list bios = BIO_EMPTY_LIST;
- 	struct bio *bio;
-+	struct blk_plug plug;
+diff --git a/include/linux/random.h b/include/linux/random.h
+index f45b8be3e3c4..da782c16c20c 100644
+--- a/include/linux/random.h
++++ b/include/linux/random.h
+@@ -12,6 +12,8 @@
+ #include <linux/list.h>
+ #include <linux/once.h>
  
- 	/* as long as there are pending bios, @blkg can't go away */
- 	spin_lock_bh(&blkg->async_bio_lock);
-@@ -129,8 +130,10 @@ static void blkg_async_bio_workfn(struct work_struct *work)
- 	bio_list_init(&blkg->async_bios);
- 	spin_unlock_bh(&blkg->async_bio_lock);
++#include <asm/archrandom.h>
++
+ #include <uapi/linux/random.h>
  
-+	blk_start_plug(&plug);
- 	while ((bio = bio_list_pop(&bios)))
- 		submit_bio(bio);
-+	blk_finish_plug(&plug);
- }
- 
- /**
+ struct random_ready_callback {
 -- 
-1.8.3.1
+2.18.4
 
