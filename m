@@ -2,59 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DB723DFC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D5623DF36
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728798AbgHFRxY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 6 Aug 2020 13:53:24 -0400
-Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:8047 "EHLO
-        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728389AbgHFQbQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:31:16 -0400
-Subject: Re: [PATCH 2/2] selinux: add attributes to avc tracepoint
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
-        Paul Moore <paul@paul-moore.com>
-CC:     Nick Kralevich <nnk@google.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>
-References: <20200806080358.3124505-1-tweek@google.com>
- <20200806080358.3124505-2-tweek@google.com>
- <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com>
-From:   peter enderborg <peter.enderborg@sony.com>
-Message-ID: <8627d780-0e19-6755-0de5-c686deb0f5de@sony.com>
-Date:   Thu, 6 Aug 2020 14:24:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729605AbgHFRmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:42:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729642AbgHFRbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:31:43 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF96B22CF6;
+        Thu,  6 Aug 2020 12:25:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596716738;
+        bh=jpYTCCwR4fZP8SyH14e+ACdHwa6e8RH80YNL1hLi6L8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IRZhR4rjAD9KvhCFxHEGYa6XFLYelDK0rOrJrpXDwilVmtTt1wRyxDSC4Wswclshs
+         B9Q7GB075Ei7Z37D1jXxrm1iIYpDK/dls9Z2XQoCLXwexQHnOD9Fobkp8o7ddWlAJ0
+         IUPhOkDgbXgI0PhArND5uIY0mRYirezqMMpSjl2A=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1k3exk-000Gxu-7i; Thu, 06 Aug 2020 13:25:36 +0100
 MIME-Version: 1.0
-In-Reply-To: <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-GB
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=frmim2wf c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=IkcTkHD0fZMA:10 a=y4yBn9ojGxQA:10 a=z6gsHLkEAAAA:8 a=6V6ZJp-5uwDIHVc_4FwA:9 a=QEXdDO2ut3YA:10 a=d-OLMTCWyvARjPbQ-enb:22
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 06 Aug 2020 13:25:35 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jason Liu <jason.hui.liu@nxp.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, catalin.marinas@arm.com,
+        will@kernel.org, sashal@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/1] arm64: kexec: no need to do irq_chip->irq_mask if it
+ already masked
+In-Reply-To: <VI1PR0402MB38249815EA37338953E8AAC1AE480@VI1PR0402MB3824.eurprd04.prod.outlook.com>
+References: <20200804085657.10776-1-jason.hui.liu@nxp.com>
+ <b4444c737f9d6fd8fd99dbb809d35a0f@kernel.org> <20200804113850.GB15199@bogus>
+ <VI1PR0402MB38243230C51FDB1C3F490853AE4B0@VI1PR0402MB3824.eurprd04.prod.outlook.com>
+ <3c63ae0cc3a7b5bad5d4638a9870340e@kernel.org>
+ <VI1PR0402MB38249815EA37338953E8AAC1AE480@VI1PR0402MB3824.eurprd04.prod.outlook.com>
+User-Agent: Roundcube Webmail/1.4.5
+Message-ID: <1e4496c263e486be3438f2797630164a@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: jason.hui.liu@nxp.com, sudeep.holla@arm.com, catalin.marinas@arm.com, will@kernel.org, sashal@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/20 2:11 PM, Stephen Smalley wrote:
-> On 8/6/20 4:03 AM, Thiébaud Weksteen wrote:
->
->> From: Peter Enderborg <peter.enderborg@sony.com>
->>
->> Add further attributes to filter the trace events from AVC.
->
-> Please include sample usage and output in the description.
->
->
-Im not sure where you want it to be.
+On 2020-08-06 11:05, Jason Liu wrote:
+>> -----Original Message-----
+>> From: Marc Zyngier <maz@kernel.org>
 
-In the commit message or in a Documentation/trace/events-avc.rst ?
+[...]
 
+>> > No, this patch is not papering over a much deeper issue in the driver.
+>> > This is just to make things better for the ARM64 kexec.
+>> 
+>> Yes, I'm sure it is... However:
+>> 
+>> request_irq()
+>> <goes into suspend, panic somewhere after having turned the irqchip 
+>> clock off>
+>> if (chip->irq_mask && !irqd_irq_masked(&desc->irq_data))
+>>      <explodes, as the interrupt isn't masked>
+>> 
+>> This is because the PM in the irqsteer driver is completely busted:
+>> request_irq() should get a reference on the driver to prevent it from 
+>> being
+>> suspended. Since you don't implement it correctly, this doesn't happen 
+>> and
+>> your "improvement" doesn't help at all.
+> 
+> The request_irq will get a reference to prevent the irqchip from being
+> suspended due to it call
+> irq_chip_pm_get(). I am pretty sure we have implemented correctly and
+> that is also the common Linux code.
+
+Then it seems you cannot read your own driver. At no point do you
+set the parent_device that would give you a fighting chance to
+get the device clocked and powered on. How does it work? Magic?
+
+> In order to save power and let the irqchip enter into runtime SUSPEND
+> mode, the driver will call free_irq()
+> When it was not used(idle). Then free_irq() will decrease the
+> reference and let the irqchip enter suspend state.
+
+The reference count on *what*? There is nothing to take a reference
+on. So yes, you understand how the core kernel works. But you don't
+seem to notice that there is no link between the irq and the device
+that implements the controller.
+
+> So, when the irqchip entered suspend, which means there is no user for
+> the irqchip and all the irqs were DISABLED + MASKED.
+> Due to the runtimePM support for the irqchip, when kexec runs, it will
+> sometimes meet the situation that the irqchip is suspend due to
+> no users for it. So from either the performance(time cost) or coding
+> logic, the machine_kexec_mask_interrupts() should not do
+> double mask for the irqs which already masked.
+
+I strongly suggest you start by fixing the damn driver first.
+
+In the meantime, NAK to this patch.
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
