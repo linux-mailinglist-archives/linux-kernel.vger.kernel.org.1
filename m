@@ -2,92 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14ED823DBC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FA623DC9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728537AbgHFQcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:32:12 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24772 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728207AbgHFQad (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:30:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596731413;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y0hRjxIYgtYoy/h39f3PiFZ6a4d+4DkToJeydt3cH9g=;
-        b=iZtXESXtVYz10VmHreFwC22BNjliTNzd81kbPEN7/+3dBgwyMWYaOhsniO9mSVUNFArjzl
-        x90ovgo6CjLZ2rO/L0p9/Y3aBFobK/nPS3wEu1SmToTs0G9DT2iZWHysY574tAvNjxHHCg
-        i7TfiR5jkbD3fs6I1i4+ZFGA7ZlDiQY=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-279-0ULF9YdJPSOq6V_mIsxuMQ-1; Thu, 06 Aug 2020 11:09:52 -0400
-X-MC-Unique: 0ULF9YdJPSOq6V_mIsxuMQ-1
-Received: by mail-qk1-f199.google.com with SMTP id d131so33791010qke.3
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 08:09:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Y0hRjxIYgtYoy/h39f3PiFZ6a4d+4DkToJeydt3cH9g=;
-        b=B6rrzip0HiRf5CsEXSqhTZblkrVRZ2koI17vVziksRCqq1erFgHufAs3e+tITJ4vDb
-         hpEJ30yOr0Rwt66OzWyNNURAOrz4AeoV7SruhyV4FLWuRh6QY+EAcarxA//y7U53XHlg
-         zbFjmMQ+b8eYP68z6Y5767Ca37dy2mt3+eq1NX0YNA9856bqaN7PD7vPQ4YPJVDvLtbw
-         fD6fxfvb1UvImDSyv09yscGNkwy7icwf27RY/aY2/gaqLFPti79/YMNx4wdzUhJiV2GJ
-         YqfKFdFaEGeXPdxnP4lLzc6Ma8xKmNLdIpHSlJ0bcRLO8jE1QXkJ+Ix0ynwDVBOJwauu
-         u1xg==
-X-Gm-Message-State: AOAM532pARuZQdEfW7zkUG9oN7nmd1vWLKMoXka9L/XpKA10CgnA2slw
-        NZm9XUt8FdeL6/3JHNvQRDe4DRJAL1u8AlL/388ZAoF3fMqOON+hBrvHrGU2ZAOD0x0f6GUi0Tq
-        rj9DWOUbdbtgjirlhsVUyfUql
-X-Received: by 2002:a37:4d09:: with SMTP id a9mr7354943qkb.157.1596726591372;
-        Thu, 06 Aug 2020 08:09:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy805HTIuuD4jVfreBGZ/exggS77Pp3EK2TvUaU5b2qywpfHQSnY0gYW5+tnwJiE06+MrWX0Q==
-X-Received: by 2002:a37:4d09:: with SMTP id a9mr7354918qkb.157.1596726591081;
-        Thu, 06 Aug 2020 08:09:51 -0700 (PDT)
-Received: from x1.bristot.me (host-87-16-204-193.retail.telecomitalia.it. [87.16.204.193])
-        by smtp.gmail.com with ESMTPSA id q13sm4607376qkn.85.2020.08.06.08.09.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 08:09:50 -0700 (PDT)
-Subject: Re: [ANNOUNCE][CFP] Real-Time Micro Conference at LPC 2020
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Dhaval Giani <dhaval.giani@gmail.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        =?UTF-8?Q?Luis_Claudio_R=2e_Gon=c3=a7alves?= <lclaudio@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        Tom Rix <trix@redhat.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Valentin Schneider <valentin.schneider@arm.com>
-References: <72353caf-c2aa-f2e4-fe2d-778f04625b70@redhat.com>
-Message-ID: <d0a0ef26-f24d-a5bb-5812-4ef4efe82704@redhat.com>
-Date:   Thu, 6 Aug 2020 17:09:40 +0200
+        id S1729541AbgHFQyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:54:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32940 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729699AbgHFQxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:53:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 36FEEADE1;
+        Thu,  6 Aug 2020 15:13:22 +0000 (UTC)
+Subject: Re: [PATCH v2] mm, dump_page: do not crash with bad
+ compound_mapcount()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        cai@lca.pw, kirill@shutemov.name, rppt@linux.ibm.com,
+        william.kucharski@oracle.com,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20200804214807.169256-1-jhubbard@nvidia.com>
+ <ac97deea-4638-badd-9495-c9ca313837bb@suse.cz>
+ <20200806134851.GN23808@casper.infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <790ae9a4-6874-ac34-d2a2-28a2137335cb@suse.cz>
+Date:   Thu, 6 Aug 2020 17:13:05 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <72353caf-c2aa-f2e4-fe2d-778f04625b70@redhat.com>
+In-Reply-To: <20200806134851.GN23808@casper.infradead.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -96,16 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/3/20 6:51 PM, Daniel Bristot de Oliveira wrote:
-> Proposals must be submitted by August 2nd, and submitters will be notified of
-> acceptance by August 9th.
+On 8/6/20 3:48 PM, Matthew Wilcox wrote:
+> On Thu, Aug 06, 2020 at 01:45:11PM +0200, Vlastimil Babka wrote:
+>> How about this additional patch now that we have head_mapcoun()? (I wouldn't
+>> go for squashing as the goal and scope is too different).
+> 
+> I like it.  It bothers me that the compiler doesn't know that
+> compound_head(compound_head(x)) == compound_head(x).  I updated
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=32911 with a request to be
+> able to tell the compiler that compound_head() is idempotent.
 
-Because some people asked for more time to work on their proposals, we ended up
-leaving the submission open during this week, postponing the deadline to August
-9th, with notifications not later than August 16th!
+Yeah it would be nice to get the benefits everywhere automatically. But I guess
+the compiler would have to discard the idempotence assumptions if there are
+multiple consecutive (perhaps hidden behind page flag access)
+compound_head(page) from a function, as soon as we modify the struct page somewhere.
 
-[Feel free to ping me in case of doubts]
+>> The bloat-o-meter difference without DEBUG_VM is the following:
+>> 
+>> add/remove: 0/0 grow/shrink: 1/4 up/down: 32/-56 (-24)
+>> Function                                     old     new   delta
+>> __split_huge_pmd                            2867    2899     +32
+>> shrink_page_list                            3860    3847     -13
+>> reuse_swap_page                              762     748     -14
+>> page_trans_huge_mapcount                     153     139     -14
+>> total_mapcount                               187     172     -15
+>> Total: Before=8687306, After=8687282, chg -0.00%
+> 
+> That's great.  I'm expecting improvements from my thp_head() macro when
+> that lands (currently in Andrew's tree).  I have been reluctant to replace
+> current callers of compound_head() with thp_head(), but I suspect PF_HEAD
+> could use thp_head() and save a few bytes on a tinyconfig build.
+> 
+>> +++ b/mm/huge_memory.c
+>> @@ -2125,7 +2125,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+>>  	 * Set PG_double_map before dropping compound_mapcount to avoid
+>>  	 * false-negative page_mapped().
+>>  	 */
+>> -	if (compound_mapcount(page) > 1 && !TestSetPageDoubleMap(page)) {
+>> +	if (head_mapcount(page) > 1 && !TestSetPageDoubleMap(page)) {
+> 
+> I'm a little nervous about this one.  The page does actually come from
+> pmd_page(), and today that's guaranteed to be a head page.  But I'm
+> not convinced that's going to still be true in twenty years.  With the
+> current THP patchset, I won't allocate pages larger than PMD order, but
+> I can see there being interest in tracking pages in chunks larger than
+> 2MB in the future.  And then pmd_page() might well return a tail page.
+> So it might be a good idea to not convert this one.
 
-Thanks!
--- Daniel
-
+Hmm the function converts the compound mapcount of the whole page to a
+HPAGE_PMD_NR of base pages. If suddenly the compound page was bigger than a pmd,
+then I guess this wouldn't work properly anymore without changes anyway?
+Maybe we could stick something like VM_BUG_ON(PageTransHuge(page)) there as
+"enforced documentation" for now?
