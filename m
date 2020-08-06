@@ -2,118 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D944F23D99B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 13:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2342323D98B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 13:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726403AbgHFLEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 07:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
+        id S1729399AbgHFLAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 07:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729279AbgHFKgX (ORCPT
+        with ESMTP id S1729394AbgHFKhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 06:36:23 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9E1C0617A1
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 03:27:51 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id g6so38507630ljn.11
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 03:27:51 -0700 (PDT)
+        Thu, 6 Aug 2020 06:37:21 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91335C0617A5
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 03:36:08 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id v6so33784003iow.11
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 03:36:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kMBgMZhsaHkiYpNXe6mnulxBmErGl6mZVT718X/hP1s=;
-        b=q44JM/MhPtGS1X8CEtdPT8jY1IsznRmL/EUJCRVKZ0SQjpJuKmiF3MRSg0V201k6/0
-         7wdleRwGXgcpS6GBcJQn3aN4+K1pHDGZuvFRDvTF9APAIhXb+a2xl9Jp+eur4UHwQKOG
-         a+RLO7aCLHiHjNUkqDHv3KHpAByqNpYKygFYVYfjG2rDRNZ1boVJjHid9G6QxHXMRDHj
-         lxu6G5SWy3EMKBtlkZJxRZeLycn9DXYVVNUnw64xSNl8FhKmMBKmB/5GaDUrg6bknGVy
-         69EcKcUZE3qqrUPWzoTffaHacemMJWCOZb/G6QEBjYa8rAKMuVSkNGFwC876gdtvvS/j
-         Xp6w==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Hj3R0tIfcIkpZhk/MOW24yuwzJti3fMgCq+xlKWe23s=;
+        b=any6vJdFKrdkd+a4fKkNab188WSeW3kDjNjijmxdqJ1Y4AwYn4FLR/iQrpMyExolkK
+         66mFi0t5w16+fsEhYOsaXPC7OJVlsPhTg+WoYRWPK0FdQfP7YIvZg6ds7gMUG92eJGlf
+         QR/wHYZ3/YvNbqgsC9Df7dIJZMcVh4kmPbXY766NOOS+giXcztD5zCFd1TqLjGdL+pVO
+         Rk1DiDsxHshnBfVWwBD5pTA0mCuqTXK04NlevzeDQqxbwa63QWFviu1CKXtu3YJ1qgJr
+         2x+ZNON385FtWrcjVdXr3Pb9gwapMQ9nHVmz2lZTKPRtnV0lpchJrHtdsXLPNJk1IEsU
+         K8Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kMBgMZhsaHkiYpNXe6mnulxBmErGl6mZVT718X/hP1s=;
-        b=HcKeeIat/rByzKASXGjtRf52YxAJK6HBjzBVRS1pVlBU8UA4zVdCI5kjUJNLyHPewG
-         s5BEqk75OJjRtLYi02/2bFm1JEYLgsyk3nFHQ369dh1nK67ky8DhddLZ9U3o1WzMGmIt
-         j/BgEHRKUfosjfstYfszFqjEMxTCKqemdeSbQZJBZL/Hk3mMj0cDPx24dAnwuSfP+KFb
-         0NjIJyIyR11SEV3wGTrnlhjxEdl9hkKhyuqtz3EiD6DwMCbM/rtZ699goH/jViDtQ9YK
-         +w1tjwFzjyI7AwTzH3YuQhgZX4Zag5zxRzjJdq0HemenkyrVZYmJ/W9070KmARsG00sl
-         EHVg==
-X-Gm-Message-State: AOAM533lYHnV6mCRKeCMDVwrrdoVaQp2k2AnBBgznB1GkyyhL4sT3eKF
-        0tpH50ov/kWs4BO8hLiXuVxfCQ==
-X-Google-Smtp-Source: ABdhPJwKs0kOBphzk4nhXY72GuBZVVKvwfIRMs8kMWmC7io4Zo82tk1RHZ72Ob2Qcz50sTYcK1DvmA==
-X-Received: by 2002:a05:651c:201b:: with SMTP id s27mr3653296ljo.468.1596709669841;
-        Thu, 06 Aug 2020 03:27:49 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id h18sm2208204ljk.7.2020.08.06.03.27.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 03:27:49 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 80A47102E1B; Thu,  6 Aug 2020 13:27:57 +0300 (+03)
-Date:   Thu, 6 Aug 2020 13:27:57 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v3 3/6] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <20200806102757.7vobcaewdukr2xdl@box>
-References: <20200804095035.18778-1-rppt@kernel.org>
- <20200804095035.18778-4-rppt@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Hj3R0tIfcIkpZhk/MOW24yuwzJti3fMgCq+xlKWe23s=;
+        b=M39EbJGJCLTIpZHT78Xw3CI0nFBPA4BhYsh1gEIJm80hQ+PEfMHBbgFq29RDrdbB/2
+         2/dN2KN+Yk5OYuvJldP2B0nPrTOQ26JytiknZuHTLZAk2uKXlGlWJ41sPoCbTJxG2grh
+         zEnkdPovD2f+y6+r6VufYodeG1z4uwW3Z4x468u6jEBkwejNfMRQzIaQhKL+gfIny4u2
+         sAv3+E7wj5ruzUYdY9eeRqgM6djldz12sJ9RvfXznHg1IXFdAwliPZ4dql5URdLnRW/n
+         TwLcqhGRZetXnu8+CXLEr+h8dccUpqraGbQj5EZK0I/PO0s1fjR7zP5/ylBb11RK3cec
+         qVQw==
+X-Gm-Message-State: AOAM531fCcoM9zcrZpY+VN/IKTBvHb3RpyZCbzy/fpLRAcA83ZhOKVVV
+        FxD4ydPG7bEYTnyl+ckAG23GJkWONfU084JfcpSZvw==
+X-Google-Smtp-Source: ABdhPJzHUTWPq7F01xZd1/4hqfefGb4XRem0zi/X7ZLbxaLwgnPaMNDxLcsPytmk4P8gwPB+ZN1V8Vf8ZJycfMty5SQ=
+X-Received: by 2002:a5e:d519:: with SMTP id e25mr9126780iom.36.1596710167873;
+ Thu, 06 Aug 2020 03:36:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804095035.18778-4-rppt@kernel.org>
+References: <20200805153507.005753845@linuxfoundation.org>
+In-Reply-To: <20200805153507.005753845@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 6 Aug 2020 16:05:56 +0530
+Message-ID: <CA+G9fYs3szBM=oz5f-zJudALL0Um_X9xR0cQKzq_HQXqrdut-w@mail.gmail.com>
+Subject: Re: [PATCH 4.14 0/8] 4.14.193-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 12:50:32PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Introduce "memfd_secret" system call with the ability to create memory
-> areas visible only in the context of the owning process and not mapped not
-> only to other processes but in the kernel page tables as well.
-> 
-> The user will create a file descriptor using the memfd_secret() system call
-> where flags supplied as a parameter to this system call will define the
-> desired protection mode for the memory associated with that file
-> descriptor. Currently there are two protection modes:
-> 
-> * exclusive - the memory area is unmapped from the kernel direct map and it
->               is present only in the page tables of the owning mm.
-> * uncached  - the memory area is present only in the page tables of the
->               owning mm and it is mapped there as uncached.
+On Wed, 5 Aug 2020 at 21:23, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.193 release.
+> There are 8 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 07 Aug 2020 15:34:53 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.193-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I'm not sure why flag for exclusive mode is needed. It has to be default.
-And if you want uncached on top of that set the flag.
-What am I missing?
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
--- 
- Kirill A. Shutemov
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.14.193-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.14.y
+git commit: e8ffd3efac224a0f72ae9ddffc0522f6b2e169ba
+git describe: v4.14.192-9-ge8ffd3efac22
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.14-oe/bu=
+ild/v4.14.192-9-ge8ffd3efac22
+
+
+No regressions (compared to build v4.14.191-57-ge8ffd3efac22)
+
+
+No fixes (compared to build v4.14.191-57-ge8ffd3efac22)
+
+Ran 25279 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* kselftest/net
+* libhugetlbfs
+* linux-log-parser
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* v4l2-compliance
+* kvm-unit-tests
+* ltp-cap_bounds-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* perf
+* ltp-open-posix-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-native/net
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* kselftest-vsyscall-mode-none/net
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
