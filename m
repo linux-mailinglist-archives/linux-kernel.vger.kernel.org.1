@@ -2,103 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A644F23D7D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1C323D7CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgHFIIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 04:08:31 -0400
-Received: from elvis.franken.de ([193.175.24.41]:36293 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726799AbgHFIEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 04:04:14 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1k3arg-0000uJ-00; Thu, 06 Aug 2020 10:03:04 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 42BD9C0C56; Thu,  6 Aug 2020 09:41:41 +0200 (CEST)
-Date:   Thu, 6 Aug 2020 09:41:41 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Joshua Kinard <kumba@gentoo.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        kernel test robot <lkp@intel.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] MIPS: SGI-IP27: always enable NUMA in Kconfig
-Message-ID: <20200806074141.GA5148@alpha.franken.de>
-References: <20200805125141.24987-1-rppt@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805125141.24987-1-rppt@kernel.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S1727006AbgHFIHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 04:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728473AbgHFIEN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 04:04:13 -0400
+Received: from mail-ed1-x54a.google.com (mail-ed1-x54a.google.com [IPv6:2a00:1450:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8ADFC061756
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 01:04:09 -0700 (PDT)
+Received: by mail-ed1-x54a.google.com with SMTP id x12so6896853eds.4
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 01:04:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=LcmumI/w/Hm4tyicPdUaUNyCK6OWHY8oQP8ZiSpx1Fw=;
+        b=vpdDkZjdkXkYqtDgFNnezY0woangi9BN3lrLOrCQwyy4EsZMw0fsi+t57Qm3ccQVBS
+         00a062McIzIhQbGYSxG5vsmjITQcYN7jdm5ab6WLIZ3FLWXcdmuCfuA88SxfBreLLCfc
+         HE5HJAeSzQuQwkCwyHszArHeK6OIbutuS6bkiaRzXgo+P9NmpiU1tR/lerHt/LVOtw7T
+         MOKsDoVAUy/jqkpdqagqAQviyhdOWfW0KowT2CG40pmUz2xRC5Vi0vE0um3Ad4yf3ddS
+         k1epQ1Skpk0dMnKQmsw8O1rt7rQp6giPZOPMzCnhoGNv6YE6U1yX3g2Uk0DRUVOltRkA
+         G4gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=LcmumI/w/Hm4tyicPdUaUNyCK6OWHY8oQP8ZiSpx1Fw=;
+        b=hxLnKzeyv76iY49Lt70lWKPUWevlXKwjgAWV3Y7DRdyIjTme3gZur4lhfbBxc4xai8
+         1nbyU7LbGyxrKYn/KWVUQAgJ18YsWPYQEvQs1XPZMNvz6t+3UmD+LSszVgl2EdOQTWaG
+         JESU+krlhDe1ag+oqmI5Q4u75hlsooo8ItLajCHz0fmBL4auepwV4n1JuhpJHfdaPq4f
+         JBVZWaFj3qnpCJBkv/wGijFp0v6NymSGLHqfMUDIQs/Da19SgtLX7+RPZV1MqT57vdXU
+         JcXRT92az2mVSTDNlxOuFp9i1RnKhGX5k6fsC6gz7gDnb4TVZzMOJrGkd8fMAKPsh6W8
+         SS0A==
+X-Gm-Message-State: AOAM533peWxt5bXiSxxGdmQ9mTCgA/tHiBdJInjcZ80/Fyt0TZtFROgD
+        kuPE8jr0M/3p0TFRyJ/cxpQ0b+/8Tw==
+X-Google-Smtp-Source: ABdhPJzUel/EPiNJ94rUHLsYATT2qjBrxXNXOu8GqzYUfz1/Vy6keCPUJzpkyY5F3u6H+k+5Pnu0DEgsgA==
+X-Received: by 2002:a17:906:d930:: with SMTP id rn16mr3267737ejb.330.1596701044913;
+ Thu, 06 Aug 2020 01:04:04 -0700 (PDT)
+Date:   Thu,  6 Aug 2020 10:03:41 +0200
+Message-Id: <20200806080358.3124505-1-tweek@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
+Subject: [PATCH 1/2] selinux: add tracepoint on denials
+From:   "=?UTF-8?q?Thi=C3=A9baud=20Weksteen?=" <tweek@google.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Nick Kralevich <nnk@google.com>,
+        "=?UTF-8?q?Thi=C3=A9baud=20Weksteen?=" <tweek@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Peter Enderborg <peter.enderborg@sony.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 03:51:41PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> When a configuration has NUMA disabled and SGI_IP27 enabled, the build
-> fails:
-> 
->   CC      kernel/bounds.s
->   CC      arch/mips/kernel/asm-offsets.s
-> In file included from arch/mips/include/asm/topology.h:11,
->                  from include/linux/topology.h:36,
->                  from include/linux/gfp.h:9,
->                  from include/linux/slab.h:15,
->                  from include/linux/crypto.h:19,
->                  from include/crypto/hash.h:11,
->                  from include/linux/uio.h:10,
->                  from include/linux/socket.h:8,
->                  from include/linux/compat.h:15,
->                  from arch/mips/kernel/asm-offsets.c:12:
-> include/linux/topology.h: In function 'numa_node_id':
-> arch/mips/include/asm/mach-ip27/topology.h:16:27: error: implicit declaration of function 'cputonasid'; did you mean 'cpu_vpe_id'? [-Werror=implicit-function-declaration]
->  #define cpu_to_node(cpu) (cputonasid(cpu))
->                            ^~~~~~~~~~
-> include/linux/topology.h:119:9: note: in expansion of macro 'cpu_to_node'
->   return cpu_to_node(raw_smp_processor_id());
->          ^~~~~~~~~~~
-> include/linux/topology.h: In function 'cpu_cpu_mask':
-> arch/mips/include/asm/mach-ip27/topology.h:19:7: error: implicit declaration of function 'hub_data' [-Werror=implicit-function-declaration]
->       &hub_data(node)->h_cpus)
->        ^~~~~~~~
-> include/linux/topology.h:210:9: note: in expansion of macro 'cpumask_of_node'
->   return cpumask_of_node(cpu_to_node(cpu));
->          ^~~~~~~~~~~~~~~
-> arch/mips/include/asm/mach-ip27/topology.h:19:21: error: invalid type argument of '->' (have 'int')
->       &hub_data(node)->h_cpus)
->                      ^~
-> include/linux/topology.h:210:9: note: in expansion of macro 'cpumask_of_node'
->   return cpumask_of_node(cpu_to_node(cpu));
->          ^~~~~~~~~~~~~~~
-> 
-> Before switch from discontigmem to sparsemem, there always was
-> CONFIG_NEED_MULTIPLE_NODES=y because it was selected by DISCONTIGMEM.
-> Without DISCONTIGMEM it is possible to have SPARSEMEM without NUMA for
-> SGI_IP27 and as many things there rely on custom node definition, the
-> build breaks.
-> 
-> As Thomas noted "... there are right now too many places in IP27 code,
-> which assumes NUMA enabled", the simplest solution would be to always
-> enable NUMA for SGI-IP27 builds.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: 397dc00e249e ("mips: sgi-ip27: switch from DISCONTIGMEM to SPARSEMEM")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  arch/mips/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+The audit data currently captures which process and which target
+is responsible for a denial. There is no data on where exactly in the
+process that call occurred. Debugging can be made easier by being able to
+reconstruct the unified kernel and userland stack traces [1]. Add a
+tracepoint on the SELinux denials which can then be used by userland
+(i.e. perf).
 
-applied to mips-next.
+Although this patch could manually be added by each OS developer to
+trouble shoot a denial, adding it to the kernel streamlines the
+developers workflow.
 
-Thomas.
+[1] https://source.android.com/devices/tech/debug/native_stack_dump
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Signed-off-by: Thi=C3=A9baud Weksteen <tweek@google.com>
+Suggested-by: Joel Fernandes <joelaf@google.com>
+Reviewed-by: Peter Enderborg <peter.enderborg@sony.com>
+---
+ MAINTAINERS                |  1 +
+ include/trace/events/avc.h | 37 +++++++++++++++++++++++++++++++++++++
+ security/selinux/avc.c     |  5 +++++
+ 3 files changed, 43 insertions(+)
+ create mode 100644 include/trace/events/avc.h
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c8e8232c65da..0efaea0e144c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15426,6 +15426,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/gi=
+t/pcmoore/selinux.git
+ F:	Documentation/ABI/obsolete/sysfs-selinux-checkreqprot
+ F:	Documentation/ABI/obsolete/sysfs-selinux-disable
+ F:	Documentation/admin-guide/LSM/SELinux.rst
++F:	include/trace/events/avc.h
+ F:	include/uapi/linux/selinux_netlink.h
+ F:	scripts/selinux/
+ F:	security/selinux/
+diff --git a/include/trace/events/avc.h b/include/trace/events/avc.h
+new file mode 100644
+index 000000000000..07c058a9bbcd
+--- /dev/null
++++ b/include/trace/events/avc.h
+@@ -0,0 +1,37 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Author: Thi=C3=A9baud Weksteen <tweek@google.com>
++ */
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM avc
++
++#if !defined(_TRACE_SELINUX_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_SELINUX_H
++
++#include <linux/tracepoint.h>
++
++TRACE_EVENT(selinux_audited,
++
++	TP_PROTO(struct selinux_audit_data *sad),
++
++	TP_ARGS(sad),
++
++	TP_STRUCT__entry(
++		__field(unsigned int, tclass)
++		__field(unsigned int, audited)
++	),
++
++	TP_fast_assign(
++		__entry->tclass =3D sad->tclass;
++		__entry->audited =3D sad->audited;
++	),
++
++	TP_printk("tclass=3D%u audited=3D%x",
++		__entry->tclass,
++		__entry->audited)
++);
++
++#endif
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
+diff --git a/security/selinux/avc.c b/security/selinux/avc.c
+index d18cb32a242a..b0a0af778b70 100644
+--- a/security/selinux/avc.c
++++ b/security/selinux/avc.c
+@@ -31,6 +31,9 @@
+ #include "avc_ss.h"
+ #include "classmap.h"
+=20
++#define CREATE_TRACE_POINTS
++#include <trace/events/avc.h>
++
+ #define AVC_CACHE_SLOTS			512
+ #define AVC_DEF_CACHE_THRESHOLD		512
+ #define AVC_CACHE_RECLAIM		16
+@@ -706,6 +709,8 @@ static void avc_audit_post_callback(struct audit_buffer=
+ *ab, void *a)
+ 	u32 scontext_len;
+ 	int rc;
+=20
++	trace_selinux_audited(sad);
++
+ 	rc =3D security_sid_to_context(sad->state, sad->ssid, &scontext,
+ 				     &scontext_len);
+ 	if (rc)
+--=20
+2.28.0.163.g6104cc2f0b6-goog
+
