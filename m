@@ -2,110 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8E923DFEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA32F23DFF7
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728666AbgHFRz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:55:26 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50308 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728050AbgHFQ2w (ORCPT
+        id S1730263AbgHFRzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728117AbgHFQ2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:28:52 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1k3ijY-0003ET-2S; Thu, 06 Aug 2020 16:27:12 +0000
-To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-From:   Colin Ian King <colin.king@canonical.com>
-Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
- 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
-Subject: re: net: dsa: sja1105: use detected device id instead of DT one on
- mismatch
-Message-ID: <60d2d8f9-1376-2047-b958-7bdbbde1538e@canonical.com>
-Date:   Thu, 6 Aug 2020 17:27:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 6 Aug 2020 12:28:51 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B1CC002147;
+        Thu,  6 Aug 2020 09:27:29 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id q75so42072431iod.1;
+        Thu, 06 Aug 2020 09:27:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ahDyQRQ8qG4y6mT2u2SznObMHtFgTL4ajSNN22kfjp4=;
+        b=ZdUtrIiJcl7Nfj9Rvxj9ES6+kDWC9CU4i6LSL72ge1TPy0kr03vTTQEUex02PjmL3u
+         OREa/2ZjGChbnkDQPpgqTUPhSe1rrAhOluGC/DnFLngXi6g5zwZGyNbmoRXbsTxxdNht
+         fct1LmaMYieptij4rv7VS/p47/4iviUWpBv0w3z9v1hGJLdxx9bBuWkxNdrfMKei+8pm
+         iADYistAX6rxg2A/SFtqiU3NnJBJPQZHYT6bkzKb13tAG6buip1ZlNxlEI45+l4cQThT
+         FLg479wbNG8iJF15uFtunAfz8Lpk+Y+8WpfyljXhAmTw3Eugcyr9C/nhqPKFGXKkKu3+
+         uUKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ahDyQRQ8qG4y6mT2u2SznObMHtFgTL4ajSNN22kfjp4=;
+        b=ma8hcYstOX/2t0tqA1eUEpt/wM7WuES0R+yB8oMngn2R4NOvRj8tWWOHpoFmijYLiw
+         xS3Taii4Pz0b9HaZD/JJ+8EnR0umErapR17o8M0EkSmIYeL3SjL/2dt773MoUzaxrhF0
+         5jZ43uCuitf0jcPW4MD+fnqiIOxrWY1ZfHORCO7qWk0ZgvAtBVmTA0qMy5+FvOytY0Uq
+         GYW+c9tREOdXogIYjdY+aMC7MOPVHog/lznKoGKBkckiMacjWtcH81Ll4X5HZTD+speg
+         lL+x92WXo20o+k/1nSYrxBW7Vc8Ufj1rlPy9wlXfCCxDD+dInnB2uEgYaLo/rCH3afGg
+         7rVw==
+X-Gm-Message-State: AOAM531rx88ZikX2dn4FJkAgfSFRn5cK3tjihTSdWHmp47Zt67Gv7jx+
+        BUtbpJ+GKKxAQ/6JDgqEGyK1Tks/fHy8vic3Oag=
+X-Google-Smtp-Source: ABdhPJwp0t3SYC5aIhVbXM5FB0FqySqXQ3e9kH+H7ALWmqQU0x59DnrVnktbemL/IXIyov7ZoZdkXqsBZiq+pkoA6oM=
+X-Received: by 2002:a05:6602:2e83:: with SMTP id m3mr11285893iow.38.1596731248551;
+ Thu, 06 Aug 2020 09:27:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1595681998-19193-22-git-send-email-alex.shi@linux.alibaba.com>
+ <CAKgT0UfpHjBTHvtZz7=WMhZZAunVYuNMpuYBQCiorERb5seFUQ@mail.gmail.com>
+ <f34e790f-50e6-112c-622f-d7ab804c6d22@linux.alibaba.com> <CAKgT0UckqbmYJDE3L2Bg1Nr=Y=GT0OBx1GEhaZ14EbRTzd8tiw@mail.gmail.com>
+ <a1c6a3a6-f8e3-7bb5-e881-216a4b57ae84@linux.alibaba.com>
+In-Reply-To: <a1c6a3a6-f8e3-7bb5-e881-216a4b57ae84@linux.alibaba.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Thu, 6 Aug 2020 09:27:16 -0700
+Message-ID: <CAKgT0UcARhDAVYkJAPe=P5XBfk9fdyGPx0S7rqhiLLhg3s62dQ@mail.gmail.com>
+Subject: Re: [PATCH v17 21/21] mm/lru: revise the comments of lru_lock
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Aug 5, 2020 at 6:39 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2020/8/4 =E4=B8=8B=E5=8D=8810:29, Alexander Duyck =E5=86=99=E9=
+=81=93:
+> > On Tue, Aug 4, 2020 at 3:04 AM Alex Shi <alex.shi@linux.alibaba.com> wr=
+ote:
+> >>
+> >>
+> >>
+> >> =E5=9C=A8 2020/8/4 =E4=B8=8A=E5=8D=886:37, Alexander Duyck =E5=86=99=
+=E9=81=93:
+> >>>>
+> >>>>  shrink_inactive_list() also diverts any unevictable pages that it f=
+inds on the
+> >>>> -inactive lists to the appropriate zone's unevictable list.
+> >>>> +inactive lists to the appropriate node's unevictable list.
+> >>>>
+> >>>>  shrink_inactive_list() should only see SHM_LOCK'd pages that became=
+ SHM_LOCK'd
+> >>>>  after shrink_active_list() had moved them to the inactive list, or =
+pages mapped
+> >>> Same here.
+> >>
+> >> lruvec is used per memcg per node actually, and it fallback to node if=
+ memcg disabled.
+> >> So the comments are still right.
+> >>
+> >> And most of changes just fix from zone->lru_lock to pgdat->lru_lock ch=
+ange.
+> >
+> > Actually in my mind one thing that might work better would be to
+> > explain what the lruvec is and where it resides. Then replace zone
+> > with lruvec since that is really where the unevictable list resides.
+> > Then it would be correct for both the memcg and pgdat case.
+>
+> Could you like to revise the doc as your thought?
+> >
+> >>>
+> >>>> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> >>>> index 64ede5f150dc..44738cdb5a55 100644
+> >>>> --- a/include/linux/mm_types.h
+> >>>> +++ b/include/linux/mm_types.h
+> >>>> @@ -78,7 +78,7 @@ struct page {
+> >>>>                 struct {        /* Page cache and anonymous pages */
+> >>>>                         /**
+> >>>>                          * @lru: Pageout list, eg. active_list prote=
+cted by
+> >>>> -                        * pgdat->lru_lock.  Sometimes used as a gen=
+eric list
+> >>>> +                        * lruvec->lru_lock.  Sometimes used as a ge=
+neric list
+> >>>>                          * by the page owner.
+> >>>>                          */
+> >>>>                         struct list_head lru;
+> >>>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> >>>> index 8af956aa13cf..c92289a4e14d 100644
+> >>>> --- a/include/linux/mmzone.h
+> >>>> +++ b/include/linux/mmzone.h
+> >>>> @@ -115,7 +115,7 @@ static inline bool free_area_empty(struct free_a=
+rea *area, int migratetype)
+> >>>>  struct pglist_data;
+> >>>>
+> >>>>  /*
+> >>>> - * zone->lock and the zone lru_lock are two of the hottest locks in=
+ the kernel.
+> >>>> + * zone->lock and the lru_lock are two of the hottest locks in the =
+kernel.
+> >>>>   * So add a wild amount of padding here to ensure that they fall in=
+to separate
+> >>>>   * cachelines.  There are very few zone structures in the machine, =
+so space
+> >>>>   * consumption is not a concern here.
+> >>> So I don't believe you are using ZONE_PADDING in any way to try and
+> >>> protect the LRU lock currently. At least you aren't using it in the
+> >>> lruvec. As such it might make sense to just drop the reference to the
+> >>> lru_lock here. That reminds me that we still need to review the
+> >>> placement of the lru_lock and determine if there might be a better
+> >>> placement and/or padding that might improve performance when under
+> >>> heavy stress.
+> >>>
+> >>
+> >> Right, is it the following looks better?
+> >>
+> >> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> >> index ccc76590f823..0ed520954843 100644
+> >> --- a/include/linux/mmzone.h
+> >> +++ b/include/linux/mmzone.h
+> >> @@ -113,8 +113,7 @@ static inline bool free_area_empty(struct free_are=
+a *area, int migratetype)
+> >>  struct pglist_data;
+> >>
+> >>  /*
+> >> - * zone->lock and the lru_lock are two of the hottest locks in the ke=
+rnel.
+> >> - * So add a wild amount of padding here to ensure that they fall into=
+ separate
+> >> + * Add a wild amount of padding here to ensure datas fall into separa=
+te
+> >>   * cachelines.  There are very few zone structures in the machine, so=
+ space
+> >>   * consumption is not a concern here.
+> >>   */
+> >>
+> >> Thanks!
+> >> Alex
+> >
+> > I would maybe tweak it to make sure it is clear that we are using this
+> > to pad out items that are likely to cause cache thrash such as various
+> > hot spinocks and such.
+> >
+>
+> I appreciate if you like to change the doc better. :)
 
-Static analysis with Coverity has detected a potential issue with the
-following commit:
+Give me a day or so. I will submit a follow-on patch with some cleanup
+for the comments.
 
-commit 0b0e299720bb99428892a23ecbd2b4b7f61ccf6d
-Author: Vladimir Oltean <olteanv@gmail.com>
-Date:   Mon Aug 3 19:48:23 2020 +0300
+Thanks.
 
-    net: dsa: sja1105: use detected device id instead of DT one on mismatch
-
-The analysis is as follows:
-
-Array compared against 0 (NO_EFFECT)array_null: Comparing an array to
-null is not useful: match->compatible, since the test will always
-evaluate as true.
-
-    Was match->compatible formerly declared as a pointer?
-
-3418        for (match = sja1105_dt_ids; match->compatible; match++) {
-3419                const struct sja1105_info *info = match->data;
-3420
-
-I'm not sure what the original intention was, so I was unable to fix
-this hence I'm sending this report as I think it needs addressing.
-
-Colin
+- Alex
