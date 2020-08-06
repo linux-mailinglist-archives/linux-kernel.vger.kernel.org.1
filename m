@@ -2,204 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DFA23D931
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB8123D909
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729314AbgHFKQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 06:16:31 -0400
-Received: from m15112.mail.126.com ([220.181.15.112]:52946 "EHLO
-        m15112.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729146AbgHFKQS (ORCPT
+        id S1729310AbgHFKBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 06:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729177AbgHFKAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 06:16:18 -0400
-X-Greylist: delayed 2058 seconds by postgrey-1.27 at vger.kernel.org; Thu, 06 Aug 2020 06:16:14 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=luyhsBjuQ1lgUJ9+5g
-        meLe6LuVmiVnknnb0rBb/Ua3k=; b=Z4kzREVNOFyelPCzOHVyCLqXwOlVEyqfuw
-        tV/OdpR7ZZjMhtsJgM14RjtH4dacZjj8/sBCTDntM9m991JbDPIFnAxWwmFB1soB
-        wM7bsKDUB9VcyhWYzdWbTVjzuLRHmIDlEfIrhadb2UG6sS7R7yim9MJOKqEGfoH3
-        6kYususX8=
-Received: from xr-hulk-k8s-node1933.gh.sankuai.com (unknown [101.236.11.3])
-        by smtp2 (Coremail) with SMTP id DMmowAD3_OCDzytfxipQGA--.39882S2;
-        Thu, 06 Aug 2020 17:38:17 +0800 (CST)
-From:   Jiang Ying <jiangying8582@126.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz, stable@vger.kernel.org
-Cc:     wanglong19@meituan.com, heguanjun@meituan.com
-Subject: [PATCH v5] ext4: fix direct I/O read error for kernel stable rc4.4
-Date:   Thu,  6 Aug 2020 17:38:11 +0800
-Message-Id: <1596706691-82760-1-git-send-email-jiangying8582@126.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: DMmowAD3_OCDzytfxipQGA--.39882S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAw47WFW8tw4rCr1UZr4xZwb_yoWrCF4xpr
-        sxC3W5WrZYvr4xCanrG3WDuFyFyayDGFWUXF9Y934UZw45Kr95KrWIkF1UGayUJrZY9w4Y
-        qFWqyryfJw1UZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jaFAJUUUUU=
-X-Originating-IP: [101.236.11.3]
-X-CM-SenderInfo: xmld0wp1lqwmqvysqiyswou0bp/1tbimgl4AFpEAtuHOQAAsS
+        Thu, 6 Aug 2020 06:00:07 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C79EC061574;
+        Thu,  6 Aug 2020 02:51:06 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id c16so29228730ejx.12;
+        Thu, 06 Aug 2020 02:51:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+SFOm87lTcNXDMRd0wla+8fRn6E4XWGuxMzSlFg70fQ=;
+        b=JV0gvhrdXEN1nZMtSO1lTgMczv1zN2ZavAimjnNwggg521VOBCuR4Gm3K4rDnL9jsH
+         DPLHwP0J9pnbg653AVPkCbQ+iQn7Ml0Xi8+vJKzdAWJ4ZxDcWbEchgA8+rGebMzf8jqR
+         RZyAS1WRwy7nsSiHXJxTmAPNPu0C9huw1ETHxDfrz4GEJYU/nPXyXX/Yj/6qsbOQFMSW
+         i/EOYti7Ioiu6m+6XSCBWuarbwiz7XQKsF+Ug/b1wusCyz94XurRzHemIOGBy8AGJkpi
+         JUwn3H9U3mF2B0zBTBc5xezfBXvTA5prm+wbLFOyu4KiaGhbnbc2uwNtPbGRuCwXIP8n
+         dR7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+SFOm87lTcNXDMRd0wla+8fRn6E4XWGuxMzSlFg70fQ=;
+        b=Y3YbwfNSO3mu1ZmgkHoPYqA8ZfVU8JnCwn8IqSAJRV9YuzK/v3iEKY8Fb370qbFoas
+         +/esXEC12KNn+zKtPdyPQdU3H6FMV99Zyv4jQveEDV/nzMsy2QPd5envynkMDTdV57cY
+         Ddd7iuqat+biANzBBlGUvWu/n8ZH8odVLD3gP9LF914CkJystUGZQVHaXaiGAb8JhwC5
+         HAAmxW3MttFBzPLKhGxRawiE07Z8VO++1MrVcXYO65VGCVNAv3nkM1amjKgPsYQA0WHM
+         sGau5/fv25tiUo6erZyzDTfT43V6hRePWcNmsaMIIBv4KUkYUeIBl5QteHIFDYX1lDeL
+         BvEA==
+X-Gm-Message-State: AOAM533NAxi6gJWsWdMwjqlPSmJp1KwC0o9UU+QVCXmFsPiCXk2RIMOd
+        hsaKSLQGgPIh1RC5d+kfve4=
+X-Google-Smtp-Source: ABdhPJzkeJqaDZrozkYDL4pCBHqAj4HJqbt48tTZX+JvVNe0iNt0PBOoEqPKN/U9pjcNtn2dhuTKag==
+X-Received: by 2002:a17:906:1104:: with SMTP id h4mr3479158eja.456.1596707465092;
+        Thu, 06 Aug 2020 02:51:05 -0700 (PDT)
+Received: from ubuntu-laptop ([2a01:598:b906:f0c9:15b9:533b:62ba:b5b3])
+        by smtp.googlemail.com with ESMTPSA id dc23sm2910204edb.50.2020.08.06.02.51.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 06 Aug 2020 02:51:04 -0700 (PDT)
+Message-ID: <871fdbc1719d7a3c469bf857071aa2c6bd71ddaf.camel@gmail.com>
+Subject: Re: [PATCH v1] scsi: ufs: no need to send one Abort Task TM in case
+ the task in DB was cleared
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 06 Aug 2020 11:50:54 +0200
+In-Reply-To: <a68a1bdf74bdf8ada29808537290b35b@codeaurora.org>
+References: <20200804123534.29104-1-huobean@gmail.com>
+         <a68a1bdf74bdf8ada29808537290b35b@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is used to fix ext4 direct I/O read error when
-the read size is not aligned with block size.
 
-Then, I will use a test to explain the error.
+> 
+> Please check Stanley's recent change to ufshcd_abort, you may
+> want to rebase your change on his and do goto cleanup here.
+> @Stanley correct me if I am wrong.
+> 
+> But even if you do a goto cleanup here, we still lost the
+> chances to dump host infos/regs like it does in the old code.
+> If a cmd was completed but without a notifying intr, this is
+> kind of a problem that we/host should look into, because it's
+> pasted at least 30 sec since the cmd was sent, so those dumps
+> are necessary to debug the problem. How about moving blow prints
+> in front of this part?
+> 
+> Thanks,
+> 
+> Can Guo.
+> 
+> >  	}
+> > 
+> >  	/* Print Transfer Request of aborted task */
 
-(1) Make a file that is not aligned with block size:
-	$dd if=/dev/zero of=./test.jar bs=1000 count=3
+Hi Can
 
-(2) I wrote a source file named "direct_io_read_file.c" as following:
+Thanks, do you mean that change to like this:
 
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <unistd.h>
-	#include <sys/file.h>
-	#include <sys/types.h>
-	#include <sys/stat.h>
-	#include <string.h>
-	#define BUF_SIZE 1024
 
-	int main()
-	{
-		int fd;
-		int ret;
+Author: Bean Huo <beanhuo@micron.com>
+Date:   Thu Aug 6 11:34:45 2020 +0200
 
-		unsigned char *buf;
-		ret = posix_memalign((void **)&buf, 512, BUF_SIZE);
-		if (ret) {
-			perror("posix_memalign failed");
-			exit(1);
-		}
-		fd = open("./test.jar", O_RDONLY | O_DIRECT, 0755);
-		if (fd < 0){
-			perror("open ./test.jar failed");
-			exit(1);
-		}
+    scsi: ufs: no need to send one Abort Task TM in case the task in 	
+  was cleared
+    
+    If the bit corresponds to a task in the Doorbell register has been
+    cleared, no need to poll the status of the task on the device side
+    and to send an Abort Task TM.
+    This patch also deletes dispensable dev_err() in case of the task
+    already completed.
+    
+    Signed-off-by: Bean Huo <beanhuo@micron.com>
 
-		do {
-			ret = read(fd, buf, BUF_SIZE);
-			printf("ret=%d\n",ret);
-			if (ret < 0) {
-				perror("write test.jar failed");
-			}
-		} while (ret > 0);
-
-		free(buf);
-		close(fd);
-	}
-
-(3) Compile the source file:
-	$gcc direct_io_read_file.c -D_GNU_SOURCE
-
-(4) Run the test program:
-	$./a.out
-
-	The result is as following:
-	ret=1024
-	ret=1024
-	ret=952
-	ret=-1
-	write test.jar failed: Invalid argument.
-
-I have tested this program on XFS filesystem, XFS does not have
-this problem, because XFS use iomap_dio_rw() to do direct I/O
-read. And the comparing between read offset and file size is done
-in iomap_dio_rw(), the code is as following:
-
-	if (pos < size) {
-		retval = filemap_write_and_wait_range(mapping, pos,
-				pos + iov_length(iov, nr_segs) - 1);
-
-		if (!retval) {
-			retval = mapping->a_ops->direct_IO(READ, iocb,
-						iov, pos, nr_segs);
-		}
-		...
-	}
-
-...only when "pos < size", direct I/O can be done, or 0 will be return.
-
-I have tested the fix patch on Ext4, it is up to the mustard of
-EINVAL in man2(read) as following:
-	#include <unistd.h>
-	ssize_t read(int fd, void *buf, size_t count);
-
-	EINVAL
-		fd is attached to an object which is unsuitable for reading;
-		or the file was opened with the O_DIRECT flag, and either the
-		address specified in buf, the value specified in count, or the
-		current file offset is not suitably aligned.
-
-So I think this patch can be applied to fix ext4 direct I/O error.
-
-However Ext4 introduces direct I/O read using iomap infrastructure
-on kernel 5.5, the patch is commit <b1b4705d54ab>
-("ext4: introduce direct I/O read using iomap infrastructure"),
-then Ext4 will be the same as XFS, they all use iomap_dio_rw() to do direct
-I/O read. So this problem does not exist on kernel 5.5 for Ext4.
-
-From above description, we can see this problem exists on all the kernel
-versions between kernel 3.14 and kernel 5.4. It will cause the Applications
-to fail to read. For example, when the search service downloads a new full
-index file, the search engine is loading the previous index file and is
-processing the search request, it can not use buffer io that may squeeze
-the previous index file in use from pagecache, so the serch service must
-use direct I/O read.
-
-Please apply this patch on these kernel versions, or please use the method
-on kernel 5.5 to fix this problem.
-
-Fixes: 9fe55eea7e4b ("Fix race when checking i_size on direct i/o read")
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Wang Long <wanglong19@meituan.com>
-Signed-off-by: Jiang Ying <jiangying8582@126.com>
-
-Changes since V4:
-	Fix build error on kernel stable rc 4.4.
-	This patch only for kernel 4.4.
-
-Changes since V3:
-	Add the info: this bug could break some application that use the
-	stable kernel releases.
-
-Changes since V2:
-	Optimize the description of the commit message and make a variation for
-	the patch, e.g. with:
-
-		Before:
-			loff_t size;
-			size = i_size_read(inode);
-		After:
-			loff_t size = i_size_read(inode);
-
-Changes since V1:
-	Signed-off use real name and add "Fixes:" flag
-
----
- fs/ext4/inode.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 8e79970..8816016 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3353,6 +3353,13 @@ static ssize_t ext4_direct_IO(struct kiocb *iocb, struct iov_iter *iter,
- 	size_t count = iov_iter_count(iter);
- 	ssize_t ret;
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 307622284239..f7c91ce9e294 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -6425,23 +6425,9 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+                return ufshcd_eh_host_reset_handler(cmd);
  
-+	if (iov_iter_rw(iter) == READ) {
-+		loff_t size = i_size_read(inode);
+        ufshcd_hold(hba, false);
+-       reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
+        /* If command is already aborted/completed, return SUCCESS */
+-       if (!(test_bit(tag, &hba->outstanding_reqs))) {
+-               dev_err(hba->dev,
+-                       "%s: cmd at tag %d already completed,
+outstanding=0x%lx, doorbell=0x%x\n",
+-                       __func__, tag, hba->outstanding_reqs, reg);
++       if (!(test_bit(tag, &hba->outstanding_reqs)))
+                goto out;
+-       }
+-
+-       if (!(reg & (1 << tag))) {
+-               dev_err(hba->dev,
+-               "%s: cmd was completed, but without a notifying intr,
+tag = %d",
+-               __func__, tag);
+-       }
+-
+-       /* Print Transfer Request of aborted task */
+-       dev_err(hba->dev, "%s: Device abort task at tag %d\n",
+__func__, tag);
+ 
+        /*
+         * Print detailed info about aborted request.
+@@ -6462,6 +6448,17 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+        }
+        hba->req_abort_count++;
+ 
++       reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
++       if (!(reg & (1 << tag))) {
++               dev_err(hba->dev,
++               "%s: cmd was completed, but without a notifying intr,
+tag = %d",
++               __func__, tag);
++               goto cleanup;
++       }
 +
-+		if (offset >= size)
-+			return 0;
-+	}
++       /* Print Transfer Request of aborted task */
++       dev_err(hba->dev, "%s: Device abort task at tag %d\n",
+__func__, tag);
 +
- #ifdef CONFIG_EXT4_FS_ENCRYPTION
- 	if (ext4_encrypted_inode(inode) && S_ISREG(inode->i_mode))
- 		return 0;
--- 
-1.8.3.1
+        /* Skip task abort in case previous aborts failed and report
+failure */
+        if (lrbp->req_abort_skip) {
+                err = -EIO;
+@@ -6526,6 +6523,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+                goto out;
+        }
+ 
++cleanup:
+        scsi_dma_unmap(cmd);
+ 
+        spin_lock_irqsave(host->host_lock, flags);
+
+
+
+
+
+Author: Stanley Chu <stanley.chu@mediatek.com>
+Date:   Thu Aug 6 11:48:00 2020 +0200
+
+    scsi: ufs: Cleanup completed request without interrupt notification
+    
+    If somehow no interrupt notification is raised for a completed
+request
+    and its doorbell bit is cleared by host, UFS driver needs to
+cleanup
+    its outstanding bit in ufshcd_abort(). Otherwise, system may behave
+    abnormally by below flow:
+    
+    After ufshcd_abort() returns, this request will be requeued by SCSI
+    layer with its outstanding bit set. Any future completed request
+    will trigger ufshcd_transfer_req_compl() to handle all "completed
+    outstanding bits". In this time, the "abnormal outstanding bit"
+    will be detected and the "requeued request" will be chosen to
+execute
+    request post-processing flow. This is wrong because this request is
+    still "alive".
+    
+    Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index f7c91ce9e294..29d5e5e5d0e0 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -6489,7 +6489,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+                        /* command completed already */
+                        dev_err(hba->dev, "%s: cmd at tag %d
+successfully cleared from DB.\n",
+                                __func__, tag);
+-                       goto out;
++                       goto cleanup;
+                } else {
+                        dev_err(hba->dev,
+                                "%s: no response from device. tag = %d,
+err %d\n",
 
