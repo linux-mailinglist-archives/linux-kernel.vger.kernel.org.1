@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722AA23D809
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD1A23D80B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728943AbgHFIeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 04:34:09 -0400
-Received: from sauhun.de ([88.99.104.3]:52276 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726844AbgHFIeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 04:34:02 -0400
-Received: from localhost (router.4pisysteme.de [80.79.225.122])
-        by pokefinder.org (Postfix) with ESMTPSA id AF5732C0845;
-        Thu,  6 Aug 2020 10:33:56 +0200 (CEST)
-Date:   Thu, 6 Aug 2020 10:33:56 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Stephen Kitt <steve@sk2.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: remove the 2.6 "Upgrading I2C Drivers" guide
-Message-ID: <20200806083339.GA1549@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Stephen Kitt <steve@sk2.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200805183149.21647-1-steve@sk2.org>
- <20200805215351.GB2182@kunai>
- <20200806090800.08b77d4a@heffalump.sk2.org>
+        id S1728952AbgHFIfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 04:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726844AbgHFIfw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 04:35:52 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94971C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 01:35:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KLCbXXU3FEEkK2kFGOqzvm7OFPwa7d/ljqwYmaL9Dxo=; b=WDwoXxOenowP410hrcgMlpdl3V
+        Pl2Yw8sVwgsENBuDhkRA0zoEPM6tr+5AfwhbYty1pl/vVfOjfPo61tpZ6kDZXOCHx4qgOktdWVtUV
+        wo3lZ7tZ0QEkrz1mdWlKVIC40ubRLWzaEO4HNrPAdq0BXR1Z+YcHmBgfFYI1hbGyqC2Ttofiv1a/y
+        gh+iZ1YfyeCJutQ/3ePjmqM/rcvtkg6q6IJEjRnT8i67uvXYp/QCJ2rZdFFPqT/e3NF6UnaANVX4A
+        7BXY2tbdXOX+jstBC4BXUOuhUd2bx5lNSGEcsWhUK7YSAKknG4hu4pfHPi1Am7i7/+FfMkxPaC/ez
+        Yr/T9G2g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3bN9-0002f7-A0; Thu, 06 Aug 2020 08:35:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 50E0A300446;
+        Thu,  6 Aug 2020 10:35:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DB8802B61F1C0; Thu,  6 Aug 2020 10:35:30 +0200 (CEST)
+Date:   Thu, 6 Aug 2020 10:35:30 +0200
+From:   peterz@infradead.org
+To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>, alexey.budankov@linux.intel.com,
+        adrian.hunter@intel.com, Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH 1/2] perf: Add closing sibling events' file descriptors
+Message-ID: <20200806083530.GV2674@hirez.programming.kicks-ass.net>
+References: <20200708151635.81239-1-alexander.shishkin@linux.intel.com>
+ <20200708151635.81239-2-alexander.shishkin@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="f2QGlHpHGjS2mn6Y"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200806090800.08b77d4a@heffalump.sk2.org>
+In-Reply-To: <20200708151635.81239-2-alexander.shishkin@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 08, 2020 at 06:16:34PM +0300, Alexander Shishkin wrote:
+> Currently, perf requires one file descriptor per event. In large groups,
+> this may mean running into the limit on open file descriptors. However,
+> the sibling events in a group only need file descriptors for the initial
+> configuration stage, after which they may not be needed any more.
+> 
+> This adds an opt-in flag to the perf_event_open() syscall to retain
+> sibling events after their file descriptors are closed. In this case, the
+> actual events will be closed with the group leader.
 
---f2QGlHpHGjS2mn6Y
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So having the 1:1 relation with filedesc imposes a resource limit on
+userspace.
 
-
-> > Maybe because I don't have the commit in my tree? Can you rebase on top
-> > of 5.8?
->=20
-> Ah, yes, the commit is on top of Linus=E2=80=99 current master, following=
- the merge
-> of docs-5.9 from Jon=E2=80=99s tree. In 5.8 the file is a .txt file, but =
-Mauro
-> converted it to .rst for 5.9, and this patch removes the latter file (to
-> avoid a merge conflict later on...). If you prefer, I can submit it to the
-> docs tree instead!
-
-I see. Thanks for the heads up!
-
-> > And please also remove the reference in Documentation/i2c/index.rst
->=20
-> Oops, yes, I=E2=80=99ll do that in v2 once we decide where it should go.
-
-I am fine with either it going via the doc-tree or you sending me v2
-again after 5.9-rc1. For the first case:
-
-Acked-by: Wolfram Sang <wsa@kernel.org>
-
-
---f2QGlHpHGjS2mn6Y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8rwHQACgkQFA3kzBSg
-KbZHXQ//c9DIYXPOW2Pp6OWXKnsA47NLi/SQHWhhINgm/Q9zZpC/guVJbgpoQb35
-7FOj3e2RxarfIZOkaDFTZuPv+I4noKF3cAVHQTARbB9zDMWm0KKCkn3lkokWvToO
-Bw1sZDus7kNi2soeXzbfF1CnlmgjAXSIj1tnG9nUt5iqETY+ov+jq/biAZc3tVhD
-R/ODgJLQolvlZs5z8u95D3SLLL1Zi+zSRCGpNMFpS/6RaxOd369vWUlw9xH6+S6C
-aqcP6q6pMtIY51R3roWremGcFuWX0OGMG5grucwsY3Vs/kwt1zP+JrwsTLz9Tsjr
-fTdS8N7DzUBG21axjhR3FcwonFI8xocPGyuAWHTiEC3nfVbF8Hf2dkm92H5cLKN7
-jO8zdNf3wd4UeCkRyU/NU6gn6ohbnJCM+qda5ooKuTgUpsVNSg2vLRL/YdvOODMC
-utnLwVwvWr5l/H331fRfrdEL+aoO/wt6iE3rx7+0wXXRvx6/NECwlPGZZ0M9JT4W
-oYJk+qsmtcrj46ura0v6Lmy/t2vPyPpmH5zgfFxl4ek3ZMYenWu7Msxtn6TMdzWK
-ReouigCAeM+6hwJSsNEz8+2RdDF2iejIS1K/yldqKuFmZGQIgMyDlWQyr/JySWuM
-sk9qHULjnlZsuvS+W8HIhOB3282Rtdr6OvFEzhid2nVEnxje98U=
-=KhdI
------END PGP SIGNATURE-----
-
---f2QGlHpHGjS2mn6Y--
+This patch breaks that and enables a user to basically DoS the system by
+creating unbound events.
