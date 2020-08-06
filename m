@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A20123E353
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA9423E35B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbgHFUzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 16:55:15 -0400
-Received: from crapouillou.net ([89.234.176.41]:35280 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725875AbgHFUzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 16:55:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1596747312; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IBFRdiJpx6gDDqGjzCQG6RaWnse1sSSLfX/Lv9JDZeI=;
-        b=T6jTH60Y6CtWnBhropJA1Y8XhgnMQnsAb98TDZ/ObOsbPAP9D/AEIX1HaO7IafjXxAxnS8
-        YpNOyl4H3cmD8LFDWPQVkkOAQN3UxOsw/5QomVhHixmIKs3Wsu7mwcDKbwgJZzUem6hhPP
-        fk8hq1CEzIGVvO5AXFTAtNN9WvXjfCA=
-Date:   Wed, 05 Aug 2020 02:04:34 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] memory: jz4780_nemc: Fix an error pointer vs NULL check
- in probe()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Message-Id: <MJDKEQ.BWLP6TXTA14J1@crapouillou.net>
-In-Reply-To: <20200803143607.GC346925@mwanda>
-References: <20200803143607.GC346925@mwanda>
+        id S1726517AbgHFU7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 16:59:35 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:56602 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbgHFU7f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 16:59:35 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 076AnV9p040546;
+        Thu, 6 Aug 2020 05:49:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1596710971;
+        bh=/TAJIpYqryMmmTpOr2TbNaq9wdkP1C9Qtn8+dcFlgos=;
+        h=From:To:CC:Subject:Date;
+        b=kCEoiLXsM48Apv1lOQICiH+Ru4e5lLNVgwWRBgob4HWjO97V++CzXICYyZ+FlsPv8
+         4AAsd9btlfYgbCPWTAlb3cvZP1LJJ/muzgdhn9l6A6ddyXxwQ/7//65itD7w9+TXfi
+         hs0U5LKQiNSBxyaq4HEpqZYn7QUT1Xm2TTjRykME=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 076AnUw6059545;
+        Thu, 6 Aug 2020 05:49:30 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 6 Aug
+ 2020 05:49:30 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 6 Aug 2020 05:49:30 -0500
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 076AnSCZ111264;
+        Thu, 6 Aug 2020 05:49:29 -0500
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <dan.j.williams@intel.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] dmaengine: of-dma: Fix of_dma_router_xlate's of_dma_xlate handling
+Date:   Thu, 6 Aug 2020 13:49:28 +0300
+Message-ID: <20200806104928.25975-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+of_dma_xlate callback can return ERR_PTR as well NULL in case of failure.
 
+If error code is returned (not NULL) then the route should be released and
+the router should not be registered for the channel.
 
-Le lun. 3 ao=FBt 2020 =E0 17:36, Dan Carpenter <dan.carpenter@oracle.com>=20
-a =E9crit :
-> The devm_ioremap() function returns NULL on error, it doesn't return
-> error pointers.  This bug could lead to an Oops during probe.
->=20
-> Fixes: f046e4a3f0b9 ("memory: jz4780_nemc: Only request IO memory the=20
-> driver will use")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 56f13c0d9524c ("dmaengine: of_dma: Support for DMA routers")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ drivers/dma/of-dma.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+diff --git a/drivers/dma/of-dma.c b/drivers/dma/of-dma.c
+index 863f2aaf5c8f..8a4f608904b9 100644
+--- a/drivers/dma/of-dma.c
++++ b/drivers/dma/of-dma.c
+@@ -71,12 +71,12 @@ static struct dma_chan *of_dma_router_xlate(struct of_phandle_args *dma_spec,
+ 		return NULL;
+ 
+ 	chan = ofdma_target->of_dma_xlate(&dma_spec_target, ofdma_target);
+-	if (chan) {
+-		chan->router = ofdma->dma_router;
+-		chan->route_data = route_data;
+-	} else {
++	if (IS_ERR_OR_NULL(chan)) {
+ 		ofdma->dma_router->route_free(ofdma->dma_router->dev,
+ 					      route_data);
++	} else {
++		chan->router = ofdma->dma_router;
++		chan->route_data = route_data;
+ 	}
+ 
+ 	/*
+-- 
+Peter
 
-Thanks!
--Paul
-
-> ---
->  drivers/memory/jz4780-nemc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/memory/jz4780-nemc.c=20
-> b/drivers/memory/jz4780-nemc.c
-> index 3ec5cb0fce1e..608ae925e641 100644
-> --- a/drivers/memory/jz4780-nemc.c
-> +++ b/drivers/memory/jz4780-nemc.c
-> @@ -304,9 +304,9 @@ static int jz4780_nemc_probe(struct=20
-> platform_device *pdev)
->  	}
->=20
->  	nemc->base =3D devm_ioremap(dev, res->start, NEMC_REG_LEN);
-> -	if (IS_ERR(nemc->base)) {
-> +	if (!nemc->base) {
->  		dev_err(dev, "failed to get I/O memory\n");
-> -		return PTR_ERR(nemc->base);
-> +		return -ENOMEM;
->  	}
->=20
->  	writel(0, nemc->base + NEMC_NFCSR);
-> --
-> 2.27.0
->=20
-
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
