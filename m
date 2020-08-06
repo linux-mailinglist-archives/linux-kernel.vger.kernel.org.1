@@ -2,100 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D337A23D832
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B59523D85A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728618AbgHFIy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 04:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726094AbgHFIyz (ORCPT
+        id S1729046AbgHFJKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:10:38 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:22673 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727768AbgHFJKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 04:54:55 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3D0C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 01:54:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sjPmb+gKsoTr4gKJxpXZXAXQKQybWUTDRfPhRmtRJlU=; b=dpiWAUFOI4iJE6fUsW+QV7ZkXa
-        3x7q97QuD47tPatxuiiBA1P/Eep1oUtAWOT92PyLEhU6C9/Z8UitQ402UZeE9c1UKKNrbO5irRBp0
-        Enx+csJ8wy5fBJqVwlsjoFybJ8npL89aW15HpTNnOQRTZ0rJsPu6MFixyeZTzcMqofbz63Jpsr5jv
-        z/Gwf9hhnmiqm/9Iy4467sJv4j45XA0HNJ3V0XZBKVgjjIhgPzqlxkamOQptyfSZAhwtMuhwtN58h
-        fhGPSupzZpnZyFtJRTZvDL9DzOO7Qq1oA0bF2ubMk956U/AUoeo2im/KJzY2iGpRzF9Mou7o4LY2a
-        zB6S1g8w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k3bfV-00041J-VU; Thu, 06 Aug 2020 08:54:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8F0F2304D28;
-        Thu,  6 Aug 2020 10:54:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5274C220F91BB; Thu,  6 Aug 2020 10:54:29 +0200 (CEST)
-Date:   Thu, 6 Aug 2020 10:54:29 +0200
-From:   peterz@infradead.org
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-Subject: Re: [PATCH 1/2] sched/topology: Allow archs to override cpu_smt_mask
-Message-ID: <20200806085429.GX2674@hirez.programming.kicks-ass.net>
-References: <20200804033307.76111-1-srikar@linux.vnet.ibm.com>
- <20200804104520.GB2657@hirez.programming.kicks-ass.net>
- <20200804121007.GJ24375@linux.vnet.ibm.com>
- <20200804124755.GJ2674@hirez.programming.kicks-ass.net>
- <87ft90z6dy.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ft90z6dy.fsf@mpe.ellerman.id.au>
+        Thu, 6 Aug 2020 05:10:06 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200806091002epoutp02c180b974a3c896563e9507600863b24c~oor1sNMFO0885008850epoutp02D
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:10:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200806091002epoutp02c180b974a3c896563e9507600863b24c~oor1sNMFO0885008850epoutp02D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1596705002;
+        bh=+Tk1raV2lX3/B/vawB8miWVvRfhulCe0CC4e8YCxARg=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=tdJT0ReOmN8rcQ8zWbUJZrjkpDTZNjR3wqcjpG3tT7ln08A+5GJt6ZIDlkMx48aMR
+         Jp6qHg3LolXCQeRsiXtyt9I3RLfwDxycLs7B8ybujhcvLPiMd+GSieILsLq98Kx+Ud
+         AcrCVolBCwOxGUHKOybSyiVKTvrlAZhrw9yxYKPo=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p2.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200806091001epcas1p2f02484a63395973d98377016db17c142~oor1Owpew2868728687epcas1p23;
+        Thu,  6 Aug 2020 09:10:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [PATCH v8 1/4] scsi: ufs: Add UFS feature related parameter
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01596705001840.JavaMail.epsvc@epcpadp1>
+Date:   Thu, 06 Aug 2020 18:02:09 +0900
+X-CMS-MailID: 20200806090209epcms2p6ca5658db27f2c2167ea8187bd445858f
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d
+References: <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
+        <CGME20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d@epcms2p6>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 03:32:25PM +1000, Michael Ellerman wrote:
+This is a patch for parameters to be used for UFS feature and HPB
+module.
 
-> That brings with it a bunch of problems, such as existing software that
-> has been developed/configured for Power8 and expects to see SMT8.
-> 
-> We also allow LPARs to be live migrated from Power8 to Power9 (and back), so
-> maintaining the illusion of SMT8 is considered a requirement to make that work.
+Reviewed-by: Can Guo <cang@codeaurora.org>
+Tested-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+---
+ drivers/scsi/ufs/ufs.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-So how does that work if the kernel booted on P9 and demuxed the SMT8
-into 2xSMT4? If you migrate that state onto a P8 with actual SMT8 you're
-toast again.
+diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
+index f8ab16f30fdc..ae557b8d3eba 100644
+--- a/drivers/scsi/ufs/ufs.h
++++ b/drivers/scsi/ufs/ufs.h
+@@ -122,6 +122,7 @@ enum flag_idn {
+ 	QUERY_FLAG_IDN_WB_EN                            = 0x0E,
+ 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_EN                 = 0x0F,
+ 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_DURING_HIBERN8     = 0x10,
++	QUERY_FLAG_IDN_HPB_RESET                        = 0x11,
+ };
+ 
+ /* Attribute idn for Query requests */
+@@ -195,6 +196,9 @@ enum unit_desc_param {
+ 	UNIT_DESC_PARAM_PHY_MEM_RSRC_CNT	= 0x18,
+ 	UNIT_DESC_PARAM_CTX_CAPABILITIES	= 0x20,
+ 	UNIT_DESC_PARAM_LARGE_UNIT_SIZE_M1	= 0x22,
++	UNIT_DESC_HPB_LU_MAX_ACTIVE_REGIONS	= 0x23,
++	UNIT_DESC_HPB_LU_PIN_REGION_START_OFFSET	= 0x25,
++	UNIT_DESC_HPB_LU_NUM_PIN_REGIONS	= 0x27,
+ 	UNIT_DESC_PARAM_WB_BUF_ALLOC_UNITS	= 0x29,
+ };
+ 
+@@ -235,6 +239,8 @@ enum device_desc_param {
+ 	DEVICE_DESC_PARAM_PSA_MAX_DATA		= 0x25,
+ 	DEVICE_DESC_PARAM_PSA_TMT		= 0x29,
+ 	DEVICE_DESC_PARAM_PRDCT_REV		= 0x2A,
++	DEVICE_DESC_PARAM_HPB_VER		= 0x40,
++	DEVICE_DESC_PARAM_HPB_CONTROL		= 0x42,
+ 	DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP	= 0x4F,
+ 	DEVICE_DESC_PARAM_WB_PRESRV_USRSPC_EN	= 0x53,
+ 	DEVICE_DESC_PARAM_WB_TYPE		= 0x54,
+@@ -283,6 +289,10 @@ enum geometry_desc_param {
+ 	GEOMETRY_DESC_PARAM_ENM4_MAX_NUM_UNITS	= 0x3E,
+ 	GEOMETRY_DESC_PARAM_ENM4_CAP_ADJ_FCTR	= 0x42,
+ 	GEOMETRY_DESC_PARAM_OPT_LOG_BLK_SIZE	= 0x44,
++	GEOMETRY_DESC_HPB_REGION_SIZE		= 0x48,
++	GEOMETRY_DESC_HPB_NUMBER_LU		= 0x49,
++	GEOMETRY_DESC_HPB_SUBREGION_SIZE	= 0x4A,
++	GEOMETRY_DESC_HPB_DEVICE_MAX_ACTIVE_REGIONS	= 0x4B,
+ 	GEOMETRY_DESC_PARAM_WB_MAX_ALLOC_UNITS	= 0x4F,
+ 	GEOMETRY_DESC_PARAM_WB_MAX_WB_LUNS	= 0x53,
+ 	GEOMETRY_DESC_PARAM_WB_BUFF_CAP_ADJ	= 0x54,
+@@ -327,6 +337,7 @@ enum {
+ 
+ /* Possible values for dExtendedUFSFeaturesSupport */
+ enum {
++	UFS_DEV_HPB_SUPPORT		= BIT(7),
+ 	UFS_DEV_WRITE_BOOSTER_SUP	= BIT(8),
+ };
+ 
+@@ -537,6 +548,7 @@ struct ufs_dev_info {
+ 	u8 *model;
+ 	u16 wspecversion;
+ 	u32 clk_gating_wait_us;
++	u8 b_ufs_feature_sup;
+ 	u32 d_ext_ufs_feature_sup;
+ 	u8 b_wb_buffer_type;
+ 	u32 d_wb_alloc_units;
+-- 
+2.17.1
 
-> Yeah I agree the naming is confusing.
-> 
-> Let's call them "SMT4 cores" and "SMT8 cores"?
 
-Works for me, thanks!
-
-> The problem is we are already lying to userspace, because firmware lies to us.
-> 
-> ie. the firmware on these systems shows us an SMT8 core, and so current kernels
-> show SMT8 to userspace. I don't think we can realistically change that fact now,
-> as these systems are already out in the field.
-> 
-> What this patch tries to do is undo some of the mess, and at least give the
-> scheduler the right information.
-
-What a mess... I think it depends on what you do with that P9 to P8
-migration case. Does it make sense to have a "p8_compat" boot arg for
-the case where you want LPAR migration back onto P8 systems -- in which
-case it simply takes the firmware's word as gospel and doesn't untangle
-things, because it can actually land on a P8.
