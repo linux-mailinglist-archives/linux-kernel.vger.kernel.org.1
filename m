@@ -2,131 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6241623DDD7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C608D23DE64
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730510AbgHFRPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:15:31 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:45854 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729507AbgHFRPZ (ORCPT
+        id S1730033AbgHFRZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728735AbgHFRDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:15:25 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076DILXb007671;
-        Thu, 6 Aug 2020 13:18:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : mime-version :
- content-type; s=corp-2020-01-29;
- bh=AHSv3tsI28sIISVsPR048qSjA4rjmfzS6HgnYK0Bxvc=;
- b=Lq3TcMtz29DRvR8UISmpLfn9qAFdXxKeC3s8/FD7pj4ij7eSqrHztQ/RtQvyvZ8JLMh+
- MwklYDHZi52xRqeZVXaSKdTRK3tC4kClZrwLCCly/JBvozGdeiCj579ZG72vxJMByJuW
- 6/Db/L5yHg7wD1per9OfP82QHaPwklcFWZhCx7E5ONrMUdz/LDQVAZkalNrzWoFN6wK7
- cqTMY4RBKeVl9s3slreVL1NOOGgPyBIGT+mqU4/IBUSyh1Bna3QscCHeLkBivSxGVYY2
- utcMj2qVhduUgZ/mN12WlBATYGDGYfYaYtfnxaq/8BvJrviSJOgLWjSN7zcRM+iPLaFN eA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 32r6ep2urb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 06 Aug 2020 13:18:20 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076Cwxi9172955;
-        Thu, 6 Aug 2020 13:18:15 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 32pdnwc31r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Aug 2020 13:18:15 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 076DIEuv021665;
-        Thu, 6 Aug 2020 13:18:14 GMT
-Received: from starbug-mbp.localdomain (/79.97.215.145)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Aug 2020 06:18:14 -0700
-Received: by starbug-mbp.localdomain (Postfix, from userid 501)
-        id BC84EF04A3F; Thu,  6 Aug 2020 14:18:09 +0100 (IST)
-From:   Darren Kenny <darren.kenny@oracle.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v36 07/24] x86/cpu/intel: Add nosgx kernel parameter
-In-Reply-To: <20200716135303.276442-8-jarkko.sakkinen@linux.intel.com>
-References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
- <20200716135303.276442-8-jarkko.sakkinen@linux.intel.com>
-Date:   Thu, 06 Aug 2020 14:18:09 +0100
-Message-ID: <m2wo2brjzi.fsf@oracle.com>
+        Thu, 6 Aug 2020 13:03:02 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF19CC034615
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:19:13 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id s15so15145180pgc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 06:19:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=etsukata-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V1nnod0YcV7H2TUfC8Gd96YGz+LSO9JcTYXXX1K5F8M=;
+        b=YKSScdMPWzgWF7wSGiSqP95WaTCqorzQjkBnqwiKacTI0pfodkP5JNyOASut44yJ3s
+         l5WouG2nks7VRPeOnmuKSKOFIZh8Ic0u8UuUxx45NqhalbT1S4f/9zdk9NtVZOzxRZIQ
+         5aiTXswxQAVqbhKii8Csr+ntnUijgnCyA7hcfIOHIXy36EYCI/cakomgU/tpxjmQzq1D
+         2pwabp9JoYYNme1qeEGLFdWuN+eKF79/Trev97gkXlSZWXu0VOo/HKohGN680R/9FDPI
+         Ere7hd6MEpRJtverCfv4jb0jqpZkVGowXiQuFo/kT+QYEJlC6cIka8DF1SLC/s5p6s+X
+         Ichw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V1nnod0YcV7H2TUfC8Gd96YGz+LSO9JcTYXXX1K5F8M=;
+        b=iF7i09/mKC/fAy3lFE5KN6mkPl4wgMnktQdGl8cUqf1QAnC/CETovUk3ZgGjh1dMxh
+         TLFbxlawUXLOBtOdDkRQ5PAi5XouEEDfa/sxvkH+o0ct5OO3h11u3R2xM86de5tN1z02
+         VfdPBQa1KdRLMf/x78vJcWTBoUX/UrSO89auS0IF6wdkXlOEwL19TyNct2Fv+OguGLNj
+         oyIpTuVL22dc+FE80qrk4O1A5qaAE/+BF6a6fycjbTcT/dd28WUYK5PuOJisZt+l3447
+         dfYlboRN1yMblxJo/qAnAUOQte45P/zYrfRmaprRyaKfCQONSms+53NtfwL2p1KGfga8
+         W/bw==
+X-Gm-Message-State: AOAM531WhGXT+6985KCiUTAfo6msZee/iwzDx5x/MSgW+emEr1JOFT/e
+        o3iG0+e/3Bv7Nr9oK4EXwLklI8WVcRI=
+X-Google-Smtp-Source: ABdhPJy5OWv4YebWEdmAk1TZNEahwpIKQsFkvMQ2u8mMNYwisz/N6njR6OtM1fCTbW1PDnm4LCQG4w==
+X-Received: by 2002:aa7:982e:: with SMTP id q14mr8418876pfl.299.1596719950852;
+        Thu, 06 Aug 2020 06:19:10 -0700 (PDT)
+Received: from localhost.localdomain (p14232-ipngn10801marunouchi.tokyo.ocn.ne.jp. [122.24.13.232])
+        by smtp.gmail.com with ESMTPSA id y72sm8790366pfg.58.2020.08.06.06.19.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 06:19:09 -0700 (PDT)
+From:   Eiichi Tsukata <devel@etsukata.com>
+To:     darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Eiichi Tsukata <devel@etsukata.com>
+Subject: [PATCH] xfs: Fix UBSAN null-ptr-deref in xfs_sysfs_init
+Date:   Thu,  6 Aug 2020 22:18:47 +0900
+Message-Id: <20200806131847.2248244-1-devel@etsukata.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 spamscore=0 mlxscore=0
- bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060094
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 bulkscore=0
- malwarescore=0 clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0
- impostorscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008060095
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 2020-07-16 at 16:52:46 +03, Jarkko Sakkinen wrote:
-> Add kernel parameter to disable Intel SGX kernel support.
->
-> Tested-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+If xfs_sysfs_init is called with parent_kobj == NULL, UBSAN
+shows the following warning:
 
-Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+  UBSAN: null-ptr-deref in ./fs/xfs/xfs_sysfs.h:37:23
+  member access within null pointer of type 'struct xfs_kobj'
+  Call Trace:
+   dump_stack+0x10e/0x195
+   ubsan_type_mismatch_common+0x241/0x280
+   __ubsan_handle_type_mismatch_v1+0x32/0x40
+   init_xfs_fs+0x12b/0x28f
+   do_one_initcall+0xdd/0x1d0
+   do_initcall_level+0x151/0x1b6
+   do_initcalls+0x50/0x8f
+   do_basic_setup+0x29/0x2b
+   kernel_init_freeable+0x19f/0x20b
+   kernel_init+0x11/0x1e0
+   ret_from_fork+0x22/0x30
 
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 2 ++
->  arch/x86/kernel/cpu/feat_ctl.c                  | 9 +++++++++
->  2 files changed, 11 insertions(+)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index fb95fad81c79..e747bd9ca911 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -3314,6 +3314,8 @@
->  
->  	nosep		[BUGS=X86-32] Disables x86 SYSENTER/SYSEXIT support.
->  
-> +	nosgx		[X86-64,SGX] Disables Intel SGX kernel support.
-> +
->  	nosmp		[SMP] Tells an SMP kernel to act as a UP kernel,
->  			and disable the IO APIC.  legacy for "maxcpus=0".
->  
-> diff --git a/arch/x86/kernel/cpu/feat_ctl.c b/arch/x86/kernel/cpu/feat_ctl.c
-> index c3afcd2e4342..1837df39527f 100644
-> --- a/arch/x86/kernel/cpu/feat_ctl.c
-> +++ b/arch/x86/kernel/cpu/feat_ctl.c
-> @@ -101,6 +101,15 @@ static void clear_sgx_caps(void)
->  	setup_clear_cpu_cap(X86_FEATURE_SGX2);
->  }
->  
-> +static int __init nosgx(char *str)
-> +{
-> +	clear_sgx_caps();
-> +
-> +	return 0;
-> +}
-> +
-> +early_param("nosgx", nosgx);
-> +
->  void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
->  {
->  	bool tboot = tboot_enabled();
-> -- 
-> 2.25.1
+Fix it by checking parent_kobj before the code accesses its member.
+
+Signed-off-by: Eiichi Tsukata <devel@etsukata.com>
+---
+ fs/xfs/xfs_sysfs.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/xfs/xfs_sysfs.h b/fs/xfs/xfs_sysfs.h
+index e9f810fc6731..aad67dc4ab5b 100644
+--- a/fs/xfs/xfs_sysfs.h
++++ b/fs/xfs/xfs_sysfs.h
+@@ -32,9 +32,9 @@ xfs_sysfs_init(
+ 	struct xfs_kobj		*parent_kobj,
+ 	const char		*name)
+ {
++	struct kobject *parent = parent_kobj ? &parent_kobj->kobject : NULL;
+ 	init_completion(&kobj->complete);
+-	return kobject_init_and_add(&kobj->kobject, ktype,
+-				    &parent_kobj->kobject, "%s", name);
++	return kobject_init_and_add(&kobj->kobject, ktype, parent, "%s", name);
+ }
+ 
+ static inline void
+-- 
+2.26.2
+
