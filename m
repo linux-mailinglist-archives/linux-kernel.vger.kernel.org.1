@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AFE23D915
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 630AD23D90D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729072AbgHFKCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 06:02:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
+        id S1729332AbgHFKDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 06:03:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729279AbgHFKAP (ORCPT
+        with ESMTP id S1729312AbgHFKAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 06:00:15 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFFFC06179E
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 03:00:15 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id t14so9079713wmi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 03:00:15 -0700 (PDT)
+        Thu, 6 Aug 2020 06:00:36 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356D8C0617A0
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 03:00:18 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a5so33432764wrm.6
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 03:00:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=foundries-io.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=+V7CqI/htEIIY4PnseQyLNdhHuJMGQr2hPmi29hq7rk=;
-        b=blwBIVMkBZZkw+M4KMDSy/63AIjjwVfHw43Oy0ACpSlXffJeTWN3CY93N5DaXkVswb
-         3HO9lN0cc7W/frHVpA1yzI+9QdNdtcTSbJ3U12dMbNGAMRnPXC6uourzC0TxP02RMSW0
-         2YZhbW77PIM3IWsGrmCnFyar1JiKYi8EC0zZ2eUfUIyLXV4zSaY/Tynm4kxpOKm0x7Tw
-         o3yUaWgOxLx0kNiYBdmmp9itGhYWMLYKoPz53xjRL0+3b/ynmuHFvPDpqTtqpDB5wOs+
-         //cXcteNIqc1KkQ1WluccIM7NTYAxYVY50qpNsTStA573o5lNYOfDyRXIlEtEwixDkW/
-         xYeA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=IjCAb6ElutCFPhXtiRRhexkYUeHi/3Oyyo9f5qPCuTw=;
+        b=07ssaopVlpy25M08Sfu8/Ed2KaEWKD7qpGWYm9QQsMA5sjGrjsDEg2rNUkOkeFqb+W
+         E51HB2POCciK3fXe+LVmMAMbYu+08znf/dSU3+QzzliE3YIlxf3l/aiFYRCF/nzSJmbe
+         nZI4TjWfA9aCvbvYAlnZyBtmW5qh5/PkFnRL6V1I+Cc/7PQ/Ine1LrRKCEfcvBuYRsdg
+         0fRn19HfsnOyGGVrutacfiZkr1jXoQ4B5spsLH61a490BqxKsYA5R40F9Iglc+bSC4jM
+         MhicEySUJqULV14ucCB1y29WSWTHVjAZiO8d2/r9fgaPcvewP8SLBg1vxsxwSa4B0FgL
+         1BBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=+V7CqI/htEIIY4PnseQyLNdhHuJMGQr2hPmi29hq7rk=;
-        b=IQT3QlU7j7a9PW4NkLoVy3a+tJsJE0v+v+P8KHLXFqD2fYGznuIVXMhkzYvD9qsDzb
-         YhmN7UjevN76goyg0CBmhdMRGtggbhJAPfhWyRpYXgn+OC9uMK9fiO7lmhzJd1UJPGLT
-         dYg8GsMw7ib2d4L08go8VvTCSLWyUfuwh6dnruSRTe85D5AC+RJUpQI6YUH2B+K+tyBA
-         s5afxqQgBvOF0OXHD4mxM1nEXW+ndyWabaKUGvyvI/1ZtrfuTL5VSIqQl/l/tJh9GVff
-         akIBy1TMZztGzOTW0KE7ddhKHAFDnZeS/YyvRXERYzm0Ko/1UrkujnCaGxEQXLyxSbML
-         iTbg==
-X-Gm-Message-State: AOAM531iNh1qJPL+N+xt7F7elTWHDUaESYytMNEeR6nK8Ofti1g4zJEH
-        sjlzuGUE/SByg6ss9W//q3j9sA==
-X-Google-Smtp-Source: ABdhPJwERWrzbPFeEbvwnDFlnCmx/Q90cpWFyXp3nyjuWcAWsrGJT8br/+ZFQznxexxykT9CnEnETA==
-X-Received: by 2002:a05:600c:2154:: with SMTP id v20mr7189068wml.186.1596708014190;
-        Thu, 06 Aug 2020 03:00:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=IjCAb6ElutCFPhXtiRRhexkYUeHi/3Oyyo9f5qPCuTw=;
+        b=pCEltv9BAjXQy3tCNm3nImUEo9rPVkFTMbinXIH8rYEXtxk77Wr6Auf6BRuqgiNqPa
+         rAyQi5EQ9fQwy04wyI1NZb2YQMlWMyM/zqOuIoTqDL27Fqz94gPL2bLVYLcztdgWCJbA
+         3MkO8vx/2FpqEPLYuScUoJ9Nw56iiGcYbx3Sp+4A7mmZSxFL1atH74SUbeF6kL2A6YF2
+         RqoZH+IRvtbitL+n6o5P5Yeifmfz0uGYaVAy/2B/qZnVqqtP5TCbYp5YP9LJMor5pbmM
+         eenD30fm1eA9KnWo3DGtuu9qSlz58WslEXImBsquuyLnDvG5aBg1gpLFo+v7/TWFZ9GI
+         VOyg==
+X-Gm-Message-State: AOAM5307HjnnFGlxNCP0rrJLJfuxrf/g4QJCEHREAQhIuD7gkHtwpvEp
+        2Nc7dK7dqqG3lXxsH1rTEOzTnQ==
+X-Google-Smtp-Source: ABdhPJzflnDm5lBDSKdsku0RgxeIpkyuqg7F5psga7JqMeU7TsH7cOl9HX/ejXDzhuS7Q4ZjSsVC7Q==
+X-Received: by 2002:a5d:6744:: with SMTP id l4mr7288655wrw.105.1596708015448;
+        Thu, 06 Aug 2020 03:00:15 -0700 (PDT)
 Received: from localhost.localdomain (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
-        by smtp.gmail.com with ESMTPSA id p3sm5741376wma.44.2020.08.06.03.00.12
+        by smtp.gmail.com with ESMTPSA id p3sm5741376wma.44.2020.08.06.03.00.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 03:00:13 -0700 (PDT)
+        Thu, 06 Aug 2020 03:00:15 -0700 (PDT)
 From:   Jorge Ramirez-Ortiz <jorge@foundries.io>
 To:     jorge@foundries.io, sumit.garg@linaro.org,
         jens.wiklander@linaro.org
@@ -53,38 +54,55 @@ Cc:     mpm@selenic.com, herbert@gondor.apana.org.au, arnd@arndb.de,
         ricardo@foundries.io, mike@foundries.io,
         gregkh@linuxfoundation.org, op-tee@lists.trustedfirmware.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCHv3 1/2] hwrng: optee: handle unlimited data rates
-Date:   Thu,  6 Aug 2020 12:00:09 +0200
-Message-Id: <20200806100010.20509-1-jorge@foundries.io>
+Subject: [PATCHv3 2/2] hwrng: optee: fix wait use case
+Date:   Thu,  6 Aug 2020 12:00:10 +0200
+Message-Id: <20200806100010.20509-2-jorge@foundries.io>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200806100010.20509-1-jorge@foundries.io>
+References: <20200806100010.20509-1-jorge@foundries.io>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Data rates of MAX_UINT32 will schedule an unnecessary one jiffy
-timeout on the call to msleep. Avoid this scenario by using 0 as the
-unlimited data rate.
+The current code waits for data to be available before attempting a
+second read. However the second read would not be executed as the
+while loop will exit.
+
+This fix does not wait if all data has been read (skips the call to
+msleep(0)) and reads a second time if partial data was retrieved on
+the first read.
+
+Worth noticing that since msleep(0) schedules a one jiffy timeout is
+better to skip such a call.
 
 Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
 Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
 ---
- drivers/char/hw_random/optee-rng.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/char/hw_random/optee-rng.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/char/hw_random/optee-rng.c b/drivers/char/hw_random/optee-rng.c
-index 49b2e02537dd..5bc4700c4dae 100644
+index 5bc4700c4dae..a99d82949981 100644
 --- a/drivers/char/hw_random/optee-rng.c
 +++ b/drivers/char/hw_random/optee-rng.c
-@@ -128,7 +128,7 @@ static int optee_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
+@@ -122,14 +122,14 @@ static int optee_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
+ 	if (max > MAX_ENTROPY_REQ_SZ)
+ 		max = MAX_ENTROPY_REQ_SZ;
+ 
+-	while (read == 0) {
++	while (read < max) {
+ 		rng_size = get_optee_rng_data(pvt_data, data, (max - read));
+ 
  		data += rng_size;
  		read += rng_size;
  
--		if (wait) {
-+		if (wait && pvt_data->data_rate) {
- 			if (timeout-- == 0)
+ 		if (wait && pvt_data->data_rate) {
+-			if (timeout-- == 0)
++			if ((timeout-- == 0) || (read == max))
  				return read;
  			msleep((1000 * (max - read)) / pvt_data->data_rate);
+ 		} else {
 -- 
 2.17.1
 
