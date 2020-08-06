@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F4E23DD22
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C7C23DE09
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729851AbgHFRDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729687AbgHFRB5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:01:57 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06287C061A1D;
-        Thu,  6 Aug 2020 05:11:32 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b79so44603520qkg.9;
-        Thu, 06 Aug 2020 05:11:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=oD5+bJ3r0NN3+6TONla3cei1wENXPPPflhOciZ2VB4s=;
-        b=dQuqgtfS6RBkdriO+slPy4lqyTseXAvt2kbP+a1MviCWr9QEOseah3mcpt4MMUd4AN
-         s9u0+9nplkK/NeuiuUWGtd5DDu0wFR9YgP4ezxKA6fCk+al+KkRRq6PBC4C0V0i6Slc2
-         F28jZ228C3U9HAm7NPVeisPP/d2JemUwFTyU1VDuXRqvoY5eyAnLUb6Y3Ib4ngXlnmir
-         HnbhWJhcz2HM2OFdOI+RRr0o30KwdMB6fKM3M+I9D1uHPmFeD7ZH7QKDEwIgiWvtl9hm
-         ZtQpcY+drUgwU0tLHp0JGt7/WDDogsveRySF7Of7qLekv+FulU6yqQtdvX2H9OCENWiG
-         itig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=oD5+bJ3r0NN3+6TONla3cei1wENXPPPflhOciZ2VB4s=;
-        b=gC1h/dtY5HG631euLh9C2VSHmhLklWGB/IjpZGeWv52X8Frs7ZScepECdqS2S12Qe6
-         +CGMWmWbSMqiQbAxdxxB/HvZfrmoP+/kjvFo/W5nvlMziajyJ5wobc7uVdZDJ4TZGtwh
-         De7fTiSPEpyepNCBw4aLZIqjdchgpohfueL1h/kh//0ReOToDs2b9k12ApQ8y5lEnfTV
-         TGwKzf4x/OhvAcBpITaWw0Fn79VesrTU78ezluOFp0Kn1kUn9COHOrzBAp0likF0F8h2
-         2SfhhB9Cs9yHLt06oOgZz0HIc7P1+JBv/cOiomcNRAs7cue/GEVHCDt5axCS3JsNBiK2
-         deyQ==
-X-Gm-Message-State: AOAM531ROIHQPGgZV0TljFtzan+1ROqx6opax7H31GYDmtsi4DNwLT76
-        fDGCT3UkIhurgDmFkesZc71KGwPH
-X-Google-Smtp-Source: ABdhPJzOx37xQt8ecJxvdZYrYkmBbnSyOV8Y4LF22tgQGi9lvs1/OfjNG+kYv30K1IpGIUALFHXSfA==
-X-Received: by 2002:a05:620a:a0b:: with SMTP id i11mr8653585qka.65.1596715889932;
-        Thu, 06 Aug 2020 05:11:29 -0700 (PDT)
-Received: from [192.168.1.190] (pool-68-134-6-11.bltmmd.fios.verizon.net. [68.134.6.11])
-        by smtp.gmail.com with ESMTPSA id 7sm3959910qky.89.2020.08.06.05.11.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 05:11:29 -0700 (PDT)
-Subject: Re: [PATCH 2/2] selinux: add attributes to avc tracepoint
-To:     =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     Nick Kralevich <nnk@google.com>,
-        Peter Enderborg <peter.enderborg@sony.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
-References: <20200806080358.3124505-1-tweek@google.com>
- <20200806080358.3124505-2-tweek@google.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Message-ID: <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com>
-Date:   Thu, 6 Aug 2020 08:11:28 -0400
+        id S1730326AbgHFRVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:21:22 -0400
+Received: from mga02.intel.com ([134.134.136.20]:15606 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730434AbgHFRRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:17:05 -0400
+IronPort-SDR: /slNVu9mYoXyp+zWgpWBcOmMfwLN2bjumDruDhHfEioSXgbgcKwHtfqwHThQmKhIoAdhY72Xjx
+ S3SpCwoDSr7A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="140662224"
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="140662224"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 05:21:38 -0700
+IronPort-SDR: Qwvu0VK5iroQvkARLssUhiiV4FgMFwJQ6rsD01xVsy79+MlsNigcuySyBTMRj670mHi4IFu/z+
+ uZm712bkEdSw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="493647059"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by fmsmga005.fm.intel.com with ESMTP; 06 Aug 2020 05:21:36 -0700
+Subject: Re: [PATCH] mmc: sdhci-pci-o2micro: fix spelling mistake "unsupport"
+ -> "unsupported"
+To:     Colin King <colin.king@canonical.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "ernest.zhang" <ernest.zhang@bayhubtech.com>
+References: <20200806115059.59241-1-colin.king@canonical.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <016404fc-fce8-20f5-da6c-1b7ea936cf5a@intel.com>
+Date:   Thu, 6 Aug 2020 15:21:11 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200806080358.3124505-2-tweek@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200806115059.59241-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/20 4:03 AM, Thiébaud Weksteen wrote:
++ code author ernest.zhang <ernest.zhang@bayhubtech.com>
 
-> From: Peter Enderborg <peter.enderborg@sony.com>
->
-> Add further attributes to filter the trace events from AVC.
+On 6/08/20 2:50 pm, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake in a pr_info message. Fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/mmc/host/sdhci-pci-o2micro.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-pci-o2micro.c b/drivers/mmc/host/sdhci-pci-o2micro.c
+> index fa76748d8929..4eca8d2d0599 100644
+> --- a/drivers/mmc/host/sdhci-pci-o2micro.c
+> +++ b/drivers/mmc/host/sdhci-pci-o2micro.c
+> @@ -469,7 +469,7 @@ static void sdhci_pci_o2_enable_msi(struct sdhci_pci_chip *chip,
+>  
+>  	ret = pci_find_capability(chip->pdev, PCI_CAP_ID_MSI);
+>  	if (!ret) {
+> -		pr_info("%s: unsupport msi, use INTx irq\n",
+> +		pr_info("%s: unsupported msi, use INTx irq\n",
 
-Please include sample usage and output in the description.
+I think the meaning is more like:
 
+	MSI is not supported, using INTx IRQ
+
+>  			mmc_hostname(host->mmc));
+>  		return;
+>  	}
+> 
 
