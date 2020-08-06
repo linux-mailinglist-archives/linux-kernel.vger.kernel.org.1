@@ -2,73 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C02C23DCDD
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6141023DCC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729877AbgHFQ5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728959AbgHFQkm (ORCPT
+        id S1729385AbgHFQzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:55:49 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:33314 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729580AbgHFQzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:40:42 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E13C0086BA;
-        Thu,  6 Aug 2020 08:39:01 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id z17so25696467ill.6;
-        Thu, 06 Aug 2020 08:39:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K/3We8AGMWDx9mNTiTs/sOpLR+yCgqCzpB93qqwd4xg=;
-        b=YQmE464gOXatIJgW4wBruhfeDMsoedxtYKDSDdwlqSco27XKoB6YpoyxAiGHFyOH56
-         9aBPYNIDDTpw4IQr2siOCpymcA0w750p7NIh9NgjtJt77Z0UGuSLRhh+QP8g8d1Gyzl7
-         NwPSNOggrwD5viuGGjIEHaHCZuX0NghGYYyGd8WoX4y5LQeo+WQOt15+tPeOIzQgCpT4
-         hlqo2C0S6mntSTmH+GectnV20/Pl2QTb3fb09UH3y/rNje1zE690h+jUJX9g2Gg2wqSp
-         i+o/T9jHXWrLGUD/7+3Ikzudg7ybxxb4v5b2wLydfRSoxA4aunpab5PWT90KvTCgKGMk
-         7uhA==
-X-Gm-Message-State: AOAM532Yd90LjKvcGM0N3wB+NehosS+c/Skg+3qlFoPhkfUp0lapRHCj
-        HcVYBbkiw0EK5pD7poIO0K/D/Rk=
-X-Google-Smtp-Source: ABdhPJxIIJY14/wDGJG1LlEcpKWPQN9KGSXYigWRU+8ra5vZCkBoygTzV2YMWGy2Cnsuuto1f8jrlg==
-X-Received: by 2002:a6b:c3cf:: with SMTP id t198mr10069332iof.164.1596724203177;
-        Thu, 06 Aug 2020 07:30:03 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id s6sm4071541ilq.73.2020.08.06.07.30.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 07:30:02 -0700 (PDT)
-Received: (nullmailer pid 807481 invoked by uid 1000);
-        Thu, 06 Aug 2020 14:29:59 -0000
-Date:   Thu, 6 Aug 2020 08:29:59 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Rohit kumar <rohitkr@codeaurora.org>
-Cc:     lgirdwood@gmail.com, devicetree@vger.kernel.org,
-        plai@codeaurora.org, bgoswami@codeaurora.org,
-        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
-        broonie@kernel.org, tiwai@suse.com, agross@kernel.org,
-        srinivas.kandagatla@linaro.org, alsa-devel@alsa-project.org,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org, perex@perex.cz
-Subject: Re: [PATCH v5 07/12] dt-bindings: sound: lpass-cpu: Add sc7180 lpass
- cpu node
-Message-ID: <20200806142959.GA807423@bogus>
-References: <1596528453-11437-1-git-send-email-rohitkr@codeaurora.org>
- <1596528453-11437-8-git-send-email-rohitkr@codeaurora.org>
+        Thu, 6 Aug 2020 12:55:47 -0400
+Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 8EC6B3B2C33;
+        Thu,  6 Aug 2020 14:37:42 +0000 (UTC)
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 75B25C000F;
+        Thu,  6 Aug 2020 14:32:18 +0000 (UTC)
+Date:   Thu, 6 Aug 2020 16:35:59 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: media: ov772x: Document endpoint
+ properties
+Message-ID: <20200806143559.ha6amfa4gq2o4jbi@uno.localdomain>
+References: <1596454753-13612-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1596454753-13612-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1596528453-11437-8-git-send-email-rohitkr@codeaurora.org>
+In-Reply-To: <1596454753-13612-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 04 Aug 2020 13:37:28 +0530, Rohit kumar wrote:
-> Add dt-bindings to support "qcom,lpass-cpu-sc7180" node.
-> 
-> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
-> ---
->  .../devicetree/bindings/sound/qcom,lpass-cpu.txt   | 55 +++++++++++++++++++++-
->  1 file changed, 53 insertions(+), 2 deletions(-)
-> 
+Hi Prabhakar,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On Mon, Aug 03, 2020 at 12:39:11PM +0100, Lad Prabhakar wrote:
+> Document endpoint properties required for parallel interface
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>  .../devicetree/bindings/media/i2c/ov772x.txt     | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/media/i2c/ov772x.txt b/Documentation/devicetree/bindings/media/i2c/ov772x.txt
+> index 0b3ede5b8e6a..1f4153484717 100644
+> --- a/Documentation/devicetree/bindings/media/i2c/ov772x.txt
+> +++ b/Documentation/devicetree/bindings/media/i2c/ov772x.txt
+> @@ -21,6 +21,22 @@ subnode for its digital output video port, in accordance with the video
+>  interface bindings defined in Documentation/devicetree/bindings/media/
+>  video-interfaces.txt.
+>
+> +Endpoint node required properties for parallel connection are:
+> +- remote-endpoint: a phandle to the bus receiver's endpoint node.
+
+we allow endpoints without a remote end connected usually. They can be
+filled in later, in example, with an overlay.
+
+> +- bus-width: shall be set to <8> for 8 bits parallel bus
+> +	     or <10> for 10 bits parallel bus
+> +- data-shift: shall be set to <2> for 8 bits parallel bus
+> +	      (lines 9:2 are used) or <0> for 10 bits parallel bus
+
+defining what is required or optional might be hard. I don't see the
+driver enforcing their presence and I assume they have safe default.
+Maybe make them optional and specify what the defaul value is ?
+
+
+> +- hsync-active: active state of the HSYNC signal, 0/1 for LOW/HIGH respectively.
+> +		(Not required for bus-type equal 6)
+> +- vsync-active: active state of the VSYNC signal, 0/1 for LOW/HIGH respectively.
+> +		(Not required for bus-type equal 6)
+
+If they're not required, they're optional, aren't they ? :)
+
+> +- pclk-sample: sample data on rising (1) or falling (0) edge of the pixel clock
+> +	       signal. (Not required for bus-type equal 6)
+
+Why the pclk polarity is does not apply to BT.656 ?
+
+> +- bus-type: data bus type. Possible values are:
+> +	    5 - Parallel
+> +	    6 - Bt.656
+
+Are we making this required, or do we expect this to be deduced
+depending on which other properties have been specified ? Sakari it
+seems you would like this to become a properties that has to be
+specified most of the times, right ? (I tend to agree with that FWIW),
+but does it impact retro-compatibility ?
+
+> +
+>  Example:
+>
+>  &i2c0 {
+> --
+> 2.17.1
+>
