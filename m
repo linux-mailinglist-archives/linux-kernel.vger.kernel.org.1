@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799ED23D7E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2C723D7F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728861AbgHFIQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 04:16:32 -0400
-Received: from elvis.franken.de ([193.175.24.41]:36318 "EHLO elvis.franken.de"
+        id S1728840AbgHFIXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 04:23:13 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:18272 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727768AbgHFIQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 04:16:26 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1k3b4Z-0000ze-00; Thu, 06 Aug 2020 10:16:23 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 7F708C0C58; Thu,  6 Aug 2020 10:16:05 +0200 (CEST)
-Date:   Thu, 6 Aug 2020 10:16:05 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     WANG Xuerui <git@xen0n.name>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Zhou Yanjie <zhouyanjie@zoho.com>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: Provide Kconfig option for default IEEE 754
- conformance mode
-Message-ID: <20200806081605.GA5715@alpha.franken.de>
-References: <20200801061147.1412187-1-jiaxun.yang@flygoat.com>
- <d03a350c-842c-c041-f11b-017ec68e3de4@flygoat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d03a350c-842c-c041-f11b-017ec68e3de4@flygoat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S1727768AbgHFIXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 04:23:12 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BMhMH72hCz9v0TH;
+        Thu,  6 Aug 2020 10:23:07 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id IHruyvwNIS1G; Thu,  6 Aug 2020 10:23:07 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BMhMH65Wxz9v0St;
+        Thu,  6 Aug 2020 10:23:07 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 415D38B7F9;
+        Thu,  6 Aug 2020 10:23:09 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id XCcAL8QChux9; Thu,  6 Aug 2020 10:23:09 +0200 (CEST)
+Received: from po16052vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.102])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 08EBC8B75E;
+        Thu,  6 Aug 2020 10:23:09 +0200 (CEST)
+Received: by po16052vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id B0CBA65BC9; Thu,  6 Aug 2020 08:23:08 +0000 (UTC)
+Message-Id: <a6e62627d25fb7ae9b91d8bf553e707689e37498.1596702117.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v3 1/3] syscalls: use uaccess_kernel in addr_limit_user_check
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu,  6 Aug 2020 08:23:08 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 09:59:15PM +0800, Jiaxun Yang wrote:
-> 
-> 
-> 在 2020/8/1 14:11, Jiaxun Yang 写道:
-> >Requested by downstream distros, a Kconfig option for default
-> >IEEE 754 conformance mode allows them to set their mode to
-> >relaxed by default.
-> >
-> >Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> >Reviewed-by: WANG Xuerui <git@xen0n.name>
-> >Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-> >Reviewed-by: Huacai Chen <chenhc@lemote.com>
-> >
-> >--
-> >v2: Reword according to Xuerui's suggestion.
-> >---
-> Hi Thomas,
-> 
-> Is it possible to get this patch into 5.9 merge window?
-> I think it have got enough review tag, and the config option was requested
-> by a Debian developer. The next Debian release will take 5.9 lts kernel and
-> they don't want to ship a non-bootable kernel in a major release.
+From: Christoph Hellwig <hch@lst.de>
 
-no I won't include it into 5.9, I need to first go through links pointed
-to by Maciej and fully understand what a proper solution could be.
+Patch series "clean up address limit helpers", v2.
 
-Thomas.
+In preparation for eventually phasing out direct use of set_fs(), this
+series removes the segment_eq() arch helper that is only used to implement
+or duplicate the uaccess_kernel() API, and then adds descriptive helpers
+to force the kernel address limit.
 
+This patch (of 6):
+
+Use the uaccess_kernel helper instead of duplicating it.
+
+Link: http://lkml.kernel.org/r/20200714105505.935079-1-hch@lst.de
+Link: http://lkml.kernel.org/r/20200710135706.537715-1-hch@lst.de
+Link: http://lkml.kernel.org/r/20200710135706.537715-2-hch@lst.de
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Nick Hu <nickhu@andestech.com>
+Cc: Greentime Hu <green.hu@gmail.com>
+Cc: Vincent Chen <deanbo422@gmail.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ include/linux/syscalls.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index b951a87da987..e933a43d4a69 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -263,7 +263,7 @@ static inline void addr_limit_user_check(void)
+ 		return;
+ #endif
+ 
+-	if (CHECK_DATA_CORRUPTION(!segment_eq(get_fs(), USER_DS),
++	if (CHECK_DATA_CORRUPTION(uaccess_kernel(),
+ 				  "Invalid address limit on user-mode return"))
+ 		force_sig(SIGKILL);
+ 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.25.0
+
