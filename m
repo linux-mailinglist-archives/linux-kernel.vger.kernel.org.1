@@ -2,51 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3AA23DDA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4955B23DD98
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730381AbgHFRM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:12:28 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58916 "EHLO
+        id S1730333AbgHFRL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:11:58 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58954 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730215AbgHFRKG (ORCPT
+        with ESMTP id S1729980AbgHFRKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:10:06 -0400
-Date:   Thu, 06 Aug 2020 17:10:01 -0000
+        Thu, 6 Aug 2020 13:10:09 -0400
+Date:   Thu, 06 Aug 2020 17:10:04 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596733801;
+        s=2020; t=1596733805;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WqGPH07pzHO47/xm9n06evZRKuSJhzUmUKmbO1v96+E=;
-        b=Ye1VrZbm2fG74IfDotWAi5nfNJSP1bi31yteIDYG9HWKtdvY2JxF8ZliICEcb1P8cnBokq
-        C/aJkO9shrF1RFok2C8Nd7RRiN9pWHsfchHnbJ47JByoKo4yLVNvQL5xph1KNOimvUSAgv
-        /XPSJzk0zC0rXM8ImENqSSwgB+Y2QApjMM46y5VwsUFdsl2dt2I0SIfaP718NgPh/5Bxw8
-        lkNJPPTmAWdV3zfa3oVG6lJK1ufJUj6D9Ife104+d9g18OB3GwKQumKKEih9Zfo6JDp0T/
-        Ygjx2HEMX+r8Qmjih19PQ4wMx2XMHKxAvZ9WAhT5/GdmvM2o1iTmGFNbBNguUg==
+        bh=+utsXAeGhNXjIKqlvfGdymA67VasGXGDyHkHdtuCecA=;
+        b=sMJ2pQSB54/aYaWb27/Io8Os5snnYlvS78cdTTFtAawDsiBIdu5exjJAjF6ThS9cYeKgdW
+        yNmv6O8522ZbF/uyfZu8/d40n+Gnl7ZbfzyTMgkwjw4WXEbInaTeDlUGZtgC4viELxSCkC
+        VVWpTJTxgNwvWm827iY0o2aCY/mN4VHNW8roZmwcTojCcGTMhSqTXi1uTX8OE9/W3zJTtK
+        5RF2Kpj8FUZQuXPhrH49GrfjCYmWLYFijCYyKAs8EtoG6aR9E9wvH2txjhUAbuFJykZdOv
+        /5mQLpPeFvStLq/su6TZY7XG+z7C/wxSOicN/1vbTxf5r5Yfd5rrtteTQmKgMA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596733801;
+        s=2020e; t=1596733805;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WqGPH07pzHO47/xm9n06evZRKuSJhzUmUKmbO1v96+E=;
-        b=WOxDiAq+txKabkOs0K+aE484kQD5IEVOtUIk3SESpDUr0NfwNtjagRkbUsf7dageqCPL+Z
-        VnFdsSKB1CzKU1Aw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+        bh=+utsXAeGhNXjIKqlvfGdymA67VasGXGDyHkHdtuCecA=;
+        b=xtt43iINyy5QMehIAXrlXVCW7sVCkGcjGSByvvTr2vr5+Bfg8xmfRNGYpJP5ldh5J9bQMX
+        q02NV1qK/m+GkKBA==
+From:   "tip-bot2 for Pingfan Liu" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/urgent] timekeeping/vsyscall: Provide vdso_update_begin/end()
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Sven Schnelle <svens@linux.ibm.com>, x86 <x86@kernel.org>,
+Subject: [tip: x86/urgent] x86/purgatory: Don't generate debug info for purgatory.ro
+Cc:     Pingfan Liu <kernelfans@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dave Young <dyoung@redhat.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200804150124.41692-3-svens@linux.ibm.com>
-References: <20200804150124.41692-3-svens@linux.ibm.com>
+In-Reply-To: <1596433788-3784-1-git-send-email-kernelfans@gmail.com>
+References: <1596433788-3784-1-git-send-email-kernelfans@gmail.com>
 MIME-Version: 1.0
-Message-ID: <159673380118.3192.11120762582178305899.tip-bot2@tip-bot2>
+Message-ID: <159673380472.3192.5214197870543431131.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,154 +58,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/urgent branch of tip:
+The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     19d0070a2792181f79df01277fe00b83b9f7eda7
-Gitweb:        https://git.kernel.org/tip/19d0070a2792181f79df01277fe00b83b9f7eda7
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 04 Aug 2020 17:01:23 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 06 Aug 2020 10:57:30 +02:00
+Commit-ID:     b031cf7752a82fefa6818a788d906d14f533afa9
+Gitweb:        https://git.kernel.org/tip/b031cf7752a82fefa6818a788d906d14f533afa9
+Author:        Pingfan Liu <kernelfans@gmail.com>
+AuthorDate:    Mon, 03 Aug 2020 13:49:48 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 06 Aug 2020 15:29:25 +02:00
 
-timekeeping/vsyscall: Provide vdso_update_begin/end()
+x86/purgatory: Don't generate debug info for purgatory.ro
 
-Architectures can have the requirement to add additional architecture
-specific data to the VDSO data page which needs to be updated independent
-of the timekeeper updates.
+Purgatory.ro is a standalone binary that is not linked against the rest of
+the kernel.  Its image is copied into an array that is linked to the
+kernel, and from there kexec relocates it wherever it desires.
 
-To protect these updates vs. concurrent readers and a conflicting update
-through timekeeping, provide helper functions to make such updates safe.
+Unlike the debug info for vmlinux, which can be used for analyzing crash
+such info is useless in purgatory.ro. And discarding them can save about
+200K space.
 
-vdso_update_begin() takes the timekeeper_lock to protect against a
-potential update from timekeeper code and increments the VDSO sequence
-count to signal data inconsistency to concurrent readers. vdso_update_end()
-makes the sequence count even again to signal data consistency and drops
-the timekeeper lock.
+ Original:
+   259080  kexec-purgatory.o
+ Stripped debug info:
+    29152  kexec-purgatory.o
 
-[ Sven: Add interrupt disable handling to the functions ]
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/20200804150124.41692-3-svens@linux.ibm.com
-
+Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+Acked-by: Dave Young <dyoung@redhat.com>
+Link: https://lore.kernel.org/r/1596433788-3784-1-git-send-email-kernelfans@gmail.com
 ---
- include/vdso/vsyscall.h            |  3 ++-
- kernel/time/timekeeping.c          |  2 +-
- kernel/time/timekeeping_internal.h | 11 +++++---
- kernel/time/vsyscall.c             | 41 +++++++++++++++++++++++++++++-
- 4 files changed, 53 insertions(+), 4 deletions(-)
+ arch/x86/purgatory/Makefile | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/include/vdso/vsyscall.h b/include/vdso/vsyscall.h
-index 2c6134e..b0fdc9c 100644
---- a/include/vdso/vsyscall.h
-+++ b/include/vdso/vsyscall.h
-@@ -6,6 +6,9 @@
+diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+index 088bd76..d24b43a 100644
+--- a/arch/x86/purgatory/Makefile
++++ b/arch/x86/purgatory/Makefile
+@@ -32,7 +32,7 @@ KCOV_INSTRUMENT := n
+ # make up the standalone purgatory.ro
  
- #include <asm/vdso/vsyscall.h>
+ PURGATORY_CFLAGS_REMOVE := -mcmodel=kernel
+-PURGATORY_CFLAGS := -mcmodel=large -ffreestanding -fno-zero-initialized-in-bss
++PURGATORY_CFLAGS := -mcmodel=large -ffreestanding -fno-zero-initialized-in-bss -g0
+ PURGATORY_CFLAGS += $(DISABLE_STACKLEAK_PLUGIN) -DDISABLE_BRANCH_PROFILING
+ PURGATORY_CFLAGS += $(call cc-option,-fno-stack-protector)
  
-+unsigned long vdso_update_begin(void);
-+void vdso_update_end(unsigned long flags);
+@@ -64,6 +64,9 @@ CFLAGS_sha256.o			+= $(PURGATORY_CFLAGS)
+ CFLAGS_REMOVE_string.o		+= $(PURGATORY_CFLAGS_REMOVE)
+ CFLAGS_string.o			+= $(PURGATORY_CFLAGS)
+ 
++AFLAGS_REMOVE_setup-x86_$(BITS).o	+= -Wa,-gdwarf-2
++AFLAGS_REMOVE_entry64.o			+= -Wa,-gdwarf-2
 +
- #endif /* !__ASSEMBLY__ */
+ $(obj)/purgatory.ro: $(PURGATORY_OBJS) FORCE
+ 		$(call if_changed,ld)
  
- #endif /* __VDSO_VSYSCALL_H */
-diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index 63a632f..4c7212f 100644
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -50,7 +50,7 @@ static struct {
- 	.seq = SEQCNT_ZERO(tk_core.seq),
- };
- 
--static DEFINE_RAW_SPINLOCK(timekeeper_lock);
-+DEFINE_RAW_SPINLOCK(timekeeper_lock);
- static struct timekeeper shadow_timekeeper;
- 
- /**
-diff --git a/kernel/time/timekeeping_internal.h b/kernel/time/timekeeping_internal.h
-index bcbb52d..4ca2787 100644
---- a/kernel/time/timekeeping_internal.h
-+++ b/kernel/time/timekeeping_internal.h
-@@ -1,12 +1,14 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #ifndef _TIMEKEEPING_INTERNAL_H
- #define _TIMEKEEPING_INTERNAL_H
--/*
-- * timekeeping debug functions
-- */
-+
- #include <linux/clocksource.h>
-+#include <linux/spinlock.h>
- #include <linux/time.h>
- 
-+/*
-+ * timekeeping debug functions
-+ */
- #ifdef CONFIG_DEBUG_FS
- extern void tk_debug_account_sleep_time(const struct timespec64 *t);
- #else
-@@ -31,4 +33,7 @@ static inline u64 clocksource_delta(u64 now, u64 last, u64 mask)
- }
- #endif
- 
-+/* Semi public for serialization of non timekeeper VDSO updates. */
-+extern raw_spinlock_t timekeeper_lock;
-+
- #endif /* _TIMEKEEPING_INTERNAL_H */
-diff --git a/kernel/time/vsyscall.c b/kernel/time/vsyscall.c
-index 54ce6eb..88e6b8e 100644
---- a/kernel/time/vsyscall.c
-+++ b/kernel/time/vsyscall.c
-@@ -13,6 +13,8 @@
- #include <vdso/helpers.h>
- #include <vdso/vsyscall.h>
- 
-+#include "timekeeping_internal.h"
-+
- static inline void update_vdso_data(struct vdso_data *vdata,
- 				    struct timekeeper *tk)
- {
-@@ -127,3 +129,42 @@ void update_vsyscall_tz(void)
- 
- 	__arch_sync_vdso_data(vdata);
- }
-+
-+/**
-+ * vdso_update_begin - Start of a VDSO update section
-+ *
-+ * Allows architecture code to safely update the architecture specific VDSO
-+ * data. Disables interrupts, acquires timekeeper lock to serialize against
-+ * concurrent updates from timekeeping and invalidates the VDSO data
-+ * sequence counter to prevent concurrent readers from accessing
-+ * inconsistent data.
-+ *
-+ * Returns: Saved interrupt flags which need to be handed in to
-+ * vdso_update_end().
-+ */
-+unsigned long vdso_update_begin(void)
-+{
-+	struct vdso_data *vdata = __arch_get_k_vdso_data();
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&timekeeper_lock, flags);
-+	vdso_write_begin(vdata);
-+	return flags;
-+}
-+
-+/**
-+ * vdso_update_end - End of a VDSO update section
-+ * @flags:	Interrupt flags as returned from vdso_update_begin()
-+ *
-+ * Pairs with vdso_update_begin(). Marks vdso data consistent, invokes data
-+ * synchronization if the architecture requires it, drops timekeeper lock
-+ * and restores interrupt flags.
-+ */
-+void vdso_update_end(unsigned long flags)
-+{
-+	struct vdso_data *vdata = __arch_get_k_vdso_data();
-+
-+	vdso_write_end(vdata);
-+	__arch_sync_vdso_data(vdata);
-+	raw_spin_unlock_irqrestore(&timekeeper_lock, flags);
-+}
