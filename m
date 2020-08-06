@@ -2,88 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE8B23DC2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C3023DC0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729408AbgHFQrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:47:05 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:30761 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729215AbgHFQpQ (ORCPT
+        id S1729176AbgHFQpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:45:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727824AbgHFQoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:45:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596732315;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=kQ8/0ag4BCcQ9dWEWrckB6cUtNt8F/dt5Qa3/Yht9h0=;
-        b=EsDXHSR/3LJK4VJZPv04L6DM0XyDfhuzMq59WvMxrltBdjx7PGXA53D5kcR2CjL2+E8Ey/
-        ADXKC8XwfLStAlkOSm5P8/6/waPT1oyQpwV/DtVBAcJzU1X/VE3s+hkJ70QeqrOZvt/0ic
-        JpU1i6/zoUL8guzq/9kX12KbQ82UIr4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-q7zoak4XPlC7eMMKlhdHXw-1; Thu, 06 Aug 2020 12:45:10 -0400
-X-MC-Unique: q7zoak4XPlC7eMMKlhdHXw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DCDD1005504;
-        Thu,  6 Aug 2020 16:45:09 +0000 (UTC)
-Received: from redhat.com (null.msp.redhat.com [10.15.80.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F396010023A6;
-        Thu,  6 Aug 2020 16:45:08 +0000 (UTC)
-Date:   Thu, 6 Aug 2020 11:45:07 -0500
-From:   David Teigland <teigland@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] dlm updates for 5.9
-Message-ID: <20200806164507.GC9935@redhat.com>
+        Thu, 6 Aug 2020 12:44:46 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDA5C0A8921;
+        Thu,  6 Aug 2020 09:44:46 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id c10so5921598edk.6;
+        Thu, 06 Aug 2020 09:44:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7j5tR0m8H3OjMJuPim98FwiN1aMkbIjxdxVhuyjo0Ew=;
+        b=eoPd66cTTjH9l86GoO63fQ8X+ctw+Tj6hSPmE5nYp/Vdw7ql/bdp4r9RzKYlJMfuc6
+         Uv8D1gdE4B+TP1mfI9optHvVmRoSLmApmaSXNVcECB65pZ8tz+2AyjO9ruPRFC25iy7P
+         GUKejLwQ/2ZaTbOxLdkbRqTHAS7Pf8nC9vskid09nzG5twd6YAD24ztc9/h6xh5r/wS8
+         IxPxwM73RIb7oiyYJwFcLdvxiVLKrNZLEgBmui6leAyfg2ByBszOKKDeCehFyiG9JPsm
+         K4eQ1HVC6piC9IOLSV2KMGGIbEXbSenlSoNegi0W7skQxYA720JZqAWd99NG0vJG3oe2
+         rXFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7j5tR0m8H3OjMJuPim98FwiN1aMkbIjxdxVhuyjo0Ew=;
+        b=hAkF1lbYeNCZFijXsiDk3SbtrBrVXg8sZ86tD+Aayf8RUylTCerVFt6frl2MMMwqfQ
+         k755u8odwthqIgOnX++qrN1IIIHTZXnbVQj9xENANWVgBYypEbrJTkj+ayywWzrcNmw/
+         uLTiUpME1QgJvW9mQTdwnlPv9qSSGDY8L98N+25zB5SG35SDzjsCgw5cCLXSaoHXgQHo
+         LStdYKt7a07CKKjSyBUVZhBcwd2OhxgImD8eZBk5MPIKBVJzhwTbGA+LLA+IBMrut2GS
+         cpx9bYo7qAu3yZbP+8aoHq5rSHjapwKZUJygOhQZTLgNoaR/B5yBSfAXk0bxyfJG1BNB
+         uBbw==
+X-Gm-Message-State: AOAM533TpVzbHddcFJSZv+bontlBIJ8h3uqTg6J/0RtZa9TSXM173UQk
+        IB7TM1bD6u5QlGD2i5QfsC2Ir43VmVb85rqUR/s=
+X-Google-Smtp-Source: ABdhPJwR1WrcmmYyv3xVh2Lg73XDm1Qy31RKbQCdDoen+3KsX/nStphPf+QMMn9o4Ud82k5K1qcstkFDVwFQJCjr5Ao=
+X-Received: by 2002:a05:6402:a5b:: with SMTP id bt27mr5003305edb.120.1596732284503;
+ Thu, 06 Aug 2020 09:44:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.8.3 (2017-05-23)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <1596634446-1413-1-git-send-email-kalyan_t@codeaurora.org>
+ <CAF6AEGtWNDGDsUBVk-Ud5OpretHA4qKDKtE+3mS=C8DAa=+Heg@mail.gmail.com> <1101abba0c8082da196f36636ef07a84@codeaurora.org>
+In-Reply-To: <1101abba0c8082da196f36636ef07a84@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 6 Aug 2020 09:45:28 -0700
+Message-ID: <CAF6AEGu2Lfb94kjnd7+GU_c93z0Zw2SgQ==UcrjPg3Wah=24ng@mail.gmail.com>
+Subject: Re: [Freedreno] [v1] drm/msm/dpu: Fix reservation failures in modeset
+To:     Kalyan Thota <kalyan_t@codeaurora.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Raviteja Tamatam <travitej@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        nganji@codeaurora.org, Sean Paul <seanpaul@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Drew Davenport <ddavenport@chromium.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Aug 6, 2020 at 7:46 AM <kalyan_t@codeaurora.org> wrote:
+>
+> On 2020-08-05 21:18, Rob Clark wrote:
+> > On Wed, Aug 5, 2020 at 6:34 AM Kalyan Thota <kalyan_t@codeaurora.org>
+> > wrote:
+> >>
+> >> In TEST_ONLY commit, rm global_state will duplicate the
+> >> object and request for new reservations, once they pass
+> >> then the new state will be swapped with the old and will
+> >> be available for the Atomic Commit.
+> >>
+> >> This patch fixes some of missing links in the resource
+> >> reservation sequence mentioned above.
+> >>
+> >> 1) Creation of a duplicate state in test_only commit (Rob)
+> >> 2) Allow resource release only during crtc_active false.
+> >>
+> >> For #2
+> >> In a modeset operation, swap state happens well before disable.
+> >> Hence clearing reservations in disable will cause failures
+> >> in modeset enable.
+> >>
+> >> Sequence:
+> >>     Swap state --> old, new
+> >>     modeset disables --> virt disable
+> >>     modeset enable --> virt modeset
+> >>
+> >> Allow reservations to be cleared only when crtc active is false
+> >> as in that case there wont be any modeset enable after disable.
+> >>
+> >> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+> >> ---
+> >>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 7 +++++--
+> >>  1 file changed, 5 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> >> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> >> index 63976dc..b85a576 100644
+> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> >> @@ -582,7 +582,7 @@ static int dpu_encoder_virt_atomic_check(
+> >>         dpu_kms = to_dpu_kms(priv->kms);
+> >>         mode = &crtc_state->mode;
+> >>         adj_mode = &crtc_state->adjusted_mode;
+> >> -       global_state = dpu_kms_get_existing_global_state(dpu_kms);
+> >> +       global_state = dpu_kms_get_global_state(crtc_state->state);
+> >>         trace_dpu_enc_atomic_check(DRMID(drm_enc));
+> >>
+> >>         /*
+> >> @@ -1172,6 +1172,7 @@ static void dpu_encoder_virt_disable(struct
+> >> drm_encoder *drm_enc)
+> >>         struct msm_drm_private *priv;
+> >>         struct dpu_kms *dpu_kms;
+> >>         struct dpu_global_state *global_state;
+> >> +       struct drm_crtc_state *crtc_state;
+> >>         int i = 0;
+> >>
+> >>         if (!drm_enc) {
+> >> @@ -1191,6 +1192,7 @@ static void dpu_encoder_virt_disable(struct
+> >> drm_encoder *drm_enc)
+> >>         priv = drm_enc->dev->dev_private;
+> >>         dpu_kms = to_dpu_kms(priv->kms);
+> >>         global_state = dpu_kms_get_existing_global_state(dpu_kms);
+> >> +       crtc_state = drm_enc->crtc->state;
+> >>
+> >>         trace_dpu_enc_disable(DRMID(drm_enc));
+> >>
+> >> @@ -1220,7 +1222,8 @@ static void dpu_encoder_virt_disable(struct
+> >> drm_encoder *drm_enc)
+> >>
+> >>         DPU_DEBUG_ENC(dpu_enc, "encoder disabled\n");
+> >>
+> >> -       dpu_rm_release(global_state, drm_enc);
+> >> +       if (crtc_state->active_changed && !crtc_state->active)
+> >> +               dpu_rm_release(global_state, drm_enc);
+> >
+> > I still think releasing the state in the atomic_commit() path is the
+> > wrong thing to do.  In the commit path, the various state objects
+> > should be immutable.. ie. in the atomic_test() path you derive the new
+> > hw state (including assignment/release of resources), and
+> > atomic_commit() is simply pushing the state down to the hw.
+> >
+> > Otherwise, this looks better than v1.
+> >
+> > BR,
+> > -R
+> >
+> okay. Should we avoid reservation all together if active=0 on that crtc
+> and trigger rm_release on the enc during atomic_check ?
+> how do you see the approach ?
 
-Please pull dlm updates from tag:
+Yeah, I suppose something like:
 
-git://git.kernel.org/pub/scm/linux/kernel/git/teigland/linux-dlm.git dlm-5.9
+   if (drm_atomic_crtc_needs_modeset()) {
+      reserve()
+   } else if (active_changed && !active) {
+      release()
+   }
 
-This set includes a some improvements to the dlm networking layer:
-improving the ability to trace dlm messages for debugging, and improved
-handling of bad messages or disrupted connections.
+I think it could happen (at least with atomic api) that you get a
+modeset without active_changed, so we might need to release() and then
+reserve() in that case?  (This is probably where starting to run more
+IGT tests would be useful)
 
-Note two unusual things:
-- There is a commit under net that was posted to netdev, which add a
-  socket helper for setting a mark value on a socket.
-- This branch was just rebased to drop a commit that was adding a tuning
-  knob to adjust blocking during recovery; we decided there's not enough
-  evidence it's necessary.
+BR,
+-R
 
-Thanks,
-Dave
-
-Alexander Aring (6):
-      net: sock: add sock_set_mark
-      fs: dlm: set skb mark for listen socket
-      fs: dlm: set skb mark per peer socket
-      fs: dlm: don't close socket on invalid message
-      fs: dlm: change handling of reconnects
-      fs: dlm: implement tcp graceful shutdown
-
-Wang Hai (1):
-      dlm: Fix kobject memleak
-
- fs/dlm/config.c    |  44 +++++++++++++++++++++++++++++
- fs/dlm/config.h    |   2 ++
- fs/dlm/lockspace.c |   6 ++--
- fs/dlm/lowcomms.c  | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------
- include/net/sock.h |   1 +
- net/core/sock.c    |   8 ++++++
- 6 files changed, 164 insertions(+), 28 deletions(-)
-
+> -Kalyan
+> >>
+> >>         mutex_unlock(&dpu_enc->enc_lock);
+> >>  }
+> >> --
+> >> 1.9.1
+> >>
+> > _______________________________________________
+> > Freedreno mailing list
+> > Freedreno@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/freedreno
