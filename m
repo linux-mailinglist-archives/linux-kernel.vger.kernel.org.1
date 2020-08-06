@@ -2,108 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C608D23DE64
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41AA23DDD4
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730033AbgHFRZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
+        id S1729987AbgHFRPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728735AbgHFRDC (ORCPT
+        with ESMTP id S1729992AbgHFRFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:03:02 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF19CC034615
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:19:13 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id s15so15145180pgc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 06:19:13 -0700 (PDT)
+        Thu, 6 Aug 2020 13:05:35 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10295C03461B
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:22:55 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id b25so36281342qto.2
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 06:22:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsukata-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V1nnod0YcV7H2TUfC8Gd96YGz+LSO9JcTYXXX1K5F8M=;
-        b=YKSScdMPWzgWF7wSGiSqP95WaTCqorzQjkBnqwiKacTI0pfodkP5JNyOASut44yJ3s
-         l5WouG2nks7VRPeOnmuKSKOFIZh8Ic0u8UuUxx45NqhalbT1S4f/9zdk9NtVZOzxRZIQ
-         5aiTXswxQAVqbhKii8Csr+ntnUijgnCyA7hcfIOHIXy36EYCI/cakomgU/tpxjmQzq1D
-         2pwabp9JoYYNme1qeEGLFdWuN+eKF79/Trev97gkXlSZWXu0VOo/HKohGN680R/9FDPI
-         Ere7hd6MEpRJtverCfv4jb0jqpZkVGowXiQuFo/kT+QYEJlC6cIka8DF1SLC/s5p6s+X
-         Ichw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l452q3QF9j1q5B+O8g1DRoVbZw8RLr9ADl2JOygRsek=;
+        b=Mg6HboN/rUfom8vlziRroCnZqyO3uPSNzAc+6sYKqxm+aO8hbUrExhJ5P0UGExDpPt
+         8E+3O5Xztb5jqAfe2sdaj+rCEVXypK/8qOW4zmrU/2krm0eVRC72vPl+3FYrO60YzLIF
+         oOLscUrZAEwW4na0p7Hy6FjleGOttqp3wkuW535u6XCmWnMGGXe9riYizroFFSr7aBlr
+         dJEsoOr4ywsL+z/hAzp/9NyqWvyUcudepm681eY7Gc9FHN2ui42sF7Zmn4n6ygygAJyL
+         K8qGm5o2zTxm8PKVLOrrhWSqP+7Xd5zo2+4SESCTatmZa0MqnGmPsc5J4/JGPZUa9zAb
+         1Ilg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V1nnod0YcV7H2TUfC8Gd96YGz+LSO9JcTYXXX1K5F8M=;
-        b=iF7i09/mKC/fAy3lFE5KN6mkPl4wgMnktQdGl8cUqf1QAnC/CETovUk3ZgGjh1dMxh
-         TLFbxlawUXLOBtOdDkRQ5PAi5XouEEDfa/sxvkH+o0ct5OO3h11u3R2xM86de5tN1z02
-         VfdPBQa1KdRLMf/x78vJcWTBoUX/UrSO89auS0IF6wdkXlOEwL19TyNct2Fv+OguGLNj
-         oyIpTuVL22dc+FE80qrk4O1A5qaAE/+BF6a6fycjbTcT/dd28WUYK5PuOJisZt+l3447
-         dfYlboRN1yMblxJo/qAnAUOQte45P/zYrfRmaprRyaKfCQONSms+53NtfwL2p1KGfga8
-         W/bw==
-X-Gm-Message-State: AOAM531WhGXT+6985KCiUTAfo6msZee/iwzDx5x/MSgW+emEr1JOFT/e
-        o3iG0+e/3Bv7Nr9oK4EXwLklI8WVcRI=
-X-Google-Smtp-Source: ABdhPJy5OWv4YebWEdmAk1TZNEahwpIKQsFkvMQ2u8mMNYwisz/N6njR6OtM1fCTbW1PDnm4LCQG4w==
-X-Received: by 2002:aa7:982e:: with SMTP id q14mr8418876pfl.299.1596719950852;
-        Thu, 06 Aug 2020 06:19:10 -0700 (PDT)
-Received: from localhost.localdomain (p14232-ipngn10801marunouchi.tokyo.ocn.ne.jp. [122.24.13.232])
-        by smtp.gmail.com with ESMTPSA id y72sm8790366pfg.58.2020.08.06.06.19.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 06:19:09 -0700 (PDT)
-From:   Eiichi Tsukata <devel@etsukata.com>
-To:     darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Eiichi Tsukata <devel@etsukata.com>
-Subject: [PATCH] xfs: Fix UBSAN null-ptr-deref in xfs_sysfs_init
-Date:   Thu,  6 Aug 2020 22:18:47 +0900
-Message-Id: <20200806131847.2248244-1-devel@etsukata.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l452q3QF9j1q5B+O8g1DRoVbZw8RLr9ADl2JOygRsek=;
+        b=FLi2im7DJCKlmBJbAEtEbne8jXhvflhszFyiaWZXo754Ta9dcXdGZTbQXrUQGX2qfx
+         k2ZeNSd57UJF9VmhTAiX3YAxZUdknw5YXW/leM1Q9t8FjKWhVsr27q4zE6q9oRskD3nw
+         cBG9Vst6a0yVD3Y4OuirHDQG928UuHR1bczkINzT+6r4g5I3i2SjQVykQcnYecgEXGut
+         C58ApZKiZ1QlZKZ0/gnuJONJS3eR9UTj0LPbJhR4xdxkjNQyCslGEaYgXAr1NS+V9KBl
+         V0OJZ1ZKMZhpjaXxZdYXquLkI3ca/gZjVu61WFxSf9wyqL001ztE696lfRKAoIcrQIYV
+         WxlA==
+X-Gm-Message-State: AOAM5305EPTa0VWXfJJVfYx0+51uPQe+uM+bWEkP6MdzHTlD+u7zf+Bu
+        Hait0WN3cWlmuIw0D2VAo9cUHMhBn0L6V7DeAajytg==
+X-Google-Smtp-Source: ABdhPJyKCRmY5VXKo1ALEnDnaEiOxnqnsnEuJ9I5ViFF2LKRVyHWjaaFicyzxjGYcX3HEb+/saU0cepj+m5ckR4FsR8=
+X-Received: by 2002:ac8:154:: with SMTP id f20mr8501217qtg.57.1596720173806;
+ Thu, 06 Aug 2020 06:22:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200805230852.GA28727@paulmck-ThinkPad-P72> <CANpmjNPxzOFC+VQujipFaPmAV8evU2LnB4X-iXuHah45o-7pfw@mail.gmail.com>
+In-Reply-To: <CANpmjNPxzOFC+VQujipFaPmAV8evU2LnB4X-iXuHah45o-7pfw@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 6 Aug 2020 15:22:42 +0200
+Message-ID: <CACT4Y+Ye7j-scb-thp2ubORCoEnuJPHL7W6Wh_DLP_4cux-0SQ@mail.gmail.com>
+Subject: Re: Finally starting on short RCU grace periods, but...
+To:     Marco Elver <elver@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Kostya Serebryany <kcc@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        "'Dmitry Vyukov' via syzkaller-upstream-moderation" 
+        <syzkaller-upstream-moderation@googlegroups.com>,
+        Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If xfs_sysfs_init is called with parent_kobj == NULL, UBSAN
-shows the following warning:
+On Thu, Aug 6, 2020 at 12:31 PM Marco Elver <elver@google.com> wrote:
+>
+> +Cc kasan-dev
+>
+> On Thu, 6 Aug 2020 at 01:08, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > Hello!
+> >
+> > If I remember correctly, one of you asked for a way to shorten RCU
+> > grace periods so that KASAN would have a better chance of detecting bugs
+> > such as pointers being leaked out of RCU read-side critical sections.
+> > I am finally starting entering and testing code for this, but realized
+> > that I had forgotten a couple of things:
+> >
+> > 1.      I don't remember exactly who asked, but I suspect that it was
+> >         Kostya.  I am using his Reported-by as a placeholder for the
+> >         moment, but please let me know if this should be adjusted.
+>
+> It certainly was not me.
+>
+> > 2.      Although this work is necessary to detect situtions where
+> >         call_rcu() is used to initiate a grace period, there already
+> >         exists a way to make short grace periods that are initiated by
+> >         synchronize_rcu(), namely, the rcupdate.rcu_expedited kernel
+> >         boot parameter.  This will cause all calls to synchronize_rcu()
+> >         to act like synchronize_rcu_expedited(), resulting in about 2-3
+> >         orders of magnitude reduction in grace-period latency on small
+> >         systems (say 16 CPUs).
+> >
+> > In addition, I plan to make a few other adjustments that will
+> > increase the probability of KASAN spotting a pointer leak even in the
+> > rcupdate.rcu_expedited case.
+>
+> Thank you, that'll be useful I think.
+>
+> > But if you would like to start this sort of testing on current mainline,
+> > rcupdate.rcu_expedited is your friend!
 
-  UBSAN: null-ptr-deref in ./fs/xfs/xfs_sysfs.h:37:23
-  member access within null pointer of type 'struct xfs_kobj'
-  Call Trace:
-   dump_stack+0x10e/0x195
-   ubsan_type_mismatch_common+0x241/0x280
-   __ubsan_handle_type_mismatch_v1+0x32/0x40
-   init_xfs_fs+0x12b/0x28f
-   do_one_initcall+0xdd/0x1d0
-   do_initcall_level+0x151/0x1b6
-   do_initcalls+0x50/0x8f
-   do_basic_setup+0x29/0x2b
-   kernel_init_freeable+0x19f/0x20b
-   kernel_init+0x11/0x1e0
-   ret_from_fork+0x22/0x30
+Hi Paul,
 
-Fix it by checking parent_kobj before the code accesses its member.
+This is great!
 
-Signed-off-by: Eiichi Tsukata <devel@etsukata.com>
----
- fs/xfs/xfs_sysfs.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I understand it's not a sufficiently challenging way of tracking
+things, but it's simply here ;)
+https://bugzilla.kernel.org/show_bug.cgi?id=208299
+(now we also know who asked for this, +Jann)
 
-diff --git a/fs/xfs/xfs_sysfs.h b/fs/xfs/xfs_sysfs.h
-index e9f810fc6731..aad67dc4ab5b 100644
---- a/fs/xfs/xfs_sysfs.h
-+++ b/fs/xfs/xfs_sysfs.h
-@@ -32,9 +32,9 @@ xfs_sysfs_init(
- 	struct xfs_kobj		*parent_kobj,
- 	const char		*name)
- {
-+	struct kobject *parent = parent_kobj ? &parent_kobj->kobject : NULL;
- 	init_completion(&kobj->complete);
--	return kobject_init_and_add(&kobj->kobject, ktype,
--				    &parent_kobj->kobject, "%s", name);
-+	return kobject_init_and_add(&kobj->kobject, ktype, parent, "%s", name);
- }
- 
- static inline void
--- 
-2.26.2
+I've tested on the latest mainline and with rcupdate.rcu_expedited=1
+it boots to ssh successfully and I see:
+[    0.369258][    T0] All grace periods are expedited (rcu_expedited).
 
+I have created https://github.com/google/syzkaller/pull/2021 to enable
+it on syzbot.
+On syzbot we generally use only 2-4 CPUs per VM, so it should be even better.
+
+> Do any of you remember some bugs we missed due to this? Can we find
+> them if we add this option?
+
+The problem is that it's hard to remember bugs that were not caught :)
+Here is an approximation of UAFs with free in rcu callback:
+https://groups.google.com/forum/#!searchin/syzkaller-bugs/KASAN$20use-after-free$20rcu_do_batch%7Csort:date
+The ones with low hit count are the ones that we almost did not catch.
+That's the best estimation I can think of. Also potentially we can get
+reproducers for such bugs without reproducers.
+Maybe we will be able to correlate some bugs/reproducers that appear
+soon with this change.
