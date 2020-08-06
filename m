@@ -2,184 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE61E23D805
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4312223D803
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728919AbgHFIcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 04:32:53 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:40620 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728489AbgHFIcw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 04:32:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1596702771; x=1628238771;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=1RpaG9RAAKpGNO6XXGwnZxtC9dDckxBzjSij3vpXkRQ=;
-  b=XJR8uEImKlMpJ+RSLon5kXsS5rtTBWh3Tz1zfxeiDVAy2eICt6BBcMp3
-   +SDalHY+U5uBWhyvexjl/M+5UOwOAxCTQL/6yeL7eqrN+zFKPtrUGrN7b
-   9NUkVBWfZ+PilL0XiFYsv+MHzPNHl3Js5VQpbA8saD7ke88zaD7uoSSCl
-   o=;
-IronPort-SDR: vHtWfuUG4vEl+dprOaD9/qgSxVSLX1IHZn99fzlDMiWKhy2a3HBu/PPZYn9m5sSvdTB9gTO2P3
- b2dUGYeAXgWA==
-X-IronPort-AV: E=Sophos;i="5.75,441,1589241600"; 
-   d="scan'208";a="66001732"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 06 Aug 2020 08:32:38 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id 81EBCA0601;
-        Thu,  6 Aug 2020 08:32:35 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 6 Aug 2020 08:32:34 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.73) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 6 Aug 2020 08:32:16 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     SeongJae Park <sjpark@amazon.com>
-CC:     <akpm@linux-foundation.org>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <fan.du@intel.com>, <foersleo@amazon.de>,
-        <gthelen@google.com>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <rppt@kernel.org>, <sblbir@amazon.com>, <shakeelb@google.com>,
-        <shuah@kernel.org>, <sj38.park@gmail.com>, <snu@amazon.de>,
-        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        SeongJae Park <sjpark@amazon.de>
-Subject: Re: [RFC v6 00/10] DAMON: Support Physical Memory Address Space Monitoring
-Date:   Thu, 6 Aug 2020 10:31:55 +0200
-Message-ID: <20200806083155.31432-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200805065951.18221-1-sjpark@amazon.com>
+        id S1728888AbgHFIcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 04:32:23 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:37830 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727768AbgHFIcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 04:32:22 -0400
+Received: from [10.130.0.75] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP9wNwCtfckAFAA--.925S3;
+        Thu, 06 Aug 2020 16:32:15 +0800 (CST)
+Subject: Re: [PATCH] MIPS: Introduce cmdline argument writecombine=
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>
+References: <1596697741-3561-1-git-send-email-yangtiezhu@loongson.cn>
+ <10e04885-b775-e7db-b927-6400382fd32d@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <cc0c8b89-748d-0d38-bcc8-1c2dbb0996bf@loongson.cn>
+Date:   Thu, 6 Aug 2020 16:32:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.73]
-X-ClientProxiedBy: EX13D08UWC002.ant.amazon.com (10.43.162.168) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+In-Reply-To: <10e04885-b775-e7db-b927-6400382fd32d@flygoat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9DxP9wNwCtfckAFAA--.925S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFyDCrWkZFyrZFWxJrWrZrb_yoWrJrWUpF
+        WDG3ZxGr4fKr1jyF9xArnFqrWYvrn3AF9xAr1UGr1UZas09r1kKFn2qrWagF4kZryxKa40
+        yFW09FyUKw10y3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvSb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l
+        c2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+        AVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
+        ZEXa7IUYbjjPUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 Aug 2020 08:59:41 +0200 SeongJae Park <sjpark@amazon.com> wrote:
+On 08/06/2020 03:39 PM, Jiaxun Yang wrote:
+>
+>
+> 在 2020/8/6 下午3:09, Tiezhu Yang 写道:
+>> Loongson processors have a writecombine issue that maybe failed to
+>> write back framebuffer used with ATI Radeon or AMD GPU at times,
+>> after commit 8a08e50cee66 ("drm: Permit video-buffers writecombine
+>> mapping for MIPS"), there exists some errors such as blurred screen
+>> and lockup, and so on.
+>>
+>> With this patch, disable writecombine by default for Loongson64 to
+>> work well with ATI Radeon or AMD GPU, and it has no influence on the
+>> other platforms due to writecombine is enabled by default.
+>>
+>> Additionally, if it is necessary, writecombine=on can be set manually
+>> in the cmdline to enhance the performance for Loongson LS7A integrated
+>> graphics in the future.
+>>
+>> [   60.958721] radeon 0000:03:00.0: ring 0 stalled for more than 
+>> 10079msec
+>> [   60.965315] radeon 0000:03:00.0: GPU lockup (current fence id 
+>> 0x0000000000000112 last fence id 0x000000000000011d on ring 0)
+>> [   60.976525] radeon 0000:03:00.0: ring 3 stalled for more than 
+>> 10086msec
+>> [   60.983156] radeon 0000:03:00.0: GPU lockup (current fence id 
+>> 0x0000000000000374 last fence id 0x00000000000003a8 on ring 3)
+> Hi Tiezhu,
+>
+> Thanks for your patch.
+> Personally I didn't have any issue with writecombine on my test 
+> systems, but there
+> are some complains about unstable graphic card from users. So 
+> generally a cmdline
+> writecombine switch is necessary.
+>
+>>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>   arch/mips/include/asm/pgtable.h |  4 ++++
+>>   arch/mips/kernel/cpu-probe.c    | 19 +++++++++++++++++++
+>>   2 files changed, 23 insertions(+)
+>>
+>> diff --git a/arch/mips/include/asm/pgtable.h 
+>> b/arch/mips/include/asm/pgtable.h
+>> index dd7a0f5..34869f7 100644
+>> --- a/arch/mips/include/asm/pgtable.h
+>> +++ b/arch/mips/include/asm/pgtable.h
+>> @@ -473,6 +473,10 @@ static inline pgprot_t pgprot_noncached(pgprot_t 
+>> _prot)
+>>   static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
+>>   {
+>>       unsigned long prot = pgprot_val(_prot);
+>> +    extern bool mips_writecombine;
+>> +
+>> +    if (!mips_writecombine)
+>> +        return pgprot_noncached(_prot);
+>
+> You can simply override c->writecombine to _CACHE_UNCACHED in 
+> cpu-probe.c with
+> out this kind of hijack.
+>
+>>         /* cpu_data[0].writecombine is already shifted by 
+>> _CACHE_SHIFT */
+>>       prot = (prot & ~_CACHE_MASK) | cpu_data[0].writecombine;
+>> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+>> index e2955f1..98777ca 100644
+>> --- a/arch/mips/kernel/cpu-probe.c
+>> +++ b/arch/mips/kernel/cpu-probe.c
+>> @@ -459,6 +459,25 @@ static int __init ftlb_disable(char *s)
+>>     __setup("noftlb", ftlb_disable);
+>>   +#ifdef CONFIG_MACH_LOONGSON64
+>> +bool mips_writecombine; /* initialise to false by default */
+>> +#else
+>> +bool mips_writecombine = true;
+>> +#endif
+>> +EXPORT_SYMBOL(mips_writecombine);
+> There is no need to export this symbol, see comment before.
+>> +
+>> +static int __init writecombine_setup(char *str)
+>> +{
+>> +    if (strcmp(str, "on") == 0)
+>> +        mips_writecombine = true;
+>> +    else if (strcmp(str, "off") == 0)
+>> +        mips_writecombine = false;
+>> +
+>> +    return 1;
+>> +}
+>> +
+>> +__setup("writecombine=", writecombine_setup);
+>
+> Use early_param here seems more reasonable, it will be probed earlier.
 
-> From: SeongJae Park <sjpark@amazon.de>
-> 
-> Changes from Previous Version
-> =============================
-> 
-> - paddr: Support nested iomem sections (Du Fan)
-> - Rebase on v5.8
-> 
-> Introduction
-> ============
-> 
-> DAMON[1] programming interface users can extend DAMON for any address space by
-> configuring the address-space specific low level primitives with appropriate
-> ones including their own implementations.  However, because the implementation
-> for the virtual address space is only available now, the users should implement
-> their own for other address spaces.  Worse yet, the user space users who rely
-> on the debugfs interface and user space tool, cannot implement their own.
-> 
-> This patchset implements another reference implementation of the low level
-> primitives for the physical memory address space.  With this change, hence, the
-> kernel space users can monitor both the virtual and the physical address spaces
-> by simply changing the configuration in the runtime.  Further, this patchset
-> links the implementation to the debugfs interface and the user space tool for
-> the user space users.
-> 
-> Note that the implementation supports only the user memory, as same to the idle
-> page access tracking feature.
-> 
-> [1] https://lore.kernel.org/linux-mm/20200706115322.29598-1-sjpark@amazon.com/
+Hi Jiaxun,
 
-This patchset doesn't works for physical address monitoring because I forgot
-below patch.  Sorry for missing it.  Please apply it before you test this
-patchset.  Or, you can clone the patch applied complete git tree:
+Thanks for your suggestion, it looks better.
 
-    $ git clone git://github.com/sjp38/linux -b cdamon/rfc/v6.1
+I will modify and test it, then I will send v2 with another
+document patch to explain this cmdline argument.
 
-The web is also available:
-https://github.com/sjp38/linux/releases/tag/cdamon/rfc/v6.1
+Thanks,
+Tiezhu
 
-The patch will be split and squashed in appropriate patch in the next spin.
-
-=============================== >8 ===========================================
-From edf6b586f4ac3f8f4d61ebde56d644422bd93bee Mon Sep 17 00:00:00 2001
-From: SeongJae Park <sjpark@amazon.de>
-Date: Thu, 6 Aug 2020 08:18:49 +0000
-Subject: [PATCH] mm/damon: Fix paddr target id problem
-
-The target id for 'paddr' is meaningless, but we set it as '-1' for fun
-and smooth interaction with the user space interfaces.  However, the
-target ids are 'unsigned long' and thus using '-1' makes no sense.  This
-commit changes the fake number to another funny but unsigned number,
-'42'.
-
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- Documentation/admin-guide/mm/damon/usage.rst | 4 ++--
- mm/damon.c                                   | 2 +-
- tools/damon/_damon.py                        | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index 88b8e9254a7e..3e2f1519c96a 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -334,12 +334,12 @@ check it again::
- Users can also monitor the physical memory address space of the system by
- writing a special keyword, "``paddr\n``" to the file.  Because physical address
- space monitoring doesn't support multiple targets, reading the file will show a
--fake value, ``-1``, as below::
-+fake value, ``42``, as below::
-
-     # cd <debugfs>/damon
-     # echo paddr > target_ids
-     # cat target_ids
--    -1
-+    42
-
- Note that setting the target ids doesn't start the monitoring.
-
-diff --git a/mm/damon.c b/mm/damon.c
-index a9757a0e5cf7..66268cb45b51 100644
---- a/mm/damon.c
-+++ b/mm/damon.c
-@@ -2047,7 +2047,7 @@ static ssize_t debugfs_target_ids_write(struct file *file,
-                ctx->target_valid = NULL;
-
-                /* target id is meaningless here, but we set it just for fun */
--               snprintf(kbuf, count, "-1    ");
-+               snprintf(kbuf, count, "42    ");
-        } else {
-                /* Configure the context for virtual memory monitoring */
-                ctx->init_target_regions = kdamond_init_vm_regions;
-diff --git a/tools/damon/_damon.py b/tools/damon/_damon.py
-index cf14a0d59b94..6ff278117e84 100644
---- a/tools/damon/_damon.py
-+++ b/tools/damon/_damon.py
-@@ -28,7 +28,7 @@ def set_target(tid, init_regions=[]):
-         return 0
-
-     if tid == 'paddr':
--        tid = -1
-+        tid = 42
-     string = ' '.join(['%s %d %d' % (tid, r[0], r[1]) for r in init_regions])
-     return subprocess.call('echo "%s" > %s' % (string, debugfs_init_regions),
-             shell=True, executable='/bin/bash')
---
-2.17.1
+>
+>> +
+>>   /*
+>>    * Check if the CPU has per tc perf counters
+>>    */
+> Thanks
+>
+> - Jiaxun
 
