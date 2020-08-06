@@ -2,95 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87C023DF35
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA6223DFD8
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729699AbgHFRmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:42:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729403AbgHFRbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:31:43 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5FC523133;
-        Thu,  6 Aug 2020 15:12:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596726754;
-        bh=cUg8ko8OEiK/4qIbgfajwCnFYSLMbgT5cLNLiBOA0zc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AbFccKDJye+6TKEYkdO27Ltto8sfBzN9avARpUTzS2JIZOCnVJJvIiHQp6vOomQOC
-         F8JNZCzIVobAp32SyKnSVXDA/lbtwWMtL78IWNpUC9RYHN0kLSqSvrU3xvklsMNxUQ
-         acUSid/EZztAy2Hg3NFiZG8sWBd8qI54SF2roqnw=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k3hZJ-000Iec-1O; Thu, 06 Aug 2020 16:12:33 +0100
+        id S1726769AbgHFRya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:54:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728048AbgHFQay (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:30:54 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F092C0A893D;
+        Thu,  6 Aug 2020 08:13:33 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id EAAD02972D4
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH v2 00/14] Clean H264 stateless uAPI
+Date:   Thu,  6 Aug 2020 12:12:56 -0300
+Message-Id: <20200806151310.98624-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 06 Aug 2020 16:12:32 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Daniel Palmer <daniel@0x0f.com>,
-        Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Cc:     alix.wu@mediatek.com, DTML <devicetree@vger.kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, yj.chiang@mediatek.com
-Subject: Re: [PATCH 0/2] irqchip: irq-mt58xx: Add mt58xx series interrupt
-In-Reply-To: <CAFr9PXkFJJKnqVkPBXgh1kqL_serK4DmrmJ73xU+ZMA+NuF-bA@mail.gmail.com>
-References: <CAFr9PX=Gk9h6ASi6saBLhoZ45g-WqCzDQo2XWT033fJykFSY_g@mail.gmail.com>
- <20200806140739.31501-1-mark-pk.tsai@mediatek.com>
- <CAFr9PXkFJJKnqVkPBXgh1kqL_serK4DmrmJ73xU+ZMA+NuF-bA@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <654a81dcefb3024d762ff338d4bd7f14@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: daniel@0x0f.com, mark-pk.tsai@mediatek.com, alix.wu@mediatek.com, devicetree@vger.kernel.org, jason@lakedaemon.net, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, yj.chiang@mediatek.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-06 15:58, Daniel Palmer wrote:
-> Hi Mark-PK,
-> 
-> On Thu, 6 Aug 2020 at 23:08, Mark-PK Tsai <mark-pk.tsai@mediatek.com> 
-> wrote:
->> > Do you know if it would be possible to confirm if they are
->> > the
->> > same thing? MediaTek bought MStar a few years ago so it seems likely
->> > but I have no hard information.
->> >
->> 
->> Yes, it's for the same interrupt controller IP.
-> 
-> That's good news. :)
-> 
->> > If they are the same thing could we work on making one series that
->> > supports both use cases?
->> 
->> Sure, and I think the irq controller driver should support both use 
->> cases.
->> So how about keep the MTK version driver?
-> 
-> I'm fine with that. Maybe you can push the MTK version and I can send
-> a small patch after that to add the small bits I need?
+Here's a new round for the H.264 uAPI cleanup, which as discussed
+aims at being stabilized and promoted as a first-class public uAPI soon.
 
-In the interest of being vendor agnostic, please rename the properties
-such as mediatek,irqs-map-range to something less brand-specific.
-The compatible string should be enough.
+It should be noted that there is already GStreamer native
+support for this interface, which will be part of 1.18,
+once it's released.
 
-Thanks,
+I have pushed a branch porting GStreamer to
+support these interface changes:
 
-         M.
+https://gitlab.freedesktop.org/ezequielgarcia/gst-plugins-bad/-/commits/for_h264_uapi_v3
+
+As was discussed the SLICE_PARAMS control is now clarified
+to work for one-slice-per-request operation, using CAPTURE
+buffer holding features. This is how Cedrus driver is implemented.
+
+The other drivers currently supported Hantro and Rockchip VDEC,
+as well as the MTK stateless decoder posted by Alex Courbot
+operate in frame-based mode.
+
+These "frame-based" devices parse the slice headers in hardware,
+and therefore shall not support SLICE_PARAMS. To that extent,
+the redundant bitstream fields are now part of the DECODE_PARAMS
+control.
+
+Hopefully now the specification documentation is clear enough.
+GStreamer, Chromium and FFmpeg (which I'm sure will be implemented
+as soon as we stabilize the API) should serve as reference examples
+on how the API is consumed.
+
+Changelog:
+
+v1->v2:
+* Clean SLICE_PARAMS documentation, which we don't
+  expect to be part of an array anymore. 
+* Clarify how frame-based and slice-based modes
+  are expected to work.
+* Add Cedrus patches to fix field references,
+  as requested by Jernej.
+* Fix wrongly removed SPS in rkvdec.
+* Fix rkvdec DPB reference implementation.
+* Fix missing Cedrus and missing control member,
+  for prediction weight table control.
+* Say "raster scan" instead of "matrix" in the docs.
+* Drop duplicated macros and use v4l2_h264_dpb_reference
+  for the DPB reference signalling.
+
+RFC->v1: 
+* Split prediction weight table to a separate control.
+* Increase size of first_mb_in_slice field.
+* Cleanup DPB entry interface, to support field coding.
+* Increase of DPB entry pic_num field.
+* Move slice invariant fields to the per-frame control.
+
+Ezequiel Garcia (10):
+  media: uapi: h264: Further clarify scaling lists order
+  media: uapi: h264: Split prediction weight parameters
+  media: uapi: h264: Increase size of 'first_mb_in_slice' field
+  media: uapi: h264: Clean DPB entry interface
+  media: uapi: h264: Increase size of DPB entry pic_num
+  media: uapi: h264: Drop SLICE_PARAMS 'size' field
+  media: uapi: h264: Clarify SLICE_BASED mode
+  media: uapi: h264: Clean slice invariants syntax elements
+  media: hantro: Don't require unneeded H264_SLICE_PARAMS
+  media: rkvdec: Don't require unneeded H264_SLICE_PARAMS
+
+Jernej Skrabec (3):
+  media: uapi: h264: Update reference lists
+  media: cedrus: h264: Properly configure reference field
+  media: cedrus: h264: Fix frame list construction
+
+Philipp Zabel (1):
+  media: uapi: h264: Clarify pic_order_cnt_bit_size field
+
+ .../media/v4l/ext-ctrls-codec.rst             | 224 ++++++++++--------
+ drivers/media/v4l2-core/v4l2-ctrls.c          |  28 +++
+ drivers/media/v4l2-core/v4l2-h264.c           |  12 +-
+ drivers/staging/media/hantro/hantro_drv.c     |   5 -
+ .../staging/media/hantro/hantro_g1_h264_dec.c |  21 +-
+ drivers/staging/media/hantro/hantro_h264.c    |   8 +-
+ drivers/staging/media/hantro/hantro_hw.h      |   2 -
+ drivers/staging/media/rkvdec/rkvdec-h264.c    |  27 +--
+ drivers/staging/media/rkvdec/rkvdec.c         |   5 -
+ drivers/staging/media/sunxi/cedrus/cedrus.c   |   7 +
+ drivers/staging/media/sunxi/cedrus/cedrus.h   |   1 +
+ .../staging/media/sunxi/cedrus/cedrus_dec.c   |   2 +
+ .../staging/media/sunxi/cedrus/cedrus_h264.c  |  49 ++--
+ include/media/h264-ctrls.h                    |  80 ++++---
+ include/media/v4l2-ctrls.h                    |   2 +
+ include/media/v4l2-h264.h                     |   3 +-
+ 16 files changed, 257 insertions(+), 219 deletions(-)
+
 -- 
-Jazz is not dead. It just smells funny...
+2.27.0
+
