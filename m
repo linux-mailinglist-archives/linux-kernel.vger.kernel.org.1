@@ -2,126 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C41D23DF13
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A80D23DF21
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729587AbgHFRh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:37:56 -0400
-Received: from mail.efficios.com ([167.114.26.124]:44178 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728584AbgHFRhH (ORCPT
+        id S1730462AbgHFRiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:38:21 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40206 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728326AbgHFRiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:37:07 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 3FDA329B3CB;
-        Thu,  6 Aug 2020 13:37:06 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id H0HhRYvWXMqS; Thu,  6 Aug 2020 13:37:05 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B325F29B5B3;
-        Thu,  6 Aug 2020 13:37:05 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B325F29B5B3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1596735425;
-        bh=OrosOIBuaBgs7qXL5uOz7bAbp98TAnrOMrITAMPW1Rk=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=eUWfIcTPd+W2tkiWaomJrp/lm1s26VFGZYzc8N6C0gBcJso2X1b7D55AtOjMYAOfc
-         CCWCmmQMYQDFYX08/W/jRirCdr3UxcRRR1wc2kjY/PFAJnjp1FZD14Qjv0o4mgFtfq
-         kjNyaWu/xdZLW8Le17XnYDI8siemWZ1CPItnbbkYfzDWlwCFRIAd91+oG6DpdMHUfa
-         cAOw2Ft/ugPTyfzVJWWLjekkX6oCZ6FFeM8Z6Y6z3+kSGUHwj5MawO7KF4RmTceBHK
-         2A1pzq35vSRMTGS03UWAVOKn4k0nBmk+h/V6ZZvaZaILA4fXJgk77DhD72ed8VrjyC
-         ZTAEnS3oHdfvg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id nI9X0H-SkiRq; Thu,  6 Aug 2020 13:37:05 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id A408529B636;
-        Thu,  6 Aug 2020 13:37:05 -0400 (EDT)
-Date:   Thu, 6 Aug 2020 13:37:05 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Peter Oskolkov <posk@google.com>, paulmck <paulmck@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul Turner <pjt@google.com>,
-        Chris Kennelly <ckennelly@google.com>
-Message-ID: <1668913120.1621.1596735425601.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CAFTs51Ufyds5mypiysL=2ZwtyMk9hjLm-9tJbYz=xciY1f2=5g@mail.gmail.com>
-References: <20200806000859.160882-1-posk@google.com> <20200806134828.GA165568@hirez.programming.kicks-ass.net> <CAFTs51Ufyds5mypiysL=2ZwtyMk9hjLm-9tJbYz=xciY1f2=5g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] membarrier: add
- MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU
+        Thu, 6 Aug 2020 13:38:19 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 076Hc3MU004811;
+        Thu, 6 Aug 2020 12:38:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1596735483;
+        bh=vwXPIie4Fk6NjQ/oTOiMgA8dv5Jnoh1p121aYz5W/yw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=DsaoMsJckoXFsaEmYn8B94hkGNDatRz1JX8v7sH3x1Bgq6l6Pat4766+ruXBNkVN5
+         g7iGs3rjUT4vNR23ZOgpiBZWQgCoXPMnW+1riXVqFvDExpumLqMg1f+cT4LOrgvbCi
+         nxz4O4WheCTJDVZfTbFtGT5ydc+1MAJsRvtXuXzU=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 076Hc2Sw003462;
+        Thu, 6 Aug 2020 12:38:03 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 6 Aug
+ 2020 12:38:03 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 6 Aug 2020 12:38:03 -0500
+Received: from [10.250.160.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 076HbvKU024262;
+        Thu, 6 Aug 2020 12:37:59 -0500
+Subject: Re: [PATCH -next] crypto: sa2ul: add Kconfig selects to fix build
+ error
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        David Miller <davem@davemloft.net>
+CC:     Tero Kristo <t-kristo@ti.com>
+References: <6e04b405-7369-ff04-a2dd-aa7c561e13d6@infradead.org>
+From:   "J, KEERTHY" <j-keerthy@ti.com>
+Message-ID: <ce215b73-4c76-648f-f19d-46930e73a5ed@ti.com>
+Date:   Thu, 6 Aug 2020 23:07:56 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <6e04b405-7369-ff04-a2dd-aa7c561e13d6@infradead.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3959 (ZimbraWebClient - FF79 (Linux)/8.8.15_GA_3953)
-Thread-Topic: membarrier: add MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU
-Thread-Index: S/ODafaL6Qc5NbUukMlKTrc5xZy9ZQ==
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Aug 6, 2020, at 1:07 PM, Peter Oskolkov posk@posk.io wrote:
 
-> On Thu, Aug 6, 2020 at 6:48 AM <peterz@infradead.org> wrote:
->>
->> On Wed, Aug 05, 2020 at 05:08:58PM -0700, Peter Oskolkov wrote:
->>
->> Thanks for the Cc!
+
+On 8/6/2020 9:24 PM, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
 > 
-> Always a pleasure!
+> sa2ul.c uses sha{1,256,512}_zero_message_hash, so select the
+> Kconfig symbols that provide those, like other crypto drivers do.
 > 
-> (Sorry, included only membarrier maintainers in v1; in v2 included
-> both membarrier and rseq maintainers).
+> Fixes this build error:
 > 
->>
->> > + * @MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU:
->> > + *                          If a thread belonging to the current process
->> > + *                          is currently in an RSEQ critical section on the
->> > + *                          CPU identified by flags parameter, restart it.
->> > + *                          @flags: if @flags >= 0, identifies the CPU to
->> > + *                                  restart RSEQ CS on; if == -1, restarts
->> > + *                                  RSEQ CSs on all CPUs.
->>
->> > +     } else if (cpu_id == -1) {
->> > +             on_each_cpu(membarrier_rseq_ipi,
->> > +                         current->group_leader, true);
->>
->> This is an unpriv IPI the world. That's a big no-no.
+> ld: drivers/crypto/sa2ul.o: in function `sa_sha_digest':
+> sa2ul.c:(.text+0x2b25): undefined reference to `sha512_zero_message_hash'
+
+Thanks for catching this.
+
+Reviewed-by: Keerthy <j-keerthy@ti.com>
+
 > 
-> removed in v2.
-
-I don't think the feature must be removed, but its implementation needs adjustment.
-
-How about we simply piggy-back on the membarrier schemes we already have, and
-implement:
-
-membarrier_register_private_expedited(MEMBARRIER_FLAG_RSEQ)
-membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ)
-
-All the logic is there to prevent sending IPIs to runqueues which are not running
-threads associated with the same mm. Considering that preemption does an rseq abort,
-running a thread belonging to a different mm should mean that this CPU is not
-currently executing an rseq critical section, or if it was, it has already been
-aborted, so it is quiescent.
-
-Then you'll probably want to change membarrier_private_expedited so it takes an
-extra "cpu" argument. If cpu=-1, iterate on all runqueues like we currently do.
-If cpu >= 0, only IPI that CPU if the thread currently running has the same mm.
-
-Also, should this belong to the membarrier or the rseq system call ? It just
-looks like the membarrier happens to implement very similar things for barriers,
-but arguably this is really about rseq. I wonder if we should expose this through
-rseq instead, even if we end up using membarrier code.
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: Randy Dunlap <rdunlap@infradead.org> # 2020-07-29
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: Tero Kristo <t-kristo@ti.com>
+> Cc: Keerthy <j-keerthy@ti.com>
+> ---
+>   drivers/crypto/Kconfig |    3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> --- linux-next-20200806.orig/drivers/crypto/Kconfig
+> +++ linux-next-20200806/drivers/crypto/Kconfig
+> @@ -873,6 +873,9 @@ config CRYPTO_DEV_SA2UL
+>   	select CRYPTO_AES
+>   	select CRYPTO_AES_ARM64
+>   	select CRYPTO_ALGAPI
+> +	select CRYPTO_SHA1
+> +	select CRYPTO_SHA256
+> +	select CRYPTO_SHA512
+>   	select HW_RANDOM
+>   	select SG_SPLIT
+>   	help
+> 
