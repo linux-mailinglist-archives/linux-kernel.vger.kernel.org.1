@@ -2,140 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6413123DE44
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6450923DE8C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729429AbgHFRYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        id S1728666AbgHFR1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728798AbgHFREp (ORCPT
+        with ESMTP id S1729685AbgHFRBx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:04:45 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694B5C0619CF;
-        Thu,  6 Aug 2020 06:50:04 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id e11so11993641otk.4;
-        Thu, 06 Aug 2020 06:50:03 -0700 (PDT)
+        Thu, 6 Aug 2020 13:01:53 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B9AC0698CD;
+        Thu,  6 Aug 2020 06:50:41 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id c2so29333088edx.8;
+        Thu, 06 Aug 2020 06:50:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SEjQBZlrTFsQloK4tn/llXwept9F2hPUgYtTajnb1LA=;
-        b=MYFtD1vgNVKOxnDpEWoSNTcqVqARbDQ4iS+ttYasNnJ2A1Rymefw8vFcH2aHdZ4fye
-         GG0GarjIsVRgTSxlorHMu76c0fQH4leeKMyq3Qp+mtVhv05KN0PVzAs/syXyvgvtjpA2
-         SXQQJ2fdCSlmi/tWZxKRI1zoZLoa63MUWdHV+S0E1cu9rouZrjPORjmndPu05a/1Kz/+
-         dy/CwGAqKZ1WG5gYYfgl86uxvWAORJ5Mx+oxIfngtOVXyH+qzhpRzl5BIW4h+NvzFPCU
-         8+xW+Q5DoC8gRPMtzE4pPnwpiMY21vrjrVOuKS/p0YXelP9PTFMnP3Coh3qv116+54n3
-         0dgQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pYOAU4zyTtJPYkEQfnQ4aWaYGVh8/wQuqp7IpTtJ6do=;
+        b=LvlvYpq9JUMWnC9/yFSS4wQkoMzm46piNKWyoQ5DuTwW/jjZl7ANZ4j592Uyj1yy3Y
+         31H9pN3pbfyxBlVjBg64O+j4LwbZFScsNLIjvF/xJffyXB6z4b1w/YA+UINKPohJPaKM
+         DhL8lwL+cYEe5vSJyl7gu1SCgZsX7iilU2sURy2UrTJgoEa0KrNbaU6eVmOsX1Dtp1Vs
+         A040v/hmZTFY4JNauiwROduRvAeiJehMUPswUJA9yeARYk+30rTwtZkzc7LQhJPv/sEt
+         kSF0maMNyYzQhF8UsZAf9VAKcQmDJRyt8GUPaEH5dTUt+t8xVfWwudrXhnv/OhxEJC80
+         KuwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SEjQBZlrTFsQloK4tn/llXwept9F2hPUgYtTajnb1LA=;
-        b=Jvqp5xtZLZpZd5N2KzIr4AM0wCrC09IChuLOj06IEvZ00M1Elwc7ds0uN5KlTKZkxt
-         Nodv+r8o4vGuHJV2p82xSDySrFUWTL3pPuhT90kkbCfUqn3/kLdd7SgFeKqMGy2NHkZo
-         7rPclGILKIBJuXCLliJq8V0E1UTSpXbE4Y+pVfm7ORpKJ8xqkdw+giw0/5LG8nXFJbgy
-         ptnfL4MimUnq5SscIgu6huXxi3kp+lCDRWbj19Z1qcbL0ECtSsr8epd+LjU4e6ClBnwb
-         GznBWw3H6TZRLL0V6F02hpQpeHVI4M71jUZmnNl7Za38HR3h7hjZ6rgWpdkYxeTLwQhM
-         LnFQ==
-X-Gm-Message-State: AOAM533JpofGkhaIuR0UjfUTNL6e5pZ1T1iEfBnOrAZAHsxnmNqyUDyB
-        ToHyO7jb3qfm3IB6l12whRhvCsT1V2VVdIbaQLU=
-X-Google-Smtp-Source: ABdhPJw4ecP6H//vDHHZvBTuxT/QGbR+ZI3XNBXLHzPCazzTrLsqEggBwLft6DcjEwmJkWIfi5p6NHkE5D1PCLV+MYw=
-X-Received: by 2002:a9d:67d3:: with SMTP id c19mr7420766otn.162.1596721798604;
- Thu, 06 Aug 2020 06:49:58 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=pYOAU4zyTtJPYkEQfnQ4aWaYGVh8/wQuqp7IpTtJ6do=;
+        b=YR5fT+QSuZ/dBEwGSsK5mYJhzW5ArBsUUbmkhC2vO9ujgh28/V39u3+fYVINmBhtPa
+         VzC3j7Pk5FyqHRdOTHGnlahNraAcGs+h/zjzwQwYmatyOSSUjy02EgrhDf3cxdSRmu84
+         WyWmD8/v3U8oWvcw4Sapmd//IPbXaqZcVmuIpo2kBzMNbHMFK2SAmgAuh773KjV+Hytk
+         0o2UlcGFts9eAQe/WnqPSLjeh/8+L5gGfdk2bfgzsPKckEliazNJ4Rey/jyu0h4K+Epr
+         PN5gPZZRJWhORszPSQqsBulo3xw4+mHny527WiQ7OsfBMxQK205LVUKr/5nXt08GoRIm
+         BxmA==
+X-Gm-Message-State: AOAM5313a4W/raGmtwtZunkPZFZMPgMCw3CtdHFOILHjACLXUZfm19nC
+        SaFhMSomLM8OaA6qV8euLvs=
+X-Google-Smtp-Source: ABdhPJzYxh9mNb/BHUYWWWsOHgNjPXvNZwBtPKO84YZdhn5EUVlGhMh8pj2PSHlZ0cZ/+d3acTJDPQ==
+X-Received: by 2002:a05:6402:13d9:: with SMTP id a25mr4192009edx.141.1596721839522;
+        Thu, 06 Aug 2020 06:50:39 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id c7sm3614732edf.1.2020.08.06.06.50.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 06:50:38 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 15:50:36 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     x86@kernel.org, Jan Kara <jack@suse.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: improve compat handling for the i386 u64 alignment quirk v2
+Message-ID: <20200806135036.GA2077896@gmail.com>
+References: <20200731122202.213333-1-hch@lst.de>
 MIME-Version: 1.0
-References: <20200806080358.3124505-1-tweek@google.com> <20200806080358.3124505-2-tweek@google.com>
- <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com> <8627d780-0e19-6755-0de5-c686deb0f5de@sony.com>
- <971592b6-5d5f-05d8-d243-b521fe65577d@gmail.com> <07e2c48d-3918-6ceb-a6b2-4e2f18f9ea01@gmail.com>
-In-Reply-To: <07e2c48d-3918-6ceb-a6b2-4e2f18f9ea01@gmail.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Thu, 6 Aug 2020 09:49:47 -0400
-Message-ID: <CAEjxPJ4no_GqMp8aw43zpwmwq42Wi_1dvP+ZBs1a-mnReDt5Og@mail.gmail.com>
-Subject: Re: [PATCH 2/2] selinux: add attributes to avc tracepoint
-To:     peter enderborg <peter.enderborg@sony.com>,
-        =?UTF-8?Q?Thi=C3=A9baud_Weksteen?= <tweek@google.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     Nick Kralevich <nnk@google.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200731122202.213333-1-hch@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 9:45 AM Stephen Smalley
-<stephen.smalley.work@gmail.com> wrote:
->
-> On 8/6/20 8:32 AM, Stephen Smalley wrote:
->
-> > On 8/6/20 8:24 AM, peter enderborg wrote:
-> >
-> >> On 8/6/20 2:11 PM, Stephen Smalley wrote:
-> >>> On 8/6/20 4:03 AM, Thi=C3=A9baud Weksteen wrote:
-> >>>
-> >>>> From: Peter Enderborg <peter.enderborg@sony.com>
-> >>>>
-> >>>> Add further attributes to filter the trace events from AVC.
-> >>> Please include sample usage and output in the description.
-> >>>
-> >>>
-> >> Im not sure where you want it to be.
-> >>
-> >> In the commit message or in a Documentation/trace/events-avc.rst ?
-> >
-> > I was just asking for it in the commit message / patch description.  I
-> > don't know what is typical for Documentation/trace.
->
-> For example, I just took the patches for a spin, running the
-> selinux-testsuite under perf like so:
->
-> sudo perf record -e avc:selinux_audited -g make test
->
-> and then ran:
->
-> sudo perf report -g
->
-> and a snippet of sample output included:
->
->       6.40%     6.40%  requested=3D0x800000 denied=3D0x800000
-> audited=3D0x800000 result=3D-13 ssid=3D922 tsid=3D922
-> scontext=3Dunconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023
-> tcontext=3Dunconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023
-> tclass=3Dcapability
 
-So then the question becomes how do you use the above information,
-e.g. is that sufficient to correlate it to an actual avc: denied
-message, how do you decode the requested/denied/audited fields (or
-should the code do that for you and just report the string name(s) of
-the permission(s), do you need all three of those fields separately,
-is it useful to log the ssid/tsid at all given that you have the
-contexts and sids are dynamically assigned, etc.
+* Christoph Hellwig <hch@lst.de> wrote:
 
->              |
->              ---0x495641000028933d
->                 __libc_start_main
->                 |
->                 |--4.60%--__GI___ioctl
->                 |          entry_SYSCALL_64
->                 |          do_syscall_64
->                 |          __x64_sys_ioctl
->                 |          ksys_ioctl
->                 |          binder_ioctl
->                 |          binder_set_nice
->                 |          can_nice
->                 |          capable
->                 |          security_capable
->                 |          cred_has_capability.isra.0
->                 |          slow_avc_audit
->                 |          common_lsm_audit
->                 |          avc_audit_post_callback
->                 |          avc_audit_post_callback
+> Hi all,
+> 
+> the i386 ABI is a little special in that it uses less than natural
+> alignment for 64-bit integer types (u64 and s64), and a significant
+> amount of our compat handlers deals with just that.  Unfortunately
+> there is no good way to check for this specific quirk at runtime,
+> similar how in_compat_syscall() checks for a compat syscall.  This
+> series adds such a check, and then uses the quota code as an example
+> of how this improves the compat handling.  I have a few other places
+> in mind where this will also be useful going forward.
+> 
+> Changes since v1:
+>  - use asm-generic/compat.h instead of linux/compat.h for
+>    compat_u64 and compat_s64
+>  - fix a typo
+> 
+> Diffstat:
+>  b/arch/arm64/include/asm/compat.h        |    2 
+>  b/arch/mips/include/asm/compat.h         |    2 
+>  b/arch/parisc/include/asm/compat.h       |    2 
+>  b/arch/powerpc/include/asm/compat.h      |    2 
+>  b/arch/s390/include/asm/compat.h         |    2 
+>  b/arch/sparc/include/asm/compat.h        |    3 
+>  b/arch/x86/entry/syscalls/syscall_32.tbl |    2 
+>  b/arch/x86/include/asm/compat.h          |    3 
+>  b/fs/quota/Kconfig                       |    5 -
+>  b/fs/quota/Makefile                      |    1 
+>  b/fs/quota/compat.h                      |   34 ++++++++
+>  b/fs/quota/quota.c                       |   73 +++++++++++++++---
+>  b/include/asm-generic/compat.h           |    8 ++
+>  b/include/linux/compat.h                 |    9 ++
+>  b/include/linux/quotaops.h               |    3 
+>  b/kernel/sys_ni.c                        |    1 
+>  fs/quota/compat.c                        |  120 -------------------------------
+>  17 files changed, 113 insertions(+), 159 deletions(-)
+
+If nobody objects to this being done at runtime, and if it's 100% ABI 
+compatible, then the x86 impact looks good to me:
+
+Acked-by: Ingo Molnar <mingo@kernel.org>
+
+Thanks,
+
+	Ingo
