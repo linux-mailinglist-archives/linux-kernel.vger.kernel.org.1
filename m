@@ -2,96 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F4823E244
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DB623E24A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgHFTdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 15:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725875AbgHFTdl (ORCPT
+        id S1726256AbgHFTeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 15:34:05 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16791 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725875AbgHFTeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 15:33:41 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9096CC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 12:33:40 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id k12so20271676otr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 12:33:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Fpq7wVyleeE3lJivC0yCSUpTWD3vPscmoHMBxV4pkMo=;
-        b=Ola8E9AsNg2r+NHHc4cZAv1YL2AKrJeMwEhJ9CGOI1DSU/G/p9DIKZ8P17sSUlA0Uw
-         XaM4aYKf8ckkD42uzhxhPsDd++mkvUKWGzD9tDGbGCBQn3ivY9ADwXtpI4zgmfvwSacC
-         WN4KJ3yEwXygFqPvodBBUbBXzSBR4wlYyWLwk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Fpq7wVyleeE3lJivC0yCSUpTWD3vPscmoHMBxV4pkMo=;
-        b=a2oBj1lrCbLodIjYM7X3tvvy9BlH9sGlwp67JbFbFJMV41wDht5wls6xJ3Tgx1Y57M
-         BDIkfSRPQXpTYbf5BFxvFUyVdciIQVMo137J/SaiJ+wBIwIFoYSIJS49f1b0I7CFCGAe
-         /mwG2/fof6KV5oh/8Wsq4e5n+7ZwYX47wsMwslH4UVOWs6gxgL+C9k1Tfl5ZQ22w3Cp2
-         E7+TbA+Y4Abs/699yeo06UG8xYu6arsI8e+srlRdM7WWlYdqApY5IGTlaEiqhLmtBZ/t
-         zIBFsUW2GFJw04ZulI84M0OhcXv3r7iFpQhEheyEsI5Ynlt0xr1BXfaNkRFiEhlPf3XI
-         WomA==
-X-Gm-Message-State: AOAM5300GGduawSyjZO9O+jfTizhsfw/7jwmKH2QF+8aCJ1JarivJvJj
-        fJq/m58Q4Ta+cnHvsTXr46ebmA==
-X-Google-Smtp-Source: ABdhPJxgp4Nayzl+OkCvCOgm+xl3uLGJLuNhSxl78NDNfOLJhKPxR58mqm+F2D95N2q1oQbisl2c0w==
-X-Received: by 2002:a9d:148:: with SMTP id 66mr8490804otu.132.1596742419998;
-        Thu, 06 Aug 2020 12:33:39 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id u72sm1285719oie.22.2020.08.06.12.33.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 12:33:39 -0700 (PDT)
-Subject: Re: [PATCH 4.19 0/6] 4.19.138-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, skhan@linuxfoundation.org
-References: <20200805153505.472594546@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <909eb769-8c3b-ced8-94ec-53bf3a6696be@linuxfoundation.org>
-Date:   Thu, 6 Aug 2020 13:33:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 6 Aug 2020 15:34:05 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f2c5af90000>; Thu, 06 Aug 2020 12:33:13 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 06 Aug 2020 12:34:04 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 06 Aug 2020 12:34:04 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 6 Aug
+ 2020 19:33:57 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Thu, 6 Aug 2020 19:33:57 +0000
+Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f2c5b250001>; Thu, 06 Aug 2020 12:33:57 -0700
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+CC:     Randy Dunlap <rdunlap@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Jason Gunthorpe" <jgg@mellanox.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ralph Campbell <rcampbell@nvidia.com>
+Subject: [PATCH] mm/migrate: fix migrate_pgmap_owner w/o CONFIG_MMU_NOTIFIER
+Date:   Thu, 6 Aug 2020 12:33:53 -0700
+Message-ID: <20200806193353.7124-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200805153505.472594546@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1596742393; bh=p8Y/nFQLLNnrnLBeQIsBixY5c1DG7LMFlrm6+gZS1x4=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=hdyP32H7zn64syR4uT2rTRA19/BK9LVSo77ZlfxRaEaWLAN9mN4aJNIUt0HN/YTno
+         Q5j7tY7uT8QkwqqGnkx0bKi0Y9UrLXoNzmJv2+TxP4b2KxXKY6f+2z7sn5TSA6ATRx
+         fC+yCpHqC7Can5iuWzDaw6m0J+BixA/WeX6uH1YwnBjVmQiC55p9vv27jYpQmRFXa5
+         eqMZADCP3xNirIgSXPKn2gpzqk00mHnO/ehVgyaH07L1Hr+P/uA99z34Xsp2l7BXjA
+         mbQWdpwCL/GmJBsBtTsCNwQyk7GYyu404Ag2zVnmus/QgY3qPUgLiVwY0lVtA1hoD1
+         hfs/l3kW4xWAg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/20 9:52 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.138 release.
-> There are 6 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 07 Aug 2020 15:34:53 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.138-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On x86_64, when CONFIG_MMU_NOTIFIER is not set/enabled, there is a
+compiler error:
 
-Compiled and booted on my test system. No dmesg regressions.
+../mm/migrate.c: In function 'migrate_vma_collect':
+../mm/migrate.c:2481:7: error: 'struct mmu_notifier_range' has no member
+named 'migrate_pgmap_owner'
+  range.migrate_pgmap_owner =3D migrate->pgmap_owner;
+       ^
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Fixes: 998427b3ad2c ("mm/notifier: add migration invalidation type")
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+---
 
-thanks,
--- Shuah
+This is based on the latest linux and is for Andrew Morton's mm tree.
+MMU_NOTIFIER is selected automatically by a number of other config
+options so I missed this in my own testing. Thanks to Randy Dunlap for
+finding it.
+
+ include/linux/mmu_notifier.h | 13 +++++++++++++
+ mm/migrate.c                 |  6 +++---
+ 2 files changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+index c6f0708195cd..b8200782dede 100644
+--- a/include/linux/mmu_notifier.h
++++ b/include/linux/mmu_notifier.h
+@@ -521,6 +521,16 @@ static inline void mmu_notifier_range_init(struct mmu_=
+notifier_range *range,
+ 	range->flags =3D flags;
+ }
+=20
++static inline void mmu_notifier_range_init_migrate(
++			struct mmu_notifier_range *range, unsigned int flags,
++			struct vm_area_struct *vma, struct mm_struct *mm,
++			unsigned long start, unsigned long end, void *pgmap)
++{
++	mmu_notifier_range_init(range, MMU_NOTIFY_MIGRATE, flags, vma, mm,
++				start, end);
++	range->migrate_pgmap_owner =3D pgmap;
++}
++
+ #define ptep_clear_flush_young_notify(__vma, __address, __ptep)		\
+ ({									\
+ 	int __young;							\
+@@ -645,6 +655,9 @@ static inline void _mmu_notifier_range_init(struct mmu_=
+notifier_range *range,
+=20
+ #define mmu_notifier_range_init(range,event,flags,vma,mm,start,end)  \
+ 	_mmu_notifier_range_init(range, start, end)
++#define mmu_notifier_range_init_migrate(range, flags, vma, mm, start, end,=
+ \
++					pgmap) \
++	_mmu_notifier_range_init(range, start, end)
+=20
+ static inline bool
+ mmu_notifier_range_blockable(const struct mmu_notifier_range *range)
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 4fcc465736ff..d179657f8685 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -2386,9 +2386,9 @@ static void migrate_vma_collect(struct migrate_vma *m=
+igrate)
+ 	 * that the registered device driver can skip invalidating device
+ 	 * private page mappings that won't be migrated.
+ 	 */
+-	mmu_notifier_range_init(&range, MMU_NOTIFY_MIGRATE, 0, migrate->vma,
+-			migrate->vma->vm_mm, migrate->start, migrate->end);
+-	range.migrate_pgmap_owner =3D migrate->pgmap_owner;
++	mmu_notifier_range_init_migrate(&range, 0, migrate->vma,
++		migrate->vma->vm_mm, migrate->start, migrate->end,
++		migrate->pgmap_owner);
+ 	mmu_notifier_invalidate_range_start(&range);
+=20
+ 	walk_page_range(migrate->vma->vm_mm, migrate->start, migrate->end,
+--=20
+2.20.1
+
