@@ -2,92 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2F223DEE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC2223DFB8
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbgHFReQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:34:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55390 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729731AbgHFRcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:32:05 -0400
-Received: from localhost.localdomain (unknown [89.208.247.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09D5523123;
-        Thu,  6 Aug 2020 14:52:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596725526;
-        bh=i5ANlpqR018YR0d6q0AnTMbQwaCSVTrwSPCu4a3h7lc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NWfRvtbaky3m3FtA0y3zzCKqvokh4wOi44r6qO8lyx6VnY3sSO1XUFafedRF6Eh8Y
-         up9hJkXBv3MqNDx1IBqInmV8ifJpbXr7ybPfA/nitNWGSwgx/f8Clc9hmt/420yBDE
-         Pyg1GFqDe84WMyVVFL2oHiVYusgeLw25WfXIHINE=
-From:   guoren@kernel.org
-To:     guoren@kernel.org, rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH] ftrace: Fixup lockdep assert held of text_mutex
-Date:   Thu,  6 Aug 2020 14:50:54 +0000
-Message-Id: <1596725454-16245-1-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
+        id S1730377AbgHFRwd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 6 Aug 2020 13:52:33 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:8045 "EHLO
+        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728399AbgHFQbU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:31:20 -0400
+Subject: Re: [PATCH 2/2] selinux: add attributes to avc tracepoint
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
+        Paul Moore <paul@paul-moore.com>
+CC:     Nick Kralevich <nnk@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>
+References: <20200806080358.3124505-1-tweek@google.com>
+ <20200806080358.3124505-2-tweek@google.com>
+ <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com>
+ <8627d780-0e19-6755-0de5-c686deb0f5de@sony.com>
+ <971592b6-5d5f-05d8-d243-b521fe65577d@gmail.com>
+ <07e2c48d-3918-6ceb-a6b2-4e2f18f9ea01@gmail.com>
+ <CAEjxPJ4no_GqMp8aw43zpwmwq42Wi_1dvP+ZBs1a-mnReDt5Og@mail.gmail.com>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <dfeac808-b40d-77fd-0d31-f66f279083eb@sony.com>
+Date:   Thu, 6 Aug 2020 16:51:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAEjxPJ4no_GqMp8aw43zpwmwq42Wi_1dvP+ZBs1a-mnReDt5Og@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=frmim2wf c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=IkcTkHD0fZMA:10 a=y4yBn9ojGxQA:10 a=pGLkceISAAAA:8 a=z6gsHLkEAAAA:8 a=Fbti1pkVs00Xad8lyQgA:9 a=QEXdDO2ut3YA:10 a=d-OLMTCWyvARjPbQ-enb:22
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+On 8/6/20 3:49 PM, Stephen Smalley wrote:
+> On Thu, Aug 6, 2020 at 9:45 AM Stephen Smalley
+> <stephen.smalley.work@gmail.com> wrote:
+>> On 8/6/20 8:32 AM, Stephen Smalley wrote:
+>>
+>>> On 8/6/20 8:24 AM, peter enderborg wrote:
+>>>
+>>>> On 8/6/20 2:11 PM, Stephen Smalley wrote:
+>>>>> On 8/6/20 4:03 AM, Thiébaud Weksteen wrote:
+>>>>>
+>>>>>> From: Peter Enderborg <peter.enderborg@sony.com>
+>>>>>>
+>>>>>> Add further attributes to filter the trace events from AVC.
+>>>>> Please include sample usage and output in the description.
+>>>>>
+>>>>>
+>>>> Im not sure where you want it to be.
+>>>>
+>>>> In the commit message or in a Documentation/trace/events-avc.rst ?
+>>> I was just asking for it in the commit message / patch description.  I
+>>> don't know what is typical for Documentation/trace.
+>> For example, I just took the patches for a spin, running the
+>> selinux-testsuite under perf like so:
+>>
+>> sudo perf record -e avc:selinux_audited -g make test
+>>
+>> and then ran:
+>>
+>> sudo perf report -g
+>>
+>> and a snippet of sample output included:
+>>
+>>       6.40%     6.40%  requested=0x800000 denied=0x800000
+>> audited=0x800000 result=-13 ssid=922 tsid=922
+>> scontext=unconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023
+>> tcontext=unconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023
+>> tclass=capability
+> So then the question becomes how do you use the above information,
+> e.g. is that sufficient to correlate it to an actual avc: denied
+> message, how do you decode the requested/denied/audited fields (or
+> should the code do that for you and just report the string name(s) of
+> the permission(s), do you need all three of those fields separately,
+> is it useful to log the ssid/tsid at all given that you have the
+> contexts and sids are dynamically assigned, etc.
+>
+>>              |
+>>              ---0x495641000028933d
+>>                 __libc_start_main
+>>                 |
+>>                 |--4.60%--__GI___ioctl
+>>                 |          entry_SYSCALL_64
+>>                 |          do_syscall_64
+>>                 |          __x64_sys_ioctl
+>>                 |          ksys_ioctl
+>>                 |          binder_ioctl
+>>                 |          binder_set_nice
+>>                 |          can_nice
+>>                 |          capable
+>>                 |          security_capable
+>>                 |          cred_has_capability.isra.0
+>>                 |          slow_avc_audit
+>>                 |          common_lsm_audit
+>>                 |          avc_audit_post_callback
+>>                 |          avc_audit_post_callback
 
-The function ftrace_process_locs() will modify text code, so we
-should give a text_mutex lock. Because some arch's patch code
-will assert held of text_mutex even during start_kernel->
-ftrace_init().
+The real cool thing happen when you enable "user-stack-trace" too.
 
-backtrace log:
-   assert by lockdep_assert_held(&text_mutex)
-0  patch_insn_write (addr=0xffffffe0000010fc <set_reset_devices+10>, insn=0xffffffe001203eb8, len=8) at arch/riscv/kernel/patch.c:63
-1  0xffffffe0002042ec in patch_text_nosync (addr=<optimized out>, insns=<optimized out>, len=<optimized out>) at arch/riscv/kernel/patch.c:93
-2  0xffffffe00020628e in __ftrace_modify_call (hook_pos=<optimized out>, target=<optimized out>, enable=<optimized out>) at arch/riscv/kernel/ftrace.c:68
-3  0xffffffe0002063c0 in ftrace_make_nop (mod=<optimized out>, rec=0xffffffe001221c70 <text_mutex+96>, addr=18446743936272720288) at arch/riscv/kernel/ftrace.c:97
-4  0xffffffe0002b13f0 in ftrace_init_nop (rec=<optimized out>, mod=<optimized out>) at ./include/linux/ftrace.h:647
-5  ftrace_nop_initialize (rec=<optimized out>, mod=<optimized out>) at kernel/trace/ftrace.c:2619
-6  ftrace_update_code (new_pgs=<optimized out>, mod=<optimized out>) at kernel/trace/ftrace.c:3063
-7  ftrace_process_locs (mod=<optimized out>, start=<optimized out>, end=<optimized out>) at kernel/trace/ftrace.c:6154
-8  0xffffffe00000b6e6 in ftrace_init () at kernel/trace/ftrace.c:6715
-9  0xffffffe000001b48 in start_kernel () at init/main.c:888
-10 0xffffffe0000010a8 in _start_kernel () at arch/riscv/kernel/head.S:247
+           <...>-4820  [007] .... 85878.897553: selinux_audited: requested=0x4000000 denied=0x4000000 audited=0x4000000 result=-13 ssid=341 tsid=61 scontext=system_u:system_r:ntpd_t:s0 tcontext=system_u:object_r:bin_t:s0 tclass=file
+           <...>-4820  [007] .... 85878.897572: <user stack trace>
+ =>  <00007f07d99bb45b>
+ =>  <0000555ecd89ca57>
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
----
- kernel/trace/ftrace.c | 3 +++
- 1 file changed, 3 insertions(+)
+The fields are useful for filter what you what to see and what you can ignore.  Having the ssid and text was from the part where it is called.
+The numeric can be used for two things. When you dont have any context. Same same reason as in post_callback. We need to be static
+in format so it need  be there if it ever can happen. And it is also useful for faster filtering.
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 1903b80..4b48b88 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -26,6 +26,7 @@
- #include <linux/uaccess.h>
- #include <linux/bsearch.h>
- #include <linux/module.h>
-+#include <linux/memory.h>
- #include <linux/ftrace.h>
- #include <linux/sysctl.h>
- #include <linux/slab.h>
-@@ -6712,9 +6713,11 @@ void __init ftrace_init(void)
- 
- 	last_ftrace_enabled = ftrace_enabled = 1;
- 
-+	mutex_lock(&text_mutex);
- 	ret = ftrace_process_locs(NULL,
- 				  __start_mcount_loc,
- 				  __stop_mcount_loc);
-+	mutex_unlock(&text_mutex);
- 
- 	pr_info("ftrace: allocated %ld pages with %ld groups\n",
- 		ftrace_number_of_pages, ftrace_number_of_groups);
--- 
-2.7.4
+You can do "ssid!=42 && ssid!=43 && tsid==666".  From my view it would be good to have all fields there. But they need to right typed to be able
+to use the filter mechanism. There must me some trade-off too where the argument filtering get bigger than the processing, but I think we can
+add a lot more before we reach that threshold.
 
