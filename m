@@ -2,114 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D6323E442
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 01:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7431423E44A
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 01:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726233AbgHFXDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 19:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgHFXDi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 19:03:38 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4150AC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 16:03:38 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id f10so141283plj.8
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 16:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=0gDnN//bxk4XCQG+5+85qQKDntN2R3o5FFO9hcqipr4=;
-        b=Qz+Tzz7bYWSKTO2D5D1zgMNC/JGFqIwqPZZilBd/61zHOwvpLorhkmc7e7VEaUMNzu
-         LnaRmb/RxkNitmzslzS10MrXEJp5npQp/zZZeMPjlconFW4iWIkykeZ/wB04ja2fGUB3
-         6OJdfKhct7H5dJi16+7wGmBn1PO/p/GPHw/Y8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=0gDnN//bxk4XCQG+5+85qQKDntN2R3o5FFO9hcqipr4=;
-        b=uYF0DZnhEAPfhEH6bngOat8NFxhI3/gryKGj8OFdsOgd82h8i1zNlcusufDhBo78E4
-         F1XIIUpp10N79MvnvlU3Q3ZLHM9Nk+EA3pYz4Ik9k2YcIhH743+NtwheGFFaDB6dOBmE
-         H1PprtMq2zvs6cYVG+9OTl0wc2JS7oxbx/2Fpfp+DqW5ggJVUXjWVK6xpOzi8E98Bm/Y
-         GeYqI1Emg/f5IXxXrnH6VR2Hab8LkorA0/SkN2H/WXLynrThplsWB17X6OW6iWXfn8hw
-         tdO08j7WiUeJAzH/+e1FPIUS+Q456r9UZ+D85BVsTHiM0XKhO3iELC+nZSsOWOYeaQ4T
-         DGVQ==
-X-Gm-Message-State: AOAM53194D+oj9rHICyLX/7ncSvEqDhQvJYZb/W8yKPx7IGIKZiFJj5k
-        NuDHzXcDFuIHTNwx3j5ZFLSYrg==
-X-Google-Smtp-Source: ABdhPJxheayUk8uIULBY6NewH6D0OhojLErEsa5goOKcKVPS5xWNRVsItvYP7z12DSkLAXSq9aVcRA==
-X-Received: by 2002:a17:902:7405:: with SMTP id g5mr9862707pll.173.1596755017579;
-        Thu, 06 Aug 2020 16:03:37 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id j16sm8166331pgb.33.2020.08.06.16.03.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 16:03:36 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S1726392AbgHFXFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 19:05:13 -0400
+Received: from mga14.intel.com ([192.55.52.115]:27306 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725812AbgHFXFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 19:05:12 -0400
+IronPort-SDR: vXCBGlEmPU9IxCx5iWvEKZqDBlU18EkAL/TjOaOKmgtoCJv7BGFvTxXCdA8VDgM/6ajkaW+s0Z
+ iCjc/ZnIuGKw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9705"; a="152191017"
+X-IronPort-AV: E=Sophos;i="5.75,443,1589266800"; 
+   d="scan'208";a="152191017"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 16:05:10 -0700
+IronPort-SDR: uUTn6CHU7je2ajS68CQoj2YLjkr/1MCldGbXYW6F3YT4knCs9GgIsaQzrIUWzAKLloL+v10rQZ
+ nZPx79bBmmXA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,443,1589266800"; 
+   d="scan'208";a="323591859"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by orsmga008.jf.intel.com with ESMTP; 06 Aug 2020 16:05:10 -0700
+Date:   Thu, 6 Aug 2020 16:04:55 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        Tony Luck <tony.luck@intel.com>,
+        Cathy Zhang <cathy.zhang@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-edac@vger.kernel.org
+Subject: Re: [PATCH v3] x86/cpu: Use SERIALIZE in sync_core() when available
+Message-ID: <20200806230455.GA25599@ranerica-svr.sc.intel.com>
+References: <20200806192531.25136-1-ricardo.neri-calderon@linux.intel.com>
+ <a6ab438e-8ca8-999f-9eb9-c43fe1b9f128@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAL_JsqJou=yHsyQB+TUvwbNHDh81g7Lm7oWJfavYmPuYtxhREQ@mail.gmail.com>
-References: <20200731164853.3020946-1-campello@chromium.org> <20200731104555.v3.1.I0925046377211b8b6f06764857f03b4ab592bddb@changeid> <20200801160639.1410944e@archlinux> <159648122347.1360974.1094560524092762187@swboyd.mtv.corp.google.com> <CAL_JsqLs99Q7o32mqZROQSLuaf-_6vVg_wSVbpMr0u3eD9LVEw@mail.gmail.com> <20200806191451.3ce5ec57@archlinux> <CAL_JsqJou=yHsyQB+TUvwbNHDh81g7Lm7oWJfavYmPuYtxhREQ@mail.gmail.com>
-Subject: Re: [PATCH v3 01/15] dt-bindings: iio: Add bindings for sx9310 sensor
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Daniel Campello <campello@chromium.org>,
-        LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Douglas Anderson <dianders@chromium.org>, open list:
-        IIO SUBSYSTEM AND DRIVERS <linux-iio@vger.kernel.org>, ;
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     ;
-                        ^-missing semicolon to end mail group, extraneous tokens in mailbox, missing end of mailbox
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 06 Aug 2020 16:03:35 -0700
-Message-ID: <159675501533.1360974.12010874193333451805@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a6ab438e-8ca8-999f-9eb9-c43fe1b9f128@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rob Herring (2020-08-06 15:12:34)
-> On Thu, Aug 6, 2020 at 12:14 PM Jonathan Cameron <jic23@kernel.org> wrote:
-> >
-> > On Mon, 3 Aug 2020 20:01:06 -0600
-> > Rob Herring <robh+dt@kernel.org> wrote:
-> >
-> > > On Mon, Aug 3, 2020 at 1:00 PM Stephen Boyd <swboyd@chromium.org> wro=
-te:
-> > > >
-> > > > This is mostly a decision for Rob to make, but I would make it requ=
-ired
-> > > > because the device is always an io channel provider. It may be that=
- it
-> > > > isn't providing anything in the DT to something else in the DT but =
-it is
-> > > > providing this information somewhere so always having to spell that=
- out
-> > > > is simple and doesn't hurt.
-> > >
-> > > I agree. If the user is split in a board file or overlay, we don't
-> > > want to have to be adding it to the provider at that time.
-> >
-> > That is perhaps a reasonable view point for devices with channels that
-> > are likely to be used by consumer drivers, but in this particular case =
-we
-> > are talking about a proximity sensor.  So far I don't think we
-> > have any consumer drivers for this type of sensor (I might have forgott=
-en
-> > one of course!)
->=20
-> Indeed, I didn't consider whether it made sense in the first place. So
-> should it just not be specified at all in this case? I can't really
-> picture what the usecase for a consumer node would be.
->=20
+On Thu, Aug 06, 2020 at 12:57:26PM -0700, Dave Hansen wrote:
+> On 8/6/20 12:25 PM, Ricardo Neri wrote:
+> >  static inline void sync_core(void)
+> >  {
+> >  	/*
+> > -	 * There are quite a few ways to do this.  IRET-to-self is nice
+> > +	 * Hardware can do this for us if SERIALIZE is available. Otherwise,
+> > +	 * there are quite a few ways to do this.  IRET-to-self is nice
+> 
+> This seems to imply that things other than SERIALIZE aren't the hardware
+> doing this.  All of these methods are equally architecturally
+> serializing *and* provided by the hardware.
 
-I was thinking that a WiFi DT node may directly grab the channel from
-this device and use this for SAR power changes. That would avoid going
-all the way to userspace to figure out that something is close proximity
-and then tell WiFi to reduce power.
+Indeed, I can see how the wording may imply that.
+
+> 
+> I also don't quite get the point of separating the comments from the
+> code.  Shouldn't this be:
+> 
+> 	/*
+> 	 * The SERIALIZE instruction is the most straightforward way to
+> 	 * do this but it not universally available.
+> 	 */
+
+I regard the comment as describing all the considered options to for
+architectural serialization. What about if I add SERIALIZE as another
+option? I propose to discuss it towards the end of the comment:
+
+	/*
+	 * There are quite a few ways to do this.  IRET-to-self is nice
+	 * because it works on every CPU, at any CPL (so it's compatible
+	 * with paravirtualization), and it never exits to a hypervisor.
+	 * The only down sides are that it's a bit slow (it seems to be
+	 * a bit more than 2x slower than the fastest options) and that
+	 * it unmasks NMIs.  The "push %cs" is needed because, in
+	 * paravirtual environments, __KERNEL_CS may not be a valid CS
+	 * value when we do IRET directly.
+	 *
+	 * In case NMI unmasking or performance ever becomes a problem,
+	 * the next best option appears to be MOV-to-CR2 and an
+	 * unconditional jump.  That sequence also works on all CPUs,
+	 * but it will fault at CPL3 (i.e. Xen PV).
+	 *
+	 * CPUID is the conventional way, but it's nasty: it doesn't
+	 * exist on some 486-like CPUs, and it usually exits to a
+	 * hypervisor.
+	 *
+ 	 * The SERIALIZE instruction is the most straightforward way to
+ 	 * do this as it does not clobber registers or exit to a
+	 * hypervisor. However, it is not universally available.
+ 	 *
+	 * Like all of Linux's memory ordering operations, this is a
+	 * compiler barrier as well.
+	 */
+
+What do you think?
+
+> 	if (static_cpu_has(X86_FEATURE_SERIALIZE)) {
+> 		asm volatile(__ASM_SERIALIZE ::: "memory");
+> 		return;
+> 	}
+> 
+> 	/*
+> 	 * For all other processors, IRET-to-self is nice ...
+> 	 */
+> 	iret_to_self();
+
