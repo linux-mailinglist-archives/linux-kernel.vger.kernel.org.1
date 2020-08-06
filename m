@@ -2,81 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B163523D8FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7717C23D901
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729308AbgHFJ5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:57:01 -0400
-Received: from mga12.intel.com ([192.55.52.136]:36335 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729309AbgHFJ4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:56:33 -0400
-IronPort-SDR: TFmqPj/5L3oQCQKn0GONb70CPzx1JOA/uw20qMR7ZJ51mXSvTuq1QNRAZcVNRnF1Gfz6tAFRav
- kWiRpscLg47Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="132314944"
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="132314944"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 02:56:22 -0700
-IronPort-SDR: KRJJOdTHLW4LCOOg0j60Q7V6RSiN7LHzSWm0xALuAxSdjXHQAY7kms6SdqznoyrqbgpuTKjvAk
- kWyW3H0TmAYQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="437486241"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004.jf.intel.com with ESMTP; 06 Aug 2020 02:56:18 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1k3cdG-006ow6-7n; Thu, 06 Aug 2020 12:56:18 +0300
-Date:   Thu, 6 Aug 2020 12:56:18 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] auxdisplay: charlcd: Reuse hex_to_bin() instead of
- custom code
-Message-ID: <20200806095618.GA1625681@smile.fi.intel.com>
-References: <20200518193617.74548-1-andriy.shevchenko@linux.intel.com>
- <CANiq72nJgGJJoUoJMxD5LTa-A7Rn1UPnr16nf8DbY9HOy7ZKEA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiq72nJgGJJoUoJMxD5LTa-A7Rn1UPnr16nf8DbY9HOy7ZKEA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1729268AbgHFJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726094AbgHFJ6w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 05:58:52 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE562C061757
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 02:58:51 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a15so43378064wrh.10
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 02:58:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries-io.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=IjCAb6ElutCFPhXtiRRhexkYUeHi/3Oyyo9f5qPCuTw=;
+        b=M3hQ0f4LkSWB8thUbjJc+2oJa6y5cmCLs5eD1KoJQkMPuLQbkCSP5TGo61vhJUeK/x
+         okUOHv5gpWr71ku2i/E36Skxdbfnn18rmL3eBJWrH+0mYVz8okIXXR53bQDWRM4TxMP9
+         F+WT5h45ad3rWeJjwT0ygsg4yvC6H/6m9hivJlY3OWDsq0ODZmdxUxpF/P/UBC2jXGpK
+         OhGd+Oegw56eEjiekzwedj9yzzMzY99ZpiyBy7A0qJZLnr0RiclFMXaA32e1fEeijQ7Q
+         yD4AYk6PV8a0dusI2VcgtO4BYhK0SK16GMfSWoSG06raXRA5r1h1S+GM0meA+9tmSTYD
+         AsUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=IjCAb6ElutCFPhXtiRRhexkYUeHi/3Oyyo9f5qPCuTw=;
+        b=OJNZb4u3+b8LrE6hNuW/tnScSjAq6Mt8nu4D1kdryXTpc+QTDHXmPTwebPnBzUGjym
+         6W8XmnmI35Ojl+QCw5WRyUekdJMEqstk9KeqRIG7fQ4B+5qgwN4gHCFUp10lvsA3W2Xo
+         /PuB5miuCiNQ4fYAMmKX1XmOam0C4tQJY/2BR8KyKfVcs1FZa0YB0GkV9uMZznH2lD1j
+         V0CyOeVTmvmrz9scieL9rEehzSNB1ZvXVi2ub0WGRXE3wP2ZTHT6CXYB+b2pQYmDUGvd
+         6MlDBRRMTwNQo+eupqaBrpxLgy93Zm9DUHYHcNslOckllsFKByVBLegsVF836ZJXmL/Z
+         vsUQ==
+X-Gm-Message-State: AOAM532xDnuXbWozLjzcYtO9M4mFenp/o4mQdPaHmSrvS01f7ebbyEG+
+        Kc1iOENjc3poX9/INh6PEj+h5g==
+X-Google-Smtp-Source: ABdhPJwn+3pUhsigOTALX0nYV9hiGuaZwXe1U6BCXbpNO1wYrek2IXuJiZU9Zca5n1jK+Wg7rHfjpg==
+X-Received: by 2002:adf:9e90:: with SMTP id a16mr7074410wrf.40.1596707930696;
+        Thu, 06 Aug 2020 02:58:50 -0700 (PDT)
+Received: from localhost.localdomain (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
+        by smtp.gmail.com with ESMTPSA id z66sm5793181wme.16.2020.08.06.02.58.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 02:58:50 -0700 (PDT)
+From:   Jorge Ramirez-Ortiz <jorge@foundries.io>
+To:     jorge@foundries.io, sumit.garg@linaro.org,
+        jens.wiklander@linaro.org
+Cc:     herbert@gondor.apana.org.au, mpm@selenic.com, arnd@arndb.de,
+        ricardo@foundries.io, mike@foundries.io,
+        gregkh@linuxfoundation.org, op-tee@lists.trustedfirmware.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCHv3 2/2] hwrng: optee: fix wait use case
+Date:   Thu,  6 Aug 2020 11:58:45 +0200
+Message-Id: <20200806095845.20288-2-jorge@foundries.io>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 11:48:53PM +0200, Miguel Ojeda wrote:
-> Hi Andy,
-> 
-> On Mon, May 18, 2020 at 9:36 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > hex_to_bin() may be used to convert hexdecimal digit to its binary
-> > representation.
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> 
-> Looks fine to me and the logic is simpler for the `esc` increase too.
-> Thanks for the cleanup! Were you able to test it, by any chance? I
-> will queue it up for -rc1.
+The current code waits for data to be available before attempting a
+second read. However the second read would not be executed as the
+while loop will exit.
 
-May I ask which version did you have in mind? Now it's merge window for
-v5.9-rc1 and patch is still not there...
+This fix does not wait if all data has been read (skips the call to
+msleep(0)) and reads a second time if partial data was retrieved on
+the first read.
 
->  (Sidenote: it would be nice if `git patch` allowed for a full-to-full
-> comparison for patches like this since the unified format is harder to
-> read; I couldn't find the option from a quick look...).
-> 
-> Cheers,
-> Miguel
+Worth noticing that since msleep(0) schedules a one jiffy timeout is
+better to skip such a call.
 
+Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+---
+ drivers/char/hw_random/optee-rng.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/char/hw_random/optee-rng.c b/drivers/char/hw_random/optee-rng.c
+index 5bc4700c4dae..a99d82949981 100644
+--- a/drivers/char/hw_random/optee-rng.c
++++ b/drivers/char/hw_random/optee-rng.c
+@@ -122,14 +122,14 @@ static int optee_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
+ 	if (max > MAX_ENTROPY_REQ_SZ)
+ 		max = MAX_ENTROPY_REQ_SZ;
+ 
+-	while (read == 0) {
++	while (read < max) {
+ 		rng_size = get_optee_rng_data(pvt_data, data, (max - read));
+ 
+ 		data += rng_size;
+ 		read += rng_size;
+ 
+ 		if (wait && pvt_data->data_rate) {
+-			if (timeout-- == 0)
++			if ((timeout-- == 0) || (read == max))
+ 				return read;
+ 			msleep((1000 * (max - read)) / pvt_data->data_rate);
+ 		} else {
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
