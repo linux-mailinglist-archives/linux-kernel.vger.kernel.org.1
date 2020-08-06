@@ -2,140 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643CD23DD33
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E242123DE20
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729996AbgHFRFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:05:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729940AbgHFREp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:04:45 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7DAC034620
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:26:10 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b79so44830096qkg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 06:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T2iPfxLBjVspZYrNz+huCOCqkAd+X2FNwnJZLpWw+hM=;
-        b=Y4ynlCXKpUtRgCoRk5Ti+JvbQvLBJhoDyUZKoyhtmY7lfFYMIZMnj1VrVkD89tOWzG
-         UDwmd8cf+5zAURws27dVU4KtqqcfXWq2iI29b0U13AoTFqvFygDiPCEPAt26EOs5YYQY
-         T7Ko8UixmobQX2cH/A28lxdtcJ9tI2gujadmpowppl/KjMwlSEs9iQiPKj6guDuUTMhZ
-         ouxhD5ppzi4GvruPpWaS+0szPx57vt36FfI1kwdZqbK6oajfmXvpU9iSM0xsMVWhySYf
-         K/84x5aatxjiXyiN5qPY8OGk68e5WA30dNhfKabWHiPhYi3r08k4BwndSGs/0GCOSx9e
-         67cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T2iPfxLBjVspZYrNz+huCOCqkAd+X2FNwnJZLpWw+hM=;
-        b=HMoIoSrEp9ij2cRnJpOi4jpIRI3g4M8frl8eVC9nx5CulRY/hMCri2mhWlL/qawFll
-         ne7kmfKVpbZQFe3yMESvWAXGcYGVYItySkaKvJANS7uolW2i7hw2jL7gcwQStbksVo/r
-         EXWpgThyRzmz57JEXqbwfVT6SoJqF+/wkkUBormSMTlTq+6TFjfFgfVifCjF/Gg8aUHI
-         t1tQfzazfXk7lu6TtuCt9RNN2ytJgZvXpzCd5enkwLdxcJvYbMteuF7J6HndVuSpjGCU
-         juS7GuDRePmoi45liJj5Xa3fCeUPPWBVW6rPXV3W4/lf3BAq7/q/uJVZqhu8jAnc0Too
-         9DSQ==
-X-Gm-Message-State: AOAM530U2stwxUi9OLQ2M036+TWTt90zR1aFfRnUhXWyNlahhtPLn9i3
-        hWtK/388KLE5CHRfh05+zhe7Y1DM7HVKMbnBALmCxg==
-X-Google-Smtp-Source: ABdhPJxReIfkTG2PFeEofgMQSaJ+TVjIRZizX6Bx1Li3yDeV50HDF/ByHlxxkoxuQ0Awpa3E+ru/ewqtulglRVJQKdA=
-X-Received: by 2002:a05:620a:676:: with SMTP id a22mr8706700qkh.8.1596720369262;
- Thu, 06 Aug 2020 06:26:09 -0700 (PDT)
+        id S1728268AbgHFRWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:22:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:45798 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729665AbgHFRWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:22:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0FAAD101E;
+        Thu,  6 Aug 2020 06:29:29 -0700 (PDT)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 710CC3F7D7;
+        Thu,  6 Aug 2020 06:29:20 -0700 (PDT)
+Subject: Re: [PATCH] sched/fair: reduce preemption with IDLE tasks
+ runable(Internet mail)
+To:     =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>
+Cc:     Jiang Biao <benbjiang@gmail.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200801023248.90104-1-benbjiang@gmail.com>
+ <5ed0fd46-3a3d-3c1a-5d75-03a74864e640@arm.com>
+ <592F24A7-BF43-457D-AC40-DC5E35279730@tencent.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <8bef1f94-f9bf-08a5-2ff3-3485d7796a96@arm.com>
+Date:   Thu, 6 Aug 2020 15:29:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200805230852.GA28727@paulmck-ThinkPad-P72> <CANpmjNPxzOFC+VQujipFaPmAV8evU2LnB4X-iXuHah45o-7pfw@mail.gmail.com>
- <CACT4Y+Ye7j-scb-thp2ubORCoEnuJPHL7W6Wh_DLP_4cux-0SQ@mail.gmail.com>
-In-Reply-To: <CACT4Y+Ye7j-scb-thp2ubORCoEnuJPHL7W6Wh_DLP_4cux-0SQ@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 6 Aug 2020 15:25:57 +0200
-Message-ID: <CACT4Y+aF=Y-b7Lm7+UAD7Zb1kS1uWF+G_3yBbXsY6YO3k2dBuw@mail.gmail.com>
-Subject: Re: Finally starting on short RCU grace periods, but...
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Kostya Serebryany <kcc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        "'Dmitry Vyukov' via syzkaller-upstream-moderation" 
-        <syzkaller-upstream-moderation@googlegroups.com>,
-        Jann Horn <jannh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <592F24A7-BF43-457D-AC40-DC5E35279730@tencent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 3:22 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Thu, Aug 6, 2020 at 12:31 PM Marco Elver <elver@google.com> wrote:
-> >
-> > +Cc kasan-dev
-> >
-> > On Thu, 6 Aug 2020 at 01:08, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > Hello!
-> > >
-> > > If I remember correctly, one of you asked for a way to shorten RCU
-> > > grace periods so that KASAN would have a better chance of detecting bugs
-> > > such as pointers being leaked out of RCU read-side critical sections.
-> > > I am finally starting entering and testing code for this, but realized
-> > > that I had forgotten a couple of things:
-> > >
-> > > 1.      I don't remember exactly who asked, but I suspect that it was
-> > >         Kostya.  I am using his Reported-by as a placeholder for the
-> > >         moment, but please let me know if this should be adjusted.
-> >
-> > It certainly was not me.
-> >
-> > > 2.      Although this work is necessary to detect situtions where
-> > >         call_rcu() is used to initiate a grace period, there already
-> > >         exists a way to make short grace periods that are initiated by
-> > >         synchronize_rcu(), namely, the rcupdate.rcu_expedited kernel
-> > >         boot parameter.  This will cause all calls to synchronize_rcu()
-> > >         to act like synchronize_rcu_expedited(), resulting in about 2-3
-> > >         orders of magnitude reduction in grace-period latency on small
-> > >         systems (say 16 CPUs).
-> > >
-> > > In addition, I plan to make a few other adjustments that will
-> > > increase the probability of KASAN spotting a pointer leak even in the
-> > > rcupdate.rcu_expedited case.
-> >
-> > Thank you, that'll be useful I think.
-> >
-> > > But if you would like to start this sort of testing on current mainline,
-> > > rcupdate.rcu_expedited is your friend!
->
-> Hi Paul,
->
-> This is great!
->
-> I understand it's not a sufficiently challenging way of tracking
-> things, but it's simply here ;)
-> https://bugzilla.kernel.org/show_bug.cgi?id=208299
-> (now we also know who asked for this, +Jann)
->
-> I've tested on the latest mainline and with rcupdate.rcu_expedited=1
-> it boots to ssh successfully and I see:
-> [    0.369258][    T0] All grace periods are expedited (rcu_expedited).
->
-> I have created https://github.com/google/syzkaller/pull/2021 to enable
-> it on syzbot.
-> On syzbot we generally use only 2-4 CPUs per VM, so it should be even better.
->
-> > Do any of you remember some bugs we missed due to this? Can we find
-> > them if we add this option?
->
-> The problem is that it's hard to remember bugs that were not caught :)
-> Here is an approximation of UAFs with free in rcu callback:
-> https://groups.google.com/forum/#!searchin/syzkaller-bugs/KASAN$20use-after-free$20rcu_do_batch%7Csort:date
-> The ones with low hit count are the ones that we almost did not catch.
-> That's the best estimation I can think of. Also potentially we can get
-> reproducers for such bugs without reproducers.
-> Maybe we will be able to correlate some bugs/reproducers that appear
-> soon with this change.
+On 03/08/2020 13:26, benbjiang(蒋彪) wrote:
+> 
+> 
+>> On Aug 3, 2020, at 4:16 PM, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>>
+>> On 01/08/2020 04:32, Jiang Biao wrote:
+>>> From: Jiang Biao <benbjiang@tencent.com>
+>>>
+>>> No need to preempt when there are only one runable CFS task with
+>>> other IDLE tasks on runqueue. The only one CFS task would always
+>>> be picked in that case.
+>>>
+>>> Signed-off-by: Jiang Biao <benbjiang@tencent.com>
+>>> ---
+>>> kernel/sched/fair.c | 2 +-
+>>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>>> index 04fa8dbcfa4d..8fb80636b010 100644
+>>> --- a/kernel/sched/fair.c
+>>> +++ b/kernel/sched/fair.c
+>>> @@ -4527,7 +4527,7 @@ entity_tick(struct cfs_rq *cfs_rq, struct sched_entity *curr, int queued)
+>>> 		return;
+>>> #endif
+>>>
+>>> -	if (cfs_rq->nr_running > 1)
+>>> +	if (cfs_rq->nr_running > cfs_rq.idle_h_nr_running + 1)
+>>
+>> cfs_rq is a pointer.
+> It is. Sorry about that. :)
+> 
+>>
+>>> 		check_preempt_tick(cfs_rq, curr);
+>>> }
+>>
+>> You can't compare cfs_rq->nr_running with cfs_rq->idle_h_nr_running!
+>>
+>> There is a difference between cfs_rq->h_nr_running and
+>> cfs_rq->nr_running. The '_h_' stands for hierarchical.
+>>
+>> The former gives you hierarchical task accounting whereas the latter is
+>> the number of sched entities (representing tasks or taskgroups) enqueued
+>> in cfs_rq.
+>>
+>> In entity_tick(), cfs_rq->nr_running has to be used for the condition to
+>> call check_preempt_tick(). We want to check if curr has to be preempted
+>> by __pick_first_entity(cfs_rq) on this cfs_rq.
+>>
+>> entity_tick() is called for each sched entity (and so for each
+>> cfs_rq_of(se)) of the task group hierarchy (e.g. task p running in
+>> taskgroup /A/B : se(p) -> se(A/B) -> se(A)).
+> That’s true. I was thinking adding a new cfs_rq->idle_nr_running member to
+> track the per cfs_rq's IDLE task number, and reducing preemption here based
+> on that. 
 
-Wait, it was added in 2012?
-https://github.com/torvalds/linux/commit/3705b88db0d7cc4
+How would you deal with se's representing taskgroups which contain
+SCHED_IDLE and SCHED_NORMAL tasks or other taskgroups doing that?
+
+> I’m not sure if it’s ok to do that, because the IDLE class seems not to be so
+> pure that could tolerate starving.
+
+Not sure I understand but idle_sched_class is not the same as SCHED_IDLE
+(policy)?
+
+> We need an absolutely low priority class that could tolerate starving, which
+> could be used to co-locate offline tasks. But IDLE class seems to be not
+> *low* enough, if considering the fairness of CFS, and IDLE class still has a
+> weight.
+
+[...]
