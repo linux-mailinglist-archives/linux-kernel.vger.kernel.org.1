@@ -2,111 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D486B23DEFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE75223DF3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730629AbgHFRfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:35:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729339AbgHFRfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:35:23 -0400
-Received: from localhost (c-67-169-218-210.hsd1.or.comcast.net [67.169.218.210])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729222AbgHFRnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:43:35 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:11892 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728862AbgHFRna (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:43:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596735809; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
+ Subject: Sender; bh=ggOg6zyHd/BJyz6p09BxDxipcYys+9vo5wRtRWDV+Dw=; b=tS2mJ8Ub0u94CgYFT8OEriZCdjnAlhmSrtGy+cINM+lAmRkBBIzihWwfPBL1skbkrSSKmQAz
+ tiq299hP1/y/zKzfjUDPePgFdAJUXYoV4xqXBoDBR53k8EEP07vlFprI2qVm6tdZHxhks9cD
+ IKVx46psV0dKCWoGZenLK3FA79c=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
+ 5f2c1da548ee73b1c7a30a67 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 Aug 2020 15:11:33
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 75D15C4339C; Thu,  6 Aug 2020 15:11:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.129] (unknown [183.83.142.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D180823131;
-        Thu,  6 Aug 2020 15:07:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596726464;
-        bh=iNFLlgEhiYwp8ZRVI4J6gnGFP+JhjSTOqd0S/pIkyto=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Y05pH6hS7jyZT5I8hGUXIH6dhp6PsUwz5DjbgHn90eVss5blosSYAtqvXLAZi0cru
-         f/6d9Z2uXGUfy8Dt/nLbxnBREXGcOJF2eIAY58tqgMl8+/8KY3/bfqo+hawGgia2CQ
-         XCtAqh4Tnn0mF+9oROVTrcDvkJ111VpXtBDsG5RA=
-Date:   Thu, 6 Aug 2020 08:07:43 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, riteshh@linux.ibm.com,
-        rgoldwyn@suse.de, agruenba@redhat.com, linux-btrfs@vger.kernel.org
-Subject: [GIT PULL v2] iomap: new code for 5.9-rc1
-Message-ID: <20200806150743.GC6090@magnolia>
+        (Authenticated sender: rohitkr)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 62261C433C9;
+        Thu,  6 Aug 2020 15:11:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 62261C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rohitkr@codeaurora.org
+Subject: Re: [PATCH v5 00/12] ASoC: qcom: Add support for SC7180 lpass variant
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1596528453-11437-1-git-send-email-rohitkr@codeaurora.org>
+From:   Rohit Kumar <rohitkr@codeaurora.org>
+Message-ID: <1aa197e8-0c11-e2f1-d067-c74c1a185b8a@codeaurora.org>
+Date:   Thu, 6 Aug 2020 20:41:04 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <1596528453-11437-1-git-send-email-rohitkr@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hello Mark,
 
-Please pull these new changes to the iomap code for 5.9.  The most
-notable changes are:
+Other than patch 12, there is no comment on other patches from anyone as 
+of now.
 
-1) iomap no longer invalidate the page cache when performing a direct
-read, since doing so is unnecessary and the old directio code doesn't do
-that either.
+[PATCH v5 12/12] dt-bindings: sound: lpass-cpu: Move to yaml format
 
-2) iomap embraced the use of returning ENOTBLK from a direct write to
-trigger falling back to a buffered write since ext4 already did this and
-btrfs wants it for their port.
+I will plan to post patch12 only with comments addressed if other
+changes does not have any comment. Please let me know your inputs.
 
-3) iomap falls back to buffered writes if we're doing a direct write and
-the page cache invalidation after the flush fails; this was necessary to
-handle a corner case in the btrfs port.
+Thanks,
+Rohit
+On 8/4/2020 1:37 PM, Rohit kumar wrote:
+> This patch chain add audio support for SC7180 soc by doing the required
+> modification in existing common lpass-cpu/lpass-platform driver.
+> This also fixes some concurrency issue.
+>
+> This patch series is already tested by Srinivas on Dragon Board 410c.
+> Changes since v4:
+>          - Updated compatible string for sc7180 lpass cpu as suggested by Rob
+>          - Addressed comments by Rob in yaml Documentation.
+>
+> Ajit Pandey (4):
+>    ASoC: qcom: Add common array to initialize soc based core clocks
+>    ASoC: qcom: lpass-platform: Replace card->dev with component->dev
+>    include: dt-bindings: sound: Add sc7180-lpass bindings header
+>    ASoC: qcom: lpass-sc7180: Add platform driver for lpass audio
+>
+> Rohit kumar (8):
+>    ASoC: qcom: lpass-cpu: Move ahbix clk to platform specific function
+>    ASoC: qcom: lpass-platform: fix memory leak
+>    ASoC: qcom: lpass: Use regmap_field for i2sctl and dmactl registers
+>    ASoC: qcom: lpass-cpu: fix concurrency issue
+>    dt-bindings: sound: lpass-cpu: Add sc7180 lpass cpu node
+>    ASoC: qcom: lpass-cpu: Use platform_get_resource
+>    ASoC: qcom: lpass-platform: Use platform_get_irq
+>    dt-bindings: sound: lpass-cpu: Move to yaml format
+>
+>   .../devicetree/bindings/sound/qcom,lpass-cpu.txt   |  79 --------
+>   .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 179 +++++++++++++++++
+>   include/dt-bindings/sound/sc7180-lpass.h           |  10 +
+>   sound/soc/qcom/Kconfig                             |   5 +
+>   sound/soc/qcom/Makefile                            |   2 +
+>   sound/soc/qcom/lpass-apq8016.c                     |  86 ++++++--
+>   sound/soc/qcom/lpass-cpu.c                         | 204 ++++++++++---------
+>   sound/soc/qcom/lpass-ipq806x.c                     |  67 +++++++
+>   sound/soc/qcom/lpass-lpaif-reg.h                   | 157 ++++++++-------
+>   sound/soc/qcom/lpass-platform.c                    | 155 +++++++++++----
+>   sound/soc/qcom/lpass-sc7180.c                      | 216 +++++++++++++++++++++
+>   sound/soc/qcom/lpass.h                             |  63 +++++-
+>   12 files changed, 924 insertions(+), 299 deletions(-)
+>   delete mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+>   create mode 100644 include/dt-bindings/sound/sc7180-lpass.h
+>   create mode 100644 sound/soc/qcom/lpass-sc7180.c
+>
+-- 
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the Linux Foundation.
 
-4) Remove email virus scanner detritus that was accidentally included in
-yesterday's pull request.  Clearly I need(ed) to update my git branch
-checker scripts. :(
-
-The branch merges cleanly with your HEAD branch as of a few minutes ago.
-Please let me know if there are any strange problems.
-
---D
-
-The following changes since commit dcb7fd82c75ee2d6e6f9d8cc71c52519ed52e258:
-
-  Linux 5.8-rc4 (2020-07-05 16:20:22 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.9-merge-5
-
-for you to fetch changes up to 60263d5889e6dc5987dc51b801be4955ff2e4aa7:
-
-  iomap: fall back to buffered writes for invalidation failures (2020-08-05 09:24:16 -0700)
-
-----------------------------------------------------------------
-New code for 5.9:
-- Make sure we call ->iomap_end with a failure code if ->iomap_begin
-  failed in any way; some filesystems need to try to undo things.
-- Don't invalidate the page cache during direct reads since we already
-  sync'd the cache with disk.
-- Make direct writes fall back to the page cache if the pre-write
-  cache invalidation fails.  This avoids a cache coherency problem.
-- Fix some idiotic virus scanner warning bs in the previous tag.
-
-----------------------------------------------------------------
-Andreas Gruenbacher (1):
-      iomap: Make sure iomap_end is called after iomap_begin
-
-Christoph Hellwig (2):
-      xfs: use ENOTBLK for direct I/O to buffered I/O fallback
-      iomap: fall back to buffered writes for invalidation failures
-
-Dave Chinner (1):
-      iomap: Only invalidate page cache pages on direct IO writes
-
- fs/ext4/file.c       |  2 ++
- fs/gfs2/file.c       |  3 ++-
- fs/iomap/apply.c     | 13 +++++++++----
- fs/iomap/direct-io.c | 37 +++++++++++++++++++++----------------
- fs/iomap/trace.h     |  1 +
- fs/xfs/xfs_file.c    |  8 ++++----
- fs/zonefs/super.c    |  7 +++++--
- 7 files changed, 44 insertions(+), 27 deletions(-)
