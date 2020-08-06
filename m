@@ -2,72 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B876C23DC6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0761E23DC60
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729400AbgHFQv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:51:56 -0400
-Received: from mail-pg1-f171.google.com ([209.85.215.171]:46023 "EHLO
-        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729382AbgHFQvw (ORCPT
+        id S1729571AbgHFQve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729461AbgHFQu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:51:52 -0400
-Received: by mail-pg1-f171.google.com with SMTP id x6so11972822pgx.12;
-        Thu, 06 Aug 2020 09:51:52 -0700 (PDT)
+        Thu, 6 Aug 2020 12:50:57 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D349FC0A88AC
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 07:50:26 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 74so16816335pfx.13
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 07:50:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=m441G42Dw2WA9biOCbEC37yIb+vN9wJnSWpEb0R2V68=;
+        b=Cledxagv6nAMt7v27o6YgUP9m5QB9CGCXnaH7AZ6bfcv6uloE7ZOwWdiAi884qPWXU
+         nsMKzrVONYBXUhr9LKbqaqsq8eHvS27d7N6O/c9rnICXjUimLSwqqHBAE2PNJqRJN554
+         +faXNAnPmyXY+emn9rHNcurNW9PpoeJI4TaRQxPk48vVuQnm37r8nU5LXkOg16ryaD8q
+         /OGzANa6yCr5OzEJcEeHc2DH9IBCdv6DZhWnui5h85+QlXyo/1kPilHKftaoJTplTNSD
+         SrChY1voDzVzNo7leiBxHNXpjMmUsV8aNgGi6ZXr7A34HUx7bxCsTKTfqGkSlF3VBPKf
+         hfjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9WzP/qX68qYJ2hNsWrKZ2UF/VOiRo1FGiV7mEAPI4o8=;
-        b=UBAj31rUkVHghDVXtjZ0/wVOUkN+aCkneYrWizAVydvO8QkGyrwIoMxW8J4J494VnX
-         0F/W/hz5G46lcCNR5mh2esaxXsZfe/Yb6S+ehVdjyIyXZCr4Uucyih7yKFQb+/L8MPHk
-         vPB3mQPmGo03pva1ntFRFYrTwSi0YJs/RfWAAoCDcfPgDmlpLPAukJn/i6fJ+O3wC9H4
-         MdyzjnOR+WPv6btxeiwiT5Ufhi9zdKXcW/fndA4OXgiblzVhKbz7zO7rxPbMdl9lRPQx
-         6BcRY3/MpLxxftaeFYbd0DCz2zgchDN3u4J7OGjgXASG+kH4Dao+XTKuvrJ+58kIIHXW
-         cyBQ==
-X-Gm-Message-State: AOAM530BAB8rQ0hzlRrkDOIg6rVJ0o2jUrh4FQNIkQaFy94eDjUZWESo
-        jrthlPvvf+lL6qyM+eOLTNtqLZw=
-X-Google-Smtp-Source: ABdhPJzSi7X3jBLpEqD8SZQol0aayJ75PVEkC6cgKrEGtbOTZR9JvyOCv2zvr0+d+NIejU2BAtVvgQ==
-X-Received: by 2002:a92:ba02:: with SMTP id o2mr10384602ili.3.1596725420911;
-        Thu, 06 Aug 2020 07:50:20 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id p20sm3847903iod.27.2020.08.06.07.50.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 07:50:20 -0700 (PDT)
-Received: (nullmailer pid 840060 invoked by uid 1000);
-        Thu, 06 Aug 2020 14:50:19 -0000
-Date:   Thu, 6 Aug 2020 08:50:19 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>,
-        Ahmet Inan <inan@distec.de>, kernel@collabora.com,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=m441G42Dw2WA9biOCbEC37yIb+vN9wJnSWpEb0R2V68=;
+        b=XPb2CGjQfXLj2MGzBgt9XqxPupPxqq6sIvR+1Fomxl6rqVJXFosBhguRMXn1I5kDaX
+         z6vWMHNphDefHFc42rTTrBvkWjufWZnzDBFNGrYiDVT5+ff6Z83N5EFtf8dy0MvjYnpi
+         yBCphTstEVC/jvDi06dz/X+iLQLLowJcIeyoMyVH4SlxXxgkWchgDLyq2RqjLKq379FF
+         qioKKyROP/+8eB4ozptd6q75IzhA5jx0uqAR9C7JibxI4AOiI+nXi34QUIEViv2uPbdq
+         jugo073grzvKcyP3+gHCRNUjn6u9C6npMHOnO0DMKSxe8uf7veykPSudUfTXELEGh0UY
+         10Tg==
+X-Gm-Message-State: AOAM5327UZCmdue3swVkY7oLWY5JV+Bm2laIMI5D8SYexcrR6w/CkSiv
+        XsvtADGKhVTvaDHHvLATXHG+D+ak
+X-Google-Smtp-Source: ABdhPJwVePxwBGETaMABZuy3jh92a5kranZesLy3lqWNemyvYhONO+jdmgqrBb4ELoQd7C0vOYVECA==
+X-Received: by 2002:a63:3fcf:: with SMTP id m198mr7408374pga.342.1596725426212;
+        Thu, 06 Aug 2020 07:50:26 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i1sm8890519pfo.212.2020.08.06.07.50.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Aug 2020 07:50:25 -0700 (PDT)
+Subject: Re: [PATCH] random: fix a compilation error on arm64
+To:     Qian Cai <cai@lca.pw>, torvalds@linux-foundation.org
+Cc:     daniel.diaz@linaro.org, tytso@mit.edu, catalin.marinas@arm.com,
+        will@kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv4 3/4] Input: EXC3000: Add reset gpio support
-Message-ID: <20200806145019.GA840006@bogus>
-References: <20200805160520.456570-1-sebastian.reichel@collabora.com>
- <20200805160520.456570-4-sebastian.reichel@collabora.com>
+References: <20200806135836.31736-1-cai@lca.pw>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <4edcf552-ef82-cdd2-3fda-38d42ebfecc7@roeck-us.net>
+Date:   Thu, 6 Aug 2020 07:50:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805160520.456570-4-sebastian.reichel@collabora.com>
+In-Reply-To: <20200806135836.31736-1-cai@lca.pw>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 05 Aug 2020 18:05:19 +0200, Sebastian Reichel wrote:
-> Add basic support for an optional reset gpio.
+On 8/6/20 6:58 AM, Qian Cai wrote:
+> linux-next failed to compile using this .config,
+> https://gitlab.com/cailca/linux-mm/-/blob/master/arm64.config
 > 
-> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
->  .../input/touchscreen/eeti,exc3000.yaml         |  2 ++
->  drivers/input/touchscreen/exc3000.c             | 17 +++++++++++++++++
->  2 files changed, 19 insertions(+)
+> arch/arm64/kernel/kaslr.c: In function 'kaslr_early_init':
+> arch/arm64/kernel/kaslr.c:128:6: error: implicit declaration of function
+> '__early_cpu_has_rndr'; did you mean '__early_pfn_to_nid'?
+> [-Werror=implicit-function-declaration]
+>   if (__early_cpu_has_rndr()) {
+>       ^~~~~~~~~~~~~~~~~~~~
+>       __early_pfn_to_nid
+> arch/arm64/kernel/kaslr.c:131:7: error: implicit declaration of function
+> '__arm64_rndr' [-Werror=implicit-function-declaration]
+>    if (__arm64_rndr(&raw))
+>        ^~~~~~~~~~~~
+> cc1: some warnings being treated as errors
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+This happens because ARCH_RANDOM is disabled. May be I am wrong, but I
+would argue that __arm64_rndr() should not be called directly in the
+first place. arch_get_random_seed_long_early() should be called instead.
+
+Thanks,
+Guenter
+
+> Fixes: 585524081ecd ("random: random.h should include archrandom.h, not the other way around")
+> Signed-off-by: Qian Cai <cai@lca.pw>
+> ---
+>  include/linux/random.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/include/linux/random.h b/include/linux/random.h
+> index f45b8be3e3c4..da782c16c20c 100644
+> --- a/include/linux/random.h
+> +++ b/include/linux/random.h
+> @@ -12,6 +12,8 @@
+>  #include <linux/list.h>
+>  #include <linux/once.h>
+>  
+> +#include <asm/archrandom.h>
+> +
+>  #include <uapi/linux/random.h>
+>  
+>  struct random_ready_callback {
+> 
+
