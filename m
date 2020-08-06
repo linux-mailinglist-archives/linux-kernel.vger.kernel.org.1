@@ -2,78 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1BA23DFFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596F323DF2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728253AbgHFR41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:56:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43256 "EHLO mail.kernel.org"
+        id S1730649AbgHFRjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:39:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726490AbgHFQSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:18:23 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1729164AbgHFRbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:31:43 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.162.129.152])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5773723109;
-        Thu,  6 Aug 2020 12:44:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23A3B22D0B;
+        Thu,  6 Aug 2020 12:46:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596717854;
-        bh=3ou9omZc4Nra39WBs2vjwo4o71UySqGYORcZDy+9Of0=;
+        s=default; t=1596717970;
+        bh=QrxjxFQXvrxHBH9YwYcV7vnXh+iepBJIdhJO2i2pYwo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=muSooC1zKf0fyERxc69b+JeSq4moOoQrnp+6V7oRuGvIV4DKdpmNaoqtI0FshKW1E
-         YkZO3GZ/vgWLO077nzlSpOTNBJdd5BpwMfmpA94C6+S+tGeHsWX3ri8cnVxpyqsLJC
-         5ZbvmTyOmK/We90L/Gu9I0vZ05qbOzFxCpacBz4A=
-Date:   Thu, 6 Aug 2020 14:44:28 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.7 0/7] 5.7.14-rc2 review
-Message-ID: <20200806124428.GC2876088@kroah.com>
-References: <20200805195916.183355405@linuxfoundation.org>
- <CA+G9fYs-vNeH=BCbFZAA28-C=dE+iajWEF+0vvgZMwr=yw-5xA@mail.gmail.com>
+        b=uX8oj8a0O0wlst6i0TMUJvQdx1C9L0JnVS7VabH1BZZjEM3yNcWmoAM235rVTBzip
+         vF/heXazR6fsDCMq25esXaLoi2m6SGrnIZbeUfuT75aIz+TpUyIUAOpaNKlIoJdFU5
+         CGNrv9pkmgZoSFhouNY48YNe8/9w4aMGnis/isZM=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1FA3B40D9D; Thu,  6 Aug 2020 09:46:08 -0300 (-03)
+Date:   Thu, 6 Aug 2020 09:46:08 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        =?iso-8859-1?Q?Genevi=E8ve?= Bastien <gbastien@versatic.net>,
+        Wang Nan <wangnan0@huawei.com>,
+        Jeremie Galarneau <jgalar@efficios.com>
+Subject: Re: [PATCH v2 6/7] perf script: Change enum perf_output_field values
+ to be 64 bits
+Message-ID: <20200806124608.GH71359@kernel.org>
+References: <20200805093444.314999-1-jolsa@kernel.org>
+ <20200805093444.314999-7-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYs-vNeH=BCbFZAA28-C=dE+iajWEF+0vvgZMwr=yw-5xA@mail.gmail.com>
+In-Reply-To: <20200805093444.314999-7-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 02:16:26PM +0530, Naresh Kamboju wrote:
-> On Thu, 6 Aug 2020 at 01:29, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.7.14 release.
-> > There are 7 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Fri, 07 Aug 2020 19:59:06 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.14-rc2.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> 
-> Results from Linaro’s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
+Em Wed, Aug 05, 2020 at 11:34:43AM +0200, Jiri Olsa escreveu:
+> So it's possible to add new values. I did not find any place
+> where the enum values are passed through some number type,
+> so it's safe to make this change.
 
-Great, thanks for testing all of these and letting me know.
+Thanks, applied.
 
-greg k-h
+- Arnaldo
+ 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/builtin-script.c | 64 ++++++++++++++++++-------------------
+>  1 file changed, 32 insertions(+), 32 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> index 0dfc38fb6d35..eb45f678dc2f 100644
+> --- a/tools/perf/builtin-script.c
+> +++ b/tools/perf/builtin-script.c
+> @@ -82,38 +82,38 @@ static bool			native_arch;
+>  unsigned int scripting_max_stack = PERF_MAX_STACK_DEPTH;
+>  
+>  enum perf_output_field {
+> -	PERF_OUTPUT_COMM            = 1U << 0,
+> -	PERF_OUTPUT_TID             = 1U << 1,
+> -	PERF_OUTPUT_PID             = 1U << 2,
+> -	PERF_OUTPUT_TIME            = 1U << 3,
+> -	PERF_OUTPUT_CPU             = 1U << 4,
+> -	PERF_OUTPUT_EVNAME          = 1U << 5,
+> -	PERF_OUTPUT_TRACE           = 1U << 6,
+> -	PERF_OUTPUT_IP              = 1U << 7,
+> -	PERF_OUTPUT_SYM             = 1U << 8,
+> -	PERF_OUTPUT_DSO             = 1U << 9,
+> -	PERF_OUTPUT_ADDR            = 1U << 10,
+> -	PERF_OUTPUT_SYMOFFSET       = 1U << 11,
+> -	PERF_OUTPUT_SRCLINE         = 1U << 12,
+> -	PERF_OUTPUT_PERIOD          = 1U << 13,
+> -	PERF_OUTPUT_IREGS	    = 1U << 14,
+> -	PERF_OUTPUT_BRSTACK	    = 1U << 15,
+> -	PERF_OUTPUT_BRSTACKSYM	    = 1U << 16,
+> -	PERF_OUTPUT_DATA_SRC	    = 1U << 17,
+> -	PERF_OUTPUT_WEIGHT	    = 1U << 18,
+> -	PERF_OUTPUT_BPF_OUTPUT	    = 1U << 19,
+> -	PERF_OUTPUT_CALLINDENT	    = 1U << 20,
+> -	PERF_OUTPUT_INSN	    = 1U << 21,
+> -	PERF_OUTPUT_INSNLEN	    = 1U << 22,
+> -	PERF_OUTPUT_BRSTACKINSN	    = 1U << 23,
+> -	PERF_OUTPUT_BRSTACKOFF	    = 1U << 24,
+> -	PERF_OUTPUT_SYNTH           = 1U << 25,
+> -	PERF_OUTPUT_PHYS_ADDR       = 1U << 26,
+> -	PERF_OUTPUT_UREGS	    = 1U << 27,
+> -	PERF_OUTPUT_METRIC	    = 1U << 28,
+> -	PERF_OUTPUT_MISC            = 1U << 29,
+> -	PERF_OUTPUT_SRCCODE	    = 1U << 30,
+> -	PERF_OUTPUT_IPC             = 1U << 31,
+> +	PERF_OUTPUT_COMM            = 1ULL << 0,
+> +	PERF_OUTPUT_TID             = 1ULL << 1,
+> +	PERF_OUTPUT_PID             = 1ULL << 2,
+> +	PERF_OUTPUT_TIME            = 1ULL << 3,
+> +	PERF_OUTPUT_CPU             = 1ULL << 4,
+> +	PERF_OUTPUT_EVNAME          = 1ULL << 5,
+> +	PERF_OUTPUT_TRACE           = 1ULL << 6,
+> +	PERF_OUTPUT_IP              = 1ULL << 7,
+> +	PERF_OUTPUT_SYM             = 1ULL << 8,
+> +	PERF_OUTPUT_DSO             = 1ULL << 9,
+> +	PERF_OUTPUT_ADDR            = 1ULL << 10,
+> +	PERF_OUTPUT_SYMOFFSET       = 1ULL << 11,
+> +	PERF_OUTPUT_SRCLINE         = 1ULL << 12,
+> +	PERF_OUTPUT_PERIOD          = 1ULL << 13,
+> +	PERF_OUTPUT_IREGS	    = 1ULL << 14,
+> +	PERF_OUTPUT_BRSTACK	    = 1ULL << 15,
+> +	PERF_OUTPUT_BRSTACKSYM	    = 1ULL << 16,
+> +	PERF_OUTPUT_DATA_SRC	    = 1ULL << 17,
+> +	PERF_OUTPUT_WEIGHT	    = 1ULL << 18,
+> +	PERF_OUTPUT_BPF_OUTPUT	    = 1ULL << 19,
+> +	PERF_OUTPUT_CALLINDENT	    = 1ULL << 20,
+> +	PERF_OUTPUT_INSN	    = 1ULL << 21,
+> +	PERF_OUTPUT_INSNLEN	    = 1ULL << 22,
+> +	PERF_OUTPUT_BRSTACKINSN	    = 1ULL << 23,
+> +	PERF_OUTPUT_BRSTACKOFF	    = 1ULL << 24,
+> +	PERF_OUTPUT_SYNTH           = 1ULL << 25,
+> +	PERF_OUTPUT_PHYS_ADDR       = 1ULL << 26,
+> +	PERF_OUTPUT_UREGS	    = 1ULL << 27,
+> +	PERF_OUTPUT_METRIC	    = 1ULL << 28,
+> +	PERF_OUTPUT_MISC            = 1ULL << 29,
+> +	PERF_OUTPUT_SRCCODE	    = 1ULL << 30,
+> +	PERF_OUTPUT_IPC             = 1ULL << 31,
+>  };
+>  
+>  struct output_option {
+> -- 
+> 2.25.4
+> 
+
+-- 
+
+- Arnaldo
