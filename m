@@ -2,254 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C063E23DF9F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B028623DF88
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728973AbgHFRvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728431AbgHFQcd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:32:33 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBF2C02B8C6
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:31:38 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id k20so10269034wmi.5
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:31:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=q/57p8pjM914Lcbk7bBCIqievLGqZS/SzbLkF/PRwXQ=;
-        b=GaCQ8rthE/nMuAM5wV0kJwOUiCLiJ1O/PjmZ9cvtFRhp860Y/1KNLhsaWLlTmphvuz
-         hlRMsnKPH/8Ao+JDlz11IKZSOWdyvyC6AYx38fj4JEnOzx/H35jIHKNco3qgooNf6Uvb
-         xhs2iO49EjwQSkXwhCozPt0qoXrfd7UnL2WV/UivPQptYp3RU3hmcqGZNscaKO5VCYrd
-         S95FKZ5yKa45pkdIe0lDqgYMq9TR7xk1tXXuzrCYIwcckD3XTR1W4d0aTHG/V9+Wbx5W
-         Cft02o6noz4dfOnAGO0nM72mE/atmPZhCwnz7Dq5+RBoAacsJQj7S+4JGWLqrzlabLXI
-         Usqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=q/57p8pjM914Lcbk7bBCIqievLGqZS/SzbLkF/PRwXQ=;
-        b=Pk/4aBC0Y9KfkVro8rrdUPcn+QujzqdulPak18pBjKD7nk9D87I9iEOKBxRCbIU4Uf
-         r4wxuy3He6+BJJWp+fyZCgPhnklFbzXYuLQ/y2VLZLUTCha8tb6/R5QL0qWbz88zMqGe
-         skIcxEIvrgq2T4h6Koqfb/yBYuF/vDe9sv+R3f92GE/Yle4XGDcDb5PiLWa6P9roRrTc
-         wEJcdTZHAKKqy+kt09na1vA6GMGDw1u6/uQLq1qF45gtCabb4JuEJMXciPI2/Y7p3OkQ
-         Q8D+JePFkh5aoO5r/iw/dpdMbPCCdKiT51nDN9pc4X/zjC2qnqpYhgs41zR+S7Pe4SjZ
-         g2lg==
-X-Gm-Message-State: AOAM533fbJ1CSZ09DUNtoQo2af9hAltCqrq6uLpksZh/W/9/4MrdwgA5
-        m+d5Ezi3TAfjwnaIx6IpgGRnzg==
-X-Google-Smtp-Source: ABdhPJxAesQbqbXg5mCZ+OU1K2tf6BHYH72efs+8li0fTcb6bfdNUKOyz5yU/K/UYMHymreyNE9JaQ==
-X-Received: by 2002:a1c:8094:: with SMTP id b142mr9284568wmd.59.1596731496969;
-        Thu, 06 Aug 2020 09:31:36 -0700 (PDT)
-Received: from localhost.localdomain ([87.120.218.65])
-        by smtp.googlemail.com with ESMTPSA id i66sm7468537wma.35.2020.08.06.09.31.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 06 Aug 2020 09:31:36 -0700 (PDT)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     robh+dt@kernel.org, bjorn.andersson@linaro.org,
-        sibis@codeaurora.org, mka@chromium.org, dianders@chromium.org,
-        georgi.djakov@linaro.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/7] arm64: dts: qcom: sdm845: Increase the number of interconnect cells
-Date:   Thu,  6 Aug 2020 19:31:24 +0300
-Message-Id: <20200806163126.22667-6-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200806163126.22667-1-georgi.djakov@linaro.org>
-References: <20200806163126.22667-1-georgi.djakov@linaro.org>
+        id S1730544AbgHFRsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:48:55 -0400
+Received: from mga05.intel.com ([192.55.52.43]:60463 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728474AbgHFQfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:35:02 -0400
+IronPort-SDR: mb8azU7q6OnPasrYFMjQyzra+BPBUkyVmFji5lA2/4RKlNTbeRGFLEXVh8k5qTver1nfYW9jx4
+ 1eRs6yuS7eFw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="237715846"
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="237715846"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 09:34:57 -0700
+IronPort-SDR: s9MnVWk0qnB+x3CrRPd9eSjg7CJ9npFh9AmIH8kbb4Yx51prYh0UhDnfZUpJrh+Bdf2gn+i8bs
+ huYBepBTzgKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="276432190"
+Received: from lkp-server02.sh.intel.com (HELO 37a337f97289) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 06 Aug 2020 09:34:45 -0700
+Received: from kbuild by 37a337f97289 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k3iqq-0001Tw-Ae; Thu, 06 Aug 2020 16:34:44 +0000
+Date:   Fri, 7 Aug 2020 00:33:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: arch/x86/net/bpf_jit_comp.c:342:6: warning: Variable 'ret' is
+ reassigned a value before the old one has been used.
+Message-ID: <202008070037.Dz0HMdFX%lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Increase the number of interconnect-cells, as now we can include
-the tag information. The consumers can specify the path tag as an
-additional argument to the endpoints.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   47ec5303d73ea344e84f46660fff693c57641386
+commit: 428d5df1fa4f28daf622c48dd19da35585c9053c bpf, x86: Emit patchable direct jump as tail call
+date:   9 months ago
+compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
 
-Tested-by: Sibi Sankar <sibis@codeaurora.org>
-Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+
+cppcheck warnings: (new ones prefixed by >>)
+
+>> arch/x86/net/bpf_jit_comp.c:342:6: warning: Variable 'ret' is reassigned a value before the old one has been used. [redundantAssignment]
+    ret = 0;
+        ^
+   arch/x86/net/bpf_jit_comp.c:334:6: note: Variable 'ret' is reassigned a value before the old one has been used.
+    ret = -EBUSY;
+        ^
+   arch/x86/net/bpf_jit_comp.c:342:6: note: Variable 'ret' is reassigned a value before the old one has been used.
+    ret = 0;
+        ^
+   arch/x86/net/bpf_jit_comp.c:409:2: warning: Signed integer overflow for expression '72+(139<<8)+(132<<16)+(214<<24)'. [integerOverflow]
+    EMIT4_off32(0x48, 0x8B, 0x84, 0xD6,       /* mov rax, [rsi + rdx * 8 + offsetof(...)] */
+    ^
+
+vim +/ret +342 arch/x86/net/bpf_jit_comp.c
+
+   267	
+   268	static int __bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+   269					void *old_addr, void *new_addr,
+   270					const bool text_live)
+   271	{
+   272		int (*emit_patch_fn)(u8 **pprog, void *func, void *ip);
+   273		const u8 *nop_insn = ideal_nops[NOP_ATOMIC5];
+   274		u8 old_insn[X86_PATCH_SIZE] = {};
+   275		u8 new_insn[X86_PATCH_SIZE] = {};
+   276		u8 *prog;
+   277		int ret;
+   278	
+   279		switch (t) {
+   280		case BPF_MOD_NOP_TO_CALL ... BPF_MOD_CALL_TO_NOP:
+   281			emit_patch_fn = emit_call;
+   282			break;
+   283		case BPF_MOD_NOP_TO_JUMP ... BPF_MOD_JUMP_TO_NOP:
+   284			emit_patch_fn = emit_jump;
+   285			break;
+   286		default:
+   287			return -ENOTSUPP;
+   288		}
+   289	
+   290		switch (t) {
+   291		case BPF_MOD_NOP_TO_CALL:
+   292		case BPF_MOD_NOP_TO_JUMP:
+   293			if (!old_addr && new_addr) {
+   294				memcpy(old_insn, nop_insn, X86_PATCH_SIZE);
+   295	
+   296				prog = new_insn;
+   297				ret = emit_patch_fn(&prog, new_addr, ip);
+   298				if (ret)
+   299					return ret;
+   300				break;
+   301			}
+   302			return -ENXIO;
+   303		case BPF_MOD_CALL_TO_CALL:
+   304		case BPF_MOD_JUMP_TO_JUMP:
+   305			if (old_addr && new_addr) {
+   306				prog = old_insn;
+   307				ret = emit_patch_fn(&prog, old_addr, ip);
+   308				if (ret)
+   309					return ret;
+   310	
+   311				prog = new_insn;
+   312				ret = emit_patch_fn(&prog, new_addr, ip);
+   313				if (ret)
+   314					return ret;
+   315				break;
+   316			}
+   317			return -ENXIO;
+   318		case BPF_MOD_CALL_TO_NOP:
+   319		case BPF_MOD_JUMP_TO_NOP:
+   320			if (old_addr && !new_addr) {
+   321				memcpy(new_insn, nop_insn, X86_PATCH_SIZE);
+   322	
+   323				prog = old_insn;
+   324				ret = emit_patch_fn(&prog, old_addr, ip);
+   325				if (ret)
+   326					return ret;
+   327				break;
+   328			}
+   329			return -ENXIO;
+   330		default:
+   331			return -ENOTSUPP;
+   332		}
+   333	
+   334		ret = -EBUSY;
+   335		mutex_lock(&text_mutex);
+   336		if (memcmp(ip, old_insn, X86_PATCH_SIZE))
+   337			goto out;
+   338		if (text_live)
+   339			text_poke_bp(ip, new_insn, X86_PATCH_SIZE, NULL);
+   340		else
+   341			memcpy(ip, new_insn, X86_PATCH_SIZE);
+ > 342		ret = 0;
+   343	out:
+   344		mutex_unlock(&text_mutex);
+   345		return ret;
+   346	}
+   347	
+
 ---
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 44 ++++++++++++++--------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index e506793407d8..94f5d27f2927 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -200,7 +200,7 @@ &LITTLE_CPU_SLEEP_1
- 			dynamic-power-coefficient = <100>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
- 			operating-points-v2 = <&cpu0_opp_table>;
--			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc SLAVE_EBI1>,
-+			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			next-level-cache = <&L2_0>;
-@@ -225,7 +225,7 @@ &LITTLE_CPU_SLEEP_1
- 			dynamic-power-coefficient = <100>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
- 			operating-points-v2 = <&cpu0_opp_table>;
--			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc SLAVE_EBI1>,
-+			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			next-level-cache = <&L2_100>;
-@@ -247,7 +247,7 @@ &LITTLE_CPU_SLEEP_1
- 			dynamic-power-coefficient = <100>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
- 			operating-points-v2 = <&cpu0_opp_table>;
--			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc SLAVE_EBI1>,
-+			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			next-level-cache = <&L2_200>;
-@@ -269,7 +269,7 @@ &LITTLE_CPU_SLEEP_1
- 			dynamic-power-coefficient = <100>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
- 			operating-points-v2 = <&cpu0_opp_table>;
--			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc SLAVE_EBI1>,
-+			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			next-level-cache = <&L2_300>;
-@@ -291,7 +291,7 @@ &BIG_CPU_SLEEP_1
- 			dynamic-power-coefficient = <396>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
- 			operating-points-v2 = <&cpu4_opp_table>;
--			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc SLAVE_EBI1>,
-+			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			next-level-cache = <&L2_400>;
-@@ -313,7 +313,7 @@ &BIG_CPU_SLEEP_1
- 			dynamic-power-coefficient = <396>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
- 			operating-points-v2 = <&cpu4_opp_table>;
--			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc SLAVE_EBI1>,
-+			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			next-level-cache = <&L2_500>;
-@@ -335,7 +335,7 @@ &BIG_CPU_SLEEP_1
- 			dynamic-power-coefficient = <396>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
- 			operating-points-v2 = <&cpu4_opp_table>;
--			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc SLAVE_EBI1>,
-+			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			next-level-cache = <&L2_600>;
-@@ -357,7 +357,7 @@ &BIG_CPU_SLEEP_1
- 			dynamic-power-coefficient = <396>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
- 			operating-points-v2 = <&cpu4_opp_table>;
--			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc SLAVE_EBI1>,
-+			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			next-level-cache = <&L2_700>;
-@@ -2011,49 +2011,49 @@ pcie1_lane: lanes@1c06200 {
- 		mem_noc: interconnect@1380000 {
- 			compatible = "qcom,sdm845-mem-noc";
- 			reg = <0 0x01380000 0 0x27200>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		dc_noc: interconnect@14e0000 {
- 			compatible = "qcom,sdm845-dc-noc";
- 			reg = <0 0x014e0000 0 0x400>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		config_noc: interconnect@1500000 {
- 			compatible = "qcom,sdm845-config-noc";
- 			reg = <0 0x01500000 0 0x5080>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		system_noc: interconnect@1620000 {
- 			compatible = "qcom,sdm845-system-noc";
- 			reg = <0 0x01620000 0 0x18080>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		aggre1_noc: interconnect@16e0000 {
- 			compatible = "qcom,sdm845-aggre1-noc";
- 			reg = <0 0x016e0000 0 0x15080>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		aggre2_noc: interconnect@1700000 {
- 			compatible = "qcom,sdm845-aggre2-noc";
- 			reg = <0 0x01700000 0 0x1f300>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		mmss_noc: interconnect@1740000 {
- 			compatible = "qcom,sdm845-mmss-noc";
- 			reg = <0 0x01740000 0 0x1c100>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
-@@ -2156,8 +2156,8 @@ ipa: ipa@1e40000 {
- 			clocks = <&rpmhcc RPMH_IPA_CLK>;
- 			clock-names = "core";
- 
--			interconnects = <&aggre2_noc MASTER_IPA &mem_noc SLAVE_EBI1>,
--				        <&aggre2_noc MASTER_IPA &system_noc SLAVE_IMEM>,
-+			interconnects = <&aggre2_noc MASTER_IPA 0 &mem_noc SLAVE_EBI1 0>,
-+					<&aggre2_noc MASTER_IPA 0 &system_noc SLAVE_IMEM 0>,
- 					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_IPA_CFG>;
- 			interconnect-names = "memory",
- 					     "imem",
-@@ -3561,8 +3561,8 @@ usb_1: usb@a6f8800 {
- 
- 			resets = <&gcc GCC_USB30_PRIM_BCR>;
- 
--			interconnects = <&aggre2_noc MASTER_USB3_0 &mem_noc SLAVE_EBI1>,
--					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3_0>;
-+			interconnects = <&aggre2_noc MASTER_USB3_0 0 &mem_noc SLAVE_EBI1 0>,
-+					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3_0 0>;
- 			interconnect-names = "usb-ddr", "apps-usb";
- 
- 			usb_1_dwc3: dwc3@a600000 {
-@@ -3609,8 +3609,8 @@ usb_2: usb@a8f8800 {
- 
- 			resets = <&gcc GCC_USB30_SEC_BCR>;
- 
--			interconnects = <&aggre2_noc MASTER_USB3_1 &mem_noc SLAVE_EBI1>,
--					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3_1>;
-+			interconnects = <&aggre2_noc MASTER_USB3_1 0 &mem_noc SLAVE_EBI1 0>,
-+					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3_1 0>;
- 			interconnect-names = "usb-ddr", "apps-usb";
- 
- 			usb_2_dwc3: dwc3@a800000 {
-@@ -4306,7 +4306,7 @@ lpasscc: clock-controller@17014000 {
- 		gladiator_noc: interconnect@17900000 {
- 			compatible = "qcom,sdm845-gladiator-noc";
- 			reg = <0 0x17900000 0 0xd080>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
