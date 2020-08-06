@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8286E23DDB1
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9D223DDAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730428AbgHFRND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:13:03 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58912 "EHLO
+        id S1730409AbgHFRMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:12:49 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58924 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730213AbgHFRKD (ORCPT
+        with ESMTP id S1730216AbgHFRKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:10:03 -0400
-Date:   Thu, 06 Aug 2020 17:10:00 -0000
+        Thu, 6 Aug 2020 13:10:06 -0400
+Date:   Thu, 06 Aug 2020 17:10:01 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596733801;
+        s=2020; t=1596733802;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=s/zdo6N3kr6DwXPfg4F5UGxVXyrpPOOGwsHDs97g2I4=;
-        b=2+mFfU3njFmL3l5dT7cX2MUSyLPXOwaND6Pn93DWxCr4BNfKd/8pU6PEcTdParl9Bd4vfN
-        fweYOIajGt6fL4fAU2eCAicyxdOwcAE8Esi0JX16LfAb1vjVQCJ0zYpq+XldJwQEG2bY13
-        v1fxmkR+az/QkBUVG/CfRkVyGuCH3VDtVVAMBoS15qrHxpSjHIcd976YxPK3tmA4wqfrvf
-        3s00/b+/cbudVTAj5I5yKhDfyf1UJF05cidP+KHkuOijPnwoFBs6FffJKm3+7CyShy5aOj
-        nKdGJiPNxjn22XWeawNScwApbiOsyb4XQbOGGm1SMzKvapgY67E7j/DmhdDX6A==
+        bh=Gd5AfIYXFdlRNvNYPKomq5pISASI7cUerV9XrD7j7bA=;
+        b=gEI+zt9go5T3ru+v5NAAIyzbtcyGRLeS2LsFXngbDvuIJ2CE7MyZcOWBfBzxgKzDPNmClv
+        eCTIhRidCMtP2FEYxKJUaz0tbxLsmf4hV0X83zcOPwjrciWBbMUsyshVO3n76/jHN9kPJn
+        7P7rb9OF1lbdMX6wfeR3/44gS8XY0S/6wCogYSW4pqHDdLBMmfwhEtgksfsSlzVGqlUdDO
+        gkEluGJNKaTztCI6UflVdI42f38pwDDA+R1vVASx2LJgmCn7ZAcR8rI/9lj35/zVoXtD8/
+        iVsKxrWl8EhJihJEGisiQjSgLi/m6tIn1OQFW9gFJnprv6E1VpxSx237szrSLQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596733801;
+        s=2020e; t=1596733802;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=s/zdo6N3kr6DwXPfg4F5UGxVXyrpPOOGwsHDs97g2I4=;
-        b=TosHXgtWzY4CxwZWNRoZnAvUVfxakvzK0R70YJhLD717j/YklCEArBcWaLkK8VvAZAgsuS
-        pwMuYZCnfaLZhKDA==
-From:   "tip-bot2 for Sven Schnelle" <tip-bot2@linutronix.de>
+        bh=Gd5AfIYXFdlRNvNYPKomq5pISASI7cUerV9XrD7j7bA=;
+        b=Gb01PpxBYOdqzJHFtA46wdH9W58WwOjMmkf+zzIw91P2WkpwQjqksdVjbHv+9vsfMWfCSC
+        H8WquW6F1HvmIqCQ==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/urgent] lib/vdso: Allow to add architecture-specific vdso data
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+Subject: [tip: timers/urgent] vdso/treewide: Add vdso_data pointer argument to
+ __arch_get_hw_counter()
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200804150124.41692-2-svens@linux.ibm.com>
-References: <20200804150124.41692-2-svens@linux.ibm.com>
+In-Reply-To: <draft-87wo2ekuzn.fsf@nanos.tec.linutronix.de>
+References: <draft-87wo2ekuzn.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Message-ID: <159673380055.3192.7751211345799683003.tip-bot2@tip-bot2>
+Message-ID: <159673380184.3192.11397705484145709278.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,79 +58,161 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/urgent branch of tip:
 
-Commit-ID:     d60d7de3e16d7cea998bad17d87366a359625894
-Gitweb:        https://git.kernel.org/tip/d60d7de3e16d7cea998bad17d87366a359625894
-Author:        Sven Schnelle <svens@linux.ibm.com>
-AuthorDate:    Tue, 04 Aug 2020 17:01:22 +02:00
+Commit-ID:     4c5a116ada953b86125ab7c70a57c57463a55a55
+Gitweb:        https://git.kernel.org/tip/4c5a116ada953b86125ab7c70a57c57463a55a55
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 04 Aug 2020 22:37:48 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Thu, 06 Aug 2020 10:57:30 +02:00
 
-lib/vdso: Allow to add architecture-specific vdso data
+vdso/treewide: Add vdso_data pointer argument to __arch_get_hw_counter()
 
-The initial assumption that all VDSO related data can be completely generic
-does not hold. S390 needs architecture specific storage to access the clock
-steering information.
+MIPS already uses and S390 will need the vdso data pointer in
+__arch_get_hw_counter().
 
-Add struct arch_vdso_data to the vdso data struct. For architectures which
-do not need extra data this defaults to an empty struct. Architectures
-which require it, enable CONFIG_ARCH_HAS_VDSO_DATA and provide their
-specific struct in asm/vdso/data.h.
+This works nicely as long as the architecture does not support time
+namespaces in the VDSO. With time namespaces enabled the regular
+accessor to the vdso data pointer __arch_get_vdso_data() will return the
+namespace specific VDSO data page for tasks which are part of a
+non-root time namespace. This would cause the architectures which need
+the vdso data pointer in __arch_get_hw_counter() to access the wrong
+vdso data page.
 
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+Add a vdso_data pointer argument to __arch_get_hw_counter() and hand it in
+from the call sites in the core code. For architectures which do not need
+the data pointer in their counter accessor function the compiler will just
+optimize it out.
+
+Fix up all existing architecture implementations and make MIPS utilize the
+pointer instead of invoking the accessor function.
+
+No functional change and no change in the resulting object code (except
+MIPS).
+
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/20200804150124.41692-2-svens@linux.ibm.com
-
+Link: https://lkml.kernel.org/r/draft-87wo2ekuzn.fsf@nanos.tec.linutronix.de
 ---
- arch/Kconfig            |  3 +++
- include/vdso/datapage.h | 10 ++++++++++
- 2 files changed, 13 insertions(+)
+ arch/arm/include/asm/vdso/gettimeofday.h          | 3 ++-
+ arch/arm64/include/asm/vdso/compat_gettimeofday.h | 3 ++-
+ arch/arm64/include/asm/vdso/gettimeofday.h        | 3 ++-
+ arch/mips/include/asm/vdso/gettimeofday.h         | 5 +++--
+ arch/riscv/include/asm/vdso/gettimeofday.h        | 3 ++-
+ arch/x86/include/asm/vdso/gettimeofday.h          | 3 ++-
+ lib/vdso/gettimeofday.c                           | 4 ++--
+ 7 files changed, 15 insertions(+), 9 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index a112448..b44dd6b 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -975,6 +975,9 @@ config HAVE_SPARSE_SYSCALL_NR
- 	  entries at 4000, 5000 and 6000 locations. This option turns on syscall
- 	  related optimizations for a given architecture.
+diff --git a/arch/arm/include/asm/vdso/gettimeofday.h b/arch/arm/include/asm/vdso/gettimeofday.h
+index 1b207cf..2134cbd 100644
+--- a/arch/arm/include/asm/vdso/gettimeofday.h
++++ b/arch/arm/include/asm/vdso/gettimeofday.h
+@@ -113,7 +113,8 @@ static inline bool arm_vdso_hres_capable(void)
+ }
+ #define __arch_vdso_hres_capable arm_vdso_hres_capable
  
-+config ARCH_HAS_VDSO_DATA
-+	bool
-+
- source "kernel/gcov/Kconfig"
+-static __always_inline u64 __arch_get_hw_counter(int clock_mode)
++static __always_inline u64 __arch_get_hw_counter(int clock_mode,
++						 const struct vdso_data *vd)
+ {
+ #ifdef CONFIG_ARM_ARCH_TIMER
+ 	u64 cycle_now;
+diff --git a/arch/arm64/include/asm/vdso/compat_gettimeofday.h b/arch/arm64/include/asm/vdso/compat_gettimeofday.h
+index 75cbae6..7508b0a 100644
+--- a/arch/arm64/include/asm/vdso/compat_gettimeofday.h
++++ b/arch/arm64/include/asm/vdso/compat_gettimeofday.h
+@@ -103,7 +103,8 @@ int clock_getres32_fallback(clockid_t _clkid, struct old_timespec32 *_ts)
+ 	return ret;
+ }
  
- source "scripts/gcc-plugins/Kconfig"
-diff --git a/include/vdso/datapage.h b/include/vdso/datapage.h
-index ee810ca..73eb622 100644
---- a/include/vdso/datapage.h
-+++ b/include/vdso/datapage.h
-@@ -19,6 +19,12 @@
- #include <vdso/time32.h>
- #include <vdso/time64.h>
+-static __always_inline u64 __arch_get_hw_counter(s32 clock_mode)
++static __always_inline u64 __arch_get_hw_counter(s32 clock_mode,
++						 const struct vdso_data *vd)
+ {
+ 	u64 res;
  
-+#ifdef CONFIG_ARCH_HAS_VDSO_DATA
-+#include <asm/vdso/data.h>
-+#else
-+struct arch_vdso_data {};
-+#endif
-+
- #define VDSO_BASES	(CLOCK_TAI + 1)
- #define VDSO_HRES	(BIT(CLOCK_REALTIME)		| \
- 			 BIT(CLOCK_MONOTONIC)		| \
-@@ -64,6 +70,8 @@ struct vdso_timestamp {
-  * @tz_dsttime:		type of DST correction
-  * @hrtimer_res:	hrtimer resolution
-  * @__unused:		unused
-+ * @arch_data:		architecture specific data (optional, defaults
-+ *			to an empty struct)
-  *
-  * vdso_data will be accessed by 64 bit and compat code at the same time
-  * so we should be careful before modifying this structure.
-@@ -97,6 +105,8 @@ struct vdso_data {
- 	s32			tz_dsttime;
- 	u32			hrtimer_res;
- 	u32			__unused;
-+
-+	struct arch_vdso_data	arch_data;
- };
+diff --git a/arch/arm64/include/asm/vdso/gettimeofday.h b/arch/arm64/include/asm/vdso/gettimeofday.h
+index 9c29ad3..631ab12 100644
+--- a/arch/arm64/include/asm/vdso/gettimeofday.h
++++ b/arch/arm64/include/asm/vdso/gettimeofday.h
+@@ -64,7 +64,8 @@ int clock_getres_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
+ 	return ret;
+ }
  
- /*
+-static __always_inline u64 __arch_get_hw_counter(s32 clock_mode)
++static __always_inline u64 __arch_get_hw_counter(s32 clock_mode,
++						 const struct vdso_data *vd)
+ {
+ 	u64 res;
+ 
+diff --git a/arch/mips/include/asm/vdso/gettimeofday.h b/arch/mips/include/asm/vdso/gettimeofday.h
+index c63ddca..2203e2d 100644
+--- a/arch/mips/include/asm/vdso/gettimeofday.h
++++ b/arch/mips/include/asm/vdso/gettimeofday.h
+@@ -167,7 +167,8 @@ static __always_inline u64 read_gic_count(const struct vdso_data *data)
+ 
+ #endif
+ 
+-static __always_inline u64 __arch_get_hw_counter(s32 clock_mode)
++static __always_inline u64 __arch_get_hw_counter(s32 clock_mode,
++						 const struct vdso_data *vd)
+ {
+ #ifdef CONFIG_CSRC_R4K
+ 	if (clock_mode == VDSO_CLOCKMODE_R4K)
+@@ -175,7 +176,7 @@ static __always_inline u64 __arch_get_hw_counter(s32 clock_mode)
+ #endif
+ #ifdef CONFIG_CLKSRC_MIPS_GIC
+ 	if (clock_mode == VDSO_CLOCKMODE_GIC)
+-		return read_gic_count(get_vdso_data());
++		return read_gic_count(vd);
+ #endif
+ 	/*
+ 	 * Core checks mode already. So this raced against a concurrent
+diff --git a/arch/riscv/include/asm/vdso/gettimeofday.h b/arch/riscv/include/asm/vdso/gettimeofday.h
+index 3099362..f839f16 100644
+--- a/arch/riscv/include/asm/vdso/gettimeofday.h
++++ b/arch/riscv/include/asm/vdso/gettimeofday.h
+@@ -60,7 +60,8 @@ int clock_getres_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
+ 	return ret;
+ }
+ 
+-static __always_inline u64 __arch_get_hw_counter(s32 clock_mode)
++static __always_inline u64 __arch_get_hw_counter(s32 clock_mode,
++						 const struct vdso_data *vd)
+ {
+ 	/*
+ 	 * The purpose of csr_read(CSR_TIME) is to trap the system into
+diff --git a/arch/x86/include/asm/vdso/gettimeofday.h b/arch/x86/include/asm/vdso/gettimeofday.h
+index fb81fea..df01d73 100644
+--- a/arch/x86/include/asm/vdso/gettimeofday.h
++++ b/arch/x86/include/asm/vdso/gettimeofday.h
+@@ -241,7 +241,8 @@ static u64 vread_hvclock(void)
+ }
+ #endif
+ 
+-static inline u64 __arch_get_hw_counter(s32 clock_mode)
++static inline u64 __arch_get_hw_counter(s32 clock_mode,
++					const struct vdso_data *vd)
+ {
+ 	if (likely(clock_mode == VDSO_CLOCKMODE_TSC))
+ 		return (u64)rdtsc_ordered();
+diff --git a/lib/vdso/gettimeofday.c b/lib/vdso/gettimeofday.c
+index bcc9a98..2919f16 100644
+--- a/lib/vdso/gettimeofday.c
++++ b/lib/vdso/gettimeofday.c
+@@ -68,7 +68,7 @@ static int do_hres_timens(const struct vdso_data *vdns, clockid_t clk,
+ 		if (unlikely(!vdso_clocksource_ok(vd)))
+ 			return -1;
+ 
+-		cycles = __arch_get_hw_counter(vd->clock_mode);
++		cycles = __arch_get_hw_counter(vd->clock_mode, vd);
+ 		if (unlikely(!vdso_cycles_ok(cycles)))
+ 			return -1;
+ 		ns = vdso_ts->nsec;
+@@ -138,7 +138,7 @@ static __always_inline int do_hres(const struct vdso_data *vd, clockid_t clk,
+ 		if (unlikely(!vdso_clocksource_ok(vd)))
+ 			return -1;
+ 
+-		cycles = __arch_get_hw_counter(vd->clock_mode);
++		cycles = __arch_get_hw_counter(vd->clock_mode, vd);
+ 		if (unlikely(!vdso_cycles_ok(cycles)))
+ 			return -1;
+ 		ns = vdso_ts->nsec;
