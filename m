@@ -2,284 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B16323DF8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EA723DFC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728303AbgHFRt3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 6 Aug 2020 13:49:29 -0400
-Received: from mailoutvs34.siol.net ([185.57.226.225]:44784 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728137AbgHFQeN (ORCPT
+        id S1728428AbgHFRwc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 6 Aug 2020 13:52:32 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:8046 "EHLO
+        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728391AbgHFQbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:34:13 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 9F3E5524534;
-        Thu,  6 Aug 2020 17:54:23 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id gggXxBQX4zcq; Thu,  6 Aug 2020 17:54:23 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id F2B9652457D;
-        Thu,  6 Aug 2020 17:54:22 +0200 (CEST)
-Received: from jernej-laptop.localnet (cpe-86-58-58-148.static.triera.net [86.58.58.148])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id 16B02524534;
-        Thu,  6 Aug 2020 17:54:22 +0200 (CEST)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [PATCH v2 01/14] media: uapi: h264: Update reference lists
-Date:   Thu, 06 Aug 2020 17:54:21 +0200
-Message-ID: <3517723.C3QgaYJNcI@jernej-laptop>
-In-Reply-To: <20200806154707.GA1621078@aptenodytes>
-References: <20200806151310.98624-1-ezequiel@collabora.com> <20200806151310.98624-2-ezequiel@collabora.com> <20200806154707.GA1621078@aptenodytes>
+        Thu, 6 Aug 2020 12:31:21 -0400
+Subject: Re: [PATCH 2/2] selinux: add attributes to avc tracepoint
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>
+CC:     =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Nick Kralevich <nnk@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>
+References: <20200806080358.3124505-1-tweek@google.com>
+ <20200806080358.3124505-2-tweek@google.com>
+ <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com>
+ <8627d780-0e19-6755-0de5-c686deb0f5de@sony.com>
+ <971592b6-5d5f-05d8-d243-b521fe65577d@gmail.com>
+ <07e2c48d-3918-6ceb-a6b2-4e2f18f9ea01@gmail.com>
+ <CAEjxPJ4no_GqMp8aw43zpwmwq42Wi_1dvP+ZBs1a-mnReDt5Og@mail.gmail.com>
+ <dfeac808-b40d-77fd-0d31-f66f279083eb@sony.com>
+ <CAEjxPJ4EaXJ88-hT=jgfn0d1WVP9QQb0w2XQi7U2YVuqN2oMsg@mail.gmail.com>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <17ca6cfc-9334-f326-2598-84a9b3846d28@sony.com>
+Date:   Thu, 6 Aug 2020 17:59:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <CAEjxPJ4EaXJ88-hT=jgfn0d1WVP9QQb0w2XQi7U2YVuqN2oMsg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=frmim2wf c=1 sm=1 tr=0 a=Jtaq2Av1iV2Yg7i8w6AGMw==:117 a=IkcTkHD0fZMA:10 a=y4yBn9ojGxQA:10 a=z6gsHLkEAAAA:8 a=pGLkceISAAAA:8 a=nkvH8rM_Rumw_HgpOOAA:9 a=QEXdDO2ut3YA:10 a=d-OLMTCWyvARjPbQ-enb:22
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On 8/6/20 5:03 PM, Stephen Smalley wrote:
+> On Thu, Aug 6, 2020 at 10:51 AM peter enderborg
+> <peter.enderborg@sony.com> wrote:
+>> On 8/6/20 3:49 PM, Stephen Smalley wrote:
+>>> On Thu, Aug 6, 2020 at 9:45 AM Stephen Smalley
+>>> <stephen.smalley.work@gmail.com> wrote:
+>>>> On 8/6/20 8:32 AM, Stephen Smalley wrote:
+>>>>
+>>>>> On 8/6/20 8:24 AM, peter enderborg wrote:
+>>>>>
+>>>>>> On 8/6/20 2:11 PM, Stephen Smalley wrote:
+>>>>>>> On 8/6/20 4:03 AM, Thiébaud Weksteen wrote:
+>>>>>>>
+>>>>>>>> From: Peter Enderborg <peter.enderborg@sony.com>
+>>>>>>>>
+>>>>>>>> Add further attributes to filter the trace events from AVC.
+>>>>>>> Please include sample usage and output in the description.
+>>>>>>>
+>>>>>>>
+>>>>>> Im not sure where you want it to be.
+>>>>>>
+>>>>>> In the commit message or in a Documentation/trace/events-avc.rst ?
+>>>>> I was just asking for it in the commit message / patch description.  I
+>>>>> don't know what is typical for Documentation/trace.
+>>>> For example, I just took the patches for a spin, running the
+>>>> selinux-testsuite under perf like so:
+>>>>
+>>>> sudo perf record -e avc:selinux_audited -g make test
+>>>>
+>>>> and then ran:
+>>>>
+>>>> sudo perf report -g
+>>>>
+>>>> and a snippet of sample output included:
+>>>>
+>>>>       6.40%     6.40%  requested=0x800000 denied=0x800000
+>>>> audited=0x800000 result=-13 ssid=922 tsid=922
+>>>> scontext=unconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023
+>>>> tcontext=unconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023
+>>>> tclass=capability
+>>> So then the question becomes how do you use the above information,
+>>> e.g. is that sufficient to correlate it to an actual avc: denied
+>>> message, how do you decode the requested/denied/audited fields (or
+>>> should the code do that for you and just report the string name(s) of
+>>> the permission(s), do you need all three of those fields separately,
+>>> is it useful to log the ssid/tsid at all given that you have the
+>>> contexts and sids are dynamically assigned, etc.
+>>>
+>>>>              |
+>>>>              ---0x495641000028933d
+>>>>                 __libc_start_main
+>>>>                 |
+>>>>                 |--4.60%--__GI___ioctl
+>>>>                 |          entry_SYSCALL_64
+>>>>                 |          do_syscall_64
+>>>>                 |          __x64_sys_ioctl
+>>>>                 |          ksys_ioctl
+>>>>                 |          binder_ioctl
+>>>>                 |          binder_set_nice
+>>>>                 |          can_nice
+>>>>                 |          capable
+>>>>                 |          security_capable
+>>>>                 |          cred_has_capability.isra.0
+>>>>                 |          slow_avc_audit
+>>>>                 |          common_lsm_audit
+>>>>                 |          avc_audit_post_callback
+>>>>                 |          avc_audit_post_callback
+>> The real cool thing happen when you enable "user-stack-trace" too.
+>>
+>>            <...>-4820  [007] .... 85878.897553: selinux_audited: requested=0x4000000 denied=0x4000000 audited=0x4000000 result=-13 ssid=341 tsid=61 scontext=system_u:system_r:ntpd_t:s0 tcontext=system_u:object_r:bin_t:s0 tclass=file
+>>            <...>-4820  [007] .... 85878.897572: <user stack trace>
+>>  =>  <00007f07d99bb45b>
+>>  =>  <0000555ecd89ca57>
+>>
+>> The fields are useful for filter what you what to see and what you can ignore.  Having the ssid and text was from the part where it is called.
+>> The numeric can be used for two things. When you dont have any context. Same same reason as in post_callback. We need to be static
+>> in format so it need  be there if it ever can happen. And it is also useful for faster filtering.
+>>
+>> You can do "ssid!=42 && ssid!=43 && tsid==666".  From my view it would be good to have all fields there. But they need to right typed to be able
+>> to use the filter mechanism. There must me some trade-off too where the argument filtering get bigger than the processing, but I think we can
+>> add a lot more before we reach that threshold.
+> I don't think the SIDs are useful because they are dynamically
+> assigned (aside from the initial SIDs for bootstrapping before policy
+> load) and are not exported to userspace (userspace has no way to look
+> them up).  It is probably a mistake that we even fall back to logging
+> them in the existing code and may just be a legacy of when SIDs were
+> exported to userspace (ancient history, before mainline merge of
+> SELinux).
+>
+> In any event, if you were to include the sample usage and output I
+> provided as part of the commit message / patch description (or replace
+> with your own example), that would be helpful I think.  Even better
+> would be to also provide some hint as to how people are expected to
+> decode the requested/denied/audited fields (I know how to do that but
+> not everyone will, and ideally one would have a script or something
+> for doing so).
 
-Dne četrtek, 06. avgust 2020 ob 17:47:07 CEST je Paul Kocialkowski napisal(a):
-> Hi,
-> 
-> On Thu 06 Aug 20, 12:12, Ezequiel Garcia wrote:
-> > From: Jernej Skrabec <jernej.skrabec@siol.net>
-> > 
-> > When dealing with with interlaced frames, reference lists must tell if
-> > each particular reference is meant for top or bottom field. This info
-> > is currently not provided at all in the H264 related controls.
-> > 
-> > Make reference lists hold a structure which will also hold an
-> > enumerator type along index into DPB array. The enumerator must
-> > be used to specify if reference is for top or bottom field.
-> > 
-> > Currently the only user of these lists is Cedrus which is just compile
-> > fixed here. Actual usage of will come in a following commit.
-> 
-> Is there a particular reason we are adding this to the ref_pic_list[0-1]
-> instead of the DPB entries directly?
+But they are always the same until load off a new policy? And they can be mapped while debugging.
 
-Yes, it is.
+You see one event and then you "know" it. This is for developers so it is a different mindset than for the
+netlink type that is for administrators.  Features for speeding things up are useful.
 
-> 
-> It feels nicer to avoid making the lists structs when the entries they are
-> referring to are already in a struct. I think this is the approach Kwiboo
-> took when adding support for fields in references some time ago.
-> 
-> What do you think?
-
-It's different thing. I tried using that, but image wasn't decoded correctly. 
-IMO this is also the same reason why VAAPI doesn't have indices to DPB and 
-instead have full VAPictureH264 structure array for RefPicList0 and 
-RefPicList1. VAAPI has also note here "/* See 8.2.4.2 */" but I need to check 
-it...
-
-Best regards,
-Jernej 
-
-> 
-> Cheers,
-> 
-> Paul
-> 
-> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> > ---
-> > v2:
-> > * As pointed out by Jonas, enum v4l2_h264_dpb_reference here.
-> > ---
-> > 
-> >  .../media/v4l/ext-ctrls-codec.rst             | 44 ++++++++++++++++++-
-> >  .../staging/media/sunxi/cedrus/cedrus_h264.c  |  6 +--
-> >  include/media/h264-ctrls.h                    | 23 +++++++---
-> >  3 files changed, 62 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst index
-> > d0d506a444b1..f2b2a381369f 100644
-> > --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > @@ -1843,10 +1843,10 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type
-> > -> 
-> >      * - __u32
-> >      
-> >        - ``slice_group_change_cycle``
-> >        -
-> > 
-> > -    * - __u8
-> > +    * - struct :c:type:`v4l2_h264_reference`
-> > 
-> >        - ``ref_pic_list0[32]``
-> >        - Reference picture list after applying the per-slice modifications
-> > 
-> > -    * - __u8
-> > +    * - struct :c:type:`v4l2_h264_reference`
-> > 
-> >        - ``ref_pic_list1[32]``
-> >        - Reference picture list after applying the per-slice modifications
-> >      
-> >      * - __u32
-> > 
-> > @@ -1926,6 +1926,46 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type
-> > -
-> > 
-> >        - ``chroma_offset[32][2]``
-> >        -
-> > 
-> > +``Picture Reference``
-> > +
-> > +.. c:type:: v4l2_h264_reference
-> > +
-> > +.. cssclass:: longtable
-> > +
-> > +.. flat-table:: struct v4l2_h264_reference
-> > +    :header-rows:  0
-> > +    :stub-columns: 0
-> > +    :widths:       1 1 2
-> > +
-> > +    * - enum :c:type:`v4l2_h264_dpb_reference`
-> > +      - ``reference``
-> > +      - Specifies how the DPB entry is referenced.
-> > +    * - __u8
-> > +      - ``index``
-> > +      - Index into the :c:type:`v4l2_ctrl_h264_decode_params`.dpb array.
-> > +
-> > +.. c:type:: v4l2_h264_dpb_reference
-> > +
-> > +.. cssclass:: longtable
-> > +
-> > +.. flat-table::
-> > +    :header-rows:  0
-> > +    :stub-columns: 0
-> > +    :widths:       1 1 2
-> > +
-> > +    * - ``V4L2_H264_DPB_TOP_REF``
-> > +      - 0x1
-> > +      - The top field in field pair is used for
-> > +        short-term reference.
-> > +    * - ``V4L2_H264_DPB_BOTTOM_REF``
-> > +      - 0x2
-> > +     - The bottom field in field pair is used for
-> > +        short-term reference.
-> > +    * - ``V4L2_H264_DPB_FRAME_REF``
-> > +      - 0x3
-> > +      - The frame (or the top/bottom fields, if it's a field pair)
-> > +        is used for short-term reference.
-> > +
-> > 
-> >  ``V4L2_CID_MPEG_VIDEO_H264_DECODE_PARAMS (struct)``
-> >  
-> >      Specifies the decode parameters (as extracted from the bitstream)
-> >      for the associated H264 slice data. This includes the necessary
-> > 
-> > diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> > b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c index
-> > 54ee2aa423e2..cce527bbdf86 100644
-> > --- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> > +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> > @@ -166,8 +166,8 @@ static void cedrus_write_frame_list(struct cedrus_ctx
-> > *ctx,> 
-> >  static void _cedrus_write_ref_list(struct cedrus_ctx *ctx,
-> >  
-> >  				   struct cedrus_run *run,
-> > 
-> > -				   const u8 *ref_list, u8 
-num_ref,
-> > -				   enum cedrus_h264_sram_off sram)
-> > +				   const struct 
-v4l2_h264_reference *ref_list,
-> > +				   u8 num_ref, enum 
-cedrus_h264_sram_off sram)
-> > 
-> >  {
-> >  
-> >  	const struct v4l2_ctrl_h264_decode_params *decode =
-> >  	run->h264.decode_params; struct vb2_queue *cap_q;
-> > 
-> > @@ -188,7 +188,7 @@ static void _cedrus_write_ref_list(struct cedrus_ctx
-> > *ctx,> 
-> >  		int buf_idx;
-> >  		u8 dpb_idx;
-> > 
-> > -		dpb_idx = ref_list[i];
-> > +		dpb_idx = ref_list[i].index;
-> > 
-> >  		dpb = &decode->dpb[dpb_idx];
-> >  		
-> >  		if (!(dpb->flags & V4L2_H264_DPB_ENTRY_FLAG_ACTIVE))
-> > 
-> > diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
-> > index 080fd1293c42..4c0bb7f5fb05 100644
-> > --- a/include/media/h264-ctrls.h
-> > +++ b/include/media/h264-ctrls.h
-> > @@ -19,6 +19,8 @@
-> > 
-> >   */
-> >  
-> >  #define V4L2_H264_NUM_DPB_ENTRIES 16
-> > 
-> > +#define V4L2_H264_REF_LIST_LEN (2 * V4L2_H264_NUM_DPB_ENTRIES)
-> > +
-> > 
-> >  /* Our pixel format isn't stable at the moment */
-> >  #define V4L2_PIX_FMT_H264_SLICE v4l2_fourcc('S', '2', '6', '4') /* H264
-> >  parsed slices */> 
-> > @@ -140,6 +142,19 @@ struct v4l2_h264_pred_weight_table {
-> > 
-> >  #define V4L2_H264_SLICE_FLAG_DIRECT_SPATIAL_MV_PRED	0x04
-> >  #define V4L2_H264_SLICE_FLAG_SP_FOR_SWITCH		0x08
-> > 
-> > +enum v4l2_h264_dpb_reference {
-> > +	V4L2_H264_DPB_TOP_REF = 0x1,
-> > +	V4L2_H264_DPB_BOTTOM_REF = 0x2,
-> > +	V4L2_H264_DPB_FRAME_REF = 0x3,
-> > +};
-> > +
-> > +struct v4l2_h264_reference {
-> > +	enum v4l2_h264_dpb_reference fields;
-> > +
-> > +	/* Index into v4l2_ctrl_h264_decode_params.dpb[] */
-> > +	__u8 index;
-> > +};
-> > +
-> > 
-> >  struct v4l2_ctrl_h264_slice_params {
-> >  
-> >  	/* Size in bytes, including header */
-> >  	__u32 size;
-> > 
-> > @@ -178,12 +193,8 @@ struct v4l2_ctrl_h264_slice_params {
-> > 
-> >  	__u8 num_ref_idx_l1_active_minus1;
-> >  	__u32 slice_group_change_cycle;
-> > 
-> > -	/*
-> > -	 * Entries on each list are indices into
-> > -	 * v4l2_ctrl_h264_decode_params.dpb[].
-> > -	 */
-> > -	__u8 ref_pic_list0[32];
-> > -	__u8 ref_pic_list1[32];
-> > +	struct v4l2_h264_reference ref_pic_list0[V4L2_H264_REF_LIST_LEN];
-> > +	struct v4l2_h264_reference ref_pic_list1[V4L2_H264_REF_LIST_LEN];
-> > 
-> >  	__u32 flags;
-> >  
-> >  };
-
-
-
+Im doing a update on commit message, will send it to Weksteen for a review round first.
 
