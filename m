@@ -2,82 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DECF023E07A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8590823E084
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725927AbgHFSew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
+        id S1728975AbgHFSfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:35:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728343AbgHFSeC (ORCPT
+        with ESMTP id S1727899AbgHFSei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:34:02 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA116C0617A2
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 11:34:00 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id qc22so36598241ejb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 11:34:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6Lwo0h1UUt/TkFfE8EDJeJnCBcomQmQ6I+GLf07iiXg=;
-        b=bgSPmGpCYS5e5FW3E8UqQvh0DrBkVffrlqEPzxjQ13CfvimfhTStK2fLoQVOYd9W2w
-         1f6gndjCwBqLRVnufF94mWiG+N80jMFrUzBIoHEFmw/O5M1BxMiSmJU+FsIMbeM1ZZ8m
-         B1DOF1T+PwYCGXan6+xPmqtgc3jSc4lGG9rjT1dMfhKIMkixlBv3AJWf+Kd4+fU0DRj4
-         mhZxQKFBp7vrNdEkcGJxFELeOpKh7KjxGwP6RgEP7Rzkxxp7enGlVMq/pZSwDTiofbVL
-         o4Gn3Sn9KJpfg8ZpNjspxEkq6zTvwgSbaYyp1KpP8KbMF5n4z1blX7BVt4aylgklE54o
-         mn4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6Lwo0h1UUt/TkFfE8EDJeJnCBcomQmQ6I+GLf07iiXg=;
-        b=V2cKehBEZkTJx+dlJ/PMWy7cckMS/gddzVlIcU+Uq5b8qOdQZWt84auoMVYZV3L6pJ
-         ppisdnkH5TkRteLJ4KLFJpS4Q5Y5i9T7V02resul1U7xZ/cCJsjg97JcupfPWmYSV/uF
-         S8+jTCqPfde+NjzJ/7NVZocX12wFoapbgr8p8HE2w/LokzDWosreKvRCQPidV1lyEswA
-         /buo0Sf3n3PCBIJnG1jjYngXAMj3L+qKIx0+gbgLDZK4YIbyvm7OZuVxOAKNkynTDGYU
-         SrSl6ERhsCg9fvfmxrmi+9NrUl7diuCackLQr8v3KGgA2mi6JUhYKeJUZgS/OB9ePRuQ
-         lglQ==
-X-Gm-Message-State: AOAM533jF2KAWyOzswvHAPLKZILfp5yXHn/gSRcqzM0pxA7qAABVkscr
-        /yNIUhquOBXwhBrZjA/l/TgTKPlCOI8Vxwcz2PNHduCquA==
-X-Google-Smtp-Source: ABdhPJxMQZuQY3avDUyZx56UT2rDq0X/QFpraARHLo6LAMfX3Rh5oyf19noACgmf5bDruxn2zfaSliNFW2ds+o0adCE=
-X-Received: by 2002:a17:906:1403:: with SMTP id p3mr5592371ejc.106.1596738839416;
- Thu, 06 Aug 2020 11:33:59 -0700 (PDT)
+        Thu, 6 Aug 2020 14:34:38 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C581C061290
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 11:34:20 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1k3kiN-00043O-ME; Thu, 06 Aug 2020 20:34:07 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1k3kiM-0007Yl-En; Thu, 06 Aug 2020 20:34:06 +0200
+Date:   Thu, 6 Aug 2020 20:34:06 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        Prashant Malani <pmalani@chromium.org>,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 7/7] pwm: cros-ec: Simplify EC error handling
+Message-ID: <20200806183406.avejgcuxaolea2pz@pengutronix.de>
+References: <20200806153308.204605-1-linux@roeck-us.net>
+ <20200806153308.204605-8-linux@roeck-us.net>
 MIME-Version: 1.0
-References: <20200803123439.83400-1-jbi.octave@gmail.com> <20200803123439.83400-2-jbi.octave@gmail.com>
-In-Reply-To: <20200803123439.83400-2-jbi.octave@gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 6 Aug 2020 14:33:48 -0400
-Message-ID: <CAHC9VhR1-=veLYGeRiF9MAi3QxrGy_z-q+B1DD9t-foPPRJmbA@mail.gmail.com>
-Subject: Re: [RESEND PATCH 1/2] audit: change unnecessary globals into statics
-To:     Jules Irenge <jbi.octave@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Eric Paris <eparis@redhat.com>,
-        "moderated list:AUDIT SUBSYSTEM" <linux-audit@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yaf2rliyowjjwr36"
+Content-Disposition: inline
+In-Reply-To: <20200806153308.204605-8-linux@roeck-us.net>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 3, 2020 at 8:35 AM Jules Irenge <jbi.octave@gmail.com> wrote:
->
-> Variables sig_pid, audit_sig_uid and audit_sig_sid
-> are only used in the audit.c file across the kernel
-> Hence it appears no reason for declaring them as globals
-> This patch removes their global declarations from the .h file
-> and change them into static in the .c file.
->
-> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
-> ---
->  kernel/audit.c | 6 +++---
->  kernel/audit.h | 4 ----
->  2 files changed, 3 insertions(+), 7 deletions(-)
 
-Thanks Jules, this looks reasonable although I'm not going to merge
-them into audit/next until after the merge window closes.  I'll send
-another reply once this has been merged.
+--yaf2rliyowjjwr36
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-paul moore
-www.paul-moore.com
+On Thu, Aug 06, 2020 at 08:33:08AM -0700, Guenter Roeck wrote:
+> With enhanced error reporting from cros_ec_cmd_xfer_status() in place,
+> we can fully use it and no longer rely on EC error codes.
+>=20
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Thanks
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--yaf2rliyowjjwr36
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8sTRsACgkQwfwUeK3K
+7AljKgf+NqWAUswdLzLgjqhYVOCid4+Uol5gqvLd1PWPzFcBLjYn4qhp9zCcu9IJ
+AzY555m9cXLChHqkEScDlUleoaOE0SjOlW4eabwKO3BakLm5S+xaiu1ak7RcxW8O
+Bz9qlW1S+9lAm+fG5jxdHnJkk9RJ5isJQl7s0XdzDYvACgGjh5oLHnm5pjbwH+Gk
+u8tFgy0xLsm6MdURY7gEaIveEUiD4Pcn+Kh13Z3RArmF5hJqoRFi0qxxszaQyZF4
+p2FozkPNOBxKOVr1hKtXQqU/q0yrFWh4Wlokh+POqnNiS5U9uO1+i/r563VbKJyZ
+5PtUqpdOjmjZR0c+LuqFEHYBaDr8vg==
+=AiFP
+-----END PGP SIGNATURE-----
+
+--yaf2rliyowjjwr36--
