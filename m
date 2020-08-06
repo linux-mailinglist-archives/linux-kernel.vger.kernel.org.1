@@ -2,55 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3A023DD95
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626E523DD89
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730308AbgHFRLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730226AbgHFRKJ (ORCPT
+        id S1730276AbgHFRL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:11:28 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59002 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730227AbgHFRKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:10:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3072C061575;
-        Thu,  6 Aug 2020 10:10:09 -0700 (PDT)
-Date:   Thu, 06 Aug 2020 17:10:07 -0000
+        Thu, 6 Aug 2020 13:10:11 -0400
+Date:   Thu, 06 Aug 2020 17:10:08 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596733808;
+        s=2020; t=1596733809;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Pr7bCYviArGye3y9QgU0GHmrTGpo9Vah1SuVzRiY8yw=;
-        b=NFDFMb7bdBN1MF9KEVW9mwdqpxvgbJeTizEVXT0tj8/aWG5UIna4mm0XHc3EG0tFMBwEjW
-        faDhp4PXab1QW/Lfu9jkciXtgyYHrK3ySkw0rr6P2UlaqqemNk8OblwZMMf0hz2O9bn3zL
-        E2nQf1UKqjflFMXH0bYoAsNSGg3T3Wtcof1nMqh7TVsKWdhQ9tfDnhRAUROfv6g68s695h
-        O54u1N9wDwDo9yTc5K/ywmRLO0hhxsNFmVB5GW2KWjdnQjMimBND7sUdTPeY4dq+hHD6T3
-        LAEjw45JPZlmKmGnBIqhtxIgdA4lsTg7HZpg27tLjx9OP7j+o0j5FE4kYp60TA==
+        bh=kLXFrA6tBJNd4MkbIolJxW97S6FGhmw2sEvJo7KvuFg=;
+        b=ZIsmJko36NzKZnMsBeMQEeaujYyg3kLMz2Ci+8j/Y83tU8xs4VOMhFzFMsbAwsqf7prDp5
+        lye8DuRvcGPgnKg/MoUyNktMaUpyfBKQZkiqgizgZR4U//nuqqnFRwaJTzZAfyimjwOGW6
+        X4bs+XCxh/SA9C87qB+UioHSjRmsDk9yx8OvLfT1NXKUa7Ak0N1Oc6jKTJoXkTcG8S6lr+
+        h/lOw67UGKREZn8+tv54nEyJ5d8lL6DVDJ86Siyp1adcyiiSqMZPibCnsJXM7aof+S3CQ/
+        K1yIbgw/KyHU020Agtn3j9fddnCKKkM4H2Qc3rCQVaNsc4aRnxAu+b3V4tIcjg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596733808;
+        s=2020e; t=1596733809;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Pr7bCYviArGye3y9QgU0GHmrTGpo9Vah1SuVzRiY8yw=;
-        b=AJew4jIodX6sk108XoAufHRU3njO22T4AOMfqdPXi0S4yuOgsoW21fOn7pklrwl+yEay2X
-        ffysnGhro43OGIAg==
-From:   "tip-bot2 for Lianbo Jiang" <tip-bot2@linutronix.de>
+        bh=kLXFrA6tBJNd4MkbIolJxW97S6FGhmw2sEvJo7KvuFg=;
+        b=kfHNmATLXnB64iR2BduT1ctQvscrlZBqI5xp8Oh9mIlbPoRBiZSx4lzo4JUCb6qGo4e9SR
+        Jg9Q3RBzBE5LL7Cg==
+From:   "tip-bot2 for Shuo Liu" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/crash: Correct the address boundary of function
- parameters
-Cc:     Lianbo Jiang <lijiang@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Dave Young <dyoung@redhat.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200804044933.1973-2-lijiang@redhat.com>
-References: <20200804044933.1973-2-lijiang@redhat.com>
+Subject: [tip: x86/urgent] x86/acrn: Allow ACRN guest to use X2APIC mode
+Cc:     Yakui Zhao <yakui.zhao@intel.com>, Shuo Liu <shuo.a.liu@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200806113802.9325-1-shuo.a.liu@intel.com>
+References: <20200806113802.9325-1-shuo.a.liu@intel.com>
 MIME-Version: 1.0
-Message-ID: <159673380758.3192.12299066068844130724.tip-bot2@tip-bot2>
+Message-ID: <159673380887.3192.6850923557894856416.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,36 +59,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     5b89a35f8c11a7846b06ac729d7de72044f7fc60
-Gitweb:        https://git.kernel.org/tip/5b89a35f8c11a7846b06ac729d7de72044f7fc60
-Author:        Lianbo Jiang <lijiang@redhat.com>
-AuthorDate:    Tue, 04 Aug 2020 12:49:31 +08:00
+Commit-ID:     f75576c4818fdf344691ca5b791f42bf3878c3a8
+Gitweb:        https://git.kernel.org/tip/f75576c4818fdf344691ca5b791f42bf3878c3a8
+Author:        Shuo Liu <shuo.a.liu@intel.com>
+AuthorDate:    Thu, 06 Aug 2020 19:38:02 +08:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 06 Aug 2020 15:25:58 +02:00
+CommitterDate: Thu, 06 Aug 2020 15:20:17 +02:00
 
-x86/crash: Correct the address boundary of function parameters
+x86/acrn: Allow ACRN guest to use X2APIC mode
 
-Let's carefully handle the boundary of the function parameter to make
-sure that the arguments passed doesn't exceed the address range.
+The ACRN Hypervisor did not support x2APIC and thus x2APIC support was
+disabled by always returning false when VM checked for x2APIC support.
 
-Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
+ACRN received full support of x2APIC and exports the capability through
+CPUID feature bits.
+
+Let VM decide if it needs to switch to x2APIC mode according to CPUID
+features.
+
+Originally-by: Yakui Zhao <yakui.zhao@intel.com>
+Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Dave Young <dyoung@redhat.com>
-Link: https://lore.kernel.org/r/20200804044933.1973-2-lijiang@redhat.com
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Link: https://lore.kernel.org/r/20200806113802.9325-1-shuo.a.liu@intel.com
 ---
- arch/x86/kernel/crash.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/cpu/acrn.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index fd87b59..a8f3af2 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -230,7 +230,7 @@ static int elf_header_exclude_ranges(struct crash_mem *cmem)
- 	int ret = 0;
+diff --git a/arch/x86/kernel/cpu/acrn.c b/arch/x86/kernel/cpu/acrn.c
+index 1da9b1c..3b08cdf 100644
+--- a/arch/x86/kernel/cpu/acrn.c
++++ b/arch/x86/kernel/cpu/acrn.c
+@@ -11,6 +11,7 @@
  
- 	/* Exclude the low 1M because it is always reserved */
--	ret = crash_exclude_mem_range(cmem, 0, 1<<20);
-+	ret = crash_exclude_mem_range(cmem, 0, (1<<20)-1);
- 	if (ret)
- 		return ret;
+ #include <linux/interrupt.h>
+ #include <asm/apic.h>
++#include <asm/cpufeatures.h>
+ #include <asm/desc.h>
+ #include <asm/hypervisor.h>
+ #include <asm/idtentry.h>
+@@ -29,12 +30,7 @@ static void __init acrn_init_platform(void)
  
+ static bool acrn_x2apic_available(void)
+ {
+-	/*
+-	 * x2apic is not supported for now. Future enablement will have to check
+-	 * X86_FEATURE_X2APIC to determine whether x2apic is supported in the
+-	 * guest.
+-	 */
+-	return false;
++	return boot_cpu_has(X86_FEATURE_X2APIC);
+ }
+ 
+ static void (*acrn_intr_handler)(void);
