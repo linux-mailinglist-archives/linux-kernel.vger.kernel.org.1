@@ -2,82 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07ED423D86E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD25423D874
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729087AbgHFJTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:19:15 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:54758 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728974AbgHFJRu (ORCPT
+        id S1729130AbgHFJUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729072AbgHFJS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:17:50 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0769DMXU134762;
-        Thu, 6 Aug 2020 09:17:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=1mPUi5W2MorAFmoBzG9tPbGD54xKE1Byrx1RzDX0UmU=;
- b=eKiFr4Bs/bpWdX6yLxeMc5sFEBJ30+bhMqjEFXaCXU9wW5n47PIATToBiWpr+CLVaKDP
- 8A0tZz0TZdkw0tEIcpW0won99EJYkQ61jOuiGMnuepmHxUSOsxqA5JJ5wKYcJVq9OHaq
- pBALBvxS0QXNV4kM/rwuYDhi3OakRkd3/PSjnbSO/1A48svKmA+oG131xfSZev+LJtub
- qaecgcJ+E6qYTHY8Lb+CsIAGpJ7PEWqQfkjE/RVUhkE/V9xIB61oP9mBuPunQR0qJtkJ
- 7UQpAp1LRsK/9rfQca8fG0SveJMrEtCLE+oBzPX+VjLOeCGIz1EAujV989TnlId5PiMo fg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 32r6gwssfh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 06 Aug 2020 09:17:29 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0769CwME158826;
-        Thu, 6 Aug 2020 09:17:28 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 32pdnvtwtd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Aug 2020 09:17:28 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0769HI56012706;
-        Thu, 6 Aug 2020 09:17:18 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Aug 2020 02:17:17 -0700
-Date:   Thu, 6 Aug 2020 12:17:09 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Oleksandr Andrushchenko <andr2000@gmail.com>
-Cc:     xen-devel@lists.xenproject.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, boris.ostrovsky@oracle.com,
-        jgross@suse.com, airlied@linux.ie, daniel@ffwll.ch,
-        sstabellini@kernel.org, intel-gfx@lists.freedesktop.org,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Subject: Re: [PATCH 2/6] drm/xen-front: Fix misused IS_ERR_OR_NULL checks
-Message-ID: <20200806091709.GU5493@kadam>
-References: <20200731125109.18666-1-andr2000@gmail.com>
- <20200731125109.18666-3-andr2000@gmail.com>
+        Thu, 6 Aug 2020 05:18:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB3BC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 02:18:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LGsolx+q4+pRQwaFegj0pZt825v+uaehpXLibfoN7qg=; b=Ns3KKIZDE6iGgMooNVVQ63I1br
+        CvPi4fQkVVaIqdaadNEcdq5e/qP0sFb+t7e7CxNw088wxUDhKLm0p07hCuJGdrAGGqArmBx3z+bcJ
+        XAvI8FNyeJOKqNSXUOHdyXSYxUg6XuIVnKb6IMunukKE/jeTy9iKElJdtoyUUk6W3Kaj1ukYnZE9M
+        UMqYPPJHj4IxUeNE6DnokltXo2FBVwg0LhQRzaOHrAkSzlN8ICB9ytGWeBT56i8nx35AsTjrmPfCe
+        eN2klwLsvDa2jdXush1PsPISlab9rjivhBUdiBnclY6XsfOdaYiIMuAamMjrQkst0K9boxWwrfnlm
+        a57pVYTg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3c2A-0000FS-J5; Thu, 06 Aug 2020 09:17:58 +0000
+Date:   Thu, 6 Aug 2020 10:17:58 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v3 3/3] powerpc/uaccess: simplify the get_fs() set_fs()
+ logic
+Message-ID: <20200806091758.GA653@infradead.org>
+References: <a6e62627d25fb7ae9b91d8bf553e707689e37498.1596702117.git.christophe.leroy@csgroup.eu>
+ <cf39cb8e42cffe323393b8cecdc59a7230298eab.1596702117.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200731125109.18666-3-andr2000@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 mlxscore=0
- bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060065
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
- phishscore=0 clxscore=1011 suspectscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060065
+In-Reply-To: <cf39cb8e42cffe323393b8cecdc59a7230298eab.1596702117.git.christophe.leroy@csgroup.eu>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks great!  Thanks.
+Do you urgently need this?  My plan for 5.10 is to rebased and submit
+the remaining bits of this branch:
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/set_fs-removal
 
-regards,
-dan carpenter
-
+which will kill off set_fs/get_fs entirely.
