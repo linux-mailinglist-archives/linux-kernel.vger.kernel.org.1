@@ -2,137 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE02B23D7BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 09:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A644F23D7D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728863AbgHFHuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 03:50:09 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35800 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728851AbgHFHtq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 03:49:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596700180;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xB6SfwN9zZAFK1inviExT4PSWJ9s32aoWCOt/UwHdpI=;
-        b=OiMKltL0s/mtZ9+RLEkA8jiypTUUTAY+mdwMlBxrn/k9v3ZXUYswSIqCnFvA38mT1bwaeE
-        wNjZ+3EKMpFIASdnAOEU1cJWvTznJKDk0CY1konzJ/Xx4Jn4zrpwsISFcQqqftMLNM/1Wz
-        bIF0zC0gJYCFD9DAW6a4rXHt8YNa5mc=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-347-ktelfVc3P0SCYuJcyY994Q-1; Thu, 06 Aug 2020 03:49:38 -0400
-X-MC-Unique: ktelfVc3P0SCYuJcyY994Q-1
-Received: by mail-wr1-f69.google.com with SMTP id t3so13391156wrr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 00:49:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xB6SfwN9zZAFK1inviExT4PSWJ9s32aoWCOt/UwHdpI=;
-        b=uhI+c1hFqltDk0XPyjHNjcWr5VzS4Md011hxt9LbwGTHF8/FGROu42kvicYioN+uF2
-         qhqKpaMSTSfS8C+qwqAl3zF0j6oJh01NpAlQqUGo5bjaXoVDi1eI4nGnT0LUZTN3vo94
-         tYu/A+v0LIyT0Q8WGSPf6dwsKd1oFnUDn/QTyuHw9MbOxuosAoqkKK4ilw6XR6YVXS0H
-         GsUb0V8ZTuLdDUASzwegAtmfW1Yp4qr7kocs2pHVJvcyTAKOC7XsDKEEeotYzRMrFAhV
-         ujmykdW0FCer9kp/AkeCM7IHTUD8Mt8QlJY2LvTpa4g8Ki3OWS7DM1A9DZqpLdI4w/+I
-         ggGg==
-X-Gm-Message-State: AOAM533Un2XIIxEtYiKDI5CKbuH5G3deSd0FTeqEv820fRhqZf4YzVoR
-        dWDHlQ5bdNt7mAJbkioujak5ManxMpavMuNbCtjiRvYdYsxHD53r31Mo3bhp85fnPl+K61a72NI
-        EzernXzp1h+untk6hRdnCJPQb
-X-Received: by 2002:a1c:e244:: with SMTP id z65mr6663768wmg.34.1596700177235;
-        Thu, 06 Aug 2020 00:49:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZ5kIFKf/UdkmWPj9U+O2NxXnYswiWnhDgQNIX/nObMw+EYpBVxwz7xoUqJ3nnWezsts3JEg==
-X-Received: by 2002:a1c:e244:: with SMTP id z65mr6663754wmg.34.1596700176991;
-        Thu, 06 Aug 2020 00:49:36 -0700 (PDT)
-Received: from steredhat ([5.180.207.22])
-        by smtp.gmail.com with ESMTPSA id l18sm5580825wrm.52.2020.08.06.00.49.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 00:49:36 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 09:49:29 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Aleksa Sarai <asarai@suse.de>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH v3 0/3] io_uring: add restrictions to support untrusted
- applications and guests
-Message-ID: <20200806074929.bl6utxrmmx3hf2y2@steredhat>
-References: <20200728160101.48554-1-sgarzare@redhat.com>
+        id S1728194AbgHFIIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 04:08:31 -0400
+Received: from elvis.franken.de ([193.175.24.41]:36293 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726799AbgHFIEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 04:04:14 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k3arg-0000uJ-00; Thu, 06 Aug 2020 10:03:04 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 42BD9C0C56; Thu,  6 Aug 2020 09:41:41 +0200 (CEST)
+Date:   Thu, 6 Aug 2020 09:41:41 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Paul Burton <paulburton@kernel.org>,
+        Joshua Kinard <kumba@gentoo.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        kernel test robot <lkp@intel.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: SGI-IP27: always enable NUMA in Kconfig
+Message-ID: <20200806074141.GA5148@alpha.franken.de>
+References: <20200805125141.24987-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200728160101.48554-1-sgarzare@redhat.com>
+In-Reply-To: <20200805125141.24987-1-rppt@kernel.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gentle ping.
+On Wed, Aug 05, 2020 at 03:51:41PM +0300, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> When a configuration has NUMA disabled and SGI_IP27 enabled, the build
+> fails:
+> 
+>   CC      kernel/bounds.s
+>   CC      arch/mips/kernel/asm-offsets.s
+> In file included from arch/mips/include/asm/topology.h:11,
+>                  from include/linux/topology.h:36,
+>                  from include/linux/gfp.h:9,
+>                  from include/linux/slab.h:15,
+>                  from include/linux/crypto.h:19,
+>                  from include/crypto/hash.h:11,
+>                  from include/linux/uio.h:10,
+>                  from include/linux/socket.h:8,
+>                  from include/linux/compat.h:15,
+>                  from arch/mips/kernel/asm-offsets.c:12:
+> include/linux/topology.h: In function 'numa_node_id':
+> arch/mips/include/asm/mach-ip27/topology.h:16:27: error: implicit declaration of function 'cputonasid'; did you mean 'cpu_vpe_id'? [-Werror=implicit-function-declaration]
+>  #define cpu_to_node(cpu) (cputonasid(cpu))
+>                            ^~~~~~~~~~
+> include/linux/topology.h:119:9: note: in expansion of macro 'cpu_to_node'
+>   return cpu_to_node(raw_smp_processor_id());
+>          ^~~~~~~~~~~
+> include/linux/topology.h: In function 'cpu_cpu_mask':
+> arch/mips/include/asm/mach-ip27/topology.h:19:7: error: implicit declaration of function 'hub_data' [-Werror=implicit-function-declaration]
+>       &hub_data(node)->h_cpus)
+>        ^~~~~~~~
+> include/linux/topology.h:210:9: note: in expansion of macro 'cpumask_of_node'
+>   return cpumask_of_node(cpu_to_node(cpu));
+>          ^~~~~~~~~~~~~~~
+> arch/mips/include/asm/mach-ip27/topology.h:19:21: error: invalid type argument of '->' (have 'int')
+>       &hub_data(node)->h_cpus)
+>                      ^~
+> include/linux/topology.h:210:9: note: in expansion of macro 'cpumask_of_node'
+>   return cpumask_of_node(cpu_to_node(cpu));
+>          ^~~~~~~~~~~~~~~
+> 
+> Before switch from discontigmem to sparsemem, there always was
+> CONFIG_NEED_MULTIPLE_NODES=y because it was selected by DISCONTIGMEM.
+> Without DISCONTIGMEM it is possible to have SPARSEMEM without NUMA for
+> SGI_IP27 and as many things there rely on custom node definition, the
+> build breaks.
+> 
+> As Thomas noted "... there are right now too many places in IP27 code,
+> which assumes NUMA enabled", the simplest solution would be to always
+> enable NUMA for SGI-IP27 builds.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: 397dc00e249e ("mips: sgi-ip27: switch from DISCONTIGMEM to SPARSEMEM")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  arch/mips/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-I'll rebase on master, but if there are any things that I can improve,
-I'll be happy to do.
+applied to mips-next.
 
-Thanks,
-Stefano
+Thomas.
 
-On Tue, Jul 28, 2020 at 06:00:58PM +0200, Stefano Garzarella wrote:
-> v3:
->  - added IORING_RESTRICTION_SQE_FLAGS_ALLOWED and
->    IORING_RESTRICTION_SQE_FLAGS_REQUIRED
->  - removed IORING_RESTRICTION_FIXED_FILES_ONLY opcode
->  - enabled restrictions only when the rings start
-> 
-> RFC v2: https://lore.kernel.org/io-uring/20200716124833.93667-1-sgarzare@redhat.com
-> 
-> RFC v1: https://lore.kernel.org/io-uring/20200710141945.129329-1-sgarzare@redhat.com
-> 
-> Following the proposal that I send about restrictions [1], I wrote this series
-> to add restrictions in io_uring.
-> 
-> I also wrote helpers in liburing and a test case (test/register-restrictions.c)
-> available in this repository:
-> https://github.com/stefano-garzarella/liburing (branch: io_uring_restrictions)
-> 
-> Just to recap the proposal, the idea is to add some restrictions to the
-> operations (sqe opcode and flags, register opcode) to safely allow untrusted
-> applications or guests to use io_uring queues.
-> 
-> The first patch changes io_uring_register(2) opcodes into an enumeration to
-> keep track of the last opcode available.
-> 
-> The second patch adds IOURING_REGISTER_RESTRICTIONS opcode and the code to
-> handle restrictions.
-> 
-> The third patch adds IORING_SETUP_R_DISABLED flag to start the rings disabled,
-> allowing the user to register restrictions, buffers, files, before to start
-> processing SQEs.
-> 
-> Comments and suggestions are very welcome.
-> 
-> Thank you in advance,
-> Stefano
-> 
-> [1] https://lore.kernel.org/io-uring/20200609142406.upuwpfmgqjeji4lc@steredhat/
-> 
-> Stefano Garzarella (3):
->   io_uring: use an enumeration for io_uring_register(2) opcodes
->   io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
->   io_uring: allow disabling rings during the creation
-> 
->  fs/io_uring.c                 | 167 ++++++++++++++++++++++++++++++++--
->  include/uapi/linux/io_uring.h |  60 +++++++++---
->  2 files changed, 207 insertions(+), 20 deletions(-)
-> 
-> -- 
-> 2.26.2
-> 
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
