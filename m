@@ -2,117 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CB523D6A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 07:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F3723D6AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 08:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgHFF6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 01:58:35 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46037 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726051AbgHFF6f (ORCPT
+        id S1727942AbgHFGAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 02:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726051AbgHFGAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 01:58:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596693513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ROash10duIpE/uRw8Y0foDvQjeHUSzvvXlunxpzl8MY=;
-        b=Qdje07V/lSm4HgB395YlIbPFFvEuDH4BnZ6RDJZT7HKu5elsLl3TcYzTiiceJqaPZjk86S
-        I2k1W4unC9kDhzhZlrVUHRNHBVUD0YQHS2+jaufA9EEK5k9XEzq2QUBJP1QEFzBgsZ+g2I
-        Idp/zuhCD4wC6hswcOkjSIuQ+peLgnE=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-Z5p72NYkMQ-cK5clyRqhgQ-1; Thu, 06 Aug 2020 01:58:31 -0400
-X-MC-Unique: Z5p72NYkMQ-cK5clyRqhgQ-1
-Received: by mail-wm1-f69.google.com with SMTP id c184so2613285wme.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 22:58:31 -0700 (PDT)
+        Thu, 6 Aug 2020 02:00:45 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20861C061574;
+        Wed,  5 Aug 2020 23:00:43 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id 2so6074992pjx.5;
+        Wed, 05 Aug 2020 23:00:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MQuBJ0AZA3Ql/KbLn468nE0MeNrmfmZUYry76u8WWnU=;
+        b=jfX2ioH7ZSJzrDANkazGM2XJ7JGsVM3tBYR+RSYwcg/QLerDtmI8jEw3H/5e15kW44
+         RdeU2DdDLmI10zC0CweUu8fZ37g6mnn5baVOhReo3lXeWp9XSKC+4V7Of0+OwqCuI4HG
+         77axr46GEeY2Jmgoy9wGnQoCNgx0L8uhh/bI4zWmrr1GhqvMaz59mfSuqAv7niwihqTD
+         AbKBMVdEaT6bS/ggY3wjGM+36AjP0+JIvLXMVkdJ9y8RhNy3U7pvaEhKR8SwCrGFOpAJ
+         p6pnV/p/0+ayK2r2gatPQWKV31vBIQYHFCugvJfaWXQrwbYd30qXTnmP1G2alMR9rXzv
+         gAsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ROash10duIpE/uRw8Y0foDvQjeHUSzvvXlunxpzl8MY=;
-        b=OzYDgwwS7+xwE+n4cveRK3mmGkdoVSxOfwYquMnxbRzW1+4jWauWGQKR5Yb0tdLeE7
-         53n45e6tVcJqTkJgFeIiDLxHUJUkR6lykaP1luZwN3kGADTEB/LJ5QS6P4dT8cpRLI45
-         5InDZuRQson9ayckBPdl5dFKNpnS1PjsLTQ6V6kBxpexV/BbMajgJXazLPMmt/XCnamI
-         hDuuuAgjxHwmwnavAqmD5vaP3tffFcZ1pFsspW8cLGJEZIIh29iVL6U2funRsHK39jbc
-         +CxTcvYOE/5aHy9U+AAYOHlyLaxZ8eytoup1nMhxJVVVVOKM7PuP3/Jf5tC3FIOXvUGW
-         8tqA==
-X-Gm-Message-State: AOAM5321ZNfp2b7vyMyV4h7qKGoZDPrgebxmyEpd0FuX2B+cXHHpkfuz
-        fLlYDU9CvMUYhCUOc4UQY6loVqXbg5wEz68wKFpDIiCYYGtVQycnU8yCtziRINw9MfAaAkjILK0
-        wh7MB6Ia6CoPSIy0SWQYBiPum
-X-Received: by 2002:a1c:59c2:: with SMTP id n185mr6644724wmb.104.1596693510110;
-        Wed, 05 Aug 2020 22:58:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzMfTd+fQO/qWYVB46EsFXyAOA5C3DoglabIcYVWxoQ2qa+aefyPe9WQJEOfgniTDRJwIeZog==
-X-Received: by 2002:a1c:59c2:: with SMTP id n185mr6644711wmb.104.1596693509935;
-        Wed, 05 Aug 2020 22:58:29 -0700 (PDT)
-Received: from redhat.com (bzq-79-177-102-128.red.bezeqint.net. [79.177.102.128])
-        by smtp.gmail.com with ESMTPSA id y17sm5492967wrh.63.2020.08.05.22.58.28
+         :mime-version:content-disposition:in-reply-to;
+        bh=MQuBJ0AZA3Ql/KbLn468nE0MeNrmfmZUYry76u8WWnU=;
+        b=f56L+brcMR5aLkvbpiiSlJ9fyF71Yb/f9oV0cq95ODCymyMyikVOUBmdY3FSuvp3yv
+         ylkmv/dENJmvNu8xVL6mi0mFCaLw6d3jfl/4Tpww4pBQi8clJWdeVh/jP1vSjRPqoL6s
+         6cvlZowZmLfzQy5PADfiWkjRyb4gsn5hgm4WASM5TTquQtz+NGABh6iI20s4f295VqcN
+         FAKoGXhs9zMRv3lrAA8tZ6nWE2dfUu8apliXs3TDFyXBaMvA5+kWJqjQ00lJf9hds5wU
+         +DqY1H1R7r0TzQlqikcsooyTI9AJoA++74Q14SNOo3i/UGlkIpI4gZ60Ai4l/t19uCLT
+         isvQ==
+X-Gm-Message-State: AOAM530i56PwHCy851WhOxY4qAw3S40Z5OXNyoorjts6yTmuFN7jFbc3
+        U85Y2ithk9BHrxpnqp5SzWo=
+X-Google-Smtp-Source: ABdhPJz1AigiTfRNCtWEJT/qDJuvjr1ZSqs97lpsBEC1kzhcEQtEN0LMSmKPKOzO3LsEollShQ8VxQ==
+X-Received: by 2002:a17:90b:124e:: with SMTP id gx14mr6994509pjb.225.1596693639235;
+        Wed, 05 Aug 2020 23:00:39 -0700 (PDT)
+Received: from gmail.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id a33sm5485817pgl.75.2020.08.05.23.00.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 22:58:29 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 01:58:26 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 03/24] virtio: allow __virtioXX, __leXX in config space
-Message-ID: <20200806015604-mutt-send-email-mst@kernel.org>
-References: <20200803205814.540410-1-mst@redhat.com>
- <20200803205814.540410-4-mst@redhat.com>
- <ce85a206-45a6-da3d-45a7-06f068f3bad7@redhat.com>
- <20200805074434-mutt-send-email-mst@kernel.org>
- <4aa65ad6-5324-0a8c-0fa6-0d8e680f0706@redhat.com>
+        Wed, 05 Aug 2020 23:00:38 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 11:29:06 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Andres Salomon <dilinger@queued.net>,
+        Antonino Daplas <adaplas@gmail.com>,
+        Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-geode@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v1 01/12] fbdev: gxfb: use generic power management
+Message-ID: <20200806055843.GA486683@gmail.com>
+References: <20200805180722.244008-2-vaibhavgupta40@gmail.com>
+ <20200805201901.GA529929@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4aa65ad6-5324-0a8c-0fa6-0d8e680f0706@redhat.com>
+In-Reply-To: <20200805201901.GA529929@bjorn-Precision-5520>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 11:37:38AM +0800, Jason Wang wrote:
+On Wed, Aug 05, 2020 at 03:19:01PM -0500, Bjorn Helgaas wrote:
+> On Wed, Aug 05, 2020 at 11:37:11PM +0530, Vaibhav Gupta wrote:
+> > Drivers using legacy power management .suspen()/.resume() callbacks
+> > have to manage PCI states and device's PM states themselves. They also
+> > need to take care of standard configuration registers.
 > 
-> On 2020/8/5 下午7:45, Michael S. Tsirkin wrote:
-> > > >    #define virtio_cread(vdev, structname, member, ptr)			\
-> > > >    	do {								\
-> > > >    		might_sleep();						\
-> > > >    		/* Must match the member's type, and be integer */	\
-> > > > -		if (!typecheck(typeof((((structname*)0)->member)), *(ptr))) \
-> > > > +		if (!__virtio_typecheck(structname, member, *(ptr)))	\
-> > > >    			(*ptr) = 1;					\
-> > > A silly question,  compare to using set()/get() directly, what's the value
-> > > of the accessors macro here?
-> > > 
-> > > Thanks
-> > get/set don't convert to the native endian, I guess that's why
-> > drivers use cread/cwrite. It is also nice that there's type
-> > safety, checking the correct integer width is used.
+> s/using legacy/using legacy PCI/
+> s/.suspen/.suspend/ (in all these patches)
 > 
+Oh, that's a blunder. Since most of the drivers in my project need similar
+changes, I made a template for commit message. And by mistake I would have
+edited the template itself.
+> I wouldn't necessarily repost the whole series just for that (unless
+> the maintainer wants it), but maybe update your branch so if you have
+> occasion to repost for other reasons, this will be fixed.
 > 
-> Yes, but this is simply because a macro is used here, how about just doing
-> things similar like virtio_cread_bytes():
+> This particular driver actually doesn't *do* any of the PCI state or
+> device PM state management you mention.  And I don't see the "single
+> 'struct dev_pm_ops'" you mention below -- I thought that meant you
+> would have a single struct shared between drivers (I think you did
+> that for IDE?), but that's not what you're doing.  This driver has
+> gxfb_pm_ops, the next has lxfb_pm_ops, etc.
 > 
-> static inline void virtio_cread(struct virtio_device *vdev,
->                       unsigned int offset,
->                       void *buf, size_t len)
+Yeah, the sentence sounds misleading. What I meant was that earlier there
+were two pointers for PM, .suspend and .resume. Whereas now there is a single
+"struct dev_pm_ops" variable inside pci_driver.
+> AFAICT the patches are fine, but the commit logs don't seem exactly
+> accurate.
 > 
-> 
-> And do the endian conversion inside?
-> 
-> Thanks
-> 
+I am fixing it.
 
-Then you lose type safety. It's very easy to have an le32 field
-and try to read it into a u16 by mistake.
-
-These macros are all about preventing bugs: and the whole patchset
-is about several bugs sparse found - that is what prompted me to make
-type checks more strict.
-
-
+Thanks
+Vaibhav Gupta
+> > Switch to generic power management framework using a single
+> > "struct dev_pm_ops" variable to take the unnecessary load from the driver.
+> > This also avoids the need for the driver to directly call most of the PCI
+> > helper functions and device power state control functions, as through
+> > the generic framework PCI Core takes care of the necessary operations,
+> > and drivers are required to do only device-specific jobs.
+> >
+> > Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> > ---
+> >  drivers/video/fbdev/geode/gxfb.h       |  5 ----
+> >  drivers/video/fbdev/geode/gxfb_core.c  | 36 ++++++++++++++------------
+> >  drivers/video/fbdev/geode/suspend_gx.c |  4 ---
+> >  3 files changed, 20 insertions(+), 25 deletions(-)
 > > 
-
+> > diff --git a/drivers/video/fbdev/geode/gxfb.h b/drivers/video/fbdev/geode/gxfb.h
+> > index d2e9c5c8e294..792c111c21e4 100644
+> > --- a/drivers/video/fbdev/geode/gxfb.h
+> > +++ b/drivers/video/fbdev/geode/gxfb.h
+> > @@ -21,7 +21,6 @@ struct gxfb_par {
+> >  	void __iomem *dc_regs;
+> >  	void __iomem *vid_regs;
+> >  	void __iomem *gp_regs;
+> > -#ifdef CONFIG_PM
+> >  	int powered_down;
+> >  
+> >  	/* register state, for power management functionality */
+> > @@ -36,7 +35,6 @@ struct gxfb_par {
+> >  	uint64_t fp[FP_REG_COUNT];
+> >  
+> >  	uint32_t pal[DC_PAL_COUNT];
+> > -#endif
+> >  };
+> >  
+> >  unsigned int gx_frame_buffer_size(void);
+> > @@ -49,11 +47,8 @@ void gx_set_dclk_frequency(struct fb_info *info);
+> >  void gx_configure_display(struct fb_info *info);
+> >  int gx_blank_display(struct fb_info *info, int blank_mode);
+> >  
+> > -#ifdef CONFIG_PM
+> >  int gx_powerdown(struct fb_info *info);
+> >  int gx_powerup(struct fb_info *info);
+> > -#endif
+> > -
+> >  
+> >  /* Graphics Processor registers (table 6-23 from the data book) */
+> >  enum gp_registers {
+> > diff --git a/drivers/video/fbdev/geode/gxfb_core.c b/drivers/video/fbdev/geode/gxfb_core.c
+> > index d38a148d4746..44089b331f91 100644
+> > --- a/drivers/video/fbdev/geode/gxfb_core.c
+> > +++ b/drivers/video/fbdev/geode/gxfb_core.c
+> > @@ -322,17 +322,14 @@ static struct fb_info *gxfb_init_fbinfo(struct device *dev)
+> >  	return info;
+> >  }
+> >  
+> > -#ifdef CONFIG_PM
+> > -static int gxfb_suspend(struct pci_dev *pdev, pm_message_t state)
+> > +static int __maybe_unused gxfb_suspend(struct device *dev)
+> >  {
+> > -	struct fb_info *info = pci_get_drvdata(pdev);
+> > +	struct fb_info *info = dev_get_drvdata(dev);
+> >  
+> > -	if (state.event == PM_EVENT_SUSPEND) {
+> > -		console_lock();
+> > -		gx_powerdown(info);
+> > -		fb_set_suspend(info, 1);
+> > -		console_unlock();
+> > -	}
+> > +	console_lock();
+> > +	gx_powerdown(info);
+> > +	fb_set_suspend(info, 1);
+> > +	console_unlock();
+> >  
+> >  	/* there's no point in setting PCI states; we emulate PCI, so
+> >  	 * we don't end up getting power savings anyways */
+> > @@ -340,9 +337,9 @@ static int gxfb_suspend(struct pci_dev *pdev, pm_message_t state)
+> >  	return 0;
+> >  }
+> >  
+> > -static int gxfb_resume(struct pci_dev *pdev)
+> > +static int __maybe_unused gxfb_resume(struct device *dev)
+> >  {
+> > -	struct fb_info *info = pci_get_drvdata(pdev);
+> > +	struct fb_info *info = dev_get_drvdata(dev);
+> >  	int ret;
+> >  
+> >  	console_lock();
+> > @@ -356,7 +353,6 @@ static int gxfb_resume(struct pci_dev *pdev)
+> >  	console_unlock();
+> >  	return 0;
+> >  }
+> > -#endif
+> >  
+> >  static int gxfb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >  {
+> > @@ -467,15 +463,23 @@ static const struct pci_device_id gxfb_id_table[] = {
+> >  
+> >  MODULE_DEVICE_TABLE(pci, gxfb_id_table);
+> >  
+> > +static const struct dev_pm_ops gxfb_pm_ops = {
+> > +#ifdef CONFIG_PM_SLEEP
+> > +	.suspend	= gxfb_suspend,
+> > +	.resume		= gxfb_resume,
+> > +	.freeze		= NULL,
+> > +	.thaw		= gxfb_resume,
+> > +	.poweroff	= NULL,
+> > +	.restore	= gxfb_resume,
+> > +#endif
+> > +};
+> > +
+> >  static struct pci_driver gxfb_driver = {
+> >  	.name		= "gxfb",
+> >  	.id_table	= gxfb_id_table,
+> >  	.probe		= gxfb_probe,
+> >  	.remove		= gxfb_remove,
+> > -#ifdef CONFIG_PM
+> > -	.suspend	= gxfb_suspend,
+> > -	.resume		= gxfb_resume,
+> > -#endif
+> > +	.driver.pm	= &gxfb_pm_ops,
+> >  };
+> >  
+> >  #ifndef MODULE
+> > diff --git a/drivers/video/fbdev/geode/suspend_gx.c b/drivers/video/fbdev/geode/suspend_gx.c
+> > index 1110a527c35c..8c49d4e98772 100644
+> > --- a/drivers/video/fbdev/geode/suspend_gx.c
+> > +++ b/drivers/video/fbdev/geode/suspend_gx.c
+> > @@ -11,8 +11,6 @@
+> >  
+> >  #include "gxfb.h"
+> >  
+> > -#ifdef CONFIG_PM
+> > -
+> >  static void gx_save_regs(struct gxfb_par *par)
+> >  {
+> >  	int i;
+> > @@ -259,5 +257,3 @@ int gx_powerup(struct fb_info *info)
+> >  	par->powered_down  = 0;
+> >  	return 0;
+> >  }
+> > -
+> > -#endif
+> > -- 
+> > 2.27.0
+> > 
