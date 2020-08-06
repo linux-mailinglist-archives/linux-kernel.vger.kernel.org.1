@@ -2,126 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA5723DD24
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE9423DDF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729904AbgHFRDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729564AbgHFRB5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:01:57 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC4BC034604
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 05:32:12 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id jp10so23541882ejb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 05:32:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wITD6sAbyjVa5WRqw37Sc/Lb0EfyweCj3P0+wea36Io=;
-        b=msJ9eXJ47kbGAjrgF16460tFJbqR1deSR1wZPU7U9hNgjFASv3q85xr2slEvFTf+6+
-         OFVC/KLvPCzDI5Qxf76YP1S7TsIxD2WlS/YUD4j0f181kF1qkAsSYk/kzrLJ9pFLNFHg
-         gAHn6CyMn4rfYiwBHHF8VwVijPNm/sHxrWS/AmS0y5JjpvXv5sdSh4e3XF30kbZ68lHa
-         jXBI3++7orK5KUNl2Lw7ZVMj7Srr2/GdksdFS0Dd1NAunpT+2VCFBlmu3dXmtmXDam45
-         RibxBrvNcGgGJ6AoFvguHJIYRy+01MDjpvXT4IFsl4uDDnTyJf7oPjXHHKZtPddY+hYF
-         vyCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wITD6sAbyjVa5WRqw37Sc/Lb0EfyweCj3P0+wea36Io=;
-        b=k1qzfUzZ8O3V0X9l58pMRCgT4JJdM5+MEDP+PTYcLDSWF9E7ZTblJIOqoEDZEbzZ4I
-         rIW4KsQLFvKLSdms0wSOCQDVEBumS2gle1aacy2j6gJsGaQVWCROAteXL0EzAmMTBrMS
-         gjNgAl9TVTDZE9OTs5EAH7FUyWe3l5RRklvUyjuVocFMru1ZoCo7urLe8XQUFi8Cxovh
-         BbKh13ISG5pvgPf18zS+WutCLUqvDfa3UAp/iDkNSSDs+J1N7vEJXuMPckHWQGuYztY6
-         vu9gHhaXj29N9691ZlfUePZvEuGGyebEejPNIghC4FSPyC4SKLlLk8QX8++ZOXcrrcRf
-         N9nA==
-X-Gm-Message-State: AOAM531R+wPHSrKSurnssiiF6GdkRFAtDSHatZZCBi0DPTrOeVuup/fj
-        dhMy6m7pnq/4+37BAS8mfAuoiw==
-X-Google-Smtp-Source: ABdhPJyyXzW2CgSWZhZQ4DtQV/ji+0A+9TGcUGcy18YDaELUmm5VvDivlLRl9mTyjP31xr+nAvgiAg==
-X-Received: by 2002:a17:906:f202:: with SMTP id gt2mr4056426ejb.70.1596717129751;
-        Thu, 06 Aug 2020 05:32:09 -0700 (PDT)
-Received: from tim.froidcoeur.net (ptr-7tznw15pracyli75x11.18120a2.ip6.access.telenet.be. [2a02:1811:50e:f0f0:d05d:939:f42b:f575])
-        by smtp.gmail.com with ESMTPSA id c5sm3695778ejb.103.2020.08.06.05.32.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 05:32:09 -0700 (PDT)
-From:   Tim Froidcoeur <tim.froidcoeur@tessares.net>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Patrick McHardy <kaber@trash.net>,
-        KOVACS Krisztian <hidden@balabit.hu>
-Cc:     Tim Froidcoeur <tim.froidcoeur@tessares.net>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net v3 2/2] net: initialize fastreuse on inet_inherit_port
-Date:   Thu,  6 Aug 2020 14:30:23 +0200
-Message-Id: <20200806123024.585212-3-tim.froidcoeur@tessares.net>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200806123024.585212-1-tim.froidcoeur@tessares.net>
-References: <20200806123024.585212-1-tim.froidcoeur@tessares.net>
+        id S1730471AbgHFRUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:20:49 -0400
+Received: from mga03.intel.com ([134.134.136.65]:51384 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729326AbgHFRUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:20:23 -0400
+IronPort-SDR: EAsyGwuC2NO1Jx/bw1A2R6TlAqvNKhAe5IawoL+MsH2VmfVDWPG1sD2ozf1P6N9Ytzgxoh7hJJ
+ uqOm2DYihFug==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="152745828"
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="152745828"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 05:32:45 -0700
+IronPort-SDR: 2aAO8Ggv2nwJsZzTNR+3URxFbkMv5n5zcTn051khE/n9Pk+zyVE+favngvjTASWIVJGr1gBe8P
+ Pysl+v0aYB1g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="325366356"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by fmsmga002.fm.intel.com with ESMTP; 06 Aug 2020 05:32:43 -0700
+Subject: Re: [PATCH] mmc: sdhci-pci-o2micro: fix spelling mistake "unsupport"
+ -> "unsupported"
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Colin King <colin.king@canonical.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shirley her <shirley.her@bayhubtech.com>
+References: <20200806115059.59241-1-colin.king@canonical.com>
+ <016404fc-fce8-20f5-da6c-1b7ea936cf5a@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <e472589a-99ed-36d4-1f69-583376a5ceaf@intel.com>
+Date:   Thu, 6 Aug 2020 15:32:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <016404fc-fce8-20f5-da6c-1b7ea936cf5a@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the case of TPROXY, bind_conflict optimizations for SO_REUSEADDR or
-SO_REUSEPORT are broken, possibly resulting in O(n) instead of O(1) bind
-behaviour or in the incorrect reuse of a bind.
+On 6/08/20 3:21 pm, Adrian Hunter wrote:
+> + code author ernest.zhang <ernest.zhang@bayhubtech.com>
 
-the kernel keeps track for each bind_bucket if all sockets in the
-bind_bucket support SO_REUSEADDR or SO_REUSEPORT in two fastreuse flags.
-These flags allow skipping the costly bind_conflict check when possible
-(meaning when all sockets have the proper SO_REUSE option).
+That email address bounced, so instead adding
 
-For every socket added to a bind_bucket, these flags need to be updated.
-As soon as a socket that does not support reuse is added, the flag is
-set to false and will never go back to true, unless the bind_bucket is
-deleted.
+	shirley her <shirley.her@bayhubtech.com>
 
-Note that there is no mechanism to re-evaluate these flags when a socket
-is removed (this might make sense when removing a socket that would not
-allow reuse; this leaves room for a future patch).
-
-For this optimization to work, it is mandatory that these flags are
-properly initialized and updated.
-
-When a child socket is created from a listen socket in
-__inet_inherit_port, the TPROXY case could create a new bind bucket
-without properly initializing these flags, thus preventing the
-optimization to work. Alternatively, a socket not allowing reuse could
-be added to an existing bind bucket without updating the flags, causing
-bind_conflict to never be called as it should.
-
-Call inet_csk_update_fastreuse when __inet_inherit_port decides to create
-a new bind_bucket or use a different bind_bucket than the one of the
-listen socket.
-
-Fixes: 093d282321da ("tproxy: fix hash locking issue when using port redirection in __inet_inherit_port()")
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Tim Froidcoeur <tim.froidcoeur@tessares.net>
----
- net/ipv4/inet_hashtables.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-index 2bbaaf0c7176..006a34b18537 100644
---- a/net/ipv4/inet_hashtables.c
-+++ b/net/ipv4/inet_hashtables.c
-@@ -163,6 +163,7 @@ int __inet_inherit_port(const struct sock *sk, struct sock *child)
- 				return -ENOMEM;
- 			}
- 		}
-+		inet_csk_update_fastreuse(tb, child);
- 	}
- 	inet_bind_hash(child, tb, port);
- 	spin_unlock(&head->lock);
--- 
-2.25.1
+> 
+> On 6/08/20 2:50 pm, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> There is a spelling mistake in a pr_info message. Fix it.
+>>
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>  drivers/mmc/host/sdhci-pci-o2micro.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mmc/host/sdhci-pci-o2micro.c b/drivers/mmc/host/sdhci-pci-o2micro.c
+>> index fa76748d8929..4eca8d2d0599 100644
+>> --- a/drivers/mmc/host/sdhci-pci-o2micro.c
+>> +++ b/drivers/mmc/host/sdhci-pci-o2micro.c
+>> @@ -469,7 +469,7 @@ static void sdhci_pci_o2_enable_msi(struct sdhci_pci_chip *chip,
+>>  
+>>  	ret = pci_find_capability(chip->pdev, PCI_CAP_ID_MSI);
+>>  	if (!ret) {
+>> -		pr_info("%s: unsupport msi, use INTx irq\n",
+>> +		pr_info("%s: unsupported msi, use INTx irq\n",
+> 
+> I think the meaning is more like:
+> 
+> 	MSI is not supported, using INTx IRQ
+> 
+>>  			mmc_hostname(host->mmc));
+>>  		return;
+>>  	}
+>>
+> 
 
