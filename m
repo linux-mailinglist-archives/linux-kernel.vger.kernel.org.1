@@ -2,113 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B5223DBE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0669223DCEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728864AbgHFQhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40948 "EHLO
+        id S1729918AbgHFQ6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728932AbgHFQfo (ORCPT
+        with ESMTP id S1728975AbgHFQkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:35:44 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18BBC00216A
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:09:06 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id t6so39467093ljk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:09:06 -0700 (PDT)
+        Thu, 6 Aug 2020 12:40:42 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D5DC00216C;
+        Thu,  6 Aug 2020 09:10:56 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id k13so26439147lfo.0;
+        Thu, 06 Aug 2020 09:10:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b+FOmc3x4TlSIosvK+g/xbYJM2PQZPI5ZqFQRC+ljXI=;
-        b=u2YT/+arQ2RT6JROfq2KclPiQp4+Q216/ziCsMWXtr9rNVYLBKRtFK6ZbJSSZd9PYp
-         5MqQNXTpoE134DxS/Ec4aZOqUZhhsNxTmENZl2EeRinjavid10hIqBUv6oodlANe2SwJ
-         Kgbbr4M0hEbLoS3xuOqRoMJJeYe6WoZc+FcByAn/5tnb0Igg/cKQqjhCRvI1S/A6XGJX
-         tT1cbjFaLMp6GR6G+c7MoR43IwUXP0mxYZkfLALzluzzkTyur3Tqos38pP4hyQb8sxYh
-         QHLR4fmX4aH5ThtvTDuFmbwBgcAmc1pcTvKTdlrwiGhQyPcdbaphs4xVm8jECht9r5CL
-         thww==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CARAOasIFak870VufiBClJ7GzwKqbGWjQPwUf4dCREk=;
+        b=OmngnfVzaAJ9jJNJdEi4kf1hA9P2f7ak2OMok4/yWOq+hkeBgCSKcgzjtw27fGmOWn
+         3Zr8eTtteML9DsrP8N8PGLMwnxXtz2X5uWtxhQ1b1Hp0lQ3K227+u3B9Y44NmKqsDiAI
+         PoGdUJrtbj5F5PHsAbCQ/Xlg8BGF/H+5Ji8upNSdPxqYHp69l0/gw5+WAhPBzdU851Y4
+         OZngM7HgmAS0C6TzfrcDz3JJ+k9LNjkmAOqZ2kkNckw+xhrNxNuoyiHIk+KPqIxMpngc
+         uoTKka3sq9RAXGa3rl6n/LiXS1X1o1Bw47L3qLOompZl1KYCytoql8VhP2iFa6gGlKSe
+         pKDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b+FOmc3x4TlSIosvK+g/xbYJM2PQZPI5ZqFQRC+ljXI=;
-        b=Lcx4RJ8dBK8kU59mHPY5Mm/G0JOaCIfv85rvRdELaGbGz/HPWFLOd+x90ZV1hjro/n
-         h5zy+64p/XdC4I6x/T8BXcbvhc869a63OIk1hShIvZiWtKRLeeyFbiLiVVsHK7BXNMgL
-         b1J2IKkJOjqC31DGXr3f6qmWro11IV9yKLd509fpv0VmucutOGmSOMBaNRluHi/yb1Nx
-         SPK7XcLKjK5OTK4mkT683nVfS7SW+pAZkqY98xKcNhkb0pCsZ3iTHd3MXeMHZKFjl3Wo
-         7Ubb7RKRl4bvOAl/hGq3pR57Jj/NSbROw37vHGT5Nw+hG3JWmf72BP9mIIrJahgy27Q9
-         JpZw==
-X-Gm-Message-State: AOAM532Abmq9asscz5dH/9hWHFnxFicQEleFO4s0J+vBzVAR2GdmwYax
-        XtkrIUonR6FxZosgSF4hsnJRedE4WeaHoY4GwjuZ+ZzzJLw=
-X-Google-Smtp-Source: ABdhPJw3JV+p1U0VEzzIMl77foo8ILJLvSfoLsNoqG/VsjTgotZRib0SJ53kgAs7YyHWHvURuABt6bcvPtjKrx6CBT8=
-X-Received: by 2002:a05:651c:543:: with SMTP id q3mr4132966ljp.145.1596730143553;
- Thu, 06 Aug 2020 09:09:03 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CARAOasIFak870VufiBClJ7GzwKqbGWjQPwUf4dCREk=;
+        b=Rvn61SHyDSvs5LrCpe/XgfFQ3dEjZFqOttgbjSenDllbn2EbA24HCi3tXS7LHFkVKA
+         IpNwRX6sTVVqW8fo81W5muMITeogvfY0ca/Df1fKrGqLn/YfoZ/nO9rwQjg8HCZjVXQr
+         7MfdpUJhrbxXn1RasPv6VsbrGWNvv+xMVa66s0LlUvjzTACWpm7c3mh9aXwXWFxpz2qZ
+         RV8PG2IZTNTLsYsWprVkEF6wuQvLFqWXfQ84V+5PlbSQqHjT6vY90FMfMncdXPIUm6Lh
+         MyLqyxOW5AOy1NID9a6YJPT6QF3gYDdjKCpCy3/IdKrE6BdVeGH7yC6enWUOOleI9N8K
+         dmiw==
+X-Gm-Message-State: AOAM531GHmPIi40RDNQY+rUuoncj4bLLlHiwcWnqj8qg9a7DDmSsDT27
+        cEkOGxyyRw89HhhZF1KPf5Js9ujy
+X-Google-Smtp-Source: ABdhPJzuFA0l+OQL4YSNgzVA9hLB2nNjiEMtvYCJAZAFfYBW6wFxaQDOT3HDYMkQDm5DZYd2Vh+F6Q==
+X-Received: by 2002:ac2:5ec8:: with SMTP id d8mr4213855lfq.169.1596730253375;
+        Thu, 06 Aug 2020 09:10:53 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-41-50.dynamic.spd-mgts.ru. [94.29.41.50])
+        by smtp.googlemail.com with ESMTPSA id y1sm3096536lfb.45.2020.08.06.09.10.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Aug 2020 09:10:52 -0700 (PDT)
+Subject: Re: [PATCH v8 08/10] gpu: host1x: mipi: Keep MIPI clock enabled till
+ calibration is done
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     jonathanh@nvidia.com, frankc@nvidia.com, hverkuil@xs4all.nl,
+        sakari.ailus@iki.fi, robh+dt@kernel.org, helen.koike@collabora.com,
+        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1596469346-937-1-git-send-email-skomatineni@nvidia.com>
+ <1596469346-937-9-git-send-email-skomatineni@nvidia.com>
+ <20200805134600.GA3351349@ulmo>
+ <103efe31-1abc-54f2-6004-490d7bb1b61a@gmail.com>
+ <dcd58ae7-58ed-11d1-0e10-7f522b651b30@gmail.com>
+ <addb92e5-7c7a-6fba-117d-c7880b2d4597@nvidia.com>
+ <ed80bf2f-213f-286a-59b2-fc85e4181b3d@gmail.com>
+ <6eede805-80fd-016f-22f8-b6d25f6587af@nvidia.com>
+ <1c12e40e-de7f-0599-a941-82760b4c7668@gmail.com>
+ <9ef0b875-e826-43e2-207e-168d2081ff6a@nvidia.com>
+ <4689cfe9-e7c4-48bf-217f-3a31b59b8bda@nvidia.com>
+ <0e78c5ca-c529-1e98-891d-30351c9aae81@gmail.com>
+ <b2098a68-d02f-b406-fc57-56e3ff5d8d1a@nvidia.com>
+ <309e3b66-9288-91ef-71b4-be73eacbbd62@nvidia.com>
+ <fde2431a-0585-ac32-ac25-73e198aaa948@nvidia.com>
+ <4025a458-fa78-924d-c84f-166f82df0f8e@gmail.com>
+ <4f15d655-3d62-cf9f-82da-eae379d60fa6@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b5612e93-f1c4-4762-baa1-5d85eb1edbe1@gmail.com>
+Date:   Thu, 6 Aug 2020 19:10:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <0000000000006925ea05a69d5bfb@google.com> <000000000000ecb92805ac33a761@google.com>
-In-Reply-To: <000000000000ecb92805ac33a761@google.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 6 Aug 2020 18:08:36 +0200
-Message-ID: <CAG48ez0Rdut=HxSyKUCiCVU=zZJPR7YXcOfL3tRBXXwUS0iKxw@mail.gmail.com>
-Subject: Re: WARNING in binder_transaction_buffer_release (2)
-To:     syzbot <syzbot+e113a0b970b7b3f394ba@syzkaller.appspotmail.com>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Martijn Coenen <maco@android.com>,
-        Todd Kjos <tkjos@android.com>
-Cc:     Christian Brauner <christian@brauner.io>,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4f15d655-3d62-cf9f-82da-eae379d60fa6@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 1:19 PM syzbot
-<syzbot+e113a0b970b7b3f394ba@syzkaller.appspotmail.com> wrote:
-> syzbot suspects this issue was fixed by commit:
->
-> commit 4b836a1426cb0f1ef2a6e211d7e553221594f8fc
-> Author: Jann Horn <jannh@google.com>
-> Date:   Mon Jul 27 12:04:24 2020 +0000
->
->     binder: Prevent context manager from incrementing ref 0
-[...]
-> dashboard link: https://syzkaller.appspot.com/bug?extid=e113a0b970b7b3f394ba
-[...]
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: binder: Prevent context manager from incrementing ref 0
+06.08.2020 18:59, Sowjanya Komatineni пишет:
+...
+>>> Confirmed from HW designer, calibration FSM to finish takes worst case
+>>> 72uS so by the time it gets to sensor stream it will be done its
+>>> sequence and will be waiting for DONE bit.
+>>>
+>>> So disabling MIPI CAL clock on sensor stream fails is safe.
+>>
+>> 72us is quite a lot of time, what will happen if LP-11 happens before
+>> FSM finished calibration?
+>>
+>> Maybe the finish_calibration() needs to split into two parts:
+>>
+>>   1. wait for CAL_STATUS_ACTIVE before enabling sensor
+>>   2. wait for CAL_STATUS_DONE after enabling sensor
+> 
+> I don't think we need to split for active and done. Active will be 1 as
+> long as other pads are in calibration as well.
+> 
+> We cant use active status check for specific pads under calibration.
+> This is common bit for all pads.
 
-I think this issue still exists, syzbot probably just hit it in a
-weird way that doesn't work anymore.
+Does hardware have a single FSM block shared by all pads or there is FSM
+per group of pads?
 
-This warning:
+> Unfortunately HW don't have separate status indicating when sequence is
+> done to indicate its waiting for LP11.
+> 
+> 
+> To avoid all this, will remove cancel_calibration() totally and use same
+> finish calibration even in case of stream failure then.
+> 
 
-case BINDER_TYPE_FD: {
-        /*
-         * No need to close the file here since user-space
-         * closes it for for successfully delivered
-         * transactions. For transactions that weren't
-         * delivered, the new fd was never allocated so
-         * there is no need to close and the fput on the
-         * file is done when the transaction is torn
-         * down.
-         */
-        WARN_ON(failed_at &&
-                proc->tsk == current->group_leader);
-} break;
-
-can be false-positive if the sender and recipient of the transaction
-are associated with the same task_struct. But there isn't really any
-reason why you wouldn't be able to have sender and recipient in the
-same process, as long as the binder_proc is different.
-(binder_transaction() has a weird check that refuses transactions to
-handle 0 based on task_struct equality - which IMO doesn't really make
-sense -, but transactions to other handles can happen just fine even
-if both ends are in the same task_struct.)
-
-Maybe the best fix is just to rip out that WARN_ON()?
+What about to add 72us delay to the end of start_calibration() in order
+to ensure that FSM is finished before LP-11?
