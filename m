@@ -2,134 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C541C23E136
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5050B23E17F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730116AbgHFSmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:42:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:46570 "EHLO foss.arm.com"
+        id S1729576AbgHFSu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:50:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728322AbgHFSXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:23:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1FCCA1FB;
-        Thu,  6 Aug 2020 11:11:26 -0700 (PDT)
-Received: from [10.57.35.143] (unknown [10.57.35.143])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1BB813F7D7;
-        Thu,  6 Aug 2020 11:11:24 -0700 (PDT)
-Subject: Re: [tip: perf/core] perf/core: Fix endless multiplex timer
-To:     "stable@vger.kernel.org" <stable@vger.kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>
-References: <20200305123851.GX2596@hirez.programming.kicks-ass.net>
- <158470908175.28353.4859180707604949658.tip-bot2@tip-bot2>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <abd1dde6-2761-ae91-195c-cd7c4e4515c6@arm.com>
-Date:   Thu, 6 Aug 2020 19:11:24 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1729548AbgHFSuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 14:50:22 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08A0D206A2;
+        Thu,  6 Aug 2020 18:14:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596737641;
+        bh=cTDFY6e9XbsVg5M5M8qrth0ZUAqNLBrGztIVgptNGgo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Zco0Fv7OomTblCt+TSZIE7kmS4eZOhsPBYtALr7GSSmJ/F+cWPQ2NRbt9Tpmko0NC
+         UxR0BhR7NPP1nCdv2OndPM8SMyyu4j4LZsA4WCLN/8P3c+h5UR6kXSSZ6RaqpC0bSj
+         GCtnswe0Qen27QfRnSOFxIaDUXtVOiG2QXouYm/k=
+Date:   Thu, 6 Aug 2020 11:13:58 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, oss-drivers@netronome.com,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Elder <elder@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH v2 0/2 net] bitfield.h cleanups
+Message-ID: <20200806111358.2b23887c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAKwvOd=YBL_igN-Z1V9bePdt9+GOqkKq-H4Wg8GBZvBsdOHeOw@mail.gmail.com>
+References: <20200708230402.1644819-1-ndesaulniers@google.com>
+        <CAKwvOdmXtFo8YoNd7pgBnTQEwTZw0nGx-LypDiFKRR_HzZm9aA@mail.gmail.com>
+        <CAKwvOdkGmgdh6-4VRUGkd1KRC-PgFcGwP5vKJvO9Oj3cB_Qh6Q@mail.gmail.com>
+        <20200720.163458.475401930020484350.davem@davemloft.net>
+        <CAKwvOdmU+Eh0BF+o4yqSBFRXkokLOzvy-Qni27DcXOSKv5KOtQ@mail.gmail.com>
+        <CAKwvOd=YBL_igN-Z1V9bePdt9+GOqkKq-H4Wg8GBZvBsdOHeOw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <158470908175.28353.4859180707604949658.tip-bot2@tip-bot2>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-03-20 12:58, tip-bot2 for Peter Zijlstra wrote:
-> The following commit has been merged into the perf/core branch of tip:
+On Wed, 5 Aug 2020 10:44:30 -0700 Nick Desaulniers wrote:
+> Hi David,
+> I read through https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html#q-how-often-do-changes-from-these-trees-make-it-to-the-mainline-linus-tree
+> and noticed http://vger.kernel.org/~davem/net-next.html.  Since the
+> merge window just opened, it sounds like I'll need to wait 2 weeks for
+> it to close before resending? Is that correct? Based on:
 > 
-> Commit-ID:     90c91dfb86d0ff545bd329d3ddd72c147e2ae198
-> Gitweb:        https://git.kernel.org/tip/90c91dfb86d0ff545bd329d3ddd72c147e2ae198
-> Author:        Peter Zijlstra <peterz@infradead.org>
-> AuthorDate:    Thu, 05 Mar 2020 13:38:51 +01:00
-> Committer:     Peter Zijlstra <peterz@infradead.org>
-> CommitterDate: Fri, 20 Mar 2020 13:06:22 +01:00
+> > IMPORTANT: Do not send new net-next content to netdev during the period during which net-next tree is closed.  
 > 
-> perf/core: Fix endless multiplex timer
+> Then based on the next section in the doc, it sounds like I was
+> missing which tree to put the patch in, in the subject? I believe
+> these patches should target net-next (not net) since they're not
+> addressing regressions from the most recent cycle.
 > 
-> Kan and Andi reported that we fail to kill rotation when the flexible
-> events go empty, but the context does not. XXX moar
-> 
-> Fixes: fd7d55172d1e ("perf/cgroups: Don't rotate events for cgroups unnecessarily")
+> Do I have all that right?
 
-Can this patch (commit 90c91dfb86d0 ("perf/core: Fix endless multiplex 
-timer") upstream) be applied to stable please? For PMU drivers built as 
-modules, the bug can actually kill the system, since the runaway hrtimer 
-loop keeps calling pmu->{enable,disable} after all the events have been 
-closed and dropped their references to pmu->module. Thus legitimately 
-unloading the module once things have got into this state quickly 
-results in a crash when those callbacks disappear.
+Nick, please repost the first patch only (to:dave, cc:netdev,...,
+subject "[PATCH net resend] ...") and I'm pretty sure Dave will
+re-consider it, it's a build fix after all. In any case reviewing 
+a patch with a short explanation under the commit message on why it's
+resend is easier [1] for a maintainer to process than digging through
+conversations.
 
-(FWIW I spent about two days fighting with this while testing a new 
-driver as a module against the 5.3 kernel installed on someone else's 
-machine, assuming it was a bug in my code...)
-
-Robin.
-
-> Reported-by: Andi Kleen <ak@linux.intel.com>
-> Reported-by: Kan Liang <kan.liang@linux.intel.com>
-> Tested-by: Kan Liang <kan.liang@linux.intel.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Link: https://lkml.kernel.org/r/20200305123851.GX2596@hirez.programming.kicks-ass.net
-> ---
->   kernel/events/core.c | 20 ++++++++++++++------
->   1 file changed, 14 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index ccf8d4f..b5a68d2 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -2291,6 +2291,7 @@ __perf_remove_from_context(struct perf_event *event,
->   
->   	if (!ctx->nr_events && ctx->is_active) {
->   		ctx->is_active = 0;
-> +		ctx->rotate_necessary = 0;
->   		if (ctx->task) {
->   			WARN_ON_ONCE(cpuctx->task_ctx != ctx);
->   			cpuctx->task_ctx = NULL;
-> @@ -3188,12 +3189,6 @@ static void ctx_sched_out(struct perf_event_context *ctx,
->   	if (!ctx->nr_active || !(is_active & EVENT_ALL))
->   		return;
->   
-> -	/*
-> -	 * If we had been multiplexing, no rotations are necessary, now no events
-> -	 * are active.
-> -	 */
-> -	ctx->rotate_necessary = 0;
-> -
->   	perf_pmu_disable(ctx->pmu);
->   	if (is_active & EVENT_PINNED) {
->   		list_for_each_entry_safe(event, tmp, &ctx->pinned_active, active_list)
-> @@ -3203,6 +3198,13 @@ static void ctx_sched_out(struct perf_event_context *ctx,
->   	if (is_active & EVENT_FLEXIBLE) {
->   		list_for_each_entry_safe(event, tmp, &ctx->flexible_active, active_list)
->   			group_sched_out(event, cpuctx, ctx);
-> +
-> +		/*
-> +		 * Since we cleared EVENT_FLEXIBLE, also clear
-> +		 * rotate_necessary, is will be reset by
-> +		 * ctx_flexible_sched_in() when needed.
-> +		 */
-> +		ctx->rotate_necessary = 0;
->   	}
->   	perf_pmu_enable(ctx->pmu);
->   }
-> @@ -3985,6 +3987,12 @@ ctx_event_to_rotate(struct perf_event_context *ctx)
->   				      typeof(*event), group_node);
->   	}
->   
-> +	/*
-> +	 * Unconditionally clear rotate_necessary; if ctx_flexible_sched_in()
-> +	 * finds there are unschedulable events, it will set it again.
-> +	 */
-> +	ctx->rotate_necessary = 0;
-> +
->   	return event;
->   }
->   
-> 
+[1] may be related to the use of patchwork on netdev
