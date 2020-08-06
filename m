@@ -2,81 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5271123DDB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30F723DDD8
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729386AbgHFRNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:13:51 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3046 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729103AbgHFRNk (ORCPT
+        id S1730528AbgHFRPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729477AbgHFRPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:13:40 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f2c3a360001>; Thu, 06 Aug 2020 10:13:26 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 06 Aug 2020 10:13:40 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 06 Aug 2020 10:13:40 -0700
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 6 Aug
- 2020 17:13:39 +0000
-Subject: Re: linux-next: Tree for Aug 6 (mm/migrate.c)
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200806162116.1d033db0@canb.auug.org.au>
- <85e9276d-1747-b265-53be-a33ab6203045@infradead.org>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <1634e188-0faf-a240-6847-94468d63d7d7@nvidia.com>
-Date:   Thu, 6 Aug 2020 10:13:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Thu, 6 Aug 2020 13:15:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3FC8C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 10:15:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XxaSeZ8vU13ipKwWzVxowozt5SCaySmLqUJlyGW8WBI=; b=cmrZQ8YvjWkEmDNcAnsrELEWBy
+        +U/oGZ90fBu3UCq1CEVkLZ8pQXNZz/HX9XtdneThVBn8S+5rR7beEskioaQxUwouXGRCImpAbOLUg
+        IvIh3MD/OTU10pRzBM2HG8ypZ0FianKgzTtevdllZhIe/BkaCEpQGY6KrlGv1SFM8eQsgsX0cZiaS
+        1Q9hwQk9NaT839uWgfXwv/Lg3ghYyYsi3b13RJyS+MbQwfglYT54wN9v2nrDnRc/isnCEwZK+V8KU
+        7jOeRrsVSiyYdxtkxFXhUgjpZL0UGtWy5iNixC/W4kW1o3tD98QhRnD3yUuh+tMvSOG8hE9Gi8aiP
+        X5NTaawA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3jTp-00050N-0D; Thu, 06 Aug 2020 17:15:01 +0000
+Date:   Thu, 6 Aug 2020 18:15:00 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        cai@lca.pw, kirill@shutemov.name, rppt@linux.ibm.com,
+        william.kucharski@oracle.com,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v2] mm, dump_page: do not crash with bad
+ compound_mapcount()
+Message-ID: <20200806171500.GA17456@casper.infradead.org>
+References: <20200804214807.169256-1-jhubbard@nvidia.com>
+ <ac97deea-4638-badd-9495-c9ca313837bb@suse.cz>
+ <20200806134851.GN23808@casper.infradead.org>
+ <790ae9a4-6874-ac34-d2a2-28a2137335cb@suse.cz>
+ <20200806153938.GO23808@casper.infradead.org>
+ <da00f435-a867-0108-8855-872019d85d44@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <85e9276d-1747-b265-53be-a33ab6203045@infradead.org>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1596734006; bh=FgNKwrpR6dpbYgks9Ta2+mgfbhRCmYt+NfPFOCEKaP8=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=YvMnkjxVR89j7CHtxQAoxybVDJtVOJOqMzLz/7hFOS8O3DRjkdCY76DMI7twMYZce
-         HE92lSHfPHiX86gbdO8CeRO32qZrMVIr6+8eq0Dmnrjo5RS8FrGAdd0+zL9J0ovO+K
-         PzrOgVCmRqou7a8bH9hTmSNYJch7PtDkdYs8uq8I6gRvkJBbxi/JHSGiQ1zxC1JJ5Z
-         Gr2+KjbxXdXUGy0uG/Q2GfHeKAzrWFg/7j0NEm5rEGd1E7WYDvjFvnxGzneDAJDzKX
-         hYLvRJm60bshRxJP45c1yNAzAO5jaMGPDAcAcXcj8HvUXs0tVtgrX+PjjgvCwyA+Co
-         roOGPCqemxbUA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <da00f435-a867-0108-8855-872019d85d44@suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 06, 2020 at 05:53:10PM +0200, Vlastimil Babka wrote:
+> On 8/6/20 5:39 PM, Matthew Wilcox wrote:
+> >> >> +++ b/mm/huge_memory.c
+> >> >> @@ -2125,7 +2125,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+> >> >>  	 * Set PG_double_map before dropping compound_mapcount to avoid
+> >> >>  	 * false-negative page_mapped().
+> >> >>  	 */
+> >> >> -	if (compound_mapcount(page) > 1 && !TestSetPageDoubleMap(page)) {
+> >> >> +	if (head_mapcount(page) > 1 && !TestSetPageDoubleMap(page)) {
+> >> > 
+> >> > I'm a little nervous about this one.  The page does actually come from
+> >> > pmd_page(), and today that's guaranteed to be a head page.  But I'm
+> >> > not convinced that's going to still be true in twenty years.  With the
+> >> > current THP patchset, I won't allocate pages larger than PMD order, but
+> >> > I can see there being interest in tracking pages in chunks larger than
+> >> > 2MB in the future.  And then pmd_page() might well return a tail page.
+> >> > So it might be a good idea to not convert this one.
+> >> 
+> >> Hmm the function converts the compound mapcount of the whole page to a
+> >> HPAGE_PMD_NR of base pages. If suddenly the compound page was bigger than a pmd,
+> >> then I guess this wouldn't work properly anymore without changes anyway?
+> >> Maybe we could stick something like VM_BUG_ON(PageTransHuge(page)) there as
+> >> "enforced documentation" for now?
+> > 
+> > I think it would work as-is.  But also I may have totally misunderstood it.
+> > I'll write this declaratively and specifically for x86 (PMD order is 9)
+> > ... tell me when I've made a mistake ;-)
+> > 
+> > This function is for splitting the PMD.  We're leaving the underlying
+> > page intact and just changing the page table.  So if, say, we have an
+> > underlying 4MB page (and maybe the pages are mapped as PMDs in this
+> > process), we might get subpage number 512 of this order-10 page.  We'd
+> > need to check the DoubleMap bit on subpage 1, and the compound_mapcount
+> > also stored in page 1, but we'd only want to spread the mapcount out
+> > over the 512 subpages from 512-1023; we wouldn't want to spread it out
+> > over 0-511 because they aren't affected by this particular PMD.
+> 
+> Yeah, and then we decrease the compound mapcount, which is a counter of "how
+> many times is this compound page mapped as a whole". But we only removed (the
+> second) half of the compound mapping, so imho that would be wrong?
 
-On 8/6/20 7:50 AM, Randy Dunlap wrote:
-> On 8/5/20 11:21 PM, Stephen Rothwell wrote:
->> Hi all,
->>
-> 
-> on x86_64:
-> 
-> when CONFIG_MMU_NOTIFIER is not set/enabled:
-> 
-> ../mm/migrate.c: In function 'migrate_vma_collect':
-> ../mm/migrate.c:2481:7: error: 'struct mmu_notifier_range' has no member named 'migrate_pgmap_owner'
->    range.migrate_pgmap_owner = migrate->pgmap_owner;
->         ^
-> 
+I'd expect that count to be incremented by 1 for each PMD that it's
+mapped to?  ie change the definition of that counter slightly.
 
-Thanks for finding this.
-I'm working on it.
+> > Having to reason about stuff like this is why I limited the THP code to
+> > stop at PMD order ... I don't want to make my life even more complicated
+> > than I have to!
+> 
+> Kirill might correct me but I'd expect the THP code right now has baked in many
+> assumptions about THP pages being exactly HPAGE_PMD_ORDER large?
+
+There are somewhat fewer places that make that assumption after applying
+the ~80 patches here ... http://git.infradead.org/users/willy/pagecache.git
+
+I have mostly not touched the anonymous THPs (obviously some of the code
+paths are shared), although both Kirill & I think there's a win to be
+had there too.
