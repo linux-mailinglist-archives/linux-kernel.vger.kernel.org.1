@@ -2,138 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F96B23D8D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D4223D8DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729104AbgHFJng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729076AbgHFJma (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:42:30 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3FDC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 02:42:00 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id h8so25764017lfp.9
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 02:42:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xiBtfv09Rewh33AK2W77Sh/BJrs195/KdV/txM9SnfM=;
-        b=pOD4YJJB9NYsTyVi9YyMgqMX62jv0IKvTH/+546UVtScHjOj3YuqppoyOxGSpZGLZ3
-         ktZJOx941KjDIIlY3sQA7PFxCfPLJTzi6cbZfCiLmVLCdTy0SmkKy09SfUjFQAZzz9ms
-         m1tPoDTkMu3jzV+SPc1rIT4rmQ04eTGKEnU5XlwUCCjGqGBZc2fwwidT85azIsxdrVOS
-         uo32jXEPDrWuvNQW5fmud877MRS3RT1fmMQNZUe2Y2Iev1SJXOU6RLWc0lLbs9f7wp42
-         smKzQigDbG9RqsRVAozGIMFQGw3muz9Q8A9H86StSnr5FFrPNPEei2hzdlTTLBTb7Evz
-         SwrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xiBtfv09Rewh33AK2W77Sh/BJrs195/KdV/txM9SnfM=;
-        b=CGVKucVBlKWBDSG45iZuHPR9+1kkB5o3bIFqDVaXswR4KO3Kcd439tuXw0vNtH02vV
-         3aIXj+hz9CeZTHhvR3Ru4Kl0ccspmq3G/GewWq9aQWlL3zCPXsceiKaQdE7+nj2cgMMF
-         crBl6ciCiLJom8+nx24vJDhRFxIW00EaYhRv/jRGDRtwlo1iCLrGwsX7g529hlJppb0j
-         OVMNmHtAMaxy2c1rDNr+SOmVR/TjuA10LpHjjyMzH2rWQhmp68rzOZI6V2XClPdblyh4
-         SH3hxQC43NrNvFZ+sxY08Fl2wUHy8O9Hv/+mMNz+jS9Eqx1D8L/UtcJ6eweyuauCFV3z
-         /2hg==
-X-Gm-Message-State: AOAM5320GX6u/FgqAJplfJ/2Z3j94pha4ySywb5PdHb02ayHkw8S3Uli
-        ImSLfKcY2T/f0Dh7vMf2RqNLlrFj8PFCPkctsb5xfA==
-X-Google-Smtp-Source: ABdhPJyiQSuuZkL3S5NCMXaqBrOx5c7oy6V+lNy2kA0O0vzu+FVy9yoWAyu8VznLi9x/g0S6xr6H38ivfdD537KQdgM=
-X-Received: by 2002:a19:cb53:: with SMTP id b80mr3544428lfg.77.1596706918251;
- Thu, 06 Aug 2020 02:41:58 -0700 (PDT)
+        id S1729171AbgHFJnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:43:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:41644 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729027AbgHFJnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 05:43:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 10F511045;
+        Thu,  6 Aug 2020 02:43:14 -0700 (PDT)
+Received: from [10.163.65.54] (unknown [10.163.65.54])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C8FB3F9AB;
+        Thu,  6 Aug 2020 02:43:10 -0700 (PDT)
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, rafael@kernel.org
+From:   Vikas Kumar <vikas.kumar2@arm.com>
+Subject: [LTP-FAIL][02/21] fs: refactor ksys_umount
+Message-ID: <d28d2235-9b1c-0403-59ca-e57ac5d0460e@arm.com>
+Date:   Thu, 6 Aug 2020 15:13:06 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <f32130bf-cfd4-b1bf-538c-dbc9ee2d947a@eaxlabs.cz>
-In-Reply-To: <f32130bf-cfd4-b1bf-538c-dbc9ee2d947a@eaxlabs.cz>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 6 Aug 2020 11:41:46 +0200
-Message-ID: <CACRpkdaHNuuS-2zMwWf-2--8FFV_4aQuAjYx8pLu66h4adQcwQ@mail.gmail.com>
-Subject: Re: pinctrl: sx150x bug
-To:     Martin DEVERA <devik@eaxlabs.cz>, Peter Rosin <peda@axentia.se>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+Hi Christoph,
 
-thanks for your report, let's check with Peter, Neil and Andrey who also
-use this expander if they also see this problem (CC).
+We have seen LTP test(utime06 and umount03) failure in Next Master with 
+commit Id 41525f56e256("fs: refactor ksys_umount").
+I didn't analysis root cause of problem, i am reporting this issue.
 
-On Wed, Aug 5, 2020 at 11:28 AM Martin DEVERA <devik@eaxlabs.cz> wrote:
+---------------------------------------------
+LTP Testcase    Result    Exit Value
+----------------------------------- ---------
+umount03          FAIL           4
+utime06             FAIL           2
+--------------------------------------------
 
-> I encountered bug in SX1502 expander driver in 5.7.7. Here is relevant
-> DTS part:
->
-> compatible = "semtech,sx1502q";
-> gpio4_cfg_pins: gpio2-cfg {
->                          pins = "gpio5";
->                          output-high;
->      };
->
-> And part of OOPS:
->
-> [    0.673996] [<c023cfa6>] (gpiochip_get_data) from [<c023b235>]
-> (sx150x_gpio_direction_output+0xd)
-> [    0.683259] [<c023b235>] (sx150x_gpio_direction_output) from
-> [<c023b363>] (sx150x_pinconf_set+0x)
-> [    0.692796] [<c023b363>] (sx150x_pinconf_set) from [<c0238fef>]
-> (pinconf_apply_setting+0x39/0x7e)
-> [    0.701635] [<c0238fef>] (pinconf_apply_setting) from [<c0236c77>]
-> (pinctrl_commit_state+0xa5/0x)
-> [    0.710648] [<c0236c77>] (pinctrl_commit_state) from [<c0237e03>]
-> (pinctrl_enable+0xff/0x1d4)
-> [    0.719139] [<c0237e03>] (pinctrl_enable) from [<c023b791>]
-> (sx150x_probe+0x1a3/0x358)
-> [    0.727027] [<c023b791>] (sx150x_probe) from [<c02c38bf>]
-> (i2c_device_probe+0x1bb/0x1dc)
->
-> The problem is that sx150x_pinconf_set uses sx150x_gpio_direction_output
-> but gpio is not
-> setup yet. Patch below fixes it but I'm not sure whether is it correct:
->
-> diff --git a/drivers/pinctrl/pinctrl-sx150x.c
-> b/drivers/pinctrl/pinctrl-sx150x.c
-> index 6e74bd87d959..3f5651edd336 100644
-> --- a/drivers/pinctrl/pinctrl-sx150x.c
-> +++ b/drivers/pinctrl/pinctrl-sx150x.c
-> @@ -1154,12 +1154,6 @@ static int sx150x_probe(struct i2c_client *client,
->                  return ret;
->          }
->
-> -       ret = pinctrl_enable(pctl->pctldev);
-> -       if (ret) {
-> -               dev_err(dev, "Failed to enable pinctrl device\n");
-> -               return ret;
-> -       }
-> -
->          /* Register GPIO controller */
->          pctl->gpio.base = -1;
->          pctl->gpio.ngpio = pctl->data->npins;
-> @@ -1191,6 +1185,12 @@ static int sx150x_probe(struct i2c_client *client,
->          if (ret)
->                  return ret;
->
-> +       ret = pinctrl_enable(pctl->pctldev);
-> +       if (ret) {
-> +               dev_err(dev, "Failed to enable pinctrl device\n");
-> +               return ret;
-> +       }
-> +
->          ret = gpiochip_add_pin_range(&pctl->gpio, dev_name(dev),
->                                       0, 0, pctl->data->npins);
->          if (ret)
+LTP utime06 Fail Log:
+/dev/loop0 is mounted; will not make a filesystem here!
+utime06     0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+utime06     0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra 
+opts=''
+utime06     1  TBROK  :  tst_mkfs.c:102: utime06.c:122: mkfs.ext2 failed 
+with 1
+utime06     2  TBROK  :  tst_mkfs.c:102: Remaining cases broken
 
-I don't see any problem with the patch, can you send a proper patch
-with git-send-email so we can test it and apply it if it works for the
-other users? Include the mentioned people on CC.
+LTP umount03 Fail Log:
+tst_device.c:262: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:89: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1244: INFO: Timeout per run is 0h 05m 00s
+umount03.c:35: PASS: umount() fails as expected: EPERM (1)
+tst_device.c:383: INFO: umount('mntpoint') failed with EBUSY, try 1...
+tst_device.c:387: INFO: Likely gvfsd-trash is probing newly mounted fs, 
+kill it to speed up tests.
+tst_device.c:383: INFO: umount('mntpoint') failed with EBUSY, try 2...
+tst_device.c:383: INFO: umount('mntpoint') failed with EBUSY, try 3...
+tst_device.c:383: INFO: umount('mntpoint') failed with EBUSY, try 48...
+tst_device.c:383: INFO: umount('mntpoint') failed with EBUSY, try 49...
+tst_device.c:383: INFO: umount('mntpoint') failed with EBUSY, try 50...
+tst_device.c:394: WARN: Failed to umount('mntpoint') after 50 retries
+tst_tmpdir.c:336: WARN: tst_rmdir: rmobj(/scratch/ltp-Lnmh7tbxY6/gx0hJU) 
+failed: remove(/scratch/ltp-Lnmh7tbxY6/gx0hJU/mntpoint) failed; 
+errno=16: EBUSY
 
-Yours,
-Linus Walleij
+Regards,
+
+Vikas
+
+
+Below Commit ID 41525f56e256 Bisected for This fail:
+
+     commit 41525f56e2564c2feff4fb2824823900efb3a39f
+     Author: Christoph Hellwig <hch@lst.de>
+     Date:   Tue Jul 21 10:54:34 2020 +0200
+
+     fs: refactor ksys_umount
+
+     Factor out a path_umount helper that takes a struct path * instead 
+of the
+     actual file name.  This will allow to convert the init and devtmpfs 
+code
+     to properly mount based on a kernel pointer instead of relying on the
+     implicit set_fs(KERNEL_DS) during early init.
+
+     Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+---
+  fs/namespace.c | 40 ++++++++++++++++++----------------------
+  1 file changed, 18 insertions(+), 22 deletions(-)
+
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 6f8234f74bed90..43834b59eff6c3 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -1706,36 +1706,19 @@ static inline bool may_mandlock(void)
+  }
+  #endif
+
+-/*
+- * Now umount can handle mount points as well as block devices.
+- * This is important for filesystems which use unnamed block devices.
+- *
+- * We now support a flag for forced unmount like the other 'big iron'
+- * unixes. Our API is identical to OSF/1 to avoid making a mess of AMD
+- */
+-
+-int ksys_umount(char __user *name, int flags)
++static int path_umount(struct path *path, int flags)
+  {
+-    struct path path;
+      struct mount *mnt;
+      int retval;
+-    int lookup_flags = LOOKUP_MOUNTPOINT;
+
+      if (flags & ~(MNT_FORCE | MNT_DETACH | MNT_EXPIRE | UMOUNT_NOFOLLOW))
+          return -EINVAL;
+-
+      if (!may_mount())
+          return -EPERM;
+
+-    if (!(flags & UMOUNT_NOFOLLOW))
+-        lookup_flags |= LOOKUP_FOLLOW;
+-
+-    retval = user_path_at(AT_FDCWD, name, lookup_flags, &path);
+-    if (retval)
+-        goto out;
+-    mnt = real_mount(path.mnt);
++    mnt = real_mount(path->mnt);
+      retval = -EINVAL;
+-    if (path.dentry != path.mnt->mnt_root)
++    if (path->dentry != path->mnt->mnt_root)
+          goto dput_and_out;
+      if (!check_mnt(mnt))
+          goto dput_and_out;
+@@ -1748,12 +1731,25 @@ int ksys_umount(char __user *name, int flags)
+      retval = do_umount(mnt, flags);
+  dput_and_out:
+      /* we mustn't call path_put() as that would clear mnt_expiry_mark */
+-    dput(path.dentry);
++    dput(path->dentry);
+      mntput_no_expire(mnt);
+-out:
+      return retval;
+  }
+
++int ksys_umount(char __user *name, int flags)
++{
++    int lookup_flags = LOOKUP_MOUNTPOINT;
++    struct path path;
++    int ret;
++
++    if (!(flags & UMOUNT_NOFOLLOW))
++        lookup_flags |= LOOKUP_FOLLOW;
++    ret = user_path_at(AT_FDCWD, name, lookup_flags, &path);
++    if (ret)
++        return ret;
++    return path_umount(&path, flags);
++}
++
+SYSCALL_DEFINE2(umount, char __user *, name, int, flags)
+  {
+
+
