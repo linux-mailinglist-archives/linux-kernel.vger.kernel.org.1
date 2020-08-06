@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E8323E408
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 00:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919A623E40C
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 00:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726248AbgHFWcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 18:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgHFWcB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 18:32:01 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94C1C061574;
-        Thu,  6 Aug 2020 15:32:00 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id f24so13615ejx.6;
-        Thu, 06 Aug 2020 15:32:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cIR5gjbU+Mwah1iH8pBqwUm77E/30L+bDjha2zH7UhE=;
-        b=tQbpfTRkaS+EXC5hy7iflWYywPq7iEufj6aXlB0TgQTb4TQkXon9cRnEm8WosLXENG
-         hdHnfb26i3aqMVgLEjcrgp73pcoJsU8vcW57sHbqIDrCa7UWxIbPy4MnSiJzPQ1NBnjF
-         UqEnuoFt0nmCRpawn+xt8Pu31IdHy7zdY1TOsmivMXYv0Rhl/vEKtE5nTu/31c7rYvHm
-         uugsPVaTXaRJD6HPrLbm0GOm3IH9DjnGJqfNGFo0KAsyex1lXpx4nJ5tC+eAUEiKjfhl
-         LsXVt3QEWWVyAXDwWthkhGRnHT1jdufUAqDPedjmVy3CkqDRAnnqcenv2g67L1CojxtY
-         rXyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cIR5gjbU+Mwah1iH8pBqwUm77E/30L+bDjha2zH7UhE=;
-        b=BpSJrZqgl47Q3qnvblLH0L/dSyJvJ6ODTGgaXI35n3Ltf/U1XOHiXlhuPqKeS+xdAs
-         +IWkaoaAmsKM7535P6sys/uMsmzeYPitIHGoJIHF7LIAPBy6LeqRPfguYWDCLxQyEuVc
-         FWl4krsbc5jzwmtAhWcROXAGlDL3HuYN1+M+I2SJpvcg78L/uSLCv/n4Kfn06I6gcFoB
-         4pM71cEY4SZmeUTPPOgCbDpQC0cBnrW0kU2J1x4WeedaIQ2aeuQbZL4CqEhhtWEDaH89
-         I3teGwrPuVif4HgcdJN6xQQOxCGjHpcA+avylAbKMscSWRF3xT2nOm27TtqBrxKQomNw
-         ywyg==
-X-Gm-Message-State: AOAM531S+qVnNAFxjcNeiVix/NtHU77yDkKMjHwp2DMMaP3zJ5W9XIHr
-        mcsSAlSl0EFgzGNDksM9rm4=
-X-Google-Smtp-Source: ABdhPJyOMmGi6mKgUkgfCV3kgswvOuijmfxLZUafhcyHeXGR/0cNk7pXbcQl3AoLWZikRuoaTya/0Q==
-X-Received: by 2002:a17:906:1f53:: with SMTP id d19mr6408582ejk.327.1596753119566;
-        Thu, 06 Aug 2020 15:31:59 -0700 (PDT)
-Received: from localhost.localdomain (abae50.neoplus.adsl.tpnet.pl. [83.6.168.50])
-        by smtp.googlemail.com with ESMTPSA id k22sm4411316edo.24.2020.08.06.15.31.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 15:31:59 -0700 (PDT)
-From:   Konrad Dybcio <konradybcio@gmail.com>
-To:     amit.pundir@linaro.org
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, john.stultz@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, sumit.semwal@linaro.org,
-        Konrad Dybcio <konradybcio@gmail.com>
-Subject: 
-Date:   Fri,  7 Aug 2020 00:31:34 +0200
-Message-Id: <20200806223134.42748-1-konradybcio@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <CAMi1Hd3Dv_T7kgThLTk2QLtfS7LBvhJ5R=6C3seUYK0GvNV6eA@mail.gmail.com>
-References: <CAMi1Hd3Dv_T7kgThLTk2QLtfS7LBvhJ5R=6C3seUYK0GvNV6eA@mail.gmail.com>
+        id S1726200AbgHFWdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 18:33:46 -0400
+Received: from ozlabs.org ([203.11.71.1]:39085 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726027AbgHFWdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 18:33:46 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BN3Dm29y5z9sPB;
+        Fri,  7 Aug 2020 08:33:44 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1596753224;
+        bh=FsB5kYxkaUFGzjHKfdToVWaIcno3UIYxxqaOUIlfcCI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Wgf24cwa57IK9UcVS8Z4TojTJzkry95gJ9mpg9gneW6Bk34ZuJuJVDcXbruV/3rA5
+         uYiuxLSq0z0lMx0aq4Sz5wbkmJJmep+HZ80HTHJHUOuUNwxZyB2o3y1SJQ1fCq8qZf
+         6jIV5JYa3alpxFJSOu1FzEG8aeHHphBh7LH4S1hdv/IWMK9yyi0yw8JiVBmbLaW3CU
+         krCQtVvF6KTfC5C7q7hsiJVr3ZbiHmlF1t3w4+eKHV2FIbxktlplr/ZqWbfN/0POuB
+         1HxhReCqusyiCzt/6Imwcr7Ircf3TyKvR5f18/QZUDWOjGuKJXRgm07ftci24UKXNC
+         zswADLUmiXvLw==
+Date:   Fri, 7 Aug 2020 08:33:42 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steve French <smfrench@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the cifs tree
+Message-ID: <20200807083342.6977153b@canb.auug.org.au>
+In-Reply-To: <CAH2r5mvGD3ftLDfwrpx61kaJQnPpspupdDHD8NOjnF-q-ByTfg@mail.gmail.com>
+References: <20200806164505.0eada105@canb.auug.org.au>
+        <CAH2r5mvGD3ftLDfwrpx61kaJQnPpspupdDHD8NOjnF-q-ByTfg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/gLZlApbWK/zRikX/hm+fGUR";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject: Re: [PATCH v4] arm64: dts: qcom: Add support for Xiaomi Poco F1 (Beryllium)
+--Sig_/gLZlApbWK/zRikX/hm+fGUR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
->// This removed_region is needed to boot the device
->               // TODO: Find out the user of this reserved memory
->               removed_region: memory@88f00000 {
+Hi Steve,
 
-This region seems to belong to the Trust Zone. When Linux tries to access it, TZ bites and shuts the device down.
+Thanks for fixing this up.
 
-Konrad
+On Thu, 6 Aug 2020 10:31:33 -0500 Steve French <smfrench@gmail.com> wrote:
+>
+> I just fixed the Author tag in this patch to match your email address
+> but seems like the author email address gets mangled when sent through
+> some mailing lists.  Any ideas how to avoid this.
+
+You may need to ask people to add an explicit From: line at the start
+of the body for patches sent via the samba.org mailing lists (since
+they mangle addresses to get around DKIM checks, I assume).
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/gLZlApbWK/zRikX/hm+fGUR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8shUcACgkQAVBC80lX
+0Gw1Gwf/XWj7q5tp9zlh9ivEzpmZpfatsr98aHls5d/vEsSZEnbEjunSiqYbMXL4
+BKr6+Hl9yhN5RjiGFx7VdmZPnq2GxYKH1xCSGakENhJZBFV41vcUgzuxqXuulHYL
+0eFuuESEDv1TpTz7ACCXcRCAo6LP7EyHvBUQLLzf+We0/43y4sttf58tMVgdVg4w
+NXqghR54mkmAhI/8HPS1C6Q7s2bCbb78RrwZ8xMRZRglfFOEtmSdYDZhJYVwun33
+LBB2R9DVIjhKEx0dFPGNeR5X1RmoNl+a8+r3TOHJXPNOc91mQ3Z8BhZnUP5feOtc
+EZ+zLKtcXCk5AbcKA+NdIwsUpnRSmA==
+=HyuJ
+-----END PGP SIGNATURE-----
+
+--Sig_/gLZlApbWK/zRikX/hm+fGUR--
