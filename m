@@ -2,203 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA32F23DFF7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3E623DFEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730263AbgHFRzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728117AbgHFQ2v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729490AbgHFRz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:55:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41868 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728057AbgHFQ2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 Aug 2020 12:28:51 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B1CC002147;
-        Thu,  6 Aug 2020 09:27:29 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id q75so42072431iod.1;
-        Thu, 06 Aug 2020 09:27:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ahDyQRQ8qG4y6mT2u2SznObMHtFgTL4ajSNN22kfjp4=;
-        b=ZdUtrIiJcl7Nfj9Rvxj9ES6+kDWC9CU4i6LSL72ge1TPy0kr03vTTQEUex02PjmL3u
-         OREa/2ZjGChbnkDQPpgqTUPhSe1rrAhOluGC/DnFLngXi6g5zwZGyNbmoRXbsTxxdNht
-         fct1LmaMYieptij4rv7VS/p47/4iviUWpBv0w3z9v1hGJLdxx9bBuWkxNdrfMKei+8pm
-         iADYistAX6rxg2A/SFtqiU3NnJBJPQZHYT6bkzKb13tAG6buip1ZlNxlEI45+l4cQThT
-         FLg479wbNG8iJF15uFtunAfz8Lpk+Y+8WpfyljXhAmTw3Eugcyr9C/nhqPKFGXKkKu3+
-         uUKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ahDyQRQ8qG4y6mT2u2SznObMHtFgTL4ajSNN22kfjp4=;
-        b=ma8hcYstOX/2t0tqA1eUEpt/wM7WuES0R+yB8oMngn2R4NOvRj8tWWOHpoFmijYLiw
-         xS3Taii4Pz0b9HaZD/JJ+8EnR0umErapR17o8M0EkSmIYeL3SjL/2dt773MoUzaxrhF0
-         5jZ43uCuitf0jcPW4MD+fnqiIOxrWY1ZfHORCO7qWk0ZgvAtBVmTA0qMy5+FvOytY0Uq
-         GYW+c9tREOdXogIYjdY+aMC7MOPVHog/lznKoGKBkckiMacjWtcH81Ll4X5HZTD+speg
-         lL+x92WXo20o+k/1nSYrxBW7Vc8Ufj1rlPy9wlXfCCxDD+dInnB2uEgYaLo/rCH3afGg
-         7rVw==
-X-Gm-Message-State: AOAM531rx88ZikX2dn4FJkAgfSFRn5cK3tjihTSdWHmp47Zt67Gv7jx+
-        BUtbpJ+GKKxAQ/6JDgqEGyK1Tks/fHy8vic3Oag=
-X-Google-Smtp-Source: ABdhPJwp0t3SYC5aIhVbXM5FB0FqySqXQ3e9kH+H7ALWmqQU0x59DnrVnktbemL/IXIyov7ZoZdkXqsBZiq+pkoA6oM=
-X-Received: by 2002:a05:6602:2e83:: with SMTP id m3mr11285893iow.38.1596731248551;
- Thu, 06 Aug 2020 09:27:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
- <1595681998-19193-22-git-send-email-alex.shi@linux.alibaba.com>
- <CAKgT0UfpHjBTHvtZz7=WMhZZAunVYuNMpuYBQCiorERb5seFUQ@mail.gmail.com>
- <f34e790f-50e6-112c-622f-d7ab804c6d22@linux.alibaba.com> <CAKgT0UckqbmYJDE3L2Bg1Nr=Y=GT0OBx1GEhaZ14EbRTzd8tiw@mail.gmail.com>
- <a1c6a3a6-f8e3-7bb5-e881-216a4b57ae84@linux.alibaba.com>
-In-Reply-To: <a1c6a3a6-f8e3-7bb5-e881-216a4b57ae84@linux.alibaba.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 6 Aug 2020 09:27:16 -0700
-Message-ID: <CAKgT0UcARhDAVYkJAPe=P5XBfk9fdyGPx0S7rqhiLLhg3s62dQ@mail.gmail.com>
-Subject: Re: [PATCH v17 21/21] mm/lru: revise the comments of lru_lock
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Jann Horn <jannh@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1BF2BAC48;
+        Thu,  6 Aug 2020 16:28:48 +0000 (UTC)
+Date:   Thu, 06 Aug 2020 18:28:30 +0200
+Message-ID: <s5himdvbuxd.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, ckeepax@opensource.cirrus.com
+Subject: Re: [RFC PATCH v2 0/6] ALSA: compress: add support to change codec profile in gapless playback
+In-Reply-To: <20200806043010.GC12965@vkoul-mobl>
+References: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
+        <s5hpn8mqudq.wl-tiwai@suse.de>
+        <20200723130522.GB12965@vkoul-mobl>
+        <s5hlfjaqsk7.wl-tiwai@suse.de>
+        <20200723155612.GC12965@vkoul-mobl>
+        <s5hy2naotsa.wl-tiwai@suse.de>
+        <20200806043010.GC12965@vkoul-mobl>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 5, 2020 at 6:39 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
->
->
->
-> =E5=9C=A8 2020/8/4 =E4=B8=8B=E5=8D=8810:29, Alexander Duyck =E5=86=99=E9=
-=81=93:
-> > On Tue, Aug 4, 2020 at 3:04 AM Alex Shi <alex.shi@linux.alibaba.com> wr=
-ote:
-> >>
-> >>
-> >>
-> >> =E5=9C=A8 2020/8/4 =E4=B8=8A=E5=8D=886:37, Alexander Duyck =E5=86=99=
-=E9=81=93:
-> >>>>
-> >>>>  shrink_inactive_list() also diverts any unevictable pages that it f=
-inds on the
-> >>>> -inactive lists to the appropriate zone's unevictable list.
-> >>>> +inactive lists to the appropriate node's unevictable list.
-> >>>>
-> >>>>  shrink_inactive_list() should only see SHM_LOCK'd pages that became=
- SHM_LOCK'd
-> >>>>  after shrink_active_list() had moved them to the inactive list, or =
-pages mapped
-> >>> Same here.
-> >>
-> >> lruvec is used per memcg per node actually, and it fallback to node if=
- memcg disabled.
-> >> So the comments are still right.
-> >>
-> >> And most of changes just fix from zone->lru_lock to pgdat->lru_lock ch=
-ange.
-> >
-> > Actually in my mind one thing that might work better would be to
-> > explain what the lruvec is and where it resides. Then replace zone
-> > with lruvec since that is really where the unevictable list resides.
-> > Then it would be correct for both the memcg and pgdat case.
->
-> Could you like to revise the doc as your thought?
-> >
-> >>>
-> >>>> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> >>>> index 64ede5f150dc..44738cdb5a55 100644
-> >>>> --- a/include/linux/mm_types.h
-> >>>> +++ b/include/linux/mm_types.h
-> >>>> @@ -78,7 +78,7 @@ struct page {
-> >>>>                 struct {        /* Page cache and anonymous pages */
-> >>>>                         /**
-> >>>>                          * @lru: Pageout list, eg. active_list prote=
-cted by
-> >>>> -                        * pgdat->lru_lock.  Sometimes used as a gen=
-eric list
-> >>>> +                        * lruvec->lru_lock.  Sometimes used as a ge=
-neric list
-> >>>>                          * by the page owner.
-> >>>>                          */
-> >>>>                         struct list_head lru;
-> >>>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> >>>> index 8af956aa13cf..c92289a4e14d 100644
-> >>>> --- a/include/linux/mmzone.h
-> >>>> +++ b/include/linux/mmzone.h
-> >>>> @@ -115,7 +115,7 @@ static inline bool free_area_empty(struct free_a=
-rea *area, int migratetype)
-> >>>>  struct pglist_data;
-> >>>>
-> >>>>  /*
-> >>>> - * zone->lock and the zone lru_lock are two of the hottest locks in=
- the kernel.
-> >>>> + * zone->lock and the lru_lock are two of the hottest locks in the =
-kernel.
-> >>>>   * So add a wild amount of padding here to ensure that they fall in=
-to separate
-> >>>>   * cachelines.  There are very few zone structures in the machine, =
-so space
-> >>>>   * consumption is not a concern here.
-> >>> So I don't believe you are using ZONE_PADDING in any way to try and
-> >>> protect the LRU lock currently. At least you aren't using it in the
-> >>> lruvec. As such it might make sense to just drop the reference to the
-> >>> lru_lock here. That reminds me that we still need to review the
-> >>> placement of the lru_lock and determine if there might be a better
-> >>> placement and/or padding that might improve performance when under
-> >>> heavy stress.
-> >>>
-> >>
-> >> Right, is it the following looks better?
-> >>
-> >> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> >> index ccc76590f823..0ed520954843 100644
-> >> --- a/include/linux/mmzone.h
-> >> +++ b/include/linux/mmzone.h
-> >> @@ -113,8 +113,7 @@ static inline bool free_area_empty(struct free_are=
-a *area, int migratetype)
-> >>  struct pglist_data;
-> >>
-> >>  /*
-> >> - * zone->lock and the lru_lock are two of the hottest locks in the ke=
-rnel.
-> >> - * So add a wild amount of padding here to ensure that they fall into=
- separate
-> >> + * Add a wild amount of padding here to ensure datas fall into separa=
-te
-> >>   * cachelines.  There are very few zone structures in the machine, so=
- space
-> >>   * consumption is not a concern here.
-> >>   */
-> >>
-> >> Thanks!
-> >> Alex
-> >
-> > I would maybe tweak it to make sure it is clear that we are using this
-> > to pad out items that are likely to cause cache thrash such as various
-> > hot spinocks and such.
-> >
->
-> I appreciate if you like to change the doc better. :)
+On Thu, 06 Aug 2020 13:08:13 +0200,
+Vinod Koul wrote:
+> 
+> On 23-07-20, 22:33, Takashi Iwai wrote:
+> > On Thu, 23 Jul 2020 17:56:12 +0200,
+> > Vinod Koul wrote:
+> > > 
+> > > On 23-07-20, 15:17, Takashi Iwai wrote:
+> > > > On Thu, 23 Jul 2020 15:05:22 +0200,
+> > > > Vinod Koul wrote:
+> > > > > 
+> > > > > On 23-07-20, 14:38, Takashi Iwai wrote:
+> > > > > > On Tue, 21 Jul 2020 19:00:01 +0200,
+> > > > > > Srinivas Kandagatla wrote:
+> > > > > > > 
+> > > > > > > For gapless playback it is possible that each track can have different
+> > > > > > > codec profile with same decoder, for example we have WMA album,
+> > > > > > > we may have different tracks as WMA v9, WMA v10 and so on
+> > > > > > > Or if DSP's like QDSP have abililty to switch decoders on single stream
+> > > > > > > for each track, then this call could be used to set new codec parameters.
+> > > > > > > 
+> > > > > > > Existing code does not allow to change this profile while doing gapless
+> > > > > > > playback.
+> > > > > > > 
+> > > > > > > This patchset adds new SNDRV_COMPRESS_SET_CODEC_PARAMS IOCTL along with
+> > > > > > > flags in capablity structure to allow userspace to set this new
+> > > > > > > parameters required which switching codec profile, either for gapless
+> > > > > > > or cross fade usecase.
+> > > > > > 
+> > > > > > One idea that came up at the previous audio conference regarding this
+> > > > > > implementation was to just allow SET_PARAMS during the stream is
+> > > > > > running (only if the driver sets the capability) instead of
+> > > > > > introducing yet a new ioctl and an ops.
+> > > > > > Would it make sense?
+> > > > > 
+> > > > > That does sound good but only issue would be that we need to somehow
+> > > > > mark/document that buffer info is useless and would be discarded, how do
+> > > > > we do that?
+> > > > 
+> > > > Yes, the buffer and no_wake_mode can be ignored in the gapless
+> > > > re-setup.  Is your concern only about the documentation?  Or something
+> > > > else needs to be changed significantly?  It's a new scheme in anyway,
+> > > > so the documentation update is required...
+> > > 
+> > > My concern is potential abuse of API down the road, if you feel it is
+> > > okay, I am okay with the proposal
+> > 
+> > If this can be potentially dangerous, it shouldn't be used, of course.
+> > What kind of scenario could it be?
+> 
+> I can think of users trying to invoke this incorrectly, right now we
+> would reject this.
+> 
+> Maybe, we can add checks like, if next_track is set and then copy the
+> codec params only to prevent any misuse.
+> 
+> Do you think that would be okay?
 
-Give me a day or so. I will submit a follow-on patch with some cleanup
-for the comments.
+Yes, it's the same condition check that was proposed for the new
+ioctl.
 
-Thanks.
 
-- Alex
+Takashi
