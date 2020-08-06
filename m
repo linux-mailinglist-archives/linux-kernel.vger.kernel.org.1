@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4DB23DF7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E0423DFFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730503AbgHFRsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728915AbgHFQf3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:35:29 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A6DC002171
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:12:21 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id b14so43721572qkn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:12:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LNB4XrMfx73bJTHAO2AhrZUygv9EzgmvGK/ZVIbyqWk=;
-        b=rhr3f/+dktLBEgzw+MJRXvW/ZFTLTiX0yv0u8nO/IkwCM3Maf5waT00SMNZd4oAu4W
-         0hmRWusyqbiGWLyRx/cBtbApYYEpVomBuE/y02SCH7N9l1b5J7xVRMkd4AnYcBYbl7VS
-         BHrBPhGtyIncF9DKGqFV51JW0AXJOjyLr3QiNArI+GcZtIvjbQtFiJS2KlhHPtQdNlOI
-         heb1pfPvIb0gBuCMmJoHzHH6FGdZUXJmr04FlOkM7fNGkytatxwYr7C+j5HriVYm545k
-         8EscbPVENUaVNmBG7oAY2M/2lgrF6muj0o7gZOEHbojGaZQis9TCaVhxkxpvLBYaR5fm
-         +p+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=LNB4XrMfx73bJTHAO2AhrZUygv9EzgmvGK/ZVIbyqWk=;
-        b=CoFZTOnvErKK7vWPAvCCrlAH4392n4DLeqFe//KyoWbYEvlY++XpQHk+2159eIB6Ad
-         ptKp0E6AUlgb7kCgJtzsvk2RrIZMYg9goeTMRUyppWq5DixAINewSi6pyldGmt9J9wvP
-         IXPSzeC6ghWu0ZqyNSBQm9Ps7yJxZ1kdhT2ZfdGqdihPOzRzc5fCvuJN0TzcJVbrhksa
-         pcK7mzXv4gDrBhxINW4PmdZOK0rPp9p7mmOL7/dScFNjQGAgQX49VgAOzjc7aDtEk681
-         Ucs/CMR9KKp6lXthxISdwCogNATP/1nyAisEzVr+I/IAzqRN2NX5M9QNRYvWS2XNhVnn
-         L8nQ==
-X-Gm-Message-State: AOAM532rdE8QisiAuUmbZk2q2S0E9/YigLfslYFgLmAbHlHKtXo3OvbT
-        U/vBY6XfKCCLLchOtymFKiY=
-X-Google-Smtp-Source: ABdhPJw04QM3xFHJS5pDtBRTiR9Yg7aRmbMABPh0dZttNj1MZn0oKCHd2GgnvHncOWyKNqP19tH0DA==
-X-Received: by 2002:a37:a848:: with SMTP id r69mr8799325qke.58.1596730340541;
-        Thu, 06 Aug 2020 09:12:20 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id l11sm5121757qti.59.2020.08.06.09.12.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 09:12:19 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Thu, 6 Aug 2020 12:12:17 -0400
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Fangrui Song <maskray@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/4] x86/boot: Check that there are no runtime
- relocations
-Message-ID: <20200806161217.GA682406@rani.riverdale.lan>
-References: <20200524212816.243139-1-nivedita@alum.mit.edu>
- <20200525225918.1624470-5-nivedita@alum.mit.edu>
- <CAMj1kXHc4o91VkaChoyVzr4w-HOaashMPtkCKLaszMGCxhR_2A@mail.gmail.com>
- <20200526151623.GB2190602@rani.riverdale.lan>
- <20200526171340.pdbautbix5ygdvgp@google.com>
- <20200526191411.GA2380966@rani.riverdale.lan>
- <20200806111953.GA1630647@smile.fi.intel.com>
+        id S1727850AbgHFR4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:56:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725927AbgHFQRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:17:23 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60833206C3;
+        Thu,  6 Aug 2020 16:16:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596730581;
+        bh=Go2sWZfxTTzTPYGn6XoCJvsRXRnN2EaJUECx0AoDb7A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wLqr1QNn3UVaZB4dJw58Fzn6f2R9YD+QKzUF/5/drVhZa8T/Y8WslRwpZNZdUKsPO
+         s/lgGMSEo5Als7HXZZn4/gdR4PiUdvdcVkQIBin6HT7NvdwPOPbwcvPByzN4vTcAc3
+         EjLhMSIM2VzPJKC4VF+W4jAwH1BwzJQvLsOj2Ofk=
+Date:   Thu, 6 Aug 2020 17:15:57 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator: pwm: Do not print error on probe deferral
+Message-ID: <20200806161557.GD6442@sirena.org.uk>
+References: <20200806155515.3936329-1-thierry.reding@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EY/WZ/HvNxOox07X"
 Content-Disposition: inline
-In-Reply-To: <20200806111953.GA1630647@smile.fi.intel.com>
+In-Reply-To: <20200806155515.3936329-1-thierry.reding@gmail.com>
+X-Cookie: Hedonist for hire... no job too easy!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 02:19:53PM +0300, Andy Shevchenko wrote:
-> On Tue, May 26, 2020 at 03:14:11PM -0400, Arvind Sankar wrote:
-> 
-> Side question: are you going to submit a v3 of this?
-> Or i.o.w. what is the status of this series?
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
 
-The latest is v6 [0], which has some minor changes over this version and
-is rebased on 5.8-rc7.
+--EY/WZ/HvNxOox07X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I will send out another rebase once the merge window closes.
+On Thu, Aug 06, 2020 at 05:55:15PM +0200, Thierry Reding wrote:
 
-Thanks.
+>  	if (IS_ERR(drvdata->enb_gpio)) {
+>  		ret = PTR_ERR(drvdata->enb_gpio);
+> -		dev_err(&pdev->dev, "Failed to get enable GPIO: %d\n", ret);
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(&pdev->dev, "Failed to get enable GPIO: %d\n", ret);
 
-[0] https://lore.kernel.org/lkml/20200731202738.2577854-1-nivedita@alum.mit.edu/
+This will not provide any diagnostics if there's an issue with probe
+deferral it'll be hard for people to figure out what's going on.  At
+most lower the severity to dev_dbg() but don't totally remove the
+logging.
+
+--EY/WZ/HvNxOox07X
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8sLL0ACgkQJNaLcl1U
+h9A+ZQf+JLu+ogtTHXQeHNP5UIbUOInHJJyLt6Pw17nALqc/IYVP6qs1dR+rJ0Pg
+LG2Qhmo2tb1cMQAGQXVrdjHgCECdZ3vh+F39ZICxm8FQX/NCaQ8bTQeQ8sdf+qX/
+fjpUXQ+FCRMLX7m40nMqygI6RAj+32/HVEvJBTL6V90Pv417kyWz3exmhm7hPR4c
+sNxfROheDoBFwGoe3sGYB4AhUTCGYHhifHS3Ue/oBfAz/sHcfJurVK02+R5UC/zU
+ZZLMmuMJtJf3CcTa0dI0fTIlijYIl0Lt/IZ2bLJjXyblhSe+tSmaH0+yrM8PNjNz
+GRZOnZu99eSBQAFKFLzhTaTg1KkH8A==
+=R5xO
+-----END PGP SIGNATURE-----
+
+--EY/WZ/HvNxOox07X--
