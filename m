@@ -2,295 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11BA23DCA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE02323DC24
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729655AbgHFQy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:54:56 -0400
-Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:41298 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729553AbgHFQuP (ORCPT
+        id S1729376AbgHFQqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729247AbgHFQpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:50:15 -0400
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
-        by mx0b-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 076BPHEA021976;
-        Thu, 6 Aug 2020 04:34:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=proofpoint;
- bh=lpu3R9pnJEeYMPfZkRDd6NNNOjlZmLlWX81096+hIF0=;
- b=tOwdgn1xj8iQeTTNkWlbqv/Z7e5ov9tvfiACiFqqopM4nQrVYB+LJCaA0vqzGpBsyl4i
- ECDKkaYuiq4CC1riaV41jEDfvhF4zFp0JMI4TchpIAIhcaN/9ZJ1F3ZXTAGC15PDVQa8
- /VTNEoWgcrSutU3nXHrKNafweVcFrpH+XTrcD2Qjl5eyAoANUpr0cbkBFGlp+W2OT9p7
- HfH0INjkF1/OjxH4dNDQTiCn3JnaW3A4+OXCK5Um+5zad1jvHRcNxYMSSvqtv/fumFWx
- L6D0HupBOseuNMYBexEJ2xwy+oKU0dqcgDSqfcAMTH6i2Obilvgk9dEotgT8u7H2hYNT Rw== 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
-        by mx0b-0014ca01.pphosted.com with ESMTP id 32n8gy1uv9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 04:34:52 -0700
+        Thu, 6 Aug 2020 12:45:44 -0400
+Received: from EUR03-AM5-obe.outbound.protection.outlook.com (mail-am5eur03on0609.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe08::609])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63FE6C002160;
+        Thu,  6 Aug 2020 09:03:32 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B6KIIb228bj11R77OeOpZU3wXab7L/Deq63qL90YrW8r1snK5Fir0jb1vhcZbGwVfZ1cBJ/C8dd94gXAlax5fLWKe1qv2xbczaFr+5VR/GpEd3LvNXOtkcSZZsaCvVIVOJ37g2RMZT5YSGdYqnRmh+QaHqOdzM5RNLX8TCXUYeYtBF/paurW8ZCg/4lX5xJ0a1uRQTseEJtmR/t6mui88a3jcNyphA0P/K5+7aeE09rS72oaJmLqRGtOHY0ihcKIvFPjrryiLUexaT7sZv1QknhX0JSHq+y9sUFs2aguvZSmiI9Sy5fG+MHyJsIJekhQN/T7sPgPu+dpeN2u99Zn6g==
+ b=DOzo3G5Nutbs/ulohseR341BK8C2yMJ6sgmF1xc7xG3jK+rmMTMUVMdhCYYuYMQ4wBzHjY1yQyvq8VZO541qQBPzdRnszaC/8L9uflQKQz8ccpriYqfnP4toCyBWG7qmjMXvpZRHyR9xh4dahcaZee0SEP/JxCVML7rjxmT6u2uTAlrTE0I61G1pvepXiQAUn/HBOmf5ZizY1k8bdsbgM6l+NQuIT7xzk54JRCQQgWDtBWwaEq2kEC0As7zBWoTmq0aXpZEb3AuXGTZv0vZ7ZsvWUUbUkggR6zYkhDD9SccjMAIoi0g4Qw6kwHU+V+WeZHayx7BNaqJoQ6unCtibkA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lpu3R9pnJEeYMPfZkRDd6NNNOjlZmLlWX81096+hIF0=;
- b=fcVnIMqkk2K8LYcjX25IVMJzZzoC6qYP0PlOnM65d4ceW3P+ZsDPOeQMJqns5I9OBrnqvWYAiInK4LJVEW1DfiiL5LqdVdtga4kq6VtV9PgtaUymtG6Yuy+RVt9yggO+/XXoJSCOn9gAR+M7upGHaTF/H1lrjtKRjKh8m87YMln1R+EjE7neWFxCBO8gSWY+8nKVxpKo+Aeoc8XMJ9H4b0PLgSaoKUOAQ+0055fyPBMkF8xFitlv79haqHFFEmy3j1FzGa9kZBooiuD/m8Gny7GVi3kyEFyLSc9D49Q17xyq9W64xqwZUg3HYfVkPLFaTlOpG5N2thi/7BI8B8dicQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 64.207.220.244) smtp.rcpttodomain=samsung.com smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
+ bh=b+k2D6/qcFMdpyoRIaVnXgzL/A/qtdVYBZNVBR/cfX0=;
+ b=JpF0n5G+BMsTu2izhS0fRHu/brIN/Q3jujPzwPCLs9dx0p5nsYq6GzQsFLPfmXcORvHPjLFjHB4+vtWOJYIDNAk1Ci7//gvwr/NqyILO9gzpQOdB/Fx5jJ/di9isAoSeYdgePGBXfmYTjhaHYp0RJsZjF5F/2hC2Mnmlrw0QTxj8Peki9tpbCdmBiGjzM20B6uQbJHk4eKfFFKjRb8lqYgfEcwbE6eo4e+0DgDDN/2CJCwP4pyB/4EYi/djOIzSRO0IdhpVc6QgXQ2TmoxLzYidN04FSjSFcvWVp4dmMM4oO1xdHbKe/LSX9+SLzy5w1qTLYtD1Y+uOYA4dHI5jW7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lpu3R9pnJEeYMPfZkRDd6NNNOjlZmLlWX81096+hIF0=;
- b=MUPEndLzT8+BVNZStgGY/AiFobRpIJ4wHQ6BfmpJkM6uxfR7laTDmDcCEjRsKMLNv5mYNH1vuGSLGWGZ/Aa4ouNmI9u9b5YzIXa2c17jEpTIJcnxNN80rEIDABIQqkGWArbIfdizPuW+oBn77tFjP9hMd+/9oS9x7HQgrplJiFA=
-Received: from MWHPR21CA0040.namprd21.prod.outlook.com (2603:10b6:300:129::26)
- by BN7PR07MB4835.namprd07.prod.outlook.com (2603:10b6:406:f0::15) with
+ bh=b+k2D6/qcFMdpyoRIaVnXgzL/A/qtdVYBZNVBR/cfX0=;
+ b=bh3odnxA3YQGg4aZPwB7UQC1X2TxnC6rXCjEoAGLUnAQdXGNKM6ioeRKJewIF9Ge1i+sdeep7fEllaPtYxmWH7rKQKunKHBJ/ycUcfQuoCEXiewh0qCtFEt6YW3GKQ7h+RW030kl3N+aeL8bBNXlrRqMbI6GmIL4Mn51O8o5l0w=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VE1PR04MB6608.eurprd04.prod.outlook.com (2603:10a6:803:125::12)
+ by VI1PR04MB3022.eurprd04.prod.outlook.com (2603:10a6:802:9::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.21; Thu, 6 Aug
- 2020 11:34:48 +0000
-Received: from MW2NAM12FT039.eop-nam12.prod.protection.outlook.com
- (2603:10b6:300:129:cafe::14) by MWHPR21CA0040.outlook.office365.com
- (2603:10b6:300:129::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.0 via Frontend
- Transport; Thu, 6 Aug 2020 11:34:48 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 64.207.220.244)
- smtp.mailfrom=cadence.com; samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 64.207.220.244 as permitted sender) receiver=protection.outlook.com;
- client-ip=64.207.220.244; helo=wcmailrelayl01.cadence.com;
-Received: from wcmailrelayl01.cadence.com (64.207.220.244) by
- MW2NAM12FT039.mail.protection.outlook.com (10.13.181.39) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3261.10 via Frontend Transport; Thu, 6 Aug 2020 11:34:46 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by wcmailrelayl01.cadence.com (8.14.7/8.14.4) with ESMTP id 076BYZWm083124
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=OK);
-        Thu, 6 Aug 2020 04:34:37 -0700
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Thu, 6 Aug 2020 13:34:35 +0200
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Thu, 6 Aug 2020 13:34:35 +0200
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 076BYZLq008204;
-        Thu, 6 Aug 2020 13:34:35 +0200
-Received: (from sjakhade@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 076BYZd7008203;
-        Thu, 6 Aug 2020 13:34:35 +0200
-From:   Swapnil Jakhade <sjakhade@cadence.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <Laurent.pinchart@ideasonboard.com>, <robh+dt@kernel.org>,
-        <a.hajda@samsung.com>, <narmstrong@baylibre.com>,
-        <jonas@kwiboo.se>, <jernej.skrabec@siol.net>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mparab@cadence.com>, <sjakhade@cadence.com>,
-        <yamonkar@cadence.com>, <tomi.valkeinen@ti.com>, <jsarha@ti.com>,
-        <nsekhar@ti.com>, <praneeth@ti.com>
-Subject: [PATCH v8 1/3] dt-bindings: drm/bridge: Document Cadence MHDP bridge bindings
-Date:   Thu, 6 Aug 2020 13:34:30 +0200
-Message-ID: <1596713672-8146-2-git-send-email-sjakhade@cadence.com>
-X-Mailer: git-send-email 2.4.5
-In-Reply-To: <1596713672-8146-1-git-send-email-sjakhade@cadence.com>
-References: <1596713672-8146-1-git-send-email-sjakhade@cadence.com>
-MIME-Version: 1.0
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.18; Thu, 6 Aug
+ 2020 11:41:44 +0000
+Received: from VE1PR04MB6608.eurprd04.prod.outlook.com
+ ([fe80::a856:c104:11c7:258d]) by VE1PR04MB6608.eurprd04.prod.outlook.com
+ ([fe80::a856:c104:11c7:258d%6]) with mapi id 15.20.3261.019; Thu, 6 Aug 2020
+ 11:41:44 +0000
+From:   Andrei Botila <andrei.botila@oss.nxp.com>
+To:     Horia Geanta <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/9] crypto: caam - xts(aes) updates
+Date:   Thu,  6 Aug 2020 14:41:18 +0300
+Message-Id: <20200806114127.8650-1-andrei.botila@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
 Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: AM0PR06CA0101.eurprd06.prod.outlook.com
+ (2603:10a6:208:fa::42) To VE1PR04MB6608.eurprd04.prod.outlook.com
+ (2603:10a6:803:125::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv15007.swis.ro-buh01.nxp.com (83.217.231.2) by AM0PR06CA0101.eurprd06.prod.outlook.com (2603:10a6:208:fa::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.18 via Frontend Transport; Thu, 6 Aug 2020 11:41:43 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [83.217.231.2]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bd2c18fb-e488-464f-70c8-08d839fcb8d4
-X-MS-TrafficTypeDiagnostic: BN7PR07MB4835:
-X-Microsoft-Antispam-PRVS: <BN7PR07MB4835FC8D026B146DE90B33EDC5480@BN7PR07MB4835.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 5de1b927-6578-4be9-b611-08d839fdb1b4
+X-MS-TrafficTypeDiagnostic: VI1PR04MB3022:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB3022DABEED586C69715F7C2EB4480@VI1PR04MB3022.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VE7roeJIKnK+Jfd7Ulve5dZTvD8CxfqyBVlj/HnwVk62aPU6H9hcvuZGifUCPFU4ImF/3gyrcbi/AyYM0n4P97MDopg20ZKR5pzWJf7rwA1VwNogV6uTy6OnychY6ZfZrnzryQhrBc9TA6i3EqhQDSBPnb1GkE+EFjln3Py6NMjaSQ5DxXs4KJ7EdypN+qNX5KQpr91jdsLm/vDUw2EQZ37nA4mFsk06La3YoNxghnJw3JWnwNhTpSZ3nIXbQvu+GZljRRqpsqKJeLL92U8o0jgwpQW3zKkk4a9YyuNDUO6kBzeqtNBkrzRyUoAVgsHf06C7djiC8SNipfY2N7b1puZgTz+tBOcYiQSnwRlGg8sk3cYMRG/cEdDHUzbZoNpt++PZtlY2M69kxtW980Ol/3BqdOBlARjnJNvivqur+Iu4Riqv73IsVRkBi9Mlx4LF4Qnoc7vgbSQ3LO6n/nmYIvhFh+rGcU+9/hkrWC51fSjmjYLyAWcDeGMTgW12slciaYO2oL5sY5SHnYUKhMldEvvwIL0SznhuQCFvMrpGogyDJZyu86Yg9yulHqUW/zEUr7efnR6kCCASagt0+L/W6g==
-X-Forefront-Antispam-Report: CIP:64.207.220.244;CTRY:CN;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:wcmailrelayl01.cadence.com;PTR:ErrorRetry;CAT:NONE;SFTY:;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(36092001)(46966005)(8936002)(8676002)(7416002)(47076004)(4326008)(82740400003)(70586007)(478600001)(36756003)(186003)(81166007)(70206006)(26005)(83380400001)(82310400002)(356005)(86362001)(6666004)(36906005)(2616005)(336012)(426003)(2906002)(316002)(54906003)(42186006)(110136005)(5660300002)(921003)(21314003)(2101003)(83996005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2020 11:34:46.7797
+X-Microsoft-Antispam-Message-Info: x4mogo3Ly+MWSs/3HtGylV5Xfl0dnt7+7oI4NBUxfXOtJ0yKcn/7biXVofwzqRNyWEFRVF40mWQl9x60XXMYCypXqIBfTedrG3nqBrlze/dCN09oYGZqMj0+iUrEuMOH3yf3J2khFuCcOHCoW0+qLZLTSiIiYVe8Fnbrc5yo6BUc+wvtJTlHpslbMnbb1vXVvQNiI/rxOR9v95IGu2L/YncGFbJzY4K6/iBV/e8A/YUL7UORRsYpuAft0i+7Kw4CRQUYiZTsp1soaYS/hHK7wKRK5EQPGYZf0nZuFWVjWMwvL/M1c6llgg/QL+x4COzd
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6608.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(366004)(346002)(396003)(376002)(5660300002)(1076003)(478600001)(6512007)(2906002)(83380400001)(16526019)(6486002)(956004)(26005)(186003)(44832011)(2616005)(6506007)(86362001)(8676002)(316002)(66476007)(66946007)(66556008)(8936002)(4326008)(52116002)(6666004)(110136005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: pW5j9aRWBEQPKLeDDlFVtPBqe64zKOmEXh1mZ7yUzvwn0fED/G4t7NNZoVDWAabH96Y5lIdM2aMWfFSWRMxH6xKqXcfQgXi/46RkKcUbUo4qZdXb0S0KQ1mrMIJitRduTGyfbYpX7UxVf7QwfeUVtE9VKNB4OrSDhrPYOdTVFJMWM8JXk8oklLjc+fub8dKjRlFRIoQJiV0vcWQ14JTIEnKm5X2VS0XB/ua7ALIduOlzAoQ3A7BiRS9Ee1pvvD7Wh8Zl9of8oPZny2ub5q3j1ox5mGrNKEX8fxd9tvTBFRSOCjkv3LhaxBnNATjZVkleb2mTKAo7J6WekAPA240uNJe+krDgA+PGgrmlrDFV4ELdUDj8hUy/zaMQxlYh3wgt+dC0v+szAEBwN7BPncph5ltjN75M7QZpiPaRjehUHeh5QLeIkmrGKQ0rCJG6g8IkzafbAMxs0THfUrdEgwBsC65VnkQm/qvnR8p1Se4OqvXIxFc7NewqphzsQTkDFXSzAtus/D1JoH263DYkhnmTBJQgcN74e80Dbo3WTdZokp3FWGKhXqIFcnCujNYkHIBzYbIISgHp6VubxbZq54nBUAFcz9+fgT7YNrnn0BP9jj5Y7u2g8AsnGejL9+YtU9yq2lum5Qh39sjOXveBacxDKQ==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5de1b927-6578-4be9-b611-08d839fdb1b4
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6608.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2020 11:41:44.5933
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd2c18fb-e488-464f-70c8-08d839fcb8d4
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[64.207.220.244];Helo=[wcmailrelayl01.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: MW2NAM12FT039.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR07MB4835
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-06_06:2020-08-06,2020-08-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 malwarescore=0
- phishscore=0 mlxlogscore=999 impostorscore=0 priorityscore=1501
- bulkscore=0 suspectscore=0 spamscore=0 mlxscore=0 clxscore=1015
- adultscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2008060083
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kB1MkpFYOQSRlR87Bux+pmuK5cQld9+EqPHZ+8SsTH1e7kTR2VjqjkmTwkdCP0yl38lTO7UuyGMnyOZrfOYGxA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3022
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuti Amonkar <yamonkar@cadence.com>
+From: Andrei Botila <andrei.botila@nxp.com>
 
-Document the bindings used for the Cadence MHDP DPI/DP bridge in
-yaml format.
+This patch series fixes some problems in CAAM's implementation of xts(aes):
+ - CAAM until Era 9 can't process XTS with 16B IV
+ - CAAM can only process in hardware XTS key lengths of 16B and 32B
+ - These hardware limitations are resolved through a fallback
 
-Signed-off-by: Yuti Amonkar <yamonkar@cadence.com>
-Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
----
- .../bindings/display/bridge/cdns,mhdp.yaml    | 139 ++++++++++++++++++
- 1 file changed, 139 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/bridge/cdns,mhdp.yaml
+This patch series also adds a new feature in CAAM's xts(aes):
+ - CAAM is now able to process XTS with 16B IV in HW
 
-diff --git a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp.yaml b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp.yaml
-new file mode 100644
-index 000000000000..dabccefe0983
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp.yaml
-@@ -0,0 +1,139 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/display/bridge/cdns,mhdp.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Cadence MHDP bridge
-+
-+maintainers:
-+  - Swapnil Jakhade <sjakhade@cadence.com>
-+  - Yuti Amonkar <yamonkar@cadence.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - cdns,mhdp8546
-+      - ti,j721e-mhdp8546
-+
-+  reg:
-+    minItems: 1
-+    maxItems: 2
-+    items:
-+      - description:
-+          Register block of mhdptx apb registers up to PHY mapped area (AUX_CONFIG_P).
-+          The AUX and PMA registers are not part of this range, they are instead
-+          included in the associated PHY.
-+      - description:
-+          Register block for DSS_EDP0_INTG_CFG_VP registers in case of TI J7 SoCs.
-+
-+  reg-names:
-+    minItems: 1
-+    maxItems: 2
-+    items:
-+      - const: mhdptx
-+      - const: j721e-intg
-+
-+  clocks:
-+    maxItems: 1
-+    description:
-+      DP bridge clock, used by the IP to know how to translate a number of
-+      clock cycles into a time (which is used to comply with DP standard timings
-+      and delays).
-+
-+  phys:
-+    maxItems: 1
-+    description:
-+      phandle to the DisplayPort PHY.
-+
-+  ports:
-+    type: object
-+    description:
-+      Ports as described in Documentation/devicetree/bindings/graph.txt.
-+
-+    properties:
-+      '#address-cells':
-+        const: 1
-+
-+      '#size-cells':
-+        const: 0
-+
-+      port@0:
-+        type: object
-+        description:
-+          Input port representing the DP bridge input.
-+
-+      port@1:
-+        type: object
-+        description:
-+          Output port representing the DP bridge output.
-+
-+    required:
-+      - port@0
-+      - port@1
-+      - '#address-cells'
-+      - '#size-cells'
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: ti,j721e-mhdp8546
-+    then:
-+      properties:
-+        reg:
-+          minItems: 2
-+        reg-names:
-+          minItems: 2
-+    else:
-+      properties:
-+        reg:
-+          maxItems: 1
-+        reg-names:
-+          maxItems: 1
-+
-+required:
-+  - compatible
-+  - clocks
-+  - reg
-+  - reg-names
-+  - phys
-+  - ports
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    bus {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        mhdp: dp-bridge@f0fb000000 {
-+            compatible = "cdns,mhdp8546";
-+            reg = <0xf0 0xfb000000 0x0 0x1000000>;
-+            reg-names = "mhdptx";
-+            clocks = <&mhdp_clock>;
-+            phys = <&dp_phy>;
-+
-+            ports {
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+
-+                port@0 {
-+                    reg = <0>;
-+                    dp_bridge_input: endpoint {
-+                        remote-endpoint = <&xxx_dpi_output>;
-+                    };
-+                };
-+
-+                port@1 {
-+                    reg = <1>;
-+                    dp_bridge_output: endpoint {
-+                        remote-endpoint = <&xxx_dp_connector_input>;
-+                    };
-+                };
-+            };
-+        };
-+    };
-+...
+Andrei Botila (9):
+  crypto: caam/jr - add fallback for XTS with more than 8B IV
+  crypto: caam/qi - add fallback for XTS with more than 8B IV
+  crypto: caam/qi2 - add fallback for XTS with more than 8B IV
+  crypto: caam/jr - add support for more XTS key lengths
+  crypto: caam/qi - add support for more XTS key lengths
+  crypto: caam/qi2 - add support for more XTS key lengths
+  crypto: caam/jr - add support for XTS with 16B IV
+  crypto: caam/qi - add support for XTS with 16B IV
+  crypto: caam/qi2 - add support for XTS with 16B IV
+
+ drivers/crypto/caam/caamalg.c      | 81 +++++++++++++++++++++++--
+ drivers/crypto/caam/caamalg_desc.c | 27 +++++----
+ drivers/crypto/caam/caamalg_qi.c   | 86 ++++++++++++++++++++++++---
+ drivers/crypto/caam/caamalg_qi2.c  | 95 ++++++++++++++++++++++++++++--
+ drivers/crypto/caam/caamalg_qi2.h  |  2 +
+ 5 files changed, 261 insertions(+), 30 deletions(-)
+
 -- 
-2.26.1
+2.17.1
 
