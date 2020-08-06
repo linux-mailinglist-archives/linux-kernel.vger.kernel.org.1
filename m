@@ -2,71 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B1C23D871
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869C123D86B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729096AbgHFJTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58050 "EHLO
+        id S1729048AbgHFJRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729021AbgHFJQ0 (ORCPT
+        with ESMTP id S1728989AbgHFJQ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:16:26 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9823C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 02:16:11 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id v9so16454939ljk.6
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 02:16:10 -0700 (PDT)
+        Thu, 6 Aug 2020 05:16:29 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA57EC061756
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 02:16:28 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id q75so40714285iod.1
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 02:16:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=O6y/1nusRg/opQLxoCjDaYb+pDRSmXrkyxeECnISubo=;
-        b=PtaSV2ove3y2GjUl3zgbytQS4V18ekpX8JerMyv1Z5IU2wpobpSaREpEI0uNGytpuw
-         Ms9/blsTo/qxS/fbnxhBYbah/5/clC0JT7vqsqanT3zqdxebPUvy8MZwl5w5L1JnA6Di
-         dFg1iv4GZu+akQwYkN0ML4T5Rz6RLOMKwR1oGRx8npHtNFtlXyBPYc5lD9/XAUIMKLK5
-         qchSdYBKlZ3ij7VZHHTh6kwLItkr4sIEUSITeu/YzRjAiw32gLYrb4Evl7ftXywUkXWQ
-         vpBCx6LPuz7wNUprAXH+NFNIoKSF8vcDzIgxHtyw8H/4OWCmiBqDCCNNztIvSx4Exugj
-         YnXA==
+        bh=AzEHWOi3xIMl9Jy+/KlKWcDEquQYLPv874A/EyE4ZHI=;
+        b=PZPcVjrc/xHooM7c3HriRaCxncN6sKojP1capBrxYWQE9YtLmSqoBhpyxQeWMZ1aGp
+         9XceRxbsGG5YsKO1WumACBcwe0h3mELGAo7TkestVhfXXpdUeJmRW62vxEnrB9IfLJbc
+         mWDEhjm1vTCfUoxfFoG6BDIca+xEnM6YlURvE+H2ZtCR9eBHgAsA38t9T11BzqeBCcu/
+         /B168zINbMzuQXM21xoln5ZhvhIWgZX9qhG3u67tCuTleB7PNvubBq2PAkBqzFrp8tv9
+         eGr32xvOJu/lCot4WYZxVXG6k/CXHmk5+QTCmhiRN7Z7ToZFQgMBNRWcPjGiXyFkcdQY
+         eNhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=O6y/1nusRg/opQLxoCjDaYb+pDRSmXrkyxeECnISubo=;
-        b=gM5J7YCg69g1UqjEwtmiTp6gvWvY7f8U6E9ISTixnoruvL2HcT8kWSLF25q9b7q7j5
-         mpTvSiX9OCOB2gb9JcSm5LkOgiJAmAh5yfonTFEY2oue2Qxiqtb1NivuGldFtgqTHtKV
-         bXV7cfCwWZAwuSuydMUZrME19rAC3sPQpG0eqKeejYBbkQN4ZW1rrARwOvOR4HG/7eA2
-         uHb0S13OH3PoVaZJPTK1sA1huuBnef8+4MWIW/dYdPr19t+wxLkukdPJex+5+6AmHDKq
-         Ll5/2LHEVQUdPAWPlTOKcvrwo4YgWnf+GW5rYPt/GSeae6iVCtUljp4cyvr0NKwLLatC
-         3RRQ==
-X-Gm-Message-State: AOAM533QEXmKpFOdZiQd81dMF+0tvEKnbgypVc4oLBCPACfc9yX4tuJn
-        lAU1aPE7gveBLQrH3jC4j+oYanaqLXsyI9FM10zWTQ==
-X-Google-Smtp-Source: ABdhPJzBTOaMiojdnzKyHqLEImTKlT/zfzMQhRBTIgNOjRet/iAK+RkazmypZr39sE0b3ZVCLj56/E3KimwycMfX/pQ=
-X-Received: by 2002:a2e:3202:: with SMTP id y2mr3666465ljy.30.1596705361101;
- Thu, 06 Aug 2020 02:16:01 -0700 (PDT)
+        bh=AzEHWOi3xIMl9Jy+/KlKWcDEquQYLPv874A/EyE4ZHI=;
+        b=i43w9c4SU72Bg5DcW3S5f9zioeCxavd7CbeTS4dir267F1wMH69dskQZLtL7thxYzY
+         JT+WZOrYhkSts3/tOBAkcNmi8tII3o4wCuuh/AajiT5ChhGPdTKcyuxGYVsQYvKlEkca
+         PSnXZ2KTNekkGLIU/ZUyQG74BaLZNqCapP7QEk6BhozPgWiD967xsDAATqELtF4ADFp3
+         JxJlrd0mz2I0hbjt5lpU5PZjikN0QJITO+pGpAfDDlkiTzeVXxQh3ORjc2WQOLetQg1/
+         MEyrHpusiyyvua7ha7mNRcME7Zi2qUQ4/dNHE4Izt4ndK7YthqL4Mbzvi0ysm8V99gpf
+         v1MA==
+X-Gm-Message-State: AOAM530bwp1a/6DviTrhFEaHYsh88+0dL0jfV/mVN69GmVHQke2FH6y4
+        rVFORsWfsOlJWDHbLyP4KmhqlfpaLY6m75yBQ9Tabg==
+X-Google-Smtp-Source: ABdhPJy7yM5CtQD2+dEoxYCRskCx/AdhBQbVnbMScLypVppsjaBip5ECbDaThMGjtJm5tiag+RbMJQe2mauCQhGCRl8=
+X-Received: by 2002:a05:6638:1129:: with SMTP id f9mr8508246jar.35.1596705387910;
+ Thu, 06 Aug 2020 02:16:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200723084622.31134-1-jorge@foundries.io> <20200723084622.31134-2-jorge@foundries.io>
- <CAFA6WYPQ3GGYostoHU=6qg4c_LqoqOZVbZ8gbQbGkNfyGydQjQ@mail.gmail.com>
- <20200724142305.GA24164@trex> <CAFA6WYOGu4DPzd93h-yFLJvLmRH=ZroN70+ZNY6xCOOM+TJOSA@mail.gmail.com>
- <20200805203817.GA12229@trex> <CAFA6WYPKGTb6Qj7emETpB9-XXO8vcf6v2ONKD4pt+M9F-=HWbQ@mail.gmail.com>
- <20200806063040.GA27943@trex> <CAFA6WYMSXGKXx2vM2qcTLpRUugQUphM8Gn5YvPX9fTj3MHvXqQ@mail.gmail.com>
- <20200806081437.GA21405@trex>
-In-Reply-To: <20200806081437.GA21405@trex>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Thu, 6 Aug 2020 14:45:49 +0530
-Message-ID: <CAFA6WYOH4OjwACqU6n7dJ6PtWOLC6wN5wPa=C_SGRMZNrmLrMA@mail.gmail.com>
-Subject: Re: [PATCHv2 2/2] hwrng: optee: fix wait use case
-To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, ricardo@foundries.io,
-        Michael Scott <mike@foundries.io>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        op-tee@lists.trustedfirmware.org,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200805153505.472594546@linuxfoundation.org>
+In-Reply-To: <20200805153505.472594546@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 6 Aug 2020 14:46:16 +0530
+Message-ID: <CA+G9fYtaug+jnS1ctsnU0GJRX3yovqXYTMG04OSVMix4yqDrXA@mail.gmail.com>
+Subject: Re: [PATCH 4.19 0/6] 4.19.138-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
@@ -74,167 +67,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 6 Aug 2020 at 13:44, Jorge Ramirez-Ortiz, Foundries
-<jorge@foundries.io> wrote:
+On Wed, 5 Aug 2020 at 21:23, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On 06/08/20, Sumit Garg wrote:
-> > On Thu, 6 Aug 2020 at 12:00, Jorge Ramirez-Ortiz, Foundries
-> > <jorge@foundries.io> wrote:
-> > >
-> > > On 06/08/20, Sumit Garg wrote:
-> > > > On Thu, 6 Aug 2020 at 02:08, Jorge Ramirez-Ortiz, Foundries
-> > > > <jorge@foundries.io> wrote:
-> > > > >
-> > > > > On 05/08/20, Sumit Garg wrote:
-> > > > > > Apologies for my delayed response as I was busy with some other=
- tasks
-> > > > > > along with holidays.
-> > > > >
-> > > > > no pb! was just making sure this wasnt falling through some crack=
-s.
-> > > > >
-> > > > > >
-> > > > > > On Fri, 24 Jul 2020 at 19:53, Jorge Ramirez-Ortiz, Foundries
-> > > > > > <jorge@foundries.io> wrote:
-> > > > > > >
-> > > > > > > On 24/07/20, Sumit Garg wrote:
-> > > > > > > > On Thu, 23 Jul 2020 at 14:16, Jorge Ramirez-Ortiz <jorge@fo=
-undries.io> wrote:
-> > > > > > > > >
-> > > > > > > > > The current code waits for data to be available before at=
-tempting a
-> > > > > > > > > second read. However the second read would not be execute=
-d as the
-> > > > > > > > > while loop exits.
-> > > > > > > > >
-> > > > > > > > > This fix does not wait if all data has been read and read=
-s a second
-> > > > > > > > > time if only partial data was retrieved on the first read=
-.
-> > > > > > > > >
-> > > > > > > > > This fix also does not attempt to read if not data is req=
-uested.
-> > > > > > > >
-> > > > > > > > I am not sure how this is possible, can you elaborate?
-> > > > > > >
-> > > > > > > currently, if the user sets max 0, get_optee_rng_data will re=
-gardless
-> > > > > > > issuese a call to the secure world requesting 0 bytes from th=
-e RNG
-> > > > > > >
-> > > > > >
-> > > > > > This case is already handled by core API: rng_dev_read().
-> > > > >
-> > > > > ah ok good point, you are right
-> > > > > but yeah, there is no consequence to the actual patch.
-> > > > >
-> > > >
-> > > > So, at least you could get rid of the corresponding text from commi=
-t message.
-> > > >
-> > > > > >
-> > > > > > > with this patch, this request is avoided.
-> > > > > > >
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-> > > > > > > > > ---
-> > > > > > > > >  v2: tidy up the while loop to avoid reading when no data=
- is requested
-> > > > > > > > >
-> > > > > > > > >  drivers/char/hw_random/optee-rng.c | 4 ++--
-> > > > > > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > > > > > >
-> > > > > > > > > diff --git a/drivers/char/hw_random/optee-rng.c b/drivers=
-/char/hw_random/optee-rng.c
-> > > > > > > > > index 5bc4700c4dae..a99d82949981 100644
-> > > > > > > > > --- a/drivers/char/hw_random/optee-rng.c
-> > > > > > > > > +++ b/drivers/char/hw_random/optee-rng.c
-> > > > > > > > > @@ -122,14 +122,14 @@ static int optee_rng_read(struct hw=
-rng *rng, void *buf, size_t max, bool wait)
-> > > > > > > > >         if (max > MAX_ENTROPY_REQ_SZ)
-> > > > > > > > >                 max =3D MAX_ENTROPY_REQ_SZ;
-> > > > > > > > >
-> > > > > > > > > -       while (read =3D=3D 0) {
-> > > > > > > > > +       while (read < max) {
-> > > > > > > > >                 rng_size =3D get_optee_rng_data(pvt_data,=
- data, (max - read));
-> > > > > > > > >
-> > > > > > > > >                 data +=3D rng_size;
-> > > > > > > > >                 read +=3D rng_size;
-> > > > > > > > >
-> > > > > > > > >                 if (wait && pvt_data->data_rate) {
-> > > > > > > > > -                       if (timeout-- =3D=3D 0)
-> > > > > > > > > +                       if ((timeout-- =3D=3D 0) || (read=
- =3D=3D max))
-> > > > > > > >
-> > > > > > > > If read =3D=3D max, would there be any sleep?
-> > > > > > >
-> > > > > > > no but I see no reason why there should be a wait since we al=
-ready have
-> > > > > > > all the data that we need; the msleep is only required when w=
-e need to
-> > > > > > > wait for the RNG to generate entropy for the number of bytes =
-we are
-> > > > > > > requesting. if we are requesting 0 bytes, the entropy is alre=
-ady
-> > > > > > > available. at leat this is what makes sense to me.
-> > > > > > >
-> > > > > >
-> > > > > > Wouldn't it lead to a call as msleep(0); that means no wait as =
-well?
-> > > > >
-> > > > > I dont understand: there is no reason to wait if read =3D=3D max =
-and this
-> > > > > patch will not wait: if read =3D=3D max it calls 'return read'
-> > > > >
-> > > > > am I misunderstanding your point?
-> > > >
-> > > > What I mean is that we shouldn't require this extra check here as
-> > > > there wasn't any wait if read =3D=3D max with existing implementati=
-on too.
-> > >
-> > > um, I am getting confused Sumit
-> > >
-> > > with the exisiting implementation (the one we aim to replace), if get=
-_optee_rng_data reads all the values requested on the first call (ie, read =
-=3D 0) with wait set to true, the call will wait with msleep(0). Which is u=
-nnecessary and waits for a jiffy (ie, the call to msleep 0 will schedule a =
-one jiffy timeout interrruptible)
-> > >
-> > > with this alternative implementation, msleep(0) does not get called.
-> > >
-> > > are we in synch?
-> >
-> > Ah, I see msleep(0) also by default schedules timeout for 1 jiffy. So
-> > we are in sync now. Probably you can clarify this in commit message as
-> > well to avoid confusion.
+> This is the start of the stable review cycle for the 4.19.138 release.
+> There are 6 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> ok will do.
-> shall I add your reviewed-by line or just resend?
+> Responses should be made by Fri, 07 Aug 2020 15:34:53 +0000.
+> Anything received after that time might be too late.
 >
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.138-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Yes it's fine with me to add mine reviewed-by.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> >
-> > -Sumit
-> >
-> > >
-> > > >
-> > > > -Sumit
-> > > >
-> > > > >
-> > > > > >
-> > > > > > -Sumit
-> > > > > >
-> > > > > > >
-> > > > > > > >
-> > > > > > > > -Sumit
-> > > > > > > >
-> > > > > > > > >                                 return read;
-> > > > > > > > >                         msleep((1000 * (max - read)) / pv=
-t_data->data_rate);
-> > > > > > > > >                 } else {
-> > > > > > > > > --
-> > > > > > > > > 2.17.1
-> > > > > > > > >
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.19.138-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 2f4ec68a8dc81295799b14aaebf6dd12aec9a2fa
+git describe: v4.19.137-7-g2f4ec68a8dc8
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.19-oe/bu=
+ild/v4.19.137-7-g2f4ec68a8dc8
+
+
+No regressions (compared to build v4.19.136-53-ga820898d10fd)
+
+
+No fixes (compared to build v4.19.136-53-ga820898d10fd)
+
+Ran 34829 total tests in the following environments and test suites.
+
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* kselftest/net
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-ipc-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* v4l2-compliance
+* ltp-dio-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-mm-tests
+* network-basic-tests
+* ltp-commands-tests
+* ltp-math-tests
+* ltp-open-posix-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-native/net
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* kselftest-vsyscall-mode-none/net
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
