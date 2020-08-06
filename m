@@ -2,140 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5EF623DE9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02EBB23DD30
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729931AbgHFR2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729501AbgHFRB2 (ORCPT
+        id S1729381AbgHFRFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:05:18 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:58340 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729919AbgHFREQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:01:28 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288A9C061A2B
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 05:26:36 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id d20so4258169ual.13
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 05:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ENhodf2YoBg1Pmsfjazaz/7CkxNbPH+EsWhjLL6Mz5A=;
-        b=QC7prWFPCRV++k6goOsc8GWMtgQPqd9JxDIp4XUlR+Fyr283M++afQrf7AAWOAmF3o
-         HKKC2CP0NgoqF0ByInagurjybL1pic7EwqN9flQcd9bT2C1R1Wng+uBy4A/2OHyikrOu
-         D3NW9SAee5kn/dv9QwzytpUFFisgpUtv8KswkBDpxnCcB4IiULkVC6f+zuFitfePEwsm
-         lyCRR9RXn9qC8EptXYgNA3WtjmZ9lxM7GAUjWf1LAZ6EgKIeutCyepkZS0n3/4ure6nL
-         lJJH2mhtSB/9KI4Spictb/CWwLX4qnQHRfuLg9LdJh3psSlU8Fhkxjv+wTfO9mmQi+re
-         gmvg==
+        Thu, 6 Aug 2020 13:04:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596733446;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nr31koH93+WFCQ1SShZUdSdGjjcRGiTN1IIFjT+aQyE=;
+        b=dqT9OFjh82/6i2QXXKfTijTmXIgVx/zrnr1ljxrfCv1lQBLf63FQhf0+dUbD/bZvygaHmH
+        5U4n7biRHtWgHtV+a5+3rKVVDcF3zSYSN/xHICDJVLrP/Q8XuuHwbhIkDNSBstSPSuXawU
+        6TPCm8QtL8+aM7DfhtJ24Jh5eIQ4LFM=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-349-lN1pkvlkPziGH4o2l1s80Q-1; Thu, 06 Aug 2020 08:29:29 -0400
+X-MC-Unique: lN1pkvlkPziGH4o2l1s80Q-1
+Received: by mail-wr1-f69.google.com with SMTP id w7so12337662wre.11
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 05:29:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ENhodf2YoBg1Pmsfjazaz/7CkxNbPH+EsWhjLL6Mz5A=;
-        b=VO654QAi9PwbXqaU1JoNARENy8H7DXz10oLAugYxZ9P+S/yFDwJUMhBngsY6B2Iium
-         uP8kjY5LyZSeTU7Syyd/Nv7YFwVPgHZkJhApvYKbyhg6d9TDb7f+I7+b8XDGS/Ls1VEX
-         /+2BHNBmC+2fKX7ne1nBu6KWVu8bOcZb9GsRG7qlxlcmAWyzUO39gIuJv0eMzzfJMYtB
-         vVrnfzK5jJV6XQp9IWdBv8E/lqPShG2XGl1iB0czJN0NxogSFYHdAESg8bTk/u0Dgbtx
-         Btl/ca7wpIj7JwFjUcLw7nYnUTYRIPA9Fi/dPCbfoSuAf/hd02QTSyFOw5oF28l6gX14
-         sNLg==
-X-Gm-Message-State: AOAM531R7OVZGas6A6hTghezeQWGXKaPzNeWVFIeIeFhjw7V1c5WIkcc
-        SPa98hCUxNRAIbkWhqI54/XqHqS26HI=
-X-Google-Smtp-Source: ABdhPJwJ9pKO1JuKQBxAo4IZYdWwSz0Tnj6YA2vBozU9lYG+byjbp/adagVIMskb8Ff45YaI1tN1iA==
-X-Received: by 2002:ab0:2ea2:: with SMTP id y2mr5818327uay.15.1596716792798;
-        Thu, 06 Aug 2020 05:26:32 -0700 (PDT)
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
-        by smtp.gmail.com with ESMTPSA id p5sm997315vkp.44.2020.08.06.05.26.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 05:26:32 -0700 (PDT)
-Received: by mail-vs1-f41.google.com with SMTP id b26so19503600vsa.13
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 05:26:32 -0700 (PDT)
-X-Received: by 2002:a67:bb06:: with SMTP id m6mr6268521vsn.54.1596716791730;
- Thu, 06 Aug 2020 05:26:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Nr31koH93+WFCQ1SShZUdSdGjjcRGiTN1IIFjT+aQyE=;
+        b=Iy6Q+H+BJq8iogLrTm18DhdOlZI/8O7gu8oJC1Dv7IC9BynpZ00TRRMYLhH0plr0kN
+         zGNXchFdTEt+8uGPq2VTNsVkbw2w9EunXLOD0WC6kgixHnu68KmTYkFK//4d1Kl0Cnq2
+         PR5WqAQzImJiN93O0OTfr5f3QHmpUIhugccQmBABdhJ8GOamJxZOa0vUMAy7fpbqwu8E
+         KwmQ2NcEq6Wy6BozApBKJf8/3Y0K2zMJcRbDvr19dZ0HsWfTvHUbTk9eaYm6/dx2R8Nl
+         FxLcPp23juVt8JQ8rYPAB2Rzr6N3luFaywBAtDOSRGwcNJUjaWz7ZsXH9p5FT2ZTiWkd
+         AhIw==
+X-Gm-Message-State: AOAM530OeXVRmwtXeeIyG9oQysaEaTkrw3QKRBJANHUzPnKbQ//PjOJ4
+        V+NjN+7nufabGt0BnutPZsJhkLcDsLe54QJ+9PwCYRmmIli6kNJMi6VLpqS+JHLBTesVAEWk/Rj
+        j2A5a41A0ZQ0QghLTSXQm1zo1
+X-Received: by 2002:adf:ef44:: with SMTP id c4mr7084614wrp.84.1596716968174;
+        Thu, 06 Aug 2020 05:29:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzJ4+AA6iquJ/sckIZtxP+kOJp4F9JmrvFvoL/Ez3y4VOCxeSwNfgBeYWoNlFlzVDFCbQoFrw==
+X-Received: by 2002:adf:ef44:: with SMTP id c4mr7084593wrp.84.1596716967976;
+        Thu, 06 Aug 2020 05:29:27 -0700 (PDT)
+Received: from redhat.com ([192.117.173.58])
+        by smtp.gmail.com with ESMTPSA id z8sm6159274wmf.42.2020.08.06.05.29.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 05:29:26 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 08:29:22 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <eli@mellanox.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, lulu@redhat.com,
+        shahafs@mellanox.com, hanand@xilinx.com, mhabets@solarflare.com,
+        gdawar@xilinx.com, saugatm@xilinx.com, vmireyno@marvell.com,
+        zhangweining@ruijie.com.cn
+Subject: Re: [PATCH 1/4] vdpa: introduce config op to get valid iova range
+Message-ID: <20200806082727-mutt-send-email-mst@kernel.org>
+References: <20200617032947.6371-1-jasowang@redhat.com>
+ <20200617032947.6371-2-jasowang@redhat.com>
+ <20200805085035-mutt-send-email-mst@kernel.org>
+ <20200806120354.GA171218@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
-References: <1596714642-25183-1-git-send-email-linmiaohe@huawei.com>
-In-Reply-To: <1596714642-25183-1-git-send-email-linmiaohe@huawei.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 6 Aug 2020 14:25:54 +0200
-X-Gmail-Original-Message-ID: <CA+FuTSf48QvUhzmUROmSe-3W_H-FuCigq8Rg7otB0-XprDu6-A@mail.gmail.com>
-Message-ID: <CA+FuTSf48QvUhzmUROmSe-3W_H-FuCigq8Rg7otB0-XprDu6-A@mail.gmail.com>
-Subject: Re: [PATCH 1/5] net: Fix potential deadloop in skb_copy_ubufs()
-To:     linmiaohe <linmiaohe@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, rdunlap@infradead.org,
-        decui@microsoft.com, Jakub Sitnicki <jakub@cloudflare.com>,
-        jeremy@azazel.net, mashirle@us.ibm.com,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806120354.GA171218@mtl-vdi-166.wap.labs.mlnx>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 1:48 PM linmiaohe <linmiaohe@huawei.com> wrote:
->
-> From: Miaohe Lin <linmiaohe@huawei.com>
->
-> We could be trapped in deadloop when we try to copy userspace skb frags
-> buffers to kernel with a cloned skb:
->
-> [kbox] catch panic event, panic reason:kernel stack overflow
-> [kbox] catch panic event, start logging.
-> CPU: 3 PID: 4083 Comm: insmod Kdump: loaded Tainted: G       OE  4.19 #6
-> Hardware name: linux,dummy-virt (DT)
-> Call trace:
->         dump_backtrace+0x0/0x198
->         show_stack+0x24/0x30
->         dump_stack+0xa4/0xcc
->         kbox_panic_notifier_callback+0x1d0/0x310 [kbox]
->         notifier_call_chain+0x5c/0xa0
->         atomic_notifier_call_chain+0x3c/0x50
->         panic+0x164/0x314
->         __stack_chk_fail+0x0/0x28
->         handle_bad_stack+0xfc/0x108
->         __bad_stack+0x90/0x94
->         pskb_expand_head+0x0/0x2c8
->         pskb_expand_head+0x290/0x2c8
->         skb_copy_ubufs+0x3cc/0x520
->         pskb_expand_head+0x290/0x2c8
->         skb_copy_ubufs+0x3cc/0x520
->         pskb_expand_head+0x290/0x2c8
->         skb_copy_ubufs+0x3cc/0x520
->         pskb_expand_head+0x290/0x2c8
->         skb_copy_ubufs+0x3cc/0x520
->         ...
->         pskb_expand_head+0x290/0x2c8
->         skb_copy_ubufs+0x3cc/0x520
->         ...
->
-> Reproduce code snippet:
->         skb = alloc_skb(UBUF_DATA_LEN, GFP_ATOMIC);
->         clone = skb_clone(skb, GFP_ATOMIC);
->         skb_zcopy_set_nouarg(clone, NULL);
->         pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
->
-> Catch this unexpected case and return -EINVAL in skb_orphan_frags() before
-> we call skb_copy_ubufs() to fix it.
+On Thu, Aug 06, 2020 at 03:03:55PM +0300, Eli Cohen wrote:
+> On Wed, Aug 05, 2020 at 08:51:56AM -0400, Michael S. Tsirkin wrote:
+> > On Wed, Jun 17, 2020 at 11:29:44AM +0800, Jason Wang wrote:
+> > > This patch introduce a config op to get valid iova range from the vDPA
+> > > device.
+> > > 
+> > > Signed-off-by: Jason Wang <jasowang@redhat.com>
+> > > ---
+> > >  include/linux/vdpa.h | 14 ++++++++++++++
+> > >  1 file changed, 14 insertions(+)
+> > > 
+> > > diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+> > > index 239db794357c..b7633ed2500c 100644
+> > > --- a/include/linux/vdpa.h
+> > > +++ b/include/linux/vdpa.h
+> > > @@ -41,6 +41,16 @@ struct vdpa_device {
+> > >  	unsigned int index;
+> > >  };
+> > >  
+> > > +/**
+> > > + * vDPA IOVA range - the IOVA range support by the device
+> > > + * @start: start of the IOVA range
+> > > + * @end: end of the IOVA range
+> > > + */
+> > > +struct vdpa_iova_range {
+> > > +	u64 start;
+> > > +	u64 end;
+> > > +};
+> > > +
+> > 
+> > 
+> > This is ambiguous. Is end in the range or just behind it?
+> > How about first/last?
+> 
+> It is customary in the kernel to use start-end where end corresponds to
+> the byte following the last in the range. See struct vm_area_struct
+> vm_start and vm_end fields
 
-Is this a hypothetical codepath?
+Exactly my point:
 
-skb zerocopy carefully tracks clone calls where necessary. See the
-call to skb_orphan_frags in skb_clone, and the implementation of that
-callee.
+include/linux/mm_types.h:       unsigned long vm_end;           /* The first byte after our end address
 
-The only caller of skb zerocopy with nouarg is tpacket_fill_skb, as
-of commit 5cd8d46ea156 ("packet: copy user buffers before orphan or
-clone").
+in this case Jason wants it to be the last byte, not one behind.
 
-As the commit subject indicates, this sets skb_zcopy_set_nouarg
-exactly to be sure that any clone will trigger a copy of "zerocopy"
-user data to private kernel memory.
 
-No clone must happen between alloc_skb and
-skb_zcopy_set_nouarg, indeed. But AFAIK, none exists.
+> > 
+> > 
+> > 
+> > >  /**
+> > >   * vDPA_config_ops - operations for configuring a vDPA device.
+> > >   * Note: vDPA device drivers are required to implement all of the
+> > > @@ -134,6 +144,9 @@ struct vdpa_device {
+> > >   * @get_generation:		Get device config generation (optional)
+> > >   *				@vdev: vdpa device
+> > >   *				Returns u32: device generation
+> > > + * @get_iova_range:		Get supported iova range (on-chip IOMMU)
+> > > + *				@vdev: vdpa device
+> > > + *				Returns the iova range supported by the device
+> > >   * @set_map:			Set device memory mapping (optional)
+> > >   *				Needed for device that using device
+> > >   *				specific DMA translation (on-chip IOMMU)
+> > > @@ -195,6 +208,7 @@ struct vdpa_config_ops {
+> > >  	void (*set_config)(struct vdpa_device *vdev, unsigned int offset,
+> > >  			   const void *buf, unsigned int len);
+> > >  	u32 (*get_generation)(struct vdpa_device *vdev);
+> > > +	struct vdpa_iova_range (*get_iova_range)(struct vdpa_device *vdev);
+> > >  
+> > >  	/* DMA ops */
+> > >  	int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
+> > > -- 
+> > > 2.20.1
+> > 
+
