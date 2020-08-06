@@ -2,103 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6AF23DF62
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A875623DF57
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729132AbgHFRp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729048AbgHFQii (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:38:38 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF47C0A8937;
-        Thu,  6 Aug 2020 09:37:52 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id i10so17745342ljn.2;
-        Thu, 06 Aug 2020 09:37:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4Q0WTpvCCL+6Pe1EDwbYvKPkRlKq8z+DxxZ7AeLCJVg=;
-        b=TrMpilwZ9M4MwreBNnwma2VJI2q26VefA0WuFvLmreCsroIk7jwLukMoCftKuFEuhS
-         HjGOlFlw/dYW35bodmQ6KKv0WGlQYjZH/XbqPrpMGhlaVF9lk6rQoZeA7tpKXz4kOSlg
-         XyZx8DGJYmazif0infQGFLCmFl+o4w8GFZHCaIKFlhIlY0sdWoZEjWMO0w1it2SS4fwk
-         gbYGX6VbT0MA5LPdQq8Wpt6+s3LMoJcTIfMqzpPDgBIrs29E48gURdn0VRoshdUsYcKo
-         AIWWxTFDiyb0GIaIchp1SJDjiTtVTWZc0IECA4QTnL5L+aidt2pZTIoFIoZO4YWqrQNG
-         7wdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4Q0WTpvCCL+6Pe1EDwbYvKPkRlKq8z+DxxZ7AeLCJVg=;
-        b=BxIJiPKdwoPV/iH0CQVNCPjmD5sSMC8rZEils/HQegH/+r9BYoX83aM3t6qzO1BOcH
-         GI5OjO7eV1WCpSTORZpE0oMXvnmU99cSqn7Vvkiv4F9fKcCQIZx8wUqDNYfEW2JhT6VS
-         V+e17ygsHe2FiEkIwn4pUukkzAPJqXGp291qytKWA+8Ahg8HMmENOFFK/m6/Zec9Gy00
-         STQnD6Bn8XO20nQUx0JTUbuj9YIV81tFJ5ERTpRkIECVhOR0QXWPhuj6fPj/7H74+j83
-         fRdZ+TRNvonSG2kxCfjxJ3MRG1DlgJkqhoAK4SbtGm1NmYUvwSyLH81vvVmgYYzU0HdY
-         UhCw==
-X-Gm-Message-State: AOAM532GDQkSMSeCEOPd+ROYfgtaq9npF73iIa3Jeo/UqTHgp8qv71f6
-        c5eB4cJhseWQQF0kdoDKGGyAmqVb
-X-Google-Smtp-Source: ABdhPJx4ujwkV04InWB60thG1oTCOQyv6u1R0K+P5Nf1ivz2mWIs/0ZQn9L5vQD/xYaS9UXOT+8p8w==
-X-Received: by 2002:a05:651c:330:: with SMTP id b16mr4315610ljp.77.1596731868683;
-        Thu, 06 Aug 2020 09:37:48 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-41-50.dynamic.spd-mgts.ru. [94.29.41.50])
-        by smtp.googlemail.com with ESMTPSA id e14sm2613354ljl.96.2020.08.06.09.37.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 09:37:47 -0700 (PDT)
-Subject: Re: [PATCH v8 08/10] gpu: host1x: mipi: Keep MIPI clock enabled till
- calibration is done
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     jonathanh@nvidia.com, frankc@nvidia.com, hverkuil@xs4all.nl,
-        sakari.ailus@iki.fi, robh+dt@kernel.org, helen.koike@collabora.com,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1596469346-937-1-git-send-email-skomatineni@nvidia.com>
- <1596469346-937-9-git-send-email-skomatineni@nvidia.com>
- <20200805134600.GA3351349@ulmo>
- <103efe31-1abc-54f2-6004-490d7bb1b61a@gmail.com>
- <dcd58ae7-58ed-11d1-0e10-7f522b651b30@gmail.com>
- <addb92e5-7c7a-6fba-117d-c7880b2d4597@nvidia.com>
- <ed80bf2f-213f-286a-59b2-fc85e4181b3d@gmail.com>
- <6eede805-80fd-016f-22f8-b6d25f6587af@nvidia.com>
- <1c12e40e-de7f-0599-a941-82760b4c7668@gmail.com>
- <9ef0b875-e826-43e2-207e-168d2081ff6a@nvidia.com>
- <4689cfe9-e7c4-48bf-217f-3a31b59b8bda@nvidia.com>
- <0e78c5ca-c529-1e98-891d-30351c9aae81@gmail.com>
- <b2098a68-d02f-b406-fc57-56e3ff5d8d1a@nvidia.com>
- <309e3b66-9288-91ef-71b4-be73eacbbd62@nvidia.com>
- <fde2431a-0585-ac32-ac25-73e198aaa948@nvidia.com>
- <4025a458-fa78-924d-c84f-166f82df0f8e@gmail.com>
- <4f15d655-3d62-cf9f-82da-eae379d60fa6@nvidia.com>
- <9deaee09-c422-5694-7c19-d85354b9b703@gmail.com>
-Message-ID: <14793e8c-30dc-5cf5-fdf9-6f64fa433818@gmail.com>
-Date:   Thu, 6 Aug 2020 19:37:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730336AbgHFRp7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 6 Aug 2020 13:45:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729034AbgHFQih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:38:37 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F012204FD;
+        Thu,  6 Aug 2020 16:37:50 +0000 (UTC)
+Date:   Thu, 6 Aug 2020 12:37:48 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>
+Cc:     peter enderborg <peter.enderborg@sony.com>,
+        =?UTF-8?B?VGhpw6liYXVk?= Weksteen <tweek@google.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Nick Kralevich <nnk@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
+Subject: Re: [PATCH 2/2] selinux: add attributes to avc tracepoint
+Message-ID: <20200806123748.2285944b@oasis.local.home>
+In-Reply-To: <971592b6-5d5f-05d8-d243-b521fe65577d@gmail.com>
+References: <20200806080358.3124505-1-tweek@google.com>
+        <20200806080358.3124505-2-tweek@google.com>
+        <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com>
+        <8627d780-0e19-6755-0de5-c686deb0f5de@sony.com>
+        <971592b6-5d5f-05d8-d243-b521fe65577d@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <9deaee09-c422-5694-7c19-d85354b9b703@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-06.08.2020 19:13, Dmitry Osipenko пишет:
-> 06.08.2020 18:59, Sowjanya Komatineni пишет:
-> ..
->> We cant use active status check for specific pads under calibration.
->> This is common bit for all pads.
-> 
-> I'm not sure why this is a problem.
-> 
+On Thu, 6 Aug 2020 08:32:38 -0400
+Stephen Smalley <stephen.smalley.work@gmail.com> wrote:
 
-IIUC, the start_calibration() should wait for the MIPI_CAL_STATUS_ACTIVE
-and finish_calibration() should wait for MIPI_AUTO_CAL_DONE_CSIA/B.
+> >
+> > In the commit message or in a Documentation/trace/events-avc.rst ?  
+> 
+> I was just asking for it in the commit message / patch description.  I 
+> don't know what is typical for Documentation/trace.
+
+No, the Documentation/trace is for generic tracing documentation. Not
+for individual events.
+
+-- Steve
