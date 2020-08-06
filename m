@@ -2,155 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E1D23DD4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D0123DD57
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729833AbgHFRIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:08:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729136AbgHFRGk (ORCPT
+        id S1729390AbgHFRIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:08:24 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:56788 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729357AbgHFRGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:06:40 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A6AC00039B
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 08:41:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=SYlFjm0mwqc1/fLu0yjS/vwFC4Hl2/w3ahTiDqtfULI=; b=VZp0+VHrvA/ss+thlumVpoS9l
-        msQUgYqdXu8vSwI729+ZVuDv1CLlf22ILfwawlPVDf/Afffgb9LNeU3GYftSJKKu8KU3fWsn2mobg
-        Ev1a9GcJyWXNav5OfbfbgHTl4CXilPehVT0uAonCtmdikoFj2tLyyn0IRoZwmEryJwiuxJ/raz1Sj
-        GYLCC9wJTxK44Ia5RznOBlNKdPyqRW7LfrlGoJq+wu93B9xQT60aTPIaIECAawOALg+zzuRCBhI5n
-        4Ku8mi+DwbUgVwDi22RJ8w1Si28OlJMf8lj6YfmBDSneCweCl+JzspzbhWxmWE0Ih40y6YOwA0pqk
-        x+hol8PhQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49120)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1k3i1Z-0004nQ-U7; Thu, 06 Aug 2020 16:41:45 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1k3i1Y-0006Ie-Mj; Thu, 06 Aug 2020 16:41:44 +0100
-Date:   Thu, 6 Aug 2020 16:41:44 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Pratyush Anand <panand@redhat.com>,
-        Pavel Labath <labath@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kazuhiro Inaba <kinaba@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] ARM: hw_breakpoint: Handle inexact watchpoint addresses
-Message-ID: <20200806154144.GD1551@shell.armlinux.org.uk>
-References: <20191019111216.1.I82eae759ca6dc28a245b043f485ca490e3015321@changeid>
- <20191120191813.GD4799@willie-the-truck>
- <CAD=FV=Wntf0TCwdtNNvPY-CXX1VL_SZK8Y8yw1r=UfeayHfwgw@mail.gmail.com>
- <CAD=FV=WgoVN-scgT41R=6Toif2Zrskb3rNzZn_xbP_-ByZC1MA@mail.gmail.com>
+        Thu, 6 Aug 2020 13:06:35 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 05EBF20B4908;
+        Thu,  6 Aug 2020 08:46:37 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 05EBF20B4908
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1596728798;
+        bh=KG2C6RbvLQBgLP+0NWNVA/7hHclgHh703Y6EXT9pNkY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aXAMg6wcqdwOoZdGIULELD41c4SAJhF4XYK8WNDNhmldx9W/PmQVnJb83CT/mqp4d
+         ZDHRVzKvbhts3VJKMjZBX1Psyz0BOoN18dI37/BVFR2LwW3pQHbIZ6M7Z/hrydcRF4
+         OtV0jXI+OHmzpKsa8SVpRidB/XRbUFc2MJ9rhfhg=
+Date:   Thu, 6 Aug 2020 10:46:36 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Nayna <nayna@linux.vnet.ibm.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Nayna Jain <nayna@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH 1/2] ima: Pre-parse the list of keyrings in a KEY_CHECK
+ rule
+Message-ID: <20200806154636.GB55159@sequoia>
+References: <20200727140831.64251-1-tyhicks@linux.microsoft.com>
+ <20200727140831.64251-2-tyhicks@linux.microsoft.com>
+ <8f749594-1214-9f2d-4614-d360772a2ab6@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAD=FV=WgoVN-scgT41R=6Toif2Zrskb3rNzZn_xbP_-ByZC1MA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8f749594-1214-9f2d-4614-d360772a2ab6@linux.vnet.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 08:05:10AM -0700, Doug Anderson wrote:
-> Hi,
+On 2020-08-06 11:34:43, Nayna wrote:
 > 
-> On Mon, Dec 2, 2019 at 8:36 AM Doug Anderson <dianders@chromium.org> wrote:
-> >
-> > Hi,
-> >
-> > On Wed, Nov 20, 2019 at 11:18 AM Will Deacon <will@kernel.org> wrote:
-> > >
-> > > On Sat, Oct 19, 2019 at 11:12:26AM -0700, Douglas Anderson wrote:
-> > > > This is commit fdfeff0f9e3d ("arm64: hw_breakpoint: Handle inexact
-> > > > watchpoint addresses") but ported to arm32, which has the same
-> > > > problem.
-> > > >
-> > > > This problem was found by Android CTS tests, notably the
-> > > > "watchpoint_imprecise" test [1].  I tested locally against a copycat
-> > > > (simplified) version of the test though.
-> > > >
-> > > > [1] https://android.googlesource.com/platform/bionic/+/master/tests/sys_ptrace_test.cpp
-> > > >
-> > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > > ---
-> > > >
-> > > >  arch/arm/kernel/hw_breakpoint.c | 96 ++++++++++++++++++++++++---------
-> > > >  1 file changed, 70 insertions(+), 26 deletions(-)
-> > >
-> > > Sorry for taking so long to look at this. After wrapping my head around the
-> > > logic again
-> >
-> > Yeah.  It was a little weird and (unfortunately) arbitrarily different
-> > in some places compared to the arm64 code.
-> >
-> >
-> > > I think it looks fine, so please put it into the patch system
-> > > with my Ack:
-> > >
-> > > Acked-by: Will Deacon <will@kernel.org>
-> >
-> > Thanks!  Submitted as:
-> >
-> > https://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=8944/1
+> On 7/27/20 10:08 AM, Tyler Hicks wrote:
+> > The ima_keyrings buffer was used as a work buffer for strsep()-based
+> > parsing of the "keyrings=" option of an IMA policy rule. This parsing
+> > was re-performed each time an asymmetric key was added to a kernel
+> > keyring for each loaded policy rule that contained a "keyrings=" option.
+> > 
+> > An example rule specifying this option is:
+> > 
+> >   measure func=KEY_CHECK keyrings=a|b|c
+> > 
+> > The rule says to measure asymmetric keys added to any of the kernel
+> > keyrings named "a", "b", or "c". The size of the buffer size was
+> > equal to the size of the largest "keyrings=" value seen in a previously
+> > loaded rule (5 + 1 for the NUL-terminator in the previous example) and
+> > the buffer was pre-allocated at the time of policy load.
+> > 
+> > The pre-allocated buffer approach suffered from a couple bugs:
+> > 
+> > 1) There was no locking around the use of the buffer so concurrent key
+> >     add operations, to two different keyrings, would result in the
+> >     strsep() loop of ima_match_keyring() to modify the buffer at the same
+> >     time. This resulted in unexpected results from ima_match_keyring()
+> >     and, therefore, could cause unintended keys to be measured or keys to
+> >     not be measured when IMA policy intended for them to be measured.
+> > 
+> > 2) If the kstrdup() that initialized entry->keyrings in ima_parse_rule()
+> >     failed, the ima_keyrings buffer was freed and set to NULL even when a
+> >     valid KEY_CHECK rule was previously loaded. The next KEY_CHECK event
+> >     would trigger a call to strcpy() with a NULL destination pointer and
+> >     crash the kernel.
+> > 
+> > Remove the need for a pre-allocated global buffer by parsing the list of
+> > keyrings in a KEY_CHECK rule at the time of policy load. The
+> > ima_rule_entry will contain an array of string pointers which point to
+> > the name of each keyring specified in the rule. No string processing
+> > needs to happen at the time of asymmetric key add so iterating through
+> > the list and doing a string comparison is all that's required at the
+> > time of policy check.
+> > 
+> > In the process of changing how the "keyrings=" policy option is handled,
+> > a couple additional bugs were fixed:
+> > 
+> > 1) The rule parser accepted rules containing invalid "keyrings=" values
+> >     such as "a|b||c", "a|b|", or simply "|".
+> > 
+> > 2) The /sys/kernel/security/ima/policy file did not display the entire
+> >     "keyrings=" value if the list of keyrings was longer than what could
+> >     fit in the fixed size tbuf buffer in ima_policy_show().
+> > 
+> > Fixes: 5c7bac9fb2c5 ("IMA: pre-allocate buffer to hold keyrings string")
+> > Fixes: 2b60c0ecedf8 ("IMA: Read keyrings= option from the IMA policy")
+> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > ---
+> >   security/integrity/ima/ima_policy.c | 138 +++++++++++++++++++---------
+> >   1 file changed, 93 insertions(+), 45 deletions(-)
+> > 
+> > diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> > index 07f033634b27..c328cfa0fc49 100644
+> > --- a/security/integrity/ima/ima_policy.c
+> > +++ b/security/integrity/ima/ima_policy.c
+> > @@ -59,6 +59,11 @@ enum policy_types { ORIGINAL_TCB = 1, DEFAULT_TCB };
+> >   enum policy_rule_list { IMA_DEFAULT_POLICY = 1, IMA_CUSTOM_POLICY };
+> > +struct ima_rule_opt_list {
+> > +	size_t count;
+> > +	char *items[];
+> > +};
+> > +
+> >   struct ima_rule_entry {
+> >   	struct list_head list;
+> >   	int action;
+> > @@ -78,7 +83,7 @@ struct ima_rule_entry {
+> >   		int type;	/* audit type */
+> >   	} lsm[MAX_LSM_RULES];
+> >   	char *fsname;
+> > -	char *keyrings; /* Measure keys added to these keyrings */
+> > +	struct ima_rule_opt_list *keyrings; /* Measure keys added to these keyrings */
+> >   	struct ima_template_desc *template;
+> >   };
+> > @@ -206,10 +211,6 @@ static LIST_HEAD(ima_policy_rules);
+> >   static LIST_HEAD(ima_temp_rules);
+> >   static struct list_head *ima_rules = &ima_default_rules;
+> > -/* Pre-allocated buffer used for matching keyrings. */
+> > -static char *ima_keyrings;
+> > -static size_t ima_keyrings_len;
+> > -
+> >   static int ima_policy __initdata;
+> >   static int __init default_measure_policy_setup(char *str)
+> > @@ -253,6 +254,72 @@ static int __init default_appraise_policy_setup(char *str)
+> >   }
+> >   __setup("ima_appraise_tcb", default_appraise_policy_setup);
+> > +static struct ima_rule_opt_list *ima_alloc_rule_opt_list(const substring_t *src)
+> > +{
+> > +	struct ima_rule_opt_list *opt_list;
+> > +	size_t count = 0;
+> > +	char *src_copy;
+> > +	char *cur, *next;
+> > +	size_t i;
+> > +
+> > +	src_copy = match_strdup(src);
+> > +	if (!src_copy)
+> > +		return NULL;
 > 
-> Oddly, I found that if I go visit that page now I see:
-> 
-> > - - - Note 2 submitted by Russell King on 17 Jan 2020 11:16:34 (UTC) - - -
-> > Moved to applied
-> >
-> > Applied to git-curr (misc branch).
-> 
-> Yet if I go check mainline the patch is not there.  This came to my
-> attention since we had my patch picked to the Chrome OS 4.19 tree and
-> suddenly recently got a stable merge conflict with "ARM: 8986/1:
-> hw_breakpoint: Don't invoke overflow handler on uaccess watchpoints".
-> 
-> Anyone know what happened here?
+> The caller of this function checks for IS_ERR(..) and not
+> IS_ERR_OR_NULL(..). Shouldn't it return ERR_PTR(-EINVAL) instead of NULL ?
 
-Yes.  Stephen Rothwell raised a complaint against it, which you were
-copied with:
+Yes! Thank you for catching this.
 
-> Hi all,
-> 
-> Commit
-> 
->   116375be0461 ("ARM: 8944/1: hw_breakpoint: Handle inexact watchpoint addresses")
-> 
-> is missing a Signed-off-by from its author.
+I switched this function to returning an ERR_PTR() towards the end of my
+development for this series and missed this particular return.
 
-My reply to Stephen's email was:
+I'll send out a v2 ASAP.
 
-> Thanks Stephen, patch dropped.
-> 
-> It looks like Doug used his "m.disordat.com" address to submit the
-> patch through the web interface, and there was no From: in the patch
-> itself, so that was used as the patch author.  However, as you spotted,
-> it was signed off using Doug's "chromium.org" address.
-> 
-> I think it's time to make the patch system a bit more strict, checking
-> that the submission address is mentioned in a signed-off-by tag
-> somewhere in the commit message.
-> 
-> Doug, the patch system does have your "chromium.org" address, if that's
-> the one you want to use as the author, please submit using that instead.
-> Thanks.
-> 
-> Russell.
+Tyler
 
-Neither email got a response from you, so the patch was dropped and
-nothing further happened.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> 
+> Thanks & Regards,
+> 
+>     - Nayna
