@@ -2,110 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D21B23E128
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A2423E0ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730062AbgHFSl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:41:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729991AbgHFSkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:40:23 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728574AbgHFSjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:39:22 -0400
+Received: from relay5.mymailcheap.com ([159.100.241.64]:34336 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727888AbgHFS34 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 14:29:56 -0400
+Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [144.217.248.100])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 7639020144;
+        Thu,  6 Aug 2020 18:29:44 +0000 (UTC)
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id 81FCA3F157;
+        Thu,  6 Aug 2020 14:27:41 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id ABEB72A7CD;
+        Thu,  6 Aug 2020 20:27:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1596738460;
+        bh=v6+hYB3wUB+4/fro3yDhVbBnH/mkjkFI9z9KFpiDfWY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=S1ikrnLeCYGOThBERfKTcSAxsaKWw+oY22EKp6ctbJ3sm8pYcpExFdyU69jyvA8yn
+         7IL6fwJ7AYeY/OvjCXQ+QJmZKvSe20EzdNzg9L6y0PMOPn2H8zxjqJFvRgBuT1fHgy
+         VPl1WurgjhNCgHKVd8de4myzl+hDzQEM6ZaIosTo=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id q5uWU0nKA4vN; Thu,  6 Aug 2020 20:27:39 +0200 (CEST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A68B1221E2;
-        Thu,  6 Aug 2020 18:25:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596738333;
-        bh=44fEtW2caAEFXbE7fawJjZxMVIwDcVHgxMSMWD9dt9I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pGb2mHgQfkiIS0YL5xHX/68+l4GHFu4EJCbRNO3qHj0hAlJLmlRvBiVSWp1v2pdZR
-         s5dCjtvXrxDYZ2889wT/B88/eE9EVkBWx+mX692WZH7x29D/Ti8kEE7SCRIhEsVa1Z
-         BY2BtiaRGKiNprz+j2KZ/gP7yVosJq1OrmKft654=
-Date:   Thu, 6 Aug 2020 11:25:30 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jiri Pirko <jiri@resnulli.us>
-Cc:     Moshe Shemesh <moshe@mellanox.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Subject: Re: [PATCH net-next RFC 01/13] devlink: Add reload level option to
- devlink reload command
-Message-ID: <20200806112530.0588b3ac@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200805110258.GA2169@nanopsycho>
-References: <20200728130653.7ce2f013@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <04f00024-758c-bc19-c187-49847c24a5a4@mellanox.com>
-        <20200729140708.5f914c15@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <3352bd96-d10e-6961-079d-5c913a967513@mellanox.com>
-        <20200730161101.48f42c5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <0f2467fd-ee2e-1a51-f9c1-02f8a579d542@mellanox.com>
-        <20200803141442.GB2290@nanopsycho>
-        <20200803135703.16967635@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20200804100418.GA2210@nanopsycho>
-        <20200804133946.7246514e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20200805110258.GA2169@nanopsycho>
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Thu,  6 Aug 2020 20:27:39 +0200 (CEST)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id E93A3419D2;
+        Thu,  6 Aug 2020 18:27:38 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="FR7C13jQ";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [0.0.0.0] (unknown [203.86.239.91])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id AE74441330;
+        Thu,  6 Aug 2020 18:26:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1596738369;
+        bh=v6+hYB3wUB+4/fro3yDhVbBnH/mkjkFI9z9KFpiDfWY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=FR7C13jQLja842FFA+9Mfd6g4RgDFwwYpn9p508EWXpQbJO+EEISvRkT04Yu3kjs5
+         8hUoJ8Za/j9z26Nqg84aOmk2fTLDqaHzLGNH4rnzeFnAZjp463C0oIv4aDmpJX9uXo
+         mlCjH08OVtGlsQlenkaO2C+wplwCTvCERW2yA96I=
+Subject: Re: [PATCH] MIPS: Introduce cmdline argument writecombine=
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1596697741-3561-1-git-send-email-yangtiezhu@loongson.cn>
+ <10e04885-b775-e7db-b927-6400382fd32d@flygoat.com>
+ <cc0c8b89-748d-0d38-bcc8-1c2dbb0996bf@loongson.cn>
+ <20200806101733.GA8136@alpha.franken.de>
+ <9e563c75-ffaa-45b4-0e99-25a8b1eff828@flygoat.com>
+ <20200806165212.GA2754@alpha.franken.de>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <c81440ec-a46e-06e1-9ee3-ec3bd2826c4e@flygoat.com>
+Date:   Fri, 7 Aug 2020 02:26:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200806165212.GA2754@alpha.franken.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Rspamd-Queue-Id: E93A3419D2
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         RCPT_COUNT_FIVE(0.00)[5];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 Aug 2020 13:02:58 +0200 Jiri Pirko wrote:
-> Tue, Aug 04, 2020 at 10:39:46PM CEST, kuba@kernel.org wrote:
-> >AFAIU the per-driver default is needed because we went too low 
-> >level with what the action constitutes. We need maintain the higher
-> >level actions.
-> >
-> >The user clearly did not care if FW was reset during devlink reload
-> >before this set, so what has changed? The objective user has is to  
-> 
-> Well for mlxsw, the user is used to this flow:
-> devlink dev flash - flash new fw
-> devlink dev reload - new fw is activated and reset and driver instances
-> are re-created.
 
-Ugh, if the current behavior already implies fw-activation for some
-drivers then the default has to probably be "do all the things" :S
 
-> >activate their config / FW / move to different net ns. 
-> >
-> >Reloading the driver or resetting FW is a low level detail which
-> >achieves different things for different implementations. So it's 
-> >not a suitable abstraction -> IOW we need the driver default.  
-> 
-> I'm confused. So you think we need the driver default?
+在 2020/8/7 上午12:52, Thomas Bogendoerfer 写道:
+> On Thu, Aug 06, 2020 at 07:56:20PM +0800, Jiaxun Yang wrote:
+>> Our current problem is Loongson's writecombine implementation seems buggy.
+>> This is our platform issue rather than target hardware issue.
+> ok, so simply clear cpu_data[0].writecombine for the fauly parts
+@Tiezhu,
 
-No, I'm talking about the state of this patch set. _In this patchset_ 
-we need a driver default because of the unsuitable abstraction.
+I don't know the exact faulty parts, could you please investigate it in 
+Loongson?
 
-Better design would not require it.
+I can remember a Loongson stuff told me the issue was solved in GS464E but
+there are still users complaining about that.
 
-> >The work flow for the user is:
-> >
-> >0. download fw to /lib/firmware
-> >1. devlink flash $dev $fw
-> >2. if live activation is enabled
-> >   yes - devlink reload $dev $live-activate
-> >   no - report machine has to be drained for reboot
-> >
-> >fw-reset can't be $live-activate, because as Jake said fw-reset does
-> >not activate the new image for Intel. So will we end up per-driver
-> >defaults in the kernel space, and user space maintaining a mapping from  
-> 
-> Well, that is what what is Moshe's proposal. Per-driver kernel default..
-> I'm not sure what we are arguing about then :/
+In fact I can't reproduce it in all of my test systems:
+3B1500 + RS780E + R5 230
+3A3000 + RS780E Laptop
+3A4000 + LS7A + RX550
+>> And we don't even know which hardware is known to be good. The same graphic
+>> card became a different story on different user's hand.
+> find out what is broken and add the needed workarounds then.
 
-The fact that if I do a pure "driver reload" it will active new
-firmware for mlxsw but not for mlx5. In this patchset for mlx5 I need
-driver reload fw-reset. And for Intel there is no suitable option.
+Well, let's leave this task for Loongson company.
+User's community don't have the ability to trace hardware behavior 
+precisely.
 
-> >a driver to what a "level" of reset implies.
-> >
-> >I hope this makes things crystal clear. Please explain what problems
-> >you're seeing and extensions you're expecting. A list of user scenarios
-> >you foresee would be v. useful.  
+>> I understood what Teizhu thought. For entry-level users, we don't want to
+>> trouble
+>> them, so we have writecombine disabled by default. However, for advanced
+>> user
+>> trying to tweak their system, we should leave a switch for them to get it
+>> back.
+> IMHO if we do it that way, we end up with millions of knobs for tweaking
+> broken hardware, and nobody knows what's exactly broken. Sorry I won't go
+> that way.
+
+Haha, that was my first impression to Linux as a primary school student. 
+It just
+looks like an aircraft cockpit with thousands of knobs & switches, but 
+to airborne
+you just need to control yoke and throttle.
+
+- Jiaxun
