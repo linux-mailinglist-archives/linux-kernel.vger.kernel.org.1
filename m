@@ -2,74 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EBF23DE92
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD1923DE76
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730366AbgHFR13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
+        id S1729680AbgHFR0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:26:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729265AbgHFRBd (ORCPT
+        with ESMTP id S1729100AbgHFRCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:01:33 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20836C0A8883
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 07:20:23 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id x24so8878159lfe.11
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 07:20:23 -0700 (PDT)
+        Thu, 6 Aug 2020 13:02:31 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08431C0A888A
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 07:20:30 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id qc22so35720388ejb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 07:20:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Hhhap6Yc7PpUiUD0py8cHrVh0mhGyr2EPQNKI0dXDKo=;
-        b=P8YzW7gcNiZLomPm4YW7RgSSI1+6vb2MSMdmbioBbs3SF3p7ki3QgaxwMkghJG2ztj
-         jmw5b9dgPywgQugwKpQbk/Snks/TAi8gXAujjkqCiTZsxpUnPiQKCE71qctiPc0zh3u5
-         Tl/G21sV0TIvXSBzARChQCZxZ2d74692f5bKo3VNkm06tLBdPTF87BJtnhIRhrYuwlLg
-         6ss7enUZK0GtY/R00vdeo1tJqxyAyoCCfa4/Gx/yFcSJk7SuVo/vS9LGTmDNbigc7sqJ
-         VgjicOqXTRps5nSm8Xn87dGq5wHMntIAC1UwfA6S4Ec0Bmt5OWTWkR2Vc24kwWpDyStk
-         UpZQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pmb1iEsk02Ktbby15UBHnv6Nn0dAPG2lRhmD1yH0a80=;
+        b=sWE7THrjlHNLdtN4mIh5h4fTj8KCy3mVPv1JEAB/wX9MgwhCEmWMjH/DqccDYjeTE7
+         MtDnU6Zm5PvCdRpb3rJU8nVpMIgdMxDmkYFgJkZ/c9U/P+bi3EEiiY05oudV1m1zMfrt
+         TvwBOBlsfE6kicwzKDs+Zxx5WlG8sIHf+kDoWEq7EgcKbCOG2/+t/cCRCo1yLBV6hfhq
+         s5MJg7YHAQoixFsAwZL/djN1KuAXP7CjO0BtPruHxhS9GAPQwavznxEzo74/HimtM6Om
+         vdxUhwCoGgEq+E5ze89pDEX/fzZBMA1sKcDwuxiU6Md/vzrKxgyNnynKnJX5osAKz60+
+         EMMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hhhap6Yc7PpUiUD0py8cHrVh0mhGyr2EPQNKI0dXDKo=;
-        b=hdG5ZpClSjRVjnII/RjP4q1eGEJHk+2QvMZ3eGbIchSgj026KFbSsnVVlP3nyvJKs4
-         qlk1FM3YtZjmENcAkXb6FGYGwilv76yzN7FicCp6eXxOHiXfLAw4+MX+KIQDc5nsVdQE
-         klSnPE8zfHo/W+XPNMI4vK9cvB2eVtzbl3r1cbmisC7BEYJSbqxnOwTrmHS4wH/rYnbJ
-         eJz+QeOBmMpKEqf+C/y9vKOtlLvbCebhE0SOd6IIRMocmEgKHFI0Mdqx3JIBlPTJb1w+
-         thtGqZhux1gLHTxQ54ekkivQGtg4uLQkx7rGe8cIXHHPWUua4Sak4lLaVh5EKEOzywRr
-         U4sQ==
-X-Gm-Message-State: AOAM532TE9VB2Miz3hnuShN+XlmAuIVNWfI6Vk0umve4qy5u17MV10NJ
-        w9PLDZKkgiJzs0qizwzkVUvuVlfR1nk1vCqZQh5F4MHS
-X-Google-Smtp-Source: ABdhPJwFODp0uHduBsVR5dsdRziifTcVU//9maBj1DK7EpB1fIlWObBGpWHc2lbWTRdw3ab5aLsX6BZfQumIoPa3xHs=
-X-Received: by 2002:a05:6512:3b7:: with SMTP id v23mr4114623lfp.10.1596723621653;
- Thu, 06 Aug 2020 07:20:21 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=pmb1iEsk02Ktbby15UBHnv6Nn0dAPG2lRhmD1yH0a80=;
+        b=Cm4G3rSmTFZHbtrxVgb+GR2AsgbU6S7ACxbLYvcQkUhpO+dOf7qMhbfGrxzT47ZHv4
+         nN4iXLwxn227mdicHqxOXNVRtVW2Z/Smv0FFJdIFkfsKSwLjlNtuGk3k2glJNQ8pYB6/
+         IFWnbXCKdQwyz/ZmiKW+ueMAlr9svZVjn055rx9Qm9P3EsxzLgdHHdMFq6vtvS6j8gL4
+         1F5BI82ZTyFPxw3DNRo30/EQlsfsEroyIzcfQisM0TIECgKA7QpczmwcAXmEt5tt5+EI
+         5VmuaOLJzOcjfrWpXnXDmJICLja/0MKnUlMx/R+2GtORhgHlal7hRVMQy+u/w7Vsssk1
+         mkiQ==
+X-Gm-Message-State: AOAM533U/Yhhk5eplnwbVsLunuj/Cnxva5eeq9coSINb8iU7hJ2siqOt
+        7IDxVtDhECBOuQk7uAa7N/U=
+X-Google-Smtp-Source: ABdhPJxtEf/TMq+OtbgjEnfVmr1L884FceniIKzXmMKSw7kOAIBmsNSevXnhSG4VlvtUFycjHcOV3g==
+X-Received: by 2002:a17:906:a18e:: with SMTP id s14mr4570218ejy.168.1596723628805;
+        Thu, 06 Aug 2020 07:20:28 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id v13sm3917056ejq.59.2020.08.06.07.20.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 07:20:27 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 16:20:25 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
+        peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, morten.rasmussen@arm.com
+Subject: Re: [PATCH v4 03/10] sched/topology: Propagate SD_ASYM_CPUCAPACITY
+ upwards
+Message-ID: <20200806142025.GD2077896@gmail.com>
+References: <20200731115502.12954-1-valentin.schneider@arm.com>
+ <20200731115502.12954-4-valentin.schneider@arm.com>
 MIME-Version: 1.0
-References: <20200518193617.74548-1-andriy.shevchenko@linux.intel.com>
- <CANiq72nJgGJJoUoJMxD5LTa-A7Rn1UPnr16nf8DbY9HOy7ZKEA@mail.gmail.com> <20200806095618.GA1625681@smile.fi.intel.com>
-In-Reply-To: <20200806095618.GA1625681@smile.fi.intel.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 6 Aug 2020 16:20:10 +0200
-Message-ID: <CANiq72=_=OELWGSCMAE44UX+U3VokrnW98gUJ24rk3KBodWPEQ@mail.gmail.com>
-Subject: Re: [PATCH v1] auxdisplay: charlcd: Reuse hex_to_bin() instead of
- custom code
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200731115502.12954-4-valentin.schneider@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
 
-On Thu, Aug 6, 2020 at 11:56 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> May I ask which version did you have in mind? Now it's merge window for
-> v5.9-rc1 and patch is still not there...
+* Valentin Schneider <valentin.schneider@arm.com> wrote:
 
-Yeah, apologies, sending it during this merge window... :-)
+> We currently set this flag *only* on domains whose topology level exactly
+> match the level where we detect asymmetry (as returned by
+> asym_cpu_capacity_level()). This is rather problematic.
+> 
+> Say there are two clusters in the system, one with a lone big CPU and the
+> other with a mix of big and LITTLE CPUs (as is allowed by DynamIQ):
+> 
+> DIE [                ]
+> MC  [             ][ ]
+>      0   1   2   3  4
+>      L   L   B   B  B
+> 
+> asym_cpu_capacity_level() will figure out that the MC level is the one
+> where all CPUs can see a CPU of max capacity, and we will thus set
+> SD_ASYM_CPUCAPACITY at MC level for all CPUs.
+> 
+> That lone big CPU will degenerate its MC domain, since it would be alone in
+> there, and will end up with just a DIE domain. Since the flag was only set
+> at MC, this CPU ends up not seeing any SD with the flag set, which is
+> broken.
+> 
+> Rather than clearing dflags at every topology level, clear it before
+> entering the topology level loop. This will properly propagate upwards
+> flags that are set starting from a certain level.
+> 
+> Reviewed-by: Quentin Perret <qperret@google.com>
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>  kernel/sched/topology.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 865fff3ef20a..42b89668e1e4 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -1985,11 +1985,10 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
+>  	/* Set up domains for CPUs specified by the cpu_map: */
+>  	for_each_cpu(i, cpu_map) {
+>  		struct sched_domain_topology_level *tl;
+> +		int dflags = 0;
+>  
+>  		sd = NULL;
+>  		for_each_sd_topology(tl) {
+> -			int dflags = 0;
+> -
+>  			if (tl == tl_asym) {
+>  				dflags |= SD_ASYM_CPUCAPACITY;
+>  				has_asym = true;
 
-Cheers,
-Miguel
+I'd suggest ordering all patches with potential side effects at the 
+end, to make them easier to bisect.
+
+I.e. I'd reorder this series to do:
+
+ - Obviously correct renamings & cleanups
+
+ - Convert the code over to the new instrumented sd-flags method. This 
+   will presumably spew a few warnings for problems the new debugging 
+   checks catch in existing topologies.
+
+ - Do all the behavioral changes and fixes like this patch, even if we 
+   think that they have no serious side effects.
+
+In that sense it might make sense to order the two ARM patches to the 
+later stage as well - but I suppose it's OK to do those two first as 
+well.
+
+Nice series otherwise, these new checks look really useful and already 
+caught bugs.
+
+Thanks,
+
+	Ingo
