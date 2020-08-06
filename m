@@ -2,109 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5CD23DF29
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 226CA23DEEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730568AbgHFRiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:38:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55144 "EHLO mail.kernel.org"
+        id S1730235AbgHFRep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:34:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729811AbgHFRbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:31:43 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1729687AbgHFRbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:31:44 -0400
+Received: from localhost (mobile-166-175-186-42.mycingular.net [166.175.186.42])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 714F82311E;
-        Thu,  6 Aug 2020 13:11:33 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.93)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1k3fgC-006KUf-3J; Thu, 06 Aug 2020 09:11:32 -0400
-Message-ID: <20200806131131.981451078@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Thu, 06 Aug 2020 09:11:10 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>
-Subject: [for-linus][PATCH 2/3] tracing: Use trace_sched_process_free() instead of exit() for pid
- tracing
-References: <20200806131108.374130743@goodmis.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 208C823122;
+        Thu,  6 Aug 2020 13:13:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596719609;
+        bh=DVhuP8UL/Dey1HcALXY+xyYV4uOthFoT+uVqZoV82jQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=QYI7mLwkFAuWc+zsX3QicF8JtRLiIXc6aQxLd/8zcKr/Xiw2xjevHZmfWg71/6uHz
+         aWbfsTAyUkDUcbnwj82ljAIRJE9ulBdYa1mFX3Zzro5zlPb9LiBEUxdRpP6yosMeeN
+         TgYC+TfNJJL7A0ETqQDmr9zO9bK0U4B9SndYOw+o=
+Date:   Thu, 6 Aug 2020 08:13:27 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhelgaas@google.com, robh@kernel.org, maz@kernel.org
+Subject: Re: [PATCH v9 2/2] PCI: xilinx-cpm: Add Versal CPM Root Port driver
+Message-ID: <20200806131327.GA654295@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806095445.GA9715@e121166-lin.cambridge.arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Thu, Aug 06, 2020 at 10:54:45AM +0100, Lorenzo Pieralisi wrote:
+> On Wed, Aug 05, 2020 at 06:30:50PM -0500, Bjorn Helgaas wrote:
+> > On Wed, Aug 05, 2020 at 05:03:26PM -0500, Bjorn Helgaas wrote:
+> > > On Wed, Aug 05, 2020 at 10:39:28PM +0100, Lorenzo Pieralisi wrote:
+> > > > On Wed, Aug 05, 2020 at 03:43:58PM -0500, Bjorn Helgaas wrote:
+> > > > > On Tue, Jun 16, 2020 at 06:26:54PM +0530, Bharat Kumar Gogada wrote:
+> > > > > > - Add support for Versal CPM as Root Port.
+> > > > > > - The Versal ACAP devices include CCIX-PCIe Module (CPM). The integrated
+> > > > > >   block for CPM along with the integrated bridge can function
+> > > > > >   as PCIe Root Port.
+> > > > > > - Bridge error and legacy interrupts in Versal CPM are handled using
+> > > > > >   Versal CPM specific interrupt line.
+> > > > > 
+> > > > > > +static void xilinx_cpm_pcie_init_port(struct xilinx_cpm_pcie_port *port)
+> > > > > > +{
+> > > > > > +	if (cpm_pcie_link_up(port))
+> > > > > > +		dev_info(port->dev, "PCIe Link is UP\n");
+> > > > > > +	else
+> > > > > > +		dev_info(port->dev, "PCIe Link is DOWN\n");
+> > > > > > +
+> > > > > > +	/* Disable all interrupts */
+> > > > > > +	pcie_write(port, ~XILINX_CPM_PCIE_IDR_ALL_MASK,
+> > > > > > +		   XILINX_CPM_PCIE_REG_IMR);
+> > > > > > +
+> > > > > > +	/* Clear pending interrupts */
+> > > > > > +	pcie_write(port, pcie_read(port, XILINX_CPM_PCIE_REG_IDR) &
+> > > > > > +		   XILINX_CPM_PCIE_IMR_ALL_MASK,
+> > > > > > +		   XILINX_CPM_PCIE_REG_IDR);
+> > > > > > +
+> > > > > > +	/*
+> > > > > > +	 * XILINX_CPM_PCIE_MISC_IR_ENABLE register is mapped to
+> > > > > > +	 * CPM SLCR block.
+> > > > > > +	 */
+> > > > > > +	writel(XILINX_CPM_PCIE_MISC_IR_LOCAL,
+> > > > > > +	       port->cpm_base + XILINX_CPM_PCIE_MISC_IR_ENABLE);
+> > > > > > +	/* Enable the Bridge enable bit */
+> > > > > > +	pcie_write(port, pcie_read(port, XILINX_CPM_PCIE_REG_RPSC) |
+> > > > > > +		   XILINX_CPM_PCIE_REG_RPSC_BEN,
+> > > > > > +		   XILINX_CPM_PCIE_REG_RPSC);
+> > > > > > +}
+> > > > > > +
+> > > > > > +/**
+> > > > > > + * xilinx_cpm_pcie_parse_dt - Parse Device tree
+> > > > > > + * @port: PCIe port information
+> > > > > > + * @bus_range: Bus resource
+> > > > > > + *
+> > > > > > + * Return: '0' on success and error value on failure
+> > > > > > + */
+> > > > > > +static int xilinx_cpm_pcie_parse_dt(struct xilinx_cpm_pcie_port *port,
+> > > > > > +				    struct resource *bus_range)
+> > > > > > +{
+> > > > > > +	struct device *dev = port->dev;
+> > > > > > +	struct platform_device *pdev = to_platform_device(dev);
+> > > > > > +	struct resource *res;
+> > > > > > +
+> > > > > > +	port->cpm_base = devm_platform_ioremap_resource_byname(pdev,
+> > > > > > +							       "cpm_slcr");
+> > > > > > +	if (IS_ERR(port->cpm_base))
+> > > > > > +		return PTR_ERR(port->cpm_base);
+> > > > > > +
+> > > > > > +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg");
+> > > > > > +	if (!res)
+> > > > > > +		return -ENXIO;
+> > > > > > +
+> > > > > > +	port->cfg = pci_ecam_create(dev, res, bus_range,
+> > > > > > +				    &pci_generic_ecam_ops);
+> > > > > 
+> > > > > Aren't we passing an uninitialized pointer (bus_range) here?  This
+> > > > > looks broken to me.
+> > > > > 
+> > > > > The kernelci build warns about it:
+> > > > > https://kernelci.org/build/next/branch/master/kernel/next-20200805/
+> > > > > 
+> > > > >   /scratch/linux/drivers/pci/controller/pcie-xilinx-cpm.c:557:39: warning: variable 'bus_range' is uninitialized when used here [-Wuninitialized]
+> > > > > 
+> > > > > I'm dropping this for now.  I can't believe this actually works.
+> > > > 
+> > > > It is caused by my rebase to fix -next after the rework in pci/misc
+> > > > (I had to drop the call to pci_parse_request_of_pci_ranges()).
+> > > > 
+> > > > I will look into this tomorrow if Rob does not beat me to it.
+> > > > 
+> > > > Apologies, it is a new driver that was based on an interface
+> > > > that is being reworked, for good reasons, in pci/misc.
+> > > 
+> > > Oh, yep, I think I see what happened.  I'll try to fix this in hopes
+> > > of making linux-next tonight.
+> > 
+> > OK, I think I fixed it.  Man, that was a lot of work for a git novice
+> > like me ;)  Current head: 6f119ec8d9c8 ("Merge branch 'pci/irq-error'")
+> 
+> Sorry about that.
 
-On exit, if a process is preempted after the trace_sched_process_exit()
-tracepoint but before the process is done exiting, then when it gets
-scheduled in, the function tracers will not filter it properly against the
-function tracing pid filters.
-
-That is because the function tracing pid filters hooks to the
-sched_process_exit() tracepoint to remove the exiting task's pid from the
-filter list. Because the filtering happens at the sched_switch tracepoint,
-when the exiting task schedules back in to finish up the exit, it will no
-longer be in the function pid filtering tables.
-
-This was noticeable in the notrace self tests on a preemptable kernel, as
-the tests would fail as it exits and preempted after being taken off the
-notrace filter table and on scheduling back in it would not be in the
-notrace list, and then the ending of the exit function would trace. The test
-detected this and would fail.
-
-Cc: stable@vger.kernel.org
-Cc: Namhyung Kim <namhyung@kernel.org>
-Fixes: 1e10486ffee0a ("ftrace: Add 'function-fork' trace option")
-Fixes: c37775d57830a ("tracing: Add infrastructure to allow set_event_pid to follow children"
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/ftrace.c       | 4 ++--
- kernel/trace/trace_events.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 4e3a5d79c078..76f2dd6fd414 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -6985,12 +6985,12 @@ void ftrace_pid_follow_fork(struct trace_array *tr, bool enable)
- 	if (enable) {
- 		register_trace_sched_process_fork(ftrace_pid_follow_sched_process_fork,
- 						  tr);
--		register_trace_sched_process_exit(ftrace_pid_follow_sched_process_exit,
-+		register_trace_sched_process_free(ftrace_pid_follow_sched_process_exit,
- 						  tr);
- 	} else {
- 		unregister_trace_sched_process_fork(ftrace_pid_follow_sched_process_fork,
- 						    tr);
--		unregister_trace_sched_process_exit(ftrace_pid_follow_sched_process_exit,
-+		unregister_trace_sched_process_free(ftrace_pid_follow_sched_process_exit,
- 						    tr);
- 	}
- }
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index f6f55682d3e2..a85effb2373b 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -538,12 +538,12 @@ void trace_event_follow_fork(struct trace_array *tr, bool enable)
- 	if (enable) {
- 		register_trace_prio_sched_process_fork(event_filter_pid_sched_process_fork,
- 						       tr, INT_MIN);
--		register_trace_prio_sched_process_exit(event_filter_pid_sched_process_exit,
-+		register_trace_prio_sched_process_free(event_filter_pid_sched_process_exit,
- 						       tr, INT_MAX);
- 	} else {
- 		unregister_trace_sched_process_fork(event_filter_pid_sched_process_fork,
- 						    tr);
--		unregister_trace_sched_process_exit(event_filter_pid_sched_process_exit,
-+		unregister_trace_sched_process_free(event_filter_pid_sched_process_exit,
- 						    tr);
- 	}
- }
--- 
-2.26.2
-
-
+No problem, if I were less OCD and more smart about git, it would have
+been trivial.  But it did make it into the Aug 6 linux-next, so that's
+good!
