@@ -2,82 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C2123D8D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F96B23D8D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729222AbgHFJlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:41:37 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57040 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726094AbgHFJlJ (ORCPT
+        id S1729104AbgHFJng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729076AbgHFJma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:41:09 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596706866;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7h1NwChE7k/KZnYmQuWPK12OfyVN6+DmIy8syMh+/Ks=;
-        b=0en1W3foTyJQ/a3ORD69xVDuy6RGBmSpumUZOiO+zNNjdZ98YVdw025EVEVh0vFD7aYK5L
-        I7/sw6SwqJ06boKGugm4ApL7T7jZi+K3MSw9qlCNmFfu9EErsq8zZIiorKQ3pqjJO/xSAH
-        dXWv/P+S53NyOmxXmnn1hUvYJr7J6VS8rDiEaRTxqjuOzhYYRsVWfUQwB6kW+jys94AT4a
-        HEswFNxvCS+6lkzecrs4K1zQ+a1c6eK50+ACvB9c97Pt0WIT9KYaegmfP1iAwrvUpKUUKx
-        cr6Twjjgi6OcvnBtrgXF9m3y8Ei6KtDwlkecdJqbBsOGPUVfBIIARWxzghzVxQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596706866;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7h1NwChE7k/KZnYmQuWPK12OfyVN6+DmIy8syMh+/Ks=;
-        b=4eBnpOGf08nGpnL+jnNqH5dmgNbgf5eT0rVBjjVBHEiNG3JQgMsYvX+22Ccpdz12hJBVUZ
-        WJupblTyigLCvCCw==
-To:     peterz@infradead.org,
-        Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        Alison Wang <alison.wang@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, paulmck@kernel.org, mw@semihalf.com,
-        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>
-Subject: Re: [RFC PATCH] arm64: defconfig: Disable fine-grained task level IRQ time accounting
-In-Reply-To: <20200805153120.GU2674@hirez.programming.kicks-ass.net>
-References: <87mu3ho48v.fsf@kurt> <20200730082228.r24zgdeiofvwxijm@skbuf> <873654m9zi.fsf@kurt> <87lfiwm2bj.fsf@nanos.tec.linutronix.de> <20200803114112.mrcuupz4ir5uqlp6@skbuf> <87d047n4oh.fsf@nanos.tec.linutronix.de> <jhjh7tjivew.mognet@arm.com> <875z9zmt4i.fsf@nanos.tec.linutronix.de> <20200805134002.GQ2674@hirez.programming.kicks-ass.net> <jhja6z9i4bi.mognet@arm.com> <20200805153120.GU2674@hirez.programming.kicks-ass.net>
-Date:   Thu, 06 Aug 2020 11:41:06 +0200
-Message-ID: <874kpgi025.fsf@nanos.tec.linutronix.de>
+        Thu, 6 Aug 2020 05:42:30 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3FDC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 02:42:00 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id h8so25764017lfp.9
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 02:42:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xiBtfv09Rewh33AK2W77Sh/BJrs195/KdV/txM9SnfM=;
+        b=pOD4YJJB9NYsTyVi9YyMgqMX62jv0IKvTH/+546UVtScHjOj3YuqppoyOxGSpZGLZ3
+         ktZJOx941KjDIIlY3sQA7PFxCfPLJTzi6cbZfCiLmVLCdTy0SmkKy09SfUjFQAZzz9ms
+         m1tPoDTkMu3jzV+SPc1rIT4rmQ04eTGKEnU5XlwUCCjGqGBZc2fwwidT85azIsxdrVOS
+         uo32jXEPDrWuvNQW5fmud877MRS3RT1fmMQNZUe2Y2Iev1SJXOU6RLWc0lLbs9f7wp42
+         smKzQigDbG9RqsRVAozGIMFQGw3muz9Q8A9H86StSnr5FFrPNPEei2hzdlTTLBTb7Evz
+         SwrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xiBtfv09Rewh33AK2W77Sh/BJrs195/KdV/txM9SnfM=;
+        b=CGVKucVBlKWBDSG45iZuHPR9+1kkB5o3bIFqDVaXswR4KO3Kcd439tuXw0vNtH02vV
+         3aIXj+hz9CeZTHhvR3Ru4Kl0ccspmq3G/GewWq9aQWlL3zCPXsceiKaQdE7+nj2cgMMF
+         crBl6ciCiLJom8+nx24vJDhRFxIW00EaYhRv/jRGDRtwlo1iCLrGwsX7g529hlJppb0j
+         OVMNmHtAMaxy2c1rDNr+SOmVR/TjuA10LpHjjyMzH2rWQhmp68rzOZI6V2XClPdblyh4
+         SH3hxQC43NrNvFZ+sxY08Fl2wUHy8O9Hv/+mMNz+jS9Eqx1D8L/UtcJ6eweyuauCFV3z
+         /2hg==
+X-Gm-Message-State: AOAM5320GX6u/FgqAJplfJ/2Z3j94pha4ySywb5PdHb02ayHkw8S3Uli
+        ImSLfKcY2T/f0Dh7vMf2RqNLlrFj8PFCPkctsb5xfA==
+X-Google-Smtp-Source: ABdhPJyiQSuuZkL3S5NCMXaqBrOx5c7oy6V+lNy2kA0O0vzu+FVy9yoWAyu8VznLi9x/g0S6xr6H38ivfdD537KQdgM=
+X-Received: by 2002:a19:cb53:: with SMTP id b80mr3544428lfg.77.1596706918251;
+ Thu, 06 Aug 2020 02:41:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <f32130bf-cfd4-b1bf-538c-dbc9ee2d947a@eaxlabs.cz>
+In-Reply-To: <f32130bf-cfd4-b1bf-538c-dbc9ee2d947a@eaxlabs.cz>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 6 Aug 2020 11:41:46 +0200
+Message-ID: <CACRpkdaHNuuS-2zMwWf-2--8FFV_4aQuAjYx8pLu66h4adQcwQ@mail.gmail.com>
+Subject: Re: pinctrl: sx150x bug
+To:     Martin DEVERA <devik@eaxlabs.cz>, Peter Rosin <peda@axentia.se>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-peterz@infradead.org writes:
-> On Wed, Aug 05, 2020 at 02:56:49PM +0100, Valentin Schneider wrote:
+Hi Martin,
+
+thanks for your report, let's check with Peter, Neil and Andrey who also
+use this expander if they also see this problem (CC).
+
+On Wed, Aug 5, 2020 at 11:28 AM Martin DEVERA <devik@eaxlabs.cz> wrote:
+
+> I encountered bug in SX1502 expander driver in 5.7.7. Here is relevant
+> DTS part:
 >
->> I've been tempted to say the test case is a bit bogus, but am not familiar
->> enough with the RT throttling details to stand that ground. That said, from
->> both looking at the execution and the stress-ng source code, it seems to
->> unconditionally spawn 32 FIFO-50 tasks (there's even an option to make
->> these FIFO-99!!!), which is quite a crowd on monoCPU systems.
+> compatible = "semtech,sx1502q";
+> gpio4_cfg_pins: gpio2-cfg {
+>                          pins = "gpio5";
+>                          output-high;
+>      };
 >
-> Oh, so it's a case of: we do stupid without tuning and the system falls
-> over. I can live with that.
+> And part of OOPS:
+>
+> [    0.673996] [<c023cfa6>] (gpiochip_get_data) from [<c023b235>]
+> (sx150x_gpio_direction_output+0xd)
+> [    0.683259] [<c023b235>] (sx150x_gpio_direction_output) from
+> [<c023b363>] (sx150x_pinconf_set+0x)
+> [    0.692796] [<c023b363>] (sx150x_pinconf_set) from [<c0238fef>]
+> (pinconf_apply_setting+0x39/0x7e)
+> [    0.701635] [<c0238fef>] (pinconf_apply_setting) from [<c0236c77>]
+> (pinctrl_commit_state+0xa5/0x)
+> [    0.710648] [<c0236c77>] (pinctrl_commit_state) from [<c0237e03>]
+> (pinctrl_enable+0xff/0x1d4)
+> [    0.719139] [<c0237e03>] (pinctrl_enable) from [<c023b791>]
+> (sx150x_probe+0x1a3/0x358)
+> [    0.727027] [<c023b791>] (sx150x_probe) from [<c02c38bf>]
+> (i2c_device_probe+0x1bb/0x1dc)
+>
+> The problem is that sx150x_pinconf_set uses sx150x_gpio_direction_output
+> but gpio is not
+> setup yet. Patch below fixes it but I'm not sure whether is it correct:
+>
+> diff --git a/drivers/pinctrl/pinctrl-sx150x.c
+> b/drivers/pinctrl/pinctrl-sx150x.c
+> index 6e74bd87d959..3f5651edd336 100644
+> --- a/drivers/pinctrl/pinctrl-sx150x.c
+> +++ b/drivers/pinctrl/pinctrl-sx150x.c
+> @@ -1154,12 +1154,6 @@ static int sx150x_probe(struct i2c_client *client,
+>                  return ret;
+>          }
+>
+> -       ret = pinctrl_enable(pctl->pctldev);
+> -       if (ret) {
+> -               dev_err(dev, "Failed to enable pinctrl device\n");
+> -               return ret;
+> -       }
+> -
+>          /* Register GPIO controller */
+>          pctl->gpio.base = -1;
+>          pctl->gpio.ngpio = pctl->data->npins;
+> @@ -1191,6 +1185,12 @@ static int sx150x_probe(struct i2c_client *client,
+>          if (ret)
+>                  return ret;
+>
+> +       ret = pinctrl_enable(pctl->pctldev);
+> +       if (ret) {
+> +               dev_err(dev, "Failed to enable pinctrl device\n");
+> +               return ret;
+> +       }
+> +
+>          ret = gpiochip_add_pin_range(&pctl->gpio, dev_name(dev),
+>                                       0, 0, pctl->data->npins);
+>          if (ret)
 
-It's not a question of whether you can live with that behaviour for a
-particular silly test case.
+I don't see any problem with the patch, can you send a proper patch
+with git-send-email so we can test it and apply it if it works for the
+other users? Include the mentioned people on CC.
 
-The same happens with a single RT runaway task with enough interrupt
-load on a UP machine. Just validated that. And that has nothing to do
-with a silly test case. Sporadic runaways due to a bug in a once per
-week code path simply can happen and having the safety net working
-depending on a config option selected or not is just wrong.
-
-Thanks,
-
-        tglx
-
-
-
-
+Yours,
+Linus Walleij
