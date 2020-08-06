@@ -2,109 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A441823DD02
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7C123DD40
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729838AbgHFQ7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44598 "EHLO
+        id S1727937AbgHFRG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728975AbgHFQ6i (ORCPT
+        with ESMTP id S1729961AbgHFRFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:58:38 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE290C0A3BD0
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:58:37 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id l4so51022940ejd.13
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:58:37 -0700 (PDT)
+        Thu, 6 Aug 2020 13:05:49 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1698C0617A5
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 04:31:09 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id z6so49246431iow.6
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 04:31:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1XBlSxPFXmmwC9ml0NMR2WdlXom4n6CpwebB65mVnUs=;
-        b=dXe6RGc6/xXA7dnes7IB/pkAiTFvxhcpMvvtqW5JIhIYAIOZZskja/irTxfuzn7ZLl
-         BBhgrAchBiS9dj4kiDmcC0lEGAn06HCfFv6nA5dXmdYahycy0MfXQ2ZMAd65HnYzIU0G
-         OvEJar8x1W8NIm/obNQnQmKoMi94gth0dQhd0cO/R5GP/Ep+6wW2lP44E7m8Pd8S2Z06
-         PaKtvZp+Y7P3sMXXRTWk1rDK3tszZaurMvD748iPm+CVVqeCD3YJFeKNkRQvWm3wJGOY
-         VJd9cVLog2o4YEJ6H4NSw2R88nYq7Bg1mQOzd2aOlgIjNcz2oSZP6yf04FCk4EHCIoAH
-         /l9Q==
+         :cc:content-transfer-encoding;
+        bh=GBkcW6NgtTDsQc7K+wm9MXLGks5e/hCdXllRiayCbwg=;
+        b=KrhVDbNQF8AsaaoIl4UOq09EsyfUznkaVXPCKNK89TXD4Uz95qFlls1Uidq4Vskll9
+         zMvwZ2qZED8YOEIFfYZSHnbu0eZf46ZwG2xa9S+vuPklscZyIUL8aITpZ+2i4NmkySdw
+         nZdaNIrVnvMY4Tr3C+aZGR98x5SvBijd5poj/LjbLGpkGcm1eouHtZjbWiGLLv3GflxY
+         Rns9zkuRpElvyvFXPBEWRYvrKdHPEr/oqAaYL+0dABM42HpcSDxCRi6EYu9dlHzgMsWD
+         IVsMY9HkHa66iGKoZTMCpDZ02mbKCnF6o0CyI4jP6zCGVYjYqzuP/LPMMGI4MsfHzMkO
+         rtMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1XBlSxPFXmmwC9ml0NMR2WdlXom4n6CpwebB65mVnUs=;
-        b=LYGX00miFV1fJlU5tJlkde/NDCOtwscz82eYp3jcC7kLxYDfNtJgzHfALyPJuHqLBH
-         efnrg/vLcE/1GbWjphqvnG9KsDFEesBziAEwRBVQBCgBxTlnN4ejWXUHYvzKT6HTmJUp
-         0T396ELot0THM9YXy7iU33briKfSICemXk2pgrQt6Th8KuHu2FmlYln1ByaNjyaa/GW7
-         yeOxW8wGqzX96PEkm08jN568rAoSKhhsCatgxrXGIBXh8HYMfD2p93NqlddLp+rK0h+2
-         SK1gOFT4OdsgZLBMhyhoTbiZlPLbv2TLGyJ+kCWWVVZ9o2nBL8cvOVck1jB5TJV5++53
-         BwCA==
-X-Gm-Message-State: AOAM533G4Z4C+2q0nS9U4bZme2MgSr5j/ZprFgaQUmHs2aYZBG+Knxpq
-        ZFe4+qcDaImhet2KaRyB8dpD2xuMsUnszTSv1jRSOg==
-X-Google-Smtp-Source: ABdhPJwRwr7iyIOMmsIdXrbJrtDmOHJSdVosW8f7X72dl0j3AzF5hsJa5Lkjawzt3dSCmXDg7a+kSdYK+wDCeczJkfM=
-X-Received: by 2002:a17:907:208e:: with SMTP id pv14mr5596998ejb.438.1596733116143;
- Thu, 06 Aug 2020 09:58:36 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GBkcW6NgtTDsQc7K+wm9MXLGks5e/hCdXllRiayCbwg=;
+        b=QmWMVAaObBTR9+Y2XRMxAqx1EsouqX9D/u/KSI7TlGKG3/A/yh+wcKwxgWpIyRctME
+         daoTfcp504igMIWAJlgoxioEI4AWGpGYyFM7Ay7ws8tml3YAuJsPwsabVkAFrqDTXZmP
+         zTGwMKgU8ga43hWbuL3cOKVOsmXTyKZaP9VwXAIIg0jhkbuz96Xioau28KuNkVAbsxj0
+         ZerHN1NH1FhsZhU+VTAwWwGS/Ow9w/DJrW3ku2PLm2sogaCTgRxr9gn+esyOOUUhplkH
+         GD+uFZDIgNmazoqSd4y2DFd320b9DWxD7OqqHw49lO+upV8UcEgh+YvBtBRVqwr/TnZV
+         wmrQ==
+X-Gm-Message-State: AOAM532202hTS84mHJgSpdCVjoWsUCQRGy11WwNOowyZh8ozdP8XAhTz
+        lN/a0It2Zjx8Ulc8z4iFXLOOwv0feQJHmo6tYpr3WQ==
+X-Google-Smtp-Source: ABdhPJy7a7Ne0v4q4AEIG4e7TRTRyIROhS0phm/+rD1dY9pUIJCcXadcDhjB/ixMMu7NcRS0NZ+3yYPztVui/apjKL8=
+X-Received: by 2002:a05:6638:1b5:: with SMTP id b21mr11426605jaq.125.1596713468774;
+ Thu, 06 Aug 2020 04:31:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200806165359.2381483-1-jannh@google.com>
-In-Reply-To: <20200806165359.2381483-1-jannh@google.com>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Thu, 6 Aug 2020 09:58:23 -0700
-Message-ID: <CAHRSSEwgfaQhqgHhfKWKpd78WAT20aj49exUgbJqhVXp7NBY_w@mail.gmail.com>
-Subject: Re: [PATCH] binder: Remove bogus warning on failed same-process transaction
-To:     Jann Horn <jannh@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <1596558782-3415-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1596558782-3415-11-git-send-email-gene.chen.richtek@gmail.com> <20200805161021.GK5556@sirena.org.uk>
+In-Reply-To: <20200805161021.GK5556@sirena.org.uk>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Thu, 6 Aug 2020 11:30:56 +0800
+Message-ID: <CAE+NS360iKLoGxiiz8NmQqCp2Uge98Eehe4g2sn_N0e-E3DgyQ@mail.gmail.com>
+Subject: Re: [PATCH 9/9] mfd: mt6360: Merge different sub-devices I2C read/write
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>, rafael@kernel.org,
+        gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Gene Chen <gene_chen@richtek.com>, benjamin.chao@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 9:54 AM Jann Horn <jannh@google.com> wrote:
+Mark Brown <broonie@kernel.org> =E6=96=BC 2020=E5=B9=B48=E6=9C=886=E6=97=A5=
+ =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8812:10=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> While binder transactions with the same binder_proc as sender and recipient
-> are forbidden, transactions with the same task_struct as sender and
-> recipient are possible (even though currently there is a weird check in
-> binder_transaction() that rejects them in the target==0 case).
-> Therefore, task_struct identities can't be used to distinguish whether
-> the caller is running in the context of the sender or the recipient.
+> On Wed, Aug 05, 2020 at 12:33:02AM +0800, Gene Chen wrote:
+> > From: Gene Chen <gene_chen@richtek.com>
+> >
+> > Remove unuse register definition.
+> > Merge different sub-devices I2C read/write functions into one Regmap,
+> > because PMIC and LDO part need CRC bits for access protection.
 >
-> Since I see no easy way to make this WARN_ON() useful and correct, let's
-> just remove it.
->
-> Fixes: 44d8047f1d87 ("binder: use standard functions to allocate fds")
-> Reported-by: syzbot+e113a0b970b7b3f394ba@syzkaller.appspotmail.com
-> Signed-off-by: Jann Horn <jannh@google.com>
+> It's not clear why this isn't just done in the device regmap, there's
+> exactly one user?
 
-Acked-by: Todd Kjos <tkjos@google.com>
+because I use one regmap to access 4 I2C devices,
+I need change the regmap_bus struct to fit I2C read/write with CRC bit
+Therefore, MFD reviewer suggests I can move the regmap api to regmap
+folder such as regmap-ac97.c
 
-> ---
->  drivers/android/binder.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> index f936530a19b0..5b0376344dbe 100644
-> --- a/drivers/android/binder.c
-> +++ b/drivers/android/binder.c
-> @@ -2344,8 +2344,6 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
->                          * file is done when the transaction is torn
->                          * down.
->                          */
-> -                       WARN_ON(failed_at &&
-> -                               proc->tsk == current->group_leader);
->                 } break;
->                 case BINDER_TYPE_PTR:
->                         /*
->
-> base-commit: 47ec5303d73ea344e84f46660fff693c57641386
-> --
-> 2.28.0.163.g6104cc2f0b6-goog
->
+Is it okay to apply this change?
