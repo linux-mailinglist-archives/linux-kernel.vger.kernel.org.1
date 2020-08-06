@@ -2,162 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F6E23DDE6
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B9423DEB2
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729861AbgHFRRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:17:39 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:38888 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730310AbgHFRQF (ORCPT
+        id S1729314AbgHFR2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729777AbgHFRA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:16:05 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076D3U7g110854;
-        Thu, 6 Aug 2020 13:16:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : mime-version :
- content-type; s=corp-2020-01-29;
- bh=QJht0r9+pb7DHhPqjRhH2JvzfLPN8ybMHKn/qOjbH2k=;
- b=aXVZSySx0VdbMCIc7UwoUYNkbRxEfw1H1fWM2hUYhG6l49upkohTYMQ8YIyiBYMuUGvk
- 3E0yaL7/gopg4Lxd2DYLqiRR2zXIJmcSn0JGX9nxff4a099qKGNmgLibIntdgZLVXmXd
- C36coJ1tIe5A9Q3jlcjTPb4T+i331Nw8XyY2YWauKZs1fsNbAUg1972qrp9HSsdsGUFm
- EbNrgecK4O9M5mm2D0FuKP8xY2OsAjTC0AL/cfr3lxTF+cRxsph1HgaZrKePG05EGKN1
- bi+OxnIhvtdB/HTi/V7yJ98WwQ8MA9fWW2x9W8OH/QO+A7Yu2PZ+Zq54bYHkdunBe6kI 9g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 32r6gwttmc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 06 Aug 2020 13:16:16 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076Cx7fl151578;
-        Thu, 6 Aug 2020 13:14:16 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 32qy8nbxcn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Aug 2020 13:14:16 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 076DECB8015724;
-        Thu, 6 Aug 2020 13:14:12 GMT
-Received: from starbug-mbp.localdomain (/79.97.215.145)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Aug 2020 06:14:12 -0700
-Received: by starbug-mbp.localdomain (Postfix, from userid 501)
-        id 17C8AF04845; Thu,  6 Aug 2020 14:14:06 +0100 (IST)
-From:   Darren Kenny <darren.kenny@oracle.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v36 02/24] x86/cpufeatures: x86/msr: Add Intel SGX
- Launch Control hardware bits
-In-Reply-To: <20200716135303.276442-3-jarkko.sakkinen@linux.intel.com>
-References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
- <20200716135303.276442-3-jarkko.sakkinen@linux.intel.com>
-Date:   Thu, 06 Aug 2020 14:14:06 +0100
-Message-ID: <m2d043syqp.fsf@oracle.com>
+        Thu, 6 Aug 2020 13:00:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96925C034613
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:16:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cOTbQsNE4Og+7v4i6+VKDw9s40FCqKihoprFB/Z7nt8=; b=hvCFPwavzhUN+ZIogP2sMOZQlR
+        ldTroAQ1ISrql6nxZpb0nEf4gN8Fxz94Lc+EK7Cv32LXLhU9UxovKAKLvqDFx577e91UBb9M3Vkc1
+        uhd6LiOkRaw/MadIv8c+2h7qQ6GD7W67I5NCQCYtMbIE45KhgOcKTU3KseZBXf0XKKaYswdd0YWQl
+        sI6Ddf0X27dLDWKYa33hew5wjNxo1fVvwOfS+NMZ3FohiFw0dDcEOr15JDGRAV/AdpsXS0qMwRECs
+        ZpivDAKjhPWCs/nczc8EnzDTjHNcHnpgphZ1mMrLPFyREGDpvAlnHeexNyOSdfs/NgDBnHbnl95Qw
+        w5I8myLQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3fkO-0002VI-16; Thu, 06 Aug 2020 13:15:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 99ADE3010D2;
+        Thu,  6 Aug 2020 15:15:47 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 74607213C48A6; Thu,  6 Aug 2020 15:15:47 +0200 (CEST)
+Date:   Thu, 6 Aug 2020 15:15:47 +0200
+From:   peterz@infradead.org
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Michael Neuling <mikey@neuling.org>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+Subject: Re: [PATCH 1/2] sched/topology: Allow archs to override cpu_smt_mask
+Message-ID: <20200806131547.GC2674@hirez.programming.kicks-ass.net>
+References: <20200804033307.76111-1-srikar@linux.vnet.ibm.com>
+ <20200804104520.GB2657@hirez.programming.kicks-ass.net>
+ <20200804121007.GJ24375@linux.vnet.ibm.com>
+ <20200804124755.GJ2674@hirez.programming.kicks-ass.net>
+ <87ft90z6dy.fsf@mpe.ellerman.id.au>
+ <20200806085429.GX2674@hirez.programming.kicks-ass.net>
+ <87d044yn9z.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- spamscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008060094
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
- phishscore=0 clxscore=1015 suspectscore=1 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060094
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87d044yn9z.fsf@mpe.ellerman.id.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 2020-07-16 at 16:52:41 +03, Jarkko Sakkinen wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->
-> Add X86_FEATURE_SGX_LC, which informs whether or not the CPU supports SGX
-> Launch Control.
->
-> Add MSR_IA32_SGXLEPUBKEYHASH{0, 1, 2, 3}, which when combined contain a
-> SHA256 hash of a 3072-bit RSA public key. SGX backed software packages, so
-> called enclaves, are always signed. All enclaves signed with the public key
-> are unconditionally allowed to initialize. [1]
->
-> Add FEAT_CTL_SGX_LC_ENABLED, which informs whether the aformentioned MSRs
-> are writable or not. If the bit is off, the public key MSRs are read-only
-> for the OS.
->
-> If the MSRs are read-only, the platform must provide a launch enclave (LE).
-> LE can create cryptographic tokens for other enclaves that they can pass
-> together with their signature to the ENCLS(EINIT) opcode, which is used
-> to initialize enclaves.
->
-> Linux is unlikely to support the locked configuration because it takes away
-> the control of the launch decisions from the kernel.
->
-> [1] Intel SDM: 38.1.4 Intel SGX Launch Control Configuration
->
-> Reviewed-by: Borislav Petkov <bp@alien8.de>
-> Acked-by: Jethro Beekman <jethro@fortanix.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+On Thu, Aug 06, 2020 at 10:25:12PM +1000, Michael Ellerman wrote:
+> peterz@infradead.org writes:
+> > On Thu, Aug 06, 2020 at 03:32:25PM +1000, Michael Ellerman wrote:
+> >
+> >> That brings with it a bunch of problems, such as existing software that
+> >> has been developed/configured for Power8 and expects to see SMT8.
+> >> 
+> >> We also allow LPARs to be live migrated from Power8 to Power9 (and back), so
+> >> maintaining the illusion of SMT8 is considered a requirement to make that work.
+> >
+> > So how does that work if the kernel booted on P9 and demuxed the SMT8
+> > into 2xSMT4? If you migrate that state onto a P8 with actual SMT8 you're
+> > toast again.
+> 
+> The SMT mask would be inaccurate on the P8, rather than the current case
+> where it's inaccurate on the P9.
+> 
+> Which would be our preference, because the backward migration case is
+> not common AIUI.
+> 
+> Or am I missing a reason we'd be even more toast than that?
 
-Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+Well, the scheduler might do a wee bit funny. We just had a patch that
+increase load-balancing opportunities between SMT siblings because they
+all share L1 anyway.
 
-> ---
->  arch/x86/include/asm/cpufeatures.h | 1 +
->  arch/x86/include/asm/msr-index.h   | 7 +++++++
->  2 files changed, 8 insertions(+)
->
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index 545ac3e0e269..0a4541e4f076 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -352,6 +352,7 @@
->  #define X86_FEATURE_CLDEMOTE		(16*32+25) /* CLDEMOTE instruction */
->  #define X86_FEATURE_MOVDIRI		(16*32+27) /* MOVDIRI instruction */
->  #define X86_FEATURE_MOVDIR64B		(16*32+28) /* MOVDIR64B instruction */
-> +#define X86_FEATURE_SGX_LC		(16*32+30) /* Software Guard Extensions Launch Control */
->  
->  /* AMD-defined CPU features, CPUID level 0x80000007 (EBX), word 17 */
->  #define X86_FEATURE_OVERFLOW_RECOV	(17*32+ 0) /* MCA overflow recovery support */
-> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-> index 18e08da19f16..3d7c89a8533f 100644
-> --- a/arch/x86/include/asm/msr-index.h
-> +++ b/arch/x86/include/asm/msr-index.h
-> @@ -582,6 +582,7 @@
->  #define FEAT_CTL_LOCKED				BIT(0)
->  #define FEAT_CTL_VMX_ENABLED_INSIDE_SMX		BIT(1)
->  #define FEAT_CTL_VMX_ENABLED_OUTSIDE_SMX	BIT(2)
-> +#define FEAT_CTL_SGX_LC_ENABLED			BIT(17)
->  #define FEAT_CTL_SGX_ENABLED			BIT(18)
->  #define FEAT_CTL_LMCE_ENABLED			BIT(20)
->  
-> @@ -602,6 +603,12 @@
->  #define MSR_IA32_UCODE_WRITE		0x00000079
->  #define MSR_IA32_UCODE_REV		0x0000008b
->  
-> +/* Intel SGX Launch Enclave Public Key Hash MSRs */
-> +#define MSR_IA32_SGXLEPUBKEYHASH0	0x0000008C
-> +#define MSR_IA32_SGXLEPUBKEYHASH1	0x0000008D
-> +#define MSR_IA32_SGXLEPUBKEYHASH2	0x0000008E
-> +#define MSR_IA32_SGXLEPUBKEYHASH3	0x0000008F
-> +
->  #define MSR_IA32_SMM_MONITOR_CTL	0x0000009b
->  #define MSR_IA32_SMBASE			0x0000009e
->  
-> -- 
-> 2.25.1
+But yeah, nothing terminal.
+
+> Under PowerVM the kernel does know it's being migrated, so we could
+> actually update the mask, but I'm not sure if that's really feasible.
+
+As long as you get a notification, rebuilding the sched domains isn't
+terribly hard to do, there's more code that does that.
+
+> >> Yeah I agree the naming is confusing.
+> >> 
+> >> Let's call them "SMT4 cores" and "SMT8 cores"?
+> >
+> > Works for me, thanks!
+> >
+> >> The problem is we are already lying to userspace, because firmware lies to us.
+> >> 
+> >> ie. the firmware on these systems shows us an SMT8 core, and so current kernels
+> >> show SMT8 to userspace. I don't think we can realistically change that fact now,
+> >> as these systems are already out in the field.
+> >> 
+> >> What this patch tries to do is undo some of the mess, and at least give the
+> >> scheduler the right information.
+> >
+> > What a mess... I think it depends on what you do with that P9 to P8
+> > migration case. Does it make sense to have a "p8_compat" boot arg for
+> > the case where you want LPAR migration back onto P8 systems -- in which
+> > case it simply takes the firmware's word as gospel and doesn't untangle
+> > things, because it can actually land on a P8.
+> 
+> We already get told by firmware that we're running in "p8 compat" mode,
+> because we have to pretend to userspace that it's running on a P8. So we
+> could use that as a signal to leave things alone.
+> 
+> But my understanding is most LPARs don't get migrated back and forth,
+> they'll start life on a P8 and only get migrated to a P9 once when the
+> customer gets a P9. They might then run for a long time (months to
+> years) on the P9 in P8 compat mode, not because they ever want to
+> migrate back to a real P8, but because the software in the LPAR is still
+> expecting to be on a P8.
+> 
+> I'm not a real expert on all the Enterprisey stuff though, so someone
+> else might be able to give us a better picture.
+> 
+> But the point of mentioning the migration stuff was mainly just to
+> explain why we feel we need to present SMT8 to userspace even on P9.
+
+OK, fair enough. The patch wasn't particularly onerous, I was just
+wondering why etc..
+
+The case of starting on a P8 and being migrated to a P9 makes sense to
+me; in that case you'd like to rebuild your sched domains, but can't go
+about changing user visible topolofy information.
+
+I suppose:
+
+Acked-by; Peter Zijlstra (Intel) <peterz@infradead.org>
+
+An updated Changelog that recaps some of this discussion might also be
+nice.
