@@ -2,159 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0410623DBE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DBD23DCE5
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728724AbgHFQgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728852AbgHFQfQ (ORCPT
+        id S1729556AbgHFQ57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:57:59 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:37175 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729793AbgHFQ5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:35:16 -0400
-Received: from EUR03-DB5-obe.outbound.protection.outlook.com (mail-db5eur03on0606.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0a::606])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25AC3C00215D
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:02:38 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RD8xgo43a6T2SGFjAcWDjV+r4fjzoY8b6B8Mxy98sWXkZNyIEDqP9gqLZuLaF94uXmsKvOzHM5wBYDt33M2G0wqjQNf5bER2SYJwoE7ygSgeoicrhHYwXuzJiMSbeYMx+ZetpH1S0iX63tcZ7Z4f6ds4h/b5HyVAXt7oOv5SrmxTTjzG1u3EBToIkN+zo4VGFWAD/nu85CCf7eIe8BzAlWTn+GS8bwtIk6S2Zt2yLS15/BBqY3rvNumTBX9g4GkRhy/bn3PxxiuQzCytJDrRtDeQ394w1fDQ2Ib/tzf03RrSB0Ctfo1Q6AtYEP+j5AZtmhBK8B7/cVC07oI8bKLWFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DLqJ0miimQRl3JojoWiGKToPRHUPoM8wNVkepgL6SQg=;
- b=lnXMYx7V9iSBw3xE6NsSk5cxP553ydfP74bwFG4yUE8btt0npzVlBv8HVnzi3kjeNGuSqW4tBp00M90djfVe0yJPtVG2IrcapN+DQIrIW9oD+AjB+SJZAdyARoAOoO14cdK2+2fpWHs2f/ZBKJ0Eua0JhXUu+Zs9shF8aSVAzOrFVOE5GiGWqj/YSZmaJ1xc4ZOIlhGGaqrvxptekaqiGbXDLWgfLzNuf1DtCdMMB16rhOV2jWBc914FsmRnz4RKDSTOL801VbbRsoX3hDnr9RKPsqqUuk6pDyLT8bXzypiJHRkxtUAUM1hDUIZd/fcNTMTShe3Y0fAzXtVz6Lnitg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DLqJ0miimQRl3JojoWiGKToPRHUPoM8wNVkepgL6SQg=;
- b=reVsNquZ1rhlqHKc/+DtjcfpPD4xs4VfGbUVvXNfDDnKDdu3Yc1uXV2e7vzh95DrHSUNjVfvCJ71vL4WQvpBwzNaziCSTkMTlvAVQ1uWzkvDA5XMOl6HB3+5evvJWbCYYUJY/XuMRVllSBgpgmGGu0PvKiZuk0btZyMY1Zci4Rw=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=mellanox.com;
-Received: from AM0PR05MB4786.eurprd05.prod.outlook.com (2603:10a6:208:b3::15)
- by AM0PR05MB4900.eurprd05.prod.outlook.com (2603:10a6:208:cb::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.21; Thu, 6 Aug
- 2020 12:10:10 +0000
-Received: from AM0PR05MB4786.eurprd05.prod.outlook.com
- ([fe80::9186:8b7:3cf7:7813]) by AM0PR05MB4786.eurprd05.prod.outlook.com
- ([fe80::9186:8b7:3cf7:7813%7]) with mapi id 15.20.3239.021; Thu, 6 Aug 2020
- 12:10:10 +0000
-Date:   Thu, 6 Aug 2020 15:10:02 +0300
-From:   Eli Cohen <eli@mellanox.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "mst@redhat.com" <mst@redhat.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rob.miller@broadcom.com" <rob.miller@broadcom.com>,
-        "lingshan.zhu@intel.com" <lingshan.zhu@intel.com>,
-        "eperezma@redhat.com" <eperezma@redhat.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        Shahaf Shuler <shahafs@mellanox.com>,
-        "hanand@xilinx.com" <hanand@xilinx.com>,
-        "mhabets@solarflare.com" <mhabets@solarflare.com>,
-        "gdawar@xilinx.com" <gdawar@xilinx.com>,
-        "saugatm@xilinx.com" <saugatm@xilinx.com>,
-        "vmireyno@marvell.com" <vmireyno@marvell.com>,
-        "zhangweining@ruijie.com.cn" <zhangweining@ruijie.com.cn>
-Subject: Re: [PATCH 1/4] vdpa: introduce config op to get valid iova range
-Message-ID: <20200806121002.GA171574@mtl-vdi-166.wap.labs.mlnx>
-References: <20200617032947.6371-1-jasowang@redhat.com>
- <20200617032947.6371-2-jasowang@redhat.com>
+        Thu, 6 Aug 2020 12:57:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596733022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JsQQ+Of14Jcox/vjqRSvLqdJ9OO0AZmQ6i3MKzbPweU=;
+        b=ECmsgVcMzNpEWxJQ99HTAjC4QylaUFh2OgG6T21CvkiIg9O4Chec9vE5hL+436Bjhrjcao
+        aFmRtf6itPkJKu6DKyIettse6Cl7U3R0g4ANecAXu385+UnOMUodg8rhVppxqAkY1NgNL7
+        2UNxBwXDMrTvNnQ8Z26CQTt8Wft0NYo=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-zwNVAjOLO5Wc5CnDT8T3dQ-1; Thu, 06 Aug 2020 08:19:35 -0400
+X-MC-Unique: zwNVAjOLO5Wc5CnDT8T3dQ-1
+Received: by mail-wm1-f70.google.com with SMTP id p23so3511971wmc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 05:19:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JsQQ+Of14Jcox/vjqRSvLqdJ9OO0AZmQ6i3MKzbPweU=;
+        b=DwI1srMW6MtUZvMa+34CliJ9mqGEgU8b5fEaOp41tnIg7t9/Ah73RL7EXPvaQ9wLmr
+         9GsnfYQm8mv6bA2yFFkmPrRstirR7rV2s4oPLdXbq0+Zj5V+NAA2wIzgGW72+Y4nbSNS
+         f8KhdOucI4YmBV+tBIWIwLjwwhq7+kASiRnWdf6zy0DwMaXGlwlmpFr3yIKTYQunEH12
+         F0OkKwGo0lALTV3gr16qwh1DA9/a356xoonVn9Vj8zFaDVS0V5UPEsTCPxkARGrCNoUu
+         netjwEsQjyFYZ6cLtuBbnDO7w7ys/g2Ul6uAGdGOoJVbC4MB7TaxIiME3CeM0rL3sDal
+         8N6w==
+X-Gm-Message-State: AOAM533t5IAqwDc1XEGj1sdC7CPGQ7XvsMiQFIVToZJQ2za7GESamEys
+        9G+PKjCewCzlFETj+lvNuFThHZTyRbKfx3d9uqv6GG5X66GoMRtu1LaflYhs/MylrxIoER06qG7
+        ufMcIRUf9ApzNZiiHu9Tclww+
+X-Received: by 2002:a1c:5a41:: with SMTP id o62mr7903989wmb.16.1596716374331;
+        Thu, 06 Aug 2020 05:19:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzyIywm4grHWIEGGqRYHwakkz8CRdHAYx5VrR1wcD6mUEyChlrX/txPMAT79yt1vKaH9Ku0ng==
+X-Received: by 2002:a1c:5a41:: with SMTP id o62mr7903978wmb.16.1596716374170;
+        Thu, 06 Aug 2020 05:19:34 -0700 (PDT)
+Received: from redhat.com (bzq-79-180-0-181.red.bezeqint.net. [79.180.0.181])
+        by smtp.gmail.com with ESMTPSA id n24sm6536082wmi.36.2020.08.06.05.19.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 05:19:33 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 08:19:30 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
+Message-ID: <20200806081800-mutt-send-email-mst@kernel.org>
+References: <20200728143741.2718593-1-vkuznets@redhat.com>
+ <20200805201851-mutt-send-email-mst@kernel.org>
+ <873650p1vo.fsf@vitty.brq.redhat.com>
+ <20200806055008-mutt-send-email-mst@kernel.org>
+ <87wo2cngv6.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200617032947.6371-2-jasowang@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-ClientProxiedBy: AM0PR05CA0075.eurprd05.prod.outlook.com
- (2603:10a6:208:136::15) To AM0PR05MB4786.eurprd05.prod.outlook.com
- (2603:10a6:208:b3::15)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mtl-vdi-166.wap.labs.mlnx (94.188.199.18) by AM0PR05CA0075.eurprd05.prod.outlook.com (2603:10a6:208:136::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.15 via Frontend Transport; Thu, 6 Aug 2020 12:10:08 +0000
-X-Originating-IP: [94.188.199.18]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: ef9a659e-936a-47a2-4194-08d83a01aa33
-X-MS-TrafficTypeDiagnostic: AM0PR05MB4900:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR05MB4900A014E6839CE2227D2131C5480@AM0PR05MB4900.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1051;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kHanc3JHLU/I1xq/QrHA4qMmqSDF+tBPez6FGK0a3a+17tc0NZ/AVuT49eQZwoMpPtXysyM3NnRgmzYKkrbhRO+xNIiWunKiY8ZvUsfMpTwaKjiz2LQB+4Eazgpm/9QknQhCOhJANnj3TfQIvZ5anpztVTjPwxTr/iq7T5nv7AHY6eOUzTZnBjzOzYqis6dN3EQW2avtlLnBAQu63GEQ95fMgbM8GFiZyOU4GfQ+sd4YaLt6fItkE7PjxWRnrvkQP6AcgeGYqY7GAYye6r7EZ0c0ka+SAr25okNSd0x7+3hW6lZL996S2Dinnap9NljJy8ni5O4IDqzDu3mv2ctGJw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB4786.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(136003)(366004)(376002)(346002)(26005)(186003)(6506007)(66556008)(52116002)(66946007)(7696005)(83380400001)(956004)(1076003)(54906003)(16526019)(33656002)(66476007)(5660300002)(86362001)(6666004)(316002)(4326008)(2906002)(7416002)(478600001)(8676002)(9686003)(55016002)(6916009)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: X0pl5mAtk+FTVMqFnpy41em+Qof4ftxxZZGaOnV7i/dFbs1/+WUh8Ajd1yArPlwpI8ZHnyf7wU5Ae++C/iqPYlP5FheDodcXH1aUTERK9cAsm9kSCtBgz7OCQew+ydVYPC1FDAo1pEh5JlWlvNlx2SQg9bmQ8FZqUj6DWSi0iYJpvcgYJF6MU4YLjomWaFssnNJa9aaf2y+bmrvf0NK+NRk5pEN8JckXDW0OdmweFJuyykDA15z4Su+yT49jrKzuxormlS1SOG4j6HBBOhE5Bpq96rWsBAmPfUjKgME7Zz3f9jhRgKJy36wV7FmYxn3Ii1FGsMc9q9WGR/kKYQPUgRrUdASVjly/5DEYVoe1GZ2MSZsRYq1f8nQuZ3gMVqwXz9JVKA8CGn/DMCh8+VpnTFWRG6ghC+swolXaEJ7TGNPXifLntNV3xh02RmdCrsiIZHTIDYTT6EywfJd5nIcb3dxOqXaSgbbd4pnISwQLu/6aaumg+DzR8roXoZGLthlBgCRU7To7dz3ul4H7+2ODknQgcW8j8u/+Gm6GYgjonqnGxH5tu9u4NXZZGBpoYwLQ25/5P6irNCNI3plFMYxrpinmG6MiF+M19f9KhzkBgboqqg5g7mI+pwHUDSztvjWeZsRt89OviZr9bGokB3Xl7w==
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef9a659e-936a-47a2-4194-08d83a01aa33
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR05MB4786.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2020 12:10:10.0457
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mFAkiKODoRNjNaUipZ6P4IeGOI5Jv5+VdwNd0n/l8WRtC2iOws8feC0YKuSKGuuDFHFXtOlteG9piqUsF5Fnig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB4900
+In-Reply-To: <87wo2cngv6.fsf@vitty.brq.redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 06:29:44AM +0300, Jason Wang wrote:
-> This patch introduce a config op to get valid iova range from the vDPA
-> device.
+On Thu, Aug 06, 2020 at 01:39:09PM +0200, Vitaly Kuznetsov wrote:
+> "Michael S. Tsirkin" <mst@redhat.com> writes:
 > 
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> ---
->  include/linux/vdpa.h | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+> > About the feature bit, I am not sure why it's really needed. A single
+> > mmio access is cheaper than two io accesses anyway, right? So it makes
+> > sense for a kvm guest whether host has this feature or not.
+> > We need to be careful and limit to a specific QEMU implementation
+> > to avoid tripping up bugs, but it seems more appropriate to
+> > check it using pci host IDs.
 > 
-> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> index 239db794357c..b7633ed2500c 100644
-> --- a/include/linux/vdpa.h
-> +++ b/include/linux/vdpa.h
-> @@ -41,6 +41,16 @@ struct vdpa_device {
->  	unsigned int index;
->  };
->  
-> +/**
-> + * vDPA IOVA range - the IOVA range support by the device
-> + * @start: start of the IOVA range
-> + * @end: end of the IOVA range
-> + */
-> +struct vdpa_iova_range {
-> +	u64 start;
-> +	u64 end;
-> +};
-> +
+> Right, it's just that "running on KVM" is too coarse grained, we just
+> need a way to somehow distinguish between "known/good" and
+> "unknown/buggy" configurations.
 
-What do you do with this information? Suppose some device tells you it
-supports some limited range, say, from 0x40000000 to 0x80000000. What
-does qemu do with this information?
+Basically it's not KVM, it's QEMU that is known good.  QEMU vendor id in
+the pci host seems like a reasonable way to detect that. If someone
+reuses QEMU ID - I guess they better behave just like QEMU :)
 
->  /**
->   * vDPA_config_ops - operations for configuring a vDPA device.
->   * Note: vDPA device drivers are required to implement all of the
-> @@ -134,6 +144,9 @@ struct vdpa_device {
->   * @get_generation:		Get device config generation (optional)
->   *				@vdev: vdpa device
->   *				Returns u32: device generation
-> + * @get_iova_range:		Get supported iova range (on-chip IOMMU)
-> + *				@vdev: vdpa device
-> + *				Returns the iova range supported by the device
->   * @set_map:			Set device memory mapping (optional)
->   *				Needed for device that using device
->   *				specific DMA translation (on-chip IOMMU)
-> @@ -195,6 +208,7 @@ struct vdpa_config_ops {
->  	void (*set_config)(struct vdpa_device *vdev, unsigned int offset,
->  			   const void *buf, unsigned int len);
->  	u32 (*get_generation)(struct vdpa_device *vdev);
-> +	struct vdpa_iova_range (*get_iova_range)(struct vdpa_device *vdev);
->  
->  	/* DMA ops */
->  	int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
+I also proposed only limiting this to register 0 (device id),
+will make it very unlikely this can break accidentally ...
+
 > -- 
-> 2.20.1
-> 
+> Vitaly
+
