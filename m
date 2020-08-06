@@ -2,167 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F8923D831
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8CB23D829
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgHFIyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 04:54:08 -0400
-Received: from mga11.intel.com ([192.55.52.93]:12501 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726094AbgHFIyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 04:54:06 -0400
-IronPort-SDR: 8riitl7awcECN3o2wbk13vGeGzfMPGMok5606GAPhdt5VIXfEPB8BJL8W+fzzu+9/ujc+akih5
- m4o/EKj9f0fg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="150498635"
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="150498635"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 01:54:05 -0700
-IronPort-SDR: InD2z2LzvaoEpB1qIUDjK4uckbvUGxbnedd0SgcCWvZeFkxTjiopNMxEng1nNiYcDnpaPK2q48
- MyN9lEd/qgJg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="493125492"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga006.fm.intel.com with ESMTP; 06 Aug 2020 01:54:03 -0700
-Date:   Thu, 6 Aug 2020 16:50:33 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     "Wu, Hao" <hao.wu@intel.com>
-Cc:     "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>
-Subject: Re: [PATCH v3 3/4] fpga: dfl: create a dfl bus type to support DFL
-   devices
-Message-ID: <20200806085033.GA13943@yilunxu-OptiPlex-7050>
-References: <1596524715-18038-1-git-send-email-yilun.xu@intel.com>
- <1596524715-18038-4-git-send-email-yilun.xu@intel.com>
- <DM6PR11MB38194B629A3DC70FC0E8A010854B0@DM6PR11MB3819.namprd11.prod.outlook.com>
- <20200806060257.GB7179@yilunxu-OptiPlex-7050>
- <DM6PR11MB3819D5CFD0A46DCE02C9EF1A85480@DM6PR11MB3819.namprd11.prod.outlook.com>
+        id S1728935AbgHFIwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 04:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728607AbgHFIwB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 04:52:01 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3D0C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 01:52:00 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id p16so29004425ile.0
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 01:52:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VaSV/iOvU4KTpuYFNqKMq1HFqHP5k5kT1iej1ya7KdQ=;
+        b=tDn2Fk6RhwRhI/ZdCNLFMXX8oTnr1BGydvcryTFZLifDcdTJ33JCpN+J6BYeM6k9KO
+         KFJHdLqpNuisjDFG3rCZd2ReM2Ho8wGVuZXeISHpl56E18GE/M3qz7Oz3a3MBkfRcN62
+         p1kdotbeYQCoOX9pepWkSv0jP8T/nqmFBaUUQ++cxyOUgmyFmA5kraGMewqOKpjAXw0o
+         /x3EwYzg+AC3ywQdAUCNWUnilEdTNQDJktiVhls1MdZ02dqfXUmWuylPb8YbjX0PqKrH
+         yLU8Hm1PU0lxGm17SbjBihDIV/NWX4X/tTj8lxQfcrxLiNnBtz61+WBs5rkAoZqOaChG
+         +eFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VaSV/iOvU4KTpuYFNqKMq1HFqHP5k5kT1iej1ya7KdQ=;
+        b=EG//mfmG4GSjdCxWFdCnRF83yAMA8SogndbWa9moMMay1gqbyt8dTmulPEnDYfmWxB
+         R69fxVa4u6v+GWuexDfaRdknA0PWYwfS/SfBMkuNdHmy3sxmUJShS0GYtib4UGYZZp0l
+         9JZr4S9VUDVGx62pRdUZHGseZtwt7erL2r4bpCOGiPtsG4L/YxUGevePfi2ypM/0VTY8
+         99eakmBwvHEvuHGmimFTG467OzI+/HPZ+emzKpsisYBPkVOtVr+rIVdnRyfzRqq7UB8u
+         vp7Pwahyjc1cPOLwMyj8NbrPbIMVHMsQs/tSCc7oqqqVGq34/dyrhrZEIVER1w3GV+7X
+         yHBg==
+X-Gm-Message-State: AOAM5321jJ0KedBkeaG4X8A/l/NOsK+mnDwt4r5TKR+r6mlRgpWUvkJi
+        o9ctdMhQ5w4Es8RNnIW6l6bnjQUqf2ykX1O/+/3H95wicR3J/A==
+X-Google-Smtp-Source: ABdhPJzGpNbmtnmC6ma4yk3rvNm7OdHnI1PDjmt9Qpv76QdRLXqmmEKMgXT9m4eEF1glYKlS2oM8/jelYTGC7QG/uZQ=
+X-Received: by 2002:a92:1d1:: with SMTP id 200mr9616426ilb.71.1596703919933;
+ Thu, 06 Aug 2020 01:51:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB3819D5CFD0A46DCE02C9EF1A85480@DM6PR11MB3819.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20200805153507.053638231@linuxfoundation.org>
+In-Reply-To: <20200805153507.053638231@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 6 Aug 2020 14:21:48 +0530
+Message-ID: <CA+G9fYujKYgN1r168ot8Kvx2SNtYOgAj8gBCYxQ6ek9mUzndrg@mail.gmail.com>
+Subject: Re: [PATCH 5.4 0/9] 5.4.57-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 03:11:14PM +0800, Wu, Hao wrote:
-> > > > +static int dfl_bus_uevent(struct device *dev, struct kobj_uevent_env
-> > *env)
-> > > > +{
-> > > > +struct dfl_device *ddev = to_dfl_dev(dev);
-> > > > +
-> > > > +return add_uevent_var(env, "MODALIAS=dfl:t%08Xf%04X",
-> > > > +      ddev->type, ddev->feature_id);
-> > >
-> > > Then we only print 12bit of feature_id will be enough?
-> > > should we make type shorter as well as feature id?
-> >
-> > I could envision that we need a struct
-> >
-> >  struct dfl_feature_id {
-> > u16 id: 12;
-> >  }
-> >
-> > for it.
-> >
-> > But it seems more complex and I didn't see the benifit. We don't have to
-> > worry about the invalid values cause we parse all the ddev->feature_id in
-> > dfl driver, and ensures it will not be larger than 12bit value.
-> 
-> Ideally type is only 4bits per spec, but looks like it's adding more zero before
-> the type value, and also the feature id. This may not be a real problem, but
-> may look a little wired, isn't it?
+On Wed, 5 Aug 2020 at 21:23, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.57 release.
+> There are 9 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 07 Aug 2020 15:34:53 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.57-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-OK, I could change the print.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> 
-> >
-> > > And do you think if we should add a new field for dfl version?
-> >
-> > I think it may not be necessary now. If we support dfl v1 in future, we
-> > still could try to check uuid first, then fall back to type &
-> > feature_id.
-> 
-> I think it's all about the uevent and it's user, and for users, they may have to
-> deal with different versions, right? As you mentioned, if the event will be
-> different format for v1 and it's not compatible with v0, anyway we need
-> the version sooner or later, is my understanding correct?
+Summary
+------------------------------------------------------------------------
 
-The version is not needed for uevent. The different formats of
-uevents explain themselves (dfl v0 or dfl v1), is it?
-If we add the dfl version in uevent then we should also add
-the version in struct dfl_device_id, and all dfl driver should fill the
-version info in its id_table. But actually that's redundent work to
-driver developer.
+kernel: 5.4.57-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: 1c4819817cd892724f91e5d253eec5f746243602
+git describe: v5.4.56-10-g1c4819817cd8
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.4-oe/bui=
+ld/v5.4.56-10-g1c4819817cd8
 
-The version in struct dfl_device may simplify the internal code on how
-to format the uevent. But considering the only extension of dflv1 I
-think checking the null uuid is also simply enough.
 
-> 
-> >
-> > Do you have any idea for the potential usage of dfl version.
-> >
-> 
-> > > > +/* then add irq resource */
-> > > > +if (feature->nr_irqs) {
-> > > > +ddev->irqs = kcalloc(feature->nr_irqs,
-> > > > +     sizeof(*ddev->irqs), GFP_KERNEL);
-> > > > +if (!ddev->irqs) {
-> > > > +ret = -ENOMEM;
-> > > > +goto put_dev;
-> > > > +}
-> > > > +
-> > > > +for (i = 0; i < feature->nr_irqs; i++)
-> > > > +ddev->irqs[i] = feature->irq_ctx[i].irq;
-> > > > +
-> > > > +ddev->num_irqs = feature->nr_irqs;
-> > >
-> > > Do we need to consider using IORESOURCE_IRQ here as well?
-> >
-> > The helper functions for IORESOURCE_IRQ are all for platform_devices,
-> > We need to define a set of functions similar to them, I think current
-> > implementation is simpler, for dfl bus and drivers.
-> 
-> If some case that it's going to reuse some platform device driver,
-> then dfl_device driver will create platform device, it has to pass the mmio
-> and irq resources to platform device driver, how you plan to do that?
+No regressions (compared to build v5.4.55-87-g47b594b8993f)
 
-I think even we create struct resource array for dfl_devices, the dfl
-driver still has to create and fill its pdev resource as needed. There
-is little chance the driver could just memcpy them. So the dfl driver
-could fill the irq resources of pdev according to ddev->irqs & num_irqs.
+No fixes (compared to build v5.4.55-87-g47b594b8993f)
 
-> 
-> > > > +static int dfl_devs_init(struct platform_device *pdev)
-> > > > +{
-> > > > +struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev-
-> > > > >dev);
-> > > > +struct dfl_feature *feature;
-> > > > +struct dfl_device *ddev;
-> > > > +
-> > > > +dfl_fpga_dev_for_each_feature(pdata, feature) {
-> > > > +if (feature->ioaddr || feature->priv)
-> > >
-> > > Why checks priv here?
-> >
-> > I want to make sure the dfl_device is not already created.
-> 
-> Is that a valid case that we expected? or sounds like error code needs
-> to be returned?
+Ran 35321 total tests in the following environments and test suites.
 
-OK. It is invalid, I could error out in this case.
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
 
-> 
-> Thanks
-> Hao
+Test Suites
+-----------
+* install-android-platform-tools-r2800
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* v4l2-compliance
+* ltp-dio-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cve-tests
+* ltp-math-tests
+* ltp-open-posix-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* igt-gpu-tools
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
