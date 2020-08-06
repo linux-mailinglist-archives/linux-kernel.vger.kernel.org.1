@@ -2,139 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A6623DE2A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C45E23DE38
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbgHFRWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
+        id S1729319AbgHFRXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729978AbgHFRF3 (ORCPT
+        with ESMTP id S1729799AbgHFRFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:05:29 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54118C08E834;
-        Thu,  6 Aug 2020 06:46:04 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id x7so6104756qvi.5;
-        Thu, 06 Aug 2020 06:46:04 -0700 (PDT)
+        Thu, 6 Aug 2020 13:05:06 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7139EC08E835;
+        Thu,  6 Aug 2020 06:46:28 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id c15so8840938lfi.3;
+        Thu, 06 Aug 2020 06:46:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Noe4wrhHeIIK26GAoxH7cWbO0xP9alc9hvsEUqIX8NA=;
-        b=cv/95UJph2wr3UWInLzIaEl9oiswTM9TRU4cQfMXkEZoqrQEFWcICBh2QDk6mp1Qfw
-         KpR6V2c1AOvb2DPEJAgM4oED/8vLiZC8HsU0fFeagcUgfjt4lnO2/8pwAin7o0i/3ekq
-         TfLLFQg+VNvw2yYWW01MeOjPuIxsPlD7zR/Kn9dFXY4CCIIEcxFXnq/tbu6ajTWhQ3YN
-         Y7WoYGhOLddFLwZkgIaWhNfNcOfwxQVhMQr/ChvdyVmMjhdh2vrKQXTqXGOVRKrn7ae1
-         RhP0KgyQ0XmQmIA2BRRKUAyx1LVf61bfgtYtSxz6/tJ6IkGMQWWX6ZCO3meTwThYO3dH
-         NM1w==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VZnlZHi2pNVM/YMIfXvf/UHbjwYhQmIPewxedOf93xI=;
+        b=obXR+Nn3YxEJAFYj9GjuuDHfWohVA8Ko2EZOZhRZLysgDkBB/zbNM9sFGHsyIalrV4
+         nhWnw+C8JYCh/hhgGGIK+A5QVPoC1u2W0DMy+tbkWLsBhKev24yAyy/CXHDYX/0qelNI
+         H6YkD+SM7NZszlsAWXR0/CDbstrY4mr0yoePvmsFTURovar9kWBpSeOCu85MkyANy7Q6
+         X4JL+qn9lAkd1xlNmY8vQw+M3hRVSK0hzPO5pygND0gWt0pA/NN4wVcb9XGxq5RBRpYe
+         JTk404spywnd3PhejTaIe4KjNw4tEZhg2KJpTx5y2qHI6RDSdq4QOTyX16Kdx2IGoBvo
+         VChg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Noe4wrhHeIIK26GAoxH7cWbO0xP9alc9hvsEUqIX8NA=;
-        b=B7zfhbBwNQZQ2Vb3H90MCYBypw/fQiLUkYmd++K5bak74FOnoSWzJNZz4xUmd+X2K8
-         NuOhPBNWjGn372D8iFAbqKUwbH/FW0RO36PsPRRJjVv/OV9p0jVrY0DAqBK+Yc3rc0Ce
-         A8JiBfwVp2VXpP3UyoC25bjhKKspBUBZ5OFmYVDmY8EF638Ilj6UUm0y8vLRYxOr47/s
-         uPGGRzOas+9PZg7zZohv8xJINMODOIbyTiZoMlP4A32lvmgCv8M1CAR3PM96gCxncpiD
-         774Kme8oIeZsLi2A6L0P56wss/IZryfqOIhgtVBNP2Gxr7WTFSdlFaaIs5DevtHVtp2f
-         1SHQ==
-X-Gm-Message-State: AOAM531LrRs4C3w9LqKm3VgUJgRQRgjfXnXiz+jyNSdmzoN8Zlv8GsWk
-        pOyH/S62jxHJc//iArEU5CdvZrtk
-X-Google-Smtp-Source: ABdhPJw2x4WU2W9FDOCW+Ug5kBjdCTPlTiPVRAcE3dURT7jwFxY8gJBcK+ltJpICNFCiCipgP1PqgA==
-X-Received: by 2002:ad4:4ea5:: with SMTP id ed5mr9085944qvb.130.1596721551815;
-        Thu, 06 Aug 2020 06:45:51 -0700 (PDT)
-Received: from [192.168.1.190] (pool-68-134-6-11.bltmmd.fios.verizon.net. [68.134.6.11])
-        by smtp.gmail.com with ESMTPSA id g136sm4331573qke.82.2020.08.06.06.45.50
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VZnlZHi2pNVM/YMIfXvf/UHbjwYhQmIPewxedOf93xI=;
+        b=tagaIIRLTt86ZBnBqxL3EzA8poZDsNq1p8gZniw42b//dzB1EnGM2vXudxtyv6Kyvx
+         yvKseGSwmx74kpcgcnsyi06EVjQBa2q45jEfF861Dum6KEK/Y5CGgzATUo7R+phsY1Ev
+         /zF70lW2ufQFP4Y4BO0eeAuIdVQYj6e16YKEipjBVedxM+1OFx5ySmUlIuSvDsibao4I
+         jAdBcf7rPcIAJZTp6xvW2KzwBRkFhYhyvddQtWDcBhlo65eBiTZTmpID0jx54ilP6wXb
+         9tZfOH1Znq6vXKSg2ZyUQAvEVJHG1UvlJaxigwUNDejzi3l3gItK33wWhqhDS3/GYKUr
+         DKNg==
+X-Gm-Message-State: AOAM531EdD8H/9ojGlu3d0RoFXiU+9BxYCphRcMy3YRZpl4ls2ZKoG5i
+        jm011Wmdb8Qbup8XcevxWnw0KwJi
+X-Google-Smtp-Source: ABdhPJw4moAXUF/I/3kTkOQE43bGzwcBxEGZxvffHv+O3d1addRnPEos3MVbxYnblMoeVEBo8DGHhg==
+X-Received: by 2002:a19:4f01:: with SMTP id d1mr3959771lfb.159.1596721576594;
+        Thu, 06 Aug 2020 06:46:16 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-41-50.dynamic.spd-mgts.ru. [94.29.41.50])
+        by smtp.googlemail.com with ESMTPSA id z18sm2402757lja.55.2020.08.06.06.46.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 06:45:51 -0700 (PDT)
-Subject: Re: [PATCH 2/2] selinux: add attributes to avc tracepoint
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-To:     peter enderborg <peter.enderborg@sony.com>,
-        =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     Nick Kralevich <nnk@google.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
-References: <20200806080358.3124505-1-tweek@google.com>
- <20200806080358.3124505-2-tweek@google.com>
- <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com>
- <8627d780-0e19-6755-0de5-c686deb0f5de@sony.com>
- <971592b6-5d5f-05d8-d243-b521fe65577d@gmail.com>
-Message-ID: <07e2c48d-3918-6ceb-a6b2-4e2f18f9ea01@gmail.com>
-Date:   Thu, 6 Aug 2020 09:45:50 -0400
+        Thu, 06 Aug 2020 06:46:15 -0700 (PDT)
+Subject: Re: [Patch v2 2/4] dmaengine: tegra: Add Tegra GPC DMA driver
+To:     Rajesh Gumasta <rgumasta@nvidia.com>, ldewangan@nvidia.com,
+        jonathanh@nvidia.com, vkoul@kernel.org, dan.j.williams@intel.com,
+        thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kyarlagadda@nvidia.com, Pavan Kunapuli <pkunapuli@nvidia.com>
+References: <1596699006-9934-1-git-send-email-rgumasta@nvidia.com>
+ <1596699006-9934-3-git-send-email-rgumasta@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <bc7d0d9d-ac7f-b720-64f5-63e0c76e6786@gmail.com>
+Date:   Thu, 6 Aug 2020 16:46:14 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <971592b6-5d5f-05d8-d243-b521fe65577d@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1596699006-9934-3-git-send-email-rgumasta@nvidia.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/20 8:32 AM, Stephen Smalley wrote:
+06.08.2020 10:30, Rajesh Gumasta пишет:
+...
+> +/*
+> + * Save and restore csr and channel register on pm_suspend
+> + * and pm_resume respectively
+> + */
+> +static int __maybe_unused tegra_dma_pm_suspend(struct device *dev)
+> +{
+> +	struct tegra_dma *tdma = dev_get_drvdata(dev);
+> +	int i;
+> +
+> +	for (i = 0; i < tdma->chip_data->nr_channels; i++) {
+> +		struct tegra_dma_channel *tdc = &tdma->channels[i];
+> +		struct tegra_dma_channel_regs *ch_reg = &tdc->channel_reg;
+> +
+> +		ch_reg->csr = tdc_read(tdc, TEGRA_GPCDMA_CHAN_CSR);
+> +		ch_reg->src_ptr = tdc_read(tdc, TEGRA_GPCDMA_CHAN_SRC_PTR);
+> +		ch_reg->dst_ptr = tdc_read(tdc, TEGRA_GPCDMA_CHAN_DST_PTR);
+> +		ch_reg->high_addr_ptr = tdc_read(tdc,
+> +						 TEGRA_GPCDMA_CHAN_HIGH_ADDR_PTR);
+> +		ch_reg->mc_seq = tdc_read(tdc, TEGRA_GPCDMA_CHAN_MCSEQ);
+> +		ch_reg->mmio_seq = tdc_read(tdc, TEGRA_GPCDMA_CHAN_MMIOSEQ);
+> +		ch_reg->wcount = tdc_read(tdc, TEGRA_GPCDMA_CHAN_WCOUNT);
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused tegra_dma_pm_resume(struct device *dev)
+> +{
+> +	struct tegra_dma *tdma = dev_get_drvdata(dev);
+> +	int i;
+> +
+> +	for (i = 0; i < tdma->chip_data->nr_channels; i++) {
+> +		struct tegra_dma_channel *tdc = &tdma->channels[i];
+> +		struct tegra_dma_channel_regs *ch_reg = &tdc->channel_reg;
+> +
+> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_WCOUNT, ch_reg->wcount);
+> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_DST_PTR, ch_reg->dst_ptr);
+> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_SRC_PTR, ch_reg->src_ptr);
+> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_HIGH_ADDR_PTR,
+> +			  ch_reg->high_addr_ptr);
+> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_MMIOSEQ, ch_reg->mmio_seq);
+> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_MCSEQ, ch_reg->mc_seq);
+> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_CSR,
+> +			  (ch_reg->csr & ~TEGRA_GPCDMA_CSR_ENB));
+> +	}
+> +	return 0;
+> +}
+> +
+> +static const struct __maybe_unused dev_pm_ops tegra_dma_dev_pm_ops = {
+> +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(tegra_dma_pm_suspend, tegra_dma_pm_resume)
+> +};
 
-> On 8/6/20 8:24 AM, peter enderborg wrote:
->
->> On 8/6/20 2:11 PM, Stephen Smalley wrote:
->>> On 8/6/20 4:03 AM, Thiébaud Weksteen wrote:
->>>
->>>> From: Peter Enderborg <peter.enderborg@sony.com>
->>>>
->>>> Add further attributes to filter the trace events from AVC.
->>> Please include sample usage and output in the description.
->>>
->>>
->> Im not sure where you want it to be.
->>
->> In the commit message or in a Documentation/trace/events-avc.rst ?
->
-> I was just asking for it in the commit message / patch description.  I 
-> don't know what is typical for Documentation/trace.
-
-For example, I just took the patches for a spin, running the 
-selinux-testsuite under perf like so:
-
-sudo perf record -e avc:selinux_audited -g make test
-
-and then ran:
-
-sudo perf report -g
-
-and a snippet of sample output included:
-
-      6.40%     6.40%  requested=0x800000 denied=0x800000 
-audited=0x800000 result=-13 ssid=922 tsid=922 
-scontext=unconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023 
-tcontext=unconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023 
-tclass=capability
-             |
-             ---0x495641000028933d
-                __libc_start_main
-                |
-                |--4.60%--__GI___ioctl
-                |          entry_SYSCALL_64
-                |          do_syscall_64
-                |          __x64_sys_ioctl
-                |          ksys_ioctl
-                |          binder_ioctl
-                |          binder_set_nice
-                |          can_nice
-                |          capable
-                |          security_capable
-                |          cred_has_capability.isra.0
-                |          slow_avc_audit
-                |          common_lsm_audit
-                |          avc_audit_post_callback
-                |          avc_audit_post_callback
-                |
-
+Please explain why this is needed. All DMA should be stopped (not
+paused) on system's suspend, shouldn't it?
