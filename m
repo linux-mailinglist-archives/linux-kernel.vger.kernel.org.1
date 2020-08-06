@@ -2,193 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A073023DED9
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8F923DF0E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730541AbgHFRdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:33:14 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:49232 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729889AbgHFRdH (ORCPT
+        id S1730640AbgHFRgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730443AbgHFRg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:33:07 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596735186; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=KzVFweAIS+EhIpI7ual5fLSHmD+4lkv/Udm9Snff2TA=;
- b=kEmZwxzB651AgGzR7XIzXO2/8lAYJkqbFYX976ClqaViih6s8pj5JkhpuWF1vFxBZVc/wXv1
- BhzjVgu5DzpqDVZCkpN1elaSm3hrUmuLi2GucFTQOXxVTTbu5msT2y2jL8dOHJlW4MX/QJCf
- JVvPENRKQuOWZDanKdnH/gLnWHI=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f2c3ed0d5b453ea40097d64 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 Aug 2020 17:33:04
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1375AC433A0; Thu,  6 Aug 2020 17:33:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 25B06C43391;
-        Thu,  6 Aug 2020 17:33:03 +0000 (UTC)
+        Thu, 6 Aug 2020 13:36:29 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C01C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 10:36:29 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id k12so19983628otr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 10:36:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xWs6Ffw3WpIeedVEGxgmLg1+uarFaPgN9gTHSd3ibmg=;
+        b=h7MloIJOtgd8oNMv9KiDhQ69SKAd0MGHCzbPV18/Axq05hG/Lf4Yd/8WmCguybwVfi
+         w8eh5OFkmAX/tvplpoaVXn0OvcNNxw7LSnRNnxTdygO42DapwzcYU3bZbGEFdC3I+dHx
+         TVE/M/hePiLA9rUDysYU8NV20KFE4WIEDoDTcvTKeVTGbeiGTDR41qT4yPCW4/q9P+ck
+         NPaGnP70XjfFAWXhUjBGWQpOuR/+4FxscdbYWYMwd9Vd41KBJYDjapTuGIV5pJYHxyyB
+         iCblLMlfT3wipepuRTpqpNBWg7y/0JuovsT4+iR4DqK4NslMxW24i9PNdEWkjES+E9mf
+         qrGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xWs6Ffw3WpIeedVEGxgmLg1+uarFaPgN9gTHSd3ibmg=;
+        b=nLu+VyGGIoTiEzH0+vb0uW0RMBcLvlNupsf9dvXJrS1IGLr9l55ElKNiogHURDjeEh
+         WwbfNB4oGLGb+dXsztrn5SRZRv5S7Va0+spT/y2Y+SPdSZXY48oWLUYslzvb+6BOuH8M
+         lMdt17OFRX2IIzGe0ZFXdVNEfdJRLo3kFjOwXx1z9D67tOWtXu72kP4rIjjz/ZanpdJ5
+         9qI6UpDQ2FRP9kU4NHIDAPcotlo1BcsAQMh0TU/FIztsCRA9WjiLrMFld0FqRyepXygJ
+         fV9/4I01NqpkU/ijhmR9Tv5MtbYFHAO2TRFawNfzYN+21QFAWa900koC/t7gmq6Bp06J
+         PLkw==
+X-Gm-Message-State: AOAM533vvPtiwQ8yoxrfUF2cIGz+gDDG3GTBVLNf2It6sqmRn2zmHGUI
+        tDWYSNCTgQK2MbJxKEbGEOzdXSIu6l49+ZeF7RTRyg==
+X-Google-Smtp-Source: ABdhPJw5W+NsuSxoqJYZWbtd8UCN7aRv3GVPEARZjYQheJcs+k9kdmtCeRNsSS+ueHAwpQKOvpXtfbmCdpiamXMXNZw=
+X-Received: by 2002:a9d:22ca:: with SMTP id y68mr8043964ota.56.1596735388579;
+ Thu, 06 Aug 2020 10:36:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 06 Aug 2020 23:03:03 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alex Elder <elder@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+References: <20200728143741.2718593-1-vkuznets@redhat.com> <20200728143741.2718593-3-vkuznets@redhat.com>
+ <CALMp9eSWsvufDXMuTUR3Fmh91O7tHUaqpDbAoavSMc=prpcDzg@mail.gmail.com> <20200805201702-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20200805201702-mutt-send-email-mst@kernel.org>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 6 Aug 2020 10:36:16 -0700
+Message-ID: <CALMp9eRonv7Ds2fw_fByqpQcyQBuq3fEXNnzi6ZmEHd2nHYO+w@mail.gmail.com>
+Subject: Re: [PATCH 2/3] KVM: x86: introduce KVM_MEM_PCI_HOLE memory
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Peter Xu <peterx@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] soc: qcom: aoss: Don't wait for IRQ if we might be in
- suspend/resume noirq
-In-Reply-To: <CAD=FV=Xmf5Qj8obuKdE5CqYL7ek7CQQLPt4j4eTu=RpwcDwM2w@mail.gmail.com>
-References: <20200805091141.1.I86b3faaecb0d82997b599b1300f879606c71e116@changeid>
- <159664899840.1360974.7548807728313161626@swboyd.mtv.corp.google.com>
- <CAD=FV=UK+xHV6qsr2AsPB=BzmzN77AT-du8G2tt1QZMQUpGgKg@mail.gmail.com>
- <159666852526.1360974.3062132560884413001@swboyd.mtv.corp.google.com>
- <4c40db0fe88dd9aff6897ebc103aa3e9@codeaurora.org>
- <CAD=FV=Xmf5Qj8obuKdE5CqYL7ek7CQQLPt4j4eTu=RpwcDwM2w@mail.gmail.com>
-Message-ID: <8450aff2d16aed092295c61a8e4ca850@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-06 22:40, Doug Anderson wrote:
-> Hi,
-> 
-> On Thu, Aug 6, 2020 at 7:36 AM Sibi Sankar <sibis@codeaurora.org> 
-> wrote:
->> 
->> On 2020-08-06 04:32, Stephen Boyd wrote:
->> > +Sibi who wrote the code
->> >
->> > Quoting Doug Anderson (2020-08-05 13:24:06)
->> >>
->> >> On Wed, Aug 5, 2020 at 10:36 AM Stephen Boyd <swboyd@chromium.org>
->> >> wrote:
->> >> >
->> >> > Why is the genpd being powered off at all? It looks like the driver is
->> >> > written in a way that it doesn't expect this to happen. See where
->> >> > adsp_pds_disable() is called from. Looks like the remoteproc "stop"
->> >> > callback should be called or the driver should be detached.
->> >> >
->> >> > It sort of looks like the genpd is expected to be at the max level all
->> >> > the time (it sets INT_MAX in adsp_pds_enable(), cool).
->> >>
->> >> In general in Linux there are some things that, at suspend time, get
->> >> done behind a driver's back.  The regulator API, for instance, allows
->> >> for regulators to be turned off in suspend even if a driver leaves
->> >> them on.  Sure, it's good practice for a driver to be explicit but the
->> >> regulator suspend states do allow for the more heavy-handed approach.
->> >>
->> >> I guess I assume that genpd is a bit similar.  If a driver leaves a
->> >> genpd on all the time then it will still be turned off at suspend time
->> >> and then turned back on at resume time.  It seems like it must be part
->> >> of the genpd API.  Specifically genpd_sync_power_off() says: "Check if
->> >> the given PM domain can be powered off (during system suspend or
->> >> hibernation) and do that if so."  That makes it seem like it's how
->> >> genpd works.
->> >>
->> >> Reading all the descriptions of things like GENPD_FLAG_ALWAYS_ON,
->> >> GENPD_FLAG_ACTIVE_WAKEUP, GENPD_FLAG_RPM_ALWAYS_ON makes me even more
->> >> convinced that it's normal (unless otherwise specified) for genpds to
->> >> get turned off in suspend even if a driver just blindly left them on.
->> >>
->> >> Presumably if this "modem" genpd is supposed to stay on in suspend
->> >> time it should have been marked "always on"?  I'd guess we'd need to
->> >> add "GENPD_FLAG_ALWAYS_ON" in some (or all?) cases in qmp_pd_add() if
->> >> this was true?
->> >
->> > Agreed. I can't read the mind of Sibi so I can only guess that Sibi
->> > wasn't expecting this behavior by reading the driver structure. That
->> > could be a wrong assumption.
->> >
->> >>
->> >>
->> >> > Maybe we need to
->> >> > add some sort of suspend hooks to the remote proc driver instead? Where
->> >> > those suspend hooks are called earlier and drop the genpd performance
->> >> > state request but otherwise leave it enabled across suspend?
->> >>
->> >> I think you're saying:
->> >>
->> >> a) You think it's a bug today that the "modem" genpd is being powered
->> >> off in suspend.  Any evidence to back this up?
->> >>
->> >> b) Assuming it's a bug today, we should mark the "modem" as
->> >> GENPD_FLAG_ALWAYS_ON.
->> >>
->> >> c) If there are genpds that sometimes should be left on in suspend but
->> >> sometimes not (and that doesn't match up with what
->> >> GENPD_FLAG_ACTIVE_WAKEUP does), then we'd have to pass
->> >> GENPD_FLAG_ALWAYS_ON as a flag and then add suspend hooks to make the
->> >> decision for us.
->> 
->> Doug/Stephen,
->> 
->> Yes this is a bug, we wouldn't want
->> to disable aoss_qmp genpd for modem
->> during suspend (when the modem is
->> running). The qmp send for modem
->> is the primary means through which
->> aoss determines whether to wait for
->> modem before proceeding to sleep. So
->> looks like updating the flag with
->> GENPD_FLAG_ACTIVE_WAKEUP is the way
->> to go. But introducing another flag
->> that doesn't touch genpd's during
->> suspend/resume should also work.
-> 
-> OK, sounds good.  As per out-of-band conversation:
-> 
-> * You'll plan to post a patch updating the flag.
-> 
-> * There's still nothing here that says my patch is the wrong thing to
-> do also.  It seems like genpd poweroff routine are expected to be able
-> to run at "noirq" time so we should make sure we are able to do that.
-> 
-> I'm also curious: my patch doesn't affect the behavior.  The genpd
-> would be powered off with or without my patch, my patch just removes a
-> pointless 1 second delay.  Therefore I guess today there is some type
-> of bug because the genpd is being turned off.  What would be the
-> visible impact of that bug?  ...or is it somehow masked by something
-> else keeping this power on so it wasn't an issue right now?
+On Wed, Aug 5, 2020 at 5:18 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Wed, Aug 05, 2020 at 10:05:40AM -0700, Jim Mattson wrote:
+> > On Tue, Jul 28, 2020 at 7:38 AM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+> > >
+> > > PCIe config space can (depending on the configuration) be quite big but
+> > > usually is sparsely populated. Guest may scan it by accessing individual
+> > > device's page which, when device is missing, is supposed to have 'pci
+> > > hole' semantics: reads return '0xff' and writes get discarded. Compared
+> > > to the already existing KVM_MEM_READONLY, VMM doesn't need to allocate
+> > > real memory and stuff it with '0xff'.
+> >
+> > Note that the bus error semantics described should apply to *any*
+> > unbacked guest physical addresses, not just addresses in the PCI hole.
+> > (Typically, this also applies to the standard local APIC page
+> > (0xfee00xxx) when the local APIC is either disabled or in x2APIC mode,
+> > which is an area that kvm has had trouble with in the past.)
+>
+> Well ATM from KVM's POV unbacked -> exit to userspace, right?
+> Not sure what you are suggesting here ...
 
-I've been told AOSS decides to wait
-for modem suspend if its been notified
-that modem is on through qmp_send. AFAIK
-we never ran into this because AOSS sleep
-sequence starts after xo-shutdown which
-wont be reached in the presence of active
-rpmh votes from modem.
-
-Regardless we definitely want this genpd left
-untouched during suspend/resume.
-
-> 
-> -Doug
-> 
-> 
-> -Doug
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Sometimes, maybe. That's not the way the emulation of most VMX
+instructions works, should they access unbacked memory. Perhaps that's
+just a whole slew of bugs to be fixed. :-)
