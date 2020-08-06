@@ -2,279 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE03B23E2EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFFA23E2C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgHFUND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 16:13:03 -0400
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:57592 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726093AbgHFUND (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 16:13:03 -0400
-Received: from localhost.localdomain ([93.22.39.179])
-        by mwinf5d39 with ME
-        id CAzB2300Z3rvC1Z03AzC6E; Thu, 06 Aug 2020 12:59:13 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 06 Aug 2020 12:59:13 +0200
-X-ME-IP: 93.22.39.179
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] tty: serial: icom: switch from 'pci_' to 'dma_' API
-Date:   Thu,  6 Aug 2020 08:05:07 +0200
-Message-Id: <20200806060507.730142-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        id S1726402AbgHFUBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 16:01:47 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9247 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726249AbgHFUBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 16:01:45 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 8893FBF263BE271FF394;
+        Thu,  6 Aug 2020 19:48:24 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Thu, 6 Aug 2020
+ 19:48:13 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     <davem@davemloft.net>, <pabeni@redhat.com>, <willemb@google.com>,
+        <fw@strlen.de>, <pablo@netfilter.org>, <edumazet@google.com>,
+        <steffen.klassert@secunet.com>, <Jason@zx2c4.com>,
+        <rdunlap@infradead.org>, <decui@microsoft.com>,
+        <jakub@cloudflare.com>, <jeremy@azazel.net>, <mashirle@us.ibm.com>
+CC:     <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
+Subject: [PATCH 1/5] net: Fix potential deadloop in skb_copy_ubufs()
+Date:   Thu, 6 Aug 2020 19:50:42 +0800
+Message-ID: <1596714642-25183-1-git-send-email-linmiaohe@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+We could be trapped in deadloop when we try to copy userspace skb frags
+buffers to kernel with a cloned skb:
 
-When memory is allocated in 'get_port_memory()', GFP_KERNEL can be used
-because it is only called from a probe function and no lock is acquired.
-The call chain is:
-   icom_probe				(the probe function)
-      --> icom_load_ports
-         --> get_port_memory
+[kbox] catch panic event, panic reason:kernel stack overflow
+[kbox] catch panic event, start logging.
+CPU: 3 PID: 4083 Comm: insmod Kdump: loaded Tainted: G       OE  4.19 #6
+Hardware name: linux,dummy-virt (DT)
+Call trace:
+	dump_backtrace+0x0/0x198
+	show_stack+0x24/0x30
+	dump_stack+0xa4/0xcc
+	kbox_panic_notifier_callback+0x1d0/0x310 [kbox]
+	notifier_call_chain+0x5c/0xa0
+	atomic_notifier_call_chain+0x3c/0x50
+	panic+0x164/0x314
+	__stack_chk_fail+0x0/0x28
+	handle_bad_stack+0xfc/0x108
+	__bad_stack+0x90/0x94
+	pskb_expand_head+0x0/0x2c8
+	pskb_expand_head+0x290/0x2c8
+	skb_copy_ubufs+0x3cc/0x520
+	pskb_expand_head+0x290/0x2c8
+	skb_copy_ubufs+0x3cc/0x520
+	pskb_expand_head+0x290/0x2c8
+	skb_copy_ubufs+0x3cc/0x520
+	pskb_expand_head+0x290/0x2c8
+	skb_copy_ubufs+0x3cc/0x520
+	...
+	pskb_expand_head+0x290/0x2c8
+	skb_copy_ubufs+0x3cc/0x520
+	...
 
+Reproduce code snippet:
+	skb = alloc_skb(UBUF_DATA_LEN, GFP_ATOMIC);
+	clone = skb_clone(skb, GFP_ATOMIC);
+	skb_zcopy_set_nouarg(clone, NULL);
+	pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
 
-When memory is allocated in 'load_code()', GFP_KERNEL can be used because
-it is only called from a .startup function.
-   icom_open				(the .startup function of struct uart_ops)
-      --> startup
-         --> load_code
-.startup functions are protected using a semaphore and no spinlock is
-taken.
+Catch this unexpected case and return -EINVAL in skb_orphan_frags() before
+we call skb_copy_ubufs() to fix it.
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Fixes: a6686f2f382b ("skbuff: skb supports zero-copy buffers")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/tty/serial/icom.c | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
+ include/linux/skbuff.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/tty/serial/icom.c b/drivers/tty/serial/icom.c
-index 624f3d541c68..94c8281ddb5f 100644
---- a/drivers/tty/serial/icom.c
-+++ b/drivers/tty/serial/icom.c
-@@ -138,24 +138,24 @@ static void free_port_memory(struct icom_port *icom_port)
- 
- 	trace(icom_port, "RET_PORT_MEM", 0);
- 	if (icom_port->recv_buf) {
--		pci_free_consistent(dev, 4096, icom_port->recv_buf,
--				    icom_port->recv_buf_pci);
-+		dma_free_coherent(&dev->dev, 4096, icom_port->recv_buf,
-+				  icom_port->recv_buf_pci);
- 		icom_port->recv_buf = NULL;
- 	}
- 	if (icom_port->xmit_buf) {
--		pci_free_consistent(dev, 4096, icom_port->xmit_buf,
--				    icom_port->xmit_buf_pci);
-+		dma_free_coherent(&dev->dev, 4096, icom_port->xmit_buf,
-+				  icom_port->xmit_buf_pci);
- 		icom_port->xmit_buf = NULL;
- 	}
- 	if (icom_port->statStg) {
--		pci_free_consistent(dev, 4096, icom_port->statStg,
--				    icom_port->statStg_pci);
-+		dma_free_coherent(&dev->dev, 4096, icom_port->statStg,
-+				  icom_port->statStg_pci);
- 		icom_port->statStg = NULL;
- 	}
- 
- 	if (icom_port->xmitRestart) {
--		pci_free_consistent(dev, 4096, icom_port->xmitRestart,
--				    icom_port->xmitRestart_pci);
-+		dma_free_coherent(&dev->dev, 4096, icom_port->xmitRestart,
-+				  icom_port->xmitRestart_pci);
- 		icom_port->xmitRestart = NULL;
- 	}
- }
-@@ -169,7 +169,8 @@ static int get_port_memory(struct icom_port *icom_port)
- 	struct pci_dev *dev = icom_port->adapter->pci_dev;
- 
- 	icom_port->xmit_buf =
--	    pci_alloc_consistent(dev, 4096, &icom_port->xmit_buf_pci);
-+	    dma_alloc_coherent(&dev->dev, 4096, &icom_port->xmit_buf_pci,
-+			       GFP_KERNEL);
- 	if (!icom_port->xmit_buf) {
- 		dev_err(&dev->dev, "Can not allocate Transmit buffer\n");
- 		return -ENOMEM;
-@@ -179,7 +180,8 @@ static int get_port_memory(struct icom_port *icom_port)
- 	      (unsigned long) icom_port->xmit_buf);
- 
- 	icom_port->recv_buf =
--	    pci_alloc_consistent(dev, 4096, &icom_port->recv_buf_pci);
-+	    dma_alloc_coherent(&dev->dev, 4096, &icom_port->recv_buf_pci,
-+			       GFP_KERNEL);
- 	if (!icom_port->recv_buf) {
- 		dev_err(&dev->dev, "Can not allocate Receive buffer\n");
- 		free_port_memory(icom_port);
-@@ -189,7 +191,8 @@ static int get_port_memory(struct icom_port *icom_port)
- 	      (unsigned long) icom_port->recv_buf);
- 
- 	icom_port->statStg =
--	    pci_alloc_consistent(dev, 4096, &icom_port->statStg_pci);
-+	    dma_alloc_coherent(&dev->dev, 4096, &icom_port->statStg_pci,
-+			       GFP_KERNEL);
- 	if (!icom_port->statStg) {
- 		dev_err(&dev->dev, "Can not allocate Status buffer\n");
- 		free_port_memory(icom_port);
-@@ -199,7 +202,8 @@ static int get_port_memory(struct icom_port *icom_port)
- 	      (unsigned long) icom_port->statStg);
- 
- 	icom_port->xmitRestart =
--	    pci_alloc_consistent(dev, 4096, &icom_port->xmitRestart_pci);
-+	    dma_alloc_coherent(&dev->dev, 4096, &icom_port->xmitRestart_pci,
-+			       GFP_KERNEL);
- 	if (!icom_port->xmitRestart) {
- 		dev_err(&dev->dev,
- 			"Can not allocate xmit Restart buffer\n");
-@@ -414,7 +418,7 @@ static void load_code(struct icom_port *icom_port)
- 	/*Set up data in icom DRAM to indicate where personality
- 	 *code is located and its length.
- 	 */
--	new_page = pci_alloc_consistent(dev, 4096, &temp_pci);
-+	new_page = dma_alloc_coherent(&dev->dev, 4096, &temp_pci, GFP_KERNEL);
- 
- 	if (!new_page) {
- 		dev_err(&dev->dev, "Can not allocate DMA buffer\n");
-@@ -494,7 +498,7 @@ static void load_code(struct icom_port *icom_port)
- 	}
- 
- 	if (new_page != NULL)
--		pci_free_consistent(dev, 4096, new_page, temp_pci);
-+		dma_free_coherent(&dev->dev, 4096, new_page, temp_pci);
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 0c0377fc00c2..167c8f4cb6e3 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -2753,6 +2753,9 @@ static inline int skb_orphan_frags(struct sk_buff *skb, gfp_t gfp_mask)
+ 	if (!skb_zcopy_is_nouarg(skb) &&
+ 	    skb_uarg(skb)->callback == sock_zerocopy_callback)
+ 		return 0;
++	/* If the skb is cloned, return error here or we will be trapped in deadloop. */
++	if (unlikely(skb_cloned(skb)))
++		return -EINVAL;
+ 	return skb_copy_ubufs(skb, gfp_mask);
  }
  
- static int startup(struct icom_port *icom_port)
 -- 
-2.25.1
+2.19.1
 
