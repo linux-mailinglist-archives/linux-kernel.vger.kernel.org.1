@@ -2,131 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81D523E2BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC9D23E2C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgHFUBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 16:01:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44740 "EHLO
+        id S1726293AbgHFUCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 16:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725875AbgHFUBB (ORCPT
+        with ESMTP id S1725272AbgHFUCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 16:01:01 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33257C061574;
-        Thu,  6 Aug 2020 13:01:01 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id 9so9846491wmj.5;
-        Thu, 06 Aug 2020 13:01:01 -0700 (PDT)
+        Thu, 6 Aug 2020 16:02:47 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0067C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 13:02:47 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o13so27545644pgf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 13:02:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1efmHhkESZyyTkV4YjG9R+9VKAGSzU4A2n9DPJ51c6k=;
-        b=vXzP8kirTQLXYXApQ4BkSpIMvXB164bzSWnTW5WsT1Th1fa0cfY/x6FOvSEdm6nXnD
-         4uMl/EHRTfBE49HyFD6TbXG+Hbt9V3beqowzhdWO9GfYvHI8qphDINlGViHhAJ6zOBrw
-         xcAP9Cz9DxEAPnVO0nF7ecih9rDg17vCXQ344u58AwahDEq5GCRn0dLorkX/GEAmHo6o
-         pfQZy+AdC2UYQtWrQuCiFIWZ4oPFfcf8KshjJC5hDASRdCQF+B2vyYIHOJRsbCHgRriM
-         29ipPohXt9rHbc0XtelExLCVJco6YzCcfGdfwuUTckpc42y+C0xQSd56DatK9MEviAhE
-         4lGA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y6WcLYjf0CU0iVN4Q9GedmvZXdsK8JgwGS0sL53z0KA=;
+        b=FSNR9s4dMJqLdikbJ7ztdA7Pc3gB6eHveHHSW/Z1O5T8Mxz64Jn7BAZ0O+v2c82Kc7
+         OrwOfX5GfZzOAWnQw0WKofOrkhuOP0oVFwHKtDbxGNXKLn6Ip6/BX/fuThjIBbaWokht
+         qX7N+5AMA+kUDpoZLYgpKcNcyV39bEiWJKW1k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1efmHhkESZyyTkV4YjG9R+9VKAGSzU4A2n9DPJ51c6k=;
-        b=PyVbbL/HW8sU08I+wou+k2yBZbKSKi/rTHCV+MeaWygvfUVMDZQotRza+qLdn0Cd51
-         mZ0WlxQ/4MaLiiv6NSD8iZavAz+9pRfneHpFFDizHTnTH5A+xrwDTi5IZ0LUYa/LCEz3
-         brUeE3cdP4IRo6GSxJnC4rE+GRX1bsbTtz5mHjqUFvkHcUFggpP4a6i7o+RzVwXmzzbN
-         rXowlv7Ctzp4a5cbfIQuK2NPSgURc188mc0aFHBqVNI5p8OMc1mvlm0ygpCZGFtSQSsJ
-         mf1s+JR4/7U+3dS4/b9zDdDx8ft1gM/2UVElwAYBH6zcKqGOB1rSPaOUXPyCW4Bypslh
-         k/9w==
-X-Gm-Message-State: AOAM530E/2LDXFwA7P+EgWd0cxt13gTbgUjutg6ZGu7YJ5VngUph7Iup
-        w1dYN5ADvCNDFoHFDmX9kBo=
-X-Google-Smtp-Source: ABdhPJwGV5s3DdZeTmZurz5B8CV3xP8yPdmxkvz6E0i1ONWbghrttEfIOdrVF+lRXrsTMBAlrjsgyw==
-X-Received: by 2002:a1c:964b:: with SMTP id y72mr9536627wmd.69.1596744059869;
-        Thu, 06 Aug 2020 13:00:59 -0700 (PDT)
-Received: from [10.230.30.107] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id y203sm8105701wmc.29.2020.08.06.13.00.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 13:00:59 -0700 (PDT)
-Subject: Re: [PATCH stable v4.9 v2] arm64: entry: Place an SB sequence
- following an ERET instruction
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>
-References: <20200709195034.15185-1-f.fainelli@gmail.com>
- <20200720130411.GB494210@kroah.com>
- <df1de420-ac59-3647-3b81-a0c163783225@gmail.com>
-Message-ID: <9c29080e-8b3a-571c-3296-e0487fa473fa@gmail.com>
-Date:   Thu, 6 Aug 2020 13:00:54 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.10.0
+        bh=y6WcLYjf0CU0iVN4Q9GedmvZXdsK8JgwGS0sL53z0KA=;
+        b=JLIs/z/FPSEzs5KqN2D0PA9k4sbg7Z23CSSUIVtfQrHv6C4dAmEXoUwTT3DzBPHQG/
+         nfQT7PryYvTEGAQ5LTxRISNzfwFY5Auvkz9js5WR/a9QMaR0XTUh5coHWiYb+uyjCWoc
+         XnCpzLqT4S/7HdiEOrmyDa/yLsmRcFnFd/vAkOlFKFrVDNHzo1pHXW9iXsPol5I7u4UQ
+         fC+S0UMbc86KNRxo+2Ag9eauzV77KKgUsT4u27Q8HOFWptyGaUUnL9E8Ny7TMdt8v1TO
+         tZACo7v50KGnvpvNH38F0Fx1gHfRNkdp81qJrm5y9vpDtn8oLQMMUAKAWQIK1wcO+CvN
+         qogw==
+X-Gm-Message-State: AOAM5330R/7toZIM6qNn0BaRHVDZwA50TK2Otqn00wyKSQqnEJ4tzQX+
+        ByVxDnkAIH1B4WyJ/maVVq0Z+A==
+X-Google-Smtp-Source: ABdhPJxhkPxXi4g1/LUWtikGFy2euAdY0VwMTB8RnKsrwCYod3B6LIF43md44gYapZuhzzj0nMEFcQ==
+X-Received: by 2002:a65:6817:: with SMTP id l23mr8744061pgt.428.1596744167100;
+        Thu, 06 Aug 2020 13:02:47 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id y29sm9322179pfr.11.2020.08.06.13.02.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 13:02:46 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Pavel Machek <pavel@denx.de>,
+        Douglas Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] regmap: debugfs: Fix comment typo malforned=>malformed
+Date:   Thu,  6 Aug 2020 13:02:26 -0700
+Message-Id: <20200806130222.1.I832b2b45244c80ba2550a5bbcef80b574e47c57e@changeid>
+X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
 MIME-Version: 1.0
-In-Reply-To: <df1de420-ac59-3647-3b81-a0c163783225@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Silly typo.  You go squish now.  Was introduced in commit 299632e54b2e
+("regmap: debugfs: Don't sleep while atomic for fast_io regmaps").
 
+Reported-by: Pavel Machek <pavel@denx.de>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-On 7/20/2020 11:26 AM, Florian Fainelli wrote:
-> On 7/20/20 6:04 AM, Greg KH wrote:
->> On Thu, Jul 09, 2020 at 12:50:23PM -0700, Florian Fainelli wrote:
->>> From: Will Deacon <will.deacon@arm.com>
->>>
->>> commit 679db70801da9fda91d26caf13bf5b5ccc74e8e8 upstream
->>>
->>> Some CPUs can speculate past an ERET instruction and potentially perform
->>> speculative accesses to memory before processing the exception return.
->>> Since the register state is often controlled by a lower privilege level
->>> at the point of an ERET, this could potentially be used as part of a
->>> side-channel attack.
->>>
->>> This patch emits an SB sequence after each ERET so that speculation is
->>> held up on exception return.
->>>
->>> Signed-off-by: Will Deacon <will.deacon@arm.com>
->>> [florian: Adjust hyp-entry.S to account for the label
->>>  added change to hyp/entry.S]
->>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
->>> ---
->>> Changes in v2:
->>>
->>> - added missing hunk in hyp/entry.S per Will's feedback
->>
->> What about 4.19.y and 4.14.y trees?  I can't take something for 4.9.y
->> and then have a regression if someone moves to a newer release, right?
-> 
-> Sure, send you candidates for 4.14 and 4.19.
+ drivers/base/regmap/regmap-debugfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Greg, did you have a chance to queue those changes for 4.9, 4.14 and 4.19?
-
-https://lore.kernel.org/linux-arm-kernel/20200720182538.13304-1-f.fainelli@gmail.com/
-https://lore.kernel.org/linux-arm-kernel/20200720182937.14099-1-f.fainelli@gmail.com/
-https://lore.kernel.org/linux-arm-kernel/20200709195034.15185-1-f.fainelli@gmail.com/
-
-Thanks
+diff --git a/drivers/base/regmap/regmap-debugfs.c b/drivers/base/regmap/regmap-debugfs.c
+index f58baff2be0a..51ed8fd29c79 100644
+--- a/drivers/base/regmap/regmap-debugfs.c
++++ b/drivers/base/regmap/regmap-debugfs.c
+@@ -467,7 +467,7 @@ static ssize_t regmap_cache_only_write_file(struct file *file,
+ 	int err;
+ 
+ 	err = kstrtobool_from_user(user_buf, count, &new_val);
+-	/* Ignore malforned data like debugfs_write_file_bool() */
++	/* Ignore malformed data like debugfs_write_file_bool() */
+ 	if (err)
+ 		return count;
+ 
+@@ -514,7 +514,7 @@ static ssize_t regmap_cache_bypass_write_file(struct file *file,
+ 	int err;
+ 
+ 	err = kstrtobool_from_user(user_buf, count, &new_val);
+-	/* Ignore malforned data like debugfs_write_file_bool() */
++	/* Ignore malformed data like debugfs_write_file_bool() */
+ 	if (err)
+ 		return count;
+ 
 -- 
-Florian
+2.28.0.163.g6104cc2f0b6-goog
+
