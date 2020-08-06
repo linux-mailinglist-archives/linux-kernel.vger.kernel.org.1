@@ -2,165 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4312223D803
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722AA23D809
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728888AbgHFIcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 04:32:23 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:37830 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727768AbgHFIcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 04:32:22 -0400
-Received: from [10.130.0.75] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP9wNwCtfckAFAA--.925S3;
-        Thu, 06 Aug 2020 16:32:15 +0800 (CST)
-Subject: Re: [PATCH] MIPS: Introduce cmdline argument writecombine=
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>
-References: <1596697741-3561-1-git-send-email-yangtiezhu@loongson.cn>
- <10e04885-b775-e7db-b927-6400382fd32d@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <cc0c8b89-748d-0d38-bcc8-1c2dbb0996bf@loongson.cn>
-Date:   Thu, 6 Aug 2020 16:32:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1728943AbgHFIeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 04:34:09 -0400
+Received: from sauhun.de ([88.99.104.3]:52276 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726844AbgHFIeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 04:34:02 -0400
+Received: from localhost (router.4pisysteme.de [80.79.225.122])
+        by pokefinder.org (Postfix) with ESMTPSA id AF5732C0845;
+        Thu,  6 Aug 2020 10:33:56 +0200 (CEST)
+Date:   Thu, 6 Aug 2020 10:33:56 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Stephen Kitt <steve@sk2.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: remove the 2.6 "Upgrading I2C Drivers" guide
+Message-ID: <20200806083339.GA1549@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        Stephen Kitt <steve@sk2.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200805183149.21647-1-steve@sk2.org>
+ <20200805215351.GB2182@kunai>
+ <20200806090800.08b77d4a@heffalump.sk2.org>
 MIME-Version: 1.0
-In-Reply-To: <10e04885-b775-e7db-b927-6400382fd32d@flygoat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9DxP9wNwCtfckAFAA--.925S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxGFyDCrWkZFyrZFWxJrWrZrb_yoWrJrWUpF
-        WDG3ZxGr4fKr1jyF9xArnFqrWYvrn3AF9xAr1UGr1UZas09r1kKFn2qrWagF4kZryxKa40
-        yFW09FyUKw10y3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvSb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l
-        c2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
-        AVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280
-        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
-        ZEXa7IUYbjjPUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="f2QGlHpHGjS2mn6Y"
+Content-Disposition: inline
+In-Reply-To: <20200806090800.08b77d4a@heffalump.sk2.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/06/2020 03:39 PM, Jiaxun Yang wrote:
->
->
-> 在 2020/8/6 下午3:09, Tiezhu Yang 写道:
->> Loongson processors have a writecombine issue that maybe failed to
->> write back framebuffer used with ATI Radeon or AMD GPU at times,
->> after commit 8a08e50cee66 ("drm: Permit video-buffers writecombine
->> mapping for MIPS"), there exists some errors such as blurred screen
->> and lockup, and so on.
->>
->> With this patch, disable writecombine by default for Loongson64 to
->> work well with ATI Radeon or AMD GPU, and it has no influence on the
->> other platforms due to writecombine is enabled by default.
->>
->> Additionally, if it is necessary, writecombine=on can be set manually
->> in the cmdline to enhance the performance for Loongson LS7A integrated
->> graphics in the future.
->>
->> [   60.958721] radeon 0000:03:00.0: ring 0 stalled for more than 
->> 10079msec
->> [   60.965315] radeon 0000:03:00.0: GPU lockup (current fence id 
->> 0x0000000000000112 last fence id 0x000000000000011d on ring 0)
->> [   60.976525] radeon 0000:03:00.0: ring 3 stalled for more than 
->> 10086msec
->> [   60.983156] radeon 0000:03:00.0: GPU lockup (current fence id 
->> 0x0000000000000374 last fence id 0x00000000000003a8 on ring 3)
-> Hi Tiezhu,
->
-> Thanks for your patch.
-> Personally I didn't have any issue with writecombine on my test 
-> systems, but there
-> are some complains about unstable graphic card from users. So 
-> generally a cmdline
-> writecombine switch is necessary.
->
->>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>   arch/mips/include/asm/pgtable.h |  4 ++++
->>   arch/mips/kernel/cpu-probe.c    | 19 +++++++++++++++++++
->>   2 files changed, 23 insertions(+)
->>
->> diff --git a/arch/mips/include/asm/pgtable.h 
->> b/arch/mips/include/asm/pgtable.h
->> index dd7a0f5..34869f7 100644
->> --- a/arch/mips/include/asm/pgtable.h
->> +++ b/arch/mips/include/asm/pgtable.h
->> @@ -473,6 +473,10 @@ static inline pgprot_t pgprot_noncached(pgprot_t 
->> _prot)
->>   static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
->>   {
->>       unsigned long prot = pgprot_val(_prot);
->> +    extern bool mips_writecombine;
->> +
->> +    if (!mips_writecombine)
->> +        return pgprot_noncached(_prot);
->
-> You can simply override c->writecombine to _CACHE_UNCACHED in 
-> cpu-probe.c with
-> out this kind of hijack.
->
->>         /* cpu_data[0].writecombine is already shifted by 
->> _CACHE_SHIFT */
->>       prot = (prot & ~_CACHE_MASK) | cpu_data[0].writecombine;
->> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
->> index e2955f1..98777ca 100644
->> --- a/arch/mips/kernel/cpu-probe.c
->> +++ b/arch/mips/kernel/cpu-probe.c
->> @@ -459,6 +459,25 @@ static int __init ftlb_disable(char *s)
->>     __setup("noftlb", ftlb_disable);
->>   +#ifdef CONFIG_MACH_LOONGSON64
->> +bool mips_writecombine; /* initialise to false by default */
->> +#else
->> +bool mips_writecombine = true;
->> +#endif
->> +EXPORT_SYMBOL(mips_writecombine);
-> There is no need to export this symbol, see comment before.
->> +
->> +static int __init writecombine_setup(char *str)
->> +{
->> +    if (strcmp(str, "on") == 0)
->> +        mips_writecombine = true;
->> +    else if (strcmp(str, "off") == 0)
->> +        mips_writecombine = false;
->> +
->> +    return 1;
->> +}
->> +
->> +__setup("writecombine=", writecombine_setup);
->
-> Use early_param here seems more reasonable, it will be probed earlier.
 
-Hi Jiaxun,
+--f2QGlHpHGjS2mn6Y
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your suggestion, it looks better.
 
-I will modify and test it, then I will send v2 with another
-document patch to explain this cmdline argument.
+> > Maybe because I don't have the commit in my tree? Can you rebase on top
+> > of 5.8?
+>=20
+> Ah, yes, the commit is on top of Linus=E2=80=99 current master, following=
+ the merge
+> of docs-5.9 from Jon=E2=80=99s tree. In 5.8 the file is a .txt file, but =
+Mauro
+> converted it to .rst for 5.9, and this patch removes the latter file (to
+> avoid a merge conflict later on...). If you prefer, I can submit it to the
+> docs tree instead!
 
-Thanks,
-Tiezhu
+I see. Thanks for the heads up!
 
->
->> +
->>   /*
->>    * Check if the CPU has per tc perf counters
->>    */
-> Thanks
->
-> - Jiaxun
+> > And please also remove the reference in Documentation/i2c/index.rst
+>=20
+> Oops, yes, I=E2=80=99ll do that in v2 once we decide where it should go.
 
+I am fine with either it going via the doc-tree or you sending me v2
+again after 5.9-rc1. For the first case:
+
+Acked-by: Wolfram Sang <wsa@kernel.org>
+
+
+--f2QGlHpHGjS2mn6Y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8rwHQACgkQFA3kzBSg
+KbZHXQ//c9DIYXPOW2Pp6OWXKnsA47NLi/SQHWhhINgm/Q9zZpC/guVJbgpoQb35
+7FOj3e2RxarfIZOkaDFTZuPv+I4noKF3cAVHQTARbB9zDMWm0KKCkn3lkokWvToO
+Bw1sZDus7kNi2soeXzbfF1CnlmgjAXSIj1tnG9nUt5iqETY+ov+jq/biAZc3tVhD
+R/ODgJLQolvlZs5z8u95D3SLLL1Zi+zSRCGpNMFpS/6RaxOd369vWUlw9xH6+S6C
+aqcP6q6pMtIY51R3roWremGcFuWX0OGMG5grucwsY3Vs/kwt1zP+JrwsTLz9Tsjr
+fTdS8N7DzUBG21axjhR3FcwonFI8xocPGyuAWHTiEC3nfVbF8Hf2dkm92H5cLKN7
+jO8zdNf3wd4UeCkRyU/NU6gn6ohbnJCM+qda5ooKuTgUpsVNSg2vLRL/YdvOODMC
+utnLwVwvWr5l/H331fRfrdEL+aoO/wt6iE3rx7+0wXXRvx6/NECwlPGZZ0M9JT4W
+oYJk+qsmtcrj46ura0v6Lmy/t2vPyPpmH5zgfFxl4ek3ZMYenWu7Msxtn6TMdzWK
+ReouigCAeM+6hwJSsNEz8+2RdDF2iejIS1K/yldqKuFmZGQIgMyDlWQyr/JySWuM
+sk9qHULjnlZsuvS+W8HIhOB3282Rtdr6OvFEzhid2nVEnxje98U=
+=KhdI
+-----END PGP SIGNATURE-----
+
+--f2QGlHpHGjS2mn6Y--
