@@ -2,74 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7588223DD13
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD8523DC4D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729934AbgHFQ7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729015AbgHFQkk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:40:40 -0400
-Received: from mail-pj1-x1048.google.com (mail-pj1-x1048.google.com [IPv6:2607:f8b0:4864:20::1048])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ECEC0086BF
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 08:40:09 -0700 (PDT)
-Received: by mail-pj1-x1048.google.com with SMTP id s4so7928629pjq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 08:40:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=656dnNAuUUnD/k18gLmyRR/+raciy1Oyj/NPSnNG5xk=;
-        b=Qb9x6kSybloGsaxZ5zVWPFw7GBTOWjDT7Onj6xNESz+uV3WQz0HuI+a9I/HP4YbIzk
-         FwL8gNu2aGWqnMbYtPk1jHNAM6sS2MJF7B7efXCNcrDQ4UqJfR0AY8jXMCbsnqJKP36r
-         wj8tjRolORRljI8XJKVHzKZSxTBGDFz7AkNFQdh+WrEtUB/FuMJ0k3/9YFl65FV1NT4F
-         WIb17Fj9F6fF0rdr1qjcSYF95ofzVhCdzxLPtQCcnZUiaWo48/8ikLZqwtLu6HpuZc35
-         ZvHh57AjelK01KPedxVMLdFUSNOk2UvcGzm+1plbBto3u6mSkdYMAAFc2ShdbixM6C2W
-         StqQ==
-X-Gm-Message-State: AOAM530b5VT2n4Pqk5pjdKZMkhS85woEqBwfbejTuDT+bVdQA7NWf3O8
-        bEoyXc8yBKvEau+HL7gXiqZfYnpfqv2B6jWjNkoC8yqhYpWQ
-X-Google-Smtp-Source: ABdhPJwcAiTy/wffzoJCdETIFtbVqx/gf0LyEU7YnrR+t22WgktHp0EA2zFRLzq4BhmxgcgX5gUlZD0bRSKQNpJblmn7VpzbFmVA
+        id S1729543AbgHFQtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:49:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:45206 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729099AbgHFQmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:42:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3829131B;
+        Thu,  6 Aug 2020 04:25:59 -0700 (PDT)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 15FF43F99C;
+        Thu,  6 Aug 2020 04:25:51 -0700 (PDT)
+Subject: Re: [PATCH v4 00/10] sched: Instrument sched domain flags
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
+        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>
+References: <20200731115502.12954-1-valentin.schneider@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <306502b9-522a-43d9-1209-15675009bf1b@arm.com>
+Date:   Thu, 6 Aug 2020 13:25:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:9106:: with SMTP id t6mr10728891ild.105.1596712744169;
- Thu, 06 Aug 2020 04:19:04 -0700 (PDT)
-Date:   Thu, 06 Aug 2020 04:19:04 -0700
-In-Reply-To: <0000000000006925ea05a69d5bfb@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ecb92805ac33a761@google.com>
-Subject: Re: WARNING in binder_transaction_buffer_release (2)
-From:   syzbot <syzbot+e113a0b970b7b3f394ba@syzkaller.appspotmail.com>
-To:     arve@android.com, christian@brauner.io, devel@driverdev.osuosl.org,
-        gregkh@linuxfoundation.org, jannh@google.com,
-        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        maco@android.com, syzkaller-bugs@googlegroups.com,
-        tkjos@android.com, tkjos@google.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200731115502.12954-1-valentin.schneider@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On 31/07/2020 13:54, Valentin Schneider wrote:
+> Hi,
+> 
+> I've repeatedly stared at an SD flag and asked myself "how should that be
+> set up in the domain hierarchy anyway?". I figured that if we formalize our
+> flags zoology a bit, we could also do some runtime assertions on them -
+> this is what this series is all about.
+> 
+> Patches
+> =======
+> 
+> The idea is to associate the flags with metaflags that describes how they
+> should be set in a sched domain hierarchy ("if this SD has it, all its {parents,
+> children} have it") or how they behave wrt degeneration - details are in the
+> comments and commit logs. 
+> 
+> The good thing is that the debugging bits go away when CONFIG_SCHED_DEBUG isn't
+> set. The bad thing is that this replaces SD_* flags definitions with some
+> unsavoury macros. This is mainly because I wanted to avoid having to duplicate
+> work between declaring the flags and declaring their metaflags.
+> 
+> o Patches 1-3 are topology cleanups / fixes
+> o Patches 4-6 instrument SD flags and add assertions
+> o Patches 7-10 leverage the instrumentation to factorize domain degeneration
+> 
+> Revisions
+> =========
+> 
+> v3 -> v4
+> --------
+> 
+> o Reordered the series to have fixes / cleanups first
+> 
+> o Added SD_ASYM_CPUCAPACITY propagation (Quentin)
+> o Made ARM revert back to the default sched topology (Dietmar)
+> o Removed SD_SERIALIZE degeneration special case (Peter)
+> 
+> o Made SD_NUMA and SD_SERIALIZE have SDF_NEEDS_GROUPS
+> 
+>   As discussed on v3, I thought this wasn't required, but thinking some more
+>   about it there can be cases where that changes the current behaviour. For
+>   instance, in the following wacky triangle:
+> 
+>       0\ 30
+>       | \
+>   20  |  2
+>       | /
+>       1/ 30
+> 
+>   there are two unique distances thus two NUMA topology levels, however the
+>   first one for node 2 would have the same span as its child domain and thus
+>   should be degenerated. If we don't give SD_NUMA and SD_SERIALIZE
+>   SDF_NEEDS_GROUPS, this domain wouldn't be denegerated since its child
+>   *doesn't* have either SD_NUMA or SD_SERIALIZE (it's the first NUMA domain),
+>   and we'd have this weird NUMA domain lingering with a single group.
 
-commit 4b836a1426cb0f1ef2a6e211d7e553221594f8fc
-Author: Jann Horn <jannh@google.com>
-Date:   Mon Jul 27 12:04:24 2020 +0000
+LGTM.
 
-    binder: Prevent context manager from incrementing ref 0
+Tested on Arm & Arm64 dual-cluster big.LITTLE (so only
+default_topology[]) with CONFIG_SCHED_MC=y for the following cases:
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10c84dec900000
-start commit:   9cb1fd0e Linux 5.7-rc7
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cca7550d53ffa599
-dashboard link: https://syzkaller.appspot.com/bug?extid=e113a0b970b7b3f394ba
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1230353c100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17fd535e100000
+(1) normal bring-up
+(2) CPU hp all but one CPU of one cluster
+(3) CPU hp entire cluster
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: binder: Prevent context manager from incrementing ref 0
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
