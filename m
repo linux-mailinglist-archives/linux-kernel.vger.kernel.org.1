@@ -2,201 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F88A23DE1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6413123DE44
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgHFRWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:22:24 -0400
-Received: from mga12.intel.com ([192.55.52.136]:21019 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729682AbgHFRWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:22:20 -0400
-IronPort-SDR: nPbIrXuGCnxNcfTnCprALzQ0BFh3/+vc1AVHiSEpzU8dU7pTug7ieOKjXn37vd6bRUGDA4AHsb
- nFgKIoQosE2Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="132350916"
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="132350916"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 06:49:33 -0700
-IronPort-SDR: VifqmHcioRWCOYS5d4Qs4Nqs93YWd2Lrl0707lzM3kzXcZU+XnNUN4NdD0v/f0VeHjPIv8ISA3
- /7ePweAgmmZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="333190377"
-Received: from lkp-server02.sh.intel.com (HELO 37a337f97289) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 06 Aug 2020 06:49:32 -0700
-Received: from kbuild by 37a337f97289 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k3gGx-0001K8-Md; Thu, 06 Aug 2020 13:49:31 +0000
-Date:   Thu, 06 Aug 2020 21:49:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.08.04a] BUILD SUCCESS
- 9acd395ec8a6addc60cc95c6ba0c9a70e85d0601
-Message-ID: <5f2c0a4c.vKH25GcoWnQnVl8R%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729429AbgHFRYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728798AbgHFREp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:04:45 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694B5C0619CF;
+        Thu,  6 Aug 2020 06:50:04 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id e11so11993641otk.4;
+        Thu, 06 Aug 2020 06:50:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=SEjQBZlrTFsQloK4tn/llXwept9F2hPUgYtTajnb1LA=;
+        b=MYFtD1vgNVKOxnDpEWoSNTcqVqARbDQ4iS+ttYasNnJ2A1Rymefw8vFcH2aHdZ4fye
+         GG0GarjIsVRgTSxlorHMu76c0fQH4leeKMyq3Qp+mtVhv05KN0PVzAs/syXyvgvtjpA2
+         SXQQJ2fdCSlmi/tWZxKRI1zoZLoa63MUWdHV+S0E1cu9rouZrjPORjmndPu05a/1Kz/+
+         dy/CwGAqKZ1WG5gYYfgl86uxvWAORJ5Mx+oxIfngtOVXyH+qzhpRzl5BIW4h+NvzFPCU
+         8+xW+Q5DoC8gRPMtzE4pPnwpiMY21vrjrVOuKS/p0YXelP9PTFMnP3Coh3qv116+54n3
+         0dgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=SEjQBZlrTFsQloK4tn/llXwept9F2hPUgYtTajnb1LA=;
+        b=Jvqp5xtZLZpZd5N2KzIr4AM0wCrC09IChuLOj06IEvZ00M1Elwc7ds0uN5KlTKZkxt
+         Nodv+r8o4vGuHJV2p82xSDySrFUWTL3pPuhT90kkbCfUqn3/kLdd7SgFeKqMGy2NHkZo
+         7rPclGILKIBJuXCLliJq8V0E1UTSpXbE4Y+pVfm7ORpKJ8xqkdw+giw0/5LG8nXFJbgy
+         ptnfL4MimUnq5SscIgu6huXxi3kp+lCDRWbj19Z1qcbL0ECtSsr8epd+LjU4e6ClBnwb
+         GznBWw3H6TZRLL0V6F02hpQpeHVI4M71jUZmnNl7Za38HR3h7hjZ6rgWpdkYxeTLwQhM
+         LnFQ==
+X-Gm-Message-State: AOAM533JpofGkhaIuR0UjfUTNL6e5pZ1T1iEfBnOrAZAHsxnmNqyUDyB
+        ToHyO7jb3qfm3IB6l12whRhvCsT1V2VVdIbaQLU=
+X-Google-Smtp-Source: ABdhPJw4ecP6H//vDHHZvBTuxT/QGbR+ZI3XNBXLHzPCazzTrLsqEggBwLft6DcjEwmJkWIfi5p6NHkE5D1PCLV+MYw=
+X-Received: by 2002:a9d:67d3:: with SMTP id c19mr7420766otn.162.1596721798604;
+ Thu, 06 Aug 2020 06:49:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20200806080358.3124505-1-tweek@google.com> <20200806080358.3124505-2-tweek@google.com>
+ <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com> <8627d780-0e19-6755-0de5-c686deb0f5de@sony.com>
+ <971592b6-5d5f-05d8-d243-b521fe65577d@gmail.com> <07e2c48d-3918-6ceb-a6b2-4e2f18f9ea01@gmail.com>
+In-Reply-To: <07e2c48d-3918-6ceb-a6b2-4e2f18f9ea01@gmail.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Thu, 6 Aug 2020 09:49:47 -0400
+Message-ID: <CAEjxPJ4no_GqMp8aw43zpwmwq42Wi_1dvP+ZBs1a-mnReDt5Og@mail.gmail.com>
+Subject: Re: [PATCH 2/2] selinux: add attributes to avc tracepoint
+To:     peter enderborg <peter.enderborg@sony.com>,
+        =?UTF-8?Q?Thi=C3=A9baud_Weksteen?= <tweek@google.com>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     Nick Kralevich <nnk@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.08.04a
-branch HEAD: 9acd395ec8a6addc60cc95c6ba0c9a70e85d0601  squash! tools/memory-model: Improve litmus-test documentation
+On Thu, Aug 6, 2020 at 9:45 AM Stephen Smalley
+<stephen.smalley.work@gmail.com> wrote:
+>
+> On 8/6/20 8:32 AM, Stephen Smalley wrote:
+>
+> > On 8/6/20 8:24 AM, peter enderborg wrote:
+> >
+> >> On 8/6/20 2:11 PM, Stephen Smalley wrote:
+> >>> On 8/6/20 4:03 AM, Thi=C3=A9baud Weksteen wrote:
+> >>>
+> >>>> From: Peter Enderborg <peter.enderborg@sony.com>
+> >>>>
+> >>>> Add further attributes to filter the trace events from AVC.
+> >>> Please include sample usage and output in the description.
+> >>>
+> >>>
+> >> Im not sure where you want it to be.
+> >>
+> >> In the commit message or in a Documentation/trace/events-avc.rst ?
+> >
+> > I was just asking for it in the commit message / patch description.  I
+> > don't know what is typical for Documentation/trace.
+>
+> For example, I just took the patches for a spin, running the
+> selinux-testsuite under perf like so:
+>
+> sudo perf record -e avc:selinux_audited -g make test
+>
+> and then ran:
+>
+> sudo perf report -g
+>
+> and a snippet of sample output included:
+>
+>       6.40%     6.40%  requested=3D0x800000 denied=3D0x800000
+> audited=3D0x800000 result=3D-13 ssid=3D922 tsid=3D922
+> scontext=3Dunconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023
+> tcontext=3Dunconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023
+> tclass=3Dcapability
 
-elapsed time: 720m
+So then the question becomes how do you use the above information,
+e.g. is that sufficient to correlate it to an actual avc: denied
+message, how do you decode the requested/denied/audited fields (or
+should the code do that for you and just report the string name(s) of
+the permission(s), do you need all three of those fields separately,
+is it useful to log the ssid/tsid at all given that you have the
+contexts and sids are dynamically assigned, etc.
 
-configs tested: 139
-configs skipped: 9
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                       mainstone_defconfig
-sh                   sh7770_generic_defconfig
-mips                       rbtx49xx_defconfig
-ia64                         bigsur_defconfig
-arm                          simpad_defconfig
-sh                          polaris_defconfig
-powerpc64                           defconfig
-mips                  mips_paravirt_defconfig
-microblaze                      mmu_defconfig
-sh                          rsk7201_defconfig
-powerpc                      mgcoge_defconfig
-powerpc64                        alldefconfig
-mips                      maltasmvp_defconfig
-arm                         axm55xx_defconfig
-xtensa                    xip_kc705_defconfig
-m68k                       m5475evb_defconfig
-powerpc                       holly_defconfig
-mips                         tb0287_defconfig
-arc                              allyesconfig
-sh                        dreamcast_defconfig
-mips                      fuloong2e_defconfig
-mips                     loongson1c_defconfig
-arm                          lpd270_defconfig
-m68k                       m5249evb_defconfig
-arm                            qcom_defconfig
-powerpc                      ep88xc_defconfig
-mips                           jazz_defconfig
-arm                       netwinder_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                    amigaone_defconfig
-powerpc                      pasemi_defconfig
-arm                             rpc_defconfig
-m68k                        mvme147_defconfig
-m68k                          multi_defconfig
-powerpc                  mpc885_ads_defconfig
-sh                   secureedge5410_defconfig
-ia64                          tiger_defconfig
-arm                         mv78xx0_defconfig
-mips                     loongson1b_defconfig
-sh                         apsh4a3a_defconfig
-s390                          debug_defconfig
-powerpc                     powernv_defconfig
-arm                        spear6xx_defconfig
-mips                         db1xxx_defconfig
-mips                            gpr_defconfig
-arm                       imx_v4_v5_defconfig
-arm                     eseries_pxa_defconfig
-arm                            pleb_defconfig
-arm                        keystone_defconfig
-arm                          collie_defconfig
-arm                         bcm2835_defconfig
-c6x                        evmc6678_defconfig
-sh                         microdev_defconfig
-sh                           se7751_defconfig
-powerpc                       ppc64_defconfig
-m68k                       m5275evb_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-x86_64               randconfig-a006-20200806
-x86_64               randconfig-a001-20200806
-x86_64               randconfig-a004-20200806
-x86_64               randconfig-a005-20200806
-x86_64               randconfig-a003-20200806
-x86_64               randconfig-a002-20200806
-i386                 randconfig-a004-20200805
-i386                 randconfig-a001-20200805
-i386                 randconfig-a002-20200805
-i386                 randconfig-a006-20200805
-i386                 randconfig-a005-20200805
-i386                 randconfig-a003-20200805
-i386                 randconfig-a005-20200806
-i386                 randconfig-a004-20200806
-i386                 randconfig-a001-20200806
-i386                 randconfig-a002-20200806
-i386                 randconfig-a003-20200806
-i386                 randconfig-a006-20200806
-x86_64               randconfig-a013-20200805
-x86_64               randconfig-a011-20200805
-x86_64               randconfig-a012-20200805
-x86_64               randconfig-a016-20200805
-x86_64               randconfig-a015-20200805
-x86_64               randconfig-a014-20200805
-i386                 randconfig-a011-20200805
-i386                 randconfig-a012-20200805
-i386                 randconfig-a013-20200805
-i386                 randconfig-a014-20200805
-i386                 randconfig-a015-20200805
-i386                 randconfig-a016-20200805
-i386                 randconfig-a011-20200806
-i386                 randconfig-a012-20200806
-i386                 randconfig-a013-20200806
-i386                 randconfig-a015-20200806
-i386                 randconfig-a014-20200806
-i386                 randconfig-a016-20200806
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>              |
+>              ---0x495641000028933d
+>                 __libc_start_main
+>                 |
+>                 |--4.60%--__GI___ioctl
+>                 |          entry_SYSCALL_64
+>                 |          do_syscall_64
+>                 |          __x64_sys_ioctl
+>                 |          ksys_ioctl
+>                 |          binder_ioctl
+>                 |          binder_set_nice
+>                 |          can_nice
+>                 |          capable
+>                 |          security_capable
+>                 |          cred_has_capability.isra.0
+>                 |          slow_avc_audit
+>                 |          common_lsm_audit
+>                 |          avc_audit_post_callback
+>                 |          avc_audit_post_callback
