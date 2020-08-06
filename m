@@ -2,192 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2212223E000
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E8E23DECC
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725817AbgHFR6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:58:12 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:49682 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725272AbgHFR6K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:58:10 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076D27CE176546;
-        Thu, 6 Aug 2020 13:17:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : mime-version :
- content-type; s=corp-2020-01-29;
- bh=xeQh4UwI5BYb0rFkOfOqf85p8ALQ3Km95tWCw+dneU0=;
- b=V4GqZD3E80QaR3bTb+QGtayZjdsIoQKe5MeCDAW2nKaiOSWZb/GCKMD2eNBIaQKeT9Q1
- YXwYXaln8m7XAaQr54etsrv/obofZQbCIK9lWM7Gi+YtHKuiqpGxmf2J+uBisydwsSmW
- PcBWXVpV62OaJ3g4+bG2OKI7hPlSvRy6nfBrSp5cLB7aaw4rx8w+uKl5zf5ZWCJVn34J
- R+SUItZpWq00NrHAgY87XnHyZLZ5nbWAUi8cX23lLKDR4KQ4MoALI7M6zRdcC8AjPEKW
- 0zLc8BhNX18GxGsJKoln9+ndvvhcpB4mNoDSubSWgD5rkV3FBRk/gAPfArXOGu5OCLQ3 xw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 32r6ep2uph-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 06 Aug 2020 13:17:57 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076Cwxmu172996;
-        Thu, 6 Aug 2020 13:17:56 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 32pdnwc24c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Aug 2020 13:17:56 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 076DHrHX018618;
-        Thu, 6 Aug 2020 13:17:54 GMT
-Received: from starbug-mbp.localdomain (/79.97.215.145)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Aug 2020 06:17:53 -0700
-Received: by starbug-mbp.localdomain (Postfix, from userid 501)
-        id D1895F04A2B; Thu,  6 Aug 2020 14:17:47 +0100 (IST)
-From:   Darren Kenny <darren.kenny@oracle.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v36 06/24] x86/cpu/intel: Detect SGX support
-In-Reply-To: <20200716135303.276442-7-jarkko.sakkinen@linux.intel.com>
-References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
- <20200716135303.276442-7-jarkko.sakkinen@linux.intel.com>
-Date:   Thu, 06 Aug 2020 14:17:47 +0100
-Message-ID: <m2zh77rk04.fsf@oracle.com>
+        id S1729774AbgHFRcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:32:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729272AbgHFRbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:31:23 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6D6E2310C;
+        Thu,  6 Aug 2020 13:27:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596720430;
+        bh=3CR47nCFqExTQ2ML0Q2q5ma+kjZk2NCJpGaKDoZNAp0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ADXfnL9F5IxPiRumosniAILFcwP44WwOkV2KfXpn2zCUQ+j5RQzq/J9lyn1bZXQid
+         f0qnMGIxOJgpQoFxUeFMWej2QiZ0sJcbXGL462KhzOt5H703XMuzejKaCV6bDplpPS
+         v3AJ40qDkmnKh+NbCNNblwBjPDB36nrbvXnkSjv4=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 7476335206C1; Thu,  6 Aug 2020 06:27:10 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 06:27:10 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     peterz@infradead.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        Alison Wang <alison.wang@nxp.com>, catalin.marinas@arm.com,
+        will@kernel.org, mw@semihalf.com, leoyang.li@nxp.com,
+        vladimir.oltean@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>
+Subject: Re: [RFC PATCH] arm64: defconfig: Disable fine-grained task level
+ IRQ time accounting
+Message-ID: <20200806132710.GL4295@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <87lfiwm2bj.fsf@nanos.tec.linutronix.de>
+ <20200803114112.mrcuupz4ir5uqlp6@skbuf>
+ <87d047n4oh.fsf@nanos.tec.linutronix.de>
+ <jhjh7tjivew.mognet@arm.com>
+ <875z9zmt4i.fsf@nanos.tec.linutronix.de>
+ <20200805134002.GQ2674@hirez.programming.kicks-ass.net>
+ <jhja6z9i4bi.mognet@arm.com>
+ <20200805153120.GU2674@hirez.programming.kicks-ass.net>
+ <874kpgi025.fsf@nanos.tec.linutronix.de>
+ <20200806114545.GA2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 spamscore=0 mlxscore=0
- bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060094
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 bulkscore=0
- malwarescore=0 clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0
- impostorscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008060094
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806114545.GA2674@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 2020-07-16 at 16:52:45 +03, Jarkko Sakkinen wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->
-> Configure SGX as part of feature control MSR initialization and update
-> the associated X86_FEATURE flags accordingly.  Because the kernel will
-> require the LE hash MSRs to be writable when running native enclaves,
-> disable X86_FEATURE_SGX (and all derivatives) if SGX Launch Control is
-> not (or cannot) be fully enabled via feature control MSR.
->
-> The check is done for every CPU, not just BSP, in order to verify that
-> MSR_IA32_FEATURE_CONTROL is correctly configured on all CPUs. The other
-> parts of the kernel, like the enclave driver, expect the same
-> configuration from all CPUs.
->
-> Note, unlike VMX, clear the X86_FEATURE_SGX* flags for all CPUs if any
-> CPU lacks SGX support as the kernel expects SGX to be available on all
-> CPUs.  X86_FEATURE_VMX is intentionally cleared only for the current CPU
-> so that KVM can provide additional information if KVM fails to load,
-> e.g. print which CPU doesn't support VMX.  KVM/VMX requires additional
-> per-CPU enabling, e.g. to set CR4.VMXE and do VMXON, and so already has
-> the necessary infrastructure to do per-CPU checks.  SGX on the other
-> hand doesn't require additional enabling, so clearing the feature flags
-> on all CPUs means the SGX subsystem doesn't need to manually do support
-> checks on a per-CPU basis.
->
-> Acked-by: Jethro Beekman <jethro@fortanix.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+On Thu, Aug 06, 2020 at 01:45:45PM +0200, peterz@infradead.org wrote:
+> On Thu, Aug 06, 2020 at 11:41:06AM +0200, Thomas Gleixner wrote:
+> > peterz@infradead.org writes:
+> > > On Wed, Aug 05, 2020 at 02:56:49PM +0100, Valentin Schneider wrote:
+> > >
+> > >> I've been tempted to say the test case is a bit bogus, but am not familiar
+> > >> enough with the RT throttling details to stand that ground. That said, from
+> > >> both looking at the execution and the stress-ng source code, it seems to
+> > >> unconditionally spawn 32 FIFO-50 tasks (there's even an option to make
+> > >> these FIFO-99!!!), which is quite a crowd on monoCPU systems.
+> > >
+> > > Oh, so it's a case of: we do stupid without tuning and the system falls
+> > > over. I can live with that.
+> > 
+> > It's not a question of whether you can live with that behaviour for a
+> > particular silly test case.
+> > 
+> > The same happens with a single RT runaway task with enough interrupt
+> > load on a UP machine. Just validated that. 
+> 
+> Of course.
+> 
+> > And that has nothing to do
+> > with a silly test case. Sporadic runaways due to a bug in a once per
+> > week code path simply can happen and having the safety net working
+> > depending on a config option selected or not is just wrong.
+> 
+> The safety thing is concerned with RT tasks. It doesn't pretend to help
+> with runnaway IRQs, never has, never will.
 
-Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+Getting into the time machine back to the 1990s...
 
-> ---
->  arch/x86/kernel/cpu/feat_ctl.c | 32 +++++++++++++++++++++++++++++++-
->  1 file changed, 31 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kernel/cpu/feat_ctl.c b/arch/x86/kernel/cpu/feat_ctl.c
-> index 29a3bedabd06..c3afcd2e4342 100644
-> --- a/arch/x86/kernel/cpu/feat_ctl.c
-> +++ b/arch/x86/kernel/cpu/feat_ctl.c
-> @@ -93,16 +93,35 @@ static void init_vmx_capabilities(struct cpuinfo_x86 *c)
->  }
->  #endif /* CONFIG_X86_VMX_FEATURE_NAMES */
->  
-> +static void clear_sgx_caps(void)
-> +{
-> +	setup_clear_cpu_cap(X86_FEATURE_SGX);
-> +	setup_clear_cpu_cap(X86_FEATURE_SGX_LC);
-> +	setup_clear_cpu_cap(X86_FEATURE_SGX1);
-> +	setup_clear_cpu_cap(X86_FEATURE_SGX2);
-> +}
-> +
->  void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
->  {
->  	bool tboot = tboot_enabled();
-> +	bool enable_sgx;
->  	u64 msr;
->  
->  	if (rdmsrl_safe(MSR_IA32_FEAT_CTL, &msr)) {
->  		clear_cpu_cap(c, X86_FEATURE_VMX);
-> +		clear_sgx_caps();
->  		return;
->  	}
->  
-> +	/*
-> +	 * Enable SGX if and only if the kernel supports SGX and Launch Control
-> +	 * is supported, i.e. disable SGX if the LE hash MSRs can't be written.
-> +	 */
-> +	enable_sgx = cpu_has(c, X86_FEATURE_SGX) &&
-> +		     cpu_has(c, X86_FEATURE_SGX1) &&
-> +		     cpu_has(c, X86_FEATURE_SGX_LC) &&
-> +		     IS_ENABLED(CONFIG_INTEL_SGX);
-> +
->  	if (msr & FEAT_CTL_LOCKED)
->  		goto update_caps;
->  
-> @@ -124,13 +143,16 @@ void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
->  			msr |= FEAT_CTL_VMX_ENABLED_INSIDE_SMX;
->  	}
->  
-> +	if (enable_sgx)
-> +		msr |= FEAT_CTL_SGX_ENABLED | FEAT_CTL_SGX_LC_ENABLED;
-> +
->  	wrmsrl(MSR_IA32_FEAT_CTL, msr);
->  
->  update_caps:
->  	set_cpu_cap(c, X86_FEATURE_MSR_IA32_FEAT_CTL);
->  
->  	if (!cpu_has(c, X86_FEATURE_VMX))
-> -		return;
-> +		goto update_sgx;
->  
->  	if ( (tboot && !(msr & FEAT_CTL_VMX_ENABLED_INSIDE_SMX)) ||
->  	    (!tboot && !(msr & FEAT_CTL_VMX_ENABLED_OUTSIDE_SMX))) {
-> @@ -143,4 +165,12 @@ void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
->  		init_vmx_capabilities(c);
->  #endif
->  	}
-> +
-> +update_sgx:
-> +	if (!(msr & FEAT_CTL_SGX_ENABLED) ||
-> +	    !(msr & FEAT_CTL_SGX_LC_ENABLED) || !enable_sgx) {
-> +		if (enable_sgx)
-> +			pr_err_once("SGX disabled by BIOS\n");
-> +		clear_sgx_caps();
-> +	}
->  }
-> -- 
-> 2.25.1
+DYNIX/ptx had a discretionary mechanism to deal with excessive interrupts.
+There was a function that long-running interrupt handlers were supposed
+to call periodically that would return false if the system felt that
+the CPU had done enough interrupts for the time being.  In that case,
+the interrupt handler was supposed to schedule itself for a later time,
+but leave the interrupt unacknowledged in order to prevent retriggering
+in the meantime.
+
+Of course, this mechanism would be rather less helpful in Linux.
+
+For one, Linux has way more device drivers and way more oddball devices.
+In contrast, the few devices that DYNIX/ptx supported were carefully
+selected, and the selection criteria included being able to put up
+with this sort of thing.  Also, the fact that there was but a handful
+of device drivers meant that changes like this could be more easily
+propagated through all drivers.
+
+Also, Linux supports way more workloads.  In contrast, DYNIX/ptx could
+pick a small percentage of each CPU that would be permitted to be used
+by hardware interrupt handlers.  As in there are probably Linux workloads
+that run >90% of some poor CPU within hardware interrupt handlers.
+
+But reminiscing anyway on the off-chance that this inspires someone
+to come up with an idea that would work well in the Linux environment.
+
+							Thanx, Paul
+
+> The further extreme is an interrupt storm, those have always taken a
+> machine down.
+> 
+> Accounting unrelated IRQ time to RT tasks is equally wrong, the task
+> execution is unrelated to the IRQs. The config option at least offers
+> insight into where time goes -- and it's a config option because doing
+> time accounting on interrupts adds overhead :/
+> 
+> This really is a no-win all round.
+> 
+> The only 'sensible' option here is threaded IRQs, where the IRQ line
+> gets disabled until the handler thread has ran, that also helps with IRQ
+> storms.
