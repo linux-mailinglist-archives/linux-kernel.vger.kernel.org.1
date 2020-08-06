@@ -2,125 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1210023DF99
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A33823DED4
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728968AbgHFRvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:51:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49582 "EHLO mx2.suse.de"
+        id S1729894AbgHFRcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:32:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728225AbgHFQdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:33:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 47FBDAD4D;
-        Thu,  6 Aug 2020 12:14:55 +0000 (UTC)
-Date:   Thu, 6 Aug 2020 14:14:36 +0200
-From:   Jean Delvare <jdelvare@suse.de>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: VAIO EEPROM support in at24
-Message-ID: <20200806141436.4dcdfe08@endymion>
-In-Reply-To: <CAMRc=MeoWUaL_qvwL6bkpaVUvxh4x3ZN6V4UNQr+bjnLo3NubQ@mail.gmail.com>
-References: <20200317151409.7940926c@endymion>
-        <CAMRc=Mdoh5Sk3iS_CO4+++SG2jJOy1qrG4q2zOzbeYYMdJR0VA@mail.gmail.com>
-        <20200805163655.6cfa6e17@endymion>
-        <CAMRc=MeoWUaL_qvwL6bkpaVUvxh4x3ZN6V4UNQr+bjnLo3NubQ@mail.gmail.com>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        id S1730021AbgHFRcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:32:05 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.162.129.152])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48A1D22D70;
+        Thu,  6 Aug 2020 12:14:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596716098;
+        bh=m16MT79olmaa7abBr/5LqaDwmt0YlsS+xqXWUX0QNaE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zRVBf93Ri71TRAetiYxoE8JIOQrmypZHCdqTW4lW9X2BdGGR2qAkpDq5FhayVAXsf
+         RA5zLJ/ll6jmZd/C0WixhECssjCV0VDOu0joM8KTTJRTXQpIkP91HS6fQOg2RI94Rw
+         uQ9pCfYblkm8+NeuH+bhopH9+4ZroK2dkJdt9Ljg=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D393D40524; Thu,  6 Aug 2020 09:14:55 -0300 (-03)
+Date:   Thu, 6 Aug 2020 09:14:55 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] perf: extend message to mention CAP_SYS_PTRACE and
+ perf security doc link
+Message-ID: <20200806121455.GF16189@kernel.org>
+References: <6f8a7425-6e7d-19aa-1605-e59836b9e2a6@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6f8a7425-6e7d-19aa-1605-e59836b9e2a6@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 Aug 2020 20:14:28 +0200, Bartosz Golaszewski wrote:
-> On Wed, Aug 5, 2020 at 4:36 PM Jean Delvare <jdelvare@suse.de> wrote:
-> > I finally found the time to give it a try. Here's what my (tested)
-> > prototype looks like:
+Em Wed, Aug 05, 2020 at 10:31:20AM +0300, Alexey Budankov escreveu:
 > 
-> Hi Jean,
+> Adjust limited access message to mention CAP_SYS_PTRACE capability
+> for processes of unprivileged users. Add link to perf security
+> document in the end of the section about capabilities.
+> The change has been inspired by this discussion:
+> https://lore.kernel.org/lkml/20200722113007.GI77866@kernel.org/
+
+Thanks, applied.
+
+- Arnaldo
+ 
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> ---
+>  tools/perf/util/evsel.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> this looks good at first glance.
-> 
-> > --- a/drivers/misc/eeprom/at24.c
-> > +++ b/drivers/misc/eeprom/at24.c
-> > (...)
-> > @@ -427,6 +450,15 @@ static int at24_read(void *priv, unsigne
-> >
-> >         pm_runtime_put(dev);
-> >
-> > +       if ((at24->flags & AT24_FLAG_MASKED_RANGE) && !capable(CAP_SYS_ADMIN)) {  
-> 
-> Maybe use unlikely() here? It's not necessarily a hotpath but at least
-> it would be obvious it's a corner case.
-
-Sure.
-
-> > (...)
-> > 1* Do we actually need to use a struct resource? With the current
-> >    requirements, that looks overkill to me. We really only need the
-> >    start and end offsets of the masked area (or start and length). Or
-> >    do you plan to ever support multiple masked ranges, and
-> >    resource.child would be used to daisy-chain these ranges? Personally
-> >    I would wait until the need exists.
-> 
-> Yes, since this change doesn't seem to commit to any stable ABI, I'd
-> say we can drop the reference to struct resource and possibly add it
-> in the future. This just was the first thing that came to mind when I
-> suggested it.
-
-OK, I changed it to simple integers for now.
-
-> >    Note that if we would just store mstart and mlen in struct
-> >    at24_chip_data then we could even get rid of AT24_FLAG_MASKED_RANGE,
-> >    as mlen > 0 would imply a masked range.
-> 
-> Makes sense.
-
-Done.
-
-> > 2* I chose the name "eeprom-vaio" because "vaio" would be too generic.
-> >    I'm open to suggestions if you don't like that name.
-> 
-> Are you sure there won't be any different models of vaio eeproms? How
-> about '24c02-vaio' or 'eeprom-vaio-24c02'?
-
-All I've seen were 24C02 but last time was a decade ago. I have no idea
-if recent Vaio laptops still have this EEPROM, at this address, of that
-size. 'eeprom-vaio-24c02' is too long to my taste, and kind of
-redundant as '24c02' implies 'eeprom'. I like '24c02-vaio' very much
-though, it is both concise and accurate, and is future-proof too. I'll
-go for that, thanks for the suggestion.
-
-> > 3* at24_read() was pretty elegant before my changes, but with the need
-> >    to remember the original value of many parameters, it no longer is.
-> >    I'm considering rewriting it in a way that does not modify the
-> >    parameters needed to process the masked range, either as part of
-> >    this patch or as a subsequent clean-up patch. That would hopefully
-> >    make the code elegant again.
-> 
-> All clean-ups are welcome.
-
-OK, I'll give it a try and see if I can tidy it up.
-
-> > 4* I made the masking active only for non-root users as this is what
-> >    the legacy eeprom driver was doing. I hope that's OK with you.
-> >  
-> 
-> Yes, it's fine with me. If more fine-grained control is needed we can
-> probably extend it.
-
-OK :-)
-
-I have a patch almost ready, I'll submit v2 later today.
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index 9aa51a65593d..e241ee773ccb 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -2500,8 +2500,10 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
+>  
+>  		return scnprintf(msg + printed, size - printed,
+>  		 "Consider adjusting /proc/sys/kernel/perf_event_paranoid setting to open\n"
+> -		 "access to performance monitoring and observability operations for users\n"
+> -		 "without CAP_PERFMON or CAP_SYS_ADMIN Linux capability.\n"
+> +		 "access to performance monitoring and observability operations for processes\n"
+> +		 "without CAP_PERFMON, CAP_SYS_PTRACE or CAP_SYS_ADMIN Linux capability.\n"
+> +		 "More information can be found at 'Perf events and tool security' document:\n"
+> +		 "https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html\n"
+>  		 "perf_event_paranoid setting is %d:\n"
+>  		 "  -1: Allow use of (almost) all events by all users\n"
+>  		 "      Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK\n"
+> -- 
+> 2.24.1
 
 -- 
-Jean Delvare
-SUSE L3 Support
+
+- Arnaldo
