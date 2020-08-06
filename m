@@ -2,129 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C45E23DE38
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDEFB23DE91
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729319AbgHFRXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
+        id S1730352AbgHFR1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729799AbgHFRFG (ORCPT
+        with ESMTP id S1729546AbgHFRBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:05:06 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7139EC08E835;
-        Thu,  6 Aug 2020 06:46:28 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id c15so8840938lfi.3;
-        Thu, 06 Aug 2020 06:46:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VZnlZHi2pNVM/YMIfXvf/UHbjwYhQmIPewxedOf93xI=;
-        b=obXR+Nn3YxEJAFYj9GjuuDHfWohVA8Ko2EZOZhRZLysgDkBB/zbNM9sFGHsyIalrV4
-         nhWnw+C8JYCh/hhgGGIK+A5QVPoC1u2W0DMy+tbkWLsBhKev24yAyy/CXHDYX/0qelNI
-         H6YkD+SM7NZszlsAWXR0/CDbstrY4mr0yoePvmsFTURovar9kWBpSeOCu85MkyANy7Q6
-         X4JL+qn9lAkd1xlNmY8vQw+M3hRVSK0hzPO5pygND0gWt0pA/NN4wVcb9XGxq5RBRpYe
-         JTk404spywnd3PhejTaIe4KjNw4tEZhg2KJpTx5y2qHI6RDSdq4QOTyX16Kdx2IGoBvo
-         VChg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VZnlZHi2pNVM/YMIfXvf/UHbjwYhQmIPewxedOf93xI=;
-        b=tagaIIRLTt86ZBnBqxL3EzA8poZDsNq1p8gZniw42b//dzB1EnGM2vXudxtyv6Kyvx
-         yvKseGSwmx74kpcgcnsyi06EVjQBa2q45jEfF861Dum6KEK/Y5CGgzATUo7R+phsY1Ev
-         /zF70lW2ufQFP4Y4BO0eeAuIdVQYj6e16YKEipjBVedxM+1OFx5ySmUlIuSvDsibao4I
-         jAdBcf7rPcIAJZTp6xvW2KzwBRkFhYhyvddQtWDcBhlo65eBiTZTmpID0jx54ilP6wXb
-         9tZfOH1Znq6vXKSg2ZyUQAvEVJHG1UvlJaxigwUNDejzi3l3gItK33wWhqhDS3/GYKUr
-         DKNg==
-X-Gm-Message-State: AOAM531EdD8H/9ojGlu3d0RoFXiU+9BxYCphRcMy3YRZpl4ls2ZKoG5i
-        jm011Wmdb8Qbup8XcevxWnw0KwJi
-X-Google-Smtp-Source: ABdhPJw4moAXUF/I/3kTkOQE43bGzwcBxEGZxvffHv+O3d1addRnPEos3MVbxYnblMoeVEBo8DGHhg==
-X-Received: by 2002:a19:4f01:: with SMTP id d1mr3959771lfb.159.1596721576594;
-        Thu, 06 Aug 2020 06:46:16 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-41-50.dynamic.spd-mgts.ru. [94.29.41.50])
-        by smtp.googlemail.com with ESMTPSA id z18sm2402757lja.55.2020.08.06.06.46.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 06:46:15 -0700 (PDT)
-Subject: Re: [Patch v2 2/4] dmaengine: tegra: Add Tegra GPC DMA driver
-To:     Rajesh Gumasta <rgumasta@nvidia.com>, ldewangan@nvidia.com,
-        jonathanh@nvidia.com, vkoul@kernel.org, dan.j.williams@intel.com,
-        thierry.reding@gmail.com, p.zabel@pengutronix.de,
-        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kyarlagadda@nvidia.com, Pavan Kunapuli <pkunapuli@nvidia.com>
-References: <1596699006-9934-1-git-send-email-rgumasta@nvidia.com>
- <1596699006-9934-3-git-send-email-rgumasta@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <bc7d0d9d-ac7f-b720-64f5-63e0c76e6786@gmail.com>
-Date:   Thu, 6 Aug 2020 16:46:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 6 Aug 2020 13:01:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B143C08EA0C
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:48:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fVBnHUcFxQGjvxOa6RZAyjHA4KKJKA6BGBKM0Icu23A=; b=NalefOkaTW/5+O9kt3/ME+A+/S
+        wqUiV4ev4go7Gn0R+sqowD4RwjR6/fY09Lha2ZgageW4yhT49toZCiB0ctmdHGDQ4htmOVfFOW5He
+        Ycy+PybX6eEJ7jQksDhLlEf+s090tP8vH5/p0X9reCWrOPU/mX7ZqFhc9Ep73xA3fYNh409wkJf85
+        iHfPzks0HAK1tJNtbVC95PQaZ7xxetO7SidA9S+0TbA5ffV1e+QEEOdpB7m8ankOAIpommV/iVeNY
+        jSZpKkrW7LJ/GRIxJsWn8vtZzBQCrD3WC8WxNe2a329WZr5jaWpibDeHhrc/klaphqDYIg55SDO7r
+        lL3XbzBA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3gFy-00043K-8q; Thu, 06 Aug 2020 13:48:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 51832301A66;
+        Thu,  6 Aug 2020 15:48:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 253CA213C4897; Thu,  6 Aug 2020 15:48:29 +0200 (CEST)
+Date:   Thu, 6 Aug 2020 15:48:28 +0200
+From:   peterz@infradead.org
+To:     Peter Oskolkov <posk@google.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, Paul Turner <pjt@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Peter Oskolkov <posk@posk.io>
+Subject: Re: [PATCH 1/2] membarrier: add
+ MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU
+Message-ID: <20200806134828.GA165568@hirez.programming.kicks-ass.net>
+References: <20200806000859.160882-1-posk@google.com>
 MIME-Version: 1.0
-In-Reply-To: <1596699006-9934-3-git-send-email-rgumasta@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806000859.160882-1-posk@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-06.08.2020 10:30, Rajesh Gumasta пишет:
-...
-> +/*
-> + * Save and restore csr and channel register on pm_suspend
-> + * and pm_resume respectively
-> + */
-> +static int __maybe_unused tegra_dma_pm_suspend(struct device *dev)
-> +{
-> +	struct tegra_dma *tdma = dev_get_drvdata(dev);
-> +	int i;
-> +
-> +	for (i = 0; i < tdma->chip_data->nr_channels; i++) {
-> +		struct tegra_dma_channel *tdc = &tdma->channels[i];
-> +		struct tegra_dma_channel_regs *ch_reg = &tdc->channel_reg;
-> +
-> +		ch_reg->csr = tdc_read(tdc, TEGRA_GPCDMA_CHAN_CSR);
-> +		ch_reg->src_ptr = tdc_read(tdc, TEGRA_GPCDMA_CHAN_SRC_PTR);
-> +		ch_reg->dst_ptr = tdc_read(tdc, TEGRA_GPCDMA_CHAN_DST_PTR);
-> +		ch_reg->high_addr_ptr = tdc_read(tdc,
-> +						 TEGRA_GPCDMA_CHAN_HIGH_ADDR_PTR);
-> +		ch_reg->mc_seq = tdc_read(tdc, TEGRA_GPCDMA_CHAN_MCSEQ);
-> +		ch_reg->mmio_seq = tdc_read(tdc, TEGRA_GPCDMA_CHAN_MMIOSEQ);
-> +		ch_reg->wcount = tdc_read(tdc, TEGRA_GPCDMA_CHAN_WCOUNT);
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int __maybe_unused tegra_dma_pm_resume(struct device *dev)
-> +{
-> +	struct tegra_dma *tdma = dev_get_drvdata(dev);
-> +	int i;
-> +
-> +	for (i = 0; i < tdma->chip_data->nr_channels; i++) {
-> +		struct tegra_dma_channel *tdc = &tdma->channels[i];
-> +		struct tegra_dma_channel_regs *ch_reg = &tdc->channel_reg;
-> +
-> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_WCOUNT, ch_reg->wcount);
-> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_DST_PTR, ch_reg->dst_ptr);
-> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_SRC_PTR, ch_reg->src_ptr);
-> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_HIGH_ADDR_PTR,
-> +			  ch_reg->high_addr_ptr);
-> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_MMIOSEQ, ch_reg->mmio_seq);
-> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_MCSEQ, ch_reg->mc_seq);
-> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_CSR,
-> +			  (ch_reg->csr & ~TEGRA_GPCDMA_CSR_ENB));
-> +	}
-> +	return 0;
-> +}
-> +
-> +static const struct __maybe_unused dev_pm_ops tegra_dma_dev_pm_ops = {
-> +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(tegra_dma_pm_suspend, tegra_dma_pm_resume)
-> +};
+On Wed, Aug 05, 2020 at 05:08:58PM -0700, Peter Oskolkov wrote:
 
-Please explain why this is needed. All DMA should be stopped (not
-paused) on system's suspend, shouldn't it?
+Thanks for the Cc!
+
+> + * @MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU:
+> + *                          If a thread belonging to the current process
+> + *                          is currently in an RSEQ critical section on the
+> + *                          CPU identified by flags parameter, restart it.
+> + *                          @flags: if @flags >= 0, identifies the CPU to
+> + *                                  restart RSEQ CS on; if == -1, restarts
+> + *                                  RSEQ CSs on all CPUs.
+
+> +	} else if (cpu_id == -1) {
+> +		on_each_cpu(membarrier_rseq_ipi,
+> +			    current->group_leader, true);
+
+This is an unpriv IPI the world. That's a big no-no.
+
+Double so because all you want to target is the current process, which
+you're defining as CLONE_THREAD, where the rest of this file uses
+CLONE_VM to define a process.
