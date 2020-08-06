@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C55523DD7D
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D4A23DE9C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730236AbgHFRKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
+        id S1729656AbgHFR17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730020AbgHFRFz (ORCPT
+        with ESMTP id S1729145AbgHFRBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:05:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DA1C03460E
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 05:48:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=P6qNlBkvQK38nzWUjveHhnAF0NGDmv9N0Zynt0nU5t8=; b=PRI5tz1IQQhX/xPAWyOweJIlTg
-        6k7lzo+ye+6vBBhBZzLQg1PE10oWeu2DD2nzMbE9ubTPZpqw/vCg581NoAcKJwdYLN9E1L+FKayES
-        YN2wWuc7NuBhSlyXX4pkgl9+A1IBlIyHq3ePsOSnFmmPuyGFC0BdC16tAJuOOId34zN5aZ569aQtw
-        fwNqGbE07KimU9grnGpg3o+h4b/riFehPU/WnoRB+N8KJAfGmFRC7Xt3YKTMGAPoX/yel/RRRt3jy
-        cNGjDECRY1VGdgol/p7VL9BHYGjINK0rVbtblUEPoPjPk0rNUdIkUvvbbCQlqz5BqZ2HE37ClmKdf
-        DcUl6mdA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k3fK8-0001HA-Ab; Thu, 06 Aug 2020 12:48:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 00D43300446;
-        Thu,  6 Aug 2020 14:48:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E633F213C48B6; Thu,  6 Aug 2020 14:48:42 +0200 (CEST)
-Date:   Thu, 6 Aug 2020 14:48:42 +0200
-From:   peterz@infradead.org
-To:     Will Deacon <will@kernel.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        paulmck <paulmck@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 2/2] sched: membarrier: cover kthread_use_mm
-Message-ID: <20200806124842.GB2674@hirez.programming.kicks-ass.net>
-References: <20200728160010.3314-1-mathieu.desnoyers@efficios.com>
- <20200728160010.3314-2-mathieu.desnoyers@efficios.com>
- <20200804145145.GM2657@hirez.programming.kicks-ass.net>
- <1708074166.39992.1596553173337.JavaMail.zimbra@efficios.com>
- <20200804170153.GO2657@hirez.programming.kicks-ass.net>
- <20200805105920.GB35926@hirez.programming.kicks-ass.net>
- <498869868.209.1596640956570.JavaMail.zimbra@efficios.com>
- <20200806080351.GA31889@willie-the-truck>
+        Thu, 6 Aug 2020 13:01:31 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2948BC034611
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:10:26 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id 88so43912579wrh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 06:10:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=zXVXBV8/VUcFTZPGB6Ma7QiZbdUggilJOj8C6Ws5aaA=;
+        b=LaQv1D6rHd4IVWhOW7LYtMxbBmO5Cpdf1kciCtARSrkcU1LDkw1BDF6ANlh6mXtvwT
+         gUZF0E5dbVzNR9OFV1L788MEEJsm+I7KkpgoZLhDHOABKGBYigHkiQOyC0ZZqLoWmNbU
+         WDp6GcWNi443iofzHcF7phchSuD/ig/t/vX5jOOOZoMjsPqCqiZCKUekR9Y9EC7oE5QS
+         14jK/3Ed7WzaenvK5WSbxHd2Cklgyt+v318q7L75WuuZodiBJOtDEzAwPPeaIE+Z5Be8
+         nbo4dInXkdkEN13ofXSuWkoZSckIfqHPlW+vsYB87PVrTqb4kLpA8fUmXmO2AgZEYxkp
+         kzZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=zXVXBV8/VUcFTZPGB6Ma7QiZbdUggilJOj8C6Ws5aaA=;
+        b=kL4401USuO71+RmEWbe8JTw2rf+gcJMRbdRsxjaGWJ5yTHrVMQqb9sJ4hAG5bzMWbL
+         F1YsxPTrLzVc7JknXzVRRQI7LM247J1Cfrg5DZ5OG0+rGy+gLhoIixjsubRwvrQ3CE4+
+         URiKoG5AFkPu7EyyqsOwKpFJ4c0riw0TwEs2zLKk4ymFHeEcrmrIhdv7mdgei1JJlNTW
+         d7QdJEaGQVBwFUBe7InK6YPyc6qB1XUYMpmlnlMYGCjB0hcGAltKqZgGYN1ERlSNRvLb
+         qks6zS8aLUDJJscefZo3kjk28J96cB5WJT6b1srKsqRn3o3ElKMFvGpgy727Di/P3amW
+         H+xQ==
+X-Gm-Message-State: AOAM532vTrpHa0AVuxbBIX1nWz2CARU/N2AwYvWBz2qQCFdBaEAoU1BH
+        AAfnXeu4OIlixlloJZQczNzM5PbC0Al1cO6qgVw=
+X-Google-Smtp-Source: ABdhPJxVRIHiK0dH9iDgd6YFuWthDR0AC33B9kaqHvav52l4yj5kXte/n+FK7q929lA/ngghB6tMOtfrzb5rB2c3b8Y=
+X-Received: by 2002:adf:9cc9:: with SMTP id h9mr7496193wre.343.1596719423889;
+ Thu, 06 Aug 2020 06:10:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200806080351.GA31889@willie-the-truck>
+Received: by 2002:a1c:4d0c:0:0:0:0:0 with HTTP; Thu, 6 Aug 2020 06:10:23 -0700 (PDT)
+Reply-To: sgtjanray@gmail.com
+From:   SGT JAN RAY <mamadouneymar004@gmail.com>
+Date:   Thu, 6 Aug 2020 15:10:23 +0200
+Message-ID: <CA+r1DsTTfa5FKOquPon-shS5UCLSf3gk1AAFsxV7+Aebc0N=qg@mail.gmail.com>
+Subject: Hello Greetings.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 01:13:46PM +0100, Will Deacon wrote:
-> I'm not sure I really see the benefit of the rename, to be honest with you,
-> especially if smp_mb__after_spinlock() doesn't disappear at the same time.
+-- 
+Hello Greetings.
 
-The reason I proposed a rename is because:
+I am happy to have you here as a friend, i hope all is well with you,
+and how are you enjoying your day over there in your country?
 
-	mutex_lock(&foo);
-	smp_mb__after_spinlock();
+My name is SGT JAN RAY,. I*m 28 years old an orphan my parents
+died when I was five years old nobody to help me,I send you my
+business proposal with tears and sorrow Please let this not be a
+surprised message to you.
 
-looks weird. But, afaict, it will work as expected. As the only possible
-way to implement any lock() is with atomic*_acquire() or stronger.
+I am single. an Nurse in America military but i am presently in
+Afghanistan for the fight against terrorism and peace keeping, I need
+an urgent help from you i have in my possession the sum of $3.5million
+USD I made here in Afghanistan.
 
-Another possible name would be: smp_mb__after_lock().
+I want you to stand as my beneficiary receive the fund you will assist
+me to invest it in a good profitable Venture or you keep it for me
+until I arrive your country, I will give You 40% of the total money
+for your assistance after you have receive The money.
+
+Take good care of yourself.your urgent reply is needed is my private
+email address below  sgtjanray@gmail.com, for more details.
+
+Best Resgards
+SGT JAN RAY,,
