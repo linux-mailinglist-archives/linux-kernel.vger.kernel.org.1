@@ -2,141 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A0C23DC56
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3698E23DC3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728926AbgHFQue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:50:34 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:19381 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729087AbgHFQlS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:41:18 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f2c329f0001>; Thu, 06 Aug 2020 09:41:03 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 06 Aug 2020 09:41:16 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 06 Aug 2020 09:41:16 -0700
-Received: from [10.2.172.190] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 6 Aug
- 2020 16:41:15 +0000
-Subject: Re: [PATCH v8 08/10] gpu: host1x: mipi: Keep MIPI clock enabled till
- calibration is done
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
-        <helen.koike@collabora.com>, <gregkh@linuxfoundation.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1596469346-937-1-git-send-email-skomatineni@nvidia.com>
- <1596469346-937-9-git-send-email-skomatineni@nvidia.com>
- <20200805134600.GA3351349@ulmo>
- <103efe31-1abc-54f2-6004-490d7bb1b61a@gmail.com>
- <dcd58ae7-58ed-11d1-0e10-7f522b651b30@gmail.com>
- <addb92e5-7c7a-6fba-117d-c7880b2d4597@nvidia.com>
- <ed80bf2f-213f-286a-59b2-fc85e4181b3d@gmail.com>
- <6eede805-80fd-016f-22f8-b6d25f6587af@nvidia.com>
- <1c12e40e-de7f-0599-a941-82760b4c7668@gmail.com>
- <9ef0b875-e826-43e2-207e-168d2081ff6a@nvidia.com>
- <4689cfe9-e7c4-48bf-217f-3a31b59b8bda@nvidia.com>
- <0e78c5ca-c529-1e98-891d-30351c9aae81@gmail.com>
- <b2098a68-d02f-b406-fc57-56e3ff5d8d1a@nvidia.com>
- <309e3b66-9288-91ef-71b4-be73eacbbd62@nvidia.com>
- <fde2431a-0585-ac32-ac25-73e198aaa948@nvidia.com>
- <4025a458-fa78-924d-c84f-166f82df0f8e@gmail.com>
- <4f15d655-3d62-cf9f-82da-eae379d60fa6@nvidia.com>
- <b5612e93-f1c4-4762-baa1-5d85eb1edbe1@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <412f8c53-1aca-db31-99a1-a0ecb2081ca5@nvidia.com>
-Date:   Thu, 6 Aug 2020 09:41:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <b5612e93-f1c4-4762-baa1-5d85eb1edbe1@gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+        id S1729480AbgHFQrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:47:46 -0400
+Received: from mga09.intel.com ([134.134.136.24]:47730 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727971AbgHFQnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:43:39 -0400
+IronPort-SDR: GRVSrb0LK03SrIIKeNu8tvIsSycbdjpipOGEB9lsGRsvo+q0/y/+bocrvseRmY0jGV1+8Nnz0F
+ VbNT3rXLCBlg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="153992057"
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="153992057"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 09:41:35 -0700
+IronPort-SDR: GAJDbnXkDa7psZvnylCK7oMXGkpXam4dSXEvrD0A8r1wUuweOn7oVZcUFgd9UYPa4Lz3bAb5RD
+ mqceOhtePsQQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
+   d="scan'208";a="325441387"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga002.fm.intel.com with ESMTP; 06 Aug 2020 09:41:35 -0700
+Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 6 Aug 2020 09:41:34 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 6 Aug 2020 09:41:34 -0700
+Received: from FMSEDG001.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 6 Aug 2020 09:41:34 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.173)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Thu, 6 Aug 2020 09:41:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ImriYgzARA4S0+6SW9EA4eY/r5TyzQwwWjERbm2feRpOJAdIr2VpTgqumaWYzaF0AbJZzY0VoxU9pB9RCfK204r72N+9whOHCJk9/f3ndJY9Vr8Hr6tPSv/xy4URiGgAthDQgyPqVgkrFInh1QEQvc6YL9aYyWZtUzEgpPAWCXOoWsMxDaCn6WrtaE7fqhLeLvwQH5vhvvOlZncIJ5RI6sHaLZC5ad6hVwV71tHf38/526Ze+0XSgxXX6kIK/1MEJSvNMyiznd+36iNimeTQCmWTRYjqjJjrOOw+FUn36sLmvTNJuWt3mUIPror4F1ncquzsd4UdXaNtTTz/zsRZ4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yBNRaYdebOZPatFDnTdRZezksjjppy9sxjIqU3rrukM=;
+ b=hkZiebtxwUhFbgYmyKswH6iDhb2pmCBwSShljqubiRYUr+O8y9Fy4MsYNb0NILOKVSYm0T5TrHRwXli2w0NBIAW86gWSmY6QwB7rxGKqe2dvmpAkissB1iVjDpH5TfhnXDLAd3YyUItntaymTiFRxO5R8rtlSUSbqTuIkgsLw+pCoNwcFq7L2XFaaz+HlrkfbO6zmX2vRcGqhiMNnNXl0/MRaho354DyWRf0/ExB65R7ReOdofEpQ1BSyEtC32rX8ox6uK60v9BZM5vLJx6nnEvYlA1lvw8NhtjfPtDyxi5ZLwIdrRvK+x5oOCpiQKJN36v3QFmoksA/Y0JaxNzvDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yBNRaYdebOZPatFDnTdRZezksjjppy9sxjIqU3rrukM=;
+ b=NVr3jDzX5eP+T0OPvNadOnGnlg6gDQgASjPTzG6GA/tmpYUaAlZpRP0kOOJqZl495zA7vDW6nayqF3/a1Wihb8N7lUGCqTrX0SaaIYzWNHqd8UE04Z4wfDLgd6E9+0FmFy8URAYd9PK3pKJ0wwfp/YoEI/OXqLBsC3wyWqzlK7w=
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com (2603:10b6:5:138::26)
+ by DM5PR11MB0044.namprd11.prod.outlook.com (2603:10b6:4:64::38) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.16; Thu, 6 Aug
+ 2020 16:41:28 +0000
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::f043:4bdc:ef57:1b41]) by DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::f043:4bdc:ef57:1b41%5]) with mapi id 15.20.3239.022; Thu, 6 Aug 2020
+ 16:41:28 +0000
+From:   "Lu, Brent" <brent.lu@intel.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>
+CC:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "yuhsuan@google.com" <yuhsuan@google.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Sam McNally <sammc@chromium.org>,
+        "Mark Brown" <broonie@kernel.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Stuart <daniel.stuart14@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        Damian van Soelen <dj.vsoelen@gmail.com>
+Subject: RE: [PATCH v3 2/2] ASoC: Intel: Add period size constraint on strago
+ board
+Thread-Topic: [PATCH v3 2/2] ASoC: Intel: Add period size constraint on strago
+ board
+Thread-Index: AQHWZzZzIgMFwAI7HkKT1/DPVspAl6khsDgAgAFDasCAAAm3gIADX8DAgAAlz4CAABcIUIAABbiAgACx9iCAALX6gIADSeRA
+Date:   Thu, 6 Aug 2020 16:41:28 +0000
+Message-ID: <DM6PR11MB364259049769F6EF3B84AABD97480@DM6PR11MB3642.namprd11.prod.outlook.com>
+References: <1596020585-11517-1-git-send-email-brent.lu@intel.com>
+ <1596198365-10105-1-git-send-email-brent.lu@intel.com>
+ <1596198365-10105-3-git-send-email-brent.lu@intel.com>
+ <s5h5za3ajvb.wl-tiwai@suse.de>
+ <DM6PR11MB3642AE90DF98956CCEDE6C2F974F0@DM6PR11MB3642.namprd11.prod.outlook.com>
+ <s5hd04a90o4.wl-tiwai@suse.de>
+ <DM6PR11MB3642B5BC2E1E0708088526D8974D0@DM6PR11MB3642.namprd11.prod.outlook.com>
+ <63bca214-3434-16c6-1b60-adf323aec554@linux.intel.com>
+ <DM6PR11MB3642D9BE1E5DAAB8B78B84B0974D0@DM6PR11MB3642.namprd11.prod.outlook.com>
+ <s5hpn873by6.wl-tiwai@suse.de>
+ <DM6PR11MB36423A9D28134811AD5A911F974A0@DM6PR11MB3642.namprd11.prod.outlook.com>
+ <6466847a-8aae-24f7-d727-36ba75e95f98@linux.intel.com>
+In-Reply-To: <6466847a-8aae-24f7-d727-36ba75e95f98@linux.intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1596732063; bh=aSj+An4k0jQSBKE0gQLbkgh8EUdWIyZoOObI+nTFPQ4=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=FY9UKV4S6ICiJGg4B7NbEf9KBDsvgca/RcruHvXMwH3vkmJvFd37M9kkd6NUrVePs
-         1AzoPKnCxuaJ55FLoYqhtX5CA/L9MkPR/WyhVndrEy5ivTCcuqIhRZ3NVltDZPUGSu
-         rsP80G+YfJIw0n8sAtFDcVZWKPe/TKgkWkTt3rS4He6ALc/mfL8T/kNqJCwr9RoIHc
-         nDOMWdUubUae1l1/q92P9NlLQ3DcmbWavouObFIbnESHkDSqCOPr2KT8LIaniP9ZGo
-         THX8GSRxcbqrtYIJ/ozDmzwVKYgsvYKUZJOCNpIEzLMqGnqDMfsor5d6bp9E3h7Qx6
-         1CdmL42QEtuQQ==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [114.36.92.201]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e59278e5-c1aa-4476-1622-08d83a279148
+x-ms-traffictypediagnostic: DM5PR11MB0044:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR11MB0044481720407480655A565F97480@DM5PR11MB0044.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: H5yaxC4riSiGOK79R3+9ZcyeCD4PvpsgO8b0rTMWiTLnRouTkMDjK1G0OxBYvr4tLPfTiP+5KR/bSH4JUsaCzsOWgeSZO2pixLqk5ufTmVce5HECXVwlaQTLmAUWXY5io+wbdt+CwR0Jfoid3MBJe+SbnePXGoM1pzA2wGUHVn08HYtOeNsmtBptrQXjznoJyFB/Sy1O5in1q5ID3+nRs0jz2swiQj+UcSqIMCc5WgluGs8zfIV4zPNrdDQcx52cpvfTMrlDXmu6YDx3txtsxnMTsaGXsWI8iurePvPwj6PvODHqZ/Wl1MsxXbQr8D3K7j76Y06PjzUu/7SvHrh3IjmoDeLDNrUJKiPvClc+tI/ho48d0UIfCWUZ3OLGsFW+
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3642.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(39860400002)(366004)(346002)(376002)(26005)(186003)(6506007)(86362001)(2906002)(52536014)(5660300002)(7416002)(76116006)(54906003)(110136005)(8676002)(316002)(8936002)(55016002)(33656002)(64756008)(66556008)(66476007)(66946007)(66446008)(4326008)(7696005)(9686003)(71200400001)(83380400001)(478600001)(11716003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 8TMLMdksh0jtDJVNU4PlcauhIa2QNo8QO1Y15nVTFosh1Y+uT5oGAi1Ak4h0jMkhE2GOvr2hzoe2fj1uwJnrwnWifCHAnMdOYf+XQaWe7aRaTScq/2/sRpb33cRYks3rXR+u1n2t3mNV71S/JbI77DRnSG8YRDdqFWNWQQWEUP/pHGal01TFubDqUiv7c5I9MVDyEf70qDE+8AwsxeuQY2xNpDHKStp2Nq3bMcjIAOV8PT3D+QJq6wSlddzS/RBL3ELn/3+N9mwbNWzQOoaAOLb287h3oTawLLtaOb/CAMYfODD580XdUEuTFn1b6rfXZx+bEfvrdcDSTqCSmQxR0oSKj+iZyEgQuwV72aXjXn2gNeKWSxW4J1/em8vmEXEbDjeZYApB6JZqpPMVPSeu3zLUbuRPfHlAd/bWKc3l8VyPGz9KhkwP9NsulVeN1U4Lj9qPkx35QEbAfuFwx679QizLMbwtU59QXhf5Mq/AcZtyM/68CHonRxMfLjDBQ0070lyeWCL0sONcEKW0TBNOdWFeI0YWSHr0rCoOkOmKWyLSunbclJ3VlLxa29lYRej/jKOjlYgEOdbJdCPtmiHVB4wqmcGPgqa+8AZYjFMFYQdwZnzJLja/MWPPIFoBPOVu2SZccivy0+xh7pz70YUnzA==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3642.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e59278e5-c1aa-4476-1622-08d83a279148
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Aug 2020 16:41:28.7881
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XBH4LLHM86mvjwGSYiNX8gEF7mCQTHQGgF7/QfCLNWxBiMB+EGZKoCpGwaiosrMBDYzZ+hH/AbbbowHqDVe3hA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB0044
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 8/6/20 9:10 AM, Dmitry Osipenko wrote:
-> 06.08.2020 18:59, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> ...
->>>> Confirmed from HW designer, calibration FSM to finish takes worst case
->>>> 72uS so by the time it gets to sensor stream it will be done its
->>>> sequence and will be waiting for DONE bit.
->>>>
->>>> So disabling MIPI CAL clock on sensor stream fails is safe.
->>> 72us is quite a lot of time, what will happen if LP-11 happens before
->>> FSM finished calibration?
->>>
->>> Maybe the finish_calibration() needs to split into two parts:
->>>
->>>  =C2=A0 1. wait for CAL_STATUS_ACTIVE before enabling sensor
->>>  =C2=A0 2. wait for CAL_STATUS_DONE after enabling sensor
->> I don't think we need to split for active and done. Active will be 1 as
->> long as other pads are in calibration as well.
->>
->> We cant use active status check for specific pads under calibration.
->> This is common bit for all pads.
-> Does hardware have a single FSM block shared by all pads or there is FSM
-> per group of pads?
-
-MIPI CAL status register has DONE bits for individual pads status and=20
-single ACTIVE bit.
-
-ACTIVE bit set to 1 indicates auto calibration is active which is the=20
-case even when other pads (other CSI pads from other ports streaming in=20
-case of parallel stream) are under calibration. Also DSI is shared as well.
-
-We do calibration for individual pads. So, we should not rely on ACTIVE bit=
-.
-
-
-MIPI driver checks for condition ACTIVE =3D=3D 1 && DONE =3D=3D 1 from the=
-=20
-beginning.
-
-But I think this also should be fixed as in case of parallel streams=20
-calibration can happen in parallel waiting for ACTIVE to be cleared=20
-makes all calibration callers to wait for longer than needed as ACTIVE=20
-is common for all pads.
-
->
->> Unfortunately HW don't have separate status indicating when sequence is
->> done to indicate its waiting for LP11.
->>
->>
->> To avoid all this, will remove cancel_calibration() totally and use same
->> finish calibration even in case of stream failure then.
->>
-> What about to add 72us delay to the end of start_calibration() in order
-> to ensure that FSM is finished before LP-11?
-
-Why we should add 72uS in start_calibration() when can use same=20
-finish_calibration() for both pass/fail cases?
-
-Only timing loose we see is in case of failure we still wait for 250ms=20
-and as this is failing case I hope should be ok.
-
+PiANCj4gSSBkb24ndCBnZXQgdGhpcy4gSWYgdGhlIHBsYXRmb3JtIGRyaXZlciBhbHJlYWR5IHN0
+YXRlZCAyNDAgYW5kIDk2MCBzYW1wbGVzIHdoeQ0KPiB3b3VsZCA0MzIgYmUgY2hvc2VuPyBEb2Vz
+bid0IHRoaXMgbWVhbiB0aGUgY29uc3RyYWludCBpcyBub3QgYXBwbGllZD8NCg0KSGkgUGllcnJl
+LA0KDQpTb3JyeSBmb3IgbGF0ZSByZXBseS4gSSB1c2VkIGZvbGxvd2luZyBjb25zdHJhaW50cyBp
+biBWMyBwYXRjaCBzbyBhbnkgcGVyaW9kIHdoaWNoDQphbGlnbnMgMW1zIHdvdWxkIGJlIGFjY2Vw
+dGVkLg0KDQorCS8qDQorCSAqIE1ha2Ugc3VyZSB0aGUgcGVyaW9kIHRvIGJlIG11bHRpcGxlIG9m
+IDFtcyB0byBhbGlnbiB0aGUNCisJICogZGVzaWduIG9mIGZpcm13YXJlLiBBcHBseSBzYW1lIHJ1
+bGUgdG8gYnVmZmVyIHNpemUgdG8gbWFrZQ0KKwkgKiBzdXJlIGFsc2EgY291bGQgYWx3YXlzIGZp
+bmQgYSB2YWx1ZSBmb3IgcGVyaW9kIHNpemUNCisJICogcmVnYXJkbGVzcyB0aGUgYnVmZmVyIHNp
+emUgZ2l2ZW4gYnkgdXNlciBzcGFjZS4NCisJICovDQorCXNuZF9wY21faHdfY29uc3RyYWludF9z
+dGVwKHN1YnN0cmVhbS0+cnVudGltZSwgMCwNCisJCQkgICBTTkRSVl9QQ01fSFdfUEFSQU1fUEVS
+SU9EX1NJWkUsIDQ4KTsNCisJc25kX3BjbV9od19jb25zdHJhaW50X3N0ZXAoc3Vic3RyZWFtLT5y
+dW50aW1lLCAwLA0KKwkJCSAgIFNORFJWX1BDTV9IV19QQVJBTV9CVUZGRVJfU0laRSwgNDgpOw0K
+DQpSZWdhcmRzLA0KQnJlbnQNCg0KPiANCj4gPiBbICAgNTIuMDExMTQ2XSBzb3VuZCBwY21DMUQw
+cDogaHdfcGFyYW0NCj4gPiBbICAgNTIuMDExMTUyXSBzb3VuZCBwY21DMUQwcDogICBBQ0NFU1Mg
+MHgxDQo+ID4gWyAgIDUyLjAxMTE1NV0gc291bmQgcGNtQzFEMHA6ICAgRk9STUFUIDB4NA0KPiA+
+IFsgICA1Mi4wMTExNThdIHNvdW5kIHBjbUMxRDBwOiAgIFNVQkZPUk1BVCAweDENCj4gPiBbICAg
+NTIuMDExMTYxXSBzb3VuZCBwY21DMUQwcDogICBTQU1QTEVfQklUUyBbMTY6MTZdDQo+ID4gWyAg
+IDUyLjAxMTE2NF0gc291bmQgcGNtQzFEMHA6ICAgRlJBTUVfQklUUyBbMzI6MzJdDQo+ID4gWyAg
+IDUyLjAxMTE2N10gc291bmQgcGNtQzFEMHA6ICAgQ0hBTk5FTFMgWzI6Ml0NCj4gPiBbICAgNTIu
+MDExMTcwXSBzb3VuZCBwY21DMUQwcDogICBSQVRFIFs0ODAwMDo0ODAwMF0NCj4gPiBbICAgNTIu
+MDExMTczXSBzb3VuZCBwY21DMUQwcDogICBQRVJJT0RfVElNRSBbOTAwMDo5MDAwXQ0KPiA+IFsg
+ICA1Mi4wMTExNzZdIHNvdW5kIHBjbUMxRDBwOiAgIFBFUklPRF9TSVpFIFs0MzI6NDMyXQ0KPiA+
+IFsgICA1Mi4wMTExNzldIHNvdW5kIHBjbUMxRDBwOiAgIFBFUklPRF9CWVRFUyBbMTcyODoxNzI4
+XQ0KPiA+IFsgICA1Mi4wMTExODJdIHNvdW5kIHBjbUMxRDBwOiAgIFBFUklPRFMgWzQ3NDo0NzRd
+DQo+ID4gWyAgIDUyLjAxMTE4NV0gc291bmQgcGNtQzFEMHA6ICAgQlVGRkVSX1RJTUUgWzQyNjYw
+MDA6NDI2NjAwMF0NCj4gPiBbICAgNTIuMDExMTg4XSBzb3VuZCBwY21DMUQwcDogICBCVUZGRVJf
+U0laRSBbMjA0NzY4OjIwNDc2OF0NCj4gPiBbICAgNTIuMDExMTkxXSBzb3VuZCBwY21DMUQwcDog
+ICBCVUZGRVJfQllURVMgWzgxOTA3Mjo4MTkwNzJdDQo+ID4gWyAgIDUyLjAxMTE5NF0gc291bmQg
+cGNtQzFEMHA6ICAgVElDS19USU1FIFswOjBdDQo+ID4NCj4gPiBSZWdhcmRzLA0KPiA+IEJyZW50
+DQo+ID4NCj4gPj4NCj4gPj4NCj4gPj4gVGFrYXNoaQ0KPiA+DQo+ID4NCg==
