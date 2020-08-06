@@ -2,76 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C2F23DF56
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6BC23DFF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729894AbgHFRpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:45:55 -0400
-Received: from mga02.intel.com ([134.134.136.20]:11127 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728234AbgHFQih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:38:37 -0400
-IronPort-SDR: fE0GVkJOzDvZFi9c+cQSHzm6Kwn6tKCMAJDuCnq+64C7u5C2+4HbO5755dcdHPGMkRynQeee/m
- D3yab4csLR7w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="140707733"
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="140707733"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 08:32:06 -0700
-IronPort-SDR: 9dqFfthCWP0LCXusvT7/YdIN2LUfL+dM8a7cOSPw//37suISlg4AYceONUhkp3L97Q2vJ28zie
- pSeFYhboG0hA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="276413105"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by fmsmga008.fm.intel.com with ESMTP; 06 Aug 2020 08:32:05 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id 76CC6301CAC; Thu,  6 Aug 2020 08:32:05 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 08:32:05 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     peterz@infradead.org
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        Jiri Olsa <jolsa@kernel.org>, alexey.budankov@linux.intel.com,
-        adrian.hunter@intel.com
-Subject: Re: [PATCH 1/2] perf: Add closing sibling events' file descriptors
-Message-ID: <20200806153205.GA1448395@tassilo.jf.intel.com>
-References: <20200708151635.81239-1-alexander.shishkin@linux.intel.com>
- <20200708151635.81239-2-alexander.shishkin@linux.intel.com>
- <20200806083530.GV2674@hirez.programming.kicks-ass.net>
+        id S1728127AbgHFRzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728045AbgHFQ2v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:28:51 -0400
+Received: from relay.felk.cvut.cz (relay.felk.cvut.cz [IPv6:2001:718:2:1611:0:1:0:70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D6B12C002156;
+        Thu,  6 Aug 2020 08:55:08 -0700 (PDT)
+Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
+        by relay.felk.cvut.cz (8.15.2/8.15.2) with ESMTP id 076Frg7D045971;
+        Thu, 6 Aug 2020 17:53:42 +0200 (CEST)
+        (envelope-from pisa@cmp.felk.cvut.cz)
+Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
+        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 076FrfBn002665;
+        Thu, 6 Aug 2020 17:53:41 +0200
+Received: (from pisa@localhost)
+        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 076FrfWs002664;
+        Thu, 6 Aug 2020 17:53:41 +0200
+X-Authentication-Warning: haar.felk.cvut.cz: pisa set sender to pisa@cmp.felk.cvut.cz using -f
+From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
+To:     Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v4 2/6] dt-bindings: net: can: binding for CTU CAN FD open-source IP core.
+Date:   Thu, 6 Aug 2020 17:53:40 +0200
+User-Agent: KMail/1.9.10
+Cc:     Pavel Machek <pavel@ucw.cz>, linux-can@vger.kernel.org,
+        devicetree@vger.kernel.org, mkl@pengutronix.de,
+        socketcan@hartkopp.net, wg@grandegger.com, davem@davemloft.net,
+        mark.rutland@arm.com, c.emde@osadl.org, armbru@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.jerabek01@gmail.com, ondrej.ille@gmail.com,
+        jnovak@fel.cvut.cz, jara.beran@gmail.com, porazil@pikron.com
+References: <cover.1596408856.git.pisa@cmp.felk.cvut.cz> <20200804092021.yd3wisz3g2ed6ioe@duo.ucw.cz> <20200806144713.GA829771@bogus>
+In-Reply-To: <20200806144713.GA829771@bogus>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20200806083530.GV2674@hirez.programming.kicks-ass.net>
+Message-Id: <202008061753.40832.pisa@cmp.felk.cvut.cz>
+X-FELK-MailScanner-Information: 
+X-MailScanner-ID: 076Frg7D045971
+X-FELK-MailScanner: Found to be clean
+X-FELK-MailScanner-SpamCheck: not spam, SpamAssassin (not cached, score=-0.1,
+        required 6, BAYES_00 -0.50, KHOP_HELO_FCRDNS 0.40,
+        NICE_REPLY_A -0.00, SPF_HELO_NONE 0.00, SPF_NONE 0.00)
+X-FELK-MailScanner-From: pisa@cmp.felk.cvut.cz
+X-FELK-MailScanner-Watermark: 1597334025.32967@lL+aMP+/PLx5Ni1jQOKRFQ
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > This adds an opt-in flag to the perf_event_open() syscall to retain
-> > sibling events after their file descriptors are closed. In this case, the
-> > actual events will be closed with the group leader.
-> 
-> So having the 1:1 relation with filedesc imposes a resource limit on
-> userspace.
-> 
-> This patch breaks that and enables a user to basically DoS the system by
-> creating unbound events.
+Hello Pavel and Rob,
 
-The idea was to account the events in the locked memory allocation too.
-Not sure that made it into the patch though.
+thanks much for review.
 
-It has a minor issue that it might break some existing setups that rely
-on the mmap fitting exactly into the mmap allocation, but that could
-be solved by allowing a little slack, since the existing setups
-likely don't have that many events.
+On Thursday 06 of August 2020 16:47:13 Rob Herring wrote:
+> On Tue, Aug 04, 2020 at 11:20:21AM +0200, Pavel Machek wrote:
+> > On Tue 2020-08-04 11:18:17, Pavel Machek wrote:
+> > > Hi!
+> > >
+> > > > The commit text again to make checkpatch happy.
+> > >
+> > > ?
 
-There's also a secondary issue of DoS the kernel by creating very long
-lists to iterate, but I suppose this is already quite possible, so probably
-not a new issue.
+The checkpatch reports as a problem when there is no description
+of the patch. At least for patch
 
--Andi
+  [PATCH v4 1/6] dt-bindings: vendor-prefix: add prefix for the Czech Technical University in Prague.
+
+I consider that little pontificate but I have fullfiled its suggestion
+with remark, that in this case, It is not my intention to add these
+promotions. I remove the reference to patchcheck from these commit messages.
+
+> > > > +    oneOf:
+> > > > +      - items:
+> > > > +          - const: ctu,ctucanfd
+> > > > +          - const: ctu,canfd-2
+> > > > +      - const: ctu,ctucanfd
+> > >
+> > > For consistency, can we have ctu,canfd-1, ctu,canfd-2?
+> >
+> > Make it ctu,ctucanfd-1, ctu,ctucanfd-2... to make it consistent with
+> > the file names.
+>
+> If you are going to do version numbers, please define where they come
+> from. Hopefully some tag of the h/w IP version...
+>
+> Better yet, put version numbers in the h/w registers itself and you
+> don't need different compatibles.
+
+The actual major version of the core is 2. The minor intended
+for release was 1. But we wait for driver inclusion and release
+and IP core release has not been realized. Sources moved to
+2.2-pre version and compiled core reports 2.2 now.
+There is added control bit for protocol exception
+behavior selection and minor enhancements in sync of standard
+and data rate bittimes starts.
+
+Yes, version can be obtained from hardware.
+There is magic and version in the first core register.
+See 3.1.1 DEVICE_ID section of the manual (page 22/28)
+
+  http://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/Progdokum.pdf
+
+As for the DT identifier we use "ctu,ctucanfd" in more projects already.
+Some devices are in the wild now. So I would prefer to keep compatibility
+with that name. Other name reflects that this driver is compatible with major
+version 2 of the core. It can be "ctu,ctucanfd-2". I am not sure if the
+repeat of "ctu" is good idea, but yes, full sources prefix is "ctucanfd".
+The second alias can be omitted alltogether. But I am not sure, there can
+be one day fundamental change between IP core versions which would be better
+handled by change of PCI ID and DT ID. It is questionable if attempt to keep
+single driver for more too different versions would be more manageable
+or convoluted than two fully independent ones. May it be we do not need
+to solve that because by that time it would be "ctu,ctucanxl".
+
+At this time, our actual first first choic for the IP core identifier
+is ctu,ctucanfd.
+
+As for the pointed description, I would remove them from version 5
+according to your reference. My personal one is to keep documentation
+(even of actual/local functional setup) directly in the sources and mainline
+to find it out when I or somebody else need to recreate or update designs,
+my biological memory is already worn out by past events.
+
+I am not sure if I should wait for subsystem maintainers review now
+or sent new patches version. I may get to its preparation tommorrow
+or may it be later because I want to take some time in
+countrysite/mountains.
+
+Best wishes
+
+                Pavel
+-- 
+                Pavel Pisa
+    phone:      +420 603531357
+    e-mail:     pisa@cmp.felk.cvut.cz
+    Department of Control Engineering FEE CVUT
+    Karlovo namesti 13, 121 35, Prague 2
+    university: http://dce.fel.cvut.cz/
+    personal:   http://cmp.felk.cvut.cz/~pisa
+    projects:   https://www.openhub.net/accounts/ppisa
+    CAN related:http://canbus.pages.fel.cvut.cz/
 
