@@ -2,161 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0761E23DC60
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178DE23DC17
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729571AbgHFQve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
+        id S1729285AbgHFQqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729461AbgHFQu5 (ORCPT
+        with ESMTP id S1729244AbgHFQpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:50:57 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D349FC0A88AC
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 07:50:26 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 74so16816335pfx.13
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 07:50:26 -0700 (PDT)
+        Thu, 6 Aug 2020 12:45:44 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6F1C0A88C0
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 07:58:30 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z18so40743735wrm.12
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 07:58:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=m441G42Dw2WA9biOCbEC37yIb+vN9wJnSWpEb0R2V68=;
-        b=Cledxagv6nAMt7v27o6YgUP9m5QB9CGCXnaH7AZ6bfcv6uloE7ZOwWdiAi884qPWXU
-         nsMKzrVONYBXUhr9LKbqaqsq8eHvS27d7N6O/c9rnICXjUimLSwqqHBAE2PNJqRJN554
-         +faXNAnPmyXY+emn9rHNcurNW9PpoeJI4TaRQxPk48vVuQnm37r8nU5LXkOg16ryaD8q
-         /OGzANa6yCr5OzEJcEeHc2DH9IBCdv6DZhWnui5h85+QlXyo/1kPilHKftaoJTplTNSD
-         SrChY1voDzVzNo7leiBxHNXpjMmUsV8aNgGi6ZXr7A34HUx7bxCsTKTfqGkSlF3VBPKf
-         hfjA==
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I2QgUmIlO6maUIvLNmFMIgB6tFghLiGYEgxkf43Wx9U=;
+        b=RU0tPU8bAxRiOuvHY7DJRlCCP2+QRbiYTaM0EYG5OIICce80n/byLWVwV7uLOp8vjb
+         zWbCdW/3rPa2b9W3bVCAqFeyee6Kk5YIEQGfReqtSa12vcltpB6yZj0yIp6dXYe+ZXTA
+         uj1D2Zs5Yu49k1Pzvv5W7vUodcbxEQk3yvggE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=m441G42Dw2WA9biOCbEC37yIb+vN9wJnSWpEb0R2V68=;
-        b=XPb2CGjQfXLj2MGzBgt9XqxPupPxqq6sIvR+1Fomxl6rqVJXFosBhguRMXn1I5kDaX
-         z6vWMHNphDefHFc42rTTrBvkWjufWZnzDBFNGrYiDVT5+ff6Z83N5EFtf8dy0MvjYnpi
-         yBCphTstEVC/jvDi06dz/X+iLQLLowJcIeyoMyVH4SlxXxgkWchgDLyq2RqjLKq379FF
-         qioKKyROP/+8eB4ozptd6q75IzhA5jx0uqAR9C7JibxI4AOiI+nXi34QUIEViv2uPbdq
-         jugo073grzvKcyP3+gHCRNUjn6u9C6npMHOnO0DMKSxe8uf7veykPSudUfTXELEGh0UY
-         10Tg==
-X-Gm-Message-State: AOAM5327UZCmdue3swVkY7oLWY5JV+Bm2laIMI5D8SYexcrR6w/CkSiv
-        XsvtADGKhVTvaDHHvLATXHG+D+ak
-X-Google-Smtp-Source: ABdhPJwVePxwBGETaMABZuy3jh92a5kranZesLy3lqWNemyvYhONO+jdmgqrBb4ELoQd7C0vOYVECA==
-X-Received: by 2002:a63:3fcf:: with SMTP id m198mr7408374pga.342.1596725426212;
-        Thu, 06 Aug 2020 07:50:26 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i1sm8890519pfo.212.2020.08.06.07.50.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 07:50:25 -0700 (PDT)
-Subject: Re: [PATCH] random: fix a compilation error on arm64
-To:     Qian Cai <cai@lca.pw>, torvalds@linux-foundation.org
-Cc:     daniel.diaz@linaro.org, tytso@mit.edu, catalin.marinas@arm.com,
-        will@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20200806135836.31736-1-cai@lca.pw>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <4edcf552-ef82-cdd2-3fda-38d42ebfecc7@roeck-us.net>
-Date:   Thu, 6 Aug 2020 07:50:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I2QgUmIlO6maUIvLNmFMIgB6tFghLiGYEgxkf43Wx9U=;
+        b=afxV8DSso8eT5yH9WMXJvq9+TPBo7Q2tAex8gU+CAeMUiQfn1AsM8cVb+Wqa8mjdk8
+         JO7Sz304bhON6mqzU+WcKJKthRWmmYYg+Hsnnt58pNlw9vGsJ4i03+7N/KI29+bIG4NT
+         uKe7VjnxeAdVGqvQRRgtJyrddly410lKfJknvwDqM3wydvtFKn5h2XGnuIq5l1lYiYJh
+         z0JdBfdh/noB/RUNYpwg9PFJ8E/TzsDDdKsaTmNwtJCy3x88NHM4SVIf0tEWb93suRw9
+         hPT2Ksnsek78Yp7Ss5YWZ+uOnDY3OT6NN+rGOwTKJJ7aD+BgWqqmkvdbaXMJuF0mXO5s
+         AClA==
+X-Gm-Message-State: AOAM531f6zA+di3VubQQu0br+uZBFm/ATK1uEMIL55fX/pI+EGvyUx/Q
+        0Ya9mUZCvVqrb+tmDD0BVuOkGhf1/UAvXu6u4627lg==
+X-Google-Smtp-Source: ABdhPJxei3fOQSc5RtFiRdeqUA8wYj3HA5L3OtFNsjWOwMSmZXT0JK+Zw+6cm6ro6Yk62WFzA6yS7yy5PVLA37ZNW0U=
+X-Received: by 2002:adf:ed85:: with SMTP id c5mr7800963wro.307.1596725908629;
+ Thu, 06 Aug 2020 07:58:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200806135836.31736-1-cai@lca.pw>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAFr9PX=Gk9h6ASi6saBLhoZ45g-WqCzDQo2XWT033fJykFSY_g@mail.gmail.com>
+ <20200806140739.31501-1-mark-pk.tsai@mediatek.com>
+In-Reply-To: <20200806140739.31501-1-mark-pk.tsai@mediatek.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Thu, 6 Aug 2020 23:58:33 +0900
+Message-ID: <CAFr9PXkFJJKnqVkPBXgh1kqL_serK4DmrmJ73xU+ZMA+NuF-bA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] irqchip: irq-mt58xx: Add mt58xx series interrupt
+To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Cc:     alix.wu@mediatek.com, DTML <devicetree@vger.kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, yj.chiang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/20 6:58 AM, Qian Cai wrote:
-> linux-next failed to compile using this .config,
-> https://gitlab.com/cailca/linux-mm/-/blob/master/arm64.config
-> 
-> arch/arm64/kernel/kaslr.c: In function 'kaslr_early_init':
-> arch/arm64/kernel/kaslr.c:128:6: error: implicit declaration of function
-> '__early_cpu_has_rndr'; did you mean '__early_pfn_to_nid'?
-> [-Werror=implicit-function-declaration]
->   if (__early_cpu_has_rndr()) {
->       ^~~~~~~~~~~~~~~~~~~~
->       __early_pfn_to_nid
-> arch/arm64/kernel/kaslr.c:131:7: error: implicit declaration of function
-> '__arm64_rndr' [-Werror=implicit-function-declaration]
->    if (__arm64_rndr(&raw))
->        ^~~~~~~~~~~~
-> cc1: some warnings being treated as errors
-> 
+Hi Mark-PK,
 
-This happens because ARCH_RANDOM is disabled. May be I am wrong, but I
-would argue that __arm64_rndr() should not be called directly in the
-first place. arch_get_random_seed_long_early() should be called instead.
+On Thu, 6 Aug 2020 at 23:08, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
+> > Do you know if it would be possible to confirm if they are
+> > the
+> > same thing? MediaTek bought MStar a few years ago so it seems likely
+> > but I have no hard information.
+> >
+>
+> Yes, it's for the same interrupt controller IP.
+
+That's good news. :)
+
+> > If they are the same thing could we work on making one series that
+> > supports both use cases?
+>
+> Sure, and I think the irq controller driver should support both use cases.
+> So how about keep the MTK version driver?
+
+I'm fine with that. Maybe you can push the MTK version and I can send
+a small patch after that to add the small bits I need?
+
+> I'll send patch v2 after -rc1 as I mentioned in the previous mail,
+> and keep you posted.
+> And any suggestion is welcome. :)
+
+I think Marc's comments on my series apply to your driver and I think
+maybe answer some of the questions you had. For example what
+to do about the read-modify-write sequence for updating the registers.
+
+> > It's also possible that if the interrupt controller is the same some
+> > other things like the SPI NOR controller etc are also common and
+> > working
+> > on a single driver for those would save us both time.
+>
+> I'm not sure about that.
+> I'll check the patches you contributed and confirm with our driver owners.
+
+I have a very messy tree with support for the SPI NOR controller, SPI, i2c etc
+that were used in MStar chips. If any of those are shared it'd be great to know.
 
 Thanks,
-Guenter
 
-> Fixes: 585524081ecd ("random: random.h should include archrandom.h, not the other way around")
-> Signed-off-by: Qian Cai <cai@lca.pw>
-> ---
->  include/linux/random.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/include/linux/random.h b/include/linux/random.h
-> index f45b8be3e3c4..da782c16c20c 100644
-> --- a/include/linux/random.h
-> +++ b/include/linux/random.h
-> @@ -12,6 +12,8 @@
->  #include <linux/list.h>
->  #include <linux/once.h>
->  
-> +#include <asm/archrandom.h>
-> +
->  #include <uapi/linux/random.h>
->  
->  struct random_ready_callback {
-> 
-
+Daniel
