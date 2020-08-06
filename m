@@ -2,148 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B59523D85A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C42E23D83E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729046AbgHFJKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:10:38 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:22673 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727768AbgHFJKG (ORCPT
+        id S1728915AbgHFJC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:02:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725927AbgHFJC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:10:06 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200806091002epoutp02c180b974a3c896563e9507600863b24c~oor1sNMFO0885008850epoutp02D
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:10:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200806091002epoutp02c180b974a3c896563e9507600863b24c~oor1sNMFO0885008850epoutp02D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1596705002;
-        bh=+Tk1raV2lX3/B/vawB8miWVvRfhulCe0CC4e8YCxARg=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=tdJT0ReOmN8rcQ8zWbUJZrjkpDTZNjR3wqcjpG3tT7ln08A+5GJt6ZIDlkMx48aMR
-         Jp6qHg3LolXCQeRsiXtyt9I3RLfwDxycLs7B8ybujhcvLPiMd+GSieILsLq98Kx+Ud
-         AcrCVolBCwOxGUHKOybSyiVKTvrlAZhrw9yxYKPo=
-Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p2.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200806091001epcas1p2f02484a63395973d98377016db17c142~oor1Owpew2868728687epcas1p23;
-        Thu,  6 Aug 2020 09:10:01 +0000 (GMT)
-Mime-Version: 1.0
-Subject: [PATCH v8 1/4] scsi: ufs: Add UFS feature related parameter
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <231786897.01596705001840.JavaMail.epsvc@epcpadp1>
-Date:   Thu, 06 Aug 2020 18:02:09 +0900
-X-CMS-MailID: 20200806090209epcms2p6ca5658db27f2c2167ea8187bd445858f
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d
-References: <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
-        <CGME20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d@epcms2p6>
+        Thu, 6 Aug 2020 05:02:58 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C2CC061574;
+        Thu,  6 Aug 2020 02:02:58 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id q4so31369837edv.13;
+        Thu, 06 Aug 2020 02:02:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BtAZAsrc9ChZDBxja2M8CUkXA4o6z7WOsBQ2MhI4SX4=;
+        b=bWG8V9GDjLuWRiYWSTn7UBWGgM/968UMS6O8Tx/mmYR0zmowlkn5MuKiikjhedAAB5
+         EwBiDYLkx72AW0mhbdoONYQ7B3Yl7w4onYe9m8w7DaDtxpCDq5hsz4lD9Nto4OlYht/T
+         dypSlXuWgeifRwRCBkxYgFQy4N3TDKcVgo3Fts6qp60UBmbGxw0arRxB9hil5LMmhnbx
+         cp//gsQW5BEV+B/aEhBES/zY03mbQ5HotqnaIAgthtyR1uX182YIQHtr+U2HNZ7Oi/SI
+         pB0xsCFbAZFQeuVHwHrxGqALp5Pm1zNY6JuYSRRil1rKwxfRtyc8KRa99ih456Qxaopz
+         yUrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BtAZAsrc9ChZDBxja2M8CUkXA4o6z7WOsBQ2MhI4SX4=;
+        b=BE9X0uRD8nmHJZCVScXpuE4FNO7gEsvAP/pUcce42vxqaYgIgwj+JBrDiHws0uFbtj
+         R9bQF3VvPFZzC3KShU3GVisvTtx3tUcV5Ol8npdvTi8vBTPNIY1QolPY9n7D295i3kBU
+         W8PlycnKOwunpKOyewKD5/hw4+LS/fU5uaDGb8HUlprRxBg5GHAaZEAIiXptxRsUnFjL
+         EwnEdhD8DXyzVThjABu9wmxCfp5ebyzA7eDcgqtWV9y62akKeEZtnmL1/zS1MynQUPwW
+         wC2c3y6TNn1q/hbcFDXzuF6XPe9YIXlm2ORU8h1Yo+Jp5yMwfy+5O0+ODvJXAo99cacy
+         /o3w==
+X-Gm-Message-State: AOAM531u+kaxrr01poqrXzegc3Tw4EB52xBXV3S+z/LzdMVpml4D5Hu+
+        qLVM2sqH81auqbudyutVEGbLgnApAKxbYA==
+X-Google-Smtp-Source: ABdhPJxnRKDEntM+utjGsoNw8ngGGR4vhSsivH2K+Uec6jZBXKU45aCp4ORW6Vexm5d+0N3LVteGDQ==
+X-Received: by 2002:aa7:d1cc:: with SMTP id g12mr3172241edp.385.1596704570766;
+        Thu, 06 Aug 2020 02:02:50 -0700 (PDT)
+Received: from ci00583-linux.xsens-tech.local (2001-1c06-0702-ba00-88c2-8039-7a6c-c842.cable.dynamic.v6.ziggo.nl. [2001:1c06:702:ba00:88c2:8039:7a6c:c842])
+        by smtp.googlemail.com with ESMTPSA id x1sm3188987ejc.119.2020.08.06.02.02.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 02:02:50 -0700 (PDT)
+From:   Patrick Riphagen <ppriphagen@gmail.com>
+X-Google-Original-From: Patrick Riphagen <patrick.riphagen@xsens.com>
+To:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     patrick.riphagen@xsens.com, stable@vger.kernel.org
+Subject: [PATCH] USB: serial: ftdi_sio: add IDs for Xsens Mti USB converter
+Date:   Thu,  6 Aug 2020 11:02:34 +0200
+Message-Id: <20200806090234.4130-1-patrick.riphagen@xsens.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a patch for parameters to be used for UFS feature and HPB
-module.
+The device added has an FTDI chip inside.
+The device is used to connect Xsens USB Motion Trackers.
 
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Tested-by: Bean Huo <beanhuo@micron.com>
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Patrick Riphagen <patrick.riphagen@xsens.com>
 ---
- drivers/scsi/ufs/ufs.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/usb/serial/ftdi_sio.c     | 1 +
+ drivers/usb/serial/ftdi_sio_ids.h | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-index f8ab16f30fdc..ae557b8d3eba 100644
---- a/drivers/scsi/ufs/ufs.h
-+++ b/drivers/scsi/ufs/ufs.h
-@@ -122,6 +122,7 @@ enum flag_idn {
- 	QUERY_FLAG_IDN_WB_EN                            = 0x0E,
- 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_EN                 = 0x0F,
- 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_DURING_HIBERN8     = 0x10,
-+	QUERY_FLAG_IDN_HPB_RESET                        = 0x11,
- };
+diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
+index 9ad44a96dfe3..2c08cad32f1d 100644
+--- a/drivers/usb/serial/ftdi_sio.c
++++ b/drivers/usb/serial/ftdi_sio.c
+@@ -713,6 +713,7 @@ static const struct usb_device_id id_table_combined[] = {
+ 	{ USB_DEVICE(XSENS_VID, XSENS_AWINDA_STATION_PID) },
+ 	{ USB_DEVICE(XSENS_VID, XSENS_CONVERTER_PID) },
+ 	{ USB_DEVICE(XSENS_VID, XSENS_MTDEVBOARD_PID) },
++	{ USB_DEVICE(XSENS_VID, XSENS_MTIUSBCONVERTER_PID) },
+ 	{ USB_DEVICE(XSENS_VID, XSENS_MTW_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_OMNI1509) },
+ 	{ USB_DEVICE(MOBILITY_VID, MOBILITY_USB_SERIAL_PID) },
+diff --git a/drivers/usb/serial/ftdi_sio_ids.h b/drivers/usb/serial/ftdi_sio_ids.h
+index e8373528264c..b5ca17a5967a 100644
+--- a/drivers/usb/serial/ftdi_sio_ids.h
++++ b/drivers/usb/serial/ftdi_sio_ids.h
+@@ -160,6 +160,7 @@
+ #define XSENS_AWINDA_DONGLE_PID 0x0102
+ #define XSENS_MTW_PID		0x0200	/* Xsens MTw */
+ #define XSENS_MTDEVBOARD_PID	0x0300	/* Motion Tracker Development Board */
++#define XSENS_MTIUSBCONVERTER_PID	0x0301	/* MTi USB converter */
+ #define XSENS_CONVERTER_PID	0xD00D	/* Xsens USB-serial converter */
  
- /* Attribute idn for Query requests */
-@@ -195,6 +196,9 @@ enum unit_desc_param {
- 	UNIT_DESC_PARAM_PHY_MEM_RSRC_CNT	= 0x18,
- 	UNIT_DESC_PARAM_CTX_CAPABILITIES	= 0x20,
- 	UNIT_DESC_PARAM_LARGE_UNIT_SIZE_M1	= 0x22,
-+	UNIT_DESC_HPB_LU_MAX_ACTIVE_REGIONS	= 0x23,
-+	UNIT_DESC_HPB_LU_PIN_REGION_START_OFFSET	= 0x25,
-+	UNIT_DESC_HPB_LU_NUM_PIN_REGIONS	= 0x27,
- 	UNIT_DESC_PARAM_WB_BUF_ALLOC_UNITS	= 0x29,
- };
- 
-@@ -235,6 +239,8 @@ enum device_desc_param {
- 	DEVICE_DESC_PARAM_PSA_MAX_DATA		= 0x25,
- 	DEVICE_DESC_PARAM_PSA_TMT		= 0x29,
- 	DEVICE_DESC_PARAM_PRDCT_REV		= 0x2A,
-+	DEVICE_DESC_PARAM_HPB_VER		= 0x40,
-+	DEVICE_DESC_PARAM_HPB_CONTROL		= 0x42,
- 	DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP	= 0x4F,
- 	DEVICE_DESC_PARAM_WB_PRESRV_USRSPC_EN	= 0x53,
- 	DEVICE_DESC_PARAM_WB_TYPE		= 0x54,
-@@ -283,6 +289,10 @@ enum geometry_desc_param {
- 	GEOMETRY_DESC_PARAM_ENM4_MAX_NUM_UNITS	= 0x3E,
- 	GEOMETRY_DESC_PARAM_ENM4_CAP_ADJ_FCTR	= 0x42,
- 	GEOMETRY_DESC_PARAM_OPT_LOG_BLK_SIZE	= 0x44,
-+	GEOMETRY_DESC_HPB_REGION_SIZE		= 0x48,
-+	GEOMETRY_DESC_HPB_NUMBER_LU		= 0x49,
-+	GEOMETRY_DESC_HPB_SUBREGION_SIZE	= 0x4A,
-+	GEOMETRY_DESC_HPB_DEVICE_MAX_ACTIVE_REGIONS	= 0x4B,
- 	GEOMETRY_DESC_PARAM_WB_MAX_ALLOC_UNITS	= 0x4F,
- 	GEOMETRY_DESC_PARAM_WB_MAX_WB_LUNS	= 0x53,
- 	GEOMETRY_DESC_PARAM_WB_BUFF_CAP_ADJ	= 0x54,
-@@ -327,6 +337,7 @@ enum {
- 
- /* Possible values for dExtendedUFSFeaturesSupport */
- enum {
-+	UFS_DEV_HPB_SUPPORT		= BIT(7),
- 	UFS_DEV_WRITE_BOOSTER_SUP	= BIT(8),
- };
- 
-@@ -537,6 +548,7 @@ struct ufs_dev_info {
- 	u8 *model;
- 	u16 wspecversion;
- 	u32 clk_gating_wait_us;
-+	u8 b_ufs_feature_sup;
- 	u32 d_ext_ufs_feature_sup;
- 	u8 b_wb_buffer_type;
- 	u32 d_wb_alloc_units;
+ /* Xsens devices using FTDI VID */
 -- 
-2.17.1
-
+2.25.1
 
