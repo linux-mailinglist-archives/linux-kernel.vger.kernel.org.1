@@ -2,146 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D3523D7A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 09:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C8623D7AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 09:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728628AbgHFHsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 03:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44494 "EHLO
+        id S1728735AbgHFHsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 03:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728649AbgHFHrn (ORCPT
+        with ESMTP id S1728367AbgHFHrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 Aug 2020 03:47:43 -0400
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F9BC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 00:47:34 -0700 (PDT)
-Received: by mail-ua1-x943.google.com with SMTP id x17so3680966uao.5
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 00:47:34 -0700 (PDT)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D73CC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 00:47:32 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id f1so42476450wro.2
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 00:47:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b0t+oHy+3tXSv0Fyo8sj7nLYPLgMZk4rOQH5zJCrsUw=;
-        b=mmO64tyBsv+JgYuCiVyrAC9dV/zesXAcDYptXbHbTy4W8WXtXbVWPIOs51jgsbEwN3
-         HhXWe+f/qbuFvdAhQUwRBnYyDtQkKTwom+nj/bIY8e2tBjpbRMQwYA/mO3SqrIt98nwT
-         ra9b6d/QmxEpGikM9bJy8QITxjvVXBLrvoxFkUVpYbmnHlJkpgXjxr1pM0NwEq35WKDI
-         Yu7mXGNnpAeeKTujMpr7d82Epw3cGUSK/7QLXPNOuLPg9ur0TbkWJFeRaBIIhWndag9O
-         MJ5eDNE6ElyNqBNB73YNa0pKfS56drZJ+EY+hNc2AdhgZGEE/49fUu+Uqq/POqk0UH9X
-         arkA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HHOPpgbgSKjDTGkpjqLc9R9y62AcGcDlV5geHTzbj4k=;
+        b=huIdmLYimIV/KSis/VRrs/h7gvLArHfqG/ltX0I5AeF1iCTLGBqMHip1CC1N+4mHTY
+         EEfMhXqOT4Cvy6kSAlvZLnuHOQY4IRpZ2MX9koV7VnA7avsWXz6yypW4cTpVhZ29tE22
+         MwxXWdZM1LO0bonUk30Tw9sk6/b9Yi+RAShi/FA5zW1/VuySaCdULkCLhzTQQ2bwkHMB
+         +MhJ5/QvsrDCImQvySWulvxTqLlQzJwh2Nzx6jqZ7sw29ZSMZUNKTvtEW7bhxqs8nuiI
+         PWzWj2zoKSmygmQkpLciPPKy6l9moly/qwFssdGb8/3P5TFa6BS2GtwOE3kIzO1vN2or
+         7NBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b0t+oHy+3tXSv0Fyo8sj7nLYPLgMZk4rOQH5zJCrsUw=;
-        b=dsW8o0Oga12shiaV5S6tkoJ/o4NWCIzHJciJ7sKFKb0mnwfMC0tLyH/MwU2J6nDZ9S
-         t1AvaXA1pvARN40tUnI3M+6s53ATSUlzGl3n+6GvNzEZ4KVESkibGHsN115Bk2JWjvOX
-         rWwoIkMXnNVCFQE6S93bWPiARviSUXFX9S8swJLQOA2u7LMIkYIMAGfvBSx0yCVrMkTq
-         rBz2TWrdaPKxBXYjCkv1GYjTODxQ1wd3R1jY7XhXLHob/5wiJc0clQdDEi8+JkZgPq8D
-         779Im8bYwa7MX0RQbe5UTlJ1XgSOjUGpbUgdtbj9xc+c098KtIUbLMeMJXeXUv5jH3l8
-         1upw==
-X-Gm-Message-State: AOAM533fIIGGkuXvk2U3qLYz+B3m4Nqn3Dsbv5aqnp2rdZk6joXNR0lM
-        3jAfv6S0hFO5CtOH35wFSDtJdY/RUac=
-X-Google-Smtp-Source: ABdhPJxPtkp+24f9JXfVYxDK2gKu9X5dp+3a153H++uJfoDUS3mufNB/BSaF+70/DCtf0/GR7JA05Q==
-X-Received: by 2002:a9f:37e3:: with SMTP id q90mr5382269uaq.137.1596700051272;
-        Thu, 06 Aug 2020 00:47:31 -0700 (PDT)
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
-        by smtp.gmail.com with ESMTPSA id u3sm912248vkb.0.2020.08.06.00.47.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HHOPpgbgSKjDTGkpjqLc9R9y62AcGcDlV5geHTzbj4k=;
+        b=K1GoMVNXy7i/f6LwdT2CNxD3pJne4uAj2ns1QVuYe4IolDzIZzgR2NRx1gLvPlcXTL
+         RU0rMJUee4jHB+wEyNvBbun+PTpIP4r5b5IFOzPO1pp2zTp6QUs2XXV94jDPcShNYy79
+         Zmck2k1JxJIRvy0dax4L/VQvU801UnfjFdrlfBbnQwi71hPWNtAgoO9rCsHeV9QzQj1O
+         qD32yhZNxvHjwRMkmwsbMCVCEFBSnMjmZ45yZAQqMD9YGdY2ovl+kvRzyBjmqq1oAdTU
+         NJhZhcJMSPMZ4N4HtZihp0z5d/vvdfp8Pyt+rGiCf+S+rXGLEgTE3TsUsMWyIE8yj025
+         Pn8A==
+X-Gm-Message-State: AOAM531YhPrW6tDlQ4Po0CLrQkBoeEJG7BOprh3dkcuX+uZwJxedzHHz
+        8i5ADA5C48ZUjQe88glXuSpIyw==
+X-Google-Smtp-Source: ABdhPJw+4NVYCnu2GbhFtnNRtemtzn42yTacU2OokEGm5X69leVrkhBEzTunKFaJrBI+wZmBlt4Vig==
+X-Received: by 2002:adf:e7c3:: with SMTP id e3mr6237105wrn.356.1596700050497;
         Thu, 06 Aug 2020 00:47:30 -0700 (PDT)
-Received: by mail-ua1-f54.google.com with SMTP id x17so3680935uao.5
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 00:47:29 -0700 (PDT)
-X-Received: by 2002:ab0:1892:: with SMTP id t18mr633054uag.108.1596700049106;
- Thu, 06 Aug 2020 00:47:29 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id p14sm5943332wrx.90.2020.08.06.00.47.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 00:47:28 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 09:47:23 +0200
+From:   Marco Elver <elver@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        fenghua.yu@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        yu-cheng.yu@intel.com, jgross@suse.com, sdeep@vmware.com,
+        virtualization@lists.linux-foundation.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>
+Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*()
+ helpers
+Message-ID: <20200806074723.GA2364872@elver.google.com>
+References: <0000000000007d3b2d05ac1c303e@google.com>
+ <20200805132629.GA87338@elver.google.com>
+ <20200805134232.GR2674@hirez.programming.kicks-ass.net>
+ <20200805135940.GA156343@elver.google.com>
+ <20200805141237.GS2674@hirez.programming.kicks-ass.net>
+ <20200805141709.GD35926@hirez.programming.kicks-ass.net>
+ <CANpmjNN6FWZ+MsAn3Pj+WEez97diHzqF8hjONtHG15C2gSpSgw@mail.gmail.com>
+ <CANpmjNNy3XKQqgrjGPPKKvXhAoF=mae7dk8hmoS4k4oNnnB=KA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200806015040.98379-1-xie.he.0141@gmail.com>
-In-Reply-To: <20200806015040.98379-1-xie.he.0141@gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 6 Aug 2020 09:46:52 +0200
-X-Gmail-Original-Message-ID: <CA+FuTSeOhYOqKjHk5ZBFiY=_+pXgUKe4BKx1S+gu9T9X2c1+bQ@mail.gmail.com>
-Message-ID: <CA+FuTSeOhYOqKjHk5ZBFiY=_+pXgUKe4BKx1S+gu9T9X2c1+bQ@mail.gmail.com>
-Subject: Re: [PATCH] drivers/net/wan/lapbether: Added needed_headroom and a
- skb->len check
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Martin Schiller <ms@dev.tdt.de>,
-        Brian Norris <briannorris@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNNy3XKQqgrjGPPKKvXhAoF=mae7dk8hmoS4k4oNnnB=KA@mail.gmail.com>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 3:51 AM Xie He <xie.he.0141@gmail.com> wrote:
->
-> 1. Added a skb->len check
->
-> This driver expects upper layers to include a pseudo header of 1 byte
-> when passing down a skb for transmission. This driver will read this
-> 1-byte header. This patch added a skb->len check before reading the
-> header to make sure the header exists.
->
-> 2. Changed to use needed_headroom instead of hard_header_len to request
-> necessary headroom to be allocated
->
-> In net/packet/af_packet.c, the function packet_snd first reserves a
-> headroom of length (dev->hard_header_len + dev->needed_headroom).
-> Then if the socket is a SOCK_DGRAM socket, it calls dev_hard_header,
-> which calls dev->header_ops->create, to create the link layer header.
-> If the socket is a SOCK_RAW socket, it "un-reserves" a headroom of
-> length (dev->hard_header_len), and assumes the user to provide the
-> appropriate link layer header.
->
-> So according to the logic of af_packet.c, dev->hard_header_len should
-> be the length of the header that would be created by
-> dev->header_ops->create.
->
-> However, this driver doesn't provide dev->header_ops, so logically
-> dev->hard_header_len should be 0.
->
-> So we should use dev->needed_headroom instead of dev->hard_header_len
-> to request necessary headroom to be allocated.
->
-> This change fixes kernel panic when this driver is used with AF_PACKET
-> SOCK_RAW sockets.
->
-> Call stack when panic:
->
-> [  168.399197] skbuff: skb_under_panic: text:ffffffff819d95fb len:20
-> put:14 head:ffff8882704c0a00 data:ffff8882704c09fd tail:0x11 end:0xc0
-> dev:veth0
-> ...
-> [  168.399255] Call Trace:
-> [  168.399259]  skb_push.cold+0x14/0x24
-> [  168.399262]  eth_header+0x2b/0xc0
-> [  168.399267]  lapbeth_data_transmit+0x9a/0xb0 [lapbether]
-> [  168.399275]  lapb_data_transmit+0x22/0x2c [lapb]
-> [  168.399277]  lapb_transmit_buffer+0x71/0xb0 [lapb]
-> [  168.399279]  lapb_kick+0xe3/0x1c0 [lapb]
-> [  168.399281]  lapb_data_request+0x76/0xc0 [lapb]
-> [  168.399283]  lapbeth_xmit+0x56/0x90 [lapbether]
-> [  168.399286]  dev_hard_start_xmit+0x91/0x1f0
-> [  168.399289]  ? irq_init_percpu_irqstack+0xc0/0x100
-> [  168.399291]  __dev_queue_xmit+0x721/0x8e0
-> [  168.399295]  ? packet_parse_headers.isra.0+0xd2/0x110
-> [  168.399297]  dev_queue_xmit+0x10/0x20
-> [  168.399298]  packet_sendmsg+0xbf0/0x19b0
-> ......
->
-> Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> Cc: Martin Schiller <ms@dev.tdt.de>
-> Cc: Brian Norris <briannorris@chromium.org>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+On Wed, Aug 05, 2020 at 07:31PM +0200, Marco Elver wrote:
+...
+> Oh well, it seems that KCSAN on syzbot still crashes even with this
+> "fix". It's harder to reproduce though, and I don't have a clear
+> reproducer other than "fuzz the kernel" right now. I think the new IRQ
+> state tracking code is still not compatible with KCSAN, even though we
+> thought it would be. Most likely there are still ways to get recursion
+> lockdep->KCSAN. An alternative would be to deal with the recursion
+> like we did before, instead of trying to squash all of it. I'll try to
+> investigate -- Peter, if you have ideas, help is appreciated.
 
-Acked-by: Willem de Bruijn <willemb@google.com>
+Testing my hypothesis that raw then nested non-raw
+local_irq_save/restore() breaks IRQ state tracking -- see the reproducer
+below. This is at least 1 case I can think of that we're bound to hit.
 
-The in-band signal byte is required, but stripped by lapbeth_xmit.
-Subsequent code will prefix additional headers, including an Ethernet
-link layer. The extra space needs to be reserved, but not pulled in
-packet_snd with skb_reserve, so has to use needed_headroom instead of
-hard_header_len.
+Thanks,
+-- Marco
+
+------ >8 ------
+
+diff --git a/init/main.c b/init/main.c
+index 15bd0efff3df..0873319dcff4 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -1041,6 +1041,22 @@ asmlinkage __visible void __init start_kernel(void)
+ 	sfi_init_late();
+ 	kcsan_init();
+ 
++	/* DEBUG CODE */
++	lockdep_assert_irqs_enabled(); /* Pass. */
++	{
++		unsigned long flags1;
++		raw_local_irq_save(flags1);
++		{
++			unsigned long flags2;
++			lockdep_assert_irqs_enabled(); /* Pass - expectedly blind. */
++			local_irq_save(flags2);
++			lockdep_assert_irqs_disabled(); /* Pass. */
++			local_irq_restore(flags2);
++		}
++		raw_local_irq_restore(flags1);
++	}
++	lockdep_assert_irqs_enabled(); /* FAIL! */
++
+ 	/* Do the rest non-__init'ed, we're now alive */
+ 	arch_call_rest_init();
+ 
