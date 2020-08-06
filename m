@@ -2,446 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68DC523DDE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E67423DD69
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730069AbgHFRSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:18:33 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:52911 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730546AbgHFRRT (ORCPT
+        id S1729334AbgHFRJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729960AbgHFRGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:17:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596734236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=onEWWUD1yYFf96Ib5iYdabPbRCsNrpZZ92IFVcR6Rs0=;
-        b=clBgRJoopj3PZdMEBLYxFs3jpaaJKEJujyLFP6ItdA5uN0Yrr7d8E3yF3wTM0PZo21SCeB
-        sYwbCW/NSTRS77XlLK53Pfu4GuBiSOmRF8w58zjUXKlw8z2nmH/kWJwTbIBrf5aPDzvEnX
-        QEBNB/WsgUd1m9Ie/ET1mPXmS8oljQA=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-393-wyDSqeoPNwq9tAdZOr00qg-1; Thu, 06 Aug 2020 10:55:57 -0400
-X-MC-Unique: wyDSqeoPNwq9tAdZOr00qg-1
-Received: by mail-io1-f71.google.com with SMTP id k5so8893989ion.17
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 07:55:56 -0700 (PDT)
+        Thu, 6 Aug 2020 13:06:08 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0FAC008692
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 08:28:54 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id m22so7669480eje.10
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 08:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=8dJRX0Igl8Nzz5CO3GKFYKT9330jHgO3CL9EwFxbfPY=;
+        b=Et4UyxEhb4ruYaDwnjt8+KPZrq/MFw2cICGFKe8rbg1pXlR+HHtzHMoSEgtnFbWhyU
+         oO7c1P0pwaTs0mUWogLImAdsgBwbePBedWGjXHb+kEIBlevGB2o01x2tle+6oNN7Ne3z
+         X0kABG46i+CXilTn3kpGonGXNkRilg4VYfJkMq3i+HF0v/LWF+HZYzq78yQo4Lx9fgav
+         qIMFgp1Cg2K7vBH2DRyFdZcFa2RvxJG+yfVJPpCcdMlqezRcrf1A1cdSVpAKI13eHGUs
+         hTsvrcBK4klJThdTnXVOA/yZE02qyEgx57ygmx0QqxEo7BPljTAUffEXUcGLohS1rrXa
+         nSVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=onEWWUD1yYFf96Ib5iYdabPbRCsNrpZZ92IFVcR6Rs0=;
-        b=N/UQ7trMq8Bdg6YZEpa7FoPdok8ZUcF5QNPfad1MeKA8e+3JsARffMSqwkD8mpLef6
-         FUyrWCpCCAP5JKA4xsYwge8dPHIbCiN7QUnBWejTIIUa0KGO90o/JHYHsA0yzVkHTb9B
-         7OuRT17wUZaJL3GcoNbjoRDo7fQOjzl6xPwarXgWmfN6HESYOtTZKBIA1tcSIGRumKQV
-         qotjib/3sW2a1ipObws4dyi5fXx13Fi9pG2Ey7sfn12jSdPOBE+IvMNzbxkOVk9Dj4AT
-         F0zRWURjg88KjPxIVOOm5aem6NWDMtXqEo2U2QKdCeAwW8/mIF0uZzHmftJNUD7vOJut
-         coNg==
-X-Gm-Message-State: AOAM533Ir5GwPHNhUG8mfH5PqLqihLEhhC3b08s42T5hRRMjfqE5rWNo
-        0CXynF3uINixxZ6MrZsl3LuX9Tn7M56StFV8k9LkRt94buC7Pa8p6moHcm6X6852YmegzqvUQIV
-        zXGPOgYP29VG/GsCUvudyiFuFk6rO8vfgjJUUP5st
-X-Received: by 2002:a92:4b08:: with SMTP id m8mr10910209ilg.11.1596725754480;
-        Thu, 06 Aug 2020 07:55:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxuJAGOPwP7OrTmjnN3rRa8ddHgXxsPgsj1Q2/acIxvDPuw3FHxbSArh+QHe2ZDGjFvubofSLbbD2G+jWL7cf4=
-X-Received: by 2002:a92:4b08:: with SMTP id m8mr10910153ilg.11.1596725753996;
- Thu, 06 Aug 2020 07:55:53 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=8dJRX0Igl8Nzz5CO3GKFYKT9330jHgO3CL9EwFxbfPY=;
+        b=pf1q7nQmrtftW64uG0QrGop+k8SNOd3AXNQPYXVxoN+BoB52aUv/t6V9AwCihyYaFo
+         HacwNQqWrpGi1mVvSVlgvXAX/MvnTBBurU3gBxl5ti4fKMCRDD3JzPaTF6IAAUuLejPT
+         696N6u1FpDwwy2ES+7nMnN5P9uORd6kWNZfwWHuj2JqVPkgMoPFxmp9EF54aPyM02D4M
+         76iKVtmEs/wYENUG06eu24iHqJmpxjI/++ULOSjdN0G6WAWI4n5z12v/eZniSS88OJNm
+         UM6rWzTd9jWQDV9wI78vMDaOdPgDoOSZBgKPCrEYFBfTWNqaJqeHKhzr3S/ocf5cDNHr
+         2wLg==
+X-Gm-Message-State: AOAM532jo55pt21Kv9HhVlf1W7eIvookGEL2XRqi3OLEcnnoCieEvyp8
+        TYY1CH9IT3XJ2HUyKVw8t4x/eGhyxmAJP7sxmvrRjA==
+X-Google-Smtp-Source: ABdhPJyJ6LKnK4sE4FKAWZMO5lrML4pA9T6kL3O1Se2tGp1Pmv8J4aqcA9YOHsfaPuOVZxolrRJlCDcA5wi4VNs9FzU=
+X-Received: by 2002:a17:906:7fc9:: with SMTP id r9mr4742298ejs.407.1596727732562;
+ Thu, 06 Aug 2020 08:28:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com> <20200716135303.276442-22-jarkko.sakkinen@linux.intel.com>
-In-Reply-To: <20200716135303.276442-22-jarkko.sakkinen@linux.intel.com>
-From:   Nathaniel McCallum <npmccallum@redhat.com>
-Date:   Thu, 6 Aug 2020 10:55:43 -0400
-Message-ID: <CAOASepOqRfUafSv_qjUv-jW_6n8G7kZ9yh-2z_Z9sjL_2zqNCg@mail.gmail.com>
-Subject: Re: [PATCH v36 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>, kai.huang@intel.com,
-        "Svahn, Kai" <kai.svahn@intel.com>, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org,
-        Neil Horman <nhorman@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+From:   Raul Rangel <rrangel@google.com>
+Date:   Thu, 6 Aug 2020 09:28:41 -0600
+Message-ID: <CAHQZ30ANTeM-pgdYZ4AbgxsnevBJnJgKZ1Kg+Uy8oSXZUvz=og@mail.gmail.com>
+Subject: PS/2 + i8042 intermixing commands
+To:     linux-input@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "S, Shirish" <Shirish.S@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a past revision of this patch, I had requested a void *misc
-parameter that could be passed through vdso_sgx_enter_enclave_t into
-sgx_enclave_exit_handler_t. This request encountered some push back
-and I dropped the issue. However, I'd like to revisit it or something
-similar.
+I'm debugging a resume issue on one of our devices using the v5.4
+kernel. The device has a PS/2 atkbd and a PS/2 touchpad. It looks like
+PS/2 commands are getting intermingled with i8042 commands. This
+results in our keyboard controller thinking it got some invalid data.
+This usually happens 1 out of 1500 resumes.
 
-One way to create a generic interface to SGX is to pass a structure
-that captures the relevant CPU state from the handler so that it can
-be evaluated in C code before reentry. Precedent for this approach can
-be found in struct kvm_run[0]. Currently, however, there is no way to
-pass a pointer to such a structure directly into the handler.
+Here is the log from my keyboard controller on a good resume.
 
-This can be done implicitly by wrapping the struct
-sgx_enclave_exception in another structure and then using techniques
-like container_of() to find another field. However, this is made more
-difficult by the fact that the sgx_enclave_exit_handler_t is not
-really using the x86_64 sysv calling convention. Therefore, the
-sgx_enclave_exit_handler_t MUST be written in assembly. This also
-implies that we can't use techniques like container_of() and must
-calculate all the offsets manually, which is tedious, error prone and
-fragile.
+I've added some comments to make it easier to follow:
+> <-- i8042_controller_resume
+> [KB recv cmd: 0xaa] # CMD #1
+>
+> [KB recv cmd: 0x60] # CMD #2
+> [ACPI kblight 0]
+> [KB recv data: 0x70]
+> [KB eaten by STATE_WRITE_CMD_BYTE: 0x70]
+> [KB set CTR_RAM(0x00)=0x70 (old:0x70)]
+>
+> <- i8042_enable_aux_port
+> [KB recv cmd: 0x60] # CMD #3
+> [KB recv data: 0x52]
+> [KB eaten by STATE_WRITE_CMD_BYTE: 0x52]
+> [KB set CTR_RAM(0x00)=0x52 (old:0x70)]
+> [AUX IRQ enable]
+> [AUX enabled]
+>
+> <- i8042_enable_kbd_port
+> [KB recv cmd: 0x60] # CMD #4
+> [KB recv data: 0x43]
+> [KB eaten by STATE_WRITE_CMD_BYTE: 0x43]
+> [KB set CTR_RAM(0x00)=0x43 (old:0x52)]
+> [KB IRQ enable]
+> [KB enable]
+>
+> <- atkbd_reconnect->atkbd_probe
+> [KB recv data: 0xf2] <- ATKBD_CMD_GETID # CMD #5
+> <- atkbd_deactivate
+> [KB recv data: 0xf5] <- ATKBD_CMD_RESET_DIS # CMD #6
+> [KS disable]
+> [KB Clear Buffer]
+>
+> <- atkbd_reconnect->atkbd_set_leds
+> [KB recv data: 0xed] # CMD #7
+> [KB recv data: 0x00]
+> [KB eaten by STATE_SETLEDS]
+>
+> <- atkbd_reconnect->atkbd_set_repeat_rate
+> [KB recv data: 0xf3] # CMD #8
+> [KB recv data: 0x00]
+> [KB eaten by STATE_SETREP: 0x00]
+>
+> <- atkbd_reconnect->atkbd_activate
+> [KB recv data: 0xf4] <- ATKBD_CMD_ENABLE # CMD #9
+> [KS enable]
+> [KB Clear Buffer]
+>
+> <- atkbd_event_work->atkbd_set_leds
+> [KB recv data: 0xed] # CMD #10
+> [KB recv data: 0x00]
+> [KB eaten by STATE_SETLEDS]
+>
+> <- atkbd_event_work->atkbd_set_repeat_rate
+> [KB recv data: 0xf3] # CMD #11
+> [KB recv data: 0x00]
+> [KB eaten by STATE_SETREP: 0x00]
+>
+> <-- trackpoint_reconnect->trackpoint_start_protocol
+> [KB recv cmd: 0xd4] <- I8042_CMD_AUX_SEND # CMD #12
+> [KB recv data: 0xe1] <- TP_READ_ID
+> [STATE_SEND_TO_MOUSE: 0xe1]
+>
+> <- Is this i8042_port_close?
+> [KB recv cmd: 0x60] # CMD #13
+> [KB recv data: 0x41]
+> [KB eaten by STATE_WRITE_CMD_BYTE: 0x41]
+> [KB set CTR_RAM(0x00)=0x41 (old:0x43)]
+> [AUX IRQ disable]
+> [KB recv cmd: 0x60] # CMD #14
+> [KB recv data: 0x43]
+> [KB eaten by STATE_WRITE_CMD_BYTE: 0x43]
+> [KB set CTR_RAM(0x00)=0x43 (old:0x41)]
+> [AUX IRQ enable]
+>
+> [KB recv cmd: 0xd4] # CMD #15
+> [KB recv data: 0xf2]
+> [STATE_SEND_TO_MOUSE: 0xf2]
 
-This is further complicated by the fact that I'm using Rust (as are a
-number of other consumers), which has no native offsetof support (yes,
-there is a crate for it, but it requires a number of complex
-strategies to defeat the compiler which aren't great) and therefore no
-container_of() support.
 
-We could design a standard struct for this (similar to struct
-kvm_run). But in order to keep performance in check we'd have to
-define a limited ABI surface (to avoid things like xsave) which
-wouldn't have the full flexibility of the current approach. This would
-allow for a kernel provided vDSO function with a normal calling
-convention, however (which does have some non-trivial value). I think
-this is a trade-off we should consider (perhaps making it optional?).
+Here is the log on the bad resume:
 
-But at the least, allowing a pass-through void *misc would reduce the
-complexity of the assembly calculations.
+> <-- i8042_controller_resume
+> [KB recv cmd: 0xaa] # CMD #1
+>
+> [KB recv cmd: 0x60] # CMD #2
+> [ACPI kblight 0]
+> [KB recv data: 0x70]
+> [KB eaten by STATE_WRITE_CMD_BYTE: 0x70]
+> [KB set CTR_RAM(0x00)=0x70 (old:0x70)]
+>
+> <- i8042_enable_aux_port
+> [KB recv cmd: 0x60] # CMD #3
+> [KB recv data: 0x52]
+> [KB eaten by STATE_WRITE_CMD_BYTE: 0x52]
+> [KB set CTR_RAM(0x00)=0x52 (old:0x70)]
+> [AUX IRQ enable]
+> [AUX enabled]
+>
+> <- i8042_enable_kbd_port
+> [KB recv cmd: 0x60] # CMD #4
+> [KB recv data: 0x43]
+> [KB eaten by STATE_WRITE_CMD_BYTE: 0x43]
+> [KB set CTR_RAM(0x00)=0x43 (old:0x52)]
+> [KB IRQ enable]
+> [KB enable]
+>
+> <- atkbd_reconnect->atkbd_probe
+> [KB recv data: 0xf2] <- ATKBD_CMD_GETID # CMD #5
+> <- atkbd_deactivate
+> [KB recv data: 0xf5] <- ATKBD_CMD_RESET_DIS # CMD #6
+> [KS disable]
+> [KB Clear Buffer]
+>
+> <- atkbd_reconnect->atkbd_set_leds
+> [KB recv data: 0xed] # CMD #7
+> [KB recv data: 0x00]
+> [KB eaten by STATE_SETLEDS]
+>
+> <- atkbd_reconnect->atkbd_set_repeat_rate
+> [KB recv data: 0xf3] # CMD #8
+> [KB recv data: 0x00]
+> [KB eaten by STATE_SETREP: 0x00]
+>
+> <- atkbd_reconnect->atkbd_activate
+> [KB recv data: 0xf4] <- ATKBD_CMD_ENABLE # CMD #9
+> [KS enable]
+> [KB Clear Buffer]
+>
+> <-- trackpoint_reconnect->trackpoint_start_protocol
+> [KB recv cmd: 0xd4] <- I8042_CMD_AUX_SEND # CMD #12
+> [KB recv data: 0xe1] <- TP_READ_ID
+> [STATE_SEND_TO_MOUSE: 0xe1]
+>
+> <- Is this i8042_port_close?
+> [KB recv cmd: 0x60] # CMD #13
+> [KB recv data: 0x41]
+> [KB eaten by STATE_WRITE_CMD_BYTE: 0x41]
+> [KB set CTR_RAM(0x00)=0x41 (old:0x43)]
+> [AUX IRQ disable]
+>
+> <- atkbd_event_work->atkbd_set_leds
+> [KB recv data: 0xed] # CMD 10
+> <- Wait, where is the data?
+>
+> <- Continuation of i8042_port_close?
+> [KB recv cmd: 0x60] # CMD #14
+> [KB recv data: 0x43]
+> [KB eaten by STATE_WRITE_CMD_BYTE: 0x43]
+> [KB set CTR_RAM(0x00)=0x43 (old:0x41)]
+> [AUX IRQ enable]
+>
+> <- Here is the data!
+> [KB recv data: 0x00] # CMD 10 (data)
+> [KB Unsupported i8042 data 0x00]
+> [KB recv data: 0x00] <- Did the host retry?
+> [KB Unsupported i8042 data 0x00]
+>
+> <- atkbd_event_work->atkbd_set_repeat_rate
+> [KB recv data: 0xf3] # CMD #11
+> [KB recv data: 0x00]
+> [KB eaten by STATE_SETREP: 0x00]
+>
+> [KB recv cmd: 0xd4] # CMD #15
+> [KB recv data: 0xf2]
+> [STATE_SEND_TO_MOUSE: 0xf2]
 
-[0]: https://github.com/torvalds/linux/blob/master/include/uapi/linux/kvm.h#L263
+As you can see CMD #10 starts between #13 and #14, and then completes
+after #14. Is this expected behavior?
 
-On Thu, Jul 16, 2020 at 9:58 AM Jarkko Sakkinen
-<jarkko.sakkinen@linux.intel.com> wrote:
->
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->
-> An SGX runtime must be aware of the exceptions, which happen inside an
-> enclave. Introduce a vDSO call that wraps EENTER/ERESUME cycle and returns
-> the CPU exception back to the caller exactly when it happens.
->
-> Kernel fixups the exception information to RDI, RSI and RDX. The SGX call
-> vDSO handler fills this information to the user provided buffer or
-> alternatively trigger user provided callback at the time of the exception.
->
-> The calling convention is custom and does not follow System V x86-64 ABI.
->
-> Suggested-by: Andy Lutomirski <luto@amacapital.net>
-> Acked-by: Jethro Beekman <jethro@fortanix.com>
-> Tested-by: Jethro Beekman <jethro@fortanix.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Co-developed-by: Cedric Xing <cedric.xing@intel.com>
-> Signed-off-by: Cedric Xing <cedric.xing@intel.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->  arch/x86/entry/vdso/Makefile             |   2 +
->  arch/x86/entry/vdso/vdso.lds.S           |   1 +
->  arch/x86/entry/vdso/vsgx_enter_enclave.S | 131 +++++++++++++++++++++++
->  arch/x86/include/asm/enclu.h             |   8 ++
->  arch/x86/include/uapi/asm/sgx.h          |  98 +++++++++++++++++
->  5 files changed, 240 insertions(+)
->  create mode 100644 arch/x86/entry/vdso/vsgx_enter_enclave.S
->  create mode 100644 arch/x86/include/asm/enclu.h
->
-> diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-> index ebe82b7aecda..f71ad5ebd0c4 100644
-> --- a/arch/x86/entry/vdso/Makefile
-> +++ b/arch/x86/entry/vdso/Makefile
-> @@ -29,6 +29,7 @@ VDSO32-$(CONFIG_IA32_EMULATION)       := y
->  vobjs-y := vdso-note.o vclock_gettime.o vgetcpu.o
->  vobjs32-y := vdso32/note.o vdso32/system_call.o vdso32/sigreturn.o
->  vobjs32-y += vdso32/vclock_gettime.o
-> +vobjs-$(VDSO64-y)              += vsgx_enter_enclave.o
->
->  # files to link into kernel
->  obj-y                          += vma.o extable.o
-> @@ -100,6 +101,7 @@ $(vobjs): KBUILD_CFLAGS := $(filter-out $(GCC_PLUGINS_CFLAGS) $(RETPOLINE_CFLAGS
->  CFLAGS_REMOVE_vclock_gettime.o = -pg
->  CFLAGS_REMOVE_vdso32/vclock_gettime.o = -pg
->  CFLAGS_REMOVE_vgetcpu.o = -pg
-> +CFLAGS_REMOVE_vsgx_enter_enclave.o = -pg
->
->  #
->  # X32 processes use x32 vDSO to access 64bit kernel data.
-> diff --git a/arch/x86/entry/vdso/vdso.lds.S b/arch/x86/entry/vdso/vdso.lds.S
-> index 36b644e16272..4bf48462fca7 100644
-> --- a/arch/x86/entry/vdso/vdso.lds.S
-> +++ b/arch/x86/entry/vdso/vdso.lds.S
-> @@ -27,6 +27,7 @@ VERSION {
->                 __vdso_time;
->                 clock_getres;
->                 __vdso_clock_getres;
-> +               __vdso_sgx_enter_enclave;
->         local: *;
->         };
->  }
-> diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
-> new file mode 100644
-> index 000000000000..be7e467e1efb
-> --- /dev/null
-> +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
-> @@ -0,0 +1,131 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#include <linux/linkage.h>
-> +#include <asm/export.h>
-> +#include <asm/errno.h>
-> +#include <asm/enclu.h>
-> +
-> +#include "extable.h"
-> +
-> +#define EX_LEAF                0*8
-> +#define EX_TRAPNR      0*8+4
-> +#define EX_ERROR_CODE  0*8+6
-> +#define EX_ADDRESS     1*8
-> +
-> +.code64
-> +.section .text, "ax"
-> +
-> +SYM_FUNC_START(__vdso_sgx_enter_enclave)
-> +       /* Prolog */
-> +       .cfi_startproc
-> +       push    %rbp
-> +       .cfi_adjust_cfa_offset  8
-> +       .cfi_rel_offset         %rbp, 0
-> +       mov     %rsp, %rbp
-> +       .cfi_def_cfa_register   %rbp
-> +       push    %rbx
-> +       .cfi_rel_offset         %rbx, -8
-> +
-> +       mov     %ecx, %eax
-> +.Lenter_enclave:
-> +       /* EENTER <= leaf <= ERESUME */
-> +       cmp     $EENTER, %eax
-> +       jb      .Linvalid_leaf
-> +       cmp     $ERESUME, %eax
-> +       ja      .Linvalid_leaf
-> +
-> +       /* Load TCS and AEP */
-> +       mov     0x10(%rbp), %rbx
-> +       lea     .Lasync_exit_pointer(%rip), %rcx
-> +
-> +       /* Single ENCLU serving as both EENTER and AEP (ERESUME) */
-> +.Lasync_exit_pointer:
-> +.Lenclu_eenter_eresume:
-> +       enclu
-> +
-> +       /* EEXIT jumps here unless the enclave is doing something fancy. */
-> +       xor     %eax, %eax
-> +
-> +       /* Invoke userspace's exit handler if one was provided. */
-> +.Lhandle_exit:
-> +       cmp     $0, 0x20(%rbp)
-> +       jne     .Linvoke_userspace_handler
-> +
-> +.Lout:
-> +       pop     %rbx
-> +       leave
-> +       .cfi_def_cfa            %rsp, 8
-> +       ret
-> +
-> +       /* The out-of-line code runs with the pre-leave stack frame. */
-> +       .cfi_def_cfa            %rbp, 16
-> +
-> +.Linvalid_leaf:
-> +       mov     $(-EINVAL), %eax
-> +       jmp     .Lout
-> +
-> +.Lhandle_exception:
-> +       mov     0x18(%rbp), %rcx
-> +       test    %rcx, %rcx
-> +       je      .Lskip_exception_info
-> +
-> +       /* Fill optional exception info. */
-> +       mov     %eax, EX_LEAF(%rcx)
-> +       mov     %di,  EX_TRAPNR(%rcx)
-> +       mov     %si,  EX_ERROR_CODE(%rcx)
-> +       mov     %rdx, EX_ADDRESS(%rcx)
-> +.Lskip_exception_info:
-> +       mov     $(-EFAULT), %eax
-> +       jmp     .Lhandle_exit
-> +
-> +.Linvoke_userspace_handler:
-> +       /* Pass the untrusted RSP (at exit) to the callback via %rcx. */
-> +       mov     %rsp, %rcx
-> +
-> +       /* Save the untrusted RSP offset in %rbx (non-volatile register). */
-> +       mov     %rsp, %rbx
-> +       and     $0xf, %rbx
-> +
-> +       /*
-> +        * Align stack per x86_64 ABI. Note, %rsp needs to be 16-byte aligned
-> +        * _after_ pushing the parameters on the stack, hence the bonus push.
-> +        */
-> +       and     $-0x10, %rsp
-> +       push    %rax
-> +
-> +       /* Push @e, the "return" value and @tcs as params to the callback. */
-> +       push    0x18(%rbp)
-> +       push    %rax
-> +       push    0x10(%rbp)
-> +
-> +       /* Clear RFLAGS.DF per x86_64 ABI */
-> +       cld
-> +
-> +       /* Load the callback pointer to %rax and invoke it via retpoline. */
-> +       mov     0x20(%rbp), %rax
-> +       call    .Lretpoline
-> +
-> +       /* Undo the post-exit %rsp adjustment. */
-> +       lea     0x20(%rsp, %rbx), %rsp
-> +
-> +       /*
-> +        * If the return from callback is zero or negative, return immediately,
-> +        * else re-execute ENCLU with the postive return value interpreted as
-> +        * the requested ENCLU leaf.
-> +        */
-> +       cmp     $0, %eax
-> +       jle     .Lout
-> +       jmp     .Lenter_enclave
-> +
-> +.Lretpoline:
-> +       call    2f
-> +1:     pause
-> +       lfence
-> +       jmp     1b
-> +2:     mov     %rax, (%rsp)
-> +       ret
-> +       .cfi_endproc
-> +
-> +_ASM_VDSO_EXTABLE_HANDLE(.Lenclu_eenter_eresume, .Lhandle_exception)
-> +
-> +SYM_FUNC_END(__vdso_sgx_enter_enclave)
-> diff --git a/arch/x86/include/asm/enclu.h b/arch/x86/include/asm/enclu.h
-> new file mode 100644
-> index 000000000000..06157b3e9ede
-> --- /dev/null
-> +++ b/arch/x86/include/asm/enclu.h
-> @@ -0,0 +1,8 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_X86_ENCLU_H
-> +#define _ASM_X86_ENCLU_H
-> +
-> +#define EENTER 0x02
-> +#define ERESUME        0x03
-> +
-> +#endif /* _ASM_X86_ENCLU_H */
-> diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
-> index 57d0d30c79b3..3760e5d5dc0c 100644
-> --- a/arch/x86/include/uapi/asm/sgx.h
-> +++ b/arch/x86/include/uapi/asm/sgx.h
-> @@ -74,4 +74,102 @@ struct sgx_enclave_set_attribute {
->         __u64 attribute_fd;
->  };
->
-> +/**
-> + * struct sgx_enclave_exception - structure to report exceptions encountered in
-> + *                               __vdso_sgx_enter_enclave()
-> + *
-> + * @leaf:      ENCLU leaf from \%eax at time of exception
-> + * @trapnr:    exception trap number, a.k.a. fault vector
-> + * @error_code:        exception error code
-> + * @address:   exception address, e.g. CR2 on a #PF
-> + * @reserved:  reserved for future use
-> + */
-> +struct sgx_enclave_exception {
-> +       __u32 leaf;
-> +       __u16 trapnr;
-> +       __u16 error_code;
-> +       __u64 address;
-> +       __u64 reserved[2];
-> +};
-> +
-> +/**
-> + * typedef sgx_enclave_exit_handler_t - Exit handler function accepted by
-> + *                                     __vdso_sgx_enter_enclave()
-> + *
-> + * @rdi:       RDI at the time of enclave exit
-> + * @rsi:       RSI at the time of enclave exit
-> + * @rdx:       RDX at the time of enclave exit
-> + * @ursp:      RSP at the time of enclave exit (untrusted stack)
-> + * @r8:                R8 at the time of enclave exit
-> + * @r9:                R9 at the time of enclave exit
-> + * @tcs:       Thread Control Structure used to enter enclave
-> + * @ret:       0 on success (EEXIT), -EFAULT on an exception
-> + * @e:         Pointer to struct sgx_enclave_exception (as provided by caller)
-> + */
-> +typedef int (*sgx_enclave_exit_handler_t)(long rdi, long rsi, long rdx,
-> +                                         long ursp, long r8, long r9,
-> +                                         void *tcs, int ret,
-> +                                         struct sgx_enclave_exception *e);
-> +
-> +/**
-> + * __vdso_sgx_enter_enclave() - Enter an SGX enclave
-> + * @rdi:       Pass-through value for RDI
-> + * @rsi:       Pass-through value for RSI
-> + * @rdx:       Pass-through value for RDX
-> + * @leaf:      ENCLU leaf, must be EENTER or ERESUME
-> + * @r8:                Pass-through value for R8
-> + * @r9:                Pass-through value for R9
-> + * @tcs:       TCS, must be non-NULL
-> + * @e:         Optional struct sgx_enclave_exception instance
-> + * @handler:   Optional enclave exit handler
-> + *
-> + * NOTE: __vdso_sgx_enter_enclave() does not ensure full compliance with the
-> + * x86-64 ABI, e.g. doesn't explicitly clear EFLAGS.DF after EEXIT.  Except for
-> + * non-volatile general purpose registers, preserving/setting state in
-> + * accordance with the x86-64 ABI is the responsibility of the enclave and its
-> + * runtime, i.e. __vdso_sgx_enter_enclave() cannot be called from C code
-> + * without careful consideration by both the enclave and its runtime.
-> + *
-> + * All general purpose registers except RAX, RBX and RCX are passed as-is to
-> + * the enclave.  RAX, RBX and RCX are consumed by EENTER and ERESUME and are
-> + * loaded with @leaf, asynchronous exit pointer, and @tcs respectively.
-> + *
-> + * RBP and the stack are used to anchor __vdso_sgx_enter_enclave() to the
-> + * pre-enclave state, e.g. to retrieve @e and @handler after an enclave exit.
-> + * All other registers are available for use by the enclave and its runtime,
-> + * e.g. an enclave can push additional data onto the stack (and modify RSP) to
-> + * pass information to the optional exit handler (see below).
-> + *
-> + * Most exceptions reported on ENCLU, including those that occur within the
-> + * enclave, are fixed up and reported synchronously instead of being delivered
-> + * via a standard signal. Debug Exceptions (#DB) and Breakpoints (#BP) are
-> + * never fixed up and are always delivered via standard signals. On synchrously
-> + * reported exceptions, -EFAULT is returned and details about the exception are
-> + * recorded in @e, the optional sgx_enclave_exception struct.
-> +
-> + * If an exit handler is provided, the handler will be invoked on synchronous
-> + * exits from the enclave and for all synchronously reported exceptions. In
-> + * latter case, @e is filled prior to invoking the handler.
-> + *
-> + * The exit handler's return value is interpreted as follows:
-> + *  >0:                continue, restart __vdso_sgx_enter_enclave() with @ret as @leaf
-> + *   0:                success, return @ret to the caller
-> + *  <0:                error, return @ret to the caller
-> + *
-> + * The exit handler may transfer control, e.g. via longjmp() or C++ exception,
-> + * without returning to __vdso_sgx_enter_enclave().
-> + *
-> + * Return:
-> + *  0 on success,
-> + *  -EINVAL if ENCLU leaf is not allowed,
-> + *  -EFAULT if an exception occurs on ENCLU or within the enclave
-> + *  -errno for all other negative values returned by the userspace exit handler
-> + */
-> +typedef int (*vdso_sgx_enter_enclave_t)(unsigned long rdi, unsigned long rsi,
-> +                                       unsigned long rdx, unsigned int leaf,
-> +                                       unsigned long r8,  unsigned long r9,
-> +                                       void *tcs,
-> +                                       struct sgx_enclave_exception *e,
-> +                                       sgx_enclave_exit_handler_t handler);
-> +
->  #endif /* _UAPI_ASM_X86_SGX_H */
-> --
-> 2.25.1
->
+I'm not quite sure if #13 and #14 are coming from i8042_port_close. I
+don't have a function trace available, but it seems to fit.
 
+I found this comment:
+/*
+ * Writers to AUX and KBD ports as well as users issuing i8042_command
+ * directly should acquire i8042_mutex (by means of calling
+ * i8042_lock_chip() and i8042_unlock_ship() helpers) to ensure that
+ * they do not disturb each other (unfortunately in many i8042
+ * implementations write to one of the ports will immediately abort
+ * command that is being processed by another port).
+ */
+static DEFINE_MUTEX(i8042_mutex);
+
+Does that not mean that i8042_port_close, i8042_enable_kbd_port,
+i8042_enable_aux_port, + any other function that calls i8042_command
+should be taking the lock before calling i8042_command?
+
+Imagine this scenario:
+1) atkbd_set_leds->ps2_command: locks i8042_mutex
+2) __ps2_command->ps2_do_sendbyte->i8042_kbd_write
+2a) locks i8042_lock
+2b) Sends the kbd command
+2c) unlocks i8042_lock
+3) i8042_port_close/i8042_enable_aux_port/etc gets called and then
+calls i8042_command
+3a) locks i8042_lock
+3b) sends 8042 CMD
+3c) sends 8042 DATA
+3d) unlocks i8042_lock
+3e) i8042_command returns
+4)  ps2_do_sendbyte continues sending the kb param via i8042_kbd_write
+4a) locks i8042_lock
+4b) Sends the kbd data <- Original data got stomped on because of the
+8042 CMD in between
+4c) unlocks i8042_lock
+4c) ps2_command unlocks i8042_mutex
+
+Is this an invalid sequence or is our keyboard controller at fault
+because it doesn't support intermingled commands?
+
+Thanks,
+Raul
+
+p.s, sorry for sending twice. I forgot to set the original as plain text :)
