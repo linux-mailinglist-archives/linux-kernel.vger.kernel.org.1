@@ -2,410 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6366723D855
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F307F23D853
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729024AbgHFJJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:09:13 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36153 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727768AbgHFJJF (ORCPT
+        id S1729001AbgHFJJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:09:06 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:60683 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728489AbgHFJJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 Aug 2020 05:09:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596704940;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9yJ7XfkuAxUj/j7kgX33C1Z1dZHcUKpge/t8PlTR2PI=;
-        b=ctIk/0x64dpoimTsJ9a780icPSrbi9rKvM/SjrtyWELFwFRRqJ0yiWw2QfH95RAkJy5Xxb
-        7KaQ4b0b30v6frfzDvOfK+YIxijq+lwgBqgxr4rkjGiUBsff/JptHSNEy9nqrmgFVSh4g+
-        XlKphOq5xWpe34VE643FudKuvJprf4E=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-145-m__9f1GFNP6pycv5Hdsm3Q-1; Thu, 06 Aug 2020 05:08:57 -0400
-X-MC-Unique: m__9f1GFNP6pycv5Hdsm3Q-1
-Received: by mail-ed1-f70.google.com with SMTP id b39so4845218edf.15
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 02:08:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=9yJ7XfkuAxUj/j7kgX33C1Z1dZHcUKpge/t8PlTR2PI=;
-        b=qnH4nwrwNv8nTKR7H+8/gzEEryOyL9aOtEIi84Pf0h3xTYFf9qf+zl7vo3zGKXgXrL
-         i/JaVsI8nFSkY5HT7eVL5sb40NYj+P6VAKTXnvGTz+t3Ais8clCsT2ktVfIEc9/hfinv
-         cBnPv85qOLboOtV0SSY3IwKmkXyHR7NtZA59AGh8z5HtVhPklQxWQpAVgE0JFYYNYCeB
-         xXu1wED6jXHTxeBSQz2SmKipfL9duP/rR2jASGub4uxh6rX0lGRPTEG7SsLNPUQvK+ko
-         w8CKXkeCHC3J4eyB01SEswmr+CwbL4fYLbJ5N0AWKRhKBT/H7Y7JSo0pjUdNhRuJmQf6
-         0PDA==
-X-Gm-Message-State: AOAM533a6Dtbypz+hs3wSZJbMcOt8KScIMr+VSaOdat7QQAyYaKaY84D
-        Svxj68XsQYEyQYeviJRRsoT6FS0M/T7P34zGl17KowLb+03FmSEQ0EDmmHI4LuEQMJY/9fQGrul
-        z94kDzdptQBpByfYuzOIz0icD
-X-Received: by 2002:a50:bf07:: with SMTP id f7mr3227272edk.356.1596704935677;
-        Thu, 06 Aug 2020 02:08:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxYg63KM8Q1SiSQH0hGWqiHK/Z/18SI01LpSJdiY8Rj4MhCod/17viTWMcS+jxy/sz/658YWA==
-X-Received: by 2002:a50:bf07:: with SMTP id f7mr3227235edk.356.1596704935300;
-        Thu, 06 Aug 2020 02:08:55 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id i26sm3004115edv.70.2020.08.06.02.08.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 02:08:54 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Andrew Jones <drjones@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Peter Xu <peterx@redhat.com>, Michael Tsirkin <mst@redhat.com>,
-        Julia Suvorova <jsuvorov@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] KVM: x86: introduce KVM_MEM_PCI_HOLE memory
-In-Reply-To: <20200805151843.yii4ufv7ubc7hqb5@kamzik.brq.redhat.com>
-References: <20200728143741.2718593-1-vkuznets@redhat.com> <20200728143741.2718593-3-vkuznets@redhat.com> <20200805151843.yii4ufv7ubc7hqb5@kamzik.brq.redhat.com>
-Date:   Thu, 06 Aug 2020 11:08:53 +0200
-Message-ID: <878sesp2e2.fsf@vitty.brq.redhat.com>
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R311e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0U4ud9kI_1596704940;
+Received: from IT-C02W23QPG8WN.local(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0U4ud9kI_1596704940)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 06 Aug 2020 17:09:01 +0800
+Subject: Re: [PATCH] net: core: explicitly call linkwatch_fire_event to speed
+ up the startup of network services
+To:     David Miller <davem@davemloft.net>
+Cc:     kuba@kernel.org, xlpang@linux.alibaba.com,
+        caspar@linux.alibaba.com, andrew@lunn.ch, edumazet@google.com,
+        jiri@mellanox.com, leon@kernel.org, jwi@linux.ibm.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200801085845.20153-1-wenyang@linux.alibaba.com>
+ <20200804.155831.644663742975051162.davem@davemloft.net>
+From:   Wen Yang <wenyang@linux.alibaba.com>
+Message-ID: <41107812-01ba-169e-2f18-69cecec94d8d@linux.alibaba.com>
+Date:   Thu, 6 Aug 2020 17:09:00 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200804.155831.644663742975051162.davem@davemloft.net>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew Jones <drjones@redhat.com> writes:
 
-> On Tue, Jul 28, 2020 at 04:37:40PM +0200, Vitaly Kuznetsov wrote:
->> PCIe config space can (depending on the configuration) be quite big but
->> usually is sparsely populated. Guest may scan it by accessing individual
->> device's page which, when device is missing, is supposed to have 'pci
->> hole' semantics: reads return '0xff' and writes get discarded. Compared
->> to the already existing KVM_MEM_READONLY, VMM doesn't need to allocate
->> real memory and stuff it with '0xff'.
->> 
->> Suggested-by: Michael S. Tsirkin <mst@redhat.com>
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->>  Documentation/virt/kvm/api.rst  | 19 +++++++++++-----
->>  arch/x86/include/uapi/asm/kvm.h |  1 +
->>  arch/x86/kvm/mmu/mmu.c          |  5 ++++-
->>  arch/x86/kvm/mmu/paging_tmpl.h  |  3 +++
->>  arch/x86/kvm/x86.c              | 10 ++++++---
->>  include/linux/kvm_host.h        |  7 +++++-
->>  include/uapi/linux/kvm.h        |  3 ++-
->>  virt/kvm/kvm_main.c             | 39 +++++++++++++++++++++++++++------
->>  8 files changed, 68 insertions(+), 19 deletions(-)
->> 
->> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
->> index 644e5326aa50..fbbf533a331b 100644
->> --- a/Documentation/virt/kvm/api.rst
->> +++ b/Documentation/virt/kvm/api.rst
->> @@ -1241,6 +1241,7 @@ yet and must be cleared on entry.
->>    /* for kvm_memory_region::flags */
->>    #define KVM_MEM_LOG_DIRTY_PAGES	(1UL << 0)
->>    #define KVM_MEM_READONLY	(1UL << 1)
->> +  #define KVM_MEM_PCI_HOLE		(1UL << 2)
->>  
->>  This ioctl allows the user to create, modify or delete a guest physical
->>  memory slot.  Bits 0-15 of "slot" specify the slot id and this value
->> @@ -1268,12 +1269,18 @@ It is recommended that the lower 21 bits of guest_phys_addr and userspace_addr
->>  be identical.  This allows large pages in the guest to be backed by large
->>  pages in the host.
->>  
->> -The flags field supports two flags: KVM_MEM_LOG_DIRTY_PAGES and
->> -KVM_MEM_READONLY.  The former can be set to instruct KVM to keep track of
->> -writes to memory within the slot.  See KVM_GET_DIRTY_LOG ioctl to know how to
->> -use it.  The latter can be set, if KVM_CAP_READONLY_MEM capability allows it,
->> -to make a new slot read-only.  In this case, writes to this memory will be
->> -posted to userspace as KVM_EXIT_MMIO exits.
->> +The flags field supports the following flags: KVM_MEM_LOG_DIRTY_PAGES,
->> +KVM_MEM_READONLY, KVM_MEM_READONLY:
->
-> The second KVM_MEM_READONLY should be KVM_MEM_PCI_HOLE. Or just drop the
-> list here, as they're listed below anyway
->
->> +- KVM_MEM_LOG_DIRTY_PAGES can be set to instruct KVM to keep track of writes to
->> +  memory within the slot.  See KVM_GET_DIRTY_LOG ioctl to know how to use it.
->> +- KVM_MEM_READONLY can be set, if KVM_CAP_READONLY_MEM capability allows it,
->> +  to make a new slot read-only.  In this case, writes to this memory will be
->> +  posted to userspace as KVM_EXIT_MMIO exits.
->> +- KVM_MEM_PCI_HOLE can be set, if KVM_CAP_PCI_HOLE_MEM capability allows it,
->> +  to create a new virtual read-only slot which will always return '0xff' when
->> +  guest reads from it. 'userspace_addr' has to be set to NULL. This flag is
->> +  mutually exclusive with KVM_MEM_LOG_DIRTY_PAGES/KVM_MEM_READONLY. All writes
->> +  to this memory will be posted to userspace as KVM_EXIT_MMIO exits.
->
-> I see 2/3's of this text is copy+pasted from above, but how about this
->
->  - KVM_MEM_LOG_DIRTY_PAGES: log writes.  Use KVM_GET_DIRTY_LOG to retreive
->    the log.
->  - KVM_MEM_READONLY: exit to userspace with KVM_EXIT_MMIO on writes.  Only
->    available when KVM_CAP_READONLY_MEM is present.
->  - KVM_MEM_PCI_HOLE: always return 0xff on reads, exit to userspace with
->    KVM_EXIT_MMIO on writes.  Only available when KVM_CAP_PCI_HOLE_MEM is
->    present.  When setting the memory region 'userspace_addr' must be NULL.
->    This flag is mutually exclusive with KVM_MEM_LOG_DIRTY_PAGES and with
->    KVM_MEM_READONLY.
 
-Sound better, thanks! Will add in v2.
-
->
->>  
->>  When the KVM_CAP_SYNC_MMU capability is available, changes in the backing of
->>  the memory region are automatically reflected into the guest.  For example, an
->> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
->> index 17c5a038f42d..cf80a26d74f5 100644
->> --- a/arch/x86/include/uapi/asm/kvm.h
->> +++ b/arch/x86/include/uapi/asm/kvm.h
->> @@ -48,6 +48,7 @@
->>  #define __KVM_HAVE_XSAVE
->>  #define __KVM_HAVE_XCRS
->>  #define __KVM_HAVE_READONLY_MEM
->> +#define __KVM_HAVE_PCI_HOLE_MEM
->>  
->>  /* Architectural interrupt line count. */
->>  #define KVM_NR_INTERRUPTS 256
->> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
->> index 8597e8102636..c2e3a1deafdd 100644
->> --- a/arch/x86/kvm/mmu/mmu.c
->> +++ b/arch/x86/kvm/mmu/mmu.c
->> @@ -3253,7 +3253,7 @@ static int kvm_mmu_hugepage_adjust(struct kvm_vcpu *vcpu, gfn_t gfn,
->>  		return PG_LEVEL_4K;
->>  
->>  	slot = gfn_to_memslot_dirty_bitmap(vcpu, gfn, true);
->> -	if (!slot)
->> +	if (!slot || (slot->flags & KVM_MEM_PCI_HOLE))
->>  		return PG_LEVEL_4K;
->>  
->>  	max_level = min(max_level, max_page_level);
->> @@ -4104,6 +4104,9 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
->>  
->>  	slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
->>  
->> +	if (!write && slot && (slot->flags & KVM_MEM_PCI_HOLE))
->> +		return RET_PF_EMULATE;
+ÔÚ 2020/8/5 ÉÏÎç6:58, David Miller Ð´µÀ:
+> From: Wen Yang <wenyang@linux.alibaba.com>
+> Date: Sat,  1 Aug 2020 16:58:45 +0800
+> 
+>> diff --git a/net/core/link_watch.c b/net/core/link_watch.c
+>> index 75431ca..6b9d44b 100644
+>> --- a/net/core/link_watch.c
+>> +++ b/net/core/link_watch.c
+>> @@ -98,6 +98,9 @@ static bool linkwatch_urgent_event(struct net_device *dev)
+>>   	if (netif_is_lag_port(dev) || netif_is_lag_master(dev))
+>>   		return true;
+>>   
+>> +	if ((dev->flags & IFF_UP) && dev->operstate == IF_OPER_DOWN)
+>> +		return true;
 >> +
->>  	if (try_async_pf(vcpu, slot, prefault, gfn, gpa, &pfn, write,
->>  			 &map_writable))
->>  		return RET_PF_RETRY;
->> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
->> index 5c6a895f67c3..27abd69e69f6 100644
->> --- a/arch/x86/kvm/mmu/paging_tmpl.h
->> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
->> @@ -836,6 +836,9 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
->>  
->>  	slot = kvm_vcpu_gfn_to_memslot(vcpu, walker.gfn);
->>  
->> +	if (!write_fault && slot && (slot->flags & KVM_MEM_PCI_HOLE))
->> +		return RET_PF_EMULATE;
->> +
->>  	if (try_async_pf(vcpu, slot, prefault, walker.gfn, addr, &pfn,
->>  			 write_fault, &map_writable))
->>  		return RET_PF_RETRY;
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index 95ef62922869..dc312b8bfa05 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -3515,6 +3515,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->>  	case KVM_CAP_EXCEPTION_PAYLOAD:
->>  	case KVM_CAP_SET_GUEST_DEBUG:
->>  	case KVM_CAP_LAST_CPU:
->> +	case KVM_CAP_PCI_HOLE_MEM:
->>  		r = 1;
->>  		break;
->>  	case KVM_CAP_SYNC_REGS:
->> @@ -10115,9 +10116,11 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
->>  		ugfn = slot->userspace_addr >> PAGE_SHIFT;
->>  		/*
->>  		 * If the gfn and userspace address are not aligned wrt each
->> -		 * other, disable large page support for this slot.
->> +		 * other, disable large page support for this slot. Also,
->> +		 * disable large page support for KVM_MEM_PCI_HOLE slots.
->>  		 */
->> -		if ((slot->base_gfn ^ ugfn) & (KVM_PAGES_PER_HPAGE(level) - 1)) {
->> +		if (slot->flags & KVM_MEM_PCI_HOLE || ((slot->base_gfn ^ ugfn) &
->
-> Please add () around the first expression
->
+>>   	return netif_carrier_ok(dev) &&	qdisc_tx_changing(dev);
+>>   }
+>>   
+> 
+> You're bypassing explicitly the logic here:
+> 
+> 	/*
+> 	 * Limit the number of linkwatch events to one
+> 	 * per second so that a runaway driver does not
+> 	 * cause a storm of messages on the netlink
+> 	 * socket.  This limit does not apply to up events
+> 	 * while the device qdisc is down.
+> 	 */
+> 	if (!urgent_only)
+> 		linkwatch_nextevent = jiffies + HZ;
+> 	/* Limit wrap-around effect on delay. */
+> 	else if (time_after(linkwatch_nextevent, jiffies + HZ))
+> 		linkwatch_nextevent = jiffies;
+> 
+> Something about this isn't right.  We need to analyze what you are seeing,
+> what device you are using, and what systemd is doing to figure out what
+> the right place for the fix.
+> 
+> Thank you.
+> 
 
-Ack
+Thank you very much for your comments.
+We are using virtio_net and the environment is a microvm similar to 
+firecracker.
 
->> +				      (KVM_PAGES_PER_HPAGE(level) - 1))) {
->>  			unsigned long j;
->>  
->>  			for (j = 0; j < lpages; ++j)
->> @@ -10179,7 +10182,8 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
->>  	 * Nothing to do for RO slots or CREATE/MOVE/DELETE of a slot.
->>  	 * See comments below.
->>  	 */
->> -	if ((change != KVM_MR_FLAGS_ONLY) || (new->flags & KVM_MEM_READONLY))
->> +	if ((change != KVM_MR_FLAGS_ONLY) || (new->flags & KVM_MEM_READONLY) ||
->> +	    (new->flags & KVM_MEM_PCI_HOLE))
->
-> How about
->
->  if ((change != KVM_MR_FLAGS_ONLY) ||
->      (new->flags & (KVM_MEM_READONLY|KVM_MEM_PCI_HOLE)))
->
+Let's briefly explain.
+net_device->operstate is assigned through linkwatch_event, and the call 
+stack is as follows:
+process_one_work
+-> linkwatch_event
+  -> __linkwatch_run_queue
+   -> linkwatch_do_dev
+    -> rfc2863_policy
+     -> default_operstate
 
-Ack
+During the machine startup process, net_device->operstate has the 
+following two-step state changes:
 
->>  		return;
->>  
->>  	/*
->> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
->> index 989afcbe642f..63c2d93ef172 100644
->> --- a/include/linux/kvm_host.h
->> +++ b/include/linux/kvm_host.h
->> @@ -1081,7 +1081,12 @@ __gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
->>  static inline unsigned long
->>  __gfn_to_hva_memslot(struct kvm_memory_slot *slot, gfn_t gfn)
->>  {
->> -	return slot->userspace_addr + (gfn - slot->base_gfn) * PAGE_SIZE;
->> +	if (likely(!(slot->flags & KVM_MEM_PCI_HOLE))) {
->> +		return slot->userspace_addr +
->> +			(gfn - slot->base_gfn) * PAGE_SIZE;
->> +	} else {
->> +		BUG();
->
-> Debug code you forgot to remove? I see below you've modified
-> __gfn_to_hva_many() to return KVM_HVA_ERR_BAD already when
-> given a PCI hole slot. I think that's the only check we should add.
+STEP A: virtnet_probe detects the network card and triggers the 
+execution of linkwatch_fire_event.
+Since linkwatch_nextevent is initialized to 0, linkwatch_work will run.
+And since net_device->state is 6 (__LINK_STATE_PRESENT | 
+__LINK_STATE_NOCARRIER), net_device->operstate will be changed from 
+IF_OPER_UNKNOWN to IF_OPER_DOWN:
+eth0 operstate:0 (IF_OPER_UNKNOWN) -> operstate:2 (IF_OPER_DOWN)
 
-No, this was intentional. We have at least two users of
-__gfn_to_hva_memslot() today and in case we ever reach here with a
-KVM_MEM_PCI_HOLE slot we're doomed anyway but it would be much easier to
-debug the immediate BUG() than an invalid pointer access some time
-later.
+virtnet_probe then executes netif_carrier_on to update 
+net_device->state, it will be changed from ¡®__LINK_STATE_PRESENT | 
+__LINK_STATE_NOCARRIER¡¯ to __LINK_STATE_PRESENT:
+eth0 state: 6 (__LINK_STATE_PRESENT | __LINK_STATE_NOCARRIER) -> 2 
+(__LINK_STATE_PRESENT)
 
-Anyway, I don't really feel strong and I'm fine with dropping the
-check. Alternatively, I can suggest we add
+STEP B: One second later (because linkwatch_nextevent = jiffies + HZ), 
+linkwatch_work is executed again.
+At this time, since net_device->state is __LINK_STATE_PRESENT, so the 
+net_device->operstate will be changed from IF_OPER_DOWN to IF_OPER_UP:
+eth0 operstate:2 (IF_OPER_DOWN) -> operstate:6 (IF_OPER_UP)
 
-BUG_ON(!slot->userspace_addr);
 
-to the beginning of __gfn_to_hva_memslot() intead.
+The above state change can be completed within 2 seconds.
+Generally, the machine will load the initramfs first, and do some 
+initialization in the initramfs, which takes some time; then switch_root 
+to the system disk and continue the initialization, which will also take 
+some time, and finally start the systemd-networkd service, bringing 
+link, etc.,
+In this way, the linkwatch_work work queue has enough time to run twice, 
+and the state of net_device->operstate is already IF_OPER_UP,
+So bringing link up quickly returns the following information:
+Aug 06 16:35:55.966121 iZuf6h1kfgutxc3el68z2lZ systemd-networkd[580]: 
+eth0: bringing link up
+...
+Aug 06 16:35:55.990461 iZuf6h1kfgutxc3el68z2lZ systemd-networkd[580]: 
+eth0: flags change: +UP +LOWER_UP +RUNNING
 
->
->> +	}
->>  }
->>  
->>  static inline int memslot_id(struct kvm *kvm, gfn_t gfn)
->> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
->> index 2c73dcfb3dbb..59d631cbb71d 100644
->> --- a/include/uapi/linux/kvm.h
->> +++ b/include/uapi/linux/kvm.h
->> @@ -109,6 +109,7 @@ struct kvm_userspace_memory_region {
->>   */
->>  #define KVM_MEM_LOG_DIRTY_PAGES	(1UL << 0)
->>  #define KVM_MEM_READONLY	(1UL << 1)
->> +#define KVM_MEM_PCI_HOLE		(1UL << 2)
->>  
->>  /* for KVM_IRQ_LINE */
->>  struct kvm_irq_level {
->> @@ -1034,7 +1035,7 @@ struct kvm_ppc_resize_hpt {
->>  #define KVM_CAP_ASYNC_PF_INT 183
->>  #define KVM_CAP_LAST_CPU 184
->>  #define KVM_CAP_SMALLER_MAXPHYADDR 185
->> -
->> +#define KVM_CAP_PCI_HOLE_MEM 186
->>  
->>  #ifdef KVM_CAP_IRQ_ROUTING
->>  
->> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
->> index 2c2c0254c2d8..3f69ae711021 100644
->> --- a/virt/kvm/kvm_main.c
->> +++ b/virt/kvm/kvm_main.c
->> @@ -1107,6 +1107,10 @@ static int check_memory_region_flags(const struct kvm_userspace_memory_region *m
->>  	valid_flags |= KVM_MEM_READONLY;
->>  #endif
->>  
->> +#ifdef __KVM_HAVE_PCI_HOLE_MEM
->> +	valid_flags |= KVM_MEM_PCI_HOLE;
->> +#endif
->> +
->>  	if (mem->flags & ~valid_flags)
->>  		return -EINVAL;
->>  
->> @@ -1284,11 +1288,26 @@ int __kvm_set_memory_region(struct kvm *kvm,
->>  		return -EINVAL;
->>  	if (mem->guest_phys_addr & (PAGE_SIZE - 1))
->>  		return -EINVAL;
->> -	/* We can read the guest memory with __xxx_user() later on. */
->> -	if ((mem->userspace_addr & (PAGE_SIZE - 1)) ||
->> -	     !access_ok((void __user *)(unsigned long)mem->userspace_addr,
->> -			mem->memory_size))
->> +
->> +	/*
->> +	 * KVM_MEM_PCI_HOLE is mutually exclusive with KVM_MEM_READONLY/
->> +	 * KVM_MEM_LOG_DIRTY_PAGES.
->> +	 */
->> +	if ((mem->flags & KVM_MEM_PCI_HOLE) &&
->> +	    (mem->flags & (KVM_MEM_READONLY | KVM_MEM_LOG_DIRTY_PAGES)))
->>  		return -EINVAL;
->> +
->> +	if (!(mem->flags & KVM_MEM_PCI_HOLE)) {
->> +		/* We can read the guest memory with __xxx_user() later on. */
->> +		if ((mem->userspace_addr & (PAGE_SIZE - 1)) ||
->> +		    !access_ok((void __user *)(unsigned long)mem->userspace_addr,
->> +			       mem->memory_size))
->> +			return -EINVAL;
->> +	} else {
->> +		if (mem->userspace_addr)
->> +			return -EINVAL;
->> +	}
->> +
->>  	if (as_id >= KVM_ADDRESS_SPACE_NUM || id >= KVM_MEM_SLOTS_NUM)
->>  		return -EINVAL;
->>  	if (mem->guest_phys_addr + mem->memory_size < mem->guest_phys_addr)
->> @@ -1328,7 +1347,8 @@ int __kvm_set_memory_region(struct kvm *kvm,
->>  	} else { /* Modify an existing slot. */
->>  		if ((new.userspace_addr != old.userspace_addr) ||
->>  		    (new.npages != old.npages) ||
->> -		    ((new.flags ^ old.flags) & KVM_MEM_READONLY))
->> +		    ((new.flags ^ old.flags) & KVM_MEM_READONLY) ||
->> +		    ((new.flags ^ old.flags) & KVM_MEM_PCI_HOLE))
->>  			return -EINVAL;
->>  
->>  		if (new.base_gfn != old.base_gfn)
->> @@ -1715,13 +1735,13 @@ unsigned long kvm_host_page_size(struct kvm_vcpu *vcpu, gfn_t gfn)
->>  
->>  static bool memslot_is_readonly(struct kvm_memory_slot *slot)
->>  {
->> -	return slot->flags & KVM_MEM_READONLY;
->> +	return slot->flags & (KVM_MEM_READONLY | KVM_MEM_PCI_HOLE);
->>  }
->>  
->>  static unsigned long __gfn_to_hva_many(struct kvm_memory_slot *slot, gfn_t gfn,
->>  				       gfn_t *nr_pages, bool write)
->>  {
->> -	if (!slot || slot->flags & KVM_MEMSLOT_INVALID)
->> +	if (!slot || (slot->flags & (KVM_MEMSLOT_INVALID | KVM_MEM_PCI_HOLE)))
->>  		return KVM_HVA_ERR_BAD;
->>  
->>  	if (memslot_is_readonly(slot) && write)
->> @@ -2318,6 +2338,11 @@ static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
->>  	int r;
->>  	unsigned long addr;
->>  
->> +	if (unlikely(slot && (slot->flags & KVM_MEM_PCI_HOLE))) {
->> +		memset(data, 0xff, len);
->> +		return 0;
->> +	}
->> +
->>  	addr = gfn_to_hva_memslot_prot(slot, gfn, NULL);
->>  	if (kvm_is_error_hva(addr))
->>  		return -EFAULT;
->> -- 
->> 2.25.4
->>
->
-> I didn't really review this patch, as it's touching lots of x86 mm
-> functions that I didn't want to delve into, but I took a quick look
-> since I was curious about the feature.
+But we are now using MicroVM, which requires extreme speed to start, 
+bypassing the initramfs and directly booting the trimmed system on the disk.
+systemd-networkd starts in less than 1 second after booting. the STEP B 
+has not been run yet, so it will wait for several hundred milliseconds 
+here, as follows:
+Jul 20 22:00:47.432552 systemd-networkd[210]: eth0: bringing link up
+...
+Jul 20 22:00:47.446108 systemd-networkd[210]: eth0: flags change: +UP 
++LOWER_UP
+...
+Jul 20 22:00:47.781463 systemd-networkd[210]: eth0: flags change: +RUNNING
 
-x86 part is really negligible, I think it would be very easy to expand
-the scope to other arches if needed.
 
-Thanks!
+Note: dhcp pays attention to IFF_RUNNING status, we may refer to:
+https://www.kernel.org/doc/Documentation/networking/operstates.txt
 
--- 
-Vitaly
+A routing daemon or dhcp client just needs to care for IFF_RUNNING or
+waiting for operstate to go IF_OPER_UP/IF_OPER_UNKNOWN before
+considering the interface / querying a DHCP address.
 
+Finally, the STEP B above only updates the value of operstate based on 
+the known state (operstate/state) on the net_device, without any 
+hardware interaction involved, so it is not very reasonable to wait for 
+1 second there.
+
+By adding:
++	if ((dev->flags & IFF_UP) && dev->operstate == IF_OPER_DOWN)
++		return true;
++
+We hope to improve the linkwatch_urgent_event function a bit.
+
+Hope to get more of your advice and guidance.
+
+Best wishes,
+Wen
