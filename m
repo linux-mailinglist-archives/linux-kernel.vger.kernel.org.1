@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C42E23D83E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 454C623D842
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728915AbgHFJC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgHFJC6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:02:58 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C2CC061574;
-        Thu,  6 Aug 2020 02:02:58 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id q4so31369837edv.13;
-        Thu, 06 Aug 2020 02:02:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BtAZAsrc9ChZDBxja2M8CUkXA4o6z7WOsBQ2MhI4SX4=;
-        b=bWG8V9GDjLuWRiYWSTn7UBWGgM/968UMS6O8Tx/mmYR0zmowlkn5MuKiikjhedAAB5
-         EwBiDYLkx72AW0mhbdoONYQ7B3Yl7w4onYe9m8w7DaDtxpCDq5hsz4lD9Nto4OlYht/T
-         dypSlXuWgeifRwRCBkxYgFQy4N3TDKcVgo3Fts6qp60UBmbGxw0arRxB9hil5LMmhnbx
-         cp//gsQW5BEV+B/aEhBES/zY03mbQ5HotqnaIAgthtyR1uX182YIQHtr+U2HNZ7Oi/SI
-         pB0xsCFbAZFQeuVHwHrxGqALp5Pm1zNY6JuYSRRil1rKwxfRtyc8KRa99ih456Qxaopz
-         yUrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BtAZAsrc9ChZDBxja2M8CUkXA4o6z7WOsBQ2MhI4SX4=;
-        b=BE9X0uRD8nmHJZCVScXpuE4FNO7gEsvAP/pUcce42vxqaYgIgwj+JBrDiHws0uFbtj
-         R9bQF3VvPFZzC3KShU3GVisvTtx3tUcV5Ol8npdvTi8vBTPNIY1QolPY9n7D295i3kBU
-         W8PlycnKOwunpKOyewKD5/hw4+LS/fU5uaDGb8HUlprRxBg5GHAaZEAIiXptxRsUnFjL
-         EwnEdhD8DXyzVThjABu9wmxCfp5ebyzA7eDcgqtWV9y62akKeEZtnmL1/zS1MynQUPwW
-         wC2c3y6TNn1q/hbcFDXzuF6XPe9YIXlm2ORU8h1Yo+Jp5yMwfy+5O0+ODvJXAo99cacy
-         /o3w==
-X-Gm-Message-State: AOAM531u+kaxrr01poqrXzegc3Tw4EB52xBXV3S+z/LzdMVpml4D5Hu+
-        qLVM2sqH81auqbudyutVEGbLgnApAKxbYA==
-X-Google-Smtp-Source: ABdhPJxnRKDEntM+utjGsoNw8ngGGR4vhSsivH2K+Uec6jZBXKU45aCp4ORW6Vexm5d+0N3LVteGDQ==
-X-Received: by 2002:aa7:d1cc:: with SMTP id g12mr3172241edp.385.1596704570766;
-        Thu, 06 Aug 2020 02:02:50 -0700 (PDT)
-Received: from ci00583-linux.xsens-tech.local (2001-1c06-0702-ba00-88c2-8039-7a6c-c842.cable.dynamic.v6.ziggo.nl. [2001:1c06:702:ba00:88c2:8039:7a6c:c842])
-        by smtp.googlemail.com with ESMTPSA id x1sm3188987ejc.119.2020.08.06.02.02.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 02:02:50 -0700 (PDT)
-From:   Patrick Riphagen <ppriphagen@gmail.com>
-X-Google-Original-From: Patrick Riphagen <patrick.riphagen@xsens.com>
-To:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     patrick.riphagen@xsens.com, stable@vger.kernel.org
-Subject: [PATCH] USB: serial: ftdi_sio: add IDs for Xsens Mti USB converter
-Date:   Thu,  6 Aug 2020 11:02:34 +0200
-Message-Id: <20200806090234.4130-1-patrick.riphagen@xsens.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728999AbgHFJDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:03:42 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:53827 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725927AbgHFJDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 05:03:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1596704617; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ZIO+8hqUYeBnO7dLtKhWRl9zvjGqCBhvytYo3OMVUuM=;
+ b=GHA0WgQ+GSzWEIt7x2KR3I3vl2mQIh8UbGFBYdm6+OBtwAg7qrj6sxbDFnyRoYg0RV9fGT4M
+ fmWhPYlPX1xlM7Mm2rvngeX0g4857KOqoN3zy8GQlHdm1wx9eHf1bv8zXWJn9DPv4zXMbKFH
+ NaTx1RUIAtvWXiS0QaJ0uWArDzo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n16.prod.us-west-2.postgun.com with SMTP id
+ 5f2bc768c85a1092b01860e6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 Aug 2020 09:03:36
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 53DF3C433AF; Thu,  6 Aug 2020 09:03:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 56FC7C433C6;
+        Thu,  6 Aug 2020 09:03:35 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 06 Aug 2020 17:03:35 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] scsi: ufs: no need to send one Abort Task TM in case
+ the task in DB was cleared
+In-Reply-To: <20200804123534.29104-1-huobean@gmail.com>
+References: <20200804123534.29104-1-huobean@gmail.com>
+Message-ID: <a68a1bdf74bdf8ada29808537290b35b@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device added has an FTDI chip inside.
-The device is used to connect Xsens USB Motion Trackers.
+Hi Bean,
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Patrick Riphagen <patrick.riphagen@xsens.com>
----
- drivers/usb/serial/ftdi_sio.c     | 1 +
- drivers/usb/serial/ftdi_sio_ids.h | 1 +
- 2 files changed, 2 insertions(+)
+On 2020-08-04 20:35, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> If the bit corresponds to a task in the Doorbell register has been
+> cleared, no need to poll the status of the task on the device side
+> and to send an Abort Task TM.
+> This patch also deletes dispensable dev_err() in case of the task
+> already completed.
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 307622284239..581b4ab52bf4 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -6425,19 +6425,16 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+>  		return ufshcd_eh_host_reset_handler(cmd);
+> 
+>  	ufshcd_hold(hba, false);
+> -	reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
+>  	/* If command is already aborted/completed, return SUCCESS */
+> -	if (!(test_bit(tag, &hba->outstanding_reqs))) {
+> -		dev_err(hba->dev,
+> -			"%s: cmd at tag %d already completed, outstanding=0x%lx, 
+> doorbell=0x%x\n",
+> -			__func__, tag, hba->outstanding_reqs, reg);
+> +	if (!(test_bit(tag, &hba->outstanding_reqs)))
+>  		goto out;
+> -	}
+> 
+> +	reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
+>  	if (!(reg & (1 << tag))) {
+>  		dev_err(hba->dev,
+>  		"%s: cmd was completed, but without a notifying intr, tag = %d",
+>  		__func__, tag);
+> +		goto out;
 
-diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
-index 9ad44a96dfe3..2c08cad32f1d 100644
---- a/drivers/usb/serial/ftdi_sio.c
-+++ b/drivers/usb/serial/ftdi_sio.c
-@@ -713,6 +713,7 @@ static const struct usb_device_id id_table_combined[] = {
- 	{ USB_DEVICE(XSENS_VID, XSENS_AWINDA_STATION_PID) },
- 	{ USB_DEVICE(XSENS_VID, XSENS_CONVERTER_PID) },
- 	{ USB_DEVICE(XSENS_VID, XSENS_MTDEVBOARD_PID) },
-+	{ USB_DEVICE(XSENS_VID, XSENS_MTIUSBCONVERTER_PID) },
- 	{ USB_DEVICE(XSENS_VID, XSENS_MTW_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_OMNI1509) },
- 	{ USB_DEVICE(MOBILITY_VID, MOBILITY_USB_SERIAL_PID) },
-diff --git a/drivers/usb/serial/ftdi_sio_ids.h b/drivers/usb/serial/ftdi_sio_ids.h
-index e8373528264c..b5ca17a5967a 100644
---- a/drivers/usb/serial/ftdi_sio_ids.h
-+++ b/drivers/usb/serial/ftdi_sio_ids.h
-@@ -160,6 +160,7 @@
- #define XSENS_AWINDA_DONGLE_PID 0x0102
- #define XSENS_MTW_PID		0x0200	/* Xsens MTw */
- #define XSENS_MTDEVBOARD_PID	0x0300	/* Motion Tracker Development Board */
-+#define XSENS_MTIUSBCONVERTER_PID	0x0301	/* MTi USB converter */
- #define XSENS_CONVERTER_PID	0xD00D	/* Xsens USB-serial converter */
- 
- /* Xsens devices using FTDI VID */
--- 
-2.25.1
+Please check Stanley's recent change to ufshcd_abort, you may
+want to rebase your change on his and do goto cleanup here.
+@Stanley correct me if I am wrong.
 
+But even if you do a goto cleanup here, we still lost the
+chances to dump host infos/regs like it does in the old code.
+If a cmd was completed but without a notifying intr, this is
+kind of a problem that we/host should look into, because it's
+pasted at least 30 sec since the cmd was sent, so those dumps
+are necessary to debug the problem. How about moving blow prints
+in front of this part?
+
+Thanks,
+
+Can Guo.
+
+>  	}
+> 
+>  	/* Print Transfer Request of aborted task */
