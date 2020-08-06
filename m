@@ -2,52 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D157323DD97
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3A023DD95
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730323AbgHFRL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:11:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58886 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730218AbgHFRKJ (ORCPT
+        id S1730308AbgHFRLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730226AbgHFRKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 Aug 2020 13:10:09 -0400
-Date:   Thu, 06 Aug 2020 17:10:06 -0000
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3072C061575;
+        Thu,  6 Aug 2020 10:10:09 -0700 (PDT)
+Date:   Thu, 06 Aug 2020 17:10:07 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596733806;
+        s=2020; t=1596733808;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zR/Ebw0TqrcppD6Z47kh84qypzshyc9lcKZ+o+8oKHw=;
-        b=nBkk2GYLc99v98lBfLaONS1H+aEWgeC2CfnHRxKo3USagd2I7FNgqsOQ4Qb4HiWBB7YaHt
-        gr1pRywAJXewAGVWd481f0HR+pYwukfeSO3pcqrp2rBwrdITM4Oh65klnmZoDgqKgkwC6d
-        up0jfVvmmnvbAYyfPUq1y/6Cgs/5k+iEJLsGyAp/olfg2DxUrJB/H5uZGm4cRvYHqDs1XF
-        HIwb44A+/k4IS2v9ui6Nlbzg6QhkpqxNkZAQuPAmv3U5O/C+/TVsOZvFxCgBJbRQcXJ9j5
-        8BoDZ2lKaH8OtuH0xrq/aCr///ZdUDQO0Y6M8Uz35YTX8/hqEKgiin7zQfeBHg==
+        bh=Pr7bCYviArGye3y9QgU0GHmrTGpo9Vah1SuVzRiY8yw=;
+        b=NFDFMb7bdBN1MF9KEVW9mwdqpxvgbJeTizEVXT0tj8/aWG5UIna4mm0XHc3EG0tFMBwEjW
+        faDhp4PXab1QW/Lfu9jkciXtgyYHrK3ySkw0rr6P2UlaqqemNk8OblwZMMf0hz2O9bn3zL
+        E2nQf1UKqjflFMXH0bYoAsNSGg3T3Wtcof1nMqh7TVsKWdhQ9tfDnhRAUROfv6g68s695h
+        O54u1N9wDwDo9yTc5K/ywmRLO0hhxsNFmVB5GW2KWjdnQjMimBND7sUdTPeY4dq+hHD6T3
+        LAEjw45JPZlmKmGnBIqhtxIgdA4lsTg7HZpg27tLjx9OP7j+o0j5FE4kYp60TA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596733806;
+        s=2020e; t=1596733808;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zR/Ebw0TqrcppD6Z47kh84qypzshyc9lcKZ+o+8oKHw=;
-        b=azH0o9MFxsOk1/5gejD9Ez8ATUaAsqatNGTU9JosjknCTs11ZzhoNObZNHzCPekpbFOhP6
-        eMIJ3JUQCx4YG8Cw==
+        bh=Pr7bCYviArGye3y9QgU0GHmrTGpo9Vah1SuVzRiY8yw=;
+        b=AJew4jIodX6sk108XoAufHRU3njO22T4AOMfqdPXi0S4yuOgsoW21fOn7pklrwl+yEay2X
+        ffysnGhro43OGIAg==
 From:   "tip-bot2 for Lianbo Jiang" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] kexec_file: Correctly output debugging information
- for the PT_LOAD ELF header
+Subject: [tip: x86/urgent] x86/crash: Correct the address boundary of function
+ parameters
 Cc:     Lianbo Jiang <lijiang@redhat.com>, Ingo Molnar <mingo@kernel.org>,
         Dave Young <dyoung@redhat.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200804044933.1973-4-lijiang@redhat.com>
-References: <20200804044933.1973-4-lijiang@redhat.com>
+In-Reply-To: <20200804044933.1973-2-lijiang@redhat.com>
+References: <20200804044933.1973-2-lijiang@redhat.com>
 MIME-Version: 1.0
-Message-ID: <159673380619.3192.11473438230376411789.tip-bot2@tip-bot2>
+Message-ID: <159673380758.3192.12299066068844130724.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,81 +62,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     8ca346039f70cf92dbada6c06048efde165b191f
-Gitweb:        https://git.kernel.org/tip/8ca346039f70cf92dbada6c06048efde165b191f
+Commit-ID:     5b89a35f8c11a7846b06ac729d7de72044f7fc60
+Gitweb:        https://git.kernel.org/tip/5b89a35f8c11a7846b06ac729d7de72044f7fc60
 Author:        Lianbo Jiang <lijiang@redhat.com>
-AuthorDate:    Tue, 04 Aug 2020 12:49:33 +08:00
+AuthorDate:    Tue, 04 Aug 2020 12:49:31 +08:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 06 Aug 2020 15:26:09 +02:00
+CommitterDate: Thu, 06 Aug 2020 15:25:58 +02:00
 
-kexec_file: Correctly output debugging information for the PT_LOAD ELF header
+x86/crash: Correct the address boundary of function parameters
 
-Currently, when we enable the debugging switch to debug kexec_file,
-we always get the following incorrect results:
-
-  kexec_file: Crash PT_LOAD elf header. phdr=00000000c988639b vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=51 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=000000003cca69a0 vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=52 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=00000000c584cb9f vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=53 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=00000000cf85d57f vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=54 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=00000000a4a8f847 vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=55 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=00000000272ec49f vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=56 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=00000000ea0b65de vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=57 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=000000001f5e490c vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=58 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=00000000dfe4109e vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=59 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=00000000480ed2b6 vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=60 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=0000000080b65151 vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=61 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=0000000024e31c5e vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=62 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=00000000332e0385 vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=63 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=000000002754d5da vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=64 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=00000000783320dd vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=65 p_offset=0x0
-  kexec_file: Crash PT_LOAD elf header. phdr=0000000076fe5b64 vaddr=0x0, paddr=0x0, sz=0x0 e_phnum=66 p_offset=0x0
-
-The reason is that kernel always prints the values of the next PT_LOAD
-instead of the current PT_LOAD. Change it to ensure that we can get the
-correct debugging information.
-
-[ mingo: Amended changelog, capitalized "ELF". ]
+Let's carefully handle the boundary of the function parameter to make
+sure that the arguments passed doesn't exceed the address range.
 
 Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Dave Young <dyoung@redhat.com>
-Link: https://lore.kernel.org/r/20200804044933.1973-4-lijiang@redhat.com
+Link: https://lore.kernel.org/r/20200804044933.1973-2-lijiang@redhat.com
 ---
- kernel/kexec_file.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/kernel/crash.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index 5cc2c47..f1f4009 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -1246,7 +1246,7 @@ int crash_prepare_elf64_headers(struct crash_mem *mem, int kernel_map,
- 	unsigned long long notes_addr;
- 	unsigned long mstart, mend;
+diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+index fd87b59..a8f3af2 100644
+--- a/arch/x86/kernel/crash.c
++++ b/arch/x86/kernel/crash.c
+@@ -230,7 +230,7 @@ static int elf_header_exclude_ranges(struct crash_mem *cmem)
+ 	int ret = 0;
  
--	/* extra phdr for vmcoreinfo elf note */
-+	/* extra phdr for vmcoreinfo ELF note */
- 	nr_phdr = nr_cpus + 1;
- 	nr_phdr += mem->nr_ranges;
+ 	/* Exclude the low 1M because it is always reserved */
+-	ret = crash_exclude_mem_range(cmem, 0, 1<<20);
++	ret = crash_exclude_mem_range(cmem, 0, (1<<20)-1);
+ 	if (ret)
+ 		return ret;
  
-@@ -1254,7 +1254,7 @@ int crash_prepare_elf64_headers(struct crash_mem *mem, int kernel_map,
- 	 * kexec-tools creates an extra PT_LOAD phdr for kernel text mapping
- 	 * area (for example, ffffffff80000000 - ffffffffa0000000 on x86_64).
- 	 * I think this is required by tools like gdb. So same physical
--	 * memory will be mapped in two elf  headers. One will contain kernel
-+	 * memory will be mapped in two ELF headers. One will contain kernel
- 	 * text virtual addresses and other will have __va(physical) addresses.
- 	 */
- 
-@@ -1323,10 +1323,10 @@ int crash_prepare_elf64_headers(struct crash_mem *mem, int kernel_map,
- 		phdr->p_filesz = phdr->p_memsz = mend - mstart + 1;
- 		phdr->p_align = 0;
- 		ehdr->e_phnum++;
--		phdr++;
--		pr_debug("Crash PT_LOAD elf header. phdr=%p vaddr=0x%llx, paddr=0x%llx, sz=0x%llx e_phnum=%d p_offset=0x%llx\n",
-+		pr_debug("Crash PT_LOAD ELF header. phdr=%p vaddr=0x%llx, paddr=0x%llx, sz=0x%llx e_phnum=%d p_offset=0x%llx\n",
- 			phdr, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz,
- 			ehdr->e_phnum, phdr->p_offset);
-+		phdr++;
- 	}
- 
- 	*addr = buf;
