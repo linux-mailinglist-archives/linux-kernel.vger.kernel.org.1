@@ -2,167 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBCF23DA0B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 13:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC1A23DA40
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 14:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726464AbgHFLX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 07:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgHFLRS (ORCPT
+        id S1728973AbgHFMS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 08:18:26 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34762 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727006AbgHFLPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 07:17:18 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B291FC0617A3
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 04:17:15 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z18so40049703wrm.12
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 04:17:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=9iOCr7eJp9cKSC0EzGHUv7YGIck1uWeEY2I5uy4YNVw=;
-        b=A5uzzMDlT7sF3Aq8xz0Mc97XaqowFT8jF2OuQeB3jO6f0XJE+2jhpT/a9sJR0O8ctk
-         j5g0YpEN9bejb6H965LB+B22WyD9ycS4AC0RQRSPwFsS1e34ApOVP1r5oITCkZul4BsK
-         U1aXsVJfiZma3bWjGBMgeCaobOkVEOC5PClJU8yEfAWGsNdVpWuJih6LrWHhy0lvdv+r
-         vDNqC9C2cxAdiQGjSHIwSXVNcmlUPykFTQeveoTQI9pZ5ML6H7f+7kkPWHBkrlHj7hys
-         AuQ6VW8HYXITfNBUKp50OtMPewNmRCVK3k/InR057UlaFsC7nFPkc07eqL8OnAjOM9Vl
-         yTCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=9iOCr7eJp9cKSC0EzGHUv7YGIck1uWeEY2I5uy4YNVw=;
-        b=lxErgzDR52QXSg0MYR+Acn4PAUV0C6IxCpkeH13ZmbmtwkkjO0CiOl3RM8aStzJSxx
-         TDfHsTejjO4ZAxOxSbORlELW1vBfMpL8NETNhZayG7fn3en1q3ivAGPwHTHlT5SSqk0w
-         aHcNRy1idIJ3tFhYFzQI1ogsH5E2LV8/9j7chK4gsd2+SkgyUH5leBrOOjoZrfhG8iFi
-         RvEj0rmJaIGzeN7K511FZHlQEqxiXiPemtsgLPslFOJ506x1IfpwhduyiX2ej+6FQf20
-         S9XLy0TU3X03eSqJE2onvpQ0WNrugdMTRys2XFKg4mWY+Ns+igPdnYgXzZgcGL0S9gqp
-         e1jg==
-X-Gm-Message-State: AOAM530NnaT1j6jwQPTQdHedKOW+9VdW+n1qYQljGYUvqvDc+Sfm3tAr
-        qDGckHw94dDLBZBT3f52vV4=
-X-Google-Smtp-Source: ABdhPJzAXSYcp8Fz4bXyGNvGF3pByi4yiYy5EZAlfiVFHfBSznTJC2Z/b6aOTAah5qSMecN0pqtvcQ==
-X-Received: by 2002:a05:6000:1152:: with SMTP id d18mr7443159wrx.357.1596712632165;
-        Thu, 06 Aug 2020 04:17:12 -0700 (PDT)
-Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
-        by smtp.gmail.com with ESMTPSA id x82sm6243352wmb.30.2020.08.06.04.17.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 04:17:11 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 08:17:05 -0300
-From:   Melissa Wen <melissa.srw@gmail.com>
-To:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Sidong Yang <realwakka@gmail.com>
-Cc:     twoerner@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-usp@googlegroups.com
-Subject: [PATCH v2] drm/vkms: guarantee vblank when capturing crc
-Message-ID: <20200806111705.xebopzucxr3367z4@smtp.gmail.com>
+        Thu, 6 Aug 2020 07:15:41 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 076AWtuR103123;
+        Thu, 6 Aug 2020 07:00:16 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32rfpx1gjw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 07:00:15 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 076B0D8t018097;
+        Thu, 6 Aug 2020 11:00:14 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma05fra.de.ibm.com with ESMTP id 32n017u9ku-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 11:00:14 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 076B0BHF19595764
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 6 Aug 2020 11:00:11 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1C415AE055;
+        Thu,  6 Aug 2020 11:00:11 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C6979AE04D;
+        Thu,  6 Aug 2020 11:00:10 +0000 (GMT)
+Received: from osiris (unknown [9.171.40.123])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu,  6 Aug 2020 11:00:10 +0000 (GMT)
+Date:   Thu, 6 Aug 2020 13:00:09 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Joerg Roedel <jroedel@suse.de>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] s390/Kconfig: add missing ZCRYPT dependency to VFIO_AP
+Message-ID: <20200806110009.GA68234@osiris>
+References: <20200805155053.3739-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20200805155053.3739-1-krzk@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-06_06:2020-08-06,2020-08-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1011
+ lowpriorityscore=0 priorityscore=1501 phishscore=0 mlxscore=0
+ malwarescore=0 spamscore=0 suspectscore=1 adultscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008060071
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VKMS needs vblank interrupts enabled to capture CRC. When vblank is
-disabled, tests like kms_cursor_crc and kms_pipe_crc_basic getting stuck
-waiting for a capture that will not occur until vkms wakes up. This patch
-adds a helper to set composer and ensure that vblank remains enabled as
-long as the CRC capture is needed.
+On Wed, Aug 05, 2020 at 05:50:53PM +0200, Krzysztof Kozlowski wrote:
+> The VFIO_AP uses ap_driver_register() (and deregister) functions
+> implemented in ap_bus.c (compiled into ap.o).  However the ap.o will be
+> built only if CONFIG_ZCRYPT is selected.
+> 
+> This was not visible before commit e93a1695d7fb ("iommu: Enable compile
+> testing for some of drivers") because the CONFIG_VFIO_AP depends on
+> CONFIG_S390_AP_IOMMU which depends on the missing CONFIG_ZCRYPT.  After
+> adding COMPILE_TEST, it is possible to select a configuration with
+> VFIO_AP and S390_AP_IOMMU but without the ZCRYPT.
+> 
+> Add proper dependency to the VFIO_AP to fix build errors:
+> 
+> ERROR: modpost: "ap_driver_register" [drivers/s390/crypto/vfio_ap.ko] undefined!
+> ERROR: modpost: "ap_driver_unregister" [drivers/s390/crypto/vfio_ap.ko] undefined!
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: e93a1695d7fb ("iommu: Enable compile testing for some of drivers")
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  arch/s390/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-It clears the execution of the following kms_cursor_crc subtests:
-1. pipe-A-cursor-[size,alpha-opaque, NxN-(on-screen, off-screen, sliding,
-random, fast-moving])] - successful when running individually.
-2. pipe-A-cursor-dpms passes again
-3. pipe-A-cursor-suspend also passes
-
-The issue was initially tracked in the sequential execution of IGT
-kms_cursor_crc subtest: when running the test sequence or one of its
-subtests twice, the odd execs complete and the pairs get stuck in an
-endless wait. In the IGT code, calling a wait_for_vblank on preparing for
-CRC capture prevented the busy-wait. But the problem persisted in the
-pipe-A-cursor-dpms and -suspend subtests.
-
-Checking the history, the pipe-A-cursor-dpms subtest was successful when,
-in vkms_atomic_commit_tail, instead of using the flip_done op, it used
-wait_for_vblanks. Another way to prevent blocking was wait_one_vblank when
-enabling crtc. However, in both cases, pipe-A-cursor-suspend persisted
-blocking in the 2nd start of CRC capture, which may indicate that
-something got stuck in the step of CRC setup. Indeed, wait_one_vblank in
-the crc setup was able to sync things and free all kms_cursor_crc
-subtests. Besides, other alternatives to force enabling vblanks or prevent
-disabling them such as calling drm_crtc_put_vblank or modeset_enables
-before commit_planes + offdelay = 0, also unlock all subtests executions.
-
-Finally, due to vkms's dependence on vblank interruptions to perform
-tasks, this patch uses refcount to ensure that vblanks happen when
-enabling composer and while crc capture is needed.
-
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-Cc: Haneen Mohammed <hamohammed.sa@gmail.com>
-Co-developed-by: Sidong Yang <realwakka@gmail.com>
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
-Co-developed-by: Daniel Vetter <daniel@ffwll.ch>
-Signed-off-by: Daniel Vetter <daniel@ffwll.ch>
-Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
----
- drivers/gpu/drm/vkms/vkms_composer.c | 20 +++++++++++++++++---
- drivers/gpu/drm/vkms/vkms_drv.h      |  1 +
- 2 files changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
-index b8b060354667..e2ac2b9759bf 100644
---- a/drivers/gpu/drm/vkms/vkms_composer.c
-+++ b/drivers/gpu/drm/vkms/vkms_composer.c
-@@ -233,6 +233,22 @@ int vkms_verify_crc_source(struct drm_crtc *crtc, const char *src_name,
- 	return 0;
- }
- 
-+void vkms_set_composer(struct vkms_output *out, bool enabled)
-+{
-+	bool old_enabled;
-+
-+	if (enabled)
-+		drm_crtc_vblank_get(&out->crtc);
-+
-+	spin_lock_irq(&out->lock);
-+	old_enabled = out->composer_enabled;
-+	out->composer_enabled = enabled;
-+	spin_unlock_irq(&out->lock);
-+
-+	if (old_enabled)
-+		drm_crtc_vblank_put(&out->crtc);
-+}
-+
- int vkms_set_crc_source(struct drm_crtc *crtc, const char *src_name)
- {
- 	struct vkms_output *out = drm_crtc_to_vkms_output(crtc);
-@@ -241,9 +257,7 @@ int vkms_set_crc_source(struct drm_crtc *crtc, const char *src_name)
- 
- 	ret = vkms_crc_parse_source(src_name, &enabled);
- 
--	spin_lock_irq(&out->lock);
--	out->composer_enabled = enabled;
--	spin_unlock_irq(&out->lock);
-+	vkms_set_composer(out, enabled);
- 
- 	return ret;
- }
-diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-index f4036bb0b9a8..2cc86d08bd4e 100644
---- a/drivers/gpu/drm/vkms/vkms_drv.h
-+++ b/drivers/gpu/drm/vkms/vkms_drv.h
-@@ -142,6 +142,7 @@ int vkms_verify_crc_source(struct drm_crtc *crtc, const char *source_name,
- 			   size_t *values_cnt);
- 
- /* Composer Support */
-+void vkms_set_composer(struct vkms_output *output, bool enabled);
- void vkms_composer_worker(struct work_struct *work);
- 
- #endif /* _VKMS_DRV_H_ */
--- 
-2.27.0
-
+Applied, thanks.
