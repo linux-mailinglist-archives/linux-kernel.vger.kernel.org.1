@@ -2,45 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0404B23E0E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB6323E069
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgHFSjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:39:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54062 "EHLO mail.kernel.org"
+        id S1728434AbgHFSdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:33:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728414AbgHFSaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:30:03 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        id S1728437AbgHFSbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 14:31:12 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4AF502311C;
-        Thu,  6 Aug 2020 18:30:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE27E221E3;
+        Thu,  6 Aug 2020 18:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596738603;
-        bh=sgrriGvvtWI7kCSGARd8WdvCWTR8opdRkGZeXw3CrHc=;
+        s=default; t=1596738630;
+        bh=0j/Gs+HBIfouG9/zhyHY47+RDgMJzkzUWkX/o6OMrro=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fNG5DOvIyahVPtBri53Saf++y4xlyIv8+02SJ89wIyCnFUIN5lVQG8ETo/KJ4fjU/
-         iDP+46UYeEdydoTAxvShr4Sk+kL3koN/yFZoXpLuXfyhAV19ULaPqTmgPBbR07Xk/l
-         SSN642xHxzS6pzimTimBnabcqxDsjGQ9OXlp0RFU=
-Date:   Thu, 6 Aug 2020 19:29:53 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Daniel Campello <campello@chromium.org>
-Cc:     LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Enrico Granata <egranata@chromium.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Stephen Boyd <swboyd@chromium.org>, linux-iio@vger.kernel.org
-Subject: Re: [PATCH v5 06/15] iio: sx9310: Fixes various memory handling
-Message-ID: <20200806192953.7a963543@archlinux>
-In-Reply-To: <20200803175559.v5.6.I8accffd77d616cb55b29bc3021cb0f5e1da3b68a@changeid>
-References: <20200803235815.778997-1-campello@chromium.org>
-        <20200803175559.v5.6.I8accffd77d616cb55b29bc3021cb0f5e1da3b68a@changeid>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        b=I+OXd6pPB0yUX7nf+Xu+8HYNDCXGzahILClI6a/xnXVm2yFkVypzmMi0jgo6k4KB8
+         eyAC++GbawumtRkuQ5JAY0yk4r6DEPb8zZpgDKPLe5xbFORRxFXru59lgOabQCrufM
+         g1RnGbbbLaU6CieM3JvArku0QjxQwVa0+LXDrqtE=
+Date:   Thu, 6 Aug 2020 11:30:26 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Qingyu Li <ieatmuttonchuan@gmail.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nfc: enforce CAP_NET_RAW for raw sockets When creating
+ a raw AF_NFC socket, CAP_NET_RAW needs to be checked first.
+Message-ID: <20200806113026.64b7f755@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200806022808.GA17066@oppo>
+References: <20200806022808.GA17066@oppo>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -49,73 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  3 Aug 2020 17:58:06 -0600
-Daniel Campello <campello@chromium.org> wrote:
+On Thu, 6 Aug 2020 10:28:08 +0800 Qingyu Li wrote:
 
-> Makes use __aligned(8) to ensure that the timestamp is correctly aligned
-> when we call io_push_to_buffers_with_timestamp().
-> Also makes use of sizeof() for regmap_bulk_read instead of static value.
-> 
-> Signed-off-by: Daniel Campello <campello@chromium.org>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Applied
+Commit message is required. Perhaps shorten the subject and put more
+info here.
 
+> Signed-off-by: Qingyu Li <ieatmuttonchuan@gmail.com>
 > ---
+>  net/nfc/rawsock.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> Changes in v5:
->  - Really use a pointer to buffer struct on
-> iio_push_to_buffers_with_timestamp().
+> diff --git a/net/nfc/rawsock.c b/net/nfc/rawsock.c
+> index ba5ffd3badd3..c1302b689a98 100644
+> --- a/net/nfc/rawsock.c
+> +++ b/net/nfc/rawsock.c
+> @@ -332,8 +332,11 @@ static int rawsock_create(struct net *net, struct socket *sock,
+>  	if ((sock->type != SOCK_SEQPACKET) && (sock->type != SOCK_RAW))
+>  		return -ESOCKTNOSUPPORT;
 > 
-> Changes in v4:
->  - Use pointer to buffer struct on iio_push_to_buffers_with_timestamp().
+> -	if (sock->type == SOCK_RAW)
+> +	if (sock->type == SOCK_RAW){
+> +		if (!capable(CAP_NET_RAW))
+> +			return -EPERM;
+>  		sock->ops = &rawsock_raw_ops;
+> +	}
+
+please run checkpatch.pl --strict and fix the issues.
+
+>  	else
+>  		sock->ops = &rawsock_ops;
 > 
-> Changes in v3:
->  - Changed buffer to struct type to align timestamp memory properly.
 > 
-> Changes in v2:
->  - Fixed commit message from "iio: sx9310: Align memory"
 > 
->  drivers/iio/proximity/sx9310.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
-> index 66ecdd309e0ddc..127b1ba79e2dea 100644
-> --- a/drivers/iio/proximity/sx9310.c
-> +++ b/drivers/iio/proximity/sx9310.c
-> @@ -132,8 +132,11 @@ struct sx9310_data {
->  	 */
->  	bool prox_stat[SX9310_NUM_CHANNELS];
->  	bool trigger_enabled;
-> -	__be16 buffer[SX9310_NUM_CHANNELS +
-> -		      4]; /* 64-bit data + 64-bit timestamp */
-> +	/* Ensure correct alignment of timestamp when present. */
-> +	struct {
-> +		__be16 channels[SX9310_NUM_CHANNELS];
-> +		s64 ts __aligned(8);
-> +	} buffer;
->  	/* Remember enabled channels and sample rate during suspend. */
->  	unsigned int suspend_ctrl0;
->  	struct completion completion;
-> @@ -344,7 +347,7 @@ static int sx9310_read_prox_data(struct sx9310_data *data,
->  	if (ret < 0)
->  		return ret;
->  
-> -	return regmap_bulk_read(data->regmap, chan->address, val, 2);
-> +	return regmap_bulk_read(data->regmap, chan->address, val, sizeof(*val));
->  }
->  
->  /*
-> @@ -694,10 +697,10 @@ static irqreturn_t sx9310_trigger_handler(int irq, void *private)
->  		if (ret < 0)
->  			goto out;
->  
-> -		data->buffer[i++] = val;
-> +		data->buffer.channels[i++] = val;
->  	}
->  
-> -	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-> +	iio_push_to_buffers_with_timestamp(indio_dev, &data->buffer,
->  					   pf->timestamp);
->  
->  out:
 
