@@ -2,155 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65E523D9D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 13:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCCB23DA1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 13:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725812AbgHFLRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 07:17:00 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20456 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726490AbgHFLNv (ORCPT
+        id S1728194AbgHFLrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 07:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727809AbgHFLRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 07:13:51 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 076AX2Zk023945;
-        Thu, 6 Aug 2020 07:10:47 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32rdt2n6mc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 07:10:47 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 076AeeeC049571;
-        Thu, 6 Aug 2020 07:10:46 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32rdt2n6ht-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 07:10:46 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 076B7Jv2015021;
-        Thu, 6 Aug 2020 11:10:44 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 32mynh5cuj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 11:10:44 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 076BAf3t30736750
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 6 Aug 2020 11:10:41 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C2F7CAE05A;
-        Thu,  6 Aug 2020 11:10:41 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7CDD7AE063;
-        Thu,  6 Aug 2020 11:10:38 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.24.39])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu,  6 Aug 2020 11:10:38 +0000 (GMT)
-Date:   Thu, 6 Aug 2020 14:10:36 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v3 1/6] mm: add definition of PMD_PAGE_ORDER
-Message-ID: <20200806111036.GJ163101@linux.ibm.com>
-References: <20200804095035.18778-1-rppt@kernel.org>
- <20200804095035.18778-2-rppt@kernel.org>
- <20200806101112.bjw4mxu2odpsg2hh@box>
+        Thu, 6 Aug 2020 07:17:00 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4763CC0617A9
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 04:06:46 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id df16so18497100edb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 04:06:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=S/X2S8Un72gBHPqjEBeUbRT6khumFRMEJ0GKnYWhQoU=;
+        b=ZQmX2XOG51SZPQLT9CoMa3NRtTFzhOTfEl/HndyrmJ+5KOoCEzpzgAKbfksi1pDrgR
+         J8OcaKxOL8iiZiWypX7BiJ7ZAQlJ7+snk+f10xB/Iyhw+3YDrIBXMlCYYSPTXcYrW3ag
+         CdXnh8Y9ClcWRbAfbrNLSMKnqZf65CNXESYNM5rXyzz2t6iOaAr1f0JAW8itoGpEqLt2
+         yAPUGnk6bT+31I9WRdTAzRctxNu80WZiYZh5z4I3JXdBJT7syuUJba8V0Vl67sWTEwJG
+         1quus6OfKfIXUxvE6YKGwbWPqRpa3IW8I0TjosZ3w3qY2LVtiDeQ7OkcQ6YBnavx+ZIo
+         /bLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=S/X2S8Un72gBHPqjEBeUbRT6khumFRMEJ0GKnYWhQoU=;
+        b=q3frUw/6JCDVM/dXgtAJZFtLf8T+mEFOqTxZ09hqx+LcSoOaAvDzVb291Z+LMnQqfv
+         3+pCWQj7k3c+oYibpKS+2594n/dVaLm6KCLurGR4wvWSZ0xsSu+ZM/1rTGNC2Y6P/6cM
+         A3ba0VK8yWKKgfvcwfxQSY3Tw4UUDQOdMUlRUzUGujAN2BpnYUPjnnU78ZU2sVRd2KnY
+         lOqU4uhuusoRkvg6lnLwMUuBCNr1Mm+dFeujVh4i/8Wp28qignFh7NFl73T2/DRf/gyA
+         vZGAs5EKj9YWRkyoqKpxHivrPtkBqwUmVCmiKImEV7JsJSUFeO0knncOwjYi8a7s17z7
+         UX/w==
+X-Gm-Message-State: AOAM532gxUmFeDMRru7SjBkn+TAC4nWJcu4y/BZD7yVzRtcybjhXH96H
+        pYiU2vqv5d6O0s8a/DslbndIsYtlBlpe0MZtCiSlM910PH17nW3Se4B24gMeawF4flY6WX50nK7
+        ELryYPE5RHkZ767MZBg==
+X-Google-Smtp-Source: ABdhPJy3G6d4eB2KPic/Jx2xZphGvOf7yTyGdw/FaCqjMdrsgXqO8sB7/mWx+z08+SMJ8SK5WtqviQ==
+X-Received: by 2002:aa7:ccd5:: with SMTP id y21mr3402579edt.91.1596712004954;
+        Thu, 06 Aug 2020 04:06:44 -0700 (PDT)
+Received: from tim.froidcoeur.net (ptr-7tznw15pracyli75x11.18120a2.ip6.access.telenet.be. [2a02:1811:50e:f0f0:d05d:939:f42b:f575])
+        by smtp.gmail.com with ESMTPSA id v13sm3597682edl.9.2020.08.06.04.06.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 04:06:44 -0700 (PDT)
+From:   Tim Froidcoeur <tim.froidcoeur@tessares.net>
+To:     tim.froidcoeur@tessares.net,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Cc:     matthieu.baerts@tessares.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net v2 1/2] net: refactor bind_bucket fastreuse into helper
+Date:   Thu,  6 Aug 2020 13:06:30 +0200
+Message-Id: <20200806110631.475855-2-tim.froidcoeur@tessares.net>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200806110631.475855-1-tim.froidcoeur@tessares.net>
+References: <20200806110631.475855-1-tim.froidcoeur@tessares.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200806101112.bjw4mxu2odpsg2hh@box>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-06_06:2020-08-06,2020-08-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 priorityscore=1501 malwarescore=0 adultscore=0
- mlxlogscore=997 clxscore=1011 suspectscore=1 spamscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008060075
+Content-Type: text/plain; charset="US-ASCII"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 01:11:12PM +0300, Kirill A. Shutemov wrote:
-> On Tue, Aug 04, 2020 at 12:50:30PM +0300, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > The definition of PMD_PAGE_ORDER denoting the number of base pages in the
-> > second-level leaf page is already used by DAX and maybe handy in other
-> > cases as well.
-> > 
-> > Several architectures already have definition of PMD_ORDER as the size of
-> > second level page table, so to avoid conflict with these definitions use
-> > PMD_PAGE_ORDER name and update DAX respectively.
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >  fs/dax.c                | 10 +++++-----
-> >  include/linux/pgtable.h |  3 +++
-> >  2 files changed, 8 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/fs/dax.c b/fs/dax.c
-> > index 11b16729b86f..b91d8c8dda45 100644
-> > --- a/fs/dax.c
-> > +++ b/fs/dax.c
-> > @@ -50,7 +50,7 @@ static inline unsigned int pe_order(enum page_entry_size pe_size)
-> >  #define PG_PMD_NR	(PMD_SIZE >> PAGE_SHIFT)
-> >  
-> >  /* The order of a PMD entry */
-> > -#define PMD_ORDER	(PMD_SHIFT - PAGE_SHIFT)
-> > +#define PMD_PAGE_ORDER	(PMD_SHIFT - PAGE_SHIFT)
-> 
-> Hm. Wouldn't it conflict with definition in pgtable.h? Or should we
-> include it instead?
+Refactor the fastreuse update code in inet_csk_get_port into a small
+helper function that can be called from other places.
 
-Actually I meant to remove it here and keep only the definition in
-pgtable.h.
-Will fix.
+Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Signed-off-by: Tim Froidcoeur <tim.froidcoeur@tessares.net>
+---
 
-> > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> > index 56c1e8eb7bb0..79f8443609e7 100644
-> > --- a/include/linux/pgtable.h
-> > +++ b/include/linux/pgtable.h
-> > @@ -28,6 +28,9 @@
-> >  #define USER_PGTABLES_CEILING	0UL
-> >  #endif
-> >  
-> > +/* Number of base pages in a second level leaf page */
-> > +#define PMD_PAGE_ORDER	(PMD_SHIFT - PAGE_SHIFT)
-> > +
-> >  /*
-> >   * A page table page can be thought of an array like this: pXd_t[PTRS_PER_PxD]
-> >   *
-> 
-> -- 
->  Kirill A. Shutemov
+Notes:
+    - remove unnecessary cast (Matt)
+
+ include/net/inet_connection_sock.h |  4 ++
+ net/ipv4/inet_connection_sock.c    | 97 ++++++++++++++++--------------
+ 2 files changed, 57 insertions(+), 44 deletions(-)
+
+diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
+index e5b388f5fa20..1d59bf55bb4d 100644
+--- a/include/net/inet_connection_sock.h
++++ b/include/net/inet_connection_sock.h
+@@ -316,6 +316,10 @@ int inet_csk_compat_getsockopt(struct sock *sk, int level, int optname,
+ int inet_csk_compat_setsockopt(struct sock *sk, int level, int optname,
+ 			       char __user *optval, unsigned int optlen);
+ 
++/* update the fast reuse flag when adding a socket */
++void inet_csk_update_fastreuse(struct inet_bind_bucket *tb,
++			       struct sock *sk);
++
+ struct dst_entry *inet_csk_update_pmtu(struct sock *sk, u32 mtu);
+ 
+ #define TCP_PINGPONG_THRESH	3
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index afaf582a5aa9..a1be020bde8e 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -296,6 +296,57 @@ static inline int sk_reuseport_match(struct inet_bind_bucket *tb,
+ 				    ipv6_only_sock(sk), true, false);
+ }
+ 
++void inet_csk_update_fastreuse(struct inet_bind_bucket *tb,
++			       struct sock *sk)
++{
++	kuid_t uid = sock_i_uid(sk);
++	bool reuse = sk->sk_reuse && sk->sk_state != TCP_LISTEN;
++
++	if (hlist_empty(&tb->owners)) {
++		tb->fastreuse = reuse;
++		if (sk->sk_reuseport) {
++			tb->fastreuseport = FASTREUSEPORT_ANY;
++			tb->fastuid = uid;
++			tb->fast_rcv_saddr = sk->sk_rcv_saddr;
++			tb->fast_ipv6_only = ipv6_only_sock(sk);
++			tb->fast_sk_family = sk->sk_family;
++#if IS_ENABLED(CONFIG_IPV6)
++			tb->fast_v6_rcv_saddr = sk->sk_v6_rcv_saddr;
++#endif
++		} else {
++			tb->fastreuseport = 0;
++		}
++	} else {
++		if (!reuse)
++			tb->fastreuse = 0;
++		if (sk->sk_reuseport) {
++			/* We didn't match or we don't have fastreuseport set on
++			 * the tb, but we have sk_reuseport set on this socket
++			 * and we know that there are no bind conflicts with
++			 * this socket in this tb, so reset our tb's reuseport
++			 * settings so that any subsequent sockets that match
++			 * our current socket will be put on the fast path.
++			 *
++			 * If we reset we need to set FASTREUSEPORT_STRICT so we
++			 * do extra checking for all subsequent sk_reuseport
++			 * socks.
++			 */
++			if (!sk_reuseport_match(tb, sk)) {
++				tb->fastreuseport = FASTREUSEPORT_STRICT;
++				tb->fastuid = uid;
++				tb->fast_rcv_saddr = sk->sk_rcv_saddr;
++				tb->fast_ipv6_only = ipv6_only_sock(sk);
++				tb->fast_sk_family = sk->sk_family;
++#if IS_ENABLED(CONFIG_IPV6)
++				tb->fast_v6_rcv_saddr = sk->sk_v6_rcv_saddr;
++#endif
++			}
++		} else {
++			tb->fastreuseport = 0;
++		}
++	}
++}
++
+ /* Obtain a reference to a local port for the given sock,
+  * if snum is zero it means select any available local port.
+  * We try to allocate an odd port (and leave even ports for connect())
+@@ -308,7 +359,6 @@ int inet_csk_get_port(struct sock *sk, unsigned short snum)
+ 	struct inet_bind_hashbucket *head;
+ 	struct net *net = sock_net(sk);
+ 	struct inet_bind_bucket *tb = NULL;
+-	kuid_t uid = sock_i_uid(sk);
+ 	int l3mdev;
+ 
+ 	l3mdev = inet_sk_bound_l3mdev(sk);
+@@ -345,49 +395,8 @@ int inet_csk_get_port(struct sock *sk, unsigned short snum)
+ 			goto fail_unlock;
+ 	}
+ success:
+-	if (hlist_empty(&tb->owners)) {
+-		tb->fastreuse = reuse;
+-		if (sk->sk_reuseport) {
+-			tb->fastreuseport = FASTREUSEPORT_ANY;
+-			tb->fastuid = uid;
+-			tb->fast_rcv_saddr = sk->sk_rcv_saddr;
+-			tb->fast_ipv6_only = ipv6_only_sock(sk);
+-			tb->fast_sk_family = sk->sk_family;
+-#if IS_ENABLED(CONFIG_IPV6)
+-			tb->fast_v6_rcv_saddr = sk->sk_v6_rcv_saddr;
+-#endif
+-		} else {
+-			tb->fastreuseport = 0;
+-		}
+-	} else {
+-		if (!reuse)
+-			tb->fastreuse = 0;
+-		if (sk->sk_reuseport) {
+-			/* We didn't match or we don't have fastreuseport set on
+-			 * the tb, but we have sk_reuseport set on this socket
+-			 * and we know that there are no bind conflicts with
+-			 * this socket in this tb, so reset our tb's reuseport
+-			 * settings so that any subsequent sockets that match
+-			 * our current socket will be put on the fast path.
+-			 *
+-			 * If we reset we need to set FASTREUSEPORT_STRICT so we
+-			 * do extra checking for all subsequent sk_reuseport
+-			 * socks.
+-			 */
+-			if (!sk_reuseport_match(tb, sk)) {
+-				tb->fastreuseport = FASTREUSEPORT_STRICT;
+-				tb->fastuid = uid;
+-				tb->fast_rcv_saddr = sk->sk_rcv_saddr;
+-				tb->fast_ipv6_only = ipv6_only_sock(sk);
+-				tb->fast_sk_family = sk->sk_family;
+-#if IS_ENABLED(CONFIG_IPV6)
+-				tb->fast_v6_rcv_saddr = sk->sk_v6_rcv_saddr;
+-#endif
+-			}
+-		} else {
+-			tb->fastreuseport = 0;
+-		}
+-	}
++	inet_csk_update_fastreuse(tb, sk);
++
+ 	if (!inet_csk(sk)->icsk_bind_hash)
+ 		inet_bind_hash(sk, tb, port);
+ 	WARN_ON(inet_csk(sk)->icsk_bind_hash != tb);
+-- 
+2.25.1
+
 
 -- 
-Sincerely yours,
-Mike.
+
+
+Disclaimer: https://www.tessares.net/mail-disclaimer/ 
+<https://www.tessares.net/mail-disclaimer/>
+
+
