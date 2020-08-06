@@ -2,115 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6AC23DD14
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EF123DC7F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729823AbgHFQ7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728999AbgHFQkk (ORCPT
+        id S1729663AbgHFQwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:52:50 -0400
+Received: from 20.mo1.mail-out.ovh.net ([188.165.45.168]:41145 "EHLO
+        20.mo1.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729231AbgHFQwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:40:40 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CA1C002174
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:14:46 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id r4so17213173pls.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E+VfmnxDV498yxI5rDUMFgAbVpKeY5DLzESFio3gnB4=;
-        b=UBJ+xRcZblEVxSJwz/PK+6Kw1nyvUVkSJPh5W3yJfyKUV1zBsLoDfTSVMzPYi0aXAB
-         MoIYnymHlZyzMpW2QDQGcE1yacW3lPSxo41W77F74qUi7yZyaUPg4mZaaTps4uw7arDv
-         MHSZarQlh9DmRRObpE31wn60GWelGoIPB5AylEpEXUq4SI+QeMWpN/xCPgXX1c1h//Sp
-         S9Ey6QXTSzW1azNC4LSOgHLG0DM60r0TB8IOANE/aQ4gxx5NyI3mz9gnPTAW/h9jxKfp
-         0lb+PuigzZbdX2MQNlrcwr4HG7qc6BD+BJ/i/5L79G1rwr7l4ZDWOMuBD7XJZmcLs1MT
-         o4KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E+VfmnxDV498yxI5rDUMFgAbVpKeY5DLzESFio3gnB4=;
-        b=SBwnrenk2TlLHmHqwQdZ9N44NQ2mS85L2DpxBwFRZB77ilnNExoP+VEYN5J0M1Z2Zv
-         +tM2ip3ZuFA4zWqku8hsner9i/80LJKBNpqUhDSsFpNVqwpKkyCSfWJvvGzwwU9T0z5e
-         w4RU33xki2cxtZ83xstkPxC0D4fU/LSKwSc8n/MpiDzC6tBCBRIlE4VOzntu002vdTH2
-         Vn6fcBiMpNxzZZw1BLmlztYeuLXS7BO+wRmRY5WQzDWySNIioB5NnDbzEj7QywLLe67U
-         zg5qoR4RQcrNxXGyw5dxVgg/uLBeuZyioq+GldYdAibwPGOaZxiH9LRtixa+GEM5SItq
-         A6EA==
-X-Gm-Message-State: AOAM5330OeXPq5ZwXtTN/XtgBhYo1U8WMQL1s1C0mN6jD1O7ef20Sfdn
-        9dikICr73SKkc45BxIif9oA=
-X-Google-Smtp-Source: ABdhPJygnoz1mAHZpteX4eA3W25LGEwX06xrCjfRfUvdj+ghvykms+CWaAws1JOdPxRlOy6x95gWgw==
-X-Received: by 2002:a17:90a:e551:: with SMTP id ei17mr9109006pjb.224.1596730485648;
-        Thu, 06 Aug 2020 09:14:45 -0700 (PDT)
-Received: from localhost.localdomain ([112.44.78.113])
-        by smtp.gmail.com with ESMTPSA id x127sm9537245pfd.86.2020.08.06.09.14.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 06 Aug 2020 09:14:44 -0700 (PDT)
-From:   Jiang Biao <benbjiang@gmail.com>
-X-Google-Original-From: Jiang Biao <benbjiang@tencent.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org
-Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org,
-        Jiang Biao <benbjiang@tencent.com>
-Subject: [PATCH RFC v2] sched/fair: simplify the work when reweighting entity
-Date:   Fri,  7 Aug 2020 00:14:06 +0800
-Message-Id: <20200806161406.22629-1-benbjiang@tencent.com>
-X-Mailer: git-send-email 2.21.0
+        Thu, 6 Aug 2020 12:52:31 -0400
+X-Greylist: delayed 2103 seconds by postgrey-1.27 at vger.kernel.org; Thu, 06 Aug 2020 12:52:27 EDT
+Received: from player791.ha.ovh.net (unknown [10.110.115.229])
+        by mo1.mail-out.ovh.net (Postfix) with ESMTP id 77EF91CEBB8
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 18:15:19 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player791.ha.ovh.net (Postfix) with ESMTPSA id 9F80915002624;
+        Thu,  6 Aug 2020 16:15:13 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-104R0059bfe411c-1641-46b4-891b-cf95eaa2adb0,
+                    9D5F4B8471F7AF6BEF45141B8B52B4DEEC6DEFE4) smtp.auth=steve@sk2.org
+From:   Stephen Kitt <steve@sk2.org>
+To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
+Subject: [PATCH v2] docs: remove the 2.6 "Upgrading I2C Drivers" guide
+Date:   Thu,  6 Aug 2020 18:14:56 +0200
+Message-Id: <20200806161456.8680-1-steve@sk2.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 3213036861844639109
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrkedtgddutdduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeetgedugfelkeeikeetgeegteevfeeufeetuefgudeiiedthfehtdeffeekvdeffeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeeluddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiang Biao <benbjiang@tencent.com>
+All the drivers have long since been upgraded, and all the important
+information here is also included in the "Implementing I2C device
+drivers" guide.
 
-If a se is on_rq when reweighting entity, all we need should be
-updating the load of cfs_rq, other dequeue/enqueue work could be
-redundant, such as,
-* nr_running--/nr_running++
-
-Even though the following dequeue/enqueue path would never be reached
-* account_numa_dequeue/account_numa_enqueue
-* list_del/list_add from/into cfs_tasks
-but it could be a little confusing.
-
-Simplifying the logic could be helpful to reduce a litte overhead for
-hot path, and make it cleaner and more readable.
-
-Signed-off-by: Jiang Biao <benbjiang@tencent.com>
+Signed-off-by: Stephen Kitt <steve@sk2.org>
 ---
-v2<-v1: 
-- Amend the commit log.
+ Documentation/i2c/index.rst             |   1 -
+ Documentation/i2c/upgrading-clients.rst | 285 ------------------------
+ 2 files changed, 286 deletions(-)
+ delete mode 100644 Documentation/i2c/upgrading-clients.rst
 
- kernel/sched/fair.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+diff --git a/Documentation/i2c/index.rst b/Documentation/i2c/index.rst
+index fee4744475df..8a2ad3845191 100644
+--- a/Documentation/i2c/index.rst
++++ b/Documentation/i2c/index.rst
+@@ -62,7 +62,6 @@ Legacy documentation
+ .. toctree::
+    :maxdepth: 1
+ 
+-   upgrading-clients
+    old-module-parameters
+ 
+ .. only::  subproject and html
+diff --git a/Documentation/i2c/upgrading-clients.rst b/Documentation/i2c/upgrading-clients.rst
+deleted file mode 100644
+index 1708090d7b8f..000000000000
+--- a/Documentation/i2c/upgrading-clients.rst
++++ /dev/null
+@@ -1,285 +0,0 @@
+-=================================================
+-Upgrading I2C Drivers to the new 2.6 Driver Model
+-=================================================
+-
+-Ben Dooks <ben-linux@fluff.org>
+-
+-Introduction
+-------------
+-
+-This guide outlines how to alter existing Linux 2.6 client drivers from
+-the old to the new binding methods.
+-
+-
+-Example old-style driver
+-------------------------
+-
+-::
+-
+-  struct example_state {
+-	struct i2c_client	client;
+-	....
+-  };
+-
+-  static struct i2c_driver example_driver;
+-
+-  static unsigned short ignore[] = { I2C_CLIENT_END };
+-  static unsigned short normal_addr[] = { OUR_ADDR, I2C_CLIENT_END };
+-
+-  I2C_CLIENT_INSMOD;
+-
+-  static int example_attach(struct i2c_adapter *adap, int addr, int kind)
+-  {
+-	struct example_state *state;
+-	struct device *dev = &adap->dev;  /* to use for dev_ reports */
+-	int ret;
+-
+-	state = kzalloc(sizeof(struct example_state), GFP_KERNEL);
+-	if (state == NULL) {
+-		dev_err(dev, "failed to create our state\n");
+-		return -ENOMEM;
+-	}
+-
+-	example->client.addr    = addr;
+-	example->client.flags   = 0;
+-	example->client.adapter = adap;
+-
+-	i2c_set_clientdata(&state->i2c_client, state);
+-	strscpy(client->i2c_client.name, "example", sizeof(client->i2c_client.name));
+-
+-	ret = i2c_attach_client(&state->i2c_client);
+-	if (ret < 0) {
+-		dev_err(dev, "failed to attach client\n");
+-		kfree(state);
+-		return ret;
+-	}
+-
+-	dev = &state->i2c_client.dev;
+-
+-	/* rest of the initialisation goes here. */
+-
+-	dev_info(dev, "example client created\n");
+-
+-	return 0;
+-  }
+-
+-  static int example_detach(struct i2c_client *client)
+-  {
+-	struct example_state *state = i2c_get_clientdata(client);
+-
+-	i2c_detach_client(client);
+-	kfree(state);
+-	return 0;
+-  }
+-
+-  static int example_attach_adapter(struct i2c_adapter *adap)
+-  {
+-	return i2c_probe(adap, &addr_data, example_attach);
+-  }
+-
+-  static struct i2c_driver example_driver = {
+-	.driver		= {
+-		.owner		= THIS_MODULE,
+-		.name		= "example",
+-		.pm		= &example_pm_ops,
+-	},
+-	.attach_adapter = example_attach_adapter,
+-	.detach_client	= example_detach,
+-  };
+-
+-
+-Updating the client
+--------------------
+-
+-The new style binding model will check against a list of supported
+-devices and their associated address supplied by the code registering
+-the busses. This means that the driver .attach_adapter and
+-.detach_client methods can be removed, along with the addr_data,
+-as follows::
+-
+-  - static struct i2c_driver example_driver;
+-
+-  - static unsigned short ignore[] = { I2C_CLIENT_END };
+-  - static unsigned short normal_addr[] = { OUR_ADDR, I2C_CLIENT_END };
+-
+-  - I2C_CLIENT_INSMOD;
+-
+-  - static int example_attach_adapter(struct i2c_adapter *adap)
+-  - {
+-  - 	return i2c_probe(adap, &addr_data, example_attach);
+-  - }
+-
+-    static struct i2c_driver example_driver = {
+-  -	.attach_adapter = example_attach_adapter,
+-  -	.detach_client	= example_detach,
+-    }
+-
+-Add the probe and remove methods to the i2c_driver, as so::
+-
+-   static struct i2c_driver example_driver = {
+-  +	.probe		= example_probe,
+-  +	.remove		= example_remove,
+-   }
+-
+-Change the example_attach method to accept the new parameters
+-which include the i2c_client that it will be working with::
+-
+-  - static int example_attach(struct i2c_adapter *adap, int addr, int kind)
+-  + static int example_probe(struct i2c_client *client,
+-  +			   const struct i2c_device_id *id)
+-
+-Change the name of example_attach to example_probe to align it with the
+-i2c_driver entry names. The rest of the probe routine will now need to be
+-changed as the i2c_client has already been setup for use.
+-
+-The necessary client fields have already been setup before
+-the probe function is called, so the following client setup
+-can be removed::
+-
+-  -	example->client.addr    = addr;
+-  -	example->client.flags   = 0;
+-  -	example->client.adapter = adap;
+-  -
+-  -	strscpy(client->i2c_client.name, "example", sizeof(client->i2c_client.name));
+-
+-The i2c_set_clientdata is now::
+-
+-  -	i2c_set_clientdata(&state->client, state);
+-  +	i2c_set_clientdata(client, state);
+-
+-The call to i2c_attach_client is no longer needed, if the probe
+-routine exits successfully, then the driver will be automatically
+-attached by the core. Change the probe routine as so::
+-
+-  -	ret = i2c_attach_client(&state->i2c_client);
+-  -	if (ret < 0) {
+-  -		dev_err(dev, "failed to attach client\n");
+-  -		kfree(state);
+-  -		return ret;
+-  -	}
+-
+-
+-Remove the storage of 'struct i2c_client' from the 'struct example_state'
+-as we are provided with the i2c_client in our example_probe. Instead we
+-store a pointer to it for when it is needed.
+-
+-::
+-
+-  struct example_state {
+-  -	struct i2c_client	client;
+-  +	struct i2c_client	*client;
+-
+-the new i2c client as so::
+-
+-  -	struct device *dev = &adap->dev;  /* to use for dev_ reports */
+-  + 	struct device *dev = &i2c_client->dev;  /* to use for dev_ reports */
+-
+-And remove the change after our client is attached, as the driver no
+-longer needs to register a new client structure with the core::
+-
+-  -	dev = &state->i2c_client.dev;
+-
+-In the probe routine, ensure that the new state has the client stored
+-in it::
+-
+-  static int example_probe(struct i2c_client *i2c_client,
+-			 const struct i2c_device_id *id)
+-  {
+-	struct example_state *state;
+-	struct device *dev = &i2c_client->dev;
+-	int ret;
+-
+-	state = kzalloc(sizeof(struct example_state), GFP_KERNEL);
+-	if (state == NULL) {
+-		dev_err(dev, "failed to create our state\n");
+-		return -ENOMEM;
+-	}
+-
+-  +	state->client = i2c_client;
+-
+-Update the detach method, by changing the name to _remove and
+-to delete the i2c_detach_client call. It is possible that you
+-can also remove the ret variable as it is not needed for any
+-of the core functions.
+-
+-::
+-
+-  - static int example_detach(struct i2c_client *client)
+-  + static int example_remove(struct i2c_client *client)
+-  {
+-	struct example_state *state = i2c_get_clientdata(client);
+-
+-  -	i2c_detach_client(client);
+-
+-And finally ensure that we have the correct ID table for the i2c-core
+-and other utilities::
+-
+-  + struct i2c_device_id example_idtable[] = {
+-  +       { "example", 0 },
+-  +       { }
+-  +};
+-  +
+-  +MODULE_DEVICE_TABLE(i2c, example_idtable);
+-
+-  static struct i2c_driver example_driver = {
+-	.driver		= {
+-		.owner		= THIS_MODULE,
+-		.name		= "example",
+-	},
+-  +	.id_table	= example_ids,
+-
+-
+-Our driver should now look like this::
+-
+-  struct example_state {
+-	struct i2c_client	*client;
+-	....
+-  };
+-
+-  static int example_probe(struct i2c_client *client,
+-			 const struct i2c_device_id *id)
+-  {
+-	struct example_state *state;
+-	struct device *dev = &client->dev;
+-
+-	state = kzalloc(sizeof(struct example_state), GFP_KERNEL);
+-	if (state == NULL) {
+-		dev_err(dev, "failed to create our state\n");
+-		return -ENOMEM;
+-	}
+-
+-	state->client = client;
+-	i2c_set_clientdata(client, state);
+-
+-	/* rest of the initialisation goes here. */
+-
+-	dev_info(dev, "example client created\n");
+-
+-	return 0;
+-  }
+-
+-  static int example_remove(struct i2c_client *client)
+-  {
+-	struct example_state *state = i2c_get_clientdata(client);
+-
+-	kfree(state);
+-	return 0;
+-  }
+-
+-  static struct i2c_device_id example_idtable[] = {
+-	{ "example", 0 },
+-	{ }
+-  };
+-
+-  MODULE_DEVICE_TABLE(i2c, example_idtable);
+-
+-  static struct i2c_driver example_driver = {
+-	.driver		= {
+-		.owner		= THIS_MODULE,
+-		.name		= "example",
+-		.pm		= &example_pm_ops,
+-	},
+-	.id_table	= example_idtable,
+-	.probe		= example_probe,
+-	.remove		= example_remove,
+-  };
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 04fa8dbcfa4d..18a8fc7bd0de 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3086,7 +3086,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
- 		/* commit outstanding execution time */
- 		if (cfs_rq->curr == se)
- 			update_curr(cfs_rq);
--		account_entity_dequeue(cfs_rq, se);
-+		update_load_sub(&cfs_rq->load, se->load.weight);
- 	}
- 	dequeue_load_avg(cfs_rq, se);
- 
-@@ -3102,7 +3102,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
- 
- 	enqueue_load_avg(cfs_rq, se);
- 	if (se->on_rq)
--		account_entity_enqueue(cfs_rq, se);
-+		update_load_add(&cfs_rq->load, se->load.weight);
- 
- }
- 
+base-commit: 2324d50d051ec0f14a548e78554fb02513d6dcef
 -- 
-2.21.0
+2.20.1
 
