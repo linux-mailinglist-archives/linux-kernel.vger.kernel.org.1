@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED3923DF38
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2212223E000
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729521AbgHFRnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:43:01 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:46438 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730010AbgHFRlL (ORCPT
+        id S1725817AbgHFR6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:58:12 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:49682 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725272AbgHFR6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:41:11 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076D2HOa005777;
-        Thu, 6 Aug 2020 13:16:22 GMT
+        Thu, 6 Aug 2020 13:58:10 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076D27CE176546;
+        Thu, 6 Aug 2020 13:17:57 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : in-reply-to : references : date : message-id : mime-version :
  content-type; s=corp-2020-01-29;
- bh=5sE9tx5anyYdQsBRy0OTu6KXJ3coyDfCkoAgQh0zTbk=;
- b=q0LSCRXDSxpEefZMaZ/gnUKK2xT2ilGxTe67HdD9UPP/kCdyy0VgXLs1XgXE41rxAK/F
- 1/cg2CoxaHQrO69VwjFaU3FksSg+jowCA+PgTFPFLp/bW0eeY+/fDgTGa1ucus6pb91R
- OexjNO6QWy+dDrVmaMGPmM2xLqMAkrGBj90xpjD+i4RQWJW4vR94paI1VjT6v/U6WPVK
- WJod64B1WI3mkoGGIKdLGxPmOw7QlvlcvdjCRN4oQixa9Xa9d4XyM3czGWnvCGd/90I8
- sfxW+72uo8anmBZdTBVaFb1otGnS/wDhXAWISPkIhHn16KCsLnQEdDbL34ExHxKyFrqF gA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 32r6fxjtsw-1
+ bh=xeQh4UwI5BYb0rFkOfOqf85p8ALQ3Km95tWCw+dneU0=;
+ b=V4GqZD3E80QaR3bTb+QGtayZjdsIoQKe5MeCDAW2nKaiOSWZb/GCKMD2eNBIaQKeT9Q1
+ YXwYXaln8m7XAaQr54etsrv/obofZQbCIK9lWM7Gi+YtHKuiqpGxmf2J+uBisydwsSmW
+ PcBWXVpV62OaJ3g4+bG2OKI7hPlSvRy6nfBrSp5cLB7aaw4rx8w+uKl5zf5ZWCJVn34J
+ R+SUItZpWq00NrHAgY87XnHyZLZ5nbWAUi8cX23lLKDR4KQ4MoALI7M6zRdcC8AjPEKW
+ 0zLc8BhNX18GxGsJKoln9+ndvvhcpB4mNoDSubSWgD5rkV3FBRk/gAPfArXOGu5OCLQ3 xw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 32r6ep2uph-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 06 Aug 2020 13:16:22 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076CvpVk071915;
-        Thu, 6 Aug 2020 13:16:22 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 32r6cvdb77-1
+        Thu, 06 Aug 2020 13:17:57 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076Cwxmu172996;
+        Thu, 6 Aug 2020 13:17:56 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 32pdnwc24c-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Aug 2020 13:16:22 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 076DGKQ6031849;
-        Thu, 6 Aug 2020 13:16:20 GMT
+        Thu, 06 Aug 2020 13:17:56 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 076DHrHX018618;
+        Thu, 6 Aug 2020 13:17:54 GMT
 Received: from starbug-mbp.localdomain (/79.97.215.145)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Aug 2020 06:16:19 -0700
+        with ESMTP ; Thu, 06 Aug 2020 06:17:53 -0700
 Received: by starbug-mbp.localdomain (Postfix, from userid 501)
-        id EED1DF049DA; Thu,  6 Aug 2020 14:16:14 +0100 (IST)
+        id D1895F04A2B; Thu,  6 Aug 2020 14:17:47 +0100 (IST)
 From:   Darren Kenny <darren.kenny@oracle.com>
 To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
         linux-sgx@vger.kernel.org
@@ -58,117 +58,136 @@ Cc:     linux-kernel@vger.kernel.org,
         kmoy@google.com, ludloff@google.com, luto@kernel.org,
         nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
         rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v36 03/24] x86/mm: x86/sgx: Signal SIGSEGV with PF_SGX
-In-Reply-To: <20200716135303.276442-4-jarkko.sakkinen@linux.intel.com>
+Subject: Re: [PATCH v36 06/24] x86/cpu/intel: Detect SGX support
+In-Reply-To: <20200716135303.276442-7-jarkko.sakkinen@linux.intel.com>
 References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
- <20200716135303.276442-4-jarkko.sakkinen@linux.intel.com>
-Date:   Thu, 06 Aug 2020 14:16:14 +0100
-Message-ID: <m2364zsyn5.fsf@oracle.com>
+ <20200716135303.276442-7-jarkko.sakkinen@linux.intel.com>
+Date:   Thu, 06 Aug 2020 14:17:47 +0100
+Message-ID: <m2zh77rk04.fsf@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxscore=0 bulkscore=0
- spamscore=0 adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 spamscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
  definitions=main-2008060094
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0 adultscore=0
- bulkscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 suspectscore=1 spamscore=0 clxscore=1015 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060094
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 bulkscore=0
+ malwarescore=0 clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0
+ impostorscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008060094
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 2020-07-16 at 16:52:42 +03, Jarkko Sakkinen wrote:
+On Thursday, 2020-07-16 at 16:52:45 +03, Jarkko Sakkinen wrote:
 > From: Sean Christopherson <sean.j.christopherson@intel.com>
 >
-> Include SGX bit to the PF error codes and throw SIGSEGV with PF_SGX when
-> a #PF with SGX set happens.
+> Configure SGX as part of feature control MSR initialization and update
+> the associated X86_FEATURE flags accordingly.  Because the kernel will
+> require the LE hash MSRs to be writable when running native enclaves,
+> disable X86_FEATURE_SGX (and all derivatives) if SGX Launch Control is
+> not (or cannot) be fully enabled via feature control MSR.
 >
-> CPU throws a #PF with the SGX set in the event of Enclave Page Cache Map
-> (EPCM) conflict. The EPCM is a CPU-internal table, which describes the
-> properties for a enclave page. Enclaves are measured and signed software
-> entities, which SGX hosts. [1]
+> The check is done for every CPU, not just BSP, in order to verify that
+> MSR_IA32_FEATURE_CONTROL is correctly configured on all CPUs. The other
+> parts of the kernel, like the enclave driver, expect the same
+> configuration from all CPUs.
 >
-> Although the primary purpose of the EPCM conflict checks  is to prevent
-> malicious accesses to an enclave, an illegit access can happen also for
-> legit reasons.
->
-> All SGX reserved memory, including EPCM is encrypted with a transient key
-> that does not survive from the power transition. Throwing a SIGSEGV allows
-> user space software to react when this happens (e.g. recreate the enclave,
-> which was invalidated).
->
-> [1] Intel SDM: 36.5.1 Enclave Page Cache Map (EPCM)
+> Note, unlike VMX, clear the X86_FEATURE_SGX* flags for all CPUs if any
+> CPU lacks SGX support as the kernel expects SGX to be available on all
+> CPUs.  X86_FEATURE_VMX is intentionally cleared only for the current CPU
+> so that KVM can provide additional information if KVM fails to load,
+> e.g. print which CPU doesn't support VMX.  KVM/VMX requires additional
+> per-CPU enabling, e.g. to set CR4.VMXE and do VMXON, and so already has
+> the necessary infrastructure to do per-CPU checks.  SGX on the other
+> hand doesn't require additional enabling, so clearing the feature flags
+> on all CPUs means the SGX subsystem doesn't need to manually do support
+> checks on a per-CPU basis.
 >
 > Acked-by: Jethro Beekman <jethro@fortanix.com>
 > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 
 Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
 
 > ---
->  arch/x86/include/asm/traps.h | 14 ++++++++------
->  arch/x86/mm/fault.c          | 13 +++++++++++++
->  2 files changed, 21 insertions(+), 6 deletions(-)
+>  arch/x86/kernel/cpu/feat_ctl.c | 32 +++++++++++++++++++++++++++++++-
+>  1 file changed, 31 insertions(+), 1 deletion(-)
 >
-> diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
-> index 714b1a30e7b0..4446f95ad997 100644
-> --- a/arch/x86/include/asm/traps.h
-> +++ b/arch/x86/include/asm/traps.h
-> @@ -44,12 +44,13 @@ void __noreturn handle_stack_overflow(const char *message,
->  /*
->   * Page fault error code bits:
->   *
-> - *   bit 0 ==	 0: no page found	1: protection fault
-> - *   bit 1 ==	 0: read access		1: write access
-> - *   bit 2 ==	 0: kernel-mode access	1: user-mode access
-> - *   bit 3 ==				1: use of reserved bit detected
-> - *   bit 4 ==				1: fault was an instruction fetch
-> - *   bit 5 ==				1: protection keys block access
-> + *   bit 0  ==	 0: no page found	1: protection fault
-> + *   bit 1  ==	 0: read access		1: write access
-> + *   bit 2  ==	 0: kernel-mode access	1: user-mode access
-> + *   bit 3  ==				1: use of reserved bit detected
-> + *   bit 4  ==				1: fault was an instruction fetch
-> + *   bit 5  ==				1: protection keys block access
-> + *   bit 15 ==				1: inside SGX enclave
->   */
->  enum x86_pf_error_code {
->  	X86_PF_PROT	=		1 << 0,
-> @@ -58,5 +59,6 @@ enum x86_pf_error_code {
->  	X86_PF_RSVD	=		1 << 3,
->  	X86_PF_INSTR	=		1 << 4,
->  	X86_PF_PK	=		1 << 5,
-> +	X86_PF_SGX	=		1 << 15,
->  };
->  #endif /* _ASM_X86_TRAPS_H */
-> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> index 1ead568c0101..1db6fbd7af8e 100644
-> --- a/arch/x86/mm/fault.c
-> +++ b/arch/x86/mm/fault.c
-> @@ -1055,6 +1055,19 @@ access_error(unsigned long error_code, struct vm_area_struct *vma)
->  	if (error_code & X86_PF_PK)
->  		return 1;
+> diff --git a/arch/x86/kernel/cpu/feat_ctl.c b/arch/x86/kernel/cpu/feat_ctl.c
+> index 29a3bedabd06..c3afcd2e4342 100644
+> --- a/arch/x86/kernel/cpu/feat_ctl.c
+> +++ b/arch/x86/kernel/cpu/feat_ctl.c
+> @@ -93,16 +93,35 @@ static void init_vmx_capabilities(struct cpuinfo_x86 *c)
+>  }
+>  #endif /* CONFIG_X86_VMX_FEATURE_NAMES */
+>  
+> +static void clear_sgx_caps(void)
+> +{
+> +	setup_clear_cpu_cap(X86_FEATURE_SGX);
+> +	setup_clear_cpu_cap(X86_FEATURE_SGX_LC);
+> +	setup_clear_cpu_cap(X86_FEATURE_SGX1);
+> +	setup_clear_cpu_cap(X86_FEATURE_SGX2);
+> +}
+> +
+>  void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
+>  {
+>  	bool tboot = tboot_enabled();
+> +	bool enable_sgx;
+>  	u64 msr;
+>  
+>  	if (rdmsrl_safe(MSR_IA32_FEAT_CTL, &msr)) {
+>  		clear_cpu_cap(c, X86_FEATURE_VMX);
+> +		clear_sgx_caps();
+>  		return;
+>  	}
 >  
 > +	/*
-> +	 * Access is blocked by the Enclave Page Cache Map (EPCM), i.e. the
-> +	 * access is allowed by the PTE but not the EPCM. This usually happens
-> +	 * when the EPCM is yanked out from under us, e.g. by hardware after a
-> +	 * suspend/resume cycle. In any case, software, i.e. the kernel, can't
-> +	 * fix the source of the fault as the EPCM can't be directly modified by
-> +	 * software. Handle the fault as an access error in order to signal
-> +	 * userspace so that userspace can rebuild their enclave(s), even though
-> +	 * userspace may not have actually violated access permissions.
+> +	 * Enable SGX if and only if the kernel supports SGX and Launch Control
+> +	 * is supported, i.e. disable SGX if the LE hash MSRs can't be written.
 > +	 */
-> +	if (unlikely(error_code & X86_PF_SGX))
-> +		return 1;
+> +	enable_sgx = cpu_has(c, X86_FEATURE_SGX) &&
+> +		     cpu_has(c, X86_FEATURE_SGX1) &&
+> +		     cpu_has(c, X86_FEATURE_SGX_LC) &&
+> +		     IS_ENABLED(CONFIG_INTEL_SGX);
 > +
->  	/*
->  	 * Make sure to check the VMA so that we do not perform
->  	 * faults just to hit a X86_PF_PK as soon as we fill in a
+>  	if (msr & FEAT_CTL_LOCKED)
+>  		goto update_caps;
+>  
+> @@ -124,13 +143,16 @@ void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
+>  			msr |= FEAT_CTL_VMX_ENABLED_INSIDE_SMX;
+>  	}
+>  
+> +	if (enable_sgx)
+> +		msr |= FEAT_CTL_SGX_ENABLED | FEAT_CTL_SGX_LC_ENABLED;
+> +
+>  	wrmsrl(MSR_IA32_FEAT_CTL, msr);
+>  
+>  update_caps:
+>  	set_cpu_cap(c, X86_FEATURE_MSR_IA32_FEAT_CTL);
+>  
+>  	if (!cpu_has(c, X86_FEATURE_VMX))
+> -		return;
+> +		goto update_sgx;
+>  
+>  	if ( (tboot && !(msr & FEAT_CTL_VMX_ENABLED_INSIDE_SMX)) ||
+>  	    (!tboot && !(msr & FEAT_CTL_VMX_ENABLED_OUTSIDE_SMX))) {
+> @@ -143,4 +165,12 @@ void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
+>  		init_vmx_capabilities(c);
+>  #endif
+>  	}
+> +
+> +update_sgx:
+> +	if (!(msr & FEAT_CTL_SGX_ENABLED) ||
+> +	    !(msr & FEAT_CTL_SGX_LC_ENABLED) || !enable_sgx) {
+> +		if (enable_sgx)
+> +			pr_err_once("SGX disabled by BIOS\n");
+> +		clear_sgx_caps();
+> +	}
+>  }
 > -- 
 > 2.25.1
