@@ -2,133 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C8623D7AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 09:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B38F23D7AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 09:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728735AbgHFHsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 03:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728367AbgHFHrn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 03:47:43 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D73CC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 00:47:32 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f1so42476450wro.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 00:47:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HHOPpgbgSKjDTGkpjqLc9R9y62AcGcDlV5geHTzbj4k=;
-        b=huIdmLYimIV/KSis/VRrs/h7gvLArHfqG/ltX0I5AeF1iCTLGBqMHip1CC1N+4mHTY
-         EEfMhXqOT4Cvy6kSAlvZLnuHOQY4IRpZ2MX9koV7VnA7avsWXz6yypW4cTpVhZ29tE22
-         MwxXWdZM1LO0bonUk30Tw9sk6/b9Yi+RAShi/FA5zW1/VuySaCdULkCLhzTQQ2bwkHMB
-         +MhJ5/QvsrDCImQvySWulvxTqLlQzJwh2Nzx6jqZ7sw29ZSMZUNKTvtEW7bhxqs8nuiI
-         PWzWj2zoKSmygmQkpLciPPKy6l9moly/qwFssdGb8/3P5TFa6BS2GtwOE3kIzO1vN2or
-         7NBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HHOPpgbgSKjDTGkpjqLc9R9y62AcGcDlV5geHTzbj4k=;
-        b=K1GoMVNXy7i/f6LwdT2CNxD3pJne4uAj2ns1QVuYe4IolDzIZzgR2NRx1gLvPlcXTL
-         RU0rMJUee4jHB+wEyNvBbun+PTpIP4r5b5IFOzPO1pp2zTp6QUs2XXV94jDPcShNYy79
-         Zmck2k1JxJIRvy0dax4L/VQvU801UnfjFdrlfBbnQwi71hPWNtAgoO9rCsHeV9QzQj1O
-         qD32yhZNxvHjwRMkmwsbMCVCEFBSnMjmZ45yZAQqMD9YGdY2ovl+kvRzyBjmqq1oAdTU
-         NJhZhcJMSPMZ4N4HtZihp0z5d/vvdfp8Pyt+rGiCf+S+rXGLEgTE3TsUsMWyIE8yj025
-         Pn8A==
-X-Gm-Message-State: AOAM531YhPrW6tDlQ4Po0CLrQkBoeEJG7BOprh3dkcuX+uZwJxedzHHz
-        8i5ADA5C48ZUjQe88glXuSpIyw==
-X-Google-Smtp-Source: ABdhPJw+4NVYCnu2GbhFtnNRtemtzn42yTacU2OokEGm5X69leVrkhBEzTunKFaJrBI+wZmBlt4Vig==
-X-Received: by 2002:adf:e7c3:: with SMTP id e3mr6237105wrn.356.1596700050497;
-        Thu, 06 Aug 2020 00:47:30 -0700 (PDT)
-Received: from elver.google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id p14sm5943332wrx.90.2020.08.06.00.47.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 00:47:28 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 09:47:23 +0200
-From:   Marco Elver <elver@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        fenghua.yu@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        yu-cheng.yu@intel.com, jgross@suse.com, sdeep@vmware.com,
-        virtualization@lists.linux-foundation.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>
-Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*()
- helpers
-Message-ID: <20200806074723.GA2364872@elver.google.com>
-References: <0000000000007d3b2d05ac1c303e@google.com>
- <20200805132629.GA87338@elver.google.com>
- <20200805134232.GR2674@hirez.programming.kicks-ass.net>
- <20200805135940.GA156343@elver.google.com>
- <20200805141237.GS2674@hirez.programming.kicks-ass.net>
- <20200805141709.GD35926@hirez.programming.kicks-ass.net>
- <CANpmjNN6FWZ+MsAn3Pj+WEez97diHzqF8hjONtHG15C2gSpSgw@mail.gmail.com>
- <CANpmjNNy3XKQqgrjGPPKKvXhAoF=mae7dk8hmoS4k4oNnnB=KA@mail.gmail.com>
+        id S1728817AbgHFHtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 03:49:06 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:59946 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728367AbgHFHsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 03:48:47 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 71E11A9348D262EB461C;
+        Thu,  6 Aug 2020 15:48:38 +0800 (CST)
+Received: from localhost.localdomain (10.175.118.36) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 6 Aug 2020 15:48:29 +0800
+From:   Luo bin <luobin9@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
+        <cloud.wangxiaoyun@huawei.com>, <chiqijun@huawei.com>
+Subject: [PATCH net-next] hinic: fix strncpy output truncated compile warnings
+Date:   Thu, 6 Aug 2020 15:48:30 +0800
+Message-ID: <20200806074830.1375-1-luobin9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNNy3XKQqgrjGPPKKvXhAoF=mae7dk8hmoS4k4oNnnB=KA@mail.gmail.com>
-User-Agent: Mutt/1.14.4 (2020-06-18)
+Content-Type: text/plain
+X-Originating-IP: [10.175.118.36]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 07:31PM +0200, Marco Elver wrote:
-...
-> Oh well, it seems that KCSAN on syzbot still crashes even with this
-> "fix". It's harder to reproduce though, and I don't have a clear
-> reproducer other than "fuzz the kernel" right now. I think the new IRQ
-> state tracking code is still not compatible with KCSAN, even though we
-> thought it would be. Most likely there are still ways to get recursion
-> lockdep->KCSAN. An alternative would be to deal with the recursion
-> like we did before, instead of trying to squash all of it. I'll try to
-> investigate -- Peter, if you have ideas, help is appreciated.
+fix the compile warnings of 'strncpy' output truncated before
+terminating nul copying N bytes from a string of the same length
 
-Testing my hypothesis that raw then nested non-raw
-local_irq_save/restore() breaks IRQ state tracking -- see the reproducer
-below. This is at least 1 case I can think of that we're bound to hit.
+Signed-off-by: Luo bin <luobin9@huawei.com>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+ drivers/net/ethernet/huawei/hinic/hinic_devlink.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Thanks,
--- Marco
-
------- >8 ------
-
-diff --git a/init/main.c b/init/main.c
-index 15bd0efff3df..0873319dcff4 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1041,6 +1041,22 @@ asmlinkage __visible void __init start_kernel(void)
- 	sfi_init_late();
- 	kcsan_init();
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_devlink.c b/drivers/net/ethernet/huawei/hinic/hinic_devlink.c
+index c6adc776f3c8..1dc948c07b94 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_devlink.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_devlink.c
+@@ -342,9 +342,9 @@ static int chip_fault_show(struct devlink_fmsg *fmsg,
  
-+	/* DEBUG CODE */
-+	lockdep_assert_irqs_enabled(); /* Pass. */
-+	{
-+		unsigned long flags1;
-+		raw_local_irq_save(flags1);
-+		{
-+			unsigned long flags2;
-+			lockdep_assert_irqs_enabled(); /* Pass - expectedly blind. */
-+			local_irq_save(flags2);
-+			lockdep_assert_irqs_disabled(); /* Pass. */
-+			local_irq_restore(flags2);
-+		}
-+		raw_local_irq_restore(flags1);
-+	}
-+	lockdep_assert_irqs_enabled(); /* FAIL! */
-+
- 	/* Do the rest non-__init'ed, we're now alive */
- 	arch_call_rest_init();
+ 	level = event->event.chip.err_level;
+ 	if (level < FAULT_LEVEL_MAX)
+-		strncpy(level_str, fault_level[level], strlen(fault_level[level]));
++		strncpy(level_str, fault_level[level], strlen(fault_level[level]) + 1);
+ 	else
+-		strncpy(level_str, "Unknown", strlen("Unknown"));
++		strncpy(level_str, "Unknown", sizeof(level_str));
  
+ 	if (level == FAULT_LEVEL_SERIOUS_FLR) {
+ 		err = devlink_fmsg_u32_pair_put(fmsg, "Function level err func_id",
+@@ -388,9 +388,9 @@ static int fault_report_show(struct devlink_fmsg *fmsg,
+ 	int err;
+ 
+ 	if (event->type < FAULT_TYPE_MAX)
+-		strncpy(type_str, fault_type[event->type], strlen(fault_type[event->type]));
++		strncpy(type_str, fault_type[event->type], strlen(fault_type[event->type]) + 1);
+ 	else
+-		strncpy(type_str, "Unknown", strlen("Unknown"));
++		strncpy(type_str, "Unknown", sizeof(type_str));
+ 
+ 	err = devlink_fmsg_string_pair_put(fmsg, "Fault type", type_str);
+ 	if (err)
+-- 
+2.17.1
+
