@@ -2,100 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E160D23DE2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C55523DD7D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730241AbgHFRWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:22:55 -0400
+        id S1730236AbgHFRKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:10:18 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729966AbgHFRFS (ORCPT
+        with ESMTP id S1730020AbgHFRFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:05:18 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F065C034606;
-        Thu,  6 Aug 2020 05:32:40 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id j187so44659201qke.11;
-        Thu, 06 Aug 2020 05:32:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=MrPgmRKoIt5tINqjcxkNbe0xvTFGlqQ3fNUFCJE5Byo=;
-        b=b8F5MFMkpPLTisV29sfk9+/fgaNb7SzgZ5y93TB4vjbUtAi9SRdlcdzeLf7YHacqps
-         iVMPPJOeeIrOFaZFGYL/DTpQG+t15q7ukh1lG5yteuHBnHesTU6lx3+YPJTlwparDRH0
-         M5PLm570k1vVH8E7K/1kaSqm3juFXkQB0j2RzG38qerfqd4PWg5mP6EbgK5hsZvPRr01
-         Cte6Q4ae35fkfF1pn9fHxQZc+pnc0AGkLWvmhnSqIdN5/T4KypgCnU/qs6v9pnohwu42
-         Mexzy6vhjPeG6yvNUEoUzwP3TXc5A/Oxjq3t7ay79hBgYfwYRSMlmN7MWFWjqUbp1T4E
-         2Jyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=MrPgmRKoIt5tINqjcxkNbe0xvTFGlqQ3fNUFCJE5Byo=;
-        b=GE2ikYgNS8SFzsmN/fkTF04EkDr45vM/aMEEVeCwg+E3tmh2CL10Rkzfdipd58qalF
-         rPLvIzh8vkRQEzaaosBoHNGCdE0H5kBUe+i2babk+966W0bVCKR7cTArepSVWwitnDzR
-         z7gVdphw5z5IU0neODpfPi/Kk44/CP7SfibhAaIdQsbrLzBYImRRaLY5lTHeJsr0duh7
-         LYumoSouC6xdf8Cuk2Yy0KRwc5CF27sjADtVckKZVkjLqCkcWd+LaEeF6zQ3TLTX84RJ
-         gjayO6y70ZZH3N6AKRoW11OioZL1Iu1LO5gKFVvU6ESzbg2tPiXeH3x4xc9hlIkN9qU7
-         mRBA==
-X-Gm-Message-State: AOAM53080mpGYBOIHDMi/At5tmESqfYtc2rA0I4S5ylNBPgX3wKlioh9
-        dLkHu9QxLuoUsLPU0e0i26s3Ajyl
-X-Google-Smtp-Source: ABdhPJyx9omDeyEteSo3cfGKjhw01pVAD3AWhJ0uL3GUCySwHoAJzCAtfvgLTH3R29udm5b2vyK6RQ==
-X-Received: by 2002:a05:620a:4c2:: with SMTP id 2mr7811456qks.80.1596717159524;
-        Thu, 06 Aug 2020 05:32:39 -0700 (PDT)
-Received: from [192.168.1.190] (pool-68-134-6-11.bltmmd.fios.verizon.net. [68.134.6.11])
-        by smtp.gmail.com with ESMTPSA id v28sm5351254qtk.28.2020.08.06.05.32.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 05:32:38 -0700 (PDT)
-Subject: Re: [PATCH 2/2] selinux: add attributes to avc tracepoint
-To:     peter enderborg <peter.enderborg@sony.com>,
-        =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     Nick Kralevich <nnk@google.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
-References: <20200806080358.3124505-1-tweek@google.com>
- <20200806080358.3124505-2-tweek@google.com>
- <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com>
- <8627d780-0e19-6755-0de5-c686deb0f5de@sony.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Message-ID: <971592b6-5d5f-05d8-d243-b521fe65577d@gmail.com>
-Date:   Thu, 6 Aug 2020 08:32:38 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 6 Aug 2020 13:05:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DA1C03460E
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 05:48:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=P6qNlBkvQK38nzWUjveHhnAF0NGDmv9N0Zynt0nU5t8=; b=PRI5tz1IQQhX/xPAWyOweJIlTg
+        6k7lzo+ye+6vBBhBZzLQg1PE10oWeu2DD2nzMbE9ubTPZpqw/vCg581NoAcKJwdYLN9E1L+FKayES
+        YN2wWuc7NuBhSlyXX4pkgl9+A1IBlIyHq3ePsOSnFmmPuyGFC0BdC16tAJuOOId34zN5aZ569aQtw
+        fwNqGbE07KimU9grnGpg3o+h4b/riFehPU/WnoRB+N8KJAfGmFRC7Xt3YKTMGAPoX/yel/RRRt3jy
+        cNGjDECRY1VGdgol/p7VL9BHYGjINK0rVbtblUEPoPjPk0rNUdIkUvvbbCQlqz5BqZ2HE37ClmKdf
+        DcUl6mdA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3fK8-0001HA-Ab; Thu, 06 Aug 2020 12:48:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 00D43300446;
+        Thu,  6 Aug 2020 14:48:43 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E633F213C48B6; Thu,  6 Aug 2020 14:48:42 +0200 (CEST)
+Date:   Thu, 6 Aug 2020 14:48:42 +0200
+From:   peterz@infradead.org
+To:     Will Deacon <will@kernel.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        paulmck <paulmck@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 2/2] sched: membarrier: cover kthread_use_mm
+Message-ID: <20200806124842.GB2674@hirez.programming.kicks-ass.net>
+References: <20200728160010.3314-1-mathieu.desnoyers@efficios.com>
+ <20200728160010.3314-2-mathieu.desnoyers@efficios.com>
+ <20200804145145.GM2657@hirez.programming.kicks-ass.net>
+ <1708074166.39992.1596553173337.JavaMail.zimbra@efficios.com>
+ <20200804170153.GO2657@hirez.programming.kicks-ass.net>
+ <20200805105920.GB35926@hirez.programming.kicks-ass.net>
+ <498869868.209.1596640956570.JavaMail.zimbra@efficios.com>
+ <20200806080351.GA31889@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <8627d780-0e19-6755-0de5-c686deb0f5de@sony.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806080351.GA31889@willie-the-truck>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/20 8:24 AM, peter enderborg wrote:
+On Thu, Aug 06, 2020 at 01:13:46PM +0100, Will Deacon wrote:
+> I'm not sure I really see the benefit of the rename, to be honest with you,
+> especially if smp_mb__after_spinlock() doesn't disappear at the same time.
 
-> On 8/6/20 2:11 PM, Stephen Smalley wrote:
->> On 8/6/20 4:03 AM, Thiébaud Weksteen wrote:
->>
->>> From: Peter Enderborg <peter.enderborg@sony.com>
->>>
->>> Add further attributes to filter the trace events from AVC.
->> Please include sample usage and output in the description.
->>
->>
-> Im not sure where you want it to be.
->
-> In the commit message or in a Documentation/trace/events-avc.rst ?
+The reason I proposed a rename is because:
 
-I was just asking for it in the commit message / patch description.  I 
-don't know what is typical for Documentation/trace.
+	mutex_lock(&foo);
+	smp_mb__after_spinlock();
 
+looks weird. But, afaict, it will work as expected. As the only possible
+way to implement any lock() is with atomic*_acquire() or stronger.
 
+Another possible name would be: smp_mb__after_lock().
