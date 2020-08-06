@@ -2,121 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D25F23DBA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E318A23DBCE
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727964AbgHFQ2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727868AbgHFQSr (ORCPT
+        id S1727951AbgHFQd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:33:29 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50308 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728614AbgHFQce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:18:47 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37AD3C002168
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:06:59 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id h16so16524036oti.7
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:06:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kRzJPbiSWqPMYf9cXUnubjz9KwLdR0t2PlxbglQqDmQ=;
-        b=t+y4ObijkT9CwJCdosVyvo3hNb0ZL2IQqYE+OfodlfDj45ikA05n+fCWNnY5GD4pZ8
-         ZnMT0RRGiqj1cgMNTKenHMDNmTSR0lUMYqDGgYq45E9L/SP5axhkyDqluQIuqi8uSEmX
-         PGfLd1vme9MOv4ADHA4yxeORytbopb4k9g+NSiKNdn+vkAT5YmfhIO2yIhgVvzTGM+q+
-         R2LpxADUnvKlV6epXzLdAiAbZfIw+gx0o2rOwcziRgP13Cpqwth84og51FzOZwqP8hAh
-         5G22Wr1oLKPn0gpw0Mg4Iclbh0omDHMj4XcLiz4/3MiUIIXZv6PmXo9I1D+ab/4F4+/C
-         QH6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kRzJPbiSWqPMYf9cXUnubjz9KwLdR0t2PlxbglQqDmQ=;
-        b=p9W77EOGC9ZpcNjki6Ne08E5rXpKfTMsIFrivnEVg01KlbpG8woJWffhlgTk3cHFd9
-         j8I1qdodLJF5bcrvnYUiSvS9htcjrWZkmA/w/6ucHYoapdQy5CO/1QbTkMxIWUhI9yZg
-         jFmIbcI4NoPnK5l5bXBnqopVAF2o8X/geRlUKyknMrcnvwgMahaEOkx53s8OsDESjZQv
-         YajI649BO+VFXGuynsDWzIDNZzPTqosAAEl0DY1kq5Ypgi5xC8WYSAQHXlFMQOz+ACy2
-         OEyoD/WN3zB85+gg3DplXMZqccz0CD6bg5NtOB+t7SwkJ/+AHONqxbD4PdHtTkrSox5C
-         zZJA==
-X-Gm-Message-State: AOAM531rSmVDDvnVbweFYMqSqy+owbG9GA/pj+7zHmKJ/NBcafJv5XuF
-        fFl0xirhRd9M4GLXPdi7r+ngAmhSwTKZzVuoK/XPQA==
-X-Google-Smtp-Source: ABdhPJwJIAVQosWtiZxAR5ukKpi9U77jc1CvocrDPXa9RPmKehtYj1ngcb2n5vTsNgDi2+Vf46JBBmJ/ZE4zEtXVcoI=
-X-Received: by 2002:a9d:65d3:: with SMTP id z19mr8224587oth.233.1596730016189;
- Thu, 06 Aug 2020 09:06:56 -0700 (PDT)
+        Thu, 6 Aug 2020 12:32:34 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1k3dQL-0005mp-8Q; Thu, 06 Aug 2020 10:47:01 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next][V2] staging: wfx: fix a handful of spelling mistakes
+Date:   Thu,  6 Aug 2020 11:47:01 +0100
+Message-Id: <20200806104701.46123-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <0000000000007d3b2d05ac1c303e@google.com> <20200805132629.GA87338@elver.google.com>
- <20200805134232.GR2674@hirez.programming.kicks-ass.net> <20200805135940.GA156343@elver.google.com>
- <20200805141237.GS2674@hirez.programming.kicks-ass.net> <20200805141709.GD35926@hirez.programming.kicks-ass.net>
- <CANpmjNN6FWZ+MsAn3Pj+WEez97diHzqF8hjONtHG15C2gSpSgw@mail.gmail.com>
- <CANpmjNNy3XKQqgrjGPPKKvXhAoF=mae7dk8hmoS4k4oNnnB=KA@mail.gmail.com>
- <20200806074723.GA2364872@elver.google.com> <20200806113236.GZ2674@hirez.programming.kicks-ass.net>
- <20200806131702.GA3029162@elver.google.com>
-In-Reply-To: <20200806131702.GA3029162@elver.google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 6 Aug 2020 18:06:43 +0200
-Message-ID: <CANpmjNNqt8YrCad4WqgCoXvH47pRXtSLpnTKhD8W8+UpoYJ+jQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*() helpers
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        fenghua.yu@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>, yu-cheng.yu@intel.com,
-        jgross@suse.com, sdeep@vmware.com,
-        virtualization@lists.linux-foundation.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 6 Aug 2020 at 15:17, Marco Elver <elver@google.com> wrote:
->
-> On Thu, Aug 06, 2020 at 01:32PM +0200, peterz@infradead.org wrote:
-> > On Thu, Aug 06, 2020 at 09:47:23AM +0200, Marco Elver wrote:
-> > > Testing my hypothesis that raw then nested non-raw
-> > > local_irq_save/restore() breaks IRQ state tracking -- see the reproducer
-> > > below. This is at least 1 case I can think of that we're bound to hit.
-> ...
-> >
-> > /me goes ponder things...
-> >
-> > How's something like this then?
-> >
-> > ---
-> >  include/linux/sched.h |  3 ---
-> >  kernel/kcsan/core.c   | 62 ++++++++++++++++++++++++++++++++++++---------------
-> >  2 files changed, 44 insertions(+), 21 deletions(-)
->
-> Thank you! That approach seems to pass syzbot (also with
-> CONFIG_PARAVIRT) and kcsan-test tests.
->
-> I had to modify it some, so that report.c's use of the restore logic
-> works and not mess up the IRQ trace printed on KCSAN reports (with
-> CONFIG_KCSAN_VERBOSE).
->
-> I still need to fully convince myself all is well now and we don't end
-> up with more fixes. :-) If it passes further testing, I'll send it as a
-> real patch (I want to add you as Co-developed-by, but would need your
-> Signed-off-by for the code you pasted, I think.)
+From: Colin Ian King <colin.king@canonical.com>
 
-With CONFIG_PARAVIRT=y (without the notrace->noinstr patch), I still
-get lockdep DEBUG_LOCKS_WARN_ON(!lockdep_hardirqs_enabled()), although
-it takes longer for syzbot to hit them. But I think that's expected
-because we can still get the recursion that I pointed out, and will
-need that patch.
+There are various spelling mistakes in comments and error messages.
+Fix these.
 
-I also get some "BUG: MAX_LOCKDEP_CHAINS too low!" on syzbot (KCSAN is
-not in the stacktrace). Although it may be unrelated:
-https://lore.kernel.org/lkml/0000000000005613c705aaf88e04@google.com/
--- when are they expected?
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
 
-Thanks,
--- Marco
+V2: add in some more fixes as spotted by Randy Dunlap
+
+---
+ drivers/staging/wfx/data_rx.c | 2 +-
+ drivers/staging/wfx/data_tx.c | 2 +-
+ drivers/staging/wfx/debug.c   | 6 +++---
+ drivers/staging/wfx/hif_rx.c  | 2 +-
+ drivers/staging/wfx/hif_tx.c  | 4 ++--
+ drivers/staging/wfx/main.c    | 2 +-
+ drivers/staging/wfx/main.h    | 2 +-
+ drivers/staging/wfx/sta.c     | 2 +-
+ 8 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/staging/wfx/data_rx.c b/drivers/staging/wfx/data_rx.c
+index 6fb078880742..7fcbbfc53416 100644
+--- a/drivers/staging/wfx/data_rx.c
++++ b/drivers/staging/wfx/data_rx.c
+@@ -73,7 +73,7 @@ void wfx_rx_cb(struct wfx_vif *wvif,
+ 	if (arg->rx_flags.encryp)
+ 		hdr->flag |= RX_FLAG_DECRYPTED;
+ 
+-	// Block ack negociation is offloaded by the firmware. However,
++	// Block ack negotiation is offloaded by the firmware. However,
+ 	// re-ordering must be done by the mac80211.
+ 	if (ieee80211_is_action(frame->frame_control) &&
+ 	    mgmt->u.action.category == WLAN_CATEGORY_BACK &&
+diff --git a/drivers/staging/wfx/data_tx.c b/drivers/staging/wfx/data_tx.c
+index 3acf4eb0214d..41f9afd41e14 100644
+--- a/drivers/staging/wfx/data_tx.c
++++ b/drivers/staging/wfx/data_tx.c
+@@ -234,7 +234,7 @@ static void wfx_tx_fixup_rates(struct ieee80211_tx_rate *rates)
+ 	int i;
+ 	bool finished;
+ 
+-	// Firmware is not able to mix rates with differents flags
++	// Firmware is not able to mix rates with different flags
+ 	for (i = 0; i < IEEE80211_TX_MAX_RATES; i++) {
+ 		if (rates[0].flags & IEEE80211_TX_RC_SHORT_GI)
+ 			rates[i].flags |= IEEE80211_TX_RC_SHORT_GI;
+diff --git a/drivers/staging/wfx/debug.c b/drivers/staging/wfx/debug.c
+index 3f1712b7c919..99c53e1afece 100644
+--- a/drivers/staging/wfx/debug.c
++++ b/drivers/staging/wfx/debug.c
+@@ -267,7 +267,7 @@ static ssize_t wfx_send_hif_msg_write(struct file *file,
+ 	if (count < sizeof(struct hif_msg))
+ 		return -EINVAL;
+ 
+-	// wfx_cmd_send() chekc that reply buffer is wide enough, but do not
++	// wfx_cmd_send() checks that reply buffer is wide enough, but does not
+ 	// return precise length read. User have to know how many bytes should
+ 	// be read. Filling reply buffer with a memory pattern may help user.
+ 	memset(context->reply, 0xFF, sizeof(context->reply));
+@@ -299,8 +299,8 @@ static ssize_t wfx_send_hif_msg_read(struct file *file, char __user *user_buf,
+ 		return ret;
+ 	if (context->ret < 0)
+ 		return context->ret;
+-	// Be carefull, write() is waiting for a full message while read()
+-	// only return a payload
++	// Be careful, write() is waiting for a full message while read()
++	// only returns a payload
+ 	if (copy_to_user(user_buf, context->reply, count))
+ 		return -EFAULT;
+ 
+diff --git a/drivers/staging/wfx/hif_rx.c b/drivers/staging/wfx/hif_rx.c
+index cc7c0cf226ba..1d32973d8ec1 100644
+--- a/drivers/staging/wfx/hif_rx.c
++++ b/drivers/staging/wfx/hif_rx.c
+@@ -118,7 +118,7 @@ static int hif_keys_indication(struct wfx_dev *wdev,
+ 
+ 	// SL_PUB_KEY_EXCHANGE_STATUS_SUCCESS is used by legacy secure link
+ 	if (body->status && body->status != HIF_STATUS_SLK_NEGO_SUCCESS)
+-		dev_warn(wdev->dev, "secure link negociation error\n");
++		dev_warn(wdev->dev, "secure link negotiation error\n");
+ 	memcpy(pubkey, body->ncp_pub_key, sizeof(pubkey));
+ 	memreverse(pubkey, sizeof(pubkey));
+ 	wfx_sl_check_pubkey(wdev, pubkey, body->ncp_pub_key_mac);
+diff --git a/drivers/staging/wfx/hif_tx.c b/drivers/staging/wfx/hif_tx.c
+index 5110f9b93762..3b5f4dcc469c 100644
+--- a/drivers/staging/wfx/hif_tx.c
++++ b/drivers/staging/wfx/hif_tx.c
+@@ -78,7 +78,7 @@ int wfx_cmd_send(struct wfx_dev *wdev, struct hif_msg *request,
+ 
+ 	wfx_bh_request_tx(wdev);
+ 
+-	// NOTE: no timeout is catched async is enabled
++	// NOTE: no timeout is caught async is enabled
+ 	if (async)
+ 		return 0;
+ 
+@@ -125,7 +125,7 @@ int wfx_cmd_send(struct wfx_dev *wdev, struct hif_msg *request,
+ 
+ // This function is special. After HIF_REQ_ID_SHUT_DOWN, chip won't reply to any
+ // request anymore. We need to slightly hack struct wfx_hif_cmd for that job. Be
+-// carefull to only call this funcion during device unregister.
++// careful to only call this function during device unregister.
+ int hif_shutdown(struct wfx_dev *wdev)
+ {
+ 	int ret;
+diff --git a/drivers/staging/wfx/main.c b/drivers/staging/wfx/main.c
+index 11dfa088fc86..4263f912760b 100644
+--- a/drivers/staging/wfx/main.c
++++ b/drivers/staging/wfx/main.c
+@@ -384,7 +384,7 @@ int wfx_probe(struct wfx_dev *wdev)
+ 	err = wfx_sl_init(wdev);
+ 	if (err && wdev->hw_caps.capabilities.link_mode == SEC_LINK_ENFORCED) {
+ 		dev_err(wdev->dev,
+-			"chip require secure_link, but can't negociate it\n");
++			"chip require secure_link, but can't negotiate it\n");
+ 		goto err0;
+ 	}
+ 
+diff --git a/drivers/staging/wfx/main.h b/drivers/staging/wfx/main.h
+index c59d375dd3ad..2457cb595b0f 100644
+--- a/drivers/staging/wfx/main.h
++++ b/drivers/staging/wfx/main.h
+@@ -19,7 +19,7 @@ struct wfx_dev;
+ struct hwbus_ops;
+ 
+ struct wfx_platform_data {
+-	/* Keyset and ".sec" extention will appended to this string */
++	/* Keyset and ".sec" extension will be appended to this string */
+ 	const char *file_fw;
+ 	const char *file_pds;
+ 	struct gpio_desc *gpio_wakeup;
+diff --git a/drivers/staging/wfx/sta.c b/drivers/staging/wfx/sta.c
+index 4e30ab17a93d..ad63332f690c 100644
+--- a/drivers/staging/wfx/sta.c
++++ b/drivers/staging/wfx/sta.c
+@@ -214,7 +214,7 @@ static int wfx_get_ps_timeout(struct wfx_vif *wvif, bool *enable_ps)
+ 	if (chan0 && chan1 && chan0->hw_value != chan1->hw_value &&
+ 	    wvif->vif->type != NL80211_IFTYPE_AP) {
+ 		// It is necessary to enable powersave if channels
+-		// are differents.
++		// are different.
+ 		if (enable_ps)
+ 			*enable_ps = true;
+ 		if (wvif->wdev->force_ps_timeout > -1)
+-- 
+2.27.0
+
