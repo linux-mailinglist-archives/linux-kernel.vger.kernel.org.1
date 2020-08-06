@@ -2,54 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A857A23E4A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 01:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 997FF23E4A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 01:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgHFXkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 19:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726533AbgHFXiw (ORCPT
+        id S1727076AbgHFXkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 19:40:15 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60936 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726547AbgHFXiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 19:38:52 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C43C061575;
-        Thu,  6 Aug 2020 16:38:52 -0700 (PDT)
-Date:   Thu, 06 Aug 2020 23:38:50 -0000
+        Thu, 6 Aug 2020 19:38:54 -0400
+Date:   Thu, 06 Aug 2020 23:38:51 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596757131;
+        s=2020; t=1596757132;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zDxatrwO+co72myHzmJiVqhEcOcAAOjarE+tDUP3zz0=;
-        b=rzKES9e0H1m5Nm6KXCA6vSDrWrdNJHMtiDPI/5LrnNgOggaF7wIoh74AoT5B65rK1j2YGa
-        WHML9va4Uu+gWnMSVKQSemYzFa9DmsWSuXfeIdfvNYPcT122SI5D2DITvh61kWHpvk8+VB
-        kvB4/+ZqejjuokyUC1/pZSHXKhTQMRL3xiIjjxlzLT7EJriZ5DJENYnfsoiRuIUQkwj0fB
-        qSetmEqbttvWzhy5TE/upOJw2p1A6h4FxiO95Blhko0lod27CPwli9r/qlEd1flr+Iux6n
-        avwM0yk2cMntgUxwUSQdYX7qrXD8Q6IVhpl5gsQtfZcB6xzUXxdUozKEXNrOOQ==
+        bh=CLpJDeFxy+PTx4/tTPkZdjyWW+ZYuXF66k678B1t4rs=;
+        b=aMqoema19u4I+UEZh/OHpX5/t6hc11TnLMeDgv9Mykk5ndN6t0a0D9hb80Rr8TrKzOf4T+
+        M1hKA5DMqC+ByNdKyMeXRVUpj/IbOaeCdQB2QsWVlvJfTx0t+ZHqE+OFC8IoWDx4ETA0M3
+        pJxbrIz9VR8tJ7gFPrkWhKCWseErQo62fRUB6+3ZxZgQeFaRje5J5fJXuhDUnuJb9W2bUl
+        LLPVCtb+yU2Rahqcf1a+471yDc0slYbdm4ff9VC7Mv/bzmDvQcA+cv7OfthIJSllM9WB7h
+        15iuWnlDG0KknkhKQgBBbO3HTvUTC8A8p5JUtggojMZoJYi6XPViNYRehKwd0Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596757131;
+        s=2020e; t=1596757132;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zDxatrwO+co72myHzmJiVqhEcOcAAOjarE+tDUP3zz0=;
-        b=vIRQpDGmT0wZfMPayECEODhFEAxr/x4RCFzpOqM21Kk/qNBIy57BEcRnpyuxfs2VMBTLUt
-        S4+3ucjKHYtSk3CQ==
+        bh=CLpJDeFxy+PTx4/tTPkZdjyWW+ZYuXF66k678B1t4rs=;
+        b=Tk5EY1R/kqCQMZVHzBKj/uBDdZc3YcUMe768w0kFwSteOd8CX5tRXVQPPm0Hl1yM/t+XhC
+        1esuHuCd7zLWQJAw==
 From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/kaslr] x86/kaslr: Add a check that the random address is in range
+Subject: [tip: x86/kaslr] x86/kaslr: Replace 'unsigned long long' with 'u64'
 Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
         Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200728225722.67457-22-nivedita@alum.mit.edu>
-References: <20200728225722.67457-22-nivedita@alum.mit.edu>
+In-Reply-To: <20200728225722.67457-20-nivedita@alum.mit.edu>
+References: <20200728225722.67457-20-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Message-ID: <159675713045.3192.895736711102672509.tip-bot2@tip-bot2>
+Message-ID: <159675713178.3192.13197922720000433482.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,52 +58,96 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/kaslr branch of tip:
 
-Commit-ID:     f49236ae424d499d02ee3ce35fb9130ddf95b03f
-Gitweb:        https://git.kernel.org/tip/f49236ae424d499d02ee3ce35fb9130ddf95b03f
+Commit-ID:     3a066990a35eb289d54036637d2793d4743b8f07
+Gitweb:        https://git.kernel.org/tip/3a066990a35eb289d54036637d2793d4743b8f07
 Author:        Arvind Sankar <nivedita@alum.mit.edu>
-AuthorDate:    Tue, 28 Jul 2020 18:57:22 -04:00
+AuthorDate:    Tue, 28 Jul 2020 18:57:20 -04:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Fri, 31 Jul 2020 11:08:17 +02:00
 
-x86/kaslr: Add a check that the random address is in range
+x86/kaslr: Replace 'unsigned long long' with 'u64'
 
-Check in find_random_phys_addr() that the chosen address is inside the
-range that was required.
+No functional change.
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200728225722.67457-22-nivedita@alum.mit.edu
+Link: https://lore.kernel.org/r/20200728225722.67457-20-nivedita@alum.mit.edu
 ---
- arch/x86/boot/compressed/kaslr.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ arch/x86/boot/compressed/kaslr.c | 13 ++++++-------
+ arch/x86/boot/compressed/misc.h  |  4 ++--
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index 80cdd20..735fcb2 100644
+index 3244f5b..db8589c 100644
 --- a/arch/x86/boot/compressed/kaslr.c
 +++ b/arch/x86/boot/compressed/kaslr.c
-@@ -803,6 +803,8 @@ static void process_e820_entries(unsigned long minimum,
- static unsigned long find_random_phys_addr(unsigned long minimum,
- 					   unsigned long image_size)
+@@ -98,7 +98,7 @@ static bool memmap_too_large;
+  * Store memory limit: MAXMEM on 64-bit and KERNEL_IMAGE_SIZE on 32-bit.
+  * It may be reduced by "mem=nn[KMG]" or "memmap=nn[KMG]" command line options.
+  */
+-static unsigned long long mem_limit;
++static u64 mem_limit;
+ 
+ /* Number of immovable memory regions */
+ static int num_immovable_mem;
+@@ -141,8 +141,7 @@ enum parse_mode {
+ };
+ 
+ static int
+-parse_memmap(char *p, unsigned long long *start, unsigned long long *size,
+-		enum parse_mode mode)
++parse_memmap(char *p, u64 *start, u64 *size, enum parse_mode mode)
  {
-+	u64 phys_addr;
-+
- 	/* Bail out early if it's impossible to succeed. */
- 	if (minimum + image_size > mem_limit)
- 		return 0;
-@@ -816,7 +818,15 @@ static unsigned long find_random_phys_addr(unsigned long minimum,
- 	if (!process_efi_entries(minimum, image_size))
- 		process_e820_entries(minimum, image_size);
+ 	char *oldp;
  
--	return slots_fetch_random();
-+	phys_addr = slots_fetch_random();
-+
-+	/* Perform a final check to make sure the address is in range. */
-+	if (phys_addr < minimum || phys_addr + image_size > mem_limit) {
-+		warn("Invalid physical address chosen!\n");
-+		return 0;
-+	}
-+
-+	return (unsigned long)phys_addr;
- }
+@@ -172,7 +171,7 @@ parse_memmap(char *p, unsigned long long *start, unsigned long long *size,
+ 			 */
+ 			*size = 0;
+ 		} else {
+-			unsigned long long flags;
++			u64 flags;
  
- static unsigned long find_random_virt_addr(unsigned long minimum,
+ 			/*
+ 			 * efi_fake_mem=nn@ss:attr the attr specifies
+@@ -211,7 +210,7 @@ static void mem_avoid_memmap(enum parse_mode mode, char *str)
+ 
+ 	while (str && (i < MAX_MEMMAP_REGIONS)) {
+ 		int rc;
+-		unsigned long long start, size;
++		u64 start, size;
+ 		char *k = strchr(str, ',');
+ 
+ 		if (k)
+@@ -612,7 +611,7 @@ static void __process_mem_region(struct mem_vector *entry,
+ 	unsigned long region_end;
+ 
+ 	/* Enforce minimum and memory limit. */
+-	region.start = max_t(unsigned long long, entry->start, minimum);
++	region.start = max_t(u64, entry->start, minimum);
+ 	region_end = min(entry->start + entry->size, mem_limit);
+ 
+ 	/* Give up if slot area array is full. */
+@@ -673,7 +672,7 @@ static bool process_mem_region(struct mem_vector *region,
+ 	 * immovable memory and @region.
+ 	 */
+ 	for (i = 0; i < num_immovable_mem; i++) {
+-		unsigned long long start, end, entry_end, region_end;
++		u64 start, end, entry_end, region_end;
+ 		struct mem_vector entry;
+ 
+ 		if (!mem_overlaps(region, &immovable_mem[i]))
+diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
+index 726e264..3efce27 100644
+--- a/arch/x86/boot/compressed/misc.h
++++ b/arch/x86/boot/compressed/misc.h
+@@ -70,8 +70,8 @@ int cmdline_find_option(const char *option, char *buffer, int bufsize);
+ int cmdline_find_option_bool(const char *option);
+ 
+ struct mem_vector {
+-	unsigned long long start;
+-	unsigned long long size;
++	u64 start;
++	u64 size;
+ };
+ 
+ #if CONFIG_RANDOMIZE_BASE
