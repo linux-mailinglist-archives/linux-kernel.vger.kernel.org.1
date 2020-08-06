@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B386123DC43
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B00D23DCD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729512AbgHFQsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:48:09 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:39918 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728288AbgHFQmu (ORCPT
+        id S1729489AbgHFQ4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:56:38 -0400
+Received: from mail-qk1-f177.google.com ([209.85.222.177]:44077 "EHLO
+        mail-qk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728305AbgHFQkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:42:50 -0400
-Received: by mail-io1-f65.google.com with SMTP id z6so50313543iow.6;
-        Thu, 06 Aug 2020 09:42:29 -0700 (PDT)
+        Thu, 6 Aug 2020 12:40:43 -0400
+Received: by mail-qk1-f177.google.com with SMTP id j187so45469190qke.11;
+        Thu, 06 Aug 2020 09:39:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Xm0fEuCIzwDzQykroFSnT+aLdkyYmWsu6Ftt9JukdD8=;
-        b=pQJ5Wbk0onBVVfm9KbkO0nmaavZycrP8XIUYtq43nQTVhrVaoIj+HDrpXaQeHZoj59
-         bNGNwgQnjRvBDVB/vPd0DsKWMA1sfz2rPl5hAU8wwG+FozqCsYo5t6auZZmEqQJVG2Mh
-         /xn53eG5weFyiy3aFt7BcE6R5TgqTEFj2EdR5jSMimAxO8Lx0LgSWY/ZDfj9ItB+8pGk
-         kLmKTY4CqlgBxFS59tfv9jMQGLq3KrnNAD77oiUFLKD863sr+Lr0UH5FAd0CAgAhkGpW
-         vX0cWACmID12vfpA3D69yKou7Nnb2gE/F6Ew0H2+5tZbjba0LjR4QBgG1jSf3kmWOAhI
-         hjHQ==
-X-Gm-Message-State: AOAM530Kbs0aPqTvXwfU4E/hDBIMWRR2hASQtLdH+SGIeDHupjYJifa3
-        akdjR06qiDIpvz3F5Uhx4JO9CxY=
-X-Google-Smtp-Source: ABdhPJyjT8GHER76WNSFqjmQvUAzAjClMjTAIIg56K2M86QwRA9rbhDENI7nQUMj/Vpq8VKa/Li+pA==
-X-Received: by 2002:a92:1589:: with SMTP id 9mr11145233ilv.234.1596725235912;
-        Thu, 06 Aug 2020 07:47:15 -0700 (PDT)
+        bh=Gc23MbsN7Py2AbboYagkFP2z88M/HrX+ProFw+VbFVM=;
+        b=ROfPHsG6aonG5ia7Kjn4qzG5KZvRkxWic1szCGP6lTh53B6aupm1JBYrYjidlefO+K
+         GI/z5QCsB5xrIqeJQHmS8I7ANLG1fvkD/Nzpufp0+wxPOanjWlV9SeBUjTnTI+T4egmK
+         o+zR8Ra8siBZtlGN0h2MbIa0yF5Ff96VYfMJsWrfwT+0iRsd1qOSUNtUBhDuedo/agTz
+         TWrGvmcFU+kEgHclxWTGAmZOSHXhPOkCq2S9+WSV68TwCWSzCmT432EMQ+qY2oq9NrXD
+         aUpya/G7M2l+4TSFQipVySQg2xjJ7umDBOcYz3pzvnhsvLhrm0FSR1MCnlnU35sew8cJ
+         CGXQ==
+X-Gm-Message-State: AOAM532r5OyYGjGo1ZXBdDtaw7EHHCx9wUJm/9JJ2v/AwnKv0uUhAS5m
+        nR+U0L+FHfpQpD3K4B/6Hmn6BHA=
+X-Google-Smtp-Source: ABdhPJyL1DZXcZGnPUV+B06ZfrnB9Tblb5Z4e91WZYwHydSuUfJe04oo3xFTp2utb9Cfoqi/+eTqGA==
+X-Received: by 2002:a02:3445:: with SMTP id z5mr12031366jaz.134.1596725365863;
+        Thu, 06 Aug 2020 07:49:25 -0700 (PDT)
 Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id s74sm4198158ilb.44.2020.08.06.07.47.14
+        by smtp.gmail.com with ESMTPSA id n10sm4371029ila.2.2020.08.06.07.49.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 07:47:15 -0700 (PDT)
-Received: (nullmailer pid 834882 invoked by uid 1000);
-        Thu, 06 Aug 2020 14:47:13 -0000
-Date:   Thu, 6 Aug 2020 08:47:13 -0600
+        Thu, 06 Aug 2020 07:49:25 -0700 (PDT)
+Received: (nullmailer pid 838369 invoked by uid 1000);
+        Thu, 06 Aug 2020 14:49:23 -0000
+Date:   Thu, 6 Aug 2020 08:49:23 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>, pisa@cmp.felk.cvut.cz
-Cc:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
-        mkl@pengutronix.de, socketcan@hartkopp.net, wg@grandegger.com,
-        davem@davemloft.net, mark.rutland@arm.com, c.emde@osadl.org,
-        armbru@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.jerabek01@gmail.com,
-        ondrej.ille@gmail.com, jnovak@fel.cvut.cz, jara.beran@gmail.com,
-        porazil@pikron.com
-Subject: Re: [PATCH v4 2/6] dt-bindings: net: can: binding for CTU CAN FD
- open-source IP core.
-Message-ID: <20200806144713.GA829771@bogus>
-References: <cover.1596408856.git.pisa@cmp.felk.cvut.cz>
- <701442883f2b439637ff84544745725bdee7bcf8.1596408856.git.pisa@cmp.felk.cvut.cz>
- <20200804091817.yuf6s26bclehpwwi@duo.ucw.cz>
- <20200804092021.yd3wisz3g2ed6ioe@duo.ucw.cz>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     linux-input@vger.kernel.org, Ahmet Inan <inan@distec.de>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Martin Fuzzey <martin.fuzzey@flowbird.group>,
+        kernel@collabora.com, devicetree@vger.kernel.org
+Subject: Re: [PATCHv4 1/4] dt-bindings: touchscreen: Convert EETI EXC3000
+ touchscreen to json-schema
+Message-ID: <20200806144923.GA838296@bogus>
+References: <20200805160520.456570-1-sebastian.reichel@collabora.com>
+ <20200805160520.456570-2-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200804092021.yd3wisz3g2ed6ioe@duo.ucw.cz>
+In-Reply-To: <20200805160520.456570-2-sebastian.reichel@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 11:20:21AM +0200, Pavel Machek wrote:
-> On Tue 2020-08-04 11:18:17, Pavel Machek wrote:
-> > Hi!
-> > 
-> > > The commit text again to make checkpatch happy.
-> > 
-> > ?
-> > 
-> > 
-> > > +    oneOf:
-> > > +      - items:
-> > > +          - const: ctu,ctucanfd
-> > > +          - const: ctu,canfd-2
-> > > +      - const: ctu,ctucanfd
-> > 
-> > For consistency, can we have ctu,canfd-1, ctu,canfd-2?
+On Wed, 05 Aug 2020 18:05:17 +0200, Sebastian Reichel wrote:
+> Convert the EETI EXC3000 binding to DT schema format using json-schema
 > 
-> Make it ctu,ctucanfd-1, ctu,ctucanfd-2... to make it consistent with
-> the file names.
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+>  .../input/touchscreen/eeti,exc3000.yaml       | 53 +++++++++++++++++++
+>  .../bindings/input/touchscreen/exc3000.txt    | 26 ---------
+>  2 files changed, 53 insertions(+), 26 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/exc3000.txt
+> 
 
-If you are going to do version numbers, please define where they come 
-from. Hopefully some tag of the h/w IP version...
-
-Better yet, put version numbers in the h/w registers itself and you 
-don't need different compatibles.
-
-Rob
+Reviewed-by: Rob Herring <robh@kernel.org>
