@@ -2,125 +2,410 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454C623D842
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6366723D855
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728999AbgHFJDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:03:42 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:53827 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725927AbgHFJDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:03:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596704617; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ZIO+8hqUYeBnO7dLtKhWRl9zvjGqCBhvytYo3OMVUuM=;
- b=GHA0WgQ+GSzWEIt7x2KR3I3vl2mQIh8UbGFBYdm6+OBtwAg7qrj6sxbDFnyRoYg0RV9fGT4M
- fmWhPYlPX1xlM7Mm2rvngeX0g4857KOqoN3zy8GQlHdm1wx9eHf1bv8zXWJn9DPv4zXMbKFH
- NaTx1RUIAtvWXiS0QaJ0uWArDzo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n16.prod.us-west-2.postgun.com with SMTP id
- 5f2bc768c85a1092b01860e6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 Aug 2020 09:03:36
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 53DF3C433AF; Thu,  6 Aug 2020 09:03:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 56FC7C433C6;
-        Thu,  6 Aug 2020 09:03:35 +0000 (UTC)
+        id S1729024AbgHFJJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:09:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36153 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727768AbgHFJJF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 05:09:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596704940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9yJ7XfkuAxUj/j7kgX33C1Z1dZHcUKpge/t8PlTR2PI=;
+        b=ctIk/0x64dpoimTsJ9a780icPSrbi9rKvM/SjrtyWELFwFRRqJ0yiWw2QfH95RAkJy5Xxb
+        7KaQ4b0b30v6frfzDvOfK+YIxijq+lwgBqgxr4rkjGiUBsff/JptHSNEy9nqrmgFVSh4g+
+        XlKphOq5xWpe34VE643FudKuvJprf4E=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-145-m__9f1GFNP6pycv5Hdsm3Q-1; Thu, 06 Aug 2020 05:08:57 -0400
+X-MC-Unique: m__9f1GFNP6pycv5Hdsm3Q-1
+Received: by mail-ed1-f70.google.com with SMTP id b39so4845218edf.15
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 02:08:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=9yJ7XfkuAxUj/j7kgX33C1Z1dZHcUKpge/t8PlTR2PI=;
+        b=qnH4nwrwNv8nTKR7H+8/gzEEryOyL9aOtEIi84Pf0h3xTYFf9qf+zl7vo3zGKXgXrL
+         i/JaVsI8nFSkY5HT7eVL5sb40NYj+P6VAKTXnvGTz+t3Ais8clCsT2ktVfIEc9/hfinv
+         cBnPv85qOLboOtV0SSY3IwKmkXyHR7NtZA59AGh8z5HtVhPklQxWQpAVgE0JFYYNYCeB
+         xXu1wED6jXHTxeBSQz2SmKipfL9duP/rR2jASGub4uxh6rX0lGRPTEG7SsLNPUQvK+ko
+         w8CKXkeCHC3J4eyB01SEswmr+CwbL4fYLbJ5N0AWKRhKBT/H7Y7JSo0pjUdNhRuJmQf6
+         0PDA==
+X-Gm-Message-State: AOAM533a6Dtbypz+hs3wSZJbMcOt8KScIMr+VSaOdat7QQAyYaKaY84D
+        Svxj68XsQYEyQYeviJRRsoT6FS0M/T7P34zGl17KowLb+03FmSEQ0EDmmHI4LuEQMJY/9fQGrul
+        z94kDzdptQBpByfYuzOIz0icD
+X-Received: by 2002:a50:bf07:: with SMTP id f7mr3227272edk.356.1596704935677;
+        Thu, 06 Aug 2020 02:08:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxYg63KM8Q1SiSQH0hGWqiHK/Z/18SI01LpSJdiY8Rj4MhCod/17viTWMcS+jxy/sz/658YWA==
+X-Received: by 2002:a50:bf07:: with SMTP id f7mr3227235edk.356.1596704935300;
+        Thu, 06 Aug 2020 02:08:55 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id i26sm3004115edv.70.2020.08.06.02.08.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 02:08:54 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter Xu <peterx@redhat.com>, Michael Tsirkin <mst@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] KVM: x86: introduce KVM_MEM_PCI_HOLE memory
+In-Reply-To: <20200805151843.yii4ufv7ubc7hqb5@kamzik.brq.redhat.com>
+References: <20200728143741.2718593-1-vkuznets@redhat.com> <20200728143741.2718593-3-vkuznets@redhat.com> <20200805151843.yii4ufv7ubc7hqb5@kamzik.brq.redhat.com>
+Date:   Thu, 06 Aug 2020 11:08:53 +0200
+Message-ID: <878sesp2e2.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 06 Aug 2020 17:03:35 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] scsi: ufs: no need to send one Abort Task TM in case
- the task in DB was cleared
-In-Reply-To: <20200804123534.29104-1-huobean@gmail.com>
-References: <20200804123534.29104-1-huobean@gmail.com>
-Message-ID: <a68a1bdf74bdf8ada29808537290b35b@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bean,
+Andrew Jones <drjones@redhat.com> writes:
 
-On 2020-08-04 20:35, Bean Huo wrote:
-> From: Bean Huo <beanhuo@micron.com>
-> 
-> If the bit corresponds to a task in the Doorbell register has been
-> cleared, no need to poll the status of the task on the device side
-> and to send an Abort Task TM.
-> This patch also deletes dispensable dev_err() in case of the task
-> already completed.
-> 
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 307622284239..581b4ab52bf4 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -6425,19 +6425,16 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->  		return ufshcd_eh_host_reset_handler(cmd);
-> 
->  	ufshcd_hold(hba, false);
-> -	reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
->  	/* If command is already aborted/completed, return SUCCESS */
-> -	if (!(test_bit(tag, &hba->outstanding_reqs))) {
-> -		dev_err(hba->dev,
-> -			"%s: cmd at tag %d already completed, outstanding=0x%lx, 
-> doorbell=0x%x\n",
-> -			__func__, tag, hba->outstanding_reqs, reg);
-> +	if (!(test_bit(tag, &hba->outstanding_reqs)))
->  		goto out;
-> -	}
-> 
-> +	reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
->  	if (!(reg & (1 << tag))) {
->  		dev_err(hba->dev,
->  		"%s: cmd was completed, but without a notifying intr, tag = %d",
->  		__func__, tag);
-> +		goto out;
+> On Tue, Jul 28, 2020 at 04:37:40PM +0200, Vitaly Kuznetsov wrote:
+>> PCIe config space can (depending on the configuration) be quite big but
+>> usually is sparsely populated. Guest may scan it by accessing individual
+>> device's page which, when device is missing, is supposed to have 'pci
+>> hole' semantics: reads return '0xff' and writes get discarded. Compared
+>> to the already existing KVM_MEM_READONLY, VMM doesn't need to allocate
+>> real memory and stuff it with '0xff'.
+>> 
+>> Suggested-by: Michael S. Tsirkin <mst@redhat.com>
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  Documentation/virt/kvm/api.rst  | 19 +++++++++++-----
+>>  arch/x86/include/uapi/asm/kvm.h |  1 +
+>>  arch/x86/kvm/mmu/mmu.c          |  5 ++++-
+>>  arch/x86/kvm/mmu/paging_tmpl.h  |  3 +++
+>>  arch/x86/kvm/x86.c              | 10 ++++++---
+>>  include/linux/kvm_host.h        |  7 +++++-
+>>  include/uapi/linux/kvm.h        |  3 ++-
+>>  virt/kvm/kvm_main.c             | 39 +++++++++++++++++++++++++++------
+>>  8 files changed, 68 insertions(+), 19 deletions(-)
+>> 
+>> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+>> index 644e5326aa50..fbbf533a331b 100644
+>> --- a/Documentation/virt/kvm/api.rst
+>> +++ b/Documentation/virt/kvm/api.rst
+>> @@ -1241,6 +1241,7 @@ yet and must be cleared on entry.
+>>    /* for kvm_memory_region::flags */
+>>    #define KVM_MEM_LOG_DIRTY_PAGES	(1UL << 0)
+>>    #define KVM_MEM_READONLY	(1UL << 1)
+>> +  #define KVM_MEM_PCI_HOLE		(1UL << 2)
+>>  
+>>  This ioctl allows the user to create, modify or delete a guest physical
+>>  memory slot.  Bits 0-15 of "slot" specify the slot id and this value
+>> @@ -1268,12 +1269,18 @@ It is recommended that the lower 21 bits of guest_phys_addr and userspace_addr
+>>  be identical.  This allows large pages in the guest to be backed by large
+>>  pages in the host.
+>>  
+>> -The flags field supports two flags: KVM_MEM_LOG_DIRTY_PAGES and
+>> -KVM_MEM_READONLY.  The former can be set to instruct KVM to keep track of
+>> -writes to memory within the slot.  See KVM_GET_DIRTY_LOG ioctl to know how to
+>> -use it.  The latter can be set, if KVM_CAP_READONLY_MEM capability allows it,
+>> -to make a new slot read-only.  In this case, writes to this memory will be
+>> -posted to userspace as KVM_EXIT_MMIO exits.
+>> +The flags field supports the following flags: KVM_MEM_LOG_DIRTY_PAGES,
+>> +KVM_MEM_READONLY, KVM_MEM_READONLY:
+>
+> The second KVM_MEM_READONLY should be KVM_MEM_PCI_HOLE. Or just drop the
+> list here, as they're listed below anyway
+>
+>> +- KVM_MEM_LOG_DIRTY_PAGES can be set to instruct KVM to keep track of writes to
+>> +  memory within the slot.  See KVM_GET_DIRTY_LOG ioctl to know how to use it.
+>> +- KVM_MEM_READONLY can be set, if KVM_CAP_READONLY_MEM capability allows it,
+>> +  to make a new slot read-only.  In this case, writes to this memory will be
+>> +  posted to userspace as KVM_EXIT_MMIO exits.
+>> +- KVM_MEM_PCI_HOLE can be set, if KVM_CAP_PCI_HOLE_MEM capability allows it,
+>> +  to create a new virtual read-only slot which will always return '0xff' when
+>> +  guest reads from it. 'userspace_addr' has to be set to NULL. This flag is
+>> +  mutually exclusive with KVM_MEM_LOG_DIRTY_PAGES/KVM_MEM_READONLY. All writes
+>> +  to this memory will be posted to userspace as KVM_EXIT_MMIO exits.
+>
+> I see 2/3's of this text is copy+pasted from above, but how about this
+>
+>  - KVM_MEM_LOG_DIRTY_PAGES: log writes.  Use KVM_GET_DIRTY_LOG to retreive
+>    the log.
+>  - KVM_MEM_READONLY: exit to userspace with KVM_EXIT_MMIO on writes.  Only
+>    available when KVM_CAP_READONLY_MEM is present.
+>  - KVM_MEM_PCI_HOLE: always return 0xff on reads, exit to userspace with
+>    KVM_EXIT_MMIO on writes.  Only available when KVM_CAP_PCI_HOLE_MEM is
+>    present.  When setting the memory region 'userspace_addr' must be NULL.
+>    This flag is mutually exclusive with KVM_MEM_LOG_DIRTY_PAGES and with
+>    KVM_MEM_READONLY.
 
-Please check Stanley's recent change to ufshcd_abort, you may
-want to rebase your change on his and do goto cleanup here.
-@Stanley correct me if I am wrong.
+Sound better, thanks! Will add in v2.
 
-But even if you do a goto cleanup here, we still lost the
-chances to dump host infos/regs like it does in the old code.
-If a cmd was completed but without a notifying intr, this is
-kind of a problem that we/host should look into, because it's
-pasted at least 30 sec since the cmd was sent, so those dumps
-are necessary to debug the problem. How about moving blow prints
-in front of this part?
+>
+>>  
+>>  When the KVM_CAP_SYNC_MMU capability is available, changes in the backing of
+>>  the memory region are automatically reflected into the guest.  For example, an
+>> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+>> index 17c5a038f42d..cf80a26d74f5 100644
+>> --- a/arch/x86/include/uapi/asm/kvm.h
+>> +++ b/arch/x86/include/uapi/asm/kvm.h
+>> @@ -48,6 +48,7 @@
+>>  #define __KVM_HAVE_XSAVE
+>>  #define __KVM_HAVE_XCRS
+>>  #define __KVM_HAVE_READONLY_MEM
+>> +#define __KVM_HAVE_PCI_HOLE_MEM
+>>  
+>>  /* Architectural interrupt line count. */
+>>  #define KVM_NR_INTERRUPTS 256
+>> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+>> index 8597e8102636..c2e3a1deafdd 100644
+>> --- a/arch/x86/kvm/mmu/mmu.c
+>> +++ b/arch/x86/kvm/mmu/mmu.c
+>> @@ -3253,7 +3253,7 @@ static int kvm_mmu_hugepage_adjust(struct kvm_vcpu *vcpu, gfn_t gfn,
+>>  		return PG_LEVEL_4K;
+>>  
+>>  	slot = gfn_to_memslot_dirty_bitmap(vcpu, gfn, true);
+>> -	if (!slot)
+>> +	if (!slot || (slot->flags & KVM_MEM_PCI_HOLE))
+>>  		return PG_LEVEL_4K;
+>>  
+>>  	max_level = min(max_level, max_page_level);
+>> @@ -4104,6 +4104,9 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+>>  
+>>  	slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+>>  
+>> +	if (!write && slot && (slot->flags & KVM_MEM_PCI_HOLE))
+>> +		return RET_PF_EMULATE;
+>> +
+>>  	if (try_async_pf(vcpu, slot, prefault, gfn, gpa, &pfn, write,
+>>  			 &map_writable))
+>>  		return RET_PF_RETRY;
+>> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+>> index 5c6a895f67c3..27abd69e69f6 100644
+>> --- a/arch/x86/kvm/mmu/paging_tmpl.h
+>> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
+>> @@ -836,6 +836,9 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
+>>  
+>>  	slot = kvm_vcpu_gfn_to_memslot(vcpu, walker.gfn);
+>>  
+>> +	if (!write_fault && slot && (slot->flags & KVM_MEM_PCI_HOLE))
+>> +		return RET_PF_EMULATE;
+>> +
+>>  	if (try_async_pf(vcpu, slot, prefault, walker.gfn, addr, &pfn,
+>>  			 write_fault, &map_writable))
+>>  		return RET_PF_RETRY;
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 95ef62922869..dc312b8bfa05 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -3515,6 +3515,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>>  	case KVM_CAP_EXCEPTION_PAYLOAD:
+>>  	case KVM_CAP_SET_GUEST_DEBUG:
+>>  	case KVM_CAP_LAST_CPU:
+>> +	case KVM_CAP_PCI_HOLE_MEM:
+>>  		r = 1;
+>>  		break;
+>>  	case KVM_CAP_SYNC_REGS:
+>> @@ -10115,9 +10116,11 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+>>  		ugfn = slot->userspace_addr >> PAGE_SHIFT;
+>>  		/*
+>>  		 * If the gfn and userspace address are not aligned wrt each
+>> -		 * other, disable large page support for this slot.
+>> +		 * other, disable large page support for this slot. Also,
+>> +		 * disable large page support for KVM_MEM_PCI_HOLE slots.
+>>  		 */
+>> -		if ((slot->base_gfn ^ ugfn) & (KVM_PAGES_PER_HPAGE(level) - 1)) {
+>> +		if (slot->flags & KVM_MEM_PCI_HOLE || ((slot->base_gfn ^ ugfn) &
+>
+> Please add () around the first expression
+>
 
-Thanks,
+Ack
 
-Can Guo.
+>> +				      (KVM_PAGES_PER_HPAGE(level) - 1))) {
+>>  			unsigned long j;
+>>  
+>>  			for (j = 0; j < lpages; ++j)
+>> @@ -10179,7 +10182,8 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
+>>  	 * Nothing to do for RO slots or CREATE/MOVE/DELETE of a slot.
+>>  	 * See comments below.
+>>  	 */
+>> -	if ((change != KVM_MR_FLAGS_ONLY) || (new->flags & KVM_MEM_READONLY))
+>> +	if ((change != KVM_MR_FLAGS_ONLY) || (new->flags & KVM_MEM_READONLY) ||
+>> +	    (new->flags & KVM_MEM_PCI_HOLE))
+>
+> How about
+>
+>  if ((change != KVM_MR_FLAGS_ONLY) ||
+>      (new->flags & (KVM_MEM_READONLY|KVM_MEM_PCI_HOLE)))
+>
 
->  	}
-> 
->  	/* Print Transfer Request of aborted task */
+Ack
+
+>>  		return;
+>>  
+>>  	/*
+>> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+>> index 989afcbe642f..63c2d93ef172 100644
+>> --- a/include/linux/kvm_host.h
+>> +++ b/include/linux/kvm_host.h
+>> @@ -1081,7 +1081,12 @@ __gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
+>>  static inline unsigned long
+>>  __gfn_to_hva_memslot(struct kvm_memory_slot *slot, gfn_t gfn)
+>>  {
+>> -	return slot->userspace_addr + (gfn - slot->base_gfn) * PAGE_SIZE;
+>> +	if (likely(!(slot->flags & KVM_MEM_PCI_HOLE))) {
+>> +		return slot->userspace_addr +
+>> +			(gfn - slot->base_gfn) * PAGE_SIZE;
+>> +	} else {
+>> +		BUG();
+>
+> Debug code you forgot to remove? I see below you've modified
+> __gfn_to_hva_many() to return KVM_HVA_ERR_BAD already when
+> given a PCI hole slot. I think that's the only check we should add.
+
+No, this was intentional. We have at least two users of
+__gfn_to_hva_memslot() today and in case we ever reach here with a
+KVM_MEM_PCI_HOLE slot we're doomed anyway but it would be much easier to
+debug the immediate BUG() than an invalid pointer access some time
+later.
+
+Anyway, I don't really feel strong and I'm fine with dropping the
+check. Alternatively, I can suggest we add
+
+BUG_ON(!slot->userspace_addr);
+
+to the beginning of __gfn_to_hva_memslot() intead.
+
+>
+>> +	}
+>>  }
+>>  
+>>  static inline int memslot_id(struct kvm *kvm, gfn_t gfn)
+>> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+>> index 2c73dcfb3dbb..59d631cbb71d 100644
+>> --- a/include/uapi/linux/kvm.h
+>> +++ b/include/uapi/linux/kvm.h
+>> @@ -109,6 +109,7 @@ struct kvm_userspace_memory_region {
+>>   */
+>>  #define KVM_MEM_LOG_DIRTY_PAGES	(1UL << 0)
+>>  #define KVM_MEM_READONLY	(1UL << 1)
+>> +#define KVM_MEM_PCI_HOLE		(1UL << 2)
+>>  
+>>  /* for KVM_IRQ_LINE */
+>>  struct kvm_irq_level {
+>> @@ -1034,7 +1035,7 @@ struct kvm_ppc_resize_hpt {
+>>  #define KVM_CAP_ASYNC_PF_INT 183
+>>  #define KVM_CAP_LAST_CPU 184
+>>  #define KVM_CAP_SMALLER_MAXPHYADDR 185
+>> -
+>> +#define KVM_CAP_PCI_HOLE_MEM 186
+>>  
+>>  #ifdef KVM_CAP_IRQ_ROUTING
+>>  
+>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+>> index 2c2c0254c2d8..3f69ae711021 100644
+>> --- a/virt/kvm/kvm_main.c
+>> +++ b/virt/kvm/kvm_main.c
+>> @@ -1107,6 +1107,10 @@ static int check_memory_region_flags(const struct kvm_userspace_memory_region *m
+>>  	valid_flags |= KVM_MEM_READONLY;
+>>  #endif
+>>  
+>> +#ifdef __KVM_HAVE_PCI_HOLE_MEM
+>> +	valid_flags |= KVM_MEM_PCI_HOLE;
+>> +#endif
+>> +
+>>  	if (mem->flags & ~valid_flags)
+>>  		return -EINVAL;
+>>  
+>> @@ -1284,11 +1288,26 @@ int __kvm_set_memory_region(struct kvm *kvm,
+>>  		return -EINVAL;
+>>  	if (mem->guest_phys_addr & (PAGE_SIZE - 1))
+>>  		return -EINVAL;
+>> -	/* We can read the guest memory with __xxx_user() later on. */
+>> -	if ((mem->userspace_addr & (PAGE_SIZE - 1)) ||
+>> -	     !access_ok((void __user *)(unsigned long)mem->userspace_addr,
+>> -			mem->memory_size))
+>> +
+>> +	/*
+>> +	 * KVM_MEM_PCI_HOLE is mutually exclusive with KVM_MEM_READONLY/
+>> +	 * KVM_MEM_LOG_DIRTY_PAGES.
+>> +	 */
+>> +	if ((mem->flags & KVM_MEM_PCI_HOLE) &&
+>> +	    (mem->flags & (KVM_MEM_READONLY | KVM_MEM_LOG_DIRTY_PAGES)))
+>>  		return -EINVAL;
+>> +
+>> +	if (!(mem->flags & KVM_MEM_PCI_HOLE)) {
+>> +		/* We can read the guest memory with __xxx_user() later on. */
+>> +		if ((mem->userspace_addr & (PAGE_SIZE - 1)) ||
+>> +		    !access_ok((void __user *)(unsigned long)mem->userspace_addr,
+>> +			       mem->memory_size))
+>> +			return -EINVAL;
+>> +	} else {
+>> +		if (mem->userspace_addr)
+>> +			return -EINVAL;
+>> +	}
+>> +
+>>  	if (as_id >= KVM_ADDRESS_SPACE_NUM || id >= KVM_MEM_SLOTS_NUM)
+>>  		return -EINVAL;
+>>  	if (mem->guest_phys_addr + mem->memory_size < mem->guest_phys_addr)
+>> @@ -1328,7 +1347,8 @@ int __kvm_set_memory_region(struct kvm *kvm,
+>>  	} else { /* Modify an existing slot. */
+>>  		if ((new.userspace_addr != old.userspace_addr) ||
+>>  		    (new.npages != old.npages) ||
+>> -		    ((new.flags ^ old.flags) & KVM_MEM_READONLY))
+>> +		    ((new.flags ^ old.flags) & KVM_MEM_READONLY) ||
+>> +		    ((new.flags ^ old.flags) & KVM_MEM_PCI_HOLE))
+>>  			return -EINVAL;
+>>  
+>>  		if (new.base_gfn != old.base_gfn)
+>> @@ -1715,13 +1735,13 @@ unsigned long kvm_host_page_size(struct kvm_vcpu *vcpu, gfn_t gfn)
+>>  
+>>  static bool memslot_is_readonly(struct kvm_memory_slot *slot)
+>>  {
+>> -	return slot->flags & KVM_MEM_READONLY;
+>> +	return slot->flags & (KVM_MEM_READONLY | KVM_MEM_PCI_HOLE);
+>>  }
+>>  
+>>  static unsigned long __gfn_to_hva_many(struct kvm_memory_slot *slot, gfn_t gfn,
+>>  				       gfn_t *nr_pages, bool write)
+>>  {
+>> -	if (!slot || slot->flags & KVM_MEMSLOT_INVALID)
+>> +	if (!slot || (slot->flags & (KVM_MEMSLOT_INVALID | KVM_MEM_PCI_HOLE)))
+>>  		return KVM_HVA_ERR_BAD;
+>>  
+>>  	if (memslot_is_readonly(slot) && write)
+>> @@ -2318,6 +2338,11 @@ static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
+>>  	int r;
+>>  	unsigned long addr;
+>>  
+>> +	if (unlikely(slot && (slot->flags & KVM_MEM_PCI_HOLE))) {
+>> +		memset(data, 0xff, len);
+>> +		return 0;
+>> +	}
+>> +
+>>  	addr = gfn_to_hva_memslot_prot(slot, gfn, NULL);
+>>  	if (kvm_is_error_hva(addr))
+>>  		return -EFAULT;
+>> -- 
+>> 2.25.4
+>>
+>
+> I didn't really review this patch, as it's touching lots of x86 mm
+> functions that I didn't want to delve into, but I took a quick look
+> since I was curious about the feature.
+
+x86 part is really negligible, I think it would be very easy to expand
+the scope to other arches if needed.
+
+Thanks!
+
+-- 
+Vitaly
+
