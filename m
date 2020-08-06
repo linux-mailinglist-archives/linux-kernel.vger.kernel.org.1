@@ -2,47 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA9F23D63E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 07:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C7323D655
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 07:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727905AbgHFFDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 01:03:20 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45517 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725271AbgHFFDR (ORCPT
+        id S1728389AbgHFFHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 01:07:24 -0400
+Received: from labrats.qualcomm.com ([199.106.110.90]:27913 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728276AbgHFFHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 01:03:17 -0400
-Received: from callcc.thunk.org (pool-96-230-252-158.bstnma.fios.verizon.net [96.230.252.158])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0765355t023378
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 6 Aug 2020 01:03:06 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id C7274420263; Thu,  6 Aug 2020 01:03:05 -0400 (EDT)
-Date:   Thu, 6 Aug 2020 01:03:05 -0400
-From:   tytso@mit.edu
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     adilger.kernel@dilger.ca, corbet@lwn.net,
-        linux-ext4@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: Ext4
-Message-ID: <20200806050305.GF7657@mit.edu>
-References: <20200706190339.20709-1-grandmaster@al2klimov.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200706190339.20709-1-grandmaster@al2klimov.de>
+        Thu, 6 Aug 2020 01:07:14 -0400
+IronPort-SDR: e39rWUhAJJ6i5WxF52iI3QrGERf/vCYxWHWh0nb0Se2ptEujjprf11XuOlcX5NI4vtlcutOxv0
+ Bw84T0PcuV2S29G1rL/TdOz36Fhntda7ZUfxN34ZONCmQ2tIAvT3wFTCIvpAToMbFA6GeQKnXv
+ tprtvInMS3OImcmy3Q9VFEv1JDLnAqd56bh3UekG3tBdWTOnKrTzhxCDRdh0E02XbFUsXfs6Z6
+ lF6ExAYew9WyQHO8jnc/iBlfsuQLErrKXaZj4a7/ZZNkG80OgMI8BLbu4PjgDXWna5cegHCX/w
+ 2+U=
+X-IronPort-AV: E=Sophos;i="5.75,440,1589266800"; 
+   d="scan'208";a="47243583"
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by labrats.qualcomm.com with ESMTP; 05 Aug 2020 22:06:30 -0700
+Received: from stor-presley.qualcomm.com ([192.168.140.85])
+  by ironmsg04-sd.qualcomm.com with ESMTP; 05 Aug 2020 22:06:28 -0700
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id D830921564; Wed,  5 Aug 2020 22:06:28 -0700 (PDT)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH 1/9] scsi: ufs: Add checks before setting clk-gating states
+Date:   Wed,  5 Aug 2020 22:06:12 -0700
+Message-Id: <1596690383-16438-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1596690383-16438-1-git-send-email-cang@codeaurora.org>
+References: <1596690383-16438-1-git-send-email-cang@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 09:03:39PM +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
+Clock gating features can be turned on/off selectively which means its
+state information is only important if it is enabled. This change makes
+sure that we only look at state of clk-gating if it is enabled.
 
-Thanks, applied.
+Signed-off-by: Can Guo <cang@codeaurora.org>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Reviewed-by: Hongwu Su <hongwus@codeaurora.org>
+Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+Reviewed-by: Bean Huo <beanhuo@micron.com>
 
-						- Ted
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 3076222..5acb38c 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1839,6 +1839,8 @@ static void ufshcd_init_clk_gating(struct ufs_hba *hba)
+ 	if (!ufshcd_is_clkgating_allowed(hba))
+ 		return;
+ 
++	hba->clk_gating.state = CLKS_ON;
++
+ 	hba->clk_gating.delay_ms = 150;
+ 	INIT_DELAYED_WORK(&hba->clk_gating.gate_work, ufshcd_gate_work);
+ 	INIT_WORK(&hba->clk_gating.ungate_work, ufshcd_ungate_work);
+@@ -2541,7 +2543,8 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
+ 		err = SCSI_MLQUEUE_HOST_BUSY;
+ 		goto out;
+ 	}
+-	WARN_ON(hba->clk_gating.state != CLKS_ON);
++	WARN_ON(ufshcd_is_clkgating_allowed(hba) &&
++		(hba->clk_gating.state != CLKS_ON));
+ 
+ 	lrbp = &hba->lrb[tag];
+ 
+@@ -8326,8 +8329,11 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		/* If link is active, device ref_clk can't be switched off */
+ 		__ufshcd_setup_clocks(hba, false, true);
+ 
+-	hba->clk_gating.state = CLKS_OFF;
+-	trace_ufshcd_clk_gating(dev_name(hba->dev), hba->clk_gating.state);
++	if (ufshcd_is_clkgating_allowed(hba)) {
++		hba->clk_gating.state = CLKS_OFF;
++		trace_ufshcd_clk_gating(dev_name(hba->dev),
++					hba->clk_gating.state);
++	}
+ 
+ 	/* Put the host controller in low power mode if possible */
+ 	ufshcd_hba_vreg_set_lpm(hba);
+@@ -8467,6 +8473,11 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	if (hba->clk_scaling.is_allowed)
+ 		ufshcd_suspend_clkscaling(hba);
+ 	ufshcd_setup_clocks(hba, false);
++	if (ufshcd_is_clkgating_allowed(hba)) {
++		hba->clk_gating.state = CLKS_OFF;
++		trace_ufshcd_clk_gating(dev_name(hba->dev),
++					hba->clk_gating.state);
++	}
+ out:
+ 	hba->pm_op_in_progress = 0;
+ 	if (ret)
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
