@@ -2,67 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12ADD23E0C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70CB23E062
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729833AbgHFSiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:38:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729266AbgHFSfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:35:22 -0400
-Received: from localhost.localdomain (unknown [194.230.155.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E5F623102;
-        Thu,  6 Aug 2020 18:25:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596738321;
-        bh=VAU1eGfzCZfS7G3FX+Wn/xXTQQH5HorEtjLf+F1OX28=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EXqHoFUBTp6Wfsbm9vRJqQUKwEuV8d/XmfWKVnu+R/hlUZPEP0voCFwpiql36+fxN
-         aVXfleK8EVRRbX0y8jxECPsZOaSciaIITxd4jglIIpSQ8R+zRbAXAlo6GjrQ1waz/y
-         fqaLnN6L+cykz+Rh4mjkkNs96GoIwR4C2gn4J77I=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 41/41] MAINTAINERS: Add more name matches for Samsung SoC entries
-Date:   Thu,  6 Aug 2020 20:20:58 +0200
-Message-Id: <20200806182059.2431-41-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200806181932.2253-1-krzk@kernel.org>
-References: <20200806181932.2253-1-krzk@kernel.org>
+        id S1728714AbgHFScs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:32:48 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12369 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728422AbgHFSbN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 14:31:13 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f2c4a7b0000>; Thu, 06 Aug 2020 11:22:51 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 06 Aug 2020 11:23:41 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 06 Aug 2020 11:23:41 -0700
+Received: from [10.26.73.183] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 6 Aug
+ 2020 18:23:36 +0000
+Subject: Re: [PATCH v5 08/11] arm64: defconfig: Build AHUB component drivers
+To:     Sameer Pujar <spujar@nvidia.com>, <broonie@kernel.org>,
+        <perex@perex.cz>, <tiwai@suse.com>,
+        <kuninori.morimoto.gx@renesas.com>, <robh+dt@kernel.org>,
+        <lgirdwood@gmail.com>
+CC:     <thierry.reding@gmail.com>, <digetx@gmail.com>,
+        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
+        <mkumard@nvidia.com>, <viswanathl@nvidia.com>,
+        <rlokhande@nvidia.com>, <dramesh@nvidia.com>,
+        <atalambedu@nvidia.com>, <nwartikar@nvidia.com>,
+        <swarren@nvidia.com>, <nicoleotsuka@gmail.com>
+References: <1595134890-16470-1-git-send-email-spujar@nvidia.com>
+ <1595134890-16470-9-git-send-email-spujar@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <eae61836-463d-4e50-36bc-c422d2094d0e@nvidia.com>
+Date:   Thu, 6 Aug 2020 19:23:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1595134890-16470-9-git-send-email-spujar@nvidia.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1596738171; bh=R4YM1NGHdWeT95v8E9vGiRVmOpALow/m7dTW+oS7Nzc=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=MwfczHrZJLUBOTJcWJJGy7Klr0mISWBuiU8W6VKd/baXDXgeUvwjIxktsP7Qu0fO8
+         uQ+sLa2Ah5DnfK/TWUmxpMZVj70/e9g6Byv5hSzj5u6zSdw7lnJny24+QL7/c2Vl7D
+         dyB7KSt8tUDhyPjG57Ur6YfF9JRbEXCQtS8ThY5PFDIgJUdVI63o8vR+cxg00GR/Ws
+         bKJslnpnJdIIbB7qgOTJWSfwvLzfnOoIwykifPIqz+yt+YChQAsRKiCQp+sQIWDCsh
+         Pw0LpFtM4g5/u7VCiPFPumP/pwzoo29Q5e0undXZ49CAVGivoGF5v+TNftPJRSI27p
+         1HbCuyDoBOhgA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Samsung SoC maintainer entry covers drivers and headers matching
-"exynos" name but except that there are also files for S3C24xx, S3C64xx
-and S5Pv210 SoCs.  These sometimes do not have a separate entry for a
-driver maintainer thus might miss review.  Add them to the Samsung SoC
-maintainer entry to cover all SoCs with name matches.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- MAINTAINERS | 3 +++
- 1 file changed, 3 insertions(+)
+On 19/07/2020 06:01, Sameer Pujar wrote:
+> This patch helps to build AHUB and its client drivers (I2S, DMIC,
+> DSPK, ADMAIF and AHUB). These register components with ASoC core.
+> 
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> ---
+>  arch/arm64/configs/defconfig | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 89538d9..4976e1a 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -669,6 +669,12 @@ CONFIG_SND_SOC_RK3399_GRU_SOUND=m
+>  CONFIG_SND_SOC_SAMSUNG=y
+>  CONFIG_SND_SOC_RCAR=m
+>  CONFIG_SND_SUN4I_SPDIF=m
+> +CONFIG_SND_SOC_TEGRA=m
+> +CONFIG_SND_SOC_TEGRA210_AHUB=m
+> +CONFIG_SND_SOC_TEGRA210_DMIC=m
+> +CONFIG_SND_SOC_TEGRA210_I2S=m
+> +CONFIG_SND_SOC_TEGRA186_DSPK=m
+> +CONFIG_SND_SOC_TEGRA210_ADMAIF=m
+>  CONFIG_SND_SOC_AK4613=m
+>  CONFIG_SND_SOC_ES7134=m
+>  CONFIG_SND_SOC_ES7241=m
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6c74aa41e35b..7dcd9305a622 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2422,6 +2422,9 @@ F:	drivers/soc/samsung/
- F:	drivers/tty/serial/samsung*
- F:	include/linux/soc/samsung/
- N:	exynos
-+N:	s3c2410
-+N:	s3c64xx
-+N:	s5pv210
- 
- ARM/SAMSUNG MOBILE MACHINE SUPPORT
- M:	Kyungmin Park <kyungmin.park@samsung.com>
+
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+
+Thanks!
+Jon
+
 -- 
-2.17.1
-
+nvpublic
