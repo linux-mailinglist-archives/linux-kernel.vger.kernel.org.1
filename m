@@ -2,146 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBC223DF63
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81F323DF72
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729876AbgHFRqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:46:05 -0400
-Received: from mail-db8eur05on2045.outbound.protection.outlook.com ([40.107.20.45]:21984
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728973AbgHFQid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:38:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wq9i+MsSsbXnMznX0BrExpsutyEjWyAWMptx/r4sUGbyXJN4Oz5Kn9wtpAHZgXdh4H8Pgjrv7gm4Q5ejP9lTOhyslOtsf+Zayve4tFyDaRhZJudLf5P6X0sMh24Rs3lC0oiyFElkme+9MZhpE5BKyHgbqvmV1Si917xTtRY7AGX0XX/kbkeYswCGjGg0w1299bC/CK+aiSrzCn7v7+L+TP+zDNEEj7kj5fKGyH31vhdmKDH1+AuQUcr6bSJMrKlbH9XwaH9Lr07jUefkwV350Bj6en5hnfDRTtxC+MjA+XWDSDEgIfW8uhWvRq2pdV+YzOQigpF+Hljdfb6LlSnd8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HgZtPL4Ibx4wosYkqrEpR4/2iTIOpPK1UPEReGFUPoc=;
- b=AcmFGvCSgZzgtlyFms2hZbcE+7kI/lYvdc3uBVBpTF/iJ8LLxdbeo4DouiWO1CjAjqiYWb/l0l93Jlq8yItwMBQr1BIOAa/zdOKs9KIfAvrKsso3bpUGgIzpklLsc3M2rMVntymJjb7v8i20QvCNXln39tuxCvi5SFWn+fH87hDgnP8i2WjU1wqnK72LQkFjU6s9naeihQcUtFXgisU32omzp1QtrzlF516cq2c9MXrFsG/W5szrnY/0f71VQn8kUEKTO4R0X4b5JebW5aDG/WsUBDnzk6bnkpAhPAQqGTBcDsIb6uIVeNEbAwXY9/OMYfEattuCGLXh4Eunxgzj2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HgZtPL4Ibx4wosYkqrEpR4/2iTIOpPK1UPEReGFUPoc=;
- b=Nx8Ed/wBrAR1SrJ2uD9weVt24bLEnUh9menpStJeRbqKEsPZnoO8t07OCykZQIRbZTCyxQcTqEnwT5nu1DEwza9xlLl0WNBLc3kxchW/UqV+nTnvhNLIctlg996k+wbcvbyBTB4GC2xIyfrR5aBcMzeIZmAiXo+I5ZMuxfmsmvs=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from VE1PR04MB6608.eurprd04.prod.outlook.com (2603:10a6:803:125::12)
- by VI1PR04MB6959.eurprd04.prod.outlook.com (2603:10a6:803:139::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.20; Thu, 6 Aug
- 2020 16:36:24 +0000
-Received: from VE1PR04MB6608.eurprd04.prod.outlook.com
- ([fe80::a856:c104:11c7:258d]) by VE1PR04MB6608.eurprd04.prod.outlook.com
- ([fe80::a856:c104:11c7:258d%6]) with mapi id 15.20.3261.019; Thu, 6 Aug 2020
- 16:36:24 +0000
-From:   Andrei Botila <andrei.botila@oss.nxp.com>
-To:     Horia Geanta <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND 8/9] crypto: caam/qi - add support for XTS with 16B IV
-Date:   Thu,  6 Aug 2020 19:35:50 +0300
-Message-Id: <20200806163551.14395-9-andrei.botila@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
-References: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: AM4PR0902CA0015.eurprd09.prod.outlook.com
- (2603:10a6:200:9b::25) To VE1PR04MB6608.eurprd04.prod.outlook.com
- (2603:10a6:803:125::12)
+        id S1730121AbgHFRrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:47:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728189AbgHFQgv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:36:51 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891E3C0A8939
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:36:30 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id e5so22781401qth.5
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:36:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=DvyIA/JTe+84zYGDoHZHJrA5hQ4/MmmrAwVON+cWjU0=;
+        b=VAvtYRowsi2O47cD8G+2+rAL17XGHM72rQDyxreoq/q5Yuhf0yDSMFt9RZZI23ngIp
+         yZvOYQcpvkxkijqxxqyuaHVseJEkCtBUJSEap8ejbdVveYD5Wj3vLLV6y+RCZRSBncVs
+         /PkWAcv5mk4LZoWUhmQFRxVfoW2/CtyrIWuFh/WcySPRRWDumXVOZL1gvRpjo9Z4EuRo
+         UZv/QnQBoSdDgVNj4efeUnVFnvpaI/ybQHdLfEnyUmxC4IL6eaRQ+i+Jg07yTT/59RPF
+         yd3UZv/OnLj0YGIy49wvs2qz+CgERhtVFbc02ntNQNzN7rASwGVrLp1ANkQlcuFm9oY7
+         spKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=DvyIA/JTe+84zYGDoHZHJrA5hQ4/MmmrAwVON+cWjU0=;
+        b=B9mOCe4HoROxmO1K7aQl11s2ffeE/+xx09g34TAirmc7CV1FhPOMwGrCF3nHULdU83
+         dcV+PT9FJWHemRinR+5AUtOoy1YMp5nQpU0PNy6ajmgxnb8dvtVsRdzn3tnO1Xa2DMzA
+         bM7lS0BkwjrrnSgR7NMyMgwqHfoh4ZQbsjbJzxXUU6iGuYlN2WC3bQ1Lx925jRM+iCw2
+         MG4Mh+eJm3cG7HD/vLhfxpZXD92HJeNMJR9qEO46finlDd2Y0Zt4vhFdWI3xGGAqXJ6J
+         /vAXGYOREtFWwpBB2HhRbL5Hp+HoB8rADfgiuxvXFDd0vVhqbivCUgJKyEE4IIh1XTPi
+         fCPw==
+X-Gm-Message-State: AOAM530MYhdCPiFRFq+QzR15cA9IQzrEz2kkdVKhfnqmL8EknIGiOR9s
+        ZsENyTbWkkOwrIhQghwaR8gXOCMp5aCJ5tMwXsCPIZQv
+X-Google-Smtp-Source: ABdhPJzrgra6vGTQ5XNjrmiffChBnZ10k2QyElJIs1M55uBXlAohKnFTfV1yW/SoeJsntmlkQcI+CC/ZRKIGssbGytA=
+X-Received: by 2002:aed:2b66:: with SMTP id p93mr9856513qtd.49.1596731789619;
+ Thu, 06 Aug 2020 09:36:29 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv15007.swis.ro-buh01.nxp.com (83.217.231.2) by AM4PR0902CA0015.eurprd09.prod.outlook.com (2603:10a6:200:9b::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.19 via Frontend Transport; Thu, 6 Aug 2020 16:36:23 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [83.217.231.2]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 48ca1fea-dac6-481c-fd82-08d83a26db91
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6959:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB6959DEA638EE58C5BE36801EB4480@VI1PR04MB6959.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SGV1s/nVHnfHTaLOy0J4g3b+7ViKm5jgKcrWPknigje+z3ZZcyKw8P+YnzVwBPfxpIi6fBOA45ctvgQJCR3mULVMmahGLINs2B7W/XHqp7khyaxWUvV2jhTKUd/WhfcCh2+/rGtIIFBaOg1D/bpEweAshPtBbI5ovl7WRaKECN8IEo6uGtvThr6FyH5mRsQjYVyeVzyPwufOEoaa4zpXLS3LZ/ZB0UXBTNOLP/xsMtU5JMVmpyBDsGgcbidqnvipLQz/qNj464WZyGGytb4cpLgREseF3vlEvlJvQ88K9QOjiTwt9uDVN3g5hARiZUvHV6GqPoVpdsATStOgcIRRZQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6608.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(136003)(396003)(39860400002)(366004)(186003)(2906002)(16526019)(6486002)(8676002)(4326008)(6512007)(26005)(83380400001)(5660300002)(2616005)(956004)(6506007)(478600001)(8936002)(44832011)(66946007)(316002)(86362001)(66476007)(66556008)(110136005)(1076003)(6666004)(52116002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Muss0W++fF65bqTOVQv2LZADiRuNLRxIGLhgR+c1FQ11GiujXqBWsTB23hJ1F3sRSxSYCFWla5go3UogWTJPbmvXQwFAuwWTpuuq33F+w8Pz95jlnGPE5PAYu+zLsmZkYO4G/dwsIA2fZE+VhZefHxGWLd/c6c6nOg8ss+MKJUczHuB7QlqRwjU4fWQAOPA+YUdr4+eLzyEjBWZ2Xbdf8Oc8Gs038r+LwGx7YUbZfC5RpWR6wPkNGjtn34hJ5r3bL/5gN7rV+QtcqOw/ctb/tDStLnlWRfseWuBpQLGOjqdJAMPjw4RXd4YMuJ9kFIw9STR2HI7kgj99lU3SYCQNJ8V5LEYYRU2vKyRZSCaz6W+y1L63WbieEPuhb81lW2yII1VQBIjsHXTUpPL1qnWPji3h4YP6TohbgDvNFck4xgJHpgLQmaNWgEB+nIiDSk6P9LZ30s32y4B0NiitvPLzEapde6vBOZpjqx113cW5nL1tp1Kb7JMmyj5T6cnKWpZWNJp8rYa9ND87gGO6vTKanYMLP3mi9oRLBT8PSKXeDYS1ELuSr9if4+YiK25zeVHhE2x+jo1/B9v2/dilPg68Qq73A6lTmQMfVtQxDICN0fP1wVA5OTcXadx+tcPbnzR28RDClS22p80vE+tb5KQ8/g==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48ca1fea-dac6-481c-fd82-08d83a26db91
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6608.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2020 16:36:24.1220
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3lR+Z4cv16GoAK7ls0EzKP1A+rOPKyiiZNNugocySfnJsawINjGq6cBNFRPr7NlE009Gtb4+CJXE0EA8PY8Hcg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6959
+Received: by 2002:ac8:550f:0:0:0:0:0 with HTTP; Thu, 6 Aug 2020 09:36:29 -0700 (PDT)
+Reply-To: georgemike7031@gmail.com
+From:   george mike <ed7293954@gmail.com>
+Date:   Thu, 6 Aug 2020 18:36:29 +0200
+Message-ID: <CAN9EptJdCH+b=FFAhCH9=SN6iFE6sDBKz8eJmb4tT6EikfpWGw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrei Botila <andrei.botila@nxp.com>
+Hello
 
-Newer CAAM versions (Era 9+) support 16B IVs. Since for these devices
-the HW limitation is no longer present newer version should process the
-requests containing 16B IVs directly in hardware without using a fallback.
+My name is George MikeI am a lawyer by profession. I wish to offer you
+the next of kin to my client. You will inherit the sum of ($8.5 Million)
+dollars my client left in the bank before his death.
 
-Signed-off-by: Andrei Botila <andrei.botila@nxp.com>
----
- drivers/crypto/caam/caamalg_qi.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+My client is a citizen of your country who died in auto crash with his wife
+and only son. I will be entitled with 50% of the total fund while 50% will
+be for you.
+Please contact my private email here for more details:georgemike7031@gmail.=
+com
 
-diff --git a/drivers/crypto/caam/caamalg_qi.c b/drivers/crypto/caam/caamalg_qi.c
-index 1d775a55fcf5..df58a899e97d 100644
---- a/drivers/crypto/caam/caamalg_qi.c
-+++ b/drivers/crypto/caam/caamalg_qi.c
-@@ -732,6 +732,7 @@ static int xts_skcipher_setkey(struct crypto_skcipher *skcipher, const u8 *key,
- {
- 	struct caam_ctx *ctx = crypto_skcipher_ctx(skcipher);
- 	struct device *jrdev = ctx->jrdev;
-+	struct caam_drv_private *ctrlpriv = dev_get_drvdata(jrdev->parent);
- 	int ret = 0;
- 	int err;
- 
-@@ -741,9 +742,12 @@ static int xts_skcipher_setkey(struct crypto_skcipher *skcipher, const u8 *key,
- 		return err;
- 	}
- 
--	err = crypto_skcipher_setkey(ctx->fallback, key, keylen);
--	if (err)
--		return err;
-+	if (ctrlpriv->era <= 8 || (keylen != 2 * AES_KEYSIZE_128 &&
-+				   keylen != 2 * AES_KEYSIZE_256)) {
-+		err = crypto_skcipher_setkey(ctx->fallback, key, keylen);
-+		if (err)
-+			return err;
-+	}
- 
- 	ctx->cdata.keylen = keylen;
- 	ctx->cdata.key_virt = key;
-@@ -1405,12 +1409,13 @@ static inline int skcipher_crypt(struct skcipher_request *req, bool encrypt)
- 	struct skcipher_edesc *edesc;
- 	struct crypto_skcipher *skcipher = crypto_skcipher_reqtfm(req);
- 	struct caam_ctx *ctx = crypto_skcipher_ctx(skcipher);
-+	struct caam_drv_private *ctrlpriv = dev_get_drvdata(ctx->jrdev->parent);
- 	int ret;
- 
- 	if (!req->cryptlen)
- 		return 0;
- 
--	if (ctx->fallback && (xts_skcipher_ivsize(req) ||
-+	if (ctx->fallback && ((ctrlpriv->era <= 8 && xts_skcipher_ivsize(req)) ||
- 			      (ctx->cdata.keylen != 2 * AES_KEYSIZE_128 &&
- 			       ctx->cdata.keylen != 2 * AES_KEYSIZE_256))) {
- 		struct caam_skcipher_req_ctx *rctx = skcipher_request_ctx(req);
--- 
-2.17.1
+Many thanks in advance,
+Mr.George Mike,
 
+
+
+Hallo
+
+Mein Name ist George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
+Ihnen anbieten
+der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
+Millionen US-Dollar)
+Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
+
+Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
+einem Autounfall ums Leben gekommen ist
+und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, 50%
+sein f=C3=BCr dich.
+Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
+Informationen: georgemike7031@gmail.com
+
+Vielen Dank im Voraus,
+Mr. George Mike,
