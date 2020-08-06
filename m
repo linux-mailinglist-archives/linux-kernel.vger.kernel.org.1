@@ -2,122 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8590B23E213
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C19323E20B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgHFTZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 15:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39154 "EHLO
+        id S1726126AbgHFTXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 15:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725272AbgHFTZI (ORCPT
+        with ESMTP id S1726055AbgHFTXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 15:25:08 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1046C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 12:19:06 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id y3so45050444wrl.4
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 12:19:06 -0700 (PDT)
+        Thu, 6 Aug 2020 15:23:00 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB7CC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 12:23:00 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id g19so38735093ioh.8
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 12:23:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nBU/pM3MYlEmZitwD1KhBWl8EEKhumB4q1qsW3XKr34=;
-        b=DwDiI7JRoKfd2/50mvMUbKhYmterRGUW3oT7ZbKdfmD00qEpTgvlqq6Liqo6Xxq2Ac
-         IDEOFJ9vfek3fTe4GivTbNOJSxdhPpmYXFlG57g17ii07PgbfsVHG/PdwRMVORw53WhR
-         CTrupnia/072ruKaZKastIIW0MsEV7IeTagJyKabuBJpTF2SfOUA7lHgugcV47mvMl7o
-         KN7OP25lO6CSsllz3c4NUUJNcoDAnhkK8ilWKZhHoDBgUSZX1tXrUddmHUzttCx9FhCU
-         ySZGj/NdrmNx6vnPhU8CVcNRKqMPbudi25jZNGC/qzQZvjZQCx2aywWcIkn/XfHWm3jE
-         2khg==
+        d=poorly.run; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nJMMEQyeYoFZamYcp1LYhzE0BTlamnydOpPxwDn2cGs=;
+        b=fXqsYbmIT1mSvSoJNPQ1aMveBbEXe6FaWiTjjLD7vClMKtZNFOwBq9xP9rkqhpAXpj
+         0S8XA5sqdQ6Rs5cl34L0Cg2n6SYnwdyX/fYTn3wTWXls8UgF6Zp2J2JOhZyLrK/ibRfS
+         jnQBUp+XFpneM3+ugwPmog+A5+c7S4yT4RFXLUQiw/dC9eeunQS923G5TdDgSFLl8DKE
+         RUGWgHm9/5PsfZdMZBKslvKmFmQs93CUxIg8eLRpdNCiTEAph2BLmzWojoU6h3jGziaP
+         wT3zl9aOO5Y55YZ30yfHKUhJWRfQ7SfoYuZolUV4/7V06s7RPzwm29d3kwCkIbM8oIf8
+         PoOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nBU/pM3MYlEmZitwD1KhBWl8EEKhumB4q1qsW3XKr34=;
-        b=trQUw2R8h80RQGahzE08MVDbnX6mcbBy9/D3lr8yLCLfKUYjQFDM8ddHUZIQs8PayV
-         HdiTY40O5rhg8xLEFJWltmfjwUiHOLIXtMv/bz300M/3KPyamUB9yhOyzUI/6a+RD0s+
-         6drSkScVMEaY8VYtih0G5EAcpzTXH2xYXE4N4Z7W8p1kJFszfFO6WgmZH51pA4Q1vWSK
-         FJT3HETU06jUnLQgdbEe1ejYCkM6l15yI6c1xnj7wFp3IL4qHDlaPPQ+fyjLPbObMoYl
-         PApDzY5Ahjeddy97QunCdlj4saxVJkztSjO98pfNL+GSgZwZzxNhoEI438PZsH5OUquG
-         af4A==
-X-Gm-Message-State: AOAM531jRFkzBcdp/2UEwYX54+OBL5vDWTpjmkvt53h0TBNSHm5Ms+na
-        kBqtC/1rxHn+Dz3GVpEqeW0=
-X-Google-Smtp-Source: ABdhPJwspMhA4inynCobhK/0zh+GzIEbqrp0SK1AaC9F08HZ3N5eUOyCbQjr+bHQfeHCb/tplUMHgg==
-X-Received: by 2002:adf:9e8b:: with SMTP id a11mr8464291wrf.309.1596741545387;
-        Thu, 06 Aug 2020 12:19:05 -0700 (PDT)
-Received: from localhost.localdomain (cpc83647-brig20-2-0-cust926.3-3.cable.virginm.net. [82.19.195.159])
-        by smtp.gmail.com with ESMTPSA id f15sm7172154wmj.39.2020.08.06.12.19.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 12:19:04 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Eli Cohen <eli@mellanox.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] vdpa/mlx5: Fix erroneous null pointer checks
-Date:   Thu,  6 Aug 2020 20:18:39 +0100
-Message-Id: <20200806191849.82189-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nJMMEQyeYoFZamYcp1LYhzE0BTlamnydOpPxwDn2cGs=;
+        b=K0RughRxAx3i23+2d8PFWf4xBUlnVhze65ZzJLCbo3NtCjimuH8kT2s6aYdK4uY9GU
+         /vcNDic41Z1PB0p5PCpKgUY2ZrWPW+SHG3WIeMP/Cxgqv9fOYzJRnjsH/jK3qJ+gq0Ma
+         tmKrc57PWbYutEnxwfGZwZBBcFSj3pBuYlmnol9Irdfmoo4GBGzoiCXCVwNHYGoEZD7g
+         8Df0/GXIEZZxZ3ed32cfYnGAzExwuPcVEbn0tpTFV79BAEh+1oFTpZAGxHGBLgYUw5Fm
+         t53DD9umAZ8Bv+aFbG3IP2CFgWhcaXA9VHpW2K/O6rUow9zFyNS1FyD712J/TEqEXysd
+         SjEg==
+X-Gm-Message-State: AOAM530nmTlEpG7oilzRyIVcBKCveWifmI+YxiZaaosbvYZ/I9efAa8e
+        7hsXQ0ZPn3WtKdmaexF51O1tCndLo+DRqqzuHkzRWOAp
+X-Google-Smtp-Source: ABdhPJy4WmJcVXA1gBMJGOmohxprVyg5ve0gqpy0IlGbYGAqjJu2AIxPjnPrNwwYptTfyq2LZVkyeLZYYqzhFQ2MyIo=
+X-Received: by 2002:a02:70c3:: with SMTP id f186mr537634jac.118.1596741778965;
+ Thu, 06 Aug 2020 12:22:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200806144618.4384a0f9@oasis.local.home>
+In-Reply-To: <20200806144618.4384a0f9@oasis.local.home>
+From:   Sean Paul <sean@poorly.run>
+Date:   Thu, 6 Aug 2020 15:22:23 -0400
+Message-ID: <CAMavQK+j8Gxj5n8XnzjprM5b4gL0Kopd5Nu0MNnJPt5_5KifWA@mail.gmail.com>
+Subject: Re: [PATCH v2] tracing: Add trace_array_init_printk() to initialize
+ instance trace_printk() buffers
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In alloc_inout() in net/mlx5_vnet.c, there are a few places where memory
-is allocated to *in and *out, but only the values of in and out are
-null-checked (i.e. there is a missing dereference). Fix this.
+On Thu, Aug 6, 2020 at 2:46 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+>
+> As trace_array_printk() used with not global instances will not add noise to
+> the main buffer, they are OK to have in the kernel (unlike trace_printk()).
+> This require the subsystem to create their own tracing instance, and the
+> trace_array_printk() only writes into those instances.
+>
+> Add trace_array_init_printk() to initialize the trace_printk() buffers
+> without printing out the WARNING message.
+>
+> Reported-by: Sean Paul <sean@poorly.run>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+> Changes since v1:
+>   Added EXPORT_SYMBOL_GPL() to trace_array_init_printk() as it is
+>   required for another function that is exported.
 
-Addresses-Coverity: ("CID 1496603: (REVERSE_INULL)")
-Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Could we also add this to trace.h?
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index 3ec44a4f0e45..bcb6600c2839 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -867,7 +867,7 @@ static void alloc_inout(struct mlx5_vdpa_net *ndev, int cmd, void **in, int *inl
- 		*outlen = MLX5_ST_SZ_BYTES(qp_2rst_out);
- 		*in = kzalloc(*inlen, GFP_KERNEL);
- 		*out = kzalloc(*outlen, GFP_KERNEL);
--		if (!in || !out)
-+		if (!*in || !*out)
- 			goto outerr;
- 
- 		MLX5_SET(qp_2rst_in, *in, opcode, cmd);
-@@ -879,7 +879,7 @@ static void alloc_inout(struct mlx5_vdpa_net *ndev, int cmd, void **in, int *inl
- 		*outlen = MLX5_ST_SZ_BYTES(rst2init_qp_out);
- 		*in = kzalloc(*inlen, GFP_KERNEL);
- 		*out = kzalloc(MLX5_ST_SZ_BYTES(rst2init_qp_out), GFP_KERNEL);
--		if (!in || !out)
-+		if (!*in || !*out)
- 			goto outerr;
- 
- 		MLX5_SET(rst2init_qp_in, *in, opcode, cmd);
-@@ -896,7 +896,7 @@ static void alloc_inout(struct mlx5_vdpa_net *ndev, int cmd, void **in, int *inl
- 		*outlen = MLX5_ST_SZ_BYTES(init2rtr_qp_out);
- 		*in = kzalloc(*inlen, GFP_KERNEL);
- 		*out = kzalloc(MLX5_ST_SZ_BYTES(init2rtr_qp_out), GFP_KERNEL);
--		if (!in || !out)
-+		if (!*in || !*out)
- 			goto outerr;
- 
- 		MLX5_SET(init2rtr_qp_in, *in, opcode, cmd);
-@@ -914,7 +914,7 @@ static void alloc_inout(struct mlx5_vdpa_net *ndev, int cmd, void **in, int *inl
- 		*outlen = MLX5_ST_SZ_BYTES(rtr2rts_qp_out);
- 		*in = kzalloc(*inlen, GFP_KERNEL);
- 		*out = kzalloc(MLX5_ST_SZ_BYTES(rtr2rts_qp_out), GFP_KERNEL);
--		if (!in || !out)
-+		if (!*in || !*out)
- 			goto outerr;
- 
- 		MLX5_SET(rtr2rts_qp_in, *in, opcode, cmd);
--- 
-2.28.0
-
+>
+>  kernel/trace/trace.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+>
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 06c0feae5ff9..c5f822736261 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -3129,6 +3129,9 @@ static int alloc_percpu_trace_buffer(void)
+>  {
+>         struct trace_buffer_struct *buffers;
+>
+> +       if (trace_percpu_buffer)
+> +               return 0;
+> +
+>         buffers = alloc_percpu(struct trace_buffer_struct);
+>         if (MEM_FAIL(!buffers, "Could not allocate percpu trace_printk buffer"))
+>                 return -ENOMEM;
+> @@ -3331,6 +3334,26 @@ int trace_array_vprintk(struct trace_array *tr,
+>         return __trace_array_vprintk(tr->array_buffer.buffer, ip, fmt, args);
+>  }
+>
+> +/**
+> + * trace_array_printk - Print a message to a specific instance
+> + * @tr: The instance trace_array descriptor
+> + * @ip: The instruction pointer that this is called from.
+> + * @fmt: The format to print (printf format)
+> + *
+> + * If a subsystem sets up its own instance, they have the right to
+> + * printk strings into their tracing instance buffer using this
+> + * function. Note, this function will not write into the top level
+> + * buffer (use trace_printk() for that), as writing into the top level
+> + * buffer should only have events that can be individually disabled.
+> + * trace_printk() is only used for debugging a kernel, and should not
+> + * be ever encorporated in normal use.
+> + *
+> + * trace_array_printk() can be used, as it will not add noise to the
+> + * top level tracing buffer.
+> + *
+> + * Note, trace_array_init_printk() must be called on @tr before this
+> + * can be used.
+> + */
+>  __printf(3, 0)
+>  int trace_array_printk(struct trace_array *tr,
+>                        unsigned long ip, const char *fmt, ...)
+> @@ -3355,6 +3378,27 @@ int trace_array_printk(struct trace_array *tr,
+>  }
+>  EXPORT_SYMBOL_GPL(trace_array_printk);
+>
+> +/**
+> + * trace_array_init_printk - Initialize buffers for trace_array_printk()
+> + * @tr: The trace array to initialize the buffers for
+> + *
+> + * As trace_array_printk() only writes into instances, they are OK to
+> + * have in the kernel (unlike trace_printk()). This needs to be called
+> + * before trace_array_printk() can be used on a trace_array.
+> + */
+> +int trace_array_init_printk(struct trace_array *tr)
+> +{
+> +       if (!tr)
+> +               return -ENOENT;
+> +
+> +       /* This is only allowed for created instances */
+> +       if (tr == &global_trace)
+> +               return -EINVAL;
+> +
+> +       return alloc_percpu_trace_buffer();
+> +}
+> +EXPORT_SYMBOL_GPL(trace_array_init_printk);
+> +
+>  __printf(3, 4)
+>  int trace_array_printk_buf(struct trace_buffer *buffer,
+>                            unsigned long ip, const char *fmt, ...)
+> --
+> 2.25.4
+>
