@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6475923D5B0
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 05:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CB523D5B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 05:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgHFDIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 23:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
+        id S1727897AbgHFDIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 23:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727783AbgHFDI2 (ORCPT
+        with ESMTP id S1727078AbgHFDId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 23:08:28 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6B5C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 20:08:28 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id g33so8518431pgb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 20:08:28 -0700 (PDT)
+        Wed, 5 Aug 2020 23:08:33 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F90C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 20:08:33 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id s15so14391113pgc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 20:08:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Z9aoTydaBrsa4BYExn4DIx/YUkSnAWMKI+PsrmMc1kg=;
-        b=WrkJpCyS//k5f3jLpJq0gYmWMxcAz9Jo8ahuFYEOai5Ic6kfXLmFMv7a7xU4nI7mJf
-         P8NFXQ4A1g65VpJtKThhoBOB5Qx+CTnzX2sJO7/XlLMvuqZQdocOn7yPo9ifAPXGUm0y
-         w3m0rct4atRlkW/EQfzz+yEi9dtw3kByAy/+0l0ef12l8tyHNAmJnsdNghh3VrllI3F/
-         1+wlVlwv32jhrspT3BPPeRmc9wfoH0wN3SNPrLSgmaE3JV9RlyMyloliuzkWke89FXrs
-         nYJxAXsutGPT6qeoKlfJSPeOR74S2s24MddVc+9zsX1lQObC0T5SsiIcx1wrAdmLaJbA
-         3jGg==
+        bh=LeGuejqiZKjogcIK6n2jDnenD7gfGOh4ncq9Lv6XsGw=;
+        b=blAtE25XP3Tyx/AkTtJ/jtd+TQaBw40CgwevvROi4bbjiK9542g9kaQ+/yuRK99YgC
+         vylstvC3NVKtUmtTIFmhc3GmGLtiSSxT7hXxpSErhQT3/dDf42keygrO78rQVnv3AkjO
+         LUJ+B43qnAxVoI+2+2xiKWdOCh9bUVR3HivWY9ST1WDNu+DmOJ6fhlRWpqnXfK0jgycc
+         GAMFKJMMNYSQhIha4YMtmsft36NzOMzWOgclglxwdvJyO/uiG4Q69yKZZlFp8A8mrtmi
+         LFzPnqG2527zpzL1GBczCZ0cmyjo9jFiNsPiofA2HP4MEz+2Lv7qeiqR+ldhG1W5xUJv
+         YcKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=Z9aoTydaBrsa4BYExn4DIx/YUkSnAWMKI+PsrmMc1kg=;
-        b=acjohmHqPgj9jTe8S97Hh1EtbuyyrmeZ8SCivTX5r6Tdvpe0ZHRoQH8GyHwG5S5adw
-         moPzH8tmo34s5XHQ/0Ze73/vMR9g+OM2eqDrpgv+TQH8dlJsetI3csVg7aR06w368yhz
-         leqvsDjP/k+N8NgPxrGTYbaTAgzGgI7Wbkb1pYTK/oFbtz1wSl92XnBveYvr3toeaF0w
-         JRSy0ZG3/vHUd2RpMsEQSZ1h8rMcpuIE/5Dx5Ib6xVsBNcPb/WNa4s2/pJPcArdMJqSW
-         5TE+CgCRQ6QopNpZE3JFR8X/uCpKh3NDTJevkP9FAXBFc6Vf9OuLU46aE/+0XiK4jt34
-         WdRQ==
-X-Gm-Message-State: AOAM5328fHH0QTHNgdSERkNKksFUYtS+UJUh44igm+IWFnkwUm93vso7
-        Un9KbSYJY2pCNqRXs/VXc2P1qw==
-X-Google-Smtp-Source: ABdhPJxvroh3jGExosCdQNtms3tA8lWe1hNJRAg7BKavEOjPYB3KFqjr6Ga7fIIAt8Wm1xuyBUMlSw==
-X-Received: by 2002:a63:fd03:: with SMTP id d3mr5534389pgh.76.1596683308330;
-        Wed, 05 Aug 2020 20:08:28 -0700 (PDT)
+        bh=LeGuejqiZKjogcIK6n2jDnenD7gfGOh4ncq9Lv6XsGw=;
+        b=uj0mPhG68anyiuklx+pg3HlPo+DMS/EYH8VZhXWk1ltAW3BVeiCas8aEIhJcMhBzDE
+         SJgu7ILjW+jjWbFqJznDyB3iOMk+sv7TZDrGTbNTp6CX5YEbY8Uabr4t1KNN5LAP4P6Q
+         qZQKa1tjn0/refVDJP6sd3QV3goznJqrW7WXm8Us4KPtgPfHodxqk2fAf7xGd41XqHth
+         ArBgXnsk1kv+OIJ5+mZ4dUSPoyUJaTPdHOcDB9JMnE8EdwK/HV/G6XCyAb4WIS9jGMYe
+         QXXELT+pDSXyuAXnhy4JulCTd3IJKvaA7f1ZorqIzXmVExfPBOWAa2gMuz+Ho/oVv5Yn
+         CKPA==
+X-Gm-Message-State: AOAM532uppJvOIYV5QuAUIXr2y8BrHZsDC1j2rXKUN0Teoic1H5kzqfw
+        tonRP8JfayiqTc1NW7PEgVd+vA==
+X-Google-Smtp-Source: ABdhPJzyghsU5N9v0iVhtVnD1wULUpwAzQtDUt+GaCmPo49GyFQAB379ZyYx+qf7zLgezOArKkEFSg==
+X-Received: by 2002:aa7:942e:: with SMTP id y14mr6269638pfo.58.1596683312898;
+        Wed, 05 Aug 2020 20:08:32 -0700 (PDT)
 Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id i7sm4945160pgh.58.2020.08.05.20.08.27
+        by smtp.gmail.com with ESMTPSA id d13sm5553987pfq.118.2020.08.05.20.08.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 05 Aug 2020 20:08:27 -0700 (PDT)
+        Wed, 05 Aug 2020 20:08:32 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>,
@@ -65,9 +65,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         Mike Leach <mike.leach@linaro.org>
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH RESEND v1 07/11] perf arm-spe: Enable attribution PERF_SAMPLE_DATA_SRC
-Date:   Thu,  6 Aug 2020 11:07:23 +0800
-Message-Id: <20200806030727.30267-8-leo.yan@linaro.org>
+Subject: [PATCH RESEND v1 08/11] perf arm-spe: Save memory addresses in packet
+Date:   Thu,  6 Aug 2020 11:07:24 +0800
+Message-Id: <20200806030727.30267-9-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200806030727.30267-1-leo.yan@linaro.org>
 References: <20200806030727.30267-1-leo.yan@linaro.org>
@@ -76,28 +76,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is to enable attribution PERF_SAMPLE_DATA_SRC for the perf
-data, when decoding the tracing data, it will tells the tool it contains
-memory data.
+This patch is to save virtual and physical memory addresses in packet,
+the address info can be used for generating memory samples.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/util/arm-spe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/arm-spe-decoder/arm-spe-decoder.c | 4 ++++
+ tools/perf/util/arm-spe-decoder/arm-spe-decoder.h | 2 ++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-index 3882a5360ada..c2cf5058648f 100644
---- a/tools/perf/util/arm-spe.c
-+++ b/tools/perf/util/arm-spe.c
-@@ -803,7 +803,7 @@ arm_spe_synth_events(struct arm_spe *spe, struct perf_session *session)
- 	attr.type = PERF_TYPE_HARDWARE;
- 	attr.sample_type = evsel->core.attr.sample_type & PERF_SAMPLE_MASK;
- 	attr.sample_type |= PERF_SAMPLE_IP | PERF_SAMPLE_TID |
--		PERF_SAMPLE_PERIOD;
-+			    PERF_SAMPLE_PERIOD | PERF_SAMPLE_DATA_SRC;
- 	if (spe->timeless_decoding)
- 		attr.sample_type &= ~(u64)PERF_SAMPLE_TIME;
- 	else
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+index 93e063f22be5..373dc2d1cf06 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+@@ -162,6 +162,10 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
+ 				decoder->record.from_ip = ip;
+ 			else if (idx == SPE_ADDR_PKT_HDR_INDEX_BRANCH)
+ 				decoder->record.to_ip = ip;
++			else if (idx == SPE_ADDR_PKT_HDR_INDEX_DATA_VIRT)
++				decoder->record.addr = ip;
++			else if (idx == SPE_ADDR_PKT_HDR_INDEX_DATA_PHYS)
++				decoder->record.phys_addr = ip;
+ 			break;
+ 		case ARM_SPE_COUNTER:
+ 			break;
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+index a5111a8d4360..5acddfcffbd1 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+@@ -47,6 +47,8 @@ struct arm_spe_record {
+ 	u64 from_ip;
+ 	u64 to_ip;
+ 	u64 timestamp;
++	u64 addr;
++	u64 phys_addr;
+ };
+ 
+ struct arm_spe_insn;
 -- 
 2.17.1
 
