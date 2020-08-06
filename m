@@ -2,142 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B42A23D565
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 04:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E3F23D569
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 04:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgHFCWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 22:22:36 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:31210 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726005AbgHFCWf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 22:22:35 -0400
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 0762MGfW005242;
-        Thu, 6 Aug 2020 11:22:17 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0762MGfW005242
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1596680537;
-        bh=sgC4wMyOXq1SDJpZeZcw2hSX1e75t3MVK4Q+P0k1NLU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oaL/Czqy1sTqI7z/ObQV9/lXX2n8BmBIaC55qwNhyYOuM7TuOWQvX3Wn4URhTSABg
-         pZD9NbDOJX7sGZGga+hZS8Re+rlHthMrg8oXTv6PKMBY8NYe8EFT1iU+Ua0N2jDHob
-         0JfkimM3iXn2iTD621RqFY69Q+RAKPuFhhR5Tt6pZ0QETglHi0lKTwT2nDg/ELnKOI
-         9Nx5hY2Bh66gkPh0gpZdPfa/W4N3Jkhf+nWtWFPLVGxmlNYrl1aNee3UGlBZPz/ScJ
-         SFNvHsxxTfhOJV0bDXe43O+1YvO/eDsEcPl0Z61NRj/OWMXb7zdnU9reyxi0pmeKXZ
-         pFPll+yblEPjQ==
-X-Nifty-SrcIP: [209.85.222.50]
-Received: by mail-ua1-f50.google.com with SMTP id p27so10107806uaa.12;
-        Wed, 05 Aug 2020 19:22:17 -0700 (PDT)
-X-Gm-Message-State: AOAM532sa46h1RZflJtgXi8AtXlcFuSU8HfcuuRDu33tmi1uNowfibT8
-        o6Pr0TdUHR+I03PSByV65qQCpqCiSsBS3MgLGKg=
-X-Google-Smtp-Source: ABdhPJzapV3/tw5sL05iXLx3S/H/o9bbQBZyBcr5IV+1cnkMKhGX2cUkcZKpq0tPVVv2tG3KFnm9OWTFrMiPxcBGMo0=
-X-Received: by 2002:ab0:41:: with SMTP id 59mr4087008uai.40.1596680536213;
- Wed, 05 Aug 2020 19:22:16 -0700 (PDT)
+        id S1726851AbgHFC03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 22:26:29 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8771 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725999AbgHFC02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 22:26:28 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 6C8951545C524298B78F;
+        Thu,  6 Aug 2020 10:26:26 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.106) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Thu, 6 Aug 2020
+ 10:26:24 +0800
+Subject: Re: Patch "KVM: arm64: Make vcpu_cp1x() work on Big Endian hosts" has
+ been added to the 4.4-stable tree
+To:     <linux-kernel@vger.kernel.org>, <gregkh@linuxfoundation.org>,
+        <james.morse@arm.com>, <maz@kernel.org>, <drjones@redhat.com>,
+        <marc.zyngier@arm.com>, <christoffer.dall@linaro.org>
+CC:     <stable-commits@vger.kernel.org>, <kvm@vger.kernel.org>
+References: <159230500664142@kroah.com>
+From:   yangerkun <yangerkun@huawei.com>
+Message-ID: <6084bc97-11ea-4b7d-086e-fb98880fca6c@huawei.com>
+Date:   Thu, 6 Aug 2020 10:26:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <1596650328-14869-1-git-send-email-eberman@codeaurora.org>
-In-Reply-To: <1596650328-14869-1-git-send-email-eberman@codeaurora.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 6 Aug 2020 11:21:37 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARrFFF5DTQfm3mo0NtdJjP9p4c=h5iM=vTuOSR=JE8Sbg@mail.gmail.com>
-Message-ID: <CAK7LNARrFFF5DTQfm3mo0NtdJjP9p4c=h5iM=vTuOSR=JE8Sbg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Add dtc flag test
-To:     Elliot Berman <eberman@codeaurora.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Steve Muckle <smuckle@google.com>,
-        Trilok Soni <tsoni@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <159230500664142@kroah.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.106]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 2:59 AM Elliot Berman <eberman@codeaurora.org> wrote:
->
-> Host dtc may not support the same flags as kernel's copy of dtc. Test
-> if dtc supports each flag when the dtc comes from host.
->
-> Signed-off-by: Elliot Berman <eberman@codeaurora.org>
+Hi,
 
+Not familiar with kvm. And I have a question about this patch. Maybe 
+backport this patch 3204be4109ad("KVM: arm64: Make vcpu_cp1x() work on 
+Big Endian hosts") without 52f6c4f02164 ("KVM: arm64: Change 32-bit 
+handling of VM system registers") seems not right?
 
-I think this supports only the newer external DTC,
-but not older ones.
+Thanks,
+Kun.
 
-This feature is intended to test the upstream DTC
-before resyncing in-kernel scripts/dtc/.
-
-
-
-
-
-
+在 2020/6/16 18:56, gregkh@linuxfoundation.org 写道:
+> 
+> This is a note to let you know that I've just added the patch titled
+> 
+>      KVM: arm64: Make vcpu_cp1x() work on Big Endian hosts
+> 
+> to the 4.4-stable tree which can be found at:
+>      http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+> 
+> The filename of the patch is:
+>       kvm-arm64-make-vcpu_cp1x-work-on-big-endian-hosts.patch
+> and it can be found in the queue-4.4 subdirectory.
+> 
+> If you, or anyone else, feels it should not be added to the stable tree,
+> please let <stable@vger.kernel.org> know about it.
+> 
+> 
+>>From 3204be4109ad681523e3461ce64454c79278450a Mon Sep 17 00:00:00 2001
+> From: Marc Zyngier <maz@kernel.org>
+> Date: Tue, 9 Jun 2020 08:40:35 +0100
+> Subject: KVM: arm64: Make vcpu_cp1x() work on Big Endian hosts
+> 
+> From: Marc Zyngier <maz@kernel.org>
+> 
+> commit 3204be4109ad681523e3461ce64454c79278450a upstream.
+> 
+> AArch32 CP1x registers are overlayed on their AArch64 counterparts
+> in the vcpu struct. This leads to an interesting problem as they
+> are stored in their CPU-local format, and thus a CP1x register
+> doesn't "hit" the lower 32bit portion of the AArch64 register on
+> a BE host.
+> 
+> To workaround this unfortunate situation, introduce a bias trick
+> in the vcpu_cp1x() accessors which picks the correct half of the
+> 64bit register.
+> 
+> Cc: stable@vger.kernel.org
+> Reported-by: James Morse <james.morse@arm.com>
+> Tested-by: James Morse <james.morse@arm.com>
+> Acked-by: James Morse <james.morse@arm.com>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
 > ---
->  scripts/Makefile.lib | 34 ++++++++++++++++++++++------------
->  1 file changed, 22 insertions(+), 12 deletions(-)
->
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index 841ac03..2722a67 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -274,25 +274,35 @@ quiet_cmd_gzip = GZIP    $@
->
->  # DTC
->  # ---------------------------------------------------------------------------
-> +ifeq ("$(origin DTC)", "command line")
-> +PHONY += $(DTC)
-> +dtc-option = $(call try-run, $(DTC) $1 -v,$1)
-> +else
-> +# Just add the flag. DTC is compiled later as a prerequisite, so there's no dtc
-> +# to test the flag against. This is okay because we're not testing flags which
-> +# aren't supported by in-kernel dtc to begin with.
-> +dtc-option = $1
-> +endif
+>   arch/arm64/include/asm/kvm_host.h |    6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -178,8 +178,10 @@ struct kvm_vcpu_arch {
+>    * CP14 and CP15 live in the same array, as they are backed by the
+>    * same system registers.
+>    */
+> -#define vcpu_cp14(v,r)		((v)->arch.ctxt.copro[(r)])
+> -#define vcpu_cp15(v,r)		((v)->arch.ctxt.copro[(r)])
+> +#define CPx_BIAS		IS_ENABLED(CONFIG_CPU_BIG_ENDIAN)
 > +
->  DTC ?= $(objtree)/scripts/dtc/dtc
-> -DTC_FLAGS += -Wno-interrupt_provider
-> +DTC_FLAGS += $(call dtc-option,-Wno-interrupt_provider)
->
->  # Disable noisy checks by default
->  ifeq ($(findstring 1,$(KBUILD_EXTRA_WARN)),)
-> -DTC_FLAGS += -Wno-unit_address_vs_reg \
-> -       -Wno-unit_address_format \
-> -       -Wno-avoid_unnecessary_addr_size \
-> -       -Wno-alias_paths \
-> -       -Wno-graph_child_address \
-> -       -Wno-simple_bus_reg \
-> -       -Wno-unique_unit_address \
-> -       -Wno-pci_device_reg
-> +DTC_FLAGS += $(call dtc-option,-Wno-unit_address_vs_reg) \
-> +       $(call dtc-option,-Wno-unit_address_format) \
-> +       $(call dtc-option,-Wno-avoid_unnecessary_addr_size) \
-> +       $(call dtc-option,-Wno-alias_paths) \
-> +       $(call dtc-option,-Wno-graph_child_address) \
-> +       $(call dtc-option,-Wno-simple_bus_reg) \
-> +       $(call dtc-option,-Wno-unique_unit_address) \
-> +       $(call dtc-option,-Wno-pci_device_reg)
->  endif
->
->  ifneq ($(findstring 2,$(KBUILD_EXTRA_WARN)),)
-> -DTC_FLAGS += -Wnode_name_chars_strict \
-> -       -Wproperty_name_chars_strict \
-> -       -Winterrupt_provider
-> +DTC_FLAGS += $(call dtc-option,-Wnode_name_chars_strict) \
-> +       $(call dtc-option,-Wproperty_name_chars_strict) \
-> +       $(call dtc-option,-Winterrupt_provider)
->  endif
->
->  DTC_FLAGS += $(DTC_FLAGS_$(basetarget))
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
->
+> +#define vcpu_cp14(v,r)		((v)->arch.ctxt.copro[(r) ^ CPx_BIAS])
+> +#define vcpu_cp15(v,r)		((v)->arch.ctxt.copro[(r) ^ CPx_BIAS])
+>   
+>   #ifdef CONFIG_CPU_BIG_ENDIAN
+>   #define vcpu_cp15_64_high(v,r)	vcpu_cp15((v),(r))
+> 
+> 
+> Patches currently in stable-queue which might be from maz@kernel.org are
+> 
+> queue-4.4/kvm-arm64-make-vcpu_cp1x-work-on-big-endian-hosts.patch
+> 
+> .
+> 
 
-
--- 
-Best Regards
-Masahiro Yamada
