@@ -2,60 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D65723DCFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C9C23DC05
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729478AbgHFQ64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41654 "EHLO
+        id S1729142AbgHFQoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:44:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728768AbgHFQkm (ORCPT
+        with ESMTP id S1729001AbgHFQkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 Aug 2020 12:40:42 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D907C0086B9;
-        Thu,  6 Aug 2020 08:36:58 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id c16so30416719ejx.12;
-        Thu, 06 Aug 2020 08:36:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xpnCPJNyGsrLzWm8QOzVbxMg70S0b7SCU0Q8vzGNKK0=;
-        b=Z/EQNUDaGYAngW57e5SPhEMMQviexnNEdX1OL8T0J8vvO3HW6AQDQoEtnsgqOdejSG
-         j7NeDR63FkI2y+Sg+FZr7fDNzw68hmE1/zlxMxpiX3QWPCNyjoV7VTBhIsB4wh5bQM2D
-         1derZihF6/dWXWAcaG0BO1yZbDTL0QBWxO7LBWCr5mp45poeITN69tJKvhXEo60OJYPV
-         ihDCDzTECHtfo7SkZxW+uFK/+YG7mWoVZ+k1omKseDF0t3XgJ8bsfmz000dVuXwptjt+
-         egVVAZ2W9LcB2Yln2DEJralPQYwHKJ3PdtqE6+eT2W1a8A5XSbLY3346tLlrVWjzRnlo
-         Qq/g==
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AAB8C0086BC;
+        Thu,  6 Aug 2020 08:39:20 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id v4so42602271ljd.0;
+        Thu, 06 Aug 2020 08:39:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=xpnCPJNyGsrLzWm8QOzVbxMg70S0b7SCU0Q8vzGNKK0=;
-        b=euAqzzWTnNEQwRAKymBjwwW3fsYAVNaCyX/1Ht/hSDwiefzy74pA6WRwKjrIJ1O8XH
-         GjfO7gNbYxPpu1rYLvpnU44j2QGOjz7tXBWL0NMEgFUX5ECk4jUgCfdHO+5qh8k4Jqxk
-         rY1G2TNnqtXfH1FE0NOj8owprm04uO0xKUe9hb7ZS0O/q7QhRDqeXHiMcMv34gcBNTcv
-         QcxkABWdVFQ1ldXPg7R87ZrIiqE7J0fB1adduM5UKFPf9QV6b1Bk3QGpZaBe6Z6+LTgw
-         i4YtZ2mDuC8n48D7W9FY56PiRYlu2eSNKZ7ZHSaiZg271AKiGTmS5C22NR/gtzSp94qo
-         h9rw==
-X-Gm-Message-State: AOAM531O55K8tOOWaugL3HQ2yzc3cyKNxhPbt0jt1nZzjiyhTJS06iQM
-        BZ7YWXzhpUIjvY6RA/6MO3wxxuMB
-X-Google-Smtp-Source: ABdhPJyjvQ0o88PzKsmx99c/tjJod1LI1/VwIAe8QTyZaHHrSHXsA/mfPwbax44NxKm9klRmAuMXZQ==
-X-Received: by 2002:a17:906:970a:: with SMTP id k10mr4850800ejx.189.1596728216809;
-        Thu, 06 Aug 2020 08:36:56 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id g21sm3563561edm.65.2020.08.06.08.36.54
+        bh=q5PIhTZ1k5FdG3NQbW/iiFuxA5Ifg1yNdI35SxS/Xwk=;
+        b=qQGNBo6Ekik496p3/E13FqX0TMGK+7zedJcS9ukf6cmLtwnbAEhkXjXAbK7OHp5zjo
+         /XPHpmUDEPKy8Iw38Q08tzeWDCaC/9ImokMgBOM+HRYwWv7ZdCjDiz8LibmRTeqN4BGD
+         JYVlGgw/o3m3yuE14VtimRONafHPNADq7EkerpnxevEdfxQeHc2PP7JjDLlCHQ13vrnZ
+         KIHN9/EjGf8fGNMsFBINqWmX6eJQUzr/h6XUcXnp9MgkyRAVehdfwdEajwjRkwwmiXeN
+         uIiLMRZHyORk0e/nZ3sGaGObKos2UnoDouX31w8j6vQu2L+u3UpoBNuTxfY3hRic4Ny0
+         xb0A==
+X-Gm-Message-State: AOAM532XMv2iAljFtCbUMxAO+hbXbHoRKx+D9JZ/GYsb22XvWAsyqRd6
+        N6YkizC2wXu/GqsLTevUGxQ=
+X-Google-Smtp-Source: ABdhPJxkmm9iVoirzrxeN4OhGBs4mKGRNymtq+vksvikDKFhl16Z12DTSOySIPWDzecAwwEXojdHKg==
+X-Received: by 2002:a2e:9196:: with SMTP id f22mr4160854ljg.435.1596728358635;
+        Thu, 06 Aug 2020 08:39:18 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id v26sm2554919lji.65.2020.08.06.08.39.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 08:36:54 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] of: platform: Destroy child devices symmetrically
-Date:   Thu,  6 Aug 2020 17:36:50 +0200
-Message-Id: <20200806153650.3883530-1-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 06 Aug 2020 08:39:17 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@xi.terra>)
+        id 1k3hzE-0003Cf-Up; Thu, 06 Aug 2020 17:39:21 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH net] net: phy: fix memory leak in device-create error path
+Date:   Thu,  6 Aug 2020 17:37:53 +0200
+Message-Id: <20200806153753.12247-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -63,45 +59,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+A recent commit introduced a late error path in phy_device_create()
+which fails to release the device name allocated by dev_set_name().
 
-Iterate over child devices in reverse when unpopulating a platform
-device to make this step symmetrical with the population step. This
-fixes an issue in the Tegra DRM driver where upon module unload the
-DPAUX controller tries to unregister an I2C controller but will end
-up waiting indefinitely because one of the SOR devices is keeping a
-reference to it. Since the SOR devices are instantiated after the
-DPAUX devices, they would only be removed (and hence release their
-reference to the I2C controller) after the DPAUX devices have been
-removed.
-
-While destroying the child devices in reverse order helps in this
-situation, it isn't fully safe to do so either. An even better way
-would be for the child devices to be reordered to match the probe
-order, which would work irrespective of the instantiation order.
-
-However, reordering by probe order would be fairly complicated and
-doesn't fix any known issues, so we'll go with the simpler fix for
-now.
-
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Fixes: 13d0ab6750b2 ("net: phy: check return code when requesting PHY driver module")
+Cc: Heiner Kallweit <hkallweit1@gmail.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/of/platform.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/phy/phy_device.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-index 071f04da32c8..b557a0fcd4ba 100644
---- a/drivers/of/platform.c
-+++ b/drivers/of/platform.c
-@@ -590,7 +590,7 @@ EXPORT_SYMBOL_GPL(of_platform_device_destroy);
- void of_platform_depopulate(struct device *parent)
- {
- 	if (parent->of_node && of_node_check_flag(parent->of_node, OF_POPULATED_BUS)) {
--		device_for_each_child(parent, NULL, of_platform_device_destroy);
-+		device_for_each_child_reverse(parent, NULL, of_platform_device_destroy);
- 		of_node_clear_flag(parent->of_node, OF_POPULATED_BUS);
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 1b9523595839..57d44648c8dd 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -615,7 +615,9 @@ struct phy_device *phy_device_create(struct mii_bus *bus, int addr, u32 phy_id,
+ 	if (c45_ids)
+ 		dev->c45_ids = *c45_ids;
+ 	dev->irq = bus->irq[addr];
++
+ 	dev_set_name(&mdiodev->dev, PHY_ID_FMT, bus->id, addr);
++	device_initialize(&mdiodev->dev);
+ 
+ 	dev->state = PHY_DOWN;
+ 
+@@ -649,10 +651,8 @@ struct phy_device *phy_device_create(struct mii_bus *bus, int addr, u32 phy_id,
+ 		ret = phy_request_driver_module(dev, phy_id);
  	}
- }
+ 
+-	if (!ret) {
+-		device_initialize(&mdiodev->dev);
+-	} else {
+-		kfree(dev);
++	if (ret) {
++		put_device(&mdiodev->dev);
+ 		dev = ERR_PTR(ret);
+ 	}
+ 
 -- 
-2.27.0
+2.26.2
 
