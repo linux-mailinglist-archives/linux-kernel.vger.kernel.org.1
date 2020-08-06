@@ -2,79 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B3E23DEC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A1D23DFBE
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgHFR3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728624AbgHFRAI (ORCPT
+        id S1730525AbgHFRww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:52:52 -0400
+Received: from mail-yb1-f196.google.com ([209.85.219.196]:42113 "EHLO
+        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728399AbgHFRwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:00:08 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF738C0617A3;
-        Thu,  6 Aug 2020 04:22:04 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id m34so166033pgl.11;
-        Thu, 06 Aug 2020 04:22:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jnzzxc34cQW56LxwSyg5mi8Zc5YMYFPRJUcDt/n6b0U=;
-        b=LvvBqyfgpeZFSNNkZU5lsH3pLnN3iLgCPYQiwOUywcijpSNbWn1VcotxvttMfFZZ/0
-         UEooSgKnM/46tX0dlW6rODlpbd70OlBc1b6QxBwLff+/AixsDfDV/LcDJTsVHqVmWVib
-         7JoeJiPKNeBlYli59nkZnoGA7CvxTwbmtgA43tH15RABrCfUbQTGKm9COuxDF2cVBXzo
-         gUuxTBkMB1GUdaNl5WvzpQqYnVbhDA/LCSST/w/pdAN2Qgi/B41xGydKPVk27/AbcbSc
-         HBOYygAnhNBzT5VBMtPYX0jdHiY0FqIKhNJcyJKpKVYBKZLo/LXuBD6uhx7k8DFGI9CP
-         dBRw==
+        Thu, 6 Aug 2020 13:52:49 -0400
+Received: by mail-yb1-f196.google.com with SMTP id a34so21128399ybj.9;
+        Thu, 06 Aug 2020 10:52:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jnzzxc34cQW56LxwSyg5mi8Zc5YMYFPRJUcDt/n6b0U=;
-        b=uaWF9Zc636jrZQmHa/el/gY2EZfBSJ/fJkzgMD9kmCTCKqKlbsbE7scSWO+OtYVo4g
-         BxyjYInpyMNxLRzIrJ/qFlbf37TmAOy1C1LbeKqC1yK8msI4pP/MEdwJ6n5UxdhJObEu
-         6wRn1UVGyI5GhCqS0R55U83YhIJ8DeeA5ysnJKRQ9q3iIm0j54b7OFpPuKjSz52S5eLh
-         Ol1Nrvt4O+i7LLtjo1tKwk61zrulapdirN4Cx4ccIDTXnDVZuAvDucgdzHSs7m7diQcD
-         ZHXio+h7FnBMckadOj8Ax9XM0IRM/sjTw9ocVRe5yXS7xjpYRLMfMEdl03IG1lMFo7zH
-         Mh9A==
-X-Gm-Message-State: AOAM5301TkgFAqwzZ6iTt6EOGo7bBdvGqCXtliWG3SwdiS5Ch01IY8EK
-        N7+F9qbVocWeMPx9A5qbu1ZZKNzsqMPsiiYxD1TgUQ==
-X-Google-Smtp-Source: ABdhPJykwbb1OjxTXVBM34rrhJ4WhW/ws9Yx3vOWBNCofm/m7DTOL6oWsFpa9T4EXhuWQhhvqc+eGGA6Z1J+4Kc+R4Q=
-X-Received: by 2002:a63:e057:: with SMTP id n23mr6686076pgj.368.1596712924359;
- Thu, 06 Aug 2020 04:22:04 -0700 (PDT)
+        bh=hgg7zjRmtBHf2LasBRhwIDC6917kX0SOQm5jVjzS8IY=;
+        b=nCh3eFAgcnGVQJwt76xeSrzviRhoMjBHsIuHNXqkAq8EOA6dy151e3y+EG3BLYtRsh
+         QVeqmj+OgHWIwCP9EHVbkmOZsDgAbBuH0dI7NHHm319inLAaqbVq/v+48emOBsxM6sWB
+         4Uou/DL6sXdDtY+GNzLwQ0+7EzprdDbQfmVlF0N+uCoYrknPp3yYJZ6yA+knEqTqoBsU
+         XVN16pumaeUUCx+7anFWCojmZ0K8GyeljDlxH4WvNJlOFyN76PG3WtFTD8rFogDet6Z8
+         yOvGcAKvVIEHQsT1SH3N+Xmmmu/i9Lfmau5NboSDdDGB1SlooRci5+T8xpI66ULIppIl
+         BKiA==
+X-Gm-Message-State: AOAM53190UqgjPg+EZxVr2A0wv07M7iXN69bNIdS4VZwdt5D43irDMsD
+        2tGgc1XaPcR21iWPafAUO1lK94+qINHbf97L/4p8cg==
+X-Google-Smtp-Source: ABdhPJxULzaMdb2r5HtAoGgvyO5tjHQhRFpUAVkZo1s1fFBs4k39zAEGh6ZRygcyIDYC1Ra54huZqcZBjxPgAvBb0BE=
+X-Received: by 2002:a9d:590a:: with SMTP id t10mr6761257oth.262.1596713126064;
+ Thu, 06 Aug 2020 04:25:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200806015040.98379-1-xie.he.0141@gmail.com> <CA+FuTSeOhYOqKjHk5ZBFiY=_+pXgUKe4BKx1S+gu9T9X2c1+bQ@mail.gmail.com>
-In-Reply-To: <CA+FuTSeOhYOqKjHk5ZBFiY=_+pXgUKe4BKx1S+gu9T9X2c1+bQ@mail.gmail.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Thu, 6 Aug 2020 04:21:53 -0700
-Message-ID: <CAJht_ENbEh1JFhk57YD+MteOafv6+PgE25hRUjyiPk9B48dEVA@mail.gmail.com>
-Subject: Re: [PATCH] drivers/net/wan/lapbether: Added needed_headroom and a
- skb->len check
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>,
-        Brian Norris <briannorris@chromium.org>
+References: <4981405.3kqTVLv5tO@kreacher> <1709487.Bxjb1zNRZM@kreacher>
+ <3226770.pJcYkdRNc2@kreacher> <004701d66bb6$22a11410$67e33c30$@net>
+In-Reply-To: <004701d66bb6$22a11410$67e33c30$@net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 6 Aug 2020 13:25:13 +0200
+Message-ID: <CAJZ5v0gz89CXmNmFE50oB78JigrDzo=EPYcGQORRtz7WbWv9fQ@mail.gmail.com>
+Subject: Re: [PATCH v7] cpufreq: intel_pstate: Implement passive mode with HWP enabled
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Francisco Jerez <francisco.jerez.plata@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 12:47 AM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
+On Thu, Aug 6, 2020 at 1:04 PM Doug Smythies <dsmythies@telus.net> wrote:
 >
-> Acked-by: Willem de Bruijn <willemb@google.com>
+> On 2020.08.05 09:56 Rafael J. Wysocki wrote:
 >
-> The in-band signal byte is required, but stripped by lapbeth_xmit.
-> Subsequent code will prefix additional headers, including an Ethernet
-> link layer. The extra space needs to be reserved, but not pulled in
-> packet_snd with skb_reserve, so has to use needed_headroom instead of
-> hard_header_len.
+> > v6 -> v7:
+> >    * Cosmetic changes in store_energy_performance_prefernce() to reduce the
+> >      LoC number and make it a bit easier to read.  No intentional functional
+> >      impact.
+>
+> ??
+> V7 is identical to V6.
+>
+> Diff:
 
-Thank you, Willem!
+Oh.
+
+It looks like I sent the v6 instead of it, then.
+
+I'll send the right one shortly, sorry for the confusion.
