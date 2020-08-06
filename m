@@ -2,198 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DE423D957
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E28A423D956
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 12:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729434AbgHFKoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 06:44:14 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:33149 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729365AbgHFKhW (ORCPT
+        id S1729388AbgHFKll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 06:41:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729392AbgHFKgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 06:37:22 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 411705C0075;
-        Thu,  6 Aug 2020 06:25:02 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Thu, 06 Aug 2020 06:25:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=y6TR7KGEsyJS9Ciixjf+CKxcF1U
-        s1gifm6+rZFueTCc=; b=JLPR1zeUqCpKCuFq5tvi9FwyDVMN3SP6lh0ZxnXc86K
-        Px+ydSiegQXOiWaURVko5RD3zRgobli4eXaWcSsJj1SzZVpZgcjcr3X0XElN99Jl
-        wWJxA+blX7NSGhqTdFur1KtbiMXqYvdgaFHxoA65J1Ib/QzLelV6znMcO9bB4M3Q
-        8gL1Vs5vWDhAnICQebEuMVOncR+O2RFP/5AtxqKOEKHCb5bqDXwx9HBAAkukqP73
-        FkcomJxY0uOys9QkiRFO/S4+Zq6attAG9zgZUUKrlpswVAnbVxpOiPBmfnfvClbT
-        ++NyT68hzPM6jlGGVr6IRDK0RBXPyimr8qflsKtWsmg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=y6TR7K
-        GEsyJS9Ciixjf+CKxcF1Us1gifm6+rZFueTCc=; b=pBgJV/EQoDtF0c8HkVFuZx
-        2mSNZVeegWhXEuhu0JmsMVOEpxsfmJhcIauw0YiwzgMSQ62wUgqZZpHvFjT8cMbD
-        rVKLAoc31qolZQVWe3YM/RElqYFjQ7+1cJQERNFwq3pDWqxhJEEsTKfj+VYRr8T1
-        msa2B6/IFodhiA+Vb4rb1S/jDgpfJ2COl1ZiqyvwrcsRs6qYJ4sCv/cKRIcHd1RP
-        HOcQDHXRXbFtO9Y67bKOPfB6NasLcGcYl7iBdbUUU6AQJKLBuNRTn5lnZv6M/cFg
-        uhc9AHxdv2PSDjJ0WeP6herDeLddH65i3xm4g4ejZl94eJqwXRK31xTF+yaOVgAw
-        ==
-X-ME-Sender: <xms:fdorX8ncEe2zZKAa-CXAcFUlV3idhBK6dwZLu5KLEVXpcqvKc7vfLQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrkedtgddvkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
-    keeirdekledruddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:fdorX72zORz44DIzvn5fVl__DWkmtAgoci9Rxm6_4H64BP56HBpc5g>
-    <xmx:fdorX6qtqWsdvS-aswrdBnSsBk6Zg1cktQaxxT-lnNyQKIGljuc3lA>
-    <xmx:fdorX4kZ4RJxNxh-Q6duf2lCox8toYVIQdQ7rwZzdYCqgCTyy32fkg>
-    <xmx:ftorX2-kZAn2ievVuHPQP5KS3t9MgSO9HGBuKMI_ZpDZYrTYvNnnCg>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D5C5530600B4;
-        Thu,  6 Aug 2020 06:25:00 -0400 (EDT)
-Date:   Thu, 6 Aug 2020 12:24:46 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Jiang Ying <jiangying8582@126.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz, stable@vger.kernel.org, wanglong19@meituan.com,
-        heguanjun@meituan.com
-Subject: Re: [PATCH v5] ext4: fix direct I/O read error for kernel stable
- rc4.4
-Message-ID: <20200806102446.GA2792131@kroah.com>
-References: <1596706691-82760-1-git-send-email-jiangying8582@126.com>
+        Thu, 6 Aug 2020 06:36:23 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C69C061757
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 03:26:32 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id z188so16840337pfc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 03:26:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HFQwzbiefbpfbQFLc0zRge0aMRzUuoiJq6/bLA8CABQ=;
+        b=z8tydMrbJZmdGu0lb6D8fiATUQOQnZ2LTi3TH8K+kklHy1YxIMA7o18BjoXkNo8SLu
+         uDGXiQIhcaweqBHVQaS6UwO954M24jqnaK3oZEE49+ChN0NRBTjvEJttxbrsPVBge/3J
+         kX1nJEAklBNWWZXdGZ1fyUiWi9EBasqndrPm2LhFaaI2/uWnnk6n1BAYBZXWeD6MSUww
+         d3740yD04zI0BzUmuurGfrH2rXG794yB3fE9/pGbc5eEz3Fmu2wpxjzX5Xi7/6R6g5P3
+         g35ZMrhUwug0NSjANrWSnp7LSIfGJAgDOMOdfSRpNmi+jSZoTbCV+bE8Glrk15ra+PVk
+         oetg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HFQwzbiefbpfbQFLc0zRge0aMRzUuoiJq6/bLA8CABQ=;
+        b=atTu1Uail3ZH2pQ5iJeQjNZvzpYRZn05rhKRUmf1Me4VmEAx8bTfZNsp+zt0nxIigS
+         EvED74o027pLcjHtheS2Br/ETnXRVOPs2N4cWsHUf6jbvyD21Fpa4oi3pNRjDC1TRx1t
+         46dK5yMAdq4YExmgpPydcY1yxC187CU2oQT/EeRWBDiluZ/gSqAf2ttgdQucGiq0CsY1
+         7ZtIXtojmIRpuI98jFzDGtsyCOL5nIeFEosVlY48ZRh7EJpDYU2FSBlFEZHIO1+wvfMt
+         xzt7pQ0tiv/7rt9UayO6b7FjX2mFcWkv1dcETQDtJCDgcVSRsS76mxTPFf16bz5xtDgB
+         ouKw==
+X-Gm-Message-State: AOAM532TxKurFCIBgsQICzFpXHLSlrEJ3hIAjN68ucu7Klo5/VUICNF6
+        pYhx8UDrv2p+Bislei049hCB
+X-Google-Smtp-Source: ABdhPJyeuaqpfkpPTZXEXyS2DV+YjRijY6hoRp+ZiREGIm+IZTpaxIeO+Am8BZpkc2kEWk4wH+OEtA==
+X-Received: by 2002:a63:c50a:: with SMTP id f10mr6885148pgd.167.1596709591711;
+        Thu, 06 Aug 2020 03:26:31 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:594:2f7a:c8c3:17bf:d7ce:f7e2])
+        by smtp.gmail.com with ESMTPSA id a18sm6181942pjh.42.2020.08.06.03.26.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 06 Aug 2020 03:26:31 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 15:56:23 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        sboyd@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH v2 3/3] arm64: dts: Enabled MHI device over PCIe
+Message-ID: <20200806102623.GB2406@Mani-XPS-13-9360>
+References: <1596706332-12957-1-git-send-email-gokulsri@codeaurora.org>
+ <1596706332-12957-4-git-send-email-gokulsri@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1596706691-82760-1-git-send-email-jiangying8582@126.com>
+In-Reply-To: <1596706332-12957-4-git-send-email-gokulsri@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 05:38:11PM +0800, Jiang Ying wrote:
-> This patch is used to fix ext4 direct I/O read error when
-> the read size is not aligned with block size.
+On Thu, Aug 06, 2020 at 03:02:12PM +0530, Gokul Sriram Palanisamy wrote:
+> Enabled MHI device support over PCIe and added memory
+> reservation required for MHI enabled QCN9000 PCIe card.
 > 
-> Then, I will use a test to explain the error.
-> 
-> (1) Make a file that is not aligned with block size:
-> 	$dd if=/dev/zero of=./test.jar bs=1000 count=3
-> 
-> (2) I wrote a source file named "direct_io_read_file.c" as following:
-> 
-> 	#include <stdio.h>
-> 	#include <stdlib.h>
-> 	#include <unistd.h>
-> 	#include <sys/file.h>
-> 	#include <sys/types.h>
-> 	#include <sys/stat.h>
-> 	#include <string.h>
-> 	#define BUF_SIZE 1024
-> 
-> 	int main()
-> 	{
-> 		int fd;
-> 		int ret;
-> 
-> 		unsigned char *buf;
-> 		ret = posix_memalign((void **)&buf, 512, BUF_SIZE);
-> 		if (ret) {
-> 			perror("posix_memalign failed");
-> 			exit(1);
-> 		}
-> 		fd = open("./test.jar", O_RDONLY | O_DIRECT, 0755);
-> 		if (fd < 0){
-> 			perror("open ./test.jar failed");
-> 			exit(1);
-> 		}
-> 
-> 		do {
-> 			ret = read(fd, buf, BUF_SIZE);
-> 			printf("ret=%d\n",ret);
-> 			if (ret < 0) {
-> 				perror("write test.jar failed");
-> 			}
-> 		} while (ret > 0);
-> 
-> 		free(buf);
-> 		close(fd);
-> 	}
-> 
-> (3) Compile the source file:
-> 	$gcc direct_io_read_file.c -D_GNU_SOURCE
-> 
-> (4) Run the test program:
-> 	$./a.out
-> 
-> 	The result is as following:
-> 	ret=1024
-> 	ret=1024
-> 	ret=952
-> 	ret=-1
-> 	write test.jar failed: Invalid argument.
-> 
-> I have tested this program on XFS filesystem, XFS does not have
-> this problem, because XFS use iomap_dio_rw() to do direct I/O
-> read. And the comparing between read offset and file size is done
-> in iomap_dio_rw(), the code is as following:
-> 
-> 	if (pos < size) {
-> 		retval = filemap_write_and_wait_range(mapping, pos,
-> 				pos + iov_length(iov, nr_segs) - 1);
-> 
-> 		if (!retval) {
-> 			retval = mapping->a_ops->direct_IO(READ, iocb,
-> 						iov, pos, nr_segs);
-> 		}
-> 		...
-> 	}
-> 
-> ...only when "pos < size", direct I/O can be done, or 0 will be return.
-> 
-> I have tested the fix patch on Ext4, it is up to the mustard of
-> EINVAL in man2(read) as following:
-> 	#include <unistd.h>
-> 	ssize_t read(int fd, void *buf, size_t count);
-> 
-> 	EINVAL
-> 		fd is attached to an object which is unsuitable for reading;
-> 		or the file was opened with the O_DIRECT flag, and either the
-> 		address specified in buf, the value specified in count, or the
-> 		current file offset is not suitably aligned.
-> 
-> So I think this patch can be applied to fix ext4 direct I/O error.
-> 
-> However Ext4 introduces direct I/O read using iomap infrastructure
-> on kernel 5.5, the patch is commit <b1b4705d54ab>
-> ("ext4: introduce direct I/O read using iomap infrastructure"),
-> then Ext4 will be the same as XFS, they all use iomap_dio_rw() to do direct
-> I/O read. So this problem does not exist on kernel 5.5 for Ext4.
-> 
-> >From above description, we can see this problem exists on all the kernel
-> versions between kernel 3.14 and kernel 5.4. It will cause the Applications
-> to fail to read. For example, when the search service downloads a new full
-> index file, the search engine is loading the previous index file and is
-> processing the search request, it can not use buffer io that may squeeze
-> the previous index file in use from pagecache, so the serch service must
-> use direct I/O read.
-> 
-> Please apply this patch on these kernel versions, or please use the method
-> on kernel 5.5 to fix this problem.
-> 
-> Fixes: 9fe55eea7e4b ("Fix race when checking i_size on direct i/o read")
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Reviewed-by: Wang Long <wanglong19@meituan.com>
-> Signed-off-by: Jiang Ying <jiangying8582@126.com>
-> 
-> Changes since V4:
-> 	Fix build error on kernel stable rc 4.4.
-> 	This patch only for kernel 4.4.
 
-What about for the 4.9.y tree, will this work there too?
+There is no DT support exist for MHI as of now, so this is not going to work.
 
-thanks,
+Thanks,
+Mani
 
-greg k-h
+> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi | 58 ++++++++++++++++++++++++++++++
+>  arch/arm64/boot/dts/qcom/ipq8074.dtsi      |  8 +++++
+>  2 files changed, 66 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+> index 0827055..d201a7b 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+> @@ -24,6 +24,22 @@
+>  		device_type = "memory";
+>  		reg = <0x0 0x40000000 0x0 0x20000000>;
+>  	};
+> +
+> +	reserved-memory {
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		qcn9000_pcie0: memory@50f00000 {
+> +			no-map;
+> +			reg = <0x0 0x50f00000 0x0 0x03700000>;
+> +		};
+> +
+> +		qcn9000_pcie1: memory@54600000 {
+> +			no-map;
+> +			reg = <0x0 0x54600000 0x0 0x03700000>;
+> +		};
+> +	};
+>  };
+>  
+>  &blsp1_spi1 {
+> @@ -74,3 +90,45 @@
+>  		nand-bus-width = <8>;
+>  	};
+>  };
+> +
+> +&pcie0_rp {
+> +	status = "ok";
+> +
+> +	mhi_0: qcom,mhi@0 {
+> +		reg = <0 0 0 0 0 >;
+> +		qrtr_instance_id = <0x20>;
+> +		#address-cells = <0x2>;
+> +		#size-cells = <0x2>;
+> +
+> +		base-addr = <0x50f00000>;
+> +		qcom,caldb-addr = <0x53E00000>;
+> +		qrtr_node_id = <0x27>;
+> +		mhi,max-channels = <30>;
+> +		mhi,timeout = <10000>;
+> +
+> +		pcie0_mhi: pcie0_mhi {
+> +			status = "ok";
+> +		};
+> +	};
+> +};
+> +
+> +&pcie1_rp {
+> +	status = "ok";
+> +
+> +	mhi_1: qcom,mhi@1 {
+> +		reg = <0 0 0 0 0 >;
+> +		qrtr_instance_id = <0x21>;
+> +		#address-cells = <0x2>;
+> +		#size-cells = <0x2>;
+> +
+> +		base-addr = <0x54600000>;
+> +		qcom,caldb-addr = <0x57500000>;
+> +		qrtr_node_id = <0x28>;
+> +		mhi,max-channels = <30>;
+> +		mhi,timeout = <10000>;
+> +
+> +		pcie1_mhi: pcie1_mhi {
+> +			status = "ok";
+> +		};
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> index b651345..eef47c1 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> @@ -709,6 +709,10 @@
+>  				      "ahb",
+>  				      "axi_m_sticky";
+>  			status = "disabled";
+> +
+> +			pcie1_rp: pcie1_rp {
+> +				reg = <0 0 0 0 0>;
+> +			};
+>  		};
+>  
+>  		pcie0: pci@20000000 {
+> @@ -779,6 +783,10 @@
+>  				      "axi_m_sticky",
+>  				      "axi_s_sticky";
+>  			status = "disabled";
+> +
+> +			pcie0_rp: pcie0_rp {
+> +				reg = <0 0 0 0 0>;
+> +			};
+>  		};
+>  
+>  		tcsr_q6: syscon@1945000 {
+> -- 
+> 2.7.4
+> 
