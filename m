@@ -2,281 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E67423DD69
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E1D23DD4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729334AbgHFRJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
+        id S1729833AbgHFRIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729960AbgHFRGI (ORCPT
+        with ESMTP id S1729136AbgHFRGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:06:08 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0FAC008692
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 08:28:54 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id m22so7669480eje.10
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 08:28:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=8dJRX0Igl8Nzz5CO3GKFYKT9330jHgO3CL9EwFxbfPY=;
-        b=Et4UyxEhb4ruYaDwnjt8+KPZrq/MFw2cICGFKe8rbg1pXlR+HHtzHMoSEgtnFbWhyU
-         oO7c1P0pwaTs0mUWogLImAdsgBwbePBedWGjXHb+kEIBlevGB2o01x2tle+6oNN7Ne3z
-         X0kABG46i+CXilTn3kpGonGXNkRilg4VYfJkMq3i+HF0v/LWF+HZYzq78yQo4Lx9fgav
-         qIMFgp1Cg2K7vBH2DRyFdZcFa2RvxJG+yfVJPpCcdMlqezRcrf1A1cdSVpAKI13eHGUs
-         hTsvrcBK4klJThdTnXVOA/yZE02qyEgx57ygmx0QqxEo7BPljTAUffEXUcGLohS1rrXa
-         nSVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=8dJRX0Igl8Nzz5CO3GKFYKT9330jHgO3CL9EwFxbfPY=;
-        b=pf1q7nQmrtftW64uG0QrGop+k8SNOd3AXNQPYXVxoN+BoB52aUv/t6V9AwCihyYaFo
-         HacwNQqWrpGi1mVvSVlgvXAX/MvnTBBurU3gBxl5ti4fKMCRDD3JzPaTF6IAAUuLejPT
-         696N6u1FpDwwy2ES+7nMnN5P9uORd6kWNZfwWHuj2JqVPkgMoPFxmp9EF54aPyM02D4M
-         76iKVtmEs/wYENUG06eu24iHqJmpxjI/++ULOSjdN0G6WAWI4n5z12v/eZniSS88OJNm
-         UM6rWzTd9jWQDV9wI78vMDaOdPgDoOSZBgKPCrEYFBfTWNqaJqeHKhzr3S/ocf5cDNHr
-         2wLg==
-X-Gm-Message-State: AOAM532jo55pt21Kv9HhVlf1W7eIvookGEL2XRqi3OLEcnnoCieEvyp8
-        TYY1CH9IT3XJ2HUyKVw8t4x/eGhyxmAJP7sxmvrRjA==
-X-Google-Smtp-Source: ABdhPJyJ6LKnK4sE4FKAWZMO5lrML4pA9T6kL3O1Se2tGp1Pmv8J4aqcA9YOHsfaPuOVZxolrRJlCDcA5wi4VNs9FzU=
-X-Received: by 2002:a17:906:7fc9:: with SMTP id r9mr4742298ejs.407.1596727732562;
- Thu, 06 Aug 2020 08:28:52 -0700 (PDT)
+        Thu, 6 Aug 2020 13:06:40 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A6AC00039B
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 08:41:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=SYlFjm0mwqc1/fLu0yjS/vwFC4Hl2/w3ahTiDqtfULI=; b=VZp0+VHrvA/ss+thlumVpoS9l
+        msQUgYqdXu8vSwI729+ZVuDv1CLlf22ILfwawlPVDf/Afffgb9LNeU3GYftSJKKu8KU3fWsn2mobg
+        Ev1a9GcJyWXNav5OfbfbgHTl4CXilPehVT0uAonCtmdikoFj2tLyyn0IRoZwmEryJwiuxJ/raz1Sj
+        GYLCC9wJTxK44Ia5RznOBlNKdPyqRW7LfrlGoJq+wu93B9xQT60aTPIaIECAawOALg+zzuRCBhI5n
+        4Ku8mi+DwbUgVwDi22RJ8w1Si28OlJMf8lj6YfmBDSneCweCl+JzspzbhWxmWE0Ih40y6YOwA0pqk
+        x+hol8PhQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49120)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1k3i1Z-0004nQ-U7; Thu, 06 Aug 2020 16:41:45 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1k3i1Y-0006Ie-Mj; Thu, 06 Aug 2020 16:41:44 +0100
+Date:   Thu, 6 Aug 2020 16:41:44 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Pratyush Anand <panand@redhat.com>,
+        Pavel Labath <labath@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kazuhiro Inaba <kinaba@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] ARM: hw_breakpoint: Handle inexact watchpoint addresses
+Message-ID: <20200806154144.GD1551@shell.armlinux.org.uk>
+References: <20191019111216.1.I82eae759ca6dc28a245b043f485ca490e3015321@changeid>
+ <20191120191813.GD4799@willie-the-truck>
+ <CAD=FV=Wntf0TCwdtNNvPY-CXX1VL_SZK8Y8yw1r=UfeayHfwgw@mail.gmail.com>
+ <CAD=FV=WgoVN-scgT41R=6Toif2Zrskb3rNzZn_xbP_-ByZC1MA@mail.gmail.com>
 MIME-Version: 1.0
-From:   Raul Rangel <rrangel@google.com>
-Date:   Thu, 6 Aug 2020 09:28:41 -0600
-Message-ID: <CAHQZ30ANTeM-pgdYZ4AbgxsnevBJnJgKZ1Kg+Uy8oSXZUvz=og@mail.gmail.com>
-Subject: PS/2 + i8042 intermixing commands
-To:     linux-input@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "S, Shirish" <Shirish.S@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=WgoVN-scgT41R=6Toif2Zrskb3rNzZn_xbP_-ByZC1MA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm debugging a resume issue on one of our devices using the v5.4
-kernel. The device has a PS/2 atkbd and a PS/2 touchpad. It looks like
-PS/2 commands are getting intermingled with i8042 commands. This
-results in our keyboard controller thinking it got some invalid data.
-This usually happens 1 out of 1500 resumes.
+On Thu, Aug 06, 2020 at 08:05:10AM -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Mon, Dec 2, 2019 at 8:36 AM Doug Anderson <dianders@chromium.org> wrote:
+> >
+> > Hi,
+> >
+> > On Wed, Nov 20, 2019 at 11:18 AM Will Deacon <will@kernel.org> wrote:
+> > >
+> > > On Sat, Oct 19, 2019 at 11:12:26AM -0700, Douglas Anderson wrote:
+> > > > This is commit fdfeff0f9e3d ("arm64: hw_breakpoint: Handle inexact
+> > > > watchpoint addresses") but ported to arm32, which has the same
+> > > > problem.
+> > > >
+> > > > This problem was found by Android CTS tests, notably the
+> > > > "watchpoint_imprecise" test [1].  I tested locally against a copycat
+> > > > (simplified) version of the test though.
+> > > >
+> > > > [1] https://android.googlesource.com/platform/bionic/+/master/tests/sys_ptrace_test.cpp
+> > > >
+> > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > > ---
+> > > >
+> > > >  arch/arm/kernel/hw_breakpoint.c | 96 ++++++++++++++++++++++++---------
+> > > >  1 file changed, 70 insertions(+), 26 deletions(-)
+> > >
+> > > Sorry for taking so long to look at this. After wrapping my head around the
+> > > logic again
+> >
+> > Yeah.  It was a little weird and (unfortunately) arbitrarily different
+> > in some places compared to the arm64 code.
+> >
+> >
+> > > I think it looks fine, so please put it into the patch system
+> > > with my Ack:
+> > >
+> > > Acked-by: Will Deacon <will@kernel.org>
+> >
+> > Thanks!  Submitted as:
+> >
+> > https://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=8944/1
+> 
+> Oddly, I found that if I go visit that page now I see:
+> 
+> > - - - Note 2 submitted by Russell King on 17 Jan 2020 11:16:34 (UTC) - - -
+> > Moved to applied
+> >
+> > Applied to git-curr (misc branch).
+> 
+> Yet if I go check mainline the patch is not there.  This came to my
+> attention since we had my patch picked to the Chrome OS 4.19 tree and
+> suddenly recently got a stable merge conflict with "ARM: 8986/1:
+> hw_breakpoint: Don't invoke overflow handler on uaccess watchpoints".
+> 
+> Anyone know what happened here?
 
-Here is the log from my keyboard controller on a good resume.
+Yes.  Stephen Rothwell raised a complaint against it, which you were
+copied with:
 
-I've added some comments to make it easier to follow:
-> <-- i8042_controller_resume
-> [KB recv cmd: 0xaa] # CMD #1
->
-> [KB recv cmd: 0x60] # CMD #2
-> [ACPI kblight 0]
-> [KB recv data: 0x70]
-> [KB eaten by STATE_WRITE_CMD_BYTE: 0x70]
-> [KB set CTR_RAM(0x00)=0x70 (old:0x70)]
->
-> <- i8042_enable_aux_port
-> [KB recv cmd: 0x60] # CMD #3
-> [KB recv data: 0x52]
-> [KB eaten by STATE_WRITE_CMD_BYTE: 0x52]
-> [KB set CTR_RAM(0x00)=0x52 (old:0x70)]
-> [AUX IRQ enable]
-> [AUX enabled]
->
-> <- i8042_enable_kbd_port
-> [KB recv cmd: 0x60] # CMD #4
-> [KB recv data: 0x43]
-> [KB eaten by STATE_WRITE_CMD_BYTE: 0x43]
-> [KB set CTR_RAM(0x00)=0x43 (old:0x52)]
-> [KB IRQ enable]
-> [KB enable]
->
-> <- atkbd_reconnect->atkbd_probe
-> [KB recv data: 0xf2] <- ATKBD_CMD_GETID # CMD #5
-> <- atkbd_deactivate
-> [KB recv data: 0xf5] <- ATKBD_CMD_RESET_DIS # CMD #6
-> [KS disable]
-> [KB Clear Buffer]
->
-> <- atkbd_reconnect->atkbd_set_leds
-> [KB recv data: 0xed] # CMD #7
-> [KB recv data: 0x00]
-> [KB eaten by STATE_SETLEDS]
->
-> <- atkbd_reconnect->atkbd_set_repeat_rate
-> [KB recv data: 0xf3] # CMD #8
-> [KB recv data: 0x00]
-> [KB eaten by STATE_SETREP: 0x00]
->
-> <- atkbd_reconnect->atkbd_activate
-> [KB recv data: 0xf4] <- ATKBD_CMD_ENABLE # CMD #9
-> [KS enable]
-> [KB Clear Buffer]
->
-> <- atkbd_event_work->atkbd_set_leds
-> [KB recv data: 0xed] # CMD #10
-> [KB recv data: 0x00]
-> [KB eaten by STATE_SETLEDS]
->
-> <- atkbd_event_work->atkbd_set_repeat_rate
-> [KB recv data: 0xf3] # CMD #11
-> [KB recv data: 0x00]
-> [KB eaten by STATE_SETREP: 0x00]
->
-> <-- trackpoint_reconnect->trackpoint_start_protocol
-> [KB recv cmd: 0xd4] <- I8042_CMD_AUX_SEND # CMD #12
-> [KB recv data: 0xe1] <- TP_READ_ID
-> [STATE_SEND_TO_MOUSE: 0xe1]
->
-> <- Is this i8042_port_close?
-> [KB recv cmd: 0x60] # CMD #13
-> [KB recv data: 0x41]
-> [KB eaten by STATE_WRITE_CMD_BYTE: 0x41]
-> [KB set CTR_RAM(0x00)=0x41 (old:0x43)]
-> [AUX IRQ disable]
-> [KB recv cmd: 0x60] # CMD #14
-> [KB recv data: 0x43]
-> [KB eaten by STATE_WRITE_CMD_BYTE: 0x43]
-> [KB set CTR_RAM(0x00)=0x43 (old:0x41)]
-> [AUX IRQ enable]
->
-> [KB recv cmd: 0xd4] # CMD #15
-> [KB recv data: 0xf2]
-> [STATE_SEND_TO_MOUSE: 0xf2]
+> Hi all,
+> 
+> Commit
+> 
+>   116375be0461 ("ARM: 8944/1: hw_breakpoint: Handle inexact watchpoint addresses")
+> 
+> is missing a Signed-off-by from its author.
 
+My reply to Stephen's email was:
 
-Here is the log on the bad resume:
+> Thanks Stephen, patch dropped.
+> 
+> It looks like Doug used his "m.disordat.com" address to submit the
+> patch through the web interface, and there was no From: in the patch
+> itself, so that was used as the patch author.  However, as you spotted,
+> it was signed off using Doug's "chromium.org" address.
+> 
+> I think it's time to make the patch system a bit more strict, checking
+> that the submission address is mentioned in a signed-off-by tag
+> somewhere in the commit message.
+> 
+> Doug, the patch system does have your "chromium.org" address, if that's
+> the one you want to use as the author, please submit using that instead.
+> Thanks.
+> 
+> Russell.
 
-> <-- i8042_controller_resume
-> [KB recv cmd: 0xaa] # CMD #1
->
-> [KB recv cmd: 0x60] # CMD #2
-> [ACPI kblight 0]
-> [KB recv data: 0x70]
-> [KB eaten by STATE_WRITE_CMD_BYTE: 0x70]
-> [KB set CTR_RAM(0x00)=0x70 (old:0x70)]
->
-> <- i8042_enable_aux_port
-> [KB recv cmd: 0x60] # CMD #3
-> [KB recv data: 0x52]
-> [KB eaten by STATE_WRITE_CMD_BYTE: 0x52]
-> [KB set CTR_RAM(0x00)=0x52 (old:0x70)]
-> [AUX IRQ enable]
-> [AUX enabled]
->
-> <- i8042_enable_kbd_port
-> [KB recv cmd: 0x60] # CMD #4
-> [KB recv data: 0x43]
-> [KB eaten by STATE_WRITE_CMD_BYTE: 0x43]
-> [KB set CTR_RAM(0x00)=0x43 (old:0x52)]
-> [KB IRQ enable]
-> [KB enable]
->
-> <- atkbd_reconnect->atkbd_probe
-> [KB recv data: 0xf2] <- ATKBD_CMD_GETID # CMD #5
-> <- atkbd_deactivate
-> [KB recv data: 0xf5] <- ATKBD_CMD_RESET_DIS # CMD #6
-> [KS disable]
-> [KB Clear Buffer]
->
-> <- atkbd_reconnect->atkbd_set_leds
-> [KB recv data: 0xed] # CMD #7
-> [KB recv data: 0x00]
-> [KB eaten by STATE_SETLEDS]
->
-> <- atkbd_reconnect->atkbd_set_repeat_rate
-> [KB recv data: 0xf3] # CMD #8
-> [KB recv data: 0x00]
-> [KB eaten by STATE_SETREP: 0x00]
->
-> <- atkbd_reconnect->atkbd_activate
-> [KB recv data: 0xf4] <- ATKBD_CMD_ENABLE # CMD #9
-> [KS enable]
-> [KB Clear Buffer]
->
-> <-- trackpoint_reconnect->trackpoint_start_protocol
-> [KB recv cmd: 0xd4] <- I8042_CMD_AUX_SEND # CMD #12
-> [KB recv data: 0xe1] <- TP_READ_ID
-> [STATE_SEND_TO_MOUSE: 0xe1]
->
-> <- Is this i8042_port_close?
-> [KB recv cmd: 0x60] # CMD #13
-> [KB recv data: 0x41]
-> [KB eaten by STATE_WRITE_CMD_BYTE: 0x41]
-> [KB set CTR_RAM(0x00)=0x41 (old:0x43)]
-> [AUX IRQ disable]
->
-> <- atkbd_event_work->atkbd_set_leds
-> [KB recv data: 0xed] # CMD 10
-> <- Wait, where is the data?
->
-> <- Continuation of i8042_port_close?
-> [KB recv cmd: 0x60] # CMD #14
-> [KB recv data: 0x43]
-> [KB eaten by STATE_WRITE_CMD_BYTE: 0x43]
-> [KB set CTR_RAM(0x00)=0x43 (old:0x41)]
-> [AUX IRQ enable]
->
-> <- Here is the data!
-> [KB recv data: 0x00] # CMD 10 (data)
-> [KB Unsupported i8042 data 0x00]
-> [KB recv data: 0x00] <- Did the host retry?
-> [KB Unsupported i8042 data 0x00]
->
-> <- atkbd_event_work->atkbd_set_repeat_rate
-> [KB recv data: 0xf3] # CMD #11
-> [KB recv data: 0x00]
-> [KB eaten by STATE_SETREP: 0x00]
->
-> [KB recv cmd: 0xd4] # CMD #15
-> [KB recv data: 0xf2]
-> [STATE_SEND_TO_MOUSE: 0xf2]
+Neither email got a response from you, so the patch was dropped and
+nothing further happened.
 
-As you can see CMD #10 starts between #13 and #14, and then completes
-after #14. Is this expected behavior?
-
-I'm not quite sure if #13 and #14 are coming from i8042_port_close. I
-don't have a function trace available, but it seems to fit.
-
-I found this comment:
-/*
- * Writers to AUX and KBD ports as well as users issuing i8042_command
- * directly should acquire i8042_mutex (by means of calling
- * i8042_lock_chip() and i8042_unlock_ship() helpers) to ensure that
- * they do not disturb each other (unfortunately in many i8042
- * implementations write to one of the ports will immediately abort
- * command that is being processed by another port).
- */
-static DEFINE_MUTEX(i8042_mutex);
-
-Does that not mean that i8042_port_close, i8042_enable_kbd_port,
-i8042_enable_aux_port, + any other function that calls i8042_command
-should be taking the lock before calling i8042_command?
-
-Imagine this scenario:
-1) atkbd_set_leds->ps2_command: locks i8042_mutex
-2) __ps2_command->ps2_do_sendbyte->i8042_kbd_write
-2a) locks i8042_lock
-2b) Sends the kbd command
-2c) unlocks i8042_lock
-3) i8042_port_close/i8042_enable_aux_port/etc gets called and then
-calls i8042_command
-3a) locks i8042_lock
-3b) sends 8042 CMD
-3c) sends 8042 DATA
-3d) unlocks i8042_lock
-3e) i8042_command returns
-4)  ps2_do_sendbyte continues sending the kb param via i8042_kbd_write
-4a) locks i8042_lock
-4b) Sends the kbd data <- Original data got stomped on because of the
-8042 CMD in between
-4c) unlocks i8042_lock
-4c) ps2_command unlocks i8042_mutex
-
-Is this an invalid sequence or is our keyboard controller at fault
-because it doesn't support intermingled commands?
-
-Thanks,
-Raul
-
-p.s, sorry for sending twice. I forgot to set the original as plain text :)
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
