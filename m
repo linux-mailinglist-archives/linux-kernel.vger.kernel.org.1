@@ -2,151 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F65223E313
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D17F23E325
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 22:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726464AbgHFUVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 16:21:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726058AbgHFUVS (ORCPT
+        id S1726386AbgHFU1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 16:27:30 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:20686 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbgHFU13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 16:21:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF37C061574;
-        Thu,  6 Aug 2020 13:21:16 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596745273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xtHNLCxJfzsiJSCp6/W+TfOKxP2aJ6UgREgy+loBHMI=;
-        b=R6Q0ESn3y1nFnbdCuyGK0a83rqiXG8o7/o8w7zgwZPTxcrxycOlwCP9+kCI/nt8ak7n7Mg
-        g6Fgmkcr/k7pm/ulgLm4xEo+wxRiaRf5Ov3SHz1fIwIeAt+frnBgPWY1ZpLV0T0Gh4mWMx
-        lxTmOBiTx4Zt4fkY9zIv8/dbw0BUyPXIIbKc/W7VT8dguTXihqNIaqifWjlr3dkYQwPPy7
-        4E9Xj5KIHhrChnRxs5vRovcAPlvzVFcp2d1fZGEI5bZKDaPtFiVQcKpSvVSF+17+JTdpq9
-        TQmnaTen4VK/BEvUBXUp3A2OX2nGzdAwUhLJmPo6skT+IToB1D95OLH0712vUA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596745273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xtHNLCxJfzsiJSCp6/W+TfOKxP2aJ6UgREgy+loBHMI=;
-        b=fXJRubCjssIpQgTtL/ZduGNhVfFn7HZPRc8hhVtuSscb+ctPyf0CnqZPYi2XebcAC4VBfm
-        OwvT7Zfw9fXJ0vCQ==
-To:     "Dey\, Megha" <megha.dey@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        "vkoul\@kernel.org" <vkoul@kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "rafael\@kernel.org" <rafael@kernel.org>,
-        "gregkh\@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "hpa\@zytor.com" <hpa@zytor.com>,
-        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Raj\, Ashok" <ashok.raj@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Tian\, Kevin" <kevin.tian@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "Lin\, Jing" <jing.lin@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
-        "parav\@mellanox.com" <parav@mellanox.com>,
-        "Hansen\, Dave" <dave.hansen@intel.com>,
-        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain\, Mona" <mona.hossain@intel.com>,
-        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86\@kernel.org" <x86@kernel.org>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH RFC v2 02/18] irq/dev-msi: Add support for a new DEV_MSI irq domain
-In-Reply-To: <014ffe59-38d3-b770-e065-dfa2d589adc6@intel.com>
-References: <159534667974.28840.2045034360240786644.stgit@djiang5-desk3.ch.intel.com> <159534734833.28840.10067945890695808535.stgit@djiang5-desk3.ch.intel.com> <878sfbxtzi.wl-maz@kernel.org> <20200722195928.GN2021248@mellanox.com> <96a1eb5ccc724790b5404a642583919d@intel.com> <20200805221548.GK19097@mellanox.com> <70465fd3a7ae428a82e19f98daa779e8@intel.com> <20200805225330.GL19097@mellanox.com> <630e6a4dc17b49aba32675377f5a50e0@intel.com> <20200806001927.GM19097@mellanox.com> <c6a1c065ab9b46bbaf9f5713462085a5@intel.com> <87tuxfhf9u.fsf@nanos.tec.linutronix.de> <014ffe59-38d3-b770-e065-dfa2d589adc6@intel.com>
-Date:   Thu, 06 Aug 2020 22:21:11 +0200
-Message-ID: <87h7tfh6fc.fsf@nanos.tec.linutronix.de>
+        Thu, 6 Aug 2020 16:27:29 -0400
+Received: from localhost.localdomain ([93.22.37.174])
+        by mwinf5d46 with ME
+        id CLTR230083lSDvh03LTR5x; Thu, 06 Aug 2020 22:27:26 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 06 Aug 2020 22:27:26 +0200
+X-ME-IP: 93.22.37.174
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     davem@davemloft.net, kuba@kernel.org, steve.glendinning@shawell.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] smsc9420: switch from 'pci_' to 'dma_' API
+Date:   Thu,  6 Aug 2020 22:27:23 +0200
+Message-Id: <20200806202723.734581-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Megha,
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-"Dey, Megha" <megha.dey@intel.com> writes:
-> On 8/6/2020 10:10 AM, Thomas Gleixner wrote:
->> If the DEV/MSI domain has it's own per IR unit resource management, then
->> you need one per IR unit.
->>
->> If the resource management is solely per device then having a domain per
->> device is the right choice.
->
-> The dev-msi domain can be used by other devices if they too would want
-> to follow the vector->intel IR->dev-msi IRQ hierarchy.  I do create
-> one dev-msi IRQ domain instance per IR unit. So I guess for this case,
-> it makes most sense to have a dev-msi IRQ domain per IR unit as
-> opposed to create one per individual driver..
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-I'm not really convinced. I looked at the idxd driver and that has it's
-own interrupt related resource management for the IMS slots and provides
-the mask,unmask callbacks for the interrupt chip via this crude platform
-data indirection.
+When memory is allocated in 'smsc9420_probe()', GFP_KERNEL can be used
+because it is a probe function and no lock is acquired.
 
-So I don't see the value of the dev-msi domain per IR unit. The domain
-itself does not provide much functionality other than indirections and
-you clearly need per device interrupt resource management on the side
-and a customized irq chip. I rather see it as a plain layering
-violation.
+While at it, rewrite the size passed to 'dma_alloc_coherent()' the same way
+as the one passed to 'dma_free_coherent()'. This form is less verbose:
+   sizeof(struct smsc9420_dma_desc) * RX_RING_SIZE +
+   sizeof(struct smsc9420_dma_desc) * TX_RING_SIZE,
+vs
+   sizeof(struct smsc9420_dma_desc) * (RX_RING_SIZE + TX_RING_SIZE)
 
-The point is that your IDXD driver manages the per device IMS slots
-which is a interrupt related resource. The story would be different if
-the IMS slots would be managed by some central or per IR unit entity,
-but in that case you'd need IMS specific domain(s).
 
-So the obvious consequence of the hierarchical irq design is:
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
-   vector -> IR -> IDXD
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
 
-which makes the control flow of allocating an interrupt for a subdevice
-straight forward following the irq hierarchy rules.
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
 
-This still wants to inherit the existing msi domain functionality, but
-the amount of code required is small and removes all these pointless
-indirections and integrates the slot management naturally.
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
 
-If you expect or know that there are other devices coming up with IMS
-integrated then most of that code can be made a common library. But for
-this to make sense, you really want to make sure that these other
-devices do not require yet another horrible layer of indirection.
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
-A side note: I just read back on the specification and stumbled over
-the following gem:
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
- "IMS may also optionally support per-message masking and pending bit
-  status, similar to the per-vector mask and pending bit array in the
-  PCI Express MSI-X capability."
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
 
-Optionally? Please tell the hardware folks to make this mandatory. We
-have enough pain with non maskable MSI interrupts already so introducing
-yet another non maskable interrupt trainwreck is not an option.
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
 
-It's more than a decade now that I tell HW people not to repeat the
-non-maskable MSI failure, but obviously they still think that
-non-maskable interrupts are a brilliant idea. I know that HW folks
-believe that everything they omit can be fixed in software, but they
-have to finally understand that this particular issue _cannot_ be fixed
-at all.
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
 
-Thanks,
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
 
-        tglx
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/net/ethernet/smsc/smsc9420.c | 51 +++++++++++++++-------------
+ 1 file changed, 28 insertions(+), 23 deletions(-)
+
+diff --git a/drivers/net/ethernet/smsc/smsc9420.c b/drivers/net/ethernet/smsc/smsc9420.c
+index 42bef04d65ba..68969549a5c7 100644
+--- a/drivers/net/ethernet/smsc/smsc9420.c
++++ b/drivers/net/ethernet/smsc/smsc9420.c
+@@ -497,8 +497,9 @@ static void smsc9420_free_tx_ring(struct smsc9420_pdata *pd)
+ 
+ 		if (skb) {
+ 			BUG_ON(!pd->tx_buffers[i].mapping);
+-			pci_unmap_single(pd->pdev, pd->tx_buffers[i].mapping,
+-					 skb->len, PCI_DMA_TODEVICE);
++			dma_unmap_single(&pd->pdev->dev,
++					 pd->tx_buffers[i].mapping, skb->len,
++					 DMA_TO_DEVICE);
+ 			dev_kfree_skb_any(skb);
+ 		}
+ 
+@@ -530,8 +531,9 @@ static void smsc9420_free_rx_ring(struct smsc9420_pdata *pd)
+ 			dev_kfree_skb_any(pd->rx_buffers[i].skb);
+ 
+ 		if (pd->rx_buffers[i].mapping)
+-			pci_unmap_single(pd->pdev, pd->rx_buffers[i].mapping,
+-				PKT_BUF_SZ, PCI_DMA_FROMDEVICE);
++			dma_unmap_single(&pd->pdev->dev,
++					 pd->rx_buffers[i].mapping,
++					 PKT_BUF_SZ, DMA_FROM_DEVICE);
+ 
+ 		pd->rx_ring[i].status = 0;
+ 		pd->rx_ring[i].length = 0;
+@@ -749,8 +751,8 @@ static void smsc9420_rx_handoff(struct smsc9420_pdata *pd, const int index,
+ 	dev->stats.rx_packets++;
+ 	dev->stats.rx_bytes += packet_length;
+ 
+-	pci_unmap_single(pd->pdev, pd->rx_buffers[index].mapping,
+-		PKT_BUF_SZ, PCI_DMA_FROMDEVICE);
++	dma_unmap_single(&pd->pdev->dev, pd->rx_buffers[index].mapping,
++			 PKT_BUF_SZ, DMA_FROM_DEVICE);
+ 	pd->rx_buffers[index].mapping = 0;
+ 
+ 	skb = pd->rx_buffers[index].skb;
+@@ -782,9 +784,9 @@ static int smsc9420_alloc_rx_buffer(struct smsc9420_pdata *pd, int index)
+ 	if (unlikely(!skb))
+ 		return -ENOMEM;
+ 
+-	mapping = pci_map_single(pd->pdev, skb_tail_pointer(skb),
+-				 PKT_BUF_SZ, PCI_DMA_FROMDEVICE);
+-	if (pci_dma_mapping_error(pd->pdev, mapping)) {
++	mapping = dma_map_single(&pd->pdev->dev, skb_tail_pointer(skb),
++				 PKT_BUF_SZ, DMA_FROM_DEVICE);
++	if (dma_mapping_error(&pd->pdev->dev, mapping)) {
+ 		dev_kfree_skb_any(skb);
+ 		netif_warn(pd, rx_err, pd->dev, "pci_map_single failed!\n");
+ 		return -ENOMEM;
+@@ -901,8 +903,10 @@ static void smsc9420_complete_tx(struct net_device *dev)
+ 		BUG_ON(!pd->tx_buffers[index].skb);
+ 		BUG_ON(!pd->tx_buffers[index].mapping);
+ 
+-		pci_unmap_single(pd->pdev, pd->tx_buffers[index].mapping,
+-			pd->tx_buffers[index].skb->len, PCI_DMA_TODEVICE);
++		dma_unmap_single(&pd->pdev->dev,
++				 pd->tx_buffers[index].mapping,
++				 pd->tx_buffers[index].skb->len,
++				 DMA_TO_DEVICE);
+ 		pd->tx_buffers[index].mapping = 0;
+ 
+ 		dev_kfree_skb_any(pd->tx_buffers[index].skb);
+@@ -932,9 +936,9 @@ static netdev_tx_t smsc9420_hard_start_xmit(struct sk_buff *skb,
+ 	BUG_ON(pd->tx_buffers[index].skb);
+ 	BUG_ON(pd->tx_buffers[index].mapping);
+ 
+-	mapping = pci_map_single(pd->pdev, skb->data,
+-				 skb->len, PCI_DMA_TODEVICE);
+-	if (pci_dma_mapping_error(pd->pdev, mapping)) {
++	mapping = dma_map_single(&pd->pdev->dev, skb->data, skb->len,
++				 DMA_TO_DEVICE);
++	if (dma_mapping_error(&pd->pdev->dev, mapping)) {
+ 		netif_warn(pd, tx_err, pd->dev,
+ 			   "pci_map_single failed, dropping packet\n");
+ 		return NETDEV_TX_BUSY;
+@@ -1522,7 +1526,7 @@ smsc9420_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		goto out_free_netdev_2;
+ 	}
+ 
+-	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) {
++	if (dma_set_mask(&pdev->dev, DMA_BIT_MASK(32))) {
+ 		netdev_err(dev, "No usable DMA configuration, aborting\n");
+ 		goto out_free_regions_3;
+ 	}
+@@ -1540,10 +1544,9 @@ smsc9420_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	pd = netdev_priv(dev);
+ 
+ 	/* pci descriptors are created in the PCI consistent area */
+-	pd->rx_ring = pci_alloc_consistent(pdev,
+-		sizeof(struct smsc9420_dma_desc) * RX_RING_SIZE +
+-		sizeof(struct smsc9420_dma_desc) * TX_RING_SIZE,
+-		&pd->rx_dma_addr);
++	pd->rx_ring = dma_alloc_coherent(&pdev->dev,
++		sizeof(struct smsc9420_dma_desc) * (RX_RING_SIZE + TX_RING_SIZE),
++		&pd->rx_dma_addr, GFP_KERNEL);
+ 
+ 	if (!pd->rx_ring)
+ 		goto out_free_io_4;
+@@ -1599,8 +1602,9 @@ smsc9420_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	return 0;
+ 
+ out_free_dmadesc_5:
+-	pci_free_consistent(pdev, sizeof(struct smsc9420_dma_desc) *
+-		(RX_RING_SIZE + TX_RING_SIZE), pd->rx_ring, pd->rx_dma_addr);
++	dma_free_coherent(&pdev->dev,
++			  sizeof(struct smsc9420_dma_desc) * (RX_RING_SIZE + TX_RING_SIZE),
++			  pd->rx_ring, pd->rx_dma_addr);
+ out_free_io_4:
+ 	iounmap(virt_addr - LAN9420_CPSR_ENDIAN_OFFSET);
+ out_free_regions_3:
+@@ -1632,8 +1636,9 @@ static void smsc9420_remove(struct pci_dev *pdev)
+ 	BUG_ON(!pd->tx_ring);
+ 	BUG_ON(!pd->rx_ring);
+ 
+-	pci_free_consistent(pdev, sizeof(struct smsc9420_dma_desc) *
+-		(RX_RING_SIZE + TX_RING_SIZE), pd->rx_ring, pd->rx_dma_addr);
++	dma_free_coherent(&pdev->dev,
++			  sizeof(struct smsc9420_dma_desc) * (RX_RING_SIZE + TX_RING_SIZE),
++			  pd->rx_ring, pd->rx_dma_addr);
+ 
+ 	iounmap(pd->ioaddr - LAN9420_CPSR_ENDIAN_OFFSET);
+ 	pci_release_regions(pdev);
+-- 
+2.25.1
+
