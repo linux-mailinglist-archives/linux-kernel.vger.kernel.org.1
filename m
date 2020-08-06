@@ -2,122 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145A023D884
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B42023D889
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729050AbgHFJXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:23:31 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:56860 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729127AbgHFJUd (ORCPT
+        id S1729174AbgHFJYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:24:33 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:38463 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729132AbgHFJXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:20:33 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0769DP4M134775;
-        Thu, 6 Aug 2020 09:20:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=K6nnIq7KbMdGmwq3DRCgXsdqJJG+nAKIN0b+IcOgc+k=;
- b=VBCNZ0B6tMfR1rKyX72Att5NUO6if4UBo9dHYDl+0D3q1NcsaDvCWtVjbHrVRnGpz+Ud
- x+ihOlgeDyR0x8PKISxsN7Wi0fs5rpqTqv77K4/3mB4xa8FbFlAx9iXJJ4ZMJO6qom7y
- umDcAh0fQbfMZh7yUC7s9oHI3OQ4H1pkGd/yCX4uFpcF8WusdLnV5nfVpNiqj4xyY49D
- AqxiVxYwMXOT1eEQP9aq1XCh5vWufjALgF8rY86Br7SxI+DUP7f1hNi71z1q7WUMAvyk
- daIl/wf/W3yD2yONtZ7Sym3V7oP4TmG+WPmyJSLme8ucD0jSm14WEvh5Vaas/7mgW53G tg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 32r6gwssvs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 06 Aug 2020 09:20:15 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0769Dnvf019978;
-        Thu, 6 Aug 2020 09:20:15 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 32r6cv0q8m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Aug 2020 09:20:14 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0769KB5b024041;
-        Thu, 6 Aug 2020 09:20:11 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Aug 2020 02:20:10 -0700
-Date:   Thu, 6 Aug 2020 12:20:02 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
-Cc:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
-        Oleksandr Andrushchenko <andr2000@gmail.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
-Subject: Re: [PATCH 2/6] drm/xen-front: Fix misused IS_ERR_OR_NULL checks
-Message-ID: <20200806092001.GV5493@kadam>
-References: <20200731125109.18666-1-andr2000@gmail.com>
- <20200731125109.18666-3-andr2000@gmail.com>
- <6d719ab2-d9f6-2c3c-8979-b12a4d10b96d@suse.com>
- <0ed5082f-0280-16c0-7410-f6a90262bcee@epam.com>
+        Thu, 6 Aug 2020 05:23:33 -0400
+X-UUID: c90b4b5441d24288acb143bcc4e49656-20200806
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=mvtOpKmyyI86lc99yfomx8qPrFB6iHZgh3PjEqxrAa8=;
+        b=LVKhvWwaCXgo4L207xNBvICumCDrgPHVMHW7ggfgSgE53vSODWPAWrxeejSHKOI7Mh7GVJv4BpaAawiPr2LWV2E0g6BcKVNDFEDgWYkAEUST+Cj7AnOvPpGH11GMDY/uOsLuWHa6sMOCzgh/myWGYW7t1VBL1djIhY5L/rG993o=;
+X-UUID: c90b4b5441d24288acb143bcc4e49656-20200806
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <weiyi.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 550916183; Thu, 06 Aug 2020 17:22:01 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 6 Aug 2020 17:21:58 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 6 Aug 2020 17:21:58 +0800
+From:   Weiyi Lu <weiyi.lu@mediatek.com>
+To:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>
+CC:     James Liao <jamesjj.liao@mediatek.com>,
+        Fan Chen <fan.chen@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, Weiyi Lu <weiyi.lu@mediatek.com>
+Subject: [PATCH v17 00/12] Mediatek MT8183 scpsys support 
+Date:   Thu, 6 Aug 2020 17:21:43 +0800
+Message-ID: <1596705715-15320-1-git-send-email-weiyi.lu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0ed5082f-0280-16c0-7410-f6a90262bcee@epam.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 bulkscore=0
- spamscore=0 adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060065
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
- phishscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060065
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 06:35:20AM +0000, Oleksandr Andrushchenko wrote:
-> 
-> On 8/4/20 9:12 AM, Jürgen Groß wrote:
-> > On 31.07.20 14:51, Oleksandr Andrushchenko wrote:
-> >> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-> >>
-> >> The patch c575b7eeb89f: "drm/xen-front: Add support for Xen PV
-> >> display frontend" from Apr 3, 2018, leads to the following static
-> >> checker warning:
-> >>
-> >>     drivers/gpu/drm/xen/xen_drm_front_gem.c:140 xen_drm_front_gem_create()
-> >>     warn: passing zero to 'ERR_CAST'
-> >>
-> >> drivers/gpu/drm/xen/xen_drm_front_gem.c
-> >>     133  struct drm_gem_object *xen_drm_front_gem_create(struct drm_device *dev,
-> >>     134                                                  size_t size)
-> >>     135  {
-> >>     136          struct xen_gem_object *xen_obj;
-> >>     137
-> >>     138          xen_obj = gem_create(dev, size);
-> >>     139          if (IS_ERR_OR_NULL(xen_obj))
-> >>     140                  return ERR_CAST(xen_obj);
-> >>
-> >> Fix this and the rest of misused places with IS_ERR_OR_NULL in the
-> >> driver.
-> >>
-> >> Fixes:  c575b7eeb89f: "drm/xen-front: Add support for Xen PV display frontend"
-> >
-> > Again forgot to Cc stable?
-> 
-> I was just not sure if these minor fixes need to go the stable, but I will add
-
-Correct.  It's still a bug because it's setting the error code
-incorrectly on the impossible path.  But fortunately impossible things
-don't affect runtime.
-
-regards,
-dan carpenter
+VGhpcyBzZXJpZXMgaXMgYmFzZWQgb24gdjUuOC1yYzENCg0KY2hhbmdlIHNpbmNlIHYxNjoNCi0g
+SW50cm9kdWNlIGhpZXJhcmNoaWNhbCBzY3BzeXMgZGV2aWNlIG5vZGUgdG8gc2hvdyB0aGUgZGVw
+ZW5kZW5jeSBiZXR3ZWVuIGVhY2ggcG93ZXIgZG9tYWluLg0KICBBbmQgY291bGQgYmUgbW9yZSBj
+bGVhcmx5IHRvIGdyb3VwIHN1YnN5cyBjbG9ja3MgaW50byBwb3dlciBkb21haW4gc3ViIG5vZGUu
+DQoNCmNoYW5nZSBzaW5jZSB2MTU6DQotIHJlbW92ZSB1bm5lZWRlZCBlcnJvciBsb2cgaW4gW1BB
+VENIIDA2LzExXQ0KDQpjaGFuZ2VzIHNpbmNlIHYxNDoNCi0gZml4IGNvbW1pdCBtZXNzYWdlIHR5
+cG8NCi0gdXNlIHByb3BlcnR5IG5hbWUgIm1lZGlhdGVrLHNtaSIgZm9yIHNtaSBwaGFuZGxlDQoN
+CmNoYW5nZXMgc2luY2UgdjEzOg0KLSBkb2N1bWVudCBvcHRpb25hbCBwcm9wZXJ0eSAic21pLWNv
+bW0iDQotIG1vdmUgZGVmaW5lcyBpbiBzY3BzeWMuaCB0byBtdGstc2Nwc3lzLmMgZGlyZWN0bHkN
+Ci0gbWlub3IgY29kaW5nIHN5dGxlIGZpeGVzDQoNCmNoYW5nZSBzaW5jZSB2MTI6DQotIHNlcGFy
+YXRlIHRoZSBmaXggb2YgY29tbWEgYXQgdGhlIGVuZCBpbnRvIGEgbmV3IHBhdGNoIFtQQVRDSCAw
+OS8xMV0NCg0KY2hhbmdlcyBzaW5jZSB2MTE6DQotIHJlLW9yZGVyIHBhdGNoZXMgIlJlbW92ZSBp
+bmZyYWNmZyBtaXNjIGRyaXZlciBzdXBwb3J0IiBhbmQgIkFkZCBtdWx0aXBsZSBzdGVwIGJ1cyBw
+cm90ZWN0aW9uIg0KLSBhZGQgY2FwIE1US19TQ1BEX1NSQU1fSVNPIGZvciBleHRyYSBzcmFtIGNv
+bnRyb2wNCi0gbWlub3IgY29kaW5nIHN5dGxlIGZpeGVzIGFuZCByZXdvcmQgY29tbWl0IG1lc3Nh
+Z2VzDQoNCmNoYW5nZXMgc2luY2UgdjEwOg0KLSBzcXVhc2ggUEFUQ0ggMDQgYW5kIFBBVENIIDA2
+IGluIHY5IGludG8gaXRzIHByZXZpb3VzIHBhdGNoDQotIGFkZCAiaWdub3JlX2Nscl9hY2siIGZv
+ciBtdWx0aXBsZSBzdGVwIGJ1cyBwcm90ZWN0aW9uIGNvbnRyb2wgdG8gaGF2ZSBhIGNsZWFuIGRl
+ZmluaXRpb24gb2YgcG93ZXIgZG9tYWluIGRhdGENCi0ga2VlcCB0aGUgbWFzayByZWdpc3RlciBi
+aXQgZGVmaW5pdGlvbnMgYW5kIGRvIHRoZSBzYW1lIGZvciBNVDgxODMNCg0KY2hhbmdlcyBzaW5j
+ZSB2OToNCi0gYWRkIG5ldyBQQVRDSCAwNCBhbmQgUEFUQ0ggMDYgdG8gcmVwbGFjZSBieSBuZXcg
+bWV0aG9kIGZvciBhbGwgY29tcGF0aWJsZXMNCi0gYWRkIG5ldyBQQVRDSCAwNyB0byByZW1vdmUg
+aW5mcmFjZmcgbWlzYyBkcml2ZXINCi0gbWlub3IgY29kaW5nIHN5dGxlIGZpeA0KDQpjaGFuZ2Vz
+IHNpbmNlIHY3Og0KLSByZXdvcmQgaW4gYmluZGluZyBkb2N1bWVudCBbUEFUQ0ggMDIvMTRdDQot
+IGZpeCBlcnJvciByZXR1cm4gY2hlY2tpbmcgYnVnIGluIHN1YnN5cyBjbG9jayBjb250cm9sIFtQ
+QVRDSCAxMC8xNF0NCi0gYWRkIHBvd2VyIGRvbWFpbnMgcHJvcGVyaXR5IHRvIG1mZ2NmZyBwYXRj
+aCBbUEFUQ0ggMTQvMTRdIGZyb20NCiAgaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRj
+aC8xMTEyNjE5OS8NCg0KY2hhbmdlcyBzaW5jZSB2NjoNCi0gcmVtb3ZlIHRoZSBwYXRjaCBvZiBT
+UERYIGxpY2Vuc2UgaWRlbnRpZmllciBiZWNhdXNlIGl0J3MgYWxyZWFkeSBmaXhlZA0KDQpjaGFu
+Z2VzIHNpbmNlIHY1Og0KLSBmaXggZG9jdW1lbnRhdGlvbiBpbiBbUEFUQ0ggMDQvMTRdDQotIHJl
+bW92ZSB1c2VsZXNzIHZhcmlhYmxlIGNoZWNraW5nIGFuZCByZXVzZSBBUEkgb2YgY2xvY2sgY29u
+dHJvbCBpbiBbUEFUQ0ggMDYvMTRdDQotIGNvZGluZyBzdHlsZSBmaXggb2YgYnVzIHByb3RlY3Rp
+b24gY29udHJvbCBpbiBbUEFUQ0ggMDgvMTRdDQotIGZpeCBuYW1pbmcgb2YgbmV3IGFkZGVkIGRh
+dGEgaW4gW1BBVENIIDA5LzE0XQ0KLSBzbWFsbCByZWZhY3RvciBvZiBtdWx0aXBsZSBzdGVwIGJ1
+cyBwcm90ZWN0aW9uIGNvbnRyb2wgaW4gW1BBVENIIDEwLzE0XQ0KDQpjaGFuZ2VzIHNpbmNlIHY0
+Og0KLSBhZGQgcHJvcGVydHkgdG8gbXQ4MTgzIHNtaS1jb21tb24NCi0gc2VwZXJhdGUgcmVmYWN0
+b3IgcGF0Y2hlcyBhbmQgbmV3IGFkZCBmdW5jdGlvbg0KLSBhZGQgcG93ZXIgY29udHJvbGxlciBk
+ZXZpY2Ugbm9kZQ0KDQoNCldlaXlpIEx1ICgxMik6DQogIGR0LWJpbmRpbmdzOiBtZWRpYXRlazog
+QWRkIHByb3BlcnR5IHRvIG10ODE4MyBzbWktY29tbW9uDQogIHNvYzogbWVkaWF0ZWs6IEFkZCBi
+YXNpY19jbGtfbmFtZSB0byBzY3BfcG93ZXJfZGF0YQ0KICBzb2M6IG1lZGlhdGVrOiBSZW1vdmUg
+aW5mcmFjZmcgbWlzYyBkcml2ZXIgc3VwcG9ydA0KICBzb2M6IG1lZGlhdGVrOiBBZGQgbXVsdGlw
+bGUgc3RlcCBidXMgcHJvdGVjdGlvbiBjb250cm9sDQogIGR0LWJpbmRpbmdzOiBzb2M6IEFkZCBN
+VDgxODMgcG93ZXIgZHQtYmluZGluZ3MNCiAgc29jOiBtZWRpYXRlazogQWRkIHN1cHBvcnQgZm9y
+IGhpZXJhcmNoaWNhbCBzY3BzeXMgZGV2aWNlIG5vZGUNCiAgc29jOiBtZWRpYXRlazogQWRkIHN1
+YnN5cyBjbG9jayBjb250cm9sIGZvciBidXMgcHJvdGVjdGlvbg0KICBzb2M6IG1lZGlhdGVrOiBB
+ZGQgZXh0cmEgc3JhbSBjb250cm9sDQogIHNvYzogbWVkaWF0ZWs6IEFkZCBNVDgxODMgc2Nwc3lz
+IHN1cHBvcnQNCiAgc29jOiBtZWRpYXRlazogQWRkIGEgY29tbWEgYXQgdGhlIGVuZA0KICBhcm02
+NDogZHRzOiBBZGQgcG93ZXIgY29udHJvbGxlciBkZXZpY2Ugbm9kZSBvZiBNVDgxODMNCiAgYXJt
+NjQ6IGR0czogQWRkIHBvd2VyLWRvbWFpbnMgcHJvcGVydHkgdG8gbWZnY2ZnDQoNCiAuLi4vbWVk
+aWF0ZWssc21pLWNvbW1vbi50eHQgICAgICAgICAgICAgICAgICAgfCAgIDIgKy0NCiAuLi4vYmlu
+ZGluZ3Mvc29jL21lZGlhdGVrL3NjcHN5cy50eHQgICAgICAgICAgfCAgODEgKy0NCiBhcmNoL2Fy
+bTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE4My5kdHNpICAgICAgfCAxMjQgKysrDQogZHJpdmVy
+cy9zb2MvbWVkaWF0ZWsvS2NvbmZpZyAgICAgICAgICAgICAgICAgIHwgIDEwIC0NCiBkcml2ZXJz
+L3NvYy9tZWRpYXRlay9NYWtlZmlsZSAgICAgICAgICAgICAgICAgfCAgIDEgLQ0KIGRyaXZlcnMv
+c29jL21lZGlhdGVrL210ay1pbmZyYWNmZy5jICAgICAgICAgICB8ICA3OSAtLQ0KIGRyaXZlcnMv
+c29jL21lZGlhdGVrL210ay1zY3BzeXMuYyAgICAgICAgICAgICB8IDc3MCArKysrKysrKysrKysr
+Ky0tLS0NCiBpbmNsdWRlL2R0LWJpbmRpbmdzL3Bvd2VyL210ODE4My1wb3dlci5oICAgICAgfCAg
+MjYgKw0KIGluY2x1ZGUvbGludXgvc29jL21lZGlhdGVrL2luZnJhY2ZnLmggICAgICAgICB8ICAz
+OSAtDQogOSBmaWxlcyBjaGFuZ2VkLCA4NDUgaW5zZXJ0aW9ucygrKSwgMjg3IGRlbGV0aW9ucygt
+KQ0KIGRlbGV0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstaW5mcmFjZmcu
+Yw0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2R0LWJpbmRpbmdzL3Bvd2VyL210ODE4My1w
+b3dlci5oDQogZGVsZXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGludXgvc29jL21lZGlhdGVrL2lu
+ZnJhY2ZnLmgNCg==
 
