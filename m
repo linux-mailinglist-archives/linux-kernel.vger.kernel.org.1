@@ -2,104 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEDE23DB99
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D25F23DBA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgHFQYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:24:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727837AbgHFQRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:17:23 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 251B923134;
-        Thu,  6 Aug 2020 15:48:52 +0000 (UTC)
-Date:   Thu, 6 Aug 2020 11:48:50 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     guoren@kernel.org
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: [PATCH] ftrace: Fixup lockdep assert held of text_mutex
-Message-ID: <20200806114850.051f84d0@oasis.local.home>
-In-Reply-To: <1596725454-16245-1-git-send-email-guoren@kernel.org>
-References: <1596725454-16245-1-git-send-email-guoren@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727964AbgHFQ2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727868AbgHFQSr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:18:47 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37AD3C002168
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:06:59 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id h16so16524036oti.7
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:06:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kRzJPbiSWqPMYf9cXUnubjz9KwLdR0t2PlxbglQqDmQ=;
+        b=t+y4ObijkT9CwJCdosVyvo3hNb0ZL2IQqYE+OfodlfDj45ikA05n+fCWNnY5GD4pZ8
+         ZnMT0RRGiqj1cgMNTKenHMDNmTSR0lUMYqDGgYq45E9L/SP5axhkyDqluQIuqi8uSEmX
+         PGfLd1vme9MOv4ADHA4yxeORytbopb4k9g+NSiKNdn+vkAT5YmfhIO2yIhgVvzTGM+q+
+         R2LpxADUnvKlV6epXzLdAiAbZfIw+gx0o2rOwcziRgP13Cpqwth84og51FzOZwqP8hAh
+         5G22Wr1oLKPn0gpw0Mg4Iclbh0omDHMj4XcLiz4/3MiUIIXZv6PmXo9I1D+ab/4F4+/C
+         QH6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kRzJPbiSWqPMYf9cXUnubjz9KwLdR0t2PlxbglQqDmQ=;
+        b=p9W77EOGC9ZpcNjki6Ne08E5rXpKfTMsIFrivnEVg01KlbpG8woJWffhlgTk3cHFd9
+         j8I1qdodLJF5bcrvnYUiSvS9htcjrWZkmA/w/6ucHYoapdQy5CO/1QbTkMxIWUhI9yZg
+         jFmIbcI4NoPnK5l5bXBnqopVAF2o8X/geRlUKyknMrcnvwgMahaEOkx53s8OsDESjZQv
+         YajI649BO+VFXGuynsDWzIDNZzPTqosAAEl0DY1kq5Ypgi5xC8WYSAQHXlFMQOz+ACy2
+         OEyoD/WN3zB85+gg3DplXMZqccz0CD6bg5NtOB+t7SwkJ/+AHONqxbD4PdHtTkrSox5C
+         zZJA==
+X-Gm-Message-State: AOAM531rSmVDDvnVbweFYMqSqy+owbG9GA/pj+7zHmKJ/NBcafJv5XuF
+        fFl0xirhRd9M4GLXPdi7r+ngAmhSwTKZzVuoK/XPQA==
+X-Google-Smtp-Source: ABdhPJwJIAVQosWtiZxAR5ukKpi9U77jc1CvocrDPXa9RPmKehtYj1ngcb2n5vTsNgDi2+Vf46JBBmJ/ZE4zEtXVcoI=
+X-Received: by 2002:a9d:65d3:: with SMTP id z19mr8224587oth.233.1596730016189;
+ Thu, 06 Aug 2020 09:06:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <0000000000007d3b2d05ac1c303e@google.com> <20200805132629.GA87338@elver.google.com>
+ <20200805134232.GR2674@hirez.programming.kicks-ass.net> <20200805135940.GA156343@elver.google.com>
+ <20200805141237.GS2674@hirez.programming.kicks-ass.net> <20200805141709.GD35926@hirez.programming.kicks-ass.net>
+ <CANpmjNN6FWZ+MsAn3Pj+WEez97diHzqF8hjONtHG15C2gSpSgw@mail.gmail.com>
+ <CANpmjNNy3XKQqgrjGPPKKvXhAoF=mae7dk8hmoS4k4oNnnB=KA@mail.gmail.com>
+ <20200806074723.GA2364872@elver.google.com> <20200806113236.GZ2674@hirez.programming.kicks-ass.net>
+ <20200806131702.GA3029162@elver.google.com>
+In-Reply-To: <20200806131702.GA3029162@elver.google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 6 Aug 2020 18:06:43 +0200
+Message-ID: <CANpmjNNqt8YrCad4WqgCoXvH47pRXtSLpnTKhD8W8+UpoYJ+jQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*() helpers
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        fenghua.yu@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>, yu-cheng.yu@intel.com,
+        jgross@suse.com, sdeep@vmware.com,
+        virtualization@lists.linux-foundation.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  6 Aug 2020 14:50:54 +0000
-guoren@kernel.org wrote:
+On Thu, 6 Aug 2020 at 15:17, Marco Elver <elver@google.com> wrote:
+>
+> On Thu, Aug 06, 2020 at 01:32PM +0200, peterz@infradead.org wrote:
+> > On Thu, Aug 06, 2020 at 09:47:23AM +0200, Marco Elver wrote:
+> > > Testing my hypothesis that raw then nested non-raw
+> > > local_irq_save/restore() breaks IRQ state tracking -- see the reproducer
+> > > below. This is at least 1 case I can think of that we're bound to hit.
+> ...
+> >
+> > /me goes ponder things...
+> >
+> > How's something like this then?
+> >
+> > ---
+> >  include/linux/sched.h |  3 ---
+> >  kernel/kcsan/core.c   | 62 ++++++++++++++++++++++++++++++++++++---------------
+> >  2 files changed, 44 insertions(+), 21 deletions(-)
+>
+> Thank you! That approach seems to pass syzbot (also with
+> CONFIG_PARAVIRT) and kcsan-test tests.
+>
+> I had to modify it some, so that report.c's use of the restore logic
+> works and not mess up the IRQ trace printed on KCSAN reports (with
+> CONFIG_KCSAN_VERBOSE).
+>
+> I still need to fully convince myself all is well now and we don't end
+> up with more fixes. :-) If it passes further testing, I'll send it as a
+> real patch (I want to add you as Co-developed-by, but would need your
+> Signed-off-by for the code you pasted, I think.)
 
-> From: Guo Ren <guoren@linux.alibaba.com>
-> 
-> The function ftrace_process_locs() will modify text code, so we
-> should give a text_mutex lock. Because some arch's patch code
-> will assert held of text_mutex even during start_kernel->
-> ftrace_init().
+With CONFIG_PARAVIRT=y (without the notrace->noinstr patch), I still
+get lockdep DEBUG_LOCKS_WARN_ON(!lockdep_hardirqs_enabled()), although
+it takes longer for syzbot to hit them. But I think that's expected
+because we can still get the recursion that I pointed out, and will
+need that patch.
 
-NAK.
+I also get some "BUG: MAX_LOCKDEP_CHAINS too low!" on syzbot (KCSAN is
+not in the stacktrace). Although it may be unrelated:
+https://lore.kernel.org/lkml/0000000000005613c705aaf88e04@google.com/
+-- when are they expected?
 
-This looks like a bug in the lockdep_assert_held() in whatever arch
-(riscv) is running.
-
-> 
-> backtrace log:
->    assert by lockdep_assert_held(&text_mutex)
-> 0  patch_insn_write (addr=0xffffffe0000010fc <set_reset_devices+10>, insn=0xffffffe001203eb8, len=8) at arch/riscv/kernel/patch.c:63
-> 1  0xffffffe0002042ec in patch_text_nosync (addr=<optimized out>, insns=<optimized out>, len=<optimized out>) at arch/riscv/kernel/patch.c:93
-> 2  0xffffffe00020628e in __ftrace_modify_call (hook_pos=<optimized out>, target=<optimized out>, enable=<optimized out>) at arch/riscv/kernel/ftrace.c:68
-> 3  0xffffffe0002063c0 in ftrace_make_nop (mod=<optimized out>, rec=0xffffffe001221c70 <text_mutex+96>, addr=18446743936272720288) at arch/riscv/kernel/ftrace.c:97
-> 4  0xffffffe0002b13f0 in ftrace_init_nop (rec=<optimized out>, mod=<optimized out>) at ./include/linux/ftrace.h:647
-> 5  ftrace_nop_initialize (rec=<optimized out>, mod=<optimized out>) at kernel/trace/ftrace.c:2619
-> 6  ftrace_update_code (new_pgs=<optimized out>, mod=<optimized out>) at kernel/trace/ftrace.c:3063
-> 7  ftrace_process_locs (mod=<optimized out>, start=<optimized out>, end=<optimized out>) at kernel/trace/ftrace.c:6154
-> 8  0xffffffe00000b6e6 in ftrace_init () at kernel/trace/ftrace.c:6715
-> 9  0xffffffe000001b48 in start_kernel () at init/main.c:888
-> 10 0xffffffe0000010a8 in _start_kernel () at arch/riscv/kernel/head.S:247
-> 
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> ---
->  kernel/trace/ftrace.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 1903b80..4b48b88 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -26,6 +26,7 @@
->  #include <linux/uaccess.h>
->  #include <linux/bsearch.h>
->  #include <linux/module.h>
-> +#include <linux/memory.h>
->  #include <linux/ftrace.h>
->  #include <linux/sysctl.h>
->  #include <linux/slab.h>
-> @@ -6712,9 +6713,11 @@ void __init ftrace_init(void)
-
-ftrace_init() is called before SMP is initialized. Nothing else should
-be running here. That means grabbing a mutex is useless.
-
--- Steve
-
-
->  
->  	last_ftrace_enabled = ftrace_enabled = 1;
->  
-> +	mutex_lock(&text_mutex);
->  	ret = ftrace_process_locs(NULL,
->  				  __start_mcount_loc,
->  				  __stop_mcount_loc);
-> +	mutex_unlock(&text_mutex);
->  
->  	pr_info("ftrace: allocated %ld pages with %ld groups\n",
->  		ftrace_number_of_pages, ftrace_number_of_groups);
-
+Thanks,
+-- Marco
