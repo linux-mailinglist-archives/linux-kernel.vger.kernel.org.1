@@ -2,156 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EA723DFC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0459E23DFCA
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728428AbgHFRwc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 6 Aug 2020 13:52:32 -0400
-Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:8046 "EHLO
-        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728391AbgHFQbV (ORCPT
+        id S1725535AbgHFRxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:53:47 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50371 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728328AbgHFQa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:31:21 -0400
-Subject: Re: [PATCH 2/2] selinux: add attributes to avc tracepoint
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-CC:     =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Nick Kralevich <nnk@google.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>
-References: <20200806080358.3124505-1-tweek@google.com>
- <20200806080358.3124505-2-tweek@google.com>
- <89d23362-39b9-79e5-84f1-d7b89204ef38@gmail.com>
- <8627d780-0e19-6755-0de5-c686deb0f5de@sony.com>
- <971592b6-5d5f-05d8-d243-b521fe65577d@gmail.com>
- <07e2c48d-3918-6ceb-a6b2-4e2f18f9ea01@gmail.com>
- <CAEjxPJ4no_GqMp8aw43zpwmwq42Wi_1dvP+ZBs1a-mnReDt5Og@mail.gmail.com>
- <dfeac808-b40d-77fd-0d31-f66f279083eb@sony.com>
- <CAEjxPJ4EaXJ88-hT=jgfn0d1WVP9QQb0w2XQi7U2YVuqN2oMsg@mail.gmail.com>
-From:   peter enderborg <peter.enderborg@sony.com>
-Message-ID: <17ca6cfc-9334-f326-2598-84a9b3846d28@sony.com>
-Date:   Thu, 6 Aug 2020 17:59:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 6 Aug 2020 12:30:59 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1k3iRR-0001NL-01; Thu, 06 Aug 2020 16:08:29 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, Eli Cohen <eli@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] vdpa/mlx5: fix memory allocation failure checks
+Date:   Thu,  6 Aug 2020 17:08:28 +0100
+Message-Id: <20200806160828.90463-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <CAEjxPJ4EaXJ88-hT=jgfn0d1WVP9QQb0w2XQi7U2YVuqN2oMsg@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-GB
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=frmim2wf c=1 sm=1 tr=0 a=Jtaq2Av1iV2Yg7i8w6AGMw==:117 a=IkcTkHD0fZMA:10 a=y4yBn9ojGxQA:10 a=z6gsHLkEAAAA:8 a=pGLkceISAAAA:8 a=nkvH8rM_Rumw_HgpOOAA:9 a=QEXdDO2ut3YA:10 a=d-OLMTCWyvARjPbQ-enb:22
-X-SEG-SpamProfiler-Score: 0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/20 5:03 PM, Stephen Smalley wrote:
-> On Thu, Aug 6, 2020 at 10:51 AM peter enderborg
-> <peter.enderborg@sony.com> wrote:
->> On 8/6/20 3:49 PM, Stephen Smalley wrote:
->>> On Thu, Aug 6, 2020 at 9:45 AM Stephen Smalley
->>> <stephen.smalley.work@gmail.com> wrote:
->>>> On 8/6/20 8:32 AM, Stephen Smalley wrote:
->>>>
->>>>> On 8/6/20 8:24 AM, peter enderborg wrote:
->>>>>
->>>>>> On 8/6/20 2:11 PM, Stephen Smalley wrote:
->>>>>>> On 8/6/20 4:03 AM, Thiébaud Weksteen wrote:
->>>>>>>
->>>>>>>> From: Peter Enderborg <peter.enderborg@sony.com>
->>>>>>>>
->>>>>>>> Add further attributes to filter the trace events from AVC.
->>>>>>> Please include sample usage and output in the description.
->>>>>>>
->>>>>>>
->>>>>> Im not sure where you want it to be.
->>>>>>
->>>>>> In the commit message or in a Documentation/trace/events-avc.rst ?
->>>>> I was just asking for it in the commit message / patch description.  I
->>>>> don't know what is typical for Documentation/trace.
->>>> For example, I just took the patches for a spin, running the
->>>> selinux-testsuite under perf like so:
->>>>
->>>> sudo perf record -e avc:selinux_audited -g make test
->>>>
->>>> and then ran:
->>>>
->>>> sudo perf report -g
->>>>
->>>> and a snippet of sample output included:
->>>>
->>>>       6.40%     6.40%  requested=0x800000 denied=0x800000
->>>> audited=0x800000 result=-13 ssid=922 tsid=922
->>>> scontext=unconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023
->>>> tcontext=unconfined_u:unconfined_r:test_binder_mgr_t:s0-s0:c0.c1023
->>>> tclass=capability
->>> So then the question becomes how do you use the above information,
->>> e.g. is that sufficient to correlate it to an actual avc: denied
->>> message, how do you decode the requested/denied/audited fields (or
->>> should the code do that for you and just report the string name(s) of
->>> the permission(s), do you need all three of those fields separately,
->>> is it useful to log the ssid/tsid at all given that you have the
->>> contexts and sids are dynamically assigned, etc.
->>>
->>>>              |
->>>>              ---0x495641000028933d
->>>>                 __libc_start_main
->>>>                 |
->>>>                 |--4.60%--__GI___ioctl
->>>>                 |          entry_SYSCALL_64
->>>>                 |          do_syscall_64
->>>>                 |          __x64_sys_ioctl
->>>>                 |          ksys_ioctl
->>>>                 |          binder_ioctl
->>>>                 |          binder_set_nice
->>>>                 |          can_nice
->>>>                 |          capable
->>>>                 |          security_capable
->>>>                 |          cred_has_capability.isra.0
->>>>                 |          slow_avc_audit
->>>>                 |          common_lsm_audit
->>>>                 |          avc_audit_post_callback
->>>>                 |          avc_audit_post_callback
->> The real cool thing happen when you enable "user-stack-trace" too.
->>
->>            <...>-4820  [007] .... 85878.897553: selinux_audited: requested=0x4000000 denied=0x4000000 audited=0x4000000 result=-13 ssid=341 tsid=61 scontext=system_u:system_r:ntpd_t:s0 tcontext=system_u:object_r:bin_t:s0 tclass=file
->>            <...>-4820  [007] .... 85878.897572: <user stack trace>
->>  =>  <00007f07d99bb45b>
->>  =>  <0000555ecd89ca57>
->>
->> The fields are useful for filter what you what to see and what you can ignore.  Having the ssid and text was from the part where it is called.
->> The numeric can be used for two things. When you dont have any context. Same same reason as in post_callback. We need to be static
->> in format so it need  be there if it ever can happen. And it is also useful for faster filtering.
->>
->> You can do "ssid!=42 && ssid!=43 && tsid==666".  From my view it would be good to have all fields there. But they need to right typed to be able
->> to use the filter mechanism. There must me some trade-off too where the argument filtering get bigger than the processing, but I think we can
->> add a lot more before we reach that threshold.
-> I don't think the SIDs are useful because they are dynamically
-> assigned (aside from the initial SIDs for bootstrapping before policy
-> load) and are not exported to userspace (userspace has no way to look
-> them up).  It is probably a mistake that we even fall back to logging
-> them in the existing code and may just be a legacy of when SIDs were
-> exported to userspace (ancient history, before mainline merge of
-> SELinux).
->
-> In any event, if you were to include the sample usage and output I
-> provided as part of the commit message / patch description (or replace
-> with your own example), that would be helpful I think.  Even better
-> would be to also provide some hint as to how people are expected to
-> decode the requested/denied/audited fields (I know how to do that but
-> not everyone will, and ideally one would have a script or something
-> for doing so).
+From: Colin Ian King <colin.king@canonical.com>
 
-But they are always the same until load off a new policy? And they can be mapped while debugging.
+The memory allocation failure checking for in and out is currently
+checking if the pointers are valid rather than the contents of what
+they point to. Hence the null check on failed memory allocations is
+incorrect.  Fix this by adding the missing indirection in the check.
+Also for the default case, just set the *in and *out to null as
+these don't have any thing allocated to kfree. Finally remove the
+redundant *in and *out check as these have been already done on each
+allocation in the case statement.
 
-You see one event and then you "know" it. This is for developers so it is a different mindset than for the
-netlink type that is for administrators.  Features for speeding things up are useful.
+Addresses-Coverity: ("Null pointer dereference")
+Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/vdpa/mlx5/net/mlx5_vnet.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-Im doing a update on commit message, will send it to Weksteen for a review round first.
+diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+index 3ec44a4f0e45..55bc58e1dae9 100644
+--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
++++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+@@ -867,7 +867,7 @@ static void alloc_inout(struct mlx5_vdpa_net *ndev, int cmd, void **in, int *inl
+ 		*outlen = MLX5_ST_SZ_BYTES(qp_2rst_out);
+ 		*in = kzalloc(*inlen, GFP_KERNEL);
+ 		*out = kzalloc(*outlen, GFP_KERNEL);
+-		if (!in || !out)
++		if (!*in || !*out)
+ 			goto outerr;
+ 
+ 		MLX5_SET(qp_2rst_in, *in, opcode, cmd);
+@@ -879,7 +879,7 @@ static void alloc_inout(struct mlx5_vdpa_net *ndev, int cmd, void **in, int *inl
+ 		*outlen = MLX5_ST_SZ_BYTES(rst2init_qp_out);
+ 		*in = kzalloc(*inlen, GFP_KERNEL);
+ 		*out = kzalloc(MLX5_ST_SZ_BYTES(rst2init_qp_out), GFP_KERNEL);
+-		if (!in || !out)
++		if (!*in || !*out)
+ 			goto outerr;
+ 
+ 		MLX5_SET(rst2init_qp_in, *in, opcode, cmd);
+@@ -896,7 +896,7 @@ static void alloc_inout(struct mlx5_vdpa_net *ndev, int cmd, void **in, int *inl
+ 		*outlen = MLX5_ST_SZ_BYTES(init2rtr_qp_out);
+ 		*in = kzalloc(*inlen, GFP_KERNEL);
+ 		*out = kzalloc(MLX5_ST_SZ_BYTES(init2rtr_qp_out), GFP_KERNEL);
+-		if (!in || !out)
++		if (!*in || !*out)
+ 			goto outerr;
+ 
+ 		MLX5_SET(init2rtr_qp_in, *in, opcode, cmd);
+@@ -914,7 +914,7 @@ static void alloc_inout(struct mlx5_vdpa_net *ndev, int cmd, void **in, int *inl
+ 		*outlen = MLX5_ST_SZ_BYTES(rtr2rts_qp_out);
+ 		*in = kzalloc(*inlen, GFP_KERNEL);
+ 		*out = kzalloc(MLX5_ST_SZ_BYTES(rtr2rts_qp_out), GFP_KERNEL);
+-		if (!in || !out)
++		if (!*in || !*out)
+ 			goto outerr;
+ 
+ 		MLX5_SET(rtr2rts_qp_in, *in, opcode, cmd);
+@@ -927,16 +927,15 @@ static void alloc_inout(struct mlx5_vdpa_net *ndev, int cmd, void **in, int *inl
+ 		MLX5_SET(qpc, qpc, rnr_retry, 7);
+ 		break;
+ 	default:
+-		goto outerr;
++		goto outerr_nullify;
+ 	}
+-	if (!*in || !*out)
+-		goto outerr;
+ 
+ 	return;
+ 
+ outerr:
+ 	kfree(*in);
+ 	kfree(*out);
++outerr_nullify:
+ 	*in = NULL;
+ 	*out = NULL;
+ }
+-- 
+2.27.0
 
