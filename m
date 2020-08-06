@@ -2,99 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297FF23DCA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B811723DCE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729699AbgHFQy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729759AbgHFQyN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:54:13 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A89C0A3BD0
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:54:11 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id d30so14305784qve.5
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:54:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=rCm9cY6ajxJ7usQ3AHKrWox7W/sIb0CRigoftU0dpEI=;
-        b=PHMfc5AxB5CnXqLw5iAjfPAjw6WolNBPr/1vdUHJd1AEFoh7clU9JHC/sqqOUj+riM
-         pHOVnHgkDYQ6gDD4TSr0Qt1sZZ6haTuBWdiyXgUv3p334IQRsmrCJtSqn7rDA5JJFq7U
-         FZB2xOwlw3vgmdtsJjISSZjuzXy5q/6iucfcKQLhaUNv5mVCWHpRl4SjU47YEuT5PJJf
-         QErCeYe4YECdbsGWYTrlvRzKz3C5oiJSLJ1sNSJDlyMfX+1ZGYFluOH1Dc52izdTH8YK
-         qlEQS1BWZRa3Mh38M4pPBs04tjmwhIepZGBJzJHnRrDD0cXu1RmcNswMPetBtdMshnll
-         2PJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=rCm9cY6ajxJ7usQ3AHKrWox7W/sIb0CRigoftU0dpEI=;
-        b=UrWtHB1lpZ58AvSHw/KBobZ5sJvsQluC7Ybcvi3r+wo0cdOrf0Od7PbQApziEoKsMh
-         IxVh9yTqTkE+Zs169sCyTcYzSejrMOxIkWZ0B+C6ZD4fXo9smRi4XgOcSwfVYlHeYfEy
-         PgmnoYANL4LCYPBAlZ5hsBS6D/yOLG2eeeM2bl+TNpGRcVWps6zHAJgtsxJTZ/bwUv9X
-         zIWoJ7SNPCvHsLySoKKkn4uaVJvLfE1cmcZ/EiIgen7NfwNPC/A+450v9/tL8rgQ//6s
-         4DcdV2CW3DghH8Py0HmcIvuWsE1RWTz3QceeqNBhfRkIzHGuKNy/SWznv8r3UzjoNsqe
-         BqAw==
-X-Gm-Message-State: AOAM533F4rPuK8Jl/Q5we0YxGvNZd0vzkylX3kcNJfiZZ/pqgSV0pZdL
-        ub9cHZGvtQM16RBqixn7wq9obL3lMw==
-X-Google-Smtp-Source: ABdhPJxKMwuPDKBYR+NJXzoJwI9ymXY2JTIR/CIMWdANcc0jRgvGsIlnEHvb2S29PQ10EUHf5fUrNicbyA==
-X-Received: by 2002:ad4:56ee:: with SMTP id cr14mr10244737qvb.119.1596732850548;
- Thu, 06 Aug 2020 09:54:10 -0700 (PDT)
-Date:   Thu,  6 Aug 2020 18:53:59 +0200
-Message-Id: <20200806165359.2381483-1-jannh@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-Subject: [PATCH] binder: Remove bogus warning on failed same-process transaction
-From:   Jann Horn <jannh@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1729893AbgHFQ6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:58:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729876AbgHFQ5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:57:13 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3F4C2086A;
+        Thu,  6 Aug 2020 16:57:12 +0000 (UTC)
+Date:   Thu, 6 Aug 2020 12:57:10 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Sean Paul <sean@poorly.run>
+Subject: tracing: Add trace_array_init_printk() to initialize instance
+ trace_printk() buffers
+Message-ID: <20200806125710.3e9bd355@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While binder transactions with the same binder_proc as sender and recipient
-are forbidden, transactions with the same task_struct as sender and
-recipient are possible (even though currently there is a weird check in
-binder_transaction() that rejects them in the target==0 case).
-Therefore, task_struct identities can't be used to distinguish whether
-the caller is running in the context of the sender or the recipient.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Since I see no easy way to make this WARN_ON() useful and correct, let's
-just remove it.
+As trace_array_printk() used with not global instances will not add noise to
+the main buffer, they are OK to have in the kernel (unlike trace_printk()).
+This require the subsystem to create their own tracing instance, and the
+trace_array_printk() only writes into those instances.
 
-Fixes: 44d8047f1d87 ("binder: use standard functions to allocate fds")
-Reported-by: syzbot+e113a0b970b7b3f394ba@syzkaller.appspotmail.com
-Signed-off-by: Jann Horn <jannh@google.com>
+Add trace_array_init_printk() to initialize the trace_printk() buffers
+without printing out the WARNING message.
+
+Reported-by: Sean Paul <sean@poorly.run>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- drivers/android/binder.c | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/trace/trace.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index f936530a19b0..5b0376344dbe 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -2344,8 +2344,6 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
- 			 * file is done when the transaction is torn
- 			 * down.
- 			 */
--			WARN_ON(failed_at &&
--				proc->tsk == current->group_leader);
- 		} break;
- 		case BINDER_TYPE_PTR:
- 			/*
-
-base-commit: 47ec5303d73ea344e84f46660fff693c57641386
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 06c0feae5ff9..48b608d9c5b1 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3129,6 +3129,9 @@ static int alloc_percpu_trace_buffer(void)
+ {
+ 	struct trace_buffer_struct *buffers;
+ 
++	if (trace_percpu_buffer)
++		return 0;
++
+ 	buffers = alloc_percpu(struct trace_buffer_struct);
+ 	if (MEM_FAIL(!buffers, "Could not allocate percpu trace_printk buffer"))
+ 		return -ENOMEM;
+@@ -3331,6 +3334,26 @@ int trace_array_vprintk(struct trace_array *tr,
+ 	return __trace_array_vprintk(tr->array_buffer.buffer, ip, fmt, args);
+ }
+ 
++/**
++ * trace_array_printk - Print a message to a specific instance
++ * @tr: The instance trace_array descriptor
++ * @ip: The instruction pointer that this is called from.
++ * @fmt: The format to print (printf format)
++ *
++ * If a subsystem sets up its own instance, they have the right to
++ * printk strings into their tracing instance buffer using this
++ * function. Note, this function will not write into the top level
++ * buffer (use trace_printk() for that), as writing into the top level
++ * buffer should only have events that can be individually disabled.
++ * trace_printk() is only used for debugging a kernel, and should not
++ * be ever encorporated in normal use.
++ *
++ * trace_array_printk() can be used, as it will not add noise to the
++ * top level tracing buffer.
++ *
++ * Note, trace_array_init_printk() must be called on @tr before this
++ * can be used.
++ */
+ __printf(3, 0)
+ int trace_array_printk(struct trace_array *tr,
+ 		       unsigned long ip, const char *fmt, ...)
+@@ -3355,6 +3378,26 @@ int trace_array_printk(struct trace_array *tr,
+ }
+ EXPORT_SYMBOL_GPL(trace_array_printk);
+ 
++/**
++ * trace_array_init_printk - Initialize buffers for trace_array_printk()
++ * @tr: The trace array to initialize the buffers for
++ *
++ * As trace_array_printk() only writes into instances, they are OK to
++ * have in the kernel (unlike trace_printk()). This needs to be called
++ * before trace_array_printk() can be used on a trace_array.
++ */
++int trace_array_init_printk(struct trace_array *tr)
++{
++	if (!tr)
++		return -ENOENT;
++
++	/* This is only allowed for created instances */
++	if (tr == &global_trace)
++		return -EINVAL;
++
++	return alloc_percpu_trace_buffer();
++}
++
+ __printf(3, 4)
+ int trace_array_printk_buf(struct trace_buffer *buffer,
+ 			   unsigned long ip, const char *fmt, ...)
 -- 
-2.28.0.163.g6104cc2f0b6-goog
+2.25.4
 
