@@ -2,264 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5A823DC4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C646523DBF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgHFQsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:48:50 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:42586 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729181AbgHFQsE (ORCPT
+        id S1728607AbgHFQim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:38:42 -0400
+Received: from sonic303-2.consmr.mail.bf2.yahoo.com ([74.6.131.41]:41920 "EHLO
+        sonic303-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729015AbgHFQgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:48:04 -0400
-Received: from relay5-d.mail.gandi.net (unknown [217.70.183.197])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 4BD373A9E62;
-        Thu,  6 Aug 2020 15:47:30 +0000 (UTC)
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id B435D1C0003;
-        Thu,  6 Aug 2020 15:47:07 +0000 (UTC)
-Date:   Thu, 6 Aug 2020 17:47:07 +0200
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH v2 01/14] media: uapi: h264: Update reference lists
-Message-ID: <20200806154707.GA1621078@aptenodytes>
-References: <20200806151310.98624-1-ezequiel@collabora.com>
- <20200806151310.98624-2-ezequiel@collabora.com>
+        Thu, 6 Aug 2020 12:36:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596731766; bh=Sq0m1vvm2SZTihycyLIp46MmEaT+M4u+5ZuM67ujUHw=; h=Date:From:Reply-To:Subject:References:From:Subject; b=XDKQPZHrbbUC73v3sLnFxOYCgpEIOLz7Gr4DgNDYFK6Jld7I0hNKQaFW1bgPynLEK9VfnU7xlPLbs4l1+nqQS6wbijK9pTz8/w8a5nqoZHwd+6Z78Q4qxPIDOWQocNhX3cNyYqxJbM54LVFTT7WcEKcLRVDV5l/Jbr+fTIbHsxZcGCe5xmDwKbkCNSDb9zoCO/2+dpaTaZz2RHZQN5gXg8zGpTd+5/95uAmBBD4XSuz/RxbVrJ81d0+QeoqJ9JFkxJQwwHNQnUoSuPh1QN3Xtu1wxh4EmtG59OqEsAmPt4KLDv43Dofxcj3Q+KF0r8frwyf4tHW+06Vc23dnOKkwhA==
+X-YMail-OSG: _aUucakVM1lP.hRmB57UA0ZMO9yFOz6ju1cxj_7h1DshilUcD0Yndx9gSibU10I
+ NEH0pYbket2Ny0CzJ.0rx7u4VTDGe3fPEODmvvIULv0WfhSKizdj42eBQ5IJEIpJeHFrLllc6AIs
+ mT.Y3eoak7eTKENWmS_6YHC3yot1y1z7nXpvB4JpyfROVZDqSxloflRiFfJuYBj9ZX1YSmp3jiow
+ 1hC2JArmU6UNfw6a1Cdiud5CPVLNvdNmZMWWRx0xka2CUvlPb7x53eI96IHUs1rC.XfAQD4hGUyk
+ XErHyBLnGcgVxtf53TbI9xyHhr36gRBnIEsgF6ik_IQxij43jk9BELLSqu.l1FOqCL3ehGsOZtWZ
+ HwAQdjOA7zmP2LjFRvXjWfchpa_JSlL3W2w3whrE5BDu1LdNt6N1p9FeYcF7EPYC3CB0yMaWkmz0
+ 4pYLjsOWTwhowssvbsoGAkM3uHT0tj_Ro6qcIfz9oG.GdG0v4_PHMyChhTPzD.p6Ybc8A16Ceq3C
+ Vpe.qvveApX22eEM.9.0.xvl.TTL6xeJf9Yz_2pTBg2yPxz_2vBLcnHodsJXl6yHLmHOj1S_JPSX
+ INfG8G3DgCUYENc0daOXVHrVeGY_jzYiVwbq17z9psYwp4dvfQBpZDyQuQseFs4d6SHD0TrR9IQ3
+ tQB_oOLx46yao1rqXgnNlLK_n_VZjfUpOXv7hsvx7wYmuDOOdKPs0VGoCybCrcYp.y8pH7GWB8Kn
+ fI8TJcVhUkdOH_18KN_Tn2hlXlFdGbUXq9WwSKkL7SMNKfmj8qpgZHR88iOwdifkJ7vM1NHusr8k
+ 2fkZgWisb9W0_sctcHhq9uE6dHhaP.SUfe5RTVNjkypAZPTopT5kRIvUJxX1FxQEfFzljKmuR7c8
+ .oaPayQVpnckS5SIkZe0oxGn5BKLYtLtxVyz4f6PlozNU.WXq.GtBa_nhJ8dsEQCtvEpMoGqnV.x
+ cPhmsU_dafjvPwLQS4CbaEM_mHSoaFSNGQGJCUD0chQtuMDYHn0YacxEi8P8vePygafHAdcTd5Uq
+ EwUWbgHHWXJoXEvJC.o8ERUUQKVa1aijy2Mn9ZrF0EuVq834EZllAfr_0K1h2bU9oDOVEtYoOwjS
+ E7WCP9rwvb8wmxBGFmJf1q6ncxg5QxOqPBNp5hO4Or4n7KeCkRxHrqNLrIVFsPyTMCKHEYHa5Pdu
+ rIK4kIS0oUvRPsc9TL0vTf9ECjgTkHahe.SXrG5jv0X7.QhYE0bxmBU5Wb8peLTjOO9a_2knP8lR
+ 24XTCX4IXtRorPeTyjrIXytEnGB1DF14b
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.bf2.yahoo.com with HTTP; Thu, 6 Aug 2020 16:36:06 +0000
+Date:   Thu, 6 Aug 2020 15:47:14 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <annahbruun6@gmail.com>
+Reply-To: mrsminaabrunel653@gmail.com
+Message-ID: <1731309241.628416.1596728834962@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
-Content-Disposition: inline
-In-Reply-To: <20200806151310.98624-2-ezequiel@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1731309241.628416.1596728834962.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16436 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---C7zPtVaVf+AK4Oqc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+My Dear in the lord
 
-On Thu 06 Aug 20, 12:12, Ezequiel Garcia wrote:
-> From: Jernej Skrabec <jernej.skrabec@siol.net>
->=20
-> When dealing with with interlaced frames, reference lists must tell if
-> each particular reference is meant for top or bottom field. This info
-> is currently not provided at all in the H264 related controls.
->=20
-> Make reference lists hold a structure which will also hold an
-> enumerator type along index into DPB array. The enumerator must
-> be used to specify if reference is for top or bottom field.
->=20
-> Currently the only user of these lists is Cedrus which is just compile
-> fixed here. Actual usage of will come in a following commit.
 
-Is there a particular reason we are adding this to the ref_pic_list[0-1]
-instead of the DPB entries directly?
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
+ gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
+ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
+on Euro) Eight million, Five hundred thousand Euros in a bank in Rome the c=
+apital city of Italy in Southern Europe. The money was from the sale of his=
+ company and death benefits payment and entitlements of my deceased husband=
+ by his company.
 
-It feels nicer to avoid making the lists structs when the entries they are
-referring to are already in a struct. I think this is the approach Kwiboo t=
-ook
-when adding support for fields in references some time ago.
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
 
-What do you think?
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
 
-Cheers,
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
 
-Paul
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
 
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> ---
-> v2:
-> * As pointed out by Jonas, enum v4l2_h264_dpb_reference here.
-> ---
->  .../media/v4l/ext-ctrls-codec.rst             | 44 ++++++++++++++++++-
->  .../staging/media/sunxi/cedrus/cedrus_h264.c  |  6 +--
->  include/media/h264-ctrls.h                    | 23 +++++++---
->  3 files changed, 62 insertions(+), 11 deletions(-)
->=20
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/=
-Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index d0d506a444b1..f2b2a381369f 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -1843,10 +1843,10 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_typ=
-e -
->      * - __u32
->        - ``slice_group_change_cycle``
->        -
-> -    * - __u8
-> +    * - struct :c:type:`v4l2_h264_reference`
->        - ``ref_pic_list0[32]``
->        - Reference picture list after applying the per-slice modifications
-> -    * - __u8
-> +    * - struct :c:type:`v4l2_h264_reference`
->        - ``ref_pic_list1[32]``
->        - Reference picture list after applying the per-slice modifications
->      * - __u32
-> @@ -1926,6 +1926,46 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type=
- -
->        - ``chroma_offset[32][2]``
->        -
-> =20
-> +``Picture Reference``
-> +
-> +.. c:type:: v4l2_h264_reference
-> +
-> +.. cssclass:: longtable
-> +
-> +.. flat-table:: struct v4l2_h264_reference
-> +    :header-rows:  0
-> +    :stub-columns: 0
-> +    :widths:       1 1 2
-> +
-> +    * - enum :c:type:`v4l2_h264_dpb_reference`
-> +      - ``reference``
-> +      - Specifies how the DPB entry is referenced.
-> +    * - __u8
-> +      - ``index``
-> +      - Index into the :c:type:`v4l2_ctrl_h264_decode_params`.dpb array.
-> +
-> +.. c:type:: v4l2_h264_dpb_reference
-> +
-> +.. cssclass:: longtable
-> +
-> +.. flat-table::
-> +    :header-rows:  0
-> +    :stub-columns: 0
-> +    :widths:       1 1 2
-> +
-> +    * - ``V4L2_H264_DPB_TOP_REF``
-> +      - 0x1
-> +      - The top field in field pair is used for
-> +        short-term reference.
-> +    * - ``V4L2_H264_DPB_BOTTOM_REF``
-> +      - 0x2
-> +     - The bottom field in field pair is used for
-> +        short-term reference.
-> +    * - ``V4L2_H264_DPB_FRAME_REF``
-> +      - 0x3
-> +      - The frame (or the top/bottom fields, if it's a field pair)
-> +        is used for short-term reference.
-> +
->  ``V4L2_CID_MPEG_VIDEO_H264_DECODE_PARAMS (struct)``
->      Specifies the decode parameters (as extracted from the bitstream)
->      for the associated H264 slice data. This includes the necessary
-> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c b/drivers/s=
-taging/media/sunxi/cedrus/cedrus_h264.c
-> index 54ee2aa423e2..cce527bbdf86 100644
-> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> @@ -166,8 +166,8 @@ static void cedrus_write_frame_list(struct cedrus_ctx=
- *ctx,
-> =20
->  static void _cedrus_write_ref_list(struct cedrus_ctx *ctx,
->  				   struct cedrus_run *run,
-> -				   const u8 *ref_list, u8 num_ref,
-> -				   enum cedrus_h264_sram_off sram)
-> +				   const struct v4l2_h264_reference *ref_list,
-> +				   u8 num_ref, enum cedrus_h264_sram_off sram)
->  {
->  	const struct v4l2_ctrl_h264_decode_params *decode =3D run->h264.decode_=
-params;
->  	struct vb2_queue *cap_q;
-> @@ -188,7 +188,7 @@ static void _cedrus_write_ref_list(struct cedrus_ctx =
-*ctx,
->  		int buf_idx;
->  		u8 dpb_idx;
-> =20
-> -		dpb_idx =3D ref_list[i];
-> +		dpb_idx =3D ref_list[i].index;
->  		dpb =3D &decode->dpb[dpb_idx];
-> =20
->  		if (!(dpb->flags & V4L2_H264_DPB_ENTRY_FLAG_ACTIVE))
-> diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
-> index 080fd1293c42..4c0bb7f5fb05 100644
-> --- a/include/media/h264-ctrls.h
-> +++ b/include/media/h264-ctrls.h
-> @@ -19,6 +19,8 @@
->   */
->  #define V4L2_H264_NUM_DPB_ENTRIES 16
-> =20
-> +#define V4L2_H264_REF_LIST_LEN (2 * V4L2_H264_NUM_DPB_ENTRIES)
-> +
->  /* Our pixel format isn't stable at the moment */
->  #define V4L2_PIX_FMT_H264_SLICE v4l2_fourcc('S', '2', '6', '4') /* H264 =
-parsed slices */
-> =20
-> @@ -140,6 +142,19 @@ struct v4l2_h264_pred_weight_table {
->  #define V4L2_H264_SLICE_FLAG_DIRECT_SPATIAL_MV_PRED	0x04
->  #define V4L2_H264_SLICE_FLAG_SP_FOR_SWITCH		0x08
-> =20
-> +enum v4l2_h264_dpb_reference {
-> +	V4L2_H264_DPB_TOP_REF =3D 0x1,
-> +	V4L2_H264_DPB_BOTTOM_REF =3D 0x2,
-> +	V4L2_H264_DPB_FRAME_REF =3D 0x3,
-> +};
-> +
-> +struct v4l2_h264_reference {
-> +	enum v4l2_h264_dpb_reference fields;
-> +
-> +	/* Index into v4l2_ctrl_h264_decode_params.dpb[] */
-> +	__u8 index;
-> +};
-> +
->  struct v4l2_ctrl_h264_slice_params {
->  	/* Size in bytes, including header */
->  	__u32 size;
-> @@ -178,12 +193,8 @@ struct v4l2_ctrl_h264_slice_params {
->  	__u8 num_ref_idx_l1_active_minus1;
->  	__u32 slice_group_change_cycle;
-> =20
-> -	/*
-> -	 * Entries on each list are indices into
-> -	 * v4l2_ctrl_h264_decode_params.dpb[].
-> -	 */
-> -	__u8 ref_pic_list0[32];
-> -	__u8 ref_pic_list1[32];
-> +	struct v4l2_h264_reference ref_pic_list0[V4L2_H264_REF_LIST_LEN];
-> +	struct v4l2_h264_reference ref_pic_list1[V4L2_H264_REF_LIST_LEN];
-> =20
->  	__u32 flags;
->  };
-> --=20
-> 2.27.0
->=20
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---C7zPtVaVf+AK4Oqc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl8sJfsACgkQ3cLmz3+f
-v9G7JQf/TnWncpqO5avCsiYx8iHH1eLwDhPb6bnmWUzXT4OaXdC12feSeLbDMMg1
-LJCN8vURx+PCw7lwqV86i3gVlvePQZ+BukVOELAomGEDJP4Wrr2mrz7Z0p5encuv
-nQrzHqEdKZVi4CLXxNEsrqidJo/74vnUgeP10jtPG72+nluwXmOlACXeNJgA2/Ca
-UfHUCjy6eXVvLShfabxuej+5GP4zVWAHRtwJi8Ar3Ik/WyazhWoqCvNguA2LxgUl
-IRYWs4suJUAbR4ftreTcqEeb0bM60F7mxAik8UtnVvZd3YMgQL+4FBiA6nW+pYzu
-ZFcdsq53+2TSQY/8E1vOZrZ87qwRiw==
-=EiuI
------END PGP SIGNATURE-----
-
---C7zPtVaVf+AK4Oqc--
+Thanks
+Mrs. Mina A. Brunel
