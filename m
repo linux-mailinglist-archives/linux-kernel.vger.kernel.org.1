@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD8823D8C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607BF23D8C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729272AbgHFJhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729074AbgHFJey (ORCPT
+        id S1729233AbgHFJi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:38:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23481 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729223AbgHFJg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:34:54 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD03BC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 02:34:53 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1596706483;
+        Thu, 6 Aug 2020 05:36:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596706615;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fQkbKY9HMHdIDVxo57b/7ooYqvcFkMgq0/3YSoWs1eI=;
-        b=kN9sYWpFBqxH8i+Q+XfIJ8K3gXFkwExErJzky6iYhLWWPcVa2Z+p+OkEvD+GisZSXAeaLZ
-        /oJ9kuejzW+IncznugGgptjhxw1+7hzVMcsFt7Y1Oq4issSKGHiO8rU7Rs5jqhzql0diX2
-        2oG3d8F9RifH6uyXVYIIZqNNKOuJmzgMFr7kSEomrSqabk5OASsk4BB+EN+HwRxo7IqWBZ
-        zoRt4BEcLoNSg66M2m8QbTb2dRdkf7tE/7hJ4bjWqnvjmFwRE7dmSMQT6GFb35Fxk9YSpH
-        n8j4k/ev4EXmFfg2P1UeeSmzVNT1JD2pVHXwXZN5cCxzYfIGBmWpyeLkIjCxzA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1596706483;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fQkbKY9HMHdIDVxo57b/7ooYqvcFkMgq0/3YSoWs1eI=;
-        b=MLXgfR34ZN2c7p471X0+h9DeZYNO1M5vJ4NsJRZZh/+fSvjbiWc5sKSQu+R2OqaUwHFJ4S
-        b72tNLPsH2m+vSBA==
-To:     peterz@infradead.org
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        Alison Wang <alison.wang@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, paulmck@kernel.org, mw@semihalf.com,
-        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>
-Subject: Re: [RFC PATCH] arm64: defconfig: Disable fine-grained task level IRQ time accounting
-In-Reply-To: <20200805134002.GQ2674@hirez.programming.kicks-ass.net>
-References: <877dumbtoi.fsf@kurt> <20200729094943.lsmhsqlnl7rlnl6f@skbuf> <87mu3ho48v.fsf@kurt> <20200730082228.r24zgdeiofvwxijm@skbuf> <873654m9zi.fsf@kurt> <87lfiwm2bj.fsf@nanos.tec.linutronix.de> <20200803114112.mrcuupz4ir5uqlp6@skbuf> <87d047n4oh.fsf@nanos.tec.linutronix.de> <jhjh7tjivew.mognet@arm.com> <875z9zmt4i.fsf@nanos.tec.linutronix.de> <20200805134002.GQ2674@hirez.programming.kicks-ass.net>
-Date:   Thu, 06 Aug 2020 11:34:42 +0200
-Message-ID: <877duci0ct.fsf@nanos.tec.linutronix.de>
+        bh=2SRXYqR/w4ZPmQdMHnc72Nwp3MhKm+bh3iVJiUJELNE=;
+        b=ISelayjvZq0aFt5mkkgJVvzj00VbSJBZZGgzsuTGeH067PsenEEvUsUj8IzBONYtRK45qG
+        DFfO1pZSfqPSjhjSYbQhVh7c3w7SspCH/jhpZOamrjoheNH5Fz5ZPWyGyEUih7A+dWfDYi
+        oklV5b2Y/xb4Ir2hxGemH6lri1uGUok=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-322-H-9PRI80Pv28O2DYRxpUzg-1; Thu, 06 Aug 2020 05:36:53 -0400
+X-MC-Unique: H-9PRI80Pv28O2DYRxpUzg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1B39D1940922;
+        Thu,  6 Aug 2020 09:36:52 +0000 (UTC)
+Received: from gondolin (ovpn-113-2.ams2.redhat.com [10.36.113.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E70F5C6D9;
+        Thu,  6 Aug 2020 09:36:48 +0000 (UTC)
+Date:   Thu, 6 Aug 2020 11:36:45 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfio-pci: Avoid recursive read-lock usage
+Message-ID: <20200806113645.47de0bfa.cohuck@redhat.com>
+In-Reply-To: <159665024415.30380.4401928486051321567.stgit@gimli.home>
+References: <159665024415.30380.4401928486051321567.stgit@gimli.home>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-peterz@infradead.org writes:
-> On Mon, Aug 03, 2020 at 09:22:53PM +0200, Thomas Gleixner wrote:
->
->>    totaltime = irqtime + tasktime
->> 
->> Ignoring irqtime and pretending that totaltime is what the scheduler
->> can control and deal with is naive at best.
->
-> Well no, that's what we call system overhead and is assumed to be
-> included in the 'error margin'.
->
-> The way things are set up is that we say that, by default, RT tasks can
-> consume 95% of cputime and the remaining 5% is sufficient to keep the
-> system alive.
->
-> Those 5% include all system overhead, IRQs, RCU, !RT workqueues etc..
->
-> Obviously IRQ_TIME accounting changes the balance a bit, but that's what
-> it is. We can't really do anything better.
->
-> Apparently this SoC has significant IRQ time for some reason. Also,
-> relying on RT throttling for 'correct' behaviour is also wrong. What
-> needs to be done is find who is using all this RT time and why, that
-> isn't right.
+On Wed, 05 Aug 2020 11:58:05 -0600
+Alex Williamson <alex.williamson@redhat.com> wrote:
 
-It's a test case and we know already who is using the time. But that's
-not the point.
+> A down_read on memory_lock is held when performing read/write accesses
+> to MMIO BAR space, including across the copy_to/from_user() callouts
+> which may fault.  If the user buffer for these copies resides in an
+> mmap of device MMIO space, the mmap fault handler will acquire a
+> recursive read-lock on memory_lock.  Avoid this by reducing the lock
+> granularity.  Sequential accesses requiring multiple ioread/iowrite
+> cycles are expected to be rare, therefore typical accesses should not
+> see additional overhead.
+> 
+> VGA MMIO accesses are expected to be non-fatal regardless of the PCI
+> memory enable bit to allow legacy probing, this behavior remains with
+> a comment added.  ioeventfds are now included in memory access testing,
+> with writes dropped while memory space is disabled.
+> 
+> Fixes: abafbc551fdd ("vfio-pci: Invalidate mmaps and block MMIO access on disabled memory")
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> ---
+>  drivers/vfio/pci/vfio_pci_private.h |    2 +
+>  drivers/vfio/pci/vfio_pci_rdwr.c    |  120 ++++++++++++++++++++++++++++-------
+>  2 files changed, 98 insertions(+), 24 deletions(-)
 
-A runaway RT task resulting in a RCU stall or whatever lockup of the
-system is definitely not the right answer.
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 
-The throttler, as much as it's a horrible hack, is there to prevent this
-and to give the admin a chance to pinpoint and kill that thing instead
-of having to press the reset button and scratching head what might have
-caused this.
-
-Thanks,
-
-        tglx
