@@ -2,80 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C2623D7FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D8223D800
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728962AbgHFIZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 04:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728946AbgHFIZG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 04:25:06 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8A8C061574;
-        Thu,  6 Aug 2020 01:25:06 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id p1so27121669pls.4;
-        Thu, 06 Aug 2020 01:25:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VtZTL6+gIK1sJt3cJ7zuQJSCi6/qCpwrTyBQLHCj2S8=;
-        b=OG+9CdJZ3W44CK1x0ACetduLjsaqgdlaCWAGhCBzH4drk+NT/7sVWJqo5EQ4O40wjU
-         X//LkVywCyxSs+DykBCjxmdogajLS7NiiItI9NutC96YSTCBWLLvxc8T0LgyV17Rdp4e
-         E+Qm1vMT8Gkd72bQhQ1ln4bHvMnOzRqe6aLBc6loKakLLdqAGLHysU5wYm8m5vyLhfsQ
-         e77LvT8zt26rYT0jOEyz8bYTidpZR21VsWmMvCmhtnEfYRmj3uHtTZj+dcxSGQ1MXgCW
-         nKD4XiOU57DnhL7nSogbW8Auk/uvTE7WLTIHEgmvtbt0Za7DhGoPCKzAL0quEp2wnmMC
-         2/sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VtZTL6+gIK1sJt3cJ7zuQJSCi6/qCpwrTyBQLHCj2S8=;
-        b=hr2uvFmW4/cpq2mhqEOr8b45mb/lee+z/UB8kC1NiEHD5MHAXQ/hkTH0ioWv4BAbIl
-         Eog8PXMUuLXXZiQ4hQAF/1AUUoge3cQFMhYdggkxfNyadcjoFJiI7qvEZBYB8ueSeLkQ
-         h0aIY3nNlq2+Z8IHliPmgFKQcS2xXZ2UPtvteJvULOFn9RM4aNJBT0gNX5O1Q9svhB8u
-         3b9za5puVnoEX4oVji80nLtZXvU0Uo7rTCiggRcg8Kut7lavGWFxIkO49tsXRO109tbh
-         GCKKbM3JxtRzgNyqMRKFg9SFLlfXrf7hAkHSieiyvqKKR6b/iDSWvDJrCVO3MB8kPZta
-         asKg==
-X-Gm-Message-State: AOAM532xUGJBjz9B3Lxexcwm7POOLxUcnbWlyGX6qZVA93xqJvRsdRH5
-        JQ81hig7IV1FzmGBtrYHz5YjrKV/HidzaJlc+XM=
-X-Google-Smtp-Source: ABdhPJzmbxmj08PcVsTlWSiqof+tF9qK3QjOl3a4d12D0ib+K78WCQkugcFS8JtCY3shZrfclqs6X4bZD0ZXQyH/S3M=
-X-Received: by 2002:a17:902:59dd:: with SMTP id d29mr6753635plj.170.1596702305301;
- Thu, 06 Aug 2020 01:25:05 -0700 (PDT)
+        id S1728864AbgHFIaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 04:30:19 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:11088 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727768AbgHFIaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 04:30:15 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BMhWR2RVVz9v0TL;
+        Thu,  6 Aug 2020 10:30:11 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id tFMet-3MCDpc; Thu,  6 Aug 2020 10:30:11 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BMhWR1h5Wz9v0TJ;
+        Thu,  6 Aug 2020 10:30:11 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A447B8B7FA;
+        Thu,  6 Aug 2020 10:30:12 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id rPm5gnB6BF8Y; Thu,  6 Aug 2020 10:30:12 +0200 (CEST)
+Received: from [172.25.230.102] (po15451.idsi0.si.c-s.fr [172.25.230.102])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 741AA8B7F9;
+        Thu,  6 Aug 2020 10:30:12 +0200 (CEST)
+Subject: Re: [PATCH v2] powerpc/uaccess: simplify the get_fs() set_fs() logic
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <dd2876b808ea38eb7b7f760ecd6ce06096c61fb5.1580295551.git.christophe.leroy@c-s.fr>
+ <87mu3nyh3w.fsf@mpe.ellerman.id.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <2d0b777d-f1aa-08a1-f287-47ac68efbd99@csgroup.eu>
+Date:   Thu, 6 Aug 2020 10:29:56 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200805130252.41973-1-patrick.riphagen@xsens.com>
-In-Reply-To: <20200805130252.41973-1-patrick.riphagen@xsens.com>
-From:   Frans Klaver <fransklaver@gmail.com>
-Date:   Thu, 6 Aug 2020 10:24:54 +0200
-Message-ID: <CAH6sp9NE_U-CDcrBueTPpzvCRUC3unCZFhhLFPTRVsCyN9THCQ@mail.gmail.com>
-Subject: Re: [PATCH] USB: serial: ftdi_sio: add IDs for Xsens Mti USB converter
-To:     Patrick Riphagen <ppriphagen@gmail.com>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Patrick Riphagen <patrick.riphagen@xsens.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87mu3nyh3w.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Patrick,
 
-On Wed, Aug 5, 2020 at 9:57 PM Patrick Riphagen <ppriphagen@gmail.com> wrote:
->
-> The device added has an FTDI chip inside.
-> The device is used to connect Xsens USB Motion Trackers.
->
-> Signed-off-by: Patrick Riphagen <patrick.riphagen@xsens.com>
 
-Now you've dropped the backport to stable. Just put
+Le 25/07/2020 à 13:22, Michael Ellerman a écrit :
+> Hi Christophe,
+> 
+> Unfortunately this would collide messily with "uaccess: remove
+> segment_eq" in linux-next, so I'll ask you to do a respin based on that,
+> some comments below.
 
-Cc: stable@vger.kernel.org
+Done, sent as v3, together with the 2 patchs from Linux next to get it 
+build and boot.
 
-just before your sign-off. Everything will be taken care of
-automatically once the patch is merged.
+> 
+> Christophe Leroy <christophe.leroy@c-s.fr> writes:
+>> On powerpc, we only have USER_DS and KERNEL_DS
+>>
+>> Today, this is managed as an 'unsigned long' data space limit
+>> which is used to compare the passed address with, plus a bit
+>> in the thread_info flags that is set whenever modifying the limit
+>> to enable the verification in addr_limit_user_check()
+>>
+>> The limit is either the last address of user space when USER_DS is
+>> set, and the last address of address space when KERNEL_DS is set.
+>> In both cases, the limit is a compiletime constant.
+>>
+>> get_fs() returns the limit, which is part of thread_info struct
+>> set_fs() updates the limit then set the TI_FSCHECK flag.
+>> addr_limit_user_check() check the flag, and if it is set it checks
+>> the limit is the user limit, then unsets the TI_FSCHECK flag.
+>>
+>> In addition, when the flag is set the syscall exit work is involved.
+>> This exit work is heavy compared to normal syscall exit as it goes
+>> through normal exception exit instead of the fast syscall exit.
+>>
+>> Rename this TI_FSCHECK flag to TIF_KERNEL_DS flag which tells whether
+>> KERNEL_DS or USER_DS is set. Get mm_segment_t be redifined as a bool
+>> struct that is either false (for USER_DS) or true (for KERNEL_DS).
+>> When TIF_KERNEL_DS is set, the limit is ~0UL. Otherwise it is
+>> TASK_SIZE_USER (resp TASK_SIZE_USER64 on PPC64). When KERNEL_DS is
+>> set, there is no range to check. Define TI_FSCHECK as an alias to
+>> TIF_KERNEL_DS.
+> 
+> I'd rather avoid the "DS" name any more than we have to. Maybe it means
+> "data space" but that's not a very common term.
 
-Frans
+I thought it was a reference to the ds/fs/gs ... segment registers in 
+the 8086 ?
+
+> 
+> The generic helper these days is called uaccess_kernel(), which returns
+> true when uaccess routines are allowed to access the kernel.
+> 
+> So calling it TIF_UACCESS_KERNEL would work I think?
+
+ok
+
+> 
+> The bool could be called uaccess_kernel.
+> And END_OF_USER_DS could be USER_ADDR_MAX.
+
+ok
+
+> 
+>> On exit, involve exit work when the bit is set, i.e. when KERNEL_DS
+>> is set. addr_limit_user_check() will clear the bit and kill the
+>> user process.
+> 
+> I guess this is safe. The check was added to make sure we never return
+> to userspace with KERNEL_DS set, but using the actual TIF flag to
+> determine the address limit should be equally safe, and avoid the
+> overhead of the check in the good case.
+
+That's the purpose indeed, yes.
+
+
+christophe
