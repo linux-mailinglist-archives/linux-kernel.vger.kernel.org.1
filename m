@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5535623DD50
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA7A23DDCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730137AbgHFRIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
+        id S1729985AbgHFROq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729587AbgHFRIG (ORCPT
+        with ESMTP id S1730206AbgHFRJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:08:06 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1DFEC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 10:08:05 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id o18so51097432eje.7
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 10:08:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=posk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f8/nn7ZbDCfrAUl2xyqy7+UpgLeitL0XyOQaDvrk0gg=;
-        b=J0oSNU5c9WU8jd827FqViUbaxw7NHF1awlvX2T/tm5YLVqSpmrQLHI1cWovA9K2aNX
-         EkfiIzRlW4k7NA5brGbVauGTIRidQB4Pa4EXjUCuqmeA3JTA145PcxNTkcT6vVAYn1Gt
-         Y65hCqFpf3KzbLLL2ngYFJqX7c8QuPRGJcixbRyNZqqhXRuvM64nC8ynh75Q8YMMv1k1
-         lkjWugxLLu4cCDse8vopnEgWjXRM9/onm2fAFLu0QLbOFzte8sFMzEZb9DfIfbMOfOLD
-         oBABcc1f+0wB/c8H6UNr7fty7ujUc8kwJKUW9EUafoKJ5J7E+2r5yZ3WNqQmKC7KWI2Q
-         JjGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f8/nn7ZbDCfrAUl2xyqy7+UpgLeitL0XyOQaDvrk0gg=;
-        b=iWRjlpUrl7dKfEUcDTuRGzmBtZJo8yCmqqAFHgIEbrZ5EagWKXSUAwBJ0dmSt2ME68
-         0/TktzXBaxNFthB9hrXOk5L6NY9Fa05qp1cSX0rojW/PzR74+c58Dzn2+jX1aHXgGHIK
-         /fFEhv8v9rdN7mts9LveZDoLCAhyGUgVjrwtm10Ig+IWA82uvcpKmZ9M2i/xY+vF4Yj7
-         i8xZY0+zYPIXMlfjBHBAaCrbcbeC8dvrm4bQ/a819Lsv55X0xBbtiGK1iZComdwdW+/U
-         yL41ji5UqTFPr6/0cHOZfP82KvuN6oyAcs2pEsGCXdHcXo7QWwjdqk7Q8uwhsxKdZFzI
-         HhlA==
-X-Gm-Message-State: AOAM532+1rdr0qa8vOJGInX6WcYhJnVt7AYRFRp/nD14gTPZ9uTqCSQk
-        BsuvVYoYDhrlxscOxB+0KUI5ER5xC400iGPL30Oxws5J
-X-Google-Smtp-Source: ABdhPJxi86q1mLGXwMz8ldpkQ6k09WKKnKCUmcGZpvpT96v/iuuruH7DIPliC1+uJAahl+fMsZf0jQ32oxnT7uGlfWU=
-X-Received: by 2002:a17:906:2296:: with SMTP id p22mr5238258eja.510.1596733684514;
- Thu, 06 Aug 2020 10:08:04 -0700 (PDT)
+        Thu, 6 Aug 2020 13:09:56 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B0EC061574;
+        Thu,  6 Aug 2020 10:09:55 -0700 (PDT)
+Date:   Thu, 06 Aug 2020 17:09:52 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1596733793;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=0IfDYCyrpOkq4cmxc1Tqa4VZc19IKhfIyezM8UnI2Pg=;
+        b=RWFCzw5AvxwIuVk3MEpBqIPepmQuV2m3tPeZOAcF1Hd4xJjna2IIHpEfkGO4ErOLhPkGxe
+        VDGQEzxkAvukHWgMc7vmH7OHI6g0CxIU+rJX9MdKTRMtwkGIFANBu8X3qOjnSwYQLy29ki
+        0hg3z3p6zE8e6+Su4lKV5MPbMSxr+sKXn4Py+GHdFDCW7QTzuIFC3hNwdkUfKiG7yDTK+K
+        QwLMpO2Ns9C2Q8m+32Q6Yi7G3ywoLSLy3MxKpUlAumc7uSxG/8z7/5gb8nokhDmsEn92RL
+        c5sVK0oErMQ5mTf/iUGR6RJ4TCFm8wbocleBDFyC4xH4gVPLqJAy25M4dGHj+Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1596733793;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=0IfDYCyrpOkq4cmxc1Tqa4VZc19IKhfIyezM8UnI2Pg=;
+        b=jIGFwuAIXvTsnDCz+IY8ShcX6rnpSfQYztmes6UQ1o8JBBbXSXkYWV8i/1SssAGwITWnVl
+        o68fCXUWTdgThEAw==
+From:   "tip-bot2 for Masami Hiramatsu" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/urgent] kprobes: Remove show_registers() function prototype
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-References: <20200806000859.160882-1-posk@google.com> <20200806134828.GA165568@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200806134828.GA165568@hirez.programming.kicks-ass.net>
-From:   Peter Oskolkov <posk@posk.io>
-Date:   Thu, 6 Aug 2020 10:07:53 -0700
-Message-ID: <CAFTs51Ufyds5mypiysL=2ZwtyMk9hjLm-9tJbYz=xciY1f2=5g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] membarrier: add MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Peter Oskolkov <posk@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paul Turner <pjt@google.com>,
-        Chris Kennelly <ckennelly@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <159673379297.3192.4747957589177383846.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 6:48 AM <peterz@infradead.org> wrote:
->
-> On Wed, Aug 05, 2020 at 05:08:58PM -0700, Peter Oskolkov wrote:
->
-> Thanks for the Cc!
+The following commit has been merged into the perf/urgent branch of tip:
 
-Always a pleasure!
+Commit-ID:     09fc67b500c7f0bb1b5ed774197ac7f2c5285655
+Gitweb:        https://git.kernel.org/tip/09fc67b500c7f0bb1b5ed774197ac7f2c5285655
+Author:        Masami Hiramatsu <mhiramat@kernel.org>
+AuthorDate:    Fri, 17 Jul 2020 17:42:55 +09:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 06 Aug 2020 17:52:28 +02:00
 
-(Sorry, included only membarrier maintainers in v1; in v2 included
-both membarrier and rseq maintainers).
+kprobes: Remove show_registers() function prototype
 
->
-> > + * @MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU:
-> > + *                          If a thread belonging to the current process
-> > + *                          is currently in an RSEQ critical section on the
-> > + *                          CPU identified by flags parameter, restart it.
-> > + *                          @flags: if @flags >= 0, identifies the CPU to
-> > + *                                  restart RSEQ CS on; if == -1, restarts
-> > + *                                  RSEQ CSs on all CPUs.
->
-> > +     } else if (cpu_id == -1) {
-> > +             on_each_cpu(membarrier_rseq_ipi,
-> > +                         current->group_leader, true);
->
-> This is an unpriv IPI the world. That's a big no-no.
+Remove show_registers() function prototype because this function
+has been renamed by commit:
 
-removed in v2.
+  57da8b960b9a ("x86: Avoid double stack traces with show_regs()")
 
->
-> Double so because all you want to target is the current process, which
-> you're defining as CLONE_THREAD, where the rest of this file uses
-> CLONE_VM to define a process.
+and this commit has removed the caller in kprobes altogether:
 
-Use current->mm in v2 instead of current->group_leader. Is it better this way?
+  80006dbee674 ("kprobes/x86: Remove jprobe implementation")
+
+So this doesn't exist anymore - remove the orphan prototype.
+
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ include/linux/kprobes.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 45b8cdc..9be1bff 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -227,7 +227,6 @@ extern int arch_prepare_kprobe(struct kprobe *p);
+ extern void arch_arm_kprobe(struct kprobe *p);
+ extern void arch_disarm_kprobe(struct kprobe *p);
+ extern int arch_init_kprobes(void);
+-extern void show_registers(struct pt_regs *regs);
+ extern void kprobes_inc_nmissed_count(struct kprobe *p);
+ extern bool arch_within_kprobe_blacklist(unsigned long addr);
+ extern int arch_populate_kprobe_blacklist(void);
