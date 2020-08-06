@@ -2,209 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544F623DCA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755A423DC58
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729786AbgHFQys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:54:48 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52960 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729111AbgHFQym (ORCPT
+        id S1729272AbgHFQvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:51:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729555AbgHFQuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:54:42 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 076FVtLN001663;
-        Thu, 6 Aug 2020 11:34:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=/6OwY2FMLYMMfilDKDbdLEaroXYly6ajpHy06tH7vzE=;
- b=NFp7G9kd2x96lc9KEZiGdkoiJtZVPUeCg+siGa9Rvr+HnY3ZwjZHVOiTfqDwgSCPW+Tc
- iBDfRXr0claVrFidVYxv7V2IYQzOQwBVk4nGtfYZYPN5PqB3+pk+VMlJ0chbURrLir9W
- 1hgjui5lwxXaXhU+Ye7jMRSajeC8rMDRlotc7FrkXP1qwAwvsH/dbKvBKSfZjpEc+/J9
- GmEGWO4h5GI2Bgi+3kjgnQ1ycjz5i/zbYiF1M7Jncc+PMyFW1a0l6vOEd2d0+rLCUlDb
- UD2Ou4iJP+c3h7K4bcLdfqya0iBR0RxJd5IivrCFQIXoQduwt0WcXW5+HrqmSDhZWj8i OA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32repgumnm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 11:34:48 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 076FWxK7005324;
-        Thu, 6 Aug 2020 11:34:48 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32repgumn8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 11:34:48 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 076FYC00010222;
-        Thu, 6 Aug 2020 15:34:47 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma01wdc.us.ibm.com with ESMTP id 32n018jgks-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Aug 2020 15:34:47 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 076FYkDv60096866
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 6 Aug 2020 15:34:46 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F1999C605B;
-        Thu,  6 Aug 2020 15:34:45 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1F259C6055;
-        Thu,  6 Aug 2020 15:34:44 +0000 (GMT)
-Received: from swastik.ibm.com (unknown [9.160.68.187])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  6 Aug 2020 15:34:43 +0000 (GMT)
-Subject: Re: [PATCH 1/2] ima: Pre-parse the list of keyrings in a KEY_CHECK
- rule
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Nayna Jain <nayna@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-References: <20200727140831.64251-1-tyhicks@linux.microsoft.com>
- <20200727140831.64251-2-tyhicks@linux.microsoft.com>
-From:   Nayna <nayna@linux.vnet.ibm.com>
-Message-ID: <8f749594-1214-9f2d-4614-d360772a2ab6@linux.vnet.ibm.com>
-Date:   Thu, 6 Aug 2020 11:34:43 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 6 Aug 2020 12:50:13 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E497C0086B8;
+        Thu,  6 Aug 2020 08:35:08 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id m22so7692552eje.10;
+        Thu, 06 Aug 2020 08:35:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jAnZHwKItrjXdvdR58QzqOoGM6YiK6Tg67ZIO3IEXZQ=;
+        b=PaV9DzcXBRT4XdiWVj2xuDnpNzGzZvTVchEJ29eJg3AwKErvnq9AkPTWImWIdPrvSk
+         Cm1fi9ZxhQcs1r7k5zNMztQZEJqDMdu4nka/5tt8Hhb9cFcUnBoSa31kj9ZW0F5Bwztk
+         NHaIsLTKVw7u8qV/lSP5g3fWoeyPzO6NUKldsdvdpw3jIGhMz1cqJ+9ArczJ7cx3GIwk
+         PX8WirWmF4DG/A/CFrnhy+HE2KQsK+ZRlZFYc32HeYG6Tbh2C++BzOTYyxkUXmkEOi0k
+         xTt2rad3nwG1/HXaM/GIW7ndJd+xF1vxwoL77XDNGhT/4l0+wVpZ2QhQn6ruUQVtS02g
+         ux2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=jAnZHwKItrjXdvdR58QzqOoGM6YiK6Tg67ZIO3IEXZQ=;
+        b=TTPfMM13Pu9OMkt7JxxQcBfbqEEvjOOoD3OhDR9jjNMI3rOH3FU9JWaJ0i279B6ENc
+         afd6v9+JHkBxdfK2LuuX0Xs1oozl+ODcj9U2gDDA2zlJqO4d6n1q3VEnYaTy47VQDl32
+         PaiDPLLKTvPmffe5ANx4wHYxaanegVYtFUwxf2G0LRmMkRVDwTjOHZoJ0qe89+WdW2y2
+         KqCv97hIG/ksaGLxClZ5TRxd2e526HyQJf4Fqp8BUpcWZzcGHL6EdQWVen1qZVLC94lU
+         dPfPSUpdAOrdOOSErXE5OGN36zxwBIFEHg6h9UvYsdx8GyRVIw4kEW25Vc//14hdrd9M
+         cxHg==
+X-Gm-Message-State: AOAM530JJcsyGeEvUzWUBBrJC099TNgwOteWgIcuS7ccgTYC2a182LsF
+        uc/0L24eMtPD9JUxlnL8tW4=
+X-Google-Smtp-Source: ABdhPJzGSWcXsTvrFChy/oKLxWzAYTmdg9pUBz7YXxu/sHbxaHPFNUziq5MLvb9Mv5LaLwHDPyG+XA==
+X-Received: by 2002:a17:907:4064:: with SMTP id nl4mr4903112ejb.342.1596728106880;
+        Thu, 06 Aug 2020 08:35:06 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id h9sm4027593ejt.50.2020.08.06.08.35.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 08:35:06 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 17:35:00 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        X86 ML <x86@kernel.org>, stable <stable@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Erwin Tsaur <erwin.tsaur@intel.com>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        0day robot <lkp@intel.com>, lkp@lists.01.org
+Subject: Re: [x86/copy_mc] a0ac629ebe: fio.read_iops -43.3% regression
+Message-ID: <20200806153500.GC2131635@gmail.com>
+References: <159630256804.3143511.8894023468833792004.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20200803094257.GA23458@shao2-debian>
+ <20200806133452.GA2077191@gmail.com>
+ <CAPcyv4hS7K0Arrd+C0LhjrFH=yGJf3g55_WkHOET4z58AcWrJw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200727140831.64251-2-tyhicks@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-06_12:2020-08-06,2020-08-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 suspectscore=0
- adultscore=0 mlxlogscore=999 clxscore=1011 phishscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008060108
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4hS7K0Arrd+C0LhjrFH=yGJf3g55_WkHOET4z58AcWrJw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 7/27/20 10:08 AM, Tyler Hicks wrote:
-> The ima_keyrings buffer was used as a work buffer for strsep()-based
-> parsing of the "keyrings=" option of an IMA policy rule. This parsing
-> was re-performed each time an asymmetric key was added to a kernel
-> keyring for each loaded policy rule that contained a "keyrings=" option.
->
-> An example rule specifying this option is:
->
->   measure func=KEY_CHECK keyrings=a|b|c
->
-> The rule says to measure asymmetric keys added to any of the kernel
-> keyrings named "a", "b", or "c". The size of the buffer size was
-> equal to the size of the largest "keyrings=" value seen in a previously
-> loaded rule (5 + 1 for the NUL-terminator in the previous example) and
-> the buffer was pre-allocated at the time of policy load.
->
-> The pre-allocated buffer approach suffered from a couple bugs:
->
-> 1) There was no locking around the use of the buffer so concurrent key
->     add operations, to two different keyrings, would result in the
->     strsep() loop of ima_match_keyring() to modify the buffer at the same
->     time. This resulted in unexpected results from ima_match_keyring()
->     and, therefore, could cause unintended keys to be measured or keys to
->     not be measured when IMA policy intended for them to be measured.
->
-> 2) If the kstrdup() that initialized entry->keyrings in ima_parse_rule()
->     failed, the ima_keyrings buffer was freed and set to NULL even when a
->     valid KEY_CHECK rule was previously loaded. The next KEY_CHECK event
->     would trigger a call to strcpy() with a NULL destination pointer and
->     crash the kernel.
->
-> Remove the need for a pre-allocated global buffer by parsing the list of
-> keyrings in a KEY_CHECK rule at the time of policy load. The
-> ima_rule_entry will contain an array of string pointers which point to
-> the name of each keyring specified in the rule. No string processing
-> needs to happen at the time of asymmetric key add so iterating through
-> the list and doing a string comparison is all that's required at the
-> time of policy check.
->
-> In the process of changing how the "keyrings=" policy option is handled,
-> a couple additional bugs were fixed:
->
-> 1) The rule parser accepted rules containing invalid "keyrings=" values
->     such as "a|b||c", "a|b|", or simply "|".
->
-> 2) The /sys/kernel/security/ima/policy file did not display the entire
->     "keyrings=" value if the list of keyrings was longer than what could
->     fit in the fixed size tbuf buffer in ima_policy_show().
->
-> Fixes: 5c7bac9fb2c5 ("IMA: pre-allocate buffer to hold keyrings string")
-> Fixes: 2b60c0ecedf8 ("IMA: Read keyrings= option from the IMA policy")
-> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> ---
->   security/integrity/ima/ima_policy.c | 138 +++++++++++++++++++---------
->   1 file changed, 93 insertions(+), 45 deletions(-)
->
-> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> index 07f033634b27..c328cfa0fc49 100644
-> --- a/security/integrity/ima/ima_policy.c
-> +++ b/security/integrity/ima/ima_policy.c
-> @@ -59,6 +59,11 @@ enum policy_types { ORIGINAL_TCB = 1, DEFAULT_TCB };
->   
->   enum policy_rule_list { IMA_DEFAULT_POLICY = 1, IMA_CUSTOM_POLICY };
->   
-> +struct ima_rule_opt_list {
-> +	size_t count;
-> +	char *items[];
-> +};
-> +
->   struct ima_rule_entry {
->   	struct list_head list;
->   	int action;
-> @@ -78,7 +83,7 @@ struct ima_rule_entry {
->   		int type;	/* audit type */
->   	} lsm[MAX_LSM_RULES];
->   	char *fsname;
-> -	char *keyrings; /* Measure keys added to these keyrings */
-> +	struct ima_rule_opt_list *keyrings; /* Measure keys added to these keyrings */
->   	struct ima_template_desc *template;
->   };
->   
-> @@ -206,10 +211,6 @@ static LIST_HEAD(ima_policy_rules);
->   static LIST_HEAD(ima_temp_rules);
->   static struct list_head *ima_rules = &ima_default_rules;
->   
-> -/* Pre-allocated buffer used for matching keyrings. */
-> -static char *ima_keyrings;
-> -static size_t ima_keyrings_len;
-> -
->   static int ima_policy __initdata;
->   
->   static int __init default_measure_policy_setup(char *str)
-> @@ -253,6 +254,72 @@ static int __init default_appraise_policy_setup(char *str)
->   }
->   __setup("ima_appraise_tcb", default_appraise_policy_setup);
->   
-> +static struct ima_rule_opt_list *ima_alloc_rule_opt_list(const substring_t *src)
-> +{
-> +	struct ima_rule_opt_list *opt_list;
-> +	size_t count = 0;
-> +	char *src_copy;
-> +	char *cur, *next;
-> +	size_t i;
-> +
-> +	src_copy = match_strdup(src);
-> +	if (!src_copy)
-> +		return NULL;
+* Dan Williams <dan.j.williams@intel.com> wrote:
 
-The caller of this function checks for IS_ERR(..) and not 
-IS_ERR_OR_NULL(..). Shouldn't it return ERR_PTR(-EINVAL) instead of NULL ?
+> On Thu, Aug 6, 2020 at 6:35 AM Ingo Molnar <mingo@kernel.org> wrote:
+> >
+> >
+> > * kernel test robot <rong.a.chen@intel.com> wrote:
+> >
+> > > Greeting,
+> > >
+> > > FYI, we noticed a -43.3% regression of fio.read_iops due to commit:
+> > >
+> > >
+> > > commit: a0ac629ebe7b3d248cb93807782a00d9142fdb98 ("x86/copy_mc: Introduce copy_mc_generic()")
+> > > url: https://github.com/0day-ci/linux/commits/Dan-Williams/Renovate-memcpy_mcsafe-with-copy_mc_to_-user-kernel/20200802-014046
+> > >
+> > >
+> > > in testcase: fio-basic
+> > > on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 256G memory
+> > > with following parameters:
+> >
+> > So this performance regression, if it isn't a spurious result, looks
+> > concerning. Is this expected?
+> 
+> This is not expected and I think delays these patches until I'm back
+> from leave in a few weeks. I know that we might lose some inlining
+> effect due to replacing native memcpy, but I did not expect it would
+> have an impact like this. In my testing I was seeing a performance
+> improvement from replacing the careful / open-coded copy with rep;
+> mov;, which increases the surprise of this result.
 
-Thanks & Regards,
+It would be nice to double check this on the kernel-test-robot side as 
+well, to make sure it's not a false positive.
 
-     - Nayna
+Thanks,
 
+	Ingo
