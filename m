@@ -2,149 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02EBB23DD30
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6F323DE30
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729381AbgHFRFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:05:18 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:58340 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729919AbgHFREQ (ORCPT
+        id S1728573AbgHFRXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728970AbgHFRFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:04:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596733446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nr31koH93+WFCQ1SShZUdSdGjjcRGiTN1IIFjT+aQyE=;
-        b=dqT9OFjh82/6i2QXXKfTijTmXIgVx/zrnr1ljxrfCv1lQBLf63FQhf0+dUbD/bZvygaHmH
-        5U4n7biRHtWgHtV+a5+3rKVVDcF3zSYSN/xHICDJVLrP/Q8XuuHwbhIkDNSBstSPSuXawU
-        6TPCm8QtL8+aM7DfhtJ24Jh5eIQ4LFM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-349-lN1pkvlkPziGH4o2l1s80Q-1; Thu, 06 Aug 2020 08:29:29 -0400
-X-MC-Unique: lN1pkvlkPziGH4o2l1s80Q-1
-Received: by mail-wr1-f69.google.com with SMTP id w7so12337662wre.11
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 05:29:29 -0700 (PDT)
+        Thu, 6 Aug 2020 13:05:18 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFA2C034601
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 05:32:08 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id o23so22672626ejr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 05:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SBUeg6ZgfiBHlBkgCw/YPENtqIybhDV/THXpJy1l8Ak=;
+        b=E5ZH4bpBOUNIObWXCgJBPo0fRnChPgetEBnLT1TtXjqiV+wGDSaMnkFJ3f9qcXcv5C
+         /xtMPo552QhFx2AbPNwgFuiWczZs671hm+Y3fIx50EZHhk+C8+tueK+lc5LggNith+WZ
+         cbEd48HrUUD29sjHcORxdcSp/AJy+c2/lJQU0frs2bzofLtPulrC9FCMgdx5kT8NeQvm
+         aJfWEOXfbLTcn5h5+XMjyGWFp7S2i9LQ5Fbg2GDaVGpjvuxPL7eedVVIEEjrMjzAlbGI
+         ykpo+LgjwzrhCjwWnHtVog37xoaLj+uks00l99NHcpHg/m+VN8EDwtlJFKd3uXUduf//
+         K0oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Nr31koH93+WFCQ1SShZUdSdGjjcRGiTN1IIFjT+aQyE=;
-        b=Iy6Q+H+BJq8iogLrTm18DhdOlZI/8O7gu8oJC1Dv7IC9BynpZ00TRRMYLhH0plr0kN
-         zGNXchFdTEt+8uGPq2VTNsVkbw2w9EunXLOD0WC6kgixHnu68KmTYkFK//4d1Kl0Cnq2
-         PR5WqAQzImJiN93O0OTfr5f3QHmpUIhugccQmBABdhJ8GOamJxZOa0vUMAy7fpbqwu8E
-         KwmQ2NcEq6Wy6BozApBKJf8/3Y0K2zMJcRbDvr19dZ0HsWfTvHUbTk9eaYm6/dx2R8Nl
-         FxLcPp23juVt8JQ8rYPAB2Rzr6N3luFaywBAtDOSRGwcNJUjaWz7ZsXH9p5FT2ZTiWkd
-         AhIw==
-X-Gm-Message-State: AOAM530OeXVRmwtXeeIyG9oQysaEaTkrw3QKRBJANHUzPnKbQ//PjOJ4
-        V+NjN+7nufabGt0BnutPZsJhkLcDsLe54QJ+9PwCYRmmIli6kNJMi6VLpqS+JHLBTesVAEWk/Rj
-        j2A5a41A0ZQ0QghLTSXQm1zo1
-X-Received: by 2002:adf:ef44:: with SMTP id c4mr7084614wrp.84.1596716968174;
-        Thu, 06 Aug 2020 05:29:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzJ4+AA6iquJ/sckIZtxP+kOJp4F9JmrvFvoL/Ez3y4VOCxeSwNfgBeYWoNlFlzVDFCbQoFrw==
-X-Received: by 2002:adf:ef44:: with SMTP id c4mr7084593wrp.84.1596716967976;
-        Thu, 06 Aug 2020 05:29:27 -0700 (PDT)
-Received: from redhat.com ([192.117.173.58])
-        by smtp.gmail.com with ESMTPSA id z8sm6159274wmf.42.2020.08.06.05.29.24
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SBUeg6ZgfiBHlBkgCw/YPENtqIybhDV/THXpJy1l8Ak=;
+        b=ZE4+68JO4PBQEdVQiCZlXw1EuiQVJQ/3mZ9BG3u182u08QAeTlukVqGCQus82wP9FE
+         I2xgLH/Ni3EqRsNpZ28LdYpwheDPAyN2sHKAFqMwSqoYji08dFr/SnLiLen945uS1OvN
+         2TGuRfBkEib7A+4YJb1cZM24U63KuywfdOa5Gh0XhuymGOsK1hcx5TrIsWw0I6m7Amcn
+         Mz0iV3jPpGsMZC36P9WLBO5IL7dGwx923xH/MLrMw+PmX2ShFjtUwfydz6rYeBhwF6KY
+         TGena0n8ZHn1pY5zudtUEtauWcY1QM6GSgcUym9jiwwCSv5evakW304OaacLHn+XuiSH
+         HMqw==
+X-Gm-Message-State: AOAM531EJv/nH8AxUSdm0cMidPi4KPwq+mVxyMYiE82sZqVEo6Oxkeo2
+        WEAfe+K5V2OgXLYaoUiFtOWiCw==
+X-Google-Smtp-Source: ABdhPJyhhBpJwzxhDnBKBjHz1AevD4rapS/DwSsy6qNYU48uAH6pkx9QlBz57JKuB5fl8Su5P+B/ZQ==
+X-Received: by 2002:a17:906:3685:: with SMTP id a5mr3915681ejc.298.1596717124401;
+        Thu, 06 Aug 2020 05:32:04 -0700 (PDT)
+Received: from tim.froidcoeur.net (ptr-7tznw15pracyli75x11.18120a2.ip6.access.telenet.be. [2a02:1811:50e:f0f0:d05d:939:f42b:f575])
+        by smtp.gmail.com with ESMTPSA id c5sm3695778ejb.103.2020.08.06.05.32.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 05:29:26 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 08:29:22 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <eli@mellanox.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
-        lingshan.zhu@intel.com, eperezma@redhat.com, lulu@redhat.com,
-        shahafs@mellanox.com, hanand@xilinx.com, mhabets@solarflare.com,
-        gdawar@xilinx.com, saugatm@xilinx.com, vmireyno@marvell.com,
-        zhangweining@ruijie.com.cn
-Subject: Re: [PATCH 1/4] vdpa: introduce config op to get valid iova range
-Message-ID: <20200806082727-mutt-send-email-mst@kernel.org>
-References: <20200617032947.6371-1-jasowang@redhat.com>
- <20200617032947.6371-2-jasowang@redhat.com>
- <20200805085035-mutt-send-email-mst@kernel.org>
- <20200806120354.GA171218@mtl-vdi-166.wap.labs.mlnx>
+        Thu, 06 Aug 2020 05:32:03 -0700 (PDT)
+From:   Tim Froidcoeur <tim.froidcoeur@tessares.net>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Patrick McHardy <kaber@trash.net>,
+        KOVACS Krisztian <hidden@balabit.hu>
+Cc:     Tim Froidcoeur <tim.froidcoeur@tessares.net>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net v3 0/2] net: initialize fastreuse on inet_inherit_port
+Date:   Thu,  6 Aug 2020 14:30:21 +0200
+Message-Id: <20200806123024.585212-1-tim.froidcoeur@tessares.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200806120354.GA171218@mtl-vdi-166.wap.labs.mlnx>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 03:03:55PM +0300, Eli Cohen wrote:
-> On Wed, Aug 05, 2020 at 08:51:56AM -0400, Michael S. Tsirkin wrote:
-> > On Wed, Jun 17, 2020 at 11:29:44AM +0800, Jason Wang wrote:
-> > > This patch introduce a config op to get valid iova range from the vDPA
-> > > device.
-> > > 
-> > > Signed-off-by: Jason Wang <jasowang@redhat.com>
-> > > ---
-> > >  include/linux/vdpa.h | 14 ++++++++++++++
-> > >  1 file changed, 14 insertions(+)
-> > > 
-> > > diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> > > index 239db794357c..b7633ed2500c 100644
-> > > --- a/include/linux/vdpa.h
-> > > +++ b/include/linux/vdpa.h
-> > > @@ -41,6 +41,16 @@ struct vdpa_device {
-> > >  	unsigned int index;
-> > >  };
-> > >  
-> > > +/**
-> > > + * vDPA IOVA range - the IOVA range support by the device
-> > > + * @start: start of the IOVA range
-> > > + * @end: end of the IOVA range
-> > > + */
-> > > +struct vdpa_iova_range {
-> > > +	u64 start;
-> > > +	u64 end;
-> > > +};
-> > > +
-> > 
-> > 
-> > This is ambiguous. Is end in the range or just behind it?
-> > How about first/last?
-> 
-> It is customary in the kernel to use start-end where end corresponds to
-> the byte following the last in the range. See struct vm_area_struct
-> vm_start and vm_end fields
+In the case of TPROXY, bind_conflict optimizations for SO_REUSEADDR or
+SO_REUSEPORT are broken, possibly resulting in O(n) instead of O(1) bind
+behaviour or in the incorrect reuse of a bind.
 
-Exactly my point:
+the kernel keeps track for each bind_bucket if all sockets in the
+bind_bucket support SO_REUSEADDR or SO_REUSEPORT in two fastreuse flags.
+These flags allow skipping the costly bind_conflict check when possible
+(meaning when all sockets have the proper SO_REUSE option).
 
-include/linux/mm_types.h:       unsigned long vm_end;           /* The first byte after our end address
+For every socket added to a bind_bucket, these flags need to be updated.
+As soon as a socket that does not support reuse is added, the flag is
+set to false and will never go back to true, unless the bind_bucket is
+deleted.
 
-in this case Jason wants it to be the last byte, not one behind.
+Note that there is no mechanism to re-evaluate these flags when a socket
+is removed (this might make sense when removing a socket that would not
+allow reuse; this leaves room for a future patch).
 
+For this optimization to work, it is mandatory that these flags are
+properly initialized and updated.
 
-> > 
-> > 
-> > 
-> > >  /**
-> > >   * vDPA_config_ops - operations for configuring a vDPA device.
-> > >   * Note: vDPA device drivers are required to implement all of the
-> > > @@ -134,6 +144,9 @@ struct vdpa_device {
-> > >   * @get_generation:		Get device config generation (optional)
-> > >   *				@vdev: vdpa device
-> > >   *				Returns u32: device generation
-> > > + * @get_iova_range:		Get supported iova range (on-chip IOMMU)
-> > > + *				@vdev: vdpa device
-> > > + *				Returns the iova range supported by the device
-> > >   * @set_map:			Set device memory mapping (optional)
-> > >   *				Needed for device that using device
-> > >   *				specific DMA translation (on-chip IOMMU)
-> > > @@ -195,6 +208,7 @@ struct vdpa_config_ops {
-> > >  	void (*set_config)(struct vdpa_device *vdev, unsigned int offset,
-> > >  			   const void *buf, unsigned int len);
-> > >  	u32 (*get_generation)(struct vdpa_device *vdev);
-> > > +	struct vdpa_iova_range (*get_iova_range)(struct vdpa_device *vdev);
-> > >  
-> > >  	/* DMA ops */
-> > >  	int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
-> > > -- 
-> > > 2.20.1
-> > 
+When a child socket is created from a listen socket in
+__inet_inherit_port, the TPROXY case could create a new bind bucket
+without properly initializing these flags, thus preventing the
+optimization to work. Alternatively, a socket not allowing reuse could
+be added to an existing bind bucket without updating the flags, causing
+bind_conflict to never be called as it should.
+
+Patch 1/2 refactors the fastreuse update code in inet_csk_get_port into a
+small helper function, making the actual fix tiny and easier to understand. 
+
+Patch 2/2 calls this new helper when __inet_inherit_port decides to create
+a new bind_bucket or use a different bind_bucket than the one of the listen
+socket.
+
+v3: - remove company disclaimer from automatic signature
+v2: - remove unnecessary cast 
+
+Tim Froidcoeur (2):
+  net: refactor bind_bucket fastreuse into helper
+  net: initialize fastreuse on inet_inherit_port
+
+ include/net/inet_connection_sock.h |  4 ++
+ net/ipv4/inet_connection_sock.c    | 97 ++++++++++++++++--------------
+ net/ipv4/inet_hashtables.c         |  1 +
+ 3 files changed, 58 insertions(+), 44 deletions(-)
+
+-- 
+2.25.1
 
