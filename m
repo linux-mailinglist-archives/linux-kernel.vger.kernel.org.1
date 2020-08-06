@@ -2,123 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A3223DD3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4985C23DE7D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729297AbgHFRGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730000AbgHFRFk (ORCPT
+        id S1726942AbgHFR0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:26:17 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:46178 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729832AbgHFRCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:05:40 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1279CC0A54DA
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 07:07:56 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id a26so24675523ejc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 07:07:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AQEugxAcEBQ6a4sgcA20W1Quw9HbEc41R2dof7DTeNU=;
-        b=fCyC2qUuNOqTdzjAFTbFyIzpk34L4hh66NZP0hzKJf0dXILT3/k2Tz2WLL+Fp50MpH
-         sLYlBxs9kVVk3nXPCkZj02Zsnn81Q+RtPAbiAsDdQ+cxGU/p5XnpgWvSpsf7ouH6+Ihw
-         LLUQMSlRUosZIu6C1ErB3JgncVnBlnc9otqvPjaYYqui4Fs4JPknCR64JTWVgs5V5QSt
-         YJS+7UPbSabyZjgEYsHJ9nNDHiSI7xJfjADN5nAGnD0Wdli5O12vX0PrMLgUQlASKcuz
-         3EXVUFeSWa93M++O6CrqmL+ZcPUAOUd1ybAir5CC5Ms/tAPwH4r0Yt/tsXYvFdm4zKVc
-         wUTg==
+        Thu, 6 Aug 2020 13:02:03 -0400
+Received: by mail-il1-f194.google.com with SMTP id c6so5935116ilo.13;
+        Thu, 06 Aug 2020 10:02:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=AQEugxAcEBQ6a4sgcA20W1Quw9HbEc41R2dof7DTeNU=;
-        b=iXPwxpiFzad6XmY03QOM8/+/KFBW/Z3Up1MWIuetOER2nHaveaPQK0qhSJKyOtToT+
-         q+uNHoMpCwTtTK+zYscUvrBhTb8P1lk7WgiHRpAb5fslNf6FWwXj2lW/RpomUW+iAjCO
-         40pF4VABwIZdx+ntlwwjDznhluF9IDVUvPqBQurKGsktcEsEL8iOQEy0fUtnMghGPwfx
-         S7Aa/xF+jvqKDut6FURS9NXUhht8m/bcDC+9qpDg7Ueqve5nYfSV8zWNLxElCgrjEqv7
-         7XqWtpkNZsDIm9xYbaZlhL+R14ivsw7i6oWX9p0Ik8cxqSXwLgNI2hug3B3wDEirjbq3
-         ZMeg==
-X-Gm-Message-State: AOAM532LWmRjURSpjhsavunJ8uasv5EfLCM4tiLihyZperGPqpR5BISS
-        Iur9kjkRE7DEceDoQGbAJVs=
-X-Google-Smtp-Source: ABdhPJyETMaep/2LOaTjdL/VLSQhcd5lLv830gLluG4vfw6POwpqBNqOQhHPLutRnm5NyFhntswIdA==
-X-Received: by 2002:a17:906:e24f:: with SMTP id gq15mr4554926ejb.46.1596722873192;
-        Thu, 06 Aug 2020 07:07:53 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id g9sm3625374edk.97.2020.08.06.07.07.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4a+UH2c0ravXsXQYiIiU2PDrCAbSISRiJ7nu8uzSR8k=;
+        b=doauD29SYFYkF9x+c3jO2UjCMUlaICRp/oouYVKaPh+q19dbCjvxdeGLU04JMRUahV
+         Fc580rgI1RKdFryyT1UJjcEuVa+nfa2tcaKCGAVYRCaTzuDT+4B4Hqget+0858QftfE2
+         G+Vy0a6eIIrxp4COtbr87KvTZ7ScrG0rMHy2pvWjCpok1UbCElsEn8cW/Mj9XMrW9Swf
+         xXiRwJPyU5dMN8CfmF6rbQwMNg2uOWGMFTp7GiPAfQk7JlDTw4dIT/pRqtVrB3cZIbZE
+         G40YJvxZmzp1c6juuwMSmn8PsC04Rk3e5m/S6MpQrFbKyaNVZOtrR+ElZiqmePH+qCvQ
+         hTMg==
+X-Gm-Message-State: AOAM532lFn9QL21xxfWmse8KOzpjEj8yvIjKrk09m8wOfOieY0OZQP2S
+        KWPV59w+3eBbe5o9/AM7QGK13SY=
+X-Google-Smtp-Source: ABdhPJzRteBDaWzy4duYfRNpOT2CWnniOjFmm0VIz9MvqlHlamjAWGnsZtm0dzKTfwRZ3h3p7UE8Sg==
+X-Received: by 2002:a92:4f:: with SMTP id 76mr10864122ila.291.1596722950017;
+        Thu, 06 Aug 2020 07:09:10 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id q200sm3812334iod.5.2020.08.06.07.09.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 07:07:52 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 16:07:50 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>
-Subject: Re: [PATCH v4 05/10] sched/topology: Define and assign sched_domain
- flag metadata
-Message-ID: <20200806140750.GC2077896@gmail.com>
-References: <20200731115502.12954-1-valentin.schneider@arm.com>
- <20200731115502.12954-6-valentin.schneider@arm.com>
+        Thu, 06 Aug 2020 07:09:09 -0700 (PDT)
+Received: (nullmailer pid 771383 invoked by uid 1000);
+        Thu, 06 Aug 2020 14:09:06 -0000
+Date:   Thu, 6 Aug 2020 08:09:06 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     galak@codeaurora.org, festevam@gmail.com,
+        linux-serial@vger.kernel.org, s.hauer@pengutronix.de,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Linux-imx@nxp.com,
+        kernel@pengutronix.de, shawnguo@kernel.org,
+        gregkh@linuxfoundation.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: serial: Convert MXS auart to json-schema
+Message-ID: <20200806140906.GA770620@bogus>
+References: <1596603259-5367-1-git-send-email-Anson.Huang@nxp.com>
+ <1596603259-5367-2-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200731115502.12954-6-valentin.schneider@arm.com>
+In-Reply-To: <1596603259-5367-2-git-send-email-Anson.Huang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 05 Aug 2020 12:54:18 +0800, Anson Huang wrote:
+> Convert the MXS auart binding to DT schema format using json-schema.
+> 
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
+>  .../devicetree/bindings/serial/fsl-mxs-auart.txt   | 53 ------------
+>  .../devicetree/bindings/serial/fsl-mxs-auart.yaml  | 93 ++++++++++++++++++++++
+>  2 files changed, 93 insertions(+), 53 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/serial/fsl-mxs-auart.txt
+>  create mode 100644 Documentation/devicetree/bindings/serial/fsl-mxs-auart.yaml
+> 
 
-* Valentin Schneider <valentin.schneider@arm.com> wrote:
 
-> +#ifndef SD_FLAG
-> +#define SD_FLAG(x, y, z)
-> +#endif
+My bot found errors running 'make dt_binding_check' on your patch:
 
-AFAICS there's not a single use of sd_flags.h that doesn't come with 
-its own SD_FLAG definition, so I suppose this should be:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml: serial@8006a000: clocks: [[4294967295, 45]] is too short
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml: serial@8006a000: compatible: Additional items are not allowed ('fsl,imx23-auart' was unexpected)
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml: serial@8006a000: compatible: ['fsl,imx28-auart', 'fsl,imx23-auart'] is too long
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml: serial@8006a000: 'dmas' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml: serial@8006a000: 'dma-names' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx23-clock.example.dt.yaml: serial@8006c000: clocks: [[4294967295, 32]] is too short
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx23-clock.example.dt.yaml: serial@8006c000: 'dmas' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx23-clock.example.dt.yaml: serial@8006c000: 'dma-names' is a required property
 
-#ifndef SD_FLAG
-# error "Should not happen."
-#endif
 
-?
+See https://patchwork.ozlabs.org/patch/1341077
 
-Also, some nits:
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
 
-> +/*
-> + * Expected flag uses
-> + *
-> + * SHARED_CHILD: These flags are meant to be set from the base domain upwards.
-> + * If a domain has this flag set, all of its children should have it set. This
-> + * is usually because the flag describes some shared resource (all CPUs in that
-> + * domain share the same foobar), or because they are tied to a scheduling
-> + * behaviour that we want to disable at some point in the hierarchy for
-> + * scalability reasons.
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
 
-s/foobar/resource
+Please check and re-submit.
 
-?
-
-> +/*
-> + * cross-node balancing
-> + *
-> + * SHARED_PARENT: Set for all NUMA levels above NODE.
-> + */
-> +SD_FLAG(SD_NUMA,                12, SDF_SHARED_PARENT)
-
-s/cross-node/Cross-node
-
-BTW., is there any particular reason why these need to be defines with 
-a manual enumeration of flag values - couldn't we generate 
-auto-enumerated C enums instead or so?
-
-> +#ifdef CONFIG_SCHED_DEBUG
-> +#define SD_FLAG(_name, idx, mflags) [idx] = {.meta_flags = mflags, .name = #_name},
-
-s/{./{ .
-s/e}/e }
-
-Thanks,
-
-	Ingo
