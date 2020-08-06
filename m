@@ -2,90 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728C523DCE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A459223DCDC
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729903AbgHFQ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:58:10 -0400
-Received: from mga09.intel.com ([134.134.136.24]:49498 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729764AbgHFQ6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:58:00 -0400
-IronPort-SDR: WLdqZe4tV5KZW1xn3O0Emg85d3+Vn67AdmIpBEeCjw+MwRhCIGI+pIKGeAkwjR+T4S2gA+e6rA
- T+4+HRfk57BA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9704"; a="153943831"
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="153943831"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 07:25:09 -0700
-IronPort-SDR: ah2anX3z0TQP0vyEw5c+uaJdOGWBrH1WybS8y6rEptf+myvDgodfHn1Rz3Xu4D9TCsXM8cp6EV
- +g8yWwfENwGA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,441,1589266800"; 
-   d="scan'208";a="437557111"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
-  by orsmga004.jf.intel.com with ESMTP; 06 Aug 2020 07:25:08 -0700
-Date:   Thu, 6 Aug 2020 22:37:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Shannon Nelson <snelson@pensando.io>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: drivers/net/ethernet/pensando/ionic/ionic_txrx.c:608:3: warning:
- Variable 'done' is modified but its new value is never used.
-Message-ID: <20200806143735.GA9232@xsang-OptiPlex-9020>
+        id S1729867AbgHFQ5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:57:10 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:40758 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728723AbgHFQkm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 12:40:42 -0400
+Received: by mail-il1-f194.google.com with SMTP id x1so20675139ilp.7;
+        Thu, 06 Aug 2020 09:39:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xk1+TxcE3QnIGMOvPraXoKHV6uIacnJL3Sj3a6NYZPM=;
+        b=N58pHWGrEBfXX6ulurZai9KKwSZKQyXXXeGIqHspMfWQ3boJDtauhQfgXIGMyS0jlC
+         h0JKwoll4DUykjdW23kB9e9urpcMdd7Vw1pkkP1nkeasL63Or4fkxoHrE/buXuNmTbvP
+         iHrrg/cJ28dwr7PYELBjFX8LKjqQLXHczvfz5xcNUqjnBwFpmNvkRsa9tuX2cIzkolM7
+         XJss5IvxakrXjZy/mVHtR0cphCWz8N18q4R0yqGcW17cvM3uca7xO2GzxK2dVSRFR79+
+         mQ32TAuukBpIPeTSJMOhZc/lqWCZRXsEszSsmcoE5eY60qQpTRbUyns20FmQj0qVEcYf
+         lMPQ==
+X-Gm-Message-State: AOAM531D69kdV7mzrS9XQI1KvdKCVlV3Chg9IGuv6m9BDe4L2oDtS+vF
+        eHb5OuWDNjLhQxYC+lsUQdHFXlI=
+X-Google-Smtp-Source: ABdhPJywUa1fS+mhDPPCoUj+LuP94rGkcgwbq8VHiTsnW6mBNPkpA3uSHzABW0gjnvpFFTpk6c+lhA==
+X-Received: by 2002:a05:6602:24d5:: with SMTP id h21mr10407216ioe.108.1596724757598;
+        Thu, 06 Aug 2020 07:39:17 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id a18sm4061245ilp.52.2020.08.06.07.39.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 07:39:16 -0700 (PDT)
+Received: (nullmailer pid 822114 invoked by uid 1000);
+        Thu, 06 Aug 2020 14:39:12 -0000
+Date:   Thu, 6 Aug 2020 08:39:12 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Cheng-Yi Chiang <cychiang@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>, dianders@chromium.org,
+        dgreid@chromium.org, tzungbi@chromium.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v4 1/2] ASoC: qcom: dt-bindings: Add sc7180 machine
+ bindings
+Message-ID: <20200806143912.GA816294@bogus>
+References: <20200803040122.2063634-1-cychiang@chromium.org>
+ <20200803040122.2063634-2-cychiang@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200803040122.2063634-2-cychiang@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   fffe3ae0ee84e25d2befe2ae59bc32aa2b6bc77b
-commit: f9c00e2cf258d215a1ed2a7b2ae5b91ac2f29582 ionic: clean tx queue of unfinished requests
-date:   4 months ago
-:::::: branch date: 5 hours ago
-:::::: commit date: 4 months ago
-compiler: ia64-linux-gcc (GCC) 9.3.0
+On Mon, Aug 03, 2020 at 12:01:21PM +0800, Cheng-Yi Chiang wrote:
+> Add devicetree bindings documentation file for sc7180 sound card.
+> 
+> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> ---
+>  .../bindings/sound/qcom,sc7180.yaml           | 113 ++++++++++++++++++
+>  1 file changed, 113 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+> new file mode 100644
+> index 000000000000..c74f0fe9fb3b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+> @@ -0,0 +1,113 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/qcom,sc7180.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies Inc. SC7180 ASoC sound card driver
+> +
+> +maintainers:
+> +  - Rohit kumar <rohitkr@codeaurora.org>
+> +  - Cheng-Yi Chiang <cychiang@chromium.org>
+> +
+> +description:
+> +  This binding describes the SC7180 sound card which uses LPASS for audio.
+> +
+> +properties:
+> +  compatible:
+> +    contains:
+> +      const: qcom,sc7180-sndcard
+> +
+> +  audio-routing:
+> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> +    description:
+> +      A list of the connections between audio components. Each entry is a
+> +      pair of strings, the first being the connection's sink, the second
+> +      being the connection's source.
+> +
+> +  model:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description: User specified audio sound card name
+> +
+> +  aux-dev:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: phandle of the codec for headset detection
+> +
+> +patternProperties:
+> +  "^dai-link(@[0-9]+)?$":
+> +    description:
+> +      Each subnode represents a dai link. Subnodes of each dai links would be
+> +      cpu/codec dais.
+> +
+> +    type: object
+> +
+> +    properties:
+> +      link-name:
+> +        description: Indicates dai-link name and PCM stream name.
+> +        $ref: /schemas/types.yaml#/definitions/string
+> +        maxItems: 1
+> +
+> +      reg:
+> +        description: dai link address.
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        maxItems: 1
+> +
+> +      cpu:
+> +        description: Holds subnode which indicates cpu dai.
+> +        type: object
+> +        properties:
+> +          sound-dai: true
+> +
+> +      codec:
+> +        description: Holds subnode which indicates codec dai.
+> +        type: object
+> +        properties:
+> +          sound-dai: true
+> +
+> +    required:
+> +      - link-name
+> +      - cpu
+> +      - codec
+> +
+> +    additionalProperties: false
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Nothing required?
 
+Add:
 
-cppcheck warnings: (new ones prefixed by >>)
+additionalProperties: false
 
->> drivers/net/ethernet/pensando/ionic/ionic_txrx.c:608:3: warning: Variable 'done' is modified but its new value is never used. [unreadVariable]
-     done++;
-     ^
+(And you'll need to define #address-cells and #size-cells)
 
-# https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f9c00e2cf258d215a1ed2a7b2ae5b91ac2f29582
-git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-git remote update linus
-git checkout f9c00e2cf258d215a1ed2a7b2ae5b91ac2f29582
-vim +/done +608 drivers/net/ethernet/pensando/ionic/ionic_txrx.c
-
-0f3154e6bcb3549 Shannon Nelson 2019-09-03  595  
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  596  void ionic_tx_empty(struct ionic_queue *q)
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  597  {
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  598  	struct ionic_desc_info *desc_info;
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  599  	int done = 0;
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  600  
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  601  	/* walk the not completed tx entries, if any */
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  602  	while (q->head != q->tail) {
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  603  		desc_info = q->tail;
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  604  		q->tail = desc_info->next;
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  605  		ionic_tx_clean(q, desc_info, NULL, desc_info->cb_arg);
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  606  		desc_info->cb = NULL;
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  607  		desc_info->cb_arg = NULL;
-f9c00e2cf258d21 Shannon Nelson 2020-03-27 @608  		done++;
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  609  	}
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  610  }
-f9c00e2cf258d21 Shannon Nelson 2020-03-27  611  
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
+> +
+> +examples:
+> +
+> +  - |
+> +    sound {
+> +        compatible = "qcom,sc7180-sndcard";
+> +        model = "sc7180-snd-card";
+> +
+> +        audio-routing =
+> +                    "Headphone Jack", "HPOL",
+> +                    "Headphone Jack", "HPOR";
+> +
+> +        aux-dev = <&alc5682>;
+> +
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        dai-link@0 {
+> +            link-name = "MultiMedia0";
+> +            reg = <0>;
+> +            cpu {
+> +                sound-dai = <&lpass_cpu 0>;
+> +            };
+> +
+> +            codec {
+> +                sound-dai = <&alc5682 0>;
+> +            };
+> +        };
+> +
+> +        dai-link@1 {
+> +            link-name = "MultiMedia1";
+> +            reg = <1>;
+> +            cpu {
+> +                sound-dai = <&lpass_cpu 1>;
+> +            };
+> +
+> +            codec {
+> +                sound-dai = <&max98357a>;
+> +            };
+> +        };
+> +    };
+> -- 
+> 2.28.0.163.g6104cc2f0b6-goog
+> 
