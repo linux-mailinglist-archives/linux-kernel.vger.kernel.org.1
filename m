@@ -2,132 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB7023DFF9
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A94023E001
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730401AbgHFR4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
+        id S1728212AbgHFR60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:58:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730358AbgHFR4A (ORCPT
+        with ESMTP id S1728021AbgHFR6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:56:00 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F3FC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 10:55:59 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a15so44835784wrh.10
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 10:55:59 -0700 (PDT)
+        Thu, 6 Aug 2020 13:58:25 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73275C061574;
+        Thu,  6 Aug 2020 10:58:25 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id m200so22002427ybf.10;
+        Thu, 06 Aug 2020 10:58:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=VLToQkSGb9Fyj+rMmCyIoE12BtD4sRvLhirgEOkP9W4=;
-        b=aiclBWRQsaqlr4rxoQqEFfHk424DkMeqTmreM/zu7IQoemedoiGmY1RO05MmpZR6+P
-         w7xGe9fU76E3VMZ7Isj9CVyq5FEg4I8VDs+q0YobHeP9Ohy4GB5+BKuoR/WEUbUXJdph
-         UquQ9WkUAjpPvjtyL6o6gTPDC/x9qzlzrlEYI=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=38zt7R0RJPvUtymX3Nw4Froxt2V5VzBCbTJwdCMITjk=;
+        b=JqOUSExpWEr6MrFaSCly9Ovija/fz43XDW+gr6PI61X+B+JCPytJ2Vf1F9JIMC7LuV
+         t7EG7svIbvbImejCECaNF0WFsDqeEaBI8FZLkOA4kechvVj2051f6rhhB5xk3iIaSM2F
+         qYK8KCMLC6dNC0Tfl6UL8+lfIKSER1HbggNtkRJmBZdFbHfchW1bj2qfa9PLbR/q0I5a
+         zdje0Orjx+M8gmCTn0POcb7PLabdLmbaSAF3CtQ5qikd0OzNB9IwRYIiJYLKSrqnfw7z
+         uuLv0PUSZrw5TxyVDFCVyRVXR6zSHQP6tZ4e19lTYqrHa41MutsJkkPJ4gf/2bfvdJbZ
+         Nd/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=VLToQkSGb9Fyj+rMmCyIoE12BtD4sRvLhirgEOkP9W4=;
-        b=ZmlagJCKYN9ntCKFfDGpb1Z8jB+wj8MYTE1pxKvvcrj3ncv3NK453oCpxtDINGPPyF
-         78Bl98V1tcJ23zhuxRTO3Xn8yqm7CwVSf1Z1kLUu/UAOOdeS1rWjdTMxOabV8v0Tbm/f
-         hqqye8z1ewOSZx5u3lbIcwiHBE2GhirVi5pZSXpmYfqiMVlGoBW3YjmxTywzl5dxuhks
-         RQasZbGf5LSxdETxTvurPYSGE6SvFoL4DWsBdwyvJ9Op5Nzgklq4Is4RZf5Gn+X67AhY
-         Efq3IR32NE/4vkt3n3D6auNJUimx/VBycukMFBPWfw/ldO2vGd53Wn6JGIQTaxoxs9+3
-         pJDQ==
-X-Gm-Message-State: AOAM531TKHe/jPi31WRAIEmKoxyqebx0AflPPD7KcvNaBj4A1Gl5yHAJ
-        JKMcu5FwxxNtoneGWBwqfH/684B5/5PJUyNVP0oC23dr9YA6sQUzgZ4kTmJ8oOtn0nHGUTiRy8Y
-        cMTHQRxS1xHl02OpfoE3So44pSkunQil+wwomGUQJxDfUU9cDPuSGkibzoIPbAeYvQ8VqOwRHRa
-        RDzrvMda4P
-X-Google-Smtp-Source: ABdhPJzbtHnvN2YvogoQjvg6Nr1wWat0eDA9t2hrW3lsNiU9zCFscq1A7+T3HDp3Wo7bjV+9E+cWiQ==
-X-Received: by 2002:adf:bb07:: with SMTP id r7mr8403518wrg.102.1596736558012;
-        Thu, 06 Aug 2020 10:55:58 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id l11sm6978590wme.11.2020.08.06.10.55.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 10:55:57 -0700 (PDT)
-Subject: Re: [PATCH v4] PCI: Reduce warnings on possible RW1C corruption
-To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        ray.jui@broadcom.com, helgaas@kernel.org, sbranden@broadcom.com,
-        f.fainelli@gmail.com, lorenzo.pieralisi@arm.com, robh@kernel.org
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200806041455.11070-1-mark.tomlinson@alliedtelesis.co.nz>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <16cbd3f5-722a-cf8b-487e-82a0bbf95053@broadcom.com>
-Date:   Thu, 6 Aug 2020 10:55:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=38zt7R0RJPvUtymX3Nw4Froxt2V5VzBCbTJwdCMITjk=;
+        b=K0/fjFvLtQcIT+ZGB9G7Nib41xduzR+TRp7PwE9dKRtl9DZjtp287ryAL8LjKe2cbw
+         qX4TEW/Fj+dZBcYh2P/T6f6KVIUYUBkxy/mSqxp2hpuCHSs4huVqoCz/5j6gygtz8UBT
+         p8ch8haGeJvZb/k/6QX+guurkY1gmoJMiAB2p1JowMNS7kHYOeG9N4g1yOniTGv2t/jB
+         6zKv3JpBuSRQskTEFPOvoW1GAR4NSXJin6tfBNqtRQxikoIVHluOPZVgcSfoGoHrnkmw
+         yULdASGrANLAyvldw06GbfiGEgbR5nUhcaSbRSiAqUyVzqdJ82xqbHGLhYSV33Bc8l8D
+         gwrw==
+X-Gm-Message-State: AOAM53183e0cowIqhH2+4iaeYB/ru9gtVGr2bHKgCwNwGKvMMpHMVHU3
+        PCfMW7v0ciKFZ3gxgQwwe2ppb8zGzUUcy0zETB4=
+X-Google-Smtp-Source: ABdhPJz355Ybf7YZoM14a0jlC2NgBFxprVG+YySjYZNVzQuSWG8GFbt/H3f/xBFH7oB6PrZTgeImqQGI4NkzBYFnW3k=
+X-Received: by 2002:a25:84cd:: with SMTP id x13mr14685208ybm.425.1596736702777;
+ Thu, 06 Aug 2020 10:58:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200806041455.11070-1-mark.tomlinson@alliedtelesis.co.nz>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-CA
+References: <20200722054314.2103880-1-irogers@google.com> <CAEf4BzaBYaFJ3eUinS9nHeykJ0xEbZpwLts33ZDp1PT=bkyjww@mail.gmail.com>
+ <CAP-5=fXMUWFs6YtQVuxjenCrOmKtKYCqZE3YofwdR=ArDYSwbQ@mail.gmail.com> <CAEf4BzYiY30de5qmiKeazG4ewyziXtdhHFFH4vjp1wi4iAXqiw@mail.gmail.com>
+In-Reply-To: <CAEf4BzYiY30de5qmiKeazG4ewyziXtdhHFFH4vjp1wi4iAXqiw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 6 Aug 2020 10:58:12 -0700
+Message-ID: <CAEf4BzZ_67M6nJZFL73ANYYARiErmv9aiYygw8JwJW4qyWGNog@mail.gmail.com>
+Subject: Re: [RFC PATCH] bpftool btf: Add prefix option to dump C
+To:     Ian Rogers <irogers@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good.
+On Fri, Jul 31, 2020 at 8:47 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Jul 31, 2020 at 6:47 PM Ian Rogers <irogers@google.com> wrote:
+> >
+> > On Tue, Jul 21, 2020 at 11:58 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Tue, Jul 21, 2020 at 10:44 PM Ian Rogers <irogers@google.com> wrote:
+> > > >
+> > > > When bpftool dumps types and enum members into a header file for
+> > > > inclusion the names match those in the original source. If the same
+> > > > header file needs to be included in the original source and the bpf
+> > > > program, the names of structs, unions, typedefs and enum members will
+> > > > have naming collisions.
+> > >
+> > > vmlinux.h is not really intended to be used from user-space, because
+> > > it's incompatible with pretty much any other header that declares any
+> > > type. Ideally we should make this better, but that might require some
+> > > compiler support. We've been discussing with Yonghong extending Clang
+> > > with a compile-time check for whether some type is defined or not,
+> > > which would allow to guard every type and only declare it
+> > > conditionally, if it's missing. But that's just an idea at this point.
+> >
+> > Thanks Andrii! We're not looking at user-space code but the BPF code.
+> > The prefix idea comes from a way to solve this problem in C++ with
+> > namespaces:
+> >
+> > namespace vmlinux {
+> > #include "vmlinux.h"
+> > }
+> >
+> > As the BPF programs are C code then the prefix acts like the
+> > namespace. It seems strange to need to extend the language.
+>
+> This is a classic case of jumping to designing a solution without
+> discussing a real problem first :)
+>
+> You don't need to use any of the kernel headers together with
+> vmlinux.h (and it won't work as well), because vmlinux.h is supposed
+> to have all the **used** types from the kernel. So BPF programs only
+> include vmlinux.h and few libbpf-provided headers with helpers. Which
+> is why I assumed that you are trying to use it from user-space. But
+> see below on what went wrong.
+>
+> >
+> > > Regardless, vmlinux.h is also very much Clang-specific, and shouldn't
+> > > work well with GCC. Could you elaborate on the specifics of the use
+> > > case you have in mind? That could help me see what might be the right
+> > > solution. Thanks!
+> >
+> > So the use-case is similar to btf_iter.h:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/progs/bpf_iter.h
+> > To avoid collisions with somewhat cleaner macro or not games.
+> >
+> > Prompted by your concern I was looking into changing bpf_iter.h to use
+> > a prefix to show what the difference would be like. I also think that
+> > there may be issues with our kernel and tool set up that may mean that
+> > the prefix is unnecessary, if I fix something else. Anyway, to give an
+> > example I needed to build the selftests but this is failing for me.
+> > What I see is:
+> >
+> > $ git clone git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+> > $ cd bpf-next
+> > $ make defconfig
+> > $ cat >>.config <<EOF
+> > CONFIG_DEBUG_INFO=y
+> > CONFIG_DEBUG_INFO_BTF=y
+> > EOF
+> > $ make -j all
+> > $ mkdir /tmp/selftests
+> > $ make O=/tmp/selftests/ TARGETS=bpf kselftest
+> > ...
+> >   CLANG    /tmp/selftests//kselftest/bpf/tools/build/bpftool/profiler.bpf.o
+> > skeleton/profiler.bpf.c:18:21: error: invalid application of 'sizeof'
+> > to an incomplete type 'struct bpf_perf_event_value'
+> >         __uint(value_size, sizeof(struct bpf_perf_event_value));
+> >                            ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >
+> > Checking with bpftool the vmlinux lacks struct bpf_perf_event_value
+> > but as this is unconditionally defined in bpf.h this seems wrong. Do
+> > you have any suggestions and getting a working build?
+>
+> It is unconditionally defined in bpf.h, but unless kernel code really
+> uses that type for something, compiler won't generate DWARF
+> information for that type, which subsequently won't get into BTF.
+> Adding CONFIG_DEBUG_INFO_BTF=y ensures you get BTF type info
+> generated, but only for subsystems that were compiled into vmlinux
+> according to your kernel config.
+>
+> In this case, default config doesn't enable CONFIG_BPF_EVENTS, which
+> is a requirement to compile kernel/trace/bpf_trace.c, which in turn
+> uses struct bpf_perf_event_value in the helper signature.
+>
+> So the solution in your case would be to use a slightly richer kernel
+> config, which enables more of the BPF subsystem. You can check
+> selftests/bpf/config for a list of options we typically enable to run
+> of selftests, for instance.
+>
 
-On 2020-08-05 9:14 p.m., Mark Tomlinson wrote:
-> For hardware that only supports 32-bit writes to PCI there is the
-> possibility of clearing RW1C (write-one-to-clear) bits. A rate-limited
-> messages was introduced by fb2659230120, but rate-limiting is not the
-> best choice here. Some devices may not show the warnings they should if
-> another device has just produced a bunch of warnings. Also, the number
-> of messages can be a nuisance on devices which are otherwise working
-> fine.
->
-> This patch changes the ratelimit to a single warning per bus. This
-> ensures no bus is 'starved' of emitting a warning and also that there
-> isn't a continuous stream of warnings. It would be preferable to have a
-> warning per device, but the pci_dev structure is not available here, and
-> a lookup from devfn would be far too slow.
->
-> Suggested-by: Bjorn Helgaas <helgaas@kernel.org>
-> Fixes: fb2659230120 ("PCI: Warn on possible RW1C corruption for sub-32 bit config writes")
-> Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Acked-by: Scott Branden <scott.branden@broadcom.com>
-> ---
-> changes in v4:
->  - Use bitfield rather than bool to save memory (was meant to be in v3).
->
->  drivers/pci/access.c | 9 ++++++---
->  include/linux/pci.h  | 1 +
->  2 files changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/pci/access.c b/drivers/pci/access.c
-> index 79c4a2ef269a..b452467fd133 100644
-> --- a/drivers/pci/access.c
-> +++ b/drivers/pci/access.c
-> @@ -160,9 +160,12 @@ int pci_generic_config_write32(struct pci_bus *bus, unsigned int devfn,
->  	 * write happen to have any RW1C (write-one-to-clear) bits set, we
->  	 * just inadvertently cleared something we shouldn't have.
->  	 */
-> -	dev_warn_ratelimited(&bus->dev, "%d-byte config write to %04x:%02x:%02x.%d offset %#x may corrupt adjacent RW1C bits\n",
-> -			     size, pci_domain_nr(bus), bus->number,
-> -			     PCI_SLOT(devfn), PCI_FUNC(devfn), where);
-> +	if (!bus->unsafe_warn) {
-> +		dev_warn(&bus->dev, "%d-byte config write to %04x:%02x:%02x.%d offset %#x may corrupt adjacent RW1C bits\n",
-> +			 size, pci_domain_nr(bus), bus->number,
-> +			 PCI_SLOT(devfn), PCI_FUNC(devfn), where);
-> +		bus->unsafe_warn = 1;
-> +	}
->  
->  	mask = ~(((1 << (size * 8)) - 1) << ((where & 0x3) * 8));
->  	tmp = readl(addr) & mask;
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 34c1c4f45288..85211a787f8b 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -626,6 +626,7 @@ struct pci_bus {
->  	struct bin_attribute	*legacy_io;	/* Legacy I/O for this bus */
->  	struct bin_attribute	*legacy_mem;	/* Legacy mem */
->  	unsigned int		is_added:1;
-> +	unsigned int		unsafe_warn:1;	/* warned about RW1C config write */
->  };
->  
->  #define to_pci_bus(n)	container_of(n, struct pci_bus, dev)
+So we've discussed this and related issues today at BPF office hours
+and few more thoughts occurred to me after I left the call.
 
+You don't really have to use vmlinux.h, if it's inconvenient. Unless
+you want to use some internal kernel type that's not available in
+kernel-headers. Otherwise feel free to use normal kernel header
+includes and don't use vmlinux.h. If you are using BPF_CORE_READ(),
+any type is automatically CO-RE-relocatable, even if they come from
+#include <linux/whatever.h>. If you need to use direct memory accesses
+with programs like fentry/fexit, then adding:
+
+#pragma clang attribute push (__attribute__((preserve_access_index)),
+apply_to = record)
+
+before you include any headers would make types in those headers
+automatically CO-RE-relocatable even for direct memory accesses. So
+this is just something to keep in mind.
+
+
+But the way we've been handling this was like this.
+
+On BPF program side:
+
+#include "vmlinux.h"
+#include "my_custom_types.h"
+
+...
+
+
+On user-space program side:
+
+#include <stdint.h> /* and whatever else is needed */
+#include "my_custom_types.h"
+
+Then in my_custom_types.h you just assume all the needed types are
+defined (in either vmlinux.h or in user-space header includes):
+
+
+struct my_struct {
+    uint64_t whatever;
+};
+
+So far worked fine. It still sucks you can't include some of the
+kernel headers to get some useful macro, but to solve that we'd need
+Clang extension to check that some type X is already defined, as we
+discussed in the call.
+
+Hope this helps a bit.
+
+
+
+[...]
