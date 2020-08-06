@@ -2,131 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A725F23DE39
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F6E23DDE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729207AbgHFRXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729932AbgHFRFG (ORCPT
+        id S1729861AbgHFRRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:17:39 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:38888 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730310AbgHFRQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:05:06 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A579FC034612
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 06:10:38 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id l4so50184292ejd.13
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 06:10:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Y37dSXMpF9i5zwI93ayCq0fr59uu6XSE2Odw+I/dNvE=;
-        b=q8sjFvgHM0X7asxHMfSQI0E/0lUVZpTLaBQcdNapsY+haLKU8yj/yOcAyd4yHoL/Zn
-         8OzL+aiIWsTkZpCbQa+rYja3b/wX2wdfiT0slTbbsm2SLoLUXXrX6+hvNmST2j9bigTh
-         Q1ApEcKJv0hhJ7l7i64LTfxnekJQ46Fi5Uh5XnHEHPNQOQiI4qW8vL6VXbmNgJ/aVhhm
-         CI+1dtK7bu7+uIsAmcxnW1J7GHDqhFqx9tCozej3QWGWkgUFsd5SK4sV2dDw/IC0xs/i
-         BrWrvwVWRcHozdyGMqN69MKQveO7MQmMSFiwTMr/ziyhwI6NbngQt++5fhxTCbyxnTYV
-         V5Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Y37dSXMpF9i5zwI93ayCq0fr59uu6XSE2Odw+I/dNvE=;
-        b=DklcmGsXu1rUBxK5swHvi645piJ3dEgA0Pnft7kwz612pgGnngmOs2NB5Mq7rUsVdq
-         YtsK8nex5kh02ytSBE7v91PVzqxUL5Bwt2r/G69j97FXRmkBx3D6iGvepmZzmwoyNk6R
-         EFyVy9KmfrnKetMI6Kb54FGxxztOzGQ/3RCeLzzS9IXT4i0lCzE43fMYt0qOfqAXG4zK
-         NHQXRaVGFU/lNCcXB1YbTbVMzSxWHmLJZchrIjZqIO8F+f4mytqoE9K6DIjTX5PDDqmN
-         1AIIJR2izdufYxj5H3ZhkOloX3SJWYyzThGBu9X81npuHJfFB2afsxS/W40QfN6dUHmu
-         hLMw==
-X-Gm-Message-State: AOAM533GIAneEUWO6xsmKdOt/n8WC9/l1QGcf8rvabas9yiZhOAf695M
-        rDhTC2hZAL7nJwLdOXJKri0=
-X-Google-Smtp-Source: ABdhPJw8FI8o0LJCCc4YFIXvzfnQAjaWtw1rRx4JdSipZ0NvrLS7FIMh5tpaW1eYj1ORhmiInoxG0g==
-X-Received: by 2002:a17:906:5a8a:: with SMTP id l10mr4031628ejq.397.1596719437400;
-        Thu, 06 Aug 2020 06:10:37 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id x1sm3625544ejc.119.2020.08.06.06.10.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 06:10:36 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 15:10:34 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Thu, 6 Aug 2020 13:16:05 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076D3U7g110854;
+        Thu, 6 Aug 2020 13:16:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=QJht0r9+pb7DHhPqjRhH2JvzfLPN8ybMHKn/qOjbH2k=;
+ b=aXVZSySx0VdbMCIc7UwoUYNkbRxEfw1H1fWM2hUYhG6l49upkohTYMQ8YIyiBYMuUGvk
+ 3E0yaL7/gopg4Lxd2DYLqiRR2zXIJmcSn0JGX9nxff4a099qKGNmgLibIntdgZLVXmXd
+ C36coJ1tIe5A9Q3jlcjTPb4T+i331Nw8XyY2YWauKZs1fsNbAUg1972qrp9HSsdsGUFm
+ EbNrgecK4O9M5mm2D0FuKP8xY2OsAjTC0AL/cfr3lxTF+cRxsph1HgaZrKePG05EGKN1
+ bi+OxnIhvtdB/HTi/V7yJ98WwQ8MA9fWW2x9W8OH/QO+A7Yu2PZ+Zq54bYHkdunBe6kI 9g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 32r6gwttmc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 06 Aug 2020 13:16:16 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076Cx7fl151578;
+        Thu, 6 Aug 2020 13:14:16 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 32qy8nbxcn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 Aug 2020 13:14:16 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 076DECB8015724;
+        Thu, 6 Aug 2020 13:14:12 GMT
+Received: from starbug-mbp.localdomain (/79.97.215.145)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 06 Aug 2020 06:14:12 -0700
+Received: by starbug-mbp.localdomain (Postfix, from userid 501)
+        id 17C8AF04845; Thu,  6 Aug 2020 14:14:06 +0100 (IST)
+From:   Darren Kenny <darren.kenny@oracle.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
         Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [GIT PULL] x86/mm changes for v5.9
-Message-ID: <20200806131034.GA2067370@gmail.com>
-References: <20200803190354.GA1293087@gmail.com>
- <20200805110348.GA108872@zx2c4.com>
- <CAHk-=wiq+7sW3Lk5iQ0-zY5XWES4rSxK505vXsgFY=za88+RZw@mail.gmail.com>
+        Jethro Beekman <jethro@fortanix.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v36 02/24] x86/cpufeatures: x86/msr: Add Intel SGX
+ Launch Control hardware bits
+In-Reply-To: <20200716135303.276442-3-jarkko.sakkinen@linux.intel.com>
+References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
+ <20200716135303.276442-3-jarkko.sakkinen@linux.intel.com>
+Date:   Thu, 06 Aug 2020 14:14:06 +0100
+Message-ID: <m2d043syqp.fsf@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiq+7sW3Lk5iQ0-zY5XWES4rSxK505vXsgFY=za88+RZw@mail.gmail.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ spamscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008060094
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
+ phishscore=0 clxscore=1015 suspectscore=1 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008060094
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thursday, 2020-07-16 at 16:52:41 +03, Jarkko Sakkinen wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>
+> Add X86_FEATURE_SGX_LC, which informs whether or not the CPU supports SGX
+> Launch Control.
+>
+> Add MSR_IA32_SGXLEPUBKEYHASH{0, 1, 2, 3}, which when combined contain a
+> SHA256 hash of a 3072-bit RSA public key. SGX backed software packages, so
+> called enclaves, are always signed. All enclaves signed with the public key
+> are unconditionally allowed to initialize. [1]
+>
+> Add FEAT_CTL_SGX_LC_ENABLED, which informs whether the aformentioned MSRs
+> are writable or not. If the bit is off, the public key MSRs are read-only
+> for the OS.
+>
+> If the MSRs are read-only, the platform must provide a launch enclave (LE).
+> LE can create cryptographic tokens for other enclaves that they can pass
+> together with their signature to the ENCLS(EINIT) opcode, which is used
+> to initialize enclaves.
+>
+> Linux is unlikely to support the locked configuration because it takes away
+> the control of the launch decisions from the kernel.
+>
+> [1] Intel SDM: 38.1.4 Intel SGX Launch Control Configuration
+>
+> Reviewed-by: Borislav Petkov <bp@alien8.de>
+> Acked-by: Jethro Beekman <jethro@fortanix.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 
-* Linus Torvalds <torvalds@linux-foundation.org> wrote:
+Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
 
-> On Wed, Aug 5, 2020 at 4:03 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> >
-> > The commit 8bb9bf242d1f ("x86/mm/64: Do not sync vmalloc/ioremap
-> > mappings") causes the OOPS below, in Linus' tree and in linux-next,
-> > unearthed by my CI on <https://www.wireguard.com/build-status/>.
-> > Bisecting reveals 8bb9bf242d1f, and reverting this makes the OOPS go
-> > away.
-> 
-> The oops happens early in the function, and the "Code:" line actually
-> gets almost the whole function prologue in it (missing first two bytes
-> are probably "push %rbp"):
-> 
->    0: 41 56                push   %r14
->    2: 41 55                push   %r13
->    4: 41 54                push   %r12
->    6: 55                    push   %rbp
->    7: 48 89 f5              mov    %rsi,%rbp
->    a: 53                    push   %rbx
->    b: 48 89 fb              mov    %rdi,%rbx
->    e: 48 83 ec 08          sub    $0x8,%rsp
->   12: 48 8b 06              mov    (%rsi),%rax
->   15: 4c 8b 67 40          mov    0x40(%rdi),%r12
->   19: 49 89 c6              mov    %rax,%r14
->   1c: 45 30 f6              xor    %r14b,%r14b
->   1f: a8 04                test   $0x4,%al
->   21: b8 00 00 00 00        mov    $0x0,%eax
->   26: 4c 0f 44 f0          cmove  %rax,%r14
->   2a:* 49 8b 46 08          mov    0x8(%r14),%rax <-- trapping instruction
-> 
-> 
-> > BUG: unable to handle page fault for address: ffffe8ffffd00608
-> > #PF: supervisor read access in kernel mode
-> > #PF: error_code(0x0000) - not-present page
-> > PGD 0 P4D 0
-> 
-> Yeah, missing page table because it wasn't copied.
-> 
-> Presumably because that kthread is using the active_mm of some random
-> user space process that didn't get sync'ed.
-> 
-> And the sync_global_pgds() may have ended up being sufficient
-> synchronization with whoever allocated thigns, even if it wasn't about
-> the TLB contents themselves.
-> 
-> So apparently the "the page-table pages are all pre-allocated now" is
-> simply not true. Joerg?
-> 
-> Unless somebody can figure this out fairly quickly, I think it should
-> just be reverted.
-
-Agreed. Joerg?
-
-Thanks,
-
-	Ingo
+> ---
+>  arch/x86/include/asm/cpufeatures.h | 1 +
+>  arch/x86/include/asm/msr-index.h   | 7 +++++++
+>  2 files changed, 8 insertions(+)
+>
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index 545ac3e0e269..0a4541e4f076 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -352,6 +352,7 @@
+>  #define X86_FEATURE_CLDEMOTE		(16*32+25) /* CLDEMOTE instruction */
+>  #define X86_FEATURE_MOVDIRI		(16*32+27) /* MOVDIRI instruction */
+>  #define X86_FEATURE_MOVDIR64B		(16*32+28) /* MOVDIR64B instruction */
+> +#define X86_FEATURE_SGX_LC		(16*32+30) /* Software Guard Extensions Launch Control */
+>  
+>  /* AMD-defined CPU features, CPUID level 0x80000007 (EBX), word 17 */
+>  #define X86_FEATURE_OVERFLOW_RECOV	(17*32+ 0) /* MCA overflow recovery support */
+> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+> index 18e08da19f16..3d7c89a8533f 100644
+> --- a/arch/x86/include/asm/msr-index.h
+> +++ b/arch/x86/include/asm/msr-index.h
+> @@ -582,6 +582,7 @@
+>  #define FEAT_CTL_LOCKED				BIT(0)
+>  #define FEAT_CTL_VMX_ENABLED_INSIDE_SMX		BIT(1)
+>  #define FEAT_CTL_VMX_ENABLED_OUTSIDE_SMX	BIT(2)
+> +#define FEAT_CTL_SGX_LC_ENABLED			BIT(17)
+>  #define FEAT_CTL_SGX_ENABLED			BIT(18)
+>  #define FEAT_CTL_LMCE_ENABLED			BIT(20)
+>  
+> @@ -602,6 +603,12 @@
+>  #define MSR_IA32_UCODE_WRITE		0x00000079
+>  #define MSR_IA32_UCODE_REV		0x0000008b
+>  
+> +/* Intel SGX Launch Enclave Public Key Hash MSRs */
+> +#define MSR_IA32_SGXLEPUBKEYHASH0	0x0000008C
+> +#define MSR_IA32_SGXLEPUBKEYHASH1	0x0000008D
+> +#define MSR_IA32_SGXLEPUBKEYHASH2	0x0000008E
+> +#define MSR_IA32_SGXLEPUBKEYHASH3	0x0000008F
+> +
+>  #define MSR_IA32_SMM_MONITOR_CTL	0x0000009b
+>  #define MSR_IA32_SMBASE			0x0000009e
+>  
+> -- 
+> 2.25.1
