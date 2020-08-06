@@ -2,142 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36ADB23D8F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9064923D8F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729273AbgHFJyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:54:03 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:39186 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729125AbgHFJxc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:53:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596707605;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KFQZ0mX53TPSFs7e42z02Iv0vBjIKEpvfFKAKifFm84=;
-        b=OdQhs77y+/xp+GSTQX+QW5cg2VvJV3fBBmrtv2wTcuZXzMq/IPHgSn8sxQ0Ko2AcuhWgHr
-        rhHrLHEsdYu4hMFbuOYle4f0O0ZDdnYScwoatS9hE0D2TctHeFADz9l0xsmaZTcc8hIyaw
-        bvKW1ZhDkkA6PxGO4M3x9jskuGUhSfQ=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-210-UVigqYytNGa1-LZQZJGy0g-1; Thu, 06 Aug 2020 05:53:23 -0400
-X-MC-Unique: UVigqYytNGa1-LZQZJGy0g-1
-Received: by mail-wm1-f71.google.com with SMTP id v8so3376604wma.6
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 02:53:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KFQZ0mX53TPSFs7e42z02Iv0vBjIKEpvfFKAKifFm84=;
-        b=O5C4qj2OPuwbhFif3lEX+P3kibKHZN853b86Bk4JaJid4AEl9fbK/6HQB+c+PR+QzB
-         0Fp7oIeC7kopmL5fuPEIRulZ6Y1Rv/9QY+9IrUzxh99PLxodfJYx+CMhwc4ptmjbLnhS
-         FOwo2hzyElwpUA8D+qEw3S+ZbDkMU1FyAA9odrN/Ns2Tq7D50HpGXoM8eEhxmadBNZLm
-         2K1rH6szYtcjGUiKMljf0gvRriy8KQAy9Se9e3tD1xPy8gapn5f7vLYTPj1IkkGlB9VF
-         bCOK5HCRzrPHehKWasZScUh+NmjYpmfuhqAdvui9LSUcdY7unygpFifCm5w1f65lutrE
-         lRwA==
-X-Gm-Message-State: AOAM533lrj7dEB+BcihV/LbSG9Rr4cZV8YvJcj9D5Q+fg465P3lMGckI
-        qM/aaEiXV8AXES7Uq7FgYzMXbEf4nHaC3I30sBd3P1jDcXEzH8nWjlE0Oq4vMfZes0BaqLleIVS
-        yXNPXozNNmv7/6QW/B5WePZgM
-X-Received: by 2002:adf:a35e:: with SMTP id d30mr7103529wrb.53.1596707602574;
-        Thu, 06 Aug 2020 02:53:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzH/h9qDvGp6nYOJg6CynBAkWPpcdo5K5kwjUb/kSWQKLCWEkI6SJe/Yh1L7V0XGzkLsCqZXw==
-X-Received: by 2002:adf:a35e:: with SMTP id d30mr7103515wrb.53.1596707602334;
-        Thu, 06 Aug 2020 02:53:22 -0700 (PDT)
-Received: from redhat.com (bzq-79-178-123-8.red.bezeqint.net. [79.178.123.8])
-        by smtp.gmail.com with ESMTPSA id m126sm5943543wmf.3.2020.08.06.02.53.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 02:53:21 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 05:53:18 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Julia Suvorova <jsuvorov@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
-Message-ID: <20200806055008-mutt-send-email-mst@kernel.org>
-References: <20200728143741.2718593-1-vkuznets@redhat.com>
- <20200805201851-mutt-send-email-mst@kernel.org>
- <873650p1vo.fsf@vitty.brq.redhat.com>
+        id S1729296AbgHFJzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:55:15 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:37921 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729274AbgHFJy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 05:54:56 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BMkP82qsWz9v0SZ;
+        Thu,  6 Aug 2020 11:54:52 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id EGAhQQuTYzTh; Thu,  6 Aug 2020 11:54:52 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BMkP82110z9v0SX;
+        Thu,  6 Aug 2020 11:54:52 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9CEDD8B7FE;
+        Thu,  6 Aug 2020 11:54:53 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id dGZqyIVZZVmv; Thu,  6 Aug 2020 11:54:53 +0200 (CEST)
+Received: from [172.25.230.102] (po15451.idsi0.si.c-s.fr [172.25.230.102])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 85FAB8B7F9;
+        Thu,  6 Aug 2020 11:54:51 +0200 (CEST)
+Subject: Re: [PATCH v3 3/3] powerpc/uaccess: simplify the get_fs() set_fs()
+ logic
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <a6e62627d25fb7ae9b91d8bf553e707689e37498.1596702117.git.christophe.leroy@csgroup.eu>
+ <cf39cb8e42cffe323393b8cecdc59a7230298eab.1596702117.git.christophe.leroy@csgroup.eu>
+ <20200806091758.GA653@infradead.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <d9111162-220a-c1a8-4251-5815030cb32e@csgroup.eu>
+Date:   Thu, 6 Aug 2020 11:54:44 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <873650p1vo.fsf@vitty.brq.redhat.com>
+In-Reply-To: <20200806091758.GA653@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 11:19:55AM +0200, Vitaly Kuznetsov wrote:
-> "Michael S. Tsirkin" <mst@redhat.com> writes:
+
+
+Le 06/08/2020 à 11:17, Christoph Hellwig a écrit :
+> Do you urgently need this?  My plan for 5.10 is to rebased and submit
+> the remaining bits of this branch:
 > 
-> > On Tue, Jul 28, 2020 at 04:37:38PM +0200, Vitaly Kuznetsov wrote:
-> >> This is a continuation of "[PATCH RFC 0/5] KVM: x86: KVM_MEM_ALLONES
-> >> memory" work: 
-> >> https://lore.kernel.org/kvm/20200514180540.52407-1-vkuznets@redhat.com/
-> >> and pairs with Julia's "x86/PCI: Use MMCONFIG by default for KVM guests":
-> >> https://lore.kernel.org/linux-pci/20200722001513.298315-1-jusual@redhat.com/
-> >> 
-> >> PCIe config space can (depending on the configuration) be quite big but
-> >> usually is sparsely populated. Guest may scan it by accessing individual
-> >> device's page which, when device is missing, is supposed to have 'pci
-> >> hole' semantics: reads return '0xff' and writes get discarded.
-> >> 
-> >> When testing Linux kernel boot with QEMU q35 VM and direct kernel boot
-> >> I observed 8193 accesses to PCI hole memory. When such exit is handled
-> >> in KVM without exiting to userspace, it takes roughly 0.000001 sec.
-> >> Handling the same exit in userspace is six times slower (0.000006 sec) so
-> >> the overal; difference is 0.04 sec. This may be significant for 'microvm'
-> >> ideas.
-> >> 
-> >> Note, the same speed can already be achieved by using KVM_MEM_READONLY
-> >> but doing this would require allocating real memory for all missing
-> >> devices and e.g. 8192 pages gives us 32mb. This will have to be allocated
-> >> for each guest separately and for 'microvm' use-cases this is likely
-> >> a no-go.
-> >> 
-> >> Introduce special KVM_MEM_PCI_HOLE memory: userspace doesn't need to
-> >> back it with real memory, all reads from it are handled inside KVM and
-> >> return '0xff'. Writes still go to userspace but these should be extremely
-> >> rare.
-> >> 
-> >> The original 'KVM_MEM_ALLONES' idea had additional optimizations: KVM
-> >> was mapping all 'PCI hole' pages to a single read-only page stuffed with
-> >> 0xff. This is omitted in this submission as the benefits are unclear:
-> >> KVM will have to allocate SPTEs (either on demand or aggressively) and
-> >> this also consumes time/memory.
-> >
-> > Curious about this: if we do it aggressively on the 1st fault,
-> > how long does it take to allocate 256 huge page SPTEs?
-> > And the amount of memory seems pretty small then, right?
+>      http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/set_fs-removal
 > 
-> Right, this could work but we'll need a 2M region (one per KVM host of
-> course) filled with 0xff-s instead of a single 4k page.
-
-Given it's global doesn't sound too bad.
-
+> which will kill off set_fs/get_fs entirely.
 > 
-> Generally, I'd like to reach an agreement on whether this feature (and
-> the corresponding Julia's patch addding PV feature bit) is worthy. In
-> case it is (meaning it gets merged in this simplest form), we can
-> suggest further improvements. It would also help if firmware (SeaBIOS,
-> OVMF) would start recognizing the PV feature bit too, this way we'll be
-> seeing even bigger improvement and this may or may not be a deal-breaker
-> when it comes to the 'aggressive PTE mapping' idea.
 
-About the feature bit, I am not sure why it's really needed. A single
-mmio access is cheaper than two io accesses anyway, right? So it makes
-sense for a kvm guest whether host has this feature or not.
-We need to be careful and limit to a specific QEMU implementation
-to avoid tripping up bugs, but it seems more appropriate to
-check it using pci host IDs.
+No this isn't needed urgently at all I think.
 
-> -- 
-> Vitaly
+It was sleeping in Patchwork since January, and I received comments from 
+Michael a few days ago asking me to re-submit, see 
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/dd2876b808ea38eb7b7f760ecd6ce06096c61fb5.1580295551.git.christophe.leroy@c-s.fr/
 
+But if you are killing set_fs/get_fs entirely, that's even better I 
+guess. Thanks for the hands up.
+
+Christophe
