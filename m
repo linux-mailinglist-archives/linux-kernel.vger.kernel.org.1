@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB4223E24C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D1823E266
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 21:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726339AbgHFTeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 15:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
+        id S1726150AbgHFTmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 15:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726276AbgHFTeM (ORCPT
+        with ESMTP id S1725272AbgHFTmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 15:34:12 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165F1C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 12:34:11 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id k12so20272921otr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 12:34:11 -0700 (PDT)
+        Thu, 6 Aug 2020 15:42:16 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DCDEC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 12:42:16 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id m22so8488607eje.10
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 12:42:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1es26tsdCKsqKmJOB8uF5Bn5UO+epgItEywVRGDwRXA=;
-        b=XE4k7WyI2t7M59d27ZYsgFmCscGNqSYs6wi0xjS3Vgo/Z2qEl42HftuaR4p79Fgoga
-         L8XJkEdsU1kItTy0CsGsiCLzWIekHyY98ZR2Vw7sTZK7QsaXW1N/gL1Bhu2edkZzFbv0
-         liqpuRk9wgjvxS9hJfK6ALEXCaxmTxsEmylwg=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lTGXraRKF2Xnn2zuWAFO6+p95IAHDQSM01rMKogsvzs=;
+        b=vQ9MkvPxcyEeIPqReTCgblByWgNh2RXqMOXfyQnzzV5pGUlbO1gNEi9Tuk2yXGAyvw
+         Llp+YllnNF+/5YT35hIhLddUTJeCADRxco3W0o3sJc6USpPGiFgOPIyrTihBZOF3Ps3m
+         b5ZWbutt/sHTifnimmHoLPTtNqysTQ9XTb7MzUOjCMNhbiT5DOvjHviINbVtIZmIxAqP
+         S/sojwgCS0IH2KnB0TgYVG74FK3c4xzz0rriqrJAqHzc4Qk0guo0NNaJc+a+XXnz9Sog
+         4j/RZfiLZqNe763mb3UC297NbxucK6AXP/cO9wRfGDEb577fsZw7XZ8d8qKe5ewyzyAP
+         3TSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1es26tsdCKsqKmJOB8uF5Bn5UO+epgItEywVRGDwRXA=;
-        b=MCTBOF7VYfQ/EmZI2YcY7tyrRL3maAwYI891E0gHxgehswNJB0nGFFRtbSVvyuzCEX
-         bGauKEnCLjgNjBJw+HhZFEQlJDGRmI92/L9lCCsSQrqTkOCjlXuZiCXiE0zzDY/QuFIF
-         KfAaI5N8PZltaSUpBZP9cSrwhzSFuAYRs3HtfX1zrvox3s25Rb9dbqnJ8AVIFd82kwTf
-         aslEGIojAHwHEAmlLNOQ6UvF/OdVdhQBiFGGnfFgM3zHzE5uZDeGlagStjrSqhRlaONp
-         0mn+Umo18kzizwROfJQcdNrkdVoe1U75oFo4omNZ15QcTSetB0SLH+K+w6L2h0tE3PF9
-         J/1A==
-X-Gm-Message-State: AOAM53342LW6vBywzV5JAQR6EkavmvxA0r/HdXPbCSE5NI4mc4kE3AgX
-        GaO/NLf60xTNt3bWzVleDq+ejQ==
-X-Google-Smtp-Source: ABdhPJxYxpY0QuM0iIR4HWc0hd1gPoDxDjJmafm9uJSbMujRdlz6vySSTL55Y5mkaZmp4Lh6W2+WvQ==
-X-Received: by 2002:a9d:7349:: with SMTP id l9mr9021506otk.341.1596742451094;
-        Thu, 06 Aug 2020 12:34:11 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id w22sm1341226ooq.37.2020.08.06.12.34.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 12:34:10 -0700 (PDT)
-Subject: Re: [PATCH 4.14 0/8] 4.14.193-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, skhan@linuxfoundation.org
-References: <20200805153507.005753845@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <87e43631-71d2-d7f9-7cdc-4f62c1f067c6@linuxfoundation.org>
-Date:   Thu, 6 Aug 2020 13:34:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=lTGXraRKF2Xnn2zuWAFO6+p95IAHDQSM01rMKogsvzs=;
+        b=ARd6hJv+NXd5s/qk26WZ7kkcWSBTjLPdixyWyCeT14ytPbU9mAQ+bAhoOHD49OGyY7
+         UTZccqO5mrhUazNsUP16X7B22Q+c+7bZqRwAjJA3eDPRJw2cP8dVoSR3Is5MqzS/TzLr
+         DzjB0eg7eaodVtE2ee8SXwlDuOhycMAwg3gVuDDyBHRy+xaKQqUcdXrOadSaZSYu5Ny6
+         3OXGv37E5GzrGflngMPnzTHSgT/iYGtFOpt/O5yL5vQhYjgHJhkA4G6ZSdLaOwdIeO1t
+         fBQFKDWj3LztxGmpj3+sFfEa1J0m+ymCCvcQbHmuBg3hMRfblJFFtoGKnVjuRBh5VKWR
+         9pGQ==
+X-Gm-Message-State: AOAM530enUZJDyDc2oRKIEZC5zk15BFZZcxeUu1RMgiLIA2zs6VHnaRy
+        KHdz0BuJ5ZIM467NwEwHw/o=
+X-Google-Smtp-Source: ABdhPJwUSrOkit6R1m2RY1wbmUSTm5YwAHlyOTZHCmOcOrZQfPZ3BWq1IWCOT8TWScXfg7dJa2YeoA==
+X-Received: by 2002:a17:906:2451:: with SMTP id a17mr5773388ejb.274.1596742935020;
+        Thu, 06 Aug 2020 12:42:15 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:a03f:a7fb:e200:d567:ec52:e0a5:f485])
+        by smtp.gmail.com with ESMTPSA id e13sm4016643eds.46.2020.08.06.12.42.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 12:42:14 -0700 (PDT)
+From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: [RESEND PATCH] sparse: use static inline for __chk_{user,io}_ptr()
+Date:   Thu,  6 Aug 2020 21:42:06 +0200
+Message-Id: <20200806194206.10338-1-luc.vanoostenryck@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200805153507.005753845@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/20 9:53 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.193 release.
-> There are 8 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 07 Aug 2020 15:34:53 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.193-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+__chk_user_ptr() & __chk_io_ptr() are dummy extern functions which
+only exist to enforce the typechecking of __user or __iomem pointers
+in macros when using sparse.
 
-Compiled and booted on my test system. No dmesg regressions.
+This typechecking is done by inserting a call to these functions.
+But the presence of these calls can inhibit some simplifications
+and so influence the result of sparse's analysis of context/locking.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Fix this by changing these calls into static inline calls with
+an empty body.
 
-thanks,
--- Shuah
+Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+---
+ include/linux/compiler_types.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index b67930216e45..a9b6699f3934 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -11,8 +11,8 @@
+ # define __iomem	__attribute__((noderef, address_space(__iomem)))
+ # define __percpu	__attribute__((noderef, address_space(__percpu)))
+ # define __rcu		__attribute__((noderef, address_space(__rcu)))
+-extern void __chk_user_ptr(const volatile void __user *);
+-extern void __chk_io_ptr(const volatile void __iomem *);
++static inline void __chk_user_ptr(const volatile void __user *ptr) { }
++static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
+ /* context/locking */
+ # define __must_hold(x)	__attribute__((context(x,1,1)))
+ # define __acquires(x)	__attribute__((context(x,0,1)))
+-- 
+2.28.0
 
