@@ -2,146 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F1623DED2
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C401923DEE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730398AbgHFRcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:32:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55152 "EHLO mail.kernel.org"
+        id S1730325AbgHFReS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:34:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730000AbgHFRcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729685AbgHFRcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 Aug 2020 13:32:05 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AAE6A22DA9;
-        Thu,  6 Aug 2020 12:36:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0563C22DBF;
+        Thu,  6 Aug 2020 12:37:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596717375;
-        bh=V1PSRo4eX8swYDgWsq71j+ws4CVRQUFXtfzrKm6Cs7g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YdOifq+YBdCEaRBYC/2UMY89UncYsccDHOtl9ip82PBoV1QXbyBcyhdkRqstYBDmg
-         92q4c79+Ym+cezlho5R9ZueuW9+3ku53CLnyxnaK6Hmfo/4TjYbuwT7zj4nE4Jg1Eh
-         2QRQZeKN1Hs73+lNjjbMFygLq9kJDYH7ZujeajtM=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k3f82-000H6F-3e; Thu, 06 Aug 2020 13:36:14 +0100
+        s=default; t=1596717466;
+        bh=jL9tYWE9iw+uSM7TMvqp3lXSaJ38TCtcHbCBzrH9URk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FTKNqPDOSoDVsrkVCQRBkhh82E5jMj1JeoqvMgmSvt/r52lW6IP0hCZe5xb6yX1XW
+         Fc8UcvHlqyqILzqf79rqJaDtp8Yb62k7F06R3KpYF6ZDrdDO38gupAtHWt5GOOVQgy
+         nVmjkYs7ZtApS1RJ24E/VGn1ob8gmyOC0Nm9rgi4=
+Date:   Thu, 6 Aug 2020 13:37:22 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: fsl-asoc-card: Get "extal" clock rate by
+ clk_get_rate
+Message-ID: <20200806123721.GC6442@sirena.org.uk>
+References: <1596699585-27429-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 06 Aug 2020 13:36:14 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
-        tglx@linutronix.de, jason@lakedaemon.net,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Willy Tarreau <w@1wt.eu>,
-        mark-pk.tsai@mediatek.com
-Subject: Re: [PATCH 2/3] irqchip: mstar: msc313-intc interrupt controller
- driver
-In-Reply-To: <CAFr9PXmzZmHWv+DWppaXOih9p5pJK=3JYCCC+-XrnQ+S7sV+fw@mail.gmail.com>
-References: <20200805110052.2655487-1-daniel@0x0f.com>
- <20200805110052.2655487-3-daniel@0x0f.com>
- <a2ac8875d67ce7afe1b28f01683e0c9d@kernel.org>
- <CAFr9PXmzZmHWv+DWppaXOih9p5pJK=3JYCCC+-XrnQ+S7sV+fw@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <3e177112a804b54589464853ff8ac8ad@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: daniel@0x0f.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, tglx@linutronix.de, jason@lakedaemon.net, robh+dt@kernel.org, arnd@arndb.de, w@1wt.eu, mark-pk.tsai@mediatek.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kVXhAStRUZ/+rrGn"
+Content-Disposition: inline
+In-Reply-To: <1596699585-27429-1-git-send-email-shengjiu.wang@nxp.com>
+X-Cookie: Hedonist for hire... no job too easy!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-06 11:03, Daniel Palmer wrote:
-> Hi Marc,
-> 
-> On Thu, 6 Aug 2020 at 01:26, Marc Zyngier <maz@kernel.org> wrote:
->> > +struct msc313_intc {
->> > +     struct irq_domain *domain;
->> > +     void __iomem *base;
->> > +     struct irq_chip irqchip;
->> 
->> Why do you need to embed the irq_chip on a per-controller basis?
-> 
-> Current chips have 1 instance of each type of controller but some of 
-> the
-> newer ones seem to have an extra copy of the non-FIQ version with 
-> different
-> offset to the GIC.
 
-It is much better to have an irqchip structure per irqchip type,
-rather than one per instance, as you can then make the irqchip const.
-It also saves memory when you have more than a single instance.
+--kVXhAStRUZ/+rrGn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The only case where it doesn't work is when PM gets involved, as the
-parent_device pointer is stupidly stored in the irqchip device.
+On Thu, Aug 06, 2020 at 03:39:45PM +0800, Shengjiu Wang wrote:
 
-> 
->> > +};
->> > +
->> > +static void msc313_intc_maskunmask(struct msc313_intc *intc, int
->> > hwirq, bool mask)
->> > +{
->> > +     int regoff = REGOFF(hwirq);
->> > +     void __iomem *addr = intc->base + REGOFF_MASK + regoff;
->> > +     u16 bit = IRQBIT(hwirq);
->> > +     u16 reg = readw_relaxed(addr);
->> > +
->> > +     if (mask)
->> > +             reg |= bit;
->> > +     else
->> > +             reg &= ~bit;
->> > +
->> > +     writew_relaxed(reg, addr);
->> 
->> RMW on a shared MMIO register. Not going to end well. This is valid
->> for all the callbacks, I believe.
-> 
-> Do you have any suggestions on how to resolve that? It seems usually
-> an interrupt controller has set and clear registers to get around this.
-> Would defining a spinlock at the top of the driver and using that 
-> around
-> the read and modify sequences be good enough?
+>  	} else if (of_node_name_eq(cpu_np, "esai")) {
+> +		struct clk *esai_clk = clk_get(&cpu_pdev->dev, "extal");
+> +
+> +		if (!IS_ERR(esai_clk)) {
+> +			priv->cpu_priv.sysclk_freq[TX] = clk_get_rate(esai_clk);
+> +			priv->cpu_priv.sysclk_freq[RX] = clk_get_rate(esai_clk);
+> +			clk_put(esai_clk);
+> +		}
 
-Yes, a spinlock is the conventional way to solve it. Make sure
-you use the irqsave/irqrestore versions, as mask/unmask can
-also occur whilst in interrupt context.
+This should handle probe deferral.  Also if this clock is in use
+shouldn't we be enabling it?  It looks like it's intended to be a
+crystal so it's probably forced on all the time but sometimes there's
+power control for crystals, or perhaps someone might do something
+unusual with the hardware.
 
-> 
->> > +
->> > +     if (flow_type & (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_LEVEL_HIGH))
->> > +             reg &= ~bit;
->> > +     else
->> > +             reg |= bit;
->> 
->> I don't follow grasp the logic here. What happens on EDGE_BOTH, for
->> example?
-> 
-> To be honest I don't quite remember. I'll check and rewrite this.
-> 
->> This driver has a massive feeling of déja-vu. It is almost
->> a copy of the one posted at [1], which I reviewed early
->> this week. The issues are the exact same, and I'm 98%
->> sure this is the same IP block used by two SoC vendors.
-> 
-> This would make a lot of sense considering MediaTek bought MStar
-> for their TV SoCs. The weirdness with only using 16 bits in a register
-> suggests they've inherited the shared ARM/8051 bus that the MStar
-> chips have. Thanks for the tip off.
+--kVXhAStRUZ/+rrGn
+Content-Type: application/pgp-signature; name="signature.asc"
 
-It is indeed the 16bit accesses that reminded me of the MTK
-code, as that's very unusual.
+-----BEGIN PGP SIGNATURE-----
 
-Hopefully you can work with the MTK guys to resolve this quickly.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8r+YEACgkQJNaLcl1U
+h9AgUQf/RsD8CeWYDbaeEKFdJGHhIhdtwKO8qRAL1Z0U+AS4lEQwWdvppChPN90d
+SjiFV8GtE1TIQ3IrzShwKjq4ZU1Kg8qWKcuqnTiqjQDoMJ11Fj6bWXqdwPSGioZ1
+3mKOsJKQihgFHiXY+Xm1R3VuwpJiq19qSM94KYTy+K4p1NcS9Usdr5da5007rE/d
+2RiyA2UvQjMtbCgOU8ZhM2XCRzwBUyFSGgmHvifONQIX0Sacr85m5SxW7teUVz36
+5//kIoJlF/aOpi0dvugXYBPu1Ic8TVAAYWsIxVthtSvmV2dwKlorbO2X/VCJjbgS
+V3SZRTvuY8ZlZdkOdxOSlCA8DNgtTA==
+=nUjz
+-----END PGP SIGNATURE-----
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+--kVXhAStRUZ/+rrGn--
