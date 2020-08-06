@@ -2,96 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95D123DE50
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD20823DE3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729537AbgHFRYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729929AbgHFREn (ORCPT
+        id S1730050AbgHFRXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:23:43 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26028 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729955AbgHFRE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:04:43 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A516C03460C;
-        Thu,  6 Aug 2020 07:22:50 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 185so41736659ljj.7;
-        Thu, 06 Aug 2020 07:22:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XByk4zQLeWdVJ99jAPoK52EaFY9Nq96sXFd7ZxTXSZs=;
-        b=T0JlCXRlEg1AKCwQb1Q6HbT/3xfXPI1KwN7z3+S4H2XdoJf5sckRXpOd32Vj99hdZL
-         37mV132mg68iZ3zO5YvGKQBpF4ZmLRSkbzl9rdYzDZZDGFw8O8b+S0Uq9Vq50z6pIVR+
-         7zD4im9G8SYACEta3zEIjft/lAZB1aTVdYmJ+L3Y0S34NidBHYZ7yh9ee/J2ye9CgA3P
-         /lJ5WIpzDneUNMyM1VHVqjwIAPrL0Pxab33D5KBqnh67nkkXTXcLe+46/lNeUrb+LrsA
-         5VQFpXLPhIINuM8eV5bGVSYNijh7laO+zCxpNisCSy8HwtoQkSIowyDIIujk9DMonPW4
-         gdow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XByk4zQLeWdVJ99jAPoK52EaFY9Nq96sXFd7ZxTXSZs=;
-        b=LsiPdCSSIGezBLwLMm67zLU5h4j/XH/3HNXICixllh2bQwJih88B/4+HMoie+FYAat
-         kPjz35npSDaoyd0v+njcqFdK7FXP4c/n/piP7hjvYU/R8/003cKpo6CPdP0m3MBa4hT5
-         IXQd23k6FVopVTHZLxo/1OmVhuq+qhgrEJ05UxYUjsLpR6gLwEwX48wqfZkmsl2H9dlz
-         2O8v++SH54T/V18McZQLjyYb57U+QAWH7vMGywHMTFPypa0MRncRtStop/lNR7EzBY+5
-         41HU8jmRsd9FL4PjGSZmCpLdwlCLpLD2bZ2Mjmh3dTBlcw/twNkkXB2NRhbc0gAYTXqd
-         CS6Q==
-X-Gm-Message-State: AOAM532aEAxUGSRASymmXM040IztMx4Ikt5XrnZEAokGqrhrYKUTAvvN
-        dbfjGgo1untPtR7UEDivDrA=
-X-Google-Smtp-Source: ABdhPJxA2Tkfxwf/RHpIug+GOl8r/RwGGUhTAJxYzx5jCzoXQ539huOTFz7Djjq2XQjHvs9c2QBk/Q==
-X-Received: by 2002:a2e:3c03:: with SMTP id j3mr3998129lja.397.1596723767006;
-        Thu, 06 Aug 2020 07:22:47 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-41-50.dynamic.spd-mgts.ru. [94.29.41.50])
-        by smtp.googlemail.com with ESMTPSA id h17sm2479535ljj.118.2020.08.06.07.22.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 07:22:45 -0700 (PDT)
-Subject: Re: [Patch v2 2/4] dmaengine: tegra: Add Tegra GPC DMA driver
-To:     Rajesh Gumasta <rgumasta@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Krishna Yarlagadda <kyarlagadda@nvidia.com>,
-        Pavan Kunapuli <pkunapuli@nvidia.com>
-References: <1596699006-9934-1-git-send-email-rgumasta@nvidia.com>
- <1596699006-9934-3-git-send-email-rgumasta@nvidia.com>
- <bc7d0d9d-ac7f-b720-64f5-63e0c76e6786@gmail.com>
- <CH2PR12MB41350E273B36463F9B372A52A2480@CH2PR12MB4135.namprd12.prod.outlook.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <8fa139f2-685e-9e19-df55-bc7f84ec9a4c@gmail.com>
-Date:   Thu, 6 Aug 2020 17:22:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CH2PR12MB41350E273B36463F9B372A52A2480@CH2PR12MB4135.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Thu, 6 Aug 2020 13:04:57 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 076E4BLq037516;
+        Thu, 6 Aug 2020 10:23:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=kmhmWCdm048zOKwXHN42FLNuOm7WrXWJMfUPgkm2BNs=;
+ b=XogXsXMRXlfm/JAY1LPooBLT63IRYCp8ojV2ctAf3lkvx5Vw9iebfbHieezthAQNC8c0
+ /b1g87Yz1d4zB3k1WmuW66G9PU53U8W4EKMQAt7AIgCI/psb/OtVEE/vgSFef0buG0Z7
+ JYYwr4i98hQQjP4LOaXvML4fgtZAkymKXVkOEnyDvVVF2gFiGNfUIeZK/XEjsOlO4vj2
+ JabFvOzanHZCzsGRQ9PzVHJrSjmUeuJaEAN0xISsn+fffwArKOrYc5vb2gWSAF6EBLid
+ tAJK30i6TKzf/UYtYNXDr7tiutyamSPYWlkM7VKb4hqRKBliSIvFSDVr+n1qfByVXcpS JA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32rgnf5y0j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 10:23:10 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 076E4iXH040969;
+        Thu, 6 Aug 2020 10:23:10 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32rgnf5xyj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 10:23:10 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 076EF6Jl029907;
+        Thu, 6 Aug 2020 14:23:07 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 32n0185j5x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Aug 2020 14:23:07 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 076EN48J16253204
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 6 Aug 2020 14:23:05 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CAB55AE059;
+        Thu,  6 Aug 2020 14:23:04 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 541CFAE04D;
+        Thu,  6 Aug 2020 14:23:04 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.149.70])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  6 Aug 2020 14:23:04 +0000 (GMT)
+From:   Pierre Morel <pmorel@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     pasic@linux.ibm.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        mst@redhat.com, jasowang@redhat.com, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH v1 0/1] s390: virtio-ccw: PV needs VIRTIO I/O device protection
+Date:   Thu,  6 Aug 2020 16:23:01 +0200
+Message-Id: <1596723782-12798-1-git-send-email-pmorel@linux.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-06_09:2020-08-06,2020-08-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 mlxlogscore=999 malwarescore=0 adultscore=0 mlxscore=0
+ phishscore=0 suspectscore=1 clxscore=1015 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008060099
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-06.08.2020 16:56, Rajesh Gumasta пишет:
-...
->>> +static const struct __maybe_unused dev_pm_ops
->> tegra_dma_dev_pm_ops = {
->>> +     SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(tegra_dma_pm_suspend,
->>> +tegra_dma_pm_resume) };
->>
->> Please explain why this is needed. All DMA should be stopped (not
->> paused) on system's suspend, shouldn't it?
-> I have rechecked with HW verification team and they confirmed that after suspend, csr and channel registers will get reset hence on resume we need to restore back.
-> Also GPCDMA does not support power gate as a unit.
+Hi all,
 
-But all registers are re-programmed on starting a DMA transfer, hence
-why do you need to save-restore them on suspend-resume?
+In another series I proposed to add an architecture specific
+callback to fail feature negociation on architecture need.
+
+In VIRTIO, we already have an entry to reject the features on the
+transport basis.
+
+Transport is not architecture so I send a separate series in which
+we fail the feature negociation inside virtio_ccw_finalize_features,
+the virtio_config_ops.finalize_features for S390 CCW transport,
+when the device do not propose the VIRTIO_F_IOMMU_PLATFORM.
+
+This solves the problem of crashing QEMU when this one is not using
+a CCW device with iommu_platform=on in S390.
+
+Regards,
+Pierre
+
+Regards,
+Pierre
+
+Pierre Morel (1):
+  s390: virtio-ccw: PV needs VIRTIO I/O device protection
+
+ drivers/s390/virtio/virtio_ccw.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
+
