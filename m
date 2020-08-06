@@ -2,97 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5079123E3E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 00:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309DF23E3EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 00:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728999AbgHFWPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 18:15:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728986AbgHFWPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 18:15:40 -0400
-Received: from localhost (130.sub-72-107-113.myvzw.com [72.107.113.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FA49221E2;
-        Thu,  6 Aug 2020 22:15:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596752139;
-        bh=6V+A6F9WaUs3FGFH0cDcq6c0VYlcrNfuScxXobnpo3k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=fhmU7icYI+Tc7SdZpy0wowfM7RZbgqmTi3wJpP/mfqdrweNF2ylB0kgeJmvGZP+SC
-         r6T8pC2+JbWbuIfXwHpyb7GEcnAV5L7TkPgsr2rCnf03hFchFiYc9G78EvO+K8Lugb
-         sQim6ONph1cpwxAKr9aO6oLqE148o0w5L0GKqqtg=
-Date:   Thu, 6 Aug 2020 17:15:37 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Cengiz Can <cengiz@kernel.wtf>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Subject: Re: [PATCH] staging: atomisp: move null check to earlier point
-Message-ID: <20200806221537.GA703560@bjorn-Precision-5520>
+        id S1726393AbgHFWVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 18:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726167AbgHFWVc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 18:21:32 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54080C061574;
+        Thu,  6 Aug 2020 15:21:32 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id p1so111079pls.4;
+        Thu, 06 Aug 2020 15:21:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=t1TN4T3jQ2jrlk3a/d7SaKfk2DJyftZUv6bXnlt6NPQ=;
+        b=GyumodkGmYKsGSwVnzxjXGz3Hc6dDp/7EX3r4spkycDyPVNN0ciFP2qEtF0XPhrBf4
+         +cCI0OWrH6x101NHuYUTOaXPwuCecyhxfEvjJRna72hDnNI+bib+8AzwceW3eJdE75Gn
+         SeIJKEi14my/hEJw+qU/KCE5RSHazXH9KHIfKLNltLm7ADcruE5/tGFOBJjd/g0Mnrl5
+         TD9+5yjblEpGaVz4M1LHrXLmcdWRpP5c2NV1JaW3i6df06bY03MlPUl3EghFXAFM5iLk
+         Ox9KU5vu5QYQH83zkF+ICm8Q2r+16LLLSd84hY8z6dVmhZCgoIg7vDd5Gd8rg9nvzxvN
+         9EXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=t1TN4T3jQ2jrlk3a/d7SaKfk2DJyftZUv6bXnlt6NPQ=;
+        b=e1lzyzb0IUfIRzudWXCJ1cnSbrZG3OU8EoVQ0p+kJDkZ1tnLXS6o966fc2KdC6EHeL
+         3SrIF0a5mXVw76vBuseFHDBVjkkqkjlSiZ4ovEVfQAjHNwieeA9kQTFnWW2rC5ZbPf9O
+         XCVz7HUemkpVnapitCxqsMEN6h+Q28m+bBbKFOppxvOEkVHfUzGS1ldj+fNmo5m0qPl1
+         ED2axOJ1D3LUxfVoNB0CC1/auI0H9efPJaH6IlviqbYNd5RQTwLOmmWz2ftkLDDCIrhJ
+         Wdyw2sb/kvUexW2wviff3HtcudiqYhWO/eNEvVHcZJMxGZcVkKXQc7LPLka0fe1Ye8m0
+         FC6w==
+X-Gm-Message-State: AOAM533QHJUjqnXMz8lHoCE9mfaVnnvTe76eDAuB5RQDhG7tKwWbhiP6
+        q6J7leABOdw2O3ozloO5s2k=
+X-Google-Smtp-Source: ABdhPJwdY4ryrXf97t2P6yPCseaEpoaitTdHlZtd60UHAYlnINemi0RFvJHHjsz9ZaSHJyy7n+NjVw==
+X-Received: by 2002:a17:902:45:: with SMTP id 63mr9766294pla.179.1596752491350;
+        Thu, 06 Aug 2020 15:21:31 -0700 (PDT)
+Received: from [10.1.10.11] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id w82sm9912017pff.7.2020.08.06.15.21.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Aug 2020 15:21:30 -0700 (PDT)
+Subject: Re: [PATCH 25/26] net: pass a sockptr_t into ->setsockopt
+To:     Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
+        linux-can@vger.kernel.org, dccp@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
+        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org,
+        Stefan Schmidt <stefan@datenfreihafen.org>
+References: <20200723060908.50081-1-hch@lst.de>
+ <20200723060908.50081-26-hch@lst.de>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <6357942b-0b6e-1901-7dce-e308c9fac347@gmail.com>
+Date:   Thu, 6 Aug 2020 15:21:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200730084545.GB1793@kadam>
+In-Reply-To: <20200723060908.50081-26-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 11:45:45AM +0300, Dan Carpenter wrote:
-> On Wed, Jul 29, 2020 at 06:13:44PM +0300, Andy Shevchenko wrote:
-> > On Wed, Jul 29, 2020 at 5:00 PM Cengiz Can <cengiz@kernel.wtf> wrote:
-> > >
-> > > `find_gmin_subdev` function that returns a pointer to `struct
-> > > gmin_subdev` can return NULL.
-> > >
-> > > In `gmin_v2p8_ctrl` there's a call to this function but the possibility
-> > > of a NULL was not checked before its being dereferenced. ie:
-> > >
-> > > ```
-> > > /* Acquired here --------v */
-> > > struct gmin_subdev *gs = find_gmin_subdev(subdev);
-> > > int ret;
-> > > int value;
-> > >
-> > > /*  v------Dereferenced here */
-> > > if (gs->v2p8_gpio >= 0) {
-> > >         pr_info("atomisp_gmin_platform: 2.8v power on GPIO %d\n",
-> > >                 gs->v2p8_gpio);
-> > >         ret = gpio_request(gs->v2p8_gpio, "camera_v2p8");
-> > >         if (!ret)
-> > >                 ret = gpio_direction_output(gs->v2p8_gpio, 0);
-> > >         if (ret)
-> > >                 pr_err("V2P8 GPIO initialization failed\n");
-> > > }
-> > > ```
-> > >
-> > > I have moved the NULL check before deref point.
-> > 
-> > "Move the NULL check..."
-> > See Submitting Patches documentation how to avoid "This patch", "I", "we", etc.
+
+
+On 7/22/20 11:09 PM, Christoph Hellwig wrote:
+> Rework the remaining setsockopt code to pass a sockptr_t instead of a
+> plain user pointer.  This removes the last remaining set_fs(KERNEL_DS)
+> outside of architecture specific code.
 > 
-> I always feel like this is a pointless requirement.  We're turning
-> into bureaucrats.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Stefan Schmidt <stefan@datenfreihafen.org> [ieee802154]
+> ---
 
-There is a danger of that, and I'm more guilty than most.  But I do
-think there's value in consistent style because it allows readers to
-focus on the content instead of being distracted by different margins,
-grammar ("move vs. moved"), paragraph styles, quoting conventions,
-etc.
 
-Ideally we would scan previous commit logs (and the existing code!)
-and make new changes fit seamlessly so it looks like everything was
-done at the same time by the same person.
+...
 
-But often that doesn't happen.  Sometimes I take the liberty to tweak
-things as I apply them to try to avoid trivial rework.
+> diff --git a/net/ipv6/raw.c b/net/ipv6/raw.c
+> index 594e01ad670aa6..874f01cd7aec42 100644
+> --- a/net/ipv6/raw.c
+> +++ b/net/ipv6/raw.c
+> @@ -972,13 +972,13 @@ static int rawv6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+>  }
+>  
 
-Bjorn
+...
+
+>  static int do_rawv6_setsockopt(struct sock *sk, int level, int optname,
+> -			    char __user *optval, unsigned int optlen)
+> +			       sockptr_t optval, unsigned int optlen)
+>  {
+>  	struct raw6_sock *rp = raw6_sk(sk);
+>  	int val;
+>  
+> -	if (get_user(val, (int __user *)optval))
+> +	if (copy_from_sockptr(&val, optval, sizeof(val)))
+>  		return -EFAULT;
+>  
+
+converting get_user(...)   to  copy_from_sockptr(...) really assumed the optlen
+has been validated to be >= sizeof(int) earlier.
+
+Which is not always the case, for example here.
+
+User application can fool us passing optlen=0, and a user pointer of exactly TASK_SIZE-1
+
+
