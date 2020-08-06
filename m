@@ -2,94 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8590823E084
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E7723E07D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728975AbgHFSfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727899AbgHFSei (ORCPT
+        id S1729228AbgHFSfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:35:11 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:59905 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728674AbgHFSej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:34:38 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C581C061290
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 11:34:20 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1k3kiN-00043O-ME; Thu, 06 Aug 2020 20:34:07 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1k3kiM-0007Yl-En; Thu, 06 Aug 2020 20:34:06 +0200
-Date:   Thu, 6 Aug 2020 20:34:06 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 7/7] pwm: cros-ec: Simplify EC error handling
-Message-ID: <20200806183406.avejgcuxaolea2pz@pengutronix.de>
-References: <20200806153308.204605-1-linux@roeck-us.net>
- <20200806153308.204605-8-linux@roeck-us.net>
+        Thu, 6 Aug 2020 14:34:39 -0400
+Received: from [192.168.1.4] (unknown [176.88.145.153])
+        (Authenticated sender: cengiz@kernel.wtf)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id A4228240008;
+        Thu,  6 Aug 2020 18:34:25 +0000 (UTC)
+From:   Cengiz Can <cengiz@kernel.wtf>
+To:     <andy.shevchenko@gmail.com>
+CC:     <dan.carpenter@oracle.com>, <devel@driverdev.osuosl.org>,
+        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <mchehab@kernel.org>,
+        <sakari.ailus@linux.intel.com>, Cengiz Can <cengiz@kernel.wtf>
+Date:   Thu, 06 Aug 2020 21:34:22 +0300
+Message-ID: <173c50d7bb0.2bfa.85c738e3968116fc5c0dc2de74002084@kernel.wtf>
+In-Reply-To: <20200801220101.2783-1-cengiz@kernel.wtf>
+References: <20200731083856.GF3703480@smile.fi.intel.com>
+ <20200801220101.2783-1-cengiz@kernel.wtf>
+User-Agent: AquaMail/1.25.2-1672 (build: 102500008)
+Subject: Re: [PATCH v6] staging: atomisp: move null check to earlier point
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yaf2rliyowjjwr36"
-Content-Disposition: inline
-In-Reply-To: <20200806153308.204605-8-linux@roeck-us.net>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Andy,
 
---yaf2rliyowjjwr36
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Can I get some feedback on v6 please?
 
-On Thu, Aug 06, 2020 at 08:33:08AM -0700, Guenter Roeck wrote:
-> With enhanced error reporting from cros_ec_cmd_xfer_status() in place,
-> we can fully use it and no longer rely on EC error codes.
->=20
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+I hope it suits your standards this time.
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+Thank you
 
-Thanks
-Uwe
+On August 2, 2020 01:02:22 Cengiz Can <cengiz@kernel.wtf> wrote:
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+> `find_gmin_subdev()` that returns a pointer to `struct
+> gmin_subdev` can return NULL.
+>
+> In `gmin_v2p8_ctrl()` there's a call to this function but the
+> possibility of a NULL was not checked before its being dereferenced,
+> i.e.:
+>
+>  /* Acquired here --------v */
+>  struct gmin_subdev *gs = find_gmin_subdev(subdev);
+>
+>  /*  v------Dereferenced here */
+>  if (gs->v2p8_gpio >= 0) {
+>      ...
+>  }
+>
+> With this change we're null checking `find_gmin_subdev()` result
+> and we return an error if that's the case. We also WARN()
+> for the sake of debugging.
+>
+> Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
+> Reported-by: Coverity Static Analyzer CID 1465536
+> Suggested-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+> ---
+>
+> Please do note that this change introduces a new return value to
+> `gmin_v2p8_ctrl()`.
+>
+> [NEW] - raise a WARN and return -ENODEV if there are no subdevices.
+>       - return result of `gpio_request` or `gpio_direction_output`.
+>       - return 0 if GPIO is ON.
+>       - return results of `regulator_enable` or `regulator_disable`.
+>       - according to PMIC type, return result of `axp_regulator_set`
+>         or `gmin_i2c_write`.
+>       - return -EINVAL if unknown PMIC type.
+>
+> Patch Changelog:
+>   v4: Fix minor typo in commit message
+>   v5: Remove typo from email subject
+>   v6: Remove duplicate Signed-off-by tag
+>
+> drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c | 5 ++++-
+> 1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c 
+> b/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
+> index 0df46a1af5f0..1ad0246764a6 100644
+> --- a/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
+> +++ b/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
+> @@ -871,6 +871,9 @@ static int gmin_v2p8_ctrl(struct v4l2_subdev *subdev, 
+> int on)
+> 	int ret;
+> 	int value;
+>
+> +	if (WARN_ON(!gs))
+> +		return -ENODEV;
+> +
+> 	if (gs->v2p8_gpio >= 0) {
+> 		pr_info("atomisp_gmin_platform: 2.8v power on GPIO %d\n",
+> 			gs->v2p8_gpio);
+> @@ -881,7 +884,7 @@ static int gmin_v2p8_ctrl(struct v4l2_subdev *subdev, 
+> int on)
+> 			pr_err("V2P8 GPIO initialization failed\n");
+> 	}
+>
+> -	if (!gs || gs->v2p8_on == on)
+> +	if (gs->v2p8_on == on)
+> 		return 0;
+> 	gs->v2p8_on = on;
+>
+> --
+> 2.27.0
 
---yaf2rliyowjjwr36
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8sTRsACgkQwfwUeK3K
-7AljKgf+NqWAUswdLzLgjqhYVOCid4+Uol5gqvLd1PWPzFcBLjYn4qhp9zCcu9IJ
-AzY555m9cXLChHqkEScDlUleoaOE0SjOlW4eabwKO3BakLm5S+xaiu1ak7RcxW8O
-Bz9qlW1S+9lAm+fG5jxdHnJkk9RJ5isJQl7s0XdzDYvACgGjh5oLHnm5pjbwH+Gk
-u8tFgy0xLsm6MdURY7gEaIveEUiD4Pcn+Kh13Z3RArmF5hJqoRFi0qxxszaQyZF4
-p2FozkPNOBxKOVr1hKtXQqU/q0yrFWh4Wlokh+POqnNiS5U9uO1+i/r563VbKJyZ
-5PtUqpdOjmjZR0c+LuqFEHYBaDr8vg==
-=AiFP
------END PGP SIGNATURE-----
-
---yaf2rliyowjjwr36--
