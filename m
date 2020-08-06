@@ -2,128 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5913C23D87F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145A023D884
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729034AbgHFJWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:22:02 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59218 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729128AbgHFJUC (ORCPT
+        id S1729050AbgHFJXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:23:31 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:56860 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729127AbgHFJUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:20:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596705599;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qbng0KIuhjnrRqPApXRDER8ey72aYykcRLaK9qO7KvA=;
-        b=cEoQlBQEuqu+qCJvvxQttxVJScTJXz19QmuG29oAhVIiZESCVvIfHPT+4/zb9KMBnse6lQ
-        RH0nCF4bcz5tZREwAz7At8ycBx9+vsrCtw+3qCWj5aMuIoxtpemKWEHl4IX4XxfpTg9X0B
-        uR6Ij5yZiIc7K9CIDtucwRsPgzQW2AE=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-MweavDV1P1Kqq0QdmHwjGA-1; Thu, 06 Aug 2020 05:19:58 -0400
-X-MC-Unique: MweavDV1P1Kqq0QdmHwjGA-1
-Received: by mail-ej1-f71.google.com with SMTP id y10so18403534ejd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 02:19:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Qbng0KIuhjnrRqPApXRDER8ey72aYykcRLaK9qO7KvA=;
-        b=SfiwPJCPPTzQbDp9vMdM7EqYoWQpis6DWXz3CmlhwnKK66rYTzlZaVv7Y60Uc09RHJ
-         QWNGNNiVABuryUrcHzWnHQsHgTf+T1csLGj7E9QpiX0czNEi32I1ipApRmt5DtfOHfT2
-         BzOEHTnBhdhU0AmnE6vMTOeImnotaZOApF/iYDzyL6U6rDzfMjeQ4n/2UAhBZW//OOli
-         1pbeDVFe8dx1B0RdrBRllVDGWnkjpjEzscTchiEYQnG3Tft6TfJIpvlA8clqGnXf1xQs
-         A2Upoo4+Std6SCPD1baxpOFcKQvR7j3zCfQBMTZA2Xn41VTP9zSoyCyTf6vTif+t2l/b
-         /GPQ==
-X-Gm-Message-State: AOAM532fznKM/UVeQvgnn/7SKHbIeuVlnkLsgU8X+3uj8s86lq3F4Fg5
-        bhlYMP5LjqzCt3kCaGMrZBYHPlHdjgsf+UBShR+pepE0sarpigFSjgUlgY2wNaKJdIPQaCYcNMC
-        hDVE0E+Yc198nqgGZ7eu8QNqC
-X-Received: by 2002:a17:906:c1c3:: with SMTP id bw3mr3607430ejb.8.1596705596998;
-        Thu, 06 Aug 2020 02:19:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxuRhDEaObKZG/m3SESq3Y56+cff+sBnsRhNDN/4SkNQ35QaOrvvNAQiLpZKC54ekRuuLKNEA==
-X-Received: by 2002:a17:906:c1c3:: with SMTP id bw3mr3607421ejb.8.1596705596800;
-        Thu, 06 Aug 2020 02:19:56 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id i9sm3312397ejb.48.2020.08.06.02.19.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 02:19:56 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Julia Suvorova <jsuvorov@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
-In-Reply-To: <20200805201851-mutt-send-email-mst@kernel.org>
-References: <20200728143741.2718593-1-vkuznets@redhat.com> <20200805201851-mutt-send-email-mst@kernel.org>
-Date:   Thu, 06 Aug 2020 11:19:55 +0200
-Message-ID: <873650p1vo.fsf@vitty.brq.redhat.com>
+        Thu, 6 Aug 2020 05:20:33 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0769DP4M134775;
+        Thu, 6 Aug 2020 09:20:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=K6nnIq7KbMdGmwq3DRCgXsdqJJG+nAKIN0b+IcOgc+k=;
+ b=VBCNZ0B6tMfR1rKyX72Att5NUO6if4UBo9dHYDl+0D3q1NcsaDvCWtVjbHrVRnGpz+Ud
+ x+ihOlgeDyR0x8PKISxsN7Wi0fs5rpqTqv77K4/3mB4xa8FbFlAx9iXJJ4ZMJO6qom7y
+ umDcAh0fQbfMZh7yUC7s9oHI3OQ4H1pkGd/yCX4uFpcF8WusdLnV5nfVpNiqj4xyY49D
+ AqxiVxYwMXOT1eEQP9aq1XCh5vWufjALgF8rY86Br7SxI+DUP7f1hNi71z1q7WUMAvyk
+ daIl/wf/W3yD2yONtZ7Sym3V7oP4TmG+WPmyJSLme8ucD0jSm14WEvh5Vaas/7mgW53G tg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 32r6gwssvs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 06 Aug 2020 09:20:15 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0769Dnvf019978;
+        Thu, 6 Aug 2020 09:20:15 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 32r6cv0q8m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 Aug 2020 09:20:14 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0769KB5b024041;
+        Thu, 6 Aug 2020 09:20:11 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 06 Aug 2020 02:20:10 -0700
+Date:   Thu, 6 Aug 2020 12:20:02 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+Cc:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
+        Oleksandr Andrushchenko <andr2000@gmail.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Subject: Re: [PATCH 2/6] drm/xen-front: Fix misused IS_ERR_OR_NULL checks
+Message-ID: <20200806092001.GV5493@kadam>
+References: <20200731125109.18666-1-andr2000@gmail.com>
+ <20200731125109.18666-3-andr2000@gmail.com>
+ <6d719ab2-d9f6-2c3c-8979-b12a4d10b96d@suse.com>
+ <0ed5082f-0280-16c0-7410-f6a90262bcee@epam.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0ed5082f-0280-16c0-7410-f6a90262bcee@epam.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008060065
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
+ phishscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008060065
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Michael S. Tsirkin" <mst@redhat.com> writes:
+On Tue, Aug 04, 2020 at 06:35:20AM +0000, Oleksandr Andrushchenko wrote:
+> 
+> On 8/4/20 9:12 AM, Jürgen Groß wrote:
+> > On 31.07.20 14:51, Oleksandr Andrushchenko wrote:
+> >> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> >>
+> >> The patch c575b7eeb89f: "drm/xen-front: Add support for Xen PV
+> >> display frontend" from Apr 3, 2018, leads to the following static
+> >> checker warning:
+> >>
+> >>     drivers/gpu/drm/xen/xen_drm_front_gem.c:140 xen_drm_front_gem_create()
+> >>     warn: passing zero to 'ERR_CAST'
+> >>
+> >> drivers/gpu/drm/xen/xen_drm_front_gem.c
+> >>     133  struct drm_gem_object *xen_drm_front_gem_create(struct drm_device *dev,
+> >>     134                                                  size_t size)
+> >>     135  {
+> >>     136          struct xen_gem_object *xen_obj;
+> >>     137
+> >>     138          xen_obj = gem_create(dev, size);
+> >>     139          if (IS_ERR_OR_NULL(xen_obj))
+> >>     140                  return ERR_CAST(xen_obj);
+> >>
+> >> Fix this and the rest of misused places with IS_ERR_OR_NULL in the
+> >> driver.
+> >>
+> >> Fixes:  c575b7eeb89f: "drm/xen-front: Add support for Xen PV display frontend"
+> >
+> > Again forgot to Cc stable?
+> 
+> I was just not sure if these minor fixes need to go the stable, but I will add
 
-> On Tue, Jul 28, 2020 at 04:37:38PM +0200, Vitaly Kuznetsov wrote:
->> This is a continuation of "[PATCH RFC 0/5] KVM: x86: KVM_MEM_ALLONES
->> memory" work: 
->> https://lore.kernel.org/kvm/20200514180540.52407-1-vkuznets@redhat.com/
->> and pairs with Julia's "x86/PCI: Use MMCONFIG by default for KVM guests":
->> https://lore.kernel.org/linux-pci/20200722001513.298315-1-jusual@redhat.com/
->> 
->> PCIe config space can (depending on the configuration) be quite big but
->> usually is sparsely populated. Guest may scan it by accessing individual
->> device's page which, when device is missing, is supposed to have 'pci
->> hole' semantics: reads return '0xff' and writes get discarded.
->> 
->> When testing Linux kernel boot with QEMU q35 VM and direct kernel boot
->> I observed 8193 accesses to PCI hole memory. When such exit is handled
->> in KVM without exiting to userspace, it takes roughly 0.000001 sec.
->> Handling the same exit in userspace is six times slower (0.000006 sec) so
->> the overal; difference is 0.04 sec. This may be significant for 'microvm'
->> ideas.
->> 
->> Note, the same speed can already be achieved by using KVM_MEM_READONLY
->> but doing this would require allocating real memory for all missing
->> devices and e.g. 8192 pages gives us 32mb. This will have to be allocated
->> for each guest separately and for 'microvm' use-cases this is likely
->> a no-go.
->> 
->> Introduce special KVM_MEM_PCI_HOLE memory: userspace doesn't need to
->> back it with real memory, all reads from it are handled inside KVM and
->> return '0xff'. Writes still go to userspace but these should be extremely
->> rare.
->> 
->> The original 'KVM_MEM_ALLONES' idea had additional optimizations: KVM
->> was mapping all 'PCI hole' pages to a single read-only page stuffed with
->> 0xff. This is omitted in this submission as the benefits are unclear:
->> KVM will have to allocate SPTEs (either on demand or aggressively) and
->> this also consumes time/memory.
->
-> Curious about this: if we do it aggressively on the 1st fault,
-> how long does it take to allocate 256 huge page SPTEs?
-> And the amount of memory seems pretty small then, right?
+Correct.  It's still a bug because it's setting the error code
+incorrectly on the impossible path.  But fortunately impossible things
+don't affect runtime.
 
-Right, this could work but we'll need a 2M region (one per KVM host of
-course) filled with 0xff-s instead of a single 4k page.
-
-Generally, I'd like to reach an agreement on whether this feature (and
-the corresponding Julia's patch addding PV feature bit) is worthy. In
-case it is (meaning it gets merged in this simplest form), we can
-suggest further improvements. It would also help if firmware (SeaBIOS,
-OVMF) would start recognizing the PV feature bit too, this way we'll be
-seeing even bigger improvement and this may or may not be a deal-breaker
-when it comes to the 'aggressive PTE mapping' idea.
-
--- 
-Vitaly
+regards,
+dan carpenter
 
