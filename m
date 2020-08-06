@@ -2,85 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80EA23DCC4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B386123DC43
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729451AbgHFQzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729821AbgHFQzI (ORCPT
+        id S1729512AbgHFQsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:48:09 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:39918 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728288AbgHFQmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:55:08 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A388C0A8896
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 07:46:13 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id x5so9097129wmi.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 07:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gLXqGFGiHgPstKedhUHjfysLbjGakCzVB3i4zDx+oWw=;
-        b=Q0Vkd8f+xEGj7g+Tfc/bf7PgGTANOuxb8H/vt4RA8nQe0K9jblkNaMap5vDZwOxwRH
-         jtVczWc4chEpp+xh4NPMhlEUHFF83KX3i+4LOutvQnN1JiU9nq85rZ0MbqjQMUtAK/yf
-         1aI0JEz98Tx2V1OOL9Blul3Bt50mZ7MHmN4yA=
+        Thu, 6 Aug 2020 12:42:50 -0400
+Received: by mail-io1-f65.google.com with SMTP id z6so50313543iow.6;
+        Thu, 06 Aug 2020 09:42:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gLXqGFGiHgPstKedhUHjfysLbjGakCzVB3i4zDx+oWw=;
-        b=Od0O4XFKOCkv4XGA7V/aPlKEj2QNB3thi2PL7CpGIS3SuUS6WiBd+ggCo6vfUF07LB
-         3mC5qdGDBI9RXpLPIjT9X/d9rdsvLTCznJiQKa6btTKMQQ4eU0p11BBFWRIqPq8LcCYS
-         G8SWh4+fgLmcsCPnv8OTY/HGRy8Yr9f98k9V9us3vh1tiV2lFmlvhRqK0/vlsqgwpQoO
-         IAF1bg4nNKoDfUWgyksImhimPHP7ORq7BYGYnMmVHavN/+sZESr5aEog/9Un+EZk15Eu
-         sGOzRU3/jrSsz5t5/g5k/hs2Mbu4TucNF6YW6LKukaZ8/rgIExsCJ8gJqkagSU2bpfaj
-         OChg==
-X-Gm-Message-State: AOAM5311DvGp2IuYyB2/MfzOJLcvnn59Aof1RDMCn0oJd6j/kui0Hs8f
-        szhIQ5Vq4hJiV9zDX8Pw9C9fsEbCylbxQ/OYpOfO8Q==
-X-Google-Smtp-Source: ABdhPJyRPdnu/4oes4dUWniKCpXd9HW462x3vl7mDrEPqKHwTpf2ehRX8ZMMFSRZUR47QXpMdE14WQ64HNIMpiKFVSE=
-X-Received: by 2002:a1c:2646:: with SMTP id m67mr8832227wmm.137.1596725171925;
- Thu, 06 Aug 2020 07:46:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Xm0fEuCIzwDzQykroFSnT+aLdkyYmWsu6Ftt9JukdD8=;
+        b=pQJ5Wbk0onBVVfm9KbkO0nmaavZycrP8XIUYtq43nQTVhrVaoIj+HDrpXaQeHZoj59
+         bNGNwgQnjRvBDVB/vPd0DsKWMA1sfz2rPl5hAU8wwG+FozqCsYo5t6auZZmEqQJVG2Mh
+         /xn53eG5weFyiy3aFt7BcE6R5TgqTEFj2EdR5jSMimAxO8Lx0LgSWY/ZDfj9ItB+8pGk
+         kLmKTY4CqlgBxFS59tfv9jMQGLq3KrnNAD77oiUFLKD863sr+Lr0UH5FAd0CAgAhkGpW
+         vX0cWACmID12vfpA3D69yKou7Nnb2gE/F6Ew0H2+5tZbjba0LjR4QBgG1jSf3kmWOAhI
+         hjHQ==
+X-Gm-Message-State: AOAM530Kbs0aPqTvXwfU4E/hDBIMWRR2hASQtLdH+SGIeDHupjYJifa3
+        akdjR06qiDIpvz3F5Uhx4JO9CxY=
+X-Google-Smtp-Source: ABdhPJyjT8GHER76WNSFqjmQvUAzAjClMjTAIIg56K2M86QwRA9rbhDENI7nQUMj/Vpq8VKa/Li+pA==
+X-Received: by 2002:a92:1589:: with SMTP id 9mr11145233ilv.234.1596725235912;
+        Thu, 06 Aug 2020 07:47:15 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id s74sm4198158ilb.44.2020.08.06.07.47.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 07:47:15 -0700 (PDT)
+Received: (nullmailer pid 834882 invoked by uid 1000);
+        Thu, 06 Aug 2020 14:47:13 -0000
+Date:   Thu, 6 Aug 2020 08:47:13 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Pavel Machek <pavel@ucw.cz>, pisa@cmp.felk.cvut.cz
+Cc:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        mkl@pengutronix.de, socketcan@hartkopp.net, wg@grandegger.com,
+        davem@davemloft.net, mark.rutland@arm.com, c.emde@osadl.org,
+        armbru@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.jerabek01@gmail.com,
+        ondrej.ille@gmail.com, jnovak@fel.cvut.cz, jara.beran@gmail.com,
+        porazil@pikron.com
+Subject: Re: [PATCH v4 2/6] dt-bindings: net: can: binding for CTU CAN FD
+ open-source IP core.
+Message-ID: <20200806144713.GA829771@bogus>
+References: <cover.1596408856.git.pisa@cmp.felk.cvut.cz>
+ <701442883f2b439637ff84544745725bdee7bcf8.1596408856.git.pisa@cmp.felk.cvut.cz>
+ <20200804091817.yuf6s26bclehpwwi@duo.ucw.cz>
+ <20200804092021.yd3wisz3g2ed6ioe@duo.ucw.cz>
 MIME-Version: 1.0
-References: <20200805110052.2655487-1-daniel@0x0f.com> <20200805110052.2655487-2-daniel@0x0f.com>
- <CAL_JsqK5YWe71HU+bSMG2uNZOgFN85x4zatuiS-fkUYKXHDs-w@mail.gmail.com>
-In-Reply-To: <CAL_JsqK5YWe71HU+bSMG2uNZOgFN85x4zatuiS-fkUYKXHDs-w@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Thu, 6 Aug 2020 23:46:16 +0900
-Message-ID: <CAFr9PXn_RSwWoaWEmW5m1pBVgo5c41KfEy0db-cgt0+v_sv5Ww@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt: bindings: interrupt-controller: Add binding
- description for msc313-intc
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200804092021.yd3wisz3g2ed6ioe@duo.ucw.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Tue, Aug 04, 2020 at 11:20:21AM +0200, Pavel Machek wrote:
+> On Tue 2020-08-04 11:18:17, Pavel Machek wrote:
+> > Hi!
+> > 
+> > > The commit text again to make checkpatch happy.
+> > 
+> > ?
+> > 
+> > 
+> > > +    oneOf:
+> > > +      - items:
+> > > +          - const: ctu,ctucanfd
+> > > +          - const: ctu,canfd-2
+> > > +      - const: ctu,ctucanfd
+> > 
+> > For consistency, can we have ctu,canfd-1, ctu,canfd-2?
+> 
+> Make it ctu,ctucanfd-1, ctu,ctucanfd-2... to make it consistent with
+> the file names.
 
-On Thu, 6 Aug 2020 at 23:15, Rob Herring <robh+dt@kernel.org> wrote:
+If you are going to do version numbers, please define where they come 
+from. Hopefully some tag of the h/w IP version...
 
-> Why are you sending another version? You ignored the errors and my
-> questions on the RFC.
+Better yet, put version numbers in the h/w registers itself and you 
+don't need different compatibles.
 
-Sorry I didn't think I got any responses RFC but after searching it looks
-like the email from your bot and your question about the two custom
-properties went into a folder I wasn't looking at.
-
-Based on Marc's feedback (that there should be an static irqchip
-struct for each variation)
-I'm going to drop the custom properties and make the metadata they had
-part of the driver. They were basically there to try to make the
-driver universal.
-
-Again sorry for my mishap.
-
-Daniel
+Rob
