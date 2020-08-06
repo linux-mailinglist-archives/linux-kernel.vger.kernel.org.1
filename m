@@ -2,143 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2141F23DD68
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E96723DD4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730053AbgHFRJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
+        id S1730116AbgHFRIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727081AbgHFRGE (ORCPT
+        with ESMTP id S1729946AbgHFRGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:06:04 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D40C06138D
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 10:04:11 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id l17so50335044iok.7
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 10:04:11 -0700 (PDT)
+        Thu, 6 Aug 2020 13:06:40 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323BBC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 10:05:50 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id 3so33988648qkv.13
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 10:05:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nC6PJfNXVU4vFSBxvbjKSl0ryoqOjAjd9RWGvuVHbDM=;
-        b=oLZpvRf1kTJ4eibRUBcjxdeDvtdZOPtNEomtrXn5C94Hbs8Rj8dHrZnApxdRFEwjCl
-         WBc8yQHq3KYajW40zb9qdXGQih4IRSt9uGsN29kdUUfkeijhhBhk6xJqY18RwkHQExnz
-         En5loq1sNJvdr9jvuHobjEotIrsWjcIKsW/9iQLsjtEx4p2gHXPoyKfw1uUZjlnoMgEr
-         cwfI76oogIyUiUU8qlY+Ugbn9lc35uMPWzQr+rfeC0c6wD3GxBi6pVfoIgQbJ8oLdNTa
-         F4WcNsXK48XhtTQShEm/52gGR2owP8y3C7Uh7G0GJAgUeyMsrEVGHSwuLDZzOSVQ3qXj
-         YEhg==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ClCRhz5VpiOzswZeEfz32cI4Ba2QyTHClpP/KXN77n8=;
+        b=IaHQhlbRWGXN2/ao+LoJlBFGdbqt+zL5VeTLHAkovnP6l+enfuSJzm52DuFZPXbvWI
+         FSspI20sJny2yb3byTqFpczlG9HADujqraCWnUSwzqwLTvYaiYL1PRHk/2dxxj2Is2u+
+         a3LV++mKN5yFhfQcaUcpwu3eL6bIA6zT7Lgm6eSZZJoeLsXc/A0typPneJKHKREIvNqZ
+         wn9gQtrl27vn5k4unsqOvnPBsjcKswcsFY6ReFOGmVfxVQeSUo3tWx+9AeFIvQ9gHNVe
+         PBB3s/5lq4nEuZQh9mZSEEzLLvlhpsJlKQTuzyPJPlykKmDL+wMe3h13i09TDxg+13yC
+         nUmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nC6PJfNXVU4vFSBxvbjKSl0ryoqOjAjd9RWGvuVHbDM=;
-        b=PPRnj14g+wzfd1hzgkHnFWxZ2GtDal0BfxSghaEUsKm0w0cYWUmsXEs2I4jfhvxLhP
-         FTZl48k9MhK5GyKqjriVDug/UG/80yTk04yNXxxK7RGhdHKWyyu0bXKGTtuPArNIUBLn
-         BgscBVBKb0ZCRsMoSPSws14z0StE0o9/7mUtHwVngzyCvm+7MTb4sVTUfFJHYj+bSFvq
-         KqOBdtvm0r7poiXPOyZcZg4Fg3dTzo4Fb3+61cSI7SxoYfaBpUt/QznaftX7DwvJJTym
-         kaXW08kho/EDP54MsNCmxA+g3VC6pw2sLIc8xuOSoWKkIedLGq1j0pKjFTRHxUXB52oq
-         vBCw==
-X-Gm-Message-State: AOAM533NEPLV6dS0wbURItqrTWWlxlWitE/VWb7DoLJvsWNGHioeLsNl
-        49T2zzfz2i9l9BPNZzwhU7us8xgcd3WfHXGaMQ0eQQ==
-X-Google-Smtp-Source: ABdhPJzzfGB7YzJrZpItnSdv7H0n5425elbodoOWx8Z/hmcoLH46KhADWrSuaoJDJxAtjYKU+SpwKZ8kaLVmNy3x9qo=
-X-Received: by 2002:a5d:80cb:: with SMTP id h11mr10901351ior.189.1596733449095;
- Thu, 06 Aug 2020 10:04:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200805141202.8641-1-yulei.kernel@gmail.com>
-In-Reply-To: <20200805141202.8641-1-yulei.kernel@gmail.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 6 Aug 2020 10:03:57 -0700
-Message-ID: <CANgfPd_P_bjduGgS7miCp4BLUaDXBTYb9swC1gzxwYG2baWRVw@mail.gmail.com>
-Subject: Re: [RFC 0/9] KVM:x86/mmu:Introduce parallel memory virtualization to
- boost performance
-To:     Yulei Zhang <yulei.kernel@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        xiaoguangrong.eric@gmail.com, kernellwp@gmail.com,
-        lihaiwei.kernel@gmail.com, Yulei Zhang <yuleixzhang@tencent.com>,
-        Junaid Shahid <junaids@google.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ClCRhz5VpiOzswZeEfz32cI4Ba2QyTHClpP/KXN77n8=;
+        b=qISYHphlFOLnDUy0f1ahor2brTSXzft9UcE8jAUTPkreOijZ9b29jKaclog+17Zi46
+         XOlhuFeTiEQgqUyqA3XLCWAsk7g8Le2xE7YCp/qNeQ8vraelEznZe2bACpAkn/PcGsPd
+         /gXqNzjcxIW1Df7xhqf4YWOQYpYfUrIo6j9HulyR6VLzBMoY/yJufYPXxLwKtttYE5YY
+         BU6EGeIfNiAcxWmzTcJLI+2MH5MeNTMW03oUcKkYd+TFOSFptpsH4NYlgU7uEvlKfO/O
+         vStYM1wR0BEwQNW/dR5c9xy5vWPzK6l/EdFPQIkrzILJjcHUEQg6iSA36TEif1f+B9fZ
+         AGIQ==
+X-Gm-Message-State: AOAM530JcyUA2yRbpOt6e7l/GQSaXaJTQKr6JeHIr3ja9jUJQsNE+gB/
+        BWDrtCNp35St8xwV6FRoG0synRXb
+X-Google-Smtp-Source: ABdhPJyPrrFgf+jmR3AS5090OYP3uL6N4D/xOD+aUyRRQ84OAADWwld7vDWjMWEJ5+hHxAx/fLoVPu0b
+X-Received: by 2002:ad4:46e1:: with SMTP id h1mr10195779qvw.129.1596733548153;
+ Thu, 06 Aug 2020 10:05:48 -0700 (PDT)
+Date:   Thu,  6 Aug 2020 10:05:43 -0700
+Message-Id: <20200806170544.382140-1-posk@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
+Subject: [PATCH 1/2 v2] rseq/membarrier: add MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU
+From:   Peter Oskolkov <posk@google.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     Paul Turner <pjt@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Peter Oskolkov <posk@posk.io>, Peter Oskolkov <posk@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 5, 2020 at 9:53 AM Yulei Zhang <yulei.kernel@gmail.com> wrote:
->
-> From: Yulei Zhang <yuleixzhang@tencent.com>
->
-> Currently in KVM memory virtulization we relay on mmu_lock to synchronize
-> the memory mapping update, which make vCPUs work in serialize mode and
-> slow down the execution, especially after migration to do substantial
-> memory mapping setup, and performance get worse if increase vCPU numbers
-> and guest memories.
->
-> The idea we present in this patch set is to mitigate the issue with
-> pre-constructed memory mapping table. We will fast pin the guest memory
-> to build up a global memory mapping table according to the guest memslots
-> changes and apply it to cr3, so that after guest starts up all the vCPUs
-> would be able to update the memory concurrently, thus the performance
-> improvement is expected.
+This patchset is based on Google-internal RSEQ
+work done by Paul Turner and Andrew Hunter.
 
-Is a re-implementation of the various MMU functions in this series
-necessary to pre-populate the EPT/NPT? I realize the approach you took
-is probably the fastest way to pre-populate an EPT, but it seems like
-similar pre-population could be achieved with some changes to the PF
-handler's prefault scheme or, from user space by adding a dummy vCPU
-to touch memory before loading the actual guest image.
+When working with per-CPU RSEQ-based memory allocations,
+it is sometimes important to make sure that a global
+memory location is no longer accessed from RSEQ critical
+sections. For example, there can be two per-CPU lists,
+one is "active" and accessed per-CPU, while another one
+is inactive and worked on asynchronously "off CPU" (e.g.
+garbage collection is performed). Then at some point
+the two lists are swapped, and a fast RCU-like mechanism
+is required to make sure that the previously active
+list is no longer accessed.
 
-I think this series is taking a similar approach to the direct MMU RFC
-I sent out a little less than a year ago. (I will send another version
-of that series in the next month.) I'm not sure this level of
-complexity is worth it if you're only interested in EPT pre-population.
-Is pre-population your goal? You mention "parallel memory
-virtualization," does that refer to parallel page fault handling you
-intend to implement in a future series?
+This patch introduces such a mechanism: in short,
+membarrier() syscall issues an IPI to a CPU, restarting
+a potentially active RSEQ critical section on the CPU.
 
-There are a number of features I see you've chosen to leave behind in
-this series which might work for your use case, but I think they're
-necessary. These include handling vCPUs with different roles (SMM, VMX
-non root mode, etc.), MMU notifiers (which I realize matter less for
-pinned memory), demand paging through UFFD, fast EPT
-invalidation/teardown and others.
+v1->v2:
+  - removed the ability to IPI all CPUs in a single sycall;
+  - use task->mm rather than task->group_leader to identify
+    tasks belonging to the same process.
 
->
-> And after test the initial patch with memory dirty pattern workload, we
-> have seen positive results even with huge page enabled. For example,
-> guest with 32 vCPUs and 64G memories, in 2M/1G huge page mode we would get
-> more than 50% improvement.
->
->
-> Yulei Zhang (9):
->   Introduce new fields in kvm_arch/vcpu_arch struct for direct build EPT
->     support
->   Introduce page table population function for direct build EPT feature
->   Introduce page table remove function for direct build EPT feature
->   Add release function for direct build ept when guest VM exit
->   Modify the page fault path to meet the direct build EPT requirement
->   Apply the direct build EPT according to the memory slots change
->   Add migration support when using direct build EPT
->   Introduce kvm module parameter global_tdp to turn on the direct build
->     EPT mode
->   Handle certain mmu exposed functions properly while turn on direct
->     build EPT mode
->
->  arch/mips/kvm/mips.c            |  13 +
->  arch/powerpc/kvm/powerpc.c      |  13 +
->  arch/s390/kvm/kvm-s390.c        |  13 +
->  arch/x86/include/asm/kvm_host.h |  13 +-
->  arch/x86/kvm/mmu/mmu.c          | 537 ++++++++++++++++++++++++++++++--
->  arch/x86/kvm/svm/svm.c          |   2 +-
->  arch/x86/kvm/vmx/vmx.c          |  17 +-
->  arch/x86/kvm/x86.c              |  55 ++--
->  include/linux/kvm_host.h        |   7 +-
->  virt/kvm/kvm_main.c             |  43 ++-
->  10 files changed, 648 insertions(+), 65 deletions(-)
->
-> --
-> 2.17.1
->
+The second patch in the patchset adds a selftest
+of this feature.
+
+Signed-off-by: Peter Oskolkov <posk@google.com>
+---
+ include/uapi/linux/membarrier.h |  5 ++++
+ kernel/sched/membarrier.c       | 43 +++++++++++++++++++++++++++++++--
+ 2 files changed, 46 insertions(+), 2 deletions(-)
+
+diff --git a/include/uapi/linux/membarrier.h b/include/uapi/linux/membarrier.h
+index 5891d7614c8c..ce4628ea17fa 100644
+--- a/include/uapi/linux/membarrier.h
++++ b/include/uapi/linux/membarrier.h
+@@ -114,6 +114,10 @@
+  *                          If this command is not implemented by an
+  *                          architecture, -EINVAL is returned.
+  *                          Returns 0 on success.
++ * @MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU:
++ *                          If a thread belonging to the current process
++ *                          is currently in an RSEQ critical section on the
++ *                          CPU identified by flags parameter, restart it.
+  * @MEMBARRIER_CMD_SHARED:
+  *                          Alias to MEMBARRIER_CMD_GLOBAL. Provided for
+  *                          header backward compatibility.
+@@ -131,6 +135,7 @@ enum membarrier_cmd {
+ 	MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED		= (1 << 4),
+ 	MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE		= (1 << 5),
+ 	MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE	= (1 << 6),
++	MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU		= (1 << 7),
+ 
+ 	/* Alias for header backward compatibility. */
+ 	MEMBARRIER_CMD_SHARED			= MEMBARRIER_CMD_GLOBAL,
+diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
+index 168479a7d61b..1cdfde23696c 100644
+--- a/kernel/sched/membarrier.c
++++ b/kernel/sched/membarrier.c
+@@ -18,11 +18,19 @@
+ #define MEMBARRIER_PRIVATE_EXPEDITED_SYNC_CORE_BITMASK	0
+ #endif
+ 
++#ifdef CONFIG_RSEQ
++#define MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU_BITMASK		\
++	MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU
++#else
++#define MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU_BITMASK	0
++#endif
++
+ #define MEMBARRIER_CMD_BITMASK						\
+ 	(MEMBARRIER_CMD_GLOBAL | MEMBARRIER_CMD_GLOBAL_EXPEDITED	\
+ 	| MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED			\
+ 	| MEMBARRIER_CMD_PRIVATE_EXPEDITED				\
+ 	| MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED			\
++	| MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU_BITMASK		\
+ 	| MEMBARRIER_PRIVATE_EXPEDITED_SYNC_CORE_BITMASK)
+ 
+ static void ipi_mb(void *info)
+@@ -308,10 +316,39 @@ static int membarrier_register_private_expedited(int flags)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_RSEQ
++static void membarrier_rseq_ipi(void *arg)
++{
++	if (current->mm != arg)  /* Not our process. */
++		return;
++	if (!current->rseq)  /* RSEQ not set up for the current task/thread. */
++		return;
++
++	rseq_preempt(current);
++}
++#endif
++
++static int membarrier_private_restart_rseq_on_cpu(int cpu_id)
++{
++#ifdef CONFIG_RSEQ
++	/* syscalls are not allowed inside rseq critical sections. */
++	if (cpu_id == raw_smp_processor_id())
++		return 0;
++
++	return smp_call_function_single(cpu_id, membarrier_rseq_ipi,
++					current->mm, true);
++#else
++	return 0;
++#endif
++}
++
+ /**
+  * sys_membarrier - issue memory barriers on a set of threads
+  * @cmd:   Takes command values defined in enum membarrier_cmd.
+- * @flags: Currently needs to be 0. For future extensions.
++ * @flags: Currently needs to be 0 for all commands other than
++ *         MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU: in the latter
++ *         case it indicates the CPU on which to interrupt (= restart)
++ *         the RSEQ critical section.
+  *
+  * If this system call is not implemented, -ENOSYS is returned. If the
+  * command specified does not exist, not available on the running
+@@ -339,7 +376,7 @@ static int membarrier_register_private_expedited(int flags)
+  */
+ SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
+ {
+-	if (unlikely(flags))
++	if (unlikely(flags && cmd != MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU))
+ 		return -EINVAL;
+ 	switch (cmd) {
+ 	case MEMBARRIER_CMD_QUERY:
+@@ -369,6 +406,8 @@ SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
+ 		return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
+ 	case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE:
+ 		return membarrier_register_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
++	case MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU:
++		return membarrier_private_restart_rseq_on_cpu(flags);
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+2.28.0.163.g6104cc2f0b6-goog
+
