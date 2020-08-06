@@ -2,179 +2,471 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A27123E196
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0246B23E0B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728794AbgHFS6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:58:06 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:23206 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725272AbgHFS6F (ORCPT
+        id S1729628AbgHFSh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:37:28 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:32882 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729246AbgHFShW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:58:05 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200806185802epoutp02a59819ca22038da91352541ddbce0a5f~owtOmsmoa2431024310epoutp02V
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 18:58:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200806185802epoutp02a59819ca22038da91352541ddbce0a5f~owtOmsmoa2431024310epoutp02V
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1596740282;
-        bh=0CUPozoJxgZ/+ZdJILzBOZVCWR6NdezQpSnjAUwVyU4=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=kPuygxwooEgX6AMHSEzrWxr42fUJy/KTV7FO1htBUEZG37V3fUmJjcP6xnEcIysUe
-         DPrZXLUMhfhkvqurRquQclOgXJZApyQ/axB5NYQo+wHcc2MmabH9zLY47xm0bsYlOF
-         4wviMOS2rCwdPFsXve7MeiWwueyVKopkk+jGC3HY=
-Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p1.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200806185801epcas1p15e673f1efea77c748d7bee2c3dfcbd67~owtOKc4Zw1388513885epcas1p19;
-        Thu,  6 Aug 2020 18:58:01 +0000 (GMT)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v7 0/4] scsi: ufs: Add Host Performance Booster
- Support
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Can Guo <cang@codeaurora.org>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <3e36260c917ce65963a1ee2cd040c0f3@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <231786897.01596740281687.JavaMail.epsvc@epcpadp2>
-Date:   Thu, 06 Aug 2020 16:26:35 +0900
-X-CMS-MailID: 20200806072635epcms2p7faba0ff059f75015a6325f0664b01c42
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200805033750epcms2p3fd74b94500593df38d50e1bf426c2347
-References: <3e36260c917ce65963a1ee2cd040c0f3@codeaurora.org>
-        <231786897.01596600181895.JavaMail.epsvc@epcpadp2>
-        <CGME20200805033750epcms2p3fd74b94500593df38d50e1bf426c2347@epcms2p7>
+        Thu, 6 Aug 2020 14:37:22 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076D29kq005639;
+        Thu, 6 Aug 2020 13:15:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=YcLfpSdm1E9ZQ7qhCEu9yVXQY/xD3EgomopbNxvC0v4=;
+ b=VQsvKmCPNDQf/oq7sB802elFqNx5C2G8YTQ27p+hPkSwg08RJ9QF/TZGZvQLTdtYJn1Q
+ GWEswBDkBy1Fn77e+BcvWJx0Jp0C1tFb+8OXEeSGqhdcwOhqoZ/WSex0Fov9NI0/j5Po
+ BVXeKWx1NcJllmw8i4ny4ePZzYyEJLiPnxxZ+XqK4hedZYnFkDH6ax7JQ04avqTFsdfY
+ oAibeYk17XYHXqh3Yu66X+v/0OEn/fTTXX2hTZ4QsViOhuNnLf+iygZzQLww134DS9qf
+ zLSEeV0GMoJErJ6cDBtgg36lP2wd+TLibBI0LZDCZBhcrRV9nslhE3oLtf/ej6PWP4Dc NA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 32r6fxjtjd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 06 Aug 2020 13:15:00 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076CvpXY071922;
+        Thu, 6 Aug 2020 13:14:59 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 32r6cvd998-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 Aug 2020 13:14:59 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 076DEvFB016240;
+        Thu, 6 Aug 2020 13:14:57 GMT
+Received: from starbug-mbp.localdomain (/79.97.215.145)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 06 Aug 2020 06:14:57 -0700
+Received: by starbug-mbp.localdomain (Postfix, from userid 501)
+        id 45AD6F048BE; Thu,  6 Aug 2020 14:14:51 +0100 (IST)
+From:   Darren Kenny <darren.kenny@oracle.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, sean.j.christopherson@intel.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v36 04/24] x86/sgx: Add SGX microarchitectural data
+ structures
+In-Reply-To: <20200716135303.276442-5-jarkko.sakkinen@linux.intel.com>
+References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
+ <20200716135303.276442-5-jarkko.sakkinen@linux.intel.com>
+Date:   Thu, 06 Aug 2020 14:14:51 +0100
+Message-ID: <m27dubsypg.fsf@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxscore=0 bulkscore=0
+ spamscore=0 adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008060094
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0 adultscore=0
+ bulkscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0
+ lowpriorityscore=0 suspectscore=1 spamscore=0 clxscore=1015 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008060094
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Can Guo,
-> 
-> On 2020-08-05 11:37, Daejun Park wrote:
-> > Changelog:
-> > 
-> > v6 -> v7
-> > 1. Remove UFS feature layer.
-> > 2. Cleanup for sparse error.
-> > 
-> > v5 -> v6
-> > Change base commit to b53293fa662e28ae0cdd40828dc641c09f133405
-> > 
-> > v4 -> v5
-> > Delete unused macro define.
-> > 
-> > v3 -> v4
-> > 1. Cleanup.
-> > 
-> > v2 -> v3
-> > 1. Add checking input module parameter value.
-> > 2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
-> > 3. Cleanup for unused variables and label.
-> > 
-> > v1 -> v2
-> > 1. Change the full boilerplate text to SPDX style.
-> > 2. Adopt dynamic allocation for sub-region data structure.
-> > 3. Cleanup.
-> > 
-> > NAND flash memory-based storage devices use Flash Translation Layer 
-> > (FTL)
-> > to translate logical addresses of I/O requests to corresponding flash
-> > memory addresses. Mobile storage devices typically have RAM with
-> > constrained size, thus lack in memory to keep the whole mapping table.
-> > Therefore, mapping tables are partially retrieved from NAND flash on
-> > demand, causing random-read performance degradation.
-> > 
-> > To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
-> > (Host Performance Booster) which uses host system memory as a cache for 
-> > the
-> > FTL mapping table. By using HPB, FTL data can be read from host memory
-> > faster than from NAND flash memory.
-> > 
-> > The current version only supports the DCM (device control mode).
-> > This patch consists of 3 parts to support HPB feature.
-> > 
-> > 1) HPB probe and initialization process
-> > 2) READ -> HPB READ using cached map information
-> > 3) L2P (logical to physical) map management
-> > 
-> > In the HPB probe and init process, the device information of the UFS is
-> > queried. After checking supported features, the data structure for the 
-> > HPB
-> > is initialized according to the device information.
-> > 
-> > A read I/O in the active sub-region where the map is cached is changed 
-> > to
-> > HPB READ by the HPB.
-> > 
-> > The HPB manages the L2P map using information received from the
-> > device. For active sub-region, the HPB caches through ufshpb_map
-> > request. For the in-active region, the HPB discards the L2P map.
-> > When a write I/O occurs in an active sub-region area, associated dirty
-> > bitmap checked as dirty for preventing stale read.
-> > 
-> > HPB is shown to have a performance improvement of 58 - 67% for random 
-> > read
-> > workload. [1]
-> > 
-> > This series patches are based on the 5.9/scsi-queue branch.
-> > 
-> > [1]:
-> > https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
-> > 
-> > Daejun park (4):
-> >  scsi: ufs: Add UFS feature related parameter
-> >  scsi: ufs: Introduce HPB feature
-> >  scsi: ufs: L2P map management for HPB read
-> >  scsi: ufs: Prepare HPB read for cached sub-region
-> > 
-> >  drivers/scsi/ufs/Kconfig  |   18 +
-> >  drivers/scsi/ufs/Makefile |    1 +
-> >  drivers/scsi/ufs/ufs.h    |   12 +
-> >  drivers/scsi/ufs/ufshcd.c |   42 +
-> >  drivers/scsi/ufs/ufshcd.h |    9 +
-> >  drivers/scsi/ufs/ufshpb.c | 1926 
-> > ++++++++++++++++++++++++++++++++++++++++
-> >  drivers/scsi/ufs/ufshpb.h |  241 +++++
-> >  7 files changed, 2249 insertions(+)
-> >  created mode 100644 drivers/scsi/ufs/ufshpb.c
-> >  created mode 100644 drivers/scsi/ufs/ufshpb.h
-> 
-> I only gave my reviewed-by tag to the very first patch (changes to 
-> ufshcd.h),
-> but not the whole series. Please remove those tags accordingly.
-> 
-OK, I am sorry about that.
-I will remove tags and re-submit my patches.
+On Thursday, 2020-07-16 at 16:52:43 +03, Jarkko Sakkinen wrote:
+> Define the SGX microarchitectural data structures used by various SGX
+> opcodes. This is not an exhaustive representation of all SGX data
+> structures but only those needed by the kernel.
+>
+> The data structures are described in:
+>
+>   Intel SDM: 37.6 INTEL=C2=AE SGX DATA STRUCTURES OVERVIEW
+>
+> Acked-by: Jethro Beekman <jethro@fortanix.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 
-Thanks,
+Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
 
-Daejun
+> ---
+>  arch/x86/kernel/cpu/sgx/arch.h | 343 +++++++++++++++++++++++++++++++++
+>  1 file changed, 343 insertions(+)
+>  create mode 100644 arch/x86/kernel/cpu/sgx/arch.h
+>
+> diff --git a/arch/x86/kernel/cpu/sgx/arch.h b/arch/x86/kernel/cpu/sgx/arc=
+h.h
+> new file mode 100644
+> index 000000000000..ddae55e9d4d8
+> --- /dev/null
+> +++ b/arch/x86/kernel/cpu/sgx/arch.h
+> @@ -0,0 +1,343 @@
+> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
+> +/**
+> + * Copyright(c) 2016-18 Intel Corporation.
+> + *
+> + * Contains data structures defined by the SGX architecture.  Data struc=
+tures
+> + * defined by the Linux software stack should not be placed here.
+> + */
+> +#ifndef _ASM_X86_SGX_ARCH_H
+> +#define _ASM_X86_SGX_ARCH_H
+> +
+> +#include <linux/bits.h>
+> +#include <linux/types.h>
+> +
+> +#define SGX_CPUID				0x12
+> +#define SGX_CPUID_FIRST_VARIABLE_SUB_LEAF	2
+> +
+> +/**
+> + * enum sgx_return_code - The return code type for ENCLS, ENCLU and ENCLV
+> + * %SGX_NOT_TRACKED:		Previous ETRACK's shootdown sequence has not
+> + *				been completed yet.
+> + * %SGX_INVALID_EINITTOKEN:	EINITTOKEN is invalid and enclave signer's
+> + *				public key does not match IA32_SGXLEPUBKEYHASH.
+> + * %SGX_UNMASKED_EVENT:		An unmasked event, e.g. INTR, was received
+> + */
+> +enum sgx_return_code {
+> +	SGX_NOT_TRACKED			=3D 11,
+> +	SGX_INVALID_EINITTOKEN		=3D 16,
+> +	SGX_UNMASKED_EVENT		=3D 128,
+> +};
+> +
+> +/**
+> + * enum sgx_sub_leaf_types - SGX CPUID variable sub-leaf types
+> + * %SGX_CPUID_SUB_LEAF_INVALID:		Indicates this sub-leaf is invalid.
+> + * %SGX_CPUID_SUB_LEAF_EPC_SECTION:	Sub-leaf enumerates an EPC section.
+> + */
+> +enum sgx_sub_leaf_types {
+> +	SGX_CPUID_SUB_LEAF_INVALID	=3D 0x0,
+> +	SGX_CPUID_SUB_LEAF_EPC_SECTION	=3D 0x1,
+> +};
+> +
+> +#define SGX_CPUID_SUB_LEAF_TYPE_MASK	GENMASK(3, 0)
+> +
+> +#define SGX_MODULUS_SIZE 384
+> +
+> +/**
+> + * enum sgx_miscselect - additional information to an SSA frame
+> + * %SGX_MISC_EXINFO:	Report #PF or #GP to the SSA frame.
+> + *
+> + * Save State Area (SSA) is a stack inside the enclave used to store pro=
+cessor
+> + * state when an exception or interrupt occurs. This enum defines additi=
+onal
+> + * information stored to an SSA frame.
+> + */
+> +enum sgx_miscselect {
+> +	SGX_MISC_EXINFO		=3D BIT(0),
+> +};
+> +
+> +#define SGX_MISC_RESERVED_MASK	GENMASK_ULL(63, 1)
+> +
+> +#define SGX_SSA_GPRS_SIZE		184
+> +#define SGX_SSA_MISC_EXINFO_SIZE	16
+> +
+> +/**
+> + * enum sgx_attributes - the attributes field in &struct sgx_secs
+> + * %SGX_ATTR_INIT:		Enclave can be entered (is initialized).
+> + * %SGX_ATTR_DEBUG:		Allow ENCLS(EDBGRD) and ENCLS(EDBGWR).
+> + * %SGX_ATTR_MODE64BIT:		Tell that this a 64-bit enclave.
+> + * %SGX_ATTR_PROVISIONKEY:      Allow to use provisioning keys for remote
+> + *				attestation.
+> + * %SGX_ATTR_KSS:		Allow to use key separation and sharing (KSS).
+> + * %SGX_ATTR_EINITTOKENKEY:	Allow to use token signing key that is used =
+to
+> + *				sign cryptographic tokens that can be passed to
+> + *				EINIT as an authorization to run an enclave.
+> + */
+> +enum sgx_attribute {
+> +	SGX_ATTR_INIT		=3D BIT(0),
+> +	SGX_ATTR_DEBUG		=3D BIT(1),
+> +	SGX_ATTR_MODE64BIT	=3D BIT(2),
+> +	SGX_ATTR_PROVISIONKEY	=3D BIT(4),
+> +	SGX_ATTR_EINITTOKENKEY	=3D BIT(5),
+> +	SGX_ATTR_KSS		=3D BIT(7),
+> +};
+> +
+> +#define SGX_ATTR_RESERVED_MASK	(BIT_ULL(3) | BIT_ULL(6) | GENMASK_ULL(63=
+, 8))
+> +#define SGX_ATTR_ALLOWED_MASK	(SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT | \
+> +				 SGX_ATTR_KSS)
+> +
+> +/**
+> + * struct sgx_secs - SGX Enclave Control Structure (SECS)
+> + * @size:		size of the address space
+> + * @base:		base address of the  address space
+> + * @ssa_frame_size:	size of an SSA frame
+> + * @miscselect:		additional information stored to an SSA frame
+> + * @attributes:		attributes for enclave
+> + * @xfrm:		XSave-Feature Request Mask (subset of XCR0)
+> + * @mrenclave:		SHA256-hash of the enclave contents
+> + * @mrsigner:		SHA256-hash of the public key used to sign the SIGSTRUCT
+> + * @config_id:		a user-defined value that is used in key derivation
+> + * @isv_prod_id:	a user-defined value that is used in key derivation
+> + * @isv_svn:		a user-defined value that is used in key derivation
+> + * @config_svn:		a user-defined value that is used in key derivation
+> + *
+> + * SGX Enclave Control Structure (SECS) is a special enclave page that i=
+s not
+> + * visible in the address space. In fact, this structure defines the add=
+ress
+> + * range and other global attributes for the enclave and it is the first=
+ EPC
+> + * page created for any enclave. It is moved from a temporary buffer to =
+an EPC
+> + * by the means of ENCLS(ECREATE) leaf.
+> + */
+> +struct sgx_secs {
+> +	u64 size;
+> +	u64 base;
+> +	u32 ssa_frame_size;
+> +	u32 miscselect;
+> +	u8  reserved1[24];
+> +	u64 attributes;
+> +	u64 xfrm;
+> +	u32 mrenclave[8];
+> +	u8  reserved2[32];
+> +	u32 mrsigner[8];
+> +	u8  reserved3[32];
+> +	u32 config_id[16];
+> +	u16 isv_prod_id;
+> +	u16 isv_svn;
+> +	u16 config_svn;
+> +	u8  reserved4[3834];
+> +} __packed;
+> +
+> +/**
+> + * enum sgx_tcs_flags - execution flags for TCS
+> + * %SGX_TCS_DBGOPTIN:	If enabled allows single-stepping and breakpoints
+> + *			inside an enclave. It is cleared by EADD but can
+> + *			be set later with EDBGWR.
+> + */
+> +enum sgx_tcs_flags {
+> +	SGX_TCS_DBGOPTIN	=3D 0x01,
+> +};
+> +
+> +#define SGX_TCS_RESERVED_MASK	GENMASK_ULL(63, 1)
+> +#define SGX_TCS_RESERVED_SIZE	4024
+> +
+> +/**
+> + * struct sgx_tcs - Thread Control Structure (TCS)
+> + * @state:		used to mark an entered TCS
+> + * @flags:		execution flags (cleared by EADD)
+> + * @ssa_offset:		SSA stack offset relative to the enclave base
+> + * @ssa_index:		the current SSA frame index (cleard by EADD)
+> + * @nr_ssa_frames:	the number of frame in the SSA stack
+> + * @entry_offset:	entry point offset relative to the enclave base
+> + * @exit_addr:		address outside the enclave to exit on an exception or
+> + *			interrupt
+> + * @fs_offset:		offset relative to the enclave base to become FS
+> + *			segment inside the enclave
+> + * @gs_offset:		offset relative to the enclave base to become GS
+> + *			segment inside the enclave
+> + * @fs_limit:		size to become a new FS-limit (only 32-bit enclaves)
+> + * @gs_limit:		size to become a new GS-limit (only 32-bit enclaves)
+> + *
+> + * Thread Control Structure (TCS) is an enclave page visible in its addr=
+ess
+> + * space that defines an entry point inside the enclave. A thread enters=
+ inside
+> + * an enclave by supplying address of TCS to ENCLU(EENTER). A TCS can be=
+ entered
+> + * by only one thread at a time.
+> + */
+> +struct sgx_tcs {
+> +	u64 state;
+> +	u64 flags;
+> +	u64 ssa_offset;
+> +	u32 ssa_index;
+> +	u32 nr_ssa_frames;
+> +	u64 entry_offset;
+> +	u64 exit_addr;
+> +	u64 fs_offset;
+> +	u64 gs_offset;
+> +	u32 fs_limit;
+> +	u32 gs_limit;
+> +	u8  reserved[SGX_TCS_RESERVED_SIZE];
+> +} __packed;
+> +
+> +/**
+> + * struct sgx_pageinfo - an enclave page descriptor
+> + * @addr:	address of the enclave page
+> + * @contents:	pointer to the page contents
+> + * @metadata:	pointer either to a SECINFO or PCMD instance
+> + * @secs:	address of the SECS page
+> + */
+> +struct sgx_pageinfo {
+> +	u64 addr;
+> +	u64 contents;
+> +	u64 metadata;
+> +	u64 secs;
+> +} __packed __aligned(32);
+> +
+> +
+> +/**
+> + * enum sgx_page_type - bits in the SECINFO flags defining the page type
+> + * %SGX_PAGE_TYPE_SECS:	a SECS page
+> + * %SGX_PAGE_TYPE_TCS:	a TCS page
+> + * %SGX_PAGE_TYPE_REG:	a regular page
+> + * %SGX_PAGE_TYPE_VA:	a VA page
+> + * %SGX_PAGE_TYPE_TRIM:	a page in trimmed state
+> + */
+> +enum sgx_page_type {
+> +	SGX_PAGE_TYPE_SECS,
+> +	SGX_PAGE_TYPE_TCS,
+> +	SGX_PAGE_TYPE_REG,
+> +	SGX_PAGE_TYPE_VA,
+> +	SGX_PAGE_TYPE_TRIM,
+> +};
+> +
+> +#define SGX_NR_PAGE_TYPES	5
+> +#define SGX_PAGE_TYPE_MASK	GENMASK(7, 0)
+> +
+> +/**
+> + * enum sgx_secinfo_flags - the flags field in &struct sgx_secinfo
+> + * %SGX_SECINFO_R:	allow read
+> + * %SGX_SECINFO_W:	allow write
+> + * %SGX_SECINFO_X:	allow execution
+> + * %SGX_SECINFO_SECS:	a SECS page
+> + * %SGX_SECINFO_TCS:	a TCS page
+> + * %SGX_SECINFO_REG:	a regular page
+> + * %SGX_SECINFO_VA:	a VA page
+> + * %SGX_SECINFO_TRIM:	a page in trimmed state
+> + */
+> +enum sgx_secinfo_flags {
+> +	SGX_SECINFO_R			=3D BIT(0),
+> +	SGX_SECINFO_W			=3D BIT(1),
+> +	SGX_SECINFO_X			=3D BIT(2),
+> +	SGX_SECINFO_SECS		=3D (SGX_PAGE_TYPE_SECS << 8),
+> +	SGX_SECINFO_TCS			=3D (SGX_PAGE_TYPE_TCS << 8),
+> +	SGX_SECINFO_REG			=3D (SGX_PAGE_TYPE_REG << 8),
+> +	SGX_SECINFO_VA			=3D (SGX_PAGE_TYPE_VA << 8),
+> +	SGX_SECINFO_TRIM		=3D (SGX_PAGE_TYPE_TRIM << 8),
+> +};
+> +
+> +#define SGX_SECINFO_PERMISSION_MASK	GENMASK_ULL(2, 0)
+> +#define SGX_SECINFO_PAGE_TYPE_MASK	(SGX_PAGE_TYPE_MASK << 8)
+> +#define SGX_SECINFO_RESERVED_MASK	~(SGX_SECINFO_PERMISSION_MASK | \
+> +					  SGX_SECINFO_PAGE_TYPE_MASK)
+> +
+> +/**
+> + * struct sgx_secinfo - describes attributes of an EPC page
+> + * @flags:	permissions and type
+> + *
+> + * Used together with ENCLS leaves that add or modify an EPC page to an
+> + * enclave to define page permissions and type.
+> + */
+> +struct sgx_secinfo {
+> +	u64 flags;
+> +	u8  reserved[56];
+> +} __packed __aligned(64);
+> +
+> +#define SGX_PCMD_RESERVED_SIZE 40
+> +
+> +/**
+> + * struct sgx_pcmd - Paging Crypto Metadata (PCMD)
+> + * @enclave_id:	enclave identifier
+> + * @mac:	MAC over PCMD, page contents and isvsvn
+> + *
+> + * PCMD is stored for every swapped page to the regular memory. When ELD=
+U loads
+> + * the page back it recalculates the MAC by using a isvsvn number stored=
+ in a
+> + * VA page. Together these two structures bring integrity and rollback
+> + * protection.
+> + */
+> +struct sgx_pcmd {
+> +	struct sgx_secinfo secinfo;
+> +	u64 enclave_id;
+> +	u8  reserved[SGX_PCMD_RESERVED_SIZE];
+> +	u8  mac[16];
+> +} __packed __aligned(128);
+> +
+> +#define SGX_SIGSTRUCT_RESERVED1_SIZE 84
+> +#define SGX_SIGSTRUCT_RESERVED2_SIZE 20
+> +#define SGX_SIGSTRUCT_RESERVED3_SIZE 32
+> +#define SGX_SIGSTRUCT_RESERVED4_SIZE 12
+> +
+> +/**
+> + * struct sgx_sigstruct_header -  defines author of the enclave
+> + * @header1:		constant byte string
+> + * @vendor:		must be either 0x0000 or 0x8086
+> + * @date:		YYYYMMDD in BCD
+> + * @header2:		costant byte string
+> + * @swdefined:		software defined value
+> + */
+> +struct sgx_sigstruct_header {
+> +	u64 header1[2];
+> +	u32 vendor;
+> +	u32 date;
+> +	u64 header2[2];
+> +	u32 swdefined;
+> +	u8  reserved1[84];
+> +} __packed;
+> +
+> +/**
+> + * struct sgx_sigstruct_body - defines contents of the enclave
+> + * @miscselect:		additional information stored to an SSA frame
+> + * @misc_mask:		required miscselect in SECS
+> + * @attributes:		attributes for enclave
+> + * @xfrm:		XSave-Feature Request Mask (subset of XCR0)
+> + * @attributes_mask:	required attributes in SECS
+> + * @xfrm_mask:		required XFRM in SECS
+> + * @mrenclave:		SHA256-hash of the enclave contents
+> + * @isvprodid:		a user-defined value that is used in key derivation
+> + * @isvsvn:		a user-defined value that is used in key derivation
+> + */
+> +struct sgx_sigstruct_body {
+> +	u32 miscselect;
+> +	u32 misc_mask;
+> +	u8  reserved2[20];
+> +	u64 attributes;
+> +	u64 xfrm;
+> +	u64 attributes_mask;
+> +	u64 xfrm_mask;
+> +	u8  mrenclave[32];
+> +	u8  reserved3[32];
+> +	u16 isvprodid;
+> +	u16 isvsvn;
+> +} __packed;
+> +
+> +/**
+> + * struct sgx_sigstruct - an enclave signature
+> + * @header:		defines author of the enclave
+> + * @modulus:		the modulus of the public key
+> + * @exponent:		the exponent of the public key
+> + * @signature:		the signature calculated over the fields except modulus,
+> + * @body:		defines contents of the enclave
+> + * @q1:			a value used in RSA signature verification
+> + * @q2:			a value used in RSA signature verification
+> + *
+> + * Header and body are the parts that are actual signed. The remaining f=
+ields
+> + * define the signature of the enclave.
+> + */
+> +struct sgx_sigstruct {
+> +	struct sgx_sigstruct_header header;
+> +	u8  modulus[SGX_MODULUS_SIZE];
+> +	u32 exponent;
+> +	u8  signature[SGX_MODULUS_SIZE];
+> +	struct sgx_sigstruct_body body;
+> +	u8  reserved4[12];
+> +	u8  q1[SGX_MODULUS_SIZE];
+> +	u8  q2[SGX_MODULUS_SIZE];
+> +} __packed;
+> +
+> +#define SGX_LAUNCH_TOKEN_SIZE 304
+> +
+> +#endif /* _ASM_X86_SGX_ARCH_H */
+> --=20
+> 2.25.1
