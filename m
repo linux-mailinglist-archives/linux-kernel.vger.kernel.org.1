@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596F323DF2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CA123DED3
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730649AbgHFRjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:39:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54822 "EHLO mail.kernel.org"
+        id S1730316AbgHFRcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:32:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729164AbgHFRbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:31:43 -0400
+        id S1729990AbgHFRcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:32:05 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.162.129.152])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23A3B22D0B;
-        Thu,  6 Aug 2020 12:46:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40B6122E00;
+        Thu,  6 Aug 2020 12:46:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596717970;
-        bh=QrxjxFQXvrxHBH9YwYcV7vnXh+iepBJIdhJO2i2pYwo=;
+        s=default; t=1596717979;
+        bh=2YyO1ZqH/6cnyMPPGg73Ui0g57bCCXYKUQEKexUXx3Q=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uX8oj8a0O0wlst6i0TMUJvQdx1C9L0JnVS7VabH1BZZjEM3yNcWmoAM235rVTBzip
-         vF/heXazR6fsDCMq25esXaLoi2m6SGrnIZbeUfuT75aIz+TpUyIUAOpaNKlIoJdFU5
-         CGNrv9pkmgZoSFhouNY48YNe8/9w4aMGnis/isZM=
+        b=O9uop/ZUocbLCmFVUhPP4EbZ84zTLLkbhvET+p+8XavNveD1egkGHnllzLGaDdMra
+         yOunxij9yATii/ElapTlYASqKHDGGAZe0odkc+JkhEragd+pw/Z5IO5Q3vSMu/sJOQ
+         5DH4CzLDYgMEAGhh1K2nqfuC5T/C3KxRPSbcmgSs=
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1FA3B40D9D; Thu,  6 Aug 2020 09:46:08 -0300 (-03)
-Date:   Thu, 6 Aug 2020 09:46:08 -0300
+        id 6798840DEA; Thu,  6 Aug 2020 09:46:17 -0300 (-03)
+Date:   Thu, 6 Aug 2020 09:46:17 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
+Cc:     David Ahern <dsahern@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
@@ -36,114 +37,321 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Michael Petlan <mpetlan@redhat.com>,
         Ian Rogers <irogers@google.com>,
         Andi Kleen <ak@linux.intel.com>,
-        David Ahern <dsahern@gmail.com>,
         =?iso-8859-1?Q?Genevi=E8ve?= Bastien <gbastien@versatic.net>,
         Wang Nan <wangnan0@huawei.com>,
         Jeremie Galarneau <jgalar@efficios.com>
-Subject: Re: [PATCH v2 6/7] perf script: Change enum perf_output_field values
- to be 64 bits
-Message-ID: <20200806124608.GH71359@kernel.org>
+Subject: Re: [PATCH v2 7/7] perf script: Add tod field to display time of day
+Message-ID: <20200806124617.GI71359@kernel.org>
 References: <20200805093444.314999-1-jolsa@kernel.org>
- <20200805093444.314999-7-jolsa@kernel.org>
+ <20200805093444.314999-8-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200805093444.314999-7-jolsa@kernel.org>
+In-Reply-To: <20200805093444.314999-8-jolsa@kernel.org>
 X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Aug 05, 2020 at 11:34:43AM +0200, Jiri Olsa escreveu:
-> So it's possible to add new values. I did not find any place
-> where the enum values are passed through some number type,
-> so it's safe to make this change.
+Em Wed, Aug 05, 2020 at 11:34:44AM +0200, Jiri Olsa escreveu:
+> Adding tod field to display time of day column with
+> time of date (wallclock) time.
+> 
+>   # perf record -k CLOCK_MONOTONIC kill
+>   kill: not enough arguments
+>   [ perf record: Woken up 1 times to write data ]
+>   [ perf record: Captured and wrote 0.033 MB perf.data (8 samples) ]
 
 Thanks, applied.
 
 - Arnaldo
  
+>   # perf script
+>             perf 261340 152919.481538:          1 cycles:  ffffffff8106d104 ...
+>             perf 261340 152919.481543:          1 cycles:  ffffffff8106d104 ...
+>             perf 261340 152919.481545:          7 cycles:  ffffffff8106d104 ...
+>   ...
+> 
+>   # perf script --ns
+>             perf 261340 152919.481538922:          1 cycles:  ffffffff8106d ...
+>             perf 261340 152919.481543286:          1 cycles:  ffffffff8106d ...
+>             perf 261340 152919.481545397:          7 cycles:  ffffffff8106d ...
+>   ...
+> 
+>   # perf script -F+tod
+>             perf 261340 2020-07-13 18:26:55.620971 152919.481538:           ...
+>             perf 261340 2020-07-13 18:26:55.620975 152919.481543:           ...
+>             perf 261340 2020-07-13 18:26:55.620978 152919.481545:           ...
+>   ...
+> 
+>   # perf script -F+tod --ns
+>             perf 261340 2020-07-13 18:26:55.620971621 152919.481538922:     ...
+>             perf 261340 2020-07-13 18:26:55.620975985 152919.481543286:     ...
+>             perf 261340 2020-07-13 18:26:55.620978096 152919.481545397:     ...
+>   ...
+> 
+> It's available only for recording with clockid specified,
+> because it's the only case where we can get reference time
+> to wallclock time. It's can't do that with perf clock yet.
+> 
+> Error is display if you want to use --tod on data without
+> clockid specified:
+> 
+>   # perf script -F+tod
+>   Can't provide 'tod' time, missing clock data. Please record with -k/--clockid option.
+> 
+> Original-patch-by: David Ahern <dsahern@gmail.com>
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/perf/builtin-script.c | 64 ++++++++++++++++++-------------------
->  1 file changed, 32 insertions(+), 32 deletions(-)
+>  tools/perf/builtin-script.c | 131 +++++++++++++++++++++++++++---------
+>  1 file changed, 98 insertions(+), 33 deletions(-)
 > 
 > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> index 0dfc38fb6d35..eb45f678dc2f 100644
+> index eb45f678dc2f..484ce6067d23 100644
 > --- a/tools/perf/builtin-script.c
 > +++ b/tools/perf/builtin-script.c
-> @@ -82,38 +82,38 @@ static bool			native_arch;
->  unsigned int scripting_max_stack = PERF_MAX_STACK_DEPTH;
->  
->  enum perf_output_field {
-> -	PERF_OUTPUT_COMM            = 1U << 0,
-> -	PERF_OUTPUT_TID             = 1U << 1,
-> -	PERF_OUTPUT_PID             = 1U << 2,
-> -	PERF_OUTPUT_TIME            = 1U << 3,
-> -	PERF_OUTPUT_CPU             = 1U << 4,
-> -	PERF_OUTPUT_EVNAME          = 1U << 5,
-> -	PERF_OUTPUT_TRACE           = 1U << 6,
-> -	PERF_OUTPUT_IP              = 1U << 7,
-> -	PERF_OUTPUT_SYM             = 1U << 8,
-> -	PERF_OUTPUT_DSO             = 1U << 9,
-> -	PERF_OUTPUT_ADDR            = 1U << 10,
-> -	PERF_OUTPUT_SYMOFFSET       = 1U << 11,
-> -	PERF_OUTPUT_SRCLINE         = 1U << 12,
-> -	PERF_OUTPUT_PERIOD          = 1U << 13,
-> -	PERF_OUTPUT_IREGS	    = 1U << 14,
-> -	PERF_OUTPUT_BRSTACK	    = 1U << 15,
-> -	PERF_OUTPUT_BRSTACKSYM	    = 1U << 16,
-> -	PERF_OUTPUT_DATA_SRC	    = 1U << 17,
-> -	PERF_OUTPUT_WEIGHT	    = 1U << 18,
-> -	PERF_OUTPUT_BPF_OUTPUT	    = 1U << 19,
-> -	PERF_OUTPUT_CALLINDENT	    = 1U << 20,
-> -	PERF_OUTPUT_INSN	    = 1U << 21,
-> -	PERF_OUTPUT_INSNLEN	    = 1U << 22,
-> -	PERF_OUTPUT_BRSTACKINSN	    = 1U << 23,
-> -	PERF_OUTPUT_BRSTACKOFF	    = 1U << 24,
-> -	PERF_OUTPUT_SYNTH           = 1U << 25,
-> -	PERF_OUTPUT_PHYS_ADDR       = 1U << 26,
-> -	PERF_OUTPUT_UREGS	    = 1U << 27,
-> -	PERF_OUTPUT_METRIC	    = 1U << 28,
-> -	PERF_OUTPUT_MISC            = 1U << 29,
-> -	PERF_OUTPUT_SRCCODE	    = 1U << 30,
-> -	PERF_OUTPUT_IPC             = 1U << 31,
-> +	PERF_OUTPUT_COMM            = 1ULL << 0,
-> +	PERF_OUTPUT_TID             = 1ULL << 1,
-> +	PERF_OUTPUT_PID             = 1ULL << 2,
-> +	PERF_OUTPUT_TIME            = 1ULL << 3,
-> +	PERF_OUTPUT_CPU             = 1ULL << 4,
-> +	PERF_OUTPUT_EVNAME          = 1ULL << 5,
-> +	PERF_OUTPUT_TRACE           = 1ULL << 6,
-> +	PERF_OUTPUT_IP              = 1ULL << 7,
-> +	PERF_OUTPUT_SYM             = 1ULL << 8,
-> +	PERF_OUTPUT_DSO             = 1ULL << 9,
-> +	PERF_OUTPUT_ADDR            = 1ULL << 10,
-> +	PERF_OUTPUT_SYMOFFSET       = 1ULL << 11,
-> +	PERF_OUTPUT_SRCLINE         = 1ULL << 12,
-> +	PERF_OUTPUT_PERIOD          = 1ULL << 13,
-> +	PERF_OUTPUT_IREGS	    = 1ULL << 14,
-> +	PERF_OUTPUT_BRSTACK	    = 1ULL << 15,
-> +	PERF_OUTPUT_BRSTACKSYM	    = 1ULL << 16,
-> +	PERF_OUTPUT_DATA_SRC	    = 1ULL << 17,
-> +	PERF_OUTPUT_WEIGHT	    = 1ULL << 18,
-> +	PERF_OUTPUT_BPF_OUTPUT	    = 1ULL << 19,
-> +	PERF_OUTPUT_CALLINDENT	    = 1ULL << 20,
-> +	PERF_OUTPUT_INSN	    = 1ULL << 21,
-> +	PERF_OUTPUT_INSNLEN	    = 1ULL << 22,
-> +	PERF_OUTPUT_BRSTACKINSN	    = 1ULL << 23,
-> +	PERF_OUTPUT_BRSTACKOFF	    = 1ULL << 24,
-> +	PERF_OUTPUT_SYNTH           = 1ULL << 25,
-> +	PERF_OUTPUT_PHYS_ADDR       = 1ULL << 26,
-> +	PERF_OUTPUT_UREGS	    = 1ULL << 27,
-> +	PERF_OUTPUT_METRIC	    = 1ULL << 28,
-> +	PERF_OUTPUT_MISC            = 1ULL << 29,
-> +	PERF_OUTPUT_SRCCODE	    = 1ULL << 30,
-> +	PERF_OUTPUT_IPC             = 1ULL << 31,
+> @@ -114,6 +114,32 @@ enum perf_output_field {
+>  	PERF_OUTPUT_MISC            = 1ULL << 29,
+>  	PERF_OUTPUT_SRCCODE	    = 1ULL << 30,
+>  	PERF_OUTPUT_IPC             = 1ULL << 31,
+> +	PERF_OUTPUT_TOD             = 1ULL << 32,
+> +};
+> +
+> +struct perf_script {
+> +	struct perf_tool	tool;
+> +	struct perf_session	*session;
+> +	bool			show_task_events;
+> +	bool			show_mmap_events;
+> +	bool			show_switch_events;
+> +	bool			show_namespace_events;
+> +	bool			show_lost_events;
+> +	bool			show_round_events;
+> +	bool			show_bpf_events;
+> +	bool			show_cgroup_events;
+> +	bool			show_text_poke_events;
+> +	bool			allocated;
+> +	bool			per_event_dump;
+> +	bool			stitch_lbr;
+> +	struct evswitch		evswitch;
+> +	struct perf_cpu_map	*cpus;
+> +	struct perf_thread_map *threads;
+> +	int			name_width;
+> +	const char              *time_str;
+> +	struct perf_time_interval *ptime_range;
+> +	int			range_size;
+> +	int			range_num;
 >  };
 >  
 >  struct output_option {
+> @@ -152,6 +178,7 @@ struct output_option {
+>  	{.str = "misc", .field = PERF_OUTPUT_MISC},
+>  	{.str = "srccode", .field = PERF_OUTPUT_SRCCODE},
+>  	{.str = "ipc", .field = PERF_OUTPUT_IPC},
+> +	{.str = "tod", .field = PERF_OUTPUT_TOD},
+>  };
+>  
+>  enum {
+> @@ -502,6 +529,7 @@ static void set_print_ip_opts(struct perf_event_attr *attr)
+>   */
+>  static int perf_session__check_output_opt(struct perf_session *session)
+>  {
+> +	bool tod = false;
+>  	unsigned int j;
+>  	struct evsel *evsel;
+>  
+> @@ -528,6 +556,7 @@ static int perf_session__check_output_opt(struct perf_session *session)
+>  			continue;
+>  
+>  		set_print_ip_opts(&evsel->core.attr);
+> +		tod |= output[j].fields & PERF_OUTPUT_TOD;
+>  	}
+>  
+>  	if (!no_callchain) {
+> @@ -568,13 +597,17 @@ static int perf_session__check_output_opt(struct perf_session *session)
+>  		}
+>  	}
+>  
+> +	if (tod && !session->header.env.clock.enabled) {
+> +		pr_err("Can't provide 'tod' time, missing clock data. "
+> +		       "Please record with -k/--clockid option.\n");
+> +		return -1;
+> +	}
+>  out:
+>  	return 0;
+>  }
+>  
+>  static int perf_sample__fprintf_regs(struct regs_dump *regs, uint64_t mask,
+> -				     FILE *fp
+> -)
+> +				     FILE *fp)
+>  {
+>  	unsigned i = 0, r;
+>  	int printed = 0;
+> @@ -592,6 +625,56 @@ static int perf_sample__fprintf_regs(struct regs_dump *regs, uint64_t mask,
+>  	return printed;
+>  }
+>  
+> +#define DEFAULT_TOD_FMT "%F %H:%M:%S"
+> +
+> +static char*
+> +tod_scnprintf(struct perf_script *script, char *buf, int buflen,
+> +	     u64 timestamp)
+> +{
+> +	u64 tod_ns, clockid_ns;
+> +	struct perf_env *env;
+> +	unsigned long nsec;
+> +	struct tm ltime;
+> +	char date[64];
+> +	time_t sec;
+> +
+> +	buf[0] = '\0';
+> +	if (buflen < 64 || !script)
+> +		return buf;
+> +
+> +	env = &script->session->header.env;
+> +	if (!env->clock.enabled) {
+> +		scnprintf(buf, buflen, "disabled");
+> +		return buf;
+> +	}
+> +
+> +	clockid_ns = env->clock.clockid_ns;
+> +	tod_ns     = env->clock.tod_ns;
+> +
+> +	if (timestamp > clockid_ns)
+> +		tod_ns += timestamp - clockid_ns;
+> +	else
+> +		tod_ns -= clockid_ns - timestamp;
+> +
+> +	sec  = (time_t) (tod_ns / NSEC_PER_SEC);
+> +	nsec = tod_ns - sec * NSEC_PER_SEC;
+> +
+> +	if (localtime_r(&sec, &ltime) == NULL) {
+> +		scnprintf(buf, buflen, "failed");
+> +	} else {
+> +		strftime(date, sizeof(date), DEFAULT_TOD_FMT, &ltime);
+> +
+> +		if (symbol_conf.nanosecs) {
+> +			snprintf(buf, buflen, "%s.%09lu", date, nsec);
+> +		} else {
+> +			snprintf(buf, buflen, "%s.%06lu",
+> +				 date, nsec / NSEC_PER_USEC);
+> +		}
+> +	}
+> +
+> +	return buf;
+> +}
+> +
+>  static int perf_sample__fprintf_iregs(struct perf_sample *sample,
+>  				      struct perf_event_attr *attr, FILE *fp)
+>  {
+> @@ -606,7 +689,8 @@ static int perf_sample__fprintf_uregs(struct perf_sample *sample,
+>  					 attr->sample_regs_user, fp);
+>  }
+>  
+> -static int perf_sample__fprintf_start(struct perf_sample *sample,
+> +static int perf_sample__fprintf_start(struct perf_script *script,
+> +				      struct perf_sample *sample,
+>  				      struct thread *thread,
+>  				      struct evsel *evsel,
+>  				      u32 type, FILE *fp)
+> @@ -615,6 +699,7 @@ static int perf_sample__fprintf_start(struct perf_sample *sample,
+>  	unsigned long secs;
+>  	unsigned long long nsecs;
+>  	int printed = 0;
+> +	char tstr[128];
+>  
+>  	if (PRINT_FIELD(COMM)) {
+>  		if (latency_format)
+> @@ -683,6 +768,11 @@ static int perf_sample__fprintf_start(struct perf_sample *sample,
+>  		printed += ret;
+>  	}
+>  
+> +	if (PRINT_FIELD(TOD)) {
+> +		tod_scnprintf(script, tstr, sizeof(tstr), sample->time);
+> +		printed += fprintf(fp, "%s ", tstr);
+> +	}
+> +
+>  	if (PRINT_FIELD(TIME)) {
+>  		u64 t = sample->time;
+>  		if (reltime) {
+> @@ -1667,31 +1757,6 @@ static int perf_sample__fprintf_synth(struct perf_sample *sample,
+>  	return 0;
+>  }
+>  
+> -struct perf_script {
+> -	struct perf_tool	tool;
+> -	struct perf_session	*session;
+> -	bool			show_task_events;
+> -	bool			show_mmap_events;
+> -	bool			show_switch_events;
+> -	bool			show_namespace_events;
+> -	bool			show_lost_events;
+> -	bool			show_round_events;
+> -	bool			show_bpf_events;
+> -	bool			show_cgroup_events;
+> -	bool			show_text_poke_events;
+> -	bool			allocated;
+> -	bool			per_event_dump;
+> -	bool			stitch_lbr;
+> -	struct evswitch		evswitch;
+> -	struct perf_cpu_map	*cpus;
+> -	struct perf_thread_map *threads;
+> -	int			name_width;
+> -	const char              *time_str;
+> -	struct perf_time_interval *ptime_range;
+> -	int			range_size;
+> -	int			range_num;
+> -};
+> -
+>  static int evlist__max_name_len(struct evlist *evlist)
+>  {
+>  	struct evsel *evsel;
+> @@ -1739,7 +1804,7 @@ static void script_print_metric(struct perf_stat_config *config __maybe_unused,
+>  
+>  	if (!fmt)
+>  		return;
+> -	perf_sample__fprintf_start(mctx->sample, mctx->thread, mctx->evsel,
+> +	perf_sample__fprintf_start(NULL, mctx->sample, mctx->thread, mctx->evsel,
+>  				   PERF_RECORD_SAMPLE, mctx->fp);
+>  	fputs("\tmetric: ", mctx->fp);
+>  	if (color)
+> @@ -1754,7 +1819,7 @@ static void script_new_line(struct perf_stat_config *config __maybe_unused,
+>  {
+>  	struct metric_ctx *mctx = ctx;
+>  
+> -	perf_sample__fprintf_start(mctx->sample, mctx->thread, mctx->evsel,
+> +	perf_sample__fprintf_start(NULL, mctx->sample, mctx->thread, mctx->evsel,
+>  				   PERF_RECORD_SAMPLE, mctx->fp);
+>  	fputs("\tmetric: ", mctx->fp);
+>  }
+> @@ -1865,7 +1930,7 @@ static void process_event(struct perf_script *script,
+>  
+>  	++es->samples;
+>  
+> -	perf_sample__fprintf_start(sample, thread, evsel,
+> +	perf_sample__fprintf_start(script, sample, thread, evsel,
+>  				   PERF_RECORD_SAMPLE, fp);
+>  
+>  	if (PRINT_FIELD(PERIOD))
+> @@ -2174,7 +2239,7 @@ static int print_event_with_time(struct perf_tool *tool,
+>  		thread = machine__findnew_thread(machine, pid, tid);
+>  
+>  	if (thread && evsel) {
+> -		perf_sample__fprintf_start(sample, thread, evsel,
+> +		perf_sample__fprintf_start(script, sample, thread, evsel,
+>  					   event->header.type, stdout);
+>  	}
+>  
+> @@ -3439,7 +3504,7 @@ int cmd_script(int argc, const char **argv)
+>  		     "Fields: comm,tid,pid,time,cpu,event,trace,ip,sym,dso,"
+>  		     "addr,symoff,srcline,period,iregs,uregs,brstack,"
+>  		     "brstacksym,flags,bpf-output,brstackinsn,brstackoff,"
+> -		     "callindent,insn,insnlen,synth,phys_addr,metric,misc,ipc",
+> +		     "callindent,insn,insnlen,synth,phys_addr,metric,misc,ipc,tod",
+>  		     parse_output_fields),
+>  	OPT_BOOLEAN('a', "all-cpus", &system_wide,
+>  		    "system-wide collection from all CPUs"),
 > -- 
 > 2.25.4
 > 
