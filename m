@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E05923DEF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA19623DF09
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728459AbgHFRfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50342 "EHLO
+        id S1730604AbgHFRga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729800AbgHFRfI (ORCPT
+        with ESMTP id S1729698AbgHFRfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:35:08 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9E1C00869A
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 08:18:04 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id 88so44339838wrh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 08:18:04 -0700 (PDT)
+        Thu, 6 Aug 2020 13:35:24 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BED4C0086A7
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 08:20:03 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id g19so36922114ejc.9
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 08:20:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=jkRzw9X+EX3L+3zQqU4QCdPigGYnW5BHQWzwy20q+e8=;
-        b=lphGR91Dylgt3QFHlqAdaFIzGY6qh//uTdh3Gt8Q4UNgsvc4vDubJq09lowrjCsZ0m
-         xO2ionmQp76zgqqgYilsGk6vpH4Y4K3NEkjQx2n08cRupiMTN3GqmLPynPhogb+tK46T
-         jmiRmWn0GxL5MgMeHlyifd9xXkxLl+9VpEji7YVXY0pGK61DzdVZk6MREGput6660kEv
-         xqgvecPaDHPD+W1sB+qdUWHtJMNvsMVwbeUjEgpzFCqVc4A3bq16lUvyrqOA9VdschWB
-         HsklC/TdtZbiZbmcw6e84F37nvZ2D0Ivy250/fRjYhc5rc+ZtevOBHAmUWa/iHv7k5ZU
-         Taig==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=27KOdDBMR58YvRnK7H5/nd9yUqjH+UuYcfpnQiwOOLU=;
+        b=tGrB7Z7WS0HHtWrS+RAu0IAYwU8Nad8rwMZdG73SY5x2ARE0d1FqXwWCLzD3UMrdlR
+         6Kn0kjJyU3Zbj6OubM+TRf7kg41JZspNfLxofrrUzUQMRrYpHgt6yi61+Rzw0TSxyySG
+         ZrV978lfm55ZcESwNGZp975asvMxzL4xk01lDpBkj9kuUKt1y4ZnLs/xyWsATvELhJk1
+         kFLFuZbHju979DVXXQ3lQhqftMpDMvL9oc++9T2qcgkhq/HPw08XX+JQDNIRTow6uAXN
+         WiVbdduH+x+EmynnvVmeE/Jlm8OcHRV5jln6i5lJFo17YjLsUFxNhJ1YjoX3Mjouet1b
+         4MZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=jkRzw9X+EX3L+3zQqU4QCdPigGYnW5BHQWzwy20q+e8=;
-        b=i9hRc2GsLt7WHgz6El7Fx15DeQGs7ND1FxcHszUW0rNgzoibfPE8zmuKAYlBtYHO5f
-         pqN0vsDtIGnkLa/OclDgY8enhwZ5Loj7FpZoDVp10IQV1MMDOVd57OsEpIpK8bSK3d0Y
-         USww3fPlr1AU0q0nwNvwQTAUbXzpMNXp2FibaRod5h2PBTxJg6ntLLEDTaBWoHC24iEW
-         DBQieO71BcgK5Knih4eK4yfT43F8SjLJOrcMx4A9Gwd8Q2f+Etp/BT2AkE8mphnyueMv
-         +LkVmGCRIEtSeEjf4V4fM7ijH73KiMIXmxhUNrxcnW1GVWmOiWRoxJCFUlBZEhqZDS6p
-         q7Sg==
-X-Gm-Message-State: AOAM5326BLQQKMgx5NfX2Z5qf/Xuxak+DdhX6q7G23F25OiFvkTRYJ7X
-        tbxogiO018ZdNhcQx38974lEvAl5iQBAeHn5yM4=
-X-Google-Smtp-Source: ABdhPJyD2z7f4Yny3OFxURxZZtM4wNQMzzb9nZPaM0QjOw5421qzw6E7SjrXdEo/61+ecBvMmPdkw/kMRDWoOIWBSUQ=
-X-Received: by 2002:adf:9487:: with SMTP id 7mr7551172wrr.133.1596727083242;
- Thu, 06 Aug 2020 08:18:03 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=27KOdDBMR58YvRnK7H5/nd9yUqjH+UuYcfpnQiwOOLU=;
+        b=VYimEth6TiqnsnInDDBRwXzdmZIvJFUwBGOH1wa/DLtnZ01l/rMhfatTMzPX77/W5x
+         1zpGwSrTmuaw8w/dbWIZPH1yoi3sjTUOJ5cqvEzgvA4j+MhWDwo/EbBCN+WK1k0+7/SJ
+         +OQVTIs5gxba/FnuATfMZWc44qGLwVrcuGGd5yyCSVxJ6hObV0q4GlGF8BazVb2hruxM
+         A6AiIfGTS5LSKqf5H1xSPrb9uuvi+wy0/wsO9vwXD6WOWdTCrmpBUJ0hfwHhIOp4/Sjd
+         E82r1qGN4wFGmSTIFX011YJDv/dHTtDMPwd7zH+KKG1z9HQ5vHH9blMwSFVPgIPBXF60
+         q70Q==
+X-Gm-Message-State: AOAM531DjbEtsbAaNQlAv/xe8vLLEJ8rre3XUetxa558Nys2skuMl4vQ
+        vtA9S0AWiiLEdig4PauDj8jPwvPhaHZTL9dlXzHd7w==
+X-Google-Smtp-Source: ABdhPJzrlkvHWWpq4WM0aG15rib8qGzmbNy1T+8TCAaz/ASsMen1gmJIqTYuiQwAEJfL8+D0y5EKRfUDgIokuAOiI0I=
+X-Received: by 2002:a17:906:38d8:: with SMTP id r24mr4667542ejd.341.1596727202027;
+ Thu, 06 Aug 2020 08:20:02 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:adf:94c6:0:0:0:0:0 with HTTP; Thu, 6 Aug 2020 08:18:02 -0700 (PDT)
-Reply-To: mrs.sophia202@list.ru
-From:   "Mrs. Sophia Robin" <mrs.aishamuammar.gaddafi@gmail.com>
-Date:   Thu, 6 Aug 2020 08:18:02 -0700
-Message-ID: <CAKDKtgz-UU_Bbz0mkLq5nA3BU6FmBBtU1sJpWnUg7ccNr7sDRA@mail.gmail.com>
-Subject: Hello My Dearest
-To:     undisclosed-recipients:;
+References: <159630256804.3143511.8894023468833792004.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20200803094257.GA23458@shao2-debian> <20200806133452.GA2077191@gmail.com>
+In-Reply-To: <20200806133452.GA2077191@gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 6 Aug 2020 08:19:52 -0700
+Message-ID: <CAPcyv4hS7K0Arrd+C0LhjrFH=yGJf3g55_WkHOET4z58AcWrJw@mail.gmail.com>
+Subject: Re: [x86/copy_mc] a0ac629ebe: fio.read_iops -43.3% regression
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        X86 ML <x86@kernel.org>, stable <stable@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Erwin Tsaur <erwin.tsaur@intel.com>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        0day robot <lkp@intel.com>, lkp@lists.01.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello My Dearest
+On Thu, Aug 6, 2020 at 6:35 AM Ingo Molnar <mingo@kernel.org> wrote:
+>
+>
+> * kernel test robot <rong.a.chen@intel.com> wrote:
+>
+> > Greeting,
+> >
+> > FYI, we noticed a -43.3% regression of fio.read_iops due to commit:
+> >
+> >
+> > commit: a0ac629ebe7b3d248cb93807782a00d9142fdb98 ("x86/copy_mc: Introduce copy_mc_generic()")
+> > url: https://github.com/0day-ci/linux/commits/Dan-Williams/Renovate-memcpy_mcsafe-with-copy_mc_to_-user-kernel/20200802-014046
+> >
+> >
+> > in testcase: fio-basic
+> > on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 256G memory
+> > with following parameters:
+>
+> So this performance regression, if it isn't a spurious result, looks
+> concerning. Is this expected?
 
-Please I appeal to you to exercise a little patience and read through
-my mail carefully, I am contacting you personally for investment
-assistance and a long term business relationship in your Country.
-
-I am Mrs. Sophia Robin a citizen of the united state of America; I
-work in HSBC Bank in Milan Italy as a Telex Manager charge of wire
-transfer and online banking department.
-
-I am contacting you for an important and  urgent business transaction,
-I  want the bank to transfer the money left by Dr. Cheng Chao,  A
-Chinese  Politicians who  died, March 17th 2020 without any trace of
-his family member,  he used our bank to launder money overseas through
-the help of their Political advisers. And most of the funds which they
-transferred out of the shores of China were gold and oil money that
-was supposed to have been used to develop the continent.
-
-Can you invest this money and also help the poor? The amount value at
-($15.5million Dollars), left in his account still unclaimed, if you
-know that you are capable to invest this fund into any  profitable
-business in your country kindly send me your details information as
-listed below to enable me draft you an application form of claim along
-with the deposit certificate which you are going to fill with your
-bank account detail necessary and contact the HSBC Bank in Italy  for
-immediate transfer of the Amounted sum into your bank account direct.
-
-Percentage share will be 60, for me/ 40, for you.
-
-(1) Your full name..................................................
-(2) Your address....................................................
-(3) Your Nationality.................................................
-(4) Your Age / Sex.....................................................
-(5) Your Occupation............................................
-(6) Your marital status......................................
-(7) Your direct telephone number..................
-(8) your ID Card.......................................
-
-Thanks with my best regards.
-Mrs. Sophia Robin
-Telex / Online Banking Manager
-Milan Italy  (H.S.B.C)
+This is not expected and I think delays these patches until I'm back
+from leave in a few weeks. I know that we might lose some inlining
+effect due to replacing native memcpy, but I did not expect it would
+have an impact like this. In my testing I was seeing a performance
+improvement from replacing the careful / open-coded copy with rep;
+mov;, which increases the surprise of this result.
