@@ -2,126 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B02C23D875
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A59423D8A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725927AbgHFJTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729074AbgHFJS4 (ORCPT
-        <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:18:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8EBC061575
-        for <Linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 02:18:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HBfnhIZeMcT664G81tfZBhokhfWHpa8MvvKA8GAKnW4=; b=JdRQpYBXtol5csn+jTgJXmQMuC
-        Rs9h+TuA6T61PEr5h3BLllrn0OLlKXAcDPGljedtzehj0V9Ib14nNX+O242NSr+7ppICimAwMl6Cp
-        SElRBKTxlvGzzzm6VjBDBVBSWBB9HBYeaoZ9w3igbe9Gwtx8ldr3+VpIk1FNF2ww0hRoQuIpUZwXT
-        V+SekrLBrpuM8VUhukWogLMMdge1r7Hk3ctdLHjKtcYK4bukzZzHXUOvBTF3yNUoTea5XUQzVkhaC
-        3q4JIqbp4ahtvWW6/0I77cqPifyI6EOHxPR9UQPBKJtVLXsJ1thFo9iL5rr3Vy2VLyozx5wN17PMu
-        vMTFeTqg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k3c2e-0000GO-Ej; Thu, 06 Aug 2020 09:18:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 92C25300446;
-        Thu,  6 Aug 2020 11:18:27 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7A50D220F91BB; Thu,  6 Aug 2020 11:18:27 +0200 (CEST)
-Date:   Thu, 6 Aug 2020 11:18:27 +0200
-From:   peterz@infradead.org
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     mingo@redhat.com, oleg@redhat.com, acme@kernel.org,
-        jolsa@kernel.org, Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        alexander.shishkin@linux.intel.com, mark.rutland@arm.com
-Subject: Re: [PATCH v1 2/2] perf/core: Fake regs for leaked kernel samples
-Message-ID: <20200806091827.GY2674@hirez.programming.kicks-ass.net>
-References: <20200731025617.16243-1-yao.jin@linux.intel.com>
- <20200731025617.16243-2-yao.jin@linux.intel.com>
- <20200804114900.GI2657@hirez.programming.kicks-ass.net>
- <4c958d61-11a7-9f3e-9e7d-d733270144a1@linux.intel.com>
- <20200805124454.GP2657@hirez.programming.kicks-ass.net>
- <797aa4de-c618-f340-ad7b-cef38c96b035@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <797aa4de-c618-f340-ad7b-cef38c96b035@linux.intel.com>
+        id S1729154AbgHFJXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:23:47 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:12035 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729037AbgHFJXE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 05:23:04 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200806092302epoutp019ba1a05dd9d2e816a13629f032080d1a~oo3MLUf1e0308503085epoutp011
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:23:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200806092302epoutp019ba1a05dd9d2e816a13629f032080d1a~oo3MLUf1e0308503085epoutp011
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1596705782;
+        bh=bQeZ6Y+7CBCceoyI2BeoMjkmmZIPFsL4/CyH5T7S6rs=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=DQdj1tjc1Bcj4mwYPgrp2cS3/U5fWtbpWPa6K0iTF89LyuqJh7QJ+yd8JrTDBJ4hx
+         Iz9wucguoTIwv8TofAlAwsuudxqzAur3xgc6ldD21wclCAPLG63kLavD8hUhiD8+xq
+         ibUSroAqHu6GRyV2iVAxg1vKk1Gz7PJoQtQxxD2E=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p4.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200806092301epcas1p43cb0a7feb28c09dc05efaa3e7564085e~oo3LpKc_D2694626946epcas1p4P;
+        Thu,  6 Aug 2020 09:23:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [PATCH v8 4/4] scsi: ufs: Prepare HPB read for cached sub-region
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <336371513.41596705485601.JavaMail.epsvc@epcpadp2>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01596705781817.JavaMail.epsvc@epcpadp2>
+Date:   Thu, 06 Aug 2020 18:18:41 +0900
+X-CMS-MailID: 20200806091841epcms2p355597c0048155035eea805fd0951abd5
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d
+References: <336371513.41596705485601.JavaMail.epsvc@epcpadp2>
+        <231786897.01596705302142.JavaMail.epsvc@epcpadp1>
+        <231786897.01596705001840.JavaMail.epsvc@epcpadp1>
+        <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
+        <CGME20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d@epcms2p3>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 10:26:29AM +0800, Jin, Yao wrote:
+This patch changes the read I/O to the HPB read I/O.
 
-> > +static struct pt_regs *sanitize_sample_regs(struct perf_event *event, struct pt_regs *regs)
-> > +{
-> > +	struct pt_regs *sample_regs = regs;
-> > +
-> > +	/* user only */
-> > +	if (!event->attr.exclude_kernel || !event->attr.exclude_hv ||
-> > +	    !event->attr.exclude_host   || !event->attr.exclude_guest)
-> > +		return sample_regs;
-> > +
-> 
-> Is this condition correct?
-> 
-> Say counting user event on host, exclude_kernel = 1 and exclude_host = 0. It
-> will go "return sample_regs" path.
+If the logical address of the read I/O belongs to active sub-region, the
+HPB driver modifies the read I/O command to HPB read. It modifies the UPIU
+command of UFS instead of modifying the existing SCSI command.
 
-I'm not sure, I'm terminally confused on virt stuff.
+In the HPB version 1.0, the maximum read I/O size that can be converted to
+HPB read is 4KB.
 
-Suppose we have nested virt:
+The dirty map of the active sub-region prevents an incorrect HPB read that
+has stale physical page number which is updated by previous write I/O.
 
-	L0-hv
-	|
-	G0/L1-hv
-	   |
-	   G1
+Tested-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+---
+ drivers/scsi/ufs/ufshpb.c | 227 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 227 insertions(+)
 
-And we're running in G0, then:
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index 25cd7153f102..fe24b2277621 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -46,6 +46,22 @@ static inline int ufshpb_is_valid_srgn(struct ufshpb_region *rgn,
+ 		srgn->srgn_state == HPB_SRGN_VALID;
+ }
+ 
++static inline bool ufshpb_is_read_cmd(struct scsi_cmnd *cmd)
++{
++	return req_op(cmd->request) == REQ_OP_READ;
++}
++
++static inline bool ufshpb_is_write_discard_cmd(struct scsi_cmnd *cmd)
++{
++	return op_is_write(req_op(cmd->request)) ||
++	       op_is_discard(req_op(cmd->request));
++}
++
++static inline bool ufshpb_is_support_chunk(int transfer_len)
++{
++	return transfer_len <= HPB_MULTI_CHUNK_HIGH;
++}
++
+ static inline bool ufshpb_is_general_lun(int lun)
+ {
+ 	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
+@@ -112,8 +128,219 @@ static inline void ufshpb_set_state(struct ufshpb_lu *hpb, int state)
+ 	atomic_set(&hpb->hpb_state, state);
+ }
+ 
++static inline u32 ufshpb_get_lpn(struct scsi_cmnd *cmnd)
++{
++	return blk_rq_pos(cmnd->request) >>
++		(ilog2(cmnd->device->sector_size) - 9);
++}
++
++static inline unsigned int ufshpb_get_len(struct scsi_cmnd *cmnd)
++{
++	return blk_rq_sectors(cmnd->request) >>
++		(ilog2(cmnd->device->sector_size) - 9);
++}
++
++static void ufshpb_set_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
++			     int srgn_idx, int srgn_offset, int cnt)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	int set_bit_len;
++	int bitmap_len = hpb->entries_per_srgn;
++
++next_srgn:
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	if ((srgn_offset + cnt) > bitmap_len)
++		set_bit_len = bitmap_len - srgn_offset;
++	else
++		set_bit_len = cnt;
++
++	if (rgn->rgn_state != HPB_RGN_INACTIVE &&
++	    srgn->srgn_state == HPB_SRGN_VALID)
++		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
++
++	srgn_offset = 0;
++	if (++srgn_idx == hpb->srgns_per_rgn) {
++		srgn_idx = 0;
++		rgn_idx++;
++	}
++
++	cnt -= set_bit_len;
++	if (cnt > 0)
++		goto next_srgn;
++
++	WARN_ON(cnt < 0);
++}
++
++static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
++				   int srgn_idx, int srgn_offset, int cnt)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	int bitmap_len = hpb->entries_per_srgn;
++	int bit_len;
++
++next_srgn:
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	if (!ufshpb_is_valid_srgn(rgn, srgn))
++		return true;
++
++	/*
++	 * If the region state is active, mctx must be allocated.
++	 * In this case, check whether the region is evicted or
++	 * mctx allcation fail.
++	 */
++	WARN_ON(!srgn->mctx);
++
++	if ((srgn_offset + cnt) > bitmap_len)
++		bit_len = bitmap_len - srgn_offset;
++	else
++		bit_len = cnt;
++
++	if (find_next_bit(srgn->mctx->ppn_dirty,
++			  bit_len, srgn_offset) >= srgn_offset)
++		return true;
++
++	srgn_offset = 0;
++	if (++srgn_idx == hpb->srgns_per_rgn) {
++		srgn_idx = 0;
++		rgn_idx++;
++	}
++
++	cnt -= bit_len;
++	if (cnt > 0)
++		goto next_srgn;
++
++	return false;
++}
++
++static u64 ufshpb_get_ppn(struct ufshpb_lu *hpb,
++			  struct ufshpb_map_ctx *mctx, int pos, int *error)
++{
++	u64 *ppn_table;
++	struct page *page;
++	int index, offset;
++
++	index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
++	offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
++
++	page = mctx->m_page[index];
++	if (unlikely(!page)) {
++		*error = -ENOMEM;
++		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
++			"error. cannot find page in mctx\n");
++		return 0;
++	}
++
++	ppn_table = page_address(page);
++	if (unlikely(!ppn_table)) {
++		*error = -ENOMEM;
++		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
++			"error. cannot get ppn_table\n");
++		return 0;
++	}
++
++	return ppn_table[offset];
++}
++
++static inline void
++ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int *rgn_idx,
++			int *srgn_idx, int *offset)
++{
++	int rgn_offset;
++
++	*rgn_idx = lpn >> hpb->entries_per_rgn_shift;
++	rgn_offset = lpn & hpb->entries_per_rgn_mask;
++	*srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
++	*offset = rgn_offset & hpb->entries_per_srgn_mask;
++}
++
++static void
++ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb *lrbp,
++				  u32 lpn, u64 ppn,  unsigned int transfer_len)
++{
++	unsigned char *cdb = lrbp->ucd_req_ptr->sc.cdb;
++
++	cdb[0] = UFSHPB_READ;
++
++	put_unaligned_be64(ppn, &cdb[6]);
++	cdb[14] = transfer_len;
++}
++
++/* routine : READ10 -> HPB_READ  */
+ void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+ {
++	struct ufshpb_lu *hpb;
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	struct scsi_cmnd *cmd = lrbp->cmd;
++	u32 lpn;
++	u64 ppn;
++	unsigned long flags;
++	int transfer_len, rgn_idx, srgn_idx, srgn_offset;
++	int err = 0;
++
++	hpb = ufshpb_get_hpb_data(cmd);
++	if (!hpb)
++		return;
++
++	WARN_ON(hpb->lun != cmd->device->lun);
++	if (!ufshpb_is_write_discard_cmd(cmd) &&
++	    !ufshpb_is_read_cmd(cmd))
++		return;
++
++	transfer_len = ufshpb_get_len(cmd);
++	if (unlikely(!transfer_len))
++		return;
++
++	lpn = ufshpb_get_lpn(cmd);
++	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	/* If command type is WRITE or DISCARD, set bitmap as drity */
++	if (ufshpb_is_write_discard_cmd(cmd)) {
++		spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
++				 transfer_len);
++		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++		return;
++	}
++
++	WARN_ON(!ufshpb_is_read_cmd(cmd));
++
++	if (!ufshpb_is_support_chunk(transfer_len))
++		return;
++
++	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
++				   transfer_len)) {
++		atomic_inc(&hpb->stats.miss_cnt);
++		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++		return;
++	}
++
++	ppn = ufshpb_get_ppn(hpb, srgn->mctx, srgn_offset, &err);
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++	if (unlikely(err)) {
++		/*
++		 * In this case, the region state is active,
++		 * but the ppn table is not allocated.
++		 * Make sure that ppn table must be allocated on
++		 * active state.
++		 */
++		WARN_ON(true);
++		dev_err(hba->dev, "ufshpb_get_ppn failed. err %d\n", err);
++		return;
++	}
++
++	ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
++
++	atomic_inc(&hpb->stats.hit_cnt);
+ }
+ 
+ static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
+-- 
+2.17.1
 
- - 'exclude_hv' would exclude L0 events
- - 'exclude_host' would ... exclude L1-hv events?
- - 'exclude_guest' would ... exclude G1 events?
 
-Then the next question is, if G0 is a host, does the L1-hv run in
-G0 userspace or G0 kernel space?
-
-I was assuming G0 userspace would not include anything L1 (kvm is a
-kernel module after all), but what do I know.
-
-> > @@ -11609,7 +11636,8 @@ SYSCALL_DEFINE5(perf_event_open,
-> >   	if (err)
-> >   		return err;
-> > -	if (!attr.exclude_kernel) {
-> > +	if (!attr.exclude_kernel || !attr.exclude_callchain_kernel ||
-> > +	    !attr.exclude_hv || !attr.exclude_host || !attr.exclude_guest) {
-> >   		err = perf_allow_kernel(&attr);
-> >   		if (err)
-> >   			return err;
-> > 
-> 
-> I can understand the conditions "!attr.exclude_kernel || !attr.exclude_callchain_kernel".
-> 
-> But I'm not very sure about the "!attr.exclude_hv || !attr.exclude_host || !attr.exclude_guest".
-
-Well, I'm very sure G0 userspace should never see L0 or G1 state, so
-exclude_hv and exclude_guest had better be true.
-
-> On host, exclude_hv = 1, exclude_guest = 1 and exclude_host = 0, right?
-
-Same as above, is G0 host state G0 userspace?
-
-> So even exclude_kernel = 1 but exclude_host = 0, we will still go
-> perf_allow_kernel path. Please correct me if my understanding is wrong.
-
-Yes, because with those permission checks in place it means you have
-permission to see kernel bits.
