@@ -2,169 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A62023E383
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 23:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A33223E396
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 23:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726128AbgHFV2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 17:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgHFV2y (ORCPT
+        id S1726238AbgHFVoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 17:44:25 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:51594 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726050AbgHFVoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 17:28:54 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208F6C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 14:28:54 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id u10so42815plr.7
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 14:28:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsukata-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2lJRJTwvENpDAW5AwuYPZPT385WPYs9MEp7IL4/DPVc=;
-        b=XnJKUdprMfzxCjaz5Mp+ypgnNPEmyUdmYP2bZrClNW5XZgBhDpcwgX7CiSIc7Qn+LY
-         cHcpL1vCehuqd9WlCMzUDzq0Cc7sYpWlSF8+aQwhqDgFn/XiwP2D6f8KMKXgfZtYVr6l
-         WfG+qVcFeEIKkKT0aWXQ5ASQpxOVI+nWWGbO9+/scatNDkh+eAOsojbrc6jh19Cxir0/
-         2+EonkdyKVwJeN7Z3h0WRSEWiZ85uGfxy+0WGDz72dhhSY0/B2Sjen9pY7aicMMhJV8T
-         6v8xz0o3yqJmGEGHrHehcngf3c9XxDHuFwErg/qKdM792rcJMa44YUQfXE4SviUqa7FW
-         dhMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=2lJRJTwvENpDAW5AwuYPZPT385WPYs9MEp7IL4/DPVc=;
-        b=KTdcQKO14tYd2sytKZlqnaHxGNQpQKWtriHrKVXjvVzBq3j7sOxaZRA4FOuVVSRqJ0
-         j2aa/CRx94xpyynDQB4YdrhImTXVa0XS+g+yB4GOy5rH4svgMZpBMFQfIaZ47B0LYb4f
-         juzpKFspeLuNH56ZxYTY5+NOR48R3Tl/ZOvjhTKJM2vJqGkWQ/6xhEVzBTVU+eHShALe
-         cjxJf2212rFEDZYMKwlfCtw6tAmsn4MEeoQeOi2eYb+A4HaeC9IEhOLJs/Tw/INBkYeD
-         COZ8LGgsLdb9u5kILZ948eTWjh7x+Mpq7MvuoK8jjJP81MZXQ+vpk8/4Xj1Iyvjll3CV
-         AjQg==
-X-Gm-Message-State: AOAM533TaO1HecknLO3Y1uP4vH/zCLo5SbCsADYqUEhAxJ6xcg7Srn6D
-        KbmHFmEIFEICsRthUb3GPEnxLRDFujqNfg==
-X-Google-Smtp-Source: ABdhPJwy+rJvKCRaUwOO4BKsqLhD4Va9EKI3SIzQOljlTakdytgaT2CmeZym7V77h+qQyX2E50LMjg==
-X-Received: by 2002:a17:90a:ff85:: with SMTP id hf5mr10028161pjb.79.1596749332986;
-        Thu, 06 Aug 2020 14:28:52 -0700 (PDT)
-Received: from Etsukata.local (p14232-ipngn10801marunouchi.tokyo.ocn.ne.jp. [122.24.13.232])
-        by smtp.gmail.com with ESMTPSA id 207sm9334233pfz.203.2020.08.06.14.28.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 06 Aug 2020 14:28:52 -0700 (PDT)
-Subject: Re: [PATCH] xfs: Fix UBSAN null-ptr-deref in xfs_sysfs_init
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200806150527.2283029-1-devel@etsukata.com>
- <20200806151331.GD6107@magnolia>
-From:   Eiichi Tsukata <devel@etsukata.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=devel@etsukata.com; keydata=
- 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
-Message-ID: <953af7c9-73bb-ccc4-bb69-083b585d1dd3@etsukata.com>
-Date:   Fri, 7 Aug 2020 06:28:49 +0900
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:60.0)
- Gecko/20100101 Thunderbird/60.9.1
-MIME-Version: 1.0
-In-Reply-To: <20200806151331.GD6107@magnolia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 6 Aug 2020 17:44:23 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076EgE5q153796;
+        Thu, 6 Aug 2020 14:45:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
+ bh=obaVmbgBXXm2urNWlyNH2OLW5Z9/AQRdX/v3/ftgK3I=;
+ b=s1LhiUzq1dgyKH3qyoMLnYz3ie+BDgWEI4dISFmv/s8DaVMMcGuguvxcwBu7siJ+L6FX
+ zgSpw1/o5BGY1SW2MQOmRwMf7+iBZp2/LIP72VAY+adyjZaooootLFHUudgSbWlooXyo
+ hy7uvsRMJ4w1aTjyl/M48sHkjXxMDBJh+8/u00/1qMPlqYP7hDpN7c9lxYrpAhUW9Ro2
+ x/Y1KMqqYEIydrEN8fR983yRhCpKJ5SA33vbdc2M1sOwncxDq57xtxUNmfhtlLvbOzZK
+ CaV/2gNf1zktGy1jAaGaqJScVALXs0V2lwznAchVKkNhEm+1FZZ69j/HKMWJ0pHeOg34 hQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 32r6ep3dj0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 06 Aug 2020 14:45:05 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076EbpDM077357;
+        Thu, 6 Aug 2020 14:43:04 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 32r6cvhq5k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 Aug 2020 14:43:04 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 076Eh3fK006113;
+        Thu, 6 Aug 2020 14:43:03 GMT
+Received: from localhost.uk.oracle.com (/10.175.182.235)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 06 Aug 2020 07:43:03 -0700
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com, yhs@fb.com
+Cc:     linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
+        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
+        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
+        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
+        rostedt@goodmis.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [RFC PATCH bpf-next 4/4] selftests/bpf: add bpf_trace_btf helper tests
+Date:   Thu,  6 Aug 2020 15:42:25 +0100
+Message-Id: <1596724945-22859-5-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1596724945-22859-1-git-send-email-alan.maguire@oracle.com>
+References: <1596724945-22859-1-git-send-email-alan.maguire@oracle.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008060104
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ malwarescore=0 clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0
+ impostorscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008060105
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks, I sent it to linux-xfs ML. I had some trouble with gmail server.
+Basic tests verifying various flag combinations for bpf_trace_btf()
+using a tp_btf program to trace skb data.
 
-Eiichi
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ tools/testing/selftests/bpf/prog_tests/trace_btf.c | 45 ++++++++++++++++++++++
+ .../selftests/bpf/progs/netif_receive_skb.c        | 43 +++++++++++++++++++++
+ 2 files changed, 88 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_btf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/netif_receive_skb.c
 
-On 2020/08/07 0:13, Darrick J. Wong wrote:
-> On Fri, Aug 07, 2020 at 12:05:27AM +0900, Eiichi Tsukata wrote:
->> If xfs_sysfs_init is called with parent_kobj == NULL, UBSAN
->> shows the following warning:
-> 
-> This needs to be sent to the xfs mailing list, per get_maintainers.pl.
-> 
-> --D
-> 
->>   UBSAN: null-ptr-deref in ./fs/xfs/xfs_sysfs.h:37:23
->>   member access within null pointer of type 'struct xfs_kobj'
->>   Call Trace:
->>    dump_stack+0x10e/0x195
->>    ubsan_type_mismatch_common+0x241/0x280
->>    __ubsan_handle_type_mismatch_v1+0x32/0x40
->>    init_xfs_fs+0x12b/0x28f
->>    do_one_initcall+0xdd/0x1d0
->>    do_initcall_level+0x151/0x1b6
->>    do_initcalls+0x50/0x8f
->>    do_basic_setup+0x29/0x2b
->>    kernel_init_freeable+0x19f/0x20b
->>    kernel_init+0x11/0x1e0
->>    ret_from_fork+0x22/0x30
->>
->> Fix it by checking parent_kobj before the code accesses its member.
->>
->> Signed-off-by: Eiichi Tsukata <devel@etsukata.com>
->> ---
->>  fs/xfs/xfs_sysfs.h | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/xfs/xfs_sysfs.h b/fs/xfs/xfs_sysfs.h
->> index e9f810fc6731..aad67dc4ab5b 100644
->> --- a/fs/xfs/xfs_sysfs.h
->> +++ b/fs/xfs/xfs_sysfs.h
->> @@ -32,9 +32,9 @@ xfs_sysfs_init(
->>  	struct xfs_kobj		*parent_kobj,
->>  	const char		*name)
->>  {
->> +	struct kobject *parent = parent_kobj ? &parent_kobj->kobject : NULL;
->>  	init_completion(&kobj->complete);
->> -	return kobject_init_and_add(&kobj->kobject, ktype,
->> -				    &parent_kobj->kobject, "%s", name);
->> +	return kobject_init_and_add(&kobj->kobject, ktype, parent, "%s", name);
->>  }
->>  
->>  static inline void
->> -- 
->> 2.26.2
->>
+diff --git a/tools/testing/selftests/bpf/prog_tests/trace_btf.c b/tools/testing/selftests/bpf/prog_tests/trace_btf.c
+new file mode 100644
+index 0000000..e64b69d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/trace_btf.c
+@@ -0,0 +1,45 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
++
++#include "netif_receive_skb.skel.h"
++
++void test_trace_btf(void)
++{
++	struct netif_receive_skb *skel;
++	struct netif_receive_skb__bss *bss;
++	int err, duration = 0;
++
++	skel = netif_receive_skb__open();
++	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
++		return;
++
++	err = netif_receive_skb__load(skel);
++	if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
++		goto cleanup;
++
++	bss = skel->bss;
++
++	err = netif_receive_skb__attach(skel);
++	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
++		goto cleanup;
++
++	/* generate receive event */
++	system("ping -c 10 127.0.0.1");
++
++	/*
++	 * Make sure netif_receive_skb program was triggered
++	 * and it set expected return values from bpf_trace_printk()s
++	 * and all tests ran.
++	 */
++	if (CHECK(bss->ret <= 0,
++		  "bpf_trace_btf: got return value",
++		  "ret <= 0 %ld test %d\n", bss->ret, bss->num_subtests))
++		goto cleanup;
++
++	CHECK(bss->num_subtests != bss->ran_subtests, "check all subtests ran",
++	      "only ran %d of %d tests\n", bss->num_subtests,
++	      bss->ran_subtests);
++
++cleanup:
++	netif_receive_skb__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+new file mode 100644
+index 0000000..cab764e
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2020, Oracle and/or its affiliates. */
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++long ret = 0;
++int num_subtests = 0;
++int ran_subtests = 0;
++
++#define CHECK_TRACE(_p, flags)						 \
++	do {								 \
++		++num_subtests;						 \
++		if (ret >= 0) {						 \
++			++ran_subtests;					 \
++			ret = bpf_trace_btf(_p, sizeof(*(_p)), 0, flags);\
++		}							 \
++	} while (0)
++
++/* TRACE_EVENT(netif_receive_skb,
++ *	TP_PROTO(struct sk_buff *skb),
++ */
++SEC("tp_btf/netif_receive_skb")
++int BPF_PROG(trace_netif_receive_skb, struct sk_buff *skb)
++{
++	static const char skb_type[] = "struct sk_buff";
++	static struct btf_ptr p = { };
++
++	p.ptr = skb;
++	p.type = skb_type;
++
++	CHECK_TRACE(&p, 0);
++	CHECK_TRACE(&p, BTF_TRACE_F_COMPACT);
++	CHECK_TRACE(&p, BTF_TRACE_F_NONAME);
++	CHECK_TRACE(&p, BTF_TRACE_F_PTR_RAW);
++	CHECK_TRACE(&p, BTF_TRACE_F_ZERO);
++	CHECK_TRACE(&p, BTF_TRACE_F_COMPACT | BTF_TRACE_F_NONAME |
++		    BTF_TRACE_F_PTR_RAW | BTF_TRACE_F_ZERO);
++
++	return 0;
++}
+-- 
+1.8.3.1
+
