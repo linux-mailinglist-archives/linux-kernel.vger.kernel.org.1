@@ -2,89 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3742823DCB3
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA8023DC8E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 18:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729848AbgHFQzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 12:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44068 "EHLO
+        id S1729695AbgHFQxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 12:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729759AbgHFQzU (ORCPT
+        with ESMTP id S1726420AbgHFQu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:55:20 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7F8C0A889D;
-        Thu,  6 Aug 2020 07:50:05 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id i80so26235480lfi.13;
-        Thu, 06 Aug 2020 07:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Q+Uq8k5re7cUqp6WIZR8xEDOrcjWzDvNdEqOcxf2ZGk=;
-        b=YSuw0JUD4BI9mDqWniQI7oBkON85+Hily9832Miaihip0RlifaExWnpi46k72Ylx/0
-         j8dBhGbQtkX23MvMAlBA1VcS6Er1XNDPV8EThtSUBYVSUhGp9LIWaD3ne1uwJiyqBXw1
-         D5nGpPcknk3s4yzbaepxnRvrXbtI3MQYlZhj+YMBawEoaiPHRu5D5fDv0ORa5GEPxNy+
-         TEPhCrzev0zQKsSKVx4MVxamstlMxS7DGaUkHQbmcfS5aju9oQpDxX9yxs81BgmeUJUc
-         lT2FfL7PXRm8I8Im19vcypzAr8t0DyX0QiTF28F1RqyMcZybK2R5+weOFDGowmeYHxJn
-         NusQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Q+Uq8k5re7cUqp6WIZR8xEDOrcjWzDvNdEqOcxf2ZGk=;
-        b=AKt7yYQTc0AJTJrtAuxJ0IyyhOBvkwbCfuwP/EFdLmYnvnQmr9FE7hv/fTmZGGIyWL
-         qvDfEyvbkzHFEcE5UlItPdM5o7Mz2Vj6LgOQIo/EVvUfLWjqnCm2HlWSvBHTIMM4kgcz
-         VNmFhH9mvw2z/9X3UEe/OVwF7aQjd8Z3dT3GdkqonHtUKR5HDKtpeFMGIlG254R7zQES
-         /icejXIVDAxy2lbbQQk6FJxtYM97jLfydzQ5mQv1d/onZkltegY7ipQFudFX6hPVl1Oa
-         g/Y+yfVhIMkvw6QLWa743AvxAjjZBo9xE5pePbHwVilzMHxEV7yrJ7dHdxj9B+iPdl3M
-         ssjw==
-X-Gm-Message-State: AOAM530pM2j2Bg5TwrfrypyWNnkzDvp+0qe/EN1MX8voytv2hghEnHCu
-        QD/unB4/fO6lZni3VIDDf1w=
-X-Google-Smtp-Source: ABdhPJzWUE2bNkTWRtmo+gsMb7ug+grnXRR4hPLQdhUh80mdWnmTJ62sNdD6tPJa0sgHU3CrS+mq1Q==
-X-Received: by 2002:a19:457:: with SMTP id 84mr4141422lfe.191.1596725401282;
-        Thu, 06 Aug 2020 07:50:01 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-41-50.dynamic.spd-mgts.ru. [94.29.41.50])
-        by smtp.googlemail.com with ESMTPSA id a16sm2739927ljj.108.2020.08.06.07.49.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 07:50:00 -0700 (PDT)
-Subject: Re: [Patch v2 2/4] dmaengine: tegra: Add Tegra GPC DMA driver
-To:     Rajesh Gumasta <rgumasta@nvidia.com>, ldewangan@nvidia.com,
-        jonathanh@nvidia.com, vkoul@kernel.org, dan.j.williams@intel.com,
-        thierry.reding@gmail.com, p.zabel@pengutronix.de,
-        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kyarlagadda@nvidia.com, Pavan Kunapuli <pkunapuli@nvidia.com>
-References: <1596699006-9934-1-git-send-email-rgumasta@nvidia.com>
- <1596699006-9934-3-git-send-email-rgumasta@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <93b20bf7-1cb8-c8cf-06ef-1c15b7ce7ff2@gmail.com>
-Date:   Thu, 6 Aug 2020 17:49:59 +0300
+        Thu, 6 Aug 2020 12:50:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8720C0A889F;
+        Thu,  6 Aug 2020 07:50:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=C7mDjirUH0CxtHZlI1BoAJQsb/U9YG0YsZtlAVvm1Qw=; b=rcU+IgX43aspgYAYN1zcfhG3fV
+        h2u5zd+2/s8BzvboULXvhysrHIDIYXzV2x4O6w2VIcm+jPfO9GdmAUoXYpAj1fcPPFrBFEYpVmeXp
+        Tgcg1bJpF3lBBOf3LQElHVvDqGxer7ejCE1k8eU8teIEmQLrF+uDU0O9rPHO9HdsVznnxfC65lQ/a
+        q3QHnkKDV7iUNUrGuSgzYW1Z2f69xzrPg7sESW/jmWlBfMYYcN/fWPZSYTA9GARiB+daxyvQvVPu8
+        JHgKyKWg9iVjpyGstyox1cLo1rVj1aGAZ4lCbi0mYVqcTUz0LosgHtrY7WZ4WliBUIMRFHScDRf/S
+        ry+ogeCg==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3hDo-0006fy-M6; Thu, 06 Aug 2020 14:50:21 +0000
+Subject: Re: linux-next: Tree for Aug 6 (mm/migrate.c)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200806162116.1d033db0@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <85e9276d-1747-b265-53be-a33ab6203045@infradead.org>
+Date:   Thu, 6 Aug 2020 07:50:17 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1596699006-9934-3-git-send-email-rgumasta@nvidia.com>
+In-Reply-To: <20200806162116.1d033db0@canb.auug.org.au>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-06.08.2020 10:30, Rajesh Gumasta пишет:
-> +static struct dma_async_tx_descriptor *tegra_dma_prep_dma_memset(
-> +	struct dma_chan *dc, dma_addr_t dest, int value, size_t len,
-> +	unsigned long flags)
-> +{
+On 8/5/20 11:21 PM, Stephen Rothwell wrote:
+> Hi all,
+> 
 
-This looks and reads okay, although the following style of code's
-formatting is a bit more common for the kernel:
+on x86_64:
 
-static struct dma_async_tx_descriptor *
-tegra_dma_prep_dma_memset(struct dma_chan *dc, dma_addr_t dest,
-			  int value, size_t len, unsigned long flags)
+when CONFIG_MMU_NOTIFIER is not set/enabled:
 
-You could make this small improvement in a v3. Same for all similar
-cases in the code.
+../mm/migrate.c: In function 'migrate_vma_collect':
+../mm/migrate.c:2481:7: error: 'struct mmu_notifier_range' has no member named 'migrate_pgmap_owner'
+  range.migrate_pgmap_owner = migrate->pgmap_owner;
+       ^
+
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
