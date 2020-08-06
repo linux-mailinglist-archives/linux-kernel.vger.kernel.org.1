@@ -2,104 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC77823D8AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FCF23D8C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729240AbgHFJax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:30:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55826 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729203AbgHFJaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:30:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 58CA3B668;
-        Thu,  6 Aug 2020 09:30:16 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 3660A1E12C9; Thu,  6 Aug 2020 11:29:59 +0200 (CEST)
-Date:   Thu, 6 Aug 2020 11:29:59 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux- stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Jiang Ying <jiangying8582@126.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, wanglong19@meituan.com
-Subject: Re: stable rc 4.4 - v4.4.232-33-g0b3898baf614 - build breaks on
- arm64, arm, x86_64 and i386.
-Message-ID: <20200806092959.GB1313@quack2.suse.cz>
-References: <CA+G9fYtpsT23+xXkOfhBt3RP6MeHKjQCrmgF921mDdwQ+wZu2g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYtpsT23+xXkOfhBt3RP6MeHKjQCrmgF921mDdwQ+wZu2g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1729284AbgHFJhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:37:35 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:45388 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729128AbgHFJcc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 05:32:32 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 06 Aug 2020 02:32:32 -0700
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 06 Aug 2020 02:32:31 -0700
+Received: from gokulsri-linux.qualcomm.com ([10.201.2.207])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 06 Aug 2020 15:02:13 +0530
+Received: by gokulsri-linux.qualcomm.com (Postfix, from userid 432570)
+        id A053D219DD; Thu,  6 Aug 2020 15:02:12 +0530 (IST)
+From:   Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        sboyd@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     sricharan@codeaurora.org, gokulsri@codeaurora.org
+Subject: [PATCH v2 0/3] Add board support for HK10 board variants
+Date:   Thu,  6 Aug 2020 15:02:09 +0530
+Message-Id: <1596706332-12957-1-git-send-email-gokulsri@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 05-08-20 22:42:08, Naresh Kamboju wrote:
-> stable rc 4.4 build breaks on arm64, arm, x86_64 and i386.
-> 
-> Here are the build log failures on arm64.
->    git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
->     target_arch: arm64
->     toolchain: gcc-9
->     git_short_log: 0b3898baf614 (\Linux 4.4.233-rc1\)
->     git_sha: 0b3898baf61459e1f963dcf893b4683174668975
->     git_describe: v4.4.232-33-g0b3898baf614
->     kernel_version: 4.4.233-rc1
-> 
-> make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=arm64
-> CROSS_COMPILE=aarch64-linux-gnu- HOSTCC=gcc CC="sccache
-> aarch64-linux-gnu-gcc" O=build Image
-> #
-> ../arch/arm64/kernel/hw_breakpoint.c: In function ‘arch_bp_generic_fields’:
-> ../arch/arm64/kernel/hw_breakpoint.c:348:5: note: parameter passing
-> for argument of type ‘struct arch_hw_breakpoint_ctrl’ changed in GCC
-> 9.1
->   348 | int arch_bp_generic_fields(struct arch_hw_breakpoint_ctrl ctrl,
->       |     ^~~~~~~~~~~~~~~~~~~~~~
-> ../fs/ext4/inode.c: In function ‘ext4_direct_IO’:
-> ../fs/ext4/inode.c:3355:9: error: ‘offset’ redeclared as different
-> kind of symbol
->  3355 |  loff_t offset = iocb->ki_pos;
->       |         ^~~~~~
-> ../fs/ext4/inode.c:3349:17: note: previous definition of ‘offset’ was here
->  3349 |          loff_t offset)
->       |          ~~~~~~~^~~~~~
+Added support for HK10-C1 and HK10-C2 board variants based on IPQ8074 SoC.
+Both these variants support dual QCN9000 PCIe cards that uses MHI communication
+protocol over PCIe. In addition, HK10-C1 support on-chip radio.
+Both these variants slightly differ in clock configuation for ethernet.
 
-This looks like a breakage from "ext4: fix direct I/O read error" where for
-4.4 the patch needs to be updated (addition of the line
-"loff_t offset = iocb->ki_pos;" needs to be removed from the patch because
-'offset' is already passed from the caller. Jiang, will you update the patch
-for 4.4 kernels please?
+This series depends on below series:
+[V2,0/7] Add PCIe support for IPQ8074
+[v7,0/9] remoteproc: qcom: q6v5-wcss: Add support for secure pil
 
-								Honza
+Gokul Sriram Palanisamy (3):
+  dt-bindings: qcom: Add ipq8074 bindings
+  arm64: dts: Add board support for HK10
+  arm64: dts: Enabled mhi device over PCIe
 
-> make[3]: *** [../scripts/Makefile.build:277: fs/ext4/inode.o] Error 1
-> make[3]: Target '__build' not remade because of errors.
-> make[2]: *** [../scripts/Makefile.build:484: fs/ext4] Error 2
-> ../drivers/net/ethernet/apm/xgene/xgene_enet_main.c:32:36: warning:
-> array ‘xgene_enet_acpi_match’ assumed to have one element
->    32 | static const struct acpi_device_id xgene_enet_acpi_match[];
->       |                                    ^~~~~~~~~~~~~~~~~~~~~
-> make[2]: Target '__build' not remade because of errors.
-> make[1]: *** [/linux/Makefile:1006: fs] Error 2
-> make[1]: Target 'Image' not remade because of errors.
-> make: *** [Makefile:152: sub-make] Error 2
-> make: Target 'Image' not remade because of errors.
-> 
-> -- 
-> Linaro LKFT
-> https://lkft.linaro.org
+ Documentation/devicetree/bindings/arm/qcom.yaml |   4 +
+ arch/arm64/boot/dts/qcom/Makefile               |   2 +
+ arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dts    |  11 ++
+ arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dts    |  14 +++
+ arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi      | 134 ++++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi           |   8 ++
+ 6 files changed, 173 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.7.4
+
