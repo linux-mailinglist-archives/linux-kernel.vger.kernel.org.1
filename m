@@ -2,176 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF5023DDA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B635E23DD99
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730355AbgHFRMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:12:13 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58938 "EHLO
+        id S1730344AbgHFRMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:12:00 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58874 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729728AbgHFRKI (ORCPT
+        with ESMTP id S1729710AbgHFRKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:10:08 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
+        Thu, 6 Aug 2020 13:10:09 -0400
+Date:   Thu, 06 Aug 2020 17:10:05 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1596733806;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yKVD0ICRirwJxf/czTIoL9qaNHOqC5llD5fZwtykD6w=;
-        b=Uu02hQeXnceW1clbDFU34w01Na01ihe8gw5vdOZssFKm0ZWXV+ig/hiWrMPj3DyEDWsWmp
-        d5q6kG0wmvOmqMIX3dWRl6kqRLWtU/fisAqjfMYs/MNmgVZG/RmheVA60Im0TeiUhxBCZi
-        9hqt3C2EPyjAChYbG+bZD0bMlT5GYo2qRQV4t2yqJImq4xW2cQe2ctC176iuoCQtFZxNNG
-        MI4kIWnaPSegaZ8F6XUsUtUkLhfST8e4RlThO9ng/MYX/egAzO5ulxnw6h/KaTv4bLrWqA
-        /2u4RF35uMj/YCiBZQtAEM2JK91u6lf5m4pEzA64GZc0kJ2gbDtWTsZWc4f9MQ==
+        bh=YOMo0P16tgPCTAJXt80yTm/HuS5EKQ0yH4ZkqTx19r4=;
+        b=orBbfWDxyB6VqKbDp/ygm4Bqc0g2zbZltvyLsnEaUNDGYuzN2HJEQwiiFCIAdcHc0Yjkts
+        XAvAnI08LG9S7NjvFFTXWhWOis1mOIHhc1EdGUtU4VCdQXh1aPRx5Q0+oRXy7Ips9G3I/f
+        HFiQKPZJajBspkVgGDGsGINumwF7nWuSa7mtmFEPQx+OdOUYOAKekC88zixz6qQSYUm+i4
+        VI+FgyCxKPXL4pVn6Nkt8Ubxf6bhWZEQlxSiMTP0Yw/qq7YxuAF9uAzrb0IcI9yXmZj4pn
+        9uOvj/cYfxw1pxn+HdWcYepMXuwB9MAdCpIZdcqUR/v8pAWkz7k1D22/3t4arA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1596733806;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yKVD0ICRirwJxf/czTIoL9qaNHOqC5llD5fZwtykD6w=;
-        b=1ench/3Yz4ELlGwrmwd8zDNRPuZX7xmwBO6TcJKMNpbwZC7PP+JR9mKgtVvQyp3pUUu5qC
-        WOvTlcXJ7KEJIRBQ==
-To:     "Dey\, Megha" <megha.dey@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        "vkoul\@kernel.org" <vkoul@kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "rafael\@kernel.org" <rafael@kernel.org>,
-        "gregkh\@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "hpa\@zytor.com" <hpa@zytor.com>,
-        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Raj\, Ashok" <ashok.raj@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Tian\, Kevin" <kevin.tian@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "Lin\, Jing" <jing.lin@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
-        "parav\@mellanox.com" <parav@mellanox.com>,
-        "Hansen\, Dave" <dave.hansen@intel.com>,
-        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain\, Mona" <mona.hossain@intel.com>,
-        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86\@kernel.org" <x86@kernel.org>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: RE: [PATCH RFC v2 02/18] irq/dev-msi: Add support for a new DEV_MSI irq domain
-In-Reply-To: <c6a1c065ab9b46bbaf9f5713462085a5@intel.com>
-References: <159534667974.28840.2045034360240786644.stgit@djiang5-desk3.ch.intel.com> <159534734833.28840.10067945890695808535.stgit@djiang5-desk3.ch.intel.com> <878sfbxtzi.wl-maz@kernel.org> <20200722195928.GN2021248@mellanox.com> <96a1eb5ccc724790b5404a642583919d@intel.com> <20200805221548.GK19097@mellanox.com> <70465fd3a7ae428a82e19f98daa779e8@intel.com> <20200805225330.GL19097@mellanox.com> <630e6a4dc17b49aba32675377f5a50e0@intel.com> <20200806001927.GM19097@mellanox.com> <c6a1c065ab9b46bbaf9f5713462085a5@intel.com>
-Date:   Thu, 06 Aug 2020 19:10:05 +0200
-Message-ID: <87tuxfhf9u.fsf@nanos.tec.linutronix.de>
+        bh=YOMo0P16tgPCTAJXt80yTm/HuS5EKQ0yH4ZkqTx19r4=;
+        b=bC8Kj4GmOXCQkV2Wxk5ZE3XioS2ZvwJZWFmKUSjMue5xudf6ScwkijRoi0xEFrwuOJG+eR
+        zRnJ03lFUw0P39Bg==
+From:   "tip-bot2 for Dilip Kota" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/tsr: Fix tsc frequency enumeration bug on
+ Lightning Mountain SoC
+Cc:     Dilip Kota <eswara.kota@linux.intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: =?utf-8?q?=3C211c643ae217604b46cbec43a2c0423946dc7d2d=2E15964?=
+ =?utf-8?q?40057=2Egit=2Eeswara=2Ekota=40linux=2Eintel=2Ecom=3E?=
+References: =?utf-8?q?=3C211c643ae217604b46cbec43a2c0423946dc7d2d=2E159644?=
+ =?utf-8?q?0057=2Egit=2Eeswara=2Ekota=40linux=2Eintel=2Ecom=3E?=
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <159673380550.3192.4383515267826217195.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Megha,
+The following commit has been merged into the x86/urgent branch of tip:
 
-"Dey, Megha" <megha.dey@intel.com> writes:
+Commit-ID:     287bad1f2b30253443e61ff6d5597a76787f736a
+Gitweb:        https://git.kernel.org/tip/287bad1f2b30253443e61ff6d5597a76787f736a
+Author:        Dilip Kota <eswara.kota@linux.intel.com>
+AuthorDate:    Mon, 03 Aug 2020 15:56:36 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 06 Aug 2020 15:27:31 +02:00
 
->> -----Original Message-----
->> From: Jason Gunthorpe <jgg@mellanox.com>
-<SNIP>
->> Subject: Re: [PATCH RFC v2 02/18] irq/dev-msi: Add support for a new DEV_MSI
->> irq domain
+x86/tsr: Fix tsc frequency enumeration bug on Lightning Mountain SoC
 
-can you please fix your mail client not to copy the whole header of the
-mail you are replying to into the mail body?
+Frequency descriptor of Lightning Mountain SoC doesn't have all the
+frequency entries so resulting in the below failure causing a kernel hang:
 
->> > > Well, I had suggested to pass in the parent struct device, but it
->> Oops, I was thinking of platform_msi_domain_alloc_irqs() not
->> create_device_domain()
->> 
->> ie call it in the device driver that wishes to consume the extra MSIs.
->> 
->> Is there a harm if each device driver creates a new irq_domain for its use?
->
-> Well, the only harm is if we want to reuse the irq domain.
+    Error MSR_FSB_FREQ index 15 is unknown
+    tsc: Fast TSC calibration failed
 
-You cannot reuse the irq domain if you create a domain per driver. The
-way how hierarchical domains work is:
+So, add all the frequency entries in the Lightning Mountain SoC frequency
+descriptor.
 
-vector --- DMAR-MSI
-       |
-       |-- ....
-       |
-       |-- IR-0 --- IO/APIC-0
-       |        | 
-       |        |-- IO/APIC-1
-       |        |
-       |        |-- PCI/MSI-0
-       |        |
-       |        |-- HPET/MSI-0
-       |
-       |-- IR-1 --- PCI/MSI-1
-       |        |
+Fixes: 0cc5359d8fd45 ("x86/cpu: Update init data for new Airmont CPU model")
+Fixes: 812c2d7506fd ("x86/tsc_msr: Use named struct initializers")
+Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/211c643ae217604b46cbec43a2c0423946dc7d2d.1596440057.git.eswara.kota@linux.intel.com
+---
+ arch/x86/kernel/tsc_msr.c |  9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-The outermost domain is what the actual device driver uses. I.e. for
-PCI-MSI it's the msi domain which is associated to the bus the device is
-connected to. Each domain has its own interrupt chip instance and its
-own data set.
-
-Domains of the same type share the code, but neither the data nor the
-interrupt chip instance.
-
-Also there is a strict parent child relationship in terms of resources.
-Let's look at PCI.
-
-PCI/MSI-0 depends on IR-0 which depends on the vector domain. That's
-reflecting both the flow of the interrupt and the steps required for
-various tasks, e.g. allocation/deallocation and also interrupt chip
-operations. In order to allocate a PCI/MSI interrupt in domain PCI/MSI-0
-a slot in the remapping unit and a vector needs to be allocated.
-
-If you disable interrupt remapping all the outermost domains in the
-scheme above become childs of the vector domain.
-
-So if we look at DEV/MSI as a infrastructure domain then the scheme
-looks like this:
-
-vector --- DMAR-MSI
-       |
-       |-- ....
-       |
-       |-- IR-0 --- IO/APIC-0
-       |        | 
-       |        |-- IO/APIC-1
-       |        |
-       |        |-- PCI/MSI-0
-       |        |
-       |        |-- HPET/MSI-0
-       |        |
-       |        |-- DEV/MSI-0
-       |
-       |-- IR-1 --- PCI/MSI-1
-       |        |
-       |        |-- DEV/MSI-1
-
-
-But if you make it per device then you have multiple DEV/MSI domains per
-IR unit.
-
-What's the right thing to do?
-
-If the DEV/MSI domain has it's own per IR unit resource management, then
-you need one per IR unit.
-
-If the resource management is solely per device then having a domain per
-device is the right choice.
-
-Thanks,
-
-        tglx
+diff --git a/arch/x86/kernel/tsc_msr.c b/arch/x86/kernel/tsc_msr.c
+index 4fec6f3..a654a9b 100644
+--- a/arch/x86/kernel/tsc_msr.c
++++ b/arch/x86/kernel/tsc_msr.c
+@@ -133,10 +133,15 @@ static const struct freq_desc freq_desc_ann = {
+ 	.mask = 0x0f,
+ };
+ 
+-/* 24 MHz crystal? : 24 * 13 / 4 = 78 MHz */
++/*
++ * 24 MHz crystal? : 24 * 13 / 4 = 78 MHz
++ * Frequency step for Lightning Mountain SoC is fixed to 78 MHz,
++ * so all the frequency entries are 78000.
++ */
+ static const struct freq_desc freq_desc_lgm = {
+ 	.use_msr_plat = true,
+-	.freqs = { 78000, 78000, 78000, 78000, 78000, 78000, 78000, 78000 },
++	.freqs = { 78000, 78000, 78000, 78000, 78000, 78000, 78000, 78000,
++		   78000, 78000, 78000, 78000, 78000, 78000, 78000, 78000 },
+ 	.mask = 0x0f,
+ };
+ 
