@@ -2,239 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6D423DFBC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB7023DFF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730492AbgHFRwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:52:42 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2682 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728399AbgHFRwj (ORCPT
+        id S1730401AbgHFR4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730358AbgHFR4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:52:39 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f2c43000001>; Thu, 06 Aug 2020 10:50:56 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 06 Aug 2020 10:52:37 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 06 Aug 2020 10:52:37 -0700
-Received: from [10.2.172.190] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 6 Aug
- 2020 17:52:36 +0000
-Subject: Re: [PATCH v8 08/10] gpu: host1x: mipi: Keep MIPI clock enabled till
- calibration is done
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
-        <helen.koike@collabora.com>, <gregkh@linuxfoundation.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1596469346-937-1-git-send-email-skomatineni@nvidia.com>
- <dcd58ae7-58ed-11d1-0e10-7f522b651b30@gmail.com>
- <addb92e5-7c7a-6fba-117d-c7880b2d4597@nvidia.com>
- <ed80bf2f-213f-286a-59b2-fc85e4181b3d@gmail.com>
- <6eede805-80fd-016f-22f8-b6d25f6587af@nvidia.com>
- <1c12e40e-de7f-0599-a941-82760b4c7668@gmail.com>
- <9ef0b875-e826-43e2-207e-168d2081ff6a@nvidia.com>
- <4689cfe9-e7c4-48bf-217f-3a31b59b8bda@nvidia.com>
- <0e78c5ca-c529-1e98-891d-30351c9aae81@gmail.com>
- <b2098a68-d02f-b406-fc57-56e3ff5d8d1a@nvidia.com>
- <309e3b66-9288-91ef-71b4-be73eacbbd62@nvidia.com>
- <fde2431a-0585-ac32-ac25-73e198aaa948@nvidia.com>
- <4025a458-fa78-924d-c84f-166f82df0f8e@gmail.com>
- <4f15d655-3d62-cf9f-82da-eae379d60fa6@nvidia.com>
- <b5612e93-f1c4-4762-baa1-5d85eb1edbe1@gmail.com>
- <412f8c53-1aca-db31-99a1-a0ecb2081ca5@nvidia.com>
- <61275bd6-58e7-887f-aa7d-8e60895e7b2b@nvidia.com>
- <6ff57c38-9847-42b0-643b-0d167c13779f@gmail.com>
- <c6ef5e77-2b0a-1712-ca58-dbd8d232e1f1@nvidia.com>
-Message-ID: <ed79b201-85ba-f725-c5fa-fcde0761bc3d@nvidia.com>
-Date:   Thu, 6 Aug 2020 10:52:38 -0700
+        Thu, 6 Aug 2020 13:56:00 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F3FC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 10:55:59 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a15so44835784wrh.10
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 10:55:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=VLToQkSGb9Fyj+rMmCyIoE12BtD4sRvLhirgEOkP9W4=;
+        b=aiclBWRQsaqlr4rxoQqEFfHk424DkMeqTmreM/zu7IQoemedoiGmY1RO05MmpZR6+P
+         w7xGe9fU76E3VMZ7Isj9CVyq5FEg4I8VDs+q0YobHeP9Ohy4GB5+BKuoR/WEUbUXJdph
+         UquQ9WkUAjpPvjtyL6o6gTPDC/x9qzlzrlEYI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=VLToQkSGb9Fyj+rMmCyIoE12BtD4sRvLhirgEOkP9W4=;
+        b=ZmlagJCKYN9ntCKFfDGpb1Z8jB+wj8MYTE1pxKvvcrj3ncv3NK453oCpxtDINGPPyF
+         78Bl98V1tcJ23zhuxRTO3Xn8yqm7CwVSf1Z1kLUu/UAOOdeS1rWjdTMxOabV8v0Tbm/f
+         hqqye8z1ewOSZx5u3lbIcwiHBE2GhirVi5pZSXpmYfqiMVlGoBW3YjmxTywzl5dxuhks
+         RQasZbGf5LSxdETxTvurPYSGE6SvFoL4DWsBdwyvJ9Op5Nzgklq4Is4RZf5Gn+X67AhY
+         Efq3IR32NE/4vkt3n3D6auNJUimx/VBycukMFBPWfw/ldO2vGd53Wn6JGIQTaxoxs9+3
+         pJDQ==
+X-Gm-Message-State: AOAM531TKHe/jPi31WRAIEmKoxyqebx0AflPPD7KcvNaBj4A1Gl5yHAJ
+        JKMcu5FwxxNtoneGWBwqfH/684B5/5PJUyNVP0oC23dr9YA6sQUzgZ4kTmJ8oOtn0nHGUTiRy8Y
+        cMTHQRxS1xHl02OpfoE3So44pSkunQil+wwomGUQJxDfUU9cDPuSGkibzoIPbAeYvQ8VqOwRHRa
+        RDzrvMda4P
+X-Google-Smtp-Source: ABdhPJzbtHnvN2YvogoQjvg6Nr1wWat0eDA9t2hrW3lsNiU9zCFscq1A7+T3HDp3Wo7bjV+9E+cWiQ==
+X-Received: by 2002:adf:bb07:: with SMTP id r7mr8403518wrg.102.1596736558012;
+        Thu, 06 Aug 2020 10:55:58 -0700 (PDT)
+Received: from [10.136.13.65] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id l11sm6978590wme.11.2020.08.06.10.55.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Aug 2020 10:55:57 -0700 (PDT)
+Subject: Re: [PATCH v4] PCI: Reduce warnings on possible RW1C corruption
+To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
+        ray.jui@broadcom.com, helgaas@kernel.org, sbranden@broadcom.com,
+        f.fainelli@gmail.com, lorenzo.pieralisi@arm.com, robh@kernel.org
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200806041455.11070-1-mark.tomlinson@alliedtelesis.co.nz>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <16cbd3f5-722a-cf8b-487e-82a0bbf95053@broadcom.com>
+Date:   Thu, 6 Aug 2020 10:55:53 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <c6ef5e77-2b0a-1712-ca58-dbd8d232e1f1@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1596736256; bh=CS+W4xiYVifNlDvQtAoKvNJ1SxgXVP8asa+INgRDbKA=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=K6nhdIPU86mcumxZoU9u24TPt4lhoYatIyHCBBHXSuGOa21WFcwdL8nwnBkAeUxKD
-         EW9RTS/+PXiKpJsVBqhs9gy/PEpqXddrFTSpoWE+Ebm9ep5EX86+khaLWRWzfKyrUW
-         m1bg3xIVfYXMYGYdILfuS1R03yh2VtHN+AItP1Ddyxxx8+1saSZQuAvNUNJ/jc2PgN
-         zSjC/0/czumePpKc1Zm4bZ4/yb1yzXQUlSP8RdbO7z7BCcr6Ed7dW5uaGpb5/5v8hZ
-         Jnqg4obHOggVcX5xoFbniTd0I1Mwaf5st48dk3mEk9gITCBObnwkvBtBHo7/s22JBf
-         wadD5eQywyG5g==
+In-Reply-To: <20200806041455.11070-1-mark.tomlinson@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-CA
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Looks good.
 
-On 8/6/20 10:44 AM, Sowjanya Komatineni wrote:
+On 2020-08-05 9:14 p.m., Mark Tomlinson wrote:
+> For hardware that only supports 32-bit writes to PCI there is the
+> possibility of clearing RW1C (write-one-to-clear) bits. A rate-limited
+> messages was introduced by fb2659230120, but rate-limiting is not the
+> best choice here. Some devices may not show the warnings they should if
+> another device has just produced a bunch of warnings. Also, the number
+> of messages can be a nuisance on devices which are otherwise working
+> fine.
 >
-> On 8/6/20 10:27 AM, Dmitry Osipenko wrote:
->> 06.08.2020 20:12, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>> On 8/6/20 9:41 AM, Sowjanya Komatineni wrote:
->>>> On 8/6/20 9:10 AM, Dmitry Osipenko wrote:
->>>>> 06.08.2020 18:59, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>>> ...
->>>>>>>> Confirmed from HW designer, calibration FSM to finish takes worst
->>>>>>>> case
->>>>>>>> 72uS so by the time it gets to sensor stream it will be done its
->>>>>>>> sequence and will be waiting for DONE bit.
->>>>>>>>
->>>>>>>> So disabling MIPI CAL clock on sensor stream fails is safe.
->>>>>>> 72us is quite a lot of time, what will happen if LP-11 happens=20
->>>>>>> before
->>>>>>> FSM finished calibration?
->>>>>>>
->>>>>>> Maybe the finish_calibration() needs to split into two parts:
->>>>>>>
->>>>>>> =C2=A0=C2=A0=C2=A0 1. wait for CAL_STATUS_ACTIVE before enabling se=
-nsor
->>>>>>> =C2=A0=C2=A0=C2=A0 2. wait for CAL_STATUS_DONE after enabling senso=
-r
->>>>>> I don't think we need to split for active and done. Active will=20
->>>>>> be 1 as
->>>>>> long as other pads are in calibration as well.
->>>>>>
->>>>>> We cant use active status check for specific pads under calibration.
->>>>>> This is common bit for all pads.
->>>>> Does hardware have a single FSM block shared by all pads or there=20
->>>>> is FSM
->>>>> per group of pads?
->>>> MIPI CAL status register has DONE bits for individual pads status and
->>>> single ACTIVE bit.
->>>>
->>>> ACTIVE bit set to 1 indicates auto calibration is active which is the
->>>> case even when other pads (other CSI pads from other ports streaming
->>>> in case of parallel stream) are under calibration. Also DSI is shared
->>>> as well.
->>>>
->>>> We do calibration for individual pads. So, we should not rely on
->>>> ACTIVE bit.
->>>>
->>>>
->>>> MIPI driver checks for condition ACTIVE =3D=3D 1 && DONE =3D=3D 1 from=
- the
->>>> beginning.
->>>>
->>>> But I think this also should be fixed as in case of parallel streams
->>>> calibration can happen in parallel waiting for ACTIVE to be cleared
->>>> makes all calibration callers to wait for longer than needed as ACTIVE
->>>> is common for all pads.
->>>>
->>>>>> Unfortunately HW don't have separate status indicating when=20
->>>>>> sequence is
->>>>>> done to indicate its waiting for LP11.
->>>>>>
->>>>>>
->>>>>> To avoid all this, will remove cancel_calibration() totally and use
->>>>>> same
->>>>>> finish calibration even in case of stream failure then.
->>>>>>
->>>>> What about to add 72us delay to the end of start_calibration() in=20
->>>>> order
->>>>> to ensure that FSM is finished before LP-11?
->>>> Why we should add 72uS in start_calibration() when can use same
->>>> finish_calibration() for both pass/fail cases?
->>>>
->>>> Only timing loose we see is in case of failure we still wait for 250ms
->>>> and as this is failing case I hope should be ok.
->>>>
->>> Also as we don't need cancel_calibration(), keeping tegra_mipi_wait()
->>> like earlier makes sense I believe as we are letting it finish going
->>> thru sequence.
->>>
->>> So I think below are fixes,
->>>
->>> 1. Existing MIPI driver, tegra_mipi_wait() to not use status ACTIVE bit
->>> to be 0 and use only DONE bit to be 1 for wait condition=C2=A0 as we ar=
-e
->>> calibrating separately for individual pads and this ACTIVE bit is=20
->>> common
->>> for all pads where it will not be 0 in case of other parallel streams
->>> which may also be under calibration.
->> Yes, looks like it's a mistake of the current MIPI driver that it polls
->> the ACTIVE bit.
->>
->>> 2. No need for separate cancel_calibration. So, probably earlier names
->>> tegra_mipi_calibrate() and tegra_mipi_wait() hols good as we are=20
->>> waiting
->>> for calibration sequence to finish irrespective of fail/pass.
->> The new names reflect better what those functions actually do, IMO.
-> ok Will keep same names.
->>
->> What about to make finish_calibration() to take an additional argument
->> which corresponds to the awaited HW bits? For example if it's CSIA, then
->> it could be:
->>
->> =C2=A0=C2=A0 tegra_mipi_finish_calibration(csi_chan->mipi, MIPI_CAL_CSIA=
-);
-> MIPI device is separate for each stream so waiting for only those=20
-> corresponding DONE bits happen currently and no need to pass argument.
->>
->>
->> Also, is it okay that DSI and CSI could change MIPI_CAL_CTRL after DSI
->> or CSI already started calibration?
->>
->> Looking at the current start_calibration(), I think the mutex should be
->> kept locked and then finish_calibration() should unlock it.
+> This patch changes the ratelimit to a single warning per bus. This
+> ensures no bus is 'starved' of emitting a warning and also that there
+> isn't a continuous stream of warnings. It would be preferable to have a
+> warning per device, but the pci_dev structure is not available here, and
+> a lookup from devfn would be far too slow.
+>
+> Suggested-by: Bjorn Helgaas <helgaas@kernel.org>
+> Fixes: fb2659230120 ("PCI: Warn on possible RW1C corruption for sub-32 bit config writes")
+> Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Acked-by: Scott Branden <scott.branden@broadcom.com>
+> ---
+> changes in v4:
+>  - Use bitfield rather than bool to save memory (was meant to be in v3).
+>
+>  drivers/pci/access.c | 9 ++++++---
+>  include/linux/pci.h  | 1 +
+>  2 files changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/pci/access.c b/drivers/pci/access.c
+> index 79c4a2ef269a..b452467fd133 100644
+> --- a/drivers/pci/access.c
+> +++ b/drivers/pci/access.c
+> @@ -160,9 +160,12 @@ int pci_generic_config_write32(struct pci_bus *bus, unsigned int devfn,
+>  	 * write happen to have any RW1C (write-one-to-clear) bits set, we
+>  	 * just inadvertently cleared something we shouldn't have.
+>  	 */
+> -	dev_warn_ratelimited(&bus->dev, "%d-byte config write to %04x:%02x:%02x.%d offset %#x may corrupt adjacent RW1C bits\n",
+> -			     size, pci_domain_nr(bus), bus->number,
+> -			     PCI_SLOT(devfn), PCI_FUNC(devfn), where);
+> +	if (!bus->unsafe_warn) {
+> +		dev_warn(&bus->dev, "%d-byte config write to %04x:%02x:%02x.%d offset %#x may corrupt adjacent RW1C bits\n",
+> +			 size, pci_domain_nr(bus), bus->number,
+> +			 PCI_SLOT(devfn), PCI_FUNC(devfn), where);
+> +		bus->unsafe_warn = 1;
+> +	}
+>  
+>  	mask = ~(((1 << (size * 8)) - 1) << ((where & 0x3) * 8));
+>  	tmp = readl(addr) & mask;
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 34c1c4f45288..85211a787f8b 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -626,6 +626,7 @@ struct pci_bus {
+>  	struct bin_attribute	*legacy_io;	/* Legacy I/O for this bus */
+>  	struct bin_attribute	*legacy_mem;	/* Legacy mem */
+>  	unsigned int		is_added:1;
+> +	unsigned int		unsafe_warn:1;	/* warned about RW1C config write */
+>  };
+>  
+>  #define to_pci_bus(n)	container_of(n, struct pci_bus, dev)
 
-Right mutex_unlock should happen at end of finish_calibration.
-
-With keeping mutex locked in start, we dont have to check for active to=20
-be 0 to issue start as mutex will keep it locked and other pads=20
-calibration can only go thru when current one is done.
-
-So instead of below sequence, its simpler to do this way?
-
-start_calibration()
-
-- mutex_lock
-
-- wait for 72uS after start
-
-finish_calibration()
-
-- keep check for ACTIVE =3D 0 and DONE =3D 1
-
-- mutex_unlock()
-
->
-> Confirmed with HW designer.
->
-> ACTIVE is common bit for all pads where we see it 1 as long as all=20
-> pads (DSI + all CSI Pads) are under calibration.
->
-> While MIPI CAL is doing calibration for certain pads, before issuing=20
-> other start it has to wait for ACTIVE to be 0.
->
->
-> Earlier driver (before split) checks for ACTIVE to be 0 along with=20
-> DONE bit to be 1 as it does both calibrate and wait in same API.
->
-> With the split, looks like we need below sequence to be safe.
->
-> 1. tegra_mipi_start_calibration(): wait for ACTIVE to be 0 before=20
-> issuing START and after issuing start wait for 72uS to let calibration=20
-> code sequence finish so it will be ready to see LP-11 after that.
->
-> In case of parallel streams, call to start_calibration can happen when=20
-> pads of other stream are under calibration.
->
-> 2. tegra_mipi_finish_calibration(): check for DONE bit to be 1
->
->
->
