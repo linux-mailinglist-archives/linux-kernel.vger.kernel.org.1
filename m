@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7717C23D901
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3433823D903
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 11:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729268AbgHFJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 05:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726094AbgHFJ6w (ORCPT
+        id S1729300AbgHFJ7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 05:59:31 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:47241 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726094AbgHFJ7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 05:58:52 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE562C061757
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 02:58:51 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a15so43378064wrh.10
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 02:58:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries-io.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=IjCAb6ElutCFPhXtiRRhexkYUeHi/3Oyyo9f5qPCuTw=;
-        b=M3hQ0f4LkSWB8thUbjJc+2oJa6y5cmCLs5eD1KoJQkMPuLQbkCSP5TGo61vhJUeK/x
-         okUOHv5gpWr71ku2i/E36Skxdbfnn18rmL3eBJWrH+0mYVz8okIXXR53bQDWRM4TxMP9
-         F+WT5h45ad3rWeJjwT0ygsg4yvC6H/6m9hivJlY3OWDsq0ODZmdxUxpF/P/UBC2jXGpK
-         OhGd+Oegw56eEjiekzwedj9yzzMzY99ZpiyBy7A0qJZLnr0RiclFMXaA32e1fEeijQ7Q
-         yD4AYk6PV8a0dusI2VcgtO4BYhK0SK16GMfSWoSG06raXRA5r1h1S+GM0meA+9tmSTYD
-         AsUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=IjCAb6ElutCFPhXtiRRhexkYUeHi/3Oyyo9f5qPCuTw=;
-        b=OJNZb4u3+b8LrE6hNuW/tnScSjAq6Mt8nu4D1kdryXTpc+QTDHXmPTwebPnBzUGjym
-         6W8XmnmI35Ojl+QCw5WRyUekdJMEqstk9KeqRIG7fQ4B+5qgwN4gHCFUp10lvsA3W2Xo
-         /PuB5miuCiNQ4fYAMmKX1XmOam0C4tQJY/2BR8KyKfVcs1FZa0YB0GkV9uMZznH2lD1j
-         V0CyOeVTmvmrz9scieL9rEehzSNB1ZvXVi2ub0WGRXE3wP2ZTHT6CXYB+b2pQYmDUGvd
-         6MlDBRRMTwNQo+eupqaBrpxLgy93Zm9DUHYHcNslOckllsFKByVBLegsVF836ZJXmL/Z
-         vsUQ==
-X-Gm-Message-State: AOAM532xDnuXbWozLjzcYtO9M4mFenp/o4mQdPaHmSrvS01f7ebbyEG+
-        Kc1iOENjc3poX9/INh6PEj+h5g==
-X-Google-Smtp-Source: ABdhPJwn+3pUhsigOTALX0nYV9hiGuaZwXe1U6BCXbpNO1wYrek2IXuJiZU9Zca5n1jK+Wg7rHfjpg==
-X-Received: by 2002:adf:9e90:: with SMTP id a16mr7074410wrf.40.1596707930696;
-        Thu, 06 Aug 2020 02:58:50 -0700 (PDT)
-Received: from localhost.localdomain (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
-        by smtp.gmail.com with ESMTPSA id z66sm5793181wme.16.2020.08.06.02.58.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 02:58:50 -0700 (PDT)
-From:   Jorge Ramirez-Ortiz <jorge@foundries.io>
-To:     jorge@foundries.io, sumit.garg@linaro.org,
-        jens.wiklander@linaro.org
-Cc:     herbert@gondor.apana.org.au, mpm@selenic.com, arnd@arndb.de,
-        ricardo@foundries.io, mike@foundries.io,
-        gregkh@linuxfoundation.org, op-tee@lists.trustedfirmware.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCHv3 2/2] hwrng: optee: fix wait use case
-Date:   Thu,  6 Aug 2020 11:58:45 +0200
-Message-Id: <20200806095845.20288-2-jorge@foundries.io>
-X-Mailer: git-send-email 2.17.1
+        Thu, 6 Aug 2020 05:59:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U4udH-7_1596707952;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U4udH-7_1596707952)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 06 Aug 2020 17:59:12 +0800
+Date:   Thu, 6 Aug 2020 17:59:12 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Wei Yang <richard.weiyang@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v2] mm/sparse: only sub-section aligned range would be
+ populated
+Message-ID: <20200806095912.GA97074@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20200703031828.14645-1-richard.weiyang@linux.alibaba.com>
+ <20200805214955.ds7y3nwjoz2ms37h@master>
+ <1c817ced-8ad9-ce91-2992-94092bc065b3@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1c817ced-8ad9-ce91-2992-94092bc065b3@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current code waits for data to be available before attempting a
-second read. However the second read would not be executed as the
-while loop will exit.
+On Thu, Aug 06, 2020 at 09:29:36AM +0200, David Hildenbrand wrote:
+>On 05.08.20 23:49, Wei Yang wrote:
+>> On Fri, Jul 03, 2020 at 11:18:28AM +0800, Wei Yang wrote:
+>>> There are two code path which invoke __populate_section_memmap()
+>>>
+>>>  * sparse_init_nid()
+>>>  * sparse_add_section()
+>>>
+>>> For both case, we are sure the memory range is sub-section aligned.
+>>>
+>>>  * we pass PAGES_PER_SECTION to sparse_init_nid()
+>>>  * we check range by check_pfn_span() before calling
+>>>    sparse_add_section()
+>>>
+>>> Also, the counterpart of __populate_section_memmap(), we don't do such
+>>> calculation and check since the range is checked by check_pfn_span() in
+>>> __remove_pages().
+>>>
+>>> Clear the calculation and check to keep it simple and comply with its
+>>> counterpart.
+>>>
+>>> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+>>>
+>> 
+>> Hi, Andrew,
+>> 
+>> Is this one picked up?
+>
+>I can spot it in -next via the -mm tree:
+>
+>https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=68ad9becb23be14622e39ed36e5b0621a90a41d9
+>
 
-This fix does not wait if all data has been read (skips the call to
-msleep(0)) and reads a second time if partial data was retrieved on
-the first read.
+Thanks ;-)
 
-Worth noticing that since msleep(0) schedules a one jiffy timeout is
-better to skip such a call.
+Next time I would refer to this repo first.
 
-Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
----
- drivers/char/hw_random/optee-rng.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+>
+>-- 
+>Thanks,
+>
+>David / dhildenb
 
-diff --git a/drivers/char/hw_random/optee-rng.c b/drivers/char/hw_random/optee-rng.c
-index 5bc4700c4dae..a99d82949981 100644
---- a/drivers/char/hw_random/optee-rng.c
-+++ b/drivers/char/hw_random/optee-rng.c
-@@ -122,14 +122,14 @@ static int optee_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
- 	if (max > MAX_ENTROPY_REQ_SZ)
- 		max = MAX_ENTROPY_REQ_SZ;
- 
--	while (read == 0) {
-+	while (read < max) {
- 		rng_size = get_optee_rng_data(pvt_data, data, (max - read));
- 
- 		data += rng_size;
- 		read += rng_size;
- 
- 		if (wait && pvt_data->data_rate) {
--			if (timeout-- == 0)
-+			if ((timeout-- == 0) || (read == max))
- 				return read;
- 			msleep((1000 * (max - read)) / pvt_data->data_rate);
- 		} else {
 -- 
-2.17.1
-
+Wei Yang
+Help you, Help me
