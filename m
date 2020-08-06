@@ -2,150 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB4523D59B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 04:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8604823D59F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 04:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgHFC4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 Aug 2020 22:56:39 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:59037 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725999AbgHFC4i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 Aug 2020 22:56:38 -0400
+        id S1727021AbgHFC5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 Aug 2020 22:57:18 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:50532 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726851AbgHFC5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 Aug 2020 22:57:17 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1596682596; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=GSqGnDAtFz2eN+4a/6d10DfESlZhpkDU0wGAOPxxqGE=; b=tr0jNjnevfsB2VkW/M3/bgkfPLY67SyvGagUl7yn1WjRQIxB6hZkD/O1/4+EFtMZ8lz35NWN
- 8LwvSa8e/+a243nMKluJFbt7JQCH9C9derkSKM5hIWt5rM8LjUVMNBNKLWOUYwa29+bd+rlq
- Hew+bfVH9YZc2bg0ja6L/sb2W28=
-X-Mailgun-Sending-Ip: 104.130.122.29
+ s=smtp; t=1596682636; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=H/fMnJVieUL4Dlvn7ai7jzobHw8KyVB1/ebQeG0HImM=; b=e/pM2LpfWGkSXVAP9ixbyDkDm1hkDMae2cuyebZcY9q9SvCACbRE7V3zDzSy2XkGP/ikr4Za
+ Iizbt8Rnkx7o0ioQUO+evV8aYa+KZrRBe1OWSgkpdyNj2K24e5nAD0yedhbiU5CGFCFW0NoJ
+ lG0nLPhW1VNVjMkDCshsucB+8Tg=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n18.prod.us-east-1.postgun.com with SMTP id
- 5f2b71646372cee9a8eba3dc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 Aug 2020 02:56:36
+ smtp-out-n18.prod.us-west-2.postgun.com with SMTP id
+ 5f2b718b2889723bf899ca81 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 Aug 2020 02:57:15
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A3A64C43391; Thu,  6 Aug 2020 02:56:35 +0000 (UTC)
+        id BF589C433AF; Thu,  6 Aug 2020 02:57:15 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
         URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from cgoldswo-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+Received: from Pillair (unknown [49.205.240.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 37839C433CA;
-        Thu,  6 Aug 2020 02:56:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 37839C433CA
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 51009C433CB;
+        Thu,  6 Aug 2020 02:57:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 51009C433CB
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=cgoldswo@codeaurora.org
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pratikp@codeaurora.org,
-        pdaly@codeaurora.org, sudraja@codeaurora.org,
-        iamjoonsoo.kim@lge.com,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Susheel Khiani <skhiani@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>
-Subject: [PATCH] mm: cma: retry allocations in cma_alloc
-Date:   Wed,  5 Aug 2020 19:56:22 -0700
-Message-Id: <1596682582-29139-2-git-send-email-cgoldswo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1596682582-29139-1-git-send-email-cgoldswo@codeaurora.org>
-References: <1596682582-29139-1-git-send-email-cgoldswo@codeaurora.org>
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
+From:   "Rakesh Pillai" <pillair@codeaurora.org>
+To:     "'Christophe JAILLET'" <christophe.jaillet@wanadoo.fr>,
+        <kvalo@codeaurora.org>, <davem@davemloft.net>, <kuba@kernel.org>
+Cc:     <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+References: <20200802122227.678637-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20200802122227.678637-1-christophe.jaillet@wanadoo.fr>
+Subject: RE: [PATCH] ath10k: Fix the size used in a 'dma_free_coherent()' call in an error handling path
+Date:   Thu, 6 Aug 2020 08:27:07 +0530
+Message-ID: <002101d66b9d$497721b0$dc656510$@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQL6RW6rmvo2uaX7dS3qhQ/yDQwO+Kbir3+A
+Content-Language: en-us
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CMA allocations will fail if 'pinned' pages are in a CMA area, since we
-cannot migrate pinned pages. The _refcount of a struct page being greater
-than _mapcount for that page can cause pinning for anonymous pages.  This
-is because try_to_unmap(), which (1) is called in the CMA allocation path,
-and (2) decrements both _refcount and _mapcount for a page, will stop
-unmapping a page from VMAs once the _mapcount for a page reaches 0.  This
-implies that after try_to_unmap() has finished successfully for a page
-where _recount > _mapcount, that _refcount will be greater than 0.  Later
-in the CMA allocation path in migrate_page_move_mapping(), we will have one
-more reference count than intended for anonymous pages, meaning the
-allocation will fail for that page.
 
-One example of where _refcount can be greater than _mapcount for a page we
-would not expect to be pinned is inside of copy_one_pte(), which is called
-during a fork. For ptes for which pte_present(pte) == true, copy_one_pte()
-will increment the _refcount field followed by the  _mapcount field of a
-page. If the process doing copy_one_pte() is context switched out after
-incrementing _refcount but before incrementing _mapcount, then the page
-will be temporarily pinned.
 
-So, inside of cma_alloc(), instead of giving up when alloc_contig_range()
-returns -EBUSY after having scanned a whole CMA-region bitmap, perform
-retries with sleeps to give the system an opportunity to unpin any pinned
-pages.
+> -----Original Message-----
+> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Sent: Sunday, August 2, 2020 5:52 PM
+> To: kvalo@codeaurora.org; davem@davemloft.net; kuba@kernel.org;
+> pillair@codeaurora.org
+> Cc: ath10k@lists.infradead.org; linux-wireless@vger.kernel.org;
+> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; kernel-
+> janitors@vger.kernel.org; Christophe JAILLET
+> <christophe.jaillet@wanadoo.fr>
+> Subject: [PATCH] ath10k: Fix the size used in a 'dma_free_coherent()' call
+in
+> an error handling path
+> 
+> Update the size used in 'dma_free_coherent()' in order to match the one
+> used in the corresponding 'dma_alloc_coherent()'.
+> 
+> Fixes: 1863008369ae ("ath10k: fix shadow register implementation for
+> WCN3990")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> This patch looks obvious to me, but commit 1863008369ae looks also simple.
+> So it is surprising that such a "typo" slipped in.
 
-Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Co-developed-by: Susheel Khiani <skhiani@codeaurora.org>
-Signed-off-by: Susheel Khiani <skhiani@codeaurora.org>
-Co-developed-by: Vinayak Menon <vinmenon@codeaurora.org>
-Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
----
- mm/cma.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+Reviewed-by: Rakesh Pillai <pillair@codeaurora.org> 
 
-diff --git a/mm/cma.c b/mm/cma.c
-index 7f415d7..7b85fe6 100644
---- a/mm/cma.c
-+++ b/mm/cma.c
-@@ -32,6 +32,7 @@
- #include <linux/highmem.h>
- #include <linux/io.h>
- #include <linux/kmemleak.h>
-+#include <linux/delay.h>
- #include <trace/events/cma.h>
- 
- #include "cma.h"
-@@ -418,6 +419,8 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
- 	size_t i;
- 	struct page *page = NULL;
- 	int ret = -ENOMEM;
-+	int num_attempts = 0;
-+	int max_retries = 5;
- 
- 	if (!cma || !cma->count || !cma->bitmap)
- 		return NULL;
-@@ -442,8 +445,25 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
- 				bitmap_maxno, start, bitmap_count, mask,
- 				offset);
- 		if (bitmap_no >= bitmap_maxno) {
--			mutex_unlock(&cma->lock);
--			break;
-+			if ((num_attempts < max_retries) && (ret == -EBUSY)) {
-+				mutex_unlock(&cma->lock);
+> ---
+>  drivers/net/wireless/ath/ath10k/ce.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/ce.c
+> b/drivers/net/wireless/ath/ath10k/ce.c
+> index 294fbc1e89ab..e6e0284e4783 100644
+> --- a/drivers/net/wireless/ath/ath10k/ce.c
+> +++ b/drivers/net/wireless/ath/ath10k/ce.c
+> @@ -1555,7 +1555,7 @@ ath10k_ce_alloc_src_ring(struct ath10k *ar,
+> unsigned int ce_id,
+>  		ret = ath10k_ce_alloc_shadow_base(ar, src_ring, nentries);
+>  		if (ret) {
+>  			dma_free_coherent(ar->dev,
+> -					  (nentries * sizeof(struct
+> ce_desc_64) +
+> +					  (nentries * sizeof(struct ce_desc)
 +
-+				/*
-+				 * Page may be momentarily pinned by some other
-+				 * process which has been scheduled out, e.g.
-+				 * in exit path, during unmap call, or process
-+				 * fork and so cannot be freed there. Sleep
-+				 * for 100ms and retry the allocation.
-+				 */
-+				start = 0;
-+				ret = -ENOMEM;
-+				msleep(100);
-+				num_attempts++;
-+				continue;
-+			} else {
-+				mutex_unlock(&cma->lock);
-+				break;
-+			}
- 		}
- 		bitmap_set(cma->bitmap, bitmap_no, bitmap_count);
- 		/*
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+>  					   CE_DESC_RING_ALIGN),
+>  					  src_ring-
+> >base_addr_owner_space_unaligned,
+>  					  base_addr);
+> --
+> 2.25.1
+
 
