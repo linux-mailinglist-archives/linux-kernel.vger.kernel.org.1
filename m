@@ -2,347 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFFA23E35D
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 23:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC1223E363
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 23:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgHFVEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 17:04:41 -0400
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:53320 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726050AbgHFVEi (ORCPT
+        id S1726524AbgHFVHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 17:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725783AbgHFVHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 17:04:38 -0400
-Received: from localhost.localdomain ([93.22.37.174])
-        by mwinf5d46 with ME
-        id CM4Z230063lSDvh03M4ZCJ; Thu, 06 Aug 2020 23:04:35 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 06 Aug 2020 23:04:35 +0200
-X-ME-IP: 93.22.37.174
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        yuehaibing@huawei.com, vaibhavgupta40@gmail.com
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] adm8211: switch from 'pci_' to 'dma_' API
-Date:   Thu,  6 Aug 2020 23:04:31 +0200
-Message-Id: <20200806210431.736050-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Thu, 6 Aug 2020 17:07:13 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45704C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 14:07:13 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1k3n6U-00023A-Em; Thu, 06 Aug 2020 23:07:10 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1k3n6T-0004ZV-BT; Thu, 06 Aug 2020 23:07:09 +0200
+Date:   Thu, 6 Aug 2020 23:07:09 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Thorsten Scherer <t.scherer@eckelmann.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [PATCH] gpio: siox: indicate exclusive support of threaded IRQs
+Message-ID: <20200806210709.5etazgtsfgkdnoui@pengutronix.de>
+References: <20200804091603.541-1-a.fatoum@pengutronix.de>
+ <20200805061753.5o63zu4ionhgjab4@pengutronix.de>
+ <871rkkhy7v.fsf@nanos.tec.linutronix.de>
+ <CACRpkdaOysS1-Y=3ghQ+1qbMTR8yi3bHg=_+gUOPo_EcmGmJiw@mail.gmail.com>
+ <87r1sjham2.fsf@nanos.tec.linutronix.de>
+ <20200806194608.bdhvltvwxi3opykk@pengutronix.de>
+ <87eeojh5vh.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="75n4mrucr4xkreqh"
+Content-Disposition: inline
+In-Reply-To: <87eeojh5vh.fsf@nanos.tec.linutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+--75n4mrucr4xkreqh
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-When memory is allocated in 'adm8211_alloc_rings()', GFP_KERNEL can be used
-because it is called only from the probe function and no lock is acquired.
-Moreover, GFP_KERNEL is already used just a few lines above in a kmalloc.
+Hello Thomas,
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
+On Thu, Aug 06, 2020 at 10:33:06PM +0200, Thomas Gleixner wrote:
+> Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de> writes:
+> > On Thu, Aug 06, 2020 at 08:50:45PM +0200, Thomas Gleixner wrote:
+> >> handle_nested_irq() does not care. It cares about thread context,
+> >> external reentrancy protection for the same nested interrupt and that
+> >> the nested interrupt has a thread handler.
+> >>=20
+> >> The latter is what goes belly up because w/o that threaded bit set the
+> >> GPIO core fails to set nested thread. So if a consumer requests an
+> >> interrupt with request_any_context_irq() then that fails to select
+> >> thread mode which means the threaded handler is not set causing
+> >> handle_nested_irq() to fail.
+> >
+> > For a caller of request_threaded_irq() that passes a relevant hardirq
+> > handler the hardirq handler is never called but request_threaded_irq()
+> > doesn't fail. The handler is just replaced by irq_nested_primary_handler
+> > in __setup_irq(). Is that a bug? (I didn't test, just read the code, so=
+ I
+> > might have missed something.)
+>=20
+> Depends on what the threaded handler expects what the primary handler
+> has done. It might just work or not :)
 
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
+So we need something like:
 
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index 48c38e09c673..31777a0b79df 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -1393,12 +1393,18 @@ __setup_irq(unsigned int irq, struct irq_desc *desc=
+, struct irqaction *new)
+ 			ret =3D -EINVAL;
+ 			goto out_mput;
+ 		}
+-		/*
+-		 * Replace the primary handler which was provided from
+-		 * the driver for non nested interrupt handling by the
+-		 * dummy function which warns when called.
+-		 */
+-		new->handler =3D irq_nested_primary_handler;
++
++		if (new->handler =3D=3D NULL) {
++			/* Scream loud if the primary handler gets called */
++			new->handler =3D irq_nested_primary_handler;
++		} else {
++			/*
++			 * The handler won't be called as the requestor expects,
++			 * so refuse to install the handler
++			 */
++			ret =3D -EINVAL;
++			goto out_mput;
++		}
+ 	} else {
+ 		if (irq_settings_can_thread(desc)) {
+ 			ret =3D irq_setup_forced_threading(new);
 
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
+? Do we need to care for other allowed values of new->handler? Maybe
+irq_default_primary_handler?
 
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+> > Is this bad enough to justify sending this patch to stable?
+>=20
+> Yes, a Cc: stable and a Fixes: tag is justified.
 
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+That would be
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
+Fixes: be8c8facc707 ("gpio: new driver to work with a 8x12 siox")
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
+Best regards
+Uwe
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
+--75n4mrucr4xkreqh
+Content-Type: application/pgp-signature; name="signature.asc"
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
+-----BEGIN PGP SIGNATURE-----
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8scPoACgkQwfwUeK3K
+7AnQjwf+NVenm0tilv5dLcz2EM4fNz/Drg4QN3+GejSqC91vKU3VrTjbNcb0YxR8
+qHMTARruuR0CTOAo4L21onsw+9svN8b4ykl+yeqQ2NAa0mWMv7FQvJzUl0HscMwv
+imS7eusbaIVSPCDKI4B736GpMlARYzNvvwDT+i7MlqLrRlqvFN/sTvy7o5lvNDZG
+Zo2Hn6DKHwo+xBEm08Lad05BMf5s/1/oAwlNfPg2SMR8sxQ3ptrCDm+BqDuib6jy
+UCXH5/rWqI3V0fRPMc3VOvvyYvi/XwAICQ/Jd0e/BkKj0odeGxqNLgMC+IRwTwk6
+O+UsW9NscENYju1C7cbu2EBeBf5FcQ==
+=qFCN
+-----END PGP SIGNATURE-----
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/net/wireless/admtek/adm8211.c | 83 +++++++++++++--------------
- 1 file changed, 40 insertions(+), 43 deletions(-)
-
-diff --git a/drivers/net/wireless/admtek/adm8211.c b/drivers/net/wireless/admtek/adm8211.c
-index 22f9f2f8af10..5cf2045fadef 100644
---- a/drivers/net/wireless/admtek/adm8211.c
-+++ b/drivers/net/wireless/admtek/adm8211.c
-@@ -324,8 +324,8 @@ static void adm8211_interrupt_tci(struct ieee80211_hw *dev)
- 
- 		/* TODO: check TDES0_STATUS_TUF and TDES0_STATUS_TRO */
- 
--		pci_unmap_single(priv->pdev, info->mapping,
--				 info->skb->len, PCI_DMA_TODEVICE);
-+		dma_unmap_single(&priv->pdev->dev, info->mapping,
-+				 info->skb->len, DMA_TO_DEVICE);
- 
- 		ieee80211_tx_info_clear_status(txi);
- 
-@@ -382,35 +382,34 @@ static void adm8211_interrupt_rci(struct ieee80211_hw *dev)
- 		} else if (pktlen < RX_COPY_BREAK) {
- 			skb = dev_alloc_skb(pktlen);
- 			if (skb) {
--				pci_dma_sync_single_for_cpu(
--					priv->pdev,
--					priv->rx_buffers[entry].mapping,
--					pktlen, PCI_DMA_FROMDEVICE);
-+				dma_sync_single_for_cpu(&priv->pdev->dev,
-+							priv->rx_buffers[entry].mapping,
-+							pktlen,
-+							DMA_FROM_DEVICE);
- 				skb_put_data(skb,
- 					     skb_tail_pointer(priv->rx_buffers[entry].skb),
- 					     pktlen);
--				pci_dma_sync_single_for_device(
--					priv->pdev,
--					priv->rx_buffers[entry].mapping,
--					RX_PKT_SIZE, PCI_DMA_FROMDEVICE);
-+				dma_sync_single_for_device(&priv->pdev->dev,
-+							   priv->rx_buffers[entry].mapping,
-+							   RX_PKT_SIZE,
-+							   DMA_FROM_DEVICE);
- 			}
- 		} else {
- 			newskb = dev_alloc_skb(RX_PKT_SIZE);
- 			if (newskb) {
- 				skb = priv->rx_buffers[entry].skb;
- 				skb_put(skb, pktlen);
--				pci_unmap_single(
--					priv->pdev,
--					priv->rx_buffers[entry].mapping,
--					RX_PKT_SIZE, PCI_DMA_FROMDEVICE);
-+				dma_unmap_single(&priv->pdev->dev,
-+						 priv->rx_buffers[entry].mapping,
-+						 RX_PKT_SIZE, DMA_FROM_DEVICE);
- 				priv->rx_buffers[entry].skb = newskb;
- 				priv->rx_buffers[entry].mapping =
--					pci_map_single(priv->pdev,
-+					dma_map_single(&priv->pdev->dev,
- 						       skb_tail_pointer(newskb),
- 						       RX_PKT_SIZE,
--						       PCI_DMA_FROMDEVICE);
--				if (pci_dma_mapping_error(priv->pdev,
--					   priv->rx_buffers[entry].mapping)) {
-+						       DMA_FROM_DEVICE);
-+				if (dma_mapping_error(&priv->pdev->dev,
-+						      priv->rx_buffers[entry].mapping)) {
- 					priv->rx_buffers[entry].skb = NULL;
- 					dev_kfree_skb(newskb);
- 					skb = NULL;
-@@ -1449,11 +1448,11 @@ static int adm8211_init_rings(struct ieee80211_hw *dev)
- 		rx_info->skb = dev_alloc_skb(RX_PKT_SIZE);
- 		if (rx_info->skb == NULL)
- 			break;
--		rx_info->mapping = pci_map_single(priv->pdev,
-+		rx_info->mapping = dma_map_single(&priv->pdev->dev,
- 						  skb_tail_pointer(rx_info->skb),
- 						  RX_PKT_SIZE,
--						  PCI_DMA_FROMDEVICE);
--		if (pci_dma_mapping_error(priv->pdev, rx_info->mapping)) {
-+						  DMA_FROM_DEVICE);
-+		if (dma_mapping_error(&priv->pdev->dev, rx_info->mapping)) {
- 			dev_kfree_skb(rx_info->skb);
- 			rx_info->skb = NULL;
- 			break;
-@@ -1490,10 +1489,9 @@ static void adm8211_free_rings(struct ieee80211_hw *dev)
- 		if (!priv->rx_buffers[i].skb)
- 			continue;
- 
--		pci_unmap_single(
--			priv->pdev,
--			priv->rx_buffers[i].mapping,
--			RX_PKT_SIZE, PCI_DMA_FROMDEVICE);
-+		dma_unmap_single(&priv->pdev->dev,
-+				 priv->rx_buffers[i].mapping, RX_PKT_SIZE,
-+				 DMA_FROM_DEVICE);
- 
- 		dev_kfree_skb(priv->rx_buffers[i].skb);
- 	}
-@@ -1502,10 +1500,9 @@ static void adm8211_free_rings(struct ieee80211_hw *dev)
- 		if (!priv->tx_buffers[i].skb)
- 			continue;
- 
--		pci_unmap_single(priv->pdev,
-+		dma_unmap_single(&priv->pdev->dev,
- 				 priv->tx_buffers[i].mapping,
--				 priv->tx_buffers[i].skb->len,
--				 PCI_DMA_TODEVICE);
-+				 priv->tx_buffers[i].skb->len, DMA_TO_DEVICE);
- 
- 		dev_kfree_skb(priv->tx_buffers[i].skb);
- 	}
-@@ -1632,9 +1629,9 @@ static int adm8211_tx_raw(struct ieee80211_hw *dev, struct sk_buff *skb,
- 	unsigned int entry;
- 	u32 flag;
- 
--	mapping = pci_map_single(priv->pdev, skb->data, skb->len,
--				 PCI_DMA_TODEVICE);
--	if (pci_dma_mapping_error(priv->pdev, mapping))
-+	mapping = dma_map_single(&priv->pdev->dev, skb->data, skb->len,
-+				 DMA_TO_DEVICE);
-+	if (dma_mapping_error(&priv->pdev->dev, mapping))
- 		return -ENOMEM;
- 
- 	spin_lock_irqsave(&priv->lock, flags);
-@@ -1745,8 +1742,8 @@ static int adm8211_alloc_rings(struct ieee80211_hw *dev)
- 	/* Allocate TX/RX descriptors */
- 	ring_size = sizeof(struct adm8211_desc) * priv->rx_ring_size +
- 		    sizeof(struct adm8211_desc) * priv->tx_ring_size;
--	priv->rx_ring = pci_alloc_consistent(priv->pdev, ring_size,
--					     &priv->rx_ring_dma);
-+	priv->rx_ring = dma_alloc_coherent(&priv->pdev->dev, ring_size,
-+					   &priv->rx_ring_dma, GFP_KERNEL);
- 
- 	if (!priv->rx_ring) {
- 		kfree(priv->rx_buffers);
-@@ -1818,8 +1815,8 @@ static int adm8211_probe(struct pci_dev *pdev,
- 		return err; /* someone else grabbed it? don't disable it */
- 	}
- 
--	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) ||
--	    pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32))) {
-+	if (dma_set_mask(&pdev->dev, DMA_BIT_MASK(32)) ||
-+	    dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32))) {
- 		printk(KERN_ERR "%s (adm8211): No suitable DMA available\n",
- 		       pci_name(pdev));
- 		goto err_free_reg;
-@@ -1929,10 +1926,10 @@ static int adm8211_probe(struct pci_dev *pdev,
- 	kfree(priv->eeprom);
- 
-  err_free_desc:
--	pci_free_consistent(pdev,
--			    sizeof(struct adm8211_desc) * priv->rx_ring_size +
--			    sizeof(struct adm8211_desc) * priv->tx_ring_size,
--			    priv->rx_ring, priv->rx_ring_dma);
-+	dma_free_coherent(&pdev->dev,
-+			  sizeof(struct adm8211_desc) * priv->rx_ring_size +
-+			  sizeof(struct adm8211_desc) * priv->tx_ring_size,
-+			  priv->rx_ring, priv->rx_ring_dma);
- 	kfree(priv->rx_buffers);
- 
-  err_iounmap:
-@@ -1962,10 +1959,10 @@ static void adm8211_remove(struct pci_dev *pdev)
- 
- 	priv = dev->priv;
- 
--	pci_free_consistent(pdev,
--			    sizeof(struct adm8211_desc) * priv->rx_ring_size +
--			    sizeof(struct adm8211_desc) * priv->tx_ring_size,
--			    priv->rx_ring, priv->rx_ring_dma);
-+	dma_free_coherent(&pdev->dev,
-+			  sizeof(struct adm8211_desc) * priv->rx_ring_size +
-+			  sizeof(struct adm8211_desc) * priv->tx_ring_size,
-+			  priv->rx_ring, priv->rx_ring_dma);
- 
- 	kfree(priv->rx_buffers);
- 	kfree(priv->eeprom);
--- 
-2.25.1
-
+--75n4mrucr4xkreqh--
