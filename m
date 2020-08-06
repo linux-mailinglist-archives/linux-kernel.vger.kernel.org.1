@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB2B23DDE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B267923DE19
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730251AbgHFRQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:16:45 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:24800 "EHLO pegase1.c-s.fr"
+        id S1730463AbgHFRWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:22:06 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:57773 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730515AbgHFRPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:15:33 -0400
+        id S1730519AbgHFRPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:15:36 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BMw9X45Q9z9vCxw;
-        Thu,  6 Aug 2020 19:15:28 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4BMw9Y4FXDz9vCxx;
+        Thu,  6 Aug 2020 19:15:29 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id C8H3UNa7GBUz; Thu,  6 Aug 2020 19:15:28 +0200 (CEST)
+        with ESMTP id JHPLGaP4Y6mo; Thu,  6 Aug 2020 19:15:29 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BMw9X3JYzz9vCql;
-        Thu,  6 Aug 2020 19:15:28 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BMw9Y3Vbzz9vCql;
+        Thu,  6 Aug 2020 19:15:29 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C682C8B816;
-        Thu,  6 Aug 2020 19:15:30 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C5CDE8B816;
+        Thu,  6 Aug 2020 19:15:31 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id K33SXzQSZM_5; Thu,  6 Aug 2020 19:15:30 +0200 (CEST)
+        with ESMTP id Y_BBjRDQJoEZ; Thu,  6 Aug 2020 19:15:31 +0200 (CEST)
 Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7D8448B7FC;
-        Thu,  6 Aug 2020 19:15:30 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8260C8B7FC;
+        Thu,  6 Aug 2020 19:15:31 +0200 (CEST)
 Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 560BC65A68; Thu,  6 Aug 2020 17:15:30 +0000 (UTC)
-Message-Id: <ef827b73770a7b155079393f8d8430e10a99ec94.1596734104.git.christophe.leroy@csgroup.eu>
+        id 5A7E565A68; Thu,  6 Aug 2020 17:15:31 +0000 (UTC)
+Message-Id: <b07bac7a882c69deb9e6c8f234a68b3022f29072.1596734105.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <7baae4086cbb9ffb08c933b065ff7d29dbc03dd6.1596734104.git.christophe.leroy@csgroup.eu>
 References: <7baae4086cbb9ffb08c933b065ff7d29dbc03dd6.1596734104.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 3/5] powerpc/fault: Reorder tests in bad_kernel_fault()
+Subject: [PATCH v1 4/5] powerpc/fault: Avoid heavy search_exception_tables()
+ verification
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu,  6 Aug 2020 17:15:30 +0000 (UTC)
+Date:   Thu,  6 Aug 2020 17:15:31 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check address earlier to simplify the following test.
+search_exception_tables() is an heavy operation, we have to avoid it.
+When KUAP is selected, we'll know the fault has been blocked by KUAP.
+Otherwise, it behaves just as if the address was already in the TLBs
+and no fault was generated.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/mm/fault.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/powerpc/mm/fault.c | 20 +++++---------------
+ 1 file changed, 5 insertions(+), 15 deletions(-)
 
 diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-index 9ef9ee244f72..525e0c2b5406 100644
+index 525e0c2b5406..edde169ba3a6 100644
 --- a/arch/powerpc/mm/fault.c
 +++ b/arch/powerpc/mm/fault.c
-@@ -210,17 +210,17 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
+@@ -214,24 +214,14 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
+ 	if (address >= TASK_SIZE)
  		return true;
- 	}
  
--	if (!is_exec && address < TASK_SIZE && (error_code & DSISR_PROTFAULT) &&
-+	// Kernel fault on kernel address is bad
-+	if (address >= TASK_SIZE)
-+		return true;
-+
-+	if (!is_exec && (error_code & DSISR_PROTFAULT) &&
- 	    !search_exception_tables(regs->nip)) {
+-	if (!is_exec && (error_code & DSISR_PROTFAULT) &&
+-	    !search_exception_tables(regs->nip)) {
++	// Read/write fault blocked by KUAP is bad, it can never succeed.
++	if (bad_kuap_fault(regs, address, is_write)) {
  		pr_crit_ratelimited("Kernel attempted to access user page (%lx) - exploit attempt? (uid: %d)\n",
- 				    address,
- 				    from_kuid(&init_user_ns, current_uid()));
- 	}
- 
--	// Kernel fault on kernel address is bad
--	if (address >= TASK_SIZE)
+-				    address,
+-				    from_kuid(&init_user_ns, current_uid()));
+-	}
+-
+-	// Fault on user outside of certain regions (eg. copy_tofrom_user()) is bad
+-	if (!search_exception_tables(regs->nip))
 -		return true;
 -
- 	// Fault on user outside of certain regions (eg. copy_tofrom_user()) is bad
- 	if (!search_exception_tables(regs->nip))
+-	// Read/write fault in a valid region (the exception table search passed
+-	// above), but blocked by KUAP is bad, it can never succeed.
+-	if (bad_kuap_fault(regs, address, is_write))
++				    address, from_kuid(&init_user_ns, current_uid()));
  		return true;
++	}
+ 
+-	// What's left? Kernel fault on user in well defined regions (extable
+-	// matched), and allowed by KUAP in the faulting context.
++	// What's left? Kernel fault on user and allowed by KUAP in the faulting context.
+ 	return false;
+ }
+ 
 -- 
 2.25.0
 
