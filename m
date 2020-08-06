@@ -2,49 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547DA23DDF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2985023DDF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730163AbgHFRUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:20:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
+        id S1730548AbgHFRUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:20:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726149AbgHFRTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:19:45 -0400
-Subject: Re: [GIT] Networking
+        id S1730066AbgHFRT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:19:59 -0400
+Subject: Re: [GIT PULL] Hyper-V commits for 5.9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596734385;
-        bh=MWTsTuM14LK//ribvpf+b3znnXVCM8wVoaOXrxSSE9o=;
+        s=default; t=1596734399;
+        bh=llGio8NISU1dDiX/k1/v42pGDK10egkgeYA1hXPqBrE=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=0rIZaA56cXdR2p8cTW/SYKouSmGz6+ieQvmbRK7fCsVaxGPhJUZnYpuDCmMUBwlmq
-         zIlQSO13lVSjFdWAopfhGX60F9RW1kpppmiBhADIsEUytVM+QeVzMSJ/h6LolZSecp
-         nzdYGLIR/Dp7VZEgnkelM2w01TV9pf61pY+pMwJ8=
+        b=oW/8qgwVMVBvwGY9hoa9QyRwWEaUL2eAe+VSdkN6vgmI8KmKJx71JYNB/pXXApYqa
+         doLPQtVzWZr+bLkoVDwTsml8tmIh9WTQpf762nkBv0cEysWb3mZDeQEPxlvYAwgKpz
+         G724+vEhJ0oVEdgPTeg4PAZmMqGqgwx79R+bv5fE=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200805.185559.1225246192723680518.davem@davemloft.net>
-References: <20200805.185559.1225246192723680518.davem@davemloft.net>
-X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200805.185559.1225246192723680518.davem@davemloft.net>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git refs/heads/master
-X-PR-Tracked-Commit-Id: c1055b76ad00aed0e8b79417080f212d736246b6
+In-Reply-To: <20200804101516.xtytsljxre3wheae@liuwe-devbox-debian-v2>
+References: <20200804101516.xtytsljxre3wheae@liuwe-devbox-debian-v2>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200804101516.xtytsljxre3wheae@liuwe-devbox-debian-v2>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed
+X-PR-Tracked-Commit-Id: 7deff7b5b4395784b194bae3631b8333d3423938
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 47ec5303d73ea344e84f46660fff693c57641386
-Message-Id: <159673438516.17279.6122070644524538248.pr-tracker-bot@kernel.org>
-Date:   Thu, 06 Aug 2020 17:19:45 +0000
-To:     David Miller <davem@davemloft.net>
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: 9ab9bc5115c9a1a57ed83a143c601c31488eadd9
+Message-Id: <159673439877.17279.18064274073791934714.pr-tracker-bot@kernel.org>
+Date:   Thu, 06 Aug 2020 17:19:58 +0000
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
+        sthemmin@microsoft.com, haiyangz@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 05 Aug 2020 18:55:59 -0700 (PDT):
+The pull request you sent on Tue, 4 Aug 2020 10:15:16 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git refs/heads/master
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/47ec5303d73ea344e84f46660fff693c57641386
+https://git.kernel.org/torvalds/c/9ab9bc5115c9a1a57ed83a143c601c31488eadd9
 
 Thank you!
 
