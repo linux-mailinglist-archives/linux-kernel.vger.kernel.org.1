@@ -2,207 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE7E23D7CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3510923D7CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 10:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728751AbgHFIHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 04:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47054 "EHLO
+        id S1728851AbgHFIH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 04:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728578AbgHFIFQ (ORCPT
+        with ESMTP id S1728678AbgHFIF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 04:05:16 -0400
-Received: from mail-ej1-x649.google.com (mail-ej1-x649.google.com [IPv6:2a00:1450:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4334FC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 01:04:28 -0700 (PDT)
-Received: by mail-ej1-x649.google.com with SMTP id gg11so7323201ejb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 01:04:28 -0700 (PDT)
+        Thu, 6 Aug 2020 04:05:58 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73339C061574;
+        Thu,  6 Aug 2020 01:05:49 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id c10so4378331pjn.1;
+        Thu, 06 Aug 2020 01:05:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc:content-transfer-encoding;
-        bh=mOjwTlI4LaDoFAqHd/CEHg0Dqi+LihgQr+xeS1gXpis=;
-        b=tDH0SpBJOVvaIUzPtmVuxUqyvnBSUCyMqFtYcMgVXHcDWUdJhLlmnBIESBCuGGSaNx
-         AaAhbxZ2UhI28l81X3oB1EvwtIp1jgDi94nEgfOaNF2GVnHSpfYzELKPV5+2zEWAYCTr
-         TWUkhoUsSXqNwPDg7Z0DUPSWlbins9V/M57xz4QQrPSG5eKVSJG22crM5gBg2HjWWM9P
-         T34JtrSBzKMDvT7G6B0UvX+2439Pcg3AYzBn+vjjcorqRMI96vNu7DyKJvdF2Tb8bwDn
-         HExshd30yG8HkERycM93BJ3soZw0kipbgYCmreSVmwsjTEAMxNuA1GUZBMwXXeXQlpoA
-         P4Yw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gvp/wmpdcbsDD44F7FznYVLBzaBcr2CE7TDbqpCKwbU=;
+        b=LVS4O7bvmc+JPqtBelCbg8GGxi6WGmozkQmlelPXT13ddLBLKLCC+o8/XdLfU/04Mx
+         41mYpUktmB+EEYY/iIMTOmXAFjhugSv4Bc+MwjRmOyG2gsvGXTUl4WEmcfjzZjyCdpf8
+         V1Zy75NR0ITGyBTcCHW6HHgCDjWJ7llfmREAM2DczFwzm0zUrazm8YqjSkex4Kov43NR
+         GzM2NhjSMzHWMwLHGOoP3FvghbXdmKDOtBgGIo9CKrg+1wacsC95YvEsGXmhMQMK+dTL
+         5qcJmCXW6HOVwxCAQrN7TDftejgpNZchWiEKplPzgtNF1oT7P95aOmfmZbY7kN4xp9hv
+         Naqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=mOjwTlI4LaDoFAqHd/CEHg0Dqi+LihgQr+xeS1gXpis=;
-        b=UpnF1VgsUxtWr6RgZr/FMKPmVb+u8HWD/NwT3jsM5sgvUgNePvSwKHFnp82kk9qM97
-         KSqCZfGgJxV7aqNu1WFwJJmMWr0s5LVr4C3wmBiVqcwJXfKdSi0t4Q4+XPk3jeqjQPab
-         N6G51oAtBffaTUfsDF77t1d6LCmNIlF9IpQIkBSkBL0Ji6luawqNGYLHk7BtpztTtJ9c
-         ruCDazFrUlDmRt4SZNiI4mF8e2vccbg+0NLZ8vW8BabqjzqFIYanMZ6N11VvcCO5dM0x
-         mvQxvyBkc3psgXemnoyT++WG3JAE0rcENDptCaNND3Ozg09kfe3295nrkq/tF/xhuxTC
-         YKkg==
-X-Gm-Message-State: AOAM5309MItNcy+HEcyO5SqvdOQ6f2RdAdZuB8dn6WFdZP8FBTHsFjcW
-        ZkWL62cMDEHOj3IBxZByIHDT9VEJrg==
-X-Google-Smtp-Source: ABdhPJw7+h3SDa+sB/Btd5MvQIu+UhCAl+l3KSnK/otVP3qHgJoDEOH9thLaoxF8EfWtBx/+v1vbL4HEQg==
-X-Received: by 2002:a05:6402:297:: with SMTP id l23mr2957498edv.145.1596701065565;
- Thu, 06 Aug 2020 01:04:25 -0700 (PDT)
-Date:   Thu,  6 Aug 2020 10:03:42 +0200
-In-Reply-To: <20200806080358.3124505-1-tweek@google.com>
-Message-Id: <20200806080358.3124505-2-tweek@google.com>
-Mime-Version: 1.0
-References: <20200806080358.3124505-1-tweek@google.com>
-X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-Subject: [PATCH 2/2] selinux: add attributes to avc tracepoint
-From:   "=?UTF-8?q?Thi=C3=A9baud=20Weksteen?=" <tweek@google.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Nick Kralevich <nnk@google.com>,
-        Peter Enderborg <peter.enderborg@sony.com>,
-        "=?UTF-8?q?Thi=C3=A9baud=20Weksteen?=" <tweek@google.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gvp/wmpdcbsDD44F7FznYVLBzaBcr2CE7TDbqpCKwbU=;
+        b=Lc/HNk613VCVXPMmK7+VRl/yztWxFfmfg/6M36s/mtESFw6j9qzCgXAmQ/ia4IDPBk
+         yVGVGWBq3WGn0PBYgaecFnpSX+V69RxRgnCIW+PkqRwz/jmx+yO4/O5tqVMHnCg78li8
+         eQji5QvG2VNceTwVXwc5GTMAL6Fn/LUQN8kvhCBYlRunEPCm6NlbOF5SmsdZwjBkkSVs
+         uH1hVw1ARudzYgOVCh9D6JazvhpZ0QEtaXW44BoiCSIvgvowCfD4td2eed0wqH+Xa+BO
+         T3R9sTXNaUIm5u8x2oFEnzz5wlQy096SQJlKMEoYNwYHPQyROOPMfltIkgmHydy/uner
+         ckPA==
+X-Gm-Message-State: AOAM5339DLzReZTBT+Jgem8UrHoE6X8G9ODgAQWMKasyIbs0vbiIlNTu
+        TMiaUDaKH6DSh5wyMMfZJCU=
+X-Google-Smtp-Source: ABdhPJz7G7hkX91BoQ5RlVkjBTZKCspgkfr419sacZ/yxk05eABOpYQDgpGIC6gHk6dvBfA5N67Lvg==
+X-Received: by 2002:a17:902:be17:: with SMTP id r23mr6624739pls.284.1596701143493;
+        Thu, 06 Aug 2020 01:05:43 -0700 (PDT)
+Received: from gmail.com ([2601:600:9b7f:872e:a655:30fb:7373:c762])
+        by smtp.gmail.com with ESMTPSA id d22sm6939369pfd.42.2020.08.06.01.05.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 01:05:42 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 01:05:40 -0700
+From:   Andrei Vagin <avagin@gmail.com>
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        viro@zeniv.linux.org.uk, adobriyan@gmail.com, davem@davemloft.net,
+        akpm@linux-foundation.org, christian.brauner@ubuntu.com,
+        areber@redhat.com, serge@hallyn.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Subject: Re: [PATCH 00/23] proc: Introduce /proc/namespaces/ directory to
+ expose namespaces lineary
+Message-ID: <20200806080540.GA18865@gmail.com>
+References: <159611007271.535980.15362304262237658692.stgit@localhost.localdomain>
+ <87k0yl5axy.fsf@x220.int.ebiederm.org>
+ <56928404-f194-4194-5f2a-59acb15b1a04@virtuozzo.com>
+ <875za43b3w.fsf@x220.int.ebiederm.org>
+ <9ceb5049-6aea-1429-e35f-d86480f10d72@virtuozzo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <9ceb5049-6aea-1429-e35f-d86480f10d72@virtuozzo.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Enderborg <peter.enderborg@sony.com>
+On Mon, Aug 03, 2020 at 01:03:17PM +0300, Kirill Tkhai wrote:
+> On 31.07.2020 01:13, Eric W. Biederman wrote:
+> > Kirill Tkhai <ktkhai@virtuozzo.com> writes:
+> > 
+> >> On 30.07.2020 17:34, Eric W. Biederman wrote:
+> >>> Kirill Tkhai <ktkhai@virtuozzo.com> writes:
+> >>>
+> >>>> Currently, there is no a way to list or iterate all or subset of namespaces
+> >>>> in the system. Some namespaces are exposed in /proc/[pid]/ns/ directories,
+> >>>> but some also may be as open files, which are not attached to a process.
+> >>>> When a namespace open fd is sent over unix socket and then closed, it is
+> >>>> impossible to know whether the namespace exists or not.
+> >>>>
+> >>>> Also, even if namespace is exposed as attached to a process or as open file,
+> >>>> iteration over /proc/*/ns/* or /proc/*/fd/* namespaces is not fast, because
+> >>>> this multiplies at tasks and fds number.
+> >>>
+> >>> I am very dubious about this.
+> >>>
+> >>> I have been avoiding exactly this kind of interface because it can
+> >>> create rather fundamental problems with checkpoint restart.
+> >>
+> >> restart/restore :)
+> >>
+> >>> You do have some filtering and the filtering is not based on current.
+> >>> Which is good.
+> >>>
+> >>> A view that is relative to a user namespace might be ok.    It almost
+> >>> certainly does better as it's own little filesystem than as an extension
+> >>> to proc though.
+> >>>
+> >>> The big thing we want to ensure is that if you migrate you can restore
+> >>> everything.  I don't see how you will be able to restore these files
+> >>> after migration.  Anything like this without having a complete
+> >>> checkpoint/restore story is a non-starter.
+> >>
+> >> There is no difference between files in /proc/namespaces/ directory and /proc/[pid]/ns/.
+> >>
+> >> CRIU can restore open files in /proc/[pid]/ns, the same will be with /proc/namespaces/ files.
+> >> As a person who worked deeply for pid_ns and user_ns support in CRIU, I don't see any
+> >> problem here.
+> > 
+> > An obvious diffference is that you are adding the inode to the inode to
+> > the file name.  Which means that now you really do have to preserve the
+> > inode numbers during process migration.
+> >
+> > Which means now we have to do all of the work to make inode number
+> > restoration possible.  Which means now we need to have multiple
+> > instances of nsfs so that we can restore inode numbers.
+> > 
+> > I think this is still possible but we have been delaying figuring out
+> > how to restore inode numbers long enough that may be actual technical
+> > problems making it happen.
+> 
+> Yeah, this matters. But it looks like here is not a dead end. We just need
+> change the names the namespaces are exported to particular fs and to support
+> rename().
+> 
+> Before introduction a principally new filesystem type for this, can't
+> this be solved in current /proc?
 
-Add further attributes to filter the trace events from AVC.
+do you mean to introduce names for namespaces which users will be able
+to change? By default, this can be uuid.
 
-Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
-Reviewed-by: Thi=C3=A9baud Weksteen <tweek@google.com>
----
- include/trace/events/avc.h | 41 ++++++++++++++++++++++++++++----------
- security/selinux/avc.c     | 22 +++++++++++---------
- 2 files changed, 44 insertions(+), 19 deletions(-)
+And I have a suggestion about the structure of /proc/namespaces/.
 
-diff --git a/include/trace/events/avc.h b/include/trace/events/avc.h
-index 07c058a9bbcd..ac5ef2e1c2c5 100644
---- a/include/trace/events/avc.h
-+++ b/include/trace/events/avc.h
-@@ -1,6 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- /*
-- * Author: Thi=C3=A9baud Weksteen <tweek@google.com>
-+ * Authors:	Thi=C3=A9baud Weksteen <tweek@google.com>
-+ *		Peter Enderborg <Peter.Enderborg@sony.com>
-  */
- #undef TRACE_SYSTEM
- #define TRACE_SYSTEM avc
-@@ -12,23 +13,43 @@
-=20
- TRACE_EVENT(selinux_audited,
-=20
--	TP_PROTO(struct selinux_audit_data *sad),
-+	TP_PROTO(struct selinux_audit_data *sad,
-+		char *scontext,
-+		char *tcontext,
-+		const char *tclass
-+	),
-=20
--	TP_ARGS(sad),
-+	TP_ARGS(sad, scontext, tcontext, tclass),
-=20
- 	TP_STRUCT__entry(
--		__field(unsigned int, tclass)
--		__field(unsigned int, audited)
-+		__field(u32, requested)
-+		__field(u32, denied)
-+		__field(u32, audited)
-+		__field(int, result)
-+		__string(scontext, scontext)
-+		__string(tcontext, tcontext)
-+		__string(tclass, tclass)
-+		__field(u32, ssid)
-+		__field(u32, tsid)
- 	),
-=20
- 	TP_fast_assign(
--		__entry->tclass =3D sad->tclass;
--		__entry->audited =3D sad->audited;
-+		__entry->requested	=3D sad->requested;
-+		__entry->denied		=3D sad->denied;
-+		__entry->audited	=3D sad->audited;
-+		__entry->result		=3D sad->result;
-+		__entry->ssid		=3D sad->ssid;
-+		__entry->tsid		=3D sad->tsid;
-+		__assign_str(tcontext, tcontext);
-+		__assign_str(scontext, scontext);
-+		__assign_str(tclass, tclass);
- 	),
-=20
--	TP_printk("tclass=3D%u audited=3D%x",
--		__entry->tclass,
--		__entry->audited)
-+	TP_printk("requested=3D0x%x denied=3D0x%x audited=3D0x%x result=3D%d ssid=
-=3D%u tsid=3D%u scontext=3D%s tcontext=3D%s tclass=3D%s",
-+		__entry->requested, __entry->denied, __entry->audited, __entry->result,
-+		__entry->ssid, __entry->tsid, __get_str(scontext), __get_str(tcontext),
-+		__get_str(tclass)
-+	)
- );
-=20
- #endif
-diff --git a/security/selinux/avc.c b/security/selinux/avc.c
-index b0a0af778b70..7de5cc5169af 100644
---- a/security/selinux/avc.c
-+++ b/security/selinux/avc.c
-@@ -705,35 +705,39 @@ static void avc_audit_post_callback(struct audit_buff=
-er *ab, void *a)
- {
- 	struct common_audit_data *ad =3D a;
- 	struct selinux_audit_data *sad =3D ad->selinux_audit_data;
--	char *scontext;
-+	char *scontext =3D NULL;
-+	char *tcontext =3D NULL;
-+	const char *tclass =3D NULL;
- 	u32 scontext_len;
-+	u32 tcontext_len;
- 	int rc;
-=20
--	trace_selinux_audited(sad);
--
- 	rc =3D security_sid_to_context(sad->state, sad->ssid, &scontext,
- 				     &scontext_len);
- 	if (rc)
- 		audit_log_format(ab, " ssid=3D%d", sad->ssid);
- 	else {
- 		audit_log_format(ab, " scontext=3D%s", scontext);
--		kfree(scontext);
- 	}
-=20
--	rc =3D security_sid_to_context(sad->state, sad->tsid, &scontext,
--				     &scontext_len);
-+	rc =3D security_sid_to_context(sad->state, sad->tsid, &tcontext,
-+				     &tcontext_len);
- 	if (rc)
- 		audit_log_format(ab, " tsid=3D%d", sad->tsid);
- 	else {
--		audit_log_format(ab, " tcontext=3D%s", scontext);
--		kfree(scontext);
-+		audit_log_format(ab, " tcontext=3D%s", tcontext);
- 	}
-=20
--	audit_log_format(ab, " tclass=3D%s", secclass_map[sad->tclass-1].name);
-+	tclass =3D secclass_map[sad->tclass-1].name;
-+	audit_log_format(ab, " tclass=3D%s", tclass);
-=20
- 	if (sad->denied)
- 		audit_log_format(ab, " permissive=3D%u", sad->result ? 0 : 1);
-=20
-+	trace_selinux_audited(sad, scontext, tcontext, tclass);
-+	kfree(tcontext);
-+	kfree(scontext);
-+
- 	/* in case of invalid context report also the actual context string */
- 	rc =3D security_sid_to_context_inval(sad->state, sad->ssid, &scontext,
- 					   &scontext_len);
---=20
-2.28.0.163.g6104cc2f0b6-goog
+Each namespace is owned by one of user namespaces. Maybe it makes sense
+to group namespaces by their user-namespaces?
 
+/proc/namespaces/
+                 user
+                 mnt-X
+                 mnt-Y
+                 pid-X
+                 uts-Z
+                 user-X/
+                        user
+                        mnt-A
+                        mnt-B
+                        user-C
+                        user-C/
+                               user
+                 user-Y/
+                        user
+
+Do we try to invent cgroupfs for namespaces?
+
+Thanks,
+Andrei
