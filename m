@@ -2,147 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9294323D689
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 07:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A914C23D68B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 07:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727775AbgHFFqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 01:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726051AbgHFFqR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 01:46:17 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492D6C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 Aug 2020 22:46:17 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id z18so14801420otk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 05 Aug 2020 22:46:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=ZaqiVLeoazR8CQkUYq5gppTrJuQmd0jN3Fkv88tkHZ8=;
-        b=lXg8hPY0BmpGcYaRUchxmHWlFW+9e0oKPAB8zBqsFvDUDUFNdgW2oK0pVmG8vYYpK6
-         HJmAxj9jttkdlgsVM/cddriqU58ErheTTpQN8wjaneDSCH5TaaOfpWOPc8ArN/0HUO42
-         sLQleP56GlPaA2igOPdscQwwfi7wC4286H09lAr0agiItTYgbqojuxiPaCDhokeSHxsL
-         YDUlbmMs98MWo7qo0HGDJ4q2bdsuM6QjcGvO+qapxkI9kDwYMnc+n4c4yqKHuCsa773A
-         37fUMz2x1/2PDP+ccsKkEGd50GohU0bmKOMcn4R/TN3bXkVwGr6mTdnaQSQse2mp+c2Z
-         gW+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=ZaqiVLeoazR8CQkUYq5gppTrJuQmd0jN3Fkv88tkHZ8=;
-        b=FrkMNM+G9p58iwbsA+B5QWb0q2twe6AJh+7Ng3rmqm/JFXYuQZs8a4M/famoaCR3dW
-         Jzq62TLhUQPRpyl5Agra1BiudDLhsC+CWR8snhm0pGfa2xb4Rv/godaHTDlNSYDp+sNi
-         KlwOwGTiNuowQgwLEdsliVtgoI/BXkfwFbIV+LMiDv8lebkunJxeJJowxN3zqBZMATxO
-         L9yygRPbnMCdw9++td8BCkp0aB1i4PK+bxYHkg/3WerdidDx/RzDzDpP02LO42mki7IY
-         +6LBiG1ZLA3P1V4s9YiN7pra/nbxwOZ8ibzNEqkQ4GWHVrxuMLNMLu+vzebnyZZzFNj6
-         XyFQ==
-X-Gm-Message-State: AOAM531fk0KKRc66kH9aR7gs8cDKdLd3IUKrJNiG3BCsIOD/QOipOiBg
-        GtMeoxVg68M9MONngkxWawfpeZcBC+4=
-X-Google-Smtp-Source: ABdhPJy5o1IUmeAPs1J1R0jyj3A4334OcHJ6zDgUjb5xy7bS5RNnkj02GoG31GNRl0F1FVxN+w4J/w==
-X-Received: by 2002:a9d:38f:: with SMTP id f15mr5915614otf.74.1596692776353;
-        Wed, 05 Aug 2020 22:46:16 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id z72sm952656ooa.42.2020.08.05.22.46.13
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 05 Aug 2020 22:46:14 -0700 (PDT)
-Date:   Wed, 5 Aug 2020 22:46:12 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Greg KH <gregkh@linuxfoundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
-In-Reply-To: <20200727193512.GA236164@kroah.com>
-Message-ID: <alpine.LSU.2.11.2008052221440.8716@eggly.anvils>
-References: <alpine.LSU.2.11.2007231549540.1016@eggly.anvils> <CAHk-=wgvGOnMF0ePU4xS236bOsP8jouj3rps+ysCaGXvCjh2Dg@mail.gmail.com> <20200724152424.GC17209@redhat.com> <CAHk-=whuG+5pUeUqdiW4gk0prvqu7GZSMo-6oWv5PdDC5dBr=A@mail.gmail.com>
- <CAHk-=wjYHvbOs9i39EnUsC6VEJiuJ2e_5gZB5-J5CRKxq80B_Q@mail.gmail.com> <20200725101445.GB3870@redhat.com> <CAHk-=whSJbODMVmxxDs64f7BaESKWuMqOxWGpjUSDn6Jzqa71g@mail.gmail.com> <alpine.LSU.2.11.2007251343370.3804@eggly.anvils> <alpine.LSU.2.11.2007252100230.5376@eggly.anvils>
- <alpine.LSU.2.11.2007261246530.6812@eggly.anvils> <20200727193512.GA236164@kroah.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1727965AbgHFFqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 01:46:32 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:40016 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726051AbgHFFqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 01:46:32 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BMctW4D6qz9tytV;
+        Thu,  6 Aug 2020 07:46:27 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Cn2j-KJGPYQE; Thu,  6 Aug 2020 07:46:27 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BMctW21YWz9tysQ;
+        Thu,  6 Aug 2020 07:46:27 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 50E668B770;
+        Thu,  6 Aug 2020 07:46:28 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 9Cs47VjaX3ER; Thu,  6 Aug 2020 07:46:28 +0200 (CEST)
+Received: from po16052vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.102])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E77838B75E;
+        Thu,  6 Aug 2020 07:46:27 +0200 (CEST)
+Subject: Re: [PATCH v10 2/5] powerpc/vdso: Prepare for switching VDSO to
+ generic C implementation.
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, nathanl@linux.ibm.com,
+        anton@ozlabs.org, linux-arch@vger.kernel.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, luto@kernel.org, tglx@linutronix.de,
+        vincenzo.frascino@arm.com, linuxppc-dev@lists.ozlabs.org
+References: <cover.1596611196.git.christophe.leroy@csgroup.eu>
+ <348528c33cd4007f3fee7fe643ef160843d09a6c.1596611196.git.christophe.leroy@csgroup.eu>
+ <20200805140307.GO6753@gate.crashing.org>
+ <3db2a590-b842-83db-ed2b-f3ee62595f18@csgroup.eu>
+ <20200805184054.GQ6753@gate.crashing.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <24b9a5ea-f860-3b38-aee8-4d5676453d50@csgroup.eu>
+Date:   Thu, 6 Aug 2020 05:46:18 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20200805184054.GQ6753@gate.crashing.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Jul 2020, Greg KH wrote:
+Hi,
+
+On 08/05/2020 06:40 PM, Segher Boessenkool wrote:
+> Hi!
 > 
-> Linus just pointed me at this thread.
+> On Wed, Aug 05, 2020 at 04:40:16PM +0000, Christophe Leroy wrote:
+>>> It cannot optimise it because it does not know shift < 32.  The code
+>>> below is incorrect for shift equal to 32, fwiw.
+>>
+>> Is there a way to tell it ?
 > 
-> If you could run:
-> 	echo -n 'module xhci_hcd =p' > /sys/kernel/debug/dynamic_debug/control
-> and run the same workload to see if anything shows up in the log when
-> xhci crashes, that would be great.
+> Sure, for example the &31 should work (but it doesn't, with the GCC
+> version you used -- which version is that?)
 
-Thanks, I tried that, and indeed it did have a story to tell:
-
-ep 0x81 - asked for 16 bytes, 10 bytes untransferred
-ep 0x81 - asked for 16 bytes, 10 bytes untransferred
-ep 0x81 - asked for 16 bytes, 10 bytes untransferred
-   a very large number of lines like the above, then
-Cancel URB 00000000d81602f7, dev 4, ep 0x0, starting at offset 0xfffd42c0
-// Ding dong!
-ep 0x81 - asked for 16 bytes, 10 bytes untransferred
-Stopped on No-op or Link TRB for slot 1 ep 0
-xhci_drop_endpoint called for udev 000000005bc07fa6
-drop ep 0x81, slot id 1, new drop flags = 0x8, new add flags = 0x0
-add ep 0x81, slot id 1, new drop flags = 0x8, new add flags = 0x8
-xhci_check_bandwidth called for udev 000000005bc07fa6
-// Ding dong!
-Successful Endpoint Configure command
-Cancel URB 000000006b77d490, dev 4, ep 0x81, starting at offset 0x0
-// Ding dong!
-Stopped on No-op or Link TRB for slot 1 ep 2
-Removing canceled TD starting at 0x0 (dma).
-list_del corruption: prev(ffff8fdb4de7a130)->next should be ffff8fdb41697f88,
-   but is 6b6b6b6b6b6b6b6b; next(ffff8fdb4de7a130)->prev is 6b6b6b6b6b6b6b6b.
-------------[ cut here ]------------
-kernel BUG at lib/list_debug.c:53!
-RIP: 0010:__list_del_entry_valid+0x8e/0xb0
-Call Trace:
- <IRQ>
- handle_cmd_completion+0x7d4/0x14f0 [xhci_hcd]
- xhci_irq+0x242/0x1ea0 [xhci_hcd]
- xhci_msi_irq+0x11/0x20 [xhci_hcd]
- __handle_irq_event_percpu+0x48/0x2c0
- handle_irq_event_percpu+0x32/0x80
- handle_irq_event+0x4a/0x80
- handle_edge_irq+0xd8/0x1b0
- handle_irq+0x2b/0x50
- do_IRQ+0xb6/0x1c0
- common_interrupt+0x90/0x90
- </IRQ>
-
-Info provided for your interest, not expecting any response.
-The list_del info in there is non-standard, from a patch of mine:
-I find hashed addresses in debug output less than helpful.
+GCC 10.1
 
 > 
-> Although if you are using an "older version" of the driver, there's not
-> much I can suggest except update to a newer one :)
+>>> What does the compiler do for just
+>>>
+>>> static __always_inline u64 vdso_shift_ns(u64 ns, unsigned long shift)
+>>> 	return ns >> (shift & 31);
+>>> }
+>>>
+>>
+>> Worse:
+> 
+> I cannot make heads or tails of all that branch spaghetti, sorry.
+> 
+>>   73c:	55 8c 06 fe 	clrlwi  r12,r12,27
+>>   740:	7f c8 f0 14 	addc    r30,r8,r30
+>>   744:	7c c6 4a 14 	add     r6,r6,r9
+>>   748:	7c c6 e1 14 	adde    r6,r6,r28
+>>   74c:	34 6c ff e0 	addic.  r3,r12,-32
+>>   750:	41 80 00 70 	blt     7c0 <__c_kernel_clock_gettime+0x114>
+> 
+> This branch is always true.  Hrm.
 
-Yes, I was reluctant to post any info, since really the ball is at our
-end of the court, not yours. I did have a go at bringing in the latest
-xhci driver instead, but quickly saw that was not a sensible task for
-me. And I did scan the git log of xhci changes (especially xhci-ring.c
-changes): thought I saw a likely relevant and easily applied fix commit,
-but in fact it made no difference here.
+As a standalone function:
 
-I suspect it's in part a hardware problem, but driver not recovering
-correctly. I've replaced the machine (but also noticed that the same
-crash has occasionally been seen on other machines). I'm sure it has
-no relevance to this unlock_page() thread, though it's quite possible
-that it's triggered under stress, and Linus's changes allowed greater
-stress.
+With your suggestion:
 
-Hugh
+000006ac <vdso_shift_ns>:
+  6ac:	54 a5 06 fe 	clrlwi  r5,r5,27
+  6b0:	35 25 ff e0 	addic.  r9,r5,-32
+  6b4:	41 80 00 10 	blt     6c4 <vdso_shift_ns+0x18>
+  6b8:	7c 64 4c 30 	srw     r4,r3,r9
+  6bc:	38 60 00 00 	li      r3,0
+  6c0:	4e 80 00 20 	blr
+  6c4:	54 69 08 3c 	rlwinm  r9,r3,1,0,30
+  6c8:	21 45 00 1f 	subfic  r10,r5,31
+  6cc:	7c 84 2c 30 	srw     r4,r4,r5
+  6d0:	7d 29 50 30 	slw     r9,r9,r10
+  6d4:	7c 63 2c 30 	srw     r3,r3,r5
+  6d8:	7d 24 23 78 	or      r4,r9,r4
+  6dc:	4e 80 00 20 	blr
+
+
+With the version as is in my series:
+
+000006ac <vdso_shift_ns>:
+  6ac:	21 25 00 20 	subfic  r9,r5,32
+  6b0:	7c 69 48 30 	slw     r9,r3,r9
+  6b4:	7c 84 2c 30 	srw     r4,r4,r5
+  6b8:	7d 24 23 78 	or      r4,r9,r4
+  6bc:	7c 63 2c 30 	srw     r3,r3,r5
+  6c0:	4e 80 00 20 	blr
+
+
+Christophe
