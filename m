@@ -2,105 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0703923E065
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEB223E0CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 20:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbgHFSdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 14:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728681AbgHFScs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:32:48 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6B6C0617A2
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 11:32:41 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 185so42646789ljj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 11:32:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5Af00Sko3u8Ezl+gPJCbV7BmjNT3BmtEBTcrFloNwnA=;
-        b=DFus0hPOttxaAQsjZku/lbVZ4VYNVh5ObQRgCsovPMIpe9B7M1GF6NUUDJo1jk/pkb
-         I6Ji2PfXuoBnNs+NvpieyLlb1LZOse1mfbKXBwiVzCeSr6cpb9kz8NcJyk68AaXmSWxz
-         erFbvQZqcdnoPk8TTEHA+WcvMXssy1YK2pPYc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5Af00Sko3u8Ezl+gPJCbV7BmjNT3BmtEBTcrFloNwnA=;
-        b=V9nDnovvq3pPD0S/1dETo67ZZ+AuDr9RBYGOnB/3omKG4/Ia1dBiypbL0lXDDvIdyg
-         6ENTS9eUL0akaB8jcWLtAnNi4vxL+N7FLDYBn9ldTCQ0cFQzA036q9IEEwMv/3Ce2gHx
-         4F4zG26Ka08l8DzwzSbX8RwLcS9s2REpdpdRmKi14lWeQoJaN9MQ8mwSxhzdTzTVIu83
-         i1GzcQvgLB+lhc5TmO5+xKCT2NSVpF7bXqtL+n9iX1MnvOZXG7RMgFjnWKlxr9agjFRa
-         MRVpLx836Z5uR93KuZ8xfaKgsmPQ/aXdCKy8kCrzknCnlEQXa986HnKrQRNuj7eyYpp8
-         LjjA==
-X-Gm-Message-State: AOAM530uA4n9tn2fyF2o9dQorBOTRT/NJyZnaH61HQeMI/jnSeQi2rD7
-        ZLz2+npl7rPbldHg8wufb+4iCPY3/kE=
-X-Google-Smtp-Source: ABdhPJx6JFEVPmgX9Qhq3UHZ6yUB9Ss7WyTVFzSa07Yop5c5x9UIQcQF15POjgDY7r98mrpATPHWFw==
-X-Received: by 2002:a2e:910b:: with SMTP id m11mr4448850ljg.159.1596738758810;
-        Thu, 06 Aug 2020 11:32:38 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id 203sm3067881lfk.49.2020.08.06.11.32.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Aug 2020 11:32:37 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id w14so23059812ljj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 11:32:36 -0700 (PDT)
-X-Received: by 2002:a2e:b008:: with SMTP id y8mr3902152ljk.421.1596738756512;
- Thu, 06 Aug 2020 11:32:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200724152424.GC17209@redhat.com> <CAHk-=whuG+5pUeUqdiW4gk0prvqu7GZSMo-6oWv5PdDC5dBr=A@mail.gmail.com>
- <CAHk-=wjYHvbOs9i39EnUsC6VEJiuJ2e_5gZB5-J5CRKxq80B_Q@mail.gmail.com>
- <20200725101445.GB3870@redhat.com> <CAHk-=whSJbODMVmxxDs64f7BaESKWuMqOxWGpjUSDn6Jzqa71g@mail.gmail.com>
- <alpine.LSU.2.11.2007251343370.3804@eggly.anvils> <alpine.LSU.2.11.2007252100230.5376@eggly.anvils>
- <alpine.LSU.2.11.2007261246530.6812@eggly.anvils> <alpine.LSU.2.11.2008052105040.8716@eggly.anvils>
- <CAHk-=whf7wCUV2oTDUg0eeNafhhk_OhJBT2SbHZXwgtmAzNeTg@mail.gmail.com> <20200806180024.GB17456@casper.infradead.org>
-In-Reply-To: <20200806180024.GB17456@casper.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 6 Aug 2020 11:32:20 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wihTRHMm1LC4AfidZptT9ZuT-wBjE2VhYzKBy66e4iwQw@mail.gmail.com>
-Message-ID: <CAHk-=wihTRHMm1LC4AfidZptT9ZuT-wBjE2VhYzKBy66e4iwQw@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Hugh Dickins <hughd@google.com>, Oleg Nesterov <oleg@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729363AbgHFSig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 14:38:36 -0400
+Received: from gate.crashing.org ([63.228.1.57]:59882 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728053AbgHFSeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 14:34:22 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 076IXI7v018034;
+        Thu, 6 Aug 2020 13:33:18 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 076IXGtc018033;
+        Thu, 6 Aug 2020 13:33:16 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Thu, 6 Aug 2020 13:33:16 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, nathanl@linux.ibm.com,
+        linux-arch@vger.kernel.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org,
+        Tulio Magno Quites Machado Filho <tuliom@linux.ibm.com>,
+        luto@kernel.org, tglx@linutronix.de, vincenzo.frascino@arm.com,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v8 5/8] powerpc/vdso: Prepare for switching VDSO to generic C implementation.
+Message-ID: <20200806183316.GV6753@gate.crashing.org>
+References: <cover.1588079622.git.christophe.leroy@c-s.fr> <2a67c333893454868bbfda773ba4b01c20272a5d.1588079622.git.christophe.leroy@c-s.fr> <878sflvbad.fsf@mpe.ellerman.id.au> <65fd7823-cc9d-c05a-0816-c34882b5d55a@csgroup.eu> <87wo2dy5in.fsf@mpe.ellerman.id.au> <20200805133505.GN6753@gate.crashing.org> <87r1sky1hm.fsf@mpe.ellerman.id.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r1sky1hm.fsf@mpe.ellerman.id.au>
+User-Agent: Mutt/1.4.2.3i
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 11:00 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> It wasn't clear to me whether Hugh thought it was an improvement or
-> not that trylock was now less likely to jump the queue.  There're
-> the usual "fair is the opposite of throughput" kind of arguments.
+Hi!
 
-Yeah, it could go either way. But on the whole, if the lock bit is
-getting any contention, I think we'd rather have it be fair for
-latency reasons.
+On Thu, Aug 06, 2020 at 12:03:33PM +1000, Michael Ellerman wrote:
+> Segher Boessenkool <segher@kernel.crashing.org> writes:
+> > On Wed, Aug 05, 2020 at 04:24:16PM +1000, Michael Ellerman wrote:
+> >> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> >> > Indeed, 32-bit doesn't have a redzone, so I believe it needs a stack 
+> >> > frame whenever it has anything to same.
 
-That said, I'm not convinced about my patch, and I actually threw it
-away without even testing it (sometimes I keep patches around in my
-private tree for testing, and they can live there for months or even
-years when I wonder if they are worth it, but this time I didn't
-bother to go to the trouble).
+^^^
 
-If somebody is interested in pursuing this, I think that patch might
-be a good starting point (and it _might_ even work), but it seemed to
-be too subtle to really worry about unless somebody finds an actual
-acute reason for it.
+> >> >     fbb60:	94 21 ff e0 	stwu    r1,-32(r1)
+> >
+> > This is the *only* place where you can use a negative offset from r1:
+> > in the stwu to extend the stack (set up a new stack frame, or make the
+> > current one bigger).
+> 
+> (You're talking about 32-bit code here right?)
 
-I think the existing patch narrowing the window is good, and it
-clearly didn't hurt throughput (although that was almost certainly for
-other reasons).
+The "SYSV" ELF binding, yeah, which is used for 32-bit on Linux (give or
+take, ho hum).
 
-                Linus
+The ABIs that have a red zone are much nicer here (but less simple) :-)
+
+> >> At the same time it's much safer for us to just save/restore r2, and
+> >> probably in the noise performance wise.
+> >
+> > If you want a function to be able to work with ABI-compliant code safely
+> > (in all cases), you'll have to make it itself ABI-compliant as well,
+> > yes :-)
+> 
+> True. Except this is the VDSO which has previously been a bit wild west
+> as far as ABI goes :)
+
+It could get away with many things because it was guaranteed to be a
+leaf function.  Some of those things even violate the ABIs, but you can
+get away with it easily, much reduced scope.  Now if this is generated
+code, violating the rules will catch up with you sooner rather than
+later ;-)
+
+
+Segher
