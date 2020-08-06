@@ -2,90 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0805B23E480
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 01:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFD323E4A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 01:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgHFXjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 19:39:25 -0400
-Received: from mga18.intel.com ([134.134.136.126]:33140 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726889AbgHFXjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 19:39:23 -0400
-IronPort-SDR: WxImU8HKevawQsvWAAy8RPClL4sPTbQfxQsSdB4fOJVzpGfc+LYIibsLG+kA+us0OoPanuGZaa
- eQcDPtymJWDA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9705"; a="140546952"
-X-IronPort-AV: E=Sophos;i="5.75,443,1589266800"; 
-   d="scan'208";a="140546952"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 16:39:22 -0700
-IronPort-SDR: li0Zvboit1nDjrVaU53I/yfcJlRuBf8AuGwmO7gp3Q+8SO0OtZaKFEmtR1Ad803PgyAwVTC5hQ
- UPwAdr0LeSqA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,443,1589266800"; 
-   d="scan'208";a="333366457"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga007.jf.intel.com with ESMTP; 06 Aug 2020 16:39:21 -0700
-Date:   Thu, 6 Aug 2020 16:39:06 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Tony Luck <tony.luck@intel.com>,
-        Cathy Zhang <cathy.zhang@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-edac@vger.kernel.org
-Subject: Re: [PATCH v3] x86/cpu: Use SERIALIZE in sync_core() when available
-Message-ID: <20200806233906.GA27118@ranerica-svr.sc.intel.com>
-References: <20200806192531.25136-1-ricardo.neri-calderon@linux.intel.com>
- <a6ab438e-8ca8-999f-9eb9-c43fe1b9f128@intel.com>
- <20200806230455.GA25599@ranerica-svr.sc.intel.com>
- <929b76df-7da8-9147-3939-5e044f9d7728@intel.com>
+        id S1727789AbgHFXkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 19:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727118AbgHFXkT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 19:40:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DDCC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 16:40:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=Cx6kuJs2fnuW++ZonZph6Cow0fGYF3cdpbifew/elsk=; b=DjrxABI3slRHNCjwj68WOXMDm3
+        UggGtCeLk7PoiiXjQVdoBQNQ1hGRaCc3p6xVeI64JtDmyaJfX3qFqUwwdvo5Tk+FTC2LWZWyvajwv
+        Koe85h9A1dFxFAnXgrrqUzfS5lVddozusp1OQpDilcAuRu8y75a8XjZS1ZCi2yQ7GdHnnC7Q5Qgby
+        +BXT6J4LPGzUFsC1Lrrt91r7zleCHSU9iM/gg0s+CTPqUFOOY2pGJwdIWG+wwnV7ZgnC9/+3DlGQ2
+        UMnRMixc8nPbv7bf72TA4pL5klWN4h97W2ELXOBHK3ZJ6sxji7bYNpAoBhtV5gPV9E1xX8FtbIu3o
+        IL8/0ytA==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k3pUP-00082G-Pq; Thu, 06 Aug 2020 23:40:02 +0000
+Subject: Re: [PATCH] mm/migrate: fix migrate_pgmap_owner w/o
+ CONFIG_MMU_NOTIFIER
+To:     Ralph Campbell <rcampbell@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200806193353.7124-1-rcampbell@nvidia.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <a093b5ed-4ea6-7e02-f9da-19799f3cd59a@infradead.org>
+Date:   Thu, 6 Aug 2020 16:39:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <929b76df-7da8-9147-3939-5e044f9d7728@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200806193353.7124-1-rcampbell@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 04:08:47PM -0700, Dave Hansen wrote:
-> On 8/6/20 4:04 PM, Ricardo Neri wrote:
-> > 	 * CPUID is the conventional way, but it's nasty: it doesn't
-> > 	 * exist on some 486-like CPUs, and it usually exits to a
-> > 	 * hypervisor.
-> > 	 *
-> >  	 * The SERIALIZE instruction is the most straightforward way to
-> >  	 * do this as it does not clobber registers or exit to a
-> > 	 * hypervisor. However, it is not universally available.
-> >  	 *
-> > 	 * Like all of Linux's memory ordering operations, this is a
-> > 	 * compiler barrier as well.
-> > 	 */
-> > 
-> > What do you think?
+On 8/6/20 12:33 PM, Ralph Campbell wrote:
+> On x86_64, when CONFIG_MMU_NOTIFIER is not set/enabled, there is a
+> compiler error:
 > 
-> I like what I suggested.  :)
+> ../mm/migrate.c: In function 'migrate_vma_collect':
+> ../mm/migrate.c:2481:7: error: 'struct mmu_notifier_range' has no member
+> named 'migrate_pgmap_owner'
+>   range.migrate_pgmap_owner = migrate->pgmap_owner;
+>        ^
 > 
-> SERIALIZE is best where available.  Do it first, comment it by itself.
-> 
-> Then, go into the long discussion of the other alternatives.  They only
-> make sense when SERIALIZE isn't there, and the logic for selection there
-> is substantially more complicated.
+> Fixes: 998427b3ad2c ("mm/notifier: add migration invalidation type")
+> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
 
-Sure Dave, I think this layout makes sense. I will rework the comments.
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-Thanks and BR,
-Ricardo
+Thanks.
+
+
+> ---
+> 
+> This is based on the latest linux and is for Andrew Morton's mm tree.
+> MMU_NOTIFIER is selected automatically by a number of other config
+> options so I missed this in my own testing. Thanks to Randy Dunlap for
+> finding it.
+> 
+>  include/linux/mmu_notifier.h | 13 +++++++++++++
+>  mm/migrate.c                 |  6 +++---
+>  2 files changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+> index c6f0708195cd..b8200782dede 100644
+> --- a/include/linux/mmu_notifier.h
+> +++ b/include/linux/mmu_notifier.h
+> @@ -521,6 +521,16 @@ static inline void mmu_notifier_range_init(struct mmu_notifier_range *range,
+>  	range->flags = flags;
+>  }
+>  
+> +static inline void mmu_notifier_range_init_migrate(
+> +			struct mmu_notifier_range *range, unsigned int flags,
+> +			struct vm_area_struct *vma, struct mm_struct *mm,
+> +			unsigned long start, unsigned long end, void *pgmap)
+> +{
+> +	mmu_notifier_range_init(range, MMU_NOTIFY_MIGRATE, flags, vma, mm,
+> +				start, end);
+> +	range->migrate_pgmap_owner = pgmap;
+> +}
+> +
+>  #define ptep_clear_flush_young_notify(__vma, __address, __ptep)		\
+>  ({									\
+>  	int __young;							\
+> @@ -645,6 +655,9 @@ static inline void _mmu_notifier_range_init(struct mmu_notifier_range *range,
+>  
+>  #define mmu_notifier_range_init(range,event,flags,vma,mm,start,end)  \
+>  	_mmu_notifier_range_init(range, start, end)
+> +#define mmu_notifier_range_init_migrate(range, flags, vma, mm, start, end, \
+> +					pgmap) \
+> +	_mmu_notifier_range_init(range, start, end)
+>  
+>  static inline bool
+>  mmu_notifier_range_blockable(const struct mmu_notifier_range *range)
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 4fcc465736ff..d179657f8685 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -2386,9 +2386,9 @@ static void migrate_vma_collect(struct migrate_vma *migrate)
+>  	 * that the registered device driver can skip invalidating device
+>  	 * private page mappings that won't be migrated.
+>  	 */
+> -	mmu_notifier_range_init(&range, MMU_NOTIFY_MIGRATE, 0, migrate->vma,
+> -			migrate->vma->vm_mm, migrate->start, migrate->end);
+> -	range.migrate_pgmap_owner = migrate->pgmap_owner;
+> +	mmu_notifier_range_init_migrate(&range, 0, migrate->vma,
+> +		migrate->vma->vm_mm, migrate->start, migrate->end,
+> +		migrate->pgmap_owner);
+>  	mmu_notifier_invalidate_range_start(&range);
+>  
+>  	walk_page_range(migrate->vma->vm_mm, migrate->start, migrate->end,
+> 
+
+
+-- 
+~Randy
