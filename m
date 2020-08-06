@@ -2,108 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2067B23DFC8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC4E23DFCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 Aug 2020 19:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgHFRxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 13:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40130 "EHLO
+        id S1730605AbgHFRx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 13:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728314AbgHFQbD (ORCPT
+        with ESMTP id S1728333AbgHFQaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:31:03 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C80C002179
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:17:32 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id f9so6812763pju.4
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:17:32 -0700 (PDT)
+        Thu, 6 Aug 2020 12:30:55 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8B7C0086A9
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 09:22:17 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id x6so11885720pgx.12
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 09:22:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zvufMbgkHBSjZokNTrohW1HBR5GWTEJLiYyoeQKMQoc=;
-        b=Pf6FFYC0wPxL6d8QETsIOkfOlxIwRY/C0AqdyI90hPQRstfaU9+B998DLapMl1WGNB
-         WqNSPX1Ws7YGgGUmETWrVvIdqQE+KZKu7Ow4fEGNh7jS9vd1PbSjEQxo8NGLOIbGkQnR
-         oSHKePrXKpHzckubyhQ7X72KnBZun5DiYD0CXDtPtXREXrLySRCC75b7GpvHOrtOcKt6
-         PbtvmEzLWaCG3aBEKBJSVfX28GZPbZcsQxlpYrMWr01bo5XGkJXagMq5c9Uhp15tjooh
-         GESXpv1yOSShPFWP37VfgRm+CD9yuOHPXAo8Pv868sTLAK/hmBknx2rTL5Gyent1nS+0
-         uyHg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nR6p+azSrG4y2Tef6cprsCVi44IERGjpbRkmYO5cRCo=;
+        b=oQMfwnMBo7iIyU3XgTKjs+tm2fwISj9oPIXtpEOq4WbZyW2p7xX7jErO6D6GEq9RTy
+         wQ+Sksn3rn0kdhQfVBPHDpQ+mM+C/fLwCMcW8Sh98adiZ2CFeDNwk0iLXc3tFeIzFmjU
+         kjVnpRQRW0O/YafrCjyofizkbKWBbD7NcPpxyk+2FVMUH/MqbxGdtqY5XlMBqJbrGE5g
+         kqp87WWAchGt1Vr2wNBeLBdWEspXIVxxLzDQNQqQtUqwvXudlGcIRBzChNeJaqU//GvA
+         ee6Jeefgj9xc7wF3iyS+lLjG7EYrRyqDwCK4j7TTfmWqrNYythuMiKS/gWcf8pJRuTwm
+         IP4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zvufMbgkHBSjZokNTrohW1HBR5GWTEJLiYyoeQKMQoc=;
-        b=k2HfWF/tg7UN1hkOcChJq4rc6ABSsB8jvWG/2DQFjZm89zl5CM5P6QOylMgZm/esBe
-         Q+i+d5+4muEKbwsfUxyrmmpLpsQbnzBECVijNUHafpDpXlbToce1CWoOT29fMlipoJ+2
-         5qQoK3uqwYyQmHwdRIlVj7W7kR5A01bgM54qDofrvMGEP8jmD9MpTBwzfYjGVMNSzPXf
-         bFEUZR7shykjitDCaIHLk/KRpUyYXtnTqiekhszrT627ULlHBwUO0Y2lQreSTkNXesxq
-         ZM47A8IFiTK+tXPSpEiR261vpSeMkNhl1+GWDhf4qojI+blz2aZk5pAoykZodczXi5bJ
-         pJSA==
-X-Gm-Message-State: AOAM530OGRyEYNVV3yt2SntPkK7vS7wqTkFUI5lqao5JdiNqbIe/iga0
-        KMUnOfQdL6CNWc7VBF021eI=
-X-Google-Smtp-Source: ABdhPJyL9VQsbyt/WHVXcimDWPjM4C/e72yvdlI9/2OSl5YId8/LBG90edfhPfoQPbfaX1tEPA/pOQ==
-X-Received: by 2002:a17:902:b495:: with SMTP id y21mr8136734plr.116.1596730652080;
-        Thu, 06 Aug 2020 09:17:32 -0700 (PDT)
-Received: from gmail.com (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
-        by smtp.gmail.com with ESMTPSA id z15sm4352201pjz.12.2020.08.06.09.17.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nR6p+azSrG4y2Tef6cprsCVi44IERGjpbRkmYO5cRCo=;
+        b=nm9RZ5P9Z0gUkMVKaSkVHjsLLHcx0x6h8pSE1SkgMrKfstTc6Yhz3DXothlu1jcDWL
+         TeomOryVsM3L0D5TqmpRPDi9p06Z0Bm9zA1hQWK1fSgWeP2LS+muxLa0QFZVwRmjCJGm
+         Q1xxq4Y1eckWtpCdVMQ72AAKGPb0HoWjw8Z812PZ5P4Pn8iI/KXTKakAZMsU0p6Yl/2n
+         I4T3Yh3vR3ZQTBmCr2j0rUCowyH2NVPHWsNEXr8xmfDxD4CTfa5sqLQxCUuU1m1GgFrH
+         RI6WJ3LRUm8vfCkhnuYAV/mN25jXri2NhRrnqitS3e7moTMFZU/FLtHPRNqBV0VAs2qY
+         sB5g==
+X-Gm-Message-State: AOAM532qyBErueH0JLUdr/c3Z/YBLUMjlk/IOxO8ZNDFyHVA2em+t164
+        8tRXwggUEdt9lRxKXOUpCkk=
+X-Google-Smtp-Source: ABdhPJzzoRuSmi+2TOb+YGFPFJ3J09xwFNwGYghnAUhqbdTk5IO8ZOcSsIr6O8leoTNYiO6KUU/fDw==
+X-Received: by 2002:a65:6093:: with SMTP id t19mr7822568pgu.13.1596730936624;
+        Thu, 06 Aug 2020 09:22:16 -0700 (PDT)
+Received: from cvds-vagarw7.iind.intel.com (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
+        by smtp.googlemail.com with ESMTPSA id e22sm7393556pgi.62.2020.08.06.09.22.09
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 06 Aug 2020 09:17:31 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 21:47:25 +0530
+        Thu, 06 Aug 2020 09:22:16 -0700 (PDT)
 From:   Vaibhav Agarwal <vaibhav.sr@gmail.com>
-To:     Alex Elder <elder@ieee.org>
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Greer <mgreer@animalcreek.com>,
-        greybus-dev@lists.linaro.org,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: issue with uninitialized value used in a comparison in
- gbcodec_mixer_dapm_ctl_put
-Message-ID: <20200806161723.GA6927@gmail.com>
-References: <7da6363c-9423-2b9f-029a-395cc8a932d7@canonical.com>
- <07ad3809-de73-9a66-0e4f-3a49f395a98a@ieee.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Mark Greer <mgreer@animalcreek.com>
+Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>
+Subject: [PATCH v1] staging: greybus: audio: fix uninitialized value issue
+Date:   Thu,  6 Aug 2020 21:51:57 +0530
+Message-Id: <a5d4bb540e606d7980d4127a82e6af9b436e0642.1596730667.git.vaibhav.sr@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <07ad3809-de73-9a66-0e4f-3a49f395a98a@ieee.org>
-User-Agent: Mutt/1.10.1+3 (f9293d646485) (2018-09-22)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 08:35:15AM -0500, Alex Elder wrote:
+The current implementation for gbcodec_mixer_dapm_ctl_put() uses
+uninitialized gbvalue for comparison with updated value. This was found
+using static analysis with coverity.
 
-<snip>
+Uninitialized scalar variable (UNINIT)
+11. uninit_use: Using uninitialized value
+gbvalue.value.integer_value[0].
+460        if (gbvalue.value.integer_value[0] != val) {
 
-> 
-> I think the fix is to add a call to this:
-> 
->         ret = gb_audio_gb_get_control(module->mgmt_connection, data->ctl_id,
->                                       GB_AUDIO_INVALID_INDEX, &gbvalue);
-> 
-> before the field within gbvalue is used.
-> 
-> Looking at gbcodec_mixer_dapm_ctl_get() defined just above that, it
-> seems that the call to gb_audio_gb_get_control() should be preceded
-> by a call to gb_pm_runtime_get_sync().  And given that duplication,
-> I suggest this call and the PM runtime wrapper functions should be
-> placed in a new helper function.
-> 
-> I know that Vaibhav said he would be fixing this, so I guess my
-> comments are directed at him.  Thanks for sending the patch Colin.
-> 
-> 					-Alex
+This patch fixes the issue with fetching the gbvalue before using it for
+comparision.
 
-Thanks Alex. I'll share a patch with the proposed fix.
+Fixes: 6339d2322c47 ("greybus: audio: Add topology parser for GB codec")
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
+---
+ drivers/staging/greybus/audio_topology.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
---
-vaibhav
+diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
+index 2f9fdbdcd547..4b914d0edef2 100644
+--- a/drivers/staging/greybus/audio_topology.c
++++ b/drivers/staging/greybus/audio_topology.c
+@@ -456,6 +456,13 @@ static int gbcodec_mixer_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+ 	val = ucontrol->value.integer.value[0] & mask;
+ 	connect = !!val;
+ 
++	ret = gb_pm_runtime_get_sync(bundle);
++	if (ret)
++		return ret;
++
++	ret = gb_audio_gb_get_control(module->mgmt_connection, data->ctl_id,
++				      GB_AUDIO_INVALID_INDEX, &gbvalue);
++
+ 	/* update ucontrol */
+ 	if (gbvalue.value.integer_value[0] != val) {
+ 		for (wi = 0; wi < wlist->num_widgets; wi++) {
+@@ -466,16 +473,10 @@ static int gbcodec_mixer_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+ 		gbvalue.value.integer_value[0] =
+ 			cpu_to_le32(ucontrol->value.integer.value[0]);
+ 
+-		ret = gb_pm_runtime_get_sync(bundle);
+-		if (ret)
+-			return ret;
+-
+ 		ret = gb_audio_gb_set_control(module->mgmt_connection,
+ 					      data->ctl_id,
+ 					      GB_AUDIO_INVALID_INDEX, &gbvalue);
+ 
+-		gb_pm_runtime_put_autosuspend(bundle);
+-
+ 		if (ret) {
+ 			dev_err_ratelimited(codec_dev,
+ 					    "%d:Error in %s for %s\n", ret,
+@@ -483,6 +484,7 @@ static int gbcodec_mixer_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+ 			return ret;
+ 		}
+ 	}
++	gb_pm_runtime_put_autosuspend(bundle);
+ 
+ 	return 0;
+ }
 
-> 
-> 
-> > Colin
-> > 
-> > 
-> 
+base-commit: 5bbd90550da8f7bdac769b5825597e67183c9411
+prerequisite-patch-id: 2b8901339222ff7b94f10cf2341734c0fb82591c
+prerequisite-patch-id: 38dad8879a2b73bce6e89481973c7c5b82bd7145
+prerequisite-patch-id: 5f0042ccedae292395ec617789be6bf465463c1c
+prerequisite-patch-id: 35d001c366dfa4b567e59abbb37bd691a18f5e14
+prerequisite-patch-id: f13ce918ebc3796cd3c81716a7b2adf4519e7387
+prerequisite-patch-id: 0fcc6d38699a9b72ca94280d7a4dc18f0823b6f7
+prerequisite-patch-id: 8074e935bdc3dd7b114245b0648552d0ff6871c9
+-- 
+2.27.0
+
