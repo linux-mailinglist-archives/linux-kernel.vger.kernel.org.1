@@ -2,122 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A30823EF71
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AA323EFA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgHGOv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 10:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
+        id S1726974AbgHGOyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 10:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726842AbgHGOvY (ORCPT
+        with ESMTP id S1726877AbgHGOyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 10:51:24 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5446AC061756;
-        Fri,  7 Aug 2020 07:51:23 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id w12so2156580iom.4;
-        Fri, 07 Aug 2020 07:51:23 -0700 (PDT)
+        Fri, 7 Aug 2020 10:54:03 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C72BC061757
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 07:54:01 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id x24so1132481lfe.11
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 07:54:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=j7YOCwyn015CH01DvuqygeICt/lkosNS0VPJxx8lTNk=;
-        b=DZl9SjSAU9r2ocCJ25zl96LApqZMSw7v9QRevy/vcPN769EjunTsd/mxoDROifcfLh
-         x1cV0CIGT6g0Xi8y8o6WulDNVEU3MgOjy374LzN50bwKA8qj5tfqhfRG9Q0nekJQju22
-         GCXzILsDGgSQKEM3LcX5k/g1Xw3f41snt8i8oCINtSQ6N5YA/eiSfFTAreko0JF3PNtH
-         J9p4yKgszZfUSwY6ChDo83EAwG/Mcts7/mmesRa55fDcCkl3YPCe0tulykRKtrpaxq9l
-         jtyCfQeWNNNxCOjCAqiccXa6SPaZBiUkyk+VyHgZacF4AyPUX6DZFp/FbQH052q+PY5Y
-         i1DA==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EhqPU9vWVpaA19B5hOI3DtxeE4J1DHZLeRH6HorTN2k=;
+        b=0nstuNHhYMgfY/orfSpzHFq9xSMghGYwKNvoqpHTmlGuf1+bvwhkdREx5aAzdsYv6W
+         +P2x/mL5pILuLdrOIfRZgGIhLMFG5BjuL1QwYaJxTxY57Vi5wxbi/JGCMRfGlHFg3Nw6
+         3TNC7cZobl3BLJNkDcgPHNVuqPI8ZrXKIeWD2qZEweHzOIvVS4k8xBFtNDQa9jJtEVOz
+         pSOQs27jLzd83asI5InZ6ktWNNzFZzbuepa13q4TZ3M2oMZXYjLZEYK0A16NBrxtaoy3
+         cs/FgaM8+sCnB44MvVLiPCq5qX+imgGMMjEjVD7v4TxNJ7hhToOnxIyvKSPn2ffMAa0O
+         uhxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=j7YOCwyn015CH01DvuqygeICt/lkosNS0VPJxx8lTNk=;
-        b=b5L43GWyy4epKx2q02IZFAIHl3RU1x8n9M0dDep43cyLwU0x7MSytuKQ2iYXptx71K
-         niEYleUlWVPz92UwCL7BaTX6DZY+dkKiLHSrjRLYK8TcAhRodl9jy5lwrk/b06mKGGWZ
-         PKtkEzYSqDdnhROjeKoe8RgxaxuDxCEZztKwq/Bx9VMffxriILJH31XIkKp07gvOUPxu
-         8/7kFy7jeXEsT0QJWBNZ2YWlXJ7Nryef/iiuB6jl0QLeS4f2gMRJZUEIrh9f1V7hLH8+
-         hB06sAlHMaTJM/Uv3cRyEpihzAE5zyIRTWsYBpPXXMY0j4NaMHU738KyhQygxGx74wme
-         Do8A==
-X-Gm-Message-State: AOAM531fYGoMIdn/w4u9JZ7+U7iZhN6DHudr9/oFiXGEhDNQueZDjtiv
-        cRpGyX3Ll5fiq/JguTG/CxpqratXpiTCljZeSMg=
-X-Google-Smtp-Source: ABdhPJxeOx00W3je8vxOviLsrpuWMtz8cLUXTLbWzgM8MrwxscvD0ivTRszWuF80qgyakY297NlCJywTb4dj8OBja+A=
-X-Received: by 2002:a05:6602:2e83:: with SMTP id m3mr4976673iow.38.1596811882640;
- Fri, 07 Aug 2020 07:51:22 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EhqPU9vWVpaA19B5hOI3DtxeE4J1DHZLeRH6HorTN2k=;
+        b=MhKZPYXYXaefiVr1TPUGPMQJbueoxNdzqRLJ9gsjTfUaMiIearfPggFMiA9OUShnr7
+         CQyjDda0Gs0vzaVQ8pED4V3TlNvwRjMMdhahQwvZX4TEVA3wv3HnjuDYbPa7QMxdNdng
+         1IF9sLLjtgkI3D4T0zkAKkW64hxEjJofEh4iejiOBSn1MsJ+4C/JzdiHni7vtoQFgRXO
+         mCh4926FoDEfwXdBGaOtRBV5B1Ts/gK+gZexZzf7RCC8sENVIvyI+fyga4NuQnmUZeA2
+         uxeQOu8gaRmMJ8hTEoX/iL5EPdlapDnnu+/o8zEHvTAlYKdpEey5pYRomVeIW1aBBgIo
+         78CQ==
+X-Gm-Message-State: AOAM532nwUcui5rAcBJPgsCZYdN4NZTk4n2NuU9sEVy7UnGkj7d8bHJ4
+        FtHB68iemFqdhIFlvJmweMfW2ukCBi4=
+X-Google-Smtp-Source: ABdhPJz0PaGBgHUnaHhHDhvMK0ArvOeo4nmIZjUqx2Ip48fnzdNpgeNV9kmE1uUfcXQxBd/hK71dSw==
+X-Received: by 2002:a19:fc14:: with SMTP id a20mr6658335lfi.0.1596812039975;
+        Fri, 07 Aug 2020 07:53:59 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id s2sm4340929lfs.4.2020.08.07.07.53.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Aug 2020 07:53:59 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 33495102FA7; Fri,  7 Aug 2020 17:53:59 +0300 (+03)
+Date:   Fri, 7 Aug 2020 17:53:59 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        cai@lca.pw, rppt@linux.ibm.com, william.kucharski@oracle.com,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v2] mm, dump_page: do not crash with bad
+ compound_mapcount()
+Message-ID: <20200807145359.oxwzjkhv5pqinam5@box>
+References: <20200804214807.169256-1-jhubbard@nvidia.com>
+ <ac97deea-4638-badd-9495-c9ca313837bb@suse.cz>
+ <20200806134851.GN23808@casper.infradead.org>
+ <790ae9a4-6874-ac34-d2a2-28a2137335cb@suse.cz>
+ <20200806153938.GO23808@casper.infradead.org>
+ <da00f435-a867-0108-8855-872019d85d44@suse.cz>
+ <20200806171500.GA17456@casper.infradead.org>
 MIME-Version: 1.0
-References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
- <1595681998-19193-15-git-send-email-alex.shi@linux.alibaba.com>
- <CAKgT0UcbBv=QBK9ErqLKXoNLYxFz52L4fiiHy4h6zKdBs=YPOg@mail.gmail.com> <241ca157-104f-4f0d-7d5b-de394443788d@linux.alibaba.com>
-In-Reply-To: <241ca157-104f-4f0d-7d5b-de394443788d@linux.alibaba.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Fri, 7 Aug 2020 07:51:11 -0700
-Message-ID: <CAKgT0UdSrarC8j+G=LYRSadcaG6yNCoCfeVpFjEiHRJb4A77-g@mail.gmail.com>
-Subject: Re: [PATCH v17 14/21] mm/compaction: do page isolation first in compaction
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Rong Chen <rong.a.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806171500.GA17456@casper.infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 8:25 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
->
->
->
-> =E5=9C=A8 2020/8/7 =E4=B8=8A=E5=8D=882:38, Alexander Duyck =E5=86=99=E9=
-=81=93:
-> >> +
-> >>  isolate_abort:
-> >>         if (locked)
-> >>                 spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> >> +       if (page) {
-> >> +               SetPageLRU(page);
-> >> +               put_page(page);
-> >> +       }
-> >>
-> >>         /*
-> >>          * Updated the cached scanner pfn once the pageblock has been =
-scanned
-> > We should probably be calling SetPageLRU before we release the lru
-> > lock instead of before. It might make sense to just call it before we
-> > get here, similar to how you did in the isolate_fail_put case a few
-> > lines later. Otherwise this seems to violate the rules you had set up
-> > earlier where we were only going to be setting the LRU bit while
-> > holding the LRU lock.
->
-> Hi Alex,
->
-> Set out of lock here should be fine. I never said we must set the bit in =
-locking.
-> And this page is get by get_page_unless_zero(), no warry on release.
->
-> Thanks
-> Alex
+On Thu, Aug 06, 2020 at 06:15:00PM +0100, Matthew Wilcox wrote:
+> On Thu, Aug 06, 2020 at 05:53:10PM +0200, Vlastimil Babka wrote:
+> > On 8/6/20 5:39 PM, Matthew Wilcox wrote:
+> > >> >> +++ b/mm/huge_memory.c
+> > >> >> @@ -2125,7 +2125,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+> > >> >>  	 * Set PG_double_map before dropping compound_mapcount to avoid
+> > >> >>  	 * false-negative page_mapped().
+> > >> >>  	 */
+> > >> >> -	if (compound_mapcount(page) > 1 && !TestSetPageDoubleMap(page)) {
+> > >> >> +	if (head_mapcount(page) > 1 && !TestSetPageDoubleMap(page)) {
+> > >> > 
+> > >> > I'm a little nervous about this one.  The page does actually come from
+> > >> > pmd_page(), and today that's guaranteed to be a head page.  But I'm
+> > >> > not convinced that's going to still be true in twenty years.  With the
+> > >> > current THP patchset, I won't allocate pages larger than PMD order, but
+> > >> > I can see there being interest in tracking pages in chunks larger than
+> > >> > 2MB in the future.  And then pmd_page() might well return a tail page.
+> > >> > So it might be a good idea to not convert this one.
+> > >> 
+> > >> Hmm the function converts the compound mapcount of the whole page to a
+> > >> HPAGE_PMD_NR of base pages. If suddenly the compound page was bigger than a pmd,
+> > >> then I guess this wouldn't work properly anymore without changes anyway?
+> > >> Maybe we could stick something like VM_BUG_ON(PageTransHuge(page)) there as
+> > >> "enforced documentation" for now?
+> > > 
+> > > I think it would work as-is.  But also I may have totally misunderstood it.
+> > > I'll write this declaratively and specifically for x86 (PMD order is 9)
+> > > ... tell me when I've made a mistake ;-)
+> > > 
+> > > This function is for splitting the PMD.  We're leaving the underlying
+> > > page intact and just changing the page table.  So if, say, we have an
+> > > underlying 4MB page (and maybe the pages are mapped as PMDs in this
+> > > process), we might get subpage number 512 of this order-10 page.  We'd
+> > > need to check the DoubleMap bit on subpage 1, and the compound_mapcount
+> > > also stored in page 1, but we'd only want to spread the mapcount out
+> > > over the 512 subpages from 512-1023; we wouldn't want to spread it out
+> > > over 0-511 because they aren't affected by this particular PMD.
+> > 
+> > Yeah, and then we decrease the compound mapcount, which is a counter of "how
+> > many times is this compound page mapped as a whole". But we only removed (the
+> > second) half of the compound mapping, so imho that would be wrong?
+> 
+> I'd expect that count to be incremented by 1 for each PMD that it's
+> mapped to?  ie change the definition of that counter slightly.
+> 
+> > > Having to reason about stuff like this is why I limited the THP code to
+> > > stop at PMD order ... I don't want to make my life even more complicated
+> > > than I have to!
+> > 
+> > Kirill might correct me but I'd expect the THP code right now has baked in many
+> > assumptions about THP pages being exactly HPAGE_PMD_ORDER large?
 
-I wonder if this entire section shouldn't be restructured. This is the
-only spot I can see where we are resetting the LRU flag instead of
-pulling the page from the LRU list with the lock held. Looking over
-the code it seems like something like that should be possible. I am
-not sure the LRU lock is really protecting us in either the
-PageCompound check nor the skip bits. It seems like holding a
-reference on the page should prevent it from switching between
-compound or not, and the skip bits are per pageblock with the LRU bits
-being per node/memcg which I would think implies that we could have
-multiple LRU locks that could apply to a single skip bit.
+That will be true for PMD-mapped THP pages after applying Matthew's
+patchset.
+
+> There are somewhat fewer places that make that assumption after applying
+> the ~80 patches here ... http://git.infradead.org/users/willy/pagecache.git
+
+The patchset allows for THP to be anywhere between order-2 and
+order-9 (on x86-64).
+
+> I have mostly not touched the anonymous THPs (obviously some of the code
+> paths are shared), although both Kirill & I think there's a win to be
+> had there too.
+
+Yeah. Reducing LRU handling overhead alone should be enough to justify the
+effort. But we still would need to have numbers.
+
+-- 
+ Kirill A. Shutemov
