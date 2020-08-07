@@ -2,123 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9CB23F38B
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 22:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2C523F397
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 22:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbgHGUJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 16:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41114 "EHLO
+        id S1726352AbgHGUKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 16:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgHGUJJ (ORCPT
+        with ESMTP id S1725893AbgHGUKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 16:09:09 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F7EC061756;
-        Fri,  7 Aug 2020 13:09:08 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id l64so2847648qkb.8;
-        Fri, 07 Aug 2020 13:09:08 -0700 (PDT)
+        Fri, 7 Aug 2020 16:10:13 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A745C061756
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 13:10:13 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id o36so661945ooi.11
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 13:10:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=v6shjW3mv0CzotYibzehFT5/hINT+XFxzYyCDrE83Dc=;
-        b=Ve3N/HXwsKv8ySPPGskSnRr5Uacjl8x1Kputs8iftdehBMa8UVQ30VCtrkGpg4pA1J
-         fIoi7mUMWwDUbL7lEeZUzkTSYGzk+kavkV3YwUrCg/Mwi3/cIdkw99a23kUQ7rCks1JB
-         iNXh7CbDevDlHYGKRcsjuxVLIdZXq2glnT7xi9PaTrPbe0nPQ0ZKS+DRaz/K/n9+sm/d
-         t3DWG4TtMRUPtUs1Mx8bhJOie6SGgh6iidRRoOxIxioT+YZ1N2ydkIJpRx8FGnVP8Kcb
-         6kPOrnKsaXZ70kQ0DYDruyvlDh4M8PC44n/c9Fr6354XzrS8/QYdmCjbtOcok5at1VYm
-         6ILQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=soqS30MM7Lvz4xj7E5lcaM6TYNPttmmFgM0OZvhcFi4=;
+        b=TcgHBwGBV180Qzb+5Q7lmvpy+TY9LRvlMXf10V4beYwGfA/qVc1lpX5CVqk1CfysmS
+         X4D1k/PRqlhFuAUx9Z031PDqRwoJmjGiTDxBfyYOE8UD3tw+KTt82zUluR2jWQjuqYw5
+         6C0T4Pdh2RhCV4gP6N7Xvx8LVdxY82scCtfA9D9FeLG9w7AfBJqmgucGN/7e1pqTy92M
+         W7rYXB9uFHW0n1iI//YkAJW54KPct5L8KeNvMCJNqvbFkD4fzxBkZXgEKHq0v7MOLohL
+         AaiL70yDCYMyGMKa8SjPbUfr1RYw+StFHiBD7QkcbPzd+Fcfo0NItTeoms1r1jBWrStO
+         eQWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=v6shjW3mv0CzotYibzehFT5/hINT+XFxzYyCDrE83Dc=;
-        b=GHzdK+x32F4QVXwpqujAG2jNBg9RHkJuSMJp/VjLrK1sp9Yj8XzWH1ubAE+qQ676gg
-         9i2LFrcC9GJMfDF30vFQ//CYPF5PjIDkYWLEP2aj16sPAE4isEuti5BuP79RwUfwpaXL
-         EW6hnPWeXDfSEzJmxMyLojWvlx9Eoyb0TcV8pj9fZRXa5kOwemyF/BtXkwYRzHEMiYSJ
-         /8AWjBcmLtcPVyPde42uAgquczsjcSzmT0tDZML0zEXeWWkaCEswrvWNNx4pz/HoQ+Nw
-         yeVmDVa8r8Q9oEf7skudFxLfkSsoqSwNoKOoEq5a81QlkqirNX0MHq++yL4zup6DifW+
-         7BBA==
-X-Gm-Message-State: AOAM530tQXgDsCQIkW9VU8GV65A0tZLGKsQHzL/OG3PuTHhzeOMERYw6
-        xxg/NGJxJ4urPTAfbf45/3M=
-X-Google-Smtp-Source: ABdhPJxg6bRetxEVAOaiKqqoKUtFx4kiO3EkBtA3TT/yB2Ood5h2cAJoMzEOKPTQ/EC5B8xE+zcKBg==
-X-Received: by 2002:a37:a6c3:: with SMTP id p186mr14827311qke.135.1596830947429;
-        Fri, 07 Aug 2020 13:09:07 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id n127sm8006909qke.29.2020.08.07.13.09.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 Aug 2020 13:09:06 -0700 (PDT)
-Subject: Re: [PATCH] drivers: watchdog: rdc321x_wdt: Fix race condition bugs
-To:     Guenter Roeck <linux@roeck-us.net>, madhuparnabhowmik10@gmail.com
-Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andrianov@ispras.ru,
-        ldv-project@linuxtesting.org
-References: <20200807112902.28764-1-madhuparnabhowmik10@gmail.com>
- <20200807162141.GA41980@roeck-us.net>
- <8dca64a1-8cd9-6a41-b61d-1c4c14e5cd5e@gmail.com>
- <bc8c5d7d-91a4-e955-854f-eef88812ac1a@roeck-us.net>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <1b9db5ad-0edf-091b-a04e-a8f3a6ac08e2@gmail.com>
-Date:   Fri, 7 Aug 2020 13:09:02 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.10.0
+        bh=soqS30MM7Lvz4xj7E5lcaM6TYNPttmmFgM0OZvhcFi4=;
+        b=Gnll3MmrOx9F/2ekRuHVMIIltHXDOAOEe+DqADASQ5WuQ2HV4+hIsajwQaF6LKkArN
+         In7ghr78awzN+kSIAt1SDmIZRDxKR7OMjatL3Vob0uz2UsH4QD5TZNKwVpmfWoAM2oVk
+         CV2ibnTIKiTkyW5dG3FxP3BdSiXovdMUtg12jTldKyW6Ha/Gvjms5dy5xq58hpMMsr1C
+         6n84+8DeMfs5WGMHsAOtXiFnYCFSIFXWCsQQgXPHgrfpUH87BEPaS9kd+OePkMqffk5T
+         lqo+RIkUXzbdBvyi8R3ZCc7Z5jRWSux33/nG6iBJvcG3Jp/x11rxuUECuwQMob22pthp
+         raEQ==
+X-Gm-Message-State: AOAM531TXNcWzd5l4mce8JwwRHqQmWwuXPR+3qPrBwzxLGnnCP+zC0+r
+        tAAdJwel+u3RIP+KXJ9gdK0=
+X-Google-Smtp-Source: ABdhPJyAK2UqU6tVeNe21WWNq9OdVEC5p+XtuXSnZhxpZrGS3LGxm+R287zqhFmY+2lf3sd4aV2eSg==
+X-Received: by 2002:a4a:c887:: with SMTP id t7mr14059716ooq.57.1596831012751;
+        Fri, 07 Aug 2020 13:10:12 -0700 (PDT)
+Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::af38])
+        by smtp.googlemail.com with ESMTPSA id s6sm1835794otq.75.2020.08.07.13.10.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Aug 2020 13:10:11 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     jbaron@akamai.com, linux-kernel@vger.kernel.org
+Cc:     Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH 0/7] dyndbg: WIP diet plan
+Date:   Fri,  7 Aug 2020 14:09:47 -0600
+Message-Id: <20200807200957.1269454-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <bc8c5d7d-91a4-e955-854f-eef88812ac1a@roeck-us.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+dynamic-debug metadata is bloated; the __dyndbg linker section is
+effectively an array of struct _ddebugs, and its 1st 3 members are
+highly repetetive, with 90%, 84%, 45% repeats.  Total reported usage
+~150kb for ~2600 callsites on my laptop config.
+
+This patchset is one diet plan. it all holds together nicely until the
+"cache" commit, when it blows up starting init (or right after freeing
+unused kernel image, which Im hoping to do...).
+
+last commit log has the BUG trace from a LOCKDEP build, which reports
+stuff I dont quite undertand, except that it looks bad.
 
 
-On 8/7/2020 12:08 PM, Guenter Roeck wrote:
-> On 8/7/20 11:08 AM, Florian Fainelli wrote:
->>
->>
->> On 8/7/2020 9:21 AM, Guenter Roeck wrote:
->>> On Fri, Aug 07, 2020 at 04:59:02PM +0530, madhuparnabhowmik10@gmail.com wrote:
->>>> From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
->>>>
->>>> In rdc321x_wdt_probe(), rdc321x_wdt_device.queue is initialized
->>>> after misc_register(), hence if ioctl is called before its
->>>> initialization which can call rdc321x_wdt_start() function,
->>>> it will see an uninitialized value of rdc321x_wdt_device.queue,
->>>> hence initialize it before misc_register().
->>>> Also, rdc321x_wdt_device.default_ticks is accessed in reset()
->>>> function called from write callback, thus initialize it before
->>>> misc_register().
->>>>
->>>> Found by Linux Driver Verification project (linuxtesting.org).
->>>>
->>>> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
->>>
->>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
->>>
->>> Having said that ... this is yet another potentially obsolete driver.
->>> You are really wasting your (and, fwiw, my) time.
->>>
->>> Florian, any thoughts if support for this chip can/should be deprecated
->>> or even removed ?
->>
->> I am still using my rdc321x-based SoC, so no, this is not obsolete as
->> far as I am concerned, time permitting, modernizing the driver is on my
->> TODO after checking/fixing the Ethernet driver first.
->>
-> 
-> Do you have a manual ? I'd give it a try if you can test it - conversion
-> should be simple enough (I have a coccinelle script which partially
-> automates it), but this chip seems to have a fast timeout, and the
-> comments in the code ("set the timeout to 81.92 us") seem to be quite
-> obviously wrong.
+Jim Cromie (7):
+  dyndbg: give %3u width in pr-format, cosmetic only
+  dyndbg: motivate a diet plan
+  dyndbg: select ZPOOL in Kconfig.debug
+  dyndbg: split struct _ddebug in 2, creating _ddebug_callsite
+  dyndbg: WIP replace __dyndbg_callsite section with a zs-pool copy.
+  dyndbg: add locking around zpool-add loop in zpool-init
+  dyndbg: enable 'cache' of active pr_debug callsites
 
-Yes, there is a public manual for that SoC, search for RDC R8610 and the
-first link you find should be a 276 page long manual for the SoC.
+ include/asm-generic/vmlinux.lds.h |   4 +
+ include/linux/dynamic_debug.h     |  36 +++--
+ lib/Kconfig.debug                 |   1 +
+ lib/dynamic_debug.c               | 220 +++++++++++++++++++++++++-----
+ 4 files changed, 218 insertions(+), 43 deletions(-)
 
-I probably won't be able to test anything until the middle of next week
-though.
---
-Florian
+-- 
+2.26.2
+
