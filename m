@@ -2,63 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA7E23EE96
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37DCD23EEC2
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgHGOGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 10:06:33 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56313 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726776AbgHGOG3 (ORCPT
+        id S1725893AbgHGOLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 10:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725815AbgHGOLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 10:06:29 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k430o-0007uZ-AT; Fri, 07 Aug 2020 14:06:22 +0000
-Date:   Fri, 7 Aug 2020 16:06:21 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Jann Horn <jannh@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] binder: Remove bogus warning on failed same-process
- transaction
-Message-ID: <20200807140621.lrruiojgsax42hze@wittgenstein>
-References: <20200806165359.2381483-1-jannh@google.com>
+        Fri, 7 Aug 2020 10:11:37 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD47CC061756;
+        Fri,  7 Aug 2020 07:11:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3SeHm1ZjMHsIJfjxrX9fUGzdepcw8YyHP7a7yWdfxp8=; b=mr1fv8hgzT1vJ+/IBK5iw5aGKm
+        mu7pn6wNwqMJAeone/Rv0P5Mr1Jty9gc3ALqnSGBRb4qujMQfeNAH62LUcV2dk8bFozf0uSc+mOqk
+        PLe3pfK1GwBLk+NGReUkckLhk2IBQmbKiRRgd1XNi/7JEzm04sMvOPUIR73O+uDaWrezu2ZCegi3s
+        YdaCNorJIt2DcIoZenrouHeKm2x+Q/oAXf1eac6x4fvJPDIgsBoRh9L/ApJJOIBbUBfLw69Mn9T+y
+        25K7O5ydz9jaq3kDW/wOEMs8bybEr47Jec07uCVH+Kr4Fyb30jcKBt6hZszVO8Z9zNJrAo6ZJoeuM
+        GYVT2xzg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k435d-00065v-Lq; Fri, 07 Aug 2020 14:11:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EDFBC3012DC;
+        Fri,  7 Aug 2020 16:11:18 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AC91B21451927; Fri,  7 Aug 2020 16:11:18 +0200 (CEST)
+Date:   Fri, 7 Aug 2020 16:11:18 +0200
+From:   peterz@infradead.org
+To:     luca abeni <luca.abeni@santannapisa.it>
+Cc:     Juri Lelli <juri.lelli@redhat.com>, mingo@redhat.com,
+        rostedt@goodmis.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, tommaso.cucinotta@santannapisa.it,
+        alessio.balsini@gmail.com, bristot@redhat.com,
+        dietmar.eggemann@arm.com, linux-rt-users@vger.kernel.org,
+        mtosatti@redhat.com, williams@redhat.com,
+        valentin.schneider@arm.com
+Subject: Re: [RFC PATCH v2 6/6] sched/fair: Implement starvation monitor
+Message-ID: <20200807141118.GK2674@hirez.programming.kicks-ass.net>
+References: <20200807095051.385985-1-juri.lelli@redhat.com>
+ <20200807095604.GO42956@localhost.localdomain>
+ <20200807104618.GH2674@hirez.programming.kicks-ass.net>
+ <20200807154941.2bb11408@nowhere>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200806165359.2381483-1-jannh@google.com>
+In-Reply-To: <20200807154941.2bb11408@nowhere>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 06:53:59PM +0200, Jann Horn wrote:
-> While binder transactions with the same binder_proc as sender and recipient
-> are forbidden, transactions with the same task_struct as sender and
-> recipient are possible (even though currently there is a weird check in
-> binder_transaction() that rejects them in the target==0 case).
-> Therefore, task_struct identities can't be used to distinguish whether
-> the caller is running in the context of the sender or the recipient.
+On Fri, Aug 07, 2020 at 03:49:41PM +0200, luca abeni wrote:
+> Hi Peter,
 > 
-> Since I see no easy way to make this WARN_ON() useful and correct, let's
-> just remove it.
+> peterz@infradead.org wrote:
+
+> > One thing I considerd was scheduling this as a least-laxity entity --
+> > such that it runs late, not early
 > 
-> Fixes: 44d8047f1d87 ("binder: use standard functions to allocate fds")
-> Reported-by: syzbot+e113a0b970b7b3f394ba@syzkaller.appspotmail.com
-> Signed-off-by: Jann Horn <jannh@google.com>
-> ---
+> Are you thinking about scheduling both RT and non-RT tasks through
+> deadline servers? If yes,
 
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Maybe, I initially considered this for mixed criticality, where the
+'soft' class would run EDF and the 'hard' class would run LLF (or the
+other way around, I can't quite remember how I figured it).
 
-Thanks!
-Christian
+If you restrict the hard class to single CPU assignment (IOW the UP
+case) and ensure that u_llf + U_gedf/N < 1, it should just work out.
+
+But I shelved all that after I heard about that other balancer idea
+Danial was suppose to be working on ;-)))
+
+> then I think that using something like
+> laxity-based scheduling for the SCHED_OTHER server can be a good idea
+> (but then we need to understand how to combine deadline-based
+> scheduling with laxity-based scheduling, etc...)
+
+/me consults notes, EDZL is I think the closest thing there.
+
+> Or are you thinking about keeping the SCHED_OTHER server throttled
+> until its laxity is 0 (or until its laxity is lower than some small
+> value)? In this second case, the approach would work even if RT tasks
+> are not scheduled through a server (but I do not know which kind of
+> performance guarantee we could provide).
+
+That would certainly be sufficient for OTHER servers I think.
