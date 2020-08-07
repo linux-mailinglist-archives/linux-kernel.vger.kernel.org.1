@@ -2,135 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B337523F1A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 19:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981A923F1A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 19:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgHGRGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 13:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgHGRGY (ORCPT
+        id S1726198AbgHGRGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 13:06:13 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:40514 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbgHGRGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 13:06:24 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE11C061756
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 10:06:24 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id b22so2513657oic.8
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 10:06:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zGNzDMtgwMSgmAFRgpJLjT+o9IjR2c/1gKwHb2BF5us=;
-        b=mkcM7xiAr1mKAplxqn3ZtnE28sHWjgu9S2jonviQ0A/GgDiuPJcJu8n5mYZKSqeg62
-         XFnrM25HsdtwGejqHweh0u5gYipMzT/sslDbPepKyF96lgo23lXbzFpm8J6aAqdXTaBB
-         LivvQQ5TVN0acp8SUhi58JBkIEMlVzfC5X0pCOkppQtUf1a5sp8hlokXl4gt/VbvboPG
-         xH4yvtiZnNF5POxb1RLFnlKwo3BGFdGYiCav7MPMHNuhZmgCICDFWgTSOVaSaJce4uRb
-         IMW0GKY6+IMjdShYjQDLdjx1ur0WetJ9/8d6o7KAAt5c0qsxwYzaoAcL5qq8Tw2xBtjp
-         /luA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zGNzDMtgwMSgmAFRgpJLjT+o9IjR2c/1gKwHb2BF5us=;
-        b=oaFRq2wN0K6Rlr+ZN43zJF8q55LaKNWKqaGvj+yrfGBYpqdCPK7BKn7WGwYIxSgK0l
-         v+vecIqjqRjOOP5KtGDoqVMBplrymcLqhqCjH7ISBMUS02bfICq8G1oCh+xXm+g7TGNg
-         WOnkr4Hg5m9c1i/lep+A54ILDneZC8S5qsriAd3NbDD441nkAZyXioRCUnnH/HaTFMLA
-         M0IPtwBT3+ILfjYE2DKip/zxfdBuY4mOdJKbiTh4murjllsHpHJi7lElvJIc3Zv/VSW2
-         9tqG+1gYUevPNgrIO3AmHmIsPN+j3T0Tf/u4cd64NzhOwRtoLxIT/GrCZ0J0VgmOJq78
-         AUug==
-X-Gm-Message-State: AOAM531F4QZAAleaW7fk/+vNx8PuqfwKv0RfQwYYTrMTfFxF49O1dj3K
-        NaRjAGhFj5hZDwbGHZ4Z7GLElIirQlErHMfF9mI=
-X-Google-Smtp-Source: ABdhPJwBqA8Q3xycvj7gFKodm4kb+mYefqzWRYBMX0W3aFwtrkeCewYAkBKUgyxljt0RIHrc98TNjSQlqO7DcO50PO8=
-X-Received: by 2002:aca:4a96:: with SMTP id x144mr12050482oia.163.1596819981235;
- Fri, 07 Aug 2020 10:06:21 -0700 (PDT)
+        Fri, 7 Aug 2020 13:06:11 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200807170610euoutp021ef7cd32503e56aad585507b54a89d31~pC01wTJ8P0351303513euoutp02R
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 17:06:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200807170610euoutp021ef7cd32503e56aad585507b54a89d31~pC01wTJ8P0351303513euoutp02R
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1596819970;
+        bh=ySlo1rRurySUq/mJUjWBrCBKqPIR44VZIR5xfff2xc0=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=CJ/qLf9mT+oJ0m3nkPwzytd+7LjgFY8NeWbXhY4/AlmUu1Ue2gt3SvlU/s8UmYfAx
+         zvQVS8r9CMqppgi3Hxaj1L5WVkniTK0IctcBlNoAL4S6VM89facVyD5eSUP8GH2q/o
+         dtr4oPnZDQ1aWSkMj7I8tHvKAQD79mQQeMQfuxxY=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200807170609eucas1p163ca3c0f6a466a038de9b9affa345011~pC01WyY3n3153631536eucas1p1Z;
+        Fri,  7 Aug 2020 17:06:09 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 59.DA.06318.10A8D2F5; Fri,  7
+        Aug 2020 18:06:09 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200807170609eucas1p1589506c27a99349d174c6c4c29e84288~pC005XIap2084920849eucas1p1d;
+        Fri,  7 Aug 2020 17:06:09 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200807170609eusmtrp2fabd780e21b12cbcd998e857599fdf14~pC004qkxC3033030330eusmtrp2E;
+        Fri,  7 Aug 2020 17:06:09 +0000 (GMT)
+X-AuditID: cbfec7f5-38bff700000018ae-43-5f2d8a01c8a9
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id FB.66.06017.10A8D2F5; Fri,  7
+        Aug 2020 18:06:09 +0100 (BST)
+Received: from [106.120.51.75] (unknown [106.120.51.75]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200807170608eusmtip2ed8565facc73fccd2acc5b0e8aee273a~pC00fBSfA0703507035eusmtip2M;
+        Fri,  7 Aug 2020 17:06:08 +0000 (GMT)
+Subject: Re: [PATCH] clk: samsung: Prevent potential endless loop in the PLL
+ set_rate ops
+To:     Tomasz Figa <tomasz.figa@gmail.com>
+Cc:     "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mike Turquette <mturquette@baylibre.com>,
+        "moderated list:SAMSUNG SOC CLOCK DRIVERS" 
+        <linux-samsung-soc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <d980e369-73ef-89a8-6669-f7e9c5dd3243@samsung.com>
+Date:   Fri, 7 Aug 2020 19:06:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200807160627.GA1420741@elver.google.com>
-In-Reply-To: <20200807160627.GA1420741@elver.google.com>
-From:   Pekka Enberg <penberg@gmail.com>
-Date:   Fri, 7 Aug 2020 20:06:02 +0300
-Message-ID: <CAOJsxLGikg5OsM6v6nHsQbktvWKsy7ccA99OcknLWJpSqH0+pg@mail.gmail.com>
-Subject: Re: Odd-sized kmem_cache_alloc and slub_debug=Z
-To:     Marco Elver <elver@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Christoph Lameter <cl@linux.com>,
-        Kees Cook <keescook@chromium.org>, kasan-dev@googlegroups.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CA+Ln22HGSj4gFRmw1rSLaTvw3TiPC9jaM6JB4Z1fbxpwsWNZWw@mail.gmail.com>
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKKsWRmVeSWpSXmKPExsWy7djPc7qMXbrxBiu6VC02zljPanH9y3NW
+        i48991gtLu+aw2Yx4/w+Jou1R+6yW1w85Wrx79pGFotVu/4wOnB6vL/Ryu6xc9Zddo9NqzrZ
+        PPq2rGL0+LxJLoA1issmJTUnsyy1SN8ugStjzdvigpk8FQf37WRsYHzO0cXIySEhYCJx6c1f
+        xi5GLg4hgRWMEuu3nGSDcL4wSnx78psZwvnMKNF09TYzTMuSxstQLcsZJfZMOQ3lvGWUmDF7
+        OyNIlbBAtMTSu9PBOkQE1CW+TelnByliFpjNLPFsxwl2kASbgKFE79E+sAZeATuJNdNPsIDY
+        LAIqEle2HAeLiwpESux8+pIdokZQ4uTMJ2A1nAKBEt0N31hBbGYBcYmmLyuhbHmJ7W/ngN0t
+        IXCMXeLEnidsEHe7SBw+dZkJwhaWeHV8CzuELSPxf+d8JoiGZkaJnt232SGcCYwS948vYISo
+        spa4c+4X0CQOoBWaEut36UOEHSUuPZrLDBKWEOCTuPFWEOIIPolJ26ZDhXklOtqEIKpVJH6v
+        mg51gpRE95P/LBMYlWYheW0WkndmIXlnFsLeBYwsqxjFU0uLc9NTi43zUsv1ihNzi0vz0vWS
+        83M3MQIT0+l/x7/uYNz3J+kQowAHoxIP7w9f3Xgh1sSy4srcQ4wSHMxKIrxOZ0/HCfGmJFZW
+        pRblxxeV5qQWH2KU5mBREuc1XvQyVkggPbEkNTs1tSC1CCbLxMEp1cDIzZf3aefXaQZ3RHe9
+        zXRNl5jvwZv0RtDHyNf8lcHHmsiKQAP/4nPz9Qw+PNRUKLqjObHv0mNj681ix7OSGANevLm6
+        SrtRxEyiQ/O6g2HzhuM8VzoWfb/edj7zGH/Ojb1G8mHdN7Rqkuynbrr67+LEJ5t+5cftKP/4
+        5UrnOZ16JfsNldc8kzmUWIozEg21mIuKEwHCX6FNSAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCIsWRmVeSWpSXmKPExsVy+t/xe7qMXbrxBjtWcFhsnLGe1eL6l+es
+        Fh977rFaXN41h81ixvl9TBZrj9xlt7h4ytXi37WNLBardv1hdOD0eH+jld1j56y77B6bVnWy
+        efRtWcXo8XmTXABrlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpO
+        Zllqkb5dgl7GmrfFBTN5Kg7u28nYwPico4uRk0NCwERiSeNlxi5GLg4hgaWMEk+aPjF1MXIA
+        JaQk5rcoQdQIS/y51sUGUfOaUWJR/1dWkISwQLTE0rvTmUFsEQF1iW9T+tlBipgF5jNLLH+/
+        hx0kISRwlVHi9rdQEJtNwFCi92gfI4jNK2AnsWb6CRYQm0VAReLKluOMIItFBSIldu6whCgR
+        lDg58wlYCadAoER3wzewvcxAu/7Mu8QMYYtLNH1ZCRWXl9j+dg7zBEahWUjaZyFpmYWkZRaS
+        lgWMLKsYRVJLi3PTc4uN9IoTc4tL89L1kvNzNzECY3DbsZ9bdjB2vQs+xCjAwajEw7vAWzde
+        iDWxrLgy9xCjBAezkgiv09nTcUK8KYmVValF+fFFpTmpxYcYTYF+m8gsJZqcD0wPeSXxhqaG
+        5haWhubG5sZmFkrivB0CB2OEBNITS1KzU1MLUotg+pg4OKUaGKsPbC/3O6K0XKKHbcfaLd+/
+        rd/EGfdl/aa3791effnx8tqOU/PYypUve0f+7KmcvJXD8OBlwz//w2+JsusfvHl/5h+lGy1r
+        xK3/LIsrU39xiKPzlvVj1Tadr8vuCwlabcqd7rZyf2WdL7+9RP9n5vf2Td+u6S8R6fj7mfPM
+        xa4Wv6nblFZ1i/1TYinOSDTUYi4qTgQApKSnBdcCAAA=
+X-CMS-MailID: 20200807170609eucas1p1589506c27a99349d174c6c4c29e84288
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200806160653eucas1p2b7fd860f5d89589cf9df0ad0f8d3981f
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200806160653eucas1p2b7fd860f5d89589cf9df0ad0f8d3981f
+References: <CGME20200806160653eucas1p2b7fd860f5d89589cf9df0ad0f8d3981f@eucas1p2.samsung.com>
+        <20200806160646.1997-1-s.nawrocki@samsung.com>
+        <CA+Ln22HGSj4gFRmw1rSLaTvw3TiPC9jaM6JB4Z1fbxpwsWNZWw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marco,
+Hi Tomasz,
 
-On Fri, Aug 7, 2020 at 7:07 PM Marco Elver <elver@google.com> wrote:
-> I found that the below debug-code using kmem_cache_alloc(), when using
-> slub_debug=Z, results in the following crash:
->
->         general protection fault, probably for non-canonical address 0xcccccca41caea170: 0000 [#1] PREEMPT SMP PTI
->         CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.8.0+ #1
->         Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
->         RIP: 0010:freelist_dereference mm/slub.c:272 [inline]
->         RIP: 0010:get_freepointer mm/slub.c:278 [inline]
->         RIP: 0010:deactivate_slab+0x54/0x460 mm/slub.c:2111
->         Code: 8b bc c7 e0 00 00 00 48 85 d2 0f 84 00 01 00 00 49 89 d5 31 c0 48 89 44 24 08 66 66 2e 0f 1f 84 00 00 00 00 00 90 44 8b 43 20 <4b> 8b 44 05 00 48 85 c0 0f 84 1e 01 00 00 4c 89 ed 49 89 c5 8b 43
->         RSP: 0000:ffffffffa7e03e18 EFLAGS: 00010046
->         RAX: 0000000000000000 RBX: ffffa3a41c972340 RCX: 0000000000000000
->         RDX: cccccca41caea160 RSI: ffffe7c6a072ba80 RDI: ffffa3a41c972340
->         RBP: ffffa3a41caea008 R08: 0000000000000010 R09: ffffa3a41caea01d
->         R10: ffffffffa7f8dc50 R11: ffffffffa68f44c0 R12: ffffa3a41c972340
->         R13: cccccca41caea160 R14: ffffe7c6a072ba80 R15: ffffa3a41c96d540
->         FS:  0000000000000000(0000) GS:ffffa3a41fc00000(0000) knlGS:0000000000000000
->         CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->         CR2: ffffa3a051c01000 CR3: 000000045140a001 CR4: 0000000000770ef0
->         DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->         DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->         PKRU: 00000000
->         Call Trace:
->          ___slab_alloc+0x336/0x340 mm/slub.c:2690
->          __slab_alloc mm/slub.c:2714 [inline]
->          slab_alloc_node mm/slub.c:2788 [inline]
->          slab_alloc mm/slub.c:2832 [inline]
->          kmem_cache_alloc+0x135/0x200 mm/slub.c:2837
->          start_kernel+0x3d6/0x44e init/main.c:1049
->          secondary_startup_64+0xb6/0xc0 arch/x86/kernel/head_64.S:243
->
-> Any ideas what might be wrong?
->
-> This does not crash when redzones are not enabled.
->
-> Thanks,
-> -- Marco
->
-> ------ >8 ------
->
-> diff --git a/init/main.c b/init/main.c
-> index 15bd0efff3df..f4aa5bb3f2ec 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -1041,6 +1041,16 @@ asmlinkage __visible void __init start_kernel(void)
->         sfi_init_late();
->         kcsan_init();
->
-> +       /* DEBUG CODE */
-> +       {
-> +               struct kmem_cache *c = kmem_cache_create("test", 21, 1, 0, NULL);
-> +               char *buf;
-> +               BUG_ON(!c);
-> +               buf = kmem_cache_alloc(c, GFP_KERNEL);
-> +               kmem_cache_free(c, buf);
-> +               kmem_cache_destroy(c);
-> +       }
-> +
->         /* Do the rest non-__init'ed, we're now alive */
->         arch_call_rest_init();
+On 8/6/20 18:11, Tomasz Figa wrote:
+>> --- a/drivers/clk/samsung/clk-pll.c
+>> +++ b/drivers/clk/samsung/clk-pll.c
+>> @@ -63,6 +63,27 @@ static long samsung_pll_round_rate(struct clk_hw *hw,
+>>         return rate_table[i - 1].rate;
+>>  }
+>>
+>> +static int samsung_pll_lock_wait(struct samsung_clk_pll *pll,
+>> +                                unsigned int reg_mask)
+>> +{
+>> +       ktime_t timeout;
+>> +
+>> +       /* Wait until the PLL is in steady locked state */
+>> +       timeout = ktime_add_ms(ktime_get(), PLL_TIMEOUT_MS);
+>> +
+>> +       while (!(readl_relaxed(pll->con_reg) & reg_mask)) {
+>> +               if (ktime_after(ktime_get(), timeout)) {
+>> +                       pr_err("%s: Could not lock PLL %s\n",
+>> +                               __func__, clk_hw_get_name(&pll->hw));
+>> +                       return -EFAULT;
+>> +               }
+>> +
+>> +               cpu_relax();
+>> +       }
 
-Anything interesting in your .config? The fault does not reproduce
-with 5.8.0 + x86-64 defconfig.
+> Thanks for the patch! Good to have this consolidated. How about going
+> one step further and using the generic
+> readl_relaxed_poll_timeout_atomic() helper?
 
-- Pekka
+Might be a good suggestion, I was considering those helpers but ended
+up not using them in the patch. The cpu_relax() call might also not be
+really needed now, when there is the ktime code within the loop.
+Having multiple occurrences of readl_relaxed_poll_timeout_atomic() could
+increase the code size due to inlining. How about keeping the 
+samsung_pll_lock_wait() function and just changing its implementation?
+
+-- 
+Thanks,
+Sylwester
