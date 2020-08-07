@@ -2,58 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DC423EF8B
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D2F23EF34
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbgHGOwM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 7 Aug 2020 10:52:12 -0400
-Received: from mail.furshetcrimea.ru ([193.27.243.220]:51882 "EHLO
-        furshetcrimea.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726935AbgHGOwJ (ORCPT
+        id S1726393AbgHGOs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 10:48:26 -0400
+Received: from sonic316-54.consmr.mail.gq1.yahoo.com ([98.137.69.30]:35434
+        "EHLO sonic316-54.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726030AbgHGOs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 10:52:09 -0400
-X-Greylist: delayed 5015 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Aug 2020 10:51:24 EDT
-Received: from [154.118.61.214] (account info@furshetcrimea.ru HELO [192.168.8.100])
-  by furshetcrimea.ru (CommuniGate Pro SMTP 6.1.10)
-  with ESMTPA id 11132978; Fri, 07 Aug 2020 17:58:09 +0300
-Content-Type: text/plain; charset="iso-8859-1"
+        Fri, 7 Aug 2020 10:48:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1596811704; bh=DRdKyhPGIi9crruXXUy170YawLE0IdKbv+gBvEcp4AM=; h=Date:From:To:Cc:Subject:References:In-Reply-To:From:Subject; b=NiJoSnATbMRLRjHMinPnle5lIzryqrmYBEmotq/eMoeImwyOzfzZ5Mgpnhm0DB4pAyZUB29p60D5QIiIu+cx42RdOpkKzLE+4Gz+pwCCKMrEJs7/IjGXXiDoAGaV0bUpbT77NF3gGPXzKEEKAJDJwvT3rfrjLn0hKFAFNU6Gz2pSXCK+NNLlvw4z3eX8VekkckiZsCaqIaQRyb2GccHRo2YoDkxPTRJuGWOH6F8sFf6oTooKlHXjpI9FjI5AIIjjXJUfdQrWl0hX8K+E+FS5iM+2t3vDoQoYwt4kr0XEb9L6TM6tpYs8he5HpLYwrhX62cEB2Ydz8yvCZqx2uoreBg==
+X-YMail-OSG: ovvgQ1UVM1mz5EpcWqKWrUhoX_TiqyFhP7NxGwI_FX4aNp2Ut0eg4r4_hrNn4uS
+ 2aANjSospXsm0irwLJG7CoQ38HHMkT6CTiz2raCHgrUt1WKS_E1W.29j8G.S2v6_ITUCn2MM7G2z
+ u.BnBOVpjhlQFVFfWuTpnUQTBp18COCaSUy7UNbZ8nND2JujTr.EqTsV9u7L9EcYily5Iok29ASX
+ QGF7oTS85JgvrZUiCxCKJMxS_pu59ZNbtJ0F8YHLol3wYwTBBoQzwdtkPrUBRGodRXqEL6GcQWFC
+ vpNde3EbhFYewhsYWcFd9jCbuNrZ.RFjduzEOGGqFqc9Phc9b54a7iMnZciFpOVERDobRQr_Sk8d
+ bdg10fRLLolzCkpFGQjoZGYFshE0TVTt3o42D4KCfB3XIHyoiKsS1iKehsd__pb01xEYkH2IOXKv
+ 06yNR.ZnG0dtg6PL3GrkE5zxmrd7EjiQxomWmDZQX619lcYP7QoL54sCxFVikeZPuwtJ4kebwqag
+ T.4UoYW4UELEgqzIOL8b20Tp2_HBhgkJOBem_NflNqylBPIOtiOY0.ObC3y0x_mi2uIUugizRFiR
+ 5uVQwqS4U8G.LHz6kXcebsEB9qwBYDd_xjTxpFCbDbSI1VYLlvlLULW8bzqqaTCutbD18KovCG_W
+ 1ZQt.aKCOLreZQt0_PWk43ONIS7CcA6NMevuCi9GEX2X6ybxKsyU2CdJjdjsaFQU0_1cqwNXiQO1
+ rp4hsbm9Sk4uY61EOxq5iYfFFeWjqOqRa512PfMllXSmZRRpy02nshYSgOxPG5B9bZJ6CchZTBcg
+ QJ87vEunZ__1YQJ9aXj7fHHOHaxxoeaC1IRtkhxnD5X9o3Dr2FN6XzovSGLFkFp8qOh_JKxhIY9d
+ sn4w.IyuQnLqKv.OZIC9maMN8QzM2Pnnd.FrmTYmJqDisDq8jgjOsB5V6NO5QtvQIPrzlk2_9Oca
+ jFFTy20BBxbJaZziUietLqtnCj783DwdXJghbC2Ct737B859knEIjaCA0TBAnu4FY3xDpn1.le0L
+ rclBjVEHuCGZ4Pdqc6bOG9611dxdX5h3zH6MA7ZsLrIP7LyiUkwa7XKfBXPueyYA4Oj5Fh1SipoU
+ xOG6mm18qqDduABQ0xqUDNWHHipG03owWXyJiqPCcwgWjFy3vJaLFAwCHM5MIYC5XqacLs5Y31Mr
+ rJgbknL1LOFKntvlsQXbSfHjsxsG13zaxmupCo0xWCGzlVrhgh2Z3U4BKpfF4vzqFjSemE9e6PNt
+ XwE_Pw_.fuMjlaozA35gMnoizdeAsJDpYJZSf_Q88QDDgF0y50qi1wWrXVPTB5vpi213WnCwVskD
+ HXGR3DSZp7uBtuJM93vstqeL_GanKnCmiiX40F0x2IYz13Gj.8pXSIs6F.F9Gp15wfE_z7o1jfEC
+ zRojRcu_83f29TR5kl4hA8yEUgCiu9olKM037eC2vNabmcPdS_YQx0tAdz1wp_RiPYs4UROtuXQ7
+ 9CA--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.gq1.yahoo.com with HTTP; Fri, 7 Aug 2020 14:48:24 +0000
+Received: by smtp420.mail.ir2.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 24b5f98ba496c054505f6f72607bc988;
+          Fri, 07 Aug 2020 14:48:21 +0000 (UTC)
+Date:   Fri, 7 Aug 2020 22:48:12 +0800
+From:   Gao Xiang <hsiangkao@aol.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: fs/erofs/zdata.c:198:22: sparse: sparse: non size-preserving
+ integer to pointer cast
+Message-ID: <20200807144801.GA30258@hsiangkao-HP-ZHAN-66-Pro-G1>
+References: <202008072005.Myrby1lg%lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Bei Interesse antworten.
-To:     Recipients <info@furshetcrimea.ru>
-From:   info@furshetcrimea.ru
-Date:   Fri, 07 Aug 2020 15:45:33 +0100
-Reply-To: mattiassjoborg751@gmail.com
-X-Antivirus: Avast (VPS 200807-2, 08/07/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-ID: <auto-000011132978@furshetcrimea.ru>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202008072005.Myrby1lg%lkp@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mailer: WebService/1.1.16436 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.aol Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Schöne Grüße,
+Hi,
 
-Mein Name ist MATTIAS SJOBORG, ich bin Schweizer Staatsbürger und (Vorsitzender des Vergütungs- und Nominierungsausschusses) von Tethys Petroleum, einem multinationalen Ölkonzern mit Sitz in London-England, Großbritannien. Ich bitte Sie um Ihre Hilfe, um die Summe von vierzig Millionen Dollar abzurufen, die aus zwei Sendungsboxen besteht.
+On Fri, Aug 07, 2020 at 08:08:10PM +0800, kernel test robot wrote:
+> Hi Gao,
+> 
+> First bad commit (maybe != root cause):
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   86cfccb66937dd6cbf26ed619958b9e587e6a115
+> commit: 47e4937a4a7ca4184fd282791dfee76c6799966a erofs: move erofs out of staging
+> date:   12 months ago
+> config: s390-randconfig-s032-20200807 (attached as .config)
+> compiler: s390-linux-gcc (GCC) 9.3.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # apt-get install sparse
+>         # sparse version: v0.6.2-118-ge1578773-dirty
+>         git checkout 47e4937a4a7ca4184fd282791dfee76c6799966a
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=s390 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> 
+> sparse warnings: (new ones prefixed by >>)
+> 
+> >> fs/erofs/zdata.c:198:22: sparse: sparse: non size-preserving integer to pointer cast
+>    fs/erofs/zdata.c:282:22: sparse: sparse: non size-preserving integer to pointer cast
+>    fs/erofs/zdata.c:1094:24: sparse: sparse: non size-preserving integer to pointer cast
 
-Dieses Geld wurde von der Firma erworben und von einem Diplomaten begleitet und korrekt in einer Sicherheitsfirma in Amerika hinterlegt. Mein Grund dafür ist, dass ich von der Firma zu lange um meine Ansprüche betrogen wurde, nur weil ich kein bin Britisch. Die Kontaktdaten des Diplomaten erhalten Sie, wenn Sie Ihr Interesse bekunden, mir zu helfen.
+I don't think these are valid warnings.
 
-Jede der Schachteln enthält 20 Mio. USD. Für Ihre Hilfe bin ich bereit, 40% an Sie freizugeben. Aus Sicherheitsgründen wurde die Sendung als VERTRAULICHE DIPLOMATISCHE DOKUMENTE registriert, und ich kann erklären, warum dies so erklärt wurde. Denken Sie daran, dass der Diplomat den Inhalt der Sendung nicht kennt. Er ist seit einem Monat dort, während ich nach einem zuverlässigen Partner suchen möchte. Ich werde das Land verlassen, sobald die Sendung für Sie an Sie geliefert wird Private Investitionen und ich haben geschworen, niemals nach London zurückzukehren. Bitte, ich brauche Ihre dringende Antwort, bevor meine Pläne, das Unternehmen zu verlassen, entdeckt werden.
+All these three lines are using cmpxchg struct page * (which is equivalent to unsigned long
+in these cmpxchg macros) and nothing special at all in my opinion (Especially the last two
+lines).
 
-www.tethyspetroleum.com/tethys/static/EN_US/au_seniormanagement.html
++198	if (!cmpxchg_relaxed(pages, NULL, tagptr_cast_ptr(t)))
++282	if (!cmpxchg(clt->compressedpages++, NULL, page))
++1094	if (oldpage != cmpxchg(&pcl->compressed_pages[nr], oldpage, page)) {
 
-Im Moment ist die sicherste Form der Korrespondenz meine eigene E-Mail-Adresse. Bitte antworten Sie im Interesse der Vertraulichkeit nur über meine direkte E-Mail-Adresse. Antworten Sie zusammen mit Ihrer direkten Telefon- und Faxnummer, unter der ich Sie alternativ erreichen kann.
+btw, recently sparse warnings quite confuse me (p.s. they're all on alpha/s390/sparc archs and relate
+to cmpxchg/xchg by accident), I have no idea what happened with sparse.
 
-Bitte, wenn Sie nicht bereit und interessiert sind, mir zu helfen, löschen Sie bitte diese E-Mail aus Ihrer E-Mail und tun Sie so, als hätten Sie sie nie erhalten.
-
-Freundliche Grüße,
-Mr.Mattias Sjoborg
-(Vorsitzender des Vergütungs- und Nominierungsausschusses)
-Tethys Petroleum.
-London, England
-
--- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+Thanks,
+Gao Xiang
 
