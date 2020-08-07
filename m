@@ -2,191 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330EA23F23C
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 19:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5E923F248
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 19:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728261AbgHGRuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 13:50:21 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:29111 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728228AbgHGRuT (ORCPT
+        id S1727828AbgHGRu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 13:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728329AbgHGRuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 13:50:19 -0400
-X-IronPort-AV: E=Sophos;i="5.75,446,1589209200"; 
-   d="scan'208";a="54150750"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 08 Aug 2020 02:50:18 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id A30534004BA6;
-        Sat,  8 Aug 2020 02:50:15 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 7/7] ARM: dts: r8a7742-iwg21d-q7: Add LCD support
-Date:   Fri,  7 Aug 2020 18:49:54 +0100
-Message-Id: <20200807174954.14448-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200807174954.14448-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20200807174954.14448-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Fri, 7 Aug 2020 13:50:54 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97EBC061756
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 10:50:54 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id a14so1856124edx.7
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 10:50:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=posk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nV60Lqd/s6jkR9RwVRlKW7Xy32P0lIA2VNvjGGWHCBg=;
+        b=IwhGZX7LdBz9Um8mRp/QS0j6Q+GbQl8v73j0V8V2WITC6uJ2ifcAkkiIIfaxA9/9ig
+         T96guVNcY8tg1p4oKZrQ2H3KYKPVrusWb1ZomNrEMd/NlUlmHSE159rPjcfA4sE2nZSr
+         T5WwdJSNJSbR4VYAsuED8Dkk1kfgLjFwLOLGFp680oA4u+TxQvdy4rq5qu/ybULVFECY
+         IavpPCYKYmZ13sepQ/4Ka/LOrhSAu+6DtzXg5Hb3KwPWSeY3wH6n1v7KMEHFifcTgCfX
+         +AmcTfZFtuy+HMD1eoTuWivbfPh7+xH0mZyMQjwBYYnpZnsbBM6Z5dCuISeyFXGT6YwY
+         S8HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nV60Lqd/s6jkR9RwVRlKW7Xy32P0lIA2VNvjGGWHCBg=;
+        b=T98Alh9wGig5UQtAb90ySsIsKmCHqwOjFzcoWe3saNbNnWFGHHvlE5qy/bq6aCrvuq
+         OJuT7XmNMykYOPcogbjjYXUsM3T4wL4vdxpKTrQH7Gna1gKTBXj61syyL+tQG0LjnssV
+         6Fya6D5bCM/ERLe/9GZFIKYOZcx2ejUSSyOVsQg9e07rET/ZB2Td221XbpEVesWdQ26I
+         f9LjdBuNFxDj4CwpBrswDG+rOUCj9mluIb6+ItSk+Y4/5Y/XmsBUK+2TWQeatP2M1bAs
+         gcXDdN57Q2mb1AErijnlORC18SSfFUpIBGHql2dha8jrir3Kc1Uu14NLnkfolDidrHU7
+         a4JQ==
+X-Gm-Message-State: AOAM532xofh6oVAsPfrkUs29IENmKEZkclUbp+KbBfPwo+vUNTXyi5rB
+        3HryHJik/gFURjvfX2zJns+UOi9AUh2ZmoPpWER2hg==
+X-Google-Smtp-Source: ABdhPJzvhKrW3dF3SpuUWaQUa/eW+G5WCapZOMN4nSQUAw999XeWxTFetxrMHXiBNl2+15joikVxjo+F1zTL04Gwbs0=
+X-Received: by 2002:a05:6402:16d0:: with SMTP id r16mr10237222edx.124.1596822653289;
+ Fri, 07 Aug 2020 10:50:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200806170544.382140-1-posk@google.com> <20200807133755.GJ2674@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200807133755.GJ2674@hirez.programming.kicks-ass.net>
+From:   Peter Oskolkov <posk@posk.io>
+Date:   Fri, 7 Aug 2020 10:50:42 -0700
+Message-ID: <CAFTs51VHC5nyAb7bf-jvuYDRwLS5kWP98T336Uu7h+RMFb0ZqA@mail.gmail.com>
+Subject: Re: [PATCH 1/2 v2] rseq/membarrier: add MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Peter Oskolkov <posk@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paul Turner <pjt@google.com>,
+        Chris Kennelly <ckennelly@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The iwg21d comes with a 7" capacitive touch screen, therefore
-add support for it.
+On Fri, Aug 7, 2020 at 6:38 AM <peterz@infradead.org> wrote:
+>
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
----
- arch/arm/boot/dts/r8a7742-iwg21d-q7.dts | 84 +++++++++++++++++++++++++
- 1 file changed, 84 insertions(+)
+[...]
 
-diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-index b3461a61a4bf..cf59fd61e422 100644
---- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-+++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-@@ -30,6 +30,7 @@
- 
- /dts-v1/;
- #include "r8a7742-iwg21m.dtsi"
-+#include <dt-bindings/pwm/pwm.h>
- 
- / {
- 	model = "iWave Systems RainboW-G21D-Qseven board based on RZ/G1H";
-@@ -52,6 +53,50 @@
- 		clock-frequency = <26000000>;
- 	};
- 
-+	lcd_backlight: backlight {
-+		compatible = "pwm-backlight";
-+		pwms = <&tpu 2 5000000 0>;
-+		brightness-levels = <0 4 8 16 32 64 128 255>;
-+		pinctrl-0 = <&backlight_pins>;
-+		pinctrl-names = "default";
-+		default-brightness-level = <7>;
-+		enable-gpios = <&gpio3 11 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	lvds-receiver {
-+		compatible = "ti,ds90cf384a", "lvds-decoder";
-+		powerdown-gpios = <&gpio5 28 GPIO_ACTIVE_LOW>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				lvds_receiver_in: endpoint {
-+					remote-endpoint = <&lvds0_out>;
-+				};
-+			};
-+			port@1 {
-+				reg = <1>;
-+				lvds_receiver_out: endpoint {
-+					remote-endpoint = <&panel_in>;
-+				};
-+			};
-+		};
-+	};
-+
-+	panel {
-+		compatible = "edt,etm0700g0dh6";
-+		backlight = <&lcd_backlight>;
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&lvds_receiver_out>;
-+			};
-+		};
-+	};
-+
- 	reg_1p5v: 1p5v {
- 		compatible = "regulator-fixed";
- 		regulator-name = "1P5V";
-@@ -129,12 +174,31 @@
- 		VDDIO-supply = <&reg_3p3v>;
- 		VDDD-supply = <&reg_1p5v>;
- 	};
-+
-+	touch: touchpanel@38 {
-+		compatible = "edt,edt-ft5406";
-+		reg = <0x38>;
-+		interrupt-parent = <&gpio0>;
-+		interrupts = <24 IRQ_TYPE_EDGE_FALLING>;
-+	};
- };
- 
- &cmt0 {
- 	status = "okay";
- };
- 
-+&du {
-+	status = "okay";
-+};
-+
-+&gpio0 {
-+	touch-interrupt {
-+		gpio-hog;
-+		gpios = <24 GPIO_ACTIVE_LOW>;
-+		input;
-+	};
-+};
-+
- &hsusb {
- 	pinctrl-0 = <&usb0_pins>;
- 	pinctrl-names = "default";
-@@ -165,6 +229,11 @@
- 		function = "avb";
- 	};
- 
-+	backlight_pins: backlight {
-+		groups = "tpu0_to2";
-+		function = "tpu0";
-+	};
-+
- 	i2c2_pins: i2c2 {
- 		groups = "i2c2_b";
- 		function = "i2c2";
-@@ -208,6 +277,17 @@
- 	};
- };
- 
-+&lvds0 {
-+	status = "okay";
-+	ports {
-+		port@1 {
-+			lvds0_out: endpoint {
-+				remote-endpoint = <&lvds_receiver_in>;
-+			};
-+		};
-+	};
-+};
-+
- &rcar_sound {
- 	pinctrl-0 = <&sound_pins>;
- 	pinctrl-names = "default";
-@@ -261,6 +341,10 @@
- 	shared-pin;
- };
- 
-+&tpu {
-+	status = "okay";
-+};
-+
- &usbphy {
- 	status = "okay";
- };
--- 
-2.17.1
+> I'm thinking even this is a problem, we can end up sending IPIs to CPUs
+> outside out partition (they might be NOHZ_FULL) and that's a no-no too.
+>
+> Something like so perhaps... that really limits it to CPUs that match
+> our mm.
 
+Thanks for the suggestion - I'll prepare a v3 based on your and
+Mathieu's feedback.
+
+>
+> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+> index 6be66f52a2ad..bee5e98e6774 100644
+> --- a/include/linux/sched/mm.h
+> +++ b/include/linux/sched/mm.h
+> @@ -356,6 +356,7 @@ enum {
+>
+>  enum {
+>         MEMBARRIER_FLAG_SYNC_CORE       = (1U << 0),
+> +       MEMBARRIER_FLAG_RSEQ            = (1U << 1),
+>  };
+>
+>  #ifdef CONFIG_ARCH_HAS_MEMBARRIER_CALLBACKS
+> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
+> index 168479a7d61b..4d9b22c2f5e2 100644
+> --- a/kernel/sched/membarrier.c
+> +++ b/kernel/sched/membarrier.c
+> @@ -27,6 +27,11 @@
+>
+>  static void ipi_mb(void *info)
+>  {
+> +       int *flags = info;
+> +
+> +       if (flags && (*flags & MEMBARRIER_FLAG_RSEQ))
+> +               rseq_preempt(current);
+> +
+>         smp_mb();       /* IPIs should be serializing but paranoid. */
+>  }
+>
+> @@ -129,11 +134,11 @@ static int membarrier_global_expedited(void)
+>         return 0;
+>  }
+>
+> -static int membarrier_private_expedited(int flags)
+> +static int membarrier_private_expedited(int flags, int cpu_id)
+>  {
+> -       int cpu;
+> -       cpumask_var_t tmpmask;
+>         struct mm_struct *mm = current->mm;
+> +       cpumask_var_t tmpmask;
+> +       int cpu;
+>
+>         if (flags & MEMBARRIER_FLAG_SYNC_CORE) {
+>                 if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE))
+> @@ -174,6 +179,10 @@ static int membarrier_private_expedited(int flags)
+>                  */
+>                 if (cpu == raw_smp_processor_id())
+>                         continue;
+> +
+> +               if (cpu_id >= 0 && cpu != cpu_id)
+> +                       continue;
+> +
+>                 p = rcu_dereference(cpu_rq(cpu)->curr);
+>                 if (p && p->mm == mm)
+>                         __cpumask_set_cpu(cpu, tmpmask);
+> @@ -181,7 +190,7 @@ static int membarrier_private_expedited(int flags)
+>         rcu_read_unlock();
+>
+>         preempt_disable();
+> -       smp_call_function_many(tmpmask, ipi_mb, NULL, 1);
+> +       smp_call_function_many(tmpmask, ipi_mb, &flags, 1);
+>         preempt_enable();
+>
+>         free_cpumask_var(tmpmask);
+> @@ -362,11 +371,13 @@ SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
+>         case MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED:
+>                 return membarrier_register_global_expedited();
+>         case MEMBARRIER_CMD_PRIVATE_EXPEDITED:
+> -               return membarrier_private_expedited(0);
+> +               return membarrier_private_expedited(0, -1);
+>         case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED:
+>                 return membarrier_register_private_expedited(0);
+>         case MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE:
+> -               return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
+> +               return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE, -1);
+> +       case MEMBERRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
+> +               return membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ, flags);
+>         case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE:
+>                 return membarrier_register_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
+>         default:
