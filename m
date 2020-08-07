@@ -2,126 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2CC23F0BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 18:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2D523F0C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 18:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgHGQLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 12:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgHGQLp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 12:11:45 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BEBC061756
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 09:11:44 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id c16so2615939ejx.12
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 09:11:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y9D1KRUva+vEZ2yw/RUAbLSmKMRhybgAq31n6MCUn2w=;
-        b=h8dgkoz8y/OiP85im29r03TQUoi5ZKfJewD54te1FYPtv/KEpTqZ+Da+Zaa0mlPEzE
-         csDJUwYUPnrshDjQ6xV40Ux3iDsSemGp/pg5DQtAWRaB1aGrbcaG9gUW+rtMRRyLTgQ1
-         ncC2qUcZI2kRdy542DbHxGfUEqUYiTPyZUafAliFIznk/rTpMgi5ASJ+4ySkCniKIYMH
-         NT/hAK1qje2Ml/rNoKixLn77hnR0JvTBdLS+KtPpJPZMdhr7cQOtZqWHfQgUL/vZkkk7
-         E9brMTW0uk6z/ioIWdFAof0g60jFqE3pnegpob1E+DCmYgk2LVRWhJjiwf5Qz2gjAWiK
-         Gb+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y9D1KRUva+vEZ2yw/RUAbLSmKMRhybgAq31n6MCUn2w=;
-        b=nIwplEVC+YAPEuGC9z8kKijQcVaB9F1TQJNp0Y4PxpX8v/TA35RFG9VRoIJhAr+t92
-         AKrQKOkXR3/wy2ypP/MAW4/rEGcWMcJvgl/Kunp0LRGUpnEbIC+O92fkJGUzdJFS5kAf
-         MPLj98VaQ/yhlA0pr/ykZmVcRMXIb8LnowFoR/5rgBz+tOeo/mIYKNQbT2cQOgXqB65b
-         vjMgXgrPlSaV2GSAf/DNRNVGls7xkoDj+k2LygBzRGI1XQKKVz/j+zVF4rcLfti/bxz7
-         l0i9urdSek+jHeLQiwoBzcGjMUgs0Aq/9I6fgNIwEmAdxbbLW2jB/CsMFrme47Nv+QV2
-         7RfA==
-X-Gm-Message-State: AOAM5322Ip3oNms0iAm1qGyXFI8ykOdLIQHaaa9A6amHEpyWKPi2I+Gc
-        0dAi83n5xW1fk2Wh6n/mKfOvpnVPJKaY+cBDluj9Qw==
-X-Google-Smtp-Source: ABdhPJyrYrsX5pEESa8H+K7koPpEjRogCNgaqAF5EHjcrBUY1fHtp+5JeCDPHY/P9J9KeauYe50jhbLLuLbLdMYGuqM=
-X-Received: by 2002:a17:906:9399:: with SMTP id l25mr9939694ejx.212.1596816703233;
- Fri, 07 Aug 2020 09:11:43 -0700 (PDT)
+        id S1726630AbgHGQNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 12:13:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38478 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725934AbgHGQNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 12:13:16 -0400
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9873B2065E
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 16:13:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596816795;
+        bh=AfuvdFn3dMHqvQQoxBneF6L/AD9mtL8sc5x4o3BprDc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DWJHBwYgk1neCdP4+TIFmGkZr41TsTc+6PXJ0l//hCW+xbq81LlM6pUlR0lRzpXMt
+         UhuUAaSdNZZLoIRS0tB9mm6eK9q6/zjyfEV2wjKYq/1bH94H5UCrnEVXYYHzyO/LFZ
+         YErF7gjHvlpWAP0ERaub9pCEqKgXxjldbBjY/EVA=
+Received: by mail-oi1-f170.google.com with SMTP id u63so2383620oie.5
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 09:13:15 -0700 (PDT)
+X-Gm-Message-State: AOAM530ogeuwRyTbqR7P5BYaT2wBdZoXf6dOTmsmTkHkAo98qeiA1rZF
+        13UWP60tubaMgKcyItH7IsIBS3Dbrvl4CCsw6A==
+X-Google-Smtp-Source: ABdhPJwvEIz202H+y8lt7/5urap/1s4x9MmUoqD47TMfOnZglCtDSfQblglc2OIFHIEzaeCAJcyGROSzQTGRmOwgWjE=
+X-Received: by 2002:aca:c3d8:: with SMTP id t207mr12260276oif.152.1596816794972;
+ Fri, 07 Aug 2020 09:13:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200807071718.17937-1-tanmay@codeaurora.org> <20200807071718.17937-3-tanmay@codeaurora.org>
- <b0e8415f-53e6-575d-5774-5f4f7adca982@infradead.org> <CAF6AEGvLrR2LPTF2DDEcxRwQY+pEEcooZh=NBSr5WOs+TUk0Dw@mail.gmail.com>
-In-Reply-To: <CAF6AEGvLrR2LPTF2DDEcxRwQY+pEEcooZh=NBSr5WOs+TUk0Dw@mail.gmail.com>
-From:   Guenter Roeck <groeck@google.com>
-Date:   Fri, 7 Aug 2020 09:11:32 -0700
-Message-ID: <CABXOdTeYOVWKNWfJxxVDC6Mdu1aisCs6yDCAdxRQGuUp8r2EQA@mail.gmail.com>
-Subject: Re: [PATCH v9 2/5] drm/msm/dp: add displayPort driver support
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+References: <20200710095409.407087-1-peron.clem@gmail.com>
+In-Reply-To: <20200710095409.407087-1-peron.clem@gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 7 Aug 2020 10:13:03 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLnOGVbO5T92dyzt3K-v4BRNt72yMpYR_wW-z8dpdVSvA@mail.gmail.com>
+Message-ID: <CAL_JsqLnOGVbO5T92dyzt3K-v4BRNt72yMpYR_wW-z8dpdVSvA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/14] Add regulator devfreq support to Panfrost
+To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
         dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, aravindh@codeaurora.org,
-        Abhinav Kumar <abhinavk@codeaurora.org>, khsieh@codeaurora.org,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        Guenter Roeck <groeck@chromium.org>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 7, 2020 at 8:48 AM Rob Clark <robdclark@gmail.com> wrote:
+On Fri, Jul 10, 2020 at 3:54 AM Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.c=
+om> wrote:
 >
-> On Fri, Aug 7, 2020 at 8:37 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >
-> > On 8/7/20 12:17 AM, Tanmay Shah wrote:
-> > > diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
-> > > index 6deaa7d01654..ea3c4d094d09 100644
-> > > --- a/drivers/gpu/drm/msm/Kconfig
-> > > +++ b/drivers/gpu/drm/msm/Kconfig
-> > > @@ -57,6 +57,14 @@ config DRM_MSM_HDMI_HDCP
-> > >       help
-> > >         Choose this option to enable HDCP state machine
-> > >
-> > > +config DRM_MSM_DP
-> > > +     bool "Enable DP support in MSM DRM driver"
-> >
-> >         bool "Enabled DisplayPort support in MSM DRM driver"
-> >
-> > > +     depends on DRM_MSM
-> > > +     help
-> > > +       Compile in support for DP driver in msm drm driver. DP external
-> >
-> >                                               MSM DRM
-> >
-> > Also:
-> > I can't find anywhere in drivers/gpu/drm/msm/ that explains what MSM means.
-> > What does it mean?
+> Hi,
 >
-> I believe it stands for "Mobile Station Modem".. in the pre-devicetree
-> days it was the name of the qcom platform.  Things later shifted to
-> "qcom" instead, but that was after this driver was merged.  At this
-> point it is just three letters ;-)
+> This serie cleans and adds regulator support to Panfrost devfreq.
+> This is mostly based on comment for the freshly introduced lima
+> devfreq.
 >
+> We need to add regulator support because on Allwinner the GPU OPP
+> table defines both frequencies and voltages.
+>
+> First patches [01-07] should not change the actual behavior
+> and introduce a proper panfrost_devfreq struct.
+>
+> Regards,
+> Cl=C3=A9ment
+>
+> Changes since v4:
+>  - Fix missed a pfdev to &pfdev->devfreq during rebase
+>
+> Changes since v3:
+>  - Collect Steven Price reviewed-by tags
+>  - Rebase on next/master (next-20200709)
+>
+> Changes since v2:
+>  - Collect Alyssa Rosenzweig reviewed-by tags
+>  - Fix opp_set_regulator before adding opp_table (introduce in v2)
+>  - Call err_fini in case opp_add_table failed
+>
+> Changes since v1:
+>  - Collect Steven Price reviewed-by tags
+>  - Fix spinlock comment
+>  - Drop OPP clock-name patch
+>  - Drop device_property_test patch
+>  - Add rename error labels patch
+>
+> Cl=C3=A9ment P=C3=A9ron (14):
+>   drm/panfrost: avoid static declaration
+>   drm/panfrost: clean headers in devfreq
+>   drm/panfrost: don't use pfdevfreq.busy_count to know if hw is idle
+>   drm/panfrost: introduce panfrost_devfreq struct
+>   drm/panfrost: use spinlock instead of atomic
+>   drm/panfrost: properly handle error in probe
+>   drm/panfrost: rename error labels in device_init
+>   drm/panfrost: move devfreq_init()/fini() in device
+>   drm/panfrost: dynamically alloc regulators
+>   drm/panfrost: add regulators to devfreq
+>   arm64: defconfig: Enable devfreq cooling device
+>   arm64: dts: allwinner: h6: Add cooling map for GPU
+>   [DO NOT MERGE] arm64: dts: allwinner: h6: Add GPU OPP table
+>   [DO NOT MERGE] arm64: dts: allwinner: force GPU regulator to be always
 
-FWIW: https://en.wikichip.org/wiki/qualcomm/msm
+Patches 1-10 applied to drm-misc.
 
-Guenter
-
-> BR,
-> -R
->
-> > > +       display support is enabled through this config option. It can
-> > > +       be primary or secondary display on device.
-> > > +
-> > >  config DRM_MSM_DSI
-> > >       bool "Enable DSI support in MSM DRM driver"
-> > >       depends on DRM_MSM
-> >
-> > thanks.
-> > --
-> > ~Randy
-> >
+Rob
