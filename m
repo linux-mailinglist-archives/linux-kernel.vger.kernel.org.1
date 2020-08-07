@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968F923EE6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 15:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD82023EE6F
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 15:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgHGNnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 09:43:42 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:63780 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726282AbgHGNn1 (ORCPT
+        id S1726481AbgHGNoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 09:44:09 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:52147 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726205AbgHGNoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 09:43:27 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 077Dax9v009897;
-        Fri, 7 Aug 2020 15:42:56 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=STMicroelectronics;
- bh=yrH1sOj/tTHQBQooVD/Sbc7bjAl/F6ZnmtA5MxyZscw=;
- b=1TXy3bfK6Radyo6qP7mwfBoiv4mSCFlK9wAjuGFdzpWQwBC7TzyDgX1uwWiWLdkFb8Ua
- UZPhX/C7tQyoxVLuhUMj/d/trbpXar5qlSRnFG/u4OSOx7P9XI/ObcCPspOozBJ9ctRK
- ffvFkUQ9mgVLdAlU2dQQ7Ae7plM8B73omFpdHZC/FJ7DDKHTYQ0xnH9aZhqBXPBeecTJ
- qZoubeEuB67smJsqXzLTJDTNI/XJ6Gw/kWZwYHcRlwGVKp9jl/bbyI6Yzb3XHDs0wBo/
- nWTegWxkb11c/LPIw7l+3ov+MXKTTxyyf/qFEzNQH4YRhvhVU5DlzipmZWKjsMcG7ATE hA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 32n6sbj1cw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 07 Aug 2020 15:42:56 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7965310002A;
-        Fri,  7 Aug 2020 15:42:56 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 662972B35EB;
-        Fri,  7 Aug 2020 15:42:56 +0200 (CEST)
-Received: from gnbcxd0016.gnb.st.com (10.75.127.48) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 7 Aug
- 2020 15:42:55 +0200
-Date:   Fri, 7 Aug 2020 15:42:54 +0200
-From:   Alain Volmat <alain.volmat@st.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     <amelie.delaunay@st.com>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@st.com>, <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>
-Subject: Re: [PATCH 02/18] spi: stm32-spi: defer probe for reset
-Message-ID: <20200807134254.GC12946@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Mark Brown <broonie@kernel.org>, amelie.delaunay@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        linux-spi@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fabrice.gasnier@st.com
-References: <1596610933-32599-1-git-send-email-alain.volmat@st.com>
- <1596610933-32599-3-git-send-email-alain.volmat@st.com>
- <20200805104906.GB5556@sirena.org.uk>
+        Fri, 7 Aug 2020 09:44:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596807839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E3ELIvI6TpDrr/hDE1zUqdW6bJnAxebAFwCmn25rdY8=;
+        b=KnYgm9UcTkgv2XGf+6BrtGj38z7/MNfKECoeqjE9TGyaGZCTfITCZU/efvh7Jn5p4Yyvz5
+        Nc/cogAQuXCF808or5mQHjY2BNvLw8DXHoBDnnionx1VIZdfRGg1Z8d2UBhaIy3ynFg2QN
+        zWtgbqpqfDMXuJBkW129bLIi464ZWmg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-e8jqETsdNDONK89N4iSQmA-1; Fri, 07 Aug 2020 09:43:57 -0400
+X-MC-Unique: e8jqETsdNDONK89N4iSQmA-1
+Received: by mail-wr1-f72.google.com with SMTP id f14so763899wrm.22
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 06:43:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=E3ELIvI6TpDrr/hDE1zUqdW6bJnAxebAFwCmn25rdY8=;
+        b=pJV3o23N8N+szIeDt2h4mo1XXPCnGwxlnl++xxD9zLR/OqavJPJ6fsvTKSqn44/B6w
+         0H3IHyA/7ahfdV3d5KsnYmhuCar0knrPrzHpiEvNLywQ6pNPHmgKo+i0Wrkq+TUxJx36
+         ESe3wsqpzCjNuZ+QnZbFB+Gh3j2sz4AO0fd2D0Sqd3GdcoQRtiJZ6k9h2phq6Erds9uW
+         fjcJXvIF3SJbCWabNyqParTuY+CltD/pjag7vmNszScLyS0iC5ACd5NwewIrkhZwOa1W
+         mdPUJF4t2zpk0UGtRDwfidMfjxTBdl8Ax9nzBUvGXEHxauI8wn2l2ACIphbfAc2+13Qw
+         lW3w==
+X-Gm-Message-State: AOAM533Qmid+YEnbemH9FO7FAdz+EN7Z5kcqktqeFGef4Z4mVk0cbyHH
+        CQg7IzhStUUwVVUVCN9fPp8oOO0qT8iCnJ16eMSLrFx4Xc4tC+INjtUuPc0jr8oDznvlpN4LfGM
+        wZApQxmxu9fXv71d4/msaWfjC
+X-Received: by 2002:a5d:4ad1:: with SMTP id y17mr13061439wrs.132.1596807836356;
+        Fri, 07 Aug 2020 06:43:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz5UZXlHxGMHcXSoixKUQYiEtbcK+V2fCweYqEOIb9g4sqOfVUxrdVbtco9HHswxN7U0ixwBw==
+X-Received: by 2002:a5d:4ad1:: with SMTP id y17mr13061415wrs.132.1596807836136;
+        Fri, 07 Aug 2020 06:43:56 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.36.84])
+        by smtp.gmail.com with ESMTPSA id j2sm11156302wrp.46.2020.08.07.06.43.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Aug 2020 06:43:55 -0700 (PDT)
+Date:   Fri, 7 Aug 2020 15:43:53 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     luca abeni <luca.abeni@santannapisa.it>
+Cc:     peterz@infradead.org, mingo@redhat.com, rostedt@goodmis.org,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        tommaso.cucinotta@santannapisa.it, alessio.balsini@gmail.com,
+        bristot@redhat.com, dietmar.eggemann@arm.com,
+        linux-rt-users@vger.kernel.org, mtosatti@redhat.com,
+        williams@redhat.com, valentin.schneider@arm.com
+Subject: Re: [RFC PATCH v2 6/6] sched/fair: Implement starvation monitor
+Message-ID: <20200807134353.GR42956@localhost.localdomain>
+References: <20200807095051.385985-1-juri.lelli@redhat.com>
+ <20200807095604.GO42956@localhost.localdomain>
+ <20200807152832.591f462e@nowhere>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200805104906.GB5556@sirena.org.uk>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG8NODE3.st.com (10.75.127.24) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-07_09:2020-08-06,2020-08-07 signatures=0
+In-Reply-To: <20200807152832.591f462e@nowhere>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 11:49:06AM +0100, Mark Brown wrote:
-> On Wed, Aug 05, 2020 at 09:01:57AM +0200, Alain Volmat wrote:
+On 07/08/20 15:28, luca abeni wrote:
+> Hi Juri,
 > 
-> > -	rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
-> > -	if (!IS_ERR(rst)) {
-> > +	rst = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
-> > +	if (rst) {
-> > +		if (IS_ERR(rst)) {
-> > +			ret = PTR_ERR(rst);
-> > +			if (ret != -EPROBE_DEFER)
-> > +				dev_err(&pdev->dev, "reset get failed: %d\n",
-> > +					ret);
-> > +			goto err_clk_disable;
-> > +		}
+> On Fri, 7 Aug 2020 11:56:04 +0200
+> Juri Lelli <juri.lelli@redhat.com> wrote:
 > 
-> This will not provide any diagnostics when deferring which isn't very
-> helpful if there's issues.
+> > Starting deadline server for lower priority classes right away when
+> > first task is enqueued might break guarantees
+> 
+> Which guarantees are you thinking about, here? Response times of fixed
+> priority tasks?
 
-Do you mean that a message when deferring would be needed ?
+Response time, but also wakeup latency (which, for better or worse, is
+another important metric).
 
-I am worrying that this would lead to having too much noise during boot
-since probe deferring is kinda common. Of course it can also be due to a bad
-configuration of the kernel as well but having looked around I think that
-usually driver are rather silent in case of deferring.
+> If fixed priority tasks are also scheduled through deadline servers,
+> then you can provide response-time guarantees to them even when
+> lower-priority/non-real-time tasks are scheduled through deadline
+> servers.
+
+Right, but I fear we won't be able to keep current behavior for wakeups:
+RT with highest prio always gets scheduled right away?
+
