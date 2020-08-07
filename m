@@ -2,44 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28DD23ECE8
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 13:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BD423ECEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 13:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728394AbgHGLvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 07:51:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38980 "EHLO mail.kernel.org"
+        id S1728441AbgHGLvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 07:51:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726293AbgHGLvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 07:51:10 -0400
+        id S1726293AbgHGLvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 07:51:51 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45EE02075D;
-        Fri,  7 Aug 2020 11:51:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1BDB2075D;
+        Fri,  7 Aug 2020 11:51:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596801070;
-        bh=32ICotjIyNNWkXaOINpjxUnYeW8iqTjjb8pHUgr5ccg=;
+        s=default; t=1596801110;
+        bh=cKfNzVoedQVmKvHvqaEn1VyOBUd+uYh5+G/kG05O8i0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dSZrTt4ObpLfEnBvvixZhHoma3EdrnuvSFbklHJCxzjOk9JcDv3jUUF6H7hwUaXJn
-         L5TEkvICKneIGGgUl/0kHMt/vsR60cZw9EcJ1+ij/QHlNsBc73j5+ExfBTjMCodLjS
-         Z20sQ6+CgcenNBw8e1e2FN011lE9nB5stpR6Pgqg=
-Date:   Fri, 7 Aug 2020 12:50:45 +0100
+        b=HEftQRvX29huLFXq9+TWsNE8Qe8nvmo3X6O+cCG15qzk3KbIHm1/xYVzzdOQOTNAb
+         /NrTFQqRiYzNbASVAiDemSygf9K4zF/2u8pqVJIEv4GdrdxciPSEbYj6D0ZpgueVAF
+         sxeWJt2cvD2K9Qo6/01yY0iBndmuMSPXg2ZVlPVA=
+Date:   Fri, 7 Aug 2020 12:51:25 +0100
 From:   Mark Brown <broonie@kernel.org>
 To:     Krzysztof Kozlowski <krzk@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         Russell King <linux@armlinux.org.uk>,
-        Kukjin Kim <kgene@kernel.org>, Andi Shyti <andi@etezian.org>,
-        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v2 23/41] ARM: s3c24xx: move spi fiq handler into platform
-Message-ID: <20200807115045.GF5435@sirena.org.uk>
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Sangbeom Kim <sbkim73@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 28/41] ARM: s3c24xx: move iis pinctrl config into
+ boards
+Message-ID: <20200807115125.GG5435@sirena.org.uk>
 References: <20200806181932.2253-1-krzk@kernel.org>
- <20200806182059.2431-23-krzk@kernel.org>
+ <20200806182059.2431-28-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5CUMAwwhRxlRszMD"
+        protocol="application/pgp-signature"; boundary="5L6AZ1aJH5mDrqCQ"
 Content-Disposition: inline
-In-Reply-To: <20200806182059.2431-23-krzk@kernel.org>
+In-Reply-To: <20200806182059.2431-28-krzk@kernel.org>
 X-Cookie: Disposable, use only once.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
@@ -48,32 +56,35 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---5CUMAwwhRxlRszMD
+--5L6AZ1aJH5mDrqCQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 06, 2020 at 08:20:40PM +0200, Krzysztof Kozlowski wrote:
+On Thu, Aug 06, 2020 at 08:20:45PM +0200, Krzysztof Kozlowski wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 >=20
-> The fiq handler needs access to some register definitions that
-> should not be used directly by device drivers.
+> The s3c_gpio_cfgall_range() function is an internal interface of the
+> samsung gpio driver and should not be called directly by drivers, so
+> move the iis pin initialization into the boards.
+
+Well, it is now - that wasn't the case at the time.
 
 Acked-by: Mark Brown <broonie@kernel.org>
 
---5CUMAwwhRxlRszMD
+--5L6AZ1aJH5mDrqCQ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8tQBQACgkQJNaLcl1U
-h9CCwQf9H+v8zRt71X23du7fGHjes+KdpGpxon0dxFg4Oa+k6LbFzkyH/SJ9kXNk
-5Ymwb6DhbvK7xWKP/trSvDm4iiG77lOw01JlGZvfk0yuwHTiqxdlKeIRwllptK0o
-yi5k6n0UkyOqidzvRHKAY3qCxn7ze5PicFrVoaF835u8PqcfJ/wLzojQnCr/fui4
-kEl83qK8LM/2C5JCosLMXrtl4moVLxBM1J/AXVamIIstm3vWWhpSU37jJUXInXCa
-HiGTeqE/HIrSXKoLpy3/AQm6uZBG2b5lHsRQsnqwGZRYLO0H8/PfjvmcX/nKiBow
-GLIzcyPsQuCDhjLxOTtF6TP+/JStjg==
-=WzR3
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8tQD0ACgkQJNaLcl1U
+h9CqCwf+JA5FnrUTEVVBDbW47geQe42Qnc9Xm8NStwfOPmjgajYfUNeCXBA/hmac
+FXu0yRKfw64NF52gC92PURaKRq+ZVG+3zWYf+jfKxABUiS5FZGLgQjQ7pUEtrZMc
+FxspnPqX4H57ZJXAg+q3Eq76iR132c4eX7s20jBiHJrEfEnIc86n4R5+aZ+F1HSM
+kYVzZacjdpEzter1onhkgDbwAR+HT9RdPsyefvCKxtrdgW1h28TvjI9s2XgNHgAz
+J5BNRa7ohL/qZnXYd9Z041846uXa6CQcoU51hejVbDSkXk9hprkwVwsrkGCBar2n
+58ZhRIsY5a+CLanhjLZCZoMPR6GFAQ==
+=U67M
 -----END PGP SIGNATURE-----
 
---5CUMAwwhRxlRszMD--
+--5L6AZ1aJH5mDrqCQ--
