@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73FAD23EB46
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 12:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC96723EB4B
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 12:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728203AbgHGKNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 06:13:04 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:54638 "EHLO
+        id S1728266AbgHGKNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 06:13:09 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:15830 "EHLO
         mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726511AbgHGKNB (ORCPT
+        by vger.kernel.org with ESMTP id S1728209AbgHGKNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 06:13:01 -0400
+        Fri, 7 Aug 2020 06:13:05 -0400
 Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0779vTKI023765;
-        Fri, 7 Aug 2020 03:12:58 -0700
+        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0779vSut023725;
+        Fri, 7 Aug 2020 03:13:02 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=proofpoint;
- bh=Q/P6SqKfkFAtz99jDu1P49AeqmZwBhbS48U6v/qf4gA=;
- b=l/K5EExevYNxACYogKLYclTSGxhMCL5OkRQV4jW1tFBtiR9k0ZaM560bseoWUZcX0rep
- dlaSM0uB9Bz0WcHpX9u7+bL7rF49SL2JwU7ccSKRajlRwa4zN1h4cFEPYj5S9ektcm7y
- xkDnf95ElYZ6CRwoza0/mtfRXvkMBU/0ZYR7WL16z2jcyFVAvykymN5o6exBkjgwEzj9
- RxYq9M+935mMz/RM0wVvf3OkOp8rAVRiM4XaXz2G6SVpM/6RPY3tcqViGhLH9v3Bi1We
- jPKw5LtoySaq/yDwTMIyitOHEgpjDye6y0QNboQQf6rNkF8E2uEXjDPU3yrG/k6a4nsu 1A== 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2176.outbound.protection.outlook.com [104.47.55.176])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 32nme0m4rv-1
+ bh=JZmlSqAYHBrW71GNnm51OZzJeHYWKPtLdDTdvG/lo9c=;
+ b=K481Bc7OjuveA+ovPrW6DXa4+4ZQD5hftQwgeNwk5yWPEBImjFT2i06mEdUq5bdkzr7P
+ IQKR+pHlOjiEtVcesSRG66M4kF5rDccl5LMv7on8ReOTSc8KT2MFsrtCelprR97G+B9J
+ u6lxaycarKhwNVHsOeFMNTFelKqttz/XnZxew+PxJuY1xlWFYU7xTP6LslT6l50YqGkn
+ k+MxH/zxdwyi+uEOHdiAF3z+zVBBrqK7iWXnMRZNY8lTZZEEsWn0mTkgLEgX5KAnkspK
+ HFgVvkNogLnOd3g6gV9I0AEy0ddmt9SOs9jM2io1JVC2czM9iy9e2eriV3ZTDZZZuxGR +w== 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 32nme0m4s2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 07 Aug 2020 03:12:58 -0700
+        Fri, 07 Aug 2020 03:13:02 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nRqiF19HZxxLLy6JdR3yChjmheR2gQOz4wafrxGq6Ll3fQCA2XJzOgSwmUGq3kzGCtUukAzx4os7A3XvS7EUJTap98voySrMKB32exOan2k0XG+XmM+mAV01CjVgm4Ecn33Kkys1RPXTmtVxw6gJl5cvvUey9/aFdr76UXA9gaJM2kojsvVZesw+DG+3cyROtRTCw2AZUAEJYuuXiTI5B7uYaygvifIqZ0H3+btsNHpwU74Fhdvu13W4HeqEr6M6psmY12O+F3nmf7Cr7YzgDoKi1JJQjm9qXI8MYddXE2+wwvgl5+DB6yvxl34PNkYw2c+EFa3G4TE7AL9MhqKs8g==
+ b=EiVMNlLpCiQ0OhNDJqPSSczVKx6RYShY3f9QmaBaK5ep3sksYmE0PXjjF+h1N4p/ukVq3o/UoWIcgvo5bSj1CN/m3TIpObdBXLq4JkQNIODvlFGkzAOJqxWJn1pLO5+l5xsWDGQjxzbEY0GT9QYAuPPUMO22gtDAS01UZQOCugjPiT3VJtSUinRlwVhdpa64vvGGrLMLKJaVpBrX5SlvivaJ3m9ZE2u6PgszCtlnMqnnf6RJmuL4UUAGAZYtC6gBA6QtEPEezh2wf/1oMt9fZE/Q+z00cltgKOwqwLFM14i+4135perXfQtTjo+xhtCySbSJoRj6hC5xBq1T9+YUHg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q/P6SqKfkFAtz99jDu1P49AeqmZwBhbS48U6v/qf4gA=;
- b=Npje39dK6Enp8i48uBjw91fu3LNuJcPinBCt24iT+5rWTXPhAQ8fco1neAt81uH7uuD2Oqinjrf/7kuwFrdNlQMBAVTpODBpCizT5bvWi3UmCxTysHA2kBabxNTTks7zUJM5SEyTx2zXaxCYV3pjXsPMcz0nK+n/g44kBhRLKFmk5SjkYTSIVlmiSiBzKb2aTlrefUCVfaSvPGbEcI3bUYTdQafUuO9t2+BGDbN5lch8RIyPsFlJIS+BErDKwpp0tSV6mb49iGcWO/U+TfWkfg6NmWG9Ag6l8dp/2Eag9elxbj6bWxv/MrTy4nPP3l4GL7cTbvuNRQPLa0g2KcMTFw==
+ bh=JZmlSqAYHBrW71GNnm51OZzJeHYWKPtLdDTdvG/lo9c=;
+ b=A4Pf38OS0zcv3PLdc7bXADYNRDGioIdilsADG/ccl5eFtfwOcfDjfLHX1FvU0f7L4veeho2CTarZiRGgshA1KO+gbrB1AmIm3+3sNeq3bhmuYkPDpBi42HlxVNgXyHUQu+MDuKAKxOg0+PfC99b+VJqKRERWoodv511wxLRuojW6B4zddYYm/XjNSQA5MXjTDBSajo/C7ZVG2RmvfFbZuSpT0Mlkzc7nTk2ya7lNvaw6AFyrGq0eqG1/okxnuwWeL9BeRtu736HfYA1HncUt2txAaF/jmxCUSrcv6tYz3Vvnf9wNcfOACoWqwi5kd1AoSfcRYcSSt02JJGrcYDzd5Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  199.43.4.23) smtp.rcpttodomain=kernel.org smtp.mailfrom=cadence.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
@@ -42,17 +42,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q/P6SqKfkFAtz99jDu1P49AeqmZwBhbS48U6v/qf4gA=;
- b=P//hoxjkNw5SEck8AcfVutcvo8lTZggQh2iI+a2c31l1B4XNVcxof9hq1Bm0GH1dXRrTFJ4nJBpDABZgukEGDsRDRpT2Kgl7FO5U3FFwYmodiyB3p9gZ8KcdYH8i/avolqKC/pvUt25e6qS0uNZ5/ce7GmvyJnc/j1QQz7KAzcM=
-Received: from MW2PR16CA0017.namprd16.prod.outlook.com (2603:10b6:907::30) by
- BN8PR07MB6866.namprd07.prod.outlook.com (2603:10b6:408:da::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3261.19; Fri, 7 Aug 2020 10:12:55 +0000
-Received: from MW2NAM12FT038.eop-nam12.prod.protection.outlook.com
- (2603:10b6:907:0:cafe::30) by MW2PR16CA0017.outlook.office365.com
- (2603:10b6:907::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.20 via Frontend
- Transport; Fri, 7 Aug 2020 10:12:54 +0000
+ bh=JZmlSqAYHBrW71GNnm51OZzJeHYWKPtLdDTdvG/lo9c=;
+ b=B3+QiefJltlreSlRtyEB3pP3k+QM6VeL/lrJW7cvK5DQX/LhIVcUgOwtFp+Ke9kauYSrXao8hiwdpcL32l7Ftym44dhS9jJB/ERUg721sPM+vHMB2uFX7kkyend8di3VoG8RXjtMgAL9LYTMzzGXagFcHd+2GGbdFHEZaFNrA2M=
+Received: from DM6PR13CA0066.namprd13.prod.outlook.com (2603:10b6:5:134::43)
+ by BL0PR07MB4977.namprd07.prod.outlook.com (2603:10b6:208:46::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.15; Fri, 7 Aug
+ 2020 10:12:59 +0000
+Received: from DM6NAM12FT031.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:5:134:cafe::d2) by DM6PR13CA0066.outlook.office365.com
+ (2603:10b6:5:134::43) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.7 via Frontend
+ Transport; Fri, 7 Aug 2020 10:12:59 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 199.43.4.23)
  smtp.mailfrom=cadence.com; kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=pass action=none header.from=cadence.com;
@@ -60,13 +61,13 @@ Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
  199.43.4.23 as permitted sender) receiver=protection.outlook.com;
  client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
 Received: from rmmaillnx1.cadence.com (199.43.4.23) by
- MW2NAM12FT038.mail.protection.outlook.com (10.13.180.168) with Microsoft SMTP
+ DM6NAM12FT031.mail.protection.outlook.com (10.13.179.19) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3261.10 via Frontend Transport; Fri, 7 Aug 2020 10:12:54 +0000
+ 15.20.3261.10 via Frontend Transport; Fri, 7 Aug 2020 10:12:56 +0000
 Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 077ACk5e021638
+        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 077ACk5h021638
         (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Fri, 7 Aug 2020 06:12:52 -0400
+        Fri, 7 Aug 2020 06:12:55 -0400
 X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
 Received: from maileu3.global.cadence.com (10.160.88.99) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
@@ -75,10 +76,10 @@ Received: from vleu-orange.cadence.com (10.160.88.83) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
  15.0.1367.3 via Frontend Transport; Fri, 7 Aug 2020 12:12:47 +0200
 Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 077ACkbp013399;
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 077ACku1013403;
         Fri, 7 Aug 2020 12:12:46 +0200
 Received: (from sjakhade@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 077ACkYL013398;
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 077ACkFg013402;
         Fri, 7 Aug 2020 12:12:46 +0200
 From:   Swapnil Jakhade <sjakhade@cadence.com>
 To:     <vkoul@kernel.org>, <kishon@ti.com>, <robh+dt@kernel.org>,
@@ -86,9 +87,9 @@ To:     <vkoul@kernel.org>, <kishon@ti.com>, <robh+dt@kernel.org>,
 CC:     <mparab@cadence.com>, <sjakhade@cadence.com>,
         <yamonkar@cadence.com>, <tomi.valkeinen@ti.com>, <jsarha@ti.com>,
         <nsekhar@ti.com>
-Subject: [PATCH v1 5/7] phy: cadence-torrent: Check total lane count for all subnodes is within limit
-Date:   Fri, 7 Aug 2020 12:12:43 +0200
-Message-ID: <1596795165-13341-6-git-send-email-sjakhade@cadence.com>
+Subject: [PATCH v1 6/7] dt-bindings: phy: cadence-torrent: Add binding to specify SSC mode
+Date:   Fri, 7 Aug 2020 12:12:44 +0200
+Message-ID: <1596795165-13341-7-git-send-email-sjakhade@cadence.com>
 X-Mailer: git-send-email 2.4.5
 In-Reply-To: <1596795165-13341-1-git-send-email-sjakhade@cadence.com>
 References: <1596795165-13341-1-git-send-email-sjakhade@cadence.com>
@@ -97,28 +98,28 @@ Content-Type: text/plain
 X-OrganizationHeadersPreserved: maileu3.global.cadence.com
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7061fca2-0e53-40f2-51cf-08d83aba7348
-X-MS-TrafficTypeDiagnostic: BN8PR07MB6866:
-X-Microsoft-Antispam-PRVS: <BN8PR07MB686600CD9127F1A5A8CE4FF7C5490@BN8PR07MB6866.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:115;
+X-MS-Office365-Filtering-Correlation-Id: 5a3b3a4d-e879-4743-082e-08d83aba74c1
+X-MS-TrafficTypeDiagnostic: BL0PR07MB4977:
+X-Microsoft-Antispam-PRVS: <BL0PR07MB4977C0594587EFA6F2C76101C5490@BL0PR07MB4977.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4HltqO16ytfLeUR/dUvL74s3QC9JIizWRttt6QcySepqUOJST6dfgFRD5w2KqYoX43f8jDRUi1Zw7UMbU63vSTSz3xosC2KMmGMkuGFM0Mk0uVGhdmLWc2ZqAmO8THr435vm9EVAXVpgp04olXz3/rC1UVZKr0EtbWT1jGC8Ddd9wH0dh0XlK0qKgkRzuq0LKvly8LebMafr2/bxXSuLJDCadL6+KbSkYocK03oJ4bYVSbd19v3KS+QEptLrUMQjLOHAFC4mgbz4N54Pq3yAtpUByG82nBnn1iXQ6l4ECzKbzYAkaxf2mE/t5NnEp5TQeryckeH0fsB994wUp2/EtmhYgoPbD/myGEwcqNOcvbhXScYRArb5pFhR90W+kMYFd6QmADgCFL1aI6alUAwTgJEN6+Se6AXq3wwiWmUBvHU=
-X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(4636009)(346002)(136003)(376002)(396003)(39860400002)(36092001)(46966005)(54906003)(6666004)(70586007)(8936002)(36906005)(426003)(70206006)(110136005)(316002)(2906002)(4326008)(82740400003)(42186006)(47076004)(81166007)(356005)(5660300002)(336012)(82310400002)(86362001)(2616005)(186003)(26005)(8676002)(36756003)(83380400001)(478600001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: CrlYG7biEWCgOLkY62P8I0emR5DdVTWMBvLMRc5135iP+sCyDPT7T/Y5fn/ABFpgjF4a1fM2wHqelObQw62TUs3ZNdp0D2M5ost7WT/ORLJshBs+A2mTjLFBdV0WFRWiGIgm09Nxuva5g26y9wNWJE3+4jK9fJdfDGTWrZYnlP57fPvwA+NeM0d6KQPb9gjeS77AY88/AR7NbUSf4iz695FpvosAMo8TW73YGYBLHjLEMm5dzTD/VmvL5ch0tBaQcd9FZnvwFLk+zlwBaSgkFjf39aQvV+ZxBQ+X3vwHkVDVTSDxdQNak4ZWIOLX66GLblazpg1OZrr+t7n84e2CcNq032UGI7cJcAbakima3cwm1sNOFzyeYxJ2I1hcAUw9lXZdTXIldH89lWVpxmHaSG3QaVsoU1kB0G1Ts20rLbc=
+X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(4636009)(396003)(346002)(39860400002)(136003)(376002)(36092001)(46966005)(36756003)(83380400001)(70206006)(8676002)(70586007)(26005)(2616005)(86362001)(8936002)(186003)(336012)(426003)(54906003)(110136005)(82310400002)(2906002)(82740400003)(4326008)(42186006)(316002)(356005)(478600001)(47076004)(36906005)(81166007)(5660300002);DIR:OUT;SFP:1101;
 X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2020 10:12:54.3763
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2020 10:12:56.9311
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7061fca2-0e53-40f2-51cf-08d83aba7348
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a3b3a4d-e879-4743-082e-08d83aba74c1
 X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: MW2NAM12FT038.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT031.eop-nam12.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR07MB6866
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR07MB4977
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-08-07_06:2020-08-06,2020-08-07 signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 spamscore=0
- phishscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0 adultscore=0
+ phishscore=0 mlxlogscore=890 mlxscore=0 malwarescore=0 adultscore=0
  lowpriorityscore=0 suspectscore=0 impostorscore=0 priorityscore=1501
  bulkscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2006250000 definitions=main-2008070075
@@ -127,65 +128,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add checking if total number of lanes for all subnodes is not greater than
-number of lanes supported by PHY.
+Add binding to specify Spread Spectrum Clocking mode used.
 
 Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
 ---
- drivers/phy/cadence/phy-cadence-torrent.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ .../bindings/phy/phy-cadence-torrent.yaml           |  9 +++++++++
+ include/dt-bindings/phy/phy-cadence-torrent.h       | 13 +++++++++++++
+ 2 files changed, 22 insertions(+)
+ create mode 100644 include/dt-bindings/phy/phy-cadence-torrent.h
 
-diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
-index aff85e55348f..82f48ca5dcc6 100644
---- a/drivers/phy/cadence/phy-cadence-torrent.c
-+++ b/drivers/phy/cadence/phy-cadence-torrent.c
-@@ -25,7 +25,6 @@
- #define REF_CLK_19_2MHz		19200000
- #define REF_CLK_25MHz		25000000
+diff --git a/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml b/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
+index 4071438be2ba..a7ee19d27c19 100644
+--- a/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
++++ b/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
+@@ -87,6 +87,15 @@ patternProperties:
+         enum: [1, 2, 4]
+         default: 4
  
--#define DEFAULT_NUM_LANES	4
- #define MAX_NUM_LANES		4
- #define DEFAULT_MAX_BIT_RATE	8100 /* in Mbps */
- 
-@@ -1735,6 +1734,7 @@ static int cdns_torrent_phy_probe(struct platform_device *pdev)
- 	const struct cdns_torrent_data *data;
- 	struct device_node *child;
- 	int ret, subnodes, node = 0, i;
-+	u32 total_num_lanes = 0;
- 	u8 init_dp_regmap = 0;
- 
- 	/* Get init data for this PHY */
-@@ -1809,9 +1809,15 @@ static int cdns_torrent_phy_probe(struct platform_device *pdev)
- 			goto put_child;
- 		}
- 
--		cdns_phy->phys[node].num_lanes = DEFAULT_NUM_LANES;
--		of_property_read_u32(child, "cdns,num-lanes",
--				     &cdns_phy->phys[node].num_lanes);
-+		if (of_property_read_u32(child, "cdns,num-lanes",
-+					 &cdns_phy->phys[node].num_lanes)) {
-+			dev_err(dev, "%s: No \"cdns,num-lanes\"-property.\n",
-+				child->full_name);
-+			ret = -EINVAL;
-+			goto put_child;
-+		}
++      cdns,ssc-mode:
++        description:
++          Specifies the Spread Spectrum Clocking mode used. It can be NO_SSC,
++          EXTERNAL_SSC or INTERNAL_SSC.
++          Refer include/dt-bindings/phy/phy-cadence-torrent.h for the constants to be used.
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1, 2]
++        default: 0
 +
-+		total_num_lanes += cdns_phy->phys[node].num_lanes;
- 
- 		if (cdns_phy->phys[node].phy_type == PHY_TYPE_DP) {
- 			switch (cdns_phy->phys[node].num_lanes) {
-@@ -1893,6 +1899,11 @@ static int cdns_torrent_phy_probe(struct platform_device *pdev)
- 	}
- 	cdns_phy->nsubnodes = node;
- 
-+	if (total_num_lanes > MAX_NUM_LANES) {
-+		dev_err(dev, "Invalid lane configuration\n");
-+		goto put_lnk_rst;
-+	}
+       cdns,max-bit-rate:
+         description:
+           Maximum DisplayPort link bit rate to use, in Mbps
+diff --git a/include/dt-bindings/phy/phy-cadence-torrent.h b/include/dt-bindings/phy/phy-cadence-torrent.h
+new file mode 100644
+index 000000000000..e387b6a95741
+--- /dev/null
++++ b/include/dt-bindings/phy/phy-cadence-torrent.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * This header provides constants for Cadence Torrent SERDES.
++ */
 +
- 	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
- 	if (IS_ERR(phy_provider)) {
- 		ret = PTR_ERR(phy_provider);
++#ifndef _DT_BINDINGS_TORRENT_SERDES_H
++#define _DT_BINDINGS_TORRENT_SERDES_H
++
++#define TORRENT_SERDES_NO_SSC		0
++#define TORRENT_SERDES_EXTERNAL_SSC	1
++#define TORRENT_SERDES_INTERNAL_SSC	2
++
++#endif /* _DT_BINDINGS_TORRENT_SERDES_H */
 -- 
 2.26.1
 
