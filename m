@@ -2,69 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6976523EA6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E22823EA83
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727054AbgHGJf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 05:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726382AbgHGJf3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 05:35:29 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA45C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 02:35:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tronnes.org
-        ; s=ds201912; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=gGIwDhOjA1LUWyVCPaxr0QUqfVFuaQ2aeOuDTG1FAG0=; b=MslSwSkr01gt37As8fjtp3c4L+
-        6xxPqtPSL4bh0HaSr22/l0EGjObkF7Y1b2yd2VrnO1qxWjAao21ToRnsob2Q5HbRxmUk+K7ktL12e
-        fWSA93OWvOje0tkgZmr2nk07ub+RYndaYdyv+soRH/pget70PhJuqhr+rN+PgY2iCwHGJtCohnlZg
-        v4TLPW1TL7Ywcwt3k72wJq6XiXclEFTwFNgw7x4GdYH1v54sHHX+/uCERdnN1lRTARFnk8sUiEwEi
-        Uit4ZbeeL+I0RrTXQKS5ObwCFH0AHHQtFg6tWAe7QKe14ZsFxgXUV+ABxCRIBtndf2CBx3IADZFgB
-        HQotCxuQ==;
-Received: from 211.81-166-168.customer.lyse.net ([81.166.168.211]:53009 helo=[192.168.10.61])
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <noralf@tronnes.org>)
-        id 1k3ymc-0001ze-4F; Fri, 07 Aug 2020 11:35:26 +0200
-Subject: Re: [PATCH 3/6] drm/xen-front: Add YUYV to supported formats
-To:     Oleksandr Andrushchenko <andr2000@gmail.com>,
-        xen-devel@lists.xenproject.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, boris.ostrovsky@oracle.com,
-        jgross@suse.com, airlied@linux.ie, daniel@ffwll.ch
-Cc:     intel-gfx@lists.freedesktop.org, sstabellini@kernel.org,
-        dan.carpenter@oracle.com,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-References: <20200731125109.18666-1-andr2000@gmail.com>
- <20200731125109.18666-4-andr2000@gmail.com>
-From:   =?UTF-8?Q?Noralf_Tr=c3=b8nnes?= <noralf@tronnes.org>
-Message-ID: <a7a3ce30-34a8-c084-5cbd-88271271ac67@tronnes.org>
-Date:   Fri, 7 Aug 2020 11:35:24 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728061AbgHGJij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 05:38:39 -0400
+Received: from spam01.hygon.cn ([110.188.70.11]:58222 "EHLO spam2.hygon.cn"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726382AbgHGJib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 05:38:31 -0400
+Received: from MK-DB.hygon.cn ([172.23.18.60])
+        by spam2.hygon.cn with ESMTP id 0779b7L1041093;
+        Fri, 7 Aug 2020 17:37:07 +0800 (GMT-8)
+        (envelope-from puwen@hygon.cn)
+Received: from cncheex01.Hygon.cn ([172.23.18.10])
+        by MK-DB.hygon.cn with ESMTP id 0779b09i079166;
+        Fri, 7 Aug 2020 17:37:00 +0800 (GMT-8)
+        (envelope-from puwen@hygon.cn)
+Received: from ubuntu1604-2.higon.com (172.23.18.44) by cncheex01.Hygon.cn
+ (172.23.18.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1466.3; Fri, 7 Aug 2020
+ 17:36:45 +0800
+From:   Pu Wen <puwen@hygon.cn>
+To:     <rjw@rjwysocki.net>, <lenb@kernel.org>,
+        <jarkko.nikula@linux.intel.com>,
+        <andriy.shevchenko@linux.intel.com>,
+        <mika.westerberg@linux.intel.com>, <wsa@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, Pu Wen <puwen@hygon.cn>
+Subject: [PATCH RESEND] i2c: designware: Add device HID for Hygon I2C controller
+Date:   Fri, 7 Aug 2020 17:35:29 +0800
+Message-ID: <20200807093529.5343-1-puwen@hygon.cn>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <20200731125109.18666-4-andr2000@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.23.18.44]
+X-ClientProxiedBy: cncheex01.Hygon.cn (172.23.18.10) To cncheex01.Hygon.cn
+ (172.23.18.10)
+X-MAIL: spam2.hygon.cn 0779b7L1041093
+X-DNSRBL: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add device HID HYGO0010 to match the Hygon ACPI Vendor ID (HYGO) that
+was registered in http://www.uefi.org/acpi_id_list, and the I2C
+controller on Hygon paltform will use the HID.
 
+Signed-off-by: Pu Wen <puwen@hygon.cn>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Wolfram Sang <wsa@kernel.org>
+---
+ drivers/acpi/acpi_apd.c                     | 1 +
+ drivers/i2c/busses/i2c-designware-platdrv.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-Den 31.07.2020 14.51, skrev Oleksandr Andrushchenko:
-> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-> 
-> Add YUYV to supported formats, so the frontend can work with the
-> formats used by cameras and other HW.
-> 
-> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-> ---
+diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
+index ba2612e9a0eb..f24f6d3f1fa5 100644
+--- a/drivers/acpi/acpi_apd.c
++++ b/drivers/acpi/acpi_apd.c
+@@ -240,6 +240,7 @@ static const struct acpi_device_id acpi_apd_device_ids[] = {
+ 	{ "AMDI0020", APD_ADDR(cz_uart_desc) },
+ 	{ "AMD0030", },
+ 	{ "AMD0040", APD_ADDR(st_misc_desc)},
++	{ "HYGO0010", APD_ADDR(wt_i2c_desc) },
+ #endif
+ #ifdef CONFIG_ARM64
+ 	{ "APMC0D0F", APD_ADDR(xgene_i2c_desc) },
+diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
+index a71bc58fc03c..0dfeb2d11603 100644
+--- a/drivers/i2c/busses/i2c-designware-platdrv.c
++++ b/drivers/i2c/busses/i2c-designware-platdrv.c
+@@ -55,6 +55,7 @@ static const struct acpi_device_id dw_i2c_acpi_match[] = {
+ 	{ "HISI02A1", 0 },
+ 	{ "HISI02A2", 0 },
+ 	{ "HISI02A3", 0 },
++	{ "HYGO0010", ACCESS_INTR_MASK },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(acpi, dw_i2c_acpi_match);
+-- 
+2.23.0
 
-Acked-by: Noralf Trønnes <noralf@tronnes.org>
