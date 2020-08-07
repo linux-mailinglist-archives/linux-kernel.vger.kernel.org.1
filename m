@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B9F23F2F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 21:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDE723F303
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 21:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726167AbgHGTGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 15:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgHGTGj (ORCPT
+        id S1726212AbgHGTTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 15:19:45 -0400
+Received: from 9.mo178.mail-out.ovh.net ([46.105.75.45]:60523 "EHLO
+        9.mo178.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbgHGTTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 15:06:39 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AFAC061756
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 12:06:39 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id t7so2430045otp.0
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 12:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zLv6z3MDMuVW61EC2fkzzHGi8++0GERRj/VmpMRNPpc=;
-        b=FWbrx8uquzQVwqJv5hztOcbzXrnTCu9fqAAQ0IE1v+p9MlOGSWbUWhYbsm8hLaWK2m
-         nQERO7jZSxSbFWWq5x4hgtMrGSVsEy09I7bwf1toeXEFZiEjBh+d9DfLBeNeFZMUjqyP
-         d574AxHUn09Uvdm/XkzOb0pWhuP5oWkbtNRwfvw/33f74BZMLenW4ARUZKdAXL842Tjx
-         BMk1sXYx071o9L0oAedbxZo1UrA3p1vbjHXiKAeLFeHjILX6Nz6Mshjh4iQcxNxlDmRG
-         86F8KMhoX9f88cK29/CD3rrlo7kLHZ0xBJ7zlOv6LvifqvHhCeyBH1A+lXFaw9agT9sK
-         MYJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zLv6z3MDMuVW61EC2fkzzHGi8++0GERRj/VmpMRNPpc=;
-        b=rAV8Hw16OKWoZnLe5sgEuRYsdsS5BwuMf/5Scu4lagvl4lVWPmcPCip51p8ZE5mujb
-         +IRbhT+BXf9MhUhzGveAs+JaRGFGqRS1MhgUc2HVqO9/kOxhD22/5Q1dlH0JxLrDPpes
-         I1h11n4SoKhMk2058awQPKgiJBf3/oX2I8BkTyqlhWf2Xa8Q4g9yK0JlyJXX42IoBUzd
-         7L62/k0mFeSFW2U09osRYk0d3NSJpeiUJuCNZl/9NyNf/KBAh0xGBZi6yYCKxSnTArKI
-         Y3r17d0nrfhrC8AZxfdcfccxQmSkaONjna+rgZZy+8vmeIeyYM/r4upezR5BvRT6dcj3
-         TN8g==
-X-Gm-Message-State: AOAM53245nRZIapEIRBwKpS7GUTLcvOj94ld9hF8E1gu8fWDIyxBr4MI
-        I7BR66hMLYMMpwV6mqczAheWTQypA1A6XwSOpJg=
-X-Google-Smtp-Source: ABdhPJwVJolOgJnLC9C2Rvy+MXOAFNwhTJiYKp2dL8jZ6mb7DyR3pYfGGW6b78hgfsbsIM705UNA1tVhZ20cEUAUBUE=
-X-Received: by 2002:a9d:3d77:: with SMTP id a110mr13124283otc.11.1596827198586;
- Fri, 07 Aug 2020 12:06:38 -0700 (PDT)
+        Fri, 7 Aug 2020 15:19:44 -0400
+X-Greylist: delayed 97337 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Aug 2020 15:19:43 EDT
+Received: from player715.ha.ovh.net (unknown [10.108.42.82])
+        by mo178.mail-out.ovh.net (Postfix) with ESMTP id 791D1AC1D7
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 21:07:20 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player715.ha.ovh.net (Postfix) with ESMTPSA id 76BA814E9C8DB;
+        Fri,  7 Aug 2020 19:07:13 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-100R0038ca687ab-4f78-4da8-bbe2-7590c3ca912e,
+                    B1FDDFD4E508142116FDFB9194C63E8FBE397CFD) smtp.auth=steve@sk2.org
+Date:   Fri, 7 Aug 2020 21:07:07 +0200
+From:   Stephen Kitt <steve@sk2.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wolfram Sang <wsa@kernel.org>
+Subject: Re: [PATCH v3] hwmon/pmbus: use simple i2c probe function
+Message-ID: <20200807210707.7dd1d9b9@heffalump.sk2.org>
+In-Reply-To: <20200807173231.GA47449@roeck-us.net>
+References: <20200807173231.GA47449@roeck-us.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200807160627.GA1420741@elver.google.com> <CAOJsxLGikg5OsM6v6nHsQbktvWKsy7ccA99OcknLWJpSqH0+pg@mail.gmail.com>
- <20200807171849.GA1467156@elver.google.com>
-In-Reply-To: <20200807171849.GA1467156@elver.google.com>
-From:   Pekka Enberg <penberg@gmail.com>
-Date:   Fri, 7 Aug 2020 22:06:22 +0300
-Message-ID: <CAOJsxLEJtXdCNtouqNTFxYtm5j_nnFQHpMfTOsUL2+WrLbR39g@mail.gmail.com>
-Subject: Re: Odd-sized kmem_cache_alloc and slub_debug=Z
-To:     Marco Elver <elver@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Christoph Lameter <cl@linux.com>,
-        Kees Cook <keescook@chromium.org>, kasan-dev@googlegroups.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/ZFB90kCEm=UKbNJ8Un9J6qQ"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 11990834011428048142
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrkedvgdduvdelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtderreertdejnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeevledvueefvdeivefftdeugeekveethefftdffteelheejkeejjeduffeiudetkeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeduhedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marco and Kees,
+--Sig_/ZFB90kCEm=UKbNJ8Un9J6qQ
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 07, 2020 at 08:06PM +0300, Pekka Enberg wrote:
-> > Anything interesting in your .config? The fault does not reproduce
-> > with 5.8.0 + x86-64 defconfig.
+On Fri, 7 Aug 2020 10:32:31 -0700, Guenter Roeck <linux@roeck-us.net> wrote:
+> On Fri, Aug 07, 2020 at 06:28:01PM +0200, Stephen Kitt wrote:
+> > =20
+> > -static int ltc2978_probe(struct i2c_client *client,
+> > -			 const struct i2c_device_id *id)
+> > +static int ltc2978_probe(struct i2c_client *client)
+> >  {
+> >  	int i, chip_id;
+> >  	struct ltc2978_data *data;
+> > @@ -670,10 +669,10 @@ static int ltc2978_probe(struct i2c_client *clien=
+t,
+> >  		return chip_id;
+> > =20
+> >  	data->id =3D chip_id;
+> > -	if (data->id !=3D id->driver_data)
+> > +	if (strcmp(client->name, ltc2978_id[data->id].name) !=3D 0) =20
+>=20
+> I was about to apply this patch, but this is problematic: It assumes that
+> __stringify(id) =3D=3D ltc2978_id[id].name and that ltc2978_id[id].driver=
+_data
+> =3D=3D id. While that is curently the case (as far as I can see), it is s=
+till
+> unsafe. I think it would be much safer to use i2c_match_id() here.
 
-On Fri, Aug 7, 2020 at 8:18 PM Marco Elver <elver@google.com> wrote:
-> It's quite close to defconfig, just some extra options for my test
-> environment. But none that I'd imagine change this behaviour -- but
-> maybe I missed something. I've attached my config. Also, just in case,
-> I'm on mainline from Tuesday: 2324d50d051ec0f14a548e78554fb02513d6dcef.
+I=E2=80=99m not following the __stringify assumption, but I do get your poi=
+nt about
+the driver_data being a valid index into the array; that was already baked
+into the code, as
 
-Yeah, it reproduces with defconfig too, as long as you remember to
-pass "slub_debug=Z"... :-/
+		dev_warn(&client->dev,
+			 "Device mismatch: Configured %s, detected %s\n",
+			 client->name,
+			 ltc2978_id[data->id].name);
 
-The following seems to be the culprit:
+but I=E2=80=99ll fix both.
 
-commit 3202fa62fb43087387c65bfa9c100feffac74aa6
-Author: Kees Cook <keescook@chromium.org>
-Date:   Wed Apr 1 21:04:27 2020 -0700
+Similar assumptions are present in other drivers here IIRC, I=E2=80=99ll fi=
+x those
+too.
 
-    slub: relocate freelist pointer to middle of object
+Regards,
 
-Reverting this commit and one of it's follow up fixes from Kees from
-v5.8 makes the issue go away for me. Btw, please note that caches with
-size 24 and larger do not trigger this bug, so the issue is that with
-small enough object size, we're stomping on allocator metadata (I
-assume part of the freelist).
+Stephen
 
-- Pekka
+--Sig_/ZFB90kCEm=UKbNJ8Un9J6qQ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl8tplsACgkQgNMC9Yht
+g5zbIA//S0DouNct8J2rS/6Fe3PdwZrMiAJ7FNNKqTzQDbt7Il2R8rcdXM9HVPbH
+sxloEI7MB+HbiQFRFIXlHL5xR5oBb3cUkZzstyc+SvXo+AVjYV9B+v9vjWHKAP9Z
+GgWV65P20HCtbLAat9hDMFzTGaDcoEbBzrPOdCodPrT/mA+E287tLaubw97+uWWz
+aGaoub1huJvS4HO+DTNVX6uUBslilnZXhn/LKLDvgDOqtUMnsBIdrSI7b6bgO78r
+MVou0LxSaPOxl2+nr2xJDnQILUxzsWtOROIYWgGpU/K/xpufgHWmqk1ia0iV8lUE
+BVkF/C6uduW1Zip8QcG17c/eorIfFkkzstntnQGuicbSOWHlzvuomtUn64/zC54h
+u5gncBtmrF52+sp8YbLvhyT5EgyDDS6DY0QnPg31K+V2sfGQDACCNGeLuTGaXO5N
+qYhSzCbhYsnO4sAqonhFw4Jbyt6hbf0tLEz5ikEejRCj+7vL0BPiZYYkzEvV3qxy
+YoVDJyunjR9BIEn7DuxBRcr837TXL6gMU2ZyXB4Vu1NM/gv2VOwLoW+Ey8JcCNX9
+t4lszJmVaRseXHaNtxff0Yzp8JaLUK3v1t3NXSCsno5hGE4qTg84o9MLrW/yRGZu
+QcTEwA+udmbU8nX/Wdlm6Fih+31H95mO0ElljLfjgsUrKUP2fX8=
+=XC8G
+-----END PGP SIGNATURE-----
+
+--Sig_/ZFB90kCEm=UKbNJ8Un9J6qQ--
