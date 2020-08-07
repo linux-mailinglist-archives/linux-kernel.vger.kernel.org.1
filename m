@@ -2,301 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A59423F456
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 23:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D7823F44E
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 23:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgHGVaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 17:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
+        id S1727891AbgHGVaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 17:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727824AbgHGV3s (ORCPT
+        with ESMTP id S1727831AbgHGV3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 17:29:48 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACFCC061A2B
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 14:29:48 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id r3so2376092pgn.12
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 14:29:48 -0700 (PDT)
+        Fri, 7 Aug 2020 17:29:54 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E880C061A2D
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 14:29:53 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id o23so3507546ejr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 14:29:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LfxCPN/4iZPLCZVOVhzdLvyoPvK+axLJbpywb7N3FLc=;
-        b=VIBg3oqpKZQpugF58zmKqStuZ5KBBnpMO9QTOrnjznu3Umo3cQqhRuUY+u1Vo1ME8f
-         dVB/ezp2eLRF/M1OihMCsccbSEBWLB9GxfwdGRwkeIFuRPo3roBkeWAbbHEB4ZB7JSsC
-         viG7KdWxZ5LfFPd7WviOf0CtToGYdrRn2CboKmRkbG0ygI1tVLIDSQGcH7+bhLyAnT2O
-         9Kabzp4Oe4O8CXOa2yf4LfK75nVvxwpPciAU+kWlaIW8O6j4Wb9Bgv/JZBDZa2phCJHm
-         z0MHMOm+P+Gzyeec/BJx3I+Sgas6eGPW+bIJKumLJwFOhgIW+slujH5jW0XT1TKk8HRl
-         v/Nw==
+        bh=fDDWZstNpjGOtdGZCLFEkYVcrKkQad8l/sIeiWx0PNA=;
+        b=kHFrwOCm6+H+Lg18Azi6wrn6sp7VnwHKw1qI4a4DgR+2tVfsZWWKguiTnjvT//xN5m
+         +s9DfRDsLw8w887oSLClL8uUsRIm2zFWNFSWNKeboOq3831NZe/9N+n5q54bwRWTy6RP
+         PhMZZMCgFwBpUwFvhCUk94uzEWzm1PLiMKV38=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=LfxCPN/4iZPLCZVOVhzdLvyoPvK+axLJbpywb7N3FLc=;
-        b=Xy12DnLRUUFtZBlWwh+4gDDdybYNGNQYP2S4CwfoVvgZ6e3kYc09lHJpRQGtMG/Vlb
-         qL9i5bvtTXFsWojd+vXBQhiF8MT/SyvwboVwYClEm9M/obIjEm3q61raOFAMcaH4ohIS
-         5frw5b/VUyykEqkgYdN3qCJo7W+RKaxD3OMaEBL/oDcESOsrK5OnrP5RffhhBn0+AVSn
-         ReM1hOMQ7/00cC/iL0DjQkeEYKOMyDlLy6y0w+Nm1quTeZrGt74Zp10MD90p2bc0vFJY
-         GoilnAIiwm3XA17UkZ4IVi1oSCXMAG44yDxqsL8bVkpMUbaMPGirbO5UFNa8gpXNFeob
-         NYkQ==
-X-Gm-Message-State: AOAM532qv/Ficq2Saw59cS2POkDeHWr9/rrDKMgbEhIG35CAtmMuySG2
-        GkHFyUAF7HNPm4e9RhEc16uM5cUSzoPXbmubSol5Pl4HWEI6kELSzeMhgT4CtojMvPWd0AUacGQ
-        5LKJCfsqZX7D28enET7aNf7oHyaEnrC4+2//iO+djSRI5RRheCxARbKjJOphWyEpsZNmsxGY=
-X-Google-Smtp-Source: ABdhPJyoavtOmq/7H4LPduK/k9+4umyJYh/qUDlGhNEQwJMHeb8u/v/EJaYmce8YVr9gCjxz+YCKFwc8o4TE
-X-Received: by 2002:a17:90a:1a13:: with SMTP id 19mr14039860pjk.167.1596835787619;
- Fri, 07 Aug 2020 14:29:47 -0700 (PDT)
-Date:   Fri,  7 Aug 2020 14:29:16 -0700
-In-Reply-To: <20200807212916.2883031-1-jwadams@google.com>
-Message-Id: <20200807212916.2883031-8-jwadams@google.com>
-Mime-Version: 1.0
-References: <20200807212916.2883031-1-jwadams@google.com>
-X-Mailer: git-send-email 2.28.0.236.gb10cc79966-goog
-Subject: [RFC PATCH 7/7] net-metricfs: Export /proc/net/dev via metricfs.
-From:   Jonathan Adams <jwadams@google.com>
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Jonathan Adams <jwadams@google.com>,
-        Laurent Chavey <chavey@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fDDWZstNpjGOtdGZCLFEkYVcrKkQad8l/sIeiWx0PNA=;
+        b=CUawkqeqNh7CqJ1FpRN0RaA8osxpeXASY/ivJ7JpqWcU3aKxZEJeMCmg31oHlBhfia
+         kImIq3DcB3En1UfKo9JLduR0NXtjPkzbyHDxNzBrytnlXPAuXzQzqvUVzrilB5e+fvCD
+         6XQ+TwAGIqg0n/l/XkorVXlLEYhgdMSW0M7TiGWZJR6Qq4VVS5fuWyQ+tU55nGyD8Fdy
+         bpV37iUjYEjit3housIMBTEc6A5Bf4ZRtKht/2akE3NdYQ4seXOwdrMSivbKFQQcprzj
+         r3TsBvSBuovdFidTVn6H/TbWBO+dqf01v/d2MqIB4LPawQTJ8N4w/jM4DF6HC+j9Pztp
+         jPFw==
+X-Gm-Message-State: AOAM5338Za8AX+l2WKUSHv0VcxIXOnbHoH4dkFxBfZ44SgzT7CEIB7i5
+        ci4EM/LO4+Xt0VkjepVKqXi9kdtdGCc=
+X-Google-Smtp-Source: ABdhPJy42kcYlw30MFe5Ox0ifmsYOXWd0Rm1TwaviYYfKu9DRbYJCE3MRPup5A8tTbRCLwr4CKgs5g==
+X-Received: by 2002:a17:906:4f8f:: with SMTP id o15mr10977663eju.220.1596835791824;
+        Fri, 07 Aug 2020 14:29:51 -0700 (PDT)
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com. [209.85.128.50])
+        by smtp.gmail.com with ESMTPSA id ch24sm6514256ejb.7.2020.08.07.14.29.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Aug 2020 14:29:51 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id f18so9455477wmc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 14:29:51 -0700 (PDT)
+X-Received: by 2002:a7b:cb50:: with SMTP id v16mr10118993wmj.11.1596835790795;
+ Fri, 07 Aug 2020 14:29:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200730114632.6717-1-stanimir.varbanov@linaro.org> <20200730114632.6717-4-stanimir.varbanov@linaro.org>
+In-Reply-To: <20200730114632.6717-4-stanimir.varbanov@linaro.org>
+From:   Fritz Koenig <frkoenig@chromium.org>
+Date:   Fri, 7 Aug 2020 14:29:38 -0700
+X-Gmail-Original-Message-ID: <CAMfZQbxXdNZV8e9o+=0oZ2rvM-QGJwuJpMiMmsQQ7NhG8Y35=w@mail.gmail.com>
+Message-ID: <CAMfZQbxXdNZV8e9o+=0oZ2rvM-QGJwuJpMiMmsQQ7NhG8Y35=w@mail.gmail.com>
+Subject: Re: [PATCH 3/3] venus: Add new interface queues reinit
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Chavey <chavey@google.com>
-
-Export /proc/net/dev statistics via metricfs.
-
-The implementation reports all the devices that are in the same
-network namespace as the process reading metricfs.
-
-The implementation does not report devices across network namespaces
-
-Signed-off-by: Laurent Chavey <chavey@google.com>
-[jwadams@google.com: ported code to 5.8-pre6, cleaned up googleisms ]
-Signed-off-by: Jonathan Adams <jwadams@google.com>
----
- net/core/Makefile       |   1 +
- net/core/net_metricfs.c | 194 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 195 insertions(+)
- create mode 100644 net/core/net_metricfs.c
-
-diff --git a/net/core/Makefile b/net/core/Makefile
-index 3e2c378e5f31..7647380b9679 100644
---- a/net/core/Makefile
-+++ b/net/core/Makefile
-@@ -27,6 +27,7 @@ obj-$(CONFIG_NET_PTP_CLASSIFY) += ptp_classifier.o
- obj-$(CONFIG_CGROUP_NET_PRIO) += netprio_cgroup.o
- obj-$(CONFIG_CGROUP_NET_CLASSID) += netclassid_cgroup.o
- obj-$(CONFIG_LWTUNNEL) += lwtunnel.o
-+obj-$(CONFIG_METRICFS) += net_metricfs.o
- obj-$(CONFIG_LWTUNNEL_BPF) += lwt_bpf.o
- obj-$(CONFIG_BPF_STREAM_PARSER) += sock_map.o
- obj-$(CONFIG_DST_CACHE) += dst_cache.o
-diff --git a/net/core/net_metricfs.c b/net/core/net_metricfs.c
-new file mode 100644
-index 000000000000..82f0f797b0b0
---- /dev/null
-+++ b/net/core/net_metricfs.c
-@@ -0,0 +1,194 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* net_metricfs: Exports network counters using metricfs.
-+ */
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/metricfs.h>
-+#include <linux/netdevice.h>
-+#include <linux/nsproxy.h>
-+#include <linux/rcupdate.h>
-+#include <linux/stddef.h>
-+#include <linux/types.h>
-+#include <net/net_namespace.h>
-+
-+struct metric_def {
-+	struct metric *metric;
-+	size_t off;
-+	char *name;
-+	char *desc;
-+};
-+
-+/* If needed, we could export this via a function for other /net users */
-+static struct metricfs_subsys *net_root_subsys;
-+static struct metricfs_subsys *dev_subsys;
-+static struct metricfs_subsys *dev_stats_subsys;
-+
-+static struct metric_def metric_def[] = {
-+	{NULL, offsetof(struct rtnl_link_stats64, rx_bytes),
-+	 "rx_bytes", "net device received bytes count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, rx_packets),
-+	 "rx_packets", "net device received packets count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, rx_errors),
-+	 "rx_errors", "net device received errors count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, rx_dropped),
-+	 "rx_dropped", "net device dropped packets count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, rx_missed_errors),
-+	 "rx_missed_errors",  "net device missed errors count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, rx_fifo_errors),
-+	 "rx_fifo_errors", "net device fifo errors count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, rx_length_errors),
-+	 "rx_length_errors", "net device length errors count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, rx_over_errors),
-+	 "rx_over_errors", "net device received overflow errors count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, rx_crc_errors),
-+	 "rx_crc_errors", "net device received crc errors count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, rx_frame_errors),
-+	 "rx_frame_errors", "net device received frame errors count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, rx_compressed),
-+	 "rx_compressed", "net device received compressed packet count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, multicast),
-+	 "rx_multicast", "net device received multicast packet count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, tx_bytes),
-+	 "tx_bytes", "net device transmited bytes count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, tx_packets),
-+	 "tx_packets", "net device transmited packets count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, tx_errors),
-+	 "tx_errors", "net device transmited errors count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, tx_dropped),
-+	 "tx_dropped", "net device transmited packet drop count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, tx_fifo_errors),
-+	 "tx_fifo_errors", "net device transmit fifo errors count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, collisions),
-+	 "tx_collision", "net device transmit collisions count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, tx_carrier_errors),
-+	 "tx_carrier_errors", "net device transmit carrier errors count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, tx_aborted_errors),
-+	 "tx_aborted_errors", "net device transmit aborted errors count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, tx_window_errors),
-+	 "tx_window_errors", "net device transmit window errors count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, tx_heartbeat_errors),
-+	 "tx_heartbeat_errors", "net device transmit heartbeat errors count"},
-+	{NULL, offsetof(struct rtnl_link_stats64, tx_compressed),
-+	 "tx_compressed_errors", "net device transmit compressed count"},
-+};
-+
-+static __init int init_net_subsys(void)
-+{
-+	net_root_subsys = metricfs_create_subsys("net", NULL);
-+	if (!net_root_subsys) {
-+		WARN_ONCE(1, "Net metricfs root not created.");
-+		return -1;
-+	}
-+	return 0;
-+}
-+
-+late_initcall(init_net_subsys);
-+
-+static void dev_stats_emit(struct metric_emitter *e,
-+			   struct net_device *dev,
-+			   struct metric_def *metricd)
-+{
-+	struct rtnl_link_stats64 temp;
-+	const struct rtnl_link_stats64 *stats = dev_get_stats(dev, &temp);
-+
-+	if (stats) {
-+		__u8 *ptr = (((__u8 *)stats) + metricd->off);
-+
-+		METRIC_EMIT_INT(e, *(__u64 *)ptr, dev->name, NULL);
-+	}
-+}
-+
-+/* metricfs export function */
-+static void dev_stats_fn(struct metric_emitter *e, void *parm)
-+{
-+	struct net_device *dev;
-+	struct net *net;
-+	struct nsproxy *nsproxy = current->nsproxy;
-+
-+	rcu_read_lock();
-+	for_each_net_rcu(net) {
-+		/* skip namespaces not associated with the caller */
-+		if (nsproxy->net_ns != net)
-+			continue;
-+		for_each_netdev_rcu(net, dev) {
-+			dev_stats_emit(e, dev, (struct metric_def *)parm);
-+		}
-+	}
-+	rcu_read_unlock();
-+}
-+
-+static void clean_dev_stats_subsys(void)
-+{
-+	int x;
-+	int metric_count = sizeof(metric_def) / sizeof(struct metric_def);
-+
-+	for (x = 0; x < metric_count; x++) {
-+		if (metric_def[x].metric) {
-+			metric_unregister(metric_def[x].metric);
-+			metric_def[x].metric = NULL;
-+		}
-+	}
-+	if (dev_stats_subsys)
-+		metricfs_destroy_subsys(dev_stats_subsys);
-+	if (dev_subsys)
-+		metricfs_destroy_subsys(dev_subsys);
-+	dev_stats_subsys = NULL;
-+	dev_subsys = NULL;
-+}
-+
-+static int __init init_dev_stats_subsys(void)
-+{
-+	int x;
-+	int metric_count = sizeof(metric_def) / sizeof(struct metric_def);
-+
-+	dev_subsys = NULL;
-+	dev_stats_subsys = NULL;
-+	if (!net_root_subsys) {
-+		WARN_ONCE(1, "Net metricfs root not initialized.");
-+		goto error;
-+	}
-+	dev_subsys =
-+		metricfs_create_subsys("dev", net_root_subsys);
-+	if (!dev_subsys) {
-+		WARN_ONCE(1, "Net metricfs dev not created.");
-+		goto error;
-+	}
-+	dev_stats_subsys =
-+		metricfs_create_subsys("stats", dev_subsys);
-+	if (!dev_stats_subsys) {
-+		WARN_ONCE(1, "Dev metricfs stats not created.");
-+		goto error;
-+	}
-+
-+	/* initialize each of the metrics */
-+	for (x = 0; x < metric_count; x++) {
-+		metric_def[x].metric =
-+			metric_register_parm(metric_def[x].name,
-+					     dev_stats_subsys,
-+					     metric_def[x].desc,
-+					     "interface",
-+					     NULL,
-+					     dev_stats_fn,
-+					     (void *)&metric_def[x],
-+					     false,
-+					     true,  /* this is a counter */
-+					     THIS_MODULE);
-+		if (!metric_def[x].metric) {
-+			WARN_ONCE(1, "Dev metricfs stats %s not registered.",
-+				  metric_def[x].name);
-+			goto error;
-+		}
-+	}
-+	return 0;
-+error:
-+	clean_dev_stats_subsys();
-+	return -1;
-+}
-+
-+/* need to wait for metricfs and net metricfs root to be initialized */
-+late_initcall_sync(init_dev_stats_subsys);
-+
-+static void __exit dev_stats_exit(void)
-+{
-+	clean_dev_stats_subsys();
-+}
--- 
-2.28.0.236.gb10cc79966-goog
-
+On Thu, Jul 30, 2020 at 4:47 AM Stanimir Varbanov
+<stanimir.varbanov@linaro.org> wrote:
+>
+> Presently the recovery mechanism is using two hfi functions
+> to destroy and create interface queues. For the purpose of
+> recovery we don't need to free and allocate the memory used
+> for interface message queues, that's why we introduce new
+> function which just reinit the queues.  Also this will give
+> to the recovery procedure one less reason to fail (if for
+> some reason we couldn't allocate memory).
+>
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.c      |  3 +-
+>  drivers/media/platform/qcom/venus/hfi.c       |  5 ++
+>  drivers/media/platform/qcom/venus/hfi.h       |  1 +
+>  drivers/media/platform/qcom/venus/hfi_venus.c | 51 +++++++++++++++++++
+>  drivers/media/platform/qcom/venus/hfi_venus.h |  1 +
+>  5 files changed, 59 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> index 46f6e34d435a..eda8f35425df 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -72,8 +72,7 @@ static void venus_sys_error_handler(struct work_struct *work)
+>         while (core->pmdomains[0] && pm_runtime_active(core->pmdomains[0]))
+>                 usleep_range(1000, 1500);
+>
+> -       hfi_destroy(core);
+> -       ret |= hfi_create(core, &venus_core_ops);
+> +       hfi_reinit(core);
+>
+>         pm_runtime_get_sync(core->dev);
+>
+> diff --git a/drivers/media/platform/qcom/venus/hfi.c b/drivers/media/platform/qcom/venus/hfi.c
+> index a211eb93e0f9..a59022adb14c 100644
+> --- a/drivers/media/platform/qcom/venus/hfi.c
+> +++ b/drivers/media/platform/qcom/venus/hfi.c
+> @@ -517,3 +517,8 @@ void hfi_destroy(struct venus_core *core)
+>  {
+>         venus_hfi_destroy(core);
+>  }
+> +
+> +void hfi_reinit(struct venus_core *core)
+> +{
+> +       venus_hfi_queues_reinit(core);
+> +}
+> diff --git a/drivers/media/platform/qcom/venus/hfi.h b/drivers/media/platform/qcom/venus/hfi.h
+> index 62c315291484..f25d412d6553 100644
+> --- a/drivers/media/platform/qcom/venus/hfi.h
+> +++ b/drivers/media/platform/qcom/venus/hfi.h
+> @@ -145,6 +145,7 @@ struct hfi_ops {
+>
+>  int hfi_create(struct venus_core *core, const struct hfi_core_ops *ops);
+>  void hfi_destroy(struct venus_core *core);
+> +void hfi_reinit(struct venus_core *core);
+>
+>  int hfi_core_init(struct venus_core *core);
+>  int hfi_core_deinit(struct venus_core *core, bool blocking);
+> diff --git a/drivers/media/platform/qcom/venus/hfi_venus.c b/drivers/media/platform/qcom/venus/hfi_venus.c
+> index 3392fd177d22..90067cd8c892 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_venus.c
+> +++ b/drivers/media/platform/qcom/venus/hfi_venus.c
+> @@ -1603,3 +1603,54 @@ int venus_hfi_create(struct venus_core *core)
+>         core->ops = NULL;
+>         return ret;
+>  }
+> +
+> +void venus_hfi_queues_reinit(struct venus_core *core)
+> +{
+> +       struct venus_hfi_device *hdev = to_hfi_priv(core);
+> +       struct hfi_queue_table_header *tbl_hdr;
+> +       struct iface_queue *queue;
+> +       struct hfi_sfr *sfr;
+> +       unsigned int i;
+> +
+> +       mutex_lock(&hdev->lock);
+> +
+> +       for (i = 0; i < IFACEQ_NUM; i++) {
+> +               queue = &hdev->queues[i];
+> +               queue->qhdr =
+> +                       IFACEQ_GET_QHDR_START_ADDR(hdev->ifaceq_table.kva, i);
+> +
+> +               venus_set_qhdr_defaults(queue->qhdr);
+> +
+> +               queue->qhdr->start_addr = queue->qmem.da;
+> +
+> +               if (i == IFACEQ_CMD_IDX)
+> +                       queue->qhdr->type |= HFI_HOST_TO_CTRL_CMD_Q;
+> +               else if (i == IFACEQ_MSG_IDX)
+> +                       queue->qhdr->type |= HFI_CTRL_TO_HOST_MSG_Q;
+> +               else if (i == IFACEQ_DBG_IDX)
+> +                       queue->qhdr->type |= HFI_CTRL_TO_HOST_DBG_Q;
+> +       }
+> +
+> +       tbl_hdr = hdev->ifaceq_table.kva;
+> +       tbl_hdr->version = 0;
+> +       tbl_hdr->size = IFACEQ_TABLE_SIZE;
+> +       tbl_hdr->qhdr0_offset = sizeof(struct hfi_queue_table_header);
+> +       tbl_hdr->qhdr_size = sizeof(struct hfi_queue_header);
+> +       tbl_hdr->num_q = IFACEQ_NUM;
+> +       tbl_hdr->num_active_q = IFACEQ_NUM;
+> +
+> +       /*
+> +        * Set receive request to zero on debug queue as there is no
+> +        * need of interrupt from video hardware for debug messages
+> +        */
+> +       queue = &hdev->queues[IFACEQ_DBG_IDX];
+> +       queue->qhdr->rx_req = 0;
+> +
+> +       sfr = hdev->sfr.kva;
+> +       sfr->buf_size = ALIGNED_SFR_SIZE;
+> +
+> +       /* ensure table and queue header structs are settled in memory */
+> +       wmb();
+> +
+> +       mutex_unlock(&hdev->lock);
+> +}
+> diff --git a/drivers/media/platform/qcom/venus/hfi_venus.h b/drivers/media/platform/qcom/venus/hfi_venus.h
+> index 57154832090e..1b656ef2bf07 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_venus.h
+> +++ b/drivers/media/platform/qcom/venus/hfi_venus.h
+> @@ -10,5 +10,6 @@ struct venus_core;
+>
+>  void venus_hfi_destroy(struct venus_core *core);
+>  int venus_hfi_create(struct venus_core *core);
+> +void venus_hfi_queues_reinit(struct venus_core *core);
+>
+>  #endif
+> --
+> 2.17.1
+>
+Reviewed-by: Fritz Koenig <frkoenig@chromium.org>
