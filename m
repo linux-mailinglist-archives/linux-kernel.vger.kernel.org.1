@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E22823EA83
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C915423EA77
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728061AbgHGJij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 05:38:39 -0400
-Received: from spam01.hygon.cn ([110.188.70.11]:58222 "EHLO spam2.hygon.cn"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726382AbgHGJib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 05:38:31 -0400
-Received: from MK-DB.hygon.cn ([172.23.18.60])
-        by spam2.hygon.cn with ESMTP id 0779b7L1041093;
-        Fri, 7 Aug 2020 17:37:07 +0800 (GMT-8)
-        (envelope-from puwen@hygon.cn)
-Received: from cncheex01.Hygon.cn ([172.23.18.10])
-        by MK-DB.hygon.cn with ESMTP id 0779b09i079166;
-        Fri, 7 Aug 2020 17:37:00 +0800 (GMT-8)
-        (envelope-from puwen@hygon.cn)
-Received: from ubuntu1604-2.higon.com (172.23.18.44) by cncheex01.Hygon.cn
- (172.23.18.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1466.3; Fri, 7 Aug 2020
- 17:36:45 +0800
-From:   Pu Wen <puwen@hygon.cn>
-To:     <rjw@rjwysocki.net>, <lenb@kernel.org>,
-        <jarkko.nikula@linux.intel.com>,
-        <andriy.shevchenko@linux.intel.com>,
-        <mika.westerberg@linux.intel.com>, <wsa@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>, Pu Wen <puwen@hygon.cn>
-Subject: [PATCH RESEND] i2c: designware: Add device HID for Hygon I2C controller
-Date:   Fri, 7 Aug 2020 17:35:29 +0800
-Message-ID: <20200807093529.5343-1-puwen@hygon.cn>
-X-Mailer: git-send-email 2.23.0
+        id S1727857AbgHGJgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 05:36:47 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9352 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726382AbgHGJgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 05:36:46 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 43F3866F4F5373A0D409;
+        Fri,  7 Aug 2020 17:36:44 +0800 (CST)
+Received: from [10.174.179.72] (10.174.179.72) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 7 Aug 2020 17:36:39 +0800
+Subject: Re: [PATCH net 0/4] support multipacket broadcast message
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+CC:     <robin@protonic.nl>, <linux@rempel-privat.de>,
+        <kernel@pengutronix.de>, <socketcan@hartkopp.net>,
+        <mkl@pengutronix.de>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-can@vger.kernel.org>
+References: <1596599425-5534-1-git-send-email-zhangchangzhong@huawei.com>
+ <20200806161027.py5ged3a23xpmxgi@pengutronix.de>
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+Message-ID: <24c3daa5-8243-0b80-9f4c-aa5883cb75da@huawei.com>
+Date:   Fri, 7 Aug 2020 17:36:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.23.18.44]
-X-ClientProxiedBy: cncheex01.Hygon.cn (172.23.18.10) To cncheex01.Hygon.cn
- (172.23.18.10)
-X-MAIL: spam2.hygon.cn 0779b7L1041093
-X-DNSRBL: 
+In-Reply-To: <20200806161027.py5ged3a23xpmxgi@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.72]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device HID HYGO0010 to match the Hygon ACPI Vendor ID (HYGO) that
-was registered in http://www.uefi.org/acpi_id_list, and the I2C
-controller on Hygon paltform will use the HID.
+Hi Oleksij,
 
-Signed-off-by: Pu Wen <puwen@hygon.cn>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Wolfram Sang <wsa@kernel.org>
----
- drivers/acpi/acpi_apd.c                     | 1 +
- drivers/i2c/busses/i2c-designware-platdrv.c | 1 +
- 2 files changed, 2 insertions(+)
+We have tested this j1939 stack according to SAE J1939-21. It works fine for
+most cases, but when we test multipacket broadcast message function we found
+the receiver can't receive those packets.
 
-diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
-index ba2612e9a0eb..f24f6d3f1fa5 100644
---- a/drivers/acpi/acpi_apd.c
-+++ b/drivers/acpi/acpi_apd.c
-@@ -240,6 +240,7 @@ static const struct acpi_device_id acpi_apd_device_ids[] = {
- 	{ "AMDI0020", APD_ADDR(cz_uart_desc) },
- 	{ "AMD0030", },
- 	{ "AMD0040", APD_ADDR(st_misc_desc)},
-+	{ "HYGO0010", APD_ADDR(wt_i2c_desc) },
- #endif
- #ifdef CONFIG_ARM64
- 	{ "APMC0D0F", APD_ADDR(xgene_i2c_desc) },
-diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-index a71bc58fc03c..0dfeb2d11603 100644
---- a/drivers/i2c/busses/i2c-designware-platdrv.c
-+++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-@@ -55,6 +55,7 @@ static const struct acpi_device_id dw_i2c_acpi_match[] = {
- 	{ "HISI02A1", 0 },
- 	{ "HISI02A2", 0 },
- 	{ "HISI02A3", 0 },
-+	{ "HYGO0010", ACCESS_INTR_MASK },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, dw_i2c_acpi_match);
--- 
-2.23.0
+You can reproduce on CAN bus or vcan, for vcan case use cangw to connect vcan0
+and vcan1:
+sudo cangw -A -s vcan0 -d vcan1 -e
+sudo cangw -A -s vcan1 -d vcan0 -e
 
+To reproduce it use following commands:
+testj1939 -B -r vcan1:0x90 &
+testj1939 -B -s20 vcan0:0x80 :,0x12300
+
+Besides, candump receives correct packets while testj1939 receives nothing.
+
+Regards,
+Zhang Changzhong
+
+On 2020/8/7 0:10, Oleksij Rempel wrote:
+> Hello,
+> 
+> Thank you for your patches! Currently I'm busy, but I'll take a look at it as
+> soon possible.
+> 
+> btw. can you tell me about more of your use case/work. I would like to
+> have some feedback about this stack. You can write a personal message,
+> if it is not for public.
+> 
+> On Wed, Aug 05, 2020 at 11:50:21AM +0800, Zhang Changzhong wrote:
+>> Zhang Changzhong (4):
+>>   can: j1939: fix support for multipacket broadcast message
+>>   can: j1939: cancel rxtimer on multipacket broadcast session complete
+>>   can: j1939: abort multipacket broadcast session when timeout occurs
+>>   can: j1939: add rxtimer for multipacket broadcast session
+>>
+>>  net/can/j1939/transport.c | 48 +++++++++++++++++++++++++++++++++++------------
+>>  1 file changed, 36 insertions(+), 12 deletions(-)
+> 
+> Regards,
+> Oleksij
+> 
