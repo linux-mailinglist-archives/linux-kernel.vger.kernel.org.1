@@ -2,176 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B8523E843
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 09:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA24E23E833
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 09:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgHGHrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 03:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726212AbgHGHrH (ORCPT
+        id S1727112AbgHGHpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 03:45:54 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15966 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727077AbgHGHpw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 03:47:07 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8353C061574;
-        Fri,  7 Aug 2020 00:47:07 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id t23so674315qto.3;
-        Fri, 07 Aug 2020 00:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5TVRRrTJtmZdv6+6tRsGQqVeebKVn7+NZ1W0hZ5IlAc=;
-        b=GX52DsY3qIAl6y7VYvZNA6C7+CF8Xc3SkbYXO3RM+3EFn4rXFViWvcOewgLYU6HbgJ
-         uicchdrQfbyspVtdT10EeV4W8n+6haTvofNa82//gqanhTFomVEAVU4T/alV4608b+dX
-         otbPCb9DcyZmLDmLkBsmJkskovHimQ1QjCepmsy+EXDPmN2fL9s67X/gZ4+gMtNG9A6O
-         kUtUtx3msIyeyZ6g3s4M+bTnsvofYUqWXpyKhlsouAcvLjNUhUfu8/Ry2/kBZosN+M37
-         N9GHzHB9yIb0Exc9hAhp1uPeR1PEGsfw4I4Tc456rqCAeMchNYQH+7WBvZ0ljkj30cOD
-         87nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5TVRRrTJtmZdv6+6tRsGQqVeebKVn7+NZ1W0hZ5IlAc=;
-        b=kGhVlZUq6KCpSdlh+DfnPPZFeI3abnFDfoUjJrBKTa6RpeiCfUsveDYcmMXr92BJsk
-         z/laPbORoydqQ6Lo8e9IcE6e672Z6wyJrbkoopgXNigisTTPkOErPKWJxsH71Y2dU4In
-         lEpQBYy0FzRlm0Px+uOV2PDDEkAQ9GP6mBVCMy8ZUwMj9Gs0vM1yfna+yK6AKuKL1k5U
-         tHNt89CrvS1xUx9IdDVvQJK368mtUAX84DYTbdreB8jNZsolJIAvgwz90Iwr+OBw4scp
-         t1OnEURZkNSKfSHE33TNDzNlzf0ianNVcbIuAZyoUH0lw5biQNld5NIkjkyKSzHIIv5K
-         xgNg==
-X-Gm-Message-State: AOAM5309HYln3Rr+HRfhkc3d1phx/qVz1Hg/xqxK7VfxggmYTpu13rRk
-        FE4BxK25EPTj9ss0OPUivBQ=
-X-Google-Smtp-Source: ABdhPJyq8IpG6jqFOXfhqXITDu6hadTHPSLs5omqd3OJpjos7mlE6qfsk6BKCaRwuMsOlQCpn0JsQQ==
-X-Received: by 2002:ac8:4e39:: with SMTP id d25mr12571151qtw.208.1596786427051;
-        Fri, 07 Aug 2020 00:47:07 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id d26sm7289401qtc.51.2020.08.07.00.47.06
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 07 Aug 2020 00:47:06 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 3DC7F27C0054;
-        Fri,  7 Aug 2020 03:47:06 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 07 Aug 2020 03:47:06 -0400
-X-ME-Sender: <xms:-gYtX9YT703LbnsjkMNhxcE_tidta9S-Fc9Gyq5M0L-n9TcETf9MMA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrkedugdduvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhephedvveetfefgiedutedtfeevvddvleekjeeuffffleeguefhhfejteekieeu
-    ueelnecukfhppeduudegrdekhedrudektddrvdduheenucevlhhushhtvghrufhiiigvpe
-    elnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
-    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnpe
-    epfhhigihmvgdrnhgrmhgvsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:-gYtX0bS2x83-RSowex01dVlIBoNsjKSYFwKMCxzniyZeAlTMnEUmA>
-    <xmx:-gYtX__Da5PD3g5dbsjPBlONZxOTOVqMmxEdNwI3YW8qQ-nrvd-tmQ>
-    <xmx:-gYtX7r58KykQ2R6970LAqm7ZOgOCwznZKlQ3myLNMHDmWMYCYxg7g>
-    <xmx:-gYtXxkjqkaKfFLBQJBrMadKDn8xam-jfd13U6ELLkpfbJ1HpCWdgw>
-Received: from localhost (unknown [114.85.180.215])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 32BF730600B2;
-        Fri,  7 Aug 2020 03:47:04 -0400 (EDT)
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: [RFC v7 19/19] lockdep/selftest: Introduce recursion3
-Date:   Fri,  7 Aug 2020 15:42:38 +0800
-Message-Id: <20200807074238.1632519-20-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200807074238.1632519-1-boqun.feng@gmail.com>
-References: <20200807074238.1632519-1-boqun.feng@gmail.com>
+        Fri, 7 Aug 2020 03:45:52 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0777VVDY083462;
+        Fri, 7 Aug 2020 03:45:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=7APp82u1fCIlemZu0jLuz5QrArJmIFqrMX78hUa7qdo=;
+ b=V6gpAB+7J9/ujY1w9q4oJi/jEjLfGyjtqUGqAPsIsnz9WA8wjBa/19pEBTwikE9Xbavl
+ wmvLrf8CA4pPDt7mQf+5YyAHDBtY2rdWxqSJYtYr6jg34RZelnhwfd2v7Yz+nyhX1TiE
+ ndtEincxtUpJdfngl+523HsE+tR7bKmW/RFdYIsM4Jc2xis33AgmlYlqV0lkymeN6HDE
+ mCrgGPkec63NcDbwwJ+11+Ipt307Enz0EZD5n29OmREcJr0WWxamQmAJRPusC5bATmv5
+ lSEuQwedO65Y3S+Gj2Ersf9sa3wIB84eBdzx6lyZ6WbuunXLUzFRqfZWUubmTOlpYbOf TA== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32rnu9met2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 07 Aug 2020 03:45:30 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0777eQKO019843;
+        Fri, 7 Aug 2020 07:45:28 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 32n0186d1v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 07 Aug 2020 07:45:28 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0777jQ6u65143248
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 7 Aug 2020 07:45:26 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 27605AE056;
+        Fri,  7 Aug 2020 07:45:26 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 13843AE051;
+        Fri,  7 Aug 2020 07:45:22 +0000 (GMT)
+Received: from srikart450.in.ibm.com (unknown [9.199.45.118])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  7 Aug 2020 07:45:21 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michael Neuling <mikey@neuling.org>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+Subject: [PATCH v2 1/2] sched/topology: Allow archs to override cpu_smt_mask
+Date:   Fri,  7 Aug 2020 13:15:16 +0530
+Message-Id: <20200807074517.27957-1-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-07_02:2020-08-06,2020-08-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ lowpriorityscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
+ impostorscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008070051
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a test case shows that USED_IN_*_READ and ENABLE_*_READ can cause
-deadlock too.
+cpu_smt_mask tracks topology_sibling_cpumask. This would be good for
+most architectures. One of the users of cpu_smt_mask(), would be to
+identify idle-cores. On Power9, a pair of SMT4 cores can be presented by
+the firmware as a SMT8 core for backward compatibility reasons.
 
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Powerpc allows LPARs to be live migrated from Power8 to Power9. Do note
+Power8 had only SMT8 cores. Existing software which has been
+developed/configured for Power8 would expect to see SMT8 core.
+Maintaining the illusion of SMT8 core is a requirement to make that
+work.
+
+In order to maintain above userspace backward compatibility with
+previous versions of processor, Power9 onwards there is option to the
+firmware to advertise a pair of SMT4 cores as a fused cores aka SMT8
+core. On Power9 this pair shares the L2 cache as well. However, from the
+scheduler's point of view, a core should be determined by SMT4, since
+its a completely independent unit of compute. Hence allow PowerPc
+architecture to override the default cpu_smt_mask() to point to the SMT4
+cores in a SMT8 mode.
+
+This will ensure the scheduler is always given the right information.
+
+Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michael Neuling <mikey@neuling.org>
+Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+Acked-by; Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 ---
- lib/locking-selftest.c | 55 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+Changelog v1->v2:
+	Update the commit msg based on the discussion in community esp
+	with Peter Zijlstra and Michael Ellerman.
 
-diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
-index 17f8f6f37165..a899b3f0e2e5 100644
---- a/lib/locking-selftest.c
-+++ b/lib/locking-selftest.c
-@@ -1249,6 +1249,60 @@ GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_soft_rlock)
- #include "locking-selftest-wlock.h"
- GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_soft_wlock)
+ include/linux/topology.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/topology.h b/include/linux/topology.h
+index 608fa4aadf0e..ad03df1cc266 100644
+--- a/include/linux/topology.h
++++ b/include/linux/topology.h
+@@ -198,7 +198,7 @@ static inline int cpu_to_mem(int cpu)
+ #define topology_die_cpumask(cpu)		cpumask_of(cpu)
+ #endif
  
-+#undef E1
-+#undef E2
-+#undef E3
-+/*
-+ * read-lock / write-lock recursion that is unsafe.
-+ *
-+ * A is a ENABLED_*_READ lock
-+ * B is a USED_IN_*_READ lock
-+ *
-+ * read_lock(A);
-+ *			write_lock(B);
-+ * <interrupt>
-+ * read_lock(B);
-+ * 			write_lock(A); // if this one is read_lock(), no deadlock
-+ */
-+
-+#define E1()				\
-+					\
-+	IRQ_DISABLE();			\
-+	WL(B);				\
-+	LOCK(A);			\
-+	UNLOCK(A);			\
-+	WU(B);				\
-+	IRQ_ENABLE();
-+
-+#define E2()				\
-+					\
-+	RL(A);				\
-+	RU(A);				\
-+
-+#define E3()				\
-+					\
-+	IRQ_ENTER();			\
-+	RL(B);				\
-+	RU(B);				\
-+	IRQ_EXIT();
-+
-+/*
-+ * Generate 24 testcases:
-+ */
-+#include "locking-selftest-hardirq.h"
-+#include "locking-selftest-rlock.h"
-+GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_hard_rlock)
-+
-+#include "locking-selftest-wlock.h"
-+GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_hard_wlock)
-+
-+#include "locking-selftest-softirq.h"
-+#include "locking-selftest-rlock.h"
-+GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_soft_rlock)
-+
-+#include "locking-selftest-wlock.h"
-+GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_soft_wlock)
-+
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- # define I_SPINLOCK(x)	lockdep_reset_lock(&lock_##x.dep_map)
- # define I_RWLOCK(x)	lockdep_reset_lock(&rwlock_##x.dep_map)
-@@ -2413,6 +2467,7 @@ void locking_selftest(void)
- 
- 	DO_TESTCASE_6x2x2RW("irq read-recursion", irq_read_recursion);
- 	DO_TESTCASE_6x2x2RW("irq read-recursion #2", irq_read_recursion2);
-+	DO_TESTCASE_6x2x2RW("irq read-recursion #3", irq_read_recursion3);
- 
- 	ww_tests();
- 
+-#ifdef CONFIG_SCHED_SMT
++#if defined(CONFIG_SCHED_SMT) && !defined(cpu_smt_mask)
+ static inline const struct cpumask *cpu_smt_mask(int cpu)
+ {
+ 	return topology_sibling_cpumask(cpu);
 -- 
-2.28.0
+2.18.2
 
