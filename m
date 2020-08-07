@@ -2,118 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7D223E756
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 08:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF3523E763
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 08:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726128AbgHGGaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 02:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgHGGaR (ORCPT
+        id S1726150AbgHGGjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 02:39:46 -0400
+Received: from 1.mo177.mail-out.ovh.net ([178.33.107.143]:38221 "EHLO
+        1.mo177.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgHGGjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 02:30:17 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03678C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 23:30:16 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id q13so393841vsn.9
-        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 23:30:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=hosiDsSF7pcUUswxQ+NwvqT+/8m2fK+HL/QoB2WtKc0=;
-        b=r7pYSAPIs9Z1iB+tygPfQa+qeu+I45vUVHTXgGXXu6FU69l0cLnBK1Zo2ugqxSGxjb
-         hHBb/d9rJn8jh6xmoHWjN7MuFt3pLj41BX2PVeKxofJpXZ2V/3XZRZddvRjC3dep4bO5
-         vnLByj0K91pnkBkOriemEoNACk/vDicSYPhZ3/TTH4q71/BMSFYkha+oefMnu0OG03VW
-         Mujeb74LzNECWR3TZW5xfLDNMQeaAneFNW6o8GuU2BPpP5tU+AMWhftKVomN+Z6fJ/ol
-         7KHcz3CmbCdgisD6RKzyy3r5fHHn0hSRc3ZYJLP1I6V+1cRjCZslFuNWUX9TtcVcLqMW
-         H9LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=hosiDsSF7pcUUswxQ+NwvqT+/8m2fK+HL/QoB2WtKc0=;
-        b=a6WUWmZ3MeonSQWTiYOurL/XoGSWR/h/n8ZWsrLt1Lmk08bb35wWBgfV2ADxtQSIKP
-         ML9Jp/WP991zLmzZ3Qy4NUGu1wUQxY1uXN9tfKg6DWwgXrvxX+JbSHrd7Iyo5cdUh5/T
-         PxNVosOjwwe5dUI5WRAHkIMnd6gWI+E29bzsycF6hxUYcmXx2Ls95jrw7yJ7d08nnQob
-         9WHbDkiW95idvTnX3fhaFndG0eD/WadqSeh8JqblgA9YR5QTeFLqyamniO+K7rxnGoo3
-         iFqvMtLw1wNmqo2n3dR4YEFsuTZC+zzmWnMc5nddZhRdoqnKEsbTIjbEiZ3t7O1Ko+Uw
-         8crw==
-X-Gm-Message-State: AOAM531PP46KOl/lVtEi9o8+blWKph/hrv93vijqbJGAuptqaW1vg3CK
-        wG1ruywwhAmKFDu2cNJ6ePjjNbN8WA9p8E+ZtgE=
-X-Google-Smtp-Source: ABdhPJxjXJV1o2VuDmipNH/ersobL4XBMaFmhTjWm2MWBpJFRUC/sh6bX9szq2CJA+68+cCaxHX/iKyUGL0E08KTiEg=
-X-Received: by 2002:a67:302:: with SMTP id 2mr8983457vsd.228.1596781815526;
- Thu, 06 Aug 2020 23:30:15 -0700 (PDT)
+        Fri, 7 Aug 2020 02:39:45 -0400
+X-Greylist: delayed 587 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Aug 2020 02:39:44 EDT
+Received: from player697.ha.ovh.net (unknown [10.108.42.168])
+        by mo177.mail-out.ovh.net (Postfix) with ESMTP id 030B613C847
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 08:23:34 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player697.ha.ovh.net (Postfix) with ESMTPSA id D71D3151467EB;
+        Fri,  7 Aug 2020 06:23:28 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-98R002924d5bf1-2994-4c8b-9b6c-5998cd15a743,
+                    B1FDDFD4E508142116FDFB9194C63E8FBE397CFD) smtp.auth=steve@sk2.org
+Date:   Fri, 7 Aug 2020 08:23:27 +0200
+From:   Stephen Kitt <steve@sk2.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon/pmbus: use simple i2c probe function
+Message-ID: <20200807082327.02e8a682@heffalump.sk2.org>
+In-Reply-To: <e378e4e6-73b3-0a11-bca6-ec0d4225a010@roeck-us.net>
+References: <20200806161645.9437-1-steve@sk2.org>
+        <5f7b5828-cb7c-127a-e454-6c8b8d98777b@roeck-us.net>
+        <20200806221232.278c3878@heffalump.sk2.org>
+        <e378e4e6-73b3-0a11-bca6-ec0d4225a010@roeck-us.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Fri, 7 Aug 2020 01:30:04 -0500
-Message-ID: <CABb+yY0bZ8cdRa+vWYzE4zbujgQfKK=NzZs7G4o0QkxJXscEGQ@mail.gmail.com>
-Subject: [GIT PULL] Mailbox changes for v5.9
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/ZP=p/855_tqUdr_mQhb1AN/"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 17538705802184117518
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrkedugddutdelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtderreertdejnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeevledvueefvdeivefftdeugeekveethefftdffteelheejkeejjeduffeiudetkeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrieeljedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--Sig_/ZP=p/855_tqUdr_mQhb1AN/
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-The following changes since commit 92ed301919932f777713b9172e525674157e983d:
+On Thu, 6 Aug 2020 14:48:58 -0700, Guenter Roeck <linux@roeck-us.net> wrote:
+> On 8/6/20 1:12 PM, Stephen Kitt wrote:
+> > On Thu, 6 Aug 2020 12:15:55 -0700, Guenter Roeck <linux@roeck-us.net>
+> > wrote: =20
+> >> On 8/6/20 9:16 AM, Stephen Kitt wrote: =20
+[...]
+> >> Also, I am not convinced that replacements such as
+> >>
+> >> -	{ "ipsps1", 0 },
+> >> +	{ .name =3D "ipsps1" },
+> >>
+> >> are an improvement. I would suggest to leave that alone for
+> >> consistency (and to make it easier to add more devices to the
+> >> various drivers if that happens in the future). =20
+> >=20
+> > From reading through all the drivers using id_table, it seems to me that
+> > we could do away with driver_data altogether and move all that to
+> > driver-local structures, in many cases covering more than just an id. By
+> > only initialising the elements of the structure that are really needed,=
+ I
+> > was hoping to (a) make it more obvious that driver_data isn=E2=80=99t u=
+sed, and
+> > (b) allow removing it without touching all the code again.
+> >  =20
+>=20
+> I don't see it as an improvement to replace a common data structure with
+> per-driver data structures. That sounds too much like "let's re-invent
+> the wheel over and over again". If that is where things are going, I'd
+> rather have it implemented everywhere else first. I am ok with the other
+> changes, but not with this.
 
-  Linux 5.8-rc7 (2020-07-26 14:14:06 -0700)
+I agree, and I wasn=E2=80=99t intending on encouraging re-inventing the whe=
+el in each
+driver. Let=E2=80=99s focus on probe_new for now...
 
-are available in the Git repository at:
+What did you mean by =E2=80=9Cto make it easier to add more devices to the =
+various
+drivers if that happens in the future=E2=80=9D? There are already many driv=
+ers with
+multiple devices but no driver_data, dropping the explicit driver_data
+initialisation doesn=E2=80=99t necessarily make it harder to add devices, d=
+oes it?
 
-  git://git.linaro.org/landing-teams/working/fujitsu/integration.git
-tags/mailbox-v5.9
+Regards,
 
-for you to fetch changes up to 884996986347dbe3b735cfa9bc041dd98a533796:
+Stephen
 
-  mailbox: mediatek: cmdq: clear task in channel before shutdown
-(2020-08-03 23:56:38 -0500)
+--Sig_/ZP=p/855_tqUdr_mQhb1AN/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-----------------------------------------------------------------
-- mediatek :
-    add support for mt6779 gce
-    shutdown cleanup and address shift support
-- qcom :
-    add msm8994 apcs and sdm660 hmss compatibility
-- imx :
-    mark PM funcs __maybe
-- pcc :
-    put acpi table before bailout
-- misc:
-    replace http with https links
+-----BEGIN PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Alexander A. Klimov (1):
-      mailbox: Replace HTTP links with HTTPS ones
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl8s818ACgkQgNMC9Yht
+g5wjxA//Ugr98eRz3F0dBjgb/dsdKZ2f7yN68V/HyjcOU+Qy/lKbqqhaICkDSBlz
+9qfG5Q6fZFzZTSIJKJMBdBX/LimJP8EdqqsvqMv+oTdFF2rk/xU+GEa5GO2GBGR4
+rY6fMZwkaQAT2tFrmjj9DkGyCN1oOXuTjESGWvRNZddNCG/0jn3JmjAI3cfRIJdm
+CFcpu5aPGO/kEBEM9iwWdY3BnGXisaxMkpqblJ3IfI+O+qNDu+I74TfHEKeuTbxv
+xwbew9yP8DveTOJmRaJqJLlHYVReWH4lw01u6XJ/oxeYwK5KvG1b52c9pBug6SlK
+HmKfr9fPBhd0jY11UJf6tdLbD6lYY4Sl4pXQ+MMOWYiyzkkxXHEx4RXrZGCtlhfQ
+vMfhpw1YtRvaye6D9cbiAbR/xlAtFp0FlA2dH9kepy352pAWjHa5LZg0nGqjYtE9
+zN0JJkTmumYjvyCzcia9XNJB83kz5vU5gvlDZpMvUO47jwHTBlpUWW1cy2K0WfTW
+Y3hhxGB+NkbfxbEUStbIiA4BEBn0yEK3LT3CZ7prExgLsy8SqulTCA3m2jdoIIVq
+P/S6ZMpMHZAhxEG4Ygjl77mJ6gZlrnGY3SL1POOUpwJ9F3yGbneNBXaywpSrEzQq
+IWFlrTjVIcg6MD97OR2muSRnTKKdcToMqwPSkHNRwtd9oCycZug=
+=sd2Z
+-----END PGP SIGNATURE-----
 
-Dennis YC Hsieh (4):
-      dt-binding: gce: add gce header file for mt6779
-      mailbox: cmdq: variablize address shift in platform
-      mailbox: cmdq: support mt6779 gce platform definition
-      mailbox: mediatek: cmdq: clear task in channel before shutdown
-
-Hanjun Guo (1):
-      mailbox: pcc: Put the PCCT table for error path
-
-Konrad Dybcio (2):
-      mailbox: qcom: Add sdm660 hmss compatible
-      mailbox: qcom: Add msm8994 apcs compatible
-
-Nathan Chancellor (1):
-      mailbox: imx: Mark PM functions as __maybe_unused
-
- .../devicetree/bindings/mailbox/mtk-gce.txt        |   8 +-
- .../bindings/mailbox/qcom,apcs-kpss-global.yaml    |   2 +
- drivers/mailbox/imx-mailbox.c                      |   8 +-
- drivers/mailbox/mtk-cmdq-mailbox.c                 |  97 +++++++--
- drivers/mailbox/omap-mailbox.c                     |   2 +-
- drivers/mailbox/pcc.c                              |   9 +-
- drivers/mailbox/qcom-apcs-ipc-mailbox.c            |  10 +
- drivers/mailbox/ti-msgmgr.c                        |   2 +-
- include/dt-bindings/gce/mt6779-gce.h               | 222 +++++++++++++++++++++
- include/linux/mailbox/mtk-cmdq-mailbox.h           |   2 +
- 10 files changed, 338 insertions(+), 24 deletions(-)
- create mode 100644 include/dt-bindings/gce/mt6779-gce.h
+--Sig_/ZP=p/855_tqUdr_mQhb1AN/--
