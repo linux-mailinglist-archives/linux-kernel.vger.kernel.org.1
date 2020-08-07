@@ -2,156 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A51D23E866
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 09:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065F723E869
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 09:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbgHGHzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 03:55:23 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:41057 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgHGHzW (ORCPT
+        id S1726796AbgHGH4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 03:56:09 -0400
+Received: from sonic302-19.consmr.mail.ir2.yahoo.com ([87.248.110.82]:45905
+        "EHLO sonic302-19.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725805AbgHGH4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 03:55:22 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 5027E22FB3;
-        Fri,  7 Aug 2020 09:55:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1596786919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9hGDTBt2ohvP3pUFxiEGsGVDkqzJeiARNsYJ4DVt4ic=;
-        b=u39k1Rd23VOdMiahzF9mq8/jsjpib0To7In1fCUzBkkWL17xPN7KaDC+EL1l93vqOYcZBT
-        NxUKPSCQfIzb4SqFruG6nRYIqqFGi7m3f1Fnum9p3JKoy3JDc4+lgMXX4s0Zg/TaXQmtWt
-        wQder17jiWE4ifABm6jgXktAfN0Ev6c=
+        Fri, 7 Aug 2020 03:56:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596786966; bh=Z9vsd41Fm7Z/yq5jTLtgMDMwEzBsZK/n03hNCpbaf3Q=; h=Date:From:Reply-To:Subject:References:From:Subject; b=gzdMJqYz8d6XEZiYQDwTx9hJfnbhl+0I37GB77PnFfyRm9o22g1nl4GyUs/xlhk1v/8Sq6fGJGFlA++yNuZOPZpYcjXY7oPGZ0LL0YaxlDfJfOTZi1aoNreScg16jL3nwQAemIaSHTk+esi7VTskQBsHvfqx/Yx+anbut8SkCduY9lQIpjgxK9GcXtK9op2CBGbJv8JaYqZfY8p7z2yj6VnXUQHcHabrBHq/dcixpMBtgs7q2Jkwg/t0CGVQjOq9+NDdglpHtT/4cl95Y61CWkTvosaQ1xge4c4JReJ/WPdj+wvJz4r/qY5B0OWMjFYPIM4j9TUWbC7yuwofAMoPHA==
+X-YMail-OSG: gFdNqAEVM1mcHepdS68umZH2EozI5w2.0524tCE9nPKA2Ih0oqJqUF6OizlN5tr
+ wyOArtS.TD6FW_9XU4.RK0clcEW59XyhZpyHBtRlkcGbFTd4WITFa9vX3xZnFiyUonlUmmIOsIZE
+ hTtbH58cIZjZqCcrVVsMw3AAgMUCq0QCjbdY10SA6OfarrAZL9iBhlWB8chQQ9YDkkh_wcaiTxNW
+ YFzXrLd5HOeBfiAnwcMiTDILdxYT5nSon8HUuD1DIxyItzIdLf4hzu4l9esBHUpn3WCoE9ZY0gOF
+ yrKTAn8XFc2JifiXxyJeDb5RYptrdnPdmWkmLRUtlvw3gUboADpwT6kvlkis_dGZD9ykS.e7nNMV
+ trKkxjWCyt7k1T1Ag7bg.WoJ1jX4W6TfPHq480q8LEJ6kfSw7O0zOwtWnEvsz4SkAZ6H9Cf0e6ND
+ dePy92bGEGnDvxgx1tDM..Bi.w740W1VCp0uQPZUPkRBD51FuCD6Jd8u0JJ6io547xrbV9FAzoUZ
+ S1cVxlVpnlzmmzANa.GFyk2.JRy5AmxiqiL9aIINyp9HmUUGu8mQmMLWPE1HZEp04bSLKIIbSpX2
+ GTTwb9FnnHxYcaLmsDBF8vB2zMRK1IeRpKibUbbdesitNddUkpMMIcjWuaI1byEXgXHBuF2bZYwQ
+ 8fdnYvmNAlAaQD6CBvxSdZkQmh0xyCTg9LDk23wzT.LKTjO5uoSLa.ykCk51CsalSaskVcXX5yeo
+ pF18B8EAXABQxvDj9ptfeF.fVRlA5Bw4.Z5dcacLMs8Y_wjcrBmaLnqOlM_18o_lu39KJ_v_fHmK
+ 70Sx0yGHBqascKi5lEmjGriYRpQ9NKAFy4z7FJTB7FsjGvsHPvoY1xP8kSw.XYF_Cb91d3Qxsdr1
+ 79LMSha97xPPjhZTB6K80Hw0f.q3LUHo7laR5dr9.68_W2QCKdcq52_eHgY4nRmhAuUO8LGqDDn9
+ Sni5RfI9OvHwZqnQ2PbHomzwas8lBxoI7VXd2mrFngBOzDpuRZDKwqJ6lupvd1GXlniQgjfJsBdF
+ 6FiVqm3G22LBdOMnlarWGTHPejT4hOZKjRBymIAJhDQHDTswV_1lQ5fLtXwx_MUn60WioLF5TV5i
+ OQwIrQ2Ktm4Lwm6mDYAWJK61CKXNGvVtdQHdLOr6lCOCkWnoVE2uJcf2yqSzgxqEJyJdsfVje7Yk
+ zbJiGl40HQB4Ceojzj0PFgigwo90_7TmR.WCTihrNnH6iaOQbv8F3FCyiiWWc92HXLNFdK2o6a1D
+ y5GXTrwDm_A72H.OFh6EGmlBRdaXmCxAHi7VIOfwBtIv6f.an6ZfNvBLRKR6edhnUBSSMaFBBMyl
+ oUQVaU8VkPsrp.LnMqMy5R2v_oCxSRnYAlp0TXkz5Eh3_8WA-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ir2.yahoo.com with HTTP; Fri, 7 Aug 2020 07:56:06 +0000
+Date:   Fri, 7 Aug 2020 07:56:02 +0000 (UTC)
+From:   Sergeant Katie Brianna Taylor <katiebrannataylor07@gmail.com>
+Reply-To: katiebriannataylor07@hotmail.com
+Message-ID: <533534290.1680462.1596786962045@mail.yahoo.com>
+Subject: FROM SERGEANT KATIE B. TAYLOR ,
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Fri, 07 Aug 2020 09:55:19 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v7 06/13] pwm: add support for sl28cpld PWM controller
-In-Reply-To: <20200807074543.pfbwlhtegl3oc4zp@pengutronix.de>
-References: <20200803093559.12289-1-michael@walle.cc>
- <20200803093559.12289-7-michael@walle.cc>
- <20200806084000.k3aj5nmqdodmb35v@pengutronix.de>
- <e288ca6cfee819223395712e04159dd9@walle.cc>
- <20200807074543.pfbwlhtegl3oc4zp@pengutronix.de>
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <92116be9aa56250becc4019c6c7a1538@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <533534290.1680462.1596786962045.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16436 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-08-07 09:45, schrieb Uwe Kleine-König:
-> On Fri, Aug 07, 2020 at 09:28:31AM +0200, Michael Walle wrote:
->> Hi Uwe, Hi Lee,
->> 
->> Am 2020-08-06 10:40, schrieb Uwe Kleine-König:
->> > On Mon, Aug 03, 2020 at 11:35:52AM +0200, Michael Walle wrote:
->> > > diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
->> > > index 7dbcf6973d33..a0d50d70c3b9 100644
->> > > --- a/drivers/pwm/Kconfig
->> > > +++ b/drivers/pwm/Kconfig
->> > > @@ -428,6 +428,16 @@ config PWM_SIFIVE
->> > >  	  To compile this driver as a module, choose M here: the module
->> > >  	  will be called pwm-sifive.
->> > >
->> > > +config PWM_SL28CPLD
->> > > +	tristate "Kontron sl28cpld PWM support"
->> > > +	select MFD_SIMPLE_MFD_I2C
->> >
->> > Is it sensible to present this option to everyone? Maybe
->> >
->> > 	depends on SOME_SYMBOL_ONLY_TRUE_ON_SL28CPLD || COMPILE_TEST
->> 
->> Because there is now no real MFD driver anymore, there is also
->> no symbol for that. The closest would be ARCH_ARM64 but I don't
->> think that is a good idea.
->> 
->> Lee, what do you think about adding a symbol to the MFD, which
->> selects MFD_SIMPLE_MFD_I2C but doesn't enable any C modules?
->> 
->> I.e.
->> config MFD_SL28CPLD
->>     tristate "Kontron sl28cpld"
->>     select MFD_SIMPLE_MFD_I2C
->>     help
->>       Say yes here to add support for the Kontron sl28cpld board
->>       management controller.
->> 
->> Then all the other device driver could depend on the MFD_SL28CPLD
->> symbol.
->> 
->> [..]
->> 
->> > > +static void sl28cpld_pwm_get_state(struct pwm_chip *chip,
->> > > +				   struct pwm_device *pwm,
->> > > +				   struct pwm_state *state)
->> > > +{
->> > > +	struct sl28cpld_pwm *priv = dev_get_drvdata(chip->dev);
->> > > +	unsigned int reg;
->> > > +	int prescaler;
->> > > +
->> > > +	sl28cpld_pwm_read(priv, SL28CPLD_PWM_CTRL, &reg);
->> > > +
->> > > +	state->enabled = reg & SL28CPLD_PWM_CTRL_ENABLE;
->> > > +
->> > > +	prescaler = FIELD_GET(SL28CPLD_PWM_CTRL_PRESCALER_MASK, reg);
->> > > +	state->period = SL28CPLD_PWM_PERIOD(prescaler);
->> > > +
->> > > +	sl28cpld_pwm_read(priv, SL28CPLD_PWM_CYCLE, &reg);
->> > > +	state->duty_cycle = SL28CPLD_PWM_TO_DUTY_CYCLE(reg);
->> >
->> > Should reg be masked to SL28CPLD_PWM_CYCLE_MAX, or is it guaranteed that
->> > the upper bits are zero?
->> 
->> Mh, the hardware guarantees that bit7 is zero. So masking with
->> SL28CPLD_PWM_CYCLE_MAX won't buy us much. But what I could think
->> could go wrong is this: someone set the prescaler to != 0 and the
->> duty cycle to a value greater than the max value for this particular
->> prescaler mode. For the above calculations this would result in a
->> duty_cycle greater than the period, if I'm not mistaken.
->> 
->> The behavior of the hardware is undefined in that case (at the moment
->> it will be always on, I guess). So this isn't a valid setting.
->> Nevertheless it might happen. So what about the following:
->> 
->> state->duty_cycle = min(state->duty_cycle, state->period);
-> 
-> If you care about this: This can also happen (at least shortly) in
-> sl28cpld_pwm_apply() as you write SL28CPLD_PWM_CTRL before
-> SL28CPLD_PWM_CYCLE there.
 
-It could also happen if it was the other way around, couldn't it?
-Changing modes might glitch.
 
-I care more about returning valid values to the PWM core ;)
+I=C2=A0am=C2=A0Sergeant=C2=A0Katie=C2=A0Brianna=C2=A0Taylor,=C2=A0originall=
+y=C2=A0from=C2=A0Lake=C2=A0Jackson=C2=A0Texas.=C2=A0I=C2=A0have=C2=A0person=
+ally=C2=A0conducted=C2=A0a=C2=A0special=C2=A0research=C2=A0on=C2=A0the=C2=
+=A0internet=C2=A0and=C2=A0came=C2=A0across=C2=A0your=C2=A0information.=C2=
+=A0I=C2=A0am=C2=A0writing=C2=A0you=C2=A0this=C2=A0mail=C2=A0from=C2=A0US=C2=
+=A0Military=C2=A0Base=C2=A0Kabul=C2=A0Afghanistan.=C2=A0I=C2=A0have=C2=A0a=
+=C2=A0secured=C2=A0business=C2=A0proposal=C2=A0for=C2=A0you.=C2=A0If=C2=A0y=
+ou=C2=A0are=C2=A0interested=C2=A0in=C2=A0my=C2=A0private=C2=A0email=C2=A0(k=
+atiebriannataylor07@hotmail.com),=C2=A0please=C2=A0contact=C2=A0me=C2=A0imm=
+ediately=C2=A0for=C2=A0more=C2=A0information.
 
--michael
+Thank=C2=A0you.
