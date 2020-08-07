@@ -2,88 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07AC23E697
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 06:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E1E23E69B
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 06:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725934AbgHGEQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 00:16:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725379AbgHGEQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 00:16:06 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 526CF2086A;
-        Fri,  7 Aug 2020 04:16:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596773764;
-        bh=ku0mtRLPmN6NVNq3U53FKsGpwTHeRKVHnmHxSE42guc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=S7+UxFypRpe8o0zzl2NftpnwsYRS9AdI6vRChUDLAvWxMutLfNSNBIt7cTvBwn+8h
-         xysgk+VIjLuAMPR1J6wpNZimmNWIZucpAcbGs5nqWK8oHkug4npsj+enYYU/4zDgrU
-         rGPkX+Z7EbO57uBaZquCYaFvcJOeVxnjSrPYLWes=
-Date:   Thu, 6 Aug 2020 21:16:03 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Michal =?ISO-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Roman Gushchin <guro@fb.com>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/5] mm: memcg: charge memcg percpu memory to the
- parent cgroup
-Message-Id: <20200806211603.195727c03995c3a25ffc6d76@linux-foundation.org>
-In-Reply-To: <20200729171039.GA22229@blackbody.suse.cz>
-References: <20200623184515.4132564-1-guro@fb.com>
-        <20200623184515.4132564-5-guro@fb.com>
-        <20200729171039.GA22229@blackbody.suse.cz>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+        id S1726094AbgHGESb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 00:18:31 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:39173 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725287AbgHGESa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 00:18:30 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R911e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0U4zix1D_1596773906;
+Received: from localhost(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0U4zix1D_1596773906)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 07 Aug 2020 12:18:26 +0800
+From:   Huaixin Chang <changhuaixin@linux.alibaba.com>
+To:     changhuaixin@linux.alibaba.com
+Cc:     bp@alien8.de, hpa@zytor.com, jpoimboe@redhat.com,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luto@amacapital.net, michal.lkml@markovi.net, mingo@redhat.com,
+        peterz@infradead.org, tglx@linutronix.de, x86@kernel.org,
+        yamada.masahiro@socionext.com
+Subject: [PATCH v2 0/3] Build ORC fast lookup table in scripts/sorttable tool
+Date:   Fri,  7 Aug 2020 12:17:59 +0800
+Message-Id: <20200807041802.18639-1-changhuaixin@linux.alibaba.com>
+X-Mailer: git-send-email 2.14.4.44.g2045bb6
+In-Reply-To: <20200723034643.33537-1-changhuaixin@linux.alibaba.com>
+References: <20200723034643.33537-1-changhuaixin@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Jul 2020 19:10:39 +0200 Michal Koutn=FD <mkoutny@suse.com> wrote:
+Move building of fast lookup table from boot to sorttable tool. This saves us
+6380us boot time on Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GHz with cores. It
+adds a little more than 7ms to boot time when testing on the same CPU.
 
-> Hello.
->=20
-> On Tue, Jun 23, 2020 at 11:45:14AM -0700, Roman Gushchin <guro@fb.com> wr=
-ote:
-> > Because the size of memory cgroup internal structures can dramatically
-> > exceed the size of object or page which is pinning it in the memory, it=
-'s
-> > not a good idea to simple ignore it.  It actually breaks the isolation
-> > between cgroups.
-> No doubt about accounting the memory if it's significant amount.
->=20
-> > Let's account the consumed percpu memory to the parent cgroup.
-> Why did you choose charging to the parent of the created cgroup?
->=20
-> Should the charge go the cgroup _that is creating_ the new memcg?
->=20
-> One reason is that there are the throttling mechanisms for memory limits
-> and those are better exercised when the actor and its memory artefact
-> are the same cgroup, aren't they?
->=20
-> The second reason is based on the example Dlegation Containment
-> (Documentation/admin-guide/cgroup-v2.rst)
->=20
-> > For an example, let's assume cgroups C0 and C1 have been delegated to
-> > user U0 who created C00, C01 under C0 and C10 under C1 as follows and
-> > all processes under C0 and C1 belong to U0::
-> >=20
-> >   ~~~~~~~~~~~~~ - C0 - C00
-> >   ~ cgroup    ~      \ C01
-> >   ~ hierarchy ~
-> >   ~~~~~~~~~~~~~ - C1 - C10
->=20
-> Thanks to permissions a task running in C0 creating a cgroup in C1 would
-> deplete C1's supply victimizing tasks inside C1.
+Changelog v2:
+1. Write .orc_lookup section header via objtool
+2. Move two ORC lookup table macro from orc_lookup.h into orc_types.h
+3. Spell 'ORC' in capitalized fashion
 
-These week-old issues appear to be significant.  Roman?  Or someone
-else?
+Huaixin Chang (3):
+  objtool: Write .orc_lookup section header
+  scripts/sorttable: Build ORC fast lookup table via sorttable tool
+  x86/unwind/orc: Simplify unwind_init() for x86 boot
+
+ arch/x86/include/asm/orc_lookup.h      | 16 ------
+ arch/x86/include/asm/orc_types.h       | 16 ++++++
+ arch/x86/kernel/unwind_orc.c           | 41 +--------------
+ arch/x86/kernel/vmlinux.lds.S          |  2 +-
+ scripts/sorttable.h                    | 96 +++++++++++++++++++++++++++++++---
+ tools/arch/x86/include/asm/orc_types.h | 16 ++++++
+ tools/objtool/orc_gen.c                |  4 ++
+ 7 files changed, 128 insertions(+), 63 deletions(-)
+
+-- 
+2.14.4.44.g2045bb6
+
