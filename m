@@ -2,176 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F330823F43F
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 23:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C6023F44B
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 23:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbgHGV33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 17:29:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
+        id S1727879AbgHGVaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 17:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726015AbgHGV32 (ORCPT
+        with ESMTP id S1727077AbgHGV3r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 17:29:28 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1ED5C061756
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 14:29:27 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id bs17so2249910edb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 14:29:27 -0700 (PDT)
+        Fri, 7 Aug 2020 17:29:47 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE802C061A31
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 14:29:42 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id f59so2593663qtb.22
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 14:29:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=yecGcmW1H4YPmsU+YTc6bYsirnPkC2akIxfo68Ph3IA=;
-        b=gVBBXSHyNzt8rNePfxY1ncMz7C4eDz4YWTWWTL23EgpsUmW0Gtu+IKVQzZZPPajUsm
-         p+OLXMUQs7aok7cm7IafP4KTyvjZ2lMscp0WHC6AWnh+T5kKyC6VdzIPuVb3JbmIPi0N
-         MRZXC0Hsmo+yByNOzIxP7XAR4M6tykynCQNxo=
+        bh=O7nU7lYRfe2R9ziGF333WHlsyARaR/Q4/HWduypodHg=;
+        b=wF2sKYSCPfS1oM0NH0xBupgB1N/FqdnAiRnprzF9CglUuoj8PFS0W/tP4/W0GJPNuX
+         TyrQaJi9YYWikcZeI0piuRjIgi7S5jtC+iCUMgx8SN14rfqmKY7koAozdgACk/O4WfVJ
+         yv7+JzWcCmipUuyAMJMfzjLlkCoyIjH1rZVL2QfDcg/SnWLNI8ygMAJbmEQc4uzHhanr
+         cOazUENtE+ArWoT9JNvMKb2ZhVEp8J8eXYoSQYPithEBghTam0jogYR9DsEv5IJ8i0zG
+         nhl2W24qoGsirdUwqm7iXnLP0F2QVNElE3cyh5qkdYDPSSJRi85rrFJtgQ3oy1s4p4h+
+         sSCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yecGcmW1H4YPmsU+YTc6bYsirnPkC2akIxfo68Ph3IA=;
-        b=tLNANId32AyxH+HGtY9mwtzq7k7+h4KpDTVP+amehSo0sTcq58jXSpJ7F+q62lPGJN
-         BgAZz0XZrzODUs613YWUHM+HOIrPag7Ks28xDYQpVr+a8gZZgghI62LdNT2VJT4iehn0
-         po/vH137k0CbrvAXvHlzsvZUO01Xm+JFcnBQKvYxlarM+5kbOiD682IyN3AxEo4rKQ0W
-         z+SomPOtOYDXx3/Ge+tjF0MyjIBUbmuobDLqLkUwcfhf7insX41szJ9tr/Khw73KsPic
-         39DO2KXDgmaulc1meitraCjzpeR54zmLAjh5hcFu18EZd94s5BP3sHg8icIxLGHU0eal
-         ir/w==
-X-Gm-Message-State: AOAM531ctURATU2rq1+YF7hr+i+D7UmESB4mOcVYmOU6sIsR9xKqKO5r
-        xa5u32oMmQbGpQbhiTTBxY+GvKB1NWj9cw==
-X-Google-Smtp-Source: ABdhPJx6GEItqEjASKDolIG98tQBsdPW/iegfQm/jhgLkL80cryF3ju7w9wwcdmsJvD93hU0S/e/EA==
-X-Received: by 2002:a05:6402:1d32:: with SMTP id dh18mr10672567edb.14.1596835766451;
-        Fri, 07 Aug 2020 14:29:26 -0700 (PDT)
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
-        by smtp.gmail.com with ESMTPSA id m13sm6170553eds.10.2020.08.07.14.29.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 Aug 2020 14:29:26 -0700 (PDT)
-Received: by mail-wr1-f54.google.com with SMTP id a5so2881366wrm.6
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 14:29:25 -0700 (PDT)
-X-Received: by 2002:adf:dfc7:: with SMTP id q7mr13741548wrn.80.1596835765510;
- Fri, 07 Aug 2020 14:29:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200730114632.6717-1-stanimir.varbanov@linaro.org> <20200730114632.6717-3-stanimir.varbanov@linaro.org>
-In-Reply-To: <20200730114632.6717-3-stanimir.varbanov@linaro.org>
-From:   Fritz Koenig <frkoenig@chromium.org>
-Date:   Fri, 7 Aug 2020 14:29:13 -0700
-X-Gmail-Original-Message-ID: <CAMfZQbxUxm0FSjZUgrb7a_j_W2S1W=p2KQZT-hpOf2UyaVPNOw@mail.gmail.com>
-Message-ID: <CAMfZQbxUxm0FSjZUgrb7a_j_W2S1W=p2KQZT-hpOf2UyaVPNOw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] venus: Rework recovery mechanism
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=O7nU7lYRfe2R9ziGF333WHlsyARaR/Q4/HWduypodHg=;
+        b=l32UTayfYQtFXB+F0BYTizZBh1kf6QN+QtpiwxDNKOrojSXzkfyIz98JPDn7vquqoP
+         oq/SYjOSo1nB+DKYrIgV5d7DDqaRfiFm1XU562lli5EsEhXh0Y00A9nm9I3rkGLB3gJh
+         XdBqmeH0KbexHOINMgjjvmHAFy3nbkOZgg0PyWjXMgiTxUN6G5GRHQwb+vYmSkQlo8Ak
+         x4Sddo7WF3m5npktMctAReiJIGGnMlxuDu5DMHCAZbVe29sPinNpOXPSLfVkCMzXPsEJ
+         PNjVgCXSUAKV1ZUc8wXxYM1eS2kPlKeUQIPW/VOfNawwK2Xa1GlVBtS3DQqqDNZgbfi9
+         MyZQ==
+X-Gm-Message-State: AOAM5336OYdxm/aY/qFGGC/MYq0Zi3Jz3W5zhoLhaaLSob7MoBECPqGn
+        ppv+HEIi0Zvssqr+AwgNFyJVXnsrNm0o2zCttwrMcQYltDiRiH1oCW4E6F8rlJBa/BKGvhwEFlX
+        S39kSqezn/5t50iBk87TSbmpclbyTYgANsoNF0Mg4bCbaevqmvMS8n16ugjOxMSG7JF6C9PQ=
+X-Google-Smtp-Source: ABdhPJwX9D4en+hACeaFijzp6xuG9EX9sqMK2d3+XO8tWnEdN3dt94ChhAurZV3Fxr5jxFzwH9+/rqq5AG1s
+X-Received: by 2002:a05:6214:11a8:: with SMTP id u8mr15191510qvv.88.1596835781537;
+ Fri, 07 Aug 2020 14:29:41 -0700 (PDT)
+Date:   Fri,  7 Aug 2020 14:29:13 -0700
+In-Reply-To: <20200807212916.2883031-1-jwadams@google.com>
+Message-Id: <20200807212916.2883031-5-jwadams@google.com>
+Mime-Version: 1.0
+References: <20200807212916.2883031-1-jwadams@google.com>
+X-Mailer: git-send-email 2.28.0.236.gb10cc79966-goog
+Subject: [RFC PATCH 4/7] core/metricfs: expose softirq information through metricfs
+From:   Jonathan Adams <jwadams@google.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Jonathan Adams <jwadams@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 4:47 AM Stanimir Varbanov
-<stanimir.varbanov@linaro.org> wrote:
->
-> After power domains and clock restructuring the recovery for
-> sdm845 and v4 did not work properly. Fix that by reworking the
-> recovery function and the sequence.
->
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  drivers/media/platform/qcom/venus/core.c      | 24 ++++++++++---------
->  drivers/media/platform/qcom/venus/hfi_venus.c | 11 ---------
->  2 files changed, 13 insertions(+), 22 deletions(-)
->
-> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-> index 203c6538044f..46f6e34d435a 100644
-> --- a/drivers/media/platform/qcom/venus/core.c
-> +++ b/drivers/media/platform/qcom/venus/core.c
-> @@ -6,6 +6,7 @@
->  #include <linux/init.h>
->  #include <linux/interconnect.h>
->  #include <linux/ioctl.h>
-> +#include <linux/delay.h>
->  #include <linux/list.h>
->  #include <linux/module.h>
->  #include <linux/of_device.h>
-> @@ -40,13 +41,7 @@ static void venus_event_notify(struct venus_core *core, u32 event)
->         mutex_unlock(&core->lock);
->
->         disable_irq_nosync(core->irq);
-> -
-> -       /*
-> -        * Delay recovery to ensure venus has completed any pending cache
-> -        * operations. Without this sleep, we see device reset when firmware is
-> -        * unloaded after a system error.
-> -        */
-> -       schedule_delayed_work(&core->work, msecs_to_jiffies(100));
-> +       schedule_delayed_work(&core->work, msecs_to_jiffies(10));
->  }
->
->  static const struct hfi_core_ops venus_core_ops = {
-> @@ -59,23 +54,30 @@ static void venus_sys_error_handler(struct work_struct *work)
->                         container_of(work, struct venus_core, work.work);
->         int ret = 0;
->
-> -       dev_warn(core->dev, "system error has occurred, starting recovery!\n");
-> -
->         pm_runtime_get_sync(core->dev);
->
->         hfi_core_deinit(core, true);
-> -       hfi_destroy(core);
-> +
-> +       dev_warn(core->dev, "system error has occurred, starting recovery!\n");
-> +
->         mutex_lock(&core->lock);
-> +
-> +       while (pm_runtime_active(core->dev_dec) || pm_runtime_active(core->dev_enc))
-> +               msleep(10);
-> +
->         venus_shutdown(core);
->
->         pm_runtime_put_sync(core->dev);
->
-> +       while (core->pmdomains[0] && pm_runtime_active(core->pmdomains[0]))
-> +               usleep_range(1000, 1500);
-> +
-> +       hfi_destroy(core);
->         ret |= hfi_create(core, &venus_core_ops);
->
->         pm_runtime_get_sync(core->dev);
->
->         ret |= venus_boot(core);
-> -
->         ret |= hfi_core_resume(core, true);
->
->         enable_irq(core->irq);
-> diff --git a/drivers/media/platform/qcom/venus/hfi_venus.c b/drivers/media/platform/qcom/venus/hfi_venus.c
-> index 0d8855014ab3..3392fd177d22 100644
-> --- a/drivers/media/platform/qcom/venus/hfi_venus.c
-> +++ b/drivers/media/platform/qcom/venus/hfi_venus.c
-> @@ -986,13 +986,6 @@ static void venus_process_msg_sys_error(struct venus_hfi_device *hdev,
->
->         venus_set_state(hdev, VENUS_STATE_DEINIT);
->
-> -       /*
-> -        * Once SYS_ERROR received from HW, it is safe to halt the AXI.
-> -        * With SYS_ERROR, Venus FW may have crashed and HW might be
-> -        * active and causing unnecessary transactions. Hence it is
-> -        * safe to stop all AXI transactions from venus subsystem.
-> -        */
-> -       venus_halt_axi(hdev);
->         venus_sfr_print(hdev);
->  }
->
-> @@ -1009,10 +1002,6 @@ static irqreturn_t venus_isr_thread(struct venus_core *core)
->         res = hdev->core->res;
->         pkt = hdev->pkt_buf;
->
-> -       if (hdev->irq_status & WRAPPER_INTR_STATUS_A2HWD_MASK) {
-> -               venus_sfr_print(hdev);
-> -               hfi_process_watchdog_timeout(core);
-> -       }
->
->         while (!venus_iface_msgq_read(hdev, pkt)) {
->                 msg_ret = hfi_process_msg_packet(core, pkt);
-> --
-> 2.17.1
->
-Reviewed-by: Fritz Koenig <frkoenig@chromium.org>
+Add metricfs support for displaying percpu softirq counters.  The
+top directory is /sys/kernel/debug/metricfs/softirq.  Then there
+is a subdirectory for each softirq type.  For example:
+
+    cat /sys/kernel/debug/metricfs/softirq/NET_RX/values
+
+Signed-off-by: Jonathan Adams <jwadams@google.com>
+
+---
+
+jwadams@google.com: rebased to 5.8-pre6
+	This is work originally done by another engineer at
+	google, who would rather not have their name associated with this
+	patchset. They're okay with me sending it under my name.
+---
+ kernel/softirq.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index c4201b7f42b1..1ae3a540b789 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -25,6 +25,8 @@
+ #include <linux/smpboot.h>
+ #include <linux/tick.h>
+ #include <linux/irq.h>
++#include <linux/jump_label.h>
++#include <linux/metricfs.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/irq.h>
+@@ -738,3 +740,46 @@ unsigned int __weak arch_dynirq_lower_bound(unsigned int from)
+ {
+ 	return from;
+ }
++
++#ifdef CONFIG_METRICFS
++
++#define METRICFS_ITEM(name) \
++static void \
++metricfs_##name(struct metric_emitter *e, int cpu) \
++{ \
++	int64_t v = kstat_softirqs_cpu(name##_SOFTIRQ, cpu); \
++	METRIC_EMIT_PERCPU_INT(e, cpu, v); \
++} \
++METRIC_EXPORT_PERCPU_COUNTER(name, #name " softirq", metricfs_##name)
++
++METRICFS_ITEM(HI);
++METRICFS_ITEM(TIMER);
++METRICFS_ITEM(NET_TX);
++METRICFS_ITEM(NET_RX);
++METRICFS_ITEM(BLOCK);
++METRICFS_ITEM(IRQ_POLL);
++METRICFS_ITEM(TASKLET);
++METRICFS_ITEM(SCHED);
++METRICFS_ITEM(HRTIMER);
++METRICFS_ITEM(RCU);
++
++static int __init init_softirq_metricfs(void)
++{
++	struct metricfs_subsys *subsys;
++
++	subsys = metricfs_create_subsys("softirq", NULL);
++	metric_init_HI(subsys);
++	metric_init_TIMER(subsys);
++	metric_init_NET_TX(subsys);
++	metric_init_NET_RX(subsys);
++	metric_init_BLOCK(subsys);
++	metric_init_IRQ_POLL(subsys);
++	metric_init_TASKLET(subsys);
++	metric_init_SCHED(subsys);
++	metric_init_RCU(subsys);
++
++	return 0;
++}
++module_init(init_softirq_metricfs);
++
++#endif
+-- 
+2.28.0.236.gb10cc79966-goog
+
