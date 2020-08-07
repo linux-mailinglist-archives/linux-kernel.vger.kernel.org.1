@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72E0523E9DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C439823E9DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgHGJN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 05:13:26 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:49075 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727897AbgHGJNX (ORCPT
+        id S1728089AbgHGJNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 05:13:36 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:44961 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727054AbgHGJNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 05:13:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0U5.Byfr_1596791600;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U5.Byfr_1596791600)
+        Fri, 7 Aug 2020 05:13:33 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0U5.RnvZ_1596791601;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U5.RnvZ_1596791601)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 07 Aug 2020 17:13:20 +0800
+          Fri, 07 Aug 2020 17:13:21 +0800
 From:   Wei Yang <richard.weiyang@linux.alibaba.com>
 To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH 09/10] mm/hugetlb: narrow the hugetlb_lock protection area during preparing huge page
-Date:   Fri,  7 Aug 2020 17:12:50 +0800
-Message-Id: <20200807091251.12129-10-richard.weiyang@linux.alibaba.com>
+Subject: [PATCH 10/10] mm/hugetlb: not necessary to abuse temporary page to workaround the nasty free_huge_page
+Date:   Fri,  7 Aug 2020 17:12:51 +0800
+Message-Id: <20200807091251.12129-11-richard.weiyang@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 In-Reply-To: <20200807091251.12129-1-richard.weiyang@linux.alibaba.com>
 References: <20200807091251.12129-1-richard.weiyang@linux.alibaba.com>
@@ -33,31 +33,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-set_hugetlb_cgroup_[rsvd] just manipulate page local data, which is not
-necessary to be protected by hugetlb_lock.
-
-Let's take this out.
+Let's always increase surplus_huge_pages and so that free_huge_page
+could decrease it at free time.
 
 Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 ---
- mm/hugetlb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/hugetlb.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 9473eb6800e9..1f2010c9dd8d 100644
+index 1f2010c9dd8d..a0eb81e0e4c5 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -1494,9 +1494,9 @@ static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
- {
- 	INIT_LIST_HEAD(&page->lru);
- 	set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
--	spin_lock(&hugetlb_lock);
- 	set_hugetlb_cgroup(page, NULL);
- 	set_hugetlb_cgroup_rsvd(page, NULL);
-+	spin_lock(&hugetlb_lock);
- 	h->nr_huge_pages++;
- 	h->nr_huge_pages_node[nid]++;
- 	spin_unlock(&hugetlb_lock);
+@@ -1913,21 +1913,19 @@ static struct page *alloc_surplus_huge_page(struct hstate *h, gfp_t gfp_mask,
+ 		return NULL;
+ 
+ 	spin_lock(&hugetlb_lock);
++
++	h->surplus_huge_pages++;
++	h->surplus_huge_pages_node[page_to_nid(page)]++;
++
+ 	/*
+ 	 * We could have raced with the pool size change.
+ 	 * Double check that and simply deallocate the new page
+-	 * if we would end up overcommiting the surpluses. Abuse
+-	 * temporary page to workaround the nasty free_huge_page
+-	 * codeflow
++	 * if we would end up overcommiting the surpluses.
+ 	 */
+-	if (h->surplus_huge_pages >= h->nr_overcommit_huge_pages) {
+-		SetPageHugeTemporary(page);
++	if (h->surplus_huge_pages > h->nr_overcommit_huge_pages) {
+ 		spin_unlock(&hugetlb_lock);
+ 		put_page(page);
+ 		return NULL;
+-	} else {
+-		h->surplus_huge_pages++;
+-		h->surplus_huge_pages_node[page_to_nid(page)]++;
+ 	}
+ 
+ out_unlock:
 -- 
 2.20.1 (Apple Git-117)
 
