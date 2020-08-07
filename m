@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7904A23E830
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 09:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8C323E837
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 09:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727066AbgHGHpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 03:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
+        id S1727790AbgHGHqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 03:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgHGHpt (ORCPT
+        with ESMTP id S1727773AbgHGHp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 03:45:49 -0400
+        Fri, 7 Aug 2020 03:45:57 -0400
 Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D6FC061575;
-        Fri,  7 Aug 2020 00:45:48 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id b25so674354qto.2;
-        Fri, 07 Aug 2020 00:45:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41669C061574;
+        Fri,  7 Aug 2020 00:45:57 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id v22so655143qtq.8;
+        Fri, 07 Aug 2020 00:45:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ti7198ZO6Tw7UAENrO4tj4DQ46O0LPvCqAsxSveIfz4=;
-        b=XeV+cPLsHQhJAwhQSczJa/21m/qbYCktLMSi9iJ+82AoZwMOfTUnxFLwSvE490c913
-         ykINCcmKI1yaulrPQwqH+zXKfXYZuTiV3Lj1ipzYRJCoouz3nRoN9dO6Bxz2NJArv5UD
-         EzL3kZnyrQoX8wjzULga5tZ4W8ad9Ttg7c7wTBc46QDKa3V1fjQYSG4nvc9TbNteUKld
-         c/5oH3jyZU/myeJg10Vy9RB99WX1uMzoi2P735Iv0QJ5cdR0kwopX68Jnbyz66JBKeWd
-         /Ug3La6OmifCgh0qK5mEbQTHOg1wJxJImYIa1qSTzQRMfHm1ngguOdilE4kttpw3kxJi
-         Asww==
+        bh=EHg5gQL7O9H3weXw7HumbisNzK8ZK1pZS93c4xfkxlw=;
+        b=uqRDp1KIdnjSSjtURugjUs7jkmnhxCRyrgfRIIZf1YYf/7ZfupoiudHXsjSreOhhuc
+         U8jJjKe/4ED7VQ1QlcKM0N+c6wuXWdbG3n7evxSilXOEnx3YohBiJNaFkz6Sf378rjOJ
+         QUmJ8wIy4lV4Q+p72A4PzfWBqe3YFjrawnqzaOB7G8RpKecVZKgM0mn09TnnFRDkcQNR
+         9+5QZOs1lunqu1PGB2f6fybQV+syDzCPEHA2DhVowKfc0yUCWvFGeAktDL64suYKLVj8
+         pZ79ehd/o+xD55aJ8VHvC4Ok6QmpFh/ZY6bvkT8X/D6KYropzSelBS462edLarB4pJA4
+         nikQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ti7198ZO6Tw7UAENrO4tj4DQ46O0LPvCqAsxSveIfz4=;
-        b=d9Q60TUPP6pMH0YZkbN2HWucM2sIsD2fomhb+UNavWYSnLAYnGlzdQom+iGFhDfXsZ
-         ANZFHsISPz/lpaODXHATiykgy4BwAleqxqlGz7QWqRRkDKshvEVF2IP1dVM56Qm3lzqG
-         5qRLYXMA3T7Hug3GfVbjzTQYvZbURec8MXRY/eiLPDrWKijBbNjtWs8Kg0MMdyI2je5v
-         KKAcbhWRl6fY5IET/Wz0CWiTvsxVR14dgH5dEI+OqOhNgzzJPVpONpPOuFC5vEowHMLK
-         E4VlOAPf4vwEd2E5Wn/4kN5cy/qWk43zimjwQ93DZKT3y8yfcx3qZijXWshK+bXW49aC
-         +gmQ==
-X-Gm-Message-State: AOAM532Pm+cEEYMp3h32oVHWZ4PO5lP/rFC9Uq0SX8YmJpGgyqDftni6
-        IRs1C2qIRzf7iahvy3szrpY=
-X-Google-Smtp-Source: ABdhPJwIJKP9s8cVw5vdMN1qLsrS5DpUCCqZ5sNOluCIVHtQvsU6LFR2Wg47D7MXMTZDHX79XFS0AA==
-X-Received: by 2002:aed:34e2:: with SMTP id x89mr12657876qtd.313.1596786348094;
-        Fri, 07 Aug 2020 00:45:48 -0700 (PDT)
+        bh=EHg5gQL7O9H3weXw7HumbisNzK8ZK1pZS93c4xfkxlw=;
+        b=W57DO/j6IHTyl8hVUYnilT7lzxC5jblmkNLYXmksQJfaAhq1uMqrsP+pjHxwcyYVe6
+         YVSw6P2ioQt6H8ollFEla18BENh/eD7VPjcWV7JcBQ3CDMbX6r/7DvoAXt1O21EHStPt
+         njOC4/zl8WbJM2xm6TrnpdHGl4edJQNaWlyhcfCO85eQfRm4mHBgAm6XciCAce+rnKVZ
+         5b7c+AYuU02AgiV194YwOLkQh0CL2r+ZjwzEuLvPPSpotvGFWkzASLQrej+a2DMfzHB5
+         xHZRCszJhrVj/WbWQhsWutRdwK6/MMgOYHkLbRXNT5wcgbhzcNFQJt4lgYKEVQHZNQae
+         sSHg==
+X-Gm-Message-State: AOAM530OmCk0X1HtlPdHwKADmcy0bSzDNS38RIm/YrJ+eoJxhcbrcTcH
+        pN7BmByo4b75DkYZg8O5pkA=
+X-Google-Smtp-Source: ABdhPJwY1AX/Fv/EgjsxEtaqA6v1Uve/wyfVkvlK0t858bI04DX2OWrsx5mE1bs5Vf/bYdK+2a/Gxw==
+X-Received: by 2002:aed:36aa:: with SMTP id f39mr13334366qtb.297.1596786356574;
+        Fri, 07 Aug 2020 00:45:56 -0700 (PDT)
 Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id k11sm5759153qkk.93.2020.08.07.00.45.47
+        by smtp.gmail.com with ESMTPSA id a67sm6388744qkd.40.2020.08.07.00.45.55
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 07 Aug 2020 00:45:47 -0700 (PDT)
+        Fri, 07 Aug 2020 00:45:56 -0700 (PDT)
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 2977227C0054;
-        Fri,  7 Aug 2020 03:45:47 -0400 (EDT)
+        by mailauth.nyi.internal (Postfix) with ESMTP id B92B027C0054;
+        Fri,  7 Aug 2020 03:45:55 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 07 Aug 2020 03:45:47 -0400
-X-ME-Sender: <xms:qwYtX3XnijwXzQNfsNhg8CjbxbKvXlx4yodyU7IlttwuTCDY16ibVA>
+  by compute3.internal (MEProxy); Fri, 07 Aug 2020 03:45:55 -0400
+X-ME-Sender: <xms:swYtX6FKbO5nD5m6fW_eQO-lYf1NyIjYDmUJiE8WOsqKbvvRbc3L0w>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrkedugdduvdeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -61,16 +61,16 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrkedugdduvdeiucetufdoteggod
     ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
     htvghrnhephedvveetfefgiedutedtfeevvddvleekjeeuffffleeguefhhfejteekieeu
     ueelnecukfhppeduudegrdekhedrudektddrvdduheenucevlhhushhtvghrufhiiigvpe
-    egnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
+    ehnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
     vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnpe
     epfhhigihmvgdrnhgrmhgvsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:qwYtX_nG6bDY1DJZIQal67EioH3rpZON2L6ar7ZfPhQHrJjL6qF5Mg>
-    <xmx:qwYtXzbGOa9aNhB9DbIGTBVYwwxbMJ3JImNKs40FhrGOR5_tImvaww>
-    <xmx:qwYtXyVVWVY626IzMYkn5SxGV_4QipKCKXFDIOwnQMZ5lSJzbPMW-g>
-    <xmx:qwYtX6A_7X4cLocFAMim1E8PBLjiggaeAH6EsUQGQrE7E_0_a2ZzZg>
+X-ME-Proxy: <xmx:swYtX7WIioF3CT8tgFMeD-eAZ9xtJ61uVj1Rz8fktwUQOKOA9j6BAA>
+    <xmx:swYtX0IrC5NZOf1iJRbRa1aw-HZShrFyAIcF2xcXj7AkoF_K8LQ2Gw>
+    <xmx:swYtX0EjWgYlA2VRkNbe1wQP9g9CGqPPi2rDpVMyFqgHSCMPAnQzYA>
+    <xmx:swYtX-xWu_YncJDfiZInBntq51c-WNQcrRdwnLZ7I-AKihHPLMuLbw>
 Received: from localhost (unknown [114.85.180.215])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 27AC13060067;
-        Fri,  7 Aug 2020 03:45:45 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id E90363060067;
+        Fri,  7 Aug 2020 03:45:53 -0400 (EDT)
 From:   Boqun Feng <boqun.feng@gmail.com>
 To:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -78,9 +78,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Waiman Long <longman@redhat.com>,
         Boqun Feng <boqun.feng@gmail.com>
-Subject: [RFC v7 14/19] lockdep: Take read/write status in consideration when generate chainkey
-Date:   Fri,  7 Aug 2020 15:42:33 +0800
-Message-Id: <20200807074238.1632519-15-boqun.feng@gmail.com>
+Subject: [RFC v7 15/19] lockdep/selftest: Unleash irq_read_recursion2 and add more
+Date:   Fri,  7 Aug 2020 15:42:34 +0800
+Message-Id: <20200807074238.1632519-16-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200807074238.1632519-1-boqun.feng@gmail.com>
 References: <20200807074238.1632519-1-boqun.feng@gmail.com>
@@ -91,195 +91,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the chainkey of a lock chain is a hash sum of the class_idx
-of all the held locks, the read/write status are not taken in to
-consideration while generating the chainkey. This could result into a
-problem, if we have:
-
-	P1()
-	{
-		read_lock(B);
-		lock(A);
-	}
-
-	P2()
-	{
-		lock(A);
-		read_lock(B);
-	}
-
-	P3()
-	{
-		lock(A);
-		write_lock(B);
-	}
-
-, and P1(), P2(), P3() run one by one. And when running P2(), lockdep
-detects such a lock chain A -> B is not a deadlock, then it's added in
-the chain cache, and then when running P3(), even if it's a deadlock, we
-could miss it because of the hit of chain cache. This could be confirmed
-by self testcase "chain cached mixed R-L/L-W ".
-
-To resolve this, we use concept "hlock_id" to generate the chainkey, the
-hlock_id is a tuple (hlock->class_idx, hlock->read), which fits in a u16
-type. With this, the chainkeys are different is the lock sequences have
-the same locks but different read/write status.
-
-Besides, since we use "hlock_id" to generate chainkeys, the chain_hlocks
-array now store the "hlock_id"s rather than lock_class indexes.
+Now since we can handle recursive read related irq inversion deadlocks
+correctly, uncomment the irq_read_recursion2 and add more testcases.
 
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/locking/lockdep.c | 53 ++++++++++++++++++++++++++--------------
- 1 file changed, 35 insertions(+), 18 deletions(-)
+ lib/locking-selftest.c | 59 +++++++++++++++++++++++++++++++++---------
+ 1 file changed, 47 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 867199c4b85d..f332d1b9d87b 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -371,6 +371,21 @@ static struct hlist_head classhash_table[CLASSHASH_SIZE];
- 
- static struct hlist_head chainhash_table[CHAINHASH_SIZE];
- 
-+/*
-+ * the id of held_lock
-+ */
-+static inline u16 hlock_id(struct held_lock *hlock)
-+{
-+	BUILD_BUG_ON(MAX_LOCKDEP_KEYS_BITS + 2 > 16);
-+
-+	return (hlock->class_idx | (hlock->read << MAX_LOCKDEP_KEYS_BITS));
-+}
-+
-+static inline unsigned int chain_hlock_class_idx(u16 hlock_id)
-+{
-+	return hlock_id & MAX_LOCKDEP_KEYS;
-+}
-+
- /*
-  * The hash key of the lock dependency chains is a hash itself too:
-  * it's a hash of all locks taken up to that lock, including that lock.
-@@ -3202,7 +3217,10 @@ static inline void free_chain_hlocks(int base, int size)
- 
- struct lock_class *lock_chain_get_class(struct lock_chain *chain, int i)
- {
--	return lock_classes + chain_hlocks[chain->base + i];
-+	u16 chain_hlock = chain_hlocks[chain->base + i];
-+	unsigned int class_idx = chain_hlock_class_idx(chain_hlock);
-+
-+	return lock_classes + class_idx - 1;
- }
+diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+index 002d1ec09852..f65a658cc9e3 100644
+--- a/lib/locking-selftest.c
++++ b/lib/locking-selftest.c
+@@ -1053,20 +1053,28 @@ GENERATE_PERMUTATIONS_3_EVENTS(irq_inversion_soft_wlock)
+ #define E3()				\
+ 					\
+ 	IRQ_ENTER();			\
+-	RL(A);				\
++	LOCK(A);			\
+ 	L(B);				\
+ 	U(B);				\
+-	RU(A);				\
++	UNLOCK(A);			\
+ 	IRQ_EXIT();
  
  /*
-@@ -3228,12 +3246,12 @@ static inline int get_first_held_lock(struct task_struct *curr,
- /*
-  * Returns the next chain_key iteration
+- * Generate 12 testcases:
++ * Generate 24 testcases:
   */
--static u64 print_chain_key_iteration(int class_idx, u64 chain_key)
-+static u64 print_chain_key_iteration(u16 hlock_id, u64 chain_key)
- {
--	u64 new_chain_key = iterate_chain_key(chain_key, class_idx);
-+	u64 new_chain_key = iterate_chain_key(chain_key, hlock_id);
+ #include "locking-selftest-hardirq.h"
+-GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion_hard)
++#include "locking-selftest-rlock.h"
++GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion_hard_rlock)
++
++#include "locking-selftest-wlock.h"
++GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion_hard_wlock)
  
--	printk(" class_idx:%d -> chain_key:%016Lx",
--		class_idx,
-+	printk(" hlock_id:%d -> chain_key:%016Lx",
-+		(unsigned int)hlock_id,
- 		(unsigned long long)new_chain_key);
- 	return new_chain_key;
- }
-@@ -3250,12 +3268,12 @@ print_chain_keys_held_locks(struct task_struct *curr, struct held_lock *hlock_ne
- 		hlock_next->irq_context);
- 	for (; i < depth; i++) {
- 		hlock = curr->held_locks + i;
--		chain_key = print_chain_key_iteration(hlock->class_idx, chain_key);
-+		chain_key = print_chain_key_iteration(hlock_id(hlock), chain_key);
+ #include "locking-selftest-softirq.h"
+-GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion_soft)
++#include "locking-selftest-rlock.h"
++GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion_soft_rlock)
++
++#include "locking-selftest-wlock.h"
++GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion_soft_wlock)
  
- 		print_lock(hlock);
- 	}
+ #undef E1
+ #undef E2
+@@ -1080,8 +1088,8 @@ GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion_soft)
+ 					\
+ 	IRQ_DISABLE();			\
+ 	L(B);				\
+-	WL(A);				\
+-	WU(A);				\
++	LOCK(A);			\
++	UNLOCK(A);			\
+ 	U(B);				\
+ 	IRQ_ENABLE();
  
--	print_chain_key_iteration(hlock_next->class_idx, chain_key);
-+	print_chain_key_iteration(hlock_id(hlock_next), chain_key);
- 	print_lock(hlock_next);
- }
+@@ -1098,13 +1106,21 @@ GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion_soft)
+ 	IRQ_EXIT();
  
-@@ -3263,14 +3281,14 @@ static void print_chain_keys_chain(struct lock_chain *chain)
- {
- 	int i;
- 	u64 chain_key = INITIAL_CHAIN_KEY;
--	int class_id;
-+	u16 hlock_id;
+ /*
+- * Generate 12 testcases:
++ * Generate 24 testcases:
+  */
+ #include "locking-selftest-hardirq.h"
+-// GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_hard)
++#include "locking-selftest-rlock.h"
++GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_hard_rlock)
++
++#include "locking-selftest-wlock.h"
++GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_hard_wlock)
  
- 	printk("depth: %u\n", chain->depth);
- 	for (i = 0; i < chain->depth; i++) {
--		class_id = chain_hlocks[chain->base + i];
--		chain_key = print_chain_key_iteration(class_id, chain_key);
-+		hlock_id = chain_hlocks[chain->base + i];
-+		chain_key = print_chain_key_iteration(hlock_id, chain_key);
+ #include "locking-selftest-softirq.h"
+-// GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_soft)
++#include "locking-selftest-rlock.h"
++GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_soft_rlock)
++
++#include "locking-selftest-wlock.h"
++GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_soft_wlock)
  
--		print_lock_name(lock_classes + class_id);
-+		print_lock_name(lock_classes + chain_hlock_class_idx(hlock_id) - 1);
- 		printk("\n");
- 	}
- }
-@@ -3319,7 +3337,7 @@ static int check_no_collision(struct task_struct *curr,
- 	}
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ # define I_SPINLOCK(x)	lockdep_reset_lock(&lock_##x.dep_map)
+@@ -1257,6 +1273,25 @@ static inline void print_testname(const char *testname)
+ 	dotest(name##_rlock_##nr, SUCCESS, LOCKTYPE_RWLOCK);	\
+ 	pr_cont("\n");
  
- 	for (j = 0; j < chain->depth - 1; j++, i++) {
--		id = curr->held_locks[i].class_idx;
-+		id = hlock_id(&curr->held_locks[i]);
++#define DO_TESTCASE_2RW(desc, name, nr)				\
++	print_testname(desc"/"#nr);				\
++	pr_cont("      |");					\
++	dotest(name##_wlock_##nr, FAILURE, LOCKTYPE_RWLOCK);	\
++	dotest(name##_rlock_##nr, SUCCESS, LOCKTYPE_RWLOCK);	\
++	pr_cont("\n");
++
++#define DO_TESTCASE_2x2RW(desc, name, nr)			\
++	DO_TESTCASE_2RW("hard-"desc, name##_hard, nr)		\
++	DO_TESTCASE_2RW("soft-"desc, name##_soft, nr)		\
++
++#define DO_TESTCASE_6x2x2RW(desc, name)				\
++	DO_TESTCASE_2x2RW(desc, name, 123);			\
++	DO_TESTCASE_2x2RW(desc, name, 132);			\
++	DO_TESTCASE_2x2RW(desc, name, 213);			\
++	DO_TESTCASE_2x2RW(desc, name, 231);			\
++	DO_TESTCASE_2x2RW(desc, name, 312);			\
++	DO_TESTCASE_2x2RW(desc, name, 321);
++
+ #define DO_TESTCASE_6(desc, name)				\
+ 	print_testname(desc);					\
+ 	dotest(name##_spin, FAILURE, LOCKTYPE_SPIN);		\
+@@ -2121,8 +2156,8 @@ void locking_selftest(void)
+ 	DO_TESTCASE_6x6("safe-A + unsafe-B #2", irqsafe4);
+ 	DO_TESTCASE_6x6RW("irq lock-inversion", irq_inversion);
  
- 		if (DEBUG_LOCKS_WARN_ON(chain_hlocks[chain->base + j] != id)) {
- 			print_collision(curr, hlock, chain);
-@@ -3368,7 +3386,6 @@ static inline int add_chain_cache(struct task_struct *curr,
- 				  struct held_lock *hlock,
- 				  u64 chain_key)
- {
--	struct lock_class *class = hlock_class(hlock);
- 	struct hlist_head *hash_head = chainhashentry(chain_key);
- 	struct lock_chain *chain;
- 	int i, j;
-@@ -3411,11 +3428,11 @@ static inline int add_chain_cache(struct task_struct *curr,
+-	DO_TESTCASE_6x2("irq read-recursion", irq_read_recursion);
+-//	DO_TESTCASE_6x2B("irq read-recursion #2", irq_read_recursion2);
++	DO_TESTCASE_6x2x2RW("irq read-recursion", irq_read_recursion);
++	DO_TESTCASE_6x2x2RW("irq read-recursion #2", irq_read_recursion2);
  
- 	chain->base = j;
- 	for (j = 0; j < chain->depth - 1; j++, i++) {
--		int lock_id = curr->held_locks[i].class_idx;
-+		int lock_id = hlock_id(curr->held_locks + i);
+ 	ww_tests();
  
- 		chain_hlocks[chain->base + j] = lock_id;
- 	}
--	chain_hlocks[chain->base + j] = class - lock_classes;
-+	chain_hlocks[chain->base + j] = hlock_id(hlock);
- 	hlist_add_head_rcu(&chain->entry, hash_head);
- 	debug_atomic_inc(chain_lookup_misses);
- 	inc_chains(chain->irq_context);
-@@ -3602,7 +3619,7 @@ static void check_chain_key(struct task_struct *curr)
- 		if (prev_hlock && (prev_hlock->irq_context !=
- 							hlock->irq_context))
- 			chain_key = INITIAL_CHAIN_KEY;
--		chain_key = iterate_chain_key(chain_key, hlock->class_idx);
-+		chain_key = iterate_chain_key(chain_key, hlock_id(hlock));
- 		prev_hlock = hlock;
- 	}
- 	if (chain_key != curr->curr_chain_key) {
-@@ -4702,7 +4719,7 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
- 		chain_key = INITIAL_CHAIN_KEY;
- 		chain_head = 1;
- 	}
--	chain_key = iterate_chain_key(chain_key, class_idx);
-+	chain_key = iterate_chain_key(chain_key, hlock_id(hlock));
- 
- 	if (nest_lock && !__lock_is_held(nest_lock, -1)) {
- 		print_lock_nested_lock_not_held(curr, hlock, ip);
-@@ -5597,7 +5614,7 @@ static void remove_class_from_lock_chain(struct pending_free *pf,
- 	int i;
- 
- 	for (i = chain->base; i < chain->base + chain->depth; i++) {
--		if (chain_hlocks[i] != class - lock_classes)
-+		if (chain_hlock_class_idx(chain_hlocks[i]) != class - lock_classes)
- 			continue;
- 		/*
- 		 * Each lock class occurs at most once in a lock chain so once
 -- 
 2.28.0
 
