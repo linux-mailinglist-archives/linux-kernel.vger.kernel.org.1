@@ -2,113 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D09523EE80
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 15:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5520823EEE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726212AbgHGN6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 09:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgHGN5o (ORCPT
+        id S1726448AbgHGOQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 10:16:47 -0400
+Received: from mail.santannapisa.it ([193.205.80.98]:52489 "EHLO
+        mail.santannapisa.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725815AbgHGOQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 09:57:44 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3191C061574;
-        Fri,  7 Aug 2020 06:57:43 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id t23so2321061ljc.3;
-        Fri, 07 Aug 2020 06:57:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=GsMsINOwUrYodbh+1gZjJuGWX0FnIRjRsLe5PftqS9Y=;
-        b=LAYdrLE18Y6Z9pFhpwKemwVYQtGrkZEn0bB8iNXLvmV+hH9X9A7iaNQsCwiFsyEj4b
-         /X2+gh5lt+QllIUYPYH9+NKRfzeGpGvIy9saZ+BIZAmP645aVjdX8iRSffHcW2zUcx7C
-         N+dlC2BpARVeztxtDswhlCh8EdXsG+MKVoMMxlOxUbPGlJRGB/urPCdETpWj6zNwTGqN
-         gEAxE8ASN9Spn9Eb0CYrlNcRoBVUhlLXmvStr2gn3w5671jnt19OiLTuPZUg+7fEFEMi
-         O18wySiFr0ZN2Qu0BxI72uA51LI1yzGLv7SldZ+ZuiOz4Mhi8Vt4B/LGc6BZ4Vx++O1H
-         VKEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :date:message-id:mime-version;
-        bh=GsMsINOwUrYodbh+1gZjJuGWX0FnIRjRsLe5PftqS9Y=;
-        b=nrSfLBwpjWVDECYiweD89S1OQKsv6r7UpVg09L8If7edeERxJCqFCrgMc+5aQlIbQ1
-         MTdQPrOwJcpGJUp0pJWANiqWb2y76smW5MblS4wkverEToLxws82CTzyrrgcTQ5uWp7v
-         hPsDfhISTU8c5+LAydKFxKEABwF4D+YshxVzwZYj/JanvxxQAXwHUwzC6lz8mKHyJaUz
-         bGk+qprHdzzyPJfbO5JUZBo4I7fe3iP/GAPcNCiSTYMJEFJlbMpsLhLGEKs6BdkuWZ0B
-         uGO4pciTCE+WMzs3xhhWZYxjuJlx4Rp7vQGET3GEBc/PMR8Ycc3SZXnyTsgG4U+cFY0f
-         34qw==
-X-Gm-Message-State: AOAM531DyWDCTBIvsbasQF4L59nwOulz97E15aAIFR7+5TkbqDGjBwYm
-        IS1+gJj91S82ESrR4Mb7tSZe+jn6lTo=
-X-Google-Smtp-Source: ABdhPJydZP9rgsASTJaEa+1o/kNJx+qckxY75jtJmI9lKpoCrqxNzNUZzRaJM/QkfNuX/rWV9czOIA==
-X-Received: by 2002:a05:651c:88:: with SMTP id 8mr6678123ljq.277.1596808657281;
-        Fri, 07 Aug 2020 06:57:37 -0700 (PDT)
-Received: from saruman ([165.231.178.18])
-        by smtp.gmail.com with ESMTPSA id v9sm4173599lja.81.2020.08.07.06.57.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Aug 2020 06:57:36 -0700 (PDT)
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v2 08/41] usb: gadget: s3c: use platform resources
-In-Reply-To: <20200806182059.2431-8-krzk@kernel.org>
-References: <20200806181932.2253-1-krzk@kernel.org> <20200806182059.2431-8-krzk@kernel.org>
-Date:   Fri, 07 Aug 2020 16:57:31 +0300
-Message-ID: <87y2mqpnhw.fsf@kernel.org>
+        Fri, 7 Aug 2020 10:16:47 -0400
+Received: from [94.37.192.58] (account l.abeni@santannapisa.it HELO nowhere)
+  by santannapisa.it (CommuniGate Pro SMTP 6.1.11)
+  with ESMTPSA id 150296581; Fri, 07 Aug 2020 15:16:43 +0200
+Date:   Fri, 7 Aug 2020 15:16:32 +0200
+From:   luca abeni <luca.abeni@santannapisa.it>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, rostedt@goodmis.org,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        tommaso.cucinotta@santannapisa.it, alessio.balsini@gmail.com,
+        bristot@redhat.com, dietmar.eggemann@arm.com,
+        linux-rt-users@vger.kernel.org, mtosatti@redhat.com,
+        williams@redhat.com, valentin.schneider@arm.com
+Subject: Re: [RFC PATCH v2 0/6] SCHED_DEADLINE server infrastructure
+Message-ID: <20200807151632.36dc6200@nowhere>
+In-Reply-To: <20200807095051.385985-1-juri.lelli@redhat.com>
+References: <20200807095051.385985-1-juri.lelli@redhat.com>
+Organization: Scuola Superiore S.Anna
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi Juri,
 
-Krzysztof Kozlowski <krzk@kernel.org> writes:
+thanks for sharing the v2 patchset!
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The resources are correctly initialized, so just use them
-> instead of relying on hardcoded data from platform headers.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+In the next days I'll have a look at it, and try some tests...
 
-If you want me to carry this and the following patch through my tree,
-let me know. Otherwise:
+In the meanwhile, I have some questions/comments after a first quick
+look.
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+If I understand well, the patchset does not apply deadline servers to
+FIFO and RR tasks, right? How does this patchset interact with RT
+throttling?
 
-=2D-=20
-balbi
+If I understand well, patch 6/6 does something like "use deadline
+servers for SCHED_OTHER only if FIFO/RR tasks risk to starve
+SCHED_OTHER tasks"... Right? I understand this is because you do not
+want to delay RT tasks if they are not starving other tasks. But then,
+maybe what you want is not deadline-based scheduling. Maybe a
+reservation-based scheduler based on fixed priorities is what you want?
+(with SCHED_DEADLINE, you could provide exact performance guarantees to
+SCHED_OTHER tasks, but I suspect patch 6/6 breaks these guarantees?)
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+			Thanks,
+				Luca
 
-iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl8tXcsACgkQzL64meEa
-mQZA4w/8CJ54XLKdECc57KFHhY6lVIHanhEvJbHXAxas90EQiV8BrcUe+5jiL026
-iz2wcFq9GYRTRVcR2drgUG0fVSuqYbPbETlwAWy8fyDRKfs+LfDlvH0iz3eo7P2h
-Lr3OBDYEymbErFov8w1cOWNIDuRjol8ed7FWnLQfvXNd9NKXaCq9JvCBkjcBfKGT
-EcB4+ZUGtY6IQ1iDVrB0tpC6Br7HiuZoVocSuN+3LQSCae/QoYD57fqujyH5ywHk
-QB7XSnp9yKk1vI20X/U5J/5DbM6k3DE73A24cpf+TFKDabQcdRUiSRJm1evl12nE
-hOz0cBxflsL9BUtpOpvGKYDz6GjR/KXnkKw/I9q3npkNd1ybWAIKaELoQkE/Jtni
-AjaR1uzMb0X7IPDaJu7dYFYSujWjFK/WrJZxJc9O7lCrugN5aAC9nt87s56wptZq
-TCfN/ot2OOtemOc2BcrwDItdiPTbdOHxkrVu886cIYbxhHDyB0+Tk18Qa9paffUC
-TS3Ebq6mPDuksavbGn9aum6xz5vJiw7rwz9laTw4pTdoGvphedZAOhWQiisZaBvk
-zefXWKxWnu9KWOZiLemLpmm1Ml5sohd13hmwSDt8CUiuw8+3ipooiN87wPlnXCbG
-397W2xRTWYXkS0teICSXeuEMdXky1HZ8R/PD7bA6ApGmgNV60k8=
-=pdwI
------END PGP SIGNATURE-----
---=-=-=--
+On Fri,  7 Aug 2020 11:50:45 +0200
+Juri Lelli <juri.lelli@redhat.com> wrote:
+
+> Hi,
+> 
+> This is RFC v2 of Peter's SCHED_DEADLINE server infrastructure
+> implementation [1].
+> 
+> SCHED_DEADLINE servers can help fixing starvation issues of low
+> priority tasks (e.g., SCHED_OTHER) when higher priority tasks
+> monopolize CPU cycles. Today we have RT Throttling; DEADLINE servers
+> should be able to replace and improve that.
+> 
+> I rebased Peter's patches (adding changelogs where needed) on
+> tip/sched/core as of today and incorporated fixes to issues discussed
+> during RFC v1. Current set seems to even boot on real HW! :-)
+> 
+> While playing with RFC v1 set (and discussing it further offline with
+> Daniel) it has emerged the need to slightly change the behavior. Patch
+> 6/6 is a (cumbersome?) attempt to show what's probably needed.
+> The problem with "original" implementation is that FIFO tasks might
+> suffer preemption from NORMAL even when spare CPU cycles are
+> available. In fact, fair deadline server is enqueued right away when
+> NORMAL tasks wake up and they are first scheduled by the server, thus
+> potentially preempting a well behaving FIFO task. This is of course
+> not ideal. So, in patch 6/6 I propose to use some kind of starvation
+> monitor/ watchdog that delays enqueuing of deadline servers to the
+> point when fair tasks might start to actually suffer from starvation
+> (just randomly picked HZ/2 for now). One problem I already see with
+> the current implementation is that it adds overhead to fair paths, so
+> I'm pretty sure there are better ways to implement the idea (e.g.,
+> Daniel already suggested using a starvation monitor kthread sort of
+> thing).
+> 
+> Receiving comments and suggestions is the sole purpose of this posting
+> at this stage. Hopefully we can further discuss the idea at Plumbers
+> in a few weeks. So, please don't focus too much into actual
+> implementation (which I plan to revise anyway after I'm back from pto
+> :), but try to see if this might actually fly. The feature seems to
+> be very much needed.
+> 
+> Thanks!
+> 
+> Juri
+> 
+> 1 -
+> https://lore.kernel.org/lkml/20190726145409.947503076@infradead.org/
+> 
+> Juri Lelli (1):
+>   sched/fair: Implement starvation monitor
+> 
+> Peter Zijlstra (5):
+>   sched: Unify runtime accounting across classes
+>   sched/deadline: Collect sched_dl_entity initialization
+>   sched/deadline: Move bandwidth accounting into
+> {en,de}queue_dl_entity sched/deadline: Introduce deadline servers
+>   sched/fair: Add trivial fair server
+> 
+>  include/linux/sched.h    |  28 ++-
+>  kernel/sched/core.c      |  23 +-
+>  kernel/sched/deadline.c  | 483
+> ++++++++++++++++++++++++--------------- kernel/sched/fair.c      |
+> 136 ++++++++++- kernel/sched/rt.c        |  17 +-
+>  kernel/sched/sched.h     |  50 +++-
+>  kernel/sched/stop_task.c |  16 +-
+>  7 files changed, 522 insertions(+), 231 deletions(-)
+> 
+
