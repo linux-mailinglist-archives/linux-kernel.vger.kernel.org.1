@@ -2,133 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B7A23F211
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 19:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A7523F214
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 19:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726624AbgHGRmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 13:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgHGRmH (ORCPT
+        id S1726996AbgHGRmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 13:42:50 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:55037 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726015AbgHGRmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 13:42:07 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6695CC061756
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 10:42:07 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id o1so1404653plk.1
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 10:42:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3or5Uc/EoDqPWURPsRB27O8EdmQJvFJDjXDNilQ2W/o=;
-        b=SiRgFI/BFbh9JTxI3YwMHZSDmB7howP4OchHiXcHKJFY8YCK5Q3Wuy0Xwcr4Yi4mft
-         pbITlt7SMmCxbYRtE2CxRtDVzUlWU+4RTeRDeFwHpCf0M8E9vKPe0n0cWeW1WcpXti1V
-         qUFOlBKxqusGOtX+vNfbIEktsb8Il6URA4hWk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3or5Uc/EoDqPWURPsRB27O8EdmQJvFJDjXDNilQ2W/o=;
-        b=cakG7yHsOlNUwC7BWL/ViWpudGSgAAAZJ/nrORjYHIGbA3Jr8I+C+cTXd4Qw9dC6bI
-         mXJrqdGC/JFlLbtzAWhPSTJLY/URaRsH6jcg3nsfcDFk3BPsa54h5QN3UqjV3VQQ3r78
-         +O0w5sOt/ToRXAdEZvytbrv3nPhQUxjM5GRh3zT9z7JH9Q9WYv0GfDXqXnZER0aib7O5
-         FdZIrRkt5l6sBvpql6MiMq2UDHdUPx+tcmB6RzW58KIa/WeB8eC/EpmNGxeoD8PWFmn/
-         R0yiz8RGQF7vNbFebH+HKc9O50UzX6G7PczzCZvEeH0sdQwrgC5ejJA9OIduN3TSPmXu
-         8Mig==
-X-Gm-Message-State: AOAM53237myJx62uQPsfHEU93RzpsQYi57mVzV2pRGJcGmf83h1uP123
-        hK7bgkgoeHdX/Twc50NypCIWHA==
-X-Google-Smtp-Source: ABdhPJwqOqYTYh4JReBUX4c3HOE9kTIdYkHO3Wb+ZMZk+NJndqxFeOBssIAcr7au4wLDl8M1JElxFg==
-X-Received: by 2002:a17:902:9f94:: with SMTP id g20mr12241520plq.14.1596822126947;
-        Fri, 07 Aug 2020 10:42:06 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s6sm12670167pfb.50.2020.08.07.10.42.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Aug 2020 10:42:05 -0700 (PDT)
-Date:   Fri, 7 Aug 2020 10:42:03 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Chris Palmer <palmer@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Matt Denton <mpdenton@google.com>,
-        Robert Sesek <rsesek@google.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, Will Drewry <wad@chromium.org>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: wine fails to start with seccomp updates for v5.9-rc1
-Message-ID: <202008071038.3F308DEEE@keescook>
-References: <1596812929.lz7fuo8r2w.none.ref@localhost>
- <1596812929.lz7fuo8r2w.none@localhost>
- <CAHk-=wi41L-OXCPQJi4dtc_7SmYTzXGz0XM=39rjiTNAi2gn3g@mail.gmail.com>
- <20200807173609.GJ4402@mussarela>
+        Fri, 7 Aug 2020 13:42:49 -0400
+Received: from mail-qv1-f53.google.com ([209.85.219.53]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MkYoK-1kReqP3jfa-00m3Ei; Fri, 07 Aug 2020 19:42:48 +0200
+Received: by mail-qv1-f53.google.com with SMTP id w2so1108850qvh.12;
+        Fri, 07 Aug 2020 10:42:47 -0700 (PDT)
+X-Gm-Message-State: AOAM532+7psWA3XSEzzzlRrYm69eacuclV6Rxrpwixdruc3bF/469+3k
+        yJWT/aRpSFQBxy040BkHuzXP69d2ie00vtHgmD4=
+X-Google-Smtp-Source: ABdhPJyv7rCGmFeLP7RqhcY13WRRiZFuulb0+11PGjaOlihhytyNU3OWx3CTv4fKmN0hSDmFQyGgcqMPDDRluUfvdeM=
+X-Received: by 2002:a0c:e604:: with SMTP id z4mr16028335qvm.222.1596822166562;
+ Fri, 07 Aug 2020 10:42:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200807173609.GJ4402@mussarela>
+References: <20200806181932.2253-1-krzk@kernel.org> <20200806182059.2431-9-krzk@kernel.org>
+ <87v9hupnf7.fsf@kernel.org>
+In-Reply-To: <87v9hupnf7.fsf@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 7 Aug 2020 19:42:30 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2UH2NELh8ifZj0s+Xv1vqURjwJWU5Qb2FQiOq7c=dcBg@mail.gmail.com>
+Message-ID: <CAK8P3a2UH2NELh8ifZj0s+Xv1vqURjwJWU5Qb2FQiOq7c=dcBg@mail.gmail.com>
+Subject: Re: [PATCH v2 09/41] usb: gadget: s3c-hsudc: remove platform header dependency
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        USB list <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:xqCGEHVPGcWB0jFSoTTeIJSqhIg7jVYYMR5j6NlvNl3TbaQ0WLr
+ +8ETHw69y0eV6btEKppBnfNKYARUJNbYhrpZnQwY9UGItBJQluG410enW81PrSEYRlN7ms2
+ kURabCHww+WltJqBkc7pNCxWIMnLDtgiCmYh6qKwaibwz/eSyN3hQ3ZCkRBXJwXHE01Vs7l
+ V15y1LQw3+u5kuB4BvPIA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xuYE522+8qo=:D7pjgWSOHM6maavPIzu8JH
+ NBk2XWP6xcFRkDFEhGxHX3a2T5KwIxJCfJyEv8pFvtRgDn0vIhVvWAPP9os1bqnQTa921d4OF
+ yCGIBZqV1RO6VV6Q1XpZagM0SKuWIpFMos0cPcEu5m+1tl/Guwl2vF/u4xZexUogeu43ecNrD
+ IInm9OsPg7cOZs6sRKFbAMjwOddT35RVEfRgSyuUSrx5KtR78v8RXJ5IzePLxW5DYE9GZl+X8
+ UB+7sH0smUk/hGwU2eMDCiccm6F/IPEg48Tjhb/gLXgowHl9usaxeooIgdYl2nLT48Vbgiinm
+ sr2gZnyfHXPeJewzZIuzonleNax5qbNrKsKE7MyQe86uMHC/az49oUEL8lZJes8PpBOX+tfkM
+ XkskfDEYHaG2W1AQT8McFJXPRutuOyuocFpWPQOgzGvz8F+lxBTNS7Z5R4XKeKTKnWBwEZDly
+ KSg1vJVeV0LMrwiiwV1PGDrpIcPhuCTi8Y8v+J2XUV/IMLqYPDOjQfwppGhzM+0DfnIn1nBaS
+ ARWxg3aCHRK3fOkBqNP45ltMpPadrz1etsoqtnbEYzsQUoR+Ty/ndQxWyg/kXEf3M6ezhTaji
+ qUolMcHjczxWcbcdXPUPGHHy0ULjT9dapcTZOK9TnslzgS586fS65QbN2zPMzGVV5pwhYphKd
+ TkfrbBjLwPDNrS7eUKgkRUy/cJ+wudbNPdsrfiG9gStI7WJRz2Ug77g3GOwbtcGkrZEVsPNTB
+ f95ilNP2PF5WtzzHcl0OAZJtms6Ng4Y452LFQcbshk4wvr+jaSzp/xHectlBYIykpVsiZEwjA
+ fhftQAHnzHjrO8gCy6NOqjJMvNNDGC9MpUWGPFreAWBAzDXdnm5EmewvuoShojJZSVBT2qdrP
+ E+7GDwxkb6G1Cl4I8keYYiEr/S2Ghe/pdJLTmj8cJjwdIwSxODpRCaXGgQzN/2OivB+4ll5uq
+ xuM2gH8h3/lWbpibBi4P2zVLj7XrgxDmSTgWl3w8ynu0WWThfDne0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 07, 2020 at 02:36:09PM -0300, Thadeu Lima de Souza Cascardo wrote:
-> On Fri, Aug 07, 2020 at 08:48:46AM -0700, Linus Torvalds wrote:
-> > On Fri, Aug 7, 2020 at 8:19 AM Alex Xu (Hello71) <alex_y_xu@yahoo.ca> wrote:
-> > >
-> > > On Linus' master, wine fails to start with the following error:
-> > >
-> > > wine client error:0: write: Bad file descriptor
-> > >
-> > > This issue is not present on 5.8. It appears to be caused by failure to
-> > > write to a pipe FD received via SCM_RIGHTS. Therefore, I tried reverting
-> > > 9ecc6ea491f0, which resolved the issue.
-> > 
-> > Would you mind trying to bisect exactly where it happens?
-> > 
-> 
-> This report [1] seemed related and pointed out at c0029de50982 ("net/scm:
-> Regularize compat handling of scm_detach_fds()"). The use of CMSG_USER_DATA
-> instead of CMSG_COMPAT_DATA seems fishy.
+On Fri, Aug 7, 2020 at 3:59 PM Felipe Balbi <balbi@kernel.org> wrote:
+> Krzysztof Kozlowski <krzk@kernel.org> writes:
 
-Argh; yes. Thank you for finding that! That's what I get for trying to
-regularize the compat path. :(
+> > +#include <linux/delay.h>
+> > +
+> >  #define S3C2443_CLKREG(x)            ((x) + S3C24XX_VA_CLKPWR)
+> >
+> >  #define S3C2443_PLLCON_MDIVSHIFT     16
+> > @@ -184,5 +186,52 @@ s3c2443_get_epll(unsigned int pllval, unsigned int baseclk)
+> >       return (unsigned int)fvco;
+> >  }
+> >
+> > +static inline void s3c_hsudc_init_phy(void)
+>
+> This should, really, be a PHY driver under drivers/phy, since the goal
+> is to make this platform-independent, might as well take the opportunity
+> to introduce a proper driver, no?
 
-> Alex, can you try applying the patch below?
-> 
-> Cascardo.
-> 
-> [1] https://lists.ozlabs.org/pipermail/linuxppc-dev/2020-August/216156.html
-> 
-> > I don't think any of the commits in that pull are supposed to change
-> > semantics, and while reverting the whole merge shows that yes, that's
-> > what brought in the problems, it would be good to pinpoint just which
-> > change breaks so that we can fix just that thing.
-> > 
-> > Kees, ideas?
-> > 
-> >                  Linus
-> 
-> ---
-> diff --git a/net/compat.c b/net/compat.c
-> index 703acb51c698..95ce707a30a3 100644
-> --- a/net/compat.c
-> +++ b/net/compat.c
-> @@ -294,7 +294,7 @@ void scm_detach_fds_compat(struct msghdr *msg, struct scm_cookie *scm)
->  		(struct compat_cmsghdr __user *)msg->msg_control;
->  	unsigned int o_flags = (msg->msg_flags & MSG_CMSG_CLOEXEC) ? O_CLOEXEC : 0;
->  	int fdmax = min_t(int, scm_max_fds_compat(msg), scm->fp->count);
-> -	int __user *cmsg_data = CMSG_USER_DATA(cm);
-> +	int __user *cmsg_data = CMSG_COMPAT_DATA(cm);
->  	int err = 0, i;
->  
->  	for (i = 0; i < fdmax; i++) {
+In theory, this is absolutely correct. I fear it will be hard to find anyone
+to make a larger scale cleanup of the file however. As my old changelog
+text says, there is only one board (smdk2416) in the kernel that registers
+the device. My change was the minimum to keep it working during the
+move to a multiplatform configuration, but if there is someone who has
+the hardware and volunteers to make a proper phy driver, that would also
+work.
 
-That almost certainly will fix the problem.
+As the board only exists as a reference for other boards, but none of those
+made it into the kernel, we could alternatively just decide to drop the
+driver. There is also a .dts file for the board, which is lacking a device node
+for the udc (and the driver lacks DT support), so that board file could also
+be dropped then, leaving only the DT version as a reference for the SoC.
 
--- 
-Kees Cook
+       Arnd
