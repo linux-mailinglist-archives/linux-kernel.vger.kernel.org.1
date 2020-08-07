@@ -2,143 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3681523E70E
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 07:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763E623E712
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 07:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726130AbgHGFcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 01:32:45 -0400
-Received: from mga18.intel.com ([134.134.136.126]:63274 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725379AbgHGFco (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 01:32:44 -0400
-IronPort-SDR: OZj2mWmemSxL3M3jVB6tmNbDdos9PYyBchb8TJIlWVUHfedhT4ZpAjtIgYX/hZGohW41mCEReW
- xkqnqp8j5Q9g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9705"; a="140596035"
-X-IronPort-AV: E=Sophos;i="5.75,444,1589266800"; 
-   d="scan'208";a="140596035"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 22:32:43 -0700
-IronPort-SDR: pLfGEBJpI7xx0p5sg0RMxkJZgy6UhOtl8I9/47/YNbBasKhay6fkpbB7i5Uc1RFBaRc9nlUSg9
- A922vMQpXvJA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,444,1589266800"; 
-   d="scan'208";a="323660042"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
-  by orsmga008.jf.intel.com with ESMTP; 06 Aug 2020 22:32:40 -0700
-Subject: Re: [PATCH v1 2/2] perf/core: Fake regs for leaked kernel samples
-To:     peterz@infradead.org
-Cc:     mingo@redhat.com, oleg@redhat.com, acme@kernel.org,
-        jolsa@kernel.org, Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        alexander.shishkin@linux.intel.com, mark.rutland@arm.com
-References: <20200731025617.16243-1-yao.jin@linux.intel.com>
- <20200731025617.16243-2-yao.jin@linux.intel.com>
- <20200804114900.GI2657@hirez.programming.kicks-ass.net>
- <4c958d61-11a7-9f3e-9e7d-d733270144a1@linux.intel.com>
- <20200805124454.GP2657@hirez.programming.kicks-ass.net>
- <797aa4de-c618-f340-ad7b-cef38c96b035@linux.intel.com>
- <20200806091827.GY2674@hirez.programming.kicks-ass.net>
- <20200806092454.GE35926@hirez.programming.kicks-ass.net>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <207564ba-6faa-e054-af3f-5af233cc0637@linux.intel.com>
-Date:   Fri, 7 Aug 2020 13:32:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726066AbgHGFhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 01:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725263AbgHGFhH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 01:37:07 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2CBC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 22:37:07 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id 25so950748oir.0
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 22:37:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bshcHl2T8AESsslx0ccXbV3aY6vJT2KoDDHlcYIDHrY=;
+        b=aXEXd+i+t+qGNoEFQg3b0uBTCiBKvM7N8rBESwCtzR+MeoPruLJMMbmi3GtB1cCpHa
+         rPsSDBqiuP7YU6Gs/XjsfZ+r5ogTTS/vIkmHuJM9d5vG0e63RNRWAHiC9Ywa0SGhBI/8
+         LIYgrMup4/T+LLSvaiLzTfx/RJPWILfZ16AIHHMmqWDtxJ4w2ZIiXFnz7nH8kukAyIOT
+         uWosKUrijIuQdc8jVdrLzNBSSeubsyLo8w+20txQaU8W3XXRb+dAUJx/IFSwXkhYodrT
+         raP5/6UjHaMCxQMLJPqpjSoPgvVOM9MhCGQcnWbga9FabiCh6G2fiOlaNKhB6wTFszfW
+         3Ehg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bshcHl2T8AESsslx0ccXbV3aY6vJT2KoDDHlcYIDHrY=;
+        b=GbMzlZyjSN5znALZJN0wt4b3snYpM6qxrx72f+NfVnec7tJZE4xWXZ5aF1SAqUWajR
+         uooaV2IWJlJe9Fzy1xhr2MF/2e/mhNM6nCO/XujefXuomHQL4Vsbs+2mX0zeKer06K5l
+         dUJvKuDfAd6DyJFbqAFaf8vMwPi/723i2VcQEvZz2YrRlGhY0mRNpzFmRyz04qjB8Kfa
+         3bC5Smy6k3DdlPqf9bY+9g/BSqpRvPWNeo6/8+WkT6cKWe6ILSZXWewyqAenQJlpKwZ8
+         7e9LPPVGV42B3/KIQxbdaIEi61TBz3JGDn4iXTiIrsGSGJCOw7Xc/+6HXY9Cpj2N4SsC
+         E4Ig==
+X-Gm-Message-State: AOAM532yNm9UzUXTfeecKkdytCTyd2cV+KvgYaqluPjvj/o+kh6RccMU
+        gHbTo19JKtfolRVndGcZB0mEc4Zm0YBHPyb431IOCi7v8Qk=
+X-Google-Smtp-Source: ABdhPJx4UQV50fxwCcOf9bf53S4B3y5D81RGOt7DCiIie57a/6l8uRD0XwpBincCwB/YLwYElwccK7bSN0X9j4tj2PI=
+X-Received: by 2002:aca:c508:: with SMTP id v8mr9674679oif.149.1596778626575;
+ Thu, 06 Aug 2020 22:37:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200806092454.GE35926@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <202008070734.uF4WSa1Q%lkp@intel.com>
+In-Reply-To: <202008070734.uF4WSa1Q%lkp@intel.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Fri, 7 Aug 2020 07:36:55 +0200
+Message-ID: <CAMhs-H8_KDZgH4XjKoeF4LuR6V4ueDgO9YYF-gecJLg0Gu=7pA@mail.gmail.com>
+Subject: Re: drivers/staging/mt7621-pci/pci-mt7621.c:189:11: error:
+ 'pci_generic_config_read' undeclared here (not in a function)
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Hi,
 
-On 8/6/2020 5:24 PM, peterz@infradead.org wrote:
-> On Thu, Aug 06, 2020 at 11:18:27AM +0200, peterz@infradead.org wrote:
->> On Thu, Aug 06, 2020 at 10:26:29AM +0800, Jin, Yao wrote:
->>
->>>> +static struct pt_regs *sanitize_sample_regs(struct perf_event *event, struct pt_regs *regs)
->>>> +{
->>>> +	struct pt_regs *sample_regs = regs;
->>>> +
->>>> +	/* user only */
->>>> +	if (!event->attr.exclude_kernel || !event->attr.exclude_hv ||
->>>> +	    !event->attr.exclude_host   || !event->attr.exclude_guest)
->>>> +		return sample_regs;
->>>> +
->>>
->>> Is this condition correct?
->>>
->>> Say counting user event on host, exclude_kernel = 1 and exclude_host = 0. It
->>> will go "return sample_regs" path.
->>
->> I'm not sure, I'm terminally confused on virt stuff.
-> 
-> [A]
-> 
->> Suppose we have nested virt:
->>
->> 	L0-hv
->> 	|
->> 	G0/L1-hv
->> 	   |
->> 	   G1
->>
->> And we're running in G0, then:
->>
->>   - 'exclude_hv' would exclude L0 events
->>   - 'exclude_host' would ... exclude L1-hv events?
->>   - 'exclude_guest' would ... exclude G1 events?
-> 
-> [B]
-> 
->> Then the next question is, if G0 is a host, does the L1-hv run in
->> G0 userspace or G0 kernel space?
->>
->> I was assuming G0 userspace would not include anything L1 (kvm is a
->> kernel module after all), but what do I know.
->>
->>>> @@ -11609,7 +11636,8 @@ SYSCALL_DEFINE5(perf_event_open,
->>>>    	if (err)
->>>>    		return err;
->>>> -	if (!attr.exclude_kernel) {
->>>> +	if (!attr.exclude_kernel || !attr.exclude_callchain_kernel ||
->>>> +	    !attr.exclude_hv || !attr.exclude_host || !attr.exclude_guest) {
->>>>    		err = perf_allow_kernel(&attr);
->>>>    		if (err)
->>>>    			return err;
->>>>
->>>
->>> I can understand the conditions "!attr.exclude_kernel || !attr.exclude_callchain_kernel".
->>>
->>> But I'm not very sure about the "!attr.exclude_hv || !attr.exclude_host || !attr.exclude_guest".
->>
->> Well, I'm very sure G0 userspace should never see L0 or G1 state, so
->> exclude_hv and exclude_guest had better be true.
->>
->>> On host, exclude_hv = 1, exclude_guest = 1 and exclude_host = 0, right?
->>
->> Same as above, is G0 host state G0 userspace?
->>
->>> So even exclude_kernel = 1 but exclude_host = 0, we will still go
->>> perf_allow_kernel path. Please correct me if my understanding is wrong.
->>
->> Yes, because with those permission checks in place it means you have
->> permission to see kernel bits.
-> 
-> So if I understand 'exclude_host' wrong -- a distinct possibility -- can
-> we then pretty please have the above [A-B] corrected and put in a
-> comment near perf_event_attr and the exclude_* comments changed to refer
-> to that?
-> 
+On Fri, Aug 7, 2020 at 1:51 AM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Sergio,
+>
+> First bad commit (maybe != root cause):
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   7b4ea9456dd3f73238408126ab00f1d906963d81
+> commit: 3b2fa0c92686562ac0b8cf00c0326a45814f8e18 MIPS: ralink: enable PCI support only if driver for mt7621 SoC is selected
+> date:   9 months ago
+> config: mips-randconfig-r005-20200807 (attached as .config)
+> compiler: mipsel-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         git checkout 3b2fa0c92686562ac0b8cf00c0326a45814f8e18
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+> >> drivers/staging/mt7621-pci/pci-mt7621.c:189:11: error: 'pci_generic_config_read' undeclared here (not in a function)
+>      189 |  .read  = pci_generic_config_read,
+>          |           ^~~~~~~~~~~~~~~~~~~~~~~
+> >> drivers/staging/mt7621-pci/pci-mt7621.c:190:12: error: 'pci_generic_config_write' undeclared here (not in a function)
+>      190 |  .write  = pci_generic_config_write,
+>          |            ^~~~~~~~~~~~~~~~~~~~~~~~
+[snip]
 
-In my previous mail, I explained what I understood for 'exclude_host', but not sure if it's correct. 
-Needs more review comments.
+PCI is not selected if CONFIG_SOC_MT7621 is not set which is the case
+for the attached kernel config... There was a time when the driver
+itself was depending on PCI (which for me seems to be the correct
+thing to do) but
+it was removed creating a regression for gnubee and ralink with pci
+based boards. This was done in 'c4d48cf5e2f0 ("MIPS: ralink:
+deactivate PCI support for SOC_MT7621")'. To try to fix this issue and
+being able again to properly compile the driver I sent the patch is
+mentioned here by the test robot in where HAVE_PCI was selected only
+in PCI_MT7621 SOC was selected... I was told in the mips kernel list
+that this way was not the best thing to do to fix the issue but the
+patch was accepted. I also asked about the original compile issue to
+the guy who removed first the 'depends PCI' stuff with no answer at
+all... So, what should I do to properly fix this?
 
-Thanks
-Jin Yao
+Thanks in advance for your time.
+
+Best regards,
+    Sergio Paracuellos
