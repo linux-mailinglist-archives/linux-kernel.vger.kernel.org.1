@@ -2,110 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6298B23E6D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 06:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F1323E6D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 06:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726066AbgHGEco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 00:32:44 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:37622 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725263AbgHGEcn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 00:32:43 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0774WNsI141338;
-        Fri, 7 Aug 2020 04:32:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=8Wfo9c+uZ6H9abHfs8H2dH/06jlrmsvNMvWZnZ+m/xQ=;
- b=gAYVyRcDHCZA1oU2kbOgRx4hqvmV4BJvzhMXYaeXs9feh9vbcmA/P1TUX4HB+zt5uwb/
- /gqO6h6vmZST0Ojs2lYI4qe7Vp1Cs+VLLSoFpvRz9jljEGaAR64sVajPwEhdXeVSa+bP
- Fr1CQgFirE23smTbLCZQ759WgnTasH065pa8SA096yqmvdbypkk4TuTywvrOhJCPw7ho
- 3uGxrmsaIXtO8A5PwfKVUTmx4TIAODzKICSbDK3e7hGZaoNbzYT8YizJesaVQ2EEJs66
- kA3ezxDWhl28g4/S7jGg5a0ON3VTZZVV9cTI20Aepc41PNDKuj3JfEeCin6nGwP2ekRu 4w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 32r6ep6ejq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 07 Aug 2020 04:32:23 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0774T1Ch032156;
-        Fri, 7 Aug 2020 04:32:23 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 32pdnye4u6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 07 Aug 2020 04:32:23 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0774WJdV016137;
-        Fri, 7 Aug 2020 04:32:20 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Aug 2020 21:32:19 -0700
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     Bean Huo <huobean@gmail.com>,
-        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Subject: Re: [PATCH v8 0/4] scsi: ufs: Add Host Performance Booster Support
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1mu37w0ig.fsf@ca-mkp.ca.oracle.com>
-References: <CGME20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d@epcms2p6>
-        <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
-        <7c59c7abf7b00c368228b3096e1bea8c9e2b2e80.camel@gmail.com>
-        <SN6PR04MB4640CE297AAB3CF4D37EE002FC480@SN6PR04MB4640.namprd04.prod.outlook.com>
-        <39c546268abead68f4c00f17dc47c1597f3e0273.camel@gmail.com>
-        <SN6PR04MB4640210D586CBA053F56DCF0FC480@SN6PR04MB4640.namprd04.prod.outlook.com>
-        <e3aba7fba7c208ac58c638139bd615c871d2e52e.camel@gmail.com>
-        <SN6PR04MB464069DD70022FC3C55265B6FC480@SN6PR04MB4640.namprd04.prod.outlook.com>
-Date:   Fri, 07 Aug 2020 00:32:15 -0400
-In-Reply-To: <SN6PR04MB464069DD70022FC3C55265B6FC480@SN6PR04MB4640.namprd04.prod.outlook.com>
-        (Avri Altman's message of "Thu, 6 Aug 2020 13:56:34 +0000")
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9705 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 spamscore=0 mlxscore=0
- bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008070031
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9705 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 bulkscore=0
- malwarescore=0 clxscore=1011 mlxscore=0 priorityscore=1501 adultscore=0
- impostorscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008070032
+        id S1726078AbgHGEfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 00:35:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46148 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725263AbgHGEfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 00:35:05 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49D0421744;
+        Fri,  7 Aug 2020 04:35:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596774904;
+        bh=5O8qOqoxu6cXV6n8s+ir2UAXTbHifSn0FzcatJDVJZQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=meBb48lXMEMvszs9mFfHQbw+SAFTZepacdQ+fAduyOqNB85rAk9a/6JjN0PkyK9WM
+         +5vk+BkcGUxBrePySKzDt7STTIXfL5zVC/ZFqPxXFHPIzqXM7HfZkUablsN2WfTGXt
+         Tliwrf0i2fUD7DZxJVi+7iMfjjLcOpKKVZyl2zhQ=
+Date:   Thu, 6 Aug 2020 21:35:03 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Bibo Mao <maobibo@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Daniel Silsby <dansilsby@gmail.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 2/3] mm/huge_memory.c: update tlb entry if pmd is
+ changed
+Message-Id: <20200806213503.58f40af5f2dd99e386b0f6cb@linux-foundation.org>
+In-Reply-To: <ad67e08e-9da8-6123-2c14-c197d22ee27a@linux.ibm.com>
+References: <1592990792-1923-1-git-send-email-maobibo@loongson.cn>
+        <1592990792-1923-2-git-send-email-maobibo@loongson.cn>
+        <07f78e99-6e59-0bce-8ac0-50d7c7600461@oracle.com>
+        <87lfkbl5gz.fsf@linux.ibm.com>
+        <6071df89-1438-1a25-136d-228b8863364e@oracle.com>
+        <ad67e08e-9da8-6123-2c14-c197d22ee27a@linux.ibm.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 26 Jun 2020 13:43:06 +0530 "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com> wrote:
 
-Avri,
+> On 6/25/20 10:16 PM, Mike Kravetz wrote:
+> > On 6/25/20 5:01 AM, Aneesh Kumar K.V wrote:
+> >> Mike Kravetz <mike.kravetz@oracle.com> writes:
+> >>
+> >>> On 6/24/20 2:26 AM, Bibo Mao wrote:
+> >>>> When set_pmd_at is called in function do_huge_pmd_anonymous_page,
+> >>>> new tlb entry can be added by software on MIPS platform.
+> >>>>
+> >>>> Here add update_mmu_cache_pmd when pmd entry is set, and
+> >>>> update_mmu_cache_pmd is defined as empty excepts arc/mips platform.
+> >>>> This patch has no negative effect on other platforms except arc/mips
+> >>>> system.
+> >>>
+> >>> I am confused by this comment.  It appears that update_mmu_cache_pmd
+> >>> is defined as non-empty on arc, mips, powerpc and sparc architectures.
+> >>> Am I missing something?
+> >>>
+> >>> If those architectures do provide update_mmu_cache_pmd, then the previous
+> >>> patch and this one now call update_mmu_cache_pmd with the actual faulting
+> >>> address instead of the huge page aligned address.  This was intentional
+> >>> for mips.  However, are there any potential issues on the other architectures?
+> >>> I am no expert in any of those architectures.  arc looks like it could be
+> >>> problematic as update_mmu_cache_pmd calls update_mmu_cache and then
+> >>> operates on (address & PAGE_MASK).  That could now be different.
+> >>>
+> >>
+> >> Also we added update_mmu_cache_pmd to update a THP entry. That could be
+> >> different from a hugetlb entry on some architectures. If we need to do
+> >> hugetlb equivalent for update_mmu_cache, we should add a different
+> >> function.
+> > 
+> > I do not know the mips architecture well enough or if the motivation for
+> > this patch was based on THP or hugetlb pages.  However, it will change
+> > the address passed to update_mmu_cache_pmd from huge page aligned to the
+> > actual faulting address.  Will such a change in the passed address impact
+> > the powerpc update_mmu_cache_pmd routine?
+> > 
+> 
+> Right now powerpc update_mmu_cache_pmd() is a dummy function. But I 
+> agree we should audit arch to make sure such a change can work with 
+> architectures. My comment was related to the fact that mmu cache update 
+> w.r.t THP and hugetlb can be different on some platforms. So we may
+> want to avoid using the same function for both.
 
-> Martin - Are you considering to merge the HPB feature eventually to
-> mainline kernel?
+So I'll assume that this patch is stalled until such an audit has taken
+place?
 
-I promise to take a look at the new series. But I can't say I'm a big
-fan of how this feature was defined in the spec.
-
-And - as discussed a couple of weeks ago - I would still like to see
-some supporting evidence from a realistic workload and not a synthetic
-benchmark.
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
