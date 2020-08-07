@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210A823F27E
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 20:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9583C23F286
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 20:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgHGSIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 14:08:01 -0400
-Received: from mail.efficios.com ([167.114.26.124]:53718 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgHGSIA (ORCPT
+        id S1726722AbgHGSI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 14:08:58 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:35153 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725934AbgHGSI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 14:08:00 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id D459F2C5136;
-        Fri,  7 Aug 2020 14:07:59 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 2wgxhzQoKYeG; Fri,  7 Aug 2020 14:07:59 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 8390E2C5135;
-        Fri,  7 Aug 2020 14:07:59 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 8390E2C5135
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1596823679;
-        bh=zRX1O9Hp5u2oxqTYBLW6OkzFj3h9lFf45jqhiPIZNEY=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=ZX5SRTkPorFmvMzezKgCAAO+sI+49flYmIj1BwliY1w4BXSv665pgBL7NaypYknFk
-         ZPii6cdGJbX6CHdR/azTjMf5lQXuiZBwvfn5P8Cv2lD5XtQtI/FjPremV35N4twQ6F
-         7kGhlbCgIYWSt3khbqmEeVSYXUkJIp0nu9gzeEiZh88OorTfBuxPdJcA2oB3rTcmtH
-         o3alRwOxhZcAvfBhZQIPVCZLeYIY1A+90QvRljnys1fnst2W5b0Kz/sa9Xl+191afn
-         a6yTT+l6qf3BnJ4ftp6QjTsoJI8I//bgPTYdGmymGaXTj8zIPrcd46k53VA/SOJte9
-         7snqgalHIrB9A==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id PF4qG6Vg7Tx5; Fri,  7 Aug 2020 14:07:59 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 757822C4ECE;
-        Fri,  7 Aug 2020 14:07:59 -0400 (EDT)
-Date:   Fri, 7 Aug 2020 14:07:59 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Peter Oskolkov <posk@google.com>, paulmck <paulmck@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul Turner <pjt@google.com>,
-        Chris Kennelly <ckennelly@google.com>
-Message-ID: <1689650939.2607.1596823679392.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CAFTs51VabphnoXOxLgUqDL288zfLpEugC-H5jxg=JGhTHB7QDg@mail.gmail.com>
-References: <20200806000859.160882-1-posk@google.com> <20200806134828.GA165568@hirez.programming.kicks-ass.net> <CAFTs51Ufyds5mypiysL=2ZwtyMk9hjLm-9tJbYz=xciY1f2=5g@mail.gmail.com> <1668913120.1621.1596735425601.JavaMail.zimbra@efficios.com> <CAFTs51VabphnoXOxLgUqDL288zfLpEugC-H5jxg=JGhTHB7QDg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] membarrier: add
- MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU
+        Fri, 7 Aug 2020 14:08:57 -0400
+Received: by mail-ot1-f66.google.com with SMTP id 93so2305148otx.2;
+        Fri, 07 Aug 2020 11:08:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vlBLt0wVavmDZ5RFEsE+vCh0JS01F9HZx3Rc707e4Kw=;
+        b=d6mJgNWfX5o6T2N9E2ZV11Oc/wjLapES/dMSdzTwqWAZe5G/4i/3Sjr9cJgb81Brz+
+         RTCDoutlMnVUZnsTwuBqnoGrIpVmfHPEXiuKRg6BU5alzfZhJhJxsZx/GU+l3NYkxNiC
+         ZHG7t2q2DVz53gDqCe60YieNwRlwM4Exar4s0tYfP1mCmxwVhO/kHqd4jsvXykNPk7lY
+         m+/kY/8GmTleUO28VfZF7AicHeOR64SWr0RHgHzjfd4NzzeEI5iI/oDRhBUb1+gsNTAB
+         SapBNigx6t2H9+lcFRCPJeoI8PDuwlnxqvSV5oPVYNYBq85z629H6+40U2FCylhZvsbu
+         1mzw==
+X-Gm-Message-State: AOAM531x9kiWXbz/SIy3S3Vo1Vi0sO7K+IbCxlUwl+OlWFW1oSP2qVTe
+        6b6ASJzv07u5XAg03uCcndtJzQ7DaO32lR2ZPvs=
+X-Google-Smtp-Source: ABdhPJwS6Rs7JJC7qd1+eUP1wOhP9sPrOMJCwJ8G7Tro9YiSK2Elieu727o27cU/trsCY95ziwt2Qftnp7gkk1L3qkg=
+X-Received: by 2002:a05:6830:1e5c:: with SMTP id e28mr12255651otj.118.1596823735863;
+ Fri, 07 Aug 2020 11:08:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3959 (ZimbraWebClient - FF79 (Linux)/8.8.15_GA_3953)
-Thread-Topic: membarrier: add MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU
-Thread-Index: Xx96NTYjLPZR8gb9GR8pxC4FdSAa7w==
+References: <20200807093529.5343-1-puwen@hygon.cn>
+In-Reply-To: <20200807093529.5343-1-puwen@hygon.cn>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 7 Aug 2020 20:08:44 +0200
+Message-ID: <CAJZ5v0hJoJr5+GSZfoYXmTtH_TrY17P_xRABZg1YFnQ+WUaqmg@mail.gmail.com>
+Subject: Re: [PATCH RESEND] i2c: designware: Add device HID for Hygon I2C controller
+To:     Pu Wen <puwen@hygon.cn>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Aug 7, 2020, at 1:48 PM, Peter Oskolkov posk@posk.io wrote:
+On Fri, Aug 7, 2020 at 11:37 AM Pu Wen <puwen@hygon.cn> wrote:
+>
+> Add device HID HYGO0010 to match the Hygon ACPI Vendor ID (HYGO) that
+> was registered in http://www.uefi.org/acpi_id_list, and the I2C
+> controller on Hygon paltform will use the HID.
+>
+> Signed-off-by: Pu Wen <puwen@hygon.cn>
+> Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Acked-by: Wolfram Sang <wsa@kernel.org>
+> ---
+>  drivers/acpi/acpi_apd.c                     | 1 +
+>  drivers/i2c/busses/i2c-designware-platdrv.c | 1 +
+>  2 files changed, 2 insertions(+)
+>
+> diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
+> index ba2612e9a0eb..f24f6d3f1fa5 100644
+> --- a/drivers/acpi/acpi_apd.c
+> +++ b/drivers/acpi/acpi_apd.c
+> @@ -240,6 +240,7 @@ static const struct acpi_device_id acpi_apd_device_ids[] = {
+>         { "AMDI0020", APD_ADDR(cz_uart_desc) },
+>         { "AMD0030", },
+>         { "AMD0040", APD_ADDR(st_misc_desc)},
+> +       { "HYGO0010", APD_ADDR(wt_i2c_desc) },
+>  #endif
+>  #ifdef CONFIG_ARM64
+>         { "APMC0D0F", APD_ADDR(xgene_i2c_desc) },
+> diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
+> index a71bc58fc03c..0dfeb2d11603 100644
+> --- a/drivers/i2c/busses/i2c-designware-platdrv.c
+> +++ b/drivers/i2c/busses/i2c-designware-platdrv.c
+> @@ -55,6 +55,7 @@ static const struct acpi_device_id dw_i2c_acpi_match[] = {
+>         { "HISI02A1", 0 },
+>         { "HISI02A2", 0 },
+>         { "HISI02A3", 0 },
+> +       { "HYGO0010", ACCESS_INTR_MASK },
+>         { }
+>  };
+>  MODULE_DEVICE_TABLE(acpi, dw_i2c_acpi_match);
+> --
 
-> On Thu, Aug 6, 2020 at 10:37 AM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
->>
-[...]
->> Also, should this belong to the membarrier or the rseq system call ? It just
->> looks like the membarrier happens to implement very similar things for barriers,
->> but arguably this is really about rseq. I wonder if we should expose this
->> through
->> rseq instead, even if we end up using membarrier code.
-> 
-> Yes, this is more about rseq; on the other hand, the high-level API/behavior
-> looks closer to that membarrier, and a lot of code will be shared.
-> 
-> As you are the maintainer for both rseq and membarrier, this is for
-> you to decide, I guess... :)
-
-Considering that membarrier has been made extensible with the cmd
-argument, and on the other hand rseq can be extended with "flags", but is
-currently only about registration/unregistration, I think adding a command
-to membarrier is indeed a natural approach.
-
-I am not very fond on re-purposing the membarrier flags parameter into a
-cpu number though. Maybe we should tweak the membarrier system call so it
-can expect 3 arguments instead ?
-
-  int membarrier(int cmd, int flags, int cpu);
-
-where cpu is only used for specific commands.
-
-One thing I find weird about Peter's patch is that it adds a
-MEMBERRIER_CMD_PRIVATE_EXPEDITED_RSEQ without a corresponding
-MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ. Considering that
-the SYNC_CORE variant already has its own register command, I
-find it weird that the RSEQ counterpart does not have one.
-
-Also, do we want to allow a RSEQ | SYNC_CORE private expedited
-membarrier as well ? If that is the case, then we might want to
-investigate exposing RSEQ-membarrier as a new membarrier flag
-rather than as a stand-alone command.
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Applied as 5.9-rc1 material, thanks!
