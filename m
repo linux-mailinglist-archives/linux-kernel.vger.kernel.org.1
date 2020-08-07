@@ -2,131 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DB923F10F
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 18:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E9723F0E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 18:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgHGQWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 12:22:54 -0400
-Received: from mail-eopbgr140057.outbound.protection.outlook.com ([40.107.14.57]:4231
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726996AbgHGQWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 12:22:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jh9qgscdqncpn79ITzpR3BoDnDKfl7OAH3J3Rk3SrTwoxEHCDsxYW+Jbx5jvuDMROK/ZINKgKufnmgBZgm0BbZx8xsGyE7ptLeNys57+wMY/RDGDSgt6zOXcN0LlK7JdtsM+zlSoavalr1tunthhgDdr3HCz35KYbEakaLspPU/u7VW0at23/2/H/RzRMQxKaW1IvKHEulDidSqRNK5gXVa2CxCqvrt9MGiNHCFH/WFtVlLA4H9YUdpvKiKlrzpZdFGd7hC6awDu3ZefUmq6IxVYV3ZYJe1C+oMhNh2IUS8ryRKlcV12Dy9FU3WQQJSoB1QgddMZiW85Serobkd8LA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HAYKh++vF4KpuHhTQZhWSaZQIOj6T+WI/Kqium2hgI8=;
- b=M0/aoE85XR/o0obJzKAOx+TV3jVdCjtJ5W6jBMhTnpNvLk5qleIzpY/0fFdXh7Iwnxxa+pfMH42i7BKCHx8Vu1XAu3Q0aPaMXuyYvX+HTCsx8vRCqQ5vtTazyaoEOOVK2gCQJhetR2w7qSPBsjDue0mt3MgYCNYzcWu9aLPl3Vs9wJa3CRMtu8umHZuOjqitC9L7KBOKEGIk1hnQqVQ46nA2AtT1cs8/280EohUOoBNObjtdd/mfxOMoqXI1Ca7XlPCjsDKu4k7LJVFQCxxm/trxV6QXy4fXnlfKUC/zIdkIpcljbZ5OFcNlFlMUrrwwv5kQby2xzzuD/OQqFaAPfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HAYKh++vF4KpuHhTQZhWSaZQIOj6T+WI/Kqium2hgI8=;
- b=TS+e9r5RkchV+RoXdpnpRSfdbMgOhyZ1tPX6/dV/nkowoDemPCvYOF1/gTT5TZog9AfMIBvZiLrkL/p570B5OyssbW0pA7CNXpCZTQKQkXmsKhWr46uH9ayu8CVDkCuCVgY3zjn92dHvCQiQYLFD68Rl/pUGzKu5GniZANIhHOE=
-Authentication-Results: gondor.apana.org.au; dkim=none (message not signed)
- header.d=none;gondor.apana.org.au; dmarc=none action=none
- header.from=oss.nxp.com;
-Received: from VE1PR04MB6608.eurprd04.prod.outlook.com (2603:10a6:803:125::12)
- by VE1PR04MB7359.eurprd04.prod.outlook.com (2603:10a6:800:1a0::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.18; Fri, 7 Aug
- 2020 16:22:26 +0000
-Received: from VE1PR04MB6608.eurprd04.prod.outlook.com
- ([fe80::a856:c104:11c7:258d]) by VE1PR04MB6608.eurprd04.prod.outlook.com
- ([fe80::a856:c104:11c7:258d%6]) with mapi id 15.20.3261.019; Fri, 7 Aug 2020
- 16:22:26 +0000
-From:   Andrei Botila <andrei.botila@oss.nxp.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, x86@kernel.org,
-        linux-arm-kernel@axis.com, Andrei Botila <andrei.botila@nxp.com>,
-        =?UTF-8?q?Breno=20Leit=C3=A3o?= <leitao@debian.org>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 22/22] crypto: vmx - add check for xts input length equal to zero
-Date:   Fri,  7 Aug 2020 19:20:10 +0300
-Message-Id: <20200807162010.18979-23-andrei.botila@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200807162010.18979-1-andrei.botila@oss.nxp.com>
-References: <20200807162010.18979-1-andrei.botila@oss.nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM0PR04CA0075.eurprd04.prod.outlook.com
- (2603:10a6:208:be::16) To VE1PR04MB6608.eurprd04.prod.outlook.com
- (2603:10a6:803:125::12)
+        id S1726293AbgHGQVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 12:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgHGQVl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 12:21:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED584C061756;
+        Fri,  7 Aug 2020 09:21:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=S8JHbHVUKOnsDJ6vyDw0HBSI86uZiFi5itw14Bq3gQU=; b=jOD2ZI+n0+FgJNGycqX64zKdGD
+        4/o/iIp+buCL8ZsTq/dYT8ZX74PeRaHP6hBP81XbZUifMux8OnSCQfaQVrm39N5NQrK6yZwlMxBCg
+        NVr0dwLLvZmb5NBI4j+0nMIPLKe5ZCSs/8iOWOj/HqN3ssOP9EimnDK0TI6TxKJJ4izGK92drhUF2
+        Ym5tlRsy9nNUxy56Zhg3vFijErdRX9ObeRw2KSOEZYdBMTg9JMugJXgmnnQ6SiCc5Jp6Feb8ICndg
+        JaTSsg2+dw7MzWTiI1Zivi2/El06E6dbX9ZiDkbTp7C4DYk6/MUYyYgJs2gWzqUjB+NuCqc5E5p5i
+        +7tqXNDw==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k457g-0002hE-0j; Fri, 07 Aug 2020 16:21:36 +0000
+Subject: Re: [PATCH v9 2/5] drm/msm/dp: add displayPort driver support
+To:     Guenter Roeck <groeck@google.com>
+Cc:     Tanmay Shah <tanmay@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        freedreno@lists.freedesktop.org, Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, aravindh@codeaurora.org,
+        abhinavk@codeaurora.org, khsieh@codeaurora.org,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        Guenter Roeck <groeck@chromium.org>
+References: <20200807071718.17937-1-tanmay@codeaurora.org>
+ <20200807071718.17937-3-tanmay@codeaurora.org>
+ <b0e8415f-53e6-575d-5774-5f4f7adca982@infradead.org>
+ <CABXOdTf6be2-O_aBakamNFswt+Xk0urJ7_x9hgwuuFO6=NDeew@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ab0a3659-b4c4-e7a9-f010-9ace4dae84a7@infradead.org>
+Date:   Fri, 7 Aug 2020 09:21:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv15007.swis.ro-buh01.nxp.com (83.217.231.2) by AM0PR04CA0075.eurprd04.prod.outlook.com (2603:10a6:208:be::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.15 via Frontend Transport; Fri, 7 Aug 2020 16:22:24 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [83.217.231.2]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: db6d582e-f312-4347-9a5e-08d83aee126e
-X-MS-TrafficTypeDiagnostic: VE1PR04MB7359:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB7359471A5569A61EA9CF0A07B4490@VE1PR04MB7359.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SBvn7lOuFex1vjZwY6ydgy4jyzzZtHO/gIs0aX6QgEcPdzCCSf1BTS75NQCyVYdJhxSP0I7YP776icGqlcA72y4redHK7GrbO341CIUxvUqfvn7fG/27E5cEyBKZRZZ7Igs078iuPcSgbSVlRAlHv4tFAq9c0GyjtQHqLUdiSus8AGCNKaXb4PKRDlG7VyyMVa18vMVDqcfnV4O+U9UobRt5T293UwoAyu6KPelqjozk/XjKgdr6k6wqqjSPYVYE1DJRjFyxrnZWgGZCzRceXXiP3QgZxY+5rwYF5GxN/1Idw7fFmLzy++Q7l8axzmdotDZRXaa4U7mYbp0+0EBMhg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6608.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(136003)(346002)(396003)(376002)(44832011)(66556008)(66476007)(110136005)(7416002)(66574015)(54906003)(1076003)(6506007)(4326008)(66946007)(83380400001)(8936002)(316002)(26005)(956004)(186003)(16526019)(478600001)(4744005)(86362001)(5660300002)(6666004)(6512007)(2906002)(8676002)(2616005)(52116002)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: KTItpbhXeOfEP8zVq7C1jZ3rUJg/Axwj1GIaJ6oh6r8O79WA9TeK3NEH3jNgm7iibzK8UrQGc7liMJ0hYADZMa9o8IqZkylaUfMiOi+O0I4p2UMEkD5zZcNIbv7DszcUs9Od5BVL4KHguOzJi+6qV+zbjW36w/mfya7AEMUieWbSs8Tn9ssQ/DAfznckJT5GQ/oGPXPqYvK1HvrtkXzPonErlpUmE+c4Npkyquz9pBAX0wHAKPJ2UbFoPgfCeWB13YgkKF+i6BWg024sPw7XucHGNvRe75lSAz9CoTz3kmCsmSOd7lUqwwXDu+i7IAoV8JgFG+BxNDBQ7lZ+eEul0MIerbT/K/Y21Eu5fTonGTe2hQ9Hh12ztBjt8FVTzdmSvtMgTZW7gIpYcoILTh+TVpjCzO8HduG2n93f47hG8N+1vG5SrxDCuIBFBDeUncLqMI8ZJQz6rqJa0NnDHBYMkcXXdWvpQy4vxwlWSZUeIdtyHmVDdGqU6C0pSfLeehH06/zdLxPiulPavV1/sB2W2Aij77bymNpacXCBcDcQSOtEBeUPZszevu3gVJTNnRCDWQSE9I4K0gSqPypnPpKe6foB3GFKITow3HJ3QevxDhACjjTuP3It9weM/mpqLA7yuOJ9fxINIHEgO8X2Nf/xeA==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: db6d582e-f312-4347-9a5e-08d83aee126e
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6608.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2020 16:22:26.0819
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NL63hu0oDLC6Gd5K5C0q+EsW26/jq1TLUW9PHxLBY/jvSFuqGNyGLihFO0MIN9gakneY2u+S56Wo04AVePo9EA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7359
+In-Reply-To: <CABXOdTf6be2-O_aBakamNFswt+Xk0urJ7_x9hgwuuFO6=NDeew@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrei Botila <andrei.botila@nxp.com>
+On 8/7/20 9:09 AM, Guenter Roeck wrote:
+> On Fri, Aug 7, 2020 at 8:37 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> On 8/7/20 12:17 AM, Tanmay Shah wrote:
+>>> diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+>>> index 6deaa7d01654..ea3c4d094d09 100644
+>>> --- a/drivers/gpu/drm/msm/Kconfig
+>>> +++ b/drivers/gpu/drm/msm/Kconfig
+>>> @@ -57,6 +57,14 @@ config DRM_MSM_HDMI_HDCP
+>>>       help
+>>>         Choose this option to enable HDCP state machine
+>>>
+>>> +config DRM_MSM_DP
+>>> +     bool "Enable DP support in MSM DRM driver"
+>>
+>>         bool "Enabled DisplayPort support in MSM DRM driver"
+>>
+> Why "Enabled" ? This would be quite unusual for a Kconfig entry.
 
-Standardize the way input lengths equal to 0 are handled in all skcipher
-algorithms. All the algorithms return 0 for input lengths equal to zero.
+Sorry, my typo.
+Just "Enable", like it was earlier.
 
-Cc: "Breno Leitão" <leitao@debian.org>
-Cc: Nayna Jain <nayna@linux.ibm.com>
-Cc: Paulo Flabiano Smorigo <pfsmorigo@gmail.com>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Andrei Botila <andrei.botila@nxp.com>
----
- drivers/crypto/vmx/aes_xts.c | 3 +++
- 1 file changed, 3 insertions(+)
+> Guenter
+> 
+>>> +     depends on DRM_MSM
+>>> +     help
+>>> +       Compile in support for DP driver in msm drm driver. DP external
+>>
+>>                                               MSM DRM
+>>
+>> Also:
+>> I can't find anywhere in drivers/gpu/drm/msm/ that explains what MSM means.
+>> What does it mean?
+>>
+>>> +       display support is enabled through this config option. It can
+>>> +       be primary or secondary display on device.
+>>> +
+>>>  config DRM_MSM_DSI
+>>>       bool "Enable DSI support in MSM DRM driver"
+>>>       depends on DRM_MSM
 
-diff --git a/drivers/crypto/vmx/aes_xts.c b/drivers/crypto/vmx/aes_xts.c
-index 9fee1b1532a4..33107c9e2656 100644
---- a/drivers/crypto/vmx/aes_xts.c
-+++ b/drivers/crypto/vmx/aes_xts.c
-@@ -84,6 +84,9 @@ static int p8_aes_xts_crypt(struct skcipher_request *req, int enc)
- 	u8 tweak[AES_BLOCK_SIZE];
- 	int ret;
- 
-+	if (!req->cryptlen)
-+		return 0;
-+
- 	if (req->cryptlen < AES_BLOCK_SIZE)
- 		return -EINVAL;
- 
+
 -- 
-2.17.1
+~Randy
 
