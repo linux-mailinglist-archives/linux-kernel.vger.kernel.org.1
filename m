@@ -2,140 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A0A23EE78
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 15:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AD323EE7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 15:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgHGNxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 09:53:08 -0400
-Received: from rnd-relay.smtp.broadcom.com ([192.19.229.170]:53622 "EHLO
-        rnd-relay.smtp.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726155AbgHGNxD (ORCPT
+        id S1726202AbgHGNzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 09:55:44 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:30773 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbgHGNzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 09:53:03 -0400
-Received: from mail-irv-17.broadcom.com (mail-irv-17.lvn.broadcom.net [10.75.242.48])
-        by rnd-relay.smtp.broadcom.com (Postfix) with ESMTP id 758DF30C0FE;
-        Fri,  7 Aug 2020 06:51:19 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 rnd-relay.smtp.broadcom.com 758DF30C0FE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1596808279;
-        bh=tGx/rX9q9g90/gKcnXViGFt5JZcPsprp9pEqIAGHWrg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HCkl2wKm3M07Wx2cO8ia4Y9gCs3H8AfVX8V49ovatQqPwV7RIFwms8MgfWrce0z3T
-         sxrLl/j4lvXM6x+UqFHsrZLubj29EiRg0eV+3eCUiWmx+M6ujkzFziOgClpbi5dB43
-         V0eyDND3RzPpjnoArEyk4QsixeII2WmeqHJtVGec=
-Received: from stbsrv-and-01.and.broadcom.net (stbsrv-and-01.and.broadcom.net [10.28.16.211])
-        by mail-irv-17.broadcom.com (Postfix) with ESMTP id ACD5A140093;
-        Fri,  7 Aug 2020 06:53:00 -0700 (PDT)
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-To:     linux-mips@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        james.quinlan@broadcom.com
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v1] MIPS: uasm: false warning on use of uasm_i_lui()
-Date:   Fri,  7 Aug 2020 09:52:45 -0400
-Message-Id: <20200807135251.32148-1-james.quinlan@broadcom.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 7 Aug 2020 09:55:40 -0400
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 077DtHJ8010749;
+        Fri, 7 Aug 2020 22:55:18 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 077DtHJ8010749
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1596808518;
+        bh=kxd75shqpUDCrWO6tl08NjmmCC2WGIAYElGpbYzOIWM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JZIU+GWr4nr9BXEu654yyZx5GPzcPX5LduAigEvpw3RBvdjpChf9/IGhVsd4Y8HNH
+         LqZdf4VY6McyRdtPIAKr0bqr1GzkTpZPHz0qG6HoLjcvvx8SRP9NjL365Mp5NoN2cz
+         9/rHJiGiuU05UnSyjlp+AMZnMq7Tpf5pBN0qEBXDwm7Uu8PLSzpPJgubP4BegaQDs4
+         q4hYKWWLfecNTxkzPiBo6+LV4mYTIi01fvlNtjk7DyFnNI/YmFzC3UJgUkzJwkgkYZ
+         TQCgkpdNdFxC8xUp42lTcaZOnI93hevbxIGkLQD+TH0KjW/939vvgcZptdQxef4jVD
+         fwlQFTZ1B1HNg==
+X-Nifty-SrcIP: [209.85.217.49]
+Received: by mail-vs1-f49.google.com with SMTP id p8so866395vsm.12;
+        Fri, 07 Aug 2020 06:55:18 -0700 (PDT)
+X-Gm-Message-State: AOAM5314UcsxEh9oD2kycqOBxXvmjS/NpwO7ZcSDQy6bMLXZFb7gY3UF
+        bo7G/w5qWwY+QpBe979gF873VdrrkXVP3kEFcvA=
+X-Google-Smtp-Source: ABdhPJwGNgtHcxnjmriCTHVsk/7QbBL5IwjRVD6FQFxzFRVjRYM9C48mG/o5qZkvzESZE4GuK6e7x55JL3XE1e/O/AY=
+X-Received: by 2002:a67:7c11:: with SMTP id x17mr10979837vsc.155.1596808516824;
+ Fri, 07 Aug 2020 06:55:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200708133015.12286-1-maxime.chretien@bootlin.com>
+In-Reply-To: <20200708133015.12286-1-maxime.chretien@bootlin.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 7 Aug 2020 22:54:40 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASpZ=By_-5KKps_q3emHuLBNv7AneLh9eNwBqbZToivSA@mail.gmail.com>
+Message-ID: <CAK7LNASpZ=By_-5KKps_q3emHuLBNv7AneLh9eNwBqbZToivSA@mail.gmail.com>
+Subject: Re: [PATCH] kconfig qconf: Add grey background for hidden options
+To:     Maxime Chretien <maxime.chretien@bootlin.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the example uasm code
+On Wed, Jul 8, 2020 at 10:30 PM Maxime Chretien
+<maxime.chretien@bootlin.com> wrote:
+>
+> This is useful to see which configuration parameters can be edited
+> or not when "Show All Options" is enabled.
+>
+> Signed-off-by: Maxime Chretien <maxime.chretien@bootlin.com>
+> ---
+>  scripts/kconfig/qconf.cc | 7 +++++++
+>  scripts/kconfig/qconf.h  | 4 ++++
+>  2 files changed, 11 insertions(+)
 
-	uasm_i_lui(p, tmp, 0xa000);
 
-issues a warning at Linux boot when the code is "assembled".  This is
-because the "lui" instruction is defined by the macro "Ip_u1s2(_lui)" -- I
-believe it should be Ip_u1u2(_lui) -- and its definition is associated with
-the SIMM macro -- I believe it should be the UIMM macro.  The current code
-takes a 32bit number and checks that it can be converted to a 16bit signed
-immediate.  This check fails of course for an immediate such as 0x0000a000.
+I like the idea, but
+maybe this patch could be improved?
 
-This is fixed.  However, there are two uses of uasm_i_lui() in
-UASM_i_LA_mostly() which use 16bit signed immediates in the form of a
-sign-extended 32 bit number.  Left alone these may now cause a warning when
-being processed by build_imm().  These two uses have been modified by first
-calling build_simm() on the argument to uasm_i_lui() as to convert it to a
-proper 16 bit unsigned integer.
+For example, in the following test code,
+BAR is correctly painted grey when CONFIG_FOO=n,
+but "my menu" is always white despite of
+"depends on FOO"
 
-Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
----
- arch/mips/include/asm/uasm.h  | 2 +-
- arch/mips/mm/uasm-micromips.c | 2 +-
- arch/mips/mm/uasm-mips.c      | 2 +-
- arch/mips/mm/uasm.c           | 6 +++---
- 4 files changed, 6 insertions(+), 6 deletions(-)
+----(test code)------
 
-diff --git a/arch/mips/include/asm/uasm.h b/arch/mips/include/asm/uasm.h
-index f7effca791a5..7ea1d338570b 100644
---- a/arch/mips/include/asm/uasm.h
-+++ b/arch/mips/include/asm/uasm.h
-@@ -127,7 +127,7 @@ Ip_u2s3u1(_lh);
- Ip_u2s3u1(_lhu);
- Ip_u2s3u1(_ll);
- Ip_u2s3u1(_lld);
--Ip_u1s2(_lui);
-+Ip_u1u2(_lui);
- Ip_u2s3u1(_lw);
- Ip_u2s3u1(_lwu);
- Ip_u3u1u2(_lwx);
-diff --git a/arch/mips/mm/uasm-micromips.c b/arch/mips/mm/uasm-micromips.c
-index 75ef90486fe6..86ee1499e120 100644
---- a/arch/mips/mm/uasm-micromips.c
-+++ b/arch/mips/mm/uasm-micromips.c
-@@ -82,7 +82,7 @@ static const struct insn insn_table_MM[insn_invalid] = {
- 	[insn_lh]	= {M(mm_lh32_op, 0, 0, 0, 0, 0), RT | RS | SIMM},
- 	[insn_ll]	= {M(mm_pool32c_op, 0, 0, (mm_ll_func << 1), 0, 0), RS | RT | SIMM},
- 	[insn_lld]	= {0, 0},
--	[insn_lui]	= {M(mm_pool32i_op, mm_lui_op, 0, 0, 0, 0), RS | SIMM},
-+	[insn_lui]	= {M(mm_pool32i_op, mm_lui_op, 0, 0, 0, 0), RS | UIMM},
- 	[insn_lw]	= {M(mm_lw32_op, 0, 0, 0, 0, 0), RT | RS | SIMM},
- 	[insn_mfc0]	= {M(mm_pool32a_op, 0, 0, 0, mm_mfc0_op, mm_pool32axf_op), RT | RS | RD},
- 	[insn_mfhi]	= {M(mm_pool32a_op, 0, 0, 0, mm_mfhi32_op, mm_pool32axf_op), RS},
-diff --git a/arch/mips/mm/uasm-mips.c b/arch/mips/mm/uasm-mips.c
-index 7154a1d99aad..b45c15111d68 100644
---- a/arch/mips/mm/uasm-mips.c
-+++ b/arch/mips/mm/uasm-mips.c
-@@ -132,7 +132,7 @@ static const struct insn insn_table[insn_invalid] = {
- 	[insn_ll]	= {M6(spec3_op, 0, 0, 0, ll6_op),  RS | RT | SIMM9},
- 	[insn_lld]	= {M6(spec3_op, 0, 0, 0, lld6_op),  RS | RT | SIMM9},
- #endif
--	[insn_lui]	= {M(lui_op, 0, 0, 0, 0, 0),	RT | SIMM},
-+	[insn_lui]	= {M(lui_op, 0, 0, 0, 0, 0),	RT | UIMM},
- 	[insn_lw]	= {M(lw_op, 0, 0, 0, 0, 0),  RS | RT | SIMM},
- 	[insn_lwu]	= {M(lwu_op, 0, 0, 0, 0, 0),  RS | RT | SIMM},
- 	[insn_lwx]	= {M(spec3_op, 0, 0, 0, lwx_op, lx_op), RS | RT | RD},
-diff --git a/arch/mips/mm/uasm.c b/arch/mips/mm/uasm.c
-index c56f129c9a4b..ca5d47da3bd1 100644
---- a/arch/mips/mm/uasm.c
-+++ b/arch/mips/mm/uasm.c
-@@ -327,7 +327,7 @@ I_u2s3u1(_lh)
- I_u2s3u1(_lhu)
- I_u2s3u1(_ll)
- I_u2s3u1(_lld)
--I_u1s2(_lui)
-+I_u1u2(_lui)
- I_u2s3u1(_lw)
- I_u2s3u1(_lwu)
- I_u1u2u3(_mfc0)
-@@ -457,7 +457,7 @@ UASM_EXPORT_SYMBOL(uasm_rel_lo);
- void UASM_i_LA_mostly(u32 **buf, unsigned int rs, long addr)
- {
- 	if (!uasm_in_compat_space_p(addr)) {
--		uasm_i_lui(buf, rs, uasm_rel_highest(addr));
-+		uasm_i_lui(buf, rs, build_simm(uasm_rel_highest(addr)));
- 		if (uasm_rel_higher(addr))
- 			uasm_i_daddiu(buf, rs, rs, uasm_rel_higher(addr));
- 		if (uasm_rel_hi(addr)) {
-@@ -468,7 +468,7 @@ void UASM_i_LA_mostly(u32 **buf, unsigned int rs, long addr)
- 		} else
- 			uasm_i_dsll32(buf, rs, rs, 0);
- 	} else
--		uasm_i_lui(buf, rs, uasm_rel_hi(addr));
-+		uasm_i_lui(buf, rs, build_simm(uasm_rel_hi(addr)));
- }
- UASM_EXPORT_SYMBOL(UASM_i_LA_mostly);
- 
+config FOO
+       bool "foo"
+
+config BAR
+       bool "bar"
+       depends on FOO
+
+menu "my menu"
+       depends on FOO
+
+endmenu
+
+-------(test code end)----
+
+
+
+
+
+
+
+> diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
+> index c0ac8f7b5f1a..be9ff4651da1 100644
+> --- a/scripts/kconfig/qconf.cc
+> +++ b/scripts/kconfig/qconf.cc
+> @@ -208,6 +208,13 @@ void ConfigItem::updateMenu(void)
+>         }
+>         if (!sym_has_value(sym) && visible)
+>                 prompt += " (NEW)";
+> +
+> +       if(!visible) {
+> +               setBackground(promptColIdx, QBrush(QColor("#E0E0E0")));
+> +       } else {
+> +               setBackground(promptColIdx, QBrush());
+> +       }
+> +
+
+
+I think all the columns should be grey-grounded.
+Please note you can click other columns to
+toggle y/m/n.
+
+
+How about something like this?
+
+
+
+QBrush brush;
+
+if (visible)
+        brush = QBrush()
+else
+        brush = QBrush(QColor("#E0E0E0"));
+
+setBackground(promptColIdx, brush);
+setBackground(nameColIdx, brush);
+setBackground(noColIdx, brush);
+setBackground(modColIdx, brush);
+setBackground(yesColIdx, brush);
+setBackground(dataColIdx, brush);
+
+
+
+
+>  set_prompt:
+>         setText(promptColIdx, prompt);
+>  }
+> diff --git a/scripts/kconfig/qconf.h b/scripts/kconfig/qconf.h
+> index c879d79ce817..79e47e8c1ae7 100644
+> --- a/scripts/kconfig/qconf.h
+> +++ b/scripts/kconfig/qconf.h
+> @@ -174,6 +174,10 @@ class ConfigItem : public QTreeWidgetItem {
+>         {
+>                 return Parent::text(idx);
+>         }
+> +       void setBackground(colIdx idx, const QBrush& brush)
+> +       {
+> +               Parent::setBackground(idx, brush);
+> +       }
+
+I do not understand why this wrapper is useful...
+
+
+>         void setPixmap(colIdx idx, const QIcon &icon)
+>         {
+>                 Parent::setIcon(idx, icon);
+> --
+> 2.27.0
+>
+
+
 -- 
-2.17.1
-
+Best Regards
+Masahiro Yamada
