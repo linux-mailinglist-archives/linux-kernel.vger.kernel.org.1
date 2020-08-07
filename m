@@ -2,85 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3214923EE03
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 15:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83A123EE18
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 15:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726190AbgHGNTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 09:19:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726015AbgHGNTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 09:19:14 -0400
-Received: from ziggy.com (81.172.57.81.dyn.user.ono.com [81.172.57.81])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E29522086A;
-        Fri,  7 Aug 2020 13:19:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596806354;
-        bh=90W/RlmEX3PAdf4oEsZD+boIBLyjUS1TrXoIlmoXv6M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=K3+w16/vPkbiOROuEmRUBKt2EyFZDHkhwM5D5RPR/xWJI8gBlWeT59Be2kccdeeRA
-         sQapHJNEC+JUFGTMpNd6O9xDexL3aIIAvw7Ip+Un4iDC7tbW0jmLN+maSqoWj7tUOr
-         RRdZl8udmoxeaVGeBQbK1KrJszBNor5PMilIcjUU=
-From:   matthias.bgg@kernel.org
-To:     qii.wang@mediatek.com, matthias.bgg@gmail.com, wsa@the-dreams.de,
-        yingjoe.chen@mediatek.com
-Cc:     linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Matthias Brugger <mbrugger@suse.com>
-Subject: [v2] i2c: mediatek: Fix i2c_spec_values description
-Date:   Fri,  7 Aug 2020 15:19:04 +0200
-Message-Id: <20200807131904.6515-1-matthias.bgg@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S1726150AbgHGNYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 09:24:05 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:60208 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725936AbgHGNXo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 09:23:44 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 077DMvQ9021119;
+        Fri, 7 Aug 2020 15:23:30 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=b6BXTsl2mjCqg+/gyeLA7aW/o4J+gxG3ahn6UuubIzY=;
+ b=p3E5YYlzIOFmZmLNQMzd5Nj1xWH3haLk4gwkJJkYrMlxtr/AISWQfW/fslX4+Bfh4A0G
+ ZlGX0YkizMgpPd8WiLxqTxceIdJJxObjlqEIRPvSW2tEDcYuyiqO9Omyvty/1GmTgd3I
+ W59hdTeEPNXqBPuf8smgKXqLoQGgwzlYKQ8IaUgYYXsDYTyx4b5zWCjS3JfJ+XVOdJUX
+ RZ78a4ljDql3uMwHOD/n8CyD0qnN6i8TV6KxCaHl7G4pIt5ZfOZiaW3rRikdfYdMH0mA
+ lXuYO8Ld5PxueBosoOafYO2rwk+ek08657F0wf9+gncNN/BNTH7yE1uAEDhnmiI8I1KO SA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 32n6sbhy7p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 07 Aug 2020 15:23:30 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A4EA210002A;
+        Fri,  7 Aug 2020 15:23:29 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 967D92B8A02;
+        Fri,  7 Aug 2020 15:23:29 +0200 (CEST)
+Received: from localhost (10.75.127.50) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 7 Aug 2020 15:23:29
+ +0200
+From:   Alain Volmat <alain.volmat@st.com>
+To:     <broonie@kernel.org>, <amelie.delaunay@st.com>
+CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>,
+        <alain.volmat@st.com>
+Subject: [PATCH 0/5] spi: stm32: various driver fixes
+Date:   Fri, 7 Aug 2020 15:21:20 +0200
+Message-ID: <1596806485-3810-1-git-send-email-alain.volmat@st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG8NODE3.st.com (10.75.127.24) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-07_09:2020-08-06,2020-08-07 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Brugger <mbrugger@suse.com>
+This serie is a reduced version of the serie
+[spi: stm32: various driver enhancements] previously sent.
 
-The struct i2c_spec_values have it's members documented but is
-missing the starting '@', which leads to warings like:
+Alain Volmat (1):
+  spi: stm32: always perform registers configuration prior to transfer
 
-drivers/i2c/busses/i2c-mt65xx.c:267: warning: Function parameter or member 'min_low_ns' not described in 'i2c_spec_values'
+Amelie Delaunay (3):
+  spi: stm32: fix fifo threshold level in case of short transfer
+  spi: stm32: fix stm32_spi_prepare_mbr in case of odd clk_rate
+  spi: stm32: fixes suspend/resume management
 
-We also delete min_high_ns member as it is not used in the code.
+Antonio Borneo (1):
+  spi: stm32h7: fix race condition at end of transfer
 
-Signed-off-by: Matthias Brugger <mbrugger@suse.com>
----
-
-Changes since v1:
-delete mint_high_ns member
-
- drivers/i2c/busses/i2c-mt65xx.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index e889f74703e4..efc14041d45b 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -253,14 +253,13 @@ struct mtk_i2c {
- 
- /**
-  * struct i2c_spec_values:
-- * min_low_ns: min LOW period of the SCL clock
-- * min_su_sta_ns: min set-up time for a repeated START condition
-- * max_hd_dat_ns: max data hold time
-- * min_su_dat_ns: min data set-up time
-+ * @min_low_ns: min LOW period of the SCL clock
-+ * @min_su_sta_ns: min set-up time for a repeated START condition
-+ * @max_hd_dat_ns: max data hold time
-+ * @min_su_dat_ns: min data set-up time
-  */
- struct i2c_spec_values {
- 	unsigned int min_low_ns;
--	unsigned int min_high_ns;
- 	unsigned int min_su_sta_ns;
- 	unsigned int max_hd_dat_ns;
- 	unsigned int min_su_dat_ns;
--- 
-2.28.0
+ drivers/spi/spi-stm32.c | 95 ++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 58 insertions(+), 37 deletions(-)
 
