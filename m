@@ -2,158 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE3023EA97
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9AC23EAB2
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728155AbgHGJkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 05:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727053AbgHGJkG (ORCPT
+        id S1727975AbgHGJpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 05:45:36 -0400
+Received: from relay1.mymailcheap.com ([144.217.248.102]:40937 "EHLO
+        relay1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727791AbgHGJpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 05:40:06 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEDDC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 02:40:06 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g8so1154438wmk.3
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 02:40:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2ygenASuFAVHeSxyfRvlwBCfbX67rwOVVS8/a2O5+lk=;
-        b=vCUz+KQVy1TVKykoi2FIr81nxc/Dlf66XKmkkyc6xVTHk6IfWWXk8aLggri1BoX4H4
-         sd7UJ6SnzD3ZBnabDJrahu1OR8ZiELVkKEruE9wzBCo49m6qx+FmF6bBcoSBGUFMB00H
-         ewDq5c8XABr7mfCaZs0P1qvsYSwa405Uz9XwsefdjgcGd1udB3OPZSKOY+4eLYUtFX68
-         DNPTHTwYSkcuLiQBDBZKukk/kijCebWpgd3EYFC/b37S9S6QEYFlwUP1voaQvpuX6AbT
-         YhwKAZVGHquNbMMhmdZu8YrzITupoPwk6x7lTE7yu1s302i33Rhvoyp3lM7Xk1yAiD7V
-         PbNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2ygenASuFAVHeSxyfRvlwBCfbX67rwOVVS8/a2O5+lk=;
-        b=SK7GcXWr31Y1NOG0ZmUWgk/mBWCCzg1b3q+V53jX2mVgzHmHV/poXZ18EKPiTbtyRV
-         w08tZcWru4Dkes7vXoLXPq/McLg/yIPlfN4X/VC/od4Sw+HFlmH5GSj94y/QGYQaeB3+
-         VJUV+Ziq2Vif4G4jztlLH7Vh96+svjMfRLHfSt1NAwoKxiG8t0KYOkBReyMNXkJ+VAIR
-         I0zhLpMQQSvJZPLhw8eVFWgg73c7wdXRBNUVc7ZGHGXp7y2cffQS6RyMjvVKLuHwmUzG
-         cY25RhoW/nhfw3pti+YCAY5xMVRU8Wfmj8r8pZfuNQm6sOkmz+595pcb/Fn95omUfMOx
-         s44A==
-X-Gm-Message-State: AOAM533z3BjDCDd4qpVq6D06t6d6DzKoK/Z5zeYM0KDg7K7zXfnzpWTp
-        M3vyfCZ9J6CQSwPA4l8ncBuhfg==
-X-Google-Smtp-Source: ABdhPJwuqQGf4ihtasBI+Gyuf4ZsDRFnz4dqvO8MH6E2ks+1/REokqPvz45ZuYKgSxuFeG9iFggAhA==
-X-Received: by 2002:a1c:7d55:: with SMTP id y82mr11787250wmc.186.1596793204726;
-        Fri, 07 Aug 2020 02:40:04 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:f457:5fc1:5262:84c? ([2a01:e34:ed2f:f020:f457:5fc1:5262:84c])
-        by smtp.googlemail.com with ESMTPSA id o10sm9397248wrw.79.2020.08.07.02.40.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 Aug 2020 02:40:04 -0700 (PDT)
-Subject: Re: [GIT PULL] RESEND: thermal for v5.9-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Colin King <colin.king@canonical.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Lukasz Luba <Lukasz.Luba@arm.com>,
-        Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>,
-        Henry Yen <henry.yen@mediatek.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM mailing list <linux-pm@vger.kernel.org>,
-        Marian-Cristian Rotariu 
-        <marian-cristian.rotariu.rb@bp.renesas.com>
-References: <db1dc155-0c7c-f4eb-7fa6-047a78829a82@linaro.org>
- <CAHk-=wgLt61owJ_eKwy43bBujxy3-s=xQXwsSi6VHME7SiAgiA@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <b903cdd8-cbb5-1a6a-3943-9bb019f1eed7@linaro.org>
-Date:   Fri, 7 Aug 2020 11:40:02 +0200
+        Fri, 7 Aug 2020 05:45:35 -0400
+X-Greylist: delayed 54956 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Aug 2020 05:45:34 EDT
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id 1BC153F157;
+        Fri,  7 Aug 2020 05:45:34 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id F2AFB2A3BD;
+        Fri,  7 Aug 2020 05:45:33 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1596793534;
+        bh=t2ToXu8yhIqZ88STj/d3ONGFTA8kxJKnz/37IqJZGRM=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=uJ84z521nNKtV4R5VGcEmR9GfVXgbGZjbnPLuAd+11uWL123lN6uLnQcvIILUo1pe
+         jbAjokFSB9Gdin6IcHV0MNKpEnoX96+CN0m+DK0ERVEldPi62cUN2Ln4PIbw4ahL0C
+         beFKEjlBqj4TDpqIK366G9FKPdK9PIr5Ek1DUajM=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id U4cAgRT9TFvB; Fri,  7 Aug 2020 05:45:32 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Fri,  7 Aug 2020 05:45:32 -0400 (EDT)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 7C68B4259A;
+        Fri,  7 Aug 2020 09:45:29 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="MQWInGY+";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [0.0.0.0] (unknown [203.86.239.91])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 33B7E425A5;
+        Fri,  7 Aug 2020 09:41:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1596793292;
+        bh=t2ToXu8yhIqZ88STj/d3ONGFTA8kxJKnz/37IqJZGRM=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=MQWInGY+u2ATCv0NCgzuj2d9PyJlN8/N2Mp7pmwP4pW3rou4d7bKSkZWhw5MRy/Xx
+         oZF1G4KWtqVlcjyHc4LXOb8FDRiNyXWgzHwFYnes7sMgc1DGTTZW6cTQI6cVUnzQZv
+         QrfkausLBTMPPnoFFNuEsrw09la0sTombiwU3OpU=
+Subject: Re: [PATCH 4/4] MIPS: BCM63xx: refactor board declarations
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        tsbogend@alpha.franken.de, f.fainelli@gmail.com,
+        jonas.gorski@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20200807093825.2902474-1-noltari@gmail.com>
+ <20200807093825.2902474-5-noltari@gmail.com>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <4ebe17b8-699d-349a-9c33-6eec5cb40fa3@flygoat.com>
+Date:   Fri, 7 Aug 2020 17:41:25 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgLt61owJ_eKwy43bBujxy3-s=xQXwsSi6VHME7SiAgiA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20200807093825.2902474-5-noltari@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Rspamd-Queue-Id: 7C68B4259A
+X-Spamd-Result: default: False [1.40 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         FREEMAIL_TO(0.00)[gmail.com,alpha.franken.de,broadcom.com,vger.kernel.org,lists.infradead.org];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hi Linus,
 
+在 2020/8/7 下午5:38, Álvaro Fernández Rojas 写道:
+> Current board declarations are a mess. Let's put some order and make them
+> follow the same structure.
+> Also remove board declarations tabs and double whitespace in the header.
+>
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> ---
+>   arch/mips/bcm63xx/boards/board_bcm963xx.c | 617 +++++++++++-----------
+>   1 file changed, 306 insertions(+), 311 deletions(-)
+>
+> diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+> index ac9570b66f37..36dd356374b1 100644
+> --- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
+> +++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+> @@ -1,6 +1,6 @@
+>   /*
+>    * This file is subject to the terms and conditions of the GNU General Public
+> - * License.  See the file "COPYING" in the main directory of this archive
+> + * License. See the file "COPYING" in the main directory of this archive
+You'd better replace licenses text with SPDX identifier.
+>    * for more details.
+>    *
+>    * Copyright (C) 2008 Maxime Bizon <mbizon@freebox.fr>
+> @@ -41,30 +41,28 @@ static struct board_info board;
+>    */
+>
 
-On 07/08/2020 04:43, Linus Torvalds wrote:
-> On Thu, Aug 6, 2020 at 1:19 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->>
->>
->> - Add generic netlink support for userspace notifications: events,
->> temperature
->>   and discovery commands (Daniel Lezcano)
-> 
-> This is "default y".
-> 
-> Why?
-> 
-> The help text doesn't explain either.
-> 
-> Please explain, or remove the default y. We don't add new features and
-> then try to force people to use them by enabling them by default.
-> 
-> "default y" is mainly for when something unconditional gets split up
-> and becomes conditional (so now "default y" means that you don't break
-> peoples setups when they don't even know what it is).
-> 
-> Alternatively, "default y" is for things that are make peoples lives
-> immeasurably better somehow, and it would be a crime to not enable it
-> because it's _so_ wonderful.
+Thanks
 
-Well, I won't argue the netlink notification is so that fantastic but it
-is a feature that was needed since a long time. A previous partial
-implementation was directly compiled-in and then removed [1] because
-there were no user as it is and we wanted to introduce a clean new
-notification framework based in our previous discussion at Linux
-Plumbers Conference [2] but that needed some cleanups of the thermal
-core code before.
-
-This netlink framework fulfills the needs of the thermal daemons for
-Intel, Android HAL and SoC vendors which are hacking the thermal
-framework or constantly polling the temperature.
-
-Because the compilation failed if CONFIG_NET=n, the Kconfig option was
-introduced afterwards [3]. It could have been directly handled in the
-code with a 'ifdef' directive without option but it sounded more
-convenient to at least give the opportunity to opt-out the notification.
-
-It defaults to 'y' because the previous (but unused) implementation was
-unconditionally compiled-in and because of the thermal users needs.
-
-Is default=y wrong given this history?
-
- -- Daniel
-
-
-[1] https://patchwork.kernel.org/patch/11202093/
-[2]
-https://www.linuxplumbersconf.org/event/2/contributions/185/attachments/39/46/LPC_2018_Thermal-Srinivas-Rui.pdf
-[3]
-https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git/commit/?h=thermal/next&id=5b8583d3bd7fc10cea07e4a5bfa59465758a39dc
-
-
-> So far, I'm not convinced we've ever hit that second case.
-> 
-> Convince me that the thermal layer is so magical that it really
-> warrants it. Tell me why and how my life is improved by enabling it.
-> 
->              Linus
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+- Jiaxun
