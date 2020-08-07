@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F8C23F227
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 19:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E3023F229
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 19:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgHGRr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 13:47:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40154 "EHLO mail.kernel.org"
+        id S1727062AbgHGRsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 13:48:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726015AbgHGRr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 13:47:56 -0400
-Subject: Re: [GIT PULL] RISC-V Patches for the 5.9 Merge Window, Part 1
+        id S1726015AbgHGRsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 13:48:11 -0400
+Subject: Re: [git pull] regset work
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596822476;
-        bh=aiSmJ6M3m4KFemyGg8H54Z+JLkfPFuM4Lq/xrEW90Jk=;
+        s=default; t=1596822491;
+        bh=nOrxrRd9XLj7d9qhiFQO1na9S+72lXEfOphlfrRBGLk=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=UR0bbyogQ7GFaNNHiNuAMp3B3yRQaP11+9Qj73XHH5VVpvSw3cd7FCzxQuUCpzHsT
-         bSRn5eKMDrCg4Pijw6LOSDnZ+d39IDvhm9aaCvfEf0JCyTqpvilLT+hz35m6qBKElY
-         gkMxbKz/lqPXBWx92/IgxAOFbqKINJ5CF1ImOEUo=
+        b=CzAtYhgMuUeit9UTxVQLwYcV2ld6+I4M1x0fuO2LCYs1U3Y6CxJ2OPEjQMXQG4h1b
+         RtXuGBBW+Y8ZDJhz+3P3h6bMilY+kBKcHSNp1eqCIBjA0g6zIlWK1RvyXzKRd21GU9
+         ZklRpbxa+CLJ6G7L10gQ7Ch88vxhqEg+XxKElnrw=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <mhng-bb218bf7-4f63-48f8-95a6-67ff0d32a166@palmerdabbelt-glaptop1>
-References: <mhng-bb218bf7-4f63-48f8-95a6-67ff0d32a166@palmerdabbelt-glaptop1>
-X-PR-Tracked-List-Id: <linux-riscv.lists.infradead.org>
-X-PR-Tracked-Message-Id: <mhng-bb218bf7-4f63-48f8-95a6-67ff0d32a166@palmerdabbelt-glaptop1>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.9-mw0
-X-PR-Tracked-Commit-Id: 40284a072c42f6177184fb1f62ba94c69e0c0277
+In-Reply-To: <20200806141044.GP1236603@ZenIV.linux.org.uk>
+References: <20200806141044.GP1236603@ZenIV.linux.org.uk>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200806141044.GP1236603@ZenIV.linux.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.regset
+X-PR-Tracked-Commit-Id: ce327e1c54119179066d6f3573a28001febc9265
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: dbf83817315d9ce93b3e5b1c83a167f537245bd8
-Message-Id: <159682247650.18750.12723959783536094211.pr-tracker-bot@kernel.org>
-Date:   Fri, 07 Aug 2020 17:47:56 +0000
-To:     Palmer Dabbelt <palmer@dabbelt.com>
+X-PR-Merge-Commit-Id: 19b39c38abf68591edbd698740d410c37ee075cc
+Message-Id: <159682249108.18750.2732125873851448328.pr-tracker-bot@kernel.org>
+Date:   Fri, 07 Aug 2020 17:48:11 +0000
+To:     Al Viro <viro@zeniv.linux.org.uk>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 06 Aug 2020 16:17:49 -0700 (PDT):
+The pull request you sent on Thu, 6 Aug 2020 15:10:44 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.9-mw0
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.regset
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/dbf83817315d9ce93b3e5b1c83a167f537245bd8
+https://git.kernel.org/torvalds/c/19b39c38abf68591edbd698740d410c37ee075cc
 
 Thank you!
 
