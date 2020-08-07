@@ -2,133 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5520823EEE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DBA23EE86
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgHGOQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 10:16:47 -0400
-Received: from mail.santannapisa.it ([193.205.80.98]:52489 "EHLO
-        mail.santannapisa.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgHGOQr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 10:16:47 -0400
-Received: from [94.37.192.58] (account l.abeni@santannapisa.it HELO nowhere)
-  by santannapisa.it (CommuniGate Pro SMTP 6.1.11)
-  with ESMTPSA id 150296581; Fri, 07 Aug 2020 15:16:43 +0200
-Date:   Fri, 7 Aug 2020 15:16:32 +0200
-From:   luca abeni <luca.abeni@santannapisa.it>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, rostedt@goodmis.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        tommaso.cucinotta@santannapisa.it, alessio.balsini@gmail.com,
-        bristot@redhat.com, dietmar.eggemann@arm.com,
-        linux-rt-users@vger.kernel.org, mtosatti@redhat.com,
-        williams@redhat.com, valentin.schneider@arm.com
-Subject: Re: [RFC PATCH v2 0/6] SCHED_DEADLINE server infrastructure
-Message-ID: <20200807151632.36dc6200@nowhere>
-In-Reply-To: <20200807095051.385985-1-juri.lelli@redhat.com>
-References: <20200807095051.385985-1-juri.lelli@redhat.com>
-Organization: Scuola Superiore S.Anna
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726346AbgHGOBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 10:01:48 -0400
+Received: from mga17.intel.com ([192.55.52.151]:22712 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725893AbgHGN5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 09:57:46 -0400
+IronPort-SDR: wlpMGhdOSvUnorNBm3ntc46Fc48haCB4gui4NDBCx82g326SWSed2cSGAdpMoJye3r1peZAV9O
+ wmnd3n7PBr4w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9705"; a="133152990"
+X-IronPort-AV: E=Sophos;i="5.75,445,1589266800"; 
+   d="scan'208";a="133152990"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2020 06:57:45 -0700
+IronPort-SDR: pwMXa8vGIkLDsOxSklIOUXl4kL1xeksuuCEUT8+6SH//TXEkhgRuvcaJi839n8brVZs7lfrN7V
+ UxMDpZFFxWpg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,445,1589266800"; 
+   d="scan'208";a="397586053"
+Received: from lkp-server02.sh.intel.com (HELO 090e49ab5480) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Aug 2020 06:57:44 -0700
+Received: from kbuild by 090e49ab5480 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k42sR-0000Iw-Uu; Fri, 07 Aug 2020 13:57:43 +0000
+Date:   Fri, 07 Aug 2020 21:57:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS
+ 0cd39f4600ed4de859383018eb10f0f724900e1b
+Message-ID: <5f2d5dc7.tAmOrss3CGKuS/yI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Juri,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/urgent
+branch HEAD: 0cd39f4600ed4de859383018eb10f0f724900e1b  locking/seqlock, headers: Untangle the spaghetti monster
 
-thanks for sharing the v2 patchset!
+elapsed time: 1398m
 
-In the next days I'll have a look at it, and try some tests...
+configs tested: 165
+configs skipped: 11
 
-In the meanwhile, I have some questions/comments after a first quick
-look.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-If I understand well, the patchset does not apply deadline servers to
-FIFO and RR tasks, right? How does this patchset interact with RT
-throttling?
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          polaris_defconfig
+powerpc64                           defconfig
+microblaze                      mmu_defconfig
+powerpc                      mgcoge_defconfig
+sh                   sh7770_generic_defconfig
+powerpc64                        alldefconfig
+mips                      maltasmvp_defconfig
+arm                         axm55xx_defconfig
+xtensa                    xip_kc705_defconfig
+m68k                       m5475evb_defconfig
+powerpc                       holly_defconfig
+mips                 pnx8335_stb225_defconfig
+arm                       aspeed_g5_defconfig
+mips                      bmips_stb_defconfig
+sh                           se7712_defconfig
+arc                           tb10x_defconfig
+sh                           se7780_defconfig
+mips                   sb1250_swarm_defconfig
+powerpc                    amigaone_defconfig
+mips                         tb0287_defconfig
+sh                        dreamcast_defconfig
+mips                      fuloong2e_defconfig
+mips                     loongson1c_defconfig
+arm                          lpd270_defconfig
+mips                        jmr3927_defconfig
+arm                          ep93xx_defconfig
+mips                            e55_defconfig
+arm                         shannon_defconfig
+arm                       imx_v4_v5_defconfig
+powerpc                      pasemi_defconfig
+mips                     loongson1b_defconfig
+sh                           se7619_defconfig
+arc                      axs103_smp_defconfig
+powerpc                    mvme5100_defconfig
+mips                        bcm47xx_defconfig
+arm                             rpc_defconfig
+m68k                        mvme147_defconfig
+m68k                          multi_defconfig
+sh                           se7206_defconfig
+arm                         lpc32xx_defconfig
+arm                          ixp4xx_defconfig
+powerpc                  mpc885_ads_defconfig
+sh                   secureedge5410_defconfig
+ia64                          tiger_defconfig
+arm                         mv78xx0_defconfig
+sh                         apsh4a3a_defconfig
+m68k                       m5249evb_defconfig
+sh                               j2_defconfig
+arm                  colibri_pxa270_defconfig
+xtensa                              defconfig
+arm                     eseries_pxa_defconfig
+arm                            pleb_defconfig
+arm                        keystone_defconfig
+arm                          collie_defconfig
+mips                           jazz_defconfig
+sh                        sh7763rdp_defconfig
+arm                             ezx_defconfig
+mips                       rbtx49xx_defconfig
+sh                          lboxre2_defconfig
+s390                          debug_defconfig
+sh                           se7722_defconfig
+ia64                            zx1_defconfig
+mips                 decstation_r4k_defconfig
+openrisc                    or1ksim_defconfig
+sh                          rsk7269_defconfig
+mips                        workpad_defconfig
+xtensa                generic_kc705_defconfig
+arm                          gemini_defconfig
+arm                           h3600_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20200806
+x86_64               randconfig-a001-20200806
+x86_64               randconfig-a004-20200806
+x86_64               randconfig-a005-20200806
+x86_64               randconfig-a003-20200806
+x86_64               randconfig-a002-20200806
+i386                 randconfig-a005-20200805
+i386                 randconfig-a004-20200805
+i386                 randconfig-a001-20200805
+i386                 randconfig-a003-20200805
+i386                 randconfig-a002-20200805
+i386                 randconfig-a006-20200805
+i386                 randconfig-a005-20200806
+i386                 randconfig-a004-20200806
+i386                 randconfig-a001-20200806
+i386                 randconfig-a002-20200806
+i386                 randconfig-a003-20200806
+i386                 randconfig-a006-20200806
+i386                 randconfig-a005-20200807
+i386                 randconfig-a004-20200807
+i386                 randconfig-a001-20200807
+i386                 randconfig-a002-20200807
+i386                 randconfig-a003-20200807
+i386                 randconfig-a006-20200807
+x86_64               randconfig-a013-20200807
+x86_64               randconfig-a011-20200807
+x86_64               randconfig-a012-20200807
+x86_64               randconfig-a016-20200807
+x86_64               randconfig-a015-20200807
+x86_64               randconfig-a014-20200807
+i386                 randconfig-a011-20200806
+i386                 randconfig-a012-20200806
+i386                 randconfig-a013-20200806
+i386                 randconfig-a015-20200806
+i386                 randconfig-a014-20200806
+i386                 randconfig-a016-20200806
+i386                 randconfig-a011-20200807
+i386                 randconfig-a012-20200807
+i386                 randconfig-a013-20200807
+i386                 randconfig-a015-20200807
+i386                 randconfig-a014-20200807
+i386                 randconfig-a016-20200807
+i386                 randconfig-a011-20200805
+i386                 randconfig-a012-20200805
+i386                 randconfig-a013-20200805
+i386                 randconfig-a014-20200805
+i386                 randconfig-a015-20200805
+i386                 randconfig-a016-20200805
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-If I understand well, patch 6/6 does something like "use deadline
-servers for SCHED_OTHER only if FIFO/RR tasks risk to starve
-SCHED_OTHER tasks"... Right? I understand this is because you do not
-want to delay RT tasks if they are not starving other tasks. But then,
-maybe what you want is not deadline-based scheduling. Maybe a
-reservation-based scheduler based on fixed priorities is what you want?
-(with SCHED_DEADLINE, you could provide exact performance guarantees to
-SCHED_OTHER tasks, but I suspect patch 6/6 breaks these guarantees?)
-
-
-			Thanks,
-				Luca
-
-On Fri,  7 Aug 2020 11:50:45 +0200
-Juri Lelli <juri.lelli@redhat.com> wrote:
-
-> Hi,
-> 
-> This is RFC v2 of Peter's SCHED_DEADLINE server infrastructure
-> implementation [1].
-> 
-> SCHED_DEADLINE servers can help fixing starvation issues of low
-> priority tasks (e.g., SCHED_OTHER) when higher priority tasks
-> monopolize CPU cycles. Today we have RT Throttling; DEADLINE servers
-> should be able to replace and improve that.
-> 
-> I rebased Peter's patches (adding changelogs where needed) on
-> tip/sched/core as of today and incorporated fixes to issues discussed
-> during RFC v1. Current set seems to even boot on real HW! :-)
-> 
-> While playing with RFC v1 set (and discussing it further offline with
-> Daniel) it has emerged the need to slightly change the behavior. Patch
-> 6/6 is a (cumbersome?) attempt to show what's probably needed.
-> The problem with "original" implementation is that FIFO tasks might
-> suffer preemption from NORMAL even when spare CPU cycles are
-> available. In fact, fair deadline server is enqueued right away when
-> NORMAL tasks wake up and they are first scheduled by the server, thus
-> potentially preempting a well behaving FIFO task. This is of course
-> not ideal. So, in patch 6/6 I propose to use some kind of starvation
-> monitor/ watchdog that delays enqueuing of deadline servers to the
-> point when fair tasks might start to actually suffer from starvation
-> (just randomly picked HZ/2 for now). One problem I already see with
-> the current implementation is that it adds overhead to fair paths, so
-> I'm pretty sure there are better ways to implement the idea (e.g.,
-> Daniel already suggested using a starvation monitor kthread sort of
-> thing).
-> 
-> Receiving comments and suggestions is the sole purpose of this posting
-> at this stage. Hopefully we can further discuss the idea at Plumbers
-> in a few weeks. So, please don't focus too much into actual
-> implementation (which I plan to revise anyway after I'm back from pto
-> :), but try to see if this might actually fly. The feature seems to
-> be very much needed.
-> 
-> Thanks!
-> 
-> Juri
-> 
-> 1 -
-> https://lore.kernel.org/lkml/20190726145409.947503076@infradead.org/
-> 
-> Juri Lelli (1):
->   sched/fair: Implement starvation monitor
-> 
-> Peter Zijlstra (5):
->   sched: Unify runtime accounting across classes
->   sched/deadline: Collect sched_dl_entity initialization
->   sched/deadline: Move bandwidth accounting into
-> {en,de}queue_dl_entity sched/deadline: Introduce deadline servers
->   sched/fair: Add trivial fair server
-> 
->  include/linux/sched.h    |  28 ++-
->  kernel/sched/core.c      |  23 +-
->  kernel/sched/deadline.c  | 483
-> ++++++++++++++++++++++++--------------- kernel/sched/fair.c      |
-> 136 ++++++++++- kernel/sched/rt.c        |  17 +-
->  kernel/sched/sched.h     |  50 +++-
->  kernel/sched/stop_task.c |  16 +-
->  7 files changed, 522 insertions(+), 231 deletions(-)
-> 
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
