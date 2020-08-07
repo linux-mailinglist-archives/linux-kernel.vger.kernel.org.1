@@ -2,129 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6967923F0E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 18:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C58123F126
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 18:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgHGQVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 12:21:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34516 "EHLO
+        id S1727876AbgHGQXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 12:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgHGQVo (ORCPT
+        with ESMTP id S1726664AbgHGQXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 12:21:44 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F844C061756;
-        Fri,  7 Aug 2020 09:21:44 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id d4so1135299pjx.5;
-        Fri, 07 Aug 2020 09:21:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RtvJ13hdgXULntpol9mloh5tvxGSRGDKG13PZYUi3XU=;
-        b=H6mz2e+SOP/exVXTPiRz80OCuPuaIvFBqcsYiF+nL/rWpO8UkEOqqqKs9Qf0lT6vtc
-         x7OhdyO9yMTBl6Rlof8X9S7Kjm1WSJY8ODEJPcoY7nagpcLQwdx9F+QAbjBkj6/cAZYh
-         Pkrh+zKCLdudTC1MRPRuJZWdXBh9zq6iRFQS9o6NGHqU3Bi3gjRfrYmxg+qeARIbUjw0
-         vjcB65OafzC7MkmVzrMx2P2bDyoVrpSWpLkvUE0X0b/qNOFww+04ki7pJtC/WPM13dVv
-         DU/qOY8AuP6exCLRJFxX00XjR/m/mGTIsVOcxuHEruyEcKvEk+ARufx/2jGURlm6mXkK
-         ItEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RtvJ13hdgXULntpol9mloh5tvxGSRGDKG13PZYUi3XU=;
-        b=VLaC6WKz60lvsgWQmT474tJV4AFhx7Fs8MBiHJg/9OSpFO3M2yfLCTYoHZktHQcKVF
-         bf4ylbkuzXwXgZn/UA1+DajJdtmGM5S3P98CGDKVqt3+lQvbwAufobknracZeAzWazUQ
-         KBny0Gxs5uqn0lBqOfpg0H1U57JnIalgmVWFjGLTGO+wDl0lcJ2PcXZG13dl9iqdGyLy
-         Az37UHtOPyMvbPcQJTYSfE5w4n2sT1BeoUm//xAWKX6KlNTI9a/9wu3nyex13DjRV/ui
-         37j30QjthBmAyToLCrCWBPb8Mi0XqM7bBzlkgKB06FDEY0WcKoYh+6NLQjggcF4BzAuW
-         2PUw==
-X-Gm-Message-State: AOAM532vI6U9Kz4WwB9xWY59zLfyVcIozbiWldy0ND6ZiRdHT+iNYzWA
-        0GCw5U9EsXWloRFO0mJ4Jq4=
-X-Google-Smtp-Source: ABdhPJwiD81Z5EZLACnX1D2qaPuUB786F3u3s/Cr6RexLawSv5Y20XjRJJ1zrawKoro9VWPZnJEhkA==
-X-Received: by 2002:a17:90b:4b84:: with SMTP id lr4mr13554580pjb.111.1596817304007;
-        Fri, 07 Aug 2020 09:21:44 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f89sm11813143pje.11.2020.08.07.09.21.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Aug 2020 09:21:42 -0700 (PDT)
-Date:   Fri, 7 Aug 2020 09:21:41 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     madhuparnabhowmik10@gmail.com
-Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andrianov@ispras.ru,
-        ldv-project@linuxtesting.org, f.fainelli@gmail.com
-Subject: Re: [PATCH] drivers: watchdog: rdc321x_wdt: Fix race condition bugs
-Message-ID: <20200807162141.GA41980@roeck-us.net>
-References: <20200807112902.28764-1-madhuparnabhowmik10@gmail.com>
+        Fri, 7 Aug 2020 12:23:11 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E788C061756;
+        Fri,  7 Aug 2020 09:23:11 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k4597-00BE3G-Tq; Fri, 07 Aug 2020 16:23:05 +0000
+Date:   Fri, 7 Aug 2020 17:23:05 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: srvfs: file system for posting open file descriptors into fs
+ namespace
+Message-ID: <20200807162305.GT1236603@ZenIV.linux.org.uk>
+References: <55ef0e9a-fb70-7c4a-e945-4d521180221c@metux.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200807112902.28764-1-madhuparnabhowmik10@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <55ef0e9a-fb70-7c4a-e945-4d521180221c@metux.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 07, 2020 at 04:59:02PM +0530, madhuparnabhowmik10@gmail.com wrote:
-> From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+On Fri, Aug 07, 2020 at 01:09:30PM +0200, Enrico Weigelt, metux IT consult wrote:
+> Hello folks,
 > 
-> In rdc321x_wdt_probe(), rdc321x_wdt_device.queue is initialized
-> after misc_register(), hence if ioctl is called before its
-> initialization which can call rdc321x_wdt_start() function,
-> it will see an uninitialized value of rdc321x_wdt_device.queue,
-> hence initialize it before misc_register().
-> Also, rdc321x_wdt_device.default_ticks is accessed in reset()
-> function called from write callback, thus initialize it before
-> misc_register().
 > 
-> Found by Linux Driver Verification project (linuxtesting.org).
+> here's the first version of my "srvfs" implementation - a synthentic
+> filesystem which allows a process to "publish" an open file descriptor
+> into the file system, so other processes can continue from there, with
+> whatever state the fd is already in.
 > 
-> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> This is a concept from Plan9. The main purpose is allowing applications
+> "dialing" some connection, do initial handshakes (eg. authentication)
+> and then publish the connection to other applications, that now can now
+> make use of the already dialed connection.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-Having said that ... this is yet another potentially obsolete driver.
-You are really wasting your (and, fwiw, my) time.
-
-Florian, any thoughts if support for this chip can/should be deprecated
-or even removed ?
-
-Guenter
-
-> ---
->  drivers/watchdog/rdc321x_wdt.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/watchdog/rdc321x_wdt.c b/drivers/watchdog/rdc321x_wdt.c
-> index 57187efeb86f..f0c94ea51c3e 100644
-> --- a/drivers/watchdog/rdc321x_wdt.c
-> +++ b/drivers/watchdog/rdc321x_wdt.c
-> @@ -231,6 +231,8 @@ static int rdc321x_wdt_probe(struct platform_device *pdev)
->  
->  	rdc321x_wdt_device.sb_pdev = pdata->sb_pdev;
->  	rdc321x_wdt_device.base_reg = r->start;
-> +	rdc321x_wdt_device.queue = 0;
-> +	rdc321x_wdt_device.default_ticks = ticks;
->  
->  	err = misc_register(&rdc321x_wdt_misc);
->  	if (err < 0) {
-> @@ -245,14 +247,11 @@ static int rdc321x_wdt_probe(struct platform_device *pdev)
->  				rdc321x_wdt_device.base_reg, RDC_WDT_RST);
->  
->  	init_completion(&rdc321x_wdt_device.stop);
-> -	rdc321x_wdt_device.queue = 0;
->  
->  	clear_bit(0, &rdc321x_wdt_device.inuse);
->  
->  	timer_setup(&rdc321x_wdt_device.timer, rdc321x_wdt_trigger, 0);
->  
-> -	rdc321x_wdt_device.default_ticks = ticks;
-> -
->  	dev_info(&pdev->dev, "watchdog init success\n");
->  
->  	return 0;
-> -- 
-> 2.17.1
-> 
+Yeah, but...  Linux open() always gets a new struct file instance; how
+do you work around that?  Some variant of ->atomic_open() API change?
+Details, please.
