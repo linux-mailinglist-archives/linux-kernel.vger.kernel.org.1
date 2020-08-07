@@ -2,94 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E680F23F1D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 19:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2447923F1DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 19:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgHGRUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 13:20:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:60146 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgHGRUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 13:20:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C8641FB;
-        Fri,  7 Aug 2020 10:20:31 -0700 (PDT)
-Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.210.119])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A05A13F7D7;
-        Fri,  7 Aug 2020 10:20:28 -0700 (PDT)
-From:   Jianlin Lv <Jianlin.Lv@arm.com>
-To:     bpf@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, yhs@fb.com, Jianlin.Lv@arm.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH bpf-next] bpf: fix segmentation fault of test_progs
-Date:   Sat,  8 Aug 2020 01:20:16 +0800
-Message-Id: <20200807172016.150952-1-Jianlin.Lv@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200731061600.18344-1-Jianlin.Lv@arm.com>
-References: <20200731061600.18344-1-Jianlin.Lv@arm.com>
+        id S1726994AbgHGRU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 13:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726545AbgHGRU5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 13:20:57 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C06C061A27
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 10:20:56 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id p14so2372633wmg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 10:20:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=s8Gg7Zt8gvjVcJNqZJEesrPztRK/2q4jyigfD0LuxL0=;
+        b=J7mC8E68aYnj2RergZPJmlURoMDBxPuYGSSgoOGWnrU0RV2jKkTOL9u1LfD8O3oQ+j
+         rPjBORNpj3pTQP7vR2TvQc4QSeDFHnJFntoZdwSA9vbeEd5MlK5rqzJGyCP7sGO9uQIZ
+         /8QmCW4CZdfG7Bz3LiTM2Qw/DS3YKrjc6NFSaNyHGaXU54Zb86aoIrR0pksNFu01abEr
+         QolRT8rPOndmAV/+u7J382KsweZWvO4nzctjvPu3Ms5MK0HWpBtqzSsDLRrCrjUsFCAj
+         d3H6hIYK7gInEQXtQjP3P/CkGzq1jFM/sIGudxRCu3/t6R+7DSLSFCTLeRlmAPTmrb4Q
+         imqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=s8Gg7Zt8gvjVcJNqZJEesrPztRK/2q4jyigfD0LuxL0=;
+        b=r+YShnbUVpPWvVfrkazX9nGMfNF3BUqDkzqAPvEoIb8hn7dyjbCK9SkPTnBelaL8Lz
+         yCQQBVbwxhzu7ZSS76yM4+Kth0WCO0IJbwCpK3ilUe/QC66C0CTK6OeGEoZWKJBdR1Gl
+         Vy38ErKEYk/F3Dm+rgrAtlWKIXVIwKul/BNcsH7o61VFBbyfHivMzYHS+WnrIlvYxEVa
+         E9ngRsFHrenjnUDQo39iJY0W39O5uzg+dsc+EK1YKmuRleIzEc4snHTj5ukdFX4hrT64
+         RIH2z+X+ld/o2RjQ7f9yIlK8J/7lq5qfeYP5gqa9b5GQHjOblco2jwWxEErV0WQXNCVD
+         +Fhg==
+X-Gm-Message-State: AOAM533W42nb21kpcZ7r/B5RpsQSRyn6aNSdPPoPAnKW1dRq+o7DGEax
+        f2o4Vl8n9xL6cLGQ9pI1JHGJow==
+X-Google-Smtp-Source: ABdhPJwtX/HDP1muKWF83XqDo5WH0PxfeVFbIX1cunmSOV+Dj9s8LZXg8o/Nuba/vDmB5+6zExwUPg==
+X-Received: by 2002:a1c:f204:: with SMTP id s4mr14385469wmc.9.1596820855087;
+        Fri, 07 Aug 2020 10:20:55 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id j5sm11530953wmb.15.2020.08.07.10.20.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Aug 2020 10:20:54 -0700 (PDT)
+Date:   Fri, 7 Aug 2020 19:20:48 +0200
+From:   Marco Elver <elver@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Christoph Lameter <cl@linux.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: Odd-sized kmem_cache_alloc and slub_debug=Z
+Message-ID: <20200807172048.GB1467156@elver.google.com>
+References: <20200807160627.GA1420741@elver.google.com>
+ <202008071010.69B612E@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202008071010.69B612E@keescook>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-test_progs reports the segmentation fault as below
+On Fri, Aug 07, 2020 at 10:16AM -0700, Kees Cook wrote:
+> On Fri, Aug 07, 2020 at 06:06:27PM +0200, Marco Elver wrote:
+> > I found that the below debug-code using kmem_cache_alloc(), when using
+> > slub_debug=Z, results in the following crash:
+> > 
+> > 	general protection fault, probably for non-canonical address 0xcccccca41caea170: 0000 [#1] PREEMPT SMP PTI
+> > 	CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.8.0+ #1
+> > 	Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
+> > 	RIP: 0010:freelist_dereference mm/slub.c:272 [inline]
+> > 	RIP: 0010:get_freepointer mm/slub.c:278 [inline]
+> 
+> That really looks like more fun from my moving the freelist pointer... 
+> 
+> > 	R13: cccccca41caea160 R14: ffffe7c6a072ba80 R15: ffffa3a41c96d540
+> 
+> Except that it's all cccc at the start, which doesn't look like "data"
+> nor the hardened freelist obfuscation.
+> 
+> > 	FS:  0000000000000000(0000) GS:ffffa3a41fc00000(0000) knlGS:0000000000000000
+> > 	CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > 	CR2: ffffa3a051c01000 CR3: 000000045140a001 CR4: 0000000000770ef0
+> > 	DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > 	DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > 	PKRU: 00000000
+> > 	Call Trace:
+> > 	 ___slab_alloc+0x336/0x340 mm/slub.c:2690
+> > 	 __slab_alloc mm/slub.c:2714 [inline]
+> > 	 slab_alloc_node mm/slub.c:2788 [inline]
+> > 	 slab_alloc mm/slub.c:2832 [inline]
+> > 	 kmem_cache_alloc+0x135/0x200 mm/slub.c:2837
+> > 	 start_kernel+0x3d6/0x44e init/main.c:1049
+> > 	 secondary_startup_64+0xb6/0xc0 arch/x86/kernel/head_64.S:243
+> > 
+> > Any ideas what might be wrong?
+> > 
+> > This does not crash when redzones are not enabled.
+> > 
+> > Thanks,
+> > -- Marco
+> > 
+> > ------ >8 ------
+> > 
+> > diff --git a/init/main.c b/init/main.c
+> > index 15bd0efff3df..f4aa5bb3f2ec 100644
+> > --- a/init/main.c
+> > +++ b/init/main.c
+> > @@ -1041,6 +1041,16 @@ asmlinkage __visible void __init start_kernel(void)
+> >  	sfi_init_late();
+> >  	kcsan_init();
+> >  
+> > +	/* DEBUG CODE */
+> > +	{
+> > +		struct kmem_cache *c = kmem_cache_create("test", 21, 1, 0, NULL);
+> > +		char *buf;
+> > +		BUG_ON(!c);
+> > +		buf = kmem_cache_alloc(c, GFP_KERNEL);
+> > +		kmem_cache_free(c, buf);
+> > +		kmem_cache_destroy(c);
+> > +	}
+> > +
+> >  	/* Do the rest non-__init'ed, we're now alive */
+> >  	arch_call_rest_init();
+> >  
+> 
+> Which kernel version? Can you send your CONFIG too?
 
-$ sudo ./test_progs -t mmap --verbose
-test_mmap:PASS:skel_open_and_load 0 nsec
-......
-test_mmap:PASS:adv_mmap1 0 nsec
-test_mmap:PASS:adv_mmap2 0 nsec
-test_mmap:PASS:adv_mmap3 0 nsec
-test_mmap:PASS:adv_mmap4 0 nsec
-Segmentation fault
+Sorry, didn't see this before I replied to the other -- it's here:
+https://lkml.kernel.org/r/20200807171849.GA1467156@elver.google.com
 
-This issue was triggered because mmap() and munmap() used inconsistent
-length parameters; mmap() creates a new mapping of 3*page_size, but the
-length parameter set in the subsequent re-map and munmap() functions is
-4*page_size; this leads to the destruction of the process space.
-
-Another issue is that when unmap the second page fails, the length
-parameter to delete tmp1 mappings should be 3*page_size.
-
-Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
----
- tools/testing/selftests/bpf/prog_tests/mmap.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/mmap.c b/tools/testing/selftests/bpf/prog_tests/mmap.c
-index 43d0b5578f46..2070cfe19cac 100644
---- a/tools/testing/selftests/bpf/prog_tests/mmap.c
-+++ b/tools/testing/selftests/bpf/prog_tests/mmap.c
-@@ -192,7 +192,7 @@ void test_mmap(void)
- 	/* unmap second page: pages 1, 3 mapped */
- 	err = munmap(tmp1 + page_size, page_size);
- 	if (CHECK(err, "adv_mmap2", "errno %d\n", errno)) {
--		munmap(tmp1, map_sz);
-+		munmap(tmp1, 3 * page_size);
- 		goto cleanup;
- 	}
- 
-@@ -207,8 +207,8 @@ void test_mmap(void)
- 	CHECK(tmp1 + page_size != tmp2, "adv_mmap4",
- 	      "tmp1: %p, tmp2: %p\n", tmp1, tmp2);
- 
--	/* re-map all 4 pages */
--	tmp2 = mmap(tmp1, 4 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
-+	/* re-map all 3 pages */
-+	tmp2 = mmap(tmp1, 3 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
- 		    data_map_fd, 0);
- 	if (CHECK(tmp2 == MAP_FAILED, "adv_mmap5", "errno %d\n", errno)) {
- 		munmap(tmp1, 3 * page_size); /* unmap page 1 */
-@@ -226,7 +226,7 @@ void test_mmap(void)
- 	CHECK_FAIL(map_data->val[2] != 321);
- 	CHECK_FAIL(map_data->val[far] != 3 * 321);
- 
--	munmap(tmp2, 4 * page_size);
-+	munmap(tmp2, 3 * page_size);
- 
- 	/* map all 4 pages, but with pg_off=1 page, should fail */
- 	tmp1 = mmap(NULL, 4 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
--- 
-2.17.1
-
+Thanks,
+-- Marco
