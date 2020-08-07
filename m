@@ -2,79 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBF823E945
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 10:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0259023E94A
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 10:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727842AbgHGIjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 04:39:23 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:41853 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726936AbgHGIjW (ORCPT
+        id S1727955AbgHGIj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 04:39:59 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:31531 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726382AbgHGIj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 04:39:22 -0400
-Received: by mail-ot1-f67.google.com with SMTP id a65so1013601otc.8;
-        Fri, 07 Aug 2020 01:39:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vKfgGnjXRpTaiAEIZ5vtKn7CB7zEFKghH7Cgz6HwfSg=;
-        b=bfT4mi20W9DGvBITOhaBmgDEieFceoKvqyCriWDQCYxZG1w1fyrNunIwxTAyvdClrv
-         xLwulZzRNs1qjnx4RQh4aruM30Rw2fJ30L3BJqlCdfKX6vrKrbvwv3DwjoHxVY1I9Nxt
-         kWJBVwAuTbY1Q22khcWiXEwmxVKqNMydP5R3MORHF65N9quXoVV6hdb/5fmNSTekhK8k
-         J9UHkyuzUKk3B8IEGGWIwtgX3KXS8P3KX5lmUBYxXidOl0Ts+Wu4G2+x4NapypZrdTnc
-         0z/sf7+NIz0B+tGd3X+3o3ig5R159wehyM8+Dha+OWChJ8Il/kzXpyeVUWuzwqr3NiOs
-         Eckw==
-X-Gm-Message-State: AOAM533mW7yvzuKEUfUrhZSxVC9Spp2vdfSKzNBhS3F5+oGstBwQKVQ9
-        JaX9Ohj7g+vM8ePy+xU2FMpOu4JceNorSNGMc7k=
-X-Google-Smtp-Source: ABdhPJzxabCXC24U/rTq2tBqlEz/WWYILzDohzuiG2HrpUTh6ZjgHU3FAKFNGT0WWLpgTg2BdtVX6Yst1SGXEZif/t8=
-X-Received: by 2002:a05:6830:1b79:: with SMTP id d25mr10192558ote.107.1596789561162;
- Fri, 07 Aug 2020 01:39:21 -0700 (PDT)
+        Fri, 7 Aug 2020 04:39:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596789597;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=OlUdNVLkFbE86ANY/tbMVg0aRxa7c4aH/HL6yZUmDFI=;
+        b=Anx/nToC93GeclaJg0o9ZmqKTpCK0i2n68pPiZdkDInfitUH0dkGG7ztzseEuZFu+b51X6
+        dq3AtWM2Yu9aJQQQqoc0trY8RvpMOZgxQAlx4ZrN/363JSkIyh1lkeJ0nsXdwO+YfI8fFo
+        UqBonBnU5jrHgLhsJExeptaYEBJ+QvU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-191-eRSuRYPAOOacnDWMSEeuCw-1; Fri, 07 Aug 2020 04:39:53 -0400
+X-MC-Unique: eRSuRYPAOOacnDWMSEeuCw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E24928005B0;
+        Fri,  7 Aug 2020 08:39:51 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.139])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 950025C1D2;
+        Fri,  7 Aug 2020 08:39:48 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Jon Doron <arilou@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/7] KVM: x86: hyper-v: make KVM_GET_SUPPORTED_HV_CPUID more useful
+Date:   Fri,  7 Aug 2020 10:39:39 +0200
+Message-Id: <20200807083946.377654-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <20200806183152.11809-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200806183152.11809-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20200806183152.11809-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 7 Aug 2020 10:39:09 +0200
-Message-ID: <CAMuHMdXK1mfmYjCMWYNqMVy7jJ9Hh7kBZMBbzyD-pkwrHB6Pjw@mail.gmail.com>
-Subject: Re: [PATCH 4/5] dt-bindings: pwm: renesas,tpu-pwm: Document r8a7742 support
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux PWM List <linux-pwm@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 8:32 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Document r8a7742 specific compatible strings. No driver change is
-> needed as the fallback compatible string "renesas,tpu" activates the
-> right code in the driver.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+KVM_GET_SUPPORTED_HV_CPUID was initially implemented as a vCPU ioctl but
+this is not very useful when VMM is just trying to query which Hyper-V
+features are supported by the host prior to creating VM/vCPUs. The data
+in KVM_GET_SUPPORTED_HV_CPUID is mostly static with a few exceptions but
+it seems we can change this. Add support for KVM_GET_SUPPORTED_HV_CPUID as
+a system ioctl as well.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+QEMU specific description:
+In some cases QEMU needs to collect the information about which Hyper-V
+features are supported by KVM and pass it up the stack. For non-hyper-v
+features this is done with system-wide KVM_GET_SUPPORTED_CPUID/
+KVM_GET_MSRS ioctls but Hyper-V specific features don't get in the output
+(as Hyper-V CPUIDs intersect with KVM's). In QEMU, CPU feature expansion
+happens before any KVM vcpus are created so KVM_GET_SUPPORTED_HV_CPUID
+can't be used in its current shape.
 
-Gr{oetje,eeting}s,
+Vitaly Kuznetsov (7):
+  KVM: x86: hyper-v: Mention SynDBG CPUID leaves in api.rst
+  KVM: x86: hyper-v: disallow configuring SynIC timers with no SynIC
+  KVM: x86: hyper-v: make KVM_GET_SUPPORTED_HV_CPUID output independent
+    of eVMCS enablement
+  KVM: x86: hyper-v: always advertise HV_STIMER_DIRECT_MODE_AVAILABLE
+  KVM: x86: hyper-v: drop now unneeded vcpu parameter from
+    kvm_vcpu_ioctl_get_hv_cpuid()
+  KVM: x86: hyper-v: allow KVM_GET_SUPPORTED_HV_CPUID as a system ioctl
+  KVM: selftests: test KVM_GET_SUPPORTED_HV_CPUID as a system ioctl
 
-                        Geert
+ Documentation/virt/kvm/api.rst                | 12 +--
+ arch/x86/include/asm/kvm_host.h               |  2 +-
+ arch/x86/kvm/hyperv.c                         | 30 ++++----
+ arch/x86/kvm/hyperv.h                         |  3 +-
+ arch/x86/kvm/vmx/evmcs.c                      |  8 +-
+ arch/x86/kvm/vmx/evmcs.h                      |  2 +-
+ arch/x86/kvm/x86.c                            | 44 ++++++-----
+ include/uapi/linux/kvm.h                      |  4 +-
+ .../testing/selftests/kvm/include/kvm_util.h  |  2 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 26 +++++++
+ .../selftests/kvm/x86_64/hyperv_cpuid.c       | 77 +++++++++----------
+ 11 files changed, 120 insertions(+), 90 deletions(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.4
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
