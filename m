@@ -2,341 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D3A23F04A
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 17:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C62023F053
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 17:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbgHGP5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 11:57:21 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:24829 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726797AbgHGP5P (ORCPT
+        id S1726913AbgHGP54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 11:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726524AbgHGP5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 11:57:15 -0400
+        Fri, 7 Aug 2020 11:57:55 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3D8C061756
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 08:57:55 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id q17so1225369pls.9
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 08:57:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1596815834; x=1628351834;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=PqaES98GuoN0EaWLewBLTQukteeJnUgWf94ImTbzG/g=;
-  b=uIQI9LCJnP5qx+S05s1Z8iSnft+ucRx/tF3EYI5kQ2L/OpQXRSlaUjrP
-   k2md4/slE1FqACnijYVqqh2FbTnmz0PYr3VhK1ObTUZZmdrt3ROPuZFu7
-   dKAkHy6SKmhakuJ4sMzhPXwsUe5CFnjI+5TUwVdcw1VZPJP1XTTlH6YOi
-   o=;
-IronPort-SDR: 4/TmL8DtaTTthLk3gv+a/FZ+kHVELWpr/DIlrgms+5kHl7nTaF0B4Luj2i9leFS4LFRS9AWqQk
- deU08Y5vLbBA==
-X-IronPort-AV: E=Sophos;i="5.75,446,1589241600"; 
-   d="scan'208";a="46546146"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 07 Aug 2020 15:57:12 +0000
-Received: from EX13MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id 22C54A2214;
-        Fri,  7 Aug 2020 15:57:08 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 7 Aug 2020 15:57:08 +0000
-Received: from u79c5a0a55de558.ant.amazon.com (10.43.162.140) by
- EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 7 Aug 2020 15:57:05 +0000
-From:   Alexander Graf <graf@amazon.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-CC:     Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        KarimAllah Raslan <karahmed@amazon.de>,
-        Aaron Lewis <aaronlewis@google.com>, <kvm@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 3/3] KVM: selftests: Add test for user space MSR handling
-Date:   Fri, 7 Aug 2020 17:56:48 +0200
-Message-ID: <20200807155648.8602-4-graf@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200807155648.8602-1-graf@amazon.com>
-References: <20200807155648.8602-1-graf@amazon.com>
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eUpvaTqUYrMyWZbq7tEdgtH3MVmHdB0HgoG8WDALDBM=;
+        b=g9NXD8HRe/9tWdd5YZ8x9Hmxw3j98KyR/Ixwr2U1JGV+x9ew1ox6djajiVhu+TfrOI
+         ABtBAqd9syIkMWXhelhf1W24OajVWIBjq0X9Vh87ZuUwnrykfpvENL9xVOb5ui2LQZel
+         p48Cc27jK2ysSbiJfeiD0r7sRlBuvpTYOVhijW/1rH/AJV0jiMHQYFwaWmkhchK9fHtb
+         kDUKocyVU+Y4KtxUdnOMzrTYnmQ1OtnbJH9nAZPX7BEwJhOrJeG9mN8jXaDkLp376FBS
+         ROyXvwV/77NpGCP/lgBkuBcsYYo860DtMesZnGVGwwLA8RXjcGSe9TcPC0MwilTo0Geb
+         1pOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eUpvaTqUYrMyWZbq7tEdgtH3MVmHdB0HgoG8WDALDBM=;
+        b=qwhnV9qJspu6jNZyYbbP5QtJEETTV1gLzcXbg20I3TdfqV4Wt3UJ1AWKYEP3KuGDB3
+         FuP8RSE9irykmSYnpXS4DM1UUA9gZeTsBSWRk/z6u1d4NbMzPX0EpxIG7WcY0Ear2dEV
+         q4TKKIrXciaxj7EuA0+wKeSLh02mUFYPzzjnodkLv40q05f1fM+Qhz0otjC1y/M8q7q9
+         JUwb9p57LbFsjAmVYi6ea9w3v30H7NPqoUUGP03/8krb7vLVofTUv+GL+pX7phjxEOeF
+         qMBDMUNNMfMRgwBHDT79dAKs4TfRAWAow2m3Wi3fEq13TDiED8S6Z3oHqoy9jOcIEMow
+         67Rw==
+X-Gm-Message-State: AOAM530MdSK1Kzlp7armsJbi9HvZQCS7QYsEFJ8PobXuLp1n3YzAEmTJ
+        LP2iYPN8DyhuYG2CY6xLNqsTbMgrCFY=
+X-Google-Smtp-Source: ABdhPJwvt973ShLNQBXsJ5gTd6aOO23BVnkwbA42vMbpqVpfyb/A98JNGRX5vMHbZxmUGl2coyfQsg==
+X-Received: by 2002:a17:902:9309:: with SMTP id bc9mr12418716plb.51.1596815873482;
+        Fri, 07 Aug 2020 08:57:53 -0700 (PDT)
+Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id x136sm12851663pfc.28.2020.08.07.08.57.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Aug 2020 08:57:53 -0700 (PDT)
+Date:   Fri, 7 Aug 2020 08:57:45 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     linux-kernel@vger.kernel.org
+Subject: [ANNOUNCE] iproute2 5.8
+Message-ID: <20200807085745.705a0247@hermes.lan>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.140]
-X-ClientProxiedBy: EX13D29UWA001.ant.amazon.com (10.43.160.187) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have the ability to handle MSRs from user space and also to
-select which ones we do want to prevent in-kernel KVM code from handling,
-let's add a selftest to show case and verify the API.
+Time for a new version of iproute2 to go with the 5.8 kernel.
+There are couple of administrative changes that long term downloaders
+will notice. First it that iproute2 is now maintained on the "main"
+branch. There are parallel copies (both updated) on kernel.org
+and github.
 
-Signed-off-by: Alexander Graf <graf@amazon.com>
+If you use github, you will get the right default branch;
+if you use kernel.org you will get the WRONG default branch.
+Kernel.org still does not have an way to change the name of the
+default branch. The "master" branch is dead and will be
+removed once kernel.org is fixed. If you have an existing
+iproute2 git repo either or clone a new copy or
+see one of many tutorials on renaming the master branch.
 
----
+The other change is that the former date based internal
+versioning (snapshot) is replaced by the regular version numbering
+which corresponds to the kernel version. Iproute2
+carries its own sanitized version of the kernel headers so the
+current code will build and run on older kernel releases.
 
-v2 -> v3:
+It is recommended to always use the latest iproute2.
+Do not treat iproute2 like perf and require matching packages.
+The latest code will always run on older kernels (and vice versa);
+this is possible because of the kernel API/ABI guarantees.
+Except for rare cases, iproute2 does not do maintenance releases
+and there is no long term stable version.
 
-  - s/KVM_CAP_ADD_MSR_ALLOWLIST/KVM_CAP_X86_MSR_ALLOWLIST/g
-  - Add test to clear whitelist
-  - Adjust to reply-less API
-  - Fix asserts
-  - Actually trap on MSR_IA32_POWER_CTL writes
----
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../selftests/kvm/x86_64/user_msr_test.c      | 221 ++++++++++++++++++
- 2 files changed, 222 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/x86_64/user_msr_test.c
+Download:
+    https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.8.0.tar.gz
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 4a166588d99f..80d5c348354c 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -55,6 +55,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/vmx_set_nested_state_test
- TEST_GEN_PROGS_x86_64 += x86_64/vmx_tsc_adjust_test
- TEST_GEN_PROGS_x86_64 += x86_64/xss_msr_test
- TEST_GEN_PROGS_x86_64 += x86_64/debug_regs
-+TEST_GEN_PROGS_x86_64 += x86_64/user_msr_test
- TEST_GEN_PROGS_x86_64 += clear_dirty_log_test
- TEST_GEN_PROGS_x86_64 += demand_paging_test
- TEST_GEN_PROGS_x86_64 += dirty_log_test
-diff --git a/tools/testing/selftests/kvm/x86_64/user_msr_test.c b/tools/testing/selftests/kvm/x86_64/user_msr_test.c
-new file mode 100644
-index 000000000000..7b149424690d
---- /dev/null
-+++ b/tools/testing/selftests/kvm/x86_64/user_msr_test.c
-@@ -0,0 +1,221 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * tests for KVM_CAP_X86_USER_SPACE_MSR and KVM_X86_ADD_MSR_ALLOWLIST
-+ *
-+ * Copyright (C) 2020, Amazon Inc.
-+ *
-+ * This is a functional test to verify that we can deflect MSR events
-+ * into user space.
-+ */
-+#define _GNU_SOURCE /* for program_invocation_short_name */
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/ioctl.h>
-+
-+#include "test_util.h"
-+
-+#include "kvm_util.h"
-+#include "processor.h"
-+
-+#define VCPU_ID                  5
-+
-+u32 msr_reads, msr_writes;
-+
-+struct range_desc {
-+	struct kvm_msr_allowlist allow;
-+	void (*populate)(struct kvm_msr_allowlist *range);
-+};
-+
-+static void populate_c0000000_read(struct kvm_msr_allowlist *range)
-+{
-+	u8 *bitmap = range->bitmap;
-+	u32 idx = MSR_SYSCALL_MASK & (KVM_MSR_ALLOWLIST_MAX_LEN - 1);
-+
-+	bitmap[idx / 8] &= ~(1 << (idx % 8));
-+}
-+
-+static void populate_00000000_write(struct kvm_msr_allowlist *range)
-+{
-+	u8 *bitmap = range->bitmap;
-+	u32 idx = MSR_IA32_POWER_CTL & (KVM_MSR_ALLOWLIST_MAX_LEN - 1);
-+
-+	bitmap[idx / 8] &= ~(1 << (idx % 8));
-+}
-+
-+struct range_desc ranges[] = {
-+	{
-+		.allow = {
-+			.flags = KVM_MSR_ALLOW_READ,
-+			.base = 0x00000000,
-+			.nmsrs = KVM_MSR_ALLOWLIST_MAX_LEN * BITS_PER_BYTE,
-+		},
-+	}, {
-+		.allow = {
-+			.flags = KVM_MSR_ALLOW_WRITE,
-+			.base = 0x00000000,
-+			.nmsrs = KVM_MSR_ALLOWLIST_MAX_LEN * BITS_PER_BYTE,
-+		},
-+		.populate = populate_00000000_write,
-+	}, {
-+		.allow = {
-+			.flags = KVM_MSR_ALLOW_READ | KVM_MSR_ALLOW_WRITE,
-+			.base = 0x40000000,
-+			.nmsrs = KVM_MSR_ALLOWLIST_MAX_LEN * BITS_PER_BYTE,
-+		},
-+	}, {
-+		.allow = {
-+			.flags = KVM_MSR_ALLOW_READ,
-+			.base = 0xc0000000,
-+			.nmsrs = KVM_MSR_ALLOWLIST_MAX_LEN * BITS_PER_BYTE,
-+		},
-+		.populate = populate_c0000000_read,
-+	}, {
-+		.allow = {
-+			.flags = KVM_MSR_ALLOW_WRITE,
-+			.base = 0xc0000000,
-+			.nmsrs = KVM_MSR_ALLOWLIST_MAX_LEN * BITS_PER_BYTE,
-+		},
-+	},
-+};
-+
-+static void guest_msr_calls(bool trapped)
-+{
-+	/* This goes into the in-kernel emulation */
-+	wrmsr(MSR_SYSCALL_MASK, 0);
-+
-+	if (trapped) {
-+		/* This goes into user space emulation */
-+		GUEST_ASSERT(rdmsr(MSR_SYSCALL_MASK) == MSR_SYSCALL_MASK);
-+	} else {
-+		GUEST_ASSERT(rdmsr(MSR_SYSCALL_MASK) != MSR_SYSCALL_MASK);
-+	}
-+
-+	/* If trapped == true, this goes into user space emulation */
-+	wrmsr(MSR_IA32_POWER_CTL, 0x1234);
-+
-+	/* This goes into the in-kernel emulation */
-+	rdmsr(MSR_IA32_POWER_CTL);
-+}
-+
-+static void guest_code(void)
-+{
-+	guest_msr_calls(true);
-+
-+	/*
-+	 * Disable allow listing, so that the kernel
-+	 * handles everything in the next round
-+	 */
-+	GUEST_SYNC(0);
-+
-+	guest_msr_calls(false);
-+
-+	GUEST_DONE();
-+}
-+
-+static int handle_ucall(struct kvm_vm *vm)
-+{
-+	struct ucall uc;
-+
-+	switch (get_ucall(vm, VCPU_ID, &uc)) {
-+	case UCALL_ABORT:
-+		TEST_FAIL("Guest assertion not met");
-+		break;
-+	case UCALL_SYNC:
-+		vm_ioctl(vm, KVM_X86_CLEAR_MSR_ALLOWLIST, NULL);
-+		break;
-+	case UCALL_DONE:
-+		return 1;
-+	default:
-+		TEST_FAIL("Unknown ucall %lu", uc.cmd);
-+	}
-+
-+	return 0;
-+}
-+
-+static void handle_rdmsr(struct kvm_run *run)
-+{
-+	run->msr.data = run->msr.index;
-+	msr_reads++;
-+}
-+
-+static void handle_wrmsr(struct kvm_run *run)
-+{
-+	/* ignore */
-+	msr_writes++;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	struct kvm_enable_cap cap = {
-+		.cap = KVM_CAP_X86_USER_SPACE_MSR,
-+		.args[0] = 1,
-+	};
-+	struct kvm_vm *vm;
-+	struct kvm_run *run;
-+	int rc;
-+	int i;
-+
-+	/* Tell stdout not to buffer its content */
-+	setbuf(stdout, NULL);
-+
-+	/* Create VM */
-+	vm = vm_create_default(VCPU_ID, 0, guest_code);
-+	vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
-+	run = vcpu_state(vm, VCPU_ID);
-+
-+	rc = kvm_check_cap(KVM_CAP_X86_USER_SPACE_MSR);
-+	TEST_ASSERT(rc, "KVM_CAP_X86_USER_SPACE_MSR is available");
-+	vm_enable_cap(vm, &cap);
-+
-+	rc = kvm_check_cap(KVM_CAP_X86_MSR_ALLOWLIST);
-+	TEST_ASSERT(rc, "KVM_CAP_X86_MSR_ALLOWLIST is available");
-+
-+	/* Set up MSR allowlist */
-+	for (i = 0; i < ARRAY_SIZE(ranges); i++) {
-+		struct kvm_msr_allowlist *a = &ranges[i].allow;
-+		u32 bitmap_size = a->nmsrs / BITS_PER_BYTE;
-+		struct kvm_msr_allowlist *range = malloc(sizeof(*a) + bitmap_size);
-+
-+		TEST_ASSERT(range, "range alloc failed (%ld bytes)\n", sizeof(*a) + bitmap_size);
-+
-+		*range = *a;
-+
-+		/* Allow everything by default */
-+		memset(range->bitmap, 0xff, bitmap_size);
-+
-+		if (ranges[i].populate)
-+			ranges[i].populate(range);
-+
-+		vm_ioctl(vm, KVM_X86_ADD_MSR_ALLOWLIST, range);
-+	}
-+
-+	while (1) {
-+		rc = _vcpu_run(vm, VCPU_ID);
-+
-+		TEST_ASSERT(rc == 0, "vcpu_run failed: %d\n", rc);
-+
-+		switch (run->exit_reason) {
-+		case KVM_EXIT_X86_RDMSR:
-+			handle_rdmsr(run);
-+			break;
-+		case KVM_EXIT_X86_WRMSR:
-+			handle_wrmsr(run);
-+			break;
-+		case KVM_EXIT_IO:
-+			if (handle_ucall(vm))
-+				goto done;
-+			break;
-+		}
-+
-+	}
-+
-+done:
-+	TEST_ASSERT(msr_reads == 1, "Handled 1 rdmsr in user space");
-+	TEST_ASSERT(msr_writes == 1, "Handled 1 wrmsr in user space");
-+
-+	kvm_vm_free(vm);
-+
-+	return 0;
-+}
--- 
-2.17.1
+Repository for current release
+    https://github.com/shemminger/iproute2.git
+    git://git.kernel.org/pub/scm/network/iproute2/iproute2.git
+
+And future release (net-next):
+    git://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git
+
+Thanks for all the contributions.
+
+Report problems (or enhancements) to the netdev@vger.kernel.org mailing list.
 
 
+Alexander Aring (1):
+      lwtunnel: add support for rpl segment routing
 
+Andrea Claudi (1):
+      ip address: remove useless include
 
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
+Anton Danilov (3):
+      tc: improve the qdisc show command
+      misc: make the pattern matching case-insensitive
+      bridge: fdb: the 'dynamic' option in the show/get commands
 
+Bjarni Ingi Gislason (5):
+      libnetlink.3: display section numbers in roman font, not boldface
+      man8/bridge.8: fix misuse of two-fonts macros
+      devlink.8: Use a single-font macro for a single argument
+      devlink-dev.8: use a single-font macro for one argument
+      devlint-health.8: use a single-font macro for a single argument
 
+David Ahern (4):
+      Update kernel headers and import mptcp.h
+      Update kernel headers
+      Import rpl.h and rpl_iptunnel.h uapi headers
+      Update kernel headers and import tc_gate.h
+
+Davide Caratti (2):
+      ss: allow dumping MPTCP subflow information
+      tc: full JSON support for 'bpf' filter
+
+Dmitry Yakunin (4):
+      ss: introduce cgroup2 cache and helper functions
+      ss: add support for cgroup v2 information and filtering
+      ss: add checks for bc filter support
+      lib: fix checking of returned file handle size for cgroup
+
+Eran Ben Elisha (1):
+      devlink: Add devlink health auto_dump command support
+
+Eyal Birger (2):
+      ip xfrm: update man page on setting/printing XFRMA_IF_ID in states/policies
+      ip xfrm: policy: support policies with IF_ID in get/delete/deleteall
+
+Guillaume Nault (3):
+      ip link: initial support for bareudp devices
+      tc: flower: support multiple MPLS LSE match
+      testsuite: Add tests for bareudp tunnels
+
+Hoang Huu Le (1):
+      tipc: fixed a compile warning in tipc/link.c
+
+Ian K. Coolidge (2):
+      iproute2: ip addr: Organize flag properties structurally
+      iproute2: ip addr: Add support for setting 'optimistic'
+
+Ido Schimmel (3):
+      devlink: Add 'control' trap type
+      devlink: Add 'mirror' trap action
+      devlink: Document zero policer identifier
+
+Jakub Kicinski (1):
+      devlink: support kernel-side snapshot id allocation
+
+Jamie Gloudon (1):
+      tc/m_estimator: Print proper value for estimator interval in raw.
+
+Julien Fortin (2):
+      bridge: fdb get: add missing json init (new_json_obj)
+      bridge: fdb show: fix fdb entry state output for json context
+
+Louis Peens (1):
+      devlink: add 'disk' to 'fw_load_policy' string validation
+
+Maciej Fijalkowski (1):
+      tc: mqprio: reject queues count/offset pair count higher than num_tc
+
+Mark Starovoytov (2):
+      macsec: add support for MAC offload
+      macsec: add support for specifying offload at link add time
+
+Matthieu Baerts (1):
+      mptcp: show all endpoints when no ID is specified
+
+Paolo Abeni (3):
+      add support for mptcp netlink interface
+      man: mptcp man page
+      man: ip.8: add reference to mptcp man-page
+
+Petr Machata (1):
+      tc: pedit: Support JSON dumping
+
+Po Liu (2):
+      iproute2-next:tc:action: add a gate control action
+      iproute2-next: add gate action man page
+
+Roi Dayan (1):
+      ip address: Fix loop initial declarations are only allowed in C99
+
+Roman Mashak (1):
+      tc: report time an action was first used
+
+Sorah Fukumori (1):
+      ip fou: respect preferred_family for IPv6
+
+Stephen Hemminger (11):
+      uapi: update headers
+      devlink: update include files
+      uapi: update to magic.h
+      man/tc: remove obsolete reference to ipchains
+      uapi: update bpf.h
+      iplink_bareudp: use common include syntax
+      rtacct: drop unused header
+      genl: use <> for system includes
+      uapi: update bpf.h
+      replace SNAPSHOT with auto-generated version string
+      lnstat: use same version as iproute2
+
+Tony Ambardar (1):
+      configure: support ipset version 7 with kernel version 5
+
+Tuong Lien (1):
+      tipc: enable printing of broadcast rcv link stats
+
+William Tu (1):
+      erspan: Add type I version 0 support.
+
+Xin Long (7):
+      iproute_lwtunnel: add options support for geneve metadata
+      iproute_lwtunnel: add options support for vxlan metadata
+      iproute_lwtunnel: add options support for erspan metadata
+      tc: m_tunnel_key: add options support for vxlan
+      tc: m_tunnel_key: add options support for erpsan
+      tc: f_flower: add options support for vxlan
+      tc: f_flower: add options support for erspan
 
