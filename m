@@ -2,151 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2EC23EAF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D6E23EB00
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728244AbgHGJw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 05:52:26 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:50481 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727037AbgHGJwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 05:52:25 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 5f638ce4
-        for <linux-kernel@vger.kernel.org>;
-        Fri, 7 Aug 2020 09:27:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=jHXcrZ97Q570/AtX6P6IATl6PTE=; b=CeVpML
-        F5oWN3sLB1ftZhe6CaCcV2VNLGaYjGtfXqpWsgctvZT5ior0c32UebT0MqPhSVA/
-        tkH0clSjumgfwAYVpFZ81CGp7Brbw15eS7hcpxumFQRSM6Fp/lHcPX/r+nvdWjet
-        D+ufvGl6laMTd1oXWhwI/7aXn3efSUe3not7JO/TP0yGiepoVr+q7zIeq0urHYz9
-        yizLhxK+Vri+wBVj95hv2lDSPiJFH3OLGc91gbw+2PlzjgDyS3/aAdNw8bggMCqn
-        1sVVa2VSgkrLwYudMwMPfEgWdSlDf413Y0UH04VvwetBUW4qeFWYw12Mo5FuBANW
-        tJZr/IIMfXOuOpuQ==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 33151408 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
-        for <linux-kernel@vger.kernel.org>;
-        Fri, 7 Aug 2020 09:27:39 +0000 (UTC)
-Received: by mail-io1-f50.google.com with SMTP id k23so1286268iom.10
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 02:52:22 -0700 (PDT)
-X-Gm-Message-State: AOAM5307bI7/Y40panEPkSx4l54GJEsenOEMyswLxLEMWbJlXsex1PKu
-        a6fQ9ymLh8eTofi8yY5OF23q6KETDKsgWUQ0PV8=
-X-Google-Smtp-Source: ABdhPJy3V605feOT5+5TKU4+CnasPliUWlXHkez8VK4HT0wXUw6hLsGToFNAT8a41z5LvKF1Xc3/kk6y7A7LqQl/erk=
-X-Received: by 2002:a05:6638:250f:: with SMTP id v15mr3907264jat.75.1596793941897;
- Fri, 07 Aug 2020 02:52:21 -0700 (PDT)
+        id S1727951AbgHGJzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 05:55:43 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:45988 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726511AbgHGJzn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 05:55:43 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0779ml3q045938;
+        Fri, 7 Aug 2020 09:55:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=U57hJGBvYAZAMOnQ3O6QNekgMQcBD7eYnU+p31GzweA=;
+ b=y/Pbi7FUb1LHdHIpkXKGuWEqfg/BG+5bXr5kAlMt5zYIUrRf7lLNQ2KrSDsG7WUbBVpz
+ SBKFdDDfxxZhEFHQeQKiarI0yYSKJSZFE8NPu7YJe6J1bTnmbwMHxi0eY0gvV0sf7aiC
+ bfTPx1j9A22dXDBu23V/DD4Ae20Wp9hQlFU+PJg4CI6p+KkpKC7qJ0rSMMJLwJjzs3fZ
+ 4CLWpqPsvtT02m5h4hMucPEuzVrz6jzWCr/d8NpJV8F6VcZUtlU+QwfvqOA2SznWJws2
+ w4iom168FzbHNbT6HgS1NByUXbhK6YnjzYhTWgRs/Zqzkqkdmcw6p8yAtAmgqHRPLgFR Dw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 32r6fxqphu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 07 Aug 2020 09:55:33 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0779nCXk187938;
+        Fri, 7 Aug 2020 09:53:33 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 32qy8q98vk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 07 Aug 2020 09:53:32 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0779rTWo028623;
+        Fri, 7 Aug 2020 09:53:29 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 07 Aug 2020 02:53:28 -0700
+Date:   Fri, 7 Aug 2020 12:53:20 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Cengiz Can <cengiz@kernel.wtf>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Subject: Re: [PATCH] staging: atomisp: move null check to earlier point
+Message-ID: <20200807095320.GI1793@kadam>
+References: <20200730084545.GB1793@kadam>
+ <20200806221537.GA703560@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20200807084013.7090-1-joro@8bytes.org>
-In-Reply-To: <20200807084013.7090-1-joro@8bytes.org>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Fri, 7 Aug 2020 11:52:09 +0200
-X-Gmail-Original-Message-ID: <CAHmME9rPfsMJ_btZecWrJN=R6FqAFmjDzCC_tMGk01+R6gJAPw@mail.gmail.com>
-Message-ID: <CAHmME9rPfsMJ_btZecWrJN=R6FqAFmjDzCC_tMGk01+R6gJAPw@mail.gmail.com>
-Subject: Re: [PATCH] x86/mm/64: Do not dereference non-present PGD entries
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     X86 ML <x86@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806221537.GA703560@bjorn-Precision-5520>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9705 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ spamscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008070073
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9705 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0 adultscore=0
+ bulkscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0
+ lowpriorityscore=0 suspectscore=0 spamscore=0 clxscore=1015 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008070073
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 7, 2020 at 10:40 AM Joerg Roedel <joro@8bytes.org> wrote:
->
-> From: Joerg Roedel <jroedel@suse.de>
->
-> The code for preallocate_vmalloc_pages() was written under the
-> assumption that the p4d_offset() and pud_offset() functions will perform
-> present checks before dereferencing the parent entries.
->
-> This assumption is wrong an leads to a bug in the code which causes the
-> physical address found in the PGD be used as a page-table page, even if
-> the PGD is not present.
->
-> So the code flow currently is:
->
->         pgd = pgd_offset_k(addr);
->         p4d = p4d_offset(pgd, addr);
->         if (p4d_none(*p4d))
->                 p4d = p4d_alloc(&init_mm, pgd, addr);
->
-> This lacks a check for pgd_none() at least, the correct flow would be:
->
->         pgd = pgd_offset_k(addr);
->         if (pgd_none(*pgd))
->                 p4d = p4d_alloc(&init_mm, pgd, addr);
->         else
->                 p4d = p4d_offset(pgd, addr);
->
-> But this is the same flow that the p4d_alloc() and the pud_alloc()
-> functions use internally, so there is no need to duplicate them.
->
-> Remove the p?d_none() checks from the function and just call into
-> p4d_alloc() and pud_alloc() to correctly pre-allocate the PGD entries.
->
-> Reported-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> Fixes: 6eb82f994026 ("x86/mm: Pre-allocate P4D/PUD pages for vmalloc area")
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/x86/mm/init_64.c | 31 +++++++++++++------------------
->  1 file changed, 13 insertions(+), 18 deletions(-)
->
-> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> index 3f4e29a78f2b..449e071240e1 100644
-> --- a/arch/x86/mm/init_64.c
-> +++ b/arch/x86/mm/init_64.c
-> @@ -1253,28 +1253,23 @@ static void __init preallocate_vmalloc_pages(void)
->                 p4d_t *p4d;
->                 pud_t *pud;
->
-> -               p4d = p4d_offset(pgd, addr);
-> -               if (p4d_none(*p4d)) {
-> -                       /* Can only happen with 5-level paging */
-> -                       p4d = p4d_alloc(&init_mm, pgd, addr);
-> -                       if (!p4d) {
-> -                               lvl = "p4d";
-> -                               goto failed;
-> -                       }
-> -               }
-> +               lvl = "p4d";
-> +               p4d = p4d_alloc(&init_mm, pgd, addr);
-> +               if (!p4d)
-> +                       goto failed;
->
-> +               /*
-> +                * With 5-level paging the P4D level is not folded. So the PGDs
-> +                * are now populated and there is no need to walk down to the
-> +                * PUD level.
-> +                */
->                 if (pgtable_l5_enabled())
->                         continue;
->
-> -               pud = pud_offset(p4d, addr);
-> -               if (pud_none(*pud)) {
-> -                       /* Ends up here only with 4-level paging */
-> -                       pud = pud_alloc(&init_mm, p4d, addr);
-> -                       if (!pud) {
-> -                               lvl = "pud";
-> -                               goto failed;
-> -                       }
-> -               }
-> +               lvl = "pud";
-> +               pud = pud_alloc(&init_mm, p4d, addr);
-> +               if (!pud)
-> +                       goto failed;
->         }
->
->         return;
-> --
-> 2.26.2
+Beyond that, though, I feel like the rules are stupid because I've seen
+more than a couple commit messages which were contorted to avoid
+imperative.  My own standard for commit messages is that 1) Is the
+problem explained, especially what it looks like to user space?  2) Is
+it clear what the solution is?  3)  Does the patch itself raise any
+questions that I can't figure out and which aren't explained in the
+commit message.  And I figure I'm not a domain expert but if I can
+understand the commit message probably anyone can.
 
+We've got people who speak English as a second language and then start
+imposing pointless rules on top?  It's crazy.  I've had to ask someone
+recently to redo a commit message and it seemed very obvious they were
+focused on nonsense about imperative and avoiding saying "this patch"
+to the extent that I literally could not figure out what they were
+saying.  When I read the patch, of course, I could see what they were
+doing but from the commit message it was impossible.
 
-This appears to fix the issue, so:
+regards,
+dan carpenter
 
-Tested-by: Jason A. Donenfeld <Jason@zx2c4.com>
