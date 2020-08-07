@@ -2,105 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DDC23F22A
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 19:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969B823F251
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 19:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgHGRsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 13:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
+        id S1726645AbgHGRyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 13:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727032AbgHGRsm (ORCPT
+        with ESMTP id S1725934AbgHGRyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 13:48:42 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FD2C061756
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 10:48:41 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id m20so1860028eds.2
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 10:48:41 -0700 (PDT)
+        Fri, 7 Aug 2020 13:54:00 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8937EC061756
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 10:54:00 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id o18so2944919eje.7
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 10:54:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=posk.io; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=a1jD6vSBcep9pVCJ88Buz+hBFmqHCHo08h2XlXM8iY4=;
-        b=gb9t2ERu8IGQ6tNi0ZxR5nubtWLAqXc/EC2R0cU+LNABC6fdMKUqGGuhMQP0aWtcCr
-         NOKutwU0d8AkYJXjJXuM2W9PFhd13h+jbpI3nfdH9TokAxxU9XfeWLSfLxOCo4OqveqB
-         H710NTxC1CkGCJ7VnCqPMxWgyNlwqr0P23OuSyBHGHR6la4eWqMXbepAyn76UVVZy7A5
-         iiXoP/bDwyn+c6oNCs8wE8nWf9+LFHaD2tlHh8/DgD2FigydwUAcj/SCw5vL4xPPCMRa
-         PITZdOXFlNEWqRPX2QlV3kMoGtUvWw/H5YMCdi4FG1Y6E6ON3sRSByJclSbKmu2ZkvW5
-         Rblg==
+        bh=wGFdCB+GKzD87ayJg5twz22vO2M3+oAnG+AZmdx2+Tw=;
+        b=GCOfjs+cadNP985tRMOkg0b9IlsRY8+J6xskzLilbV4gipDWDZWq5J7PTntv9s55c7
+         bcx+/eye+O1SxIol+V+cpcPjdB/U6QiD/y5l/VzXIlqlPvd021eERPXLfe1WTQFvpU7E
+         wzK9G07x2PKrmcJ1rZ2IxQqa42zF4PX91vFsM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=a1jD6vSBcep9pVCJ88Buz+hBFmqHCHo08h2XlXM8iY4=;
-        b=r2wOmoQqZp95UiRSEU7r5IhU3dyTe6fln+r4ijRLoizPi9hMISOFSTa49eGRg0CYo5
-         SyGhOEsk25hMvx5Bd1Sw9H2enP9BrSjGrFeVaycRKJyqSrlYPoxkmWegFKHLGWXHQMYL
-         3hP2bnFxZ8rTzUY2NfmjkwMst+LNpKt156FEMpV5plFJDaNz3t++MZ8hV1RMK3OK/iQA
-         TmmBrez/H8Zuk6AdrMytB6czTzIBon6l3vH/oMyNQmK3ewHjG67AyuTp784XeXPN25Yb
-         wJD5ZCGCogfrEVCA5lLKesMmAjNea8RZzqqBhLWtX342ypoExKT27EZES7ZIvTZs4Sbf
-         2YOA==
-X-Gm-Message-State: AOAM531uFpksFXhFbFvoCOxVouCD/QE9k3wh+TVW3KNUgYf1r7+hA+Q+
-        C6tMlL0jDhD0Kc+JnAAZaqNNgSynXqv0MUmh11YZAg==
-X-Google-Smtp-Source: ABdhPJzGpjUDE2F7v4zvcrJj8Q9OnVtBAm/vW0S9za2zCKoK+R7ysCXYPqmqE/h/Cap747aZc90Hkhjn1QjcylQwHB4=
-X-Received: by 2002:a50:93a2:: with SMTP id o31mr10054666eda.203.1596822520037;
- Fri, 07 Aug 2020 10:48:40 -0700 (PDT)
+        bh=wGFdCB+GKzD87ayJg5twz22vO2M3+oAnG+AZmdx2+Tw=;
+        b=WTjOoyqyjXEEO0HF5SSVj631gscRJguqmrOLCDDWDjSg9FQXbtGlgOTlja8NFmZq4y
+         FWHfdkIhvMAHIbRv52nYXShnV7dGw/8j/ofKCb3DIu+NoYbc9+mhK12ZKFHCH3jDtMVN
+         vNcf2tcQ4upQSZD53ghhrWCCIy5N02Ww1zJWp/EWh9fmGkgaC57TKlWmomuf2JVFsKAo
+         1WwwT2tvywUcumf9LTBBckf/Z2GX8XS5ZDeLpUcEjkzW1E9VI8R0emNDdkTII+3g2QFf
+         87pZxCVjKBCGkSmz3fckoWApaSABaiA9gdzd8Vv6fB/ToROwrX23wb+QZ5thOKWhcr/f
+         /CxA==
+X-Gm-Message-State: AOAM531enhzoNseTOilsygogxUe1O9sKczo7Tb6fm1o723c+7Mn4aWWK
+        Di8M5uOFbKhUajUzvvDzOcYPY/oVNiM=
+X-Google-Smtp-Source: ABdhPJxHWbvmMCbWTCWrgn4Lvuhu9Ca2rsGd9cjyI1rO3nU3NsmoCmedBiBIZYyhi2TNaOyWBhSORg==
+X-Received: by 2002:a17:906:a204:: with SMTP id r4mr10227345ejy.552.1596822838930;
+        Fri, 07 Aug 2020 10:53:58 -0700 (PDT)
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
+        by smtp.gmail.com with ESMTPSA id a18sm6379907ejt.69.2020.08.07.10.53.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Aug 2020 10:53:58 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id q4so1837586edv.13
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 10:53:58 -0700 (PDT)
+X-Received: by 2002:ac2:46d0:: with SMTP id p16mr7083884lfo.142.1596822532290;
+ Fri, 07 Aug 2020 10:48:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200806000859.160882-1-posk@google.com> <20200806134828.GA165568@hirez.programming.kicks-ass.net>
- <CAFTs51Ufyds5mypiysL=2ZwtyMk9hjLm-9tJbYz=xciY1f2=5g@mail.gmail.com> <1668913120.1621.1596735425601.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1668913120.1621.1596735425601.JavaMail.zimbra@efficios.com>
-From:   Peter Oskolkov <posk@posk.io>
-Date:   Fri, 7 Aug 2020 10:48:29 -0700
-Message-ID: <CAFTs51VabphnoXOxLgUqDL288zfLpEugC-H5jxg=JGhTHB7QDg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] membarrier: add MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Peter Oskolkov <posk@google.com>, paulmck <paulmck@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul Turner <pjt@google.com>,
-        Chris Kennelly <ckennelly@google.com>
+References: <20200807144521.34732-1-linux@roeck-us.net> <20200807173513.GR6750@gaia>
+In-Reply-To: <20200807173513.GR6750@gaia>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 7 Aug 2020 10:48:36 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjh1qFxHc2kScvcusv_f3bYangc3cro9s_WCPOvd+biTQ@mail.gmail.com>
+Message-ID: <CAHk-=wjh1qFxHc2kScvcusv_f3bYangc3cro9s_WCPOvd+biTQ@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: kaslr: Use standard early random function
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>, Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Qian Cai <cai@lca.pw>,
+        Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 10:37 AM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
+On Fri, Aug 7, 2020 at 10:35 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
 >
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+>
+> Linus, could you please pick this up directly? Otherwise, it will wait
+> until we reach -rc1 to avoid basing a branch on a random commit.
 
-> >>
-> >> This is an unpriv IPI the world. That's a big no-no.
-> >
-> > removed in v2.
->
-> I don't think the feature must be removed, but its implementation needs adjustment.
->
-> How about we simply piggy-back on the membarrier schemes we already have, and
-> implement:
->
-> membarrier_register_private_expedited(MEMBARRIER_FLAG_RSEQ)
-> membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ)
->
-> All the logic is there to prevent sending IPIs to runqueues which are not running
-> threads associated with the same mm. Considering that preemption does an rseq abort,
-> running a thread belonging to a different mm should mean that this CPU is not
-> currently executing an rseq critical section, or if it was, it has already been
-> aborted, so it is quiescent.
->
-> Then you'll probably want to change membarrier_private_expedited so it takes an
-> extra "cpu" argument. If cpu=-1, iterate on all runqueues like we currently do.
-> If cpu >= 0, only IPI that CPU if the thread currently running has the same mm.
->
+Already done, since I was the cause of the mess. But because I did it
+early, your Acked-by didn't get in.
 
-Thanks, Mathieu! I'll prepare something based on your and Peter's feedback.
-
-> Also, should this belong to the membarrier or the rseq system call ? It just
-> looks like the membarrier happens to implement very similar things for barriers,
-> but arguably this is really about rseq. I wonder if we should expose this through
-> rseq instead, even if we end up using membarrier code.
-
-Yes, this is more about rseq; on the other hand, the high-level API/behavior
-looks closer to that membarrier, and a lot of code will be shared.
-
-As you are the maintainer for both rseq and membarrier, this is for
-you to decide, I guess... :)
+              Linus
