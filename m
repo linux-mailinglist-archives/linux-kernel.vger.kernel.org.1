@@ -2,107 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E7023F30C
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 21:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC1123F31B
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 21:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgHGT34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 15:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
+        id S1726491AbgHGTea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 15:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgHGT3z (ORCPT
+        with ESMTP id S1726045AbgHGTe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 15:29:55 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71761C061756
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 12:29:55 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id s23so2121876qtq.12
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 12:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DwHxa/wKxXJOTRK09zqSMYHbouDi1S4p4xtTraM5iGA=;
-        b=YVpVzgVMyxrAA91SMgwq1uRERiYL9d2sigFhiHcc+Gb3HYQOXIe5VdR2+iTSNd3b/u
-         8ASMZA8CikFbtPxyCvOQ0Q+/AGlV6EejSTXxHP/rb2zixr7q/nX3ZHgUOcsfo7J8przL
-         L9BcRALgg3XDwa7kDV4mx2hYEqOgDymwxsfeKx//YyrR0Urdf1PzBTsthBdBanS/8Eqb
-         bdup239rJK1C1usdexrexFv0mi9S2/y5Z7mVnA+7QHANdB7L0f6vffQzhdMhVTi8Utm/
-         1ncX4gfpbz82zJ9qFBT/qwBdO7oxwEn8TfHC2XTMceUdXvaIl9yFeFTNZbzq3lC2YxZi
-         dxeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DwHxa/wKxXJOTRK09zqSMYHbouDi1S4p4xtTraM5iGA=;
-        b=ofu2u3qJVtHO9XqUf21TjOH7jUzKrjAw+eG4ZkQ+1kF5HhcZFu6snyIKQfzsYAY9ni
-         K73TidVOZi2zqfW3UFYJL3pDu+dewoOlZ27kqgvBNhzxwN+fDGm/vhtIQAGYy3q9Gsls
-         8LX6fM7KLusMWf2EVDaOCws68Va7RZqPat2pk05xhDP8Ji6tJxetphc1GrDRjmNElvuW
-         bJFT3gGCS3QA/g8pSVBJSMJ/yLTdMGNIEtXRDDwVTzNymoeX1EYXc50Z8b85Rkm+2mIR
-         9YI9BSKK0lSHetzUH7giZeiZZcHDxTcQ2rkwwkhKXc0lZJDWWhJkJlcnYnHI5tkrTJRI
-         gp7A==
-X-Gm-Message-State: AOAM532i6h1vsR8X6r9TfJbh6JIDTpPmIGoMj6Z4ysPPiy1ptUvVE6zR
-        d7I2nTnGcDvDEu//KshaG+Sw/Wt5UAMlsRxNySrP/g==
-X-Google-Smtp-Source: ABdhPJwVK8YxEVoCQuHZTJcCjYxNh0sSOhQEyT93e5WefGbitF2zu2ak5N7ORZ0X16QJ8/Swbk2HySVmZPk/OP9u4WY=
-X-Received: by 2002:ac8:67da:: with SMTP id r26mr15451206qtp.332.1596828594651;
- Fri, 07 Aug 2020 12:29:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200601091231.3794350-1-chengzhihao1@huawei.com>
- <CAFLxGvwLSvYsQ+OPi85VS8aQ2uge_JqQRD2C8h=XMORvCej3Sw@mail.gmail.com>
- <211afcd0-d5b3-5ac0-1fd1-dc789634a858@huawei.com> <CAFLxGvwRDfB4mqxJhOLwWvoZ3yzpVY-kuAiovYLf8T7WwJqaTg@mail.gmail.com>
- <9caa4860-975c-70bb-c8b9-737d1db9ead4@huawei.com> <CAFLxGvycs7DNu5o5QY1WwTPfS6cTTykTh-91n9TQZ7yP_ADr4A@mail.gmail.com>
- <2086f822-e67a-43e4-76d8-5339eaccd3ac@huawei.com> <CAFLxGvzwoC1GcjJOfwpc8V5LD79=8XiJaNV2HjOm8EdQcCbp+w@mail.gmail.com>
- <5f7ae548-350b-cedf-3c8e-25fea06a8377@huawei.com>
-In-Reply-To: <5f7ae548-350b-cedf-3c8e-25fea06a8377@huawei.com>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Fri, 7 Aug 2020 21:29:43 +0200
-Message-ID: <CAFLxGvy-RRksDvPcB6z8GQUoMFZ_NRGxk9aM2FuTZ22UWU6Knw@mail.gmail.com>
-Subject: Re: [PATCH] ubi: check kthread_should_stop() after the setting of
- task state
-To:     Zhihao Cheng <chengzhihao1@huawei.com>
-Cc:     linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        "zhangyi (F)" <yi.zhang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 7 Aug 2020 15:34:29 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23335C061756
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 12:34:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=8B3vcTdKxdTXdjxQQXeqQU3fplBogydFUAU3MnPnOKc=; b=LicXS2JVVk1dhQl0sH6K5VlxAp
+        o5+KoHy6yMO8JIXAd75BKyo3Sp5U4rxtTDWVkFCPzh33RQ/0g5az/c67YPZLKDuTn9zVEMzHq6e6J
+        2sXVbiM9x5Nbsc584O0uYEhmGt47+nYo/fgyf+T+7/VhFpzSXMvFdkM9o8GB6zsFH5SdnrY7iuFqI
+        +QrDsT0iYOoXgBk2U4oF508cb39zD9RCkkT/fxJbhUI2/uxJSHEHXkS7/lbTHJVCU3OZc2rZX/xGQ
+        iEWGTvOF4Mwc00S6ZizVw6YZ/4PSSao7Tg8VvR34u3m2lTf8B3Q9tvr1f31micNmWGkaBU9uOsNVP
+        MYiLBwig==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k4889-0005Jc-Ew; Fri, 07 Aug 2020 19:34:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0831D30015A;
+        Fri,  7 Aug 2020 21:34:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id A0E4621F9221F; Fri,  7 Aug 2020 21:34:13 +0200 (CEST)
+Message-ID: <20200807192336.405068898@infradead.org>
+User-Agent: quilt/0.66
+Date:   Fri, 07 Aug 2020 21:23:36 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     tglx@linutronix.de, mingo@kernel.org, will@kernel.org
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, elver@google.com,
+        paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
+        peterz@infradead.org
+Subject: [RFC][PATCH 0/3] Tracing, Idle, RCU and such goodness
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 7, 2020 at 4:18 AM Zhihao Cheng <chengzhihao1@huawei.com> wrote=
-:
-> That's where we hold different views. I have 3 viewpoints=EF=BC=88You can=
- point
-> out which one you disagree.=EF=BC=89:
->
-> 1. If kthread_stop() happens at line 12, ubi thread is *marked* with
-> stop flag, it will stop at kthread_should_stop() as long as it can reach
-> the next iteration.
->
-> 2. If task A is on runqueue and its state is TASK_RUNNING, task A will
-> be scheduled to execute.
->
-> 3. If kthread_stop() happens at line 12, after program counter going to
-> line 14, ubi thead is on runqueue and its state is TASK_RUNNING. I have
-> explained this in situation 1 in last session.
->
->
-> I mean ubi thread is on runqueue with TASK_RUNNING state & stop flag
-> after the process you described.
->
-> Line 12   kthread_stop()
->
->                   set_bit(mark stop flag) && wake_up_process(enqueue &&
-> set TASK_RUNNING )    =3D> TASK_RUNNING & stop flag & on runqueue
->
-> Line 13  schedule()
->
->                   Do nothing but pick next task to execute
+Hi,
 
-You are perfectly right! I failed to concentrate on the state changes.
-Now all makes sense, also your comment before the if statement.
-So I don't know how to make this more clear in the code.
-Maybe it's just me being dense and in need for a vacation. ;-)
+Syzbot report:
 
---=20
-Thanks,
-//richard
+  https://lkml.kernel.org/r/000000000000e3068105ac405407@google.com
+
+triggered a whole bunch of fallout.
+
+These 3 patches are in reverse order of discovery. With them applied the
+reproducer no longer triggers and the machine boots without errors.
+
+I also spend half the day trying to rewrite TRACE_IRQFLAGS, but so far haven't
+had success. I have the feeling that there's something slightly simpler hiding
+in there, but so far it doesn't want to come out.
+
+Please, look carefully, this is all tricky code, and it's been a long and hot
+day here, mistakes are almost guaranteed :/
+
+I also want to remove the _rcuidle() from trace_preemptirq.c, but given
+this was quite enough, I didn't touch those.
+
