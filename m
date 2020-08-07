@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA7023E5A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 03:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786B323E5A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 03:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726439AbgHGBzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 21:55:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51224 "EHLO mail.kernel.org"
+        id S1726472AbgHGBzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 21:55:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726393AbgHGBzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 21:55:12 -0400
-Subject: Re: [GIT PULL] first round of SCSI updates for the 5.8+ merge window
+        id S1726049AbgHGBzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 21:55:52 -0400
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596765312;
-        bh=ZQ3AZOQRls5Sk7BQCbwdqbcwdxOK2Rjt6f8/0mn/8CU=;
+        s=default; t=1596765352;
+        bh=Kuxr/E45KykG/F9cinjmLyrKFsHbQTNBQoM2q88Ns5M=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=XwTosu1GRkKt+QgS7nWWmkeUVopgJsT8mod50Bpo9FrC+fniw9bB7SNEFZKnP7VHd
-         ySYV8ZHK4APP6G3TX3qAZkRya5hRenaWZhnetiKbdbBEabswTCU7gTMWn3vuEWs1bx
-         nR0H2RvqNEM2BbVygO7TvFVCLdiy88sv1MWJnY7w=
+        b=VVgJDXgDxO+gOy2j13WNsuoLxWyWzQcseCQ/T6X1alqTLqmw7dnLTvqfzCyxWLKUe
+         F4sdO5QrKXOOdKJL2T/puwgR1fPQckGvx6wUQYtcpatf3YaAT9DLq2y57+q8q8z4C1
+         ZjIp6KGX1By7W0a9UjpRhY8QuV54QCgB9ntkdBrU=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <1596747315.25458.50.camel@HansenPartnership.com>
-References: <1596747315.25458.50.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <1596747315.25458.50.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
-X-PR-Tracked-Commit-Id: bf1a28f92a8b00ee8ce48cc11338980e31ddb7b3
+In-Reply-To: <20200806182732.GA1062117@nvidia.com>
+References: <20200806182732.GA1062117@nvidia.com>
+X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200806182732.GA1062117@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: 23fcc7dee2c6aba1060558683988263851e74bab
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: dfdf16ecfd6abafc22b7f02364d9bb879ca8a5ee
-Message-Id: <159676531190.30846.10031371483321725160.pr-tracker-bot@kernel.org>
-Date:   Fri, 07 Aug 2020 01:55:11 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: d7806bbd22cabc3e3b0a985cfcffa29cf156bb30
+Message-Id: <159676535207.30846.14993292043025471844.pr-tracker-bot@kernel.org>
+Date:   Fri, 07 Aug 2020 01:55:52 +0000
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 06 Aug 2020 13:55:15 -0700:
+The pull request you sent on Thu, 6 Aug 2020 15:27:32 -0300:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/dfdf16ecfd6abafc22b7f02364d9bb879ca8a5ee
+https://git.kernel.org/torvalds/c/d7806bbd22cabc3e3b0a985cfcffa29cf156bb30
 
 Thank you!
 
