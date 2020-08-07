@@ -2,155 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E975423EF2A
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE0223EFB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726282AbgHGOpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 10:45:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbgHGOpB (ORCPT
+        id S1726428AbgHGO5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 10:57:22 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.23]:16247 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726233AbgHGO5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 10:45:01 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CB5C061756;
-        Fri,  7 Aug 2020 07:45:01 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 5DB0828C534
-Message-ID: <7e0ad157cabb656cbb4f24354146197e6a1d3f36.camel@collabora.com>
-Subject: Re: [PATCH v2 08/14] media: uapi: h264: Drop SLICE_PARAMS 'size'
- field
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Date:   Fri, 07 Aug 2020 11:44:51 -0300
-In-Reply-To: <20200806155028.GB1621078@aptenodytes>
-References: <20200806151310.98624-1-ezequiel@collabora.com>
-         <20200806151310.98624-9-ezequiel@collabora.com>
-         <20200806155028.GB1621078@aptenodytes>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-1 
+        Fri, 7 Aug 2020 10:57:21 -0400
+X-Greylist: delayed 363 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Aug 2020 10:57:20 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1596812239;
+        s=strato-dkim-0002; d=xenosoft.de;
+        h=Date:Message-ID:Subject:From:To:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+        Subject:Sender;
+        bh=etPxG83tkMXiJ/hnA1T72V+lMvSf2k090VPDeSw1U3I=;
+        b=i4lMLHigxmSRgkCjW5JyTJKOftY5we0zpq89EAXRzjG20hXeIS3TCi00p8G7/6uRi7
+        hZkI4lOqc9GFy1/UEQ91+OtACqoiVn1OmrsjcUy8O3P+nGO+elYihb813kpsrtMrRk93
+        rQV4WIZmAxkOEjsVSdnY/d0GwggJBzV+WDUplUcVKP52mgKnGlcQM8+sBJRU0+bxvhuJ
+        HpY+OTZotZlRjFCI30EoS/EQG/EFi7fNtkBh5UqxybTbythCCtzG89lOx1HXuEB+Fbve
+        5SSefifMUk9kjBuNR13NyQmC63rAQ2ZtHuf0HbcIuxFJ4U0ZiWR7omM7vKObRLgvBrHA
+        QPIA==
+X-RZG-AUTH: ":L2QefEenb+UdBJSdRCXu93KJ1bmSGnhMdmOod1DhGM4l4Hio94KKxRySfLxnHfJ+Dkjp5DdBJSrwuuqxvPhSI1Vi9hdbute3wuvmUTfEdg9AyQ=="
+X-RZG-CLASS-ID: mo00
+Received: from [IPv6:2a02:8109:89c0:ebfc:15f9:f3ba:c3bc:6875]
+        by smtp.strato.de (RZmta 46.10.5 AUTH)
+        with ESMTPSA id 60686ew77EjEQ1K
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Fri, 7 Aug 2020 16:45:14 +0200 (CEST)
+To:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        keescook@chromium.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "R.T.Dickinson" <rtd2@xtra.co.nz>,
+        Darren Stevens <darren@stevens-zone.net>,
+        mad skateman <madskateman@gmail.com>
+From:   Christian Zigotzky <chzigotzky@xenosoft.de>
+Subject: [Latest Git kernel/Linux-next kernel] Xorg doesn't start after the
+ seccomp updates v5.9-rc1
+Message-ID: <67cd9693-10bc-5aa5-0898-ff2ac1f9c725@xenosoft.de>
+Date:   Fri, 7 Aug 2020 16:45:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: de-DE
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-08-06 at 17:50 +0200, Paul Kocialkowski wrote:
-> Hi,
-> 
-> On Thu 06 Aug 20, 12:13, Ezequiel Garcia wrote:
-> > The SLICE_PARAMS control is intended for slice-based
-> > devices. In this mode, the OUTPUT buffer contains
-> > a single slice, and so the buffer's plane payload size
-> > can be used to query the slice size.
-> 
-> If we later extend the API for supporting multiple slices with dynamic array
-> controls, I guess we'll need to know the size of each slice in each control
-> elements. So I'd rather keep that even if it's indeed redundant with
-> vb2_get_plane_payload in single-slice mode.
-> 
+Hello,
 
-If we later extend the API, another control (possibly
-another decoding mode?) shall be introduced.
+Xorg doesn't start with the latest Git kernel anymore on some Linux 
+distributions after the seccomp updates v5.9-rc1 [1]. For example on 
+Fienix (Debian Sid PowerPC 32-bit) and on ubuntu MATE 16.04.6 (PowerPC 
+32-bit). I tested these distributions on the A-EON AmigaOne X1000 [2], 
+A-EON AmigaOne X5000 [3], and in a virtual e5500 QEMU machine with a 
+virtio_gpu.
 
-This API covers single-slice-per-request as specified
-and documented in patch 9/14 "Clarify SLICE_BASED mode".
+Error messages:
 
-This is along the lines of the proposal drafted by Nicolas,
-see my reply: https://lkml.org/lkml/2020/8/5/791.
+systemd-journald[2238]: Failed to send WATCHDOG-1 notification message: 
+Connection refused
+systemd-journald[2238]: Failed to send WATCHDOG-1 notification message: 
+Transport endpoint is not connected
+systemd-journald[2238]: Failed to send WATCHDOG-1 notification message: 
+Transport endpoint is not connected
+systemd-journald[2238]: Failed to send WATCHDOG-1 notification message: 
+Transport endpoint is not connected
+systemd-journald[2238]: Failed to send WATCHDOG-1 notification message: 
+Transport endpoint is not connected
+systemd-journald[2238]: Failed to send WATCHDOG-1 notification message: 
+Transport endpoint is not connected
 
-This applies to num_slices, slice size and slice start offset.
+---
 
-There are multiple ways of doing this.
+But Xorg works on Ubuntu 10.04.4 (PowerPC 32-bit), openSUSE Tumbleweed 
+20190722 PPC64 and on Fedora 27 PPC64 with the latest Git kernel.
 
-Thanks!
-Ezequiel
+I bisected today [4].
 
-> What do you think?
-> 
-> Paul
-> 
-> > To reduce the API surface drop the size from the
-> > SLICE_PARAMS control.
-> > 
-> > A follow-up change will remove other members in SLICE_PARAMS
-> > so we don't need to add padding fields here.
-> > 
-> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> > ---
-> >  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 3 ---
-> >  drivers/staging/media/sunxi/cedrus/cedrus_h264.c          | 7 +++----
-> >  include/media/h264-ctrls.h                                | 3 ---
-> >  3 files changed, 3 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > index 427fc5727ec0..fff74b7bf32a 100644
-> > --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > @@ -1760,9 +1760,6 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
-> >      :stub-columns: 0
-> >      :widths:       1 1 2
-> >  
-> > -    * - __u32
-> > -      - ``size``
-> > -      -
-> >      * - __u32
-> >        - ``start_byte_offset``
-> >          Offset (in bytes) from the beginning of the OUTPUT buffer to the start
-> > diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> > index a9ba78b15907..8b6f05aadbe8 100644
-> > --- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> > +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> > @@ -324,17 +324,16 @@ static void cedrus_set_params(struct cedrus_ctx *ctx,
-> >  	struct vb2_buffer *src_buf = &run->src->vb2_buf;
-> >  	struct cedrus_dev *dev = ctx->dev;
-> >  	dma_addr_t src_buf_addr;
-> > -	u32 len = slice->size * 8;
-> > +	size_t slice_bytes = vb2_get_plane_payload(src_buf, 0);
-> >  	unsigned int pic_width_in_mbs;
-> >  	bool mbaff_pic;
-> >  	u32 reg;
-> >  
-> > -	cedrus_write(dev, VE_H264_VLD_LEN, len);
-> > +	cedrus_write(dev, VE_H264_VLD_LEN, slice_bytes * 8);
-> >  	cedrus_write(dev, VE_H264_VLD_OFFSET, 0);
-> >  
-> >  	src_buf_addr = vb2_dma_contig_plane_dma_addr(src_buf, 0);
-> > -	cedrus_write(dev, VE_H264_VLD_END,
-> > -		     src_buf_addr + vb2_get_plane_payload(src_buf, 0));
-> > +	cedrus_write(dev, VE_H264_VLD_END, src_buf_addr + slice_bytes);
-> >  	cedrus_write(dev, VE_H264_VLD_ADDR,
-> >  		     VE_H264_VLD_ADDR_VAL(src_buf_addr) |
-> >  		     VE_H264_VLD_ADDR_FIRST | VE_H264_VLD_ADDR_VALID |
-> > diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
-> > index 4f05ee265997..f74736fcfa00 100644
-> > --- a/include/media/h264-ctrls.h
-> > +++ b/include/media/h264-ctrls.h
-> > @@ -158,9 +158,6 @@ struct v4l2_h264_reference {
-> >  };
-> >  
-> >  struct v4l2_ctrl_h264_slice_params {
-> > -	/* Size in bytes, including header */
-> > -	__u32 size;
-> > -
-> >  	/* Offset in bytes to the start of slice in the OUTPUT buffer. */
-> >  	__u32 start_byte_offset;
-> >  
-> > -- 
-> > 2.27.0
-> > 
+Result: net/scm: Regularize compat handling of scm_detach_fds() 
+(c0029de50982c1fb215330a5f9d433cec0cfd8cc) [5] is the first bad commit.
+
+This commit has been merged with the seccomp updates v5.9-rc1 on 
+2020-08-04 14:11:08 -0700 [1]. Since these updates, Xorg doesn't start 
+anymore on some Linux distributions.
+
+Unfortunately I wasn't able to revert the first bad commit. The first 
+bad commit depends on many other commits, which unfortunately I don't 
+know. I tried to remove the modifications of the files from the first 
+bad commit but without any success. There are just too many dependencies.
+
+Additionally I compiled a linux-next kernel because of the issue with 
+the lastest Git kernel. Unfortunately this kernel doesn't boot. It can't 
+initialize the graphics card.
+
+Could you please test Xorg with the latest Git kernel on some Linux 
+distributions?
+
+Thanks,
+Christian
+
+
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9ecc6ea491f0c0531ad81ef9466284df260b2227
+[2] https://en.wikipedia.org/wiki/AmigaOne_X1000
+[3] http://wiki.amiga.org/index.php?title=X5000
+[4] https://forum.hyperion-entertainment.com/viewtopic.php?p=51317#p51317
+[5] 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c0029de50982c1fb215330a5f9d433cec0cfd8cc
 
 
