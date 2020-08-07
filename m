@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D2823EEBA
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFB423EE97
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726797AbgHGOJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 10:09:05 -0400
-Received: from mga07.intel.com ([134.134.136.100]:15633 "EHLO mga07.intel.com"
+        id S1726579AbgHGOEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 10:04:34 -0400
+Received: from mga12.intel.com ([192.55.52.136]:10122 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726096AbgHGN55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 09:57:57 -0400
-IronPort-SDR: udebMZuTpmH8ZK6JNmkcV8g+E0B948xIGVg/cMgZM1APkDqNojkJvzbTlYOEuumkTtl2TJ1CS5
- idHtBA29/oTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9705"; a="217409232"
+        id S1726226AbgHGN6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 09:58:15 -0400
+IronPort-SDR: IR4XiRxW9ObKYBuDUr16EPQaYkFp2b5noWcfFrHSlsjt/46H2DkVHblnj5Ceg53Pgma5Ppo5Z/
+ 1fmRN7ZbDBwA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9705"; a="132638377"
 X-IronPort-AV: E=Sophos;i="5.75,445,1589266800"; 
-   d="scan'208";a="217409232"
+   d="scan'208";a="132638377"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2020 06:57:48 -0700
-IronPort-SDR: xdt7a5CoDMGu8+zrgJYYE95M+rm6iZTBfGhdYYcqyp3RhyAHtlRmEAx8dDTiRzX8TUOWvyAGrL
- I8dQ8HsAyhVA==
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2020 06:58:08 -0700
+IronPort-SDR: HIw8EkictUtAcXrAoSt+uZAHW08pVZvuL+pgxULsOJiC7VeFMGHDQ/IWGx+tECiLTevAaCuwZS
+ geCspFXkdXKQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,445,1589266800"; 
-   d="scan'208";a="468236497"
+   d="scan'208";a="333547143"
 Received: from lkp-server02.sh.intel.com (HELO 090e49ab5480) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 07 Aug 2020 06:57:47 -0700
+  by orsmga007.jf.intel.com with ESMTP; 07 Aug 2020 06:58:05 -0700
 Received: from kbuild by 090e49ab5480 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1k42sU-0000Iz-Pt; Fri, 07 Aug 2020 13:57:46 +0000
-Date:   Fri, 07 Aug 2020 21:57:29 +0800
+        id 1k42sU-0000J7-SM; Fri, 07 Aug 2020 13:57:46 +0000
+Date:   Fri, 07 Aug 2020 21:57:32 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- f29dfa53cc8ae6ad93bae619bcc0bf45cab344f7
-Message-ID: <5f2d5dc9.NDW6OpDDbkV/dy7A%lkp@intel.com>
+Subject: [tip:x86/kaslr] BUILD SUCCESS
+ 76167e5c5457aee8fba3edc5b8554183696fc94d
+Message-ID: <5f2d5dcc.GACXkTKne0jV4HcO%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -46,13 +46,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
-branch HEAD: f29dfa53cc8ae6ad93bae619bcc0bf45cab344f7  x86/bugs/multihit: Fix mitigation reporting when VMX is not in use
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/kaslr
+branch HEAD: 76167e5c5457aee8fba3edc5b8554183696fc94d  x86/kaslr: Replace strlen() with strnlen()
 
-elapsed time: 722m
+elapsed time: 1173m
 
-configs tested: 120
-configs skipped: 4
+configs tested: 140
+configs skipped: 73
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -62,6 +62,11 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
+arm                       mainstone_defconfig
+sh                   sh7770_generic_defconfig
+mips                       rbtx49xx_defconfig
+ia64                         bigsur_defconfig
+arm                          simpad_defconfig
 sh                          polaris_defconfig
 powerpc64                           defconfig
 microblaze                      mmu_defconfig
@@ -69,35 +74,51 @@ arm                         axm55xx_defconfig
 xtensa                    xip_kc705_defconfig
 m68k                       m5475evb_defconfig
 powerpc                       holly_defconfig
-arm                         shannon_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                      pasemi_defconfig
-mips                     loongson1b_defconfig
-sh                           se7619_defconfig
-sh                           se7206_defconfig
-arm                         lpc32xx_defconfig
-arm                          ixp4xx_defconfig
-powerpc                  mpc885_ads_defconfig
+powerpc                     pq2fads_defconfig
+c6x                                 defconfig
+arm                           u8500_defconfig
+mips                 pnx8335_stb225_defconfig
+arm                       aspeed_g5_defconfig
+mips                      bmips_stb_defconfig
+powerpc                    amigaone_defconfig
+sh                           se7712_defconfig
+arc                           tb10x_defconfig
+sh                           se7780_defconfig
+mips                   sb1250_swarm_defconfig
+sh                          r7780mp_defconfig
+arm                        realview_defconfig
+arm                           sunxi_defconfig
+microblaze                    nommu_defconfig
 mips                      fuloong2e_defconfig
+mips                     loongson1c_defconfig
+arm                          lpd270_defconfig
+mips                        jmr3927_defconfig
+arm                          ep93xx_defconfig
+mips                            e55_defconfig
+m68k                       m5249evb_defconfig
+sh                        dreamcast_defconfig
+alpha                               defconfig
+powerpc                  mpc885_ads_defconfig
 sh                   secureedge5410_defconfig
 ia64                          tiger_defconfig
 arm                         mv78xx0_defconfig
-mips                           jazz_defconfig
-sh                        sh7763rdp_defconfig
-sh                           se7712_defconfig
-arm                             ezx_defconfig
-mips                       rbtx49xx_defconfig
-sh                          lboxre2_defconfig
+mips                     loongson1b_defconfig
+sh                         apsh4a3a_defconfig
+sh                            hp6xx_defconfig
 s390                          debug_defconfig
+powerpc                     powernv_defconfig
+arm                        spear6xx_defconfig
+mips                         db1xxx_defconfig
+mips                            gpr_defconfig
+arm                       imx_v4_v5_defconfig
+arm                     eseries_pxa_defconfig
+arm                            pleb_defconfig
+arm                        keystone_defconfig
+arm                          collie_defconfig
 sh                           se7722_defconfig
-sh                          rsk7269_defconfig
 ia64                            zx1_defconfig
 mips                 decstation_r4k_defconfig
 openrisc                    or1ksim_defconfig
-mips                        workpad_defconfig
-xtensa                generic_kc705_defconfig
-arm                          gemini_defconfig
-arm                           h3600_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -111,7 +132,6 @@ c6x                              allyesconfig
 nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
-alpha                               defconfig
 alpha                            allyesconfig
 xtensa                           allyesconfig
 h8300                            allyesconfig
@@ -122,15 +142,15 @@ s390                             allyesconfig
 parisc                           allyesconfig
 s390                                defconfig
 i386                             allyesconfig
+i386                                defconfig
 sparc                            allyesconfig
 sparc                               defconfig
-i386                                defconfig
 mips                             allyesconfig
 mips                             allmodconfig
-powerpc                             defconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
+powerpc                             defconfig
 x86_64               randconfig-a006-20200806
 x86_64               randconfig-a001-20200806
 x86_64               randconfig-a004-20200806
@@ -143,30 +163,30 @@ i386                 randconfig-a001-20200806
 i386                 randconfig-a002-20200806
 i386                 randconfig-a003-20200806
 i386                 randconfig-a006-20200806
-i386                 randconfig-a005-20200807
-i386                 randconfig-a004-20200807
-i386                 randconfig-a001-20200807
-i386                 randconfig-a002-20200807
-i386                 randconfig-a003-20200807
-i386                 randconfig-a006-20200807
-x86_64               randconfig-a013-20200807
-x86_64               randconfig-a011-20200807
-x86_64               randconfig-a012-20200807
-x86_64               randconfig-a016-20200807
-x86_64               randconfig-a015-20200807
-x86_64               randconfig-a014-20200807
-i386                 randconfig-a011-20200807
-i386                 randconfig-a012-20200807
-i386                 randconfig-a013-20200807
-i386                 randconfig-a015-20200807
-i386                 randconfig-a014-20200807
-i386                 randconfig-a016-20200807
+i386                 randconfig-a005-20200805
+i386                 randconfig-a004-20200805
+i386                 randconfig-a001-20200805
+i386                 randconfig-a003-20200805
+i386                 randconfig-a002-20200805
+i386                 randconfig-a006-20200805
+x86_64               randconfig-a013-20200805
+x86_64               randconfig-a011-20200805
+x86_64               randconfig-a012-20200805
+x86_64               randconfig-a016-20200805
+x86_64               randconfig-a015-20200805
+x86_64               randconfig-a014-20200805
 i386                 randconfig-a011-20200805
 i386                 randconfig-a012-20200805
 i386                 randconfig-a013-20200805
 i386                 randconfig-a014-20200805
 i386                 randconfig-a015-20200805
 i386                 randconfig-a016-20200805
+i386                 randconfig-a011-20200806
+i386                 randconfig-a012-20200806
+i386                 randconfig-a013-20200806
+i386                 randconfig-a015-20200806
+i386                 randconfig-a014-20200806
+i386                 randconfig-a016-20200806
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
