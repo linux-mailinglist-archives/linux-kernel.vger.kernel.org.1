@@ -2,185 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9856423F45A
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 23:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC32C23F46C
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 23:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbgHGVa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 17:30:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
+        id S1726648AbgHGVdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 17:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727814AbgHGV3s (ORCPT
+        with ESMTP id S1725893AbgHGVdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 17:29:48 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D29C061D7E
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 14:29:46 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id b142so2786993pfb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 14:29:46 -0700 (PDT)
+        Fri, 7 Aug 2020 17:33:23 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B203CC061756
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 14:33:22 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id a15so2870353wrh.10
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 14:33:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1TZQegrBgPNN+SZZCsJyOP7eFX7H3/9/2zydOordKRU=;
-        b=ieZHYo04XCdbBogCHiXjbZeFR1bV303kMQGvEtUCo3MyCZv4PiQWUZOtUp5UOdsJms
-         OBTC87r+1D0ws9FbjFeU+TDngcJIVQp/zIa7cOyLrT+Kfwkksir2bzMZMZM71wB478Ek
-         KoeuqdI4fr1vD4oXtX+BT3zcMk4kACaAfsSllWPfE1XV9+yGzGNku5ufgoJtirVr8ZaS
-         pKG4jrzoRlV6GzhJsAabu9U1sMqMRLkG8XujccP5ELANmH4hQZEIMJBKDEnHRH+KpJy8
-         hSiEyisrJRZ8PcdacCUH3tpzWxbzlRwGl7dvUMXeAkWcUTPXKhKYFM0reJax5bPpfGFV
-         iRkQ==
+        bh=Kb51K/JMx93SnPedI+EIdFTSAF1IqBeo/q6vamdS4A8=;
+        b=j5fGpkuVmHIE5Ps7zFBfy2Pdo1F76BJ2oz5uWWb95k6tuAOeu9Lp4hnY+11pqXqX1f
+         eW1WZpc91IM6WYWcp4j7Pc0/kUgOqrwv13XpEAuwqgjmvnwoIIzpfOy3OE4k4/KCmI8w
+         ra9stYzuUfw82bKAJG8gGxGsX6WJE2a3T138c12Td/HoyQKB2GU84ST0lk/zf/LbdF/d
+         IBWP4IIg1oHczrZH/o2MdqLogojr6xaCupKt9SwIPIiPSkUipTJx5ONXLtq+8Og5YlNT
+         8S80SBjxPsK8ALFVuDrRJDapxKxuC1Z1yAZquhI6AWArhrAHO3gS9bAYqZpoMK3/hxu6
+         mVPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=1TZQegrBgPNN+SZZCsJyOP7eFX7H3/9/2zydOordKRU=;
-        b=rRCjuBBNnbuV1sUUV32fPPVPKsLF5lbe4nZ4UNZL+mg8+tFFBJAFM+4/NE4mFkPQ7H
-         8pbNax60H+XOKFUIVLYOidSMF54t4w51ELqRf8lq0jTQv9zkBEuS1pATyqgXa9Gz6tAW
-         12TNPtQ++NgOAY4PiTpzVINp7KzYHPUTMWUOdETOiazMjyl1+R9b2U2fDP1ZhSoVnu+2
-         eCYMkDbheubCQNH6cU/ZwG/nZdbTzqSSjnRwPTxGNIhBSz34cT79l5xpxmem5ipHOhPq
-         +3jxNqLEXyL4be0pjDdOfX7+h8CfpnZPE42xjhfRZmtLGGqPglRqPkYrdk6LI6rG8G9P
-         eR6A==
-X-Gm-Message-State: AOAM533ofujkM9cbOz/N+NvXoCXotcOmD/mO4G7GMBGkLv1IF+JtUcVp
-        T1BoHk6A6CaBs7vOFj3qNDMhcR/o/XCi1Tork3rZU31ttR3YCV6hu3FSiVG7mj83Rb73lgT8B8Q
-        xe66za8TPshUbPH6Ybz2rluQwTG10eMSKyhQQQLDrgwR3DFPChEqKxGFRp8FfffUYJSx+/JY=
-X-Google-Smtp-Source: ABdhPJz+2C/PgoKritkxy8QCsvDLemjrofpIEPFwkhIfTB+Eqa7wlcLaV2OWCQg+F4nEAB7Hu1Xv9XgPH0tp
-X-Received: by 2002:a17:90b:1254:: with SMTP id gx20mr16269548pjb.117.1596835785342;
- Fri, 07 Aug 2020 14:29:45 -0700 (PDT)
-Date:   Fri,  7 Aug 2020 14:29:15 -0700
-In-Reply-To: <20200807212916.2883031-1-jwadams@google.com>
-Message-Id: <20200807212916.2883031-7-jwadams@google.com>
-Mime-Version: 1.0
-References: <20200807212916.2883031-1-jwadams@google.com>
-X-Mailer: git-send-email 2.28.0.236.gb10cc79966-goog
-Subject: [RFC PATCH 6/7] core/metricfs: expose x86-specific irq information
- through metricfs
-From:   Jonathan Adams <jwadams@google.com>
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Jonathan Adams <jwadams@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kb51K/JMx93SnPedI+EIdFTSAF1IqBeo/q6vamdS4A8=;
+        b=CX76/v7U6RezzJF8EE1sA/NPZZ/n5+HhhpbeeKEtvb4tAUa/FV3LCp9rjnSGmfExJO
+         cePM0cGA/NJzNl+imogAQb+Yv6ES22rFuFsAzHNmiVzNeWuqWhCfaAZzS3lfpzeXvIeA
+         GgqxAKSxZu3g57nzuvFLjTe7OSs9ySGJkFanONQQyzLxXrkK/v38IB3vQ6v6WuXK0UNz
+         tOPcwsuwoe38+PfyB6y0lwbtIP35waBs67K4w7GPeFi2Rfs2g1ADSFIXGNxZJ6Upr8q3
+         dhzPwpW/+ERE29wO64g/7t7WiNN77ECScGczACXa+Mbj2iEkvSb3HV5/zdz4TaN7BpRj
+         y5jg==
+X-Gm-Message-State: AOAM530GA8HCUzS7Jv/QfxniRzspSubIWeR34p3/n9APsbS01RyQO+Cc
+        1ZYPwQ0n2puF/zS8G0S6LsTt4hSmCOpqdjj9gVGeRQ==
+X-Google-Smtp-Source: ABdhPJxXQmEyH/oQ6CHELZFCo1U1iD2D6vbAatj8wgGfSPKfqffSXXd1hCvHhnXMVMh8U7IDXpV1HbyO9BWtNAzpZjA=
+X-Received: by 2002:adf:f511:: with SMTP id q17mr9909904wro.414.1596836001220;
+ Fri, 07 Aug 2020 14:33:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200806094440.14962-1-98.arpi@gmail.com> <CAHp75Vdpyr=LiOsjgoJ1YscrvFwivtfg58dePtF9aQDYp6V9-A@mail.gmail.com>
+In-Reply-To: <CAHp75Vdpyr=LiOsjgoJ1YscrvFwivtfg58dePtF9aQDYp6V9-A@mail.gmail.com>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 8 Aug 2020 05:33:09 +0800
+Message-ID: <CABVgOSmXFZL+uxKY9yAn9JVzChZxQDsucSQGAGBxM6OpOkCwJg@mail.gmail.com>
+Subject: Re: [PATCH] lib: Convert test_hexdump.c to KUnit
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add metricfs support for displaying percpu irq counters for x86.
-The top directory is /sys/kernel/debug/metricfs/irq_x86.
-Then there is a subdirectory for each x86-specific irq counter.
-For example:
+On Thu, Aug 6, 2020 at 5:53 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, Aug 6, 2020 at 12:48 PM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> >
+> > Converts test lib/test_hexdump.c to KUnit.
+> > More information about KUnit can be found at
+> > https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
+> > KUnit provides a common framework for unit tests in the kernel.
+>
+> > -config TEST_HEXDUMP
+> > -       tristate "Test functions located in the hexdump module at runtime"
+>
+> We have a nice collection of tests starting with TEST_ in the
+> configuration, now it's gone.
+> I'm strongly against this change.
+> Code itself okay, but without addressing above - NAK.
+>
 
-    cat /sys/kernel/debug/metricfs/irq_x86/TLB/values
+This change is to make the test naming compliant with the proposed
+KUnit test naming guidelines:
+- https://lore.kernel.org/linux-kselftest/20200702071416.1780522-1-davidgow@google.com/
 
-Signed-off-by: Jonathan Adams <jwadams@google.com>
+The hope is that tests built on KUnit will all end up with the same
+[x]_KUNIT_TEST config options (which at least preserves the
+consistency of the test naming, even if they'll not all sort
+together), and should make it easier for people to know that the test
+results will be in a common format, and that the test can also be run
+using the KUnit tools.
 
----
-
-jwadams@google.com: rebased to 5.8-pre6
-	This is work originally done by another engineer at
-	google, who would rather not have their name associated with
-	this patchset. They're okay with me sending it under my name.
----
- arch/x86/kernel/irq.c | 80 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 80 insertions(+)
-
-diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
-index 181060247e3c..ffacbbc4066c 100644
---- a/arch/x86/kernel/irq.c
-+++ b/arch/x86/kernel/irq.c
-@@ -12,6 +12,7 @@
- #include <linux/delay.h>
- #include <linux/export.h>
- #include <linux/irq.h>
-+#include <linux/metricfs.h>
- 
- #include <asm/irq_stack.h>
- #include <asm/apic.h>
-@@ -374,3 +375,82 @@ void fixup_irqs(void)
- 	}
- }
- #endif
-+
-+#ifdef CONFIG_METRICFS
-+#define METRICFS_ITEM(name, field, desc) \
-+static void \
-+metricfs_##name(struct metric_emitter *e, int cpu) \
-+{ \
-+	int64_t v = irq_stats(cpu)->field; \
-+	METRIC_EMIT_PERCPU_INT(e, cpu, v); \
-+} \
-+METRIC_EXPORT_PERCPU_COUNTER(name, desc, metricfs_##name)
-+
-+METRICFS_ITEM(NMI, __nmi_count, "Non-maskable interrupts");
-+#ifdef CONFIG_X86_LOCAL_APIC
-+METRICFS_ITEM(LOC, apic_timer_irqs, "Local timer interrupts");
-+METRICFS_ITEM(SPU, irq_spurious_count, "Spurious interrupts");
-+METRICFS_ITEM(PMI, apic_perf_irqs, "Performance monitoring interrupts");
-+METRICFS_ITEM(IWI, apic_irq_work_irqs, "IRQ work interrupts");
-+METRICFS_ITEM(RTR, icr_read_retry_count, "APIC ICR read retries");
-+#endif
-+METRICFS_ITEM(PLT, x86_platform_ipis, "Platform interrupts");
-+#ifdef CONFIG_SMP
-+METRICFS_ITEM(RES, irq_resched_count, "Rescheduling interrupts");
-+METRICFS_ITEM(CAL, irq_call_count, "Function call interrupts");
-+METRICFS_ITEM(TLB, irq_tlb_count, "TLB shootdowns");
-+#endif
-+#ifdef CONFIG_X86_THERMAL_VECTOR
-+METRICFS_ITEM(TRM, irq_thermal_count, "Thermal event interrupts");
-+#endif
-+#ifdef CONFIG_X86_MCE_THRESHOLD
-+METRICFS_ITEM(THR, irq_threshold_count, "Threshold APIC interrupts");
-+#endif
-+#ifdef CONFIG_X86_MCE_AMD
-+METRICFS_ITEM(DFR, irq_deferred_error_count, "Deferred Error APIC interrupts");
-+#endif
-+#ifdef CONFIG_HAVE_KVM
-+METRICFS_ITEM(PIN, kvm_posted_intr_ipis, "Posted-interrupt notification event");
-+METRICFS_ITEM(PIW, kvm_posted_intr_wakeup_ipis,
-+	"Posted-interrupt wakeup event");
-+#endif
-+
-+static int __init init_irq_metricfs(void)
-+{
-+	struct metricfs_subsys *subsys;
-+
-+	subsys = metricfs_create_subsys("irq_x86", NULL);
-+
-+	metric_init_NMI(subsys);
-+#ifdef CONFIG_X86_LOCAL_APIC
-+	metric_init_LOC(subsys);
-+	metric_init_SPU(subsys);
-+	metric_init_PMI(subsys);
-+	metric_init_IWI(subsys);
-+	metric_init_RTR(subsys);
-+#endif
-+	metric_init_PLT(subsys);
-+#ifdef CONFIG_SMP
-+	metric_init_RES(subsys);
-+	metric_init_CAL(subsys);
-+	metric_init_TLB(subsys);
-+#endif
-+#ifdef CONFIG_X86_THERMAL_VECTOR
-+	metric_init_TRM(subsys);
-+#endif
-+#ifdef CONFIG_X86_MCE_THRESHOLD
-+	metric_init_THR(subsys);
-+#endif
-+#ifdef CONFIG_X86_MCE_AMD
-+	metric_init_DFR(subsys);
-+#endif
-+#ifdef CONFIG_HAVE_KVM
-+	metric_init_PIN(subsys);
-+	metric_init_PIW(subsys);
-+#endif
-+
-+	return 0;
-+}
-+module_init(init_irq_metricfs);
-+
-+#endif
--- 
-2.28.0.236.gb10cc79966-goog
-
+The naming guidelines haven't been upstreamed yet, though, so we'd
+definitely appreciate input on that thread if you've got comments more
+broadly than for this particular patch. Ultimately, I don't think it
+matters too much what we end up using, but having some consistency is
+the goal.
