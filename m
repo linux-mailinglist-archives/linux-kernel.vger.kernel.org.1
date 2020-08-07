@@ -2,136 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D6C23F275
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 20:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1838223F27D
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 20:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgHGSGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 14:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50648 "EHLO
+        id S1728018AbgHGSHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 14:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726248AbgHGSGx (ORCPT
+        with ESMTP id S1725934AbgHGSHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 14:06:53 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E666C061756
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 11:06:53 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id c80so2484154wme.0
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 11:06:53 -0700 (PDT)
+        Fri, 7 Aug 2020 14:07:34 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106E2C061756;
+        Fri,  7 Aug 2020 11:07:34 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id v13so2666880oiv.13;
+        Fri, 07 Aug 2020 11:07:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tpabc+dhQPZMaSfy3eZRqVNk+pKX/o3PXA4QYyMUyT8=;
-        b=X1fHuPdee3miTqzeiRI6HPkJli5bqvS3wz2BzKtIXDUu9z/BCm42GjemMhNoetbUSP
-         +drUx71hZXHDWIRyY6xM/zIqF4Z3/NNNDy552yHGJvsl+5+t9NyoN6M03a9OVJZgm4TR
-         n+XQIFVhXqLy+pTCNoCQwZTzh4yjx5HshUyQaJYRln6uHVvej7M2GL9kYnQWNRzVnQj1
-         +Fm79NqHDx3WOT2LT9J4JUG8kuMLlSqrcyEsyqUirNhCWS5+ksNSu7+5OXSrZT6PeQjx
-         Mky59QXOyulr3WPh2QIQOGCLe3Ojuz06TGxF2wu+8pCnblEVM9lz5Y/pmYRuuqEmtlIy
-         xG7w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7F5o5gH/tEwEajzpI7fTjneSGKfDGJAlpNidTq6oDnU=;
+        b=h+X+IDG5dLANG+FOYNwmT/mCzl4Eb5Ny4ytokQkbBAz6vm7JzGxrWxCh6OV0G41Ykp
+         S2ejLI8XMS4YUc+lMRsIWn0uc7CVSjSzAeAGa27laMge9LsOK2CPGIijmkWa+E7ks4K0
+         jJ5r4IpBgYA1ztYzjHeBvXUzdb1kVTFDMdG0Wwao/aFVgz3IeaDxX45YwG1kBfoVjr22
+         IQaqs8IXPcgqnbByfxJJ/zRFIJmL6RBbpsQsFv2tYI2QJYdeia+uouapjk95vdMma8/l
+         mz3+NKks7GOgRHY2CkxNuKWAPs34MlpC7/xXPigdPv7wQe+sT98EW4iDrialwFEl6PR0
+         M5/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tpabc+dhQPZMaSfy3eZRqVNk+pKX/o3PXA4QYyMUyT8=;
-        b=r3nIC+9CMbOY4Amld97PScE0RjULR00bE/dj6XorA7PNbcVt0cx2IdOo1qxJDWHZsy
-         NinQr27WA9EGbPSDL1PHmu+h2k63B9/Lf8LN1RsD3nLiDeO3uo2YBLGhCNTbyBto06x1
-         QhZ35WhE+D2ps5uG2CpIZoY6vhQH6RPWlzkyPD2z+w3v2+f9ZH7joYlE6D47q4WrcpTm
-         jbV7sfiHRfa7iNQEfzOmlFWW04Y1WYu8pXHuCWJdVi3/qAR9XaW95ba/Ykkj7aIL52Ef
-         jjavcXaUbT0z0GTOXtpI8bhHXDfeS7uVuaphXfAE51SScWxpREaa10WslOn0iPL8a1Z+
-         NUZQ==
-X-Gm-Message-State: AOAM531OJ0Uc26jjfaCbbQbUUO6Nkoq5+yjlhUDykzbVutK2kLmXY0WW
-        ZRo2IsXLVVBgdrB0lhldicycfw==
-X-Google-Smtp-Source: ABdhPJy8cM5YxawMXXvMgK4ekM6+8WQD6gYzzmGT9vpjcS+Zwld44Q9XWWhM4WjSV3BnyG0ieow2kw==
-X-Received: by 2002:a1c:1d91:: with SMTP id d139mr14374581wmd.144.1596823611492;
-        Fri, 07 Aug 2020 11:06:51 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:a9ac:cbdb:2935:5df0? ([2a01:e34:ed2f:f020:a9ac:cbdb:2935:5df0])
-        by smtp.googlemail.com with ESMTPSA id t13sm10898775wru.65.2020.08.07.11.06.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 Aug 2020 11:06:50 -0700 (PDT)
-Subject: Re: [GIT PULL] RESEND: thermal for v5.9-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Colin King <colin.king@canonical.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Lukasz Luba <Lukasz.Luba@arm.com>,
-        Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>,
-        Henry Yen <henry.yen@mediatek.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM mailing list <linux-pm@vger.kernel.org>,
-        Marian-Cristian Rotariu 
-        <marian-cristian.rotariu.rb@bp.renesas.com>
-References: <db1dc155-0c7c-f4eb-7fa6-047a78829a82@linaro.org>
- <CAHk-=wgLt61owJ_eKwy43bBujxy3-s=xQXwsSi6VHME7SiAgiA@mail.gmail.com>
- <b903cdd8-cbb5-1a6a-3943-9bb019f1eed7@linaro.org>
- <CAHk-=wgSJwbghhQYCoAVq6ewGKZ+rZvxeKvxb-o_gMt7d7-Nbw@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <88678a80-4ca2-5cb0-d9c5-3e64b7f113f5@linaro.org>
-Date:   Fri, 7 Aug 2020 20:06:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7F5o5gH/tEwEajzpI7fTjneSGKfDGJAlpNidTq6oDnU=;
+        b=SmmL9mvd/4mdRUDlpR+iskhLsGdfsC255WxNb3r/HdWcWOFvybZiryZC8jACkfsxH4
+         n2qYXfJvt2M0tMRmJ2Pn0OQYNaVwQLMsiltq9eaKPYhwPhKA+drV4fojUmVp74X4MFbw
+         T7aoUT7X+2RlbtNDNR/F21o3XT+w70bVTf7f0c+wRvBHL7yEvKuuQ/ayVzFCJKv/rOo/
+         9BGVgNSQxuY/rzuNS6oSqOQBRVgUDIP5OUHQtZv+3Rfzpt/d0E07W9B2yv9FXZVtxRQz
+         Oy02sleNi3SAWZoesUipl2d+UK7yIllNzIN9h/o05rBzL/+cnyX4OHSWN9HGLFPUF+VO
+         k+TQ==
+X-Gm-Message-State: AOAM532gw8Mc7TkqSNQFzJr+o5tEUeOvTMrZVKSLdlpXUMwfSdE290S7
+        5VpLiknNUUijIS9Ls8QkYJzTYLrJ5aW+EoYv3vpfzOd8sZo=
+X-Google-Smtp-Source: ABdhPJwAwFyKTWZBNEByGdfE4mVSiUP2K7OvxM69x0Fq4mUmGEi6WMVAeDWuVNdDDca6vu4Gvg3YPhC4XatMWkG74EA=
+X-Received: by 2002:aca:2306:: with SMTP id e6mr12413148oie.108.1596823653421;
+ Fri, 07 Aug 2020 11:07:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgSJwbghhQYCoAVq6ewGKZ+rZvxeKvxb-o_gMt7d7-Nbw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200730205112.2099429-1-ndesaulniers@google.com> <20200730205112.2099429-2-ndesaulniers@google.com>
+In-Reply-To: <20200730205112.2099429-2-ndesaulniers@google.com>
+From:   Nathan Huckleberry <nhuck15@gmail.com>
+Date:   Fri, 7 Aug 2020 13:07:21 -0500
+Message-ID: <CAN=-RxtoXCG5h2qirsrLG2P37pjjMEHgfAv-7+NSVUy9_LPaYQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ARM: backtrace-clang: check for NULL lr
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        clang-built-linux@googlegroups.com,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Lvqiang Huang <lvqiang.huang@unisoc.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Miles Chen <miles.chen@mediatek.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/08/2020 17:54, Linus Torvalds wrote:
-> On Fri, Aug 7, 2020 at 2:40 AM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->>
->> It defaults to 'y' because the previous (but unused) implementation was
->> unconditionally compiled-in and because of the thermal users needs.
->>
->> Is default=y wrong given this history?
-> 
-> One million percent wrong.
-> 
-> The fact that the old implementation was never used just shows that
-> it's not so important, and it shouldn't be default 'y'. Not having it
-> doesn't break anything.
-> 
-> And the new implementation presumably isn't even compatible with the
-> old format also means that it shouldn't be default 'y'. Building it in
-> wouldn't help anyway.
-> 
-> And the fact that _some_ users might want it does not mean that it
-> should be default 'y', because those users presumably _know_ they want
-> it.
-> 
-> IOW, defaulting to 'y' is just wrong in every possible way. This is
-> not some kind of "to maintain compatibility and not break existing
-> users we should enable this" kind of thing.
-> 
-> And it's not some kind of "everybody should have it" thing either,
-> since presumably nobody has the user-space support for it anyway.
-> 
-> It's something that a new distro would enable _if_ they actually end
-> up supporting the user space. Not something the kernel should enable
-> "just because".
-> 
-> Really: "default y" is _wrong_. Every developer thinks that _their_
-> code is so magical and special that everybody should run it.
-> 
-> And every developer is almost always wrong. Unless you have a "not
-> having this will break existing users", you don't do it.
+On Thu, Jul 30, 2020 at 3:51 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> If the link register was zeroed out, do not attempt to use it for
+> address calculations for which there are currently no fixup handlers,
+> which can lead to a panic during unwind. Since panicking triggers
+> another unwind, this can lead to an infinite loop.  If this occurs
+> during start_kernel(), this can prevent a kernel from booting.
+>
+> commit 59b6359dd92d ("ARM: 8702/1: head-common.S: Clear lr before jumping to start_kernel()")
+> intentionally zeros out the link register in __mmap_switched which tail
+> calls into start kernel. Test for this condition so that we can stop
+> unwinding when initiated within start_kernel() correctly.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: commit 6dc5fd93b2f1 ("ARM: 8900/1: UNWINDER_FRAME_POINTER implementation for Clang")
+> Reported-by: Miles Chen <miles.chen@mediatek.com>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  arch/arm/lib/backtrace-clang.S | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/arm/lib/backtrace-clang.S b/arch/arm/lib/backtrace-clang.S
+> index 6174c45f53a5..5388ac664c12 100644
+> --- a/arch/arm/lib/backtrace-clang.S
+> +++ b/arch/arm/lib/backtrace-clang.S
+> @@ -144,6 +144,8 @@ for_each_frame:     tst     frame, mask             @ Check for address exceptions
+>   */
+>  1003:          ldr     sv_lr, [sv_fp, #4]      @ get saved lr from next frame
+>
+> +               tst     sv_lr, #0               @ If there's no previous lr,
+> +               beq     finished_setup          @ we're done.
+>                 ldr     r0, [sv_lr, #-4]        @ get call instruction
+>                 ldr     r3, .Lopcode+4
+>                 and     r2, r3, r0              @ is this a bl call
+> --
+> 2.28.0.163.g6104cc2f0b6-goog
+>
 
-Ok, I will send a fix.
-
-Thanks for taking the time to clarify that.
-
-  -- Daniel
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Reviewed-by: Nathan Huckleberry <nhuck15@gmail.com>
