@@ -2,41 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0AB423EA22
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7957223EA1B
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728296AbgHGJUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 05:20:52 -0400
-Received: from conuserg-12.nifty.com ([210.131.2.79]:42276 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728228AbgHGJUI (ORCPT
+        id S1728223AbgHGJUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 05:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728152AbgHGJT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 05:20:08 -0400
-Received: from localhost.localdomain (softbank060134047170.bbtec.net [60.134.47.170]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 0779JBQF032147;
-        Fri, 7 Aug 2020 18:19:25 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 0779JBQF032147
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1596791966;
-        bh=vg1UK8X3+Dt2794jmYGfE1ZPMS7oNKG3Ek8+eQungWw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XLrJq71ZCbrj4N4ifnUJFyfAHX7jl1wvjbNreybb077uwaoT2FZek9lEhLC/cNXbt
-         l9wvyJUj8GFDriihv1Gfnu+pq+NfCXwssx2L6p+PnzqUSwGPBFSMYQYTMMw5ULASsh
-         Qmqod5g2vOYKcp0/HBVeqkWbvzZotykhDTB6TLM4TuylLlVnoizYEr+Cusn9Pu+6Bq
-         zxt9+BxG4Ng1SKe8x3D0tOyeU9INM7TAnoJOuiVv8GEEqWJ6H/3uifQyHflvl3Hmv2
-         gXPbwTr1jEuC5nxtxqW9af/eMvdRQ+aAyzM3FWodsN2syY/s0vb3B2RcMuilnfiEy+
-         8jhsxUwPJJF3Q==
-X-Nifty-SrcIP: [60.134.47.170]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 19/19] kconfig: qconf: move setOptionMode() to ConfigList from ConfigView
-Date:   Fri,  7 Aug 2020 18:19:09 +0900
-Message-Id: <20200807091909.2985787-19-masahiroy@kernel.org>
+        Fri, 7 Aug 2020 05:19:58 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A50C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 02:19:57 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id m20so783453eds.2
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 02:19:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=melexis.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WzDswwBfXvOnych9mKo86pvZBTTMjA75hoRZ23jMux8=;
+        b=A5k3r0AZjXI5l/OpMsrMSGwe9CvLtM/wZ/FbzlOoj/yIPnGPa3NvehBqFR/CgV7NZK
+         YM8H/1tiFk4Ww9C4I2UQ3UXgj4rGc923MDncpGYMDshEwZ0ijw2ymCvAk84Je9NfiMqJ
+         olAUMocpdlhxEWxE7pjaD+lQjOUY9Go84g5DgyJeI2DW5lnoslfNLVI4w2lvSGrpWYKq
+         84LatWrSrlV1Pw1SCFf8sgnmtP17oMazpHRbBG+oz5gu4mhT14qxxU7wVL3kr0L4SEBy
+         nhe23+UbSefFhk39RVuS0HN2ywvbd3QD0ZwDwFJkr8NiwNVzsDKhXYj/+XdmOhnCT/1x
+         /KGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WzDswwBfXvOnych9mKo86pvZBTTMjA75hoRZ23jMux8=;
+        b=Ed9mCzGkxpGrC5xT+YDg2XUVOREohWLJJjO4/3AZXOVOxE1M6LD5EImcQAtyPlaGH7
+         7T4w/Hy4PEYvkGXPk1T6mgRr4k8QRFkQEPQc6fXV7ihXfYLsvNEUZoGj2Ew/xc55RjRA
+         11cckcIKb+TWRNxP1+VYCyVh/MTWAb2DkM6RS8Ir/C5p6yiKpKdbkWluZ0te9GLI4X9Q
+         uWCA5ZF0ktiIoXgNuKMeGUuQIfxhaEgys/S3Y55i1CS7P5BvhqeNZap5a06cbkk4Bvom
+         A2Iw80njLZflSWBPR2kjbNg5l/zk8IkbKK3QFBlYeEJtpDa2mIFrj75i/QvqjljNhwCq
+         B72A==
+X-Gm-Message-State: AOAM531gwIJtm0eyIO/g9YE+QxBupZxA7VLDZVr0YGZFHBWtjObfbu6M
+        4MsO/QTF0Y7WJQbz7GwG1KhzPw==
+X-Google-Smtp-Source: ABdhPJwBwzstwHc2j3/qVJpQcsd5JT+qFwUCQW4s3ccC8jHxxizJZcA/mTCwuHFx7e872tBdBuKaWQ==
+X-Received: by 2002:a05:6402:84e:: with SMTP id b14mr7715423edz.115.1596791996585;
+        Fri, 07 Aug 2020 02:19:56 -0700 (PDT)
+Received: from localhost.localdomain (ptr-4xajgyum9863qf6si3v.18120a2.ip6.access.telenet.be. [2a02:1810:a421:dd00:2092:7f6b:4676:cab])
+        by smtp.gmail.com with ESMTPSA id c20sm5134005edy.40.2020.08.07.02.19.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Aug 2020 02:19:55 -0700 (PDT)
+From:   Crt Mori <cmo@melexis.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Crt Mori <cmo@melexis.com>
+Subject: [PATCH 1/2 v2 resend] iio:temperature:mlx90632: Reduce number of equal calulcations
+Date:   Fri,  7 Aug 2020 11:19:48 +0200
+Message-Id: <20200807091948.967161-1-cmo@melexis.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200807091909.2985787-1-masahiroy@kernel.org>
-References: <20200807091909.2985787-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -44,142 +63,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ConfigView::setOptionMode() only gets access to the 'list' member.
+TAdut4 was calculated each iteration although it did not change. In light
+of near future additions of the Extended range DSP calculations, this
+function refactoring will help reduce unrelated changes in that series as
+well as reduce the number of new functions needed.
 
-Move it to the more relevant ConfigList class.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Crt Mori <cmo@melexis.com>
 ---
+ drivers/iio/temperature/mlx90632.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Changes in v2:
-  - new patch
-
- scripts/kconfig/qconf.cc | 46 ++++++++++++++++++++--------------------
- scripts/kconfig/qconf.h  |  9 ++++----
- 2 files changed, 27 insertions(+), 28 deletions(-)
-
-diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
-index 8eacebfeb030..ee6da1a8c636 100644
---- a/scripts/kconfig/qconf.cc
-+++ b/scripts/kconfig/qconf.cc
-@@ -358,6 +358,18 @@ void ConfigList::reinit(void)
- 	updateListAll();
+diff --git a/drivers/iio/temperature/mlx90632.c b/drivers/iio/temperature/mlx90632.c
+index 51b812bcff2e..763a148a0095 100644
+--- a/drivers/iio/temperature/mlx90632.c
++++ b/drivers/iio/temperature/mlx90632.c
+@@ -374,11 +374,11 @@ static s32 mlx90632_calc_temp_ambient(s16 ambient_new_raw, s16 ambient_old_raw,
  }
  
-+void ConfigList::setOptionMode(QAction *action)
-+{
-+	if (action == showNormalAction)
-+		optMode = normalOpt;
-+	else if (action == showAllAction)
-+		optMode = allOpt;
-+	else
-+		optMode = promptOpt;
-+
-+	updateListAll();
-+}
-+
- void ConfigList::saveSettings(void)
+ static s32 mlx90632_calc_temp_object_iteration(s32 prev_object_temp, s64 object,
+-					       s64 TAdut, s32 Fa, s32 Fb,
++					       s64 TAdut, s64 TAdut4, s32 Fa, s32 Fb,
+ 					       s32 Ga, s16 Ha, s16 Hb,
+ 					       u16 emissivity)
  {
- 	if (!objectName().isEmpty()) {
-@@ -900,9 +912,9 @@ void ConfigList::contextMenuEvent(QContextMenuEvent *e)
- }
+-	s64 calcedKsTO, calcedKsTA, ir_Alpha, TAdut4, Alpha_corr;
++	s64 calcedKsTO, calcedKsTA, ir_Alpha, Alpha_corr;
+ 	s64 Ha_customer, Hb_customer;
  
- ConfigView*ConfigView::viewList;
--QAction *ConfigView::showNormalAction;
--QAction *ConfigView::showAllAction;
--QAction *ConfigView::showPromptAction;
-+QAction *ConfigList::showNormalAction;
-+QAction *ConfigList::showAllAction;
-+QAction *ConfigList::showPromptAction;
+ 	Ha_customer = ((s64)Ha * 1000000LL) >> 14ULL;
+@@ -393,10 +393,6 @@ static s32 mlx90632_calc_temp_object_iteration(s32 prev_object_temp, s64 object,
+ 	Alpha_corr = emissivity * div64_s64(Alpha_corr, 100000LL);
+ 	Alpha_corr = div64_s64(Alpha_corr, 1000LL);
+ 	ir_Alpha = div64_s64((s64)object * 10000000LL, Alpha_corr);
+-	TAdut4 = (div64_s64(TAdut, 10000LL) + 27315) *
+-		(div64_s64(TAdut, 10000LL) + 27315) *
+-		(div64_s64(TAdut, 10000LL)  + 27315) *
+-		(div64_s64(TAdut, 10000LL) + 27315);
  
- ConfigView::ConfigView(QWidget* parent, const char *name)
- 	: Parent(parent)
-@@ -933,18 +945,6 @@ ConfigView::~ConfigView(void)
+ 	return (int_sqrt64(int_sqrt64(ir_Alpha * 1000000000000LL + TAdut4))
+ 		- 27315 - Hb_customer) * 10;
+@@ -406,17 +402,21 @@ static s32 mlx90632_calc_temp_object(s64 object, s64 ambient, s32 Ea, s32 Eb,
+ 				     s32 Fa, s32 Fb, s32 Ga, s16 Ha, s16 Hb,
+ 				     u16 tmp_emi)
+ {
+-	s64 kTA, kTA0, TAdut;
++	s64 kTA, kTA0, TAdut, TAdut4;
+ 	s64 temp = 25000;
+ 	s8 i;
+ 
+ 	kTA = (Ea * 1000LL) >> 16LL;
+ 	kTA0 = (Eb * 1000LL) >> 8LL;
+ 	TAdut = div64_s64(((ambient - kTA0) * 1000000LL), kTA) + 25 * 1000000LL;
++	TAdut4 = (div64_s64(TAdut, 10000LL) + 27315) *
++		(div64_s64(TAdut, 10000LL) + 27315) *
++		(div64_s64(TAdut, 10000LL)  + 27315) *
++		(div64_s64(TAdut, 10000LL) + 27315);
+ 
+ 	/* Iterations of calculation as described in datasheet */
+ 	for (i = 0; i < 5; ++i) {
+-		temp = mlx90632_calc_temp_object_iteration(temp, object, TAdut,
++		temp = mlx90632_calc_temp_object_iteration(temp, object, TAdut, TAdut4,
+ 							   Fa, Fb, Ga, Ha, Hb,
+ 							   tmp_emi);
  	}
- }
- 
--void ConfigView::setOptionMode(QAction *act)
--{
--	if (act == showNormalAction)
--		list->optMode = normalOpt;
--	else if (act == showAllAction)
--		list->optMode = allOpt;
--	else
--		list->optMode = promptOpt;
--
--	list->updateListAll();
--}
--
- void ConfigView::setShowName(bool b)
- {
- 	if (list->showName != b) {
-@@ -1487,17 +1487,17 @@ ConfigMainWindow::ConfigMainWindow(void)
- 
- 	QActionGroup *optGroup = new QActionGroup(this);
- 	optGroup->setExclusive(true);
--	connect(optGroup, SIGNAL(triggered(QAction*)), configView,
-+	connect(optGroup, SIGNAL(triggered(QAction*)), configList,
- 		SLOT(setOptionMode(QAction *)));
--	connect(optGroup, SIGNAL(triggered(QAction *)), menuView,
-+	connect(optGroup, SIGNAL(triggered(QAction *)), menuList,
- 		SLOT(setOptionMode(QAction *)));
- 
--	configView->showNormalAction = new QAction("Show Normal Options", optGroup);
--	configView->showAllAction = new QAction("Show All Options", optGroup);
--	configView->showPromptAction = new QAction("Show Prompt Options", optGroup);
--	configView->showNormalAction->setCheckable(true);
--	configView->showAllAction->setCheckable(true);
--	configView->showPromptAction->setCheckable(true);
-+	ConfigList::showNormalAction = new QAction("Show Normal Options", optGroup);
-+	ConfigList::showNormalAction->setCheckable(true);
-+	ConfigList::showAllAction = new QAction("Show All Options", optGroup);
-+	ConfigList::showAllAction->setCheckable(true);
-+	ConfigList::showPromptAction = new QAction("Show Prompt Options", optGroup);
-+	ConfigList::showPromptAction->setCheckable(true);
- 
- 	QAction *showDebugAction = new QAction("Show Debug Info", this);
- 	  showDebugAction->setCheckable(true);
-diff --git a/scripts/kconfig/qconf.h b/scripts/kconfig/qconf.h
-index 460b858b0faa..461df6419f15 100644
---- a/scripts/kconfig/qconf.h
-+++ b/scripts/kconfig/qconf.h
-@@ -74,6 +74,8 @@ public slots:
- 	void changeValue(ConfigItem* item);
- 	void updateSelection(void);
- 	void saveSettings(void);
-+	void setOptionMode(QAction *action);
-+
- signals:
- 	void menuChanged(struct menu *menu);
- 	void menuSelected(struct menu *menu);
-@@ -105,6 +107,8 @@ public slots:
- 	QPalette disabledColorGroup;
- 	QPalette inactivedColorGroup;
- 	QMenu* headerPopup;
-+
-+	static QAction *showNormalAction, *showAllAction, *showPromptAction;
- };
- 
- class ConfigItem : public QTreeWidgetItem {
-@@ -196,7 +200,6 @@ public slots:
- 	void setShowName(bool);
- 	void setShowRange(bool);
- 	void setShowData(bool);
--	void setOptionMode(QAction *);
- signals:
- 	void showNameChanged(bool);
- 	void showRangeChanged(bool);
-@@ -207,10 +210,6 @@ public slots:
- 
- 	static ConfigView* viewList;
- 	ConfigView* nextView;
--
--	static QAction *showNormalAction;
--	static QAction *showAllAction;
--	static QAction *showPromptAction;
- };
- 
- class ConfigInfoView : public QTextBrowser {
 -- 
 2.25.1
 
