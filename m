@@ -2,83 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E9D23EBFB
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 13:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E7223EC1A
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 13:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgHGLLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 07:11:16 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:47305 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726159AbgHGLKV (ORCPT
+        id S1728282AbgHGLNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 07:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728064AbgHGLLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 07:10:21 -0400
-Received: from [192.168.1.155] ([95.117.97.82]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1McpaE-1kdt290dOM-00ZwUJ; Fri, 07 Aug 2020 13:09:31 +0200
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-Subject: srvfs: file system for posting open file descriptors into fs
- namespace
-Message-ID: <55ef0e9a-fb70-7c4a-e945-4d521180221c@metux.net>
-Date:   Fri, 7 Aug 2020 13:09:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 7 Aug 2020 07:11:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE36C061574;
+        Fri,  7 Aug 2020 04:11:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=H9pFCH3Moi70e7rPhQDsmelFkTpyLNVCigPJMZhbh4M=; b=unE27pINXTEXPyCzsiuOqFGJ3T
+        btSDm/aYdoK9MTat9yPFqQPYM78+m2/AsFj+yr3YRQ7nLXlarKa+n2oS+9kspkv07ANWDg8VFAGsD
+        BEgWU3pMKrNpE01GHlBqlEtOBjRL5kBuuinu1VHsNK70/EAhQxnjBLfuWmWwv5MvjRHhcPi/STG67
+        4mxM0E/0Np9If37fkQWdHzrSl4vroNEZQn4+vfsEE1pmc2t5K04Mf/dKijKgjSScesaI7766NbMKL
+        K73JIP2ASefw7evgpqCbNr/3B+U2WQNPCahBXUE2lJr211M1yPpKkTmTZPTjLgLopiPwCfz2oJzAb
+        kwFckUwA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k40HY-0005Qq-4Q; Fri, 07 Aug 2020 11:11:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D9F8D304BAE;
+        Fri,  7 Aug 2020 13:11:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C01C4236DA3E1; Fri,  7 Aug 2020 13:11:26 +0200 (CEST)
+Date:   Fri, 7 Aug 2020 13:11:26 +0200
+From:   peterz@infradead.org
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH 1/2] lockdep: improve current->(hard|soft)irqs_enabled
+ synchronisation with actual irq state
+Message-ID: <20200807111126.GI2674@hirez.programming.kicks-ass.net>
+References: <20200723105615.1268126-1-npiggin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:aYH5qUaztN8iXaCem72LGjZk06I3Aw5dDKBfrw6qDZ1UnOmvPQx
- ObESaggefqvn96vKY6IXgUGbWqXXxHzU2BEOMTeV53LmkvC8Ns4L6fdZkUMo4jRoLcGE539
- YCj/zPMzCDckPTPpOIkd6qye3h4yOaQopx3Wwn7ErZj1G6qjtKrXLutvQ4k/TmJd04jzTPE
- YUja84VuOmEglQ0ASnfnQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Jw4ZP2u63oM=:eTZKKOWShd2aXxkZBLJ6hb
- jhzcZNQhxsKnk+wMJxHXUOiKDDw5loMmoo5/7yOqagBwQ/iAh5cxzsAQWA1fPjMW/b9RrkPU+
- JZfpRXst4VfACNJvV6gsCNvh/SmQlFNLYE6GcaqcjaBRwZpRpMSREIMKQT+vV+LrB4G3uKbRV
- x93zM6N9MEvOJKl7RpKBiBSu7+bS4bYxeslL6r2Ux5DzmNGcWbqLgvuNF7tjsVtg57Vxe6TfU
- K48l/t63NlSeeqVOSwyTLub95fS6AZ8NCKE64KhDtemPfINoPtnPM5ouiGHUE7vzim9fUvxCG
- 2p5fY462b0uYowV0FjhmoUIN6KG2T/zPtHOc2M9TIs3kwiqFg3AR+RjZe4J2pCCUfygFbctpp
- NrAfsx+teNoMaCMxue8UKuV0AtXFJIgdt7QawRHPrQSq5qN8o+joIWE3lgL+JcJsgw+ub1H6i
- 9sijwcHU7F0dLmUDoT3FLEuc0Hmg2LMAWRcwFR4/M+O62lOlO4GQ1hAtujk8VFuhveX2n/W67
- KPf8CPeKIKdYkm4AAxLwfScQaTaxkGLEErkSqXBlF9/UPkiNbYFVeKJBS8gP1jjeB9sSiW6tq
- T+TAAuV38VgBZMC+up3BgWmg2ICuTsJqT+1T9Qgg5kavYgOoJgpJWgxH3OoV9/u+by/49IamE
- zUvBEW12VgUAbACU/bo3VUq/9cH3VioI8OIYoDahPVSVMI21mUuVdxf4Y8mOlg/IJJhpVk/z5
- 1wZyjziFRs3pzSX00OWTBadOZKRrJzF+maDJHLqi98N2tFHKaibWzg+aIBT/n0cyVJxJVsnZR
- lbClW72tLWSE/RMo+WMPRWhuLKeVe0RQxWruPa5AffJC2QHGEUX+vH0Tqz7uKib8RWRpG1U
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200723105615.1268126-1-npiggin@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello folks,
 
+What's wrong with something like this?
 
-here's the first version of my "srvfs" implementation - a synthentic
-filesystem which allows a process to "publish" an open file descriptor
-into the file system, so other processes can continue from there, with
-whatever state the fd is already in.
+AFAICT there's no reason to actually try and add IRQ tracing here, it's
+just a hand full of instructions at the most.
 
-This is a concept from Plan9. The main purpose is allowing applications
-"dialing" some connection, do initial handshakes (eg. authentication)
-and then publish the connection to other applications, that now can now
-make use of the already dialed connection.
+---
 
-I'm currently developing it out-of-tree - will convert it to patches,
-once it reached a stable state.
-
-https://github.com/metux/linux-srvfs-oot
-
-
-Some quick background pointers on how it works on Plan9:
-http://man.cat-v.org/plan_9/4/exportfs
-https://9fans.github.io/plan9port/man/man3/dial.html
-
-
-
-have fun,
-
--- 
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+diff --git a/arch/powerpc/include/asm/hw_irq.h b/arch/powerpc/include/asm/hw_irq.h
+index 3a0db7b0b46e..6be22c1838e2 100644
+--- a/arch/powerpc/include/asm/hw_irq.h
++++ b/arch/powerpc/include/asm/hw_irq.h
+@@ -196,33 +196,6 @@ static inline bool arch_irqs_disabled(void)
+ 		arch_local_irq_restore(flags);				\
+ 	} while(0)
+ 
+-#ifdef CONFIG_TRACE_IRQFLAGS
+-#define powerpc_local_irq_pmu_save(flags)			\
+-	 do {							\
+-		raw_local_irq_pmu_save(flags);			\
+-		trace_hardirqs_off();				\
+-	} while(0)
+-#define powerpc_local_irq_pmu_restore(flags)			\
+-	do {							\
+-		if (raw_irqs_disabled_flags(flags)) {		\
+-			raw_local_irq_pmu_restore(flags);	\
+-			trace_hardirqs_off();			\
+-		} else {					\
+-			trace_hardirqs_on();			\
+-			raw_local_irq_pmu_restore(flags);	\
+-		}						\
+-	} while(0)
+-#else
+-#define powerpc_local_irq_pmu_save(flags)			\
+-	do {							\
+-		raw_local_irq_pmu_save(flags);			\
+-	} while(0)
+-#define powerpc_local_irq_pmu_restore(flags)			\
+-	do {							\
+-		raw_local_irq_pmu_restore(flags);		\
+-	} while (0)
+-#endif  /* CONFIG_TRACE_IRQFLAGS */
+-
+ #endif /* CONFIG_PPC_BOOK3S */
+ 
+ #ifdef CONFIG_PPC_BOOK3E
+diff --git a/arch/powerpc/include/asm/local.h b/arch/powerpc/include/asm/local.h
+index bc4bd19b7fc2..b357a35672b1 100644
+--- a/arch/powerpc/include/asm/local.h
++++ b/arch/powerpc/include/asm/local.h
+@@ -32,9 +32,9 @@ static __inline__ void local_##op(long i, local_t *l)			\
+ {									\
+ 	unsigned long flags;						\
+ 									\
+-	powerpc_local_irq_pmu_save(flags);				\
++	raw_powerpc_local_irq_pmu_save(flags);				\
+ 	l->v c_op i;						\
+-	powerpc_local_irq_pmu_restore(flags);				\
++	raw_powerpc_local_irq_pmu_restore(flags);				\
+ }
+ 
+ #define LOCAL_OP_RETURN(op, c_op)					\
+@@ -43,9 +43,9 @@ static __inline__ long local_##op##_return(long a, local_t *l)		\
+ 	long t;								\
+ 	unsigned long flags;						\
+ 									\
+-	powerpc_local_irq_pmu_save(flags);				\
++	raw_powerpc_local_irq_pmu_save(flags);				\
+ 	t = (l->v c_op a);						\
+-	powerpc_local_irq_pmu_restore(flags);				\
++	raw_powerpc_local_irq_pmu_restore(flags);				\
+ 									\
+ 	return t;							\
+ }
+@@ -81,11 +81,11 @@ static __inline__ long local_cmpxchg(local_t *l, long o, long n)
+ 	long t;
+ 	unsigned long flags;
+ 
+-	powerpc_local_irq_pmu_save(flags);
++	raw_powerpc_local_irq_pmu_save(flags);
+ 	t = l->v;
+ 	if (t == o)
+ 		l->v = n;
+-	powerpc_local_irq_pmu_restore(flags);
++	raw_powerpc_local_irq_pmu_restore(flags);
+ 
+ 	return t;
+ }
+@@ -95,10 +95,10 @@ static __inline__ long local_xchg(local_t *l, long n)
+ 	long t;
+ 	unsigned long flags;
+ 
+-	powerpc_local_irq_pmu_save(flags);
++	raw_powerpc_local_irq_pmu_save(flags);
+ 	t = l->v;
+ 	l->v = n;
+-	powerpc_local_irq_pmu_restore(flags);
++	raw_powerpc_local_irq_pmu_restore(flags);
+ 
+ 	return t;
+ }
+@@ -117,12 +117,12 @@ static __inline__ int local_add_unless(local_t *l, long a, long u)
+ 	unsigned long flags;
+ 	int ret = 0;
+ 
+-	powerpc_local_irq_pmu_save(flags);
++	raw_powerpc_local_irq_pmu_save(flags);
+ 	if (l->v != u) {
+ 		l->v += a;
+ 		ret = 1;
+ 	}
+-	powerpc_local_irq_pmu_restore(flags);
++	raw_powerpc_local_irq_pmu_restore(flags);
+ 
+ 	return ret;
+ }
