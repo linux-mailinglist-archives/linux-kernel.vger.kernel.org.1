@@ -2,417 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6631A23EA1E
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A52F23EA45
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728287AbgHGJUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 05:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728276AbgHGJUm (ORCPT
+        id S1727905AbgHGJXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 05:23:22 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29414 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725881AbgHGJXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 05:20:42 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDDFC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 02:20:42 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id v22so788093edy.0
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 02:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=melexis.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=alK2uwXjJAvvcKN2M/uKq75VCc1VISRu/NQMjzV3t8s=;
-        b=luBkOvRpFuyyv7GhOjkI4m9GQ4KKMYK7B1dsUd4Pg9rLeuIkbWCe63VSDYpY70MXAM
-         v7cPIWDE2G+lsfVF2NcX5Km5bPGsYs7QeN5ko6UjbfTfP/HTLvZPN7agCtF1QaQpB88o
-         IbtvMOBaoEKpXmEoMsRPNWXIOCYyERPkPlRVLJC2iRFlIBwBvO0uXzQDLuEsV10ZLGfW
-         A03e/sPC/UF85kdTt75uBxp/Nrlgd9FtNAcB4lxMl4lwX4Vt34JL4bdCnw+vwYnapr/+
-         iQHA7AKudGIcQ95lQrcutxXky7b3rJbJM5Fv1VlM3pTSy1Cuzf6Hd875Og6pGuBoZ9AX
-         t9Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=alK2uwXjJAvvcKN2M/uKq75VCc1VISRu/NQMjzV3t8s=;
-        b=tP+j0rO7s84vVNYDGEiPHeb4N42kI/pglcVmZBqKwSeHbnRvhD2AjEl5oNFwwBhXTa
-         yfo/jDaCa15rZVCJWlbU9rG1gdGbB1ulLhp2Ekd5WY9vEmiO90wapOJNhV3SE5+nBy9q
-         6ZQJYTwhH+EHoYwi45O+1nSlgcBcz9qubym8l9MshlbGBZIJOX7yQHmLI+Pw5yr082BB
-         962KHZI85rqNe7vJ/b0uTHxiUEYQ1togsqj1wqQhwZzh6soD9od24NrvGjyrH0qhf+Fk
-         ArbqxBbssZserf/r8cqxNk2AxcKuo/u0eCyGv/Ev/9kQCDisZlhSFq/TZ3W63DIu45cn
-         Dt1Q==
-X-Gm-Message-State: AOAM532hf1qOQ2cNFUod4sCXbgL4duzE3IKJGvZ7epG0EKhck9ICBrM+
-        3A8Sh+NAaW8ZiOkkXJNJk/88a3wrrAjPDg==
-X-Google-Smtp-Source: ABdhPJy+Ki2UcB85M7cmg6N2cXnI6BnYqdoO4MGh1FmXJbjDfu3Kim0yqIJcOlAozyxyyUHzQ+yH5Q==
-X-Received: by 2002:aa7:db51:: with SMTP id n17mr6954268edt.222.1596792040872;
-        Fri, 07 Aug 2020 02:20:40 -0700 (PDT)
-Received: from localhost.localdomain (ptr-4xajgyum9863qf6si3v.18120a2.ip6.access.telenet.be. [2a02:1810:a421:dd00:2092:7f6b:4676:cab])
-        by smtp.gmail.com with ESMTPSA id h9sm5592547ejt.50.2020.08.07.02.20.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Aug 2020 02:20:40 -0700 (PDT)
-From:   Crt Mori <cmo@melexis.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Crt Mori <cmo@melexis.com>
-Subject: [PATCH 2/2 resend] iio:temperature:mlx90632: Adding extended calibration option
-Date:   Fri,  7 Aug 2020 11:20:14 +0200
-Message-Id: <20200807092014.967262-1-cmo@melexis.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 7 Aug 2020 05:23:19 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07794hFE059704;
+        Fri, 7 Aug 2020 05:23:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : date : mime-version : in-reply-to : content-type :
+ content-transfer-encoding : message-id; s=pp1;
+ bh=1g03ZrsAvU3imE8zwOJzFzX6Suq13FXKqdRyOgNIzuI=;
+ b=FQ1PLt4hTiHEifRKRogJbBRU0tM++7lUxJhJhMy37d8wi5v2vJQGVWc5epptKaJAAKaf
+ zFR0PfjkxG0sHFpDhgbLo8GzgHmBECLnvFRWLK8//U8yrG7a6DoXQ5ZPAwF+1oOusvtt
+ oi/OfsdMBgiaWtTPFYvdjHE/5hfZmvZheldkYRajo0e+695gxhYSZBZK/4uf/T4xKGe6
+ 3kXAgbf80M0BB6pn0layHneR7SWuuW26yt6zZWMMtCpkpGhrfX6p2N6UJ+xtcagIzsAP
+ 6OTvE/hQNBGv8jQ2GvogUNB4RWAy189bTxa/wh5sxZdAu7aePV/hdXnbYelRSlY8DPB+ aA== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32rephmdet-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 07 Aug 2020 05:23:16 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0779F7Qc031564;
+        Fri, 7 Aug 2020 09:23:15 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 32n018bykk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 07 Aug 2020 09:23:15 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0779Lk4p61276644
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 7 Aug 2020 09:21:46 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C61464C04E;
+        Fri,  7 Aug 2020 09:23:12 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B3CF64C046;
+        Fri,  7 Aug 2020 09:23:11 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.36.111])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  7 Aug 2020 09:23:11 +0000 (GMT)
+Subject: Re: [RFC 1/1] pmem: Add cond_resched() in bio_for_each_segment loop
+ in pmem_make_request
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+References: <0d96e2481f292de2cda8828b03d5121004308759.1596011292.git.riteshh@linux.ibm.com>
+ <20200802230148.GA2114@dread.disaster.area>
+ <20200803071405.64C0711C058@d06av25.portsmouth.uk.ibm.com>
+ <20200803215144.GB2114@dread.disaster.area>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Fri, 7 Aug 2020 14:53:10 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200803215144.GB2114@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Message-Id: <20200807092311.B3CF64C046@d06av22.portsmouth.uk.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-07_05:2020-08-06,2020-08-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ adultscore=0 mlxlogscore=999 clxscore=1015 phishscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008070064
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For some time market wants medical grade accuracy in medical range,
-while still retaining the declared accuracy outside of the medical range
-within the same sensor. That is why we created extended calibration
-which is automatically switched to when object temperature is too high.
 
-This patch also introduces the object_ambient_temperature variable which
-is needed for more accurate calculation of the object infra-red
-footprint as sensor's ambient temperature might be totally different
-than what the ambient temperature is at object and that is why we can
-have some more error which can be eliminated. Currently this temperature
-is fixed at 25, but interface to adjust it by user (with external sensor
-or just IR measurement of the another object which acts as ambient),
-will be introduced in another commit.
 
-Signed-off-by: Crt Mori <cmo@melexis.com>
----
- drivers/iio/temperature/mlx90632.c | 219 ++++++++++++++++++++++++++++-
- 1 file changed, 217 insertions(+), 2 deletions(-)
+On 8/4/20 3:21 AM, Dave Chinner wrote:
+> On Mon, Aug 03, 2020 at 12:44:04PM +0530, Ritesh Harjani wrote:
+>>
+>>
+>> On 8/3/20 4:31 AM, Dave Chinner wrote:
+>>> On Wed, Jul 29, 2020 at 02:15:18PM +0530, Ritesh Harjani wrote:
+>>>> For systems which do not have CONFIG_PREEMPT set and
+>>>> if there is a heavy multi-threaded load/store operation happening
+>>>> on pmem + sometimes along with device latencies, softlockup warnings like
+>>>> this could trigger. This was seen on Power where pagesize is 64K.
+>>>>
+>>>> To avoid softlockup, this patch adds a cond_resched() in this path.
+>>>>
+>>>> <...>
+>>>> watchdog: BUG: soft lockup - CPU#31 stuck for 22s!
+>>>> <...>
+>>>> CPU: 31 PID: 15627 <..> 5.3.18-20
+>>>> <...>
+>>>> NIP memcpy_power7+0x43c/0x7e0
+>>>> LR memcpy_flushcache+0x28/0xa0
+>>>>
+>>>> Call Trace:
+>>>> memcpy_power7+0x274/0x7e0 (unreliable)
+>>>> memcpy_flushcache+0x28/0xa0
+>>>> write_pmem+0xa0/0x100 [nd_pmem]
+>>>> pmem_do_bvec+0x1f0/0x420 [nd_pmem]
+>>>> pmem_make_request+0x14c/0x370 [nd_pmem]
+>>>> generic_make_request+0x164/0x400
+>>>> submit_bio+0x134/0x2e0
+>>>> submit_bio_wait+0x70/0xc0
+>>>> blkdev_issue_zeroout+0xf4/0x2a0
+>>>> xfs_zero_extent+0x90/0xc0 [xfs]
+>>>> xfs_bmapi_convert_unwritten+0x198/0x230 [xfs]
+>>>> xfs_bmapi_write+0x284/0x630 [xfs]
+>>>> xfs_iomap_write_direct+0x1f0/0x3e0 [xfs]
+>>>> xfs_file_iomap_begin+0x344/0x690 [xfs]
+>>>> dax_iomap_pmd_fault+0x488/0xc10
+>>>> __xfs_filemap_fault+0x26c/0x2b0 [xfs]
+>>>> __handle_mm_fault+0x794/0x1af0
+>>>> handle_mm_fault+0x12c/0x220
+>>>> __do_page_fault+0x290/0xe40
+>>>> do_page_fault+0x38/0xc0
+>>>> handle_page_fault+0x10/0x30
+>>>>
+>>>> Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+>>>> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+>>>> ---
+>>>>    drivers/nvdimm/pmem.c | 1 +
+>>>>    1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+>>>> index 2df6994acf83..fcf7af13897e 100644
+>>>> --- a/drivers/nvdimm/pmem.c
+>>>> +++ b/drivers/nvdimm/pmem.c
+>>>> @@ -214,6 +214,7 @@ static blk_qc_t pmem_make_request(struct request_queue *q, struct bio *bio)
+>>>>    			bio->bi_status = rc;
+>>>>    			break;
+>>>>    		}
+>>>> +		cond_resched();
+>>>
+>>> There are already cond_resched() calls between submitted bios in
+>>> blkdev_issue_zeroout() via both __blkdev_issue_zero_pages() and
+>>> __blkdev_issue_write_zeroes(), so I'm kinda wondering where the
+>>> problem is coming from here.
+>>
+>> This problem is coming from that bio call- submit_bio()
+>>
+>>>
+>>> Just how big is the bio being issued here that it spins for 22s
+>>> trying to copy it?
+>>
+>> It's 256 (due to BIO_MAX_PAGES) * 64KB (pagesize) = 16MB.
+>> So this is definitely not an easy trigger as per tester was mainly seen
+>> on a VM.
+> 
+> Right, so a memcpy() of 16MB of data in a single bio is taking >22s?
+> 
+> If so, then you can't solve this problem with cond_resched() - if
+> something that should only take half a millisecond to run is taking
+> 22s of CPU time, there are bigger problems occurring that need
+> fixing.
+> 
+> i.e. if someone is running a workload that has effectively
+> livelocked the hardware cache coherency protocol across the entire
+> machine, then changing kernel code that requires memory bandwidth to
+> be available is not going to fix the problem. All is does is shoot
+> the messenger that tells you there is something going wrong.
 
-diff --git a/drivers/iio/temperature/mlx90632.c b/drivers/iio/temperature/mlx90632.c
-index 763a148a0095..bb35a65bb9f0 100644
---- a/drivers/iio/temperature/mlx90632.c
-+++ b/drivers/iio/temperature/mlx90632.c
-@@ -58,6 +58,8 @@
- /* Control register address - volatile */
- #define MLX90632_REG_CONTROL	0x3001 /* Control Register address */
- #define   MLX90632_CFG_PWR_MASK		GENMASK(2, 1) /* PowerMode Mask */
-+#define   MLX90632_CFG_MTYP_MASK		GENMASK(8, 4) /* Meas select Mask */
-+
- /* PowerModes statuses */
- #define MLX90632_PWR_STATUS(ctrl_val) (ctrl_val << 1)
- #define MLX90632_PWR_STATUS_HALT MLX90632_PWR_STATUS(0) /* hold */
-@@ -65,6 +67,18 @@
- #define MLX90632_PWR_STATUS_STEP MLX90632_PWR_STATUS(2) /* step */
- #define MLX90632_PWR_STATUS_CONTINUOUS MLX90632_PWR_STATUS(3) /* continuous*/
- 
-+/* Measurement types */
-+#define MLX90632_MTYP_MEDICAL 0
-+#define MLX90632_MTYP_EXTENDED 17
-+
-+/* Measurement type select*/
-+#define MLX90632_MTYP_STATUS(ctrl_val) (ctrl_val << 4)
-+#define MLX90632_MTYP_STATUS_MEDICAL MLX90632_MTYP_STATUS(MLX90632_MTYP_MEDICAL)
-+#define MLX90632_MTYP_STATUS_EXTENDED MLX90632_MTYP_STATUS(MLX90632_MTYP_EXTENDED)
-+
-+/* I2C command register - volatile */
-+#define MLX90632_REG_I2C_CMD    0x3005 /* I2C command Register address */
-+
- /* Device status register - volatile */
- #define MLX90632_REG_STATUS	0x3fff /* Device status register */
- #define   MLX90632_STAT_BUSY		BIT(10) /* Device busy indicator */
-@@ -81,6 +95,8 @@
- /* Magic constants */
- #define MLX90632_ID_MEDICAL	0x0105 /* EEPROM DSPv5 Medical device id */
- #define MLX90632_ID_CONSUMER	0x0205 /* EEPROM DSPv5 Consumer device id */
-+#define MLX90632_ID_EXTENDED	0x0505 /* EEPROM DSPv5 Extended range device id */
-+#define MLX90632_ID_MASK	GENMASK(14, 0) /* DSP version and device ID in EE_VERSION */
- #define MLX90632_DSP_VERSION	5 /* DSP version */
- #define MLX90632_DSP_MASK	GENMASK(7, 0) /* DSP version in EE_VERSION */
- #define MLX90632_RESET_CMD	0x0006 /* Reset sensor (address or global) */
-@@ -88,16 +104,20 @@
- #define MLX90632_REF_3		12LL /**< ResCtrlRef value of Channel 3 */
- #define MLX90632_MAX_MEAS_NUM	31 /**< Maximum measurements in list */
- #define MLX90632_SLEEP_DELAY_MS 3000 /**< Autosleep delay */
-+#define MLX90632_EXTENDED_LIMIT 27000 /* Extended mode raw value limit */
- 
- struct mlx90632_data {
- 	struct i2c_client *client;
- 	struct mutex lock; /* Multiple reads for single measurement */
- 	struct regmap *regmap;
- 	u16 emissivity;
-+	u8 mtyp; /* measurement type - to enable extended range calculations */
-+	u32 object_ambient_temperature;
- };
- 
- static const struct regmap_range mlx90632_volatile_reg_range[] = {
- 	regmap_reg_range(MLX90632_REG_I2C_ADDR, MLX90632_REG_CONTROL),
-+	regmap_reg_range(MLX90632_REG_I2C_CMD, MLX90632_REG_I2C_CMD),
- 	regmap_reg_range(MLX90632_REG_STATUS, MLX90632_REG_STATUS),
- 	regmap_reg_range(MLX90632_RAM_1(0),
- 			 MLX90632_RAM_3(MLX90632_MAX_MEAS_NUM)),
-@@ -113,6 +133,7 @@ static const struct regmap_range mlx90632_read_reg_range[] = {
- 	regmap_reg_range(MLX90632_EE_CTRL, MLX90632_EE_I2C_ADDR),
- 	regmap_reg_range(MLX90632_EE_Ha, MLX90632_EE_Hb),
- 	regmap_reg_range(MLX90632_REG_I2C_ADDR, MLX90632_REG_CONTROL),
-+	regmap_reg_range(MLX90632_REG_I2C_CMD, MLX90632_REG_I2C_CMD),
- 	regmap_reg_range(MLX90632_REG_STATUS, MLX90632_REG_STATUS),
- 	regmap_reg_range(MLX90632_RAM_1(0),
- 			 MLX90632_RAM_3(MLX90632_MAX_MEAS_NUM)),
-@@ -199,6 +220,28 @@ static int mlx90632_perform_measurement(struct mlx90632_data *data)
- 	return (reg_status & MLX90632_STAT_CYCLE_POS) >> 2;
- }
- 
-+static int mlx90632_set_meas_type(struct regmap *regmap, u8 type)
-+{
-+	int ret;
-+
-+	if ((type != MLX90632_MTYP_MEDICAL) & (type != MLX90632_MTYP_EXTENDED))
-+		return -EINVAL;
-+
-+	ret = regmap_write(regmap, MLX90632_REG_I2C_CMD, MLX90632_RESET_CMD);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = regmap_write_bits(regmap, MLX90632_REG_CONTROL,
-+				 (MLX90632_CFG_MTYP_MASK | MLX90632_CFG_PWR_MASK),
-+				 (MLX90632_MTYP_STATUS(type) | MLX90632_PWR_STATUS_HALT));
-+	if (ret < 0)
-+		return ret;
-+
-+	mlx90632_pwr_continuous(regmap);
-+
-+	return ret;
-+}
-+
- static int mlx90632_channel_new_select(int perform_ret, uint8_t *channel_new,
- 				       uint8_t *channel_old)
- {
-@@ -300,6 +343,106 @@ static int mlx90632_read_all_channel(struct mlx90632_data *data,
- 	return ret;
- }
- 
-+static int mlx90632_read_ambient_raw_extended(struct regmap *regmap,
-+					      s16 *ambient_new_raw, s16 *ambient_old_raw)
-+{
-+	int ret;
-+	unsigned int read_tmp;
-+
-+	ret = regmap_read(regmap, MLX90632_RAM_3(17), &read_tmp);
-+	if (ret < 0)
-+		return ret;
-+	*ambient_new_raw = (s16)read_tmp;
-+
-+	ret = regmap_read(regmap, MLX90632_RAM_3(18), &read_tmp);
-+	if (ret < 0)
-+		return ret;
-+	*ambient_old_raw = (s16)read_tmp;
-+
-+	return ret;
-+}
-+
-+static int mlx90632_read_object_raw_extended(struct regmap *regmap, s16 *object_new_raw)
-+{
-+	int ret;
-+	unsigned int read_tmp;
-+	s32 read;
-+
-+	ret = regmap_read(regmap, MLX90632_RAM_1(17), &read_tmp);
-+	if (ret < 0)
-+		return ret;
-+	read = (s16)read_tmp;
-+
-+	ret = regmap_read(regmap, MLX90632_RAM_2(17), &read_tmp);
-+	if (ret < 0)
-+		return ret;
-+	read = read - (s16)read_tmp;
-+
-+	ret = regmap_read(regmap, MLX90632_RAM_1(18), &read_tmp);
-+	if (ret < 0)
-+		return ret;
-+	read = read - (s16)read_tmp;
-+
-+	ret = regmap_read(regmap, MLX90632_RAM_2(18), &read_tmp);
-+	if (ret < 0)
-+		return ret;
-+	read = (read + (s16)read_tmp) / 2;
-+
-+	ret = regmap_read(regmap, MLX90632_RAM_1(19), &read_tmp);
-+	if (ret < 0)
-+		return ret;
-+	read = read + (s16)read_tmp;
-+
-+	ret = regmap_read(regmap, MLX90632_RAM_2(19), &read_tmp);
-+	if (ret < 0)
-+		return ret;
-+	read = read + (s16)read_tmp;
-+
-+	if (read > 32767 || read < -32768)
-+		return -EINVAL;
-+
-+	*object_new_raw = (int16_t)read;
-+
-+	return ret;
-+}
-+
-+static int mlx90632_read_all_channel_extended(struct mlx90632_data *data, s16 *object_new_raw,
-+					      s16 *ambient_new_raw, s16 *ambient_old_raw)
-+{
-+	s32 ret;
-+	int tries = 4;
-+
-+	mutex_lock(&data->lock);
-+	ret = mlx90632_set_meas_type(data->regmap, MLX90632_MTYP_EXTENDED);
-+	if (ret < 0)
-+		goto read_unlock;
-+
-+	while (tries-- > 0) {
-+		ret = mlx90632_perform_measurement(data);
-+		if (ret < 0)
-+			goto read_unlock;
-+
-+		if (ret == 19)
-+			break;
-+	}
-+	if (tries < 0) {
-+		ret = -ETIMEDOUT;
-+		goto read_unlock;
-+	}
-+
-+	ret = mlx90632_read_object_raw_extended(data->regmap, object_new_raw);
-+	if (ret < 0)
-+		goto read_unlock;
-+
-+	ret = mlx90632_read_ambient_raw_extended(data->regmap, ambient_new_raw, ambient_old_raw);
-+
-+read_unlock:
-+	(void) mlx90632_set_meas_type(data->regmap, MLX90632_MTYP_MEDICAL);
-+
-+	mutex_unlock(&data->lock);
-+	return ret;
-+}
-+
- static int mlx90632_read_ee_register(struct regmap *regmap, u16 reg_lsb,
- 				     s32 *reg_value)
- {
-@@ -354,9 +497,23 @@ static s64 mlx90632_preprocess_temp_obj(s16 object_new_raw, s16 object_old_raw,
- 	return div64_s64((tmp << 19ULL), 1000LL);
- }
- 
-+static s64 mlx90632_preprocess_temp_obj_extended(s16 object_new_raw, s16 ambient_new_raw,
-+						 s16 ambient_old_raw, s16 Ka)
-+{
-+	s64 VR_IR, kKa, tmp;
-+
-+	kKa = ((s64)Ka * 1000LL) >> 10ULL;
-+	VR_IR = (s64)ambient_old_raw * 1000000LL +
-+		kKa * div64_s64(((s64)ambient_new_raw * 1000LL),
-+			(MLX90632_REF_3));
-+	tmp = div64_s64(
-+			div64_s64((((s64)object_new_raw) * 1000000000000LL), MLX90632_REF_12),
-+			VR_IR);
-+	return div64_s64((tmp << 19ULL), 1000LL);
-+}
-+
- static s32 mlx90632_calc_temp_ambient(s16 ambient_new_raw, s16 ambient_old_raw,
--				      s32 P_T, s32 P_R, s32 P_G, s32 P_O,
--				      s16 Gb)
-+				      s32 P_T, s32 P_R, s32 P_G, s32 P_O, s16 Gb)
- {
- 	s64 Asub, Bsub, Ablock, Bblock, Cblock, AMB, sum;
- 
-@@ -423,6 +580,37 @@ static s32 mlx90632_calc_temp_object(s64 object, s64 ambient, s32 Ea, s32 Eb,
- 	return temp;
- }
- 
-+static s32 mlx90632_calc_temp_object_extended(s64 object, s64 ambient, s64 reflected,
-+					      s32 Ea, s32 Eb, s32 Fa, s32 Fb, s32 Ga,
-+					      s16 Ha, s16 Hb, u16 tmp_emi)
-+{
-+	s64 kTA, kTA0, TAdut, TAdut4, Tr4, TaTr4;
-+	s64 temp = 25000;
-+	s8 i;
-+
-+	kTA = (Ea * 1000LL) >> 16LL;
-+	kTA0 = (Eb * 1000LL) >> 8LL;
-+	TAdut = div64_s64(((ambient - kTA0) * 1000000LL), kTA) + 25 * 1000000LL;
-+	Tr4 = (div64_long(reflected, 10) + 27315) *
-+		(div64_long(reflected, 10) + 27315) *
-+		(div64_long(reflected, 10) + 27315) *
-+		(div64_long(reflected, 10) + 27315);
-+	TAdut4 = (div64_s64(TAdut, 10000LL) + 27315) *
-+		(div64_s64(TAdut, 10000LL) + 27315) *
-+		(div64_s64(TAdut, 10000LL)  + 27315) *
-+		(div64_s64(TAdut, 10000LL) + 27315);
-+	TaTr4 = Tr4 - div64_long(Tr4 - TAdut4, tmp_emi) * 1000;
-+
-+	/* Iterations of calculation as described in datasheet */
-+	for (i = 0; i < 5; ++i) {
-+		temp = mlx90632_calc_temp_object_iteration(temp, object, TAdut, TaTr4,
-+							   Fa / 2, Fb, Ga, Ha, Hb,
-+							   tmp_emi);
-+	}
-+
-+	return temp;
-+}
-+
- static int mlx90632_calc_object_dsp105(struct mlx90632_data *data, int *val)
- {
- 	s32 ret;
-@@ -470,6 +658,26 @@ static int mlx90632_calc_object_dsp105(struct mlx90632_data *data, int *val)
- 	if (ret < 0)
- 		return ret;
- 
-+	if (object_new_raw > MLX90632_EXTENDED_LIMIT &&
-+	    data->mtyp == MLX90632_MTYP_EXTENDED) {
-+		ret = mlx90632_read_all_channel_extended(data, &object_new_raw,
-+							 &ambient_new_raw, &ambient_old_raw);
-+		if (ret < 0)
-+			return ret;
-+
-+		/* Use extended mode calculations */
-+		ambient = mlx90632_preprocess_temp_amb(ambient_new_raw,
-+						       ambient_old_raw, Gb);
-+		object = mlx90632_preprocess_temp_obj_extended(object_new_raw,
-+							       ambient_new_raw,
-+							       ambient_old_raw, Ka);
-+		*val = mlx90632_calc_temp_object_extended(object, ambient,
-+							  data->object_ambient_temperature,
-+							  Ea, Eb, Fa, Fb, Ga,
-+							  Ha, Hb, data->emissivity);
-+		return 0;
-+	}
-+
- 	ambient = mlx90632_preprocess_temp_amb(ambient_new_raw,
- 					       ambient_old_raw, Gb);
- 	object = mlx90632_preprocess_temp_obj(object_new_raw,
-@@ -643,6 +851,7 @@ static int mlx90632_probe(struct i2c_client *client,
- 	i2c_set_clientdata(client, indio_dev);
- 	mlx90632->client = client;
- 	mlx90632->regmap = regmap;
-+	mlx90632->mtyp = MLX90632_MTYP_MEDICAL;
- 
- 	mutex_init(&mlx90632->lock);
- 	indio_dev->name = id->name;
-@@ -662,12 +871,17 @@ static int mlx90632_probe(struct i2c_client *client,
- 		dev_err(&client->dev, "read of version failed: %d\n", ret);
- 		return ret;
- 	}
-+	read = read & MLX90632_ID_MASK;
- 	if (read == MLX90632_ID_MEDICAL) {
- 		dev_dbg(&client->dev,
- 			"Detected Medical EEPROM calibration %x\n", read);
- 	} else if (read == MLX90632_ID_CONSUMER) {
- 		dev_dbg(&client->dev,
- 			"Detected Consumer EEPROM calibration %x\n", read);
-+	} else if (read == MLX90632_ID_EXTENDED) {
-+		dev_dbg(&client->dev,
-+			"Detected Extended range EEPROM calibration %x\n", read);
-+		mlx90632->mtyp = MLX90632_MTYP_EXTENDED;
- 	} else if ((read & MLX90632_DSP_MASK) == MLX90632_DSP_VERSION) {
- 		dev_dbg(&client->dev,
- 			"Detected Unknown EEPROM calibration %x\n", read);	
-@@ -679,6 +893,7 @@ static int mlx90632_probe(struct i2c_client *client,
- 	}
- 
- 	mlx90632->emissivity = 1000;
-+	mlx90632->object_ambient_temperature = 25000; /* 25 degrees Celsius */
- 
- 	pm_runtime_disable(&client->dev);
- 	ret = pm_runtime_set_active(&client->dev);
--- 
-2.25.1
+Thanks Dave. Appreciate your inputs in this area.
+Yes, agreed on the fact that we should not shoot the messenger itself.
+Will look more into this.
 
+-ritesh
