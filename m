@@ -2,212 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0DB23F317
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 21:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA1B23F31F
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 21:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgHGTcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 15:32:46 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:39402 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgHGTcp (ORCPT
+        id S1726466AbgHGTfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 15:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726038AbgHGTfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 15:32:45 -0400
-Received: by mail-io1-f68.google.com with SMTP id z6so3020426iow.6
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 12:32:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p3h0tB6KwL/1zsM8Iqv08PPXT2hN0xRM0rpK7r3CHFs=;
-        b=G1lv9d3iOqxULWbmTXoH9ssSZ9+icPWWlZtwEU11klYGH9OdTZuStMGCD2Nd1OcN7j
-         hDL/UiF1YftdIMeWkRdjFywacZ3gJ/5zdLah5yehEEGJiQOldlQG8GXX5/picxOvSGOW
-         oY2VOEOrVHX43OX4m1E+mnRDi5IvwOwvktZJO1KduGrAf5YkRNC0DrDHPayl4PVjmBXp
-         3t6vWMcUfmC9CDb2li82JDOjBeN0JD71sj9/TYVRpZx4oltrbMIKsjJT4EzSgDeex9Tr
-         FMVFFN6PyYqjbCk58kEi7iKFpYeTY/BwaUHmInqPICycIewjrFcRTzcUz4ao7Ey4U2YQ
-         2VQA==
-X-Gm-Message-State: AOAM532nSI/Vv0FIaMhbzPZ5Ko4UEC0cyBwhAhIrIyBLHAAzKNJzvGMT
-        SVggRKLQ2pZbxlJrWhPg7Q==
-X-Google-Smtp-Source: ABdhPJws4XJ73LOIOQTnvLHovOoGVM5K20z1z11ZGD2ftDqp098XlalQncOdbJTPC7AAHuP7nh6hrQ==
-X-Received: by 2002:a05:6602:221a:: with SMTP id n26mr5927822ion.170.1596828763908;
-        Fri, 07 Aug 2020 12:32:43 -0700 (PDT)
-Received: from xps15.herring.priv ([64.188.179.252])
-        by smtp.googlemail.com with ESMTPSA id z9sm4975142ilm.78.2020.08.07.12.32.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Aug 2020 12:32:43 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH] libperf: Fix man page typos
-Date:   Fri,  7 Aug 2020 13:32:41 -0600
-Message-Id: <20200807193241.3904545-1-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        Fri, 7 Aug 2020 15:35:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E5CC061756
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 12:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=t2izdhy9urvECJgu7c0L+DP8+hLwhvJe9LrSJI1uUoU=; b=nEnfdelSe1G9Q+nx+YpNh0mw1/
+        +a4gGLD0aa9HwBzJxEjQA3qi4g3PXKSq79Y2zY7r0uTtXUyt2tr8itdma+mPNnJjLysKop3luLRvG
+        +s7fjtFyK5BDV4QlN7hM/nOamL+SwvA0z5nuEEDEVkjWFjr9iEPhOAGmNcZDkABfyKoAlFsgnfKBI
+        dcflAoOAEb0LQ5wMksJBIOfeRdBCdYEXiElhQbz8I5flB4ii8eeyt7t8c0xOeXGXxXRhYURPthiAf
+        RSriqo9p5uWoZquYNMFKQWc4plLasbaF3PUqWR6M8S7fAD6PS3GH5YwF8HMfn+hn0rAXP3VhMVAj3
+        wjY/kmAg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k4890-0001tN-N2; Fri, 07 Aug 2020 19:35:10 +0000
+Date:   Fri, 7 Aug 2020 20:35:10 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
+Message-ID: <20200807193510.GG17456@casper.infradead.org>
+References: <20200725101445.GB3870@redhat.com>
+ <CAHk-=whSJbODMVmxxDs64f7BaESKWuMqOxWGpjUSDn6Jzqa71g@mail.gmail.com>
+ <alpine.LSU.2.11.2007251343370.3804@eggly.anvils>
+ <alpine.LSU.2.11.2007252100230.5376@eggly.anvils>
+ <alpine.LSU.2.11.2007261246530.6812@eggly.anvils>
+ <alpine.LSU.2.11.2008052105040.8716@eggly.anvils>
+ <CAHk-=whf7wCUV2oTDUg0eeNafhhk_OhJBT2SbHZXwgtmAzNeTg@mail.gmail.com>
+ <20200806180024.GB17456@casper.infradead.org>
+ <CAHk-=wihTRHMm1LC4AfidZptT9ZuT-wBjE2VhYzKBy66e4iwQw@mail.gmail.com>
+ <alpine.LSU.2.11.2008071047510.1239@eggly.anvils>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2008071047510.1239@eggly.anvils>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix various typos and inconsistent capitalization of CPU in the libperf
-man pages.
+On Fri, Aug 07, 2020 at 11:41:09AM -0700, Hugh Dickins wrote:
+> My home testing was, effectively, on top of c6fe44d96fc1 (v5.8 plus
+> your two patches): I did not have in the io_uring changes from the
+> current tree. In glancing there, I noticed one new and one previous
+> instance of SetPageWaiters() *after* __add_wait_queue_entry_tail():
+> are those correct?
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- tools/lib/perf/Documentation/libperf-counting.txt | 14 ++++++++------
- tools/lib/perf/Documentation/libperf-sampling.txt | 13 +++++++------
- tools/lib/perf/Documentation/libperf.txt          |  4 ++--
- 3 files changed, 17 insertions(+), 14 deletions(-)
+By the way, don't do any performance testing on current Linus tree.
+This commit:
 
-diff --git a/tools/lib/perf/Documentation/libperf-counting.txt b/tools/lib/perf/Documentation/libperf-counting.txt
-index cae9757f49c1..8b75efcd67ce 100644
---- a/tools/lib/perf/Documentation/libperf-counting.txt
-+++ b/tools/lib/perf/Documentation/libperf-counting.txt
-@@ -7,13 +7,13 @@ libperf-counting - counting interface
- 
- DESCRIPTION
- -----------
--The counting interface provides API to meassure and get count for specific perf events.
-+The counting interface provides API to measure and get count for specific perf events.
- 
- The following test tries to explain count on `counting.c` example.
- 
- It is by no means complete guide to counting, but shows libperf basic API for counting.
- 
--The `counting.c` comes with libbperf package and can be compiled and run like:
-+The `counting.c` comes with libperf package and can be compiled and run like:
- 
- [source,bash]
- --
-@@ -26,7 +26,8 @@ count 176242, enabled 176242, run 176242
- It requires root access, because of the `PERF_COUNT_SW_CPU_CLOCK` event,
- which is available only for root.
- 
--The `counting.c` example monitors two events on the current process and displays their count, in a nutshel it:
-+The `counting.c` example monitors two events on the current process and displays
-+their count, in a nutshell it:
- 
- * creates events
- * adds them to the event list
-@@ -152,7 +153,7 @@ Configure event list with the thread map and open events:
- --
- 
- Both events are created as disabled (note the `disabled = 1` assignment above),
--so we need to enable the whole list explicitely (both events).
-+so we need to enable the whole list explicitly (both events).
- 
- From this moment events are counting and we can do our workload.
- 
-@@ -167,7 +168,8 @@ When we are done we disable the events list.
-  79         perf_evlist__disable(evlist);
- --
- 
--Now we need to get the counts from events, following code iterates throught the events list and read counts:
-+Now we need to get the counts from events, following code iterates through the
-+events list and read counts:
- 
- [source,c]
- --
-@@ -178,7 +180,7 @@ Now we need to get the counts from events, following code iterates throught the
-  85         }
- --
- 
--And finaly cleanup.
-+And finally cleanup.
- 
- We close the whole events list (both events) and remove it together with the threads map:
- 
-diff --git a/tools/lib/perf/Documentation/libperf-sampling.txt b/tools/lib/perf/Documentation/libperf-sampling.txt
-index d71a7b4fcf5f..d6ca24f6ef78 100644
---- a/tools/lib/perf/Documentation/libperf-sampling.txt
-+++ b/tools/lib/perf/Documentation/libperf-sampling.txt
-@@ -8,13 +8,13 @@ libperf-sampling - sampling interface
- 
- DESCRIPTION
- -----------
--The sampling interface provides API to meassure and get count for specific perf events.
-+The sampling interface provides API to measure and get count for specific perf events.
- 
- The following test tries to explain count on `sampling.c` example.
- 
- It is by no means complete guide to sampling, but shows libperf basic API for sampling.
- 
--The `sampling.c` comes with libbperf package and can be compiled and run like:
-+The `sampling.c` comes with libperf package and can be compiled and run like:
- 
- [source,bash]
- --
-@@ -33,7 +33,8 @@ cpu   0, pid   4465, tid   4470, ip         7f84fe0ebebf, period             176
- 
- It requires root access, because it uses hardware cycles event.
- 
--The `sampling.c` example profiles/samples all CPUs with hardware cycles, in a nutshel it:
-+The `sampling.c` example profiles/samples all CPUs with hardware cycles, in a
-+nutshell it:
- 
- - creates events
- - adds them to the event list
-@@ -90,7 +91,7 @@ Once the setup is complete we start by defining cycles event using the `struct p
-  36         };
- --
- 
--Next step is to prepare cpus map.
-+Next step is to prepare CPUs map.
- 
- In this case we will monitor all the available CPUs:
- 
-@@ -152,7 +153,7 @@ Once the events list is open, we can create memory maps AKA perf ring buffers:
- --
- 
- The event is created as disabled (note the `disabled = 1` assignment above),
--so we need to enable the events list explicitely.
-+so we need to enable the events list explicitly.
- 
- From this moment the cycles event is sampling.
- 
-@@ -212,7 +213,7 @@ Each sample needs to get parsed:
- 106                                 cpu, pid, tid, ip, period);
- --
- 
--And finaly cleanup.
-+And finally cleanup.
- 
- We close the whole events list (both events) and remove it together with the threads map:
- 
-diff --git a/tools/lib/perf/Documentation/libperf.txt b/tools/lib/perf/Documentation/libperf.txt
-index 5a6bb512789d..0c74c30ed23a 100644
---- a/tools/lib/perf/Documentation/libperf.txt
-+++ b/tools/lib/perf/Documentation/libperf.txt
-@@ -29,7 +29,7 @@ SYNOPSIS
-   void libperf_init(libperf_print_fn_t fn);
- --
- 
--*API to handle cpu maps:*
-+*API to handle CPU maps:*
- 
- [source,c]
- --
-@@ -217,7 +217,7 @@ Following objects are key to the libperf interface:
- 
- [horizontal]
- 
--struct perf_cpu_map:: Provides a cpu list abstraction.
-+struct perf_cpu_map:: Provides a CPU list abstraction.
- 
- struct perf_thread_map:: Provides a thread list abstraction.
- 
--- 
-2.25.1
+commit 37f4a24c2469a10a4c16c641671bd766e276cf9f (refs/bisect/bad)
+Author: Ming Lei <ming.lei@redhat.com>
+Date:   Tue Jun 30 22:03:57 2020 +0800
 
+    blk-mq: centralise related handling into blk_mq_get_driver_tag
+    
+    Move .nr_active update and request assignment into blk_mq_get_driver_tag(),
+    all are good to do during getting driver tag.
+    
+    Meantime blk-flush related code is simplified and flush request needn't
+    to update the request table manually any more.
+    
+    Signed-off-by: Ming Lei <ming.lei@redhat.com>
+    Cc: Christoph Hellwig <hch@infradead.org>
+    Signed-off-by: Jens Axboe <axboe@kernel.dk>
+
+slows everything down, at least on my test qemu system.  Seems like it's
+losing block queue tags.
