@@ -2,55 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1038623E5E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 04:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B196F23E5E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 04:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgHGCjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 22:39:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38550 "EHLO mail.kernel.org"
+        id S1726489AbgHGCja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 22:39:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726049AbgHGCjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 22:39:10 -0400
-Subject: Re: [GIT PULL v2] iomap: new code for 5.9-rc1
+        id S1726049AbgHGCj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 22:39:27 -0400
+Subject: Re: [GIT PULL] CIFS/SMB3 Fixes
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596767950;
-        bh=zFOyHZS18PBPXv24TPjZot4Y7THCDOAZOYL0pNQ8Wi0=;
+        s=default; t=1596767967;
+        bh=P556asfZU0fv6PfTTcVU1bTzaYkGV5iaaVAZr7fseew=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=gaj/Ebh7DmnIZITl9QB+5jrj3tGA1PNpahqKbcxD95KflA3ENJUBuviCfoacXzvSb
-         bApi4u9QzNK3DOdLmKbmtGrj3fACpx0yGvUc4b9r3iG+zL/O8SnylpubrChW55m07m
-         oi1hoZQL06Hyz1+fAVPFbxMjxdTgyPuwF5+KUE8U=
+        b=v7mK7iRsfnghH1Af6iYwCOJQ7L0xeQ5NCD5tN98XlJApUAnb+MAi4Oqf/Gnp2iNjG
+         CqFPfxTIp/07h0nJsvGpl1PFX44WmRxiNzzs07xK/FuIvTP01LsWAkRITTp3wo1c2l
+         YJBf+qkh4WKxySMLWt/ceJFJaLrkFzIw8D7/1z4E=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200806150743.GC6090@magnolia>
-References: <20200806150743.GC6090@magnolia>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200806150743.GC6090@magnolia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.9-merge-5
-X-PR-Tracked-Commit-Id: 60263d5889e6dc5987dc51b801be4955ff2e4aa7
+In-Reply-To: <CAH2r5mvA7xqmqPMmYRrU+Jc8SbF-YG=GH9OjvR+Upx_q6aH3jA@mail.gmail.com>
+References: <CAH2r5mvA7xqmqPMmYRrU+Jc8SbF-YG=GH9OjvR+Upx_q6aH3jA@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAH2r5mvA7xqmqPMmYRrU+Jc8SbF-YG=GH9OjvR+Upx_q6aH3jA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/5.9-rc-smb3-fixes-part1
+X-PR-Tracked-Commit-Id: 7efd081582619e7c270d1c0a422385dcaa99fa9f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0e4656a299db8484933a143259e7e5ebae2e3a01
-Message-Id: <159676795001.23087.7465580263799667328.pr-tracker-bot@kernel.org>
-Date:   Fri, 07 Aug 2020 02:39:10 +0000
-To:     "Darrick J. Wong" <djwong@kernel.org>
+X-PR-Merge-Commit-Id: 327a8d76b1ac2037f87bf041f3bc076407284ffc
+Message-Id: <159676796725.23087.18320063482019258045.pr-tracker-bot@kernel.org>
+Date:   Fri, 07 Aug 2020 02:39:27 +0000
+To:     Steve French <smfrench@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, riteshh@linux.ibm.com,
-        rgoldwyn@suse.de, agruenba@redhat.com, linux-btrfs@vger.kernel.org
+        LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 6 Aug 2020 08:07:43 -0700:
+The pull request you sent on Mon, 3 Aug 2020 17:45:03 -0500:
 
-> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.9-merge-5
+> git://git.samba.org/sfrench/cifs-2.6.git tags/5.9-rc-smb3-fixes-part1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0e4656a299db8484933a143259e7e5ebae2e3a01
+https://git.kernel.org/torvalds/c/327a8d76b1ac2037f87bf041f3bc076407284ffc
 
 Thank you!
 
