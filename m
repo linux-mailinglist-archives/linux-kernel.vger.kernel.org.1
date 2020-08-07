@@ -2,153 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D881723E77A
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 08:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B738323E788
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 09:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726242AbgHGG6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 02:58:23 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59600 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725805AbgHGG6W (ORCPT
+        id S1726533AbgHGHEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 03:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgHGHEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 02:58:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596783500;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=m/hTQ57NSOU1AR5VfkeKkbB3aIGjwLPKETw5i6btfv8=;
-        b=PNFvZWO0F1YieebcdI4x+DRYF6eL9swuzM17p5YfqTS/BTOkvm+Pzfng8eMLc8bAQdwWN+
-        umlboiFsWks4yYQA5LmJRkw2bLjNADrP011BADQmxeX3rcEFK6iHkJ6VDMiMnvLQcxzH0N
-        k7WWMlkE+k7x/P1L4RC8j7tzaRZXA7k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-507-W7lOtSdpOcK86Y6NLXFXQg-1; Fri, 07 Aug 2020 02:58:16 -0400
-X-MC-Unique: W7lOtSdpOcK86Y6NLXFXQg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6E08800685;
-        Fri,  7 Aug 2020 06:58:13 +0000 (UTC)
-Received: from [10.36.112.251] (ovpn-112-251.ams2.redhat.com [10.36.112.251])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9617A1036D15;
-        Fri,  7 Aug 2020 06:58:10 +0000 (UTC)
-Subject: Re: [PATCH v5 3/3] mm/page_alloc: Keep memoryless cpuless node 0
- offline
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Michal Such?nek <msuchanek@suse.de>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        linuxppc-dev@lists.ozlabs.org, Christopher Lameter <cl@linux.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>
-References: <20200701084200.GN2369@dhcp22.suse.cz>
- <20200701100442.GB17918@linux.vnet.ibm.com>
- <184102af-ecf2-c834-db46-173ab2e66f51@redhat.com>
- <20200701110145.GC17918@linux.vnet.ibm.com>
- <0468f965-8762-76a3-93de-3987cf859927@redhat.com>
- <12945273-d788-710d-e8d7-974966529c7d@redhat.com>
- <20200701122110.GT2369@dhcp22.suse.cz>
- <20200703091001.GJ21462@kitsune.suse.cz>
- <20200703092414.GR18446@dhcp22.suse.cz>
- <20200703105944.GS18446@dhcp22.suse.cz>
- <20200703125823.GA26243@linux.vnet.ibm.com>
- <20200806213211.6a6a56037fe771836e5abbe9@linux-foundation.org>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <5688b358-36bc-ccf0-d24b-a65375a9f3c3@redhat.com>
-Date:   Fri, 7 Aug 2020 08:58:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 7 Aug 2020 03:04:12 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80C4C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 00:04:11 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id u24so1064106oiv.7
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 00:04:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=oYWNp/GpuNpaVK72kwx0orN+HBmw3zsxbuspfgdgQAw=;
+        b=vG0VER3/fpNDvr9mnd1+MncBPnDmbCH2YpAigdAFgnMGZc8mrbbOr7jFYmHBWwvC8R
+         Y+myxpR5y2JQbZX5ykV19khJ3+KHjaZm/LFm431GzGPvUljPvBkgRiDu7yv/zndyam4W
+         kBqs/xJhZQHVUqjJ9oSlA6oZ45LJhyHUya/jdoSEZIw9XoBKKG7Oxmo04nTK1darbxqA
+         VgVmNRwcVDxc8Q4CtGy1Fh0cPxVE15vcrnq66hJRnxhQ9ha8ArkaerlkfIpXbqaRLzj1
+         ZLAByKo8qYsy7RyhtSxicVC+O6udeWYzRh4DxTes1TOLl40aKfZvGKUv7xEH3W6CZG6X
+         Q5Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=oYWNp/GpuNpaVK72kwx0orN+HBmw3zsxbuspfgdgQAw=;
+        b=s84mg7T98JDoylRLbHdOe+GaznhNwZkRsJ/t0hNXM4dRwKN3/csCoWraaOZJwy6enE
+         z2kr5weclcYz1afp87ZWr5zVRIfxL0GOI88uJb2/0SUV3fk5tPviqgwgoFp76xKxLCBp
+         RqTKvz6mIdPWsl2GMt2qLnZwuzc8nrFtGYDDMzolMoOSe3hjFPHhFdrRQxUdJx4Wk16j
+         WG4Xqv5Z6Asg6LdJDrhV1HoWnKwJX1NyQ0Kxo32HbzHcKCtJx1r4J+x26Ngxp9ITkZYE
+         XZPqxSeMWenGiWED83BBm2+NCt7waWScS5/N92C9Dj2zugcA3Gc26xbm6wcPhpvbyiqn
+         Q5LA==
+X-Gm-Message-State: AOAM533p3oV1AQKtHOCCrGjfyiLC1rzYdUVJdjdYrLt+G3OPFZVn7Ay6
+        /YOXQC307sxcFzaQndxt70mKw5/NI1Q6SAqMOf8=
+X-Google-Smtp-Source: ABdhPJyx67TqDmr+TFC7z82Z0l0CKJBL9H1gdVhdSvwmXwhtI6apmn24XHSA+FzKoOhOTdAPJvnjBK6HVQlAEHmHcTU=
+X-Received: by 2002:aca:724f:: with SMTP id p76mr10105390oic.35.1596783851057;
+ Fri, 07 Aug 2020 00:04:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200806213211.6a6a56037fe771836e5abbe9@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20200527135329.1172644-1-arnd@arndb.de> <CA+icZUUcH91QDDEin9GyEoD8kqrQSPAnkZJyMnXU40Sk5FAo3A@mail.gmail.com>
+ <875z9vh18a.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <875z9vh18a.fsf@nanos.tec.linutronix.de>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 7 Aug 2020 09:03:59 +0200
+Message-ID: <CA+icZUWpbYDJ7CnVOsWG9paoi-EHpzW2=ERYK=GeR2z9WtJCbw@mail.gmail.com>
+Subject: Re: [PATCH] x86: work around clang IAS bug referencing __force_order
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zhenzhong Duan <zhenzhong.duan@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        linux-kernel@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.08.20 06:32, Andrew Morton wrote:
-> On Fri, 3 Jul 2020 18:28:23 +0530 Srikar Dronamraju <srikar@linux.vnet.ibm.com> wrote:
-> 
->>> The memory hotplug changes that somehow because you can hotremove numa
->>> nodes and therefore make the nodemask sparse but that is not a common
->>> case. I am not sure what would happen if a completely new node was added
->>> and its corresponding node was already used by the renumbered one
->>> though. It would likely conflate the two I am afraid. But I am not sure
->>> this is really possible with x86 and a lack of a bug report would
->>> suggest that nobody is doing that at least.
->>>
->>
->> JFYI,
->> Satheesh copied in this mailchain had opened a bug a year on crash with vcpu
->> hotplug on memoryless node. 
->>
->> https://bugzilla.kernel.org/show_bug.cgi?id=202187
-> 
-> So...  do we merge this patch or not?  Seems that the overall view is
-> "risky but nobody is likely to do anything better any time soon"?
+On Fri, Aug 7, 2020 at 12:13 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Sedat Dilek <sedat.dilek@gmail.com> writes:
+> > what is the status of this patch?
+>
+> Just looked at it.
+>
+> > I needed this one to be able to build VirtualBox via DKMS as an
+> > out-of-tree kernel-module.
+>
+> Not being able to build the vbox rootkit is a feature, not a bug.
+>
 
-I recall the issue Michal saw was "fix powerpc" vs. "break other
-architectures". @Michal how should we proceed? At least x86-64 won't be
-affected IIUC.
+It must be a funny job to work for Linux/x86.
+Keep your humour :-).
 
--- 
-Thanks,
+We have a second issue hitting this problem when CONFIG_LKDTM=m.
+There are more details in CBL issue #1120.
+Especially see comments from Nick [2] and user pcc [3].
 
-David / dhildenb
+Thanks.
 
+- Sedat -
+
+[1] https://github.com/ClangBuiltLinux/linux/issues/1120
+[2] https://github.com/ClangBuiltLinux/linux/issues/1120#issuecomment-668736160
+[3] https://github.com/ClangBuiltLinux/linux/issues/1120#issuecomment-668746486
