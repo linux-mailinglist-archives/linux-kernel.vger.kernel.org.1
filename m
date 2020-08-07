@@ -2,80 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9604323F002
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 17:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3451B23F017
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 17:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgHGP1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 11:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgHGP1p (ORCPT
+        id S1726399AbgHGPk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 11:40:58 -0400
+Received: from 8.mo177.mail-out.ovh.net ([46.105.61.98]:56924 "EHLO
+        8.mo177.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbgHGPk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 11:27:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2724FC061756;
-        Fri,  7 Aug 2020 08:27:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=A6reZ+I6qgExQ6tk0eR0RqsI3FRby5QZjmXbBTCsRpE=; b=jhJYAsDBx5mQARq8HFgz3mMQYG
-        O06mJ2jVj1/Hooz3lLXQr3jSnaOu4YRK8d/7qmpzc6NX7AVBLznUBuD5XdkIqUcgtR8mBMm44blh2
-        RukKKZhq9Amh33DyJNVkpsm/cQmbBmKwh8Hq1i3RycjB76fmHb3ivkvVRvixoVY0TiTCrhVx09P3T
-        3z8MLOn55T6FNEdAp8y15TyGg9s+0UWSq46F/aoeJbALEsNQEOFVYnmrDNJ/lZerK8GNlwnInbPvN
-        OeNlt7yMznGN8++j5wm1rj5Dqqe+H/1UF5RhDKH9ldPAAnnUKCtlUR0yyfbmc1bFN7ZFnR02WbYch
-        VWm/pMEw==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k44HT-0000Cp-6H; Fri, 07 Aug 2020 15:27:39 +0000
-Subject: Re: [PATCH v9 3/5] drm/msm/dp: add support for DP PLL driver
-To:     Tanmay Shah <tanmay@codeaurora.org>, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        robdclark@gmail.com
-Cc:     linux-kernel@vger.kernel.org, freedreno@lists.freedesktop.org,
-        seanpaul@chromium.org, daniel@ffwll.ch, airlied@linux.ie,
-        aravindh@codeaurora.org, abhinavk@codeaurora.org,
-        khsieh@codeaurora.org, Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>
-References: <20200807071718.17937-1-tanmay@codeaurora.org>
- <20200807071718.17937-4-tanmay@codeaurora.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3b0d0e49-5fe8-e217-4ddc-1ff08e65ab48@infradead.org>
-Date:   Fri, 7 Aug 2020 08:27:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 7 Aug 2020 11:40:58 -0400
+X-Greylist: delayed 33439 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Aug 2020 11:40:56 EDT
+Received: from player737.ha.ovh.net (unknown [10.108.42.228])
+        by mo177.mail-out.ovh.net (Postfix) with ESMTP id 6F16213AFF7
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 17:31:17 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player737.ha.ovh.net (Postfix) with ESMTPSA id 95BE7BA0F3BD;
+        Fri,  7 Aug 2020 15:31:07 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-96R001be37b43d-2adb-404c-9edc-3b4ec5cae877,
+                    B1FDDFD4E508142116FDFB9194C63E8FBE397CFD) smtp.auth=steve@sk2.org
+From:   Stephen Kitt <steve@sk2.org>
+To:     Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Kitt <steve@sk2.org>
+Subject: [PATCH] arch/arm: use simple i2c probe function
+Date:   Fri,  7 Aug 2020 17:31:00 +0200
+Message-Id: <20200807153100.384845-1-steve@sk2.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <20200807071718.17937-4-tanmay@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 8342073888835653110
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrkedvgdekiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejfeejrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/20 12:17 AM, Tanmay Shah wrote:
-> diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
-> index ea3c4d094d09..cc1392b29022 100644
-> --- a/drivers/gpu/drm/msm/Kconfig
-> +++ b/drivers/gpu/drm/msm/Kconfig
-> @@ -60,6 +60,7 @@ config DRM_MSM_HDMI_HDCP
->  config DRM_MSM_DP
->  	bool "Enable DP support in MSM DRM driver"
->  	depends on DRM_MSM
-> +	default y
->  	help
->  	  Compile in support for DP driver in msm drm driver. DP external
->  	  display support is enabled through this config option. It can
+The i2c probe functions here don't use the id information provided in
+their second argument, so the single-parameter i2c probe function
+("probe_new") can be used instead.
 
-Hi,
+This avoids scanning the identifier tables during probes.
 
-You need a very strong justification to make an optional part of a driver
-to be "default y".
+Signed-off-by: Stephen Kitt <steve@sk2.org>
+---
+ arch/arm/mach-davinci/board-dm644x-evm.c     |  5 ++---
+ arch/arm/mach-davinci/board-dm646x-evm.c     | 10 ++++------
+ arch/arm/mach-s3c64xx/mach-crag6410-module.c |  5 ++---
+ 3 files changed, 8 insertions(+), 12 deletions(-)
 
-so why?
-
-thanks.
+diff --git a/arch/arm/mach-davinci/board-dm644x-evm.c b/arch/arm/mach-davinci/board-dm644x-evm.c
+index a5d3708fedf6..d0dcf69cc76d 100644
+--- a/arch/arm/mach-davinci/board-dm644x-evm.c
++++ b/arch/arm/mach-davinci/board-dm644x-evm.c
+@@ -548,8 +548,7 @@ static const struct property_entry eeprom_properties[] = {
+  */
+ static struct i2c_client *dm6446evm_msp;
+ 
+-static int dm6446evm_msp_probe(struct i2c_client *client,
+-		const struct i2c_device_id *id)
++static int dm6446evm_msp_probe(struct i2c_client *client)
+ {
+ 	dm6446evm_msp = client;
+ 	return 0;
+@@ -569,7 +568,7 @@ static const struct i2c_device_id dm6446evm_msp_ids[] = {
+ static struct i2c_driver dm6446evm_msp_driver = {
+ 	.driver.name	= "dm6446evm_msp",
+ 	.id_table	= dm6446evm_msp_ids,
+-	.probe		= dm6446evm_msp_probe,
++	.probe_new	= dm6446evm_msp_probe,
+ 	.remove		= dm6446evm_msp_remove,
+ };
+ 
+diff --git a/arch/arm/mach-davinci/board-dm646x-evm.c b/arch/arm/mach-davinci/board-dm646x-evm.c
+index 4600b617f9b4..2dce16fff77e 100644
+--- a/arch/arm/mach-davinci/board-dm646x-evm.c
++++ b/arch/arm/mach-davinci/board-dm646x-evm.c
+@@ -160,8 +160,7 @@ static struct platform_device davinci_aemif_device = {
+ #define DM646X_EVM_ATA_PWD		BIT(1)
+ 
+ /* CPLD Register 0 Client: used for I/O Control */
+-static int cpld_reg0_probe(struct i2c_client *client,
+-			   const struct i2c_device_id *id)
++static int cpld_reg0_probe(struct i2c_client *client)
+ {
+ 	if (HAS_ATA) {
+ 		u8 data;
+@@ -197,7 +196,7 @@ static const struct i2c_device_id cpld_reg_ids[] = {
+ static struct i2c_driver dm6467evm_cpld_driver = {
+ 	.driver.name	= "cpld_reg0",
+ 	.id_table	= cpld_reg_ids,
+-	.probe		= cpld_reg0_probe,
++	.probe_new	= cpld_reg0_probe,
+ };
+ 
+ /* LEDS */
+@@ -402,8 +401,7 @@ static struct snd_platform_data dm646x_evm_snd_data[] = {
+ #ifdef CONFIG_I2C
+ static struct i2c_client *cpld_client;
+ 
+-static int cpld_video_probe(struct i2c_client *client,
+-			const struct i2c_device_id *id)
++static int cpld_video_probe(struct i2c_client *client)
+ {
+ 	cpld_client = client;
+ 	return 0;
+@@ -424,7 +422,7 @@ static struct i2c_driver cpld_video_driver = {
+ 	.driver = {
+ 		.name	= "cpld_video",
+ 	},
+-	.probe		= cpld_video_probe,
++	.probe_new	= cpld_video_probe,
+ 	.remove		= cpld_video_remove,
+ 	.id_table	= cpld_video_id,
+ };
+diff --git a/arch/arm/mach-s3c64xx/mach-crag6410-module.c b/arch/arm/mach-s3c64xx/mach-crag6410-module.c
+index 34f1baa10c54..43b587e79d21 100644
+--- a/arch/arm/mach-s3c64xx/mach-crag6410-module.c
++++ b/arch/arm/mach-s3c64xx/mach-crag6410-module.c
+@@ -378,8 +378,7 @@ static const struct {
+ 	  .i2c_devs = wm2200_i2c, .num_i2c_devs = ARRAY_SIZE(wm2200_i2c) },
+ };
+ 
+-static int wlf_gf_module_probe(struct i2c_client *i2c,
+-			       const struct i2c_device_id *i2c_id)
++static int wlf_gf_module_probe(struct i2c_client *i2c)
+ {
+ 	int ret, i, j, id, rev;
+ 
+@@ -432,7 +431,7 @@ static struct i2c_driver wlf_gf_module_driver = {
+ 	.driver = {
+ 		.name = "wlf-gf-module"
+ 	},
+-	.probe = wlf_gf_module_probe,
++	.probe_new = wlf_gf_module_probe,
+ 	.id_table = wlf_gf_module_id,
+ };
+ 
 -- 
-~Randy
+2.25.4
 
