@@ -2,58 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE9923EF51
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAC023EFA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgHGOuP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 7 Aug 2020 10:50:15 -0400
-Received: from mail.furshetcrimea.ru ([193.27.243.220]:51882 "EHLO
-        furshetcrimea.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbgHGOuO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 10:50:14 -0400
-X-Greylist: delayed 4989 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Aug 2020 10:50:12 EDT
-Received: from [154.118.61.214] (account info@furshetcrimea.ru HELO [192.168.8.100])
-  by furshetcrimea.ru (CommuniGate Pro SMTP 6.1.10)
-  with ESMTPA id 11097430; Fri, 07 Aug 2020 16:34:39 +0300
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726773AbgHGOxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 10:53:54 -0400
+Received: from vpn2.c-s.fr ([93.17.235.2]:31032 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727033AbgHGOxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 10:53:44 -0400
+X-Greylist: delayed 1332 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Aug 2020 10:53:43 EDT
+Received: from localhost (mailhub2-ext [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4BNSTj0v49z9ttfp;
+        Fri,  7 Aug 2020 16:31:21 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [172.26.127.65]) (amavisd-new, port 10024)
+        with ESMTP id cj3w-Q5bmpO7; Fri,  7 Aug 2020 16:31:21 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4BNSTj05PQz9ttfn;
+        Fri,  7 Aug 2020 16:31:21 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5E2FC8BBAD;
+        Fri,  7 Aug 2020 16:31:23 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id TRVENUZcnl2M; Fri,  7 Aug 2020 16:31:23 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8AD738BBA8;
+        Fri,  7 Aug 2020 16:31:22 +0200 (CEST)
+Subject: Re: [PATCH] powerpc:entry_32: correct the path and function name in
+ the comment
+To:     chenzefeng <chenzefeng2@huawei.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        christophe.leroy@c-s.fr, tglx@linutronix.de, bigeasy@linutronix.de,
+        npiggin@gmail.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        zengweilin@huawei.com
+References: <20200807101956.67454-1-chenzefeng2@huawei.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <b8d70e7a-7dc8-ef46-9e84-7f03d68a151b@csgroup.eu>
+Date:   Fri, 7 Aug 2020 16:31:21 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Bei Interesse antworten.
-To:     Recipients <info@furshetcrimea.ru>
-From:   info@furshetcrimea.ru
-Date:   Fri, 07 Aug 2020 14:22:02 +0100
-Reply-To: mattiassjoborg751@gmail.com
-X-Antivirus: Avast (VPS 200807-0, 08/07/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-ID: <auto-000011097430@furshetcrimea.ru>
+In-Reply-To: <20200807101956.67454-1-chenzefeng2@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Schöne Grüße,
 
-Mein Name ist MATTIAS SJOBORG, ich bin Schweizer Staatsbürger und (Vorsitzender des Vergütungs- und Nominierungsausschusses) von Tethys Petroleum, einem multinationalen Ölkonzern mit Sitz in London-England, Großbritannien. Ich bitte Sie um Ihre Hilfe, um die Summe von vierzig Millionen Dollar abzurufen, die aus zwei Sendungsboxen besteht.
 
-Dieses Geld wurde von der Firma erworben und von einem Diplomaten begleitet und korrekt in einer Sicherheitsfirma in Amerika hinterlegt. Mein Grund dafür ist, dass ich von der Firma zu lange um meine Ansprüche betrogen wurde, nur weil ich kein bin Britisch. Die Kontaktdaten des Diplomaten erhalten Sie, wenn Sie Ihr Interesse bekunden, mir zu helfen.
+Le 07/08/2020 Ã  12:19, chenzefeng a Ã©critÂ :
+> Update the comment for file's directory and function name changed.
+> 
+> Fixes: facd04a904ff ("powerpc: convert to copy_thread_tls")
+> Fixes: 14cf11af6cf6 ("powerpc: Merge enough to start building in arch/powerpc.")
+> 
+> Signed-off-by: chenzefeng <chenzefeng2@huawei.com>
+> ---
+>   arch/powerpc/kernel/entry_32.S | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
+> index 8420abd4ea1c..9937593d3a33 100644
+> --- a/arch/powerpc/kernel/entry_32.S
+> +++ b/arch/powerpc/kernel/entry_32.S
+> @@ -696,8 +696,8 @@ handle_dabr_fault:
+>    * to the "_switch" path.  If you change this , you'll have to
+>    * change the fork code also.
+>    *
+> - * The code which creates the new task context is in 'copy_thread'
+> - * in arch/ppc/kernel/process.c
+> + * The code which creates the new task context is in 'copy_thread_tls'
+> + * in arch/powerpc/kernel/process.c
 
-Jede der Schachteln enthält 20 Mio. USD. Für Ihre Hilfe bin ich bereit, 40% an Sie freizugeben. Aus Sicherheitsgründen wurde die Sendung als VERTRAULICHE DIPLOMATISCHE DOKUMENTE registriert, und ich kann erklären, warum dies so erklärt wurde. Denken Sie daran, dass der Diplomat den Inhalt der Sendung nicht kennt. Er ist seit einem Monat dort, während ich nach einem zuverlässigen Partner suchen möchte. Ich werde das Land verlassen, sobald die Sendung für Sie an Sie geliefert wird Private Investitionen und ich haben geschworen, niemals nach London zurückzukehren. Bitte, ich brauche Ihre dringende Antwort, bevor meine Pläne, das Unternehmen zu verlassen, entdeckt werden.
+Does it matters at all where the function is ? I'm sure people can find 
+it themselves.
 
-www.tethyspetroleum.com/tethys/static/EN_US/au_seniormanagement.html
+Christophe
 
-Im Moment ist die sicherste Form der Korrespondenz meine eigene E-Mail-Adresse. Bitte antworten Sie im Interesse der Vertraulichkeit nur über meine direkte E-Mail-Adresse. Antworten Sie zusammen mit Ihrer direkten Telefon- und Faxnummer, unter der ich Sie alternativ erreichen kann.
-
-Bitte, wenn Sie nicht bereit und interessiert sind, mir zu helfen, löschen Sie bitte diese E-Mail aus Ihrer E-Mail und tun Sie so, als hätten Sie sie nie erhalten.
-
-Freundliche Grüße,
-Mr.Mattias Sjoborg
-(Vorsitzender des Vergütungs- und Nominierungsausschusses)
-Tethys Petroleum.
-London, England
-
--- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
-
+>    */
+>   _GLOBAL(_switch)
+>   	stwu	r1,-INT_FRAME_SIZE(r1)
+> 
