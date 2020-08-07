@@ -2,64 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065F723E869
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 09:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB02F23E86E
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 09:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgHGH4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 03:56:09 -0400
-Received: from sonic302-19.consmr.mail.ir2.yahoo.com ([87.248.110.82]:45905
-        "EHLO sonic302-19.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725805AbgHGH4I (ORCPT
+        id S1726793AbgHGH6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 03:58:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726432AbgHGH6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 03:56:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596786966; bh=Z9vsd41Fm7Z/yq5jTLtgMDMwEzBsZK/n03hNCpbaf3Q=; h=Date:From:Reply-To:Subject:References:From:Subject; b=gzdMJqYz8d6XEZiYQDwTx9hJfnbhl+0I37GB77PnFfyRm9o22g1nl4GyUs/xlhk1v/8Sq6fGJGFlA++yNuZOPZpYcjXY7oPGZ0LL0YaxlDfJfOTZi1aoNreScg16jL3nwQAemIaSHTk+esi7VTskQBsHvfqx/Yx+anbut8SkCduY9lQIpjgxK9GcXtK9op2CBGbJv8JaYqZfY8p7z2yj6VnXUQHcHabrBHq/dcixpMBtgs7q2Jkwg/t0CGVQjOq9+NDdglpHtT/4cl95Y61CWkTvosaQ1xge4c4JReJ/WPdj+wvJz4r/qY5B0OWMjFYPIM4j9TUWbC7yuwofAMoPHA==
-X-YMail-OSG: gFdNqAEVM1mcHepdS68umZH2EozI5w2.0524tCE9nPKA2Ih0oqJqUF6OizlN5tr
- wyOArtS.TD6FW_9XU4.RK0clcEW59XyhZpyHBtRlkcGbFTd4WITFa9vX3xZnFiyUonlUmmIOsIZE
- hTtbH58cIZjZqCcrVVsMw3AAgMUCq0QCjbdY10SA6OfarrAZL9iBhlWB8chQQ9YDkkh_wcaiTxNW
- YFzXrLd5HOeBfiAnwcMiTDILdxYT5nSon8HUuD1DIxyItzIdLf4hzu4l9esBHUpn3WCoE9ZY0gOF
- yrKTAn8XFc2JifiXxyJeDb5RYptrdnPdmWkmLRUtlvw3gUboADpwT6kvlkis_dGZD9ykS.e7nNMV
- trKkxjWCyt7k1T1Ag7bg.WoJ1jX4W6TfPHq480q8LEJ6kfSw7O0zOwtWnEvsz4SkAZ6H9Cf0e6ND
- dePy92bGEGnDvxgx1tDM..Bi.w740W1VCp0uQPZUPkRBD51FuCD6Jd8u0JJ6io547xrbV9FAzoUZ
- S1cVxlVpnlzmmzANa.GFyk2.JRy5AmxiqiL9aIINyp9HmUUGu8mQmMLWPE1HZEp04bSLKIIbSpX2
- GTTwb9FnnHxYcaLmsDBF8vB2zMRK1IeRpKibUbbdesitNddUkpMMIcjWuaI1byEXgXHBuF2bZYwQ
- 8fdnYvmNAlAaQD6CBvxSdZkQmh0xyCTg9LDk23wzT.LKTjO5uoSLa.ykCk51CsalSaskVcXX5yeo
- pF18B8EAXABQxvDj9ptfeF.fVRlA5Bw4.Z5dcacLMs8Y_wjcrBmaLnqOlM_18o_lu39KJ_v_fHmK
- 70Sx0yGHBqascKi5lEmjGriYRpQ9NKAFy4z7FJTB7FsjGvsHPvoY1xP8kSw.XYF_Cb91d3Qxsdr1
- 79LMSha97xPPjhZTB6K80Hw0f.q3LUHo7laR5dr9.68_W2QCKdcq52_eHgY4nRmhAuUO8LGqDDn9
- Sni5RfI9OvHwZqnQ2PbHomzwas8lBxoI7VXd2mrFngBOzDpuRZDKwqJ6lupvd1GXlniQgjfJsBdF
- 6FiVqm3G22LBdOMnlarWGTHPejT4hOZKjRBymIAJhDQHDTswV_1lQ5fLtXwx_MUn60WioLF5TV5i
- OQwIrQ2Ktm4Lwm6mDYAWJK61CKXNGvVtdQHdLOr6lCOCkWnoVE2uJcf2yqSzgxqEJyJdsfVje7Yk
- zbJiGl40HQB4Ceojzj0PFgigwo90_7TmR.WCTihrNnH6iaOQbv8F3FCyiiWWc92HXLNFdK2o6a1D
- y5GXTrwDm_A72H.OFh6EGmlBRdaXmCxAHi7VIOfwBtIv6f.an6ZfNvBLRKR6edhnUBSSMaFBBMyl
- oUQVaU8VkPsrp.LnMqMy5R2v_oCxSRnYAlp0TXkz5Eh3_8WA-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ir2.yahoo.com with HTTP; Fri, 7 Aug 2020 07:56:06 +0000
-Date:   Fri, 7 Aug 2020 07:56:02 +0000 (UTC)
-From:   Sergeant Katie Brianna Taylor <katiebrannataylor07@gmail.com>
-Reply-To: katiebriannataylor07@hotmail.com
-Message-ID: <533534290.1680462.1596786962045@mail.yahoo.com>
-Subject: FROM SERGEANT KATIE B. TAYLOR ,
+        Fri, 7 Aug 2020 03:58:49 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E41C061574;
+        Fri,  7 Aug 2020 00:58:49 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id q4so600419edv.13;
+        Fri, 07 Aug 2020 00:58:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Tuw+x57Z+bMcMrxr13BmFplTP3eisVN9XVgbyO55MO0=;
+        b=vRMd9PUlAg/a5xmdWCCfudW7SwJ5VR6Z4Hrhm4qR8AOim0VagQlEEad1/0Bx+dWJHZ
+         sW5AyqOC3WpW1oKnKWCgq26dn48KoTG5VOMdvrRDz+XxkjoXzY46+8QfSMdLjMl2UFUN
+         hNiurKamXzapq24Q1kcLZ+3SyqbMz1OCkqFVPcEWMPombjDFWV1KQMhtJ+8seNLFy4XA
+         B6QaHrsOXOQdO/d56eSbYpJMAHxQsEFWpmmG5rW9Jf4jp7v/Z3n8aqf3WlMWkg7ccsTl
+         3diRQ+8LV/AkVjq7i5wLxkcRDbE/z8ASxSTKY6+F/kktXByiHb8HkEheKRUsQXBICc3y
+         m2zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Tuw+x57Z+bMcMrxr13BmFplTP3eisVN9XVgbyO55MO0=;
+        b=OYiMzjFXPSFO5Hq00tRgxUUXGI1KnzFjieli2VyU1XNqwg45ScewNUV3x+tPgHcIiT
+         yR5Y7tdieRxpRRetn5YsaiJcP+y61x0w/grb3RNufqeSp8HtTOY/KhOH4+Ba1f43822r
+         YW52K8CYLrgckhEAIWTuLP7vWmyyQ/cS1y+YMuJe6hWPp5hqZI/0DBXbuG220YiNHPKU
+         leGOsjjIVXC6lr0NAInuUKbJCd15Iwq7AYE9A/fdYD9gMuSOKFNoGd3D+S2BXQYXGEOc
+         NCQxdQOAQnYi6BJIiZebeZvbObydySGHkPffutf5uj3g/yIBdXvJhzDAwQUThoaRObAU
+         3C0w==
+X-Gm-Message-State: AOAM531D0HiAnLXtvB4dOR3F0rC6opHg60kMgTeKyCSKhdyV7BICtMIK
+        RqiNXpwIrcoXynwKKBU0Mtw=
+X-Google-Smtp-Source: ABdhPJyiAQdzHoP6LkrlU4ivnx0fWRZ4nd2LXvjjg5R081k//p8Tggu2WF2t2e97x3dZ+ksitMw9xA==
+X-Received: by 2002:aa7:dc44:: with SMTP id g4mr7788605edu.273.1596787127998;
+        Fri, 07 Aug 2020 00:58:47 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id t19sm5020290edw.63.2020.08.07.00.58.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Aug 2020 00:58:46 -0700 (PDT)
+Date:   Fri, 7 Aug 2020 09:58:45 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] rtc: max77686: Fix wake-ups for max77620
+Message-ID: <20200807075845.GA94549@ulmo>
+References: <20200806125431.699339-1-jonathanh@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <533534290.1680462.1596786962045.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16436 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="KsGdsel6WgEHnImy"
+Content-Disposition: inline
+In-Reply-To: <20200806125431.699339-1-jonathanh@nvidia.com>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--KsGdsel6WgEHnImy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I=C2=A0am=C2=A0Sergeant=C2=A0Katie=C2=A0Brianna=C2=A0Taylor,=C2=A0originall=
-y=C2=A0from=C2=A0Lake=C2=A0Jackson=C2=A0Texas.=C2=A0I=C2=A0have=C2=A0person=
-ally=C2=A0conducted=C2=A0a=C2=A0special=C2=A0research=C2=A0on=C2=A0the=C2=
-=A0internet=C2=A0and=C2=A0came=C2=A0across=C2=A0your=C2=A0information.=C2=
-=A0I=C2=A0am=C2=A0writing=C2=A0you=C2=A0this=C2=A0mail=C2=A0from=C2=A0US=C2=
-=A0Military=C2=A0Base=C2=A0Kabul=C2=A0Afghanistan.=C2=A0I=C2=A0have=C2=A0a=
-=C2=A0secured=C2=A0business=C2=A0proposal=C2=A0for=C2=A0you.=C2=A0If=C2=A0y=
-ou=C2=A0are=C2=A0interested=C2=A0in=C2=A0my=C2=A0private=C2=A0email=C2=A0(k=
-atiebriannataylor07@hotmail.com),=C2=A0please=C2=A0contact=C2=A0me=C2=A0imm=
-ediately=C2=A0for=C2=A0more=C2=A0information.
+On Thu, Aug 06, 2020 at 01:54:31PM +0100, Jon Hunter wrote:
+> Following commit d8f090dbeafd ("rtc: max77686: Do not allow interrupt to
+> fire before system resume"), RTC wake-ups stopped working on Jetson TX2
+> and Jetson Xavier platforms. The Jetson TX2 uses the max77620 PMIC and
+> the Jetson Xavier uses max20024 PMIC. Both of these PMICs have the same
+> max77620 RTC controller.
+>=20
+> For the max77620 RTC, the variable 'rtc_irq_from_platform' is defined as
+> true in the max77686 driver and because of this the IRQ passed to the
+> max77686 driver for RTC is the PMIC IRQ and not the parent. Hence,
+> following commit d8f090dbeafd ("rtc: max77686: Do not allow interrupt to
+> fire before system resume"), for the max77620 the RTC IRQ within the
+> PMIC is now getting disabled on entry to suspend and unable to wake the
+> system up. Fix this by only disabling interrupts on entry to suspend
+> in the max77686 RTC driver, if the interrupt is the parent interrupt.
+>=20
+> Fixes: d8f090dbeafd ("rtc: max77686: Do not allow interrupt to fire befor=
+e system resume")
+> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+>  drivers/rtc/rtc-max77686.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
 
-Thank=C2=A0you.
+Looks good and fixes suspend/resume with rtcwake for me on Jetson TX2
+and Jetson AGX Xavier:
+
+Reviewed-by: Thierry Reding <treding@nvidia.com>
+Tested-by: Thierry Reding <treding@nvidia.com>
+
+--KsGdsel6WgEHnImy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl8tCbIACgkQ3SOs138+
+s6FF4RAAs2d+/2YZ7DDSBgsjCUYQQRTj7u1jgGgJyk27ZbXjEXyk+H3qYtN4efBS
+EDtAOnfvYOcliYvh5dmGqsGUSTAhE2jBHcfVJxv6V5lrB5svQSJqOz0I1jPl6+Gk
+yy5KenGE69Iqyp0G/GjiRtvlbHHhvIJXn0DrwIwAay8DkWz7KDSso/x6VngDSCkk
+SEbBddoYJaUEC1SRmgZ3YmKJD5SypxsmcOy6RxBnxG3UnZQ0nP9oRU0UVfVzi9Fe
+5tbr4kD/6L9iMjzkGnz/oAWYTHQJzdpI2p5YKO3gR9+U9CVpX9lHVI75O0oUfnSa
+h4Je+sf9OkAggfoNZz6NTEhydtWkDsukl3veSzXAdTqEam3xTTdKTo4gTPhC+TXF
+p7uWJtzRhPq4v150lOTqVOWWKVsXCr8Jq67HwpHFjsYrhcoKfm7YhJ4EgxlPyR7T
+k0cOMM5c0PJSoO8lgg8kIAIbd+1GXeUjH/rRxQJiOilSmgV5Ta95xcGQQExW64V+
+QJt4ee0w2sRy6n305M+i6ERNntwbWppFhs6FdhUsmvCNj8reNm6QMHdevS0zIwrM
+btvPfP2Wyv28JAmHRgIFg/J2CrpWrMNYH7MkBo+N3VXwgESL71rzUZDjH95RqtbQ
+Q6FCRVnAG7xUE+PtaZVQlEKArHR5AzUI4ELCdxf1gHrMcZI0PTk=
+=iem5
+-----END PGP SIGNATURE-----
+
+--KsGdsel6WgEHnImy--
