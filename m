@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF2623E8AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 10:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222F923E8A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 10:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbgHGIPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 04:15:18 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:55990 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726382AbgHGIPP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 04:15:15 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 100661C0BE5; Fri,  7 Aug 2020 10:15:12 +0200 (CEST)
-Date:   Fri, 7 Aug 2020 10:15:11 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Eddie James <eajames@linux.ibm.com>
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, dmurphy@ti.com,
-        jacek.anaszewski@gmail.com, vishwa@linux.ibm.com,
-        andy.shevchenko@gmail.com
-Subject: Re: [PATCH v2 2/2] leds: pca955x: Add an IBM software implementation
- of the PCA9552 chip
-Message-ID: <20200807081511.oqwqxhltvy552ltn@duo.ucw.cz>
-References: <20200803145055.5203-1-eajames@linux.ibm.com>
- <20200803145055.5203-3-eajames@linux.ibm.com>
+        id S1726916AbgHGIPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 04:15:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726382AbgHGIPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 04:15:07 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4AF16221E5;
+        Fri,  7 Aug 2020 08:15:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596788106;
+        bh=GEpRruLfz3323Dj33FBXvW9djkVkixGRQbT9OQbjvvo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=vT07ljnhqbBidIjcWYH6dDRz3g4B4R3Q/ucN5ZJff9d6CJXdJmxwDf4F8E6v4NqBg
+         gzPkJPoIQQ910deCMrSH6OBDsYpHbdfokJiTwozjXP5Hx+lSv3YzJoJvv6cXfMsgTm
+         3TW/r464JheBTH6QsxbQkrZxIpwG5JLLeqKroEXE=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.14.193
+Date:   Fri,  7 Aug 2020 10:15:19 +0200
+Message-Id: <159678811916430@kroah.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="k677muyop72qw6uc"
-Content-Disposition: inline
-In-Reply-To: <20200803145055.5203-3-eajames@linux.ibm.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I'm announcing the release of the 4.14.193 kernel.
 
---k677muyop72qw6uc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+All users of the 4.14 kernel series must upgrade.
 
-On Mon 2020-08-03 09:50:55, Eddie James wrote:
-> IBM created an implementation of the PCA9552 on a PIC16F
-> microcontroller. The I2C device addresses are different from the
-> hardware PCA9552, so add a new compatible string and associated
-> platform data to be able to probe this device.
->=20
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> Reviewed-by: Vishwanatha Subbanna <vishwa@linux.vnet.ibm.com>
+The updated 4.14.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.14.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Acked-by: Pavel Machek <pavel@ucw.cz>
+thanks,
 
-This can be applied when Rob ack's the device tree change.
+greg k-h
 
-I'll ask you to do new patch version when that happens.
+------------
 
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+ Makefile                           |    2 
+ arch/arm/include/asm/percpu.h      |    2 
+ arch/arm/kernel/head-common.S      |    1 
+ drivers/char/random.c              |    1 
+ drivers/scsi/libsas/sas_ata.c      |    1 
+ drivers/scsi/libsas/sas_discover.c |   32 ++++++---------
+ drivers/scsi/libsas/sas_expander.c |    8 ++-
+ drivers/scsi/libsas/sas_internal.h |    1 
+ drivers/scsi/libsas/sas_port.c     |    3 -
+ fs/ext4/inode.c                    |    5 ++
+ include/linux/prandom.h            |   78 +++++++++++++++++++++++++++++++++++++
+ include/linux/random.h             |   63 +----------------------------
+ include/scsi/libsas.h              |    3 -
+ include/scsi/scsi_transport_sas.h  |    1 
+ kernel/time/timer.c                |    8 +++
+ lib/random32.c                     |    2 
+ 16 files changed, 123 insertions(+), 88 deletions(-)
 
---k677muyop72qw6uc
-Content-Type: application/pgp-signature; name="signature.asc"
+Geert Uytterhoeven (1):
+      ARM: 8702/1: head-common.S: Clear lr before jumping to start_kernel()
 
------BEGIN PGP SIGNATURE-----
+Greg Kroah-Hartman (2):
+      Revert "scsi: libsas: direct call probe and destruct"
+      Linux 4.14.193
 
-iF0EARECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXy0NjwAKCRAw5/Bqldv6
-8jNyAKCMxMj/qGc8bzYFljNed7jfDdIh7wCeIPgGR7JyB/2buecYvZ2EvDKH7co=
-=gRF+
------END PGP SIGNATURE-----
+Grygorii Strashko (1):
+      ARM: percpu.h: fix build error
 
---k677muyop72qw6uc--
+Jiang Ying (1):
+      ext4: fix direct I/O read error
+
+Linus Torvalds (2):
+      random32: remove net_rand_state from the latent entropy gcc plugin
+      random32: move the pseudo-random 32-bit definitions to prandom.h
+
+Willy Tarreau (2):
+      random32: update the net random state on interrupt and activity
+      random: fix circular include dependency on arm64 after addition of percpu.h
+
