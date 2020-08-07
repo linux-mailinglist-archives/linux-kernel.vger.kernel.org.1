@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87ED823F31C
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 21:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF86323F31E
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 21:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgHGTeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726789AbgHGTeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 7 Aug 2020 15:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgHGTef (ORCPT
+        with ESMTP id S1726569AbgHGTef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 7 Aug 2020 15:34:35 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3799FC061756
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D31FC061757
         for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 12:34:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=B9dTJjOzzVrkha6MNvkzN4hFWnaQt3gD4TB0VFtHlDI=; b=PHs4g+HxALWoirJ/Xn457VPiC1
-        /W2e156UVhgJXA1SV1uikodRQJoAYIYgIEO8PUwSSrK0k4hB0N1jeQdt/p8xP+LgqZSMZZOgVe1+H
-        tSgpeIAhUm+7tltxDWqa4P+LST4ocCg7C3CoAs4GiVKkkWQfZbuk3JeEHcJrdF08KW547yjGfGVu2
-        mDUETS74T/gM/6G6BupzwOruiGZaSGpxXPxjbKPGnzR+6xZutUMlDOQ8fgZuWEQn2d39m6N/hlSwN
-        PIislbG17+cr3nYSAlQwfHj49a1yBdChB3yd1JP9EJnlsz64P18aDq+c29SXmrlRmz/2y0tOvqC1H
-        d4xJmXJQ==;
+        bh=q7qulpqAdX36SfnH7+5yo69CQ5s+D4aJ7X9LFvgh0dc=; b=OPgv1US9Kj0ipv/Yx3OOubA9lq
+        Ul8Ou8HB1nNei8N2PYbmLJr9yp73JSvs2xLhONYm5j/+3DUny5hcrVwDOjIQDfIJ4e6Khu0x2bWXz
+        aLCZetMQJ5cCtuxs1JB/mRBSuOh6nd5C5//sm9BBRIsfk3u5K3g1aLKHLnfEnnNX8xCqYg3oPuZAv
+        G69bQRBVzDqR+EHfmwHq4M/vtFv5S1u1WoZRi0H/ssPTuD9IT+srVqrfgso2/7QGlQqHwPBLWtnx9
+        NorRBvLNCQIkehqQqn2zjWqzaJJJ/vY5HQeSGE4YYS1wiN3iOBG40Yd/4B9VgnJw9Llqfm/TNExSl
+        K6Farn2Q==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k4887-0001mx-1H; Fri, 07 Aug 2020 19:34:15 +0000
+        id 1k4887-0001mv-1O; Fri, 07 Aug 2020 19:34:15 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1E9A53012DC;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1D8733010D2;
         Fri,  7 Aug 2020 21:34:13 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id AE36C29BEC9F8; Fri,  7 Aug 2020 21:34:13 +0200 (CEST)
-Message-ID: <20200807193018.060388629@infradead.org>
+        id B75A92B2C82C3; Fri,  7 Aug 2020 21:34:13 +0200 (CEST)
+Message-ID: <20200807193018.160331394@infradead.org>
 User-Agent: quilt/0.66
-Date:   Fri, 07 Aug 2020 21:23:38 +0200
+Date:   Fri, 07 Aug 2020 21:23:39 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, mingo@kernel.org, will@kernel.org
 Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, elver@google.com,
         paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
         peterz@infradead.org
-Subject: [RFC][PATCH 2/3] locking,entry: #PF vs TRACE_IRQFLAGS
+Subject: [RFC][PATCH 3/3] lockdep,trace: Expose tracepoints
 References: <20200807192336.405068898@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,115 +52,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Much of the complexity in irqenter_{enter,exit}() is due to #PF being
-the sole exception that can schedule from kernel context.
+The lockdep tracepoints are under the lockdep recursion counter, this
+has a bunch of nasty side effects:
 
-One additional wrinkle with #PF is that it is non-maskable, it can
-happen _anywhere_. Due to this, and the wonders of tracing, we can get
-the 'normal' NMI nesting vs TRACE_IRQFLAGS:
+ - TRACE_IRQFLAGS doesn't work across the entire tracepoint, leading to
+   all sorts of dodgy complaints.
 
-	local_irq_disable()
-	  raw_local_irq_disable();
-	  trace_hardirqs_off();
-
-	local_irq_enable();
-	  trace_hardirqs_on();
-	  <#PF>
-	    trace_hardirqs_off()
-	    ...
-	    if (!regs_irqs_disabled(regs)
-	      trace_hardirqs_on();
-	  </#PF>
-	  // WHOOPS -- lockdep thinks IRQs are disabled again!
-	  raw_local_irqs_enable();
-
-Rework irqenter_{enter,exit}() to save/restore the software state.
+ - RCU-lockdep doesn't see the tracepoints either, hiding numerous
+   "suspicious RCU usage" warnings.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/entry-common.h |    1 
- kernel/entry/common.c        |   52 ++++++++++++++++++++-----------------------
- 2 files changed, 26 insertions(+), 27 deletions(-)
+ kernel/locking/lockdep.c |   27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
---- a/include/linux/entry-common.h
-+++ b/include/linux/entry-common.h
-@@ -310,6 +310,7 @@ void irqentry_exit_to_user_mode(struct p
- #ifndef irqentry_state
- typedef struct irqentry_state {
- 	bool	exit_rcu;
-+	bool	irqs_enabled;
- } irqentry_state_t;
- #endif
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -5000,8 +5000,9 @@ void lock_acquire(struct lockdep_map *lo
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
  
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -260,6 +260,7 @@ noinstr irqentry_state_t irqentry_enter(
- {
- 	irqentry_state_t ret = {
- 		.exit_rcu = false,
-+		.irqs_enabled = lockdep_hardirqs_enabled(),
- 	};
+-	current->lockdep_recursion++;
+ 	trace_lock_acquire(lock, subclass, trylock, read, check, nest_lock, ip);
++
++	current->lockdep_recursion++;
+ 	__lock_acquire(lock, subclass, trylock, read, check,
+ 		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
+ 	lockdep_recursion_finish();
+@@ -5016,10 +5017,13 @@ void lock_release(struct lockdep_map *lo
+ 	if (unlikely(current->lockdep_recursion))
+ 		return;
  
- 	if (user_mode(regs)) {
-@@ -340,35 +341,32 @@ noinstr void irqentry_exit(struct pt_reg
- 	/* Check whether this returns to user mode */
- 	if (user_mode(regs)) {
- 		irqentry_exit_to_user_mode(regs);
--	} else if (!regs_irqs_disabled(regs)) {
--		/*
--		 * If RCU was not watching on entry this needs to be done
--		 * carefully and needs the same ordering of lockdep/tracing
--		 * and RCU as the return to user mode path.
--		 */
--		if (state.exit_rcu) {
--			instrumentation_begin();
--			/* Tell the tracer that IRET will enable interrupts */
--			trace_hardirqs_on_prepare();
--			lockdep_hardirqs_on_prepare(CALLER_ADDR0);
--			instrumentation_end();
--			rcu_irq_exit();
--			lockdep_hardirqs_on(CALLER_ADDR0);
--			return;
--		}
-+		return;
-+	}
- 
--		instrumentation_begin();
-+	instrumentation_begin();
-+	/*
-+	 * When returning to interrupts enabled, and RCU was watching see if we
-+	 * need preemption.
-+	 */
-+	if (!regs_irqs_disabled(regs) && !state.exit_rcu) {
- 		if (IS_ENABLED(CONFIG_PREEMPTION))
- 			irqentry_exit_cond_resched();
--		/* Covers both tracing and lockdep */
--		trace_hardirqs_on();
--		instrumentation_end();
--	} else {
--		/*
--		 * IRQ flags state is correct already. Just tell RCU if it
--		 * was not watching on entry.
--		 */
--		if (state.exit_rcu)
--			rcu_irq_exit();
- 	}
 +
-+	/*
-+	 * Return the TRACE_IRQFLAGS state to what we found on entry.
-+	 * Observe the correct order vs RCU.
-+	 */
-+	if (state.irqs_enabled) {
-+		trace_hardirqs_on_prepare();
-+		lockdep_hardirqs_on_prepare(CALLER_ADDR0);
-+	}
-+	instrumentation_end();
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
+-	current->lockdep_recursion++;
 +
-+	if (state.exit_rcu)
-+		rcu_irq_exit();
+ 	trace_lock_release(lock, ip);
 +
-+	if (state.irqs_enabled)
-+		lockdep_hardirqs_on(CALLER_ADDR0);
++	current->lockdep_recursion++;
+ 	if (__lock_release(lock, ip))
+ 		check_chain_key(current);
+ 	lockdep_recursion_finish();
+@@ -5171,7 +5175,7 @@ __lock_contended(struct lockdep_map *loc
+ 		stats->bounces[bounce_contended + !!hlock->read]++;
  }
+ 
+-static void
++static bool
+ __lock_acquired(struct lockdep_map *lock, unsigned long ip)
+ {
+ 	struct task_struct *curr = current;
+@@ -5187,16 +5191,16 @@ __lock_acquired(struct lockdep_map *lock
+ 	 * acquire, how the heck did that happen?
+ 	 */
+ 	if (DEBUG_LOCKS_WARN_ON(!depth))
+-		return;
++		return false;
+ 
+ 	hlock = find_held_lock(curr, lock, depth, &i);
+ 	if (!hlock) {
+ 		print_lock_contention_bug(curr, lock, _RET_IP_);
+-		return;
++		return false;
+ 	}
+ 
+ 	if (hlock->instance != lock)
+-		return;
++		return false;
+ 
+ 	cpu = smp_processor_id();
+ 	if (hlock->waittime_stamp) {
+@@ -5205,8 +5209,6 @@ __lock_acquired(struct lockdep_map *lock
+ 		hlock->holdtime_stamp = now;
+ 	}
+ 
+-	trace_lock_acquired(lock, ip);
+-
+ 	stats = get_lock_stats(hlock_class(hlock));
+ 	if (waittime) {
+ 		if (hlock->read)
+@@ -5219,6 +5221,8 @@ __lock_acquired(struct lockdep_map *lock
+ 
+ 	lock->cpu = cpu;
+ 	lock->ip = ip;
++
++	return true;
+ }
+ 
+ void lock_contended(struct lockdep_map *lock, unsigned long ip)
+@@ -5244,6 +5248,7 @@ EXPORT_SYMBOL_GPL(lock_contended);
+ void lock_acquired(struct lockdep_map *lock, unsigned long ip)
+ {
+ 	unsigned long flags;
++	bool trace;
+ 
+ 	if (unlikely(!lock_stat || !debug_locks))
+ 		return;
+@@ -5254,8 +5259,12 @@ void lock_acquired(struct lockdep_map *l
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
+ 	current->lockdep_recursion++;
+-	__lock_acquired(lock, ip);
++	trace = __lock_acquired(lock, ip);
+ 	lockdep_recursion_finish();
++
++	if (trace)
++		trace_lock_acquired(lock, ip);
++
+ 	raw_local_irq_restore(flags);
+ }
+ EXPORT_SYMBOL_GPL(lock_acquired);
 
 
