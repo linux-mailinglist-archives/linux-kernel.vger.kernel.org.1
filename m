@@ -2,57 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382D923EFB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E788F23EFD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 17:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbgHGO7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 10:59:32 -0400
-Received: from [125.140.134.231] ([125.140.134.231]:58763 "EHLO
-        WIN-DAONO245HJF" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726066AbgHGO7c (ORCPT
+        id S1726205AbgHGPKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 11:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbgHGPKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 10:59:32 -0400
-Received: from User ([185.191.231.247]) by WIN-DAONO245HJF with Microsoft SMTPSVC(8.5.9600.16384);
-         Fri, 7 Aug 2020 23:56:47 +0900
-Reply-To: <williiamrichard2999@yahoo.com>
-From:   "williams richard" <richardwilliamsrichard355@gmail.com>
-Subject: INVESTMENT PARTNER
-Date:   Fri, 7 Aug 2020 07:56:55 -0700
+        Fri, 7 Aug 2020 11:10:18 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF9DC061756
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 08:10:18 -0700 (PDT)
+Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <has@pengutronix.de>)
+        id 1k440Y-0006QD-If; Fri, 07 Aug 2020 17:10:10 +0200
+Received: from has by dude02.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <has@pengutronix.de>)
+        id 1k440W-00039A-Km; Fri, 07 Aug 2020 17:10:08 +0200
+From:   Holger Assmann <h.assmann@pengutronix.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Holger Assmann <h.assmann@pengutronix.de>,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: stm32: lxa-mc1: Fix kernel warning about PHY delays
+Date:   Fri,  7 Aug 2020 17:03:56 +0200
+Message-Id: <20200807150355.6116-1-h.assmann@pengutronix.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <WIN-DAONO245HJF8sRn00ad91b8@WIN-DAONO245HJF>
-X-OriginalArrivalTime: 07 Aug 2020 14:56:47.0881 (UTC) FILETIME=[F97B4F90:01D66CCA]
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
+X-SA-Exim-Mail-From: has@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Sir/Madam
+The KSZ9031 PHY skew timings for rxc/txc, originally set to achieve
+the desired phase shift between clock- and data-signal, now trigger a
+kernel warning when used in rgmii-id mode:
 
+ *-skew-ps values should be used only with phy-mode = "rgmii"
 
-I work as an agent to some Investors. Do you need a business loan or
-funds for a business idea or want to expand but need huge funding? We
-are expanding our investment presence by granting debt loan to fund
-viable and lucrative projects. If you have any project that needs
-funding, kindly revert to me with your business plan and if we find
-your business to be worthy of investment, you will be promptly
-contacted and both parties will meet face to face and have a
-round-table meeting together.
+This is because commit bcf3440c6dd7 ("net: phy: micrel: add phy-mode
+support for the KSZ9031 PHY") now configures own timings when
+phy-mode = "rgmii-id". Device trees wanting to set their own delays
+should use phy-mode "rgmii" instead as the warning prescribes.
 
-Good documentation will be carried out between you and the Investor
-before putting down his funds.
+The "standard" timings now used with "rgmii-id" work fine on this
+board, so drop the explicit timings in the device tree and thereby
+silence the warning.
 
-Regards
+Fixes: 666b5ca85cd3 ("ARM: dts: stm32: add STM32MP1-based Linux Automation MC-1 board")
+Signed-off-by: Holger Assmann <h.assmann@pengutronix.de>
+---
+ arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts | 2 --
+ 1 file changed, 2 deletions(-)
 
+diff --git a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+index 5700e6b700d3..b85025d00943 100644
+--- a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
++++ b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+@@ -121,8 +121,6 @@
+ 			reset-gpios = <&gpiog 0 GPIO_ACTIVE_LOW>; /* ETH_RST# */
+ 			interrupt-parent = <&gpioa>;
+ 			interrupts = <6 IRQ_TYPE_EDGE_FALLING>; /* ETH_MDINT# */
+-			rxc-skew-ps = <1860>;
+-			txc-skew-ps = <1860>;
+ 			reset-assert-us = <10000>;
+ 			reset-deassert-us = <300>;
+ 			micrel,force-master;
+-- 
+2.20.1
 
-
-williams richard 
-
-via  williiamrichard2999@yahoo.com
