@@ -2,55 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E5023F263
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 20:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12DC23F26C
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 20:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726971AbgHGSB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 14:01:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45330 "EHLO mail.kernel.org"
+        id S1728016AbgHGSEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 14:04:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726015AbgHGSB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 14:01:27 -0400
-Subject: Re: [GIT PULL] xfs: new code for 5.9-rc1
+        id S1726429AbgHGSEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 14:04:43 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 042592075D;
+        Fri,  7 Aug 2020 18:04:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596823287;
-        bh=+K6uo2vXfoM35kneAHG8QLTckjLRBhkJkxZr2m4oIXM=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=P0O3rW/4+Ugy2PB4py/qZJzb9DW5oglONMPEmr2hsdsBsJXjhUnChkyhwNgHdqH5D
-         n6hCLGuNoa0PwF4zZL++X3WFMh6Hcxw16mXKeCzFySqj+GimaAIAYm75/ielYNrbUR
-         QSI12DT3CuGWlaZOP+fjW9Nq6wRrsSNyW86L4Z8k=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200807040817.GD6096@magnolia>
-References: <20200807040817.GD6096@magnolia>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200807040817.GD6096@magnolia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.9-merge-7
-X-PR-Tracked-Commit-Id: 818d5a91559ffe1e1f2095dcbbdb96c13fdb94ec
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5631c5e0eb9035d92ceb20fcd9cdb7779a3f5cc7
-Message-Id: <159682328702.30890.11249398306478997606.pr-tracker-bot@kernel.org>
-Date:   Fri, 07 Aug 2020 18:01:27 +0000
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de
+        s=default; t=1596823483;
+        bh=RSMl2ntL1d76/kc9CXYy5VSQyaNgn/6MPpZbXP7P/XA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xQI9JWhQeMl9te6tCLjVG1xmKiJmpQPyZq6saJBGt2Xpe6QETkpNJ1fz/Drv4Vzq4
+         crvt1UdI/qDBy/SC9igWTltdlstoOHfKHAxzU//IY+wREgETK3e/0gwVDSI8gTaPN/
+         iEmyxIu4CY0Wp+dxWE9fVB9z4G9s2YRUF2XXdKGY=
+Date:   Fri, 7 Aug 2020 11:04:41 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Rouven Czerwinski <r.czerwinski@pengutronix.de>
+Cc:     Pooja Trivedi <poojatrivedi@gmail.com>,
+        Aviad Yehezkel <aviadye@mellanox.com>,
+        Boris Pismenny <borisp@mellanox.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v2 net-next] net/tls: allow MSG_CMSG_COMPAT in sendmsg
+Message-ID: <20200807110441.6df98445@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <f088c78e335653c8e07d6f304b5995602ee7398f.camel@pengutronix.de>
+References: <20200806064906.14421-1-r.czerwinski@pengutronix.de>
+        <20200806114657.42f1ce8c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <b55718ad4e675ed9a9c3eb1c5d952945f8b20c7a.camel@pengutronix.de>
+        <f088c78e335653c8e07d6f304b5995602ee7398f.camel@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 6 Aug 2020 21:08:17 -0700:
+On Fri, 07 Aug 2020 14:27:48 +0200 Rouven Czerwinski wrote:
+> I just tested on my x86_64 workstation and these specific tests fail
+> there too, do they only work on 5.8? They were added in 5.8, but I am
+> running 5.7.11 here. It looks like these failures are not
+> MSG_CMSG_COMPAT related.
+>=20
+> Pooja Trivedi do you have an idea?
 
-> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.9-merge-7
+=F0=9F=98=AF
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5631c5e0eb9035d92ceb20fcd9cdb7779a3f5cc7
+We need this:
 
-Thank you!
+https://lore.kernel.org/netdev/1591392508-14592-1-git-send-email-pooja.triv=
+edi@stackpath.com/
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Looks like it never ended up getting applied to any tree.
+
+Pooja is that the case? Could you please resend without the RFC tag?
