@@ -2,100 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E5923F439
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 23:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE2523F441
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 23:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbgHGV2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 17:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
+        id S1727066AbgHGV3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 17:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726648AbgHGV2h (ORCPT
+        with ESMTP id S1727021AbgHGV3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 17:28:37 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B292C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 14:28:37 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id c10so2233601edk.6
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 14:28:37 -0700 (PDT)
+        Fri, 7 Aug 2020 17:29:35 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628F9C061A28
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 14:29:35 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id n21so4349901ybf.18
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 14:29:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bdNucF0koSppcU0GmU9pSl6fM9HVcxNoH43SdcmhMo4=;
-        b=WRZkwZaLt55Y2h276GQIL0EwY8JZgUt+nO04eGdR+5coh476ORbcDKISCIzllLYqgr
-         7pXl9SAv+kRl9cT8mG/IIezkcnD/mOK8BF31NyqErmOkrd2TjVOko70lECZRwmQMlz1Y
-         b8cFcuQo1C617FdhnPXZESL8OsSbpCtiVGg/A=
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=2Epbq3zd+57RV+c5a3tR14Y8EZnVI9kXEnkZqe3uwAA=;
+        b=W4JL+gkPyvYfdfwk6ydvYnTnosTt4pvJ7tL6kLXU+WUTb6rftiPRdMePYrbZabnBTD
+         +ISkyoN5LHfFW3Z6CwOyFJX0djyFH2uNFR35eVqx4/Y/Qi47Gs+4ceJ48kzO4YJo7Gux
+         deL3jBPiYpM3y+EqgYB+N5By3UQ0F55MxwqLYjl/Awc3revSFDBw4yahIaJqx+SGgXOg
+         vquf/jHyOotjcNWthbAW3uUC7wpRsVMjWeVPbcdTZppHRp2GfKlamKeJ1xDUvV2FIBM8
+         PYK8Tlv+XXASS++2PpJDsFc0cd4D+NzUwhVxDOepLelhsNX9Zlr+hx87Y8ZZOIZF3C1g
+         i+rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bdNucF0koSppcU0GmU9pSl6fM9HVcxNoH43SdcmhMo4=;
-        b=nFdVlMaplROi8dThGp22BaMj2tz2PL5f+6WFgD+UObu5hmYmNzQRqutdymlf3p2WKN
-         wAVyOlBdYJkz9SQ4PUw6XGjjHxGPf2cRAO5C9M6bKR81mZXMDcyCED4GzsCNtyQOaD5I
-         7K8kRH88+KlcW9kFAHqjISpk6lEVt9isueWWOgOuD5pNOHaWdx+ZEuKSEaEKaDG64VBM
-         ZxHyUf2NRbIaXDZC/vuKVHon98u7rU0Yr2vOx5cYtWqKLVyjUx/r67OLrbzSiyF/5qP5
-         028OH0vBmr6J4hulGMdPfQ1WgGGLU4JoF/hyLYbotv1lkI6VI8lNG3XSa7Mi04AiY64c
-         2K/Q==
-X-Gm-Message-State: AOAM530f3ZFaAvdeQawBAZiutSTNar2BnBof7bQLmrXdyHjxYo/qXgxl
-        Wxpa4ZlbK4fXaiUFVUHhD3BVt3D1q3Q=
-X-Google-Smtp-Source: ABdhPJwRUhERrMBC3w6Q8l+DvsYGBeVwPgesiIWBaXEo6L5u2pbREKzcimFt0KU5GAbPenAI54A8bQ==
-X-Received: by 2002:a50:d75e:: with SMTP id i30mr11146847edj.246.1596835715971;
-        Fri, 07 Aug 2020 14:28:35 -0700 (PDT)
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com. [209.85.221.49])
-        by smtp.gmail.com with ESMTPSA id g24sm6135082eds.42.2020.08.07.14.28.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 Aug 2020 14:28:35 -0700 (PDT)
-Received: by mail-wr1-f49.google.com with SMTP id a14so2878878wra.5
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 14:28:35 -0700 (PDT)
-X-Received: by 2002:adf:fdce:: with SMTP id i14mr13480967wrs.273.1596835714967;
- Fri, 07 Aug 2020 14:28:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200730114632.6717-1-stanimir.varbanov@linaro.org> <20200730114632.6717-2-stanimir.varbanov@linaro.org>
-In-Reply-To: <20200730114632.6717-2-stanimir.varbanov@linaro.org>
-From:   Fritz Koenig <frkoenig@chromium.org>
-Date:   Fri, 7 Aug 2020 14:28:22 -0700
-X-Gmail-Original-Message-ID: <CAMfZQbx36rZc=9p8a=mGSqwvtfQ-KRO+5=8yEuo-NA+eeoBBNg@mail.gmail.com>
-Message-ID: <CAMfZQbx36rZc=9p8a=mGSqwvtfQ-KRO+5=8yEuo-NA+eeoBBNg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] venus: parser: Prepare parser for multiple invocations
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=2Epbq3zd+57RV+c5a3tR14Y8EZnVI9kXEnkZqe3uwAA=;
+        b=PDTnPzoSuNUQIe0bQtAkuiHKjEF2sY6Q4eF+QMIXqmjKn1hhvtiKwjv0/qJAucJlFj
+         wgQQ7w+/XIf4G+/nUJsDHnNPZSYH4gFJz6PFP/bLBNy+qDDaFHHYj6WVSOh016FwvMzr
+         J24VwRmwbwAqzKRkcQGh8I+DikVhHMk7kTpvwdIGD+eRbzAj71raXpHC4eOAehJ1boWw
+         dTAmWTjzo9g8YshjDust4pwS83ABa7maPbHTKvJXn/DlMz/rmBX5RFQse0qqOqhbSqFr
+         7Sv/en8i4QPtp/CNdf8h4Md91fpt6Fdh65Hb0glG9TvbMbFLheznqncciOF0Q7XO2Kw9
+         criQ==
+X-Gm-Message-State: AOAM532n/DTxJW9mgH4wY61sNFKWPEKmlYlKVJTWo7WdwzBW0VYPY6dw
+        k2lr7E8rHLNIp35RA4LDQFJLiXX6PzB0stg6kS26t+3uGLFEcIyAjqv7/gGuaQsXmcocGDqO+lq
+        3J4c0pZxHa4foMvKaeVn0y7EgExfVbcmcWKlEnr98Pom0krq0sDHmrq537Rd/hXITzZQoCuI=
+X-Google-Smtp-Source: ABdhPJwpYiGEXI6N/WmSc1sNe+MKpn0dLtZLyveRHzfSP1IyYqPUCszF3totD/1mcAxmqwETOm6E5qQykQ85
+X-Received: by 2002:a25:d709:: with SMTP id o9mr21697023ybg.392.1596835774334;
+ Fri, 07 Aug 2020 14:29:34 -0700 (PDT)
+Date:   Fri,  7 Aug 2020 14:29:09 -0700
+Message-Id: <20200807212916.2883031-1-jwadams@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.236.gb10cc79966-goog
+Subject: [RFC PATCH 0/7] metricfs metric file system and examples
+From:   Jonathan Adams <jwadams@google.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Jonathan Adams <jwadams@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 4:47 AM Stanimir Varbanov
-<stanimir.varbanov@linaro.org> wrote:
->
-> Presently the hfi_parser has been called only once during driver
-> probe. To prepare the parser function to be called multiple times
-> from recovery we need to initialize few variables which are used
-> during parsing time.
->
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  drivers/media/platform/qcom/venus/hfi_parser.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/media/platform/qcom/venus/hfi_parser.c b/drivers/media/platform/qcom/venus/hfi_parser.c
-> index 7f515a4b9bd1..363ee2a65453 100644
-> --- a/drivers/media/platform/qcom/venus/hfi_parser.c
-> +++ b/drivers/media/platform/qcom/venus/hfi_parser.c
-> @@ -239,6 +239,9 @@ u32 hfi_parser(struct venus_core *core, struct venus_inst *inst, void *buf,
->
->         parser_init(inst, &codecs, &domain);
->
-> +       core->codecs_count = 0;
-> +       memset(core->caps, 0, sizeof(core->caps));
-> +
->         while (words_count) {
->                 data = word + 1;
->
-> --
-> 2.17.1
->
+[resending to widen the CC lists per rdunlap@infradead.org's suggestion
+original posting to lkml here: https://lkml.org/lkml/2020/8/5/1009]
 
-Reviewed-by: Fritz Koenig <frkoenig@chromium.org>
+To try to restart the discussion of kernel statistics started by the
+statsfs patchsets (https://lkml.org/lkml/2020/5/26/332), I wanted
+to share the following set of patches which are Google's 'metricfs'
+implementation and some example uses.  Google has been using metricfs
+internally since 2012 as a way to export various statistics to our
+telemetry systems (similar to OpenTelemetry), and we have over 200
+statistics exported on a typical machine.
+
+These patches have been cleaned up and modernized v.s. the versions
+in production; I've included notes under the fold in the patches.
+They're based on v5.8-rc6.
+
+The statistics live under debugfs, in a tree rooted at:
+
+	/sys/kernel/debug/metricfs
+
+Each metric is a directory, with four files in it.  For example, the '
+core/metricfs: Create metricfs, standardized files under debugfs.' patch
+includes a simple 'metricfs_presence' metric, whose files look like:
+/sys/kernel/debug/metricfs:
+ metricfs_presence/annotations
+  DESCRIPTION A\ basic\ presence\ metric.
+ metricfs_presence/fields
+  value
+  int
+ metricfs_presence/values
+  1
+ metricfs_presence/version
+  1
+
+(The "version" field always says '1', and is kind of vestigial)
+
+An example of a more complicated stat is the networking stats.
+For example, the tx_bytes stat looks like:
+
+net/dev/stats/tx_bytes/annotations
+  DESCRIPTION net\ device\ transmited\ bytes\ count
+  CUMULATIVE
+net/dev/stats/tx_bytes/fields
+  interface value
+  str int
+net/dev/stats/tx_bytes/values
+  lo 4394430608
+  eth0 33353183843
+  eth1 16228847091
+net/dev/stats/tx_bytes/version
+  1
+
+The per-cpu statistics show up in the schedulat stat info and x86
+IRQ counts.  For example:
+
+stat/user/annotations
+  DESCRIPTION time\ in\ user\ mode\ (nsec)
+  CUMULATIVE
+stat/user/fields
+  cpu value
+  int int
+stat/user/values
+  0 1183486517734
+  1 1038284237228
+  ...
+stat/user/version
+  1
+
+The full set of example metrics I've included are:
+
+core/metricfs: Create metricfs, standardized files under debugfs.
+  metricfs_presence
+core/metricfs: metric for kernel warnings
+  warnings/values
+core/metricfs: expose scheduler stat information through metricfs
+  stat/*
+net-metricfs: Export /proc/net/dev via metricfs.
+  net/dev/stats/[tr]x_*
+core/metricfs: expose x86-specific irq information through metricfs
+  irq_x86/*
+
+The general approach is called out in kernel/metricfs.c:
+
+The kernel provides:
+  - A description of the metric
+  - The subsystem for the metric (NULL is ok)
+  - Type information about the metric, and
+  - A callback function which supplies metric values.
+
+Limitations:
+  - "values" files are at MOST 64K. We truncate the file at that point.
+  - The list of fields and types is at most 1K.
+  - Metrics may have at most 2 fields.
+
+Best Practices:
+  - Emit the most important data first! Once the 64K per-metric buffer
+    is full, the emit* functions won't do anything.
+  - In userspace, open(), read(), and close() the file quickly! The kernel
+    allocation for the metric is alive as long as the file is open. This
+    permits users to seek around the contents of the file, while
+    permitting an atomic view of the data.
+
+Note that since the callbacks are called and the data is generated at
+file open() time, the relative consistency is only between members of
+a given metric; the rx_bytes stat for every network interface will
+be read at almost the same time, but if you want to get rx_bytes
+and rx_packets, there could be a bunch of slew between the two file
+opens.  (So this doesn't entirely address Andrew Lunn's comments in
+https://lkml.org/lkml/2020/5/26/490)
+
+This also doesn't address one of the basic parts of the statsfs work:
+moving the statistics out of debugfs to avoid lockdown interactions.
+
+Google has found a lot of value in having a generic interface for adding
+these kinds of statistics with reasonably low overhead (reading them
+is O(number of statistics), not number of objects in each statistic).
+There are definitely warts in the interface, but does the basic approach
+make sense to folks?
+
+Thanks,
+- Jonathan
+
+Jonathan Adams (5):
+  core/metricfs: add support for percpu metricfs files
+  core/metricfs: metric for kernel warnings
+  core/metricfs: expose softirq information through metricfs
+  core/metricfs: expose scheduler stat information through metricfs
+  core/metricfs: expose x86-specific irq information through metricfs
+
+Justin TerAvest (1):
+  core/metricfs: Create metricfs, standardized files under debugfs.
+
+Laurent Chavey (1):
+  net-metricfs: Export /proc/net/dev via metricfs.
+
+ arch/x86/kernel/irq.c      |  80 ++++
+ fs/proc/stat.c             |  57 +++
+ include/linux/metricfs.h   | 131 +++++++
+ kernel/Makefile            |   2 +
+ kernel/metricfs.c          | 775 +++++++++++++++++++++++++++++++++++++
+ kernel/metricfs_examples.c | 151 ++++++++
+ kernel/panic.c             | 131 +++++++
+ kernel/softirq.c           |  45 +++
+ lib/Kconfig.debug          |  18 +
+ net/core/Makefile          |   1 +
+ net/core/net_metricfs.c    | 194 ++++++++++
+ 11 files changed, 1585 insertions(+)
+ create mode 100644 include/linux/metricfs.h
+ create mode 100644 kernel/metricfs.c
+ create mode 100644 kernel/metricfs_examples.c
+ create mode 100644 net/core/net_metricfs.c
+
+-- 
+2.28.0.236.gb10cc79966-goog
+
