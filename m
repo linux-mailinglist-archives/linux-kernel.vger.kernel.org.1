@@ -2,166 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF86323F31E
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 21:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDDF23F312
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 21:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgHGTeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 15:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726569AbgHGTef (ORCPT
+        id S1726524AbgHGTc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 15:32:28 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:34030 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbgHGTc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 15:34:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D31FC061757
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 12:34:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=q7qulpqAdX36SfnH7+5yo69CQ5s+D4aJ7X9LFvgh0dc=; b=OPgv1US9Kj0ipv/Yx3OOubA9lq
-        Ul8Ou8HB1nNei8N2PYbmLJr9yp73JSvs2xLhONYm5j/+3DUny5hcrVwDOjIQDfIJ4e6Khu0x2bWXz
-        aLCZetMQJ5cCtuxs1JB/mRBSuOh6nd5C5//sm9BBRIsfk3u5K3g1aLKHLnfEnnNX8xCqYg3oPuZAv
-        G69bQRBVzDqR+EHfmwHq4M/vtFv5S1u1WoZRi0H/ssPTuD9IT+srVqrfgso2/7QGlQqHwPBLWtnx9
-        NorRBvLNCQIkehqQqn2zjWqzaJJJ/vY5HQeSGE4YYS1wiN3iOBG40Yd/4B9VgnJw9Llqfm/TNExSl
-        K6Farn2Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k4887-0001mv-1O; Fri, 07 Aug 2020 19:34:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1D8733010D2;
-        Fri,  7 Aug 2020 21:34:13 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id B75A92B2C82C3; Fri,  7 Aug 2020 21:34:13 +0200 (CEST)
-Message-ID: <20200807193018.160331394@infradead.org>
-User-Agent: quilt/0.66
-Date:   Fri, 07 Aug 2020 21:23:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de, mingo@kernel.org, will@kernel.org
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, elver@google.com,
-        paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
-        peterz@infradead.org
-Subject: [RFC][PATCH 3/3] lockdep,trace: Expose tracepoints
-References: <20200807192336.405068898@infradead.org>
+        Fri, 7 Aug 2020 15:32:27 -0400
+Received: by mail-il1-f194.google.com with SMTP id t4so2728446iln.1
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 12:32:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bt/nVcEmuirPVtvYSsxj3S2SEQncSrQ1r5Gx/y9AdOM=;
+        b=USdxikVqXsukqPgBMoghd6Szp18UzME1kfk/5NhrKrrQHmtu1aYp0RnOo3zs2QNABk
+         alprHc/QTKS+2dLRAlsrtTzcsFETm4x2nWPin9xN3zZLGEM829AX+WdUtM6vDFBxLbBF
+         XzHdWpQUuMlhKUspi5vpPGJuk0lHAvXvMBGkAk0XAsN1Qq04FnDWRm0inMw8hKjHTRa2
+         eBabNVHyuzOJYxNlzTFIRqYiT4wMhlmJrz1rmlk35Kc1pAKcVG4Ue5a0eZpgEQy92f7E
+         S8wkUH6AJhFY0Y14zaUnRYmuxCYy4MDhFuoKXF6aaEwEFpuiFCzMAY8Rf36d63U/1IMv
+         FFiw==
+X-Gm-Message-State: AOAM5332tEolHQx1qppCQQoITmIT9l5rXGyyZCVZhbOCsJPN/vv1xyeW
+        L1rWS/vLOXQV+Lz6LgDLdJTaXcc=
+X-Google-Smtp-Source: ABdhPJwJMQI4IYAymCg9MKgcXByUvR0r8WJebIlBkgrmdn4WhpCmBB/32gCHgDZLX8OfymAsiel0TA==
+X-Received: by 2002:a92:c805:: with SMTP id v5mr6360546iln.134.1596828746910;
+        Fri, 07 Aug 2020 12:32:26 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.252])
+        by smtp.googlemail.com with ESMTPSA id n1sm6807331ilo.68.2020.08.07.12.32.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Aug 2020 12:32:26 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [PATCH] MAINTAINERS: Add missing tools/lib/perf/ path to perf maintainers
+Date:   Fri,  7 Aug 2020 13:32:25 -0600
+Message-Id: <20200807193225.3904108-1-robh@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The lockdep tracepoints are under the lockdep recursion counter, this
-has a bunch of nasty side effects:
+Commit 3ce311afb558 ("libperf: Move to tools/lib/perf") moved libperf
+out of tools/perf/, but failed to update MAINTAINERS.
 
- - TRACE_IRQFLAGS doesn't work across the entire tracepoint, leading to
-   all sorts of dodgy complaints.
-
- - RCU-lockdep doesn't see the tracepoints either, hiding numerous
-   "suspicious RCU usage" warnings.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- kernel/locking/lockdep.c |   27 ++++++++++++++++++---------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -5000,8 +5000,9 @@ void lock_acquire(struct lockdep_map *lo
- 	raw_local_irq_save(flags);
- 	check_flags(flags);
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 496fd4eafb68..f29ddd97ec20 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13410,6 +13410,7 @@ F:	arch/*/kernel/perf_event*.c
+ F:	include/linux/perf_event.h
+ F:	include/uapi/linux/perf_event.h
+ F:	kernel/events/*
++F:	tools/lib/perf/
+ F:	tools/perf/
  
--	current->lockdep_recursion++;
- 	trace_lock_acquire(lock, subclass, trylock, read, check, nest_lock, ip);
-+
-+	current->lockdep_recursion++;
- 	__lock_acquire(lock, subclass, trylock, read, check,
- 		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
- 	lockdep_recursion_finish();
-@@ -5016,10 +5017,13 @@ void lock_release(struct lockdep_map *lo
- 	if (unlikely(current->lockdep_recursion))
- 		return;
- 
-+
- 	raw_local_irq_save(flags);
- 	check_flags(flags);
--	current->lockdep_recursion++;
-+
- 	trace_lock_release(lock, ip);
-+
-+	current->lockdep_recursion++;
- 	if (__lock_release(lock, ip))
- 		check_chain_key(current);
- 	lockdep_recursion_finish();
-@@ -5171,7 +5175,7 @@ __lock_contended(struct lockdep_map *loc
- 		stats->bounces[bounce_contended + !!hlock->read]++;
- }
- 
--static void
-+static bool
- __lock_acquired(struct lockdep_map *lock, unsigned long ip)
- {
- 	struct task_struct *curr = current;
-@@ -5187,16 +5191,16 @@ __lock_acquired(struct lockdep_map *lock
- 	 * acquire, how the heck did that happen?
- 	 */
- 	if (DEBUG_LOCKS_WARN_ON(!depth))
--		return;
-+		return false;
- 
- 	hlock = find_held_lock(curr, lock, depth, &i);
- 	if (!hlock) {
- 		print_lock_contention_bug(curr, lock, _RET_IP_);
--		return;
-+		return false;
- 	}
- 
- 	if (hlock->instance != lock)
--		return;
-+		return false;
- 
- 	cpu = smp_processor_id();
- 	if (hlock->waittime_stamp) {
-@@ -5205,8 +5209,6 @@ __lock_acquired(struct lockdep_map *lock
- 		hlock->holdtime_stamp = now;
- 	}
- 
--	trace_lock_acquired(lock, ip);
--
- 	stats = get_lock_stats(hlock_class(hlock));
- 	if (waittime) {
- 		if (hlock->read)
-@@ -5219,6 +5221,8 @@ __lock_acquired(struct lockdep_map *lock
- 
- 	lock->cpu = cpu;
- 	lock->ip = ip;
-+
-+	return true;
- }
- 
- void lock_contended(struct lockdep_map *lock, unsigned long ip)
-@@ -5244,6 +5248,7 @@ EXPORT_SYMBOL_GPL(lock_contended);
- void lock_acquired(struct lockdep_map *lock, unsigned long ip)
- {
- 	unsigned long flags;
-+	bool trace;
- 
- 	if (unlikely(!lock_stat || !debug_locks))
- 		return;
-@@ -5254,8 +5259,12 @@ void lock_acquired(struct lockdep_map *l
- 	raw_local_irq_save(flags);
- 	check_flags(flags);
- 	current->lockdep_recursion++;
--	__lock_acquired(lock, ip);
-+	trace = __lock_acquired(lock, ip);
- 	lockdep_recursion_finish();
-+
-+	if (trace)
-+		trace_lock_acquired(lock, ip);
-+
- 	raw_local_irq_restore(flags);
- }
- EXPORT_SYMBOL_GPL(lock_acquired);
-
+ PERFORMANCE EVENTS SUBSYSTEM ARM64 PMU EVENTS
+-- 
+2.25.1
 
