@@ -2,130 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B0C23EDB3
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 15:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175CB23EDAF
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 15:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726212AbgHGNKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 09:10:06 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:59639 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgHGNKC (ORCPT
+        id S1726131AbgHGNJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 09:09:39 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:53254 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725872AbgHGNJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 09:10:02 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 07 Aug 2020 06:10:00 -0700
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 07 Aug 2020 06:09:59 -0700
-Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 07 Aug 2020 18:39:30 +0530
-Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
-        id 1689349FA; Fri,  7 Aug 2020 18:39:29 +0530 (IST)
-From:   Kalyan Thota <kalyan_t@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        seanpaul@chromium.org, hoegsberg@chromium.org,
-        dianders@chromium.org, mkrishn@codeaurora.org,
-        travitej@codeaurora.org, nganji@codeaurora.org,
-        swboyd@chromium.org, abhinavk@codeaurora.org,
-        ddavenport@chromium.org
-Subject: [v2] drm/msm/dpu: Fix reservation failures in modeset
-Date:   Fri,  7 Aug 2020 18:39:27 +0530
-Message-Id: <1596805767-29339-1-git-send-email-kalyan_t@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        Fri, 7 Aug 2020 09:09:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596805777;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mev5185ldyIV+fC/Brbo/2YSYslUv44q6prbV1qxumY=;
+        b=ZQqahLF+puqQhalaY2AkPTnzxKbiGGIYOs9kQhDMl46m4Q7b8w33w47yi1MKXndc8kGDbJ
+        rrF0pOkZvAL7A0SfzwxiScT2cTo6HbhLAU2cLIQJcH2rWpnNYmSS2aPnapMRRr07ZCql44
+        U8/3KXcJ4TaChS9X7o7WgOIc0SX9ck8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-401-hfkVj4HsM0KOQwUF7ngvig-1; Fri, 07 Aug 2020 09:09:36 -0400
+X-MC-Unique: hfkVj4HsM0KOQwUF7ngvig-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CDF46800685;
+        Fri,  7 Aug 2020 13:09:34 +0000 (UTC)
+Received: from localhost (ovpn-12-31.pek2.redhat.com [10.72.12.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 29C20100239B;
+        Fri,  7 Aug 2020 13:09:33 +0000 (UTC)
+Date:   Fri, 7 Aug 2020 21:09:31 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 08/10] mm/hugetlb: return non-isolated page in the loop
+ instead of break and check
+Message-ID: <20200807130931.GS14854@MiWiFi-R3L-srv>
+References: <20200807091251.12129-1-richard.weiyang@linux.alibaba.com>
+ <20200807091251.12129-9-richard.weiyang@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200807091251.12129-9-richard.weiyang@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In TEST_ONLY commit, rm global_state will duplicate the
-object and request for new reservations, once they pass
-then the new state will be swapped with the old and will
-be available for the Atomic Commit.
+On 08/07/20 at 05:12pm, Wei Yang wrote:
+> Function dequeue_huge_page_node_exact() iterates the free list and
+> return the first non-isolated one.
+> 
+> Instead of break and check the loop variant, we could return in the loop
+> directly. This could reduce some redundant check.
+> 
+> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+> ---
+>  mm/hugetlb.c | 26 ++++++++++++--------------
+>  1 file changed, 12 insertions(+), 14 deletions(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index b8e844911b5a..9473eb6800e9 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1035,20 +1035,18 @@ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
+>  {
+>  	struct page *page;
+>  
+> -	list_for_each_entry(page, &h->hugepage_freelists[nid], lru)
+> -		if (!PageHWPoison(page))
+> -			break;
 
-This patch fixes some of missing links in the resource
-reservation sequence mentioned above.
+I don't see how it can reduce redundant check, just two different
+styles.
 
-1) Creation of duplicate state in test_only commit (Rob)
-2) Allocate and release the resources on every modeset.
-3) Avoid allocation only when active is false.
+> -	/*
+> -	 * if 'non-isolated free hugepage' not found on the list,
+> -	 * the allocation fails.
 
-In a modeset operation, swap state happens well before
-disable. Hence clearing reservations in disable will
-cause failures in modeset enable.
+But the above code comment seems stale, it checks HWPoision page
+directly, but not the old isolated page checking.
 
-Allow reservations to be cleared/allocated before swap,
-such that only newly committed resources are pushed to HW.
-
-Changes in v1:
- - Move the rm release to atomic_check.
- - Ensure resource allocation and free happens when active
-   is not changed i.e only when mode is changed.(Rob)
-
-Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-index 63976dc..50a98d1 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-@@ -582,7 +582,7 @@ static int dpu_encoder_virt_atomic_check(
- 	dpu_kms = to_dpu_kms(priv->kms);
- 	mode = &crtc_state->mode;
- 	adj_mode = &crtc_state->adjusted_mode;
--	global_state = dpu_kms_get_existing_global_state(dpu_kms);
-+	global_state = dpu_kms_get_global_state(crtc_state->state);
- 	trace_dpu_enc_atomic_check(DRMID(drm_enc));
- 
- 	/*
-@@ -617,12 +617,15 @@ static int dpu_encoder_virt_atomic_check(
- 	/* Reserve dynamic resources now. */
- 	if (!ret) {
- 		/*
--		 * Avoid reserving resources when mode set is pending. Topology
--		 * info may not be available to complete reservation.
-+		 * Release and Allocate resources on every modeset
-+		 * Dont allocate when active is false.
- 		 */
- 		if (drm_atomic_crtc_needs_modeset(crtc_state)) {
--			ret = dpu_rm_reserve(&dpu_kms->rm, global_state,
--					drm_enc, crtc_state, topology);
-+			dpu_rm_release(global_state, drm_enc);
-+
-+			if (!crtc_state->active_changed || crtc_state->active)
-+				ret = dpu_rm_reserve(&dpu_kms->rm, global_state,
-+						drm_enc, crtc_state, topology);
- 		}
- 	}
- 
-@@ -1171,7 +1174,6 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
- 	struct dpu_encoder_virt *dpu_enc = NULL;
- 	struct msm_drm_private *priv;
- 	struct dpu_kms *dpu_kms;
--	struct dpu_global_state *global_state;
- 	int i = 0;
- 
- 	if (!drm_enc) {
-@@ -1190,7 +1192,6 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
- 
- 	priv = drm_enc->dev->dev_private;
- 	dpu_kms = to_dpu_kms(priv->kms);
--	global_state = dpu_kms_get_existing_global_state(dpu_kms);
- 
- 	trace_dpu_enc_disable(DRMID(drm_enc));
- 
-@@ -1220,8 +1221,6 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
- 
- 	DPU_DEBUG_ENC(dpu_enc, "encoder disabled\n");
- 
--	dpu_rm_release(global_state, drm_enc);
--
- 	mutex_unlock(&dpu_enc->enc_lock);
- }
- 
--- 
-1.9.1
+> -	 */
+> -	if (&h->hugepage_freelists[nid] == &page->lru)
+> -		return NULL;
+> -	list_move(&page->lru, &h->hugepage_activelist);
+> -	set_page_refcounted(page);
+> -	h->free_huge_pages--;
+> -	h->free_huge_pages_node[nid]--;
+> -	return page;
+> +	list_for_each_entry(page, &h->hugepage_freelists[nid], lru) {
+> +		if (PageHWPoison(page))
+> +			continue;
+> +
+> +		list_move(&page->lru, &h->hugepage_activelist);
+> +		set_page_refcounted(page);
+> +		h->free_huge_pages--;
+> +		h->free_huge_pages_node[nid]--;
+> +		return page;
+> +	}
+> +
+> +	return NULL;
+>  }
+>  
+>  static struct page *dequeue_huge_page_nodemask(struct hstate *h, gfp_t gfp_mask, int nid,
+> -- 
+> 2.20.1 (Apple Git-117)
+> 
+> 
 
