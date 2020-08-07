@@ -2,104 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4810923E578
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 03:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F194E23E57B
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 03:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbgHGBW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 21:22:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgHGBW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 21:22:58 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC31F206B5;
-        Fri,  7 Aug 2020 01:22:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596763377;
-        bh=taVUPcZZG/PWKJC217fUi0ps3ehP0TVRSPgn7VkId3c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=g/x8BUWd+/8S2SPzeeZX0ZEBkmC/kgdEn44bpSuR6MN8Jpku6wnUXnriH85QTteDi
-         nc584DAU+eZD+PYvvb7li6pPAlGLKaEvEJqpDBDhBQtglPSig6nadpIo7+OdYnDYgG
-         rudNx0RnNOiKuEWiHCkson/aTL4X80TzTaE0G+/o=
-Date:   Thu, 6 Aug 2020 18:22:56 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mike.kravetz@oracle.com, David Rientjes <rientjes@google.com>,
-        mgorman@suse.de, Michel Lespinasse <walken@google.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>
-Subject: Re: [PATCH v4] mm/hugetlb: add mempolicy check in the reservation
- routine
-Message-Id: <20200806182256.7aab51726cd91301d53cff2d@linux-foundation.org>
-In-Reply-To: <CAMZfGtVE4BJppEHrh=+E4+mo+K5Q9M5q+oBv64q_94x0YyGpqA@mail.gmail.com>
-References: <20200728034938.14993-1-songmuchun@bytedance.com>
-        <CAMZfGtVE4BJppEHrh=+E4+mo+K5Q9M5q+oBv64q_94x0YyGpqA@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+        id S1726338AbgHGBXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 21:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726226AbgHGBXY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 21:23:24 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB751C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 18:23:23 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id e24so428045pfl.13
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 18:23:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=yC5jYNAZ2LkpJAay2cVTHRBar69NJbTlP8o5uIXB6/g=;
+        b=dbhUZ4AdddRmmfM5MZeqGAPEKz9pXzfFnWWvVwOcBdaX6SgkOX4BLQ1qmjaI2Vv/RE
+         lI810NuPrU8cba8i0YMXSkn1Ohkr+DXWdTHizneQgoirhCfkZmKKIefeuWQqwM6d5p46
+         5ScI/Z3lLN/VuwpppPg52ErsiS6PbguN4Kopt6kIWm0mDIDHjOFb1h27WrIDbRLRHP2v
+         z/Nof0CVwzKkv+LKjBfCzacBwcSdazISEWZKgHJuaT4pwK6Fsdwez25g9dP4eiWSO7hC
+         qCfmyEflLkUT16wBzHw+kRlqSt1miYrr3Hnn1UbC94AfE7oJaTUr/YGJlqf9blZYhnkg
+         PqRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=yC5jYNAZ2LkpJAay2cVTHRBar69NJbTlP8o5uIXB6/g=;
+        b=cI0cQyrU1oAYezGsz8lEJd8DRaEd2Fr7IEv/qTLfH3mfdMz/+HTubitvo6JfbpqGu0
+         LLUlkQP/0Vy68k8eDa0OeNvuWLkppcTrol3SAUMwiWgkXxpXLCiBWkD229rxKBL0Z1cE
+         6yZnM+DahjBNed6gzI6kdOpvkBxQB09N6Dvtfj45UvsRzxvHYwq9kggALr+bnG98b37z
+         J20Qd0F+iWcSQov6eZjA0woW/A3HPQfDxPqH+mPVlOcqzTRNVcUeVa/M1/gprAhtsUcX
+         gfGXW7g001GNq1WqypfkyaqWmHm+tCXOo4JgTGEpZp5C7M/+BYUXhR0Rh/zRLtbXIlQp
+         bX2w==
+X-Gm-Message-State: AOAM530YWd8sBHVP8z/twnEC7gGEawRNHkMkqdNaCmPKf7aWHF1Y6ram
+        VBJ7h0vU2J+6vj3UWQyMZm5yvbWb
+X-Google-Smtp-Source: ABdhPJzX3Q/EZzrTsL+psZOfV6Qe3oGEelBpSTkxN0LrcRBxKGusOhF5mZvdOdGnh5l977FkZGlm/weK
+X-Received: by 2002:a17:90a:6343:: with SMTP id v3mr11046672pjs.163.1596763402902;
+ Thu, 06 Aug 2020 18:23:22 -0700 (PDT)
+Date:   Thu,  6 Aug 2020 18:23:03 -0700
+Message-Id: <20200807012303.3769170-1-cfir@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Mailer: git-send-email 2.28.0.236.gb10cc79966-goog
+Subject: [PATCH] KVM: SVM: Mark SEV launch secret pages as dirty.
+From:   Cfir Cohen <cfir@google.com>
+To:     "kvm @ vger . kernel . org" <kvm@vger.kernel.org>,
+        Lendacky Thomas <thomas.lendacky@amd.com>,
+        Singh Brijesh <brijesh.singh@amd.com>
+Cc:     Grimm Jon <Jon.Grimm@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Cfir Cohen <cfir@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 6 Aug 2020 15:45:14 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
+The LAUNCH_SECRET command performs encryption of the
+launch secret memory contents. Mark pinned pages as
+dirty, before unpinning them.
+This matches the logic in sev_launch_update().
 
-> On Tue, Jul 28, 2020 at 11:49 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> >
-> > In the reservation routine, we only check whether the cpuset meets
-> > the memory allocation requirements. But we ignore the mempolicy of
-> > MPOL_BIND case. If someone mmap hugetlb succeeds, but the subsequent
-> > memory allocation may fail due to mempolicy restrictions and receives
-> > the SIGBUS signal. This can be reproduced by the follow steps.
-> >
-> >  1) Compile the test case.
-> >     cd tools/testing/selftests/vm/
-> >     gcc map_hugetlb.c -o map_hugetlb
-> >
-> >  2) Pre-allocate huge pages. Suppose there are 2 numa nodes in the
-> >     system. Each node will pre-allocate one huge page.
-> >     echo 2 > /proc/sys/vm/nr_hugepages
-> >
-> >  3) Run test case(mmap 4MB). We receive the SIGBUS signal.
-> >     numactl --membind=0 ./map_hugetlb 4
-> >
-> > With this patch applied, the mmap will fail in the step 3) and throw
-> > "mmap: Cannot allocate memory".
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Reported-by: Jianchao Guo <guojianchao@bytedance.com>
-> > Suggested-by: Michal Hocko <mhocko@kernel.org>
-> > Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> 
-> Hi Andrew,
-> 
-> Any comments or forgot to add this to the queue for the
-> merge window?
+Signed-off-by: Cfir Cohen <cfir@google.com>
+---
+ arch/x86/kvm/svm/sev.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-I think Baoquan He's comment threw me off.
-
-I worry about the use of `current' in mempolicy.h.  It's the first time
-this header has referenced current and the patch forgot to include
-sched.h to get the definition.  Presumably it works by accident.  I
-could toss in the #include but sometimes that blows up.
-
-But it's unlikely that we'll be getting circular includes or other such
-nastiness between those two header files, so fingers crossed...
-
---- a/include/linux/mempolicy.h~mm-hugetlb-add-mempolicy-check-in-the-reservation-routine-fix
-+++ a/include/linux/mempolicy.h
-@@ -6,7 +6,7 @@
- #ifndef _LINUX_MEMPOLICY_H
- #define _LINUX_MEMPOLICY_H 1
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 5573a97f1520..37c47d26b9f7 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -850,7 +850,7 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	struct kvm_sev_launch_secret params;
+ 	struct page **pages;
+ 	void *blob, *hdr;
+-	unsigned long n;
++	unsigned long n, i;
+ 	int ret, offset;
  
--
-+#include <linux/sched.h>
- #include <linux/mmzone.h>
- #include <linux/dax.h>
- #include <linux/slab.h>
-_
+ 	if (!sev_guest(kvm))
+@@ -863,6 +863,14 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	if (!pages)
+ 		return -ENOMEM;
+ 
++	/*
++	 * The LAUNCH_SECRET command will perform in-place encryption of the
++	 * memory content (i.e it will write the same memory region with C=1).
++	 * It's possible that the cache may contain the data with C=0, i.e.,
++	 * unencrypted so invalidate it first.
++	 */
++	sev_clflush_pages(pages, n);
++
+ 	/*
+ 	 * The secret must be copied into contiguous memory region, lets verify
+ 	 * that userspace memory pages are contiguous before we issue command.
+@@ -908,6 +916,11 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ e_free:
+ 	kfree(data);
+ e_unpin_memory:
++	/* content of memory is updated, mark pages dirty */
++	for (i = 0; i < n; i++) {
++		set_page_dirty_lock(pages[i]);
++		mark_page_accessed(pages[i]);
++	}
+ 	sev_unpin_memory(kvm, pages, n);
+ 	return ret;
+ }
+-- 
+2.28.0.163.g6104cc2f0b6-goog
 
