@@ -2,79 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A2B23EAAF
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1929823EAD5
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727908AbgHGJpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 05:45:11 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:50028 "EHLO loongson.cn"
+        id S1728225AbgHGJsO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 7 Aug 2020 05:48:14 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3008 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727791AbgHGJpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 05:45:11 -0400
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxG+SIIi1fvqkFAA--.1496S2;
-        Fri, 07 Aug 2020 17:44:41 +0800 (CST)
-From:   Youling Tang <tangyouling@loongson.cn>
-To:     Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: [PATCH] kernel/debug: Fix spelling mistake in debug_core.c
-Date:   Fri,  7 Aug 2020 17:44:40 +0800
-Message-Id: <1596793480-22559-1-git-send-email-tangyouling@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9BxG+SIIi1fvqkFAA--.1496S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtFy5Ar1DGr1kCw4fWF1UGFg_yoWDtFg_Kw
-        n2yws5Ca1UJ345Ar4UCw1rXFnY9w4UZFZ8Ar1agrZF9a4Dt34UXwsYqF1kGFWrWrWDXr9x
-        Ar9avr4ayr12gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8uwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUID73DUUUU
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+        id S1727012AbgHGJsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 05:48:13 -0400
+Received: from dggeme751-chm.china.huawei.com (unknown [172.30.72.55])
+        by Forcepoint Email with ESMTP id 32A3FA343AFD2D9F7DEE;
+        Fri,  7 Aug 2020 17:48:11 +0800 (CST)
+Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
+ dggeme751-chm.china.huawei.com (10.3.19.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 7 Aug 2020 17:48:10 +0800
+Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
+ dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
+ Fri, 7 Aug 2020 17:48:10 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/5] net: Set fput_needed iff FDPUT_FPUT is set
+Thread-Topic: [PATCH 3/5] net: Set fput_needed iff FDPUT_FPUT is set
+Thread-Index: AdZr620tBH193zydRFGWcrvlIYey9g==
+Date:   Fri, 7 Aug 2020 09:48:10 +0000
+Message-ID: <f9487fa9e24148dc98f22ebe9c3e9478@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.177.143]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typo: "notifiter" --> "notifier"
-	  "overriden" --> "overridden"
+Al Viro <viro@zeniv.linux.org.uk> wrote:
+>On Thu, Aug 06, 2020 at 12:59:16PM +0100, Al Viro wrote:
+>> On Thu, Aug 06, 2020 at 07:53:16PM +0800, linmiaohe wrote:
+>> > From: Miaohe Lin <linmiaohe@huawei.com>
+>> > 
+>> > We should fput() file iff FDPUT_FPUT is set. So we should set 
+>> > fput_needed accordingly.
+>> > 
+>> > Fixes: 00e188ef6a7e ("sockfd_lookup_light(): switch to fdget^W^Waway 
+>> > from fget_light")
+>> 
+>> Explain, please.  We are getting it from fdget(); what else can we get in flags there?
+>
+>FWIW, struct fd ->flags may have two bits set: FDPUT_FPUT and FDPUT_POS_UNLOCK.
+>The latter is set only by __fdget_pos() and its callers, and that only for regular files and directories.
+>
+>Nevermind that sockfd_lookup_light() does *not* use ..._pos() family of primitives, even if it started to use e.g. fdget_pos() it *still* would not end up with anything other than FDPUT_FPUT to deal with on that path - it checks that what it got is a socket.  Anything else is dropped right there, without leaving fput() to caller.
+>
+>So could you explain what exactly the bug is - if you are seeing some breakage and this patch fixes it, something odd is definitely going on and it would be nice to figure out what that something is.
 
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
----
- kernel/debug/debug_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I'am sorry, but I did not find something odd. I do this because this would make code more clear and consistent. It's pure a clean up patch.
+Maybe Fixes tag makes this looks like a bugfix.
 
-diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-index b16dbc1..3eeee0a 100644
---- a/kernel/debug/debug_core.c
-+++ b/kernel/debug/debug_core.c
-@@ -80,7 +80,7 @@ static int			exception_level;
- struct kgdb_io		*dbg_io_ops;
- static DEFINE_SPINLOCK(kgdb_registration_lock);
- 
--/* Action for the reboot notifiter, a global allow kdb to change it */
-+/* Action for the reboot notifier, a global allow kdb to change it */
- static int kgdbreboot;
- /* kgdb console driver is loaded */
- static int kgdb_con_registered;
-@@ -163,7 +163,7 @@ early_param("nokgdbroundup", opt_nokgdbroundup);
- 
- /*
-  * Weak aliases for breakpoint management,
-- * can be overriden by architectures when needed:
-+ * can be overridden by architectures when needed:
-  */
- int __weak kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
- {
--- 
-2.1.0
+Thanks for your reply and detailed explaination. :)
+
+And sorry for my rookie mistake, I wasn't meant to make these as a patch set...
 
