@@ -2,136 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F378923E567
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 03:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0E623E57A
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 03:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgHGBH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 Aug 2020 21:07:58 -0400
-Received: from mga04.intel.com ([192.55.52.120]:33877 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbgHGBH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 Aug 2020 21:07:58 -0400
-IronPort-SDR: 1XpFsISlpAI2S8PCPRV2FOVu8My0Yr7GquKx/qiBZcQClFoJh+TCEbtUDaeXB0BPjc0TYj+wlW
- C27txBOk0mHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9705"; a="150421854"
-X-IronPort-AV: E=Sophos;i="5.75,443,1589266800"; 
-   d="scan'208";a="150421854"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2020 18:07:57 -0700
-IronPort-SDR: k4MODjfqjuqHG09gzsqE7+9RHLuCTbjrUCgNRBARyzbTunsyNTGgy+avlzK7KSOeJ+wLpyXwPT
- CBOhO8/FRdHg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,443,1589266800"; 
-   d="scan'208";a="333388128"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.215.69]) ([10.254.215.69])
-  by orsmga007.jf.intel.com with ESMTP; 06 Aug 2020 18:07:54 -0700
-Cc:     baolu.lu@linux.intel.com,
-        RaymondPang-oc <RaymondPang-oc@zhaoxin.com>,
-        CobeChen-oc <CobeChen-oc@zhaoxin.com>
-Subject: =?UTF-8?B?UmU6IOetlOWkjTog562U5aSNOiDnrZTlpI06IOetlOWkjTog562U5aSN?=
- =?UTF-8?B?OiDnrZTlpI06IFtQQVRDSF0gaW9tbXUvdnQtZDpBZGQgc3VwcG9ydCBmb3IgQUNQ?=
- =?UTF-8?Q?I_device_in_RMRR?=
-To:     FelixCui-oc <FelixCui-oc@zhaoxin.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>
-References: <20200802100735.2722-1-FelixCui-oc@zhaoxin.com>
- <73d4a1e4-f6b7-efb0-e225-2e462c838657@linux.intel.com>
- <f6759b9bb2594026b58f9a89e3ce9dc6@zhaoxin.com>
- <9f64d9b6-16e8-73ce-2186-9d8ba49c39f4@linux.intel.com>
- <44ff8f73fa1f49a183a1d8d6d9c2213c@zhaoxin.com>
- <314679b4-7653-041b-9310-73baf8117766@linux.intel.com>
- <1aea042a1b524ef88e491ca2a6d95fb7@zhaoxin.com>
- <36da53a6-00e2-1be1-91b5-d90906a6199f@linux.intel.com>
- <a5fda3f364da4e739736e7d7bc618972@zhaoxin.com>
- <a2658f9c-23fa-bb72-edba-ad61e52085cd@linux.intel.com>
- <9ba29114fcad43d58159fcc7a4d89501@zhaoxin.com>
- <1477b1dd-ac48-b49d-77f9-107bb4555b91@linux.intel.com>
- <06a05e49a2564909a2049eb8be401670@zhaoxin.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <30ef5891-1368-d580-564a-1c21d90f47cd@linux.intel.com>
-Date:   Fri, 7 Aug 2020 09:07:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726224AbgHGBXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 Aug 2020 21:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgHGBXG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 Aug 2020 21:23:06 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D728EC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 Aug 2020 18:23:05 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id o21so463705oie.12
+        for <linux-kernel@vger.kernel.org>; Thu, 06 Aug 2020 18:23:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EGoiJwr7Yn7E8C81RuccqJ1OLqJy/5B2GmlLZzl97CY=;
+        b=osmTCgsekWezaCWmBB9Fal9fGvS/B9ZLHEO/zNUnaIFHxPMRYcgjd8J32mw+CwJl/u
+         t7LcYW/wgR4ddB0nPQminG/BGV8meoautGgE291F5yX/BB7hzW/sR3HtvdwwgLEylpJ6
+         xZVqSoMvXPPAq5FqyM0q1LbzCD+g/vBFFo/yB10uFLsiqzKwNz2xbT+GIXiTopKtXGgT
+         0Aa7+kvPGsakHXyCuSLBqYhT2UPIgDdmgQjPI+WvGzGHA8OihhXvuxt/minXpuA0mB4R
+         IQuPoapIrW9o9m01ORxnrpPMiO+ZnDU6e9odE1eZrejTiMc4Tj6xl+vqu8idgUtDC9Ek
+         /lpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EGoiJwr7Yn7E8C81RuccqJ1OLqJy/5B2GmlLZzl97CY=;
+        b=KA+KBsw/IwN0o9M/vCFz/Bj72xfRc4B5BjF0Fi6Kz6QW3ElN9GhaGc5BAQRF2z8AH+
+         7KzODPZu5qufPRGiJQnSaihUfzISdkONYCO2Bw3gHmPTbvQVrieG95HEq5oC9xJ/8slu
+         MrBmOpU59viOPcw+ciW+1ihUuCxoGS2MWtvYc7XtmLWUXSV6+srH8ovW5PQYHsJGyvAP
+         eJUrcK+Pluu1xZr+KQmmb955ZywnBGs+tULP+ORzWjMLvFxYxGxI3OXxa8CHCvsZM9sB
+         kxPB2lGYZV8g39WOQu4eW8GMU202NsgbqVCwrvmxC2qN6OQ6K8Qf8c4EBTaQyQsrZURT
+         SyyQ==
+X-Gm-Message-State: AOAM532RkuBx4j0ILPiWxbFdR4OvbSNUgXcwwEfXnuVbJtxnXDsuZBv+
+        n5XYXwLYYjzZgOmC8kjncKJYAHCjtueW2oA/+6oKvQ==
+X-Google-Smtp-Source: ABdhPJwFk2nflHwOtTvVQHApMHk97eO1yiJZx+c9NT3sX6L2W+QUIqlBsciPxXNEYOGivlC0fJKcGnGDyWS8Vo0yGMg=
+X-Received: by 2002:aca:f106:: with SMTP id p6mr8969952oih.169.1596763384888;
+ Thu, 06 Aug 2020 18:23:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <06a05e49a2564909a2049eb8be401670@zhaoxin.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200718000637.3632841-1-saravanak@google.com>
+ <20200718000637.3632841-3-saravanak@google.com> <CALAqxLVZ+rFE+hM9OtQ46NqpTHeLu6oKLNWKstLv1U5zbwyq7g@mail.gmail.com>
+ <CAGETcx_rkK3-bKhDP_N4n_WyXLXFPoaUV9rbY_Y+H1Joj=dCyw@mail.gmail.com>
+ <f314b687-11a9-5a5e-e79e-c46dd2f16c6f@kali.org> <78ad0914-6173-f753-9eba-b7cbfbb51fd6@kali.org>
+ <CALAqxLXPN9kThwF32YoWyApaWnfjthANXj3uk65Wc3ddaJQFFQ@mail.gmail.com> <20200807004001.GF20825@builder.lan>
+In-Reply-To: <20200807004001.GF20825@builder.lan>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Thu, 6 Aug 2020 18:22:53 -0700
+Message-ID: <CALAqxLWwY00PVUL7EM-tgbXeB5h8MsfPo7EFZTfDSzbb3P3eqQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] irqchip/qcom-pdc: Switch to using
+ IRQCHIP_PLATFORM_DRIVER helper macros
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Steev Klimaszewski <steev@kali.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hanks Chen <hanks.chen@mediatek.com>,
+        CC Hwang <cc.hwang@mediatek.com>,
+        Loda Chou <loda.chou@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Felix,
+On Thu, Aug 6, 2020 at 5:43 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+> On Wed 05 Aug 14:57 PDT 2020, John Stultz wrote:
+> > On Wed, Aug 5, 2020 at 2:47 PM Steev Klimaszewski <steev@kali.org> wrote:
+> > > On 8/5/20 4:16 PM, Steev Klimaszewski wrote:
+> > > > On 8/5/20 3:19 PM, Saravana Kannan wrote:
+> > > >> On Wed, Aug 5, 2020 at 12:44 AM John Stultz <john.stultz@linaro.org> wrote:
+> > > >>> <sigh>
+> > > >>> So this is where I bashfully admit I didn't get a chance to try this
+> > > >>> patch series out, as I had success with a much older version of
+> > > >>> Saravana's macro magic.
+> > > >>>
+> > > >>> But unfortunately, now that this has landed in mainline, I'm seeing
+> > > >>> boot regressions on db845c. :( This is in the non-modular case,
+> > > >>> building the driver in.
+> > > >> Does that mean the modular version is working? Or you haven't tried
+> > > >> that yet? I'll wait for your reply before I try to fix it. I don't
+> > > >> have the hardware, but it should be easy to guess this issue looking
+> > > >> at the code delta.
+> > > > For what it's worth, I saw this too on the Lenovo C630 (started on -next
+> > > > around 20200727, but I didn't track it down as, well, there's less way
+> > > > to get debug output on the C630.
+> > > >
+> > > > In my testing, module or built-in doesn't matter, but reverting does
+> > > > allow me to boot again.
+> > > >
+> > > Actually - I spoke too soon - QCOM_PDC built-in with the commit reverted
+> > > boots, however, module (on the c630 at least) doesn't boot whether it's
+> > > a module or built-in.
+> >
+> > You may need to set deferred_probe_timeout=30 to give things a bit
+> > more grace time to load.
+>
+> With the risk of me reading more into this than what you're saying,
+> please don't upstream anything that depend this parameter to be
+> increased.
+>
+> Compiling any of these drivers as module should not require the user to
+> pass additional kernel command line parameters in order to get their
+> device to boot.
 
-On 2020/8/6 14:51, FelixCui-oc wrote:
-> Hi  baolu,
-> 		>Sure. Before that, let me sync my understanding with you. You have an acpi namespace device in ANDD table, it also shows up in the device scope of a RMRR.
-> 		>Current code doesn't enumerate that device for the RMRR, hence iommu_create_device_direct_mappings() doesn't work for this device.
-> 
-> 		>At the same time, probe_acpi_namespace_devices() doesn't work for this device, hence you want to add a home-made
-> 		>acpi_device_create_direct_mappings() helper.
-> 
-> 		Your understanding is right.
-> 		But there is a problem that even if the namespace device in rmrr is enumerated in the code, probe_acpi_namespace_devices() also doesn't work for this device.
-> 		This is because the dev parameter of the iommu_create_device_direct_mappings() is not the namespace device in RMRR.
-> 		The actual parameter passed in is the namespace device's physical node device.
-> 		In iommu_create_device_direct_mappings(), the physical node device passed in cannot match the namespace device in rmrr->device[],right?
-> 		We need acpi_device_create_direct_mappings() helper ?
-> 
-> 		In addition, adev->physical_node_list is related to the __HID of namespace device reported by the bios.
-> 		For example, if the __HID reported by the bios belongs to acpi_pnp_device_ids[], adev->physical_node_list has no devices.
-> 		So in acpi_device_create_direct_mappings(), I added the case that adev->physical_node_list is empty.
+So, ideally I agree, and Saravana's fw_devlink work should allow us to
+avoid it. But the reality is that it is already required (at least in
+configurations heavily using modules) to give more time for modules
+loaded to resolve missing dependencies after init begins (due to
+changes in the driver core to fail loading after init so that optional
+dt links aren't eternally looked for). This was seen when trying to
+enable the qualcom clk drivers to modules.
 
-Got you. Thanks!
+It doesn't seem necessary in this case, but I suggested it here as
+I've got it enabled by default in my AOSP builds so that the
+module-heavy configs for GKI boot properly (even if Saravana's
+fw_devlink work is disabled).
 
-Have you ever tried to have probe_acpi_namespace_devices() handle the
-case of empty adev->physical_node_list at the same time?
-
-Best regards,
-baolu
-
-> 
-> 
-> Best regards
-> Felix cui
-> 
-> 
->   
-> 
-> -----邮件原件-----
-> 发件人: Lu Baolu <baolu.lu@linux.intel.com>
-> 发送时间: 2020年8月6日 10:36
-> 收件人: FelixCui-oc <FelixCui-oc@zhaoxin.com>; Joerg Roedel <joro@8bytes.org>; iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org; David Woodhouse <dwmw2@infradead.org>
-> 抄送: baolu.lu@linux.intel.com; RaymondPang-oc <RaymondPang-oc@zhaoxin.com>; CobeChen-oc <CobeChen-oc@zhaoxin.com>
-> 主题: Re: 答复: 答复: 答复: 答复: 答复: [PATCH] iommu/vt-d:Add support for ACPI device in RMRR
-> 
-> Hi Felix,
-> 
-> On 8/5/20 3:37 PM, FelixCui-oc wrote:
->> Hi baolu,
->> 		Let me talk about why acpi_device_create_direct_mappings() is needed and please tell me if there is an error.
-> 
-> Sure. Before that, let me sync my understanding with you. You have an acpi namespace device in ANDD table, it also shows up in the device scope of a RMRR. Current code doesn't enumerate that device for the RMRR, hence iommu_create_device_direct_mappings() doesn't work for this device.
-> 
-> At the same time, probe_acpi_namespace_devices() doesn't work for this device, hence you want to add a home-made
-> acpi_device_create_direct_mappings() helper.
-> 
-> Did I get it right?
-> 
->> 		In the probe_acpi_namespace_devices() function, only the device in the addev->physical_node_list is probed,
->> 		but we need to establish identity mapping for the namespace device in RMRR. These are two different devices.
-> 
-> The namespace device has been probed and put in one drhd's device list.
-> Hence, it should be processed by probe_acpi_namespace_devices(). So the question is why there are no devices in addev->physical_node_list?
-> 
->> 		Therefore, the namespace device in RMRR is not mapped in probe_acpi_namespace_devices().
->> 		acpi_device_create_direct_mappings() is to create direct mappings for namespace devices in RMRR.
-> 
-> Best regards,
-> baolu
-> 
+thanks
+-john
