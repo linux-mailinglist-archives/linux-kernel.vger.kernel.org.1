@@ -2,129 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A317A23F0CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 18:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2CC23F0BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 18:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgHGQQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 12:16:13 -0400
-Received: from mail-dm6nam10on2084.outbound.protection.outlook.com ([40.107.93.84]:14336
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726030AbgHGQQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 12:16:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CAPWle5wVQuyhPUo58Te2azUKg87Dh+nH5usIp6tX5gGARt1F8CacAoIT+EK6x1uto8br138HY7+7arAfGKbRaYhxj0N8kYN3IefvLonPueS9o+0NsyQ/hxCGct0nIyLsd6WDgj6vJX/aarOYlnbFKguLg2/L7F6+UTdjJHtLH654Drn3mc5xK1OFEiwvTh3yUsLmHWcPblx6nANkvQ8mVbhiTAHh8Ct/RypTqq5wlwXoJEwgsFJ6dFC1XuRB4nFp+03TH8nzGJrut/WFPmDwQXkT7swzSGo1UKSjwPeS6U9maNrRdZr1lNmOCwkGK6A6WAOfjv4d7ELf4nv6bmpuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rx3wfKZBAkWa78NVMszSWAJ4jhBnGuqJxpn3pWbmn/o=;
- b=lzZjgI/OB2l3JhaLaruTkOEJdPmRKueEPAkJGpywF5qWT35u4VltkbALTaM8Xgoy+gpE7mtwveBARFjF42bHIWKK2eGi+3TMKjh6MoFJQyZGb7n8UBEsi8Cv+GhC4pttjBW9hk+5a7fLvnmbf/iz4Upsl/GRisbFeukf8iu0tFU+bXdHX0KRnJDg3niBF/BCvJg9EbkuCNr1WC3DMByqZkwk7eOikPyajXnmJZphgsqdId3FuhamHeDIDPXkLi5GPttwSHnBkTZoMGRuAsgD3t3DoLwEKqCiiYcEksjMkRw6GKdIdHW3PArSDeHtST4E/Us1eIrF2xSPkjyeGbgG3w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com;
- dmarc=permerror action=none header.from=amd.com; dkim=none (message not
- signed); arc=none
+        id S1726542AbgHGQLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 12:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgHGQLp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 12:11:45 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BEBC061756
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 09:11:44 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id c16so2615939ejx.12
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 09:11:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rx3wfKZBAkWa78NVMszSWAJ4jhBnGuqJxpn3pWbmn/o=;
- b=sRw58YSpY1kDWwKsagJ3JjaQzbmn7JU76SO9OTjTFp+AGGIAt6GAJ67DqsUCJXXqW+3Bt1RdTmagl/yUqF3dwhzouPQJ11uBRxwkOsiIQY6RyFo/zej9xE6E6YxFGmAjsdZy9pkvr4KxKSf8geFojNmxxVAAriYdTjvieuXjyHw=
-Received: from MWHPR11CA0028.namprd11.prod.outlook.com (2603:10b6:300:115::14)
- by CY4PR12MB1224.namprd12.prod.outlook.com (2603:10b6:903:39::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16; Fri, 7 Aug
- 2020 16:16:09 +0000
-Received: from CO1NAM11FT057.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:115:cafe::e2) by MWHPR11CA0028.outlook.office365.com
- (2603:10b6:300:115::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.15 via Frontend
- Transport; Fri, 7 Aug 2020 16:16:09 +0000
-X-MS-Exchange-Authentication-Results: spf=none (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=permerror action=none header.from=amd.com;
-Received-SPF: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-Received: from SATLEXMB02.amd.com (165.204.84.17) by
- CO1NAM11FT057.mail.protection.outlook.com (10.13.174.205) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3261.16 via Frontend Transport; Fri, 7 Aug 2020 16:16:08 +0000
-Received: from SATLEXMB01.amd.com (10.181.40.142) by SATLEXMB02.amd.com
- (10.181.40.143) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Fri, 7 Aug 2020
- 11:16:07 -0500
-Received: from vishnu-All-Series.amd.com (10.180.168.240) by
- SATLEXMB01.amd.com (10.181.40.142) with Microsoft SMTP Server id 15.1.1713.5
- via Frontend Transport; Fri, 7 Aug 2020 11:16:04 -0500
-From:   Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>
-CC:     Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Akshu Agrawal <akshu.agrawal@amd.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: amd: Replacing component->name with codec_dai->name.
-Date:   Fri, 7 Aug 2020 21:40:17 +0530
-Message-ID: <20200807161046.17932-1-Vishnuvardhanrao.Ravulapati@amd.com>
-X-Mailer: git-send-email 2.17.1
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y9D1KRUva+vEZ2yw/RUAbLSmKMRhybgAq31n6MCUn2w=;
+        b=h8dgkoz8y/OiP85im29r03TQUoi5ZKfJewD54te1FYPtv/KEpTqZ+Da+Zaa0mlPEzE
+         csDJUwYUPnrshDjQ6xV40Ux3iDsSemGp/pg5DQtAWRaB1aGrbcaG9gUW+rtMRRyLTgQ1
+         ncC2qUcZI2kRdy542DbHxGfUEqUYiTPyZUafAliFIznk/rTpMgi5ASJ+4ySkCniKIYMH
+         NT/hAK1qje2Ml/rNoKixLn77hnR0JvTBdLS+KtPpJPZMdhr7cQOtZqWHfQgUL/vZkkk7
+         E9brMTW0uk6z/ioIWdFAof0g60jFqE3pnegpob1E+DCmYgk2LVRWhJjiwf5Qz2gjAWiK
+         Gb+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y9D1KRUva+vEZ2yw/RUAbLSmKMRhybgAq31n6MCUn2w=;
+        b=nIwplEVC+YAPEuGC9z8kKijQcVaB9F1TQJNp0Y4PxpX8v/TA35RFG9VRoIJhAr+t92
+         AKrQKOkXR3/wy2ypP/MAW4/rEGcWMcJvgl/Kunp0LRGUpnEbIC+O92fkJGUzdJFS5kAf
+         MPLj98VaQ/yhlA0pr/ykZmVcRMXIb8LnowFoR/5rgBz+tOeo/mIYKNQbT2cQOgXqB65b
+         vjMgXgrPlSaV2GSAf/DNRNVGls7xkoDj+k2LygBzRGI1XQKKVz/j+zVF4rcLfti/bxz7
+         l0i9urdSek+jHeLQiwoBzcGjMUgs0Aq/9I6fgNIwEmAdxbbLW2jB/CsMFrme47Nv+QV2
+         7RfA==
+X-Gm-Message-State: AOAM5322Ip3oNms0iAm1qGyXFI8ykOdLIQHaaa9A6amHEpyWKPi2I+Gc
+        0dAi83n5xW1fk2Wh6n/mKfOvpnVPJKaY+cBDluj9Qw==
+X-Google-Smtp-Source: ABdhPJyrYrsX5pEESa8H+K7koPpEjRogCNgaqAF5EHjcrBUY1fHtp+5JeCDPHY/P9J9KeauYe50jhbLLuLbLdMYGuqM=
+X-Received: by 2002:a17:906:9399:: with SMTP id l25mr9939694ejx.212.1596816703233;
+ Fri, 07 Aug 2020 09:11:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6df3f196-e917-455f-d256-08d83aed31ce
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1224:
-X-Microsoft-Antispam-PRVS: <CY4PR12MB12249C94E418325F929CA714E7490@CY4PR12MB1224.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: l2dD8EVLQsLeu3iUjmqMYuy3XW6DkXuxMUh+QXNwi12VbhcHpxS0W7D3dnKY5T7in4F+/OJkv9BHDjYwmGiaZ1XMTHMQbrdB0YWZzBUPtJZ5h7WB9Ghw/wzwn3X90IUX3CtYW94WC5Ku9fWbXMHuwg8HiKqOYc9dTE149WSM4i6Cqk+HYtAHFE8FtlWvoG7ulAW3JQJSfDj/6ox4nRDptMF4G4D+r2hkcPlxXQG7PuFktASEQuNieGtetlTWSnVcwx65XAVQyuNOsZyjnhZOB2813oraDHmf3nZzm+W3umWNIW9zTEn8HbjtfkCeGIleKm3PeuoGtuBr6DKi5PRM3mQ1JUGj6oM0eUkPWUSGJRAHpB9Wde/QH8IvednQ/b5nxoScMf+Bc+MyRIQDrmMs1TdE4DnpIG+fhXKiU05JFdE=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB02.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(376002)(136003)(346002)(396003)(46966005)(316002)(54906003)(109986005)(186003)(8676002)(26005)(8936002)(426003)(7696005)(36756003)(6666004)(82310400002)(70586007)(81166007)(70206006)(4326008)(336012)(1076003)(5660300002)(2906002)(47076004)(2616005)(86362001)(82740400003)(83380400001)(356005)(478600001)(266003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2020 16:16:08.8603
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6df3f196-e917-455f-d256-08d83aed31ce
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB02.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT057.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1224
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200807071718.17937-1-tanmay@codeaurora.org> <20200807071718.17937-3-tanmay@codeaurora.org>
+ <b0e8415f-53e6-575d-5774-5f4f7adca982@infradead.org> <CAF6AEGvLrR2LPTF2DDEcxRwQY+pEEcooZh=NBSr5WOs+TUk0Dw@mail.gmail.com>
+In-Reply-To: <CAF6AEGvLrR2LPTF2DDEcxRwQY+pEEcooZh=NBSr5WOs+TUk0Dw@mail.gmail.com>
+From:   Guenter Roeck <groeck@google.com>
+Date:   Fri, 7 Aug 2020 09:11:32 -0700
+Message-ID: <CABXOdTeYOVWKNWfJxxVDC6Mdu1aisCs6yDCAdxRQGuUp8r2EQA@mail.gmail.com>
+Subject: Re: [PATCH v9 2/5] drm/msm/dp: add displayPort driver support
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, aravindh@codeaurora.org,
+        Abhinav Kumar <abhinavk@codeaurora.org>, khsieh@codeaurora.org,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        Guenter Roeck <groeck@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replacing string compare with "codec_dai->name" instead of comparing with
-"codec_dai->component->name" in hw_params because,
-Here the component name for codec RT1015 is "i2c-10EC5682:00"
-and will never be "rt1015-aif1" as it is codec-dai->name.
-So, strcmp() always compares and fails to set the
-sysclk,pll,bratio for expected codec-dai="rt1015-aif1".
+On Fri, Aug 7, 2020 at 8:48 AM Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Fri, Aug 7, 2020 at 8:37 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> >
+> > On 8/7/20 12:17 AM, Tanmay Shah wrote:
+> > > diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+> > > index 6deaa7d01654..ea3c4d094d09 100644
+> > > --- a/drivers/gpu/drm/msm/Kconfig
+> > > +++ b/drivers/gpu/drm/msm/Kconfig
+> > > @@ -57,6 +57,14 @@ config DRM_MSM_HDMI_HDCP
+> > >       help
+> > >         Choose this option to enable HDCP state machine
+> > >
+> > > +config DRM_MSM_DP
+> > > +     bool "Enable DP support in MSM DRM driver"
+> >
+> >         bool "Enabled DisplayPort support in MSM DRM driver"
+> >
+> > > +     depends on DRM_MSM
+> > > +     help
+> > > +       Compile in support for DP driver in msm drm driver. DP external
+> >
+> >                                               MSM DRM
+> >
+> > Also:
+> > I can't find anywhere in drivers/gpu/drm/msm/ that explains what MSM means.
+> > What does it mean?
+>
+> I believe it stands for "Mobile Station Modem".. in the pre-devicetree
+> days it was the name of the qcom platform.  Things later shifted to
+> "qcom" instead, but that was after this driver was merged.  At this
+> point it is just three letters ;-)
+>
 
-Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
----
- sound/soc/amd/acp3x-rt5682-max9836.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+FWIW: https://en.wikichip.org/wiki/qualcomm/msm
 
-diff --git a/sound/soc/amd/acp3x-rt5682-max9836.c b/sound/soc/amd/acp3x-rt5682-max9836.c
-index 55815fdaa1aa..406526e79af3 100644
---- a/sound/soc/amd/acp3x-rt5682-max9836.c
-+++ b/sound/soc/amd/acp3x-rt5682-max9836.c
-@@ -138,7 +138,7 @@ static int acp3x_1015_hw_params(struct snd_pcm_substream *substream,
- 	srate = params_rate(params);
- 
- 	for_each_rtd_codec_dais(rtd, i, codec_dai) {
--		if (strcmp(codec_dai->component->name, "rt1015-aif"))
-+		if (strcmp(codec_dai->name, "rt1015-aif"))
- 			continue;
- 		ret = snd_soc_dai_set_bclk_ratio(codec_dai, 64);
- 		if (ret < 0)
--- 
-2.17.1
+Guenter
 
+> BR,
+> -R
+>
+> > > +       display support is enabled through this config option. It can
+> > > +       be primary or secondary display on device.
+> > > +
+> > >  config DRM_MSM_DSI
+> > >       bool "Enable DSI support in MSM DRM driver"
+> > >       depends on DRM_MSM
+> >
+> > thanks.
+> > --
+> > ~Randy
+> >
