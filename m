@@ -2,88 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118B623EAD9
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BF023EAED
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbgHGJsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 05:48:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727012AbgHGJsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 05:48:22 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF779221E5;
-        Fri,  7 Aug 2020 09:48:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596793701;
-        bh=PcmJrNmkKXFSnXfYxarKgwFKdUaxsn6gLY15nHsiy+Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VWlFBRPJWUoSvqida/H+MLdkn5zPYE2eiHgUT700CFRHSU4WWIGWrhOFZZqMXEhGZ
-         dBZ4/83WIu2m1P2cfHnH9ABh7DcVOHkuzsxDetFbqFv9soht4uZMK59kJ9EeE/V6Qq
-         OC3Bqt7FJ1bJSY7bWr1/zZYn8jpEhNsyJ+RdKMRs=
-Date:   Fri, 7 Aug 2020 11:48:34 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johnson CH Chen =?utf-8?B?KOmZs+aYreWLsyk=?= 
-        <JohnsonCH.Chen@moxa.com>
-Cc:     Jiri Slaby <jirislaby@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        Jason Chen =?utf-8?B?KOmZs+WFhuWFiCk=?= <Jason.Chen@moxa.com>,
-        Victor Yu =?utf-8?B?KOa4uOWLnee+qSk=?= <victor.yu@moxa.com>,
-        Danny Lin =?utf-8?B?KOael+aUv+aYkyk=?= <danny.lin@moxa.com>
-Subject: Re: [PATCH] tty: Add MOXA NPort Real TTY Driver
-Message-ID: <20200807094834.GA3069990@kroah.com>
-References: <HK2PR01MB328134FB2EF5F9D1E381BDA3FA610@HK2PR01MB3281.apcprd01.prod.exchangelabs.com>
- <7b190f5c-c2f4-032a-af89-444a1f7d9a80@gmail.com>
- <HK2PR01MB328115306D9656E2E95D85ECFA490@HK2PR01MB3281.apcprd01.prod.exchangelabs.com>
+        id S1728177AbgHGJut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 05:50:49 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:57918 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727820AbgHGJup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 05:50:45 -0400
+Received: by ajax-webmail-mail-app3 (Coremail) ; Fri, 7 Aug 2020 17:50:13
+ +0800 (GMT+08:00)
+X-Originating-IP: [210.32.144.186]
+Date:   Fri, 7 Aug 2020 17:50:13 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Takashi Iwai" <tiwai@suse.de>
+Cc:     kjlu@umn.edu, "Jaroslav Kysela" <perex@perex.cz>,
+        "Takashi Iwai" <tiwai@suse.com>, "Geoffrey D. Bennett" <g@b4.vu>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] ALSA: usb-audio: Fix memleak in
+ scarlett2_add_new_ctl
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
+ Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
+In-Reply-To: <s5htuxeanl2.wl-tiwai@suse.de>
+References: <20200807071229.9533-1-dinghao.liu@zju.edu.cn>
+ <s5htuxeanl2.wl-tiwai@suse.de>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <HK2PR01MB328115306D9656E2E95D85ECFA490@HK2PR01MB3281.apcprd01.prod.exchangelabs.com>
+Message-ID: <2632689f.4acd5.173c853f824.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cC_KCgAH0t7VIy1fY10wAg--.31871W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgECBlZdtPbBHgAHsW
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbXIS07vEb7Iv0x
+        C_JF4lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
+        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
+        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
+        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIAIbVA2z4x0Y4vEx4A2jsIE14v26r
+        xl6s0DMIAIbVA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1lV2xY62AIxVAIcxkEcVAq
+        07x20xvEncxIr21lV2xY6c02F40EFcxC0VAKzVAqx4xG6I80ewCS07vEYx0E2Ix0cI8IcV
+        AFwI0_Jr0_Jr4lV2xY6cIj6I8E87Iv67AKxVWUJVW8JwCS07vEOx8S6xCaFVCjc4AY6r1j
+        6r4UMIAIbVCjxxvEw4WlV2xY6xkIecxEwVAFwVW8uwCS07vEc2IjII80xcxEwVAKI48JMI
+        AIbVCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1lV2xY6xCjnVCjjxCrMIAIbVCFx2IqxVCF
+        s4IE7xkEbVWUJVW8JwCS07vEx2IqxVAqx4xG67AKxVWUJVWUGwCS07vEx2IqxVCjr7xvwV
+        AFwI0_JrI_JrWlV2xY6I8E67AF67kF1VAFwI0_JF0_Jw1lV2xY6IIF0xvE2Ix0cI8IcVAF
+        wI0_Jr0_JF4lV2xY6IIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCS07vEIxAIcVCF04
+        k26cxKx2IYs7xG6rW3Jr0E3s1lV2xY6IIF0xvEx4A2jsIE14v26r1j6r4UMIAIbVCI42IY
+        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73U
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 07, 2020 at 09:18:57AM +0000, Johnson CH Chen (陳昭勳) wrote:
-> > > +	if (info->modem_control & UART_MCR_RTS)
-> > > +		nd->cmd_buffer[6] = 1;
-> > > +	else
-> > > +		nd->cmd_buffer[6] = 0;
-> > > +
-> > > +	if (termio->c_cflag & CRTSCTS) {
-> > > +		nd->cmd_buffer[7] = 1;
-> > > +		nd->cmd_buffer[8] = 1;
-> > > +	} else {
-> > > +		nd->cmd_buffer[7] = 0;
-> > > +		nd->cmd_buffer[8] = 0;
-> > > +	}
-> > > +
-> > > +	if (termio->c_iflag & IXON)
-> > > +		nd->cmd_buffer[9] = 1;
-> > > +	else
-> > > +		nd->cmd_buffer[9] = 0;
-> > > +
-> > > +	if (termio->c_iflag & IXOFF)
-> > > +		nd->cmd_buffer[10] = 1;
-> > > +	else
-> > > +		nd->cmd_buffer[10] = 0;
-> > 
-> > What is this cmd_buffer good for actually? Only to let the user know?
-> > Then -- drop it.
-> 
-> Because detailed iterations for cmd_buffer and cmd_rsp with Nport
-> server device are regarded proprietary for our company, is it good to
-> reveal value of cmd_buffer[] with macros only for upstream this
-> driver?
-
-There is nothing "proprietary" for Linux kernel code, sorry.  Please
-document this properly so we can understand, review, and maintain it
-over time correctly.
-
-thanks,
-
-greg k-h
+CgomcXVvdDtUYWthc2hpIEl3YWkmcXVvdDsgJmx0O3Rpd2FpQHN1c2UuZGUmZ3Q75YaZ6YGT77ya
+Cj4gT24gRnJpLCAwNyBBdWcgMjAyMCAwOToxMjoyNyArMDIwMCwKPiBEaW5naGFvIExpdSB3cm90
+ZToKPiA+IAo+ID4gV2hlbiBzbmRfdXNiX21peGVyX2FkZF9jb250cm9sKCkgZmFpbHMsIGVsZW0g
+bmVlZHMgdG8gYmUKPiA+IGZyZWVkIGp1c3QgbGlrZSB3aGVuIHNuZF9jdGxfbmV3MSgpIGZhaWxz
+LiBIb3dldmVyLCBjdXJyZW50Cj4gPiBjb2RlIGlzIHJldHVybmluZyBkaXJlY3RseSBhbmQgZW5k
+cyB1cCBsZWFraW5nIG1lbW9yeS4KPiAKPiBObywgdGhpcyB3b3VsZCBsZWFkIHRvIGRvdWJsZS1m
+cmVlLiAgc25kX2N0bF9hZGQoKSBzaG93cyBhIGtpbmQgb2YKPiBzcGVjaWFsIGJlaGF2aW9yLCBp
+dCBhbHJlYWR5IHJlbGVhc2VzIHRoZSBvYmplY3QgYXQgaXRzIGVycm9yIHBhdGguCj4gCgpJdCdz
+IGNsZWFyIHRvIG1lLCB0aGFua3MhCgpSZWdhcmRzLApEaW5naGFvCg==
