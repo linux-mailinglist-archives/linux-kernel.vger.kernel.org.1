@@ -2,95 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06EC23EB1D
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 12:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5D123EB21
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 12:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbgHGKDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 06:03:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47190 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727012AbgHGKDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 06:03:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DAF6FAB9F;
-        Fri,  7 Aug 2020 10:03:17 +0000 (UTC)
-Subject: Re: [PATCH v3 4/7] x86/paravirt: remove 32-bit support from
- PARAVIRT_XXL
-To:     peterz@infradead.org
-Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-References: <20200807083826.16794-1-jgross@suse.com>
- <20200807083826.16794-5-jgross@suse.com>
- <20200807093916.GF2674@hirez.programming.kicks-ass.net>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <3a0712ee-efca-5684-d321-3b789e01fc16@suse.com>
-Date:   Fri, 7 Aug 2020 12:02:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727961AbgHGKDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 06:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727012AbgHGKDy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 06:03:54 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F0EFC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 03:03:54 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id m71so347156pfd.1
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 03:03:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=PfRFH2bLZs/kRxOEuKfHcypEFEEz+uhPQyAZNop2RgA=;
+        b=nMDFmvxZY3G0jUP+B2nhsmEX22Ysn5S6HgrW78IfonQeJ0KGaIFMZdd9e1smtVJfK6
+         /1go5noWL2Hvp3rq+o4j4JiccfJHy0IhQDyao6KJzOstHOztYllPsBsbb19SKqF+aXQV
+         +EmcPdCBw+LTLP0yi5PlypWdidv5OKtc0z9uLKRjC+JADYeXRxJ8c7jda0ms+msX0q9O
+         V7Ppv3BxG7bLQaI2axlgN+bnPrmlSLKi5Hmejydv1uxKp7ODFSE3dvOMXlKKHrYi0CFW
+         mhxRakBPKXeamOS5VrwiVpt5GYxhgEVWjmS1Viiw1Yn6oQwfXRLCwIP3KYnXjjESPFVM
+         nbgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=PfRFH2bLZs/kRxOEuKfHcypEFEEz+uhPQyAZNop2RgA=;
+        b=j5L5F14G5JYKNNvOU0KjPZ5Bto5Z+abvirgNdT8WWeNvgJiOzDSwbrDq/Aa3Anjhyb
+         hwpgHyGNMAW98RjAJkwbN7w8HR3hBI5Ka2nq0w2S1vT2uhr04u0xfhN1to5VwzQeqtRV
+         x3mFV28z9VteKCq5b9YZXpqHRKYCuU7J/mjMaKwl1fK4HEBAha3us93CoZoDSODMYS1w
+         i/hqWhCpZunhQ2x5bMdUB6kHYuo4Jcc2qbVLMftUM6K9CbDkefJHw6vAGTnDeKptXL8C
+         5UtEPYOqyX2kHuM4Mk5CRYFMiTX0husds+LeFAa/uvWhGmZfiY6cUhoxMfPgFHSkMTRe
+         W5bQ==
+X-Gm-Message-State: AOAM531Ki6XcXhRXwFmWeL2E1EVkCeYq9BYWyColNMQgsaW6hg0uvn9J
+        JpnZVZhWK2sYjolWh/BcrjsMTr/k0S6oiWhciJs=
+X-Google-Smtp-Source: ABdhPJwYU+E/jzbDq963alymj3j05ox1OBYdwHswftQx6P3tDN4BJLjTSFCsfgzFhm7lNaxgYFGgCxA0n3c9nbSBucs=
+X-Received: by 2002:a63:4c57:: with SMTP id m23mr10623684pgl.77.1596794632290;
+ Fri, 07 Aug 2020 03:03:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200807093916.GF2674@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a17:90a:69a5:0:0:0:0 with HTTP; Fri, 7 Aug 2020 03:03:51
+ -0700 (PDT)
+Reply-To: mrs.maddalenanicholaus@gmail.com
+From:   "Mrs. Maddalena Nicholaus" <sckk12345@gmail.com>
+Date:   Fri, 7 Aug 2020 11:03:51 +0100
+Message-ID: <CAGZU5sJb0P5m3iCf09hrmzDec4geA2-L26M3zK8zw4BCChuVEw@mail.gmail.com>
+Subject: I wait for your urgent response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.08.20 11:39, peterz@infradead.org wrote:
-> On Fri, Aug 07, 2020 at 10:38:23AM +0200, Juergen Gross wrote:
-> 
->> -# else
->> -	const unsigned char	cpu_iret[1];
->> -# endif
->>   };
->>   
->>   static const struct patch_xxl patch_data_xxl = {
->> @@ -42,7 +38,6 @@ static const struct patch_xxl patch_data_xxl = {
->>   	.irq_save_fl		= { 0x9c, 0x58 },	// pushf; pop %[re]ax
->>   	.mmu_read_cr2		= { 0x0f, 0x20, 0xd0 },	// mov %cr2, %[re]ax
->>   	.mmu_read_cr3		= { 0x0f, 0x20, 0xd8 },	// mov %cr3, %[re]ax
->> -# ifdef CONFIG_X86_64
->>   	.mmu_write_cr3		= { 0x0f, 0x22, 0xdf },	// mov %rdi, %cr3
->>   	.irq_restore_fl		= { 0x57, 0x9d },	// push %rdi; popfq
->>   	.cpu_wbinvd		= { 0x0f, 0x09 },	// wbinvd
->> @@ -50,19 +45,11 @@ static const struct patch_xxl patch_data_xxl = {
->>   				    0x48, 0x0f, 0x07 },	// swapgs; sysretq
->>   	.cpu_swapgs		= { 0x0f, 0x01, 0xf8 },	// swapgs
->>   	.mov64			= { 0x48, 0x89, 0xf8 },	// mov %rdi, %rax
->> -# else
->> -	.mmu_write_cr3		= { 0x0f, 0x22, 0xd8 },	// mov %eax, %cr3
->> -	.irq_restore_fl		= { 0x50, 0x9d },	// push %eax; popf
->> -	.cpu_iret		= { 0xcf },		// iret
->> -# endif
-> 
-> I was looking at x86_64 paravirt the other day and found we actually
-> have pv_ops.cpu.iret users there..
+Greetings dear,
 
-On x86_64 we have (without PARAVIRT_XXL):
+I am Mrs. Maddalena Nicholaus, a Finnish citizen and 85 years old with
+grief. I am looking for your help due to my medical situation here in
+London. My medical condition is not in good shape and I will need your
+assistance to grant my last wish over the inheritance of my Late
+father which currently belongs to me. I want to hand it over to you
+for a charity project. feel free to get back to me for more details if
+you are interested.
 
-#define INTERRUPT_RETURN        jmp native_iret
+I wait for your urgent response.
 
-and with PARAVIRT_XXL this is basically a jmp *pv_ops.cpu.iret which
-will then be patched to either jmp native_iret or jmp xen_iret.
-
-On x86_32 INTERRUPT_RETURN was just "iret" for the non-paravirt case.
-This is the reason for above dropping of the static patch data.
-
-> So we want to change the above to also patch iret on x86_64 or do we
-> need to fix x86_64 to not have pv-iret?
-
-We want it to stay how it is. This will let both variants (PARVIRT y/n)
-continue to work.
-
-
-Juergen
+Regards,
+Mrs. Maddalena Nicholaus.
