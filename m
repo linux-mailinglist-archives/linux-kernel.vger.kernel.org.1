@@ -2,80 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B3223EA54
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6100023EA5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgHGJ3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 05:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgHGJ3S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 05:29:18 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E61C061574;
-        Fri,  7 Aug 2020 02:29:18 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g33so634956pgb.4;
-        Fri, 07 Aug 2020 02:29:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rwqLIgdFSoAcnw6GHO+On5ux8ew4MdyPxUQX1pacN74=;
-        b=O93kCnerzIl1YmyT0GQa8FMyfEFgK8eS0elulCcqBX1vyIEL2oUeMKym+bG/5HAMz/
-         exdCspzs+xqJx/+sHdho67fFZnSsoQ97goiywPccUU/APwkl10ggrKGU+7WUWksCsUxw
-         4H6UcCiI4HyNSp1YGi6HDRozHbE9Fye5GGSDfb47Jn2FlTZb5a9SOPSr3bdmt7iTADo/
-         00gpipFJ6TAuAhb/IvXloZklpM/nPJEqxtEhgXibSQ1hXXMQZ+e9fS5xiF8mXb9ziAEL
-         MdAMp1sxASYjtN8yXQ4Z8nVXI2p2m0w0syoKIm6GLCikTwGBXy2I4wyKlHnuWyjHKX1v
-         MFfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rwqLIgdFSoAcnw6GHO+On5ux8ew4MdyPxUQX1pacN74=;
-        b=AcbkP0PVpFI+DgMN3Jki9vqxlhYcOHUXjL3Ep53ZVYQQSeGVHb9uMTymH3gg2V942c
-         yN4a60z+BVMSKTNrBCcWoG1DtxjQ/apoGexvlTaP2+i+IWZRGS1qV3tj0498UZG2RyZn
-         nS3RRgvmPbQkjqQx8UxkCy1Ss25qLNhOx+FM63gadtEkNIBtru9SpE48I/t0elN8H7WW
-         peeajTjeigUTcPONe8qsV2SSyR+Za5/X945Ta4bhiTUH9K+y1a1mRfPI2w6Wu2ZLBJey
-         Wn92vvqHNLyEnxmkqEigaUH6L1TTgs/vEDI8hVQ8uQkmHKtqrgh3jBFqbXYHXUy/BsnV
-         urIQ==
-X-Gm-Message-State: AOAM5307thd5XiHIROtAY8SAPNZVx/K/M0QLuBYooIwyo0ujldktO/vB
-        iUravanO4UPGhFBSfeo1l5ENpx1H6e7yNAo6GFQ=
-X-Google-Smtp-Source: ABdhPJy30bL84G8d8XWMkfD6aJujeX4zZPF5+WRLIw0mQU9zMx2VFfLMi0HDegxzci3X0Y1bZG4nIBc137qhObQNMyw=
-X-Received: by 2002:a63:9dc2:: with SMTP id i185mr3087118pgd.203.1596792556914;
- Fri, 07 Aug 2020 02:29:16 -0700 (PDT)
+        id S1727773AbgHGJbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 05:31:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34548 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726511AbgHGJbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 05:31:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 992C1AC55;
+        Fri,  7 Aug 2020 09:32:05 +0000 (UTC)
+Date:   Fri, 7 Aug 2020 11:31:46 +0200
+From:   Jean Delvare <jdelvare@suse.de>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: VAIO EEPROM support in at24
+Message-ID: <20200807113146.7557c18b@endymion>
+In-Reply-To: <20200805163655.6cfa6e17@endymion>
+References: <20200317151409.7940926c@endymion>
+        <CAMRc=Mdoh5Sk3iS_CO4+++SG2jJOy1qrG4q2zOzbeYYMdJR0VA@mail.gmail.com>
+        <20200805163655.6cfa6e17@endymion>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-References: <20200807091900.967047-1-cmo@melexis.com>
-In-Reply-To: <20200807091900.967047-1-cmo@melexis.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 7 Aug 2020 12:29:00 +0300
-Message-ID: <CAHp75VcJ_h2_Lkn2DiG1B5AOQGmsRx5N5jU2ADX5bgq2cqBnYg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] iio: temperature: mlx90632: Add extended calibration calculations
-To:     Crt Mori <cmo@melexis.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 7, 2020 at 12:22 PM Crt Mori <cmo@melexis.com> wrote:
->
-> Since the second patch is dependent on the first and was still not
-> merged, I have decided to send them together. First patch just makes
-> second one more readable as it splits out the repeated calculation and
-> that enables the second patch to tweak the variable to the new
-> condition.
->
+On Wed, 5 Aug 2020 16:36:55 +0200, Jean Delvare wrote:
+> 1* Do we actually need to use a struct resource? With the current
+>    requirements, that looks overkill to me. We really only need the
+>    start and end offsets of the masked area (or start and length). Or
+>    do you plan to ever support multiple masked ranges, and
+>    resource.child would be used to daisy-chain these ranges? Personally
+>    I would wait until the need exists.
 
-When at it, bump the version relative to the maximum of all patches
-involved, like v2 should be for all patches in this series.
-So, there is -v<X> option to git format-patch to help with this.
+Dang, turns out that the need already exists. I just found that the
+eeprom driver masks *2* areas of the Sony VAIO EEPROMs. I should know
+because I'm the one who made that change but that was 13 years ago and
+my memory doesn't go that far back.
 
+I'll think of a way to support that. Still not a big fan of
+daisy-chained resource structs though. Maybe a generic post-processing
+callback function would do... I'll give that a try.
 
-
---
-With Best Regards,
-Andy Shevchenko
+-- 
+Jean Delvare
+SUSE L3 Support
