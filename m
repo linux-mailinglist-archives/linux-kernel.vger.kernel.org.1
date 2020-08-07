@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5B923E90B
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 10:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3879323E93A
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 10:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgHGIgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 04:36:35 -0400
-Received: from mail-dm6nam10on2040.outbound.protection.outlook.com ([40.107.93.40]:32864
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727814AbgHGIg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 04:36:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e0bQkz9nWxLugjO1k0I7XbUZrvYuj6ZI+yE6u6aVEKsTROxxaIqxBZ++UsgKvFtfgWK0yCaUneBnql53q/k/cgmCiL7ZdtjEB1ryoaA5In1hTykpaPXkwLD+9XghXJGPz2IHg6R0cjeHnj/+Ihmk16GGp1FX43bHSKfgIGYDDIn7EGYO/TsJXAFDcGujAanyK+wICMgoRyrnxwJQHk7M/bA64MAC+Xc4QGk0uvnMYeyZ4l51xj2Lf48H+kS9vLjsqsPL9jJb5AReE2Zp5PbZjIk9CBQo8SfbvTatWzoy5i5UCMDJSq2Hqh0IWlLRemzhSBHPwD9ABOC3SvKooo0+Lg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x2cbSZ/rN/8v5jDg6srzcOeAE9w69ncQcUaoBHJwcY4=;
- b=XiyRMmqaYRElxE5u2htcN0I0j7sUz2pSr2SxWJ3CPyI7RaNLELkrBYuJVgA73uS+1GuB8UdkZkCkbC6HZ8I5emPeDc0tlEeuKYcXXOeJEwfeEVoIO1iDPEkU0pJcWkzcP/zEbyy20HAKXWJlJPEkAvuokc/0JRrbqj1zf/vOb0DnwpZdjjb3tyxrMNobERqvbvx+JmMcQuennNYNHv1QR9RUrIOJTBKZUSbSLLhBoqd8E3BLT8pgAM/31N41h7+ljU4FaxVPB2xtDECnqPM+qjh/s1qndMGbKcLM5WwNjIGttGDoeJRAj/kcgeYwN9vTToeg8q9dedZgJOvU/lMBFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x2cbSZ/rN/8v5jDg6srzcOeAE9w69ncQcUaoBHJwcY4=;
- b=U74yHgFA6Ovn6IcZcIr6W378Ebf6OVIOgSEZKQ7QeMSGZWuf/P8cw2sLehEYwyndeMXvxNvRUBIm1lfOdTiO6UBzVdC/aMrOV7buM1Cy5KZX+Kx+OG594gnXPVe1BjBR4ZftrZnyxqhyc9R4E67auJM35zcZYgRX7vRWRBsd4ic=
-Received: from BY5PR12MB4292.namprd12.prod.outlook.com (2603:10b6:a03:212::12)
- by BYAPR12MB3511.namprd12.prod.outlook.com (2603:10b6:a03:132::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.20; Fri, 7 Aug
- 2020 08:36:25 +0000
-Received: from BY5PR12MB4292.namprd12.prod.outlook.com
- ([fe80::31da:c8c6:10f7:3181]) by BY5PR12MB4292.namprd12.prod.outlook.com
- ([fe80::31da:c8c6:10f7:3181%5]) with mapi id 15.20.3261.019; Fri, 7 Aug 2020
- 08:36:25 +0000
-From:   "RAVULAPATI, VISHNU VARDHAN RAO" 
-        <Vishnuvardhanrao.Ravulapati@amd.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] ASoC: amd: Replacing component->name with codec_dai->name
-Thread-Topic: [PATCH] ASoC: amd: Replacing component->name with
- codec_dai->name
-Thread-Index: AQHWa9sxjTkuG6r2KEqc7oVyF8d+LKkq8baAgAFhu5A=
-Date:   Fri, 7 Aug 2020 08:36:25 +0000
-Message-ID: <BY5PR12MB429286C315F66F7E2E5EA501E7490@BY5PR12MB4292.namprd12.prod.outlook.com>
-References: <20200806101451.7918-1-Vishnuvardhanrao.Ravulapati@amd.com>
- <20200806112831.GA6442@sirena.org.uk>
-In-Reply-To: <20200806112831.GA6442@sirena.org.uk>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [165.204.159.242]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 031b1ea5-05d3-4f73-cd79-08d83aacf901
-x-ms-traffictypediagnostic: BYAPR12MB3511:
-x-microsoft-antispam-prvs: <BYAPR12MB351116DD67333F2FE12CC56EE7490@BYAPR12MB3511.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: p9Get5WBCzT6gWS3lOA2hvXE1TN3aDUpQFVVxzwArOR7+o6SNTwatv5vsRMkRuhT6yrfNm7RjlcoVyHHTxkpVq+OA4JuAxi8u8GRpoaj00zoS9n7rW+FJUqC2wip771RZzzBrseQjxvKZ6d0FZa2CPBV5e4tNFJOhNJBftLSD3ESh4zUW9lbTmMIm3rg8bRvU4AJJSp0H4BuF7kGjecaE9tJicyTEG1Knbky92hwVpSVg03Prlz+9fWCUplVw3bEaahgEnBGOuKBRHXz5HmWc8BUAmIuHVvXP8irGTnfwzqO16OOlujDNaiJOlYoycHI
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4292.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(136003)(366004)(346002)(376002)(4326008)(5660300002)(4744005)(52536014)(316002)(54906003)(76116006)(66446008)(66476007)(66556008)(64756008)(478600001)(9686003)(66946007)(55016002)(8936002)(8676002)(186003)(2906002)(26005)(33656002)(6506007)(6916009)(71200400001)(86362001)(7696005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: bxGg2FvrxBz7eONoSWM3ZfnyixS5FwQ0jCBOTvJDdThS4ogcPuIn7wbhyRBGJvTFxcAM7wADzpnE7Svsow0aWp7ymDIRKk1L6kRl34K5zkpda7rnKaj9GVBC8gwhClzQglzo9DRZisR2DU6YfDqDpSTPX+Yv+cgDtMHcQl/nN//EG9IJMs5Lc2pHdIxEDUsgCW84dS6xxaBzHYi6S/bXX1mghhwe+/KvSURZzSXsMmWlKILhR0unI//OoJb1wF3v6SohF222zo2Fep3ZNoPSmE3viKyejRkOERtFg6wYFNGtqgIItD+15skz0KUMJHFOLKDvesNecQ6b5q+UuQnC3I8bVrxyTcriQpJB7IF4L9OBL8TpRAJF7/nyFoYX4uV5id+TKQmYas6fI5IlGGGQFPKKjAv19O+VR81E+IuLkQxSIE3LrroAfPKJauOoHP7Eh79W3sc/spuVGLtgwjdouoeP0/tgl5FPA9PJzdaDssbbg67pg9CaUaxbvQvNDckQDco9q13KB3anjm9E333fA+UAZQJdm9SlZzfG3Iab7v8atz84M8PElATW7bqY1dhom/M4UjnrhA5MqhzQ/PGv43e1RqT0othvjWBelDc+PCcTtIPaEJ//wDWQ1tQ/7TsL1byadGKbIoV96eNVpOZ7ww==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727116AbgHGIid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 04:38:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59566 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726619AbgHGIid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 04:38:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 058FFAAC7;
+        Fri,  7 Aug 2020 08:38:49 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Cc:     Juergen Gross <jgross@suse.com>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>
+Subject: [PATCH v3 0/7] Remove 32-bit Xen PV guest support
+Date:   Fri,  7 Aug 2020 10:38:19 +0200
+Message-Id: <20200807083826.16794-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4292.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 031b1ea5-05d3-4f73-cd79-08d83aacf901
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Aug 2020 08:36:25.7235
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9xWFj1bPjK0m2nsyRJDi42bvfGL4X7Cry6LAi3Zg5A0IlCjWw/sVdNzP20y6AZNbwlCMMjhQFPuqo0C4HnUBnQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3511
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The long term plan has been to replace Xen PV guests by PVH. The first
+victim of that plan are now 32-bit PV guests, as those are used only
+rather seldom these days. Xen on x86 requires 64-bit support and with
+Grub2 now supporting PVH officially since version 2.04 there is no
+need to keep 32-bit PV guest support alive in the Linux kernel.
+Additionally Meltdown mitigation is not available in the kernel running
+as 32-bit PV guest, so dropping this mode makes sense from security
+point of view, too.
 
+Changes in V3:
+- addressed comments to V2
+- split patch 1 into 2 patches
+- new patches 3 and 7
 
-On Thu, Aug 06, 2020 at 03:44:12PM +0530, Ravulapati Vishnu vardhan rao wro=
-te:
+Changes in V2:
+- rebase to 5.8 kernel
+- addressed comments to V1
+- new patches 3 and 4
 
-> Replacing string compare with codec_dai->name instead of comparing=20
-> with codec_dai->component->name in hw_params.
+Juergen Gross (7):
+  x86/xen: remove 32-bit Xen PV guest support
+  x86/xen: eliminate xen-asm_64.S
+  x86/xen: drop tests for highmem in pv code
+  x86/paravirt: remove 32-bit support from PARAVIRT_XXL
+  x86/paravirt: cleanup paravirt macros
+  x86/paravirt: use CONFIG_PARAVIRT_XXL instead of CONFIG_PARAVIRT
+  x86/entry/32: revert "Fix XEN_PV build dependency"
 
->Why?
+ arch/x86/entry/entry_32.S                   | 109 +----
+ arch/x86/entry/entry_64.S                   |   4 +-
+ arch/x86/entry/vdso/vdso32/note.S           |  30 --
+ arch/x86/entry/vdso/vdso32/vclock_gettime.c |   1 +
+ arch/x86/include/asm/fixmap.h               |   2 +-
+ arch/x86/include/asm/idtentry.h             |   4 +-
+ arch/x86/include/asm/paravirt.h             | 107 +----
+ arch/x86/include/asm/paravirt_types.h       |  21 -
+ arch/x86/include/asm/pgtable-3level_types.h |   5 -
+ arch/x86/include/asm/proto.h                |   2 +-
+ arch/x86/include/asm/required-features.h    |   2 +-
+ arch/x86/include/asm/segment.h              |   6 +-
+ arch/x86/kernel/cpu/common.c                |   8 -
+ arch/x86/kernel/head_32.S                   |  31 --
+ arch/x86/kernel/kprobes/core.c              |   1 -
+ arch/x86/kernel/kprobes/opt.c               |   1 -
+ arch/x86/kernel/paravirt.c                  |  18 -
+ arch/x86/kernel/paravirt_patch.c            |  17 -
+ arch/x86/xen/Kconfig                        |   3 +-
+ arch/x86/xen/Makefile                       |   3 +-
+ arch/x86/xen/apic.c                         |  17 -
+ arch/x86/xen/enlighten_pv.c                 |  78 +---
+ arch/x86/xen/mmu_pv.c                       | 488 ++++----------------
+ arch/x86/xen/p2m.c                          |   6 +-
+ arch/x86/xen/setup.c                        |  36 +-
+ arch/x86/xen/smp_pv.c                       |  18 -
+ arch/x86/xen/vdso.h                         |   6 -
+ arch/x86/xen/xen-asm.S                      | 193 +++++++-
+ arch/x86/xen/xen-asm_32.S                   | 185 --------
+ arch/x86/xen/xen-asm_64.S                   | 192 --------
+ arch/x86/xen/xen-head.S                     |   6 -
+ drivers/xen/Kconfig                         |   4 +-
+ 32 files changed, 305 insertions(+), 1299 deletions(-)
+ delete mode 100644 arch/x86/xen/vdso.h
+ delete mode 100644 arch/x86/xen/xen-asm_32.S
+ delete mode 100644 arch/x86/xen/xen-asm_64.S
 
-Here the component name for codec RT1015 is "i2c-10EC1015:00" and will neve=
-r be "rt1015-aif1"
-As it is codec-dai->name so the strcmp always compares and fails to set the=
- sysclk,pll,bratio of expected codec-dai
+-- 
+2.26.2
 
-Thanks,
-Vishnu
