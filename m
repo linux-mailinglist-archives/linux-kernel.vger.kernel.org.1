@@ -2,148 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C6023F44B
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 23:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A045D23F43C
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 23:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgHGVaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 17:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
+        id S1726932AbgHGV3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 17:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727077AbgHGV3r (ORCPT
+        with ESMTP id S1726015AbgHGV3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 17:29:47 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE802C061A31
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 14:29:42 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id f59so2593663qtb.22
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 14:29:42 -0700 (PDT)
+        Fri, 7 Aug 2020 17:29:19 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6931AC061756;
+        Fri,  7 Aug 2020 14:29:19 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id x69so3063884qkb.1;
+        Fri, 07 Aug 2020 14:29:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=O7nU7lYRfe2R9ziGF333WHlsyARaR/Q4/HWduypodHg=;
-        b=wF2sKYSCPfS1oM0NH0xBupgB1N/FqdnAiRnprzF9CglUuoj8PFS0W/tP4/W0GJPNuX
-         TyrQaJi9YYWikcZeI0piuRjIgi7S5jtC+iCUMgx8SN14rfqmKY7koAozdgACk/O4WfVJ
-         yv7+JzWcCmipUuyAMJMfzjLlkCoyIjH1rZVL2QfDcg/SnWLNI8ygMAJbmEQc4uzHhanr
-         cOazUENtE+ArWoT9JNvMKb2ZhVEp8J8eXYoSQYPithEBghTam0jogYR9DsEv5IJ8i0zG
-         nhl2W24qoGsirdUwqm7iXnLP0F2QVNElE3cyh5qkdYDPSSJRi85rrFJtgQ3oy1s4p4h+
-         sSCQ==
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6OCdZ+ZeCbuJb568osbDrIdPBoRSxq8uWrbOnWLeK5E=;
+        b=noA9x5sq8cTXe/XXi9Q4ba+UczIxMQ928kgCeg9juRZTOVfCH+8OjGDFymehDxoyFa
+         GlgOCtQ1HVmgoA5iKlaktjH6ZfIJCWDW8T9BC6T6Fm8dzJxZcPyZ48dhmpaiZhOcoebP
+         NBa0RjCtozFkyOfdHK0Gr0eUBqvZMDAAOgjm6Iyk/QijpWQDLy90bo4zcOYEoGl/1MnK
+         /AjQIlMBy4W0HDeUywa+vMcrn1BWFYz7rAJNNiZCE8S6Jg5QyqztFBvrRPZiP+5RvJid
+         ZDJyzjN4HEIyC8z7jRbRZZTI5SvpPfxWzakb6OLBroLkqoyw0WP3IYNb928wOYPM7dUO
+         XCug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=O7nU7lYRfe2R9ziGF333WHlsyARaR/Q4/HWduypodHg=;
-        b=l32UTayfYQtFXB+F0BYTizZBh1kf6QN+QtpiwxDNKOrojSXzkfyIz98JPDn7vquqoP
-         oq/SYjOSo1nB+DKYrIgV5d7DDqaRfiFm1XU562lli5EsEhXh0Y00A9nm9I3rkGLB3gJh
-         XdBqmeH0KbexHOINMgjjvmHAFy3nbkOZgg0PyWjXMgiTxUN6G5GRHQwb+vYmSkQlo8Ak
-         x4Sddo7WF3m5npktMctAReiJIGGnMlxuDu5DMHCAZbVe29sPinNpOXPSLfVkCMzXPsEJ
-         PNjVgCXSUAKV1ZUc8wXxYM1eS2kPlKeUQIPW/VOfNawwK2Xa1GlVBtS3DQqqDNZgbfi9
-         MyZQ==
-X-Gm-Message-State: AOAM5336OYdxm/aY/qFGGC/MYq0Zi3Jz3W5zhoLhaaLSob7MoBECPqGn
-        ppv+HEIi0Zvssqr+AwgNFyJVXnsrNm0o2zCttwrMcQYltDiRiH1oCW4E6F8rlJBa/BKGvhwEFlX
-        S39kSqezn/5t50iBk87TSbmpclbyTYgANsoNF0Mg4bCbaevqmvMS8n16ugjOxMSG7JF6C9PQ=
-X-Google-Smtp-Source: ABdhPJwX9D4en+hACeaFijzp6xuG9EX9sqMK2d3+XO8tWnEdN3dt94ChhAurZV3Fxr5jxFzwH9+/rqq5AG1s
-X-Received: by 2002:a05:6214:11a8:: with SMTP id u8mr15191510qvv.88.1596835781537;
- Fri, 07 Aug 2020 14:29:41 -0700 (PDT)
-Date:   Fri,  7 Aug 2020 14:29:13 -0700
-In-Reply-To: <20200807212916.2883031-1-jwadams@google.com>
-Message-Id: <20200807212916.2883031-5-jwadams@google.com>
-Mime-Version: 1.0
-References: <20200807212916.2883031-1-jwadams@google.com>
-X-Mailer: git-send-email 2.28.0.236.gb10cc79966-goog
-Subject: [RFC PATCH 4/7] core/metricfs: expose softirq information through metricfs
-From:   Jonathan Adams <jwadams@google.com>
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Jonathan Adams <jwadams@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=6OCdZ+ZeCbuJb568osbDrIdPBoRSxq8uWrbOnWLeK5E=;
+        b=of+j5na8yD595Sd3duX0JMQ8hJMRZhJ7KCit0YDEADAQMylwL0RyjGThjzhhECqhTF
+         S43KA2Ze0jCRPL1YV6Jww0f+VuUMUfUbAorEsxh27M01/NJ2to6+VFAfZxwYEXQMxGWC
+         3MHxDMfUImYYICeNaAH3yW3pxVIb63RzggtH920XXpNpNC0ZRGqFfApr4EsEz2YFyrfv
+         oS0by0/kBHNd64bqlvYDWDCqJtKfoOHWEMmvk5ev4JuRfmZy7T153tXWLbowFD6g8Rtr
+         7A7ovs5PWThktKDsNCkYtTDJRj+hhAez/on2zxPDnkhc82uYAlViS4ZBXdZTeN6BRBgg
+         uvMA==
+X-Gm-Message-State: AOAM531kuhwEqYY9AsSlgEX0h81FrQdREp0GST4cuUzyrwX9CyqHuI2V
+        elELeNt0GRGkAaep12T8KOM=
+X-Google-Smtp-Source: ABdhPJxgMl4he648RZK+OwIGlkgBK6xjVlA/GQhmQeA4WNXiqRanMMXY26+OJDI0nbbGD/KTT9vmRA==
+X-Received: by 2002:a05:620a:234:: with SMTP id u20mr14935734qkm.54.1596835758328;
+        Fri, 07 Aug 2020 14:29:18 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id t93sm8636947qtd.97.2020.08.07.14.29.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Aug 2020 14:29:17 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Fri, 7 Aug 2020 17:29:14 -0400
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Fangrui Song <maskray@google.com>,
+        clang-built-linux@googlegroups.com, e5ten.arch@gmail.com,
+        stable@vger.kernel.org, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Dmitry Golovin <dima@golovin.in>,
+        Marco Elver <elver@google.com>, Nick Terrell <terrelln@fb.com>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/boot: avoid relaxable symbols with Clang
+Message-ID: <20200807212914.GB1454138@rani.riverdale.lan>
+References: <20200807194100.3570838-1-ndesaulniers@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200807194100.3570838-1-ndesaulniers@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add metricfs support for displaying percpu softirq counters.  The
-top directory is /sys/kernel/debug/metricfs/softirq.  Then there
-is a subdirectory for each softirq type.  For example:
+On Fri, Aug 07, 2020 at 12:41:00PM -0700, Nick Desaulniers wrote:
+> A recent change to a default value of configuration variable
+> (ENABLE_X86_RELAX_RELOCATIONS OFF -> ON) in LLVM now causes Clang's
+> integrated assembler to emit R_X86_64_GOTPCRELX/R_X86_64_REX_GOTPCRELX
+> relocations. LLD will relax instructions with these relocations based on
+> whether the image is being linked as position independent or not.  When
+> not, then LLD will relax these instructions to use absolute addressing
+> mode (R_RELAX_GOT_PC_NOPIC). This causes kernels built with Clang
+> and linked with LLD to fail to boot.
 
-    cat /sys/kernel/debug/metricfs/softirq/NET_RX/values
+It could also cause kernels compiled with gcc and linked with LLD to
+fail in the same way, no? The gcc/gas combination will generate the
+relaxed relocations from I think gas-2.26 onward. Although the only
+troublesome symbol in the case of gcc/gas is trampoline_32bit_src,
+referenced from pgtable_64.c (gcc doesn't use a GOTPC reloc for _pgtable
+etc).
 
-Signed-off-by: Jonathan Adams <jwadams@google.com>
+I'm a bit surprised you were able to boot with just _pgtable fixed
+(looking at the CBL issue), there are quite a few more GOTPC relocs with
+clang -- maybe LLD isn't doing all the optimizations it could yet.
 
----
+This potential issue was mentioned [0] in one of the earlier threads
+(see last paragraph).
 
-jwadams@google.com: rebased to 5.8-pre6
-	This is work originally done by another engineer at
-	google, who would rather not have their name associated with this
-	patchset. They're okay with me sending it under my name.
----
- kernel/softirq.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+[0] https://lore.kernel.org/lkml/20200526191411.GA2380966@rani.riverdale.lan/
 
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index c4201b7f42b1..1ae3a540b789 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -25,6 +25,8 @@
- #include <linux/smpboot.h>
- #include <linux/tick.h>
- #include <linux/irq.h>
-+#include <linux/jump_label.h>
-+#include <linux/metricfs.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/irq.h>
-@@ -738,3 +740,46 @@ unsigned int __weak arch_dynirq_lower_bound(unsigned int from)
- {
- 	return from;
- }
-+
-+#ifdef CONFIG_METRICFS
-+
-+#define METRICFS_ITEM(name) \
-+static void \
-+metricfs_##name(struct metric_emitter *e, int cpu) \
-+{ \
-+	int64_t v = kstat_softirqs_cpu(name##_SOFTIRQ, cpu); \
-+	METRIC_EMIT_PERCPU_INT(e, cpu, v); \
-+} \
-+METRIC_EXPORT_PERCPU_COUNTER(name, #name " softirq", metricfs_##name)
-+
-+METRICFS_ITEM(HI);
-+METRICFS_ITEM(TIMER);
-+METRICFS_ITEM(NET_TX);
-+METRICFS_ITEM(NET_RX);
-+METRICFS_ITEM(BLOCK);
-+METRICFS_ITEM(IRQ_POLL);
-+METRICFS_ITEM(TASKLET);
-+METRICFS_ITEM(SCHED);
-+METRICFS_ITEM(HRTIMER);
-+METRICFS_ITEM(RCU);
-+
-+static int __init init_softirq_metricfs(void)
-+{
-+	struct metricfs_subsys *subsys;
-+
-+	subsys = metricfs_create_subsys("softirq", NULL);
-+	metric_init_HI(subsys);
-+	metric_init_TIMER(subsys);
-+	metric_init_NET_TX(subsys);
-+	metric_init_NET_RX(subsys);
-+	metric_init_BLOCK(subsys);
-+	metric_init_IRQ_POLL(subsys);
-+	metric_init_TASKLET(subsys);
-+	metric_init_SCHED(subsys);
-+	metric_init_RCU(subsys);
-+
-+	return 0;
-+}
-+module_init(init_softirq_metricfs);
-+
-+#endif
--- 
-2.28.0.236.gb10cc79966-goog
+> 
+> Also, the LLVM commit notes that these relocation types aren't supported
+> until binutils 2.26. Since we support binutils 2.23+, avoid the
+> relocations regardless of linker.
 
+Note that the GNU assembler won't support the option to disable the
+relaxations until 2.26, when they were added.
+
+However, it turns out that clang always uses the integrated assembler
+for the decompressor (and the EFI stub) because the no-integrated-as
+option gets dropped when building these pieces, due to redefinition of
+KBUILD_CFLAGS. You might want to mention this in the commit log or a
+comment to explain why using the option unconditionally is safe. It
+might need to be made conditional if the CFLAGS ever gets fixed to
+maintain no-integrated-as.
+
+Thanks.
