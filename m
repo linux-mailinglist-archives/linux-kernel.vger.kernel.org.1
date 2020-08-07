@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC3623E78C
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 09:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C554E23E78F
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 09:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbgHGHHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 03:07:19 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:41033 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726038AbgHGHHR (ORCPT
+        id S1726615AbgHGHH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 03:07:29 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:38801 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726249AbgHGHHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 7 Aug 2020 03:07:17 -0400
-Received: by mail-il1-f197.google.com with SMTP id l6so828995ilf.8
+Received: by mail-io1-f71.google.com with SMTP id a65so984869iog.5
         for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 00:07:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=qv4lE7G2xaxTSAJq3kTpN12XBqorrrJ0WTduANv5o2E=;
-        b=X6mDVtQBs+XBix8nkCf6i5vzr/ojivOOLmeVAV/cOocPEcakSDUiNRvxXMteeEg326
-         +KmOUv3LakhCbvqxu4/Lp2IBiImPx7/kyU6dzPnyYk6XHIW7dUOd82QFoYukE3Qlt6g4
-         6WS28K09QsRP4HMCbpW5JKlEibMpCvx3cpzvfEtsh5soZkJWDAm9rHWM7LzyVONuXEaH
-         eT5+CvuypAgpekskRzUj9gbX8sBqF9iZUHPhcTiMt2JJ1yRHhRLPgC+GAIwgSKgjWybt
-         zNXYCXlC/6QlZnnYoVqaq2CHdc/ZQpN2ngNJoz/HYUEje/rXXStn1KO51ICCEQuyU5BM
-         XecQ==
-X-Gm-Message-State: AOAM533a8qv2ho7K8YBEbKAUhutmbXXtgRvMwJHdSNICPFIOH3gRSrKZ
-        zHSDZa4gxxf5mrLy6Qru6Pn+dI8ALQ28U+XvSmCsMwNOEaYv
-X-Google-Smtp-Source: ABdhPJz+Fp2qewsy1tzCgdnTssJIOpyK1pr79B/YED4ieO7jQXedDYAOnf7J2eMFO/mmqoemvNgL3LD3hRLj31KCKx4NqGvCI7Iu
+        bh=p96+8eivvECQ6gB2pMJM1gOA5q/X+IfS62pER3Ikwjc=;
+        b=HeBF/ZvJOnxtEDOnoTTNL09AKAV21608Rmi7YVKeUozO9A2qxAB2F7CBngJc6AlQ0B
+         sFguHK0Bv2uaYkEoXkNm8RvokGkAdhcR3DJRD9kUby06hgLdKk0OjqMkQf7y3KLwxpHu
+         gkb57rTFBiRwCWvG4uatFWEUfBff4uNvDjrK4Kxq44xbA/7bFAAly+6eokOkI3jZtP8o
+         Xh67ACvRTSNRT7iVlek4QCVSaKbEImwt7Cpks+jUBXH/Rfi30gI5RRhWm+/eovapFse4
+         p+iLe+IH1XUAmvnThIFceJ9UV7+yLx9gVZlKLq1JjyluNQzNbb6M/CqknjWsp7NNLJWN
+         GRzQ==
+X-Gm-Message-State: AOAM532J49aLyK7AMzQuLtvcL9W8V62Tq8ZKJxNuhIEGFi9w9jDQ73sz
+        n7QMbsCVQt+8B4ESgCOkQW1mc5BzF74atovDd30CeHsjNmw5
+X-Google-Smtp-Source: ABdhPJzPfM2I+0d4pil+xyqfPnF98jniuzjJF0QmomQhPU/65w25n4YTGgrl360bm+CiGfgLQKcPazPb12i/mr3E0/o+gbbhMkJl
 MIME-Version: 1.0
-X-Received: by 2002:a92:d8d2:: with SMTP id l18mr2843601ilo.94.1596784036194;
+X-Received: by 2002:a02:b610:: with SMTP id h16mr3429002jam.74.1596784036494;
  Fri, 07 Aug 2020 00:07:16 -0700 (PDT)
 Date:   Fri, 07 Aug 2020 00:07:16 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000042af6205ac444172@google.com>
-Subject: WARNING: locking bug in l2cap_chan_del
-From:   syzbot <syzbot+01d7fc00b2a0419d01cc@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000004740cd05ac444126@google.com>
+Subject: KASAN: use-after-free Write in afs_manage_cell
+From:   syzbot <syzbot+f59c67285cb61166a0cf@syzkaller.appspotmail.com>
+To:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -50,63 +48,91 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    47ec5303 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+HEAD commit:    fffe3ae0 Merge tag 'for-linus-hmm' of git://git.kernel.org..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=111d93fa900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7bb894f55faf8242
-dashboard link: https://syzkaller.appspot.com/bug?extid=01d7fc00b2a0419d01cc
+console output: https://syzkaller.appspot.com/x/log.txt?x=1053efea900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=18bb86f2e4ebfda2
+dashboard link: https://syzkaller.appspot.com/bug?extid=f59c67285cb61166a0cf
 compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+01d7fc00b2a0419d01cc@syzkaller.appspotmail.com
+Reported-by: syzbot+f59c67285cb61166a0cf@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-DEBUG_LOCKS_WARN_ON(1)
-WARNING: CPU: 0 PID: 12006 at kernel/locking/lockdep.c:183 hlock_class kernel/locking/lockdep.c:183 [inline]
-WARNING: CPU: 0 PID: 12006 at kernel/locking/lockdep.c:183 hlock_class kernel/locking/lockdep.c:172 [inline]
-WARNING: CPU: 0 PID: 12006 at kernel/locking/lockdep.c:183 check_wait_context kernel/locking/lockdep.c:4100 [inline]
-WARNING: CPU: 0 PID: 12006 at kernel/locking/lockdep.c:183 __lock_acquire+0x1674/0x5640 kernel/locking/lockdep.c:4376
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 12006 Comm: kworker/0:14 Not tainted 5.8.0-syzkaller #0
+==================================================================
+BUG: KASAN: use-after-free in afs_activate_cell fs/afs/cell.c:626 [inline]
+BUG: KASAN: use-after-free in afs_manage_cell+0xf72/0x11c0 fs/afs/cell.c:697
+Write of size 8 at addr ffff88808ecf5888 by task kworker/1:2/2576
+
+CPU: 1 PID: 2576 Comm: kworker/1:2 Not tainted 5.8.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events l2cap_chan_timeout
+Workqueue: afs afs_manage_cell
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
  dump_stack+0x18f/0x20d lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:231
- __warn.cold+0x20/0x45 kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:235
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:255
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:hlock_class kernel/locking/lockdep.c:183 [inline]
-RIP: 0010:hlock_class kernel/locking/lockdep.c:172 [inline]
-RIP: 0010:check_wait_context kernel/locking/lockdep.c:4100 [inline]
-RIP: 0010:__lock_acquire+0x1674/0x5640 kernel/locking/lockdep.c:4376
-Code: d2 0f 85 f1 36 00 00 44 8b 15 b0 8e 57 09 45 85 d2 0f 85 1c fa ff ff 48 c7 c6 80 af 4b 88 48 c7 c7 80 aa 4b 88 e8 ce 36 eb ff <0f> 0b e9 02 fa ff ff c7 44 24 38 fe ff ff ff 41 bf 01 00 00 00 c7
-RSP: 0018:ffffc900065878e0 EFLAGS: 00010086
-RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000000000
-RDX: ffff888051186380 RSI: ffffffff815d8eb7 RDI: fffff52000cb0f0e
-RBP: ffff888051186cf0 R08: 0000000000000000 R09: ffffffff89bcb3c3
-R10: 00000000000010e6 R11: 0000000000000001 R12: 0000000000000000
-R13: 000000000000126a R14: ffff888051186380 R15: 0000000000040000
- lock_acquire+0x1f1/0xad0 kernel/locking/lockdep.c:5005
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
- _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
- spin_lock_bh include/linux/spinlock.h:359 [inline]
- lock_sock_nested+0x3b/0x110 net/core/sock.c:3040
- l2cap_sock_teardown_cb+0x88/0x400 net/bluetooth/l2cap_sock.c:1520
- l2cap_chan_del+0xad/0x1300 net/bluetooth/l2cap_core.c:618
- l2cap_chan_close+0x118/0xb10 net/bluetooth/l2cap_core.c:823
- l2cap_chan_timeout+0x173/0x450 net/bluetooth/l2cap_core.c:436
+ print_address_description.constprop.0.cold+0xae/0x436 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ afs_activate_cell fs/afs/cell.c:626 [inline]
+ afs_manage_cell+0xf72/0x11c0 fs/afs/cell.c:697
  process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
  worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
  kthread+0x3b5/0x4a0 kernel/kthread.c:292
  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+
+Allocated by task 16538:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:494
+ kmem_cache_alloc_trace+0x14f/0x2d0 mm/slab.c:3551
+ kmalloc include/linux/slab.h:555 [inline]
+ kzalloc include/linux/slab.h:669 [inline]
+ afs_alloc_cell fs/afs/cell.c:151 [inline]
+ afs_lookup_cell+0x5c8/0x1440 fs/afs/cell.c:262
+ afs_parse_source fs/afs/super.c:290 [inline]
+ afs_parse_param+0x404/0x8c0 fs/afs/super.c:326
+ vfs_parse_fs_param fs/fs_context.c:117 [inline]
+ vfs_parse_fs_param+0x203/0x550 fs/fs_context.c:98
+ vfs_parse_fs_string+0xe6/0x150 fs/fs_context.c:161
+ do_new_mount fs/namespace.c:2869 [inline]
+ do_mount+0x658/0x1fe0 fs/namespace.c:3200
+ __do_sys_mount fs/namespace.c:3410 [inline]
+ __se_sys_mount fs/namespace.c:3387 [inline]
+ __x64_sys_mount+0x18f/0x230 fs/namespace.c:3387
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 7033:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ kasan_set_free_info mm/kasan/common.c:316 [inline]
+ __kasan_slab_free+0xf5/0x140 mm/kasan/common.c:455
+ __cache_free mm/slab.c:3426 [inline]
+ kfree+0x103/0x2c0 mm/slab.c:3757
+ rcu_do_batch kernel/rcu/tree.c:2427 [inline]
+ rcu_core+0x5c7/0x1190 kernel/rcu/tree.c:2655
+ __do_softirq+0x2de/0xa24 kernel/softirq.c:298
+
+The buggy address belongs to the object at ffff88808ecf5800
+ which belongs to the cache kmalloc-1k of size 1024
+The buggy address is located 136 bytes inside of
+ 1024-byte region [ffff88808ecf5800, ffff88808ecf5c00)
+The buggy address belongs to the page:
+page:ffffea00023b3d40 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea0002896a48 ffffea0002784e88 ffff8880aa000c40
+raw: 0000000000000000 ffff88808ecf5000 0000000100000002 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88808ecf5780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88808ecf5800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88808ecf5880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                      ^
+ ffff88808ecf5900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88808ecf5980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
 
 ---
