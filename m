@@ -2,125 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C5623EDAD
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 15:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B0C23EDB3
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 15:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726066AbgHGNJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 09:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgHGNJd (ORCPT
+        id S1726212AbgHGNKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 09:10:06 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:59639 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgHGNKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 09:09:33 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F74C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 06:09:32 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id m19so2006992ejd.8
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 06:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C2XCXsmJyA7W5usz6rBfTizoWqy9Uyp5cHVW9IvGA2c=;
-        b=axN4FL/COED5Z5yRiWtsARF1hdhL5JgTJpfZqkBRCXe4tFeCxtQCgehSz7hPjibXzw
-         jwYp+AotTyirGdBNg0299qV5KbQxVHSXao/FMMViaFCst/9JCu9xJSDK31A3nNMqhJvE
-         RoyggGI4FWc+l3ItIb1XuejWp3OM4WSzgaWNM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C2XCXsmJyA7W5usz6rBfTizoWqy9Uyp5cHVW9IvGA2c=;
-        b=NaLuRefJ0MdNWFgPzUAp8Np9y6fL/4RIiZxR+a1YbvRAL0tD4SW8T0HASU//vzi7LD
-         TY8+XmADUGDNX9GnZTI5993fnBaz/YdtG3nZ+ER4cXgUk/QNQtrszlMfY5Y+2RHe1I1X
-         joUgYa3UfdtNPiu5ygDVbKvapQ7WhGzEKntNfm2ITkRnFGwu3n0YnJ7xdhOpTT57OTrC
-         OZSgXErPkabVn2xKDEZ6h6tUA408KlbozHgJTD467PUnamslILjuRo0OfXd1ULp/2XBv
-         pzioZ24guftZ3jTIIMNzv+GDzBWRUaX7priGUmK9MN67zU8dhXi6VG1VcZE1k02TOW15
-         gYKA==
-X-Gm-Message-State: AOAM530EhOh799OTmirjki6LXxxiGJH9UCm9ADIE8rzQFUDDaOrF8usq
-        ldaVQkURX/s0EbxQ03hLy2EE7soZKUX2ldAwiP3ZEdSl
-X-Google-Smtp-Source: ABdhPJxrEzTPKTvRkUAnTnQZpqhKI9YTMaeAolXGnU7xz6Imi4rKSsQrGfHqItdJEg+dDbPYVlolH1F5VhxwHH1WaNw=
-X-Received: by 2002:a17:906:3850:: with SMTP id w16mr9706026ejc.205.1596805770763;
- Fri, 07 Aug 2020 06:09:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200710144520.RESEND.1.Id0f52f486e277b5af30babac8ba6b09589962a68@changeid>
- <20200710070332.GA1175842@kroah.com> <CANMq1KDcKWgyYYP_m0-WV7602g7zUbU0PPkvwXxbSTF5vFfKGQ@mail.gmail.com>
- <CANMq1KC7CgUT+neoOUZbnr8MbDgqEikqt2vn8dxAS1rpX=C2aA@mail.gmail.com>
- <20200807062809.GB979264@kroah.com> <CANMq1KD_hJ_ST3du7dcSd8GBtdL4d-C1pWbxXz8Wu8w79-2fUg@mail.gmail.com>
- <20200807100444.0f2d3c94@coco.lan>
-In-Reply-To: <20200807100444.0f2d3c94@coco.lan>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Fri, 7 Aug 2020 21:09:20 +0800
-Message-ID: <CANMq1KD1HDT75YqwyqW-wdGZGSjuq_GvGdwYNF2ZU8Cgx6HHEg@mail.gmail.com>
-Subject: Re: [RESEND PATCH] media: atomisp: Replace trace_printk by pr_info
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, lkml <linux-kernel@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 7 Aug 2020 09:10:02 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 07 Aug 2020 06:10:00 -0700
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 07 Aug 2020 06:09:59 -0700
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 07 Aug 2020 18:39:30 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id 1689349FA; Fri,  7 Aug 2020 18:39:29 +0530 (IST)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        seanpaul@chromium.org, hoegsberg@chromium.org,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        travitej@codeaurora.org, nganji@codeaurora.org,
+        swboyd@chromium.org, abhinavk@codeaurora.org,
+        ddavenport@chromium.org
+Subject: [v2] drm/msm/dpu: Fix reservation failures in modeset
+Date:   Fri,  7 Aug 2020 18:39:27 +0530
+Message-Id: <1596805767-29339-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 7, 2020 at 4:04 PM Mauro Carvalho Chehab <mchehab@kernel.org> wrote:
->
-> Em Fri, 7 Aug 2020 14:51:12 +0800
-> Nicolas Boichat <drinkcat@chromium.org> escreveu:
->
-> > On Fri, Aug 7, 2020 at 2:28 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Fri, Aug 07, 2020 at 09:50:23AM +0800, Nicolas Boichat wrote:
-> > > > On Fri, Jul 24, 2020 at 8:41 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
-> > > > >
-> > > > > On Fri, Jul 10, 2020 at 3:03 PM Greg Kroah-Hartman
-> > > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > >
-> > > > > > On Fri, Jul 10, 2020 at 02:45:29PM +0800, Nicolas Boichat wrote:
-> > > > > > > trace_printk should not be used in production code, replace it
-> > > > > > > call with pr_info.
-> > > > > > >
-> > > > > > > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-> > > > > > > ---
-> > > > > > > Sent this before as part of a series (whose 4th patch was a
-> > > > > > > change that allows to detect such trace_printk), but maybe it's
-> > > > > > > easier to get individual maintainer attention by splitting it.
-> > > > > >
-> > > > > > Mauro should take this soon:
-> > > > > >
-> > > > > > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > >
-> > > > > Mauro: did you get a chance to look at this? (and the other similar
-> > > > > patch "media: camss: vfe: Use trace_printk for debugging only")
-> > > >
-> > > > Mauro: Another gentle ping. Thanks.
-> > >
-> > > It's the middle of the merge window, maintainers can't do anything until
-> > > after 5.9-rc1 is out, sorry.
-> >
-> > Huh, wait, looks like Mauro _did_ pick it (found it in this email
-> > "[GIT PULL for v5.8-rc7] media fixes").
-> >
-> > My bad then, I was expecting an ack ,-)
->
-> Never expect acks. Kernel maintainers usually don't send them.
+In TEST_ONLY commit, rm global_state will duplicate the
+object and request for new reservations, once they pass
+then the new state will be swapped with the old and will
+be available for the Atomic Commit.
 
-For some reasons I'm working mainly with maintainers who do ,-) I'll
-adjust my expectations, thanks.
+This patch fixes some of missing links in the resource
+reservation sequence mentioned above.
 
-> Yet, in the case of media, you should probably have received
-> an automatic e-mail from our patchwork instance.
+1) Creation of duplicate state in test_only commit (Rob)
+2) Allocate and release the resources on every modeset.
+3) Avoid allocation only when active is false.
 
-Nope, didn't receive anything. But I'm happy to blame gmail for that...
+In a modeset operation, swap state happens well before
+disable. Hence clearing reservations in disable will
+cause failures in modeset enable.
 
-Anyway, I'll ping you again after the merge window closes about
-"media: camss: vfe: Use trace_printk for debugging only" (I _think_
-that one didn't get merged). Hopefully not too many other
-trace_printks made it through the cracks in the meantime ,-)
+Allow reservations to be cleared/allocated before swap,
+such that only newly committed resources are pushed to HW.
 
-Thanks, have a good weekend,
+Changes in v1:
+ - Move the rm release to atomic_check.
+ - Ensure resource allocation and free happens when active
+   is not changed i.e only when mode is changed.(Rob)
 
->
-> Thanks,
-> Mauro
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index 63976dc..50a98d1 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -582,7 +582,7 @@ static int dpu_encoder_virt_atomic_check(
+ 	dpu_kms = to_dpu_kms(priv->kms);
+ 	mode = &crtc_state->mode;
+ 	adj_mode = &crtc_state->adjusted_mode;
+-	global_state = dpu_kms_get_existing_global_state(dpu_kms);
++	global_state = dpu_kms_get_global_state(crtc_state->state);
+ 	trace_dpu_enc_atomic_check(DRMID(drm_enc));
+ 
+ 	/*
+@@ -617,12 +617,15 @@ static int dpu_encoder_virt_atomic_check(
+ 	/* Reserve dynamic resources now. */
+ 	if (!ret) {
+ 		/*
+-		 * Avoid reserving resources when mode set is pending. Topology
+-		 * info may not be available to complete reservation.
++		 * Release and Allocate resources on every modeset
++		 * Dont allocate when active is false.
+ 		 */
+ 		if (drm_atomic_crtc_needs_modeset(crtc_state)) {
+-			ret = dpu_rm_reserve(&dpu_kms->rm, global_state,
+-					drm_enc, crtc_state, topology);
++			dpu_rm_release(global_state, drm_enc);
++
++			if (!crtc_state->active_changed || crtc_state->active)
++				ret = dpu_rm_reserve(&dpu_kms->rm, global_state,
++						drm_enc, crtc_state, topology);
+ 		}
+ 	}
+ 
+@@ -1171,7 +1174,6 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+ 	struct dpu_encoder_virt *dpu_enc = NULL;
+ 	struct msm_drm_private *priv;
+ 	struct dpu_kms *dpu_kms;
+-	struct dpu_global_state *global_state;
+ 	int i = 0;
+ 
+ 	if (!drm_enc) {
+@@ -1190,7 +1192,6 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+ 
+ 	priv = drm_enc->dev->dev_private;
+ 	dpu_kms = to_dpu_kms(priv->kms);
+-	global_state = dpu_kms_get_existing_global_state(dpu_kms);
+ 
+ 	trace_dpu_enc_disable(DRMID(drm_enc));
+ 
+@@ -1220,8 +1221,6 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+ 
+ 	DPU_DEBUG_ENC(dpu_enc, "encoder disabled\n");
+ 
+-	dpu_rm_release(global_state, drm_enc);
+-
+ 	mutex_unlock(&dpu_enc->enc_lock);
+ }
+ 
+-- 
+1.9.1
+
