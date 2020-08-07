@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A501D23EA8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BB523EA90
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 11:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbgHGJiq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 7 Aug 2020 05:38:46 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:42979 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728092AbgHGJin (ORCPT
+        id S1728090AbgHGJjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 05:39:17 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:52350 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727792AbgHGJjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 05:38:43 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-16-5qKKb2pWNfK428LdGWcIog-1; Fri, 07 Aug 2020 10:38:39 +0100
-X-MC-Unique: 5qKKb2pWNfK428LdGWcIog-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 7 Aug 2020 10:38:38 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 7 Aug 2020 10:38:38 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christoph Hellwig' <hch@lst.de>,
-        "x86@kernel.org" <x86@kernel.org>, "Jan Kara" <jack@suse.com>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>
-Subject: RE: [PATCH 3/3] quota: simplify the quotactl compat handling
-Thread-Topic: [PATCH 3/3] quota: simplify the quotactl compat handling
-Thread-Index: AQHWZzVGHzqazLGYN0OsEvz6unAGWaksbb8Q
-Date:   Fri, 7 Aug 2020 09:38:38 +0000
-Message-ID: <f894de9f065f4bf9a451668dfbf35591@AcuMS.aculab.com>
-References: <20200731122202.213333-1-hch@lst.de>
- <20200731122202.213333-4-hch@lst.de>
-In-Reply-To: <20200731122202.213333-4-hch@lst.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 7 Aug 2020 05:39:16 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0779cwpV020790;
+        Fri, 7 Aug 2020 04:38:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1596793138;
+        bh=Ci3SQG5GuTu5PfVgX5SPec+hpQmMwKCLgIR+XPhEscc=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=V7I86E3He3ICPEnFPJ60kxm8G0x6UY3g4dV1pFfZT51+oR2f1A/swiZ93BNqbwKyN
+         wkx2F34f/8JctQbFLF/aANYv6pI+5ECOKkAoxl+djwGg+Poo2BRYurSDgRrxJ1RttI
+         gPj0WrXko5rYJXKT6nBt5GeF2mi3XqNd8O5CV3Kc=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0779cweJ084121;
+        Fri, 7 Aug 2020 04:38:58 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 7 Aug
+ 2020 04:38:58 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 7 Aug 2020 04:38:58 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0779csxd102220;
+        Fri, 7 Aug 2020 04:38:55 -0500
+Subject: Re: [PATCH v8 2/3] drm: bridge: Add support for Cadence MHDP DPI/DP
+ bridge
+To:     Swapnil Jakhade <sjakhade@cadence.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <Laurent.pinchart@ideasonboard.com>,
+        <robh+dt@kernel.org>, <a.hajda@samsung.com>,
+        <narmstrong@baylibre.com>, <jonas@kwiboo.se>,
+        <jernej.skrabec@siol.net>, <dri-devel@lists.freedesktop.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <mparab@cadence.com>, <yamonkar@cadence.com>, <jsarha@ti.com>,
+        <nsekhar@ti.com>, <praneeth@ti.com>
+References: <1596713672-8146-1-git-send-email-sjakhade@cadence.com>
+ <1596713672-8146-3-git-send-email-sjakhade@cadence.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <0fe8e670-c9eb-729c-f013-28c53bd65abd@ti.com>
+Date:   Fri, 7 Aug 2020 12:38:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <1596713672-8146-3-git-send-email-sjakhade@cadence.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig
-> Sent: 31 July 2020 13:22
+Hi Swapnil,
+
+On 06/08/2020 14:34, Swapnil Jakhade wrote:
+> Add a new DRM bridge driver for Cadence MHDP DPTX IP used in TI J721e SoC.
+> MHDP DPTX IP is the component that complies with VESA DisplayPort (DP) and
+> embedded Display Port (eDP) standards. It integrates uCPU running the
+> embedded Firmware (FW) interfaced over APB interface.
 > 
-> Fold the misaligned u64 workarounds into the main quotactl flow instead
-> of implementing a separate compat syscall handler.
+> Basically, it takes a DPI stream as input and outputs it encoded in DP
+> format. Currently, it supports only SST mode.
 > 
-...
-> +static int compat_copy_fs_quota_stat(struct compat_fs_quota_stat __user *to,
-> +		struct fs_quota_stat *from)
-> +{
-> +	if (put_user(from->qs_version, &to->qs_version) ||
-> +	    put_user(from->qs_flags, &to->qs_flags) ||
-> +	    put_user(from->qs_pad, &to->qs_pad) ||
-> +	    compat_copy_fs_qfilestat(&to->qs_uquota, &from->qs_uquota) ||
-> +	    compat_copy_fs_qfilestat(&to->qs_gquota, &from->qs_gquota) ||
-> +	    put_user(from->qs_incoredqs, &to->qs_incoredqs) ||
-> +	    put_user(from->qs_btimelimit, &to->qs_btimelimit) ||
-> +	    put_user(from->qs_itimelimit, &to->qs_itimelimit) ||
-> +	    put_user(from->qs_rtbtimelimit, &to->qs_rtbtimelimit) ||
-> +	    put_user(from->qs_bwarnlimit, &to->qs_bwarnlimit) ||
-> +	    put_user(from->qs_iwarnlimit, &to->qs_iwarnlimit))
-> +		return -EFAULT;
-> +	return 0;
-> +}
+> Co-developed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> Co-developed-by: Jyri Sarha <jsarha@ti.com>
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+> Signed-off-by: Yuti Amonkar <yamonkar@cadence.com>
+> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+> ---
 
-That might look better as a 'noinline' function that copied
-all the fields into an on-stack struct compat_fs_quota_stat
-and then did a single copy_to_user().
+<snip>
 
-(I do 'like' qs_pad - I wonder what the person who added
-it was smoking.)
+> +	mhdp_state = to_cdns_mhdp_bridge_state(new_state);
+> +
+> +	mhdp_state->current_mode = drm_mode_duplicate(bridge->dev, mode);
+> +	drm_mode_set_name(mhdp_state->current_mode);
+> +
 
-	David
+current_mode is never freed, so this leaks memory.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+ Tomi
 
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
