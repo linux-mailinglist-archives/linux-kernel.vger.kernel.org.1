@@ -2,94 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1618123E7B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 09:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE15323E7C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 09:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgHGHSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 03:18:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgHGHSJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 03:18:09 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3ECDC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 00:18:08 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id x12so642726qtp.1
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 00:18:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BjBgjmOHw57678g0o5hgG5E9h3ORFUrabBo5u11RIkM=;
-        b=a/CYaZUTnaXHYxqHoecfCwYEelSne77o/fgIVbDNgujdYRVXwWmuaYBlO1L60+Q7wi
-         VAV9GzcIaEiwrsQqXgQ3CbqbZwpM7Rm67s3wC/vPd0V1vU10vpdIVlwFdQSGnXWT9iFL
-         FrBz/EmG2SzhpE4MAtfAGijqdjnGgI7x9BkGB8b9wkvXFAs3sWZfS3cuNBWuUjeF144e
-         WqmS/sjKnHERyHXHj1D4ub7NJFhZrZzLmQcpm9CfbG1MfC82t2ZP2lvZExDnEwQGDZ6T
-         C7y9vnBi+pglIAzfJqty3goo1Mshzlovbmb77WUsXZEshGSm43rphjfMNd8HoqJuCBZC
-         OelQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BjBgjmOHw57678g0o5hgG5E9h3ORFUrabBo5u11RIkM=;
-        b=QzfOZHCnArVb9o+W7WNga75jPyx1lAArTunPxa13Kg4ogpOkhKcY2edw8wW5+LunGp
-         ptSGXyx5MDVSAh94s3joE5Sb7CKXXlJZVyRBVIHwUbVuTlSg+N0aJH2eWkSrDfWsmKH1
-         X/PcUK0Y7w+ekWgj76jA88JP7dbJtUp0d2GyjkQTuSjIL7ZU2t+B1uR+OIOhzxOY0Oy+
-         KCifQIIg3lEQeDYgQB4sETyRoDlBFqYiTkk6x3aJGas7dg5VRT8816v1DgSQca7VEgnd
-         GTftUkMZnXDXAr0W5GAHMPqjIhEF4rp1PlV3W5XbxoUlOJMl9Xegt0dXgsiPQQHGxLpW
-         iTBg==
-X-Gm-Message-State: AOAM531ftCtUG63NbxbTSVnS4XvNPcH1HY8IfP99GsdLOlywQUJeRNqm
-        oOQxS1c2++dsNssMYUWbTegdRnTbj58YOXV3ng4=
-X-Google-Smtp-Source: ABdhPJwH6rQ4Xtx8TIDeCErClcwMqaVFrhF6ev68LM4jAENVmB3yaTIBDChUTbXFpgYfNjU12TzCBsz0qDFzNQ4T+OM=
-X-Received: by 2002:ac8:450c:: with SMTP id q12mr12563634qtn.292.1596784688131;
- Fri, 07 Aug 2020 00:18:08 -0700 (PDT)
+        id S1726766AbgHGHT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 03:19:57 -0400
+Received: from verein.lst.de ([213.95.11.211]:52834 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725805AbgHGHT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 03:19:57 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 889B368D0E; Fri,  7 Aug 2020 09:19:54 +0200 (CEST)
+Date:   Fri, 7 Aug 2020 09:19:54 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Miller <davem@davemloft.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Todd Kjos <tkjos@google.com>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [GIT] Networking
+Message-ID: <20200807071954.GA2086@lst.de>
+References: <20200805.185559.1225246192723680518.davem@davemloft.net> <CANcMJZA1pSz8T9gkRtwYHy_vVfoMj35Wd-+qqxQBg+GRaXS0_Q@mail.gmail.com> <011a0a3b-74ac-fa61-2a04-73cb9897e8e8@gmail.com> <CALAqxLVDyTygzoktGK+aYnT2dQdOTPFAD=P=Kr1x+TmLuUC=NA@mail.gmail.com> <CALAqxLWKGfoPya3u9pbvZcbMAhjXKmYvp8b6L7hpk4bNWyt7sQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <1596699585-27429-1-git-send-email-shengjiu.wang@nxp.com> <20200806123721.GC6442@sirena.org.uk>
-In-Reply-To: <20200806123721.GC6442@sirena.org.uk>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Fri, 7 Aug 2020 15:17:57 +0800
-Message-ID: <CAA+D8AOqaEEGuVp_vaSf6XAyjjCd=azj2qgKkqagvrtBNr9Mqw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: Get "extal" clock rate by clk_get_rate
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALAqxLWKGfoPya3u9pbvZcbMAhjXKmYvp8b6L7hpk4bNWyt7sQ@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 8:39 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Thu, Aug 06, 2020 at 03:39:45PM +0800, Shengjiu Wang wrote:
->
-> >       } else if (of_node_name_eq(cpu_np, "esai")) {
-> > +             struct clk *esai_clk = clk_get(&cpu_pdev->dev, "extal");
-> > +
-> > +             if (!IS_ERR(esai_clk)) {
-> > +                     priv->cpu_priv.sysclk_freq[TX] = clk_get_rate(esai_clk);
-> > +                     priv->cpu_priv.sysclk_freq[RX] = clk_get_rate(esai_clk);
-> > +                     clk_put(esai_clk);
-> > +             }
->
-> This should handle probe deferral.  Also if this clock is in use
-> shouldn't we be enabling it?  It looks like it's intended to be a
-> crystal so it's probably forced on all the time but sometimes there's
-> power control for crystals, or perhaps someone might do something
-> unusual with the hardware.
+On Thu, Aug 06, 2020 at 11:23:34PM -0700, John Stultz wrote:
+> So I've finally rebase-bisected it down to:
+>   a31edb2059ed ("net: improve the user pointer check in init_user_sockptr")
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a31edb2059ed4e498f9aa8230c734b59d0ad797a
+> 
+> And reverting that from linus/HEAD (at least from this morning) seems
+> to avoid it.
+> 
+> Seems like it is just adding extra checks on the data passed, so maybe
+> existing trouble from a different driver is the issue here, but it's
+> not really clear from the crash what might be wrong.
+> 
+> Suggestions would be greatly appreciated!
 
-Ok, will add handler for probe deferral.
+I think the sockpt optimization is just a little to clever for its
+own sake, as also chown by the other issue pointed out by Eric.
 
-This clock is not a crystal, "extal" clock is for cpu dai, it is from
-soc internal PLL. which is enabled by cpu dai, here is just to
-get the clock rate.
+Can you try this revert that just goes back to the "boring" normal
+version for everyone?
 
-best regards
-wang shengjiu
+diff --git a/include/linux/sockptr.h b/include/linux/sockptr.h
+index 96840def9d69cc..ea193414298b7f 100644
+--- a/include/linux/sockptr.h
++++ b/include/linux/sockptr.h
+@@ -8,26 +8,9 @@
+ #ifndef _LINUX_SOCKPTR_H
+ #define _LINUX_SOCKPTR_H
+ 
+-#include <linux/compiler.h>
+ #include <linux/slab.h>
+ #include <linux/uaccess.h>
+ 
+-#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+-typedef union {
+-	void		*kernel;
+-	void __user	*user;
+-} sockptr_t;
+-
+-static inline bool sockptr_is_kernel(sockptr_t sockptr)
+-{
+-	return (unsigned long)sockptr.kernel >= TASK_SIZE;
+-}
+-
+-static inline sockptr_t KERNEL_SOCKPTR(void *p)
+-{
+-	return (sockptr_t) { .kernel = p };
+-}
+-#else /* CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE */
+ typedef struct {
+ 	union {
+ 		void		*kernel;
+@@ -45,15 +28,10 @@ static inline sockptr_t KERNEL_SOCKPTR(void *p)
+ {
+ 	return (sockptr_t) { .kernel = p, .is_kernel = true };
+ }
+-#endif /* CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE */
+ 
+-static inline int __must_check init_user_sockptr(sockptr_t *sp, void __user *p,
+-		size_t size)
++static inline sockptr_t USER_SOCKPTR(void __user *p)
+ {
+-	if (!access_ok(p, size))
+-		return -EFAULT;
+-	*sp = (sockptr_t) { .user = p };
+-	return 0;
++	return (sockptr_t) { .user = p };
+ }
+ 
+ static inline bool sockptr_is_null(sockptr_t sockptr)
+diff --git a/net/ipv4/bpfilter/sockopt.c b/net/ipv4/bpfilter/sockopt.c
+index 545b2640f0194d..1b34cb9a7708ec 100644
+--- a/net/ipv4/bpfilter/sockopt.c
++++ b/net/ipv4/bpfilter/sockopt.c
+@@ -57,18 +57,16 @@ int bpfilter_ip_set_sockopt(struct sock *sk, int optname, sockptr_t optval,
+ 	return bpfilter_mbox_request(sk, optname, optval, optlen, true);
+ }
+ 
+-int bpfilter_ip_get_sockopt(struct sock *sk, int optname,
+-			    char __user *user_optval, int __user *optlen)
++int bpfilter_ip_get_sockopt(struct sock *sk, int optname, char __user *optval,
++			    int __user *optlen)
+ {
+-	sockptr_t optval;
+-	int err, len;
++	int len;
+ 
+ 	if (get_user(len, optlen))
+ 		return -EFAULT;
+-	err = init_user_sockptr(&optval, user_optval, len);
+-	if (err)
+-		return err;
+-	return bpfilter_mbox_request(sk, optname, optval, len, false);
++
++	return bpfilter_mbox_request(sk, optname, USER_SOCKPTR(optval), len,
++				     false);
+ }
+ 
+ static int __init bpfilter_sockopt_init(void)
+diff --git a/net/socket.c b/net/socket.c
+index aff52e81653ce3..e44b8ac47f6f46 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -2097,7 +2097,7 @@ static bool sock_use_custom_sol_socket(const struct socket *sock)
+ int __sys_setsockopt(int fd, int level, int optname, char __user *user_optval,
+ 		int optlen)
+ {
+-	sockptr_t optval;
++	sockptr_t optval = USER_SOCKPTR(user_optval);
+ 	char *kernel_optval = NULL;
+ 	int err, fput_needed;
+ 	struct socket *sock;
+@@ -2105,10 +2105,6 @@ int __sys_setsockopt(int fd, int level, int optname, char __user *user_optval,
+ 	if (optlen < 0)
+ 		return -EINVAL;
+ 
+-	err = init_user_sockptr(&optval, user_optval, optlen);
+-	if (err)
+-		return err;
+-
+ 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
+ 	if (!sock)
+ 		return err;
