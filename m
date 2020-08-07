@@ -2,118 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE0223EFB1
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD1F23EF2C
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 16:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbgHGO5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 10:57:22 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.23]:16247 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726233AbgHGO5V (ORCPT
+        id S1726377AbgHGOpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 10:45:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726030AbgHGOpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 10:57:21 -0400
-X-Greylist: delayed 363 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Aug 2020 10:57:20 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1596812239;
-        s=strato-dkim-0002; d=xenosoft.de;
-        h=Date:Message-ID:Subject:From:To:X-RZG-CLASS-ID:X-RZG-AUTH:From:
-        Subject:Sender;
-        bh=etPxG83tkMXiJ/hnA1T72V+lMvSf2k090VPDeSw1U3I=;
-        b=i4lMLHigxmSRgkCjW5JyTJKOftY5we0zpq89EAXRzjG20hXeIS3TCi00p8G7/6uRi7
-        hZkI4lOqc9GFy1/UEQ91+OtACqoiVn1OmrsjcUy8O3P+nGO+elYihb813kpsrtMrRk93
-        rQV4WIZmAxkOEjsVSdnY/d0GwggJBzV+WDUplUcVKP52mgKnGlcQM8+sBJRU0+bxvhuJ
-        HpY+OTZotZlRjFCI30EoS/EQG/EFi7fNtkBh5UqxybTbythCCtzG89lOx1HXuEB+Fbve
-        5SSefifMUk9kjBuNR13NyQmC63rAQ2ZtHuf0HbcIuxFJ4U0ZiWR7omM7vKObRLgvBrHA
-        QPIA==
-X-RZG-AUTH: ":L2QefEenb+UdBJSdRCXu93KJ1bmSGnhMdmOod1DhGM4l4Hio94KKxRySfLxnHfJ+Dkjp5DdBJSrwuuqxvPhSI1Vi9hdbute3wuvmUTfEdg9AyQ=="
-X-RZG-CLASS-ID: mo00
-Received: from [IPv6:2a02:8109:89c0:ebfc:15f9:f3ba:c3bc:6875]
-        by smtp.strato.de (RZmta 46.10.5 AUTH)
-        with ESMTPSA id 60686ew77EjEQ1K
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Fri, 7 Aug 2020 16:45:14 +0200 (CEST)
-To:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        keescook@chromium.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "R.T.Dickinson" <rtd2@xtra.co.nz>,
-        Darren Stevens <darren@stevens-zone.net>,
-        mad skateman <madskateman@gmail.com>
-From:   Christian Zigotzky <chzigotzky@xenosoft.de>
-Subject: [Latest Git kernel/Linux-next kernel] Xorg doesn't start after the
- seccomp updates v5.9-rc1
-Message-ID: <67cd9693-10bc-5aa5-0898-ff2ac1f9c725@xenosoft.de>
-Date:   Fri, 7 Aug 2020 16:45:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: de-DE
+        Fri, 7 Aug 2020 10:45:24 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC13C061756
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 07:45:24 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id a79so1098531pfa.8
+        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 07:45:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id;
+        bh=zxXsF5v4kySUXX8zekd8kr4bDxHN8XmHqdakABYtG0g=;
+        b=eyy7A/8gb8nHja2j11uzp8oHZ6E98tg2hH3eO0ZwrKbQ5UQaOFP/jzDAL3HpSDSQ7V
+         6z5ODYeZkmoyziFq6M7nb2plZ4qEbXU5fltUB6mNKaQ+dsXl2D0nX1SKPZR+1uIahI3F
+         tiuPMoX909fG7aaNDcVG5PhBNUl/s9UwT+ncsjw4F4uhupZgEbiBv2e49aZXwFGWJSYs
+         3IOCjNvoX+dLw850w7iRmno/uWfSSOlMAaRKYHBnJ7aWk2haScLlboEs9vTq+TabeVs+
+         wvHE54nzX0yZi2FsqOxykr08hJiB5RujuDmU3VDf5x+B4tXF7lfINJhbJfviaXHhgvRO
+         1NDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
+        bh=zxXsF5v4kySUXX8zekd8kr4bDxHN8XmHqdakABYtG0g=;
+        b=nG85Mr35JzxI3qARGcQq0PW1+1T8elv2VN5L0enmda3Gso6OOPxpGoA33VcZnqsVTc
+         Yhzqf6yNtKxhkYTfGVFKRHHucPKme1qdbwjQNQCnkCuSXw2B9ME49ctOL4HiDmv3DdOU
+         wJkBcdF87B6WLyoqRfshWl4NmS0WiqQHTGnzsbvbyhqchxZOLGrb05LCbmWw/gd4e9lC
+         x+EvN7o2b0WKixMguPVKBusn3gxFmuIC4ZfU5NsBXDggvKOZ4UQSWRvQCZWCnY9yBS84
+         IVk0e1yxzRZBfU5GtcOaH/SyfQyttYxzv7F6bhoTsqVNWoM4LLqQ5ACvAmJ4euIQa+d3
+         3NSg==
+X-Gm-Message-State: AOAM533FiAZllACheDh162wo57Bz5sf/aD8GAP6CT2ensbqKbzCD4Duc
+        sobEn8CBj2y//6NOwDG+zLE=
+X-Google-Smtp-Source: ABdhPJwCUSP9BQrZXdhJpcJmeIwQobyUtdREgxCv7vpjeBZ9e3qvFLc520Ft6/bc1SXVUS9ygapc2w==
+X-Received: by 2002:a62:830d:: with SMTP id h13mr13130034pfe.269.1596811524143;
+        Fri, 07 Aug 2020 07:45:24 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b23sm5730657pfo.12.2020.08.07.07.45.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 07 Aug 2020 07:45:23 -0700 (PDT)
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>,
+        tytso@mit.edu, Guenter Roeck <linux@roeck-us.net>,
+        Qian Cai <cai@lca.pw>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH v2] arm64: kaslr: Use standard early random function
+Date:   Fri,  7 Aug 2020 07:45:21 -0700
+Message-Id: <20200807144521.34732-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Commit 585524081ecd ("random: random.h should include archrandom.h, not
+the other way around") tries to fix a problem with recursive inclusion
+of linux/random.h and arch/archrandom.h for arm64. Unfortunately, this
+results in the following compile error if ARCH_RANDOM is disabled.
 
-Xorg doesn't start with the latest Git kernel anymore on some Linux 
-distributions after the seccomp updates v5.9-rc1 [1]. For example on 
-Fienix (Debian Sid PowerPC 32-bit) and on ubuntu MATE 16.04.6 (PowerPC 
-32-bit). I tested these distributions on the A-EON AmigaOne X1000 [2], 
-A-EON AmigaOne X5000 [3], and in a virtual e5500 QEMU machine with a 
-virtio_gpu.
+arch/arm64/kernel/kaslr.c: In function 'kaslr_early_init':
+arch/arm64/kernel/kaslr.c:128:6: error: implicit declaration of function
+'__early_cpu_has_rndr'; did you mean '__early_pfn_to_nid'?
+[-Werror=implicit-function-declaration]
+  if (__early_cpu_has_rndr()) {
+      ^~~~~~~~~~~~~~~~~~~~
+      __early_pfn_to_nid
+arch/arm64/kernel/kaslr.c:131:7: error: implicit declaration of function
+'__arm64_rndr' [-Werror=implicit-function-declaration]
+   if (__arm64_rndr(&raw))
+       ^~~~~~~~~~~~
 
-Error messages:
+Problem is that arch/archrandom.h is only included from linux/random.h if
+ARCH_RANDOM is enabled. If not, __arm64_rndr() and __early_cpu_has_rndr()
+are undeclared, causing the problem.
 
-systemd-journald[2238]: Failed to send WATCHDOG-1 notification message: 
-Connection refused
-systemd-journald[2238]: Failed to send WATCHDOG-1 notification message: 
-Transport endpoint is not connected
-systemd-journald[2238]: Failed to send WATCHDOG-1 notification message: 
-Transport endpoint is not connected
-systemd-journald[2238]: Failed to send WATCHDOG-1 notification message: 
-Transport endpoint is not connected
-systemd-journald[2238]: Failed to send WATCHDOG-1 notification message: 
-Transport endpoint is not connected
-systemd-journald[2238]: Failed to send WATCHDOG-1 notification message: 
-Transport endpoint is not connected
+Use arch_get_random_seed_long_early() instead of arm64 specific functions
+to solve the problem.
 
+Reported-by: Qian Cai <cai@lca.pw>
+Fixes: 585524081ecd ("random: random.h should include archrandom.h, not the other way around")
+Cc: Qian Cai <cai@lca.pw>
+Cc: Mark Brown <broonie@kernel.org>
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+Reviewed-by: Mark Brown <broonie@kernel.org>
+Tested-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
+v2: Added Reviewed-by: and Tested-by: tags
+    Removed comment about side effect
+        (it wasn't correct; code functionality is the same)
+    Removed second Fixes: tag (did not apply)
 
-But Xorg works on Ubuntu 10.04.4 (PowerPC 32-bit), openSUSE Tumbleweed 
-20190722 PPC64 and on Fedora 27 PPC64 with the latest Git kernel.
+ arch/arm64/kernel/kaslr.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-I bisected today [4].
-
-Result: net/scm: Regularize compat handling of scm_detach_fds() 
-(c0029de50982c1fb215330a5f9d433cec0cfd8cc) [5] is the first bad commit.
-
-This commit has been merged with the seccomp updates v5.9-rc1 on 
-2020-08-04 14:11:08 -0700 [1]. Since these updates, Xorg doesn't start 
-anymore on some Linux distributions.
-
-Unfortunately I wasn't able to revert the first bad commit. The first 
-bad commit depends on many other commits, which unfortunately I don't 
-know. I tried to remove the modifications of the files from the first 
-bad commit but without any success. There are just too many dependencies.
-
-Additionally I compiled a linux-next kernel because of the issue with 
-the lastest Git kernel. Unfortunately this kernel doesn't boot. It can't 
-initialize the graphics card.
-
-Could you please test Xorg with the latest Git kernel on some Linux 
-distributions?
-
-Thanks,
-Christian
-
-
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9ecc6ea491f0c0531ad81ef9466284df260b2227
-[2] https://en.wikipedia.org/wiki/AmigaOne_X1000
-[3] http://wiki.amiga.org/index.php?title=X5000
-[4] https://forum.hyperion-entertainment.com/viewtopic.php?p=51317#p51317
-[5] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c0029de50982c1fb215330a5f9d433cec0cfd8cc
-
+diff --git a/arch/arm64/kernel/kaslr.c b/arch/arm64/kernel/kaslr.c
+index 9ded4237e1c1..b181e0544b79 100644
+--- a/arch/arm64/kernel/kaslr.c
++++ b/arch/arm64/kernel/kaslr.c
+@@ -84,6 +84,7 @@ u64 __init kaslr_early_init(u64 dt_phys)
+ 	void *fdt;
+ 	u64 seed, offset, mask, module_range;
+ 	const u8 *cmdline, *str;
++	unsigned long raw;
+ 	int size;
+ 
+ 	/*
+@@ -122,15 +123,12 @@ u64 __init kaslr_early_init(u64 dt_phys)
+ 	}
+ 
+ 	/*
+-	 * Mix in any entropy obtainable architecturally, open coded
+-	 * since this runs extremely early.
++	 * Mix in any entropy obtainable architecturally if enabled
++	 * and supported.
+ 	 */
+-	if (__early_cpu_has_rndr()) {
+-		unsigned long raw;
+ 
+-		if (__arm64_rndr(&raw))
+-			seed ^= raw;
+-	}
++	if (arch_get_random_seed_long_early(&raw))
++		seed ^= raw;
+ 
+ 	if (!seed) {
+ 		kaslr_status = KASLR_DISABLED_NO_SEED;
+-- 
+2.17.1
 
