@@ -2,92 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BEC23EE4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 15:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBCF823EE56
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 Aug 2020 15:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgHGNhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 09:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37418 "EHLO
+        id S1726226AbgHGNiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 09:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgHGNhE (ORCPT
+        with ESMTP id S1725970AbgHGNiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 09:37:04 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BC9C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 06:37:03 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a14so1712512wra.5
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 06:37:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4LVGnEnOhzHJYp7k/0jPrqpIv6dziA/YJ8laLNioGFM=;
-        b=vPrchpkKsG/T8AFiA7Yn7M46PLKiPZDNi/VQkH2XagE4mkxFfqePQ0DxXi+WpJ0U+R
-         6+Tigj2zd0aonU/AOQBMGGxh/7cj9dH4jhH2VUrWClb3vy1rnD1tCXk42aJL1AHYH9BG
-         Q4Uz5H0srLIX9r+VyELVxP9kuxiAsEbUqq9hEoDmU5/crvFK+xwDOtq3mnLgQkLKHdLX
-         ZrLAMvRodPLri/9wPmrIwsmz4cFf505+ZmWsdmEO9LLOySAhCm/VB094CFm7/MxkVVh0
-         h70Gf9ij6xNTbK0wO3r9fgqqJItuYk3DK8aD5rK/6yo4wsXCG5VGzupDxsUhheb284q4
-         WXFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4LVGnEnOhzHJYp7k/0jPrqpIv6dziA/YJ8laLNioGFM=;
-        b=bYx48dUjIEkBQ076uRQLnIvw6qM3QX37h9u4lWjpmAdB1lYpjp6xCKRjegoZwvn18L
-         GoH8oRM/5PNs1EHus9HQVxTIvH1HWscHOAcTnfFVP5MXAgT5BZhhk8vrNL08WvDhaW3s
-         pDeb7eKcZGyJ0+EqdmRouCk3DNt2wltq3GdyzDxq2bxZVgXLU+UjDnmdHXiaDSON0RRu
-         gMKM80vYgyrMqhPauSCOOeZO2H1FLZvd1pI3LQFr9FDyGqY9vZIVhUwShoizsvak+PEW
-         npOQzDVe2Ud31qlXqpRWUOt1KPGSFQkOzbHIX1hAnRk76gmX7thy5ZtJyPPpFxw3hUQ+
-         ZkdQ==
-X-Gm-Message-State: AOAM530FUTq91jRXs4yJEp0stzewv7URjZnxeyy7tboBPWXSOfHZIBaJ
-        LD/bDAAPXj5rb70P2oNK+XI=
-X-Google-Smtp-Source: ABdhPJyy6/1Evq0AWxcj8cS24OPjPyqAVqG2TPNcf52PUYgYZc8VHPTAJXAA/0IWvQkVVjS73ndtbw==
-X-Received: by 2002:a5d:630b:: with SMTP id i11mr12856842wru.95.1596807422267;
-        Fri, 07 Aug 2020 06:37:02 -0700 (PDT)
-Received: from abel.fritz.box ([2a02:908:1252:fb60:8a1:e63e:700c:859e])
-        by smtp.gmail.com with ESMTPSA id k126sm11084609wme.17.2020.08.07.06.37.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Aug 2020 06:37:01 -0700 (PDT)
-From:   "=?UTF-8?q?Christian=20K=C3=B6nig?=" 
-        <ckoenig.leichtzumerken@gmail.com>
-X-Google-Original-From: =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-To:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Shashank.Sharma@amd.com, daniel.vetter@ffwll.ch,
-        alexander.deucher@amd.com
-Subject: [PATCH] drm/amdgpu: adjust the pid in the grab_id trace point
-Date:   Fri,  7 Aug 2020 15:36:58 +0200
-Message-Id: <20200807133658.1866-2-christian.koenig@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200807133658.1866-1-christian.koenig@amd.com>
-References: <20200807133658.1866-1-christian.koenig@amd.com>
+        Fri, 7 Aug 2020 09:38:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF05C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 06:38:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BNHhg74FH0aIGNuZudrsPwpAtKO2+uyNLCH15s0iV80=; b=dAvmNoqW0EYerv/ttknI0evnMM
+        1yVh8ZDVtV7XlmwNUf3V3RXlmmMgRbeqX6jarc4U05eNV2oxNFnmuBgUwVQz17GWiKAyVpQzinEuT
+        zxDJYq1RYy1ZhxHCSZoQpzDH6+kf7dQ6C7KE3fu5emoyyIkHSTcAeXORuoe8ebo3G+ll2+zEHbUwa
+        S9FbmOi66+RnJlnyZ1SSK5iSUOoxlUEuVeHzZ4fMxlYP8TF894gpw+A21fjuE/iyPn+CpUZ6EcdOj
+        B/AXQzzzJt91zdHWDrySKHcYjUin0EgLRGl5m2Jf6klb1ulY+mzO4Mo4MTDkBKHpyJJm990NLt1qL
+        Mm5dOCuQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k42ZL-0003m1-0x; Fri, 07 Aug 2020 13:37:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4BE1B3010D2;
+        Fri,  7 Aug 2020 15:37:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A9B9621451922; Fri,  7 Aug 2020 15:37:55 +0200 (CEST)
+Date:   Fri, 7 Aug 2020 15:37:55 +0200
+From:   peterz@infradead.org
+To:     Peter Oskolkov <posk@google.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org, Paul Turner <pjt@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Peter Oskolkov <posk@posk.io>
+Subject: Re: [PATCH 1/2 v2] rseq/membarrier: add
+ MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU
+Message-ID: <20200807133755.GJ2674@hirez.programming.kicks-ass.net>
+References: <20200806170544.382140-1-posk@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806170544.382140-1-posk@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trace something useful instead of the pid of a kernel thread here.
+On Thu, Aug 06, 2020 at 10:05:43AM -0700, Peter Oskolkov wrote:
+> +#ifdef CONFIG_RSEQ
+> +static void membarrier_rseq_ipi(void *arg)
+> +{
+> +	if (current->mm != arg)  /* Not our process. */
+> +		return;
+> +	if (!current->rseq)  /* RSEQ not set up for the current task/thread. */
+> +		return;
+> +
+> +	rseq_preempt(current);
+> +}
+> +#endif
+> +
+> +static int membarrier_private_restart_rseq_on_cpu(int cpu_id)
+> +{
+> +#ifdef CONFIG_RSEQ
+> +	/* syscalls are not allowed inside rseq critical sections. */
+> +	if (cpu_id == raw_smp_processor_id())
+> +		return 0;
+> +
+> +	return smp_call_function_single(cpu_id, membarrier_rseq_ipi,
+> +					current->mm, true);
+> +#else
+> +	return 0;
+> +#endif
+> +}
 
-Signed-off-by: Christian König <christian.koenig@amd.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h | 1 +
- 1 file changed, 1 insertion(+)
+I'm thinking even this is a problem, we can end up sending IPIs to CPUs
+outside out partition (they might be NOHZ_FULL) and that's a no-no too.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h
-index 5da20fc166d9..07f99ef69d91 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h
-@@ -228,6 +228,7 @@ TRACE_EVENT(amdgpu_vm_grab_id,
- 			     ),
+Something like so perhaps... that really limits it to CPUs that match
+our mm.
+
+diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+index 6be66f52a2ad..bee5e98e6774 100644
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@ -356,6 +356,7 @@ enum {
  
- 	    TP_fast_assign(
-+			   __entry->ent.pid = vm->task_info.pid;
- 			   __entry->pasid = vm->pasid;
- 			   __assign_str(ring, ring->name)
- 			   __entry->vmid = job->vmid;
--- 
-2.17.1
-
+ enum {
+ 	MEMBARRIER_FLAG_SYNC_CORE	= (1U << 0),
++	MEMBARRIER_FLAG_RSEQ		= (1U << 1),
+ };
+ 
+ #ifdef CONFIG_ARCH_HAS_MEMBARRIER_CALLBACKS
+diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
+index 168479a7d61b..4d9b22c2f5e2 100644
+--- a/kernel/sched/membarrier.c
++++ b/kernel/sched/membarrier.c
+@@ -27,6 +27,11 @@
+ 
+ static void ipi_mb(void *info)
+ {
++	int *flags = info;
++
++	if (flags && (*flags & MEMBARRIER_FLAG_RSEQ))
++		rseq_preempt(current);
++
+ 	smp_mb();	/* IPIs should be serializing but paranoid. */
+ }
+ 
+@@ -129,11 +134,11 @@ static int membarrier_global_expedited(void)
+ 	return 0;
+ }
+ 
+-static int membarrier_private_expedited(int flags)
++static int membarrier_private_expedited(int flags, int cpu_id)
+ {
+-	int cpu;
+-	cpumask_var_t tmpmask;
+ 	struct mm_struct *mm = current->mm;
++	cpumask_var_t tmpmask;
++	int cpu;
+ 
+ 	if (flags & MEMBARRIER_FLAG_SYNC_CORE) {
+ 		if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE))
+@@ -174,6 +179,10 @@ static int membarrier_private_expedited(int flags)
+ 		 */
+ 		if (cpu == raw_smp_processor_id())
+ 			continue;
++
++		if (cpu_id >= 0 && cpu != cpu_id)
++			continue;
++
+ 		p = rcu_dereference(cpu_rq(cpu)->curr);
+ 		if (p && p->mm == mm)
+ 			__cpumask_set_cpu(cpu, tmpmask);
+@@ -181,7 +190,7 @@ static int membarrier_private_expedited(int flags)
+ 	rcu_read_unlock();
+ 
+ 	preempt_disable();
+-	smp_call_function_many(tmpmask, ipi_mb, NULL, 1);
++	smp_call_function_many(tmpmask, ipi_mb, &flags, 1);
+ 	preempt_enable();
+ 
+ 	free_cpumask_var(tmpmask);
+@@ -362,11 +371,13 @@ SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
+ 	case MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED:
+ 		return membarrier_register_global_expedited();
+ 	case MEMBARRIER_CMD_PRIVATE_EXPEDITED:
+-		return membarrier_private_expedited(0);
++		return membarrier_private_expedited(0, -1);
+ 	case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED:
+ 		return membarrier_register_private_expedited(0);
+ 	case MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE:
+-		return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
++		return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE, -1);
++	case MEMBERRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
++		return membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ, flags);
+ 	case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE:
+ 		return membarrier_register_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
+ 	default:
