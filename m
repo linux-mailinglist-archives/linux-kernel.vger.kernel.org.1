@@ -2,76 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B7723F5DE
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 04:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C4F23F5E3
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 04:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726256AbgHHCF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 22:05:26 -0400
-Received: from m12-18.163.com ([220.181.12.18]:40660 "EHLO m12-18.163.com"
+        id S1726523AbgHHCGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 22:06:21 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:47030 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726163AbgHHCFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 22:05:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=58O72jhnrDHl5eaGDS
-        i3G0TKF4cP/BfnN/97i4BIIUM=; b=PM77PxTVMbqsonZea0PseEBcsU3qAeqLv+
-        vLYnrGez8l5WQnhyPX6ajKQOftG7qOx1cb/JF8OwMBBKKv6jFPZ9p5CA9EjGe8F5
-        7KU8ZMwI2vWNCwxk+VpXS1EkF7wSdFFG5PYjCgaJsffdli5OoP+0fK9eWQJcJriO
-        b40pF2Nz4=
-Received: from localhost.localdomain (unknown [58.33.79.182])
-        by smtp14 (Coremail) with SMTP id EsCowABnvrJDCC5fRqxLIA--.16258S3;
-        Sat, 08 Aug 2020 10:04:58 +0800 (CST)
-From:   Grant Feng <von81@163.com>
-To:     von81@163.com, jacek.anaszewski@gmail.com, pavel@ucw.cz,
-        dmurphy@ti.com, robh+dt@kernel.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] leds: Add an optional property named 'sdb-gpios'
-Date:   Sat,  8 Aug 2020 10:04:39 +0800
-Message-Id: <20200808020439.20606-2-von81@163.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200808020439.20606-1-von81@163.com>
-References: <20200808020439.20606-1-von81@163.com>
-X-CM-TRANSID: EsCowABnvrJDCC5fRqxLIA--.16258S3
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKw4fCFWfXFW7XFy3XrWfAFb_yoWDtFc_Ja
-        s7Cr4IgrZ8uF4vgw1DZr1avr4UCw4xAF1kCw4IqF1kAw1xt3sIgF92q34Yyr1UGana9r43
-        Ca97ta4UJ3ZFkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0dMaUUUUUU==
-X-Originating-IP: [58.33.79.182]
-X-CM-SenderInfo: xyrqmii6rwjhhfrp/xtbBiAp6OlaD8FYqmQAAsC
+        id S1726262AbgHHCGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 22:06:21 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1k4EFV-008g5y-NR; Sat, 08 Aug 2020 04:06:17 +0200
+Date:   Sat, 8 Aug 2020 04:06:17 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jonathan Adams <jwadams@google.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>
+Subject: Re: [RFC PATCH 0/7] metricfs metric file system and examples
+Message-ID: <20200808020617.GD2028541@lunn.ch>
+References: <20200807212916.2883031-1-jwadams@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200807212916.2883031-1-jwadams@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The chip enters hardware shutdown when the SDB pin is pulled low.
-The chip releases hardware shutdown when the SDB pin is pulled high.
+> net/dev/stats/tx_bytes/annotations
+>   DESCRIPTION net\ device\ transmited\ bytes\ count
+>   CUMULATIVE
+> net/dev/stats/tx_bytes/fields
+>   interface value
+>   str int
+> net/dev/stats/tx_bytes/values
+>   lo 4394430608
+>   eth0 33353183843
+>   eth1 16228847091
 
-Signed-off-by: Grant Feng <von81@163.com>
----
- Documentation/devicetree/bindings/leds/leds-is31fl32xx.txt | 3 +++
- 1 file changed, 3 insertions(+)
+This is a rather small system. Have you tested it at scale? An
+Ethernet switch with 64 physical interfaces, and say 32 VLAN
+interfaces stack on top. So this one file will contain 2048 entries?
 
-diff --git a/Documentation/devicetree/bindings/leds/leds-is31fl32xx.txt b/Documentation/devicetree/bindings/leds/leds-is31fl32xx.txt
-index 926c2117942c..94f02827fd83 100644
---- a/Documentation/devicetree/bindings/leds/leds-is31fl32xx.txt
-+++ b/Documentation/devicetree/bindings/leds/leds-is31fl32xx.txt
-@@ -15,6 +15,8 @@ Required properties:
- - reg: I2C slave address
- - address-cells : must be 1
- - size-cells : must be 0
-+- sdb-gpios : (optional)
-+  Specifier of the GPIO connected to SDB pin.
- 
- LED sub-node properties:
- - reg : LED channel number (1..N)
-@@ -31,6 +33,7 @@ is31fl3236: led-controller@3c {
- 	reg = <0x3c>;
- 	#address-cells = <1>;
- 	#size-cells = <0>;
-+	sdb-gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
- 
- 	led@1 {
- 		reg = <1>;
--- 
-2.17.1
+And generally, you are not interested in one statistic, but many
+statistics. So you will need to cat each file, not just one file. And
+the way this is implemented:
 
++static void dev_stats_emit(struct metric_emitter *e,
++                          struct net_device *dev,
++                          struct metric_def *metricd)
++{
++       struct rtnl_link_stats64 temp;
++       const struct rtnl_link_stats64 *stats = dev_get_stats(dev, &temp);
++
++       if (stats) {
++               __u8 *ptr = (((__u8 *)stats) + metricd->off);
++
++               METRIC_EMIT_INT(e, *(__u64 *)ptr, dev->name, NULL);
++       }
++}
 
+means you are going to be calling dev_get_stats() for each file, and
+there are 23 files if i counted correctly. So dev_get_stats() will be
+called 47104 times, in this made up example. And this is not always
+cheap, these counts can be atomic.
+
+So i personally don't think netdev statistics is a good idea, i doubt
+it scales.
+
+I also think you are looking at the wrong set of netdev counters. I
+would be more interested in ethtool -S counters. But it appears you
+make the assumption that each object you are collecting metrics for
+has the same set of counters. This is untrue for network interfaces,
+where each driver can export whatever counters it wants, and they can
+be dynamic.
+
+	Andrew
