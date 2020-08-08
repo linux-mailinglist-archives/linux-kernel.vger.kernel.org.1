@@ -2,72 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C125023F8D1
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 22:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255A223F8D8
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 22:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgHHUxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 Aug 2020 16:53:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726200AbgHHUxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 Aug 2020 16:53:15 -0400
-Received: from localhost.localdomain (unknown [95.146.230.158])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E508E206B5;
-        Sat,  8 Aug 2020 20:53:13 +0000 (UTC)
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] arm64 fix for 5.9-rc1
-Date:   Sat,  8 Aug 2020 21:53:12 +0100
-Message-Id: <20200808205312.565-1-catalin.marinas@arm.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726299AbgHHU4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 Aug 2020 16:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbgHHU4A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 Aug 2020 16:56:00 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1846C061756;
+        Sat,  8 Aug 2020 13:55:57 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (85-76-78-184-nat.elisa-mobile.fi [85.76.78.184])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E4760F9;
+        Sat,  8 Aug 2020 22:55:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1596920156;
+        bh=7AzBW6y7AohK848k4WmKInfvCXQ963jNC9GWH4yAtvo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gvVEBFS/9RlgkpwmVx4e22Eft0jGK4pKGXo5ziC06KmbGbbEc4SWuLFdyU14gDTeR
+         fiLx1sIfp/mKBcu2fqvEHYxHbGnPR78OXnIlEFAe7Yg7/QD5+xO5B1uEIzoLqY23nA
+         daRCBWP3hBNzIxJq1dIjpncO6uQAzdUvh3LyltcU=
+Date:   Sat, 8 Aug 2020 23:55:43 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH 0/7] r8a7742: Enable DU and LVDS
+Message-ID: <20200808205543.GL6186@pendragon.ideasonboard.com>
+References: <20200807174954.14448-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200807174954.14448-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Prabhakar,
 
-Please pull the arm64 updates below. The fix addresses a symbol export
-for the tegra194-cpufreq module that made its way into mainline (the
-issue was found in -next but still debating an alternative fix without
-exporting __cpu_logical_map).
+Thank you for the patches.
 
-Thanks.
+On Fri, Aug 07, 2020 at 06:49:47PM +0100, Lad Prabhakar wrote:
+> Hi All,
+> 
+> This patch series adds support for DU and LVDS to r8a7742
+> SoC and enables LCD support on r8a7742-iwg21d-q7 board.
+> 
+> This patch series applies on top of [1].
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/
+>     renesas-devel.git/log/?h=renesas-arm-dt-for-v5.10
 
-The following changes since commit 0e4cd9f2654915be8d09a1bd1b405ce5426e64c4:
+The driver changes will need to go through the DRM/KMS tree, and I'd
+recommend the DT binding changes to go the same route as well. I can
+handle the rebase when applying, and once the bindings get accept, you
+can ask Geert to upstream the last 3 patchs. Would that work for you ?
 
-  Merge branch 'for-next/read-barrier-depends' into for-next/core (2020-07-31 18:09:57 +0100)
+> Lad Prabhakar (7):
+>   dt-bindings: display: renesas,du: Document the r8a7742 bindings
+>   drm: rcar-du: Add r8a7742 support
+>   dt-bindings: display: renesas,lvds: Document r8a7742 bindings
+>   drm: rcar-du: lvds: Add r8a7742 support
+>   ARM: dts: r8a7742: Add DU support
+>   ARM: dts: r8a7742: Add LVDS support
+>   ARM: dts: r8a7742-iwg21d-q7: Add LCD support
+> 
+>  .../bindings/display/bridge/renesas,lvds.txt  |  1 +
+>  .../bindings/display/renesas,du.txt           |  2 +
+>  arch/arm/boot/dts/r8a7742-iwg21d-q7.dts       | 84 +++++++++++++++++
+>  arch/arm/boot/dts/r8a7742.dtsi                | 89 +++++++++++++++++++
+>  drivers/gpu/drm/rcar-du/rcar_du_drv.c         |  5 +-
+>  drivers/gpu/drm/rcar-du/rcar_lvds.c           |  1 +
+>  6 files changed, 180 insertions(+), 2 deletions(-)
 
-are available in the Git repository at:
+-- 
+Regards,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
-
-for you to fetch changes up to eaecca9e7710281be7c31d892c9f447eafd7ddd9:
-
-  arm64: Fix __cpu_logical_map undefined issue (2020-08-08 19:25:04 +0100)
-
-----------------------------------------------------------------
-- Fix tegra194-cpufreq module build failure caused  __cpu_logical_map
-  not exported.
-
-- Improve fixed_addresses comment regarding the fixmap buffer sizes.
-
-----------------------------------------------------------------
-Kefeng Wang (1):
-      arm64: Fix __cpu_logical_map undefined issue
-
-Pingfan Liu (1):
-      arm64/fixmap: make notes of fixed_addresses more precisely
-
- arch/arm64/include/asm/fixmap.h | 7 +++----
- arch/arm64/include/asm/smp.h    | 7 ++++++-
- arch/arm64/kernel/setup.c       | 8 +++++++-
- arch/arm64/kernel/smp.c         | 6 +++---
- 4 files changed, 19 insertions(+), 9 deletions(-)
+Laurent Pinchart
