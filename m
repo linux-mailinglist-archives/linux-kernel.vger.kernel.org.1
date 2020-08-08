@@ -2,81 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD3223F8B7
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 22:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B1223F8BD
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 22:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgHHUHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 Aug 2020 16:07:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35042 "EHLO
+        id S1726352AbgHHU1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 Aug 2020 16:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbgHHUHL (ORCPT
+        with ESMTP id S1726069AbgHHU1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 Aug 2020 16:07:11 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A98C061756;
-        Sat,  8 Aug 2020 13:07:11 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id f10so2785340plj.8;
-        Sat, 08 Aug 2020 13:07:11 -0700 (PDT)
+        Sat, 8 Aug 2020 16:27:55 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235ADC061756
+        for <linux-kernel@vger.kernel.org>; Sat,  8 Aug 2020 13:27:55 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id z20so2803480plo.6
+        for <linux-kernel@vger.kernel.org>; Sat, 08 Aug 2020 13:27:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SiCenb5vX6dJuKnVeIHYtfpTZiB8QcQyZGTetv9DPOc=;
-        b=lFVDLSY7VsBKcLcjFlyRYW5BGeOL+Sx4ZFqlgN3tH75pBxcn+6zjnmCxNhGfVYhYuE
-         Sr1pnCzIyrdU24BuU6L+Vdd0mCqiHjsWx+wEADZL5IkjwUVUnfMIcyrGs+XNAsx63Nn/
-         kJZBiuZn7mBL28Sn3Hq06N4T59tBRosqBV+e06ndqfCJUY+wpsQvrOcRUALYbXkVTRPt
-         i7pUntfcoD2C8s1STFqKDr937fzT/T1GWAwFyrIX5pLoRjqwMsjxIPbAUGZRx04vWOtZ
-         e2WuRXOr81EgWc7Y2Dm8FiIlI5Kq2stZ79hmF3bDEQZC6Dzf/2s7MvwxgWFwXo3uCMvD
-         h3bg==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=yuWM4DIUwQmPQT7Mh/C4UCJ0P+zz+HJ6Yw1Tj1RgIH8=;
+        b=Pewx+UjwaR5478j7M2UM4nexiXMCwf1ZLb/0YNsySuIWgtC/2CGq8F7lwS+HpomAOv
+         TgFGxy9C/6/vxRxaJK9hchgHIC/UnP3YMyrMHKScQ3l/7xQkfbGbpswRyFZDcSHgqGDT
+         IKCU48/UyzlXWY0szuy97s2hUWIipQJ7qukqtsfwwLU9OXWXiNHYbUuqCG3ZmQ+exCfT
+         D3O6Vo2wzphIy91c+qCJhylZ4wPW73zdM4uUsTn/c7eugE3f9ZIh8u7MPuiTeQOjbHRj
+         V4+zMRiPB1PmVK9+EST6rs8dT48v0VR0ejkF6Gb1HdpuPSEDWJ5Gzc6ipo/V2m/UN+DR
+         bKzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SiCenb5vX6dJuKnVeIHYtfpTZiB8QcQyZGTetv9DPOc=;
-        b=jKH2l7EDmNsvfWCDpVwO/qO9bR2eiOxBTPou0mRSuFgaASYZTllI+3731XThv/Fhz8
-         e0RgVOEQA1Deti/FE1fJ6cP4oGGDRSZ/xj2YfbGtcdqXes02FgeIT+AZVZUyP+YpVuPS
-         3qnJnvUotKNzB6VndiqpUT30hrckjY0a4ScvmQwxul2O08kcsQm/4byqudicaYP4GJa3
-         WLxi+OMi+EoWSB/S0VMAyfD3Eqq7TN1UOyjV+U+Jdg3/8tYWMPHqCECkVfHCxSgT9Tgl
-         8pL2/S6tOCmTLvLYVs8Jyh+kinghIyjTcwxI7n+vsVXrbA0cLzPloEYlksbZBl5ZINk6
-         AhpQ==
-X-Gm-Message-State: AOAM533jo6FGJEQ2Y7B4JlCHNH0FzORj3GfjCe8vIVoXEGCrjz5kreG6
-        RR1AgswVcMiCIlcklwfri4vPWgJ3BWYul9py88g=
-X-Google-Smtp-Source: ABdhPJx3m3z8wLpeaUy6bo8RBwuhpiSY+3pnNM2wrC+7RR+7r+qCmBiLSKNdfzMCnAjiOa+z/Qs/lEcLuwFT4pzD3sU=
-X-Received: by 2002:a17:902:4b:: with SMTP id 69mr18475941pla.18.1596917229824;
- Sat, 08 Aug 2020 13:07:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200808121026.1300375-1-cmo@melexis.com>
-In-Reply-To: <20200808121026.1300375-1-cmo@melexis.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 8 Aug 2020 23:06:53 +0300
-Message-ID: <CAHp75VeY9MgqenaCDJww4m+T6fpYeaGgPr8QXCYLxyx36BHnJg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] iio: temperature: mlx90632: Add extended
- calibration calculations
-To:     Crt Mori <cmo@melexis.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=yuWM4DIUwQmPQT7Mh/C4UCJ0P+zz+HJ6Yw1Tj1RgIH8=;
+        b=CR5/M2hN17m5jCirs9IvjDStQlG+9QqWv3WzP4lokJkBmLvVbi6tr0kVfjK01+ao4t
+         47aWTa/uOC7XHmxRldfkQahE2hxGG+ILjU5nEgrEhfKmh+Uc9Ma1DGFx2aPgHj1Y5J/C
+         tR/NmFNip+xeF2TXb/czstHFfbP51wuYF0TuNVi8mLXytGordKXEYtQEz1PTzflaxQSM
+         j5Xoo0mTl1AtQMx+nIwDQ+D+/84/mF1CdhyXGlIo61QERcmcCw0cXwpbgxgynczepIpY
+         mqFLxKfe8zzlUOq6n6pj6BGaKrQ1JbFGNtZW4qIZzWfsxBJaXkHDznZcxnIKpGKg0yXz
+         6HoA==
+X-Gm-Message-State: AOAM531gxYJMDAEmok2ZeUAVfiCGByytjgIexyzgkL6D99M7DHXSwYXY
+        h6RuRTffLyq7IJ1u8X/6Xk8=
+X-Google-Smtp-Source: ABdhPJzuPBhn7v/lPaIPGv5raUAXmDi+JjhwpKI0vY9OxOKrZRfxJrI26g9Csvb6pVSpmdt7w1mXWw==
+X-Received: by 2002:a17:902:b193:: with SMTP id s19mr18892707plr.194.1596918473959;
+        Sat, 08 Aug 2020 13:27:53 -0700 (PDT)
+Received: from thinkpad ([69.172.171.109])
+        by smtp.gmail.com with ESMTPSA id e3sm14936263pgu.40.2020.08.08.13.27.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 Aug 2020 13:27:53 -0700 (PDT)
+Date:   Sat, 8 Aug 2020 13:28:22 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     xujialu <xujialu@vimux.org>, masahiroy@kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: realpath "No such file or directory" warnings when building
+Message-ID: <20200808202822.GA597061@thinkpad>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 8, 2020 at 3:10 PM Crt Mori <cmo@melexis.com> wrote:
->
-> Since the second patch is dependent on the first and was still not
-> merged, I have decided to send them together. First patch just makes
-> second one more readable as it splits out the repeated calculation and
-> that enables the second patch to tweak the variable to the new
-> condition.
+tags from KBUILD_OUTPUT directory
+Reply-To: 
 
-So, we are closer, but here is one remark, it's not good to send a new
-version if you are not going to address _all_ comments (it's fine to
-do, but you need to answer first why you are not going to satisfy
-them). For example, explicit castings here and there, voodoo
-arithmetics is left uncommented.
+running 'make ARCH=x86_64 COMPILED_SOURCE=1 cscope tags' in
+KBUILD_OUTPUT directory produces lots of "No such file or directory"
+warnings from realpath
 
+it seems like commit 4f491bb6ea2a greatly improved tags generation when
+COMPILED_SOURCE=1 is set, but should we add "-q" flag for realpath in 
+all_compiled_sources() or probably it would be better to fix root cause
+and make sure that for example we don't try to find objtool sources and
+exclude other similar dirs during tags generation? what do you think?
 
--- 
-With Best Regards,
-Andy Shevchenko
+...
+realpath: special.h: No such file or directory
+realpath: warn.h: No such file or directory
+realpath: sigchain.c: No such file or directory
+realpath: sigchain.h: No such file or directory
+realpath: orc_gen.c: No such file or directory
+realpath: objtool.c: No such file or directory
+...
