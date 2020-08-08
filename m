@@ -2,130 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E3423F782
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 14:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF9023F777
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 14:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgHHMOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 Aug 2020 08:14:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47306 "EHLO
+        id S1726307AbgHHMKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 Aug 2020 08:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726316AbgHHMLP (ORCPT
+        with ESMTP id S1725957AbgHHMKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 Aug 2020 08:11:15 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CACAC061A31
-        for <linux-kernel@vger.kernel.org>; Sat,  8 Aug 2020 05:11:07 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id jp10so4779346ejb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 08 Aug 2020 05:11:07 -0700 (PDT)
+        Sat, 8 Aug 2020 08:10:45 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A43C061756
+        for <linux-kernel@vger.kernel.org>; Sat,  8 Aug 2020 05:10:45 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id v15so2302534pgh.6
+        for <linux-kernel@vger.kernel.org>; Sat, 08 Aug 2020 05:10:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=melexis.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/XWY4gvQRYHXEyWmE4WsXwZ1nN+0si4ZlbIfngpHZ5M=;
-        b=awV+k81WnzaxYEO9gsxcGspjzXsyKu03ExAJEbK9V/ZL3FfU2Nj1gdRph/ixyi65Rk
-         jfIun1AY/HiBnDJVnRqedB1bV3fPirB79TaRcxNKY3r2qYkKLb7wKha8Z60S1Tk/lK+5
-         kStUyHD0H6iu1uI8qwM2RnoBj8EKttgGc8k8SIU4oz2n2gCYjNyd6+eEa9fYVy3NB7Yf
-         j52xN1L+DnnztgzcDWAhlIJyBpP/kgiHA3oxcInwJ7MO7/jcMwU0xq0RCimqrThsLQYj
-         qyxavCKanOWsEAKpByVVRmc+FtDiy65xRcKihp1//lvK25CauS8V3W/vWiQL+++aLMMU
-         hMog==
+        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EuDMSmp04hSHSVLRHL1PUWBPuYB4U3JnGDB9t2qv6ho=;
+        b=a27s0HjDAgd0N2W+2hyaEb/r9U8rPWgKPcToKVqzsY6g1RHey3lP/n73NLKJYe/Ok9
+         55O55oJSSu9auuHd0IZZMeayaFYrB0XkDdzao+sYMQoIml9w00hFjBH8r/pwdPpew/sz
+         D4U3ycTuRW2hhSyGQ/+vQPPBrkxE9ZKOeqrJhg7L0PM3vPL7tG3pJcxpNVs3aBK4ByJe
+         KCqGQqzLjn/hShsU0zUkoh4exC0lP0KHzK4vtrIfJ3N9ohkhYUxOT1oj/NDw/OG3J1d+
+         9y8hysX2pQorUHhg24RtZ6E+WgR2WN28nXtkQnzysvPpbbsZGt1ljbQWW59Kk3ViJl54
+         tcqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/XWY4gvQRYHXEyWmE4WsXwZ1nN+0si4ZlbIfngpHZ5M=;
-        b=E/qKfRytIMn7WiS6XTvhoj1ZcMWUpAbru+JKhMKRFyBigYRGuFsphSObt2F1RZF58W
-         BCVjMMNKRLhkwHBdcGG6QxagQDAf8NhuSrIToUmcXdTeoHRjRuv9hTGqoqWGQwdt3n7A
-         DGII//wK+kpo/sKv7VS2SKP756aJ6KZkP468sp0Vo9auF0/ZTmsiDvvPcTbh2m5qQhob
-         lfsuQAK6DZoqeB3cZEko3mMa5p2IhkVoj7yJliaRGA1Qe6T21r0kvrtlowtMSxI922c5
-         LgjIZPw1Pqf9CcSAhfFrLnrpH0C+fs8xqCNe9BS1H6pWNjTffabs8OrZFSyq/R6VN/Mc
-         WR5A==
-X-Gm-Message-State: AOAM533p1r+YjQrBXcHex4U888trmuAW5o4O4QJZsaVtMuD+zgOsOT3p
-        EX5WSzlJCe86wNnjaBmM1pO56S4pMuWOxQ==
-X-Google-Smtp-Source: ABdhPJxQzvJnqokhx97YNGfRwinM7IAeYCnLYiHfVMfvK3qytGjU16LoWecSxOgwsXIzu1cScWZ/LA==
-X-Received: by 2002:a17:906:f905:: with SMTP id lc5mr13207897ejb.340.1596888665305;
-        Sat, 08 Aug 2020 05:11:05 -0700 (PDT)
-Received: from localhost.localdomain (ptr-4xajgywt9p1tstfsdfc.18120a2.ip6.access.telenet.be. [2a02:1810:a421:dd00:b0e6:1cd9:30c1:35f8])
-        by smtp.gmail.com with ESMTPSA id b2sm8130833ejg.70.2020.08.08.05.11.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Aug 2020 05:11:04 -0700 (PDT)
-From:   Crt Mori <cmo@melexis.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Crt Mori <cmo@melexis.com>
-Subject: [PATCH v4 4/4] iio:temperature:mlx90632: Convert polling while loops to do-while
-Date:   Sat,  8 Aug 2020 14:10:26 +0200
-Message-Id: <20200808121026.1300375-5-cmo@melexis.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200808121026.1300375-1-cmo@melexis.com>
-References: <20200808121026.1300375-1-cmo@melexis.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EuDMSmp04hSHSVLRHL1PUWBPuYB4U3JnGDB9t2qv6ho=;
+        b=n37rJubn47mfXO02SZg5GcsruowDOmntFMxvYmViQOUiAmSQ2tl5q0awil9PKjnFpY
+         aQ2qZrrPc2DyW7ZSHxYH7BDZijC/YbLkkVni+qaNKiOfFIipiQyExXOl31a75S55qDRy
+         AhzWjyzlEIHaZ7K4iu4L2HVPecxVok7wpTlaGaIbfZzUBZBJ6SvtOhxp9IjKkMe5jjRU
+         eemuq6a+KTOS0AK/EoPMTAlnqgXXfo3PZc/gO9Wm2M+IF7x7V0oasYDfu1FCUbFZfMbA
+         WGzvy1TA12zhQpZ6jFlghrx25JCnipBKMQDlnTp1MT/y5zBHyhphuwpe2egj9hEhz9Ap
+         mqLw==
+X-Gm-Message-State: AOAM531Sd+LHiPMiXvFLz/gGesles7hFNRKRuxvwsltVqI7U57LBoVin
+        KptGHnK4AmdxzoD+I9SQ45i5jg3IUBVB6586v26OLg==
+X-Google-Smtp-Source: ABdhPJzM1muWFLwLDSvo0MoNAYjZ2t7+UNajWvXxXMkjymrpkaeIPbZuHepCLbtxZZBVSatO1nbVYIIZ+/IHe775HYM=
+X-Received: by 2002:a63:4b44:: with SMTP id k4mr15861573pgl.305.1596888644708;
+ Sat, 08 Aug 2020 05:10:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200807162010.18979-1-andrei.botila@oss.nxp.com> <20200807162010.18979-17-andrei.botila@oss.nxp.com>
+In-Reply-To: <20200807162010.18979-17-andrei.botila@oss.nxp.com>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Sat, 8 Aug 2020 15:10:33 +0300
+Message-ID: <CAOtvUMero-gF5ZE1unnD_wcDnzZX_SL0tQ2yJNqzc3rg5RhuDA@mail.gmail.com>
+Subject: Re: [PATCH 16/22] crypto: ccree - add check for xts input length
+ equal to zero
+To:     Andrei Botila <andrei.botila@oss.nxp.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390@vger.kernel.org, x86@kernel.org,
+        linux-arm-kernel@axis.com, Andrei Botila <andrei.botila@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reduce number of lines and improve readability to convert polling while
-loops to do-while. The iopoll.h interface was not used, because we
-require more than 20ms timeout, because time for sensor to perform a
-measurement is around 10ms and it needs to perform measurements for each
-channel (which currently is 3).
+On Fri, Aug 7, 2020 at 7:22 PM Andrei Botila <andrei.botila@oss.nxp.com> wr=
+ote:
+>
+> From: Andrei Botila <andrei.botila@nxp.com>
+>
+> Standardize the way input lengths equal to 0 are handled in all skcipher
+> algorithms. All the algorithms return 0 for input lengths equal to zero.
+> This change has implications not only for xts(aes) but also for cts(cbc(a=
+es))
+> and cts(cbc(paes)).
+>
+> Cc: Gilad Ben-Yossef <gilad@benyossef.com>
+> Signed-off-by: Andrei Botila <andrei.botila@nxp.com>
+> ---
+>  drivers/crypto/ccree/cc_cipher.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/crypto/ccree/cc_cipher.c b/drivers/crypto/ccree/cc_c=
+ipher.c
+> index 076669dc1035..112bb8b4dce6 100644
+> --- a/drivers/crypto/ccree/cc_cipher.c
+> +++ b/drivers/crypto/ccree/cc_cipher.c
+> @@ -912,17 +912,18 @@ static int cc_cipher_process(struct skcipher_reques=
+t *req,
+>
+>         /* STAT_PHASE_0: Init and sanity checks */
+>
+> -       if (validate_data_size(ctx_p, nbytes)) {
+> -               dev_dbg(dev, "Unsupported data size %d.\n", nbytes);
+> -               rc =3D -EINVAL;
+> -               goto exit_process;
+> -       }
+>         if (nbytes =3D=3D 0) {
+>                 /* No data to process is valid */
+>                 rc =3D 0;
+>                 goto exit_process;
+>         }
+>
+> +       if (validate_data_size(ctx_p, nbytes)) {
+> +               dev_dbg(dev, "Unsupported data size %d.\n", nbytes);
+> +               rc =3D -EINVAL;
+> +               goto exit_process;
+> +       }
+> +
+>         if (ctx_p->fallback_on) {
+>                 struct skcipher_request *subreq =3D skcipher_request_ctx(=
+req);
+>
+> --
+> 2.17.1
+>
 
-Signed-off-by: Crt Mori <cmo@melexis.com>
----
- drivers/iio/temperature/mlx90632.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+Acked-by: Gilad Ben-Yossef <gilad@benyossef.com>
 
-diff --git a/drivers/iio/temperature/mlx90632.c b/drivers/iio/temperature/mlx90632.c
-index 4e0131705c11..24ffcce9ad74 100644
---- a/drivers/iio/temperature/mlx90632.c
-+++ b/drivers/iio/temperature/mlx90632.c
-@@ -214,15 +214,13 @@ static int mlx90632_perform_measurement(struct mlx90632_data *data)
- 	if (ret < 0)
- 		return ret;
- 
--	while (tries-- > 0) {
-+	do {
- 		ret = regmap_read(data->regmap, MLX90632_REG_STATUS,
- 				  &reg_status);
- 		if (ret < 0)
- 			return ret;
--		if (reg_status & MLX90632_STAT_DATA_RDY)
--			break;
- 		usleep_range(10000, 11000);
--	}
-+	} while (!(reg_status & MLX90632_STAT_DATA_RDY) && tries--);
- 
- 	if (tries < 0) {
- 		dev_err(&data->client->dev, "data not ready");
-@@ -419,7 +417,7 @@ static int mlx90632_read_object_raw_extended(struct regmap *regmap, s16 *object_
- static int mlx90632_read_all_channel_extended(struct mlx90632_data *data, s16 *object_new_raw,
- 					      s16 *ambient_new_raw, s16 *ambient_old_raw)
- {
--	int tries = 4;
-+	int tries = 5;
- 	int ret;
- 
- 	mutex_lock(&data->lock);
-@@ -427,14 +425,13 @@ static int mlx90632_read_all_channel_extended(struct mlx90632_data *data, s16 *o
- 	if (ret < 0)
- 		goto read_unlock;
- 
--	while (tries-- > 0) {
-+	do {
- 		ret = mlx90632_perform_measurement(data);
- 		if (ret < 0)
- 			goto read_unlock;
- 
--		if (ret == 19)
--			break;
--	}
-+	} while ((ret != 19) && tries--);
-+
- 	if (tries < 0) {
- 		ret = -ETIMEDOUT;
- 		goto read_unlock;
--- 
-2.25.1
+Thanks,
+Gilad
 
+--=20
+Gilad Ben-Yossef
+Chief Coffee Drinker
+
+values of =CE=B2 will give rise to dom!
