@@ -2,80 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69E323F820
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 17:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7418523F823
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 18:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726458AbgHHP7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 Aug 2020 11:59:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53778 "EHLO
+        id S1726382AbgHHQG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 Aug 2020 12:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbgHHP7k (ORCPT
+        with ESMTP id S1726242AbgHHQG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 Aug 2020 11:59:40 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A7CC061756;
-        Sat,  8 Aug 2020 08:59:40 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id j7so4870843oij.9;
-        Sat, 08 Aug 2020 08:59:40 -0700 (PDT)
+        Sat, 8 Aug 2020 12:06:28 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3409EC061756;
+        Sat,  8 Aug 2020 09:06:28 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id a26so5171996ejc.2;
+        Sat, 08 Aug 2020 09:06:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7dfDkqe0MohgZmH8uj4bGL4bJvNG2hnoF5m4hePOOcw=;
-        b=P24hH7Czrfi8mHom3UkoX8dd+bd6tG762PbSgVCnjlHykp4xlqR6xJFmV/5x2/wYSO
-         eNYzMDglpolZLyilCmOvuGWGHLw2wcsvi9E2GhKZU64yyoS/QYdp3Z5+Pm/fjiwICn4U
-         SmMSih8lnl8PjKaFJnKf8fV0NbQ+NlAyhETCEpRMnE2GvMWt8AOtxbGL9p57Npb4VTAf
-         ZfQ2G0fciNlm6vBNrNUmQWnfvIr48pb0mJxKJwKnuQRg5HnVP8rDq0hMNaUs2e7DTNFF
-         y+hlLnpJ9x86ttnUEL6P4n8GkfYYdS+4+VFTKJkUSlQad64dzqyuD5kI7u6OuqcDEgY1
-         BWjA==
+        h=from:to:cc:subject:date:message-id;
+        bh=yV0nxDJVpKaDI8NMLiY0hoFo/m2FGLWPL6IB8rVSdIc=;
+        b=Sa5KBSWnEhK0L9uO837LP+k2wvdXuZ0c+eR9tnhbAFtSPptlZk3Rc60UxtDxV+elTb
+         7FGodum6ZSrKruZXfs/OckbWDgtEu2Rz9TNnRVF3iT1nvsxuHzGM2RwVmaVQkpLHAz7X
+         QJMXFXYpMMSfxnOteMI0EauPJSHnamcPsp3+mWzfYowD3pZEwgO3zht7OPp4UBLj622c
+         63OSM8tFX1D7dJkWXp1gV0XsAiIn1hk5Wqfwf9wXHDhgkKnaDch1SwWDWkJILt4iR/o5
+         9KHKlqUGhIF0E1dCOMtxl4/UIsNceUbhbxFb+CCLTenRFvld4WTCn3jRh22sIBK42P0o
+         Atuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7dfDkqe0MohgZmH8uj4bGL4bJvNG2hnoF5m4hePOOcw=;
-        b=VCyya8d712XHkePFmjUxfV5cCN00Uhl48R3BMHFSIjFqfiFxfALWJE0m6s11T3QjTn
-         egr94nSbc28A3zf0Nsro/uDYcRv3c6G7ocS2LKKoLnjG0q8G95QR26Kk5mBgqQcapa1Q
-         2yq8rLs3dR0RgDiUBQyEZ2qjabJmEL2XDBYS5TS2yCd2/mLTTBTdPv6DtEkuuDzB6Dsl
-         L0H+eIg1OuP6hqVqy0XZJUBUPM3/KYd+W9BjUowFRiARLZa6TioVj28dNHjq0Tgiw7vP
-         bnN1horZCrEKlsypOTpmkIuwLjjlN4RT+W63uSVf/xEsETmUvBBqsRF0+2EAKaxH7cVl
-         X//A==
-X-Gm-Message-State: AOAM530107+EeuyLw4UNkTKdqFmWmMpwPguBocyqSvJEiaESTdM6/HOM
-        azNH0Ku5atsxZ6EOmTMuFog=
-X-Google-Smtp-Source: ABdhPJymGhqPMQv0DitcITw4drSE2nmsiPaqGWl4u+UiEKPwMQO6DERlcaNl0E0OHtW6j9oT+0b5ow==
-X-Received: by 2002:aca:5489:: with SMTP id i131mr16232449oib.157.1596902379287;
-        Sat, 08 Aug 2020 08:59:39 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:2d6d:708e:ac93:f86b])
-        by smtp.googlemail.com with ESMTPSA id e18sm1646009oiy.52.2020.08.08.08.59.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 08 Aug 2020 08:59:38 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/7] metricfs metric file system and examples
-To:     Andrew Lunn <andrew@lunn.ch>, Jonathan Adams <jwadams@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        netdev@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>
-References: <20200807212916.2883031-1-jwadams@google.com>
- <20200808020617.GD2028541@lunn.ch>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <191cb2fc-387a-006e-62fd-177096ac480e@gmail.com>
-Date:   Sat, 8 Aug 2020 09:59:34 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200808020617.GD2028541@lunn.ch>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=yV0nxDJVpKaDI8NMLiY0hoFo/m2FGLWPL6IB8rVSdIc=;
+        b=IylN3FCWf1Zocut3KKAifsfKk07HmsgAD/gNWYEwZhs8WC4h7wScZlja61rqkSsjoj
+         0mMw2XMhTv6sCMKggPHyGy03bBybePixN1Rzc3E0ct3KKpj5fUoFeVyANS9bI7GLpvzH
+         PlpQqDmTOybn9zctxUNKd0bxg3yv5WiVerAhTUPhy0RYN5Fn1K3H4HAaGqiusPuLqDOA
+         VypIrXUUj8aLEMNuJYu7hKwF5Un+k6AXM4bVYXYMSU7SoX6SBCshyoCaOakT/o9veIGR
+         qvpE85voOXGguKWE0+dgs0YM2bSFGaZv+AVTHueJ494P3+XO+blREPIs2cxmTSzXq7z9
+         Bxpw==
+X-Gm-Message-State: AOAM532c+SF+7Jkxre2fXdOV+FyHN0DbtORH6cHrNaglRvFM7VWQj8k4
+        wf3uvWT0X9dzibkZaR41hKk=
+X-Google-Smtp-Source: ABdhPJz/AR9tGTIS1ckJIHI/lnu5rdm81ZYbf5UqmBiK8JlZ9JatrM4qM5Q6zj5GJDhUbohzS2Kblg==
+X-Received: by 2002:a17:906:b248:: with SMTP id ce8mr14013718ejb.85.1596902786508;
+        Sat, 08 Aug 2020 09:06:26 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id k24sm8404338ejz.102.2020.08.08.09.06.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 08 Aug 2020 09:06:26 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] rk3318 A95X Z2 board
+Date:   Sat,  8 Aug 2020 18:06:15 +0200
+Message-Id: <20200808160618.15445-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/20 8:06 PM, Andrew Lunn wrote:
-> So i personally don't think netdev statistics is a good idea, i doubt
-> it scales.
+Add rk3318 A95X Z2 board.
 
-+1
+What works:
+ adc key
+ emmc
+ ethernet
+ hdmi
+ gpu
+ ir
+ mmc
+ sd card
+ vop
+ usb2
+ uart2
+
+Not tested:
+ av
+ uart0 / bt
+ spdif
+ wifi
+
+No support in mainline:
+ usb3 (works with manufacturer driver)
+ front display (works with custom gpio driver AD1628/HT1628)
+
+Problems:
+ U-boot only starts on emmc, then loads kernel from sd card or emmc.
+
+ Hdmi hotplug detects DVI modes, but marks them all BAD.
+ The dw-hdmi driver needs more pre_pll_cfg_table entries.
+ Slow boot behavior. Screen available way after boot. (no penguins)
+
+ GPU support for Debian is not up to date. (old version)
+ Use Github version instead.
+ Test with glmark2-es2-drm gives glmark2 Score: 29
+ Kernel log:
+  lima ff300000.gpu: pp pp0 reset time out
+  lima ff300000.gpu: pp pp1 reset time out
+ No mainline support for GPU thermal and voltage to frequency.
+ PWM1 supply connected to DMC, GPU and vcodec.
+
+ The box only has a model name. Vendor prefix not verified.
+
+ Etc.
+
+Changed V3:
+  add acked by
+  change adc-keys
+  change regulator
+  change SPDIF
+  rebase
+  remove disable-wp
+  remove pinctrl-names
+  remove vcc_phy
+  use label u2phy
+
+Changed V2:
+  add vendor prefix
+  changed compatible string
+  changed led active high to active low
+  removed usb3 regulator node
+  restyle
+
+Johan Jonker (3):
+  dt-bindings: Add vendor prefix for Shenzhen Zkmagic Technology Co.,
+    Ltd.
+  dt-bindings: arm: rockchip: add Zkmagic A95X Z2 description
+  arm64: dts: rockchip: add rk3318 A95X Z2 board
+
+Johan Jonker (3):
+  dt-bindings: Add vendor prefix for Shenzhen Zkmagic Technology Co.,
+    Ltd.
+  dt-bindings: arm: rockchip: add Zkmagic A95X Z2 description
+  arm64: dts: rockchip: add rk3318 A95X Z2 board
+
+ .../devicetree/bindings/arm/rockchip.yaml          |   5 +
+ .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+ arch/arm64/boot/dts/rockchip/Makefile              |   1 +
+ arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts    | 374 +++++++++++++++++++++
+ 4 files changed, 382 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts
+
+--
+2.11.0
+
