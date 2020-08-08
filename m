@@ -2,140 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB9023F5EF
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 04:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D3823F609
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 04:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgHHCWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 22:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726186AbgHHCWS (ORCPT
+        id S1726335AbgHHCxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 22:53:09 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:49060 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbgHHCxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 22:22:18 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B76C061756
-        for <linux-kernel@vger.kernel.org>; Fri,  7 Aug 2020 19:22:18 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id b25so2782767qto.2
-        for <linux-kernel@vger.kernel.org>; Fri, 07 Aug 2020 19:22:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ecrnqYOvc4eCeauMfs2J6ltj0dBor5l9FCOKfk/i2NE=;
-        b=IsbJCfT9oVZ5agxDiVijRJYQ9e6JAKIQZC1Wx5njAoRkdcMK1YNS/yaBEJVw9hyJ+1
-         O41sdyPfGqA1ihXW3L4Z92E57qUtjHb0azYl+jTGL/0b+r80ycB32zdcHepRTJZ6Zv+c
-         NJNYv6+FTcpAMqRrh2XRp3nGn9i9Z2B76FI9zCscozBtGfOcGEVyx3WsoL6/krziaQju
-         sYfDUEI1a7DWTDkAPQRASLvRVwHo0tSWFdl/SiNBpS/UpddzIJhghPGTARUxVz3X/KjY
-         MtqtGg3CXuuB1IGA6i/A3mgJigRTBO7hl3cKduviJ4YCJ0q7ZcA7k+2DFzyLL2+kU17U
-         V3sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ecrnqYOvc4eCeauMfs2J6ltj0dBor5l9FCOKfk/i2NE=;
-        b=qxYqYtXfLnkSu6msvCkKj0xp9os9y28l+W2MglsB2tsdVnbafiwG/o4ugYcdtOHFEB
-         xucuasdegbRXdeGljt+fPcZb1xqi9uis+8etPL6W9ELJ0xG74QAEfxpPaX35Fs49kq8h
-         9TXXVfi8WWVVUP794zPg3yLjLop77RqCmpYTqnhyU2caHZ8ei78Ej4I83TlkMnfb8rHO
-         1Yj9Fq52pEUCPoISz7rCiT7zx4GsBJPXpSpaif8rK8bgzA4xY0v1AqbM52rML/zy6gET
-         GFk9thzxwqwWWFKBl8LRcxl5eyYVa8wI3sOJZcVbjX+oQkxX6+HWwpGHLnYiQqyYVF3a
-         CHVg==
-X-Gm-Message-State: AOAM533qPPQTrkmDz1TBvYLs7Igc0F06hPgxYsoPqRtfZe2rZBcFF0l9
-        xU8mgWWAYGK+58JBM8KWmr4=
-X-Google-Smtp-Source: ABdhPJxM5y4L5rKuVDondHa1v4nK0PZ4ONWX1OVrNFgG4YC4bDVvflESho0SwrLV22yC7pbRhQlDnw==
-X-Received: by 2002:ac8:4c8e:: with SMTP id j14mr17652215qtv.381.1596853337361;
-        Fri, 07 Aug 2020 19:22:17 -0700 (PDT)
-Received: from mail.google.com ([66.42.85.36])
-        by smtp.gmail.com with ESMTPSA id e4sm9412771qts.57.2020.08.07.19.22.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Aug 2020 19:22:16 -0700 (PDT)
-Date:   Sat, 8 Aug 2020 10:22:03 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Changbin Du <changbin.du@gmail.com>, Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        Fri, 7 Aug 2020 22:53:09 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 077NqoSK174205;
+        Sat, 8 Aug 2020 00:02:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=pRss8K84ABZhW+aCcIYrAd7OGGKvba8jWPFZbS6GPjs=;
+ b=FtXVTd8aOYb4zRtenSiHSQNkfm2nsBUN0eE7SnF+3fJaWxc5d3NFPzy71gYnMy9v6s9F
+ aZJbyP2WyS1aWGyVszPfiCZITejQotp9BM/QwkCaxWSEDEbvBfrsDcra2/U9XXueaPs6
+ DKAHSZYgv+mkcg35mt5Wpm9hvbugW7aGmSH2aNZ71ZQLOSpBwib3kr4dDLqvZhhnNH2T
+ kLlgWucPtnCr1kiYV2hA6jBjvhusPBLobNJQqaZRUfuPjX5kyLmWYNxTA7R5PlHVkBti
+ +4t/cLoKqgXk97p15xfpk+wn8y9Vt1igXt7qXs49L4d3ypNHuxWVGZdbCNyXZOrOeE7s kA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 32r6epb636-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 08 Aug 2020 00:02:34 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 077NrFM0173446;
+        Sat, 8 Aug 2020 00:02:33 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 32qy8rmw5k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 08 Aug 2020 00:02:33 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07802L38016066;
+        Sat, 8 Aug 2020 00:02:21 GMT
+Received: from localhost.localdomain (/10.159.159.21)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 07 Aug 2020 17:02:21 -0700
+Subject: Re: [PATCH] KVM: SVM: Mark SEV launch secret pages as dirty.
+To:     Cfir Cohen <cfir@google.com>,
+        "kvm @ vger . kernel . org" <kvm@vger.kernel.org>,
+        Lendacky Thomas <thomas.lendacky@amd.com>,
+        Singh Brijesh <brijesh.singh@amd.com>
+Cc:     Grimm Jon <Jon.Grimm@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 01/18] perf ftrace: select function/function_graph
- tracer automatically
-Message-ID: <20200808022203.yqadm2verquocjrg@mail.google.com>
-References: <20200718064826.9865-1-changbin.du@gmail.com>
- <20200718064826.9865-2-changbin.du@gmail.com>
- <20200804125115.GF3440834@kernel.org>
- <20200806001448.ln2u7qyc4fnuk5lh@mail.google.com>
- <E69D6A9B-D2F7-43EA-AD6F-3164F199A6E4@gmail.com>
+References: <20200807012303.3769170-1-cfir@google.com>
+From:   Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Message-ID: <dc4f24b2-2b7f-f7a2-eef9-6e40dc6f3797@oracle.com>
+Date:   Fri, 7 Aug 2020 17:02:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E69D6A9B-D2F7-43EA-AD6F-3164F199A6E4@gmail.com>
+In-Reply-To: <20200807012303.3769170-1-cfir@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9706 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ spamscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008070162
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9706 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 bulkscore=0
+ malwarescore=0 clxscore=1011 mlxscore=0 priorityscore=1501 adultscore=0
+ impostorscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008070162
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 10:05:03PM -0300, Arnaldo Carvalho de Melo wrote:
-> 
-> 
-> On August 5, 2020 9:14:48 PM GMT-03:00, Changbin Du <changbin.du@gmail.com> wrote:
-> >On Tue, Aug 04, 2020 at 09:51:15AM -0300, Arnaldo Carvalho de Melo
-> >wrote:
-> >> Em Sat, Jul 18, 2020 at 02:48:09PM +0800, Changbin Du escreveu:
-> >> > The '-g/-G' options have already implied function_graph tracer
-> >should be
-> >> > used instead of function tracer. So the extra option '--tracer' can
-> >be
-> >> > killed.
-> >> > 
-> >> > This patch changes the behavior as below:
-> >> >   - By default, function tracer is used.
-> >> >   - If '-g' or '-G' option is on, then function_graph tracer is
-> >used.
-> >> >   - The perf configuration item 'ftrace.tracer' is marked as
-> >deprecated.
-> >> >   - The option '--tracer' is marked as deprecated.
-> >> 
-> >> You should try to be more granular, for instance, I think the
-> >decision
-> >> to change the default is questionable, but could be acceptable.
-> >> 
-> >> But why deprecate the perf configuration for the default tracer?
-> >> 
-> >> Say people who already use 'perf ftrace ls' go and use with this
-> >patch
-> >> and see that it changed the default from the function_graph tracer to
-> >> the function tracer and disagree with you, they want the default to
-> >be
-> >> the function graph tracer, know that there is (or there was) a
-> >> ftrace.tracer in ~/.prefconfig, and then try that, only to find out
-> >that
-> >> it is not possible, frustrating :-\
-> >> 
-> >> So can we please remove this deprecation of ftrace.tracer so that
-> >people
-> >> used to how it was can get that behaviour back?
-> >> 
-> >Agreed. If no -F or -G is given, we can use the ftrace.tracer as
-> >default tracer.
-> >Let me update it. Thanks.
-> 
-> Thanks, I'm general try to be as granular as possible, doing one thing per patch, this way the reviewer can do some preliminary cherry picking and we also improve git bisectability.
+
+On 8/6/20 6:23 PM, Cfir Cohen wrote:
+> The LAUNCH_SECRET command performs encryption of the
+> launch secret memory contents. Mark pinned pages as
+> dirty, before unpinning them.
+> This matches the logic in sev_launch_update().
+sev_launch_update_data() instead of sev_launch_update() ?
 >
-Arnaldo, I changed the policy as below:
-      - Preserve the default tracerr which is function_graph.
-      - If '-g' or '-G' option is on, then function_graph tracer is used.
-      - If '-T' or '-N' option is on, then function tracer is used.
-      - The option '--tracer' or configuration ftrace.tracer only takes
-	effect if neither -g/-G nor -T/-N is specified.
-      - The function_graph has priority over function tracer if both -G/-g
-	and -T/-N are given.
-
-Please check updatae in v8. Thanks.
-> - Arnaldo
-> 
-> -- 
-> Sent from my Android device with K-9 Mail. Please excuse my brevity.
-
--- 
-Cheers,
-Changbin Du
+> Signed-off-by: Cfir Cohen <cfir@google.com>
+> ---
+>   arch/x86/kvm/svm/sev.c | 15 ++++++++++++++-
+>   1 file changed, 14 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 5573a97f1520..37c47d26b9f7 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -850,7 +850,7 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   	struct kvm_sev_launch_secret params;
+>   	struct page **pages;
+>   	void *blob, *hdr;
+> -	unsigned long n;
+> +	unsigned long n, i;
+>   	int ret, offset;
+>   
+>   	if (!sev_guest(kvm))
+> @@ -863,6 +863,14 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   	if (!pages)
+>   		return -ENOMEM;
+>   
+> +	/*
+> +	 * The LAUNCH_SECRET command will perform in-place encryption of the
+> +	 * memory content (i.e it will write the same memory region with C=1).
+> +	 * It's possible that the cache may contain the data with C=0, i.e.,
+> +	 * unencrypted so invalidate it first.
+> +	 */
+> +	sev_clflush_pages(pages, n);
+> +
+>   	/*
+>   	 * The secret must be copied into contiguous memory region, lets verify
+>   	 * that userspace memory pages are contiguous before we issue command.
+> @@ -908,6 +916,11 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   e_free:
+>   	kfree(data);
+>   e_unpin_memory:
+> +	/* content of memory is updated, mark pages dirty */
+> +	for (i = 0; i < n; i++) {
+> +		set_page_dirty_lock(pages[i]);
+> +		mark_page_accessed(pages[i]);
+> +	}
+>   	sev_unpin_memory(kvm, pages, n);
+>   	return ret;
+>   }
+Reviewed-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
