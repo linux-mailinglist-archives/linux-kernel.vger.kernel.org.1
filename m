@@ -2,207 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2960923F939
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 23:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1242523F933
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 23:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgHHVvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 Aug 2020 17:51:39 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57526 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725950AbgHHVvi (ORCPT
+        id S1726073AbgHHVn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 Aug 2020 17:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgHHVny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 Aug 2020 17:51:38 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 078LoVuo015561;
-        Sat, 8 Aug 2020 14:51:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=facebook;
- bh=shnf3XUgsWxS5mb56nP4OtfUtcLVG0fBIS33PQJ7Yxs=;
- b=J7G/GPP/vEc6PNiadBQK7JaBSYjB6uEZyIFj9QlTkcJMoj96aS62Wu90YrFAS7SUUrOe
- UQsumHCHMs3YhiRAAH8w9eWRLgYphFy5tJP4pXwO1vQx/7ahPYWG+wWMUGSF8gtDILFE
- pTEt514/4GgXz6Koo6C8/iZyK79yB38CTqw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 32ssjk1np7-20
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 08 Aug 2020 14:51:27 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sat, 8 Aug 2020 14:43:12 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nfJg/5SDpBmbTG+V4LfoAlwFY9uuDtFOCDeor9fYbrvnZGz9uS4nym5HGGYaAlYhwhE4mZJp02XzfPF50RezhSEHKr1PsLWh6BAPL+5VwoDkzunENtxEJlUM6OukX98EiL/RYrZb4SIzh9WqC86x7OwLeoyMJBzP6QIRsLox4jnQK0P9KcGo6yCggDJwTQ+YAbvOzmro59LeGm29lla/uVn+k5Q8h9h4Ms7seO7HNCJSEOmEJoBoQHazws3BjeBD524pxBApfW+n61axMPgU0wxwb4nb4oABgpaeQuGkCOaotrZox6js1IxY/TRfB+HzR8U2xqg20SV73DZBTSgYkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=shnf3XUgsWxS5mb56nP4OtfUtcLVG0fBIS33PQJ7Yxs=;
- b=KLImhLBZLIFUcpHWFMKr2LQ9Y66MYkX03dnHB2ORA60HsyhHM3OGuRdyqhjp0DNvXQvMnQnzmrT3XsNmKjcqFShGO5ZKdpIlDIwJuU7WduykjJjM2hZhW2XIGXAQbVVII5uDaOnFNaWtbtOh5PcrqtGA35dQ4CSRzwxJF0N0seEG5sI8gl/KdO5MkPbosa+bBwa0hsJa+NpCxeDF0uxQeJDk2xL/sg/2fFHnOZDDFvji5TEfQiNNcobKv0qOwMR+KNmXMpog9BZbT7Ac0chLYD49y8u6Cxjnp1oG/v9KrZhhoe8mt8lAFrsCxggsaNm7MS7zDAoRoDtOzUI2DnWUkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=shnf3XUgsWxS5mb56nP4OtfUtcLVG0fBIS33PQJ7Yxs=;
- b=SkKAmV3wTQNoFBzbF9n/Y1HlbhVvxJ8FB7lOB4plKtLB28KPffMqzyx6HFV/e5kCeBMlSP8GwtbKQJb+NV7XLWhzXWYLX1jZFWdXfjU/gXh3ZL8VtaKPBMM4OPCOzhDf4AGh1K4J0SC7deAetmoxdLArSNPXYxuZljcNhjOl4wE=
-Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
- header.d=none;linux.alibaba.com; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
- (2603:10b6:805:e3::14) by SA0PR15MB3952.namprd15.prod.outlook.com
- (2603:10b6:806:8d::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.19; Sat, 8 Aug
- 2020 21:43:11 +0000
-Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
- ([fe80::197f:d445:824d:1efa]) by SN6PR1501MB4141.namprd15.prod.outlook.com
- ([fe80::197f:d445:824d:1efa%6]) with mapi id 15.20.3261.019; Sat, 8 Aug 2020
- 21:43:11 +0000
-Date:   Sat, 8 Aug 2020 14:43:06 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-CC:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm/memcg: remove useless check on page->mem_cgroup
-Message-ID: <20200808214306.GA1409287@carbon.dhcp.thefacebook.com>
-References: <1596166480-22814-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200731151655.GB491801@cmpxchg.org>
- <9338716f-ca0e-057f-8d94-03e2b3f70281@linux.alibaba.com>
- <20200803081815.GD5174@dhcp22.suse.cz>
- <bd61e672-b997-c4cd-2047-fca9dc11cc4c@linux.alibaba.com>
- <92dd8e68-8095-72c5-0144-2a084e4d5993@linux.alibaba.com>
- <5622ef68-5e70-d1a9-d1be-b45411b6be5c@linux.alibaba.com>
- <4740bac1-72f6-a640-ab6a-a8801e68c27a@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4740bac1-72f6-a640-ab6a-a8801e68c27a@linux.alibaba.com>
-X-ClientProxiedBy: BYAPR03CA0031.namprd03.prod.outlook.com
- (2603:10b6:a02:a8::44) To SN6PR1501MB4141.namprd15.prod.outlook.com
- (2603:10b6:805:e3::14)
+        Sat, 8 Aug 2020 17:43:54 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C440C061756
+        for <linux-kernel@vger.kernel.org>; Sat,  8 Aug 2020 14:43:54 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id e4so2705068pjd.0
+        for <linux-kernel@vger.kernel.org>; Sat, 08 Aug 2020 14:43:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=ob2QP37RLgezFVyX3w2G2VcGlyjy7XL6IfmIT/KAVYE=;
+        b=zBUTeTu6BCDOah74lEjuHLPnYciK9mL/nwvFolTpQJ/dVEAdbZn+7RceBmTJRCZeQ2
+         hUMSNf5kNvxSjpf9gNR0k4xySdaPKrE1W+9TSqKQDHJgJNpcHBKH7VkicnRGwgbHjzhw
+         oAn13OvWDjK8Tt6rkwHJ+NxX8zvsORdOsoVfuJdcrTKocukLQXOfFgHZvzZJMkEphFPO
+         zSDxTmLLVOOJuPVwjHJR+9oBjtXU/qhZaCw1FipgOrGjwUzvzSrWdtwcOvyyuui1T4HE
+         Pjh/evfHL0nSUHxsOuy/lXQ5UCx9Tsni3Df/pBJYkinFdQ4YkDeOpE6XMXYN9W1Xah0a
+         q6yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=ob2QP37RLgezFVyX3w2G2VcGlyjy7XL6IfmIT/KAVYE=;
+        b=HDDYO+3ru0SSZVJkT3qaqH/CPoEWmQ3h289NXpG3HsroTDsvDRB08gsxBR/5P4T5rN
+         4lDNQHDOTdlnYNimMuEpV3P4Iz28g2aI2FZieVMWRHau4/Pz7v49Ai3xcceZZZjHaVrv
+         LnyC2MEc2Nq101AXMEH3QaKvXH7Oe8WltDF7J+hqdgyWj1itzOzhI0c/utswKKwSWVJk
+         rZMQ9rvIFvQeNQ2lCg4fLGJNugX5fnPU1dx3EXPE9o2c2SrjgX21xQ8Ar38ZWL+ild+X
+         gMtO+dz2oqrWAfeVyKa8JBK1UW0tO0xfhoqeZl+0mZS81pQhyjjRkoB2lbI9ZjRyy/Kr
+         Prfg==
+X-Gm-Message-State: AOAM530kefMwXAf/+mxAfByTdKHHJ1vgEP7UF3LuVcXiZvaMjbNLq2rf
+        y3aKGjWWpxtM6YGMYxi/guV3FitvNJg=
+X-Google-Smtp-Source: ABdhPJxbuqLwNwT/CWVgooi+/9riT5XA8Q9Qna2zxIIT1MZYkMHAijzxBE2v4k1AkYiX9MNOW5ryqQ==
+X-Received: by 2002:a17:90b:1b45:: with SMTP id nv5mr20366519pjb.35.1596923033719;
+        Sat, 08 Aug 2020 14:43:53 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id e3sm15017726pgu.40.2020.08.08.14.43.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 08 Aug 2020 14:43:52 -0700 (PDT)
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH] kernel: update callers of task_work_add() to use TWA_RESUME
+Message-ID: <10debfb3-25f2-20ed-d4f3-1d95ba4c2129@kernel.dk>
+Date:   Sat, 8 Aug 2020 15:43:50 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:a2b8) by BYAPR03CA0031.namprd03.prod.outlook.com (2603:10b6:a02:a8::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.15 via Frontend Transport; Sat, 8 Aug 2020 21:43:09 +0000
-X-Originating-IP: [2620:10d:c090:400::5:a2b8]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1e17b8cd-3a25-46e9-a694-08d83be40b98
-X-MS-TrafficTypeDiagnostic: SA0PR15MB3952:
-X-Microsoft-Antispam-PRVS: <SA0PR15MB3952F4B3FD54ABCC32A8F9F2BE460@SA0PR15MB3952.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vY6OM+dFvNJdYV6ZEq4ihnekAMtHh3irqsh7V1dDqR3GIjHZ3pakqvKgenJGTN5r+NMnxGCA4DSROqMdSnltAale+O9NOtYoWda2/TCkaBmItwkB2R8ndHPtDbDWN6OgDj+NYK0AVITAxyMh//6dChBB/22Oa+2MWK4+6s/u6qR8QcW6pBPorM/a74qDNYknzq4dkRXaoFm0hN6uuC5MwXozWiTSuLumPsYK9SmtJJGsafhX0HFB0eUEw/hlNArZ7toKygYsGhQjZOiNCc3YZYs7BJ5idlXV3JjOYgQ3HiPbFj7sej/fWWACmlKMNOLwyK/HX2Q3mspahw4XbBWoYQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(376002)(39860400002)(396003)(136003)(346002)(16526019)(186003)(6916009)(316002)(2906002)(66946007)(66476007)(5660300002)(8936002)(478600001)(66556008)(54906003)(83380400001)(52116002)(55016002)(33656002)(6666004)(7696005)(86362001)(8676002)(53546011)(1076003)(9686003)(6506007)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Doo6V85qf02dtQ4HVz///kuqFHmRmqnBSyRTCojcm5IROT2eCqrgVqyuOSaPvP53Rl0a7XAlcskFpOWXyMWO4ekcKkuVEdICxhHrmwltCdReijDwYF/RqlR3Vbh3F7npZ1cK/Nhc7xoImvGId2FnSwZSsqz/ZSuH2Szhxd6uyYn51vnHoNavQwzJlCWCXqKc0440VH6A1j5mxEnnHrKcyXcbR012V9VP9FC3x8lif9VtXOz3Ol9V/ZPKF+0XwJDyz6b/wddT+CJryRwVvGuds+b3xwQn0TgH+Yw35kUiqtorrWLB2HjbhGcz1gfxzRyTHpiisWchr/R7N0sdy8wFMNewzb5GnOoE7KRjDjXeFbLTFabOlpz6P7gWshtipxfg3x1hpS5EZJ4YxCvPiXGFYfTQcqcj52N+4mn/g7PqWJZjtL3A+6ZjqVrSEg0bHDlZkWGiKs7moDKq308yVjC5oMroXpr/pTcN/dF5Cseg2FUkH1R6bzw4bl8I0lFCZMSM0Vz4YAV1wZ7/PRJl5vT43htQnVaHzlVZnlzG+P69PIc0L0Er3EQ1xKVtYt//kgsvmrJH6+D7wDjW4I+uImPoj48ILFHLer67rkCLK/P0ggFiNqgOeE7B49+WDk3PEEKBnaLhFonWRTeuLt87rJsiHLgIUOlZXwJnnETk36Pg48c=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e17b8cd-3a25-46e9-a694-08d83be40b98
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB4141.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2020 21:43:10.9369
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3qZJEKxkxpIhy2e4yro6JK7Or8oasAm8Owgrq3MHpsn2l+Y/GFHMUMv9c6t48E0M
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3952
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-08_15:2020-08-06,2020-08-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011
- phishscore=0 suspectscore=1 bulkscore=0 adultscore=0 priorityscore=1501
- malwarescore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008080167
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 08, 2020 at 09:22:29PM +0800, Alex Shi wrote:
-> 
-> 
-> 在 2020/8/5 下午9:02, Alex Shi 写道:
-> > 
-> > 
-> > 在 2020/8/5 下午8:28, Alex Shi 写道:
-> >> The last patch has a problem on define. this version could fix it.
-> >>
-> >> BTW, I see some !memcg happens when MEMCG compilered but disabled by cgroup_disable
-> >>
-> >>
-> >> [   94.657666] ---[ end trace f1f34bfc3b32ed2f ]---
-> >> [   95.138995] anon flags: 0x5005b48008000d(locked|uptodate|dirty|swapbacked)
-> >> [   95.146220] raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
-> >> [   95.154549] raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
-> >> [   95.162876] page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
-> >>
-> >>
-> > 
-> > The following patch may helpful.
-> 
-> Any comments for the 2 patches?
-> 
-> Thanks
-> Alex
-> 
-> > 
-> > From 8bfb26a2e37e08dc61d20212bcfa5812a367ba94 Mon Sep 17 00:00:00 2001
-> > From: Alex Shi <alex.shi@linux.alibaba.com>
-> > Date: Wed, 5 Aug 2020 20:32:12 +0800
-> > Subject: [PATCH] mm/memcg: don't try charge swap if memcg disabled
-> > 
-> > If we disabled memcg by cgroup_disable=memory, the swap charges are
-> > still called. Let's return from the funcs earlier and keep WARN_ON
-> > monitor.
-> > 
-> > Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> > Cc: Johannes Weiner <hannes@cmpxchg.org>
-> > Cc: Michal Hocko <mhocko@kernel.org>
-> > Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: cgroups@vger.kernel.org
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-kernel@vger.kernel.org
-> > ---
-> >  mm/memcontrol.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index cb07a48d53aa..65f2b42d25af 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -7163,6 +7163,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
-> >  	VM_BUG_ON_PAGE(PageLRU(page), page);
-> >  	VM_BUG_ON_PAGE(page_count(page), page);
-> >  
-> > +	if (mem_cgroup_disabled())
-> > +		return;
-> > +
-> >  	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> >  		return;
-> >  
-> > @@ -7228,6 +7231,9 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
-> >  	struct mem_cgroup *memcg;
-> >  	unsigned short oldid;
-> >  
-> > +	if (mem_cgroup_disabled())
-> > +		return 0;
-> > +
-> >  	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> >  		return 0;
-> >  
-> > 
+Any pre-existing caller of this function uses 'true' to signal to use
+notifications or not, but we now also have signaled notifications.
+Update existing callers that specify 'true' for notify to use the
+updated TWA_RESUME instead.
 
+This was noted in the original commit as well:
 
-Hi Alex,
+e91b48162332 ("task_work: teach task_work_add() to do signal_wake_up()")
 
-this patch looks good to me. Please, feel free to add
-Reviewed-by: Roman Gushchin <guro@fb.com>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-What's the second patch?
+---
 
-Thanks!
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 14e4b4d17ee5..615a34d697df 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1345,7 +1345,7 @@ void noinstr do_machine_check(struct pt_regs *regs)
+ 		current->mce_kill_me.func = kill_me_maybe;
+ 		if (kill_it)
+ 			current->mce_kill_me.func = kill_me_now;
+-		task_work_add(current, &current->mce_kill_me, true);
++		task_work_add(current, &current->mce_kill_me, TWA_RESUME);
+ 	} else {
+ 		/*
+ 		 * Handle an MCE which has happened in kernel space but from
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 3f844f14fc0a..2c022eee122d 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -561,7 +561,7 @@ static int __rdtgroup_move_task(struct task_struct *tsk,
+ 	 * callback has been invoked.
+ 	 */
+ 	atomic_inc(&rdtgrp->waitcount);
+-	ret = task_work_add(tsk, &callback->work, true);
++	ret = task_work_add(tsk, &callback->work, TWA_RESUME);
+ 	if (ret) {
+ 		/*
+ 		 * Task is exiting. Drop the refcount and free the callback.
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index 81bf71b10d44..8360f8d6be65 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -879,7 +879,7 @@ static void ghes_proc_in_irq(struct irq_work *irq_work)
+ 			estatus_node->task_work.func = ghes_kick_task_work;
+ 			estatus_node->task_work_cpu = smp_processor_id();
+ 			ret = task_work_add(current, &estatus_node->task_work,
+-					    true);
++					    TWA_RESUME);
+ 			if (ret)
+ 				estatus_node->task_work.func = NULL;
+ 		}
+diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+index f50c5f182bb5..d4a11eaeed91 100644
+--- a/drivers/android/binder.c
++++ b/drivers/android/binder.c
+@@ -2251,7 +2251,7 @@ static void binder_deferred_fd_close(int fd)
+ 	__close_fd_get_file(fd, &twcb->file);
+ 	if (twcb->file) {
+ 		filp_close(twcb->file, current->files);
+-		task_work_add(current, &twcb->twork, true);
++		task_work_add(current, &twcb->twork, TWA_RESUME);
+ 	} else {
+ 		kfree(twcb);
+ 	}
+diff --git a/fs/file_table.c b/fs/file_table.c
+index 656647f9575a..709ada3151da 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -339,7 +339,7 @@ void fput_many(struct file *file, unsigned int refs)
+ 
+ 		if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
+ 			init_task_work(&file->f_u.fu_rcuhead, ____fput);
+-			if (!task_work_add(task, &file->f_u.fu_rcuhead, true))
++			if (!task_work_add(task, &file->f_u.fu_rcuhead, TWA_RESUME))
+ 				return;
+ 			/*
+ 			 * After this task has run exit_task_work(),
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 4a0f600a3328..8b072349fe28 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -1191,7 +1191,7 @@ static void mntput_no_expire(struct mount *mnt)
+ 		struct task_struct *task = current;
+ 		if (likely(!(task->flags & PF_KTHREAD))) {
+ 			init_task_work(&mnt->mnt_rcu, __cleanup_mnt);
+-			if (!task_work_add(task, &mnt->mnt_rcu, true))
++			if (!task_work_add(task, &mnt->mnt_rcu, TWA_RESUME))
+ 				return;
+ 		}
+ 		if (llist_add(&mnt->mnt_llist, &delayed_mntput_list))
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 5f8b0c52fd2e..10e35c08b44d 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -1823,7 +1823,7 @@ void uprobe_copy_process(struct task_struct *t, unsigned long flags)
+ 
+ 	t->utask->dup_xol_addr = area->vaddr;
+ 	init_task_work(&t->utask->dup_xol_work, dup_xol_work);
+-	task_work_add(t, &t->utask->dup_xol_work, true);
++	task_work_add(t, &t->utask->dup_xol_work, TWA_RESUME);
+ }
+ 
+ /*
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 2ba8f230feb9..cce1ab6b62a9 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -2923,7 +2923,7 @@ static void task_tick_numa(struct rq *rq, struct task_struct *curr)
+ 		curr->node_stamp += period;
+ 
+ 		if (!time_before(jiffies, curr->mm->numa_next_scan))
+-			task_work_add(curr, work, true);
++			task_work_add(curr, work, TWA_RESUME);
+ 	}
+ }
+ 
+diff --git a/security/keys/keyctl.c b/security/keys/keyctl.c
+index 9febd37a168f..ed86310ffcd4 100644
+--- a/security/keys/keyctl.c
++++ b/security/keys/keyctl.c
+@@ -1693,7 +1693,7 @@ long keyctl_session_to_parent(void)
+ 
+ 	/* the replacement session keyring is applied just prior to userspace
+ 	 * restarting */
+-	ret = task_work_add(parent, newwork, true);
++	ret = task_work_add(parent, newwork, TWA_RESUME);
+ 	if (!ret)
+ 		newwork = NULL;
+ unlock:
+diff --git a/security/yama/yama_lsm.c b/security/yama/yama_lsm.c
+index 536c99646f6a..06e226166aab 100644
+--- a/security/yama/yama_lsm.c
++++ b/security/yama/yama_lsm.c
+@@ -99,7 +99,7 @@ static void report_access(const char *access, struct task_struct *target,
+ 	info->access = access;
+ 	info->target = target;
+ 	info->agent = agent;
+-	if (task_work_add(current, &info->work, true) == 0)
++	if (task_work_add(current, &info->work, TWA_RESUME) == 0)
+ 		return; /* success */
+ 
+ 	WARN(1, "report_access called from exiting task");
+
+-- 
+Jens Axboe
 
