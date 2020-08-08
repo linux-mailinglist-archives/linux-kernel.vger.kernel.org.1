@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CB123F73C
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 12:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF28C23F740
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 12:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbgHHK3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 Aug 2020 06:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbgHHK3i (ORCPT
+        id S1726344AbgHHKcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 Aug 2020 06:32:43 -0400
+Received: from 6.mo2.mail-out.ovh.net ([87.98.165.38]:32987 "EHLO
+        6.mo2.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725980AbgHHKcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 Aug 2020 06:29:38 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8ACC061756;
-        Sat,  8 Aug 2020 03:29:37 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id s15so2303840pgc.8;
-        Sat, 08 Aug 2020 03:29:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sMuzX08ks4Pi6hqwcqcEba13N3oB4kmmw049KdwaPL4=;
-        b=dDTfHLZ4J0jxeFiQwNhDFbVnurxLUKnHy6N8szRC1dlgXgZurV7wvEpJ300X+AoW5I
-         MtjQsTD97x+eILlp2fKp3W8CohdFOzz1BymAPyqTZbkRWWYJSoB10UJq+FXNJqONVE+d
-         SBuxhB/J/fDUIzmNFSeDlfDHi6bL2jgw5DGblhxqWeZ6KLTBmQWuMO5j71bGde88ZIrX
-         nmqpsqzcO9Tc1ZjQyUCeTWBuxfYDlpjmRMofPeIO6lxYnDPEsx9G0Fu1Z1ZRXdmflRsG
-         PBffVyWSuWMtnEW5lZLK0/SeL8C8Y/C6z72OviaU1gxmdQ0hdJ/kMwLBbC0Inp/YyDW6
-         hJCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sMuzX08ks4Pi6hqwcqcEba13N3oB4kmmw049KdwaPL4=;
-        b=qTRw54QcP0JWg5R6LnopeeGlFnp24o0D8ZNh1Mqc7s4XoorMH94kc9yzMnAz1GFf5m
-         tm43j9KnMunrpBwL+w+1lPncj3W7DpJvdVisdMf94eROVMhdA0XDX03N2i4ruApxxB48
-         fQSEE3ceMbpfLz9fFJ/bBsXcJYkwuu3tGhM98gPGSsVVU/vdge1TemJJXXklLHX+zPC7
-         Z6opwNSMYqzEyADem0FPRveUO75mXsZrL/O9acd0o7qMvRgZpqcZoDvsouweIAQBvJjA
-         yXzRDMdZjacdOPkqJSexL2fOKqy7BTo6w7u7dYKnatRYQLATEbJhZZh1/ulS1+oNsW5n
-         KJBw==
-X-Gm-Message-State: AOAM533nRB/LhHgCBQZOdvFnHq5LMhAvy5gWycHWKYMfWlTQdDyAjX6G
-        dINL+rOE/GSXZOZE1HgRdoZrKSMhtv9yt7hcoZXvpqY4kzM=
-X-Google-Smtp-Source: ABdhPJyaC8AY/XBoJwPuplHBsBCpyOhrB/+sdblKonKxa3WSKQJWaZ6gyFbbV28CEVmckRbn5oO2IHrFZRnBKm7wDB8=
-X-Received: by 2002:a63:ec18:: with SMTP id j24mr10194559pgh.74.1596882576098;
- Sat, 08 Aug 2020 03:29:36 -0700 (PDT)
+        Sat, 8 Aug 2020 06:32:43 -0400
+X-Greylist: delayed 12593 seconds by postgrey-1.27 at vger.kernel.org; Sat, 08 Aug 2020 06:32:41 EDT
+Received: from player692.ha.ovh.net (unknown [10.110.171.30])
+        by mo2.mail-out.ovh.net (Postfix) with ESMTP id 7AA611E22E2
+        for <linux-kernel@vger.kernel.org>; Sat,  8 Aug 2020 08:53:43 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player692.ha.ovh.net (Postfix) with ESMTPSA id B7F0014F99554;
+        Sat,  8 Aug 2020 06:53:36 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-105G00604a03001-07ae-404f-8b1c-e8e00fea8c5d,
+                    79D32C5DBA076DF52B56DF0DE49DD07428F72CA9) smtp.auth=steve@sk2.org
+Date:   Sat, 8 Aug 2020 08:53:29 +0200
+From:   Stephen Kitt <steve@sk2.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wolfram Sang <wsa@kernel.org>
+Subject: Re: [PATCH v3] hwmon/pmbus: use simple i2c probe function
+Message-ID: <20200808085329.4713bf38@heffalump.sk2.org>
+In-Reply-To: <20200807210707.7dd1d9b9@heffalump.sk2.org>
+References: <20200807173231.GA47449@roeck-us.net>
+        <20200807210707.7dd1d9b9@heffalump.sk2.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200807232104.1256119-1-cmo@melexis.com>
-In-Reply-To: <20200807232104.1256119-1-cmo@melexis.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 8 Aug 2020 13:29:19 +0300
-Message-ID: <CAHp75Vfio8RN9XpSPn2jL7WDCitbO0=BfjB85E5edZQs-7OxqQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] iio: temperature: mlx90632: Add extended
- calibration calculations
-To:     Crt Mori <cmo@melexis.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/y.bcllr/2+vwSjXRyoFtyXy"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 5473843875180530958
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrkeefgdduudefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtderreertdejnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeevledvueefvdeivefftdeugeekveethefftdffteelheejkeejjeduffeiudetkeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrieelvddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 8, 2020 at 2:22 AM Crt Mori <cmo@melexis.com> wrote:
->
-> Since the second patch is dependent on the first and was still not
-> merged, I have decided to send them together. First patch just makes
-> second one more readable as it splits out the repeated calculation and
-> that enables the second patch to tweak the variable to the new
-> condition.
+--Sig_/y.bcllr/2+vwSjXRyoFtyXy
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Neither here nor in the individual patches I haven't found a changelog.
+On Fri, 7 Aug 2020 21:07:07 +0200, Stephen Kitt <steve@sk2.org> wrote:
 
-> Crt Mori (2):
->   iio:temperature:mlx90632: Reduce number of equal calulcations
->   iio:temperature:mlx90632: Adding extended calibration option
->
->  drivers/iio/temperature/mlx90632.c | 233 +++++++++++++++++++++++++++--
->  1 file changed, 223 insertions(+), 10 deletions(-)
->
-> --
-> 2.25.1
->
+> On Fri, 7 Aug 2020 10:32:31 -0700, Guenter Roeck <linux@roeck-us.net> wro=
+te:
+> > On Fri, Aug 07, 2020 at 06:28:01PM +0200, Stephen Kitt wrote: =20
+> > > =20
+> > > -static int ltc2978_probe(struct i2c_client *client,
+> > > -			 const struct i2c_device_id *id)
+> > > +static int ltc2978_probe(struct i2c_client *client)
+> > >  {
+> > >  	int i, chip_id;
+> > >  	struct ltc2978_data *data;
+> > > @@ -670,10 +669,10 @@ static int ltc2978_probe(struct i2c_client
+> > > *client, return chip_id;
+> > > =20
+> > >  	data->id =3D chip_id;
+> > > -	if (data->id !=3D id->driver_data)
+> > > +	if (strcmp(client->name, ltc2978_id[data->id].name) !=3D 0)   =20
+> >=20
+> > I was about to apply this patch, but this is problematic: It assumes th=
+at
+> > __stringify(id) =3D=3D ltc2978_id[id].name and that ltc2978_id[id].driv=
+er_data
+> > =3D=3D id. While that is curently the case (as far as I can see), it is=
+ still
+> > unsafe. I think it would be much safer to use i2c_match_id() here. =20
+>=20
+> I=E2=80=99m not following the __stringify assumption
+[...]
 
+I get it, the code assumes there=E2=80=99s a bijection between the set of n=
+ames and
+the set of driver_data values. So effectively we can=E2=80=99t log the dete=
+cted name
+based on the chip_id...
 
--- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+
+Stephen
+
+--Sig_/y.bcllr/2+vwSjXRyoFtyXy
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl8uS+kACgkQgNMC9Yht
+g5xIzxAAlaUtrB0ITq9gTE6oXUQv1bI/nUA7jM0Th2HsVOEjUDr6TOT/RatMscfk
+gRywHUPfPLczg0fbt5oYLN8F+laBkYE8gdhurUqalS5AC2YgnBraooAXRDWd7bux
+hCGkkwoP8jdV3wg5FDwdsE+WeUzCOKcy0oO25MSgFsAnb9xcj7Q7EI0GQE0HsKL+
+AopKclYJjpnI4micMOXkTsxjtFthCt9U2BTxQ7O4ehy0ENiDDuVw+S5PfIXlcu3r
+aXXv4onAgRJSWRbLQ93pMAyd4DKXl5lY9duhQbyALlZIB9svpOkvL8xd4F3RQAeV
+Bo45bMV1LDmBlkc5IU6NREHW2xFnSL4xjM3evJ9Wb0h7QoI3QmhvJC363nNKJ2kK
+60nDefPvLiYIFIm7L0Ym0uRSc+4sLJpSZLWL+fGYaHa2hKWmcdnDih/aT6i1/jsc
+GDxHiaigPZwqlui/ehI8VZkuuN5skrMMpidle7sZZbp0Gf0dwdtMegYd07Oye+pK
+o1yJp8mMwPEdJ31oi+O7ra8NWcEBDVW0jSFUck/V8WeOqSkArvEsm+K8BxaRoz58
+b8nimZKFSnLfIybE4uPSYGOnSfrjRCmNwqDQe3gFagcHUFvsqmE46gls5uhlia96
+RkqBwvQ0R+DY0CbV4FUXY0Qyxm0gVHuunKgO5GZcoiGihqrdAgs=
+=aVzI
+-----END PGP SIGNATURE-----
+
+--Sig_/y.bcllr/2+vwSjXRyoFtyXy--
