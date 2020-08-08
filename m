@@ -2,60 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 836D323F96E
+	by mail.lfdr.de (Postfix) with ESMTP id F0B6B23F96F
 	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 01:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgHHXG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 Aug 2020 19:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34128 "EHLO
+        id S1726321AbgHHXHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 Aug 2020 19:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbgHHXG5 (ORCPT
+        with ESMTP id S1725950AbgHHXHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 Aug 2020 19:06:57 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D86F0C061756
-        for <linux-kernel@vger.kernel.org>; Sat,  8 Aug 2020 16:06:56 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o13so2884280pgf.0
-        for <linux-kernel@vger.kernel.org>; Sat, 08 Aug 2020 16:06:56 -0700 (PDT)
+        Sat, 8 Aug 2020 19:07:00 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1F7C061756
+        for <linux-kernel@vger.kernel.org>; Sat,  8 Aug 2020 16:07:00 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id u128so3096710pfb.6
+        for <linux-kernel@vger.kernel.org>; Sat, 08 Aug 2020 16:07:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+NUym8HD4rAkVe/v6ICYggV0BsxvR+hENFSjlluLvaE=;
-        b=aMe3M8hq1N8mSUWwNNNa+BFs1vz/wV1RLDQ3aKe9dZ8lrmuGinl6xfAIrLq3fOeTkM
-         N3hc8QFBrDaE9dWn6pWlRyvETXwdC3fhaRu2/ZRMAWqsmI5Bxp51/jIMQHk4CziXULNG
-         iMpcZsTC9xPGbT2FfPSknpiztvVPl8ImdyfFVrFYfndNhvZ0COftp3gaFTzT3RIwBwWU
-         vxKkzM6ntX9xp+kCCblvztnqRMerEjPHEWkwq385lhwxDIY/fEOAug5BiyDMEo42du2l
-         CwGKLVjj3Ep2kKJSISgg7NonFFF2F2CLM8VRmTqippaF0oA+tTPSUSOlcgabpLSYnbyO
-         kVGA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=emiTgggaIF+BQrqHX2Ti87z5PsPZiDji49xQXoUlCVA=;
+        b=LoE/fjBSi9f+qG08SnhKBMIqj5SRCNf06QZHLO8LAHjwjeV3QfzjitC8SoIve96p8d
+         9mpz5ZfGO2qcYXm0rAMBYSJECHZcVksa+xs6tHM4l04EFKO/0BDSzScMxeygHhqnHzbX
+         AXEwTvbdhNHHopLBXpgWeTRBFOSUP0uh2DQiUUgSjKMhl0syXgVvxkcYoTfjzoEKE2NK
+         DXxtv/TjtV7FUCeGThWxxq1pA/eIMCNScbcwvxup1Y9MCUa8GnRcA+8IRufBSf9PlCrZ
+         Xd38U0VJCb4hvZQXSwU2DOysRVfA6547D3G7t/QWwvHoJgwwisS1JgqF6mHYOSew7A0X
+         aJDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+NUym8HD4rAkVe/v6ICYggV0BsxvR+hENFSjlluLvaE=;
-        b=k/+y0RSG1pn4X1dej3ZFu1zBBxwTgImQhPRCAC5z456nLJ1069hEbpzEyqrmsb4rxj
-         lN7uRHH1JBa9+wRSzChgsWR2odDpgkleUWE6ntlGoLa2cg8dtGo7spdEfYBoKVDBfPA+
-         r9BRCXnuFGr7/pQqLI2ywvMPts8yMB9Pjyt10R0tB9qGQviCl8mVjAitqbfm0z7U1Fe/
-         1XGpXanJjkkCo+JsZ2PlhikD2EWIjJltfdP15NDzDOh0Y1kjZB7lywXSzp2twWZOhPUF
-         GvZrl6vcAhQ7DN/F7AyaRR1ODtX2WGt9DNGv5xatmkv7kpyEMkz2NzznMmV2VEuBTHjU
-         1SDA==
-X-Gm-Message-State: AOAM530N8mQGSPeM1SMqrUhwYiH/PJk9ZRbnAC7geqnbutSTDrVBuhlW
-        GkLQZGfwnWv5ZUK9OKCo6hamwSHM
-X-Google-Smtp-Source: ABdhPJwwUYqdXxqG539lrx1ReHEixuDRGFYbsDQfr8IEltHrrz02kEUzxyXgd03Qyt12lwEO9U2jzw==
-X-Received: by 2002:a63:31d1:: with SMTP id x200mr16735498pgx.209.1596928015829;
-        Sat, 08 Aug 2020 16:06:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=emiTgggaIF+BQrqHX2Ti87z5PsPZiDji49xQXoUlCVA=;
+        b=WVhqtCKfJ5vs1kJQXVipwRsJxx1c+lewG7qKyMpxlvPSL28+OXBov4I6DAqhkN8Hcd
+         TJgQEx3IQ6lek0y1ezDgI5V23oW+fai2Oa1UQanwABTDu3ZzhnWUzZRx581YfUw9twVt
+         aTCe0TNQS8L9TNAFtvdcZesCVOGw6mi6GzoKqfzI2L7CpbIjHjK6eNMM5wV0vo1v3A2o
+         IPunBZFz/qHapsygeiSDdiXGMdVsWUri74pjs2CrzDEf1374jo/pKyzK+4/nmCt/3LfN
+         /Z6yQIrAiWfr1JsRVJPxHkJJL8pldfGZOKelkIh/rgt8ZNXDd1Koy2Ve/Sdh7BRU5CtQ
+         FWSQ==
+X-Gm-Message-State: AOAM531aEp2wo2jfESAkdRTnWMSteErXqWhqeEZfF65L6e7cFgjpv1sN
+        FPr9Ub0u4MX/QVS9sPe2sIKGlhy2
+X-Google-Smtp-Source: ABdhPJwc8Q9LMIsXZW8Gug+sjrx5goq3Q3xh0H9aatHbSvWaZlDxI8HC7TJrpGzpLUj0+DZqeIopIA==
+X-Received: by 2002:a63:b709:: with SMTP id t9mr16476983pgf.376.1596928020053;
+        Sat, 08 Aug 2020 16:07:00 -0700 (PDT)
 Received: from localhost (g223.115-65-55.ppp.wakwak.ne.jp. [115.65.55.223])
-        by smtp.gmail.com with ESMTPSA id t69sm5919679pgd.66.2020.08.08.16.06.54
+        by smtp.gmail.com with ESMTPSA id d24sm19470570pfq.72.2020.08.08.16.06.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Aug 2020 16:06:55 -0700 (PDT)
+        Sat, 08 Aug 2020 16:06:59 -0700 (PDT)
 From:   Stafford Horne <shorne@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Stafford Horne <shorne@gmail.com>
-Subject: [PATCH v3 0/6] OpenRISC header and sparse warning fixes for 5.9
-Date:   Sun,  9 Aug 2020 08:06:41 +0900
-Message-Id: <20200808230647.833047-1-shorne@gmail.com>
+        Stafford Horne <shorne@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        openrisc@lists.librecores.org
+Subject: [PATCH v3 1/6] openrisc: io: Fixup defines and move include to the end
+Date:   Sun,  9 Aug 2020 08:06:42 +0900
+Message-Id: <20200808230647.833047-2-shorne@gmail.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200808230647.833047-1-shorne@gmail.com>
+References: <20200808230647.833047-1-shorne@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -63,43 +71,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This didn't seem to cause any issues, but while working on fixing up
+sparse annotations for OpenRISC I noticed this.  This patch moves the
+include of asm-generic/io.h to the end of the file.  Also, we add
+defines of ioremap and iounmap, that way we don't get duplicate
+definitions from asm-generic/io.h.
 
+Signed-off-by: Stafford Horne <shorne@gmail.com>
+---
+Changes since v2:
+ - none
 Changes since v1:
- - in "io: Fixup defines and move include to the end" added a linux/types.h
-   include as there were compiler failurs pointed out by kbuild.
- - Remove some __force's suggested by Luc Van Oostenryck
+ - Add linux/types.h include following report from kbuild
 
+ arch/openrisc/include/asm/io.h | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-This a series of fixes for OpenRISC sparse warnings.  The kbuild robots report
-many issues related to issues with OpenRISC headers having missing or incorrect
-sparse annotations.
-
-Example kdbuild-all report:
-
-  net/ipv4/ip_sockglue.c:1489:13: sparse: sparse: incorrect type in initializer (different address spaces)
-
-  https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/MB6SE7BX425ENFTSIL6KAOB3CVS4WJLH/
-
-Also this includes a few cleanups which I noticed while working on the warning
-fixups.
-
--Stafford
-
-
-Stafford Horne (6):
-  openrisc: io: Fixup defines and move include to the end
-  openrisc: uaccess: Fix sparse address space warnings
-  openrisc: uaccess: Use static inline function in access_ok
-  openrisc: uaccess: Remove unused macro __addr_ok
-  openrisc: signal: Fix sparse address space warnings
-  openrisc: uaccess: Add user address space check to access_ok
-
- arch/openrisc/include/asm/io.h      |  9 +++++++--
- arch/openrisc/include/asm/uaccess.h | 21 +++++++++++----------
- arch/openrisc/kernel/signal.c       | 14 +++++++-------
- 3 files changed, 25 insertions(+), 19 deletions(-)
-
+diff --git a/arch/openrisc/include/asm/io.h b/arch/openrisc/include/asm/io.h
+index db02fb2077d9..7d6b4a77b379 100644
+--- a/arch/openrisc/include/asm/io.h
++++ b/arch/openrisc/include/asm/io.h
+@@ -14,6 +14,8 @@
+ #ifndef __ASM_OPENRISC_IO_H
+ #define __ASM_OPENRISC_IO_H
+ 
++#include <linux/types.h>
++
+ /*
+  * PCI: can we really do 0 here if we have no port IO?
+  */
+@@ -25,9 +27,12 @@
+ #define PIO_OFFSET		0
+ #define PIO_MASK		0
+ 
+-#include <asm-generic/io.h>
+-
++#define ioremap ioremap
+ void __iomem *ioremap(phys_addr_t offset, unsigned long size);
++
++#define iounmap iounmap
+ extern void iounmap(void *addr);
+ 
++#include <asm-generic/io.h>
++
+ #endif
 -- 
 2.26.2
 
