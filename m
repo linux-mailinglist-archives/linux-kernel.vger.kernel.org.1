@@ -2,92 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC5E23F7D5
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 15:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A9A23F7D9
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 15:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgHHNmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 Aug 2020 09:42:12 -0400
-Received: from elvis.franken.de ([193.175.24.41]:39026 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726190AbgHHNmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 Aug 2020 09:42:04 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1k4P6k-0004vB-00; Sat, 08 Aug 2020 15:41:58 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 19B0AC0C98; Sat,  8 Aug 2020 15:41:47 +0200 (CEST)
-Date:   Sat, 8 Aug 2020 15:41:47 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alex Deucher <alexander.deucher@amd.com>, christian.koenig@amd.com,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] gpu/drm: Remove TTM_PL_FLAG_WC of VRAM to fix
- writecombine issue for Loongson64
-Message-ID: <20200808134147.GA5772@alpha.franken.de>
-References: <1596871502-3432-1-git-send-email-yangtiezhu@loongson.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1596871502-3432-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S1726398AbgHHNqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 Aug 2020 09:46:50 -0400
+Received: from m15112.mail.126.com ([220.181.15.112]:37808 "EHLO
+        m15112.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726190AbgHHNqt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 Aug 2020 09:46:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=WHXhFzIbKFdevwIdD+
+        ipgUf5p6qP87QN0gbQI3/2iqo=; b=WppCPe6B9k1QK5HY1ceyHrHO1nR9zeVsAe
+        VebFryE2Othe2r0zK+dVn0RcwfrlmRzDnepQ8RllrcD4+9umPS747sny5KU9yIAE
+        VBMXsXtQosL4Qre+57G6u5QWbSLR9fLaScIeBfCRuh/FXkMo9o0mvgVKkmRGcUAI
+        VpTyIOxKs=
+Received: from 192.168.137.133 (unknown [112.10.84.202])
+        by smtp2 (Coremail) with SMTP id DMmowABHzSGArC5fXMmZGA--.43065S3;
+        Sat, 08 Aug 2020 21:45:38 +0800 (CST)
+From:   Xianting Tian <xianting_tian@126.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] ext4: use kmemdup_nul() instead of kstrndup()
+Date:   Sat,  8 Aug 2020 09:45:36 -0400
+Message-Id: <1596894336-49052-1-git-send-email-xianting_tian@126.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: DMmowABHzSGArC5fXMmZGA--.43065S3
+X-Coremail-Antispam: 1Uf129KBjvdXoW7JryrZFy5Kw4DWrW3WryfZwb_yoW3uFX_XF
+        WxJF4DWryftr4IkF1Fkay5tFsYkrs2vr13Xan3Ary5Xw1qq3WYgw1DZry7XF98Wr43JFZ8
+        u34kJrnFqrn2vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8G2NJUUUUU==
+X-Originating-IP: [112.10.84.202]
+X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbi3AJ6pFpD-WPjfAAAsY
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 08, 2020 at 03:25:02PM +0800, Tiezhu Yang wrote:
-> Loongson processors have a writecombine issue that maybe failed to
-> write back framebuffer used with ATI Radeon or AMD GPU at times,
-> after commit 8a08e50cee66 ("drm: Permit video-buffers writecombine
-> mapping for MIPS"), there exists some errors such as blurred screen
-> and lockup, and so on.
-> 
-> Remove the flag TTM_PL_FLAG_WC of VRAM to fix writecombine issue for
-> Loongson64 to work well with ATI Radeon or AMD GPU, and it has no any
-> influence on the other platforms.
+kmemdup_nul() is more efficient than kmemdup_nul() if
+the size is known exactly.
 
-well it's not my call to take or reject this patch, but I already
-indicated it might be better to disable writecombine on the CPU
-detection side (or do you have other devices where writecombining
-works ?). Something like below will disbale it for all loongson64 CPUs.
-If you now find out where it works and where it doesn't, you can even
-reduce it to the required minium of affected CPUs.
+The description of kstrndup() already suggested:
+Note: Use kmemdup_nul() instead if the size is known exactly.
 
-Thomas.
+Signed-off-by: Xianting Tian <xianting_tian@126.com>
+---
+ fs/ext4/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index def1659fe262..cdd87009e931 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -2043,7 +2043,6 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
- 			set_isa(c, MIPS_CPU_ISA_M64R2);
- 			break;
- 		}
--		c->writecombine = _CACHE_UNCACHED_ACCELERATED;
- 		c->ases |= (MIPS_ASE_LOONGSON_MMI | MIPS_ASE_LOONGSON_EXT |
- 				MIPS_ASE_LOONGSON_EXT2);
- 		break;
-@@ -2073,7 +2072,6 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
- 		 * register, we correct it here.
- 		 */
- 		c->options |= MIPS_CPU_FTLB | MIPS_CPU_TLBINV | MIPS_CPU_LDPTE;
--		c->writecombine = _CACHE_UNCACHED_ACCELERATED;
- 		c->ases |= (MIPS_ASE_LOONGSON_MMI | MIPS_ASE_LOONGSON_CAM |
- 			MIPS_ASE_LOONGSON_EXT | MIPS_ASE_LOONGSON_EXT2);
- 		c->ases &= ~MIPS_ASE_VZ; /* VZ of Loongson-3A2000/3000 is incomplete */
-@@ -2084,7 +2082,6 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
- 		set_elf_platform(cpu, "loongson3a");
- 		set_isa(c, MIPS_CPU_ISA_M64R2);
- 		decode_cpucfg(c);
--		c->writecombine = _CACHE_UNCACHED_ACCELERATED;
- 		break;
- 	default:
- 		panic("Unknown Loongson Processor ID!");
-
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 330957e..be37556 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -4016,7 +4016,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 	}
+ 
+ 	if (sbi->s_es->s_mount_opts[0]) {
+-		char *s_mount_opts = kstrndup(sbi->s_es->s_mount_opts,
++		char *s_mount_opts = kmemdup_nul(sbi->s_es->s_mount_opts,
+ 					      sizeof(sbi->s_es->s_mount_opts),
+ 					      GFP_KERNEL);
+ 		if (!s_mount_opts)
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+1.8.3.1
+
