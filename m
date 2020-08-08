@@ -2,71 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC1823F62A
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 05:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC4623F62C
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 05:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726393AbgHHD2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 23:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726212AbgHHD2b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 23:28:31 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7254BC061756;
-        Fri,  7 Aug 2020 20:28:31 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id qc22so4028676ejb.4;
-        Fri, 07 Aug 2020 20:28:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:mime-version:content-transfer-encoding
-         :content-description:subject:to:from:date:reply-to;
-        bh=KZxomOrCfGKcRdij0ymf/g952wNhDs42ReaqHNdRcCA=;
-        b=u4FZDPa74JrnaWqkoyrsI7AF8mdVbIjtjq+AZr+ObjEhUTV0vGilkmg2DBat3z/xrW
-         aYriOWVBOqxJWmlPc2I+0INuUjDV95/XUt7+YhfknsP7ihlIdC3n+c4tYjA6ywFkcnOZ
-         BMfW2z3K6aQnjvD2j6FtKB2OdRRlt8erub6xji/mQYNKHPhFrbBgDe/0ayYHXvysjJFa
-         FcvsAEjFPl+aizwMpUzr1HxFq8Cla/am+EQ9cmOTUPe/2lruxcNLc4rPM0PKh//tUscE
-         0LoF2Prmp/302l40wGtV2ahL7MUcQPQOG7PM3WILG1+66uJZOfm4X/Rl14C6X5aOnXEs
-         TzJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:mime-version
-         :content-transfer-encoding:content-description:subject:to:from:date
-         :reply-to;
-        bh=KZxomOrCfGKcRdij0ymf/g952wNhDs42ReaqHNdRcCA=;
-        b=SOkbX+eQnAEWyL8FT90wf9adwsbqAhAH0nMx8nxHdtkakIDRPRh1PQ6vB+s9d05k+p
-         Z7cwlBlg0BHPyhBpUKFGEvPSNX1hLADl11dZzybNx6saT+JDvW2k9A+dZqZvlISk2Lrw
-         8D8/fUMBHJkys4g6kvw3/aQTbSUi3WBU9OOS4e5jE3v/q+WJify/OgVvHYrl3Qrv0ISv
-         PgyXNJ252Wn828ERjprAO4n+H8apMEpJM6PpNLbnIgrxpdpJnxBp8549UqajkQpmgLHx
-         epyZI2Uh8pscCDC/SDFn1Msr+6Gel/8tVV73kJAfUKiWEC5Ai3/yRIvvREVQXwFi9r7R
-         0IBg==
-X-Gm-Message-State: AOAM5306GjCuB5gTFrHzhSrNAqypllxBznhMd5s6S94Go3e81f3VmIrp
-        /vwQsQGMNaTXW5M0z+zipYM=
-X-Google-Smtp-Source: ABdhPJyFIXz62qDFPcoTm8StUP/joQXiNU6HuxdE+q0wTDI/jmLjX//PUNP2gf6BjMqoLe2To9D+1w==
-X-Received: by 2002:a17:906:f905:: with SMTP id lc5mr11863926ejb.340.1596857310293;
-        Fri, 07 Aug 2020 20:28:30 -0700 (PDT)
-Received: from [192.168.0.112] ([196.171.10.162])
-        by smtp.gmail.com with ESMTPSA id cc9sm6797833edb.14.2020.08.07.20.28.24
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Fri, 07 Aug 2020 20:28:29 -0700 (PDT)
-Message-ID: <5f2e1bdd.1c69fb81.367fa.2b29@mx.google.com>
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726262AbgHHDgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 23:36:36 -0400
+Received: from mga02.intel.com ([134.134.136.20]:6958 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726200AbgHHDgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 23:36:36 -0400
+IronPort-SDR: fb4ODeR6K4HnUcc5en7EwlOV0CHQel+cdHnQ1wwgm2Ff12wQJFqvaz59NKeRHHlLl/y0rmNlGc
+ RAqKM1MlnI9A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9706"; a="141106442"
+X-IronPort-AV: E=Sophos;i="5.75,448,1589266800"; 
+   d="scan'208";a="141106442"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2020 20:36:35 -0700
+IronPort-SDR: YCM9EXbK/jh/TXTYVnB9ql35sqCQ845r9LoyiK6mYKlUsLwY5MO8wcXm99P/dz9QDI27s6GwGf
+ DqUIg5Y4IDJA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,448,1589266800"; 
+   d="scan'208";a="289816114"
+Received: from lkp-server02.sh.intel.com (HELO 090e49ab5480) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 07 Aug 2020 20:36:34 -0700
+Received: from kbuild by 090e49ab5480 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k4Fes-0000dk-2J; Sat, 08 Aug 2020 03:36:34 +0000
+Date:   Sat, 8 Aug 2020 11:35:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: fs/init.c:72:8: warning: Variable 'error' is reassigned a value
+ before the old one has been used.
+Message-ID: <202008081143.D8Y8xO2X%lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Hello
-To:     Recipients <nourrazakari@gmail.com>
-From:   "Jennifer" <nourrazakari@gmail.com>
-Date:   Sat, 08 Aug 2020 03:28:15 +0000
-Reply-To: jenniferalex026@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
-My name is Jenifer Alex
-Please reply, so that we can know more better =
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   30185b69a2d533c4ba6ca926b8390ce7de495e29
+commit: 4b7ca5014cbef51cdb99fd644eae4f3773747a05 init: add an init_chroot helper
+date:   8 days ago
+compiler: hppa-linux-gcc (GCC) 9.3.0
 
-and share photos,
-Thank you.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+
+cppcheck warnings: (new ones prefixed by >>)
+
+>> fs/init.c:72:8: warning: Variable 'error' is reassigned a value before the old one has been used. [redundantAssignment]
+    error = security_path_chroot(&path);
+          ^
+   fs/init.c:69:8: note: Variable 'error' is reassigned a value before the old one has been used.
+    error = -EPERM;
+          ^
+   fs/init.c:72:8: note: Variable 'error' is reassigned a value before the old one has been used.
+    error = security_path_chroot(&path);
+          ^
+
+vim +/error +72 fs/init.c
+
+    57	
+    58	int __init init_chroot(const char *filename)
+    59	{
+    60		struct path path;
+    61		int error;
+    62	
+    63		error = kern_path(filename, LOOKUP_FOLLOW | LOOKUP_DIRECTORY, &path);
+    64		if (error)
+    65			return error;
+    66		error = inode_permission(path.dentry->d_inode, MAY_EXEC | MAY_CHDIR);
+    67		if (error)
+    68			goto dput_and_out;
+    69		error = -EPERM;
+    70		if (!ns_capable(current_user_ns(), CAP_SYS_CHROOT))
+    71			goto dput_and_out;
+  > 72		error = security_path_chroot(&path);
+    73		if (error)
+    74			goto dput_and_out;
+    75		set_fs_root(current->fs, &path);
+    76	dput_and_out:
+    77		path_put(&path);
+    78		return error;
+    79	}
+    80	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
