@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BA023F62D
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 05:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5BE23F633
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 05:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726507AbgHHDgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 Aug 2020 23:36:46 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:48584 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726200AbgHHDgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 Aug 2020 23:36:46 -0400
-Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id 01C9FE04D439560D1802;
-        Sat,  8 Aug 2020 11:36:44 +0800 (CST)
-Received: from [10.174.61.242] (10.174.61.242) by
- dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Sat, 8 Aug 2020 11:36:43 +0800
-Subject: Re: [PATCH net-next v1] hinic: fix strncpy output truncated compile
- warnings
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "davem@davemloft.net" <davem@davemloft.net>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "luoxianjun@huawei.com" <luoxianjun@huawei.com>,
-        "yin.yinshi@huawei.com" <yin.yinshi@huawei.com>,
-        "cloud.wangxiaoyun@huawei.com" <cloud.wangxiaoyun@huawei.com>,
-        "chiqijun@huawei.com" <chiqijun@huawei.com>
-References: <20200807020914.3123-1-luobin9@huawei.com>
- <e7a4fcf12a4e4d179e2fae8ffb44f992@AcuMS.aculab.com>
-From:   "luobin (L)" <luobin9@huawei.com>
-Message-ID: <b886a6ff-8ed8-c857-f190-e99f8f735e02@huawei.com>
-Date:   Sat, 8 Aug 2020 11:36:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-MIME-Version: 1.0
-In-Reply-To: <e7a4fcf12a4e4d179e2fae8ffb44f992@AcuMS.aculab.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.61.242]
-X-ClientProxiedBy: dggeme715-chm.china.huawei.com (10.1.199.111) To
- dggeme758-chm.china.huawei.com (10.3.19.104)
-X-CFilter-Loop: Reflected
+        id S1726584AbgHHDi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 Aug 2020 23:38:29 -0400
+Received: from m12-15.163.com ([220.181.12.15]:54471 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726200AbgHHDi3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 Aug 2020 23:38:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=oSfvozyc7WeaEkyabb
+        NkYFvPW4VQ5CKtVaQR9O+77CY=; b=VJ1FFaBKZnj1W+uBi8gA6LW1mhKDXJIFO2
+        vGRL+PdRBW+SuyaiVjHU/fxcMBSmO1QkQAgRHxZEPzGPr0LUKdjrbaK1EHAloN6G
+        EwvZJGqZn1GD7dEuvR9XR7cIHL8P8hW5DSXwGc+Txc/d47EEZhtYG5CugKtaOzje
+        5XSSx4MjI=
+Received: from localhost.localdomain (unknown [58.33.126.62])
+        by smtp11 (Coremail) with SMTP id D8CowACnoqoHHi5fN_NeEw--.35350S2;
+        Sat, 08 Aug 2020 11:37:48 +0800 (CST)
+From:   Grant Feng <von81@163.com>
+To:     von81@163.com, jacek.anaszewski@gmail.com, pavel@ucw.cz,
+        dmurphy@ti.com, robh+dt@kernel.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] leds: is31fl319x: Add sdb pin and generate a 5ms low pulse when startup
+Date:   Sat,  8 Aug 2020 11:37:30 +0800
+Message-Id: <20200808033731.15695-1-von81@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: D8CowACnoqoHHi5fN_NeEw--.35350S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7AF17try5XFWUArW5AF4xZwb_yoW8AFyxpF
+        1qkFyFyFW3Jry7Kw12vFy7Za45t3W8tF4DArWxWayS93WvgFnagFyvvFnFv3ZxXFW8uFW5
+        JwsIyFW8Gr48ZrJanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jOAwsUUUUU=
+X-Originating-IP: [58.33.126.62]
+X-CM-SenderInfo: xyrqmii6rwjhhfrp/1tbiUQx6OlWBQVR0fwAAsX
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/8/7 17:32, David Laight wrote:
-> From: Luo bin
->> Sent: 07 August 2020 03:09
->>
->> fix the compile warnings of 'strncpy' output truncated before
->> terminating nul copying N bytes from a string of the same length
->>
->> Signed-off-by: Luo bin <luobin9@huawei.com>
->> Reported-by: kernel test robot <lkp@intel.com>
->> ---
->> V0~V1:
->> - use the strlen()+1 pattern consistently
->>
->>  drivers/net/ethernet/huawei/hinic/hinic_devlink.c | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/huawei/hinic/hinic_devlink.c
->> b/drivers/net/ethernet/huawei/hinic/hinic_devlink.c
->> index c6adc776f3c8..1ec88ebf81d6 100644
->> --- a/drivers/net/ethernet/huawei/hinic/hinic_devlink.c
->> +++ b/drivers/net/ethernet/huawei/hinic/hinic_devlink.c
->> @@ -342,9 +342,9 @@ static int chip_fault_show(struct devlink_fmsg *fmsg,
->>
->>  	level = event->event.chip.err_level;
->>  	if (level < FAULT_LEVEL_MAX)
->> -		strncpy(level_str, fault_level[level], strlen(fault_level[level]));
->> +		strncpy(level_str, fault_level[level], strlen(fault_level[level]) + 1);
-> 
-> Have you even considered what that code is actually doing?
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
-> .
-> 
-I'm sorry that I haven't got what you mean and I haven't found any defects in that code. Can you explain more to me?
+generate a 5ms low pulse on sdb pin when startup, then the chip
+becomes more stable in the complex EM environment.
+
+Signed-off-by: Grant Feng <von81@163.com>
+---
+ drivers/leds/leds-is31fl319x.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/drivers/leds/leds-is31fl319x.c b/drivers/leds/leds-is31fl319x.c
+index ca6634b8683c..5c499a5895e0 100644
+--- a/drivers/leds/leds-is31fl319x.c
++++ b/drivers/leds/leds-is31fl319x.c
+@@ -16,6 +16,8 @@
+ #include <linux/of_device.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
+ 
+ /* register numbers */
+ #define IS31FL319X_SHUTDOWN		0x00
+@@ -61,6 +63,7 @@
+ struct is31fl319x_chip {
+ 	const struct is31fl319x_chipdef *cdef;
+ 	struct i2c_client               *client;
++	struct gpio_desc		*sdb_gpio;
+ 	struct regmap                   *regmap;
+ 	struct mutex                    lock;
+ 	u32                             audio_gain_db;
+@@ -207,6 +210,15 @@ static int is31fl319x_parse_dt(struct device *dev,
+ 	if (!np)
+ 		return -ENODEV;
+ 
++	is31->sdb_gpio = devm_gpiod_get_optional(dev,
++						"sdb",
++						GPIOD_OUT_HIGH);
++	if (IS_ERR(is31->sdb_gpio)) {
++		ret = PTR_ERR(is31->sdb_gpio);
++		dev_err(dev, "Failed to get sdb gpio: %d\n", ret);
++		return ret;
++	}
++
+ 	of_dev_id = of_match_device(of_is31fl319x_match, dev);
+ 	if (!of_dev_id) {
+ 		dev_err(dev, "Failed to match device with supported chips\n");
+@@ -350,6 +362,12 @@ static int is31fl319x_probe(struct i2c_client *client,
+ 	if (err)
+ 		goto free_mutex;
+ 
++	if (is31->sdb_gpio) {
++		gpiod_direction_output(is31->sdb_gpio, 0);
++		mdelay(5);
++		gpiod_direction_output(is31->sdb_gpio, 1);
++	}
++
+ 	is31->client = client;
+ 	is31->regmap = devm_regmap_init_i2c(client, &regmap_config);
+ 	if (IS_ERR(is31->regmap)) {
+-- 
+2.17.1
+
+
