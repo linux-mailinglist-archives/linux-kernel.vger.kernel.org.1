@@ -2,102 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B5723F958
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 00:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CF623F959
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 00:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726207AbgHHWfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 Aug 2020 18:35:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbgHHWfF (ORCPT
+        id S1726084AbgHHWiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 Aug 2020 18:38:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21758 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725950AbgHHWiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 Aug 2020 18:35:05 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542C2C061756
-        for <linux-kernel@vger.kernel.org>; Sat,  8 Aug 2020 15:35:05 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id mt12so2740277pjb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 08 Aug 2020 15:35:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I/495s6jK4+K+lb6gJ13kJw9U3KMzAEyRbv/wQPm9f8=;
-        b=H3PLCcIdqUB3EIjsg8we5jSGI9NkkuDvWgva4xebovhozPZytq9rBepnyTmSuYCkKO
-         8E7+pKxRjIoIvtunYP1O+4A+yPxtXwNYXUi1ToAzG8O0kgjOpUP5WdbULMZ0zpx2bPmh
-         qzlcpfMbk2iDSkMqBQNDNL83I3ZOB6RajjCDS6khFj4cYF89Cmi6bxq+EpDduudOc16s
-         OEYAVV2uA2Hmz6WgWKCSSa6bJazvH9z06VGgg7RbEd7l0VQYngs4gFnMo8rHJLCCXHwG
-         X9SecNqMrx3wv/M4bGKVLlEgbhdYLmHSAiU1WrHFx96fo/BKuX4uGtYOJRtYUoxGORvv
-         5jEQ==
+        Sat, 8 Aug 2020 18:38:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596926289;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hm04VRSPNOWAWag6GBV43qqvwU0AE+7Ghd/jAhwulxw=;
+        b=i8scnWxkEJ+0+rAQT244f0b7gV8e21ha6q3hJqO5JGdR0YuvavLSg39Ki7jn/7hdqK/5mH
+        zVeHth/xjIhPOYQVMsGpkf8vCP6FMKcTBWUEEMY0aQMVexZj6fwVBefsq0aqy1gPwEqkZs
+        0B5KAT5GgKprrf4FOC3WeINbr6jUSc0=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-437-UI7m8kqpOICFjbLNCyyseA-1; Sat, 08 Aug 2020 18:38:06 -0400
+X-MC-Unique: UI7m8kqpOICFjbLNCyyseA-1
+Received: by mail-qt1-f200.google.com with SMTP id h10so4660460qtc.4
+        for <linux-kernel@vger.kernel.org>; Sat, 08 Aug 2020 15:38:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I/495s6jK4+K+lb6gJ13kJw9U3KMzAEyRbv/wQPm9f8=;
-        b=Lb1DJmkfJ9YaOXZTBQ6W45UPxRwWPQv1Pro22hnOgTyhNa6IlEoqNvMKl0dd3FKaRq
-         YiO+1RM6oGPlCRYzxpa3QBU+Sgu2VTgXC+S/wF1/B0eK32Rlk7Vm6fgUw9HGIMRuuZ7v
-         vOCWCYf5YQFY7hWmWEY2eq1BuACuf44St1kbkG4lB3B00cwwckp2k7xj8paQbMK6Mia+
-         MMi2Um+hMkh4/QoHc9sdOGxgy7dW3PSPdfrlrZZTaFnVe/yQzrZ1NMlljaerC8FtsMG4
-         8NEE17JIkQ4Zud2s/4RHBdOU338RJx+5DMoDl64x+zWbrPqN3c/67R3KSlw62JL6/+hw
-         A+lA==
-X-Gm-Message-State: AOAM531MYmQgpAFXCo1rdjwTxnwWjZAHo5b7SuPLiKJYI0+oOi8dHfc0
-        a93sccE9qIiosa4ff8aAIWw=
-X-Google-Smtp-Source: ABdhPJy18GEJMoZI66OE79WvxRq8YUz5aQXgKLgGrq2t6mfzL2oSPYvAGnuZyP8XL9T0CkaQJuQ9og==
-X-Received: by 2002:a17:90a:1a42:: with SMTP id 2mr18451210pjl.16.1596926104709;
-        Sat, 08 Aug 2020 15:35:04 -0700 (PDT)
-Received: from localhost (g223.115-65-55.ppp.wakwak.ne.jp. [115.65.55.223])
-        by smtp.gmail.com with ESMTPSA id y196sm18148356pfc.202.2020.08.08.15.35.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hm04VRSPNOWAWag6GBV43qqvwU0AE+7Ghd/jAhwulxw=;
+        b=mXU/nuoTsPWx1h3sozQVHnPiLpNR4O9rYwucDH74/LK3WUCZZxNVLhg2iQtjsHTefi
+         q1PNebV4rqHrWMNbOMbIGrkS2K6+XLn/tmh/DdngpUFXtEHiErupvg0KSJrtth5M2Fm3
+         ocYOP2sMrOJsHAgGYN5LdQvVmaC11EP7ORnBT4Jx09ljyJupM5NyAGsnPd43tu8pi8zD
+         RAJijBp5wZIEeEclXqWZcuNaQJvf78uDIC63VwNYyJm5OcDWRHyXR6RQ/K7az1gJmBww
+         Plf3LRTpBcJD3S+EFg1yYyC1AKb+BuTbwd7FqgvqFi0eNivYzDLxPJ2RqxiXVm/oJFEs
+         RNnA==
+X-Gm-Message-State: AOAM531PXxkVOuHTLGwgxesU6U1DXir4r2FQvgHwwSNryZxXYYEb4GXq
+        mIvWICOldc+hPgGTK//u9W2maeEkw4HXoUpWPmBuGHg82Pwu/5f3Gr5BDIQ9RlKCbgrMj0cth8S
+        yBthgquPsJTnObHK+1Z7Y6HJm
+X-Received: by 2002:a05:6214:1841:: with SMTP id d1mr5532516qvy.135.1596926285681;
+        Sat, 08 Aug 2020 15:38:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzmPVIWEUNy8xotgKUcg/jyaIL5QwRv/NmfY6IdCt6CqLIa+lxmHQ6UDh54vnPKDo5WtuB7WQ==
+X-Received: by 2002:a05:6214:1841:: with SMTP id d1mr5532502qvy.135.1596926285378;
+        Sat, 08 Aug 2020 15:38:05 -0700 (PDT)
+Received: from xz-x1.redhat.com (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
+        by smtp.gmail.com with ESMTPSA id h20sm9797647qkk.79.2020.08.08.15.38.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Aug 2020 15:35:03 -0700 (PDT)
-Date:   Sun, 9 Aug 2020 07:35:01 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        openrisc@lists.librecores.org
-Subject: Re: [PATCH v2 6/6] openrisc: uaccess: Add user address space check
- to access_ok
-Message-ID: <20200808223501.GP80756@lianli.shorne-pla.net>
-References: <20200805210725.310301-1-shorne@gmail.com>
- <20200805210725.310301-7-shorne@gmail.com>
- <20200806190229.b7jbmkavu7qqzegy@ltop.local>
+        Sat, 08 Aug 2020 15:38:04 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     peterx@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>, Christoph Hellwig <hch@lst.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kirill Shutemov <kirill@shutemov.name>, Jan Kara <jack@suse.cz>
+Subject: [PATCH] mm/gup: Allow real explicit breaking of COW
+Date:   Sat,  8 Aug 2020 18:38:02 -0400
+Message-Id: <20200808223802.11451-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200806190229.b7jbmkavu7qqzegy@ltop.local>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 09:02:29PM +0200, Luc Van Oostenryck wrote:
-> On Thu, Aug 06, 2020 at 06:07:25AM +0900, Stafford Horne wrote:
-> > Now that __user annotations are fixed for openrisc uaccess api's we can
-> > add checking to the access_ok macro.  This patch adds the __chk_user_ptr
-> > check, on normal builds the added check is a nop.
-> > 
-> > Signed-off-by: Stafford Horne <shorne@gmail.com>
-> > ---
-> >  arch/openrisc/include/asm/uaccess.h | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/openrisc/include/asm/uaccess.h b/arch/openrisc/include/asm/uaccess.h
-> > index 85a55359b244..53ddc66abb3f 100644
-> > --- a/arch/openrisc/include/asm/uaccess.h
-> > +++ b/arch/openrisc/include/asm/uaccess.h
-> > @@ -57,7 +57,8 @@ static inline int __range_ok(unsigned long addr, unsigned long size)
-> >  
-> >  #define access_ok(addr, size)						\
-> >  ({ 									\
-> > -	__range_ok((unsigned long)(addr), (size));			\
-> > +	__chk_user_ptr(addr);						\
-> > +	__range_ok((__force unsigned long)(addr), (size));		\
-> >  })
-> 
-> Just for info, __force is not needed when casting a pointer to
-> unsigned long (or uintptr_t). It's not incorrect to use one
-> but I think it's to avoid __force as much as possible.
+Starting from commit 17839856fd58 ("gup: document and work around "COW can
+break either way" issue", 2020-06-02), explicit copy-on-write behavior is
+enforced for private gup pages even if it's a read-only.  It is achieved by
+always passing FOLL_WRITE to emulate a write.
 
-Thanks, I didn't realize that.  I will fix.
+That should fix the COW issue that we were facing, however above commit could
+also break userfaultfd-wp and applications like umapsort [1,2].
 
--Stafford
+One general routine of umap-like program is: userspace library will manage page
+allocations, and it will evict the least recently used pages from memory to
+external storages (e.g., file systems).  Below are the general steps to evict
+an in-memory page in the uffd service thread when the page pool is full:
+
+  (1) UFFDIO_WRITEPROTECT with mode=WP on some to-be-evicted page P, so that
+      further writes to page P will block (keep page P clean)
+  (2) Copy page P to external storage (e.g. file system)
+  (3) MADV_DONTNEED to evict page P
+
+Here step (1) makes sure that the page to dump will always be up-to-date, so
+that the page snapshot in the file system is consistent with the one that was
+in the memory.  However with commit 17839856fd58, step (2) can potentially hang
+itself because e.g. if we use write() to a file system fd to dump the page
+data, that will be a translated read gup request in the file system driver to
+read the page content, then the read gup will be translated to a write gup due
+to the new enforced COW behavior.  This write gup will further trigger
+handle_userfault() and hang the uffd service thread itself.
+
+I think the problem will go away too if we replace the write() to the file
+system into a memory write to a mmaped region in the userspace library, because
+normal page faults will not enforce COW, only gup is affected.  However we
+cannot forbid users to use write() or any form of kernel level read gup.
+
+One solution is actually already mentioned in commit 17839856fd58, which is to
+provide an explicit BREAK_COW scemantics for enforced COW.  Then we can still
+use FAULT_FLAG_WRITE to identify whether this is a "real write request" or an
+"enfornced COW (read) request".
+
+[1] https://github.com/LLNL/umap-apps/blob/develop/src/umapsort/umapsort.cpp
+[2] https://github.com/LLNL/umap
+
+CC: Marty Mcfadden <mcfadden8@llnl.gov>
+CC: Andrea Arcangeli <aarcange@redhat.com>
+CC: Linus Torvalds <torvalds@linux-foundation.org>
+CC: Andrew Morton <akpm@linux-foundation.org>
+CC: Jann Horn <jannh@google.com>
+CC: Christoph Hellwig <hch@lst.de>
+CC: Oleg Nesterov <oleg@redhat.com>
+CC: Kirill Shutemov <kirill@shutemov.name>
+CC: Jan Kara <jack@suse.cz>
+Fixes: 17839856fd588f4ab6b789f482ed3ffd7c403e1f
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ include/linux/mm.h |  3 +++
+ mm/gup.c           |  4 ++--
+ mm/memory.c        | 15 ++++++++++++---
+ 3 files changed, 17 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index f6a82f9bccd7..dacba5c7942f 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -409,6 +409,7 @@ extern pgprot_t protection_map[16];
+  * @FAULT_FLAG_REMOTE: The fault is not for current task/mm.
+  * @FAULT_FLAG_INSTRUCTION: The fault was during an instruction fetch.
+  * @FAULT_FLAG_INTERRUPTIBLE: The fault can be interrupted by non-fatal signals.
++ * @FAULT_FLAG_BREAK_COW: Do COW explicitly for the fault (even for read)
+  *
+  * About @FAULT_FLAG_ALLOW_RETRY and @FAULT_FLAG_TRIED: we can specify
+  * whether we would allow page faults to retry by specifying these two
+@@ -439,6 +440,7 @@ extern pgprot_t protection_map[16];
+ #define FAULT_FLAG_REMOTE			0x80
+ #define FAULT_FLAG_INSTRUCTION  		0x100
+ #define FAULT_FLAG_INTERRUPTIBLE		0x200
++#define FAULT_FLAG_BREAK_COW			0x400
+ 
+ /*
+  * The default fault flags that should be used by most of the
+@@ -2756,6 +2758,7 @@ struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
+ #define FOLL_SPLIT_PMD	0x20000	/* split huge pmd before returning */
+ #define FOLL_PIN	0x40000	/* pages must be released via unpin_user_page */
+ #define FOLL_FAST_ONLY	0x80000	/* gup_fast: prevent fall-back to slow gup */
++#define FOLL_BREAK_COW  0x100000 /* request for explicit COW (even for read) */
+ 
+ /*
+  * FOLL_PIN and FOLL_LONGTERM may be used in various combinations with each
+diff --git a/mm/gup.c b/mm/gup.c
+index d8a33dd1430d..02267f5797a7 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1076,7 +1076,7 @@ static long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
+ 			}
+ 			if (is_vm_hugetlb_page(vma)) {
+ 				if (should_force_cow_break(vma, foll_flags))
+-					foll_flags |= FOLL_WRITE;
++					foll_flags |= FOLL_BREAK_COW;
+ 				i = follow_hugetlb_page(mm, vma, pages, vmas,
+ 						&start, &nr_pages, i,
+ 						foll_flags, locked);
+@@ -1095,7 +1095,7 @@ static long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
+ 		}
+ 
+ 		if (should_force_cow_break(vma, foll_flags))
+-			foll_flags |= FOLL_WRITE;
++			foll_flags |= FOLL_BREAK_COW;
+ 
+ retry:
+ 		/*
+diff --git a/mm/memory.c b/mm/memory.c
+index c39a13b09602..0c819056374e 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2900,7 +2900,8 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
+ {
+ 	struct vm_area_struct *vma = vmf->vma;
+ 
+-	if (userfaultfd_pte_wp(vma, *vmf->pte)) {
++	if ((vmf->flags & FAULT_FLAG_WRITE) &&
++	    userfaultfd_pte_wp(vma, *vmf->pte)) {
+ 		pte_unmap_unlock(vmf->pte, vmf->ptl);
+ 		return handle_userfault(vmf, VM_UFFD_WP);
+ 	}
+@@ -3290,7 +3291,11 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 		put_page(swapcache);
+ 	}
+ 
+-	if (vmf->flags & FAULT_FLAG_WRITE) {
++	/*
++	 * We'll do a COW if it's a write or the caller wants explicit COW
++	 * behavior (even if it's a read operation)
++	 */
++	if (vmf->flags & (FAULT_FLAG_WRITE | FAULT_FLAG_BREAK_COW)) {
+ 		ret |= do_wp_page(vmf);
+ 		if (ret & VM_FAULT_ERROR)
+ 			ret &= VM_FAULT_ERROR;
+@@ -4241,7 +4246,11 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+ 		update_mmu_tlb(vmf->vma, vmf->address, vmf->pte);
+ 		goto unlock;
+ 	}
+-	if (vmf->flags & FAULT_FLAG_WRITE) {
++	/*
++	 * We'll do a COW if it's a write or the caller wants explicit COW
++	 * behavior (even if it's a read operation)
++	 */
++	if (vmf->flags & (FAULT_FLAG_WRITE | FAULT_FLAG_BREAK_COW)) {
+ 		if (!pte_write(entry))
+ 			return do_wp_page(vmf);
+ 		entry = pte_mkdirty(entry);
+-- 
+2.26.2
+
