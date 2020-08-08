@@ -2,176 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FED23F92D
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 23:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2960923F939
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 Aug 2020 23:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgHHVcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 Aug 2020 17:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726069AbgHHVcV (ORCPT
+        id S1726120AbgHHVvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 Aug 2020 17:51:39 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57526 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725950AbgHHVvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 Aug 2020 17:32:21 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9455C061756
-        for <linux-kernel@vger.kernel.org>; Sat,  8 Aug 2020 14:32:21 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id u24so5378300oiv.7
-        for <linux-kernel@vger.kernel.org>; Sat, 08 Aug 2020 14:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KbiruEThZwwBNNbqYU9VCvLYRkhuc+0AzXoKgsDR8KY=;
-        b=XYl75+YK3Y28AwXMLh9zP+v4x8ZIKq2G8zrxQsCP/0JOVHyris5bWIGLrNXawnLztH
-         eH1Eo5ZWwNBWWqPSothyde2NJPHwtYKz40VFZCnVCNJjoZ8s2C3VQMhgc1RH8u/fP+4z
-         r0MnQrISYfS0/k99bpZke0k98N30gN+zFFm+C2QMdWohgsDPaKRAI06K/7mpjrZtmTjt
-         fwVF0eW1Eiw4OmdFaBh0NjHVPT28lE5CIcPswGdV9bjU1aFJXrSnuDmZa5vpUWxAJ7QF
-         1VAVgEKpfY1+rsKhVXDQttRRGJVma1h3Rvl/+xEy/i7wW0qjZ7NJherm1ff8P6wMEAlN
-         2uXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KbiruEThZwwBNNbqYU9VCvLYRkhuc+0AzXoKgsDR8KY=;
-        b=dk4y8mjfsxmxrQ2nLiFrP8mGaj3Ft+5NR7iLsPtM9I+V1q8I6Zkh5PVaRrmA9fZZwL
-         NfEgndBgbaBv9Y73NBHFUurGKFI2+jyLAqL0kGKFwMVkz79yK5dDko2760wJyUpvHZ3m
-         Qy29tCljaoE8e0E/eQUZFD0Cput4m9b1JReq1/OInF1Ml2yR+t/AN3mv85XvbMveHdC8
-         k6ozdRlnMPV+N3tYcxu2yz7vg/gUsgPEWDmOxPXRBDUnnWgBsdhIE/hxlJF69V770BrO
-         gyk/Tqx5Ra+JLZO5m1925b84jVNG2B8XsRc2gcPFR0v7LYVFedQnk06AOvSN01Tt0pvr
-         qY6g==
-X-Gm-Message-State: AOAM530k1C39x4DJumTqtlRp9oQWbKdTL3UdDMfix5HNus3Np4FmR4va
-        vgwQbElgzcg/uyiVmlcws/gUysd+9oVipfIGrE3Utg==
-X-Google-Smtp-Source: ABdhPJxbFaEWUkYXoWuv4s6cPdBCYGiAhkAq4GGBkZiCJsULVGQBlqD0ChK8oYzlCMRfIwT9d26rYuHaOLrdvi01pv0=
-X-Received: by 2002:aca:1117:: with SMTP id 23mr16930520oir.97.1596922340984;
- Sat, 08 Aug 2020 14:32:20 -0700 (PDT)
+        Sat, 8 Aug 2020 17:51:38 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 078LoVuo015561;
+        Sat, 8 Aug 2020 14:51:27 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=shnf3XUgsWxS5mb56nP4OtfUtcLVG0fBIS33PQJ7Yxs=;
+ b=J7G/GPP/vEc6PNiadBQK7JaBSYjB6uEZyIFj9QlTkcJMoj96aS62Wu90YrFAS7SUUrOe
+ UQsumHCHMs3YhiRAAH8w9eWRLgYphFy5tJP4pXwO1vQx/7ahPYWG+wWMUGSF8gtDILFE
+ pTEt514/4GgXz6Koo6C8/iZyK79yB38CTqw= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32ssjk1np7-20
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 08 Aug 2020 14:51:27 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sat, 8 Aug 2020 14:43:12 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nfJg/5SDpBmbTG+V4LfoAlwFY9uuDtFOCDeor9fYbrvnZGz9uS4nym5HGGYaAlYhwhE4mZJp02XzfPF50RezhSEHKr1PsLWh6BAPL+5VwoDkzunENtxEJlUM6OukX98EiL/RYrZb4SIzh9WqC86x7OwLeoyMJBzP6QIRsLox4jnQK0P9KcGo6yCggDJwTQ+YAbvOzmro59LeGm29lla/uVn+k5Q8h9h4Ms7seO7HNCJSEOmEJoBoQHazws3BjeBD524pxBApfW+n61axMPgU0wxwb4nb4oABgpaeQuGkCOaotrZox6js1IxY/TRfB+HzR8U2xqg20SV73DZBTSgYkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=shnf3XUgsWxS5mb56nP4OtfUtcLVG0fBIS33PQJ7Yxs=;
+ b=KLImhLBZLIFUcpHWFMKr2LQ9Y66MYkX03dnHB2ORA60HsyhHM3OGuRdyqhjp0DNvXQvMnQnzmrT3XsNmKjcqFShGO5ZKdpIlDIwJuU7WduykjJjM2hZhW2XIGXAQbVVII5uDaOnFNaWtbtOh5PcrqtGA35dQ4CSRzwxJF0N0seEG5sI8gl/KdO5MkPbosa+bBwa0hsJa+NpCxeDF0uxQeJDk2xL/sg/2fFHnOZDDFvji5TEfQiNNcobKv0qOwMR+KNmXMpog9BZbT7Ac0chLYD49y8u6Cxjnp1oG/v9KrZhhoe8mt8lAFrsCxggsaNm7MS7zDAoRoDtOzUI2DnWUkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=shnf3XUgsWxS5mb56nP4OtfUtcLVG0fBIS33PQJ7Yxs=;
+ b=SkKAmV3wTQNoFBzbF9n/Y1HlbhVvxJ8FB7lOB4plKtLB28KPffMqzyx6HFV/e5kCeBMlSP8GwtbKQJb+NV7XLWhzXWYLX1jZFWdXfjU/gXh3ZL8VtaKPBMM4OPCOzhDf4AGh1K4J0SC7deAetmoxdLArSNPXYxuZljcNhjOl4wE=
+Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
+ header.d=none;linux.alibaba.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14) by SA0PR15MB3952.namprd15.prod.outlook.com
+ (2603:10b6:806:8d::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.19; Sat, 8 Aug
+ 2020 21:43:11 +0000
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::197f:d445:824d:1efa]) by SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::197f:d445:824d:1efa%6]) with mapi id 15.20.3261.019; Sat, 8 Aug 2020
+ 21:43:11 +0000
+Date:   Sat, 8 Aug 2020 14:43:06 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+CC:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm/memcg: remove useless check on page->mem_cgroup
+Message-ID: <20200808214306.GA1409287@carbon.dhcp.thefacebook.com>
+References: <1596166480-22814-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200731151655.GB491801@cmpxchg.org>
+ <9338716f-ca0e-057f-8d94-03e2b3f70281@linux.alibaba.com>
+ <20200803081815.GD5174@dhcp22.suse.cz>
+ <bd61e672-b997-c4cd-2047-fca9dc11cc4c@linux.alibaba.com>
+ <92dd8e68-8095-72c5-0144-2a084e4d5993@linux.alibaba.com>
+ <5622ef68-5e70-d1a9-d1be-b45411b6be5c@linux.alibaba.com>
+ <4740bac1-72f6-a640-ab6a-a8801e68c27a@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4740bac1-72f6-a640-ab6a-a8801e68c27a@linux.alibaba.com>
+X-ClientProxiedBy: BYAPR03CA0031.namprd03.prod.outlook.com
+ (2603:10b6:a02:a8::44) To SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14)
 MIME-Version: 1.0
-References: <s5hbljocbxl.wl-tiwai@suse.de> <CANcMJZCPPOOmKyRMKYRe5sRsqf-rrO6wXK5BPVwFrAPLZOEyMg@mail.gmail.com>
- <s5hv9ht7hz9.wl-tiwai@suse.de>
-In-Reply-To: <s5hv9ht7hz9.wl-tiwai@suse.de>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Sat, 8 Aug 2020 14:32:09 -0700
-Message-ID: <CALAqxLUkT0r-mrR5pKx4vXAHubS87oeEEN53C_q5fSKoh-=M3w@mail.gmail.com>
-Subject: Re: [GIT PULL] sound updates for 5.9
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:a2b8) by BYAPR03CA0031.namprd03.prod.outlook.com (2603:10b6:a02:a8::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.15 via Frontend Transport; Sat, 8 Aug 2020 21:43:09 +0000
+X-Originating-IP: [2620:10d:c090:400::5:a2b8]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1e17b8cd-3a25-46e9-a694-08d83be40b98
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3952:
+X-Microsoft-Antispam-PRVS: <SA0PR15MB3952F4B3FD54ABCC32A8F9F2BE460@SA0PR15MB3952.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vY6OM+dFvNJdYV6ZEq4ihnekAMtHh3irqsh7V1dDqR3GIjHZ3pakqvKgenJGTN5r+NMnxGCA4DSROqMdSnltAale+O9NOtYoWda2/TCkaBmItwkB2R8ndHPtDbDWN6OgDj+NYK0AVITAxyMh//6dChBB/22Oa+2MWK4+6s/u6qR8QcW6pBPorM/a74qDNYknzq4dkRXaoFm0hN6uuC5MwXozWiTSuLumPsYK9SmtJJGsafhX0HFB0eUEw/hlNArZ7toKygYsGhQjZOiNCc3YZYs7BJ5idlXV3JjOYgQ3HiPbFj7sej/fWWACmlKMNOLwyK/HX2Q3mspahw4XbBWoYQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(376002)(39860400002)(396003)(136003)(346002)(16526019)(186003)(6916009)(316002)(2906002)(66946007)(66476007)(5660300002)(8936002)(478600001)(66556008)(54906003)(83380400001)(52116002)(55016002)(33656002)(6666004)(7696005)(86362001)(8676002)(53546011)(1076003)(9686003)(6506007)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: Doo6V85qf02dtQ4HVz///kuqFHmRmqnBSyRTCojcm5IROT2eCqrgVqyuOSaPvP53Rl0a7XAlcskFpOWXyMWO4ekcKkuVEdICxhHrmwltCdReijDwYF/RqlR3Vbh3F7npZ1cK/Nhc7xoImvGId2FnSwZSsqz/ZSuH2Szhxd6uyYn51vnHoNavQwzJlCWCXqKc0440VH6A1j5mxEnnHrKcyXcbR012V9VP9FC3x8lif9VtXOz3Ol9V/ZPKF+0XwJDyz6b/wddT+CJryRwVvGuds+b3xwQn0TgH+Yw35kUiqtorrWLB2HjbhGcz1gfxzRyTHpiisWchr/R7N0sdy8wFMNewzb5GnOoE7KRjDjXeFbLTFabOlpz6P7gWshtipxfg3x1hpS5EZJ4YxCvPiXGFYfTQcqcj52N+4mn/g7PqWJZjtL3A+6ZjqVrSEg0bHDlZkWGiKs7moDKq308yVjC5oMroXpr/pTcN/dF5Cseg2FUkH1R6bzw4bl8I0lFCZMSM0Vz4YAV1wZ7/PRJl5vT43htQnVaHzlVZnlzG+P69PIc0L0Er3EQ1xKVtYt//kgsvmrJH6+D7wDjW4I+uImPoj48ILFHLer67rkCLK/P0ggFiNqgOeE7B49+WDk3PEEKBnaLhFonWRTeuLt87rJsiHLgIUOlZXwJnnETk36Pg48c=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e17b8cd-3a25-46e9-a694-08d83be40b98
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB4141.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2020 21:43:10.9369
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3qZJEKxkxpIhy2e4yro6JK7Or8oasAm8Owgrq3MHpsn2l+Y/GFHMUMv9c6t48E0M
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3952
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-08_15:2020-08-06,2020-08-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011
+ phishscore=0 suspectscore=1 bulkscore=0 adultscore=0 priorityscore=1501
+ malwarescore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008080167
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 7, 2020 at 11:46 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Sat, 08 Aug 2020 02:23:24 +0200,
-> John Stultz wrote:
-> >
-> > On Thu, Aug 6, 2020 at 3:33 AM Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > Linus,
-> > >
-> > > please pull sound updates for v5.9 from:
-> > >
-> > >   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.9-rc1
-> > >
-> > > The topmost commit is c7fabbc51352f50cc58242a6dc3b9c1a3599849b
-> > >
-> > > ----------------------------------------------------------------
-> > >
-> > > sound updates for 5.9
-> > >
-> > > This became wide and scattered updates all over the sound tree as
-> > > diffstat shows: lots of (still ongoing) refactoring works in ASoC,
-> > > fixes and cleanups caught by static analysis, inclusive term
-> > > conversions as well as lots of new drivers.  Below are highlights:
-> > >
-> > > ASoC core:
-> > > * API cleanups and conversions to the unified mute_stream() call
-> > > * Simplify I/O helper functions
-> > > * Use helper macros to retrieve RTD from substreams
-> > ...
-> > > Kuninori Morimoto (90):
-> > >       ASoC: soc-component: add soc_component_pin() and share code
-> > >       ASoC: soc-component: move snd_soc_component_xxx_regmap() to soc-component
-> > >       ASoC: soc-component: move snd_soc_component_initialize() to soc-component.c
-> > >       ASoC: soc-component: add soc_component_err()
-> > >       ASoC: soc-component: add snd_soc_pcm_component_prepare()
-> > >       ASoC: soc-component: add snd_soc_pcm_component_hw_params()
-> > >       ASoC: soc-component: add snd_soc_pcm_component_hw_free()
-> > >       ASoC: soc-component: add snd_soc_pcm_component_trigger()
-> > >       ASoC: soc-component: add snd_soc_component_init()
-> > >       ASoC: soc-component: merge soc-io.c into soc-component.c
-> >
-> > So oddly, today I bisected down the change "ASoC: soc-component: merge
-> > soc-io.c into soc-component.c":
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=460b42d162e3cf634586999e6a84e74ca52e626d
-> >
-> > as causing audio regressions on Dragonboard 845c running AOSP.
-> >
-> > On boot I was seeing tons of:
-> > q6routing remoteproc-adsp:glink-edge:apr:apr-service@8:routing: ASoC:
-> > error at soc_component_read_no_lock on
-> > remoteproc-adsp:glink-edge:apr:: -5
-> >
-> > And when audio was supposed to play I'd see:
-> > [  227.462986] qcom-q6afe aprsvc:apr-service:4:4: cmd = 0x100e5
-> > returned error = 0x9
-> > [  227.470720] qcom-q6afe aprsvc:apr-service:4:4: DSP returned error[9]
-> > [  227.477168] qcom-q6afe aprsvc:apr-service:4:4: AFE enable for port
-> > 0x4000 failed -22
-> > [  227.485038] q6afe-dai
-> > remoteproc-adsp:glink-edge:apr:apr-service@4:dais: fail to start AFE
-> > port 2
-> > [  227.494013] q6afe-dai
-> > remoteproc-adsp:glink-edge:apr:apr-service@4:dais: ASoC: error at
-> > snd_soc_pcm_dai_prepare on SLIMBUS_0_RX: -22
-> > [  227.506034]  SLIM Playback: ASoC: DAI prepare error: -22
-> > [  227.511415]  SLIM Playback: ASoC: backend prepare failed -22
-> >
-> > Its strange, as the bisected patch is really just moving code around
-> > and there's very little in the way of logic changes. After minimizing
-> > the code movement and just focusing on what changed I forward ported a
-> > revert to mainline and minimized it until things were working.
-> >
-> > The resulting patch is a twoliner here:
-> > https://git.linaro.org/people/john.stultz/android-dev.git/commit/?h=dev/db845c-mainline-WIP&id=a3527193f39b1224d59bf1519fce3ef8c57d0f5e
-> >
-> > I'm a bit baffled as to why this patch works. Logically we are
-> > returning the same value. I suspect when we hit the error, all the
-> > extra error print messages on the console slow things down and end up
-> > causing some timing related initialization failure?
->
-> Does the patch below fix the bug?  If so, it's rather a bug in the
-> commit cf6e26c71bfd ("ASoC: soc-component: merge
-> snd_soc_component_read() and snd_soc_component_read32()").
->
->
-> thanks,
->
-> Takashi
->
-> --- a/sound/soc/soc-component.c
-> +++ b/sound/soc/soc-component.c
-> @@ -406,7 +406,7 @@ static unsigned int soc_component_read_no_lock(
->                 ret = -EIO;
->
->         if (ret < 0)
-> -               soc_component_ret(component, ret);
-> +               return soc_component_ret(component, ret);
+On Sat, Aug 08, 2020 at 09:22:29PM +0800, Alex Shi wrote:
+> 
+> 
+> 在 2020/8/5 下午9:02, Alex Shi 写道:
+> > 
+> > 
+> > 在 2020/8/5 下午8:28, Alex Shi 写道:
+> >> The last patch has a problem on define. this version could fix it.
+> >>
+> >> BTW, I see some !memcg happens when MEMCG compilered but disabled by cgroup_disable
+> >>
+> >>
+> >> [   94.657666] ---[ end trace f1f34bfc3b32ed2f ]---
+> >> [   95.138995] anon flags: 0x5005b48008000d(locked|uptodate|dirty|swapbacked)
+> >> [   95.146220] raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
+> >> [   95.154549] raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
+> >> [   95.162876] page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
+> >>
+> >>
+> > 
+> > The following patch may helpful.
+> 
+> Any comments for the 2 patches?
+> 
+> Thanks
+> Alex
+> 
+> > 
+> > From 8bfb26a2e37e08dc61d20212bcfa5812a367ba94 Mon Sep 17 00:00:00 2001
+> > From: Alex Shi <alex.shi@linux.alibaba.com>
+> > Date: Wed, 5 Aug 2020 20:32:12 +0800
+> > Subject: [PATCH] mm/memcg: don't try charge swap if memcg disabled
+> > 
+> > If we disabled memcg by cgroup_disable=memory, the swap charges are
+> > still called. Let's return from the funcs earlier and keep WARN_ON
+> > monitor.
+> > 
+> > Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> > Cc: Johannes Weiner <hannes@cmpxchg.org>
+> > Cc: Michal Hocko <mhocko@kernel.org>
+> > Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: cgroups@vger.kernel.org
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> >  mm/memcontrol.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index cb07a48d53aa..65f2b42d25af 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -7163,6 +7163,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+> >  	VM_BUG_ON_PAGE(PageLRU(page), page);
+> >  	VM_BUG_ON_PAGE(page_count(page), page);
+> >  
+> > +	if (mem_cgroup_disabled())
+> > +		return;
+> > +
+> >  	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+> >  		return;
+> >  
+> > @@ -7228,6 +7231,9 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
+> >  	struct mem_cgroup *memcg;
+> >  	unsigned short oldid;
+> >  
+> > +	if (mem_cgroup_disabled())
+> > +		return 0;
+> > +
+> >  	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+> >  		return 0;
+> >  
+> > 
 
-Oh, that's so obvious now! I can't believe I was staring at that code
-and just didn't see it!
-Thanks so much for pointing this out!
 
-I'm sure this will fix it, but will validate on monday when I am
-working with the board.
+Hi Alex,
 
-thanks!
--john
+this patch looks good to me. Please, feel free to add
+Reviewed-by: Roman Gushchin <guro@fb.com>
+
+What's the second patch?
+
+Thanks!
+
