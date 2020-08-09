@@ -2,136 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF33F24001E
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 23:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9B124002B
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 23:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgHIVQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 Aug 2020 17:16:59 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:46410 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726299AbgHIVQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 Aug 2020 17:16:58 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BPsNm4rQzz8y;
-        Sun,  9 Aug 2020 23:16:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1597007817; bh=FGArzQHPDlg14jyAN9XMnsdCLbXsrN+ddGAJOjuKbns=;
-        h=Date:From:Subject:To:Cc:From;
-        b=gkAmEj+CedVDWJbR7xk/YxWSoq0UT/RpHe72jiC+y65pO/VC16m0wwu5o1zTT/A0i
-         aGJcRwcQcmOdtV+fr0VEbgRE5DN3+8/ADqipGqCEiNmbp3nF3F8YCA/7mwGupI3Ee5
-         2+eHTIXNp0rjcdHp+APWzmSake4RLXU1htMFzo0nh3O04dlWfg34J7NMJebRtUi5Jf
-         CRcVjKLhJgezGD78zk75OoxrMXgeIU1vIQ7SIsCc0ob3fb29ZU76rPqSVu8mDi6CmJ
-         e7qasE4PjOmp9k6DzVNdkJqTa4oR+5Ai+hQF+D48TZ2psIfixy9yMi0gKKulqHBNqL
-         MWc0kMcy5QNXw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Sun, 09 Aug 2020 23:16:53 +0200
-Message-Id: <b22fadc413fd7a1f4018c2c9dc261abf837731cb.1597007683.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH] regulator: simplify locking
+        id S1726499AbgHIV1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 Aug 2020 17:27:13 -0400
+Received: from mail-lj1-f170.google.com ([209.85.208.170]:38004 "EHLO
+        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgHIV1M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 Aug 2020 17:27:12 -0400
+Received: by mail-lj1-f170.google.com with SMTP id m22so7437045ljj.5
+        for <linux-kernel@vger.kernel.org>; Sun, 09 Aug 2020 14:27:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=V+0cPGM3bRsE7YkU0y2eQl4qVGY5GO2VaxSnu9p+qWk=;
+        b=bvTEEGRjdmMQmoWiieDZXptvFAM10aNifoYPcMgIan2n/G9AJAG+0z6pUi0aEORTUH
+         O4fjnytd9+Jv1+amEBCnugLYXt5jGmkpiy1L0sDrXoFmVU9tmu+q1H01rwwYErEWLJBq
+         /weV04BPN+Kt4QLaQazfpGnTz1Bck/QuhOkpDZZIkkz/n2mXRUEzNS16mBK6u93udBRe
+         Ix2EnTQJNgT5S4vI5AWF6IxEBGUsBuHPwe4kZ+GmR8roLmWAxeFs+xi2XM2AsoVpg+Kt
+         wNKgxKGo3KXiUyD+StXA7q0fV6vP2SIqaaNfxtcF6T0oLQO1ha8ysIyUsLrd3oLmioyS
+         4iSg==
+X-Gm-Message-State: AOAM5324a/Dn9vO1l6Nlsa4TtgBW6/vnRRnn9YnnP8GwzgxPjejgoRq8
+        qw2b0vnejy8Hp+hpUCJ0pQo=
+X-Google-Smtp-Source: ABdhPJywEO7G7AjBEBjlke7hxs6urEH6pmbyTMrO5IqAjs+lVoCFfvgzB6RBDCyMWzMcpThbsBF+9w==
+X-Received: by 2002:a2e:9bc8:: with SMTP id w8mr10166240ljj.351.1597008429929;
+        Sun, 09 Aug 2020 14:27:09 -0700 (PDT)
+Received: from localhost.localdomain (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
+        by smtp.googlemail.com with ESMTPSA id b204sm9684239lfd.48.2020.08.09.14.27.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 Aug 2020 14:27:09 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Subject: [PATCH v2] coccinelle: misc: add flexible_array.cocci script
+Date:   Mon, 10 Aug 2020 00:26:55 +0300
+Message-Id: <20200809212655.58457-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200806220342.25426-1-efremov@linux.com>
+References: <20200806220342.25426-1-efremov@linux.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify regulator locking by removing locking around locking. rdev->ref
-is now accessed only when the lock is taken. The code still smells fishy,
-but now its obvious why.
+Commit 68e4cd17e218 ("docs: deprecated.rst: Add zero-length and one-element
+arrays") marks one-element and zero-length arrays as deprecated. Kernel
+code should always use "flexible array members" instead.
 
-Fixes: f8702f9e4aa7 ("regulator: core: Use ww_mutex for regulators locking")
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+The script warns about one-element and zero-length arrays in structs.
+
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Denis Efremov <efremov@linux.com>
 ---
- drivers/regulator/core.c         | 37 ++++++--------------------------
- include/linux/regulator/driver.h |  1 -
- 2 files changed, 6 insertions(+), 32 deletions(-)
+Changes in v2:
+ - all uapi headers are now filtered-out. Unfortunately, coccinelle
+   doesn't provide structure names in Location.current_element.
+   For structures the field is always "something_else". Thus, there is
+   no easy way to create a list of existing structures in uapi headers
+   and suppress the warning only for them, but not for the newly added
+   uapi structures.
+ - The pattern doesn't require 2+ fields in a structure/union anymore.
+   Now it also checks single field structures/unions.
+ - The pattern simplified and now uses disjuction in array elements
+   (Thanks, Markus)
+ - Unions are removed from patch mode
+ - one-element arrays are removed from patch mode. Correct patch may
+   involve turning the array to a simple field instead of a flexible
+   array.
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 9e18997777d3..b0662927487c 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -45,7 +45,6 @@
- 	pr_debug("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__)
- 
- static DEFINE_WW_CLASS(regulator_ww_class);
--static DEFINE_MUTEX(regulator_nesting_mutex);
- static DEFINE_MUTEX(regulator_list_mutex);
- static LIST_HEAD(regulator_map_list);
- static LIST_HEAD(regulator_ena_gpio_list);
-@@ -150,32 +149,13 @@ static bool regulator_ops_is_valid(struct regulator_dev *rdev, int ops)
- static inline int regulator_lock_nested(struct regulator_dev *rdev,
- 					struct ww_acquire_ctx *ww_ctx)
- {
--	bool lock = false;
- 	int ret = 0;
- 
--	mutex_lock(&regulator_nesting_mutex);
-+	if (ww_ctx || !mutex_trylock_recursive(&rdev->mutex.base))
-+		ret = ww_mutex_lock(&rdev->mutex, ww_ctx);
- 
--	if (ww_ctx || !ww_mutex_trylock(&rdev->mutex)) {
--		if (rdev->mutex_owner == current)
--			rdev->ref_cnt++;
--		else
--			lock = true;
--
--		if (lock) {
--			mutex_unlock(&regulator_nesting_mutex);
--			ret = ww_mutex_lock(&rdev->mutex, ww_ctx);
--			mutex_lock(&regulator_nesting_mutex);
--		}
--	} else {
--		lock = true;
--	}
--
--	if (lock && ret != -EDEADLK) {
-+	if (ret != -EDEADLK)
- 		rdev->ref_cnt++;
--		rdev->mutex_owner = current;
--	}
--
--	mutex_unlock(&regulator_nesting_mutex);
- 
- 	return ret;
- }
-@@ -205,16 +185,11 @@ EXPORT_SYMBOL_GPL(regulator_lock);
-  */
- void regulator_unlock(struct regulator_dev *rdev)
- {
--	mutex_lock(&regulator_nesting_mutex);
-+	if (WARN_ON_ONCE(rdev->ref_cnt <= 0))
-+		return;
- 
--	if (--rdev->ref_cnt == 0) {
--		rdev->mutex_owner = NULL;
-+	if (--rdev->ref_cnt == 0)
- 		ww_mutex_unlock(&rdev->mutex);
--	}
--
--	WARN_ON_ONCE(rdev->ref_cnt < 0);
--
--	mutex_unlock(&regulator_nesting_mutex);
- }
- EXPORT_SYMBOL_GPL(regulator_unlock);
- 
-diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/driver.h
-index 8539f34ae42b..2fe5b1bcbe2f 100644
---- a/include/linux/regulator/driver.h
-+++ b/include/linux/regulator/driver.h
-@@ -448,7 +448,6 @@ struct regulator_dev {
- 
- 	struct blocking_notifier_head notifier;
- 	struct ww_mutex mutex; /* consumer lock */
--	struct task_struct *mutex_owner;
- 	int ref_cnt;
- 	struct module *owner;
- 	struct device dev;
+On the current master branch, the rule generates:
+ - context: https://gist.github.com/evdenis/e2b4323491f9eff35376372df07f723c
+ - patch: https://gist.github.com/evdenis/46081da9d68ecefd07edc3769cebcf32
+
+ scripts/coccinelle/misc/flexible_array.cocci | 88 ++++++++++++++++++++
+ 1 file changed, 88 insertions(+)
+ create mode 100644 scripts/coccinelle/misc/flexible_array.cocci
+
+diff --git a/scripts/coccinelle/misc/flexible_array.cocci b/scripts/coccinelle/misc/flexible_array.cocci
+new file mode 100644
+index 000000000000..bf6dcda1783e
+--- /dev/null
++++ b/scripts/coccinelle/misc/flexible_array.cocci
+@@ -0,0 +1,88 @@
++// SPDX-License-Identifier: GPL-2.0-only
++///
++/// Zero-length and one-element arrays are deprecated, see
++/// Documentation/process/deprecated.rst
++/// Flexible-array members should be used instead.
++///
++//
++// Confidence: High
++// Copyright: (C) 2020 Denis Efremov ISPRAS.
++// Comments:
++// Options: --no-includes --include-headers
++
++virtual context
++virtual report
++virtual org
++virtual patch
++
++@initialize:python@
++@@
++def relevant(positions):
++    for p in positions:
++        if "uapi" in p.file:
++             return False
++    return True
++
++@r depends on !patch@
++identifier name, array;
++type T;
++position p : script:python() { relevant(p) };
++@@
++
++(
++  struct name {
++    ...
++*   T array@p[\(0\|1\)];
++  };
++|
++  struct {
++    ...
++*   T array@p[\(0\|1\)];
++  };
++|
++  union name {
++    ...
++*   T array@p[\(0\|1\)];
++  };
++|
++  union {
++    ...
++*   T array@p[\(0\|1\)];
++  };
++)
++
++@depends on patch exists@
++identifier name, array;
++type T;
++position p : script:python() { relevant(p) };
++@@
++
++(
++  struct name {
++    ...
++    T array@p[
++-       0
++    ];
++  };
++|
++  struct {
++    ...
++    T array@p[
++-       0
++    ];
++  };
++)
++
++@script: python depends on report@
++p << r.p;
++@@
++
++msg = "WARNING: use flexible-array member instead"
++coccilib.report.print_report(p[0], msg)
++
++@script: python depends on org@
++p << r.p;
++@@
++
++msg = "WARNING: use flexible-array member instead"
++coccilib.org.print_todo(p, msg)
 -- 
-2.20.1
+2.26.2
 
