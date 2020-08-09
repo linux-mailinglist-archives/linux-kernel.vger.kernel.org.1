@@ -2,83 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38D923FC33
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 04:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EED23FC37
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 04:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726393AbgHICiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 Aug 2020 22:38:01 -0400
-Received: from smtprelay0082.hostedemail.com ([216.40.44.82]:55698 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726097AbgHICiA (ORCPT
+        id S1726321AbgHICkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 Aug 2020 22:40:24 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:26812 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726120AbgHICkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 Aug 2020 22:38:00 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 8E2EF18224512;
-        Sun,  9 Aug 2020 02:37:59 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2731:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3870:3871:3872:4321:4605:5007:7903:8603:10004:10400:10848:11026:11232:11658:11914:12043:12048:12297:12438:12679:12740:12760:12895:13069:13161:13229:13255:13311:13357:13439:14096:14097:14659:14721:21080:21451:21627:21972:30054:30079:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:5,LUA_SUMMARY:none
-X-HE-Tag: join82_5c010db26fce
-X-Filterd-Recvd-Size: 2767
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Sun,  9 Aug 2020 02:37:58 +0000 (UTC)
-Message-ID: <cd3a39d4ef3da9968026549e285dea3ef4261795.camel@perches.com>
-Subject: Re: [PATCH v3 1/3] scsi: 3w-9xxx: Use flexible array members to
- avoid struct padding
-From:   Joe Perches <joe@perches.com>
-To:     Samuel Holland <samuel@sholland.org>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sat, 08 Aug 2020 19:37:57 -0700
-In-Reply-To: <20200809004727.53107-1-samuel@sholland.org>
-References: <20200809004727.53107-1-samuel@sholland.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Sat, 8 Aug 2020 22:40:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596940822;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ZWmNdmE9mXz97K5KedK2xTYBcMa+8BCG/iCLTDYqd8=;
+        b=SYWNwklHfN01WgxbnRqfxLU1SreQ/icXE2ndxkMjo9JSm3AoIwigHK1HOvx7OMYB7BJviW
+        7omVEgbSVu/SvWfZ5dW69RcLybILH4/iCF6fi4EATnH15qLW9Q6xiW7xyJMQIEy9uVL4fq
+        Q80B2OM+KXwgKnHZnK/HqToyLWggyUg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-465-ZN91v3kLN4eIyNUc3Cyx1A-1; Sat, 08 Aug 2020 22:40:18 -0400
+X-MC-Unique: ZN91v3kLN4eIyNUc3Cyx1A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22B9459;
+        Sun,  9 Aug 2020 02:40:17 +0000 (UTC)
+Received: from T590 (ovpn-12-63.pek2.redhat.com [10.72.12.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6F67E2C26B;
+        Sun,  9 Aug 2020 02:40:10 +0000 (UTC)
+Date:   Sun, 9 Aug 2020 10:40:05 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: Very slow qemu device access
+Message-ID: <20200809024005.GC2134904@T590>
+References: <20200807174416.GF17456@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200807174416.GF17456@casper.infradead.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-08-08 at 19:47 -0500, Samuel Holland wrote:
-> In preparation for removing the "#pragma pack(1)" from the driver, fix
-> all instances where a trailing array member could be replaced by a
-> flexible array member. Since a flexible array member has zero size, it
-> introduces no padding, whether or not the struct is packed.
-[]
-> diff --git a/drivers/scsi/3w-9xxx.c b/drivers/scsi/3w-9xxx.c
-[]
-> @@ -676,7 +676,7 @@ static long twa_chrdev_ioctl(struct file *file, unsigned int cmd, unsigned long
->  	data_buffer_length_adjusted = (driver_command.buffer_length + 511) & ~511;
->  
->  	/* Now allocate ioctl buf memory */
-> -	cpu_addr = dma_alloc_coherent(&tw_dev->tw_pci_dev->dev, data_buffer_length_adjusted+sizeof(TW_Ioctl_Buf_Apache) - 1, &dma_handle, GFP_KERNEL);
-> +	cpu_addr = dma_alloc_coherent(&tw_dev->tw_pci_dev->dev, data_buffer_length_adjusted + sizeof(TW_Ioctl_Buf_Apache), &dma_handle, GFP_KERNEL);
+Hello Matthew,
 
-Trivia:
+On Fri, Aug 07, 2020 at 06:44:16PM +0100, Matthew Wilcox wrote:
+> 
+> Everything starts going very slowly after this commit:
+> 
+> commit 37f4a24c2469a10a4c16c641671bd766e276cf9f (refs/bisect/bad)
+> Author: Ming Lei <ming.lei@redhat.com>
+> Date:   Tue Jun 30 22:03:57 2020 +0800
+> 
+>     blk-mq: centralise related handling into blk_mq_get_driver_tag
 
-It's perhaps more sensible to order the arguments with
-the size of the struct first then the data length so
-the argument is in the order of the expected content.
+Yeah, the above is one known bad commit, which is reverted in
+4e2f62e566b5 ("Revert "blk-mq: put driver tag when this request is completed")
 
-	cpu_addr = dma_alloc_coherent(&tw_dev->tw_pci_dev->dev,
-				      sizeof(TW_Ioctl_Buf_Apache) + data_buffer_length_adjusted,
-				      &dma_handle, GFP_KERNEL);
+Finally the fixed patch of 'blk-mq: centralise related handling into blk_mq_get_driver_tag'
+is merged as 568f27006577 ("blk-mq: centralise related handling into blk_mq_get_driver_tag").
 
-> @@ -685,7 +685,7 @@ static long twa_chrdev_ioctl(struct file *file, unsigned int cmd, unsigned long
->  	tw_ioctl = (TW_Ioctl_Buf_Apache *)cpu_addr;
->  
->  	/* Now copy down the entire ioctl */
-> -	if (copy_from_user(tw_ioctl, argp, driver_command.buffer_length + sizeof(TW_Ioctl_Buf_Apache) - 1))
-> +	if (copy_from_user(tw_ioctl, argp, driver_command.buffer_length + sizeof(TW_Ioctl_Buf_Apache)))
+So please test either 4e2f62e566b5 or 568f27006577 and see if there is
+such issue.
 
-	if (copy_from_user(tw_ioctl, argp, sizeof(TW_Ioctl_Buf_Apache) + driver_command.buffer_length))
 
-etc...
-
+Thanks,
+Ming
 
