@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD3623FC98
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 06:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1154E23FCD5
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 07:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgHIEgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 Aug 2020 00:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
+        id S1726335AbgHIFGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 Aug 2020 01:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgHIEgK (ORCPT
+        with ESMTP id S1725790AbgHIFGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 Aug 2020 00:36:10 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34AD3C061756
-        for <linux-kernel@vger.kernel.org>; Sat,  8 Aug 2020 21:36:10 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id r11so3369649pfl.11
-        for <linux-kernel@vger.kernel.org>; Sat, 08 Aug 2020 21:36:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P21tL7daBF3yjezrA/PL3bwhuuAyesA+HDqEdHI5eFU=;
-        b=kJemo03+X3oJOjE2qhGI/wrF+x2Bq9Nuxd1UkRw82JP/J/1UnCgQPhfTA5DK2ghreM
-         DEOYdYirxqKjEkhZ+1AdiFMgUyktbxHcmE/7fPHbx6eW1pkdy/DqqpRvl0gqVQtG3qfL
-         xem9WVqBLZcVZ8qjGhr0hy7Vut7NmmaurZt1seGoXYLBEuyjx7th9ECe4pUgaE1D4Z5e
-         a/d/rjoeiFdC7v27eGX0CH35ekQ02kYJr5DfVW8y9eusgCUHaUa3ITY3cPRKalhENr3x
-         +NREy22FYA47eKSr4VFOLVzlNoT79jUnjLM6RLRkf8CzKJ3QKHG2a0oFBPOo6JfMQSHC
-         ri5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P21tL7daBF3yjezrA/PL3bwhuuAyesA+HDqEdHI5eFU=;
-        b=ZAvSj/e9iAJLQGXjRFE9jYtqcJpuvckxCsRLR5pG4DEdW0HEndIbyqsSWZTOTY/Aua
-         dbzn4lGCG5iUMpZfSZhlVBJyEgZni4zlu8CF0JSFxg0jAwDFOMYS0YUUT7aLfR2qJ4TI
-         7xihUvjijYEoIA748GokW7mARDEYqEd4lpb0/IOIcBTlWKSQORTa5OJvaFv0DKyngqAH
-         q/YpPsiG6vyDP3ZAHK/ksH03t9my68/gwBUL2A+gXrXTonjA8OG/8mvxuI1mGAw8mHcx
-         3ufFX9amJ7vWYhoCeugFk9YF7UESKoyDs1sfNLDC92exRABX5gxX4hLKK3b+kdiyhiBj
-         Ac1Q==
-X-Gm-Message-State: AOAM530YP/gp2uKREvckSEqncDGZZu508Eh9fqQYuX58FEmBfOPqfduX
-        eyQtHabaJu3xnxURx6JtAsLXIA==
-X-Google-Smtp-Source: ABdhPJyaQAVZfx7NE4LBNsDHpjcC+Y5iS7iQdOvy3wN6qrVmdEYeRBauSp4wkqNvWbki3tozGQn05g==
-X-Received: by 2002:a05:6a00:22c9:: with SMTP id f9mr2728054pfj.212.1596947769639;
-        Sat, 08 Aug 2020 21:36:09 -0700 (PDT)
-Received: from FVFX41FWHV2J.bytedance.net ([103.136.220.69])
-        by smtp.gmail.com with ESMTPSA id s2sm16267741pjb.33.2020.08.08.21.36.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 08 Aug 2020 21:36:08 -0700 (PDT)
-From:   Feng zhou <zhoufeng.zf@bytedance.com>
-To:     bp@alien8.de, mchehab@kernel.org, tony.luck@intel.com,
-        james.morse@arm.com, rrichter@marvell.com
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liuxian.1@bytedance.com, zhoufeng.zf@bytedance.com
-Subject: [PATCH] x86/MCE/AMD, EDAC/mce_amd
-Date:   Sun,  9 Aug 2020 12:35:59 +0800
-Message-Id: <20200809043559.9740-1-zhoufeng.zf@bytedance.com>
-X-Mailer: git-send-email 2.27.0
+        Sun, 9 Aug 2020 01:06:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD6FC061756
+        for <linux-kernel@vger.kernel.org>; Sat,  8 Aug 2020 22:06:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=KFpMew5MWdx4OVueRAZxSP2lNfAyRK8h36VA6KMljLY=; b=KOP7sa4NFIfTImV6xf9GxdSg7E
+        T+CkJvw548uZCmDd+a0LRpprZj8CeU2eEguGKNEEjZMKMJaOpfwIHzaetwxojgsVoPSCIX1k35wI9
+        hSL8S4XIWIcHJuqMD4x5aMSP+OtPC4+pr3vdzWk7/FQQwiOvXjPSSUDwd2ouITUZCIzPj9MWBgGl/
+        jOyP1t9XmW4Oq4h84K4x4eVfR89qRBIqcLH9wu6QS6Q2uE4PT1dKwPfLeQZSlICJ5wqck/oaCYyNy
+        ltXbtTQ9y3RnDIDj3tMFrc/zkA5gPqhSwW5YaAFIwXMz1lD3722hn3I5Gf0dNXOlp9yqI8LjU6IpO
+        oZmHf95g==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k4dWw-0002ST-Em; Sun, 09 Aug 2020 05:05:59 +0000
+Subject: Re: [PATCH 3/7] dyndbg: select ZPOOL in Kconfig.debug
+To:     Jim Cromie <jim.cromie@gmail.com>, jbaron@akamai.com,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Changbin Du <changbin.du@intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+References: <20200807200957.1269454-1-jim.cromie@gmail.com>
+ <20200807200957.1269454-4-jim.cromie@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <7e5c90bf-eb04-4b63-2990-7be18e22664f@infradead.org>
+Date:   Sat, 8 Aug 2020 22:05:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200807200957.1269454-4-jim.cromie@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhoufeng <zhoufeng.zf@bytedance.com>
+On 8/7/20 1:09 PM, Jim Cromie wrote:
+> dyndbg will next need zs_malloc and friends, so add config reqs now,
+> to avoid touching make-deps late in a patch-set.
+> 
+> I used select in order not to hide dyndbg inadvertently.
+> I want to say recommends, since it could be an optional feature.
+> Whats the best way ?
 
-The edac_mce_amd module calls decode_dram_ecc() on AMD Family17h and
-later systems. This function is used in amd64_edac_mod to do
-system-specific decoding for DRAM ECC errors. The function takes a
-"NodeId" as a parameter.
+Hi Jim,
+Can you elaborate on what/why/when it could be an optional feature?
 
-In AMD documentation, NodeId is used to identify a physical die in a
-system. This can be used to identify a node in the AMD_NB code and also
-it is used with umc_normaddr_to_sysaddr().
+> 
+> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> ---
+>  lib/Kconfig.debug | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 9ad9210d70a1..a7973063baf0 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -100,6 +100,7 @@ config DYNAMIC_DEBUG
+>  	depends on PRINTK
+>  	depends on (DEBUG_FS || PROC_FS)
+>  	select DYNAMIC_DEBUG_CORE
+> +	select ZPOOL
+>  	help
+>  
+>  	  Compiles debug level messages into the kernel, which would not
+> 
 
-However, the input used for decode_dram_ecc() is currently the NUMA node
-of a logical CPU. so this will cause the address translation function to
-fail or report incorrect results.
 
-Signed-off-by: zhoufeng <zhoufeng.zf@bytedance.com>
----
- drivers/edac/mce_amd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
-index 325aedf46ff2..73c805113322 100644
---- a/drivers/edac/mce_amd.c
-+++ b/drivers/edac/mce_amd.c
-@@ -996,7 +996,7 @@ static void decode_smca_error(struct mce *m)
- 	}
- 
- 	if (bank_type == SMCA_UMC && xec == 0 && decode_dram_ecc)
--		decode_dram_ecc(cpu_to_node(m->extcpu), m);
-+		decode_dram_ecc(topology_physical_package_id(m->extcpu), m);
- }
- 
- static inline void amd_decode_err_code(u16 ec)
 -- 
-2.20.1
+~Randy
 
