@@ -2,69 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9F623FE53
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 14:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AEC23FE56
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 14:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726242AbgHIMn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 Aug 2020 08:43:28 -0400
-Received: from sonic312-19.consmr.mail.sg3.yahoo.com ([106.10.244.209]:33448
-        "EHLO sonic312-19.consmr.mail.sg3.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725854AbgHIMn2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 Aug 2020 08:43:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com.ph; s=s2048; t=1596977003; bh=0iDlXFTI4TESKRtunoKHUg4JkgRhW0EZhRkg+i2dGfE=; h=Date:From:Reply-To:Subject:References:From:Subject; b=XhlH34lK2QRRusw1rbJKyscHPQd3XlBq3o/l6tpysGYW7WEhWlBKtNb8W5PKcFP0ZQ/kmdz64O+i+TCve17qGdU9U7pAivhOIwe5CLGyJX11RkybQ91TnnmELCip5AMn/56az2GB71CJHbZWaRgWYBfPIg88JRzW2sS4v2tTdAisRQJJUmCk1OyuCSzCd8L8GDnhUbqe5PS2a+l6HUBKh5cKBgYX74L36FrzcVC73vQ/jRx2Yk7kxb3/mM1KkZgv0eSqa0qDocp/VCm0RkRwu5O52UuMauay0l5DsVNbe7boxs86gS+s6YaYB1da28iBpS7ZuZVdw8VNrP3nQQ8ckQ==
-X-YMail-OSG: hQhZLucVM1mBfq3hFE.Sc8KMN0YczsySNFltGQ3Do0cNRrmkJgYFNtO3XRCGQk4
- bdDe9VHJVRmc3ka09rLxm8ZjCzU3wwcEgcOeOTC5ZhbJSFklJokWZYbULlFRNM35sFgvhgw1KRmb
- B_9UkP8Wn6ByT7WY2GlNu4YMTn0xp6o62o.oEzW07Ih_H1RciqnoVm8qdBlSMKpR483.x45F2kUL
- cUQJlclMGXW__TUsU9DueOgCW6n9FoZGLAhJ2Dhiz47tYHZSMUIb40_1dIYzAz35YWQ4MOpqLwLN
- g1NDdgPuk00Cf6hMmPoInpHfm70TSh2Iy1zMBJuoLNWsP0lqn3RhPibQerTeOenbkwkaC_NCKq9q
- GoP2f3dgmRvUysJHN1iwG_HUOb1NqsO_vrz6Oq1KYApLCAfmy6sJdsRFboou8oLcP6KmwUDPKzoN
- npti82irC0x8UMD628LWH09XjUoZv1qp5FwFvxkqpq3j9OwhU_3iLhqsD6ERZnFoH1Jf3lMAs24.
- 01WJV_ZVYe0m8WolUglIoqT45.BwE6iydsJ.twY0B35eDxAIkqUl7DM8oM2t8mOgNCyx0vNZRlB7
- fMb2Aw_Zus3yHU93siwhzIvHguoKESy_.AN6e5VlrWO8oH0481lLGJ8DmptUZ.XoQ3PpzKjePPe6
- YJqPfvwLnWf.E72AoAj3qQnZBLW1Sld60dV9rZNgl.l1DKCslojGVXTbyr2OQ77oaE1LXKZ5A8dw
- tW2m2Ww8G.lZNswE5g.k7ICmoiUHwbVG4GM_Ml4zoMKe0OqOHriGmsOksObqGYtgDiUxy2fLS4zy
- 4wEQrqdWVWCZDbo_ZLJtHDEH0hs.zZAA.hYZ_oB1wkVMK8r_7i9VeSazYog4v0z1ZzjXgRycPO5e
- ePmBmAJhGL0L8mT4eHobvXnjrwcKnodIkn9Q.j4p9c2rWUIHts3ZraL2_lY6FEWKvNKNjT2CeVp1
- 6G7qqlEdndT_6vAKro5RqTOZw9cwifadYrT6pfyTwDMMCW8yRtproz_NLA7gLu86GwyrL78OY5pV
- AlHb9AgqAiyfnDilX0svr9lgd6.ciVst8445b3TR0nT1surPWORutltdvYm4mkmw86w18fvE_SKp
- y5zIA0mffKekPcPjo.iw0T607Bw9XA1jC_WKFYoLCLbzlSAdwpO1hRErQNDtCCOMgBCJJrEy3MQp
- wvrASiHkaiDbNR_sYChe6bkq5KFJkigMS74D9C0o6vcR0fnm9lxm8mrSVcowuMdhnrPHbfNsKP2x
- LnDaru1ml7GHHg2frdtxi8VMLwea6liYN5Ix77fCNv.SMiav._fwiOF2qo8STqqmqcnXUZvYI_Z_
- nQ_PI0bP.2WUZ4F04NHQP30JBJIXyuUw7eEPeHmYyL.mLr0WOAA7gyjzp9Ae06fFJKR37
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.sg3.yahoo.com with HTTP; Sun, 9 Aug 2020 12:43:23 +0000
-Date:   Sun, 9 Aug 2020 12:43:21 +0000 (UTC)
-From:   "Mr.Dickson Nsebeh" <lastinpkt@yahoo.com.ph>
-Reply-To: waxson.a@yahoo.com
-Message-ID: <1168612853.1289970.1596977001774@mail.yahoo.com>
-Subject: Re: Your Assistance For Investment.
+        id S1726323AbgHIMyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 Aug 2020 08:54:12 -0400
+Received: from crapouillou.net ([89.234.176.41]:33422 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726009AbgHIMyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 Aug 2020 08:54:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1596977646; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:references; bh=cnkmqD3TG3gz8m5XcYrWDZ+GrLOHBws185ObzDx76W4=;
+        b=koKnTka2TQh1Pi5bezaIUxvSZNqIOH73m0JLB50SXT/kS7HRy7RE3eYCxF0kylxdMBaKtz
+        r9SBDWb9XR5VPe1KBCjk0EHZ5Hw2sMjWvsHqhuynBpq810w3G5kunugipyx8SQ0lKVHCmG
+        tn2xrwbelnBWR2TEEIiThPD3FT4ktgo=
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Bin Liu <b-liu@ti.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Johan Hovold <johan@kernel.org>, od@zcrc.me,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>, stable@vger.kernel.org
+Subject: [PATCH] usb: musb: Fix runtime PM race in musb_queue_resume_work
+Date:   Sun,  9 Aug 2020 14:53:59 +0200
+Message-Id: <20200809125359.31025-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1168612853.1289970.1596977001774.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16436 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:80.0) Gecko/20100101 Firefox/80.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
-Please, I come to you with good reason.
+musb_queue_resume_work() would call the provided callback if the runtime
+PM status was 'active'. Otherwise, it would enqueue the request if the
+hardware was still suspended (musb->is_runtime_suspended is true).
 
-My name is Mr.Dickson Nsebeh, a banker by profession,  with position of ( Assistant Manager ) I will be going on retirement end of September 2020.
+This causes a race with the runtime PM handlers, as it is possible to be
+in the case where the runtime PM status is not yet 'active', but the
+hardware has been awaken (PM resume function has been called).
 
-Please can i trust you to release the sum of $9.3 Million Dollars, to you for safe keeping in any account there in your country ?. You will have 40% as your share while 60% will be for me to move into any investment you will suggest for me.
-Please kindly reply me with your information as stated below for more details and how to execute this transfer to your provided account as soon as possible.
+When hitting the race, the resume work was not enqueued, which probably
+triggered other bugs further down the stack. For instance, a telnet
+connection on Ingenic SoCs would result in a 50/50 chance of a
+segmentation fault somewhere in the musb code.
 
-Your Full Name...
-Your Age.......
-Your Home Address..
-Your Occupation...
-Your Country......
-Your Cellular N0...
+Rework the code so that either we call the callback directly if
+(musb->is_runtime_suspended == 0), or enqueue the query otherwise.
 
-Am waiting for your response. God bless you.
+Fixes: ea2f35c01d5e ("usb: musb: Fix sleeping function called from invalid context for hdrc glue")
+Cc: stable@vger.kernel.org # v4.9
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ drivers/usb/musb/musb_core.c | 31 +++++++++++++++++--------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
 
-Mr.Dickson Nsebeh.
-Reply to> waxson.a@yahoo.com
+diff --git a/drivers/usb/musb/musb_core.c b/drivers/usb/musb/musb_core.c
+index 384a8039a7fd..462c10d7455a 100644
+--- a/drivers/usb/musb/musb_core.c
++++ b/drivers/usb/musb/musb_core.c
+@@ -2241,32 +2241,35 @@ int musb_queue_resume_work(struct musb *musb,
+ {
+ 	struct musb_pending_work *w;
+ 	unsigned long flags;
++	bool is_suspended;
+ 	int error;
+ 
+ 	if (WARN_ON(!callback))
+ 		return -EINVAL;
+ 
+-	if (pm_runtime_active(musb->controller))
+-		return callback(musb, data);
++	spin_lock_irqsave(&musb->list_lock, flags);
++	is_suspended = musb->is_runtime_suspended;
++
++	if (is_suspended) {
++		w = devm_kzalloc(musb->controller, sizeof(*w), GFP_ATOMIC);
++		if (!w) {
++			error = -ENOMEM;
++			goto out_unlock;
++		}
+ 
+-	w = devm_kzalloc(musb->controller, sizeof(*w), GFP_ATOMIC);
+-	if (!w)
+-		return -ENOMEM;
++		w->callback = callback;
++		w->data = data;
+ 
+-	w->callback = callback;
+-	w->data = data;
+-	spin_lock_irqsave(&musb->list_lock, flags);
+-	if (musb->is_runtime_suspended) {
+ 		list_add_tail(&w->node, &musb->pending_list);
+ 		error = 0;
+-	} else {
+-		dev_err(musb->controller, "could not add resume work %p\n",
+-			callback);
+-		devm_kfree(musb->controller, w);
+-		error = -EINPROGRESS;
+ 	}
++
++out_unlock:
+ 	spin_unlock_irqrestore(&musb->list_lock, flags);
+ 
++	if (!is_suspended)
++		error = callback(musb, data);
++
+ 	return error;
+ }
+ EXPORT_SYMBOL_GPL(musb_queue_resume_work);
+-- 
+2.28.0
+
