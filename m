@@ -2,174 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B551623FF49
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 18:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A92D23FF53
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 18:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgHIQoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 Aug 2020 12:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726175AbgHIQoM (ORCPT
+        id S1726505AbgHIQpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 Aug 2020 12:45:45 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:57832 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgHIQpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 Aug 2020 12:44:12 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719B1C061756
-        for <linux-kernel@vger.kernel.org>; Sun,  9 Aug 2020 09:44:11 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id j10so3147425qvo.13
-        for <linux-kernel@vger.kernel.org>; Sun, 09 Aug 2020 09:44:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VtVUcbqA/O73EOSUUlMvyg/Az0u0gAuQ6qRQ4VdVDjQ=;
-        b=E0T+ouj/gm9ezQDrznurtjO9fbYkBjs/PaHDBFowTFWpw9rPmyCLEWDZqz7S1GySXD
-         5ro+pqAdWhINcPeN2Ytdd+yegA8c6hgg0FsaKN3fcLTnnvoennBckoBvMjJd/d2VaTPp
-         PQDV0jMhgltAOS280vFGqyN4pimIjXvnWQKS8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VtVUcbqA/O73EOSUUlMvyg/Az0u0gAuQ6qRQ4VdVDjQ=;
-        b=OVrvzkLJAaA3mPVLHzqBQITlw4E3S+U2osNcGiGPJQZBj72NorWSjlHorljg4gyllP
-         v5aiCnh5qpJrBvKZCDgBmtDDqY05rVB/cCNPNgsHyzx1iltZgWw2fEhxPWl6hUOF8SKb
-         6Gch0birbj3ybUGYeg3ARJ+5RSImJfOSmnBYoke2LTXbQduCIx3mDi/QkT0ytxqvntQs
-         HZfuiAXWdyuHF/tuUeS9m1bzYgW7elWcWsGg1f+2WzsLzU30iUoLnWEJYli1DJzVBYh/
-         U6/3tSULMg+yByIBqm7H4ojZBHJwrQ6RpV2bCI+L6BpEqBh6VQrpiO8z9uGqf6IZxgeC
-         F+Ww==
-X-Gm-Message-State: AOAM531WNTXr//EUYNDMdVfHDYu6xifr7GdU+wj2DnK8SmMUqYvGNb8O
-        5BWyegPGHLPR25biKLfQfjMICg==
-X-Google-Smtp-Source: ABdhPJyKeHBg0TXoYIMgPREwAltlUPuvuVPjyksh8hkUKqC4pz0KNXpC2FrozeVyJDVjLUCBj2sw6g==
-X-Received: by 2002:ad4:46ac:: with SMTP id br12mr24597161qvb.236.1596991450241;
-        Sun, 09 Aug 2020 09:44:10 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id k1sm11778846qkf.12.2020.08.09.09.44.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 Aug 2020 09:44:09 -0700 (PDT)
-Date:   Sun, 9 Aug 2020 12:44:08 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     viremana@linux.microsoft.com,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Glexiner <tglx@linutronix.de>,
-        Paul Turner <pjt@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Subhra Mazumdar <subhra.mazumdar@oracle.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vineeth Pillai <vineethrp@gmail.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Ning, Hongyu" <hongyu.ning@linux.intel.com>,
-        =?utf-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>
-Subject: Re: [RFC PATCH 00/16] Core scheduling v6
-Message-ID: <20200809164408.GA342447@google.com>
-References: <cover.1593530334.git.vpillai@digitalocean.com>
- <6d0f9fc0-2e34-f559-29bc-4143e6d3f751@linux.intel.com>
- <CAEXW_YS6oW_AAkmOuXNMCj_N5763aG9SXEcWz_onPhQQU2TZ0g@mail.gmail.com>
- <f986f5a9-5c97-10ed-1e44-84bbd929e605@linux.intel.com>
+        Sun, 9 Aug 2020 12:45:18 -0400
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 079GixTM028732;
+        Mon, 10 Aug 2020 01:45:00 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 079GixTM028732
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1596991500;
+        bh=4/Wuc/SZmcBLjxjCab/4kWn1GAKRas6rkaBR2EHWo20=;
+        h=From:Date:Subject:To:Cc:From;
+        b=fXe5iqgEsZZNZOomxBIqwTx2ZpqZ0c2DwWZO7dBnUdO4hPRH1OPigz3cAVRNurY8y
+         clfvDuhM0ntIqNCs8JfNqTiH8Vu+qbGDLW8h2WnThIu8z5Avqg6Ufs48strU48F+W/
+         FOeBZJNr+WTA2nrKooBvjvJJQqKxLHBD8CiKAiJyHR9bA6NTlTcYY7w1aFDlWcnyCP
+         nlCBMJF3KhMjdMaSdXBgVv972N63E0HG0ZTmg06sJtiNZsXr4CMyiixzt+K6ppGhPT
+         Fn9v5tDeXxYQKTZc/JKO51ExqbbahqHAmnQMUf0DJzAwWVS5AauvQnKgvObzuKuuKP
+         5RKrp2J4TuzCg==
+X-Nifty-SrcIP: [209.85.217.48]
+Received: by mail-vs1-f48.google.com with SMTP id i129so3129589vsi.3;
+        Sun, 09 Aug 2020 09:45:00 -0700 (PDT)
+X-Gm-Message-State: AOAM530xo3yOb+t5ZZFMO/C1Hb4t9M/AlTNzyFJONdlImQp7tAbyoMdv
+        hwKsRI/6btemzSMTXKbeBu7sGCGwfhKWIg9JO4Q=
+X-Google-Smtp-Source: ABdhPJzmegxrhBUJkpqQlxlRB6LMHJWnb2qh+gXiiLgEY5iHTAm8kJYLhuDU2AlNZBxL8OXAxsDf5A54WI/UKy740Ac=
+X-Received: by 2002:a05:6102:2247:: with SMTP id e7mr16099231vsb.181.1596991498725;
+ Sun, 09 Aug 2020 09:44:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f986f5a9-5c97-10ed-1e44-84bbd929e605@linux.intel.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 10 Aug 2020 01:44:22 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARMCg0vPjZL0o-sFr+vMu17-nFcV4v4pbLazLK8iTSQWQ@mail.gmail.com>
+Message-ID: <CAK7LNARMCg0vPjZL0o-sFr+vMu17-nFcV4v4pbLazLK8iTSQWQ@mail.gmail.com>
+Subject: [GIT PULL] Kbuild updates for v5.9-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aubrey,
+Hi Linus,
 
-Apologies for replying late as I was still looking into the details.
-
-On Wed, Aug 05, 2020 at 11:57:20AM +0800, Li, Aubrey wrote:
-[...]
-> +/*
-> + * Core scheduling policy:
-> + * - CORE_SCHED_DISABLED: core scheduling is disabled.
-> + * - CORE_COOKIE_MATCH: tasks with same cookie can run
-> + *                     on the same core concurrently.
-> + * - CORE_COOKIE_TRUST: trusted task can run with kernel
-> 			thread on the same core concurrently. 
-> + * - CORE_COOKIE_LONELY: tasks with cookie can run only
-> + *                     with idle thread on the same core.
-> + */
-> +enum coresched_policy {
-> +       CORE_SCHED_DISABLED,
-> +       CORE_SCHED_COOKIE_MATCH,
-> +	CORE_SCHED_COOKIE_TRUST,
-> +       CORE_SCHED_COOKIE_LONELY,
-> +};
-> 
-> We can set policy to CORE_COOKIE_TRUST of uperf cgroup and fix this kind
-> of performance regression. Not sure if this sounds attractive?
-
-Instead of this, I think it can be something simpler IMHO:
-
-1. Consider all cookie-0 task as trusted. (Even right now, if you apply the
-   core-scheduling patchset, such tasks will share a core and sniff on each
-   other. So let us not pretend that such tasks are not trusted).
-
-2. All kernel threads and idle task would have a cookie 0 (so that will cover
-   ksoftirqd reported in your original issue).
-
-3. Add a config option (CONFIG_SCHED_CORE_DEFAULT_TASKS_UNTRUSTED). Default
-   enable it. Setting this option would tag all tasks that are forked from a
-   cookie-0 task with their own cookie. Later on, such tasks can be added to
-   a group. This cover's PeterZ's ask about having 'default untrusted').
-   (Users like ChromeOS that don't want to userspace system processes to be
-   tagged can disable this option so such tasks will be cookie-0).
-
-4. Allow prctl/cgroup interfaces to create groups of tasks and override the
-   above behaviors.
-
-5. Document everything clearly so the semantics are clear both to the
-   developers of core scheduling and to system administrators.
-
-Note that, with the concept of "system trusted cookie", we can also do
-optimizations like:
-1. Disable STIBP when switching into trusted tasks.
-2. Disable L1D flushing / verw stuff for L1TF/MDS issues, when switching into
-   trusted tasks.
-
-At least #1 seems to be biting enabling HT on ChromeOS right now, and one
-other engineer requested I do something like #2 already.
-
-Once we get full-syscall isolation working, threads belonging to a process
-can also share a core so those can just share a core with the task-group
-leader.
-
-> > Is the uperf throughput worse with SMT+core-scheduling versus no-SMT ?
-> 
-> This is a good question, from the data we measured by uperf,
-> SMT+core-scheduling is 28.2% worse than no-SMT, :(
-
-This is worrying for sure. :-(. We ought to debug/profile it more to see what
-is causing the overhead. Me/Vineeth added it as a topic for LPC as well.
-
-Any other thoughts from others on this?
-
-thanks,
-
- - Joel
+Please pull Kbuild updates for v5.9-rc1
+Thanks.
 
 
-> > thanks,
-> > 
-> >  - Joel
-> > PS: I am planning to write a patch behind a CONFIG option that tags
-> > all processes (default untrusted) so everything gets a cookie which
-> > some folks said was how they wanted (have a whitelist instead of
-> > blacklist).
-> > 
-> 
+The following changes since commit dcb7fd82c75ee2d6e6f9d8cc71c52519ed52e258:
+
+  Linux 5.8-rc4 (2020-07-05 16:20:22 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+tags/kbuild-v5.9
+
+for you to fetch changes up to 132305b3b474a85152302ceda4551384cce3904e:
+
+  kbuild: stop filtering out $(GCC_PLUGINS_CFLAGS) from cc-option base
+(2020-08-10 01:32:59 +0900)
+
+----------------------------------------------------------------
+Kbuild updates for v5.9
+
+ - run the checker (e.g. sparse) after the compiler
+
+ - remove unneeded cc-option tests for old compiler flags
+
+ - fix tar-pkg to install dtbs
+
+ - introduce ccflags-remove-y and asflags-remove-y syntax
+
+ - allow to trace functions in sub-directories of lib/
+
+ - introduce hostprogs-always-y and userprogs-always-y syntax
+
+ - various Makefile cleanups
+
+----------------------------------------------------------------
+Alexander A. Klimov (1):
+      kbuild: Replace HTTP links with HTTPS ones
+
+Domenico Andreoli (1):
+      kbuild: buildtar: add dtbs support
+
+Luc Van Oostenryck (1):
+      kbuild: run the checker after the compiler
+
+Masahiro Yamada (13):
+      Revert "kbuild: Create directory for target DTB"
+      kbuild: remove cc-option test of -fno-stack-protector
+      kbuild: remove cc-option test of -ffreestanding
+      powerpc/boot: add DTB to 'targets'
+      kbuild: always create directories of targets
+      kbuild: do not export LDFLAGS_vmlinux
+      kbuild: introduce ccflags-remove-y and asflags-remove-y
+      kbuild: trace functions in subdirectories of lib/
+      kbuild: move host .so build rules to scripts/gcc-plugins/Makefile
+      kbuild: sort hostprogs before passing it to ifneq
+      kbuild: introduce hostprogs-always-y and userprogs-always-y
+      kbuild: include scripts/Makefile.* only when relevant CONFIG is enabled
+      kbuild: stop filtering out $(GCC_PLUGINS_CFLAGS) from cc-option base
+
+ Documentation/kbuild/Kconfig.recursion-issue-02 |  2 +-
+ Documentation/kbuild/kconfig-language.rst       | 18 +++++++-------
+ Documentation/kbuild/llvm.rst                   |  2 +-
+ Documentation/kbuild/makefiles.rst              | 45
+++++++++++++++++++++++++++++++++++-
+ Makefile                                        | 26 ++++++++++++---------
+ arch/Kconfig                                    |  3 ---
+ arch/arm/boot/compressed/Makefile               |  9 ++-----
+ arch/mips/vdso/Makefile                         |  3 +--
+ arch/powerpc/boot/Makefile                      |  2 ++
+ arch/powerpc/kernel/Makefile                    |  2 +-
+ arch/powerpc/platforms/powermac/Makefile        |  2 +-
+ arch/powerpc/xmon/Makefile                      |  3 +--
+ arch/s390/Makefile                              |  2 +-
+ arch/sh/boot/compressed/Makefile                |  5 +---
+ arch/sparc/vdso/Makefile                        |  4 ++--
+ arch/um/Makefile                                |  3 +--
+ arch/x86/Makefile                               |  4 ++--
+ arch/x86/boot/compressed/Makefile               |  4 ++--
+ arch/x86/entry/vdso/Makefile                    |  4 ++--
+ arch/x86/kernel/cpu/Makefile                    |  3 +--
+ arch/x86/lib/Makefile                           |  2 +-
+ arch/x86/mm/Makefile                            |  7 +++---
+ arch/x86/power/Makefile                         |  3 +--
+ arch/x86/purgatory/Makefile                     |  2 +-
+ arch/x86/um/vdso/Makefile                       |  2 +-
+ arch/x86/xen/Makefile                           |  5 ++--
+ arch/xtensa/boot/boot-elf/Makefile              |  2 +-
+ drivers/firmware/efi/libstub/Makefile           |  4 ++--
+ drivers/xen/Makefile                            |  3 +--
+ kernel/trace/Makefile                           |  4 ++--
+ lib/Makefile                                    |  9 +++----
+ lib/livepatch/Makefile                          |  4 ----
+ mm/kasan/Makefile                               |  2 +-
+ samples/auxdisplay/Makefile                     |  3 +--
+ samples/binderfs/Makefile                       |  3 +--
+ samples/connector/Makefile                      |  3 +--
+ samples/hidraw/Makefile                         |  3 +--
+ samples/mei/Makefile                            |  4 +---
+ samples/pidfd/Makefile                          |  4 +---
+ samples/seccomp/Makefile                        |  4 +---
+ samples/timers/Makefile                         |  3 +--
+ samples/uhid/Makefile                           |  3 +--
+ samples/vfs/Makefile                            |  3 +--
+ samples/watch_queue/Makefile                    |  3 +--
+ samples/watchdog/Makefile                       |  3 +--
+ scripts/Kbuild.include                          | 10 +++-----
+ scripts/Makefile                                | 18 +++++++-------
+ scripts/Makefile.build                          | 15 ++++++------
+ scripts/Makefile.clean                          | 13 +++++++----
+ scripts/Makefile.host                           | 40
++++++--------------------------
+ scripts/Makefile.kcov                           |  4 ----
+ scripts/Makefile.kcsan                          |  4 ----
+ scripts/Makefile.lib                            | 28 +++++++++++++++-------
+ scripts/Makefile.ubsan                          |  3 ---
+ scripts/basic/Makefile                          |  3 +--
+ scripts/dtc/Makefile                            |  5 ++--
+ scripts/gcc-plugins/Makefile                    | 61
++++++++++++++++++++++++++++++++++++++++---------
+ scripts/genksyms/Makefile                       |  3 +--
+ scripts/link-vmlinux.sh                         |  4 ++++
+ scripts/mod/Makefile                            |  4 ++--
+ scripts/package/buildtar                        | 12 ++++++++++
+ scripts/package/mkdebian                        |  2 +-
+ scripts/package/mkspec                          |  2 +-
+ scripts/selinux/genheaders/Makefile             |  4 +---
+ scripts/selinux/mdp/Makefile                    |  3 +--
+ 65 files changed, 251 insertions(+), 221 deletions(-)
+
+
+-- 
+Best Regards
+Masahiro Yamada
