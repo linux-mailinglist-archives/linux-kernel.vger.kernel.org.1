@@ -2,85 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CEA23FDC7
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 13:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C87523FDE8
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 13:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgHILS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 Aug 2020 07:18:56 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:60894 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgHILSy (ORCPT
+        id S1726291AbgHILZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 Aug 2020 07:25:51 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:50937
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726009AbgHILZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 Aug 2020 07:18:54 -0400
-Received: from localhost.localdomain ([93.22.150.139])
-        by mwinf5d61 with ME
-        id DPJn2300A30hzCV03PJo69; Sun, 09 Aug 2020 13:18:52 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 09 Aug 2020 13:18:52 +0200
-X-ME-IP: 93.22.150.139
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     gregkh@linuxfoundation.org, sfr@canb.auug.org.au,
-        longman@redhat.com, akpm@linux-foundation.org, mhocko@suse.com,
-        hannes@cmpxchg.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] staging: ks7010: Do not use GFP_KERNEL in atomic context
-Date:   Sun,  9 Aug 2020 13:18:46 +0200
-Message-Id: <20200809111846.745826-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Sun, 9 Aug 2020 07:25:38 -0400
+X-IronPort-AV: E=Sophos;i="5.75,453,1589234400"; 
+   d="scan'208";a="356217592"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Aug 2020 13:25:35 +0200
+Date:   Sun, 9 Aug 2020 13:25:34 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Markus Elfring <Markus.Elfring@web.de>
+cc:     Denis Efremov <efremov@linux.com>,
+        Coccinelle <cocci@systeme.lip6.fr>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] Coccinelle: Reduce duplicate code for patch rules of
+ memdup_user.cocci
+In-Reply-To: <b5c83a17-e04f-2d10-9506-12c50b3de9b9@web.de>
+Message-ID: <alpine.DEB.2.22.394.2008091324530.2450@hadrien>
+References: <1ae3eefe-fa5a-a497-f00b-5638f4191e90@web.de> <b5c83a17-e04f-2d10-9506-12c50b3de9b9@web.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A possible call chain is as follow:
-  ks_wlan_start_xmit                    (ks_wlan_net.c)
-    --> hostif_data_request             (ks_hostif.c)
-      --> michael_mic                   (ks_hostif.c)
 
-'ks_wlan_start_xmit()' is a '.ndo_start_xmit()' function (see
-net_device_ops structure). Such calls are guarded by the __netif_tx_lock
-spinlock. So memory allocation must be atomic.
 
-So, use GFP_ATOMIC instead of GFP_KERNEL 'in michael_mic()'
+On Sun, 9 Aug 2020, Markus Elfring wrote:
 
-Fixes: ???
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-This is completely speculative. I don't know if the call chain given above
-if possible in RL application.
-So review carefully :)
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Sun, 9 Aug 2020 11:11:20 +0200
+>
+> Another patch rule was added. A bit of code was copied from a previous
+> SmPL rule for this change specification.
+>
+> * Thus reduce duplicate code by using another SmPL disjunction.
 
-If the fix is correct, it is also more the starting point of a bigger
-change, because in 'michael_mic()' there is a call to
-'crypto_alloc_shash()' and this function uses GFP_KERNEL internally (in
-'crypto_create_tfm()')
-Should this need to be changed, I don't know how 'ks_hostif.c' should be
-fixed. Changing allocation in 'crypto/api.c' looks like an overkill.
+I don't care about this issue.
 
-In other word, I think that my patch is wrong, but don't know what else to
-propose :).
----
- drivers/staging/ks7010/ks_hostif.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> * Increase the precision a bit for desired source code adjustments.
 
-diff --git a/drivers/staging/ks7010/ks_hostif.c b/drivers/staging/ks7010/ks_hostif.c
-index d70b671b06aa..c66f50e4a158 100644
---- a/drivers/staging/ks7010/ks_hostif.c
-+++ b/drivers/staging/ks7010/ks_hostif.c
-@@ -212,7 +212,7 @@ michael_mic(u8 *key, u8 *data, unsigned int len, u8 priority, u8 *result)
- 	if (ret < 0)
- 		goto err_free_tfm;
- 
--	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(tfm), GFP_KERNEL);
-+	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(tfm), GFP_ATOMIC);
- 	if (!desc) {
- 		ret = -ENOMEM;
- 		goto err_free_tfm;
--- 
-2.25.1
+This gives no information.  If you explain the improvement in an
+understandable way, I will consider whether it is useful to take the
+patch.
 
+julia
+
+> Fixes: 9c568dbd677bcfc975220d3157c89c48669a23e3 ("coccinelle: api: extend memdup_user rule with vmemdup_user()")
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>  scripts/coccinelle/api/memdup_user.cocci | 44 +++++++++---------------
+>  1 file changed, 16 insertions(+), 28 deletions(-)
+>
+> diff --git a/scripts/coccinelle/api/memdup_user.cocci b/scripts/coccinelle/api/memdup_user.cocci
+> index e01e95108405..7cf698b4e925 100644
+> --- a/scripts/coccinelle/api/memdup_user.cocci
+> +++ b/scripts/coccinelle/api/memdup_user.cocci
+> @@ -27,34 +27,22 @@ expression from,to,size;
+>  identifier l1,l2;
+>  position p : script:python() { relevant(p) };
+>  @@
+> -
+> --  to = \(kmalloc@p\|kzalloc@p\)
+> --		(size,\(GFP_KERNEL\|GFP_USER\|
+> --		      \(GFP_KERNEL\|GFP_USER\)|__GFP_NOWARN\));
+> -+  to = memdup_user(from,size);
+> -   if (
+> --      to==NULL
+> -+      IS_ERR(to)
+> -                 || ...) {
+> -   <+... when != goto l1;
+> --  -ENOMEM
+> -+  PTR_ERR(to)
+> -   ...+>
+> -   }
+> --  if (copy_from_user(to, from, size) != 0) {
+> --    <+... when != goto l2;
+> --    -EFAULT
+> --    ...+>
+> --  }
+> -
+> -@depends on patch@
+> -expression from,to,size;
+> -identifier l1,l2;
+> -position p : script:python() { relevant(p) };
+> -@@
+> -
+> --  to = \(kvmalloc@p\|kvzalloc@p\)(size,\(GFP_KERNEL\|GFP_USER\));
+> -+  to = vmemdup_user(from,size);
+> + to =
+> +(
+> +-     \(kmalloc@p\|kzalloc@p\)
+> ++     memdup_user
+> +      (
+> +-      size, \( \(GFP_KERNEL\|GFP_USER\) \| \(GFP_KERNEL\|GFP_USER\)|__GFP_NOWARN \)
+> ++      from, size
+> +      )
+> +|
+> +-     \(kvmalloc@p\|kvzalloc@p\)
+> ++     vmemdup_user
+> +      (
+> +-      size, \(GFP_KERNEL\|GFP_USER\)
+> ++      from, size
+> +      )
+> +);
+>     if (
+>  -      to==NULL
+>  +      IS_ERR(to)
+> --
+> 2.28.0
+>
+>
