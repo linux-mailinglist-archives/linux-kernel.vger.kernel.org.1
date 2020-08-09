@@ -2,66 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A362923FFF8
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 22:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1ECC23FFFB
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 22:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgHIUeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 Aug 2020 16:34:20 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:38942 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726321AbgHIUeU (ORCPT
+        id S1726402AbgHIUgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 Aug 2020 16:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726386AbgHIUgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 Aug 2020 16:34:20 -0400
-Received: from localhost.localdomain ([93.22.38.137])
-        by mwinf5d52 with ME
-        id DYa8230082xYfe503Ya9Dl; Sun, 09 Aug 2020 22:34:17 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 09 Aug 2020 22:34:17 +0200
-X-ME-IP: 93.22.38.137
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, sumit.semwal@linaro.org,
-        colton.w.lewis@protonmail.com, Ori.Messinger@amd.com,
-        m.szyprowski@samsung.com, bernard@vivo.com,
-        dri-devel@lists.freedesktop.org
-Cc:     amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] drm: amdgpu: Use the correct size when allocating memory
-Date:   Sun,  9 Aug 2020 22:34:06 +0200
-Message-Id: <20200809203406.751971-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Sun, 9 Aug 2020 16:36:01 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36ABC061786
+        for <linux-kernel@vger.kernel.org>; Sun,  9 Aug 2020 13:36:00 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id 185so7428695ljj.7
+        for <linux-kernel@vger.kernel.org>; Sun, 09 Aug 2020 13:36:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VSSDBJk6gLE6rhGULG1G81ocpF+POHgO4nE9N3d7HUY=;
+        b=ySlzyU3jUGPCX5KJkkeSbdRLwPab/kKxNC9gYhEFvTvICpgsKTziAtKKaxwnXMPrSo
+         iFMmgPWmOSYE+3wNISfHXo4r3HxtW4xIV2GWoROvAj+HfqOMZrMS24sM4mxdwB0TYY3X
+         mh/3vUcoKPlwx22+sAX1YTiTqwTjmnGcYp4hMM3oFvBkz1HtHqeJQsyVLBYmHPi57O8P
+         IWApaiSk7SJ7M7Yec1VxO6xW5+m2dPr9QhlovomgAfafpIfli9YnUDR5SXRZ1Diu1g6G
+         1Rp6v5IV0GZIcjnO6H+MzWC2fPREj8xS9eOKDyNsIYEcTNsKiUPzd1ufNdzbgGpBd1QC
+         6vbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VSSDBJk6gLE6rhGULG1G81ocpF+POHgO4nE9N3d7HUY=;
+        b=ZfjXfwB09oVrX8VCIayStbvw7YaaOfAaRy/WdscAbSd1IUZygms0Tre+c6Q4c4xkrX
+         6UjjpGIYjaUk11VDZ+MgdUi/7TFfpD+eRUUqqDrLV4t30ErwJSzsr/SiZodazCDby49W
+         4yo7Z3SHtX3uCdS2mhJqNEwAjs9R3y0h1vFPTbdxs1wwI59kw6vt7qpGEZCMMbM/3V/r
+         909zxnlTdN2x6trP4wqaEqECvGKA0wprftSFEpmoqCMf69uRff1FbuBLo16R8NJ9siKG
+         w7ATrJF5VBBJBzdgSXONKIepJ7kMv5Bsw4X07NrGCEg0hRs+m7X7pjQ0EvGeu8H7zr5N
+         UKlw==
+X-Gm-Message-State: AOAM530KLhcr176IlGgkNxg+uBLgaS70ARWrgMr9hTwFeTF+KHdtpVzw
+        T/1OjuqyA0kOwG5chBbtgzqu85zFHshIZlrmu9/6+5AhwT4=
+X-Google-Smtp-Source: ABdhPJx0+3HiK4BERST7xDlbkaqD0iE42jj++Nyzx5kx74nhW84mJ4cQsAa4/220bB8gjDfH3hkU85U+ShOtTiaYWdc=
+X-Received: by 2002:a2e:90e:: with SMTP id 14mr11146237ljj.293.1597005359121;
+ Sun, 09 Aug 2020 13:35:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CACRpkdZyVM32opVPtgPonC0Gqg7YVyCCXryvA66FQbQUELdHjg@mail.gmail.com>
+ <CAHk-=wjHNkPHvGG_Ca_f8=+w5od9_XTQ8yD55+v-3WCKhvKviw@mail.gmail.com>
+In-Reply-To: <CAHk-=wjHNkPHvGG_Ca_f8=+w5od9_XTQ8yD55+v-3WCKhvKviw@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 9 Aug 2020 22:35:47 +0200
+Message-ID: <CACRpkdaVmq3XhioG_=nNKSGVq+uAff7OAJPbyx04vVGCg5aE5g@mail.gmail.com>
+Subject: Re: [GIT PULL] pin control changes for the v5.9 kernel cycle
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When '*sgt' is allocated, we must allocated 'sizeof(**sgt)' bytes instead
-of 'sizeof(*sg)'. 'sg' (i.e. struct scatterlist) is smaller than
-'sgt' (i.e struct sg_table), so this could lead to memory corruption.
+On Sun, Aug 9, 2020 at 9:55 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Sun, Aug 9, 2020 at 6:06 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> >
+> > Driver improvements:
+> >
+> > - Linear improvement and cleanups of the Intel drivers for
+> >   Cherryview, Lynxpoint, Baytrail etc. Improved locking among
+> >   other things.
+>
+> I'm having a hard time parsing that. What does "Linear improvement" mean?
 
-Fixes: f44ffd677fb3 ("drm/amdgpu: add support for exporting VRAM using DMA-buf v3")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sorry, gradual or incremental improvement is a better
+term.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-index 134cc36e30c5..0739e259bf91 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-@@ -462,7 +462,7 @@ int amdgpu_vram_mgr_alloc_sgt(struct amdgpu_device *adev,
- 	unsigned int pages;
- 	int i, r;
- 
--	*sgt = kmalloc(sizeof(*sg), GFP_KERNEL);
-+	*sgt = kmalloc(sizeof(**sgt), GFP_KERNEL);
- 	if (!*sgt)
- 		return -ENOMEM;
- 
--- 
-2.25.1
-
+Best regards,
+Linus Walleij
