@@ -2,206 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E2A24000E
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 22:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F36D24000F
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 22:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgHIUzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 Aug 2020 16:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgHIUzv (ORCPT
+        id S1726418AbgHIU5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 Aug 2020 16:57:42 -0400
+Received: from sonic312-21.consmr.mail.bf2.yahoo.com ([74.6.128.83]:36874 "EHLO
+        sonic312-21.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726307AbgHIU5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 Aug 2020 16:55:51 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DBDC061756
-        for <linux-kernel@vger.kernel.org>; Sun,  9 Aug 2020 13:55:51 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id w12so6962919iom.4
-        for <linux-kernel@vger.kernel.org>; Sun, 09 Aug 2020 13:55:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s8RoXjKE+mO+ypPWDmlXeRlCwzQadgngKc06JsatsKg=;
-        b=UhuuysqmtF/lM+KTQxKdcZZ1QeFhLPWBmOpVvZ9k/IVY63THFsxQPFaz61xViD+Urw
-         mA4oW5PankZeJXGDyNrPwzu/JMGoGvzSKRHE9NugaCNam+bSwhs77pqyiEMFvc5T3xil
-         21Cu/IwyTIpfgP9so88lkqjcr118JySdKfJmWgtBeykOrGCXbhew4OfGc6j6wvGgGscS
-         PFYOqVpjgaZf25r/H6wm4q62urshovwTXgcPqbzNUrEq4BjZ1mNBNf8SLPbzrjwp9bL5
-         InKMNHSvy6xKLhFv97heyokYoIkPP2psxThSnfdVQLOyL7PCccNDg2tb5aCh8SyzGxXd
-         N49g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s8RoXjKE+mO+ypPWDmlXeRlCwzQadgngKc06JsatsKg=;
-        b=dDnV/CXtKphjdVZtb4LvZefUdD+87n0ixwmCbZqh6sBcnJs9OffB8DdfUxTCLp9Ykb
-         Ikp+c02f0R6XRQTcNxp262dow0OYIYpI5Pn99No9xj35FGfgaus1nlOc99wM95oukfVR
-         9NomLhnsJ+XFrnsrMX/9CwBAHYBXpzrnNFD7gae03ymr3NWdSIjPu5HHnPg89r5EOrDb
-         H6nupwR4qvvLeN5+SehcPBax56a35Y6RWfTtEBl75YdJBGpD+TIyksScZL6n2GQatPGT
-         jmpHEJAZbwkICa6Ax9Hg4Vl3XnEDpB3CeuMgLsX+V+y31SysM7qeIYT3VpVkn6yY9YE0
-         UDFw==
-X-Gm-Message-State: AOAM533xzLgsfsHhFhODEjLZeZQnVShUVrzdvbnAdcT10pOtZdas5ey5
-        FzsjMFZS5luidv55YiX5Ps17Awc1VTLyvyE4avSBBcZW+Co=
-X-Google-Smtp-Source: ABdhPJzLdjR54EtwHzbQ0Jj8paSIn7+9G8LOojV1fSOGIMcnVTmkYNkfPCxLSEKAllL54jm6DW2tP6r4MIv0+vjrUlA=
-X-Received: by 2002:a02:ccd7:: with SMTP id k23mr16875552jaq.73.1597006550551;
- Sun, 09 Aug 2020 13:55:50 -0700 (PDT)
+        Sun, 9 Aug 2020 16:57:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597006658; bh=vSZ7gQ8F13hDNYtYk6t77g8qrdmtAY1S6LJUlA/r/r4=; h=Date:From:Reply-To:Subject:References:From:Subject; b=mjhmlVHLplOKMoqSOYlldbvrVt5TMQpQjj2VDDW6pkyS7PdJoLBEFDjU58ooq1MsEEdEscqhJ+ffTeZxdz3VMoi3MdirQ2WtVWrBmdRjx32dsXhZXTdc+KlZwAyOvAdSzTQBAGINz1pUsnFwWIVZ2Y8b9fexujIr0DV8wzA8wNTWDdmAJAWYKqwth42BP7FgUdR7te86H566kAQhKnxP4sryNOjt1ttr8MleQYoQyfJ0RG3YR3PHAUZ+HbgFoxg6muOpVOROVDg6L6EBF5UnBxDJd3dlmIZaoXpXPT0QAwvuE91pol599ctA7K18BDfExCu8UHQeqHST6Wp128GEmw==
+X-YMail-OSG: a4vBFUcVM1lWaTk8IojCRJkpjmcdJXPU0saSzXQKWyIV0z6jJ8Vn6dvR7j52I7Z
+ fc3xLLVhqgAOLkSmaCOb5EB5lwVXbPIt_zG23Y7_Fd7bkc79KIepUwn0T40YhRMqCH7HDoht76Dp
+ v4l5opGtq_RAaKRLe0DmClgUBPZ5mYQDU25GJDxzlzLrGBQNSrWJUW0NtuE5nDrHISCfKkxrKXzT
+ K3M_XzB_NeC78vsuLQeCi2Y4LSKSAtEv.2rhTG3op7rvitY6CDd_npsjBPpDBcWZrPmTsT4CGdqB
+ ur7JbJsSRAAj5DLSKT0QZ5CpdMi2iV1cac9Od1_DQQI0h9kfATXpWlMt_5v9Ma5ZWEhFsEphAc_u
+ CO8G9LmLDXXk3ccwKYuEdx0phDFJKaChjTKh9KqkXNOI.vUIHa_HPG_rLhLDbWKu3nzAWsvzpIjX
+ I2_q2t9Mg0qujn88fwB88HAn3fbvVNXvviXybWxDeKE1LHiJayJq1s0aYJZ22d_SN7Gg1zfegqa9
+ KitsixEBB7vuppn5veYRVtccX0tf_pYpHteg2JWvjIgL_bmSroZeytiSTU9yyOMYYrbXViriTpWh
+ pcaIzfun7x3.hN4_Wp28vGz38CTDbDmFSDtn0xGXhkgyHCUn1vKqoFaBCcD1UNPI.jguWAlTpPRu
+ Y.5TMLwv5sL1RjPjKPAIQvt6z61rXPIdclGc2wrsYZZ5cZt4FjiCwhfiG2n630IG3kb0UHD0JiwL
+ ZY6v5rXWAdQTaqlA2nLijzD6d.2F49y3ZwoiLZ0846BN7I..PXWvE7.lygygMWCvlaCDWnz63Hqv
+ MwVdEZbHztRAHBIzYAsLHolmj1Z7OPoSdJCPrGf_bZOCE3SziCLdT..iQqBY1EAUxw5sLK2uy.dq
+ Ukj3wnpTuRXElvvABrLdqfDelekRc2UGcJ5jknNKUyZuODW25pVErdl6JlG_hjQisCrQTXv4uj23
+ wWwmrhBX1F3m898n9dNliaFty7FlnjbmjhCJYv_yqicXW7PbJb_VY6CVeRwPS2E53xuwVofcQfTb
+ yrg8IgLDTsqZku53yFTnmTYFVf67aq_l2j.pgLR2aeDDfZpx3.Dk1Dgk8pkVxxDVc4nwvIB24r.t
+ K6bKZrCQXLvGBFMWjVTPheIvWxfvgU5XAKCkIykYY0nZ_wcWk2PgejWg9iQwlFZCVevZ3HXAiF3L
+ V1TnMz7cSEV4jjp37tY2UtyG6Yo7HH7XMKou5z7LdOfnT4oaBDDR33ucCrrBY4yJojN.s1AxoWCr
+ XqQSAz4U37fuRlMvRMPvvUNKdNSje3miifBZb9RB3rlyR5n6mVLFtTwgbZi1owIQyexnrqUPVzjP
+ GctR2uR8D7z2P0DV_8j35JTW0LdCDabxT3tNErSsJrXQ5oCqqI5WfJa47
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Sun, 9 Aug 2020 20:57:38 +0000
+Date:   Sun, 9 Aug 2020 20:57:38 +0000 (UTC)
+From:   Mrs Faiza Mohammed <faizamo501@gmail.com>
+Reply-To: faiza_mo303@yahoo.com
+Message-ID: <1717288071.1607621.1597006658371@mail.yahoo.com>
+Subject: Hello My Dear,
 MIME-Version: 1.0
-References: <20200809190615.25647-1-dmtrmonakhov@yandex-team.ru>
-In-Reply-To: <20200809190615.25647-1-dmtrmonakhov@yandex-team.ru>
-From:   Konstantin Khlebnikov <koct9i@gmail.com>
-Date:   Sun, 9 Aug 2020 23:55:39 +0300
-Message-ID: <CALYGNiNFc6vgSt9WNp8+VL82aRS3a2q6x0AXJnn-HzZ33t_W9A@mail.gmail.com>
-Subject: Re: [PATCH] lib/test_lockup.c: add parameters for cond_resched inside loop
-To:     Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1717288071.1607621.1597006658371.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16436 YMailNodin Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 9, 2020 at 10:06 PM Dmitry Monakhov
-<dmtrmonakhov@yandex-team.ru> wrote:
->
-> call_cond_resched_before=Y  call cond_resched with resource before wait
-> call_cond_resched_after=Y   call cond_resched with resource after wait
-> measure_cond_resched=Y      measure maximum cond_resched time inside loop
 
-Do you really need all of them? It seems "call_cond_resched_after" is
-enough for demonstration.
-It could be shortened to just "call_cond_resched". I see no sense in
-ordering before\after sleep.
 
-Measuring time of cond_resched has vague meaning too. This just "yep,
-we have an overload".
+Hello My Dear,
 
->
-> This simulate situation where process call cond_resched() with lock held.
->
-> Example demonstrate priority inversion issue with epbf-program, where
-> low priority task sheduled out while holding cgroup_mutex for a long
-> periods of time which blocks others programs with high priority.
->
-> CGROUP_MUTEX=$(gawk '$3 == "cgroup_mutex" {print "0x"$1}' /proc/kallsyms)
-> # Emulate ebpf-application load which can hung inside cgroup_bpf_attach()
-> nice -20 modprobe lib/test_lockup.ko \
->       time_nsecs=1000 cooldown_nsecs=100000 iterations=100000 \
->       lock_mutex_ptr=$CGROUP_MUTEX \
->       measure_lock_wait=Y call_cond_resched_after=Y &
->
-> stress-ng -c $(nproc) --timeout 10s&
-> time mkdir /sys/fs/cgroup/blkio/a
->
-> Signed-off-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-> ---
->  lib/test_lockup.c | 44 +++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 43 insertions(+), 1 deletion(-)
->
-> diff --git a/lib/test_lockup.c b/lib/test_lockup.c
-> index 0f81252..3e05d6e 100644
-> --- a/lib/test_lockup.c
-> +++ b/lib/test_lockup.c
-> @@ -77,6 +77,18 @@ static bool call_cond_resched;
->  module_param(call_cond_resched, bool, 0600);
->  MODULE_PARM_DESC(call_cond_resched, "call cond_resched() between iterations");
->
-> +static bool call_cond_resched_before;
-> +module_param(call_cond_resched_before, bool, 0600);
-> +MODULE_PARM_DESC(call_cond_resched_before, "call cond_resched() before wait");
-> +
-> +static bool call_cond_resched_after;
-> +module_param(call_cond_resched_after, bool, 0600);
-> +MODULE_PARM_DESC(call_cond_resched_after, "call cond_resched() after wait");
-> +
-> +static bool measure_cond_resched;
-> +module_param(measure_cond_resched, bool, 0400);
-> +MODULE_PARM_DESC(measure_cond_resched, "measure cond_resched time");
-> +
->  static bool measure_lock_wait;
->  module_param(measure_lock_wait, bool, 0400);
->  MODULE_PARM_DESC(measure_lock_wait, "measure lock wait time");
-> @@ -162,6 +174,7 @@ MODULE_PARM_DESC(lock_sb_umount, "lock file -> sb -> s_umount");
->  static atomic_t alloc_pages_failed = ATOMIC_INIT(0);
->
->  static atomic64_t max_lock_wait = ATOMIC64_INIT(0);
-> +static atomic64_t max_cond_resched = ATOMIC64_INIT(0);
->
->  static struct task_struct *main_task;
->  static int master_cpu;
-> @@ -346,6 +359,22 @@ static void test_wait(unsigned int secs, unsigned int nsecs)
->         }
->  }
->
-> +static void test_cond_resched(void)
-> +{
-> +       s64 cur, old_max;
-> +       s64 start = local_clock();
-> +
-> +       cond_resched();
-> +
-> +       cur  = local_clock() - start;
-> +       old_max = atomic64_read(&max_cond_resched);
-> +       do {
-> +               if (cur < old_max)
-> +                       break;
-> +               old_max = atomic64_cmpxchg(&max_cond_resched, old_max, cur);
-> +       } while (old_max != cur);
-> +}
-> +
->  static void test_lockup(bool master)
->  {
->         u64 lockup_start = local_clock();
-> @@ -363,8 +392,14 @@ static void test_lockup(bool master)
->                 if (iowait)
->                         current->in_iowait = 1;
->
-> +               if (call_cond_resched_before)
-> +                       test_cond_resched();
-> +
->                 test_wait(time_secs, time_nsecs);
->
-> +               if (call_cond_resched_after)
-> +                       test_cond_resched();
-> +
->                 if (iowait)
->                         current->in_iowait = 0;
->
-> @@ -497,6 +532,7 @@ static int __init test_lockup_init(void)
->
->         if ((wait_state != TASK_RUNNING ||
->              (call_cond_resched && !reacquire_locks) ||
-> +            call_cond_resched_before || call_cond_resched_after ||
->              (alloc_pages_nr && gfpflags_allow_blocking(alloc_pages_gfp))) &&
->             (test_disable_irq || disable_softirq || disable_preempt ||
->              lock_rcu || lock_spinlock_ptr || lock_rwlock_ptr)) {
-> @@ -532,7 +568,7 @@ static int __init test_lockup_init(void)
->         if (test_lock_sb_umount && test_inode)
->                 lock_rwsem_ptr = (unsigned long)&test_inode->i_sb->s_umount;
->
-> -       pr_notice("START pid=%d time=%u +%u ns cooldown=%u +%u ns iterations=%u state=%s %s%s%s%s%s%s%s%s%s%s%s\n",
-> +       pr_notice("START pid=%d time=%u +%u ns cooldown=%u +%u ns iterations=%u state=%s %s%s%s%s%s%s%s%s%s%s%s%s%s\n",
->                   main_task->pid, time_secs, time_nsecs,
->                   cooldown_secs, cooldown_nsecs, iterations, state,
->                   all_cpus ? "all_cpus " : "",
-> @@ -545,6 +581,8 @@ static int __init test_lockup_init(void)
->                   touch_softlockup ? "touch_softlockup " : "",
->                   touch_hardlockup ? "touch_hardlockup " : "",
->                   call_cond_resched ? "call_cond_resched " : "",
-> +                 call_cond_resched_before ? "call_cond_resched_before " : "",
-> +                 call_cond_resched_after ? "call_cond_resched_after " : "",
->                   reacquire_locks ? "reacquire_locks " : "");
->
->         if (alloc_pages_nr)
-> @@ -578,6 +616,10 @@ static int __init test_lockup_init(void)
->                 pr_notice("Maximum lock wait: %lld ns\n",
->                           atomic64_read(&max_lock_wait));
->
-> +       if (measure_cond_resched)
-> +               pr_notice("Maximum cond resched time: %lld ns\n",
-> +                         atomic64_read(&max_cond_resched));
-> +
->         if (alloc_pages_nr)
->                 pr_notice("Page allocation failed %u times\n",
->                           atomic_read(&alloc_pages_failed));
-> --
-> 2.7.4
->
+Please do not feel disturbed for contacting you, based on the critical condition I find mine self though, it's not financial problem, but my health you might have know that cancer is not what to talk home about, I am married to Mr.Umair Mohammed who worked with Tunisia embassy in Burkina Faso for nine years before he died in the year 2012.We were married for eleven years without a child. He died after a brief illness that lasted for five days.
+
+Since his death I decided not to remarry, When my late husband was alive he deposited the sum of US$ 9.2m (Nine million two hundred thousand dollars) in a bank in Burkina Faso, Presently this money is still in bank. And My Doctor told me that I don't have much time to live because of the cancer problem, Having known my condition I decided to hand you over this fond to take care of the less-privileged people, you will utilize this money the way I am going to instruct herein. I want you to take 30 Percent of the total money for your personal use While 70% of the money will go to charity" people and helping the orphanage.
+
+I don't want my husband's efforts to be used by the Government. I grew up as an Orphan and I don't have anybody as my family member,
+
+I am expecting your response to private faiza_mo303@yahoo.com
+
+Regards,
+
+Mrs.Faiza Mohammed.
+written from Hospital.
