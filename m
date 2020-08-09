@@ -2,66 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F36D24000F
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 22:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FEB1240011
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 23:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbgHIU5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 Aug 2020 16:57:42 -0400
-Received: from sonic312-21.consmr.mail.bf2.yahoo.com ([74.6.128.83]:36874 "EHLO
-        sonic312-21.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726307AbgHIU5l (ORCPT
+        id S1726403AbgHIVA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 Aug 2020 17:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgHIVA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 Aug 2020 16:57:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597006658; bh=vSZ7gQ8F13hDNYtYk6t77g8qrdmtAY1S6LJUlA/r/r4=; h=Date:From:Reply-To:Subject:References:From:Subject; b=mjhmlVHLplOKMoqSOYlldbvrVt5TMQpQjj2VDDW6pkyS7PdJoLBEFDjU58ooq1MsEEdEscqhJ+ffTeZxdz3VMoi3MdirQ2WtVWrBmdRjx32dsXhZXTdc+KlZwAyOvAdSzTQBAGINz1pUsnFwWIVZ2Y8b9fexujIr0DV8wzA8wNTWDdmAJAWYKqwth42BP7FgUdR7te86H566kAQhKnxP4sryNOjt1ttr8MleQYoQyfJ0RG3YR3PHAUZ+HbgFoxg6muOpVOROVDg6L6EBF5UnBxDJd3dlmIZaoXpXPT0QAwvuE91pol599ctA7K18BDfExCu8UHQeqHST6Wp128GEmw==
-X-YMail-OSG: a4vBFUcVM1lWaTk8IojCRJkpjmcdJXPU0saSzXQKWyIV0z6jJ8Vn6dvR7j52I7Z
- fc3xLLVhqgAOLkSmaCOb5EB5lwVXbPIt_zG23Y7_Fd7bkc79KIepUwn0T40YhRMqCH7HDoht76Dp
- v4l5opGtq_RAaKRLe0DmClgUBPZ5mYQDU25GJDxzlzLrGBQNSrWJUW0NtuE5nDrHISCfKkxrKXzT
- K3M_XzB_NeC78vsuLQeCi2Y4LSKSAtEv.2rhTG3op7rvitY6CDd_npsjBPpDBcWZrPmTsT4CGdqB
- ur7JbJsSRAAj5DLSKT0QZ5CpdMi2iV1cac9Od1_DQQI0h9kfATXpWlMt_5v9Ma5ZWEhFsEphAc_u
- CO8G9LmLDXXk3ccwKYuEdx0phDFJKaChjTKh9KqkXNOI.vUIHa_HPG_rLhLDbWKu3nzAWsvzpIjX
- I2_q2t9Mg0qujn88fwB88HAn3fbvVNXvviXybWxDeKE1LHiJayJq1s0aYJZ22d_SN7Gg1zfegqa9
- KitsixEBB7vuppn5veYRVtccX0tf_pYpHteg2JWvjIgL_bmSroZeytiSTU9yyOMYYrbXViriTpWh
- pcaIzfun7x3.hN4_Wp28vGz38CTDbDmFSDtn0xGXhkgyHCUn1vKqoFaBCcD1UNPI.jguWAlTpPRu
- Y.5TMLwv5sL1RjPjKPAIQvt6z61rXPIdclGc2wrsYZZ5cZt4FjiCwhfiG2n630IG3kb0UHD0JiwL
- ZY6v5rXWAdQTaqlA2nLijzD6d.2F49y3ZwoiLZ0846BN7I..PXWvE7.lygygMWCvlaCDWnz63Hqv
- MwVdEZbHztRAHBIzYAsLHolmj1Z7OPoSdJCPrGf_bZOCE3SziCLdT..iQqBY1EAUxw5sLK2uy.dq
- Ukj3wnpTuRXElvvABrLdqfDelekRc2UGcJ5jknNKUyZuODW25pVErdl6JlG_hjQisCrQTXv4uj23
- wWwmrhBX1F3m898n9dNliaFty7FlnjbmjhCJYv_yqicXW7PbJb_VY6CVeRwPS2E53xuwVofcQfTb
- yrg8IgLDTsqZku53yFTnmTYFVf67aq_l2j.pgLR2aeDDfZpx3.Dk1Dgk8pkVxxDVc4nwvIB24r.t
- K6bKZrCQXLvGBFMWjVTPheIvWxfvgU5XAKCkIykYY0nZ_wcWk2PgejWg9iQwlFZCVevZ3HXAiF3L
- V1TnMz7cSEV4jjp37tY2UtyG6Yo7HH7XMKou5z7LdOfnT4oaBDDR33ucCrrBY4yJojN.s1AxoWCr
- XqQSAz4U37fuRlMvRMPvvUNKdNSje3miifBZb9RB3rlyR5n6mVLFtTwgbZi1owIQyexnrqUPVzjP
- GctR2uR8D7z2P0DV_8j35JTW0LdCDabxT3tNErSsJrXQ5oCqqI5WfJa47
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Sun, 9 Aug 2020 20:57:38 +0000
-Date:   Sun, 9 Aug 2020 20:57:38 +0000 (UTC)
-From:   Mrs Faiza Mohammed <faizamo501@gmail.com>
-Reply-To: faiza_mo303@yahoo.com
-Message-ID: <1717288071.1607621.1597006658371@mail.yahoo.com>
-Subject: Hello My Dear,
+        Sun, 9 Aug 2020 17:00:28 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F645C061756
+        for <linux-kernel@vger.kernel.org>; Sun,  9 Aug 2020 14:00:28 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id d19so3818670pgl.10
+        for <linux-kernel@vger.kernel.org>; Sun, 09 Aug 2020 14:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8aCJEZf4WEBTwITZBbhB6tXQBzDbqQHz0bfAnaUx6qs=;
+        b=T6WXu9+xEDiJ7an8AcxVIStPcb1AdtIN3L1aO00LS4X5PRdZMPY5jR04uTlujVuaT7
+         kEk++vl2e0HBgGXnmycZT4T3AJTM9WazVKcAI7Ya3NE+yK3vktMd6OwJ9KA0aOCYYv9a
+         0VL5UeQ95TtvN0Y6P3MvoQhInCma3tsUdzzEFzl6IAZGNu181WePZO+jQ50Q0trva505
+         Tjo9MAsM3fZl8Rfdv7nXhUqPnOXWI22Pg4t3RA9IoW2rRQLLFleBcrnzYxJ9hiW7hTzq
+         dX1WqUeg3jbOF0Um72qPTumDwnuRIMZCMs61PT+i7ob8x04hZhGpzZO/5tqc3iR2G92r
+         /tYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8aCJEZf4WEBTwITZBbhB6tXQBzDbqQHz0bfAnaUx6qs=;
+        b=V8neKcUYnfdUUaGq2IA0A5HmRL3T1AyTjpyHyIk9CoFVklLkivtCzr9MQgBkQfFNnr
+         99B0gr1qmqbKS182yap6LTBenbF6UO59NJWq/BUBMdHIPsyDShVgMhyJl/T/Kedq748W
+         PtAYXmIrNv8Tfc4BmY6AQiXGIg8RA3oEuYK/51Gd2gLJ/XpDrI26DPCRacRpLNH88mZn
+         lUoB8RPD1qJh5so2wmNn7X35RXZBX+kAeSpIDx99IMpAezslPiRvjsKtTLd70OI1yWrS
+         lwM4B3fTlhS4Kk8dYQwuclJNz9lWQygCVGEGuBNmxc7YtWtL87xgvlU4sYFVUYAsy/n7
+         nCuA==
+X-Gm-Message-State: AOAM5317BCznM174NUM7VNe59rs0qodWbYolQ31t8KHXELAma2STnSUF
+        RuX+AvzoODo63JZA97tZdhw=
+X-Google-Smtp-Source: ABdhPJw7qg6WwEw+c7lgngvfzj1mQ73HM9myLMInvTDB5Phgrfxjwf1VC1+VWbFwlhUIe5FzUV0xFw==
+X-Received: by 2002:a65:6289:: with SMTP id f9mr19212430pgv.272.1597006827473;
+        Sun, 09 Aug 2020 14:00:27 -0700 (PDT)
+Received: from thinkpad ([69.172.171.109])
+        by smtp.gmail.com with ESMTPSA id gm9sm17046793pjb.12.2020.08.09.14.00.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 Aug 2020 14:00:26 -0700 (PDT)
+Date:   Sun, 9 Aug 2020 14:00:56 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     xujialu <xujialu@vimux.org>, masahiroy@kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: realpath "No such file or directory" warnings when building tags
+ from KBUILD_OUTPUT directory
+Message-ID: <20200809210056.GA1344537@thinkpad>
+References: <20200808202822.GA597061@thinkpad>
+ <20200809071627.GC1098830@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1717288071.1607621.1597006658371.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16436 YMailNodin Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200809071627.GC1098830@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 09, 2020 at 09:16:27AM +0200, Greg Kroah-Hartman wrote:
+> On Sat, Aug 08, 2020 at 01:28:22PM -0700, Rustam Kovhaev wrote:
+> > running 'make ARCH=x86_64 COMPILED_SOURCE=1 cscope tags' in
+> > KBUILD_OUTPUT directory produces lots of "No such file or directory"
+> > warnings from realpath
+> > 
+> > it seems like commit 4f491bb6ea2a greatly improved tags generation when
+> > COMPILED_SOURCE=1 is set, but should we add "-q" flag for realpath in 
+> > all_compiled_sources() or probably it would be better to fix root cause
+> > and make sure that for example we don't try to find objtool sources and
+> > exclude other similar dirs during tags generation? what do you think?
+> > 
+> > ...
+> > realpath: special.h: No such file or directory
+> > realpath: warn.h: No such file or directory
+> > realpath: sigchain.c: No such file or directory
+> > realpath: sigchain.h: No such file or directory
+> > realpath: orc_gen.c: No such file or directory
+> > realpath: objtool.c: No such file or directory
+> > ...
+> 
+> Care to send a patch for this?
+hi Greg, yes i do, thank you!
 
-
-Hello My Dear,
-
-Please do not feel disturbed for contacting you, based on the critical condition I find mine self though, it's not financial problem, but my health you might have know that cancer is not what to talk home about, I am married to Mr.Umair Mohammed who worked with Tunisia embassy in Burkina Faso for nine years before he died in the year 2012.We were married for eleven years without a child. He died after a brief illness that lasted for five days.
-
-Since his death I decided not to remarry, When my late husband was alive he deposited the sum of US$ 9.2m (Nine million two hundred thousand dollars) in a bank in Burkina Faso, Presently this money is still in bank. And My Doctor told me that I don't have much time to live because of the cancer problem, Having known my condition I decided to hand you over this fond to take care of the less-privileged people, you will utilize this money the way I am going to instruct herein. I want you to take 30 Percent of the total money for your personal use While 70% of the money will go to charity" people and helping the orphanage.
-
-I don't want my husband's efforts to be used by the Government. I grew up as an Orphan and I don't have anybody as my family member,
-
-I am expecting your response to private faiza_mo303@yahoo.com
-
-Regards,
-
-Mrs.Faiza Mohammed.
-written from Hospital.
