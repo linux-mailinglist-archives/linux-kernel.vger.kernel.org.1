@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CDE23FC09
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 02:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4393823FC0E
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 02:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726389AbgHIAwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 Aug 2020 20:52:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38014 "EHLO mail.kernel.org"
+        id S1726256AbgHIA4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 Aug 2020 20:56:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726058AbgHIAwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 Aug 2020 20:52:16 -0400
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+        id S1725950AbgHIA4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 Aug 2020 20:56:15 -0400
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32B9620772;
-        Sun,  9 Aug 2020 00:52:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1503620772;
+        Sun,  9 Aug 2020 00:56:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596934335;
-        bh=0z/Z71osg3eyFsMFe8xBmU/V7BFVUMmz+ZgNVRDikSA=;
+        s=default; t=1596934574;
+        bh=oGs0rKWqxtfTQ9FJ6Jjr2KhUw8xQSwkZHO6TmqRx174=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LIoe2xE0rXdW+zvXDMvwmQKw276z7cbIc09/WdCEPlrHjcAtwP4g66M+twROS3A00
-         y/obU8dbo2rACU8uFScuMhwY6fEuGZ1wOQUiAjDO5RUUw58IMML/Ad0iMcl4NksTrc
-         KLL0w+lRA9YplB45x0BE3cS8nyS8oZVsGXsUpDKA=
-Received: by mail-ej1-f46.google.com with SMTP id o23so5898419ejr.1;
-        Sat, 08 Aug 2020 17:52:15 -0700 (PDT)
-X-Gm-Message-State: AOAM531GZ6gi9GYX/N1jAasSUcciRFgINNHzqOQy18SLOznyaoASiFse
-        GAnhL1gedMBZwa+1pfcZWqhAbP19YYC13jSe+w==
-X-Google-Smtp-Source: ABdhPJyZt1CSoIboKSwTbNAnnwaQ2vRrvv4qzD8K8i6CZ7BvEyJ3034SciF2SNRDbzK5xcdTgDcXaD4qHRXWuJehpPA=
-X-Received: by 2002:a17:906:d92c:: with SMTP id rn12mr15178620ejb.187.1596934333673;
- Sat, 08 Aug 2020 17:52:13 -0700 (PDT)
+        b=vzzts3B/x6KCHIQ+Hn1p1HruXW6cecQdzbZNcgEyVsoRaT4HftVQs0kdiUlaEguXF
+         fWk0YlcPKuD8iQVaZS7IFIaswzl+kHknNNwU+F4nH42NdpuO6kX7LV17NQ/mHBkQgw
+         NjB0xGxWQZpxhDtwLY6w3jb8OvrHfledr0VsJyWc=
+Received: by mail-ej1-f48.google.com with SMTP id qc22so5887388ejb.4;
+        Sat, 08 Aug 2020 17:56:14 -0700 (PDT)
+X-Gm-Message-State: AOAM530+0qNsBfXwRkauF3BLwQZuCHWJq3sRKG+RKP3XjPw3AfwMu3MZ
+        ednimpsgwMcujKVelTo7crnIDEUdH44Ry+9ohQ==
+X-Google-Smtp-Source: ABdhPJyh5IoUDVzcfP7Egn+Xg1eTx8HohyZaiVtN7kN7dlLqqJN22jwVw+zE/NmDFnoeAUDSceqqG3XpXI4D9fjYoSo=
+X-Received: by 2002:a17:906:60d5:: with SMTP id f21mr15641505ejk.94.1596934572615;
+ Sat, 08 Aug 2020 17:56:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <1596855231-5782-1-git-send-email-yongqiang.niu@mediatek.com> <1596855231-5782-3-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1596855231-5782-3-git-send-email-yongqiang.niu@mediatek.com>
+References: <1596855231-5782-1-git-send-email-yongqiang.niu@mediatek.com> <1596855231-5782-2-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1596855231-5782-2-git-send-email-yongqiang.niu@mediatek.com>
 From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sun, 9 Aug 2020 08:52:02 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__ZbNfRNfQ+DLdZh0WHVqUeQ6AbO=Lc-CUZpx25X=2Kyg@mail.gmail.com>
-Message-ID: <CAAOTY__ZbNfRNfQ+DLdZh0WHVqUeQ6AbO=Lc-CUZpx25X=2Kyg@mail.gmail.com>
-Subject: Re: [RESEND v7, PATCH 2/7] drm/mediatek: move ddp component define
- into mtk_mmsys.h
+Date:   Sun, 9 Aug 2020 08:56:01 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9myENG+APAhC6MANHn3bqGZ-jtq08v4pTWCq2v9DDjNA@mail.gmail.com>
+Message-ID: <CAAOTY_9myENG+APAhC6MANHn3bqGZ-jtq08v4pTWCq2v9DDjNA@mail.gmail.com>
+Subject: Re: [RESEND v7, PATCH 1/7] dt-bindings: mediatek: add rdma_fifo_size
+ description for mt8183 display
 To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
 Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
@@ -58,143 +58,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Yongqiang:
+
 Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B48=E6=9C=
-=888=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=8811:05=E5=AF=AB=E9=81=93=
+=888=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=8811:04=E5=AF=AB=E9=81=93=
 =EF=BC=9A
 >
-> mmsys is the driver which control the routing of these ddp component,
-> so the definition of mtk_ddp_comp_id should be placed in mtk-mmsys.h
+> rdma fifo size may be different even in same SOC, add this
+> property to the corresponding rdma
 >
+> Change-Id: I67635ec7f3f59cf4cbc7737285e5e28ff0ab71c9
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Remove change-id.
 
 > Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
 > ---
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h | 34 +----------------------=
-------
->  drivers/soc/mediatek/mtk-mmsys.c            |  4 +---
->  include/linux/soc/mediatek/mtk-mmsys.h      | 33 +++++++++++++++++++++++=
-+++++
->  3 files changed, 35 insertions(+), 36 deletions(-)
+>  .../devicetree/bindings/display/mediatek/mediatek,disp.txt | 14 ++++++++=
+++++++
+>  1 file changed, 14 insertions(+)
 >
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/dr=
-m/mediatek/mtk_drm_ddp_comp.h
-> index debe363..161201f 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> @@ -7,6 +7,7 @@
->  #define MTK_DRM_DDP_COMP_H
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp=
+.txt
+> index b91e709..e6bbe32 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
+t
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
+t
+> @@ -66,6 +66,11 @@ Required properties (DMA function blocks):
+>    argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.t=
+xt
+>    for details.
 >
->  #include <linux/io.h>
-> +#include <linux/soc/mediatek/mtk-mmsys.h>
->
->  struct device;
->  struct device_node;
-> @@ -35,39 +36,6 @@ enum mtk_ddp_comp_type {
->         MTK_DDP_COMP_TYPE_MAX,
->  };
->
-> -enum mtk_ddp_comp_id {
-> -       DDP_COMPONENT_AAL0,
-> -       DDP_COMPONENT_AAL1,
-> -       DDP_COMPONENT_BLS,
-> -       DDP_COMPONENT_CCORR,
-> -       DDP_COMPONENT_COLOR0,
-> -       DDP_COMPONENT_COLOR1,
-> -       DDP_COMPONENT_DITHER,
-> -       DDP_COMPONENT_DPI0,
-> -       DDP_COMPONENT_DPI1,
-> -       DDP_COMPONENT_DSI0,
-> -       DDP_COMPONENT_DSI1,
-> -       DDP_COMPONENT_DSI2,
-> -       DDP_COMPONENT_DSI3,
-> -       DDP_COMPONENT_GAMMA,
-> -       DDP_COMPONENT_OD0,
-> -       DDP_COMPONENT_OD1,
-> -       DDP_COMPONENT_OVL0,
-> -       DDP_COMPONENT_OVL_2L0,
-> -       DDP_COMPONENT_OVL_2L1,
-> -       DDP_COMPONENT_OVL1,
-> -       DDP_COMPONENT_PWM0,
-> -       DDP_COMPONENT_PWM1,
-> -       DDP_COMPONENT_PWM2,
-> -       DDP_COMPONENT_RDMA0,
-> -       DDP_COMPONENT_RDMA1,
-> -       DDP_COMPONENT_RDMA2,
-> -       DDP_COMPONENT_UFOE,
-> -       DDP_COMPONENT_WDMA0,
-> -       DDP_COMPONENT_WDMA1,
-> -       DDP_COMPONENT_ID_MAX,
-> -};
-> -
->  struct mtk_ddp_comp;
->  struct cmdq_pkt;
->  struct mtk_ddp_comp_funcs {
-> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-=
-mmsys.c
-> index a55f255..36ad66b 100644
-> --- a/drivers/soc/mediatek/mtk-mmsys.c
-> +++ b/drivers/soc/mediatek/mtk-mmsys.c
-> @@ -5,13 +5,11 @@
->   */
->
->  #include <linux/device.h>
-> +#include <linux/io.h>
->  #include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/soc/mediatek/mtk-mmsys.h>
->
-> -#include "../../gpu/drm/mediatek/mtk_drm_ddp.h"
-> -#include "../../gpu/drm/mediatek/mtk_drm_ddp_comp.h"
-> -
->  #define DISP_REG_CONFIG_DISP_OVL0_MOUT_EN      0x040
->  #define DISP_REG_CONFIG_DISP_OVL1_MOUT_EN      0x044
->  #define DISP_REG_CONFIG_DISP_OD_MOUT_EN                0x048
-> diff --git a/include/linux/soc/mediatek/mtk-mmsys.h b/include/linux/soc/m=
-ediatek/mtk-mmsys.h
-> index 7bab5d9..2228bf6 100644
-> --- a/include/linux/soc/mediatek/mtk-mmsys.h
-> +++ b/include/linux/soc/mediatek/mtk-mmsys.h
-> @@ -9,6 +9,39 @@
->  enum mtk_ddp_comp_id;
->  struct device;
->
-> +enum mtk_ddp_comp_id {
-> +       DDP_COMPONENT_AAL0,
-> +       DDP_COMPONENT_AAL1,
-> +       DDP_COMPONENT_BLS,
-> +       DDP_COMPONENT_CCORR,
-> +       DDP_COMPONENT_COLOR0,
-> +       DDP_COMPONENT_COLOR1,
-> +       DDP_COMPONENT_DITHER,
-> +       DDP_COMPONENT_DPI0,
-> +       DDP_COMPONENT_DPI1,
-> +       DDP_COMPONENT_DSI0,
-> +       DDP_COMPONENT_DSI1,
-> +       DDP_COMPONENT_DSI2,
-> +       DDP_COMPONENT_DSI3,
-> +       DDP_COMPONENT_GAMMA,
-> +       DDP_COMPONENT_OD0,
-> +       DDP_COMPONENT_OD1,
-> +       DDP_COMPONENT_OVL0,
-> +       DDP_COMPONENT_OVL_2L0,
-> +       DDP_COMPONENT_OVL_2L1,
-> +       DDP_COMPONENT_OVL1,
-> +       DDP_COMPONENT_PWM0,
-> +       DDP_COMPONENT_PWM1,
-> +       DDP_COMPONENT_PWM2,
-> +       DDP_COMPONENT_RDMA0,
-> +       DDP_COMPONENT_RDMA1,
-> +       DDP_COMPONENT_RDMA2,
-> +       DDP_COMPONENT_UFOE,
-> +       DDP_COMPONENT_WDMA0,
-> +       DDP_COMPONENT_WDMA1,
-> +       DDP_COMPONENT_ID_MAX,
-> +};
+> +Optional properties (RDMA function blocks):
+> +- mediatek,rdma_fifo_size: rdma fifo size may be different even in same =
+SOC, add this
+> +  property to the corresponding rdma
+> +  the value is the Max value which defined in hardware data sheet.
 > +
->  void mtk_mmsys_ddp_connect(struct device *dev,
->                            enum mtk_ddp_comp_id cur,
->                            enum mtk_ddp_comp_id next);
+>  Examples:
+>
+>  mmsys: clock-controller@14000000 {
+> @@ -207,3 +212,12 @@ od@14023000 {
+>         power-domains =3D <&scpsys MT8173_POWER_DOMAIN_MM>;
+>         clocks =3D <&mmsys CLK_MM_DISP_OD>;
+>  };
+> +
+> +rdma1: rdma@1400c000 {
+> +       compatible =3D "mediatek,mt8183-disp-rdma";
+> +       reg =3D <0 0x1400c000 0 0x1000>;
+> +       interrupts =3D <GIC_SPI 229 IRQ_TYPE_LEVEL_LOW>;
+> +       power-domains =3D <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +       clocks =3D <&mmsys CLK_MM_DISP_RDMA1>;
+> +       mediatek,rdma_fifo_size =3D <2048>;
+> +};
+
+I would like you to show rdma0 as well so that could prove two rdma
+have different fifo size in the same SoC.
+
+Regards,
+Chun-Kuang.
+
 > --
 > 1.8.1.1.dirty
 > _______________________________________________
