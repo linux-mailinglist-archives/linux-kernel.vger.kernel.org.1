@@ -2,100 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A85523FFB5
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 20:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F5923FFB9
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 20:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbgHISkj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 9 Aug 2020 14:40:39 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:37487 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgHISki (ORCPT
+        id S1726464AbgHISmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 Aug 2020 14:42:51 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46754 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgHISmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 Aug 2020 14:40:38 -0400
-Received: by mail-ej1-f66.google.com with SMTP id qc22so7229083ejb.4;
-        Sun, 09 Aug 2020 11:40:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RZ2r2fEGzTZM9l6ALM21HkIBfxbLLAFJENwfeQcKsXs=;
-        b=oxwahWGK8RsgRJDqLrzRbV0pYraaXpTSsphw57FNZKxk8quXc5a3oChoATV9nM5cM4
-         cK5GOPjwItxGITR5M4Fgov+/XlE7oQ1E1TVnJwNqsB9WWmXzb/W+a4hibYzLCj9ndY6P
-         rThZ6TSKUoQshXYsNl+s6paCfQTF4sYtuNJkXcnN5UImrNGfpi28XA98DGEnTXU3xOPB
-         FXewKP2ITKWeOpZ/Yits7Pxhm7cLXCL1pKdh8+fpFvv95KH+cj2uViunYqTc5GmgQOVk
-         HZppZvIoq/89K2ZMHpUX57+zy3pWy8NcMLaXEGGa7GR8139yThGXX8vHtovT9VgjgC2X
-         XA2A==
-X-Gm-Message-State: AOAM531fSpNt0tCMD5c194KACHqWZLZzYJaIBnQX9lW9CjF1yxX2rDLT
-        2T8mI/Ch/DrjTb2Q7Dz3qzldN28R+eICt1WwEYdwJAu0
-X-Google-Smtp-Source: ABdhPJwdaNQKUc35CAq1Vl+g4p0CKN8xjonX62rbI+Usre2BHByWTnCU4SNyNAUh+RC0zEUvP1W2rHdr75LflYZlZhg=
-X-Received: by 2002:a17:906:f914:: with SMTP id lc20mr18351445ejb.138.1596998435939;
- Sun, 09 Aug 2020 11:40:35 -0700 (PDT)
+        Sun, 9 Aug 2020 14:42:51 -0400
+Date:   Sun, 9 Aug 2020 20:42:51 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1596998569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WFLB3TBK6fJfIcKCoZtE+lRNYpp7h26frAFau4FZd5U=;
+        b=Bzp4nvwYV/adkunmZqjDgzm4J8ZvNK0+EFM3qznN9T/r/eIHKQJMbE6dRcRkY2gk1CWp6n
+        zC3/SiPizr67T9Q7KnmPsn0bf4F86l8695uf+wd6sb9nKQgx6QjpUD0uhAKNlRvfC9OkZE
+        bUN6Xir+Y8wlwSbmKXtGWDphp+TuBcjE4kkx5KiBLe1vhyikx6L8kyZXlX6BByRIye7Eh4
+        xb9XmrIaof/SvLhq9xxwGnDX4VmPwWATxy2bdoBhT5lUzMK4FqcbqSBQ0iO0/zKVCm/Zd7
+        OdiG0Hi9W8FYGiVNJbZIDSX4X6sVR++IM+2wHDDgn4MkTDhEV13MLhdgVe76Zw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1596998569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WFLB3TBK6fJfIcKCoZtE+lRNYpp7h26frAFau4FZd5U=;
+        b=Fsv0VzaBJjZ4X6r+zG/tgnVyugFlwIw3Kj34YpoG5f7cNhBrZuKTX6ef63RuHoyR3pJ6GM
+        hDfvoRMkmlG6WvBw==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 08/24] seqlock: lockdep assert non-preemptibility on
+ seqcount_t write
+Message-ID: <20200809184251.GA94072@lx-t490>
+References: <20200519214547.352050-1-a.darwish@linutronix.de>
+ <20200720155530.1173732-1-a.darwish@linutronix.de>
+ <20200720155530.1173732-9-a.darwish@linutronix.de>
+ <20200808232122.GA176509@roeck-us.net>
 MIME-Version: 1.0
-References: <20200807100411.2904279-1-noltari@gmail.com> <20200807100411.2904279-2-noltari@gmail.com>
-In-Reply-To: <20200807100411.2904279-2-noltari@gmail.com>
-From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
-Date:   Sun, 9 Aug 2020 20:40:24 +0200
-Message-ID: <CAAdtpL4EydRG0jLqCKuggc4SvKe=qk3Z1aYuD51vnXp8DoRT5g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] MIPS: BCM63xx: remove duplicated new lines
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200808232122.GA176509@roeck-us.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 7, 2020 at 12:06 PM Álvaro Fernández Rojas
-<noltari@gmail.com> wrote:
+On Sat, Aug 08, 2020 at 04:21:22PM -0700, Guenter Roeck wrote:
+> On Mon, Jul 20, 2020 at 05:55:14PM +0200, Ahmed S. Darwish wrote:
+> > Preemption must be disabled before entering a sequence count write side
+> > critical section.  Failing to do so, the seqcount read side can preempt
+> > the write side section and spin for the entire scheduler tick.  If that
+> > reader belongs to a real-time scheduling class, it can spin forever and
+> > the kernel will livelock.
+> >
+> > Assert through lockdep that preemption is disabled for seqcount writers.
+> >
 >
-> There are 3 duplicated new lines, let's remove them.
+> This patch is causing compile failures for various images (eg arm:allmodconfig,
+> arm:imx_v6_v7_defconfig, mips:allmodconfig).
 >
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> In file included from arch/arm/include/asm/bug.h:60,
+>                  from include/linux/bug.h:5,
+>                  from include/linux/thread_info.h:12,
+>                  from include/asm-generic/current.h:5,
+>                  from ./arch/arm/include/generated/asm/current.h:1,
+>                  from include/linux/sched.h:12,
+>                  from arch/arm/kernel/asm-offsets.c:11:
+> include/linux/seqlock.h: In function 'write_seqcount_begin_nested':
+> include/asm-generic/percpu.h:31:40: error: implicit declaration of function 'raw_smp_processor_id'
+>
+> Reverting it fixes the problem. Is this being addressed ?
+>
 
-Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
-=)
+@Peter, I think let's revert this one for now?
 
-> ---
->  v2: no changes.
+Shall I also send you a version of:
+
+    [PATCH v4 09/24] seqlock: Extend seqcount API with associated locks
+    https://lkml.kernel.org/r/20200720155530.1173732-10-a.darwish@linutronix.de/
+
+with the problematic "lockdep_assert_preemption_disabled()" removed?
+
+> Guenter
 >
->  arch/mips/bcm63xx/boards/board_bcm963xx.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> index 230bf27c1fb8..744aa16bab12 100644
-> --- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> +++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> @@ -32,7 +32,6 @@
->
->  #include <uapi/linux/bcm933xx_hcs.h>
->
-> -
->  #define HCS_OFFSET_128K                        0x20000
->
->  static struct board_info board;
-> @@ -337,7 +336,6 @@ static struct board_info __initdata board_96348gw_11 = {
->                 .force_duplex_full      = 1,
->         },
->
-> -
->         .has_ohci0 = 1,
->         .has_pccard = 1,
->         .has_ehci0 = 1,
-> @@ -580,7 +578,6 @@ static struct board_info __initdata board_96358vw2 = {
->                 .force_duplex_full      = 1,
->         },
->
-> -
->         .has_ohci0 = 1,
->         .has_pccard = 1,
->         .has_ehci0 = 1,
-> --
-> 2.27.0
->
+
+Thanks,
+
+--
+Ahmed S. Darwish
+Linutronix GmbH
