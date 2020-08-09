@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AB623FD63
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 10:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737C123FD62
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 Aug 2020 10:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726453AbgHIIjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 Aug 2020 04:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgHIIjE (ORCPT
+        id S1726399AbgHIIjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 Aug 2020 04:39:03 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:42599 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgHIIjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 Aug 2020 04:39:04 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A050AC061756;
-        Sun,  9 Aug 2020 01:39:04 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id d188so3535308pfd.2;
-        Sun, 09 Aug 2020 01:39:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UUqjBFLSFj07bofmN+lmejWkKSobWy2Q37QPpM9tfM4=;
-        b=DRitf7/xZbhFIbD4BmPyA9TTpOSRlwfq/F3xuOaDUsJO3IzpFeV1oVGTH8+Wi2SwGn
-         My0qxHjKHMVTZ9DvI8QegnU3vp+xPjg26dsp6Ti4mW/lVmRg5Cp3A7CithXfxdgzlOhr
-         qNSN4k+BoYJ25CZOj9PufG1/NM/JGTho6uEgF0BvQDvdKAzH2k302BvV4Eh5WdXRAtF+
-         UUcqBgmwbJO5STQ4bAhV8foXLHWSGrvkM6gHQZ2U4pRJPDhxWmGxBGHqCb0RAdK/bInU
-         it58SLgxoUYtnmLJ6h7limNeaE8Zjp0KuNCNQG8n5lhh1ti0MpH+5RLg2U+5zThs2DRm
-         i/zw==
+        Sun, 9 Aug 2020 04:39:03 -0400
+Received: by mail-ed1-f67.google.com with SMTP id df16so4248551edb.9;
+        Sun, 09 Aug 2020 01:39:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UUqjBFLSFj07bofmN+lmejWkKSobWy2Q37QPpM9tfM4=;
-        b=cv9H+fjZLmNCWIEU/5+HbL40YUnpfugrRiAAcXF1Hgs1PZh79CtYZnDtE6nnSwo8/Y
-         pUw12z+ANmbYADmn/gP32FDvDl3POq5FQ/BFr/bIm2w/hjxiSiL1R1oNaKwZjcaVfKWt
-         yxgmwHB7bpwg9b9X7mXlKM0DSLrY1LkEGbunuT8sovMG2cylfPzq3RE9GbKa3ztKwwDW
-         vf1u79vu3AKQadzGxxDe345fbXrkuU937yR9B7GicnwyAtFVblNHZRnbA5rhLjvhF+ln
-         e0W3rJ+m3UHu51hjXhc7ZuMm2bG3sUhrZBvn3ujD344vLFtupxG+iKOk8/papuGFQbnP
-         6I0A==
-X-Gm-Message-State: AOAM533ed3JjbVZaFIreuLOviL4ybMrfuY8FV8xEkCBCV+SS9S4qdSPI
-        X3EDvdolR8by/MfXXWl8fb4=
-X-Google-Smtp-Source: ABdhPJyvUr21NMad5ZRJfyYb5NwR2zQVU55Q8hb8qn25pFJb7Nomw/QR5LtliW/Q8gDkiMd+7/wHXQ==
-X-Received: by 2002:aa7:8f0d:: with SMTP id x13mr20702677pfr.193.1596962344142;
-        Sun, 09 Aug 2020 01:39:04 -0700 (PDT)
-Received: from blackclown ([103.88.82.9])
-        by smtp.gmail.com with ESMTPSA id s2sm16760513pjb.33.2020.08.09.01.39.01
+        bh=z/saybbfxMjaXzIe6opzcQCOPXkRMkvzjnIaZUfO3tk=;
+        b=k/Wzgtpkk+CIK/NdZeBuWTxhUPXwxH9IlPkaHa1qutyUdVMEH1d3+IJFzV3IzlWYyo
+         4QIOHv6RrT56/WnRs0cCQzNWLDl+4WaWkOZc/DBV1+nFtQe+KDCOnJidXwAacHgEqgaQ
+         wGVvqBkkeXZ5JsZavD4VhBUyUbR6pWQeLU1FEteLc3BowTXN9drnK77CEWmLJhdqsAjg
+         AWCwPDFOZJXD69UJx35QIkphIF+52/eoMVOmWNJlIKsdvhjJqi2G+HzZXeHxyZVi0TDU
+         1E86xpO6LzDBAaAihz53b5ugeYhSjxRKZ8xT+7F1NNtyCxIdTLCwm84Em3SP3R1Nxh4x
+         3NRw==
+X-Gm-Message-State: AOAM530a7wJTiWH+gsrC1DM9H57H6RxB3+JwPvWuMjMtQ7D0K5jlEMVS
+        IC7yLE9ckFRmsEy4qQPYrxd/JcyHzxQLhA==
+X-Google-Smtp-Source: ABdhPJwmZeN96PN/ZIAPlxWpqko234mQ9lsp9dbVEg22MBGEl66tMuP7+R6WuTo7ZFtLkn1884Z6WQ==
+X-Received: by 2002:a50:a6d2:: with SMTP id f18mr15832396edc.374.1596962341313;
+        Sun, 09 Aug 2020 01:39:01 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.117])
+        by smtp.googlemail.com with ESMTPSA id x16sm9477456edr.25.2020.08.09.01.39.00
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 09 Aug 2020 01:39:03 -0700 (PDT)
-Date:   Sun, 9 Aug 2020 14:08:57 +0530
-From:   Suraj Upadhyay <usuraj35@gmail.com>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 0/4] Infiniband Subsystem: Remove pci-dma-compat wrapper
- APIs.
-Message-ID: <20200809083857.GB4419@blackclown>
-References: <cover.1596957073.git.usuraj35@gmail.com>
- <9220090e-7340-df50-a998-57a5e7752f90@amazon.com>
+        Sun, 09 Aug 2020 01:39:00 -0700 (PDT)
+Date:   Sun, 9 Aug 2020 10:38:58 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Stephen Kitt <steve@sk2.org>
+Cc:     Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Kukjin Kim <kgene@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arch/arm: use simple i2c probe function
+Message-ID: <20200809083858.GA7517@kozik-lap>
+References: <20200807153100.384845-1-steve@sk2.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <9220090e-7340-df50-a998-57a5e7752f90@amazon.com>
+In-Reply-To: <20200807153100.384845-1-steve@sk2.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 09, 2020 at 11:35:51AM +0300, Gal Pressman wrote:
-> On 09/08/2020 10:24, Suraj Upadhyay wrote:
-> > Hii Developers,
-> > 
-> > 	This patch series will replace all the legacy pci-dma-compat wrappers
-> > with the dma-mapping APIs directly in the INFINIBAND Subsystem.
-> > 
-> > This task is done through a coccinelle script which is described in each commit
-> > message.
-> > 
-> > The changes are compile tested.
-> > 
-> > Thanks,
-> > 
-> > Suraj Upadhyay.
-> > 
-> > Suraj Upadhyay (4):
-> >   IB/hfi1: Remove pci-dma-compat wrapper APIs
-> >   IB/mthca: Remove pci-dma-compat wrapper APIs
-> >   RDMA/qib: Remove pci-dma-compat wrapper APIs
-> >   RDMA/pvrdma: Remove pci-dma-compat wrapper APIs
-> > 
-> >  drivers/infiniband/hw/hfi1/pcie.c             |  8 +++----
-> >  drivers/infiniband/hw/hfi1/user_exp_rcv.c     | 13 +++++------
-> >  drivers/infiniband/hw/mthca/mthca_eq.c        | 21 +++++++++--------
-> >  drivers/infiniband/hw/mthca/mthca_main.c      |  8 +++----
-> >  drivers/infiniband/hw/mthca/mthca_memfree.c   | 23 +++++++++++--------
-> >  drivers/infiniband/hw/qib/qib_file_ops.c      | 12 +++++-----
-> >  drivers/infiniband/hw/qib/qib_init.c          |  4 ++--
-> >  drivers/infiniband/hw/qib/qib_pcie.c          |  8 +++----
-> >  drivers/infiniband/hw/qib/qib_user_pages.c    | 12 +++++-----
-> >  .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |  6 ++---
-> >  10 files changed, 59 insertions(+), 56 deletions(-)
-> > 
+On Fri, Aug 07, 2020 at 05:31:00PM +0200, Stephen Kitt wrote:
+> The i2c probe functions here don't use the id information provided in
+> their second argument, so the single-parameter i2c probe function
+> ("probe_new") can be used instead.
 > 
-> The efa patch isn't listed here, and it shows as patch 5/4?
+> This avoids scanning the identifier tables during probes.
+> 
+> Signed-off-by: Stephen Kitt <steve@sk2.org>
+> ---
+>  arch/arm/mach-davinci/board-dm644x-evm.c     |  5 ++---
+>  arch/arm/mach-davinci/board-dm646x-evm.c     | 10 ++++------
+>  arch/arm/mach-s3c64xx/mach-crag6410-module.c |  5 ++---
+>  3 files changed, 8 insertions(+), 12 deletions(-)
+> 
 
-Yes, I forgot to add it in the queue.
+Hi,
 
-Thought it would be nice if the patch ("efa") would be in the chain.
+You need to split it per sub architecture maintainers.  The subject
+prefix is then for example: "ARM: s3c64xx: ".
 
-Though I am sending a v2 for that patch following joe perches suggestion.
-
-Hope this wasn't an annoyance.
-
-Thanks,
-
-Suraj Upadhyay.
+Best regards,
+Krzysztof
