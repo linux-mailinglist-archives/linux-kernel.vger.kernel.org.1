@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112E22408F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7657A2408C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbgHJP1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:27:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33326 "EHLO mail.kernel.org"
+        id S1728500AbgHJPZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:25:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727856AbgHJP11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:27:27 -0400
+        id S1728114AbgHJPZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:25:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FA9F22B47;
-        Mon, 10 Aug 2020 15:27:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9021020772;
+        Mon, 10 Aug 2020 15:25:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073247;
-        bh=/pXzfVr7apCbPukjab5pemRMWkkVRMKcBLRLG7uikaM=;
+        s=default; t=1597073103;
+        bh=ajMsI4xUoVTgHLx3ZBH4Psl5Wd0PXJUml7ZJQggVTok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YutEwiRG4whT3qnoiz9TsJpuCJcxPhGSI4ccB4ADFgC9zBmWOzyFeTWp/AJLEnxIS
-         EH7miE5i8TZAxz1OS6Bl6th5snr3UquoS1oLuAlOgiCkVArsup6VR7G3lSbP/lCyUF
-         TleKD5+tXwBM1c5wuNRg5bZLXIsAmFHNp+JW4vLo=
+        b=C4E3hVmDYwa7FFVVd6tZsZ4fGRUFleK9qQ6/Pajhaf2JX9mp3s2KRCZFufdFm7BRt
+         Vqtdbquj6o1zxPSg488TiOQCE6PQBMBZpTzJUfMrKvIFTFLdb0ynWOUOvhZ0n1tWID
+         zVTEGXKtpu7kwHY2RPm8/fGrlJSjNbhXxA+RKt1g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+67b2bd0e34f952d0321e@syzkaller.appspotmail.com
-Subject: [PATCH 5.4 38/67] usb: hso: check for return value in hso_serial_common_create()
+        stable@vger.kernel.org,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.7 66/79] net: bridge: clear bridges private skb space on xmit
 Date:   Mon, 10 Aug 2020 17:21:25 +0200
-Message-Id: <20200810151811.316612067@linuxfoundation.org>
+Message-Id: <20200810151815.494804698@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
-References: <20200810151809.438685785@linuxfoundation.org>
+In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
+References: <20200810151812.114485777@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,53 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
 
-[ Upstream commit e911e99a0770f760377c263bc7bac1b1593c6147 ]
+[ Upstream commit fd65e5a95d08389444e8591a20538b3edece0e15 ]
 
-in case of an error tty_register_device_attr() returns ERR_PTR(),
-add IS_ERR() check
+We need to clear all of the bridge private skb variables as they can be
+stale due to the packet being recirculated through the stack and then
+transmitted through the bridge device. Similar memset is already done on
+bridge's input. We've seen cases where proxyarp_replied was 1 on routed
+multicast packets transmitted through the bridge to ports with neigh
+suppress which were getting dropped. Same thing can in theory happen with
+the port isolation bit as well.
 
-Reported-and-tested-by: syzbot+67b2bd0e34f952d0321e@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=67b2bd0e34f952d0321e
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 821f1b21cabb ("bridge: add new BR_NEIGH_SUPPRESS port flag to suppress arp and nd flood")
+Signed-off-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/hso.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ net/bridge/br_device.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
-index 66a8b835aa94c..7449b97a3c89b 100644
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2260,12 +2260,14 @@ static int hso_serial_common_create(struct hso_serial *serial, int num_urbs,
+--- a/net/bridge/br_device.c
++++ b/net/bridge/br_device.c
+@@ -36,6 +36,8 @@ netdev_tx_t br_dev_xmit(struct sk_buff *
+ 	const unsigned char *dest;
+ 	u16 vid = 0;
  
- 	minor = get_free_serial_index();
- 	if (minor < 0)
--		goto exit;
-+		goto exit2;
- 
- 	/* register our minor number */
- 	serial->parent->dev = tty_port_register_device_attr(&serial->port,
- 			tty_drv, minor, &serial->parent->interface->dev,
- 			serial->parent, hso_serial_dev_groups);
-+	if (IS_ERR(serial->parent->dev))
-+		goto exit2;
- 
- 	/* fill in specific data for later use */
- 	serial->minor = minor;
-@@ -2310,6 +2312,7 @@ static int hso_serial_common_create(struct hso_serial *serial, int num_urbs,
- 	return 0;
- exit:
- 	hso_serial_tty_unregister(serial);
-+exit2:
- 	hso_serial_common_free(serial);
- 	return -1;
- }
--- 
-2.25.1
-
++	memset(skb->cb, 0, sizeof(struct br_input_skb_cb));
++
+ 	rcu_read_lock();
+ 	nf_ops = rcu_dereference(nf_br_ops);
+ 	if (nf_ops && nf_ops->br_dev_xmit_hook(skb)) {
 
 
