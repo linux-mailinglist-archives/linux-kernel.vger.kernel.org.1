@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C153240906
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95A324092D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728833AbgHJP2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:28:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34038 "EHLO mail.kernel.org"
+        id S1728998AbgHJP3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:29:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728813AbgHJP2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:28:02 -0400
+        id S1728959AbgHJP3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:29:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ECA2222BEA;
-        Mon, 10 Aug 2020 15:28:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E12D022D07;
+        Mon, 10 Aug 2020 15:29:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073281;
-        bh=m6QPd7om/CNzyzYTtns+TG26/HpS+Xk2eHDuxiJVcO0=;
+        s=default; t=1597073370;
+        bh=p4V3sOMcIcLg6bOq8lNuDQ3c0vE6GzxHlypxaeyenpk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=shE4bCkGQJNHdi19pUECz2+AS0jx2yoKnFg/XYhcUJzllyJmXPsf+KBCZg/KbTjBE
-         QrfkFAsT3XuS7xIlfPecAQwe/Yez/14NwUWf96uSV88/3oiR0JAD/xiLiRP3VdwCdF
-         zRy4Ys/DP015wr/qUK4Ig+GB7IvR6iPkgnKnPHn8=
+        b=JeCvXyjWstIb+Ig3fWKBHEVYfLL9qsUrg1q91AUOpTElFVN6DIebanmjtsUdaXYqh
+         a9UsGUuxPKD/XM4ulbrZGOiBE7Oxpco5uUIr8wj4zG+hHwE3MgSYtlVvOi7OEQ4b2t
+         pISwb/VIALlizBgPHqbHX6GoSXNCryDEulZ54UTE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicolas Chauvet <kwizart@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Manikanta Maddireddy <mmaddireddy@nvidia.com>
-Subject: [PATCH 5.4 49/67] PCI: tegra: Revert tegra124 raw_violation_fixup
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        stable <stable@kernel.org>
+Subject: [PATCH 4.19 14/48] mtd: properly check all write ioctls for permissions
 Date:   Mon, 10 Aug 2020 17:21:36 +0200
-Message-Id: <20200810151811.886438587@linuxfoundation.org>
+Message-Id: <20200810151804.911709325@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
-References: <20200810151809.438685785@linuxfoundation.org>
+In-Reply-To: <20200810151804.199494191@linuxfoundation.org>
+References: <20200810151804.199494191@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,159 +45,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Chauvet <kwizart@gmail.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit e7b856dfcec6d3bf028adee8c65342d7035914a1 upstream.
+commit f7e6b19bc76471ba03725fe58e0c218a3d6266c3 upstream.
 
-As reported in https://bugzilla.kernel.org/206217 , raw_violation_fixup
-is causing more harm than good in some common use-cases.
+When doing a "write" ioctl call, properly check that we have permissions
+to do so before copying anything from userspace or anything else so we
+can "fail fast".  This includes also covering the MEMWRITE ioctl which
+previously missed checking for this.
 
-This patch is a partial revert of commit:
-
-191cd6fb5d2c ("PCI: tegra: Add SW fixup for RAW violations")
-
-and fixes the following regression since then.
-
-* Description:
-
-When both the NIC and MMC are used one can see the following message:
-
-  NETDEV WATCHDOG: enp1s0 (r8169): transmit queue 0 timed out
-
-and
-
-  pcieport 0000:00:02.0: AER: Uncorrected (Non-Fatal) error received: 0000:01:00.0
-  r8169 0000:01:00.0: AER: PCIe Bus Error: severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Requester ID)
-  r8169 0000:01:00.0: AER:   device [10ec:8168] error status/mask=00004000/00400000
-  r8169 0000:01:00.0: AER:    [14] CmpltTO                (First)
-  r8169 0000:01:00.0: AER: can't recover (no error_detected callback)
-  pcieport 0000:00:02.0: AER: device recovery failed
-
-After that, the ethernet NIC is not functional anymore even after
-reloading the r8169 module. After a reboot, this is reproducible by
-copying a large file over the NIC to the MMC.
-
-For some reason this is not reproducible when files are copied to a tmpfs.
-
-* Little background on the fixup, by Manikanta Maddireddy:
-  "In the internal testing with dGPU on Tegra124, CmplTO is reported by
-dGPU. This happened because FIFO queue in AFI(AXI to PCIe) module
-get full by upstream posted writes. Back to back upstream writes
-interleaved with infrequent reads, triggers RAW violation and CmpltTO.
-This is fixed by reducing the posted write credits and by changing
-updateFC timer frequency. These settings are fixed after stress test.
-
-In the current case, RTL NIC is also reporting CmplTO. These settings
-seems to be aggravating the issue instead of fixing it."
-
-Link: https://lore.kernel.org/r/20200718100710.15398-1-kwizart@gmail.com
-Fixes: 191cd6fb5d2c ("PCI: tegra: Add SW fixup for RAW violations")
-Signed-off-by: Nicolas Chauvet <kwizart@gmail.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Manikanta Maddireddy <mmaddireddy@nvidia.com>
-Cc: stable@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: stable <stable@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[rw: Fixed locking issue]
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pci/controller/pci-tegra.c |   32 --------------------------------
- 1 file changed, 32 deletions(-)
+ drivers/mtd/mtdchar.c |   56 +++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 47 insertions(+), 9 deletions(-)
 
---- a/drivers/pci/controller/pci-tegra.c
-+++ b/drivers/pci/controller/pci-tegra.c
-@@ -181,13 +181,6 @@
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -368,9 +368,6 @@ static int mtdchar_writeoob(struct file
+ 	uint32_t retlen;
+ 	int ret = 0;
  
- #define AFI_PEXBIAS_CTRL_0		0x168
- 
--#define RP_PRIV_XP_DL		0x00000494
--#define  RP_PRIV_XP_DL_GEN2_UPD_FC_TSHOLD	(0x1ff << 1)
+-	if (!(file->f_mode & FMODE_WRITE))
+-		return -EPERM;
 -
--#define RP_RX_HDR_LIMIT		0x00000e00
--#define  RP_RX_HDR_LIMIT_PW_MASK	(0xff << 8)
--#define  RP_RX_HDR_LIMIT_PW		(0x0e << 8)
--
- #define RP_ECTL_2_R1	0x00000e84
- #define  RP_ECTL_2_R1_RX_CTLE_1C_MASK		0xffff
+ 	if (length > 4096)
+ 		return -EINVAL;
  
-@@ -323,7 +316,6 @@ struct tegra_pcie_soc {
- 	bool program_uphy;
- 	bool update_clamp_threshold;
- 	bool program_deskew_time;
--	bool raw_violation_fixup;
- 	bool update_fc_timer;
- 	bool has_cache_bars;
- 	struct {
-@@ -669,23 +661,6 @@ static void tegra_pcie_apply_sw_fixup(st
- 		writel(value, port->base + RP_VEND_CTL0);
+@@ -655,6 +652,48 @@ static int mtdchar_ioctl(struct file *fi
+ 
+ 	pr_debug("MTD_ioctl\n");
+ 
++	/*
++	 * Check the file mode to require "dangerous" commands to have write
++	 * permissions.
++	 */
++	switch (cmd) {
++	/* "safe" commands */
++	case MEMGETREGIONCOUNT:
++	case MEMGETREGIONINFO:
++	case MEMGETINFO:
++	case MEMREADOOB:
++	case MEMREADOOB64:
++	case MEMLOCK:
++	case MEMUNLOCK:
++	case MEMISLOCKED:
++	case MEMGETOOBSEL:
++	case MEMGETBADBLOCK:
++	case MEMSETBADBLOCK:
++	case OTPSELECT:
++	case OTPGETREGIONCOUNT:
++	case OTPGETREGIONINFO:
++	case OTPLOCK:
++	case ECCGETLAYOUT:
++	case ECCGETSTATS:
++	case MTDFILEMODE:
++	case BLKPG:
++	case BLKRRPART:
++		break;
++
++	/* "dangerous" commands */
++	case MEMERASE:
++	case MEMERASE64:
++	case MEMWRITEOOB:
++	case MEMWRITEOOB64:
++	case MEMWRITE:
++		if (!(file->f_mode & FMODE_WRITE))
++			return -EPERM;
++		break;
++
++	default:
++		return -ENOTTY;
++	}
++
+ 	switch (cmd) {
+ 	case MEMGETREGIONCOUNT:
+ 		if (copy_to_user(argp, &(mtd->numeraseregions), sizeof(int)))
+@@ -702,9 +741,6 @@ static int mtdchar_ioctl(struct file *fi
+ 	{
+ 		struct erase_info *erase;
+ 
+-		if(!(file->f_mode & FMODE_WRITE))
+-			return -EPERM;
+-
+ 		erase=kzalloc(sizeof(struct erase_info),GFP_KERNEL);
+ 		if (!erase)
+ 			ret = -ENOMEM;
+@@ -997,9 +1033,6 @@ static int mtdchar_ioctl(struct file *fi
+ 		ret = 0;
+ 		break;
+ 	}
+-
+-	default:
+-		ret = -ENOTTY;
  	}
  
--	/* Fixup for read after write violation. */
--	if (soc->raw_violation_fixup) {
--		value = readl(port->base + RP_RX_HDR_LIMIT);
--		value &= ~RP_RX_HDR_LIMIT_PW_MASK;
--		value |= RP_RX_HDR_LIMIT_PW;
--		writel(value, port->base + RP_RX_HDR_LIMIT);
--
--		value = readl(port->base + RP_PRIV_XP_DL);
--		value |= RP_PRIV_XP_DL_GEN2_UPD_FC_TSHOLD;
--		writel(value, port->base + RP_PRIV_XP_DL);
--
--		value = readl(port->base + RP_VEND_XP);
--		value &= ~RP_VEND_XP_UPDATE_FC_THRESHOLD_MASK;
--		value |= soc->update_fc_threshold;
--		writel(value, port->base + RP_VEND_XP);
--	}
--
- 	if (soc->update_fc_timer) {
- 		value = readl(port->base + RP_VEND_XP);
- 		value &= ~RP_VEND_XP_UPDATE_FC_THRESHOLD_MASK;
-@@ -2511,7 +2486,6 @@ static const struct tegra_pcie_soc tegra
- 	.program_uphy = true,
- 	.update_clamp_threshold = false,
- 	.program_deskew_time = false,
--	.raw_violation_fixup = false,
- 	.update_fc_timer = false,
- 	.has_cache_bars = true,
- 	.ectl.enable = false,
-@@ -2541,7 +2515,6 @@ static const struct tegra_pcie_soc tegra
- 	.program_uphy = true,
- 	.update_clamp_threshold = false,
- 	.program_deskew_time = false,
--	.raw_violation_fixup = false,
- 	.update_fc_timer = false,
- 	.has_cache_bars = false,
- 	.ectl.enable = false,
-@@ -2554,8 +2527,6 @@ static const struct tegra_pcie_soc tegra
- 	.pads_pll_ctl = PADS_PLL_CTL_TEGRA30,
- 	.tx_ref_sel = PADS_PLL_CTL_TXCLKREF_BUF_EN,
- 	.pads_refclk_cfg0 = 0x44ac44ac,
--	/* FC threshold is bit[25:18] */
--	.update_fc_threshold = 0x03fc0000,
- 	.has_pex_clkreq_en = true,
- 	.has_pex_bias_ctrl = true,
- 	.has_intr_prsnt_sense = true,
-@@ -2565,7 +2536,6 @@ static const struct tegra_pcie_soc tegra
- 	.program_uphy = true,
- 	.update_clamp_threshold = true,
- 	.program_deskew_time = false,
--	.raw_violation_fixup = true,
- 	.update_fc_timer = false,
- 	.has_cache_bars = false,
- 	.ectl.enable = false,
-@@ -2589,7 +2559,6 @@ static const struct tegra_pcie_soc tegra
- 	.program_uphy = true,
- 	.update_clamp_threshold = true,
- 	.program_deskew_time = true,
--	.raw_violation_fixup = false,
- 	.update_fc_timer = true,
- 	.has_cache_bars = false,
- 	.ectl = {
-@@ -2631,7 +2600,6 @@ static const struct tegra_pcie_soc tegra
- 	.program_uphy = false,
- 	.update_clamp_threshold = false,
- 	.program_deskew_time = false,
--	.raw_violation_fixup = false,
- 	.update_fc_timer = false,
- 	.has_cache_bars = false,
- 	.ectl.enable = false,
+ 	return ret;
+@@ -1043,6 +1076,11 @@ static long mtdchar_compat_ioctl(struct
+ 		struct mtd_oob_buf32 buf;
+ 		struct mtd_oob_buf32 __user *buf_user = argp;
+ 
++		if (!(file->f_mode & FMODE_WRITE)) {
++			ret = -EPERM;
++			break;
++		}
++
+ 		if (copy_from_user(&buf, argp, sizeof(buf)))
+ 			ret = -EFAULT;
+ 		else
 
 
