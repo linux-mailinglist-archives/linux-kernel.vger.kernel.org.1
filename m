@@ -2,233 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F960240753
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD4A240758
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbgHJOPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 10:15:44 -0400
-Received: from mga07.intel.com ([134.134.136.100]:59031 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726851AbgHJOPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 10:15:43 -0400
-IronPort-SDR: MIPOaQTjIs5/0FJIecWODIPP5WnpjfoHcKNj1sUSZ4i+4ZTapfgDzsIEbIe5a1RIfTtwPLaRVV
- iFMtxxLPlaxw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9708"; a="217876929"
-X-IronPort-AV: E=Sophos;i="5.75,457,1589266800"; 
-   d="scan'208";a="217876929"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2020 07:15:42 -0700
-IronPort-SDR: G205LpBNz1OuhvlhxlmN2rgzS7cSjUEW1z+db4tGKK7CtF4WJT0QFzeCiJznBPmqj+jdk3jWG7
- dQop1PKzq0Jw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,457,1589266800"; 
-   d="scan'208";a="469059873"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 10 Aug 2020 07:15:42 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.7.201.137])
-        by linux.intel.com (Postfix) with ESMTP id 3184C580785;
-        Mon, 10 Aug 2020 07:15:42 -0700 (PDT)
-Message-ID: <74c03fe9fea12f4b056bf694a0d03d5200244231.camel@linux.intel.com>
-Subject: Re: [PATCH V5 0/3] Intel Platform Monitoring Technology
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     lee.jones@linaro.org, dvhart@infradead.org, andy@infradead.org,
-        bhelgaas@google.com, alexander.h.duyck@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Date:   Mon, 10 Aug 2020 07:15:42 -0700
-In-Reply-To: <20200729213719.17795-1-david.e.box@linux.intel.com>
-References: <20200717190620.29821-1-david.e.box@linux.intel.com>
-         <20200729213719.17795-1-david.e.box@linux.intel.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1727030AbgHJORj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 10:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726932AbgHJORh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 10:17:37 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B21CC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 07:17:36 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id p25so8441279qkp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 07:17:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3++VDW9CFsksX2oCeztAkvfCJ7YATTDDH7DuF4MGyJQ=;
+        b=dyNuaTscRCp4wBDLNz/Mruv3dtofts4bEpGRvKV/jCZAth4Mn+VC+W0vExNqTGHauZ
+         leuHcVV5/cr6M/I2m20xTj0YCTcJWfIynjisVlsvzqC54Ejb1BX2cJXHMedQLDN433Q6
+         W97KA5oqVwqNOSuPpf/z8QnHfGl8Tfk6RE/2CygSL8mdwguPwAhP5zpkFDghhEFxwdFT
+         zNZoAZEaBFFKY0XzMZw+gU1v4yj76ammX6Pcy0Ny1iFvpCoCwlxoD7IEiwojPcWmf/fK
+         xNpVUeNPKdzBgK2StUbyyjxRJ6QuQf0hYRK27QzcXx2kPCnZiw4JCRYsdbgN3KoQhw4t
+         SbWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3++VDW9CFsksX2oCeztAkvfCJ7YATTDDH7DuF4MGyJQ=;
+        b=baUqVLhdrcSTRGwMlYMTmJLE8xSx6jzplAud30jP7tCRRvDqQukJOH68PM0c5d+yPd
+         b2weRmhjvNuBmhCNwsp4MNPKPaoCuJ2NEgVd+ZNVEB/W2L6esl12Yj7eXMZnm36Odpn8
+         G34YjFPZmNKTsb/C39Zbw1krWppTzGNWyjNVyLm1XfKUUH+gVnaq0AesMwQkj0cmAWcC
+         QJzp98G3QqWQaXmPETRr+vSjRGNHXFPMcnZvS6ndxd03OpY29W9eZT/uq4/VLK/OAriS
+         D6z3OI9vPy6QoLRIRDAVQq1eQukVuS/Fgce6ckBZO6/o2uEPnZvnYY2JHFM6B1UP0DKg
+         YyLg==
+X-Gm-Message-State: AOAM533CC9rSjMV6wI7eIhNZMZuvW4saeVAwIDgXM4wsU0XR6YRdlaXh
+        e5BciB9kCuYpqrfjEVCY/eNTbAZArzHx1v6vi0OGCg==
+X-Google-Smtp-Source: ABdhPJwOKbKK4/6wWw9jmPphWe7MUwI0KxmaNez7jEYi0uqr60dqPnsdZuy3ryr3K7PsV3eX+GTBj3b8Sken+dBZOcg=
+X-Received: by 2002:a05:620a:21d2:: with SMTP id h18mr23412240qka.407.1597069055159;
+ Mon, 10 Aug 2020 07:17:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <000000000000ce85c405ac744ff6@google.com> <20200810074706.GD1529187@kroah.com>
+ <CACT4Y+aS6oangE4BzhCfx3gs9guAW=zQpwN1LP+yB3kza68xFw@mail.gmail.com>
+ <20200810090833.GA2271719@kroah.com> <20200810091538.GA2273701@kroah.com>
+ <20200810095754.GA2404978@kroah.com> <CACT4Y+badWwK8L3HjYrv2nu-W+WnUfj5Pi2JsLTUMU3o2tJL9g@mail.gmail.com>
+ <CAAeHK+wjkbuGenK+wwMPvU=jJ7JRQ14HsQhU3sWrsUQ2QK6RYQ@mail.gmail.com>
+In-Reply-To: <CAAeHK+wjkbuGenK+wwMPvU=jJ7JRQ14HsQhU3sWrsUQ2QK6RYQ@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 10 Aug 2020 16:17:21 +0200
+Message-ID: <CACT4Y+b5QZJ1yTzh9nFYRsqMa_SxD0sbteu_L+KRL8oV8CMPvQ@mail.gmail.com>
+Subject: Re: KMSAN: kernel-infoleak in raw_ioctl
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        syzbot <syzbot+a7e220df5a81d1ab400e@syzkaller.appspotmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Alexander Potapenko <glider@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Friendly ping.
+On Mon, Aug 10, 2020 at 4:07 PM 'Andrey Konovalov' via syzkaller-bugs
+<syzkaller-bugs@googlegroups.com> wrote:
+> > > On Mon, Aug 10, 2020 at 11:15:38AM +0200, Greg KH wrote:
+> > > > On Mon, Aug 10, 2020 at 11:08:33AM +0200, Greg KH wrote:
+> > > > > On Mon, Aug 10, 2020 at 11:00:07AM +0200, Dmitry Vyukov wrote:
+> > > > > > On Mon, Aug 10, 2020 at 9:46 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > > > >
+> > > > > > > On Sun, Aug 09, 2020 at 09:27:18AM -0700, syzbot wrote:
+> > > > > > > > Hello,
+> > > > > > > >
+> > > > > > > > syzbot found the following issue on:
+> > > > > > > >
+> > > > > > > > HEAD commit:    ce8056d1 wip: changed copy_from_user where instrumented
+> > > > > > > > git tree:       https://github.com/google/kmsan.git master
+> > > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=141eb8b2900000
+> > > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3afe005fb99591f
+> > > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=a7e220df5a81d1ab400e
+> > > > > > > > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> > > > > > > > userspace arch: i386
+> > > > > > > >
+> > > > > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > > > >
+> > > > > > > The irony of a kernel module written for syzbot testing, causing syzbot
+> > > > > > > reports....
+> > > > > >
+> > > > > > The raw gadget and KCOV are also kernel code and subject to all the
+> > > > > > same rules as any other kernel code from syzkaller point of view.
+> > > > > >
+> > > > > > But I think the root cause of this bug is the origin of the uninitialized-ness:
+> > > > > >
+> > > > > > Local variable ----buf.i@asix_get_phy_addr created at:
+> > > > > >  asix_read_cmd drivers/net/usb/asix_common.c:312 [inline]
+> > > > > >  asix_read_phy_addr drivers/net/usb/asix_common.c:295 [inline]
+> > > > > >  asix_get_phy_addr+0x4d/0x290 drivers/net/usb/asix_common.c:314
+> > > > > >  asix_read_cmd drivers/net/usb/asix_common.c:312 [inline]
+> > > > > >  asix_read_phy_addr drivers/net/usb/asix_common.c:295 [inline]
+> > > > > >  asix_get_phy_addr+0x4d/0x290 drivers/net/usb/asix_common.c:314
+> > > > >
+> > > > > read buffers sent to USB hardware are ment to be filled in by the
+> > > > > hardware with the data received from it, we do not zero-out those
+> > > > > buffers before passing the pointer there.
+> > > > >
+> > > > > Perhaps with testing frameworks like the raw usb controller, that might
+> > > > > cause a number of false-positives to happen?
+> > > >
+> > > > Ah, wait, that buffer is coming from the stack, which isn't allowed in
+> > > > the first place :(
+> > > >
+> > > > So that should be changed anyway to a dynamic allocation, I'll go write
+> > > > up a patch...
+> > >
+> > > Nope, my fault, the data is not coming from the stack, so all is good.
+> >
+> > My reading of the code is that asix_read_cmd returns the number of
+> > bytes actually read, which may be less than requested.
+> > This happens in __usbnet_read_cmd:
+> > https://elixir.bootlin.com/linux/latest/source/drivers/net/usb/usbnet.c#L2002
+> > So this code in asix_read_phy_addr will need produce an uninit value
+> > for result if <2 bytes read:
+> >
+> >     u8 buf[2];
+> >     int ret = asix_read_cmd(dev, AX_CMD_READ_PHY_ID, 0, 0, 2, buf, 0);
+> >     if (ret < 0)
+> >         netdev_err(dev->net, "Error reading PHYID register: %02x\n", ret);
+> >     ret = buf[offset];
+> >     return ret;
+> >
+> > And it looks like all of 13 uses of asix_read_cmd in
+> > drivers/net/usb/asix_common.c are subject to this bug as well.
+>
+> Yeah, such issues are unfortunately currently getting attributed to
+> raw-gadget. I wonder if we can improve crash parsing code to cover
+> this kind of cases... We would need to skip the first few
+> raw-gadget/USB-related stack traces, and only take one of the "Uninit
+> was stored to memory at" ones.
 
-On Wed, 2020-07-29 at 14:37 -0700, David E. Box wrote:
-> Intel Platform Monitoring Technology (PMT) is an architecture for
-> enumerating and accessing hardware monitoring capabilities on a
-> device.
-> With customers increasingly asking for hardware telemetry, engineers
-> not
-> only have to figure out how to measure and collect data, but also how
-> to
-> deliver it and make it discoverable. The latter may be through some
-> device
-> specific method requiring device specific tools to collect the data.
-> This
-> in turn requires customers to manage a suite of different tools in
-> order to
-> collect the differing assortment of monitoring data on their
-> systems.  Even
-> when such information can be provided in kernel drivers, they may
-> require
-> constant maintenance to update register mappings as they change with
-> firmware updates and new versions of hardware. PMT provides a
-> solution for
-> discovering and reading telemetry from a device through a hardware
-> agnostic
-> framework that allows for updates to systems without requiring
-> patches to
-> the kernel or software tools.
-> 
-> PMT defines several capabilities to support collecting monitoring
-> data from
-> hardware. All are discoverable as separate instances of the PCIE
-> Designated
-> Vendor extended capability (DVSEC) with the Intel vendor code. The
-> DVSEC ID
-> field uniquely identifies the capability. Each DVSEC also provides a
-> BAR
-> offset to a header that defines capability-specific attributes,
-> including
-> GUID, feature type, offset and length, as well as configuration
-> settings
-> where applicable. The GUID uniquely identifies the register space of
-> any
-> monitor data exposed by the capability. The GUID is associated with
-> an XML
-> file from the vendor that describes the mapping of the register space
-> along
-> with properties of the monitor data. This allows vendors to perform
-> firmware updates that can change the mapping (e.g. add new metrics)
-> without
-> requiring any changes to drivers or software tools. The new mapping
-> is
-> confirmed by an updated GUID, read from the hardware, which software
-> uses
-> with a new XML.
-> 
-> The current capabilities defined by PMT are Telemetry, Watcher, and
-> Crashlog.  The Telemetry capability provides access to a continuous
-> block
-> of read only data. The Watcher capability provides access to hardware
-> sampling and tracing features. Crashlog provides access to device
-> crash
-> dumps.  While there is some relationship between capabilities
-> (Watcher can
-> be configured to sample from the Telemetry data set) each exists as
-> stand
-> alone features with no dependency on any other. The design therefore
-> splits
-> them into individual, capability specific drivers. MFD is used to
-> create
-> platform devices for each capability so that they may be managed by
-> their
-> own driver. The PMT architecture is (for the most part) agnostic to
-> the
-> type of device it can collect from. Devices nodes are consequently
-> generic
-> in naming, e.g. /dev/telem<n> and /dev/smplr<n>. Each capability
-> driver
-> creates a class to manage the list of devices supporting
-> it.  Software can
-> determine which devices support a PMT feature by searching through
-> each
-> device node entry in the sysfs class folder. It can additionally
-> determine
-> if a particular device supports a PMT feature by checking for a PMT
-> class
-> folder in the device folder.
-> 
-> This patch set provides support for the PMT framework, along with
-> support
-> for Telemetry on Tiger Lake.
-> 
-> Changes from V4:
->  	- Replace MFD with PMT in driver title
-> 	- Fix commit tags in chronological order
-> 	- Fix includes in alphabetical order
-> 	- Use 'raw' string instead of defines for device names
-> 	- Add an error message when returning an error code for
-> 	  unrecognized capability id
-> 	- Use dev_err instead of dev_warn for messages when returning
-> 	  an error
-> 	- Change while loop to call pci_find_next_ext_capability once
-> 	- Add missing continue in while loop
-> 	- Keep PCI platform defines using PCI_DEVICE_DATA magic tied to
-> 	  the pci_device_id table
-> 	- Comment and kernel message cleanup
-> 
-> Changes from V3:
-> 	- Write out full acronym for DVSEC in PCI patch commit message
-> and
-> 	  add 'Designated' to comments
-> 	- remove unused variable caught by kernel test robot <
-> lkp@intel.com>
-> 	- Add required Co-developed-by signoffs, noted by Andy
-> 	- Allow access using new CAP_PERFMON capability as suggested by
-> 	  Alexey Bundankov
-> 	- Fix spacing in Kconfig, noted by Randy
-> 	- Other style changes and fixups suggested by Andy
-> 
-> Changes from V2:
-> 	- In order to handle certain HW bugs from the telemetry
-> capability
-> 	  driver, create a single platform device per capability
-> instead of
-> 	  a device per entry. Add the entry data as device resources
-> and
-> 	  let the capability driver manage them as a set allowing for
-> 	  cleaner HW bug resolution.
-> 	- Handle discovery table offset bug in intel_pmt.c
-> 	- Handle overlapping regions in intel_pmt_telemetry.c
-> 	- Add description of sysfs class to testing ABI.
-> 	- Don't check size and count until confirming support for the
-> PMT
-> 	  capability to avoid bailing out when we need to skip it.
-> 	- Remove unneeded header file. Move code to the intel_pmt.c,
-> the
-> 	  only place where it's needed.
-> 	- Remove now unused platform data.
-> 	- Add missing header files types.h, bits.h.
-> 	- Rename file name and build options from telem to telemetry.
-> 	- Code cleanup suggested by Andy S.
-> 	- x86 mailing list added.
-> 
-> Changes from V1:
-> 	- In the telemetry driver, set the device in device_create() to
-> 	  the parent PCI device (the monitoring device) for clear
-> 	  association in sysfs. Was set before to the platform device
-> 	  created by the PCI parent.
-> 	- Move telem struct into driver and delete unneeded header
-> file.
-> 	- Start telem device numbering from 0 instead of 1. 1 was used
-> 	  due to anticipated changes, no longer needed.
-> 	- Use helper macros suggested by Andy S.
-> 	- Rename class to pmt_telemetry, spelling out full name
-> 	- Move monitor device name defines to common header
-> 	- Coding style, spelling, and Makefile/MAINTAINERS ordering
-> fixes
-> 
-> David E. Box (3):
->   PCI: Add defines for Designated Vendor-Specific Extended Capability
->   mfd: Intel Platform Monitoring Technology support
->   platform/x86: Intel PMT Telemetry capability driver
-> 
->  .../ABI/testing/sysfs-class-pmt_telemetry     |  46 ++
->  MAINTAINERS                                   |   6 +
->  drivers/mfd/Kconfig                           |  10 +
->  drivers/mfd/Makefile                          |   1 +
->  drivers/mfd/intel_pmt.c                       | 220 +++++++++
->  drivers/platform/x86/Kconfig                  |  10 +
->  drivers/platform/x86/Makefile                 |   1 +
->  drivers/platform/x86/intel_pmt_telemetry.c    | 448
-> ++++++++++++++++++
->  include/uapi/linux/pci_regs.h                 |   5 +
->  9 files changed, 747 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-class-
-> pmt_telemetry
->  create mode 100644 drivers/mfd/intel_pmt.c
->  create mode 100644 drivers/platform/x86/intel_pmt_telemetry.c
-> 
-
+Looking at some other reports in the past I considered if we should
+attribute uninit's to the _origin_ stack rather than all places the
+origin may end up being used. But I don't have quantitative data on if
+it will improve quality overall or not. There are definitely cases
+where it will be wrong as well -- in particular allocation of skb's in
+sendmsg.
