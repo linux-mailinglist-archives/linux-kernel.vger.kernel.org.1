@@ -2,126 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EA7241059
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1314241034
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730163AbgHJT33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 15:29:29 -0400
-Received: from mail-bn8nam12on2050.outbound.protection.outlook.com ([40.107.237.50]:50529
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729032AbgHJTKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 15:10:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NUxMxQNhF2ZgeE6tchQHk89+pZxW0AQi2kUVdXOGNqN3EOc4G/mU6UrvkNB0puPyYPZauol2vhJyhtX9xg7cp/XjIRVHR0PPNFLM+nCAWRWlOM6cXfBZke/k0H/otbTqkQdUjhsOWJWXqsjHhSEg/DX50rbe7ssD+srQ0xuvuPvCphmPVxORvnbohR68VIbM1y/qI4vA39cHGujVU0WIfQouG0ZLYDG/DbGq840mAzdZlzhNrS6atstE38CvCom8IFtsJCibOR9hrzpMf/DWmmaagnxb4JzTa7pZZ5LDQCgn/tVjISaWGD+MozkkiiFbuj6xjWtNI/3fKZ6pX29JPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6ntjwhA7BptFtWiLYwUI+RUuxlOOv5ibCRFTF4k0srI=;
- b=PHDAZSWHzb/Uyz9iMNYG0FZaqig6v30IctLtDpJcTQuZKQmqfJ6cdr49Q7KTFITh8GJPZve23S21OJVLGBMaz6yVP310XxAGSNuNZyN3EihBIGhox8WsRj6+4SMjQ0qOA3B/RDTChjEy35XLDS4DXjoDx34GrC2JS5gYBXVoH68aiMqPmOUmllOtV5/SkiXtFAZTUFOSRsf5pXhahaLlxWGO+VSfNh71jyotKoctWDT4+Z2uUjvA7DJKYW/3AcZCyrqnS8jdpEgokkB235iX3Upiit/RNxJQkBnno1bcWK0y1whNkvnaUxdf4/HO7B9onztHHWp5g/lYLC3DFBewXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6ntjwhA7BptFtWiLYwUI+RUuxlOOv5ibCRFTF4k0srI=;
- b=KciQmHrJaEpT9zFOT1ZY/trJRx43CsJ1TwKiBVzzboSNd6bBh7NL4xh+yOWiQm/zbugeQa3wN/08WsmFe040BPY7UY6dvTNr22MoAP6Y71/uQfbWm2PWLMuuwGJkzpw2tMikRdNbXpRnBzB3RaD4O7uZBmROOBxNslnlMPxH0h4=
-Authentication-Results: bytedance.com; dkim=none (message not signed)
- header.d=none;bytedance.com; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by BN8PR12MB2980.namprd12.prod.outlook.com (2603:10b6:408:62::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.19; Mon, 10 Aug
- 2020 19:10:41 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::1ef:8f33:480b:e2d0]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::1ef:8f33:480b:e2d0%4]) with mapi id 15.20.3261.024; Mon, 10 Aug 2020
- 19:10:41 +0000
-Date:   Mon, 10 Aug 2020 14:10:31 -0500
-From:   Yazen Ghannam <yazen.ghannam@amd.com>
-To:     Feng zhou <zhoufeng.zf@bytedance.com>
-Cc:     bp@alien8.de, mchehab@kernel.org, tony.luck@intel.com,
-        james.morse@arm.com, rrichter@marvell.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liuxian.1@bytedance.com
-Subject: Re: [PATCH] x86/MCE/AMD, EDAC/mce_amd
-Message-ID: <20200810190958.GA3406209@yaz-nikka.amd.com>
-References: <20200809043559.9740-1-zhoufeng.zf@bytedance.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200809043559.9740-1-zhoufeng.zf@bytedance.com>
-X-ClientProxiedBy: SA0PR11CA0006.namprd11.prod.outlook.com
- (2603:10b6:806:d3::11) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
+        id S1729396AbgHJT23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 15:28:29 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:44219 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729172AbgHJTLM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 15:11:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597086671; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Erzx1fruSSrSxj4EEjWNMx4b9AuQa5yJ7QWcymESvIY=;
+ b=TTQcli1TOiU4R+xD1jhtnvhtTbZVJUriDXEKqgpgvV8XjMhvBWmm6/KUewzZ2lo+3o+uRB+0
+ vvT6ku3udQuzHXPX0bMjrfFEwKVOjN/21yk6SGmzpMX5eCq2Pr45MlrRIHJpZ+OCGg3qAupE
+ JWJuH4qmUl1bI3CHyirzHI1UFUI=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
+ 5f319bcb1e4d3989d49a8d15 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 10 Aug 2020 19:11:07
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8588AC4363E; Mon, 10 Aug 2020 19:11:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 557F0C43617;
+        Mon, 10 Aug 2020 19:11:04 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from yaz-nikka.amd.com (165.204.77.1) by SA0PR11CA0006.namprd11.prod.outlook.com (2603:10b6:806:d3::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.18 via Frontend Transport; Mon, 10 Aug 2020 19:10:39 +0000
-X-Originating-IP: [165.204.77.1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 1ebb77e6-a9a8-4749-6acd-08d83d611312
-X-MS-TrafficTypeDiagnostic: BN8PR12MB2980:
-X-Microsoft-Antispam-PRVS: <BN8PR12MB29806965A375EF1382616B77F8440@BN8PR12MB2980.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QpAl2WMjmbep/ePIGreatztN8TDPqe0aoB/np0so4ZTeufAliFNkL2NtVjRHaxnSEgb9/mhI6TaIcB/g89od3t9ZZnRkMG9/A9C3X0tlUnFQKsJIYqZAtXVszC0avbVqn0K432QvgIDs37j41Z8UG5UA997oEb7I3WI/uRLOQmdQORBssgVp6/HKm9qxRXpdhdxVWr+ByuRTx3tDPYmi3tIdY8rhHyqaVRRqiCmpTwAwLBQq1I/hi/+606cL8wShDNwdVh+u8G+xgodCE/vl0R9JaPukv/D89sSoAGKQxh1m5avK56/mxFce0moeZLc2oE2mFSlioxCyMMA6ut6ClQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(376002)(136003)(346002)(366004)(396003)(5660300002)(4326008)(44832011)(55016002)(8676002)(186003)(478600001)(86362001)(16526019)(26005)(2906002)(6916009)(33656002)(7696005)(52116002)(956004)(66556008)(66476007)(83380400001)(66946007)(8936002)(6666004)(316002)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: PI5g1Sem8AyPj/NBZqI62ATYSMJEVo/nbPI+McflN+5DEjO30FGW5KeB+kSvNUFlnyIzUhRHK8hzEI2gmxM/W3wyY7ZJzCy6dnweJLnFkWQmbmj9XxDA9+nZOWvUo85GgPWLgNGHRLAKpTbJ4KM4doV3mA/VQbaYYYRsQmY7XhjXtn/ntoO18tZXkq6DpdD2ramedpT8ehP3H2tG6MIvI/5vtyPC8m7laTyZYCT5vJ0K8BT408Gh2PkziGZAhlnLnWCBuiw6e4Kpe7yhKduy6PLR9D1USWJVXRWvzQXG4pJLpfXeVZCHzT7HBRVqawCqtY8cprOBJSEileeoADy9YNuDcH8tbsrGgr50HnjEyAf5J+8heG5s6RaqN/MhNfMBlcdYDA0ATWI381iskKycjQu83gRt58IpHYev6xilJDL50YQdRts/cANBmEvSG09xDVtoF1QxExpYjPjpbUbWb1djeV8En920fGspkFvxMXdiP9J7VqeWqfN1vFvdeKKdhc4XUA7NlypQhA8blOeaJLd15tNliC/nn7aL/Q7ti6VBkJAHu9Q5SenfzAT52jMqlf2cB2Ck0zQAdYDsS/q7fcn+fnHp4KEIC8x8FabJYL+UZ/jjU3sO+3z5YI/fbmG0CkOiRAC3sfn23UI1AE02Jg==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ebb77e6-a9a8-4749-6acd-08d83d611312
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2020 19:10:41.6250
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CuW7aJdO92v+WArJQ/qCRM32MMdMzJp515MhTiH30xkwjcE6PQ3V2ZZpL5SuRO0EJa3Ad0h/AyE4DhSqVvGCJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB2980
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 10 Aug 2020 12:11:04 -0700
+From:   bbhatt@codeaurora.org
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH v6 11/11] bus: mhi: core: Introduce sysfs entries for MHI
+In-Reply-To: <20200807052242.GD3230@Mani-XPS-13-9360>
+References: <1595901740-27379-1-git-send-email-bbhatt@codeaurora.org>
+ <1595901740-27379-12-git-send-email-bbhatt@codeaurora.org>
+ <20200807052242.GD3230@Mani-XPS-13-9360>
+Message-ID: <dbe47f5d3b9aaef9815d2659df3a5161@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 09, 2020 at 12:35:59PM +0800, Feng zhou wrote:
-> From: zhoufeng <zhoufeng.zf@bytedance.com>
+On 2020-08-06 22:22, Manivannan Sadhasivam wrote:
+> On Mon, Jul 27, 2020 at 07:02:20PM -0700, Bhaumik Bhatt wrote:
+>> Introduce sysfs entries to enable userspace clients the ability to 
+>> read
+>> the serial number and the OEM PK Hash values obtained from BHI. OEMs
+>> need to read these device-specific hardware information values through
+>> userspace for factory testing purposes and cannot be exposed via 
+>> degbufs
+>> as it may remain disabled for performance reasons. Also, update the
+>> documentation for ABI to include these entries.
+>> 
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> ---
+>>  Documentation/ABI/stable/sysfs-bus-mhi | 21 ++++++++++++++
+>>  MAINTAINERS                            |  1 +
+>>  drivers/bus/mhi/core/init.c            | 53 
+>> ++++++++++++++++++++++++++++++++++
+>>  3 files changed, 75 insertions(+)
+>>  create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
+>> 
+>> diff --git a/Documentation/ABI/stable/sysfs-bus-mhi 
+>> b/Documentation/ABI/stable/sysfs-bus-mhi
+>> new file mode 100644
+>> index 0000000..1d5d0d6
+>> --- /dev/null
+>> +++ b/Documentation/ABI/stable/sysfs-bus-mhi
+>> @@ -0,0 +1,21 @@
+>> +What:		/sys/bus/mhi/devices/.../serialnumber
+>> +Date:		Jul 2020
+>> +KernelVersion:	5.8
+>> +Contact:	Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> +Description:	The file holds the serial number of the client device 
+>> obtained
+>> +		using a BHI (Boot Host Interface) register read after at least
+>> +		one attempt to power up the device has been done. If read
+>> +		without having the device power on at least once, the file will
+>> +		read all 0's.
+>> +Users:		Any userspace application or clients interested in device 
+>> info.
 > 
-> The edac_mce_amd module calls decode_dram_ecc() on AMD Family17h and
-> later systems. This function is used in amd64_edac_mod to do
-> system-specific decoding for DRAM ECC errors. The function takes a
-> "NodeId" as a parameter.
+> I think you're not using tabs here and that's why it is showing 
+> mangled. Please
+> use tabs as like other files.
 > 
-> In AMD documentation, NodeId is used to identify a physical die in a
-> system. This can be used to identify a node in the AMD_NB code and also
-> it is used with umc_normaddr_to_sysaddr().
+> Thanks,
+> Mani
 > 
-> However, the input used for decode_dram_ecc() is currently the NUMA node
-> of a logical CPU. so this will cause the address translation function to
-> fail or report incorrect results.
-> 
-> Signed-off-by: zhoufeng <zhoufeng.zf@bytedance.com>
-> ---
->  drivers/edac/mce_amd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
-> index 325aedf46ff2..73c805113322 100644
-> --- a/drivers/edac/mce_amd.c
-> +++ b/drivers/edac/mce_amd.c
-> @@ -996,7 +996,7 @@ static void decode_smca_error(struct mce *m)
->  	}
->  
->  	if (bank_type == SMCA_UMC && xec == 0 && decode_dram_ecc)
-> -		decode_dram_ecc(cpu_to_node(m->extcpu), m);
-> +		decode_dram_ecc(topology_physical_package_id(m->extcpu), m);
+Hi Mani,
 
-This will break on Naples systems, because the NodeId and the physical
-package ID will not match.
+I am using tabs actually. I, in fact, copied another file 
+(sysfs-bus-vmbus) and only modified the
+required entries and did a diff to confirm.
 
-I can send a patch soon that will work for Naples, Rome, and later
-systems.
+I doubt there is more I can do.
 
-Thanks,
-Yazen
+Please let me know if the next patch is acceptable soon.
+
+>> +
+>> +What:		/sys/bus/mhi/devices/.../oem_pk_hash
+>> +Date:		Jul 2020
+>> +KernelVersion:	5.8
+>> +Contact:	Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> +Description:	The file holds the OEM PK Hash value of the endpoint 
+>> device
+>> +		obtained using a BHI (Boot Host Interface) register read after
+>> +		at least one attempt to power up the device has been done. If
+>> +		read without having the device power on at least once, the file
+>> +		will read all 0's.
+>> +Users:		Any userspace application or clients interested in device 
+>> info.
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index e64e5db..5e49316 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -11018,6 +11018,7 @@ M:	Hemant Kumar <hemantk@codeaurora.org>
+>>  L:	linux-arm-msm@vger.kernel.org
+>>  S:	Maintained
+>>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git
+>> +F:	Documentation/ABI/stable/sysfs-bus-mhi
+>>  F:	Documentation/mhi/
+>>  F:	drivers/bus/mhi/
+>>  F:	include/linux/mhi.h
+>> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+>> index 972dbf0..c086ef2 100644
+>> --- a/drivers/bus/mhi/core/init.c
+>> +++ b/drivers/bus/mhi/core/init.c
+>> @@ -76,6 +76,56 @@ const char *to_mhi_pm_state_str(enum mhi_pm_state 
+>> state)
+>>  	return mhi_pm_state_str[index];
+>>  }
+>> 
+>> +static ssize_t serial_number_show(struct device *dev,
+>> +				  struct device_attribute *attr,
+>> +				  char *buf)
+>> +{
+>> +	struct mhi_device *mhi_dev = to_mhi_device(dev);
+>> +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+>> +
+>> +	return snprintf(buf, PAGE_SIZE, "Serial Number: %u\n",
+>> +			mhi_cntrl->serial_number);
+>> +}
+>> +static DEVICE_ATTR_RO(serial_number);
+>> +
+>> +static ssize_t oem_pk_hash_show(struct device *dev,
+>> +				struct device_attribute *attr,
+>> +				char *buf)
+>> +{
+>> +	struct mhi_device *mhi_dev = to_mhi_device(dev);
+>> +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+>> +	int i, cnt = 0;
+>> +
+>> +	for (i = 0; i < ARRAY_SIZE(mhi_cntrl->oem_pk_hash); i++)
+>> +		cnt += snprintf(buf + cnt, PAGE_SIZE - cnt,
+>> +				"OEMPKHASH[%d]: 0x%x\n", i,
+>> +				mhi_cntrl->oem_pk_hash[i]);
+>> +
+>> +	return cnt;
+>> +}
+>> +static DEVICE_ATTR_RO(oem_pk_hash);
+>> +
+>> +static struct attribute *mhi_sysfs_attrs[] = {
+>> +	&dev_attr_serial_number.attr,
+>> +	&dev_attr_oem_pk_hash.attr,
+>> +	NULL,
+>> +};
+>> +
+>> +static const struct attribute_group mhi_sysfs_group = {
+>> +	.attrs = mhi_sysfs_attrs,
+>> +};
+>> +
+>> +static int mhi_create_sysfs(struct mhi_controller *mhi_cntrl)
+>> +{
+>> +	return sysfs_create_group(&mhi_cntrl->mhi_dev->dev.kobj,
+>> +				  &mhi_sysfs_group);
+>> +}
+>> +
+>> +static void mhi_destroy_sysfs(struct mhi_controller *mhi_cntrl)
+>> +{
+>> +	sysfs_remove_group(&mhi_cntrl->mhi_dev->dev.kobj, &mhi_sysfs_group);
+>> +}
+>> +
+>>  /* MHI protocol requires the transfer ring to be aligned with ring 
+>> length */
+>>  static int mhi_alloc_aligned_ring(struct mhi_controller *mhi_cntrl,
+>>  				  struct mhi_ring *ring,
+>> @@ -917,6 +967,8 @@ int mhi_register_controller(struct mhi_controller 
+>> *mhi_cntrl,
+>>  	mhi_cntrl->mhi_dev = mhi_dev;
+>> 
+>>  	mhi_create_debugfs(mhi_cntrl);
+>> +	if (mhi_create_sysfs(mhi_cntrl))
+>> +		dev_err(mhi_cntrl->cntrl_dev, "Failed to create sysfs entries\n");
+>> 
+>>  	return 0;
+>> 
+>> @@ -940,6 +992,7 @@ void mhi_unregister_controller(struct 
+>> mhi_controller *mhi_cntrl)
+>>  	struct mhi_chan *mhi_chan = mhi_cntrl->mhi_chan;
+>>  	unsigned int i;
+>> 
+>> +	mhi_destroy_sysfs(mhi_cntrl);
+>>  	mhi_destroy_debugfs(mhi_cntrl);
+>> 
+>>  	kfree(mhi_cntrl->mhi_cmd);
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
