@@ -2,142 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D7324071F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0B1240723
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgHJOCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 10:02:39 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:60727 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726771AbgHJOCi (ORCPT
+        id S1727012AbgHJODc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 10:03:32 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:46562 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727000AbgHJOD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 10:02:38 -0400
+        Mon, 10 Aug 2020 10:03:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597068156;
+        s=mimecast20190719; t=1597068208;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Zm9UN2ybwkEfJlU9ZzUNqxOkLJ5miUSnR65cKiA6LKQ=;
-        b=NWj8BaaFT2+B0QjS3cfRcfT1g0g3mBFdxLOJ+HFF2qRheU+mny4m4OuMGd8O+Xd9nUG5Mx
-        9I+saa/rhzg3RgYbYJRctKhRdMVa3GA3NnwZQ7K876ObSb8/lSqQbppa9eo1s/iEVSFxrb
-        bW+OBXVCAH7e8TXZ6c0BmYn0bF+cI00=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-184-c5dhtUFvOdaoZU-CVEZXpw-1; Mon, 10 Aug 2020 10:02:35 -0400
-X-MC-Unique: c5dhtUFvOdaoZU-CVEZXpw-1
-Received: by mail-wr1-f71.google.com with SMTP id t12so4281900wrp.0
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 07:02:35 -0700 (PDT)
+        bh=0IyuaY9t2vA/B12pZXPt0Wm8+ZAqAc40MFsIlLkmWgc=;
+        b=Dt6uptbjnTzrssBzon3gFqXcO2ZluNu6wqbMoDT5CeXz6qBtmz/cfie8PI/NVcd4lYpZLi
+        5Ef74+1PiehCetRxnVcre5ObekX7iKxDX/guATyDSpMEc1875KwYc2Bykosw1tPrGxfLAv
+        QmvqJ7qyxfljexLqqvLnD3WS3NF5i0s=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-175-0-GZ4yaoMz-8lxtIvfUpcg-1; Mon, 10 Aug 2020 10:03:25 -0400
+X-MC-Unique: 0-GZ4yaoMz-8lxtIvfUpcg-1
+Received: by mail-wm1-f69.google.com with SMTP id d22so2914699wmd.2
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 07:03:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Zm9UN2ybwkEfJlU9ZzUNqxOkLJ5miUSnR65cKiA6LKQ=;
-        b=R8jIOtUVB1YTTTPY5/M4gCQos4EKbmRXG3r5ZxKZOHQzBgK01Yu/jtkAo/ubR8jWdl
-         KcJW7o2tJ4/oXZ5PnO9crgA4cLnmRTkIFJXBM7IIiv6caugTMiKjKC2ehBcC9cW7lK3q
-         dVY12ryuw1580bM/5qhz72b2CcQxssLcsxhShFCcVfofvuWCU0aJesqBy/VQBCBkSrCX
-         n6q6M9/Tuf/a24zKdhsDzsczLwanRTciWQ5imU/odnQ8CWWy5hCHeSnkiu8DKM86uj1I
-         Mo9z0ZeieXejfySHWNjMrK5RCPxB9z/mxud6E83LML1mK6asOVB60+12nBqvmEbjeJfr
-         MscQ==
-X-Gm-Message-State: AOAM531I5Tf3SpjbO339qBwscSPYjP3yum3O6xcYUqoiX4VcH5hc/kmZ
-        RJs7VLkcVGo0n4kACDB33pMvpwL8NNyw0eUztXZorI3vzLexl8S8+0fiROeb8LZQUlRfh6YLqN0
-        batn9ricYuG3J9X9H7YwyX/JU
-X-Received: by 2002:a5d:5445:: with SMTP id w5mr26606325wrv.342.1597068154028;
-        Mon, 10 Aug 2020 07:02:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxZKDjbvxQpugjVT7WWVCyaGFDHI2C6roKb2nSqD1rm2kdDhSV2saxy4uo2FJ6CRvCgIJPxpg==
-X-Received: by 2002:a5d:5445:: with SMTP id w5mr26606286wrv.342.1597068153685;
-        Mon, 10 Aug 2020 07:02:33 -0700 (PDT)
+        bh=0IyuaY9t2vA/B12pZXPt0Wm8+ZAqAc40MFsIlLkmWgc=;
+        b=PsjeDwO9hnJ3bRF6dI+tKp7SsAjCwSyGItbdQhJBLZT8fNxvG+WO2ha1wTXMQME6BS
+         3ySMp+f2iZbza5iIoiViyht65DddZPU8NMyPYYsmsaFZHqFpndr+7N5mVaDv3Cumo9gP
+         HEgq/5RsrQ9Nt33KbPBPCIdWHSpBEgrteqe6qGszTI6LXeeXSYa9W2YugIBXKAbJN032
+         JGXr5jmZ6t61+jsnzvrA/dQBTF8usIqKhSqzXifcbxBc4i68CsEQNcnjNlk2Ld6aIAGo
+         sWdxZB7UGqHzRKpXhZxuXNSszekAumk4e8Jl3edPgYn450fWpquBsvJiyL8RD/rdHDTi
+         xNEA==
+X-Gm-Message-State: AOAM532pkdY1M5wToPG1APVOR3qQHUhVPi0zDkaHySez4vILzVUwaDgl
+        EZQFEdyHouDtP+RiaL45Ho1ITM1NgZUz/MFBvoJJi16kZ0Q2nt61YxqOs267K8OBwRvlDpPtKhj
+        fIucGHxvEN6IvTAXVT6NOj0uf
+X-Received: by 2002:a7b:c1c2:: with SMTP id a2mr24858795wmj.74.1597068204361;
+        Mon, 10 Aug 2020 07:03:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyjNtR3OArq0V+wemZ+ZAqdL/eGbHMLXToEAuqW5w/uHw7UhkAdm+a8gtIMsDr6mATcbBH4jA==
+X-Received: by 2002:a7b:c1c2:: with SMTP id a2mr24858780wmj.74.1597068204153;
+        Mon, 10 Aug 2020 07:03:24 -0700 (PDT)
 Received: from redhat.com (bzq-109-67-41-16.red.bezeqint.net. [109.67.41.16])
-        by smtp.gmail.com with ESMTPSA id z12sm21145712wrp.20.2020.08.10.07.02.31
+        by smtp.gmail.com with ESMTPSA id r11sm21350307wrw.78.2020.08.10.07.03.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2020 07:02:33 -0700 (PDT)
-Date:   Mon, 10 Aug 2020 10:02:30 -0400
+        Mon, 10 Aug 2020 07:03:23 -0700 (PDT)
+Date:   Mon, 10 Aug 2020 10:03:17 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     Vivek Goyal <vgoyal@redhat.com>
 Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         virtio-fs@redhat.com, miklos@szeredi.hu, stefanha@redhat.com,
         dgilbert@redhat.com, Sebastien Boeuf <sebastien.boeuf@intel.com>,
         kvm@vger.kernel.org
-Subject: Re: [PATCH v2 03/20] virtio: Add get_shm_region method
-Message-ID: <20200810100208-mutt-send-email-mst@kernel.org>
+Subject: Re: [PATCH v2 05/20] virtio: Implement get_shm_region for MMIO
+ transport
+Message-ID: <20200810100240-mutt-send-email-mst@kernel.org>
 References: <20200807195526.426056-1-vgoyal@redhat.com>
- <20200807195526.426056-4-vgoyal@redhat.com>
+ <20200807195526.426056-6-vgoyal@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200807195526.426056-4-vgoyal@redhat.com>
+In-Reply-To: <20200807195526.426056-6-vgoyal@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 07, 2020 at 03:55:09PM -0400, Vivek Goyal wrote:
+On Fri, Aug 07, 2020 at 03:55:11PM -0400, Vivek Goyal wrote:
 > From: Sebastien Boeuf <sebastien.boeuf@intel.com>
 > 
-> Virtio defines 'shared memory regions' that provide a continuously
-> shared region between the host and guest.
-> 
-> Provide a method to find a particular region on a device.
+> On MMIO a new set of registers is defined for finding SHM
+> regions.  Add their definitions and use them to find the region.
 > 
 > Signed-off-by: Sebastien Boeuf <sebastien.boeuf@intel.com>
-> Signed-off-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
 > Cc: kvm@vger.kernel.org
 > Cc: "Michael S. Tsirkin" <mst@redhat.com>
+
 
 Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
 > ---
->  include/linux/virtio_config.h | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
+>  drivers/virtio/virtio_mmio.c     | 32 ++++++++++++++++++++++++++++++++
+>  include/uapi/linux/virtio_mmio.h | 11 +++++++++++
+>  2 files changed, 43 insertions(+)
 > 
-> diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-> index bb4cc4910750..c859f000a751 100644
-> --- a/include/linux/virtio_config.h
-> +++ b/include/linux/virtio_config.h
-> @@ -10,6 +10,11 @@
->  
->  struct irq_affinity;
->  
-> +struct virtio_shm_region {
-> +       u64 addr;
-> +       u64 len;
-> +};
-> +
->  /**
->   * virtio_config_ops - operations for configuring a virtio device
->   * Note: Do not assume that a transport implements all of the operations
-> @@ -65,6 +70,7 @@ struct irq_affinity;
->   *      the caller can then copy.
->   * @set_vq_affinity: set the affinity for a virtqueue (optional).
->   * @get_vq_affinity: get the affinity for a virtqueue (optional).
-> + * @get_shm_region: get a shared memory region based on the index.
->   */
->  typedef void vq_callback_t(struct virtqueue *);
->  struct virtio_config_ops {
-> @@ -88,6 +94,8 @@ struct virtio_config_ops {
->  			       const struct cpumask *cpu_mask);
->  	const struct cpumask *(*get_vq_affinity)(struct virtio_device *vdev,
->  			int index);
-> +	bool (*get_shm_region)(struct virtio_device *vdev,
-> +			       struct virtio_shm_region *region, u8 id);
->  };
->  
->  /* If driver didn't advertise the feature, it will never appear. */
-> @@ -250,6 +258,15 @@ int virtqueue_set_affinity(struct virtqueue *vq, const struct cpumask *cpu_mask)
->  	return 0;
+> diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
+> index 627ac0487494..2697c492cf78 100644
+> --- a/drivers/virtio/virtio_mmio.c
+> +++ b/drivers/virtio/virtio_mmio.c
+> @@ -498,6 +498,37 @@ static const char *vm_bus_name(struct virtio_device *vdev)
+>  	return vm_dev->pdev->name;
 >  }
 >  
-> +static inline
-> +bool virtio_get_shm_region(struct virtio_device *vdev,
-> +                         struct virtio_shm_region *region, u8 id)
+> +static bool vm_get_shm_region(struct virtio_device *vdev,
+> +			      struct virtio_shm_region *region, u8 id)
 > +{
-> +	if (!vdev->config->get_shm_region)
+> +	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
+> +	u64 len, addr;
+> +
+> +	/* Select the region we're interested in */
+> +	writel(id, vm_dev->base + VIRTIO_MMIO_SHM_SEL);
+> +
+> +	/* Read the region size */
+> +	len = (u64) readl(vm_dev->base + VIRTIO_MMIO_SHM_LEN_LOW);
+> +	len |= (u64) readl(vm_dev->base + VIRTIO_MMIO_SHM_LEN_HIGH) << 32;
+> +
+> +	region->len = len;
+> +
+> +	/* Check if region length is -1. If that's the case, the shared memory
+> +	 * region does not exist and there is no need to proceed further.
+> +	 */
+> +	if (len == ~(u64)0) {
 > +		return false;
-> +	return vdev->config->get_shm_region(vdev, region, id);
+> +	}
+> +
+
+It might make sense to validate that addr/len do not overlap.
+Will be useful for PCI too.
+Can be a patch on top.
+
+> +	/* Read the region base address */
+> +	addr = (u64) readl(vm_dev->base + VIRTIO_MMIO_SHM_BASE_LOW);
+> +	addr |= (u64) readl(vm_dev->base + VIRTIO_MMIO_SHM_BASE_HIGH) << 32;
+> +
+> +	region->addr = addr;
+> +
+> +	return true;
 > +}
 > +
->  static inline bool virtio_is_little_endian(struct virtio_device *vdev)
->  {
->  	return virtio_has_feature(vdev, VIRTIO_F_VERSION_1) ||
+>  static const struct virtio_config_ops virtio_mmio_config_ops = {
+>  	.get		= vm_get,
+>  	.set		= vm_set,
+> @@ -510,6 +541,7 @@ static const struct virtio_config_ops virtio_mmio_config_ops = {
+>  	.get_features	= vm_get_features,
+>  	.finalize_features = vm_finalize_features,
+>  	.bus_name	= vm_bus_name,
+> +	.get_shm_region = vm_get_shm_region,
+>  };
+>  
+>  
+> diff --git a/include/uapi/linux/virtio_mmio.h b/include/uapi/linux/virtio_mmio.h
+> index c4b09689ab64..0650f91bea6c 100644
+> --- a/include/uapi/linux/virtio_mmio.h
+> +++ b/include/uapi/linux/virtio_mmio.h
+> @@ -122,6 +122,17 @@
+>  #define VIRTIO_MMIO_QUEUE_USED_LOW	0x0a0
+>  #define VIRTIO_MMIO_QUEUE_USED_HIGH	0x0a4
+>  
+> +/* Shared memory region id */
+> +#define VIRTIO_MMIO_SHM_SEL             0x0ac
+> +
+> +/* Shared memory region length, 64 bits in two halves */
+> +#define VIRTIO_MMIO_SHM_LEN_LOW         0x0b0
+> +#define VIRTIO_MMIO_SHM_LEN_HIGH        0x0b4
+> +
+> +/* Shared memory region base address, 64 bits in two halves */
+> +#define VIRTIO_MMIO_SHM_BASE_LOW        0x0b8
+> +#define VIRTIO_MMIO_SHM_BASE_HIGH       0x0bc
+> +
+>  /* Configuration atomicity value */
+>  #define VIRTIO_MMIO_CONFIG_GENERATION	0x0fc
+>  
 > -- 
 > 2.25.4
 > 
