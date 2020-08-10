@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61663240445
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 11:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6192240454
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 11:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgHJJxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 05:53:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52552 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726304AbgHJJxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 05:53:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2D3E7AD65;
-        Mon, 10 Aug 2020 09:53:31 +0000 (UTC)
-Date:   Mon, 10 Aug 2020 11:53:10 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/memcg: remove useless check on page->mem_cgroup
-Message-ID: <20200810095310.GD4773@dhcp22.suse.cz>
-References: <1596166480-22814-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200731151655.GB491801@cmpxchg.org>
- <9338716f-ca0e-057f-8d94-03e2b3f70281@linux.alibaba.com>
- <20200803081815.GD5174@dhcp22.suse.cz>
- <bd61e672-b997-c4cd-2047-fca9dc11cc4c@linux.alibaba.com>
- <92dd8e68-8095-72c5-0144-2a084e4d5993@linux.alibaba.com>
- <5622ef68-5e70-d1a9-d1be-b45411b6be5c@linux.alibaba.com>
- <20200810095201.GC4773@dhcp22.suse.cz>
+        id S1726405AbgHJJ4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 05:56:36 -0400
+Received: from 60-251-196-230.HINET-IP.hinet.net ([60.251.196.230]:37617 "EHLO
+        ironport.ite.com.tw" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726141AbgHJJ4f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 05:56:35 -0400
+IronPort-SDR: wRESfOmsmtb7yplLH4QeIwwr4ZKZH0fWNI7Lw0XRRJhyxRN8EpdiJXdA9KpgEHGD1JHg0kn2cY
+ pBes+A63BLZw==
+Received: from unknown (HELO mse.ite.com.tw) ([192.168.35.30])
+  by ironport.ite.com.tw with ESMTP; 10 Aug 2020 17:56:33 +0800
+Received: from CSBMAIL1.internal.ite.com.tw (csbmail1.internal.ite.com.tw [192.168.65.58])
+        by mse.ite.com.tw with ESMTP id 07A9uTCm017762;
+        Mon, 10 Aug 2020 17:56:29 +0800 (GMT-8)
+        (envelope-from allen.chen@ite.com.tw)
+Received: from allen-VirtualBox.internal.ite.com.tw (192.168.70.14) by
+ CSBMAIL1.internal.ite.com.tw (192.168.65.58) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1713.5; Mon, 10 Aug 2020 17:56:28 +0800
+From:   allen <allen.chen@ite.com.tw>
+CC:     Allen Chen <allen.chen@ite.com.tw>,
+        Jau-Chih Tseng <Jau-Chih.Tseng@ite.com.tw>,
+        Hermes Wu <Hermes.Wu@ite.com.tw>,
+        Kenneth Hung <Kenneth.Hung@ite.com.tw>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: [PATCH v1 0/2] IT6505 cover letter
+Date:   Mon, 10 Aug 2020 17:53:16 +0800
+Message-ID: <1597053278-25421-1-git-send-email-allen.chen@ite.com.tw>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200810095201.GC4773@dhcp22.suse.cz>
+Content-Type: text/plain
+X-Originating-IP: [192.168.70.14]
+X-ClientProxiedBy: CSBMAIL1.internal.ite.com.tw (192.168.65.58) To
+ CSBMAIL1.internal.ite.com.tw (192.168.65.58)
+X-TM-SNTS-SMTP: 609A2BD4910B4656F6AD56428179872816B4E4CAF9FE52B2E48A1A4BADC8CBDF2000:8
+X-MAIL: mse.ite.com.tw 07A9uTCm017762
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 10-08-20 11:52:02, Michal Hocko wrote:
-> On Wed 05-08-20 21:02:30, Alex Shi wrote:
-> > 
-> > 
-> > 在 2020/8/5 下午8:28, Alex Shi 写道:
-> > > The last patch has a problem on define. this version could fix it.
-> > > 
-> > > BTW, I see some !memcg happens when MEMCG compilered but disabled by cgroup_disable
-> > > 
-> > > 
-> > > [   94.657666] ---[ end trace f1f34bfc3b32ed2f ]---
-> > > [   95.138995] anon flags: 0x5005b48008000d(locked|uptodate|dirty|swapbacked)
-> > > [   95.146220] raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
-> > > [   95.154549] raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
-> > > [   95.162876] page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
-> > > 
-> > > 
-> > 
-> > The following patch may helpful.
-> > 
-> > >From 8bfb26a2e37e08dc61d20212bcfa5812a367ba94 Mon Sep 17 00:00:00 2001
-> > From: Alex Shi <alex.shi@linux.alibaba.com>
-> > Date: Wed, 5 Aug 2020 20:32:12 +0800
-> > Subject: [PATCH] mm/memcg: don't try charge swap if memcg disabled
-> > 
-> > If we disabled memcg by cgroup_disable=memory, the swap charges are
-> > still called. Let's return from the funcs earlier and keep WARN_ON
-> > monitor.
-> 
-> Do I get it right that this is on top of your patch to remove the memcg
-> check or a preparatory work?
+The IT6505 is a high-performance DisplayPort 1.1a transmitter, fully compliant with DisplayPort 1.1a, HDCP 1.3 specifications. The IT6505 supports color depth of up to 36 bits (12 bits/color) and ensures robust transmission of high-quality uncompressed video content, along with uncompressed and compressed digital audio content.
 
-Sorry meant to say - add the warning rather than drop the check.
+This series refactors previous it6505 driver and contains document bindings, Kconfig to control the function enable or not.
 
-> Both are good but it would be better to
-> call that out specifically for clarity (along with the warning if that
-> is a follow up fix).
+allen (2):
+  ite-it6505 change trigger condition
+  WIP: drm/bridge: add it6505 driver
+
+ .../bindings/display/bridge/ite,it6505.yaml        |    2 +-
+ drivers/gpu/drm/bridge/Kconfig                     |    7 +
+ drivers/gpu/drm/bridge/Makefile                    |    1 +
+ drivers/gpu/drm/bridge/ite-it6505.c                | 3278 ++++++++++++++++++++
+ 4 files changed, 3287 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/gpu/drm/bridge/ite-it6505.c
+
 -- 
-Michal Hocko
-SUSE Labs
+1.9.1
+
