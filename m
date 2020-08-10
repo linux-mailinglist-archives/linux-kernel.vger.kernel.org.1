@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBB2240911
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBCE2408F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728444AbgHJP2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:28:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34672 "EHLO mail.kernel.org"
+        id S1727123AbgHJP1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:27:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728602AbgHJP2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:28:33 -0400
+        id S1728410AbgHJP1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:27:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCFFD22BF3;
-        Mon, 10 Aug 2020 15:28:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E2AF22B47;
+        Mon, 10 Aug 2020 15:27:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073313;
-        bh=OI8L8JHWA4I07xOnOfrugVYN6Wsn1SSxQOR6XVPL8Yc=;
+        s=default; t=1597073229;
+        bh=P00ThBgQLNlRPDK/22PRWiBmRKyKzX5ABwnqAtmOvHM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R+v4O5sszq64VkBUEbNHIzBR8BQ1gGwzNs0zijdlLdfzRyrK75Q9Zmbwa8oB1tO/Y
-         Dp9C9P1cCOLL0mCZp2k18+x6aGf6tW+ipHKklF7BcruYSM09yGqqKVP9SUkRIF9WHV
-         6pbR5OcBXFDNUEVN65jIvCYrU2vae52kcc2q58zc=
+        b=qjdNvqzsijnmthjP2OeytCBsH271RVXGSYwyHZgL/XH3NcR8FF4hXbh+TNnvq9VOt
+         DTU+fYnWcDl0FIeCI1jASsO7KUyDPJ3isC8nBPgWMqa/pJLnn9TmWLQ0I+ecZZzQP2
+         WILw5jm8N9/7/GebWxkv2COknqxgjJNTuepxPZFw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amitoj Kaur Chawla <amitoj1606@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Pavel Machek <pavel@ucw.cz>
-Subject: [PATCH 5.4 30/67] leds: 88pm860x: fix use-after-free on unbind
-Date:   Mon, 10 Aug 2020 17:21:17 +0200
-Message-Id: <20200810151810.920575509@linuxfoundation.org>
+        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 32/67] drm/nouveau/fbcon: fix module unload when fbcon init has failed for some reason
+Date:   Mon, 10 Aug 2020 17:21:19 +0200
+Message-Id: <20200810151811.014203848@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
 References: <20200810151809.438685785@linuxfoundation.org>
@@ -43,63 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Ben Skeggs <bskeggs@redhat.com>
 
-commit eca21c2d8655387823d695b26e6fe78cf3975c05 upstream.
+[ Upstream commit 498595abf5bd51f0ae074cec565d888778ea558f ]
 
-Several MFD child drivers register their class devices directly under
-the parent device. This means you cannot blindly do devres conversions
-so that deregistration ends up being tied to the parent device,
-something which leads to use-after-free on driver unbind when the class
-device is released while still being registered.
+Stale pointer was tripping up the unload path.
 
-Fixes: 375446df95ee ("leds: 88pm860x: Use devm_led_classdev_register")
-Cc: stable <stable@vger.kernel.org>     # 4.6
-Cc: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/leds-88pm860x.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/nouveau_fbcon.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/leds/leds-88pm860x.c
-+++ b/drivers/leds/leds-88pm860x.c
-@@ -203,21 +203,33 @@ static int pm860x_led_probe(struct platf
- 	data->cdev.brightness_set_blocking = pm860x_led_set;
- 	mutex_init(&data->lock);
- 
--	ret = devm_led_classdev_register(chip->dev, &data->cdev);
-+	ret = led_classdev_register(chip->dev, &data->cdev);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to register LED: %d\n", ret);
- 		return ret;
- 	}
- 	pm860x_led_set(&data->cdev, 0);
-+
-+	platform_set_drvdata(pdev, data);
-+
- 	return 0;
+diff --git a/drivers/gpu/drm/nouveau/nouveau_fbcon.c b/drivers/gpu/drm/nouveau/nouveau_fbcon.c
+index f439f0a5b43a5..141cc89981240 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_fbcon.c
++++ b/drivers/gpu/drm/nouveau/nouveau_fbcon.c
+@@ -592,6 +592,7 @@ fini:
+ 	drm_fb_helper_fini(&fbcon->helper);
+ free:
+ 	kfree(fbcon);
++	drm->fbcon = NULL;
+ 	return ret;
  }
  
-+static int pm860x_led_remove(struct platform_device *pdev)
-+{
-+	struct pm860x_led *data = platform_get_drvdata(pdev);
-+
-+	led_classdev_unregister(&data->cdev);
-+
-+	return 0;
-+}
- 
- static struct platform_driver pm860x_led_driver = {
- 	.driver	= {
- 		.name	= "88pm860x-led",
- 	},
- 	.probe	= pm860x_led_probe,
-+	.remove	= pm860x_led_remove,
- };
- 
- module_platform_driver(pm860x_led_driver);
+-- 
+2.25.1
+
 
 
