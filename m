@@ -2,61 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7772240CDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 20:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC127240CE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 20:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728145AbgHJSU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 14:20:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727904AbgHJSU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 14:20:28 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3D4B207FF;
-        Mon, 10 Aug 2020 18:20:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597083627;
-        bh=RfnvddbXs67O3oANFnS11BjPH1/O5YLPIMd2VCPzBX8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Zedml/KW8R7fTSARLI7t3npnpQH4znnxA2jY40g/JmPcMKxGuO68OHz/gj8kI96XX
-         sgHvL83XU0d5nIHtIRMwMGsKaUq0Yo4SWaOzTtmed8nuswpDYOAK42RzG9x+PWQLYg
-         eebhtcBApvosckI33Vix5cPZsCPJvcu5nls8uW2Q=
-Date:   Mon, 10 Aug 2020 11:20:25 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Jonathan Adams <jwadams@google.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        netdev@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [RFC PATCH 0/7] metricfs metric file system and examples
-Message-ID: <20200810112025.05825daf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <191cb2fc-387a-006e-62fd-177096ac480e@gmail.com>
-References: <20200807212916.2883031-1-jwadams@google.com>
-        <20200808020617.GD2028541@lunn.ch>
-        <191cb2fc-387a-006e-62fd-177096ac480e@gmail.com>
+        id S1728186AbgHJSVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 14:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728052AbgHJSVl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 14:21:41 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C53C061756;
+        Mon, 10 Aug 2020 11:21:41 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id u20so6051339pfn.0;
+        Mon, 10 Aug 2020 11:21:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+JFD8DByOq2aanx0SZRhh+Vls72xH1YM2iTf6wGQD9M=;
+        b=OhbLVoAmgO0WtSwfbFIuvITgBG1A+Us1nAmbkAZn3bFQeE3X+l4rBRnyDfNAcPhS9G
+         X/caSXxnAEXwluvvK8fIO0LBn5uuVKLykPO5/CzgZeOeIHVk5kSyfZ3YCQPPbgRS2cPV
+         poQmNOEIEmD1ElgvvH1ThkKafEsPYVdLZSBn7QV0vumFefyCRldQNb/AZsaQmiSZi7pn
+         459o0a16rVd6HWW+OjqZ0xqOs8HEb2dBLOImDUfrZ6gqXhvCVMhhqZVfdGiqeBF1f8sl
+         e1dPLxwbXVgq4lkQIiab7Q36BFbHMtie6AwDT81jmITyz2/65UCkZg6oqyfP1sFDEk2H
+         bWkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+JFD8DByOq2aanx0SZRhh+Vls72xH1YM2iTf6wGQD9M=;
+        b=Qu6uK4y4UkqKAgAKgiC8LCZkzLgR5uQ7FNxGziFuasqO7LP8mqwTGtVvaoO9CVkWjS
+         4eZIkyTbWWMU6wWQVOL2VjVtl1c0ltzYq5tTnlPFCxR1j+GqNf9KbakCitJ0vMhz2wFi
+         Sy8TWyMeap4VhNlkyAEI3AIu4q1m0qJBDdnkV4CzPeek4s6j3hv2ROiNX4xJgvg4iqb4
+         IhGPzmm6LcOWeiw2CPQrwsHCnzZAh2ySWh4T8EqwUPoGos0m8xp2CS4sZO9uMnMi2yNT
+         VvMn7hqYwCl/uNcykcF1T7v3HMBCtVvRovVWSLeG/WwvyUPfiCz/AAfW9QV1uXUwnW0W
+         2yZg==
+X-Gm-Message-State: AOAM532cOmUlQQpvJktuusS6TAkweeZ5z4k51u5PqOdT/04gq4317aNz
+        wYwTtfuVmKlryJvKkES3mYEXYmjzUds=
+X-Google-Smtp-Source: ABdhPJwu+iKNRl9MVy9gLlxJdubMRx/+OdkJRXm4XqpZdr9WoC9uMx9DnGcenr2NxNJ6nOoQFzk8RA==
+X-Received: by 2002:a63:4b63:: with SMTP id k35mr23855342pgl.235.1597083700496;
+        Mon, 10 Aug 2020 11:21:40 -0700 (PDT)
+Received: from localhost.localdomain ([124.253.77.168])
+        by smtp.googlemail.com with ESMTPSA id 80sm23176615pfy.147.2020.08.10.11.21.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Aug 2020 11:21:38 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Driver-API: Documentation: Replace deprecated :c:func: Usage
+Date:   Mon, 10 Aug 2020 23:51:07 +0530
+Message-Id: <20200810182107.18577-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 8 Aug 2020 09:59:34 -0600 David Ahern wrote:
-> On 8/7/20 8:06 PM, Andrew Lunn wrote:
-> > So i personally don't think netdev statistics is a good idea, i doubt
-> > it scales.  
-> 
-> +1
+Replace :c:func: with func() as the previous usage is deprecated.
 
-+1
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+---
+ Documentation/driver-api/device-io.rst | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-Please stop using networking as the example for this.
+diff --git a/Documentation/driver-api/device-io.rst b/Documentation/driver-api/device-io.rst
+index 0e389378f71d..764963876d08 100644
+--- a/Documentation/driver-api/device-io.rst
++++ b/Documentation/driver-api/device-io.rst
+@@ -36,14 +36,14 @@ are starting with one. Physical addresses are of type unsigned long.
+ 
+ This address should not be used directly. Instead, to get an address
+ suitable for passing to the accessor functions described below, you
+-should call :c:func:`ioremap()`. An address suitable for accessing
++should call ioremap(). An address suitable for accessing
+ the device will be returned to you.
+ 
+ After you've finished using the device (say, in your module's exit
+-routine), call :c:func:`iounmap()` in order to return the address
++routine), call iounmap() in order to return the address
+ space to the kernel. Most architectures allocate new address space each
+-time you call :c:func:`ioremap()`, and they can run out unless you
+-call :c:func:`iounmap()`.
++time you call ioremap(), and they can run out unless you
++call iounmap().
+ 
+ Accessing the device
+ --------------------
+@@ -60,8 +60,8 @@ readb_relaxed(), readw_relaxed(), readl_relaxed(), readq_relaxed(),
+ writeb(), writew(), writel() and writeq().
+ 
+ Some devices (such as framebuffers) would like to use larger transfers than
+-8 bytes at a time. For these devices, the :c:func:`memcpy_toio()`,
+-:c:func:`memcpy_fromio()` and :c:func:`memset_io()` functions are
++8 bytes at a time. For these devices, the memcpy_toio(),
++memcpy_fromio() and memset_io() functions are
+ provided. Do not use memset or memcpy on IO addresses; they are not
+ guaranteed to copy data in order.
+ 
+@@ -135,15 +135,15 @@ Accessing Port Space
+ 
+ Accesses to this space are provided through a set of functions which
+ allow 8-bit, 16-bit and 32-bit accesses; also known as byte, word and
+-long. These functions are :c:func:`inb()`, :c:func:`inw()`,
+-:c:func:`inl()`, :c:func:`outb()`, :c:func:`outw()` and
+-:c:func:`outl()`.
++long. These functions are inb(), inw(),
++inl(), outb(), outw() and
++outl().
+ 
+ Some variants are provided for these functions. Some devices require
+ that accesses to their ports are slowed down. This functionality is
+ provided by appending a ``_p`` to the end of the function.
+-There are also equivalents to memcpy. The :c:func:`ins()` and
+-:c:func:`outs()` functions copy bytes, words or longs to the given
++There are also equivalents to memcpy. The ins() and
++outs() functions copy bytes, words or longs to the given
+ port.
+ 
+ Public Functions Provided
+-- 
+2.27.0
 
-We don't want file interfaces for stats, and we already made that very
-clear last time.
