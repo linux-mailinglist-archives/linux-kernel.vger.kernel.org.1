@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F872408CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 443862408DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728511AbgHJPZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:25:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58786 "EHLO mail.kernel.org"
+        id S1728408AbgHJP0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:26:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728192AbgHJPZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:25:09 -0400
+        id S1728247AbgHJP0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:26:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04ECE20772;
-        Mon, 10 Aug 2020 15:25:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6341922CF7;
+        Mon, 10 Aug 2020 15:26:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073108;
-        bh=nGpeLG21Dvg+Nmre5tLkQr5WxfGP/5qtM6NgnOvlGGg=;
+        s=default; t=1597073172;
+        bh=k9emq/KdsW08FKCMSWFUNTgkoEyy13pRKrMhiQmpdnM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LnLfoJnhadVXLIAekAkAJPl3VjNmQw9Ukhwharc6ipobW42eoxc980FASMkKkMlTF
-         N+WR58kzY7BLr2wIICtmdJEiAX7PEW01tt03RSuKeztU4Usuh986ncWmVGL//pXbkt
-         1jCtrExY5fA64OClp+RoUKpoHamIfyYTqA8tdheg=
+        b=PK9lQn35aJvozC1N/X/BQd2PnVoiqJuMeEGqh6JuJ5Qusj+4n4iPQMFPorWYdYTjP
+         imaOkQbHKzzz0n03XhMyuWawhEPoA6uBCxSyRGBZwzQ820dK11n0ZGg2KeEPtBFTTB
+         D9BMtlwOy0eozqbriDH7UHJzgLsc0Ncnyz67FV60=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jitao Shi <jitao.shi@mediatek.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 39/79] drm/panel: Fix auo, kd101n80-45na horizontal noise on edges of panel
-Date:   Mon, 10 Aug 2020 17:20:58 +0200
-Message-Id: <20200810151814.203744726@linuxfoundation.org>
+        stable@vger.kernel.org, Connor McAdams <conmanx360@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 12/67] ALSA: hda/ca0132 - Fix AE-5 microphone selection commands.
+Date:   Mon, 10 Aug 2020 17:20:59 +0200
+Message-Id: <20200810151810.032971729@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
-References: <20200810151812.114485777@linuxfoundation.org>
+In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
+References: <20200810151809.438685785@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jitao Shi <jitao.shi@mediatek.com>
+From: Connor McAdams <conmanx360@gmail.com>
 
-[ Upstream commit d76acc9fcddeda53b985b029c890976a87fcc3fc ]
+commit 7fe3530427e52dd53cd7366914864e29215180a4 upstream.
 
-Fine tune the HBP and HFP to avoid the dot noise on the left and right edges.
+The ca0113 command had the wrong group_id, 0x48 when it should've been
+0x30. The front microphone selection should now work.
 
-Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200714123332.37609-1-jitao.shi@mediatek.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200803002928.8638-3-conmanx360@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 6 +++---
+ sound/pci/hda/patch_ca0132.c |    6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-index 48a164257d18c..3edb33e619088 100644
---- a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-+++ b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-@@ -615,9 +615,9 @@ static const struct panel_desc boe_tv101wum_nl6_desc = {
- static const struct drm_display_mode auo_kd101n80_45na_default_mode = {
- 	.clock = 157000,
- 	.hdisplay = 1200,
--	.hsync_start = 1200 + 80,
--	.hsync_end = 1200 + 80 + 24,
--	.htotal = 1200 + 80 + 24 + 36,
-+	.hsync_start = 1200 + 60,
-+	.hsync_end = 1200 + 60 + 24,
-+	.htotal = 1200 + 60 + 24 + 56,
- 	.vdisplay = 1920,
- 	.vsync_start = 1920 + 16,
- 	.vsync_end = 1920 + 16 + 4,
--- 
-2.25.1
-
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -4671,7 +4671,7 @@ static int ca0132_alt_select_in(struct h
+ 			tmp = FLOAT_ONE;
+ 			break;
+ 		case QUIRK_AE5:
+-			ca0113_mmio_command_set(codec, 0x48, 0x28, 0x00);
++			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x00);
+ 			tmp = FLOAT_THREE;
+ 			break;
+ 		default:
+@@ -4717,7 +4717,7 @@ static int ca0132_alt_select_in(struct h
+ 			r3di_gpio_mic_set(codec, R3DI_REAR_MIC);
+ 			break;
+ 		case QUIRK_AE5:
+-			ca0113_mmio_command_set(codec, 0x48, 0x28, 0x00);
++			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x00);
+ 			break;
+ 		default:
+ 			break;
+@@ -4756,7 +4756,7 @@ static int ca0132_alt_select_in(struct h
+ 			tmp = FLOAT_ONE;
+ 			break;
+ 		case QUIRK_AE5:
+-			ca0113_mmio_command_set(codec, 0x48, 0x28, 0x3f);
++			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x3f);
+ 			tmp = FLOAT_THREE;
+ 			break;
+ 		default:
 
 
