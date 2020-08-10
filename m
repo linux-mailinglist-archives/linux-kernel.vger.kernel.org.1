@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBDE240A68
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD492240AB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728505AbgHJPl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:41:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728489AbgHJPlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:41:22 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E123420774;
-        Mon, 10 Aug 2020 15:41:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597074081;
-        bh=/DZI2CFBXPZXY6W2D41iKfNlsWTLOnIsj8qhKNBhXyc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FnzRu9GImI9oEyDWHQAcntUlob1mf068CGlKWLj/oKXM7dkyIU9SLC12tkja3BnsT
-         n2FUkDjXa/QIF0ivhbsZFXgkn6CmJyJaK/GQhtEx1N6TZ8wpLHSU1No/9ZcbQWCnnD
-         vQwOK+h0ldJSALe1FJ9TNCb9dImTC6q9cE1JKX+I=
-Date:   Mon, 10 Aug 2020 17:41:32 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Eugene Lubarsky <elubarsky.linux@gmail.com>
-Cc:     linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, adobriyan@gmail.com,
-        avagin@gmail.com, dsahern@gmail.com
-Subject: Re: [RFC PATCH 0/5] Introduce /proc/all/ to gather stats from all
- processes
-Message-ID: <20200810154132.GA4171851@kroah.com>
-References: <20200810145852.9330-1-elubarsky.linux@gmail.com>
- <20200810150453.GB3962761@kroah.com>
- <20200811012700.2c349082@eug-lubuntu>
+        id S1728297AbgHJPot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:44:49 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:51366 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726406AbgHJPos (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:44:48 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07AFhXtJ153655;
+        Mon, 10 Aug 2020 15:44:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=JvLiuuU3UgGUfrDifIj6lXvZMS7W5udsSPkBUIuvbkM=;
+ b=o99keg9qf1qCDxOhoorD6MCLSCgG2oiYfCjODzVYEfkaELoMgwnwZ4iv8hQ9KEaneAda
+ iiZsUsiNkXMJfMXxW+3gLZ2PW7raHV/Kq4Z/OpNKyBQH7DNsIOPntyB9k4UjdF00IIa+
+ XBwbI6vHtVrPx2WuehFw/AG/dtsTgxnd+H+hjN5w6bXUes3s51e09EgqtC7Yl4MpRAKl
+ eQrbhKPWAdiOe9r2eCsf8YkrrOsPemAZdBKucdRfYA5KUkBGCzPkVcV07irNbBwO5Ipb
+ YsQG5z8AtbiO1F8Rl4JrhU9vkxqeJcuG/48hNkNhXFzjwZ0HcapCSuNxr7FW8iF/14xa fQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 32smpn79q6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 10 Aug 2020 15:44:35 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07AFJEiH003551;
+        Mon, 10 Aug 2020 15:42:34 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 32t5y16wbq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 10 Aug 2020 15:42:34 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07AFgNSI016391;
+        Mon, 10 Aug 2020 15:42:23 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 10 Aug 2020 15:42:22 +0000
+Date:   Mon, 10 Aug 2020 18:42:13 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, sumit.semwal@linaro.org,
+        colton.w.lewis@protonmail.com, Ori.Messinger@amd.com,
+        m.szyprowski@samsung.com, bernard@vivo.com,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] drm: amdgpu: Use the correct size when allocating memory
+Message-ID: <20200810154213.GM1793@kadam>
+References: <20200809203406.751971-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200811012700.2c349082@eug-lubuntu>
+In-Reply-To: <20200809203406.751971-1-christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9709 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
+ suspectscore=0 mlxscore=0 adultscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008100115
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9709 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
+ bulkscore=0 impostorscore=0 phishscore=0 clxscore=1011 spamscore=0
+ malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008100116
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 01:27:00AM +1000, Eugene Lubarsky wrote:
-> On Mon, 10 Aug 2020 17:04:53 +0200
-> Greg KH <gregkh@linuxfoundation.org> wrote:
-> > How many syscalls does this save on?
-> > 
-> > Perhaps you want my proposed readfile(2) syscall:
-> > 	https://lore.kernel.org/r/20200704140250.423345-1-gregkh@linuxfoundation.org
-> > to help out with things like this?  :)
-> 
-> The proposed readfile sounds great and would help, but if there are
-> 1000 processes wouldn't that require 1000 readfile calls to read their
-> proc files?
+On Sun, Aug 09, 2020 at 10:34:06PM +0200, Christophe JAILLET wrote:
+> When '*sgt' is allocated, we must allocated 'sizeof(**sgt)' bytes instead
+> of 'sizeof(*sg)'. 'sg' (i.e. struct scatterlist) is smaller than
+> 'sgt' (i.e struct sg_table), so this could lead to memory corruption.
 
-Yes, but that should be better than 1000 open, 1000 read, and then 1000
-close calls, right?  :)
+The sizeof(*sg) is bigger than sizeof(**sgt) so this wastes memory but
+it won't lead to corruption.
 
-> With something like this the stats for 1000 processes could be
-> retrieved with an open, a few reads and a close.
+    11  struct scatterlist {
+    12          unsigned long   page_link;
+    13          unsigned int    offset;
+    14          unsigned int    length;
+    15          dma_addr_t      dma_address;
+    16  #ifdef CONFIG_NEED_SG_DMA_LENGTH
+    17          unsigned int    dma_length;
+    18  #endif
+    19  };
 
-And have you benchmarked any of this?  Try working with the common tools
-that want this information and see if it actually is noticeable (hint, I
-have been doing that with the readfile work and it's surprising what the
-results are in places...)
+    42  struct sg_table {
+    43          struct scatterlist *sgl;        /* the list */
+    44          unsigned int nents;             /* number of mapped entries */
+    45          unsigned int orig_nents;        /* original size of list */
+    46  };
 
-> 
-> > 
-> > > The proposed files in this proof-of-concept patch set are:
-> > > 
-> > > * /proc/all/stat
-> > 
-> > I think the problem will be defining "all" in the case of the specific
-> > namespace you are dealing with, right?  How will this handle all of
-> > those issues properly for all of these different statisics?
-> > 
-> 
-> Currently I'm trying to re-use the existing code in fs/proc that
-> controls which PIDs are visible, but may well be missing something..
+regards,
+dan carpenter
 
-Try it out and see if it works correctly.  And pid namespaces are not
-the only thing these days from what I call :)
-
-thanks,
-
-greg k-h
