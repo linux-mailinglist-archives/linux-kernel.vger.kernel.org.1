@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7867824084E
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579EC240875
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727823AbgHJPTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:19:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49816 "EHLO mail.kernel.org"
+        id S1728179AbgHJPVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:21:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726888AbgHJPTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:19:43 -0400
+        id S1728150AbgHJPVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:21:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C0EF208B3;
-        Mon, 10 Aug 2020 15:19:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66E712065D;
+        Mon, 10 Aug 2020 15:21:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597072782;
-        bh=ObeMnJtvuTjudlZUs723OLhFqebQrx90QRCQCLjYZbs=;
+        s=default; t=1597072870;
+        bh=AHMq8wBLEzqNtjrtty1SYheHzrNvr5w95CEMtXa8YW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y2ibPtoIOysL12xO+XtV6nw70Q3Xt+OEGaezsulNDQiLQ7YRupr99brjBdW/hGMp8
-         bBl8b3e7cZ0351Q1J+ZgWC6+LmJI+ISA38Eicyd5/WsXJ0zfIzuF0TKZ0nZd+LSb+b
-         OAIqnjJdT3IKpokHHs8VWttOrqyTWygREcPx8BxQ=
+        b=pjHCx/EL5Bym6AG9ffoN+EKaD+WEvRf2E2CY4gashTI3C/2zcJRvKr2nTn1izQUtW
+         zRpRZthKvT4AJk7GzF71UavCyvTTo65TzhoNmPViGUNw8fjHYO+zKWt9kNUIuxFdT8
+         vgy0NjB4F/wXZchvvYAk2D8ey+DV315i5HOH3PZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
         Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 5.8 16/38] Bluetooth: Prevent out-of-bounds read in hci_inquiry_result_evt()
-Date:   Mon, 10 Aug 2020 17:19:06 +0200
-Message-Id: <20200810151804.689831155@linuxfoundation.org>
+Subject: [PATCH 5.8 17/38] Bluetooth: Prevent out-of-bounds read in hci_inquiry_result_with_rssi_evt()
+Date:   Mon, 10 Aug 2020 17:19:07 +0200
+Message-Id: <20200810151804.739117891@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200810151803.920113428@linuxfoundation.org>
 References: <20200810151803.920113428@linuxfoundation.org>
@@ -45,9 +45,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peilin Ye <yepeilin.cs@gmail.com>
 
-commit 75bbd2ea50ba1c5d9da878a17e92eac02fe0fd3a upstream.
+commit 629b49c848ee71244203934347bd7730b0ddee8d upstream.
 
-Check `num_rsp` before using it as for-loop counter.
+Check `num_rsp` before using it as for-loop counter. Add `unlock` label.
 
 Cc: stable@vger.kernel.org
 Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
@@ -55,19 +55,38 @@ Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/bluetooth/hci_event.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/bluetooth/hci_event.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
 --- a/net/bluetooth/hci_event.c
 +++ b/net/bluetooth/hci_event.c
-@@ -2520,7 +2520,7 @@ static void hci_inquiry_result_evt(struc
+@@ -4166,6 +4166,9 @@ static void hci_inquiry_result_with_rssi
+ 		struct inquiry_info_with_rssi_and_pscan_mode *info;
+ 		info = (void *) (skb->data + 1);
  
- 	BT_DBG("%s num_rsp %d", hdev->name, num_rsp);
++		if (skb->len < num_rsp * sizeof(*info) + 1)
++			goto unlock;
++
+ 		for (; num_rsp; num_rsp--, info++) {
+ 			u32 flags;
  
--	if (!num_rsp)
-+	if (!num_rsp || skb->len < num_rsp * sizeof(*info) + 1)
- 		return;
+@@ -4187,6 +4190,9 @@ static void hci_inquiry_result_with_rssi
+ 	} else {
+ 		struct inquiry_info_with_rssi *info = (void *) (skb->data + 1);
  
- 	if (hci_dev_test_flag(hdev, HCI_PERIODIC_INQ))
++		if (skb->len < num_rsp * sizeof(*info) + 1)
++			goto unlock;
++
+ 		for (; num_rsp; num_rsp--, info++) {
+ 			u32 flags;
+ 
+@@ -4207,6 +4213,7 @@ static void hci_inquiry_result_with_rssi
+ 		}
+ 	}
+ 
++unlock:
+ 	hci_dev_unlock(hdev);
+ }
+ 
 
 
