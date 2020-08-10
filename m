@@ -2,302 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2FD24108F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D962410FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730337AbgHJTbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 15:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728337AbgHJTbK (ORCPT
+        id S1729740AbgHJTds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 15:33:48 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37822 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728388AbgHJTdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 15:31:10 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0D6C061756;
-        Mon, 10 Aug 2020 12:31:10 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 08359293F19
-Message-ID: <1684df93a76cbd5e5f5435d876cf7fb88681b2ab.camel@collabora.com>
-Subject: Re: [PATCH v2 03/14] media: uapi: h264: Split prediction weight
- parameters
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Jernej =?UTF-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>
-Cc:     linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Date:   Mon, 10 Aug 2020 16:30:59 -0300
-In-Reply-To: <2153096.Em8KjNIPHG@jernej-laptop>
-References: <20200806151310.98624-1-ezequiel@collabora.com>
-         <2380739.qXQpHEDp1t@jernej-laptop>
-         <8cf55169fa1dd55b5bdf746b321419f8c7988821.camel@collabora.com>
-         <2153096.Em8KjNIPHG@jernej-laptop>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-1 
-MIME-Version: 1.0
+        Mon, 10 Aug 2020 15:33:41 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 07AJPFbd005136;
+        Mon, 10 Aug 2020 12:33:27 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=oF1CgUYSYHrTcSZ8+JEJZAt6l5+k0eNTJg+53PkDhwE=;
+ b=WfnGiMuiIdiJxDInzBFvnuDzhcuauZMYXU8CtAVhmfRMZJLsBffvQIKo8db9MTk23w/K
+ hJIzNUIvhUnsSTOEUHQR/WSFPKTLNiEVTp9oJxIOYc48a8DZAMGXilv46QvDp2AkzI5C
+ MP4M7My0EBtyQ/sJYjrjH1jOB7fE3uy8GrI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 32srrn12ch-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 10 Aug 2020 12:33:27 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 10 Aug 2020 12:33:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FE8mxyEHdZ2dEzS3k2VWKKv/OEXNZ/U5pBbq06uFspOCzqbd7k1KIUbHOv789okX/sMxPPrsZWX8BTc/HxBVwrxbGybxsE7vr3HuM7v2HfmKwnE5H9Fty3gW8EDGCKnb/kcLDSTW9NBNc7YfmC4ns1Iniy3b90LxMWXnB0XIs0icNo0aeCNA/7A8GkplJQClRNKh2ZAepIiG05dOH5D16LNTIkbAvTmwix7oVErd3HojLaQXRx92EHfV8kcXLFFqwuNYlENECsv0iwo4yCxA4YxM3jQl47LYfOx6IvPHMJtWmKOF/flcvUJa5whT6LzsJcpC4ilIl+xIsfIT3bHzIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4VHMN3n3J5aPeGc8vVYqvq7c8TDXAM94IAFgeIaWWBs=;
+ b=C81ExwAYQFeyA0UN2BBCUYr5i7bQjIcfu8peyxy541fRb+QSMr7JTzvqGU8E5dTDS/ieKgIqc6JAuZI7aaM5eznFw1gpFPFFIsqTTtDu547cJxP7JCQXY4Q+54sOMVpSm2vl+zN8IP0QkqOz9Zgis5IUjvc+Y6c4KJzUZ9QWpAjeCkdSQ7r8hEb+0Dpro0nGsYHjN6d9eDZlXENWgRPlHyWZgtWd2B3IdMbv9fX0OKfDiR9rss7ylGjlCPSKqWh25r/mMt7bC2pG65HRuAfYIGOj1qVhWJsRtLvFAfIEVLBh6wcLX/iFTsyKtIIq2wCd614PnkYXVmVXLmZ5hz+9CQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4VHMN3n3J5aPeGc8vVYqvq7c8TDXAM94IAFgeIaWWBs=;
+ b=A1o5syFEGOn8g8vcpMloPt9a/t5uksmZXt3opTkqZcioYd7AjofyK/BrJVqXqGN7cJrGUTptQw322IqdCrUoJlCHpx5xUhfYp7PmJnuN8CoKFnqe7+tJU1iolOBq7rWyLoyllHwMP4wDr6ExF0Nmw6cck5VuBV8RRXb6W86LkG4=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3030.namprd15.prod.outlook.com (2603:10b6:a03:fb::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.19; Mon, 10 Aug
+ 2020 19:33:24 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::354d:5296:6a28:f55e]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::354d:5296:6a28:f55e%6]) with mapi id 15.20.3261.024; Mon, 10 Aug 2020
+ 19:33:24 +0000
+Date:   Mon, 10 Aug 2020 12:33:20 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+CC:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/5] mm: memcg: charge memcg percpu memory to the
+ parent cgroup
+Message-ID: <20200810193320.GA1428107@carbon.DHCP.thefacebook.com>
+References: <20200623184515.4132564-1-guro@fb.com>
+ <20200623184515.4132564-5-guro@fb.com>
+ <20200729171039.GA22229@blackbody.suse.cz>
+ <20200806211603.195727c03995c3a25ffc6d76@linux-foundation.org>
+ <20200807043717.GA1231562@carbon.DHCP.thefacebook.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200807043717.GA1231562@carbon.DHCP.thefacebook.com>
+X-ClientProxiedBy: BY5PR03CA0029.namprd03.prod.outlook.com
+ (2603:10b6:a03:1e0::39) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:fa33) by BY5PR03CA0029.namprd03.prod.outlook.com (2603:10b6:a03:1e0::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.15 via Frontend Transport; Mon, 10 Aug 2020 19:33:23 +0000
+X-Originating-IP: [2620:10d:c090:400::5:fa33]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d5501b2e-ab7e-4459-7218-08d83d643f23
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3030:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB30304A66D23BCF478E28067FBE440@BYAPR15MB3030.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DALnzpmn7AQzNPsUQi+86DjSuMMnEMSMQ2gclptZzS8GR0uG1FXTS1DTfI48u47cj4/OkHIZxa0cibWWU6GznfzBv3ds2iYflLftxYTCY1G7Wdq28qtLeGaF0URZX09grtNcpvZhOtDyNFlW+EAyuf9U3aKB067JBKsoIVBKoAV+zvFW2xXLpuAI6uNEtZvXOUWgaJ0FA75wcizmb+q9c7pz0qq99BcBKaF2vQTcQJcsEvjc1g8ziTlHPm3LJINkrgdnltDSE2EdUodlBY5LSAk1C8ZAmpb4Cq2wP2nVLELvOuCiyrgqp9P+RK5BXzlwWk21tUH0NjAUilBWRg+u3A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(396003)(39860400002)(376002)(366004)(66556008)(66946007)(6506007)(9686003)(7416002)(86362001)(5660300002)(55016002)(2906002)(110136005)(1076003)(8936002)(316002)(66476007)(186003)(16526019)(54906003)(478600001)(33656002)(4326008)(8676002)(83380400001)(7696005)(52116002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: P8pp67pLxdX6dz3XZMn9Qgjg6eAxR2DhuyW0XMl+5yaOF+vAIKpvHL+KAQhDfvyH+yAaRbLs3+A1Q/qJe038VvCGqtckNmJpHz0vCUg/ypPRTK/vjqyIGkNFOxNt0GVsqGIz6/ogBmUh/1hNGF5ryx89Eyn61gXNGH4G3i2ldNkxmUKgRHOW/k/Vms0sY2qP8hyzVBk3h3HFfQVCiMmr02RQ810PZQVzk7qg+Y+V+6oIOF7PvFuNrssiynWt0HzCEwDGdFZXC+L+4D9Sqqkl9AwRjLFkVyxayKeogZNO/WAUpboDsLAgg6g3dtLmh+jFw7+oaxlwJ3qGGwEXopnhaSOqhcVZFPKbjofdAzuY3oWg3FX+vAHuqUH36ueb/YFKgPk5LhbpwpuO0ZzibCBVqL4FRRqi4VaUSMp84olq9J7f2UFT0fLBcpdwNdnuzO4gqVfqTVc3+i6eYEQOuAzm17a1z+fOyzlj+/bg/91iZqbuCwJzV834u9tO5cYU85opIQHoK97ht3c1ezQqV4jGdq0okEzompPgHnIMqc4W+ov/qSum5chob4gcWE5HHWOBbR0YrGIK4rgo8ovMX3q37SiUsLk75y1xVt/SEQKHk4l3/uyaI9veS+NU0rerJOOvZHG8EznfsdPcqP4gwoowhZ4O0qpbaP8LcCME42QvLRQ=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5501b2e-ab7e-4459-7218-08d83d643f23
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2020 19:33:24.0355
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aG0FozqhGmnA+5xhKuv6b3T2ragsCFZTE5rKN+M5145uqm7byOqoi2D6hsrQWQeH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3030
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-10_16:2020-08-06,2020-08-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ lowpriorityscore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=1 mlxscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008100132
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-08-10 at 19:05 +0200, Jernej Škrabec wrote:
-> Dne ponedeljek, 10. avgust 2020 ob 14:57:17 CEST je Ezequiel Garcia 
-> napisal(a):
-> > On Sun, 2020-08-09 at 23:11 +0200, Jernej Škrabec wrote:
-> > > Dne nedelja, 09. avgust 2020 ob 15:55:50 CEST je Ezequiel Garcia 
-> napisal(a):
-> > > > On Sat, 8 Aug 2020 at 18:01, Jonas Karlman <jonas@kwiboo.se> wrote:
-> > > > > On 2020-08-06 17:12, Ezequiel Garcia wrote:
-> > > > > > The prediction weight parameters are only required under
-> > > > > > certain conditions, which depend on slice header parameters.
-> > > > > > 
-> > > > > > As specified in section 7.3.3 Slice header syntax, the prediction
-> > > > > > weight table is present if:
-> > > > > > 
-> > > > > > ((weighted_pred_flag && (slice_type == P || slice_type == SP)) || \
-> > > > > > (weighted_bipred_idc == 1 && slice_type == B))
-> > > > > 
-> > > > > Maybe a macro can be added to help check this contition?
-> > > > > 
-> > > > > Something like this maybe:
-> > > > > 
-> > > > > #define V4L2_H264_CTRL_PRED_WEIGHTS_REQUIRED(pps, slice) \
-> > > > > 
-> > > > >         ((((pps)->flags & V4L2_H264_PPS_FLAG_WEIGHTED_PRED) && \
-> > > > >         
-> > > > >          ((slice)->slice_type == V4L2_H264_SLICE_TYPE_P || \
-> > > > >          
-> > > > >            (slice)->slice_type == V4L2_H264_SLICE_TYPE_SP)) || \
-> > > > >          
-> > > > >          ((pps)->weighted_bipred_idc == 1 && \
-> > > > >          
-> > > > >           (slice)->slice_type == V4L2_H264_SLICE_TYPE_B))
-> > > > 
-> > > > Yeah, that could make sense.
-> > > > 
-> > > > Note that the biggest value in having the prediction weight table
-> > > > separated is to allow  applications to skip setting this largish
-> > > > control,
-> > > > reducing the amount of data that needs to be passed from userspace
-> > > > -- especially when not needed :-)
-> > > > 
-> > > > > > Given its size, it makes sense to move this table to its control,
-> > > > > > so applications can avoid passing it if the slice doesn't specify
-> > > > > > it.
-> > > > > > 
-> > > > > > Before this change struct v4l2_ctrl_h264_slice_params was 960 bytes.
-> > > > > > With this change, it's 188 bytes and struct
-> > > > > > v4l2_ctrl_h264_pred_weight
-> > > > > > is 772 bytes.
-> > > > > > 
-> > > > > > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> > > > > > ---
-> > > > > > v2: Fix missing Cedrus changes and mssing control declaration,
-> > > > > > 
-> > > > > >     as noted by Hans and Jernej.
-> > > > > > 
-> > > > > > ---
-> > > > > > 
-> > > > > >  .../media/v4l/ext-ctrls-codec.rst             | 19
-> > > > > >  ++++++++++++-------
-> > > > > >  drivers/media/v4l2-core/v4l2-ctrls.c          |  8 ++++++++
-> > > > > >  drivers/staging/media/sunxi/cedrus/cedrus.c   |  7 +++++++
-> > > > > >  drivers/staging/media/sunxi/cedrus/cedrus.h   |  1 +
-> > > > > >  .../staging/media/sunxi/cedrus/cedrus_dec.c   |  2 ++
-> > > > > >  .../staging/media/sunxi/cedrus/cedrus_h264.c  |  6 ++----
-> > > > > >  include/media/h264-ctrls.h                    |  5 +++--
-> > > > > >  include/media/v4l2-ctrls.h                    |  2 ++
-> > > > > >  8 files changed, 37 insertions(+), 13 deletions(-)
-> > > > > > 
-> > > > > > diff --git
-> > > > > > a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > > > > > b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst index
-> > > > > > d1438b1e259f..c36ce5a95fc5 100644
-> > > > > > --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > > > > > +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > > > > > @@ -1879,18 +1879,23 @@ enum
-> > > > > > v4l2_mpeg_video_h264_hierarchical_coding_type -> >
-> > > > > > 
-> > > > > >        - 0x00000008
-> > > > > >        -
-> > > > > > 
-> > > > > > -``Prediction Weight Table``
-> > > > > > +``V4L2_CID_MPEG_VIDEO_H264_PRED_WEIGHTS (struct)``
-> > > > > > +    Prediction weight table defined according to :ref:`h264`,
-> > > > > > +    section 7.4.3.2 "Prediction Weight Table Semantics".
-> > > > > > +    The prediction weight table must be passed by applications
-> > > > > > +    under the conditions explained in section 7.3.3 "Slice header
-> > > > > > +    syntax".
-> > > > > > 
-> > > > > > -    The bitstream parameters are defined according to :ref:`h264`,
-> > > > > > -    section 7.4.3.2 "Prediction Weight Table Semantics". For
-> > > > > > further
-> > > > > > -    documentation, refer to the above specification, unless there
-> > > > > > is
-> > > > > > -    an explicit comment stating otherwise.
-> > > > > > +    .. note::
-> > > > > > +
-> > > > > > +       This compound control is not yet part of the public kernel
-> > > > > > API
-> > > > > > and
-> > > > > > +       it is expected to change.
-> > > > > > 
-> > > > > > -.. c:type:: v4l2_h264_pred_weight_table
-> > > > > > +.. c:type:: v4l2_ctrl_h264_pred_weights
-> > > > > > 
-> > > > > >  .. cssclass:: longtable
-> > > > > > 
-> > > > > > -.. flat-table:: struct v4l2_h264_pred_weight_table
-> > > > > > +.. flat-table:: struct v4l2_ctrl_h264_pred_weights
-> > > > > > 
-> > > > > >      :header-rows:  0
-> > > > > >      :stub-columns: 0
-> > > > > >      :widths:       1 1 2
-> > > > > > 
-> > > > > > diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c
-> > > > > > b/drivers/media/v4l2-core/v4l2-ctrls.c index
-> > > > > > 3f3fbcd60cc6..76c8dc8fb31c
-> > > > > > 100644
-> > > > > > --- a/drivers/media/v4l2-core/v4l2-ctrls.c
-> > > > > > +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-> > > > > > @@ -897,6 +897,7 @@ const char *v4l2_ctrl_get_name(u32 id)
-> > > > > > 
-> > > > > >       case V4L2_CID_MPEG_VIDEO_H264_DECODE_PARAMS:            return
-> > > > > >       "H264 Decode Parameters"; case
-> > > > > >       V4L2_CID_MPEG_VIDEO_H264_DECODE_MODE:              return
-> > > > > >       "H264
-> > > > > >       
-> > > > > >       Decode Mode"; case V4L2_CID_MPEG_VIDEO_H264_START_CODE:
-> > > > > >           return "H264 Start Code";> >
-> > > > > > 
-> > > > > > +     case V4L2_CID_MPEG_VIDEO_H264_PRED_WEIGHTS:             return
-> > > > > > "H264 Prediction Weight Table";> >
-> > > > > > 
-> > > > > >       case V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL:                   return
-> > > > > >       
-> > > > > >       "MPEG2 Level"; case V4L2_CID_MPEG_VIDEO_MPEG2_PROFILE:
-> > > > > >            return "MPEG2 Profile"; case
-> > > > > >       
-> > > > > >       V4L2_CID_MPEG_VIDEO_MPEG4_I_FRAME_QP:              return
-> > > > > >       "MPEG4
-> > > > > >       I-Frame QP Value";> >
-> > > > > > 
-> > > > > > @@ -1412,6 +1413,9 @@ void v4l2_ctrl_fill(u32 id, const char **name,
-> > > > > > enum v4l2_ctrl_type *type,> >
-> > > > > > 
-> > > > > >       case V4L2_CID_MPEG_VIDEO_H264_DECODE_PARAMS:
-> > > > > >               *type = V4L2_CTRL_TYPE_H264_DECODE_PARAMS;
-> > > > > >               break;
-> > > > > > 
-> > > > > > +     case V4L2_CID_MPEG_VIDEO_H264_PRED_WEIGHTS:
-> > > > > > +             *type = V4L2_CTRL_TYPE_H264_PRED_WEIGHTS;
-> > > > > > +             break;
-> > > > > > 
-> > > > > >       case V4L2_CID_MPEG_VIDEO_VP8_FRAME_HEADER:
-> > > > > >               *type = V4L2_CTRL_TYPE_VP8_FRAME_HEADER;
-> > > > > >               break;
-> > > > > > 
-> > > > > > @@ -1790,6 +1794,7 @@ static int std_validate_compound(const struct
-> > > > > > v4l2_ctrl *ctrl, u32 idx,> >
-> > > > > > 
-> > > > > >       case V4L2_CTRL_TYPE_H264_SPS:
-> > > > > >       case V4L2_CTRL_TYPE_H264_PPS:
-> > > > > > 
-> > > > > >       case V4L2_CTRL_TYPE_H264_SCALING_MATRIX:
-> > > > > > +     case V4L2_CTRL_TYPE_H264_PRED_WEIGHTS:
-> > > > > >       case V4L2_CTRL_TYPE_H264_SLICE_PARAMS:
-> > > > > >       
-> > > > > >       case V4L2_CTRL_TYPE_H264_DECODE_PARAMS:
-> > > > > >               break;
-> > > > > > 
-> > > > > > @@ -2553,6 +2558,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct
-> > > > > > v4l2_ctrl_handler *hdl,> >
-> > > > > > 
-> > > > > >       case V4L2_CTRL_TYPE_H264_DECODE_PARAMS:
-> > > > > >               elem_size = sizeof(struct
-> > > > > >               v4l2_ctrl_h264_decode_params);
-> > > > > >               break;
-> > > > > > 
-> > > > > > +     case V4L2_CTRL_TYPE_H264_PRED_WEIGHTS:
-> > > > > > +             elem_size = sizeof(struct
-> > > > > > v4l2_ctrl_h264_pred_weights);
-> > > > > > +             break;
-> > > > > > 
-> > > > > >       case V4L2_CTRL_TYPE_VP8_FRAME_HEADER:
-> > > > > >               elem_size = sizeof(struct v4l2_ctrl_vp8_frame_header);
-> > > > > >               break;
-> > > > > > 
-> > > > > > diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.c
-> > > > > > b/drivers/staging/media/sunxi/cedrus/cedrus.c index
-> > > > > > bc27f9430eeb..027cdd1be5a0 100644
-> > > > > > --- a/drivers/staging/media/sunxi/cedrus/cedrus.c
-> > > > > > +++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
-> > > > > > @@ -78,6 +78,13 @@ static const struct cedrus_control
-> > > > > > cedrus_controls[]
-> > > > > > = {
-> > > > > > 
-> > > > > >               .codec          = CEDRUS_CODEC_H264,
-> > > > > >               .required       = true,
-> > > > > >       
-> > > > > >       },
-> > > > > > 
-> > > > > > +     {
-> > > > > > +             .cfg = {
-> > > > > > +                     .id     =
-> > > > > > V4L2_CID_MPEG_VIDEO_H264_PRED_WEIGHTS,
-> > > > > > +             },
-> > > > > > +             .codec          = CEDRUS_CODEC_H264,
-> > > > > > +             .required       = true,
-> > > > > 
-> > > > > This should probably be false if this control is to be optional as
-> > > > > implied
-> > > > > by the commit message.
-> > > > 
-> > > > Well, the control is optional if the driver implements it as optional,
-> > > > which Cedrus isn't currently doing :-)
+On Thu, Aug 06, 2020 at 09:37:17PM -0700, Roman Gushchin wrote:
+> On Thu, Aug 06, 2020 at 09:16:03PM -0700, Andrew Morton wrote:
+> > On Wed, 29 Jul 2020 19:10:39 +0200 Michal Koutn� <mkoutny@suse.com> wrote:
+> > 
+> > > Hello.
 > > > 
-> > > Why do you think so? Prediction weights are filled only when they are
-> > > needed:https://elixir.bootlin.com/linux/latest/source/drivers/staging/medi
-> > > a/ sunxi/cedrus/cedrus_h264.c#L370
+> > > On Tue, Jun 23, 2020 at 11:45:14AM -0700, Roman Gushchin <guro@fb.com> wrote:
+> > > > Because the size of memory cgroup internal structures can dramatically
+> > > > exceed the size of object or page which is pinning it in the memory, it's
+> > > > not a good idea to simple ignore it.  It actually breaks the isolation
+> > > > between cgroups.
+> > > No doubt about accounting the memory if it's significant amount.
+> > > 
+> > > > Let's account the consumed percpu memory to the parent cgroup.
+> > > Why did you choose charging to the parent of the created cgroup?
+> > > 
+> > > Should the charge go the cgroup _that is creating_ the new memcg?
+> > > 
+> > > One reason is that there are the throttling mechanisms for memory limits
+> > > and those are better exercised when the actor and its memory artefact
+> > > are the same cgroup, aren't they?
+> 
+> Hi!
+> 
+> In general, yes. But in this case I think it wouldn't be a good idea:
+> most often cgroups are created by a centralized daemon (systemd),
+> which is usually located in the root cgroup. Even if it's located not in
+> the root cgroup, limiting it's memory will likely affect the whole system,
+> even if only one specific limit was reached.
+> If there is a containerized workload, which creates sub-cgroups,
+> charging it's parent cgroup is perfectly effective.
+> 
+> And the opposite, if we'll charge the cgroup of a process, who created
+> a cgroup, we'll not cover the most common case: systemd creating
+> cgroups for all services in the system.
+> 
+> > > 
+> > > The second reason is based on the example Dlegation Containment
+> > > (Documentation/admin-guide/cgroup-v2.rst)
+> > > 
+> > > > For an example, let's assume cgroups C0 and C1 have been delegated to
+> > > > user U0 who created C00, C01 under C0 and C10 under C1 as follows and
+> > > > all processes under C0 and C1 belong to U0::
+> > > > 
+> > > >   ~~~~~~~~~~~~~ - C0 - C00
+> > > >   ~ cgroup    ~      \ C01
+> > > >   ~ hierarchy ~
+> > > >   ~~~~~~~~~~~~~ - C1 - C10
+> > > 
+> > > Thanks to permissions a task running in C0 creating a cgroup in C1 would
+> > > deplete C1's supply victimizing tasks inside C1.
+> 
+> Right, but it's quite unusual for tasks from one cgroup to create sub-cgroups
+> in completely different cgroup. In this particular case there are tons of other
+> ways how a task from C00 can hurt C1.
+> 
 > > 
-> > Right, but that should be changed to be really optional.
-> > How does the driver reject/fail the request if the table is NULL?
+> > These week-old issues appear to be significant.  Roman?  Or someone
+> > else?
 > 
-> It's my understanding that pointer to this table can't be NULL. NULL would 
-> mean that there is no control with that ID registered in the driver.
-> 
+> Oh, I'm sorry, somehow I've missed this letter.
+> Thank you for pointing at it!
 
-Hm, I'm starting to think you are right. So, does this mean
-the default quantization matrix here is bogus?
+Hello, Michal!
 
-        if (quantization && quantization->load_intra_quantiser_matrix)
-                matrix = quantization->intra_quantiser_matrix;
-        else
-                matrix = intra_quantization_matrix_default;
+Do you have concerns left here or it's good to go?
 
-Thanks,
-Ezequiel
+It seems that this blocking the whole percpu accounting patchset from being merged,
+and I still hope it can be squeezed into 5.9.
 
-> Best regards,
-> Jernej
-> 
-> > In any case, I don't think it's necessarily something we need
-> > to tackle now.
-> > 
-> > Thanks,
-> > Ezequiel
-> 
-> 
-> 
+Thank you!
 
-
+Roman
