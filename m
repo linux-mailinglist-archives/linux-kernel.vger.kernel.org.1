@@ -2,146 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1479D24079D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECC82407A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgHJObb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 10:31:31 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:34995 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726111AbgHJOba (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 10:31:30 -0400
-X-UUID: 11580f1edfbc424b8638dfc7aa78a283-20200810
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=mciTdbGtLyle7sIBwwbHIL1yNy/ps2mp3cRnP7R9hZE=;
-        b=I8jCLxoz7Hqqx4/bGh0J114d1VMfStQylMFYJQbg4xZ3BXN0ZBElYdArAU2b50yjTQvV7qFWPnjHavlvMF8B/o/1TR5Xa//+Ic/uLj0/YvuSOaxJCw/JjZyVGxQdUZErfknNekuQeszFbK3C3FqUpQFk5PpTMNAnW73vKN8xiFA=;
-X-UUID: 11580f1edfbc424b8638dfc7aa78a283-20200810
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1849710283; Mon, 10 Aug 2020 22:31:25 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 10 Aug 2020 22:31:19 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 10 Aug 2020 22:31:19 +0800
-Message-ID: <1597069882.13160.23.camel@mtksdccf07>
-Subject: Re: [PATCH 0/5] kasan: add workqueue and timer stack for generic
- KASAN
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Qian Cai <cai@lca.pw>
-CC:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        "Stephen Boyd" <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Tejun Heo" <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
+        id S1726974AbgHJOds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 10:33:48 -0400
+Received: from mail-eopbgr80059.outbound.protection.outlook.com ([40.107.8.59]:45758
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726386AbgHJOdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 10:33:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JbPOu3ULmQf7Ogod/cXDQ/mQwJE4pj3XlwHO0+FC4t/0Wq+g2WZOH7ZyJ9OB2+UoTq3yLJsLpvMUl7BY8RjGJWLqMiCllNwMxX22TpRVF6juQ3dxk9Kc1jlEESfrulXYWeX2v78TzKm6m7IoHWy5KEH2TvIfhi/GKy7kLVFHY8ZzRDoZQOVoSPekvYf7r/dN4NH9N9i9rTRwDk71lgsiQt4WAOC89kwBlq/xD22zWgp5/XbGWJYJ/9MHA1OuznVQcwpaaj6PXJpaVEg8r29kTwvaoeCrDMy1sqCEB+zCoFdvgycRwBUtZrnkovH9upjrnv2fUXE2iIIxgzgjYRRznA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i1ii/Izet5M8Db8YInQdGB3nftdv2DhbVv7JmeUG/0k=;
+ b=dA81RkbOHQtviLBvuYHur3OJggU8jY0XtGxykjaKQ7pYiRP+SHB/qf9o7JOU1FCw0IUyoTXpzqBWV3Jqd0v23szPTam/W/zqi1UOAajDeqqI3FEM9opBtQ5H3wW/U74D0tmstHNC5kq1jXiCWzK2JJiwLR/WkCupMTHSAOqu6SraPPnwRpLv6MOvk3Xl0Y3lgAPAWkfXuZ9BE33zrHgl/42E1p66Y2RTqkRrdZ3uqux7RzAA57iS3Y4U02bJNOvESHx7v4kMraa6P332JrQ3gmPkNcs+YiY75q+NIngKcQkjuYqBsx2AK8f7dI8HfbA4BPUzT8n0HV80mybFYu5FGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i1ii/Izet5M8Db8YInQdGB3nftdv2DhbVv7JmeUG/0k=;
+ b=KcKkDyHFzXgaLu7iDt6HC1o2m+dgC7nm9uWJ77IcaL+NvHqilkQPHfnMnUpiKYEXncuL6dtQIB8GD9Bzz6/5AL5DqU+ijvyYduz8l4dEcmhQweIDmrA6GhAmnbG55lH5rgmsCG+CLXLWnXDoqkYdtbTkeBPPe0FP8KZyviuWn64=
+Authentication-Results: bootlin.com; dkim=none (message not signed)
+ header.d=none;bootlin.com; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
+ by VI1PR04MB4237.eurprd04.prod.outlook.com (2603:10a6:803:3e::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.16; Mon, 10 Aug
+ 2020 14:33:42 +0000
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::8459:4be8:7034:7a81]) by VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::8459:4be8:7034:7a81%6]) with mapi id 15.20.3261.024; Mon, 10 Aug 2020
+ 14:33:42 +0000
+Subject: Re: [PATCH 19/22] crypto: inside-secure - add check for xts input
+ length equal to zero
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "Van Leeuwen, Pascal" <pvanleeuwen@rambus.com>
+Cc:     "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Mon, 10 Aug 2020 22:31:22 +0800
-In-Reply-To: <20200810124430.GA5307@lca.pw>
-References: <20200810072115.429-1-walter-zh.wu@mediatek.com>
-         <B873B364-FF03-4819-8F9C-79F3C4EF47CE@lca.pw>
-         <1597060257.13160.11.camel@mtksdccf07> <20200810124430.GA5307@lca.pw>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-arm-kernel@axis.com" <linux-arm-kernel@axis.com>,
+        Andrei Botila <andrei.botila@nxp.com>,
+        Antoine Tenart <antoine.tenart@bootlin.com>
+References: <20200807162010.18979-1-andrei.botila@oss.nxp.com>
+ <20200807162010.18979-20-andrei.botila@oss.nxp.com>
+ <CY4PR0401MB36528610C3ABF802F8CBF35FC3440@CY4PR0401MB3652.namprd04.prod.outlook.com>
+ <20200810134500.GA22914@gondor.apana.org.au>
+From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
+Message-ID: <fd3e5862-3357-7dfc-6c75-30086ab19f82@nxp.com>
+Date:   Mon, 10 Aug 2020 17:33:39 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20200810134500.GA22914@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR02CA0083.eurprd02.prod.outlook.com
+ (2603:10a6:208:154::24) To VI1PR04MB4046.eurprd04.prod.outlook.com
+ (2603:10a6:803:4d::29)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 8A3A2465FDA3BD14C3B68297CF0BBCE39CBA5A54C6BEEBE1128F4E5F8A7680C72000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.129] (84.117.251.185) by AM0PR02CA0083.eurprd02.prod.outlook.com (2603:10a6:208:154::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.19 via Frontend Transport; Mon, 10 Aug 2020 14:33:40 +0000
+X-Originating-IP: [84.117.251.185]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 41bd7969-bdab-40da-8e7a-08d83d3a612f
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4237:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB423746628261C2719DC29C0198440@VI1PR04MB4237.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Dc6aSZ3g09Fh64a1iE1NTXTvoWwNYcJ5nzRTThX2Cfs3p+Jt/rigUisaMB0A/cEa/Ps9SgB9le1jz//NpYQ08u59cNq9J58svyZHNNnnT8n9bAR3c4Q3JnLi5b7qGgfJ+0xfOURTGRFCTULs6V9bT2fRQHx7ypquuC+YQ+F7/sQr+mL18gnCbqKd//2yKpdr/zTQK5Y9Il5/LII4BO1aJr/u8MAiqt2L1fIkXIlTlCR1gWYdUVdp3nbMkmiGAxxlcQ5NmfMsqx479l3ybhg+qPhl8AawwHlr/K+Owfp2rVo2+MWjNzoW3rP3VOLhUQPZPWLBPa3eFzUKn9B4rH/ce41ep6udMGyzEZCV4V0qviVJhY0siNn3sk+tiK+CmV07
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(39860400002)(396003)(376002)(366004)(136003)(2906002)(83380400001)(16526019)(53546011)(8936002)(26005)(478600001)(4744005)(36756003)(8676002)(66476007)(86362001)(66556008)(66946007)(31686004)(5660300002)(186003)(52116002)(4326008)(31696002)(2616005)(7416002)(316002)(6486002)(956004)(110136005)(54906003)(16576012)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 9Aub7ZarZ4jYt1XvKycWoxbzkKPRd1EGDaAAWyr7lbibwWA+MuQC5D1sI2j7vHTvFO3mXKuTmnphDLtYswg1rAPXMrW0ikgl3Qya4YVJJTuhwbN152y0vqhoFZ88hA5UfsmQpGphmNbzCX62+NpQ8uSLzSV2i3DB6z9KI+0LkUELl/q2fhOAng1yaNZCX0LHE3ppg6ArnPH7rLGVjhKJ4n3r0MAXqfwv1GI3EYNvwuho/L92S+b6aA4CdevzvsQ32+NV/l3OTZM5ZzumPHQEFn+JKQpA6uncN9EMexfgG//bYI+YVD8xYnM4QGVgattpgr2UzggWLaKiV4QQCKSTaf+FQtmAl2N+RA/ATQmvvPGxlLk08kjT8X1Ya6VKpB9y8Br6zd9C5kIXdX7bJ35KKZbsl4OjNs9QzFSJ0+dskjYffoU+3dlcRLAFBsRbAKe0QOONPj+JJSK+exhDI4Z/xAg3a3nm5gNzYPLewyzlSS13fMuG0eMljeUIpJHKzV3eOofK8sKphymUENO29iHlHzGKxfFtlAnEpog1BIPBBFVSoLttCymF0uNglKtibHw9lkgCejN303gaAgT38YExmB6YyX5nx0WpLtzH+otuGV+iLdxmyze43wlNrJc+yXtHW7unLi0sUNryxtM+9LcbZA==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41bd7969-bdab-40da-8e7a-08d83d3a612f
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2020 14:33:42.3337
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xJtoVlsHUndTVHtUFdJqq234rFHuixV8OtGvTETDLfT3qzFpJZX7ahUgdw3ve2KJJfRYl5bDNIIj5+FWKmex0w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4237
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTA4LTEwIGF0IDA4OjQ0IC0wNDAwLCBRaWFuIENhaSB3cm90ZToNCj4gT24g
-TW9uLCBBdWcgMTAsIDIwMjAgYXQgMDc6NTA6NTdQTSArMDgwMCwgV2FsdGVyIFd1IHdyb3RlOg0K
-PiA+IE9uIE1vbiwgMjAyMC0wOC0xMCBhdCAwNzoxOSAtMDQwMCwgUWlhbiBDYWkgd3JvdGU6DQo+
-ID4gPiANCj4gPiA+ID4gT24gQXVnIDEwLCAyMDIwLCBhdCAzOjIxIEFNLCBXYWx0ZXIgV3UgPHdh
-bHRlci16aC53dUBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+ID4gPiANCj4gPiA+ID4g77u/U3l6
-Ym90IHJlcG9ydHMgbWFueSBVQUYgaXNzdWVzIGZvciB3b3JrcXVldWUgb3IgdGltZXIsIHNlZSBb
-MV0gYW5kIFsyXS4NCj4gPiA+ID4gSW4gc29tZSBvZiB0aGVzZSBhY2Nlc3MvYWxsb2NhdGlvbiBo
-YXBwZW5lZCBpbiBwcm9jZXNzX29uZV93b3JrKCksDQo+ID4gPiA+IHdlIHNlZSB0aGUgZnJlZSBz
-dGFjayBpcyB1c2VsZXNzIGluIEtBU0FOIHJlcG9ydCwgaXQgZG9lc24ndCBoZWxwDQo+ID4gPiA+
-IHByb2dyYW1tZXJzIHRvIHNvbHZlIFVBRiBvbiB3b3JrcXVldWUuIFRoZSBzYW1lIG1heSBzdGFu
-ZCBmb3IgdGltZXMuDQo+ID4gPiA+IA0KPiA+ID4gPiBUaGlzIHBhdGNoc2V0IGltcHJvdmVzIEtB
-U0FOIHJlcG9ydHMgYnkgbWFraW5nIHRoZW0gdG8gaGF2ZSB3b3JrcXVldWUNCj4gPiA+ID4gcXVl
-dWVpbmcgc3RhY2sgYW5kIHRpbWVyIHF1ZXVlaW5nIHN0YWNrIGluZm9ybWF0aW9uLiBJdCBpcyB1
-c2VmdWwgZm9yDQo+ID4gPiA+IHByb2dyYW1tZXJzIHRvIHNvbHZlIHVzZS1hZnRlci1mcmVlIG9y
-IGRvdWJsZS1mcmVlIG1lbW9yeSBpc3N1ZS4NCj4gPiA+ID4gDQo+ID4gPiA+IEdlbmVyaWMgS0FT
-QU4gd2lsbCByZWNvcmQgdGhlIGxhc3QgdHdvIHdvcmtxdWV1ZSBhbmQgdGltZXIgc3RhY2tzLA0K
-PiA+ID4gPiBwcmludCB0aGVtIGluIEtBU0FOIHJlcG9ydC4gSXQgaXMgb25seSBzdWl0YWJsZSBm
-b3IgZ2VuZXJpYyBLQVNBTi4NCj4gPiA+ID4gDQo+ID4gPiA+IEluIG9yZGVyIHRvIHByaW50IHRo
-ZSBsYXN0IHR3byB3b3JrcXVldWUgYW5kIHRpbWVyIHN0YWNrcywgc28gdGhhdA0KPiA+ID4gPiB3
-ZSBhZGQgbmV3IG1lbWJlcnMgaW4gc3RydWN0IGthc2FuX2FsbG9jX21ldGEuDQo+ID4gPiA+IC0g
-dHdvIHdvcmtxdWV1ZSBxdWV1ZWluZyB3b3JrIHN0YWNrcywgdG90YWwgc2l6ZSBpcyA4IGJ5dGVz
-Lg0KPiA+ID4gPiAtIHR3byB0aW1lciBxdWV1ZWluZyBzdGFja3MsIHRvdGFsIHNpemUgaXMgOCBi
-eXRlcy4NCj4gPiA+ID4gDQo+ID4gPiA+IE9yaWduaWFsIHN0cnVjdCBrYXNhbl9hbGxvY19tZXRh
-IHNpemUgaXMgMTYgYnl0ZXMuIEFmdGVyIGFkZCBuZXcNCj4gPiA+ID4gbWVtYmVycywgdGhlbiB0
-aGUgc3RydWN0IGthc2FuX2FsbG9jX21ldGEgdG90YWwgc2l6ZSBpcyAzMiBieXRlcywNCj4gPiA+
-ID4gSXQgaXMgYSBnb29kIG51bWJlciBvZiBhbGlnbm1lbnQuIExldCBpdCBnZXQgYmV0dGVyIG1l
-bW9yeSBjb25zdW1wdGlvbi4NCj4gPiA+IA0KPiA+ID4gR2V0dGluZyBkZWJ1Z2dpbmcgdG9vbHMg
-Y29tcGxpY2F0ZWQgc3VyZWx5IGlzIHRoZSBiZXN0IHdheSB0byBraWxsIGl0LiBJIHdvdWxkIGFy
-Z3VlIHRoYXQgaXQgb25seSBtYWtlIHNlbnNlIHRvIGNvbXBsaWNhdGUgaXQgaWYgaXQgaXMgdXNl
-ZnVsIG1vc3Qgb2YgdGhlIHRpbWUgd2hpY2ggSSBuZXZlciBmZWVsIG9yIGhlYXIgdGhhdCBpcyB0
-aGUgY2FzZS4gVGhpcyByZW1pbmRzIG1lIHlvdXIgcmVjZW50IGNhbGxfcmN1KCkgc3RhY2tzIHRo
-YXQgbW9zdCBvZiB0aW1lIGp1c3QgbWFrZXMgcGFyc2luZyB0aGUgcmVwb3J0IGN1bWJlcnNvbWUu
-IFRodXMsIEkgdXJnZSB0aGlzIGV4ZXJjaXNlIHRvIG92ZXItZW5naW5lZXIgb24gc3BlY2lhbCBj
-YXNlcyBuZWVkIHRvIHN0b3AgZW50aXJlbHkuDQo+ID4gPiANCj4gPiANCj4gPiBBIGdvb2QgZGVi
-dWcgdG9vbCBpcyB0byBoYXZlIGNvbXBsZXRlIGluZm9ybWF0aW9uIGluIG9yZGVyIHRvIHNvbHZl
-DQo+ID4gaXNzdWUuIFdlIHNob3VsZCBmb2N1cyBvbiBpZiBLQVNBTiByZXBvcnRzIGFsd2F5cyBz
-aG93IHRoaXMgZGVidWcNCj4gPiBpbmZvcm1hdGlvbiBvciBjcmVhdGUgYSBvcHRpb24gdG8gZGVj
-aWRlIGlmIHNob3cgaXQuIEJlY2F1c2UgdGhpcw0KPiA+IGZlYXR1cmUgaXMgRGltaXRyeSdzIHN1
-Z2dlc3Rpb24uIHNlZSBbMV0uIFNvIEkgdGhpbmsgaXQgbmVlZCB0byBiZQ0KPiA+IGltcGxlbWVu
-dGVkLiBNYXliZSB3ZSBjYW4gd2FpdCBoaXMgcmVzcG9uc2UuIA0KPiA+IA0KPiA+IFsxXWh0dHBz
-Oi8vbGttbC5vcmcvbGttbC8yMDIwLzYvMjMvMjU2DQo+IA0KPiBJIGRvbid0IGtub3cgaWYgaXQg
-aXMgRG1pdHJ5J3MgcGlwZS1kcmVhbSB3aGljaCBldmVyeSBLQVNBTiByZXBvcnQgd291bGQgZW5h
-YmxlDQo+IGRldmVsb3BlcnMgdG8gZml4IGl0IHdpdGhvdXQgcmVwcm9kdWNpbmcgaXQuIEl0IGlz
-IGFsd2F5cyBhbiBvbmdvaW5nIHN0cnVnZ2xpbmcNCj4gYmV0d2VlbiB0byBtYWtlIGtlcm5lbCBl
-YXNpZXIgdG8gZGVidWcgYW5kIHRoZSB0aGluZ3MgbGVzcyBjdW1iZXJzb21lLg0KPiANCj4gT24g
-dGhlIG90aGVyIGhhbmQsIERtaXRyeSdzIHN1Z2dlc3Rpb24gbWFrZXMgc2Vuc2Ugb25seSBpZiB0
-aGUgcHJpY2Ugd2UgYXJlDQo+IGdvaW5nIHRvIHBheSBpcyBmYWlyLiBXaXRoIHRoZSBjdXJyZW50
-IGRpZmZzdGF0IGFuZCB0aGUgcmVjZW50IGV4cGVyaWVuY2Ugb2YNCj4gY2FsbF9yY3UoKSBzdGFj
-a3MgIndhc3RlIiBzY3JlZW4gc3BhY2VzIGFzIGEgaGVhdnkgS0FTQU4gdXNlciBteXNlbGYsIEkg
-Y2FuJ3QNCj4gcmVhbGx5IGdldCB0aGF0IGV4Y2l0aW5nIGZvciBwdXNoaW5nIHRoZSBsaW1pdCBh
-Z2FpbiBhdCBhbGwuDQo+IA0KDQpJZiB5b3UgYXJlIGNvbmNlcm5lZCB0aGF0IHRoZSByZXBvcnQg
-aXMgbG9uZywgbWF5YmUgd2UgY2FuIGNyZWF0ZSBhbg0Kb3B0aW9uIGZvciB0aGUgdXNlciBkZWNp
-ZGUgd2hldGhlciBwcmludCB0aGVtIChpbmNsdWRlIGNhbGxfcmN1KS4NClNvIHRoaXMgc2hvdWxk
-IHNhdGlzZnkgZXZlcnlvbmU/DQoNCj4gPiANCj4gPiA+ID4gDQo+ID4gPiA+IFsxXWh0dHBzOi8v
-Z3JvdXBzLmdvb2dsZS5jb20vZy9zeXprYWxsZXItYnVncy9zZWFyY2g/cT0lMjJ1c2UtYWZ0ZXIt
-ZnJlZSUyMitwcm9jZXNzX29uZV93b3JrDQo+ID4gPiA+IFsyXWh0dHBzOi8vZ3JvdXBzLmdvb2ds
-ZS5jb20vZy9zeXprYWxsZXItYnVncy9zZWFyY2g/cT0lMjJ1c2UtYWZ0ZXItZnJlZSUyMiUyMGV4
-cGlyZV90aW1lcnMNCj4gPiA+ID4gWzNdaHR0cHM6Ly9idWd6aWxsYS5rZXJuZWwub3JnL3Nob3df
-YnVnLmNnaT9pZD0xOTg0MzcNCj4gPiA+ID4gDQo+ID4gPiA+IFdhbHRlciBXdSAoNSk6DQo+ID4g
-PiA+IHRpbWVyOiBrYXNhbjogcmVjb3JkIGFuZCBwcmludCB0aW1lciBzdGFjaw0KPiA+ID4gPiB3
-b3JrcXVldWU6IGthc2FuOiByZWNvcmQgYW5kIHByaW50IHdvcmtxdWV1ZSBzdGFjaw0KPiA+ID4g
-PiBsaWIvdGVzdF9rYXNhbi5jOiBhZGQgdGltZXIgdGVzdCBjYXNlDQo+ID4gPiA+IGxpYi90ZXN0
-X2thc2FuLmM6IGFkZCB3b3JrcXVldWUgdGVzdCBjYXNlDQo+ID4gPiA+IGthc2FuOiB1cGRhdGUg
-ZG9jdW1lbnRhdGlvbiBmb3IgZ2VuZXJpYyBrYXNhbg0KPiA+ID4gPiANCj4gPiA+ID4gRG9jdW1l
-bnRhdGlvbi9kZXYtdG9vbHMva2FzYW4ucnN0IHwgIDQgKystLQ0KPiA+ID4gPiBpbmNsdWRlL2xp
-bnV4L2thc2FuLmggICAgICAgICAgICAgfCAgNCArKysrDQo+ID4gPiA+IGtlcm5lbC90aW1lL3Rp
-bWVyLmMgICAgICAgICAgICAgICB8ICAyICsrDQo+ID4gPiA+IGtlcm5lbC93b3JrcXVldWUuYyAg
-ICAgICAgICAgICAgICB8ICAzICsrKw0KPiA+ID4gPiBsaWIvdGVzdF9rYXNhbi5jICAgICAgICAg
-ICAgICAgICAgfCA1NCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysNCj4gPiA+ID4gbW0va2FzYW4vZ2VuZXJpYy5jICAgICAgICAgICAgICAgIHwg
-NDIgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gPiA+IG1t
-L2thc2FuL2thc2FuLmggICAgICAgICAgICAgICAgICB8ICA2ICsrKysrLQ0KPiA+ID4gPiBtbS9r
-YXNhbi9yZXBvcnQuYyAgICAgICAgICAgICAgICAgfCAyMiArKysrKysrKysrKysrKysrKysrKysr
-DQo+ID4gPiA+IDggZmlsZXMgY2hhbmdlZCwgMTM0IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25z
-KC0pDQo+ID4gPiA+IA0KPiA+ID4gPiAtLSANCj4gPiA+ID4gWW91IHJlY2VpdmVkIHRoaXMgbWVz
-c2FnZSBiZWNhdXNlIHlvdSBhcmUgc3Vic2NyaWJlZCB0byB0aGUgR29vZ2xlIEdyb3VwcyAia2Fz
-YW4tZGV2IiBncm91cC4NCj4gPiA+ID4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGdyb3VwIGFu
-ZCBzdG9wIHJlY2VpdmluZyBlbWFpbHMgZnJvbSBpdCwgc2VuZCBhbiBlbWFpbCB0byBrYXNhbi1k
-ZXYrdW5zdWJzY3JpYmVAZ29vZ2xlZ3JvdXBzLmNvbS4NCj4gPiA+ID4gVG8gdmlldyB0aGlzIGRp
-c2N1c3Npb24gb24gdGhlIHdlYiB2aXNpdCBodHRwczovL2dyb3Vwcy5nb29nbGUuY29tL2QvbXNn
-aWQva2FzYW4tZGV2LzIwMjAwODEwMDcyMTE1LjQyOS0xLXdhbHRlci16aC53dSU0MG1lZGlhdGVr
-LmNvbS4NCj4gPiANCg0K
+On 8/10/2020 4:45 PM, Herbert Xu wrote:
+> On Mon, Aug 10, 2020 at 10:20:20AM +0000, Van Leeuwen, Pascal wrote:
+>>
+>> With all due respect, but this makes no sense.
+> 
+> I agree.  This is a lot of churn for no gain.
+> 
+I would say the gain is that all skcipher algorithms would behave the same
+when input length equals zero - i.e. treat the request as a no-op.
 
+We can't say "no input" has any meaning to the other skcipher algorithms,
+but the convention is to accept this case and just return 0.
+I don't see why XTS has to be handled differently.
+
+Thanks,
+Horia
