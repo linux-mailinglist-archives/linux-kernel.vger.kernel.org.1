@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66EAF2409A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B0B240972
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729125AbgHJPeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:34:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35424 "EHLO mail.kernel.org"
+        id S1729216AbgHJPb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:31:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727969AbgHJP3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:29:11 -0400
+        id S1729190AbgHJPbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:31:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E94722B47;
-        Mon, 10 Aug 2020 15:29:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C685207FF;
+        Mon, 10 Aug 2020 15:31:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073350;
-        bh=97QJhoJYDeam/oMbkKOnP6nfbKvfx2kmikgCEsZvy+k=;
+        s=default; t=1597073477;
+        bh=vXeEIzsqQBvfgLUHF5Suok51uUamakv2YzQy1CuxnzQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I2uaY/TNxG6OG8ANyr/RtlWOq4kVZJvLW21n6/7Tt3xWSUhq+qdZwILMNPOtaUdph
-         RYFRne439P5Y8w/wn+YXnsT9Tvihp98MO9i/KpSxOdUarjYkxFDym7mpniEWO0gFMn
-         i02rZj7HJ30iK+7mGwDI0ZjWnccU+UMnW8B3Eosc=
+        b=etnyEP1VukVgZLVNdlu8Vpgk5QAbASJzky2oBSwj0xm2WCdJklYc7ClhciFPF/ejP
+         gmb1H2N0Bhrfa1UbfuJU0Tlv04B6WyZ6AqbcQbgH6befxo7ESJJXhJom/xFz6ms87e
+         r+ZAMA5bnYeBGugM+kovtk2Wiua5PkaWwWoQ8VVU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 62/67] openvswitch: Prevent kernel-infoleak in ovs_ct_put_key()
-Date:   Mon, 10 Aug 2020 17:21:49 +0200
-Message-Id: <20200810151812.564468225@linuxfoundation.org>
+        stable@vger.kernel.org, Xin Xiong <xiongx18@fudan.edu.cn>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 28/48] atm: fix atm_dev refcnt leaks in atmtcp_remove_persistent
+Date:   Mon, 10 Aug 2020 17:21:50 +0200
+Message-Id: <20200810151805.596847709@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
-References: <20200810151809.438685785@linuxfoundation.org>
+In-Reply-To: <20200810151804.199494191@linuxfoundation.org>
+References: <20200810151804.199494191@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,81 +46,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <yepeilin.cs@gmail.com>
+From: Xin Xiong <xiongx18@fudan.edu.cn>
 
-[ Upstream commit 9aba6c5b49254d5bee927d81593ed4429e91d4ae ]
+[ Upstream commit 51875dad43b44241b46a569493f1e4bfa0386d86 ]
 
-ovs_ct_put_key() is potentially copying uninitialized kernel stack memory
-into socket buffers, since the compiler may leave a 3-byte hole at the end
-of `struct ovs_key_ct_tuple_ipv4` and `struct ovs_key_ct_tuple_ipv6`. Fix
-it by initializing `orig` with memset().
+atmtcp_remove_persistent() invokes atm_dev_lookup(), which returns a
+reference of atm_dev with increased refcount or NULL if fails.
 
-Fixes: 9dd7f8907c37 ("openvswitch: Add original direction conntrack tuple to sw_flow_key.")
-Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+The refcount leaks issues occur in two error handling paths. If
+dev_data->persist is zero or PRIV(dev)->vcc isn't NULL, the function
+returns 0 without decreasing the refcount kept by a local variable,
+resulting in refcount leaks.
+
+Fix the issue by adding atm_dev_put() before returning 0 both when
+dev_data->persist is zero or PRIV(dev)->vcc isn't NULL.
+
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/openvswitch/conntrack.c |   38 ++++++++++++++++++++------------------
- 1 file changed, 20 insertions(+), 18 deletions(-)
+ drivers/atm/atmtcp.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
---- a/net/openvswitch/conntrack.c
-+++ b/net/openvswitch/conntrack.c
-@@ -276,10 +276,6 @@ void ovs_ct_fill_key(const struct sk_buf
- 	ovs_ct_update_key(skb, NULL, key, false, false);
- }
- 
--#define IN6_ADDR_INITIALIZER(ADDR) \
--	{ (ADDR).s6_addr32[0], (ADDR).s6_addr32[1], \
--	  (ADDR).s6_addr32[2], (ADDR).s6_addr32[3] }
--
- int ovs_ct_put_key(const struct sw_flow_key *swkey,
- 		   const struct sw_flow_key *output, struct sk_buff *skb)
- {
-@@ -301,24 +297,30 @@ int ovs_ct_put_key(const struct sw_flow_
- 
- 	if (swkey->ct_orig_proto) {
- 		if (swkey->eth.type == htons(ETH_P_IP)) {
--			struct ovs_key_ct_tuple_ipv4 orig = {
--				output->ipv4.ct_orig.src,
--				output->ipv4.ct_orig.dst,
--				output->ct.orig_tp.src,
--				output->ct.orig_tp.dst,
--				output->ct_orig_proto,
--			};
-+			struct ovs_key_ct_tuple_ipv4 orig;
-+
-+			memset(&orig, 0, sizeof(orig));
-+			orig.ipv4_src = output->ipv4.ct_orig.src;
-+			orig.ipv4_dst = output->ipv4.ct_orig.dst;
-+			orig.src_port = output->ct.orig_tp.src;
-+			orig.dst_port = output->ct.orig_tp.dst;
-+			orig.ipv4_proto = output->ct_orig_proto;
-+
- 			if (nla_put(skb, OVS_KEY_ATTR_CT_ORIG_TUPLE_IPV4,
- 				    sizeof(orig), &orig))
- 				return -EMSGSIZE;
- 		} else if (swkey->eth.type == htons(ETH_P_IPV6)) {
--			struct ovs_key_ct_tuple_ipv6 orig = {
--				IN6_ADDR_INITIALIZER(output->ipv6.ct_orig.src),
--				IN6_ADDR_INITIALIZER(output->ipv6.ct_orig.dst),
--				output->ct.orig_tp.src,
--				output->ct.orig_tp.dst,
--				output->ct_orig_proto,
--			};
-+			struct ovs_key_ct_tuple_ipv6 orig;
-+
-+			memset(&orig, 0, sizeof(orig));
-+			memcpy(orig.ipv6_src, output->ipv6.ct_orig.src.s6_addr32,
-+			       sizeof(orig.ipv6_src));
-+			memcpy(orig.ipv6_dst, output->ipv6.ct_orig.dst.s6_addr32,
-+			       sizeof(orig.ipv6_dst));
-+			orig.src_port = output->ct.orig_tp.src;
-+			orig.dst_port = output->ct.orig_tp.dst;
-+			orig.ipv6_proto = output->ct_orig_proto;
-+
- 			if (nla_put(skb, OVS_KEY_ATTR_CT_ORIG_TUPLE_IPV6,
- 				    sizeof(orig), &orig))
- 				return -EMSGSIZE;
+diff --git a/drivers/atm/atmtcp.c b/drivers/atm/atmtcp.c
+index afebeb1c3e1e9..723bad1201cc5 100644
+--- a/drivers/atm/atmtcp.c
++++ b/drivers/atm/atmtcp.c
+@@ -432,9 +432,15 @@ static int atmtcp_remove_persistent(int itf)
+ 		return -EMEDIUMTYPE;
+ 	}
+ 	dev_data = PRIV(dev);
+-	if (!dev_data->persist) return 0;
++	if (!dev_data->persist) {
++		atm_dev_put(dev);
++		return 0;
++	}
+ 	dev_data->persist = 0;
+-	if (PRIV(dev)->vcc) return 0;
++	if (PRIV(dev)->vcc) {
++		atm_dev_put(dev);
++		return 0;
++	}
+ 	kfree(dev_data);
+ 	atm_dev_put(dev);
+ 	atm_dev_deregister(dev);
+-- 
+2.25.1
+
 
 
