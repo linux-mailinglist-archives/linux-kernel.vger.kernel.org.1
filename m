@@ -2,92 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3586240A44
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70935240A4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728872AbgHJPj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:39:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52156 "EHLO mail.kernel.org"
+        id S1729288AbgHJPke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:40:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:57722 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728869AbgHJPj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:39:56 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C4B022D6F;
-        Mon, 10 Aug 2020 15:39:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073995;
-        bh=YOM+g/TR562Qnqd9mjPiiw/B/53j8zLV2C2vybC4Y3A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eesmhdwrQECMSX9NuYuFlxIep7RfnnDf/qDMe8aSjXl/LMrf2xCxCGXH7j00wCKMF
-         7NOXfKahT5R1UMzZvwNllwJv6n4hF1rCjZlTOXz2t3fpatBC2a3U9eY/fmlzxYg90R
-         doF7JwzAYFgNCJ8lbhzMwAqyI6bye5iRXRRASkDI=
-Date:   Mon, 10 Aug 2020 16:39:28 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: regulator: deadlock vs memory reclaim
-Message-ID: <20200810153928.GD6438@sirena.org.uk>
-References: <20200809222537.GA5522@qmqm.qmqm.pl>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OaZoDhBhXzo6bW1J"
-Content-Disposition: inline
-In-Reply-To: <20200809222537.GA5522@qmqm.qmqm.pl>
-X-Cookie: Walk softly and carry a megawatt laser.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728755AbgHJPk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:40:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97B201063;
+        Mon, 10 Aug 2020 08:40:28 -0700 (PDT)
+Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.210.119])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BC74B3F575;
+        Mon, 10 Aug 2020 08:40:25 -0700 (PDT)
+From:   Jianlin Lv <Jianlin.Lv@arm.com>
+To:     bpf@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, yhs@fb.com, Jianlin.Lv@arm.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH bpf-next v2] bpf: fix segmentation fault of test_progs
+Date:   Mon, 10 Aug 2020 23:39:40 +0800
+Message-Id: <20200810153940.125508-1-Jianlin.Lv@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200807172016.150952-1-Jianlin.Lv@arm.com>
+References: <20200807172016.150952-1-Jianlin.Lv@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+test_progs reports the segmentation fault as below
 
---OaZoDhBhXzo6bW1J
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+$ sudo ./test_progs -t mmap --verbose
+test_mmap:PASS:skel_open_and_load 0 nsec
+......
+test_mmap:PASS:adv_mmap1 0 nsec
+test_mmap:PASS:adv_mmap2 0 nsec
+test_mmap:PASS:adv_mmap3 0 nsec
+test_mmap:PASS:adv_mmap4 0 nsec
+Segmentation fault
 
-On Mon, Aug 10, 2020 at 12:25:37AM +0200, Micha=C5=82 Miros=C5=82aw wrote:
+This issue was triggered because mmap() and munmap() used inconsistent
+length parameters; mmap() creates a new mapping of 3*page_size, but the
+length parameter set in the subsequent re-map and munmap() functions is
+4*page_size; this leads to the destruction of the process space.
 
-> regulator_lock_dependent() starts by taking regulator_list_mutex, The
-> same mutex covers eg. regulator initialization, including memory allocati=
-ons
-> that happen there. This will deadlock when you have filesystem on eg. eMMC
-> (which uses a regulator to control module voltages) and you register
-> a new regulator (hotplug a device?) when under memory pressure.
+To fix this issue, first create 4 pages of anonymous mapping,then do all
+the mmap() with MAP_FIXED.
 
-OK, that's very much a corner case, it only applies in the case of
-coupled regulators.  The most obvious thing here would be to move the
-allocations on registration out of the locked region, we really only
-need this in the regulator_find_coupler() call I think.  If the
-regulator isn't coupled we don't need to take the lock at all.
+Another issue is that when unmap the second page fails, the length
+parameter to delete tmp1 mappings should be 4*page_size.
 
-> Basically, we have a BKL for regulator_enable() and we're using ww_mutex
-> as a recursive mutex with no deadlock prevention whatsoever. The locks
-> also seem to cover way to much (eg. initialization even before making the
-> regulator visible to the system).
+Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+---
+v2:
+- Update commit messages
+- Create 4 pages of anonymous mapping that serve the subsequent mmap()
+---
+ tools/testing/selftests/bpf/prog_tests/mmap.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-Could you be more specific about what you're looking at here?  There's
-nothing too obvious jumping out from the code here other than the bit
-around the coupling allocation, otherwise it looks like we're locking
-list walks.
+diff --git a/tools/testing/selftests/bpf/prog_tests/mmap.c b/tools/testing/selftests/bpf/prog_tests/mmap.c
+index 43d0b5578f46..9c3c5c0f068f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/mmap.c
++++ b/tools/testing/selftests/bpf/prog_tests/mmap.c
+@@ -21,7 +21,7 @@ void test_mmap(void)
+ 	const long page_size = sysconf(_SC_PAGE_SIZE);
+ 	int err, duration = 0, i, data_map_fd, data_map_id, tmp_fd, rdmap_fd;
+ 	struct bpf_map *data_map, *bss_map;
+-	void *bss_mmaped = NULL, *map_mmaped = NULL, *tmp1, *tmp2;
++	void *bss_mmaped = NULL, *map_mmaped = NULL, *tmp0, *tmp1, *tmp2;
+ 	struct test_mmap__bss *bss_data;
+ 	struct bpf_map_info map_info;
+ 	__u32 map_info_sz = sizeof(map_info);
+@@ -183,16 +183,23 @@ void test_mmap(void)
+ 
+ 	/* check some more advanced mmap() manipulations */
+ 
++	tmp0 = mmap(NULL, 4 * page_size, PROT_READ, MAP_SHARED | MAP_ANONYMOUS,
++			  -1, 0);
++	if (CHECK(tmp0 == MAP_FAILED, "adv_mmap0", "errno %d\n", errno))
++		goto cleanup;
++
+ 	/* map all but last page: pages 1-3 mapped */
+-	tmp1 = mmap(NULL, 3 * page_size, PROT_READ, MAP_SHARED,
++	tmp1 = mmap(tmp0, 3 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
+ 			  data_map_fd, 0);
+-	if (CHECK(tmp1 == MAP_FAILED, "adv_mmap1", "errno %d\n", errno))
++	if (CHECK(tmp0 != tmp1, "adv_mmap1", "tmp0: %p, tmp1: %p\n", tmp0, tmp1)) {
++		munmap(tmp0, 4 * page_size);
+ 		goto cleanup;
++	}
+ 
+ 	/* unmap second page: pages 1, 3 mapped */
+ 	err = munmap(tmp1 + page_size, page_size);
+ 	if (CHECK(err, "adv_mmap2", "errno %d\n", errno)) {
+-		munmap(tmp1, map_sz);
++		munmap(tmp1, 4 * page_size);
+ 		goto cleanup;
+ 	}
+ 
+@@ -201,7 +208,7 @@ void test_mmap(void)
+ 		    MAP_SHARED | MAP_FIXED, data_map_fd, 0);
+ 	if (CHECK(tmp2 == MAP_FAILED, "adv_mmap3", "errno %d\n", errno)) {
+ 		munmap(tmp1, page_size);
+-		munmap(tmp1 + 2*page_size, page_size);
++		munmap(tmp1 + 2*page_size, 2 * page_size);
+ 		goto cleanup;
+ 	}
+ 	CHECK(tmp1 + page_size != tmp2, "adv_mmap4",
+@@ -211,7 +218,7 @@ void test_mmap(void)
+ 	tmp2 = mmap(tmp1, 4 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
+ 		    data_map_fd, 0);
+ 	if (CHECK(tmp2 == MAP_FAILED, "adv_mmap5", "errno %d\n", errno)) {
+-		munmap(tmp1, 3 * page_size); /* unmap page 1 */
++		munmap(tmp1, 4 * page_size); /* unmap page 1 */
+ 		goto cleanup;
+ 	}
+ 	CHECK(tmp1 != tmp2, "adv_mmap6", "tmp1: %p, tmp2: %p\n", tmp1, tmp2);
+-- 
+2.17.1
 
---OaZoDhBhXzo6bW1J
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8xajAACgkQJNaLcl1U
-h9BNnQf/VnLzsKZ8MKsJKrUcITrwjL4Ty5NlAVZt14rULY5df4rpXxQ97YKGkwjD
-GK0sP3nSmNHte2WUXjPfP86H+JuWk0tpOv6g06miuuFeC0bdrSZ17dchZikGM7n+
-cGQHJ7x50NRtIRjjLE01h+huS61aYd/XBGZPcTpPgx8r724FoNGUWq7Ufyw0vc5f
-tZFVl0F5BvDmwwgtsFBkv16VtPyDMoZp7W/oEBaECcH1myFmOMdyZ/NYQ4TfEEgt
-NADH2+Z6wFJGEH4B6nkXkxAY2lY3Ya5eq8UiE9TuQru6qre59l5rC7lQTKRcRNcf
-/O6+7aYsRw36Ij/2ViyNCV929Hn6tQ==
-=oiI0
------END PGP SIGNATURE-----
-
---OaZoDhBhXzo6bW1J--
