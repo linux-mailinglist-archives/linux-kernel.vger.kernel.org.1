@@ -2,65 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EFC2405E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DF22405EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgHJM3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 08:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726141AbgHJM3f (ORCPT
+        id S1726750AbgHJMa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 08:30:28 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:35375 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726450AbgHJMa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 08:29:35 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0462C061756;
-        Mon, 10 Aug 2020 05:29:34 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 3839228F8D9
-Subject: Re: [PATCH 3/3] ARM: exynos: use DT prefetch attributes rather than
- l2c_aux_val
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Kukjin Kim <kgene@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel@collabora.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <860eb8a1eed879e55daf960c96acdac514cbda93.1596028601.git.guillaume.tucker@collabora.com>
- <5e41140ddb1afe42699715cca59c44fa2fa29e60.1596028601.git.guillaume.tucker@collabora.com>
- <20200803131147.GA476@kozik-lap>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <5a68730d-f082-a096-38eb-eaadbbc462b2@collabora.com>
-Date:   Mon, 10 Aug 2020 13:29:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 10 Aug 2020 08:30:26 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U5MbFSe_1597062621;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U5MbFSe_1597062621)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 10 Aug 2020 20:30:21 +0800
+Subject: Re: [PATCH] mm/memcg: remove useless check on page->mem_cgroup
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1596166480-22814-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200731151655.GB491801@cmpxchg.org>
+ <9338716f-ca0e-057f-8d94-03e2b3f70281@linux.alibaba.com>
+ <20200803081815.GD5174@dhcp22.suse.cz>
+ <bd61e672-b997-c4cd-2047-fca9dc11cc4c@linux.alibaba.com>
+ <92dd8e68-8095-72c5-0144-2a084e4d5993@linux.alibaba.com>
+ <20200810095500.GE4773@dhcp22.suse.cz>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <cc200767-de15-43d9-85f0-e95e48e1ac30@linux.alibaba.com>
+Date:   Mon, 10 Aug 2020 20:29:53 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200803131147.GA476@kozik-lap>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200810095500.GE4773@dhcp22.suse.cz>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2020 14:13, Krzysztof Kozlowski wrote:
-> On Wed, Jul 29, 2020 at 02:47:33PM +0100, Guillaume Tucker wrote:
->> Use the standard l2c2x0 device tree bindings to enable data and
->> instruction prefetch on exynos4210 and exynos4412 and clear the
->> respective bits in the default l2c_aux_val.  No other Exynos platform
->> relying on this default register value appears to be using the l2x0
->> cache.
+
+
+ÔÚ 2020/8/10 ÏÂÎç5:55, Michal Hocko Ð´µÀ:
 >>
->> Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
->> ---
->>  arch/arm/boot/dts/exynos4210.dtsi | 2 ++
->>  arch/arm/boot/dts/exynos4412.dtsi | 2 ++
->>  arch/arm/mach-exynos/exynos.c     | 4 ++--
+>> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+>> Cc: Johannes Weiner <hannes@cmpxchg.org>
+>> Cc: Michal Hocko <mhocko@kernel.org>
+>> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: cgroups@vger.kernel.org
+>> Cc: linux-mm@kvack.org
+>> Cc: linux-kernel@vger.kernel.org
+> Looks good to me. I am not familiar with the section tweaks but that
+> should be ok.
 > 
-> I will need these split between DTS and mach changes.
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> 
 
-Of course, sorry.  Fixed in v2.
+Thanks a lot, Michal!
 
-Thanks,
-Guillaume
+> Once you collect more feedback, please send both patches so that they do
+> not get lost in this thread.
+
+I will resend with your ack.
+
+Thanks!
+Alex
