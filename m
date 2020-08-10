@@ -2,139 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27637240336
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 10:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BDB24034B
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 10:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726284AbgHJII4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 04:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgHJIIz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 04:08:55 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C61C061756;
-        Mon, 10 Aug 2020 01:08:55 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id f193so4740799pfa.12;
-        Mon, 10 Aug 2020 01:08:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y5RQ0WwBDdVj5r5k2hkM3cpnmzSwMY7YNRulx0YXxtM=;
-        b=pED1iKL08KoHo6CLSIwODFFD6nysIPi+SYm1lyNFMiIALEXsi6pwVNxrKvUlDeMgFb
-         jMq3Uxl4WG6k56azcWn/RX1GUnSmfUg8l/VjE1a/jzn1fQU+/cVbCSec69sE0EXlgA7W
-         HXXR+yiy+3B1X9WIIQ5i8nSA6sgeU+l3nmvgTkOQ9C87AGn8IiimPT9+o6G1H7PPODHV
-         Qs+lnStTZtjSqBGkXQpX7W5RnSEU4dfaxIy7bVy6f643DxND5jkRnA3vgeRw9pScNuHl
-         wffhymtJffCRzYqO5i9bTuypzQEszgaync5Gxoge4sOL7D9xcPGvR/jWeRsPQcdVqQqH
-         KJNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y5RQ0WwBDdVj5r5k2hkM3cpnmzSwMY7YNRulx0YXxtM=;
-        b=qaMiB7mUBoDQYd1XlAOP0iKQWVaQzVH1VnpFgW4kxHCO/tGuk9OUoyVit/66mmXurl
-         4zZiZRrjRshEYvRdzdEQYXNsLybUdjjifwYJZQ1gBT9GPbdH620jbejDaxRDShqin7Cq
-         jrGp/DlelZRmUGDCfunDcBfeYdb06G/mKKKrOWpNfrodKyCdRx8dmlbfXxTSnw5v0KeK
-         txsIC6j3ckV2GODlN5a/oPUt2w+BhGkQJrFr1jRlhOWhbgniIvU+9rueHQgnYDEkBJDG
-         j3LyG4EcAuCK1lZlkBc2vup3D1nDviVgWZN3RRAlb+nI4RBf12KntggqnTuPMn0sxaNB
-         lK/A==
-X-Gm-Message-State: AOAM533/CkNq6NAtNthhtTQGjG6HB1Y57nSvGw/ugQCBQ/M1twqvsRNq
-        we3bxPWUeuyqQBLXJENk3XYDU7FKunu3c8D29xw=
-X-Google-Smtp-Source: ABdhPJw7VelfDGME9GV6apg9YyInQ/tDzBB0irEirwAiYjqB7XtHiMJyuygV1lwD4I03Rq94+h8YDRfzrtJcQQyNHMg=
-X-Received: by 2002:a62:158e:: with SMTP id 136mr24887514pfv.36.1597046935089;
- Mon, 10 Aug 2020 01:08:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200809175551.6794-1-trix@redhat.com>
-In-Reply-To: <20200809175551.6794-1-trix@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 10 Aug 2020 11:08:39 +0300
-Message-ID: <CAHp75Vcomp1mDUm5houAm2j2b2HtxAP8Z78Vfcdmgm_g+bbt7w@mail.gmail.com>
-Subject: Re: [PATCH] iio: imu: st_lsm6dsx: check st_lsm6dsx_shub_read_output return
-To:     trix@redhat.com
-Cc:     Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726550AbgHJIQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 04:16:42 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:43230 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726108AbgHJIQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 04:16:41 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CAFC3201779;
+        Mon, 10 Aug 2020 10:16:39 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4E6912011A9;
+        Mon, 10 Aug 2020 10:16:35 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7A8A0402D2;
+        Mon, 10 Aug 2020 10:16:29 +0200 (CEST)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ASoC: fsl-asoc-card: Get "extal" clock rate by clk_get_rate
+Date:   Mon, 10 Aug 2020 16:11:43 +0800
+Message-Id: <1597047103-6863-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 9, 2020 at 8:56 PM <trix@redhat.com> wrote:
->
-> From: Tom Rix <trix@redhat.com>
->
-> clang static analysis reports this represenative problem
->
-> st_lsm6dsx_shub.c:540:8: warning: Assigned value is garbage or undefined
->         *val = (s16)le16_to_cpu(*((__le16 *)data));
->              ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> data is set with
->
->         err = st_lsm6dsx_shub_read(sensor, ch->address, data, len);
->         if (err < 0)
->                 return err;
->
-> The problem with st_lsm6dsx_shub_read() is this statement
->
->         err = st_lsm6dsx_shub_read_output(hw, data,
->                                           len & ST_LS6DSX_READ_OP_MASK);
->
-> The err value is never checked.
-> So check err.
->
+On some platform(.e.g. i.MX8QM MEK), the "extal" clock is different
+with the mclk of codec, then the clock rate is also different.
+So it is better to get clock rate of "extal" rate by clk_get_rate,
+don't reuse the clock rate of mclk.
 
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+changes in v2
+- add defer probe handler
 
-> Fixes: c91c1c844ebd ("iio: imu: st_lsm6dsx: add i2c embedded controller support")
->
-> Signed-off-by: Tom Rix <trix@redhat.com>
+ sound/soc/fsl/fsl-asoc-card.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-You see, the commit message can be divided to three sections
-
-1. Title / very short description
-2. Detailed description
-3. Tag block
-
-Each of them has some specific rules:
-1. One quite short line prefixed by subsystem / driver in the
-specified format (usually gathered by reading git log against the
-module in question)
-2. Should explain why this change is done
-3. Should be one tag -- one line, no blank lines in between.
-
-Hope, you will use this in the future.
-
-After addressing that (perhaps Jonathan will do it for you)
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-> ---
->  drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c
-> index ed83471dc7dd..8c8d8870ca07 100644
-> --- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c
-> +++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c
-> @@ -313,6 +313,8 @@ st_lsm6dsx_shub_read(struct st_lsm6dsx_sensor *sensor, u8 addr,
->
->         err = st_lsm6dsx_shub_read_output(hw, data,
->                                           len & ST_LS6DSX_READ_OP_MASK);
-> +       if (err < 0)
-> +               return err;
->
->         st_lsm6dsx_shub_master_enable(sensor, false);
->
-> --
-> 2.18.1
->
-
-
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 52adedc03245..32f8f756e6bb 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -696,6 +696,17 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 			goto asrc_fail;
+ 		}
+ 	} else if (of_node_name_eq(cpu_np, "esai")) {
++		struct clk *esai_clk = clk_get(&cpu_pdev->dev, "extal");
++
++		if (!IS_ERR(esai_clk)) {
++			priv->cpu_priv.sysclk_freq[TX] = clk_get_rate(esai_clk);
++			priv->cpu_priv.sysclk_freq[RX] = clk_get_rate(esai_clk);
++			clk_put(esai_clk);
++		} else if (PTR_ERR(esai_clk) == -EPROBE_DEFER) {
++			ret = -EPROBE_DEFER;
++			goto asrc_fail;
++		}
++
+ 		priv->cpu_priv.sysclk_id[1] = ESAI_HCKT_EXTAL;
+ 		priv->cpu_priv.sysclk_id[0] = ESAI_HCKR_EXTAL;
+ 	} else if (of_node_name_eq(cpu_np, "sai")) {
 -- 
-With Best Regards,
-Andy Shevchenko
+2.27.0
+
