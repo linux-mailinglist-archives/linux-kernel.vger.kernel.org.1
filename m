@@ -2,90 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90CB240AB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC71240AC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728196AbgHJPoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:44:30 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:54910 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726406AbgHJPo3 (ORCPT
+        id S1727901AbgHJPq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:46:26 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:52229 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726406AbgHJPq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:44:29 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07AFhw58086078;
-        Mon, 10 Aug 2020 10:43:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1597074238;
-        bh=WkEloO0vK6rOToy94HdrGPp6kcZXQrZulDOI3ozBGjM=;
-        h=Subject:From:To:References:Date:In-Reply-To;
-        b=PtZVxNAQS7tKESdGPbarT6BJ5ycfc83vXrzaWBsBUdO/7iewL22Wc/pcXl0GnEBlO
-         7HKhaDnbgTyhNCS2NpY3+bGNHkNwHqTjqKRjmWlcMzWkO4lbFI6ia1i0I2tOrTif+e
-         lxsGVAd4Zk4KrL8/tmleZb46SqDgnXz1bNWuqplI=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07AFhwu0038934;
-        Mon, 10 Aug 2020 10:43:58 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 10
- Aug 2020 10:43:58 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 10 Aug 2020 10:43:58 -0500
-Received: from [10.250.227.175] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07AFhuQg012659;
-        Mon, 10 Aug 2020 10:43:56 -0500
-Subject: Re: [net-next iproute2 PATCH v4 0/2] iplink: hsr: add support for
- creating PRP device
-From:   Murali Karicheri <m-karicheri2@ti.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        <nsekhar@ti.com>, <vinicius.gomes@intel.com>,
-        <stephen@networkplumber.org>, <kuznet@ms2.inr.ac.ru>
-References: <20200806203712.2712-1-m-karicheri2@ti.com>
-Message-ID: <8be17fb1-7ffc-aab4-aec2-b3b4bacf26d8@ti.com>
-Date:   Mon, 10 Aug 2020 11:43:55 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 10 Aug 2020 11:46:26 -0400
+Received: by mail-il1-f198.google.com with SMTP id z14so8053798ilk.19
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 08:46:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=SHAexMyW7z201Yxw9hnQ8uPlGiip1/BeDLnLE7U9rJo=;
+        b=SBVQtbJj9QmSh1pteLTmGCopbEIGuUwI3BbWrmsEZC7bBeMj84Zt7DZoqIJwj7M6Sw
+         6SA4LK2FMwjOmuwyhcu5w1OHsVy4k/oiX6v3OYwbgP26yOMsJeyEi+p1Ecj7QxuCF9zq
+         k4C24sqmyNB3w8CN+bvmglkqjJoKoW5dOTM5fHa6bSIo+XS3NGzE+XYPqBtaDb28Zu67
+         Ywzf0ZGb5Tt22czDXd+1vDKKqkVBSXToSy0bl3EYmd3UhORI1eqMcwIjmzqYUuEfT1jR
+         4xnr3G0h+XPrOHMrJXz0ZjUWXOlPHeWTi1I3SBFViKY8fdOza3OVG/JK5peKFZGuTBJd
+         4Ctg==
+X-Gm-Message-State: AOAM530zAUKS7xIKotL+wrtNMgupafHtPCPSrDUlUWNmVMCO1GHDFIy8
+        0DiktpdyIC8OIUc1zxBm7fd1B/4ZgeepLZsBOBTPmyp4TMbt
+X-Google-Smtp-Source: ABdhPJwp+HLP3iQxO3liiiRpmTkJSrG5YWUlMOGePiAkgtJDyFSg+uttF8UMfBG3ecCN/S84Pv15S0aZzzwuNWMJOAckDOjPiSjG
 MIME-Version: 1.0
-In-Reply-To: <20200806203712.2712-1-m-karicheri2@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Received: by 2002:a92:d9d1:: with SMTP id n17mr17253665ilq.182.1597074385031;
+ Mon, 10 Aug 2020 08:46:25 -0700 (PDT)
+Date:   Mon, 10 Aug 2020 08:46:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000066583105ac87dbf4@google.com>
+Subject: BUG: unable to handle kernel NULL pointer dereference in loop_rw_iter
+From:   syzbot <syzbot+1abbd16e49910f6bbe45@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-iproute2 maintainers,
+Hello,
 
-On 8/6/20 4:37 PM, Murali Karicheri wrote:
-> This series enhances the iproute2 iplink module to add support
-> for creating PRP device similar to HSR. The kernel part of this
-> is already merged to net-next and the same can be referenced
-> at https://www.spinics.net/lists/linux-api/msg42615.html
-> 
-> v3 of the series is rebased to iproute2-next/master at
-> git://git.kernel.org/pub/scm/network/iproute2/iproute2-next
-> and send as v4.
-> 
-> Please apply this if looks good.
-> 
-> Murali Karicheri (2):
->    iplink: hsr: add support for creating PRP device similar to HSR
->    ip: iplink: prp: update man page for new parameter
-> 
->   ip/iplink_hsr.c       | 19 +++++++++++++++++--
->   man/man8/ip-link.8.in |  9 ++++++++-
->   2 files changed, 25 insertions(+), 3 deletions(-)
-> 
-Please merge this series to iproute2 as it is the missing piece
-needed to fully support PRP protocol support in netdev subsystem. Kernel
-part is already merged and expected to be in v5.9.x kernel.
+syzbot found the following issue on:
 
-Thanks
--- 
-Murali Karicheri
-Texas Instruments
+HEAD commit:    9420f1ce Merge tag 'pinctrl-v5.9-1' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13662f62900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=72cf85e4237850c8
+dashboard link: https://syzkaller.appspot.com/bug?extid=1abbd16e49910f6bbe45
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15929006900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15e196aa900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1abbd16e49910f6bbe45@syzkaller.appspotmail.com
+
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD a652e067 P4D a652e067 PUD a652f067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 7461 Comm: io_wqe_worker-0 Not tainted 5.8.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:0x0
+Code: Bad RIP value.
+RSP: 0018:ffffc9000804f910 EFLAGS: 00010246
+RAX: 1ffffffff10b0b9b RBX: dffffc0000000000 RCX: ffff88808962e1c8
+RDX: 000000000000003c RSI: 0000000020000740 RDI: ffff88809fb2dcc0
+RBP: 0000000020000740 R08: ffffc9000804fa28 R09: ffff8880a7639c0f
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffc9000804fa28
+R13: ffffffff88585cc0 R14: 000000000000003c R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 000000008e2a7000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ loop_rw_iter.part.0+0x26e/0x450 fs/io_uring.c:2850
+ loop_rw_iter fs/io_uring.c:2829 [inline]
+ io_write+0x6a2/0x7a0 fs/io_uring.c:3190
+ io_issue_sqe+0x1b0/0x60d0 fs/io_uring.c:5530
+ io_wq_submit_work+0x183/0x3d0 fs/io_uring.c:5775
+ io_worker_handle_work+0xa45/0x13f0 fs/io-wq.c:527
+ io_wqe_worker+0xbf0/0x10e0 fs/io-wq.c:569
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace 97e511c5a98da2fe ]---
+RIP: 0010:0x0
+Code: Bad RIP value.
+RSP: 0018:ffffc9000804f910 EFLAGS: 00010246
+RAX: 1ffffffff10b0b9b RBX: dffffc0000000000 RCX: ffff88808962e1c8
+RDX: 000000000000003c RSI: 0000000020000740 RDI: ffff88809fb2dcc0
+RBP: 0000000020000740 R08: ffffc9000804fa28 R09: ffff8880a7639c0f
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffc9000804fa28
+R13: ffffffff88585cc0 R14: 000000000000003c R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f84c3b15028 CR3: 000000008e2a7000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
