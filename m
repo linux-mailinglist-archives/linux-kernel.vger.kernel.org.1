@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E31A2409C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34564240A13
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729092AbgHJPff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:35:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34010 "EHLO mail.kernel.org"
+        id S1729144AbgHJPiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:38:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728812AbgHJP17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:27:59 -0400
+        id S1728613AbgHJPZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:25:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1965222B47;
-        Mon, 10 Aug 2020 15:27:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E01DA20658;
+        Mon, 10 Aug 2020 15:25:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073278;
-        bh=VE657nM3zy/+C8d4MAdF14nfrfA9aHxutmuYfYCwHuk=;
+        s=default; t=1597073157;
+        bh=LoCBf9smeqKX90IxjUKH7UtGhuBKcdKjGFseDosWpvs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AK+AEaoBexncMCz28XxUAhnqI8E6hle2solRwE+CW/VbKvzuBNC2QJosNkJvVsFNW
-         4Zl3DZkJO1wi5GwaG3RcgNqxcUd3yW1bPHSXjADbN6Gw4xjbhuu5kDTro8v/ZMfcXU
-         Ug/cSSSoGqDV3SVGN15Sp5smM1C5zrXxMJtkPJ9I=
+        b=RdCZFuWycpAmThkbxzZE4jOO3I8WqZXDjRRdZW7OL7+3Q6rptxFyrBSi5Z7JMER9I
+         dJwykivaK8xiwr4DLcbnwuAuSJcpKTlIHYRrr/Guzv2t+vp+jK7VP3ZTE5QMNIfh5X
+         F9W5GHmBZzq/7TGp2PK3+6XeYM8gYXlbEb4XYr3Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 48/67] Revert "powerpc/kasan: Fix shadow pages allocation failure"
-Date:   Mon, 10 Aug 2020 17:21:35 +0200
-Message-Id: <20200810151811.836690507@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.7 77/79] mptcp: fix bogus sendmsg() return code under pressure
+Date:   Mon, 10 Aug 2020 17:21:36 +0200
+Message-Id: <20200810151816.018579465@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
-References: <20200810151809.438685785@linuxfoundation.org>
+In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
+References: <20200810151812.114485777@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,79 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Paolo Abeni <pabeni@redhat.com>
 
-commit b506923ee44ae87fc9f4de16b53feb313623e146 upstream.
+[ Upstream commit 8555c6bfd5fddb1cf363d3cd157d70a1bb27f718 ]
 
-This reverts commit d2a91cef9bbdeb87b7449fdab1a6be6000930210.
+In case of memory pressure, mptcp_sendmsg() may call
+sk_stream_wait_memory() after succesfully xmitting some
+bytes. If the latter fails we currently return to the
+user-space the error code, ignoring the succeful xmit.
 
-This commit moved too much work in kasan_init(). The allocation
-of shadow pages has to be moved for the reason explained in that
-patch, but the allocation of page tables still need to be done
-before switching to the final hash table.
+Address the issue always checking for the xmitted bytes
+before mptcp_sendmsg() completes.
 
-First revert the incorrect commit, following patch redoes it
-properly.
-
-Fixes: d2a91cef9bbd ("powerpc/kasan: Fix shadow pages allocation failure")
-Cc: stable@vger.kernel.org
-Reported-by: Erhard F. <erhard_f@mailbox.org>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=208181
-Link: https://lore.kernel.org/r/3667deb0911affbf999b99f87c31c77d5e870cd2.1593690707.git.christophe.leroy@csgroup.eu
+Fixes: f296234c98a8 ("mptcp: Add handling of incoming MP_JOIN requests")
+Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/powerpc/include/asm/kasan.h      |    2 ++
- arch/powerpc/mm/init_32.c             |    2 ++
- arch/powerpc/mm/kasan/kasan_init_32.c |    4 +---
- 3 files changed, 5 insertions(+), 3 deletions(-)
+ net/mptcp/protocol.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/arch/powerpc/include/asm/kasan.h
-+++ b/arch/powerpc/include/asm/kasan.h
-@@ -27,9 +27,11 @@
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -802,7 +802,6 @@ fallback:
  
- #ifdef CONFIG_KASAN
- void kasan_early_init(void);
-+void kasan_mmu_init(void);
- void kasan_init(void);
- #else
- static inline void kasan_init(void) { }
-+static inline void kasan_mmu_init(void) { }
- #endif
+ 	mptcp_set_timeout(sk, ssk);
+ 	if (copied) {
+-		ret = copied;
+ 		tcp_push(ssk, msg->msg_flags, mss_now, tcp_sk(ssk)->nonagle,
+ 			 size_goal);
  
- #endif /* __ASSEMBLY */
---- a/arch/powerpc/mm/init_32.c
-+++ b/arch/powerpc/mm/init_32.c
-@@ -175,6 +175,8 @@ void __init MMU_init(void)
- 	btext_unmap();
- #endif
- 
-+	kasan_mmu_init();
-+
- 	setup_kup();
- 
- 	/* Shortly after that, the entire linear mapping will be available */
---- a/arch/powerpc/mm/kasan/kasan_init_32.c
-+++ b/arch/powerpc/mm/kasan/kasan_init_32.c
-@@ -129,7 +129,7 @@ static void __init kasan_remap_early_sha
- 	flush_tlb_kernel_range(KASAN_SHADOW_START, KASAN_SHADOW_END);
+@@ -815,7 +814,7 @@ fallback:
+ 	release_sock(ssk);
+ out:
+ 	release_sock(sk);
+-	return ret;
++	return copied ? : ret;
  }
  
--static void __init kasan_mmu_init(void)
-+void __init kasan_mmu_init(void)
- {
- 	int ret;
- 	struct memblock_region *reg;
-@@ -156,8 +156,6 @@ static void __init kasan_mmu_init(void)
- 
- void __init kasan_init(void)
- {
--	kasan_mmu_init();
--
- 	kasan_remap_early_shadow_ro();
- 
- 	clear_page(kasan_early_shadow_page);
+ static void mptcp_wait_data(struct sock *sk, long *timeo)
 
 
