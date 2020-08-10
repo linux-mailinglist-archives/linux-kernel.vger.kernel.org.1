@@ -2,163 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A4324106B
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D3F24108E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730398AbgHJT3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 15:29:49 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20618 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729009AbgHJT3r (ORCPT
+        id S1729694AbgHJTbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 15:31:09 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52980 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728868AbgHJTbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 15:29:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597087786;
+        Mon, 10 Aug 2020 15:31:07 -0400
+Date:   Mon, 10 Aug 2020 19:01:34 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597087864;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dcoyHjjvNSHTFrWcUCA+seEOF/h9/vEn94GBe2ClYh8=;
-        b=ZUzulfR91tr0WipNQPH8rxkcrtPfxCf6P3/JEzwcLXnZf77aE5mkYWwQ8fSZvM+5KkklMS
-        ZUrzpDTswp9cp3cf3HAdZW7wnMiTH2A/MaTy9UF5n3/JctevCuvpZNPXpNQDTSvrBo0BFi
-        sqRxaSfXdLuXyodih/t62imJh3+fShk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-131-KsQG-zhgNkmoQQ5-o649Rw-1; Mon, 10 Aug 2020 15:29:43 -0400
-X-MC-Unique: KsQG-zhgNkmoQQ5-o649Rw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24B951902EA7;
-        Mon, 10 Aug 2020 19:29:42 +0000 (UTC)
-Received: from mail (ovpn-114-184.rdu2.redhat.com [10.10.114.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BDF6B6111F;
-        Mon, 10 Aug 2020 19:29:41 +0000 (UTC)
-Date:   Mon, 10 Aug 2020 15:29:41 -0400
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        syzbot <syzbot+96cc7aba7e969b1d305c@syzkaller.appspotmail.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: INFO: task hung in pipe_read (2)
-Message-ID: <20200810192941.GA16925@redhat.com>
-References: <00000000000045b3fe05abcced2f@google.com>
- <fc097a54-0384-9d21-323f-c3ca52cdb956@I-love.SAKURA.ne.jp>
- <CAHk-=wj15SDiHjP2wPiC=Ru-RrUjOuT4AoULj6N_9pVvSXaWiw@mail.gmail.com>
- <20200807053148.GA10409@redhat.com>
- <e673cccb-1b67-802a-84e3-6aeea4513a09@i-love.sakura.ne.jp>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+         to:to:cc:cc:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6Jywy7lqllPTFMJ6o5Tm1gkuwwbnzeHH9S4UC1Euep4=;
+        b=Z+nr3IVdFq/vEDkoDCbCzPI/qcTHf2tClNSLYklPib/395MnaoQGa/7fq1nkCHswYD2cB9
+        sYtn1xIqLk0mgIfvFCsM03EuCDslESW+IVntEElhB04f6lZ4s4Lhpdl9GgM7Rz2Im2+Zfu
+        f52Uvwriy9px1ozdoTM5DLgWYQiull6Srmc2B2smBxUn1TjRA1hqyk9YDMTOh59SgWPvuB
+        Angx6TUgRgFvOOB6ru4zGXYzIOznKs21UgXNoKTH5oE7lO0MooVcWybwf6130UUMEIQ9NV
+        n7GWkL/yT9oJoNNq0H3J0lS2gdYAUd02BdI1LnCvSFwsKLZddtalssGSjFjnKg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597087864;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6Jywy7lqllPTFMJ6o5Tm1gkuwwbnzeHH9S4UC1Euep4=;
+        b=9BcfJBxONyEb7sGKihmbXN/0UYXAjhIQLTnW+5lfgMWZNQpQkPRpKbHuPs6r7UU/XzWa24
+        rjfKC169qfhpP7Dw==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [GIT pull] locking/urgent for 5.9-rc1
+Message-ID: <159708609435.2571.13948681727529247231.tglx@nanos>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Content-Disposition: inline
-In-Reply-To: <e673cccb-1b67-802a-84e3-6aeea4513a09@i-love.sakura.ne.jp>
-User-Agent: Mutt/1.14.5 (2020-06-23)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Tetsuo,
+Linus,
 
-On Sat, Aug 08, 2020 at 10:01:21AM +0900, Tetsuo Handa wrote:
-> use of killable waits disables ability to detect possibility of deadlock (because
-> lockdep can't check possibility of deadlock which involves actions in userspace), for
-> syzkaller process is SIGKILLed after 5 seconds while khungtaskd's timeout is 140 seconds.
-> 
-> If we encounter a deadlock in an unattended operation (e.g. some server process),
-> we don't have a method for resolving the deadlock. Therefore, I consider that
-> t->state == TASK_UNINTERRUPTIBLE check is a bad choice. Unless a sleep is neutral
-> (e.g. no lock is held, or obviously safe to sleep with that specific lock held),
-> sleeping for 140 seconds inside the kernel is a bad sign even if interruptible/killable.
+please pull the latest locking/urgent branch from:
 
-Task in killable state for seconds as result of another task taking
-too long to do something in kernel sounds bad, if the other task had a
-legitimate reason to take a long time in normal operations, i.e. like
-if the other task was just doing an getdents of a large directory.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2020-08-10
 
-Nobody force any app to use userfaultfd, if an app uses it and the
-other side of the pipe trusts to read from it, and it gets stuck for
-seconds in uninterruptible and killable state, it's either an app bug
-resolvable with kill -9. We also can't enforce all signals to run in
-presence of other bugs, for example if the task that won't respond to
-any signal other than CONT and KILL was blocked in stopped state by a
-buggy SIGSTOP. The pipe also can get stuck if the network is down and
-it's swapping in from NFS and nobody is forced to take the risk of
-using network attached storage as swap device either.
+up to:  0cd39f4600ed: locking/seqlock, headers: Untangle the spaghetti monster
 
-The hangcheck is currently correct to report a concern, because the
-other side of the pipe may be another process of another user that
-cannot SIGKILL the task blocked in the userfault. That sounds far
-fetched and it's not particular concerning anyway, but it's not
-technically impossible so I agree with the hangcheck timer reporting
-an issue that needs correction.
+A set of locking fixes and updates:
 
-However once the mutex is killable there's no concern anymore and the
-hangcheck timer is correct also not reporting any misbehavior anymore.
+  - Untangle the header spaghetti which causes build failures in various
+    situations caused by the lockdep additions to seqcount to validate that
+    the write side critical sections are non-preemptible.
 
-Instead of userfaultfd, you can think at 100% kernel faults backed by
-swapin from NFS or swaping from attached network storage or swapin
-from scsi with a scsi fibre channel accidentally pulled out of a few
-seconds. It's nice if uffd can survive as well as nfs or scsi would by
-retrying and waiting more than 1sec.
+  - The seqcount associated lock debug addons which were blocked by the
+    above fallout.
 
-> Can we do something like this?
-> 
->   bool retried = false;
-> retry:
->   lock();
->   disable_fault();
->   ret = access_memory_that_might_fault();
->   enable_fault();
->   if (ret == -EWOULDFAULT && !retried)
->     goto retry_without_lock;
->   if (ret == 0)
->     ret = do_something();
->   unlock();
->   return ret;
-> retry_without_lock:
->   unlock();
->   ret = access_memory_that_might_fault();
->   retried = true;
->   goto retry;
+    seqcount writers contrary to seqlock writers must be externally
+    serialized, which usually happens via locking - except for strict per
+    CPU seqcounts. As the lock is not part of the seqcount, lockdep cannot
+    validate that the lock is held.
 
-This would work, but it'll make the kernel more complex than using a
-killable mutex.
+    This new debug mechanism adds the concept of associated locks.
+    sequence count has now lock type variants and corresponding
+    initializers which take a pointer to the associated lock used for
+    writer serialization. If lockdep is enabled the pointer is stored and
+    write_seqcount_begin() has a lockdep assertion to validate that the
+    lock is held.
 
-It'd also give a worse runtime than the killable mutex, if the only
-source of blocking events while holding the mutex wouldn't be the page
-fault.
+    Aside of the type and the initializer no other code changes are
+    required at the seqcount usage sites. The rest of the seqcount API is
+    unchanged and determines the type at compile time with the help of
+    _Generic which is possible now that the minimal GCC version has been
+    moved up.
 
-With just 2 processes in this case probably it would be fine and there
-are likely won't be other sources of contention, so the main cons is
-just the code complexity to be maintained and the fact it won't
-provide any measurable practical benefit, if something it'll run
-slower by having to repeat the same fault in blocking and non blocking
-mode.
+    Adding this lockdep coverage unearthed a handful of seqcount bugs which
+    have been addressed already independent of this.
 
-With regard to the reporting of the hangcheck timer most modern paging
-code uses killable mutex because unlike the pipe code, there can be
-other sources of blockage and you don't want to wait for shared
-resources to unblock a process that is waiting on a mutex. I think
-trying to reduce the usage of killable mutex overall is a ship that
-has sailed, it won't move the needle to just avoid it in pipe code
-since it'll remain everywhere else.
+    While generaly useful this comes with a Trojan Horse twist: On RT
+    kernels the write side critical section can become preemtible if the
+    writers are serialized by an associated lock, which leads to the well
+    known reader preempts writer livelock. RT prevents this by storing the
+    associated lock pointer independent of lockdep in the seqcount and
+    changing the reader side to block on the lock when a reader detects
+    that a writer is in the write side critical section.
 
-So I'm certainly not against your proposal, but if we increase the
-complexity like above then I'd find it more attractive if it was for
-some other benefit unrelated to userfaultfd, or swapin from NFS or
-network attached storage for that matter, and I don't see a big enough
-benefit to justify it.
+ - Conversion of seqcount usage sites to associated types and initializers.
 
-Thanks!
-Andrea
+Thanks,
 
-PS. I'll be busy until Wed sorry if I don't answer promptly to
-    followups. If somebody could give a try to add the killable mutex
-    bailout failure paths that return to userland direct, or your more
-    complex alternative it'd be great.
+	tglx
+
+------------------>
+Ahmed S. Darwish (16):
+      seqlock: Extend seqcount API with associated locks
+      seqlock: Align multi-line macros newline escapes at 72 columns
+      dma-buf: Remove custom seqcount lockdep class key
+      dma-buf: Use sequence counter with associated wound/wait mutex
+      sched: tasks: Use sequence counter with associated spinlock
+      netfilter: conntrack: Use sequence counter with associated spinlock
+      netfilter: nft_set_rbtree: Use sequence counter with associated rwlock
+      xfrm: policy: Use sequence counters with associated lock
+      timekeeping: Use sequence counter with associated raw spinlock
+      vfs: Use sequence counter with associated spinlock
+      raid5: Use sequence counter with associated spinlock
+      iocost: Use sequence counter with associated spinlock
+      NFSv4: Use sequence counter with associated spinlock
+      userfaultfd: Use sequence counter with associated spinlock
+      kvm/eventfd: Use sequence counter with associated spinlock
+      hrtimer: Use sequence counter with associated raw spinlock
+
+Chris Wilson (1):
+      locking/lockdep: Fix overflow in presentation of average lock-time
+
+Ingo Molnar (1):
+      x86/headers: Remove APIC headers from <asm/smp.h>
+
+Peter Zijlstra (7):
+      seqlock: s/__SEQ_LOCKDEP/__SEQ_LOCK/g
+      seqlock: Fold seqcount_LOCKNAME_t definition
+      seqlock: Fold seqcount_LOCKNAME_init() definition
+      seqcount: Compress SEQCNT_LOCKNAME_ZERO()
+      seqcount: More consistent seqprop names
+      locking, arch/ia64: Reduce <asm/smp.h> header dependencies by moving XTP bits into the new <asm/xtp.h> header
+      locking/seqlock, headers: Untangle the spaghetti monster
+
+
 
