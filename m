@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB319240458
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 11:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5F0240465
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 11:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgHJJ5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 05:57:14 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:59274 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbgHJJ5N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 05:57:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1597053434; x=1628589434;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=fgsFSgHthR1f7WWfooMBWx4lK2mZmhBHIFfrqDvnW3A=;
-  b=jqwS+cN5JVZhyhV+0EhC6RZgRcTaMbT+soxl2XDaYbhiP09zCYEKS+BV
-   7itQbwfVpF8cIK2PdiSI2CnmLQXuK/IhMj/w5pK2zqGB1t22N/uzJoOiv
-   HV6KqJrx54s5zrQ0JdNsO3PIGBz96/go/nimdRrROHxlb8aCh+sv8Ux4m
-   U=;
-IronPort-SDR: oDdE0v8ZPK5Lkk7yWvz3oUN9YB/R8fiwPqgiI3yviaucVfVSB0zLRy1fm+BvPtfKkoVYNjbbS5
- zt7lO9XkxXog==
-X-IronPort-AV: E=Sophos;i="5.75,457,1589241600"; 
-   d="scan'208";a="66803826"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 10 Aug 2020 09:57:11 +0000
-Received: from EX13MTAUWC001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com (Postfix) with ESMTPS id BDB1EA1DD4;
-        Mon, 10 Aug 2020 09:57:09 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 10 Aug 2020 09:57:09 +0000
-Received: from 38f9d3867b82.ant.amazon.com (10.43.161.71) by
- EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 10 Aug 2020 09:57:04 +0000
-Subject: Re: [PATCH v6 10/18] nitro_enclaves: Add logic for getting the
- enclave image load info
-To:     Andra Paraschiv <andraprs@amazon.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "David Duncan" <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        "David Woodhouse" <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Karen Noel <knoel@redhat.com>,
-        "Martin Pohlack" <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-References: <20200805091017.86203-1-andraprs@amazon.com>
- <20200805091017.86203-11-andraprs@amazon.com>
-From:   Alexander Graf <graf@amazon.de>
-Message-ID: <70ec8010-cb3b-50a8-5472-a96c5aa2cf8d@amazon.de>
-Date:   Mon, 10 Aug 2020 11:57:02 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        id S1726848AbgHJJ61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 05:58:27 -0400
+Received: from mailout12.rmx.de ([94.199.88.78]:56707 "EHLO mailout12.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726304AbgHJJ60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 05:58:26 -0400
+Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout12.rmx.de (Postfix) with ESMTPS id 4BQBHM3FBQzRkq5;
+        Mon, 10 Aug 2020 11:58:23 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin01.retarus.com (Postfix) with ESMTPS id 4BQBH65lWPz2xbQ;
+        Mon, 10 Aug 2020 11:58:10 +0200 (CEST)
+Received: from n95hx1g2.localnet (192.168.54.71) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Mon, 10 Aug
+ 2020 11:57:47 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Pavel Machek <pavel@ucw.cz>
+CC:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "Hartmut Knaack" <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Peter Meerwald-Stadler" <pmeerw@pmeerw.net>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: documentation: light: Add as73211 sysfs documentation
+Date:   Mon, 10 Aug 2020 11:57:46 +0200
+Message-ID: <4688751.agSyimv0uN@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <20200810090054.GA8495@localhost>
+References: <20200808171443.114c8e05@archlinux> <20200809074335.23734-1-ceggers@arri.de> <20200810090054.GA8495@localhost>
 MIME-Version: 1.0
-In-Reply-To: <20200805091017.86203-11-andraprs@amazon.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.161.71]
-X-ClientProxiedBy: EX13D23UWC002.ant.amazon.com (10.43.162.22) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.71]
+X-RMX-ID: 20200810-115812-4BQBH65lWPz2xbQ-0@kdin01
+X-RMX-SOURCE: 217.111.95.66
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Monday, 10 August 2020, 11:00:54 CEST, Pavel Machek wrote:
+> Hi!
+> 
+> > The driver for the as73211 light sensor provides the following not yet
+> > documented sysfs entries:
+> > - in_intensity_(x|y|z)_raw
+> > - in_intensity_(x|y|z)_scale
+> > - in_intensity_sampling_frequency(_available)
+> > - in_intensity_hardwaregain(_available)
+> 
+> Should that be hardware_gain ?
+drivers/iio/industrialio-core.c:
+[IIO_CHAN_INFO_HARDWAREGAIN] = "hardwaregain",
+
+> 							
+Pavel
+regards
+Christian
 
 
-On 05.08.20 11:10, Andra Paraschiv wrote:
-> Before setting the memory regions for the enclave, the enclave image
-> needs to be placed in memory. After the memory regions are set, this
-> memory cannot be used anymore by the VM, being carved out.
-> =
-
-> Add ioctl command logic to get the offset in enclave memory where to
-> place the enclave image. Then the user space tooling copies the enclave
-> image in the memory using the given memory offset.
-> =
-
-> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
-
-Reviewed-by: Alexander Graf <graf@amazon.com>
-
-
-Alex
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
 
 
 
