@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353682410E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B4B2410E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728497AbgHJTJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 15:09:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35558 "EHLO mail.kernel.org"
+        id S1728891AbgHJTd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 15:33:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728442AbgHJTJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 15:09:21 -0400
+        id S1728471AbgHJTJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 15:09:23 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D7602078D;
-        Mon, 10 Aug 2020 19:09:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4372B22B49;
+        Mon, 10 Aug 2020 19:09:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597086560;
-        bh=OXG6lde0xlK5QBw+e52bLhB7Zjqw0VD/6DAOhjeBn3s=;
+        s=default; t=1597086563;
+        bh=Z6K4uvy4C7W23CznrC/gasZ1erGhoQ4x23h6wbcUX98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aHihRf+IQbhT5RVzvBIYMKKfbqiPRUtLdexh0ZEA/REXt8aHAi45BQNmBFcTK2kKX
-         ZrWne9SDm1MWcc8ay6QxIc2v7HtYVXNUsG1hX8TeQpITLDlDbLXRFZnzJsv2mBiP3o
-         tDdQVxxfVbjYA56/dsU2hnITiFdl1puJWAZ4iUvk=
+        b=Jf7Q2dzHhdFCZMsThE3Y6aMHd55nuHrVl7QGk3+1ljqgoahosDQm1TmnF8F7wiXvN
+         Nmmda7Djm+Ag2vL7gAOuNc2xerryx0Jf7DRe5O3Li7FGNkL5aLpcC5QNcj/y2lziDp
+         boNLtoefnWVmw+0WBeG2xWU2HsM7rr7e7fWoTRMU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhao Heming <heming.zhao@suse.com>,
-        Song Liu <songliubraving@fb.com>,
-        Sasha Levin <sashal@kernel.org>, linux-raid@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 15/64] md-cluster: fix wild pointer of unlock_all_bitmaps()
-Date:   Mon, 10 Aug 2020 15:08:10 -0400
-Message-Id: <20200810190859.3793319-15-sashal@kernel.org>
+Cc:     Lyude Paul <lyude@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.8 17/64] drm/nouveau/kms/nv50-: Fix disabling dithering
+Date:   Mon, 10 Aug 2020 15:08:12 -0400
+Message-Id: <20200810190859.3793319-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200810190859.3793319-1-sashal@kernel.org>
 References: <20200810190859.3793319-1-sashal@kernel.org>
@@ -43,70 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhao Heming <heming.zhao@suse.com>
+From: Lyude Paul <lyude@redhat.com>
 
-[ Upstream commit 60f80d6f2d07a6d8aee485a1d1252327eeee0c81 ]
+[ Upstream commit fb2420b701edbf96c2b6d557f0139902f455dc2b ]
 
-reproduction steps:
-```
-node1 # mdadm -C /dev/md0 -b clustered -e 1.2 -n 2 -l mirror /dev/sda
-/dev/sdb
-node2 # mdadm -A /dev/md0 /dev/sda /dev/sdb
-node1 # mdadm -G /dev/md0 -b none
-mdadm: failed to remove clustered bitmap.
-node1 # mdadm -S --scan
-^C  <==== mdadm hung & kernel crash
-```
+While we expose the ability to turn off hardware dithering for nouveau,
+we actually make the mistake of turning it on anyway, due to
+dithering_depth containing a non-zero value if our dithering depth isn't
+also set to 6 bpc.
 
-kernel stack:
-```
-[  335.230657] general protection fault: 0000 [#1] SMP NOPTI
-[...]
-[  335.230848] Call Trace:
-[  335.230873]  ? unlock_all_bitmaps+0x5/0x70 [md_cluster]
-[  335.230886]  unlock_all_bitmaps+0x3d/0x70 [md_cluster]
-[  335.230899]  leave+0x10f/0x190 [md_cluster]
-[  335.230932]  ? md_super_wait+0x93/0xa0 [md_mod]
-[  335.230947]  ? leave+0x5/0x190 [md_cluster]
-[  335.230973]  md_cluster_stop+0x1a/0x30 [md_mod]
-[  335.230999]  md_bitmap_free+0x142/0x150 [md_mod]
-[  335.231013]  ? _cond_resched+0x15/0x40
-[  335.231025]  ? mutex_lock+0xe/0x30
-[  335.231056]  __md_stop+0x1c/0xa0 [md_mod]
-[  335.231083]  do_md_stop+0x160/0x580 [md_mod]
-[  335.231119]  ? 0xffffffffc05fb078
-[  335.231148]  md_ioctl+0xa04/0x1930 [md_mod]
-[  335.231165]  ? filename_lookup+0xf2/0x190
-[  335.231179]  blkdev_ioctl+0x93c/0xa10
-[  335.231205]  ? _cond_resched+0x15/0x40
-[  335.231214]  ? __check_object_size+0xd4/0x1a0
-[  335.231224]  block_ioctl+0x39/0x40
-[  335.231243]  do_vfs_ioctl+0xa0/0x680
-[  335.231253]  ksys_ioctl+0x70/0x80
-[  335.231261]  __x64_sys_ioctl+0x16/0x20
-[  335.231271]  do_syscall_64+0x65/0x1f0
-[  335.231278]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-```
+So, fix it by never enabling dithering when it's disabled.
 
-Signed-off-by: Zhao Heming <heming.zhao@suse.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Reviewed-by: Ben Skeggs <bskeggs@redhat.com>
+Acked-by: Dave Airlie <airlied@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200627194657.156514-6-lyude@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/md-cluster.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/nouveau/dispnv50/head.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/md/md-cluster.c b/drivers/md/md-cluster.c
-index 813a99ffa86f8..73fd50e779754 100644
---- a/drivers/md/md-cluster.c
-+++ b/drivers/md/md-cluster.c
-@@ -1518,6 +1518,7 @@ static void unlock_all_bitmaps(struct mddev *mddev)
- 			}
- 		}
- 		kfree(cinfo->other_bitmap_lockres);
-+		cinfo->other_bitmap_lockres = NULL;
- 	}
- }
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/head.c b/drivers/gpu/drm/nouveau/dispnv50/head.c
+index 8f6455697ba72..ed6819519f6d8 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/head.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/head.c
+@@ -84,18 +84,20 @@ nv50_head_atomic_check_dither(struct nv50_head_atom *armh,
+ {
+ 	u32 mode = 0x00;
  
+-	if (asyc->dither.mode == DITHERING_MODE_AUTO) {
+-		if (asyh->base.depth > asyh->or.bpc * 3)
+-			mode = DITHERING_MODE_DYNAMIC2X2;
+-	} else {
+-		mode = asyc->dither.mode;
+-	}
++	if (asyc->dither.mode) {
++		if (asyc->dither.mode == DITHERING_MODE_AUTO) {
++			if (asyh->base.depth > asyh->or.bpc * 3)
++				mode = DITHERING_MODE_DYNAMIC2X2;
++		} else {
++			mode = asyc->dither.mode;
++		}
+ 
+-	if (asyc->dither.depth == DITHERING_DEPTH_AUTO) {
+-		if (asyh->or.bpc >= 8)
+-			mode |= DITHERING_DEPTH_8BPC;
+-	} else {
+-		mode |= asyc->dither.depth;
++		if (asyc->dither.depth == DITHERING_DEPTH_AUTO) {
++			if (asyh->or.bpc >= 8)
++				mode |= DITHERING_DEPTH_8BPC;
++		} else {
++			mode |= asyc->dither.depth;
++		}
+ 	}
+ 
+ 	asyh->dither.enable = mode;
 -- 
 2.25.1
 
