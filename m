@@ -2,81 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4E724083C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61894240857
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgHJPRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:17:15 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:32591 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725862AbgHJPRN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:17:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597072631;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tzFIJ6QrKu4yoI3w842fEVOcfFitxszWJPwA8w1tzak=;
-        b=gsEV3+a5sDDGnwKPCs6FmFDggH72VBxwiPTk33brn0K1AakWALCRBnHdNXqjtMgfDyR6Hh
-        8PKk1j0gFBI0+ALjumgmmCbD6XTmy1oRA3v1gsWBHDxH151CpgtSN20/EKHXbYba2yC+c9
-        3waPk0gUCK4FoWv8mN9r8zhGkOKv2iY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-298-F6eKrt3VN1Knd3NgOWyHPg-1; Mon, 10 Aug 2020 11:17:09 -0400
-X-MC-Unique: F6eKrt3VN1Knd3NgOWyHPg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727943AbgHJPUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:20:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727902AbgHJPUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:20:09 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D0288005B0;
-        Mon, 10 Aug 2020 15:17:07 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-113-69.rdu2.redhat.com [10.10.113.69])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CB1795D9CD;
-        Mon, 10 Aug 2020 15:16:59 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <1851200.1596472222@warthog.procyon.org.uk>
-References: <1851200.1596472222@warthog.procyon.org.uk> <447452.1596109876@warthog.procyon.org.uk>
-To:     torvalds@linux-foundation.org
-Cc:     dhowells@redhat.com, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@redhat.com>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] fscache rewrite -- please drop for now
+        by mail.kernel.org (Postfix) with ESMTPSA id E381F2075F;
+        Mon, 10 Aug 2020 15:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597072808;
+        bh=g4AkQXQ8epWXJR1F/Mkz5pr4PwZfYD7rBhbIngIE3o4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HRemLRYDybuoZV+Yhp4Oou/BsTcYU49rY3O9CHpIJPbU4+abz51+1h3Tg7Z/X9kl0
+         KJ09alfXsoYL4k2LhkQr5SMM/XZj81nPZx8BVl7yM0jnyaxiVHMZ4g01iH5Czgla9a
+         SeUth7CnOSC1eIjE366ygZF9Lm/D4hAImOaAVltw=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: [PATCH 5.8 00/38] 5.8.1-rc1 review
+Date:   Mon, 10 Aug 2020 17:18:50 +0200
+Message-Id: <20200810151803.920113428@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <667819.1597072619.1@warthog.procyon.org.uk>
-Date:   Mon, 10 Aug 2020 16:16:59 +0100
-Message-ID: <667820.1597072619@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.8.1-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.8.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.8.1-rc1
+X-KernelTest-Deadline: 2020-08-12T15:18+00:00
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+This is the start of the stable review cycle for the 5.8.1 release.
+There are 38 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Can you drop the fscache rewrite pull for now.  We've seem an issue in NFS
-integration and need to rework the read helper a bit.  I made an assumption
-that fscache will always be able to request that the netfs perform a read of a
-certain minimum size - but with NFS you can break that by setting rsize too
-small.
+Responses should be made by Wed, 12 Aug 2020 15:17:47 +0000.
+Anything received after that time might be too late.
 
-We need to make the read helper able to make multiple netfs reads.  This can
-help ceph too.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.1-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
+and the diffstat can be found below.
 
-Thanks,
-David
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.8.1-rc1
+
+Guenter Roeck <linux@roeck-us.net>
+    arm64: kaslr: Use standard early random function
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    random: random.h should include archrandom.h, not the other way around
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    random32: move the pseudo-random 32-bit definitions to prandom.h
+
+Bruno Meneguele <bmeneg@redhat.com>
+    ima: move APPRAISE_BOOTPARAM dependency on ARCH_POLICY to runtime
+
+Nicolas Chauvet <kwizart@gmail.com>
+    PCI: tegra: Revert tegra124 raw_violation_fixup
+
+Christophe Leroy <christophe.leroy@csgroup.eu>
+    powerpc/kasan: Fix shadow pages allocation failure
+
+Christophe Leroy <christophe.leroy@csgroup.eu>
+    Revert "powerpc/kasan: Fix shadow pages allocation failure"
+
+Frank van der Linden <fllinden@amazon.com>
+    xattr: break delegations in {set,remove}xattr
+
+Dmitry Osipenko <digetx@gmail.com>
+    gpio: max77620: Fix missing release of interrupt
+
+Johan Hovold <johan@kernel.org>
+    leds: 88pm860x: fix use-after-free on unbind
+
+Johan Hovold <johan@kernel.org>
+    leds: lm3533: fix use-after-free on unbind
+
+Johan Hovold <johan@kernel.org>
+    leds: da903x: fix use-after-free on unbind
+
+Johan Hovold <johan@kernel.org>
+    leds: lm36274: fix use-after-free on unbind
+
+Johan Hovold <johan@kernel.org>
+    leds: wm831x-status: fix use-after-free on unbind
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    mtd: properly check all write ioctls for permissions
+
+Yunhai Zhang <zhangyunhai@nsfocus.com>
+    vgacon: Fix for missing check in scrollback handling
+
+Kees Cook <keescook@chromium.org>
+    lkdtm/heap: Avoid edge and middle of slabs
+
+Matthias Maennich <maennich@google.com>
+    scripts: add dummy report mode to add_namespace.cocci
+
+Eric Biggers <ebiggers@google.com>
+    Smack: fix use-after-free in smk_write_relabel_self()
+
+Jann Horn <jannh@google.com>
+    binder: Prevent context manager from incrementing ref 0
+
+Adam Ford <aford173@gmail.com>
+    omapfb: dss: Fix max fclk divider for omap36xx
+
+Peilin Ye <yepeilin.cs@gmail.com>
+    Bluetooth: Prevent out-of-bounds read in hci_inquiry_result_with_rssi_evt()
+
+Peilin Ye <yepeilin.cs@gmail.com>
+    Bluetooth: Prevent out-of-bounds read in hci_inquiry_result_evt()
+
+Peilin Ye <yepeilin.cs@gmail.com>
+    Bluetooth: Fix slab-out-of-bounds read in hci_extended_inquiry_result_evt()
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    Staging: rtl8188eu: rtw_mlme: Fix uninitialized variable authmode
+
+Rustam Kovhaev <rkovhaev@gmail.com>
+    staging: rtl8712: handle firmware load failure
+
+Suren Baghdasaryan <surenb@google.com>
+    staging: android: ashmem: Fix lockdep warning for write operation
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: seq: oss: Serialize ioctls
+
+Connor McAdams <conmanx360@gmail.com>
+    ALSA: hda/ca0132 - Fix AE-5 microphone selection commands.
+
+Connor McAdams <conmanx360@gmail.com>
+    ALSA: hda/ca0132 - Fix ZxR Headphone gain control get value.
+
+Connor McAdams <conmanx360@gmail.com>
+    ALSA: hda/ca0132 - Add new quirk ID for Recon3D.
+
+Huacai Chen <chenhc@lemote.com>
+    ALSA: hda/realtek: Add alc269/alc662 pin-tables for Loongson-3 laptops
+
+Hui Wang <hui.wang@canonical.com>
+    Revert "ALSA: hda: call runtime_allow() for all hda controllers"
+
+Forest Crossman <cyrozap@gmail.com>
+    usb: xhci: Fix ASMedia ASM1142 DMA addressing
+
+Forest Crossman <cyrozap@gmail.com>
+    usb: xhci: define IDs for various ASMedia host controllers
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    USB: iowarrior: fix up report size handling for some devices
+
+Erik Ekman <erik@kryo.se>
+    USB: serial: qcserial: add EM7305 QDL product ID
+
+Stanley Chu <stanley.chu@mediatek.com>
+    scsi: ufs: Fix and simplify setup_xfer_req variant operation
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                    |   4 +-
+ arch/arm64/include/asm/archrandom.h         |   1 -
+ arch/arm64/kernel/kaslr.c                   |  14 ++--
+ arch/powerpc/include/asm/kasan.h            |   2 +
+ arch/powerpc/mm/init_32.c                   |   2 +
+ arch/powerpc/mm/kasan/kasan_init_32.c       |  29 ++++---
+ drivers/android/binder.c                    |  15 +++-
+ drivers/gpio/gpio-max77620.c                |   5 +-
+ drivers/leds/leds-88pm860x.c                |  14 +++-
+ drivers/leds/leds-da903x.c                  |  14 +++-
+ drivers/leds/leds-lm3533.c                  |  12 ++-
+ drivers/leds/leds-lm36274.c                 |  15 +++-
+ drivers/leds/leds-wm831x-status.c           |  14 +++-
+ drivers/misc/lkdtm/heap.c                   |   9 ++-
+ drivers/mtd/mtdchar.c                       |  56 +++++++++++---
+ drivers/pci/controller/pci-tegra.c          |  32 --------
+ drivers/scsi/ufs/ufshcd.c                   |   9 ++-
+ drivers/staging/android/ashmem.c            |  12 +++
+ drivers/staging/rtl8188eu/core/rtw_mlme.c   |   4 +-
+ drivers/staging/rtl8712/hal_init.c          |   3 +-
+ drivers/staging/rtl8712/usb_intf.c          |  11 ++-
+ drivers/usb/host/xhci-pci.c                 |  10 ++-
+ drivers/usb/misc/iowarrior.c                |  35 ++++++---
+ drivers/usb/serial/qcserial.c               |   1 +
+ drivers/video/console/vgacon.c              |   4 +
+ drivers/video/fbdev/omap2/omapfb/dss/dss.c  |   2 +-
+ fs/xattr.c                                  |  84 ++++++++++++++++++--
+ include/linux/prandom.h                     |  78 +++++++++++++++++++
+ include/linux/random.h                      |  66 +---------------
+ include/linux/xattr.h                       |   2 +
+ net/bluetooth/hci_event.c                   |  11 ++-
+ scripts/coccinelle/misc/add_namespace.cocci |   8 +-
+ scripts/nsdeps                              |   2 +-
+ security/integrity/ima/Kconfig              |   2 +-
+ security/integrity/ima/ima_appraise.c       |   6 ++
+ security/smack/smackfs.c                    |  13 +++-
+ sound/core/seq/oss/seq_oss.c                |   8 +-
+ sound/pci/hda/hda_intel.c                   |   1 -
+ sound/pci/hda/patch_ca0132.c                |  12 ++-
+ sound/pci/hda/patch_realtek.c               | 114 ++++++++++++++++++++++++++++
+ 40 files changed, 549 insertions(+), 187 deletions(-)
+
 
