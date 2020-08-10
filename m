@@ -2,109 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD5C240672
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 15:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31F8240678
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 15:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgHJNKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 09:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
+        id S1726830AbgHJNMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 09:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgHJNKv (ORCPT
+        with ESMTP id S1726584AbgHJNMb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 09:10:51 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F20BC061756;
-        Mon, 10 Aug 2020 06:10:51 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id n129so2535141qkd.6;
-        Mon, 10 Aug 2020 06:10:51 -0700 (PDT)
+        Mon, 10 Aug 2020 09:12:31 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EACC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 06:12:31 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id l2so8120930wrc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 06:12:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding:content-disposition;
-        bh=ujiAdgT+/a8lkUEdLHIcLIc1M7AMlHOeXKUBIZSN4YU=;
-        b=o6Whz9sEOU24iSepBzhEUAwpb1491mF7wazNBqguAhSXidNblShAUmjT0ULKRkdxcC
-         CfNSPrBbSH3yqO8MRsc1x5hSqDvpzd3A29aprp9/xqFg9YlGt9VpOtl+h9PeF3oenLYN
-         JbYAI73pZUcD2MK4TpsESV5uOE4QgE6o4HbijFIxnm68JtexOnRXvW2mLhB7X/R6tap+
-         SaeML+LcJ30+yaUYveXBAMejOEvcrAebWZRGy1SN7IB1ZHJKUuDy/41ABAltlbkmXZL5
-         rq+KHqqju8U63UEaXGVnV6HL1FTcwGck6WjCb8aD4Mfjoa5ZSToaMvhEanWoo6IHaGxM
-         BCVg==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iGTAL/+sIj6emRK3fqEhesmWaas0p8AJ5UO8Qp8MS1M=;
+        b=kiybH+qBWuADveErVU6XG2NhmnEtx+jjpz4e5l4kPqdP+eOVGDVXTTuj7GzN8/usfb
+         aqSyH2C6eba/f1bIp2y4Qwz89xvumnwQDUFTZn+O1+dhurhVQUQrPcper+mKqlPWKIJS
+         /pjIiSSf4Jsk1WTPpS5yRa5EkgDThqB3kPG0g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding
-         :content-disposition;
-        bh=ujiAdgT+/a8lkUEdLHIcLIc1M7AMlHOeXKUBIZSN4YU=;
-        b=kfrrG9HeA1/2aSKf7jOdsgFTUxn61yJL55RT/ODDVy/LqMrHBVpGERnLqloFuCwZud
-         UhUJRyQwP4H99/QlQzvR4UNiOHxZMBXKriAcxDfYK8LX5EayF5kzLubkOTKgIkiWEgCV
-         8C/8hOY3lc7xo1yRb+l/m555L9l4hCXveuDnnO2hYHvW2OQFk2IGP2JLT23tOsk76I0+
-         UoNnQDy/PK9UN5nFl4XwXYomlAxXy7ovPyGIo4UVxdUFenxMbcrjwrq6w2DqRXThGerW
-         V8Xa5ReAlxRYCSCP5FthLKTAchBA7EvjRJAn6ffreNEEJneYYvcZ0v0sbE02TsY4Kcz/
-         Nx1Q==
-X-Gm-Message-State: AOAM531/8dJrMT1kemlzvnL5oOBGsU3LNbqtbvnUfV7PMjRkwnV2Jb1U
-        LKyoWbblcyNNFrdgNmSpkAE=
-X-Google-Smtp-Source: ABdhPJyebrqHyf2sIFVLFzm8DaF3vOf/GUcosAoNFNy94psyps5t6cMgWC/xXwFlnC4NhKF8yG+KqQ==
-X-Received: by 2002:a37:b787:: with SMTP id h129mr24913657qkf.402.1597065049358;
-        Mon, 10 Aug 2020 06:10:49 -0700 (PDT)
-Received: from dwls-dell ([2804:14d:72b1:8920:a2ce:f815:f14d:bfac])
-        by smtp.gmail.com with ESMTPSA id l1sm15388418qtp.96.2020.08.10.06.10.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 10 Aug 2020 06:10:48 -0700 (PDT)
-Date:   Mon, 10 Aug 2020 10:10:45 -0300
-From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     "=?utf-8?Q?skhan=40linuxfoundation.org?=" <skhan@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "=?utf-8?Q?linux-media=40vger.kernel.org?=" 
-        <linux-media@vger.kernel.org>,
-        "=?utf-8?Q?linux-kernel=40vger.kernel.org?=" 
-        <linux-kernel@vger.kernel.org>
-Message-ID: <6FF983D6-F754-42CB-8745-EF1DFA76B12F@getmailspring.com>
-In-Reply-To: <20200808204517.GJ6186@pendragon.ideasonboard.com>
-References: <20200808204517.GJ6186@pendragon.ideasonboard.com>
-Subject: Re: [PATCH 04/20] media: uvc: uvc_v4l2.c: add temp variable for
- list iteration
-X-Mailer: Mailspring
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=iGTAL/+sIj6emRK3fqEhesmWaas0p8AJ5UO8Qp8MS1M=;
+        b=EOiIFpYbhZAtyJbIWhTUdCwb9aud2umGQAoyz+mUA/QdUk/XBHVRfKL82XJP+C2k0c
+         OtcOjoJFcFHFbjlwnAKpKlacM8njnu96md0zlymgbL/i3OG2O7BsuUibBeG88aLtpoYB
+         u1cijqy5BisaSpqVeFjfIMUJyvV6VOYjx0r6oTmKvfzM7P5oWrGMrKf6hCvh7NxgmYpp
+         ffAwi7ep2EysFcSuMtitpKAQuOC+eTFDKGhlEu569Zu5ailHQUjDJhO/VRlD9isl+vFu
+         m5qPb2qvehdb3rtRy2kxNyFdmPr/LkXG+9BOfysyOrffocMiiU13JrQ9hW2FNWQvuo3y
+         644Q==
+X-Gm-Message-State: AOAM533yl960ifrDydjGeqdnaRzDrK7RAUg9hmzPYQQN6UhOECZIJUqn
+        4WEBN1yXbBcqRFMab0p+DtW9EUhPQbE=
+X-Google-Smtp-Source: ABdhPJzE2hOnuO6FJZJTN+hB/BfbT0RyysxtWTsn0jH+nB8VUjAb31vcXQl1nU79oHgj8G6691FpWQ==
+X-Received: by 2002:a5d:5383:: with SMTP id d3mr1457089wrv.42.1597065150007;
+        Mon, 10 Aug 2020 06:12:30 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t13sm20523157wru.65.2020.08.10.06.12.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Aug 2020 06:12:29 -0700 (PDT)
+Date:   Mon, 10 Aug 2020 15:12:27 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/vgem: add missing platform_device_unregister() in
+ vgem_init()
+Message-ID: <20200810131227.GU2352366@phenom.ffwll.local>
+Mail-Followup-To: Qinglang Miao <miaoqinglang@huawei.com>,
+        David Airlie <airlied@linux.ie>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20200810125942.186637-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20200810125942.186637-1-miaoqinglang@huawei.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent, thanks for reviewing!
+On Mon, Aug 10, 2020 at 08:59:42PM +0800, Qinglang Miao wrote:
+> When vgem_init() get into out_put, the unregister call of
+> vgem_device->platform is missing. So add it before return.
+> 
+> Fixes: 363de9e7d4f6 "drm/vgem: Use drmm_add_final_kfree"
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 
-> If no entity is found by this loop the next line will dereference a NULL
-> pointer. There's a similar issue below.
+Uh right I still have my series stuck which would have fixed this properly
+... Thanks for your fix, both applied to drm-misc-next.
+-Daniel
 
-You mean this line, right?
->		pin = iterm->id;
+> ---
+>  drivers/gpu/drm/vgem/vgem_drv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
+> index a775feda1..313339bbf 100644
+> --- a/drivers/gpu/drm/vgem/vgem_drv.c
+> +++ b/drivers/gpu/drm/vgem/vgem_drv.c
+> @@ -471,8 +471,8 @@ static int __init vgem_init(void)
+>  
+>  out_put:
+>  	drm_dev_put(&vgem_device->drm);
+> +	platform_device_unregister(vgem_device->platform);
+>  	return ret;
+> -
+>  out_unregister:
+>  	platform_device_unregister(vgem_device->platform);
+>  out_free:
+> -- 
+> 2.25.1
+> 
 
-In which case, yes I missed it!
-
-> I think the issues reported by coccinelle are false positives, as every
-> chain is guaranteed to have the proper input terminals (ITERM). This is
-> verified when constructing the chain at probe time.
-
-I thought so too, but I thought it would be nice to get rid of the
-warning anyways. Probably other people will send patches for this same
-issue in the future too, i.e. until this warning is not there anymore.
-
-Do you have any suggestions or should we just leave this alone? :)
-
-Maybe:
-
-if (iterm)
-  pin = iterm->id
-
-
-This line will return an error if the iterm is not found anyway:
-
-	if (iterm == NULL || iterm->id != pin)
-		return -EINVAL
-
-
-Let me know what you think
-
-- Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
