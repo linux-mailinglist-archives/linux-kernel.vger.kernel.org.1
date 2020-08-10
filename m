@@ -2,105 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78ADE2403E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 11:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130CE2403E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 11:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726675AbgHJJVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 05:21:44 -0400
-Received: from mga04.intel.com ([192.55.52.120]:63148 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726310AbgHJJVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 05:21:44 -0400
-IronPort-SDR: LHhCCIJDB02ky4uH86BEvz5/7W3PxAjBDTFkgEdNjLCD9mVV8ag97fRTGQHej1QspmrYMPQREg
- uqRfugsq7yuw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9708"; a="150936645"
-X-IronPort-AV: E=Sophos;i="5.75,457,1589266800"; 
-   d="scan'208";a="150936645"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2020 02:21:43 -0700
-IronPort-SDR: lJ+AjjmZNrGkYBBEqN0szbQUT5QLSC5pVmEPD1kdHBqJMGBjM67IVNuWfxfkP+ZhJVnsBz1mL7
- plRqJJF01Myw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,457,1589266800"; 
-   d="scan'208";a="294327539"
-Received: from lkp-server02.sh.intel.com (HELO 5ad9e2f13e37) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 10 Aug 2020 02:21:40 -0700
-Received: from kbuild by 5ad9e2f13e37 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k53zv-0000U1-FC; Mon, 10 Aug 2020 09:21:39 +0000
-Date:   Mon, 10 Aug 2020 17:21:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Denis Efremov <efremov@linux.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Julia Lawall <Julia.Lawall@lip6.fr>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Qiujun Huang <hqjagain@gmail.com>,
-        Peter Rosin <peda@axentia.se>, dri-devel@lists.freedesktop.org
-Subject: [PATCH] coccinelle: api: fix device_attr_show.cocci warnings
-Message-ID: <20200810092100.GA42813@2f5448a72a42>
-References: <202008101736.EtK0s7BQ%lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202008101736.EtK0s7BQ%lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726718AbgHJJWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 05:22:14 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:35017 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725846AbgHJJWN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 05:22:13 -0400
+X-IronPort-AV: E=Sophos;i="5.75,457,1589209200"; 
+   d="scan'208";a="54286650"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie5.idc.renesas.com with ESMTP; 10 Aug 2020 18:22:11 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id DDF1E41EF40F;
+        Mon, 10 Aug 2020 18:22:09 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        devicetree@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 0/2] r8a774e1 add FCPF, FCPV and VSP nodes
+Date:   Mon, 10 Aug 2020 10:22:06 +0100
+Message-Id: <20200810092208.27320-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+Hi All,
 
-drivers/video/fbdev/core/fbcon.c:3509:8-16: WARNING: use scnprintf or sprintf
-drivers/video/fbdev/core/fbcon.c:3484:8-16: WARNING: use scnprintf or sprintf
+This patch series adds FCPF, FCPV and VSP nodes to r8a774e1
+SoC dtsi. Patches apply on top of series [1].
 
+[1] https://patchwork.kernel.org/project/linux-renesas-soc/
+    list/?series=319563
 
- From Documentation/filesystems/sysfs.txt:
-  show() must not use snprintf() when formatting the value to be
-  returned to user space. If you can guarantee that an overflow
-  will never happen you can use sprintf() otherwise you must use
-  scnprintf().
+Cheers,
+Prabhakar
 
-Generated by: scripts/coccinelle/api/device_attr_show.cocci
+Marian-Cristian Rotariu (2):
+  arm64: dts: renesas: r8a774e1: Add FCPF and FCPV instances
+  arm64: dts: renesas: r8a774e1: Add VSP instances
 
-Fixes: abfc19ff202d ("coccinelle: api: add device_attr_show script")
-CC: Denis Efremov <efremov@linux.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
+ arch/arm64/boot/dts/renesas/r8a774e1.dtsi | 130 ++++++++++++++++++++++
+ 1 file changed, 130 insertions(+)
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   fc80c51fd4b23ec007e88d4c688f2cac1b8648e7
-commit: abfc19ff202d287742483e15fd478ddd6ada2187 coccinelle: api: add device_attr_show script
+-- 
+2.17.1
 
-Please take the patch only if it's a positive warning. Thanks!
-
- fbcon.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -3481,7 +3481,7 @@ static ssize_t show_rotate(struct device
- 	rotate = fbcon_get_rotate(info);
- err:
- 	console_unlock();
--	return snprintf(buf, PAGE_SIZE, "%d\n", rotate);
-+	return scnprintf(buf, PAGE_SIZE, "%d\n", rotate);
- }
- 
- static ssize_t show_cursor_blink(struct device *device,
-@@ -3506,7 +3506,7 @@ static ssize_t show_cursor_blink(struct
- 	blink = (ops->flags & FBCON_FLAGS_CURSOR_TIMER) ? 1 : 0;
- err:
- 	console_unlock();
--	return snprintf(buf, PAGE_SIZE, "%d\n", blink);
-+	return scnprintf(buf, PAGE_SIZE, "%d\n", blink);
- }
- 
- static ssize_t store_cursor_blink(struct device *device,
