@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118D1240A36
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F272409A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728510AbgHJPjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:39:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58462 "EHLO mail.kernel.org"
+        id S1728695AbgHJPeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:34:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728455AbgHJPYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:24:54 -0400
+        id S1728685AbgHJP3S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:29:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D76DF20855;
-        Mon, 10 Aug 2020 15:24:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D348422BF3;
+        Mon, 10 Aug 2020 15:29:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073094;
-        bh=daB+xSwsKq1kHM+/l7j584ZlN+Y27tIZJhrJlaziGrw=;
+        s=default; t=1597073358;
+        bh=5j1N6fY856atSdd1yo4YTw/tK7vOcoJ8AervVVeA2Bk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m7QeI/cPpeyEYG35CTo9NqgXdyy7oDPZjrLgsva1qPPPGhwwsIdRjWMejZ9LHo3xS
-         8PkSMGbW7jm8iOxRaeQPVkQGe5PQSY86Ksb87J062/aEm+pZ+LzVPBUvaLPLsGWL5l
-         85q8ZUg8HCxK6J02XWOCJvwQynexP0KKAnNDiFFY=
+        b=B/tH84fRrLa/g0IkiMiMrzL41cr02cNQx0/BlDbd/3+Ioti9IPmhMl7CsWqZ3xPc7
+         rxERmk4BQKsSNbq/BLsMjwnMyV7hPlOtl91sM+FE8fMxG9lZm24+WtvnIAXmJWDiwb
+         8SyhaRruiaEIGpHCspsMbaxXVe29FSUWe07eUaRI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.7 64/79] dpaa2-eth: Fix passing zero to PTR_ERR warning
+        stable@vger.kernel.org, Erik Ekman <erik@kryo.se>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 01/48] USB: serial: qcserial: add EM7305 QDL product ID
 Date:   Mon, 10 Aug 2020 17:21:23 +0200
-Message-Id: <20200810151815.400579929@linuxfoundation.org>
+Message-Id: <20200810151804.281474167@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
-References: <20200810151812.114485777@linuxfoundation.org>
+In-Reply-To: <20200810151804.199494191@linuxfoundation.org>
+References: <20200810151804.199494191@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,47 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Erik Ekman <erik@kryo.se>
 
-[ Upstream commit 02afa9c66bb954c6959877c70d9e128dcf0adce7 ]
+commit d2a4309c1ab6df424b2239fe2920d6f26f808d17 upstream.
 
-Fix smatch warning:
+When running qmi-firmware-update on the Sierra Wireless EM7305 in a Toshiba
+laptop, it changed product ID to 0x9062 when entering QDL mode:
 
-drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c:2419
- alloc_channel() warn: passing zero to 'ERR_PTR'
+usb 2-4: new high-speed USB device number 78 using xhci_hcd
+usb 2-4: New USB device found, idVendor=1199, idProduct=9062, bcdDevice= 0.00
+usb 2-4: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+usb 2-4: Product: EM7305
+usb 2-4: Manufacturer: Sierra Wireless, Incorporated
 
-setup_dpcon() should return ERR_PTR(err) instead of zero in error
-handling case.
+The upgrade could complete after running
+ # echo 1199 9062 > /sys/bus/usb-serial/drivers/qcserial/new_id
 
-Fixes: d7f5a9d89a55 ("dpaa2-eth: defer probe on object allocate")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+qcserial 2-4:1.0: Qualcomm USB modem converter detected
+usb 2-4: Qualcomm USB modem converter now attached to ttyUSB0
+
+Signed-off-by: Erik Ekman <erik@kryo.se>
+Link: https://lore.kernel.org/r/20200717185118.3640219-1-erik@kryo.se
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-@@ -2120,7 +2120,7 @@ close:
- free:
- 	fsl_mc_object_free(dpcon);
- 
--	return NULL;
-+	return ERR_PTR(err);
- }
- 
- static void free_dpcon(struct dpaa2_eth_priv *priv,
-@@ -2144,8 +2144,8 @@ alloc_channel(struct dpaa2_eth_priv *pri
- 		return NULL;
- 
- 	channel->dpcon = setup_dpcon(priv);
--	if (IS_ERR_OR_NULL(channel->dpcon)) {
--		err = PTR_ERR_OR_ZERO(channel->dpcon);
-+	if (IS_ERR(channel->dpcon)) {
-+		err = PTR_ERR(channel->dpcon);
- 		goto err_setup;
- 	}
- 
+---
+ drivers/usb/serial/qcserial.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/usb/serial/qcserial.c
++++ b/drivers/usb/serial/qcserial.c
+@@ -155,6 +155,7 @@ static const struct usb_device_id id_tab
+ 	{DEVICE_SWI(0x1199, 0x9056)},	/* Sierra Wireless Modem */
+ 	{DEVICE_SWI(0x1199, 0x9060)},	/* Sierra Wireless Modem */
+ 	{DEVICE_SWI(0x1199, 0x9061)},	/* Sierra Wireless Modem */
++	{DEVICE_SWI(0x1199, 0x9062)},	/* Sierra Wireless EM7305 QDL */
+ 	{DEVICE_SWI(0x1199, 0x9063)},	/* Sierra Wireless EM7305 */
+ 	{DEVICE_SWI(0x1199, 0x9070)},	/* Sierra Wireless MC74xx */
+ 	{DEVICE_SWI(0x1199, 0x9071)},	/* Sierra Wireless MC74xx */
 
 
