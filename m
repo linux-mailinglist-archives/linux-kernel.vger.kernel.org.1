@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F2E241095
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C09624108D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729495AbgHJTb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 15:31:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37134 "EHLO mail.kernel.org"
+        id S1730112AbgHJTbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 15:31:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728836AbgHJTKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 15:10:10 -0400
+        id S1728868AbgHJTKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 15:10:13 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12081221E2;
-        Mon, 10 Aug 2020 19:10:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FED322B49;
+        Mon, 10 Aug 2020 19:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597086609;
-        bh=Bkk7uSPyPlKR0GzH9CuZpxOaO+KfwSErAJhcc2HJeWc=;
+        s=default; t=1597086612;
+        bh=E5VFAU4pKlcc7oy2AktMdjxV68dwiIrYRVznhcynNiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=npuTQ4O9wUiF5gdZjsC7rY/3AvM9K/cUJnkwB2Urpxs/Y65ra+wHOSSyXXre4jz8l
-         r/hyB8GUKNy45u1iwWn2NYmfH3zKzxfP+GaQV1xUKquhFhUoTnexoA0ZhuaTRfAHPq
-         5T0crfrHr82yrHYhHwPCLvk8+pffORNq1zU1WTVk=
+        b=G7OO0XK/jQYrfGF+OBnsdya21GmeIWavFb3PBsF/NHqSlgId7J3qLh3EFffMQXogT
+         upMqq6vK4h9BjIVgnialLUusq58VYBFVbo2Ger00g1Y+d/ag+r80YyKStPS1Xh5jKY
+         7IgsqR3UK+Q9rrDusp6wQH42VUc+CREzMd5moA2Q=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     shirley her <shirley.her@bayhubtech.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 51/64] mmc: sdhci-pci-o2micro: Bug fix for O2 host controller Seabird1
-Date:   Mon, 10 Aug 2020 15:08:46 -0400
-Message-Id: <20200810190859.3793319-51-sashal@kernel.org>
+Cc:     Sasi Kumar <sasi.kumar@broadcom.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 53/64] bdc: Fix bug causing crash after multiple disconnects
+Date:   Mon, 10 Aug 2020 15:08:48 -0400
+Message-Id: <20200810190859.3793319-53-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200810190859.3793319-1-sashal@kernel.org>
 References: <20200810190859.3793319-1-sashal@kernel.org>
@@ -43,40 +45,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: shirley her <shirley.her@bayhubtech.com>
+From: Sasi Kumar <sasi.kumar@broadcom.com>
 
-[ Upstream commit cdd2b769789ae1a030e1a26f6c37c5833cabcb34 ]
+[ Upstream commit a95bdfd22076497288868c028619bc5995f5cc7f ]
 
-To fix support for the O2 host controller Seabird1, set the quirk
-SDHCI_QUIRK2_PRESET_VALUE_BROKEN and the capability bit MMC_CAP2_NO_SDIO.
-Moreover, assign the ->get_cd() callback.
+Multiple connects/disconnects can cause a crash on the second
+disconnect. The driver had a problem where it would try to send
+endpoint commands after it was disconnected which is not allowed
+by the hardware. The fix is to only allow the endpoint commands
+when the endpoint is connected. This will also fix issues that
+showed up when using configfs to create gadgets.
 
-Signed-off-by: Shirley Her <shirley.her@bayhubtech.com>
-Link: https://lore.kernel.org/r/20200721011733.8416-1-shirley.her@bayhubtech.com
-[Ulf: Updated the commit message]
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasi Kumar <sasi.kumar@broadcom.com>
+Signed-off-by: Al Cooper <alcooperx@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-pci-o2micro.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/usb/gadget/udc/bdc/bdc_core.c |  4 ++++
+ drivers/usb/gadget/udc/bdc/bdc_ep.c   | 16 ++++++++++------
+ 2 files changed, 14 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-pci-o2micro.c b/drivers/mmc/host/sdhci-pci-o2micro.c
-index e2a846885902f..ed3c605fcf0c4 100644
---- a/drivers/mmc/host/sdhci-pci-o2micro.c
-+++ b/drivers/mmc/host/sdhci-pci-o2micro.c
-@@ -561,6 +561,12 @@ static int sdhci_pci_o2_probe_slot(struct sdhci_pci_slot *slot)
- 			slot->host->mmc_host_ops.get_cd = sdhci_o2_get_cd;
- 		}
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
+index 02a3a774670b1..5fde5a8b065c1 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc_core.c
++++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
+@@ -282,6 +282,7 @@ static void bdc_mem_init(struct bdc *bdc, bool reinit)
+ 	 * in that case reinit is passed as 1
+ 	 */
+ 	if (reinit) {
++		int i;
+ 		/* Enable interrupts */
+ 		temp = bdc_readl(bdc->regs, BDC_BDCSC);
+ 		temp |= BDC_GIE;
+@@ -291,6 +292,9 @@ static void bdc_mem_init(struct bdc *bdc, bool reinit)
+ 		/* Initialize SRR to 0 */
+ 		memset(bdc->srr.sr_bds, 0,
+ 					NUM_SR_ENTRIES * sizeof(struct bdc_bd));
++		/* clear ep flags to avoid post disconnect stops/deconfigs */
++		for (i = 1; i < bdc->num_eps; ++i)
++			bdc->bdc_ep_array[i]->flags = 0;
+ 	} else {
+ 		/* One time initiaization only */
+ 		/* Enable status report function pointers */
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_ep.c b/drivers/usb/gadget/udc/bdc/bdc_ep.c
+index d49c6dc1082dc..9ddc0b4e92c9c 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc_ep.c
++++ b/drivers/usb/gadget/udc/bdc/bdc_ep.c
+@@ -615,7 +615,6 @@ int bdc_ep_enable(struct bdc_ep *ep)
+ 	}
+ 	bdc_dbg_bd_list(bdc, ep);
+ 	/* only for ep0: config ep is called for ep0 from connect event */
+-	ep->flags |= BDC_EP_ENABLED;
+ 	if (ep->ep_num == 1)
+ 		return ret;
  
-+		if (chip->pdev->device == PCI_DEVICE_ID_O2_SEABIRD1) {
-+			slot->host->mmc_host_ops.get_cd = sdhci_o2_get_cd;
-+			host->mmc->caps2 |= MMC_CAP2_NO_SDIO;
-+			host->quirks2 |= SDHCI_QUIRK2_PRESET_VALUE_BROKEN;
-+		}
-+
- 		host->mmc_host_ops.execute_tuning = sdhci_o2_execute_tuning;
+@@ -759,10 +758,13 @@ static int ep_dequeue(struct bdc_ep *ep, struct bdc_req *req)
+ 					__func__, ep->name, start_bdi, end_bdi);
+ 	dev_dbg(bdc->dev, "ep_dequeue ep=%p ep->desc=%p\n",
+ 						ep, (void *)ep->usb_ep.desc);
+-	/* Stop the ep to see where the HW is ? */
+-	ret = bdc_stop_ep(bdc, ep->ep_num);
+-	/* if there is an issue with stopping ep, then no need to go further */
+-	if (ret)
++	/* if still connected, stop the ep to see where the HW is ? */
++	if (!(bdc_readl(bdc->regs, BDC_USPC) & BDC_PST_MASK)) {
++		ret = bdc_stop_ep(bdc, ep->ep_num);
++		/* if there is an issue, then no need to go further */
++		if (ret)
++			return 0;
++	} else
+ 		return 0;
  
- 		if (chip->pdev->device != PCI_DEVICE_ID_O2_FUJIN2)
+ 	/*
+@@ -1911,7 +1913,9 @@ static int bdc_gadget_ep_disable(struct usb_ep *_ep)
+ 		__func__, ep->name, ep->flags);
+ 
+ 	if (!(ep->flags & BDC_EP_ENABLED)) {
+-		dev_warn(bdc->dev, "%s is already disabled\n", ep->name);
++		if (bdc->gadget.speed != USB_SPEED_UNKNOWN)
++			dev_warn(bdc->dev, "%s is already disabled\n",
++				 ep->name);
+ 		return 0;
+ 	}
+ 	spin_lock_irqsave(&bdc->lock, flags);
 -- 
 2.25.1
 
