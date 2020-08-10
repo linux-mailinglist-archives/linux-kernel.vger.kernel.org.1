@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CCC240406
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 11:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763AC24041D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 11:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgHJJbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 05:31:50 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:54784 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726705AbgHJJbr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 05:31:47 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07A9JvDJ029678;
-        Mon, 10 Aug 2020 05:31:46 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 32snw56aeh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 05:31:45 -0400
-Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 07A9Vic4061700
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 10 Aug 2020 05:31:44 -0400
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 10 Aug
- 2020 02:31:42 -0700
-Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 10 Aug 2020 02:31:42 -0700
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 07A9VdXQ023493;
-        Mon, 10 Aug 2020 05:31:41 -0400
-From:   <alexandru.tachici@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>
-Subject: [PATCH v5 2/2] iio: accel: adxl372: Add additional trigger ABI docs
-Date:   Mon, 10 Aug 2020 12:32:57 +0300
-Message-ID: <20200810093257.65929-3-alexandru.tachici@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200810093257.65929-1-alexandru.tachici@analog.com>
-References: <20200810093257.65929-1-alexandru.tachici@analog.com>
+        id S1726749AbgHJJgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 05:36:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725809AbgHJJgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 05:36:24 -0400
+Received: from localhost (p54b3345b.dip0.t-ipconnect.de [84.179.52.91])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D560A206C3;
+        Mon, 10 Aug 2020 09:36:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597052184;
+        bh=Vw+Rj/rtZ0j1+KEfAc3glhp58FKitPQp/lGLqr3Wulg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hmqoCBs8iQxnjVk5/oAp0r4eT7/PGqY6gkhr5rmIqktzxT2V2EFBKqczRWum+UfN9
+         6YWHkdAL1GlSYmk4d/R1F1mmqLDkDZViozqxN07M6+nmg2v9ZUtbRjJRkP0H4lyH6D
+         nnC7BEs7cPPgV0smgxdfqzZAitwmnM+eOrtgfFiI=
+Date:   Mon, 10 Aug 2020 11:36:19 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Stephen Kitt <steve@sk2.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Scott Wood <oss@buserror.net>, linuxppc-dev@lists.ozlabs.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arch/powerpc: use simple i2c probe function
+Message-ID: <20200810093619.GB1290@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Stephen Kitt <steve@sk2.org>, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, Scott Wood <oss@buserror.net>,
+        linuxppc-dev@lists.ozlabs.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200807152713.381588-1-steve@sk2.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-10_03:2020-08-06,2020-08-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- clxscore=1015 impostorscore=0 mlxscore=0 adultscore=0 suspectscore=0
- priorityscore=1501 lowpriorityscore=0 mlxlogscore=999 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008100068
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WYTEVAkct0FjGQmd"
+Content-Disposition: inline
+In-Reply-To: <20200807152713.381588-1-steve@sk2.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-Document use of additional trigger supplied by driver.
+--WYTEVAkct0FjGQmd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
----
- Documentation/ABI/testing/sysfs-bus-iio-accel-adxl372 | 7 +++++++
- 1 file changed, 7 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-accel-adxl372
+On Fri, Aug 07, 2020 at 05:27:13PM +0200, Stephen Kitt wrote:
+> The i2c probe functions here don't use the id information provided in
+> their second argument, so the single-parameter i2c probe function
+> ("probe_new") can be used instead.
+>=20
+> This avoids scanning the identifier tables during probes.
+>=20
+> Signed-off-by: Stephen Kitt <steve@sk2.org>
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio-accel-adxl372 b/Documentation/ABI/testing/sysfs-bus-iio-accel-adxl372
-new file mode 100644
-index 000000000000..47e34f865ca1
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-bus-iio-accel-adxl372
-@@ -0,0 +1,7 @@
-+What:		/sys/bus/iio/devices/triggerX/name = "adxl372-devX-peak"
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		The adxl372 accelerometer kernel module provides an additional trigger,
-+		which sets the device in a mode in which it will record only the peak acceleration
-+		sensed over the set period of time in the events sysfs.
--- 
-2.20.1
+This is useful, helps deprecating the old probe method:
 
+Acked-by: Wolfram Sang <wsa@kernel.org>
+
+
+--WYTEVAkct0FjGQmd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8xFRMACgkQFA3kzBSg
+KbZjrg/6A8HNLY0mqI61E0vXIx6q74Ls1JWWIlt+BNwoqOr2d5DWiprvBzgktbFA
+JHmPFgFWaWrSdn6oFz4sOIPRPbchcupAQ6HVJI9n3QxvkycCl0tAWx9hvd0/j72A
+lVQRvxOwid02Rtmsud4IKqGppm+FpyOh626IocTBbZZFn5+dZQLzt9L78/RND68S
+6lFvK1ybFmnIZMx0N886RTZBeuXDHI+SmfaP0R8za+0AUtNigUM0W6Uh+mQfc+LC
+7c7/4xSuf+7p6/kfWxTb1nclWBRcfNo22S0oODQCui/4AYUNOJohtS00Pr9eMH5N
+0Ov2NlE/wFjntSbyR1y02n6FgXT3hDSmR9Er61orn0EfFRBHztY/mrCE++4QTSvg
+XQsEJIxzzIXvKSonT9EO+0W/iYA1QJnjGG6LBKHKP8jVlaWCbryFPMILTJGEeJ3A
+BFA/5fdcdGmPoJJWLoWLXxDOamtl/DcvF4TNH3cxRvx6ZV6LYVBbYlAz+12+082u
+AQeXjT+oYLAB8ElSgRDHrbc622tw1AAQHDyJfchj8Mz71+P/mpKXJkYFwuk6GetU
+XKw8ZUIJZmao30jZ3a5e2VmrQTDCQ363q3H380EMfAMx+6m985jdcygbPRSni/aR
+X7YJpsdoBRcVRX+lPlE/Om97sdjd4NkXvSPpZdGzpwRnsDFoFBE=
+=nnuq
+-----END PGP SIGNATURE-----
+
+--WYTEVAkct0FjGQmd--
