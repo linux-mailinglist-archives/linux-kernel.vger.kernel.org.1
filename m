@@ -2,201 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D91240C83
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 19:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87DD3240C8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 20:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbgHJR6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 13:58:08 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1606 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726820AbgHJR6H (ORCPT
+        id S1728081AbgHJSAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 14:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727853AbgHJSAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 13:58:07 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07AHXinG131454;
-        Mon, 10 Aug 2020 13:57:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=r63m5wPatlVGKXEVci7ekmXKuv/hOL947q5faQjq6d0=;
- b=aKMxF9VaYwBEUx++kNulk45CXmo5nFHZhP216H5AMH+kT9qR1elHYXlnc93zuKW0/5MZ
- ARceEHihTQplOjWEuNeJ8Toi6i4uu07vD/Q2icmqMUsA+4yjkqEw9bySuY1CsK+D4kdT
- Smlqo7y3/rIzbkDbmIHFczCzKK5ISOJFxzUyro6ruIkRVFZNI6o27fwDjK+mCo2a42OW
- 684c37R6TmviOefDaZiviwHAPVOvJ5/+BDuzhdYR7WZBL/eXFbzjEz1eoZALwrNa8fpN
- EKHoKmxXB8d4iuPZx0BeJRRBbmWvH0znKaM+nSbJzZHu+GwLbWHIU/7FMwrI4a1PsRqC 9A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32sr8kkcaq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 13:57:52 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07AHsL8R028934;
-        Mon, 10 Aug 2020 13:57:51 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32sr8kkc9v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 13:57:51 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07AHtPub026448;
-        Mon, 10 Aug 2020 17:57:48 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 32skp8agfg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 17:57:48 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07AHvkLX30736720
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 Aug 2020 17:57:46 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5633E11C052;
-        Mon, 10 Aug 2020 17:57:46 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3BFA511C04C;
-        Mon, 10 Aug 2020 17:57:41 +0000 (GMT)
-Received: from sig-9-65-241-154.ibm.com (unknown [9.65.241.154])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 10 Aug 2020 17:57:41 +0000 (GMT)
-Message-ID: <8565b1430d5244eba95fc1fe0ed470b886747aaa.camel@linux.ibm.com>
-Subject: Re: [dm-devel] [RFC PATCH v5 00/11] Integrity Policy Enforcement
- LSM (IPE)
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Chuck Lever <chucklever@gmail.com>,
-        James Morris <jmorris@namei.org>
-Cc:     Deven Bowers <deven.desai@linux.microsoft.com>,
-        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>,
-        snitzer@redhat.com, dm-devel@redhat.com,
-        tyhicks@linux.microsoft.com, agk@redhat.com,
-        Paul Moore <paul@paul-moore.com>,
-        Jonathan Corbet <corbet@lwn.net>, nramas@linux.microsoft.com,
-        serge@hallyn.com, pasha.tatashin@soleen.com,
-        Jann Horn <jannh@google.com>, linux-block@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, mdsakib@microsoft.com,
-        open list <linux-kernel@vger.kernel.org>, eparis@redhat.com,
-        linux-security-module@vger.kernel.org, linux-audit@redhat.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        jaskarankhurana@linux.microsoft.com
-Date:   Mon, 10 Aug 2020 13:57:40 -0400
-In-Reply-To: <1597079586.3966.34.camel@HansenPartnership.com>
-References: <20200728213614.586312-1-deven.desai@linux.microsoft.com>
-         <20200802115545.GA1162@bug> <20200802140300.GA2975990@sasha-vm>
-         <20200802143143.GB20261@amd>
-         <1596386606.4087.20.camel@HansenPartnership.com>
-         <fb35a1f7-7633-a678-3f0f-17cf83032d2b@linux.microsoft.com>
-         <1596639689.3457.17.camel@HansenPartnership.com>
-         <alpine.LRH.2.21.2008050934060.28225@namei.org>
-         <b08ae82102f35936427bf138085484f75532cff1.camel@linux.ibm.com>
-         <329E8DBA-049E-4959-AFD4-9D118DEB176E@gmail.com>
-         <da6f54d0438ee3d3903b2c75fcfbeb0afdf92dc2.camel@linux.ibm.com>
-         <1597073737.3966.12.camel@HansenPartnership.com>
-         <4664ab7dc3b324084df323bfa4670d5bfde76e66.camel@linux.ibm.com>
-         <1597079586.3966.34.camel@HansenPartnership.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-10_14:2020-08-06,2020-08-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- mlxlogscore=999 priorityscore=1501 bulkscore=0 suspectscore=3
- lowpriorityscore=0 phishscore=0 malwarescore=0 clxscore=1015
- impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008100122
+        Mon, 10 Aug 2020 14:00:09 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7EEC061787;
+        Mon, 10 Aug 2020 11:00:08 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id z20so5399294plo.6;
+        Mon, 10 Aug 2020 11:00:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CVnt4d+5Wgp08r0J7kB3+z69GIQYYz/zExR5olEcjBk=;
+        b=OG3YOqJTj856emQJ3jR409bssaVQwfnYH0xuv2WQ0GHOM4s2pRjpkpDcWzBP7lsonY
+         akKkViAu32WuxL3jDgt22x0Uk6iTqdVmrUJlITyNP4CuY5oYVULrhQXxpolyq6lzx5+b
+         PeNDcVAOTuKyYGLZjEUrVEnMNhIMw5UIynPS+7uxG81umBjsI1m0fIME2EbErEXi59fQ
+         rW4ximTQ+LcZ4E7XyV010NsoMjs2FrvMra9vDp9kc+RvEEeJHqzzfVKLBYZlDwKX99Ve
+         5Yb+7qolIojRPM2Bj7+eZI3na8bE2vx+eW0V1k6IZ+BqeQyWhr6CHFX2t9q/hRCdS5lN
+         5MgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CVnt4d+5Wgp08r0J7kB3+z69GIQYYz/zExR5olEcjBk=;
+        b=QmyUeKs3ZKO3+/wda/GeKKxRqW+Krw2m6J0iZEa0J91kklw2pqyno5KMVEdvRu5TRW
+         ZjbLhEkmMOMjZfa3bMOQtbH+2iXDUGJ19mSDVbif3wGPgSqEfglc4EMlgSAkzPkyCDbE
+         b8xif8uQiyFW0YHv5Y17m0sywTFRS8YFOfFPT1llZCiSTEVVuI+g5tc6/jcrVYq24zFW
+         w5egjctAVEtZoTLK3u3hTWRfuxXaa/XuFooKThGfwYLSbSYpniH3WZnz01RWBMsn4pTR
+         TkktOE4bxnLJOsBlP7iP4NdzYqHZTD1lxmQS5Tc7FLcU8ywuAlABTOUB+/76UqUVapu1
+         4EVA==
+X-Gm-Message-State: AOAM533r4Pz1kUjcKiupI0ZLAF6AGv1NwG8QY5zlKzLUd/4yyfk6wRC4
+        ZExz3MgkwnmHKTDUsSYqVVs=
+X-Google-Smtp-Source: ABdhPJyLO10tNKJfrNNNS8apU2Jzw6LHJjonfo4M/fgSFqV01U0K0zEx/p1yzdsH7qunDhTB4a4HNA==
+X-Received: by 2002:a17:90a:c7:: with SMTP id v7mr470303pjd.139.1597082408007;
+        Mon, 10 Aug 2020 11:00:08 -0700 (PDT)
+Received: from gmail.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id l12sm192017pjq.31.2020.08.10.11.00.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Aug 2020 11:00:07 -0700 (PDT)
+Date:   Mon, 10 Aug 2020 23:28:27 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Andres Salomon <dilinger@queued.net>,
+        Antonino Daplas <adaplas@gmail.com>,
+        Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-geode@lists.infradead.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1 01/12] fbdev: gxfb: use generic power management
+Message-ID: <20200810175827.GA14392@gmail.com>
+References: <20200805180722.244008-1-vaibhavgupta40@gmail.com>
+ <20200805180722.244008-2-vaibhavgupta40@gmail.com>
+ <20200808111746.GA24172@ravnborg.org>
+ <20200810093948.GB6615@gmail.com>
+ <20200810165458.GA292825@ravnborg.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200810165458.GA292825@ravnborg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-08-10 at 10:13 -0700, James Bottomley wrote:
-> On Mon, 2020-08-10 at 12:35 -0400, Mimi Zohar wrote:
-> > On Mon, 2020-08-10 at 08:35 -0700, James Bottomley wrote:
-> [...]
-> > > > Up to now, verifying remote filesystem file integrity has been
-> > > > out of scope for IMA.   With fs-verity file signatures I can at
-> > > > least grasp how remote file integrity could possibly work.  I
-> > > > don't understand how remote file integrity with existing IMA
-> > > > formats could be supported. You might want to consider writing a
-> > > > whitepaper, which could later be used as the basis for a patch
-> > > > set cover letter.
+On Mon, Aug 10, 2020 at 06:54:58PM +0200, Sam Ravnborg wrote:
+> Hi Vaibhav
+> On Mon, Aug 10, 2020 at 03:09:48PM +0530, Vaibhav Gupta wrote:
+> > On Sat, Aug 08, 2020 at 01:17:46PM +0200, Sam Ravnborg wrote:
+> > > Hi Vaibhav
 > > > 
-> > > I think, before this, we can help with the basics (and perhaps we
-> > > should sort them out before we start documenting what we'll do).
+> > > On Wed, Aug 05, 2020 at 11:37:11PM +0530, Vaibhav Gupta wrote:
+> > > > Drivers using legacy power management .suspen()/.resume() callbacks
+> > > > have to manage PCI states and device's PM states themselves. They also
+> > > > need to take care of standard configuration registers.
+> > > > 
+> > > > Switch to generic power management framework using a single
+> > > > "struct dev_pm_ops" variable
+> > > 
+> > > "to take the unnecessary load from the driver."
+> > > - I do not parse the above - I cannot see what load is removed.
+> > > But the code is simpler which is fine. The drawback is that we now
+> > > always link in the suspend_gx functions but hopefultl the linker drops
+> > > them later.
+> > > 
+> > > > This also avoids the need for the driver to directly call most of the PCI
+> > > > helper functions and device power state control functions, as through
+> > > > the generic framework PCI Core takes care of the necessary operations,
+> > > > and drivers are required to do only device-specific jobs.
+> > > Again, I do not see what calles are removed.
+> > > A single check for the state is dropped - anything else?
+> > >
+> > Yeah, the commit messages are bit misleading, I have modified them. 
+> > > > 
+> > > > Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> > > > ---
+> > > >  drivers/video/fbdev/geode/gxfb.h       |  5 ----
+> > > >  drivers/video/fbdev/geode/gxfb_core.c  | 36 ++++++++++++++------------
+> > > >  drivers/video/fbdev/geode/suspend_gx.c |  4 ---
+> > > >  3 files changed, 20 insertions(+), 25 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/video/fbdev/geode/gxfb.h b/drivers/video/fbdev/geode/gxfb.h
+> > > > index d2e9c5c8e294..792c111c21e4 100644
+> > > > --- a/drivers/video/fbdev/geode/gxfb.h
+> > > > +++ b/drivers/video/fbdev/geode/gxfb.h
+> > > > @@ -21,7 +21,6 @@ struct gxfb_par {
+> > > >  	void __iomem *dc_regs;
+> > > >  	void __iomem *vid_regs;
+> > > >  	void __iomem *gp_regs;
+> > > > -#ifdef CONFIG_PM
+> > > >  	int powered_down;
+> > > >  
+> > > >  	/* register state, for power management functionality */
+> > > > @@ -36,7 +35,6 @@ struct gxfb_par {
+> > > >  	uint64_t fp[FP_REG_COUNT];
+> > > >  
+> > > >  	uint32_t pal[DC_PAL_COUNT];
+> > > > -#endif
+> > > >  };
+> > > >  
+> > > >  unsigned int gx_frame_buffer_size(void);
+> > > > @@ -49,11 +47,8 @@ void gx_set_dclk_frequency(struct fb_info *info);
+> > > >  void gx_configure_display(struct fb_info *info);
+> > > >  int gx_blank_display(struct fb_info *info, int blank_mode);
+> > > >  
+> > > > -#ifdef CONFIG_PM
+> > > >  int gx_powerdown(struct fb_info *info);
+> > > >  int gx_powerup(struct fb_info *info);
+> > > > -#endif
+> > > > -
+> > > >  
+> > > >  /* Graphics Processor registers (table 6-23 from the data book) */
+> > > >  enum gp_registers {
+> > > > diff --git a/drivers/video/fbdev/geode/gxfb_core.c b/drivers/video/fbdev/geode/gxfb_core.c
+> > > > index d38a148d4746..44089b331f91 100644
+> > > > --- a/drivers/video/fbdev/geode/gxfb_core.c
+> > > > +++ b/drivers/video/fbdev/geode/gxfb_core.c
+> > > > @@ -322,17 +322,14 @@ static struct fb_info *gxfb_init_fbinfo(struct device *dev)
+> > > >  	return info;
+> > > >  }
+> > > >  
+> > > > -#ifdef CONFIG_PM
+> > > > -static int gxfb_suspend(struct pci_dev *pdev, pm_message_t state)
+> > > > +static int __maybe_unused gxfb_suspend(struct device *dev)
+> > > >  {
+> > > > -	struct fb_info *info = pci_get_drvdata(pdev);
+> > > > +	struct fb_info *info = dev_get_drvdata(dev);
+> > > I do not see any dev_set_drvdata() so I guess we get a NULL pointer
+> > > here which is not intended.
+> > > Adding a dev_set_data() to gxfb_probe() would do the trick.
+> > > 
+> > gxfb_probe() invokes pci_set_drvdata(pdev, info) which in turn calls
+> > dev_set_drvdata(&pdev->dev, data). Adding dev_get_drvdata() will be redundant.
+> OK, not obvious but you are right that calling dev_get_drvdata() would
+> be redundant and no need.
+> There is a pci_get_drvdata() user left so we cannot just skip it and use
+> the dev_set_drvdata() direct.
+> 
 > > 
-> > I'm not opposed to doing that, but you're taking this discussion in a
-> > totally different direction.  The current discussion is about NFSv4
-> > supporting the existing IMA signatures, not only fs-verity
-> > signatures. I'd like to understand how that is possible and for the
-> > community to weigh in on whether it makes sense.
-> 
-> Well, I see the NFS problem as being chunk at a time, right, which is
-> merkle tree, or is there a different chunk at a time mechanism we want
-> to use?  IMA currently verifies signature on open/exec and then
-> controls updates.  Since for NFS we only control the client, we can't
-> do that on an NFS server, so we really do need verification at read
-> time ... unless we're threading IMA back to the NFS server?
-
-Yes.  I still don't see how we can support the existing IMA signatures,
-which is based on the file data hash, unless the "chunk at a time
-mechanism" is not a tree, but linear.
-
-Mimi
-
-> 
-> > > The first basic is that a merkle tree allows unit at a time
-> > > verification. First of all we should agree on the unit.  Since we
-> > > always fault a page at a time, I think our merkle tree unit should
-> > > be a page not a block. Next, we should agree where the check gates
-> > > for the per page accesses should be ... definitely somewhere in
-> > > readpage, I suspect and finally we should agree how the merkle tree
-> > > is presented at the gate.  I think there are three ways:
+> > > >  
+> > > > -	if (state.event == PM_EVENT_SUSPEND) {
+> > > > -		console_lock();
+> > > > -		gx_powerdown(info);
+> > > > -		fb_set_suspend(info, 1);
+> > > > -		console_unlock();
+> > > > -	}
+> > > > +	console_lock();
+> > > > +	gx_powerdown(info);
+> > > > +	fb_set_suspend(info, 1);
+> > > > +	console_unlock();
+> > > >  
+> > > >  	/* there's no point in setting PCI states; we emulate PCI, so
+> > > >  	 * we don't end up getting power savings anyways */
+> > > > @@ -340,9 +337,9 @@ static int gxfb_suspend(struct pci_dev *pdev, pm_message_t state)
+> > > >  	return 0;
+> > > >  }
+> > > >  
+> > > > -static int gxfb_resume(struct pci_dev *pdev)
+> > > > +static int __maybe_unused gxfb_resume(struct device *dev)
+> > > >  {
+> > > > -	struct fb_info *info = pci_get_drvdata(pdev);
+> > > > +	struct fb_info *info = dev_get_drvdata(dev);
+> > > >  	int ret;
+> > > >  
+> > > >  	console_lock();
+> > > > @@ -356,7 +353,6 @@ static int gxfb_resume(struct pci_dev *pdev)
+> > > >  	console_unlock();
+> > > >  	return 0;
+> > > >  }
+> > > > -#endif
+> > > >  
+> > > >  static int gxfb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> > > >  {
+> > > > @@ -467,15 +463,23 @@ static const struct pci_device_id gxfb_id_table[] = {
+> > > >  
+> > > >  MODULE_DEVICE_TABLE(pci, gxfb_id_table);
+> > > >  
+> > > > +static const struct dev_pm_ops gxfb_pm_ops = {
+> > > > +#ifdef CONFIG_PM_SLEEP
+> > > > +	.suspend	= gxfb_suspend,
+> > > > +	.resume		= gxfb_resume,
+> > > > +	.freeze		= NULL,
+> > > > +	.thaw		= gxfb_resume,
+> > > > +	.poweroff	= NULL,
+> > > > +	.restore	= gxfb_resume,
+> > > > +#endif
+> > > > +};
+> > > Can we use SET_SYSTEM_SLEEP_PM_OPS here?
+> > > .freeze will be assigned gxfb_suspend, but gxfb_suspend will anyway be
+> > > called as far as I read the code.
+> > > Likewise for poweroff.
 > > > 
-> > >    1. Ahead of time transfer:  The merkle tree is transferred and
-> > > verified
-> > >       at some time before the accesses begin, so we already have a
-> > >       verified copy and can compare against the lower leaf.
-> > >    2. Async transfer:  We provide an async mechanism to transfer
-> > > the
-> > >       necessary components, so when presented with a unit, we check
-> > > the
-> > >       log n components required to get to the root
-> > >    3. The protocol actually provides the capability of 2 (like the
-> > > SCSI
-> > >       DIF/DIX), so to IMA all the pieces get presented instead of
-> > > IMA
-> > >       having to manage the tree
-> > > 
-> > > There are also a load of minor things like how we get the head
-> > > hash, which must be presented and verified ahead of time for each
-> > > of the above 3.
+> > Earlier, gxfb_suspend() performed each operation just for suspend event.
+> > And as it was legacy code, it was invoked by pci_legacy_suspend() for
+> > pci_pm_suspend(), pci_pm_freeze() and pci_pm_poweroff().
+> > Thus, the code was wrapped inside "if" container:
+> > 	if (state.event == PM_EVENT_SUSPEND) { }
 > > 
-> >  
-> > I was under the impression that IMA support for fs-verity signatures
-> > would be limited to including the fs-verity signature in the
-> > measurement list and verifying the fs-verity signature.   As fs-
-> > verity is limited to immutable files, this could be done on file
-> > open.  fs-verity would be responsible for enforcing the block/page
-> > data integrity.   From a local filesystem perspective, I think that
-> > is all that is necessary.
+> > After binding it with dev_pm_ops variable, pm->suspend() is invoked by just
+> > pci_pm_suspend() which is required.
+> > 
+> > So I removed the "if" container and bind the callback with pm->suspend pointer
+> > only.
+> Looking at platform.c I got the impression that freeze() would call
+> pci_legacy_suspend() anyway - but I may have missind something.
+> So I guess this is OK then.
 > 
-> The fs-verity use case is a bit of a crippled one because it's
-> immutable.  I think NFS represents more the general case where you
-> can't rely on immutability and have to verify at chunk read time.  If
-> we get chunk at a time working for NFS, it should work also for fs-
-> verity and we wouldn't need to have two special paths.
-> 
-> I think, even for NFS we would only really need to log the open, so
-> same as you imagine for fs-verity.  As long as the chunk read hashes
-> match, we can be silent because everything is going OK, so we only need
-> to determine what to do and log on mismatch (which isn't expected to
-> happen for fs-verity).
-> 
-> > In terms of remote file systems,  the main issue is transporting and
-> > storing the Merkle tree.  As fs-verity is limited to immutable files,
-> > this could still be done on file open.
-> 
-> Right, I mentioned that in my options ... we need some "supply
-> integrity" hook ... or possibly multiple hooks for a variety of
-> possible methods.
+> I look forward for next revision with updated changelogs.
+Hello Sam,
 
+Yeah, I have updated the logs, will be sending the v2 soon. :)
+
+Thanks
+Vaibhav Gupta
+> 
+> 	Sam
+> > 
+> > Using SET_SYSTEM_PM_OPS will bring back the extra step of invoking gxfb_suspend()
+> > for freeze and poweroff, even though the function will do nothing in that case.
+> > 
+> > Vaibhav Gupta
+> > > 	Sam
+> > > 
+> > > > +
+> > > >  static struct pci_driver gxfb_driver = {
+> > > >  	.name		= "gxfb",
+> > > >  	.id_table	= gxfb_id_table,
+> > > >  	.probe		= gxfb_probe,
+> > > >  	.remove		= gxfb_remove,
+> > > > -#ifdef CONFIG_PM
+> > > > -	.suspend	= gxfb_suspend,
+> > > > -	.resume		= gxfb_resume,
+> > > > -#endif
+> > > > +	.driver.pm	= &gxfb_pm_ops,
+> > > >  };
+> > > >  
+> > > >  #ifndef MODULE
+> > > > diff --git a/drivers/video/fbdev/geode/suspend_gx.c b/drivers/video/fbdev/geode/suspend_gx.c
+> > > > index 1110a527c35c..8c49d4e98772 100644
+> > > > --- a/drivers/video/fbdev/geode/suspend_gx.c
+> > > > +++ b/drivers/video/fbdev/geode/suspend_gx.c
+> > > > @@ -11,8 +11,6 @@
+> > > >  
+> > > >  #include "gxfb.h"
+> > > >  
+> > > > -#ifdef CONFIG_PM
+> > > > -
+> > > >  static void gx_save_regs(struct gxfb_par *par)
+> > > >  {
+> > > >  	int i;
+> > > > @@ -259,5 +257,3 @@ int gx_powerup(struct fb_info *info)
+> > > >  	par->powered_down  = 0;
+> > > >  	return 0;
+> > > >  }
+> > > > -
+> > > > -#endif
+> > > > -- 
+> > > > 2.27.0
+> > > > 
+> > > > _______________________________________________
+> > > > dri-devel mailing list
+> > > > dri-devel@lists.freedesktop.org
+> > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
