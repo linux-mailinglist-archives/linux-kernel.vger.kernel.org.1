@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076BA2408DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9ADF2408DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728607AbgHJPZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:25:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59792 "EHLO mail.kernel.org"
+        id S1728293AbgHJP0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:26:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728597AbgHJPZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:25:52 -0400
+        id S1728466AbgHJPZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:25:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 505A7208A9;
-        Mon, 10 Aug 2020 15:25:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3061822CF7;
+        Mon, 10 Aug 2020 15:25:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073151;
-        bh=ktl3ZDLynTSS4IXTv9zGMujR6H6biXQbYY16iEU1EFM=;
+        s=default; t=1597073154;
+        bh=dK+dE3HFvoYVSktKHD4lSR0Qr1HltIXoGbfJokD2cB4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uaVP0FrYM8hsE3jdZeh1mAdyO0LtH2sVk/xSXCyF/4cPy9cOGEvx9NCJBvDFj2+fs
-         Kvo8UduqyZkupCn0VttG61pdXAgtDKctSuVA3LpFLnzkkGqVAZQgf+niuLu0Pp2REW
-         8vPeh/TAGthjMdc3sEGEDrI50jEb7Db+sbcOrhrg=
+        b=jf+jsbTzdJoVSYPgD4rit7iVTnP5fJdouvt6gq/K84rvB9RxDM6dfAIetpKoBwmKb
+         imdKWz4pmLzQ90yknbCWbX5KS8Jb1dDL7sAWy9F3P3xXwZNxZSZ6dPeNyKwlNe4aE6
+         Rgv1NUXyOG9gsc2Mnj26al6tCRV5+zpmNjK8MdCg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jianfeng Wang <jfwang@google.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Kevin Yang <yyd@google.com>, Yuchung Cheng <ycheng@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.7 75/79] tcp: apply a floor of 1 for RTT samples from TCP timestamps
-Date:   Mon, 10 Aug 2020 17:21:34 +0200
-Message-Id: <20200810151815.920614101@linuxfoundation.org>
+        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nicolas Rybowski <nicolas.rybowski@tessares.net>
+Subject: [PATCH 5.7 76/79] mptcp: be careful on subflow creation
+Date:   Mon, 10 Aug 2020 17:21:35 +0200
+Message-Id: <20200810151815.970854393@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
 References: <20200810151812.114485777@linuxfoundation.org>
@@ -46,54 +45,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jianfeng Wang <jfwang@google.com>
+From: Paolo Abeni <pabeni@redhat.com>
 
-[ Upstream commit 730e700e2c19d87e578ff0e7d8cb1d4a02b036d2 ]
+[ Upstream commit adf7341064982de923a1f8a11bcdec48be6b3004 ]
 
-For retransmitted packets, TCP needs to resort to using TCP timestamps
-for computing RTT samples. In the common case where the data and ACK
-fall in the same 1-millisecond interval, TCP senders with millisecond-
-granularity TCP timestamps compute a ca_rtt_us of 0. This ca_rtt_us
-of 0 propagates to rs->rtt_us.
+Nicolas reported the following oops:
 
-This value of 0 can cause performance problems for congestion control
-modules. For example, in BBR, the zero min_rtt sample can bring the
-min_rtt and BDP estimate down to 0, reduce snd_cwnd and result in a
-low throughput. It would be hard to mitigate this with filtering in
-the congestion control module, because the proper floor to apply would
-depend on the method of RTT sampling (using timestamp options or
-internally-saved transmission timestamps).
+[ 1521.392541] BUG: kernel NULL pointer dereference, address: 00000000000000c0
+[ 1521.394189] #PF: supervisor read access in kernel mode
+[ 1521.395376] #PF: error_code(0x0000) - not-present page
+[ 1521.396607] PGD 0 P4D 0
+[ 1521.397156] Oops: 0000 [#1] SMP PTI
+[ 1521.398020] CPU: 0 PID: 22986 Comm: kworker/0:2 Not tainted 5.8.0-rc4+ #109
+[ 1521.399618] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+[ 1521.401728] Workqueue: events mptcp_worker
+[ 1521.402651] RIP: 0010:mptcp_subflow_create_socket+0xf1/0x1c0
+[ 1521.403954] Code: 24 08 89 44 24 04 48 8b 7a 18 e8 2a 48 d4 ff 8b 44 24 04 85 c0 75 7a 48 8b 8b 78 02 00 00 48 8b 54 24 08 48 8d bb 80 00 00 00 <48> 8b 89 c0 00 00 00 48 89 8a c0 00 00 00 48 8b 8b 78 02 00 00 8b
+[ 1521.408201] RSP: 0000:ffffabc4002d3c60 EFLAGS: 00010246
+[ 1521.409433] RAX: 0000000000000000 RBX: ffffa0b9ad8c9a00 RCX: 0000000000000000
+[ 1521.411096] RDX: ffffa0b9ae78a300 RSI: 00000000fffffe01 RDI: ffffa0b9ad8c9a80
+[ 1521.412734] RBP: ffffa0b9adff2e80 R08: ffffa0b9af02d640 R09: ffffa0b9ad923a00
+[ 1521.414333] R10: ffffabc4007139f8 R11: fefefefefefefeff R12: ffffabc4002d3cb0
+[ 1521.415918] R13: ffffa0b9ad91fa58 R14: ffffa0b9ad8c9f9c R15: 0000000000000000
+[ 1521.417592] FS:  0000000000000000(0000) GS:ffffa0b9af000000(0000) knlGS:0000000000000000
+[ 1521.419490] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1521.420839] CR2: 00000000000000c0 CR3: 000000002951e006 CR4: 0000000000160ef0
+[ 1521.422511] Call Trace:
+[ 1521.423103]  __mptcp_subflow_connect+0x94/0x1f0
+[ 1521.425376]  mptcp_pm_create_subflow_or_signal_addr+0x200/0x2a0
+[ 1521.426736]  mptcp_worker+0x31b/0x390
+[ 1521.431324]  process_one_work+0x1fc/0x3f0
+[ 1521.432268]  worker_thread+0x2d/0x3b0
+[ 1521.434197]  kthread+0x117/0x130
+[ 1521.435783]  ret_from_fork+0x22/0x30
 
-This fix applies a floor of 1 for the RTT sample delta from TCP
-timestamps, so that seq_rtt_us, ca_rtt_us, and rs->rtt_us will be at
-least 1 * (USEC_PER_SEC / TCP_TS_HZ).
+on some unconventional configuration.
 
-Note that the receiver RTT computation in tcp_rcv_rtt_measure() and
-min_rtt computation in tcp_update_rtt_min() both already apply a floor
-of 1 timestamp tick, so this commit makes the code more consistent in
-avoiding this edge case of a value of 0.
+The MPTCP protocol is trying to create a subflow for an
+unaccepted server socket. That is allowed by the RFC, even
+if subflow creation will likely fail.
+Unaccepted sockets have still a NULL sk_socket field,
+avoid the issue by failing earlier.
 
-Signed-off-by: Jianfeng Wang <jfwang@google.com>
-Signed-off-by: Neal Cardwell <ncardwell@google.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Kevin Yang <yyd@google.com>
-Acked-by: Yuchung Cheng <ycheng@google.com>
+Reported-and-tested-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
+Fixes: 7d14b0d2b9b3 ("mptcp: set correct vfs info for subflows")
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/tcp_input.c |    2 ++
- 1 file changed, 2 insertions(+)
+ net/mptcp/subflow.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -2945,6 +2945,8 @@ static bool tcp_ack_update_rtt(struct so
- 		u32 delta = tcp_time_stamp(tp) - tp->rx_opt.rcv_tsecr;
+--- a/net/mptcp/subflow.c
++++ b/net/mptcp/subflow.c
+@@ -999,6 +999,12 @@ int mptcp_subflow_create_socket(struct s
+ 	struct socket *sf;
+ 	int err;
  
- 		if (likely(delta < INT_MAX / (USEC_PER_SEC / TCP_TS_HZ))) {
-+			if (!delta)
-+				delta = 1;
- 			seq_rtt_us = delta * (USEC_PER_SEC / TCP_TS_HZ);
- 			ca_rtt_us = seq_rtt_us;
- 		}
++	/* un-accepted server sockets can reach here - on bad configuration
++	 * bail early to avoid greater trouble later
++	 */
++	if (unlikely(!sk->sk_socket))
++		return -EINVAL;
++
+ 	err = sock_create_kern(net, sk->sk_family, SOCK_STREAM, IPPROTO_TCP,
+ 			       &sf);
+ 	if (err)
 
 
