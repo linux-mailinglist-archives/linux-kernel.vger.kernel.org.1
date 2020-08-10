@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F5A24089B
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67E924089D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgHJPW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:22:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53852 "EHLO mail.kernel.org"
+        id S1728285AbgHJPXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:23:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728255AbgHJPWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:22:54 -0400
+        id S1728272AbgHJPXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:23:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27B6B20768;
-        Mon, 10 Aug 2020 15:22:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF105207FB;
+        Mon, 10 Aug 2020 15:22:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597072973;
-        bh=HcBNhSb0GmByQS2frDJPr/p9ayMXKaZQ4dRvzizDfvM=;
+        s=default; t=1597072979;
+        bh=Nn+bQBHPyRbZAZycSa5N0hcKvQctVS7s3iooCst5c9A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xbyLIvL5vwAZNmEOzFkAgpG+AcSJQwCvfQnfif9CvR+Pj0EaQU3uh4tE9Vq4E8JqS
-         m5RJwB0fb5KWjdiY/grMvMc4ELbF9sbwSMhS9Aipx1WkYzqtJyWVs8xbJx/xZVrw00
-         9HcfaI7oYCYVRdj0nQiwOWg97eP/FUEbNEdu+O7k=
+        b=AMQEtb9osUNkWiNgXMuEdxt6wXRHYPNykB/D1JibjLCnsJ2yvajlbJFycVY197FS8
+         vxp+x+zTD7NCalkDeTuiZFPDd7u81wRFcO6TUWpyQjGuoDckFKl9gIuEcK3TwewRBp
+         QmKx+pE20hyQKFRWOxWoSbLgJPyyRzZ1kXhsDtdo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.7 22/79] lkdtm/heap: Avoid edge and middle of slabs
-Date:   Mon, 10 Aug 2020 17:20:41 +0200
-Message-Id: <20200810151813.282571528@linuxfoundation.org>
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        stable <stable@kernel.org>
+Subject: [PATCH 5.7 24/79] mtd: properly check all write ioctls for permissions
+Date:   Mon, 10 Aug 2020 17:20:43 +0200
+Message-Id: <20200810151813.381099723@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
 References: <20200810151812.114485777@linuxfoundation.org>
@@ -42,42 +45,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit e12145cf1c3a8077e6d9f575711e38dd7d8a3ebc upstream.
+commit f7e6b19bc76471ba03725fe58e0c218a3d6266c3 upstream.
 
-Har har, after I moved the slab freelist pointer into the middle of the
-slab, now it looks like the contents are getting poisoned. Adjust the
-test to avoid the freelist pointer again.
+When doing a "write" ioctl call, properly check that we have permissions
+to do so before copying anything from userspace or anything else so we
+can "fail fast".  This includes also covering the MEMWRITE ioctl which
+previously missed checking for this.
 
-Fixes: 3202fa62fb43 ("slub: relocate freelist pointer to middle of object")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20200625203704.317097-3-keescook@chromium.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: stable <stable@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[rw: Fixed locking issue]
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/misc/lkdtm/heap.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/mtd/mtdchar.c |   56 +++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 47 insertions(+), 9 deletions(-)
 
---- a/drivers/misc/lkdtm/heap.c
-+++ b/drivers/misc/lkdtm/heap.c
-@@ -58,11 +58,12 @@ void lkdtm_READ_AFTER_FREE(void)
- 	int *base, *val, saw;
- 	size_t len = 1024;
- 	/*
--	 * The slub allocator uses the first word to store the free
--	 * pointer in some configurations. Use the middle of the
--	 * allocation to avoid running into the freelist
-+	 * The slub allocator will use the either the first word or
-+	 * the middle of the allocation to store the free pointer,
-+	 * depending on configurations. Store in the second word to
-+	 * avoid running into the freelist.
- 	 */
--	size_t offset = (len / sizeof(*base)) / 2;
-+	size_t offset = sizeof(*base);
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -355,9 +355,6 @@ static int mtdchar_writeoob(struct file
+ 	uint32_t retlen;
+ 	int ret = 0;
  
- 	base = kmalloc(len, GFP_KERNEL);
- 	if (!base) {
+-	if (!(file->f_mode & FMODE_WRITE))
+-		return -EPERM;
+-
+ 	if (length > 4096)
+ 		return -EINVAL;
+ 
+@@ -643,6 +640,48 @@ static int mtdchar_ioctl(struct file *fi
+ 
+ 	pr_debug("MTD_ioctl\n");
+ 
++	/*
++	 * Check the file mode to require "dangerous" commands to have write
++	 * permissions.
++	 */
++	switch (cmd) {
++	/* "safe" commands */
++	case MEMGETREGIONCOUNT:
++	case MEMGETREGIONINFO:
++	case MEMGETINFO:
++	case MEMREADOOB:
++	case MEMREADOOB64:
++	case MEMLOCK:
++	case MEMUNLOCK:
++	case MEMISLOCKED:
++	case MEMGETOOBSEL:
++	case MEMGETBADBLOCK:
++	case MEMSETBADBLOCK:
++	case OTPSELECT:
++	case OTPGETREGIONCOUNT:
++	case OTPGETREGIONINFO:
++	case OTPLOCK:
++	case ECCGETLAYOUT:
++	case ECCGETSTATS:
++	case MTDFILEMODE:
++	case BLKPG:
++	case BLKRRPART:
++		break;
++
++	/* "dangerous" commands */
++	case MEMERASE:
++	case MEMERASE64:
++	case MEMWRITEOOB:
++	case MEMWRITEOOB64:
++	case MEMWRITE:
++		if (!(file->f_mode & FMODE_WRITE))
++			return -EPERM;
++		break;
++
++	default:
++		return -ENOTTY;
++	}
++
+ 	switch (cmd) {
+ 	case MEMGETREGIONCOUNT:
+ 		if (copy_to_user(argp, &(mtd->numeraseregions), sizeof(int)))
+@@ -690,9 +729,6 @@ static int mtdchar_ioctl(struct file *fi
+ 	{
+ 		struct erase_info *erase;
+ 
+-		if(!(file->f_mode & FMODE_WRITE))
+-			return -EPERM;
+-
+ 		erase=kzalloc(sizeof(struct erase_info),GFP_KERNEL);
+ 		if (!erase)
+ 			ret = -ENOMEM;
+@@ -985,9 +1021,6 @@ static int mtdchar_ioctl(struct file *fi
+ 		ret = 0;
+ 		break;
+ 	}
+-
+-	default:
+-		ret = -ENOTTY;
+ 	}
+ 
+ 	return ret;
+@@ -1031,6 +1064,11 @@ static long mtdchar_compat_ioctl(struct
+ 		struct mtd_oob_buf32 buf;
+ 		struct mtd_oob_buf32 __user *buf_user = argp;
+ 
++		if (!(file->f_mode & FMODE_WRITE)) {
++			ret = -EPERM;
++			break;
++		}
++
+ 		if (copy_from_user(&buf, argp, sizeof(buf)))
+ 			ret = -EFAULT;
+ 		else
 
 
