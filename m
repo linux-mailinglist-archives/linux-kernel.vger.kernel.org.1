@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBAD2404EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 12:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5601B2404FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 13:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726439AbgHJK5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 06:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgHJK5r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 06:57:47 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B9BC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 03:57:47 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id p16so7163766ile.0
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 03:57:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=INZAS2s1DnDJmlTWZyxacpNZpUDgOLCAwNRt7C3cS6o=;
-        b=Ip2aIWzXB/kpUnEemSwDtcTOgYprWau8Gm9q45QEAfPneJJ07zjPlWzUtE2x+ezwXM
-         hL4Qq3k0yjxFtt1lSObZaE1kl2oNFzR+diMsZjJlxml5UI42UAiNeIxGISSYq8GmX1/G
-         ZT4xka31dZI5MpXZmJipqbxiTkYrvD4+GZyMVmDY0OsUW+xXRwOfNRySRCxSfwEr1Qrq
-         u/3mGdVUjBfuXRd2h7DrTbcgx4inCAFuGaGsb+WHNeTT6Pe5yizXbcRdShfegPKKz9gp
-         xlvxhTwk3z+uJLwrL2/Op2rAo89G/cwlEJ6nVFI4lQC1a04vWN2ZXLz9bjz2yQRkk2tp
-         Dhyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=INZAS2s1DnDJmlTWZyxacpNZpUDgOLCAwNRt7C3cS6o=;
-        b=NlAeZXWa0N+hx6Ds66XbRllFOyKN/JdOwVQ0+raEkkEIe4Sror7knQkEqaoiy8Sh//
-         9C1CK1kJXPrb7x8cI5Dk0DX9crJZpoq0/Q5w6qrn2k9UQq8i68KklLPhs4ePe2FDqZxJ
-         +/eCF1lorx0DlGbx71lLvOz5tK320HtCNtFZkiXjCX7xa9EgqyJh9OMgssNxbk+X+CcY
-         P/PQeuQ6NCkwK+uxIgK1/qdftZ3ZeIo4LvspAIm+k1QHqf4IJlQ65Fj5jYK0Kk+ylf/d
-         lBNjVNYhG+lapEDUcLeB6ycw7Yho/Zj6rIJNHbUD+hboOgWvBaFZBtgNHaRUsRPgjdH3
-         IBzg==
-X-Gm-Message-State: AOAM533oZ4hrDzoak97PlTTB3nziPfFj+hBpzufqhb+c5tdh8Isj4xG4
-        2+buxHJpKMNaIQp2jl2p79X22Yovhx3mUax6hA==
-X-Google-Smtp-Source: ABdhPJwjhha8XGC5l5Eujyd2cq417rU22ZZJwAvAl8WDLgtF2wBqzzlCadsF3Y0Qb0lyzvV8LXu9ayPlEpIayjS7a5k=
-X-Received: by 2002:a05:6e02:14c9:: with SMTP id o9mr16349427ilk.298.1597057066820;
- Mon, 10 Aug 2020 03:57:46 -0700 (PDT)
+        id S1726426AbgHJLCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 07:02:09 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:34654 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726033AbgHJLCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 07:02:09 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 14C88507FDD3097F454F;
+        Mon, 10 Aug 2020 19:02:03 +0800 (CST)
+Received: from [127.0.0.1] (10.65.95.32) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Mon, 10 Aug 2020
+ 19:01:55 +0800
+Subject: Re: [PATCH] coresight: etm4x: Add Support for HiSilicon ETM device
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        <gregkh@linuxfoundation.org>, <saiprakash.ranjan@codeaurora.org>
+References: <1596461740-13527-1-git-send-email-liuqi115@huawei.com>
+ <d7271f87-719a-cc3b-6306-bb07f24fe070@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
+From:   Qi Liu <liuqi115@huawei.com>
+Message-ID: <7aa0b078-7edd-db6a-c47e-fc6a00c2dd46@huawei.com>
+Date:   Mon, 10 Aug 2020 19:01:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Received: by 2002:a05:6602:6ce:0:0:0:0 with HTTP; Mon, 10 Aug 2020 03:57:45
- -0700 (PDT)
-Reply-To: mrs.maddalenanicholaus@gmail.com
-From:   "Mrs. Maddalena Nicholaus" <mmkkang2@gmail.com>
-Date:   Mon, 10 Aug 2020 11:57:45 +0100
-Message-ID: <CAMa_=YhDFP51TGiGAEXXZ3YtdotMvADesP8kYvVQUDJ5m+9ALA@mail.gmail.com>
-Subject: Get back to me for more details
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d7271f87-719a-cc3b-6306-bb07f24fe070@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.65.95.32]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings dear,
+Hi Suzuki,
+Thanks for your review.
 
-I am Mrs. Maddalena Nicholaus, a Finnish citizen and 79 years old with
-grief. I am looking for your help due to my medical situation here in
-London. My medical condition is not in good shape and I will need your
-assistance to grant my last wish over the inheritance of my Late
-father which currently belongs to me. I want to hand it over to you
-for a charity project. feel free to get back to me for more details if
-you are interested.
+On 2020/8/4 18:47, Suzuki K Poulose wrote:
+> Hi Qi
+> 
+> On 08/03/2020 02:35 PM, Qi Liu wrote:
+>> Add ETMv4 periperhal ID for HiSilicon Hip08 and Hip09 platform. Hip08
+>> contains ETMv4.2 device and Hip09 contains ETMv4.5 device.
+> 
+> Does the ETMv4.5 on your system implement system instructions to access
+> the ETMs ? If so, please could you give the following series on your
+> board ?
+> 
+> http://lists.infradead.org/pipermail/linux-arm-kernel/2020-July/587745.html
+> 
 
-I wait for your urgent response.
+ETMv4.5 on Hip09 platform does not support system instructions.
+> 
+>>
+>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-etm4x.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
+>> index 0c35cd5e..4a4f0bd 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm4x.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm4x.c
+>> @@ -1561,6 +1561,8 @@ static struct amba_cs_uci_id uci_id_etm4[] = {
+>>   };
+>>
+>>   static const struct amba_id etm4_ids[] = {
+>> +    CS_AMBA_ID(0x000b6d02),            /* HiSilicon-Hip09 */
+>> +    CS_AMBA_ID(0x000b6d01),            /* HiSilicon-Hip08 */
+> 
+> Please use CS_AMBA_UCI_ID() instead.
+> 
+> We should stop using the CS_AMBA_ID()
+> 
+ok, I'll fix this in next version.
 
-Regards,
-Mrs. Maddalena Nicholaus.
+Thanks,
+Qi
+> 
+> Suzuki
+> 
+> .
+> 
+
