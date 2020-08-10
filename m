@@ -2,52 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD2A240D38
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 20:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA24240D3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 20:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728271AbgHJS6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 14:58:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53832 "EHLO mail.kernel.org"
+        id S1728280AbgHJS63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 14:58:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728071AbgHJS6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 14:58:19 -0400
+        id S1728071AbgHJS62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 14:58:28 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3DD920774;
-        Mon, 10 Aug 2020 18:58:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC4F420774;
+        Mon, 10 Aug 2020 18:58:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597085899;
-        bh=u7PuXZEqeKunOaHhKj/3xF6yMMpUtKNV+V4e9KEv7Tk=;
+        s=default; t=1597085907;
+        bh=f9yOPLpXzUJ/M7rXDGHsY6M11FseFlwhUXSCxsafDv0=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=KKnzD8ZWmOJcfG/H5Vbx7+ZyeLnZ7euP6YBDAI4H07NvU9Z3uJyzaaZjhnXdG0ke0
-         Qt/57iuE1sRTs9OEqXCHuuYXF99LrEB+xmYDU1ICxqJZOlq3TJbsLiE0ZD+hqB/Ly5
-         fmhS6Xo5IGW1aH8Vrp4bhZqvIjDZHABKWusbFJuE=
-Date:   Mon, 10 Aug 2020 19:57:52 +0100
+        b=Y9+v+/E8Abp8l4Bb+b4oDryu5qBjNCdMexFbmryOcmbmpOJue8ZKobq90/uYr8WcH
+         YmpjiXRmfmWU6aTzWqUQ4v1vZlNvXhN4Jz2O6Tfa8eCisqRr9rL43zBiXvX43iPfFx
+         Zyce04pRByHN6C2Kn5E9ooJnkTat1dCZmxK0ZeX4=
+Date:   Mon, 10 Aug 2020 19:58:01 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Colin King <colin.king@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-In-Reply-To: <20200810093931.50624-1-colin.king@canonical.com>
-References: <20200810093931.50624-1-colin.king@canonical.com>
-Subject: Re: [PATCH] regulator: fix spelling mistake "Cant" -> "Can't"
-Message-Id: <159708587290.21583.4925368980262499422.b4-ty@kernel.org>
+To:     Alain Volmat <alain.volmat@st.com>, amelie.delaunay@st.com
+Cc:     linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com, alexandre.torgue@st.com,
+        mcoquelin.stm32@gmail.com, fabrice.gasnier@st.com,
+        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org
+In-Reply-To: <1596806485-3810-1-git-send-email-alain.volmat@st.com>
+References: <1596806485-3810-1-git-send-email-alain.volmat@st.com>
+Subject: Re: [PATCH 0/5] spi: stm32: various driver fixes
+Message-Id: <159708588098.21609.3669591483839193551.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 Aug 2020 10:39:31 +0100, Colin King wrote:
-> There is a spelling mistake in a dev_err message. Fix it.
+On Fri, 7 Aug 2020 15:21:20 +0200, Alain Volmat wrote:
+> This serie is a reduced version of the serie
+> [spi: stm32: various driver enhancements] previously sent.
+> 
+> Alain Volmat (1):
+>   spi: stm32: always perform registers configuration prior to transfer
+> 
+> Amelie Delaunay (3):
+>   spi: stm32: fix fifo threshold level in case of short transfer
+>   spi: stm32: fix stm32_spi_prepare_mbr in case of odd clk_rate
+>   spi: stm32: fixes suspend/resume management
+> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] regulator: fix spelling mistake "Cant" -> "Can't"
-      commit: 09dad81e0f1701ea26babe2442a1478d6ad447d3
+[1/4] spi: stm32h7: fix race condition at end of transfer
+      commit: 135dd873d3c76d812ae64c668adef3f2c59ed27f
+[2/4] spi: stm32: fix stm32_spi_prepare_mbr in case of odd clk_rate
+      commit: 9cc61973bf9385b19ff5dda4a2a7e265fcba85e4
+[3/4] spi: stm32: fixes suspend/resume management
+      commit: db96bf976a4fc65439be0b4524c0d41427d98814
+[4/4] spi: stm32: always perform registers configuration prior to transfer
+      commit: 60ccb3515fc61a0124c70aa37317f75b67560024
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
