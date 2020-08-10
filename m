@@ -2,219 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355C02401E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 08:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BB12401E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 08:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgHJGL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 02:11:27 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:25669 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgHJGL0 (ORCPT
+        id S1726379AbgHJGNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 02:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725849AbgHJGNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 02:11:26 -0400
+        Mon, 10 Aug 2020 02:13:35 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C25C061756
+        for <linux-kernel@vger.kernel.org>; Sun,  9 Aug 2020 23:13:35 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 9so6583178wmj.5
+        for <linux-kernel@vger.kernel.org>; Sun, 09 Aug 2020 23:13:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1597039887; x=1628575887;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=VLIsbXo3BKP5K1zwOJwdSKxO3DWi4xDxkgNQMqNu+WE=;
-  b=BfIoXKsNbb1ZUM3+wclz9Q+v0Ufuax78HOf06CQuFVokGoSvnuoaBQ/F
-   MT9OZg24nkXcD0XeV8g/jw2I6/1Ns49FMAD/ECAyEDmm9ua/98J16ZKcc
-   9YodhB0rsyu5eNjRTQNRVD7oHNJV2IxJ/ygp2nUCk0dn/uzgnCXNDgL8d
-   I=;
-IronPort-SDR: IsruprfH0VZNbFFBE3Rf0yvA01ANHQDxE38lsRqgzHgOgq9LukYV/kJvcM/rkNu9Mkz57ymYaU
- UgLOYbzvHmvw==
-X-IronPort-AV: E=Sophos;i="5.75,456,1589241600"; 
-   d="scan'208";a="46992143"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 10 Aug 2020 06:11:25 +0000
-Received: from EX13MTAUWC001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com (Postfix) with ESMTPS id 2BA9EA210C;
-        Mon, 10 Aug 2020 06:11:23 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 10 Aug 2020 06:11:22 +0000
-Received: from 38f9d3867b82.ant.amazon.com (10.43.161.71) by
- EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 10 Aug 2020 06:11:17 +0000
-Subject: Re: [PATCH v6 08/18] nitro_enclaves: Add logic for creating an
- enclave VM
-To:     Andra Paraschiv <andraprs@amazon.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "David Duncan" <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        "David Woodhouse" <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Karen Noel <knoel@redhat.com>,
-        "Martin Pohlack" <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-References: <20200805091017.86203-1-andraprs@amazon.com>
- <20200805091017.86203-9-andraprs@amazon.com>
-From:   Alexander Graf <graf@amazon.de>
-Message-ID: <77f71395-d7ba-f198-56dc-3b0a954a98de@amazon.de>
-Date:   Mon, 10 Aug 2020 08:11:15 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=dBeGb9NKFozCmuSADydRWnA8ktG5DHCOdPcf3Ab7zbk=;
+        b=IaWQFKFZ2ADDCEFn60SrAlV1GkczDvUoHXUswVAQcRSnzM3EUy6tQrrhNspEWOcKzl
+         r/x6hDdgUcDWJMEffU3YGiHm8gH11F/+obYTYCBfwyrQsjv9O8Of1tJnUKp73sku5PNZ
+         fT/VBJBm3YCgrmzGMpmThR9dF05pTxJvYghudGbBAh3hxxb9c1XQH/K2OoC2A9XKBvzl
+         ciI833LeiYD6tC8qRSG5H240pdm9h0j4J5ZVSIBUnMtgc1bfwvHkwWHuaMkEFmT2YQfp
+         wmREKcu1P+yMq39aPUMQLj9GF4JqGSpuxR1krQMdxrYatlIEztwPrs+R1adZEH5GqnO0
+         7+zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=dBeGb9NKFozCmuSADydRWnA8ktG5DHCOdPcf3Ab7zbk=;
+        b=VZMsG2+kWTQ0Fm3R5d6mEBIoxJkGfR0D0Tmo0ZJCi81VFeL5a+VuT+gY5LnM9dFPo5
+         ZTHcRHOI77h2WOUCN9Mcn73grgrL1vEodxvd1j1FRW5sEDO6nTw0pOaB8ReGhYkRKx7X
+         ZM3oGlKUA4wCR9k5tiHR2l9a4oAVLzaFY6pdR9z0FIQ8YU4BAwX7vEcRfJh4to9Xupsr
+         uWt9jjzC5m17MbvAnS5hh/g8u3Ep4/kUiikUTYSmMMURXstr2evWIF5WoSiHUwbB1pbd
+         +kBE7+Dqv8LTyazSKMGlBx+25dNFQg7VFFoni6Cqe6m8RAjsXWW7FVjiYk0h0pW9Mrh4
+         LU7A==
+X-Gm-Message-State: AOAM533VWVp/qb19RAbVxpfrMe+lWcDAT0Lp55565s5mVduTldji5Hnh
+        nzGwKfocQucUBwW+M3DcAc8=
+X-Google-Smtp-Source: ABdhPJxyOoKihVDCn7j/AdhD2AU1CP7dqumRfftRRTs2o9STUzFq4gvZo5L+Q/csBkS1+q7Qjg4LGg==
+X-Received: by 2002:a7b:c7d5:: with SMTP id z21mr24658947wmk.145.1597040012358;
+        Sun, 09 Aug 2020 23:13:32 -0700 (PDT)
+Received: from localhost (dslb-002-207-138-002.002.207.pools.vodafone-ip.de. [2.207.138.2])
+        by smtp.gmail.com with ESMTPSA id t133sm24328936wmf.0.2020.08.09.23.13.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 Aug 2020 23:13:30 -0700 (PDT)
+Date:   Mon, 10 Aug 2020 08:13:24 +0200
+From:   Oliver Graute <oliver.graute@gmail.com>
+To:     jason.hui.liu@nxp.com
+Cc:     anson.huang@nxp.com, aisheng.dong@nxp.com, catalin.marinas@arm.com,
+        will@kernel.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org
+Subject: Re: arm64: imx8qm: tlb SW workaround for IMX8QM
+Message-ID: <20200810061324.GA66637@archlinux.localdomain>
+References: <20200427082348.GA98329@archlinux.localdomain>
+ <20200427130328.GA101181@archlinux.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20200805091017.86203-9-andraprs@amazon.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.161.71]
-X-ClientProxiedBy: EX13D08UWC002.ant.amazon.com (10.43.162.168) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200427130328.GA101181@archlinux.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 27/04/20, Oliver Graute wrote:
+> On 27/04/20, Oliver Graute wrote:
+> > Hello,
+> >=20
+> > is this nxp software workaround already proposed to linux community? can
+> > someone point me to the discussion if available.
+> >=20
+> > https://source.codeaurora.org/external/imx/linux-imx/commit/?h=3D3Dimx_=
+5.4.3_=3D
+> > 2.0.0&id=3D3D593bea4e36d8c8a4fd65ef4f07fb8144dab2de1c
+>=20
+> sry for the broken link. Here the right one:
+>=20
+> https://source.codeaurora.org/external/imx/linux-imx/commit/?h=3Dimx_5.4.=
+3_2.0.0&id=3D593bea4e36d8c8a4fd65ef4f07fb8144dab2de1c
 
+this patch is not applicable anymore since next-20200713. Is there an
+updated one?
 
-On 05.08.20 11:10, Andra Paraschiv wrote:
-> Add ioctl command logic for enclave VM creation. It triggers a slot
-> allocation. The enclave resources will be associated with this slot and
-> it will be used as an identifier for triggering enclave run.
-> =
+Best Regards,
 
-> Return a file descriptor, namely enclave fd. This is further used by the
-> associated user space enclave process to set enclave resources and
-> trigger enclave termination.
-> =
-
-> The poll function is implemented in order to notify the enclave process
-> when an enclave exits without a specific enclave termination command
-> trigger e.g. when an enclave crashes.
-> =
-
-> Signed-off-by: Alexandru Vasile <lexnv@amazon.com>
-> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
-> Reviewed-by: Alexander Graf <graf@amazon.com>
-> ---
-> Changelog
-> =
-
-> v5 -> v6
-> =
-
-> * Update the code base to init the ioctl function in this patch.
-> * Update documentation to kernel-doc format.
-> =
-
-> v4 -> v5
-> =
-
-> * Release the reference to the NE PCI device on create VM error.
-> * Close enclave fd on copy_to_user() failure; rename fd to enclave fd
->    while at it.
-> * Remove sanity checks for situations that shouldn't happen, only if
->    buggy system or broken logic at all.
-> * Remove log on copy_to_user() failure.
-> =
-
-> v3 -> v4
-> =
-
-> * Use dev_err instead of custom NE log pattern.
-> * Update the NE ioctl call to match the decoupling from the KVM API.
-> * Add metadata for the NUMA node for the enclave memory and CPUs.
-> =
-
-> v2 -> v3
-> =
-
-> * Remove the WARN_ON calls.
-> * Update static calls sanity checks.
-> * Update kzfree() calls to kfree().
-> * Remove file ops that do nothing for now - open.
-> =
-
-> v1 -> v2
-> =
-
-> * Add log pattern for NE.
-> * Update goto labels to match their purpose.
-> * Remove the BUG_ON calls.
-> ---
->   drivers/virt/nitro_enclaves/ne_misc_dev.c | 229 ++++++++++++++++++++++
->   1 file changed, 229 insertions(+)
-> =
-
-> diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nit=
-ro_enclaves/ne_misc_dev.c
-> index 472850250220..6c8c12f65666 100644
-> --- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
-> +++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-
-[...]
-
-> +/**
-> + * ne_ioctl() - Ioctl function provided by the NE misc device.
-> + * @file:	File associated with this ioctl function.
-> + * @cmd:	The command that is set for the ioctl call.
-> + * @arg:	The argument that is provided for the ioctl call.
-> + *
-> + * Context: Process context.
-> + * Return:
-> + * * Ioctl result (e.g. enclave file descriptor) on success.
-> + * * Negative return value on failure.
-> + */
-> +static long ne_ioctl(struct file *file, unsigned int cmd, unsigned long =
-arg)
-> +{
-> +	switch (cmd) {
-> +	case NE_CREATE_VM: {
-> +		int enclave_fd =3D -1;
-> +		struct file *enclave_file =3D NULL;
-> +		struct ne_pci_dev *ne_pci_dev =3D NULL;
-> +		/* TODO: Find another way to get the NE PCI device reference. */
-> +		struct pci_dev *pdev =3D pci_get_device(PCI_VENDOR_ID_AMAZON,
-> +						      PCI_DEVICE_ID_NE, NULL);
-
-This should go away if you set misc_dev.parent.
-
-> +		int rc =3D -EINVAL;
-> +		u64 slot_uid =3D 0;
-> +
-> +		ne_pci_dev =3D pci_get_drvdata(pdev);
-> +
-> +		mutex_lock(&ne_pci_dev->enclaves_list_mutex);
-> +
-> +		enclave_fd =3D ne_create_vm_ioctl(pdev, ne_pci_dev, &slot_uid);
-> +		if (enclave_fd < 0) {
-> +			rc =3D enclave_fd;
-> +
-> +			mutex_unlock(&ne_pci_dev->enclaves_list_mutex);
-> +
-> +			pci_dev_put(pdev);
-
-This should also disappear.
-
-
-
-Alex
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+Oliver
