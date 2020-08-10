@@ -2,64 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A04024081F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68963240824
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgHJPEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:04:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41272 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726499AbgHJPEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:04:43 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7749520774;
-        Mon, 10 Aug 2020 15:04:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597071883;
-        bh=XrRQjxQ+5hBm9ooxNZUmS5a2TwH3ejiZlRc9kr/rE9U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hMiLT3vuWKmLrU+59l58LWwIcdYJmu+0zwXBqkXOpLREv3Bin7mG+U5LnwQjNZIKS
-         Pu3mCJ0+tcfBcxMKfpatwvKgGTjGQoPbHiziCQlgdUhW+yuU8dl8r+1Rp5q90BdV9q
-         m0479Pt+TS3LWP25jpPgZKUC3LWFwldollaQtUxQ=
-Date:   Mon, 10 Aug 2020 17:04:53 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Eugene Lubarsky <elubarsky.linux@gmail.com>
-Cc:     linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, adobriyan@gmail.com,
-        avagin@gmail.com, dsahern@gmail.com
-Subject: Re: [RFC PATCH 0/5] Introduce /proc/all/ to gather stats from all
- processes
-Message-ID: <20200810150453.GB3962761@kroah.com>
-References: <20200810145852.9330-1-elubarsky.linux@gmail.com>
+        id S1726528AbgHJPGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726143AbgHJPGP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:06:15 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A95C061756;
+        Mon, 10 Aug 2020 08:06:14 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id x6so5017589pgx.12;
+        Mon, 10 Aug 2020 08:06:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=n4zzcA0S7W6+MhfPmPe3RkV9t2uiG0tre547UgCr2Yw=;
+        b=e4CED/lOpJOr7C5jNbzDgAza5R3Mg9DDJmNYBlkci158HZSpAeyZwiyogXJe0HNOCw
+         xmEog1xuYF6Dz2fE4oLif2q7zzpix1m13YKOCaTF8zX7K2h6BgjFrnMSON5qpwuvXRJE
+         RywwfQ5qz91TIAeuddzcmv2Y46s130neNjYqwvU/K4Qn2V2xoClaUTu5KNOos66RL3xV
+         aAla7wyQxUHsi8xaMTZ6ZcFkYME2ohFvbK+lp1Ph+FeL8QbDoVL96g76pYXFzZpKNUzr
+         6j108ZWIqMp4CfY8NZvJLgwj8ydOBQVgS48fAZ6nZC00S/56NV4FhivPit+OYnuWweYD
+         DHJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n4zzcA0S7W6+MhfPmPe3RkV9t2uiG0tre547UgCr2Yw=;
+        b=kq4+mYvJuZvOFUwv7bCB8G0g1s8ExW05gV3NHZcICROERXhpyrQiS+Wen4D2+/QU+q
+         66LpMy8VE0T3BuzRygzGjBgnn/EerkAolhWN7aUgNCqdAO9aQD8lt0+nW09tQGoR2Suq
+         djsPOa652ge9ulkVJzjIKuWYDKb+V1SH58DLL4UWNBXeot6lGGi4wtkeSSWX0hB4IKgf
+         s20N+urAgaXzJjqne9dVecQqCNmTkU62X9tW0bdb8DhQzftSz6jWnl/GI5aKLge6Q5Ob
+         NVmyuEsxshUkMr1H7L8ZiExccxylXQJnk3rmKf6GNr9OQ/Pqhb1IcGBaDep10bSkWQue
+         EDYA==
+X-Gm-Message-State: AOAM5300NYbwEBbnAuqrNdDFLTNlCLlOWCvIHQqsetsKZI/Mt8ikswG1
+        0y7lI84HQheizZksdrRIhTsm5eyO
+X-Google-Smtp-Source: ABdhPJx4c4+BYLQf4r4GU3U/41YOwsfRHq6/82P9SZmrmDFh0rIdScrqpKs+IBzAO+0BatEzBH8MAQ==
+X-Received: by 2002:a62:7c09:: with SMTP id x9mr1369261pfc.229.1597071973271;
+        Mon, 10 Aug 2020 08:06:13 -0700 (PDT)
+Received: from [10.1.10.11] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id v10sm6321590pff.192.2020.08.10.08.06.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 Aug 2020 08:06:12 -0700 (PDT)
+Subject: Re: [PATCH] net: eliminate meaningless memcpy to data in
+ pskb_carve_inside_nonlinear()
+To:     Miaohe Lin <linmiaohe@huawei.com>, davem@davemloft.net,
+        kuba@kernel.org, pshelar@ovn.org, martin.varghese@nokia.com,
+        fw@strlen.de, dcaratti@redhat.com, edumazet@google.com,
+        steffen.klassert@secunet.com, pabeni@redhat.com,
+        shmulik@metanetworks.com, kyk.segfault@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200810122856.5423-1-linmiaohe@huawei.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <fd23f2e0-5cf9-ef66-0c15-b46eac1da609@gmail.com>
+Date:   Mon, 10 Aug 2020 08:06:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200810145852.9330-1-elubarsky.linux@gmail.com>
+In-Reply-To: <20200810122856.5423-1-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 12:58:47AM +1000, Eugene Lubarsky wrote:
-> This is an idea for substantially reducing the number of syscalls needed
-> by monitoring tools whilst mostly re-using the existing API.
 
-How many syscalls does this save on?
 
-Perhaps you want my proposed readfile(2) syscall:
-	https://lore.kernel.org/r/20200704140250.423345-1-gregkh@linuxfoundation.org
-to help out with things like this?  :)
-
-> The proposed files in this proof-of-concept patch set are:
+On 8/10/20 5:28 AM, Miaohe Lin wrote:
+> The skb_shared_info part of the data is assigned in the following loop. It
+> is meaningless to do a memcpy here.
 > 
-> * /proc/all/stat
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  net/core/skbuff.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 7e2e502ef519..5b983c9472f5 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -5952,9 +5952,6 @@ static int pskb_carve_inside_nonlinear(struct sk_buff *skb, const u32 off,
+>  
+>  	size = SKB_WITH_OVERHEAD(ksize(data));
+>  
+> -	memcpy((struct skb_shared_info *)(data + size),
+> -	       skb_shinfo(skb), offsetof(struct skb_shared_info,
+> -					 frags[skb_shinfo(skb)->nr_frags]));
+>  	if (skb_orphan_frags(skb, gfp_mask)) {
+>  		kfree(data);
+>  		return -ENOMEM;
+> 
 
-I think the problem will be defining "all" in the case of the specific
-namespace you are dealing with, right?  How will this handle all of
-those issues properly for all of these different statisics?
+Reminder : net-next is CLOSED.
 
-thanks,
+This is not correct. We still have to copy _something_
 
-greg k-h
+Something like :
+
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 2828f6d5ba898a5e50ccce45589bf1370e474b0f..1c0519426c7ba4b04377fc8054c4223c135879ab 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -5953,8 +5953,8 @@ static int pskb_carve_inside_nonlinear(struct sk_buff *skb, const u32 off,
+        size = SKB_WITH_OVERHEAD(ksize(data));
+ 
+        memcpy((struct skb_shared_info *)(data + size),
+-              skb_shinfo(skb), offsetof(struct skb_shared_info,
+-                                        frags[skb_shinfo(skb)->nr_frags]));
++              skb_shinfo(skb), offsetof(struct skb_shared_info, frags[0]));
++
+        if (skb_orphan_frags(skb, gfp_mask)) {
+                kfree(data);
+                return -ENOMEM;
