@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9DE240A7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F27240A7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgHJPTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:19:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49436 "EHLO mail.kernel.org"
+        id S1727793AbgHJPTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:19:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725869AbgHJPT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:19:29 -0400
+        id S1726466AbgHJPTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:19:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CFAC2075F;
-        Mon, 10 Aug 2020 15:19:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8575A20772;
+        Mon, 10 Aug 2020 15:19:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597072768;
-        bh=zn1+86pPO0MeKxVnkura4kzFBwLZ2uBgm92quMahL+U=;
+        s=default; t=1597072777;
+        bh=hBv+4okY+0hf3Z7WylDYYaK3Po0ZNDGgpxry0OId4UI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QrnCZwk+EdjgayOpUfkazEUdBC9PIv/H4tDbD7GiNexh4Xk8dprOYzwi+jjrZIG1b
-         EDFZVBS9yi48ErFaC+5e0si9o2Rkq1GGZEtAp1OCflSTNGmxvMTMMOIr5XdJRXo6WU
-         X4gO6l3R0B+jPUNZMiY6T20MdlaU1jlv5cJ2Dxuw=
+        b=OjUQEE1SjwIITVslg6noLCoH2dGTAVVvGgCV3Zm5/DZwJE8RtT4vDX1a5aKiQeKVX
+         2nqQJQER4flU8dUCRKOiNqbBimDDV0uE/BJhFeohk/gHFilPbatoappQHLczVnfOEk
+         PpS16H0CzBmdJx4ht7mlZkY38HzaOYMiPswIm5z8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+1a54a94bd32716796edd@syzkaller.appspotmail.com,
-        syzbot+9d2abfef257f3e2d4713@syzkaller.appspotmail.com,
-        Hillf Danton <hdanton@sina.com>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.8 11/38] ALSA: seq: oss: Serialize ioctls
-Date:   Mon, 10 Aug 2020 17:19:01 +0200
-Message-Id: <20200810151804.447913452@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>
+Subject: [PATCH 5.8 14/38] Staging: rtl8188eu: rtw_mlme: Fix uninitialized variable authmode
+Date:   Mon, 10 Aug 2020 17:19:04 +0200
+Message-Id: <20200810151804.596082919@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200810151803.920113428@linuxfoundation.org>
 References: <20200810151803.920113428@linuxfoundation.org>
@@ -45,51 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit 80982c7e834e5d4e325b6ce33757012ecafdf0bb upstream.
+commit 11536442a3b4e1de6890ea5e805908debb74f94a upstream.
 
-Some ioctls via OSS sequencer API may race and lead to UAF when the
-port create and delete are performed concurrently, as spotted by a
-couple of syzkaller cases.  This patch is an attempt to address it by
-serializing the ioctls with the existing register_mutex.
+The variable authmode can be uninitialized. The danger would be if
+it equals to _WPA_IE_ID_ (0xdd) or _WPA2_IE_ID_ (0x33). We can avoid
+this by setting it to zero instead. This is the approach that was
+used in the rtl8723bs driver.
 
-Basically OSS sequencer API is an obsoleted interface and was designed
-without much consideration of the concurrency.  There are very few
-applications with it, and the concurrent performance isn't asked,
-hence this "big hammer" approach should be good enough.
-
-Reported-by: syzbot+1a54a94bd32716796edd@syzkaller.appspotmail.com
-Reported-by: syzbot+9d2abfef257f3e2d4713@syzkaller.appspotmail.com
-Suggested-by: Hillf Danton <hdanton@sina.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200804185815.2453-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 7b464c9fa5cc ("staging: r8188eu: Add files for new driver - part 4")
+Co-developed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200728072153.9202-1-dinghao.liu@zju.edu.cn
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/core/seq/oss/seq_oss.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/staging/rtl8188eu/core/rtw_mlme.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/sound/core/seq/oss/seq_oss.c
-+++ b/sound/core/seq/oss/seq_oss.c
-@@ -168,10 +168,16 @@ static long
- odev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- {
- 	struct seq_oss_devinfo *dp;
-+	long rc;
-+
- 	dp = file->private_data;
- 	if (snd_BUG_ON(!dp))
- 		return -ENXIO;
--	return snd_seq_oss_ioctl(dp, cmd, arg);
-+
-+	mutex_lock(&register_mutex);
-+	rc = snd_seq_oss_ioctl(dp, cmd, arg);
-+	mutex_unlock(&register_mutex);
-+	return rc;
- }
+--- a/drivers/staging/rtl8188eu/core/rtw_mlme.c
++++ b/drivers/staging/rtl8188eu/core/rtw_mlme.c
+@@ -1729,9 +1729,11 @@ int rtw_restruct_sec_ie(struct adapter *
+ 	if ((ndisauthmode == Ndis802_11AuthModeWPA) ||
+ 	    (ndisauthmode == Ndis802_11AuthModeWPAPSK))
+ 		authmode = _WPA_IE_ID_;
+-	if ((ndisauthmode == Ndis802_11AuthModeWPA2) ||
++	else if ((ndisauthmode == Ndis802_11AuthModeWPA2) ||
+ 	    (ndisauthmode == Ndis802_11AuthModeWPA2PSK))
+ 		authmode = _WPA2_IE_ID_;
++	else
++		authmode = 0x0;
  
- #ifdef CONFIG_COMPAT
+ 	if (check_fwstate(pmlmepriv, WIFI_UNDER_WPS)) {
+ 		memcpy(out_ie + ielength, psecuritypriv->wps_ie, psecuritypriv->wps_ie_len);
 
 
