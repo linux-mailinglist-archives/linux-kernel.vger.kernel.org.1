@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F17240899
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F5A24089B
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728258AbgHJPWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:22:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53620 "EHLO mail.kernel.org"
+        id S1727936AbgHJPW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:22:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727794AbgHJPWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:22:45 -0400
+        id S1728255AbgHJPWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:22:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 632EB207FB;
-        Mon, 10 Aug 2020 15:22:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27B6B20768;
+        Mon, 10 Aug 2020 15:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597072965;
-        bh=3XyBT8qm/Hn65XwcVEVyAbRbtgSY0hvyPErs0wZummM=;
+        s=default; t=1597072973;
+        bh=HcBNhSb0GmByQS2frDJPr/p9ayMXKaZQ4dRvzizDfvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w4QmD3VUMeAJZZfY4MViKArebsenGU2mJdYJZAXEcS5O8P39dIaPs6yoFWVMBIG52
-         erd888+zcyxCyO6ZPS7jve2F3yZAhaaw06faS6Ei1F0zyPGLzX7DR41sufmfhzEnXk
-         hZ7oMWiVwfc+QKqs52o6s6gvH4+wJIj5KwCkioL0=
+        b=xbyLIvL5vwAZNmEOzFkAgpG+AcSJQwCvfQnfif9CvR+Pj0EaQU3uh4tE9Vq4E8JqS
+         m5RJwB0fb5KWjdiY/grMvMc4ELbF9sbwSMhS9Aipx1WkYzqtJyWVs8xbJx/xZVrw00
+         9HcfaI7oYCYVRdj0nQiwOWg97eP/FUEbNEdu+O7k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+e6416dabb497a650da40@syzkaller.appspotmail.com,
-        Eric Biggers <ebiggers@google.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Subject: [PATCH 5.7 20/79] Smack: fix use-after-free in smk_write_relabel_self()
-Date:   Mon, 10 Aug 2020 17:20:39 +0200
-Message-Id: <20200810151813.157628910@linuxfoundation.org>
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.7 22/79] lkdtm/heap: Avoid edge and middle of slabs
+Date:   Mon, 10 Aug 2020 17:20:41 +0200
+Message-Id: <20200810151813.282571528@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
 References: <20200810151812.114485777@linuxfoundation.org>
@@ -45,79 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Kees Cook <keescook@chromium.org>
 
-commit beb4ee6770a89646659e6a2178538d2b13e2654e upstream.
+commit e12145cf1c3a8077e6d9f575711e38dd7d8a3ebc upstream.
 
-smk_write_relabel_self() frees memory from the task's credentials with
-no locking, which can easily cause a use-after-free because multiple
-tasks can share the same credentials structure.
+Har har, after I moved the slab freelist pointer into the middle of the
+slab, now it looks like the contents are getting poisoned. Adjust the
+test to avoid the freelist pointer again.
 
-Fix this by using prepare_creds() and commit_creds() to correctly modify
-the task's credentials.
-
-Reproducer for "BUG: KASAN: use-after-free in smk_write_relabel_self":
-
-	#include <fcntl.h>
-	#include <pthread.h>
-	#include <unistd.h>
-
-	static void *thrproc(void *arg)
-	{
-		int fd = open("/sys/fs/smackfs/relabel-self", O_WRONLY);
-		for (;;) write(fd, "foo", 3);
-	}
-
-	int main()
-	{
-		pthread_t t;
-		pthread_create(&t, NULL, thrproc, NULL);
-		thrproc(NULL);
-	}
-
-Reported-by: syzbot+e6416dabb497a650da40@syzkaller.appspotmail.com
-Fixes: 38416e53936e ("Smack: limited capability for changing process label")
-Cc: <stable@vger.kernel.org> # v4.4+
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+Fixes: 3202fa62fb43 ("slub: relocate freelist pointer to middle of object")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20200625203704.317097-3-keescook@chromium.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- security/smack/smackfs.c |   13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/misc/lkdtm/heap.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -2720,7 +2720,6 @@ static int smk_open_relabel_self(struct
- static ssize_t smk_write_relabel_self(struct file *file, const char __user *buf,
- 				size_t count, loff_t *ppos)
- {
--	struct task_smack *tsp = smack_cred(current_cred());
- 	char *data;
- 	int rc;
- 	LIST_HEAD(list_tmp);
-@@ -2745,11 +2744,21 @@ static ssize_t smk_write_relabel_self(st
- 	kfree(data);
+--- a/drivers/misc/lkdtm/heap.c
++++ b/drivers/misc/lkdtm/heap.c
+@@ -58,11 +58,12 @@ void lkdtm_READ_AFTER_FREE(void)
+ 	int *base, *val, saw;
+ 	size_t len = 1024;
+ 	/*
+-	 * The slub allocator uses the first word to store the free
+-	 * pointer in some configurations. Use the middle of the
+-	 * allocation to avoid running into the freelist
++	 * The slub allocator will use the either the first word or
++	 * the middle of the allocation to store the free pointer,
++	 * depending on configurations. Store in the second word to
++	 * avoid running into the freelist.
+ 	 */
+-	size_t offset = (len / sizeof(*base)) / 2;
++	size_t offset = sizeof(*base);
  
- 	if (!rc || (rc == -EINVAL && list_empty(&list_tmp))) {
-+		struct cred *new;
-+		struct task_smack *tsp;
-+
-+		new = prepare_creds();
-+		if (!new) {
-+			rc = -ENOMEM;
-+			goto out;
-+		}
-+		tsp = smack_cred(new);
- 		smk_destroy_label_list(&tsp->smk_relabel);
- 		list_splice(&list_tmp, &tsp->smk_relabel);
-+		commit_creds(new);
- 		return count;
- 	}
--
-+out:
- 	smk_destroy_label_list(&list_tmp);
- 	return rc;
- }
+ 	base = kmalloc(len, GFP_KERNEL);
+ 	if (!base) {
 
 
