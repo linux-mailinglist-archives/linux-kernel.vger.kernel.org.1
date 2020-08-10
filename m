@@ -2,82 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23184240774
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3215240790
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgHJOZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 10:25:02 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:25596 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726888AbgHJOY5 (ORCPT
+        id S1727806AbgHJOZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 10:25:54 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:36041 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726436AbgHJOZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 10:24:57 -0400
-X-IronPort-AV: E=Sophos;i="5.75,457,1589234400"; 
-   d="scan'208";a="463038467"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Aug 2020 16:24:54 +0200
-Date:   Mon, 10 Aug 2020 16:24:54 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Jonathan Corbet <corbet@lwn.net>
-cc:     Markus Elfring <Markus.Elfring@web.de>,
-        Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        Coccinelle <cocci@systeme.lip6.fr>, linux-doc@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: Re: [PATCH v2] documentation: coccinelle: Improve command example
- for make C={1, 2}
-In-Reply-To: <20200810081914.37224551@lwn.net>
-Message-ID: <alpine.DEB.2.22.394.2008101624380.2466@hadrien>
-References: <ffe8c50d-0bb5-9477-a20c-96aa7bb45067@web.de> <20200810081914.37224551@lwn.net>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 10 Aug 2020 10:25:48 -0400
+Received: (qmail 300682 invoked by uid 1000); 10 Aug 2020 10:25:47 -0400
+Date:   Mon, 10 Aug 2020 10:25:47 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: storage: isd200: fix spelling mistake "removeable"
+ -> "removable"
+Message-ID: <20200810142547.GC299045@rowland.harvard.edu>
+References: <20200810083211.48282-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1836737229-1597069495=:2466"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200810083211.48282-1-colin.king@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Mon, Aug 10, 2020 at 09:32:11AM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake in a usb_stor_dbg debug message. Fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/usb/storage/isd200.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/storage/isd200.c b/drivers/usb/storage/isd200.c
+> index 89f5e33a6e6d..3c76336e43bb 100644
+> --- a/drivers/usb/storage/isd200.c
+> +++ b/drivers/usb/storage/isd200.c
+> @@ -1383,7 +1383,7 @@ static int isd200_scsi_to_ata(struct scsi_cmnd *srb, struct us_data *us,
+>  				ATA_CMD_MEDIA_LOCK : ATA_CMD_MEDIA_UNLOCK;
+>  			isd200_srb_set_bufflen(srb, 0);
+>  		} else {
+> -			usb_stor_dbg(us, "   Not removeable media, just report okay\n");
+> +			usb_stor_dbg(us, "   Not removable media, just report okay\n");
+>  			srb->result = SAM_STAT_GOOD;
+>  			sendToTransport = 0;
+>  		}
+> -- 
 
---8323329-1836737229-1597069495=:2466
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-
-
-On Mon, 10 Aug 2020, Jonathan Corbet wrote:
-
-> On Mon, 10 Aug 2020 09:30:18 +0200
-> Markus Elfring <Markus.Elfring@web.de> wrote:
->
-> > > Modify coccinelle documentation to further clarify
-> > > the usage of the makefile C variable flag by coccicheck.
-> >
-> > How do you think about a wording variant like the following
-> > for the change description?
-> >
-> >    Clarify the usage of the make variable “C” for coccicheck.
-> >
-> >
-> > > +C flag is used. The C flag is a variable used by the makefile
-> >
-> > Can such a wording approach trigger understanding difficulties?
-> > [...]
->
-> Markus, please don't harass our contributors.  This patch is an
-> improvement and, unless Julia disagrees, I am happy to apply it.
-
-There will be a V3.  Thanks.
-
-julia
---8323329-1836737229-1597069495=:2466--
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
