@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9ADF2408DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C153240906
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728293AbgHJP0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:26:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59852 "EHLO mail.kernel.org"
+        id S1728833AbgHJP2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:28:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728466AbgHJPZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:25:55 -0400
+        id S1728813AbgHJP2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:28:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3061822CF7;
-        Mon, 10 Aug 2020 15:25:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECA2222BEA;
+        Mon, 10 Aug 2020 15:28:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073154;
-        bh=dK+dE3HFvoYVSktKHD4lSR0Qr1HltIXoGbfJokD2cB4=;
+        s=default; t=1597073281;
+        bh=m6QPd7om/CNzyzYTtns+TG26/HpS+Xk2eHDuxiJVcO0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jf+jsbTzdJoVSYPgD4rit7iVTnP5fJdouvt6gq/K84rvB9RxDM6dfAIetpKoBwmKb
-         imdKWz4pmLzQ90yknbCWbX5KS8Jb1dDL7sAWy9F3P3xXwZNxZSZ6dPeNyKwlNe4aE6
-         Rgv1NUXyOG9gsc2Mnj26al6tCRV5+zpmNjK8MdCg=
+        b=shE4bCkGQJNHdi19pUECz2+AS0jx2yoKnFg/XYhcUJzllyJmXPsf+KBCZg/KbTjBE
+         QrfkFAsT3XuS7xIlfPecAQwe/Yez/14NwUWf96uSV88/3oiR0JAD/xiLiRP3VdwCdF
+         zRy4Ys/DP015wr/qUK4Ig+GB7IvR6iPkgnKnPHn8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nicolas Rybowski <nicolas.rybowski@tessares.net>
-Subject: [PATCH 5.7 76/79] mptcp: be careful on subflow creation
-Date:   Mon, 10 Aug 2020 17:21:35 +0200
-Message-Id: <20200810151815.970854393@linuxfoundation.org>
+        stable@vger.kernel.org, Nicolas Chauvet <kwizart@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Manikanta Maddireddy <mmaddireddy@nvidia.com>
+Subject: [PATCH 5.4 49/67] PCI: tegra: Revert tegra124 raw_violation_fixup
+Date:   Mon, 10 Aug 2020 17:21:36 +0200
+Message-Id: <20200810151811.886438587@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
-References: <20200810151812.114485777@linuxfoundation.org>
+In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
+References: <20200810151809.438685785@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,72 +44,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Nicolas Chauvet <kwizart@gmail.com>
 
-[ Upstream commit adf7341064982de923a1f8a11bcdec48be6b3004 ]
+commit e7b856dfcec6d3bf028adee8c65342d7035914a1 upstream.
 
-Nicolas reported the following oops:
+As reported in https://bugzilla.kernel.org/206217 , raw_violation_fixup
+is causing more harm than good in some common use-cases.
 
-[ 1521.392541] BUG: kernel NULL pointer dereference, address: 00000000000000c0
-[ 1521.394189] #PF: supervisor read access in kernel mode
-[ 1521.395376] #PF: error_code(0x0000) - not-present page
-[ 1521.396607] PGD 0 P4D 0
-[ 1521.397156] Oops: 0000 [#1] SMP PTI
-[ 1521.398020] CPU: 0 PID: 22986 Comm: kworker/0:2 Not tainted 5.8.0-rc4+ #109
-[ 1521.399618] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
-[ 1521.401728] Workqueue: events mptcp_worker
-[ 1521.402651] RIP: 0010:mptcp_subflow_create_socket+0xf1/0x1c0
-[ 1521.403954] Code: 24 08 89 44 24 04 48 8b 7a 18 e8 2a 48 d4 ff 8b 44 24 04 85 c0 75 7a 48 8b 8b 78 02 00 00 48 8b 54 24 08 48 8d bb 80 00 00 00 <48> 8b 89 c0 00 00 00 48 89 8a c0 00 00 00 48 8b 8b 78 02 00 00 8b
-[ 1521.408201] RSP: 0000:ffffabc4002d3c60 EFLAGS: 00010246
-[ 1521.409433] RAX: 0000000000000000 RBX: ffffa0b9ad8c9a00 RCX: 0000000000000000
-[ 1521.411096] RDX: ffffa0b9ae78a300 RSI: 00000000fffffe01 RDI: ffffa0b9ad8c9a80
-[ 1521.412734] RBP: ffffa0b9adff2e80 R08: ffffa0b9af02d640 R09: ffffa0b9ad923a00
-[ 1521.414333] R10: ffffabc4007139f8 R11: fefefefefefefeff R12: ffffabc4002d3cb0
-[ 1521.415918] R13: ffffa0b9ad91fa58 R14: ffffa0b9ad8c9f9c R15: 0000000000000000
-[ 1521.417592] FS:  0000000000000000(0000) GS:ffffa0b9af000000(0000) knlGS:0000000000000000
-[ 1521.419490] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1521.420839] CR2: 00000000000000c0 CR3: 000000002951e006 CR4: 0000000000160ef0
-[ 1521.422511] Call Trace:
-[ 1521.423103]  __mptcp_subflow_connect+0x94/0x1f0
-[ 1521.425376]  mptcp_pm_create_subflow_or_signal_addr+0x200/0x2a0
-[ 1521.426736]  mptcp_worker+0x31b/0x390
-[ 1521.431324]  process_one_work+0x1fc/0x3f0
-[ 1521.432268]  worker_thread+0x2d/0x3b0
-[ 1521.434197]  kthread+0x117/0x130
-[ 1521.435783]  ret_from_fork+0x22/0x30
+This patch is a partial revert of commit:
 
-on some unconventional configuration.
+191cd6fb5d2c ("PCI: tegra: Add SW fixup for RAW violations")
 
-The MPTCP protocol is trying to create a subflow for an
-unaccepted server socket. That is allowed by the RFC, even
-if subflow creation will likely fail.
-Unaccepted sockets have still a NULL sk_socket field,
-avoid the issue by failing earlier.
+and fixes the following regression since then.
 
-Reported-and-tested-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
-Fixes: 7d14b0d2b9b3 ("mptcp: set correct vfs info for subflows")
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+* Description:
+
+When both the NIC and MMC are used one can see the following message:
+
+  NETDEV WATCHDOG: enp1s0 (r8169): transmit queue 0 timed out
+
+and
+
+  pcieport 0000:00:02.0: AER: Uncorrected (Non-Fatal) error received: 0000:01:00.0
+  r8169 0000:01:00.0: AER: PCIe Bus Error: severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Requester ID)
+  r8169 0000:01:00.0: AER:   device [10ec:8168] error status/mask=00004000/00400000
+  r8169 0000:01:00.0: AER:    [14] CmpltTO                (First)
+  r8169 0000:01:00.0: AER: can't recover (no error_detected callback)
+  pcieport 0000:00:02.0: AER: device recovery failed
+
+After that, the ethernet NIC is not functional anymore even after
+reloading the r8169 module. After a reboot, this is reproducible by
+copying a large file over the NIC to the MMC.
+
+For some reason this is not reproducible when files are copied to a tmpfs.
+
+* Little background on the fixup, by Manikanta Maddireddy:
+  "In the internal testing with dGPU on Tegra124, CmplTO is reported by
+dGPU. This happened because FIFO queue in AFI(AXI to PCIe) module
+get full by upstream posted writes. Back to back upstream writes
+interleaved with infrequent reads, triggers RAW violation and CmpltTO.
+This is fixed by reducing the posted write credits and by changing
+updateFC timer frequency. These settings are fixed after stress test.
+
+In the current case, RTL NIC is also reporting CmplTO. These settings
+seems to be aggravating the issue instead of fixing it."
+
+Link: https://lore.kernel.org/r/20200718100710.15398-1-kwizart@gmail.com
+Fixes: 191cd6fb5d2c ("PCI: tegra: Add SW fixup for RAW violations")
+Signed-off-by: Nicolas Chauvet <kwizart@gmail.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Manikanta Maddireddy <mmaddireddy@nvidia.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/mptcp/subflow.c |    6 ++++++
- 1 file changed, 6 insertions(+)
 
---- a/net/mptcp/subflow.c
-+++ b/net/mptcp/subflow.c
-@@ -999,6 +999,12 @@ int mptcp_subflow_create_socket(struct s
- 	struct socket *sf;
- 	int err;
+---
+ drivers/pci/controller/pci-tegra.c |   32 --------------------------------
+ 1 file changed, 32 deletions(-)
+
+--- a/drivers/pci/controller/pci-tegra.c
++++ b/drivers/pci/controller/pci-tegra.c
+@@ -181,13 +181,6 @@
  
-+	/* un-accepted server sockets can reach here - on bad configuration
-+	 * bail early to avoid greater trouble later
-+	 */
-+	if (unlikely(!sk->sk_socket))
-+		return -EINVAL;
-+
- 	err = sock_create_kern(net, sk->sk_family, SOCK_STREAM, IPPROTO_TCP,
- 			       &sf);
- 	if (err)
+ #define AFI_PEXBIAS_CTRL_0		0x168
+ 
+-#define RP_PRIV_XP_DL		0x00000494
+-#define  RP_PRIV_XP_DL_GEN2_UPD_FC_TSHOLD	(0x1ff << 1)
+-
+-#define RP_RX_HDR_LIMIT		0x00000e00
+-#define  RP_RX_HDR_LIMIT_PW_MASK	(0xff << 8)
+-#define  RP_RX_HDR_LIMIT_PW		(0x0e << 8)
+-
+ #define RP_ECTL_2_R1	0x00000e84
+ #define  RP_ECTL_2_R1_RX_CTLE_1C_MASK		0xffff
+ 
+@@ -323,7 +316,6 @@ struct tegra_pcie_soc {
+ 	bool program_uphy;
+ 	bool update_clamp_threshold;
+ 	bool program_deskew_time;
+-	bool raw_violation_fixup;
+ 	bool update_fc_timer;
+ 	bool has_cache_bars;
+ 	struct {
+@@ -669,23 +661,6 @@ static void tegra_pcie_apply_sw_fixup(st
+ 		writel(value, port->base + RP_VEND_CTL0);
+ 	}
+ 
+-	/* Fixup for read after write violation. */
+-	if (soc->raw_violation_fixup) {
+-		value = readl(port->base + RP_RX_HDR_LIMIT);
+-		value &= ~RP_RX_HDR_LIMIT_PW_MASK;
+-		value |= RP_RX_HDR_LIMIT_PW;
+-		writel(value, port->base + RP_RX_HDR_LIMIT);
+-
+-		value = readl(port->base + RP_PRIV_XP_DL);
+-		value |= RP_PRIV_XP_DL_GEN2_UPD_FC_TSHOLD;
+-		writel(value, port->base + RP_PRIV_XP_DL);
+-
+-		value = readl(port->base + RP_VEND_XP);
+-		value &= ~RP_VEND_XP_UPDATE_FC_THRESHOLD_MASK;
+-		value |= soc->update_fc_threshold;
+-		writel(value, port->base + RP_VEND_XP);
+-	}
+-
+ 	if (soc->update_fc_timer) {
+ 		value = readl(port->base + RP_VEND_XP);
+ 		value &= ~RP_VEND_XP_UPDATE_FC_THRESHOLD_MASK;
+@@ -2511,7 +2486,6 @@ static const struct tegra_pcie_soc tegra
+ 	.program_uphy = true,
+ 	.update_clamp_threshold = false,
+ 	.program_deskew_time = false,
+-	.raw_violation_fixup = false,
+ 	.update_fc_timer = false,
+ 	.has_cache_bars = true,
+ 	.ectl.enable = false,
+@@ -2541,7 +2515,6 @@ static const struct tegra_pcie_soc tegra
+ 	.program_uphy = true,
+ 	.update_clamp_threshold = false,
+ 	.program_deskew_time = false,
+-	.raw_violation_fixup = false,
+ 	.update_fc_timer = false,
+ 	.has_cache_bars = false,
+ 	.ectl.enable = false,
+@@ -2554,8 +2527,6 @@ static const struct tegra_pcie_soc tegra
+ 	.pads_pll_ctl = PADS_PLL_CTL_TEGRA30,
+ 	.tx_ref_sel = PADS_PLL_CTL_TXCLKREF_BUF_EN,
+ 	.pads_refclk_cfg0 = 0x44ac44ac,
+-	/* FC threshold is bit[25:18] */
+-	.update_fc_threshold = 0x03fc0000,
+ 	.has_pex_clkreq_en = true,
+ 	.has_pex_bias_ctrl = true,
+ 	.has_intr_prsnt_sense = true,
+@@ -2565,7 +2536,6 @@ static const struct tegra_pcie_soc tegra
+ 	.program_uphy = true,
+ 	.update_clamp_threshold = true,
+ 	.program_deskew_time = false,
+-	.raw_violation_fixup = true,
+ 	.update_fc_timer = false,
+ 	.has_cache_bars = false,
+ 	.ectl.enable = false,
+@@ -2589,7 +2559,6 @@ static const struct tegra_pcie_soc tegra
+ 	.program_uphy = true,
+ 	.update_clamp_threshold = true,
+ 	.program_deskew_time = true,
+-	.raw_violation_fixup = false,
+ 	.update_fc_timer = true,
+ 	.has_cache_bars = false,
+ 	.ectl = {
+@@ -2631,7 +2600,6 @@ static const struct tegra_pcie_soc tegra
+ 	.program_uphy = false,
+ 	.update_clamp_threshold = false,
+ 	.program_deskew_time = false,
+-	.raw_violation_fixup = false,
+ 	.update_fc_timer = false,
+ 	.has_cache_bars = false,
+ 	.ectl.enable = false,
 
 
