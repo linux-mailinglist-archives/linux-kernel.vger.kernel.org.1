@@ -2,158 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8722F240449
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 11:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F97624044D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 11:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgHJJyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 05:54:33 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50114 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgHJJyd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 05:54:33 -0400
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597053270;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OwTf2rcMfOzqkyJabkT5LAdFYDC9N6p5znlTc4VlJfo=;
-        b=TOqxMiqrdBOYvVJCtkD1vuf1GzOtVkMyfS9IjcH1oFq8FD7mTb8YdAQPgwsOLjg6tIk0eQ
-        gzyISfEYnO4ZlpOuWVoH4WKQyP6XGoqKq/YqoqsH0NLsPVi4NgkqZS1HKTuFZxTSRcgqzy
-        8ZPLeGb0g4OGd4GmEbPO9qJ9MEDGWI2MfWsHUwky0tuHd1BeRHlVlvyTri/J3fb/4WB1qd
-        ZdoS851886IFzE7mcRRFBZqX/gczYIeN7cGYtj5v8B0Wp4NxnBfHiQAt6UdweByaUWtvCY
-        lbOH6CLRgiDWa4h6VmfvvXF/TmSKvM61zWdNOTNK652+11ZVI8Wc04jSEISHRw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597053270;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OwTf2rcMfOzqkyJabkT5LAdFYDC9N6p5znlTc4VlJfo=;
-        b=seX6A356Ojp1aDK+1HrbrYb+bpzAH8XIC2z/ZK1v4vA5qBw96z/S27tPrEODaCksMDwSpr
-        0urQ3T89eHokGSDg==
-To:     gregkh@linuxfoundation.org
-Cc:     a.darwish@linutronix.de, bigeasy@linutronix.de,
-        linux-kernel@vger.kernel.org, linux@roeck-us.net, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        tglx@linutronix.de, will@kernel.org
-Subject: [PATCH] Revert "seqlock: lockdep assert non-preemptibility on seqcount_t write"
-Date:   Mon, 10 Aug 2020 11:54:28 +0200
-Message-Id: <20200810095428.2602276-1-a.darwish@linutronix.de>
-In-Reply-To: <20200810085954.GA1591892@kroah.com>
-References: <20200810085954.GA1591892@kroah.com>
+        id S1726845AbgHJJzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 05:55:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53226 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725809AbgHJJzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 05:55:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B4197AC61;
+        Mon, 10 Aug 2020 09:55:20 +0000 (UTC)
+Date:   Mon, 10 Aug 2020 11:55:00 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/memcg: remove useless check on page->mem_cgroup
+Message-ID: <20200810095500.GE4773@dhcp22.suse.cz>
+References: <1596166480-22814-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200731151655.GB491801@cmpxchg.org>
+ <9338716f-ca0e-057f-8d94-03e2b3f70281@linux.alibaba.com>
+ <20200803081815.GD5174@dhcp22.suse.cz>
+ <bd61e672-b997-c4cd-2047-fca9dc11cc4c@linux.alibaba.com>
+ <92dd8e68-8095-72c5-0144-2a084e4d5993@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92dd8e68-8095-72c5-0144-2a084e4d5993@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 859247d39fb008ea812e8f0c398a58a20c12899e.
+On Wed 05-08-20 20:28:33, Alex Shi wrote:
+[...]
+> >From 2ca3e87fd3878ab729551682ad083a70f15bb3fc Mon Sep 17 00:00:00 2001
+> From: Alex Shi <alex.shi@linux.alibaba.com>
+> Date: Sat, 1 Aug 2020 10:43:55 +0800
+> Subject: [PATCH v3] mm/memcg: warning on !memcg after readahead page charged
+> 
+> Since readahead page is charged on memcg too, in theory we don't have to
+> check this exception now. Before safely remove them all, add a warning
+> for the unexpected !memcg.
+> 
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: cgroups@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
 
-Current implementation of lockdep_assert_preemption_disabled() uses
-per-CPU variables, which was done to untangle the existing
-seqlock.h<=>sched.h 'current->' task_struct circular dependency.
+Looks good to me. I am not familiar with the section tweaks but that
+should be ok.
 
-Using per-CPU variables did not fully untangle the dependency for
-various non-x86 architectures though, resulting in multiple broken
-builds. For the affected architectures, raw_smp_processor_id() led
-back to 'current->', thus having the original seqlock.h<=>sched.h
-dependency in full-effect.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-For now, revert adding lockdep_assert_preemption_disabled() to
-seqlock.h.
+Once you collect more feedback, please send both patches so that they do
+not get lost in this thread.
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lkml.kernel.org/r/20200808232122.GA176509@roeck-us.net
-Link: https://lkml.kernel.org/r/20200810085954.GA1591892@kroah.com
-References: Commit a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context} to per-cpu variables")
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
----
+Thanks!
 
-Notes:
-    My apologies for the mess on this one :-(
+> ---
+>  include/linux/mmdebug.h | 13 +++++++++++++
+>  mm/memcontrol.c         | 15 ++++++++-------
+>  2 files changed, 21 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/mmdebug.h b/include/linux/mmdebug.h
+> index 2ad72d2c8cc5..4ed52879ce55 100644
+> --- a/include/linux/mmdebug.h
+> +++ b/include/linux/mmdebug.h
+> @@ -37,6 +37,18 @@
+>  			BUG();						\
+>  		}							\
+>  	} while (0)
+> +#define VM_WARN_ON_ONCE_PAGE(cond, page)	({			\
+> +	static bool __section(.data.once) __warned;			\
+> +	int __ret_warn_once = !!(cond);					\
+> +									\
+> +	if (unlikely(__ret_warn_once && !__warned)) {			\
+> +		dump_page(page, "VM_WARN_ON_ONCE_PAGE(" __stringify(cond)")");\
+> +		__warned = true;					\
+> +		WARN_ON(1);						\
+> +	}								\
+> +	unlikely(__ret_warn_once);					\
+> +})
+> +
+>  #define VM_WARN_ON(cond) (void)WARN_ON(cond)
+>  #define VM_WARN_ON_ONCE(cond) (void)WARN_ON_ONCE(cond)
+>  #define VM_WARN_ONCE(cond, format...) (void)WARN_ONCE(cond, format)
+> @@ -48,6 +60,7 @@
+>  #define VM_BUG_ON_MM(cond, mm) VM_BUG_ON(cond)
+>  #define VM_WARN_ON(cond) BUILD_BUG_ON_INVALID(cond)
+>  #define VM_WARN_ON_ONCE(cond) BUILD_BUG_ON_INVALID(cond)
+> +#define VM_WARN_ON_ONCE_PAGE(cond, page)  BUILD_BUG_ON_INVALID(cond)
+>  #define VM_WARN_ONCE(cond, format...) BUILD_BUG_ON_INVALID(cond)
+>  #define VM_WARN(cond, format...) BUILD_BUG_ON_INVALID(cond)
+>  #endif
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 130093bdf74b..299382fc55a9 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1322,10 +1322,8 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
+>  	}
+>  
+>  	memcg = page->mem_cgroup;
+> -	/*
+> -	 * Swapcache readahead pages are added to the LRU - and
+> -	 * possibly migrated - before they are charged.
+> -	 */
+> +	/* Readahead page is charged too, to see if other page uncharged */
+> +	VM_WARN_ON_ONCE_PAGE(!memcg, page);
+>  	if (!memcg)
+>  		memcg = root_mem_cgroup;
+>  
+> @@ -6906,8 +6904,9 @@ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
+>  	if (newpage->mem_cgroup)
+>  		return;
+>  
+> -	/* Swapcache readahead pages can get replaced before being charged */
+>  	memcg = oldpage->mem_cgroup;
+> +	/* Readahead page is charged too, to see if other page uncharged */
+> +	VM_WARN_ON_ONCE_PAGE(!memcg, oldpage);
+>  	if (!memcg)
+>  		return;
+>  
+> @@ -7104,7 +7103,8 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+>  
+>  	memcg = page->mem_cgroup;
+>  
+> -	/* Readahead page, never charged */
+> +	/* Readahead page is charged too, to see if other page uncharged */
+> +	VM_WARN_ON_ONCE_PAGE(!memcg, page);
+>  	if (!memcg)
+>  		return;
+>  
+> @@ -7168,7 +7168,8 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
+>  
+>  	memcg = page->mem_cgroup;
+>  
+> -	/* Readahead page, never charged */
+> +	/* Readahead page is charged too, to see if other page uncharged */
+> +	VM_WARN_ON_ONCE_PAGE(!memcg, page);
+>  	if (!memcg)
+>  		return 0;
+>  
+> -- 
+> 1.8.3.1
 
- include/linux/seqlock.h | 29 ++++++-----------------------
- 1 file changed, 6 insertions(+), 23 deletions(-)
-
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 54bc20496392..e885702d8b82 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -266,12 +266,6 @@ static inline void raw_write_seqcount_end(seqcount_t *s)
- 	kcsan_nestable_atomic_end();
- }
- 
--static inline void __write_seqcount_begin_nested(seqcount_t *s, int subclass)
--{
--	raw_write_seqcount_begin(s);
--	seqcount_acquire(&s->dep_map, subclass, 0, _RET_IP_);
--}
--
- /**
-  * write_seqcount_begin_nested() - start a seqcount_t write section with
-  *                                 custom lockdep nesting level
-@@ -282,19 +276,8 @@ static inline void __write_seqcount_begin_nested(seqcount_t *s, int subclass)
-  */
- static inline void write_seqcount_begin_nested(seqcount_t *s, int subclass)
- {
--	lockdep_assert_preemption_disabled();
--	__write_seqcount_begin_nested(s, subclass);
--}
--
--/*
-- * A write_seqcount_begin() variant w/o lockdep non-preemptibility checks.
-- *
-- * Use for internal seqlock.h code where it's known that preemption is
-- * already disabled. For example, seqlock_t write side functions.
-- */
--static inline void __write_seqcount_begin(seqcount_t *s)
--{
--	__write_seqcount_begin_nested(s, 0);
-+	raw_write_seqcount_begin(s);
-+	seqcount_acquire(&s->dep_map, subclass, 0, _RET_IP_);
- }
- 
- /**
-@@ -592,7 +575,7 @@ static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start)
- static inline void write_seqlock(seqlock_t *sl)
- {
- 	spin_lock(&sl->lock);
--	__write_seqcount_begin(&sl->seqcount);
-+	write_seqcount_begin(&sl->seqcount);
- }
- 
- /**
-@@ -618,7 +601,7 @@ static inline void write_sequnlock(seqlock_t *sl)
- static inline void write_seqlock_bh(seqlock_t *sl)
- {
- 	spin_lock_bh(&sl->lock);
--	__write_seqcount_begin(&sl->seqcount);
-+	write_seqcount_begin(&sl->seqcount);
- }
- 
- /**
-@@ -645,7 +628,7 @@ static inline void write_sequnlock_bh(seqlock_t *sl)
- static inline void write_seqlock_irq(seqlock_t *sl)
- {
- 	spin_lock_irq(&sl->lock);
--	__write_seqcount_begin(&sl->seqcount);
-+	write_seqcount_begin(&sl->seqcount);
- }
- 
- /**
-@@ -666,7 +649,7 @@ static inline unsigned long __write_seqlock_irqsave(seqlock_t *sl)
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&sl->lock, flags);
--	__write_seqcount_begin(&sl->seqcount);
-+	write_seqcount_begin(&sl->seqcount);
- 	return flags;
- }
- 
 -- 
-2.28.0
-
+Michal Hocko
+SUSE Labs
