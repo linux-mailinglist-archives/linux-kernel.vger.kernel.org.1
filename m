@@ -2,114 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805BF2405B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C792405AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgHJMSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 08:18:18 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9256 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726146AbgHJMSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 08:18:15 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 4D9A955539E3F4B410D8;
-        Mon, 10 Aug 2020 20:18:12 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Mon, 10 Aug 2020
- 20:18:02 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <edumazet@google.com>,
-        <kafai@fb.com>, <daniel@iogearbox.net>, <jakub@cloudflare.com>,
-        <keescook@chromium.org>, <zhang.lin16@zte.com.cn>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] net: Fix potential memory leak in proto_register()
-Date:   Mon, 10 Aug 2020 08:16:58 -0400
-Message-ID: <20200810121658.54657-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+        id S1726673AbgHJMSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 08:18:00 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:44128 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726146AbgHJMR5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 08:17:57 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0U5MlrY2_1597061872;
+Received: from localhost(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U5MlrY2_1597061872)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 10 Aug 2020 20:17:52 +0800
+From:   Xunlei Pang <xlpang@linux.alibaba.com>
+To:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        Roman Gushchin <guro@fb.com>, Pekka Enberg <penberg@gmail.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        David Rientjes <rientjes@google.com>,
+        Xunlei Pang <xlpang@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: [PATCH v2 0/3] mm/slub: Fix count_partial() problem
+Date:   Mon, 10 Aug 2020 20:17:49 +0800
+Message-Id: <1597061872-58724-1-git-send-email-xlpang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we failed to assign proto idx, we free the twsk_slab_name but forget to
-free the twsk_slab. Add a helper function tw_prot_cleanup() to free these
-together and also use this helper function in proto_unregister().
+v1->v2:
+- Improved changelog and variable naming for PATCH 1~2.
+- PATCH3 adds per-cpu counter to avoid performance regression
+  in concurrent __slab_free().
 
-Fixes: b45ce32135d1 ("sock: fix potential memory leak in proto_register()")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- net/core/sock.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+[Testing]
+On my 32-cpu 2-socket physical machine:
+Intel(R) Xeon(R) CPU E5-2650 v2 @ 2.60GHz
+perf stat --null --repeat 10 -- hackbench 20 thread 20000
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 49cd5ffe673e..c9083ad44ea1 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -3406,6 +3406,16 @@ static void sock_inuse_add(struct net *net, int val)
- }
- #endif
- 
-+static void tw_prot_cleanup(struct timewait_sock_ops *twsk_prot)
-+{
-+	if (!twsk_prot)
-+		return;
-+	kfree(twsk_prot->twsk_slab_name);
-+	twsk_prot->twsk_slab_name = NULL;
-+	kmem_cache_destroy(twsk_prot->twsk_slab);
-+	twsk_prot->twsk_slab = NULL;
-+}
-+
- static void req_prot_cleanup(struct request_sock_ops *rsk_prot)
- {
- 	if (!rsk_prot)
-@@ -3476,7 +3486,7 @@ int proto_register(struct proto *prot, int alloc_slab)
- 						  prot->slab_flags,
- 						  NULL);
- 			if (prot->twsk_prot->twsk_slab == NULL)
--				goto out_free_timewait_sock_slab_name;
-+				goto out_free_timewait_sock_slab;
- 		}
- 	}
- 
-@@ -3484,15 +3494,15 @@ int proto_register(struct proto *prot, int alloc_slab)
- 	ret = assign_proto_idx(prot);
- 	if (ret) {
- 		mutex_unlock(&proto_list_mutex);
--		goto out_free_timewait_sock_slab_name;
-+		goto out_free_timewait_sock_slab;
- 	}
- 	list_add(&prot->node, &proto_list);
- 	mutex_unlock(&proto_list_mutex);
- 	return ret;
- 
--out_free_timewait_sock_slab_name:
-+out_free_timewait_sock_slab:
- 	if (alloc_slab && prot->twsk_prot)
--		kfree(prot->twsk_prot->twsk_slab_name);
-+		tw_prot_cleanup(prot->twsk_prot);
- out_free_request_sock_slab:
- 	if (alloc_slab) {
- 		req_prot_cleanup(prot->rsk_prot);
-@@ -3516,12 +3526,7 @@ void proto_unregister(struct proto *prot)
- 	prot->slab = NULL;
- 
- 	req_prot_cleanup(prot->rsk_prot);
--
--	if (prot->twsk_prot != NULL && prot->twsk_prot->twsk_slab != NULL) {
--		kmem_cache_destroy(prot->twsk_prot->twsk_slab);
--		kfree(prot->twsk_prot->twsk_slab_name);
--		prot->twsk_prot->twsk_slab = NULL;
--	}
-+	tw_prot_cleanup(prot->twsk_prot);
- }
- EXPORT_SYMBOL(proto_unregister);
- 
+== original, no patched
+      19.211637055 seconds time elapsed                                          ( +-  0.57% )
+
+== patched with patch1~2
+ Performance counter stats for 'hackbench 20 thread 20000' (10 runs):
+
+      21.731833146 seconds time elapsed                                          ( +-  0.17% )
+
+== patched with patch1~3
+ Performance counter stats for 'hackbench 20 thread 20000' (10 runs):
+
+      19.112106847 seconds time elapsed                                          ( +-  0.64% )
+
+
+Xunlei Pang (3):
+  mm/slub: Introduce two counters for partial objects
+  mm/slub: Get rid of count_partial()
+  mm/slub: Use percpu partial free counter
+
+ mm/slab.h |   2 +
+ mm/slub.c | 124 +++++++++++++++++++++++++++++++++++++++++++-------------------
+ 2 files changed, 89 insertions(+), 37 deletions(-)
+
 -- 
-2.19.1
+1.8.3.1
 
