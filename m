@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A5B2409BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF602409B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbgHJPfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:35:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34452 "EHLO mail.kernel.org"
+        id S1728859AbgHJPfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:35:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728611AbgHJP2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:28:22 -0400
+        id S1728863AbgHJP21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:28:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22CB722BEA;
-        Mon, 10 Aug 2020 15:28:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02D6422BEA;
+        Mon, 10 Aug 2020 15:28:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073301;
-        bh=wkqj1qoeprJlvfQN9/RlfNpdpvKWXthNynLbTT69KSw=;
+        s=default; t=1597073307;
+        bh=AGOMaizvFy9TjsAgvMYtf9C1QGamiHd6Zvyz19yNHMY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FV8IRDCYl+kHutX8O3g9Ef1Bb819OgnuXCjkuzuOGqdo5sC2ZaG8wwM59oYquOH3K
-         fMFVjSIdB9rSastN3sk8kOBEpHktwXQo/vGWgJMY5cPLnGZXArsLLK7rD50wK7DwKt
-         LpfHXI4FQTZkmJGVRMtZSFwn2INZg+O/GWI8e8Tc=
+        b=nYdDJC5hn79HH5fYUs/Ob5UIhmFopEdWlUoPUkqinYYIX8nLsaSKl+fLztDsjDqqo
+         Oel86/flHmNnDTLuBR776F1Xn0QvTjYtRlCy+nZhJs3a0+pnW03n5TRf2yz02BU+In
+         9UA2gjkdKhTOmqqa4+VRBQ43FN/TwWsldrTIc2lQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Amitoj Kaur Chawla <amitoj1606@gmail.com>,
         Johan Hovold <johan@kernel.org>, Pavel Machek <pavel@ucw.cz>
-Subject: [PATCH 5.4 26/67] leds: wm831x-status: fix use-after-free on unbind
-Date:   Mon, 10 Aug 2020 17:21:13 +0200
-Message-Id: <20200810151810.715918442@linuxfoundation.org>
+Subject: [PATCH 5.4 28/67] leds: da903x: fix use-after-free on unbind
+Date:   Mon, 10 Aug 2020 17:21:15 +0200
+Message-Id: <20200810151810.820744761@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
 References: <20200810151809.438685785@linuxfoundation.org>
@@ -45,7 +45,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johan Hovold <johan@kernel.org>
 
-commit 47a459ecc800a17109d0c496a4e21e478806ee40 upstream.
+commit 6f4aa35744f69ed9b0bf5a736c9ca9b44bc1dcea upstream.
 
 Several MFD child drivers register their class devices directly under
 the parent device. This means you cannot blindly do devres conversions
@@ -53,7 +53,7 @@ so that deregistration ends up being tied to the parent device,
 something which leads to use-after-free on driver unbind when the class
 device is released while still being registered.
 
-Fixes: 8d3b6a4001ce ("leds: wm831x-status: Use devm_led_classdev_register")
+Fixes: eed16255d66b ("leds: da903x: Use devm_led_classdev_register")
 Cc: stable <stable@vger.kernel.org>     # 4.6
 Cc: Amitoj Kaur Chawla <amitoj1606@gmail.com>
 Signed-off-by: Johan Hovold <johan@kernel.org>
@@ -61,43 +61,43 @@ Signed-off-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/leds/leds-wm831x-status.c |   14 +++++++++++++-
+ drivers/leds/leds-da903x.c |   14 +++++++++++++-
  1 file changed, 13 insertions(+), 1 deletion(-)
 
---- a/drivers/leds/leds-wm831x-status.c
-+++ b/drivers/leds/leds-wm831x-status.c
-@@ -269,12 +269,23 @@ static int wm831x_status_probe(struct pl
- 	drvdata->cdev.blink_set = wm831x_status_blink_set;
- 	drvdata->cdev.groups = wm831x_status_groups;
+--- a/drivers/leds/leds-da903x.c
++++ b/drivers/leds/leds-da903x.c
+@@ -110,12 +110,23 @@ static int da903x_led_probe(struct platf
+ 	led->flags = pdata->flags;
+ 	led->master = pdev->dev.parent;
  
--	ret = devm_led_classdev_register(wm831x->dev, &drvdata->cdev);
-+	ret = led_classdev_register(wm831x->dev, &drvdata->cdev);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to register LED: %d\n", ret);
+-	ret = devm_led_classdev_register(led->master, &led->cdev);
++	ret = led_classdev_register(led->master, &led->cdev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to register LED %d\n", id);
  		return ret;
  	}
  
-+	platform_set_drvdata(pdev, drvdata);
++	platform_set_drvdata(pdev, led);
 +
 +	return 0;
 +}
 +
-+static int wm831x_status_remove(struct platform_device *pdev)
++static int da903x_led_remove(struct platform_device *pdev)
 +{
-+	struct wm831x_status *drvdata = platform_get_drvdata(pdev);
++	struct da903x_led *led = platform_get_drvdata(pdev);
 +
-+	led_classdev_unregister(&drvdata->cdev);
++	led_classdev_unregister(&led->cdev);
 +
  	return 0;
  }
  
-@@ -283,6 +294,7 @@ static struct platform_driver wm831x_sta
- 		   .name = "wm831x-status",
- 		   },
- 	.probe = wm831x_status_probe,
-+	.remove = wm831x_status_remove,
+@@ -124,6 +135,7 @@ static struct platform_driver da903x_led
+ 		.name	= "da903x-led",
+ 	},
+ 	.probe		= da903x_led_probe,
++	.remove		= da903x_led_remove,
  };
  
- module_platform_driver(wm831x_status_driver);
+ module_platform_driver(da903x_led_driver);
 
 
