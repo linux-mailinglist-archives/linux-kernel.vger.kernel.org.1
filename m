@@ -2,164 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61E6240256
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 09:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159B424025E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 09:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgHJHTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 03:19:36 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60832 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726450AbgHJHTa (ORCPT
+        id S1726422AbgHJHVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 03:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725869AbgHJHVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 03:19:30 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07A73H6A176532;
-        Mon, 10 Aug 2020 03:19:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=R4cXQesq5YrQSp8j2SK9ClMXcspoeGwGaqpBIKTSWI4=;
- b=VkzXa55ojE1+myVpSG3XY2Ohtx5SP9jaQ3SscXfClIknNOaFLDxpSfQ/Xs5cCsBfMCzM
- 1sCNLrKKMxUsPFM0ohnjQMcKTdz2KSXHo0W3j9gOz8UBQBcu30bqD8bgtqQrg6bRVdbx
- QgRfrmpar6E+LttQWJgSGQ5KG1DPCFPcm3XPLNLaFp7/APUbzf5urvAbcNRuoaool14N
- KrPEmV7aGeVGn88cXQYcjqlOPhKB1pvG0EwUKsuC12ZWcOffljQ/1fpS7FkfJFRzw7r2
- V3khBh3F0p6YI4Z85OXEAKnUEJmF/MTrEwt4XcuY5rlWXZK5/kFrEbWirytEf35t4EOd 3w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32srj6aw6j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 03:19:18 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07A784TA005807;
-        Mon, 10 Aug 2020 03:19:18 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32srj6aw5j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 03:19:18 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07A7GEf5019372;
-        Mon, 10 Aug 2020 07:19:15 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 32skp81ynx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 07:19:15 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07A7Hjhn63767016
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 Aug 2020 07:17:45 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ED23B11C052;
-        Mon, 10 Aug 2020 07:19:12 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5197B11C050;
-        Mon, 10 Aug 2020 07:19:10 +0000 (GMT)
-Received: from srikart450.in.ibm.com (unknown [9.102.18.208])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 10 Aug 2020 07:19:10 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-Subject: [PATCH v5 10/10] powerpc/smp: Implement cpu_to_coregroup_id
-Date:   Mon, 10 Aug 2020 12:48:34 +0530
-Message-Id: <20200810071834.92514-11-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200810071834.92514-1-srikar@linux.vnet.ibm.com>
-References: <20200810071834.92514-1-srikar@linux.vnet.ibm.com>
+        Mon, 10 Aug 2020 03:21:39 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49DC4C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 00:21:38 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id g11so2183176ual.2
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 00:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EZuLaH0X1DjxkMIYvUZjBNQpk5tuEvtJPSM7s3zpgVA=;
+        b=Vqsl98sYIlry7YsaqgssuM5FYIzcM1D1osf7noHDmEMsN0q9nuXfpONaiOGWw4ZjNC
+         GxhEAINLCMhMJDXOQSwp0eT1EuzFIPK7K9sBVCA7MqB9w8S9as0fdMVPzkQztlI+7WOt
+         /rNLveVzyktnS6wtY82qfRfX2+vhRGoSTiY3sFsqzzrUVCALKkg6UEDeAAEwvLaSoBsr
+         XI4q4keaf/eP45qsUCtETI3Z8DZP3nBImstSbgruJmYJ4/vZGz2l0dj4nlPSEblvxSRT
+         6WN9Zy9y9GA/sLzBO/UHTY4UZ6sLECmSe7Fky3fjpNkkWQyi3isxhpzHbDgcYc+Njtee
+         WPtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EZuLaH0X1DjxkMIYvUZjBNQpk5tuEvtJPSM7s3zpgVA=;
+        b=CxmmZcvKk4bFUuvnqJeu6fgHJtN4SBDOrgv80TDD6uGW9C3LBUQZ0oXk5U+DrXNDcq
+         sKsebN/7P9skKWHu26vWPrlTgprofrtcyshJCjm4dpVRIW67ObbkVytlsyoXbdBO/Q2w
+         NTzZilUoS2hqbZoClEJ0FsmG5c6snjSsJkEcIqGLbvODADWo93X3bAqU9DSjWG4Rd7cl
+         MSKAwvJoJmmX3vVBH9jiCDX1acuiOICjpQPP/IfJQ1IHVacfnMHjgcqAayKJzKm+fIVx
+         TIqoZYl+YRaRARwR0lKzjAQyXAv55WHcge1pzbigBTDYS1PBP9ancgv2h6gbJNTpTOlw
+         U+tg==
+X-Gm-Message-State: AOAM533ILOxj3YCF/VB/uVcg0MGOkxNqBmPCoBx9vB5STmD2wMrkWyiZ
+        48NaYoWLDHU9yorw8IEnVvJ55XBop5c=
+X-Google-Smtp-Source: ABdhPJyLzrYdLMeCai2m+tubfarxOqo0fuqpeUQigsvyB/QMc/Z3K4Vh0cZFReL9RQmb/3kuTFgcaw==
+X-Received: by 2002:a9f:300f:: with SMTP id h15mr18278308uab.47.1597044096554;
+        Mon, 10 Aug 2020 00:21:36 -0700 (PDT)
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com. [209.85.217.51])
+        by smtp.gmail.com with ESMTPSA id u4sm4506448vkg.42.2020.08.10.00.21.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 Aug 2020 00:21:35 -0700 (PDT)
+Received: by mail-vs1-f51.google.com with SMTP id y8so3725244vsq.8
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 00:21:35 -0700 (PDT)
+X-Received: by 2002:a67:bb06:: with SMTP id m6mr19237225vsn.54.1597044094565;
+ Mon, 10 Aug 2020 00:21:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-10_02:2020-08-06,2020-08-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- impostorscore=0 mlxlogscore=849 priorityscore=1501 lowpriorityscore=0
- bulkscore=0 malwarescore=0 adultscore=0 suspectscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008100048
+References: <20200809023548.684217-1-xie.he.0141@gmail.com>
+ <CA+FuTSe-FaQFn4WNvVPJ1v+jVZAghgd1AZc-cWn2+GjPR4GzVQ@mail.gmail.com> <CAJht_EOao3-kA-W-SdJqKRiFMAFUxw7OARFGY5DL8pXvKd4TLw@mail.gmail.com>
+In-Reply-To: <CAJht_EOao3-kA-W-SdJqKRiFMAFUxw7OARFGY5DL8pXvKd4TLw@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 10 Aug 2020 09:20:56 +0200
+X-Gmail-Original-Message-ID: <CA+FuTSc7c+XTDU10Bh1ZviQomHgiTjiUvOO0iR1X95rq61Snrg@mail.gmail.com>
+Message-ID: <CA+FuTSc7c+XTDU10Bh1ZviQomHgiTjiUvOO0iR1X95rq61Snrg@mail.gmail.com>
+Subject: Re: [PATCH net] drivers/net/wan/x25_asy: Added needed_headroom and a
+ skb->len check
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lookup the coregroup id from the associativity array.
+On Sun, Aug 9, 2020 at 8:08 PM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> On Sun, Aug 9, 2020 at 2:13 AM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+> >
+> > The patch is analogous to commit c7ca03c216ac
+> > ("drivers/net/wan/lapbether: Added needed_headroom and a skb->len
+> > check").
 
-If unable to detect the coregroup id, fallback on the core id.
-This way, ensure sched_domain degenerates and an extra sched domain is
-not created.
+Acked-by: Willem de Bruijn <willemb@google.com>
 
-Ideally this function should have been implemented in
-arch/powerpc/kernel/smp.c. However if its implemented in mm/numa.c, we
-don't need to find the primary domain again.
+> >
+> > Seems to make sense based on call stack
+> >
+> >   x25_asy_xmit               // skb_pull(skb, 1)
+> >   lapb_data_request
+> >   lapb_kick
+> >   lapb_send_iframe        // skb_push(skb, 2)
+> >   lapb_transmit_buffer    // skb_push(skb, 1)
+> >   lapb_data_transmit
+> >   x25_asy_data_transmit
+> >   x25_asy_encaps
+>
+> Thank you!
+>
+> > But I frankly don't know this code and would not modify logic that no
+> > one has complained about for many years without evidence of a real
+> > bug.
+>
+> Maybe it's better to submit this patch to "net-next"?
 
-If the device-tree mentions more than one coregroup, then kernel
-implements only the last or the smallest coregroup, which currently
-corresponds to the penultimate domain in the device-tree.
+That depends on whether this solves a bug. If it is possible to send a
+0 byte packet and make ndo_start_xmit read garbage, then net is the
+right target.
 
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Anton Blanchard <anton@ozlabs.org>
-Cc: Oliver O'Halloran <oohall@gmail.com>
-Cc: Nathan Lynch <nathanl@linux.ibm.com>
-Cc: Michael Neuling <mikey@neuling.org>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Jordan Niethe <jniethe5@gmail.com>
-Cc: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
-Changelog v1 -> v2:
-	Move coregroup_enabled before getting associativity (Gautham)
+> I want to do this change because:
+>
+> 1) I hope to set needed_headroom properly for all three X.25 drivers
+> (lapbether, x25_asy, hdlc_x25) in the kernel. So that the upper layer
+> (net/x25) can be changed to use needed_headroom to allocate skb,
+> instead of the current way of using a constant to estimate the needed
+> headroom.
 
- arch/powerpc/mm/numa.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+Which constant, X25_MAX_L2_LEN?
 
-diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
-index 0d57779e7942..8b3b3ec7fcc4 100644
---- a/arch/powerpc/mm/numa.c
-+++ b/arch/powerpc/mm/numa.c
-@@ -1218,6 +1218,26 @@ int find_and_online_cpu_nid(int cpu)
- 
- int cpu_to_coregroup_id(int cpu)
- {
-+	__be32 associativity[VPHN_ASSOC_BUFSIZE] = {0};
-+	int index;
-+
-+	if (cpu < 0 || cpu > nr_cpu_ids)
-+		return -1;
-+
-+	if (!coregroup_enabled)
-+		goto out;
-+
-+	if (!firmware_has_feature(FW_FEATURE_VPHN))
-+		goto out;
-+
-+	if (vphn_get_associativity(cpu, associativity))
-+		goto out;
-+
-+	index = of_read_number(associativity, 1);
-+	if (index > min_common_depth + 1)
-+		return of_read_number(&associativity[index - 1], 1);
-+
-+out:
- 	return cpu_to_core_id(cpu);
- }
- 
--- 
-2.18.2
+> 2) The code quality of this driver is actually very low, and I also
+> hope to improve it gradually. Actually this driver had been completely
+> broken for many years and no one had noticed this until I fixed it in
+> commit 8fdcabeac398 (drivers/net/wan/x25_asy: Fix to make it work)
+> last month.
 
+Just curious: how come that netif_rx could be removed?
+
+> This driver has a lot of other issues and I wish I can
+> gradually fix them, too.
+>
+> > Were you able to actually exercise this path, similar to lapb_ether:
+> > configure the device, send data from a packet socket? If so, can you
+> > share the configuration steps?
+>
+> Yes, I can run this driver. The driver is a software driver that runs
+> over TTY links. We can set up a x25_asy link over a virtual TTY link
+> using this method:
+>
+> First:
+>   sudo modprobe lapb
+>   sudo modprobe x25_asy
+>
+> Then set up a virtual TTY link:
+>   socat -d -d pty,cfmakeraw pty,cfmakeraw &
+> This will open a pair of PTY ports.
+> (The "socat" program can be installed from package managers.)
+>
+> Then use a C program to set the line discipline for the two PTY ports:
+> Simplified version for reading:
+>   int ldisc = N_X25;
+>   int fd = open("path/to/pty", O_RDWR);
+>   ioctl(fd, TIOCSETD, &ldisc);
+>   close(fd);
+> Complete version for running:
+>   https://github.com/hyanggi/testing_linux/blob/master/network_x25/lapb/set_ldisc.c
+> Then we'll get two network interfaces named x25asy0 and x25asy1.
+>
+> Then we do:
+>   sudo ip link set x25asyN up
+> to bring them up.
+>
+> After we set up this x25_asy link, we can test it using AF_PACKET sockets:
+>
+> In the connected-side C program:
+> Complete version for running:
+>   https://github.com/hyanggi/testing_linux/blob/master/network_x25/lapb/receiver.c
+> Simplified version for reading:
+>   int sockfd = socket(AF_PACKET, SOCK_DGRAM, htons(ETH_P_ALL));
+>
+>   /* Get interface index */
+>   struct ifreq ifr;
+>   strcpy(ifr.ifr_name, "interface_name");
+>   ioctl(sockfd, SIOCGIFINDEX, &ifr);
+>   int ifindex = ifr.ifr_ifindex;
+>
+>   struct sockaddr_ll sender_addr;
+>   socklen_t sender_addr_len = sizeof sender_addr;
+>   char buffer[1500];
+>
+>   while (1) {
+>       ssize_t length = recvfrom(sockfd, buffer, sizeof buffer, 0,
+>                                 (struct sockaddr *)&sender_addr,
+>                                 &sender_addr_len);
+>       if (sender_addr.sll_ifindex != ifindex)
+>           continue;
+>       else if (buffer[0] == 0)
+>           printf("Data received.\n");
+>       else if (buffer[0] == 1)
+>           printf("Connected by the other side.\n");
+>       else if (buffer[0] == 2) {
+>           printf("Disconnected by the other side.\n");
+>           break;
+>       }
+>   }
+>
+>   close(sockfd);
+>
+> In the connecting-side C program:
+> Complete version for running:
+>   https://github.com/hyanggi/testing_linux/blob/master/network_x25/lapb/sender.c
+> Simplified version for reading:
+>   int sockfd = socket(AF_PACKET, SOCK_DGRAM, htons(ETH_P_ALL));
+>
+>   /* Get interface index */
+>   struct ifreq ifr;
+>   strcpy(ifr.ifr_name, "interface_name");
+>   ioctl(sockfd, SIOCGIFINDEX, &ifr);
+>   int ifindex = ifr.ifr_ifindex;
+>
+>   struct sockaddr_ll addr = {
+>       .sll_family = AF_PACKET,
+>       .sll_ifindex = ifindex,
+>   };
+>
+>   /* Connect */
+>   sendto(sockfd, "\x01", 1, 0, (struct sockaddr *)&addr, sizeof addr);
+>
+>   /* Send data */
+>   sendto(sockfd, "\x00" "data", 5, 0, (struct sockaddr *)&addr,
+>          sizeof addr);
+>
+>   sleep(1); /* Wait a while before disconnecting */
+>
+>   /* Disconnect */
+>   sendto(sockfd, "\x02", 1, 0, (struct sockaddr *)&addr, sizeof addr);
+>
+>   close(sockfd);
+>
+> I'm happy to answer any questions. Thank you so much!
+
+Thanks very much for the detailed reproducer.
+
+One thing to keep in mind is that AF_PACKET sockets are not the normal
+datapath. AF_X25 sockets are. But you mention that you also exercise
+the upper layer? That gives confidence that these changes are not
+accidentally introducing regressions for the default path while fixing
+oddly crafted packets with (root only for a reason) packet sockets.
