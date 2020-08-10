@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D1E2409D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1852B240A32
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728742AbgHJP1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:27:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33052 "EHLO mail.kernel.org"
+        id S1728465AbgHJPYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:24:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728706AbgHJP1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:27:13 -0400
+        id S1728444AbgHJPYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:24:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04C3722CF7;
-        Mon, 10 Aug 2020 15:27:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECC5E20772;
+        Mon, 10 Aug 2020 15:24:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073232;
-        bh=SB2k0gB8/Yq6bzcEGvdag2ZgHMDNnB6qGSLVOxkZbVE=;
+        s=default; t=1597073091;
+        bh=qeZvfDHiqugdAsX3cDYN3Pb3rFFOXn3FnRXjPQcaDf4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tGiKwwqyQCpSmeoYqLK6npXWamNEWevNdj6SECxZSuNKZKKDvu8YoPBf8CjtOVopv
-         gEDm+BhIuaJ/q20EeUlVW80FklsEe9ZrQsZtC+dpFiaLIyB6fRpyUMj87wacy6zR7m
-         rweka5jwMP1l+ssRDPbow6qgj5QKaY4yXLI0hNGc=
+        b=iLAXLc8xzqW7NPSlN1/S6XZwvRV71eACs5Eu0nmjcxJUBavtsjHU5/DDEjNnrJtsq
+         m9y5rpg1yOM10n8/apHZ09UfeOQyePaQxPI4jibiQI1JaKwx6dshoGtaTAolqUAFz7
+         cL8tbXXABphl63NsxaEGfxESnP2tE8k/zHPRC8+8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 33/67] drm/nouveau/fbcon: zero-initialise the mode_cmd2 structure
-Date:   Mon, 10 Aug 2020 17:21:20 +0200
-Message-Id: <20200810151811.065747654@linuxfoundation.org>
+        stable@vger.kernel.org, Christopher KOBAYASHI <chris@disavowed.jp>,
+        Doug Brown <doug@downtowndougbrown.com>,
+        Vincent Duvert <vincent.ldev@duvert.net>,
+        Lukas Wunner <lukas@wunner.de>,
+        Yue Haibing <yuehaibing@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.7 63/79] appletalk: Fix atalk_proc_init() return path
+Date:   Mon, 10 Aug 2020 17:21:22 +0200
+Message-Id: <20200810151815.350166933@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
-References: <20200810151809.438685785@linuxfoundation.org>
+In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
+References: <20200810151812.114485777@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +47,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Skeggs <bskeggs@redhat.com>
+From: Vincent Duvert <vincent.ldev@duvert.net>
 
-[ Upstream commit 15fbc3b938534cc8eaac584a7b0c1183fc968b86 ]
+[ Upstream commit d0f6ba2ef2c1c95069509e71402e7d6d43452512 ]
 
-This is tripping up the format modifier patches.
+Add a missing return statement to atalk_proc_init so it doesn't return
+-ENOMEM when successful.  This allows the appletalk module to load
+properly.
 
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: e2bcd8b0ce6e ("appletalk: use remove_proc_subtree to simplify procfs code")
+Link: https://www.downtowndougbrown.com/2020/08/hacking-up-a-fix-for-the-broken-appletalk-kernel-module-in-linux-5-1-and-newer/
+Reported-by: Christopher KOBAYASHI <chris@disavowed.jp>
+Reported-by: Doug Brown <doug@downtowndougbrown.com>
+Signed-off-by: Vincent Duvert <vincent.ldev@duvert.net>
+[lukas: add missing tags]
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org # v5.1+
+Cc: Yue Haibing <yuehaibing@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/nouveau/nouveau_fbcon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/appletalk/atalk_proc.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_fbcon.c b/drivers/gpu/drm/nouveau/nouveau_fbcon.c
-index 141cc89981240..5cf2381f667e2 100644
---- a/drivers/gpu/drm/nouveau/nouveau_fbcon.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_fbcon.c
-@@ -315,7 +315,7 @@ nouveau_fbcon_create(struct drm_fb_helper *helper,
- 	struct nouveau_framebuffer *fb;
- 	struct nouveau_channel *chan;
- 	struct nouveau_bo *nvbo;
--	struct drm_mode_fb_cmd2 mode_cmd;
-+	struct drm_mode_fb_cmd2 mode_cmd = {};
- 	int ret;
+--- a/net/appletalk/atalk_proc.c
++++ b/net/appletalk/atalk_proc.c
+@@ -229,6 +229,8 @@ int __init atalk_proc_init(void)
+ 				     sizeof(struct aarp_iter_state), NULL))
+ 		goto out;
  
- 	mode_cmd.width = sizes->surface_width;
--- 
-2.25.1
-
++	return 0;
++
+ out:
+ 	remove_proc_subtree("atalk", init_net.proc_net);
+ 	return -ENOMEM;
 
 
