@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02ED240903
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4AA32408D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728822AbgHJP2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:28:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33768 "EHLO mail.kernel.org"
+        id S1728586AbgHJPZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:25:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728371AbgHJP1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:27:47 -0400
+        id S1728574AbgHJPZq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:25:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A83822BF3;
-        Mon, 10 Aug 2020 15:27:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 674AF208A9;
+        Mon, 10 Aug 2020 15:25:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073267;
-        bh=nJ5uviGhYV6dHThWLKBvz/T7t58qjLG2DrnP1k+q9g0=;
+        s=default; t=1597073146;
+        bh=NKmo2FJbVFaNrNPyrXYIqpOWrHXNGdpkOmevazIuIkQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HUSdd9iDh/of/hCker2+bPv/6DAAzLdOnw67NOcL1nzG5lcCk1El0Wyt2RxU1A+zJ
-         rgDKZ/e1ZsoihWL9QQIiYDbKXgVNb6Jdi/81e98zOqRAiKoMZ9rlLGXSDOmUa03/0B
-         OHeknup3+EQuASOLFLWzXEXXwdU3B0uyTgqnhA5k=
+        b=AgY/+Idfp7Mw9YWbYQi0pHNMmJiavd7KAMacl4DEgK1yJCN6h/5vgCfir0f9oGndx
+         sRLW7pOc1WbbUv/TuXBUneZCu2whTQ2Lgrx64sulCveNLCzwVj9GvZVjK1WxsyxvuS
+         tFUQKLISLN2u+MS8XPvxKVQDPGyzc/vF9NWDGj6c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 44/67] atm: fix atm_dev refcnt leaks in atmtcp_remove_persistent
-Date:   Mon, 10 Aug 2020 17:21:31 +0200
-Message-Id: <20200810151811.617375764@linuxfoundation.org>
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.7 73/79] Revert "vxlan: fix tos value before xmit"
+Date:   Mon, 10 Aug 2020 17:21:32 +0200
+Message-Id: <20200810151815.823346131@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
-References: <20200810151809.438685785@linuxfoundation.org>
+In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
+References: <20200810151812.114485777@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,54 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Xiong <xiongx18@fudan.edu.cn>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit 51875dad43b44241b46a569493f1e4bfa0386d86 ]
+[ Upstream commit a0dced17ad9dc08b1b25e0065b54c97a318e6e8b ]
 
-atmtcp_remove_persistent() invokes atm_dev_lookup(), which returns a
-reference of atm_dev with increased refcount or NULL if fails.
+This reverts commit 71130f29979c7c7956b040673e6b9d5643003176.
 
-The refcount leaks issues occur in two error handling paths. If
-dev_data->persist is zero or PRIV(dev)->vcc isn't NULL, the function
-returns 0 without decreasing the refcount kept by a local variable,
-resulting in refcount leaks.
+In commit 71130f29979c ("vxlan: fix tos value before xmit") we want to
+make sure the tos value are filtered by RT_TOS() based on RFC1349.
 
-Fix the issue by adding atm_dev_put() before returning 0 both when
-dev_data->persist is zero or PRIV(dev)->vcc isn't NULL.
+       0     1     2     3     4     5     6     7
+    +-----+-----+-----+-----+-----+-----+-----+-----+
+    |   PRECEDENCE    |          TOS          | MBZ |
+    +-----+-----+-----+-----+-----+-----+-----+-----+
 
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+But RFC1349 has been obsoleted by RFC2474. The new DSCP field defined like
+
+       0     1     2     3     4     5     6     7
+    +-----+-----+-----+-----+-----+-----+-----+-----+
+    |          DS FIELD, DSCP           | ECN FIELD |
+    +-----+-----+-----+-----+-----+-----+-----+-----+
+
+So with
+
+IPTOS_TOS_MASK          0x1E
+RT_TOS(tos)		((tos)&IPTOS_TOS_MASK)
+
+the first 3 bits DSCP info will get lost.
+
+To take all the DSCP info in xmit, we should revert the patch and just push
+all tos bits to ip_tunnel_ecn_encap(), which will handling ECN field later.
+
+Fixes: 71130f29979c ("vxlan: fix tos value before xmit")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Acked-by: Guillaume Nault <gnault@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/atm/atmtcp.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/net/vxlan.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/atm/atmtcp.c b/drivers/atm/atmtcp.c
-index d9fd70280482c..7f814da3c2d06 100644
---- a/drivers/atm/atmtcp.c
-+++ b/drivers/atm/atmtcp.c
-@@ -433,9 +433,15 @@ static int atmtcp_remove_persistent(int itf)
- 		return -EMEDIUMTYPE;
- 	}
- 	dev_data = PRIV(dev);
--	if (!dev_data->persist) return 0;
-+	if (!dev_data->persist) {
-+		atm_dev_put(dev);
-+		return 0;
-+	}
- 	dev_data->persist = 0;
--	if (PRIV(dev)->vcc) return 0;
-+	if (PRIV(dev)->vcc) {
-+		atm_dev_put(dev);
-+		return 0;
-+	}
- 	kfree(dev_data);
- 	atm_dev_put(dev);
- 	atm_dev_deregister(dev);
--- 
-2.25.1
-
+--- a/drivers/net/vxlan.c
++++ b/drivers/net/vxlan.c
+@@ -2550,7 +2550,7 @@ static void vxlan_xmit_one(struct sk_buf
+ 		ndst = &rt->dst;
+ 		skb_tunnel_check_pmtu(skb, ndst, VXLAN_HEADROOM);
+ 
+-		tos = ip_tunnel_ecn_encap(RT_TOS(tos), old_iph, skb);
++		tos = ip_tunnel_ecn_encap(tos, old_iph, skb);
+ 		ttl = ttl ? : ip4_dst_hoplimit(&rt->dst);
+ 		err = vxlan_build_skb(skb, ndst, sizeof(struct iphdr),
+ 				      vni, md, flags, udp_sum);
+@@ -2590,7 +2590,7 @@ static void vxlan_xmit_one(struct sk_buf
+ 
+ 		skb_tunnel_check_pmtu(skb, ndst, VXLAN6_HEADROOM);
+ 
+-		tos = ip_tunnel_ecn_encap(RT_TOS(tos), old_iph, skb);
++		tos = ip_tunnel_ecn_encap(tos, old_iph, skb);
+ 		ttl = ttl ? : ip6_dst_hoplimit(ndst);
+ 		skb_scrub_packet(skb, xnet);
+ 		err = vxlan_build_skb(skb, ndst, sizeof(struct ipv6hdr),
 
 
