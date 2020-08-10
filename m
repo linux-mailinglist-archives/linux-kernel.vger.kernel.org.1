@@ -2,65 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AE82407BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F0E2407C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727062AbgHJOmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 10:42:11 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:48971 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726392AbgHJOmK (ORCPT
+        id S1726955AbgHJOnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 10:43:45 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51202 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726111AbgHJOnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 10:42:10 -0400
-Received: by mail-il1-f198.google.com with SMTP id w8so2808888ilg.15
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 07:42:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=OzRqCxKFuIBYd6uAIlx4xZOrodkSUu/+cChTzUG+OTk=;
-        b=VDkZFQFKKwGXV4066sOwC8Y/8bUrMTE5Z5QH/EAKi70uPx9gEmo5A2zgNl6RggIKN7
-         HxJbwpDLj46Ocw5ktn6Ug+I5l9IKaUKMug4aAIGv8vr4kB7EKLr/ftOF4uZQ8IcUo6T7
-         pDhEj6ZSj3trCQQyRnHdClpBdQ4JLPVTeV6KayiZJRxZBJnQHsceupFith5elvB30mo5
-         2GsUdQKW6LlGrXhmDZrwesBLi+GslanQbrJb5MSi60NyhDE/fa14GbkcKwsc3H4dvz6D
-         +ROF4J8tnjkO5y2vGHkk0xatghlfIVs8UT4bEfhZSWyiBv1hI+68CB13Pm0QDWlZ46A7
-         aVkg==
-X-Gm-Message-State: AOAM532hlRSo3vHxX93+CfeqFARmmXfS8EbKC6L0caKWWtISl8B5ZrHu
-        W+xFrZ9QZYShju2qMrfUXac/Ytib1ioNWJp/Z5VsY7HXoC9Y
-X-Google-Smtp-Source: ABdhPJxXFLShve5fwsxHgj+zHfvKDZxlj0s2XHM3ReDwNCMkS1tJ8mZ5yZkigLmULrkVBmjKY8LGwZ7Q9j1yKl+G27H/VtFlxZ3A
-MIME-Version: 1.0
-X-Received: by 2002:a5e:a607:: with SMTP id q7mr17629684ioi.16.1597070529854;
- Mon, 10 Aug 2020 07:42:09 -0700 (PDT)
-Date:   Mon, 10 Aug 2020 07:42:09 -0700
-In-Reply-To: <20200810142441.GB299045@rowland.harvard.edu>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009d004605ac86f57b@google.com>
-Subject: Re: WARNING in slab_pre_alloc_hook
-From:   syzbot <syzbot+c2c3302f9c601a4b1be2@syzkaller.appspotmail.com>
-To:     andreyknvl@gmail.com, andreyknvl@google.com, balbi@kernel.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, stern@rowland.harvard.edu,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 10 Aug 2020 10:43:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597070623;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=JcBLOi3neeT1lIyBo7PfatBN0vwuswVUL6Gsq5h2/Cs=;
+        b=LEEGvy6zhcsqoN2Adc8Src4DEHEO0UojZX+T87T06rPZSAHcggjYODVth23Q6U0UeQREsN
+        hIuNoyY2XGNcTD4gyAoqDzM2rOl/uye9qy/gpoIqUWT4BQNKygTd8qJb/x8mPypndagtmm
+        QUH6UyLoi3lZvwhE4clSt+McAwX4m4U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249-ZtPwwEoJN0mE3uY2kLDSqg-1; Mon, 10 Aug 2020 10:43:41 -0400
+X-MC-Unique: ZtPwwEoJN0mE3uY2kLDSqg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E04A659;
+        Mon, 10 Aug 2020 14:43:40 +0000 (UTC)
+Received: from dba62.ml3.eng.bos.redhat.com (dba62.ml3.eng.bos.redhat.com [10.19.176.128])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8063079CF3;
+        Mon, 10 Aug 2020 14:43:40 +0000 (UTC)
+From:   David Arcari <darcari@redhat.com>
+To:     linux-pm@vger.kernel.org
+Cc:     David Arcari <darcari@redhat.com>, Len Brown <lenb@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] tools/power turbostat: fix output formatting for ACPI CST enumeration
+Date:   Mon, 10 Aug 2020 10:43:30 -0400
+Message-Id: <20200810144330.75613-1-darcari@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+turbostat formatting is broken with ACPI CST for enumeration.  The
+problem is that the CX_ACPI% is eight characters long which does not
+work with tab formatting.  One simple solution is to remove the underbar
+from the state name such that C1_ACPI will be displayed as C1ACPI.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Signed-off-by: David Arcari <darcari@redhat.com>
+Cc: Len Brown <lenb@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+---
+ tools/power/x86/turbostat/turbostat.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-Reported-and-tested-by: syzbot+c2c3302f9c601a4b1be2@syzkaller.appspotmail.com
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index 33b370865d16..5f074879cc0a 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -3474,6 +3474,20 @@ int has_config_tdp(unsigned int family, unsigned int model)
+ 	}
+ }
+ 
++static void
++remove_underbar(char *s)
++{
++	char *to = s;
++
++	while (*s) {
++		if (*s != '_')
++			*to++ = *s;
++		s++;
++	}
++
++	*to = 0;
++}
++
+ static void
+ dump_cstate_pstate_config_info(unsigned int family, unsigned int model)
+ {
+@@ -3559,6 +3573,8 @@ dump_sysfs_cstate_config(void)
+ 		*sp = '\0';
+ 		fclose(input);
+ 
++		remove_underbar(name_buf);
++
+ 		sprintf(path, "/sys/devices/system/cpu/cpu%d/cpuidle/state%d/desc",
+ 			base_cpu, state);
+ 		input = fopen(path, "r");
+@@ -5597,6 +5613,8 @@ void probe_sysfs(void)
+ 		*sp = '%';
+ 		*(sp + 1) = '\0';
+ 
++		remove_underbar(name_buf);
++
+ 		fclose(input);
+ 
+ 		sprintf(path, "cpuidle/state%d/time", state);
+@@ -5624,6 +5642,8 @@ void probe_sysfs(void)
+ 		*sp = '\0';
+ 		fclose(input);
+ 
++		remove_underbar(name_buf);
++
+ 		sprintf(path, "cpuidle/state%d/usage", state);
+ 
+ 		if (is_deferred_skip(name_buf))
+-- 
+2.27.0
 
-Tested on:
-
-commit:         449dc8c9 Merge tag 'for-v5.9' of git://git.kernel.org/pub/..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6ef84fa8ee48e528
-dashboard link: https://syzkaller.appspot.com/bug?extid=c2c3302f9c601a4b1be2
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14ef8e52900000
-
-Note: testing is done by a robot and is best-effort only.
