@@ -2,339 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C2C2406AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 15:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9B52406B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 15:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgHJNie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 09:38:34 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:47496 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726584AbgHJNie (ORCPT
+        id S1726920AbgHJNjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 09:39:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726569AbgHJNjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 09:38:34 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 10 Aug 2020 06:38:33 -0700
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 10 Aug 2020 06:38:31 -0700
-Received: from mkrishn-linux.qualcomm.com ([10.204.66.35])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 10 Aug 2020 19:08:08 +0530
-Received: by mkrishn-linux.qualcomm.com (Postfix, from userid 438394)
-        id 5D46B458C; Mon, 10 Aug 2020 19:08:07 +0530 (IST)
-From:   Krishna Manikandan <mkrishn@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     Chandan Uddaraju <chandanu@codeaurora.org>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        seanpaul@chromium.org, hoegsberg@chromium.org,
-        kalyan_t@codeaurora.org, nganji@codeaurora.org, robh@kernel.org,
-        Vara Reddy <varar@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>
-Subject: [PATCH 2/2] dt-bindings: msm/dp: add bindings of DP/DP-PLL driver for Snapdragon
-Date:   Mon, 10 Aug 2020 19:08:03 +0530
-Message-Id: <1597066683-6044-2-git-send-email-mkrishn@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1597066683-6044-1-git-send-email-mkrishn@codeaurora.org>
-References: <1597066683-6044-1-git-send-email-mkrishn@codeaurora.org>
+        Mon, 10 Aug 2020 09:39:53 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D9EC061756;
+        Mon, 10 Aug 2020 06:39:53 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id d190so7661053wmd.4;
+        Mon, 10 Aug 2020 06:39:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wQXwole3kTB9zcN+Pyn4hxfuw4dEOY8H2tP6VlLvClg=;
+        b=UGnt1MgLcFklXEgt21yPcO9J2LBO09KqZ7e4pMxSZyA/1fsWJ/qHfpQgLQ4rL3dVWq
+         USIUYWuG9mnKroSkHXMbpyfiEWz6Mssx4vA+VVTOZt37vhp6S7ATynyaUfoyJpOGZAgN
+         pMu1erKTdM3pwcsTj/mIO6G8EOTUaFFXW/bu9ucB6c9K2+6TSARJKAiO3crMf3GABagn
+         7vIbK2UjQsoQ6jU5lrQr1ECSd37svqquz8FkOrU5sKoQw1R9Laxr6MU8KVxN3MUhViQB
+         UrCtRXz9ovaXHWBLWOaLJKWxjE3ER9hGE/2yZl/K6Pn+4ixweB8p5FpkL1UDPMqxbE2D
+         Jk7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wQXwole3kTB9zcN+Pyn4hxfuw4dEOY8H2tP6VlLvClg=;
+        b=U5ksle5/JLEFxRuVAlxQ8wQmT/31fGOFmkPcXxvZBuPG7vqEtqdJe/3nqhge9mtwHZ
+         4mq77liandxFhQWALrxHNtVN8nXyx2waCxDcQt+b3+GBWoKnfHjrEGWz+1xHrcJyKDxE
+         kE8X26G5dPMT6GiWgLqvHtHAWsnZlDNkRgaLljyG0MgjAv9rRSyjqiLtTZdsfjO7IVJ+
+         /nQbudgufOFk1LxDWirQflJZ9mT7RNa2yVwMS35xJ1iklbpOzZsQAVqlr2Xcomw2NQ+H
+         7P3nqQvqam0sMEUHwPuQfHvnNiAGaD8k+/oZUi89GyyVILvIasNJLzfNngOwm7+4m0H6
+         AL4A==
+X-Gm-Message-State: AOAM533a35Sygn3QFynMHWwuKaP6e8NVU5hcBl94oVA/0gb3SNjx/PCr
+        45ogIlGtekLlnymWgL185KeqUB1cuRWybA9IT/zXEvyZ
+X-Google-Smtp-Source: ABdhPJxoIZ6cFJfjs2hzWYJ8isoQGnGHikI77YeyYsFLqv+3ARhlck53r9n5aTVgTLdWDXt7w/KZciN5IKSwT1EYf/0=
+X-Received: by 2002:a1c:96d7:: with SMTP id y206mr25026001wmd.9.1597066791786;
+ Mon, 10 Aug 2020 06:39:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200707171515.110818-1-izabela.bakollari@gmail.com> <20200804160908.46193-1-izabela.bakollari@gmail.com>
+In-Reply-To: <20200804160908.46193-1-izabela.bakollari@gmail.com>
+From:   Izabela Bakollari <izabela.bakollari@gmail.com>
+Date:   Mon, 10 Aug 2020 15:39:40 +0200
+Message-ID: <CAC8tkWDuvz3HQDp=Bb-Sfgiks1ETG-j1SMFn6O2nhyzYL5Cc8Q@mail.gmail.com>
+Subject: Re: [PATCHv2 net-next] dropwatch: Support monitoring of dropped frames
+To:     nhorman@tuxdriver.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chandan Uddaraju <chandanu@codeaurora.org>
+I have worked on this feature as part of the Linux Kernel Mentorship
+Program. Your review would really help me in this learning process.
 
-Add bindings for Snapdragon DisplayPort controller driver.
+Thanks,
+Izabela
 
-Changes in V2:
-Provide details about sel-gpio
-
-Changes in V4:
-Provide details about max dp lanes
-Change the commit text
-
-Changes in V5:
-moved dp.txt to yaml file
-
-Changes in v6:
-- Squash all AUX LUT properties into one pattern Property
-- Make aux-cfg[0-9]-settings properties optional
-- Remove PLL/PHY bindings from DP controller dts
-- Add DP clocks description
-- Remove _clk suffix from clock names
-- Rename pixel clock to stream_pixel
-- Remove redundant bindings (GPIO, PHY, HDCP clock, etc..)
-- Fix indentation
-- Add Display Port as interface of DPU in DPU bindings
-  and add port mapping accordingly.
-
-Chages in v7:
-- Add dp-controller.yaml file common between multiple SOC
-- Rename dp-sc7180.yaml to dp-controller-sc7180.yaml
-- change compatible string and add SOC name to it.
-- Remove Root clock generator for pixel clock
-- Add assigned-clocks and assigned-clock-parents bindings
-- Remove redundant properties, descriptions and blank lines
-- Add DP port in DPU bindings
-- Update depends-on tag in commit message and rebase change accordingly
-
-Changes in v8:
-- Add MDSS AHB clock in bindings
-
-Changes in v9:
-- Remove redundant reg-name property
-- Change assigned-clocks and assigned-clocks-parents counts to 2
-- Use IRQ flags in example dts
-
-Signed-off-by: Chandan Uddaraju <chandanu@codeaurora.org>
-Signed-off-by: Vara Reddy <varar@codeaurora.org>
-Signed-off-by: Tanmay Shah <tanmay@codeaurora.org>
----
- .../bindings/display/msm/dp-controller-sc7180.yaml | 141 +++++++++++++++++++++
- .../bindings/display/msm/dp-controller.yaml        |  59 +++++++++
- .../bindings/display/msm/dpu-sc7180.yaml           |  10 ++
- 3 files changed, 210 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/msm/dp-controller-sc7180.yaml
- create mode 100644 Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-
-diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller-sc7180.yaml b/Documentation/devicetree/bindings/display/msm/dp-controller-sc7180.yaml
-new file mode 100644
-index 0000000..83a9e39
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/msm/dp-controller-sc7180.yaml
-@@ -0,0 +1,141 @@
-+# SPDX-License-Identifier: (GPL-2.0-only  OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/msm/dp-controller-sc7180.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MSM SC7180 Display Port Controller.
-+
-+maintainers:
-+  - Chandan Uddaraju <chandanu@codeaurora.org>
-+  - Vara Reddy <varar@codeaurora.org>
-+  - Tanmay Shah <tanmay@codeaurora.org>
-+
-+description: |
-+  Device tree bindings for DP host controller for MSM SC7180 target
-+  that are compatible with VESA Display Port interface specification.
-+
-+allOf:
-+  - $ref: dp-controller.yaml#
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - qcom,sc7180-dp
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 5
-+
-+  clock-names:
-+    items:
-+      - const: core_iface
-+      - const: core_aux
-+      - const: ctrl_link
-+      - const: ctrl_link_iface
-+      - const: stream_pixel
-+
-+  "#clock-cells":
-+    const: 1
-+
-+  assigned-clocks:
-+    maxItems: 2
-+  assigned-clock-parents:
-+    maxItems: 2
-+
-+  data-lanes:
-+    $ref: "/schemas/types.yaml#/definitions/uint32-array"
-+    minItems: 1
-+    maxItems: 4
-+
-+  vdda-1p2-supply:
-+    description: phandle to vdda 1.2V regulator node.
-+
-+  vdda-0p9-supply:
-+    description: phandle to vdda 0.9V regulator node.
-+
-+  ports:
-+    type: object
-+    properties:
-+      "#address-cells":
-+        const: 1
-+
-+      "#size-cells":
-+        const: 0
-+
-+      port@0:
-+        type: object
-+      port@1:
-+        type: object
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - assigned-clocks
-+  - assigned-clock-parents
-+  - vdda-1p2-supply
-+  - vdda-0p9-supply
-+  - data-lanes
-+  - ports
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/qcom,dispcc-sdm845.h>
-+    #include <dt-bindings/clock/qcom,gcc-sdm845.h>
-+    msm_dp: displayport-controller@ae90000{
-+        compatible = "qcom,sc7180-dp";
-+        reg = <0 0xae90000 0 0x1400>;
-+
-+        interrupt-parent = <&mdss>;
-+        interrupts = <12 IRQ_TYPE_NONE>;
-+
-+        clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-+                 <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
-+                 <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
-+                 <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
-+                 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
-+        clock-names = "core_iface", "core_aux",
-+                      "ctrl_link",
-+                      "ctrl_link_iface", "stream_pixel";
-+        #clock-cells = <1>;
-+
-+        assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
-+                          <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
-+        assigned-clock-parents = <&dp_phy 0>, <&dp_phy 1>;
-+
-+        vdda-1p2-supply = <&vreg_l3c_1p2>;
-+        vdda-0p9-supply = <&vreg_l4a_0p8>;
-+
-+        data-lanes = <0 1>;
-+
-+        ports {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+
-+            port@0 {
-+                reg = <0>;
-+                dp_in: endpoint {
-+                    remote-endpoint = <&dpu_intf0_out>;
-+                };
-+            };
-+
-+            port@1 {
-+                reg = <1>;
-+                dp_out: endpoint {
-+                };
-+            };
-+        };
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-new file mode 100644
-index 0000000..f41fecb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: (GPL-2.0-only  OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/msm/dp-controller.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm Display Port Controller.
-+
-+maintainers:
-+  - Chandan Uddaraju <chandanu@codeaurora.org>
-+  - Vara Reddy <varar@codeaurora.org>
-+  - Tanmay Shah <tanmay@codeaurora.org>
-+
-+description: |
-+  Device tree bindings for MSM Display Port which supports DP host controllers
-+  that are compatible with VESA Display Port interface specification.
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - qcom,sc7180-dp
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 5
-+    items:
-+      - description: AHB clock to enable register access
-+      - description: Display Port AUX clock
-+      - description: Display Port Link clock
-+      - description: Link interface clock between DP and PHY
-+      - description: Display Port Pixel clock
-+
-+  clock-names:
-+    items:
-+      - const: core_iface
-+      - const: core_aux
-+      - const: ctrl_link
-+      - const: ctrl_link_iface
-+      - const: stream_pixel
-+
-+  assigned-clocks:
-+    maxItems: 2
-+  assigned-clock-parents:
-+    maxItems: 2
-+
-+  data-lanes:
-+    $ref: "/schemas/types.yaml#/definitions/uint32-array"
-+    minItems: 1
-+    maxItems: 4
-+
-+  ports:
-+    type: object
-+...
-diff --git a/Documentation/devicetree/bindings/display/msm/dpu-sc7180.yaml b/Documentation/devicetree/bindings/display/msm/dpu-sc7180.yaml
-index df70393..be796d9 100644
---- a/Documentation/devicetree/bindings/display/msm/dpu-sc7180.yaml
-+++ b/Documentation/devicetree/bindings/display/msm/dpu-sc7180.yaml
-@@ -133,6 +133,9 @@ patternProperties:
-           port@1:
-             type: object
-             description: DPU_INTF2 (DSI2)
-+          port@2:
-+            type: object
-+            description: DPU_INTF0 (DP)
- 
-       assigned-clocks:
-         maxItems: 4
-@@ -229,6 +232,13 @@ examples:
-                                                   remote-endpoint = <&dsi0_in>;
-                                    };
-                            };
-+
-+                            port@2 {
-+                                    reg = <2>;
-+                                    dpu_intf0_out: endpoint {
-+                                                   remote-endpoint = <&dp_in>;
-+                                    };
-+                            };
-                    };
-          };
-       };
--- 
-1.9.1
-
+On Tue, Aug 4, 2020 at 6:09 PM <izabela.bakollari@gmail.com> wrote:
+>
+> From: Izabela Bakollari <izabela.bakollari@gmail.com>
+>
+> Dropwatch is a utility that monitors dropped frames by having userspace
+> record them over the dropwatch protocol over a file. This augument
+> allows live monitoring of dropped frames using tools like tcpdump.
+>
+> With this feature, dropwatch allows two additional commands (start and
+> stop interface) which allows the assignment of a net_device to the
+> dropwatch protocol. When assinged, dropwatch will clone dropped frames,
+> and receive them on the assigned interface, allowing tools like tcpdump
+> to monitor for them.
+>
+> With this feature, create a dummy ethernet interface (ip link add dev
+> dummy0 type dummy), assign it to the dropwatch kernel subsystem, by using
+> these new commands, and then monitor dropped frames in real time by
+> running tcpdump -i dummy0.
+>
+> Signed-off-by: Izabela Bakollari <izabela.bakollari@gmail.com>
+> ---
+> Changes in v2:
+> - protect the dummy ethernet interface from being changed by another
+> thread/cpu
+> ---
+>  include/uapi/linux/net_dropmon.h |  3 ++
+>  net/core/drop_monitor.c          | 84 ++++++++++++++++++++++++++++++++
+>  2 files changed, 87 insertions(+)
+>
+> diff --git a/include/uapi/linux/net_dropmon.h b/include/uapi/linux/net_dropmon.h
+> index 67e31f329190..e8e861e03a8a 100644
+> --- a/include/uapi/linux/net_dropmon.h
+> +++ b/include/uapi/linux/net_dropmon.h
+> @@ -58,6 +58,8 @@ enum {
+>         NET_DM_CMD_CONFIG_NEW,
+>         NET_DM_CMD_STATS_GET,
+>         NET_DM_CMD_STATS_NEW,
+> +       NET_DM_CMD_START_IFC,
+> +       NET_DM_CMD_STOP_IFC,
+>         _NET_DM_CMD_MAX,
+>  };
+>
+> @@ -93,6 +95,7 @@ enum net_dm_attr {
+>         NET_DM_ATTR_SW_DROPS,                   /* flag */
+>         NET_DM_ATTR_HW_DROPS,                   /* flag */
+>         NET_DM_ATTR_FLOW_ACTION_COOKIE,         /* binary */
+> +       NET_DM_ATTR_IFNAME,                     /* string */
+>
+>         __NET_DM_ATTR_MAX,
+>         NET_DM_ATTR_MAX = __NET_DM_ATTR_MAX - 1
+> diff --git a/net/core/drop_monitor.c b/net/core/drop_monitor.c
+> index 8e33cec9fc4e..781e69876d2f 100644
+> --- a/net/core/drop_monitor.c
+> +++ b/net/core/drop_monitor.c
+> @@ -30,6 +30,7 @@
+>  #include <net/genetlink.h>
+>  #include <net/netevent.h>
+>  #include <net/flow_offload.h>
+> +#include <net/sock.h>
+>
+>  #include <trace/events/skb.h>
+>  #include <trace/events/napi.h>
+> @@ -46,6 +47,7 @@
+>   */
+>  static int trace_state = TRACE_OFF;
+>  static bool monitor_hw;
+> +struct net_device *interface;
+>
+>  /* net_dm_mutex
+>   *
+> @@ -54,6 +56,8 @@ static bool monitor_hw;
+>   */
+>  static DEFINE_MUTEX(net_dm_mutex);
+>
+> +static DEFINE_SPINLOCK(interface_lock);
+> +
+>  struct net_dm_stats {
+>         u64 dropped;
+>         struct u64_stats_sync syncp;
+> @@ -255,6 +259,21 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
+>
+>  out:
+>         spin_unlock_irqrestore(&data->lock, flags);
+> +       spin_lock_irqsave(&interface_lock, flags);
+> +       if (interface && interface != skb->dev) {
+> +               skb = skb_clone(skb, GFP_ATOMIC);
+> +               if (skb) {
+> +                       skb->dev = interface;
+> +                       spin_unlock_irqrestore(&interface_lock, flags);
+> +                       netif_receive_skb(skb);
+> +               } else {
+> +                       spin_unlock_irqrestore(&interface_lock, flags);
+> +                       pr_err("dropwatch: Not enough memory to clone dropped skb\n");
+> +                       return;
+> +               }
+> +       } else {
+> +               spin_unlock_irqrestore(&interface_lock, flags);
+> +       }
+>  }
+>
+>  static void trace_kfree_skb_hit(void *ignore, struct sk_buff *skb, void *location)
+> @@ -1315,6 +1334,53 @@ static int net_dm_cmd_trace(struct sk_buff *skb,
+>         return -EOPNOTSUPP;
+>  }
+>
+> +static int net_dm_interface_start(struct net *net, const char *ifname)
+> +{
+> +       struct net_device *nd = dev_get_by_name(net, ifname);
+> +
+> +       if (nd)
+> +               interface = nd;
+> +       else
+> +               return -ENODEV;
+> +
+> +       return 0;
+> +}
+> +
+> +static int net_dm_interface_stop(struct net *net, const char *ifname)
+> +{
+> +       dev_put(interface);
+> +       interface = NULL;
+> +
+> +       return 0;
+> +}
+> +
+> +static int net_dm_cmd_ifc_trace(struct sk_buff *skb, struct genl_info *info)
+> +{
+> +       struct net *net = sock_net(skb->sk);
+> +       char ifname[IFNAMSIZ];
+> +
+> +       if (net_dm_is_monitoring())
+> +               return -EBUSY;
+> +
+> +       memset(ifname, 0, IFNAMSIZ);
+> +       nla_strlcpy(ifname, info->attrs[NET_DM_ATTR_IFNAME], IFNAMSIZ - 1);
+> +
+> +       switch (info->genlhdr->cmd) {
+> +       case NET_DM_CMD_START_IFC:
+> +               if (!interface)
+> +                       return net_dm_interface_start(net, ifname);
+> +               else
+> +                       return -EBUSY;
+> +       case NET_DM_CMD_STOP_IFC:
+> +               if (interface)
+> +                       return net_dm_interface_stop(net, interface->name);
+> +               else
+> +                       return -ENODEV;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int net_dm_config_fill(struct sk_buff *msg, struct genl_info *info)
+>  {
+>         void *hdr;
+> @@ -1503,6 +1569,7 @@ static int dropmon_net_event(struct notifier_block *ev_block,
+>         struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>         struct dm_hw_stat_delta *new_stat = NULL;
+>         struct dm_hw_stat_delta *tmp;
+> +       unsigned long flags;
+>
+>         switch (event) {
+>         case NETDEV_REGISTER:
+> @@ -1529,6 +1596,12 @@ static int dropmon_net_event(struct notifier_block *ev_block,
+>                                 }
+>                         }
+>                 }
+> +               spin_lock_irqsave(&interface_lock, flags);
+> +               if (interface && interface == dev) {
+> +                       dev_put(interface);
+> +                       interface = NULL;
+> +               }
+> +               spin_unlock_irqrestore(&interface_lock, flags);
+>                 mutex_unlock(&net_dm_mutex);
+>                 break;
+>         }
+> @@ -1543,6 +1616,7 @@ static const struct nla_policy net_dm_nl_policy[NET_DM_ATTR_MAX + 1] = {
+>         [NET_DM_ATTR_QUEUE_LEN] = { .type = NLA_U32 },
+>         [NET_DM_ATTR_SW_DROPS]  = {. type = NLA_FLAG },
+>         [NET_DM_ATTR_HW_DROPS]  = {. type = NLA_FLAG },
+> +       [NET_DM_ATTR_IFNAME] = {. type = NLA_STRING, .len = IFNAMSIZ },
+>  };
+>
+>  static const struct genl_ops dropmon_ops[] = {
+> @@ -1570,6 +1644,16 @@ static const struct genl_ops dropmon_ops[] = {
+>                 .cmd = NET_DM_CMD_STATS_GET,
+>                 .doit = net_dm_cmd_stats_get,
+>         },
+> +       {
+> +               .cmd = NET_DM_CMD_START_IFC,
+> +               .validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
+> +               .doit = net_dm_cmd_ifc_trace,
+> +       },
+> +       {
+> +               .cmd = NET_DM_CMD_STOP_IFC,
+> +               .validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
+> +               .doit = net_dm_cmd_ifc_trace,
+> +       },
+>  };
+>
+>  static int net_dm_nl_pre_doit(const struct genl_ops *ops,
+> --
+> 2.18.4
+>
