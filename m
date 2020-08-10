@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C70240208
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 08:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC75D24020A
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 08:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726173AbgHJGhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 02:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725763AbgHJGhq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 02:37:46 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91EBC061756;
-        Sun,  9 Aug 2020 23:37:45 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BQ5qp4BQbz9sTn;
-        Mon, 10 Aug 2020 16:37:42 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1597041463;
-        bh=m+zOoQuk8SkP+Bz9FQL/66wMPnFFbtixWy/eubpVc0Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GRnC6c3kHlAqKRx0LQCN/eSiXg6JyuwQxXF26dpH/zwelh7n8I5BAbKixbxOgTALd
-         d1FNqa0hMZ0wA+/Lac3jCRAaye6afo//J74jGpyACMDx0h0wjFnsaMBlLcaYhNr/eG
-         B8iuZ2iifGKil9RtVplDQ8hndUqD9Tde1coEE95d8dA6Xa/fEbypbRZ6UfHXWO5i6g
-         5K1j69Ga+La7x11Kor+Ap27qBFTU4IbqnQ1JvYJhBKxGDY0mD0zWNykJoj8PUXhZFR
-         bn3ugZxKkAxJXOiXEcGzpVbHLGFwqnStep+wszFLp5mMyvLa3KoZJ/JRXcsVwdF/an
-         1MANABR55yTjQ==
-Date:   Mon, 10 Aug 2020 16:37:40 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Lynch <nathanl@linux.ibm.com>
-Subject: Re: linux-next: manual merge of the set_fs tree with the powerpc
- tree
-Message-ID: <20200810163740.2a2f7ba6@canb.auug.org.au>
-In-Reply-To: <20200810061106.GA29318@lst.de>
-References: <20200717190931.701ddf08@canb.auug.org.au>
-        <20200809185726.5d8e5f55@canb.auug.org.au>
-        <20200810061106.GA29318@lst.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/UaY.fUB6ypMAT2JtcongkbH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1726177AbgHJGkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 02:40:19 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:48692 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725763AbgHJGkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 02:40:18 -0400
+Received: from localhost.localdomain (unknown [210.32.144.186])
+        by mail-app3 (Coremail) with SMTP id cC_KCgBnS9y+6zBfmpxZAg--.64946S4;
+        Mon, 10 Aug 2020 14:40:01 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Eliot Blennerhassett <eblennerhassett@audioscience.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: pci/asihpi: Fix memory leak in snd_card_asihpi_capture_open()
+Date:   Mon, 10 Aug 2020 14:39:55 +0800
+Message-Id: <20200810063957.13692-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgBnS9y+6zBfmpxZAg--.64946S4
+X-Coremail-Antispam: 1UD129KBjvdXoWruryktF1xCr4Duw43Jw1rXrb_yoWfZwc_Gr
+        4xAr43WFWjvr9Fv34qyr4SqrW2v395CF4vgr9xtFsxWw45t3y29rWxXryfGF92k34vkw18
+        GanFqry7AFy3JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF1l42xK82IYc2Ij64vIr41l
+        42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+        ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+        0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7VUjHUDJUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgsFBlZdtPe8fwAKsL
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/UaY.fUB6ypMAT2JtcongkbH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+When snd_pcm_hw_constraint_pow2() fails, dpcm should be freed
+just like when hpi_instream_open()  fails.
 
-Hi Christoph,
+Fixes: 719f82d3987aa ("ALSA: Add support of AudioScience ASI boards")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ sound/pci/asihpi/asihpi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-On Mon, 10 Aug 2020 08:11:06 +0200 Christoph Hellwig <hch@lst.de> wrote:
->
-> please drop my set_fs tree from linux-next.  It is not going to be
-> merged for 5.9 in this form.
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index 023c35a2a951..736eceacd3d0 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -1244,8 +1244,10 @@ static int snd_card_asihpi_capture_open(struct snd_pcm_substream *substream)
+ 	if (card->can_dma)
+ 		err = snd_pcm_hw_constraint_pow2(runtime, 0,
+ 					SNDRV_PCM_HW_PARAM_BUFFER_BYTES);
+-	if (err < 0)
++	if (err < 0) {
++		kfree(dpcm);
+ 		return err;
++	}
+ 
+ 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
+ 		card->update_interval_frames);
+-- 
+2.17.1
 
-OK, done from tomorrow.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/UaY.fUB6ypMAT2JtcongkbH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8w6zQACgkQAVBC80lX
-0Gyw6Af/dnAIhTY9v20Q1FEZX7FMIi+4CELeOIvbteK/AsBTGmZQ7Bhfbi6ugUA1
-LnVBWdyGhQJGtSIZGrbKkLUBIunRk9nYmlY3yAe8mad08302E2uvQfLrJwr8q+GY
-BUP+R8ko7sWweYD2S8LAR7W3dCZySjFtoEKs6WL3i7Ulb39BKpoQAc+aWRcAIkMW
-sOcTJrYjaDSs4ZOoJQFgUtbozwaPKkVRN3iU57d+2QGraDs09v2eSY61rbup0JZU
-Otot6cSJKksyP5uI0a+i8fxS5X6PdPVa4F59M5fhecNSGg2HSaKVWyEbI1UVgoNs
-P4koAbElkhVeaPcfNvcgYV3rcovz8Q==
-=G4eH
------END PGP SIGNATURE-----
-
---Sig_/UaY.fUB6ypMAT2JtcongkbH--
