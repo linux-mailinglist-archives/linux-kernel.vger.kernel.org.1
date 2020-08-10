@@ -2,73 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14797240285
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 09:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781DF2402D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 09:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726389AbgHJHaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 03:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgHJHaA (ORCPT
+        id S1726368AbgHJHhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 03:37:09 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26020 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725857AbgHJHhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 03:30:00 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9710CC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 00:29:59 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id bo3so8318287ejb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 00:29:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=43SZmp+vV8Sn7GE9PjnhjxxvuNGsA7FckBZzSlZ2a3A=;
-        b=TfaRUWxgqzFbKktIb4Hqt920WExOCG8A/B8G6G3gHeQdfzhyhPlBj3W4n4wmXPXo1h
-         H3SXSQKn6gjCRj/BO/qLLXhzfMro01CW6pGmfkXR1hG/J0BdHRaNCAoaEamtlVc5Ix0p
-         j6FQdh1QoUTYwtEnyVXcm96qmYLTqaCg0ZJ2U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=43SZmp+vV8Sn7GE9PjnhjxxvuNGsA7FckBZzSlZ2a3A=;
-        b=m5keCF1Z3F3JUq/Pq6XQWFnzzd+2iQxGkMCZg7THAC7Wy9mCO2vpdmsF3IodMm2VXj
-         oaTUeJePJdz5YbAsyBlNWvNV4NYnLYSaHzHAV9XQclR5JjQMrK2L7+IWIE2S9/T/QB8M
-         GuqcF9Ud5Xb18JQ1BTeIcMxwV7tlnP7kd0G/X9CmwQPWz0TomZkql7qnzSa7kpaWYHYp
-         ywYZKqr+0L6I4iAccj4ZFISqGDamlwaRZnlvpG8QH7o9WEnUV2u5+iKFaq3L8nQqK/4e
-         0GaEWP47lZ5d6SANAk3WlNqc0oyXC9ypP91y8SPY9DxUFk24rNbXUafE7q1Hg9hlMk/e
-         p2Zw==
-X-Gm-Message-State: AOAM533whEUD7mO9K/iNP3NH8aLxHwg6N7H9tggHelF/nYcBQycD7+8E
-        iqENN3nv9OCnM0eoM7AkjGlfbpNGs9vk0Ru7jD2L8w==
-X-Google-Smtp-Source: ABdhPJyciQYT53K7IaRz/5fZqD7hYIYr+Hh6aU/eSXECWt4BwXLBhbw9V/kG4kM7Be3fj25NOBPcRN9OluwZ2eziDe8=
-X-Received: by 2002:a17:906:4e4f:: with SMTP id g15mr5805547ejw.443.1597044598271;
- Mon, 10 Aug 2020 00:29:58 -0700 (PDT)
+        Mon, 10 Aug 2020 03:37:08 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07A7aspq096541;
+        Mon, 10 Aug 2020 03:36:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=qMHGl+1t4gMfa2qMarGYbBHG6334xaEDPdjFO253suY=;
+ b=Krf1qfJ9I2CaPj+doPp4MVODycGA52WR10Ymh6f9HHZtf3YCO+k9a/nmRBBhA45fRkf9
+ VjaOpYGSv6l7IpFymfppth92RsZx8KO4URFqPtjn/cDeTQ95Z2EPcgynlHl26EteNMTu
+ Pai+CjOgIkoLKgwIEqZFGCV8wzpTw7v0+a+tNnL6bcVBfVpLvf2w/JNT9ThL4UI2oSU4
+ EGLqVzXdMBxh+uC6NPs1mlefwLv8bxA3PxCTwDkY2Ne+vdglleoFw58UmKFeejrDSGVA
+ 44t9dofTYau2Svy20RFvXdJq4Qgv+3Mb5Hzbp2v7Jw3jzoxxPZghLL7auVj4SV3Pboo6 /w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32sr7h9sr9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Aug 2020 03:36:54 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07A7RlMp058579;
+        Mon, 10 Aug 2020 03:27:47 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32sr7h9qun-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Aug 2020 03:25:17 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07A7H9F0017736;
+        Mon, 10 Aug 2020 07:18:52 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06fra.de.ibm.com with ESMTP id 32skah17wa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Aug 2020 07:18:51 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07A7Im4t27460080
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 10 Aug 2020 07:18:49 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CFA1511C05B;
+        Mon, 10 Aug 2020 07:18:48 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 25B8311C052;
+        Mon, 10 Aug 2020 07:18:46 +0000 (GMT)
+Received: from srikart450.in.ibm.com (unknown [9.102.18.208])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 10 Aug 2020 07:18:45 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Neuling <mikey@neuling.org>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+Subject: [PATCH v5 02/10] powerpc/smp: Merge Power9 topology with Power topology
+Date:   Mon, 10 Aug 2020 12:48:26 +0530
+Message-Id: <20200810071834.92514-3-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200810071834.92514-1-srikar@linux.vnet.ibm.com>
+References: <20200810071834.92514-1-srikar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-References: <20200807195526.426056-1-vgoyal@redhat.com>
-In-Reply-To: <20200807195526.426056-1-vgoyal@redhat.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 10 Aug 2020 09:29:47 +0200
-Message-ID: <CAJfpegtboe-XssmqrcvsJm1R0FBP8fYFrTMv5cuBhfmebiGfQw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/20] virtiofs: Add DAX support
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-10_02:2020-08-06,2020-08-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ adultscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
+ suspectscore=0 priorityscore=1501 spamscore=0 phishscore=0 mlxlogscore=999
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008100048
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 7, 2020 at 9:55 PM Vivek Goyal <vgoyal@redhat.com> wrote:
->
+A new sched_domain_topology_level was added just for Power9. However the
+same can be achieved by merging powerpc_topology with power9_topology
+and makes the code more simpler especially when adding a new sched
+domain.
 
-> Most of the changes are limited to fuse/virtiofs. There are couple
-> of changes needed in generic dax infrastructure and couple of changes
-> in virtio to be able to access shared memory region.
+Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Anton Blanchard <anton@ozlabs.org>
+Cc: Oliver O'Halloran <oohall@gmail.com>
+Cc: Nathan Lynch <nathanl@linux.ibm.com>
+Cc: Michael Neuling <mikey@neuling.org>
+Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Jordan Niethe <jniethe5@gmail.com>
+Cc: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+---
+Changelog v1 -> v2:
+	Replaced a reference to cpu_smt_mask with per_cpu(cpu_sibling_map, cpu)
+	since cpu_smt_mask is only defined under CONFIG_SCHED_SMT
 
-So what's the plan for merging the different subsystems?  I can take
-all that into the fuse tree, but would need ACKs from the respective
-maintainers.
+ arch/powerpc/kernel/smp.c | 25 +++----------------------
+ 1 file changed, 3 insertions(+), 22 deletions(-)
 
-Thanks,
-Miklos
+diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+index edf94ca64eea..08da765b91f1 100644
+--- a/arch/powerpc/kernel/smp.c
++++ b/arch/powerpc/kernel/smp.c
+@@ -1313,7 +1313,7 @@ int setup_profiling_timer(unsigned int multiplier)
+ }
+ 
+ #ifdef CONFIG_SCHED_SMT
+-/* cpumask of CPUs with asymetric SMT dependancy */
++/* cpumask of CPUs with asymmetric SMT dependency */
+ static int powerpc_smt_flags(void)
+ {
+ 	int flags = SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES;
+@@ -1326,14 +1326,6 @@ static int powerpc_smt_flags(void)
+ }
+ #endif
+ 
+-static struct sched_domain_topology_level powerpc_topology[] = {
+-#ifdef CONFIG_SCHED_SMT
+-	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
+-#endif
+-	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
+-	{ NULL, },
+-};
+-
+ /*
+  * P9 has a slightly odd architecture where pairs of cores share an L2 cache.
+  * This topology makes it *much* cheaper to migrate tasks between adjacent cores
+@@ -1361,7 +1353,7 @@ static const struct cpumask *smallcore_smt_mask(int cpu)
+ }
+ #endif
+ 
+-static struct sched_domain_topology_level power9_topology[] = {
++static struct sched_domain_topology_level powerpc_topology[] = {
+ #ifdef CONFIG_SCHED_SMT
+ 	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
+ #endif
+@@ -1386,21 +1378,10 @@ void __init smp_cpus_done(unsigned int max_cpus)
+ #ifdef CONFIG_SCHED_SMT
+ 	if (has_big_cores) {
+ 		pr_info("Big cores detected but using small core scheduling\n");
+-		power9_topology[0].mask = smallcore_smt_mask;
+ 		powerpc_topology[0].mask = smallcore_smt_mask;
+ 	}
+ #endif
+-	/*
+-	 * If any CPU detects that it's sharing a cache with another CPU then
+-	 * use the deeper topology that is aware of this sharing.
+-	 */
+-	if (shared_caches) {
+-		pr_info("Using shared cache scheduler topology\n");
+-		set_sched_topology(power9_topology);
+-	} else {
+-		pr_info("Using standard scheduler topology\n");
+-		set_sched_topology(powerpc_topology);
+-	}
++	set_sched_topology(powerpc_topology);
+ }
+ 
+ #ifdef CONFIG_HOTPLUG_CPU
+-- 
+2.18.2
+
