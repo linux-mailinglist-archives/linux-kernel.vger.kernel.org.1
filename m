@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D65240118
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 05:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8B4240123
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 05:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726478AbgHJDBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 Aug 2020 23:01:33 -0400
-Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:44076 "EHLO
-        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbgHJDBd (ORCPT
+        id S1726403AbgHJDRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 Aug 2020 23:17:12 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:15752 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726335AbgHJDRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 Aug 2020 23:01:33 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 9CA182014566;
-        Mon, 10 Aug 2020 11:01:28 +0800 (HKT)
-X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
-Received: from mail.gtsys.com.hk ([127.0.0.1])
-        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8wlyyMNXwMCF; Mon, 10 Aug 2020 11:01:28 +0800 (HKT)
-Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 77BBE20156E6;
-        Mon, 10 Aug 2020 11:01:28 +0800 (HKT)
-Received: from [10.128.2.32] (unknown [203.145.95.159])
-        by s01.gtsys.com.hk (Postfix) with ESMTPSA id 9CE4BC019F4;
-        Mon, 10 Aug 2020 11:01:27 +0800 (HKT)
-Subject: Re: [PATCH v5 3/3] iio/dac: convert ltc2632.txt to lltc,ltc2632.yaml
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Steve Winslow <swinslow@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200420042612.27752-1-chris.ruehl@gtsys.com.hk>
- <20200420042612.27752-4-chris.ruehl@gtsys.com.hk>
- <20200430152414.GA19887@bogus>
-From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
-Message-ID: <95f3873d-c101-7a64-8456-840378dd49f3@gtsys.com.hk>
-Date:   Mon, 10 Aug 2020 11:01:25 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Sun, 9 Aug 2020 23:17:12 -0400
+X-UUID: 37a15448a78a4f3f8b24bba867dd4d8e-20200810
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Z4K8Bg/d3lhf7ivZYNBcutHvTqaH5vB2AWGS7QPOWDs=;
+        b=Oo4P5+db221PlU9fSRJrW4XhdqVoOi6Nu9wGFkP1l3aHHo0WxWIKGfiAvP+O/5MUa0a3R4/GpJYBZDdSwQJBMoyd2Ubc0h/n5RokrjF7S9/psipx7Ov97rxXX7B4vDyE77w3XacVdbF32s538STmI8zI6jWMQH/oy7+EKQ1N4S4=;
+X-UUID: 37a15448a78a4f3f8b24bba867dd4d8e-20200810
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <jiaxin.yu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1057242102; Mon, 10 Aug 2020 11:06:50 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 10 Aug 2020 11:06:48 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 10 Aug 2020 11:06:47 +0800
+From:   Jiaxin Yu <jiaxin.yu@mediatek.com>
+To:     <broonie@kernel.org>, <matthias.bgg@gmail.com>,
+        <robh+dt@kernel.org>, <tiwai@suse.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     <alsa-devel@alsa-project.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <howie.huang@mediatek.com>,
+        <tzungbi@google.com>, <eason.yen@mediatek.com>,
+        <shane.chien@mediatek.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>
+Subject: [PATCH v2 0/2] Add mediatek codec mt6359 driver
+Date:   Mon, 10 Aug 2020 11:05:52 +0800
+Message-ID: <1597028754-7732-1-git-send-email-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-In-Reply-To: <20200430152414.GA19887@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rob,
+QWRkIG1lZGlhdGVrIGNvZGVjIChNVDYzNTkpIGRyaXZlcg0KDQpNVDYzNTkgc3VwcG9ydCBwbGF5
+YmFjayBhbmQgY2FwdHVyZSBmZWF0dXJlLg0KDQpPbiBkb3dubGluayBwYXRoLCBpdCBpbmNsdWRl
+cyB0aHJlZSBEQUNzIGZvciBoYW5kc2V0LCBoZWFkc2V0LA0KYW5kIGxpbmVvdXQgcGF0aC4gT24g
+dW5saW5rIHBhdGgsIGl0IGluY2x1ZGVkcyB0aHJlZSBBRENzIGZvcg0KbWFpbiBtaWMsIHNlY29u
+ZCBtaWMsIDNyZCBtaWMsIGFuZCBoZWFkc2V0IG1pYy4NCg0KQnkgc2NlbmFyaW8sIHNlbGVjdCAq
+X01VWCB3aWRnZXQgdG8gY3JlYXRlIGRhbXAgcGF0aC4NCkFuZCBieSBzZWxlY3QgbWljX3R5cGVf
+bXV4IHRvIGNob29zZSBETUlDL0FNSUMvLi4uLg0KDQpGb3IgZXhhbXBsZSwgc2VsZWN0IHRoZXNl
+IE1VWCB3aWRnZXQgdG8gY3JlYXRlIGhlYWRzZXQgcGF0aA0KKDEpIERBQyBJbiBNdXggLS0+ICJO
+b3JtYWwgUGF0aCINCigyKSBIUEwgTXV4IC0tPiAiQXVkaW8gUGxheWJhY2siDQooMykgSFBSIE11
+eCAtLT4gIkF1ZGlvIFBsYXliYWNrIg0KDQp2MiBjaGFuZ2VzOg0KCTEuIE1vdmUgcGxheWJhY2tf
+Z3Bpby9jYXB0dXJlX2dwaW8gdG8gdGhlIG1hY2hpbmUgZHJpdmVyLg0KCTIuIEZpeCBtaWNfdHlw
+ZShBQ0MvRE1JQy9EQ0MvRENDXyopIGF0IGluaXQgc3RhZ2UuDQoJMy4gTW92ZSBkZXZtX3JlZ3Vs
+b3JfZ2V0IHRvIG10NjM1OV9wbGF0Zm9ybV9kcml2ZXJfcHJvYmUuDQoJNC4gQWRkIHJlbHVsYXRv
+cl9kaXNhYmxlIGluIHJlbW92ZSBmdW5jdGlvbi4NCgk1LiBVc2Ugc3RlcmVvIGNvbnRyb2xzIHRv
+IHRoZSB2b2x1bWUgY29udHJvbC4NCgk2LiBVc2UgU09DX0VOVU1fU0lOR0xFX0RFQ0wgaW5zdGVh
+ZCBvZiBTT0NfVkFMVUVfRU5VTV9TSU5HTEVfREVDTC4NCgk3LiBDbGVhbnVwIHVudXNlZCBjb2Rl
+Lg0KDQp2MSBjaGFuZ2VzOg0KCTEubGttbCBsaW5rOg0KCQlodHRwczovL2xrbWwub3JnL2xrbWwv
+MjAyMC8zLzUvMTI1Nw0KDQpKaWF4aW4gWXUgKDIpOg0KICBBU29DOiBtZWRpYXRlazogbXQ2MzU5
+OiBhZGQgY29kZWMgZHJpdmVyDQogIGR0LWJpbmRpbmdzOiBtZWRpYXRlazogbXQ2MzU5OiBhZGQg
+Y29kZWMgZG9jdW1lbnQNCg0KIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL210NjM1OS55
+YW1sICAgICAgICAgIHwgICA2OCArDQogc291bmQvc29jL2NvZGVjcy9LY29uZmlnICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgICA4ICsNCiBzb3VuZC9zb2MvY29kZWNzL01ha2VmaWxlICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDIgKw0KIHNvdW5kL3NvYy9jb2RlY3MvbXQ2MzU5
+LmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMjk2NiArKysrKysrKysrKysrKysrKysrKw0K
+IHNvdW5kL3NvYy9jb2RlY3MvbXQ2MzU5LmggICAgICAgICAgICAgICAgICAgICAgICAgIHwgMjY1
+MyArKysrKysrKysrKysrKysrKw0KIDUgZmlsZXMgY2hhbmdlZCwgNTY5NyBpbnNlcnRpb25zKCsp
+DQogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9z
+b3VuZC9tdDYzNTkueWFtbA0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvY29kZWNzL210
+NjM1OS5jDQogY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9jb2RlY3MvbXQ2MzU5LmgNCg0K
+LS0gDQoxLjguMS4xLmRpcnR5DQo=
 
-On 30/4/2020 11:24 pm, Rob Herring wrote:
-> On Mon, Apr 20, 2020 at 12:26:08PM +0800, Chris Ruehl wrote:
->> Conversion of the ltc2632 to yaml format and name the file 'lltc,ltc2632.yaml'.
->>
->> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
->> ---
->> v5:
->> correct require section
->> set maintainer of analog.com
->> v4..v2: no change
-
-1/3 and 2/3 make it already to linux-next.
-
-I will send 3/3 with the corrections you requested as a new
-stand alone patch and refer commit 6f1c9e0da9aae51177457731357ae8a2c8af27cd
-for reference.
-
-Regards
-Chris
