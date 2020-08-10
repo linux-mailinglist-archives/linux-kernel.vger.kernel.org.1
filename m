@@ -2,131 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D02F24065A
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 15:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C8A24066B
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 15:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgHJNG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 09:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726569AbgHJNGZ (ORCPT
+        id S1726877AbgHJNI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 09:08:26 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53126 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726462AbgHJNIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 09:06:25 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD141C06178B
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 06:06:24 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c19so13448152wmd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 06:06:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=GPx3S/8jhM90DHfD4TRK0ne1wHxOQ88UPQC+FKKE7b4=;
-        b=ZJTdwcMw05cWS5PqS2LysIVEc5cxxTh/xM1RqHbECyfWRIXZvCen0clWxvPs6VsL8q
-         Cq6EQCAbihLLjPKPJyDKllfTFcwVKAcaBSZfEd8ufk46Z2BFSR46ol4PLs7U8qV3LRsD
-         Jlxb5d3xrm9mAiALhf8zqBuK3j/akqDOrDtQs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=GPx3S/8jhM90DHfD4TRK0ne1wHxOQ88UPQC+FKKE7b4=;
-        b=a9IcN6beASdXdRhQbUpTsUSkJi/aWCSrkFM04dQZTlegQp220oCQWJeQg6ro9Lfgcc
-         l4FS3jvcCWZUPTubNhZir1bRs98DOdr5lA9V5GTGYmtgeJN0OiBzQENK/iaJueuwYLsF
-         4yunLITjVc/v8c4M8Q6HoUG4PRy+V9ZJJfpljy6sv0BBK0jEqubsV87IJfrRaxU0W6cQ
-         i7w/mYPIL/0VDEhIhcAT+15LuTjjFW94MDhb+N64YnBAe/e1f9f23CDnNej/+QNg/Qi4
-         W/zujbrE0eyD3wXlZk8oz77f7iDCyUwUMmrJaTgZBszbSXtXMbF3POSvrCH9Xls9YZdm
-         +DVQ==
-X-Gm-Message-State: AOAM533Ww5VqKposfLznw+lDsOSpMvPyRY7/JZxYsqyZ8xbckQNfIy2t
-        8pCj50zJJ72BLa3pr5ImKJFs0w==
-X-Google-Smtp-Source: ABdhPJyEBEPA21RLrPg4igFyKps9/jMj+ZOxleXUovW4dpHkDIerMq8VNi+ipVYxHqvklkBZYu8Xbw==
-X-Received: by 2002:a7b:c954:: with SMTP id i20mr27324020wml.189.1597064783265;
-        Mon, 10 Aug 2020 06:06:23 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id p6sm22227267wmg.0.2020.08.10.06.06.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2020 06:06:22 -0700 (PDT)
-Date:   Mon, 10 Aug 2020 15:06:20 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     christian.koenig@amd.com
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] dma-buf.rst: repair length of title underline
-Message-ID: <20200810130620.GS2352366@phenom.ffwll.local>
-Mail-Followup-To: christian.koenig@amd.com,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>, linux-doc@vger.kernel.org,
-        linux-rdma@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        dri-devel@lists.freedesktop.org,
-        Sumit Semwal <sumit.semwal@linaro.org>, linux-media@vger.kernel.org
-References: <20200809061739.16803-1-lukas.bulwahn@gmail.com>
- <7d434810-79bd-89a3-18f8-c5c2a2524822@gmail.com>
+        Mon, 10 Aug 2020 09:08:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597064904;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pbpPyMxeUTZufAlT4TB0KbZ9dM5w1NZ9B6YwnpXi1/s=;
+        b=hJM2otlYUoPY7VxeCg+9S/SuDdXK/EMb63r95YBavEpwFYYx2bHe7xw5vabFMzkA9bv3aG
+        GO+rnV5h9LFmhpGEzzGShn29p21HXvBnVGFrRX+y6S4jLgkre3rLGiwT2g0SAsWo7octz4
+        xzEhTG6JX1B3/EzsojREJRmGfBPmSv8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-98-bwrUS9gAOm6o0zWQN2BguA-1; Mon, 10 Aug 2020 09:08:21 -0400
+X-MC-Unique: bwrUS9gAOm6o0zWQN2BguA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B63918A0F03;
+        Mon, 10 Aug 2020 13:08:20 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.10.115.251])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B5EAE10013C2;
+        Mon, 10 Aug 2020 13:08:10 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 3286022036A; Mon, 10 Aug 2020 09:08:09 -0400 (EDT)
+Date:   Mon, 10 Aug 2020 09:08:09 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 00/20] virtiofs: Add DAX support
+Message-ID: <20200810130809.GA455528@redhat.com>
+References: <20200807195526.426056-1-vgoyal@redhat.com>
+ <CAJfpegtboe-XssmqrcvsJm1R0FBP8fYFrTMv5cuBhfmebiGfQw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7d434810-79bd-89a3-18f8-c5c2a2524822@gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <CAJfpegtboe-XssmqrcvsJm1R0FBP8fYFrTMv5cuBhfmebiGfQw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 01:25:40PM +0200, Christian König wrote:
-> Am 09.08.20 um 08:17 schrieb Lukas Bulwahn:
-> > With commit 72b6ede73623 ("dma-buf.rst: Document why indefinite fences are
-> > a bad idea"), document generation warns:
-> > 
-> >    Documentation/driver-api/dma-buf.rst:182: \
-> >    WARNING: Title underline too short.
-> > 
-> > Repair length of title underline to remove warning.
-> > 
-> > Fixes: 72b6ede73623 ("dma-buf.rst: Document why indefinite fences are a bad idea")
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+On Mon, Aug 10, 2020 at 09:29:47AM +0200, Miklos Szeredi wrote:
+> On Fri, Aug 7, 2020 at 9:55 PM Vivek Goyal <vgoyal@redhat.com> wrote:
+> >
 > 
-> Acked-by: Christian König <christian.koenig@amd.com>
+> > Most of the changes are limited to fuse/virtiofs. There are couple
+> > of changes needed in generic dax infrastructure and couple of changes
+> > in virtio to be able to access shared memory region.
 > 
-> Should I pick it up into drm-misc-next?
+> So what's the plan for merging the different subsystems?  I can take
+> all that into the fuse tree, but would need ACKs from the respective
+> maintainers.
 
-Yes please. For the future if you need to check if someone has commit
-rights and can push themselves:
+I am assuming for DAX patches we need ACK from Dan Williams and for
+virtio patches we need ack from Michael S. Tsirkin.
 
-https://people.freedesktop.org/~seanpaul/whomisc.html
+Dan, Michael, can you please review the dax and virtio patches
+respectively and if there are no concerns, please provide ACK. Or
+suggest an alternative way of how these patches can be merged.
 
-Yeah with gitlab this would all be a bit more reasonable, but we get by
-meanwhile :-)
+Thanks
+Vivek
 
-Cheers, Daniel
-> 
-> > ---
-> > Daniel, please pick this minor non-urgent fix to your new documentation.
-> > 
-> >   Documentation/driver-api/dma-buf.rst | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/driver-api/dma-buf.rst b/Documentation/driver-api/dma-buf.rst
-> > index 100bfd227265..13ea0cc0a3fa 100644
-> > --- a/Documentation/driver-api/dma-buf.rst
-> > +++ b/Documentation/driver-api/dma-buf.rst
-> > @@ -179,7 +179,7 @@ DMA Fence uABI/Sync File
-> >      :internal:
-> >   Indefinite DMA Fences
-> > -~~~~~~~~~~~~~~~~~~~~
-> > +~~~~~~~~~~~~~~~~~~~~~
-> >   At various times &dma_fence with an indefinite time until dma_fence_wait()
-> >   finishes have been proposed. Examples include:
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
