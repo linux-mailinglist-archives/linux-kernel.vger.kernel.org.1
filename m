@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30122412C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 00:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14A32412C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 00:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgHJWCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 18:02:05 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:33944 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726700AbgHJWCB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 18:02:01 -0400
+        id S1727088AbgHJWC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 18:02:27 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:12407 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727059AbgHJWCY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 18:02:24 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597096921; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1597096943; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=bJ/v+6BI1paYfL/eqbBaNuQt+rMkV7hVFchzos3nW8A=; b=Iw4GrHqnM5Xl0LqDOTV6l/ZgeDDboVNVfa/w80WU+vBresuTL2963oLYw0A8dsvzDhbDzbYS
- oLs8QoJQgB6geUlhGdnBB+inOr/CY13RFCSfyFb05cM6ZYcKz7SIZm80rMf0PPrVbazkM34j
- Kr9N2Qhx3bGzmClkOpL8c5PQj9s=
-X-Mailgun-Sending-Ip: 69.72.43.7
+ bh=XS6WycnaqRRIfStzHC4a88Vy8H2kYMsGjNh8O2sYIpE=; b=fz6F4PNFO2zf91pWjpak5e350KrIWUDLc5r4tUVpPLOF/wr0UDFOf7aI9I5OaZPyoIEFPMMT
+ uFmubbZ28bd9p741L/kHRp1AIkeRVLR+ZT2FDaNaL5ZiQI3ymaTFfiudP2KqKSyebQKDUAa3
+ V+QQ0alFR8wqoayygSvnyWd1ZkE=
+X-Mailgun-Sending-Ip: 104.130.122.29
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n16.prod.us-east-1.postgun.com with SMTP id
- 5f31c3add48d4625ca16299c (version=TLS1.2,
+ smtp-out-n15.prod.us-east-1.postgun.com with SMTP id
+ 5f31c3ad91f8def8b29f0a1d (version=TLS1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 10 Aug 2020 22:01:17
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 23785C433A1; Mon, 10 Aug 2020 22:01:17 +0000 (UTC)
+        id 284D9C433AF; Mon, 10 Aug 2020 22:01:17 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -36,9 +37,9 @@ Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF2E3C433A0;
-        Mon, 10 Aug 2020 22:01:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DF2E3C433A0
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 57C2FC433CB;
+        Mon, 10 Aug 2020 22:01:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 57C2FC433CB
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bbhatt@codeaurora.org
 From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
@@ -46,9 +47,9 @@ To:     manivannan.sadhasivam@linaro.org
 Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
         jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
         Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v7 06/11] bus: mhi: core: Introduce helper function to check device state
-Date:   Mon, 10 Aug 2020 15:01:00 -0700
-Message-Id: <1597096865-19636-7-git-send-email-bbhatt@codeaurora.org>
+Subject: [PATCH v7 07/11] bus: mhi: core: Introduce counters to track MHI device state transitions
+Date:   Mon, 10 Aug 2020 15:01:01 -0700
+Message-Id: <1597096865-19636-8-git-send-email-bbhatt@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1597096865-19636-1-git-send-email-bbhatt@codeaurora.org>
 References: <1597096865-19636-1-git-send-email-bbhatt@codeaurora.org>
@@ -57,33 +58,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a helper function to determine whether the device is in a
-powered ON state and resides in one of the active MHI states. This will
-allow for some use cases where access can be pre-determined.
+Use counters to track MHI device state transitions such as those
+to M0, M2, or M3 states. This can help in better debug, allowing
+the user to see the number of transitions to a certain MHI state
+when queried using debugfs entries or via other mechanisms.
 
 Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/bus/mhi/core/internal.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/bus/mhi/core/pm.c | 4 ++++
+ include/linux/mhi.h       | 2 ++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-index 1bbd6e9..5a81a42 100644
---- a/drivers/bus/mhi/core/internal.h
-+++ b/drivers/bus/mhi/core/internal.h
-@@ -598,6 +598,11 @@ int mhi_pm_m3_transition(struct mhi_controller *mhi_cntrl);
- int __mhi_device_get_sync(struct mhi_controller *mhi_cntrl);
- int mhi_send_cmd(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
- 		 enum mhi_cmd_type cmd);
-+static inline bool mhi_is_active(struct mhi_controller *mhi_cntrl)
-+{
-+	return (mhi_cntrl->dev_state >= MHI_STATE_M0 &&
-+		mhi_cntrl->dev_state <= MHI_STATE_M3_FAST);
-+}
+diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+index 27bb471..ce4d969 100644
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -256,6 +256,7 @@ int mhi_pm_m0_transition(struct mhi_controller *mhi_cntrl)
+ 		dev_err(dev, "Unable to transition to M0 state\n");
+ 		return -EIO;
+ 	}
++	mhi_cntrl->M0++;
  
- static inline void mhi_trigger_resume(struct mhi_controller *mhi_cntrl)
- {
+ 	/* Wake up the device */
+ 	read_lock_bh(&mhi_cntrl->pm_lock);
+@@ -326,6 +327,8 @@ void mhi_pm_m1_transition(struct mhi_controller *mhi_cntrl)
+ 		mhi_cntrl->dev_state = MHI_STATE_M2;
+ 
+ 		write_unlock_irq(&mhi_cntrl->pm_lock);
++
++		mhi_cntrl->M2++;
+ 		wake_up_all(&mhi_cntrl->state_event);
+ 
+ 		/* If there are any pending resources, exit M2 immediately */
+@@ -362,6 +365,7 @@ int mhi_pm_m3_transition(struct mhi_controller *mhi_cntrl)
+ 		return -EIO;
+ 	}
+ 
++	mhi_cntrl->M3++;
+ 	wake_up_all(&mhi_cntrl->state_event);
+ 
+ 	return 0;
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index a8379b3..d360020 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -328,6 +328,7 @@ struct mhi_controller_config {
+  * @dev_state: MHI device state
+  * @dev_wake: Device wakeup count
+  * @pending_pkts: Pending packets for the controller
++ * @M0, M2, M3: Counters to track number of device MHI state changes
+  * @transition_list: List of MHI state transitions
+  * @transition_lock: Lock for protecting MHI state transition list
+  * @wlock: Lock for protecting device wakeup
+@@ -407,6 +408,7 @@ struct mhi_controller {
+ 	enum mhi_state dev_state;
+ 	atomic_t dev_wake;
+ 	atomic_t pending_pkts;
++	u32 M0, M2, M3;
+ 	struct list_head transition_list;
+ 	spinlock_t transition_lock;
+ 	spinlock_t wlock;
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
