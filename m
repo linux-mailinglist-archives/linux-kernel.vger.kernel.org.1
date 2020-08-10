@@ -2,263 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBD8240D52
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3F7240D5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728383AbgHJTAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 15:00:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728071AbgHJS77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 14:59:59 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36726221E2;
-        Mon, 10 Aug 2020 18:59:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597085998;
-        bh=0HJsvBhDgtMd4mAfQ0IClkR95U5B70Iyt02xN0TkLRE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aMSpvbZonA3oWK0xvB/yax4FSrQgALfDEtyp7u69heNiQkz85DxmhF24Zwy83vKAU
-         Mfm7ehaatohrYVb7vx7e/NX3PkpY8YH5ZmgDV8s5rCJHfonsIVyD23cgmOs3P1ot9d
-         IJqH8xPbXjukRPEjSOp0pxkpna/oN2MvpjTv42+w=
-Date:   Mon, 10 Aug 2020 19:59:33 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jiaxin Yu <jiaxin.yu@mediatek.com>
-Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org, tiwai@suse.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        id S1728315AbgHJTA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 15:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728135AbgHJTA2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 15:00:28 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F17C061756;
+        Mon, 10 Aug 2020 12:00:27 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id k13so5504325plk.13;
+        Mon, 10 Aug 2020 12:00:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Z0+jOHm8rOkNKyaunCdMu5yjlq5vV0eABQayoJ0528s=;
+        b=ivA1aaBUqdfgaLxoUgpllPwcVHSBM7bdP5tm1sTOPej3S/pjrIeus2jhbAdE9ZCRop
+         gpw9DTZU6CMqhQ2FTPFyjfblMdEJxh8L03aZXKBEdOKPFbT/eAImT6/HCoVWAVeijQhb
+         wQSPdivqd9TnHrk0p1sSpE3hDkzM/sxbQ0NZSJTkVZNWjgd+kvrUhV3mdEGMmEVRyk0Y
+         cKew74EKthOegKVQ8badipz12z+tyVUExgN9P74Swhb0zjXBKnckcSS3ngLcheVdW8Jj
+         /uSJnGJqPSz+yBss5ED6Es1OvvXbxXKz1KFMi++RJhz8DlNDQdi4soe5evQc45D0yoTW
+         Z1kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Z0+jOHm8rOkNKyaunCdMu5yjlq5vV0eABQayoJ0528s=;
+        b=rYiMMY5zVE6ekdBVR/ULfsTTeAzk2WTFy0e7mOM0Y/m7Spl2b4Gzkg64XKdcXKGl5K
+         OcDpv/2t6IVzgWSciXa0mp7aTb7Ck6Nf1Sgi/686tfTiIPpPQlvHr2XxrBONv9KsEy72
+         MBjPlkL11e5MvpTGty/xbKCgKlbgFnFxvBU8pQRfSX+tVaFyCjolukYzRYEe34yg8Hm8
+         8G/bE2Oki8ej+YyD2ohtzIy/fwm9hd9xk7HUppSjn6OcxBXO2WLpwWTJkBySBrsq2lpK
+         0oAr82amoo7uQ+M6SqeRVsgd+RA+UtiBlgdkiyuNX2TytlZf9vrR7t55i/3v7KcwThqy
+         +Sbw==
+X-Gm-Message-State: AOAM533SjNyPbZxlOSSspQE49cmKaiRDHmImFAFQ0njWQ/N489CTqh8s
+        X5Lad+pxE/anjCyEpkN+cL7JPB2o4ks9TQ==
+X-Google-Smtp-Source: ABdhPJw9zh50ift33KPLF0gpYxTpUeEdaP8Jb6WeAkKvYMnGC5Fle9xVNYZuWbaiuMAmoxMIZ8b0+w==
+X-Received: by 2002:a17:902:8d94:: with SMTP id v20mr14878457plo.298.1597086027479;
+        Mon, 10 Aug 2020 12:00:27 -0700 (PDT)
+Received: from varodek.localdomain ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id f27sm22683547pfk.217.2020.08.10.12.00.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Aug 2020 12:00:27 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Andres Salomon <dilinger@queued.net>,
+        Antonino Daplas <adaplas@gmail.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, howie.huang@mediatek.com,
-        tzungbi@google.com, eason.yen@mediatek.com,
-        shane.chien@mediatek.com
-Subject: Re: [PATCH v2 1/2] ASoC: mediatek: mt6359: add codec driver
-Message-ID: <20200810185933.GI6438@sirena.org.uk>
-References: <1597028754-7732-1-git-send-email-jiaxin.yu@mediatek.com>
- <1597028754-7732-2-git-send-email-jiaxin.yu@mediatek.com>
+        linux-geode@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v2 09/12] fbdev: i740fb: use generic power management
+Date:   Tue, 11 Aug 2020 00:27:20 +0530
+Message-Id: <20200810185723.15540-10-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200810185723.15540-1-vaibhavgupta40@gmail.com>
+References: <20200810165458.GA292825@ravnborg.org>
+ <20200810185723.15540-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tctmm6wHVGT/P6vA"
-Content-Disposition: inline
-In-Reply-To: <1597028754-7732-2-git-send-email-jiaxin.yu@mediatek.com>
-X-Cookie: Walk softly and carry a megawatt laser.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Drivers should do only device-specific jobs. But in general, drivers using
+legacy PCI PM framework for .suspend()/.resume() have to manage many PCI
+PM-related tasks themselves which can be done by PCI Core itself. This
+brings extra load on the driver and it directly calls PCI helper functions
+to handle them.
 
---tctmm6wHVGT/P6vA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Switch to the new generic framework by updating function signatures and
+define a "struct dev_pm_ops" variable to bind PM callbacks. Also, remove
+unnecessary calls to the PCI Helper functions along with the legacy
+.suspend & .resume bindings.
 
-On Mon, Aug 10, 2020 at 11:05:53AM +0800, Jiaxin Yu wrote:
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ drivers/video/fbdev/i740fb.c | 40 +++++++++++++++---------------------
+ 1 file changed, 16 insertions(+), 24 deletions(-)
 
-> +void mt6359_set_playback_gpio(struct snd_soc_component *cmpnt)
-> +{
-> +	struct mt6359_priv *priv = snd_soc_component_get_drvdata(cmpnt);
+diff --git a/drivers/video/fbdev/i740fb.c b/drivers/video/fbdev/i740fb.c
+index c65ec7386e87..8d7f06fc8a5a 100644
+--- a/drivers/video/fbdev/i740fb.c
++++ b/drivers/video/fbdev/i740fb.c
+@@ -1175,16 +1175,11 @@ static void i740fb_remove(struct pci_dev *dev)
+ 	}
+ }
+ 
+-#ifdef CONFIG_PM
+-static int i740fb_suspend(struct pci_dev *dev, pm_message_t state)
++static int __maybe_unused i740fb_suspend(struct device *dev)
+ {
+-	struct fb_info *info = pci_get_drvdata(dev);
++	struct fb_info *info = dev_get_drvdata(dev);
+ 	struct i740fb_par *par = info->par;
+ 
+-	/* don't disable console during hibernation and wakeup from it */
+-	if (state.event == PM_EVENT_FREEZE || state.event == PM_EVENT_PRETHAW)
+-		return 0;
+-
+ 	console_lock();
+ 	mutex_lock(&(par->open_lock));
+ 
+@@ -1197,19 +1192,15 @@ static int i740fb_suspend(struct pci_dev *dev, pm_message_t state)
+ 
+ 	fb_set_suspend(info, 1);
+ 
+-	pci_save_state(dev);
+-	pci_disable_device(dev);
+-	pci_set_power_state(dev, pci_choose_state(dev, state));
+-
+ 	mutex_unlock(&(par->open_lock));
+ 	console_unlock();
+ 
+ 	return 0;
+ }
+ 
+-static int i740fb_resume(struct pci_dev *dev)
++static int __maybe_unused i740fb_resume(struct device *dev)
+ {
+-	struct fb_info *info = pci_get_drvdata(dev);
++	struct fb_info *info = dev_get_drvdata(dev);
+ 	struct i740fb_par *par = info->par;
+ 
+ 	console_lock();
+@@ -1218,11 +1209,6 @@ static int i740fb_resume(struct pci_dev *dev)
+ 	if (par->ref_count == 0)
+ 		goto fail;
+ 
+-	pci_set_power_state(dev, PCI_D0);
+-	pci_restore_state(dev);
+-	if (pci_enable_device(dev))
+-		goto fail;
+-
+ 	i740fb_set_par(info);
+ 	fb_set_suspend(info, 0);
+ 
+@@ -1231,10 +1217,17 @@ static int i740fb_resume(struct pci_dev *dev)
+ 	console_unlock();
+ 	return 0;
+ }
+-#else
+-#define i740fb_suspend NULL
+-#define i740fb_resume NULL
+-#endif /* CONFIG_PM */
++
++static const struct dev_pm_ops i740fb_pm_ops = {
++#ifdef CONFIG_PM_SLEEP
++	.suspend	= i740fb_suspend,
++	.resume		= i740fb_resume,
++	.freeze		= NULL,
++	.thaw		= i740fb_resume,
++	.poweroff	= i740fb_suspend,
++	.restore	= i740fb_resume,
++#endif /* CONFIG_PM_SLEEP */
++};
+ 
+ #define I740_ID_PCI 0x00d1
+ #define I740_ID_AGP 0x7800
+@@ -1251,8 +1244,7 @@ static struct pci_driver i740fb_driver = {
+ 	.id_table	= i740fb_id_table,
+ 	.probe		= i740fb_probe,
+ 	.remove		= i740fb_remove,
+-	.suspend	= i740fb_suspend,
+-	.resume		= i740fb_resume,
++	.driver.pm	= &i740fb_pm_ops,
+ };
+ 
+ #ifndef MODULE
+-- 
+2.27.0
 
-> +void mt6359_reset_playback_gpio(struct snd_soc_component *cmpnt)
-> +{
-> +	struct mt6359_priv *priv = snd_soc_component_get_drvdata(cmpnt);
-
-> +void mt6359_set_capture_gpio(struct snd_soc_component *cmpnt)
-> +{
-
-> +void mt6359_reset_capture_gpio(struct snd_soc_component *cmpnt)
-> +{
-
-What are these, should they not be managed through gpiolib and/or
-pinctrl?
-
-> +/* use only when doing mtkaif calibraiton at the boot time */
-> +static int mt6359_set_dcxo(struct mt6359_priv *priv, bool enable)
-> +{
-> +	regmap_update_bits(priv->regmap, MT6359_DCXO_CW12,
-> +			   0x1 << RG_XO_AUDIO_EN_M_SFT,
-> +			   (enable ? 1 : 0) << RG_XO_AUDIO_EN_M_SFT);
-> +	return 0;
-
-Either don't have a return value or use the result of
-regmap_update_bits().  There's similar issues with some other functions
-in here.
-
-> +int mt6359_mtkaif_calibration_enable(struct snd_soc_pcm_runtime *rtd)
-> +{
-
-> +EXPORT_SYMBOL_GPL(mt6359_mtkaif_calibration_enable);
-
-Why is this exported?
-
-> +static void hp_aux_feedback_loop_gain_ramp(struct mt6359_priv *priv, bool up)
-> +{
-> +	int i = 0, stage = 0;
-> +
-> +	/* Reduce HP aux feedback loop gain step by step */
-> +	for (i = 0; i <= 0xf; i++) {
-> +		stage = up ? i : 0xf - i;
-
-Please write normal conditional statements, it helps legibility.
-
-> +static int mt6359_put_volsw(struct snd_kcontrol *kcontrol,
-> +			    struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component =
-> +			snd_soc_kcontrol_component(kcontrol);
-> +	struct mt6359_priv *priv = snd_soc_component_get_drvdata(component);
-> +	struct soc_mixer_control *mc =
-> +			(struct soc_mixer_control *)kcontrol->private_value;
-> +	unsigned int reg;
-> +	int index = ucontrol->value.integer.value[0];
-> +	int ret;
-> +
-> +	ret = snd_soc_put_volsw(kcontrol, ucontrol);
-> +	if (ret < 0)
-> +		return ret;
-
-So we make the volume change actually take effect...
-
-> +	switch (mc->reg) {
-> +	case MT6359_ZCD_CON2:
-> +		regmap_read(priv->regmap, MT6359_ZCD_CON2, &reg);
-> +		priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTL] =
-> +			(reg >> RG_AUDHPLGAIN_SFT) & RG_AUDHPLGAIN_MASK;
-> +		priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTR] =
-> +			(reg >> RG_AUDHPRGAIN_SFT) & RG_AUDHPRGAIN_MASK;
-> +		break;
-
-...then read the value that was set and store it elsewhere.  What's
-going on here?
-
-> +/*HP MUX */
-> +static const char * const hp_in_mux_map[] = {
-> +	"Open",
-> +	"LoudSPK Playback",
-> +	"Audio Playback",
-> +	"Test Mode",
-> +	"HP Impedance",
-> +	"undefined1",
-> +	"undefined2",
-> +	"undefined3",
-> +};
-
-Why expose undefined (and presumably out of spec) values to userspace?
-
-> +static int mt_clksq_event(struct snd_soc_dapm_widget *w,
-> +			  struct snd_kcontrol *kcontrol,
-> +			  int event)
-> +{
-> +	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-> +	struct mt6359_priv *priv = snd_soc_component_get_drvdata(cmpnt);
-> +
-> +	dev_dbg(priv->dev, "%s(), event = 0x%x\n", __func__, event);
-> +
-> +	switch (event) {
-> +	case SND_SOC_DAPM_PRE_PMU:
-> +		/* audio clk source from internal dcxo */
-> +		regmap_update_bits(priv->regmap, MT6359_AUDENC_ANA_CON23,
-> +				   RG_CLKSQ_IN_SEL_TEST_MASK_SFT,
-> +				   0x0);
-
-This also appeared to be controlled in _set_clkseq() - are we sure that
-things couldn't get confused about the state?
-
-> +	/* HP damp circuit enable */
-> +	/*Enable HPRN/HPLN output 4K to VCM */
-
-Spaces around the /* */
-
-> +static int mt_hp_event(struct snd_soc_dapm_widget *w,
-> +		       struct snd_kcontrol *kcontrol,
-> +		       int event)
-> +{
-> +	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-> +	struct mt6359_priv *priv = snd_soc_component_get_drvdata(cmpnt);
-> +	unsigned int mux = dapm_kcontrol_get_value(w->kcontrols[0]);
-> +	int device = DEVICE_HP;
-> +
-> +	dev_dbg(priv->dev, "%s(), event 0x%x, dev_counter[DEV_HP] %d, mux %u\n",
-> +		__func__, event, priv->dev_counter[device], mux);
-> +
-> +	switch (event) {
-> +	case SND_SOC_DAPM_PRE_PMU:
-> +		priv->dev_counter[device]++;
-> +		if (priv->dev_counter[device] > 1)
-> +			break;	/* already enabled, do nothing */
-> +		else if (priv->dev_counter[device] <= 0)
-
-Why are we doing additional refcounting on top of what DAPM is doing?
-This seems like there should be at least one widget representing the
-shared bits of the audio path.
-
-> +#define MT6359_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |\
-> +			SNDRV_PCM_FMTBIT_U16_LE | SNDRV_PCM_FMTBIT_U16_BE |\
-> +			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE |\
-> +			SNDRV_PCM_FMTBIT_U24_LE | SNDRV_PCM_FMTBIT_U24_BE |\
-> +			SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S32_BE |\
-> +			SNDRV_PCM_FMTBIT_U32_LE | SNDRV_PCM_FMTBIT_U32_BE)
-
-The driver doesn't appear to configure anything except the sample rate -
-how are all these formats supported?
-
-> +	/* hp gain ctl default choose ZCD */
-> +	priv->hp_gain_ctl = HP_GAIN_CTL_ZCD;
-> +	hp_gain_ctl_select(priv, priv->hp_gain_ctl);
-
-Why not use the hardware default?
-
-> +	mt6359_codec_init_reg(cmpnt);
-> +
-> +	priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTL] = 8;
-> +	priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTR] = 8;
-> +	priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP1] = 3;
-> +	priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP2] = 3;
-> +	priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP3] = 3;
-
-Same here.
-
-> +	ret = regulator_enable(priv->avdd_reg);
-> +	if (ret) {
-> +		dev_err(priv->dev, "%s(), failed to enable regulator!\n",
-> +			__func__);
-> +		return ret;
-> +	}
-
-Perhaps make this a DAPM widget?
-
-> +	priv->avdd_reg = devm_regulator_get(&pdev->dev, "vaud18");
-> +	if (IS_ERR(priv->avdd_reg)) {
-> +		dev_err(&pdev->dev, "%s(), have no vaud18 supply", __func__);
-> +		return PTR_ERR(priv->avdd_reg);
-> +	}
-
-It's better to print error codes to help people debugging problems.
-
-> +static const struct of_device_id mt6359_of_match[] = {
-> +	{.compatible = "mediatek,mt6359-sound",},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, mt6359_of_match);
-
-We don't need a compatible here, we know that this device is here since
-it's part of the parent device and isn't something that might appear in
-another device.  This is reflecting the Linux driver model, not the
-hardware.
-
---tctmm6wHVGT/P6vA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8xmRQACgkQJNaLcl1U
-h9AwIgf/ayU+/rwIHTkJ6VHfejmdeAG1IuGX9PJk/02XeL8eLs6JB9rj9SSoU2pO
-G0QckxHzOBj3IgDORpJy47BJv7U2KM5LH5XctLsQGImG9/M+eZcQ/1lAymOqJIcx
-PEzpnBRXrIwwJYwWw+mr3EZB0fqpDUW2mXiNQ7izPT2AVi7zb0DFXFNaptVHxXoc
-EeL/LPmaj53Gla+Yzf7jgx7D3aVqD2jBvSbn7ZUdxC9UZ251BNUhgfp3qL0AoUZS
-maoxcbO9NL3J9L03l9EGTOUY1lqIqV086dq9Li6SShSkhBa75Qi62p5ekPMqzNZo
-iOIMD+8g6aPEauTaCnT4ozpXpwiPvA==
-=J0i4
------END PGP SIGNATURE-----
-
---tctmm6wHVGT/P6vA--
