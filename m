@@ -2,168 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE43D2405BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DAB2405C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726611AbgHJMVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 08:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35760 "EHLO
+        id S1726734AbgHJMWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 08:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbgHJMVn (ORCPT
+        with ESMTP id S1726676AbgHJMW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 08:21:43 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FDFC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 05:21:42 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 184so8144092wmb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 05:21:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=sK+nPyx5WoMICiJ3Qs4h5WWlLQUIHFIbElrPAgmCLH4=;
-        b=O4inzXOeTcwN/B1iTrTGVZDZ48CMY6bIxdUpNgUpB54aHYnPm5UNmHqld+o9Dn55su
-         1f9MFeihmiSvkvnjOskV8lOO5vN8gLdM6Pu8OURYyX/G/HHxZqe3vQGO+J6wcTHgYwnY
-         n25F85aj0wVRsYpK7Y7SbfMd1YhSgc8mpk1y4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=sK+nPyx5WoMICiJ3Qs4h5WWlLQUIHFIbElrPAgmCLH4=;
-        b=EOG3kESxilIczS10dYVCXf0cGcUNgAr+7psKk0WajiBHA5nuvi7aKofdY8NkqWLl5p
-         +zs6taJiLpQ2eVKCiH61BrOLwjsZa7sbaL7ghAqKrpubeXQCxfC4nU+EYWCoe+T23cjh
-         QKF7jjCYZKsabaEvAEk3l5WIelogzxwFoUQcGKJh9b5LotyhnMH99YOgeofhHkCsiwIG
-         9UWNqmKxC6VSAV2EYCPMtzNiWc0o/P9OB8mtOPc4lsZ9M6XAHgWHq8ny7PEJDTAZMWuz
-         P+6hVeABcRzvYK6218hNW4Qocf+aaKAv678YoDzVeoGBzxIHGyzXSMhY1fS2wzHo0h6k
-         E8gg==
-X-Gm-Message-State: AOAM533lfnnWCqAxzpLrQEn9GkzYePi05d7ZY19zfWMc58x3L0B9NnPL
-        EbY+WpFDd+okbFsZh2nSa+39vA==
-X-Google-Smtp-Source: ABdhPJzpZnEAGblsiWEP8Gj51L9OMtozRYzQYwBrfORSTiKSCckdnBIbi5mChPVjIxCeDGb61wXOPw==
-X-Received: by 2002:a1c:dd06:: with SMTP id u6mr26217576wmg.39.1597062101217;
-        Mon, 10 Aug 2020 05:21:41 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id l10sm20247630wru.3.2020.08.10.05.21.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2020 05:21:40 -0700 (PDT)
-Date:   Mon, 10 Aug 2020 14:21:38 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Subject: Re: [PATCH v5 00/14] Add regulator devfreq support to Panfrost
-Message-ID: <20200810122138.GH2352366@phenom.ffwll.local>
-Mail-Followup-To: =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
-        Rob Herring <robh@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Stephen Boyd <sboyd@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Steven Price <steven.price@arm.com>, Chen-Yu Tsai <wens@csie.org>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-References: <20200710095409.407087-1-peron.clem@gmail.com>
- <CAL_JsqLnOGVbO5T92dyzt3K-v4BRNt72yMpYR_wW-z8dpdVSvA@mail.gmail.com>
- <CAJiuCcfezzr7w9=-G6WK0p6YS=6SBAKF8jv=yAOyNFJ59X80qw@mail.gmail.com>
- <CAJiuCceufQko1KWmU0rHSaJiKMKST0L3OADE0O4_7myLtV4Zjg@mail.gmail.com>
+        Mon, 10 Aug 2020 08:22:27 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E220C061786;
+        Mon, 10 Aug 2020 05:22:27 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 215E5293504
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     kernel@collabora.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/4] ARM: exynos: clear L310_AUX_CTRL_NS_LOCKDOWN in default l2c_aux_val
+Date:   Mon, 10 Aug 2020 13:22:05 +0100
+Message-Id: <267a81e550a0b5d479c82b5908e2a2caa4c9c874.1597061474.git.guillaume.tucker@collabora.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJiuCceufQko1KWmU0rHSaJiKMKST0L3OADE0O4_7myLtV4Zjg@mail.gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 07, 2020 at 06:30:05PM +0200, Clément Péron wrote:
-> On Fri, 7 Aug 2020 at 18:28, Clément Péron <peron.clem@gmail.com> wrote:
-> >
-> > Hi Rob,
-> >
-> > On Fri, 7 Aug 2020 at 18:13, Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Fri, Jul 10, 2020 at 3:54 AM Clément Péron <peron.clem@gmail.com> wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > This serie cleans and adds regulator support to Panfrost devfreq.
-> > > > This is mostly based on comment for the freshly introduced lima
-> > > > devfreq.
-> > > >
-> > > > We need to add regulator support because on Allwinner the GPU OPP
-> > > > table defines both frequencies and voltages.
-> > > >
-> > > > First patches [01-07] should not change the actual behavior
-> > > > and introduce a proper panfrost_devfreq struct.
-> > > >
-> > > > Regards,
-> > > > Clément
-> > > >
-> > > > Changes since v4:
-> > > >  - Fix missed a pfdev to &pfdev->devfreq during rebase
-> > > >
-> > > > Changes since v3:
-> > > >  - Collect Steven Price reviewed-by tags
-> > > >  - Rebase on next/master (next-20200709)
-> > > >
-> > > > Changes since v2:
-> > > >  - Collect Alyssa Rosenzweig reviewed-by tags
-> > > >  - Fix opp_set_regulator before adding opp_table (introduce in v2)
-> > > >  - Call err_fini in case opp_add_table failed
-> > > >
-> > > > Changes since v1:
-> > > >  - Collect Steven Price reviewed-by tags
-> > > >  - Fix spinlock comment
-> > > >  - Drop OPP clock-name patch
-> > > >  - Drop device_property_test patch
-> > > >  - Add rename error labels patch
-> > > >
-> > > > Clément Péron (14):
-> > > >   drm/panfrost: avoid static declaration
-> > > >   drm/panfrost: clean headers in devfreq
-> > > >   drm/panfrost: don't use pfdevfreq.busy_count to know if hw is idle
-> > > >   drm/panfrost: introduce panfrost_devfreq struct
-> > > >   drm/panfrost: use spinlock instead of atomic
-> > > >   drm/panfrost: properly handle error in probe
-> > > >   drm/panfrost: rename error labels in device_init
-> > > >   drm/panfrost: move devfreq_init()/fini() in device
-> > > >   drm/panfrost: dynamically alloc regulators
-> > > >   drm/panfrost: add regulators to devfreq
-> > > >   arm64: defconfig: Enable devfreq cooling device
-> > > >   arm64: dts: allwinner: h6: Add cooling map for GPU
-> > > >   [DO NOT MERGE] arm64: dts: allwinner: h6: Add GPU OPP table
-> > > >   [DO NOT MERGE] arm64: dts: allwinner: force GPU regulator to be always
-> > >
-> > > Patches 1-10 applied to drm-misc.
-> >
-> > This serie has been superseded by v5.
-> >
-> > Could you apply the v5 instead.
-> 
-> Oups forget my email
-> 
-> I got an issue with my gmail...
+The L310_AUX_CTRL_NS_LOCKDOWN flag is set during the L2C enable
+sequence.  There is no need to set it in the default register value,
+this was done before support for it was implemented in the code.  It
+is not set in the hardware initial value either.
 
-drm-misc is a non-rebasing tree (because it's got lots of
-maintainers/committers). Which means we need fixup patches now.
+Clean this up by removing this flag from the default l2c_aux_val, and
+add it to the l2c_aux_mask to print an alert message if it was already
+set before the kernel initialisation.
 
-Not that currently drm-misc-next isn't in linux-next because of the merge
-window, so just rebasing on top of linux-next wont work (at least not
-until -rc1 is out). You can get the tree here meanwhile:
+Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+---
 
-https://cgit.freedesktop.org/drm/drm-misc/
+Notes:
+    v2: fix flag name L310_AUX_CTRL_NS_LOCKDOWN
 
-Cheers, Daniel
+ arch/arm/mach-exynos/exynos.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-exynos/exynos.c b/arch/arm/mach-exynos/exynos.c
+index 36c37444485a..a96f3353a0c1 100644
+--- a/arch/arm/mach-exynos/exynos.c
++++ b/arch/arm/mach-exynos/exynos.c
+@@ -193,8 +193,8 @@ static void __init exynos_dt_fixup(void)
+ }
+ 
+ DT_MACHINE_START(EXYNOS_DT, "Samsung Exynos (Flattened Device Tree)")
+-	.l2c_aux_val	= 0x3c400000,
+-	.l2c_aux_mask	= 0xc20fffff,
++	.l2c_aux_val	= 0x38400000,
++	.l2c_aux_mask	= 0xc60fffff,
+ 	.smp		= smp_ops(exynos_smp_ops),
+ 	.map_io		= exynos_init_io,
+ 	.init_early	= exynos_firmware_init,
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.20.1
+
