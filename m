@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C389241239
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 23:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DB424123D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 23:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgHJVSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 17:18:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45908 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726825AbgHJVSw (ORCPT
+        id S1726713AbgHJVXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 17:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726586AbgHJVXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 17:18:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597094331;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kW9eqzFeo7XlW3/tLhwNHZrS1FoKXiUbx92pJ7Yvqb0=;
-        b=O1cvZF9iM/tjZtsfmxcg1lYqqsuZhFeR/32cBg0JubyfySqTp11TlY20yinXqzgEyyAqGY
-        dCKl+naqJIcAncQhxFDQCHFIm3RSgHFTXcZXPcuAE3oUsPaUcIUzfqXQkhURY+W58XYZNz
-        9PG+6vC9RzTy1TvtWfWp7o8MI4W/k90=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-57-WAWVdh2YMMe-UXPgslRwkg-1; Mon, 10 Aug 2020 17:18:49 -0400
-X-MC-Unique: WAWVdh2YMMe-UXPgslRwkg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A22A1009600;
-        Mon, 10 Aug 2020 21:18:47 +0000 (UTC)
-Received: from Ruby.redhat.com (ovpn-114-28.rdu2.redhat.com [10.10.114.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C232979CF3;
-        Mon, 10 Aug 2020 21:18:46 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     nouveau@lists.freedesktop.org
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
-        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] drm/nouveau/kms/nv50-: Don't call HEAD_SET_CRC_CONTROL in head907d_mode()
-Date:   Mon, 10 Aug 2020 17:18:38 -0400
-Message-Id: <20200810211838.37862-3-lyude@redhat.com>
-In-Reply-To: <20200810211838.37862-1-lyude@redhat.com>
-References: <20200810211838.37862-1-lyude@redhat.com>
+        Mon, 10 Aug 2020 17:23:41 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE22CC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 14:23:40 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i19so5512102lfj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 14:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qsiDWS5n9hKEAhff174Y+UtbN9r2TblkIij4sUTlVic=;
+        b=Fi8pCtyaD9nfxMoAWYSP6HWchCG1Y42I8zripyNB8WUBb+pRCoooqvYqrqN1sN4PKA
+         0466JJ2OYdr0NLYGv69VtY1ljoP6Z1S9hC5RbT9y4MQ3EDAfO7lHrPGwAPL8VyqJSB7J
+         wGiAJaytAsvDcKY/SdrGMRx39ExYMQ0K/DBGNi8xhlVvMMCGGG3vwAZmEUDw3mGFJOs7
+         unUPUUUQqonzbxvJNybwgJp/aagLzwHY89xrO/7/VlbCyfIAq5gFdhGYInIVomx3P8Cr
+         5K5pils3Hr1tMm0qMidXtSD2pxN2nmoAv69v2w1T9cjLMQDCubOSmJupslDA+UwhfnGG
+         /DWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qsiDWS5n9hKEAhff174Y+UtbN9r2TblkIij4sUTlVic=;
+        b=H2v2yt+aQSh+ARj0HUkVA6rdqbhf3mCzIpVFMb0jSlYShV8UlxktRJm7W6su5bZenx
+         1J/APOgwykF36FSkj5WLHPDFgTRGMwtZFfpnt6mMh81t5KhakZcrq3BmmGo9m86c5v5X
+         NjMCWzFKGqY16bIO5t00EdCFzYP48UYiHRjO1Ja07J1eVGtGW9HUVI8tioDg5/i6pvA2
+         kG5p8wfOXDuhsCXeUPzv9R3/KSagEiJEGa0IIyVF5c656utGpzJPRe9OOxrZNgnG97q/
+         jEAYf0F+0mvdysHtAs/Coco8szQ2iNrGJa3bsrBu8JWX6JuGhD2mZyNnkuFDaVn8KXgm
+         /zwQ==
+X-Gm-Message-State: AOAM531tWRTUePsEdbVUJU/0XhgXtkOTRohm+ecqMBwiHOMCc4SBN4xZ
+        vA+MAyJi/Uqv+Ggo9+EvBdWvAtM7
+X-Google-Smtp-Source: ABdhPJxGqfOAqshznPYprxBoMjqwSpmohAVnBsuQ6993TvBTWAP3Qa3yrVJoUASO9Jt5KA3koBhnGA==
+X-Received: by 2002:a19:c1d7:: with SMTP id r206mr1519170lff.2.1597094618995;
+        Mon, 10 Aug 2020 14:23:38 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id j1sm9694998ljb.35.2020.08.10.14.23.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 Aug 2020 14:23:38 -0700 (PDT)
+Subject: Re: regulator: deadlock vs memory reclaim
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+References: <cover.1597089543.git.mirq-linux@rere.qmqm.pl>
+ <9a5c8ca6-2027-4d89-e290-6db564b99962@gmail.com>
+ <20200810201846.GA12091@qmqm.qmqm.pl>
+ <d9c3f307-e124-ea5e-c036-71138f9232f4@gmail.com>
+ <81e490af-d1da-873a-51b4-130ca82fd1f6@gmail.com>
+Message-ID: <dc702a33-43b1-c5af-e549-2d3acc71011b@gmail.com>
+Date:   Tue, 11 Aug 2020 00:23:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <81e490af-d1da-873a-51b4-130ca82fd1f6@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was a mistake that was present before, but never got noticed until
-we converted over to using nvidia's class headers for display
-programming. Luckily though it never caused any problems, since we
-always end up calling crc907d_set_src() after head907d_mode().
+10.08.2020 23:56, Dmitry Osipenko пишет:
+> 10.08.2020 23:21, Dmitry Osipenko пишет:
+>> 10.08.2020 23:18, Michał Mirosław пишет:
+>>> On Mon, Aug 10, 2020 at 11:15:28PM +0300, Dmitry Osipenko wrote:
+>>>> 10.08.2020 23:09, Michał Mirosław пишет:
+>>>>> At first I also thought so, but there's more. Below is a lockdep
+>>>>> complaint with your patch applied. I did a similar patch and then two more
+>>>>> (following) and that is still not enough (sysfs/debugfs do allocations,
+>>>>> too).
+>>>> Then it should be good to move the locking for init_coupling() like I
+>>>> suggested and use GFP_NOWAIT for the two other cases. It all could be a
+>>>> single small patch. Could you please check whether GFP_NOWAIT helps?
+>>>
+>>> This would be equivalent to my patches. Problem with sysfs and debugfs
+>>> remains as they don't have the option of GFP_NOWAIT. This needs to be
+>>> moved outside of the locks.
+>>
+>> Ah okay, you meant the debugfs core. I see now, thanks.
+>>
+> 
+> This indeed needs a capital solution.
+> 
+> It's not obvious how to fix it.. we can probably remove taking the
+> list_mutex from lock_dependent(), but this still won't help the case of
+> memory reclaiming because reclaim may cause touching the already locked
+> regulator. IIUC, the case of memory reclaiming under regulator lock was
+> always dangerous and happened to work by chance before, correct?
+> 
 
-So, let's get rid of this.
-
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/nouveau/dispnv50/head907d.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/head907d.c b/drivers/gpu/drm/nouveau/dispnv50/head907d.c
-index 8f860e9c52247..85648d790743f 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/head907d.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/head907d.c
-@@ -322,7 +322,7 @@ head907d_mode(struct nv50_head *head, struct nv50_head_atom *asyh)
- 	const int i = head->base.index;
- 	int ret;
- 
--	if ((ret = PUSH_WAIT(push, 14)))
-+	if ((ret = PUSH_WAIT(push, 13)))
- 		return ret;
- 
- 	PUSH_MTHD(push, NV907D, HEAD_SET_OVERSCAN_COLOR(i),
-@@ -353,14 +353,7 @@ head907d_mode(struct nv50_head *head, struct nv50_head_atom *asyh)
- 	PUSH_MTHD(push, NV907D, HEAD_SET_DEFAULT_BASE_COLOR(i),
- 		  NVVAL(NV907D, HEAD_SET_DEFAULT_BASE_COLOR, RED, 0) |
- 		  NVVAL(NV907D, HEAD_SET_DEFAULT_BASE_COLOR, GREEN, 0) |
--		  NVVAL(NV907D, HEAD_SET_DEFAULT_BASE_COLOR, BLUE, 0),
--
--				HEAD_SET_CRC_CONTROL(i),
--		  NVDEF(NV907D, HEAD_SET_CRC_CONTROL, CONTROLLING_CHANNEL, CORE) |
--		  NVDEF(NV907D, HEAD_SET_CRC_CONTROL, EXPECT_BUFFER_COLLAPSE, FALSE) |
--		  NVDEF(NV907D, HEAD_SET_CRC_CONTROL, TIMESTAMP_MODE, FALSE) |
--		  NVDEF(NV907D, HEAD_SET_CRC_CONTROL, PRIMARY_OUTPUT, NONE) |
--		  NVDEF(NV907D, HEAD_SET_CRC_CONTROL, SECONDARY_OUTPUT, NONE));
-+		  NVVAL(NV907D, HEAD_SET_DEFAULT_BASE_COLOR, BLUE, 0));
- 
- 	PUSH_MTHD(push, NV907D, HEAD_SET_PIXEL_CLOCK_FREQUENCY(i),
- 		  NVVAL(NV907D, HEAD_SET_PIXEL_CLOCK_FREQUENCY, HERTZ, m->clock * 1000) |
--- 
-2.26.2
-
+And like Mark mentioned before, this situation also potentially may
+happen from other paths.
