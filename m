@@ -2,134 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D3F24108E
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDF02410F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729694AbgHJTbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 15:31:09 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:52980 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728868AbgHJTbH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 15:31:07 -0400
-Date:   Mon, 10 Aug 2020 19:01:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597087864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=6Jywy7lqllPTFMJ6o5Tm1gkuwwbnzeHH9S4UC1Euep4=;
-        b=Z+nr3IVdFq/vEDkoDCbCzPI/qcTHf2tClNSLYklPib/395MnaoQGa/7fq1nkCHswYD2cB9
-        sYtn1xIqLk0mgIfvFCsM03EuCDslESW+IVntEElhB04f6lZ4s4Lhpdl9GgM7Rz2Im2+Zfu
-        f52Uvwriy9px1ozdoTM5DLgWYQiull6Srmc2B2smBxUn1TjRA1hqyk9YDMTOh59SgWPvuB
-        Angx6TUgRgFvOOB6ru4zGXYzIOznKs21UgXNoKTH5oE7lO0MooVcWybwf6130UUMEIQ9NV
-        n7GWkL/yT9oJoNNq0H3J0lS2gdYAUd02BdI1LnCvSFwsKLZddtalssGSjFjnKg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597087864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=6Jywy7lqllPTFMJ6o5Tm1gkuwwbnzeHH9S4UC1Euep4=;
-        b=9BcfJBxONyEb7sGKihmbXN/0UYXAjhIQLTnW+5lfgMWZNQpQkPRpKbHuPs6r7UU/XzWa24
-        rjfKC169qfhpP7Dw==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] locking/urgent for 5.9-rc1
-Message-ID: <159708609435.2571.13948681727529247231.tglx@nanos>
-Content-Type: text/plain; charset="utf-8"
+        id S1728338AbgHJTJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 15:09:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728284AbgHJTJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 15:09:05 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D4DD21775;
+        Mon, 10 Aug 2020 19:09:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597086543;
+        bh=hA1h9wZ8IJcr0MIhQYceFwDgSJwUNP7M6s/QAIjJbUk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=kYgzz++5/7lNhRBaX61dpYAB0fgZgmhA1trxGxbCZB6UWGm5Hg3zBPs0Q2IBEtg8M
+         Q+JnExD88XuYIY6TDLfuU2SKP1Kxxqy/qNNv5DjVOxDRH2xfOE+x0KNFdYDrg3zyu7
+         sA2Rtvppgmnc+utynhf8RZQyiujp4Gmc27xCKvU4=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 03/64] net: mscc: ocelot: fix encoding destination ports into multicast IPv4 address
+Date:   Mon, 10 Aug 2020 15:07:58 -0400
+Message-Id: <20200810190859.3793319-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200810190859.3793319-1-sashal@kernel.org>
+References: <20200810190859.3793319-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-please pull the latest locking/urgent branch from:
+[ Upstream commit 0897ecf7532577bda3dbcb043ce046a96948889d ]
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2020-08-10
+The ocelot hardware designers have made some hacks to support multicast
+IPv4 and IPv6 addresses. Normally, the MAC table matches on MAC
+addresses and the destination ports are selected through the DEST_IDX
+field of the respective MAC table entry. The DEST_IDX points to a Port
+Group ID (PGID) which contains the bit mask of ports that frames should
+be forwarded to. But there aren't a lot of PGIDs (only 80 or so) and
+there are clearly many more IP multicast addresses than that, so it
+doesn't scale to use this PGID mechanism, so something else was done.
+Since the first portion of the MAC address is known, the hack they did
+was to use a single PGID for _flooding_ unknown IPv4 multicast
+(PGID_MCIPV4 == 62), but for known IP multicast, embed the destination
+ports into the first 3 bytes of the MAC address recorded in the MAC
+table.
 
-up to:  0cd39f4600ed: locking/seqlock, headers: Untangle the spaghetti monster
+The VSC7514 datasheet explains it like this:
 
-A set of locking fixes and updates:
+    3.9.1.5 IPv4 Multicast Entries
 
-  - Untangle the header spaghetti which causes build failures in various
-    situations caused by the lockdep additions to seqcount to validate that
-    the write side critical sections are non-preemptible.
+    MAC table entries with the ENTRY_TYPE = 2 settings are interpreted
+    as IPv4 multicast entries.
+    IPv4 multicasts entries match IPv4 frames, which are classified to
+    the specified VID, and which have DMAC = 0x01005Exxxxxx, where
+    xxxxxx is the lower 24 bits of the MAC address in the entry.
+    Instead of a lookup in the destination mask table (PGID), the
+    destination set is programmed as part of the entry MAC address. This
+    is shown in the following table.
 
-  - The seqcount associated lock debug addons which were blocked by the
-    above fallout.
+    Table 78: IPv4 Multicast Destination Mask
 
-    seqcount writers contrary to seqlock writers must be externally
-    serialized, which usually happens via locking - except for strict per
-    CPU seqcounts. As the lock is not part of the seqcount, lockdep cannot
-    validate that the lock is held.
+        Destination Ports            Record Bit Field
+        ---------------------------------------------
+        Ports 10-0                   MAC[34-24]
 
-    This new debug mechanism adds the concept of associated locks.
-    sequence count has now lock type variants and corresponding
-    initializers which take a pointer to the associated lock used for
-    writer serialization. If lockdep is enabled the pointer is stored and
-    write_seqcount_begin() has a lockdep assertion to validate that the
-    lock is held.
+    Example: All IPv4 multicast frames in VLAN 12 with MAC 01005E112233 are
+    to be forwarded to ports 3, 8, and 9. This is done by inserting the
+    following entry in the MAC table entry:
+    VALID = 1
+    VID = 12
+    MAC = 0x000308112233
+    ENTRY_TYPE = 2
+    DEST_IDX = 0
 
-    Aside of the type and the initializer no other code changes are
-    required at the seqcount usage sites. The rest of the seqcount API is
-    unchanged and determines the type at compile time with the help of
-    _Generic which is possible now that the minimal GCC version has been
-    moved up.
+But this procedure is not at all what's going on in the driver. In fact,
+the code that embeds the ports into the MAC address looks like it hasn't
+actually been tested. This patch applies the procedure described in the
+datasheet.
 
-    Adding this lockdep coverage unearthed a handful of seqcount bugs which
-    have been addressed already independent of this.
+Since there are many other fixes to be made around multicast forwarding
+until it works properly, there is no real reason for this patch to be
+backported to stable trees, or considered a real fix of something that
+should have worked.
 
-    While generaly useful this comes with a Trojan Horse twist: On RT
-    kernels the write side critical section can become preemtible if the
-    writers are serialized by an associated lock, which leads to the well
-    known reader preempts writer livelock. RT prevents this by storing the
-    associated lock pointer independent of lockdep in the seqcount and
-    changing the reader side to block on the lock when a reader detects
-    that a writer is in the write side critical section.
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/ethernet/mscc/ocelot.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
- - Conversion of seqcount usage sites to associated types and initializers.
-
-Thanks,
-
-	tglx
-
------------------->
-Ahmed S. Darwish (16):
-      seqlock: Extend seqcount API with associated locks
-      seqlock: Align multi-line macros newline escapes at 72 columns
-      dma-buf: Remove custom seqcount lockdep class key
-      dma-buf: Use sequence counter with associated wound/wait mutex
-      sched: tasks: Use sequence counter with associated spinlock
-      netfilter: conntrack: Use sequence counter with associated spinlock
-      netfilter: nft_set_rbtree: Use sequence counter with associated rwlock
-      xfrm: policy: Use sequence counters with associated lock
-      timekeeping: Use sequence counter with associated raw spinlock
-      vfs: Use sequence counter with associated spinlock
-      raid5: Use sequence counter with associated spinlock
-      iocost: Use sequence counter with associated spinlock
-      NFSv4: Use sequence counter with associated spinlock
-      userfaultfd: Use sequence counter with associated spinlock
-      kvm/eventfd: Use sequence counter with associated spinlock
-      hrtimer: Use sequence counter with associated raw spinlock
-
-Chris Wilson (1):
-      locking/lockdep: Fix overflow in presentation of average lock-time
-
-Ingo Molnar (1):
-      x86/headers: Remove APIC headers from <asm/smp.h>
-
-Peter Zijlstra (7):
-      seqlock: s/__SEQ_LOCKDEP/__SEQ_LOCK/g
-      seqlock: Fold seqcount_LOCKNAME_t definition
-      seqlock: Fold seqcount_LOCKNAME_init() definition
-      seqcount: Compress SEQCNT_LOCKNAME_ZERO()
-      seqcount: More consistent seqprop names
-      locking, arch/ia64: Reduce <asm/smp.h> header dependencies by moving XTP bits into the new <asm/xtp.h> header
-      locking/seqlock, headers: Untangle the spaghetti monster
-
-
+diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
+index f17da67a4622e..d0b79cca51840 100644
+--- a/drivers/net/ethernet/mscc/ocelot.c
++++ b/drivers/net/ethernet/mscc/ocelot.c
+@@ -1605,14 +1605,14 @@ static int ocelot_port_obj_add_mdb(struct net_device *dev,
+ 	addr[0] = 0;
+ 
+ 	if (!new) {
+-		addr[2] = mc->ports << 0;
+-		addr[1] = mc->ports << 8;
++		addr[1] = mc->ports >> 8;
++		addr[2] = mc->ports & 0xff;
+ 		ocelot_mact_forget(ocelot, addr, vid);
+ 	}
+ 
+ 	mc->ports |= BIT(port);
+-	addr[2] = mc->ports << 0;
+-	addr[1] = mc->ports << 8;
++	addr[1] = mc->ports >> 8;
++	addr[2] = mc->ports & 0xff;
+ 
+ 	return ocelot_mact_learn(ocelot, 0, addr, vid, ENTRYTYPE_MACv4);
+ }
+@@ -1636,9 +1636,9 @@ static int ocelot_port_obj_del_mdb(struct net_device *dev,
+ 		return -ENOENT;
+ 
+ 	memcpy(addr, mc->addr, ETH_ALEN);
+-	addr[2] = mc->ports << 0;
+-	addr[1] = mc->ports << 8;
+ 	addr[0] = 0;
++	addr[1] = mc->ports >> 8;
++	addr[2] = mc->ports & 0xff;
+ 	ocelot_mact_forget(ocelot, addr, vid);
+ 
+ 	mc->ports &= ~BIT(port);
+@@ -1648,8 +1648,8 @@ static int ocelot_port_obj_del_mdb(struct net_device *dev,
+ 		return 0;
+ 	}
+ 
+-	addr[2] = mc->ports << 0;
+-	addr[1] = mc->ports << 8;
++	addr[1] = mc->ports >> 8;
++	addr[2] = mc->ports & 0xff;
+ 
+ 	return ocelot_mact_learn(ocelot, 0, addr, vid, ENTRYTYPE_MACv4);
+ }
+-- 
+2.25.1
 
