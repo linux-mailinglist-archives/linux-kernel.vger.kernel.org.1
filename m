@@ -2,214 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF5B241247
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 23:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D80D8241262
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 23:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726857AbgHJV02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 17:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbgHJV01 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 17:26:27 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17DAC061788
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 14:26:26 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id x142so2187903vke.0
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 14:26:26 -0700 (PDT)
+        id S1726799AbgHJVbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 17:31:31 -0400
+Received: from mail-dm6nam11on2056.outbound.protection.outlook.com ([40.107.223.56]:46689
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726654AbgHJVba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 17:31:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ka/P9ssAEmjdfMIuWzkoX28BOjYHWHAIWSoTYUO37e21tDDNkqw6OUufT8xHYl0V0O4+QXAky8mlidQmGGbQUXfnocDlIKQ5c9klLzOf6AnRUR2khggB2N4PEjgng48LTxHZFtifC4xy9qAcsk87DzWpTa44UcOnQDWd+rBgGW65+rJz/tbTKuLpSlTRy/l6w/GImsT4f0TCt5BhcXy4obiSIJPdaKcdm28HWVQnGhwC4dOCNbhZGIMm5E5EpdpH9E9+A8l3jVYJ0VKu0yMcsrufo/AApnuJs29cBPzXE/DLc9RFbTN5EBCR1qjWQtWUyMoRtGNsCCDkteTsmOE1PQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eRhOQA9n4u+nwuyLR+L7p9Z6yyLr05FL2I5/7hK4Arc=;
+ b=FW0RxuKU4KVinkw0Alzkap2/3fec5g/ovo/aPeNWG3y/Vyh/FTEXf7ZxZK4ywhWLRywX1+Ju4o4oJiYkzaxvWvjTQsqYVzfbFFU4UotISpw1SEwaF6uYd0ey/Ml3/1SYOGIX+ix9XJiWNSU4Xdmpse17r+O1l8PTz6nd/vMckzZaGMxGWyh6K3zRITA/vq/h0iiL4Gfr6hwHaR1UTQ+KnjaiFYWcCkxPgryJNj4+tBCfKCBwz1wLO04blMLQ4gwQGPPEWizQTYWor7/VmXhdxuQ6ZcEB0gEomZZAOw8inpTUeZQb/dk18GZpuMbX5ePwm5HudCjdpRhGbuoM+0YXJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hXASfmqoUl3o8zN6MXHewh7vS0xl4tHelH9X4EiAPTg=;
-        b=iPtviNy9RShsJFpYsrUv4+ItQVmKuSBZAs+NqagKy930sVZjRWUTkUxZacbU9KMJ9x
-         CldemxPziILP/Xm4LSWsQAELyezydtv5sifKft2/LSVyc4/58JoPG6k5BIxVVvNHjwp4
-         uWlD8l3v+F7WMtJqUFLtCaENMe7W0y16GGvzg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hXASfmqoUl3o8zN6MXHewh7vS0xl4tHelH9X4EiAPTg=;
-        b=a36OFObiBh16XGljF9L48nVbSVoWXWhl58NL0Uchdo3hkuEWS0UuOXiL2o9rZTtB5A
-         i8LJtGqG5F8/+2fjfmKRPgKnEZVnjGICDx3LyWjRpNwnTsSLUeEXZ3aokNL2FwMEQGZ5
-         IRMMDBQeQkoS1hI7MvTzNfJFMrW+EKnWiFVjvCoGeF+tqVLH9U3CIeLmjSVfw3KzNorL
-         Imz2eaC8s/9YifJbhEp5WUEV2Apy8UVX+N5TIBs+/MPwIFVpd8ULck/yZnb5JQY+qTOF
-         jztLPzLdHYDTsuHiIR9gq36tYGlZhAnBGK3F1+sdj9bItqjco8tIwT87Co+cZ1Z8b3hT
-         nATw==
-X-Gm-Message-State: AOAM531PrPqkckAn1KiSdkuSMgLKk57+WAA71jZWDhNqEu6EHfE+x8js
-        raVFMmDQ5ou9yc6e0fR+K/D10fqBikk=
-X-Google-Smtp-Source: ABdhPJyr2b6mxZFpkZ2sCqd07Xv6CW650/jZJZsa7tR2/vuNEZlfT+U5ci7ljvIby7i9kTYt5gx3JA==
-X-Received: by 2002:a1f:3d97:: with SMTP id k145mr22560204vka.8.1597094785604;
-        Mon, 10 Aug 2020 14:26:25 -0700 (PDT)
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com. [209.85.217.47])
-        by smtp.gmail.com with ESMTPSA id m62sm5614445vsd.21.2020.08.10.14.26.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Aug 2020 14:26:24 -0700 (PDT)
-Received: by mail-vs1-f47.google.com with SMTP id y8so4952739vsq.8
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 14:26:23 -0700 (PDT)
-X-Received: by 2002:a67:2c4f:: with SMTP id s76mr20074899vss.213.1597094783404;
- Mon, 10 Aug 2020 14:26:23 -0700 (PDT)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eRhOQA9n4u+nwuyLR+L7p9Z6yyLr05FL2I5/7hK4Arc=;
+ b=1X++8ZlAjsS3rOySVxvlL6z4wtJ17EPnyVHb+vZV08AUYGxOg6h89oBAlNOJ+LWdNfv2nVJO5RQv9KVNgKD5XjmqXKbgXevC9vXlj2N8IsDYhnYQDb49sLAxIIYr+rC2RWV2lAbGviQ+MIHKXr9PdvM8MA3ubVXOFnSqAoiaoLg=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BYAPR12MB2726.namprd12.prod.outlook.com (2603:10b6:a03:66::17)
+ by BY5PR12MB3714.namprd12.prod.outlook.com (2603:10b6:a03:1a9::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.22; Mon, 10 Aug
+ 2020 21:31:25 +0000
+Received: from BYAPR12MB2726.namprd12.prod.outlook.com
+ ([fe80::8503:3713:6ed0:af09]) by BYAPR12MB2726.namprd12.prod.outlook.com
+ ([fe80::8503:3713:6ed0:af09%6]) with mapi id 15.20.3261.024; Mon, 10 Aug 2020
+ 21:31:25 +0000
+From:   Sandeep Singh <Sandeep.Singh@amd.com>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        srinivas.pandruvada@linux.intel.com, jic23@kernel.org,
+        linux-iio@vger.kernel.org, hdegoede@redhat.com,
+        Nehal-bakulchandra.Shah@amd.com, andy.shevchenko@gmail.com,
+        mail@richard-neumann.de, m.felsch@pengutronix.de,
+        rdunlap@infradead.org
+Cc:     Shyam-sundar.S-k@amd.com, Sandeep Singh <sandeep.singh@amd.com>
+Subject: [PATCH v7 0/4] SFH: Add Support for AMD Sensor Fusion Hub
+Date:   Mon, 10 Aug 2020 21:30:51 +0000
+Message-Id: <20200810213055.103962-1-Sandeep.Singh@amd.com>
+X-Mailer: git-send-email 2.25.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MA1PR0101CA0025.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:22::11) To BYAPR12MB2726.namprd12.prod.outlook.com
+ (2603:10b6:a03:66::17)
 MIME-Version: 1.0
-References: <20200806221904.1.I4455ff86f0ef5281c2a0cd0a4712db614548a5ca@changeid>
- <adaef6bf-7887-feea-fedf-d3bc5566bb9d@codeaurora.org>
-In-Reply-To: <adaef6bf-7887-feea-fedf-d3bc5566bb9d@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 10 Aug 2020 14:26:11 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=X8tNpmkSrEjXgKPKsBOZfjt8aVQe47gzi5FvPqdOQN+A@mail.gmail.com>
-Message-ID: <CAD=FV=X8tNpmkSrEjXgKPKsBOZfjt8aVQe47gzi5FvPqdOQN+A@mail.gmail.com>
-Subject: Re: [PATCH] serial: qcom_geni_serial: Fix recent kdb hang
-To:     Akash Asthana <akashast@codeaurora.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Mukesh Savaliya <msavaliy@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Evan Green <evgreen@chromium.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from jatayu.amd.com (165.204.156.251) by MA1PR0101CA0025.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:22::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.18 via Frontend Transport; Mon, 10 Aug 2020 21:31:21 +0000
+X-Mailer: git-send-email 2.25.1
+X-Originating-IP: [165.204.156.251]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: eec20f42-4f92-451b-5792-08d83d74bbad
+X-MS-TrafficTypeDiagnostic: BY5PR12MB3714:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR12MB3714FB1684DEC562E1CAF724E0440@BY5PR12MB3714.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: H2KvzRwjTS0AXl7kRUq93PLb2acU0RVzuwFuMUDlJyQLrK/OlaPh4/nOiLq/P045fQ8EbCnE/JipXOdxNR/LdfLIbwt+KMELgqx73cQY7euiPFdaOuV2DYdPmoSupicaixSthaze4ItjFz3JXFxAJ1BNqzHHC06ohBAJy9NuLX4WwlWWEYk8G6wXqAlun426qQNMIS9HxKE6fuCvosiX312togi6ADWJYj63E6SjnBsRonYSt0aGz30J/qgzu8psninnsvytQsdTbSeEyGf2zks3L0QbO1xJHBp6w5wCKEdp8YIucj31apTkqBIIp6fuNbgZgEpxM9w0I6LWiDFCkw0DKyxG2G++BoJnKYVgOVooGTCcqkEmXYe+DlxDJJCqkmyVjQAqHX9gRZo0a9hGow3fgqHjakFmbvJ4jHWnT7l394yLbzXGoSFeJWe9FE7A
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2726.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(39860400002)(136003)(376002)(346002)(396003)(2906002)(1076003)(7416002)(83380400001)(478600001)(6666004)(52116002)(66946007)(7696005)(8676002)(66476007)(66556008)(26005)(6486002)(5660300002)(8936002)(36756003)(956004)(2616005)(316002)(16526019)(966005)(4326008)(86362001)(186003)(921003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: V04MBusHYyO9kZuR9MoaT6T40VOJusP6GZJpP1N1bTB87BJYyIjJ9DokkseFwx9wP2qbftworBEjYrWGd4spUbNJC3sPl8JlW870vJcHjUT3zhdYFFziy6hLMubrrwYV1eW+XVlD1FbzvqmB5KtqiI2R4LhNn0aSI7dcw7aXDP00491lzrnCXsf7JylNkv8VLbSmeCtUV/4ljjXnFREUpvqWIVx+3YwLERTsebJ5uh84l3HEx6nuroWeEvyf0IgdXl1OUNDQgc7aELF4k/VQ8v9eoxoX2uVhAOQs/AAcGmTuVWAHcykVrMLvsqMRX9JE1RfU1qCmpDoMtLFpXhy7Vstf1/QDEicWxXwXbGM2SNLlSO/WhkVxE/yd9wMVvgMKkfrol/3FlcrAyAmAZqFM1miWrCLHZ4CHPbcBsFGA16z3Qawx75lKpQjdKT+TH7bard5Wz77NhIM6z9PWjKy/0YzE/O3thYd+LrRU8MtwIFZ8J1kp+E+m8ByrBIPrauNXtbTK5dOyiZWcosGcD4/BQJMb76MzZp6kdO5qSVmugn03c/NViK5DexHXJZtLrUl0O5Y56luuO39xGkUQ4k41jirPsICBROSqDI1oOd38lx6HNmZNrZM3k5sdXEXmmWg3Z8rDozT92lMcw/+/XnxW5A==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eec20f42-4f92-451b-5792-08d83d74bbad
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2726.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2020 21:31:25.2132
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: C61zMQL+PexUUVkdOmD31fPlCY5iLi6Wa2MQmNFNkW0C4euvLv3FH+jQgM+6BLUn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3714
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Sandeep Singh <sandeep.singh@amd.com>
 
-On Mon, Aug 10, 2020 at 5:32 AM Akash Asthana <akashast@codeaurora.org> wrote:
->
-> Hi Doug,
->
-> On 8/7/2020 10:49 AM, Douglas Anderson wrote:
-> > The commit e42d6c3ec0c7 ("serial: qcom_geni_serial: Make kgdb work
-> > even if UART isn't console") worked pretty well and I've been doing a
-> > lot of debugging with it.  However, recently I typed "dmesg" in kdb
-> > and then held the space key down to scroll through the pagination.  My
-> > device hung.  This was repeatable and I found that it was introduced
-> > with the aforementioned commit.
-> >
-> > It turns out that there are some strange boundary cases in geni where
-> > in some weird situations it will signal RX_LAST but then will put 0 in
-> > RX_LAST_BYTE.  This means that the entire last FIFO entry is valid.
->
-> IMO that means we received a word in RX_FIFO and it is the last word
-> hence RX_LAST bit is set.
+AMD SFH(Sensor Fusion Hub) is HID based driver.SFH FW is part of MP2
+processor (MP2 which is an ARM® Cortex-M4 core based co-processor to
+x86)
+and it runs on MP2 where in driver resides on X86.The driver
+functionalities are divided  into three parts:-
 
-What you say would make logical sense, but it's not how I have
-observed geni to work.  See below.
+1: amd-mp2-pcie:- This module will communicate with MP2 FW and  provide
+                  that data into DRAM.
+2: Client Layer:- This part for driver will use dram data and convert
+		  that data into HID format based on HID reports.
+3: Transport driver :- This part of driver will communicate with  HID
+		  core.Communication between devices and HID core is
+		  mostly done via HID reports
 
+In terms of architecture, it resembles like ISH(Intel Integrated Sensor
+Hub).However the major difference is all the hid reports are generated
+as part of kernel driver.
 
-> RX_LAST_BYTE is 0 means none of the bytes are valid in the last word.
+AMD SFH is integrated as a part of SoC, starting from 17h family of
+processors.
+The solution is working well on several OEM products.
+AMD SFH uses HID over PCIe bus.
 
-This would imply that qcom_geni_serial_handle_rx() is also broken
-though, wouldn't it?  Specifically imagine that WORD_CNT is 1 and
-RX_LAST is set and RX_LAST_BYTE_VALID is true.  Here's the logic from
-that function:
+Changes since v1:
+        -> Fix auto build test warnings
+        -> Fix smatch warnings "possible memory leak" -Reported by Dan
+Carpenter
 
-  total_bytes = BYTES_PER_FIFO_WORD * (word_cnt - 1);
-  if (last_word_partial && last_word_byte_cnt)
-    total_bytes += last_word_byte_cnt;
-  else
-    total_bytes += BYTES_PER_FIFO_WORD;
-  port->handle_rx(uport, total_bytes, drop);
+Links of the review comments for v1:
+        [1] https://patchwork.kernel.org/patch/11325163/
+        [2] https://patchwork.kernel.org/patch/11325167/
+        [3] https://patchwork.kernel.org/patch/11325171/
+        [4] https://patchwork.kernel.org/patch/11325187/
 
-As you can see that logic will set "total_bytes" to 4 in the case I'm
-talking about.
+Changes since v2:
+        -> Debugfs divided into another patch
+        -> Fix some cosmetic changes
+        -> Fix for review comments
+           Reported and Suggested by:-  Srinivas Pandruvada
 
-
-> In such scenario we should just read RX_FIFO buffer (to empty it),
-> discard the word and return NO_POLL_CHAR. Something like below.
->
-> ---------------------------------------------------------------------------------------------------------------------------------------------------------
->
->                  else
->                          private_data->poll_cached_bytes_cnt = 4;
->
->                  private_data->poll_cached_bytes =
->                          readl(uport->membase + SE_GENI_RX_FIFOn);
->          }
->
-> +        if (!private_data->poll_cached_bytes_cnt)
-> +              return NO_POLL_CHAR;
->          private_data->poll_cached_bytes_cnt--;
->          ret = private_data->poll_cached_bytes & 0xff;
-> -------------------------------------------------------------------------------------------------------------------------------------------------------------
->
-> Please let me know whether above code helps.
-
-Your code will avoid the hang.  Yes.  ...but it will drop bytes.  I
-devised a quick-n-dirty test.  Here's a test of your code:
-
-https://crrev.com/c/2346886
-
-...and here's a test of my code:
-
-https://crrev.com/c/2346884
-
-I had to keep a buffer around since it's hard to debug the serial
-driver.  In both cases I put "DOUG" into the buffer when I detect this
-case.  If my theory about how geni worked was wrong then we should
-expect to see some garbage in the buffer right after the DOUG, right?
-...but my code gets the alphabet in nice sequence.  Your code drops 4
-bytes.
+Links of the review comments for v2:
+        [1] https://patchwork.kernel.org/patch/11355491/
+        [2] https://patchwork.kernel.org/patch/11355495/
+        [3] https://patchwork.kernel.org/patch/11355499/
+        [4] https://patchwork.kernel.org/patch/11355503/
 
 
-NOTE: while poking around with the above two test patches I found it
-was pretty easy to get geni to drop bytes / hit overflow cases and
-also to insert bogus 0 bytes in the stream (I believe these are
-related).  I was able to reproduce this:
-* With ${SUBJECT} patch in place.
-* With your proposed patch.
-* With the recent "geni" patches reverted (in other words back to 1
-byte per FIFO entry).
+Changes since v3:
+        -> Removed debugfs suggested by - Benjamin Tissoires
 
-It's not terribly surprising that we're overflowing since I believe
-kgdb isn't too keen to read characters at the same time it's writing.
-That doesn't explain the weird 0-bytes that geni seemed to be
-inserting, but at least it would explain the overflows.  However, even
-after I fixed this I _still_ was getting problems.  Specifically geni
-seemed to be hiding bytes from me until it was too late.  I put
-logging in and would see this:
+Links of the review comments for v3:
+        [1] https://lkml.org/lkml/2020/2/11/1256
+        [2] https://lkml.org/lkml/2020/2/11/1257
+        [3] https://lkml.org/lkml/2020/2/11/1258
+        [4] https://lkml.org/lkml/2020/2/11/1259
+        [5] https://lkml.org/lkml/2020/2/11/1260
 
-1 word in FIFO - wxyz
-1 word in FIFO (last set, last FIFO has 1 byte) - \n
-Check again, still 0 bytes in FIFO
-Suddenly 16 bytes are in FIFO and S_RX_FIFO_WR_ERR_EN is set.
+Changes since v4:
+        -> use PCI managed calls.
+        -> use kernel APIs
 
-I spent a whole bunch of time poking at this and couldn't find any
-sort of workaround.  Presumably geni is taking some time between me
-reading the last word out of the FIFO from the "previous" packet and
-then transitioning to the new packet.  I found a lot of references to
-this process in the hardware register description (see GENI_CFG_REG69,
-for instance), but I couldn't manage to make the kick to happen any
-faster.  Presumably this isn't a problem for things like Bluetooth
-since flow control saves them.  ...and I guess this isn't a problem in
-practice because we usually _send_ a lot of data to the host for
-console/kgdb and it's only the host => DUT path that has problems.
+Links of the review comments for v4:
+        [1] https://lkml.org/lkml/2020/2/26/1360
+        [2] https://lkml.org/lkml/2020/2/26/1361
+        [3] https://lkml.org/lkml/2020/2/26/1362
+        [4] https://lkml.org/lkml/2020/2/26/1363
+        [5] https://lkml.org/lkml/2020/2/27/1
 
 
-> I am not sure about what all scenario can leads to this behavior from
-> hardware, I will try to get an answer from hardware team.
->
-> Any error bit was set for SE_GENI_S_IRQ_STATUS & SE_GENI_M_IRQ_STATUS
-> registers?
+Changes since v5
+        -> Fix for review comments by: Andy Shevchenko
+        -> Fix for indentations erros, NULL pointer,Redundant assignment
+        -> Drop LOCs in many location
+        -> Create as a single driver module instead of two modules.
 
-As per above I can see overflows in my test case and geni seems to be
-behaving pretty badly.  If you have ideas on how to fix this I'd love
-it.  However, it still seems like my patch is right because (at least
-in the cases I tested) it avoids dropping bytes in some cases.  It
-also matches how qcom_geni_serial_handle_rx() works and if that was
-broken we'd have noticed by now.
+Links of the review comments for v5:
+        [1] https://lkml.org/lkml/2020/5/29/589
+        [2] https://lkml.org/lkml/2020/5/29/590
+        [3] https://lkml.org/lkml/2020/5/29/606
+        [4] https://lkml.org/lkml/2020/5/29/632
+        [5] https://lkml.org/lkml/2020/5/29/633
 
+Changes since v6
+        -> fix Kbuild warning "warning: ignoring return value of 'pcim_enable_device',
+	-> Removed select HID and add depends on HID 
 
-> I guess the hang was seen because *poll_cached_bytes_cnt* is unsigned
-> int and it's value was 0, when it's decremented by 1 it's value become
-> '4294967295' (very large) and dummy RX (0x00) would happen that
->
-> many times before reading any actual RX transfers/bytes.
+Links of the review comments for v6:
+	[1] https://lkml.org/lkml/2020/8/9/58
+	[2] https://lkml.org/lkml/2020/8/9/59
+	[3] https://lkml.org/lkml/2020/8/9/125
+	[4] https://lkml.org/lkml/2020/8/9/61
+	[5] https://lkml.org/lkml/2020/8/9/91
 
-Right.  That would be why it was hanging.
+Sandeep Singh (4):
+  SFH: Add maintainers and documentation for AMD SFH based on HID
+    framework
+  SFH: PCIe driver to add support of AMD sensor fusion hub
+  SFH: Transport Driver to add support of AMD Sensor Fusion Hub (SFH)
+  SFH: Create HID report to Enable support of AMD sensor fusion Hub
+    (SFH)
 
+ Documentation/hid/amd-sfh-hid.rst             | 153 +++++
+ MAINTAINERS                                   |   8 +
+ drivers/hid/Kconfig                           |   2 +
+ drivers/hid/Makefile                          |   2 +
+ drivers/hid/amd-sfh-hid/Kconfig               |  21 +
+ drivers/hid/amd-sfh-hid/Makefile              |  15 +
+ drivers/hid/amd-sfh-hid/amd_mp2_pcie.c        | 164 +++++
+ drivers/hid/amd-sfh-hid/amd_mp2_pcie.h        |  83 +++
+ drivers/hid/amd-sfh-hid/amdsfh_hid.c          | 175 +++++
+ drivers/hid/amd-sfh-hid/amdsfh_hid.h          |  68 ++
+ drivers/hid/amd-sfh-hid/amdsfh_hid_client.c   | 244 +++++++
+ .../hid_descriptor/amd_sfh_hid_descriptor.c   | 226 ++++++
+ .../hid_descriptor/amd_sfh_hid_descriptor.h   | 121 ++++
+ .../amd_sfh_hid_report_descriptor.h           | 645 ++++++++++++++++++
+ 14 files changed, 1927 insertions(+)
+ create mode 100644 Documentation/hid/amd-sfh-hid.rst
+ create mode 100644 drivers/hid/amd-sfh-hid/Kconfig
+ create mode 100644 drivers/hid/amd-sfh-hid/Makefile
+ create mode 100644 drivers/hid/amd-sfh-hid/amd_mp2_pcie.c
+ create mode 100644 drivers/hid/amd-sfh-hid/amd_mp2_pcie.h
+ create mode 100644 drivers/hid/amd-sfh-hid/amdsfh_hid.c
+ create mode 100644 drivers/hid/amd-sfh-hid/amdsfh_hid.h
+ create mode 100644 drivers/hid/amd-sfh-hid/amdsfh_hid_client.c
+ create mode 100644 drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_descriptor.c
+ create mode 100644 drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_descriptor.h
+ create mode 100644 drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_report_descriptor.h
 
--Doug
+-- 
+2.25.1
+
