@@ -2,108 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BEB240316
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 10:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378CB24031E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 10:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbgHJIB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 04:01:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:53928 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725846AbgHJIB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 04:01:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A2FF1FB;
-        Mon, 10 Aug 2020 01:01:55 -0700 (PDT)
-Received: from bogus (unknown [10.37.12.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8976E3F7BB;
-        Mon, 10 Aug 2020 01:01:53 -0700 (PDT)
-Date:   Mon, 10 Aug 2020 09:01:46 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 2/2] dt-bindings: cpufreq: Document Krait CPU
- Cache scaling
-Message-ID: <20200810080146.GA31434@bogus>
-References: <20200807234914.7341-1-ansuelsmth@gmail.com>
- <20200807234914.7341-3-ansuelsmth@gmail.com>
+        id S1726511AbgHJIDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 04:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725846AbgHJIDC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 04:03:02 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC83C061756;
+        Mon, 10 Aug 2020 01:03:02 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id f10so4356801plj.8;
+        Mon, 10 Aug 2020 01:03:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EIVYbfl60/LCAXTYgKZTMLflQoCrjmA+x5UQf4DHC8U=;
+        b=BLFDPlRaEIp2bEVswqI1V3rY6FhRvyvhrKzRCgp8XtqofWcIO+R2xg8xsxH+g2ewCL
+         rKZodlVz6vEJ7jlUQlvTofVSMkNZbEA2ofzmZ3Ll51KfOTeZiFe05PYW7MLdHw6hegtL
+         rxNbcrLM8whucUuOnBpyL91evVA3dVoD9m2ZX2Up7xDYXIxhnUaip/iP3x8LFfm9+he/
+         LSEPg3VY2l/QFnbByOpMMZoPEPResMdy6KsbmIVNE2HHBDDMBLllUuZnvn4c5AQjGgY4
+         9Om+TeqtZnUgAeaRCIX3vxbJR8Jbq45fYYcREg5j3DGJ0cSHEUJGr+YdBHyMl5AIBY5E
+         nEaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EIVYbfl60/LCAXTYgKZTMLflQoCrjmA+x5UQf4DHC8U=;
+        b=tvES0O1BfZT5pDr/3/k2ynTMYbwwnl9k02PRazNFak+OMGxpHzwB7z7P8N5TLGIpZ1
+         Rm5TDDo6swmd2XpCJohFFLTGXX/c6V5K+aBZhh3oZ3w1y7iWdozyhrI84/StGwBkwojq
+         VNeFhCbdKy8Fw6aOJaJzWFbFUybLvD71oJjNtudMZVII3czkHBoUuGcPEnHpSlYAWGCa
+         fwyvVd9NxpnBWDbzgMSk9ELANqVdZdONnBwBioPvVhor9FZBdm9JahFRFSfZxJTih/4P
+         OD/1dIbDRe9984Klv9x2gEN2wLk4aKjQvy+O21ywm2Hw8LoxH1JCW+5NFPZF3+Ge6zto
+         0qow==
+X-Gm-Message-State: AOAM531yfB1xKFn013vqTQZWY+K3YJHqepLSHgdz283097+CVJgmsJp5
+        7Ry1sP66KxRap74jI6mwcQdF6WfEz+be2viIcWTi97f4kdLi5A==
+X-Google-Smtp-Source: ABdhPJwHVCVP7tW6XE3VLpw262gbkqCVMj2TlQmrMSM9cSxkzFlBa9Yn9IC/QE5FWG2bR7VFa1pw8Jie3rkVmrEHBQo=
+X-Received: by 2002:a17:902:8491:: with SMTP id c17mr22749650plo.262.1597046581567;
+ Mon, 10 Aug 2020 01:03:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200807234914.7341-3-ansuelsmth@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200809155936.16898-1-trix@redhat.com>
+In-Reply-To: <20200809155936.16898-1-trix@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 10 Aug 2020 11:02:45 +0300
+Message-ID: <CAHp75VdEBjxYS_4g2j=ofjFWuGyTK5Me=9mMNcy5ienUUs67Ag@mail.gmail.com>
+Subject: Re: [PATCH] iio: imu: inv_mpu6050: check for temp_fifo_enable
+To:     trix@redhat.com
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 08, 2020 at 01:49:12AM +0200, Ansuel Smith wrote:
-> Document dedicated Krait CPU Cache Scaling driver.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+On Sun, Aug 9, 2020 at 7:00 PM <trix@redhat.com> wrote:
+>
+> From: Tom Rix <trix@redhat.com>
+>
+> clang static analysis reports this problem
+>
+> inv_mpu_ring.c:181:18: warning: Division by zero
+>         nb = fifo_count / bytes_per_datum;
+>              ~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+>
+> This is a false positive.
+> Dividing by 0 is protected by this check
+>
+>         if (!(st->chip_config.accl_fifo_enable |
+>                 st->chip_config.gyro_fifo_enable |
+>                 st->chip_config.magn_fifo_enable))
+>                 goto end_session;
+>         bytes_per_datum = 0;
+>
+> But there is another fifo, temp_fifo
+>
+>         if (st->chip_config.temp_fifo_enable)
+>                 bytes_per_datum += INV_MPU6050_BYTES_PER_TEMP_SENSOR;
+>
+> Which would be skipped if it was the only enabled fifo.
+> So add to the check.
+>
+
+> Fixes: 2e4c0a5e2576 ("iio: imu: inv_mpu6050: add fifo temperature data support")
+>
+> Signed-off-by: Tom Rix <trix@redhat.com>
+
+There shouldn't be a blank line in between.
+
+Other than that,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+
+
 > ---
->  .../bindings/cpufreq/krait-cache-scale.yaml   | 92 +++++++++++++++++++
->  1 file changed, 92 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml b/Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml
-> new file mode 100644
-> index 000000000000..f10b1f386a99
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/cpufreq/krait-cache-scale.yaml
-> @@ -0,0 +1,92 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/cpufreq/krait-cache-scale.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Krait Cpu Cache Frequency Scaling dedicated driver
-> +
-> +maintainers:
-> +  - Ansuel Smith <ansuelsmth@gmail.com>
-> +
-> +description: |
-> +  This Scale the Krait CPU Cache Frequency and optionally voltage
-> +  when the Cpu Frequency is changed (using the cpufreq notifier).
-> +
-> +  Cache is scaled with the max frequency across all core and the cache
-> +  frequency will scale based on the configured threshold in the dts.
-> +
-> +  The cache is hardcoded to 3 frequency bin, idle, nominal and high.
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,krait-cache
-> +
+>  drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c b/drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c
+> index b533fa2dad0a..5240a400dcb4 100644
+> --- a/drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c
+> +++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c
+> @@ -141,6 +141,7 @@ irqreturn_t inv_mpu6050_read_fifo(int irq, void *p)
+>
+>         if (!(st->chip_config.accl_fifo_enable |
+>                 st->chip_config.gyro_fifo_enable |
+> +               st->chip_config.temp_fifo_enable |
+>                 st->chip_config.magn_fifo_enable))
+>                 goto end_session;
+>         bytes_per_datum = 0;
+> --
+> 2.18.1
+>
 
-How does this fit in the standard cache hierarchy nodes ? Extend the
-example to cover that.
-
-> +  clocks:
-> +    description: Phandle to the L2 CPU clock
-> +
-> +  clock-names:
-> +    const: "l2"
-> +
-> +  voltage-tolerance:
-> +    description: Same voltage tollerance of the Krait CPU
-> +
-> +  l2-rates:
-> +    description: |
-> +      Frequency the L2 cache will be scaled at.
-> +      Value is in Hz.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    items:
-> +      - description: idle
-> +      - description: nominal
-> +      - description: high
-> +
-
-Why can't you re-use the standard OPP v2 bindings ?
 
 --
-Regards,
-Sudeep
+With Best Regards,
+Andy Shevchenko
