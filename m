@@ -2,93 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFE724073C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7322A24073F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgHJOIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 10:08:02 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33172 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726959AbgHJOIA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 10:08:00 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1k58Sz-0006s4-Sh; Mon, 10 Aug 2020 14:07:58 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     mathias.nyman@intel.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org (open list:USB XHCI DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] xhci: Do warm-reset when both CAS and XDEV_RESUME are set
-Date:   Mon, 10 Aug 2020 22:07:53 +0800
-Message-Id: <20200810140753.6639-1-kai.heng.feng@canonical.com>
+        id S1726968AbgHJOKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 10:10:55 -0400
+Received: from mga04.intel.com ([192.55.52.120]:26993 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726814AbgHJOKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 10:10:54 -0400
+IronPort-SDR: CPPCG61qqBDgzRpQpjBem41k0k/9sYzaMPw5VkRCD3x+NrFVnVookMO4wXBBU8Kg+HDnFAbRT6
+ 1bEdQWAEumOQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9708"; a="150972010"
+X-IronPort-AV: E=Sophos;i="5.75,457,1589266800"; 
+   d="scan'208";a="150972010"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2020 07:10:52 -0700
+IronPort-SDR: cOSmziu7AJHV7CDP+4ORH1JJP+n7zflvx1lxc/WXEoB1qYJamMwjpfvxMfhInwRmjB/4V+1bEF
+ cPlrTvThb2zQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,457,1589266800"; 
+   d="scan'208";a="494804839"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.73])
+  by fmsmga005.fm.intel.com with ESMTP; 10 Aug 2020 07:10:50 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH] scsi: ufs-pci: Add quirk for broken auto-hibernate for Intel EHL
+Date:   Mon, 10 Aug 2020 17:10:24 +0300
+Message-Id: <20200810141024.28859-1-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes re-plugging a USB device during system sleep renders the device
-useless:
-[  173.418345] xhci_hcd 0000:00:14.0: Get port status 2-4 read: 0x14203e2, return 0x10262
-...
-[  176.496485] usb 2-4: Waited 2000ms for CONNECT
-[  176.496781] usb usb2-port4: status 0000.0262 after resume, -19
-[  176.497103] usb 2-4: can't resume, status -19
-[  176.497438] usb usb2-port4: logical disconnect
+Intel EHL UFS host controller advertises auto-hibernate capability but it
+does not work correctly. Add a quirk for that.
 
-Because PLS equals to XDEV_RESUME, xHCI driver reports U3 to usbcore,
-despite of CAS bit is flagged.
-
-So proritize CAS over XDEV_RESUME to let usbcore handle warm-reset for
-the port.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: 8c09d75276971 ("scsi: ufshdc-pci: Add Intel PCI IDs for EHL")
 ---
- drivers/usb/host/xhci-hub.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/scsi/ufs/ufshcd-pci.c | 16 ++++++++++++++--
+ drivers/scsi/ufs/ufshcd.h     |  9 ++++++++-
+ 2 files changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
-index c3554e37e09f..4e14e164cb68 100644
---- a/drivers/usb/host/xhci-hub.c
-+++ b/drivers/usb/host/xhci-hub.c
-@@ -740,15 +740,6 @@ static void xhci_hub_report_usb3_link_state(struct xhci_hcd *xhci,
- {
- 	u32 pls = status_reg & PORT_PLS_MASK;
+diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
+index f407b13883ac..5a95a7bfbab0 100644
+--- a/drivers/scsi/ufs/ufshcd-pci.c
++++ b/drivers/scsi/ufs/ufshcd-pci.c
+@@ -44,11 +44,23 @@ static int ufs_intel_link_startup_notify(struct ufs_hba *hba,
+ 	return err;
+ }
  
--	/* resume state is a xHCI internal state.
--	 * Do not report it to usb core, instead, pretend to be U3,
--	 * thus usb core knows it's not ready for transfer
--	 */
--	if (pls == XDEV_RESUME) {
--		*status |= USB_SS_PORT_LS_U3;
--		return;
--	}
--
- 	/* When the CAS bit is set then warm reset
- 	 * should be performed on port
- 	 */
-@@ -770,6 +761,16 @@ static void xhci_hub_report_usb3_link_state(struct xhci_hcd *xhci,
- 		 */
- 		pls |= USB_PORT_STAT_CONNECTION;
- 	} else {
-+		/*
-+		 * Resume state is an xHCI internal state.  Do not report it to
-+		 * usb core, instead, pretend to be U3, thus usb core knows
-+		 * it's not ready for transfer.
-+		 */
-+		if (pls == XDEV_RESUME) {
-+			*status |= USB_SS_PORT_LS_U3;
-+			return;
-+		}
++static int ufs_intel_ehl_init(struct ufs_hba *hba)
++{
++	hba->quirks |= UFSHCD_QUIRK_BROKEN_AUTO_HIBERN8;
++	return 0;
++}
 +
- 		/*
- 		 * If CAS bit isn't set but the Port is already at
- 		 * Compliance Mode, fake a connection so the USB core
+ static struct ufs_hba_variant_ops ufs_intel_cnl_hba_vops = {
+ 	.name                   = "intel-pci",
+ 	.link_startup_notify	= ufs_intel_link_startup_notify,
+ };
+ 
++static struct ufs_hba_variant_ops ufs_intel_ehl_hba_vops = {
++	.name                   = "intel-pci",
++	.init			= ufs_intel_ehl_init,
++	.link_startup_notify	= ufs_intel_link_startup_notify,
++};
++
+ #ifdef CONFIG_PM_SLEEP
+ /**
+  * ufshcd_pci_suspend - suspend power management function
+@@ -177,8 +189,8 @@ static const struct dev_pm_ops ufshcd_pci_pm_ops = {
+ static const struct pci_device_id ufshcd_pci_tbl[] = {
+ 	{ PCI_VENDOR_ID_SAMSUNG, 0xC00C, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 },
+ 	{ PCI_VDEVICE(INTEL, 0x9DFA), (kernel_ulong_t)&ufs_intel_cnl_hba_vops },
+-	{ PCI_VDEVICE(INTEL, 0x4B41), (kernel_ulong_t)&ufs_intel_cnl_hba_vops },
+-	{ PCI_VDEVICE(INTEL, 0x4B43), (kernel_ulong_t)&ufs_intel_cnl_hba_vops },
++	{ PCI_VDEVICE(INTEL, 0x4B41), (kernel_ulong_t)&ufs_intel_ehl_hba_vops },
++	{ PCI_VDEVICE(INTEL, 0x4B43), (kernel_ulong_t)&ufs_intel_ehl_hba_vops },
+ 	{ }	/* terminate list */
+ };
+ 
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index b2ef18f1b746..87eb0794e239 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -520,6 +520,12 @@ enum ufshcd_quirks {
+ 	 * OCS FATAL ERROR with device error through sense data
+ 	 */
+ 	UFSHCD_QUIRK_BROKEN_OCS_FATAL_ERROR		= 1 << 10,
++
++	/*
++	 * This quirk needs to be enabled if the host controller has
++	 * auto-hibernate capability but it doesn't work.
++	 */
++	UFSHCD_QUIRK_BROKEN_AUTO_HIBERN8		= 1 << 11,
+ };
+ 
+ enum ufshcd_caps {
+@@ -803,7 +809,8 @@ return true;
+ 
+ static inline bool ufshcd_is_auto_hibern8_supported(struct ufs_hba *hba)
+ {
+-	return (hba->capabilities & MASK_AUTO_HIBERN8_SUPPORT);
++	return (hba->capabilities & MASK_AUTO_HIBERN8_SUPPORT) &&
++	        !(hba->quirks & UFSHCD_QUIRK_BROKEN_AUTO_HIBERN8);
+ }
+ 
+ static inline bool ufshcd_is_auto_hibern8_enabled(struct ufs_hba *hba)
 -- 
 2.17.1
 
