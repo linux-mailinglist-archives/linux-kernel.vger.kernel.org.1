@@ -2,144 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534B024052C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 13:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DEC240552
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 13:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgHJLTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 07:19:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726033AbgHJLTj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 07:19:39 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31C6C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 04:19:38 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id n129so2244848qkd.6
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 04:19:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=jBoqTcJjXqs5aO9SnK52GQyuo0v59XIXZ4pSXxs8r7w=;
-        b=AC8ZVjcVv/L1gU8pXCKrOqaZ6vVq6XYgBjH2Hnm+JxbKrX1w5Fuuq8tGRaPTmcrs/f
-         mJIHbtSmH/nnaQMZS4xirhZfVsoXp5JvBB21U5dnsFG9ZvZTPC38v77lG6WG92amYQGK
-         yYE4WLzofc8nU/u3+NcZZLV+J7FAU2IjheLHFddS9jMSJqzabuU1T7hSyVoiT1+2ljAu
-         54004XHqK+k/qXzk487itILNgkbds1WB/yUrp5q6w9OpnK/rUe1AJYkaY0PDQ3EZBybm
-         /2lxTwtsKaKphX0xEVrMryVTz//L94l9ZRi2id7gCcyoPX8zF5wwyB62zfkgJ+toO/w4
-         PkDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=jBoqTcJjXqs5aO9SnK52GQyuo0v59XIXZ4pSXxs8r7w=;
-        b=g96h7uwKOJLly74Bj+sg195/H7e+bQ6b18o6CRjdu0neoE4jAdewlCyxLkaX47yeh9
-         d+wapDSSjpuUUwj4sI4ugC+jSD1FRN7eK6OvSXj5aZRdaRrDUs82FNwDO2Qi49lnwyYj
-         8MOCi2mPXO764f7pHtiv227NLPYRL0zQqu4PEhv1Bp6ZMaWqCobz+XGVSobeftd14Dn9
-         1GBAqugvLl7H21/GIPWmMvPYuJ6gIhDN8hlSdarNkYES7bKPu1OKQEGOnm+rQAP29gPX
-         4H7WNvZMdPN2dA4eiwOwnnyK21ka4GLPVWSa+pPSUzsozlLEFoKdiunFcSYznAFS0pa/
-         hBEQ==
-X-Gm-Message-State: AOAM5333oWp0XbwBvH/L5tNNP32yJdNTZoeW9z1QS6kby3DnQVx21nrv
-        8CKLPn06xPo1fhOIl8KpRU1culSsPvgdzQ==
-X-Google-Smtp-Source: ABdhPJxbYWJL54iYtvN7kseO1/qs8NUOF49R1djsu38CnnLAFIRAGsxnqDfsY9uF6MEN5J7f/NaM2w==
-X-Received: by 2002:a05:620a:142:: with SMTP id e2mr25276476qkn.418.1597058378182;
-        Mon, 10 Aug 2020 04:19:38 -0700 (PDT)
-Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id 78sm13980983qke.81.2020.08.10.04.19.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Aug 2020 04:19:36 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Qian Cai <cai@lca.pw>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 0/5] kasan: add workqueue and timer stack for generic KASAN
-Date:   Mon, 10 Aug 2020 07:19:35 -0400
-Message-Id: <B873B364-FF03-4819-8F9C-79F3C4EF47CE@lca.pw>
-References: <20200810072115.429-1-walter-zh.wu@mediatek.com>
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        linux-mediatek@lists.infradead.org
-In-Reply-To: <20200810072115.429-1-walter-zh.wu@mediatek.com>
-To:     Walter Wu <walter-zh.wu@mediatek.com>
-X-Mailer: iPhone Mail (17F80)
+        id S1726678AbgHJLZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 07:25:11 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:39380 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726542AbgHJLVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 07:21:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597058501; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=wCH2n0Q7ydePXVwUlLWJAGuuKVfyJIQu6/ufchdgTHs=; b=BKII8mKWyDhHaFXhE/kCsEgwlMHO+EZEsujz6Euy5H5QpjCoZhj4DK2IezW4CmCiTphjISIf
+ ttgQNpmVTfbSrfgJSGGjkvBF99Lp9q0z1CS/RZUs4qTZsxcItQtTTsgs33hnlV0pc+FimkwW
+ MKujo3frpOoxJrHhqOPwlMyiVtM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n17.prod.us-east-1.postgun.com with SMTP id
+ 5f312daed78a2e58335e0987 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 10 Aug 2020 11:21:18
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A7A78C43395; Mon, 10 Aug 2020 11:21:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3FCB3C433C6;
+        Mon, 10 Aug 2020 11:21:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3FCB3C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mkshah@codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     bjorn.andersson@linaro.org, maz@kernel.org,
+        linus.walleij@linaro.org, swboyd@chromium.org,
+        evgreen@chromium.org, mka@chromium.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, agross@kernel.org, tglx@linutronix.de,
+        jason@lakedaemon.net, dianders@chromium.org, rnayak@codeaurora.org,
+        ilina@codeaurora.org, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+Subject: [PATCH v4 0/7] irqchip: qcom: pdc: Introduce irq_set_wake call
+Date:   Mon, 10 Aug 2020 16:50:53 +0530
+Message-Id: <1597058460-16211-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes in v4:
+- Drop "Remove irq_disable callback from msmgpio irqchip" patch from v3
+- Introduce irq_suspend_one() and irq_resume_one() callbacks
+- Use the new callbacks to unmask wake interrupts during suspend
+- Reset only pdc interrupts that are mapped in DTSI
 
+Changes in v3:
+- Drop gpiolib change (v2 patch 1) since its already in linux-next
+- Add Acked-by Linus Walleij for v2 patch 2 and v2 patch 3.
+- Address Stephen's comment to on v2 patch 3
+- Address Stephen's comment to change variable to static on v2 patch 4.
+- Add a new change to use return value from .irq_set_wake callback
+- Add a new change to reset PDC irq enable bank during init time
 
-> On Aug 10, 2020, at 3:21 AM, Walter Wu <walter-zh.wu@mediatek.com> wrote:
->=20
-> =EF=BB=BFSyzbot reports many UAF issues for workqueue or timer, see [1] an=
-d [2].
-> In some of these access/allocation happened in process_one_work(),
-> we see the free stack is useless in KASAN report, it doesn't help
-> programmers to solve UAF on workqueue. The same may stand for times.
->=20
-> This patchset improves KASAN reports by making them to have workqueue
-> queueing stack and timer queueing stack information. It is useful for
-> programmers to solve use-after-free or double-free memory issue.
->=20
-> Generic KASAN will record the last two workqueue and timer stacks,
-> print them in KASAN report. It is only suitable for generic KASAN.
->=20
-> In order to print the last two workqueue and timer stacks, so that
-> we add new members in struct kasan_alloc_meta.
-> - two workqueue queueing work stacks, total size is 8 bytes.
-> - two timer queueing stacks, total size is 8 bytes.
->=20
-> Orignial struct kasan_alloc_meta size is 16 bytes. After add new
-> members, then the struct kasan_alloc_meta total size is 32 bytes,
-> It is a good number of alignment. Let it get better memory consumption.
+Changes in v2:
+- Fix compiler error on gpiolib patch
 
-Getting debugging tools complicated surely is the best way to kill it. I wou=
-ld argue that it only make sense to complicate it if it is useful most of th=
-e time which I never feel or hear that is the case. This reminds me your rec=
-ent call_rcu() stacks that most of time just makes parsing the report cumber=
-some. Thus, I urge this exercise to over-engineer on special cases need to s=
-top entirely.
+This series adds support to lazy disable pdc interrupt.
 
->=20
-> [1]https://groups.google.com/g/syzkaller-bugs/search?q=3D%22use-after-free=
-%22+process_one_work
-> [2]https://groups.google.com/g/syzkaller-bugs/search?q=3D%22use-after-free=
-%22%20expire_timers
-> [3]https://bugzilla.kernel.org/show_bug.cgi?id=3D198437
->=20
-> Walter Wu (5):
-> timer: kasan: record and print timer stack
-> workqueue: kasan: record and print workqueue stack
-> lib/test_kasan.c: add timer test case
-> lib/test_kasan.c: add workqueue test case
-> kasan: update documentation for generic kasan
->=20
-> Documentation/dev-tools/kasan.rst |  4 ++--
-> include/linux/kasan.h             |  4 ++++
-> kernel/time/timer.c               |  2 ++
-> kernel/workqueue.c                |  3 +++
-> lib/test_kasan.c                  | 54 +++++++++++++++++++++++++++++++++++=
-+++++++++++++++++++
-> mm/kasan/generic.c                | 42 +++++++++++++++++++++++++++++++++++=
-+++++++
-> mm/kasan/kasan.h                  |  6 +++++-
-> mm/kasan/report.c                 | 22 ++++++++++++++++++++++
-> 8 files changed, 134 insertions(+), 3 deletions(-)
->=20
-> --=20
-> You received this message because you are subscribed to the Google Groups "=
-kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid=
-/kasan-dev/20200810072115.429-1-walter-zh.wu%40mediatek.com.
+Some drivers using gpio interrupts want to configure gpio for wakeup using
+enable_irq_wake() but during suspend entry disables irq and expects system
+to resume when interrupt occurs. In the driver resume call interrupt is
+re-enabled and removes wakeup capability using disable_irq_wake() one such
+example is cros ec driver.
+
+With [1] in documentation saying "An irq can be disabled with disable_irq()
+and still wake the system as long as the irq has wake enabled".
+
+The PDC IRQs are currently "unlazy disabled" (disable here means that it
+will be masked in PDC & GIC HW GICD_ISENABLER, the moment driver invokes
+disable_irq()) such IRQs can not wakeup from low power modes like suspend
+to RAM since the driver chosen to disable this.
+
+During suspend entry, no one re-enable/unmask in HW, even if its marked for
+wakeup.
+
+One solutions thought to address this problem was...During suspend entry at
+last point, irq chip driver re-enable/unmask IRQs in HW that are marked for
+wakeup. This was attemped in [2].
+
+This series adds alternate solution to [2] by "lazy disable" IRQs in HW.
+The genirq takes care of lazy disable in case if irqchip did not implement
+irq_disable callback. Below is high level steps on how this works out..
+
+a. During driver's disable_irq() call, IRQ will be marked disabled in SW
+b. IRQ will still be enabled(read unmasked in HW)
+c. The device then enters low power mode like suspend to RAM
+d. The HW detects unmasked IRQs and wakesup the CPU
+e. During resume after local_irq_enable() CPU goes to handle the wake IRQ
+f. Generic handler comes to know that IRQ is disabled in SW
+g. Generic handler marks IRQ as pending and now invokes mask callback
+h. IRQ gets disabled/masked in HW now
+i. When driver invokes enable_irq() the SW pending IRQ leads IRQ's handler
+j. enable_irq() will again enable/unmask in HW
+
+[1] https://www.spinics.net/lists/kernel/msg3398294.html
+[2] https://patchwork.kernel.org/patch/11466021/
+
+Douglas Anderson (4):
+  genirq: Introduce irq_suspend_one() and irq_resume_one() callbacks
+  genirq: introduce irq_suspend_parent() and irq_resume_parent()
+  pinctrl: qcom: Call our parent for irq_suspend_one / irq_resume_one
+  irqchip: qcom-pdc: Unmask wake up irqs during suspend
+
+Maulik Shah (3):
+  pinctrl: qcom: Add msmgpio irqchip flags
+  pinctrl: qcom: Use return value from irq_set_wake call
+  irqchip: qcom-pdc: Reset all pdc interrupts during init
+
+ drivers/irqchip/qcom-pdc.c         | 63 ++++++++++++++++++++++++++++++++++++--
+ drivers/pinctrl/qcom/pinctrl-msm.c | 12 +++++---
+ include/linux/irq.h                | 15 +++++++--
+ kernel/irq/chip.c                  | 44 ++++++++++++++++++++++++++
+ kernel/irq/internals.h             |  2 ++
+ kernel/irq/pm.c                    | 15 +++++++--
+ 6 files changed, 138 insertions(+), 13 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
