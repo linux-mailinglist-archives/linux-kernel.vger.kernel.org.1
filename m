@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3231241091
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A4A2410AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728856AbgHJTKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 15:10:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36994 "EHLO mail.kernel.org"
+        id S1729320AbgHJTb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 15:31:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728747AbgHJTJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 15:09:59 -0400
+        id S1728779AbgHJTKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 15:10:02 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7881A22B49;
-        Mon, 10 Aug 2020 19:09:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D7B7B20885;
+        Mon, 10 Aug 2020 19:10:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597086598;
-        bh=WjVelzmhMMwyehM7ehdWPo305YSvnE48zEuooK9dnmU=;
+        s=default; t=1597086601;
+        bh=IHXnv5gZCelNCtUHzOcPZ5aYEKPQvdmbdCnL6d6/pbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JhYjMwSss4+sbLzaE66mhoIbg9OXpZT3uICeO0EWJ46R9HXaHExXZOlfbRL/WWfpK
-         a597gdr1CKvmDm+ZGPzefdtdvGYjM6eQe3X8piY2Rm8Bs8NW17e9YFmflWz7SniPnE
-         XVYRujlB3fj7wx7MSRBWOrLsq1NA1lzq8t1bYM0M=
+        b=To5PiDSoqwUPplyUfvXLqsLxSgD2cnbls0noEai4mIWBz7PEAOVGdCk0acv1ox5to
+         JdrRMMVfV1JEe8Knlzx2lb1+NWFQDkW5zTjvw56OBRiACkQ8+Mk7cRlj662wco30a3
+         FcDEcN+kVEsu5OrImbEaQq1BXvVc1VEfgYSmV5FI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Prasanna Kerekoppa <prasanna.kerekoppa@cypress.com>,
-        Chi-hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+Cc:     Armas Spann <zappel@retarded.farm>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 43/64] brcmfmac: To fix Bss Info flag definition Bug
-Date:   Mon, 10 Aug 2020 15:08:38 -0400
-Message-Id: <20200810190859.3793319-43-sashal@kernel.org>
+        acpi4asus-user@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 45/64] platform/x86: asus-nb-wmi: add support for ASUS ROG Zephyrus G14 and G15
+Date:   Mon, 10 Aug 2020 15:08:40 -0400
+Message-Id: <20200810190859.3793319-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200810190859.3793319-1-sashal@kernel.org>
 References: <20200810190859.3793319-1-sashal@kernel.org>
@@ -48,37 +45,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prasanna Kerekoppa <prasanna.kerekoppa@cypress.com>
+From: Armas Spann <zappel@retarded.farm>
 
-[ Upstream commit fa3266541b13f390eb35bdbc38ff4a03368be004 ]
+[ Upstream commit 13bceda68fb9ef388ad40d355ab8d03ee64d14c2 ]
 
-Bss info flag definition need to be fixed from 0x2 to 0x4
-This flag is for rssi info received on channel.
-All Firmware branches defined as 0x4 and this is bug in brcmfmac.
+Add device support for the new ASUS ROG Zephyrus G14 (GA401I) and
+G15 (GA502I) series.
 
-Signed-off-by: Prasanna Kerekoppa <prasanna.kerekoppa@cypress.com>
-Signed-off-by: Chi-hsien Lin <chi-hsien.lin@cypress.com>
-Signed-off-by: Wright Feng <wright.feng@cypress.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200604071835.3842-6-wright.feng@cypress.com
+This is accomplished by two new quirk entries (one per each series),
+as well as all current available G401I/G502I DMI_PRODUCT_NAMEs to match
+the corresponding devices.
+
+Signed-off-by: Armas Spann <zappel@retarded.farm>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/platform/x86/asus-nb-wmi.c | 82 ++++++++++++++++++++++++++++++
+ 1 file changed, 82 insertions(+)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-index de0ef1b545c4f..2e31cc10c1954 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-@@ -19,7 +19,7 @@
- #define BRCMF_ARP_OL_PEER_AUTO_REPLY	0x00000008
+diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
+index 8c4d00482ef06..6c42f73c1dfd3 100644
+--- a/drivers/platform/x86/asus-nb-wmi.c
++++ b/drivers/platform/x86/asus-nb-wmi.c
+@@ -110,6 +110,16 @@ static struct quirk_entry quirk_asus_forceals = {
+ 	.wmi_force_als_set = true,
+ };
  
- #define	BRCMF_BSS_INFO_VERSION	109 /* curr ver of brcmf_bss_info_le struct */
--#define BRCMF_BSS_RSSI_ON_CHANNEL	0x0002
-+#define BRCMF_BSS_RSSI_ON_CHANNEL	0x0004
++static struct quirk_entry quirk_asus_ga401i = {
++	.wmi_backlight_power = true,
++	.wmi_backlight_set_devstate = true,
++};
++
++static struct quirk_entry quirk_asus_ga502i = {
++	.wmi_backlight_power = true,
++	.wmi_backlight_set_devstate = true,
++};
++
+ static int dmi_matched(const struct dmi_system_id *dmi)
+ {
+ 	pr_info("Identified laptop model '%s'\n", dmi->ident);
+@@ -411,6 +421,78 @@ static const struct dmi_system_id asus_quirks[] = {
+ 		},
+ 		.driver_data = &quirk_asus_forceals,
+ 	},
++	{
++		.callback = dmi_matched,
++		.ident = "ASUSTeK COMPUTER INC. GA401IH",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IH"),
++		},
++		.driver_data = &quirk_asus_ga401i,
++	},
++	{
++		.callback = dmi_matched,
++		.ident = "ASUSTeK COMPUTER INC. GA401II",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "GA401II"),
++		},
++		.driver_data = &quirk_asus_ga401i,
++	},
++	{
++		.callback = dmi_matched,
++		.ident = "ASUSTeK COMPUTER INC. GA401IU",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IU"),
++		},
++		.driver_data = &quirk_asus_ga401i,
++	},
++	{
++		.callback = dmi_matched,
++		.ident = "ASUSTeK COMPUTER INC. GA401IV",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IV"),
++		},
++		.driver_data = &quirk_asus_ga401i,
++	},
++	{
++		.callback = dmi_matched,
++		.ident = "ASUSTeK COMPUTER INC. GA401IVC",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IVC"),
++		},
++		.driver_data = &quirk_asus_ga401i,
++	},
++		{
++		.callback = dmi_matched,
++		.ident = "ASUSTeK COMPUTER INC. GA502II",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "GA502II"),
++		},
++		.driver_data = &quirk_asus_ga502i,
++	},
++	{
++		.callback = dmi_matched,
++		.ident = "ASUSTeK COMPUTER INC. GA502IU",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "GA502IU"),
++		},
++		.driver_data = &quirk_asus_ga502i,
++	},
++	{
++		.callback = dmi_matched,
++		.ident = "ASUSTeK COMPUTER INC. GA502IV",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "GA502IV"),
++		},
++		.driver_data = &quirk_asus_ga502i,
++	},
+ 	{},
+ };
  
- #define BRCMF_STA_BRCM			0x00000001	/* Running a Broadcom driver */
- #define BRCMF_STA_WME			0x00000002	/* WMM association */
 -- 
 2.25.1
 
