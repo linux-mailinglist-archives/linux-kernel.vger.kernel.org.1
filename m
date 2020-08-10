@@ -2,103 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D19240CF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 20:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1058F240CF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 20:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728144AbgHJS1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 14:27:37 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:56814 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728052AbgHJS1g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 14:27:36 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id CA06161D8ABB;
-        Mon, 10 Aug 2020 20:27:33 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id zb-VI0CWQOcx; Mon, 10 Aug 2020 20:27:33 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 48A7261D8ABC;
-        Mon, 10 Aug 2020 20:27:33 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Nb3mRZ3V-BmY; Mon, 10 Aug 2020 20:27:33 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id F347161D8ABB;
-        Mon, 10 Aug 2020 20:27:32 +0200 (CEST)
-Date:   Mon, 10 Aug 2020 20:27:32 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>
-Message-ID: <1956790813.229084.1597084052878.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] JFFS2, UBI and UBIFS changes for 5.9-rc1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Index: mNdKbqCSj6uMvkVJNBiccwZGdeEXuw==
-Thread-Topic: JFFS2, UBI and UBIFS changes for 5.9-rc1
+        id S1728158AbgHJS3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 14:29:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727872AbgHJS3C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 14:29:02 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BC0F207FF;
+        Mon, 10 Aug 2020 18:29:02 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1k5CXc-0071W2-W2; Mon, 10 Aug 2020 14:29:00 -0400
+Message-ID: <20200810182836.746909615@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Mon, 10 Aug 2020 14:28:36 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "John Warthog9 Hawley" <warthog9@kernel.org>
+Subject: [for-linus][PATCH 0/2] ktest: A couple more updates before asking for a pull request
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-ktest.git
+for-next
 
-The following changes since commit 92ed301919932f777713b9172e525674157e983d:
+Head SHA1: ff131efff141fc679cccde28bc265f4c79cbe329
 
-  Linux 5.8-rc7 (2020-07-26 14:14:06 -0700)
 
-are available in the Git repository at:
+Colin Ian King (1):
+      ktest.pl: Fix spelling mistake "Cant" -> "Can't"
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.9-rc1
+Steven Rostedt (VMware) (1):
+      ktest.pl: Change the logic to control the size of the log file emailed
 
-for you to fetch changes up to 798b7347e4f29553db4b996393caf12f5b233daf:
-
-  jffs2: fix UAF problem (2020-08-02 23:56:13 +0200)
-
-----------------------------------------------------------------
-This pull request contains changes for JFFS2, UBI and UBIFS
-
-JFFS2:
-        - Fix for a corner case while mounting
-        - Fix for an use-after-free issue
-
-UBI:
-        - Fix for a memory load while attaching
-        - Don't produce an anchor PEB with fastmap being disabled
-
-UBIFS:
-        - Fix for orphan inode logic
-        - Spelling fixes
-        - New mount option to specify filesystem version
-
-----------------------------------------------------------------
-Martin Kaistra (1):
-      ubifs: add option to specify version for new file systems
-
-Randy Dunlap (1):
-      ubifs: misc.h: delete a duplicated word
-
-Zhe Li (2):
-      jffs2: fix jffs2 mounting failure
-      jffs2: fix UAF problem
-
-Zhihao Cheng (3):
-      ubi: fastmap: Don't produce the initial next anchor PEB when fastmap is disabled
-      ubi: fastmap: Free fastmap next anchor peb during detach
-      ubifs: Fix wrong orphan node deletion in ubifs_jnl_update|rename
-
- drivers/mtd/ubi/fastmap-wl.c |  5 +++++
- drivers/mtd/ubi/wl.c         |  3 ++-
- fs/jffs2/dir.c               |  6 +++++-
- fs/jffs2/scan.c              |  3 ++-
- fs/ubifs/journal.c           | 10 ++++++----
- fs/ubifs/misc.h              |  2 +-
- fs/ubifs/sb.c                |  5 +++--
- fs/ubifs/super.c             | 18 ++++++++++++++++++
- fs/ubifs/ubifs.h             |  1 +
- 9 files changed, 43 insertions(+), 10 deletions(-)
+----
+ tools/testing/ktest/ktest.pl | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
