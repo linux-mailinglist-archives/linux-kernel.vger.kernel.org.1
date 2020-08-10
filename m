@@ -2,124 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1E22404E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 12:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75502404F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 12:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgHJKlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 06:41:24 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:62218 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726141AbgHJKlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 06:41:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597056081; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=bOfrWCltEVI8DM/7pKEvaC9vrWo0+jptX7+Cco4h2KM=;
- b=UgBxCujiKv66KOoYmW5Xr7nJ8xwtzXOP3E+hT+A8NoYVyIsyYwaZO88G0X0s/8OPwbc8fB4R
- 9mlIbSRNQZq5YgRA+KfN0i5NmKyksPgvKVxocvDr16ipjyAjjnZd+H7BqCjWNnnt/vsAcuiX
- w+G3R6OZ9FAF28MsXvjRP7quU3o=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n12.prod.us-west-2.postgun.com with SMTP id
- 5f31243d1e4d3989d43ac09e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 10 Aug 2020 10:41:01
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 36E27C433CA; Mon, 10 Aug 2020 10:41:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 80FD0C433C6;
-        Mon, 10 Aug 2020 10:41:00 +0000 (UTC)
+        id S1726547AbgHJK7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 06:59:01 -0400
+Received: from mail.netline.ch ([148.251.143.178]:41850 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726173AbgHJK7B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 06:59:01 -0400
+X-Greylist: delayed 489 seconds by postgrey-1.27 at vger.kernel.org; Mon, 10 Aug 2020 06:58:59 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id A582E2A6042;
+        Mon, 10 Aug 2020 12:50:48 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id Mpbg-h6jHzk1; Mon, 10 Aug 2020 12:50:48 +0200 (CEST)
+Received: from thor (212.174.63.188.dynamic.wline.res.cust.swisscom.ch [188.63.174.212])
+        by netline-mail3.netline.ch (Postfix) with ESMTPSA id 9C3F02A6016;
+        Mon, 10 Aug 2020 12:50:46 +0200 (CEST)
+Received: from [::1]
+        by thor with esmtp (Exim 4.94)
+        (envelope-from <michel@daenzer.net>)
+        id 1k55O9-000Uyj-S3; Mon, 10 Aug 2020 12:50:45 +0200
+Subject: Re: [PATCH] gpu/drm: Remove TTM_PL_FLAG_WC of VRAM to fix
+ writecombine issue for Loongson64
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <1596871502-3432-1-git-send-email-yangtiezhu@loongson.cn>
+ <20200808134147.GA5772@alpha.franken.de>
+ <b7b16df1-d661-d59a-005b-da594ce9fc95@flygoat.com>
+ <38857c24-25c4-cff3-569e-5bcb773bfae6@amd.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Message-ID: <2f3fd325-8093-98e7-5bc8-75490258baac@daenzer.net>
+Date:   Mon, 10 Aug 2020 12:50:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 10 Aug 2020 16:11:00 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
-        viresh.kumar@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [PATCH] opp: Fix dev_pm_opp_set_rate() to not return early
-In-Reply-To: <1597043179-17903-1-git-send-email-rnayak@codeaurora.org>
-References: <1597043179-17903-1-git-send-email-rnayak@codeaurora.org>
-Message-ID: <6b35716fbf56b2a37ed2a7e4e5bbec87@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <38857c24-25c4-cff3-569e-5bcb773bfae6@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-10 12:36, Rajendra Nayak wrote:
-> dev_pm_opp_set_rate() can now be called with freq = 0 inorder
-> to either drop performance or bandwidth votes or to disable
-> regulators on platforms which support them.
-> In such cases, a subsequent call to dev_pm_opp_set_rate() with
-> the same frequency ends up returning early because 'old_freq == freq'
-> Instead make it fall through and put back the dropped performance
-> and bandwidth votes and/or enable back the regulators.
+On 2020-08-09 2:13 p.m., Christian König wrote:
+> Am 08.08.20 um 15:50 schrieb Jiaxun Yang:
+>> 在 2020/8/8 下午9:41, Thomas Bogendoerfer 写道:
+>>> On Sat, Aug 08, 2020 at 03:25:02PM +0800, Tiezhu Yang wrote:
+>>>> Loongson processors have a writecombine issue that maybe failed to
+>>>> write back framebuffer used with ATI Radeon or AMD GPU at times,
+>>>> after commit 8a08e50cee66 ("drm: Permit video-buffers writecombine
+>>>> mapping for MIPS"), there exists some errors such as blurred screen
+>>>> and lockup, and so on.
+>>>>
+>>>> Remove the flag TTM_PL_FLAG_WC of VRAM to fix writecombine issue for
+>>>> Loongson64 to work well with ATI Radeon or AMD GPU, and it has no any
+>>>> influence on the other platforms.
+>>> well it's not my call to take or reject this patch, but I already
+>>> indicated it might be better to disable writecombine on the CPU
+>>> detection side (or do you have other devices where writecombining
+>>> works ?). Something like below will disbale it for all loongson64 CPUs.
+>>> If you now find out where it works and where it doesn't, you can even
+>>> reduce it to the required minium of affected CPUs.
+>> Hi Tiezhu, Thomas,
+>>
+>> Yes, writecombine works well on LS7A's internal GPU....
+>> And even works well with some AMD GPUs (in my case, RX550).
 > 
-> Fixes: cd7ea582 ("opp: Make dev_pm_opp_set_rate() handle freq = 0 to
-> drop performance votes")
-> Reported-by: Sajida Bhanu <sbhanu@codeaurora.org>
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> In this case the patch is a clear NAK since you haven't root caused the
+> issue and are just working around it in a very questionable manner.
 
-Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
+To be fair though, amdgpu & radeon are already disabling write-combining
+for system memory pages in 32-bit x86 kernels for similar reasons.
 
-> ---
->  drivers/opp/core.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 0c8c74a..a994f30 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -901,6 +901,9 @@ int dev_pm_opp_set_rate(struct device *dev,
-> unsigned long target_freq)
-> 
->  	/* Return early if nothing to do */
->  	if (old_freq == freq) {
-> +		if (opp_table->required_opp_tables || opp_table->regulators ||
-> +		    opp_table->paths)
-> +			goto skip_clk_only;
->  		dev_dbg(dev, "%s: old/new frequencies (%lu Hz) are same, nothing to 
-> do\n",
->  			__func__, freq);
->  		ret = 0;
-> @@ -919,6 +922,7 @@ int dev_pm_opp_set_rate(struct device *dev,
-> unsigned long target_freq)
->  		goto put_opp_table;
->  	}
-> 
-> +skip_clk_only:
->  	temp_freq = old_freq;
->  	old_opp = _find_freq_ceil(opp_table, &temp_freq);
->  	if (IS_ERR(old_opp)) {
-> @@ -954,8 +958,10 @@ int dev_pm_opp_set_rate(struct device *dev,
-> unsigned long target_freq)
->  						 IS_ERR(old_opp) ? NULL : old_opp->supplies,
->  						 opp->supplies);
->  	} else {
-> +		ret = 0;
->  		/* Only frequency scaling */
-> -		ret = _generic_set_opp_clk_only(dev, clk, freq);
-> +		if (freq != old_freq)
-> +			ret = _generic_set_opp_clk_only(dev, clk, freq);
->  	}
-> 
->  	/* Scaling down? Configure required OPPs after frequency */
 
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Earthling Michel Dänzer               |               https://redhat.com
+Libre software enthusiast             |             Mesa and X developer
