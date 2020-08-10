@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5AB240A35
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596EB240A0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728488AbgHJPZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:25:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58526 "EHLO mail.kernel.org"
+        id S1729034AbgHJPiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:38:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728472AbgHJPY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:24:57 -0400
+        id S1728619AbgHJP0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:26:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2AD021775;
-        Mon, 10 Aug 2020 15:24:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6852322B47;
+        Mon, 10 Aug 2020 15:26:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073097;
-        bh=gl2VZf/cDSSMmXY2jlPcJsO32Owg/kdwLHGKRgA07rA=;
+        s=default; t=1597073169;
+        bh=wbJkXYzP4NTlhdtfFxMAEuOaGDEharlTk8bywJATAuk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LGijGqmmJE1Ldy0qS+HecwRiXKU+ypw/rCzC5WDkJUuJI0fvO7Kje7FAZyZ9T+pzU
-         4QmDbslLoirBtGCSLm8jLBNGa5TxLdi+tFUJ28JOL5gcviEHv648LJ4jlbVWV21AtK
-         z0UWFWxYT01iGXERylbgp+xNSEDpE4TmSQEiH2O0=
+        b=MMbW2gR1w/NA6A2sLO1hT38CCe81uFnXRBu0WGk++/E8yNaBYa6Pop6+NoI5JTCkK
+         GDy6Hps6egNWzUGT57ncI9y1xOxLCCBBXRlLG2s3xaUXspedQ3rDKQmPqPCYumaHS2
+         gISex2QoxMH0Smuuk6P5Tmrn/Itm3ho/my0SeQe0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vinod Koul <vkoul@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 38/79] drm/bridge/adv7511: set the bridge type properly
-Date:   Mon, 10 Aug 2020 17:20:57 +0200
-Message-Id: <20200810151814.159951433@linuxfoundation.org>
+        stable@vger.kernel.org, Connor McAdams <conmanx360@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 11/67] ALSA: hda/ca0132 - Fix ZxR Headphone gain control get value.
+Date:   Mon, 10 Aug 2020 17:20:58 +0200
+Message-Id: <20200810151809.984317011@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
-References: <20200810151812.114485777@linuxfoundation.org>
+In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
+References: <20200810151809.438685785@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,40 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurentiu Palcu <laurentiu.palcu@nxp.com>
+From: Connor McAdams <conmanx360@gmail.com>
 
-[ Upstream commit f10761c9df96a882438faa09dcd25261281d69ca ]
+commit a00dc409de455b64e6cb2f6d40cdb8237cdb2e83 upstream.
 
-After the drm_bridge_connector_init() helper function has been added,
-the ADV driver has been changed accordingly. However, the 'type'
-field of the bridge structure was left unset, which makes the helper
-function always return -EINVAL.
+When the ZxR headphone gain control was added, the ca0132_switch_get
+function was not updated, which meant that the changes to the control
+state were not saved when entering/exiting alsamixer.
 
-Signed-off-by: Laurentiu Palcu <laurentiu.palcu@nxp.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Tested-by: Vinod Koul <vkoul@kernel.org> # tested on DragonBoard 410c
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200720124228.12552-1-laurentiu.palcu@oss.nxp.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200803002928.8638-1-conmanx360@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_ca0132.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-index 87b58c1acff4a..648eb23d07848 100644
---- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-+++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-@@ -1224,6 +1224,7 @@ static int adv7511_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -5748,6 +5748,11 @@ static int ca0132_switch_get(struct snd_
+ 		return 0;
+ 	}
  
- 	adv7511->bridge.funcs = &adv7511_bridge_funcs;
- 	adv7511->bridge.of_node = dev->of_node;
-+	adv7511->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
++	if (nid == ZXR_HEADPHONE_GAIN) {
++		*valp = spec->zxr_gain_set;
++		return 0;
++	}
++
+ 	return 0;
+ }
  
- 	drm_bridge_add(&adv7511->bridge);
- 
--- 
-2.25.1
-
 
 
