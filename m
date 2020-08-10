@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232602405AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8312405B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgHJMR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 08:17:57 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:56965 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726446AbgHJMR4 (ORCPT
+        id S1726825AbgHJMSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 08:18:40 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:41315 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726769AbgHJMSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 08:17:56 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0U5MlrY9_1597061872;
-Received: from localhost(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U5MlrY9_1597061872)
+        Mon, 10 Aug 2020 08:18:39 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0U5MbCCX_1597061873;
+Received: from localhost(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U5MbCCX_1597061873)
           by smtp.aliyun-inc.com(127.0.0.1);
           Mon, 10 Aug 2020 20:17:53 +0800
 From:   Xunlei Pang <xlpang@linux.alibaba.com>
@@ -25,9 +25,9 @@ To:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
         Xunlei Pang <xlpang@linux.alibaba.com>
 Cc:     linux-kernel@vger.kernel.org,
         "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: [PATCH v2 1/3] mm/slub: Introduce two counters for partial objects
-Date:   Mon, 10 Aug 2020 20:17:50 +0800
-Message-Id: <1597061872-58724-2-git-send-email-xlpang@linux.alibaba.com>
+Subject: [PATCH v2 2/3] mm/slub: Get rid of count_partial()
+Date:   Mon, 10 Aug 2020 20:17:51 +0800
+Message-Id: <1597061872-58724-3-git-send-email-xlpang@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1597061872-58724-1-git-send-email-xlpang@linux.alibaba.com>
 References: <1597061872-58724-1-git-send-email-xlpang@linux.alibaba.com>
@@ -36,176 +36,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The node list_lock in count_partial() spends long time iterating
-in case of large amount of partial page lists, which can cause
-thunder herd effect to the list_lock contention.
+Now the partial counters are ready, let's use them directly
+and get rid of count_partial().
 
-We have HSF RT(High-speed Service Framework Response-Time) monitors,
-the RT figures fluctuated randomly, then we deployed a tool detecting
-"irq off" and "preempt off" to dump the culprit's calltrace, capturing
-the list_lock cost nearly 100ms with irq off issued by "ss", this also
-caused network timeouts.
-
-This patch introduces two counters to maintain the actual number
-of partial objects dynamically instead of iterating the partial
-page lists with list_lock held.
-
-New counters of kmem_cache_node: partial_free_objs, partial_total_objs.
-The main operations are under list_lock in slow path, its performance
-impact should be minimal except the __slab_free() path which will be
-addressed later.
-
-Acked-by: Pekka Enberg <penberg@kernel.org>
 Co-developed-by: Wen Yang <wenyang@linux.alibaba.com>
 Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
 ---
- mm/slab.h |  2 ++
- mm/slub.c | 37 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 38 insertions(+), 1 deletion(-)
+ mm/slub.c | 57 ++++++++++++++++++++++++---------------------------------
+ 1 file changed, 24 insertions(+), 33 deletions(-)
 
-diff --git a/mm/slab.h b/mm/slab.h
-index 7e94700..c85e2fa 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -616,6 +616,8 @@ struct kmem_cache_node {
- #ifdef CONFIG_SLUB
- 	unsigned long nr_partial;
- 	struct list_head partial;
-+	atomic_long_t partial_free_objs;
-+	atomic_long_t partial_total_objs;
- #ifdef CONFIG_SLUB_DEBUG
- 	atomic_long_t nr_slabs;
- 	atomic_long_t total_objects;
 diff --git a/mm/slub.c b/mm/slub.c
-index 6589b41..6708d96 100644
+index 6708d96..25a4421 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -1775,10 +1775,24 @@ static void discard_slab(struct kmem_cache *s, struct page *page)
- /*
-  * Management of partially allocated slabs.
-  */
-+
-+static inline void
-+__update_partial_free(struct kmem_cache_node *n, long delta)
-+{
-+	atomic_long_add(delta, &n->partial_free_objs);
-+}
-+
-+static inline void
-+__update_partial_total(struct kmem_cache_node *n, long delta)
-+{
-+	atomic_long_add(delta, &n->partial_total_objs);
-+}
-+
- static inline void
- __add_partial(struct kmem_cache_node *n, struct page *page, int tail)
- {
- 	n->nr_partial++;
-+	__update_partial_total(n, page->objects);
- 	if (tail == DEACTIVATE_TO_TAIL)
- 		list_add_tail(&page->slab_list, &n->partial);
- 	else
-@@ -1798,6 +1812,7 @@ static inline void remove_partial(struct kmem_cache_node *n,
- 	lockdep_assert_held(&n->list_lock);
- 	list_del(&page->slab_list);
- 	n->nr_partial--;
-+	__update_partial_total(n, -page->objects);
+@@ -2414,11 +2414,6 @@ static inline int node_match(struct page *page, int node)
  }
  
- /*
-@@ -1842,6 +1857,7 @@ static inline void *acquire_slab(struct kmem_cache *s,
- 		return NULL;
- 
- 	remove_partial(n, page);
-+	__update_partial_free(n, -*objects);
- 	WARN_ON(!freelist);
- 	return freelist;
- }
-@@ -2174,8 +2190,11 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
- 				"unfreezing slab"))
- 		goto redo;
- 
--	if (lock)
-+	if (lock) {
-+		if (m == M_PARTIAL)
-+			__update_partial_free(n, page->objects - page->inuse);
- 		spin_unlock(&n->list_lock);
-+	}
- 
- 	if (m == M_PARTIAL)
- 		stat(s, tail);
-@@ -2241,6 +2260,7 @@ static void unfreeze_partials(struct kmem_cache *s,
- 			discard_page = page;
- 		} else {
- 			add_partial(n, page, DEACTIVATE_TO_TAIL);
-+			__update_partial_free(n, page->objects - page->inuse);
- 			stat(s, FREE_ADD_PARTIAL);
- 		}
- 	}
-@@ -2915,6 +2935,13 @@ static void __slab_free(struct kmem_cache *s, struct page *page,
- 		head, new.counters,
- 		"__slab_free"));
- 
-+	if (!was_frozen && prior) {
-+		if (n)
-+			__update_partial_free(n, cnt);
-+		else
-+			__update_partial_free(get_node(s, page_to_nid(page)), cnt);
-+	}
-+
- 	if (likely(!n)) {
- 
- 		/*
-@@ -2944,6 +2971,7 @@ static void __slab_free(struct kmem_cache *s, struct page *page,
- 	if (!kmem_cache_has_cpu_partial(s) && unlikely(!prior)) {
- 		remove_full(s, n, page);
- 		add_partial(n, page, DEACTIVATE_TO_TAIL);
-+		__update_partial_free(n, page->objects - page->inuse);
- 		stat(s, FREE_ADD_PARTIAL);
- 	}
- 	spin_unlock_irqrestore(&n->list_lock, flags);
-@@ -2955,6 +2983,7 @@ static void __slab_free(struct kmem_cache *s, struct page *page,
- 		 * Slab on the partial list.
- 		 */
- 		remove_partial(n, page);
-+		__update_partial_free(n, page->inuse - page->objects);
- 		stat(s, FREE_REMOVE_PARTIAL);
- 	} else {
- 		/* Slab must be on the full list */
-@@ -3364,6 +3393,8 @@ static inline int calculate_order(unsigned int size)
- 	n->nr_partial = 0;
- 	spin_lock_init(&n->list_lock);
- 	INIT_LIST_HEAD(&n->partial);
-+	atomic_long_set(&n->partial_free_objs, 0);
-+	atomic_long_set(&n->partial_total_objs, 0);
  #ifdef CONFIG_SLUB_DEBUG
- 	atomic_long_set(&n->nr_slabs, 0);
- 	atomic_long_set(&n->total_objects, 0);
-@@ -3437,6 +3468,7 @@ static void early_kmem_cache_node_alloc(int node)
- 	 * initialized and there is no concurrent access.
- 	 */
- 	__add_partial(n, page, DEACTIVATE_TO_HEAD);
-+	__update_partial_free(n, page->objects - page->inuse);
- }
+-static int count_free(struct page *page)
+-{
+-	return page->objects - page->inuse;
+-}
+-
+ static inline unsigned long node_nr_objs(struct kmem_cache_node *n)
+ {
+ 	return atomic_long_read(&n->total_objects);
+@@ -2426,19 +2421,27 @@ static inline unsigned long node_nr_objs(struct kmem_cache_node *n)
+ #endif /* CONFIG_SLUB_DEBUG */
  
- static void free_kmem_cache_nodes(struct kmem_cache *s)
-@@ -3747,6 +3779,7 @@ static void free_partial(struct kmem_cache *s, struct kmem_cache_node *n)
- 	list_for_each_entry_safe(page, h, &n->partial, slab_list) {
- 		if (!page->inuse) {
- 			remove_partial(n, page);
-+			__update_partial_free(n, page->objects - page->inuse);
- 			list_add(&page->slab_list, &discard);
- 		} else {
- 			list_slab_objects(s, page,
-@@ -4045,6 +4078,8 @@ int __kmem_cache_shrink(struct kmem_cache *s)
- 			if (free == page->objects) {
- 				list_move(&page->slab_list, &discard);
- 				n->nr_partial--;
-+				__update_partial_free(n, -free);
-+				__update_partial_total(n, -free);
- 			} else if (free <= SHRINK_PROMOTE_MAX)
- 				list_move(&page->slab_list, promote + free - 1);
- 		}
+ #if defined(CONFIG_SLUB_DEBUG) || defined(CONFIG_SYSFS)
+-static unsigned long count_partial(struct kmem_cache_node *n,
+-					int (*get_count)(struct page *))
+-{
+-	unsigned long flags;
+-	unsigned long x = 0;
+-	struct page *page;
++enum partial_item { PARTIAL_FREE, PARTIAL_INUSE, PARTIAL_TOTAL };
++
++static unsigned long partial_counter(struct kmem_cache_node *n,
++		enum partial_item item)
++{
++	unsigned long ret = 0;
++
++	if (item == PARTIAL_FREE) {
++		ret = atomic_long_read(&n->partial_free_objs);
++	} else if (item == PARTIAL_TOTAL) {
++		ret = atomic_long_read(&n->partial_total_objs);
++	} else if (item == PARTIAL_INUSE) {
++		ret = atomic_long_read(&n->partial_total_objs) -
++		atomic_long_read(&n->partial_free_objs);
++		if ((long)ret < 0)
++			ret = 0;
++	}
+ 
+-	spin_lock_irqsave(&n->list_lock, flags);
+-	list_for_each_entry(page, &n->partial, slab_list)
+-		x += get_count(page);
+-	spin_unlock_irqrestore(&n->list_lock, flags);
+-	return x;
++	return ret;
+ }
++
+ #endif /* CONFIG_SLUB_DEBUG || CONFIG_SYSFS */
+ 
+ static noinline void
+@@ -2468,7 +2471,7 @@ static unsigned long count_partial(struct kmem_cache_node *n,
+ 		unsigned long nr_objs;
+ 		unsigned long nr_free;
+ 
+-		nr_free  = count_partial(n, count_free);
++		nr_free  = partial_counter(n, PARTIAL_FREE);
+ 		nr_slabs = node_nr_slabs(n);
+ 		nr_objs  = node_nr_objs(n);
+ 
+@@ -4444,18 +4447,6 @@ void *__kmalloc_node_track_caller(size_t size, gfp_t gfpflags,
+ }
+ #endif
+ 
+-#ifdef CONFIG_SYSFS
+-static int count_inuse(struct page *page)
+-{
+-	return page->inuse;
+-}
+-
+-static int count_total(struct page *page)
+-{
+-	return page->objects;
+-}
+-#endif
+-
+ #ifdef CONFIG_SLUB_DEBUG
+ static void validate_slab(struct kmem_cache *s, struct page *page)
+ {
+@@ -4912,7 +4903,7 @@ static ssize_t show_slab_objects(struct kmem_cache *s,
+ 				x = atomic_long_read(&n->total_objects);
+ 			else if (flags & SO_OBJECTS)
+ 				x = atomic_long_read(&n->total_objects) -
+-					count_partial(n, count_free);
++					partial_counter(n, PARTIAL_FREE);
+ 			else
+ 				x = atomic_long_read(&n->nr_slabs);
+ 			total += x;
+@@ -4926,9 +4917,9 @@ static ssize_t show_slab_objects(struct kmem_cache *s,
+ 
+ 		for_each_kmem_cache_node(s, node, n) {
+ 			if (flags & SO_TOTAL)
+-				x = count_partial(n, count_total);
++				x = partial_counter(n, PARTIAL_TOTAL);
+ 			else if (flags & SO_OBJECTS)
+-				x = count_partial(n, count_inuse);
++				x = partial_counter(n, PARTIAL_INUSE);
+ 			else
+ 				x = n->nr_partial;
+ 			total += x;
+@@ -5961,7 +5952,7 @@ void get_slabinfo(struct kmem_cache *s, struct slabinfo *sinfo)
+ 	for_each_kmem_cache_node(s, node, n) {
+ 		nr_slabs += node_nr_slabs(n);
+ 		nr_objs += node_nr_objs(n);
+-		nr_free += count_partial(n, count_free);
++		nr_free += partial_counter(n, PARTIAL_FREE);
+ 	}
+ 
+ 	sinfo->active_objs = nr_objs - nr_free;
 -- 
 1.8.3.1
 
