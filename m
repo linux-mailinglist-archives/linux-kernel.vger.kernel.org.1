@@ -2,193 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E424240ADB
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74571240AE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 18:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgHJPzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40394 "EHLO
+        id S1727842AbgHJP7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgHJPzU (ORCPT
+        with ESMTP id S1727014AbgHJP7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:55:20 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBB8C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 08:55:20 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id bh1so5119171plb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 08:55:20 -0700 (PDT)
+        Mon, 10 Aug 2020 11:59:54 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77222C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 08:59:54 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id a65so7648493otc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 08:59:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=zhOM5a+db+03fu+9y+KxnwpweHHDcuys502DsmoxXhA=;
-        b=RvBExdkmAnkEgOU6Nk2vKZAwFQtYELi1S05QGaY2btfkBADpiYjpkJ7NP5nf0OsOa4
-         UQM/FJqfeF+8Wa8px8VUNM1HFR1xfquXIGgc1HGYIeCGWPzy35fia4JArsDV98K8vu7D
-         LvpzHFUSJ3Cr3ZdwkymRADgiY2ZI2BLDxjcMsR9UJ+Up6xwwNzh+c1qUWauE/l9KM6u6
-         LYAS2XW1wns6e7aSBI4M5yjsgixUuRivdxtxmhuxm6MqnbTcc5m0Mzm1a5QbabZgBcdV
-         vm5N9gAjWyyepf7xoba8s/OH/wop7ELxgVk/cVuJOgVVHkP7qbu0XeOPDd+pLnmo42xP
-         udRg==
+        d=linaro.org; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J5putFXdjtBiiOZjaW1jRRPwgbKFumMUrDaAe/TfxPY=;
+        b=uignxrhsl7YqL25IJPzaeQXCoDgqMrVG9f+CPe4/oYGjkrjCNccX9cxo55Q0FIZqWi
+         r8H6U36L0yuC4+zpiRiy3XA5NfVlOFKrYHhF4j4kmUwG+sgpKCzCainG9M60wqFgqvY3
+         KGAVS9udnWAAByIIrLA00VkzjQqhgPzcPjx5g5gK9ZrPn5KinNo09hTEoqMjj9qiuNML
+         YQysgdbWXfuSxDGdalQBVaYHSGYv397P3GBgXS51nuycnaAdxk/GDhsaducV9ZGj8NDM
+         ITxDUHMWnQFCKU+C0jbGmdkrvgmseHh+dsXYa86kyIMcmMaDzX3R4vKb6lb3LOOf/jn+
+         e9sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=zhOM5a+db+03fu+9y+KxnwpweHHDcuys502DsmoxXhA=;
-        b=m5bbbgnlNmkyE1YTDGF178R+DyAlSmr6MHz+hNMeSdpUwpzzJ2/l9Bw3cugH254tyZ
-         +IFObbbtVToxfIBDGIuxaz7g2FEBnXbxeCuuensAB2s2Nzxg/w7TSPHEr7xWaFhkCNON
-         768o0XwEQZCt1MIvuOJ1FvAdg//ghEyfUGtN/C/jAimsJ75gIwelLMPVPtnh80wOASMa
-         tjU8MHeNALGI3yJ2GHn8pZ+vdqj7d2eVkpdexGPqNw85s27bxS2nMBY/hegSlZ8QOmdT
-         1U4D8hzRIjEk1b1K1KYdfX8xtVbwJDHryYKjPMOotNmE68OrdZVWnTj9Xew3ZRtViHI/
-         QkeQ==
-X-Gm-Message-State: AOAM532NxX19NEfrww4NkkiL5/ANOrXjwjR3cZbyKiJ74X1yX6YrZheP
-        WMejAkXRFNsZrp4t84xBy8jayA==
-X-Google-Smtp-Source: ABdhPJzS8pMd0LP91YQq4K7gL3JBidwfv5SgjeMK+Al5ZyYEWz94BQMEK2mULY/PgMZVaibUFKaGZQ==
-X-Received: by 2002:a17:90a:4e42:: with SMTP id t2mr8373707pjl.121.1597074919593;
-        Mon, 10 Aug 2020 08:55:19 -0700 (PDT)
-Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id x22sm22145374pfn.41.2020.08.10.08.55.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Aug 2020 08:55:19 -0700 (PDT)
-Subject: Re: possible deadlock in __io_queue_deferred
-To:     syzbot <syzbot+996f91b6ec3812c48042@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-References: <00000000000035fdf505ac87b7f9@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <76cc7c43-2ebb-180d-c2c8-912972a3f258@kernel.dk>
-Date:   Mon, 10 Aug 2020 09:55:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=J5putFXdjtBiiOZjaW1jRRPwgbKFumMUrDaAe/TfxPY=;
+        b=NFAuc9EnbQvSJ+LQwXvNaPX2DJDrRdMMlSJk9KYmcSAtdoSZh1hGW2xfmswsyr3xgu
+         QUndo+kMr/i9Rbr490dFgB1Ksx5D2L5Jhj2wAkG4Qv0juji10F7Kj/CB/u+JCRgIyaTY
+         TbECjIzCJnjo1+HOOxIqEbkc3F/aagu3lXIhsC91Us8WS1aj9jzVQWQbA+hTyUT2IsKx
+         f2qE0ApAC5lKSOxyUeyYKNCqtIvCez8coFwiBIvQYTXOq8deQ10gBP0RMvRhYUx8fau7
+         3iL26MWsE9eAzB0A9IQ2mAli1LLAsNehisRPm94Vk62jNtG9HiPN6YedJ5M0vf3QuOs1
+         xP/A==
+X-Gm-Message-State: AOAM532bAW0UtMQ3BunG3sz7/1lnNPenUUKjkDnbDw15JyFWNH6vGfAj
+        dNC8Kt6gFV9OfhIdNOGXh0j3Q3LkMuQ=
+X-Google-Smtp-Source: ABdhPJxizqA1nqhjSNonj9MQPdozgl4Rzd9yzf+lOgCNtJSKtIDmVk23Zmm4rcGC2V5I3R9mdJmrlg==
+X-Received: by 2002:a9d:12ce:: with SMTP id g72mr1317273otg.306.1597075193722;
+        Mon, 10 Aug 2020 08:59:53 -0700 (PDT)
+Received: from alago.cortijodelrio.net (CableLink-189-219-73-83.Hosts.InterCable.net. [189.219.73.83])
+        by smtp.googlemail.com with ESMTPSA id h23sm970148otn.54.2020.08.10.08.59.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Aug 2020 08:59:53 -0700 (PDT)
+From:   =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        =?UTF-8?q?Diego=20Elio=20Petten=C3=B2?= <flameeyes@flameeyes.com>,
+        =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT))
+Subject: [PATCH] x86/defconfigs/32: Unset 64BIT
+Date:   Mon, 10 Aug 2020 10:59:42 -0500
+Message-Id: <20200810155943.2583275-1-daniel.diaz@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <00000000000035fdf505ac87b7f9@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/20 9:36 AM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    449dc8c9 Merge tag 'for-v5.9' of git://git.kernel.org/pub/..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14d41e02900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=9d25235bf0162fbc
-> dashboard link: https://syzkaller.appspot.com/bug?extid=996f91b6ec3812c48042
-> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133c9006900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1191cb1a900000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+996f91b6ec3812c48042@syzkaller.appspotmail.com
+A recent refresh of the defconfigs got rid of the following
+(unset) config:
 
-Thanks, the below should fix this one.
+  # CONFIG_64BIT is not set
 
+Innocuous as it seems, when the config file is saved again the
+behavior is changed so that CONFIG_64BIT=y.
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 443eecdfeda9..f9be665d1c5e 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -898,6 +898,7 @@ static void io_put_req(struct io_kiocb *req);
- static void io_double_put_req(struct io_kiocb *req);
- static void __io_double_put_req(struct io_kiocb *req);
- static struct io_kiocb *io_prep_linked_timeout(struct io_kiocb *req);
-+static void __io_queue_linked_timeout(struct io_kiocb *req);
- static void io_queue_linked_timeout(struct io_kiocb *req);
- static int __io_sqe_files_update(struct io_ring_ctx *ctx,
- 				 struct io_uring_files_update *ip,
-@@ -1179,7 +1180,7 @@ static void io_prep_async_link(struct io_kiocb *req)
- 			io_prep_async_work(cur);
- }
- 
--static void __io_queue_async_work(struct io_kiocb *req)
-+static struct io_kiocb *__io_queue_async_work(struct io_kiocb *req)
- {
- 	struct io_ring_ctx *ctx = req->ctx;
- 	struct io_kiocb *link = io_prep_linked_timeout(req);
-@@ -1187,16 +1188,19 @@ static void __io_queue_async_work(struct io_kiocb *req)
- 	trace_io_uring_queue_async_work(ctx, io_wq_is_hashed(&req->work), req,
- 					&req->work, req->flags);
- 	io_wq_enqueue(ctx->io_wq, &req->work);
--
--	if (link)
--		io_queue_linked_timeout(link);
-+	return link;
- }
- 
- static void io_queue_async_work(struct io_kiocb *req)
- {
-+	struct io_kiocb *link;
-+
- 	/* init ->work of the whole link before punting */
- 	io_prep_async_link(req);
--	__io_queue_async_work(req);
-+	link = __io_queue_async_work(req);
-+
-+	if (link)
-+		io_queue_linked_timeout(link);
- }
- 
- static void io_kill_timeout(struct io_kiocb *req)
-@@ -1229,12 +1233,19 @@ static void __io_queue_deferred(struct io_ring_ctx *ctx)
- 	do {
- 		struct io_defer_entry *de = list_first_entry(&ctx->defer_list,
- 						struct io_defer_entry, list);
-+		struct io_kiocb *link;
- 
- 		if (req_need_defer(de->req, de->seq))
- 			break;
- 		list_del_init(&de->list);
- 		/* punt-init is done before queueing for defer */
--		__io_queue_async_work(de->req);
-+		link = __io_queue_async_work(de->req);
-+		if (link) {
-+			__io_queue_linked_timeout(link);
-+			/* drop submission reference */
-+			link->flags |= REQ_F_COMP_LOCKED;
-+			io_put_req(link);
-+		}
- 		kfree(de);
- 	} while (!list_empty(&ctx->defer_list));
- }
-@@ -5945,15 +5956,12 @@ static enum hrtimer_restart io_link_timeout_fn(struct hrtimer *timer)
- 	return HRTIMER_NORESTART;
- }
- 
--static void io_queue_linked_timeout(struct io_kiocb *req)
-+static void __io_queue_linked_timeout(struct io_kiocb *req)
- {
--	struct io_ring_ctx *ctx = req->ctx;
--
- 	/*
- 	 * If the list is now empty, then our linked request finished before
- 	 * we got a chance to setup the timer
- 	 */
--	spin_lock_irq(&ctx->completion_lock);
- 	if (!list_empty(&req->link_list)) {
- 		struct io_timeout_data *data = &req->io->timeout;
- 
-@@ -5961,6 +5969,14 @@ static void io_queue_linked_timeout(struct io_kiocb *req)
- 		hrtimer_start(&data->timer, timespec64_to_ktime(data->ts),
- 				data->mode);
- 	}
-+}
-+
-+static void io_queue_linked_timeout(struct io_kiocb *req)
-+{
-+	struct io_ring_ctx *ctx = req->ctx;
-+
-+	spin_lock_irq(&ctx->completion_lock);
-+	__io_queue_linked_timeout(req);
- 	spin_unlock_irq(&ctx->completion_lock);
- 
- 	/* drop submission reference */
+Currently,
 
+  $ make i386_defconfig
+  $ grep CONFIG_64BIT .config
+  CONFIG_64BIT=y
+
+whereas previously (and with this patch now):
+
+  $ make i386_defconfig
+  $ grep CONFIG_64BIT .config
+  # CONFIG_64BIT is not set
+
+This was found with weird compiler errors on OpenEmbedded
+builds, as the compiler was unable to cope with 64-bits data
+types:
+
+  NOTE: make -j1 bzImage CC=i686-linaro-linux-gcc  -fuse-ld=bfd -fdebug-prefix-map=/oe/build/tmp/work/intel_core2_32-linaro-linux/linux-generic-mainline/5.8+gitAUTOINC+1d0e12fd3a-r0=/usr/src/debug/linux-generic-mainline/5.8+gitAUTOINC+1d0e12fd3a-r0 -fdebug-prefix-map=/oe/build/tmp/work/intel_core2_32-linaro-linux/linux-generic-mainline/5.8+gitAUTOINC+1d0e12fd3a-r0/recipe-sysroot= -fdebug-prefix-map=/oe/build/tmp/work/intel_core2_32-linaro-linux/linux-generic-mainline/5.8+gitAUTOINC+1d0e12fd3a-r0/recipe-sysroot-native=  -fdebug-prefix-map=/oe/build/tmp/work-shared/intel-core2-32/kernel-source=/usr/src/kernel -ffile-prefix-map=/oe/build/tmp/work/intel_core2_32-linaro-linux/linux-generic-mainline/5.8+gitAUTOINC+1d0e12fd3a-r0/git=/kernel-source/  LD=i686-linaro-linux-ld.bfd
+    GEN     Makefile
+    CC      scripts/mod/empty.o
+  cc1: error: code model 'kernel' not supported in the 32 bit mode
+  cc1: sorry, unimplemented: 64-bit mode not compiled in
+  /oe/build/tmp/work-shared/intel-core2-32/kernel-source/scripts/Makefile.build:280: recipe for target 'scripts/mod/empty.o' failed
+  make[2]: *** [scripts/mod/empty.o] Error 1
+  /oe/build/tmp/work-shared/intel-core2-32/kernel-source/Makefile:1174: recipe for target 'prepare0' failed
+  make[1]: *** [prepare0] Error 2
+  /oe/build/tmp/work-shared/intel-core2-32/kernel-source/Makefile:185: recipe for target '__sub-make' failed
+  make: *** [__sub-make] Error 2
+
+Fixes: 1d0e12fd3a84 ("x86/defconfigs: Refresh defconfig files")
+
+Signed-off-by: Daniel Díaz <daniel.diaz@linaro.org>
+---
+ arch/x86/configs/i386_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
+index d7577fece9eb..4cfdf5755ab5 100644
+--- a/arch/x86/configs/i386_defconfig
++++ b/arch/x86/configs/i386_defconfig
+@@ -19,6 +19,7 @@ CONFIG_CGROUP_CPUACCT=y
+ CONFIG_BLK_DEV_INITRD=y
+ # CONFIG_COMPAT_BRK is not set
+ CONFIG_PROFILING=y
++# CONFIG_64BIT is not set
+ CONFIG_SMP=y
+ CONFIG_X86_GENERIC=y
+ CONFIG_HPET_TIMER=y
 -- 
-Jens Axboe
+2.25.1
 
