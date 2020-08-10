@@ -2,124 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD36240092
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 02:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F9B240096
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 02:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgHJA61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 Aug 2020 20:58:27 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:58486 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726335AbgHJA61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 Aug 2020 20:58:27 -0400
-Received: from [10.130.0.75] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxmMWlmzBfhZcGAA--.2846S3;
-        Mon, 10 Aug 2020 08:58:14 +0800 (CST)
-Subject: Re: [PATCH] gpu/drm: Remove TTM_PL_FLAG_WC of VRAM to fix
- writecombine issue for Loongson64
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1596871502-3432-1-git-send-email-yangtiezhu@loongson.cn>
- <20200808134147.GA5772@alpha.franken.de>
- <b7b16df1-d661-d59a-005b-da594ce9fc95@flygoat.com>
- <38857c24-25c4-cff3-569e-5bcb773bfae6@amd.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <fb68c6ee-d455-24a0-524e-9b8a5033becd@loongson.cn>
-Date:   Mon, 10 Aug 2020 08:58:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1726524AbgHJA7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 Aug 2020 20:59:35 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:2798 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726335AbgHJA7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 Aug 2020 20:59:32 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BPyKZ1RKgz2d;
+        Mon, 10 Aug 2020 02:59:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1597021170; bh=1eeKBL0o88wtLrMTjQEu0rJjKv4EBeqN/ITuA7qHIqw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XucAWtFIvIbVpKNWzILk6bE15GVYS1WF5mUTYf0LaRS4ZXaFKoPwVWn+XWAJbGGuM
+         c73uOdobi01CpQ4Z8EKHZfg0qssR8XTcY16oKHSB+lJSsmXGhrKd6zJdHc6zurbWPG
+         6pDOSQzg6F/XF1dBL11+mw0vheq03EnQQTDPuWsO9A5Yr+z2eq55wl+R1+2rhEY58v
+         mW54RAMm0ntzoPeGvNNrn5z6CGx1yShl9A+FDtxrNTiD9nPEYNasGtBdvD8xLuDexm
+         LaxmbJ/lZa/iqHWw96vJsR8lF1CmQbfqY6Zg8mfZlRzLOlOUAiRxMONlKPO70FwcpK
+         5uUUv07lykKAg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Mon, 10 Aug 2020 02:59:27 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator: simplify locking
+Message-ID: <20200810005927.GA13107@qmqm.qmqm.pl>
+References: <b22fadc413fd7a1f4018c2c9dc261abf837731cb.1597007683.git.mirq-linux@rere.qmqm.pl>
+ <40871bc7-2d6c-10d4-53b3-0aded21edf3b@gmail.com>
+ <20200809223030.GB5522@qmqm.qmqm.pl>
+ <8850c09f-4b24-7ab2-a0f7-e0d752f5a404@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <38857c24-25c4-cff3-569e-5bcb773bfae6@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9DxmMWlmzBfhZcGAA--.2846S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFyUur48Zw1DtrWrJw4DXFb_yoW8tF4kpF
-        ZxKa1SgF4DJr4jyFnFqwn3XrWjkws5trW7Krn5CrWDu3sxtrnYgFyxKFWqvFWDur1fX3Wj
-        vF47WFyrua4ruFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvFb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY
-        02Avz4vE14v_twCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
-        xUcPfHUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+In-Reply-To: <8850c09f-4b24-7ab2-a0f7-e0d752f5a404@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/09/2020 08:13 PM, Christian König wrote:
-> Am 08.08.20 um 15:50 schrieb Jiaxun Yang:
->>
->>
->> 在 2020/8/8 下午9:41, Thomas Bogendoerfer 写道:
->>> On Sat, Aug 08, 2020 at 03:25:02PM +0800, Tiezhu Yang wrote:
->>>> Loongson processors have a writecombine issue that maybe failed to
->>>> write back framebuffer used with ATI Radeon or AMD GPU at times,
->>>> after commit 8a08e50cee66 ("drm: Permit video-buffers writecombine
->>>> mapping for MIPS"), there exists some errors such as blurred screen
->>>> and lockup, and so on.
->>>>
->>>> Remove the flag TTM_PL_FLAG_WC of VRAM to fix writecombine issue for
->>>> Loongson64 to work well with ATI Radeon or AMD GPU, and it has no any
->>>> influence on the other platforms.
->>> well it's not my call to take or reject this patch, but I already
->>> indicated it might be better to disable writecombine on the CPU
->>> detection side (or do you have other devices where writecombining
->>> works ?). Something like below will disbale it for all loongson64 CPUs.
->>> If you now find out where it works and where it doesn't, you can even
->>> reduce it to the required minium of affected CPUs.
->> Hi Tiezhu, Thomas,
->>
->> Yes, writecombine works well on LS7A's internal GPU....
->> And even works well with some AMD GPUs (in my case, RX550).
->
-> In this case the patch is a clear NAK since you haven't root caused 
-> the issue and are just working around it in a very questionable manner.
->
->>
->> Tiezhu, is it possible to investigate the issue deeper in Loongson?
->> Probably we just need to add some barrier to maintain the data 
->> coherency,
->> or disable writecombine for AMD GPU's command buffer and leave 
->> texture/frame
->> buffer wc accelerated.
->
-> Have you moved any buffer to VRAM and forgot to add an HDP 
-> flush/invalidate?
->
-> The acceleration is not much of a problem, but if WC doesn't work in 
-> general you need to disable it for the whole CPU and not for 
-> individual drivers.
+On Mon, Aug 10, 2020 at 03:21:47AM +0300, Dmitry Osipenko wrote:
+> 10.08.2020 01:30, Michał Mirosław пишет:
+> > On Mon, Aug 10, 2020 at 12:40:04AM +0300, Dmitry Osipenko wrote:
+> >> 10.08.2020 00:16, Michał Mirosław пишет:
+> >>> Simplify regulator locking by removing locking around locking. rdev->ref
+> >>> is now accessed only when the lock is taken. The code still smells fishy,
+> >>> but now its obvious why.
+> >>>
+> >>> Fixes: f8702f9e4aa7 ("regulator: core: Use ww_mutex for regulators locking")
+> >>> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> >>> ---
+> >>>  drivers/regulator/core.c         | 37 ++++++--------------------------
+> >>>  include/linux/regulator/driver.h |  1 -
+> >>>  2 files changed, 6 insertions(+), 32 deletions(-)
+> >>>
+> >>> diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+> >>> index 9e18997777d3..b0662927487c 100644
+> >>> --- a/drivers/regulator/core.c
+> >>> +++ b/drivers/regulator/core.c
+> >>> @@ -45,7 +45,6 @@
+> >>>  	pr_debug("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__)
+> >>>  
+> >>>  static DEFINE_WW_CLASS(regulator_ww_class);
+> >>> -static DEFINE_MUTEX(regulator_nesting_mutex);
+> >>>  static DEFINE_MUTEX(regulator_list_mutex);
+> >>>  static LIST_HEAD(regulator_map_list);
+> >>>  static LIST_HEAD(regulator_ena_gpio_list);
+> >>> @@ -150,32 +149,13 @@ static bool regulator_ops_is_valid(struct regulator_dev *rdev, int ops)
+> >>>  static inline int regulator_lock_nested(struct regulator_dev *rdev,
+> >>>  					struct ww_acquire_ctx *ww_ctx)
+> >>>  {
+> >>> -	bool lock = false;
+> >>>  	int ret = 0;
+> >>>  
+> >>> -	mutex_lock(&regulator_nesting_mutex);
+> >>> +	if (ww_ctx || !mutex_trylock_recursive(&rdev->mutex.base))
+> >>
+> >> Have you seen comment to the mutex_trylock_recursive()?
+> >>
+> >> https://elixir.bootlin.com/linux/v5.8/source/include/linux/mutex.h#L205
+> >>
+> >>  * This function should not be used, _ever_. It is purely for hysterical GEM
+> >>  * raisins, and once those are gone this will be removed.
+> >>
+> >> I knew about this function and I don't think it's okay to use it, hence
+> >> this is why there is that "nesting_mutex" and "owner" checking.
+> >>
+> >> If you disagree, then perhaps you should make another patch to remove
+> >> the stale comment to trylock_recursive().
+> > 
+> > I think that reimplementing the function just to not use it is not the
+> > right solution. The whole locking protocol is problematic and this patch
+> > just uncovers one side of it.
+> 
+> It's not clear to me what is uncovered, the ref_cnt was always accessed
+> under lock. Could you please explain in a more details?
+> 
+> Would be awesome if you could improve the code, but then you should
+> un-deprecate the trylock_recursive() before making use of it. Maybe
+> nobody will mind and it all will be good in the end.
 
-Hi Thomas, Jiaxun and Christian,
+I'm not sure why the framework wants recursive locking? If only for the
+coupling case, then ww_mutex seems the right direction to replace it:
+while walking the graph it will detect entering the same node
+a second time. But this works only during the locking transaction (with
+ww_context != NULL). Allowing recursive regulator_lock() outside of it
+seems inviting trouble.
 
-Thank you very much for your suggestions.
-
-Actually, this patch is a temporary solution to just make it work well,
-it is not a proper and final solution.
-
-I understand your opinions, it will take some time to find the root cause.
-
-Thanks,
-Tiezhu
-
->
-> Regards,
-> Christian.
->
->>
->> Thanks.
->>
->> - Jiaxun
-
+Best Regards,
+Michał Mirosław
