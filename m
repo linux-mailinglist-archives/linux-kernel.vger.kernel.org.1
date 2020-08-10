@@ -2,75 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B162405F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC0F2405ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgHJMcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 08:32:50 -0400
-Received: from sonic303-54.consmr.mail.ne1.yahoo.com ([66.163.188.180]:35808
-        "EHLO sonic303-54.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726450AbgHJMcs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 08:32:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597062767; bh=rEaUwHKYndtlTGQd1sVG1k+Ery/k+jQaHg2LkuM/QbA=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Z9l+UmYR3dprYH7Buk1jv0zVX255PZiCmlE1dO1Eh/o9lByxhCVTQhAnLvocQi01Y1tCYqEr84v41Pw68WIQUY8eC4LV9veewkYtNpjKnlsU4TYZBHOJi5G3XGxnWEl5iBWEyzrAYwL44iBxnr8ie2Xwayvr/wSK+cPTHPQ1267ejOwSl/dpyYmoPt0j2vsjyDOsvVTR8EKRlKsSMhjKfeB3hKAH/V7QKOBw433URvHbZspYt2oCW6scyfrZ2eC/42bjfdct2uMqAD7HcO1jj0Zz1p42kLKaQUZ04IVkTUMz4uVKK6Uec/lwS3fa6brmyvw9ituYQeiq0fMVvvyxhg==
-X-YMail-OSG: XwOcMWsVM1m6IeFkpe44t97LGHvRTksECJ8K8hazIosZ3dZ8rfLLx0EgJqYkNSp
- Fdz.ubmHqiBmG1HY.8ES3gS59T0EL17nl38rfVszc7rkHJHzHIgCUxOnrJgyACVprC8C4akDUcrn
- VL.uob9butrsLL_hsovKtYiuQPmmNyGfjGI1kzCvwopfLPevojSRb8CT8pySNS8KiCS3m5RFLAGG
- xXCgR93ISi11npjXUFLdcGKVm6avfJtEz.XABVIRZDUWKuS2V4bCbmzm8Njsb524urolyWotvGTH
- uscA4HyBKNuhgzRHm.XTbJLKJZq1rd8FwF06T3wZGr.UWGA7jlcfWbUMYQ8SnTw__Sf7KccarjEx
- EZdYg_UOCBEgUW4Zr30tcowqJrY_XXogVVWLw4.XN5THlrD7N4CXymNhhWlujlUyr98j7HMzTPl2
- Wg.nHivKLr4jEHvCr7jJAxq6UNz7mu1jSQtYNeWTXCQoxdY1_xq9qcMShzs6azPOclvc8uBDdO4B
- UbPJykXrasaIUW5QE4vOoPjdI2BRag52oj_sUG4.uj4G9WNbpWdgdIEosIX9cKhFUixxgcBfTQJZ
- YK4PM1ECjQUfCieH6q6Rngy2GtmDBHUxr4AJi3_tQr3o2_SM5qi2WxdByCc2N4RabeRaD2oFe6YS
- vvmYfN8D7ZNRpN6qx9B.Ox_7Nt7iY.tpxN3eAphpvsfJyWVYMaKtM_KRDXXFcXbksbJeyl0zWhPc
- G4h218aJJnI9SnxEBH_rJTN0Afky9eZsDeRyWGFYN6Q3vDrkduyxOj4Ay7zr5EcsNN4GEIJo_w0O
- yJrlbW0bqtstaiBWhEIpjovRzECj8dSo9lINyRvhDcM__dKyvl4x7_DjW0u22s5nSMuLzWYEluGo
- 6IC61ET0IK7YloSq_Jamw7gjDzu6yvwn9lSDuH7IBkpcg.hswYQ3eOEeoOScnOaliRHcSiO1WyHc
- 9W_yzF.AflRanNjiPblb0kFuD7f6kO3OsQrCom0b402KsYSIDyoZ5mkkzJ_.OZXP2wwkH3zUG7lW
- GAeciOUclif7tO7n7xkPinjhP1hs0HCxnLBS9b262XP.lDTTGbmwBU_6o7J5yQ5XfFeZLdCDNesN
- QbBNakLbdSkap19jGgnGBEmGrFldLR5Jr52EBY9m0gHirxmHuVbMEI6DBOXO2iLAmxdTn8WI_sn0
- nGUimp3P6K4i9mS0_LnCklGLgOvjGLGobrvNVVhxrN4ZzNheJYMz7zoHLJI.PHCf8gcFnXS8yz9U
- peUshykQ8Fka1qHA9.MoKiq9Q3x8q_l8dlGc9rnMiaKpFjqomo1DvMBO6xQa1tS3u6GWee9sUViE
- 9tC6K8YIKLDA9ieMD7kUDfTeTdnrTrlKiY40KqLD040CjGMN.zFeNBPFShVm8AOF5XAdk5ByiR3M
- 26npTQw--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.ne1.yahoo.com with HTTP; Mon, 10 Aug 2020 12:32:47 +0000
-Date:   Mon, 10 Aug 2020 12:30:46 +0000 (UTC)
-From:   "Relief Funding." <tm98@ncsct.in>
-Reply-To: rosesmith@live.co.uk
-Message-ID: <349872402.2478858.1597062646441@mail.yahoo.com>
-Subject: Relief Funding.
+        id S1726755AbgHJMbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 08:31:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37814 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726450AbgHJMbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 08:31:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7C610AEF3;
+        Mon, 10 Aug 2020 12:32:02 +0000 (UTC)
+Date:   Mon, 10 Aug 2020 14:31:41 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200810123141.GF4773@dhcp22.suse.cz>
+References: <20200809204354.20137-1-urezki@gmail.com>
+ <20200809204354.20137-2-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <349872402.2478858.1597062646441.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16436 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200809204354.20137-2-urezki@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun 09-08-20 22:43:53, Uladzislau Rezki (Sony) wrote:
+[...]
+> Limitations and concerns (Main part)
+> ====================================
+> The current memmory-allocation interface presents to following
+> difficulties that this patch is designed to overcome:
+> 
+> a) If built with CONFIG_PROVE_RAW_LOCK_NESTING, the lockdep will
+>    complain about violation("BUG: Invalid wait context") of the
+>    nesting rules. It does the raw_spinlock vs. spinlock nesting
+>    checks, i.e. it is not legal to acquire a spinlock_t while
+>    holding a raw_spinlock_t.
+> 
+>    Internally the kfree_rcu() uses raw_spinlock_t(in rcu-dev branch)
+>    whereas the "page allocator" internally deals with spinlock_t to
+>    access to its zones. The code also can be broken from higher level
+>    of view:
+>    <snip>
+>        raw_spin_lock(&some_lock);
+>        kfree_rcu(some_pointer, some_field_offset);
+>    <snip>
 
+Is there any fundamental problem to make zone raw_spin_lock?
 
-Dear: Beneficiary,
+> b) If built with CONFIG_PREEMPT_RT. Please note, in that case spinlock_t
+>    is converted into sleepable variant. Invoking the page allocator from
+>    atomic contexts leads to "BUG: scheduling while atomic".
 
-An irrevocable payment guarantee of =C2=A3250,000,00 GBP has been issued by=
- the UN/ World Bank Group and the International Monetary Fund (IMF) on Covi=
-d- 19 relief .
+[...]
 
-Kindly forward the below details correctly to enable us proceed on your fil=
-e as instructed by IMF AND UN Monetary Unit.
+> Proposal
+> ========
+> 1) Make GFP_* that ensures that the allocator returns NULL rather
+> than acquire its own spinlock_t. Having such flag will address a and b
+> limitations described above. It will also make the kfree_rcu() code
+> common for RT and regular kernel, more clean, less handling corner
+> cases and reduce the code size.
 
-1. Your Full Name:
-2. Address Where You Want the Courier Company to Send Your ATM Card
-To or (P.O Box) :
-3. Your Age:
-4. Occupation:
-5. Telephone Numbers:
-6. Country:
+I do not think this is a good idea. Single purpose gfp flags that tend
+to heavily depend on the current implementation of the page allocator
+have turned out to be problematic. Users used to misunderstand their
+meaning resulting in a lot of abuse which was not trivial to remove.
+This flag seem to fall into exactly this sort of category. If there is a
+problem in nesting then that should be addressed rather than a new flag
+exported IMHO. If that is absolutely not possible for some reason then
+we can try to figure out what to do but that really need a very strong
+justification.
 
-Regards.
-
-Mr. Harry Burns.
-Director ATM Payment Department
-(Barclays Bank Of London Plc)
+-- 
+Michal Hocko
+SUSE Labs
