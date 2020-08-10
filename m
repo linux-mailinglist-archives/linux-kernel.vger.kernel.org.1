@@ -2,169 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB0B2405AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE5B2405B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbgHJMSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 08:18:15 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:51252 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726450AbgHJMSO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 08:18:14 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0U5N4-L-_1597061873;
-Received: from localhost(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U5N4-L-_1597061873)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 10 Aug 2020 20:17:54 +0800
-From:   Xunlei Pang <xlpang@linux.alibaba.com>
-To:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
-        Wen Yang <wenyang@linux.alibaba.com>,
-        Roman Gushchin <guro@fb.com>, Pekka Enberg <penberg@gmail.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        David Rientjes <rientjes@google.com>,
-        Xunlei Pang <xlpang@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: [PATCH v2 3/3] mm/slub: Use percpu partial free counter
-Date:   Mon, 10 Aug 2020 20:17:52 +0800
-Message-Id: <1597061872-58724-4-git-send-email-xlpang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1597061872-58724-1-git-send-email-xlpang@linux.alibaba.com>
-References: <1597061872-58724-1-git-send-email-xlpang@linux.alibaba.com>
+        id S1726844AbgHJMS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 08:18:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726826AbgHJMS7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 08:18:59 -0400
+Received: from gaia (unknown [95.146.230.158])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C06D820709;
+        Mon, 10 Aug 2020 12:18:57 +0000 (UTC)
+Date:   Mon, 10 Aug 2020 13:18:55 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Gregory Herrero <gregory.herrero@oracle.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] recordmcount: Fix build failure on non arm64
+Message-ID: <20200810121855.GD9480@gaia>
+References: <5ca1be21fa6ebf73203b45fd9aadd2bafb5e6b15.1597049145.git.christophe.leroy@csgroup.eu>
+ <20200810091730.GA3099@ltoracle>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200810091730.GA3099@ltoracle>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only concern of introducing partial counter is that,
-partial_free_objs may cause atomic operation contention
-in case of same SLUB concurrent __slab_free().
+On Mon, Aug 10, 2020 at 11:17:30AM +0200, Gregory Herrero wrote:
+> On Mon, Aug 10, 2020 at 08:48:22AM +0000, Christophe Leroy wrote:
+> > Commit ea0eada45632 leads to the following build failure on powerpc:
+> > 
+> >   HOSTCC  scripts/recordmcount
+> > scripts/recordmcount.c: In function 'arm64_is_fake_mcount':
+> > scripts/recordmcount.c:440: error: 'R_AARCH64_CALL26' undeclared (first use in this function)
+> > scripts/recordmcount.c:440: error: (Each undeclared identifier is reported only once
+> > scripts/recordmcount.c:440: error: for each function it appears in.)
+> > make[2]: *** [scripts/recordmcount] Error 1
+> > 
+> > Make sure R_AARCH64_CALL26 is always defined.
+> > 
+> Oops, thanks for fixing this.
+> 
+> Acked-by: Gregory Herrero <gregory.herrero@oracle.com>
 
-This patch changes it to be a percpu counter to avoid that.
+Thanks. I'll queue it via the arm64 tree (as I did with the previous
+fix) but I'll wait a bit for Steve to ack it.
 
-Co-developed-by: Wen Yang <wenyang@linux.alibaba.com>
-Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
----
- mm/slab.h |  2 +-
- mm/slub.c | 38 +++++++++++++++++++++++++++++++-------
- 2 files changed, 32 insertions(+), 8 deletions(-)
-
-diff --git a/mm/slab.h b/mm/slab.h
-index c85e2fa..a709a70 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -616,7 +616,7 @@ struct kmem_cache_node {
- #ifdef CONFIG_SLUB
- 	unsigned long nr_partial;
- 	struct list_head partial;
--	atomic_long_t partial_free_objs;
-+	atomic_long_t __percpu *partial_free_objs;
- 	atomic_long_t partial_total_objs;
- #ifdef CONFIG_SLUB_DEBUG
- 	atomic_long_t nr_slabs;
-diff --git a/mm/slub.c b/mm/slub.c
-index 25a4421..f6fc60b 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1775,11 +1775,21 @@ static void discard_slab(struct kmem_cache *s, struct page *page)
- /*
-  * Management of partially allocated slabs.
-  */
-+static inline long get_partial_free(struct kmem_cache_node *n)
-+{
-+	long nr = 0;
-+	int cpu;
-+
-+	for_each_possible_cpu(cpu)
-+		nr += atomic_long_read(per_cpu_ptr(n->partial_free_objs, cpu));
-+
-+	return nr;
-+}
- 
- static inline void
- __update_partial_free(struct kmem_cache_node *n, long delta)
- {
--	atomic_long_add(delta, &n->partial_free_objs);
-+	atomic_long_add(delta, this_cpu_ptr(n->partial_free_objs));
- }
- 
- static inline void
-@@ -2429,12 +2439,12 @@ static unsigned long partial_counter(struct kmem_cache_node *n,
- 	unsigned long ret = 0;
- 
- 	if (item == PARTIAL_FREE) {
--		ret = atomic_long_read(&n->partial_free_objs);
-+		ret = get_partial_free(n);
- 	} else if (item == PARTIAL_TOTAL) {
- 		ret = atomic_long_read(&n->partial_total_objs);
- 	} else if (item == PARTIAL_INUSE) {
- 		ret = atomic_long_read(&n->partial_total_objs) -
--		atomic_long_read(&n->partial_free_objs);
-+				get_partial_free(n);
- 		if ((long)ret < 0)
- 			ret = 0;
- 	}
-@@ -3390,19 +3400,28 @@ static inline int calculate_order(unsigned int size)
- 	return -ENOSYS;
- }
- 
--static void
-+static int
- init_kmem_cache_node(struct kmem_cache_node *n)
- {
-+	int cpu;
-+
- 	n->nr_partial = 0;
- 	spin_lock_init(&n->list_lock);
- 	INIT_LIST_HEAD(&n->partial);
--	atomic_long_set(&n->partial_free_objs, 0);
-+
-+	n->partial_free_objs = alloc_percpu(atomic_long_t);
-+	if (!n->partial_free_objs)
-+		return -ENOMEM;
-+	for_each_possible_cpu(cpu)
-+		atomic_long_set(per_cpu_ptr(n->partial_free_objs, cpu), 0);
- 	atomic_long_set(&n->partial_total_objs, 0);
- #ifdef CONFIG_SLUB_DEBUG
- 	atomic_long_set(&n->nr_slabs, 0);
- 	atomic_long_set(&n->total_objects, 0);
- 	INIT_LIST_HEAD(&n->full);
- #endif
-+
-+	return 0;
- }
- 
- static inline int alloc_kmem_cache_cpus(struct kmem_cache *s)
-@@ -3463,7 +3482,7 @@ static void early_kmem_cache_node_alloc(int node)
- 	page->inuse = 1;
- 	page->frozen = 0;
- 	kmem_cache_node->node[node] = n;
--	init_kmem_cache_node(n);
-+	BUG_ON(init_kmem_cache_node(n) < 0);
- 	inc_slabs_node(kmem_cache_node, node, page->objects);
- 
- 	/*
-@@ -3481,6 +3500,7 @@ static void free_kmem_cache_nodes(struct kmem_cache *s)
- 
- 	for_each_kmem_cache_node(s, node, n) {
- 		s->node[node] = NULL;
-+		free_percpu(n->partial_free_objs);
- 		kmem_cache_free(kmem_cache_node, n);
- 	}
- }
-@@ -3511,7 +3531,11 @@ static int init_kmem_cache_nodes(struct kmem_cache *s)
- 			return 0;
- 		}
- 
--		init_kmem_cache_node(n);
-+		if (init_kmem_cache_node(n) < 0) {
-+			free_kmem_cache_nodes(s);
-+			return 0;
-+		}
-+
- 		s->node[node] = n;
- 	}
- 	return 1;
 -- 
-1.8.3.1
-
+Catalin
