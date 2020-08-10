@@ -2,84 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129BA240EFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54FF240F3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730083AbgHJTR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 15:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728618AbgHJTRY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 15:17:24 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CF8C061756;
-        Mon, 10 Aug 2020 12:17:24 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 167D112753C7F;
-        Mon, 10 Aug 2020 12:00:37 -0700 (PDT)
-Date:   Mon, 10 Aug 2020 12:17:22 -0700 (PDT)
-Message-Id: <20200810.121722.482500427015958955.davem@davemloft.net>
-To:     ndesaulniers@google.com
-Cc:     samitolvanen@google.com, kuba@kernel.org, stable@vger.kernel.org,
-        masahiroy@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, elder@linaro.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 net] bitfield.h: don't compile-time validate _val in
- FIELD_FIT
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200810182112.2221964-1-ndesaulniers@google.com>
-References: <20200810182112.2221964-1-ndesaulniers@google.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 10 Aug 2020 12:00:37 -0700 (PDT)
+        id S1729913AbgHJTUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 15:20:49 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:52446 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728155AbgHJTUo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 15:20:44 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BQQm942yLz2d;
+        Mon, 10 Aug 2020 21:20:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1597087241; bh=YLrczSTpxaAEdZF2sFqyeYjJHh21BF1+BJLgLP42RYY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BS3dTf9k+eUTG+Iyz20i9CmwY9+CAkUNv3QtK9AxWqyBer4s4mNCsCQ/ygaziFRTl
+         uU/xgcRb+lQXj+1FEKGxfHGc4+PvM/SaSyF40+e7McxLdA/CYDOhYgVaZjztz60HXC
+         V217CJ2uqIJG0M1ij7rD6kY4wVhHm1Gp0Z1brqcV9B091WmjUCu2f+XG+eCf86dR6O
+         ELgwcOKcVFwFijr0OzEylckoMCj+UBZCqAw7iOkf2Sh/590c1udb2m7FJV+bXf3Mmi
+         gqE4LLBEJfNRGvZ6O2irmY0mgc/kOhKKtxGadLUtXk9cqEk+dHMk0RWgWU/OQe/am1
+         MFns/7F+AMSqg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Mon, 10 Aug 2020 21:20:39 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator: fix pointer table overallocation
+Message-ID: <20200810192039.GA26750@qmqm.qmqm.pl>
+References: <407fbd06a02caf038a9ba3baa51c7d6d47cd6517.1597000795.git.mirq-linux@rere.qmqm.pl>
+ <5ef51b56-c533-46c8-621d-7907129594e9@gmail.com>
+ <20200810123747.GC6438@sirena.org.uk>
+ <20200810162556.GA3394@qmqm.qmqm.pl>
+ <20200810173337.GG6438@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200810173337.GG6438@sirena.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Mon, 10 Aug 2020 11:21:11 -0700
+On Mon, Aug 10, 2020 at 06:33:37PM +0100, Mark Brown wrote:
+> On Mon, Aug 10, 2020 at 06:25:56PM +0200, Micha³ Miros³aw wrote:
+> > On Mon, Aug 10, 2020 at 01:37:47PM +0100, Mark Brown wrote:
+> > > Yeah, this is more a performance improvement than a fix.
+> > Should I resend without Cc: stable?
+> I've already queued it to be applied to -next with that removed and an
+> edited subject line.
 
-> From: Jakub Kicinski <kuba@kernel.org>
-> 
-> When ur_load_imm_any() is inlined into jeq_imm(), it's possible for the
-> compiler to deduce a case where _val can only have the value of -1 at
-> compile time. Specifically,
-> 
-> /* struct bpf_insn: _s32 imm */
-> u64 imm = insn->imm; /* sign extend */
-> if (imm >> 32) { /* non-zero only if insn->imm is negative */
->   /* inlined from ur_load_imm_any */
->   u32 __imm = imm >> 32; /* therefore, always 0xffffffff */
->   if (__builtin_constant_p(__imm) && __imm > 255)
->     compiletime_assert_XXX()
-> 
-> This can result in tripping a BUILD_BUG_ON() in __BF_FIELD_CHECK() that
-> checks that a given value is representable in one byte (interpreted as
-> unsigned).
-> 
-> FIELD_FIT() should return true or false at runtime for whether a value
-> can fit for not. Don't break the build over a value that's too large for
-> the mask. We'd prefer to keep the inlining and compiler optimizations
-> though we know this case will always return false.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 1697599ee301a ("bitfield.h: add FIELD_FIT() helper")
-> Link: https://lore.kernel.org/kernel-hardening/CAK7LNASvb0UDJ0U5wkYYRzTAdnEs64HjXpEUL7d=V0CXiAXcNw@mail.gmail.com/
-> Reported-by: Masahiro Yamada <masahiroy@kernel.org>
-> Debugged-by: Sami Tolvanen <samitolvanen@google.com>
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> Changes V1->V2:
-> * add Fixes tag.
-
-Applied, thank you.
+Ok, thanks!
