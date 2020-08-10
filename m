@@ -2,69 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BE4240BF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 19:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2E4240C5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 19:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgHJR31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 13:29:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57456 "EHLO mail.kernel.org"
+        id S1727985AbgHJRup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 13:50:45 -0400
+Received: from mga06.intel.com ([134.134.136.31]:51484 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725862AbgHJR30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 13:29:26 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97E6520838;
-        Mon, 10 Aug 2020 17:29:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597080566;
-        bh=ireM7xLApekHQIqjELsBbT2kJiFJu4rDCIUy4AvUv8Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F1tDgPKQ8a48L6iXeXl2ZQ+CV+co/rlaBWrRB5CIyCCdJto7kYTEFdNv49K9N/9Y5
-         rDuTX5EDazzaDQZWo494zj8Tk+rfGv8PkWAewnuz3/NtHw2HCOORQb1SpdmA8Xqp8n
-         T9Dz72HdKHAoAsEM2uS2KfzOnSyOz07eKsKy3tjA=
-Date:   Mon, 10 Aug 2020 19:29:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+1a54a94bd32716796edd@syzkaller.appspotmail.com,
-        syzbot+9d2abfef257f3e2d4713@syzkaller.appspotmail.com,
-        Hillf Danton <hdanton@sina.com>, Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 4.19 06/48] ALSA: seq: oss: Serialize ioctls
-Message-ID: <20200810172936.GA82601@kroah.com>
-References: <20200810151804.199494191@linuxfoundation.org>
- <20200810151804.528955642@linuxfoundation.org>
- <20200810163717.GA24408@amd>
+        id S1727003AbgHJRun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 13:50:43 -0400
+IronPort-SDR: eT9EWZ6McbmJyxUR46EEvuJf+wE83m/2qgJkKakHv6vf8j9vM9wZsLM83hwu+8azWAvoXdhNOz
+ nsca1Nqq/iFw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9709"; a="215101661"
+X-IronPort-AV: E=Sophos;i="5.75,458,1589266800"; 
+   d="scan'208";a="215101661"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2020 10:50:42 -0700
+IronPort-SDR: vpzcQZYNsAW9jmuTF4kuBbii8AQLquvwRdeTooIXqtd8XQZ1yR4g0CDZCRIOZ1tG2wWtjlqdCU
+ jErFZ0Bliw8Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,458,1589266800"; 
+   d="scan'208";a="324514275"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by orsmga008.jf.intel.com with ESMTP; 10 Aug 2020 10:50:42 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id 90B6C301CAF; Mon, 10 Aug 2020 07:45:18 -0700 (PDT)
+Date:   Mon, 10 Aug 2020 07:45:18 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     peterz@infradead.org, Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>, alexey.budankov@linux.intel.com,
+        adrian.hunter@intel.com
+Subject: Re: [PATCH 1/2] perf: Add closing sibling events' file descriptors
+Message-ID: <20200810144518.GB1448395@tassilo.jf.intel.com>
+References: <20200708151635.81239-1-alexander.shishkin@linux.intel.com>
+ <20200708151635.81239-2-alexander.shishkin@linux.intel.com>
+ <20200806083530.GV2674@hirez.programming.kicks-ass.net>
+ <20200806153205.GA1448395@tassilo.jf.intel.com>
+ <875z9q1u3g.fsf@ashishki-desk.ger.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200810163717.GA24408@amd>
+In-Reply-To: <875z9q1u3g.fsf@ashishki-desk.ger.corp.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 06:37:17PM +0200, Pavel Machek wrote:
-> Hi!
+> It didn't. I can't figure out what to charge on the locked memory, as
+> all that memory is in kernel-side objects. It also needs to make sense
+
+I don't see how that makes a difference for the count. It just account
+bytes. Can you elaborate?
+
+> as iirc the default MLOCK_LIMIT is quite low, you'd hit it sooner than
+> the file descriptor limit.
+
+For a single process? 
+
 > 
-> > commit 80982c7e834e5d4e325b6ce33757012ecafdf0bb upstream.
-> > 
-> > Some ioctls via OSS sequencer API may race and lead to UAF when the
-> > port create and delete are performed concurrently, as spotted by a
-> > couple of syzkaller cases.  This patch is an attempt to address it by
-> > serializing the ioctls with the existing register_mutex.
-> > 
-> > Basically OSS sequencer API is an obsoleted interface and was designed
-> > without much consideration of the concurrency.  There are very few
-> > applications with it, and the concurrent performance isn't asked,
-> > hence this "big hammer" approach should be good enough.
+> > It has a minor issue that it might break some existing setups that rely
+> > on the mmap fitting exactly into the mmap allocation, but that could
+> > be solved by allowing a little slack, since the existing setups
+> > likely don't have that many events.
 > 
-> That really is a "big hammer". And I believe it is too big.
+> I don't see how to make this work in a sane way. Besides, if we have to
+> have a limit anyway, sticking with the existing one is just easier and
+> 1:1 is kind of more logical.
 
-Please discuss code architecture decisions on the mailing list for the
-subsystem/patch.  Doing it in random stable backports does not help out
-as all of the developers involved are not copied here.
+It's just a very wasteful way because we need an extra inode and file descriptor
+for each event*cgroup.
 
-thanks,
+And of course it's super user unfriendly because managing the fd limits
+is a pain, apart from them not really working that well anyways 
+(since someone who really wants to do a memory DoS can still open
+RLIMIT_NPROC*RLIMIT_NFILE fds just by forking) 
 
-greg k-h
+Unfortunately we're kind of stuck with the old NFILE=1024 default
+even though it makes little sense on modern servers. Right now a lot
+of very reasonable perf stat command lines don't work out of the box
+on larger machines because of this (and since cores are growing all
+the time "larger machines" of today are the standard servers of
+tomorrow)
+
+Maybe an alternative would be to allow a multiplier. For each open fd
+you can have N perf events. With N being a little higher than the current
+cost of the inode + file descriptor together.
+
+But would really prefer to have some kind of limit per uid that is
+actually sane.
+
+-Andi
