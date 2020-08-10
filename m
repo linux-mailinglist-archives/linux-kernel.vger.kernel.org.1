@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC77B2409EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E3B240A63
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgHJP0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:26:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60754 "EHLO mail.kernel.org"
+        id S1727104AbgHJPlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:41:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728659AbgHJP0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:26:44 -0400
+        id S1728334AbgHJPXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:23:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4944D22D06;
-        Mon, 10 Aug 2020 15:26:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F93D207FF;
+        Mon, 10 Aug 2020 15:23:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073204;
-        bh=pinV51YlJNoqr7xZ+tkxP0ZQ4Hxuq8N44utPAr/N1H0=;
+        s=default; t=1597073011;
+        bh=SBJBhjEf5WQoaV758p8LTeeZcqluZ9Hz0KwBVAwXsxg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pI92HgLvLeoihZItC9van0+YnIMk+19SNYNVsYjARA99rhXves86vOjbt1ZnGzCwL
-         ZqJ9AY5LS23e80jovKQRqQ+eVyVU52KRnCY6EMKexlJci8SKqJBCeWBgxzPmPwRdRi
-         0xxFYTpsCLEGf+RTENytZY+ch5UqG9nmF/+Evx+A=
+        b=1NqTudXEdJYRqrlq3TektEpETKYx4teslX0hg4C5ZjHmMs7sbBeB8Nb6goinR/qxp
+         Ka4HsCwVhzDtiyS7lw7Zfsk8Qvg392XBXIGGiYZPkJ0iCU/dATrBmJHDtrsw8EVxnV
+         x/ZoRSh0IGtPhtAkoiVj0brW/FTZaYvinXwUz+aQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Forest Crossman <cyrozap@gmail.com>
-Subject: [PATCH 5.4 04/67] usb: xhci: define IDs for various ASMedia host controllers
-Date:   Mon, 10 Aug 2020 17:20:51 +0200
-Message-Id: <20200810151809.650225665@linuxfoundation.org>
+        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 34/79] drm/nouveau/fbcon: fix module unload when fbcon init has failed for some reason
+Date:   Mon, 10 Aug 2020 17:20:53 +0200
+Message-Id: <20200810151813.967903895@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
-References: <20200810151809.438685785@linuxfoundation.org>
+In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
+References: <20200810151812.114485777@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Forest Crossman <cyrozap@gmail.com>
+From: Ben Skeggs <bskeggs@redhat.com>
 
-commit 1841cb255da41e87bed9573915891d056f80e2e7 upstream.
+[ Upstream commit 498595abf5bd51f0ae074cec565d888778ea558f ]
 
-Not all ASMedia host controllers have a device ID that matches its part
-number. #define some of these IDs to make it clearer at a glance which
-chips require what quirks.
+Stale pointer was tripping up the unload path.
 
-Acked-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Signed-off-by: Forest Crossman <cyrozap@gmail.com>
-Link: https://lore.kernel.org/r/20200728042408.180529-2-cyrozap@gmail.com
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci-pci.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_fbcon.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -55,7 +55,9 @@
- #define PCI_DEVICE_ID_AMD_PROMONTORYA_3			0x43ba
- #define PCI_DEVICE_ID_AMD_PROMONTORYA_2			0x43bb
- #define PCI_DEVICE_ID_AMD_PROMONTORYA_1			0x43bc
-+#define PCI_DEVICE_ID_ASMEDIA_1042_XHCI			0x1042
- #define PCI_DEVICE_ID_ASMEDIA_1042A_XHCI		0x1142
-+#define PCI_DEVICE_ID_ASMEDIA_2142_XHCI			0x2142
+diff --git a/drivers/gpu/drm/nouveau/nouveau_fbcon.c b/drivers/gpu/drm/nouveau/nouveau_fbcon.c
+index 24d543a01f435..e42100a2425fd 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_fbcon.c
++++ b/drivers/gpu/drm/nouveau/nouveau_fbcon.c
+@@ -588,6 +588,7 @@ fini:
+ 	drm_fb_helper_fini(&fbcon->helper);
+ free:
+ 	kfree(fbcon);
++	drm->fbcon = NULL;
+ 	return ret;
+ }
  
- static const char hcd_name[] = "xhci_hcd";
- 
-@@ -245,13 +247,13 @@ static void xhci_pci_quirks(struct devic
- 		xhci->quirks |= XHCI_BROKEN_STREAMS;
- 
- 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
--			pdev->device == 0x1042)
-+		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042_XHCI)
- 		xhci->quirks |= XHCI_BROKEN_STREAMS;
- 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
--			pdev->device == 0x1142)
-+		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI)
- 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
- 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
--			pdev->device == 0x2142)
-+		pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI)
- 		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
- 
- 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
+-- 
+2.25.1
+
 
 
