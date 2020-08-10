@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95A324092D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405712408D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728998AbgHJP3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:29:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35954 "EHLO mail.kernel.org"
+        id S1728555AbgHJPZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:25:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728959AbgHJP3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:29:31 -0400
+        id S1728431AbgHJPZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:25:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E12D022D07;
-        Mon, 10 Aug 2020 15:29:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 802EB20855;
+        Mon, 10 Aug 2020 15:25:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073370;
-        bh=p4V3sOMcIcLg6bOq8lNuDQ3c0vE6GzxHlypxaeyenpk=;
+        s=default; t=1597073132;
+        bh=QWK7XBR5gvkHC3LExaNmD7qFaj0SX1A+sVIAOWe7vgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JeCvXyjWstIb+Ig3fWKBHEVYfLL9qsUrg1q91AUOpTElFVN6DIebanmjtsUdaXYqh
-         a9UsGUuxPKD/XM4ulbrZGOiBE7Oxpco5uUIr8wj4zG+hHwE3MgSYtlVvOi7OEQ4b2t
-         pISwb/VIALlizBgPHqbHX6GoSXNCryDEulZ54UTE=
+        b=1LGP4cupAHkDULejeqtybmsDaNf5/9aXeSyhfmeXqecs3KocLdFC+OaFXtJNCmD3E
+         mKobAoXHA8JA65AiPPihDiCV5k3JSBT9Edv9k8BQBVcLNuYwzNtVpEHwMm4LRqmdfa
+         seOCsrCRntwxU08B+1IMGgJSpKk+p5zim6X4uYbU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        stable <stable@kernel.org>
-Subject: [PATCH 4.19 14/48] mtd: properly check all write ioctls for permissions
-Date:   Mon, 10 Aug 2020 17:21:36 +0200
-Message-Id: <20200810151804.911709325@linuxfoundation.org>
+        stable@vger.kernel.org, Bruno Meneguele <bmeneg@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH 5.7 78/79] ima: move APPRAISE_BOOTPARAM dependency on ARCH_POLICY to runtime
+Date:   Mon, 10 Aug 2020 17:21:37 +0200
+Message-Id: <20200810151816.065858854@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151804.199494191@linuxfoundation.org>
-References: <20200810151804.199494191@linuxfoundation.org>
+In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
+References: <20200810151812.114485777@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,120 +43,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Bruno Meneguele <bmeneg@redhat.com>
 
-commit f7e6b19bc76471ba03725fe58e0c218a3d6266c3 upstream.
+commit 311aa6aafea446c2f954cc19d66425bfed8c4b0b upstream.
 
-When doing a "write" ioctl call, properly check that we have permissions
-to do so before copying anything from userspace or anything else so we
-can "fail fast".  This includes also covering the MEMWRITE ioctl which
-previously missed checking for this.
+The IMA_APPRAISE_BOOTPARAM config allows enabling different "ima_appraise="
+modes - log, fix, enforce - at run time, but not when IMA architecture
+specific policies are enabled.  This prevents properly labeling the
+filesystem on systems where secure boot is supported, but not enabled on the
+platform.  Only when secure boot is actually enabled should these IMA
+appraise modes be disabled.
 
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: stable <stable@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[rw: Fixed locking issue]
-Signed-off-by: Richard Weinberger <richard@nod.at>
+This patch removes the compile time dependency and makes it a runtime
+decision, based on the secure boot state of that platform.
+
+Test results as follows:
+
+-> x86-64 with secure boot enabled
+
+[    0.015637] Kernel command line: <...> ima_policy=appraise_tcb ima_appraise=fix
+[    0.015668] ima: Secure boot enabled: ignoring ima_appraise=fix boot parameter option
+
+-> powerpc with secure boot disabled
+
+[    0.000000] Kernel command line: <...> ima_policy=appraise_tcb ima_appraise=fix
+[    0.000000] Secure boot mode disabled
+
+-> Running the system without secure boot and with both options set:
+
+CONFIG_IMA_APPRAISE_BOOTPARAM=y
+CONFIG_IMA_ARCH_POLICY=y
+
+Audit prompts "missing-hash" but still allow execution and, consequently,
+filesystem labeling:
+
+type=INTEGRITY_DATA msg=audit(07/09/2020 12:30:27.778:1691) : pid=4976
+uid=root auid=root ses=2
+subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=appraise_data
+cause=missing-hash comm=bash name=/usr/bin/evmctl dev="dm-0" ino=493150
+res=no
+
+Cc: stable@vger.kernel.org
+Fixes: d958083a8f64 ("x86/ima: define arch_get_ima_policy() for x86")
+Signed-off-by: Bruno Meneguele <bmeneg@redhat.com>
+Cc: stable@vger.kernel.org # 5.0
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/mtdchar.c |   56 +++++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 47 insertions(+), 9 deletions(-)
+ security/integrity/ima/Kconfig        |    2 +-
+ security/integrity/ima/ima_appraise.c |    6 ++++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -368,9 +368,6 @@ static int mtdchar_writeoob(struct file
- 	uint32_t retlen;
- 	int ret = 0;
+--- a/security/integrity/ima/Kconfig
++++ b/security/integrity/ima/Kconfig
+@@ -232,7 +232,7 @@ config IMA_APPRAISE_REQUIRE_POLICY_SIGS
  
--	if (!(file->f_mode & FMODE_WRITE))
--		return -EPERM;
--
- 	if (length > 4096)
- 		return -EINVAL;
- 
-@@ -655,6 +652,48 @@ static int mtdchar_ioctl(struct file *fi
- 
- 	pr_debug("MTD_ioctl\n");
- 
-+	/*
-+	 * Check the file mode to require "dangerous" commands to have write
-+	 * permissions.
-+	 */
-+	switch (cmd) {
-+	/* "safe" commands */
-+	case MEMGETREGIONCOUNT:
-+	case MEMGETREGIONINFO:
-+	case MEMGETINFO:
-+	case MEMREADOOB:
-+	case MEMREADOOB64:
-+	case MEMLOCK:
-+	case MEMUNLOCK:
-+	case MEMISLOCKED:
-+	case MEMGETOOBSEL:
-+	case MEMGETBADBLOCK:
-+	case MEMSETBADBLOCK:
-+	case OTPSELECT:
-+	case OTPGETREGIONCOUNT:
-+	case OTPGETREGIONINFO:
-+	case OTPLOCK:
-+	case ECCGETLAYOUT:
-+	case ECCGETSTATS:
-+	case MTDFILEMODE:
-+	case BLKPG:
-+	case BLKRRPART:
-+		break;
-+
-+	/* "dangerous" commands */
-+	case MEMERASE:
-+	case MEMERASE64:
-+	case MEMWRITEOOB:
-+	case MEMWRITEOOB64:
-+	case MEMWRITE:
-+		if (!(file->f_mode & FMODE_WRITE))
-+			return -EPERM;
-+		break;
-+
-+	default:
-+		return -ENOTTY;
+ config IMA_APPRAISE_BOOTPARAM
+ 	bool "ima_appraise boot parameter"
+-	depends on IMA_APPRAISE && !IMA_ARCH_POLICY
++	depends on IMA_APPRAISE
+ 	default y
+ 	help
+ 	  This option enables the different "ima_appraise=" modes
+--- a/security/integrity/ima/ima_appraise.c
++++ b/security/integrity/ima/ima_appraise.c
+@@ -19,6 +19,12 @@
+ static int __init default_appraise_setup(char *str)
+ {
+ #ifdef CONFIG_IMA_APPRAISE_BOOTPARAM
++	if (arch_ima_get_secureboot()) {
++		pr_info("Secure boot enabled: ignoring ima_appraise=%s boot parameter option",
++			str);
++		return 1;
 +	}
 +
- 	switch (cmd) {
- 	case MEMGETREGIONCOUNT:
- 		if (copy_to_user(argp, &(mtd->numeraseregions), sizeof(int)))
-@@ -702,9 +741,6 @@ static int mtdchar_ioctl(struct file *fi
- 	{
- 		struct erase_info *erase;
- 
--		if(!(file->f_mode & FMODE_WRITE))
--			return -EPERM;
--
- 		erase=kzalloc(sizeof(struct erase_info),GFP_KERNEL);
- 		if (!erase)
- 			ret = -ENOMEM;
-@@ -997,9 +1033,6 @@ static int mtdchar_ioctl(struct file *fi
- 		ret = 0;
- 		break;
- 	}
--
--	default:
--		ret = -ENOTTY;
- 	}
- 
- 	return ret;
-@@ -1043,6 +1076,11 @@ static long mtdchar_compat_ioctl(struct
- 		struct mtd_oob_buf32 buf;
- 		struct mtd_oob_buf32 __user *buf_user = argp;
- 
-+		if (!(file->f_mode & FMODE_WRITE)) {
-+			ret = -EPERM;
-+			break;
-+		}
-+
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
+ 	if (strncmp(str, "off", 3) == 0)
+ 		ima_appraise = 0;
+ 	else if (strncmp(str, "log", 3) == 0)
 
 
