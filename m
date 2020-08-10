@@ -2,185 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781DF2402D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 09:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8BA24028C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 09:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726368AbgHJHhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 03:37:09 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26020 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725857AbgHJHhI (ORCPT
+        id S1726474AbgHJHbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 03:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726390AbgHJHbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 03:37:08 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07A7aspq096541;
-        Mon, 10 Aug 2020 03:36:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=qMHGl+1t4gMfa2qMarGYbBHG6334xaEDPdjFO253suY=;
- b=Krf1qfJ9I2CaPj+doPp4MVODycGA52WR10Ymh6f9HHZtf3YCO+k9a/nmRBBhA45fRkf9
- VjaOpYGSv6l7IpFymfppth92RsZx8KO4URFqPtjn/cDeTQ95Z2EPcgynlHl26EteNMTu
- Pai+CjOgIkoLKgwIEqZFGCV8wzpTw7v0+a+tNnL6bcVBfVpLvf2w/JNT9ThL4UI2oSU4
- EGLqVzXdMBxh+uC6NPs1mlefwLv8bxA3PxCTwDkY2Ne+vdglleoFw58UmKFeejrDSGVA
- 44t9dofTYau2Svy20RFvXdJq4Qgv+3Mb5Hzbp2v7Jw3jzoxxPZghLL7auVj4SV3Pboo6 /w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32sr7h9sr9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 03:36:54 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07A7RlMp058579;
-        Mon, 10 Aug 2020 03:27:47 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32sr7h9qun-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 03:25:17 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07A7H9F0017736;
-        Mon, 10 Aug 2020 07:18:52 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06fra.de.ibm.com with ESMTP id 32skah17wa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Aug 2020 07:18:51 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07A7Im4t27460080
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 Aug 2020 07:18:49 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CFA1511C05B;
-        Mon, 10 Aug 2020 07:18:48 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 25B8311C052;
-        Mon, 10 Aug 2020 07:18:46 +0000 (GMT)
-Received: from srikart450.in.ibm.com (unknown [9.102.18.208])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 10 Aug 2020 07:18:45 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-Subject: [PATCH v5 02/10] powerpc/smp: Merge Power9 topology with Power topology
-Date:   Mon, 10 Aug 2020 12:48:26 +0530
-Message-Id: <20200810071834.92514-3-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200810071834.92514-1-srikar@linux.vnet.ibm.com>
-References: <20200810071834.92514-1-srikar@linux.vnet.ibm.com>
+        Mon, 10 Aug 2020 03:31:32 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB82C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 00:31:32 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z18so7147060wrm.12
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 00:31:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=4x9G4BKQPEodKbNbhS34JTOCfB7se7v0YDW0moilQvg=;
+        b=KmjOr7lGhApH6KmO1rV2ur9Cq8V7cNEvM8FRBK312jsW9+HLFlI/uzKP10UPa5smUh
+         MoOjclfPeo/4V+LP8l7LPZ68sn9H/heVE996XMzsiBINWGZfhnIE+3CJJd4WeacdBgBa
+         kg4kjO9LHV4tvpX3bK4xbgbWcsXdIN4b3k/ISucIebTERr0TEg1H8+JuovkT6/2gBHWn
+         HcWBMkGEy5oDrrBGqN9Haq1IlLCWfIWvZsDoy/7r1majuwzYvVqFwkiLFLJ3SeHEjEl+
+         ENQHPT2cAjuLfipnQNOXfEHR9/QMK+2cPXur508C9BBp0SQIbaek9bsgdDPq4vL/m0il
+         YJzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4x9G4BKQPEodKbNbhS34JTOCfB7se7v0YDW0moilQvg=;
+        b=I5zDxNSqDfx/tehjube62QUPbqOWXsgilaYyXRfCr7W1BxM0+JzUK2mAwC1vyYx0eq
+         y5Si+MN4mEfGzlYehZ3yc05DxwOJ/tvnDoBKsQ+UJksM19VGjmOejus8zjsipZE0pn9g
+         6gR8ZIx4R0ME+FDSMCJxidNe/jZXlxgEMwZ11j21plmHloJTJmzVbM6ox15LAm0Nx6G2
+         6HoEjrBGCE7arVeqiSViEJQN//b1lMP3hq6V7ycT35LCkd152I7QPPDR+sxLLJ074Hok
+         76Si0xYxQMsbf0iruf0Qd7DTQRG8MZ2qevQ3Yu+rLxyuKTm1NnGco1z1pdotCrQO6mj0
+         vVQg==
+X-Gm-Message-State: AOAM530PX8zgKRgR+rzwMR7sWeiJhAdbt21UugPx2R1wXt6gluHQqh/9
+        pBKfQauGNR7M4im8PUxtxkgd1w==
+X-Google-Smtp-Source: ABdhPJxExxrYLyu6qXhRPgZztXKPrU/zgJr51FhpKEO58wSzN65gPrJEPbrrE6QHLTBHtOvwIbO0TA==
+X-Received: by 2002:adf:a351:: with SMTP id d17mr23056398wrb.111.1597044691012;
+        Mon, 10 Aug 2020 00:31:31 -0700 (PDT)
+Received: from dell ([2.27.167.73])
+        by smtp.gmail.com with ESMTPSA id z15sm20056653wrn.89.2020.08.10.00.31.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Aug 2020 00:31:30 -0700 (PDT)
+Date:   Mon, 10 Aug 2020 08:31:28 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Josef Friedl <josef.friedl@speed.at>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        srv_heupstream <srv_heupstream@mediatek.com>
+Subject: Re: [PATCH 1/8] mfd: mt6358: refine interrupt code
+Message-ID: <20200810073128.GC4411@dell>
+References: <1595509133-5358-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <1595509133-5358-2-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <20200727154840.GY1850026@dell>
+ <1596443379.31084.3.camel@mtksdaap41>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-10_02:2020-08-06,2020-08-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- adultscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
- suspectscore=0 priorityscore=1501 spamscore=0 phishscore=0 mlxlogscore=999
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008100048
+In-Reply-To: <1596443379.31084.3.camel@mtksdaap41>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new sched_domain_topology_level was added just for Power9. However the
-same can be achieved by merging powerpc_topology with power9_topology
-and makes the code more simpler especially when adding a new sched
-domain.
+On Mon, 03 Aug 2020, Hsin-hsiung Wang wrote:
 
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Anton Blanchard <anton@ozlabs.org>
-Cc: Oliver O'Halloran <oohall@gmail.com>
-Cc: Nathan Lynch <nathanl@linux.ibm.com>
-Cc: Michael Neuling <mikey@neuling.org>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Jordan Niethe <jniethe5@gmail.com>
-Cc: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
-Changelog v1 -> v2:
-	Replaced a reference to cpu_smt_mask with per_cpu(cpu_sibling_map, cpu)
-	since cpu_smt_mask is only defined under CONFIG_SCHED_SMT
+> Hi,
+> 
+> On Mon, 2020-07-27 at 16:48 +0100, Lee Jones wrote:
+> > On Thu, 23 Jul 2020, Hsin-Hsiung Wang wrote:
+> > 
+> > > This patch refines the interrupt related code to support new chips.
+> > 
+> > Refines in what way?
+> > 
+> > What makes this better?
+> > 
+> 
+> Thanks for the comment. I will add more information into comment message
+> based on my below explanation.
 
- arch/powerpc/kernel/smp.c | 25 +++----------------------
- 1 file changed, 3 insertions(+), 22 deletions(-)
+Thanks.
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index edf94ca64eea..08da765b91f1 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -1313,7 +1313,7 @@ int setup_profiling_timer(unsigned int multiplier)
- }
- 
- #ifdef CONFIG_SCHED_SMT
--/* cpumask of CPUs with asymetric SMT dependancy */
-+/* cpumask of CPUs with asymmetric SMT dependency */
- static int powerpc_smt_flags(void)
- {
- 	int flags = SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES;
-@@ -1326,14 +1326,6 @@ static int powerpc_smt_flags(void)
- }
- #endif
- 
--static struct sched_domain_topology_level powerpc_topology[] = {
--#ifdef CONFIG_SCHED_SMT
--	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
--#endif
--	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
--	{ NULL, },
--};
--
- /*
-  * P9 has a slightly odd architecture where pairs of cores share an L2 cache.
-  * This topology makes it *much* cheaper to migrate tasks between adjacent cores
-@@ -1361,7 +1353,7 @@ static const struct cpumask *smallcore_smt_mask(int cpu)
- }
- #endif
- 
--static struct sched_domain_topology_level power9_topology[] = {
-+static struct sched_domain_topology_level powerpc_topology[] = {
- #ifdef CONFIG_SCHED_SMT
- 	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
- #endif
-@@ -1386,21 +1378,10 @@ void __init smp_cpus_done(unsigned int max_cpus)
- #ifdef CONFIG_SCHED_SMT
- 	if (has_big_cores) {
- 		pr_info("Big cores detected but using small core scheduling\n");
--		power9_topology[0].mask = smallcore_smt_mask;
- 		powerpc_topology[0].mask = smallcore_smt_mask;
- 	}
- #endif
--	/*
--	 * If any CPU detects that it's sharing a cache with another CPU then
--	 * use the deeper topology that is aware of this sharing.
--	 */
--	if (shared_caches) {
--		pr_info("Using shared cache scheduler topology\n");
--		set_sched_topology(power9_topology);
--	} else {
--		pr_info("Using standard scheduler topology\n");
--		set_sched_topology(powerpc_topology);
--	}
-+	set_sched_topology(powerpc_topology);
- }
- 
- #ifdef CONFIG_HOTPLUG_CPU
+> > > Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> > > ---
+> > >  drivers/mfd/mt6358-irq.c        | 65 ++++++++++++++++++++++++-----------------
+> > >  include/linux/mfd/mt6358/core.h |  8 ++---
+> > >  2 files changed, 41 insertions(+), 32 deletions(-)
+> > > 
+> > > diff --git a/drivers/mfd/mt6358-irq.c b/drivers/mfd/mt6358-irq.c
+> > > index db734f2..4b094e5 100644
+> > > --- a/drivers/mfd/mt6358-irq.c
+> > > +++ b/drivers/mfd/mt6358-irq.c
+> > > @@ -13,7 +13,9 @@
+> > >  #include <linux/platform_device.h>
+> > >  #include <linux/regmap.h>
+> > >  
+> > > -static struct irq_top_t mt6358_ints[] = {
+> > > +#define MTK_PMIC_REG_WIDTH 16
+> > > +
+> > > +static const struct irq_top_t mt6358_ints[] = {
+> > >  	MT6358_TOP_GEN(BUCK),
+> > >  	MT6358_TOP_GEN(LDO),
+> > >  	MT6358_TOP_GEN(PSC),
+> > > @@ -24,6 +26,13 @@ static struct irq_top_t mt6358_ints[] = {
+> > >  	MT6358_TOP_GEN(MISC),
+> > >  };
+> > >  
+> > > +static struct pmic_irq_data mt6358_irqd = {
+> > > +	.num_top = ARRAY_SIZE(mt6358_ints),
+> > > +	.num_pmic_irqs = MT6358_IRQ_NR,
+> > > +	.top_int_status_reg = MT6358_TOP_INT_STATUS0,
+> > > +	.pmic_ints = mt6358_ints,
+> > > +};
+> > 
+> > Dynamically assigned driver data is usually preferred.
+> > 
+> > Why have you gone static?
+> > 
+> 
+> Do you consider the memory allocation?
+> Below modification is to assign necessary data dynamically and the code
+> will become longer with more chips if we assign every member of the
+> structure.
+
+[...]
+
+Never mind.  On second glance, this should be fine.
+
 -- 
-2.18.2
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
