@@ -2,78 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2AC2401D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 08:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDDC2401DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 08:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726025AbgHJGEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 02:04:20 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:22890 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725808AbgHJGET (ORCPT
+        id S1726115AbgHJGKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 02:10:36 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:61367 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725846AbgHJGKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 02:04:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597039457;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=n/g6ocOTxpoqmnPi0HORaNoUPZsIO5+a1HDXeru2CPY=;
-        b=S3xCc2pTOnhkz4TOfvS4ujS6d1duDPuoNqp78UWrbkHu+DLJnUVtXwhzeR1l4gYv+7oMYS
-        ZigwtWxHM85IvcZ1Pkr4PN58gPQdD1ouHTzOUqbmJxWcQq7OfDVsEvBtfX548ZaGTqNglQ
-        oT1vqBML3ym4JtFn/zQtDFpxwgJPbR4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-289-DPkl7louOe-6NWjDofFxMg-1; Mon, 10 Aug 2020 02:04:13 -0400
-X-MC-Unique: DPkl7louOe-6NWjDofFxMg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1007579EC1;
-        Mon, 10 Aug 2020 06:04:11 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-13-38.pek2.redhat.com [10.72.13.38])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9C4045C22A;
-        Mon, 10 Aug 2020 06:03:59 +0000 (UTC)
-Date:   Mon, 10 Aug 2020 14:03:55 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     chenzhou <chenzhou10@huawei.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com,
-        tglx@linutronix.de, mingo@redhat.com, bhe@redhat.com,
-        corbet@lwn.net, John.P.donnelly@oracle.com,
-        prabhakar.pkin@gmail.com, bhsharma@redhat.com, horms@verge.net.au,
-        robh+dt@kernel.org, arnd@arndb.de, nsaenzjulienne@suse.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        guohanjun@huawei.com, xiexiuqi@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com
-Subject: Re: [PATCH v11 5/5] kdump: update Documentation about crashkernel
-Message-ID: <20200810060355.GB6988@dhcp-128-65.nay.redhat.com>
-References: <20200801130856.86625-1-chenzhou10@huawei.com>
- <20200801130856.86625-6-chenzhou10@huawei.com>
- <20200808100239.GB60590@dhcp-128-65.nay.redhat.com>
- <96d0da23-d484-7f66-1680-07b4b5984831@huawei.com>
+        Mon, 10 Aug 2020 02:10:36 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200810061032epoutp0393c5042829fce2f4560e4afb32a5051c~p00QrRKjR1033210332epoutp03r
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 06:10:32 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200810061032epoutp0393c5042829fce2f4560e4afb32a5051c~p00QrRKjR1033210332epoutp03r
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1597039832;
+        bh=EQsNdLKwnUjV9oPhkjVIs8QrNi6n4zD2Ql/kkSq1qrk=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=BN+xQ+3CGZXUHAEpETmzEn/aFdi9kq8ofM3iI7FqZBX+5VaPNsRzQg72ZbROySUjl
+         N5U9x5aRvwGw4Xx9JMVCvMv7VDD2tm+2iwhpfZdtFcoRvucDDML6Taensc+OTkLY6g
+         kRo9CpwdEJxeBVY/iP2nJj8S3UmIUmEljVKmKfCY=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20200810061026epcas1p342621fcbccd43ddb51c71c7294596c97~p00K8oZqI1286012860epcas1p3V;
+        Mon, 10 Aug 2020 06:10:26 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4BQ5DK2xRszMqYkr; Mon, 10 Aug
+        2020 06:10:25 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7F.CC.29173.0D4E03F5; Mon, 10 Aug 2020 15:10:24 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200810061021epcas1p23084a8dfb142c2bd0d28c9df6f4c2a18~p00Ga2Wk_0930009300epcas1p2j;
+        Mon, 10 Aug 2020 06:10:21 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200810061021epsmtrp1424818bf74796aa764f0f672892f3f0d~p00GXJy2m3271932719epsmtrp1r;
+        Mon, 10 Aug 2020 06:10:21 +0000 (GMT)
+X-AuditID: b6c32a37-9b7ff700000071f5-60-5f30e4d0eca3
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        AA.18.08303.DC4E03F5; Mon, 10 Aug 2020 15:10:21 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200810061021epsmtip215fe198768fc4f6efc8b4d33467ec2ec~p00GNQfU-1390513905epsmtip2h;
+        Mon, 10 Aug 2020 06:10:21 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
+Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
+        <mori.takahiro@ab.mitsubishielectric.co.jp>,
+        <motai.hirotaka@aj.mitsubishielectric.co.jp>,
+        "'Sungjong Seo'" <sj1557.seo@samsung.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200806010229.24690-1-kohada.t2@gmail.com>
+Subject: RE: [PATCH v3] exfat: integrates dir-entry getting and validation
+Date:   Mon, 10 Aug 2020 15:10:21 +0900
+Message-ID: <003c01d66edc$edbb1690$c93143b0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <96d0da23-d484-7f66-1680-07b4b5984831@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQH6G9isXEQ9sMxkt33jRW4ItYjr3QIF0gSvqNlP5GA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBJsWRmVeSWpSXmKPExsWy7bCmvu6FJwbxBvOvKVv8mHubxeLNyaks
+        Fnv2nmSxuLxrDpvF5f+fWCyWfZnMYrHl3xFWB3aPL3OOs3u0Tf7H7tF8bCWbx85Zd9k9+ras
+        YvT4vEkugC0qxyYjNTEltUghNS85PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DX
+        LTMH6BYlhbLEnFKgUEBicbGSvp1NUX5pSapCRn5xia1SakFKToGhQYFecWJucWleul5yfq6V
+        oYGBkSlQZUJOxu+DVQWvWCs6371mb2C8z9LFyMEhIWAi8abTtouRi0NIYAejxIdXl5kgnE+M
+        En+3/mPvYuQEcj4zSnxZWAhigzQ0ndjLBlG0i1Hi0Yt+dgjnJaNE65rNTCBVbAK6Ev/+7GcD
+        sUUE9CROnrwO1sEs0MgksfzEF2aQBKeApcSpe/9YQe4QFvCSmNcrBRJmEVCVaN52iAkkzAtU
+        suekGEiYV0BQ4uTMJywgNrOAvMT2t3OYIQ5SkPj5dBkrxCoriQWzfzFB1IhIzO5sYwZZKyGw
+        lEPix5LDUC+7SFxqjoPoFZZ4dXwLO4QtJfGyv40doqRa4uN+qPEdjBIvvttC2MYSN9dvADuY
+        WUBTYv0ufYiwosTO33MZIbbySbz72sMKMYVXoqNNCKJEVaLv0mEmCFtaoqv9A/sERqVZSP6a
+        heSvWUjun4WwbAEjyypGsdSC4tz01GLDAmPkeN7ECE6iWuY7GKe9/aB3iJGJg/EQowQHs5II
+        r91d/Xgh3pTEyqrUovz4otKc1OJDjKbAgJ7ILCWanA9M43kl8YamRsbGxhYmZuZmpsZK4rwP
+        bynECwmkJ5akZqemFqQWwfQxcXBKNTCJtG18Gs42qfa4QG9T5IJU6bw3e0TtwmZdOSZ20rOe
+        Q9d2yrVH87VYm3dOqLTz4Oe6ryu6gXdOTfKs9cIb9399VMYz+bnx5qUn3p1m1lp28s2ahNJD
+        20x5fop4dLh2OE+8U+15sTd3y/wptx7t+dBpffHXwcufpN5MtGJ2Npu1+7fvvjlbe+8e+FMt
+        x3p5/jG2vcwVXgaqnscsGV4d1yhsObi0ZknNZEsN4Z+XfjAb2Gk8Ybd6/o67I0hrsUqygLxb
+        xNWdr6WtvgW2FRTlBmV2l2p3bmia+mTN+Z5bJvtbv2c/Z2Kdw1VUdHzXYZc54gu2xmtqfT5T
+        pnhuxlrm6v+H51g78ifO2pGTWpl/UvO7EktxRqKhFnNRcSIAue1VaisEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmkeLIzCtJLcpLzFFi42LZdlhJXvfsE4N4g5W3ZC1+zL3NYvHm5FQW
+        iz17T7JYXN41h83i8v9PLBbLvkxmsdjy7wirA7vHlznH2T3aJv9j92g+tpLNY+esu+wefVtW
+        MXp83iQXwBbFZZOSmpNZllqkb5fAlfH7YFXBK9aKznev2RsY77N0MXJySAiYSDSd2MvWxcjF
+        ISSwg1Hiyp4PUAlpiWMnzjB3MXIA2cIShw8XQ9Q8Z5SYsHAqWA2bgK7Evz/72UBsEQE9iZMn
+        r4MNYhZoZpL49mwJM0hCSKCLUWLpdXYQm1PAUuLUvX+sIEOFBbwk5vVKgYRZBFQlmrcdYgIJ
+        8wKV7DkpBhLmFRCUODnzCQtImBlofNtGRpAws4C8xPa3c5ghrlSQ+Pl0GSvEBVYSC2b/YoKo
+        EZGY3dnGPIFReBaSSbMQJs1CMmkWko4FjCyrGCVTC4pz03OLDQuM8lLL9YoTc4tL89L1kvNz
+        NzGC40lLawfjnlUf9A4xMnEwHmKU4GBWEuG1u6sfL8SbklhZlVqUH19UmpNafIhRmoNFSZz3
+        66yFcUIC6YklqdmpqQWpRTBZJg5OqQYmSxOhTVs8tK4cNMwqP/86LOxfqmbv4sm797AHWU47
+        /uNL4VNtFZ51Oyw1WrtvKb/ZJvRnd+P/Vx5qv007FDOvpifPNF61UWBxzvXAPWZnD36S+j39
+        5h+L9FU/n6v7bGr52y4ivcFi19l4pw0q7W/38R3R3mSzInBlUPC2t6drrBmkvrxbudD7gNJU
+        ZSWuCYfEOP6tVPLdb/04e0Lb6ZthJfPtZqnnbfrYvlTxqJlWzKGdbwVvvrH/q+Y+bdeRK6e/
+        pa3O2X4y0Ptdz5NLVzN/aUfd/f+srS6RcZlY2Z6EltCkS+enOE+dazGj/trfNVZH14k9WK6y
+        xDhC9GBLtPPJ3VZHWTquqJ6ytpx0Y/JsuTlKLMUZiYZazEXFiQCrEuqBFgMAAA==
+X-CMS-MailID: 20200810061021epcas1p23084a8dfb142c2bd0d28c9df6f4c2a18
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200806010250epcas1p482847d6d906fbf0ccd618c7d1cacd12e
+References: <CGME20200806010250epcas1p482847d6d906fbf0ccd618c7d1cacd12e@epcas1p4.samsung.com>
+        <20200806010229.24690-1-kohada.t2@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-> > Previously I remember we talked about to use similar logic as X86, but I
-> > remember you mentioned on some arm64 platform there could be no low
-> > memory at all.  Is this not a problem now for the fallback?  Just be
-> > curious, thanks for the update, for the common part looks good.
-> Hi Dave,
 > 
-> Did you mean this discuss: https://lkml.org/lkml/2019/12/27/122?
-
-I meant about this reply instead :)
-https://lkml.org/lkml/2020/1/16/616
-
-Thanks
-Dave
+> +#define TYPE_PRIMARY		(TYPE_CRITICAL_PRI | TYPE_BENIGN_PRI)
+> +#define TYPE_SECONDARY		(TYPE_CRITICAL_SEC | TYPE_BENIGN_SEC)
+> +
+>  #define MAX_CHARSET_SIZE	6 /* max size of multi-byte character */
+>  #define MAX_NAME_LENGTH		255 /* max len of file name excluding NULL */
+>  #define MAX_VFSNAME_BUF_SIZE	((MAX_NAME_LENGTH + 1) * MAX_CHARSET_SIZE)
+> @@ -171,7 +174,9 @@ struct exfat_entry_set_cache {
+>  	unsigned int start_off;
+>  	int num_bh;
+>  	struct buffer_head *bh[DIR_CACHE_SIZE];
+> -	unsigned int num_entries;
+> +	int num_entries;
+> +	struct exfat_de_file *de_file;
+> +	struct exfat_de_stream *de_stream;
+I prefer to assign validated entries to **de and use it using enum value.
+	struct exfat_dentry **de;
+>  };
 
