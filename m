@@ -2,77 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3989C2402F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 09:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598682402F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 09:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgHJHp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 03:45:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:53784 "EHLO foss.arm.com"
+        id S1726595AbgHJHq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 03:46:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725894AbgHJHp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 03:45:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 821B01FB;
-        Mon, 10 Aug 2020 00:45:26 -0700 (PDT)
-Received: from bogus (unknown [10.37.12.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C1C453F7BB;
-        Mon, 10 Aug 2020 00:45:24 -0700 (PDT)
-Date:   Mon, 10 Aug 2020 08:45:17 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Sumit Gupta <sumitg@nvidia.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH] fix arm64 build with lack of __cpu_logical_map exported
-Message-ID: <20200810074517.GA28091@bogus>
-References: <20200808124242.GA352821@kroah.com>
- <20200808150443.GA492@DESKTOP-O1885NU.localdomain>
+        id S1725894AbgHJHqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 03:46:55 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF34D2065C;
+        Mon, 10 Aug 2020 07:46:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597045615;
+        bh=d7yZTMaajyYYDp1xUH/+msJ7BOrEiV5LPH4/r1jiZps=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xUMoQJ0Rj1qEx67OX2Ceqywy2Yyj+2T8X3o+e9FmDy8FR2gT+SJGFsA/UQvR136dN
+         CXt3WUVGCc0S2UXFpVGgzG9+umduUDstNjQc4eBhgYIN6uAYIMVf+Jd+R/xGfiV9Y4
+         JmfripfRyZPVjP09oPKx/jtALkGprinOP82Pn2Bs=
+Date:   Mon, 10 Aug 2020 09:47:06 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     syzbot <syzbot+a7e220df5a81d1ab400e@syzkaller.appspotmail.com>
+Cc:     andreyknvl@google.com, balbi@kernel.org, dan.carpenter@oracle.com,
+        glider@google.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: KMSAN: kernel-infoleak in raw_ioctl
+Message-ID: <20200810074706.GD1529187@kroah.com>
+References: <000000000000ce85c405ac744ff6@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200808150443.GA492@DESKTOP-O1885NU.localdomain>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <000000000000ce85c405ac744ff6@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
+On Sun, Aug 09, 2020 at 09:27:18AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    ce8056d1 wip: changed copy_from_user where instrumented
+> git tree:       https://github.com/google/kmsan.git master
+> console output: https://syzkaller.appspot.com/x/log.txt?x=141eb8b2900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3afe005fb99591f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=a7e220df5a81d1ab400e
+> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> userspace arch: i386
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
 
-On Sat, Aug 08, 2020 at 04:05:00PM +0100, Catalin Marinas wrote:
-> Hi Greg,
-> 
-> On Sat, Aug 08, 2020 at 02:42:42PM +0200, Greg Kroah-Hartman wrote:
-> > diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-> > index 87e81d29e6fb..b421a4756793 100644
-> > --- a/arch/arm64/kernel/setup.c
-> > +++ b/arch/arm64/kernel/setup.c
-> > @@ -275,6 +275,7 @@ static int __init reserve_memblock_reserved_regions(void)
-> >  arch_initcall(reserve_memblock_reserved_regions);
-> >  
-> >  u64 __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = INVALID_HWID };
-> > +EXPORT_SYMBOL_GPL(__cpu_logical_map);
-> 
-> This was still under discussion, Sudeep preferring an alternative in the
-> driver:
-> 
-> http://lkml.kernel.org/r/20200727172744.GD8003@bogus
-> http://lkml.kernel.org/r/20200724131059.GB6521@bogus
-> 
-> Sumit came with a new diff inline that fixes the driver instead of
-> exporting the __cpu_logical_map.
-> 
-> https://lore.kernel.org/linux-arm-kernel/e3a4bc21-c334-4d48-90b5-aab8d187939e@nvidia.com/
-> 
-> Sumit, Sudeep, is the above diff sufficient and can it go upstream?
-> 
+The irony of a kernel module written for syzbot testing, causing syzbot
+reports....
 
-Yes I prefer the above in above thread. I will reply on that thread. Sorry
-for missing, been a week.
-
--- 
-Regards,
-Sudeep
