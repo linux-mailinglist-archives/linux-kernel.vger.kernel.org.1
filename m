@@ -2,62 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732B5240470
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 12:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFCF240473
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 12:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgHJKEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 06:04:05 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:54309 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgHJKEF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 06:04:05 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1k54ev-00067X-Dd; Mon, 10 Aug 2020 10:04:01 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/vmwgfx: fix spelling mistake "Cant" -> "Can't"
-Date:   Mon, 10 Aug 2020 11:04:01 +0100
-Message-Id: <20200810100401.61209-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        id S1726518AbgHJKEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 06:04:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726173AbgHJKEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 06:04:51 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 987E220709;
+        Mon, 10 Aug 2020 10:04:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597053891;
+        bh=mvCtbaQWqQwxaFpcHbRDygRoOjwTGaYJbnOoivqrt3A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hSaka4gxJb2Zgqr8ZCaGdaJ/fDgmdCQmQdBD+FpBRnvznQSPc1hvnQAcdG9z8E4sR
+         Z+r+NwV4I6nbaqCmCs94L02L/dyqrEQsgZJBUOoZ9mu9NaGC8uyWceNr0qefGA2QVI
+         j9cAprsqDFUUUY8+a3Jg4P9pPxWaDSJ3O64w2ug4=
+Date:   Mon, 10 Aug 2020 12:05:02 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     bigeasy@linutronix.de, linux-kernel@vger.kernel.org,
+        linux@roeck-us.net, mingo@redhat.com, paulmck@kernel.org,
+        peterz@infradead.org, rostedt@goodmis.org, tglx@linutronix.de,
+        will@kernel.org
+Subject: Re: [PATCH] Revert "seqlock: lockdep assert non-preemptibility on
+ seqcount_t write"
+Message-ID: <20200810100502.GA2406768@kroah.com>
+References: <20200810085954.GA1591892@kroah.com>
+ <20200810095428.2602276-1-a.darwish@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200810095428.2602276-1-a.darwish@linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Mon, Aug 10, 2020 at 11:54:28AM +0200, Ahmed S. Darwish wrote:
+> This reverts commit 859247d39fb008ea812e8f0c398a58a20c12899e.
+> 
+> Current implementation of lockdep_assert_preemption_disabled() uses
+> per-CPU variables, which was done to untangle the existing
+> seqlock.h<=>sched.h 'current->' task_struct circular dependency.
+> 
+> Using per-CPU variables did not fully untangle the dependency for
+> various non-x86 architectures though, resulting in multiple broken
+> builds. For the affected architectures, raw_smp_processor_id() led
+> back to 'current->', thus having the original seqlock.h<=>sched.h
+> dependency in full-effect.
+> 
+> For now, revert adding lockdep_assert_preemption_disabled() to
+> seqlock.h.
+> 
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Link: https://lkml.kernel.org/r/20200808232122.GA176509@roeck-us.net
+> Link: https://lkml.kernel.org/r/20200810085954.GA1591892@kroah.com
+> References: Commit a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context} to per-cpu variables")
+> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 
-There is a spelling mistake in a DRM_ERROR message. Fix it.
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Even after this, there are still some build errors on arm32, but I don't
+think they are due to this change:
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-index bbce45d142aa..471836672312 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-@@ -186,7 +186,7 @@ void vmw_kms_cursor_snoop(struct vmw_surface *srf,
- 		/* TODO handle none page aligned offsets */
- 		/* TODO handle more dst & src != 0 */
- 		/* TODO handle more then one copy */
--		DRM_ERROR("Cant snoop dma request for cursor!\n");
-+		DRM_ERROR("Can't snoop dma request for cursor!\n");
- 		DRM_ERROR("(%u, %u, %u) (%u, %u, %u) (%ux%ux%u) %u %u\n",
- 			  box->srcx, box->srcy, box->srcz,
- 			  box->x, box->y, box->z,
--- 
-2.27.0
+	ERROR: modpost: "__aeabi_uldivmod" [drivers/net/ethernet/sfc/sfc.ko] undefined!
+	ERROR: modpost: "__bad_udelay" [drivers/net/ethernet/aquantia/atlantic/atlantic.ko] undefined!
 
+thanks,
+
+greg k-h
