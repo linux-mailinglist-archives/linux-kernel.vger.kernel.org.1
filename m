@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4C8240A0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45598240A21
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728968AbgHJPiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:38:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60170 "EHLO mail.kernel.org"
+        id S1727888AbgHJPZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:25:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728513AbgHJP0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:26:16 -0400
+        id S1728506AbgHJPZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:25:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A633520658;
-        Mon, 10 Aug 2020 15:26:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D2EB20772;
+        Mon, 10 Aug 2020 15:25:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073175;
-        bh=zn1+86pPO0MeKxVnkura4kzFBwLZ2uBgm92quMahL+U=;
+        s=default; t=1597073117;
+        bh=9MYJ4viWV0IEtWiX47EV+1kFx/B6YnfEQUrVtqU1GEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xiRcf4xYT7BiD6YplR7z6trVKxNHQjl66fz4OIFBneB0+aNwQIwCIoR6B7D6VXkwb
-         F5yR9XVJNS8M75XdSMlWgbp8FaE/ztd/UYmZJvFjZ7HqlledP7td368kyNlyzsynE8
-         MFj0HDE6nVtq28fTgEjjqg7Dmy+0suXwTvU8sHHo=
+        b=K1x7tyvkWLzJ6ugYPUnIG378mc2vHt0W572RIDJxUk1cEJJzrJrJlFvC1C9B0R4F2
+         Ohj3chpIBJk/uT4ldHzUIKhO3akVzpuKleFDaURY+ZTEzKdpy24YkZEQmhNMJqJJQc
+         IhfRLPAohMKvDG1WT0DIHGKr7jaDAt6f46koYpU0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+1a54a94bd32716796edd@syzkaller.appspotmail.com,
-        syzbot+9d2abfef257f3e2d4713@syzkaller.appspotmail.com,
-        Hillf Danton <hdanton@sina.com>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 13/67] ALSA: seq: oss: Serialize ioctls
-Date:   Mon, 10 Aug 2020 17:21:00 +0200
-Message-Id: <20200810151810.080801939@linuxfoundation.org>
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Alain Volmat <alain.volmat@st.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 42/79] i2c: slave: improve sanity check when registering
+Date:   Mon, 10 Aug 2020 17:21:01 +0200
+Message-Id: <20200810151814.351579726@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
-References: <20200810151809.438685785@linuxfoundation.org>
+In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
+References: <20200810151812.114485777@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,51 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-commit 80982c7e834e5d4e325b6ce33757012ecafdf0bb upstream.
+[ Upstream commit 1b1be3bf27b62f5abcf85c6f3214bdb9c7526685 ]
 
-Some ioctls via OSS sequencer API may race and lead to UAF when the
-port create and delete are performed concurrently, as spotted by a
-couple of syzkaller cases.  This patch is an attempt to address it by
-serializing the ioctls with the existing register_mutex.
+Add check for ERR_PTR and simplify code while here.
 
-Basically OSS sequencer API is an obsoleted interface and was designed
-without much consideration of the concurrency.  There are very few
-applications with it, and the concurrent performance isn't asked,
-hence this "big hammer" approach should be good enough.
-
-Reported-by: syzbot+1a54a94bd32716796edd@syzkaller.appspotmail.com
-Reported-by: syzbot+9d2abfef257f3e2d4713@syzkaller.appspotmail.com
-Suggested-by: Hillf Danton <hdanton@sina.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200804185815.2453-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Alain Volmat <alain.volmat@st.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/seq/oss/seq_oss.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/i2c/i2c-core-slave.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/sound/core/seq/oss/seq_oss.c
-+++ b/sound/core/seq/oss/seq_oss.c
-@@ -168,10 +168,16 @@ static long
- odev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+diff --git a/drivers/i2c/i2c-core-slave.c b/drivers/i2c/i2c-core-slave.c
+index 5427f047faf06..549751347e6c7 100644
+--- a/drivers/i2c/i2c-core-slave.c
++++ b/drivers/i2c/i2c-core-slave.c
+@@ -18,10 +18,8 @@ int i2c_slave_register(struct i2c_client *client, i2c_slave_cb_t slave_cb)
  {
- 	struct seq_oss_devinfo *dp;
-+	long rc;
-+
- 	dp = file->private_data;
- 	if (snd_BUG_ON(!dp))
- 		return -ENXIO;
--	return snd_seq_oss_ioctl(dp, cmd, arg);
-+
-+	mutex_lock(&register_mutex);
-+	rc = snd_seq_oss_ioctl(dp, cmd, arg);
-+	mutex_unlock(&register_mutex);
-+	return rc;
- }
+ 	int ret;
  
- #ifdef CONFIG_COMPAT
+-	if (!client || !slave_cb) {
+-		WARN(1, "insufficient data\n");
++	if (WARN(IS_ERR_OR_NULL(client) || !slave_cb, "insufficient data\n"))
+ 		return -EINVAL;
+-	}
+ 
+ 	if (!(client->flags & I2C_CLIENT_SLAVE))
+ 		dev_warn(&client->dev, "%s: client slave flag not set. You might see address collisions\n",
+-- 
+2.25.1
+
 
 
