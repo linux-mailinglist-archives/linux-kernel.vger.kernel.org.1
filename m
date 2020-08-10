@@ -2,133 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CFB240A1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C26240A38
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728721AbgHJPiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:38:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728101AbgHJPin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:38:43 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FA4D22D6F;
-        Mon, 10 Aug 2020 15:38:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073923;
-        bh=ymggXvQMYTuMlvb7REMGaGjoHB0LOXnlg1VMPd0fUPA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gqSdXHM81gwbzXzR3XVYr5Cv+R1XKxsB0Haq0sLcU11okQ/SfDFLepmttZBjNBRI2
-         sJqCnW2gXGPrpEQeQ4uA6hzCEITw02Wz/B5xg8mRxj58Gcj49fcoo4GoZDCWd6aA+G
-         RTRqaZuEkc70RUANlwkxqSbzHWGUoSIzKPAJXLxE=
-Date:   Mon, 10 Aug 2020 17:38:35 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Avi Shchislowski <Avi.Shchislowski@wdc.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        Avri Altman <Avri.Altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Subject: Re: [PATCH v6 0/5] scsi: ufs: Add Host Performance Booster Support
-Message-ID: <20200810153835.GA4169109@kroah.com>
-References: <CGME20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8@epcms2p8>
- <963815509.21594636682161.JavaMail.epsvc@epcpadp2>
- <SN6PR04MB38720C3D8FC176C3C7FB51B89A7E0@SN6PR04MB3872.namprd04.prod.outlook.com>
- <4174fcf4-73ec-8e3f-90a5-1e7584e3e2d0@acm.org>
- <SN6PR04MB3872FBE1EAE3578BFD2601189A7F0@SN6PR04MB3872.namprd04.prod.outlook.com>
+        id S1729163AbgHJPj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:39:29 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:39395 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728621AbgHJPj0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:39:26 -0400
+Received: by mail-il1-f200.google.com with SMTP id i66so8139624ile.6
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 08:39:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=gHZ8chDzSmVfqCZYobXifUF8tI0k1CLJAjBpo1Aob1g=;
+        b=Ab7L9AAOGigbzyAh3fZmpRVd5jhN3tD2cAn97U1uNX7yU9H0KwsjSiywhTRA6o1ueJ
+         CDvo9GLuCX9xhTBq6IwxfVcLpy1IBBQHuuqYbuDF8ied2iPTHivq5RjhP35TzypLLQ9R
+         0qcsYo0uWscyPX8YoPSdAB7n2/lSOm2ZLCRxi7xHLLEymtTka0tvEF9ZfmNsCqG07LrX
+         SHc18yuDUH5qRg0j2X/C5X3UEpK6iGdDvYc5BIxJr6dRc34roWgBBtQz/APt5MEZgxvc
+         Fys4rNBXr6kK7fKWQVGM38TUDE2tPp1lmEw6rVTr/aivJ1/wCQjy0hPlmJMm8c2NbPoH
+         LBSQ==
+X-Gm-Message-State: AOAM5321u/kHAzZKD6tmQEwMzfVK2HsZg16Q0hXQKdcAyz2llNB3xad8
+        DJGKnHfNcDd7+Gz/lCGkSxwhsGE+ScWJ48bPwd//RFJxAnda
+X-Google-Smtp-Source: ABdhPJys4BhvEg9Pbf2v4lOJ3eCwpwGbLc0aKfQhZxcrGrwl/gD3kT13oQlbawtD9TmpjBKwXLUKCblWWRKiO2aqYenWG0LpEIgj
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SN6PR04MB3872FBE1EAE3578BFD2601189A7F0@SN6PR04MB3872.namprd04.prod.outlook.com>
+X-Received: by 2002:a92:c8c1:: with SMTP id c1mr18477676ilq.42.1597073965948;
+ Mon, 10 Aug 2020 08:39:25 -0700 (PDT)
+Date:   Mon, 10 Aug 2020 08:39:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006ba6be05ac87c2ff@google.com>
+Subject: KASAN: global-out-of-bounds Read in fl_dump_key
+From:   syzbot <syzbot+fb2e9e2cc0c13aa477f3@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 10:00:57AM +0000, Avi Shchislowski wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Bart Van Assche <bvanassche@acm.org>
-> > Sent: Thursday, July 16, 2020 4:42 AM
-> > To: Avi Shchislowski <Avi.Shchislowski@wdc.com>;
-> > daejun7.park@samsung.com; Avri Altman <Avri.Altman@wdc.com>;
-> > jejb@linux.ibm.com; martin.petersen@oracle.com; asutoshd@codeaurora.org;
-> > beanhuo@micron.com; stanley.chu@mediatek.com; cang@codeaurora.org;
-> > tomas.winkler@intel.com; ALIM AKHTAR <alim.akhtar@samsung.com>
-> > Cc: linux-scsi@vger.kernel.org; linux-kernel@vger.kernel.org; Sang-yoon Oh
-> > <sangyoon.oh@samsung.com>; Sung-Jun Park
-> > <sungjun07.park@samsung.com>; yongmyung lee
-> > <ymhungry.lee@samsung.com>; Jinyoung CHOI <j-
-> > young.choi@samsung.com>; Adel Choi <adel.choi@samsung.com>; BoRam
-> > Shin <boram.shin@samsung.com>
-> > Subject: Re: [PATCH v6 0/5] scsi: ufs: Add Host Performance Booster Support
-> > 
-> > CAUTION: This email originated from outside of Western Digital. Do not click on
-> > links or open attachments unless you recognize the sender and know that the
-> > content is safe.
-> > 
-> > 
-> > On 2020-07-15 11:34, Avi Shchislowski wrote:
-> > > My name is Avi Shchislowski, I am managing the WDC's Linux Host R&D team
-> > in which Avri is a member of.
-> > > As the review process of HPB is progressing very constructively, we are getting
-> > more and more requests from OEMs, Inquiring about HPB in general, and host
-> > control mode in particular.
-> > >
-> > > Their main concern is that HPB will make it to 5.9 merge window, but the host
-> > control mode patches will not.
-> > > Thus, because of recent Google's GKI, the next Android LTS might not include
-> > HPB with host control mode.
-> > >
-> > > Aside of those requests, initial host control mode testing are showing
-> > promising prospective with respect of performance gain.
-> > >
-> > > What would be, in your opinion, the best policy that host control mode is
-> > included in next Android LTS?
-> > 
-> > Hi Avi,
-> > 
-> > Are you perhaps referring to the HPB patch series that has already been posted?
-> > Although I'm not sure of this, I think that the SCSI maintainer expects more
-> > Reviewed-by: and Tested-by: tags. Has anyone from WDC already taken the
-> > time to review and/or test this patch series?
-> > 
-> > Thanks,
-> > 
-> > Bart.
-> 
-> Yes, I am referring to the current proposal which I am replying to:
-> [PATCH v6 0/5] scsi: ufs: Add Host Performance Booster Support This proposal does not contains host mode, hence our customers concern.
-> What would be, in your opinion, the best policy that host control mode is included in next Android LTS  assuming it will be based on kernel v5.9 ?
+Hello,
 
-To come back to this statement, as I keep seeing it in odd places...
+syzbot found the following issue on:
 
-I have never said that the next LTS kernel would be 5.9, where did you
-get that from?  I am pretty sure that Google is also not saying that
-either.
+HEAD commit:    7c7ab580 net: Convert to use the fallthrough macro
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=17dab184900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7bb894f55faf8242
+dashboard link: https://syzkaller.appspot.com/bug?extid=fb2e9e2cc0c13aa477f3
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Work to get the feature accepted properly, do not worry about cramming
-anything into any kernel just because it might be a LTS release.  That
-causes problems that we have had in the past, and one would hope that we
-would have learned from our mistakes.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-thanks,
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fb2e9e2cc0c13aa477f3@syzkaller.appspotmail.com
 
-greg k-h
+==================================================================
+BUG: KASAN: global-out-of-bounds in fl_dump_key+0x209e/0x22f0 net/sched/cls_flower.c:2781
+Read of size 4 at addr ffffffff88deedf4 by task syz-executor.3/14802
+
+CPU: 1 PID: 14802 Comm: syz-executor.3 Not tainted 5.8.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0x5/0x436 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ fl_dump_key+0x209e/0x22f0 net/sched/cls_flower.c:2781
+ fl_tmplt_dump+0xc9/0x250 net/sched/cls_flower.c:3098
+ tc_chain_fill_node+0x48d/0x7c0 net/sched/cls_api.c:2681
+ tc_chain_notify+0x187/0x2e0 net/sched/cls_api.c:2707
+ tc_ctl_chain+0xb30/0x1000 net/sched/cls_api.c:2893
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2357
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2411
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2444
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45ce69
+Code: 2d b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb b5 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fce49ce7c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000002c100 RCX: 000000000045ce69
+RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000000000003
+RBP: 000000000118c1e0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118c1ac
+R13: 00007ffc941c811f R14: 00007fce49ce89c0 R15: 000000000118c1ac
+
+The buggy address belongs to the variable:
+ cooling_device_attr_group+0x354/0x680
+
+Memory state around the buggy address:
+ ffffffff88deec80: 00 00 03 fa fa fa fa fa 07 fa fa fa fa fa fa fa
+ ffffffff88deed00: 05 fa fa fa fa fa fa fa 07 fa fa fa fa fa fa fa
+>ffffffff88deed80: 06 fa fa fa fa fa fa fa 00 00 fa fa fa fa fa fa
+                                                             ^
+ ffffffff88deee00: 04 fa fa fa fa fa fa fa 04 fa fa fa fa fa fa fa
+ ffffffff88deee80: 05 fa fa fa fa fa fa fa 05 fa fa fa fa fa fa fa
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
