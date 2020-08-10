@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F602408B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6872408E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgHJPYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:24:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56572 "EHLO mail.kernel.org"
+        id S1728654AbgHJP0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:26:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728177AbgHJPYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:24:03 -0400
+        id S1728374AbgHJP0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:26:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C472208A9;
-        Mon, 10 Aug 2020 15:24:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BAC322BEA;
+        Mon, 10 Aug 2020 15:26:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073042;
-        bh=ZTr/YgqpNPq1cmvv/g6haa7XXEQeVX52CPB5oRr7ugc=;
+        s=default; t=1597073197;
+        bh=RF1YYZcrR8jAOi1ZJRiN7u4xbfpSyq4rjhuxrTj5BHc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HBSOVO9Mb8bGATGLQUWbHiKmlc+yg9rkMsqRV6gyl/VDvHV10wWvmuptCqPzh3zrJ
-         3YpX6C0EGZHOY00aop3zs+PrNL3/wBibOByP+lmphyN8r0QQx4hIT4+C3mFK830fAq
-         aLvcr+8ragrQHzRCP5RT9h3auQC6eUqJrHfvXh8o=
+        b=myUUAzb+3GD3bQrjJ8fn0ga9gOW+WQ2KjJIAfFP5BUXZ5dJWS5eNabreO2ERXL1Kg
+         9818bgcJfOU6LtC54rpk5KICVQsA4PpkXpnl1gDQt3UGgubXcvNJQyG/fQVp5wS1/r
+         yzxC8MvHq2+myhKtzelYFXou81EehHUtUG2WnrFg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 47/79] firmware: Fix a reference count leak.
-Date:   Mon, 10 Aug 2020 17:21:06 +0200
-Message-Id: <20200810151814.588106082@linuxfoundation.org>
+        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: [PATCH 5.4 20/67] omapfb: dss: Fix max fclk divider for omap36xx
+Date:   Mon, 10 Aug 2020 17:21:07 +0200
+Message-Id: <20200810151810.420588550@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
-References: <20200810151812.114485777@linuxfoundation.org>
+In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
+References: <20200810151809.438685785@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +46,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Adam Ford <aford173@gmail.com>
 
-[ Upstream commit fe3c60684377d5ad9b0569b87ed3e26e12c8173b ]
+commit 254503a2b186caa668a188dbbd7ab0d25149c0a5 upstream.
 
-kobject_init_and_add() takes reference even when it fails.
-If this function returns an error, kobject_put() must be called to
-properly clean up the memory associated with the object.
-Callback function fw_cfg_sysfs_release_entry() in kobject_put()
-can handle the pointer "entry" properly.
+The drm/omap driver was fixed to correct an issue where using a
+divider of 32 breaks the DSS despite the TRM stating 32 is a valid
+number.  Through experimentation, it appears that 31 works, and
+it is consistent with the value used by the drm/omap driver.
 
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Link: https://lore.kernel.org/r/20200613190533.15712-1-wu000273@umn.edu
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch fixes the divider for fbdev driver instead of the drm.
+
+Fixes: f76ee892a99e ("omapfb: copy omapdss & displays for omapfb")
+Cc: <stable@vger.kernel.org> #4.5+
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: Dave Airlie <airlied@gmail.com>
+Cc: Rob Clark <robdclark@gmail.com>
+[b.zolnierkie: mark patch as applicable to stable 4.5+ (was 4.9+)]
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200630182636.439015-1-aford173@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/firmware/qemu_fw_cfg.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/video/fbdev/omap2/omapfb/dss/dss.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/qemu_fw_cfg.c b/drivers/firmware/qemu_fw_cfg.c
-index 039e0f91dba8f..6945c3c966375 100644
---- a/drivers/firmware/qemu_fw_cfg.c
-+++ b/drivers/firmware/qemu_fw_cfg.c
-@@ -605,8 +605,10 @@ static int fw_cfg_register_file(const struct fw_cfg_file *f)
- 	/* register entry under "/sys/firmware/qemu_fw_cfg/by_key/" */
- 	err = kobject_init_and_add(&entry->kobj, &fw_cfg_sysfs_entry_ktype,
- 				   fw_cfg_sel_ko, "%d", entry->select);
--	if (err)
--		goto err_register;
-+	if (err) {
-+		kobject_put(&entry->kobj);
-+		return err;
-+	}
+--- a/drivers/video/fbdev/omap2/omapfb/dss/dss.c
++++ b/drivers/video/fbdev/omap2/omapfb/dss/dss.c
+@@ -833,7 +833,7 @@ static const struct dss_features omap34x
+ };
  
- 	/* add raw binary content access */
- 	err = sysfs_create_bin_file(&entry->kobj, &fw_cfg_sysfs_attr_raw);
-@@ -622,7 +624,6 @@ static int fw_cfg_register_file(const struct fw_cfg_file *f)
- 
- err_add_raw:
- 	kobject_del(&entry->kobj);
--err_register:
- 	kfree(entry);
- 	return err;
- }
--- 
-2.25.1
-
+ static const struct dss_features omap3630_dss_feats = {
+-	.fck_div_max		=	32,
++	.fck_div_max		=	31,
+ 	.dss_fck_multiplier	=	1,
+ 	.parent_clk_name	=	"dpll4_ck",
+ 	.dpi_select_source	=	&dss_dpi_select_source_omap2_omap3,
 
 
