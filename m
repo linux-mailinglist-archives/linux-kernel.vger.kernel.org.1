@@ -2,79 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75ED0240BCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 19:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED428240BAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 19:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727801AbgHJRUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 13:20:04 -0400
-Received: from cmta16.telus.net ([209.171.16.89]:53268 "EHLO cmta16.telus.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725862AbgHJRUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 13:20:03 -0400
-X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Mon, 10 Aug 2020 13:20:02 EDT
-Received: from montezuma.home ([154.5.226.127])
-        by cmsmtp with SMTP
-        id 5BKwkkXSG5b7l5BKykm83N; Mon, 10 Aug 2020 11:11:53 -0600
-X-Telus-Authed: none
-X-Authority-Analysis: v=2.3 cv=YPHhNiOx c=1 sm=1 tr=0
- a=f8b3WT/FcTuUJCJtQO1udw==:117 a=f8b3WT/FcTuUJCJtQO1udw==:17
- a=kj9zAlcOel0A:10 a=x7bEGLp0ZPQA:10 a=COSDN44dAAMA:10
- a=bG9gDjmhPuXUG-eiuMMA:9 a=CjuIK1q_8ugA:10
-Date:   Mon, 10 Aug 2020 10:11:50 -0700 (PDT)
-From:   Zwane Mwaikambo <zwanem@gmail.com>
-To:     tcamuso@redhat.com
-cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org, dkwon@redhat.com
-Subject: Re: [PATCH] drm: assure aux_dev is nonzero before using it
-Message-ID: <alpine.DEB.2.21.2008101004110.27032@montezuma.home>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-CMAE-Envelope: MS4wfLXLrG61H3IewWgL14PAlsxl0Y3rkOFoECheosPcZUUND7JWnN8rPKnbtQKPrkOXCu1aPejTgwQ+X7R90J+w6fD9IdyUBsRp14+2pRNZx/kNWYggJTdX
- 0xLa2pgKJOC23iLr8VbAmtdlcXp7oCl9+cr4ZWuCC5EQUMDbBt8V0rmF1448y9Q6MKlDSh7QNFCoPzAZAgrUHqhl+APfxkN1I6+iktMRThGoW689FGKKUnsC
- hvLSjM46j66W8Oh7ifli8AEYTmDmtKv58sakJbGgDH3mCHUKafvaPsOcpDWN9xrS
+        id S1727876AbgHJRMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 13:12:49 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:43189 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725873AbgHJRMr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 13:12:47 -0400
+X-IronPort-AV: E=Sophos;i="5.75,458,1589209200"; 
+   d="scan'208";a="54306417"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 11 Aug 2020 02:12:44 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id E81BF4001967;
+        Tue, 11 Aug 2020 02:12:42 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: [PATCH] arm64: dts: renesas: r8a774b1-hihope-rzg2n-ex: Enable sata
+Date:   Mon, 10 Aug 2020 18:12:39 +0100
+Message-Id: <20200810171239.30401-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Folks,
-	I know this thread eventually dropped off due to not identifying 
-the underlying issue. It's still occuring on 5.8 and in my case it 
-happened because the udev device nodes for the DP aux devices were not 
-cleaned up whereas the kernel had no association with them. I can 
-reproduce the bug just by creating a device node for a non-existent minor 
-device and calling open().
+Enable sata interface on HiHope RZ/G2N board.
 
-To me it still makes sense to just check aux_dev because the chardev has 
-no way to check before calling.
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+---
+ arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-(gdb) list *drm_dp_aux_dev_get_by_minor+0x29
-0x17b39 is in drm_dp_aux_dev_get_by_minor (drivers/gpu/drm/drm_dp_aux_dev.c:65).
-60      static struct drm_dp_aux_dev *drm_dp_aux_dev_get_by_minor(unsigned index)
-61      {
-62              struct drm_dp_aux_dev *aux_dev = NULL;
-63
-64              mutex_lock(&aux_idr_mutex);
-65              aux_dev = idr_find(&aux_idr, index);
-66              if (!kref_get_unless_zero(&aux_dev->refcount))
-67                      aux_dev = NULL;
-68              mutex_unlock(&aux_idr_mutex);
-69
-(gdb) p/x &((struct drm_dp_aux_dev *)(0x0))->refcount
-$8 = 0x18
-
-static int auxdev_open(struct inode *inode, struct file *file)
-{
-    unsigned int minor = iminor(inode);
-    struct drm_dp_aux_dev *aux_dev;
-
-    aux_dev = drm_dp_aux_dev_get_by_minor(minor);
-    if (!aux_dev)
-        return -ENODEV;
-
-    file->private_data = aux_dev;
-    return 0;
-}
-
+diff --git a/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex.dts b/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex.dts
+index a3edd55113df..60d7c8adea02 100644
+--- a/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex.dts
++++ b/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex.dts
+@@ -14,3 +14,8 @@
+ 	compatible = "hoperun,hihope-rzg2-ex", "hoperun,hihope-rzg2n",
+ 		     "renesas,r8a774b1";
+ };
++
++/* Set SW43 = ON and SW1001[7] = OFF for SATA port to be activated */
++&sata {
++	status = "okay";
++};
+-- 
+2.17.1
 
