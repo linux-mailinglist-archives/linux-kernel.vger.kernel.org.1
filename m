@@ -2,323 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B6024032C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 10:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A28B240333
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 10:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgHJIH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 04:07:29 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:54095 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725857AbgHJIH2 (ORCPT
+        id S1726629AbgHJIIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 04:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726284AbgHJIH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 04:07:28 -0400
-X-IronPort-AV: E=Sophos;i="5.75,456,1589212800"; 
-   d="scan'208";a="97927301"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 10 Aug 2020 16:07:18 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 566BF4CE38A1;
-        Mon, 10 Aug 2020 16:07:18 +0800 (CST)
-Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
- (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 10 Aug
- 2020 16:07:21 +0800
-Subject: Re: [RFC PATCH 1/8] fs: introduce get_shared_files() for dax&reflink
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <hch@lst.de>, <rgoldwyn@suse.de>,
-        <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
-References: <20200807131336.318774-1-ruansy.fnst@cn.fujitsu.com>
- <20200807131336.318774-2-ruansy.fnst@cn.fujitsu.com>
- <20200807161526.GD6090@magnolia>
-From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Message-ID: <5883fb44-4fdb-1068-b8fd-4ceab391c2a6@cn.fujitsu.com>
-Date:   Mon, 10 Aug 2020 16:07:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 10 Aug 2020 04:07:57 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C129C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 01:07:57 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id u63so8153443oie.5
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 01:07:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hGTCJkoIKMtHtW/Pwvl8SwnSj7DsdCNAqdhJNP6CKQo=;
+        b=FXtn7XamykfbLmzl3TKm/P+oN+Z51RCpAP10bFQfmx0zAympnpGOLchqF1DPyq8u1V
+         7L7AtjBEGuqOP/FalsZ2Ybih+JsDObiifYIQG+xk+kp5kOekdDg9ptZ7L/h9CnQRWudH
+         dVc42SWR7ODoKDYQ1lNfKiYEaBdynV+5dGQvrmbUb30zEdXiI870VgEodAhN/KgZg0Of
+         rYabhc8tl0q7SqLvOi9M3QXW5EOqbyhfgRaXZ0GcLrgmNkv03seho1VVoINyr/pno4sh
+         /+9QNoCH6LC0j2GMK8hFahvAr/6E3zInxN8qJZwd6QM6mLunUTBJoGsRY4ft/7XSvgq2
+         WvsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hGTCJkoIKMtHtW/Pwvl8SwnSj7DsdCNAqdhJNP6CKQo=;
+        b=t1+K6p0EkWmV8o1xdmVWq0joWcgHLvTtDpRb9zB3TQQvedHW3ZNkcc9n9u9/7KfYc8
+         IDP+e/vjKDzmHVskeWfg0T94CjWAtK7qI/m0sbOPs/4sgc1LjqbX3D7QSUpbc80RAEhN
+         ExeqS3pYvP7Z6n3RN/V9PzZAW4C0z46SE9hkPmtx7p+swXuur+QdR6GZhWNaCNZaI0nt
+         C7woZHc/HMqrBVvInwiyAfq97zyTxoJwR5ZjlJPhq3x49bmRjrkUVncZP6wgN182cKfe
+         4yEbnmymJtDLsfGPi114RYim6HU3onMXEE2EAAOZeLxMnGXrIJxLW2C56YMaqhNfhyYf
+         PaaA==
+X-Gm-Message-State: AOAM531I7AjhwYRfBOlr5tWkaArYISbNjUrE91uHOe4+ST4gRHOVPBr8
+        I/UDSkmZ7xU0N47fdRu/vMj/SmcUx4YFFfkXZ3QGAQ==
+X-Google-Smtp-Source: ABdhPJwnC0W6DYGVMmbxPZpTgFfiORiUKPLTf+DgsTgq0DhWHB8Dm6RMStrcgh5scsl335fY9cwX5hyGE1Pl8ufVbnM=
+X-Received: by 2002:aca:d4d5:: with SMTP id l204mr21041277oig.70.1597046875877;
+ Mon, 10 Aug 2020 01:07:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200807161526.GD6090@magnolia>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.167.225.141]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
-X-yoursite-MailScanner-ID: 566BF4CE38A1.AFADE
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+References: <20200807090031.3506555-1-elver@google.com> <20200807170618.GW4295@paulmck-ThinkPad-P72>
+In-Reply-To: <20200807170618.GW4295@paulmck-ThinkPad-P72>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 10 Aug 2020 10:07:44 +0200
+Message-ID: <CANpmjNPqEeQvg53wJ5EsyfssSqyOqCsPG+YTV6ytj6wsc+5BPQ@mail.gmail.com>
+Subject: Re: [PATCH] kcsan: Treat runtime as NMI-like with interrupt tracing
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 7 Aug 2020 at 19:06, Paul E. McKenney <paulmck@kernel.org> wrote:
+> On Fri, Aug 07, 2020 at 11:00:31AM +0200, Marco Elver wrote:
+> > Since KCSAN instrumentation is everywhere, we need to treat the hooks
+> > NMI-like for interrupt tracing. In order to present an as 'normal' as
+> > possible context to the code called by KCSAN when reporting errors, we
+> > need to update the IRQ-tracing state.
+> >
+> > Tested: Several runs through kcsan-test with different configuration
+> > (PROVE_LOCKING on/off), as well as hours of syzbot testing with the
+> > original config that caught the problem (without CONFIG_PARAVIRT=y,
+> > which appears to cause IRQ state tracking inconsistencies even when
+> > KCSAN remains off, see Link).
+> >
+> > Link: https://lkml.kernel.org/r/0000000000007d3b2d05ac1c303e@google.com
+> > Fixes: 248591f5d257 ("kcsan: Make KCSAN compatible with new IRQ state tracking")
+> > Reported-by: syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com
+> > Co-developed-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
+Peter, if you're fine with it, I think we'll require your
+Signed-off-by (since Co-developed-by).
 
-On 2020/8/8 上午12:15, Darrick J. Wong wrote:
-> On Fri, Aug 07, 2020 at 09:13:29PM +0800, Shiyang Ruan wrote:
->> Under the mode of both dax and reflink on, one page may be shared by
->> multiple files and offsets.  In order to track them in memory-failure or
->> other cases, we introduce this function by finding out who is sharing
->> this block(the page) in a filesystem.  It returns a list that contains
->> all the owners, and the offset in each owner.
->>
->> For XFS, rmapbt is used to find out the owners of one block.  So, it
->> should be turned on when we want to use dax&reflink feature together.
->>
->> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
->> ---
->>   fs/xfs/xfs_super.c  | 67 +++++++++++++++++++++++++++++++++++++++++++++
->>   include/linux/dax.h |  7 +++++
->>   include/linux/fs.h  |  2 ++
->>   3 files changed, 76 insertions(+)
->>
->> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
->> index 379cbff438bc..b71392219c91 100644
->> --- a/fs/xfs/xfs_super.c
->> +++ b/fs/xfs/xfs_super.c
->> @@ -35,6 +35,9 @@
->>   #include "xfs_refcount_item.h"
->>   #include "xfs_bmap_item.h"
->>   #include "xfs_reflink.h"
->> +#include "xfs_alloc.h"
->> +#include "xfs_rmap.h"
->> +#include "xfs_rmap_btree.h"
->>   
->>   #include <linux/magic.h>
->>   #include <linux/fs_context.h>
->> @@ -1097,6 +1100,69 @@ xfs_fs_free_cached_objects(
->>   	return xfs_reclaim_inodes_nr(XFS_M(sb), sc->nr_to_scan);
->>   }
->>   
->> +static int _get_shared_files_fn(
-> 
-> Needs an xfs_ prefix...
-> 
->> +	struct xfs_btree_cur	*cur,
->> +	struct xfs_rmap_irec	*rec,
->> +	void			*priv)
->> +{
->> +	struct list_head	*list = priv;
->> +	struct xfs_inode	*ip;
->> +	struct shared_files	*sfp;
->> +
->> +	/* Get files that incore, filter out others that are not in use. */
->> +	xfs_iget(cur->bc_mp, cur->bc_tp, rec->rm_owner, XFS_IGET_INCORE, 0, &ip);
-> 
-> No error checking at all?
-> 
-> What if rm_owner refers to metadata?
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > ---
+> > Patch Note: This patch applies to latest mainline. While current
+> > mainline suffers from the above problem, the configs required to hit the
+> > issue are likely not enabled too often (of course with PROVE_LOCKING on;
+> > we hit it on syzbot though). It'll probably be wise to queue this as
+> > normal on -rcu, just in case something is still off, given the
+> > non-trivial nature of the issue. (If it should instead go to mainline
+> > right now as a fix, I'd like some more test time on syzbot.)
+>
+> The usual, please let me know when/if you would like me to apply
+> to -rcu.  And have a great weekend!
 
-Yes, we need to check whether the page contains metadata.  I remembered 
-that.  I wrote the check code but removed it in this patch, because I 
-didn't find a way to associate this block device with the dax page that 
-contains metadata.  We can call dax_associate_entry() to create the 
-association if the page's owner is a file, but it's not work for 
-metadata.  I should have explained here.
+I think we need to wait until you have rebased -rcu to 5.9-rc1 some
+time next week. I will send a reminder after, and if it doesn't apply
+cleanly, I'll send a rebased patch.
 
-> 
->> +	if (ip && !ip->i_vnode.i_mapping)
->> +		return 0;
-> 
-> When is the xfs_inode released?  We don't iput it here, and there's no
-> way for dax_unlock_page (afaict the only consumer) to do it, so we
-> leak the reference.
+Thank you!
 
-Do you mean xfs_irele() ?  Sorry, I didn't realize that.  All we need is 
-get the ->mapping form a given inode number.  So, I think we can call 
-xfs_irele() when exiting this function.
+-- Marco
 
-> 
->> +
->> +	sfp = kmalloc(sizeof(*sfp), GFP_KERNEL);
-> 
-> If there are millions of open files reflinked to this range of pmem this
-> is going to allocate a /lot/ of memory.
-> 
->> +	sfp->mapping = ip->i_vnode.i_mapping;
-> 
-> sfp->mapping = VFS_I(ip)->i_mapping;
-> 
->> +	sfp->index = rec->rm_offset;
->> +	list_add_tail(&sfp->list, list);
-> 
-> Why do we leave ->cookie uninitialized?  What does it even do?
-
-It's my fault.  ->cookie should have been added in the next patch.  It 
-stores each owner's dax entry when calling dax_lock_page() in 
-memory-failure.
-
-> 
->> +
->> +	return 0;
->> +}
->> +
->> +static int
->> +xfs_fs_get_shared_files(
->> +	struct super_block	*sb,
->> +	pgoff_t			offset,
-> 
-> Which device does this offset refer to?  XFS supports multiple storage
-> devices.
-> 
-> Also, uh, is this really a pgoff_t?  If yes, you can't use it with
-> XFS_B_TO_FSB below without first converting it to a loff_t.
-
-The offset here is assigned as iomap->addr, which is obtained from 
-iomap_begin().  So that we can easily looking up for the owners of this 
-offset.
-
-I don't quite understand what you said about supporting multiple storage 
-devices.  What are these devices?  Do you mean NVDIMM, HDD, SSD and others?
-
-> 
->> +	struct list_head	*list)
->> +{
->> +	struct xfs_mount	*mp = XFS_M(sb);
->> +	struct xfs_trans	*tp = NULL;
->> +	struct xfs_btree_cur	*cur = NULL;
->> +	struct xfs_rmap_irec	rmap_low = { 0 }, rmap_high = { 0 };
-> 
-> No need to memset(0) rmap_low later, or zero rmap_high just to memset it
-> later.
-> 
->> +	struct xfs_buf		*agf_bp = NULL;
->> +	xfs_agblock_t		bno = XFS_B_TO_FSB(mp, offset);
-> 
-> "FSB" refers to xfs_fsblock_t.  You just ripped the upper 32 bits off
-> the fsblock number.
-
-I think I misused these types.  Sorry for that.
-> 
->> +	xfs_agnumber_t		agno = XFS_FSB_TO_AGNO(mp, bno);
->> +	int			error = 0;
->> +
->> +	error = xfs_trans_alloc_empty(mp, &tp);
->> +	if (error)
->> +		return error;
->> +
->> +	error = xfs_alloc_read_agf(mp, tp, agno, 0, &agf_bp);
->> +	if (error)
->> +		return error;
->> +
->> +	cur = xfs_rmapbt_init_cursor(mp, tp, agf_bp, agno);
->> +
->> +	memset(&cur->bc_rec, 0, sizeof(cur->bc_rec));
-> 
-> Not necessary, bc_rec is zero in a freshly created cursor.
-> 
->> +	/* Construct the range for one rmap search */
->> +	memset(&rmap_low, 0, sizeof(rmap_low));
->> +	memset(&rmap_high, 0xFF, sizeof(rmap_high));
->> +	rmap_low.rm_startblock = rmap_high.rm_startblock = bno;
->> +
->> +	error = xfs_rmap_query_range(cur, &rmap_low, &rmap_high,
->> +				     _get_shared_files_fn, list);
->> +	if (error == -ECANCELED)
->> +		error = 0;
->> +
->> +	xfs_btree_del_cursor(cur, error);
->> +	xfs_trans_brelse(tp, agf_bp);
->> +	return error;
->> +}
-> 
-> Looking at this, I don't think this is the right way to approach memory
-> poisoning.  Rather than allocating a (potentially huge) linked list and
-> passing it to the memory poison code to unmap pages, kill processes, and
-> free the list, I think:
-> 
-> 1) "->get_shared_files" should be more targetted.  Call it ->storage_lost
-> or something, so that it only has one purpose, which is to react to
-> asynchronous notifications that storage has been lost.
-
-Yes, it's better.  I only considered file tracking.
-> 
-> 2) The inner _get_shared_files_fn should directly call back into the
-> memory manager to remove a poisoned page from the mapping and signal
-> whatever process might have it mapped.
-
-For the error handling part, it's really reasonable.  But we have to 
-call dax_lock_page() at the beginning of memory-failure, which also need 
-to iterate all the owners in order to lock their dax entries.  I think 
-it not supposed to call the lock in each iteration instead of at the 
-beginning.
-
-> 
-> That way, _get_shared_files_fn can look in the xfs buffer cache to see
-> if we have a copy in DRAM, and immediately write it back to pmem.
-
-I didn't think of fixing the storage device.  Will take it into 
-consideration.
-
-> 
-> Hmm and now that you've gotten me rambling about hwpoison, I wonder what
-> happens if dram backing part of the xfs buffer cache goes bad...
-
-Yes, so many possible situations to consider.  For the current stage, 
-just shutdown the filesystem if memory failures on metadata, and kill 
-user processes if failures on normal files.  Is that OK?
-
-
-Anyway, thanks for reviewing.
-
---
-Thanks,
-Ruan Shiyang.
-
-> 
-> --D
-> 
->> +
->>   static const struct super_operations xfs_super_operations = {
->>   	.alloc_inode		= xfs_fs_alloc_inode,
->>   	.destroy_inode		= xfs_fs_destroy_inode,
->> @@ -1110,6 +1176,7 @@ static const struct super_operations xfs_super_operations = {
->>   	.show_options		= xfs_fs_show_options,
->>   	.nr_cached_objects	= xfs_fs_nr_cached_objects,
->>   	.free_cached_objects	= xfs_fs_free_cached_objects,
->> +	.get_shared_files	= xfs_fs_get_shared_files,
->>   };
->>   
->>   static int
->> diff --git a/include/linux/dax.h b/include/linux/dax.h
->> index 6904d4e0b2e0..0a85e321d6b4 100644
->> --- a/include/linux/dax.h
->> +++ b/include/linux/dax.h
->> @@ -40,6 +40,13 @@ struct dax_operations {
->>   
->>   extern struct attribute_group dax_attribute_group;
->>   
->> +struct shared_files {
->> +	struct list_head	list;
->> +	struct address_space	*mapping;
->> +	pgoff_t			index;
->> +	dax_entry_t		cookie;
->> +};
->> +
->>   #if IS_ENABLED(CONFIG_DAX)
->>   struct dax_device *dax_get_by_host(const char *host);
->>   struct dax_device *alloc_dax(void *private, const char *host,
->> diff --git a/include/linux/fs.h b/include/linux/fs.h
->> index f5abba86107d..81de3d2739b9 100644
->> --- a/include/linux/fs.h
->> +++ b/include/linux/fs.h
->> @@ -1977,6 +1977,8 @@ struct super_operations {
->>   				  struct shrink_control *);
->>   	long (*free_cached_objects)(struct super_block *,
->>   				    struct shrink_control *);
->> +	int (*get_shared_files)(struct super_block *sb, pgoff_t offset,
->> +				struct list_head *list);
->>   };
->>   
->>   /*
->> -- 
->> 2.27.0
->>
->>
->>
-> 
-> 
-
-
+>                                                 Thanx, Paul
+>
+> > ---
+> >  kernel/kcsan/core.c  | 79 ++++++++++++++++++++++++++++++++++----------
+> >  kernel/kcsan/kcsan.h |  3 +-
+> >  2 files changed, 62 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+> > index 9147ff6a12e5..6202a645f1e2 100644
+> > --- a/kernel/kcsan/core.c
+> > +++ b/kernel/kcsan/core.c
+> > @@ -291,13 +291,28 @@ static inline unsigned int get_delay(void)
+> >                               0);
+> >  }
+> >
+> > -void kcsan_save_irqtrace(struct task_struct *task)
+> > -{
+> > +/*
+> > + * KCSAN instrumentation is everywhere, which means we must treat the hooks
+> > + * NMI-like for interrupt tracing. In order to present a 'normal' as possible
+> > + * context to the code called by KCSAN when reporting errors we need to update
+> > + * the IRQ-tracing state.
+> > + *
+> > + * Save and restore the IRQ state trace touched by KCSAN, since KCSAN's
+> > + * runtime is entered for every memory access, and potentially useful
+> > + * information is lost if dirtied by KCSAN.
+> > + */
+> > +
+> > +struct kcsan_irq_state {
+> > +     unsigned long           flags;
+> >  #ifdef CONFIG_TRACE_IRQFLAGS
+> > -     task->kcsan_save_irqtrace = task->irqtrace;
+> > +     int                     hardirqs_enabled;
+> >  #endif
+> > -}
+> > +};
+> >
+> > +/*
+> > + * This is also called by the reporting task for the other task, to generate the
+> > + * right report with CONFIG_KCSAN_VERBOSE. No harm in restoring more than once.
+> > + */
+> >  void kcsan_restore_irqtrace(struct task_struct *task)
+> >  {
+> >  #ifdef CONFIG_TRACE_IRQFLAGS
+> > @@ -305,6 +320,41 @@ void kcsan_restore_irqtrace(struct task_struct *task)
+> >  #endif
+> >  }
+> >
+> > +/*
+> > + * Saves/restores IRQ state (see comment above). Need noinline to work around
+> > + * unfortunate code-gen upon inlining, resulting in objtool getting confused as
+> > + * well as losing stack trace information.
+> > + */
+> > +static noinline void kcsan_irq_save(struct kcsan_irq_state *irq_state)
+> > +{
+> > +#ifdef CONFIG_TRACE_IRQFLAGS
+> > +     current->kcsan_save_irqtrace = current->irqtrace;
+> > +     irq_state->hardirqs_enabled = lockdep_hardirqs_enabled();
+> > +#endif
+> > +     if (!kcsan_interrupt_watcher) {
+> > +             kcsan_disable_current(); /* Lockdep might WARN, etc. */
+> > +             raw_local_irq_save(irq_state->flags);
+> > +             lockdep_hardirqs_off(_RET_IP_);
+> > +             kcsan_enable_current();
+> > +     }
+> > +}
+> > +
+> > +static noinline void kcsan_irq_restore(struct kcsan_irq_state *irq_state)
+> > +{
+> > +     if (!kcsan_interrupt_watcher) {
+> > +             kcsan_disable_current(); /* Lockdep might WARN, etc. */
+> > +#ifdef CONFIG_TRACE_IRQFLAGS
+> > +             if (irq_state->hardirqs_enabled) {
+> > +                     lockdep_hardirqs_on_prepare(_RET_IP_);
+> > +                     lockdep_hardirqs_on(_RET_IP_);
+> > +             }
+> > +#endif
+> > +             raw_local_irq_restore(irq_state->flags);
+> > +             kcsan_enable_current();
+> > +     }
+> > +     kcsan_restore_irqtrace(current);
+> > +}
+> > +
+> >  /*
+> >   * Pull everything together: check_access() below contains the performance
+> >   * critical operations; the fast-path (including check_access) functions should
+> > @@ -350,11 +400,13 @@ static noinline void kcsan_found_watchpoint(const volatile void *ptr,
+> >       flags = user_access_save();
+> >
+> >       if (consumed) {
+> > -             kcsan_save_irqtrace(current);
+> > +             struct kcsan_irq_state irqstate;
+> > +
+> > +             kcsan_irq_save(&irqstate);
+> >               kcsan_report(ptr, size, type, KCSAN_VALUE_CHANGE_MAYBE,
+> >                            KCSAN_REPORT_CONSUMED_WATCHPOINT,
+> >                            watchpoint - watchpoints);
+> > -             kcsan_restore_irqtrace(current);
+> > +             kcsan_irq_restore(&irqstate);
+> >       } else {
+> >               /*
+> >                * The other thread may not print any diagnostics, as it has
+> > @@ -387,7 +439,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+> >       unsigned long access_mask;
+> >       enum kcsan_value_change value_change = KCSAN_VALUE_CHANGE_MAYBE;
+> >       unsigned long ua_flags = user_access_save();
+> > -     unsigned long irq_flags = 0;
+> > +     struct kcsan_irq_state irqstate;
+> >
+> >       /*
+> >        * Always reset kcsan_skip counter in slow-path to avoid underflow; see
+> > @@ -412,14 +464,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+> >               goto out;
+> >       }
+> >
+> > -     /*
+> > -      * Save and restore the IRQ state trace touched by KCSAN, since KCSAN's
+> > -      * runtime is entered for every memory access, and potentially useful
+> > -      * information is lost if dirtied by KCSAN.
+> > -      */
+> > -     kcsan_save_irqtrace(current);
+> > -     if (!kcsan_interrupt_watcher)
+> > -             local_irq_save(irq_flags);
+> > +     kcsan_irq_save(&irqstate);
+> >
+> >       watchpoint = insert_watchpoint((unsigned long)ptr, size, is_write);
+> >       if (watchpoint == NULL) {
+> > @@ -559,9 +604,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+> >       remove_watchpoint(watchpoint);
+> >       kcsan_counter_dec(KCSAN_COUNTER_USED_WATCHPOINTS);
+> >  out_unlock:
+> > -     if (!kcsan_interrupt_watcher)
+> > -             local_irq_restore(irq_flags);
+> > -     kcsan_restore_irqtrace(current);
+> > +     kcsan_irq_restore(&irqstate);
+> >  out:
+> >       user_access_restore(ua_flags);
+> >  }
+> > diff --git a/kernel/kcsan/kcsan.h b/kernel/kcsan/kcsan.h
+> > index 29480010dc30..6eb35a9514d8 100644
+> > --- a/kernel/kcsan/kcsan.h
+> > +++ b/kernel/kcsan/kcsan.h
+> > @@ -24,9 +24,8 @@ extern unsigned int kcsan_udelay_interrupt;
+> >  extern bool kcsan_enabled;
+> >
+> >  /*
+> > - * Save/restore IRQ flags state trace dirtied by KCSAN.
+> > + * Restore IRQ flags state trace dirtied by KCSAN.
+> >   */
+> > -void kcsan_save_irqtrace(struct task_struct *task);
+> >  void kcsan_restore_irqtrace(struct task_struct *task);
+> >
+> >  /*
+> > --
+> > 2.28.0.236.gb10cc79966-goog
+> >
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20200807170618.GW4295%40paulmck-ThinkPad-P72.
