@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E4A240601
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A19E240608
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 14:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbgHJMiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 08:38:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726536AbgHJMiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 08:38:13 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E37E520678;
-        Mon, 10 Aug 2020 12:38:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597063093;
-        bh=w6IZKvqKLF7y9Px742Kp6ZtUkscApoCbd/4wUWC9sqg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d/0VuUFKQ0RTEK4drzfEK+JG7k4GXBWKHtG/NeI5JrP+oZ6eUJV/PFr8mu1nssNaI
-         LrFqNZB0kXvbFoO7CVkNcmcl5MRcOLrX0OE7jhKMb5SOMIiZ3qmP5xJGYKyLjc9Lkb
-         ea5/jtBcAI/o1xLiJBpmi6VEHpNWDSIUaQNA11Vo=
-Date:   Mon, 10 Aug 2020 13:37:47 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: fix pointer table overallocation
-Message-ID: <20200810123747.GC6438@sirena.org.uk>
-References: <407fbd06a02caf038a9ba3baa51c7d6d47cd6517.1597000795.git.mirq-linux@rere.qmqm.pl>
- <5ef51b56-c533-46c8-621d-7907129594e9@gmail.com>
+        id S1726705AbgHJMkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 08:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726536AbgHJMkq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 08:40:46 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EEEC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 05:40:46 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id u24so8707320oiv.7
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 05:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=9OblTntLWoJSj1/Tu3HIkWHngfObg5fIhAiulabfj10=;
+        b=nvVhsQ3VCnuD/2IU1KW+AyTfQvTLVYw3UxiTMXiENKedyuAfCeWMm3NyhZe5thnHOd
+         W7BKX9Sso6NI4dWUU3dVjbmslBRis4wTigASSeu2RHfWHRKQK+ZQQsZ0DQj0mnYOz1lp
+         ghvkf+Y5MkBZ6QrD66GjaPn4MS6n4R0/GpZVBMOI68oZLr4uKQcOiZ1gHH23+7jqb3Oq
+         uD3wWyDkYAJVuH07hl3V+ftPqcez8c3s/upAk1+WpbiDxi2fPcgHnSxdjpg15Vwk/KYf
+         OmlUDRDnCPSExiM9GdLyF9966cKtF6HqDGH9cTja17+YXISNR/cgv1RYTiJZK37VsbC/
+         j7+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=9OblTntLWoJSj1/Tu3HIkWHngfObg5fIhAiulabfj10=;
+        b=H+Evb7yRaSBuVcPpOVwEF8mqHaohU/Z7W3R8RbA4IMZlabPDJPx45y/5H1fsFlAq9o
+         t8QZw7rNk78ahYvo/0HBQz/tqZ2d7Kkx562AcyiHZuXoUORJLc8OHajp+oz0WjZbFOZA
+         4LfDBrTwhEDtY0TQKPdRZ5RW50lMxLSlOrrS5DkpWL7TDHRUsoWEhu1pCwV2SoNrN1Xr
+         +tNk2rnnnFKIcteQtVjyps6DXdUBLODeiciCHuCl48JAwtwUyfTglDio28rAGS0wAsQU
+         +xXz/BSDJq2TVfqjcTTWTcV1FqCg4EdIgWBpQqqZr6BvkcFF0sr+JoP7fY2a+U3+QInP
+         7O3w==
+X-Gm-Message-State: AOAM530ruMfaTkS5IhJeyJ0++1UMujhpQbNFPy68aRcC3hACkimmgK9X
+        dDyfZ4Oq/LXO3PN5my3ZtKioXiFC1PjOl7uuHCA=
+X-Google-Smtp-Source: ABdhPJy//Iym0LSqjdop1JCDuQKnDXSNhzR0QC5ZintDjxsbWKd52wKquUMLl8kZ2lbmRW1YTKyUtrcWhNjbLuyxJE0=
+X-Received: by 2002:aca:df0b:: with SMTP id w11mr511439oig.110.1597063244227;
+ Mon, 10 Aug 2020 05:40:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uXxzq0nDebZQVNAZ"
-Content-Disposition: inline
-In-Reply-To: <5ef51b56-c533-46c8-621d-7907129594e9@gmail.com>
-X-Cookie: Walk softly and carry a megawatt laser.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a9d:7a49:0:0:0:0:0 with HTTP; Mon, 10 Aug 2020 05:40:43
+ -0700 (PDT)
+Reply-To: mrericbello@yandex.com
+From:   Mr Eric Bello <ubabank.benin11@gmail.com>
+Date:   Mon, 10 Aug 2020 05:40:43 -0700
+Message-ID: <CAA3c-f0CH+d_AKO6=OBN4VQ-qZ7L8Xe2tpiw_T1CU3oBAhMryA@mail.gmail.com>
+Subject: From Mr Eric Bello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear Friend,
 
---uXxzq0nDebZQVNAZ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am Mr Eric Bello, Working with a reputable bank here in Burkina Faso
+as the manager in audit department. During our last banking audits we
+discovered an abandoned account belongs to one of our deceased
+customer, late Mr. Hamid Amine Razzaq, a billionaire businessman.
 
-On Sun, Aug 09, 2020 at 10:44:25PM +0300, Dmitry Osipenko wrote:
-> 09.08.2020 22:21, Micha=C5=82 Miros=C5=82aw =D0=BF=D0=B8=D1=88=D0=B5=D1=
-=82:
-> > The code allocates sizeof(regulator_dev) for a pointer. Make it less
-> > generous. Let kcalloc() calculate the size, while at it.
-> >=20
-> > Cc: stable@vger.kernel.org
-> > Fixes: d8ca7d184b33 ("regulator: core: Introduce API for regulators cou=
-pling customization")
+Meanwhile, before i contacted you i have done personal investigation
+in locating any of his relatives who knows about the account, but i
+came out unsuccessful. I am writing to request your assistance in
+transferring the sum of 15.500.000.00 (Fifteen million Five Hundred
+Thousand Dollars) into your account.
 
-> Hello, Micha=C5=82! Thank you for the patch! Not sure whether it's worthw=
-hile
-> to backport this change since it's an improvement, I'll leave it to Mark
-> to decide, otherwise looks good to me.
+I decided to contact you to act as his foreign business partner so
+that my bank will accord you the recognition and have the fund
+transfer into your account. More details information will be forwarded
+to you.
 
-Yeah, this is more a performance improvement than a fix.
+However, i will give you full details on how the business will be
+executed and also note that you will have 40% of the above mentioned
+if you agree to handle this business with me while 50% will be for me
+and 10% for any expenses that may arise on the process .reply here:(
+ericbell4109@gmail.com )
 
---uXxzq0nDebZQVNAZ
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8xP5oACgkQJNaLcl1U
-h9DTewf5AZYWZdq5rIJAtK5PuXAjhHQRvCfaiElnTBPxIhBKlhjmNs7MjlDxsLdK
-iRTiXuJbBJvtZnUILDQ8MziCk57SuYU2+enrm+BtQqbMeFBnzxDs9ih67FEXponS
-UrEGz9rSNG9mtRXKr0K8fM2PgvoDvgHV/NyjyqaJhPPd5g5EL4zzBaoAy8UTlnED
-ceuWbYIxEYrFEwIsUt5+eYw+MkVwtOFNbaa6Kkk84tkmeH4eHEO6+y4j1Fn9vs/5
-Dn7+gbtRza4PoDUF7K15nC65IDS8nbWUaDVYEX9zU4YjN8iKVuPr5mjaHfAJjPHA
-3t32P2zYfVvwFbwjWdsESC2+oSjEjg==
-=Qp3A
------END PGP SIGNATURE-----
-
---uXxzq0nDebZQVNAZ--
+I am expecting to read from you soon.
+Best Regards
+Mr Eric Bello.
