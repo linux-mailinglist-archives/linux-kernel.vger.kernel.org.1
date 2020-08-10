@@ -2,204 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9599240268
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 09:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA6D24026F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 09:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgHJHYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 03:24:43 -0400
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:35494 "EHLO
-        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725911AbgHJHYm (ORCPT
+        id S1726536AbgHJHZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 03:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725869AbgHJHZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 03:24:42 -0400
-Received: from vla1-fdfb804fb3f3.qloud-c.yandex.net (vla1-fdfb804fb3f3.qloud-c.yandex.net [IPv6:2a02:6b8:c0d:3199:0:640:fdfb:804f])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 8931B2E126D;
-        Mon, 10 Aug 2020 10:24:38 +0300 (MSK)
-Received: from vla5-58875c36c028.qloud-c.yandex.net (vla5-58875c36c028.qloud-c.yandex.net [2a02:6b8:c18:340b:0:640:5887:5c36])
-        by vla1-fdfb804fb3f3.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id 5LOezUMGBy-ObwOeiSE;
-        Mon, 10 Aug 2020 10:24:38 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1597044278; bh=ZWfU/KIYRh2EbJ1Zuh32IQ5SqNMpfEy9pAR/vYry/3M=;
-        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
-        b=tkK5CfokMhEgA5OFPeSdtRTyPaeH5rOVZr26KuiSmQMqJmKPiYBDUhW4P19nkCU4q
-         uG6OKH3iTjHm/ZlVzPf3PBI8xd+BADXt9bmdmyXqERYG70N8RkLl8XaR7PmO77y2Zn
-         LQSuV6T4hUgqemEO3XYDxBlM6OMJuZMoglgCMyXU=
-Authentication-Results: vla1-fdfb804fb3f3.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from 95.108.174.193-red.dhcp.yndx.net (95.108.174.193-red.dhcp.yndx.net [95.108.174.193])
-        by vla5-58875c36c028.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id Lyi483T9f9-ObjiqUQh;
-        Mon, 10 Aug 2020 10:24:37 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-From:   Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-To:     linux-kernel@vger.kernel.org
-Cc:     koct9i@gmail.com, Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-Subject: [PATCH 2/2] lib/test_lockup.c: allow cond_resched inside iteration
-Date:   Mon, 10 Aug 2020 07:24:26 +0000
-Message-Id: <20200810072426.7180-2-dmtrmonakhov@yandex-team.ru>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200810072426.7180-1-dmtrmonakhov@yandex-team.ru>
-References: <20200810072426.7180-1-dmtrmonakhov@yandex-team.ru>
+        Mon, 10 Aug 2020 03:25:29 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E54C061756;
+        Mon, 10 Aug 2020 00:25:29 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id q16so4659328ybk.6;
+        Mon, 10 Aug 2020 00:25:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y9XMh30ufnUqk9AdZOEkF5RT2AG6qRJ/wAGRKNthdQs=;
+        b=oCBRTKJ8e8v7sjNsv2dJ3eqL4nIJMZaDQV+Z0mvt525/tN235DcrjvbPeKQ3MIRMBr
+         7hUHCy0BYJmDIPlGoNyPs0mXeR0PTXmDKpMrgdQW6LeviN5mvllgu7NU6pdgJp+DtQjc
+         UlRObcyQi5wgN6dRwrfwqaNhtdmgjffkfGMf3YoyCEJ9/xrA/0RfYzfhl32UIGkpA9Z4
+         vDuO11KHEHoLpkLZtSgGuQJYnDz1VRjFX8BfaStIwszLCFmLbMZBoqltplVOedvVpCer
+         d3/SvSX7xGcfFHKjKaxpUlG40CxvorsZ70vo/S7OMDNtM3+IFyQwRyNE/sHonYEh5TB0
+         ZBuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y9XMh30ufnUqk9AdZOEkF5RT2AG6qRJ/wAGRKNthdQs=;
+        b=L0BYBKvatFZC22RPyRVhWw1PXNz6OVetdbpEhbJItFa4XMt717Ouk4Dklo7/mK09Au
+         nOAsrzP87TexHUXpQeQ2vKVCTtgnwH7TLfaTHbZTTrKjrg0CpGCufp2+xwXcxW496YLB
+         9urgdBUw9Md5ap5tlHSbr93ttIeMFSNnEfJA3lnsSV2oFWIaGk25uxUVM0NyFzmK4ZNE
+         1aWMf7RCdzGDNxV1eORoQnf96PGPXpDQCW9NhbWeyCxjwkFKtmkD0+DFecdpVkzB4QIx
+         xr20sF1A7SulS1Oml7hjxbi58bvLKH7rxQtjdqAfTZWG5nJmkqyCaS8PNjbBky7Kpbqj
+         8nyw==
+X-Gm-Message-State: AOAM532go8Vs6htktiz3o0XrO4CocVryturOFVyRzIZmCXNkNHYfzwPK
+        y8whW8QmLL+GsjRGaMtKumWPAwt8fE1sH/Mtbyg=
+X-Google-Smtp-Source: ABdhPJxubfKAhbBYWXOu5Hl2BLVZlOAz0iAte5nh1SSxYgW/qeVjBucdzbTC0tkBi8v/vR2viV8lpUfrSmj3LrZea7k=
+X-Received: by 2002:a25:c743:: with SMTP id w64mr35345933ybe.127.1597044328869;
+ Mon, 10 Aug 2020 00:25:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <1596454753-13612-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1596454753-13612-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200806144511.6ajoqyynowglnbpm@uno.localdomain>
+In-Reply-To: <20200806144511.6ajoqyynowglnbpm@uno.localdomain>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Mon, 10 Aug 2020 08:25:02 +0100
+Message-ID: <CA+V-a8utQjTb44wuAOS7+GVKMwvv+OpPTFZ5Ons9Tj=i0KCqzw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] media: i2c: ov772x: Add support for BT656 mode
+To:     Jacopo Mondi <jacopo@jmondi.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- New options:
-  cond_resched_inside=Y  call cond_resched inside iteration under lock
-  measure_lockup=Y       measure maximum lockup time
+Hi Jacopo,
 
-- Rename option:
-  call_cond_resched=Y -> cond_resched_outside=Y: call cond_resched()
-                                                 between iterations.
+Thank you for the review.
 
-This allow us to simulate situation where process call cond_resched()
-with locks held.
+On Thu, Aug 6, 2020 at 3:41 PM Jacopo Mondi <jacopo@jmondi.org> wrote:
+>
+> On Mon, Aug 03, 2020 at 12:39:12PM +0100, Lad Prabhakar wrote:
+> > Add support to read the bus-type and enable BT656 mode if needed.
+> >
+> > The driver defaults to parallel mode if bus-type is not specified in DT.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > ---
+> >  drivers/media/i2c/ov772x.c | 40 ++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 40 insertions(+)
+> >
+> > diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
+> > index 2cc6a678069a..2de9248e3689 100644
+> > --- a/drivers/media/i2c/ov772x.c
+> > +++ b/drivers/media/i2c/ov772x.c
+> > @@ -31,6 +31,7 @@
+> >  #include <media/v4l2-ctrls.h>
+> >  #include <media/v4l2-device.h>
+> >  #include <media/v4l2-event.h>
+> > +#include <media/v4l2-fwnode.h>
+> >  #include <media/v4l2-image-sizes.h>
+> >  #include <media/v4l2-subdev.h>
+> >
+> > @@ -434,6 +435,7 @@ struct ov772x_priv {
+> >  #ifdef CONFIG_MEDIA_CONTROLLER
+> >       struct media_pad pad;
+> >  #endif
+> > +     struct v4l2_fwnode_endpoint ep;
+> >  };
+> >
+> >  /*
+> > @@ -574,6 +576,7 @@ static int ov772x_s_stream(struct v4l2_subdev *sd, int enable)
+> >  {
+> >       struct i2c_client *client = v4l2_get_subdevdata(sd);
+> >       struct ov772x_priv *priv = to_ov772x(sd);
+> > +     unsigned int val;
+> >       int ret = 0;
+> >
+> >       mutex_lock(&priv->lock);
+> > @@ -581,6 +584,22 @@ static int ov772x_s_stream(struct v4l2_subdev *sd, int enable)
+> >       if (priv->streaming == enable)
+> >               goto done;
+> >
+> > +     if (priv->ep.bus_type == V4L2_MBUS_BT656 && enable) {
+> > +             ret = regmap_read(priv->regmap, COM7, &val);
+> > +             if (ret)
+> > +                     goto done;
+> > +             val |= ITU656_ON_OFF;
+> > +             ret = regmap_write(priv->regmap, COM7, val);
+> > +     } else if (priv->ep.bus_type == V4L2_MBUS_BT656 && !enable) {
+>
+> is the !enable intentional ? (sorry I don't have access to the sensor
+> manual). If not, see below:
+>
+> > +             ret = regmap_read(priv->regmap, COM7, &val);
+> > +             if (ret)
+> > +                     goto done;
+> > +             val &= ~ITU656_ON_OFF;
+> > +             ret = regmap_write(priv->regmap, COM7, val);
+> > +     }
+> > +     if (ret)
+> > +             goto done;
+>
+> Could you write this as:
+>
+Agreed will do.
 
-Example demonstrate priority inversion issue with epbf-program, where
-low priority task sheduled out while holding cgroup_mutex for a long
-periods of time which blocks others high priority tasks.
+> static int ov772x_s_stream(struct v4l2_subdev *sd, int enable)
+> {
+>         struct i2c_client *client = v4l2_get_subdevdata(sd);
+>         struct ov772x_priv *priv = to_ov772x(sd);
+>         int ret = 0;
+>
+>         mutex_lock(&priv->lock);
+>
+>         if (priv->streaming == enable)
+>                 goto done;
+>
+>         if (enable) {
+>                 ret = regmap_read(priv->regmap, COM7, &val);
+>                 if (ret)
+>                         goto done;
+>
+>                 if (priv->ep.bus_type == V4L2_MBUS_BT656)
+>                         val |= ITU656_ON_OFF;
+>                 else /* if you accept my suggestion to consider othe
+>                         bus types as errors */
+>                         val &= ~ITU656_ON_OFF;
+>
+>                 ret = regmap_write(priv->regmap, COM7, val);
+>                 if (ret)
+>                         goto done;
+>
+>                 dev_dbg(&client->dev, "format %d, win %s\n",
+>                         priv->cfmt->code, priv->win->name);
+>         }
+>
+>         ret = regmap_update_bits(priv->regmap, COM2, SOFT_SLEEP_MODE,
+>                                  enable ? 0 : SOFT_SLEEP_MODE);
+>         if (ret)
+>                 goto done;
+>         priv->streaming = enable;
+>
+> done:
+>         mutex_unlock(&priv->lock);
+>
+>         return ret;
+> }
+>
+>
+> >       ret = regmap_update_bits(priv->regmap, COM2, SOFT_SLEEP_MODE,
+> >                                enable ? 0 : SOFT_SLEEP_MODE);
+> >       if (ret)
+> > @@ -1354,6 +1373,7 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
+> >
+> >  static int ov772x_probe(struct i2c_client *client)
+> >  {
+> > +     struct fwnode_handle *endpoint;
+> >       struct ov772x_priv      *priv;
+> >       int                     ret;
+> >       static const struct regmap_config ov772x_regmap_config = {
+> > @@ -1415,6 +1435,26 @@ static int ov772x_probe(struct i2c_client *client)
+> >               goto error_clk_put;
+> >       }
+> >
+> > +     endpoint = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
+> > +                                               NULL);
+> > +     if (!endpoint) {
+> > +             dev_err(&client->dev, "endpoint node not found\n");
+> > +             ret = -EINVAL;
+> > +             goto error_clk_put;
+> > +     }
+> > +
+> > +     ret = v4l2_fwnode_endpoint_parse(endpoint, &priv->ep);
+> > +     fwnode_handle_put(endpoint);
+> > +     if (ret) {
+> > +             dev_err(&client->dev, "Could not parse endpoint\n");
+> > +             goto error_clk_put;
+> > +     }
+> > +
+> > +     /* fallback to parallel mode */
+> > +     if (priv->ep.bus_type != V4L2_MBUS_PARALLEL &&
+> > +         priv->ep.bus_type != V4L2_MBUS_BT656)
+> > +             priv->ep.bus_type = V4L2_MBUS_PARALLEL;
+>
+> shouldn't this be an error ? It's either the bus type has not been
+> specified on DT (which is fine, otherwise old DTB without that
+> properties will fail) and the bus identification routine implemented
+> in v4l2_fwnode_endpoint_parse() detected a bus type which is not
+> supported, hence the DT properties are wrong, and this should be an
+> error. If you plan to expand the parsing routine to support, say
+> bus-width and pclk polarity please break this out to a new function.
+>
+Agreed.
 
-CGROUP_MUTEX=$(gawk '$3 == "cgroup_mutex" {print "0x"$1}' /proc/kallsyms)
-# Emulate ebpf-applications load which can hung inside cgroup_bpf_attach()
-nice -20 modprobe lib/test_lockup.ko \
-      time_nsecs=1000 cooldown_nsecs=100000 iterations=100000 \
-      lock_mutex_ptr=$CGROUP_MUTEX reacquire_locks=Y\
-      cond_resched_inside=Y measure_lockup=Y &
+Cheers,
+Prabhakar
 
-stress-ng -c $(nproc) --timeout 10s&
-time mkdir /sys/fs/cgroup/blkio/a
-time rmdir /sys/fs/cgroup/blkio/a
-
-Signed-off-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
----
- lib/test_lockup.c | 45 +++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 37 insertions(+), 8 deletions(-)
-
-diff --git a/lib/test_lockup.c b/lib/test_lockup.c
-index 867b2f4..5666c00 100644
---- a/lib/test_lockup.c
-+++ b/lib/test_lockup.c
-@@ -73,9 +73,13 @@ static bool touch_hardlockup;
- module_param(touch_hardlockup, bool, 0600);
- MODULE_PARM_DESC(touch_hardlockup, "touch hard-lockup watchdog between iterations");
- 
--static bool call_cond_resched;
--module_param(call_cond_resched, bool, 0600);
--MODULE_PARM_DESC(call_cond_resched, "call cond_resched() between iterations");
-+static bool cond_resched_inside;
-+module_param(cond_resched_inside, bool, 0600);
-+MODULE_PARM_DESC(cond_resched_inside, "call cond_resched() during iteration");
-+
-+static bool cond_resched_outside;
-+module_param(cond_resched_outside, bool, 0600);
-+MODULE_PARM_DESC(cond_resched_outside, "call cond_resched() between iterations");
- 
- static bool measure_alloc_pages_wait;
- module_param(measure_alloc_pages_wait, bool, 0400);
-@@ -85,6 +89,10 @@ static bool measure_lock_wait;
- module_param(measure_lock_wait, bool, 0400);
- MODULE_PARM_DESC(measure_lock_wait, "measure lock wait time");
- 
-+static bool measure_lockup;
-+module_param(measure_lockup, bool, 0400);
-+MODULE_PARM_DESC(measure_lockup, "measure maximum lockup time");
-+
- static unsigned long lock_wait_threshold = ULONG_MAX;
- module_param(lock_wait_threshold, ulong, 0400);
- MODULE_PARM_DESC(lock_wait_threshold, "print lock wait time longer than this in nanoseconds, default off");
-@@ -167,6 +175,7 @@ static atomic_t alloc_pages_failed = ATOMIC_INIT(0);
- 
- static atomic64_t max_lock_wait = ATOMIC64_INIT(0);
- static atomic64_t max_alloc_pages_wait = ATOMIC64_INIT(0);
-+static atomic64_t max_lockup_time = ATOMIC64_INIT(0);
- 
- static struct task_struct *main_task;
- static int master_cpu;
-@@ -369,6 +378,7 @@ static void test_wait(unsigned int secs, unsigned int nsecs)
- static void test_lockup(bool master)
- {
- 	u64 lockup_start = local_clock();
-+	u64 iter_start;
- 	unsigned int iter = 0;
- 	LIST_HEAD(pages);
- 
-@@ -379,12 +389,18 @@ static void test_lockup(bool master)
- 	test_alloc_pages(&pages);
- 
- 	while (iter++ < iterations && !signal_pending(main_task)) {
-+		s64 cur_lockup, max_lockup;
-+
-+		iter_start = local_clock();
- 
- 		if (iowait)
- 			current->in_iowait = 1;
- 
- 		test_wait(time_secs, time_nsecs);
- 
-+		if (cond_resched_inside)
-+			cond_resched();
-+
- 		if (iowait)
- 			current->in_iowait = 0;
- 
-@@ -400,7 +416,15 @@ static void test_lockup(bool master)
- 		if (touch_hardlockup)
- 			touch_nmi_watchdog();
- 
--		if (call_cond_resched)
-+		cur_lockup  = local_clock() - iter_start;
-+		max_lockup = atomic64_read(&max_lockup_time);
-+		do {
-+			if (cur_lockup < max_lockup)
-+				break;
-+			max_lockup = atomic64_cmpxchg(&max_lockup_time, max_lockup, cur_lockup);
-+		} while (max_lockup != cur_lockup);
-+
-+		if (cond_resched_outside)
- 			cond_resched();
- 
- 		test_wait(cooldown_secs, cooldown_nsecs);
-@@ -515,8 +539,8 @@ static int __init test_lockup_init(void)
- 		return -EINVAL;
- #endif
- 
--	if ((wait_state != TASK_RUNNING ||
--	     (call_cond_resched && !reacquire_locks) ||
-+	if ((wait_state != TASK_RUNNING || cond_resched_inside ||
-+	     (cond_resched_outside && !reacquire_locks) ||
- 	     (alloc_pages_nr && gfpflags_allow_blocking(alloc_pages_gfp))) &&
- 	    (test_disable_irq || disable_softirq || disable_preempt ||
- 	     lock_rcu || lock_spinlock_ptr || lock_rwlock_ptr)) {
-@@ -552,7 +576,7 @@ static int __init test_lockup_init(void)
- 	if (test_lock_sb_umount && test_inode)
- 		lock_rwsem_ptr = (unsigned long)&test_inode->i_sb->s_umount;
- 
--	pr_notice("START pid=%d time=%u +%u ns cooldown=%u +%u ns iterations=%u state=%s %s%s%s%s%s%s%s%s%s%s%s\n",
-+	pr_notice("START pid=%d time=%u +%u ns cooldown=%u +%u ns iterations=%u state=%s %s%s%s%s%s%s%s%s%s%s%s%s\n",
- 		  main_task->pid, time_secs, time_nsecs,
- 		  cooldown_secs, cooldown_nsecs, iterations, state,
- 		  all_cpus ? "all_cpus " : "",
-@@ -564,7 +588,8 @@ static int __init test_lockup_init(void)
- 		  lock_read ? "lock_read " : "",
- 		  touch_softlockup ? "touch_softlockup " : "",
- 		  touch_hardlockup ? "touch_hardlockup " : "",
--		  call_cond_resched ? "call_cond_resched " : "",
-+		  cond_resched_inside ? "cond_resched_inside " : "",
-+		  cond_resched_outside ? "cond_resched_outside " : "",
- 		  reacquire_locks ? "reacquire_locks " : "");
- 
- 	if (alloc_pages_nr)
-@@ -605,6 +630,10 @@ static int __init test_lockup_init(void)
- 			pr_notice("Maximum pages allocation wait: %lld ns\n",
- 				  atomic64_read(&max_alloc_pages_wait));
- 	}
-+	if (measure_lockup)
-+		pr_notice("Maximum lockup time: %lld ns\n",
-+			  atomic64_read(&max_lockup_time));
-+
- 	pr_notice("FINISH in %llu ns\n", local_clock() - test_start);
- 
- 	if (test_file)
--- 
-2.7.4
-
+> Thanks
+>    j
+>
+> > +
+> >       ret = ov772x_video_probe(priv);
+> >       if (ret < 0)
+> >               goto error_gpio_put;
+> > --
+> > 2.17.1
+> >
