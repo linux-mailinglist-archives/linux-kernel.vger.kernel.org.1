@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89CE240A01
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA232409F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728898AbgHJPhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:37:48 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:37406 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728640AbgHJPhT (ORCPT
+        id S1728696AbgHJPhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:37:25 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:39759 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728674AbgHJPhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 Aug 2020 11:37:19 -0400
-Received: by mail-il1-f199.google.com with SMTP id 5so4950643ila.4
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 08:37:19 -0700 (PDT)
+Received: by mail-il1-f200.google.com with SMTP id i66so8131957ile.6
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 08:37:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=z1AnOwdvWOgDWEgXiKkcjmRiNUEEMgZuTHLJ/I6p2U0=;
-        b=KpLGxuTBROTCWPtrY+LdNjZk9v2VHfQAauYRO3XBLFfl21OL3UbG2m7YZ1be490DWl
-         8QEfD8Bwjr/I7YNzhxVq8q8b8Z8gXSh2FlzdTB31ysXF/whAlir1x5ZqjXW5BsGRTP5K
-         1HFOCn+3+f0ueTMfwfmwNqcJGe5la9VtrWj6zIS+xfPSTHDckGVGn/f0QXcQvSSwdP6B
-         hd+xv1gM1W3Dv70B7CDabgC0d/65B8e01fW/laL7d9DysoH3B8G+yqVcg2leL1heGInK
-         twQbfBFS5zS4uWPJANcw7lGIgLkW5J972HLWt4PWoDLP/e4dX40k+VSqr5HNd0O+qT5y
-         Vqjg==
-X-Gm-Message-State: AOAM5332qbCE9CHLGpYthfTcIymjniUNXXYRX3pGa2ShrBXjhnsC44Sf
-        KURbxj2ld1wCbCPsXJAlFNt2oai6bZyM3vNWsMThY+iXW1tr
-X-Google-Smtp-Source: ABdhPJzXLcVGEGL1RIokA2/PYg0AZsJOdunpdyy5jMuU1F4eyFVV7w5W5h7P9PJORJ+cv6ygCXpWaKs/UO+7RBVKWAPhNuhbLQpM
+        bh=vgKXH4WJ5mL8jBHkC4QRYXqac1PdnedowUxx7rlEsuM=;
+        b=BdTAcyAO2sMSO9NX6lGEO9+xq6O1OXo2QvIEhs24TX6tCBiH2MtWRZfYrs3oVVBCtu
+         XFiHXaj6yqIUTnUpstXq7z3JfCsZsW48US/VDIsU0dRiTjFJd8UYGhfbapqM8OEC/V52
+         OG3o4LFFpvQDFbciz50LUSZVxHeGk4pvHLAIt9/zu7E7kV4hX0W0zNZySstFB9/Z4p/Y
+         Jhpxcgaax3wtkTpkvmzbhLj5DZ/co75uDEbtFqgUxQHuWz9Mk3J05EVGqQpf5h78dLPV
+         fvxQDWofXWaKF78ellsHuYqKaz7LHrQ1DRNLDjXz8EjYjMOxjTzN5oziCujDQ7jfpdWB
+         sXcQ==
+X-Gm-Message-State: AOAM5306lRyBT581RjR36PT/WTCURT7S6IfPCAUMrTtYKSXqyyD8+im0
+        c9CI94e2Fv+Urb2ISi7uT2KMfvF65mOMLf3ROoob9JZih2Is
+X-Google-Smtp-Source: ABdhPJwD0PYJDlH/aA+YionM4F0yS0UeZ+HmBNJlwl9iWQ+7lRzbMHmYr6o24OoWR3/2wrpeUcHk4LmvarRQkZICd8vhhm4wa+T7
 MIME-Version: 1.0
-X-Received: by 2002:a92:cf09:: with SMTP id c9mr14933190ilo.38.1597073838960;
+X-Received: by 2002:a92:c7ae:: with SMTP id f14mr19137037ilk.39.1597073838340;
  Mon, 10 Aug 2020 08:37:18 -0700 (PDT)
 Date:   Mon, 10 Aug 2020 08:37:18 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d9f93a05ac87ba78@google.com>
-Subject: KMSAN: uninit-value in hsr_get_node
-From:   syzbot <syzbot+d205b494fafacf899b18@syzkaller.appspotmail.com>
-To:     alex.shi@linux.alibaba.com, ap420073@gmail.com,
-        davem@davemloft.net, frextrite@gmail.com, glider@google.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000d07f9605ac87ba9e@google.com>
+Subject: possible deadlock in io_queue_linked_timeout
+From:   syzbot <syzbot+d4586d3028284ff8a0be@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -50,95 +49,83 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    ce8056d1 wip: changed copy_from_user where instrumented
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1198be02900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3afe005fb99591f
-dashboard link: https://syzkaller.appspot.com/bug?extid=d205b494fafacf899b18
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
+HEAD commit:    06a81c1c Merge tag 'arm64-fixes' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13fbac1c900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bf68a13f867fd1b4
+dashboard link: https://syzkaller.appspot.com/bug?extid=d4586d3028284ff8a0be
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1362024e900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1672fd34900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d205b494fafacf899b18@syzkaller.appspotmail.com
+Reported-by: syzbot+d4586d3028284ff8a0be@syzkaller.appspotmail.com
 
-hsr_slave_0: hsr_addr_subst_dest: Unknown node
-hsr_slave_1: hsr_addr_subst_dest: Unknown node
-=====================================================
-BUG: KMSAN: uninit-value in hsr_get_node+0x3d3/0x750 net/hsr/hsr_framereg.c:191
-CPU: 0 PID: 3953 Comm: syz-executor.5 Not tainted 5.8.0-rc5-syzkaller #0
+============================================
+WARNING: possible recursive locking detected
+5.8.0-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor880/6847 is trying to acquire lock:
+ffff8880a19214d8 (&ctx->completion_lock){....}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:379 [inline]
+ffff8880a19214d8 (&ctx->completion_lock){....}-{2:2}, at: io_queue_linked_timeout+0x4c/0x200 fs/io_uring.c:5928
+
+but task is already holding lock:
+ffff8880a19214d8 (&ctx->completion_lock){....}-{2:2}, at: io_cqring_overflow_flush+0x814/0xaa0 fs/io_uring.c:1333
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&ctx->completion_lock);
+  lock(&ctx->completion_lock);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+1 lock held by syz-executor880/6847:
+ #0: ffff8880a19214d8 (&ctx->completion_lock){....}-{2:2}, at: io_cqring_overflow_flush+0x814/0xaa0 fs/io_uring.c:1333
+
+stack backtrace:
+CPU: 1 PID: 6847 Comm: syz-executor880 Not tainted 5.8.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- hsr_get_node+0x3d3/0x750 net/hsr/hsr_framereg.c:191
- hsr_fill_frame_info net/hsr/hsr_forward.c:315 [inline]
- hsr_forward_skb+0x90c/0x3600 net/hsr/hsr_forward.c:358
- hsr_dev_xmit+0x133/0x230 net/hsr/hsr_device.c:221
- __netdev_start_xmit include/linux/netdevice.h:4611 [inline]
- netdev_start_xmit include/linux/netdevice.h:4625 [inline]
- xmit_one+0x3cf/0x750 net/core/dev.c:3556
- dev_hard_start_xmit net/core/dev.c:3572 [inline]
- __dev_queue_xmit+0x3aad/0x4470 net/core/dev.c:4131
- dev_queue_xmit+0x4b/0x60 net/core/dev.c:4164
- __bpf_tx_skb net/core/filter.c:2086 [inline]
- __bpf_redirect_common net/core/filter.c:2125 [inline]
- __bpf_redirect+0x1479/0x16b0 net/core/filter.c:2132
- ____bpf_clone_redirect net/core/filter.c:2165 [inline]
- bpf_clone_redirect+0x498/0x650 net/core/filter.c:2137
- ___bpf_prog_run+0x4498/0x98e0 kernel/bpf/core.c:1516
- __bpf_prog_run512+0x12e/0x190 kernel/bpf/core.c:1694
- bpf_test_run+0x52d/0xed0 include/linux/filter.h:734
- bpf_prog_test_run_skb+0x1053/0x2ad0 net/bpf/test_run.c:459
- bpf_prog_test_run kernel/bpf/syscall.c:2983 [inline]
- __do_sys_bpf+0xb364/0x1a4c0 kernel/bpf/syscall.c:4135
- __se_sys_bpf+0x8e/0xa0 kernel/bpf/syscall.c:4075
- __ia32_sys_bpf+0x4a/0x70 kernel/bpf/syscall.c:4075
- do_syscall_32_irqs_on arch/x86/entry/common.c:430 [inline]
- __do_fast_syscall_32+0x2af/0x480 arch/x86/entry/common.c:477
- do_fast_syscall_32+0x6b/0xd0 arch/x86/entry/common.c:505
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:554
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f1d549
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_deadlock_bug kernel/locking/lockdep.c:2391 [inline]
+ check_deadlock kernel/locking/lockdep.c:2432 [inline]
+ validate_chain kernel/locking/lockdep.c:3202 [inline]
+ __lock_acquire.cold+0x115/0x396 kernel/locking/lockdep.c:4426
+ lock_acquire+0x1f1/0xad0 kernel/locking/lockdep.c:5005
+ __raw_spin_lock_irq include/linux/spinlock_api_smp.h:128 [inline]
+ _raw_spin_lock_irq+0x5b/0x80 kernel/locking/spinlock.c:167
+ spin_lock_irq include/linux/spinlock.h:379 [inline]
+ io_queue_linked_timeout+0x4c/0x200 fs/io_uring.c:5928
+ __io_queue_async_work+0x1f8/0x4c0 fs/io_uring.c:1192
+ __io_queue_deferred fs/io_uring.c:1237 [inline]
+ io_commit_cqring+0x456/0x7a0 fs/io_uring.c:1265
+ io_cqring_overflow_flush+0x5b8/0xaa0 fs/io_uring.c:1359
+ io_ring_ctx_wait_and_kill+0x30e/0x600 fs/io_uring.c:7808
+ io_uring_release+0x3e/0x50 fs/io_uring.c:7829
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:135
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb7d/0x29f0 kernel/exit.c:806
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ __do_sys_exit_group kernel/exit.c:914 [inline]
+ __se_sys_exit_group kernel/exit.c:912 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:912
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x43f598
 Code: Bad RIP value.
-RSP: 002b:00000000f55170cc EFLAGS: 00000296 ORIG_RAX: 0000000000000165
-RAX: ffffffffffffffda RBX: 000000000000000a RCX: 0000000020000740
-RDX: 0000000000000028 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-Uninit was created at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
- kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
- kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
- slab_alloc_node mm/slub.c:2839 [inline]
- __kmalloc_node_track_caller+0xeab/0x12e0 mm/slub.c:4478
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- pskb_expand_head+0x26e/0x1e30 net/core/skbuff.c:1627
- skb_ensure_writable+0x4d1/0x590 net/core/skbuff.c:5457
- __bpf_try_make_writable net/core/filter.c:1624 [inline]
- bpf_try_make_writable net/core/filter.c:1630 [inline]
- bpf_try_make_head_writable net/core/filter.c:1638 [inline]
- ____bpf_clone_redirect net/core/filter.c:2159 [inline]
- bpf_clone_redirect+0x26c/0x650 net/core/filter.c:2137
- ___bpf_prog_run+0x4498/0x98e0 kernel/bpf/core.c:1516
- __bpf_prog_run512+0x12e/0x190 kernel/bpf/core.c:1694
- bpf_test_run+0x52d/0xed0 include/linux/filter.h:734
- bpf_prog_test_run_skb+0x1053/0x2ad0 net/bpf/test_run.c:459
- bpf_prog_test_run kernel/bpf/syscall.c:2983 [inline]
- __do_sys_bpf+0xb364/0x1a4c0 kernel/bpf/syscall.c:4135
- __se_sys_bpf+0x8e/0xa0 kernel/bpf/syscall.c:4075
- __ia32_sys_bpf+0x4a/0x70 kernel/bpf/syscall.c:4075
- do_syscall_32_irqs_on arch/x86/entry/common.c:430 [inline]
- __do_fast_syscall_32+0x2af/0x480 arch/x86/entry/common.c:477
- do_fast_syscall_32+0x6b/0xd0 arch/x86/entry/common.c:505
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:554
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-=====================================================
+RSP: 002b:00007ffd3a4fbaa8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000043f598
+RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
+RBP: 00000000004beda8 R08: 00000000000000e7 R09: ffffffffffffffd0
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00000000006d11a0 R14: 0000000000000000 R15: 0000000000000000
 
 
 ---
@@ -148,3 +135,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
