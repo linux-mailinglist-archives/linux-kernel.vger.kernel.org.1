@@ -2,81 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025A724097C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0966240984
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729224AbgHJPcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:32:36 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:44195 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729078AbgHJPaZ (ORCPT
+        id S1729248AbgHJPdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:33:12 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:42692 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729143AbgHJPdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:30:25 -0400
-Received: by mail-ot1-f67.google.com with SMTP id h22so7564421otq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 08:30:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EGXr1Q0HM/qo5dJWVUAaDwFLJRLFuaiaXBoFgMVJkVQ=;
-        b=ZHbqDf1Omd+MkmBmSIZZwsMe8MQlaFN1uACQ84nxk1xxwXTPgw89t6IzICqRA/7yJn
-         IrHTlAIDuvAt979oVzO6CEScnbdR9M8/HDkvBRE+GivOWn7AEVkgx1NOZcjPF1/WCbsq
-         wY5zflc8s5iZEWJegBPkwDC6jt4qhKi4D3uIK5ufDecc4C/dhrGKLC/Y0YOcMNRN5yBv
-         bWokotfXMRKrsZEwgmW4PO2hIOfn43xpCCD/uxCqdMZgiALVdkamtTGWM8WhFKfNC/hL
-         0YIF2awdadFtHW7zosWHisEDG64/JELHHGeoxqEdDqeR51seJsE7z03vrCe6qMk8zwiU
-         7N0Q==
-X-Gm-Message-State: AOAM532qhklmWkDhS0Ns5Sqj0IeT3P1QbVjCFZc1BBlGmEF8jl4EYmnb
-        1YJXsoJKXQz8GhEL4T4MoJjQpgVd9wD0HATam+c=
-X-Google-Smtp-Source: ABdhPJxkSUjUVue6l2Kb8qruxmuLEjfMHX2XY/gqPS1Y7BnQy62fmtLXDJozjrz938tbOW7O7dT8GP+A8G/V5yYCN6s=
-X-Received: by 2002:a9d:1b62:: with SMTP id l89mr1187198otl.145.1597073424726;
- Mon, 10 Aug 2020 08:30:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+icZUUGO0__SEZ7YvuQzfSdaWfTnCHW=73-3W4X=Vz51wHd+w@mail.gmail.com>
- <CAHk-=wiR+uHUyp3=Nf1aiNjmg0ZekaQJupLRguFNZ=MreuGhfg@mail.gmail.com> <CA+icZUXRjrX+1NAZy4As_ficD4aHRAZWHRj5hrE+D6E5zEKXHw@mail.gmail.com>
-In-Reply-To: <CA+icZUXRjrX+1NAZy4As_ficD4aHRAZWHRj5hrE+D6E5zEKXHw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 10 Aug 2020 17:30:13 +0200
-Message-ID: <CAMuHMdU-XugrkfM-9tQLrOJ_E1Of1Zf-DJZeSXJwkhw0Q9YoPA@mail.gmail.com>
-Subject: Re: Linux 5.8-rc6
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 10 Aug 2020 11:33:05 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200810153301euoutp02e9d152a74074f733705f277e938a1d02~p8fYI4koN1821818218euoutp02d
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 15:33:01 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200810153301euoutp02e9d152a74074f733705f277e938a1d02~p8fYI4koN1821818218euoutp02d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1597073581;
+        bh=xGW/Eb8TLGr6LjioWPTb6swHWqJ0i4j0PwmnzrrwdBk=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=TkriTn3vTmgATouWrcg4S2R0Bji7ANOe0LxUlgs5QpGNiRKF+Xds1v1+iIY3Ls7G7
+         6OlH1dpwRw99iEDhqcZehvmMHIqEN+1APlH+2EU2JvmewJdxK4uLTFVrZ0EaHn6l9R
+         s4v524jG5cFkDpfBXy6BRt3hOzLzqZm6TSY6A2HQ=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200810153301eucas1p1514acd8de8ac631d4431bda243638f2c~p8fX1rjTU2756927569eucas1p1Z;
+        Mon, 10 Aug 2020 15:33:01 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 13.4D.05997.DA8613F5; Mon, 10
+        Aug 2020 16:33:01 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200810153301eucas1p2684476145e627ba124ba4740ef204712~p8fXYl1XF0867608676eucas1p2G;
+        Mon, 10 Aug 2020 15:33:01 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200810153301eusmtrp2b3a126ce1cd7e02421bff081eb9eef19~p8fXX6rRk0085100851eusmtrp2L;
+        Mon, 10 Aug 2020 15:33:01 +0000 (GMT)
+X-AuditID: cbfec7f4-65dff7000000176d-a3-5f3168ad24a3
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id BC.C2.06314.CA8613F5; Mon, 10
+        Aug 2020 16:33:00 +0100 (BST)
+Received: from AMDC3061.digital.local (unknown [106.120.51.75]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200810153300eusmtip29723c347483cb5ac7b9a1c407d0ee3ee~p8fW3v-uZ3149731497eusmtip2T;
+        Mon, 10 Aug 2020 15:33:00 +0000 (GMT)
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+To:     linux-media@vger.kernel.org
+Cc:     hslester96@gmail.com, krzk@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH 1/2] media: Revert
+ "media: exynos4-is: Add missed check for pinctrl_lookup_state()"
+Date:   Mon, 10 Aug 2020 17:32:39 +0200
+Message-Id: <20200810153240.23827-1-s.nawrocki@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrBIsWRmVeSWpSXmKPExsWy7djPc7prMwzjDR5Ok7XYOGM9q8XsQy+Z
+        Lc6f38BusenxNVaLy7vmsFn0bNjKajHj/D4mi7VH7rJbHH7TzurA6bFz1l12j02rOtk8Ni+p
+        9+jbsorR4/MmuQDWKC6blNSczLLUIn27BK6MHQ+mshRM4ay4MukhUwPjU/YuRk4OCQETiZev
+        GsBsIYEVjBKt99W7GLmA7C+MEguPLGWCcD4zShxdsh2u43XbOlaIxHJGiUnTJ7LBtXxbuJ4R
+        pIpNwFCi92gfmC0iIC/xpPcGWBGzwHdGiZ3nfrOAJIQFUiXmv+hgBbFZBFQlnjyYDWRzcPAK
+        WEt0fMmD2CYvsXrDAWaQXgmB52wSm75eZIZIuEg8PTKdBcIWlnh1fAvUeTIS/3fOZ4JoaGaU
+        6Nl9mx3CmcAocf/4AkaIKmuJO+d+sYFsYxbQlFi/Sx8i7CixqPEY2BESAnwSN94KgoSZgcxJ
+        26YzQ4R5JTrahCCqVSR+r5rOBGFLSXQ/+Q91jofEl7/HGSFhGisx7dMitgmMcrMQdi1gZFzF
+        KJ5aWpybnlpslJdarlecmFtcmpeul5yfu4kRmB5O/zv+ZQfjrj9JhxgFOBiVeHgLrA3jhVgT
+        y4orcw8xSnAwK4nwOp09HSfEm5JYWZValB9fVJqTWnyIUZqDRUmc13jRy1ghgfTEktTs1NSC
+        1CKYLBMHp1QDI/+pCcucju0p5GE4vDg8LpbJ/FPaLSvRBT/kfm+bzOy7d8W8zEvfNHj1NL9c
+        8f74c8rEF2yMwtXFEqW/WbI45epnTJj9ef5ZvzMxwTffGv+87uV4Q2sjo6nDxS29kc43rjyp
+        eXs3pf6YU6n6x28+Dcc/PL55dHUK66LJS08asi2cwGfXU/GJ+5cSS3FGoqEWc1FxIgA9j6I7
+        CwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDLMWRmVeSWpSXmKPExsVy+t/xe7prMgzjDXqvWFlsnLGe1WL2oZfM
+        FufPb2C32PT4GqvF5V1z2Cx6NmxltZhxfh+Txdojd9ktDr9pZ3Xg9Ng56y67x6ZVnWwem5fU
+        e/RtWcXo8XmTXABrlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpO
+        Zllqkb5dgl7GjgdTWQqmcFZcmfSQqYHxKXsXIyeHhICJxOu2daxdjFwcQgJLGSWaX91k6WLk
+        AEpIScxvUYKoEZb4c62LDaLmE6PE3WP/mEESbAKGEr1H+xhBbBEBeYknvTfAipgF/jNKbJx5
+        gxlkkLBAssT7VxUgNSwCqhJPHsxmBQnzClhLdHzJg5gvL7F6wwHmCYw8CxgZVjGKpJYW56bn
+        FhvqFSfmFpfmpesl5+duYgSG5LZjPzfvYLy0MfgQowAHoxIPb4G1YbwQa2JZcWXuIUYJDmYl
+        EV6ns6fjhHhTEiurUovy44tKc1KLDzGaAu2eyCwlmpwPjJe8knhDU0NzC0tDc2NzYzMLJXHe
+        DoGDMUIC6YklqdmpqQWpRTB9TBycUg2M8Twx07Z09ayJcC72twth5rh56X+re+jxFmsHpmfK
+        k1uL/2wW6Xv4wlc36EO1yA4tJea48r+y3qIbmNqPCxTszrG0c59XlG7i/dMhpOns6+97D3AG
+        KWlz7Jhw+tcke/6eTs3E6J2dIWfYk8Je/0ve8q7ge2xW1p5OhbTO/WuPeO6f2ZI0I0yJpTgj
+        0VCLuag4EQDAswvbXwIAAA==
+X-CMS-MailID: 20200810153301eucas1p2684476145e627ba124ba4740ef204712
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200810153301eucas1p2684476145e627ba124ba4740ef204712
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200810153301eucas1p2684476145e627ba124ba4740ef204712
+References: <CGME20200810153301eucas1p2684476145e627ba124ba4740ef204712@eucas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sedat,
+The "idle" pinctrl state is optional as documented in the DT binding.
+The change introduced by the commit being reverted makes that pinctrl state
+mandatory and breaks initialization of the whole media driver, since the
+"idle" state is not specified in any mainline dts.
 
-On Tue, Jul 21, 2020 at 10:19 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> You happen to know if I can configure in my ~/.gitconfig to pull
-> linux-git stuff from two repositories - check first git.kernel.org
-> then GitHub.
->
-> Some days ago GitHub had some maintenance issues and I was not able to pull.
-> Means I trust more the security and integrity concept of git.kernel.org.
->
-> To pull from GitHub - saved 15-16mins of my life-time - meant
-> 15-16mins go earlier to sleep - as said I started my build 01:02a.m.
-> (German local-time).
+This reverts commit 18ffec750578f7447c288647d7282c7d12b1d969 to fix
+the regression.
 
-Assumed your cloned from kernel.org:
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+ drivers/media/platform/exynos4-is/media-dev.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-    git remote add github https://github.com/torvalds/linux
-
-After that:
-  1. "git remote update" will fetch data from both origin and github,
-  2. "git merge $(git tag | grep -v rc | sort -n | tail -1)" will
-     merge in the latest release, if you don't have it merged already.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
+index 16dd660..9a57523 100644
+--- a/drivers/media/platform/exynos4-is/media-dev.c
++++ b/drivers/media/platform/exynos4-is/media-dev.c
+@@ -1268,11 +1268,9 @@ static int fimc_md_get_pinctrl(struct fimc_md *fmd)
+ 	if (IS_ERR(pctl->state_default))
+ 		return PTR_ERR(pctl->state_default);
+ 
++	/* PINCTRL_STATE_IDLE is optional */
+ 	pctl->state_idle = pinctrl_lookup_state(pctl->pinctrl,
+ 					PINCTRL_STATE_IDLE);
+-	if (IS_ERR(pctl->state_idle))
+-		return PTR_ERR(pctl->state_idle);
+-
+ 	return 0;
+ }
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.7.4
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
