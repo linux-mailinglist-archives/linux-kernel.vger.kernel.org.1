@@ -2,219 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15425241182
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 22:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBAF1241193
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 22:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgHJUMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 16:12:34 -0400
-Received: from smtp-42ac.mail.infomaniak.ch ([84.16.66.172]:49361 "EHLO
-        smtp-42ac.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726402AbgHJUMd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 16:12:33 -0400
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4BQRvN075bzlhWhs;
-        Mon, 10 Aug 2020 22:12:00 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4BQRvG2BJvzlh8TS;
-        Mon, 10 Aug 2020 22:11:54 +0200 (CEST)
-Subject: Re: [PATCH v7 0/7] Add support for O_MAYEXEC
-To:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20200723171227.446711-1-mic@digikod.net>
- <202007241205.751EBE7@keescook>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <0733fbed-cc73-027b-13c7-c368c2d67fb3@digikod.net>
-Date:   Mon, 10 Aug 2020 22:11:53 +0200
-User-Agent: 
+        id S1726624AbgHJUQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 16:16:01 -0400
+Received: from mga05.intel.com ([192.55.52.43]:43643 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726115AbgHJUQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 16:16:01 -0400
+IronPort-SDR: EFaRwnGaRnwuOgKO8I176xurA5jmVHjw57RI8EORM7VVIqlSt6VuYFG0pTyljaoe43/MmJC8Jk
+ NpfjFPzaGDow==
+X-IronPort-AV: E=McAfee;i="6000,8403,9709"; a="238445479"
+X-IronPort-AV: E=Sophos;i="5.75,458,1589266800"; 
+   d="scan'208";a="238445479"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2020 13:12:52 -0700
+IronPort-SDR: DIOwE+X6NxFAJcz8icOgkd9MD/sNZ6eP1BqUhLjsxyDChAXjq/zEd9O9na0oEaC7YD95oWkHQV
+ E9t+g3MTuxFQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,458,1589266800"; 
+   d="scan'208";a="334350197"
+Received: from lkp-server01.sh.intel.com (HELO 71729f5ca340) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 10 Aug 2020 13:12:50 -0700
+Received: from kbuild by 71729f5ca340 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k5EA5-0000BU-L4; Mon, 10 Aug 2020 20:12:49 +0000
+Date:   Tue, 11 Aug 2020 04:12:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Omer Shpigelman <oshpigelman@habana.ai>
+Subject: drivers/misc/habanalabs/common/device.c:289:3: warning: %u in format
+ string (no. 1) requires 'unsigned int' but the argument type is 'signed
+ int'.
+Message-ID: <202008110418.fJWwQuUF%lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <202007241205.751EBE7@keescook>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
-X-Antivirus-Code: 0x100000
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems that there is no more complains nor questions. Do you want me
-to send another series to fix the order of the S-o-b in patch 7?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   fc80c51fd4b23ec007e88d4c688f2cac1b8648e7
+commit: 70b2f993ea4a79c298aac4ec1c58089020536ba5 habanalabs: create common folder
+date:   2 weeks ago
+compiler: riscv64-linux-gcc (GCC) 9.3.0
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
 
-On 24/07/2020 21:06, Kees Cook wrote:
-> I think this looks good now.
-> 
-> Andrew, since you're already carrying my exec clean-ups (repeated here
-> in patch 1-3), can you pick the rest of this series too?
-> 
-> Thanks!
-> 
-> -Kees
-> 
-> On Thu, Jul 23, 2020 at 07:12:20PM +0200, Mickaël Salaün wrote:
->> Hi,
->>
->> This seventh patch series do not set __FMODE_EXEC for the sake of
->> simplicity.  A notification feature could be added later if needed.  The
->> handling of all file types is now well defined and tested: by default,
->> when opening a path, access to a directory is denied (with EISDIR),
->> access to a regular file depends on the sysctl policy, and access to
->> other file types (i.e. fifo, device, socket) is denied if there is any
->> enforced policy.  There is new tests covering all these cases (cf.
->> test_file_types() ).
->>
->> As requested by Mimi Zohar, I completed the series with one of her
->> patches for IMA.  I also picked Kees Cook's patches to consolidate exec
->> permission checking into do_filp_open()'s flow.
->>
->>
->> # Goal of O_MAYEXEC
->>
->> The goal of this patch series is to enable to control script execution
->> with interpreters help.  A new O_MAYEXEC flag, usable through
->> openat2(2), is added to enable userspace script interpreters to delegate
->> to the kernel (and thus the system security policy) the permission to
->> interpret/execute scripts or other files containing what can be seen as
->> commands.
->>
->> A simple system-wide security policy can be enforced by the system
->> administrator through a sysctl configuration consistent with the mount
->> points or the file access rights.  The documentation patch explains the
->> prerequisites.
->>
->> Furthermore, the security policy can also be delegated to an LSM, either
->> a MAC system or an integrity system.  For instance, the new kernel
->> MAY_OPENEXEC flag closes a major IMA measurement/appraisal interpreter
->> integrity gap by bringing the ability to check the use of scripts [1].
->> Other uses are expected, such as for magic-links [2], SGX integration
->> [3], bpffs [4] or IPE [5].
->>
->>
->> # Prerequisite of its use
->>
->> Userspace needs to adapt to take advantage of this new feature.  For
->> example, the PEP 578 [6] (Runtime Audit Hooks) enables Python 3.8 to be
->> extended with policy enforcement points related to code interpretation,
->> which can be used to align with the PowerShell audit features.
->> Additional Python security improvements (e.g. a limited interpreter
->> withou -c, stdin piping of code) are on their way [7].
->>
->>
->> # Examples
->>
->> The initial idea comes from CLIP OS 4 and the original implementation
->> has been used for more than 12 years:
->> https://github.com/clipos-archive/clipos4_doc
->> Chrome OS has a similar approach:
->> https://chromium.googlesource.com/chromiumos/docs/+/master/security/noexec_shell_scripts.md
->>
->> Userland patches can be found here:
->> https://github.com/clipos-archive/clipos4_portage-overlay/search?q=O_MAYEXEC
->> Actually, there is more than the O_MAYEXEC changes (which matches this search)
->> e.g., to prevent Python interactive execution. There are patches for
->> Bash, Wine, Java (Icedtea), Busybox's ash, Perl and Python. There are
->> also some related patches which do not directly rely on O_MAYEXEC but
->> which restrict the use of browser plugins and extensions, which may be
->> seen as scripts too:
->> https://github.com/clipos-archive/clipos4_portage-overlay/tree/master/www-client
->>
->> An introduction to O_MAYEXEC was given at the Linux Security Summit
->> Europe 2018 - Linux Kernel Security Contributions by ANSSI:
->> https://www.youtube.com/watch?v=chNjCRtPKQY&t=17m15s
->> The "write xor execute" principle was explained at Kernel Recipes 2018 -
->> CLIP OS: a defense-in-depth OS:
->> https://www.youtube.com/watch?v=PjRE0uBtkHU&t=11m14s
->> See also an overview article: https://lwn.net/Articles/820000/
->>
->>
->> This patch series can be applied on top of v5.8-rc5 .  This can be tested
->> with CONFIG_SYSCTL.  I would really appreciate constructive comments on
->> this patch series.
->>
->> Previous version:
->> https://lore.kernel.org/lkml/20200505153156.925111-1-mic@digikod.net/
->>
->>
->> [1] https://lore.kernel.org/lkml/1544647356.4028.105.camel@linux.ibm.com/
->> [2] https://lore.kernel.org/lkml/20190904201933.10736-6-cyphar@cyphar.com/
->> [3] https://lore.kernel.org/lkml/CALCETrVovr8XNZSroey7pHF46O=kj_c5D9K8h=z2T_cNrpvMig@mail.gmail.com/
->> [4] https://lore.kernel.org/lkml/CALCETrVeZ0eufFXwfhtaG_j+AdvbzEWE0M3wjXMWVEO7pj+xkw@mail.gmail.com/
->> [5] https://lore.kernel.org/lkml/20200406221439.1469862-12-deven.desai@linux.microsoft.com/
->> [6] https://www.python.org/dev/peps/pep-0578/
->> [7] https://lore.kernel.org/lkml/0c70debd-e79e-d514-06c6-4cd1e021fa8b@python.org/
->>
->> Regards,
->>
->> Kees Cook (3):
->>   exec: Change uselib(2) IS_SREG() failure to EACCES
->>   exec: Move S_ISREG() check earlier
->>   exec: Move path_noexec() check earlier
->>
->> Mickaël Salaün (3):
->>   fs: Introduce O_MAYEXEC flag for openat2(2)
->>   fs,doc: Enable to enforce noexec mounts or file exec through O_MAYEXEC
->>   selftest/openat2: Add tests for O_MAYEXEC enforcing
->>
->> Mimi Zohar (1):
->>   ima: add policy support for the new file open MAY_OPENEXEC flag
->>
->>  Documentation/ABI/testing/ima_policy          |   2 +-
->>  Documentation/admin-guide/sysctl/fs.rst       |  49 +++
->>  fs/exec.c                                     |  23 +-
->>  fs/fcntl.c                                    |   2 +-
->>  fs/namei.c                                    |  36 +-
->>  fs/open.c                                     |  12 +-
->>  include/linux/fcntl.h                         |   2 +-
->>  include/linux/fs.h                            |   3 +
->>  include/uapi/asm-generic/fcntl.h              |   7 +
->>  kernel/sysctl.c                               |  12 +-
->>  security/integrity/ima/ima_main.c             |   3 +-
->>  security/integrity/ima/ima_policy.c           |  15 +-
->>  tools/testing/selftests/kselftest_harness.h   |   3 +
->>  tools/testing/selftests/openat2/Makefile      |   3 +-
->>  tools/testing/selftests/openat2/config        |   1 +
->>  tools/testing/selftests/openat2/helpers.h     |   1 +
->>  .../testing/selftests/openat2/omayexec_test.c | 325 ++++++++++++++++++
->>  17 files changed, 470 insertions(+), 29 deletions(-)
->>  create mode 100644 tools/testing/selftests/openat2/config
->>  create mode 100644 tools/testing/selftests/openat2/omayexec_test.c
->>
->> -- 
->> 2.27.0
->>
-> 
+cppcheck warnings: (new ones prefixed by >>)
+
+>> drivers/misc/habanalabs/common/device.c:289:3: warning: %u in format string (no. 1) requires 'unsigned int' but the argument type is 'signed int'. [invalidPrintfArgType_uint]
+     snprintf(workq_name, 32, "hl-free-jobs-%u", i);
+     ^
+>> drivers/misc/habanalabs/common/device.c:1304:24: warning: Variable 'add_cdev_sysfs_on_err' is reassigned a value before the old one has been used. [redundantAssignment]
+    add_cdev_sysfs_on_err = false;
+                          ^
+   drivers/misc/habanalabs/common/device.c:1262:24: note: Variable 'add_cdev_sysfs_on_err' is reassigned a value before the old one has been used.
+    add_cdev_sysfs_on_err = true;
+                          ^
+   drivers/misc/habanalabs/common/device.c:1304:24: note: Variable 'add_cdev_sysfs_on_err' is reassigned a value before the old one has been used.
+    add_cdev_sysfs_on_err = false;
+                          ^
+>> drivers/misc/habanalabs/common/command_submission.c:720:6: warning: Variable 'rc' is reassigned a value before the old one has been used. [redundantAssignment]
+     rc = cs_parser(hpriv, job);
+        ^
+   drivers/misc/habanalabs/common/command_submission.c:691:7: note: Variable 'rc' is reassigned a value before the old one has been used.
+      rc = -ENOMEM;
+         ^
+   drivers/misc/habanalabs/common/command_submission.c:720:6: note: Variable 'rc' is reassigned a value before the old one has been used.
+     rc = cs_parser(hpriv, job);
+        ^
+
+vim +289 drivers/misc/habanalabs/common/device.c
+
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  241  
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  242  /*
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  243   * device_early_init - do some early initialization for the habanalabs device
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  244   *
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  245   * @hdev: pointer to habanalabs device structure
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  246   *
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  247   * Install the relevant function pointers and call the early_init function,
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  248   * if such a function exists
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  249   */
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  250  static int device_early_init(struct hl_device *hdev)
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  251  {
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  252  	int i, rc;
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  253  	char workq_name[32];
+99b9d7b4970cf1 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  254  
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  255  	switch (hdev->asic_type) {
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  256  	case ASIC_GOYA:
+99b9d7b4970cf1 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  257  		goya_set_asic_funcs(hdev);
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  258  		strlcpy(hdev->asic_name, "GOYA", sizeof(hdev->asic_name));
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  259  		break;
+af57cb81a6df58 drivers/misc/habanalabs/device.c Oded Gabbay 2020-05-11  260  	case ASIC_GAUDI:
+af57cb81a6df58 drivers/misc/habanalabs/device.c Oded Gabbay 2020-05-11  261  		gaudi_set_asic_funcs(hdev);
+af57cb81a6df58 drivers/misc/habanalabs/device.c Oded Gabbay 2020-05-11  262  		sprintf(hdev->asic_name, "GAUDI");
+af57cb81a6df58 drivers/misc/habanalabs/device.c Oded Gabbay 2020-05-11  263  		break;
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  264  	default:
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  265  		dev_err(hdev->dev, "Unrecognized ASIC type %d\n",
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  266  			hdev->asic_type);
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  267  		return -EINVAL;
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  268  	}
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  269  
+99b9d7b4970cf1 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  270  	rc = hdev->asic_funcs->early_init(hdev);
+99b9d7b4970cf1 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  271  	if (rc)
+99b9d7b4970cf1 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  272  		return rc;
+99b9d7b4970cf1 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  273  
+0861e41de53044 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  274  	rc = hl_asid_init(hdev);
+0861e41de53044 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  275  	if (rc)
+0861e41de53044 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  276  		goto early_fini;
+0861e41de53044 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  277  
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  278  	if (hdev->asic_prop.completion_queues_count) {
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  279  		hdev->cq_wq = kcalloc(hdev->asic_prop.completion_queues_count,
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  280  				sizeof(*hdev->cq_wq),
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  281  				GFP_ATOMIC);
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  282  		if (!hdev->cq_wq) {
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  283  			rc = -ENOMEM;
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  284  			goto asid_fini;
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  285  		}
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  286  	}
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  287  
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  288  	for (i = 0 ; i < hdev->asic_prop.completion_queues_count ; i++) {
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05 @289  		snprintf(workq_name, 32, "hl-free-jobs-%u", i);
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  290  		hdev->cq_wq[i] = create_singlethread_workqueue(workq_name);
+9494a8dd8d22cb drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  291  		if (hdev->cq_wq == NULL) {
+9494a8dd8d22cb drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  292  			dev_err(hdev->dev, "Failed to allocate CQ workqueue\n");
+9494a8dd8d22cb drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  293  			rc = -ENOMEM;
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  294  			goto free_cq_wq;
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  295  		}
+9494a8dd8d22cb drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  296  	}
+9494a8dd8d22cb drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  297  
+1251f23ae8583b drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  298  	hdev->eq_wq = alloc_workqueue("hl-events", WQ_UNBOUND, 0);
+1251f23ae8583b drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  299  	if (hdev->eq_wq == NULL) {
+1251f23ae8583b drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  300  		dev_err(hdev->dev, "Failed to allocate EQ workqueue\n");
+1251f23ae8583b drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  301  		rc = -ENOMEM;
+1251f23ae8583b drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  302  		goto free_cq_wq;
+1251f23ae8583b drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  303  	}
+1251f23ae8583b drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  304  
+d91389bc839d72 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  305  	hdev->hl_chip_info = kzalloc(sizeof(struct hwmon_chip_info),
+d91389bc839d72 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  306  					GFP_KERNEL);
+d91389bc839d72 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  307  	if (!hdev->hl_chip_info) {
+d91389bc839d72 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  308  		rc = -ENOMEM;
+d91389bc839d72 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  309  		goto free_eq_wq;
+d91389bc839d72 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  310  	}
+d91389bc839d72 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  311  
+75b3cb2bb08037 drivers/misc/habanalabs/device.c Oded Gabbay 2019-08-28  312  	hdev->idle_busy_ts_arr = kmalloc_array(HL_IDLE_BUSY_TS_ARR_SIZE,
+75b3cb2bb08037 drivers/misc/habanalabs/device.c Oded Gabbay 2019-08-28  313  					sizeof(struct hl_device_idle_busy_ts),
+75b3cb2bb08037 drivers/misc/habanalabs/device.c Oded Gabbay 2019-08-28  314  					(GFP_KERNEL | __GFP_ZERO));
+75b3cb2bb08037 drivers/misc/habanalabs/device.c Oded Gabbay 2019-08-28  315  	if (!hdev->idle_busy_ts_arr) {
+75b3cb2bb08037 drivers/misc/habanalabs/device.c Oded Gabbay 2019-08-28  316  		rc = -ENOMEM;
+75b3cb2bb08037 drivers/misc/habanalabs/device.c Oded Gabbay 2019-08-28  317  		goto free_chip_info;
+75b3cb2bb08037 drivers/misc/habanalabs/device.c Oded Gabbay 2019-08-28  318  	}
+75b3cb2bb08037 drivers/misc/habanalabs/device.c Oded Gabbay 2019-08-28  319  
+be5d926b5c1043 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  320  	hl_cb_mgr_init(&hdev->kernel_cb_mgr);
+be5d926b5c1043 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  321  
+9494a8dd8d22cb drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  322  	mutex_init(&hdev->send_cpu_message_lock);
+19734970c98b07 drivers/misc/habanalabs/device.c Oded Gabbay 2019-05-04  323  	mutex_init(&hdev->debug_lock);
+8d45f1de3994c5 drivers/misc/habanalabs/device.c Tomer Tayar 2019-05-13  324  	mutex_init(&hdev->mmu_cache_lock);
+eff6f4a0e70b7b drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  325  	INIT_LIST_HEAD(&hdev->hw_queues_mirror_list);
+eff6f4a0e70b7b drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  326  	spin_lock_init(&hdev->hw_queues_mirror_lock);
+eb7caf84b02938 drivers/misc/habanalabs/device.c Oded Gabbay 2019-07-30  327  	INIT_LIST_HEAD(&hdev->fpriv_list);
+eb7caf84b02938 drivers/misc/habanalabs/device.c Oded Gabbay 2019-07-30  328  	mutex_init(&hdev->fpriv_list_lock);
+f8c8c7d5f1b0ea drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  329  	atomic_set(&hdev->in_reset, 0);
+0861e41de53044 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  330  
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  331  	return 0;
+0861e41de53044 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  332  
+75b3cb2bb08037 drivers/misc/habanalabs/device.c Oded Gabbay 2019-08-28  333  free_chip_info:
+75b3cb2bb08037 drivers/misc/habanalabs/device.c Oded Gabbay 2019-08-28  334  	kfree(hdev->hl_chip_info);
+d91389bc839d72 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  335  free_eq_wq:
+d91389bc839d72 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  336  	destroy_workqueue(hdev->eq_wq);
+1251f23ae8583b drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  337  free_cq_wq:
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  338  	for (i = 0 ; i < hdev->asic_prop.completion_queues_count ; i++)
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  339  		if (hdev->cq_wq[i])
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  340  			destroy_workqueue(hdev->cq_wq[i]);
+5574cb2194b13d drivers/misc/habanalabs/device.c Ofir Bitton 2020-07-05  341  	kfree(hdev->cq_wq);
+9494a8dd8d22cb drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  342  asid_fini:
+9494a8dd8d22cb drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  343  	hl_asid_fini(hdev);
+0861e41de53044 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  344  early_fini:
+0861e41de53044 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  345  	if (hdev->asic_funcs->early_fini)
+0861e41de53044 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  346  		hdev->asic_funcs->early_fini(hdev);
+0861e41de53044 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  347  
+0861e41de53044 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  348  	return rc;
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  349  }
+c4d66343a46a49 drivers/misc/habanalabs/device.c Oded Gabbay 2019-02-16  350  
+
+:::::: The code at line 289 was first introduced by commit
+:::::: 5574cb2194b13de78df68cd32655ddbe619b1251 habanalabs: Assign each CQ with its own work queue
+
+:::::: TO: Ofir Bitton <obitton@habana.ai>
+:::::: CC: Oded Gabbay <oded.gabbay@gmail.com>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
