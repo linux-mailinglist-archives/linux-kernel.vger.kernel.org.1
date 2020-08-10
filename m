@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3446240D99
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE10240D9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728605AbgHJTJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 15:09:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36016 "EHLO mail.kernel.org"
+        id S1728639AbgHJTJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 15:09:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728585AbgHJTJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 15:09:37 -0400
+        id S1728600AbgHJTJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 15:09:39 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4E3522B45;
-        Mon, 10 Aug 2020 19:09:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DE2D2224D;
+        Mon, 10 Aug 2020 19:09:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597086576;
-        bh=9FN3Q3tnh73C0rRCFPvO7ky/kSOJoa79l+EkBe8XSbc=;
+        s=default; t=1597086579;
+        bh=CaGu3jCShAi6zK9n0jAB+MVmHli5uXnzyL5xTif5KX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HDxhi3gbfiB9uY1rT8bJbUMSzui+kp5WhmalXoxlItFiYAPAp8b67q9AdCzxZEp6y
-         lFJRGfcXHSHXpOaB62iGkXJtOeKlWRIEJXvyRdU8oidKn+GvZ6o4MRNH0v/6t+9j7w
-         WdYBXDkf1i7nvkHCSBlUukTbCcVqUbsA2c0J1YKU=
+        b=kRPK5HfMhmgjyJPuHWZq4XjNYUfRjZwaZZrS1ElDpv73KRpjULYZvP4UAj3cJDXuQ
+         Z8PeULWe5LQSLuKq0F8LlhzAMKD1ypbmYn0t+UzdmhW0eMJk8c4Q+Fu19N7uPtDyBZ
+         HzZEJfZMpMNC8VzBLG1QlhassuUQHf7Y5PkmDYcs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.8 27/64] drm: msm: a6xx: fix gpu failure after system resume
-Date:   Mon, 10 Aug 2020 15:08:22 -0400
-Message-Id: <20200810190859.3793319-27-sashal@kernel.org>
+Cc:     Michael Tretter <m.tretter@pengutronix.de>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.8 29/64] drm/debugfs: fix plain echo to connector "force" attribute
+Date:   Mon, 10 Aug 2020 15:08:24 -0400
+Message-Id: <20200810190859.3793319-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200810190859.3793319-1-sashal@kernel.org>
 References: <20200810190859.3793319-1-sashal@kernel.org>
@@ -46,71 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Akhil P Oommen <akhilpo@codeaurora.org>
+From: Michael Tretter <m.tretter@pengutronix.de>
 
-[ Upstream commit 57c0bd517c06b088106b0236ed604056c8e06da5 ]
+[ Upstream commit c704b17071c4dc571dca3af4e4151dac51de081a ]
 
-On targets where GMU is available, GMU takes over the ownership of GX GDSC
-during its initialization. So, move the refcount-get on GX PD before we
-initialize the GMU. This ensures that nobody can collapse the GX GDSC
-once GMU owns the GX GDSC. This patch fixes some GMU OOB errors seen
-during GPU wake up during a system resume.
+Using plain echo to set the "force" connector attribute fails with
+-EINVAL, because echo appends a newline to the output.
 
-Reported-by: Matthias Kaehlcke <mka@chromium.org>
-Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
-Tested-by: Matthias Kaehlcke <mka@chromium.org>
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Replace strcmp with sysfs_streq to also accept strings that end with a
+newline.
+
+v2: use sysfs_streq instead of stripping trailing whitespace
+
+Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20170817104307.17124-1-m.tretter@pengutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/drm_debugfs.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-index 21e77d67151f5..1d330204c465c 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-@@ -854,10 +854,19 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
- 	/* Turn on the resources */
- 	pm_runtime_get_sync(gmu->dev);
+diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
+index 2bea221307037..bfe4602f206b4 100644
+--- a/drivers/gpu/drm/drm_debugfs.c
++++ b/drivers/gpu/drm/drm_debugfs.c
+@@ -311,13 +311,13 @@ static ssize_t connector_write(struct file *file, const char __user *ubuf,
  
-+	/*
-+	 * "enable" the GX power domain which won't actually do anything but it
-+	 * will make sure that the refcounting is correct in case we need to
-+	 * bring down the GX after a GMU failure
-+	 */
-+	if (!IS_ERR_OR_NULL(gmu->gxpd))
-+		pm_runtime_get_sync(gmu->gxpd);
-+
- 	/* Use a known rate to bring up the GMU */
- 	clk_set_rate(gmu->core_clk, 200000000);
- 	ret = clk_bulk_prepare_enable(gmu->nr_clocks, gmu->clocks);
- 	if (ret) {
-+		pm_runtime_put(gmu->gxpd);
- 		pm_runtime_put(gmu->dev);
- 		return ret;
- 	}
-@@ -903,19 +912,12 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
+ 	buf[len] = '\0';
+ 
+-	if (!strcmp(buf, "on"))
++	if (sysfs_streq(buf, "on"))
+ 		connector->force = DRM_FORCE_ON;
+-	else if (!strcmp(buf, "digital"))
++	else if (sysfs_streq(buf, "digital"))
+ 		connector->force = DRM_FORCE_ON_DIGITAL;
+-	else if (!strcmp(buf, "off"))
++	else if (sysfs_streq(buf, "off"))
+ 		connector->force = DRM_FORCE_OFF;
+-	else if (!strcmp(buf, "unspecified"))
++	else if (sysfs_streq(buf, "unspecified"))
+ 		connector->force = DRM_FORCE_UNSPECIFIED;
  	else
- 		a6xx_hfi_set_freq(gmu, gmu->current_perf_index);
- 
--	/*
--	 * "enable" the GX power domain which won't actually do anything but it
--	 * will make sure that the refcounting is correct in case we need to
--	 * bring down the GX after a GMU failure
--	 */
--	if (!IS_ERR_OR_NULL(gmu->gxpd))
--		pm_runtime_get(gmu->gxpd);
--
- out:
- 	/* On failure, shut down the GMU to leave it in a good state */
- 	if (ret) {
- 		disable_irq(gmu->gmu_irq);
- 		a6xx_rpmh_stop(gmu);
-+		pm_runtime_put(gmu->gxpd);
- 		pm_runtime_put(gmu->dev);
- 	}
- 
+ 		return -EINVAL;
 -- 
 2.25.1
 
