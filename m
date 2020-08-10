@@ -2,159 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFB124073E
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BE7240749
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgHJOKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 10:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726814AbgHJOKg (ORCPT
+        id S1727004AbgHJONp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 10:13:45 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:59613 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726814AbgHJONp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 10:10:36 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC09C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 07:10:36 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id o13so4942811pgf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 07:10:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+J/Oc1375S3Mr5QmPzxTFCZZPHRpST6WJPtH7+jp6BE=;
-        b=TdP0v+vul0dd83LHD9L+PL0bukX+v74d9vF+Fkcf3MoL42Hss5SPz/6A3tl/na4ynU
-         aT2jkdSABwLxvJh8QgD5eugETWDmII9HDmon9vdjCx68BI7MJXg764THGeLs+CD6i4GB
-         kJ1MHubbpXX4PdKMQGBa8x0OJBVYOwK0hldJ3LTVv6NZ3XYnC78xGUVKrGDmBmqLXE+N
-         3BGvSFetgywYbOqcnP8pJ7U1+weuIFyqdGHnkrU1/8Gh65ecHCnI30pZbgWFTEjqowx3
-         CC1qAzrRsjEn7O3rLoopQJqsmPXV7F+TTBptuyMVhG13GnHxhaFYkHLMu2A5ACcn+FQl
-         euYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=+J/Oc1375S3Mr5QmPzxTFCZZPHRpST6WJPtH7+jp6BE=;
-        b=O6DIcMcgK1Gz1Gg+NtMImmrSykqKR1rkFUC8IL2SSJ/INCVrLJddt/EvOszpLUucHC
-         RFvSa3eIqTCsb/iHViIAN+wYHiA2KdvS3TfNUQ4E0ZYS2a3nYpQV7XXD1/Uw2NTQeumn
-         QpYs6YP2Z2UnOm9320ayCr/LRF7LKs7Z6YivhSRb5IlUNuXWvWMHsxWJfNhO4XBL19zw
-         IHx3py8CNq/kYsT6M4ZrEiFLlqk3NDujLVGdL0ICQKFAyOehl1wxEvKzVpFmFeAHFFRr
-         cmXsviNqtsjaZ+d+BGYju1AViIGQf/1UUjzGUzlIXE0V6xsPzc/6rqA7jhGm64uIjhh0
-         avHQ==
-X-Gm-Message-State: AOAM530EWz7mdC1a6XZ9ddpUzb3UyfOcdmW4mZtH3+HfS2KUVpvc4YT0
-        WXu0YFf6amSdtPmgQIjJupw=
-X-Google-Smtp-Source: ABdhPJxnB3iXEH2IWXYhKPyWb0tX3gRI4GKOKOM369h3yRACMLGCrdxdYCGVirjtpPesRKiyMR5EVw==
-X-Received: by 2002:a65:4507:: with SMTP id n7mr21600039pgq.180.1597068635169;
-        Mon, 10 Aug 2020 07:10:35 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q17sm22310855pfh.32.2020.08.10.07.10.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Aug 2020 07:10:34 -0700 (PDT)
-Subject: Re: [PATCH] Revert "seqlock: lockdep assert non-preemptibility on
- seqcount_t write"
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Cc:     bigeasy@linutronix.de, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org,
-        rostedt@goodmis.org, tglx@linutronix.de, will@kernel.org
-References: <20200810085954.GA1591892@kroah.com>
- <20200810095428.2602276-1-a.darwish@linutronix.de>
- <20200810100502.GA2406768@kroah.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <bcf94ea2-05e6-2212-f732-b9a79a142f7e@roeck-us.net>
-Date:   Mon, 10 Aug 2020 07:10:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 10 Aug 2020 10:13:45 -0400
+Received: (qmail 300172 invoked by uid 1000); 10 Aug 2020 10:13:43 -0400
+Date:   Mon, 10 Aug 2020 10:13:43 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Can Guo <cang@codeaurora.org>, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm
+Subject: Re: [PATCH] scsi: sd: add runtime pm to open / release
+Message-ID: <20200810141343.GA299045@rowland.harvard.edu>
+References: <d3fe36a9-b785-a5c4-c90d-b8fa10f4272f@puri.sm>
+ <20200730151030.GB6332@rowland.harvard.edu>
+ <9b80ca7c-39f8-e52d-2535-8b0baf93c7d1@puri.sm>
+ <425990b3-4b0b-4dcf-24dc-4e7e60d5869d@puri.sm>
+ <20200807143002.GE226516@rowland.harvard.edu>
+ <b0abab28-880e-4b88-eb3c-9ffd927d1ed9@puri.sm>
+ <20200808150542.GB256751@rowland.harvard.edu>
+ <d3b6f7b8-5345-1ae1-4f79-5dde226e74f1@puri.sm>
+ <20200809152643.GA277165@rowland.harvard.edu>
+ <60150284-be13-d373-5448-651b72a7c4c9@puri.sm>
 MIME-Version: 1.0
-In-Reply-To: <20200810100502.GA2406768@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <60150284-be13-d373-5448-651b72a7c4c9@puri.sm>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/20 3:05 AM, Greg KH wrote:
-> On Mon, Aug 10, 2020 at 11:54:28AM +0200, Ahmed S. Darwish wrote:
->> This reverts commit 859247d39fb008ea812e8f0c398a58a20c12899e.
->>
->> Current implementation of lockdep_assert_preemption_disabled() uses
->> per-CPU variables, which was done to untangle the existing
->> seqlock.h<=>sched.h 'current->' task_struct circular dependency.
->>
->> Using per-CPU variables did not fully untangle the dependency for
->> various non-x86 architectures though, resulting in multiple broken
->> builds. For the affected architectures, raw_smp_processor_id() led
->> back to 'current->', thus having the original seqlock.h<=>sched.h
->> dependency in full-effect.
->>
->> For now, revert adding lockdep_assert_preemption_disabled() to
->> seqlock.h.
->>
->> Reported-by: Guenter Roeck <linux@roeck-us.net>
->> Link: https://lkml.kernel.org/r/20200808232122.GA176509@roeck-us.net
->> Link: https://lkml.kernel.org/r/20200810085954.GA1591892@kroah.com
->> References: Commit a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context} to per-cpu variables")
->> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+On Mon, Aug 10, 2020 at 02:03:17PM +0200, Martin Kepplinger wrote:
+> On 09.08.20 17:26, Alan Stern wrote:
+> > This is a somewhat fragile approach.  You don't know for certain that 
+> > scsi_noretry_cmd will be called.  Also, scsi_noretry_cmd can be called 
+> > from other places.
+> > 
+> > It would be better to clear the expecting_media_change flag just before 
+> > returning from scsi_decide_disposition.  That way its use is localized 
+> > to one routine, not spread out between two.
+> > 
+> > Alan Stern
+> > 
 > 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Hi Alan,
 > 
-> Even after this, there are still some build errors on arm32, but I don't
-> think they are due to this change:
+> maybe you're right. I initially just thought that I'd allow for specific
+> error codes in scsi_noretry_cmd() to return non-NULL (BUS_BUSY, PARITY,
+> ERROR) despite having the flag set.
 > 
-> 	ERROR: modpost: "__aeabi_uldivmod" [drivers/net/ethernet/sfc/sfc.ko] undefined!
-
-This affects every 32 bit architecture.
-
-> 	ERROR: modpost: "__bad_udelay" [drivers/net/ethernet/aquantia/atlantic/atlantic.ko] undefined!
+> The below version works equally fine for me but I'm not sure if it's
+> actually more safe.
 > 
+> James, when exposing a new writable sysfs option like
+> "suspend_no_media_change"(?) that drivers can check before setting the
+> new "expecting_media_change" flag (during resume), would this addition
+> make sense to you?
+> 
+> thanks,
+> 
+>                       martin
+> 
+> 
+> 
+> --- a/drivers/scsi/scsi_error.c
+> +++ b/drivers/scsi/scsi_error.c
+> @@ -565,6 +565,18 @@ int scsi_check_sense(struct scsi_cmnd *scmd)
+>  				return NEEDS_RETRY;
+>  			}
+>  		}
+> +		if (scmd->device->expecting_media_change) {
+> +			if (sshdr.asc == 0x28 && sshdr.ascq == 0x00) {
+> +				/*
+> +				 * clear the expecting_media_change in
+> +				 * scsi_decide_disposition() because we
+> +				 * need to catch possible "fail fast" overrides
+> +				 * that block readahead can cause.
+> +				 */
+> +				return NEEDS_RETRY;
+> +			}
+> +		}
+> +
+>  		/*
+>  		 * we might also expect a cc/ua if another LUN on the target
+>  		 * reported a UA with an ASC/ASCQ of 3F 0E -
+> @@ -1944,9 +1956,19 @@ int scsi_decide_disposition(struct scsi_cmnd *scmd)
+>  	 * the request was not marked fast fail.  Note that above,
+>  	 * even if the request is marked fast fail, we still requeue
+>  	 * for queue congestion conditions (QUEUE_FULL or BUSY) */
+> -	if ((++scmd->retries) <= scmd->allowed
+> -	    && !scsi_noretry_cmd(scmd)) {
+> -		return NEEDS_RETRY;
+> +	if ((++scmd->retries) <= scmd->allowed) {
+> +		/*
+> +		 * but scsi_noretry_cmd() cannot override the
+> +		 * expecting_media_change flag.
+> +		 */
+> +		if (!scsi_noretry_cmd(scmd) ||
+> +		    scmd->device->expecting_media_change) {
+> +			scmd->device->expecting_media_change = 0;
+> +			return NEEDS_RETRY;
+> +		} else {
+> +			/* marked fast fail and not expected. */
+> +			return SUCCESS;
+> +		}
+>  	} else {
 
-I don't think that is new. If anything, it is surprising that builds don't fail more
-widely because of it. AFAICS it was introduced back in 2018 (a hot 50-ms delay loop
-really isn't such a good idea).
+This may not matter...  but it's worth pointing out that 
+expecting_media_change doesn't get cleared if ++scmd->retries > 
+scmd->allowed.
 
-Guenter
+It also doesn't get cleared in cases where the device _doesn't_ 
+report a Unit Attention.
+
+Alan Stern
