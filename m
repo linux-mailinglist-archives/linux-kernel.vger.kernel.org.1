@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505EC24045B
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 11:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082EA240463
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 11:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgHJJ5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 05:57:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726403AbgHJJ5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 05:57:44 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCBB4206B5;
-        Mon, 10 Aug 2020 09:57:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597053463;
-        bh=Y+KH9N8ktz4rNGDsvRAGiG/Y5k3ax0fEm1fFpk+IFQ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wT3SsHtloU7F1ectB3ldMXM84mI94tNU+Sfk4CxdAcmKSlu4oqD2YvCA0+gDbt4xj
-         OMk7KaVKLuFAJmITQPgDji0LosJc+V5tEEHKXI33HbCT5p5cuFIdAsWQC+OEPfpkY8
-         Vx84Hw2CKF8xqJJf1Q/t6iWBfgUnMj2X0HbwkykU=
-Date:   Mon, 10 Aug 2020 11:57:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+a7e220df5a81d1ab400e@syzkaller.appspotmail.com>,
-        Andrey Konovalov <andreyknvl@google.com>, balbi@kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Alexander Potapenko <glider@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: KMSAN: kernel-infoleak in raw_ioctl
-Message-ID: <20200810095754.GA2404978@kroah.com>
-References: <000000000000ce85c405ac744ff6@google.com>
- <20200810074706.GD1529187@kroah.com>
- <CACT4Y+aS6oangE4BzhCfx3gs9guAW=zQpwN1LP+yB3kza68xFw@mail.gmail.com>
- <20200810090833.GA2271719@kroah.com>
- <20200810091538.GA2273701@kroah.com>
+        id S1726829AbgHJJ6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 05:58:17 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:35350 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726304AbgHJJ6P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 05:58:15 -0400
+Received: by mail-io1-f72.google.com with SMTP id s5so6627305iow.2
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 02:58:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=EZdx3h6CcuB/A3YH4E2rNOxNnzoeylwQGXBumWPwur8=;
+        b=XhuNkDFKkXwY5SVxlX6M6tMQ+Rn3aTK+6gDteEQWscOyZgZeG2i5P46TWiTDshzRM+
+         O4VmfG5ndBKf6GWawkls9da4EOuxPyKqiinUF5NRZ5AlPALxsvQNGjXxHQU/PA4+aaqe
+         qD7HK29iCvCCftwSGxJQ8zM58SQ+Y6JWVww3mx+B2HyMcPqR3mH7nLq9oXTd2zOW2g64
+         6pl0g5GUIXWUU64smyc+bED7BSqiTs2I3BYlTAURskkU9ChFBW7KoIcXwQ9WtBT0xJTz
+         Xux2peBRwjzL12NTFt0FtPcVh8PM2xociykyghkus1SpOHxrWTn6GN1FmG2gX3p3oMHP
+         Oz4g==
+X-Gm-Message-State: AOAM533czLEyFM5bHkxksBT5kN/WwiSyoayDpHKGoHbWFT5nylWqn3rD
+        Mo8V75rBRzZNBaef/LoUiklpkhApZlAwF1oR+jg2oJ4EexzZ
+X-Google-Smtp-Source: ABdhPJzvhXm66kwpK/KNsTcMSQVLGwfYR+Z73cIGZewuTCT2Nd2dRaEHuVytEfcM6cVxylhzXqC2glmT7ms79rqVFYp0uzVFUCAW
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200810091538.GA2273701@kroah.com>
+X-Received: by 2002:a92:d292:: with SMTP id p18mr16124770ilp.281.1597053494375;
+ Mon, 10 Aug 2020 02:58:14 -0700 (PDT)
+Date:   Mon, 10 Aug 2020 02:58:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000038399005ac82fef7@google.com>
+Subject: KCSAN: data-race in __io_cqring_fill_event / io_uring_poll
+From:   syzbot <syzbot+3020eb77f81ef0772fbe@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 11:15:38AM +0200, Greg KH wrote:
-> On Mon, Aug 10, 2020 at 11:08:33AM +0200, Greg KH wrote:
-> > On Mon, Aug 10, 2020 at 11:00:07AM +0200, Dmitry Vyukov wrote:
-> > > On Mon, Aug 10, 2020 at 9:46 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Sun, Aug 09, 2020 at 09:27:18AM -0700, syzbot wrote:
-> > > > > Hello,
-> > > > >
-> > > > > syzbot found the following issue on:
-> > > > >
-> > > > > HEAD commit:    ce8056d1 wip: changed copy_from_user where instrumented
-> > > > > git tree:       https://github.com/google/kmsan.git master
-> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=141eb8b2900000
-> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3afe005fb99591f
-> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=a7e220df5a81d1ab400e
-> > > > > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> > > > > userspace arch: i386
-> > > > >
-> > > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > >
-> > > > The irony of a kernel module written for syzbot testing, causing syzbot
-> > > > reports....
-> > > 
-> > > The raw gadget and KCOV are also kernel code and subject to all the
-> > > same rules as any other kernel code from syzkaller point of view.
-> > > 
-> > > But I think the root cause of this bug is the origin of the uninitialized-ness:
-> > > 
-> > > Local variable ----buf.i@asix_get_phy_addr created at:
-> > >  asix_read_cmd drivers/net/usb/asix_common.c:312 [inline]
-> > >  asix_read_phy_addr drivers/net/usb/asix_common.c:295 [inline]
-> > >  asix_get_phy_addr+0x4d/0x290 drivers/net/usb/asix_common.c:314
-> > >  asix_read_cmd drivers/net/usb/asix_common.c:312 [inline]
-> > >  asix_read_phy_addr drivers/net/usb/asix_common.c:295 [inline]
-> > >  asix_get_phy_addr+0x4d/0x290 drivers/net/usb/asix_common.c:314
-> > 
-> > read buffers sent to USB hardware are ment to be filled in by the
-> > hardware with the data received from it, we do not zero-out those
-> > buffers before passing the pointer there.
-> > 
-> > Perhaps with testing frameworks like the raw usb controller, that might
-> > cause a number of false-positives to happen?
-> 
-> Ah, wait, that buffer is coming from the stack, which isn't allowed in
-> the first place :(
-> 
-> So that should be changed anyway to a dynamic allocation, I'll go write
-> up a patch...
+Hello,
 
-Nope, my fault, the data is not coming from the stack, so all is good.
+syzbot found the following issue on:
 
-thanks,
+HEAD commit:    86cfccb6 Merge tag 'dlm-5.9' of git://git.kernel.org/pub/s..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=171cf11a900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3757fa75ecfde8e0
+dashboard link: https://syzkaller.appspot.com/bug?extid=3020eb77f81ef0772fbe
+compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
 
-greg k-h
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3020eb77f81ef0772fbe@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KCSAN: data-race in __io_cqring_fill_event / io_uring_poll
+
+write to 0xffff8880a04325c0 of 4 bytes by task 12088 on cpu 1:
+ io_get_cqring fs/io_uring.c:1282 [inline]
+ __io_cqring_fill_event+0x116/0x430 fs/io_uring.c:1386
+ io_cqring_add_event fs/io_uring.c:1420 [inline]
+ __io_req_complete+0xdb/0x1b0 fs/io_uring.c:1458
+ io_complete_rw_common fs/io_uring.c:2208 [inline]
+ __io_complete_rw+0x2c9/0x2e0 fs/io_uring.c:2289
+ kiocb_done fs/io_uring.c:2533 [inline]
+ io_write fs/io_uring.c:3199 [inline]
+ io_issue_sqe+0x4fb1/0x7140 fs/io_uring.c:5530
+ io_wq_submit_work+0x23e/0x340 fs/io_uring.c:5775
+ io_worker_handle_work+0xa69/0xcf0 fs/io-wq.c:527
+ io_wqe_worker+0x1f2/0x860 fs/io-wq.c:569
+ kthread+0x20d/0x230 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+read to 0xffff8880a04325c0 of 4 bytes by task 12086 on cpu 0:
+ io_cqring_events fs/io_uring.c:1937 [inline]
+ io_uring_poll+0x105/0x140 fs/io_uring.c:7751
+ vfs_poll include/linux/poll.h:90 [inline]
+ __io_arm_poll_handler+0x176/0x3f0 fs/io_uring.c:4735
+ io_arm_poll_handler+0x293/0x5c0 fs/io_uring.c:4792
+ __io_queue_sqe+0x413/0x760 fs/io_uring.c:5988
+ io_queue_sqe+0x81/0x2b0 fs/io_uring.c:6060
+ io_submit_sqe+0x333/0x560 fs/io_uring.c:6130
+ io_submit_sqes+0x8c6/0xfc0 fs/io_uring.c:6327
+ __do_sys_io_uring_enter fs/io_uring.c:8036 [inline]
+ __se_sys_io_uring_enter+0x1c2/0x720 fs/io_uring.c:7995
+ __x64_sys_io_uring_enter+0x74/0x80 fs/io_uring.c:7995
+ do_syscall_64+0x39/0x80 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 0 PID: 12086 Comm: syz-executor.5 Not tainted 5.8.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
