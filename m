@@ -2,298 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6C4240B34
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 18:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96AAB240B3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 18:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgHJQfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 12:35:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725873AbgHJQfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 12:35:11 -0400
-Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAAF52076B;
-        Mon, 10 Aug 2020 16:35:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597077310;
-        bh=6XZCNzTvPDPpAJipzV4KMM4oXZn8UErU3tUeLjJnPCk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zpYCuMyjNm7ScaxBAs25N/CLxoq1R0aZYc8lhma9LfjkEOo9r1Gyzj5PvFJTv8lPm
-         q1z+PvbVM5lydCLNJrwkyolBlLqz183vQ6vTcg9sgBJ/UoISGsXAQNwXgemNBVSjTq
-         BNpBRXVMrWpcxsk8oVaVLFw8Nq22ya/EA1Ubr5Vc=
-Date:   Mon, 10 Aug 2020 18:35:03 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, Yu Chen <chenyu56@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        ShuFan Lee <shufan_lee@richtek.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jun Li <lijun.kernel@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jack Pham <jackp@codeaurora.org>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [RFC][PATCH v3 11/11] misc: hisi_hikey_usb: Driver to support
- usb functionality of Hikey960
-Message-ID: <20200810183503.3e8bae80@coco.lan>
-In-Reply-To: <20191016033340.1288-12-john.stultz@linaro.org>
-References: <20191016033340.1288-1-john.stultz@linaro.org>
-        <20191016033340.1288-12-john.stultz@linaro.org>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1727897AbgHJQgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 12:36:36 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42998 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727839AbgHJQge (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 12:36:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597077392;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E7cstcAHVFGfhscj0UF342G+MM1KSXqD/P1R9pHujqc=;
+        b=YV9tEoXXLoSBTdBZfXyA4yI1CoocsTaPyuKoLd5zCJ0+APuQJlyDbVBinKQLjQOHIsgaCy
+        YwVjaGHPW0pAJTzPozfHWeeJqNQTgHxss/MW0KgigVlofmtWgVKU0IrmCQDvwxSzmO2weR
+        kfF5B3rFnRRY7GQF5XnvvZNabRkZfmU=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-385-Sq-M4Bg2M1mPnjETs7vvTg-1; Mon, 10 Aug 2020 12:36:30 -0400
+X-MC-Unique: Sq-M4Bg2M1mPnjETs7vvTg-1
+Received: by mail-ed1-f71.google.com with SMTP id j14so3467410edk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 09:36:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E7cstcAHVFGfhscj0UF342G+MM1KSXqD/P1R9pHujqc=;
+        b=Z101AUzuR86kOxCnwpFXIEdSUw7+eGImzlPJukdho9EIghYCO1axNKMUVTarNn9unt
+         SLxtNmFXWKjyq/SeQcNRFYOHrLm9vNnN3lbIvkNThuNu0i8JrW29VWsVjMzaa7E6Df/c
+         KrmhXGAlTwSxd1v2hJ7+Yg7rNZVm6pS4K0bS0w/9fxLXfWc2mfYUegSp3bRzqrfKHuMw
+         9jZoln/Q2qx/EOdYqWjOyMBTrNWVBjTrLB+a9Iq3louY9yk8zWz0q8vAtEmKvERy4POs
+         iNl97YvH9Z6UwCQ5KBGvqRFqQrARgTSJTHUVsxndFXivJ0n+cmk9M6tjRaNO2kyFqz0r
+         JX/Q==
+X-Gm-Message-State: AOAM532b3ISrNQubF3fRfUxHiaMSYsZU1xFlNaFYhmQ+fPEBFeotWFip
+        0W3WuVNT53vFlh4JGDUoUDu30cm+BpGIyHJsIMInVWBG39DX8MCCcEytsXCpF41hhycl2JrBcrP
+        uw6xUFlk7HtK/BgWf4zfzNbLk3ZzIAFP+SXOKWSCz
+X-Received: by 2002:a17:906:a4b:: with SMTP id x11mr23475886ejf.83.1597077389409;
+        Mon, 10 Aug 2020 09:36:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxxf3SVX6ZuISdp8oMWj+mkcjWbaPxLFNRh9thEVecTra/0s+AaKG5bkamyJTprqlXgn7eVTDeevbLYmrbh9t0=
+X-Received: by 2002:a17:906:a4b:: with SMTP id x11mr23475853ejf.83.1597077389176;
+ Mon, 10 Aug 2020 09:36:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <447452.1596109876@warthog.procyon.org.uk> <1851200.1596472222@warthog.procyon.org.uk>
+ <667820.1597072619@warthog.procyon.org.uk> <CAH2r5msKipj1exNUDaSUN7h0pjanOenhSg2=EWYMv_h15yKtxg@mail.gmail.com>
+ <672169.1597074488@warthog.procyon.org.uk>
+In-Reply-To: <672169.1597074488@warthog.procyon.org.uk>
+From:   David Wysochanski <dwysocha@redhat.com>
+Date:   Mon, 10 Aug 2020 12:35:53 -0400
+Message-ID: <CALF+zO=DkGmNDrrr-WxU6L1Xw8MA4+NrqVbvNMctwSKjy0Yh_w@mail.gmail.com>
+Subject: Re: [GIT PULL] fscache rewrite -- please drop for now
+To:     David Howells <dhowells@redhat.com>
+Cc:     Steve French <smfrench@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@redhat.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs <linux-nfs@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+On Mon, Aug 10, 2020 at 11:48 AM David Howells <dhowells@redhat.com> wrote:
+>
+> Steve French <smfrench@gmail.com> wrote:
+>
+> > cifs.ko also can set rsize quite small (even 1K for example, although
+> > that will be more than 10x slower than the default 4MB so hopefully no
+> > one is crazy enough to do that).
+>
+> You can set rsize < PAGE_SIZE?
+>
+> > I can't imagine an SMB3 server negotiating an rsize or wsize smaller than
+> > 64K in today's world (and typical is 1MB to 8MB) but the user can specify a
+> > much smaller rsize on mount.  If 64K is an adequate minimum, we could change
+> > the cifs mount option parsing to require a certain minimum rsize if fscache
+> > is selected.
+>
+> I've borrowed the 256K granule size used by various AFS implementations for
+> the moment.  A 512-byte xattr can thus hold a bitmap covering 1G of file
+> space.
+>
+>
 
-Em Wed, 16 Oct 2019 03:33:40 +0000
-John Stultz <john.stultz@linaro.org> escreveu:
-
-> From: Yu Chen <chenyu56@huawei.com>
-> 
-> The HiKey960 has a fairly complex USB configuration due to it
-> needing to support a USB-C port for host/device mode and multiple
-> USB-A ports in host mode using a single USB controller.
-> 
-> See schematics here:
->   https://github.com/96boards/documentation/raw/master/consumer/hikey/hikey960/hardware-docs/HiKey960_Schematics.pdf
-> 
-> This driver acts as a usb-role-switch intermediary, intercepting
-> the role switch notifications from the tcpm code, and passing
-> them on to the dwc3 core.
-> 
-> In doing so, it also controls the onboard hub and power gpios in
-> order to properly route the data lines between the USB-C port
-> and the onboard hub to the USB-A ports.
-> 
-> NOTE: It was noted that controlling the TYPEC_VBUS_POWER_OFF and
-> TYPEC_VBUS_POWER_ON values here is not reccomended. I'm looking
-> for a way to remove that bit from the logic here, but wanted to
-> still get feedback on this approach.
-
-Let me somewhat hijack this thread. I'm trying to add support here
-for the Hikey 970 driver. Maybe you might help me finding the remaing
-issues over there ;-)
-
-The Hikey 970 has lots of things in common with Hikey 960, but
-the USB hub uses a somewhat different approach (based on what I
-saw at the Linaro's 4.9 official Hikey kernel tree).
-
-Basically, with the enclosed patch applied, the USB hub needs these
-at the DT file:
-
-		hikey_usbhub: hikey_usbhub {
-			compatible = "hisilicon,kirin970_hikey_usbhub";
-
-			typec-vbus-gpios = <&gpio26 1 0>;
-			otg-switch-gpios = <&gpio4 2 0>;
-			hub_reset_en_gpio = <&gpio0 3 0>;
-			hub-vdd-supply = <&ldo17>;
-			usb-role-switch;
-...
-		}
-
-E.g. when compared with Hikey 960, the USB hub:
-
-- Hikey 970 uses a regulator instead of GPIO for powering on;
-- Hikey 970 has a reset pin controlled via GPIO.
-
-It should be simple to add support for it, as done by the
-enclosed patch. With this, the phy driver for Hikey 970 and a new
-small driver to properly set clocks and reset lines at dwg3[1],
-I can now see the hub on my Hikey970:
-
-	$ lsusb
-	Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-	Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-
-Still, I'm missing something to make it work, as, besides the hub,
-right now, it doesn't detect the keyboard/mouse, which are
-attached at the USB hub.
-
-Do you have any ideas?
-
--
-
-[1] Right now, this is needed:
-	https://github.com/96boards-hikey/linux/blob/hikey970-v4.9/drivers/usb/dwc3/dwc3-hisi.c
-
-    Placing dwc3 directly under soc at DT causes some weird NMI, with
-    either produce an OOPS or hangs the machine at boot time.
-
-Thanks,
-Mauro
-
-[PATCH] misc: hisi_hikey_usb: add support for Hikey 970
-
-The HiKey 970 board uses a voltage regulator and GPIO reset pin.
-
-Add support for them.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-diff --git a/drivers/misc/hisi_hikey_usb.c b/drivers/misc/hisi_hikey_usb.c
-index 3a98a890757c..76eb38fc6169 100644
---- a/drivers/misc/hisi_hikey_usb.c
-+++ b/drivers/misc/hisi_hikey_usb.c
-@@ -14,8 +14,10 @@
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/notifier.h>
-+#include <linux/of_gpio.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/slab.h>
- #include <linux/usb/role.h>
- 
-@@ -46,18 +48,27 @@ struct hisi_hikey_usb {
- 
- static void hub_power_ctrl(struct hisi_hikey_usb *hisi_hikey_usb, int value)
- {
-+	if (!hisi_hikey_usb->hub_vbus)
-+		return;
-+
- 	gpiod_set_value_cansleep(hisi_hikey_usb->hub_vbus, value);
- }
- 
- static void usb_switch_ctrl(struct hisi_hikey_usb *hisi_hikey_usb,
- 			    int switch_to)
- {
-+	if (!hisi_hikey_usb->otg_switch)
-+		return;
-+
- 	gpiod_set_value_cansleep(hisi_hikey_usb->otg_switch, switch_to);
- }
- 
- static void usb_typec_power_ctrl(struct hisi_hikey_usb *hisi_hikey_usb,
- 				 int value)
- {
-+	if (!hisi_hikey_usb->typec_vbus)
-+		return;
-+
- 	gpiod_set_value_cansleep(hisi_hikey_usb->typec_vbus, value);
- }
- 
-@@ -117,31 +128,89 @@ static int hub_usb_role_switch_set(struct usb_role_switch *sw, enum usb_role rol
- 	return 0;
- }
- 
-+static int hisi_hikey_usb_parse_kirin970(struct platform_device *pdev)
-+{
-+	struct regulator *regulator;
-+	int hub_reset_en_gpio;
-+	int ret;
-+
-+	regulator = devm_regulator_get_optional(&pdev->dev, "hub-vdd");
-+	if (IS_ERR(regulator)) {
-+		if (PTR_ERR(regulator) == -EPROBE_DEFER) {
-+			dev_info(&pdev->dev,
-+				"waiting for hub-vdd-supply to be probed\n");
-+			return PTR_ERR(regulator);
-+		} else {
-+			/* let it fall back to regulator dummy */
-+			regulator = devm_regulator_get(&pdev->dev, "hub-vdd");
-+			if (IS_ERR(regulator)) {
-+				dev_err(&pdev->dev,
-+					"get hub-vdd-supply failed with error %ld\n",
-+					PTR_ERR(regulator));
-+				return PTR_ERR(regulator);
-+			}
-+		}
-+	}
-+
-+	ret = regulator_set_voltage(regulator, 3300000, 3300000);
-+	if (ret)
-+		dev_err(&pdev->dev, "set hub-vdd-supply voltage failed\n");
-+
-+	hub_reset_en_gpio = of_get_named_gpio(pdev->dev.of_node,
-+					      "hub_reset_en_gpio", 0);
-+	if (!gpio_is_valid(hub_reset_en_gpio)) {
-+		dev_err(&pdev->dev, "Failed to get a valid reset gpio\n");
-+		return -ENODEV;
-+	}
-+
-+	ret = devm_gpio_request(&pdev->dev, hub_reset_en_gpio,
-+				"hub_reset_en_gpio");
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to request the reset gpio\n");
-+		return ret;
-+	}
-+	ret = gpio_direction_output(hub_reset_en_gpio, 1);
-+	if (ret)
-+		dev_err(&pdev->dev,
-+			"Failed to set the direction of the reset gpio\n");
-+
-+	return ret;
-+}
-+
- static int hisi_hikey_usb_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct hisi_hikey_usb *hisi_hikey_usb;
- 	struct usb_role_switch_desc hub_role_switch = {NULL};
-+	int ret;
- 
- 	hisi_hikey_usb = devm_kzalloc(dev, sizeof(*hisi_hikey_usb), GFP_KERNEL);
- 	if (!hisi_hikey_usb)
- 		return -ENOMEM;
- 
--	hisi_hikey_usb->typec_vbus = devm_gpiod_get(dev, "typec-vbus",
--						    GPIOD_OUT_LOW);
--	if (IS_ERR(hisi_hikey_usb->typec_vbus))
--		return PTR_ERR(hisi_hikey_usb->typec_vbus);
--
- 	hisi_hikey_usb->otg_switch = devm_gpiod_get(dev, "otg-switch",
- 						    GPIOD_OUT_HIGH);
- 	if (IS_ERR(hisi_hikey_usb->otg_switch))
- 		return PTR_ERR(hisi_hikey_usb->otg_switch);
- 
--	/* hub-vdd33-en is optional */
--	hisi_hikey_usb->hub_vbus = devm_gpiod_get_optional(dev, "hub-vdd33-en",
--							   GPIOD_OUT_HIGH);
--	if (IS_ERR(hisi_hikey_usb->hub_vbus))
--		return PTR_ERR(hisi_hikey_usb->hub_vbus);
-+	/* Parse Kirin 970-specific OF data */
-+	if (of_device_is_compatible(pdev->dev.of_node,
-+				    "hisilicon,kirin970_hikey_usbhub")) {
-+		ret = hisi_hikey_usb_parse_kirin970(pdev);
-+		if (ret)
-+			return ret;
-+	} else {
-+		hisi_hikey_usb->typec_vbus = devm_gpiod_get(dev, "typec-vbus",
-+							    GPIOD_OUT_LOW);
-+		if (IS_ERR(hisi_hikey_usb->typec_vbus))
-+			return PTR_ERR(hisi_hikey_usb->typec_vbus);
-+
-+		/* hub-vdd33-en is optional */
-+		hisi_hikey_usb->hub_vbus = devm_gpiod_get_optional(dev, "hub-vdd33-en",
-+								GPIOD_OUT_HIGH);
-+		if (IS_ERR(hisi_hikey_usb->hub_vbus))
-+			return PTR_ERR(hisi_hikey_usb->hub_vbus);
-+	}
- 
- 	hisi_hikey_usb->dev_role_sw = usb_role_switch_get(dev);
- 	if (!hisi_hikey_usb->dev_role_sw)
-@@ -185,6 +254,7 @@ static int  hisi_hikey_usb_remove(struct platform_device *pdev)
- 
- static const struct of_device_id id_table_hisi_hikey_usb[] = {
- 	{.compatible = "hisilicon,gpio_hubv1"},
-+	{.compatible = "hisilicon,kirin970_hikey_usbhub"},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, id_table_hisi_hikey_usb);
-
+Is it possible to make the granule size configurable, then reject a
+registration if the size is too small or not a power of 2?  Then a
+netfs using the API could try to set equal to rsize, and then error
+out with a message if the registration was rejected.
 
