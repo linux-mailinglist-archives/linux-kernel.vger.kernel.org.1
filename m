@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7657A2408C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B97240935
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728500AbgHJPZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:25:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58690 "EHLO mail.kernel.org"
+        id S1729039AbgHJPaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:30:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728114AbgHJPZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:25:03 -0400
+        id S1729023AbgHJP3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:29:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9021020772;
-        Mon, 10 Aug 2020 15:25:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC68422B47;
+        Mon, 10 Aug 2020 15:29:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073103;
-        bh=ajMsI4xUoVTgHLx3ZBH4Psl5Wd0PXJUml7ZJQggVTok=;
+        s=default; t=1597073395;
+        bh=153lkc7ni49tWjnOa1AHM2bGXCUgmkpx6h3coe7FnQs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C4E3hVmDYwa7FFVVd6tZsZ4fGRUFleK9qQ6/Pajhaf2JX9mp3s2KRCZFufdFm7BRt
-         Vqtdbquj6o1zxPSg488TiOQCE6PQBMBZpTzJUfMrKvIFTFLdb0ynWOUOvhZ0n1tWID
-         zVTEGXKtpu7kwHY2RPm8/fGrlJSjNbhXxA+RKt1g=
+        b=hSDgoCODA2ih/DnZjEFv/jplbjEoh2a+CIjRykhamglJ65DTmutR6FvN9UaKGjAxH
+         b/Tyx/HfOjSmgGuJIV9ILDZgD6hA9XaxkIWs+3hKND9FYcbpKtsYNEzbt/kxv2nXVU
+         9O1nD2XAremimnm/5VjKPr8hxTxvPazS7sOYZ5X8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.7 66/79] net: bridge: clear bridges private skb space on xmit
-Date:   Mon, 10 Aug 2020 17:21:25 +0200
-Message-Id: <20200810151815.494804698@linuxfoundation.org>
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Forest Crossman <cyrozap@gmail.com>
+Subject: [PATCH 4.19 04/48] usb: xhci: Fix ASMedia ASM1142 DMA addressing
+Date:   Mon, 10 Aug 2020 17:21:26 +0200
+Message-Id: <20200810151804.430808893@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
-References: <20200810151812.114485777@linuxfoundation.org>
+In-Reply-To: <20200810151804.199494191@linuxfoundation.org>
+References: <20200810151804.199494191@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+From: Forest Crossman <cyrozap@gmail.com>
 
-[ Upstream commit fd65e5a95d08389444e8591a20538b3edece0e15 ]
+commit ec37198acca7b4c17b96247697406e47aafe0605 upstream.
 
-We need to clear all of the bridge private skb variables as they can be
-stale due to the packet being recirculated through the stack and then
-transmitted through the bridge device. Similar memset is already done on
-bridge's input. We've seen cases where proxyarp_replied was 1 on routed
-multicast packets transmitted through the bridge to ports with neigh
-suppress which were getting dropped. Same thing can in theory happen with
-the port isolation bit as well.
+I've confirmed that the ASMedia ASM1142 has the same problem as the
+ASM2142/ASM3142, in that it too reports that it supports 64-bit DMA
+addresses when in fact it does not. As with the ASM2142/ASM3142, this
+can cause problems on systems where the upper bits matter, and adding
+the XHCI_NO_64BIT_SUPPORT quirk completely fixes the issue.
 
-Fixes: 821f1b21cabb ("bridge: add new BR_NEIGH_SUPPRESS port flag to suppress arp and nd flood")
-Signed-off-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Acked-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Signed-off-by: Forest Crossman <cyrozap@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200728042408.180529-3-cyrozap@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/bridge/br_device.c |    2 ++
- 1 file changed, 2 insertions(+)
 
---- a/net/bridge/br_device.c
-+++ b/net/bridge/br_device.c
-@@ -36,6 +36,8 @@ netdev_tx_t br_dev_xmit(struct sk_buff *
- 	const unsigned char *dest;
- 	u16 vid = 0;
+---
+ drivers/usb/host/xhci-pci.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -49,6 +49,7 @@
+ #define PCI_DEVICE_ID_AMD_PROMONTORYA_1			0x43bc
+ #define PCI_DEVICE_ID_ASMEDIA_1042_XHCI			0x1042
+ #define PCI_DEVICE_ID_ASMEDIA_1042A_XHCI		0x1142
++#define PCI_DEVICE_ID_ASMEDIA_1142_XHCI			0x1242
+ #define PCI_DEVICE_ID_ASMEDIA_2142_XHCI			0x2142
  
-+	memset(skb->cb, 0, sizeof(struct br_input_skb_cb));
-+
- 	rcu_read_lock();
- 	nf_ops = rcu_dereference(nf_br_ops);
- 	if (nf_ops && nf_ops->br_dev_xmit_hook(skb)) {
+ static const char hcd_name[] = "xhci_hcd";
+@@ -234,7 +235,8 @@ static void xhci_pci_quirks(struct devic
+ 		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI)
+ 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
+ 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
+-		pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI)
++	    (pdev->device == PCI_DEVICE_ID_ASMEDIA_1142_XHCI ||
++	     pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI))
+ 		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
+ 
+ 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
 
 
