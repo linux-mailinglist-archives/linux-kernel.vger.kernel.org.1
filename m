@@ -2,89 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E0C241216
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 23:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75DC224121D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 23:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgHJVHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 17:07:50 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:53970 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbgHJVHt (ORCPT
+        id S1726756AbgHJVKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 17:10:54 -0400
+Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:35768 "EHLO
+        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726547AbgHJVKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 17:07:49 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07AL2l79118837;
-        Mon, 10 Aug 2020 21:07:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=qf5zKfqlZEOEGC8wRAUx9WC4+DblJdiWJHPja7jVgw4=;
- b=k4U9QLo3flMOwpMKL3R6qhirB6h/Z6VdQM1kUdNEx4lJ2Aa7NMPawU8vMX+IVTM+cIQN
- /MBeHd2T79nos6zIGRK7+Gco5x779J6AJgKHSmMUwzLe8g3fpuW+tg1r7RZSzjjDsVUw
- J2WAvp9aGOVgcIsEgHyn4hcekwfoPemcjuPiZ91BPdE59THByZk5bDOT2udoqP7fP3iN
- C+FxZSbetdSHgf+5cCQymeysyb+6FZ6fk3Eyzcv2HmBOFIdcWl0NdgRdM4YSbQOo9HZd
- ruujW+HhRW5b+U2PYVmdNi04qq4VkXwzcC7b4eNFYnmAo/6w9y1sWjgfNVGSYoYfIPyi qQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 32sm0mh1b5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 10 Aug 2020 21:07:42 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07AL3QtP120754;
-        Mon, 10 Aug 2020 21:07:41 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 32u3h0beg4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 Aug 2020 21:07:41 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07AL7eS2002117;
-        Mon, 10 Aug 2020 21:07:40 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 10 Aug 2020 21:07:39 +0000
-Subject: Re: [PATCH 03/10] mm/hugetlb: use list_splice to merge two list at
- once
-To:     Wei Yang <richard.weiyang@linux.alibaba.com>,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20200807091251.12129-1-richard.weiyang@linux.alibaba.com>
- <20200807091251.12129-4-richard.weiyang@linux.alibaba.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <54d65c15-d366-cac2-b359-78c81d8d570b@oracle.com>
-Date:   Mon, 10 Aug 2020 14:07:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 10 Aug 2020 17:10:54 -0400
+Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
+        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id 924DAD5B48A;
+        Tue, 11 Aug 2020 07:10:47 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1k5F49-0007Rd-HC; Tue, 11 Aug 2020 07:10:45 +1000
+Date:   Tue, 11 Aug 2020 07:10:45 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com,
+        dan.j.williams@intel.com, hch@lst.de, rgoldwyn@suse.de,
+        qi.fuli@fujitsu.com, y-goto@fujitsu.com
+Subject: Re: [RFC PATCH 0/8] fsdax: introduce FS query interface to support
+ reflink
+Message-ID: <20200810211045.GL2114@dread.disaster.area>
+References: <20200807131336.318774-1-ruansy.fnst@cn.fujitsu.com>
+ <20200807133857.GC17456@casper.infradead.org>
+ <9673ed3c-9e42-3d01-000b-b01cda9832ce@cn.fujitsu.com>
+ <20200810111657.GL17456@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20200807091251.12129-4-richard.weiyang@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9709 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 spamscore=0 suspectscore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008100145
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9709 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 clxscore=1015
- suspectscore=0 mlxlogscore=999 priorityscore=1501 adultscore=0
- impostorscore=0 spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008100145
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200810111657.GL17456@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
+        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
+        a=IkcTkHD0fZMA:10 a=y4yBn9ojGxQA:10 a=7-415B0cAAAA:8
+        a=_uXmcX_QWSfgQcGZoHUA:9 a=QEXdDO2ut3YA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/20 2:12 AM, Wei Yang wrote:
-> Instead of add allocated file_region one by one to region_cache, we
-> could use list_splice to merge two list at once.
+On Mon, Aug 10, 2020 at 12:16:57PM +0100, Matthew Wilcox wrote:
+> On Mon, Aug 10, 2020 at 04:15:50PM +0800, Ruan Shiyang wrote:
+> > 
+> > 
+> > On 2020/8/7 下午9:38, Matthew Wilcox wrote:
+> > > On Fri, Aug 07, 2020 at 09:13:28PM +0800, Shiyang Ruan wrote:
+> > > > This patchset is a try to resolve the problem of tracking shared page
+> > > > for fsdax.
+> > > > 
+> > > > Instead of per-page tracking method, this patchset introduces a query
+> > > > interface: get_shared_files(), which is implemented by each FS, to
+> > > > obtain the owners of a shared page.  It returns an owner list of this
+> > > > shared page.  Then, the memory-failure() iterates the list to be able
+> > > > to notify each process using files that sharing this page.
+> > > > 
+> > > > The design of the tracking method is as follow:
+> > > > 1. dax_assocaite_entry() associates the owner's info to this page
+> > > 
+> > > I think that's the first problem with this design.  dax_associate_entry is
+> > > a horrendous idea which needs to be ripped out, not made more important.
+> > > It's all part of the general problem of trying to do something on a
+> > > per-page basis instead of per-extent basis.
+> > > 
+> > 
+> > The memory-failure needs to track owners info from a dax page, so I should
+> > associate the owner with this page.  In this version, I associate the block
+> > device to the dax page, so that the memory-failure is able to iterate the
+> > owners by the query interface provided by filesystem.
 > 
-> Also we know the number of entries in the list, increase the number
-> directly.
-> 
-> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+> No, it doesn't need to track owner info from a DAX page.  What it needs to
+> do is ask the filesystem.
 
-Thanks!
+Just to add to this: the owner tracking that is current done deep
+inside the DAX code needs to be moved out to the owner of the dax
+device. That may be the dax device itself, or it may be a filesystem
+like ext4 or XFS. Initially, nothing will be able to share pages and
+page owner tracking should be done on the page itself as the DAX
+code currently does.
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Hence when a page error occurs, the device owner is called with the
+page and error information, and the dax device or filesystem can
+then look up the page owner (via mapping/index pointers) and run the
+Die Userspace Die functions instead of running this all internally
+in the DAX code.
+
+Once the implementation is abstracted and controlled by the device
+owner, then we can start working to change the XFS implementation to
+support shared pages....
+
+Cheers,
+
+Dave.
 -- 
-Mike Kravetz
+Dave Chinner
+david@fromorbit.com
