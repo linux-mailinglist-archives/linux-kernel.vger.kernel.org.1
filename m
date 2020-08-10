@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C0124136D
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 00:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A278241375
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 00:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgHJW4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 18:56:08 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:50413 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726775AbgHJW4H (ORCPT
+        id S1727010AbgHJW71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 18:59:27 -0400
+Received: from smtprelay0192.hostedemail.com ([216.40.44.192]:56836 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726634AbgHJW70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 18:56:07 -0400
-Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 8616D822D55;
-        Tue, 11 Aug 2020 08:56:02 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1k5Gi1-00085Z-FF; Tue, 11 Aug 2020 08:56:01 +1000
-Date:   Tue, 11 Aug 2020 08:56:01 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Matthew Wilcox <willy@infradead.org>, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH 05/15] mm: allow read-ahead with IOCB_NOWAIT set
-Message-ID: <20200810225601.GE2079@dread.disaster.area>
-References: <20200618144355.17324-1-axboe@kernel.dk>
- <20200618144355.17324-6-axboe@kernel.dk>
- <20200624010253.GB5369@dread.disaster.area>
- <20200624014645.GJ21350@casper.infradead.org>
- <bad52be9-ae44-171b-8dbf-0d98eedcadc0@kernel.dk>
- <70b0427c-7303-8f45-48bd-caa0562a2951@kernel.dk>
- <20200624164127.GP21350@casper.infradead.org>
- <8835b6f2-b3c5-c9a0-2119-1fb161cf87dd@kernel.dk>
+        Mon, 10 Aug 2020 18:59:26 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id E4A2D4DBD;
+        Mon, 10 Aug 2020 22:59:25 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:541:973:988:989:1260:1311:1314:1345:1437:1515:1534:1541:1711:1730:1747:1777:1792:2393:2559:2562:3138:3139:3140:3141:3142:3352:3865:3867:3868:4605:5007:6261:7807:8603:10007:10848:11658:11914:12043:12291:12297:12555:12679:12683:12895:13069:13161:13229:13311:13357:13894:14096:14384:14394:14721:21080:21451:21627:21810:30012:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: way77_1f01da226fde
+X-Filterd-Recvd-Size: 1917
+Received: from joe-laptop.perches.com (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 10 Aug 2020 22:59:24 +0000 (UTC)
+From:   Joe Perches <joe@perches.com>
+To:     linux-scsi@vger.kernel.org
+Cc:     James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] scsi: lpfc: Reduce logging object code size
+Date:   Mon, 10 Aug 2020 15:59:18 -0700
+Message-Id: <cover.1597100152.git.joe@perches.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8835b6f2-b3c5-c9a0-2119-1fb161cf87dd@kernel.dk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=QKgWuTDL c=1 sm=1 tr=0
-        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
-        a=kj9zAlcOel0A:10 a=y4yBn9ojGxQA:10 a=JfrnYn6hAAAA:8 a=7-415B0cAAAA:8
-        a=eRodIBkOSM2l2XYf1zsA:9 a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 10:44:21AM -0600, Jens Axboe wrote:
-> On 6/24/20 10:41 AM, Matthew Wilcox wrote:
-> > On Wed, Jun 24, 2020 at 09:35:19AM -0600, Jens Axboe wrote:
-> >> On 6/24/20 9:00 AM, Jens Axboe wrote:
-> >>> On 6/23/20 7:46 PM, Matthew Wilcox wrote:
-> >>>> I'd be quite happy to add a gfp_t to struct readahead_control.
-> >>>> The other thing I've been looking into for other reasons is adding
-> >>>> a memalloc_nowait_{save,restore}, which would avoid passing down
-> >>>> the gfp_t.
-> >>>
-> >>> That was my first thought, having the memalloc_foo_save/restore for
-> >>> this. I don't think adding a gfp_t to readahead_control is going
-> >>> to be super useful, seems like the kind of thing that should be
-> >>> non-blocking by default.
-> >>
-> >> We're already doing memalloc_nofs_save/restore in
-> >> page_cache_readahead_unbounded(), so I think all we need is to just do a
-> >> noio dance in generic_file_buffered_read() and that should be enough.
-> > 
-> > I think we can still sleep though, right?  I was thinking more
-> > like this:
-> > 
-> > http://git.infradead.org/users/willy/linux.git/shortlog/refs/heads/memalloc
-> 
-> Yeah, that's probably better. How do we want to handle this? I've already
-> got the other bits queued up. I can either add them to the series, or
-> pull a branch that'll go into Linus as well.
+The logging macros are pretty heavyweight and can be consolidated
+to reduce overall object size.
 
-Jens, Willy,
+Joe Perches (2):
+  scsi: lpfc: Neaten logging macro #defines
+  scsi: lpfc: Add logging functions to reduce object size
 
-Now that this patch has been merged and IOCB_NOWAIT semantics ifor
-buffered reads are broken in Linus' tree, what's the plan to get
-this regression fixed before 5.9 releases?
+ drivers/scsi/lpfc/Makefile       |   2 +-
+ drivers/scsi/lpfc/lpfc.h         |   5 ++
+ drivers/scsi/lpfc/lpfc_attr.h    |   5 ++
+ drivers/scsi/lpfc/lpfc_bsg.h     |   6 ++
+ drivers/scsi/lpfc/lpfc_compat.h  |   5 ++
+ drivers/scsi/lpfc/lpfc_crtn.h    |   5 ++
+ drivers/scsi/lpfc/lpfc_disc.h    |   5 ++
+ drivers/scsi/lpfc/lpfc_hw.h      |   5 ++
+ drivers/scsi/lpfc/lpfc_hw4.h     |   5 ++
+ drivers/scsi/lpfc/lpfc_ids.h     |   5 ++
+ drivers/scsi/lpfc/lpfc_logmsg.c  | 112 +++++++++++++++++++++++++++++++
+ drivers/scsi/lpfc/lpfc_logmsg.h  |  63 ++++++-----------
+ drivers/scsi/lpfc/lpfc_nl.h      |   4 ++
+ drivers/scsi/lpfc/lpfc_nvme.h    |   5 ++
+ drivers/scsi/lpfc/lpfc_scsi.h    |   4 ++
+ drivers/scsi/lpfc/lpfc_sli.h     |   5 ++
+ drivers/scsi/lpfc/lpfc_sli4.h    |   5 ++
+ drivers/scsi/lpfc/lpfc_version.h |   5 ++
+ 18 files changed, 208 insertions(+), 43 deletions(-)
+ create mode 100644 drivers/scsi/lpfc/lpfc_logmsg.c
 
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+2.26.0
+
