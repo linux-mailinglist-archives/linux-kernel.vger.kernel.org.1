@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D6A2408FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4613A240938
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728798AbgHJP1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:27:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33666 "EHLO mail.kernel.org"
+        id S1728572AbgHJPaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:30:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728786AbgHJP1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:27:42 -0400
+        id S1729048AbgHJPaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:30:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBE9322D08;
-        Mon, 10 Aug 2020 15:27:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 609D022D08;
+        Mon, 10 Aug 2020 15:30:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073261;
-        bh=Xr/LrSwoPkpO+b5GNnU8G45cuP+w+tgscd35PT6++AU=;
+        s=default; t=1597073404;
+        bh=kBMYDFhRnChutM/t5d6Xdcinvd6tqSpoUz7KNV5h4G0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VwOEFHtMWKKOlLVyDBFCcmWqauRC6P/5/6Gd36s66RxhwsOyiRYt9keIg+WNUoBLU
-         qUIR3JZsFQvjbYlUmpjfd72LVElCOBtNPezY6Bma4ZlOLPGwhBXBENdQj2pzKbSuiH
-         ERPYBtTRRmb44e/8KAPqURd84oViYLaOdhA3zyY0=
+        b=AIAK9XlJbOSJjykCdMIKxjl21muabZUWXBn31Bkas2Cg//w+CFLltJ9hbel6NpwB3
+         ctF1PQm152yjaxP0XzY4VhtwvJjlbGnUpy0Gq+sQMJItHpjhcvQc66seUTOKElpZEs
+         zp48D/dvNtkgoGgKesi2ryHPn9CCQm4FMtfhCpJE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Squires <julian@cipht.net>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 42/67] cfg80211: check vendor command doit pointer before use
-Date:   Mon, 10 Aug 2020 17:21:29 +0200
-Message-Id: <20200810151811.514485826@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+d8489a79b781849b9c46@syzkaller.appspotmail.com,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 4.19 08/48] Bluetooth: Fix slab-out-of-bounds read in hci_extended_inquiry_result_evt()
+Date:   Mon, 10 Aug 2020 17:21:30 +0200
+Message-Id: <20200810151804.617146256@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
-References: <20200810151809.438685785@linuxfoundation.org>
+In-Reply-To: <20200810151804.199494191@linuxfoundation.org>
+References: <20200810151804.199494191@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Squires <julian@cipht.net>
+From: Peilin Ye <yepeilin.cs@gmail.com>
 
-[ Upstream commit 4052d3d2e8f47a15053320bbcbe365d15610437d ]
+commit 51c19bf3d5cfaa66571e4b88ba2a6f6295311101 upstream.
 
-In the case where a vendor command does not implement doit, and has no
-flags set, doit would not be validated and a NULL pointer dereference
-would occur, for example when invoking the vendor command via iw.
+Check upon `num_rsp` is insufficient. A malformed event packet with a
+large `num_rsp` number makes hci_extended_inquiry_result_evt() go out
+of bounds. Fix it.
 
-I encountered this while developing new vendor commands.  Perhaps in
-practice it is advisable to always implement doit along with dumpit,
-but it seems reasonable to me to always check doit anyway, not just
-when NEED_WDEV.
+This patch fixes the following syzbot bug:
 
-Signed-off-by: Julian Squires <julian@cipht.net>
-Link: https://lore.kernel.org/r/20200706211353.2366470-1-julian@cipht.net
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+    https://syzkaller.appspot.com/bug?id=4bf11aa05c4ca51ce0df86e500fce486552dc8d2
+
+Reported-by: syzbot+d8489a79b781849b9c46@syzkaller.appspotmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- net/wireless/nl80211.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/bluetooth/hci_event.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index a34bbca80f498..ec559dbad56ea 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -12949,13 +12949,13 @@ static int nl80211_vendor_cmd(struct sk_buff *skb, struct genl_info *info)
- 				if (!wdev_running(wdev))
- 					return -ENETDOWN;
- 			}
--
--			if (!vcmd->doit)
--				return -EOPNOTSUPP;
- 		} else {
- 			wdev = NULL;
- 		}
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -4151,7 +4151,7 @@ static void hci_extended_inquiry_result_
  
-+		if (!vcmd->doit)
-+			return -EOPNOTSUPP;
-+
- 		if (info->attrs[NL80211_ATTR_VENDOR_DATA]) {
- 			data = nla_data(info->attrs[NL80211_ATTR_VENDOR_DATA]);
- 			len = nla_len(info->attrs[NL80211_ATTR_VENDOR_DATA]);
--- 
-2.25.1
-
+ 	BT_DBG("%s num_rsp %d", hdev->name, num_rsp);
+ 
+-	if (!num_rsp)
++	if (!num_rsp || skb->len < num_rsp * sizeof(*info) + 1)
+ 		return;
+ 
+ 	if (hci_dev_test_flag(hdev, HCI_PERIODIC_INQ))
 
 
