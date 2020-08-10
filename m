@@ -2,145 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1A7240793
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DFF240787
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 16:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgHJO1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 10:27:36 -0400
-Received: from mga03.intel.com ([134.134.136.65]:56504 "EHLO mga03.intel.com"
+        id S1727795AbgHJOZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 10:25:44 -0400
+Received: from mga11.intel.com ([192.55.52.93]:6985 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725979AbgHJO1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 10:27:35 -0400
-IronPort-SDR: TwKOllVwdW7iSGPjGgvxkfMiYj5v+oaTWnEwfg+VMETwYfodxKtEa2YNMxaHcGPN6PI4xCbVrf
- SqqH9m06mHYg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9708"; a="153507965"
+        id S1726499AbgHJOYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 10:24:48 -0400
+IronPort-SDR: +NnfU9i/Srsl3qSsYz5oRAdfJxrgqbqiB87kghA8bUtF8FYD09pyDzcIK1KHT21+GJohpqewOb
+ 2l9DJ7xnQeww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9708"; a="151226132"
 X-IronPort-AV: E=Sophos;i="5.75,457,1589266800"; 
-   d="scan'208";a="153507965"
+   d="scan'208";a="151226132"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2020 07:27:34 -0700
-IronPort-SDR: XpyvJ+IrmMlIA/rK/B9g08LuVtdQKH3ZVP9xc57yz71cUTeyFZvudQ3njiAirgzirIJEYF0wBm
- ihgMvicM7Stg==
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2020 07:24:47 -0700
+IronPort-SDR: ISl6OiKHJsgCyCE/fF7o80n+7pdzNsHq5+65kEHYRejKZwR96IhEOjtBNT4WGpkoSJSNAPRjpt
+ hh7SvuksRo8Q==
 X-IronPort-AV: E=Sophos;i="5.75,457,1589266800"; 
-   d="scan'208";a="398240247"
-Received: from mgcummin-mobl2.amr.corp.intel.com (HELO [10.255.229.30]) ([10.255.229.30])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2020 07:27:33 -0700
-Subject: Re: [PATCH] x86/mm/64: Do not dereference non-present PGD entries
-To:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, hpa@zytor.com,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jason@zx2c4.com, Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        "Shutemov, Kirill" <kirill.shutemov@intel.com>
-References: <20200807084013.7090-1-joro@8bytes.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <165106f9-392f-9ca5-52c8-8d58c41c5f79@intel.com>
-Date:   Mon, 10 Aug 2020 07:27:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="398239634"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2020 07:24:43 -0700
+Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
+        by paasikivi.fi.intel.com (Postfix) with ESMTP id 9CBE2204B4;
+        Mon, 10 Aug 2020 17:24:41 +0300 (EEST)
+Received: from sailus by punajuuri.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@linux.intel.com>)
+        id 1k58mC-0003Ep-3j; Mon, 10 Aug 2020 17:27:48 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     linux-i2c@vger.kernel.org
+Cc:     Wolfram Sang <wsa@the-dreams.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, Bingbu Cao <bingbu.cao@intel.com>,
+        linux-media@vger.kernel.org,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
+        "Qiu, Tian Shu" <tian.shu.qiu@intel.com>
+Subject: [PATCH v5 0/6] Support running driver's probe for a device powered off
+Date:   Mon, 10 Aug 2020 17:27:41 +0300
+Message-Id: <20200810142747.12400-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200807084013.7090-1-joro@8bytes.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-... adding Kirill
+Hi all,
 
-On 8/7/20 1:40 AM, Joerg Roedel wrote:
-> +		lvl = "p4d";
-> +		p4d = p4d_alloc(&init_mm, pgd, addr);
-> +		if (!p4d)
-> +			goto failed;
->  
-> +		/*
-> +		 * With 5-level paging the P4D level is not folded. So the PGDs
-> +		 * are now populated and there is no need to walk down to the
-> +		 * PUD level.
-> +		 */
->  		if (pgtable_l5_enabled())
->  			continue;
+These patches enable calling (and finishing) a driver's probe function
+without powering on the respective device on busses where the practice is
+to power on the device for probe. While it generally is a driver's job to
+check the that the device is there, there are cases where it might be
+undesirable. (In this case it stems from a combination of hardware design
+and user expectations; see below.) The downside with this change is that
+if there is something wrong with the device, it will only be found at the
+time the device is used. In this case (the camera sensors + EEPROM in a
+sensor) I don't see any tangible harm from that though.
 
-It's early and I'm a coffee or two short of awake, but I had to stare at
-the comment for a but to make sense of it.
-
-It feels wrong, I think, because the 5-level code usually ends up doing
-*more* allocations and in this case, it is _appearing_ to do fewer.
-Would something like this make sense?
-
-		/*
-		 * The goal here is to allocate all possibly required
-		 * hardware page tables pointed to by the top hardware
-		 * level.
-		 *
-		 * On 4-level systems, the p4d layer is folded away and
-		 * the above code does no preallocation.  Below, go down
-		 * to the pud _software_ level to ensure the second
-		 * hardware level is allocated.
-		 */
+An indication both from the driver and the firmware is required to allow
+the device's power state to remain off during probe (see the first patch).
 
 
-> -		pud = pud_offset(p4d, addr);
-> -		if (pud_none(*pud)) {
-> -			/* Ends up here only with 4-level paging */
-> -			pud = pud_alloc(&init_mm, p4d, addr);
-> -			if (!pud) {
-> -				lvl = "pud";
-> -				goto failed;
-> -			}
-> -		}
-> +		lvl = "pud";
-> +		pud = pud_alloc(&init_mm, p4d, addr);
-> +		if (!pud)
-> +			goto failed;
->  	}
+The use case is such that there is a privacy LED next to an integrated
+user-facing laptop camera, and this LED is there to signal the user that
+the camera is recording a video or capturing images. That LED also happens
+to be wired to one of the power supplies of the camera, so whenever you
+power on the camera, the LED will be lit, whether images are captured from
+the camera --- or not. There's no way to implement this differently
+without additional software control (allowing of which is itself a
+hardware design decision) on most CSI-2-connected camera sensors as they
+simply have no pin to signal the camera streaming state.
+
+This is also what happens during driver probe: the camera will be powered
+on by the I²C subsystem calling dev_pm_domain_attach() and the device is
+already powered on when the driver's own probe function is called. To the
+user this visible during the boot process as a blink of the privacy LED,
+suggesting that the camera is recording without the user having used an
+application to do that. From the end user's point of view the behaviour is
+not expected and for someone unfamiliar with internal workings of a
+computer surely seems quite suspicious --- even if images are not being
+actually captured.
+
+I've tested these on linux-next master. They also apply to Wolfram's
+i2c/for-next branch, there's a patch that affects the I²C core changes
+here (see below). The patches apart from that apply to Bartosz's
+at24/for-next as well as Mauro's linux-media master branch.
+
+since v4 <URL:https://lore.kernel.org/linux-acpi/20200121134157.20396-1-sakari.ailus@linux.intel.com/>:
+
+- Rename "probe-low-power" property as "allow-low-power-probe". This is
+  taken into account in function and file naming, too.
+
+- Turn probe_low_power field in struct i2c_driver into flags field.
+
+- Rebase on Wolfram's i2c/for-next branch that contains the removal of the
+  support for disabling I²C core IRQ mappings (commit
+  0c2a34937f7e4c4776bb261114c475392da2355c).
+
+- Change wording for "allow-low-power-probe" property in ACPI
+  documentation.
+
+since v3 <URL:https://lore.kernel.org/linux-acpi/20200109154529.19484-1-sakari.ailus@linux.intel.com/T/#t>:
+
+- Rework the 2nd patch based on Rafael's comments
+
+	- Rework description of the ACPI low power state helper function,
+	  according to Rafael's text.
+
+	- Rename and rework the same function as
+	  acpi_dev_state_low_power().
+
+	- Reflect the changes in commit message as well.
+
+- Added a patch to document the probe-low-power _DSD property.
+
+since v2 <URL:https://patchwork.kernel.org/cover/11114255/>:
+
+- Remove extra CONFIG_PM ifdefs; these are not needed.
+
+- Move the checks for power state hints from drivers/base/dd.c to
+  drivers/i2c/i2c-base-core.c; these are I²C devices anyway.
+
+- Move the probe_low_power field from struct device_driver to struct
+  i2c_driver.
+
+since v1:
+
+- Rename probe_powered_off struct device field as probe_low_power and
+  reflect the similar naming to the patches overall.
+
+- Work with CONFIG_PM disabled, too.
+
+Rajmohan Mani (1):
+  media: i2c: imx319: Support probe while the device is off
+
+Sakari Ailus (5):
+  i2c: Allow driver to manage the device's power state during probe
+  ACPI: Add a convenience function to tell a device is in low power
+    state
+  ov5670: Support probe whilst the device is in a low power state
+  at24: Support probing while off
+  Documentation: ACPI: Document allow-low-power-probe _DSD property
+
+ .../acpi/dsd/allow-low-power-probe.rst        | 28 +++++++++++++
+ Documentation/firmware-guide/acpi/index.rst   |  1 +
+ drivers/acpi/device_pm.c                      | 31 ++++++++++++++
+ drivers/i2c/i2c-core-base.c                   | 17 ++++++--
+ drivers/media/i2c/imx319.c                    | 23 ++++++-----
+ drivers/media/i2c/ov5670.c                    | 23 ++++++-----
+ drivers/misc/eeprom/at24.c                    | 40 ++++++++++++-------
+ include/linux/acpi.h                          |  5 +++
+ include/linux/i2c.h                           | 14 +++++++
+ 9 files changed, 146 insertions(+), 36 deletions(-)
+ create mode 100644 Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
+
+-- 
+2.20.1
+
