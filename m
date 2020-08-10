@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C22240A97
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1714240A95
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728807AbgHJPmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:42:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53236 "EHLO mail.kernel.org"
+        id S1729289AbgHJPmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:42:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725873AbgHJPW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:22:26 -0400
+        id S1728231AbgHJPWj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:22:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C07E72075F;
-        Mon, 10 Aug 2020 15:22:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB00D20782;
+        Mon, 10 Aug 2020 15:22:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597072945;
-        bh=PvXo4XK8AZRqUTr2CoG0DPYsgX5nyXoeG9ZFRmeqqhI=;
+        s=default; t=1597072959;
+        bh=RF1YYZcrR8jAOi1ZJRiN7u4xbfpSyq4rjhuxrTj5BHc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kcOcI9ZyhMQsy2+ifnffLh3YGgH3G1QcUt1B+6tV9iLSpCv1gwrOGefnd8Uz8sYMj
-         TjFMGs/yUqHPGuvUgrBpcWJRmyRTTl8+eQLLKdngxLhLIj+SKRbr0cPkKuPzvpnTrM
-         mvZaR3EZQFUJoKihdNFpPE+rld/yurb0QfTuzSUc=
+        b=i4GPy6dNNwTyIqf24ReY2LCfOfTmbDzFJ72UW8QCWzki7obJIQ/xi93UJLRzYD8s/
+         DVSFmF4jHpqOIk2iW2ofzqO+fq4+QzWjkzZiiuCO2uMANql/RdaS8tdSXDa30Y39qm
+         d55DU49WMIxt6BVTtflc+TDZ6vReK7se62NVaK5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+80899a8a8efe8968cde7@syzkaller.appspotmail.com,
-        Rustam Kovhaev <rkovhaev@gmail.com>
-Subject: [PATCH 5.7 13/79] staging: rtl8712: handle firmware load failure
-Date:   Mon, 10 Aug 2020 17:20:32 +0200
-Message-Id: <20200810151812.778369620@linuxfoundation.org>
+        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: [PATCH 5.7 18/79] omapfb: dss: Fix max fclk divider for omap36xx
+Date:   Mon, 10 Aug 2020 17:20:37 +0200
+Message-Id: <20200810151813.015689378@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
 References: <20200810151812.114485777@linuxfoundation.org>
@@ -44,80 +46,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Adam Ford <aford173@gmail.com>
 
-commit b4383c971bc5263efe2b0915ba67ebf2bf3f1ee5 upstream.
+commit 254503a2b186caa668a188dbbd7ab0d25149c0a5 upstream.
 
-when firmware fails to load we should not call unregister_netdev()
-this patch fixes a race condition between rtl871x_load_fw_cb() and
-r871xu_dev_remove() and fixes the bug reported by syzbot
+The drm/omap driver was fixed to correct an issue where using a
+divider of 32 breaks the DSS despite the TRM stating 32 is a valid
+number.  Through experimentation, it appears that 31 works, and
+it is consistent with the value used by the drm/omap driver.
 
-Reported-by: syzbot+80899a8a8efe8968cde7@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=80899a8a8efe8968cde7
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200716151324.1036204-1-rkovhaev@gmail.com
+This patch fixes the divider for fbdev driver instead of the drm.
+
+Fixes: f76ee892a99e ("omapfb: copy omapdss & displays for omapfb")
+Cc: <stable@vger.kernel.org> #4.5+
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: Dave Airlie <airlied@gmail.com>
+Cc: Rob Clark <robdclark@gmail.com>
+[b.zolnierkie: mark patch as applicable to stable 4.5+ (was 4.9+)]
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200630182636.439015-1-aford173@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/rtl8712/hal_init.c |    3 ++-
- drivers/staging/rtl8712/usb_intf.c |   11 ++++++++---
- 2 files changed, 10 insertions(+), 4 deletions(-)
+ drivers/video/fbdev/omap2/omapfb/dss/dss.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/rtl8712/hal_init.c
-+++ b/drivers/staging/rtl8712/hal_init.c
-@@ -33,7 +33,6 @@ static void rtl871x_load_fw_cb(const str
- {
- 	struct _adapter *adapter = context;
+--- a/drivers/video/fbdev/omap2/omapfb/dss/dss.c
++++ b/drivers/video/fbdev/omap2/omapfb/dss/dss.c
+@@ -833,7 +833,7 @@ static const struct dss_features omap34x
+ };
  
--	complete(&adapter->rtl8712_fw_ready);
- 	if (!firmware) {
- 		struct usb_device *udev = adapter->dvobjpriv.pusbdev;
- 		struct usb_interface *usb_intf = adapter->pusb_intf;
-@@ -41,11 +40,13 @@ static void rtl871x_load_fw_cb(const str
- 		dev_err(&udev->dev, "r8712u: Firmware request failed\n");
- 		usb_put_dev(udev);
- 		usb_set_intfdata(usb_intf, NULL);
-+		complete(&adapter->rtl8712_fw_ready);
- 		return;
- 	}
- 	adapter->fw = firmware;
- 	/* firmware available - start netdev */
- 	register_netdev(adapter->pnetdev);
-+	complete(&adapter->rtl8712_fw_ready);
- }
- 
- static const char firmware_file[] = "rtlwifi/rtl8712u.bin";
---- a/drivers/staging/rtl8712/usb_intf.c
-+++ b/drivers/staging/rtl8712/usb_intf.c
-@@ -595,13 +595,17 @@ static void r871xu_dev_remove(struct usb
- 	if (pnetdev) {
- 		struct _adapter *padapter = netdev_priv(pnetdev);
- 
--		usb_set_intfdata(pusb_intf, NULL);
--		release_firmware(padapter->fw);
- 		/* never exit with a firmware callback pending */
- 		wait_for_completion(&padapter->rtl8712_fw_ready);
-+		pnetdev = usb_get_intfdata(pusb_intf);
-+		usb_set_intfdata(pusb_intf, NULL);
-+		if (!pnetdev)
-+			goto firmware_load_fail;
-+		release_firmware(padapter->fw);
- 		if (drvpriv.drv_registered)
- 			padapter->surprise_removed = true;
--		unregister_netdev(pnetdev); /* will call netdev_close() */
-+		if (pnetdev->reg_state != NETREG_UNINITIALIZED)
-+			unregister_netdev(pnetdev); /* will call netdev_close() */
- 		flush_scheduled_work();
- 		udelay(1);
- 		/* Stop driver mlme relation timer */
-@@ -614,6 +618,7 @@ static void r871xu_dev_remove(struct usb
- 		 */
- 		usb_put_dev(udev);
- 	}
-+firmware_load_fail:
- 	/* If we didn't unplug usb dongle and remove/insert module, driver
- 	 * fails on sitesurvey for the first time when device is up.
- 	 * Reset usb port for sitesurvey fail issue.
+ static const struct dss_features omap3630_dss_feats = {
+-	.fck_div_max		=	32,
++	.fck_div_max		=	31,
+ 	.dss_fck_multiplier	=	1,
+ 	.parent_clk_name	=	"dpll4_ck",
+ 	.dpi_select_source	=	&dss_dpi_select_source_omap2_omap3,
 
 
