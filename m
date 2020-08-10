@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCFA240D73
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE1A240D78
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728291AbgHJTJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 15:09:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35046 "EHLO mail.kernel.org"
+        id S1728380AbgHJTJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 15:09:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728071AbgHJTJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 15:09:03 -0400
+        id S1728337AbgHJTJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 15:09:11 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7C7420885;
-        Mon, 10 Aug 2020 19:09:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F19DE221E2;
+        Mon, 10 Aug 2020 19:09:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597086542;
-        bh=qQe3FyjvTTaoEb3laMj6+9MiU1PEwd4vtd+nX7lCjgg=;
+        s=default; t=1597086550;
+        bh=Ow+9PwNG87iLEwAnTdNC8Xqq/qG+EKxUsU9QqhTf+bw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=huUdr3wbB34/cRWuJcaGMnatvBt8IJaxglHgVwo0dnkgZGZ9HBAiphQFXY+anENCW
-         Qa1AFDpm7likuV8uukiUeZ0iE13127ADvNptwlW4dA5ekXLSd21XPv4XeaUoI4jlFc
-         PCLOy2xxNInnFZWPoIyGAZiwCRXYL4coJoDbqFTs=
+        b=yfe1i/brlcNsWaHjq0fzqqPHpAVziNLoLceUzUKSSekwP5RvWXactiKwLOpOkfrSI
+         /PbZ8cHuvmgFjE0yW/oaY1hRX+BJ5yq1dZZSW6x6K7g1Ct5mk0egN1afvrqEzZ9ds8
+         gtr4bZnBSQEKyojkVmBO75fuok1gopIvgjsztKpo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Maulik Shah <mkshah@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linux-arm-msm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 02/64] soc: qcom: rpmh-rsc: Set suppress_bind_attrs flag
-Date:   Mon, 10 Aug 2020 15:07:57 -0400
-Message-Id: <20200810190859.3793319-2-sashal@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 08/64] fs/btrfs: Add cond_resched() for try_release_extent_mapping() stalls
+Date:   Mon, 10 Aug 2020 15:08:03 -0400
+Message-Id: <20200810190859.3793319-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200810190859.3793319-1-sashal@kernel.org>
 References: <20200810190859.3793319-1-sashal@kernel.org>
@@ -44,39 +42,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maulik Shah <mkshah@codeaurora.org>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-[ Upstream commit 1a53ce9ab4faeb841b33d62d23283dc76c0e7c5a ]
+[ Upstream commit 9f47eb5461aaeb6cb8696f9d11503ae90e4d5cb0 ]
 
-rpmh-rsc driver is fairly core to system and should not be removable
-once its probed. However it allows to unbind driver from sysfs using
-below command which results into a crash on sc7180.
+Very large I/Os can cause the following RCU CPU stall warning:
 
-echo 18200000.rsc > /sys/bus/platform/drivers/rpmh/unbind
+RIP: 0010:rb_prev+0x8/0x50
+Code: 49 89 c0 49 89 d1 48 89 c2 48 89 f8 e9 e5 fd ff ff 4c 89 48 10 c3 4c =
+89 06 c3 4c 89 40 10 c3 0f 1f 00 48 8b 0f 48 39 cf 74 38 <48> 8b 47 10 48 85 c0 74 22 48 8b 50 08 48 85 d2 74 0c 48 89 d0 48
+RSP: 0018:ffffc9002212bab0 EFLAGS: 00000287 ORIG_RAX: ffffffffffffff13
+RAX: ffff888821f93630 RBX: ffff888821f93630 RCX: ffff888821f937e0
+RDX: 0000000000000000 RSI: 0000000000102000 RDI: ffff888821f93630
+RBP: 0000000000103000 R08: 000000000006c000 R09: 0000000000000238
+R10: 0000000000102fff R11: ffffc9002212bac8 R12: 0000000000000001
+R13: ffffffffffffffff R14: 0000000000102000 R15: ffff888821f937e0
+ __lookup_extent_mapping+0xa0/0x110
+ try_release_extent_mapping+0xdc/0x220
+ btrfs_releasepage+0x45/0x70
+ shrink_page_list+0xa39/0xb30
+ shrink_inactive_list+0x18f/0x3b0
+ shrink_lruvec+0x38e/0x6b0
+ shrink_node+0x14d/0x690
+ do_try_to_free_pages+0xc6/0x3e0
+ try_to_free_mem_cgroup_pages+0xe6/0x1e0
+ reclaim_high.constprop.73+0x87/0xc0
+ mem_cgroup_handle_over_high+0x66/0x150
+ exit_to_usermode_loop+0x82/0xd0
+ do_syscall_64+0xd4/0x100
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Lets prevent unbind at runtime by setting suppress_bind_attrs flag.
+On a PREEMPT=n kernel, the try_release_extent_mapping() function's
+"while" loop might run for a very long time on a large I/O.  This commit
+therefore adds a cond_resched() to this loop, providing RCU any needed
+quiescent states.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-Link: https://lore.kernel.org/r/1592808805-2437-1-git-send-email-mkshah@codeaurora.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/rpmh-rsc.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/btrfs/extent_io.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-index 076fd27f3081c..752a5619f715e 100644
---- a/drivers/soc/qcom/rpmh-rsc.c
-+++ b/drivers/soc/qcom/rpmh-rsc.c
-@@ -1023,6 +1023,7 @@ static struct platform_driver rpmh_driver = {
- 	.driver = {
- 		  .name = "rpmh",
- 		  .of_match_table = rpmh_drv_match,
-+		  .suppress_bind_attrs = true,
- 	},
- };
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 60278e52c37ab..eeaee346f5a95 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4516,6 +4516,8 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
  
+ 			/* once for us */
+ 			free_extent_map(em);
++
++			cond_resched(); /* Allow large-extent preemption. */
+ 		}
+ 	}
+ 	return try_release_extent_state(tree, page, mask);
 -- 
 2.25.1
 
