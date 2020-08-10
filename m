@@ -2,61 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5215E240709
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 15:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 454EA24070E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 15:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgHJN4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 09:56:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53342 "EHLO mail.kernel.org"
+        id S1726983AbgHJN57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 09:57:59 -0400
+Received: from mga04.intel.com ([192.55.52.120]:25445 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726584AbgHJN4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 09:56:39 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EBC1B2078D;
-        Mon, 10 Aug 2020 13:56:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597067799;
-        bh=SdnRjVTx+XenxW0mx6UmkUexgdMB8KMdeUjFwmhv2yg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GmhHKG+Sjryr43HZGFUTKyF64RRPiYc5FAw9/8cIHo3kkBMjwdVulsEcYeO9BjFR9
-         0eB/ecwLP1aLSHqdyP5XZRAs2wnemDEhF6rSVgnMTdw9pSmFtYSNWu9/eMcE+rzE7F
-         KF1P+dHwCz3uAWpbh18BCdePAyIs0LzPHUOe5JWk=
-Date:   Mon, 10 Aug 2020 15:56:50 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Izabela Bakollari <izabela.bakollari@gmail.com>
-Cc:     nhorman@tuxdriver.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCHv2 net-next] dropwatch: Support
- monitoring of dropped frames
-Message-ID: <20200810135650.GA3726113@kroah.com>
-References: <20200707171515.110818-1-izabela.bakollari@gmail.com>
- <20200804160908.46193-1-izabela.bakollari@gmail.com>
- <CAC8tkWDuvz3HQDp=Bb-Sfgiks1ETG-j1SMFn6O2nhyzYL5Cc8Q@mail.gmail.com>
+        id S1726881AbgHJN56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 09:57:58 -0400
+IronPort-SDR: RK9PLOcql2I/j79yww0M60FrprKDxA0KrAm8R3Zm8tLmkU+dMKjnF4C2meSvmMOPyT0rEKcC+Z
+ DrB9RzlAYhzg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9708"; a="150969357"
+X-IronPort-AV: E=Sophos;i="5.75,457,1589266800"; 
+   d="scan'208";a="150969357"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2020 06:57:58 -0700
+IronPort-SDR: unklh3Is/xfywKnmdcebNcmDXp90MkvOjJgiIx580TsBBevmNSMt3qupsfUo97a2GdEK1h8lNM
+ cEAg1kGJYQhg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,457,1589266800"; 
+   d="scan'208";a="276015511"
+Received: from um.fi.intel.com (HELO um) ([10.237.72.57])
+  by fmsmga007.fm.intel.com with ESMTP; 10 Aug 2020 06:57:55 -0700
+From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
+To:     Andi Kleen <ak@linux.intel.com>, peterz@infradead.org
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>, alexey.budankov@linux.intel.com,
+        adrian.hunter@intel.com, alexander.shishkin@linux.intel.com
+Subject: Re: [PATCH 1/2] perf: Add closing sibling events' file descriptors
+In-Reply-To: <20200806153205.GA1448395@tassilo.jf.intel.com>
+References: <20200708151635.81239-1-alexander.shishkin@linux.intel.com> <20200708151635.81239-2-alexander.shishkin@linux.intel.com> <20200806083530.GV2674@hirez.programming.kicks-ass.net> <20200806153205.GA1448395@tassilo.jf.intel.com>
+Date:   Mon, 10 Aug 2020 16:57:55 +0300
+Message-ID: <875z9q1u3g.fsf@ashishki-desk.ger.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAC8tkWDuvz3HQDp=Bb-Sfgiks1ETG-j1SMFn6O2nhyzYL5Cc8Q@mail.gmail.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 03:39:40PM +0200, Izabela Bakollari wrote:
-> I have worked on this feature as part of the Linux Kernel Mentorship
-> Program. Your review would really help me in this learning process.
+Andi Kleen <ak@linux.intel.com> writes:
 
-You sent this just a bit less than 1 week ago, and it's the middle of
-the kernel merge window, where no maintainer can take any new patches
-that are not bugfixes, and they are totally busy with the merge window
-issues.
+>> > This adds an opt-in flag to the perf_event_open() syscall to retain
+>> > sibling events after their file descriptors are closed. In this case, the
+>> > actual events will be closed with the group leader.
+>> 
+>> So having the 1:1 relation with filedesc imposes a resource limit on
+>> userspace.
+>> 
+>> This patch breaks that and enables a user to basically DoS the system by
+>> creating unbound events.
+>
+> The idea was to account the events in the locked memory allocation too.
+> Not sure that made it into the patch though.
 
-Give people a chance, try resending this after the net-next tree is open
-in a few weeks.
+It didn't. I can't figure out what to charge on the locked memory, as
+all that memory is in kernel-side objects. It also needs to make sense
+as iirc the default MLOCK_LIMIT is quite low, you'd hit it sooner than
+the file descriptor limit.
 
-thanks,
+> It has a minor issue that it might break some existing setups that rely
+> on the mmap fitting exactly into the mmap allocation, but that could
+> be solved by allowing a little slack, since the existing setups
+> likely don't have that many events.
 
-greg k-h
+I don't see how to make this work in a sane way. Besides, if we have to
+have a limit anyway, sticking with the existing one is just easier and
+1:1 is kind of more logical.
+
+Regards,
+--
+Alex
