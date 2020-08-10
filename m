@@ -2,106 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C02D24018B
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 06:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A02924018E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 06:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726089AbgHJEdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 00:33:36 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:55860 "EHLO rere.qmqm.pl"
+        id S1726284AbgHJEgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 00:36:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57676 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725846AbgHJEdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 00:33:35 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BQ34Y4vDpzVB;
-        Mon, 10 Aug 2020 06:33:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1597034013; bh=zVFn/Y4z9FM8y/cTp3a/grRU3ZsRgI3atpsALDR10a0=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=oTIc9IhPP5pd342iu6hd3itgPl1BwZ5cjQwbP9Ya+ylo4OXd4OQTMe0r0uOri/P1E
-         PH8qLOEMSmkPdcgeLsZ0U+m8t9ocLb9gtQqCKLQ1BpFQGhmQKs9nVTYHaPaMSUTqa3
-         4B8HD48Ohp7pbOjrDYyA1Yan0TQgixtbQZ5CFwdMlxsZkUH1AA3pKXSx16mdaZfr4l
-         iKibejT/p5qtklkn8mTqxH6DeJFxaJ6lK9J2ePzZWTsXUkR4No6sU52CKMfb2ekv6I
-         3ETigVU37gZMHriMM6b84z2o72bLnUJZjJaBO1ayGMTZsIVJLunmQIMdaFOoNo/zKJ
-         DXei608Lsb0bw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Mon, 10 Aug 2020 06:33:33 +0200
-Message-Id: <090775a675cf8ea644c4b65903f18b314acbc504.1597032945.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1597032945.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1597032945.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 3/3] regulator: unexport regulator_lock/unlock()
+        id S1725814AbgHJEgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 00:36:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 11E5CABE2;
+        Mon, 10 Aug 2020 04:36:54 +0000 (UTC)
+Subject: Re: [PATCH v3 1/7] x86/xen: remove 32-bit Xen PV guest support
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+References: <20200807083826.16794-1-jgross@suse.com>
+ <20200807083826.16794-2-jgross@suse.com>
+ <893bc936-81bf-1e86-8423-a61fbfb5dc02@oracle.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <8dc06c59-54a5-8716-5e26-ec1442aaadd4@suse.com>
+Date:   Mon, 10 Aug 2020 06:36:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Support Opensource <support.opensource@diasemi.com>
-Cc:     linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+In-Reply-To: <893bc936-81bf-1e86-8423-a61fbfb5dc02@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-regulator_lock/unlock() was used only to guard
-regulator_notifier_call_chain(). As no users remain, make the functions
-internal.
+On 09.08.20 04:01, Boris Ostrovsky wrote:
+> On 8/7/20 4:38 AM, Juergen Gross wrote:
+>>   
+>>   void __init xen_reserve_top(void)
+>>   {
+>> -#ifdef CONFIG_X86_32
+>> -	unsigned long top = HYPERVISOR_VIRT_START;
+>> -	struct xen_platform_parameters pp;
+>> -
+>> -	if (HYPERVISOR_xen_version(XENVER_platform_parameters, &pp) == 0)
+>> -		top = pp.virt_start;
+>> -
+>> -	reserve_top_address(-top);
+>> -#endif	/* CONFIG_X86_32 */
+>>   }
+>>   
+> 
+> 
+> We should be able now to get rid of xen_reserve_top() altogether.
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
- drivers/regulator/core.c         | 6 ++----
- include/linux/regulator/driver.h | 3 ---
- 2 files changed, 2 insertions(+), 7 deletions(-)
+Oh, yes.
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index f4035167e7ba..0a32c3da0e26 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -170,11 +170,10 @@ static inline int regulator_lock_nested(struct regulator_dev *rdev,
-  * than the one, which initially locked the mutex, it will
-  * wait on mutex.
-  */
--void regulator_lock(struct regulator_dev *rdev)
-+static void regulator_lock(struct regulator_dev *rdev)
- {
- 	regulator_lock_nested(rdev, NULL);
- }
--EXPORT_SYMBOL_GPL(regulator_lock);
- 
- /**
-  * regulator_unlock - unlock a single regulator
-@@ -183,7 +182,7 @@ EXPORT_SYMBOL_GPL(regulator_lock);
-  * This function unlocks the mutex when the
-  * reference counter reaches 0.
-  */
--void regulator_unlock(struct regulator_dev *rdev)
-+static void regulator_unlock(struct regulator_dev *rdev)
- {
- 	if (WARN_ON_ONCE(rdev->ref_cnt <= 0))
- 		return;
-@@ -191,7 +190,6 @@ void regulator_unlock(struct regulator_dev *rdev)
- 	if (--rdev->ref_cnt == 0)
- 		ww_mutex_unlock(&rdev->mutex);
- }
--EXPORT_SYMBOL_GPL(regulator_unlock);
- 
- static bool regulator_supply_is_couple(struct regulator_dev *rdev)
- {
-diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/driver.h
-index 2fe5b1bcbe2f..9c5a74cdebfe 100644
---- a/include/linux/regulator/driver.h
-+++ b/include/linux/regulator/driver.h
-@@ -532,9 +532,6 @@ int regulator_set_current_limit_regmap(struct regulator_dev *rdev,
- int regulator_get_current_limit_regmap(struct regulator_dev *rdev);
- void *regulator_get_init_drvdata(struct regulator_init_data *reg_init_data);
- 
--void regulator_lock(struct regulator_dev *rdev);
--void regulator_unlock(struct regulator_dev *rdev);
--
- /*
-  * Helper functions intended to be used by regulator drivers prior registering
-  * their regulators.
--- 
-2.20.1
+> 
+> 
+> Other than that
+> 
+> 
+> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 
+Thanks,
+
+Juergen
