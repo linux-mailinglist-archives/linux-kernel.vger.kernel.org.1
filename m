@@ -2,119 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2284C241387
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 01:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB99241381
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 01:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727808AbgHJXDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 19:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49798 "EHLO
+        id S1727068AbgHJXDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 19:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727088AbgHJXDg (ORCPT
+        with ESMTP id S1726722AbgHJXD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 19:03:36 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F94AC06174A;
-        Mon, 10 Aug 2020 16:03:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=gnabiwdB45hFlhtdmo49Peh/hpNgEzAL3CueMw6vX4w=; b=BYUZamtad5DlKTYo+f7nvfRPRO
-        NiFxde+hX4idWHucyB89yrO1CM+lxekMOPkKfitUGdJ8qUirVRoVdZn2yAf96oDpMsGNR/ybf0JjW
-        9MtsVrgQvmAXigiCLFsulZDy310vSCIzJgjoaRf/KlFtrxwmvJzdWFTJCk+MqJeJN3xIxiBcxtBIn
-        KLbvymAGLZz/bZjY/UpDHfVD3L04YTu6Lrcu5UAaA5u03pRlPmxAewB5v/aKLELgkPy2eCv/ZxRYT
-        Xie3TNv8R9/1P9keeiOGbAbEcskC5AUGD+S98vhfyE0/gORZ1AP+k4coaiVlJAt6fHzPmRmFCy8MN
-        9sdw9c4Q==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k5GpD-00080q-23; Mon, 10 Aug 2020 23:03:27 +0000
-Subject: Re: [PATCH v7 2/4] SFH: PCIe driver to add support of AMD sensor
- fusion hub
-To:     Sandeep Singh <Sandeep.Singh@amd.com>, jikos@kernel.org,
-        benjamin.tissoires@redhat.com, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, srinivas.pandruvada@linux.intel.com,
-        jic23@kernel.org, linux-iio@vger.kernel.org, hdegoede@redhat.com,
-        Nehal-bakulchandra.Shah@amd.com, andy.shevchenko@gmail.com,
-        mail@richard-neumann.de, m.felsch@pengutronix.de
-Cc:     Shyam-sundar.S-k@amd.com
-References: <20200810213055.103962-1-Sandeep.Singh@amd.com>
- <20200810213055.103962-3-Sandeep.Singh@amd.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <163a507b-1606-f37a-1733-67a06a4dc950@infradead.org>
-Date:   Mon, 10 Aug 2020 16:03:20 -0700
+        Mon, 10 Aug 2020 19:03:29 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1560C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 16:03:29 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id i92so630930pje.0
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 16:03:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RhGl5aAnfF/BQXqz/MC7L9FOMBP1d+PqSfo/ugCUrnc=;
+        b=vKzfUH8mbF/lhof7jqzTDAHUZg2nS8pYqAocFG+3PGEPxsrMyQYSoVhkjSrt63Ugjo
+         3mzhxjfv0Rm3DVkE8BiamPLYiwqpUOsYeZkY+W+EBp4KRiexXmERkpUFMbn8jYE0sTdS
+         MfhvSYIPzaWdV3C6E21CsVDz4rpJUdIyB59cAWL4/98gJwUeSSTTogyyEyOXh1GMQjBG
+         S9CsrDhpAKnCcV74+chwfTO+BQuJKcw6pHsIrC8zvHCx/9B67dL1n2ObhQ/wUIhmx9O9
+         FNmsUCkH5l+VeKFlR2BJPOGxAs5ErebttAMIucVy2/QjIQtbUPDd/nM3NzduIKcWMGXH
+         Z0tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RhGl5aAnfF/BQXqz/MC7L9FOMBP1d+PqSfo/ugCUrnc=;
+        b=di+xklEZIlCT+A6Dw3BXsXI5ZTRxJxWOjPn0YSet5Kn0JVsYTfdK2jTSS+HrNXISbH
+         6XsHR2mEOKtnq9f7UxyBC0+vyjAGDvgFjUxEvmK4zQKo1aKd7dKikppmUMEhfGMUFodL
+         XvObFNGbz4OnmEsNePgAgkOiVYDIAGnHmbqBeRWPUkBp9C5b7TkdAWpU7/VQkFGQXlYc
+         w2CYqsjU4nMCHHeR/fpIInleoXNtkYrpvmsBXGOGLv8xY4WlfAvkPYuFov+hZaHR1UOn
+         6IG7UOSYE9mF94Nx/Up22k6jxFDILeTfl0s9ikkABqoEXwfS16KqxWLC1wa34xTOBxgR
+         roDw==
+X-Gm-Message-State: AOAM533m2pWiFWFTaH4HBIvIN3Gy3pt+sWUKEm4mmfJyR/dQGtG4bGVx
+        g4ue6s/FT7c/bJMmrGW7V4Kk9A==
+X-Google-Smtp-Source: ABdhPJxaG+83Ln1EMRF7FhBciv88ind8OKJkJj4KMWNkMA4RDPdpHXJzQxhM3X6nIafRMxmlUU1yFQ==
+X-Received: by 2002:a17:902:aa91:: with SMTP id d17mr26879095plr.27.1597100609171;
+        Mon, 10 Aug 2020 16:03:29 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id z25sm23545541pfg.150.2020.08.10.16.03.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 Aug 2020 16:03:28 -0700 (PDT)
+Subject: Re: [PATCH 05/15] mm: allow read-ahead with IOCB_NOWAIT set
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        Johannes Weiner <hannes@cmpxchg.org>
+References: <20200618144355.17324-1-axboe@kernel.dk>
+ <20200618144355.17324-6-axboe@kernel.dk>
+ <20200624010253.GB5369@dread.disaster.area>
+ <20200624014645.GJ21350@casper.infradead.org>
+ <bad52be9-ae44-171b-8dbf-0d98eedcadc0@kernel.dk>
+ <70b0427c-7303-8f45-48bd-caa0562a2951@kernel.dk>
+ <20200624164127.GP21350@casper.infradead.org>
+ <8835b6f2-b3c5-c9a0-2119-1fb161cf87dd@kernel.dk>
+ <20200810225601.GE2079@dread.disaster.area>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <cf2384d3-8707-3a83-a667-8a0024867cdb@kernel.dk>
+Date:   Mon, 10 Aug 2020 17:03:27 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200810213055.103962-3-Sandeep.Singh@amd.com>
+In-Reply-To: <20200810225601.GE2079@dread.disaster.area>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/20 2:30 PM, Sandeep Singh wrote:
-> From: Sandeep Singh <sandeep.singh@amd.com>
+On 8/10/20 4:56 PM, Dave Chinner wrote:
+> On Wed, Jun 24, 2020 at 10:44:21AM -0600, Jens Axboe wrote:
+>> On 6/24/20 10:41 AM, Matthew Wilcox wrote:
+>>> On Wed, Jun 24, 2020 at 09:35:19AM -0600, Jens Axboe wrote:
+>>>> On 6/24/20 9:00 AM, Jens Axboe wrote:
+>>>>> On 6/23/20 7:46 PM, Matthew Wilcox wrote:
+>>>>>> I'd be quite happy to add a gfp_t to struct readahead_control.
+>>>>>> The other thing I've been looking into for other reasons is adding
+>>>>>> a memalloc_nowait_{save,restore}, which would avoid passing down
+>>>>>> the gfp_t.
+>>>>>
+>>>>> That was my first thought, having the memalloc_foo_save/restore for
+>>>>> this. I don't think adding a gfp_t to readahead_control is going
+>>>>> to be super useful, seems like the kind of thing that should be
+>>>>> non-blocking by default.
+>>>>
+>>>> We're already doing memalloc_nofs_save/restore in
+>>>> page_cache_readahead_unbounded(), so I think all we need is to just do a
+>>>> noio dance in generic_file_buffered_read() and that should be enough.
+>>>
+>>> I think we can still sleep though, right?  I was thinking more
+>>> like this:
+>>>
+>>> http://git.infradead.org/users/willy/linux.git/shortlog/refs/heads/memalloc
+>>
+>> Yeah, that's probably better. How do we want to handle this? I've already
+>> got the other bits queued up. I can either add them to the series, or
+>> pull a branch that'll go into Linus as well.
 > 
-> AMD SFH uses HID over PCIe bus.SFH fw is part of MP2 processor
-> (MP2 which is an ARM® Cortex-M4 core based co-processor to x86) and
-> it runs on MP2 where in driver resides on X86. This part of module
-> will communicate with MP2 Firmware and provide that data into DRAM
+> Jens, Willy,
 > 
-> Signed-off-by: Nehal Shah <Nehal-bakulchandra.Shah@amd.com>
-> Signed-off-by: Sandeep Singh <sandeep.singh@amd.com>
-> ---
->  drivers/hid/Kconfig                    |   2 +
->  drivers/hid/Makefile                   |   2 +
->  drivers/hid/amd-sfh-hid/Kconfig        |  21 ++++
->  drivers/hid/amd-sfh-hid/Makefile       |  15 +++
->  drivers/hid/amd-sfh-hid/amd_mp2_pcie.c | 164 +++++++++++++++++++++++++
->  drivers/hid/amd-sfh-hid/amd_mp2_pcie.h |  83 +++++++++++++
->  6 files changed, 287 insertions(+)
->  create mode 100644 drivers/hid/amd-sfh-hid/Kconfig
->  create mode 100644 drivers/hid/amd-sfh-hid/Makefile
->  create mode 100644 drivers/hid/amd-sfh-hid/amd_mp2_pcie.c
->  create mode 100644 drivers/hid/amd-sfh-hid/amd_mp2_pcie.h
-> 
+> Now that this patch has been merged and IOCB_NOWAIT semantics ifor
+> buffered reads are broken in Linus' tree, what's the plan to get
+> this regression fixed before 5.9 releases?
 
-Hi,
-Thanks for the update.
+Not sure where Willy's work went on this topic, but it is on my radar. But
+I think we can do something truly simple now that we have IOCB_NOIO:
 
-> diff --git a/drivers/hid/amd-sfh-hid/Kconfig b/drivers/hid/amd-sfh-hid/Kconfig
-> new file mode 100644
-> index 000000000000..a042048e8dd4
-> --- /dev/null
-> +++ b/drivers/hid/amd-sfh-hid/Kconfig
-> @@ -0,0 +1,21 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +menu "AMD SFH HID support"
-> +	depends on X86_64 || COMPILE_TEST
-> +	depends on PCI
-> +	depends on HID
-> +
-> +config AMD_SFH_HID
-> +	tristate "AMD Sensor Fusion Hub"
-> +	help
 
-Sorry I missed this in v6:
-
-help text should be indented with one tab + 2 spaces, so all of this
-should be indented an additional 2 spaces.
-
-> +	If you say yes to this option, support will be included for the AMD
-> +	Sensor Fusion Hub.
-> +	This driver will enable sensors functionality to user through HID
-> +	framework. Basically this driver will get data from MP2 Firmware
-> +	and provide that data to HID framework.
-> +	MP2 which is an ARM® Cortex-M4 core based co-processor to x86.
-> +
-> +	This driver can also be built as a module. If so, the module will
-> +	be  called amd-sfhtp-hid.
-> +	Say Y or M here if you want to support AMD SFH. If unsure, say N.
-> +
-> +endmenu
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index bd7ec3eaeed0..f1cca4bfdd7b 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3293,7 +3293,7 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
+ 	if (flags & RWF_NOWAIT) {
+ 		if (!(ki->ki_filp->f_mode & FMODE_NOWAIT))
+ 			return -EOPNOTSUPP;
+-		kiocb_flags |= IOCB_NOWAIT;
++		kiocb_flags |= IOCB_NOWAIT | IOCB_NOIO;
+ 	}
+ 	if (flags & RWF_HIPRI)
+ 		kiocb_flags |= IOCB_HIPRI;
 
 -- 
-~Randy
+Jens Axboe
 
