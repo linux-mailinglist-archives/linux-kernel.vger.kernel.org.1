@@ -2,115 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B20BC240FEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A142240FD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 21:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729596AbgHJT0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 15:26:12 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59855 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729167AbgHJT0F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 15:26:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597087563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=jW0fem5Jmjj0Zx6/HwTIZV0/DFfxiDU26zPyQGABhVY=;
-        b=jCvvaoCbggqT8+ZLFOWFckBmAhXRcNAIjN5sXfd8TtFRSprJOZwABEq6NcxtFFHpYDf5th
-        yGDW1aJao3Y3kNHZ/Zod1JTN1CjR09eKiWoe2DRScEshAgZvyB45hOoZpCmfE1yKNljMUv
-        SHS0KSuvib3gcMmFVjLxlCtFPyYPDKM=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-469-ldIoVdFiNTi0UieuYAKzhA-1; Mon, 10 Aug 2020 15:26:01 -0400
-X-MC-Unique: ldIoVdFiNTi0UieuYAKzhA-1
-Received: by mail-qv1-f71.google.com with SMTP id z10so7993608qvm.0
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 12:26:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=jW0fem5Jmjj0Zx6/HwTIZV0/DFfxiDU26zPyQGABhVY=;
-        b=PdEHvDGvHCA13JzYw1y9aPDRwaPWs/YOsGUeADm0aLq4KDGGDLbuthX7RCzV6pca8j
-         Sq/CoRi4D5Hu411kpHbHSuPP4qM9dW4Ysnbq+pwr+jEtV41d3b3i/CKR8u0aXKsah4nI
-         kNt7h6Jsp6fpK8fKc/vJXFvSfHofeExMEmW4/d9AhrW/jci6o2CWyHYyAY2vdk216LZ6
-         VP8+lnqueMWR3alzbT4O0FMIMoYNIt4zDJaxp0uc8VoISlT7/4+Gl/PorTWr6JHJpDie
-         yCAd/m1GUjbaYp2cU7KVEdqQq7UMj7BnIoQu5KQ2e7aPMuP/VAQtWzg2e4ULJpfj+kiE
-         XmsQ==
-X-Gm-Message-State: AOAM531A0JOBUPBmcKcJ8HPIAbqdMd3Epbe4SCpUuB6HcQDD00ZykNr3
-        wqWexE/VnMaLv1+hJ9RU54KIVDPVkHb0a3qNVVX70hHZA32CVfYMXR2bHcx2YCVrchD1HId16SE
-        snFwW4cu+ciWt86S6ROQZDXPz
-X-Received: by 2002:a0c:f681:: with SMTP id p1mr22661604qvn.248.1597087560682;
-        Mon, 10 Aug 2020 12:26:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZu5Y1a7ZFALxLczh2/NRooWYBVXrMgno7Bp8kSPcXz04fI7U/kb7Ai6dmhiMH/so/YqBlaQ==
-X-Received: by 2002:a0c:f681:: with SMTP id p1mr22661586qvn.248.1597087560490;
-        Mon, 10 Aug 2020 12:26:00 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 139sm14690740qkl.13.2020.08.10.12.25.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2020 12:25:59 -0700 (PDT)
-From:   trix@redhat.com
-To:     maintainers@bluecherrydvr.com, anton@corp.bluecherry.net,
-        andrey.utkin@corp.bluecherry.net, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] media: tw5864: check status of tw5864_frameinterval_get
-Date:   Mon, 10 Aug 2020 12:25:18 -0700
-Message-Id: <20200810192518.8822-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        id S1730330AbgHJTZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 15:25:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53082 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730039AbgHJTZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 15:25:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 71F94AE24;
+        Mon, 10 Aug 2020 19:25:46 +0000 (UTC)
+Date:   Mon, 10 Aug 2020 21:25:25 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200810192525.GG4773@dhcp22.suse.cz>
+References: <20200809204354.20137-1-urezki@gmail.com>
+ <20200809204354.20137-2-urezki@gmail.com>
+ <20200810123141.GF4773@dhcp22.suse.cz>
+ <20200810160739.GA29884@pc636>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200810160739.GA29884@pc636>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Mon 10-08-20 18:07:39, Uladzislau Rezki wrote:
+> > On Sun 09-08-20 22:43:53, Uladzislau Rezki (Sony) wrote:
+> > [...]
+> > > Limitations and concerns (Main part)
+> > > ====================================
+> > > The current memmory-allocation interface presents to following
+> > > difficulties that this patch is designed to overcome:
+> > > 
+> > > a) If built with CONFIG_PROVE_RAW_LOCK_NESTING, the lockdep will
+> > >    complain about violation("BUG: Invalid wait context") of the
+> > >    nesting rules. It does the raw_spinlock vs. spinlock nesting
+> > >    checks, i.e. it is not legal to acquire a spinlock_t while
+> > >    holding a raw_spinlock_t.
+> > > 
+> > >    Internally the kfree_rcu() uses raw_spinlock_t(in rcu-dev branch)
+> > >    whereas the "page allocator" internally deals with spinlock_t to
+> > >    access to its zones. The code also can be broken from higher level
+> > >    of view:
+> > >    <snip>
+> > >        raw_spin_lock(&some_lock);
+> > >        kfree_rcu(some_pointer, some_field_offset);
+> > >    <snip>
+> > 
+> > Is there any fundamental problem to make zone raw_spin_lock?
+> > 
+> Good point. Converting a regular spinlock to the raw_* variant can solve 
+> an issue and to me it seems partly reasonable. Because there are other
+> questions if we do it:
+> 
+> a) what to do with kswapd and "wake-up path" that uses sleepable lock:
+>     wakeup_kswapd() -> wake_up_interruptible(&pgdat->kswapd_wait).
 
-clang static analysis reports this problem
+If there is no RT friendly variant for waking up process from the atomic
+context then we might need to special case this for the RT tree.
 
-tw5864-video.c:773:32: warning: The left expression of the compound
-  assignment is an uninitialized value.
-  The computed value will also be garbage
-        fintv->stepwise.max.numerator *= std_max_fps;
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^
+> b) How RT people reacts on it? I guess they will no be happy.
 
-stepwise.max is set with frameinterval, which comes from
+zone->lock should be held for a very limited amount of time.
 
-	ret = tw5864_frameinterval_get(input, &frameinterval);
-	fintv->stepwise.step = frameinterval;
-	fintv->stepwise.min = frameinterval;
-	fintv->stepwise.max = frameinterval;
-	fintv->stepwise.max.numerator *= std_max_fps;
+> As i described before, calling the __get_free_page(0) with 0 as argument
+> will solve the (a). How correctly is it? From my point of view the logic
+> that bypass the wakeup path should be explicitly defined.
 
-When tw5864_frameinterval_get() fails, frameinterval is not
-set. So check the status and fix another similar problem.
+gfp_mask == 0 is GFP_NOWAIT (aka an atomic allocation request) which
+doesn't wake up kswapd. So if the wakeup is a problem then this would be
+a way to go.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/media/pci/tw5864/tw5864-video.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+> Or we can enter the allocator with (__GFP_HIGH|__GFP_ATOMIC) that bypass
+> the __GFP_KSWAPD_RECLAIM as well.
 
-diff --git a/drivers/media/pci/tw5864/tw5864-video.c b/drivers/media/pci/tw5864/tw5864-video.c
-index ec1e06da7e4f..a65114e7ca34 100644
---- a/drivers/media/pci/tw5864/tw5864-video.c
-+++ b/drivers/media/pci/tw5864/tw5864-video.c
-@@ -767,6 +767,9 @@ static int tw5864_enum_frameintervals(struct file *file, void *priv,
- 	fintv->type = V4L2_FRMIVAL_TYPE_STEPWISE;
- 
- 	ret = tw5864_frameinterval_get(input, &frameinterval);
-+	if (ret)
-+		return ret;
-+
- 	fintv->stepwise.step = frameinterval;
- 	fintv->stepwise.min = frameinterval;
- 	fintv->stepwise.max = frameinterval;
-@@ -785,6 +788,9 @@ static int tw5864_g_parm(struct file *file, void *priv,
- 	cp->capability = V4L2_CAP_TIMEPERFRAME;
- 
- 	ret = tw5864_frameinterval_get(input, &cp->timeperframe);
-+	if (ret)
-+		return ret;
-+
- 	cp->timeperframe.numerator *= input->frame_interval;
- 	cp->capturemode = 0;
- 	cp->readbuffers = 2;
+This would be an alternative which consumes memory reserves. Is this
+really needed for the particular case?
+
+> 
+> Any thoughts here? Please comment.
+> 
+> Having proposed flag will not heart RT latency and solve all concerns.
+> 
+> > > b) If built with CONFIG_PREEMPT_RT. Please note, in that case spinlock_t
+> > >    is converted into sleepable variant. Invoking the page allocator from
+> > >    atomic contexts leads to "BUG: scheduling while atomic".
+> > 
+> > [...]
+> > 
+> > > Proposal
+> > > ========
+> > > 1) Make GFP_* that ensures that the allocator returns NULL rather
+> > > than acquire its own spinlock_t. Having such flag will address a and b
+> > > limitations described above. It will also make the kfree_rcu() code
+> > > common for RT and regular kernel, more clean, less handling corner
+> > > cases and reduce the code size.
+> > 
+> > I do not think this is a good idea. Single purpose gfp flags that tend
+> > to heavily depend on the current implementation of the page allocator
+> > have turned out to be problematic. Users used to misunderstand their
+> > meaning resulting in a lot of abuse which was not trivial to remove.
+> > This flag seem to fall into exactly this sort of category. If there is a
+> > problem in nesting then that should be addressed rather than a new flag
+> > exported IMHO. If that is absolutely not possible for some reason then
+> > we can try to figure out what to do but that really need a very strong
+> > justification.
+> > 
+> The problem that i see is we can not use the page allocator from atomic
+> contexts, what is our case:
+> 
+> <snip>
+>     local_irq_save(flags) or preempt_disable() or raw_spinlock();
+>     __get_free_page(GFP_ATOMIC);
+> <snip>
+> 
+> So if we can convert the page allocator to raw_* lock it will be appreciated,
+> at least from our side, IMHO, not from RT one. But as i stated above we need
+> to sort raised questions out if converting is done.
+> 
+> What is your view?
+
+To me it would make more sense to support atomic allocations also for
+the RT tree. Having both GFP_NOWAIT and GFP_ATOMIC which do not really
+work for atomic context in RT sounds subtle and wrong.
 -- 
-2.18.1
-
+Michal Hocko
+SUSE Labs
