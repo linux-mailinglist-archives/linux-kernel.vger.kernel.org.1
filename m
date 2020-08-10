@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AF72408D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E7F240909
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 17:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728560AbgHJPZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 11:25:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59408 "EHLO mail.kernel.org"
+        id S1728847AbgHJP2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 11:28:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728539AbgHJPZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:25:35 -0400
+        id S1728836AbgHJP2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 11:28:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43CC920658;
-        Mon, 10 Aug 2020 15:25:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1EA1B22CF7;
+        Mon, 10 Aug 2020 15:28:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597073134;
-        bh=8aTXwZ4opx8LLQJfKMRpxPVdMjiXrdDmraPtP16ipPk=;
+        s=default; t=1597073289;
+        bh=Fa9O2AMPRvGAT3i4ukHBUsjceL2YOacHwR9V4CKYVHY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PJ9V2mWvfgouekQ/8P4txSPjnW1WFGDk900eiaaZ+QrtWV3v75CL8iq8iYQCKJwyM
-         RTdKH/tHJj1HlXFjJgEmLeCNMOJgrPSE08kHeFN9+TiLvOEg/kse9+XLG7zEZNvUGb
-         bA7VTHK7H9Al9pDeQ/aTzBFZCi7iDHCmeuU855IE=
+        b=trj2DLpiJHUgMnUy/dAlQyPhQ9luBAiSW19lGODkZiAWQN2czPe6vDtXstDLuhsFe
+         7K8OJzKNuupUVh6pel650N67JxTrl68sFDrhroenl2JPjzRkkBNxjP6xjYIrJFvkPH
+         YaWly1gNWKK8LTpn+5F0YRA8vcsmu/taz0mPoplk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        Mark Brown <broonie@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: [PATCH 5.7 79/79] arm64: kaslr: Use standard early random function
+        stable@vger.kernel.org, ch3332xr@gmail.com,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 51/67] ipv6: fix memory leaks on IPV6_ADDRFORM path
 Date:   Mon, 10 Aug 2020 17:21:38 +0200
-Message-Id: <20200810151816.114898609@linuxfoundation.org>
+Message-Id: <20200810151811.990324030@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200810151812.114485777@linuxfoundation.org>
-References: <20200810151812.114485777@linuxfoundation.org>
+In-Reply-To: <20200810151809.438685785@linuxfoundation.org>
+References: <20200810151809.438685785@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,76 +44,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Cong Wang <xiyou.wangcong@gmail.com>
 
-commit 9bceb80b3cc483e6763c39a4928402fa82815d3e upstream.
+[ Upstream commit 8c0de6e96c9794cb523a516c465991a70245da1c ]
 
-Commit 585524081ecd ("random: random.h should include archrandom.h, not
-the other way around") tries to fix a problem with recursive inclusion
-of linux/random.h and arch/archrandom.h for arm64.  Unfortunately, this
-results in the following compile error if ARCH_RANDOM is disabled.
+IPV6_ADDRFORM causes resource leaks when converting an IPv6 socket
+to IPv4, particularly struct ipv6_ac_socklist. Similar to
+struct ipv6_mc_socklist, we should just close it on this path.
 
-  arch/arm64/kernel/kaslr.c: In function 'kaslr_early_init':
-  arch/arm64/kernel/kaslr.c:128:6: error: implicit declaration of function '__early_cpu_has_rndr'; did you mean '__early_pfn_to_nid'? [-Werror=implicit-function-declaration]
-    if (__early_cpu_has_rndr()) {
-        ^~~~~~~~~~~~~~~~~~~~
-        __early_pfn_to_nid
-  arch/arm64/kernel/kaslr.c:131:7: error: implicit declaration of function '__arm64_rndr' [-Werror=implicit-function-declaration]
-     if (__arm64_rndr(&raw))
-         ^~~~~~~~~~~~
+This bug can be easily reproduced with the following C program:
 
-The problem is that arch/archrandom.h is only included from
-linux/random.h if ARCH_RANDOM is enabled.  If not, __arm64_rndr() and
-__early_cpu_has_rndr() are undeclared, causing the problem.
+  #include <stdio.h>
+  #include <string.h>
+  #include <sys/types.h>
+  #include <sys/socket.h>
+  #include <arpa/inet.h>
 
-Use arch_get_random_seed_long_early() instead of arm64 specific
-functions to solve the problem.
+  int main()
+  {
+    int s, value;
+    struct sockaddr_in6 addr;
+    struct ipv6_mreq m6;
 
-Reported-by: Qian Cai <cai@lca.pw>
-Fixes: 585524081ecd ("random: random.h should include archrandom.h, not the other way around")
-Cc: Qian Cai <cai@lca.pw>
-Cc: Mark Brown <broonie@kernel.org>
-Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: Mark Brown <broonie@kernel.org>
-Tested-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Sedat Dilek <sedat.dilek@gmail.com>
+    s = socket(AF_INET6, SOCK_DGRAM, 0);
+    addr.sin6_family = AF_INET6;
+    addr.sin6_port = htons(5000);
+    inet_pton(AF_INET6, "::ffff:192.168.122.194", &addr.sin6_addr);
+    connect(s, (struct sockaddr *)&addr, sizeof(addr));
+
+    inet_pton(AF_INET6, "fe80::AAAA", &m6.ipv6mr_multiaddr);
+    m6.ipv6mr_interface = 5;
+    setsockopt(s, SOL_IPV6, IPV6_JOIN_ANYCAST, &m6, sizeof(m6));
+
+    value = AF_INET;
+    setsockopt(s, SOL_IPV6, IPV6_ADDRFORM, &value, sizeof(value));
+
+    close(s);
+    return 0;
+  }
+
+Reported-by: ch3332xr@gmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/arm64/kernel/kaslr.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ include/net/addrconf.h   |    1 +
+ net/ipv6/anycast.c       |   17 ++++++++++++-----
+ net/ipv6/ipv6_sockglue.c |    1 +
+ 3 files changed, 14 insertions(+), 5 deletions(-)
 
---- a/arch/arm64/kernel/kaslr.c
-+++ b/arch/arm64/kernel/kaslr.c
-@@ -84,6 +84,7 @@ u64 __init kaslr_early_init(u64 dt_phys)
- 	void *fdt;
- 	u64 seed, offset, mask, module_range;
- 	const u8 *cmdline, *str;
-+	unsigned long raw;
- 	int size;
+--- a/include/net/addrconf.h
++++ b/include/net/addrconf.h
+@@ -273,6 +273,7 @@ int ipv6_sock_ac_join(struct sock *sk, i
+ 		      const struct in6_addr *addr);
+ int ipv6_sock_ac_drop(struct sock *sk, int ifindex,
+ 		      const struct in6_addr *addr);
++void __ipv6_sock_ac_close(struct sock *sk);
+ void ipv6_sock_ac_close(struct sock *sk);
  
- 	/*
-@@ -122,15 +123,12 @@ u64 __init kaslr_early_init(u64 dt_phys)
+ int __ipv6_dev_ac_inc(struct inet6_dev *idev, const struct in6_addr *addr);
+--- a/net/ipv6/anycast.c
++++ b/net/ipv6/anycast.c
+@@ -183,7 +183,7 @@ int ipv6_sock_ac_drop(struct sock *sk, i
+ 	return 0;
+ }
+ 
+-void ipv6_sock_ac_close(struct sock *sk)
++void __ipv6_sock_ac_close(struct sock *sk)
+ {
+ 	struct ipv6_pinfo *np = inet6_sk(sk);
+ 	struct net_device *dev = NULL;
+@@ -191,10 +191,7 @@ void ipv6_sock_ac_close(struct sock *sk)
+ 	struct net *net = sock_net(sk);
+ 	int	prev_index;
+ 
+-	if (!np->ipv6_ac_list)
+-		return;
+-
+-	rtnl_lock();
++	ASSERT_RTNL();
+ 	pac = np->ipv6_ac_list;
+ 	np->ipv6_ac_list = NULL;
+ 
+@@ -211,6 +208,16 @@ void ipv6_sock_ac_close(struct sock *sk)
+ 		sock_kfree_s(sk, pac, sizeof(*pac));
+ 		pac = next;
  	}
++}
++
++void ipv6_sock_ac_close(struct sock *sk)
++{
++	struct ipv6_pinfo *np = inet6_sk(sk);
++
++	if (!np->ipv6_ac_list)
++		return;
++	rtnl_lock();
++	__ipv6_sock_ac_close(sk);
+ 	rtnl_unlock();
+ }
  
- 	/*
--	 * Mix in any entropy obtainable architecturally, open coded
--	 * since this runs extremely early.
-+	 * Mix in any entropy obtainable architecturally if enabled
-+	 * and supported.
- 	 */
--	if (__early_cpu_has_rndr()) {
--		unsigned long raw;
+--- a/net/ipv6/ipv6_sockglue.c
++++ b/net/ipv6/ipv6_sockglue.c
+@@ -205,6 +205,7 @@ static int do_ipv6_setsockopt(struct soc
  
--		if (__arm64_rndr(&raw))
--			seed ^= raw;
--	}
-+	if (arch_get_random_seed_long_early(&raw))
-+		seed ^= raw;
+ 			fl6_free_socklist(sk);
+ 			__ipv6_sock_mc_close(sk);
++			__ipv6_sock_ac_close(sk);
  
- 	if (!seed) {
- 		kaslr_status = KASLR_DISABLED_NO_SEED;
+ 			/*
+ 			 * Sock is moving from IPv6 to IPv4 (sk_prot), so
 
 
