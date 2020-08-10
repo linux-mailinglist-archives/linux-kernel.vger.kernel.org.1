@@ -2,177 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B73E2401E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 08:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E605C2401E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 Aug 2020 08:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbgHJGNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 02:13:33 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:23215 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgHJGNd (ORCPT
+        id S1726284AbgHJGOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 02:14:51 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46344 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725814AbgHJGOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 02:13:33 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200810061330epoutp04cff1b2280595261571f6a82992697bd9~p022T0jlP2784527845epoutp04j
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 06:13:30 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200810061330epoutp04cff1b2280595261571f6a82992697bd9~p022T0jlP2784527845epoutp04j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1597040010;
-        bh=sVPhD786G5RSI7VpSeDq+N2HMw4cX49OUlz/9umjFjw=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=lKxda/VVZm69bBvS+0PXCpFC6QMp9K14RMAv80svDKfNetHV9aveXQ/2Y8xLBLYJn
-         /ZgbfFddBHUmrdtO0Jfo03IKnC8WYtV0d+POZ3Vp/sy56yFyLUWR+efm6WDEwEHycs
-         xFDy/PtxvoNt446/fwMiyzvyUgJBLf2z5fUp5YFs=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200810061330epcas1p1ff04f76adca509aafc6566661b5cf6dc~p0214tUPv2157521575epcas1p1P;
-        Mon, 10 Aug 2020 06:13:30 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.164]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4BQ5Hs2WwFzMqYkk; Mon, 10 Aug
-        2020 06:13:29 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        01.86.19033.685E03F5; Mon, 10 Aug 2020 15:13:26 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200810061326epcas1p45c82807cc8d4a0b90c28160caa566812~p02yN7dAk0090500905epcas1p4t;
-        Mon, 10 Aug 2020 06:13:26 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200810061326epsmtrp2af80ad4670f3934966e3c7a40b3bee42~p02yNVGWN1918219182epsmtrp2d;
-        Mon, 10 Aug 2020 06:13:26 +0000 (GMT)
-X-AuditID: b6c32a36-159ff70000004a59-2b-5f30e586b39e
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        30.2E.08382.585E03F5; Mon, 10 Aug 2020 15:13:25 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200810061325epsmtip2e233ecb93e63bc89904320f22fc277e7~p02yBDhmj1343413434epsmtip2J;
-        Mon, 10 Aug 2020 06:13:25 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
-Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
-        <mori.takahiro@ab.mitsubishielectric.co.jp>,
-        <motai.hirotaka@aj.mitsubishielectric.co.jp>,
-        "'Sungjong Seo'" <sj1557.seo@samsung.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200806055653.9329-1-kohada.t2@gmail.com>
-Subject: RE: [PATCH 1/2] exfat: add NameLength check when extracting name
-Date:   Mon, 10 Aug 2020 15:13:25 +0900
-Message-ID: <003d01d66edd$5baf4810$130dd830$@samsung.com>
+        Mon, 10 Aug 2020 02:14:51 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07A672hM045033;
+        Mon, 10 Aug 2020 02:14:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=DC9ZVaWbhsVOdNKl7yCJVCGW/U1781tV4/G8ec3wax0=;
+ b=g/eCrb+lh+U5FMPudB/mcYbJARjzqCDXIh/45hk0paXe4+/CnTWovHUJiy8MYo3bLJN/
+ nniRtTYJ/RgjZS39rfWW0yKuu89ITZs2YJRozXxuf2PszMX9JXr6oIYsu2p+Vb4flKoB
+ FCCs0oyDnVBcQQQgxcQ64WiEetzSl3f4J8b51koX+qaVkkxUT1W2KaxqsdP61UZcK/YU
+ Ff3GnDz0f3EyVoH3ZIq2X/O/+YWGYWEhENUaaA8Bzuom7pbUdbhTwxIPZBC82lXtx65n
+ zZHmc2NcqrrszzOIyfh7D0+fGMabSGXch33vcDP4HRhr3EEDiCiKR531DPzULu9VS1J9 6g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32sr4qt72p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Aug 2020 02:14:14 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07A6DZJn063941;
+        Mon, 10 Aug 2020 02:14:13 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32sr4qt72a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Aug 2020 02:14:13 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07A6AOBg028154;
+        Mon, 10 Aug 2020 06:14:11 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 32skp81wu6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Aug 2020 06:14:11 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07A6Cgn351642786
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 10 Aug 2020 06:12:42 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7530542047;
+        Mon, 10 Aug 2020 06:14:09 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 93C0242049;
+        Mon, 10 Aug 2020 06:14:07 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon, 10 Aug 2020 06:14:07 +0000 (GMT)
+Date:   Mon, 10 Aug 2020 11:44:06 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Josh Don <joshdon@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] sched/fair: ignore cache hotness for SMT migration
+Message-ID: <20200810061406.GA15559@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20200804105619.GE2657@hirez.programming.kicks-ass.net>
+ <20200804193413.510651-1-joshdon@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGPHLM6XNMdYK+OwXwRZrdCO4AVLgGp1IjqqbIx7ZA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNJsWRmVeSWpSXmKPExsWy7bCmnm7bU4N4g3cnDS1+zL3NYvHm5FQW
-        iz17T7JYXN41h83i8v9PLBbLvkxmsdjy7wirA7vHlznH2T3aJv9j92g+tpLNY+esu+wefVtW
-        MXp83iQXwBaVY5ORmpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6Dr
-        lpkDdIuSQlliTilQKCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8DQoECvODG3uDQvXS85P9fK
-        0MDAyBSoMiEnY8vmn4wFf4Qqmq/uZm9gXM3fxcjJISFgIvFh4TOmLkYuDiGBHYwS1zomMkM4
-        nxgllj5cwgLhfGOU6Pl8ma2LkQOs5eghL4j4XkaJWV962SGcl4wSS77+ZAeZyyagK/Hvz342
-        EFtEQE/i5MnrbCBFzAKNTBLLT3xhBklwClhI/PmzjRXEFhbwlNjWOhnMZhFQlVi84hITiM0r
-        YClxcdd3KFtQ4uTMJywgNrOAvMT2t3OYIZ5QkPj5dBkryHUiAlYS6w6VQJSISMzubAN7R0Jg
-        IYdE4/r5LBAfuEjsf2YB0Sos8er4FnYIW0ri87u9UE9WS3zcDzW9g1HixXdbCNtY4ub6DWCb
-        mAU0Jdbv0ocIK0rs/D2XEWIrn8S7rz2sEFN4JTrahCBKVCX6Lh1mgrClJbraP7BPYFSaheSt
-        WUjemoXk/lkIyxYwsqxiFEstKM5NTy02LDBCjupNjOBUqmW2g3HS2w96hxiZOBgPMUpwMCuJ
-        8Nrd1Y8X4k1JrKxKLcqPLyrNSS0+xGgKDOiJzFKiyfnAZJ5XEm9oamRsbGxhYmZuZmqsJM77
-        8JZCvJBAemJJanZqakFqEUwfEwenVAPT0k1PhQ33eV1d8uaVcGDyLcWlC9Ijmk7PKFy4c+LD
-        v8xs6aK2lvk2gpOkv2z1rP+Y5aosVtG8qa/60ksTY9H+XdMaj65+cL5onbeq/Ofap5OTrdQf
-        9S1nWK9uuKQ9gDFsjn9W7bXNzwQtd0aHPpL26Ei0nBm959A7zpkBv2Tf6dczLrxdUXtQVjdt
-        Pj9v5Kd7FXe/Sjn/+2lSXGil/iV03QNb6WDxPct7yjfZMVq7OBXWGhzdxJsa/GaLX/Tb5OuN
-        Z+etjitxne5mzzw77nLzg3xb4bv7EpmSTIXMzVZEm6pGf+W/Ple5XUmcrzNc0ujh7mDB9pCu
-        g4bf7mVs6028YWHndtTljusBOfvdzUosxRmJhlrMRcWJAK12MoMuBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplkeLIzCtJLcpLzFFi42LZdlhJXrf1qUG8wbGLVhY/5t5msXhzciqL
-        xZ69J1ksLu+aw2Zx+f8nFotlXyazWGz5d4TVgd3jy5zj7B5tk/+xezQfW8nmsXPWXXaPvi2r
-        GD0+b5ILYIvisklJzcksSy3St0vgytiy+SdjwR+hiuaru9kbGFfzdzFycEgImEgcPeTVxcjF
-        ISSwm1GiYc579i5GTqC4tMSxE2eYIWqEJQ4fLoaoec4oce7nRCaQGjYBXYl/f/azgdgiAnoS
-        J09eZwMpYhZoZpL49mwJM0RHJ6PEgqYusCpOAQuJP3+2sYLYwgKeEttaJ4PZLAKqEotXXAKb
-        yitgKXFx13coW1Di5MwnLCBXMANtaNvICBJmFpCX2P52DjPEoQoSP58uYwUpERGwklh3qASi
-        RERidmcb8wRG4VlIBs1CGDQLyaBZSDoWMLKsYpRMLSjOTc8tNiwwzEst1ytOzC0uzUvXS87P
-        3cQIjiktzR2M21d90DvEyMTBeIhRgoNZSYTX7q5+vBBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHe
-        G4UL44QE0hNLUrNTUwtSi2CyTBycUg1MHZ6z7zk8WXdoqYKDEEvXrxMvFGc9Y/UPuMNgWVG5
-        z6h+hsTiS35Tr/cnVCxW1gn3c9GV3uH+7pHdc6fm6ijj/0LdmRs/LGXbHP3fKvJkgMSB94Zh
-        wrxyk65q3X3Re+1e0s2NpevfPF7qL1lstSjoE+fSEnfj3s5vDF3v280uaefYvA6QCNOTC3b+
-        1nF+Ts/P+TNFDs/zW1jxpHHTtTJLrYOH1bb0trdc4m0WlPn6xtOg5i2726On3Rdl/WuFl/My
-        7Tv/nePW/PKQduEd9643dZtfiZ3cKOvSo+B25Jf/vRs3IuUNbXuvzXpip9aT1araUrDA7tN+
-        e7Pbyoo/39jeEhYrWrO+Ml1+9s2PZs5KLMUZiYZazEXFiQD0VPqlGAMAAA==
-X-CMS-MailID: 20200810061326epcas1p45c82807cc8d4a0b90c28160caa566812
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200806055718epcas1p1763d92dbf47e2a331a74d0bb9ea03c15
-References: <CGME20200806055718epcas1p1763d92dbf47e2a331a74d0bb9ea03c15@epcas1p1.samsung.com>
-        <20200806055653.9329-1-kohada.t2@gmail.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20200804193413.510651-1-joshdon@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-10_02:2020-08-06,2020-08-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ clxscore=1015 malwarescore=0 lowpriorityscore=0 adultscore=0
+ priorityscore=1501 mlxscore=0 suspectscore=0 impostorscore=0
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008100043
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The current implementation doesn't care NameLength when extracting the name from Name dir-entries, so
-> the name may be incorrect.
-> (Without null-termination, Insufficient Name dir-entry, etc) Add a NameLength check when extracting
-> the name from Name dir-entries to extract correct name.
-> And, change to get the information of file/stream-ext dir-entries via the member variable of
-> exfat_entry_set_cache.
-> 
-> ** This patch depends on:
->   '[PATCH v3] exfat: integrates dir-entry getting and validation'.
-> 
-> Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
-> ---
->  fs/exfat/dir.c | 81 ++++++++++++++++++++++++--------------------------
->  1 file changed, 39 insertions(+), 42 deletions(-)
-> 
-> diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c index 91cdbede0fd1..545bb73b95e9 100644
-> --- a/fs/exfat/dir.c
-> +++ b/fs/exfat/dir.c
-> @@ -28,16 +28,15 @@ static int exfat_extract_uni_name(struct exfat_dentry *ep,
-> 
->  }
-> 
-> -static void exfat_get_uniname_from_ext_entry(struct super_block *sb,
-> -		struct exfat_chain *p_dir, int entry, unsigned short *uniname)
-> +static int exfat_get_uniname_from_name_entries(struct exfat_entry_set_cache *es,
-> +		struct exfat_uni_name *uniname)
->  {
-> -	int i;
-> -	struct exfat_entry_set_cache *es;
-> +	int n, l, i;
->  	struct exfat_dentry *ep;
-> 
-> -	es = exfat_get_dentry_set(sb, p_dir, entry, ES_ALL_ENTRIES);
-> -	if (!es)
-> -		return;
-> +	uniname->name_len = es->de_stream->name_len;
-> +	if (uniname->name_len == 0)
-> +		return -EIO;
-Can we validate ->name_len and name entry ->type in exfat_get_dentry_set() ?
-> 
->  	/*
->  	 * First entry  : file entry
-> @@ -45,14 +44,15 @@ static void exfat_get_uniname_from_ext_entry(struct super_block *sb,
->  	 * Third entry  : first file-name entry
->  	 * So, the index of first file-name dentry should start from 2.
->  	 */
-> -
-> -	i = 2;
-> -	while ((ep = exfat_get_validated_dentry(es, i++, TYPE_NAME))) {
-> -		exfat_extract_uni_name(ep, uniname);
-> -		uniname += EXFAT_FILE_NAME_LEN;
-> +	for (l = 0, n = 2; l < uniname->name_len; n++) {
-> +		ep = exfat_get_validated_dentry(es, n, TYPE_NAME);
-> +		if (!ep)
-> +			return -EIO;
-> +		for (i = 0; l < uniname->name_len && i < EXFAT_FILE_NAME_LEN; i++, l++)
-> +			uniname->name[l] = le16_to_cpu(ep->dentry.name.unicode_0_14[i]);
->  	}
-> -
-> -	exfat_free_dentry_set(es, false);
-> +	uniname->name[l] = 0;
-> +	return 0;
->  }
+* Josh Don <joshdon@google.com> [2020-08-04 12:34:13]:
 
+> SMT siblings share caches, so cache hotness should be irrelevant for
+> cross-sibling migration.
+> 
+> Proposed-by: Venkatesh Pallipadi <venki@google.com>
+> Signed-off-by: Josh Don <joshdon@google.com>
+> ---
+>  kernel/sched/fair.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 1a68a0536add..abdb54e2339f 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7402,6 +7402,10 @@ static int task_hot(struct task_struct *p, struct lb_env *env)
+>  	if (unlikely(task_has_idle_policy(p)))
+>  		return 0;
+>  
+> +	/* SMT siblings share cache */
+> +	if (env->sd->flags & SD_SHARE_CPUCAPACITY)
+> +		return 0;
+> +
+
+If this for retaining cache hotness, should we look at
+SD_SHARE_PKG_RESOURCES instead of SD_SHARE_CPUCAPACITY?
+
+>  	/*
+>  	 * Buddy candidates are cache hot:
+>  	 */
+> -- 
+> 2.28.0.163.g6104cc2f0b6-goog
+> 
+
+-- 
+Thanks and Regards
+Srikar Dronamraju
