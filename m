@@ -2,123 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6D0241EC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E310D241ED0
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 19:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729358AbgHKQ7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 12:59:49 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:49791 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729182AbgHKQ7T (ORCPT
+        id S1729169AbgHKRAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 13:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729078AbgHKRAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 12:59:19 -0400
-Received: by mail-il1-f200.google.com with SMTP id b18so6700017ilh.16
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 09:59:18 -0700 (PDT)
+        Tue, 11 Aug 2020 13:00:08 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96BA8C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 10:00:07 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id m34so6979330pgl.11
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 10:00:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cdCN+EFlBoYxXAxI6GQmydGxHxnnk0sb8TB0qb8FPBM=;
+        b=gfocM8GFiLlhQY5QDxnSWQvvsMemkNQMNTijiRI++hlF04JK+lq/WJkDQBSJKriHz1
+         Pn8pX84/Wg3yE94kWAE0MBj1kjrF8d8t35Rb/23nnMsqN3Ev/8bR3BUN8WqLzRkRMIWc
+         2W3gcQopnYr/DZkNqnvyAL48CLciKBgVyftCQqOka3P1X3JlpAjhb/w3V6JvLDuTCPtV
+         +GszNsAkg0Fu/pTMH0ug2kdxooiK2M8Rs7d3NsavW3WgOYHpmkwwHvZjZ0okbosMFd0n
+         QhY5/ek6TQ+1enoMbDkQRxRtb+/9EKpXsP3Bv01xh+EbnJA7uy+/cgtuIwvgfYpYKO8p
+         l5Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=N2GsfEY2o2ubTFLb0+uCQ2NHYhOo26KcY/ro/Y8xVwA=;
-        b=IgAULmfXBBDOZfhndfsADifm/YXMZG+4sFeEdqBWv0BnmdIVb98psxhobwYXtHO9G4
-         kKLlaXAX447sOzDdSdSQqNVR3L6z8bFrQPj+3wSo5QGvfFZxsajTvsIvJr0BezGZjlFt
-         483u9Qq+g8yFZ+CFq0Db/WHm0r+xZVXqQwF6xqSk78eFtvBiNdxLyYekvDiGdKxteyNM
-         KcrmyB6vBNUSQUJ71GEhpjEkDky6A/7pn/qWenE5cBhxb96yMAE+voydQ1SDTfF5+BPY
-         d+NGUZpoW5h+fqDkISOhQgWjHOi1C5MXXDums9vxUCKPOMrHtdY0EixPHF0kLiPatI3k
-         UsSg==
-X-Gm-Message-State: AOAM5336kqqUKIRjC0jeEokH1rIRa8qyhSUF/CEkicsf6dpyp6uppWH7
-        01K6aIJ7ue4U/w2NnusJXr45XCc4Xa7ZJzaVErwsg4RY1Zh5
-X-Google-Smtp-Source: ABdhPJzGaY6E5SnEB3SD3BP4V12XiLq/lSuT7UfHasB614QLGq/e/7r6IrVgWgaS+eEsOr36HKI/5rrDaxfHwsBWWAl/yT38KBHG
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cdCN+EFlBoYxXAxI6GQmydGxHxnnk0sb8TB0qb8FPBM=;
+        b=MBOOjGT+HPBcul1nKR6bxbnyXKZMuXEYLCjdwKRoES7SaJw442xeEzuDbMiklizq2o
+         VFotuQVEaKJTVTfYK+jdVOMgy4fjJoHi6z9wsY0j1QmPLL+T4vo4Es4f4V7ZFKpveR/U
+         03XxOK3s1L52W7XC8VVEgQxW1Ro1zx3rKrCi37FufT6c4m1wqr/+MiGaVBkn9++8rZFU
+         ih6AmDOL1r6EByd3md+bFv1f6ic87684LZKtBTRGNw7Hc5UnHgO8LPOWGGNE8Z4xPDqM
+         kqTEzQBcOBoO/gY5EYbUSwlKjlGasOFiOsZwMss+WyJms4aFv/W9aXZnivndo9CSoVFF
+         wyjw==
+X-Gm-Message-State: AOAM5322Rzby6dHV/HfhpeK4eF5udjLP3Wmoj1++4hOSJ4D8CTEf+SiI
+        Q8VSmcirrg4x8aOs0SCyTFkEGMp17AQKdw/XLxBR3RJgUKE=
+X-Google-Smtp-Source: ABdhPJwlflsnhvVydVvQnH8y4HXhtOWtkwKRg+wFTfdywoYortT+tTcwiOHiCdYjh5A2VH7q9yaxD/7l6ETd7xvlbgg=
+X-Received: by 2002:a63:fa09:: with SMTP id y9mr1581444pgh.0.1597165206144;
+ Tue, 11 Aug 2020 10:00:06 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:14c2:: with SMTP id o2mr23786319ilk.54.1597165158224;
- Tue, 11 Aug 2020 09:59:18 -0700 (PDT)
-Date:   Tue, 11 Aug 2020 09:59:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e7619e05ac9cfd5a@google.com>
-Subject: general protection fault in ip6t_do_table (2)
-From:   syzbot <syzbot+dcaf7e1befbc40105535@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+References: <20200811025044.70626-1-john.stultz@linaro.org>
+In-Reply-To: <20200811025044.70626-1-john.stultz@linaro.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 11 Aug 2020 09:59:30 -0700
+Message-ID: <CAGETcx8qjnVNNB_z-Ar8gxKAy7Sc8kcj8oAWQ76mXcBpaqnagg@mail.gmail.com>
+Subject: Re: [RFC][PATCH] tty: serial: qcom_geni_serial: Drop __init from qcom_geni_console_setup
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Todd Kjos <tkjos@google.com>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-serial@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Aug 10, 2020 at 7:50 PM John Stultz <john.stultz@linaro.org> wrote:
+>
+> When booting with heavily modularized config, the serial console
+> may not be able to load until after init when modules that
+> satisfy needed dependencies have time to load.
+>
+> Unfortunately, as qcom_geni_console_setup is marked as __init,
+> the function may have been freed before we get to run it,
+> causing boot time crashes such as:
 
-syzbot found the following issue on:
+Btw, I thought non-__init functions calling __init functions would be
+caught by the build system. Is that not correct? If it's correct, do
+we know how this gets past that check?
 
-HEAD commit:    00e4db51 Merge tag 'perf-tools-2020-08-10' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1224746e900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=64a3282e09356140
-dashboard link: https://syzkaller.appspot.com/bug?extid=dcaf7e1befbc40105535
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+-Saravana
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dcaf7e1befbc40105535@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-CPU: 1 PID: 21 Comm: kworker/u4:1 Not tainted 5.8.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: wg-kex-wg0 wg_packet_handshake_send_worker
-RIP: 0010:ip6t_do_table+0x289/0x1920 net/ipv6/netfilter/ip6_tables.c:286
-Code: 80 3c 11 00 0f 85 f4 15 00 00 48 8b 4c 24 48 89 c0 48 8b 51 38 48 8d 1c c2 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 0f 85 bd 15 00 00 48 8b 03 48 89 44 24 70 0f 1f 44 00
-RSP: 0018:ffffc90000dd7650 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000008 RCX: ffff888000112800
-RDX: 0000000000000001 RSI: ffff888000112840 RDI: ffff888000112838
-RBP: 0000000000000001 R08: 0000000000000001 R09: ffffffff8c5eca27
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff88808a0b8010
-R13: ffff8880499a6400 R14: ffffc90000dd78a8 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004ed650 CR3: 00000000656af000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-Call Trace:
- nf_hook_entry_hookfn include/linux/netfilter.h:136 [inline]
- nf_hook_slow+0xc5/0x1e0 net/netfilter/core.c:512
- nf_hook include/linux/netfilter.h:256 [inline]
- __ip6_local_out+0x419/0x890 net/ipv6/output_core.c:167
- ip6_local_out+0x26/0x1a0 net/ipv6/output_core.c:177
- ip6tunnel_xmit include/net/ip6_tunnel.h:160 [inline]
- udp_tunnel6_xmit_skb+0x6a6/0xb90 net/ipv6/ip6_udp_tunnel.c:109
- send6+0x4cd/0xbc0 drivers/net/wireguard/socket.c:152
- wg_socket_send_skb_to_peer drivers/net/wireguard/socket.c:177 [inline]
- wg_socket_send_buffer_to_peer+0x1f9/0x340 drivers/net/wireguard/socket.c:199
- wg_packet_send_handshake_initiation+0x1fc/0x240 drivers/net/wireguard/send.c:40
- wg_packet_handshake_send_worker+0x18/0x30 drivers/net/wireguard/send.c:51
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Modules linked in:
----[ end trace c813eadb1f32ebc3 ]---
-RIP: 0010:ip6t_do_table+0x289/0x1920 net/ipv6/netfilter/ip6_tables.c:286
-Code: 80 3c 11 00 0f 85 f4 15 00 00 48 8b 4c 24 48 89 c0 48 8b 51 38 48 8d 1c c2 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 0f 85 bd 15 00 00 48 8b 03 48 89 44 24 70 0f 1f 44 00
-RSP: 0018:ffffc90000dd7650 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000008 RCX: ffff888000112800
-RDX: 0000000000000001 RSI: ffff888000112840 RDI: ffff888000112838
-RBP: 0000000000000001 R08: 0000000000000001 R09: ffffffff8c5eca27
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff88808a0b8010
-R13: ffff8880499a6400 R14: ffffc90000dd78a8 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004ed650 CR3: 00000000656af000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> [    6.469057] Unable to handle kernel paging request at virtual address ffffffe645d4e6cc
+> [    6.481623] Mem abort info:
+> [    6.484466]   ESR = 0x86000007
+> [    6.487557]   EC = 0x21: IABT (current EL), IL = 32 bits
+> [    6.492929]   SET = 0, FnV = 0g
+> [    6.496016]   EA = 0, S1PTW = 0
+> [    6.499202] swapper pgtable: 4k pages, 39-bit VAs, pgdp=000000008151e000
+> [    6.501286] ufshcd-qcom 1d84000.ufshc: ufshcd_print_pwr_info:[RX, TX]: gear=[3, 3], lane[2, 2], pwr[FAST MODE, FAST MODE], rate = 2
+> [    6.505977] [ffffffe645d4e6cc] pgd=000000017df9f003, p4d=000000017df9f003, pud=000000017df9f003, pmd=000000017df9c003, pte=0000000000000000
+> [    6.505990] Internal error: Oops: 86000007 [#1] PREEMPT SMP
+> [    6.505995] Modules linked in: zl10353 zl10039 zl10036 zd1301_demod xc5000 xc4000 ves1x93 ves1820 tuner_xc2028 tuner_simple tuner_types tua9001 tua6100 1
+> [    6.506152]  isl6405
+> [    6.518104] ufshcd-qcom 1d84000.ufshc: ufshcd_find_max_sup_active_icc_level: Regulator capability was not set, actvIccLevel=0
+> [    6.530549]  horus3a helene fc2580 fc0013 fc0012 fc0011 ec100 e4000 dvb_pll ds3000 drxk drxd drx39xyj dib9000 dib8000 dib7000p dib7000m dib3000mc dibx003
+> [    6.624271] CPU: 7 PID: 148 Comm: kworker/7:2 Tainted: G        W       5.8.0-mainline-12021-g6defd37ba1cd #3455
+> [    6.624273] Hardware name: Thundercomm Dragonboard 845c (DT)
+> [    6.624290] Workqueue: events deferred_probe_work_func
+> [    6.624296] pstate: 40c00005 (nZcv daif +PAN +UAO BTYPE=--)
+> [    6.624307] pc : qcom_geni_console_setup+0x0/0x110
+> [    6.624316] lr : try_enable_new_console+0xa0/0x140
+> [    6.624318] sp : ffffffc010843a30
+> [    6.624320] x29: ffffffc010843a30 x28: ffffffe645c3e7d0
+> [    6.624325] x27: ffffff80f8022180 x26: ffffffc010843b28
+> [    6.637937] x25: 0000000000000000 x24: ffffffe6462a2000
+> [    6.637941] x23: ffffffe646398000 x22: 0000000000000000
+> [    6.637945] x21: 0000000000000000 x20: ffffffe6462a5ce8
+> [    6.637952] x19: ffffffe646398e38 x18: ffffffffffffffff
+> [    6.680296] x17: 0000000000000000 x16: ffffffe64492b900
+> [    6.680300] x15: ffffffe6461e9d08 x14: 69202930203d2064
+> [    6.680305] x13: 7561625f65736162 x12: 202c363331203d20
+> [    6.696434] x11: 0000000000000030 x10: 0101010101010101
+> [    6.696438] x9 : 4d4d20746120304d x8 : 7f7f7f7f7f7f7f7f
+> [    6.707249] x7 : feff4c524c787373 x6 : 0000000000008080
+> [    6.707253] x5 : 0000000000000000 x4 : 8080000000000000
+> [    6.707257] x3 : 0000000000000000 x2 : ffffffe645d4e6cc
+> [    6.744223] qcom_geni_serial 898000.serial: dev_pm_opp_set_rate: failed to find OPP for freq 102400000 (-34)
+> [    6.744966] x1 : fffffffefe74e174 x0 : ffffffe6462a5ce8
+> [    6.753580] qcom_geni_serial 898000.serial: dev_pm_opp_set_rate: failed to find OPP for freq 102400000 (-34)
+> [    6.761634] Call trace:
+> [    6.761639]  qcom_geni_console_setup+0x0/0x110
+> [    6.761645]  register_console+0x29c/0x2f8
+> [    6.767981] Bluetooth: hci0: Frame reassembly failed (-84)
+> [    6.775252]  uart_add_one_port+0x438/0x500
+> [    6.775258]  qcom_geni_serial_probe+0x2c4/0x4a8
+> [    6.775266]  platform_drv_probe+0x58/0xa8
+> [    6.855359]  really_probe+0xec/0x398
+> [    6.855362]  driver_probe_device+0x5c/0xb8
+> [    6.855367]  __device_attach_driver+0x98/0xb8
+> [    7.184945]  bus_for_each_drv+0x74/0xd8
+> [    7.188825]  __device_attach+0xec/0x148
+> [    7.192705]  device_initial_probe+0x24/0x30
+> [    7.196937]  bus_probe_device+0x9c/0xa8
+> [    7.200816]  deferred_probe_work_func+0x7c/0xb8
+> [    7.205398]  process_one_work+0x20c/0x4b0
+> [    7.209456]  worker_thread+0x48/0x460
+> [    7.213157]  kthread+0x14c/0x158
+> [    7.216432]  ret_from_fork+0x10/0x18
+> [    7.220049] Code: bad PC value
+> [    7.223139] ---[ end trace 73f3b21e251d5a70 ]---
+>
+> Thus this patch removes the __init avoiding crash in such
+> configs.
+>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Cc: Saravana Kannan <saravanak@google.com>
+> Cc: Todd Kjos <tkjos@google.com>
+> Cc: Amit Pundir <amit.pundir@linaro.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: linux-serial@vger.kernel.org
+> Suggested-by: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> ---
+>  drivers/tty/serial/qcom_geni_serial.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
+> index 3aa29d201f54..f7c6c7466520 100644
+> --- a/drivers/tty/serial/qcom_geni_serial.c
+> +++ b/drivers/tty/serial/qcom_geni_serial.c
+> @@ -1098,7 +1098,7 @@ static unsigned int qcom_geni_serial_tx_empty(struct uart_port *uport)
+>  }
+>
+>  #ifdef CONFIG_SERIAL_QCOM_GENI_CONSOLE
+> -static int __init qcom_geni_console_setup(struct console *co, char *options)
+> +static int qcom_geni_console_setup(struct console *co, char *options)
+>  {
+>         struct uart_port *uport;
+>         struct qcom_geni_serial_port *port;
+> --
+> 2.17.1
+>
