@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8930324209F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B570E2420A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbgHKTxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 15:53:47 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:37196
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726355AbgHKTxq (ORCPT
+        id S1726430AbgHKT42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 15:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbgHKT41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 15:53:46 -0400
-X-IronPort-AV: E=Sophos;i="5.76,301,1592863200"; 
-   d="scan'208";a="356370612"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Aug 2020 21:53:43 +0200
-Date:   Tue, 11 Aug 2020 21:53:42 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
-cc:     Julia Lawall <Julia.Lawall@lip6.fr>, michal.lkml@markovi.net,
-        linux-doc@vger.kernel.org, corbet@lwn.net,
-        gregkh@linuxfoundation.org, Gilles.Muller@lip6.fr,
-        nicolas.palix@imag.fr, linux-kernel@vger.kernel.org,
-        cocci@systeme.lip6.fr
-Subject: Re: [Cocci] [PATCH v4] documentation: coccinelle: Improve command
- example for make C={1, 2}
-In-Reply-To: <20200811002350.5553-1-sylphrenadin@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2008112153280.4263@hadrien>
-References: <20200811002350.5553-1-sylphrenadin@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Tue, 11 Aug 2020 15:56:27 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFA1C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 12:56:27 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id z20so39518plo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 12:56:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jSpZyl6zszveRQTb+X3U9qCb6qt2a47wW3ClpVmbJd4=;
+        b=Qp530flHFX5VujI6zk3JRpc5NHS0opLYWMJdFxardQIeNKy0kHusBV2UjudiK3A/4d
+         nhhJ7oBQKZ6dPIgZTqyjIwb2PYjNxf/8dXO0LCpeQh/2qJxRxpIku/gGymanLHhOJsy1
+         esS5XOfi4eJ93Bw3t3emRXrWxZh6+lZj0+EUeHdRJovtGI421LpFAVG73OAU8Wm38dwF
+         Yvs2LPr7qeBJjl8N6xCV/LmhXVZeZPyhvIcIlVNVdRTRIYsjAprLT0GpUX5pJwMrZyvW
+         MwElCRoigXVExeMWpHlCirPTR10nssTPHq+fhb4VqNW4sctT7PS2MvSBfBnd4wuC4mlz
+         XWrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jSpZyl6zszveRQTb+X3U9qCb6qt2a47wW3ClpVmbJd4=;
+        b=cfduEFrzPZHmdkuEW8/hlrbAiXTTrTzxsw31mCDV+mgCTo5cWtLTE6yC9QEvE+J1cM
+         kUYUvkSKLFhJrzF2Ves08L/igsdRjquLeqUhQFq06b2aLgcNfJq3TFc1P2RNtlk0eM/+
+         QG9vYYKG1GstYDk0QOf03ExZ9Xp49KOQdvqkqWYJI6Ubjohr69//9uK/TEO50PkJEDR6
+         5KlahVxybMY4Zdyrlvk8v3U6PYcY1rJI0BP3inlYIzckzCGbZtM/qU6+Ulu2iy/aMbzY
+         yOF7e6A//pzE0M1ZmnW8Gqq/F04t/Ad1oip2OQ6eaF8BFtm1pHK/sD3Ol00Cw/jqa1a2
+         9B8w==
+X-Gm-Message-State: AOAM532jWTEC+LrwbiwhCTYCE34pzyyODxMPtjTwHy6NP6cr6gjETVJ4
+        rxSmK7QGLn+Sq52x9/Zn+pjfJg==
+X-Google-Smtp-Source: ABdhPJzEvYm0TmVimHvXEGe/uKF0y2jzt+VsiVIHOLfRm4O0wA7RC6raA0fGG6z0aao+n1UTTAZFJw==
+X-Received: by 2002:a17:90a:9f44:: with SMTP id q4mr2826417pjv.66.1597175787041;
+        Tue, 11 Aug 2020 12:56:27 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id h24sm21487728pgi.85.2020.08.11.12.56.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Aug 2020 12:56:26 -0700 (PDT)
+Date:   Tue, 11 Aug 2020 13:56:24 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     bjorn.andersson@linaro.org, o.rempel@pengutronix.de,
+        robh+dt@kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 02/10] remoteproc: imx_rproc: correct err message
+Message-ID: <20200811195624.GA3370567@xps15>
+References: <20200724080813.24884-1-peng.fan@nxp.com>
+ <20200724080813.24884-3-peng.fan@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724080813.24884-3-peng.fan@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Tue, 11 Aug 2020, Sumera Priyadarsini wrote:
-
-> Modify coccinelle documentation to further clarify
-> the usage of the makefile C variable by coccicheck.
->
-> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
-
-Acked-by: Julia Lawall <julia.lawall@inria.fr>
-
-Thanks.
-
-
->
+On Fri, Jul 24, 2020 at 04:08:05PM +0800, Peng Fan wrote:
+> It is using devm_ioremap, so not devm_ioremap_resource. Correct
+> the error message and print out sa/size.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 > ---
-> Changes in v4:
->         - Modify commit message to clarify C is a variable
-> ---
->  Documentation/dev-tools/coccinelle.rst | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
->
-> diff --git a/Documentation/dev-tools/coccinelle.rst b/Documentation/dev-tools/coccinelle.rst
-> index 6c791af1c859..74c5e6aeeff5 100644
-> --- a/Documentation/dev-tools/coccinelle.rst
-> +++ b/Documentation/dev-tools/coccinelle.rst
-> @@ -175,13 +175,20 @@ For example, to check drivers/net/wireless/ one may write::
->      make coccicheck M=drivers/net/wireless/
->
->  To apply Coccinelle on a file basis, instead of a directory basis, the
-> -following command may be used::
-> +C variable is used by the makefile to select which files to work with.
-> +This variable can be used to run scripts for the entire kernel, a
-> +specific directory, or for a single file.
->
-> -    make C=1 CHECK="scripts/coccicheck"
-> +For example, to check drivers/bluetooth/bfusb.c, the value 1 is
-> +passed to the C variable to check files that make considers
-> +need to be compiled.::
->
-> -To check only newly edited code, use the value 2 for the C flag, i.e.::
-> +    make C=1 CHECK=scripts/coccicheck drivers/bluetooth/bfusb.o
->
-> -    make C=2 CHECK="scripts/coccicheck"
-> +The value 2 is passed to the C variable to check files regardless of
-> +whether they need to be compiled or not.::
-> +
-> +    make C=2 CHECK=scripts/coccicheck drivers/bluetooth/bfusb.o
->
->  In these modes, which work on a file basis, there is no information
->  about semantic patches displayed, and no commit message proposed.
-> --
-> 2.17.1
->
-> _______________________________________________
-> Cocci mailing list
-> Cocci@systeme.lip6.fr
-> https://systeme.lip6.fr/mailman/listinfo/cocci
->
+>  drivers/remoteproc/imx_rproc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+> index 8957ed271d20..3b3904ebac75 100644
+> --- a/drivers/remoteproc/imx_rproc.c
+> +++ b/drivers/remoteproc/imx_rproc.c
+> @@ -268,7 +268,7 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
+>  		priv->mem[b].cpu_addr = devm_ioremap(&pdev->dev,
+>  						     att->sa, att->size);
+>  		if (!priv->mem[b].cpu_addr) {
+> -			dev_err(dev, "devm_ioremap_resource failed\n");
+> +			dev_err(dev, "devm_ioremap sa:0x%x size:0x%x failed\n", att->sa, att->size);
+
+I'm good with fixing the devm_ioremap part but please remove the address and
+size.  Printing them provides little value because they come from the device
+configuration area that is private to the driver.  That way we don't expose
+system information involuntarily. 
+
+With that:
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+>  			return -ENOMEM;
+>  		}
+>  		priv->mem[b].sys_addr = att->sa;
+> -- 
+> 2.16.4
+> 
