@@ -2,203 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756C6241C6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 16:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBFE241C64
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 16:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728860AbgHKObg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 10:31:36 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27954 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728516AbgHKObf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 10:31:35 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07BEHBiD045362;
-        Tue, 11 Aug 2020 10:30:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Yagmxe/0xhCzV7sViC0w5EaEzbjV9ZVLiyjz2Hf7nwI=;
- b=WmW+XsVE/7niqWHy/JQJxwCEU6SzQ8cNLjGhq+hM+ezjPGd9JoAGlQIx9TmCtAnoX7uQ
- VLoe//iO1QFAZkYxGLt2yzgnyuMoeraNGIuFs7m2GVcN4a2CpTY/SjM3bybatskt10B+
- Vg6qtcTqwlyJcsNTfFljGYHPTTT2++5VZrDbOVYCGAJb6qlo7mpts2V561GJnewkfqXz
- nNs+NPvbVIL8u8WRT+x10NGC8XCTtFUJl4TBgJ9AFaR7SI1TGjrDGyxNQsOSeK/V9g5h
- eAXZzQLTc+ukqNEt3co+p4QVzapn55P3N6MaL8PobSVtjMUMeB8oC8ShyF4kVob3i0mV Vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32uvjarjea-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 11 Aug 2020 10:30:27 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07BEI9l4049005;
-        Tue, 11 Aug 2020 10:30:26 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32uvjarj9v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 11 Aug 2020 10:30:25 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07BERPcC004395;
-        Tue, 11 Aug 2020 14:30:19 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06fra.de.ibm.com with ESMTP id 32skah251j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 11 Aug 2020 14:30:19 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07BEUG5V25625072
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Aug 2020 14:30:16 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BF94C42049;
-        Tue, 11 Aug 2020 14:30:16 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9FD9142054;
-        Tue, 11 Aug 2020 14:30:07 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.72.229])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 11 Aug 2020 14:30:07 +0000 (GMT)
-Message-ID: <e7c1f99d7cdf706ca0867e5fb76ae4cb38bc83f5.camel@linux.ibm.com>
-Subject: Re: [PATCH v7 0/7] Add support for O_MAYEXEC
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Philippe =?ISO-8859-1?Q?Tr=E9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Date:   Tue, 11 Aug 2020 10:30:06 -0400
-In-Reply-To: <20200811140203.GQ17456@casper.infradead.org>
-References: <20200723171227.446711-1-mic@digikod.net>
-         <202007241205.751EBE7@keescook>
-         <0733fbed-cc73-027b-13c7-c368c2d67fb3@digikod.net>
-         <20200810202123.GC1236603@ZenIV.linux.org.uk>
-         <917bb071-8b1a-3ba4-dc16-f8d7b4cc849f@digikod.net>
-         <CAG48ez0NAV5gPgmbDaSjo=zzE=FgnYz=-OHuXwu0Vts=B5gesA@mail.gmail.com>
-         <0cc94c91-afd3-27cd-b831-8ea16ca8ca93@digikod.net>
-         <5db0ef9cb5e7e1569a5a1f7a0594937023f7290b.camel@linux.ibm.com>
-         <20200811140203.GQ17456@casper.infradead.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-11_13:2020-08-11,2020-08-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- phishscore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=0
- lowpriorityscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008110095
+        id S1728802AbgHKOat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 10:30:49 -0400
+Received: from mail-eopbgr60068.outbound.protection.outlook.com ([40.107.6.68]:37698
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728516AbgHKOas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 10:30:48 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SbmWLfgM2JbicQnpDjC1jr1bVpA8T6PF4P8LFnIvL+wX651jvVW3i6HiW94FWYN4/Rq43hNJZgMZwzcntZJA3jgwyykNgW6UcUFElDWamJE9Z3THzXX1orsRAilvfHs/8xWF2bpsgn6piSnzHR7UgwuIgMwgS9bYOSUyRAcrBP22OecbTR3q8AMJ2mvJ1rU+7/pA7pTmW+PL0NMz0lhhexfTd0XLRZPIIcumX8LLejtgrEEMOskpz5d+/jLWAAKc3FCDlGteIQrlFVv/aDVHnGb6RQMzlehIjCa9DOgfgYqbnyCS8xN1qnAMAmYM57GRdwJB2mFlwf2vX2N1Jc3k3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RMRCoDZK/hj/h8+Q0u0UPC93jqDj7VE46FRLrJq6DE8=;
+ b=oPlzpM+semcGvxZ+wJO/a7MIjE4MvLFHMCKUAVt1nUhC9ftkJI4siLbLLzpFWF5hXRMV+156Klz1JjCu06XHw9KzWbNgmP/jxuznUW1BybLQdPYfzHZ6wTsDohBek6UJjhKiUXOo0SHUVuApZWMosoz64L17ktSepzTQSmX/PZTj3SNmwUVlq3YsHESkI0O+XsU804TgJCeYhZwDqclM7pI3IGBqf1cMCGfrLzCggY6X+/ECMR5K/ZlBvWZ31npN5nQ6ke239m7HHuHe0ghzSvTZJwvO5RtHRDeZvTn6cLtvv7Bowk5W4S5UiIr6LWpb+9JSLosRUcWk8HuaVddvkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RMRCoDZK/hj/h8+Q0u0UPC93jqDj7VE46FRLrJq6DE8=;
+ b=BhLpxWGAnQn2WH3KRf5/5JDijQpaQwyeWRlc7D0i/aaGsvtDUIrdcWUpY02KnrkFfb1hAEpJvDPIyitA7yZuP6QkZNcyTmKYr9NmyfiB9PDcIgpKbYROGaMchK+Bs2/uGC6ohG8eBom59xPJU06ai6yJzG2X6gLFTnf4vfGWdiw=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
+ by VI1PR0402MB3422.eurprd04.prod.outlook.com (2603:10a6:803:6::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.16; Tue, 11 Aug
+ 2020 14:30:44 +0000
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::8459:4be8:7034:7a81]) by VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::8459:4be8:7034:7a81%6]) with mapi id 15.20.3261.024; Tue, 11 Aug 2020
+ 14:30:44 +0000
+Subject: Re: [PATCH RESEND 1/9] crypto: caam/jr - add fallback for XTS with
+ more than 8B IV
+To:     "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
+ <20200806163551.14395-2-andrei.botila@oss.nxp.com>
+From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
+Message-ID: <fe251307-ba89-a4bc-23f5-205a1e1343ea@nxp.com>
+Date:   Tue, 11 Aug 2020 17:30:41 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20200806163551.14395-2-andrei.botila@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR10CA0118.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:e6::35) To VI1PR04MB4046.eurprd04.prod.outlook.com
+ (2603:10a6:803:4d::29)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.129] (84.117.251.185) by AM0PR10CA0118.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:e6::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.16 via Frontend Transport; Tue, 11 Aug 2020 14:30:43 +0000
+X-Originating-IP: [84.117.251.185]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: fdc67255-8c1d-4e7d-227a-08d83e0321a0
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3422:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB342216ADC16D92B04F52A42298450@VI1PR0402MB3422.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: a0Irqe3KRqrki2xERZYObVPiYJcOUGUu4PI9/Jv/UZfXtCRr1xBFzwdXJwTjPes7/zo7p/VMpWZo9tVzq+frmr9MZRFduO6M2AsL7obGGx3TkVfHl38j0MuKMwpwwWGVsN+SYet0ykfZFZpp3ujfFNOspwDdBmdXrSyt6n8lMJShh9TgBUVnXBo5qSqEeWvyPa3OVZygKe7IVdqvPWrqEJc9DRW9wg1zk0Pc3ZU/oorY8PCuCP3iXO3T+M0vsTRrdzeGxwVhJNB8kjSaiFhouD7NIkwxIqrLp4KVihbvnqIJJt1n66adMAghRPZDYHMDlhnV4QwuqOupBc6KmJi4459Frjk72G3Jz3sbTL25hci0JNIk9nDX0C+J821wPH2B
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(31696002)(498600001)(53546011)(31686004)(110136005)(8676002)(8936002)(54906003)(2906002)(66556008)(52116002)(2616005)(4326008)(956004)(36756003)(86362001)(16576012)(16526019)(83380400001)(66946007)(26005)(5660300002)(66476007)(6486002)(186003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 0oyItuBqsqflXo+gFXl2kKKctHM54mDInJ2sm76HY0mSXHknZw2D++1OPSCYyeW3zA32em640lpHXedoMX1Eto4WyGpj72cl6xJbWLD6mWwnn3NBzmG51H22uvsZFkLIX/6m7JXUKuJ0IW2p96zbuGTMX2kk7dm3alc49/jjYogU9nSwIQXBpSPVVpbcPfTinfqEoShJZ8e17DraGjejJO/Io4gZpLDUY52dvqj2d7J54lTIAliGgpCAu5vzpCJq92ZV4chkudcDJlbTwHcKiup4jnlOcGFbwAZfVOFZQ6KuAGpfXv3Gykt+auCMhJ2i/sjPSUfRI4KBP+JrI+LQrZuq3Pn8/LA1Tx/U/TrDnYhdX++M0YnTLjNtl7nIUbwCyLzjEzeELYkx+xlzen16FUwdxJ5DMjdHaCei7rlwCxlFf0kh4xwKnXtRtF56fsCwR7M2l2lxLFSjKWPSjqIRIfJjiIGQ6IvlDSCSXEqkpjKUsg3c0YAGdvQ1HFDrhSJoFK+Dwy6aOmioAWpejpT9kxc8NMCpGEBJhPr/jqi192Q5aiSWVc+wqW4Juz7LgZ//Igpiv62csQvE+NZGnY73q/xe7Gptd+jvXh5YbQh47tDl3qJzMrC32W0avVuvlMTeca9hFPiec0SRc+pmaAEySg==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fdc67255-8c1d-4e7d-227a-08d83e0321a0
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2020 14:30:44.5130
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ML2chZ0z3EAsPP1aryPn9SLsM9cB4jZU73cMLKWhUlIvIDT5OinfApifCzc2dgwmPkX/R0A5GXsuaX5Y+bU6hQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3422
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-08-11 at 15:02 +0100, Matthew Wilcox wrote:
-> On Tue, Aug 11, 2020 at 09:56:50AM -0400, Mimi Zohar wrote:
-> > On Tue, 2020-08-11 at 10:48 +0200, Mickaël Salaün wrote:
-> > > On 11/08/2020 01:03, Jann Horn wrote:
-> > > > On Tue, Aug 11, 2020 at 12:43 AM Mickaël Salaün <mic@digikod.net> wrote:
-> > > > > On 10/08/2020 22:21, Al Viro wrote:
-> > > > > > On Mon, Aug 10, 2020 at 10:11:53PM +0200, Mickaël Salaün wrote:
-> > > > > > > It seems that there is no more complains nor questions. Do you want me
-> > > > > > > to send another series to fix the order of the S-o-b in patch 7?
-> > > > > > 
-> > > > > > There is a major question regarding the API design and the choice of
-> > > > > > hooking that stuff on open().  And I have not heard anything resembling
-> > > > > > a coherent answer.
-> > > > > 
-> > > > > Hooking on open is a simple design that enables processes to check files
-> > > > > they intend to open, before they open them. From an API point of view,
-> > > > > this series extends openat2(2) with one simple flag: O_MAYEXEC. The
-> > > > > enforcement is then subject to the system policy (e.g. mount points,
-> > > > > file access rights, IMA, etc.).
-> > > > > 
-> > > > > Checking on open enables to not open a file if it does not meet some
-> > > > > requirements, the same way as if the path doesn't exist or (for whatever
-> > > > > reasons, including execution permission) if access is denied.
-> > > > 
-> > > > You can do exactly the same thing if you do the check in a separate
-> > > > syscall though.
-> > > > 
-> > > > And it provides a greater degree of flexibility; for example, you can
-> > > > use it in combination with fopen() without having to modify the
-> > > > internals of fopen() or having to use fdopen().
-> > > > 
-> > > > > It is a
-> > > > > good practice to check as soon as possible such properties, and it may
-> > > > > enables to avoid (user space) time-of-check to time-of-use (TOCTOU)
-> > > > > attacks (i.e. misuse of already open resources).
-> > > > 
-> > > > The assumption that security checks should happen as early as possible
-> > > > can actually cause security problems. For example, because seccomp was
-> > > > designed to do its checks as early as possible, including before
-> > > > ptrace, we had an issue for a long time where the ptrace API could be
-> > > > abused to bypass seccomp filters.
-> > > > 
-> > > > Please don't decide that a check must be ordered first _just_ because
-> > > > it is a security check. While that can be good for limiting attack
-> > > > surface, it can also create issues when the idea is applied too
-> > > > broadly.
-> > > 
-> > > I'd be interested with such security issue examples.
-> > > 
-> > > I hope that delaying checks will not be an issue for mechanisms such as
-> > > IMA or IPE:
-> > > https://lore.kernel.org/lkml/1544699060.6703.11.camel@linux.ibm.com/
-> > > 
-> > > Any though Mimi, Deven, Chrome OS folks?
-> > 
-> > One of the major gaps, defining a system wide policy requiring all code
-> > being executed to be signed, is interpreters.  The kernel has no
-> > context for the interpreter's opening the file.  From an IMA
-> > perspective, this information needs to be conveyed to the kernel prior
-> > to ima_file_check(), which would allow IMA policy rules to be defined
-> > in terms of O_MAYEXEC.
-> 
-> This is kind of evading the point -- Mickaël is proposing a new flag
-> to open() to tell IMA to measure the file being opened before the fd
-> is returned to userspace, and Al is suggesting a new syscall to allow
-> a previously-obtained fd to be measured.
-> 
-> I think what you're saying is that you don't see any reason to prefer
-> one over the other.
+On 8/6/2020 7:36 PM, Andrei Botila (OSS) wrote:
+> @@ -3344,12 +3382,30 @@ static int caam_cra_init(struct crypto_skcipher *tfm)
+>  	struct caam_skcipher_alg *caam_alg =
+>  		container_of(alg, typeof(*caam_alg), skcipher);
+>  	struct caam_ctx *ctx = crypto_skcipher_ctx(tfm);
+> +	u32 alg_aai = caam_alg->caam.class1_alg_type & OP_ALG_AAI_MASK;
+>  
+>  	crypto_skcipher_set_reqsize(tfm, sizeof(struct caam_skcipher_req_ctx));
+This is being called twice in case of XTS.
 
-Being able to define IMA appraise and measure file open
-(func=FILE_CHECK) policy rules  to prevent the interpreter from
-executing unsigned files would be really nice.  Otherwise, the file
-would be measured and appraised multiple times, once on file open and
-again at the point of this new syscall.
+>  
+>  	ctx->enginectx.op.do_one_request = skcipher_do_one_req;
+>  
+> -	return caam_init_common(crypto_skcipher_ctx(tfm), &caam_alg->caam,
+> +	if (alg_aai == OP_ALG_AAI_XTS) {
+> +		const char *tfm_name = crypto_tfm_alg_name(&tfm->base);
+> +		struct crypto_skcipher *fallback;
+> +
+> +		fallback = crypto_alloc_skcipher(tfm_name, 0,
+> +						 CRYPTO_ALG_NEED_FALLBACK);
+Driver should select CRYPTO_XTS, such that at least the generic
+xts implementation is available.
 
-Mimi
+> +		if (IS_ERR(fallback)) {
+> +			pr_err("Failed to allocate %s fallback: %ld\n",
+> +			       tfm_name, PTR_ERR(fallback));
+> +			return PTR_ERR(fallback);
+Shouldn't error out so early. It might be that the fallback won't be needed.
+Let's postpone this until we're sure fallback is required.
 
+Horia
