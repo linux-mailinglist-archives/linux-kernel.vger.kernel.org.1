@@ -2,149 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CAC241796
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A48241799
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgHKHuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 03:50:05 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:45855 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728133AbgHKHuF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 03:50:05 -0400
-Received: by mail-lf1-f66.google.com with SMTP id b30so6141339lfj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 00:50:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7c9LgDQzwFBP2P6ArJr6sk6r1j+llzDsGb6lR6H9a1Q=;
-        b=DXuM86OYRLMp5V2HM3q+kYMPcCYCpGkmJaowe6sielCBa7OevbluIZ4X39LLHV/mbT
-         /m3Lz8Wa3GdNQgKSuSrVbFj9dLDLhFxPCwZLMdrk8OOwLbM+v7MRIe/XXGFJ0qw0gZXV
-         7/XE3sriFbZGQ1E9WEXBJhEaXUChMT8hKNeJiFPjC6raWxHPJDXNMb4yEgg3ETVjYheB
-         PGTMmKqswhAOZjYo9XLpFSCd8+fcPpskTSWcHZgAco1nFtDWG9wzygRyOUemiOqmUchp
-         x3gUzzZNwSxPaLCcv7Pa7YNhjQjGyRSgVj2EX3yCBBTT95iQri0LlJPBLWclYRj4ITGR
-         cNmg==
-X-Gm-Message-State: AOAM533hsniEGTI+MYbTqjsDKtqVckAiDN+kKid4G2pYlrhtW0BCeV6J
-        oC+T8FEYBk0lYfmOF+dlkB/u0G9Z
-X-Google-Smtp-Source: ABdhPJxckJBrZD99vkzMZyK+yaa6woS9Ys9iCWecK6RVC95+nlUjQnGrP0mhZ4kjyiZEIGMSn83ang==
-X-Received: by 2002:ac2:4542:: with SMTP id j2mr2586816lfm.110.1597132202193;
-        Tue, 11 Aug 2020 00:50:02 -0700 (PDT)
-Received: from localhost.localdomain (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
-        by smtp.googlemail.com with ESMTPSA id z25sm9918170ljz.13.2020.08.11.00.50.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Aug 2020 00:50:01 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH] coccinelle: api: update kzfree script to kfree_sensitive
-Date:   Tue, 11 Aug 2020 10:49:53 +0300
-Message-Id: <20200811074953.73994-1-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200604140805.111613-1-efremov@linux.com>
-References: <20200604140805.111613-1-efremov@linux.com>
+        id S1728402AbgHKHvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 03:51:09 -0400
+Received: from mga18.intel.com ([134.134.136.126]:58506 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728000AbgHKHvI (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 03:51:08 -0400
+IronPort-SDR: JoX5LBR9eSipUMd4cBYJ/LlwAhSFL23XAFgvRJUzWXk09l/ClYRc8+j4nxoAXXL7sAfV4ZMegb
+ BwGCK3Fgstcg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9709"; a="141298711"
+X-IronPort-AV: E=Sophos;i="5.75,460,1589266800"; 
+   d="scan'208";a="141298711"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2020 00:51:07 -0700
+IronPort-SDR: lMCuKmesHzA92dEwJKoD/hGlP4o/9fndVwEXErlOK7PCbf6eEU64TeL9bAx5XHRBoTa/GVNcWu
+ 10o9iCZ7ysAw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,460,1589266800"; 
+   d="scan'208";a="324690276"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
+  by orsmga008.jf.intel.com with ESMTP; 11 Aug 2020 00:51:05 -0700
+Subject: Re: [PATCH v1 2/2] perf/core: Fake regs for leaked kernel samples
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+To:     peterz@infradead.org
+Cc:     mingo@redhat.com, oleg@redhat.com, acme@kernel.org,
+        jolsa@kernel.org, Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        alexander.shishkin@linux.intel.com, mark.rutland@arm.com
+References: <20200731025617.16243-1-yao.jin@linux.intel.com>
+ <20200731025617.16243-2-yao.jin@linux.intel.com>
+ <20200804114900.GI2657@hirez.programming.kicks-ass.net>
+ <4c958d61-11a7-9f3e-9e7d-d733270144a1@linux.intel.com>
+ <20200805124454.GP2657@hirez.programming.kicks-ass.net>
+ <797aa4de-c618-f340-ad7b-cef38c96b035@linux.intel.com>
+Message-ID: <56957a58-6292-e075-8c30-6230450e3518@linux.intel.com>
+Date:   Tue, 11 Aug 2020 15:50:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <797aa4de-c618-f340-ad7b-cef38c96b035@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 453431a54934 ("mm, treewide: rename kzfree() to kfree_sensitive()")
-renames kzfree to kfree_sensitive and uses memzero_explicit(...) instead of
-memset(..., 0, ...) internally. Update cocci script to reflect these
-changes.
+Hi Peter,
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
-Julia, I think you can squash this commit with original script, or I can
-resend the whole script since it's not merged to the mainline.
+On 8/6/2020 10:26 AM, Jin, Yao wrote:
+> Hi Peter,
+> 
+> On 8/5/2020 8:44 PM, peterz@infradead.org wrote:
+>> On Wed, Aug 05, 2020 at 10:15:26AM +0800, Jin, Yao wrote:
+>>> Hi Peter,
+>>>
+>>> On 8/4/2020 7:49 PM, peterz@infradead.org wrote:
+>>>> On Fri, Jul 31, 2020 at 10:56:17AM +0800, Jin Yao wrote:
+>>>>> @@ -6973,7 +6973,8 @@ static struct perf_callchain_entry __empty_callchain = { .nr = 0, };
+>>>>>    struct perf_callchain_entry *
+>>>>>    perf_callchain(struct perf_event *event, struct pt_regs *regs)
+>>>>>    {
+>>>>> -    bool kernel = !event->attr.exclude_callchain_kernel;
+>>>>> +    bool kernel = !event->attr.exclude_callchain_kernel &&
+>>>>> +              !event->attr.exclude_kernel;
+>>>>
+>>>> This seems weird; how can we get there. Also it seems to me that if you
+>>>> have !exclude_callchain_kernel you already have permission for kernel
+>>>> bits, so who cares.
+>>>>
+>>>
+>>> In perf tool, exclude_callchain_kernel is set to 1 when perf-record only
+>>> collects the user callchains and exclude_kernel is set to 1 when events are
+>>> configured to run in user space.
+>>>
+>>> So if an event is configured to run in user space, that should make sense we
+>>> don't need it's kernel callchains.
+>>>
+>>> But it seems to me there is no code logic in perf tool which can make sure
+>>> !exclude_callchain_kernel -> !exclude_kernel.
+>>>
+>>> Jiri, Arnaldo, is my understanding correct?
+>>
+>> What the perf tool does or does not do is irrelevant. It is a valid,
+>> (albeit slightly silly) configuration to have:
+>>
+>>     exclude_kernel && !exclude_callchain_kernel
+>>
+>> You're now saying that when you configure things like this you're not
+>> allowed kernel IPs, that's wrong I think.
+>>
+>> Also, !exclude_callchain_kernel should require privilidge, whcih needs
+>> fixing, see below.
+>>
+> 
+> I see you add '!exclude_callchain_kernel' check before perf_allow_kernel() at syscall entry in below 
+> code.
+> 
+> So if we allow callchain_kernel collection that means we allow kernel by default. That makes sense, 
+> thanks!
+> 
+>>> So the new code looks like:
+>>>
+>>> if (event->attr.exclude_kernel && !user_mode(regs)) {
+>>>     if (!(current->flags & PF_KTHREAD)) {
+>>>         regs_fake = task_pt_regs(current);
+>>>         if (!regs_fake)
+>>>             instruction_pointer_set(regs, -1L);
+>>>     } else {
+>>>         instruction_pointer_set(regs, -1L);
+>>>     }
+>>
+>> Again:
+>>
+>>     if (!(current->flags & PF_KTHREAD))
+>>         regs_fake = task_pt_regs(current);
+>>
+>>     if (!regs_fake)
+>>         instruction_pointer_set(regs, -1L);
+>>
+>> Is much simpler and more readable.
+>>
+> 
+> Yes, agree. Your code is much simpler and better.
+> 
+>>>>> +        if ((header->misc & PERF_RECORD_MISC_CPUMODE_MASK) ==
+>>>>> +             PERF_RECORD_MISC_KERNEL) {
+>>>>> +            header->misc &= ~PERF_RECORD_MISC_CPUMODE_MASK;
+>>>>> +            header->misc |= PERF_RECORD_MISC_USER;
+>>>>> +        }
+>>>>
+>>>> Why the conditional? At this point it had better be unconditionally
+>>>> user, no?
+>>>>
+>>>>         headers->misc &= ~PERF_RECORD_MISC_CPUMODE_MASK;
+>>>>         headers->misc |= PERF_RECORD_MISC_USER;
+>>>>
+>>>
+>>> #define PERF_RECORD_MISC_CPUMODE_MASK        (7 << 0)
+>>> #define PERF_RECORD_MISC_CPUMODE_UNKNOWN    (0 << 0)
+>>> #define PERF_RECORD_MISC_KERNEL            (1 << 0)
+>>> #define PERF_RECORD_MISC_USER            (2 << 0)
+>>> #define PERF_RECORD_MISC_HYPERVISOR        (3 << 0)
+>>> #define PERF_RECORD_MISC_GUEST_KERNEL        (4 << 0)
+>>> #define PERF_RECORD_MISC_GUEST_USER        (5 << 0)
+>>>
+>>> If we unconditionally set user, it will reset for hypervisor, guest
+>>> kernel and guest_user.
+>>
+>> At the same time :u had better not get any of those either. Which seems
+>> to suggest we're going about this wrong.
+>>
+>> Also, if we call this before perf_misc_flags() we don't need to fix it
+>> up.
+>>
+>> How's this?
+>>
+>> ---
+>>   kernel/events/core.c | 38 +++++++++++++++++++++++++++++++++-----
+>>   1 file changed, 33 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/kernel/events/core.c b/kernel/events/core.c
+>> index 7c436d705fbd..3e4e328b521a 100644
+>> --- a/kernel/events/core.c
+>> +++ b/kernel/events/core.c
+>> @@ -6988,23 +6988,49 @@ perf_callchain(struct perf_event *event, struct pt_regs *regs)
+>>       return callchain ?: &__empty_callchain;
+>>   }
+>> +/*
+>> + * Due to interrupt latency (skid), we may enter the kernel before taking the
+>> + * PMI, even if the PMU is configured to only count user events. To avoid
+>> + * leaking kernel addresses, use task_pt_regs(), when available.
+>> + */
+>> +static struct pt_regs *sanitize_sample_regs(struct perf_event *event, struct pt_regs *regs)
+>> +{
+>> +    struct pt_regs *sample_regs = regs;
+>> +
+>> +    /* user only */
+>> +    if (!event->attr.exclude_kernel || !event->attr.exclude_hv ||
+>> +        !event->attr.exclude_host   || !event->attr.exclude_guest)
+>> +        return sample_regs;
+>> +
+> 
+> Is this condition correct?
+> 
+> Say counting user event on host, exclude_kernel = 1 and exclude_host = 0. It will go "return 
+> sample_regs" path.
+> 
+>> +    if (sample_regs(regs))
+>> +        return sample_regs;
+>> +
+> 
+> In your another mail, you said it should be:
+> 
+>      if (user_regs(regs))
+>          return sample_regs;
+> 
+>> +    if (!(current->flags & PF_KTHREAD)) {
+> 
+> No '{', you mentioned in another mail.
+> 
+>> +        sample_regs = task_pt_regs(current);
+>> +    else
+>> +        instruction_pointer_set(regs, -1L);
+>> +
+>> +    return sample_regs;
+>> +}
+>> +
+>>   void perf_prepare_sample(struct perf_event_header *header,
+>>                struct perf_sample_data *data,
+>>                struct perf_event *event,
+>>                struct pt_regs *regs)
+>>   {
+>> +    struct pt_regs *sample_regs = sanitize_sample_regs(event, regs);
+>>       u64 sample_type = event->attr.sample_type;
+>>       header->type = PERF_RECORD_SAMPLE;
+>>       header->size = sizeof(*header) + event->header_size;
+>>       header->misc = 0;
+>> -    header->misc |= perf_misc_flags(regs);
+>> +    header->misc |= perf_misc_flags(sample_regs);
+>>       __perf_event_header__init_id(header, data, event);
+>>       if (sample_type & PERF_SAMPLE_IP)
+>> -        data->ip = perf_instruction_pointer(regs);
+>> +        data->ip = perf_instruction_pointer(sample_regs);
+>>       if (sample_type & PERF_SAMPLE_CALLCHAIN) {
+>>           int size = 1;
+>> @@ -7054,9 +7080,10 @@ void perf_prepare_sample(struct perf_event_header *header,
+>>           header->size += size;
+>>       }
+>> -    if (sample_type & (PERF_SAMPLE_REGS_USER | PERF_SAMPLE_STACK_USER))
+>> +    if (sample_type & (PERF_SAMPLE_REGS_USER | PERF_SAMPLE_STACK_USER)) {
+>>           perf_sample_regs_user(&data->regs_user, regs,
+>>                         &data->regs_user_copy);
+>> +    }
+>>       if (sample_type & PERF_SAMPLE_REGS_USER) {
+>>           /* regs dump ABI info */
+>> @@ -7099,7 +7126,7 @@ void perf_prepare_sample(struct perf_event_header *header,
+>>           /* regs dump ABI info */
+>>           int size = sizeof(u64);
+>> -        perf_sample_regs_intr(&data->regs_intr, regs);
+>> +        perf_sample_regs_intr(&data->regs_intr, sample_regs);
+>>           if (data->regs_intr.regs) {
+>>               u64 mask = event->attr.sample_regs_intr;
+>> @@ -11609,7 +11636,8 @@ SYSCALL_DEFINE5(perf_event_open,
+>>       if (err)
+>>           return err;
+>> -    if (!attr.exclude_kernel) {
+>> +    if (!attr.exclude_kernel || !attr.exclude_callchain_kernel ||
+>> +        !attr.exclude_hv || !attr.exclude_host || !attr.exclude_guest) {
+>>           err = perf_allow_kernel(&attr);
+>>           if (err)
+>>               return err;
+>>
+> 
+> I can understand the conditions "!attr.exclude_kernel || !attr.exclude_callchain_kernel".
+> 
+> But I'm not very sure about the "!attr.exclude_hv || !attr.exclude_host || !attr.exclude_guest".
+> 
+> On host, exclude_hv = 1, exclude_guest = 1 and exclude_host = 0, right?
+> 
+> So even exclude_kernel = 1 but exclude_host = 0, we will still go perf_allow_kernel path. Please 
+> correct me if my understanding is wrong.
+> 
+> Thanks
+> Jin Yao
 
- .../{kzfree.cocci => kfree_sensitive.cocci}   | 29 +++++++++----------
- 1 file changed, 13 insertions(+), 16 deletions(-)
- rename scripts/coccinelle/api/{kzfree.cocci => kfree_sensitive.cocci} (70%)
+Could I post v2 which basically refers to your patch but removes some conditions since I see some 
+issues in test if we use these conditions.
 
-diff --git a/scripts/coccinelle/api/kzfree.cocci b/scripts/coccinelle/api/kfree_sensitive.cocci
-similarity index 70%
-rename from scripts/coccinelle/api/kzfree.cocci
-rename to scripts/coccinelle/api/kfree_sensitive.cocci
-index 33625bd7cec9..e4a066a0b77d 100644
---- a/scripts/coccinelle/api/kzfree.cocci
-+++ b/scripts/coccinelle/api/kfree_sensitive.cocci
-@@ -1,13 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0-only
- ///
--/// Use kzfree, kvfree_sensitive rather than memset or
--/// memzero_explicit followed by kfree
-+/// Use kfree_sensitive, kvfree_sensitive rather than memset or
-+/// memzero_explicit followed by kfree.
- ///
- // Confidence: High
- // Copyright: (C) 2020 Denis Efremov ISPRAS
- // Options: --no-includes --include-headers
- //
--// Keywords: kzfree, kvfree_sensitive
-+// Keywords: kfree_sensitive, kvfree_sensitive
- //
- 
- virtual context
-@@ -18,7 +18,8 @@ virtual report
- @initialize:python@
- @@
- # kmalloc_oob_in_memset uses memset to explicitly trigger out-of-bounds access
--filter = frozenset(['kmalloc_oob_in_memset', 'kzfree', 'kvfree_sensitive'])
-+filter = frozenset(['kmalloc_oob_in_memset',
-+		    'kfree_sensitive', 'kvfree_sensitive'])
- 
- def relevant(p):
-     return not (filter & {el.current_element for el in p})
-@@ -56,17 +57,13 @@ type T;
- - memzero_explicit@m((T)E, size);
-   ... when != E
-       when strict
--// TODO: uncomment when kfree_sensitive will be merged.
--// Only this case is commented out because developers
--// may not like patches like this since kzfree uses memset
--// internally (not memzero_explicit).
--//(
--//- kfree(E)@p;
--//+ kfree_sensitive(E);
--//|
-+(
-+- kfree(E)@p;
-++ kfree_sensitive(E);
-+|
- - \(vfree\|kvfree\)(E)@p;
- + kvfree_sensitive(E, size);
--//)
-+)
- 
- @rp_memset depends on patch@
- expression E, size;
-@@ -80,7 +77,7 @@ type T;
-       when strict
- (
- - kfree(E)@p;
--+ kzfree(E);
-++ kfree_sensitive(E);
- |
- - \(vfree\|kvfree\)(E)@p;
- + kvfree_sensitive(E, size);
-@@ -91,11 +88,11 @@ p << r.p;
- @@
- 
- coccilib.report.print_report(p[0],
--  "WARNING: opportunity for kzfree/kvfree_sensitive")
-+  "WARNING: opportunity for kfree_sensitive/kvfree_sensitive")
- 
- @script:python depends on org@
- p << r.p;
- @@
- 
- coccilib.org.print_todo(p[0],
--  "WARNING: opportunity for kzfree/kvfree_sensitive")
-+  "WARNING: opportunity for kfree_sensitive/kvfree_sensitive")
--- 
-2.26.2
+  1. Remove '!event->attr.exclude_hv || !event->attr.exclude_host ||
+     !event->attr.exclude_guest' at the entry of sanitize_sample_regs().
 
+  2. Remove '!attr.exclude_hv || !attr.exclude_host || !attr.exclude_guest'
+     at the perf_event_open syscall entry.
+
+Thanks
+Jin Yao
