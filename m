@@ -2,524 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D15241911
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 11:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0535A241919
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 11:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728512AbgHKJpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 05:45:18 -0400
-Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:60647 "EHLO
-        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728224AbgHKJpR (ORCPT
+        id S1728479AbgHKJrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 05:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728377AbgHKJrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 05:45:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1597139116;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=hNMxT76XSKdCteUGW9msiopo/AZmHOxBlEJvCXXEBjQ=;
-  b=dDjBqcuEud2Po+OgkBhvD9sOroGCXTciNZfh9tdkFHrVgJP9N2827Mu9
-   GaiMe1vhoEsVaO3rKDQFG2p8go7PXCWiSrf/zoRQnieusRuJvvHDFZ8ZY
-   BzbXzKll36n/qZD9uq3P1AHbwXWoKwou3i7W+fXLTVcuyWhC/3J01R5J0
-   I=;
-Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: JNy0mE7/pD2oU2ERTgVkOQ0ZhrpqC+8cRTjFWDvQN9ERrYWyfl6g2IOo3tjkeUs4aIEbPf0Uat
- 8+kcyQkVg3VRsmxwAl8SJMH4o8V/UWSHgrGlgfnaqA+Mj7oY7udJXqhj1qF3Jh9MlqeAbK42ci
- kRzqLxDwDRNl9nCcNMWYXjWBWTm26c0iTk36VqA7kxES7JKEfRM2VgP4MdPdKQk7l5nkDnm5Ba
- tVt34JjOgfMrPIUDTNE91m1NZkgVgd/2PVTNDzLkMGJCurfPg8fhkh+7q4PhHALhEqzt2bfovM
- 3hw=
-X-SBRS: 2.7
-X-MesageID: 24269317
-X-Ironport-Server: esa2.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.75,460,1589256000"; 
-   d="scan'208";a="24269317"
-From:   Roger Pau Monne <roger.pau@citrix.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Roger Pau Monne <roger.pau@citrix.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        David Airlie <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>, Wei Liu <wl@xen.org>,
-        "Yan Yankovskyi" <yyankovskyi@gmail.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <xen-devel@lists.xenproject.org>, <linux-mm@kvack.org>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH v4 2/2] xen: add helpers to allocate unpopulated memory
-Date:   Tue, 11 Aug 2020 11:44:47 +0200
-Message-ID: <20200811094447.31208-3-roger.pau@citrix.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200811094447.31208-1-roger.pau@citrix.com>
-References: <20200811094447.31208-1-roger.pau@citrix.com>
+        Tue, 11 Aug 2020 05:47:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4D1C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 02:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=hSl2P/kJe9MOyfzAv0UR68V5yutSEkdzNefSktLECT8=; b=OsyDm2Ekl0cDY46XG1Trr/nZIv
+        T0IQ5JaztHBdVxL5XXH9DNINH/MIrXlxMEkrgKJl0T60oJZZQhUs5NUpsePlamimQZh40oU92tdjZ
+        SflhU2YmExOJNnt4tTSi1xbqYtNY9Wkifuntj7WDW/3P4j1wp67Pby/4Mgn5sxsk7ndEahdJzsHt6
+        IJbDVrVJ72dQU84e72kiFYEnkFUf8ELU6T09P4eI8cyDlJMKNGfMS8mzedzS59IBlRjBQz8O1BT6+
+        dJwHN3W7SYhWZQAXCvRa7++KDXUwQUgvGa/bRKI5lcDfJx2lBUgZ82vp/tFZFpVx+/YKlaIYuKAR7
+        tWOrTqew==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k5Qrs-000387-KS; Tue, 11 Aug 2020 09:46:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 660523003E5;
+        Tue, 11 Aug 2020 11:46:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4D3E423FF6C69; Tue, 11 Aug 2020 11:46:51 +0200 (CEST)
+Date:   Tue, 11 Aug 2020 11:46:51 +0200
+From:   peterz@infradead.org
+To:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>
+Cc:     Marco Elver <elver@google.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        fenghua.yu@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        yu-cheng.yu@intel.com, sdeep@vmware.com,
+        virtualization@lists.linux-foundation.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Wei Liu <wei.liu@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*()
+ helpers
+Message-ID: <20200811094651.GH35926@hirez.programming.kicks-ass.net>
+References: <16671cf3-3885-eb06-79ff-4cbfaeeaea79@suse.com>
+ <20200807113838.GA3547125@elver.google.com>
+ <e5bf3e6a-efff-7170-5ee6-1798008393a2@suse.com>
+ <CANpmjNPau_DEYadey9OL+iFZKEaUTqnFnyFs1dU12o00mg7ofA@mail.gmail.com>
+ <20200807151903.GA1263469@elver.google.com>
+ <20200811074127.GR3982@worktop.programming.kicks-ass.net>
+ <a2dffeeb-04f0-8042-b39a-b839c4800d6f@suse.com>
+ <20200811081205.GV3982@worktop.programming.kicks-ass.net>
+ <07f61573-fef1-e07c-03f2-a415c88dec6f@suse.com>
+ <20200811092054.GB2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200811092054.GB2674@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To be used in order to create foreign mappings. This is based on the
-ZONE_DEVICE facility which is used by persistent memory devices in
-order to create struct pages and kernel virtual mappings for the IOMEM
-areas of such devices. Note that on kernels without support for
-ZONE_DEVICE Xen will fallback to use ballooned pages in order to
-create foreign mappings.
+On Tue, Aug 11, 2020 at 11:20:54AM +0200, peterz@infradead.org wrote:
+> On Tue, Aug 11, 2020 at 10:38:50AM +0200, J¸rgen Groﬂ wrote:
+> > In case you don't want to do it I can send the patch for the Xen
+> > variants.
+> 
+> I might've opened a whole new can of worms here. I'm not sure we
+> can/want to fix the entire fallout this release :/
+> 
+> Let me ponder this a little, because the more I look at things, the more
+> problems I keep finding... bah bah bah.
 
-The newly added helpers use the same parameters as the existing
-{alloc/free}_xenballooned_pages functions, which allows for in-place
-replacement of the callers. Once a memory region has been added to be
-used as scratch mapping space it will no longer be released, and pages
-returned are kept in a linked list. This allows to have a buffer of
-pages and prevents resorting to frequent additions and removals of
-regions.
+That is, most of these irq-tracking problem are new because commit:
 
-If enabled (because ZONE_DEVICE is supported) the usage of the new
-functionality untangles Xen balloon and RAM hotplug from the usage of
-unpopulated physical memory ranges to map foreign pages, which is the
-correct thing to do in order to avoid mappings of foreign pages depend
-on memory hotplug.
+  859d069ee1dd ("lockdep: Prepare for NMI IRQ state tracking")
 
-Note the driver is currently not enabled on Arm platforms because it
-would interfere with the identity mapping required on some platforms.
+changed irq-tracking to ignore the lockdep recursion count.
 
-Signed-off-by: Roger Pau Monn√© <roger.pau@citrix.com>
----
-Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Roger Pau Monne <roger.pau@citrix.com>
-Cc: Wei Liu <wl@xen.org>
-Cc: Yan Yankovskyi <yyankovskyi@gmail.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: xen-devel@lists.xenproject.org
-Cc: linux-mm@kvack.org
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Dan Williams <dan.j.williams@intel.com>
----
-Changes since v3:
- - Introduce a Kconfig option that gates the addition of the
-   unpopulated alloc driver. This allows to easily disable it on Arm
-   platforms.
- - Dropped Juergen RB due to the addition of the Kconfig option.
- - Switched from MEMORY_DEVICE_DEVDAX to MEMORY_DEVICE_GENERIC.
+This then allows:
 
-Changes since v2:
- - Drop BUILD_BUG_ON regarding PVMMU page sizes.
- - Use a SPDX license identifier.
- - Call fill with only the minimum required number of pages.
- - Include xen.h header in xen_drm_front_gem.c.
- - Use less generic function names.
- - Exit early from the init function if not a PV guest.
- - Don't use all caps for region name.
----
- drivers/gpu/drm/xen/xen_drm_front_gem.c |   9 +-
- drivers/xen/Kconfig                     |   4 +
- drivers/xen/Makefile                    |   1 +
- drivers/xen/balloon.c                   |   4 +-
- drivers/xen/grant-table.c               |   4 +-
- drivers/xen/privcmd.c                   |   4 +-
- drivers/xen/unpopulated-alloc.c         | 185 ++++++++++++++++++++++++
- drivers/xen/xenbus/xenbus_client.c      |   6 +-
- drivers/xen/xlate_mmu.c                 |   4 +-
- include/xen/xen.h                       |   9 ++
- 10 files changed, 215 insertions(+), 15 deletions(-)
- create mode 100644 drivers/xen/unpopulated-alloc.c
+	lock_acquire()
+	  raw_local_irq_save();
+	  current->lockdep_recursion++;
+	  trace_lock_acquire()
+	   ... tracing ...
+	     #PF under raw_local_irq_*()
 
-diff --git a/drivers/gpu/drm/xen/xen_drm_front_gem.c b/drivers/gpu/drm/xen/xen_drm_front_gem.c
-index f0b85e094111..270e1bd3e4da 100644
---- a/drivers/gpu/drm/xen/xen_drm_front_gem.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front_gem.c
-@@ -18,6 +18,7 @@
- #include <drm/drm_probe_helper.h>
- 
- #include <xen/balloon.h>
-+#include <xen/xen.h>
- 
- #include "xen_drm_front.h"
- #include "xen_drm_front_gem.h"
-@@ -99,8 +100,8 @@ static struct xen_gem_object *gem_create(struct drm_device *dev, size_t size)
- 		 * allocate ballooned pages which will be used to map
- 		 * grant references provided by the backend
- 		 */
--		ret = alloc_xenballooned_pages(xen_obj->num_pages,
--					       xen_obj->pages);
-+		ret = xen_alloc_unpopulated_pages(xen_obj->num_pages,
-+					          xen_obj->pages);
- 		if (ret < 0) {
- 			DRM_ERROR("Cannot allocate %zu ballooned pages: %d\n",
- 				  xen_obj->num_pages, ret);
-@@ -152,8 +153,8 @@ void xen_drm_front_gem_free_object_unlocked(struct drm_gem_object *gem_obj)
- 	} else {
- 		if (xen_obj->pages) {
- 			if (xen_obj->be_alloc) {
--				free_xenballooned_pages(xen_obj->num_pages,
--							xen_obj->pages);
-+				xen_free_unpopulated_pages(xen_obj->num_pages,
-+							   xen_obj->pages);
- 				gem_free_pages_array(xen_obj);
- 			} else {
- 				drm_gem_put_pages(&xen_obj->base,
-diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
-index 1d339ef92422..018020b91baa 100644
---- a/drivers/xen/Kconfig
-+++ b/drivers/xen/Kconfig
-@@ -327,4 +327,8 @@ config XEN_HAVE_VPMU
- config XEN_FRONT_PGDIR_SHBUF
- 	tristate
- 
-+config XEN_UNPOPULATED_ALLOC
-+	bool
-+	default y if ZONE_DEVICE && !ARM && !ARM64
-+
- endmenu
-diff --git a/drivers/xen/Makefile b/drivers/xen/Makefile
-index c25c9a699b48..babdca808861 100644
---- a/drivers/xen/Makefile
-+++ b/drivers/xen/Makefile
-@@ -41,3 +41,4 @@ xen-gntdev-$(CONFIG_XEN_GNTDEV_DMABUF)	+= gntdev-dmabuf.o
- xen-gntalloc-y				:= gntalloc.o
- xen-privcmd-y				:= privcmd.o privcmd-buf.o
- obj-$(CONFIG_XEN_FRONT_PGDIR_SHBUF)	+= xen-front-pgdir-shbuf.o
-+obj-$(CONFIG_XEN_UNPOPULATED_ALLOC)	+= unpopulated-alloc.o
-diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
-index 37ffccda8bb8..51427c752b37 100644
---- a/drivers/xen/balloon.c
-+++ b/drivers/xen/balloon.c
-@@ -653,7 +653,7 @@ void free_xenballooned_pages(int nr_pages, struct page **pages)
- }
- EXPORT_SYMBOL(free_xenballooned_pages);
- 
--#ifdef CONFIG_XEN_PV
-+#if defined(CONFIG_XEN_PV) && !defined(CONFIG_XEN_UNPOPULATED_ALLOC)
- static void __init balloon_add_region(unsigned long start_pfn,
- 				      unsigned long pages)
- {
-@@ -707,7 +707,7 @@ static int __init balloon_init(void)
- 	register_sysctl_table(xen_root);
- #endif
- 
--#ifdef CONFIG_XEN_PV
-+#if defined(CONFIG_XEN_PV) && !defined(CONFIG_XEN_UNPOPULATED_ALLOC)
- 	{
- 		int i;
- 
-diff --git a/drivers/xen/grant-table.c b/drivers/xen/grant-table.c
-index 8d06bf1cc347..523dcdf39cc9 100644
---- a/drivers/xen/grant-table.c
-+++ b/drivers/xen/grant-table.c
-@@ -801,7 +801,7 @@ int gnttab_alloc_pages(int nr_pages, struct page **pages)
- {
- 	int ret;
- 
--	ret = alloc_xenballooned_pages(nr_pages, pages);
-+	ret = xen_alloc_unpopulated_pages(nr_pages, pages);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -836,7 +836,7 @@ EXPORT_SYMBOL_GPL(gnttab_pages_clear_private);
- void gnttab_free_pages(int nr_pages, struct page **pages)
- {
- 	gnttab_pages_clear_private(nr_pages, pages);
--	free_xenballooned_pages(nr_pages, pages);
-+	xen_free_unpopulated_pages(nr_pages, pages);
- }
- EXPORT_SYMBOL_GPL(gnttab_free_pages);
- 
-diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
-index 63abe6c3642b..b0c73c58f987 100644
---- a/drivers/xen/privcmd.c
-+++ b/drivers/xen/privcmd.c
-@@ -424,7 +424,7 @@ static int alloc_empty_pages(struct vm_area_struct *vma, int numpgs)
- 	if (pages == NULL)
- 		return -ENOMEM;
- 
--	rc = alloc_xenballooned_pages(numpgs, pages);
-+	rc = xen_alloc_unpopulated_pages(numpgs, pages);
- 	if (rc != 0) {
- 		pr_warn("%s Could not alloc %d pfns rc:%d\n", __func__,
- 			numpgs, rc);
-@@ -895,7 +895,7 @@ static void privcmd_close(struct vm_area_struct *vma)
- 
- 	rc = xen_unmap_domain_gfn_range(vma, numgfns, pages);
- 	if (rc == 0)
--		free_xenballooned_pages(numpgs, pages);
-+		xen_free_unpopulated_pages(numpgs, pages);
- 	else
- 		pr_crit("unable to unmap MFN range: leaking %d pages. rc=%d\n",
- 			numpgs, rc);
-diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
-new file mode 100644
-index 000000000000..1b5d157c6977
---- /dev/null
-+++ b/drivers/xen/unpopulated-alloc.c
-@@ -0,0 +1,185 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/errno.h>
-+#include <linux/gfp.h>
-+#include <linux/kernel.h>
-+#include <linux/mm.h>
-+#include <linux/memremap.h>
-+#include <linux/slab.h>
-+
-+#include <asm/page.h>
-+
-+#include <xen/page.h>
-+#include <xen/xen.h>
-+
-+static DEFINE_MUTEX(list_lock);
-+static LIST_HEAD(page_list);
-+static unsigned int list_count;
-+
-+static int fill_list(unsigned int nr_pages)
-+{
-+	struct dev_pagemap *pgmap;
-+	void *vaddr;
-+	unsigned int i, alloc_pages = round_up(nr_pages, PAGES_PER_SECTION);
-+	int nid, ret;
-+
-+	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
-+	if (!pgmap)
-+		return -ENOMEM;
-+
-+	pgmap->type = MEMORY_DEVICE_GENERIC;
-+	pgmap->res.name = "Xen scratch";
-+	pgmap->res.flags = IORESOURCE_MEM | IORESOURCE_BUSY;
-+
-+	ret = allocate_resource(&iomem_resource, &pgmap->res,
-+				alloc_pages * PAGE_SIZE, 0, -1,
-+				PAGES_PER_SECTION * PAGE_SIZE, NULL, NULL);
-+	if (ret < 0) {
-+		pr_err("Cannot allocate new IOMEM resource\n");
-+		kfree(pgmap);
-+		return ret;
-+	}
-+
-+	nid = memory_add_physaddr_to_nid(pgmap->res.start);
-+
-+#ifdef CONFIG_XEN_HAVE_PVMMU
-+        /*
-+         * memremap will build page tables for the new memory so
-+         * the p2m must contain invalid entries so the correct
-+         * non-present PTEs will be written.
-+         *
-+         * If a failure occurs, the original (identity) p2m entries
-+         * are not restored since this region is now known not to
-+         * conflict with any devices.
-+         */
-+	if (!xen_feature(XENFEAT_auto_translated_physmap)) {
-+		xen_pfn_t pfn = PFN_DOWN(pgmap->res.start);
-+
-+		for (i = 0; i < alloc_pages; i++) {
-+			if (!set_phys_to_machine(pfn + i, INVALID_P2M_ENTRY)) {
-+				pr_warn("set_phys_to_machine() failed, no memory added\n");
-+				release_resource(&pgmap->res);
-+				kfree(pgmap);
-+				return -ENOMEM;
-+			}
-+                }
-+	}
-+#endif
-+
-+	vaddr = memremap_pages(pgmap, nid);
-+	if (IS_ERR(vaddr)) {
-+		pr_err("Cannot remap memory range\n");
-+		release_resource(&pgmap->res);
-+		kfree(pgmap);
-+		return PTR_ERR(vaddr);
-+	}
-+
-+	for (i = 0; i < alloc_pages; i++) {
-+		struct page *pg = virt_to_page(vaddr + PAGE_SIZE * i);
-+
-+		BUG_ON(!virt_addr_valid(vaddr + PAGE_SIZE * i));
-+		list_add(&pg->lru, &page_list);
-+		list_count++;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * xen_alloc_unpopulated_pages - alloc unpopulated pages
-+ * @nr_pages: Number of pages
-+ * @pages: pages returned
-+ * @return 0 on success, error otherwise
-+ */
-+int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages)
-+{
-+	unsigned int i;
-+	int ret = 0;
-+
-+	mutex_lock(&list_lock);
-+	if (list_count < nr_pages) {
-+		ret = fill_list(nr_pages - list_count);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	for (i = 0; i < nr_pages; i++) {
-+		struct page *pg = list_first_entry_or_null(&page_list,
-+							   struct page,
-+							   lru);
-+
-+		BUG_ON(!pg);
-+		list_del(&pg->lru);
-+		list_count--;
-+		pages[i] = pg;
-+
-+#ifdef CONFIG_XEN_HAVE_PVMMU
-+		if (!xen_feature(XENFEAT_auto_translated_physmap)) {
-+			ret = xen_alloc_p2m_entry(page_to_pfn(pg));
-+			if (ret < 0) {
-+				unsigned int j;
-+
-+				for (j = 0; j <= i; j++) {
-+					list_add(&pages[j]->lru, &page_list);
-+					list_count++;
-+				}
-+				goto out;
-+			}
-+		}
-+#endif
-+	}
-+
-+out:
-+	mutex_unlock(&list_lock);
-+	return ret;
-+}
-+EXPORT_SYMBOL(xen_alloc_unpopulated_pages);
-+
-+/**
-+ * xen_free_unpopulated_pages - return unpopulated pages
-+ * @nr_pages: Number of pages
-+ * @pages: pages to return
-+ */
-+void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages)
-+{
-+	unsigned int i;
-+
-+	mutex_lock(&list_lock);
-+	for (i = 0; i < nr_pages; i++) {
-+		list_add(&pages[i]->lru, &page_list);
-+		list_count++;
-+	}
-+	mutex_unlock(&list_lock);
-+}
-+EXPORT_SYMBOL(xen_free_unpopulated_pages);
-+
-+#ifdef CONFIG_XEN_PV
-+static int __init init(void)
-+{
-+	unsigned int i;
-+
-+	if (!xen_domain())
-+		return -ENODEV;
-+
-+	if (!xen_pv_domain())
-+		return 0;
-+
-+	/*
-+	 * Initialize with pages from the extra memory regions (see
-+	 * arch/x86/xen/setup.c).
-+	 */
-+	for (i = 0; i < XEN_EXTRA_MEM_MAX_REGIONS; i++) {
-+		unsigned int j;
-+
-+		for (j = 0; j < xen_extra_mem[i].n_pfns; j++) {
-+			struct page *pg =
-+				pfn_to_page(xen_extra_mem[i].start_pfn + j);
-+
-+			list_add(&pg->lru, &page_list);
-+			list_count++;
-+		}
-+	}
-+
-+	return 0;
-+}
-+subsys_initcall(init);
-+#endif
-diff --git a/drivers/xen/xenbus/xenbus_client.c b/drivers/xen/xenbus/xenbus_client.c
-index 786fbb7d8be0..70b6c4780fbd 100644
---- a/drivers/xen/xenbus/xenbus_client.c
-+++ b/drivers/xen/xenbus/xenbus_client.c
-@@ -615,7 +615,7 @@ static int xenbus_map_ring_hvm(struct xenbus_device *dev,
- 	bool leaked = false;
- 	unsigned int nr_pages = XENBUS_PAGES(nr_grefs);
- 
--	err = alloc_xenballooned_pages(nr_pages, node->hvm.pages);
-+	err = xen_alloc_unpopulated_pages(nr_pages, node->hvm.pages);
- 	if (err)
- 		goto out_err;
- 
-@@ -656,7 +656,7 @@ static int xenbus_map_ring_hvm(struct xenbus_device *dev,
- 			 addr, nr_pages);
-  out_free_ballooned_pages:
- 	if (!leaked)
--		free_xenballooned_pages(nr_pages, node->hvm.pages);
-+		xen_free_unpopulated_pages(nr_pages, node->hvm.pages);
-  out_err:
- 	return err;
- }
-@@ -852,7 +852,7 @@ static int xenbus_unmap_ring_hvm(struct xenbus_device *dev, void *vaddr)
- 			       info.addrs);
- 	if (!rv) {
- 		vunmap(vaddr);
--		free_xenballooned_pages(nr_pages, node->hvm.pages);
-+		xen_free_unpopulated_pages(nr_pages, node->hvm.pages);
- 	}
- 	else
- 		WARN(1, "Leaking %p, size %u page(s)\n", vaddr, nr_pages);
-diff --git a/drivers/xen/xlate_mmu.c b/drivers/xen/xlate_mmu.c
-index 7b1077f0abcb..34742c6e189e 100644
---- a/drivers/xen/xlate_mmu.c
-+++ b/drivers/xen/xlate_mmu.c
-@@ -232,7 +232,7 @@ int __init xen_xlate_map_ballooned_pages(xen_pfn_t **gfns, void **virt,
- 		kfree(pages);
- 		return -ENOMEM;
- 	}
--	rc = alloc_xenballooned_pages(nr_pages, pages);
-+	rc = xen_alloc_unpopulated_pages(nr_pages, pages);
- 	if (rc) {
- 		pr_warn("%s Couldn't balloon alloc %ld pages rc:%d\n", __func__,
- 			nr_pages, rc);
-@@ -249,7 +249,7 @@ int __init xen_xlate_map_ballooned_pages(xen_pfn_t **gfns, void **virt,
- 	if (!vaddr) {
- 		pr_warn("%s Couldn't map %ld pages rc:%d\n", __func__,
- 			nr_pages, rc);
--		free_xenballooned_pages(nr_pages, pages);
-+		xen_free_unpopulated_pages(nr_pages, pages);
- 		kfree(pages);
- 		kfree(pfns);
- 		return -ENOMEM;
-diff --git a/include/xen/xen.h b/include/xen/xen.h
-index 19a72f591e2b..43efba045acc 100644
---- a/include/xen/xen.h
-+++ b/include/xen/xen.h
-@@ -52,4 +52,13 @@ bool xen_biovec_phys_mergeable(const struct bio_vec *vec1,
- extern u64 xen_saved_max_mem_size;
- #endif
- 
-+#ifdef CONFIG_XEN_UNPOPULATED_ALLOC
-+int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages);
-+void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages);
-+#else
-+#define xen_alloc_unpopulated_pages alloc_xenballooned_pages
-+#define xen_free_unpopulated_pages free_xenballooned_pages
-+#include <xen/balloon.h>
-+#endif
-+
- #endif	/* _XEN_XEN_H */
--- 
-2.28.0
+	  __lock_acquire()
+	    arch_spin_lock(&graph_lock)
+	      pv-spinlock-wait()
+	        local_irq_save() under raw_local_irq_*()
 
+However afaict that just made a bad situation worse. There already were
+issues, take for example:
+
+  trace_clock_global()
+    raw_local_irq_save();
+    arch_spin_lock()
+      pv-spinlock-wait
+        local_irq_save()
+
+And that has no lockdep_recursion to 'save' the say.
+
+The tracing recursion does however avoid some of the obvious fails
+there, like trace_clock calling into paravirt which then calls back into
+tracing. But still, that would've caused IRQ tracking problems even with
+the old code.
+
+And in that respect, this is all the exact same problem as that other
+set of patches has ( 20200807192336.405068898@infradead.org ).
+
+Now, on the flip side, it does find actual problems, the trace_lock_*()
+things were using RCU in RCU-disabled code, and here I found that
+trace_clock_global() thinkg (and I suspect there's more of that).
+
+But at this point I'm not entirelty sure how best to proceed... tracing
+uses arch_spinlock_t, which means all spinlock implementations should be
+notrace, but then that drops into paravirt and all hell breaks loose
+because Hyper-V then calls into the APIC code etc.. etc..
+
+At that rate we'll have the entire kernel marked notrace, and I'm fairly
+sure that's not a solution either.
+
+So let me once again see if I can't find a better solution for this all.
+Clearly it needs one :/
