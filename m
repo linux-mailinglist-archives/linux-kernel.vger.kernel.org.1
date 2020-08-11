@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF7A241D88
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC27241D7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729285AbgHKPoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 11:44:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47562 "EHLO mail.kernel.org"
+        id S1729256AbgHKPnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 11:43:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728958AbgHKPmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728983AbgHKPmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 Aug 2020 11:42:05 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96ED622B49;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FFB622BEF;
         Tue, 11 Aug 2020 15:42:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1597160523;
-        bh=qEWaiZ3m/Gf0hSnFw93IzfHoukanTss06kl7BdRnAbA=;
+        bh=MH1bvUjYC37bx2LZsXr1vc95Xh18NFGKlhDeP1Az7Yk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bsgS9KKdMztB0hOc2XcCIvW8pABdPmJeZSJF3Lkiw71RsTtJxpH7VnXDHq306074r
-         vdEugxrwqeYCv2U9WJM0/ys/4ez/lF1g8pQe6lcdcA6GHwTpPq4H7XYHy+lNmiGKhv
-         1VdDricrUOASUbV69GiuhPPk/DgLX+empy0/Odw4=
+        b=Ne2AATSqvUwCaTCBEffuGfszrPPJo4jrBKmiSWfbrKy6N4ntwa+ZBPc+ISdYbXpbj
+         OyTndNisM5gFqEcsTlt5pKnb/H1otR3X8i3b2Z0LiCUEbU+6ZS1i6DMJd4WWGN+ivA
+         5bB26PFsxqFLiJFMsa3KU6VsBLLWJBqaT6XGe/pM=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1k5WPZ-004bmq-O4; Tue, 11 Aug 2020 17:42:01 +0200
+        id 1k5WPZ-004bms-P0; Tue, 11 Aug 2020 17:42:01 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 14/33] spmi: add hisi-spmi-controller to the building system
-Date:   Tue, 11 Aug 2020 17:41:40 +0200
-Message-Id: <7026c57ed74b9e187b5342efd76161e33839b0ff.1597160086.git.mchehab+huawei@kernel.org>
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 15/33] mfd: Kconfig: fix a typo
+Date:   Tue, 11 Aug 2020 17:41:41 +0200
+Message-Id: <103447d4642f0560edbb814088d5158e4d853299.1597160086.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1597160086.git.mchehab+huawei@kernel.org>
 References: <cover.1597160086.git.mchehab+huawei@kernel.org>
@@ -45,43 +44,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the driver was ported to upstream, add it as a
-SPMI controller.
+individul -> individual
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/spmi/Kconfig  | 9 +++++++++
- drivers/spmi/Makefile | 2 ++
- 2 files changed, 11 insertions(+)
+ drivers/mfd/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spmi/Kconfig b/drivers/spmi/Kconfig
-index a53bad541f1a..b44e2ab6bf81 100644
---- a/drivers/spmi/Kconfig
-+++ b/drivers/spmi/Kconfig
-@@ -25,4 +25,13 @@ config SPMI_MSM_PMIC_ARB
- 	  This is required for communicating with Qualcomm PMICs and
- 	  other devices that have the SPMI interface.
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index a37d7d171382..e42d11849947 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -493,7 +493,7 @@ config MFD_HI6421_PMIC
+ 	  Add support for HiSilicon Hi6421 PMIC. Hi6421 includes multi-
+ 	  functions, such as regulators, RTC, codec, Coulomb counter, etc.
+ 	  This driver includes core APIs _only_. You have to select
+-	  individul components like voltage regulators under corresponding
++	  individual components like voltage regulators under corresponding
+ 	  menus in order to enable them.
+ 	  We communicate with the Hi6421 via memory-mapped I/O.
  
-+config SPMI_HISI3670
-+	tristate "Hisilicon 3670 SPMI Controller"
-+	select IRQ_DOMAIN_HIERARCHY
-+	depends on HAS_IOMEM
-+	help
-+	  If you say yes to this option, support will be included for the
-+	  built-in SPMI PMIC Arbiter interface on Hisilicon 3670
-+	  processors.
-+
- endif
-diff --git a/drivers/spmi/Makefile b/drivers/spmi/Makefile
-index 55a94cadeffe..694853e391cb 100644
---- a/drivers/spmi/Makefile
-+++ b/drivers/spmi/Makefile
-@@ -5,3 +5,5 @@
- obj-$(CONFIG_SPMI)	+= spmi.o
- 
- obj-$(CONFIG_SPMI_MSM_PMIC_ARB)	+= spmi-pmic-arb.o
-+
-+obj-$(CONFIG_SPMI_HISI3670) += hisi-spmi-controller.o
 -- 
 2.26.2
 
