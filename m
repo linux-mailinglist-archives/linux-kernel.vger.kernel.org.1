@@ -2,114 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC73241CA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 16:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2273F241CA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 16:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728869AbgHKOo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 10:44:26 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58854 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728782AbgHKOoZ (ORCPT
+        id S1728894AbgHKOpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 10:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728833AbgHKOps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 10:44:25 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597157062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vcln4Ca/4Fv4aIfCbdX1ilYpW3I83s8BkkosnjfF/9g=;
-        b=pRHQzTnYuDs8oyfJmawu+/oYkSua7IKYXTcGTem2SuZPjaR7H/f52+ylgGKu3ierp88ap6
-        0zA99s7nvYiY21pYwT8h4t6WQETbe8YpJTZ5V/12f+JWIf+UFUu1rBx+6gWYwoxfGdQ/zZ
-        1SioXawuDrbKnVWdloBAS6+uYn7ervKFI0HIunTzctLgXEdGs/JVx5hIjKzVNvhpELL/OS
-        E8L3T3hWa92ss0Ot4QeItyLe+3X7NYDmTka6Fb3tBlNOTq9lhIfkGUkciG9qiRqw2scN2w
-        ndW5WieIuemPfWW9LucSywm6Q1itFJuGsI9O7kfzEMklKxhp/szCg2ppQmchvA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597157062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vcln4Ca/4Fv4aIfCbdX1ilYpW3I83s8BkkosnjfF/9g=;
-        b=Ts3wdVRNujK6Sly60+quuhFMSNlyCokdzwXFNRdRUmMuVX8Hj08DrORTsVjqYALSlwhDsB
-        OrB84dSJsEJX08AQ==
-To:     Michal Hocko <mhocko@suse.com>, Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-In-Reply-To: <20200810192525.GG4773@dhcp22.suse.cz>
-References: <20200809204354.20137-1-urezki@gmail.com> <20200809204354.20137-2-urezki@gmail.com> <20200810123141.GF4773@dhcp22.suse.cz> <20200810160739.GA29884@pc636> <20200810192525.GG4773@dhcp22.suse.cz>
-Date:   Tue, 11 Aug 2020 16:44:21 +0200
-Message-ID: <87pn7x6y4a.fsf@nanos.tec.linutronix.de>
+        Tue, 11 Aug 2020 10:45:48 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924E3C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 07:45:48 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id u10so6908153plr.7
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 07:45:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0TKJ8QiOGw2cS0Spzetvjqqgie96cDTA3YQauzdWsow=;
+        b=sE1l4Jh9OMKhr6xkroUSS+SsiF3XTlxMVq54bvxBNHB0HnSBRmgi14cdjhUvy/fMtl
+         gdau5+ZUXd9R7E1FQD26A22G4PI6hs0d1cDOFFVFNLUWQpYYKdeKQTWk+LmlJvc3PpSj
+         NNboc4l12wzSTutNqGLd4oNJ9OxsfwP3ugQOa0LDf01ZD2l9kQQUnAio+1EI8/F6I90y
+         CBoOE14OjyFNaHXtsLxUWEkFLeYfyBzqp9C5rmJHYr87GWLRcJwzW4LskCOJSZhri+m0
+         0XIDSqFtVfWxMBbJUwblt5zoQxxSCllh59qRDLqYCf1N12aUch673H4de3PfwPlPUxMx
+         6eBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0TKJ8QiOGw2cS0Spzetvjqqgie96cDTA3YQauzdWsow=;
+        b=Fc8axcqs2t5LZj0ny5KWoTYneUPgJvRxinv0QON7BWHmvHFpzaJJbXCWiyS/M+p+SI
+         dKEq8g89LP7l8FOCUlkVZE05aleAt92YorZ83NDm02S43D19k8jvcvkvrdQGMR5eSWI5
+         vQcGuawcxkzoTUEjZHVIqEWSJWjTXd5SgNc1IaKSLIBAayeCOg0XNlasc7+PXV0tWDTh
+         HrxZ8P0tV4ZS2RDwnh84bq/372K28nQ6AMLB+5/Vz2ElA2F61cEAepzQv1/zbklRgXi4
+         lBLxzdrA32Z8yVG8YxWyVNND/Jx8NmAzB5kdbZmsDoOYmgUH+XnWGsg5DWQ8U7NqcBIj
+         C2zQ==
+X-Gm-Message-State: AOAM5326U6YFjxyvJfjBjvDbyUndFPvdnsqe6PqwbInb6kN88HkXIHnw
+        ArgUPdMaKrM5W0Vi6lfUrWK2lw==
+X-Google-Smtp-Source: ABdhPJzVUb/kkKz4xX9b2SpN/rk2/QXWukAxXF6jnULCHWiub9Vfnn7sZ2Fu/H7SPfgKF+vPez+WeQ==
+X-Received: by 2002:a17:90a:3ac5:: with SMTP id b63mr1480680pjc.3.1597157147934;
+        Tue, 11 Aug 2020 07:45:47 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id bv17sm3003751pjb.0.2020.08.11.07.45.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Aug 2020 07:45:47 -0700 (PDT)
+Subject: Re: possible deadlock in __io_queue_deferred
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     syzbot <syzbot+996f91b6ec3812c48042@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+References: <00000000000035fdf505ac87b7f9@google.com>
+ <76cc7c43-2ebb-180d-c2c8-912972a3f258@kernel.dk>
+ <20200811140010.gigc2amchytqmrkk@steredhat>
+ <504b4b08-30c1-4ca8-ab3b-c9f0b58f0cfa@kernel.dk>
+ <20200811144419.blu4wufu7t4dfqin@steredhat>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <23b58871-b8b6-9f5c-2a7b-f4bade6dee6e@kernel.dk>
+Date:   Tue, 11 Aug 2020 08:45:46 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200811144419.blu4wufu7t4dfqin@steredhat>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michal Hocko <mhocko@suse.com> writes:
-> On Mon 10-08-20 18:07:39, Uladzislau Rezki wrote:
->> > On Sun 09-08-20 22:43:53, Uladzislau Rezki (Sony) wrote:
->> > Is there any fundamental problem to make zone raw_spin_lock?
->> > 
->> Good point. Converting a regular spinlock to the raw_* variant can solve 
->> an issue and to me it seems partly reasonable. Because there are other
->> questions if we do it:
->> 
->> a) what to do with kswapd and "wake-up path" that uses sleepable lock:
->>     wakeup_kswapd() -> wake_up_interruptible(&pgdat->kswapd_wait).
->
-> If there is no RT friendly variant for waking up process from the atomic
-> context then we might need to special case this for the RT tree.
+On 8/11/20 8:44 AM, Stefano Garzarella wrote:
+> On Tue, Aug 11, 2020 at 08:21:12AM -0600, Jens Axboe wrote:
+>> On 8/11/20 8:00 AM, Stefano Garzarella wrote:
+>>> On Mon, Aug 10, 2020 at 09:55:17AM -0600, Jens Axboe wrote:
+>>>> On 8/10/20 9:36 AM, syzbot wrote:
+>>>>> Hello,
+>>>>>
+>>>>> syzbot found the following issue on:
+>>>>>
+>>>>> HEAD commit:    449dc8c9 Merge tag 'for-v5.9' of git://git.kernel.org/pub/..
+>>>>> git tree:       upstream
+>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=14d41e02900000
+>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=9d25235bf0162fbc
+>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=996f91b6ec3812c48042
+>>>>> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+>>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133c9006900000
+>>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1191cb1a900000
+>>>>>
+>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>>> Reported-by: syzbot+996f91b6ec3812c48042@syzkaller.appspotmail.com
+>>>>
+>>>> Thanks, the below should fix this one.
+>>>
+>>> Yeah, it seems right to me, since only __io_queue_deferred() (invoked by
+>>> io_commit_cqring()) can be called with 'completion_lock' held.
+>>
+>> Right
+>>
+>>> Just out of curiosity, while exploring the code I noticed that we call
+>>> io_commit_cqring() always with the 'completion_lock' held, except in the
+>>> io_poll_* functions.
+>>>
+>>> That's because then there can't be any concurrency?
+>>
+>> Do you mean the iopoll functions? Because we're definitely holding it
+>> for the io_poll_* functions.
+> 
+> Right, the only one seems io_iopoll_complete().
+> 
+> So, IIUC, in this case we are actively polling the level below,
+> so there shouldn't be any asynchronous events, is it right?
 
-That's a solvable problem.
+Right, that's serialized by itself.
 
->> b) How RT people reacts on it? I guess they will no be happy.
->
-> zone->lock should be held for a very limited amount of time.
+-- 
+Jens Axboe
 
-Emphasis on should. free_pcppages_bulk() can hold it for quite some time
-when a large amount of pages are purged. We surely would have converted
-it to a raw lock long time ago otherwise.
-
-For regular enterprise stuff a few hundred microseconds might qualify as
-a limited amount of time. For advanced RT applications that's way beyond
-tolerable..
-
->> As i described before, calling the __get_free_page(0) with 0 as argument
->> will solve the (a). How correctly is it? From my point of view the logic
->> that bypass the wakeup path should be explicitly defined.
->
-> gfp_mask == 0 is GFP_NOWAIT (aka an atomic allocation request) which
-> doesn't wake up kswapd. So if the wakeup is a problem then this would be
-> a way to go.
-
-The wakeup is the least of my worries.
-
-> To me it would make more sense to support atomic allocations also for
-> the RT tree. Having both GFP_NOWAIT and GFP_ATOMIC which do not really
-> work for atomic context in RT sounds subtle and wrong.
-
-Well, no. RT moves almost everything out of atomic context which means
-that GFP_ATOMIC is pretty meanlingless on a RT kernel. RT sacrifies
-performance for determinism. It's a known tradeoff.
-
-Now RCU creates a new thing which enforces to make page allocation in
-atomic context possible on RT. What for?
-
-What's the actual use case in truly atomic context for this new thing on
-an RT kernel?
-
-The actual RCU code disabling interrupts is an implementation detail
-which can easily be mitigated with a local lock.
-
-Thanks,
-
-        tglx
