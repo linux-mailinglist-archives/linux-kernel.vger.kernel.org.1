@@ -2,125 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B9B2419EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCAB12419EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728615AbgHKKut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 06:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
+        id S1728555AbgHKKu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 06:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728558AbgHKKun (ORCPT
+        with ESMTP id S1728464AbgHKKu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 06:50:43 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEEF1C061787
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 03:50:42 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id o184so5764527vsc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 03:50:42 -0700 (PDT)
+        Tue, 11 Aug 2020 06:50:27 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DEB0C06174A;
+        Tue, 11 Aug 2020 03:50:26 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id b11so6395363lfe.10;
+        Tue, 11 Aug 2020 03:50:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k2vKN6djCQsHiDDNdDQAZoPqXDVr1uTSX4rbhVukZV4=;
-        b=StcvkEIk5iKzN5OGYcbplBV0OzvB0ZMp2ibijJdGRrErwoJvbHYeK1pKp/UpMPjzIr
-         flsBwhMlc++z3LCK/yeVKDvDpro44dHfnkl2omnbhxAgoDG+P6IGd26n9CVSxcE9lfI3
-         Dj3jE/cgQiQ8MsNtIQrlN/AYRSXLfZ9JsfZArNvSkObhtKbH7z+0RTuiJ3U8vZwj8DFL
-         /0AGq3IaH/elcmhTxdiz5s46xDEiOiXeqFSpTvt6ltk37JWbFGjBQJIfCnOFipDyYzcu
-         Tii8pcKUivwccp9vT96k74ltNumDEYTP6Ci0sLhtPwFwygkUYmWu1X7fGmrFHkCpWlmV
-         fkjA==
+        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=itXXXyW5i1H7kJa+q7FRrhS32KPXcWAeeqv3XPQhNJo=;
+        b=It7IO5oPi05wwwGQhoKst5i0BiFfurtyCO+dkAQ7DZaG2EZuQLZjEvLD+NwLvyyv4i
+         wISREV9XWj5I0XEa3TNPTLwpwScKy0cTveIaRzGFOqxKf6YsUM2DNjyqZbTBHzCkrD0L
+         ONzGb/lus8eMLtKDc8yWbNJhxjd7vBmvdxFooycc7wlLgqaU2p6tKhv15lRRNM/LCpMR
+         /0d9k+WAK0hbOT7RAM8P9+fSkL6uJ6LdlH8OLNe3/ia0T7R7ZuzNkmvpPTHm22gai47j
+         CEGeJUW1Pd21quHX9wmbVP9g4L2NaX7nxfN/9mwtACqmHuGTsBszoGtfqW75p7NhZ3t3
+         8DvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k2vKN6djCQsHiDDNdDQAZoPqXDVr1uTSX4rbhVukZV4=;
-        b=DPTcSrnKv8Ak2cjMbaTOcRDkXbM125IzlNhrTwIz5LmZrFC4IjKxXpL2G3n433GFxc
-         veX839sZXMxiMWabph4JkD5FLAI7DQLN+bnQV3c6m2ufMiDjhpXoxcd9GEVF2gc3Ixad
-         hHW+86DNUqDiNvTRFsMGTaz+IvDjut2BsuD2BHfRKb88HQauSYTt1ajgeRIukqvYBBrB
-         Kq+Z2F8WWrMemGGDOsEc1Whs4ayDQG/seeGWzmzrmcLz0LvwHHhzdijDydiiPU3HxMck
-         /jyx+4wZiCd5qV5zMKC3FuFE4r3htejv820fK8D2CfjBHUa4h0sxxwTq5/JCm3CvkuB8
-         846Q==
-X-Gm-Message-State: AOAM531mR8cld0AZI9hKUNKwXhG+V+vVYEs0tNh5BAAMPecx0YnZr9kc
-        Oi887upcNFQYEF9r/fYciXStRsxs
-X-Google-Smtp-Source: ABdhPJyXkbaLKSFzFjFcOyXXlJNUjYDaOZZQJ8/II/7D97FBxr+JxrrZN/sY/PKZ00kCAgM5TGoTiw==
-X-Received: by 2002:a67:8750:: with SMTP id j77mr22962416vsd.5.1597143041070;
-        Tue, 11 Aug 2020 03:50:41 -0700 (PDT)
-Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com. [209.85.217.52])
-        by smtp.gmail.com with ESMTPSA id h139sm6315251vke.2.2020.08.11.03.50.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Aug 2020 03:50:39 -0700 (PDT)
-Received: by mail-vs1-f52.google.com with SMTP id k25so347646vsm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 03:50:39 -0700 (PDT)
-X-Received: by 2002:a67:fdc4:: with SMTP id l4mr23523503vsq.51.1597143038561;
- Tue, 11 Aug 2020 03:50:38 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
+         :date:message-id:mime-version;
+        bh=itXXXyW5i1H7kJa+q7FRrhS32KPXcWAeeqv3XPQhNJo=;
+        b=cIIicv6S8JSHss0aRYlRgL4iJ0a/uEQ/vh23I3v5bSvizrtcTzhOd1oelnux9n2SWr
+         sFwQFcpyEQyl08dVzwexT9/40A801CHXewJ3ao9izIWoaHDQ16XMirApmEYr8zVkz2jT
+         sdfS7ZfP7q2cUzU9C7081OK0ctB9SREJATKji3Gn3pPld+eTok4L+wc70EzhJLOiodvB
+         ZM74PldUEcJ3G5v7AT7GH9tomRLjvQz6iavxhkE1WTqdo+O2G7sHg8ggeBIs3BwwVjIM
+         z6ZOOUfs/SNJzt29i7CEIoVVu5jigyVtH1z0gxH3XkKEn87MIgY13pdC/fCF9ojzBLeO
+         lz9w==
+X-Gm-Message-State: AOAM531KnTQK1w3P77TmeAkyUZJOJj2FSIU1B0PeBgkvOP0zeJW5UHo/
+        wjR0dTWTf1ki7WQp+FeGcNg=
+X-Google-Smtp-Source: ABdhPJzBQkgcMck8wo0i1wUSYyiTkVCmJeEjNsemCRe808B9HyYMG2Phjl8ePTDM2XdHogFpyzVI1w==
+X-Received: by 2002:a19:102:: with SMTP id 2mr2940050lfb.54.1597143025007;
+        Tue, 11 Aug 2020 03:50:25 -0700 (PDT)
+Received: from saruman ([194.34.132.58])
+        by smtp.gmail.com with ESMTPSA id u6sm10006959ljg.105.2020.08.11.03.50.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 11 Aug 2020 03:50:23 -0700 (PDT)
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Paras Sharma <parashar@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jslaby@suse.com>, linux-arm-msm@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paras Sharma <parashar@codeaurora.org>
+Subject: Re: [PATCH V2] serial: qcom_geni_serial: To correct QUP Version detection logic
+In-Reply-To: <1597131794-1076-1-git-send-email-parashar@codeaurora.org>
+References: <1597131794-1076-1-git-send-email-parashar@codeaurora.org>
+Date:   Tue, 11 Aug 2020 13:50:19 +0300
+Message-ID: <871rkdpic4.fsf@kernel.org>
 MIME-Version: 1.0
-References: <20200809023548.684217-1-xie.he.0141@gmail.com>
- <CA+FuTSe-FaQFn4WNvVPJ1v+jVZAghgd1AZc-cWn2+GjPR4GzVQ@mail.gmail.com>
- <CAJht_EOao3-kA-W-SdJqKRiFMAFUxw7OARFGY5DL8pXvKd4TLw@mail.gmail.com>
- <CA+FuTSc7c+XTDU10Bh1ZviQomHgiTjiUvOO0iR1X95rq61Snrg@mail.gmail.com> <CAJht_EORX2intix=HxS+U+O1hiuSb25=GWi5ONHtFdEF_BS_Ng@mail.gmail.com>
-In-Reply-To: <CAJht_EORX2intix=HxS+U+O1hiuSb25=GWi5ONHtFdEF_BS_Ng@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 11 Aug 2020 12:50:01 +0200
-X-Gmail-Original-Message-ID: <CA+FuTSfS1XX9ag6npPM95Tiu_hhuan+Foxe1B+_66M-cf+26UA@mail.gmail.com>
-Message-ID: <CA+FuTSfS1XX9ag6npPM95Tiu_hhuan+Foxe1B+_66M-cf+26UA@mail.gmail.com>
-Subject: Re: [PATCH net] drivers/net/wan/x25_asy: Added needed_headroom and a
- skb->len check
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>, andrew.hendry@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > 2) The code quality of this driver is actually very low, and I also
-> > > hope to improve it gradually. Actually this driver had been completely
-> > > broken for many years and no one had noticed this until I fixed it in
-> > > commit 8fdcabeac398 (drivers/net/wan/x25_asy: Fix to make it work)
-> > > last month.
-> >
-> > Just curious: how come that netif_rx could be removed?
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+
+Hi,
+
+Paras Sharma <parashar@codeaurora.org> writes:
+> The current implementation reduces the sampling rate by half
+> if qup HW version greater is than 2.5 by checking if the geni
+                    ^^^^^^^^^^^^^^^
+                    is greater than
+
+could, possibly, be fixed while applying.
+
+> SE major version is greater than 2 and geni SE minor version
+> is greater than 5.
 >
-> When receiving data, the driver should only submit skb to upper layers
-> after it has been processed by the lapb module, i.e., it should only
-> call netif_rx in the function x25_asy_data_indication. The removed
-> netif_rx is in the function x25_asy_bump. This function is responsible
-> for passing the skb to the lapb module to process. It doesn't make
-> sense to call netif_rx here. If we call netif_rx here, we may pass
-> control frames that shouldn't be passed to upper layers (and have been
-> consumed and freed by the lapb module) to upper layers.
-
-Ah of course. Thanks for explaining.
-
-> > One thing to keep in mind is that AF_PACKET sockets are not the normal
-> > datapath. AF_X25 sockets are. But you mention that you also exercise
-> > the upper layer? That gives confidence that these changes are not
-> > accidentally introducing regressions for the default path while fixing
-> > oddly crafted packets with (root only for a reason) packet sockets.
+> This implementation fails when the version is 3 or greater.
 >
-> Yes, I test with AF_X25 sockets too to make sure the changes are OK.
-> I usually test AF_X25 sockets with:
-> https://github.com/hyanggi/testing_linux/blob/master/network_x25/x25/server.c
-> https://github.com/hyanggi/testing_linux/blob/master/network_x25/x25/client.c
+> Hence by adding the another check for geni SE major version,
+> this problem can be solved.
+>
+> Signed-off-by: Paras Sharma <parashar@codeaurora.org>
+> ---
+>  drivers/tty/serial/qcom_geni_serial.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/q=
+com_geni_serial.c
+> index 3aa29d2..a9f92d8 100644
+> --- a/drivers/tty/serial/qcom_geni_serial.c
+> +++ b/drivers/tty/serial/qcom_geni_serial.c
+> @@ -995,7 +995,8 @@ static void qcom_geni_serial_set_termios(struct uart_=
+port *uport,
+>  	sampling_rate =3D UART_OVERSAMPLING;
+>  	/* Sampling rate is halved for IP versions >=3D 2.5 */
+>  	ver =3D geni_se_get_qup_hw_version(&port->se);
+> -	if (GENI_SE_VERSION_MAJOR(ver) >=3D 2 && GENI_SE_VERSION_MINOR(ver) >=
+=3D 5)
+> +	if ((GENI_SE_VERSION_MAJOR(ver) >=3D 2 && GENI_SE_VERSION_MINOR(ver) >=
+=3D 5)
+> +		|| GENI_SE_VERSION_MAJOR(ver) >=3D 3)
 
-Excellent. Thanks for the link. Good to know that these changes are
-getting real code coverage.
+it looks like having a single GENI_SE_VERSION() that returns MAJOR and
+MINOR without STEP would look better here. Then you could use:
 
-> I became interested in X.25 when I was trying different address
-> families that Linux supported. I tried AF_X25 sockets. And then I
-> tried to use the X.25 link layer directly through AF_PACKET. I believe
-> both AF_X25 sockets and AF_PACKET sockets need to work without
-> problems with X.25 drivers - lapbether and x25_asy. There is another
-> X.25 driver (hdlc_x25) in the kernel. I haven't been able to run that
-> driver. But that driver seems to be the real driver which is really
-> used, and I know Martin Schiller <ms@dev.tdt.de> is an active user and
-> developer of that driver.
+	if (GENI_SE_VERSION(ver) >=3D 0x20050000)
 
-Great, sounds like we might have additional LAPB and X25 maintainers soon? :)
+and it would work for any future version. Not a strong opinion, though
 
-MAINTAINERS lists Andrew Hendry as maintainer for X.25. Please do CC them.
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl8yd+sACgkQzL64meEa
+mQZtng/+ME8/MzGicCyBG2nyh/gkrqd24TNxjGISKjkK1uQsWLFOC6SnVdop1Dk9
+o20Wyp1hqcLebKQ5QKXagqYc7Wc8w9NxyeWeaqiJ+QX23NEFyQ+EKrgG+KzcyhuF
+90UNVhDlimcHlpUzNJESKgh4bHljYEJIrz0nODIUA5ipuvCfHL1SSEoZrFOBiKu6
+WJSAsELXv3DcKICvND3JqW8kNXkX/eAbwmfEoWuytdd8KnNmSv0tCvFGN2GNXpI4
+mrFrbtWBfBR3DYsP38dVT9VFMEhvUadj1bBaIoUW+wLR3Vmqc+tsq/Kg/C+vKrkN
+6ynWj6cvkmZANY3x9i4tTLc3eZN+I7ic5BQFR2ecMP9B9jVdiS+Y2sMgnoIGPpKN
+EAJtOZXAdmc8eLMYKPabvQTcdlLZ0d3I1/SCI7vLbmnOW0Mlq4KPfQPwjAPjZ89C
+CeeCDQvTHqc4kB3um9216CGT2gXEgZ7VpRQ96FI37o/uqSnw3HGc1fND3XmAwKeQ
+U8cfrdozff1KXLZTHQN3Oei7N/dNURMBbqwwSdpz9j6ryI0ONDeBmAesx/waOjhK
+UpCk9OgJZ5QwmAN/ycA4F+3703rWZw8rawFNrfBNAFZ3U1wS4QY52lSfr2M5TF/0
+bjhkNxaxkLW+l+WMNzC+dTqNLlmfmFDQ+NaRyp/wUWuUP5VDseA=
+=wvqF
+-----END PGP SIGNATURE-----
+--=-=-=--
