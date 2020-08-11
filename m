@@ -2,131 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC852417BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC122417B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728266AbgHKH7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 03:59:36 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:53622 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726397AbgHKH7f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 03:59:35 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07B7uYE0113987;
-        Tue, 11 Aug 2020 07:59:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=53EN8jKASnS7i1eXPDv4p2t1yWjIDbQVRwGz+VVRrIE=;
- b=upl0Pzk8ZJUdOITxSNUhtcfc3rXWAbR9iiKllxb1lxQXDWnEwvB/JGxoackkkpHd8Bk7
- HHLUTvn7hUFwN+hjsDzU/Q/cWhahMR0OLt79yyuYxoZShevBYEZ/whzgukWxyAc4HfXy
- 63GTtT/yiLQO2obBDAs42iXtvUJBiya06JNJGl7EdCpkWxZ1WVCpuOXEo2SQ/8I9iVFC
- eLH46z5Vh0lqNOM2gLsXaHPu6+iG/byXSRE65DTI8l5P6PxhjKS2BTNiuJzFjq/uCoV9
- GZSoFVRHPGYJoZj0fTIglMcLgNxbPqLwn04c5j9ONL0IpeKftM628VEw+Pkchr/k7563 UA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 32smpnb04t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 11 Aug 2020 07:59:21 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07B7rQw4114558;
-        Tue, 11 Aug 2020 07:57:21 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 32u3h12k4j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Aug 2020 07:57:21 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07B7vBZb008189;
-        Tue, 11 Aug 2020 07:57:11 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 11 Aug 2020 07:57:11 +0000
-Date:   Tue, 11 Aug 2020 10:57:02 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, sumit.semwal@linaro.org,
-        colton.w.lewis@protonmail.com, Ori.Messinger@amd.com,
-        m.szyprowski@samsung.com, bernard@vivo.com,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] drm: amdgpu: Use the correct size when allocating memory
-Message-ID: <20200811075702.GE5493@kadam>
-References: <20200809203406.751971-1-christophe.jaillet@wanadoo.fr>
- <20200810154213.GM1793@kadam>
- <8c414dd7-4a80-6ff2-03de-5340fb0d9c61@wanadoo.fr>
+        id S1728322AbgHKH6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 03:58:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59894 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726397AbgHKH6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 03:58:23 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DF995AB9F;
+        Tue, 11 Aug 2020 07:58:42 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 14D22DAFD3; Tue, 11 Aug 2020 09:57:21 +0200 (CEST)
+Date:   Tue, 11 Aug 2020 09:57:20 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 4.4 03/16] fs/btrfs: Add cond_resched() for
+ try_release_extent_mapping() stalls
+Message-ID: <20200811075720.GL2026@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+References: <20200810191443.3795581-1-sashal@kernel.org>
+ <20200810191443.3795581-3-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8c414dd7-4a80-6ff2-03de-5340fb0d9c61@wanadoo.fr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9709 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 spamscore=0 suspectscore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008110049
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9709 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
- bulkscore=0 impostorscore=0 phishscore=0 clxscore=1015 spamscore=0
- malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008110050
+In-Reply-To: <20200810191443.3795581-3-sashal@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 08:41:14PM +0200, Marion & Christophe JAILLET wrote:
+On Mon, Aug 10, 2020 at 03:14:30PM -0400, Sasha Levin wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
 > 
-> Le 10/08/2020 à 17:42, Dan Carpenter a écrit :
-> > On Sun, Aug 09, 2020 at 10:34:06PM +0200, Christophe JAILLET wrote:
-> > > When '*sgt' is allocated, we must allocated 'sizeof(**sgt)' bytes instead
-> > > of 'sizeof(*sg)'. 'sg' (i.e. struct scatterlist) is smaller than
-> > > 'sgt' (i.e struct sg_table), so this could lead to memory corruption.
-> > The sizeof(*sg) is bigger than sizeof(**sgt) so this wastes memory but
-> > it won't lead to corruption.
-> > 
-> >      11  struct scatterlist {
-> >      12          unsigned long   page_link;
-> >      13          unsigned int    offset;
-> >      14          unsigned int    length;
-> >      15          dma_addr_t      dma_address;
-> >      16  #ifdef CONFIG_NEED_SG_DMA_LENGTH
-> >      17          unsigned int    dma_length;
-> >      18  #endif
-> >      19  };
-> > 
-> >      42  struct sg_table {
-> >      43          struct scatterlist *sgl;        /* the list */
-> >      44          unsigned int nents;             /* number of mapped entries */
-> >      45          unsigned int orig_nents;        /* original size of list */
-> >      46  };
-> > 
-> > regards,
-> > dan carpenter
+> [ Upstream commit 9f47eb5461aaeb6cb8696f9d11503ae90e4d5cb0 ]
 > 
+> Very large I/Os can cause the following RCU CPU stall warning:
 > 
-> My bad. I read 'struct scatterlist sgl' (without the *)
-> Thanks for the follow-up, Dan.
+> RIP: 0010:rb_prev+0x8/0x50
+> Code: 49 89 c0 49 89 d1 48 89 c2 48 89 f8 e9 e5 fd ff ff 4c 89 48 10 c3 4c =
+> 89 06 c3 4c 89 40 10 c3 0f 1f 00 48 8b 0f 48 39 cf 74 38 <48> 8b 47 10 48 85 c0 74 22 48 8b 50 08 48 85 d2 74 0c 48 89 d0 48
+> RSP: 0018:ffffc9002212bab0 EFLAGS: 00000287 ORIG_RAX: ffffffffffffff13
+> RAX: ffff888821f93630 RBX: ffff888821f93630 RCX: ffff888821f937e0
+> RDX: 0000000000000000 RSI: 0000000000102000 RDI: ffff888821f93630
+> RBP: 0000000000103000 R08: 000000000006c000 R09: 0000000000000238
+> R10: 0000000000102fff R11: ffffc9002212bac8 R12: 0000000000000001
+> R13: ffffffffffffffff R14: 0000000000102000 R15: ffff888821f937e0
+>  __lookup_extent_mapping+0xa0/0x110
+>  try_release_extent_mapping+0xdc/0x220
+>  btrfs_releasepage+0x45/0x70
+>  shrink_page_list+0xa39/0xb30
+>  shrink_inactive_list+0x18f/0x3b0
+>  shrink_lruvec+0x38e/0x6b0
+>  shrink_node+0x14d/0x690
+>  do_try_to_free_pages+0xc6/0x3e0
+>  try_to_free_mem_cgroup_pages+0xe6/0x1e0
+>  reclaim_high.constprop.73+0x87/0xc0
+>  mem_cgroup_handle_over_high+0x66/0x150
+>  exit_to_usermode_loop+0x82/0xd0
+>  do_syscall_64+0xd4/0x100
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 > 
-> Doesn't smatch catch such mismatch?
-> (I've not run smatch for a while, so it is maybe reported)
-
-That's why I was investigating it, because Smatch didn't catch it.
-
-Smatch would have warned if it led to memory corruption.  Smatch also
-tries to detect struct mismatches as a separate check but for some
-reason it missed it.  I'm not totally sure why yet.  I suspect that it's
-a complicated internal reason where Sparse is the sizeof to a normal
-number...  It's a known issue and hard to fix.
-
+> On a PREEMPT=n kernel, the try_release_extent_mapping() function's
+> "while" loop might run for a very long time on a large I/O.  This commit
+> therefore adds a cond_resched() to this loop, providing RCU any needed
+> quiescent states.
 > 
-> Well, the proposal is still valid, even if it has less impact as initially
-> thought.
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-Yep.
+Paul,
 
-regards,
-dan carpenter
+this patch was well hidden in some huge RCU pile
+(https://lore.kernel.org/lkml/20200623002147.25750-11-paulmck@kernel.org/)
 
+I wonder why you haven't CCed linux-btrfs, I spotted the patch queued
+for stable by incidentally. The timestamp is from June, that's quite
+some time ago. We can deal with one more patch and I tend to reply with
+acks quickly for easy patches like this to not block other peoples work
+but I'm a bit disappointed by sidestepping maintained subsystems. It's
+not just this patch, it happens from time time only to increase the
+disapointement.
