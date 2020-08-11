@@ -2,75 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3403524146A
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 03:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4874E241470
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 03:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgHKBHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 21:07:54 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:23492 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727979AbgHKBHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 21:07:43 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BQZSZ0zymzLn;
-        Tue, 11 Aug 2020 03:07:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1597108062; bh=gYTKXUJutik2+Fs5P1UBl/jeqdfUWT0Kq6EVMrvv6U0=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=CbPBKH1/HAGPGR2UqFXWoat9fIdTQCxfT38z++7jQytdFuepdoUUgDgECL4JxWVb5
-         AtpeYKLvWigemKU8rorlVkL8EbYmRuz8idqJrAecH1KcmqgPOH3xGXDPul8uyYEei8
-         XPoYK8tM0w+8cdVPTokmP+PBbC8wYLF31dIWmjSX2aW3f9L9+o9OFNqTv/YjB4pKq1
-         b39g7xajRl0EeKfaUe/zQH6kkUGgflbKyysbKZg4VHkKHL2LOA5R08oNtczhRfuzCB
-         4iHb3FMDj7gsZ2fCuTMYpeLOjMwdOrLHqLaYQJhK2s29HWs0QJSJ4k/vdMKzyZItfB
-         j5XuyDwIGGn/A==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Tue, 11 Aug 2020 03:07:41 +0200
-Message-Id: <169f98e7a2064a184167abc0f206f3a92513b8d8.1597107682.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1597107682.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1597107682.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 7/7] regulator: remove superfluous lock in
- regulator_resolve_coupling()
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Vladimir Zapolskiy <vz@mleia.com>
+        id S1728024AbgHKBLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 21:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727002AbgHKBLb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 21:11:31 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B816C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 18:11:31 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id h2so7729096pgc.19
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 18:11:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=hZlSontx+TLwHcuOl3hzbTHUYgf3jf+x/xXiXRfowoA=;
+        b=XHm0e4TRpae8mWNjQYrTYKPVSJRU+t/VHQMdxFHwdS6jWGfXUm3yKc9g9CjmB+yuO2
+         evHZa5O+BSv5/MfifDnhN61AY2lafaEm678cEZVvvZY1hqy+qwy3NkptIjuchWaaFXKA
+         duzLUUATH4nBhGJpDkmwICsHOPSaCZJ1nHuPfni2htZQ6OhDwfANXdJeyw/quhNrpjbe
+         5Wdga7j44i7JMffxqHkt2+v+YBRzU5gKXr1J58iABmh3uBf3R1TR4ALkjrL1nkkLUNx6
+         QkuzMNCI2D5Z+PlYl+LUbwjnZRDR7dgoYYyDR4oRn/w/Bs6JP0rwxD1b5PeAyr/18+nl
+         WLqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=hZlSontx+TLwHcuOl3hzbTHUYgf3jf+x/xXiXRfowoA=;
+        b=lMOsDav7fJnVz4XN57u4m2ZCnWYIwHZCaLNGFDU0bw8RFnE7InLVSsaq0ow81aO58u
+         y28DN8EhTC1FRA5woITwQrAUjAm/riSLJqvlBSkI4eHv4rpNnfSthlSlLZVrBd8kCI2C
+         pnI6jQ9fCtxtEU2OXeCSBuRYXzx8VwR6SzNZAXkIqwLu5myHW9DrSCZuUC5ung/7eVC4
+         pPkwJeIQYXDDQ/B2D8qjW7FBezD+NxbkViDzU9HDYCyrKV6pBqPTF9vZTODQPSzoX80t
+         4qAghsWxVrZt6wn8XMHHFB7TNvFOaMI5zbXsFTyN4OFV1RVvEFGrsp+qKP6CnGGEj5Bo
+         SdYA==
+X-Gm-Message-State: AOAM531aTYHqqbe/jA56JRxXEgGzdJQUVGk6DlYcZzDeo9dg8por/F5f
+        qGwy10svWWCsYsqCM7V7jD272xqbmEg=
+X-Google-Smtp-Source: ABdhPJyzlY66TrseG9waiU2ZAVrGPhiEYGh+I2M3yOj2nUtO8v/0Ao5ce1AXeibXrLLro5kg4Hv6JMIF1ns=
+X-Received: by 2002:a63:5b65:: with SMTP id l37mr23190683pgm.72.1597108290020;
+ Mon, 10 Aug 2020 18:11:30 -0700 (PDT)
+Date:   Mon, 10 Aug 2020 18:11:26 -0700
+Message-Id: <20200811011126.130297-1-badhri@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.236.gb10cc79966-goog
+Subject: [PATCH v1] usb: typec: tcpm: Fix TDA 2.2.1.1 and TDA 2.2.1.2 failures
+From:   Badhri Jagan Sridharan <badhri@google.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code modifies rdev, but locks c_rdev instead. The bug remains:
-stored c_rdev could be freed just after unlock anyway. This doesn't blow
-up because regulator_list_mutex taken outside holds it together.
+From the spec:
+"7.1.5 Response to Hard Resets
+Hard Reset Signaling indicates a communication failure has occurred and
+the Source Shall stop driving VCONN, Shall remove Rp from the VCONN pin
+and Shall drive VBUS to vSafe0V as shown in Figure 7-9. The USB connection
+May reset during a Hard Reset since the VBUS voltage will be less than
+vSafe5V for an extended period of time. After establishing the vSafe0V
+voltage condition on VBUS, the Source Shall wait tSrcRecover before
+re-applying VCONN and restoring VBUS to vSafe5V. A Source Shall conform
+to the VCONN timing as specified in [USB Type-C 1.3]."
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 ---
- drivers/regulator/core.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/usb/typec/tcpm/tcpm.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index b85ec974944e..f8834559a2fb 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -4942,13 +4942,9 @@ static void regulator_resolve_coupling(struct regulator_dev *rdev)
- 			return;
- 		}
- 
--		regulator_lock(c_rdev);
--
- 		c_desc->coupled_rdevs[i] = c_rdev;
- 		c_desc->n_resolved++;
- 
--		regulator_unlock(c_rdev);
--
- 		regulator_resolve_coupling(c_rdev);
- 	}
- }
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 3ef37202ee37..e41c4e5d3c71 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -3372,13 +3372,19 @@ static void run_state_machine(struct tcpm_port *port)
+ 			tcpm_set_state(port, SNK_HARD_RESET_SINK_OFF, 0);
+ 		break;
+ 	case SRC_HARD_RESET_VBUS_OFF:
+-		tcpm_set_vconn(port, true);
++		/*
++		 * 7.1.5 Response to Hard Resets
++		 * Hard Reset Signaling indicates a communication failure has occurred and the
++		 * Source Shall stop driving VCONN, Shall remove Rp from the VCONN pin and Shall
++		 * drive VBUS to vSafe0V as shown in Figure 7-9.
++		 */
++		tcpm_set_vconn(port, false);
+ 		tcpm_set_vbus(port, false);
+ 		tcpm_set_roles(port, port->self_powered, TYPEC_SOURCE,
+ 			       tcpm_data_role_for_source(port));
+-		tcpm_set_state(port, SRC_HARD_RESET_VBUS_ON, PD_T_SRC_RECOVER);
+ 		break;
+ 	case SRC_HARD_RESET_VBUS_ON:
++		tcpm_set_vconn(port, true);
+ 		tcpm_set_vbus(port, true);
+ 		port->tcpc->set_pd_rx(port->tcpc, true);
+ 		tcpm_set_attached_state(port, true);
+@@ -3944,7 +3950,11 @@ static void _tcpm_pd_vbus_off(struct tcpm_port *port)
+ 		tcpm_set_state(port, SNK_HARD_RESET_WAIT_VBUS, 0);
+ 		break;
+ 	case SRC_HARD_RESET_VBUS_OFF:
+-		tcpm_set_state(port, SRC_HARD_RESET_VBUS_ON, 0);
++		/*
++		 * After establishing the vSafe0V voltage condition on VBUS, the Source Shall wait
++		 * tSrcRecover before re-applying VCONN and restoring VBUS to vSafe5V.
++		 */
++		tcpm_set_state(port, SRC_HARD_RESET_VBUS_ON, PD_T_SRC_RECOVER);
+ 		break;
+ 	case HARD_RESET_SEND:
+ 		break;
 -- 
-2.20.1
+2.28.0.236.gb10cc79966-goog
 
