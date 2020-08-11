@@ -2,117 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC108241469
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 03:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2840824146C
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 03:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgHKBHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 21:07:53 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:1488 "EHLO rere.qmqm.pl"
+        id S1728131AbgHKBIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 21:08:06 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:48026 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727977AbgHKBHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 21:07:42 -0400
+        id S1727978AbgHKBHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 21:07:43 -0400
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BQZSX5HVlzfN;
-        Tue, 11 Aug 2020 03:07:40 +0200 (CEST)
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BQZSY2hWzzL3;
+        Tue, 11 Aug 2020 03:07:41 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1597108060; bh=eXLNbW9Ivy3pD8Py+AuHYcCa1pegGO6FO3h5Gange9c=;
+        t=1597108061; bh=XBigUQcy+V9cJkV3vEIxp3zZ8VW9N8bjjMb3WXILdFs=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=B0D3oQSW2i2W3C4Sm3cKiGnrOlDbdUG0UOhmvSHn24mAGVRVpoxZGMuRycJMVXb6h
-         +CfHqvSUTLhC4FTCUviOtCVMAa7zBMpjLFktUW0Fo3/+OPwk8/fkHQUHioVW/K5RkS
-         EklCRWd7JfE/epefzu3/kl+oP1VZmXkkJckgPoKqXxvRRWhVl33/hk1LX2ejaGeq6B
-         +63eXKJCVA5FQgZm310KTtSxwraxfXyA9sM67eNUI6s6DiwZhUu9m1IPSovfyFazHV
-         rPD4mHq2jUxYWyY3pypeDhcUQKOIP3JDFFeDXDLiJk/U3yQGo0XF4sctA4WP2PTjrJ
-         KmOyDWMOB26nA==
+        b=jWElF0wWl0RXfF9CyawDJe+2SCeIiU4od9RBi/GJMtx1NzFe+rGY+IfvH9vXBOWwq
+         urMnQRHRNnxT8YXWziMVy8ABSkkwIAYMoOAgV+8a75epbaXxvR2o018Xd/KnNrgisj
+         BjPKvzFwktqF4CqzocFPKJz+hQD1uQ8a47tBkrN5/sh1mLqqJ74z5UFe65L/QKg2Ar
+         mDlWM4w5+zfAwVlcmQ8oIb0FRI2gp/Jn2msvm/rgGchPaY2HbWC2LA89uBH/pCPN8K
+         f0ucJ219nZHjQYFpLXRWYK2DK7zl2Y5sSJljhpq6vTEFv4Kz6PYsJAgQ2oRtLagS9A
+         3dsuk9EJgaEMg==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.102.4 at mail
 Date:   Tue, 11 Aug 2020 03:07:40 +0200
-Message-Id: <f106ae5b37612b36cb817691fb690e5456aea0ee.1597107682.git.mirq-linux@rere.qmqm.pl>
+Message-Id: <eb061133ecd1dd856ddff2dfe7a891e00a56e3f0.1597107682.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1597107682.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1597107682.git.mirq-linux@rere.qmqm.pl>
 From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 5/7] regulator: plug of_node leak in regulator_register()'s
- error path
+Subject: [PATCH 6/7] regulator: cleanup regulator_ena_gpio_free()
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 To:     Dmitry Osipenko <digetx@gmail.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>
-Cc:     Vladimir Zapolskiy <vz@mleia.com>, linux-kernel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Vladimir Zapolskiy <vz@mleia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By calling device_initialize() earlier and noting that kfree(NULL) is
-ok, we can save a bit of code in error handling and plug of_node leak.
-Fixed commit already did part of the work.
+Since only regulator_ena_gpio_request() allocates rdev->ena_pin, and it
+guarantees that same gpiod gets same pin structure, it is enough to
+compare just the pointers. Also we know there can be only one matching
+entry on the list. Rework the code take advantage of the facts.
 
-Cc: stable@vger.kernel.org
-Fixes: 9177514ce349 ("regulator: fix memory leak on error path of regulator_register()")
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/regulator/core.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ drivers/regulator/core.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 0408c4e1d9a8..a9ff2ad55ee7 100644
+index a9ff2ad55ee7..b85ec974944e 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -5137,6 +5137,7 @@ regulator_register(const struct regulator_desc *regulator_desc,
- 		ret = -ENOMEM;
- 		goto rinse;
- 	}
-+	device_initialize(&rdev->dev);
+@@ -2260,19 +2260,19 @@ static void regulator_ena_gpio_free(struct regulator_dev *rdev)
  
- 	/*
- 	 * Duplicate the config so the driver could override it after
-@@ -5144,9 +5145,8 @@ regulator_register(const struct regulator_desc *regulator_desc,
- 	 */
- 	config = kmemdup(cfg, sizeof(*cfg), GFP_KERNEL);
- 	if (config == NULL) {
--		kfree(rdev);
- 		ret = -ENOMEM;
--		goto rinse;
-+		goto clean;
+ 	/* Free the GPIO only in case of no use */
+ 	list_for_each_entry_safe(pin, n, &regulator_ena_gpio_list, list) {
+-		if (pin->gpiod == rdev->ena_pin->gpiod) {
+-			if (pin->request_count <= 1) {
+-				pin->request_count = 0;
+-				gpiod_put(pin->gpiod);
+-				list_del(&pin->list);
+-				kfree(pin);
+-				rdev->ena_pin = NULL;
+-				return;
+-			} else {
+-				pin->request_count--;
+-			}
+-		}
++		if (pin != rdev->ena_pin)
++			continue;
++
++		if (--pin->request_count)
++			break;
++
++		gpiod_put(pin->gpiod);
++		list_del(&pin->list);
++		kfree(pin);
++		break;
  	}
++
++	rdev->ena_pin = NULL;
+ }
  
- 	init_data = regulator_of_get_init_data(dev, regulator_desc, config,
-@@ -5158,10 +5158,8 @@ regulator_register(const struct regulator_desc *regulator_desc,
- 	 * from a gpio extender or something else.
- 	 */
- 	if (PTR_ERR(init_data) == -EPROBE_DEFER) {
--		kfree(config);
--		kfree(rdev);
- 		ret = -EPROBE_DEFER;
--		goto rinse;
-+		goto clean;
- 	}
- 
- 	/*
-@@ -5214,7 +5212,6 @@ regulator_register(const struct regulator_desc *regulator_desc,
- 	}
- 
- 	/* register with sysfs */
--	device_initialize(&rdev->dev);
- 	rdev->dev.class = &regulator_class;
- 	rdev->dev.parent = dev;
- 	dev_set_name(&rdev->dev, "regulator.%lu",
-@@ -5292,13 +5289,11 @@ regulator_register(const struct regulator_desc *regulator_desc,
- 	mutex_lock(&regulator_list_mutex);
- 	regulator_ena_gpio_free(rdev);
- 	mutex_unlock(&regulator_list_mutex);
--	put_device(&rdev->dev);
--	rdev = NULL;
- clean:
- 	if (dangling_of_gpiod)
- 		gpiod_put(config->ena_gpiod);
--	kfree(rdev);
- 	kfree(config);
-+	put_device(&rdev->dev);
- rinse:
- 	if (dangling_cfg_gpiod)
- 		gpiod_put(cfg->ena_gpiod);
+ /**
 -- 
 2.20.1
 
