@@ -2,109 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A64241819
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 10:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA4524181E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 10:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbgHKIR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 04:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728254AbgHKIR0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 04:17:26 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B0FC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 01:17:25 -0700 (PDT)
-Received: from ramsan ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id E8HH230014C55Sk018HHG0; Tue, 11 Aug 2020 10:17:20 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1k5PTA-0000UC-Tn; Tue, 11 Aug 2020 10:17:16 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1k5PTA-0001g9-RW; Tue, 11 Aug 2020 10:17:16 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        linux-ide@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        stable <stable@vger.kernel.org>
-Subject: [PATCH v2] ata: sata_rcar: Fix DMA boundary mask
-Date:   Tue, 11 Aug 2020 10:17:12 +0200
-Message-Id: <20200811081712.4981-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
+        id S1728346AbgHKISy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 04:18:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48810 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728000AbgHKISx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 04:18:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A84E9AB8B;
+        Tue, 11 Aug 2020 08:19:12 +0000 (UTC)
+Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*()
+ helpers
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Marco Elver <elver@google.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        fenghua.yu@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        yu-cheng.yu@intel.com, sdeep@vmware.com,
+        virtualization@lists.linux-foundation.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Wei Liu <wei.liu@kernel.org>
+References: <CANpmjNO860SHpNve+vaoAOgarU1SWy8o--tUWCqNhn82OLCiew@mail.gmail.com>
+ <fe2bfa7f-132f-7581-a967-d01d58be1588@suse.com>
+ <20200807095032.GA3528289@elver.google.com>
+ <16671cf3-3885-eb06-79ff-4cbfaeeaea79@suse.com>
+ <20200807113838.GA3547125@elver.google.com>
+ <e5bf3e6a-efff-7170-5ee6-1798008393a2@suse.com>
+ <CANpmjNPau_DEYadey9OL+iFZKEaUTqnFnyFs1dU12o00mg7ofA@mail.gmail.com>
+ <20200807151903.GA1263469@elver.google.com>
+ <20200811074127.GR3982@worktop.programming.kicks-ass.net>
+ <a2dffeeb-04f0-8042-b39a-b839c4800d6f@suse.com>
+ <20200811081205.GV3982@worktop.programming.kicks-ass.net>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <ad08e473-bf61-b876-5de1-9e8bfd8b8911@suse.com>
+Date:   Tue, 11 Aug 2020 10:18:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200811081205.GV3982@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before commit 9495b7e92f716ab2 ("driver core: platform: Initialize
-dma_parms for platform devices"), the R-Car SATA device didn't have DMA
-parameters.  Hence the DMA boundary mask supplied by its driver was
-silently ignored, as __scsi_init_queue() doesn't check the return value
-of dma_set_seg_boundary(), and the default value of 0xffffffff was used.
+On 11.08.20 10:12, Peter Zijlstra wrote:
+> On Tue, Aug 11, 2020 at 09:57:55AM +0200, Jürgen Groß wrote:
+>> On 11.08.20 09:41, Peter Zijlstra wrote:
+>>> On Fri, Aug 07, 2020 at 05:19:03PM +0200, Marco Elver wrote:
+>>>
+>>>> My hypothesis here is simply that kvm_wait() may be called in a place
+>>>> where we get the same case I mentioned to Peter,
+>>>>
+>>>> 	raw_local_irq_save(); /* or other IRQs off without tracing */
+>>>> 	...
+>>>> 	kvm_wait() /* IRQ state tracing gets confused */
+>>>> 	...
+>>>> 	raw_local_irq_restore();
+>>>>
+>>>> and therefore, using raw variants in kvm_wait() works. It's also safe
+>>>> because it doesn't call any other libraries that would result in corrupt
+>>>
+>>> Yes, this is definitely an issue.
+>>>
+>>> Tracing, we also musn't call into tracing when using raw_local_irq_*().
+>>> Because then we re-intoduce this same issue all over again.
+>>>
+>>> Both halt() and safe_halt() are more paravirt calls, but given we're in
+>>> a KVM paravirt call already, I suppose we can directly use native_*()
+>>> here.
+>>>
+>>> Something like so then... I suppose, but then the Xen variants need TLC
+>>> too.
+>>
+>> Just to be sure I understand you correct:
+>>
+>> You mean that xen_qlock_kick() and xen_qlock_wait() and all functions
+>> called by those should gain the "notrace" attribute, right?
+>>
+>> I am not sure why the kick variants need it, though. IMO those are
+>> called only after the lock has been released, so they should be fine
+>> without notrace.
+> 
+> The issue happens when someone uses arch_spinlock_t under
+> raw_local_irq_*().
 
-Now the device has gained DMA parameters, the driver-supplied value is
-used, and the following warning is printed on Salvator-XS:
+Ah, okay.
 
-    DMA-API: sata_rcar ee300000.sata: mapping sg segment across boundary [start=0x00000000ffffe000] [end=0x00000000ffffefff] [boundary=0x000000001ffffffe]
-    WARNING: CPU: 5 PID: 38 at kernel/dma/debug.c:1233 debug_dma_map_sg+0x298/0x300
+> 
+>> And again: we shouldn't forget the Hyper-V variants.
+> 
+> Bah, my grep failed :/ Also *groan*, that's calling apic->send_IPI().
 
-(the range of start/end values depend on whether IOMMU support is
- enabled or not)
+I've seen that, too. :-(
 
-The issue here is that SATA_RCAR_DMA_BOUNDARY doesn't have bit 0 set, so
-any typical end value, which is odd, will trigger the check.
 
-Fix this by increasing the DMA boundary value by 1.
-
-Fixes: 8bfbeed58665dbbf ("sata_rcar: correct 'sata_rcar_sht'")
-Fixes: 9495b7e92f716ab2 ("driver core: platform: Initialize dma_parms for platform devices")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc: stable <stable@vger.kernel.org>
----
-v2:
-  - Add Reviewed-by, Tested-by, Cc.
-
-This is a fix for a regression in v5.7-rc5 that fell through the cracks.
-https://lore.kernel.org/linux-ide/20200513110426.22472-1-geert+renesas@glider.be/
-
-As by default the DMA debug code prints the first error only, this issue
-may be hidden on plain v5.7-rc5, where the FCP driver triggers a similar
-warning.  Merging commit dd844fb8e50b12e6 ("media: platform: fcp: Set
-appropriate DMA parameters", in v5.8-rc1) from the media tree fixes the
-FCP issue, and exposes the SATA issue.
-
-I added the second fixes tag because that commit is already being
-backported to stable kernels, and this patch thus needs backporting,
-too.
----
- drivers/ata/sata_rcar.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/ata/sata_rcar.c b/drivers/ata/sata_rcar.c
-index 141ac600b64c87ef..44b0ed8f6bb8a120 100644
---- a/drivers/ata/sata_rcar.c
-+++ b/drivers/ata/sata_rcar.c
-@@ -120,7 +120,7 @@
- /* Descriptor table word 0 bit (when DTA32M = 1) */
- #define SATA_RCAR_DTEND			BIT(0)
- 
--#define SATA_RCAR_DMA_BOUNDARY		0x1FFFFFFEUL
-+#define SATA_RCAR_DMA_BOUNDARY		0x1FFFFFFFUL
- 
- /* Gen2 Physical Layer Control Registers */
- #define RCAR_GEN2_PHY_CTL1_REG		0x1704
--- 
-2.17.1
-
+Juergen
