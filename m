@@ -2,86 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CE2241CEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14B1241CE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728914AbgHKPGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 11:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56512 "EHLO
+        id S1728864AbgHKPFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 11:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728850AbgHKPGN (ORCPT
+        with ESMTP id S1728817AbgHKPFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 11:06:13 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A1CC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 08:06:13 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 2so11900740qkf.10
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 08:06:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kKnx53M5XbyLLCCwOSDObubCS6cU/NfvJWrtPaFaVlk=;
-        b=Bv1Bl02Lx3IaqeN2DkPY+ruc6fzBfowKMA7iiIPJ+DiAJZsOy8szw6aoZ0TStGaHpZ
-         xilghORcnZqO5cX19vjFxySoMjbUkRFXfaZzw58Vc+NvQYR05SwB7jf9SpoISlQ6iZy7
-         dH1q403WO9OyWx0Z1nBbVbDc3Q4OihzLrYdrkNSOIzak0CHZwtUdc3Uh/25RvlQo/O1L
-         MnHoRfiTJ8rffT0ZepO4EWKqT7C/MNOc+lJa95lHzm0yHnksRf2JKSHIcet0AEiAXEIi
-         yMYJRK+Rm585q5ija7lhtB6mcKBWueW8BXrbPC5RnW9kvgoABAOO+Br1w5uKFRHA8t+S
-         bVUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kKnx53M5XbyLLCCwOSDObubCS6cU/NfvJWrtPaFaVlk=;
-        b=pZRkNsMJ4HSFbfHzqRT19F+dsrxpGo1LwwTbNJ4b96a3IJRXjcZBhoV1dOdUKGOSG4
-         PE/zxBKux8hKwM8X0oi/OwIybbGl+u1IC7EU3dysUl/Lgx9GVX2entzFxdjk2QiyYAnZ
-         /IkceN7GRYW+TYrr8D89HK65W+nlVl7jHUcDANEfODi8xww/ExwOzvrX0G7lbmN0OWJq
-         azzSy/UI9mjkYobTMXcSw7nf6soaImnN5GjL4Uv5w4V5PLXLRlQTP0wr7CKB5kxVI4n8
-         JZZXYVIsQFEEuPutVVIqBx1h454y+cFGo6niuwD+vKW7W2pZeTj4WuIPZ6nrX1IDmkiB
-         6rwg==
-X-Gm-Message-State: AOAM532VJeogpnJqAe7vNSuydQSL+SZs6JUDlcp5P/zCI2j3X0AWwNS2
-        UellSgFh0XPBpxrpbxwCIhvAFgd6/uU=
-X-Google-Smtp-Source: ABdhPJyJvJGap5I6DiGS6pq3ZWpGuLvnm4JDu/uIeSUz8BOTqNkzo/600m7MHlYvaSL4nuuqzQKmlQ==
-X-Received: by 2002:a37:a354:: with SMTP id m81mr1571997qke.277.1597158369961;
-        Tue, 11 Aug 2020 08:06:09 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:2dd0])
-        by smtp.gmail.com with ESMTPSA id k48sm21761270qtk.44.2020.08.11.08.06.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Aug 2020 08:06:09 -0700 (PDT)
-Date:   Tue, 11 Aug 2020 11:05:05 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/5] mm: memcg/percpu: per-memcg percpu memory
- statistics
-Message-ID: <20200811150505.GA650506@cmpxchg.org>
-References: <20200623184515.4132564-1-guro@fb.com>
- <20200623184515.4132564-4-guro@fb.com>
+        Tue, 11 Aug 2020 11:05:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87CFC06174A;
+        Tue, 11 Aug 2020 08:05:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=S2wmRSHqyGoakvY5Ivw1yEzjABx7ovMcyJ1PGL50P4E=; b=bSRd1CLwW/YaUWxJ7ZkJWUfl3g
+        TZq1CX+t7fmzcrlkxy4wifDSYbgWr71Ke6jBRmTtojMrtRT/pH9YPqprcOVfERYX1GnTp2ccJ9IE/
+        ut0cQCPNLO9lUh3Eo8hLZSOVMLff0Mh9Zgc0IEzDje2MsVZF7jTMGA64/Exz34lWlVBQUl46gHDyh
+        Nmn/sk8h3iL+eJaCwaIVjT9ay6O+bH7qp9hYCD9y02Hwjl5aK8ncBUMwy5zP8pitFnCh/jxBEsxDb
+        b5l5ojKtDs3OO7qEtlOuvrMuTL0fWWq49A3+i+DZzPE5/5JJHsrYNb2iI+HQbvEqeEXkenpM/jnAj
+        r0DWVysA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k5Vq1-0004dQ-4m; Tue, 11 Aug 2020 15:05:17 +0000
+Date:   Tue, 11 Aug 2020 16:05:17 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Burrow, Ryan - 0553 - MITLL" <Ryan.Burrow@ll.mit.edu>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Bug fix to ELF Loader which rejects valid ELFs
+Message-ID: <20200811150517.GR17456@casper.infradead.org>
+References: <c51feef9afbd4b82a3c718a072433a20@ll.mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200623184515.4132564-4-guro@fb.com>
+In-Reply-To: <c51feef9afbd4b82a3c718a072433a20@ll.mit.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 11:45:13AM -0700, Roman Gushchin wrote:
-> Percpu memory can represent a noticeable chunk of the total memory
-> consumption, especially on big machines with many CPUs.  Let's track
-> percpu memory usage for each memcg and display it in memory.stat.
-> 
-> A percpu allocation is usually scattered over multiple pages (and nodes),
-> and can be significantly smaller than a page.  So let's add a byte-sized
-> counter on the memcg level: MEMCG_PERCPU_B.  Byte-sized vmstat infra
-> created for slabs can be perfectly reused for percpu case.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Dennis Zhou <dennis@kernel.org>
+On Tue, Aug 11, 2020 at 02:44:08PM +0000, Burrow, Ryan - 0553 - MITLL wrote:
+>  	/* Sanity check the number of program headers... */
+> -	/* ...and their total size. */
+> -	size = sizeof(struct elf_phdr) * elf_ex->e_phnum;
+> -	if (size == 0 || size > 65536 || size > ELF_MIN_ALIGN)
+> +	if (elf_ex->e_phnum == 0 || elf_ex->phnum > 65535)
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+umm, did you compile-test this?
+
+assuming you meant e_phnum, it's a 16-bit quantity, so it can't be bigger
+than 65535.
+
+>  		goto out;
+>  
+> +	size = sizeof(struct elf_phdr) * elf_ex->e_phnum;
+
+use array_size() here?
+
+
+
