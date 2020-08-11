@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B43241EC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3EC241EC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 19:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729349AbgHKQ7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 12:59:37 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:53753 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729125AbgHKQ7T (ORCPT
+        id S1729150AbgHKQ7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 12:59:32 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:43807 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729092AbgHKQ7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 12:59:19 -0400
-Received: by mail-io1-f69.google.com with SMTP id f22so10177172iof.20
+        Tue, 11 Aug 2020 12:59:18 -0400
+Received: by mail-il1-f200.google.com with SMTP id 2so11026636ill.10
         for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 09:59:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=l3wlPqr6ipWe8Opm66dLPgisSNnhHiymwvjRBVgKADg=;
-        b=qxt1vA3NA9BRt0ZUy4xw0mSrrojYTAmyCTxgSZl24BQEc9J+VdmfOu0EeCvQLKSJ+S
-         0w1SY7Vh6RwD+E7EBFJkt9hmeHjgvdVj1QMUHtuUak6F9xTmwAVSKYo/JRuQnUm6yM6s
-         UN+wUoY+jXg4fxZvOg6E82PssrtdgoYBSBv5LasNJzjlAmOgWMvCG1oL82pUGElPoSyM
-         3QWK+eiy5DiLWGDgi4gA3o7d/h5+m3SpKVcGsDS+dQDqiPBthM8tMaKbiIonByfH7s+X
-         w0TAomFvEd2fUK4DDUUy4gj44E6I8iMfefR9SDnb6DeRbCGjaHPM1KqDAhlqvakIrMYL
-         9nYQ==
-X-Gm-Message-State: AOAM530RuObBdDIsDlx0A2boDDsTfTjsBK613NEyilpL9mBLyY28ePNF
-        RjHaHJc7s39qH663cxhmBmFVM9xLP5tZ02Xy5AehmsvEe5D0
-X-Google-Smtp-Source: ABdhPJxJQUhNpwViTKlqIYQHdVNHdSYbUVL2IQMxAttPZayrs+KLh/wyllEFuWMrDd47AXUX6rFXx/1jkrZkBqrw35YQnudVFt++
+        bh=hSEJXzv+2/hL/Vk/d5GgjQ9pCOq0Yj5nO/mPcFisPBc=;
+        b=b9z4xFhCuTzvQxzE60Z0qaBJF7RNoFvb3DGCSVI9y46meqY9L5yzGiHFiftVgQoLSz
+         FDD/pLoFrY5E6DWktxvD9kk0Y5QhMJVJAggD2ahBbqVsF+r4M0C+NpFsAA4797ri0AC/
+         uyCztKd+u+4OKanmFtqMkO2/MTQgLfn6UTCfp5DYHJPsPTkXuO/dEsDgTYLB9P5/UnR7
+         v/d5ct2iBLHvi38h/4/aRl40JxxCs6YCITvkeOBeE1I3XPpmXJ+3LaJoClLGqds9T4FP
+         QKbdvQsyjqkBT3Lg4938M0p97LeIkd9EXiYaU/zi181paGOIq3NJp8oQ36Sw+ut/1KIm
+         s2BQ==
+X-Gm-Message-State: AOAM531OPy7/ef21XmbxW+MqoDgT24pGcBabTnTYYgNVRcDNeetrfzxA
+        zWbaCwYBvBT8OWYfxKCF3JUtmZb6ukolQ5xCNMQyjIDKHFaF
+X-Google-Smtp-Source: ABdhPJxu/1MqreBbidE4ORyAAkFzEtqnHaDgcTxlmC9T9XKnibeibkp/DbjZxUmJL4fdgExE4Ll6R9x+mVwjH+S3HfR9J1bDYfRt
 MIME-Version: 1.0
-X-Received: by 2002:a02:c919:: with SMTP id t25mr27761316jao.38.1597165157907;
+X-Received: by 2002:a6b:8d03:: with SMTP id p3mr23308034iod.114.1597165157566;
  Tue, 11 Aug 2020 09:59:17 -0700 (PDT)
 Date:   Tue, 11 Aug 2020 09:59:17 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e2852705ac9cfd73@google.com>
-Subject: KASAN: slab-out-of-bounds Read in lock_sock_nested
-From:   syzbot <syzbot+9a0875bc1b2ca466b484@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000dd65fe05ac9cfda4@google.com>
+Subject: KASAN: use-after-free Read in ovs_ct_exit
+From:   syzbot <syzbot+dbb75a2ade6116de3326@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, dev@openvswitch.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pshelar@ovn.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -50,116 +49,99 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    bfdd5aaa Merge tag 'Smack-for-5.9' of git://github.com/csc..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=167b4d3a900000
+HEAD commit:    1c3b63f1 net/tls: allow MSG_CMSG_COMPAT in sendmsg
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=105b73fa900000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=7bb894f55faf8242
-dashboard link: https://syzkaller.appspot.com/bug?extid=9a0875bc1b2ca466b484
+dashboard link: https://syzkaller.appspot.com/bug?extid=dbb75a2ade6116de3326
 compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9a0875bc1b2ca466b484@syzkaller.appspotmail.com
+Reported-by: syzbot+dbb75a2ade6116de3326@syzkaller.appspotmail.com
 
+netdevsim netdevsim2 netdevsim0 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
 ==================================================================
-BUG: KASAN: slab-out-of-bounds in __lock_acquire+0x41d0/0x5640 kernel/locking/lockdep.c:4296
-Read of size 8 at addr ffff8880497850a0 by task kworker/1:2/23918
+BUG: KASAN: use-after-free in ovs_ct_limit_exit net/openvswitch/conntrack.c:1900 [inline]
+BUG: KASAN: use-after-free in ovs_ct_exit+0x269/0x4c7 net/openvswitch/conntrack.c:2298
+Read of size 8 at addr ffff88806896be00 by task kworker/u4:2/38
 
-CPU: 1 PID: 23918 Comm: kworker/1:2 Not tainted 5.8.0-syzkaller #0
+CPU: 1 PID: 38 Comm: kworker/u4:2 Not tainted 5.8.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events l2cap_chan_timeout
+Workqueue: netns cleanup_net
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
  dump_stack+0x18f/0x20d lib/dump_stack.c:118
  print_address_description.constprop.0.cold+0xae/0x436 mm/kasan/report.c:383
  __kasan_report mm/kasan/report.c:513 [inline]
  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- __lock_acquire+0x41d0/0x5640 kernel/locking/lockdep.c:4296
- lock_acquire+0x1f1/0xad0 kernel/locking/lockdep.c:5005
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
- _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
- spin_lock_bh include/linux/spinlock.h:359 [inline]
- lock_sock_nested+0x3b/0x110 net/core/sock.c:3040
- l2cap_sock_teardown_cb+0x88/0x400 net/bluetooth/l2cap_sock.c:1520
- l2cap_chan_del+0xad/0x1300 net/bluetooth/l2cap_core.c:618
- l2cap_chan_close+0x118/0xb10 net/bluetooth/l2cap_core.c:823
- l2cap_chan_timeout+0x173/0x450 net/bluetooth/l2cap_core.c:436
+ ovs_ct_limit_exit net/openvswitch/conntrack.c:1900 [inline]
+ ovs_ct_exit+0x269/0x4c7 net/openvswitch/conntrack.c:2298
+ ovs_exit_net+0x1e8/0xba0 net/openvswitch/datapath.c:2513
+ ops_exit_list+0xb0/0x160 net/core/net_namespace.c:186
+ cleanup_net+0x4ea/0xa00 net/core/net_namespace.c:603
  process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
  worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
  kthread+0x3b5/0x4a0 kernel/kthread.c:292
  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-Allocated by task 3899:
+Allocated by task 10412:
  save_stack+0x1b/0x40 mm/kasan/common.c:48
  set_track mm/kasan/common.c:56 [inline]
  __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:494
- __do_kmalloc mm/slab.c:3656 [inline]
- __kmalloc+0x17a/0x340 mm/slab.c:3665
- kmalloc include/linux/slab.h:560 [inline]
- tomoyo_realpath_from_path+0xc3/0x620 security/tomoyo/realpath.c:254
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_check_open_permission+0x272/0x380 security/tomoyo/file.c:771
- tomoyo_file_open security/tomoyo/tomoyo.c:313 [inline]
- tomoyo_file_open+0xa3/0xd0 security/tomoyo/tomoyo.c:308
- security_file_open+0x52/0x3f0 security/security.c:1574
- do_dentry_open+0x3a0/0x1290 fs/open.c:815
- do_open fs/namei.c:3243 [inline]
- path_openat+0x1bb9/0x2750 fs/namei.c:3360
- do_filp_open+0x17e/0x3c0 fs/namei.c:3387
- do_sys_openat2+0x16f/0x3b0 fs/open.c:1179
- do_sys_open fs/open.c:1195 [inline]
- ksys_open include/linux/syscalls.h:1390 [inline]
- __do_sys_open fs/open.c:1201 [inline]
- __se_sys_open fs/open.c:1199 [inline]
- __x64_sys_open+0x119/0x1c0 fs/open.c:1199
+ kmem_cache_alloc_trace+0x14f/0x2d0 mm/slab.c:3551
+ kmalloc include/linux/slab.h:555 [inline]
+ ovs_ct_limit_set_zone_limit net/openvswitch/conntrack.c:1963 [inline]
+ ovs_ct_limit_cmd_set+0x42e/0xc60 net/openvswitch/conntrack.c:2143
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
+ genl_rcv_msg+0x61d/0x980 net/netlink/genetlink.c:731
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:742
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2359
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2413
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2446
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Freed by task 3899:
+Freed by task 9661:
  save_stack+0x1b/0x40 mm/kasan/common.c:48
  set_track mm/kasan/common.c:56 [inline]
  kasan_set_free_info mm/kasan/common.c:316 [inline]
  __kasan_slab_free+0xf5/0x140 mm/kasan/common.c:455
  __cache_free mm/slab.c:3426 [inline]
- kfree+0x103/0x2c0 mm/slab.c:3757
- tomoyo_realpath_from_path+0x191/0x620 security/tomoyo/realpath.c:291
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_check_open_permission+0x272/0x380 security/tomoyo/file.c:771
- tomoyo_file_open security/tomoyo/tomoyo.c:313 [inline]
- tomoyo_file_open+0xa3/0xd0 security/tomoyo/tomoyo.c:308
- security_file_open+0x52/0x3f0 security/security.c:1574
- do_dentry_open+0x3a0/0x1290 fs/open.c:815
- do_open fs/namei.c:3243 [inline]
- path_openat+0x1bb9/0x2750 fs/namei.c:3360
- do_filp_open+0x17e/0x3c0 fs/namei.c:3387
- do_sys_openat2+0x16f/0x3b0 fs/open.c:1179
- do_sys_open fs/open.c:1195 [inline]
- ksys_open include/linux/syscalls.h:1390 [inline]
- __do_sys_open fs/open.c:1201 [inline]
- __se_sys_open fs/open.c:1199 [inline]
- __x64_sys_open+0x119/0x1c0 fs/open.c:1199
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ kmem_cache_free_bulk+0x7f/0x290 mm/slab.c:3721
+ kfree_bulk include/linux/slab.h:412 [inline]
+ kfree_rcu_work+0x506/0x8c0 kernel/rcu/tree.c:3148
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-The buggy address belongs to the object at ffff888049784000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 160 bytes to the right of
- 4096-byte region [ffff888049784000, ffff888049785000)
+The buggy address belongs to the object at ffff88806896be00
+ which belongs to the cache kmalloc-64 of size 64
+The buggy address is located 0 bytes inside of
+ 64-byte region [ffff88806896be00, ffff88806896be40)
 The buggy address belongs to the page:
-page:ffffea000125e100 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 head:ffffea000125e100 order:1 compound_mapcount:0
-flags: 0xfffe0000010200(slab|head)
-raw: 00fffe0000010200 ffffea0001c34088 ffffea000122f088 ffff8880aa002000
-raw: 0000000000000000 ffff888049784000 0000000100000001 0000000000000000
+page:ffffea0001a25ac0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea00026629c8 ffffea00026c7008 ffff8880aa000380
+raw: 0000000000000000 ffff88806896b000 0000000100000020 0000000000000000
 page dumped because: kasan: bad access detected
 
 Memory state around the buggy address:
- ffff888049784f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888049785000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888049785080: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                               ^
- ffff888049785100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888049785180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88806896bd00: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff88806896bd80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+>ffff88806896be00: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+                   ^
+ ffff88806896be80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff88806896bf00: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
 ==================================================================
 
 
