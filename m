@@ -2,124 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435272419A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889332419AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbgHKK0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 06:26:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55640 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728390AbgHKK0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 06:26:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5A463ACDB;
-        Tue, 11 Aug 2020 10:27:11 +0000 (UTC)
-Date:   Tue, 11 Aug 2020 12:26:49 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200811102649.GI4793@dhcp22.suse.cz>
-References: <20200809204354.20137-1-urezki@gmail.com>
- <20200809204354.20137-2-urezki@gmail.com>
- <20200810123141.GF4773@dhcp22.suse.cz>
- <20200810160739.GA29884@pc636>
- <20200810192525.GG4773@dhcp22.suse.cz>
- <20200811081917.GG4793@dhcp22.suse.cz>
- <20200811093713.GB2634@pc636>
+        id S1728615AbgHKK1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 06:27:13 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:45024 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728390AbgHKK1M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 06:27:12 -0400
+X-UUID: 028b8adeaa6849d3902c6939c9c033fe-20200811
+X-UUID: 028b8adeaa6849d3902c6939c9c033fe-20200811
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <empty.sender@empty.domain>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 50352739; Tue, 11 Aug 2020 18:27:07 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 11 Aug 2020 18:27:03 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 11 Aug 2020 18:27:03 +0800
+From:   Miles Chen <miles.chen@mediatek.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        "David S . Miller" <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        Miles Chen <miles.chen@mediatek.com>
+Subject: [PATCH] net: untag pointer in sockptr_is_kernel
+Date:   Tue, 11 Aug 2020 18:27:04 +0800
+Message-ID: <20200811102704.17875-1-miles.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200811093713.GB2634@pc636>
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 3DA173CDEB2447180FA2BE185548711F099DA603572AA935798EFE93CDA72EE32000:8
+X-MTK:  N
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 11-08-20 11:37:13, Uladzislau Rezki wrote:
-> On Tue, Aug 11, 2020 at 10:19:17AM +0200, Michal Hocko wrote:
-> > On Mon 10-08-20 21:25:26, Michal Hocko wrote:
-> > > On Mon 10-08-20 18:07:39, Uladzislau Rezki wrote:
-> > [...]
-> > > > The problem that i see is we can not use the page allocator from atomic
-> > > > contexts, what is our case:
-> > > > 
-> > > > <snip>
-> > > >     local_irq_save(flags) or preempt_disable() or raw_spinlock();
-> > > >     __get_free_page(GFP_ATOMIC);
-> > > > <snip>
-> > > > 
-> > > > So if we can convert the page allocator to raw_* lock it will be appreciated,
-> > > > at least from our side, IMHO, not from RT one. But as i stated above we need
-> > > > to sort raised questions out if converting is done.
-> > > > 
-> > > > What is your view?
-> > > 
-> > > To me it would make more sense to support atomic allocations also for
-> > > the RT tree. Having both GFP_NOWAIT and GFP_ATOMIC which do not really
-> > > work for atomic context in RT sounds subtle and wrong.
-> > 
-> > I was thinking about this some more. I still think the above would be a
-> > reasonable goal we should try to achieve. If for not other then for
-> > future maintainability (especially after the RT patchset is merged).
-> > I have tried to search for any known problems/attempts to make
-> > zone->lock raw but couldn't find anything. Maybe somebody more involved
-> > in RT world have something to say about that.
-> > 
-> I tried yesterday to convert zone->lock. See below files i had to modify:
-> <snip>
->         modified:   include/linux/mmzone.h
->         modified:   mm/compaction.c
->         modified:   mm/memory_hotplug.c
->         modified:   mm/page_alloc.c
->         modified:   mm/page_isolation.c
->         modified:   mm/page_reporting.c
->         modified:   mm/shuffle.c
->         modified:   mm/vmscan.c
->         modified:   mm/vmstat.c
-> <snip>
-> 
-> There is one more lock, that is zone->lru_lock one. Both zone->lock and this
-> one intersect between each other. If the lru_lock can be nested under zone->lock
-> it should be converted as well. But i need to analyze it farther. There are
-> two wrapper functions which are used as common interface to lock/unlock both
-> locks. See compact_lock_irqsave()/compact_unlock_should_abort_lru() in the 
-> mm/compaction.c.
-> 
-> Any thoughts here?
+From: Miles Chen <miles.chen@mediatek.com>
 
-I am not an expert on compaction. Vlastimil would know better. My
-thinking was that zone->lock is a tail lock but compaction/page
-isolation might be doing something I am not aware of right now.
+sockptr_is_kernel() uses (sockptr.kernel >= TASK_SIZE) to tell
+if the pointer is kernel space or user space. When user space uses
+the "top byte ignored" feature such as HWAsan, we must untag
+the pointer before checking against TASK_SIZE.
 
-> Anyway i tried to convert only zone->lock and use page allocator passing there
-> gfp_mask=0 as argument. So it works. CONFIG_PROVE_RAW_LOCK_NESTING does not
-> complain about any "bad" lock nesting.
-> 
-> > Anyway, if the zone->lock is not a good fit for raw_spin_lock then the
-> > only way I can see forward is to detect real (RT) atomic contexts and
-> > bail out early before taking the lock in the allocator for NOWAIT/ATOMIC
-> > requests.
-> >
-> For RT kernel we can detect it for sure. preemtable() works just fine there,
-> i.e. we can identify the context we are currently in.
+sockptr_is_kernel() will view a tagged user pointer as a kernel pointer
+and use memcpy directly and causes a kernel crash.
 
-In previous email I didn't mention why I prefer full NOWAIT semantic
-over rt specific bailouts. There are users making NOWAIT allocation
-attempts as an opportunistic allocation request which is OK to fail
-as they have a fallback to go through. This would imply they would
-prefer to know this ASAP rather then get blocked and sleep. A lack of
-reports for PREEMPT_RT would suggest that nobody has noticed as this
-though.
+static inline int copy_from_sockptr_offset(void *dst, sockptr_t src,
+		size_t offset, size_t size)
+{
+	if (!sockptr_is_kernel(src))
+		return copy_from_user(dst, src.user + offset, size);
+	memcpy(dst, src.kernel + offset, size);
+	return 0;
+}
+
+Crash log:
+[   26.066275] Unable to handle kernel access to user memory outside uaccess routines at virtual address 0000007b410f6990
+[   26.067640] Mem abort info:
+[   26.068004]   ESR = 0x9600000f
+[   26.068400]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   26.084406]   SET = 0, FnV = 0
+[   26.084805]   EA = 0, S1PTW = 0
+[   26.085310] Data abort info:
+[   26.085686]   ISV = 0, ISS = 0x0000000f
+[   26.086179]   CM = 0, WnR = 0
+[   26.086565] user pgtable: 4k pages, 39-bit VAs, pgdp=00000001feb7c000
+[   26.087386] [0000007b410f6990] pgd=0000000201ac2003, p4d=0000000201ac2003, pud=0000000201ac2003, pmd=00000001fd58a003, pte=00e80001fca7bf53
+[   26.089111] Internal error: Oops: 9600000f [#1] PREEMPT SMP
+[   30.435941] pstate: 80400005 (Nzcv daif +PAN -UAO BTYPE=--)
+[   30.435950] pc : __memcpy+0xbc/0x180
+[   30.435956] lr : copy_from_sockptr_offset+0x120/0x298
+[   30.435960] sp : ffffffc0179438d0
+[   30.441225] x29: ffffffc0179438d0 x28: ffffff81bf579940
+[   30.441898] x27: ffffffd24a752bc0 x26: ffffffc0179439b0
+[   30.442572] x25: ffffffd24a75dd60 x24: 0000000000000002
+[   30.443247] x23: ffffff81bf579940 x22: 0000000000000000
+[   30.443919] x21: b400007a2e8749f0 x20: ffffffc0179439b0
+[   30.444592] x19: 0000000000000060 x18: 0000000000000000
+[   30.445264] x17: 0000000000000000 x16: 0000000000000000
+[   30.445937] x15: 0000000000000552 x14: 00000000ba02a83b
+[   30.446609] x13: 0000000045fb4ba9 x12: 00000000e5d1c812
+[   30.447281] x11: 0000000000019cde x10: 0000000000000001
+[   30.447952] x9 : 00000000fffff000 x8 : 0000008000000000
+[   30.448625] x7 : ffffffd24932449c x6 : ffffffc0179439b0
+[   30.449295] x5 : 0000000000000000 x4 : 0000000000000000
+[   30.449967] x3 : 0000000000000060 x2 : ffffffffffffffe0
+[   30.450639] x1 : b400007a2e8749f0 x0 : ffffffc0179439b0
+[   30.451310] Call trace:
+[   30.451628]  __memcpy+0xbc/0x180
+[   30.452039]  do_ipt_set_ctl+0x88/0xa48
+[   30.452520]  nf_setsockopt+0xc4/0x104
+[   30.452988]  ip_setsockopt+0x128/0xfa8
+[   30.453466]  raw_setsockopt+0x48/0x2c0
+[   30.453944]  sock_common_setsockopt+0x18/0x20
+[   30.454497]  __sys_setsockopt+0x144/0x1ec
+[   30.455005]  __arm64_sys_setsockopt+0x24/0x30
+[   30.455560]  el0_svc_common+0xa0/0x18c
+[   30.456039]  do_el0_svc+0x78/0x80
+[   30.456462]  el0_sync_handler+0xec/0x2b8
+[   30.456960]  el0_sync+0x144/0x180
+[   30.457386] Code: 380014c3 14000028 f1020042 5400024a (a8c12027)
+[   30.458156] ---[ end trace a53f2349dbbd41cd ]---
+[   30.465290] Kernel panic - not syncing: Fatal exception
+
+Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+Fixes: 6d04fe15f78a ("net: optimize the sockptr_t for unified kernel/user address spaces")
+---
+ include/linux/sockptr.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/sockptr.h b/include/linux/sockptr.h
+index 96840def9d69..3febc4da1056 100644
+--- a/include/linux/sockptr.h
++++ b/include/linux/sockptr.h
+@@ -20,7 +20,7 @@ typedef union {
+ 
+ static inline bool sockptr_is_kernel(sockptr_t sockptr)
+ {
+-	return (unsigned long)sockptr.kernel >= TASK_SIZE;
++	return (unsigned long)untagged_addr(sockptr.kernel) >= TASK_SIZE;
+ }
+ 
+ static inline sockptr_t KERNEL_SOCKPTR(void *p)
 -- 
-Michal Hocko
-SUSE Labs
+2.18.0
+
