@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9E12415CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 06:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7102415D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 06:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728042AbgHKEoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 00:44:54 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:12029 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726165AbgHKEow (ORCPT
+        id S1726703AbgHKEs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 00:48:29 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:43972 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726178AbgHKEs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 00:44:52 -0400
-X-UUID: 8498e0aa151c4c9f87771a6793aa654e-20200811
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=34A2MTCnp24qFDlzu8bAX0BRNrZ0NdDDcDstxdaMF/0=;
-        b=lnmK+J9dagYo2xo09H9SJI7IBwCfV2Ty+fPRJ4mMGpnk31gHgswEsgJjuDq45m9Bgnki84pkqLH2CxhCKL0oUBXmOdT3wGVOTmHXm4DPD0FDMZSYfVo4V7GJcwgGGUMEkB7jr3zvW83DgGKz5W1ZJm1AIdVZpm6m+Q7l68r7h2Y=;
-X-UUID: 8498e0aa151c4c9f87771a6793aa654e-20200811
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <chinwen.chang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 780838790; Tue, 11 Aug 2020 12:44:48 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 11 Aug 2020 12:44:46 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 11 Aug 2020 12:44:46 +0800
-From:   Chinwen Chang <chinwen.chang@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Michel Lespinasse <walken@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Steven Price <steven.price@arm.com>,
-        Song Liu <songliubraving@fb.com>,
-        Jimmy Assarsson <jimmyassarsson@gmail.com>,
-        Huang Ying <ying.huang@intel.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-fsdevel@vger.kernel.org>, <wsd_upstream@mediatek.com>
-Subject: [PATCH 2/2] mm: proc: smaps_rollup: do not stall write attempts on mmap_lock
-Date:   Tue, 11 Aug 2020 12:42:35 +0800
-Message-ID: <1597120955-16495-3-git-send-email-chinwen.chang@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1597120955-16495-1-git-send-email-chinwen.chang@mediatek.com>
-References: <1597120955-16495-1-git-send-email-chinwen.chang@mediatek.com>
+        Tue, 11 Aug 2020 00:48:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597121308; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=0cJt+WgRXB1nbIu2m8++kElnkIQWCS3PK5eceIKAvUk=; b=Qzl5bTDqN2qNflTHO9RLbXyMpFQYo5jiQCSYtRZVfe/Kzhk3I5dRwfp9ailoaqKFuYgKHyn5
+ nHqcsROxwY0Ipc5c5klqFXz3iAcL0ChLMXx6BbVgPI4Nmv4lT7jRDViu3laX7JFMt7QV8RMx
+ 2jVTNWVqB1UFJexMPamIrqDzJv4=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f32231491f8def8b2098408 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 11 Aug 2020 04:48:20
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AC99BC433CA; Tue, 11 Aug 2020 04:48:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.4] (unknown [122.170.228.200])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: gkohli)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2B6E8C433C9;
+        Tue, 11 Aug 2020 04:48:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2B6E8C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=gkohli@codeaurora.org
+Subject: Re: [PATCH] arm64: Skip apply SSBS call for non SSBS system
+To:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
+        maz@kernel.org, Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        neeraju@codeaurora.org
+References: <1596550484-11029-1-git-send-email-gkohli@codeaurora.org>
+From:   Gaurav Kohli <gkohli@codeaurora.org>
+Message-ID: <16e9b436-5919-39df-3f1a-a717d4229651@codeaurora.org>
+Date:   Tue, 11 Aug 2020 10:18:13 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <1596550484-11029-1-git-send-email-gkohli@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-c21hcHNfcm9sbHVwIHdpbGwgdHJ5IHRvIGdyYWIgbW1hcF9sb2NrIGFuZCBnbyB0aHJvdWdoIHRo
-ZSB3aG9sZSB2bWENCmxpc3QgdW50aWwgaXQgZmluaXNoZXMgdGhlIGl0ZXJhdGluZy4gV2hlbiBl
-bmNvdW50ZXJpbmcgbGFyZ2UgcHJvY2Vzc2VzLA0KdGhlIG1tYXBfbG9jayB3aWxsIGJlIGhlbGQg
-Zm9yIGEgbG9uZ2VyIHRpbWUsIHdoaWNoIG1heSBibG9jayBvdGhlcg0Kd3JpdGUgcmVxdWVzdHMg
-bGlrZSBtbWFwIGFuZCBtdW5tYXAgZnJvbSBwcm9ncmVzc2luZyBzbW9vdGhseS4NCg0KVGhlcmUg
-YXJlIHVwY29taW5nIG1tYXBfbG9jayBvcHRpbWl6YXRpb25zIGxpa2UgcmFuZ2UtYmFzZWQgbG9j
-a3MsIGJ1dA0KdGhlIGxvY2sgYXBwbGllZCB0byBzbWFwc19yb2xsdXAgd291bGQgYmUgdGhlIGNv
-YXJzZSB0eXBlLCB3aGljaCBkb2Vzbid0DQphdm9pZCB0aGUgb2NjdXJyZW5jZSBvZiB1bnBsZWFz
-YW50IGNvbnRlbnRpb24uDQoNClRvIHNvbHZlIGFmb3JlbWVudGlvbmVkIGlzc3VlLCB3ZSBhZGQg
-YSBjaGVjayB3aGljaCBkZXRlY3RzIHdoZXRoZXINCmFueW9uZSB3YW50cyB0byBncmFiIG1tYXBf
-bG9jayBmb3Igd3JpdGUgYXR0ZW1wdHMuDQoNClNpZ25lZC1vZmYtYnk6IENoaW53ZW4gQ2hhbmcg
-PGNoaW53ZW4uY2hhbmdAbWVkaWF0ZWsuY29tPg0KLS0tDQogZnMvcHJvYy90YXNrX21tdS5jIHwg
-MjEgKysrKysrKysrKysrKysrKysrKysrDQogMSBmaWxlIGNoYW5nZWQsIDIxIGluc2VydGlvbnMo
-KykNCg0KZGlmZiAtLWdpdCBhL2ZzL3Byb2MvdGFza19tbXUuYyBiL2ZzL3Byb2MvdGFza19tbXUu
-Yw0KaW5kZXggZGJkYTQ0OS4uNGI1MWYyNSAxMDA2NDQNCi0tLSBhL2ZzL3Byb2MvdGFza19tbXUu
-Yw0KKysrIGIvZnMvcHJvYy90YXNrX21tdS5jDQpAQCAtODU2LDYgKzg1NiwyNyBAQCBzdGF0aWMg
-aW50IHNob3dfc21hcHNfcm9sbHVwKHN0cnVjdCBzZXFfZmlsZSAqbSwgdm9pZCAqdikNCiAJZm9y
-ICh2bWEgPSBwcml2LT5tbS0+bW1hcDsgdm1hOyB2bWEgPSB2bWEtPnZtX25leHQpIHsNCiAJCXNt
-YXBfZ2F0aGVyX3N0YXRzKHZtYSwgJm1zcyk7DQogCQlsYXN0X3ZtYV9lbmQgPSB2bWEtPnZtX2Vu
-ZDsNCisNCisJCS8qDQorCQkgKiBSZWxlYXNlIG1tYXBfbG9jayB0ZW1wb3JhcmlseSBpZiBzb21l
-b25lIHdhbnRzIHRvDQorCQkgKiBhY2Nlc3MgaXQgZm9yIHdyaXRlIHJlcXVlc3QuDQorCQkgKi8N
-CisJCWlmIChtbWFwX2xvY2tfaXNfY29udGVuZGVkKG1tKSkgew0KKwkJCW1tYXBfcmVhZF91bmxv
-Y2sobW0pOw0KKwkJCXJldCA9IG1tYXBfcmVhZF9sb2NrX2tpbGxhYmxlKG1tKTsNCisJCQlpZiAo
-cmV0KSB7DQorCQkJCXJlbGVhc2VfdGFza19tZW1wb2xpY3kocHJpdik7DQorCQkJCWdvdG8gb3V0
-X3B1dF9tbTsNCisJCQl9DQorDQorCQkJLyogQ2hlY2sgd2hldGhlciBjdXJyZW50IHZtYSBpcyBh
-dmFpbGFibGUgKi8NCisJCQl2bWEgPSBmaW5kX3ZtYShtbSwgbGFzdF92bWFfZW5kIC0gMSk7DQor
-CQkJaWYgKHZtYSAmJiB2bWEtPnZtX3N0YXJ0IDwgbGFzdF92bWFfZW5kKQ0KKwkJCQljb250aW51
-ZTsNCisNCisJCQkvKiBDdXJyZW50IHZtYSBpcyBub3QgYXZhaWxhYmxlLCBqdXN0IGJyZWFrICov
-DQorCQkJYnJlYWs7DQorCQl9DQogCX0NCiANCiAJc2hvd192bWFfaGVhZGVyX3ByZWZpeChtLCBw
-cml2LT5tbS0+bW1hcC0+dm1fc3RhcnQsDQotLSANCjEuOS4xDQo=
+Hi,
 
+Please let us know, is below patch good to have
+or not for non ssbs systems.
+
+On 8/4/2020 7:44 PM, Gaurav Kohli wrote:
+> In a system where no cpu's implement SSBS, for
+> them no need to set pstate. This might help to save
+> few cpu cycles during context switch.
+> 
+> Signed-off-by: Gaurav Kohli <gkohli@codeaurora.org>
+> 
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index 6089638..79f80f1 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -477,6 +477,13 @@ static void ssbs_thread_switch(struct task_struct *next)
+>   	struct pt_regs *regs = task_pt_regs(next);
+>   
+>   	/*
+> +	 * For Targets which don't have SSBS support, they
+> +	 * can return from here.
+> +	 */
+> +	if (!IS_ENABLED(CONFIG_ARM64_SSBD))
+> +		return;
+> +
+> +	/*
+>   	 * Nothing to do for kernel threads, but 'regs' may be junk
+>   	 * (e.g. idle task) so check the flags and bail early.
+>   	 */
+> 
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
+Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project.
