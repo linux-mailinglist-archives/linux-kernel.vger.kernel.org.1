@@ -2,85 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC9D241DC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF0B241DCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729038AbgHKQFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 12:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728797AbgHKQFl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 12:05:41 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF4BC06174A;
-        Tue, 11 Aug 2020 09:05:41 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k5WmM-00DeT8-FM; Tue, 11 Aug 2020 16:05:34 +0000
-Date:   Tue, 11 Aug 2020 17:05:34 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Christian Brauner <christian@brauner.io>,
-        Lennart Poettering <lennart@poettering.net>,
-        Linux API <linux-api@vger.kernel.org>,
-        Ian Kent <raven@themaw.net>,
-        LSM <linux-security-module@vger.kernel.org>,
+        id S1729099AbgHKQF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 12:05:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58962 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729057AbgHKQFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 12:05:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 27400B5EF;
+        Tue, 11 Aug 2020 16:06:13 +0000 (UTC)
+Date:   Tue, 11 Aug 2020 18:05:51 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: file metadata via fs API (was: [GIT PULL] Filesystem Information)
-Message-ID: <20200811160534.GL1236603@ZenIV.linux.org.uk>
-References: <1842689.1596468469@warthog.procyon.org.uk>
- <1845353.1596469795@warthog.procyon.org.uk>
- <CAJfpegunY3fuxh486x9ysKtXbhTE0745ZCVHcaqs9Gww9RV2CQ@mail.gmail.com>
- <ac1f5e3406abc0af4cd08d818fe920a202a67586.camel@themaw.net>
- <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com>
- <CAJfpegtNP8rQSS4Z14Ja4x-TOnejdhDRTsmmDD-Cccy2pkfVVw@mail.gmail.com>
- <20200811135419.GA1263716@miu.piliscsaba.redhat.com>
- <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
+Subject: Re: [PATCH 0/4] printk: reimplement LOG_CONT handling
+Message-ID: <20200811160551.GC12903@alley>
+References: <20200717234818.8622-1-john.ogness@linutronix.de>
+ <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
+ <87blkcanps.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
+In-Reply-To: <87blkcanps.fsf@jogness.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 08:20:24AM -0700, Linus Torvalds wrote:
+On Sat 2020-07-18 16:48:55, John Ogness wrote:
+> On 2020-07-17, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> > Make sure you test the case of "fast concurrent readers". The last
+> > time we did things like this, it was a disaster, because a concurrent
+> > reader would see and return the _incomplete_ line, and the next entry
+> > was still being generated on another CPU.
+> >
+> > The reader would then decide to return that incomplete line, because
+> > it had something.
+> >
+> > And while in theory this could then be handled properly in user space,
+> > in practice it wasn't. So you'd see a lot of logging tools that would
+> > then report all those continuations as separate log events.
+> >
+> > Which is the whole point of LOG_CONT - for that *not* to happen.
+> 
+> I expect this is handled correctly since the reader is not given any
+> parts until a full line is ready, but I will put more focus on testing
+> this to make sure. Thanks for the regression and testing tips.
 
-> I don't think this works for the reasons Al says, but a slight
-> modification might.
-> 
-> IOW, if you do something more along the lines of
-> 
->        fd = open(""foo/bar", O_PATH);
->        metadatafd = openat(fd, "metadataname", O_ALT);
-> 
-> it might be workable.
-> 
-> So you couldn't do it with _one_ pathname, because that is always
-> fundamentally going to hit pathname lookup rules.
-> 
-> But if you start a new path lookup with new rules, that's fine.
+Hmm, the current patchset has different problem. The continuation
+pieces are correctly passed as a single lines. But empty line is
+printed for each unused sequence number to avoid warnings about
+missed messages in journactl. It looks like:
 
-Except that you suddenly see non-directory dentries get children.
-And a lot of dcache-related logics needs to be changed if that
-becomes possible.
+Aug 11 17:08:16 sle15-sp1 kernel: x86/fpu: xstate_offset[3]:  832, xstate_sizes[3]:   64
+Aug 11 17:08:16 sle15-sp1 kernel: x86/fpu: xstate_offset[4]:  896, xstate_sizes[4]:   64
+Aug 11 17:08:16 sle15-sp1 kernel: x86/fpu: Enabled xstate features 0x1f, context size is 960 bytes, using 'compacted' format.
+Aug 11 17:08:16 sle15-sp1 kernel: BIOS-provided physical RAM map:
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: BIOS-e820: [mem 0x00000000000f0000-0x00000000000fffff] reserved
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+[...]
+Aug 11 17:08:16 sle15-sp1 kernel: kvm-clock: using sched offset of 85305506196438 cycles
+Aug 11 17:08:16 sle15-sp1 kernel: clocksource: kvm-clock: mask: 0xffffffffffffffff max_cycles: 0x1cd42e4dffb, max_idle_ns: 88>
+Aug 11 17:08:16 sle15-sp1 kernel: tsc: Detected 2112.000 MHz processor
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: e820: update [mem 0x00000000-0x00000fff] usable ==> reserved
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: e820: remove [mem 0x000a0000-0x000fffff] usable
+Aug 11 17:08:16 sle15-sp1 kernel: last_pfn = 0x180000 max_arch_pfn = 0x400000000
+Aug 11 17:08:16 sle15-sp1 kernel: MTRR default type: write-back
+Aug 11 17:08:16 sle15-sp1 kernel: MTRR fixed ranges enabled:
+[...]
+Aug 11 17:08:16 sle15-sp1 kernel: clocksource: refined-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645519>
+Aug 11 17:08:16 sle15-sp1 kernel: setup_percpu: NR_CPUS:8192 nr_cpumask_bits:3 nr_cpu_ids:3 nr_node_ids:1
+Aug 11 17:08:16 sle15-sp1 kernel: percpu: Embedded 508 pages/cpu s2043904 r8192 d28672 u2097152
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: pcpu-alloc: s2043904 r8192 d28672 u2097152 alloc=1*2097152
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: 
+Aug 11 17:08:16 sle15-sp1 kernel: pcpu-alloc: [0] 0 [0] 1 [0] 2 
+Aug 11 17:08:16 sle15-sp1 kernel: KVM setup async PF for cpu 0
+Aug 11 17:08:16 sle15-sp1 kernel: kvm-stealtime: cpu 0, msr 17f9f2080
+Aug 11 17:08:16 sle15-sp1 kernel: Built 1 zonelists, mobility grouping on.  Total pages: 1031901
+Aug 11 17:08:16 sle15-sp1 kernel: Policy zone: Normal
 
-I agree that xattrs are garbage, but this approach won't be
-a straightforward solution.  Can those suckers be passed to
-...at() as starting points?  Can they be bound in namespace?
-Can something be bound *on* them?  What do they have for inodes
-and what maintains their inumbers (and st_dev, while we are at
-it)?  Can _they_ have secondaries like that (sensu Swift)?
-Is that a flat space, or can they be directories?
 
-Only a part of the problems is implementation-related (and those are
-not trivial at all); most the fun comes from semantics of those things.
-And answers to the implementation questions are seriously dependent upon
-that...
+> > So this is just a heads-up that I will not pull something that breaks
+> > LOG_CONT because it thinks "user space can handle it". No. User space
+> > does not handle it, and we need to handle it for the user.
+
+I am afraid that this not acceptable for Linus either because people
+will report bugs and complain about regression.
+
+Slightly better solution is to skip the unused sequence numbers. It
+looks good in both dmesg/journalctl by default. Note that journalctl
+shows the warnings about missing lines "only" with "-a" option.
+Sigh, but I am afraid that this is still not acceptable.
+
+
+Hmm, I can't find any simple or even working solution for maintaining
+a monotonic sequence number a lockless way that would be the same
+for all stored pieces.
+
+I am afraid that the only working solution is to store all pieces
+in a single lockless transaction. I think that John already
+proposed using 2nd small lockless buffer for this. The problem
+might be how to synchronize flushing the pieces into the final
+buffer.
+
+Another solution would be to use separate buffer for each context
+and CPU. The problem is a missing final "\n". It might cause
+that a buffer is not flushed for a long time until another
+message is printed in the same context on the same CPU.
+
+The 2nd small logbuffer looks like a better choice if we
+are able to solve the lockless flush.
+
+Best Regards,
+Petr
