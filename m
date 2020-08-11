@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B01924157E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 05:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB1D241587
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 06:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728373AbgHKD6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 23:58:20 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:11398 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728350AbgHKD6Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 23:58:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597118296; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=9EpaubBxqFUSacMHuSIGmCuRKTELLz5Ei4tZOzpBcNk=; b=rRgwFpZXlDe+dq0lqIsU5FeIem8mVIaGoshBGodNw2hlFsnykj94qyVDpF9+ZrfY+WJ0ynlk
- djVdUx9aQffYpFzr6TO7JHn6eKbP1Ec8LHREKHFlX7Vdq4PXXVazk3/z3addZvpGmJK1+yCl
- hJJfDUaU9JubjqMSNxDCqRjnZvA=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n15.prod.us-east-1.postgun.com with SMTP id
- 5f32174a247ccc308cde06a1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 11 Aug 2020 03:58:02
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F281DC433C9; Tue, 11 Aug 2020 03:58:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from tingweiz-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tingwei)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 490F7C433C6;
-        Tue, 11 Aug 2020 03:57:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 490F7C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tingwei@codeaurora.org
-From:   Tingwei Zhang <tingwei@codeaurora.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Tingwei Zhang <tingwei@codeaurora.org>, tsoni@codeaurora.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        linux-kernel@vger.kernel.org, coresight@lists.linaro.org
-Subject: [PATCH v3 6/6] stm class: ftrace: use different channel accroding to CPU
-Date:   Tue, 11 Aug 2020 11:57:26 +0800
-Message-Id: <20200811035726.10379-7-tingwei@codeaurora.org>
-X-Mailer: git-send-email 2.20.0
-In-Reply-To: <20200811035726.10379-1-tingwei@codeaurora.org>
-References: <20200811035726.10379-1-tingwei@codeaurora.org>
+        id S1726411AbgHKETV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 00:19:21 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:33701 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725837AbgHKETU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 00:19:20 -0400
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4BQfjf3pLbz9sTS; Tue, 11 Aug 2020 14:19:18 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1597119558;
+        bh=2NZiS/B9GDmUuTZl+DIdhj2fNIhZ6RGfvaIFICHqFSM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WH64YnKMptRO4Eox2YloZbysBg7ADBHWYMCYZMpjNkFkZ7mEP/KxNx5G3tL1CKXQu
+         uhBEtjcHOmb30U2vTPlkz9eIoTSffzJN8sLu7PUF5NjsEsY4f3vQru3UoQGzwgIqFU
+         0ONoy5meOvv+eWlw4dGBg3SCcKueEgHNmY1/1gNM=
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     paulus@samba.org, mpe@ellerman.id.au
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        David Gibson <david@gibson.dropbear.id.au>
+Subject: [PATCH] powerpc: kvm: Increase HDEC threshold to enter guest
+Date:   Tue, 11 Aug 2020 14:08:34 +1000
+Message-Id: <20200811040834.45930-1-david@gibson.dropbear.id.au>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To avoid mixup of packets from differnt ftrace packets simultaneously,
-use different channel for packets from different CPU.
+Before entering a guest, we need to set the HDEC to pull us out again
+when the guest's time is up.  This needs some care, though, because the
+HDEC is edge triggered, which means that if it expires before entering the
+guest, the interrupt will be lost, meaning we stay in the guest
+indefinitely (in practice, until the the hard lockup detector pulls us out
+with an NMI).
 
-Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+For the POWER9, independent threads mode specific path, we attempt to
+prevent that, by testing time has already expired before setting the HDEC
+in kvmhv_load_regs_and_go().  However, that doesn't account for the case
+where the timer expires between that test and the actual guest entry.
+Preliminary instrumentation suggests that can take as long as 1.5µs under
+certain load conditions, and simply checking the HDEC value we're going to
+load is positive isn't enough to guarantee that leeway.
+
+That test here is sometimes masked by a test in kvmhv_p9_guest_entry(), its
+caller.  That checks that the remaining time is at 1µs.  However as noted
+above that doesn't appear to be sufficient in all circumstances even
+from the point HDEC is set, let alone this earlier point.
+
+Therefore, increase the threshold we check for in both locations to 4µs
+(2048 timebase ticks).  This is a pretty crude approach, but it addresses
+a real problem where guest load can trigger a host hard lockup.
+
+We're hoping to refine this in future by gathering more data on exactly
+how long these paths can take, and possibly by moving the check closer to
+the actual guest entry point to reduce the variance.  Getting the details
+for that might take some time however.
+
+NOTE: For reasons I haven't yet tracked down yet, I haven't actually
+managed to reproduce this on current upstream.  I have reproduced it on
+RHEL kernels without obvious differences in this area.  I'm still trying
+to determine what the cause of that difference is, but I think it's worth
+applying this change as a precaution in the interim.
+
+Signed-off-by: David Gibson <david@gibson.dropbear.id.au>
 ---
- drivers/hwtracing/stm/ftrace.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/powerpc/kvm/book3s_hv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hwtracing/stm/ftrace.c b/drivers/hwtracing/stm/ftrace.c
-index c694a6e692d1..ebf29489919c 100644
---- a/drivers/hwtracing/stm/ftrace.c
-+++ b/drivers/hwtracing/stm/ftrace.c
-@@ -37,8 +37,10 @@ static void notrace
- stm_ftrace_write(struct trace_export *export, const void *buf, unsigned int len)
- {
- 	struct stm_ftrace *stm = container_of(export, struct stm_ftrace, ftrace);
-+	/* This is called from trace system with preemption disabled */
-+	unsigned int cpu = smp_processor_id();
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 0f83f39a2bd2..65a92dd890cb 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -3435,7 +3435,7 @@ static int kvmhv_load_hv_regs_and_go(struct kvm_vcpu *vcpu, u64 time_limit,
+ 	unsigned long host_pidr = mfspr(SPRN_PID);
  
--	stm_source_write(&stm->data, STM_FTRACE_CHAN, buf, len);
-+	stm_source_write(&stm->data, STM_FTRACE_CHAN + cpu, buf, len);
- }
+ 	hdec = time_limit - mftb();
+-	if (hdec < 0)
++	if (hdec < 2048)
+ 		return BOOK3S_INTERRUPT_HV_DECREMENTER;
+ 	mtspr(SPRN_HDEC, hdec);
  
- static int stm_ftrace_link(struct stm_source_data *data)
-@@ -63,6 +65,7 @@ static int __init stm_ftrace_init(void)
- {
- 	int ret;
+@@ -3564,7 +3564,7 @@ int kvmhv_p9_guest_entry(struct kvm_vcpu *vcpu, u64 time_limit,
  
-+	stm_ftrace.data.nr_chans = num_possible_cpus();
- 	ret = stm_source_register_device(NULL, &stm_ftrace.data);
- 	if (ret)
- 		pr_err("Failed to register stm_source - ftrace.\n");
+ 	dec = mfspr(SPRN_DEC);
+ 	tb = mftb();
+-	if (dec < 512)
++	if (dec < 2048)
+ 		return BOOK3S_INTERRUPT_HV_DECREMENTER;
+ 	local_paca->kvm_hstate.dec_expires = dec + tb;
+ 	if (local_paca->kvm_hstate.dec_expires < time_limit)
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.26.2
 
