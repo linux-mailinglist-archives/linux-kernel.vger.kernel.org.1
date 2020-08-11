@@ -2,58 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F57F2419A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934BC2419A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728597AbgHKK07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 06:26:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55692 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728390AbgHKK0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 06:26:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3EC21ACF9;
-        Tue, 11 Aug 2020 10:27:14 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1ABC2DA83C; Tue, 11 Aug 2020 12:25:52 +0200 (CEST)
-Date:   Tue, 11 Aug 2020 12:25:51 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     clm@fb.com, jbacik@fb.com, dsterba@suse.com, sashal@kernel.org,
-        wqu@suse.com, nborisov@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jungyeon@gatech.edu,
-        stable@kernel.org
-Subject: Re: [PATCH] btrfs: fix error value in btrfs_get_extent
-Message-ID: <20200811102551.GM2026@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Pavel Machek <pavel@denx.de>, clm@fb.com,
-        jbacik@fb.com, dsterba@suse.com, sashal@kernel.org, wqu@suse.com,
-        nborisov@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jungyeon@gatech.edu,
-        stable@kernel.org
-References: <20200803093506.GA19472@amd>
+        id S1728534AbgHKKZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 06:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728497AbgHKKZ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 06:25:59 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87BDC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 03:25:58 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id bs17so8674259edb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 03:25:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CE2Owqviue/VQIXGk6mVLnEvDF33jGGXHgxlHjLuh/g=;
+        b=Pe3SJSUZ+vkfgPFgS5Ata/faB6BErqPNLSX71PgTg6EpmCYHXqzuuYILr082+uF+Vh
+         3MxncsZE+KaWFYMdBfFtn4E6YLavtrALT+MztOdCtwWgkqciIUFChZK1tbDGkWnCL42z
+         52fCBFF4F/gRMALt5efXhPqirlwsYS4Bdmlczd5tqtxFOH2Rg2K/Ccw4siRbYjbuJtqN
+         ulh7S+8c2thaMXICdmY/xBGL4vzOUoJUZ+T9/G+LOSdan0uSEZtYD0Vt6EPweZJhEOKz
+         I9yH/e/qfPE5/mWDFC//nO3s1gO6lshMezP5wp0yU5QWRQiOUM+D9VjFvGwn3dkAMNkp
+         W2fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CE2Owqviue/VQIXGk6mVLnEvDF33jGGXHgxlHjLuh/g=;
+        b=IVmgNwM8uZlHaFHxPKOLCuMGsBJR0mYwh101nqZq755PTN4nLzsc2BQtnZxwN4gI/P
+         1QjTn9YJH1TmNmrwIxyPRfLuq/a4/lPGru5DDgI6ir2qpTQwsdfwkxCignRKWUrQG6QF
+         bSHq1bri5tVSLGRXuTjrIUGqudd3rXKtGAnqsRtdqRzTDTEk3KQW1IOBQ9kDcSx7ZgId
+         kyVTG6lRSxIMYc6EcblEv4KBKbpYHETOARtMfG4NGP4UwlljjMzO4HzmnsT4IiJiGDgA
+         M7C5ZYxmaEdrv6VJH5bADEpLrwmgxz2pD3vXmMsn8v1wBxftH53ABlvlcmgEEAKfX4E6
+         ueDg==
+X-Gm-Message-State: AOAM532UHD9nq+QbjoYIl4s36oRAUp+g4mRz3L0e62ULIaGoHzljgQ/I
+        StE7nAS1OuqQloXx8Z3bMQLf4g==
+X-Google-Smtp-Source: ABdhPJwyjbinnjY6qvExiC6LJv5rawE65Y9qVNsEqu/7UT4pEtUrxKdedoviaZuV8xcdXXlgUM1IvA==
+X-Received: by 2002:aa7:dc44:: with SMTP id g4mr25707392edu.273.1597141557638;
+        Tue, 11 Aug 2020 03:25:57 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id v14sm14864196ejb.63.2020.08.11.03.25.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Aug 2020 03:25:56 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        john.stultz@linaro.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/2] ASoC: q6afe-dai: add dummy register read function
+Date:   Tue, 11 Aug 2020 11:25:51 +0100
+Message-Id: <20200811102552.26975-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200803093506.GA19472@amd>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 03, 2020 at 11:35:06AM +0200, Pavel Machek wrote:
-> btrfs_get_extent() sets variable ret, but out: error path expect error
-> to be in variable err. Fix that.
-> 
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+Most of the DAPM widgets for DSP ASoC components reuse reg field
+of the widgets for its internal calculations, however these are not
+real registers. So read/writes to these numbers are not really
+valid. However ASoC core will read these registers to get default
+state during startup.
 
-Thanks, patch queued for 5.9.
-> 
-> ---
-> 
-> Notice that patch introducing this problem is on its way to 4.19.137-stable.
+With recent changes to ASoC core, every register read/write
+failures are reported very verbosely. Prior to this fails to reads
+are totally ignored, so we never saw any error messages.
 
-Yeah, I'll let stable team know once this patch gets merged that the
-relevant patches can be picked.
+To fix this add dummy read function to return default value.
+
+Reported-by: John Stultz <john.stultz@linaro.org>
+Fixes: 24c4cbcfac09 ("ASoC: qdsp6: q6afe: Add q6afe dai driver")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index 2a5302f1db98..492bdbaf13c4 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -1352,6 +1352,13 @@ static const struct snd_soc_dapm_widget q6afe_dai_widgets[] = {
+ 	SND_SOC_DAPM_AIF_OUT("DISPLAY_PORT_RX", "NULL", 0, 0, 0, 0),
+ };
+ 
++static unsigned int q6afe_reg_read(struct snd_soc_component *component,
++				   unsigned int reg)
++{
++	/* default value */
++	return 0;
++}
++
+ static const struct snd_soc_component_driver q6afe_dai_component = {
+ 	.name		= "q6afe-dai-component",
+ 	.dapm_widgets = q6afe_dai_widgets,
+@@ -1359,7 +1366,7 @@ static const struct snd_soc_component_driver q6afe_dai_component = {
+ 	.dapm_routes = q6afe_dapm_routes,
+ 	.num_dapm_routes = ARRAY_SIZE(q6afe_dapm_routes),
+ 	.of_xlate_dai_name = q6afe_of_xlate_dai_name,
+-
++	.read = q6afe_reg_read,
+ };
+ 
+ static void of_q6afe_parse_dai_data(struct device *dev,
+-- 
+2.21.0
+
