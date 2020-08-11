@@ -2,109 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6980B241D1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4316241D22
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728959AbgHKP0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 11:26:30 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:51782 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728833AbgHKP03 (ORCPT
+        id S1728976AbgHKP2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 11:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728859AbgHKP2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 11:26:29 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1k5WAP-0000L2-7E; Tue, 11 Aug 2020 11:26:21 -0400
-Message-ID: <b3c828825cc62ce79d16a2f1a840279b01f33848.camel@surriel.com>
-Subject: Re: [PATCH for 5.9 v2 1/4] futex: introduce FUTEX_SWAP operation
-From:   Rik van Riel <riel@surriel.com>
-To:     peterz@infradead.org, Peter Oskolkov <posk@posk.io>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Paul Turner <pjt@google.com>,
-        Ben Segall <bsegall@google.com>, Aaron Lu <aaron.lwe@gmail.com>
-Date:   Tue, 11 Aug 2020 11:26:20 -0400
-In-Reply-To: <20200804123147.GI2674@hirez.programming.kicks-ass.net>
-References: <20200803221510.170674-1-posk@posk.io>
-         <20200803221510.170674-2-posk@posk.io>
-         <20200804123147.GI2674@hirez.programming.kicks-ass.net>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-RJsqJcckj6wQC4gZIoGP"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Tue, 11 Aug 2020 11:28:43 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D408C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 08:28:43 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id y11so6126369qvl.4
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 08:28:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Lgl2XWPxOkvTO1C8S88OrGJFzEG0BedRecFChwB3gY8=;
+        b=O+oz/y94S7Ot2vFCIAFHszkvovBOf36KdyrH2IEJWc4M4iGAI+0vUVeb65yAePs+57
+         DROlBFWLKmiEh+5yYPQAuZxOyCCI59rbE60yQsK/k5p+hCWZLwZuiio3saMyRdst9aN6
+         W00Raq/cnhUCgHcCrtxHXZRE6zekJg2/KMflF2aaWNHLVuSUxA1oo1s4fEWzKninscH7
+         +U1Bhx4SjBooCPa+GwTjN7sivvJ+csbnAYbo7Rsrvfg+DIRVEeLlRuCSag4yPLoeRdCG
+         FufH0Ro9lxoInq9MGfEz5Pr+bqIIzZVDkYh86LTyBcauJu8KDfKElTqTqBT5krSr8MMX
+         gq3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Lgl2XWPxOkvTO1C8S88OrGJFzEG0BedRecFChwB3gY8=;
+        b=N+fFL+f1fdgIxJO4ZEO8ipOTPh0LMqYgXNUiodz0URi5HoMa9BZYMyVBGz4hJhO0yl
+         6aAe7+66/SWCHDL3qRVBZczN/Irv03sAWvcYhEciRyaBaHHLxdNRUYCPLGH2ZS66dcbJ
+         Kw55A1+xuuymWtPbdAqR1Bef0We4/FpMAg86tJn5ioyh2gkjfVX+KxAa/AgWL6AkSVgy
+         v2ZYOjzhyZlbYYTUQIOo1vJM/wv2MiGY9j2aAqamcOA5feh8Mr3YM8AixGEd1VcrdR8t
+         kESy+TuYHyPcCtuzObn5Ahqw66jH2eG/2pe0MR/dSHjgrdVx8j7/3aA4XGEdoXfhxGCe
+         tjow==
+X-Gm-Message-State: AOAM532e01bO3jeCbV5DO0TSABSEJzQ0LDy32E0JKxmCJt2Nr2nxpXqd
+        5+lUR88vA91vbwE4jAR1uP88mQ==
+X-Google-Smtp-Source: ABdhPJwUsKgHMBfWAiaT6/HGMo7TWT1YWSQ7mkn2a8Es9KiyKcTAN0v8Enpnj6TS8l5TEuNaxVqYfA==
+X-Received: by 2002:ad4:446d:: with SMTP id s13mr1833462qvt.183.1597159722398;
+        Tue, 11 Aug 2020 08:28:42 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:2dd0])
+        by smtp.gmail.com with ESMTPSA id l189sm17003362qke.67.2020.08.11.08.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Aug 2020 08:28:41 -0700 (PDT)
+Date:   Tue, 11 Aug 2020 11:27:37 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/5] mm: memcg: charge memcg percpu memory to the
+ parent cgroup
+Message-ID: <20200811152737.GB650506@cmpxchg.org>
+References: <20200623184515.4132564-1-guro@fb.com>
+ <20200623184515.4132564-5-guro@fb.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200623184515.4132564-5-guro@fb.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 23, 2020 at 11:45:14AM -0700, Roman Gushchin wrote:
+> Memory cgroups are using large chunks of percpu memory to store vmstat
+> data.  Yet this memory is not accounted at all, so in the case when there
+> are many (dying) cgroups, it's not exactly clear where all the memory is.
+> 
+> Because the size of memory cgroup internal structures can dramatically
+> exceed the size of object or page which is pinning it in the memory, it's
+> not a good idea to simple ignore it.  It actually breaks the isolation
+> between cgroups.
+> 
+> Let's account the consumed percpu memory to the parent cgroup.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Acked-by: Dennis Zhou <dennis@kernel.org>
 
---=-RJsqJcckj6wQC4gZIoGP
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-On Tue, 2020-08-04 at 14:31 +0200, peterz@infradead.org wrote:
-> On Mon, Aug 03, 2020 at 03:15:07PM -0700, Peter Oskolkov wrote:
-> > A simplified/idealized use case: imagine a multi-user service
-> > application
-> > (e.g. a DBMS) that has to implement the following user CPU quota
-> > policy:
->=20
-> So the last posting made hackernews; and there a bunch expressed far
-> more interest in coroutines, which, if I'm not mistaken, can also be
-> implemented using all this.
->=20
-> Would that not make for a far simpler and more convincing use-case?
+This makes sense, and the accounting is in line with how we track and
+distribute child creation quotas (cgroup.max.descendants and
+cgroup.max.depth) up the cgroup tree.
 
-Also just worker threads in general. Instead of waking up
-an idle worker thread every time a new request comes in,
-why not allow worker threads to indicate "I'm almost done",
-and the main/receiving thread to enqueue the new request,
-to be handled when the worker thread is done with the current
-request?
+I have one minor comment that isn't a dealbreaker for me:
 
-> I really think we want to have block/resume detection sorted before
-> this
-> goes anywhere, I also strongly feel BPF should not be used for
-> functional interfaces like that.
->=20
-> That is, I want to see a complete interface before I want to commit
-> to
-> an ABI that we're stuck with.
+> @@ -5069,13 +5069,15 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+>  	if (!pn)
+>  		return 1;
+>  
+> -	pn->lruvec_stat_local = alloc_percpu(struct lruvec_stat);
+> +	pn->lruvec_stat_local = alloc_percpu_gfp(struct lruvec_stat,
+> +						 GFP_KERNEL_ACCOUNT);
+>  	if (!pn->lruvec_stat_local) {
+>  		kfree(pn);
+>  		return 1;
+>  	}
+>  
+> -	pn->lruvec_stat_cpu = alloc_percpu(struct lruvec_stat);
+> +	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct lruvec_stat,
+> +					       GFP_KERNEL_ACCOUNT);
+>  	if (!pn->lruvec_stat_cpu) {
+>  		free_percpu(pn->lruvec_stat_local);
+>  		kfree(pn);
+> @@ -5149,11 +5151,13 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
+>  		goto fail;
+>  	}
+>  
+> -	memcg->vmstats_local = alloc_percpu(struct memcg_vmstats_percpu);
+> +	memcg->vmstats_local = alloc_percpu_gfp(struct memcg_vmstats_percpu,
+> +						GFP_KERNEL_ACCOUNT);
+>  	if (!memcg->vmstats_local)
+>  		goto fail;
+>  
+> -	memcg->vmstats_percpu = alloc_percpu(struct memcg_vmstats_percpu);
+> +	memcg->vmstats_percpu = alloc_percpu_gfp(struct memcg_vmstats_percpu,
+> +						 GFP_KERNEL_ACCOUNT);
+>  	if (!memcg->vmstats_percpu)
+>  		goto fail;
+>  
+> @@ -5202,7 +5206,9 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+>  	struct mem_cgroup *memcg;
+>  	long error = -ENOMEM;
+>  
+> +	memalloc_use_memcg(parent);
+>  	memcg = mem_cgroup_alloc();
+> +	memalloc_unuse_memcg();
 
-The work case above also needs to have that figured out,
-for the (slow path, but still common) case of the worker
-thread actually having gone to sleep while the work got
-enqueued, and then needing to be woken up anyway.
+The disconnect between 1) requesting accounting and 2) which cgroup to
+charge is making me uneasy. It makes mem_cgroup_alloc() a bit of a
+handgrenade, because accounting to the current task is almost
+guaranteed to be wrong if the use_memcg() annotation were to get lost
+in a refactor or not make it to a new caller of the function.
 
-Not sure that is a direction you are interested in, given
-the description, but it could make coroutines and worker
-threads more efficient :)
+The saving grace is that mem_cgroup_alloc() is pretty unlikely to be
+used elsewhere. And pretending it's an independent interface would be
+overengineering. But how about the following in mem_cgroup_alloc() and
+alloc_mem_cgroup_per_node_info() to document that caller relationship:
 
---=20
-All Rights Reversed.
-
---=-RJsqJcckj6wQC4gZIoGP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl8yuJwACgkQznnekoTE
-3oNbgggAwBO/BAmj8n+qEFRTCkdwzHNl90lkqKNMQXHJC+tVuATC/SkdIeYwwxLq
-df3aSMxGfNqO4dOg9qs3adNAHZL43ttZ01+SYppfyaIniebPHfOYU6ezYqdH7/Zt
-6NTQHp237I890cfqcXhPJdJqt4OyR9m0hpKu7XCR9MbHtcNAiT1NYTIXEMrJuj/x
-lLVndwUcFTtg4gwFsb7PnAiUn5dJeTcYgXxwXf4TvGCkgFlXP0M6+rJV/kM3pjWD
-D5SLnzS8JNtVU5ASyFQlVxAzVev8Jxud36C7gqeQKA1WVXQktVAQqsTIeMXxeK1e
-7bFNA8BEE5btQLrXUUfeufw6ofWz/g==
-=KAJv
------END PGP SIGNATURE-----
-
---=-RJsqJcckj6wQC4gZIoGP--
-
+	/* We charge the parent cgroup, never the current task */
+	WARN_ON_ONCE(!current->active_memcg);
