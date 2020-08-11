@@ -2,127 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4B024165D
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 08:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F64F241665
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 08:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbgHKGe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 02:34:59 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:1280 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726520AbgHKGe7 (ORCPT
+        id S1728182AbgHKGiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 02:38:00 -0400
+Received: from lonlinode-sdnproxy-1.icoremail.net ([139.162.193.133]:56458
+        "HELO lonlinode-sdnproxy-1.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S1726520AbgHKGh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 02:34:59 -0400
-X-UUID: 4e83e217174340f4adcb4ff16e082455-20200811
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=HjTrZJUnmsbyXMddz+pAd0d3gGDoO/AnUi9tsFN7vvI=;
-        b=hkhy2iK7bxzjN/8wI2tM41ng+0J7E90mEj3QvoZJ8bOy3RTHYqZ8BJODlt9MZP0sBg95hd3FbyNHmMVCXYRTapbv4jcDRo4iMZ3ymn3bgwQbp0EG2FS4d2SDCYP2TIhWjgMigKHt+7M3KNMZL6Qnvc16hNWa035iLOlHzuyfHjk=;
-X-UUID: 4e83e217174340f4adcb4ff16e082455-20200811
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 2044285616; Tue, 11 Aug 2020 14:34:54 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 11 Aug 2020 14:34:51 +0800
-Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 11 Aug 2020 14:34:45 +0800
-Message-ID: <1597127686.20627.8.camel@mtksdaap41>
-Subject: Re: [PATCH v2 3/5] clk: mediatek: Fix asymmetrical PLL enable and
- disable control
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Wendell Lin <wendell.lin@mediatek.com>
-Date:   Tue, 11 Aug 2020 14:34:46 +0800
-In-Reply-To: <CANMq1KAYg2+RQiF0w7-2FKZj1QwoPDsXtmak-DHfserRjX-TWA@mail.gmail.com>
-References: <1596012277-8448-1-git-send-email-weiyi.lu@mediatek.com>
-         <1596012277-8448-4-git-send-email-weiyi.lu@mediatek.com>
-         <CANMq1KBJ3QgpZ4EuSOWYTpOatsOte5sGkqtSZQs337x3fMFFYw@mail.gmail.com>
-         <CANMq1KAYg2+RQiF0w7-2FKZj1QwoPDsXtmak-DHfserRjX-TWA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 11 Aug 2020 02:37:59 -0400
+Received: from localhost.localdomain (unknown [106.19.114.17])
+        by c1app6 (Coremail) with SMTP id BgINCgAnL_+0PDJfrfP+Aw--.3669S2;
+        Tue, 11 Aug 2020 14:37:42 +0800 (CST)
+From:   Qiu Wenbo <qiuwenbo@phytium.com.cn>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv@lists.infradead.org
+Cc:     Qiu Wenbo <qiuwenbo@phytium.com.cn>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Zong Li <zong.li@sifive.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Vincent Chen <vincent.chen@sifive.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: Setup exception vector for K210 properly
+Date:   Tue, 11 Aug 2020 14:36:56 +0800
+Message-Id: <20200811063659.284088-1-qiuwenbo@phytium.com.cn>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 2B190417C65371784B5F8095A8677560A8027995044ABD80DB753E33129969022000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: BgINCgAnL_+0PDJfrfP+Aw--.3669S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KrWxGFyDCw4DXw1kXw45trb_yoW8XFy3pr
+        W8Crn5GrWFg3Z7t3y3Aw4kurW3Jrs8G343GF4ktayFqF4ft3y5X3saga4UXr1YqFyYva9Y
+        9F9Y9ryI9w4DZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02
+        628vn2kIc2xKxwCY02Avz4vE14v_GF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
+        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
+        1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
+        AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
+        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+        VFxhVjvjDU0xZFpf9x0JU-J5rUUUUU=
+X-CM-SenderInfo: 5tlx4vhqerq15k1wx33pof0zgofq/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTA3LTI5IGF0IDE5OjAyICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6
-DQo+IE9uIFdlZCwgSnVsIDI5LCAyMDIwIGF0IDY6NTEgUE0gTmljb2xhcyBCb2ljaGF0IDxkcmlu
-a2NhdEBjaHJvbWl1bS5vcmc+IHdyb3RlOg0KPiA+DQo+ID4gT24gV2VkLCBKdWwgMjksIDIwMjAg
-YXQgNDo0NCBQTSBXZWl5aSBMdSA8d2VpeWkubHVAbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPiA+
-DQo+ID4gPiBUaGUgZW5fbWFzayBhY3R1YWxseSBpcyBhIGNvbWJpbmF0aW9uIG9mIGRpdmlkZXIg
-ZW5hYmxlIG1hc2sNCj4gPiA+IGFuZCBwbGwgZW5hYmxlIGJpdChiaXQwKS4NCj4gPiA+IEJlZm9y
-ZSB0aGlzIHBhdGNoLCB3ZSBlbmFibGVkIGJvdGggZGl2aWRlciBtYXNrIGFuZCBiaXQwIGluIHBy
-ZXBhcmUoKSwNCj4gPiA+IGJ1dCBvbmx5IGNsZWFyZWQgdGhlIGJpdDAgaW4gdW5wcmVwYXJlKCku
-DQo+ID4gPiBOb3csIHNldHRpbmcgdGhlIGVuYWJsZSByZWdpc3RlcihDT04wKSBpbiAyIHN0ZXBz
-OiBmaXJzdCBkaXZpZGVyIG1hc2ssDQo+ID4gPiB0aGVuIGJpdDAgZHVyaW5nIHByZXBhcmUoKSwg
-dmljZSB2ZXJzYS4NCj4gPiA+IEhlbmNlLCBlbl9tYXNrIHdpbGwgb25seSBiZSB1c2VkIGFzIGRp
-dmlkZXIgZW5hYmxlIG1hc2suDQo+ID4gPiBNZWFud2hpbGUsIGFsbCB0aGUgU29DIFBMTCBkYXRh
-IGFyZSB1cGRhdGVkLg0KPiA+DQo+ID4gSSBsaWtlIHRoaXMgYSBsb3QgYmV0dGVyLCBtb3N0IGNo
-YW5nZXMgbG9vayBmaW5lLCBqdXN0IGEgZmV3IG5pdHMuDQo+ID4NCj4gPiA+DQo+ID4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBXZWl5aSBMdSA8d2VpeWkubHVAbWVkaWF0ZWsuY29tPg0KPiA+ID4gLS0tDQo+
-ID4gPiAgZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10MjcwMS5jIHwgMjYgKysrKysrKysrKysr
-LS0tLS0tLS0tLS0tDQo+ID4gPiAgZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10MjcxMi5jIHwg
-MzAgKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLQ0KPiA+ID4gIGRyaXZlcnMvY2xrL21lZGlh
-dGVrL2Nsay1tdDY3NjUuYyB8IDIwICsrKysrKysrKy0tLS0tLS0tLS0NCj4gPiA+ICBkcml2ZXJz
-L2Nsay9tZWRpYXRlay9jbGstbXQ2Nzc5LmMgfCAyNCArKysrKysrKysrKy0tLS0tLS0tLS0tDQo+
-ID4gPiAgZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10Njc5Ny5jIHwgMjAgKysrKysrKysrLS0t
-LS0tLS0tLQ0KPiA+ID4gIGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDc2MjIuYyB8IDE4ICsr
-KysrKysrLS0tLS0tLS0tDQo+ID4gPiAgZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10NzYyOS5j
-IHwgMTIgKysrKystLS0tLS0NCj4gPiA+ICBkcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4MTcz
-LmMgfCA0MiArKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0NCj4gPiA+ICBk
-cml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4MTgzLmMgfCAyMiArKysrKysrKysrLS0tLS0tLS0t
-LQ0KPiA+ID4gIGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1wbGwuYyAgICB8IDEwICsrKysrKysr
-LS0NCj4gPiA+ICAxMCBmaWxlcyBjaGFuZ2VkLCAxMjIgaW5zZXJ0aW9ucygrKSwgMTAyIGRlbGV0
-aW9ucygtKQ0KPiA+ID4NCj4gW3NuaXBdDQo+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsv
-bWVkaWF0ZWsvY2xrLXBsbC5jIGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLXBsbC5jDQo+ID4g
-PiBpbmRleCBmNDQwZjJjZC4uM2M3OWUxYSAxMDA2NDQNCj4gPiA+IC0tLSBhL2RyaXZlcnMvY2xr
-L21lZGlhdGVrL2Nsay1wbGwuYw0KPiA+ID4gKysrIGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xr
-LXBsbC5jDQo+ID4gPiBAQCAtMjQ3LDggKzI0NywxMCBAQCBzdGF0aWMgaW50IG10a19wbGxfcHJl
-cGFyZShzdHJ1Y3QgY2xrX2h3ICpodykNCj4gPiA+ICAgICAgICAgd3JpdGVsKHIsIHBsbC0+cHdy
-X2FkZHIpOw0KPiA+ID4gICAgICAgICB1ZGVsYXkoMSk7DQo+ID4gPg0KPiA+ID4gLSAgICAgICBy
-ID0gcmVhZGwocGxsLT5iYXNlX2FkZHIgKyBSRUdfQ09OMCk7DQo+ID4gPiAtICAgICAgIHIgfD0g
-cGxsLT5kYXRhLT5lbl9tYXNrOw0KPiA+ID4gKyAgICAgICByID0gcmVhZGwocGxsLT5iYXNlX2Fk
-ZHIgKyBSRUdfQ09OMCkgfCBDT04wX0JBU0VfRU47DQo+ID4gPiArICAgICAgIHdyaXRlbChyLCBw
-bGwtPmJhc2VfYWRkciArIFJFR19DT04wKTsNCj4gPiA+ICsNCj4gPiA+ICsgICAgICAgciA9IHJl
-YWRsKHBsbC0+YmFzZV9hZGRyICsgUkVHX0NPTjApIHwgcGxsLT5kYXRhLT5lbl9tYXNrOw0KPiAN
-Cj4gT25lIG1vcmUgcXVlc3Rpb24uIEkgaGF2ZSB0aGUgZmVlbGluZyB0aGF0IENPTjBfQkFTRV9F
-TiBpcyB3aGF0DQo+IGVuYWJsZXMgdGhlIGNsb2NrIGZvciBnb29kIChhbmQgcGxsLT5kYXRhLT5l
-bl9tYXNrIGlzIGp1c3QgYW4NCj4gYWRkaXRpb25hbCBzZXR0aW5nL21hc2ssIHNpbmNlIHlvdSBj
-b3VsZCBkaXNhYmxlIHRoZSBjbG9jayBieSBzaW1wbHkNCj4gY2xlYXJpbmcgQ09OMF9CQVNFX0VO
-KS4gU2hvdWxkbid0IHlvdSBzZXQgcGxsLT5kYXRhLT5lbl9tYXNrIF9maXJzdF8sDQo+IHRoZW4g
-Q09OMF9CQVNFX0VOPw0KPiANCg0KSGkgTmljb2xhcywNCg0KQWN0dWFsbHkgSSBoYWQgdGhlIHNh
-bWUgcXVlc3Rpb24gd2hlbiBJIGZpcnN0IHNhdyBpdC4NCkJ1dCB0aGlzIGlzIHRoZSByZWNvbW1l
-bmRlZCBzZXF1ZW5jZSBpbiB0aGUgUExMIGFwcGxpY2F0aW9uIG5vdGVzLg0KDQpwcmVhcHJlDQp7
-DQogICAgfCBDT04wX0JBU0VfRU47DQogICAgfCBwbGwtPmRhdGEtPmVuX21hc2s7DQp9DQoNCnVu
-cHJlcGFyZQ0Kew0KICAgIH5wbGwtPmRhdGEtPmVuX21hc2s7DQogICAgfkNPTjBfQkFTRV9FTjsN
-Cn0NCg0KPiA+ID4gICAgICAgICB3cml0ZWwociwgcGxsLT5iYXNlX2FkZHIgKyBSRUdfQ09OMCk7
-DQo+ID4NCj4gPiBBcyBhIHNtYWxsIG9wdGltaXphdGlvbiwgeW91IGNhbiBkbzoNCj4gPg0KPiA+
-IGlmIChwbGwtPmRhdGEtPmVuX21hc2spIHsNCj4gPiAgICByID0gcmVhZGwocGxsLT5iYXNlX2Fk
-ZHIgKyBSRUdfQ09OMCkgfCBwbGwtPmRhdGEtPmVuX21hc2s7DQo+ID4gICAgd3JpdGVsKHIsIHBs
-bC0+YmFzZV9hZGRyICsgUkVHX0NPTjApOw0KPiA+IH0NCj4gPg0KPiA+ID4NCj4gPiA+ICAgICAg
-ICAgX19tdGtfcGxsX3R1bmVyX2VuYWJsZShwbGwpOw0KPiA+ID4gQEAgLTI3OCw2ICsyODAsMTAg
-QEAgc3RhdGljIHZvaWQgbXRrX3BsbF91bnByZXBhcmUoc3RydWN0IGNsa19odyAqaHcpDQo+ID4g
-PiAgICAgICAgIF9fbXRrX3BsbF90dW5lcl9kaXNhYmxlKHBsbCk7DQo+ID4gPg0KPiA+ID4gICAg
-ICAgICByID0gcmVhZGwocGxsLT5iYXNlX2FkZHIgKyBSRUdfQ09OMCk7DQo+ID4gPiArICAgICAg
-IHIgJj0gfnBsbC0+ZGF0YS0+ZW5fbWFzazsNCj4gPg0KPiA+IE1vdmUgdGhpcyB0byBvbmUgbGlu
-ZT8gKHNvIHRoYXQgdGhlIGNvZGUgbG9va3Mgc3ltbWV0cmljYWwsIHRvbz8pDQo+ID4NCj4gPiA+
-ICsgICAgICAgd3JpdGVsKHIsIHBsbC0+YmFzZV9hZGRyICsgUkVHX0NPTjApOw0KPiA+ID4gKw0K
-PiA+ID4gKyAgICAgICByID0gcmVhZGwocGxsLT5iYXNlX2FkZHIgKyBSRUdfQ09OMCk7DQo+ID4g
-PiAgICAgICAgIHIgJj0gfkNPTjBfQkFTRV9FTjsNCj4gDQo+IEFuZCBkaXR0bywgfkNPTjBfQkFT
-RV9FTiB0aGVuIH5wbGwtPmRhdGEtPmVuX21hc2s/DQo+IA0KPiA+DQo+ID4gZGl0dG8/DQo+ID4N
-Cj4gPiA+ICAgICAgICAgd3JpdGVsKHIsIHBsbC0+YmFzZV9hZGRyICsgUkVHX0NPTjApOw0KPiA+
-ID4NCj4gPiA+IC0tDQo+ID4gPiAxLjguMS4xLmRpcnR5DQoNCg==
+Exception vector is missing on nommu platform and it is a big issue.
+This patch is tested in Sipeed MAIX Bit Dev Board.
+
+Fixes: 79b1feba5455 ("RISC-V: Setup exception vector early")
+Signed-off-by: Qiu Wenbo <qiuwenbo@phytium.com.cn>
+---
+ arch/riscv/kernel/smpboot.c |  1 +
+ arch/riscv/kernel/traps.c   | 11 ++++++++++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
+index 356825a57551..23cde0ceb39d 100644
+--- a/arch/riscv/kernel/smpboot.c
++++ b/arch/riscv/kernel/smpboot.c
+@@ -154,6 +154,7 @@ asmlinkage __visible void smp_callin(void)
+ 	mmgrab(mm);
+ 	current->active_mm = mm;
+ 
++	trap_init();
+ 	notify_cpu_starting(curr_cpuid);
+ 	update_siblings_masks(curr_cpuid);
+ 	set_cpu_online(curr_cpuid, 1);
+diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+index ad14f4466d92..a390239818ae 100644
+--- a/arch/riscv/kernel/traps.c
++++ b/arch/riscv/kernel/traps.c
+@@ -174,7 +174,16 @@ int is_valid_bugaddr(unsigned long pc)
+ }
+ #endif /* CONFIG_GENERIC_BUG */
+ 
+-/* stvec & scratch is already set from head.S */
++/* stvec & scratch is already set from head.S when mmu is enabled */
+ void trap_init(void)
+ {
++#ifndef CONFIG_MMU
++	/*
++	 * Set sup0 scratch register to 0, indicating to exception vector
++	 * that we are presently executing in the kernel
++	 */
++	csr_write(CSR_SCRATCH, 0);
++	/* Set the exception vector address */
++	csr_write(CSR_TVEC, &handle_exception);
++#endif
+ }
+-- 
+2.28.0
 
