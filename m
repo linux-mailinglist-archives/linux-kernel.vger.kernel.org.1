@@ -2,202 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1EA2418C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 11:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4B52418C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 11:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728411AbgHKJSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 05:18:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
+        id S1728422AbgHKJVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 05:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728368AbgHKJSM (ORCPT
+        with ESMTP id S1728355AbgHKJVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 05:18:12 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B010C06174A;
-        Tue, 11 Aug 2020 02:18:12 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id t23so12724731ljc.3;
-        Tue, 11 Aug 2020 02:18:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Rc2k0yMpOdSHkseT6oPEXxwHuzZlfRokXZB8zKwWVMU=;
-        b=gJBwH5fP5BWi29W99iFxYmFcTLFS0V/Nap1R5fSSC1C5baTO1zsB8AQBWWKj4ilX54
-         Ec05PNjgmtEynrpEss9CKT3go/P8VILxR+O9+EwHtU/BLjn+9Q+GQsm59lUL5l6Jb50G
-         caf2JuqTu/vVr397vf65bsb/Tyv8qVZIqpvnHRjLEy3zo84FDN0WSBZ4LAmKloDgcHde
-         sRWd+hSJjVZmMkeQ/slssOSM5YhKTAeL28VbNPBI9hGEIp4MZSrx6amPpQHzv2G4bUWy
-         4ZcAl/cfipW2i+am73SIBbGJopgI3AcnT0tQ2HE/00G+RNCv/W4qTO23wlHEFS/vk37p
-         JTUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Rc2k0yMpOdSHkseT6oPEXxwHuzZlfRokXZB8zKwWVMU=;
-        b=S36VlQQ/aX+A/Sx7p24KfrkFDLJYbHNUjkOS7nyU4aezLQvN+3YlntnFshmWr9/0Zd
-         MvtX9kgxrpH5RnCG2sUCemZyYb+NVqDwArwmDnxF88S79RW+QIrtPVuQCND7rhsu5ZVk
-         fcCUm1CSA1Ks/SJmnFUclqjzTAQFl3yrHTY1EgM99A8fNXiMmn1Rx0LA2WVwktzNHoi8
-         /phoKtYf8tyDfiygJgOTgGg6PujjJVRZnyrgGyZxY2vQNgbICs0d9HD39SaRRVbvQCxg
-         9XVjq+n8sn9TSQKmJKVsi6YM79aZOEk6S80RpXvzfqar1QAZyqXTSXzf4xpvXOwBOzk6
-         5D2w==
-X-Gm-Message-State: AOAM530UgeD6obSMVF+w+uMFluZkDznfyTBLHwjld4chC+2L60SuzRdX
-        AOq3R+OCv9gMsFaOw6dPkkg=
-X-Google-Smtp-Source: ABdhPJwUokTJiYEOYi5f6SL0zm+V9uMIpcGHyGrrtUyI6vBfULNt8i7g+WR1f/oGMPahxlXqecMvSA==
-X-Received: by 2002:a2e:5cc9:: with SMTP id q192mr2586384ljb.452.1597137490384;
-        Tue, 11 Aug 2020 02:18:10 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id g21sm9947885ljh.103.2020.08.11.02.18.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Aug 2020 02:18:09 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 11 Aug 2020 11:18:07 +0200
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200811091807.GA2634@pc636>
-References: <20200809204354.20137-1-urezki@gmail.com>
- <20200809204354.20137-2-urezki@gmail.com>
- <20200810123141.GF4773@dhcp22.suse.cz>
- <20200810160739.GA29884@pc636>
- <20200810192525.GG4773@dhcp22.suse.cz>
+        Tue, 11 Aug 2020 05:21:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4275AC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 02:21:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=hm4JdNf7SM0QMQOFD/GVqjWP012kTgNDcYqFU8vfr/U=; b=uwpIB3NtbdqSI+ux4wqwNcFt1S
+        n1zKP3ACsnDJQpYDLP+p6yoYmCE2G3vyYa2Rp9BEOTJuP4mwZR0X6NoUcCOXsXzWBOjtSYLUneDmV
+        XfDgrNRL75yJb0MH9RXp30nGJxhgREaLVjZG1cOiuBKJpLYpnXyj3CmdXrCUwv4TNa21R4gMiU/TN
+        zqE1QbNg3KdDlK4btbqYQnPsCRYQRzrj//c/HlUhbOdWb2B6UVwB7s0u4TodxyBBp+XzYAwfLOnsN
+        nmw7lqNXFp0sYzAE5//4+e13eMMHcfZUGGB73WZC4myB4WtFAJ2uQLg+fFPV8jb33Bji1fLEzo7RL
+        BABqdmMQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k5QSn-0001tP-Lq; Tue, 11 Aug 2020 09:20:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 28822300DAE;
+        Tue, 11 Aug 2020 11:20:54 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1982020BFC4E5; Tue, 11 Aug 2020 11:20:54 +0200 (CEST)
+Date:   Tue, 11 Aug 2020 11:20:54 +0200
+From:   peterz@infradead.org
+To:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>
+Cc:     Marco Elver <elver@google.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        fenghua.yu@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        yu-cheng.yu@intel.com, sdeep@vmware.com,
+        virtualization@lists.linux-foundation.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Wei Liu <wei.liu@kernel.org>
+Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*()
+ helpers
+Message-ID: <20200811092054.GB2674@hirez.programming.kicks-ass.net>
+References: <20200807095032.GA3528289@elver.google.com>
+ <16671cf3-3885-eb06-79ff-4cbfaeeaea79@suse.com>
+ <20200807113838.GA3547125@elver.google.com>
+ <e5bf3e6a-efff-7170-5ee6-1798008393a2@suse.com>
+ <CANpmjNPau_DEYadey9OL+iFZKEaUTqnFnyFs1dU12o00mg7ofA@mail.gmail.com>
+ <20200807151903.GA1263469@elver.google.com>
+ <20200811074127.GR3982@worktop.programming.kicks-ass.net>
+ <a2dffeeb-04f0-8042-b39a-b839c4800d6f@suse.com>
+ <20200811081205.GV3982@worktop.programming.kicks-ass.net>
+ <07f61573-fef1-e07c-03f2-a415c88dec6f@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200810192525.GG4773@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <07f61573-fef1-e07c-03f2-a415c88dec6f@suse.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 09:25:25PM +0200, Michal Hocko wrote:
-> On Mon 10-08-20 18:07:39, Uladzislau Rezki wrote:
-> > > On Sun 09-08-20 22:43:53, Uladzislau Rezki (Sony) wrote:
-> > > [...]
-> > > > Limitations and concerns (Main part)
-> > > > ====================================
-> > > > The current memmory-allocation interface presents to following
-> > > > difficulties that this patch is designed to overcome:
-> > > > 
-> > > > a) If built with CONFIG_PROVE_RAW_LOCK_NESTING, the lockdep will
-> > > >    complain about violation("BUG: Invalid wait context") of the
-> > > >    nesting rules. It does the raw_spinlock vs. spinlock nesting
-> > > >    checks, i.e. it is not legal to acquire a spinlock_t while
-> > > >    holding a raw_spinlock_t.
-> > > > 
-> > > >    Internally the kfree_rcu() uses raw_spinlock_t(in rcu-dev branch)
-> > > >    whereas the "page allocator" internally deals with spinlock_t to
-> > > >    access to its zones. The code also can be broken from higher level
-> > > >    of view:
-> > > >    <snip>
-> > > >        raw_spin_lock(&some_lock);
-> > > >        kfree_rcu(some_pointer, some_field_offset);
-> > > >    <snip>
-> > > 
-> > > Is there any fundamental problem to make zone raw_spin_lock?
-> > > 
-> > Good point. Converting a regular spinlock to the raw_* variant can solve 
-> > an issue and to me it seems partly reasonable. Because there are other
-> > questions if we do it:
-> > 
-> > a) what to do with kswapd and "wake-up path" that uses sleepable lock:
-> >     wakeup_kswapd() -> wake_up_interruptible(&pgdat->kswapd_wait).
-> 
-> If there is no RT friendly variant for waking up process from the atomic
-> context then we might need to special case this for the RT tree.
-> 
-I do not see it in RT kernel. The waiting primitives, see the wait.c,
-use sleepable locks all over the file.
+On Tue, Aug 11, 2020 at 10:38:50AM +0200, Jürgen Groß wrote:
+> In case you don't want to do it I can send the patch for the Xen
+> variants.
 
-> > b) How RT people reacts on it? I guess they will no be happy.
-> 
-> zone->lock should be held for a very limited amount of time.
-> 
-> > As i described before, calling the __get_free_page(0) with 0 as argument
-> > will solve the (a). How correctly is it? From my point of view the logic
-> > that bypass the wakeup path should be explicitly defined.
-> 
-> gfp_mask == 0 is GFP_NOWAIT (aka an atomic allocation request) which
-> doesn't wake up kswapd. So if the wakeup is a problem then this would be
-> a way to go.
-> 
-What do you mean Michal? gfp_mask 0 != GFP_NOWAIT:
+I might've opened a whole new can of worms here. I'm not sure we
+can/want to fix the entire fallout this release :/
 
-#define GFP_NOWAIT (__GFP_KSWAPD_RECLAIM)
-
-it does wakeup of the kswapd. Or am i missing something? Please comment.
-If we are about to avoid the kswapd, should we define something special?
-
-#define GFP_NOWWAKE_KSWAPD 0
-
-> > Or we can enter the allocator with (__GFP_HIGH|__GFP_ATOMIC) that bypass
-> > the __GFP_KSWAPD_RECLAIM as well.
-> 
-> This would be an alternative which consumes memory reserves. Is this
-> really needed for the particular case?
-> 
-No. That was just another example illustrating how to bypass the
-__GFP_KSWAPD_RECLAIM.
-
-> > 
-> > Any thoughts here? Please comment.
-> > 
-> > Having proposed flag will not heart RT latency and solve all concerns.
-> > 
-> > > > b) If built with CONFIG_PREEMPT_RT. Please note, in that case spinlock_t
-> > > >    is converted into sleepable variant. Invoking the page allocator from
-> > > >    atomic contexts leads to "BUG: scheduling while atomic".
-> > > 
-> > > [...]
-> > > 
-> > > > Proposal
-> > > > ========
-> > > > 1) Make GFP_* that ensures that the allocator returns NULL rather
-> > > > than acquire its own spinlock_t. Having such flag will address a and b
-> > > > limitations described above. It will also make the kfree_rcu() code
-> > > > common for RT and regular kernel, more clean, less handling corner
-> > > > cases and reduce the code size.
-> > > 
-> > > I do not think this is a good idea. Single purpose gfp flags that tend
-> > > to heavily depend on the current implementation of the page allocator
-> > > have turned out to be problematic. Users used to misunderstand their
-> > > meaning resulting in a lot of abuse which was not trivial to remove.
-> > > This flag seem to fall into exactly this sort of category. If there is a
-> > > problem in nesting then that should be addressed rather than a new flag
-> > > exported IMHO. If that is absolutely not possible for some reason then
-> > > we can try to figure out what to do but that really need a very strong
-> > > justification.
-> > > 
-> > The problem that i see is we can not use the page allocator from atomic
-> > contexts, what is our case:
-> > 
-> > <snip>
-> >     local_irq_save(flags) or preempt_disable() or raw_spinlock();
-> >     __get_free_page(GFP_ATOMIC);
-> > <snip>
-> > 
-> > So if we can convert the page allocator to raw_* lock it will be appreciated,
-> > at least from our side, IMHO, not from RT one. But as i stated above we need
-> > to sort raised questions out if converting is done.
-> > 
-> > What is your view?
-> 
-> To me it would make more sense to support atomic allocations also for
-> the RT tree. Having both GFP_NOWAIT and GFP_ATOMIC which do not really
-> work for atomic context in RT sounds subtle and wrong.
->
-Same view on it.
-
-Thank you for your comments!
-
---
-Vlad Rezki
+Let me ponder this a little, because the more I look at things, the more
+problems I keep finding... bah bah bah.
