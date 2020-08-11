@@ -2,111 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B12241B61
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 15:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4EE241B6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 15:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728701AbgHKNIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 09:08:41 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:41556 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728557AbgHKNIk (ORCPT
+        id S1728710AbgHKNM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 09:12:27 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:26531 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728557AbgHKNM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 09:08:40 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C95DF1C0BD8; Tue, 11 Aug 2020 15:08:37 +0200 (CEST)
-Date:   Tue, 11 Aug 2020 15:08:37 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org
-Subject: Re: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
-Message-ID: <20200811130837.hi6wllv6g67j5wds@duo.ucw.cz>
-References: <aefc85852ea518982e74b233e11e16d2e707bc32>
- <20200728131050.24443-1-madvenka@linux.microsoft.com>
- <20200731180955.GC67415@C02TD0UTHF1T.local>
- <6236adf7-4bed-534e-0956-fddab4fd96b6@linux.microsoft.com>
- <20200804143018.GB7440@C02TD0UTHF1T.local>
- <b3368692-afe6-89b5-d634-12f4f0a601f8@linux.microsoft.com>
- <20200808221748.GA1020@bug>
- <6cca8eac-f767-b891-dc92-eaa7504a0e8b@linux.microsoft.com>
+        Tue, 11 Aug 2020 09:12:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597151545; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=mkjpPslcWtdG0991XuCFpnkQYQbbvoo58rcO36lv23E=; b=Ci5vsjKL17ivRT5xR0sTo4CahYtcCiNIbmPKyxDhINpAH3hsR2y7Uv5SzdJezSFJDzMIcAmF
+ O/YzgWff/VNGKQVOuDhuUjqt9jf9wTIXkgT7WYjsGLzaGiYwbeir8FVHMJV3jQGdZLKcjBbp
+ HUDJjrPA0JZzCByEd5+xWlSxZE4=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n17.prod.us-east-1.postgun.com with SMTP id
+ 5f3299252b87d660496edb73 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 11 Aug 2020 13:12:05
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 27614C43395; Tue, 11 Aug 2020 13:12:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.103] (unknown [183.83.143.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D04A6C433C6;
+        Tue, 11 Aug 2020 13:12:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D04A6C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=charante@codeaurora.org
+Subject: Re: [PATCH] mm, page_alloc: fix core hung in free_pcppages_bulk()
+To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        mhocko@suse.com, vbabka@suse.cz, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, vinmenon@codeaurora.org
+References: <1597075833-16736-1-git-send-email-charante@codeaurora.org>
+ <3b07d2a6-8ce7-5957-8ca5-a8d977852e14@redhat.com>
+From:   Charan Teja Kalla <charante@codeaurora.org>
+Message-ID: <3e16448a-ea3b-99c0-13b0-a5a31c9b5582@codeaurora.org>
+Date:   Tue, 11 Aug 2020 18:41:59 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="yvr4rtdsyfwruwtq"
-Content-Disposition: inline
-In-Reply-To: <6cca8eac-f767-b891-dc92-eaa7504a0e8b@linux.microsoft.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <3b07d2a6-8ce7-5957-8ca5-a8d977852e14@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks David for the comments.
 
---yvr4rtdsyfwruwtq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 8/11/2020 1:59 PM, David Hildenbrand wrote:
+> On 10.08.20 18:10, Charan Teja Reddy wrote:
+>> The following race is observed with the repeated online, offline and a
+>> delay between two successive online of memory blocks of movable zone.
+>>
+>> P1						P2
+>>
+>> Online the first memory block in
+>> the movable zone. The pcp struct
+>> values are initialized to default
+>> values,i.e., pcp->high = 0 &
+>> pcp->batch = 1.
+>>
+>> 					Allocate the pages from the
+>> 					movable zone.
+>>
+>> Try to Online the second memory
+>> block in the movable zone thus it
+>> entered the online_pages() but yet
+>> to call zone_pcp_update().
+>> 					This process is entered into
+>> 					the exit path thus it tries
+>> 					to release the order-0 pages
+>> 					to pcp lists through
+>> 					free_unref_page_commit().
+>> 					As pcp->high = 0, pcp->count = 1
+>> 					proceed to call the function
+>> 					free_pcppages_bulk().
+>> Update the pcp values thus the
+>> new pcp values are like, say,
+>> pcp->high = 378, pcp->batch = 63.
+>> 					Read the pcp's batch value using
+>> 					READ_ONCE() and pass the same to
+>> 					free_pcppages_bulk(), pcp values
+>> 					passed here are, batch = 63,
+>> 					count = 1.
+>>
+>> 					Since num of pages in the pcp
+>> 					lists are less than ->batch,
+>> 					then it will stuck in
+>> 					while(list_empty(list)) loop
+>> 					with interrupts disabled thus
+>> 					a core hung.
+>>
+>> Avoid this by ensuring free_pcppages_bulk() called with proper count of
+>> pcp list pages.
+>>
+>> The mentioned race is some what easily reproducible without [1] because
+>> pcp's are not updated for the first memory block online and thus there
+>> is a enough race window for P2 between alloc+free and pcp struct values
+>> update through onlining of second memory block.
+>>
+>> With [1], the race is still exists but it is very much narrow as we
+>> update the pcp struct values for the first memory block online itself.
+>>
+>> [1]: https://patchwork.kernel.org/patch/11696389/
+>>
+>> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+>> ---
+>>  mm/page_alloc.c | 16 ++++++++++++++--
+>>  1 file changed, 14 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index e4896e6..25e7e12 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -3106,6 +3106,7 @@ static void free_unref_page_commit(struct page *page, unsigned long pfn)
+>>  	struct zone *zone = page_zone(page);
+>>  	struct per_cpu_pages *pcp;
+>>  	int migratetype;
+>> +	int high;
+>>  
+>>  	migratetype = get_pcppage_migratetype(page);
+>>  	__count_vm_event(PGFREE);
+>> @@ -3128,8 +3129,19 @@ static void free_unref_page_commit(struct page *page, unsigned long pfn)
+>>  	pcp = &this_cpu_ptr(zone->pageset)->pcp;
+>>  	list_add(&page->lru, &pcp->lists[migratetype]);
+>>  	pcp->count++;
+>> -	if (pcp->count >= pcp->high) {
+>> -		unsigned long batch = READ_ONCE(pcp->batch);
+>> +	high = READ_ONCE(pcp->high);
+>> +	if (pcp->count >= high) {
+>> +		int batch;
+>> +
+>> +		batch = READ_ONCE(pcp->batch);
+>> +		/*
+>> +		 * For non-default pcp struct values, high is always
+>> +		 * greater than the batch. If high < batch then pass
+>> +		 * proper count to free the pcp's list pages.
+>> +		 */
+>> +		if (unlikely(high < batch))
+>> +			batch = min(pcp->count, batch);
+>> +
+>>  		free_pcppages_bulk(zone, batch, pcp);
+>>  	}
+>>  }
+>>
+> 
+> I was wondering if we should rather set all pageblocks to
+> MIGRATE_ISOLATE in online_pages() before doing the online_pages_range()
+> call, and do undo_isolate_page_range() after onlining is done.
+> 
+> move_pfn_range_to_zone()->memmap_init_zone() marks all pageblocks
+> MIGRATE_MOVABLE, and as that function is used also during boot, we could
+> supply a parameter to configure this.
+> 
+> This would prevent another race from happening: Having pages exposed to
+> the buddy ready for allocation in online_pages_range() before the
+> sections are marked online.
 
-Hi!
+Yeah this is another bug. And idea of isolate first, online and undoing
+the isolation after zonelist and pcp struct update should work even for
+the mentioned issue. This needs to go as a separate fix?
 
-> >> Thanks for the lively discussion. I have tried to answer some of the
-> >> comments below.
-> >=20
-> >>> There are options today, e.g.
-> >>>
-> >>> a) If the restriction is only per-alias, you can have distinct aliases
-> >>>    where one is writable and another is executable, and you can make =
-it
-> >>>    hard to find the relationship between the two.
-> >>>
-> >>> b) If the restriction is only temporal, you can write instructions in=
-to
-> >>>    an RW- buffer, transition the buffer to R--, verify the buffer
-> >>>    contents, then transition it to --X.
-> >>>
-> >>> c) You can have two processes A and B where A generates instrucitons =
-into
-> >>>    a buffer that (only) B can execute (where B may be restricted from
-> >>>    making syscalls like write, mprotect, etc).
-> >>
-> >> The general principle of the mitigation is W^X. I would argue that
-> >> the above options are violations of the W^X principle. If they are
-> >> allowed today, they must be fixed. And they will be. So, we cannot
-> >> rely on them.
-> >=20
-> > Would you mind describing your threat model?
-> >=20
-> > Because I believe you are using model different from everyone else.
-> >=20
-> > In particular, I don't believe b) is a problem or should be fixed.
->=20
-> It is a problem because a kernel that implements W^X properly
-> will not allow it. It has no idea what has been done in userland.
-> It has no idea that the user has checked and verified the buffer
-> contents after transitioning the page to R--.
+However, IMO, issue in free_pcppages_bulk() should be fixed by checking
+if sane count value is passed. NO?
+Posted V2: https://patchwork.kernel.org/patch/11709225/
 
-No, it is not a problem. W^X is designed to protect from attackers
-doing buffer overflows, not attackers doing arbitrary syscalls.
+> 
+> This would avoid any pages from getting allocated before we're
+> completely done onlining.
+> 
+> We would need MIGRATE_ISOLATE/CONFIG_MEMORY_ISOLATION also for
+> CONFIG_MEMORY_HOTPLUG.
+> 
 
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---yvr4rtdsyfwruwtq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXzKYVQAKCRAw5/Bqldv6
-8ukgAJ9NvrVhKohEnNz0+UYVlo/02QCYaACgiTn7V4hdsKUqG2xCfqc/g1HOnV4=
-=VFJ2
------END PGP SIGNATURE-----
-
---yvr4rtdsyfwruwtq--
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+Forum, a Linux Foundation Collaborative Project
