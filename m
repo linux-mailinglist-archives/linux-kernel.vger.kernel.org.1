@@ -2,121 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9FE24146D
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 03:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEFC241467
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 03:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728142AbgHKBIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 21:08:12 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:21721 "EHLO rere.qmqm.pl"
+        id S1728034AbgHKBHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 21:07:49 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:53765 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727867AbgHKBHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 21:07:40 -0400
+        id S1727873AbgHKBHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 21:07:41 -0400
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BQZSV0NYDzLn;
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BQZSV2fmhzMK;
         Tue, 11 Aug 2020 03:07:38 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1597108058; bh=PdvFhwzi6WSVdlVlsi5nMFE1Bfq/mqQSDVWlFsfuSO4=;
+        t=1597108058; bh=dCmMvGwnirw/nbsi+GiAhZpwcSKaH0onmesD6dcdOvY=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=gP8tVaDWNJ3kxeaDYjUXDvJVYq3wZwOZd0V4QQQuk4v7Y+hF2M2qIBu5OpvgS/YUN
-         vD1UwJC4vaS/0rBDMKYxED/uN3/XXvc0Q5vIy7HyFgDrX+C3r4bHfP4l3E0mwtAobt
-         b2L77+eRmyzmi359m3pRHi8gIMovp72OKXWqj1K15CmMEq9kDGczLNIaDmj4KDxDJT
-         p+Krm0iREJ+0rhVDA6GNJmFdognOGgYCIKvKR0k+JqyEDYLgcW2/jVyraZEHQAUciS
-         Ro64cIUf9msWPJ4Go+NXEXm9viWiF0UD2+FAQmIpIVjATQJR0OimSSm83NkJuOhCyi
-         hRJs9Ui1Nd8vw==
+        b=ZTCDisn2aiLlavqfKoX5RJX5V/CLlB1t4iosWAMbc+jOT4Xc7aiYSfiZFMhvT+sND
+         SCKEFzo0WoCqY/zXYtFc85uyiNoLwX8qRq3LOe/bkEv23y0Ht0GQdltir4koJLXP5X
+         0VWnFpfEjL/UrQlwLKUxMOrS5UPMv5MswdJvVDFNotsDB33SHCcAeHTYkMRumqRCSm
+         pqmsFT+rvtvv8xjGUoVIbRlcBnmKHC3BpQuyFhfKvjAu9iinLnaYzYLoeeBIhQWQ2G
+         6YKrcLsD4sCdNm2Qs+H1c3fwRlWcOYXOREOrXp65vu/wroYfi9gRhaEbYFO5Fe/8QQ
+         7EPWA+H+5BKyg==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Tue, 11 Aug 2020 03:07:37 +0200
-Message-Id: <b305adf8bcde9417cdd5c9d84ef5ed99541f0e2c.1597107682.git.mirq-linux@rere.qmqm.pl>
+Date:   Tue, 11 Aug 2020 03:07:38 +0200
+Message-Id: <a45e2e0715171228f140a0a01cc5924c5379bfa3.1597107682.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1597107682.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1597107682.git.mirq-linux@rere.qmqm.pl>
 From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 1/7] regulator: push allocation in regulator_init_coupling()
- outside of lock
+Subject: [PATCH 2/7] regulator: push allocation in
+ regulator_ena_gpio_request() out of lock
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, Vladimir Zapolskiy <vz@mleia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocating memory with regulator_list_mutex held makes lockdep unhappy
-when memory pressure makes the system do fs_reclaim on eg. eMMC using
-a regulator. Push the lock inside regulator_init_coupling() after the
-allocation.
+Move another allocation out of regulator_list_mutex-protected region, as
+reclaim might want to take the same lock.
 
-======================================================
 WARNING: possible circular locking dependency detected
-5.7.13+ #533 Not tainted
+5.7.13+ #534 Not tainted
 ------------------------------------------------------
 kswapd0/383 is trying to acquire lock:
-cca78ca4 (&sbi->write_io[i][j].io_rwsem){++++}-{3:3}, at: __submit_merged_write_cond+0x104/0x154
+c0e5d920 (regulator_list_mutex){+.+.}-{3:3}, at: regulator_lock_dependent+0x54/0x2c0
+
 but task is already holding lock:
 c0e38518 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x50
+
 which lock already depends on the new lock.
+
 the existing dependency chain (in reverse order) is:
--> #2 (fs_reclaim){+.+.}-{0:0}:
+
+-> #1 (fs_reclaim){+.+.}-{0:0}:
        fs_reclaim_acquire.part.11+0x40/0x50
        fs_reclaim_acquire+0x24/0x28
-       __kmalloc+0x54/0x218
-       regulator_register+0x860/0x1584
-       dummy_regulator_probe+0x60/0xa8
+       kmem_cache_alloc_trace+0x40/0x1e8
+       regulator_register+0x384/0x1630
+       devm_regulator_register+0x50/0x84
+       reg_fixed_voltage_probe+0x248/0x35c
 [...]
 other info that might help us debug this:
 
-Chain exists of:
-  &sbi->write_io[i][j].io_rwsem --> regulator_list_mutex --> fs_reclaim
-
-Possible unsafe locking scenario:
+ Possible unsafe locking scenario:
 
        CPU0                    CPU1
        ----                    ----
   lock(fs_reclaim);
                                lock(regulator_list_mutex);
                                lock(fs_reclaim);
-  lock(&sbi->write_io[i][j].io_rwsem);
- *** DEADLOCK ***
+  lock(regulator_list_mutex);
 
-1 lock held by kswapd0/383:
+ *** DEADLOCK ***
+[...]
+2 locks held by kswapd0/383:
  #0: c0e38518 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x50
+ #1: cb70e5e0 (hctx->srcu){....}-{0:0}, at: hctx_lock+0x60/0xb8
 [...]
 
-Cc: stable@vger.kernel.org
-Fixes: d8ca7d184b33 ("regulator: core: Introduce API for regulators coupling customization")
+Fixes: 541d052d7215 ("regulator: core: Only support passing enable GPIO descriptors")
+[this commit only changes context]
+Fixes: f8702f9e4aa7 ("regulator: core: Use ww_mutex for regulators locking")
+[this is when the regulator_list_mutex was introduced in reclaim locking path]
+
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/regulator/core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/regulator/core.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 0a32c3da0e26..510d234f6c46 100644
+index 510d234f6c46..3dd4d4914075 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -5010,7 +5010,10 @@ static int regulator_init_coupling(struct regulator_dev *rdev)
- 	if (!of_check_coupling_data(rdev))
- 		return -EPERM;
+@@ -2203,10 +2203,13 @@ EXPORT_SYMBOL_GPL(regulator_bulk_unregister_supply_alias);
+ static int regulator_ena_gpio_request(struct regulator_dev *rdev,
+ 				const struct regulator_config *config)
+ {
+-	struct regulator_enable_gpio *pin;
++	struct regulator_enable_gpio *pin, *new_pin;
+ 	struct gpio_desc *gpiod;
  
-+	mutex_lock(&regulator_list_mutex);
- 	rdev->coupling_desc.coupler = regulator_find_coupler(rdev);
-+	mutex_unlock(&regulator_list_mutex);
+ 	gpiod = config->ena_gpiod;
++	new_pin = kzalloc(sizeof(*new_pin), GFP_KERNEL);
 +
- 	if (IS_ERR(rdev->coupling_desc.coupler)) {
- 		err = PTR_ERR(rdev->coupling_desc.coupler);
- 		rdev_err(rdev, "failed to get coupler: %d\n", err);
-@@ -5218,9 +5221,7 @@ regulator_register(const struct regulator_desc *regulator_desc,
- 	if (ret < 0)
- 		goto wash;
++	mutex_lock(&regulator_list_mutex);
  
--	mutex_lock(&regulator_list_mutex);
- 	ret = regulator_init_coupling(rdev);
--	mutex_unlock(&regulator_list_mutex);
- 	if (ret < 0)
- 		goto wash;
+ 	list_for_each_entry(pin, &regulator_ena_gpio_list, list) {
+ 		if (pin->gpiod == gpiod) {
+@@ -2215,9 +2218,13 @@ static int regulator_ena_gpio_request(struct regulator_dev *rdev,
+ 		}
+ 	}
  
+-	pin = kzalloc(sizeof(struct regulator_enable_gpio), GFP_KERNEL);
+-	if (pin == NULL)
++	if (new_pin == NULL) {
++		mutex_unlock(&regulator_list_mutex);
+ 		return -ENOMEM;
++	}
++
++	pin = new_pin;
++	new_pin = NULL;
+ 
+ 	pin->gpiod = gpiod;
+ 	list_add(&pin->list, &regulator_ena_gpio_list);
+@@ -2225,6 +2232,10 @@ static int regulator_ena_gpio_request(struct regulator_dev *rdev,
+ update_ena_gpio_to_rdev:
+ 	pin->request_count++;
+ 	rdev->ena_pin = pin;
++
++	mutex_unlock(&regulator_list_mutex);
++	kfree(new_pin);
++
+ 	return 0;
+ }
+ 
+@@ -5179,9 +5190,7 @@ regulator_register(const struct regulator_desc *regulator_desc,
+ 	}
+ 
+ 	if (config->ena_gpiod) {
+-		mutex_lock(&regulator_list_mutex);
+ 		ret = regulator_ena_gpio_request(rdev, config);
+-		mutex_unlock(&regulator_list_mutex);
+ 		if (ret != 0) {
+ 			rdev_err(rdev, "Failed to request enable GPIO: %d\n",
+ 				 ret);
 -- 
 2.20.1
 
