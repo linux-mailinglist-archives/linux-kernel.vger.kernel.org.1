@@ -2,256 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D219241E2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8C3241E24
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729253AbgHKQVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 12:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729238AbgHKQVi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 12:21:38 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6368C061787
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 09:21:37 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id k1so1232524vkb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 09:21:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X9jWu21QNef/y5RNTkP3JQSFDtJBKoAf39qs8UQj2Es=;
-        b=GvKwKq8KzBW7bvzT/gMFdhvrNCMi36fLi5QJh0aPqDeIix2UD0f6x75Zx8Rs/obKIg
-         XgoPnYeyDRybszElAKPaek1CeqfPDBP0/gcJwQH7r/KChcEdrmFy9xMu2/1/o+gODLjB
-         DOI+rUbSa67JUJHKCfGyUGS7xwnA/xjEEI080=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X9jWu21QNef/y5RNTkP3JQSFDtJBKoAf39qs8UQj2Es=;
-        b=WtZ4Ra3LryhlLDC/PVMEekKJKGREJ57W/XstTq3Ozuz/WHDy6rRoH9/KsIsdP6d2xG
-         59t5xaRpkd95KwOFonzrVJyb8PzOZQc9KMGzMroMnGdUqRbPlpvAWWtETTz61lrNjfuf
-         aqztWnnvoEo6w6M+LgO2pE6/aRd/spULn8alh72I1UNq2dEmxypmm81A/sUoJvkTxSvZ
-         pHAgmpTeKPV6vKcfyZwKzbmOY4LI6PBuxvlqvpkiidsMHGg8CzfCsJXdIH0q84kPCwAx
-         kLDES93pTbeQKvqcwH5gEKoe8SkC4MYxUQ/0QXM0DRqTR+P3sS2xnWCTveJ80HHctRUV
-         b7wQ==
-X-Gm-Message-State: AOAM532d0C/U4P1y6+ywCw6Z8kFFPIshuV/aO0XgaiPPDA8XCYVA96ib
-        jYIGxe724NcrqIP1HtCyeI6Fx2LNC74=
-X-Google-Smtp-Source: ABdhPJzo4AjoGVKAwo9L7RHN1UdNEDJMHfEfECPdfXLSQonGSNxoLSKJspBF7Y2ISQJ8XEyRZq7F0A==
-X-Received: by 2002:a1f:2589:: with SMTP id l131mr2658919vkl.90.1597162896306;
-        Tue, 11 Aug 2020 09:21:36 -0700 (PDT)
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
-        by smtp.gmail.com with ESMTPSA id n123sm6847908vkf.41.2020.08.11.09.21.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Aug 2020 09:21:35 -0700 (PDT)
-Received: by mail-vs1-f43.google.com with SMTP id n25so6275492vsq.6
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 09:21:34 -0700 (PDT)
-X-Received: by 2002:a67:fd67:: with SMTP id h7mr22597678vsa.121.1597162894299;
- Tue, 11 Aug 2020 09:21:34 -0700 (PDT)
+        id S1729227AbgHKQVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 12:21:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729195AbgHKQVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 12:21:25 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13F8C2076C;
+        Tue, 11 Aug 2020 16:21:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597162884;
+        bh=dSmzsxL/ZLFl6N3kIR/sttPspsgPz3N7QW5fGU3drNU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=vPqXaRJNsqQi36xNIsTTH+hvphxNJkS226wzrEQkDKN5sM3RLifwxbb/oyONmRGoo
+         mH0PrjEGNE/7ptdFUe2R2c9eydbhzdeJuJ0PsQNgs+Uzu0eHB27zQ/mDDc6WZAP4g0
+         a55XjfM6KZ1iJQDq/PO7iPhAlyBcX901aXGHAdxA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.4.58
+Date:   Tue, 11 Aug 2020 18:21:25 +0200
+Message-Id: <159716288521249@kroah.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200806221904.1.I4455ff86f0ef5281c2a0cd0a4712db614548a5ca@changeid>
- <adaef6bf-7887-feea-fedf-d3bc5566bb9d@codeaurora.org> <CAD=FV=X8tNpmkSrEjXgKPKsBOZfjt8aVQe47gzi5FvPqdOQN+A@mail.gmail.com>
- <b4cd8daf-ef37-4cc1-546e-ba46cb19392a@codeaurora.org>
-In-Reply-To: <b4cd8daf-ef37-4cc1-546e-ba46cb19392a@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 11 Aug 2020 09:21:22 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=W=C111X2VzZaAKo8JhRGexG=crK+YJbr9FWcAzATggAQ@mail.gmail.com>
-Message-ID: <CAD=FV=W=C111X2VzZaAKo8JhRGexG=crK+YJbr9FWcAzATggAQ@mail.gmail.com>
-Subject: Re: [PATCH] serial: qcom_geni_serial: Fix recent kdb hang
-To:     Akash Asthana <akashast@codeaurora.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Mukesh Savaliya <msavaliy@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Evan Green <evgreen@chromium.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+I'm announcing the release of the 5.4.58 kernel.
 
-On Tue, Aug 11, 2020 at 4:54 AM Akash Asthana <akashast@codeaurora.org> wrote:
->
->
-> On 8/11/2020 2:56 AM, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Mon, Aug 10, 2020 at 5:32 AM Akash Asthana <akashast@codeaurora.org> wrote:
-> >> Hi Doug,
-> >>
-> >> On 8/7/2020 10:49 AM, Douglas Anderson wrote:
-> >>> The commit e42d6c3ec0c7 ("serial: qcom_geni_serial: Make kgdb work
-> >>> even if UART isn't console") worked pretty well and I've been doing a
-> >>> lot of debugging with it.  However, recently I typed "dmesg" in kdb
-> >>> and then held the space key down to scroll through the pagination.  My
-> >>> device hung.  This was repeatable and I found that it was introduced
-> >>> with the aforementioned commit.
-> >>>
-> >>> It turns out that there are some strange boundary cases in geni where
-> >>> in some weird situations it will signal RX_LAST but then will put 0 in
-> >>> RX_LAST_BYTE.  This means that the entire last FIFO entry is valid.
-> >> IMO that means we received a word in RX_FIFO and it is the last word
-> >> hence RX_LAST bit is set.
-> > What you say would make logical sense, but it's not how I have
-> > observed geni to work.  See below.
-> >
-> >
-> >> RX_LAST_BYTE is 0 means none of the bytes are valid in the last word.
-> > This would imply that qcom_geni_serial_handle_rx() is also broken
-> > though, wouldn't it?  Specifically imagine that WORD_CNT is 1 and
-> > RX_LAST is set and RX_LAST_BYTE_VALID is true.  Here's the logic from
-> > that function:
-> >
-> >    total_bytes = BYTES_PER_FIFO_WORD * (word_cnt - 1);
-> >    if (last_word_partial && last_word_byte_cnt)
-> >      total_bytes += last_word_byte_cnt;
-> >    else
-> >      total_bytes += BYTES_PER_FIFO_WORD;
-> >    port->handle_rx(uport, total_bytes, drop);
-> >
-> > As you can see that logic will set "total_bytes" to 4 in the case I'm
-> > talking about.
->
-> Yeah IMO as per theory this should also be corrected but since you have
-> already pulled out few experiment to prove garbage data issue(which I
-> was suspecting) is not seen.
->
-> It's already consistent with existing logic and it behaves well
-> practically . So the changes could be merge. Meanwhile I am checking
-> with HW team to get clarity.
->
-> >
-> >
-> >> In such scenario we should just read RX_FIFO buffer (to empty it),
-> >> discard the word and return NO_POLL_CHAR. Something like below.
-> >>
-> >> ---------------------------------------------------------------------------------------------------------------------------------------------------------
-> >>
-> >>                   else
-> >>                           private_data->poll_cached_bytes_cnt = 4;
-> >>
-> >>                   private_data->poll_cached_bytes =
-> >>                           readl(uport->membase + SE_GENI_RX_FIFOn);
-> >>           }
-> >>
-> >> +        if (!private_data->poll_cached_bytes_cnt)
-> >> +              return NO_POLL_CHAR;
-> >>           private_data->poll_cached_bytes_cnt--;
-> >>           ret = private_data->poll_cached_bytes & 0xff;
-> >> -------------------------------------------------------------------------------------------------------------------------------------------------------------
-> >>
-> >> Please let me know whether above code helps.
-> > Your code will avoid the hang.  Yes.  ...but it will drop bytes.  I
-> > devised a quick-n-dirty test.  Here's a test of your code:
-> I assumed those as invalid bytes and don't wanted to read them so yeah
-> dropping of bytes was expected.
-> >
-> > https://crrev.com/c/2346886
-> >
-> > ...and here's a test of my code:
-> >
-> > https://crrev.com/c/2346884
-> >
-> > I had to keep a buffer around since it's hard to debug the serial
-> > driver.  In both cases I put "DOUG" into the buffer when I detect this
-> > case.  If my theory about how geni worked was wrong then we should
-> > expect to see some garbage in the buffer right after the DOUG, right?
-> > ...but my code gets the alphabet in nice sequence.  Your code drops 4
-> > bytes.
-> Yeah I was expecting garbage data.
-> >
-> >
-> > NOTE: while poking around with the above two test patches I found it
-> > was pretty easy to get geni to drop bytes / hit overflow cases and
-> > also to insert bogus 0 bytes in the stream (I believe these are
-> > related).  I was able to reproduce this:
-> > * With ${SUBJECT} patch in place.
-> > * With your proposed patch.
-> > * With the recent "geni" patches reverted (in other words back to 1
-> > byte per FIFO entry).
-> >
-> > It's not terribly surprising that we're overflowing since I believe
-> > kgdb isn't too keen to read characters at the same time it's writing.
-> > That doesn't explain the weird 0-bytes that geni seemed to be
-> > inserting, but at least it would explain the overflows.  However, even
-> > after I fixed this I _still_ was getting problems.  Specifically geni
-> > seemed to be hiding bytes from me until it was too late.  I put
-> > logging in and would see this:
-> >
-> > 1 word in FIFO - wxyz
-> > 1 word in FIFO (last set, last FIFO has 1 byte) - \n
-> > Check again, still 0 bytes in FIFO
-> > Suddenly 16 bytes are in FIFO and S_RX_FIFO_WR_ERR_EN is set.
->
-> RX data first stored in RX_ASYNC_FIFO then it's transfered to RX_FIFO
->
-> When get_char is called and we observe 0 bytes in RX_FIFO, most probably
-> data is not transfered from RX_ASYNC_FIFO to RX_FIFO.
->
-> BITS 27:25 of SE_GENI_RX_FIFO_STATUS register shows RX_ASYNC_FIFO word
-> count.
+All users of the 5.4 kernel series must upgrade.
 
-OK, I did a tad bit more debugging and I think any problems left after
-my patch are actually kdb's fault, though geni doesn't behave terribly
-well with overflows (it would be better if it just dropped characters
-rather than enqueuing garbage).  Specifically in the tests I was
-running recently kdb would sometimes still take over 30 ms between
-polls so it's not surprising that we'd get overflows if we're
-spamming.  All my test code and results are at:
+The updated 5.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-https://crrev.com/c/2348284
+thanks,
 
-Earlier when I claimed that bytes were showing up in geni too quickly
-I was wrong.  My timing code was broken at the time.
+greg k-h
 
+------------
 
-> > I spent a whole bunch of time poking at this and couldn't find any
-> > sort of workaround.  Presumably geni is taking some time between me
-> > reading the last word out of the FIFO from the "previous" packet and
-> > then transitioning to the new packet.  I found a lot of references to
-> > this process in the hardware register description (see GENI_CFG_REG69,
-> > for instance), but I couldn't manage to make the kick to happen any
-> > faster.  Presumably this isn't a problem for things like Bluetooth
-> > since flow control saves them.  ...and I guess this isn't a problem in
-> > practice because we usually _send_ a lot of data to the host for
-> > console/kgdb and it's only the host => DUT path that has problems.
-> >
-> >
-> >> I am not sure about what all scenario can leads to this behavior from
-> >> hardware, I will try to get an answer from hardware team.
-> >>
-> >> Any error bit was set for SE_GENI_S_IRQ_STATUS & SE_GENI_M_IRQ_STATUS
-> >> registers?
-> > As per above I can see overflows in my test case and geni seems to be
-> > behaving pretty badly.  If you have ideas on how to fix this I'd love
-> > it.  However, it still seems like my patch is right because (at least
-> > in the cases I tested) it avoids dropping bytes in some cases.  It
-> > also matches how qcom_geni_serial_handle_rx() works and if that was
-> > broken we'd have noticed by now.
->
-> Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+ Makefile                                         |    2 
+ arch/powerpc/include/asm/kasan.h                 |    2 
+ arch/powerpc/mm/init_32.c                        |    2 
+ arch/powerpc/mm/kasan/kasan_init_32.c            |    4 
+ drivers/android/binder.c                         |   15 ++
+ drivers/atm/atmtcp.c                             |   10 +
+ drivers/firmware/qemu_fw_cfg.c                   |    7 -
+ drivers/gpu/drm/bochs/bochs_kms.c                |    1 
+ drivers/gpu/drm/drm_fb_helper.c                  |    6 -
+ drivers/gpu/drm/nouveau/nouveau_fbcon.c          |    3 
+ drivers/hv/channel_mgmt.c                        |   21 +---
+ drivers/hv/vmbus_drv.c                           |    4 
+ drivers/i2c/i2c-core-slave.c                     |    7 -
+ drivers/leds/leds-88pm860x.c                     |   14 ++
+ drivers/leds/leds-da903x.c                       |   14 ++
+ drivers/leds/leds-lm3533.c                       |   12 +-
+ drivers/leds/leds-lm36274.c                      |   15 ++
+ drivers/leds/leds-wm831x-status.c                |   14 ++
+ drivers/mtd/mtdchar.c                            |   56 +++++++++--
+ drivers/net/ethernet/cavium/thunder/nicvf_main.c |    4 
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c |    6 -
+ drivers/net/ethernet/intel/igb/igb_main.c        |    9 +
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c      |   21 +++-
+ drivers/net/hyperv/netvsc_drv.c                  |    7 -
+ drivers/net/usb/hso.c                            |    5 
+ drivers/net/usb/lan78xx.c                        |  117 +++++------------------
+ drivers/net/vxlan.c                              |   10 +
+ drivers/nvme/host/pci.c                          |    2 
+ drivers/pci/controller/pci-tegra.c               |   32 ------
+ drivers/staging/android/ashmem.c                 |   12 ++
+ drivers/staging/rtl8188eu/core/rtw_mlme.c        |    4 
+ drivers/staging/rtl8712/hal_init.c               |    3 
+ drivers/staging/rtl8712/usb_intf.c               |   11 +-
+ drivers/usb/host/xhci-pci.c                      |   10 +
+ drivers/usb/misc/iowarrior.c                     |   35 ++++--
+ drivers/usb/serial/qcserial.c                    |    1 
+ drivers/video/console/vgacon.c                   |    4 
+ drivers/video/fbdev/omap2/omapfb/dss/dss.c       |    2 
+ fs/io_uring.c                                    |   60 ++++-------
+ fs/nfsd/nfs4xdr.c                                |   20 ++-
+ fs/xattr.c                                       |   84 +++++++++++++++-
+ include/drm/drm_mode_config.h                    |   12 ++
+ include/linux/hyperv.h                           |    2 
+ include/linux/sunrpc/svc.h                       |    3 
+ include/linux/sunrpc/svc_rdma.h                  |    8 +
+ include/linux/sunrpc/svc_xprt.h                  |    2 
+ include/linux/xattr.h                            |    2 
+ include/net/addrconf.h                           |    1 
+ kernel/events/core.c                             |   20 ++-
+ net/9p/trans_fd.c                                |   24 +++-
+ net/appletalk/atalk_proc.c                       |    2 
+ net/bluetooth/hci_event.c                        |   11 +-
+ net/ipv4/fib_trie.c                              |    2 
+ net/ipv4/gre_offload.c                           |   13 ++
+ net/ipv4/tcp_input.c                             |    2 
+ net/ipv6/anycast.c                               |   17 ++-
+ net/ipv6/ipv6_sockglue.c                         |    1 
+ net/ipv6/route.c                                 |    8 -
+ net/openvswitch/conntrack.c                      |   38 +++----
+ net/rxrpc/call_object.c                          |   27 +++--
+ net/rxrpc/conn_object.c                          |    8 -
+ net/rxrpc/recvmsg.c                              |    2 
+ net/rxrpc/sendmsg.c                              |    3 
+ net/sunrpc/svc.c                                 |   16 +++
+ net/sunrpc/svcsock.c                             |    8 +
+ net/sunrpc/xprtrdma/svc_rdma_recvfrom.c          |    1 
+ net/sunrpc/xprtrdma/svc_rdma_rw.c                |   30 +++--
+ net/sunrpc/xprtrdma/svc_rdma_sendto.c            |   40 +++++++
+ net/sunrpc/xprtrdma/svc_rdma_transport.c         |    1 
+ net/wireless/nl80211.c                           |    6 -
+ scripts/coccinelle/misc/add_namespace.cocci      |    8 +
+ scripts/nsdeps                                   |    2 
+ security/integrity/ima/Kconfig                   |    2 
+ security/integrity/ima/ima_appraise.c            |    6 +
+ security/smack/smackfs.c                         |   13 ++
+ sound/core/seq/oss/seq_oss.c                     |    8 +
+ sound/pci/hda/hda_codec.c                        |    8 +
+ sound/pci/hda/hda_intel.c                        |    1 
+ sound/pci/hda/patch_ca0132.c                     |   12 +-
+ sound/pci/hda/patch_realtek.c                    |  114 ++++++++++++++++++++++
+ tools/lib/traceevent/event-parse.c               |    1 
+ tools/testing/selftests/net/msg_zerocopy.c       |    5 
+ 82 files changed, 817 insertions(+), 341 deletions(-)
 
-Thanks!  After my extra digging I now think that the weird case is
-triggered by the overflows and the FIFO certainly does get garbage in
-it when there are overflows, but I think my patch is still correct and
-gets correct bytes.  The garbage that is queued up is queued up later
-and looks like normal transfers.  ...so I think we're good to go with
-it.
+Adam Ford (1):
+      omapfb: dss: Fix max fclk divider for omap36xx
 
-So summary:
-1. We should land my patch.
-2. I filed <https://crbug.com/1115125> to track trying to make kdb's
-polling nicer.
-3. I also filed an internal bug to track seeing if we could make geni
-not queue up garbage in this case.
+Ben Skeggs (2):
+      drm/nouveau/fbcon: fix module unload when fbcon init has failed for some reason
+      drm/nouveau/fbcon: zero-initialise the mode_cmd2 structure
 
+Bruno Meneguele (1):
+      ima: move APPRAISE_BOOTPARAM dependency on ARCH_POLICY to runtime
 
--Doug
+Christoph Hellwig (1):
+      net/9p: validate fds in p9_fd_open
+
+Christophe Leroy (1):
+      Revert "powerpc/kasan: Fix shadow pages allocation failure"
+
+Chuck Lever (1):
+      nfsd: Fix NFSv4 READ on RDMA when using readv
+
+Cong Wang (1):
+      ipv6: fix memory leaks on IPV6_ADDRFORM path
+
+Connor McAdams (3):
+      ALSA: hda/ca0132 - Add new quirk ID for Recon3D.
+      ALSA: hda/ca0132 - Fix ZxR Headphone gain control get value.
+      ALSA: hda/ca0132 - Fix AE-5 microphone selection commands.
+
+David Howells (1):
+      rxrpc: Fix race between recvmsg and sendmsg on immediate call failure
+
+Dexuan Cui (1):
+      Drivers: hv: vmbus: Ignore CHANNELMSG_TL_CONNECT_RESULT(23)
+
+Dinghao Liu (1):
+      Staging: rtl8188eu: rtw_mlme: Fix uninitialized variable authmode
+
+Eric Biggers (1):
+      Smack: fix use-after-free in smk_write_relabel_self()
+
+Erik Ekman (1):
+      USB: serial: qcserial: add EM7305 QDL product ID
+
+Forest Crossman (2):
+      usb: xhci: define IDs for various ASMedia host controllers
+      usb: xhci: Fix ASMedia ASM1142 DMA addressing
+
+Francesco Ruggeri (1):
+      igb: reinit_locked() should be called with rtnl_lock
+
+Frank van der Linden (1):
+      xattr: break delegations in {set,remove}xattr
+
+Greg Kroah-Hartman (3):
+      USB: iowarrior: fix up report size handling for some devices
+      mtd: properly check all write ioctls for permissions
+      Linux 5.4.58
+
+Guoyu Huang (1):
+      io_uring: Fix use-after-free in io_sq_wq_submit_work()
+
+Hangbin Liu (1):
+      Revert "vxlan: fix tos value before xmit"
+
+Huacai Chen (1):
+      ALSA: hda/realtek: Add alc269/alc662 pin-tables for Loongson-3 laptops
+
+Hui Wang (1):
+      Revert "ALSA: hda: call runtime_allow() for all hda controllers"
+
+Ido Schimmel (2):
+      ipv4: Silence suspicious RCU usage warning
+      vxlan: Ensure FDB dump is performed under RCU
+
+Jann Horn (1):
+      binder: Prevent context manager from incrementing ref 0
+
+Jens Axboe (1):
+      io_uring: prevent re-read of sqe->opcode
+
+Jianfeng Wang (1):
+      tcp: apply a floor of 1 for RTT samples from TCP timestamps
+
+Johan Hovold (6):
+      leds: wm831x-status: fix use-after-free on unbind
+      leds: lm36274: fix use-after-free on unbind
+      leds: da903x: fix use-after-free on unbind
+      leds: lm3533: fix use-after-free on unbind
+      leds: 88pm860x: fix use-after-free on unbind
+      net: lan78xx: replace bogus endpoint lookup
+
+Julian Squires (1):
+      cfg80211: check vendor command doit pointer before use
+
+Kai-Heng Feng (1):
+      nvme-pci: prevent SK hynix PC400 from using Write Zeroes command
+
+Landen Chao (1):
+      net: ethernet: mtk_eth_soc: fix MTU warnings
+
+Lorenzo Bianconi (1):
+      net: gre: recompute gre csum for sctp over gre tunnels
+
+Matthias Maennich (1):
+      scripts: add dummy report mode to add_namespace.cocci
+
+Nicolas Chauvet (1):
+      PCI: tegra: Revert tegra124 raw_violation_fixup
+
+Peilin Ye (4):
+      Bluetooth: Fix slab-out-of-bounds read in hci_extended_inquiry_result_evt()
+      Bluetooth: Prevent out-of-bounds read in hci_inquiry_result_evt()
+      Bluetooth: Prevent out-of-bounds read in hci_inquiry_result_with_rssi_evt()
+      openvswitch: Prevent kernel-infoleak in ovs_ct_put_key()
+
+Peter Zijlstra (1):
+      perf/core: Fix endless multiplex timer
+
+Philippe Duplessis-Guindon (1):
+      tools lib traceevent: Fix memory leak in process_dynamic_array_len
+
+Qiushi Wu (1):
+      firmware: Fix a reference count leak.
+
+Ranjani Sridharan (1):
+      ALSA: hda: fix NULL pointer dereference during suspend
+
+René van Dorst (1):
+      net: ethernet: mtk_eth_soc: Always call mtk_gmac0_rgmii_adjust() for mt7623
+
+Rustam Kovhaev (2):
+      staging: rtl8712: handle firmware load failure
+      usb: hso: check for return value in hso_serial_common_create()
+
+Sam Ravnborg (1):
+      drm/drm_fb_helper: fix fbdev with sparc64
+
+Stephen Hemminger (1):
+      hv_netvsc: do not use VF device if link is down
+
+Suren Baghdasaryan (1):
+      staging: android: ashmem: Fix lockdep warning for write operation
+
+Takashi Iwai (1):
+      ALSA: seq: oss: Serialize ioctls
+
+Vincent Duvert (1):
+      appletalk: Fix atalk_proc_init() return path
+
+Willem de Bruijn (1):
+      selftests/net: relax cpu affinity requirement in msg_zerocopy test
+
+Wolfram Sang (2):
+      i2c: slave: improve sanity check when registering
+      i2c: slave: add sanity check when unregistering
+
+Xin Long (1):
+      net: thunderx: use spin_lock_bh in nicvf_set_rx_mode_task()
+
+Xin Xiong (1):
+      atm: fix atm_dev refcnt leaks in atmtcp_remove_persistent
+
+Xiyu Yang (1):
+      ipv6: Fix nexthop refcnt leak when creating ipv6 route info
+
+YueHaibing (1):
+      dpaa2-eth: Fix passing zero to 'PTR_ERR' warning
+
+Yunhai Zhang (1):
+      vgacon: Fix for missing check in scrollback handling
+
