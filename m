@@ -2,230 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC97D241EE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 19:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43BF1241EE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 19:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729305AbgHKRGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 13:06:33 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:13770 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729161AbgHKRG3 (ORCPT
+        id S1729222AbgHKRGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 13:06:21 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:51144 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729099AbgHKRGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 13:06:29 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07BH4cVa017059;
-        Tue, 11 Aug 2020 10:06:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=CbSmh8UXuEpQiApSbvycdTICM1ESyRpIS47YqzAmU10=;
- b=cBzenF4xb5GwkZYwjIna3MXJWzpLgMeZjn5pCV16iTyCwhwwDVgPKLthpbckvsQ70GF+
- uWDnxPrpHXk4W89vuXGDayQi189S9WL8iaYsJXeaSJbFGj5FE52p1D1+qiTUwYxbA2vv
- CQgsBYa4gWKSksPovhlmV5UK0r+DvK5NhIQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32uxp788k3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 11 Aug 2020 10:06:17 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 11 Aug 2020 10:06:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Li0LG9mKozYkl8D9tOYZzXiF/XNlP5pOs4nmDJc7GzGCeM0By8s0twOS1SSnI+To7oEGUcO2IUIKYRGanIs3SDXCVu4Gkh4C1bJtbq0zt7OcbKIhWn/p9usr9ZEw9B0hzUfxK59bxUmLee4UQ7Tj0p6NjM21Z/B82Db66gZUYCbrqROnzN1KHLSQnNW2zKVqKKlnq0uywRIKmAwElTEmvuEefjTSHVhJz+nfDgk1DfnKYHmIy8VvzGbSaIEwg+mk5OJIMokGV3EPd+RwghoLgykCJ+bW5L+upPdAy1SakXpbfRoAI3lJd2prgruCeGjqFUamHTfgvhGwI5EW540fyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CbSmh8UXuEpQiApSbvycdTICM1ESyRpIS47YqzAmU10=;
- b=l8wkLtVZNq224UFN4qU3H2Q9ql/7ZgN6vomkwSFZ3Me5JejK4eG7mU+0RpNh+DvNtNoH4+szlBfrcd1UascQHY7n2g9Mu4k1m3TkDITA/9IebyzMIvTVbdhjtu8rHcYGE7oz4gs0bDl5YBrFaQn6i9EuXu549RxKWaSzwlyLJSconNBw7Zh7MuECGzE6QqfHgmDLnivDbI0goQiBW7OLXdPcky0FwmjYG5EsvTjbP2RvVqjjWncydx1XGnqMbVBAg8ZqYl919N5qsMhefhHyOEC45tqDhxXsJ3QRWh2nv/QTDwvKtFh3o5I5Sf39LWESpoSbdP9CFk+QJmt8vy2Few==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CbSmh8UXuEpQiApSbvycdTICM1ESyRpIS47YqzAmU10=;
- b=ZENQ581C1PREoipMF6glJRUZ/hVEEvEWwgW6p0o3dX+eZcCVLd5mN8fdEY3SfUBngT86CNt6YAFhJLqoqvj/+ARi2egIc3EXdxj7PDMiOdtHKEya3ubeKKevlJgD7hbgKV5Pc04bdoBDl/0VQ48yTVSkrD2ZJxrg1vYQfEh6DrI=
-Authentication-Results: cmpxchg.org; dkim=none (message not signed)
- header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2598.namprd15.prod.outlook.com (2603:10b6:a03:14d::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15; Tue, 11 Aug
- 2020 17:06:14 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::354d:5296:6a28:f55e]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::354d:5296:6a28:f55e%6]) with mapi id 15.20.3261.025; Tue, 11 Aug 2020
- 17:06:14 +0000
-Date:   Tue, 11 Aug 2020 10:06:11 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 4/5] mm: memcg: charge memcg percpu memory to the
- parent cgroup
-Message-ID: <20200811170611.GB1507044@carbon.DHCP.thefacebook.com>
-References: <20200623184515.4132564-1-guro@fb.com>
- <20200623184515.4132564-5-guro@fb.com>
- <20200811152737.GB650506@cmpxchg.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200811152737.GB650506@cmpxchg.org>
-X-ClientProxiedBy: BYAPR08CA0055.namprd08.prod.outlook.com
- (2603:10b6:a03:117::32) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Tue, 11 Aug 2020 13:06:18 -0400
+Received: by mail-il1-f197.google.com with SMTP id t20so11019013ill.17
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 10:06:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=3Vhix2QlrP7+/gWO8RD9Xb0nh1rKeNHswNvEEXVVggk=;
+        b=XouC0hBMeM13UqedVGkDx1ue5BEK8SBndIbDSwi4XR6b7EtUo0hQA3tpEacWip8xE6
+         b6A3uGARzlLGYBUIkbRj4IyQJa4KnHLL80V2MFj32lYyKZqtkhpB+fTRpGSnu01zwfoh
+         oU9i2PuSNnO6QOBNXi5yHKKhEFnFHIqm6t/v+QWSFZ1EO964WdY9uBR/HZVYS6hYt7jT
+         iBv+h1jgndoIVqCPmaV713g1hdDKm2OFmhwXBlPeXw639neTj4R90GCYFNz/fpQaQ+QQ
+         ZrychKqqtq3AgZaVcmRN/x5bm7KZk3aqcWVPq5tD+/vyl/4smBgbLmEYeUiT7i8xO9oo
+         oU2Q==
+X-Gm-Message-State: AOAM531nmhjgJPRNw0848huvOTyHB07AfOu71rj9dOupeJJqqN+Jpso4
+        VcTdFCo1M1pkzs18nKq1pYjUBF2PuaDmnfPyQG9lQZLMHk1u
+X-Google-Smtp-Source: ABdhPJya4bXun/+NQ/qES9zRA+AQVNLy2Qz0OtAXqkV8v7oBezDW3rOulXZRMs+qHM9W8AjOsCoLdjJMu7AGJQaCF65y00BA+kfB
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:fa33) by BYAPR08CA0055.namprd08.prod.outlook.com (2603:10b6:a03:117::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.19 via Frontend Transport; Tue, 11 Aug 2020 17:06:13 +0000
-X-Originating-IP: [2620:10d:c090:400::5:fa33]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b827c471-9761-4d33-e6b2-08d83e18daab
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2598:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB25981F38BDE608FBB91715D0BE450@BYAPR15MB2598.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(376002)(346002)(396003)(8936002)(6916009)(8676002)(186003)(6506007)(16526019)(478600001)(7696005)(52116002)(1076003)(86362001)(83380400001)(55016002)(5660300002)(9686003)(33656002)(54906003)(2906002)(316002)(66556008)(66476007)(66946007)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-CrossTenant-Network-Message-Id: b827c471-9761-4d33-e6b2-08d83e18daab
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2020 17:06:14.3470
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /YVeaHBH9x1eMpYLHjWf/LKWdwjJHatZlZLR84jyjBBEmQAkM1ZpHWqq0cBulauL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2598
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-11_15:2020-08-11,2020-08-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=5
- priorityscore=1501 mlxlogscore=962 phishscore=0 clxscore=1015 adultscore=0
- mlxscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008110119
-X-FB-Internal: deliver
+X-Received: by 2002:a05:6602:2246:: with SMTP id o6mr23227895ioo.35.1597165577561;
+ Tue, 11 Aug 2020 10:06:17 -0700 (PDT)
+Date:   Tue, 11 Aug 2020 10:06:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e5ea9e05ac9d16c1@google.com>
+Subject: memory leak in do_seccomp
+From:   syzbot <syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        keescook@chromium.org, kpsingh@chromium.org,
+        linux-kernel@vger.kernel.org, luto@amacapital.net,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, wad@chromium.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 11:27:37AM -0400, Johannes Weiner wrote:
-> On Tue, Jun 23, 2020 at 11:45:14AM -0700, Roman Gushchin wrote:
-> > Memory cgroups are using large chunks of percpu memory to store vmstat
-> > data.  Yet this memory is not accounted at all, so in the case when there
-> > are many (dying) cgroups, it's not exactly clear where all the memory is.
-> > 
-> > Because the size of memory cgroup internal structures can dramatically
-> > exceed the size of object or page which is pinning it in the memory, it's
-> > not a good idea to simple ignore it.  It actually breaks the isolation
-> > between cgroups.
-> > 
-> > Let's account the consumed percpu memory to the parent cgroup.
-> > 
-> > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > Acked-by: Dennis Zhou <dennis@kernel.org>
-> 
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Hello,
 
-Thank you!
+syzbot found the following issue on:
 
-> 
-> This makes sense, and the accounting is in line with how we track and
-> distribute child creation quotas (cgroup.max.descendants and
-> cgroup.max.depth) up the cgroup tree.
-> 
-> I have one minor comment that isn't a dealbreaker for me:
-> 
-> > @@ -5069,13 +5069,15 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
-> >  	if (!pn)
-> >  		return 1;
-> >  
-> > -	pn->lruvec_stat_local = alloc_percpu(struct lruvec_stat);
-> > +	pn->lruvec_stat_local = alloc_percpu_gfp(struct lruvec_stat,
-> > +						 GFP_KERNEL_ACCOUNT);
-> >  	if (!pn->lruvec_stat_local) {
-> >  		kfree(pn);
-> >  		return 1;
-> >  	}
-> >  
-> > -	pn->lruvec_stat_cpu = alloc_percpu(struct lruvec_stat);
-> > +	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct lruvec_stat,
-> > +					       GFP_KERNEL_ACCOUNT);
-> >  	if (!pn->lruvec_stat_cpu) {
-> >  		free_percpu(pn->lruvec_stat_local);
-> >  		kfree(pn);
-> > @@ -5149,11 +5151,13 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
-> >  		goto fail;
-> >  	}
-> >  
-> > -	memcg->vmstats_local = alloc_percpu(struct memcg_vmstats_percpu);
-> > +	memcg->vmstats_local = alloc_percpu_gfp(struct memcg_vmstats_percpu,
-> > +						GFP_KERNEL_ACCOUNT);
-> >  	if (!memcg->vmstats_local)
-> >  		goto fail;
-> >  
-> > -	memcg->vmstats_percpu = alloc_percpu(struct memcg_vmstats_percpu);
-> > +	memcg->vmstats_percpu = alloc_percpu_gfp(struct memcg_vmstats_percpu,
-> > +						 GFP_KERNEL_ACCOUNT);
-> >  	if (!memcg->vmstats_percpu)
-> >  		goto fail;
-> >  
-> > @@ -5202,7 +5206,9 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
-> >  	struct mem_cgroup *memcg;
-> >  	long error = -ENOMEM;
-> >  
-> > +	memalloc_use_memcg(parent);
-> >  	memcg = mem_cgroup_alloc();
-> > +	memalloc_unuse_memcg();
-> 
-> The disconnect between 1) requesting accounting and 2) which cgroup to
-> charge is making me uneasy. It makes mem_cgroup_alloc() a bit of a
-> handgrenade, because accounting to the current task is almost
-> guaranteed to be wrong if the use_memcg() annotation were to get lost
-> in a refactor or not make it to a new caller of the function.
-> 
-> The saving grace is that mem_cgroup_alloc() is pretty unlikely to be
-> used elsewhere. And pretending it's an independent interface would be
-> overengineering. But how about the following in mem_cgroup_alloc() and
-> alloc_mem_cgroup_per_node_info() to document that caller relationship:
-> 
-> 	/* We charge the parent cgroup, never the current task */
-> 	WARN_ON_ONCE(!current->active_memcg);
+HEAD commit:    449dc8c9 Merge tag 'for-v5.9' of git://git.kernel.org/pub/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15d816c2900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4810fa4a53b3aa2c
+dashboard link: https://syzkaller.appspot.com/bug?extid=3ad9614a12f80994c32e
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=153d30e2900000
 
-I have nothing against.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
 
-Andrew, can you, please, squash the following diff into the patch?
+2020/08/09 00:29:47 executed programs: 3
+BUG: memory leak
+unreferenced object 0xffff88811310ea80 (size 96):
+  comm "syz-executor.0", pid 6688, jiffies 4294954707 (age 12.810s)
+  hex dump (first 32 bytes):
+    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 30 e0 00 00 c9 ff ff  .........0......
+  backtrace:
+    [<0000000073bb6e7d>] kmalloc include/linux/slab.h:554 [inline]
+    [<0000000073bb6e7d>] kzalloc include/linux/slab.h:666 [inline]
+    [<0000000073bb6e7d>] seccomp_prepare_filter kernel/seccomp.c:562 [inline]
+    [<0000000073bb6e7d>] seccomp_prepare_user_filter kernel/seccomp.c:604 [inline]
+    [<0000000073bb6e7d>] seccomp_set_mode_filter kernel/seccomp.c:1535 [inline]
+    [<0000000073bb6e7d>] do_seccomp+0x2ec/0xd40 kernel/seccomp.c:1649
+    [<00000000658618a4>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b8258e4d>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Thanks!
+BUG: memory leak
+unreferenced object 0xffffc90000e03000 (size 4096):
+  comm "syz-executor.0", pid 6688, jiffies 4294954707 (age 12.810s)
+  hex dump (first 32 bytes):
+    01 00 03 00 00 00 00 00 00 00 00 00 05 00 00 00  ................
+    2d 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  -...............
+  backtrace:
+    [<000000003b6a39af>] __vmalloc_node_range+0x2e1/0x3c0 mm/vmalloc.c:2520
+    [<00000000eee59e12>] __vmalloc_node mm/vmalloc.c:2552 [inline]
+    [<00000000eee59e12>] __vmalloc+0x49/0x50 mm/vmalloc.c:2566
+    [<000000006e13ac2a>] bpf_prog_alloc_no_stats+0x32/0x100 kernel/bpf/core.c:85
+    [<00000000cff3572c>] bpf_prog_alloc+0x1c/0xb0 kernel/bpf/core.c:111
+    [<000000003222ffa9>] bpf_prog_create_from_user+0x5f/0x2a0 net/core/filter.c:1409
+    [<00000000baa576ae>] seccomp_prepare_filter kernel/seccomp.c:567 [inline]
+    [<00000000baa576ae>] seccomp_prepare_user_filter kernel/seccomp.c:604 [inline]
+    [<00000000baa576ae>] seccomp_set_mode_filter kernel/seccomp.c:1535 [inline]
+    [<00000000baa576ae>] do_seccomp+0x32e/0xd40 kernel/seccomp.c:1649
+    [<00000000658618a4>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b8258e4d>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
---
+BUG: memory leak
+unreferenced object 0xffff888113bc1c00 (size 1024):
+  comm "syz-executor.0", pid 6688, jiffies 4294954707 (age 12.810s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000000466b245>] kmalloc include/linux/slab.h:554 [inline]
+    [<000000000466b245>] kzalloc include/linux/slab.h:666 [inline]
+    [<000000000466b245>] bpf_prog_alloc_no_stats+0x73/0x100 kernel/bpf/core.c:89
+    [<00000000cff3572c>] bpf_prog_alloc+0x1c/0xb0 kernel/bpf/core.c:111
+    [<000000003222ffa9>] bpf_prog_create_from_user+0x5f/0x2a0 net/core/filter.c:1409
+    [<00000000baa576ae>] seccomp_prepare_filter kernel/seccomp.c:567 [inline]
+    [<00000000baa576ae>] seccomp_prepare_user_filter kernel/seccomp.c:604 [inline]
+    [<00000000baa576ae>] seccomp_set_mode_filter kernel/seccomp.c:1535 [inline]
+    [<00000000baa576ae>] do_seccomp+0x32e/0xd40 kernel/seccomp.c:1649
+    [<00000000658618a4>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b8258e4d>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 130093bdf74b..e25f2db7e61c 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5137,6 +5137,9 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
-        if (!pn)
-                return 1;
- 
-+       /* We charge the parent cgroup, never the current task */
-+       WARN_ON_ONCE(!current->active_memcg);
-+
-        pn->lruvec_stat_local = alloc_percpu_gfp(struct lruvec_stat,
-                                                 GFP_KERNEL_ACCOUNT);
-        if (!pn->lruvec_stat_local) {
-@@ -5219,6 +5222,9 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
-                goto fail;
-        }
- 
-+       /* We charge the parent cgroup, never the current task */
-+       WARN_ON_ONCE(!current->active_memcg);
-+
-        memcg->vmstats_local = alloc_percpu_gfp(struct memcg_vmstats_percpu,
-                                                GFP_KERNEL_ACCOUNT);
-        if (!memcg->vmstats_local)
+BUG: memory leak
+unreferenced object 0xffff8881154cb860 (size 32):
+  comm "syz-executor.0", pid 6688, jiffies 4294954707 (age 12.810s)
+  hex dump (first 32 bytes):
+    01 00 73 74 65 6d 64 2d 00 5c d6 19 81 88 ff ff  ..stemd-.\......
+    65 72 76 69 63 65 00 00 00 00 00 00 00 00 00 00  ervice..........
+  backtrace:
+    [<00000000561d65d4>] kmalloc include/linux/slab.h:554 [inline]
+    [<00000000561d65d4>] bpf_prog_store_orig_filter+0x33/0xa0 net/core/filter.c:1131
+    [<000000005d9b7cd2>] bpf_prog_create_from_user+0xda/0x2a0 net/core/filter.c:1422
+    [<00000000baa576ae>] seccomp_prepare_filter kernel/seccomp.c:567 [inline]
+    [<00000000baa576ae>] seccomp_prepare_user_filter kernel/seccomp.c:604 [inline]
+    [<00000000baa576ae>] seccomp_set_mode_filter kernel/seccomp.c:1535 [inline]
+    [<00000000baa576ae>] do_seccomp+0x32e/0xd40 kernel/seccomp.c:1649
+    [<00000000658618a4>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b8258e4d>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888119d65c00 (size 32):
+  comm "syz-executor.0", pid 6688, jiffies 4294954707 (age 12.810s)
+  hex dump (first 32 bytes):
+    06 00 00 00 fb ff ff 7f 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000ad603142>] kmemdup+0x23/0x50 mm/util.c:127
+    [<0000000001d3eabf>] kmemdup include/linux/string.h:479 [inline]
+    [<0000000001d3eabf>] bpf_prog_store_orig_filter+0x5e/0xa0 net/core/filter.c:1138
+    [<000000005d9b7cd2>] bpf_prog_create_from_user+0xda/0x2a0 net/core/filter.c:1422
+    [<00000000baa576ae>] seccomp_prepare_filter kernel/seccomp.c:567 [inline]
+    [<00000000baa576ae>] seccomp_prepare_user_filter kernel/seccomp.c:604 [inline]
+    [<00000000baa576ae>] seccomp_set_mode_filter kernel/seccomp.c:1535 [inline]
+    [<00000000baa576ae>] do_seccomp+0x32e/0xd40 kernel/seccomp.c:1649
+    [<00000000658618a4>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b8258e4d>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff8881131ecb00 (size 96):
+  comm "syz-executor.0", pid 6688, jiffies 4294954707 (age 12.810s)
+  hex dump (first 32 bytes):
+    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
+    80 ea 10 13 81 88 ff ff 00 b0 d8 00 00 c9 ff ff  ................
+  backtrace:
+    [<0000000073bb6e7d>] kmalloc include/linux/slab.h:554 [inline]
+    [<0000000073bb6e7d>] kzalloc include/linux/slab.h:666 [inline]
+    [<0000000073bb6e7d>] seccomp_prepare_filter kernel/seccomp.c:562 [inline]
+    [<0000000073bb6e7d>] seccomp_prepare_user_filter kernel/seccomp.c:604 [inline]
+    [<0000000073bb6e7d>] seccomp_set_mode_filter kernel/seccomp.c:1535 [inline]
+    [<0000000073bb6e7d>] do_seccomp+0x2ec/0xd40 kernel/seccomp.c:1649
+    [<00000000658618a4>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b8258e4d>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88811310e400 (size 96):
+  comm "syz-executor.0", pid 6702, jiffies 4294955242 (age 7.460s)
+  hex dump (first 32 bytes):
+    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 50 e1 00 00 c9 ff ff  .........P......
+  backtrace:
+    [<0000000073bb6e7d>] kmalloc include/linux/slab.h:554 [inline]
+    [<0000000073bb6e7d>] kzalloc include/linux/slab.h:666 [inline]
+    [<0000000073bb6e7d>] seccomp_prepare_filter kernel/seccomp.c:562 [inline]
+    [<0000000073bb6e7d>] seccomp_prepare_user_filter kernel/seccomp.c:604 [inline]
+    [<0000000073bb6e7d>] seccomp_set_mode_filter kernel/seccomp.c:1535 [inline]
+    [<0000000073bb6e7d>] do_seccomp+0x2ec/0xd40 kernel/seccomp.c:1649
+    [<00000000658618a4>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b8258e4d>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
