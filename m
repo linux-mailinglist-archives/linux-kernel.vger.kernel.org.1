@@ -2,111 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1054C241985
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8225F241992
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728520AbgHKKRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 06:17:51 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:13120 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728346AbgHKKRv (ORCPT
+        id S1728566AbgHKKUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 06:20:17 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:49070 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728448AbgHKKUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 06:17:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1597141070; x=1628677070;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=pH/dqPFqn/5c/fFx2x7y3lTOdQqwfNkq66YZ1oLQHaE=;
-  b=hkHUyzl9kpqc6B6IDEkk2OnF4YXHCP/80VMugiyGJiKPcJZQfMzY8J2b
-   fabmugmKx7xD8+hfTJ+Lp2IJRRP99UwPfzOqJU2i9p+94QEwI7P5IrUf4
-   rJw8q0LbGCYyavr5XtDLnI/tAqqwv/cEO7uwHFeYtKCja2tJNWUaNJbdz
-   Q=;
-IronPort-SDR: /Jfizqq72H/cs+siuKEQ9MKFuSHy05tstZjjnB9QrOJfwKBi5ykGU6svTVGGSO0fjz/aJYFIea
- qIxaItFYFA+Q==
-X-IronPort-AV: E=Sophos;i="5.75,460,1589241600"; 
-   d="scan'208";a="47084569"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 11 Aug 2020 10:17:49 +0000
-Received: from EX13MTAUEB002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id 34EF5A272D;
-        Tue, 11 Aug 2020 10:17:46 +0000 (UTC)
-Received: from EX13D16EUB001.ant.amazon.com (10.43.166.28) by
- EX13MTAUEB002.ant.amazon.com (10.43.60.12) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 11 Aug 2020 10:17:46 +0000
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.140) by
- EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 11 Aug 2020 10:17:36 +0000
-Subject: Re: [PATCH v6 10/18] nitro_enclaves: Add logic for getting the
- enclave image load info
-To:     Alexander Graf <graf@amazon.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "David Duncan" <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        "David Woodhouse" <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Karen Noel <knoel@redhat.com>,
-        "Martin Pohlack" <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-References: <20200805091017.86203-1-andraprs@amazon.com>
- <20200805091017.86203-11-andraprs@amazon.com>
- <70ec8010-cb3b-50a8-5472-a96c5aa2cf8d@amazon.de>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <0ef970b1-eea2-916c-3546-fdc4f2595e99@amazon.com>
-Date:   Tue, 11 Aug 2020 13:17:31 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.1.0
+        Tue, 11 Aug 2020 06:20:17 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07BACeE2145102;
+        Tue, 11 Aug 2020 10:19:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=HcDjjzqVyfcUJIc+LnJzTj0NlEAoMZO5Bzk9COQkEZM=;
+ b=Yn+OBNG0P5mri8dkG+3CJNa9a7w3c9TXSS7Lx80OX1yyrbv+jMnXC1qBb2qgZomou2AU
+ PksfGFHLbackgq++paNuGqKsXgdEF+ek1rZZLEzu0Z6KsyPXEC3GyzKtJZXqpL8jDMvT
+ hqk4tvzWI7hdXErtss6vbfDAMc6QxwDWmRsqZOadzZrb68S8DzaHMC1h6RibhC2TEjdA
+ jRvzSVuhZUUrvfNN+aS4yC2moqs7pnrRDR4tH1d7d8UO2UdIHBNg4J3BKIwla1WuoCiB
+ nbQOxJ/BqfqGMYhLSp3QpMNLAV5Q5lp+smm2SO8zK3uVDmuMfy9Q1O7/u2OCvA2reMD0 dQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 32smpnbr9u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 11 Aug 2020 10:19:59 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07BACRU3160982;
+        Tue, 11 Aug 2020 10:17:58 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 32t5yyeb7g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 Aug 2020 10:17:58 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07BAHtfH023548;
+        Tue, 11 Aug 2020 10:17:56 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 11 Aug 2020 10:17:55 +0000
+Date:   Tue, 11 Aug 2020 13:17:47 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     gregkh@linuxfoundation.org, sfr@canb.auug.org.au,
+        longman@redhat.com, akpm@linux-foundation.org, mhocko@suse.com,
+        hannes@cmpxchg.org, devel@driverdev.osuosl.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: ks7010: Do not use GFP_KERNEL in atomic context
+Message-ID: <20200811101746.GN1793@kadam>
+References: <20200809111846.745826-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-In-Reply-To: <70ec8010-cb3b-50a8-5472-a96c5aa2cf8d@amazon.de>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.140]
-X-ClientProxiedBy: EX13D12UWC001.ant.amazon.com (10.43.162.78) To
- EX13D16EUB001.ant.amazon.com (10.43.166.28)
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200809111846.745826-1-christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9709 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
+ bulkscore=0 adultscore=0 spamscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008110068
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9709 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
+ bulkscore=0 impostorscore=0 phishscore=0 clxscore=1011 spamscore=0
+ malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008110068
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 09, 2020 at 01:18:46PM +0200, Christophe JAILLET wrote:
+> A possible call chain is as follow:
+>   ks_wlan_start_xmit                    (ks_wlan_net.c)
+>     --> hostif_data_request             (ks_hostif.c)
+>       --> michael_mic                   (ks_hostif.c)
+> 
+> 'ks_wlan_start_xmit()' is a '.ndo_start_xmit()' function (see
+> net_device_ops structure). Such calls are guarded by the __netif_tx_lock
+> spinlock. So memory allocation must be atomic.
+> 
+> So, use GFP_ATOMIC instead of GFP_KERNEL 'in michael_mic()'
+> 
+> Fixes: ???
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> This is completely speculative. I don't know if the call chain given above
+> if possible in RL application.
+> So review carefully :)
+> 
+> If the fix is correct, it is also more the starting point of a bigger
+> change, because in 'michael_mic()' there is a call to
+> 'crypto_alloc_shash()' and this function uses GFP_KERNEL internally (in
+> 'crypto_create_tfm()')
+> Should this need to be changed, I don't know how 'ks_hostif.c' should be
+> fixed. Changing allocation in 'crypto/api.c' looks like an overkill.
+> 
+> In other word, I think that my patch is wrong, but don't know what else to
+> propose :).
 
+Your patch is correct but you're also right that it's incomplete.
 
-On 10/08/2020 12:57, Alexander Graf wrote:
->
->
-> On 05.08.20 11:10, Andra Paraschiv wrote:
->> Before setting the memory regions for the enclave, the enclave image
->> needs to be placed in memory. After the memory regions are set, this
->> memory cannot be used anymore by the VM, being carved out.
->>
->> Add ioctl command logic to get the offset in enclave memory where to
->> place the enclave image. Then the user space tooling copies the enclave
->> image in the memory using the given memory offset.
->>
->> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
->
-> Reviewed-by: Alexander Graf <graf@amazon.com>
+If you look at drivers/staging/rtl8192e/rtllib_crypt_tkip.c then they
+declare the shash on stack instead of using crypto_alloc_shash().
+	SHASH_DESC_ON_STACK(desc, tfm_michael);
 
-Thanks for review. I included the tag for this one and the next 2 patches.
+That's probably what we should do here as well.  Although I don't know
+this code very well at all...  This is probably the sort of change where
+it would be good to have someone test it.
 
-Andra
-
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar=
- Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in R=
-omania. Registration number J22/2621/2005.
+regards,
+dan carpenter
 
