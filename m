@@ -2,158 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC99241850
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 10:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A873C241857
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 10:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728397AbgHKIeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 04:34:25 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:37292 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728253AbgHKIeY (ORCPT
+        id S1728401AbgHKIg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 04:36:27 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:57687 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728237AbgHKIg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 04:34:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597134862;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=7K7DD0z43UYpzQh5E+GlDsRo/oWPkB163pubJOb2E2U=;
-        b=jGaGomp+tmHV+maQEMKwW8JIRmcoJfUae4INrvsj74fIPM1oWfiyTMB6aTKamgB+5EZfHk
-        EIiNpvqFTJuhAB+tYhV5T9mPIbr7Z1oAtxmbKNLN/XT/7lfhCHFML9iWzcrcHadTs3D224
-        QBlFN/F444iShYWGN42KuLmyscBatQo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-5-h5reJzntNeSpj6PelVMOyA-1; Tue, 11 Aug 2020 04:34:21 -0400
-X-MC-Unique: h5reJzntNeSpj6PelVMOyA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CE09E10059A2;
-        Tue, 11 Aug 2020 08:34:19 +0000 (UTC)
-Received: from [10.36.113.73] (ovpn-113-73.ams2.redhat.com [10.36.113.73])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 430226842F;
-        Tue, 11 Aug 2020 08:34:18 +0000 (UTC)
-Subject: Re: [PATCH] Revert "mm/vmstat.c: do not show lowmem reserve
- protection information of empty zone"
-To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        sonnyrao@chromium.org, yuzhao@google.com, rientjes@google.com
-References: <20200811075412.12872-1-bhe@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <22a7882b-cc18-0c6d-1ab5-7e0ea6a53469@redhat.com>
-Date:   Tue, 11 Aug 2020 10:34:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 11 Aug 2020 04:36:26 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 654F55C00D0;
+        Tue, 11 Aug 2020 04:36:25 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 11 Aug 2020 04:36:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        XmkOTDau3GA4XwOfKDAkmAamcy7pGy3Ial0qb8HMlms=; b=vi6BpXWYJtMTm5Hf
+        19E7qqoMJs/Q3bfqgUknAH/9oQl/znVXHDO7MjKpqHbnZlFLkdj6B/Eo2QCwa9ve
+        cnADb4ttKLgus55JqlPzel2K4v53c6B/9hGLgTdp7Ta5oHTiVpSFOkYi8LvHGL4i
+        1uM2PyEQnkgvLEFFP08afRPurP5KfeWJkXduVl9nl0kx6+P73W4G70Bn1AiKQEND
+        ZV58w0ALWuUfTxDpza4qnYyA4GdwiyWbT917OjgPyZT/8CvfQ6HEaxZjSZjmr7Tk
+        1F8XjXJ94mzIRLqdl1zyFNR53HRnaz6O7oNqLBq0Y3F7CFvRsKqAJ/v77YLEkkY2
+        PcEFSQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=XmkOTDau3GA4XwOfKDAkmAamcy7pGy3Ial0qb8HMl
+        ms=; b=IXJmmNKH0HQPxtPlxpnml0NXFCQHdZ7PlpuDGQS2rCWXceSJWsmGdFLzs
+        USoFcpA3r7lwtxDVQMb6Wk3owJdo4ICM2KLKW3QscsqxHiB0RaPik5AwXN8SQU/M
+        /UyOher5UPYYyF8gaakROT5Ids1ELU2dl5HXcd1HgYZXnkvoYZ0eNJRNCcNDrRMb
+        soj82EXXl8MF87L7rHTtURnEFAM6DbtbgRhgQEbiymhZiVipXd46bbM1n0kboC6A
+        veuUtPjzNktHJXzIKkBReq1sowVAcvGRRfyGa/euyRobG1TnBQNtvIhVJRMXJk5F
+        lNHkZuftnrSOaFv3CIskZY45kK9SA==
+X-ME-Sender: <xms:hlgyX6Z-HyEut2jhq-jqwW4SxaWz8XsFnQ2lB-llARYr3rhAFQG5hA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrledtgddtiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkuffhvfffjghftggfggfgsehtjeertddtreejnecuhfhrohhmpefkrghnucfm
+    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnhepfe
+    efteetvdeguddvveefveeftedtffduudehueeihfeuvefgveehffeludeggfejnecukfhp
+    peehkedrjedrvddtfedruddugeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehrrghvvghnsehthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:hlgyX9YsMGOWBMsaTs1_eHdDMvR-bMWkmTad6g8F8ns44w47c-kruQ>
+    <xmx:hlgyX0-zc2SrAzt-aAje5gQDYRePFB5CLYCJnvKi8vJexn6AxqcGwg>
+    <xmx:hlgyX8q-E8ykGbfUudosCG3hEoHdHD8zJy5meyDQPMYp-xsMmYOKjg>
+    <xmx:iVgyXy3YBsm-K8dxTSBZPJPgfRvLO2S28OHQaPi3SFv5e3OHaZkieA>
+Received: from mickey.themaw.net (58-7-203-114.dyn.iinet.net.au [58.7.203.114])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 57C9030600B7;
+        Tue, 11 Aug 2020 04:36:21 -0400 (EDT)
+Message-ID: <75e04b06be0561c3cec936cd3bbc44fe82ca73f4.camel@themaw.net>
+Subject: Re: [PATCH] fs: autofs: delete repeated words in comments
+From:   Ian Kent <raven@themaw.net>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     autofs@vger.kernel.org
+Date:   Tue, 11 Aug 2020 16:36:17 +0800
+In-Reply-To: <20200811021817.24982-1-rdunlap@infradead.org>
+References: <20200811021817.24982-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <20200811075412.12872-1-bhe@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.08.20 09:54, Baoquan He wrote:
-> This reverts commit 26e7deadaae1755faf1f6d1a68988c4b8348df59.
+On Mon, 2020-08-10 at 19:18 -0700, Randy Dunlap wrote:
+> Drop duplicated words {the, at} in comments.
 > 
-> Sonny reported that one of their tests started failing on the latest
-> kernel on their Chrome OS platform. The root cause is that the above
-> commit removed the protection line of empty zone, while the parser used
-> in the test relies on the protection line to mark the end of each zone.
-> 
-> Let's revert it to avoid breaking userspace testing or applications.
-> 
-> Cc: <stable@vger.kernel.org> # 5.8.x
-> Reported-by: Sonny Rao <sonnyrao@chromium.org>
-> Signed-off-by: Baoquan He <bhe@redhat.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Ian Kent <raven@themaw.net>
+> Cc: autofs@vger.kernel.org
+
+Acked-by: Ian Kent <raven@themaw.net>
+
 > ---
->  mm/vmstat.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  fs/autofs/dev-ioctl.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 5b35c0eb8c57..62376dc66ec0 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1644,12 +1644,6 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
->  		   zone->present_pages,
->  		   zone_managed_pages(zone));
+> --- linux-next-20200807.orig/fs/autofs/dev-ioctl.c
+> +++ linux-next-20200807/fs/autofs/dev-ioctl.c
+> @@ -20,7 +20,7 @@
+>   * another mount. This situation arises when starting automount(8)
+>   * or other user space daemon which uses direct mounts or offset
+>   * mounts (used for autofs lazy mount/umount of nested mount trees),
+> - * which have been left busy at at service shutdown.
+> + * which have been left busy at service shutdown.
+>   */
 >  
-> -	/* If unpopulated, no other information is useful */
-> -	if (!populated_zone(zone)) {
-> -		seq_putc(m, '\n');
-> -		return;
-> -	}
-> -
->  	seq_printf(m,
->  		   "\n        protection: (%ld",
->  		   zone->lowmem_reserve[0]);
-> @@ -1657,6 +1651,12 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
->  		seq_printf(m, ", %ld", zone->lowmem_reserve[i]);
->  	seq_putc(m, ')');
->  
-> +	/* If unpopulated, no other information is useful */
-> +	if (!populated_zone(zone)) {
-> +		seq_putc(m, '\n');
-> +		return;
-> +	}
-> +
->  	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
->  		seq_printf(m, "\n      %-12s %lu", zone_stat_name(i),
->  			   zone_page_state(zone, i));
-> 
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
+>  typedef int (*ioctl_fn)(struct file *, struct autofs_sb_info *,
+> @@ -496,7 +496,7 @@ static int autofs_dev_ioctl_askumount(st
+>   * located path is the root of a mount we return 1 along with
+>   * the super magic of the mount or 0 otherwise.
+>   *
+> - * In both cases the the device number (as returned by
+> + * In both cases the device number (as returned by
+>   * new_encode_dev()) is also returned.
+>   */
+>  static int autofs_dev_ioctl_ismountpoint(struct file *fp,
 
