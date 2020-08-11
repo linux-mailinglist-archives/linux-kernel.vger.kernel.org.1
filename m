@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6492E241F91
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 20:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC9D241F82
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 20:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726355AbgHKSQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 14:16:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgHKSQk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 14:16:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7700C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 11:16:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=d2angCcfziZJsj+jE5k0KH3MCZIXsKjqVtB9YbQL44w=; b=S9F2yfa/UzmRITxVoNJ9lYraVf
-        Dy6MZ/M1ZBoBbV+p6eAQcY0VezPPFBCRlz6gqSuqC23Xcz2ebJ1urP9Gr4WE+izj+2ltXOAqd2QRG
-        XT3q1CfhnyfcEQwSwTLEt3ITXI8YkMcZX3WgZM/f4VbwtJ4hUfnQqouRsm1XNTOZmKxrus69f4AF3
-        E89nzV8iJViywqhN+D1abbdpG2hHKMw3L4Si6M1UWVTg1vLUVQmQjpCcFeR5j3ZavvHx+NVMhQUKR
-        N9Hvsq7cORsmxq2k8uyLJdhfgVc/0isUCN1i7dVuql95XYZMgJFB8asOHsj0aOuJqZGcIPD1XKw6W
-        TqKbkyhQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k5Yp6-0007wb-7O; Tue, 11 Aug 2020 18:16:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4B5BD3060AE;
-        Tue, 11 Aug 2020 19:59:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 32C1820BFC4E4; Tue, 11 Aug 2020 19:59:12 +0200 (CEST)
-Date:   Tue, 11 Aug 2020 19:59:12 +0200
-From:   peterz@infradead.org
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        keescook@chromium.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v2] module: Harden STRICT_MODULE_RWX
-Message-ID: <20200811175912.GF2674@hirez.programming.kicks-ass.net>
-References: <20200403171303.GK20760@hirez.programming.kicks-ass.net>
- <20200808101222.5103093e@coco.lan>
- <20200810092523.GA8612@linux-8ccs>
- <20200810150647.GB8612@linux-8ccs>
- <20200811163427.6edbf343@coco.lan>
- <20200811145524.GE2674@hirez.programming.kicks-ass.net>
- <20200811172738.2d632a09@coco.lan>
- <20200811160134.GA13652@linux-8ccs>
+        id S1726134AbgHKSED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 14:04:03 -0400
+Received: from mga02.intel.com ([134.134.136.20]:61977 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725889AbgHKSED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 14:04:03 -0400
+IronPort-SDR: BFyJdXhqB42qJpl5EXNCbyMbdZeFszE74sE0Vt4cr15g+OXKNz9DktmvwmtlPWdcIADRwI33tY
+ GVUqciyS/IYA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9710"; a="141644208"
+X-IronPort-AV: E=Sophos;i="5.76,301,1592895600"; 
+   d="scan'208";a="141644208"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2020 11:03:34 -0700
+IronPort-SDR: zVv4eU1IJ+Px03kish9Dant3Vn8Yba/ZAH97DTiKTwFjiMbjLxVyTqnESBg65BYgStzTK+Y8vI
+ 6/c0SX/PsRtw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,301,1592895600"; 
+   d="scan'208";a="324832517"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by orsmga008.jf.intel.com with ESMTP; 11 Aug 2020 11:03:34 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id AA91F301CB0; Tue, 11 Aug 2020 11:03:34 -0700 (PDT)
+Date:   Tue, 11 Aug 2020 11:03:34 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "alexey.budankov@linux.intel.com" <alexey.budankov@linux.intel.com>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>
+Subject: Re: [PATCH 1/2] perf: Add closing sibling events' file descriptors
+Message-ID: <20200811180334.GH1448395@tassilo.jf.intel.com>
+References: <20200708151635.81239-1-alexander.shishkin@linux.intel.com>
+ <20200708151635.81239-2-alexander.shishkin@linux.intel.com>
+ <20200806083530.GV2674@hirez.programming.kicks-ass.net>
+ <20200806153205.GA1448395@tassilo.jf.intel.com>
+ <875z9q1u3g.fsf@ashishki-desk.ger.corp.intel.com>
+ <20200810144518.GB1448395@tassilo.jf.intel.com>
+ <20200810203632.GF3982@worktop.programming.kicks-ass.net>
+ <20200811142955.GC1448395@tassilo.jf.intel.com>
+ <9ff26c5231954e65bbd4873d54ebd727@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200811160134.GA13652@linux-8ccs>
+In-Reply-To: <9ff26c5231954e65bbd4873d54ebd727@AcuMS.aculab.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 06:01:35PM +0200, Jessica Yu wrote:
-
-> > > On Tue, Aug 11, 2020 at 04:34:27PM +0200, Mauro Carvalho Chehab wrote:
-> > > >   [33] .plt              PROGBITS         0000000000000340  00035c80
-> > > >        0000000000000001  0000000000000000 WAX       0     0     1
-> > > >   [34] .init.plt         NOBITS           0000000000000341  00035c81
-> > > >        0000000000000001  0000000000000000  WA       0     0     1
-> > > >   [35] .text.ftrace[...] PROGBITS         0000000000000342  00035c81
-> > > >        0000000000000001  0000000000000000 WAX       0     0     1
-
-> Interesting, my cross-compiled modules do not have the executable flag -
+On Tue, Aug 11, 2020 at 02:47:03PM +0000, David Laight wrote:
+> From: Andi Kleen
+> > On Mon, Aug 10, 2020 at 10:36:32PM +0200, Peter Zijlstra wrote:
+> > > On Mon, Aug 10, 2020 at 07:45:18AM -0700, Andi Kleen wrote:
+> > >
+> > > > Unfortunately we're kind of stuck with the old NFILE=1024 default
+> > > > even though it makes little sense on modern servers.
+> > >
+> > > Why can't that be changed? It seems to me all of userspace changes all
+> > > the time; heck that system-doofus thing flushed 20+ years of sysadmin
+> > > experience down the drain, just cause. Why can't we up a file limit?
+> > 
+> > We could try, but I believe it's hard coded in various places outside
+> > the kernel.
 > 
->  [38] .plt              NOBITS           0000000000000340  00038fc0
->       0000000000000001  0000000000000000  WA       0     0     1
->  [39] .init.plt         NOBITS           0000000000000341  00038fc0
->       0000000000000001  0000000000000000  WA       0     0     1
->  [40] .text.ftrace_tram NOBITS           0000000000000342  00038fc0
->       0000000000000001  0000000000000000  WA       0     0     1
+> The place it really bites is select().
+> Although the kernel supports large bitmaps glibc doesn't.
+> The random bit overwrites are a PITA to debug.
 
-> I'm a bit confused about what NOLOAD actually implies in this context. From the
-> ld documentation - "The `(NOLOAD)' directive will mark a section to not be
-> loaded at run time." But these sections are marked SHF_ALLOC and are referenced
-> to in the module plt code. Or does it just tell the linker to not initialize it?
+Good point.
 
-Yeah, that confusion is wide-spread, so much so that bfd-ld and gold,
-both in bintils, had different behaviour at some point.
+I remember I asked for a simple define to increase like glibc5 had, but 
+they still didn't implement that.
 
-Anyway, another clue is that your build has all NOBITS, while Mauro's
-build has PROGBITS for the broken sections.
-
-Anyway, my gcc-10.1/binutils-2.34 cross tool chain (from k.org)
-generates the same as Jessica's too. I wonder if binutils-2.35 is
-wonky...
+-Andi
