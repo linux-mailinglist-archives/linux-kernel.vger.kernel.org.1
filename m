@@ -2,160 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C722421A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 23:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D974F2421AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 23:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgHKVIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 17:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgHKVIe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 17:08:34 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41F8C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 14:08:34 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id n25so17810vsq.6
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 14:08:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=posk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TxR96oCE+wXLRBmlK1nLV/rdqqdlhyggKeJpYnzoNUE=;
-        b=HRk0SSPpJt5dml1HLDtiPyIZXHX705XuOl0ejBzmbNG5ZXtF/+ZMBIdAx+ZhN5A9Lq
-         uTETADwRcUHBT6p1dRfHeUHUGX4hiHxdIjRxtI7LsLqUCQlCsBAmaqRSuTjbwUY5pKgG
-         8asyNXqvmAHPzWXS88rRk4EiEP0ai5dqn0NT7fziUX9KEVcDe1vDl1fmx/h6s4ywomTp
-         svPoHhB94ndzXXCwxjH9jmro7/nsHCJBsp308PcgbJXKvkyUfZWYMTMJtVWzrqMyPiXW
-         n4cBZMFiUNCKsCB2sEIdxz+K6ZUx/Zdnf5lmzWHGEFGqm8FuB9itD7rp5LQ+JV9DCdKy
-         zJQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TxR96oCE+wXLRBmlK1nLV/rdqqdlhyggKeJpYnzoNUE=;
-        b=qH/Vu0oeQgdSN7TF4wTg87zWh820d5h43ZuqTCJuZWBfbBjGek2lf9R/IVp6cgCE6W
-         F0uHo9J3ma06wAkOxbd1coOPMsKeXZAzu1iib2sYuEPagXjPS3L3aQNLVH0iHZUKI96H
-         tO/e0vyoj+84HOTj5Q+u4u1971jal8yxeaO0r+AGStX98JD0K6w48MjX68K4aasSyUy8
-         YJBKRmg0twRI5lJbrze2M46yYK+UXsrB8VCYMobZeNzUE2lfA7AisEOl6aeEgTNBslb4
-         jOQrCJINXNJR1x0XZviDwYZ7RspXgj8TnKmnKDCT2kH87a3pc8lJIElkGswXTMNj6prY
-         8kIA==
-X-Gm-Message-State: AOAM5301bneJr/NO4xx/YhAoLsqjY806Yvy7dL2sNhQVYBZLjEHkPxw2
-        Ww6bzmk1gIZEnhadnYekqMiN7tyxR8obis6rMLncsg==
-X-Google-Smtp-Source: ABdhPJxk3zwRyya/a7EJByypWPbfkJX9g19ATCsI9lx45hB5jHG3kJ8RsEyc7xP4DqYcfycvLqk0dw/0QIVRiU+Hsb8=
-X-Received: by 2002:a05:6102:10c2:: with SMTP id t2mr24824591vsr.33.1597180113790;
- Tue, 11 Aug 2020 14:08:33 -0700 (PDT)
+        id S1726542AbgHKVJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 17:09:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725987AbgHKVJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 17:09:33 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3EDE205CB;
+        Tue, 11 Aug 2020 21:09:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597180172;
+        bh=yO8dq+GYzKI3pBmtfR9dJRqDFTQTGZRWKVu+t+LvkGY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=eabVjfNhhkM5oPD2ZYU8CFXQe9OethQy5zj/0wymPHd/AZuPQFcgFvb7/wkaLXEF7
+         nDhpYDRcHUrW1hOqn1EcW60ZFHF0EnXxkSBRCPDxwsmTX/avbFmTCum2lYYPsWMBoF
+         Xvfs32vaa6yEFdZYPRt6oS8b0WlAFALL7KuX72RM=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id DB696352308E; Tue, 11 Aug 2020 14:09:31 -0700 (PDT)
+Date:   Tue, 11 Aug 2020 14:09:31 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200811210931.GZ4295@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200809204354.20137-1-urezki@gmail.com>
+ <20200809204354.20137-2-urezki@gmail.com>
+ <20200810123141.GF4773@dhcp22.suse.cz>
+ <20200810160739.GA29884@pc636>
+ <20200810192525.GG4773@dhcp22.suse.cz>
+ <87pn7x6y4a.fsf@nanos.tec.linutronix.de>
+ <20200811153327.GW4295@paulmck-ThinkPad-P72>
+ <87h7t96ve3.fsf@nanos.tec.linutronix.de>
+ <87eeod6kgx.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20200811000959.2486636-1-posk@google.com> <20200811062733.GP3982@worktop.programming.kicks-ass.net>
-In-Reply-To: <20200811062733.GP3982@worktop.programming.kicks-ass.net>
-From:   Peter Oskolkov <posk@posk.io>
-Date:   Tue, 11 Aug 2020 14:08:22 -0700
-Message-ID: <CAFTs51XK0HLwCCvXCcfE5P7a4ExANPNPw7UvNigwHZ8sZVP+nQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2 v3] rseq/membarrier: add MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Peter Oskolkov <posk@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paul Turner <pjt@google.com>,
-        Chris Kennelly <ckennelly@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87eeod6kgx.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 11:27 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Aug 10, 2020 at 05:09:58PM -0700, Peter Oskolkov wrote:
-> > @@ -27,6 +35,12 @@
+On Tue, Aug 11, 2020 at 09:39:10PM +0200, Thomas Gleixner wrote:
+> Thomas Gleixner <tglx@linutronix.de> writes:
+> > "Paul E. McKenney" <paulmck@kernel.org> writes:
+> >> On Tue, Aug 11, 2020 at 04:44:21PM +0200, Thomas Gleixner wrote:
+> >>> Now RCU creates a new thing which enforces to make page allocation in
+> >>> atomic context possible on RT. What for?
+> >>> 
+> >>> What's the actual use case in truly atomic context for this new thing on
+> >>> an RT kernel?
+> >>
+> >> It is not just RT kernels.  CONFIG_PROVE_RAW_LOCK_NESTING=y propagates
+> >> this constraint to all configurations, and a patch in your new favorite
+> >> subsystem really did trigger this lockdep check in a non-RT kernel.
+> >>
+> >>> The actual RCU code disabling interrupts is an implementation detail
+> >>> which can easily be mitigated with a local lock.
+> >>
+> >> In this case, we are in raw-spinlock context on entry to kfree_rcu().
 > >
-> >  static void ipi_mb(void *info)
-> >  {
->
-> The #ifdef wants to behere, otherwise you'll get a compile warning for
-> !RSEQ builds.
+> > Where?
+> 
+> And aside of the where, wasn't kfree_rcu() from within raw spinlock held
+> regions possible all the time? Either I'm missing something or you are
+> fundamentally changing RCU internals. kfree_rcu() saved RT in various
+> ways where invoking kfree() was just not an option. Confused...
 
-Ack. Will do in the next version - for now waiting for the rest to be
-worked out.
+Back in the old days (months ago!), it was possible to invoke kfree_rcu()
+while holding a raw spinlock because kfree_rcu() didn't acquire any locks.
+It didn't need to because it was just a wrapper around call_rcu().
+And call_rcu(), along with the rest of RCU's internals, has used raw
+spinlocks since near the beginnings of RT, which meant that it wasn't
+a problem in the rare cases where call_rcu() needed to acquire one of
+RCU's locks (for example, when call_rcu() sees that the current CPU has
+accumulated more than 10,000 callbacks).
 
-[...]
+But one problem with the old kfree_rcu() approach is that the memory to
+be freed is almost always cold in the cache by the time that the grace
+period ends.  And this was made worse by the fact that the rcu_do_batch()
+function traverses the list of objects to be freed as a linked list,
+thus incurring a cache miss on each and every object.  The usual fix
+for this sort of performance problem is to use arrays of pointers,
+which on a 64-bit system with 64-byte cache lines reduces the number of
+cache misses by a factor of eight.  In addition, decreasing the number
+of post-grace-period cache misses increases the stability of RCU with
+respect to callback flooding:  Because the kfree()s happen faster, it
+is harder to overrun RCU with tight loops posting callbacks (as happened
+some time back with certain types of ACLs).
 
->
-> Mathieu did mention a few other points that I didn't see addressed:
->
->  - he didn't like abusing the @flags syscall argument for a CPUid;
+Hence Ulad's work on kfree_rcu().  The approach is to allocate a
+page-sized array to hold all the pointers, then fill in the rest of these
+pointers on each subsequent kfree_rcu() call.  These arrays of pointers
+also allows use of kfree_bulk() instead of kfree(), which can improve
+performance yet more.  It is no big deal if kfree_rcu()'s allocation
+attempts fail occasionally because it can simply fall back to the old
+linked-list approach.  And given that the various lockless caches in
+the memory allocator are almost never empty, in theory life is good.
 
-@flags is not used now; maybe just rename it to something more
-generic? @param? Or @options? Or maybe more specific, like @cpu_id?
+But in practice, mainline now has CONFIG_PROVE_RAW_LOCK_NESTING,
+and for good reason -- this Kconfig option makes it at least a
+little bit harder for mainline developers to mess up RT.  But with
+CONFIG_PROVE_RAW_LOCK_NESTING=y and lockdep enabled, mainline will now
+sometimes complain if you invoke kfree_rcu() while holding a raw spinlock.
+This happens when kfree_rcu() needs to invoke the memory allocator and
+the memory allocator's caches are empty, thus resulting in the memory
+allocator attempting to acquire a non-raw spinlock.
 
->  - he wondered if we should support SYNC_CORE + RSEQ.
+Because kfree_rcu() has a fallback available (just using the old linked
+list), kfree_rcu() would work well given a way to tell the memory
+allocator to return NULL instead of acquiring a non-raw spinlock.
+Which is exactly what Ulad's recent patches are intended to do.
 
-It seems to me that CMD_PRIVATE_EXPEDITED_RSEQ is basically
-CMD_PRIVATE_EXPEDITED_SYNC_CORE with the extra "restart RSEQ CSs"
-behavior. Am I missing something? If not, what is the point of
-complicating the code as suggested below? Maybe just renaming
-CMD_PRIVATE_EXPEDITED_RSEQ to CMD_PRIVATE_EXPEDITED_SYNC_CORE_RSEQ
-will do?
+Since then, this thread has discussed various other approaches,
+including using existing combinations of GFP_ flags, converting
+the allocator's zone lock to a raw spinlock, and so on.
 
->
->
-> Not sure we can easily change the syscall at this point, but the latter
-> point could be addressed with something like this.
->
-> ---
-> Index: linux-2.6/kernel/sched/membarrier.c
-> ===================================================================
-> --- linux-2.6.orig/kernel/sched/membarrier.c
-> +++ linux-2.6/kernel/sched/membarrier.c
-> @@ -374,8 +374,26 @@ static int membarrier_register_private_e
->   */
->  SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
->  {
-> +       int cflags = 0, int cpuid = -1;
-> +
->         if (unlikely(flags) && cmd != MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ)
->                 return -EINVAL;
-> +
-> +       if (cmd & (MEMBARRIER_CMD_PRIVATE_EXPEDITED |
-> +                  MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE |
-> +                  MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ)) {
-> +
-> +               if (cmd & MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ)
-> +                       cflags |= MEMBARRIER_FLAG_RSEQ;
-> +
-> +               if (cmd & MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE) {
-> +                       cflags |= MEMBARRIER_FLAG_SYNC_CORE;
-> +                       cpuid = flags;
-> +               }
-> +
-> +               cmd = MEMBARRIER_CMD_PRIVATE_EXPEDITED;
-> +       }
-> +
->         switch (cmd) {
->         case MEMBARRIER_CMD_QUERY:
->         {
-> @@ -396,18 +414,16 @@ SYSCALL_DEFINE2(membarrier, int, cmd, in
->                 return membarrier_global_expedited();
->         case MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED:
->                 return membarrier_register_global_expedited();
-> -       case MEMBARRIER_CMD_PRIVATE_EXPEDITED:
-> -               return membarrier_private_expedited(0, -1);
->         case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED:
->                 return membarrier_register_private_expedited(0);
-> -       case MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE:
-> -               return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE, -1);
->         case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE:
->                 return membarrier_register_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
-> -       case MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
-> -               return membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ, flags);
->         case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ:
->                 return membarrier_register_private_expedited(MEMBARRIER_FLAG_RSEQ);
-> +
-> +       case MEMBARRIER_CMD_PRIVATE_EXPEDITED:
-> +               return membarrier_private_expedited(cflags, cpuid);
-> +
->         default:
->                 return -EINVAL;
->         }
->
+Does that help, or am I missing the point of your question?
+
+							Thanx, Paul
