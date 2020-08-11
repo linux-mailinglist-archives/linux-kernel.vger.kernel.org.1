@@ -2,107 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707E02417C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 10:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D012417E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 10:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728280AbgHKIAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 04:00:44 -0400
-Received: from retiisi.org.uk ([95.216.213.190]:45760 "EHLO
-        hillosipuli.retiisi.org.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726397AbgHKIAn (ORCPT
+        id S1728346AbgHKICp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 04:02:45 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:45026 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728064AbgHKICn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 04:00:43 -0400
-Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.org.uk (Postfix) with ESMTPS id 256DC634C87;
-        Tue, 11 Aug 2020 11:00:10 +0300 (EEST)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1k5PCb-0001ID-Uo; Tue, 11 Aug 2020 11:00:09 +0300
-Date:   Tue, 11 Aug 2020 11:00:09 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>, linux-acpi@vger.kernel.org,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rajmohan Mani <rajmohan.mani@intel.com>,
-        Tomasz Figa <tfiga@chromium.org>
-Subject: Re: [PATCH v4 5/6] at24: Support probing while off
-Message-ID: <20200811080009.GE840@valkosipuli.retiisi.org.uk>
-References: <20200121134157.20396-1-sakari.ailus@linux.intel.com>
- <20200121134157.20396-6-sakari.ailus@linux.intel.com>
- <CAMpxmJU5dG49N2FA0oSQsOfKrCr3KQ1BisON4c+nUJJmZQG=bQ@mail.gmail.com>
- <20200311085555.GH5379@paasikivi.fi.intel.com>
- <CAMpxmJVPTKW+sYSJ3dnfF8nLAOKEa4Ob7bpxG0KD3Tkdm+rtYw@mail.gmail.com>
- <20200323213101.GB21174@kekkonen.localdomain>
- <CAMpxmJVdyTkZMVuhSy0Ux8VUYTmQN_YEfH-akQsAL3zrwiz8Dw@mail.gmail.com>
- <20200810082549.GD840@valkosipuli.retiisi.org.uk>
- <CAMpxmJUKSR-oCGnV1E5XiAMA2nYBy5f_f8=VSoMn0zf+qF39vg@mail.gmail.com>
+        Tue, 11 Aug 2020 04:02:43 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07B7w3WB181527;
+        Tue, 11 Aug 2020 08:02:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=GRGFv4TBi3bpKYmz228Zg1/rk7iTOPq7cAFHPbz0XqU=;
+ b=tv8zAIY1s+kS8HP2+tYeG0B3fpahMIAFboVmXBvyWEUcEucAemoTX2WQFxRIrZPU1aSF
+ SEGUJMZZpeRdZg7jH68HjZxgqRVAsKEJ+p/vyWz3lKqbAHFm2FBydIolQTUyvOedG9iB
+ B51m5u+HbxDOkrwVoibN8/83WyyqWwTMbP1JCEFue1GAibYistjiEo6rVL20/PLbYFFH
+ 8zSoQmo1grQSyHqcxyPh3ed0+vTeDp6ZuhrQp8PjuagNGQwRXaKgepCZg7+jC6xuu9Sz
+ O03gpXD/DpTsGOgzoRnL2qfale/MSs22OFxtuwNQi/DROJ8wHYtz5vLJMArUI74Iqq3S /w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 32t2ydhd80-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 11 Aug 2020 08:02:32 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07B7xRi0147291;
+        Tue, 11 Aug 2020 08:00:32 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 32u3h12tue-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 Aug 2020 08:00:32 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07B80Tp7029665;
+        Tue, 11 Aug 2020 08:00:29 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 11 Aug 2020 08:00:28 +0000
+Date:   Tue, 11 Aug 2020 11:00:20 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, sumit.semwal@linaro.org,
+        colton.w.lewis@protonmail.com, Ori.Messinger@amd.com,
+        m.szyprowski@samsung.com, bernard@vivo.com,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] drm: amdgpu: Use the correct size when allocating memory
+Message-ID: <20200811080020.GF5493@kadam>
+References: <20200809203406.751971-1-christophe.jaillet@wanadoo.fr>
+ <20200810154213.GM1793@kadam>
+ <8c414dd7-4a80-6ff2-03de-5340fb0d9c61@wanadoo.fr>
+ <20200811075702.GE5493@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMpxmJUKSR-oCGnV1E5XiAMA2nYBy5f_f8=VSoMn0zf+qF39vg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200811075702.GE5493@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9709 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008110050
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9709 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 priorityscore=1501
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 phishscore=0 adultscore=0 spamscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008110050
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bartosz,
-
-On Mon, Aug 10, 2020 at 08:12:00PM +0200, Bartosz Golaszewski wrote:
-> On Mon, Aug 10, 2020 at 10:26 AM Sakari Ailus <sakari.ailus@iki.fi> wrote:
-> >
+On Tue, Aug 11, 2020 at 10:57:02AM +0300, Dan Carpenter wrote:
+> On Mon, Aug 10, 2020 at 08:41:14PM +0200, Marion & Christophe JAILLET wrote:
+> > 
+> > Le 10/08/2020 à 17:42, Dan Carpenter a écrit :
+> > > On Sun, Aug 09, 2020 at 10:34:06PM +0200, Christophe JAILLET wrote:
+> > > > When '*sgt' is allocated, we must allocated 'sizeof(**sgt)' bytes instead
+> > > > of 'sizeof(*sg)'. 'sg' (i.e. struct scatterlist) is smaller than
+> > > > 'sgt' (i.e struct sg_table), so this could lead to memory corruption.
+> > > The sizeof(*sg) is bigger than sizeof(**sgt) so this wastes memory but
+> > > it won't lead to corruption.
+> > > 
+> > >      11  struct scatterlist {
+> > >      12          unsigned long   page_link;
+> > >      13          unsigned int    offset;
+> > >      14          unsigned int    length;
+> > >      15          dma_addr_t      dma_address;
+> > >      16  #ifdef CONFIG_NEED_SG_DMA_LENGTH
+> > >      17          unsigned int    dma_length;
+> > >      18  #endif
+> > >      19  };
+> > > 
+> > >      42  struct sg_table {
+> > >      43          struct scatterlist *sgl;        /* the list */
+> > >      44          unsigned int nents;             /* number of mapped entries */
+> > >      45          unsigned int orig_nents;        /* original size of list */
+> > >      46  };
+> > > 
+> > > regards,
+> > > dan carpenter
+> > 
+> > 
+> > My bad. I read 'struct scatterlist sgl' (without the *)
+> > Thanks for the follow-up, Dan.
+> > 
+> > Doesn't smatch catch such mismatch?
+> > (I've not run smatch for a while, so it is maybe reported)
 > 
-> [snip]
+> That's why I was investigating it, because Smatch didn't catch it.
 > 
-> > >
-> > > Rafael: I think that there are two issues with patch 1/5:
-> > > 1. It adds a very specific boolean flag to a structure that's meant to
-> > > be very general. As I pointed out in the i2c patch: at the very least
-> > > this could be made into an int storing flag values, instead of a
-> > > boolean field. But rather than that - it looks to me more like a
-> > > device (or bus) feature than a driver feature. Is there any ACPI flag
-> > > we could use to pass this information to the driver model without
-> > > changing the driver structure?
-> >
-> > To my knowledge there isn't. The fact that I²C devices are powered on for
-> > probe in ACPI based systems is specific to Linux kernel and not ACPI as
-> > such.
-> >
-> > The reason this needs to be in a generic struct is that the device's power
-> > state will be changed before any interaction with the driver takes place as
-> > it's the I²C framework that powers on the device.
-> >
-> 
-> I'm not sure I'm following. Looking at patch 1/6 struct device already
-> exists so why can't this information be conveyed "per device" as
-> opposed to "per driver"?
+> Smatch would have warned if it led to memory corruption.  Smatch also
+> tries to detect struct mismatches as a separate check but for some
+> reason it missed it.  I'm not totally sure why yet.  I suspect that it's
+> a complicated internal reason where Sparse is the sizeof to a normal
 
-It's both driver and device.
+s/is/changes/
 
-Suppose there's no indication of driver support. If you add the property
-telling the device shouldn't be powered on for probe, it won't be. And if
-the driver doesn't support that, probe will fail. That could happen e.g.
-when running an older kernel on a system that happens to specify this
-property for a given device.
+> number...  It's a known issue and hard to fix.
 
-You could view this as a driver bug of course. I still think it's better to
-make driver support for this explicit, and avoid making this a practical
-problem anywhere.
+regards,
+dan carpenter
 
--- 
-Kind regards,
-
-Sakari Ailus
