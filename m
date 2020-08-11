@@ -2,232 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD9D241F71
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 19:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD12241F7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 19:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgHKRzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 13:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54370 "EHLO
+        id S1726164AbgHKR6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 13:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbgHKRzh (ORCPT
+        with ESMTP id S1725889AbgHKR6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 13:55:37 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A84C061788
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 10:55:36 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c15so12287269wrs.11
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 10:55:36 -0700 (PDT)
+        Tue, 11 Aug 2020 13:58:52 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2924FC061788
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 10:58:52 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id k13so7152193plk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 10:58:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries-io.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=tRnNNG+EOiqKnsOW3JVBYP08XhjCezeVkvW5W8pYVGc=;
-        b=O9jcFWmVEfspmlgOb02iR4u1Q7xQgY1Md3YJprx0aU2Q6Hr8UjAYHga8I5V7E7uF6g
-         js3ZaCDaoTJ6w3csCcN81SroXwFCsh3GGIdA7d9h1jaGMOzoYVnzpCy+JqJpVqCKO65I
-         y2QqZ9zew4ZIrKvRhgIX/ZnOhn8Mslx/bgdG85caTrFnQ1oO2h37CraR71xFZEN70yqX
-         nrRGe4rHj2c9AV+KQdV7XqegZrJV+xuMhzRwP018ytjJ76t+ucjD9I9SbP3X+9bR3Qia
-         EfzB8ViTxMb+QeD1qRF1OhO4AYJTPKSBa5wgrLXhLDUgmSp6kVEfLv8vj6tQWnNZSGyA
-         1h/Q==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PwLucdZe8Zl1sdg+rBs5gzd1/sOQ/Nnh9Dc69W2ZlPY=;
+        b=hppMyx4QKg2UJb3qxcOpI1jplSB7I/4IFRBebdNFDIqOIqmv+o7ixbitDdJGq3vcUG
+         /KLrDrbfIybVPxf4/FXQdluXL88QfJ4XeHlgDSolu6c9dhZgMa2k/A4bIO1QoVD7GpgV
+         Xwf3wYgXY3X/aoeA7y5BvM3uCAnmjfQ6O8cf/kfy+Jutrx4PW4ESll6hVdsA6UBh8a9o
+         HzLpmRdRsGUmK5Tgd0bGDdJBTbblNpmqczmsB0ax2StXBX0bj9yxckMDjNwn4O119Kqj
+         5QrM6y8TkZa3EXfv60POSf2PJEcWYUpNGyED/o7RYz4ryhrU01nYUgmZDFGPDTj1Clfs
+         Oy6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=tRnNNG+EOiqKnsOW3JVBYP08XhjCezeVkvW5W8pYVGc=;
-        b=sEzXpTbExg5MdmBEq/rwks3DnYuBqq/Of5S0/2QTYFKaRQOa5A/oVRZ0R2TMMwvO1z
-         4GttFVsxT+/8UC0Vs57KhZrsdxzYHKhH2LtkvuDL7Q1XMmw2z4YbwGH7ndOwYD68Rvhv
-         vENgPGlExKe4dmrD/+AORBq5VYGRFUNpVu4iGm4AnklEBZ234FyKFRLMMfWNowdAJkkE
-         RbLSqvV1e0g57BElD/Qm3tltCYpuPv+FmMMQpC8a0dZLS3Wt+aAbEQ9JjLk7nvLc91qo
-         AWhqO3LE/VxWUd5HNuhD7IjgkxKv0XYl46MUbrPWhvuWojRsSceykLFtEdnHjY5yVpju
-         Vm5A==
-X-Gm-Message-State: AOAM533kLNAF8e7LNU63kcPJTWbY4EyCfWtrlShUzMia3aKUxTw1ja18
-        holfjqot0RAkPTlGsOJr7vxbUA==
-X-Google-Smtp-Source: ABdhPJwwSsYe5c7AVIdpdHaZ1eeCyhaua3DVghoLp4hfCbr9VUao0DIKHlnBdy3F4sH+HSlsgHGv6Q==
-X-Received: by 2002:a5d:6443:: with SMTP id d3mr29905083wrw.322.1597168535403;
-        Tue, 11 Aug 2020 10:55:35 -0700 (PDT)
-Received: from localhost.localdomain (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
-        by smtp.gmail.com with ESMTPSA id y203sm6958814wmc.29.2020.08.11.10.55.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Aug 2020 10:55:34 -0700 (PDT)
-From:   Jorge Ramirez-Ortiz <jorge@foundries.io>
-To:     jorge@foundries.io, jens.wiklander@linaro.org
-Cc:     sumit.garg@linaro.org, ricardo@foundries.io, mike@foundries.io,
-        tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: [PATCHv7] drivers: optee: allow op-tee to access devices on the i2c bus
-Date:   Tue, 11 Aug 2020 19:55:31 +0200
-Message-Id: <20200811175531.10771-1-jorge@foundries.io>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PwLucdZe8Zl1sdg+rBs5gzd1/sOQ/Nnh9Dc69W2ZlPY=;
+        b=DJmQAMAQf4BIghPFztv9AOPvbZeUDTPuWdxDGOalTetzcPKw9Tdsd5sRjXHhbShFNM
+         LRECmYFTXGrhg3BOaOWlspOAO9NGWdVMntzEf/8Z/Kng34qEoltWDw9b4Phta9c+uC4Q
+         iGP4fZVEvZb+VAnQnk2ZTa2OsTNS7C0HNUBHjHzV1MDmMb5JEAup3Mqz+XEYoMyHlQB7
+         umX9Bv36bh9tpe5Uk1rWtXdpYCdeJf1vD6+lTHIdA5PdHgKQpWK584SI/YFXnGhN9qi4
+         jKjl87/VnzKT+c317iqbjJ7UsVzg1OHHn1HIpC+p9FfIQvj9V+3wzvy4CZ1W2M6I2ze0
+         Uc0w==
+X-Gm-Message-State: AOAM533gX3XuBXGNm63ig28Q5YEnZllhXafczF5W9ZwgbbngDOEj+X6y
+        jFxIfYH6/LWLQ0Pf8/MPUO8ZyaMYIp68OtKJGljlZw==
+X-Google-Smtp-Source: ABdhPJxrSYKU0WVBLGO8gzWsZ4Pu3tdO1qmy4CCNWHjfKq3SyuYhth5Im8WYLZE7blUD1zlIfFUbNzPcZ9l5upHTYZ8=
+X-Received: by 2002:a17:90a:a10c:: with SMTP id s12mr2287166pjp.32.1597168731165;
+ Tue, 11 Aug 2020 10:58:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAKwvOd=ypa8xE-kaDa7XtzPsBH8=Xu_pZj2rnWaeawNs=3dDkw@mail.gmail.com>
+ <20200811173655.1162093-1-nivedita@alum.mit.edu>
+In-Reply-To: <20200811173655.1162093-1-nivedita@alum.mit.edu>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 11 Aug 2020 10:58:40 -0700
+Message-ID: <CAKwvOdnjLfQ0fWsrFYDJ2O+qFAfEFnTEEnW-aHrPha8G3_WTrg@mail.gmail.com>
+Subject: Re: [PATCH] x86/boot/compressed: Disable relocation relaxation for
+ non-pie link
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Fangrui Song <maskray@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        e5ten.arch@gmail.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some secure elements like NXP's SE050 sit on I2C buses. For OP-TEE to
-control this type of cryptographic devices it needs coordinated access
-to the bus, so collisions and RUNTIME_PM dont get in the way.
+On Tue, Aug 11, 2020 at 10:36 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> The x86-64 psABI [0] specifies special relocation types
+> (R_X86_64_[REX_]GOTPCRELX) for indirection through the Global Offset
+> Table, semantically equivalent to R_X86_64_GOTPCREL, which the linker
+> can take advantage of for optimization (relaxation) at link time. This
+> is supported by LLD and binutils versions 2.26 onwards.
+>
+> The compressed kernel is position-independent code, however, when using
+> LLD or binutils versions before 2.27, it must be linked without the -pie
+> option. In this case, the linker may optimize certain instructions into
+> a non-position-independent form, by converting foo@GOTPCREL(%rip) to $foo.
+>
+> This potential issue has been present with LLD and binutils-2.26 for a
+> long time, but it has never manifested itself before now:
+> - LLD and binutils-2.26 only relax
+>         movq    foo@GOTPCREL(%rip), %reg
+>   to
+>         leaq    foo(%rip), %reg
+>   which is still position-independent, rather than
+>         mov     $foo, %reg
+>   which is permitted by the psABI when -pie is not enabled.
+> - gcc happens to only generate GOTPCREL relocations on mov instructions.
+> - clang does generate GOTPCREL relocations on non-mov instructions, but
+>   when building the compressed kernel, it uses its integrated assembler
+>   (due to the redefinition of KBUILD_CFLAGS dropping -no-integrated-as),
+>   which has so far defaulted to not generating the GOTPCRELX
+>   relocations.
+>
+> Nick Desaulniers reports [1,2]:
+>   A recent change [3] to a default value of configuration variable
+>   (ENABLE_X86_RELAX_RELOCATIONS OFF -> ON) in LLVM now causes Clang's
+>   integrated assembler to emit R_X86_64_GOTPCRELX/R_X86_64_REX_GOTPCRELX
+>   relocations. LLD will relax instructions with these relocations based
+>   on whether the image is being linked as position independent or not.
+>   When not, then LLD will relax these instructions to use absolute
+>   addressing mode (R_RELAX_GOT_PC_NOPIC). This causes kernels built with
+>   Clang and linked with LLD to fail to boot.
+>
+> Patch series [4] is a solution to allow the compressed kernel to be
+> linked with -pie unconditionally, but even if merged is unlikely to be
+> backported. As a simple solution that can be applied to stable as well,
+> prevent the assembler from generating the relaxed relocation types using
+> the -mrelax-relocations=no option.
+>
+> [0] https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/linker-optimization.tex#L65
+> [1] https://lore.kernel.org/lkml/20200807194100.3570838-1-ndesaulniers@google.com/
+> [2] https://github.com/ClangBuiltLinux/linux/issues/1121
+> [3] https://reviews.llvm.org/rGc41a18cf61790fc898dcda1055c3efbf442c14c0
+> [4] https://lore.kernel.org/lkml/20200731202738.2577854-1-nivedita@alum.mit.edu/
+>
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: stable@vger.kernel.org # 4.19.x
 
-This trampoline driver allow OP-TEE to access them.
+Thanks Arvind, good write up.  Just curious about this stable tag, how
+come you picked 4.19?  I can see boot failures in our CI for x86+LLD
+back to 4.9.  Can we amend that tag to use `# 4.9`? I'd be happy to
+help submit backports should they fail to apply cleanly.
+https://travis-ci.com/github/ClangBuiltLinux/continuous-integration/builds/179237488
 
-Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
----
- v7: add support for ten bit i2c slave addressing
- v6: compile out if CONFIG_I2C not enabled
- v5: alphabetic order of includes
- v4: remove unnecessary extra line in optee_msg.h
- v3: use from/to msg param to support all types of memory
-     modify OPTEE_MSG_RPC_CMD_I2C_TRANSFER message id
-     
- drivers/tee/optee/optee_msg.h | 21 ++++++++
- drivers/tee/optee/rpc.c       | 95 +++++++++++++++++++++++++++++++++++
- 2 files changed, 116 insertions(+)
+> ---
+>  arch/x86/boot/compressed/Makefile | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+> index 3962f592633d..c5449bea58ec 100644
+> --- a/arch/x86/boot/compressed/Makefile
+> +++ b/arch/x86/boot/compressed/Makefile
+> @@ -62,6 +62,12 @@ KBUILD_LDFLAGS += $(shell $(LD) --help 2>&1 | grep -q "\-z noreloc-overflow" \
+>  endif
+>  LDFLAGS_vmlinux := -T
+>
+> +# Disable relocation relaxation if not linking as PIE
+> +ifeq ($(filter -pie,$(KBUILD_LDFLAGS)),)
+> +KBUILD_CFLAGS += $(call as-option, -Wa$(comma)-mrelax-relocations=no)
+> +KBUILD_AFLAGS += $(call as-option, -Wa$(comma)-mrelax-relocations=no)
+> +endif
+> +
+>  hostprogs      := mkpiggy
+>  HOST_EXTRACFLAGS += -I$(srctree)/tools/include
+>
+> --
+> 2.26.2
+>
 
-diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
-index 795bc19ae17a..7b2d919da2ac 100644
---- a/drivers/tee/optee/optee_msg.h
-+++ b/drivers/tee/optee/optee_msg.h
-@@ -419,4 +419,25 @@ struct optee_msg_arg {
-  */
- #define OPTEE_MSG_RPC_CMD_SHM_FREE	7
- 
-+/*
-+ * Access a device on an i2c bus
-+ *
-+ * [in]  param[0].u.value.a		mode: RD(0), WR(1)
-+ * [in]  param[0].u.value.b		i2c adapter
-+ * [in]  param[0].u.value.c		i2c chip
-+ *
-+ * [in]  param[1].u.value.a		i2c control flags
-+ *
-+ * [in/out] memref[2]			buffer to exchange the transfer data
-+ *					with the secure world
-+ *
-+ * [out]  param[3].u.value.a		bytes transferred by the driver
-+ */
-+#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER 21
-+/* I2C master transfer modes */
-+#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD 0
-+#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR 1
-+/* I2C master control flags */
-+#define OPTEE_MSG_RPC_CMD_I2C_FLAGS_TEN_BIT  BIT(0)
-+
- #endif /* _OPTEE_MSG_H */
-diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
-index b4ade54d1f28..b6178761d79f 100644
---- a/drivers/tee/optee/rpc.c
-+++ b/drivers/tee/optee/rpc.c
-@@ -7,6 +7,7 @@
- 
- #include <linux/delay.h>
- #include <linux/device.h>
-+#include <linux/i2c.h>
- #include <linux/slab.h>
- #include <linux/tee_drv.h>
- #include "optee_private.h"
-@@ -49,6 +50,97 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
- 	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
- }
- 
-+#if IS_ENABLED(CONFIG_I2C)
-+static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
-+					     struct optee_msg_arg *arg)
-+{
-+	struct i2c_client client = { 0 };
-+	struct tee_param *params;
-+	int i, ret = -EOPNOTSUPP;
-+	uint32_t attr[] = {
-+		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
-+		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
-+		TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT,
-+		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT,
-+	};
-+
-+	if (arg->num_params != ARRAY_SIZE(attr)) {
-+		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
-+		return;
-+	}
-+
-+	params = kmalloc_array(arg->num_params, sizeof(struct tee_param),
-+			       GFP_KERNEL);
-+	if (!params) {
-+		arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
-+		return;
-+	}
-+
-+	if (optee_from_msg_param(params, arg->num_params, arg->params))
-+		goto bad;
-+
-+	for (i = 0; i < arg->num_params; i++) {
-+		if ((params[i].attr & TEE_IOCTL_PARAM_ATTR_TYPE_MASK)
-+		    != attr[i])
-+			goto bad;
-+	}
-+
-+	client.adapter = i2c_get_adapter(params[0].u.value.b);
-+	if (!client.adapter)
-+		goto bad;
-+
-+	if (params[1].u.value.a & OPTEE_MSG_RPC_CMD_I2C_FLAGS_TEN_BIT) {
-+		if (!i2c_check_functionality(client.adapter,
-+					     I2C_FUNC_10BIT_ADDR)) {
-+			i2c_put_adapter(client.adapter);
-+			goto bad;
-+		}
-+
-+		client.flags = I2C_CLIENT_TEN;
-+	}
-+
-+	client.addr = params[0].u.value.c;
-+	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
-+
-+	switch (params[0].u.value.a) {
-+	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
-+		ret = i2c_master_recv(&client, params[2].u.memref.shm->kaddr,
-+				      params[2].u.memref.size);
-+		break;
-+	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
-+		ret = i2c_master_send(&client, params[2].u.memref.shm->kaddr,
-+				      params[2].u.memref.size);
-+		break;
-+	default:
-+		i2c_put_adapter(client.adapter);
-+		goto bad;
-+	}
-+
-+	if (ret < 0) {
-+		arg->ret = TEEC_ERROR_COMMUNICATION;
-+	} else {
-+		params[3].u.value.a = ret;
-+		arg->ret = TEEC_SUCCESS;
-+
-+		if (optee_to_msg_param(arg->params, arg->num_params, params))
-+			arg->ret = TEEC_ERROR_BAD_PARAMETERS;
-+	}
-+
-+	i2c_put_adapter(client.adapter);
-+	kfree(params);
-+	return;
-+bad:
-+	kfree(params);
-+	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
-+}
-+#else
-+static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
-+					     struct optee_msg_arg *arg)
-+{
-+	arg->ret = TEEC_ERROR_COMMUNICATION;
-+}
-+#endif
-+
- static struct wq_entry *wq_entry_get(struct optee_wait_queue *wq, u32 key)
- {
- 	struct wq_entry *w;
-@@ -382,6 +474,9 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
- 	case OPTEE_MSG_RPC_CMD_SHM_FREE:
- 		handle_rpc_func_cmd_shm_free(ctx, arg);
- 		break;
-+	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER:
-+		handle_rpc_func_cmd_i2c_transfer(ctx, arg);
-+		break;
- 	default:
- 		handle_rpc_supp_cmd(ctx, arg);
- 	}
+
 -- 
-2.17.1
-
+Thanks,
+~Nick Desaulniers
