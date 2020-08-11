@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585D1241D67
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A34B241D74
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729140AbgHKPmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 11:42:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729039AbgHKPmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 11:42:09 -0400
-Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5437822DFB;
-        Tue, 11 Aug 2020 15:42:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597160524;
-        bh=FVeT+SHFe5lS+RwUe2cLk9QDPpG0XXVkDc+Zs7WLus8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OPG1a0dnL/SyBRXcedf0zRFSfqkM3uCooC2hXxENu8kowkT/GxqE07F7uqrW/ddst
-         EV2X3S4CmGK6/2AhAo8PXCdyBdl89wXSBHe0kZAYdeHrAFSO31wVf+NxpxJDwFzJco
-         GLIdJjJFamV+v0vAgw8EJak4D9HzSZb5U4BRNJzM=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1k5WPa-004bns-FO; Tue, 11 Aug 2020 17:42:02 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 33/33] MAINTAINERS: add an entry for HiSilicon 6421v600 drivers
-Date:   Tue, 11 Aug 2020 17:41:59 +0200
-Message-Id: <91a9fd5ae305750b3473d5826f71f8ab8673c44e.1597160086.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1597160086.git.mchehab+huawei@kernel.org>
-References: <cover.1597160086.git.mchehab+huawei@kernel.org>
+        id S1729225AbgHKPnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 11:43:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59704 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728986AbgHKPnS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 11:43:18 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597160596;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Y8wKgLFG/BB38s4C+mIP9XqAuHjOkKcj6UCnkVK68w=;
+        b=xC/kPOyFICzX+/DqLxf4qDnyIsUn+RJHbjTmGdh/IuE9OjfBlhAtRmfzWbaaaDKglABKOI
+        AaVz3AvajZJntEW5ZWAuXZDAjD+5FcyJMMZ6PtpbEft3HBxWSzuAZkBQFRjXkQN83hsBtt
+        7Q1baAzcdYNTNy4RQfcqMVrFkG3mvDxGTFDVndVN7be3k5iro0yMG7ITtQa+Xf3Ot/CnAE
+        u+UhZJOBDz0BjuIXLFF0yAbS9ipObwVLyzRs46I7pSqVyZgHFDzGytbEXEI6vrygbLNcTT
+        8PoMSowNYURNmwoBAIK8jXaGypiCTuZIeQ7BQqdbvYoE/dVrySU26GePTD/Bwg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597160596;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Y8wKgLFG/BB38s4C+mIP9XqAuHjOkKcj6UCnkVK68w=;
+        b=N2bSrMLXJ9rTsShDyvIvw4dO2c6WDCQdjtjkKblf8yaYb74SCiqksA5/vA3fBGMpBC8bwh
+        KlDoMDpvC5/Y05DA==
+To:     paulmck@kernel.org
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+In-Reply-To: <20200811153327.GW4295@paulmck-ThinkPad-P72>
+References: <20200809204354.20137-1-urezki@gmail.com> <20200809204354.20137-2-urezki@gmail.com> <20200810123141.GF4773@dhcp22.suse.cz> <20200810160739.GA29884@pc636> <20200810192525.GG4773@dhcp22.suse.cz> <87pn7x6y4a.fsf@nanos.tec.linutronix.de> <20200811153327.GW4295@paulmck-ThinkPad-P72>
+Date:   Tue, 11 Aug 2020 17:43:16 +0200
+Message-ID: <87h7t96ve3.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an entry for the SPMI, MFD and PMIC parts of the
-HiSilicon 6421v600 support.
+"Paul E. McKenney" <paulmck@kernel.org> writes:
+> On Tue, Aug 11, 2020 at 04:44:21PM +0200, Thomas Gleixner wrote:
+>> Now RCU creates a new thing which enforces to make page allocation in
+>> atomic context possible on RT. What for?
+>> 
+>> What's the actual use case in truly atomic context for this new thing on
+>> an RT kernel?
+>
+> It is not just RT kernels.  CONFIG_PROVE_RAW_LOCK_NESTING=y propagates
+> this constraint to all configurations, and a patch in your new favorite
+> subsystem really did trigger this lockdep check in a non-RT kernel.
+>
+>> The actual RCU code disabling interrupts is an implementation detail
+>> which can easily be mitigated with a local lock.
+>
+> In this case, we are in raw-spinlock context on entry to kfree_rcu().
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 956ecd5ba426..6410df78e301 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7736,6 +7736,14 @@ F:	include/linux/hippidevice.h
- F:	include/uapi/linux/if_hippi.h
- F:	net/802/hippi.c
- 
-+HISILICON 6421v600 SPMI PMIC DRIVER
-+M:	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-+L:	linux-kernel@vger.kernel.org
-+S:	Maintained
-+F:	drivers/mfd/hi6421-spmi-pmic.c
-+F:	drivers/regulator/hi6421v600-regulator.c
-+F:	drivers/spmi/spmi.c
-+
- HISILICON DMA DRIVER
- M:	Zhou Wang <wangzhou1@hisilicon.com>
- L:	dmaengine@vger.kernel.org
--- 
-2.26.2
-
+Where?
