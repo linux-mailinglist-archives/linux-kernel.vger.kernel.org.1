@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCD5241E8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60659241E93
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729275AbgHKQp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 12:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
+        id S1729288AbgHKQqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 12:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728844AbgHKQpX (ORCPT
+        with ESMTP id S1728844AbgHKQqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 12:45:23 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C79EC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 09:45:23 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id 2so2142682pjx.5
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 09:45:23 -0700 (PDT)
+        Tue, 11 Aug 2020 12:46:20 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BF0C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 09:46:20 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id c10so1740226pjn.1
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 09:46:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+u6gnCeWgAnf6Un1K5qbQxm4MSNlFFVkrtxRYNTa4wA=;
-        b=mgi4l9MkxY2nMl+KwzHQbt4JpX/02zn8co0NW5FFXilO9SwvsO05LvTi7fG1RjdmOB
-         YCUlUr3YTTQZfLrBa1RZMuzMHrXgdMv6lHcxph51NbD5uGUNX++4s+Z5SKkfSXp90JSe
-         MGVYJ9wvzIsQ1H3TVRQDF4hn7B/gistjc/HA/Q5+dYLYzhU6WUJQlxozUqCKP3FE75JE
-         mU+nmSUHMFovBxkgy75iHqcQu8hcgneaVyM8zqPAseGfjL8k6wOVYodSMD+eanoC9ZDt
-         +gyXbmZurJOeIB4PpWEe+I1LKRglSyzbxr42XG6HLzLKEM7RSi6MfE+jpIQG7ChnwEs1
-         yCTw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SoICVdOMd4Tqpxtq18KsD1itKSO8FUEzkBoLmDLhcow=;
+        b=eL59yrrKsyb0bsSfO3YV1+l0ncnOX5D2/Xs4WFvonsn6PtwdynBeH0itxm3ElutGeX
+         6q6tMvyaS0XtiDqlf1UQZbzfYUPzs+EMK0WoC+iVkOEBe/pSQbogzNeP7ZmPfdPNEu22
+         LU2fNVL/yrUDiiZdpwdvIp0dM76FFcohMMTga2kvbUbFlwcYjCp6jrMEEcw3BREARxUQ
+         DDPPmnYQ5+gNk5ZXw33oKflrz2xRCFnqaUx9P2Lw5zHc/UkAfeCAESRIoKZDUZhb65WX
+         EifOA4elfaADtXvvtigldX2Ps4CGF4lLUh+m8PV+5KK79F5/IZOVOnnWnZaZRudo4RQc
+         6RQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+u6gnCeWgAnf6Un1K5qbQxm4MSNlFFVkrtxRYNTa4wA=;
-        b=uRcSEtqvY4Qz8r3hoQpV8D8XhQtRXeAy61ReqAWeDLaxJkexcZ9l32lWPauzhSEZrQ
-         dnA0yZkkqSGmDKvkqSNJVg0FNND6B7v96UbYdFc5bypaVK1+ig1nCiOZY069Dy4P7GJz
-         84N1KfDVuNnuBfArdhZRm1cElc1FvCfBE0qaAOhaEbQ9xSaiSx1NUD+aDu3z9+dFbNl0
-         e5SYxnu7ZbQpvd9Kr5RlFqwYts7iMAlLe6+ebO/JpVy6/tA7z7gvjnDltPTyc0lzfU8M
-         4DDZUEJ0+rRLAQ82i92aCHvvgxKdmxaCMybvDgis+bhwhFjPnNdgpZXO9XD9R8BFqTh8
-         pHYg==
-X-Gm-Message-State: AOAM530HLz42TveMqIflEHZyp0ecB/0/GLq15NIsEgk2peHLsfIYsFgb
-        br+DPvgYXMw4Z5l2ptENjr0xbw==
-X-Google-Smtp-Source: ABdhPJy00Yztk47tY8iwgI/wcQ3FdlwCOjlsi/uot40hsR/MeI0V+U7fH9t0jsOf+VhOwobefIO4/A==
-X-Received: by 2002:a17:902:8307:: with SMTP id bd7mr1610841plb.159.1597164322967;
-        Tue, 11 Aug 2020 09:45:22 -0700 (PDT)
-Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id nu14sm3335490pjb.19.2020.08.11.09.45.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Aug 2020 09:45:22 -0700 (PDT)
-Subject: Re: [PATCH] task_work: only grab task signal lock when needed
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-References: <0028d3ea-4d05-405f-b457-75c83d381d89@kernel.dk>
- <20200811152310.GF21797@redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <6b43293f-2052-2bd8-80ef-eb936fe19b65@kernel.dk>
-Date:   Tue, 11 Aug 2020 10:45:21 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SoICVdOMd4Tqpxtq18KsD1itKSO8FUEzkBoLmDLhcow=;
+        b=Ow7qJVV+S5AB2/NCCbj1uHBsNCh+NfE/1uMYRtbWxyoDPGJdtE8+CwW53DuxyLR/yM
+         4dspUpPZ9XPxfskAnoDJLPFqIl9TXU9rjbxEb8HsMQrFbd9SvyuvatU/Xps208NCJkrK
+         SzsWMEMdMlX6km6kxfbhTs30d8Mycdg71latVPWBQRyAsdT31+uepHNfYGIpdbSVyzCu
+         oK+hkKiGYk07BfUfkW9VA3EAmEOgEKGduTRXWeZyB7Rj+cDvisLVjdhL3yNCin3MVXVQ
+         /Q1T6xbP0sNqSsaZsw80VDagY9XD0tXfjH5lOGcURnH+uTJoDITd9mCnxJ+isLre2Fbd
+         Nyyg==
+X-Gm-Message-State: AOAM533khM7YPMdcbLxIGSnTZnamAgq+bHcxU/doTb/GxWjU998LnLqG
+        33GZKWm/yO0xNJ+Y9xpOaxAjy46ZTlF17WUMdShqSw8fwhU=
+X-Google-Smtp-Source: ABdhPJyEIOzjg18QmQ+dOADWbUqwbtJr18f5lR5OziHFc0pyu8YJaX9K7YoLYsGzJYyelYQz3gnZJ7hJy2SKUsGpMbg=
+X-Received: by 2002:a17:90a:4f45:: with SMTP id w5mr1974736pjl.11.1597164379902;
+ Tue, 11 Aug 2020 09:46:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200811152310.GF21797@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <a5d4bb540e606d7980d4127a82e6af9b436e0642.1596730667.git.vaibhav.sr@gmail.com>
+ <20200810150356.GL1793@kadam>
+In-Reply-To: <20200810150356.GL1793@kadam>
+From:   Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Date:   Tue, 11 Aug 2020 22:15:42 +0530
+Message-ID: <CAAs3649URK20TyU=EpfoY9ow-fK6jSjP1214KTPnUUU_t2d-7g@mail.gmail.com>
+Subject: Re: [PATCH v1] staging: greybus: audio: fix uninitialized value issue
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Mark Greer <mgreer@animalcreek.com>,
+        devel@driverdev.osuosl.org, greybus-dev@lists.linaro.org,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/20 9:23 AM, Oleg Nesterov wrote:
-> On 08/11, Jens Axboe wrote:
->>
->> --- a/kernel/task_work.c
->> +++ b/kernel/task_work.c
->> @@ -42,7 +42,8 @@ task_work_add(struct task_struct *task, struct callback_head *work, int notify)
->>  		set_notify_resume(task);
->>  		break;
->>  	case TWA_SIGNAL:
->> -		if (lock_task_sighand(task, &flags)) {
->> +		if (!(READ_ONCE(task->jobctl) & JOBCTL_TASK_WORK) &&
->> +		    lock_task_sighand(task, &flags)) {
-> 
-> Aaaaah, sorry Jens, now I think this is racy. So I am glad I didn't add
-> this optimization into the initial version ;)
-> 
-> It is possible that JOBCTL_TASK_WORK is set but ->task_works == NULL. Say,
-> task_work_add(TWA_SIGNAL) + task_work_cancel(), or the target task can call
-> task_work_run() before it enters get_signal().
-> 
-> And in this case another task_work_add(tsk, TWA_SIGNAL) can actually race
-> with get_signal() which does
-> 
-> 	current->jobctl &= ~JOBCTL_TASK_WORK;
-> 	if (unlikely(current->task_works)) {
-> 		spin_unlock_irq(&sighand->siglock);
-> 		task_work_run();
-> 
-> nothing guarantees that get_signal() sees ->task_works != NULL. Probably
-> this is what Jann meant.
-> 
-> We can probably add a barrier into get_signal() but I didn't sleep today,
-> I'll try to think tomorrow.
+On Mon, Aug 10, 2020 at 8:34 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> On Thu, Aug 06, 2020 at 09:51:57PM +0530, Vaibhav Agarwal wrote:
+> > diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
+> > index 2f9fdbdcd547..4b914d0edef2 100644
+> > --- a/drivers/staging/greybus/audio_topology.c
+> > +++ b/drivers/staging/greybus/audio_topology.c
+> > @@ -456,6 +456,13 @@ static int gbcodec_mixer_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+> >       val = ucontrol->value.integer.value[0] & mask;
+> >       connect = !!val;
+> >
+> > +     ret = gb_pm_runtime_get_sync(bundle);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     ret = gb_audio_gb_get_control(module->mgmt_connection, data->ctl_id,
+> > +                                   GB_AUDIO_INVALID_INDEX, &gbvalue);
+>
+>
+> We need to check "ret" after this.
 
-Appreciate you looking into this! Would be pretty critical for me to get
-this working.
+Oops, my bad. Thanks Dan for reporting this. I'll share an updated patch soon.
 
--- 
-Jens Axboe
-
+--
+regards,
+vaibhav
+>
+> > +
+> >       /* update ucontrol */
+> >       if (gbvalue.value.integer_value[0] != val) {
+> >               for (wi = 0; wi < wlist->num_widgets; wi++) {
+> > @@ -466,16 +473,10 @@ static int gbcodec_mixer_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+>
+> regards,
+> dan carpenter
+>
