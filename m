@@ -2,113 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D195B241CE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBDF241CEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728898AbgHKPFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 11:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728873AbgHKPFn (ORCPT
+        id S1728925AbgHKPGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 11:06:44 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:46969 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728850AbgHKPGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 11:05:43 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D297C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 08:05:43 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id v9so13910985ljk.6
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 08:05:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TaPumgxPjnd+MZwdU/KPpO4ZkCcirToPKuAM/OHOrZ8=;
-        b=cPvbvK0qtt0DSX98ByGWOqz50YA0tE0K8uuQ4uIsZWUOR9+u7UiyblnJaV4/MELZ+g
-         AT6cJeqrtn5NAjcKmPQHIeMYzwSvlfiiQ7WGKy/sPmFsMDF0sruzmYzPL37JWz8JlzX8
-         l9KTUnxhv8BD7fRwIsdDwW7mzuiDF7KkaPvz8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TaPumgxPjnd+MZwdU/KPpO4ZkCcirToPKuAM/OHOrZ8=;
-        b=eh36jfxM+OgpjEW1StcBjlXaHjg3YwPKV54dxyembwLhLesn4oJJTre1uL5bve604V
-         Mv86+pm72ttnGNPgB5eNE3eYWiiLbKKr9u+J3tV/FOwgEqbFPZZN+e63Tc2eJvleAS4P
-         t/HCwmNq4oVEw529bqfnC8JmRPBKxnDhxfXQZUkY8rqx+achSKJtcxdqz2tdh8wbefPA
-         kOr5tcU+bQ9Ox7Bo+Dj6zQbEovTRsc9G+PA6iSG5wqaYbeF2QNKvbl0YKlkk7b23WNIc
-         kN7LbjlIObpr7PwkrL0RYyMkVYN3qyyXl/MuOs5AFZWt/Qds46xmrUcS6jPFputKoUxe
-         L8JQ==
-X-Gm-Message-State: AOAM530U4yOa9bxNxjGxWcbESTJdxsVB9s0XDfBp6C6WaCKTv3L4eM3R
-        Gs2oIPmJ6zrxWU8fBGi+rfm+w8JLtwE=
-X-Google-Smtp-Source: ABdhPJzYwJN/VhToDrEmKw4E16meUj7qJXmruhtDgvGHD3gpIKsMujdsSAZdvQLgzVmJd38L1BLEBA==
-X-Received: by 2002:a2e:9b4c:: with SMTP id o12mr3253082ljj.49.1597158340987;
-        Tue, 11 Aug 2020 08:05:40 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id d22sm11651352lfs.26.2020.08.11.08.05.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Aug 2020 08:05:39 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id 140so6849990lfi.5
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 08:05:39 -0700 (PDT)
-X-Received: by 2002:a19:c206:: with SMTP id l6mr3385024lfc.152.1597158338674;
- Tue, 11 Aug 2020 08:05:38 -0700 (PDT)
+        Tue, 11 Aug 2020 11:06:42 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200811150639euoutp013f3d7b47a499d018ecfe804a087b4638~qPxowy-Mn0790007900euoutp01X
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 15:06:39 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200811150639euoutp013f3d7b47a499d018ecfe804a087b4638~qPxowy-Mn0790007900euoutp01X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1597158399;
+        bh=B8NeOVKyY8VT4+bA/2LmW2ziYNbU/Azec2agY1TnN0I=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=WlD5QsrKhkIJRu2WQm01WFnnF72jxCM6fvRXzVyegPvphXyRYce6zPjX3t/+APk67
+         1t2/g79c8AFxVazAonkgQTpHR2tOsetONGkUDHrUmVj8eAxsFr3bajoQ6QojdZ5l3V
+         QsxXni1q/UtmXhH7BJs9fR+ROogx6eT1b7b9C+0M=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200811150639eucas1p1ee6e0cb6e4ec8eafb1830b718fbf2241~qPxoYzStF1447314473eucas1p12;
+        Tue, 11 Aug 2020 15:06:39 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id A3.97.06318.FF3B23F5; Tue, 11
+        Aug 2020 16:06:39 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200811150638eucas1p1fdaaa2c0b31b5c73d8f8d639018056f9~qPxoF-63u1457514575eucas1p12;
+        Tue, 11 Aug 2020 15:06:38 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200811150638eusmtrp28bd56dc5d51418d3ccade4d0c02cfb56~qPxoFZ6NO2743627436eusmtrp2Q;
+        Tue, 11 Aug 2020 15:06:38 +0000 (GMT)
+X-AuditID: cbfec7f5-38bff700000018ae-3a-5f32b3ffc4ad
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id C3.50.06314.EF3B23F5; Tue, 11
+        Aug 2020 16:06:38 +0100 (BST)
+Received: from [106.210.85.205] (unknown [106.210.85.205]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200811150637eusmtip23c73cfaf01d27591a88cca2e9790129f~qPxm0etqe0481804818eusmtip20;
+        Tue, 11 Aug 2020 15:06:37 +0000 (GMT)
+Subject: Re: [PATCH] driver core: Let dev_err_probe() use the symbolic error
+ code
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org
+From:   Andrzej Hajda <a.hajda@samsung.com>
+Message-ID: <432e6dce-f5ca-3fdd-7e24-5e343c430eab@samsung.com>
+Date:   Tue, 11 Aug 2020 17:06:35 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200810145701.129228-1-peterx@redhat.com> <CAHk-=wiSF+aKhDOewxQGCGUPyGnA=K7OtAczL5M7aisA5mgFzg@mail.gmail.com>
- <20200810191520.GA132381@xz-x1> <CAHk-=whUVHA-=4mwGaUA42teESc2mX1nwZjbbOMQsvPaoYxh3w@mail.gmail.com>
- <20200810215734.GB132381@xz-x1> <CAHk-=whng9zK-GMM+UHsTptF=mgH164Zt_Gok3ohbcWaYee71Q@mail.gmail.com>
- <CAG48ez1R_F-Oxz++sQ0dGTqZKHCyKazVEKZTTAutQbSuohXXnw@mail.gmail.com>
-In-Reply-To: <CAG48ez1R_F-Oxz++sQ0dGTqZKHCyKazVEKZTTAutQbSuohXXnw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 11 Aug 2020 08:05:22 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgyrfrpRvM8CYiiZR8s7MKC_exFDw=mPGnEKzqXBcYJxA@mail.gmail.com>
-Message-ID: <CAHk-=wgyrfrpRvM8CYiiZR8s7MKC_exFDw=mPGnEKzqXBcYJxA@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/gup: Allow real explicit breaking of COW
-To:     Jann Horn <jannh@google.com>
-Cc:     Peter Xu <peterx@redhat.com>, Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kirill Shutemov <kirill@shutemov.name>, Jan Kara <jack@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200811072036.4596-1-u.kleine-koenig@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCKsWRmVeSWpSXmKPExsWy7djPc7r/NxvFG8xdxG7xcsJhRoupD5+w
+        WTQvXs9msWrqThaLy7vmsFnM/TKV2eL2xMmMDuweO2fdZffYtKqTzWP/3DXsHv1/DTw+b5IL
+        YI3isklJzcksSy3St0vgynj+5QFjwXWOigun7rM3ML5g62Lk4JAQMJE488+ki5GTQ0hgBaPE
+        qcW1XYxcQPYXRonZjROYIJzPjBKdRyYzglSBNLz9t40RIrGcUeLJ135WCOc9o8SuthZWkLHC
+        AsESb7eHgzSICHxllPjYagtiMwuYS7Stugk2iE1AU+Lv5ptsIDavgJ3EylOXGUFaWQRUJe41
+        yoGERQXiJLYev8oEUSIocXLmExaQEk4BZ4mnPzkgJspLNG+dzQxhi0s0fVnJCnHmJnaJb6cM
+        IGwXiYcnWpggbGGJV8e3sEPYMhL/d86HitdL3F/RwgzyiYRAB6PE1g07mSES1hJ3zv0CBxYz
+        0Mnrd+lDhB0lPnzpYoSEIZ/EjbeCECfwSUzaNp0ZIswr0dEmBFGtKHH/7FaogeISSy98ZZvA
+        qDQLyV+zkDwzC8kzsxD2LmBkWcUonlpanJueWmycl1quV5yYW1yal66XnJ+7iRGYdk7/O/51
+        B+O+P0mHGAU4GJV4eBdMNIoXYk0sK67MPcQowcGsJMLrdPZ0nBBvSmJlVWpRfnxRaU5q8SFG
+        aQ4WJXFe40UvY4UE0hNLUrNTUwtSi2CyTBycUg2MBc7crlPyA1+cYddsS1qy/NSdpZH5ScqM
+        f62FbsnfiNcPEfE//7m5eE/8OtugBW0MOl1Lle/Vq7KtzugpK748+9SGSJPkzKZbTAWfS03L
+        dx9ty1Gd2SYouUzL/BjDK4X2V47nf1slf9O/2nrLft327CK3eNezM5e6xr9IqDQ3k8zKjtv/
+        p1yJpTgj0VCLuag4EQB57sTbNwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNIsWRmVeSWpSXmKPExsVy+t/xe7r/NhvFGxz9Z2jxcsJhRoupD5+w
+        WTQvXs9msWrqThaLy7vmsFnM/TKV2eL2xMmMDuweO2fdZffYtKqTzWP/3DXsHv1/DTw+b5IL
+        YI3SsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy3j+
+        5QFjwXWOigun7rM3ML5g62Lk5JAQMJF4+28bYxcjF4eQwFJGiffzrrFDJMQlds9/ywxhC0v8
+        udbFBlH0llGicc42oCIODmGBYIm328NB4iICXxkljl6cxwjSwCxgLtG26ibU1GmMEls7nzCB
+        JNgENCX+br4JtppXwE5i5anLjCCDWARUJe41yoGERQXiJB73/meGKBGUODnzCQtICaeAs8TT
+        nxwQ480k5m1+yAxhy0s0b50NZYtLNH1ZyTqBUWgWku5ZSFpmIWmZhaRlASPLKkaR1NLi3PTc
+        YkO94sTc4tK8dL3k/NxNjMCI23bs5+YdjJc2Bh9iFOBgVOLhXTDRKF6INbGsuDL3EKMEB7OS
+        CK/T2dNxQrwpiZVVqUX58UWlOanFhxhNgV6byCwlmpwPTAZ5JfGGpobmFpaG5sbmxmYWSuK8
+        HQIHY4QE0hNLUrNTUwtSi2D6mDg4pRoYbTm5Zz3Z6FpR7j6HqdqhT9moSL7zxsfKko3bjr6b
+        27nqxRVVNffovQubN5z682/lrBN/zq2/I39CpXsKM99Vu6Vs3CWrTzNdjFTI77NsKL/1eJK8
+        5atNl9Ie87N59DN73151VVRCIVvNhaH01WUhjWQWEe553b5FRpedwmXd2/Z0r2ostXVSYinO
+        SDTUYi4qTgQAk4mZBs4CAAA=
+X-CMS-MailID: 20200811150638eucas1p1fdaaa2c0b31b5c73d8f8d639018056f9
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200811072058eucas1p18f846c1fb01f2dc91c2bd74091ce05cd
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200811072058eucas1p18f846c1fb01f2dc91c2bd74091ce05cd
+References: <CGME20200811072058eucas1p18f846c1fb01f2dc91c2bd74091ce05cd@eucas1p1.samsung.com>
+        <20200811072036.4596-1-u.kleine-koenig@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 4:39 PM Jann Horn <jannh@google.com> wrote:
+Hi Uwe,
+
+On 11.08.2020 09:20, Uwe Kleine-König wrote:
+> This makes the error message:
 >
-> The way I understand Peter, he doesn't want to avoid doing COW; he
-> wants to decouple userfaultfd-WP's fault handling from COW, so that
-> userfaultfd-wp notifies only when a previously-write-protected page is
-> actually written to. In other words, he wants the COW to basically
-> happen as it happens now, but it should only create a readonly PTE;
-> and if someone later triggers a real write fault, the fault handling
-> path would run again, and this time userfaultfd-wp would be notified
-> before that readonly PTE is turned into a writable one.
+> 	error -EIO: ...
+>
+> instead of
+>
+> 	error -5: ...
+>
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
+>   drivers/base/core.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index ac1046a382bc..33734d8831c7 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -4237,10 +4237,10 @@ int dev_err_probe(const struct device *dev, int err, const char *fmt, ...)
+>   	vaf.va = &args;
+>   
+>   	if (err != -EPROBE_DEFER) {
+> -		dev_err(dev, "error %d: %pV", err, &vaf);
+> +		dev_err(dev, "error %pE: %pV", ERR_PTR(err), &vaf);
+>   	} else {
+>   		device_set_deferred_probe_reason(dev, &vaf);
+> -		dev_dbg(dev, "error %d: %pV", err, &vaf);
+> +		dev_dbg(dev, "error %pE: %pV", ERR_PTR(err), &vaf);
 
-Ahh.
 
-A light goes on.
+Apparently I have misread docs about %pE flag. Thanks for spotting this.
 
-Thank you.
+Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
 
-And apologies to Peter - I misread that patch entirely.
+Regards
+Andrzej
 
-That said, now that I (finally) understand what Peter wants to do, I
-don't think the patch does what you say.
 
-Because the GUP will now indeed avoid userfaultfd-wp unless it's
-_actually_ a write, but then any reads will cause a COW that turns
-things writable. There is no second fault.
-
-So now later writes will never cause any userfaultfd-wp notifications at all.
-
-Which for all I know might be acceptable and ok, but it seems to be
-against userfaultfd rules, and against the whole synchronization idea.
-
-So I think the patch is broken, but I'm less fundamentally concerned about it.
-
-Because at that point, it's "only" userfaultfd that might break.
-
-                  Linus
+>   	}
+>   
+>   	va_end(args);
