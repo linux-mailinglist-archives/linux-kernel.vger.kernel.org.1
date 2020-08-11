@@ -2,87 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA03524206A
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4F524206C
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgHKTjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 15:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726405AbgHKTjN (ORCPT
+        id S1726621AbgHKTjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 15:39:21 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53672 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726274AbgHKTjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 15:39:13 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 000E6C06174A;
-        Tue, 11 Aug 2020 12:39:12 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597174751;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YV8vEVVqhngk6zTeFdnzvuc65En/mdSLGrqYDqzVMCg=;
-        b=oHAMia7usYnGV2/RbJIvgRIFvUXvTG1MqS0jAZdgAYOx9M5ro+TzckijDUADM/SInRXrBu
-        1yimeOxa2NVEiVIHyprnRi6fmMg70374QzA7yoCp1Z1SoI63nUOztGCJ96Igb+JvIzLbhY
-        hiI7wFKn0tQHZYgCctYnvTUDNklRkGAcYx40u5JdzPIfoGgBrjzxO13tnzBMhEazDVNSBu
-        rq0y/UtPS2S5Cx46Ys3AJTHEx6OBXd9Bg+7Fx1Rn2EmpoXclNR04sva/VVv/sltViSdJpS
-        tb8OOxICpLyHsfimC7Stucm4e25ujHgSWW043c+a9AhmPQ9cO1De+PFSHy0gTQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597174751;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YV8vEVVqhngk6zTeFdnzvuc65En/mdSLGrqYDqzVMCg=;
-        b=5elTrME8Ulv5SlkhoPEmX3f8GciJjnw7jNzCPNSl2o6RnBtKEsfmk+OiBO4Fxx9XgSgzbM
-        sC9NgOyDeRXNApBw==
-To:     paulmck@kernel.org
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-In-Reply-To: <87h7t96ve3.fsf@nanos.tec.linutronix.de>
-References: <20200809204354.20137-1-urezki@gmail.com> <20200809204354.20137-2-urezki@gmail.com> <20200810123141.GF4773@dhcp22.suse.cz> <20200810160739.GA29884@pc636> <20200810192525.GG4773@dhcp22.suse.cz> <87pn7x6y4a.fsf@nanos.tec.linutronix.de> <20200811153327.GW4295@paulmck-ThinkPad-P72> <87h7t96ve3.fsf@nanos.tec.linutronix.de>
-Date:   Tue, 11 Aug 2020 21:39:10 +0200
-Message-ID: <87eeod6kgx.fsf@nanos.tec.linutronix.de>
+        Tue, 11 Aug 2020 15:39:20 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1k5a7A-0001Ts-UI; Tue, 11 Aug 2020 19:39:17 +0000
+Date:   Tue, 11 Aug 2020 21:39:16 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Karel Zak <kzak@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: file metadata via fs API (was: [GIT PULL] Filesystem Information)
+Message-ID: <20200811193916.zcwebstmbyvushau@wittgenstein>
+References: <1842689.1596468469@warthog.procyon.org.uk>
+ <1845353.1596469795@warthog.procyon.org.uk>
+ <CAJfpegunY3fuxh486x9ysKtXbhTE0745ZCVHcaqs9Gww9RV2CQ@mail.gmail.com>
+ <ac1f5e3406abc0af4cd08d818fe920a202a67586.camel@themaw.net>
+ <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com>
+ <CAJfpegtNP8rQSS4Z14Ja4x-TOnejdhDRTsmmDD-Cccy2pkfVVw@mail.gmail.com>
+ <20200811135419.GA1263716@miu.piliscsaba.redhat.com>
+ <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
+ <CAJfpegtWai+5Tzxi1_G+R2wEZz0q66uaOFndNE0YEQSDjq0f_A@mail.gmail.com>
+ <CAHk-=wg_bfVf5eazwH2uXTG-auCYZUpq-xb1kDeNjY7yaXS7bw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg_bfVf5eazwH2uXTG-auCYZUpq-xb1kDeNjY7yaXS7bw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Gleixner <tglx@linutronix.de> writes:
-> "Paul E. McKenney" <paulmck@kernel.org> writes:
->> On Tue, Aug 11, 2020 at 04:44:21PM +0200, Thomas Gleixner wrote:
->>> Now RCU creates a new thing which enforces to make page allocation in
->>> atomic context possible on RT. What for?
->>> 
->>> What's the actual use case in truly atomic context for this new thing on
->>> an RT kernel?
->>
->> It is not just RT kernels.  CONFIG_PROVE_RAW_LOCK_NESTING=y propagates
->> this constraint to all configurations, and a patch in your new favorite
->> subsystem really did trigger this lockdep check in a non-RT kernel.
->>
->>> The actual RCU code disabling interrupts is an implementation detail
->>> which can easily be mitigated with a local lock.
->>
->> In this case, we are in raw-spinlock context on entry to kfree_rcu().
->
-> Where?
+On Tue, Aug 11, 2020 at 09:05:22AM -0700, Linus Torvalds wrote:
+> On Tue, Aug 11, 2020 at 8:30 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
+> >
+> > What's the disadvantage of doing it with a single lookup WITH an enabling flag?
+> >
+> > It's definitely not going to break anything, so no backward
+> > compatibility issues whatsoever.
+> 
+> No backwards compatibility issues for existing programs, no.
+> 
+> But your suggestion is fundamentally ambiguous, and you most
+> definitely *can* hit that if people start using this in new programs.
+> 
+> Where does that "unified" pathname come from? It will be generated
+> from "base filename + metadata name" in user space, and
+> 
+>  (a) the base filename might have double or triple slashes in it for
+> whatever reasons.
+> 
+> This is not some "made-up gotcha" thing - I see double slashes *all*
+> the time when we have things like Makefiles doing
+> 
+>     srctree=../../src/
+> 
+> and then people do "$(srctree)/". If you haven't seen that kind of
+> pattern where the pathname has two (or sometimes more!) slashes in the
+> middle, you've led a very sheltered life.
+> 
+>  (b) even if the new user space were to think about that, and remove
+> those (hah! when have you ever seen user space do that?), as Al
+> mentioned, the user *filesystem* might have pathnames with double
+> slashes as part of symlinks.
+> 
+> So now we'd have to make sure that when we traverse symlinks, that
+> O_ALT gets cleared. Which means that it's not a unified namespace
+> after all, because you can't make symlinks point to metadata.
+> 
+> Or we'd retroactively change the semantics of a symlink, and that _is_
+> a backwards compatibility issue. Not with old software, no, but it
+> changes the meaning of old symlinks!
+> 
+> So no, I don't think a unified namespace ends up working.
+> 
+> And I say that as somebody who actually loves the concept. Ask Al: I
+> have a few times pushed for "let's allow directory behavior on regular
+> files", so that you could do things like a tar-filesystem, and access
+> the contents of a tar-file by just doing
+> 
+>     cat my-file.tar/inside/the/archive.c
+> 
+> or similar.
+> 
+> Al has convinced me it's a horrible idea (and there you have a
+> non-ambiguous marker: the slash at the end of a pathname that
+> otherwise looks and acts as a non-directory)
+> 
 
-And aside of the where, wasn't kfree_rcu() from within raw spinlock held
-regions possible all the time? Either I'm missing something or you are
-fundamentally changing RCU internals. kfree_rcu() saved RT in various
-ways where invoking kfree() was just not an option. Confused...
+Putting my kernel hat down, putting my userspace hat on.
 
-Thanks,
+I'm looking at this from a potential user of this interface.
+I'm not a huge fan of the metadata fd approach I'd much rather have a
+dedicated system call rather than opening a side-channel metadata fd
+that I can read binary data from. Maybe I'm alone in this but I was
+under the impression that other users including Ian, Lennart, and Karel
+have said on-list in some form that they would prefer this approach.
+There are even patches for systemd and libmount, I thought?
 
-        tglx
+But if we want to go down a completely different route then I'd prefer
+if this metadata fd with "special semantics" did not in any way alter
+the meaning of regular paths. This has the potential to cause a lot of
+churn for userspace. I think having to play concatenation games in
+shared libraries for mount information is a bad plan in addition to all
+the issues you raised here.
+
+Christian
