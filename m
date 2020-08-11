@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25ECF241EBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60DA241EBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbgHKQ5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 12:57:36 -0400
-Received: from mail-eopbgr80042.outbound.protection.outlook.com ([40.107.8.42]:58881
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        id S1729271AbgHKQ6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 12:58:14 -0400
+Received: from mail-eopbgr130042.outbound.protection.outlook.com ([40.107.13.42]:24131
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729001AbgHKQ5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 12:57:31 -0400
+        id S1729253AbgHKQ5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 12:57:38 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nwr4KZgUZGWZViAVN7S8TI4PoESYn8lgdPoLqT2768Y0UEOGJYg61IJ7wAu0IoPhcNnSp7rFz58Rz8KBaSKRDT9TOrT4pJEW1akzeYXWEDTt0bxkx4xrgrAxnYZERVx40kpBtb1TUZXsdPL8B3i/EU7zGIkA/xz4szhGYpIqKug2J6Iq2r0USqGayBQl4adrgD9bDGH6YcTNmu8oJ9q5PfEBwsXA05MnSJuH8ScxfGt+8kHsI968jlZI2XmN/hdSDuGx32ye/PeO7jMDOceySzF49yJr89sZGIMD0RY8p7DviPTgCwyfuN6hUMKwlCr/IJV/q9k6nFyq9Jer2JDBwQ==
+ b=JIeNru/YkNXeDKqdRBV/Qf9kUWXib93ZNpE/iZjHpRuwq9cH2MUFAi5pijoVeciYNrjTUTD4SigeM85LkLhC2jPNhO+bfiaUShtghwzZ9fzcJaxgJx8R/awNSw7Hc1kFEJ9MnEABNi7c1Xm87BnNuimc9r+uEmxdK5l8Ugc3ykP2avU21cSQTM1mpTd3IMObvFEROBKn357ceKsL+B5WEZSUKWcqiFCGH+N0/cTQK1NsKR96z6GXDd7hargyl4j8fTDs7my5b4PBoYLsT6W2mYkaHJRyAQTmDb1hBstla49vftvFgYG4JYOSHa2HUS8YgPAhtchg/+nLhz508fwu5Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kF9EcLxD1hz4JHRjWWbm7O1KzgQzRYAqlH+/+v+HmfE=;
- b=mwySn27/Y6DNXlrbup8JNufjnC+utBgX1BlPBRd38FNUUGe1pI7UmXIUn9aPJqpOrm6a1QJ2I6QudMdn7svgkqSmnSbEsTGLGIwvtKyKZjH6hjP+qr9EQPbla3yiNcI177jtQD5ZtojcyT0b43XHoPgAjD0rOoRzpLh0551tx1bCW+8MxCLOpa26qS4Pr8IT9QRbffswj5Q2iq3nqYM3nSiKak/usVwdLf+xXLvaIn6gsm8hiqpADJekbhhZdVJl/SluEunH9tNLX2qTxHy7fEKCh5EVJ8iv+Wx23C1NP5W5XQEXCZ2G5EDgtcx7SQHlkRz75iv48PKYMghltzfDRg==
+ bh=/sLLe4aKx9uY5vx95LS9KGu/ZAh34CYYf6bXCMFpAn0=;
+ b=CSJPcWpepQyL3ggXww02ZRRWhmkGMTWaZau0lReOJYTulMvWFN/UlN4X515F94YpK02sTPUc988L1mc78e4yRXtRSh2KMPW/E0IGYNc4WvEyn+LBuYr6+S7yAJQ//p1N+gERCHzd0sKnCvLROWHTxSO0GzHSFdjAvEKEuF92zWZoMapGcEzMVIIuifCtNy/2zsCur9OB82FvFympc0+a4sqLaHf9psbBLj3/38+ZVgnfHp/rSyjey172NCmghJAs/N+sVMA0Oh9tcrHNi1bUNhP0Hkacg1VCMML0D9dUCqkCmlJqe8ZYSfbjYiubAsboiY3HtVGMrrgQnw4S8HecyQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
  is 193.240.239.45) smtp.rcpttodomain=perex.cz smtp.mailfrom=diasemi.com;
  dmarc=fail (p=none sp=none pct=100) action=none header.from=diasemi.com;
@@ -27,18 +27,18 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=dialogsemiconductor.onmicrosoft.com;
  s=selector1-dialogsemiconductor-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kF9EcLxD1hz4JHRjWWbm7O1KzgQzRYAqlH+/+v+HmfE=;
- b=HDKlERFUh7H7gi2D+55yfoj5ChsrWbVltbWICfSl7BLzvEbwR4va6zOjTi0Z3f6eqaZgLMcUWxVMQ4lh3t/LZrjFhaYwnJs+7RAxWrKI7xv27M97hZWJ9XRrWUg7wA/zb1vF+izbvVux8C6DDLVeWkbh0r4z380acLvTSI5gFSA=
-Received: from AM6PR02CA0023.eurprd02.prod.outlook.com (2603:10a6:20b:6e::36)
- by DB6PR1001MB1015.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:4:65::23) with
+ bh=/sLLe4aKx9uY5vx95LS9KGu/ZAh34CYYf6bXCMFpAn0=;
+ b=TxLWT7jJ0PmRjvx6yWR0ENAYehWjUkbYlBcusXEeDMgljI2ATOh4vIvKfeFd+hugqU4JEgeWzYWhDlty/sqtKBl51smpStfNS0kAIe64jkzgdmmSXWwKPImQrsc3Y1SbZAznLkuXf7zMCOL2zGYDzw13V+aUktYy/kKoUeodTzQ=
+Received: from AM6PR02CA0018.eurprd02.prod.outlook.com (2603:10a6:20b:6e::31)
+ by AM5PR1001MB1121.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:203:12::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.15; Tue, 11 Aug
- 2020 16:57:26 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.16; Tue, 11 Aug
+ 2020 16:57:28 +0000
 Received: from HE1EUR02FT053.eop-EUR02.prod.protection.outlook.com
- (2603:10a6:20b:6e:cafe::83) by AM6PR02CA0023.outlook.office365.com
- (2603:10a6:20b:6e::36) with Microsoft SMTP Server (version=TLS1_2,
+ (2603:10a6:20b:6e:cafe::76) by AM6PR02CA0018.outlook.office365.com
+ (2603:10a6:20b:6e::31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.19 via Frontend
- Transport; Tue, 11 Aug 2020 16:57:26 +0000
+ Transport; Tue, 11 Aug 2020 16:57:28 +0000
 X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
  193.240.239.45) smtp.mailfrom=diasemi.com; perex.cz; dkim=none (message not
  signed) header.d=none;perex.cz; dmarc=fail action=none
@@ -48,19 +48,19 @@ Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
 Received: from mailrelay1.diasemi.com (193.240.239.45) by
  HE1EUR02FT053.mail.protection.outlook.com (10.152.11.109) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3261.16 via Frontend Transport; Tue, 11 Aug 2020 16:57:26 +0000
+ 15.20.3261.16 via Frontend Transport; Tue, 11 Aug 2020 16:57:27 +0000
 Received: from swsrvapps-01.diasemi.com (10.20.28.141) by
  NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
- 14.3.468.0; Tue, 11 Aug 2020 18:57:23 +0200
+ 14.3.468.0; Tue, 11 Aug 2020 18:57:24 +0200
 Received: by swsrvapps-01.diasemi.com (Postfix, from userid 22379)      id
- C53E13FB96; Tue, 11 Aug 2020 17:57:23 +0100 (BST)
-Message-ID: <7a9a2ead6e37820a6025c0a62dc45952d5032ab7.1597164865.git.Adam.Thomson.Opensource@diasemi.com>
+ C87343FBA6; Tue, 11 Aug 2020 17:57:24 +0100 (BST)
+Message-ID: <f7603a4855647429b754ce76f887ec441622015c.1597164865.git.Adam.Thomson.Opensource@diasemi.com>
 In-Reply-To: <cover.1597164865.git.Adam.Thomson.Opensource@diasemi.com>
 References: <cover.1597164865.git.Adam.Thomson.Opensource@diasemi.com>
 From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date:   Tue, 11 Aug 2020 17:57:23 +0100
-Subject: [PATCH 1/3] ASoC: da7219: Move required devm_* allocations to device
- level code
+Date:   Tue, 11 Aug 2020 17:57:24 +0100
+Subject: [PATCH 2/3] ASoC: da7219: Move soft reset handling to codec level
+ probe
 To:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Jaroslav Kysela <perex@perex.cz>
@@ -72,385 +72,505 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8bbd5ac6-b942-4bbe-3e6a-08d83e17a013
-X-MS-TrafficTypeDiagnostic: DB6PR1001MB1015:
-X-Microsoft-Antispam-PRVS: <DB6PR1001MB101512C6F1E1B1D82F8910DEA7450@DB6PR1001MB1015.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:119;
+X-MS-Office365-Filtering-Correlation-Id: fbbe1430-16e2-4d1d-fd68-08d83e17a11d
+X-MS-TrafficTypeDiagnostic: AM5PR1001MB1121:
+X-Microsoft-Antispam-PRVS: <AM5PR1001MB112183D646B6D0D1BD9FD8B1A7450@AM5PR1001MB1121.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:63;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AzO7zrVRFuispZdXo+lttTAjt9TrTAaIU7Fn20eTWIkon6DIBTlo7TiTAlHXxh2zpQ8h0OHkFbaoO/cRYITELxbjw1pxOQ1tT9dZUxVrPG9pRBNbLdmc5N/UYvMbfV3QVysWKnkvA7raCwjVluRX++CwRuvlIghBPDmS3hLAX9tglXH4EY7LciWb6XH85fjzqML8PzYAxTxepJGkRou327Lods2nHSuk0AjSMoJ2gq9DE+C/wYvE6GbRjU6S8p4r+rVI7gKEmlx+M50Kv/exo5rbaxTTQpQo98Ewl6fHQl5/eJaWdYS/cxtGtBpWGhwDtDRS3xBYsIxmYipnuDo0FLRqI5IsAyZ2ngT2EUr+FQFf37jEx36Th1+ogdxIPahXFKfEUFDd8IgdACSQzY3mmKdpJmbrb8PeJtBbRT9Mu9U0pcFla9Htu7nHG347fQwJw6/YyGY0KwB43yMe3Ev0AA==
-X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(4636009)(39850400004)(136003)(376002)(346002)(396003)(46966005)(26005)(82310400002)(83380400001)(70586007)(186003)(54906003)(107886003)(70206006)(356005)(81166007)(33310700002)(82740400003)(2906002)(47076004)(36756003)(6266002)(8936002)(110136005)(36906005)(86362001)(30864003)(42186006)(5660300002)(4326008)(316002)(426003)(478600001)(336012)(2616005)(8676002)(136400200001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: TIX+eO2yfD+B2ersWHFpi7Zm2e63MFrZ0EinIEDkuVTI348T1W0dPyG/s8FmgwGd5ZaS6pbUoWc/bxoMdSlztg3gA08c7VDH7GpQN+1WGI9yB9+yqu5AThkuWY0tHOcg7QADRdTJD04+YHRryJos6BN6WI1y2wEQbY+DqEnRM2ZTte9aAAftRvLRitjwHx0clNxatz4xy9U6NI3XEkftePPa54Pe4iZweuCXOEr+O4/EGxiXKvgtGkyyORkDurnNbNQjBHE55rXwfcrc9QV/c8t+p8vUdBCmCK+n7PxZscp2ydbuEHQXwF9DSDq7pdMuxx+M+AyrrwXq6yo3UsLPPge8WCkihAdEOtvDEcI+cKLiayAKa5fQoYv3tuOXZtXdJ8JdOxzveEdwPnAUOwQgC9wIbG2kBoJhhDnTdm1TJ7Rf2xJjS7ZZwJkMnjRkvTq9+z0Yih0VlMXOiWO+L3sbgA==
+X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(4636009)(376002)(136003)(39850400004)(396003)(346002)(46966005)(4326008)(36756003)(336012)(47076004)(82740400003)(30864003)(426003)(33310700002)(81166007)(2906002)(83380400001)(478600001)(82310400002)(356005)(8676002)(8936002)(6266002)(107886003)(70586007)(70206006)(42186006)(186003)(5660300002)(110136005)(36906005)(86362001)(26005)(2616005)(316002)(54906003)(136400200001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2020 16:57:26.0822
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2020 16:57:27.8443
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8bbd5ac6-b942-4bbe-3e6a-08d83e17a013
+X-MS-Exchange-CrossTenant-Network-Message-Id: fbbe1430-16e2-4d1d-fd68-08d83e17a11d
 X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
 X-MS-Exchange-CrossTenant-AuthSource: HE1EUR02FT053.eop-EUR02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR1001MB1015
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR1001MB1121
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for cleanup of device level and codec level probe
-funcitonality, all necessary devm_* allocations and fw retrieval
-functions are moved to the I2C probe level code.
+As part of the reorganisation of the device level and codec
+level probe functionlity, the soft reset handling should really
+reside at the codec level and after the instantiation of supplies.
+This commit makes the relevant changes to support this change of
+scope including the remove of devm_* functions being called for
+regulator instantiation at the codec level.
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 ---
- sound/soc/codecs/da7219-aad.c | 85 +++++++++++++++++++++++++------------------
- sound/soc/codecs/da7219-aad.h |  3 ++
- sound/soc/codecs/da7219.c     | 30 ++++++++-------
- 3 files changed, 70 insertions(+), 48 deletions(-)
+ sound/soc/codecs/da7219.c | 371 +++++++++++++++++++++++-----------------------
+ 1 file changed, 188 insertions(+), 183 deletions(-)
 
-diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
-index 4f2a96e..3827734 100644
---- a/sound/soc/codecs/da7219-aad.c
-+++ b/sound/soc/codecs/da7219-aad.c
-@@ -460,7 +460,7 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
-  */
- 
- static enum da7219_aad_micbias_pulse_lvl
--	da7219_aad_fw_micbias_pulse_lvl(struct snd_soc_component *component, u32 val)
-+	da7219_aad_fw_micbias_pulse_lvl(struct device *dev, u32 val)
- {
- 	switch (val) {
- 	case 2800:
-@@ -468,13 +468,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
- 	case 2900:
- 		return DA7219_AAD_MICBIAS_PULSE_LVL_2_9V;
- 	default:
--		dev_warn(component->dev, "Invalid micbias pulse level");
-+		dev_warn(dev, "Invalid micbias pulse level");
- 		return DA7219_AAD_MICBIAS_PULSE_LVL_OFF;
- 	}
- }
- 
- static enum da7219_aad_btn_cfg
--	da7219_aad_fw_btn_cfg(struct snd_soc_component *component, u32 val)
-+	da7219_aad_fw_btn_cfg(struct device *dev, u32 val)
- {
- 	switch (val) {
- 	case 2:
-@@ -492,13 +492,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
- 	case 500:
- 		return DA7219_AAD_BTN_CFG_500MS;
- 	default:
--		dev_warn(component->dev, "Invalid button config");
-+		dev_warn(dev, "Invalid button config");
- 		return DA7219_AAD_BTN_CFG_10MS;
- 	}
- }
- 
- static enum da7219_aad_mic_det_thr
--	da7219_aad_fw_mic_det_thr(struct snd_soc_component *component, u32 val)
-+	da7219_aad_fw_mic_det_thr(struct device *dev, u32 val)
- {
- 	switch (val) {
- 	case 200:
-@@ -510,13 +510,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
- 	case 1000:
- 		return DA7219_AAD_MIC_DET_THR_1000_OHMS;
- 	default:
--		dev_warn(component->dev, "Invalid mic detect threshold");
-+		dev_warn(dev, "Invalid mic detect threshold");
- 		return DA7219_AAD_MIC_DET_THR_500_OHMS;
- 	}
- }
- 
- static enum da7219_aad_jack_ins_deb
--	da7219_aad_fw_jack_ins_deb(struct snd_soc_component *component, u32 val)
-+	da7219_aad_fw_jack_ins_deb(struct device *dev, u32 val)
- {
- 	switch (val) {
- 	case 5:
-@@ -536,13 +536,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
- 	case 1000:
- 		return DA7219_AAD_JACK_INS_DEB_1S;
- 	default:
--		dev_warn(component->dev, "Invalid jack insert debounce");
-+		dev_warn(dev, "Invalid jack insert debounce");
- 		return DA7219_AAD_JACK_INS_DEB_20MS;
- 	}
- }
- 
- static enum da7219_aad_jack_det_rate
--	da7219_aad_fw_jack_det_rate(struct snd_soc_component *component, const char *str)
-+	da7219_aad_fw_jack_det_rate(struct device *dev, const char *str)
- {
- 	if (!strcmp(str, "32ms_64ms")) {
- 		return DA7219_AAD_JACK_DET_RATE_32_64MS;
-@@ -553,13 +553,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
- 	} else if (!strcmp(str, "256ms_512ms")) {
- 		return DA7219_AAD_JACK_DET_RATE_256_512MS;
- 	} else {
--		dev_warn(component->dev, "Invalid jack detect rate");
-+		dev_warn(dev, "Invalid jack detect rate");
- 		return DA7219_AAD_JACK_DET_RATE_256_512MS;
- 	}
- }
- 
- static enum da7219_aad_jack_rem_deb
--	da7219_aad_fw_jack_rem_deb(struct snd_soc_component *component, u32 val)
-+	da7219_aad_fw_jack_rem_deb(struct device *dev, u32 val)
- {
- 	switch (val) {
- 	case 1:
-@@ -571,13 +571,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
- 	case 20:
- 		return DA7219_AAD_JACK_REM_DEB_20MS;
- 	default:
--		dev_warn(component->dev, "Invalid jack removal debounce");
-+		dev_warn(dev, "Invalid jack removal debounce");
- 		return DA7219_AAD_JACK_REM_DEB_1MS;
- 	}
- }
- 
- static enum da7219_aad_btn_avg
--	da7219_aad_fw_btn_avg(struct snd_soc_component *component, u32 val)
-+	da7219_aad_fw_btn_avg(struct device *dev, u32 val)
- {
- 	switch (val) {
- 	case 1:
-@@ -589,13 +589,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
- 	case 8:
- 		return DA7219_AAD_BTN_AVG_8;
- 	default:
--		dev_warn(component->dev, "Invalid button average value");
-+		dev_warn(dev, "Invalid button average value");
- 		return DA7219_AAD_BTN_AVG_2;
- 	}
- }
- 
- static enum da7219_aad_adc_1bit_rpt
--	da7219_aad_fw_adc_1bit_rpt(struct snd_soc_component *component, u32 val)
-+	da7219_aad_fw_adc_1bit_rpt(struct device *dev, u32 val)
- {
- 	switch (val) {
- 	case 1:
-@@ -607,14 +607,13 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
- 	case 8:
- 		return DA7219_AAD_ADC_1BIT_RPT_8;
- 	default:
--		dev_warn(component->dev, "Invalid ADC 1-bit repeat value");
-+		dev_warn(dev, "Invalid ADC 1-bit repeat value");
- 		return DA7219_AAD_ADC_1BIT_RPT_1;
- 	}
- }
- 
--static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct snd_soc_component *component)
-+static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct device *dev)
- {
--	struct device *dev = component->dev;
- 	struct i2c_client *i2c = to_i2c_client(dev);
- 	struct fwnode_handle *aad_np;
- 	struct da7219_aad_pdata *aad_pdata;
-@@ -634,7 +633,7 @@ static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct snd_soc_component
- 	if (fwnode_property_read_u32(aad_np, "dlg,micbias-pulse-lvl",
- 				     &fw_val32) >= 0)
- 		aad_pdata->micbias_pulse_lvl =
--			da7219_aad_fw_micbias_pulse_lvl(component, fw_val32);
-+			da7219_aad_fw_micbias_pulse_lvl(dev, fw_val32);
- 	else
- 		aad_pdata->micbias_pulse_lvl = DA7219_AAD_MICBIAS_PULSE_LVL_OFF;
- 
-@@ -643,31 +642,31 @@ static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct snd_soc_component
- 		aad_pdata->micbias_pulse_time = fw_val32;
- 
- 	if (fwnode_property_read_u32(aad_np, "dlg,btn-cfg", &fw_val32) >= 0)
--		aad_pdata->btn_cfg = da7219_aad_fw_btn_cfg(component, fw_val32);
-+		aad_pdata->btn_cfg = da7219_aad_fw_btn_cfg(dev, fw_val32);
- 	else
- 		aad_pdata->btn_cfg = DA7219_AAD_BTN_CFG_10MS;
- 
- 	if (fwnode_property_read_u32(aad_np, "dlg,mic-det-thr", &fw_val32) >= 0)
- 		aad_pdata->mic_det_thr =
--			da7219_aad_fw_mic_det_thr(component, fw_val32);
-+			da7219_aad_fw_mic_det_thr(dev, fw_val32);
- 	else
- 		aad_pdata->mic_det_thr = DA7219_AAD_MIC_DET_THR_500_OHMS;
- 
- 	if (fwnode_property_read_u32(aad_np, "dlg,jack-ins-deb", &fw_val32) >= 0)
- 		aad_pdata->jack_ins_deb =
--			da7219_aad_fw_jack_ins_deb(component, fw_val32);
-+			da7219_aad_fw_jack_ins_deb(dev, fw_val32);
- 	else
- 		aad_pdata->jack_ins_deb = DA7219_AAD_JACK_INS_DEB_20MS;
- 
- 	if (!fwnode_property_read_string(aad_np, "dlg,jack-det-rate", &fw_str))
- 		aad_pdata->jack_det_rate =
--			da7219_aad_fw_jack_det_rate(component, fw_str);
-+			da7219_aad_fw_jack_det_rate(dev, fw_str);
- 	else
- 		aad_pdata->jack_det_rate = DA7219_AAD_JACK_DET_RATE_256_512MS;
- 
- 	if (fwnode_property_read_u32(aad_np, "dlg,jack-rem-deb", &fw_val32) >= 0)
- 		aad_pdata->jack_rem_deb =
--			da7219_aad_fw_jack_rem_deb(component, fw_val32);
-+			da7219_aad_fw_jack_rem_deb(dev, fw_val32);
- 	else
- 		aad_pdata->jack_rem_deb = DA7219_AAD_JACK_REM_DEB_1MS;
- 
-@@ -692,13 +691,13 @@ static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct snd_soc_component
- 		aad_pdata->c_mic_btn_thr = 0x3E;
- 
- 	if (fwnode_property_read_u32(aad_np, "dlg,btn-avg", &fw_val32) >= 0)
--		aad_pdata->btn_avg = da7219_aad_fw_btn_avg(component, fw_val32);
-+		aad_pdata->btn_avg = da7219_aad_fw_btn_avg(dev, fw_val32);
- 	else
- 		aad_pdata->btn_avg = DA7219_AAD_BTN_AVG_2;
- 
- 	if (fwnode_property_read_u32(aad_np, "dlg,adc-1bit-rpt", &fw_val32) >= 0)
- 		aad_pdata->adc_1bit_rpt =
--			da7219_aad_fw_adc_1bit_rpt(component, fw_val32);
-+			da7219_aad_fw_adc_1bit_rpt(dev, fw_val32);
- 	else
- 		aad_pdata->adc_1bit_rpt = DA7219_AAD_ADC_1BIT_RPT_1;
- 
-@@ -887,21 +886,13 @@ void da7219_aad_resume(struct snd_soc_component *component)
- int da7219_aad_init(struct snd_soc_component *component)
- {
- 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
--	struct da7219_aad_priv *da7219_aad;
-+	struct da7219_aad_priv *da7219_aad = da7219->aad;
- 	u8 mask[DA7219_AAD_IRQ_REG_MAX];
- 	int ret;
- 
--	da7219_aad = devm_kzalloc(component->dev, sizeof(*da7219_aad), GFP_KERNEL);
--	if (!da7219_aad)
--		return -ENOMEM;
--
--	da7219->aad = da7219_aad;
- 	da7219_aad->component = component;
- 
- 	/* Handle any DT/ACPI/platform data */
--	if (da7219->pdata && !da7219->pdata->aad_pdata)
--		da7219->pdata->aad_pdata = da7219_aad_fw_to_pdata(component);
--
- 	da7219_aad_handle_pdata(component);
- 
- 	/* Disable button detection */
-@@ -947,6 +938,30 @@ void da7219_aad_exit(struct snd_soc_component *component)
- }
- EXPORT_SYMBOL_GPL(da7219_aad_exit);
- 
-+/*
-+ * AAD related I2C probe handling
-+ */
-+
-+int da7219_aad_probe(struct i2c_client *i2c)
-+{
-+	struct da7219_priv *da7219 = i2c_get_clientdata(i2c);
-+	struct device *dev = &i2c->dev;
-+	struct da7219_aad_priv *da7219_aad;
-+
-+	da7219_aad = devm_kzalloc(dev, sizeof(*da7219_aad), GFP_KERNEL);
-+	if (!da7219_aad)
-+		return -ENOMEM;
-+
-+	da7219->aad = da7219_aad;
-+
-+	/* Retrieve any DT/ACPI/platform data */
-+	if (da7219->pdata && !da7219->pdata->aad_pdata)
-+		da7219->pdata->aad_pdata = da7219_aad_fw_to_pdata(dev);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(da7219_aad_probe);
-+
- MODULE_DESCRIPTION("ASoC DA7219 AAD Driver");
- MODULE_AUTHOR("Adam Thomson <Adam.Thomson.Opensource@diasemi.com>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/da7219-aad.h b/sound/soc/codecs/da7219-aad.h
-index cfa46fb..f48a120 100644
---- a/sound/soc/codecs/da7219-aad.h
-+++ b/sound/soc/codecs/da7219-aad.h
-@@ -212,4 +212,7 @@ struct da7219_aad_priv {
- int da7219_aad_init(struct snd_soc_component *component);
- void da7219_aad_exit(struct snd_soc_component *component);
- 
-+/* I2C Probe */
-+int da7219_aad_probe(struct i2c_client *i2c);
-+
- #endif /* __DA7219_AAD_H */
 diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index f83a6ea..82d35bc 100644
+index 82d35bc..0d1c70f8 100644
 --- a/sound/soc/codecs/da7219.c
 +++ b/sound/soc/codecs/da7219.c
-@@ -1751,9 +1751,8 @@ static int da7219_hw_params(struct snd_pcm_substream *substream,
- 	}
- }
+@@ -1844,19 +1844,19 @@ static int da7219_set_bias_level(struct snd_soc_component *component,
+ 	[DA7219_SUPPLY_VDDIO] = "VDDIO",
+ };
  
--static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_component *component)
-+static struct da7219_pdata *da7219_fw_to_pdata(struct device *dev)
+-static int da7219_handle_supplies(struct snd_soc_component *component)
++static int da7219_handle_supplies(struct snd_soc_component *component,
++				  u8 *io_voltage_lvl)
  {
--	struct device *dev = component->dev;
- 	struct da7219_pdata *pdata;
- 	const char *of_str;
- 	u32 of_val32;
-@@ -2289,10 +2288,6 @@ static int da7219_probe(struct snd_soc_component *component)
- 	}
- 
- 	/* Handle DT/ACPI/Platform data */
--	da7219->pdata = dev_get_platdata(component->dev);
--	if (!da7219->pdata)
--		da7219->pdata = da7219_fw_to_pdata(component);
--
- 	da7219_handle_pdata(component);
- 
- 	/* Check if MCLK provided */
-@@ -2569,11 +2564,12 @@ static bool da7219_volatile_register(struct device *dev, unsigned int reg)
- static int da7219_i2c_probe(struct i2c_client *i2c,
- 			    const struct i2c_device_id *id)
- {
-+	struct device *dev = &i2c->dev;
- 	struct da7219_priv *da7219;
- 	unsigned int system_active, system_status;
+ 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
+ 	struct regulator *vddio;
+-	u8 io_voltage_lvl = DA7219_IO_VOLTAGE_LEVEL_2_5V_3_6V;
  	int i, ret;
  
--	da7219 = devm_kzalloc(&i2c->dev, sizeof(struct da7219_priv),
-+	da7219 = devm_kzalloc(dev, sizeof(struct da7219_priv),
- 			      GFP_KERNEL);
- 	if (!da7219)
- 		return -ENOMEM;
-@@ -2583,7 +2579,7 @@ static int da7219_i2c_probe(struct i2c_client *i2c,
- 	da7219->regmap = devm_regmap_init_i2c(i2c, &da7219_regmap_config);
- 	if (IS_ERR(da7219->regmap)) {
- 		ret = PTR_ERR(da7219->regmap);
--		dev_err(&i2c->dev, "regmap_init() failed: %d\n", ret);
-+		dev_err(dev, "regmap_init() failed: %d\n", ret);
+ 	/* Get required supplies */
+ 	for (i = 0; i < DA7219_NUM_SUPPLIES; ++i)
+ 		da7219->supplies[i].supply = da7219_supply_names[i];
+ 
+-	ret = devm_regulator_bulk_get(component->dev, DA7219_NUM_SUPPLIES,
+-				      da7219->supplies);
++	ret = regulator_bulk_get(component->dev, DA7219_NUM_SUPPLIES,
++				 da7219->supplies);
+ 	if (ret) {
+ 		dev_err(component->dev, "Failed to get supplies");
+ 		return ret;
+@@ -1868,21 +1868,18 @@ static int da7219_handle_supplies(struct snd_soc_component *component)
+ 	if (ret < 1200000)
+ 		dev_warn(component->dev, "Invalid VDDIO voltage\n");
+ 	else if (ret < 2800000)
+-		io_voltage_lvl = DA7219_IO_VOLTAGE_LEVEL_1_2V_2_8V;
++		*io_voltage_lvl = DA7219_IO_VOLTAGE_LEVEL_1_2V_2_8V;
++	else
++		*io_voltage_lvl = DA7219_IO_VOLTAGE_LEVEL_2_5V_3_6V;
+ 
+ 	/* Enable main supplies */
+ 	ret = regulator_bulk_enable(DA7219_NUM_SUPPLIES, da7219->supplies);
+ 	if (ret) {
+ 		dev_err(component->dev, "Failed to enable supplies");
++		regulator_bulk_free(DA7219_NUM_SUPPLIES, da7219->supplies);
  		return ret;
  	}
  
-@@ -2618,12 +2614,20 @@ static int da7219_i2c_probe(struct i2c_client *i2c,
+-	/* Ensure device in active mode */
+-	snd_soc_component_write(component, DA7219_SYSTEM_ACTIVE, DA7219_SYSTEM_ACTIVE_MASK);
+-
+-	/* Update IO voltage level range */
+-	snd_soc_component_write(component, DA7219_IO_CTRL, io_voltage_lvl);
+-
+ 	return 0;
+ }
  
- 	regcache_cache_bypass(da7219->regmap, false);
- 
--	ret = devm_snd_soc_register_component(&i2c->dev,
--				     &soc_component_dev_da7219,
--				     &da7219_dai, 1);
-+	/* Retrieve DT/ACPI/Platform data */
-+	da7219->pdata = dev_get_platdata(dev);
-+	if (!da7219->pdata)
-+		da7219->pdata = da7219_fw_to_pdata(dev);
-+
-+	/* AAD */
-+	ret = da7219_aad_probe(i2c);
-+	if (ret)
-+		return ret;
-+
-+	ret = devm_snd_soc_register_component(dev, &soc_component_dev_da7219,
-+					      &da7219_dai, 1);
- 	if (ret < 0) {
--		dev_err(&i2c->dev, "Failed to register da7219 component: %d\n",
--			ret);
-+		dev_err(dev, "Failed to register da7219 component: %d\n", ret);
+@@ -2248,6 +2245,142 @@ static void da7219_handle_pdata(struct snd_soc_component *component)
  	}
+ }
+ 
++
++/*
++ * Regmap configs
++ */
++
++static struct reg_default da7219_reg_defaults[] = {
++	{ DA7219_MIC_1_SELECT, 0x00 },
++	{ DA7219_CIF_TIMEOUT_CTRL, 0x01 },
++	{ DA7219_SR_24_48, 0x00 },
++	{ DA7219_SR, 0x0A },
++	{ DA7219_CIF_I2C_ADDR_CFG, 0x02 },
++	{ DA7219_PLL_CTRL, 0x10 },
++	{ DA7219_PLL_FRAC_TOP, 0x00 },
++	{ DA7219_PLL_FRAC_BOT, 0x00 },
++	{ DA7219_PLL_INTEGER, 0x20 },
++	{ DA7219_DIG_ROUTING_DAI, 0x10 },
++	{ DA7219_DAI_CLK_MODE, 0x01 },
++	{ DA7219_DAI_CTRL, 0x28 },
++	{ DA7219_DAI_TDM_CTRL, 0x40 },
++	{ DA7219_DIG_ROUTING_DAC, 0x32 },
++	{ DA7219_DAI_OFFSET_LOWER, 0x00 },
++	{ DA7219_DAI_OFFSET_UPPER, 0x00 },
++	{ DA7219_REFERENCES, 0x08 },
++	{ DA7219_MIXIN_L_SELECT, 0x00 },
++	{ DA7219_MIXIN_L_GAIN, 0x03 },
++	{ DA7219_ADC_L_GAIN, 0x6F },
++	{ DA7219_ADC_FILTERS1, 0x80 },
++	{ DA7219_MIC_1_GAIN, 0x01 },
++	{ DA7219_SIDETONE_CTRL, 0x40 },
++	{ DA7219_SIDETONE_GAIN, 0x0E },
++	{ DA7219_DROUTING_ST_OUTFILT_1L, 0x01 },
++	{ DA7219_DROUTING_ST_OUTFILT_1R, 0x02 },
++	{ DA7219_DAC_FILTERS5, 0x00 },
++	{ DA7219_DAC_FILTERS2, 0x88 },
++	{ DA7219_DAC_FILTERS3, 0x88 },
++	{ DA7219_DAC_FILTERS4, 0x08 },
++	{ DA7219_DAC_FILTERS1, 0x80 },
++	{ DA7219_DAC_L_GAIN, 0x6F },
++	{ DA7219_DAC_R_GAIN, 0x6F },
++	{ DA7219_CP_CTRL, 0x20 },
++	{ DA7219_HP_L_GAIN, 0x39 },
++	{ DA7219_HP_R_GAIN, 0x39 },
++	{ DA7219_MIXOUT_L_SELECT, 0x00 },
++	{ DA7219_MIXOUT_R_SELECT, 0x00 },
++	{ DA7219_MICBIAS_CTRL, 0x03 },
++	{ DA7219_MIC_1_CTRL, 0x40 },
++	{ DA7219_MIXIN_L_CTRL, 0x40 },
++	{ DA7219_ADC_L_CTRL, 0x40 },
++	{ DA7219_DAC_L_CTRL, 0x40 },
++	{ DA7219_DAC_R_CTRL, 0x40 },
++	{ DA7219_HP_L_CTRL, 0x40 },
++	{ DA7219_HP_R_CTRL, 0x40 },
++	{ DA7219_MIXOUT_L_CTRL, 0x10 },
++	{ DA7219_MIXOUT_R_CTRL, 0x10 },
++	{ DA7219_CHIP_ID1, 0x23 },
++	{ DA7219_CHIP_ID2, 0x93 },
++	{ DA7219_IO_CTRL, 0x00 },
++	{ DA7219_GAIN_RAMP_CTRL, 0x00 },
++	{ DA7219_PC_COUNT, 0x02 },
++	{ DA7219_CP_VOL_THRESHOLD1, 0x0E },
++	{ DA7219_DIG_CTRL, 0x00 },
++	{ DA7219_ALC_CTRL2, 0x00 },
++	{ DA7219_ALC_CTRL3, 0x00 },
++	{ DA7219_ALC_NOISE, 0x3F },
++	{ DA7219_ALC_TARGET_MIN, 0x3F },
++	{ DA7219_ALC_TARGET_MAX, 0x00 },
++	{ DA7219_ALC_GAIN_LIMITS, 0xFF },
++	{ DA7219_ALC_ANA_GAIN_LIMITS, 0x71 },
++	{ DA7219_ALC_ANTICLIP_CTRL, 0x00 },
++	{ DA7219_ALC_ANTICLIP_LEVEL, 0x00 },
++	{ DA7219_DAC_NG_SETUP_TIME, 0x00 },
++	{ DA7219_DAC_NG_OFF_THRESH, 0x00 },
++	{ DA7219_DAC_NG_ON_THRESH, 0x00 },
++	{ DA7219_DAC_NG_CTRL, 0x00 },
++	{ DA7219_TONE_GEN_CFG1, 0x00 },
++	{ DA7219_TONE_GEN_CFG2, 0x00 },
++	{ DA7219_TONE_GEN_CYCLES, 0x00 },
++	{ DA7219_TONE_GEN_FREQ1_L, 0x55 },
++	{ DA7219_TONE_GEN_FREQ1_U, 0x15 },
++	{ DA7219_TONE_GEN_FREQ2_L, 0x00 },
++	{ DA7219_TONE_GEN_FREQ2_U, 0x40 },
++	{ DA7219_TONE_GEN_ON_PER, 0x02 },
++	{ DA7219_TONE_GEN_OFF_PER, 0x01 },
++	{ DA7219_ACCDET_IRQ_MASK_A, 0x00 },
++	{ DA7219_ACCDET_IRQ_MASK_B, 0x00 },
++	{ DA7219_ACCDET_CONFIG_1, 0xD6 },
++	{ DA7219_ACCDET_CONFIG_2, 0x34 },
++	{ DA7219_ACCDET_CONFIG_3, 0x0A },
++	{ DA7219_ACCDET_CONFIG_4, 0x16 },
++	{ DA7219_ACCDET_CONFIG_5, 0x21 },
++	{ DA7219_ACCDET_CONFIG_6, 0x3E },
++	{ DA7219_ACCDET_CONFIG_7, 0x01 },
++	{ DA7219_SYSTEM_ACTIVE, 0x00 },
++};
++
++static bool da7219_volatile_register(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case DA7219_MIC_1_GAIN_STATUS:
++	case DA7219_MIXIN_L_GAIN_STATUS:
++	case DA7219_ADC_L_GAIN_STATUS:
++	case DA7219_DAC_L_GAIN_STATUS:
++	case DA7219_DAC_R_GAIN_STATUS:
++	case DA7219_HP_L_GAIN_STATUS:
++	case DA7219_HP_R_GAIN_STATUS:
++	case DA7219_CIF_CTRL:
++	case DA7219_PLL_SRM_STS:
++	case DA7219_ALC_CTRL1:
++	case DA7219_SYSTEM_MODES_INPUT:
++	case DA7219_SYSTEM_MODES_OUTPUT:
++	case DA7219_ALC_OFFSET_AUTO_M_L:
++	case DA7219_ALC_OFFSET_AUTO_U_L:
++	case DA7219_TONE_GEN_CFG1:
++	case DA7219_ACCDET_STATUS_A:
++	case DA7219_ACCDET_STATUS_B:
++	case DA7219_ACCDET_IRQ_EVENT_A:
++	case DA7219_ACCDET_IRQ_EVENT_B:
++	case DA7219_ACCDET_CONFIG_8:
++	case DA7219_SYSTEM_STATUS:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static const struct regmap_config da7219_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++
++	.max_register = DA7219_SYSTEM_ACTIVE,
++	.reg_defaults = da7219_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(da7219_reg_defaults),
++	.volatile_reg = da7219_volatile_register,
++	.cache_type = REGCACHE_RBTREE,
++};
++
+ static struct reg_sequence da7219_rev_aa_patch[] = {
+ 	{ DA7219_REFERENCES, 0x08 },
+ };
+@@ -2255,18 +2388,56 @@ static void da7219_handle_pdata(struct snd_soc_component *component)
+ static int da7219_probe(struct snd_soc_component *component)
+ {
+ 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
+-	unsigned int rev;
+-	int ret;
++	unsigned int system_active, system_status, rev;
++	u8 io_voltage_lvl;
++	int i, ret;
+ 
+ 	da7219->component = component;
+ 	mutex_init(&da7219->ctrl_lock);
+ 	mutex_init(&da7219->pll_lock);
+ 
+ 	/* Regulator configuration */
+-	ret = da7219_handle_supplies(component);
++	ret = da7219_handle_supplies(component, &io_voltage_lvl);
+ 	if (ret)
+ 		return ret;
+ 
++	regcache_cache_bypass(da7219->regmap, true);
++
++	/* Disable audio paths if still active from previous start */
++	regmap_read(da7219->regmap, DA7219_SYSTEM_ACTIVE, &system_active);
++	if (system_active) {
++		regmap_write(da7219->regmap, DA7219_GAIN_RAMP_CTRL,
++			     DA7219_GAIN_RAMP_RATE_NOMINAL);
++		regmap_write(da7219->regmap, DA7219_SYSTEM_MODES_INPUT, 0x00);
++		regmap_write(da7219->regmap, DA7219_SYSTEM_MODES_OUTPUT, 0x01);
++
++		for (i = 0; i < DA7219_SYS_STAT_CHECK_RETRIES; ++i) {
++			regmap_read(da7219->regmap, DA7219_SYSTEM_STATUS,
++				    &system_status);
++			if (!system_status)
++				break;
++
++			msleep(DA7219_SYS_STAT_CHECK_DELAY);
++		}
++	}
++
++	/* Soft reset component */
++	regmap_write_bits(da7219->regmap, DA7219_ACCDET_CONFIG_1,
++			  DA7219_ACCDET_EN_MASK, 0);
++	regmap_write_bits(da7219->regmap, DA7219_CIF_CTRL,
++			  DA7219_CIF_REG_SOFT_RESET_MASK,
++			  DA7219_CIF_REG_SOFT_RESET_MASK);
++	regmap_write_bits(da7219->regmap, DA7219_SYSTEM_ACTIVE,
++			  DA7219_SYSTEM_ACTIVE_MASK, 0);
++	regmap_write_bits(da7219->regmap, DA7219_SYSTEM_ACTIVE,
++			  DA7219_SYSTEM_ACTIVE_MASK, 1);
++
++	regcache_cache_bypass(da7219->regmap, false);
++	regmap_reinit_cache(da7219->regmap, &da7219_regmap_config);
++
++	/* Update IO voltage level range based on supply level */
++	snd_soc_component_write(component, DA7219_IO_CTRL, io_voltage_lvl);
++
+ 	ret = regmap_read(da7219->regmap, DA7219_CHIP_REVISION, &rev);
+ 	if (ret) {
+ 		dev_err(component->dev, "Failed to read chip revision: %d\n", ret);
+@@ -2347,6 +2518,7 @@ static int da7219_probe(struct snd_soc_component *component)
+ 
+ err_disable_reg:
+ 	regulator_bulk_disable(DA7219_NUM_SUPPLIES, da7219->supplies);
++	regulator_bulk_free(DA7219_NUM_SUPPLIES, da7219->supplies);
+ 
  	return ret;
  }
+@@ -2369,6 +2541,7 @@ static void da7219_remove(struct snd_soc_component *component)
+ 
+ 	/* Supplies */
+ 	regulator_bulk_disable(DA7219_NUM_SUPPLIES, da7219->supplies);
++	regulator_bulk_free(DA7219_NUM_SUPPLIES, da7219->supplies);
+ }
+ 
+ #ifdef CONFIG_PM
+@@ -2422,142 +2595,6 @@ static int da7219_resume(struct snd_soc_component *component)
+ 
+ 
+ /*
+- * Regmap configs
+- */
+-
+-static struct reg_default da7219_reg_defaults[] = {
+-	{ DA7219_MIC_1_SELECT, 0x00 },
+-	{ DA7219_CIF_TIMEOUT_CTRL, 0x01 },
+-	{ DA7219_SR_24_48, 0x00 },
+-	{ DA7219_SR, 0x0A },
+-	{ DA7219_CIF_I2C_ADDR_CFG, 0x02 },
+-	{ DA7219_PLL_CTRL, 0x10 },
+-	{ DA7219_PLL_FRAC_TOP, 0x00 },
+-	{ DA7219_PLL_FRAC_BOT, 0x00 },
+-	{ DA7219_PLL_INTEGER, 0x20 },
+-	{ DA7219_DIG_ROUTING_DAI, 0x10 },
+-	{ DA7219_DAI_CLK_MODE, 0x01 },
+-	{ DA7219_DAI_CTRL, 0x28 },
+-	{ DA7219_DAI_TDM_CTRL, 0x40 },
+-	{ DA7219_DIG_ROUTING_DAC, 0x32 },
+-	{ DA7219_DAI_OFFSET_LOWER, 0x00 },
+-	{ DA7219_DAI_OFFSET_UPPER, 0x00 },
+-	{ DA7219_REFERENCES, 0x08 },
+-	{ DA7219_MIXIN_L_SELECT, 0x00 },
+-	{ DA7219_MIXIN_L_GAIN, 0x03 },
+-	{ DA7219_ADC_L_GAIN, 0x6F },
+-	{ DA7219_ADC_FILTERS1, 0x80 },
+-	{ DA7219_MIC_1_GAIN, 0x01 },
+-	{ DA7219_SIDETONE_CTRL, 0x40 },
+-	{ DA7219_SIDETONE_GAIN, 0x0E },
+-	{ DA7219_DROUTING_ST_OUTFILT_1L, 0x01 },
+-	{ DA7219_DROUTING_ST_OUTFILT_1R, 0x02 },
+-	{ DA7219_DAC_FILTERS5, 0x00 },
+-	{ DA7219_DAC_FILTERS2, 0x88 },
+-	{ DA7219_DAC_FILTERS3, 0x88 },
+-	{ DA7219_DAC_FILTERS4, 0x08 },
+-	{ DA7219_DAC_FILTERS1, 0x80 },
+-	{ DA7219_DAC_L_GAIN, 0x6F },
+-	{ DA7219_DAC_R_GAIN, 0x6F },
+-	{ DA7219_CP_CTRL, 0x20 },
+-	{ DA7219_HP_L_GAIN, 0x39 },
+-	{ DA7219_HP_R_GAIN, 0x39 },
+-	{ DA7219_MIXOUT_L_SELECT, 0x00 },
+-	{ DA7219_MIXOUT_R_SELECT, 0x00 },
+-	{ DA7219_MICBIAS_CTRL, 0x03 },
+-	{ DA7219_MIC_1_CTRL, 0x40 },
+-	{ DA7219_MIXIN_L_CTRL, 0x40 },
+-	{ DA7219_ADC_L_CTRL, 0x40 },
+-	{ DA7219_DAC_L_CTRL, 0x40 },
+-	{ DA7219_DAC_R_CTRL, 0x40 },
+-	{ DA7219_HP_L_CTRL, 0x40 },
+-	{ DA7219_HP_R_CTRL, 0x40 },
+-	{ DA7219_MIXOUT_L_CTRL, 0x10 },
+-	{ DA7219_MIXOUT_R_CTRL, 0x10 },
+-	{ DA7219_CHIP_ID1, 0x23 },
+-	{ DA7219_CHIP_ID2, 0x93 },
+-	{ DA7219_IO_CTRL, 0x00 },
+-	{ DA7219_GAIN_RAMP_CTRL, 0x00 },
+-	{ DA7219_PC_COUNT, 0x02 },
+-	{ DA7219_CP_VOL_THRESHOLD1, 0x0E },
+-	{ DA7219_DIG_CTRL, 0x00 },
+-	{ DA7219_ALC_CTRL2, 0x00 },
+-	{ DA7219_ALC_CTRL3, 0x00 },
+-	{ DA7219_ALC_NOISE, 0x3F },
+-	{ DA7219_ALC_TARGET_MIN, 0x3F },
+-	{ DA7219_ALC_TARGET_MAX, 0x00 },
+-	{ DA7219_ALC_GAIN_LIMITS, 0xFF },
+-	{ DA7219_ALC_ANA_GAIN_LIMITS, 0x71 },
+-	{ DA7219_ALC_ANTICLIP_CTRL, 0x00 },
+-	{ DA7219_ALC_ANTICLIP_LEVEL, 0x00 },
+-	{ DA7219_DAC_NG_SETUP_TIME, 0x00 },
+-	{ DA7219_DAC_NG_OFF_THRESH, 0x00 },
+-	{ DA7219_DAC_NG_ON_THRESH, 0x00 },
+-	{ DA7219_DAC_NG_CTRL, 0x00 },
+-	{ DA7219_TONE_GEN_CFG1, 0x00 },
+-	{ DA7219_TONE_GEN_CFG2, 0x00 },
+-	{ DA7219_TONE_GEN_CYCLES, 0x00 },
+-	{ DA7219_TONE_GEN_FREQ1_L, 0x55 },
+-	{ DA7219_TONE_GEN_FREQ1_U, 0x15 },
+-	{ DA7219_TONE_GEN_FREQ2_L, 0x00 },
+-	{ DA7219_TONE_GEN_FREQ2_U, 0x40 },
+-	{ DA7219_TONE_GEN_ON_PER, 0x02 },
+-	{ DA7219_TONE_GEN_OFF_PER, 0x01 },
+-	{ DA7219_ACCDET_IRQ_MASK_A, 0x00 },
+-	{ DA7219_ACCDET_IRQ_MASK_B, 0x00 },
+-	{ DA7219_ACCDET_CONFIG_1, 0xD6 },
+-	{ DA7219_ACCDET_CONFIG_2, 0x34 },
+-	{ DA7219_ACCDET_CONFIG_3, 0x0A },
+-	{ DA7219_ACCDET_CONFIG_4, 0x16 },
+-	{ DA7219_ACCDET_CONFIG_5, 0x21 },
+-	{ DA7219_ACCDET_CONFIG_6, 0x3E },
+-	{ DA7219_ACCDET_CONFIG_7, 0x01 },
+-	{ DA7219_SYSTEM_ACTIVE, 0x00 },
+-};
+-
+-static bool da7219_volatile_register(struct device *dev, unsigned int reg)
+-{
+-	switch (reg) {
+-	case DA7219_MIC_1_GAIN_STATUS:
+-	case DA7219_MIXIN_L_GAIN_STATUS:
+-	case DA7219_ADC_L_GAIN_STATUS:
+-	case DA7219_DAC_L_GAIN_STATUS:
+-	case DA7219_DAC_R_GAIN_STATUS:
+-	case DA7219_HP_L_GAIN_STATUS:
+-	case DA7219_HP_R_GAIN_STATUS:
+-	case DA7219_CIF_CTRL:
+-	case DA7219_PLL_SRM_STS:
+-	case DA7219_ALC_CTRL1:
+-	case DA7219_SYSTEM_MODES_INPUT:
+-	case DA7219_SYSTEM_MODES_OUTPUT:
+-	case DA7219_ALC_OFFSET_AUTO_M_L:
+-	case DA7219_ALC_OFFSET_AUTO_U_L:
+-	case DA7219_TONE_GEN_CFG1:
+-	case DA7219_ACCDET_STATUS_A:
+-	case DA7219_ACCDET_STATUS_B:
+-	case DA7219_ACCDET_IRQ_EVENT_A:
+-	case DA7219_ACCDET_IRQ_EVENT_B:
+-	case DA7219_ACCDET_CONFIG_8:
+-	case DA7219_SYSTEM_STATUS:
+-		return true;
+-	default:
+-		return false;
+-	}
+-}
+-
+-static const struct regmap_config da7219_regmap_config = {
+-	.reg_bits = 8,
+-	.val_bits = 8,
+-
+-	.max_register = DA7219_SYSTEM_ACTIVE,
+-	.reg_defaults = da7219_reg_defaults,
+-	.num_reg_defaults = ARRAY_SIZE(da7219_reg_defaults),
+-	.volatile_reg = da7219_volatile_register,
+-	.cache_type = REGCACHE_RBTREE,
+-};
+-
+-
+-/*
+  * I2C layer
+  */
+ 
+@@ -2566,8 +2603,7 @@ static int da7219_i2c_probe(struct i2c_client *i2c,
+ {
+ 	struct device *dev = &i2c->dev;
+ 	struct da7219_priv *da7219;
+-	unsigned int system_active, system_status;
+-	int i, ret;
++	int ret;
+ 
+ 	da7219 = devm_kzalloc(dev, sizeof(struct da7219_priv),
+ 			      GFP_KERNEL);
+@@ -2583,37 +2619,6 @@ static int da7219_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
+-	regcache_cache_bypass(da7219->regmap, true);
+-
+-	/* Disable audio paths if still active from previous start */
+-	regmap_read(da7219->regmap, DA7219_SYSTEM_ACTIVE, &system_active);
+-	if (system_active) {
+-		regmap_write(da7219->regmap, DA7219_GAIN_RAMP_CTRL,
+-			     DA7219_GAIN_RAMP_RATE_NOMINAL);
+-		regmap_write(da7219->regmap, DA7219_SYSTEM_MODES_INPUT, 0x00);
+-		regmap_write(da7219->regmap, DA7219_SYSTEM_MODES_OUTPUT, 0x01);
+-
+-		for (i = 0; i < DA7219_SYS_STAT_CHECK_RETRIES; ++i) {
+-			regmap_read(da7219->regmap, DA7219_SYSTEM_STATUS,
+-				    &system_status);
+-			if (!system_status)
+-				break;
+-
+-			msleep(DA7219_SYS_STAT_CHECK_DELAY);
+-		}
+-	}
+-
+-	/* Soft reset component */
+-	regmap_write_bits(da7219->regmap, DA7219_ACCDET_CONFIG_1,
+-			  DA7219_ACCDET_EN_MASK, 0);
+-	regmap_write_bits(da7219->regmap, DA7219_CIF_CTRL,
+-			  DA7219_CIF_REG_SOFT_RESET_MASK,
+-			  DA7219_CIF_REG_SOFT_RESET_MASK);
+-	regmap_write_bits(da7219->regmap, DA7219_SYSTEM_ACTIVE,
+-			  DA7219_SYSTEM_ACTIVE_MASK, 0);
+-
+-	regcache_cache_bypass(da7219->regmap, false);
+-
+ 	/* Retrieve DT/ACPI/Platform data */
+ 	da7219->pdata = dev_get_platdata(dev);
+ 	if (!da7219->pdata)
 -- 
 1.9.1
 
