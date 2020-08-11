@@ -2,373 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EACA241EDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 19:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC97D241EE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 19:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728906AbgHKRFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 13:05:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728862AbgHKRFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 13:05:01 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 877662076B;
-        Tue, 11 Aug 2020 17:04:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597165500;
-        bh=dwZHod6KPc3W7szywYJ/l216Bk/RtF5qw8WxOfVfm1o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i4ff7+a2wHioJT6TKLvhGgOrC3G4fKAx3Hb3BQR/FXG8pI1u9FntXbm64THwpT+pC
-         n0hi8qcGPABJxd+zBSpdtN4Xt4A5BeBoz42AcBHwO2K5/bvdhLSDOu8KFf3U+x8a4j
-         fbHAv448AkLehgSly2nXkTkxRAy2jalt0Cl4eXio=
-Date:   Tue, 11 Aug 2020 19:05:09 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Gage Eads <gage.eads@intel.com>
-Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
-        magnus.karlsson@intel.com, bjorn.topel@intel.com
-Subject: Re: [PATCH v2 01/19] dlb2: add skeleton for DLB 2.0 driver
-Message-ID: <20200811170509.GA765993@kroah.com>
-References: <20200811162732.1369-1-gage.eads@intel.com>
- <20200811162732.1369-2-gage.eads@intel.com>
-MIME-Version: 1.0
+        id S1729305AbgHKRGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 13:06:33 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:13770 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729161AbgHKRG3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 13:06:29 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07BH4cVa017059;
+        Tue, 11 Aug 2020 10:06:17 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=CbSmh8UXuEpQiApSbvycdTICM1ESyRpIS47YqzAmU10=;
+ b=cBzenF4xb5GwkZYwjIna3MXJWzpLgMeZjn5pCV16iTyCwhwwDVgPKLthpbckvsQ70GF+
+ uWDnxPrpHXk4W89vuXGDayQi189S9WL8iaYsJXeaSJbFGj5FE52p1D1+qiTUwYxbA2vv
+ CQgsBYa4gWKSksPovhlmV5UK0r+DvK5NhIQ= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32uxp788k3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 11 Aug 2020 10:06:17 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 11 Aug 2020 10:06:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Li0LG9mKozYkl8D9tOYZzXiF/XNlP5pOs4nmDJc7GzGCeM0By8s0twOS1SSnI+To7oEGUcO2IUIKYRGanIs3SDXCVu4Gkh4C1bJtbq0zt7OcbKIhWn/p9usr9ZEw9B0hzUfxK59bxUmLee4UQ7Tj0p6NjM21Z/B82Db66gZUYCbrqROnzN1KHLSQnNW2zKVqKKlnq0uywRIKmAwElTEmvuEefjTSHVhJz+nfDgk1DfnKYHmIy8VvzGbSaIEwg+mk5OJIMokGV3EPd+RwghoLgykCJ+bW5L+upPdAy1SakXpbfRoAI3lJd2prgruCeGjqFUamHTfgvhGwI5EW540fyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CbSmh8UXuEpQiApSbvycdTICM1ESyRpIS47YqzAmU10=;
+ b=l8wkLtVZNq224UFN4qU3H2Q9ql/7ZgN6vomkwSFZ3Me5JejK4eG7mU+0RpNh+DvNtNoH4+szlBfrcd1UascQHY7n2g9Mu4k1m3TkDITA/9IebyzMIvTVbdhjtu8rHcYGE7oz4gs0bDl5YBrFaQn6i9EuXu549RxKWaSzwlyLJSconNBw7Zh7MuECGzE6QqfHgmDLnivDbI0goQiBW7OLXdPcky0FwmjYG5EsvTjbP2RvVqjjWncydx1XGnqMbVBAg8ZqYl919N5qsMhefhHyOEC45tqDhxXsJ3QRWh2nv/QTDwvKtFh3o5I5Sf39LWESpoSbdP9CFk+QJmt8vy2Few==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CbSmh8UXuEpQiApSbvycdTICM1ESyRpIS47YqzAmU10=;
+ b=ZENQ581C1PREoipMF6glJRUZ/hVEEvEWwgW6p0o3dX+eZcCVLd5mN8fdEY3SfUBngT86CNt6YAFhJLqoqvj/+ARi2egIc3EXdxj7PDMiOdtHKEya3ubeKKevlJgD7hbgKV5Pc04bdoBDl/0VQ48yTVSkrD2ZJxrg1vYQfEh6DrI=
+Authentication-Results: cmpxchg.org; dkim=none (message not signed)
+ header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2598.namprd15.prod.outlook.com (2603:10b6:a03:14d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15; Tue, 11 Aug
+ 2020 17:06:14 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::354d:5296:6a28:f55e]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::354d:5296:6a28:f55e%6]) with mapi id 15.20.3261.025; Tue, 11 Aug 2020
+ 17:06:14 +0000
+Date:   Tue, 11 Aug 2020 10:06:11 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/5] mm: memcg: charge memcg percpu memory to the
+ parent cgroup
+Message-ID: <20200811170611.GB1507044@carbon.DHCP.thefacebook.com>
+References: <20200623184515.4132564-1-guro@fb.com>
+ <20200623184515.4132564-5-guro@fb.com>
+ <20200811152737.GB650506@cmpxchg.org>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200811162732.1369-2-gage.eads@intel.com>
+In-Reply-To: <20200811152737.GB650506@cmpxchg.org>
+X-ClientProxiedBy: BYAPR08CA0055.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::32) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:fa33) by BYAPR08CA0055.namprd08.prod.outlook.com (2603:10b6:a03:117::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.19 via Frontend Transport; Tue, 11 Aug 2020 17:06:13 +0000
+X-Originating-IP: [2620:10d:c090:400::5:fa33]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b827c471-9761-4d33-e6b2-08d83e18daab
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2598:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB25981F38BDE608FBB91715D0BE450@BYAPR15MB2598.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(376002)(346002)(396003)(8936002)(6916009)(8676002)(186003)(6506007)(16526019)(478600001)(7696005)(52116002)(1076003)(86362001)(83380400001)(55016002)(5660300002)(9686003)(33656002)(54906003)(2906002)(316002)(66556008)(66476007)(66946007)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-CrossTenant-Network-Message-Id: b827c471-9761-4d33-e6b2-08d83e18daab
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2020 17:06:14.3470
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /YVeaHBH9x1eMpYLHjWf/LKWdwjJHatZlZLR84jyjBBEmQAkM1ZpHWqq0cBulauL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2598
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-11_15:2020-08-11,2020-08-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=5
+ priorityscore=1501 mlxlogscore=962 phishscore=0 clxscore=1015 adultscore=0
+ mlxscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008110119
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 11:27:14AM -0500, Gage Eads wrote:
-> diff --git a/drivers/misc/dlb2/dlb2_main.c b/drivers/misc/dlb2/dlb2_main.c
-> new file mode 100644
-> index 000000000000..ffd6df788e2e
-> --- /dev/null
-> +++ b/drivers/misc/dlb2/dlb2_main.c
-> @@ -0,0 +1,208 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright(c) 2018-2020 Intel Corporation */
-> +
-> +#include <linux/aer.h>
-> +#include <linux/cdev.h>
-> +#include <linux/delay.h>
-> +#include <linux/fs.h>
-> +#include <linux/init.h>
-> +#include <linux/list.h>
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/uaccess.h>
-> +
-> +#include "dlb2_main.h"
-> +
-> +static const char
-> +dlb2_driver_copyright[] = "Copyright(c) 2018-2020 Intel Corporation";
+On Tue, Aug 11, 2020 at 11:27:37AM -0400, Johannes Weiner wrote:
+> On Tue, Jun 23, 2020 at 11:45:14AM -0700, Roman Gushchin wrote:
+> > Memory cgroups are using large chunks of percpu memory to store vmstat
+> > data.  Yet this memory is not accounted at all, so in the case when there
+> > are many (dying) cgroups, it's not exactly clear where all the memory is.
+> > 
+> > Because the size of memory cgroup internal structures can dramatically
+> > exceed the size of object or page which is pinning it in the memory, it's
+> > not a good idea to simple ignore it.  It actually breaks the isolation
+> > between cgroups.
+> > 
+> > Let's account the consumed percpu memory to the parent cgroup.
+> > 
+> > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > Acked-by: Dennis Zhou <dennis@kernel.org>
+> 
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Why do you have this static string that you never use?
+Thank you!
 
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_AUTHOR("Copyright(c) 2018-2020 Intel Corporation");
-> +MODULE_DESCRIPTION("Intel(R) Dynamic Load Balancer 2.0 Driver");
-> +
-> +/* The driver lock protects data structures that used by multiple devices. */
-> +static DEFINE_MUTEX(dlb2_driver_lock);
-> +static struct list_head dlb2_dev_list = LIST_HEAD_INIT(dlb2_dev_list);
+> 
+> This makes sense, and the accounting is in line with how we track and
+> distribute child creation quotas (cgroup.max.descendants and
+> cgroup.max.depth) up the cgroup tree.
+> 
+> I have one minor comment that isn't a dealbreaker for me:
+> 
+> > @@ -5069,13 +5069,15 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+> >  	if (!pn)
+> >  		return 1;
+> >  
+> > -	pn->lruvec_stat_local = alloc_percpu(struct lruvec_stat);
+> > +	pn->lruvec_stat_local = alloc_percpu_gfp(struct lruvec_stat,
+> > +						 GFP_KERNEL_ACCOUNT);
+> >  	if (!pn->lruvec_stat_local) {
+> >  		kfree(pn);
+> >  		return 1;
+> >  	}
+> >  
+> > -	pn->lruvec_stat_cpu = alloc_percpu(struct lruvec_stat);
+> > +	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct lruvec_stat,
+> > +					       GFP_KERNEL_ACCOUNT);
+> >  	if (!pn->lruvec_stat_cpu) {
+> >  		free_percpu(pn->lruvec_stat_local);
+> >  		kfree(pn);
+> > @@ -5149,11 +5151,13 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
+> >  		goto fail;
+> >  	}
+> >  
+> > -	memcg->vmstats_local = alloc_percpu(struct memcg_vmstats_percpu);
+> > +	memcg->vmstats_local = alloc_percpu_gfp(struct memcg_vmstats_percpu,
+> > +						GFP_KERNEL_ACCOUNT);
+> >  	if (!memcg->vmstats_local)
+> >  		goto fail;
+> >  
+> > -	memcg->vmstats_percpu = alloc_percpu(struct memcg_vmstats_percpu);
+> > +	memcg->vmstats_percpu = alloc_percpu_gfp(struct memcg_vmstats_percpu,
+> > +						 GFP_KERNEL_ACCOUNT);
+> >  	if (!memcg->vmstats_percpu)
+> >  		goto fail;
+> >  
+> > @@ -5202,7 +5206,9 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+> >  	struct mem_cgroup *memcg;
+> >  	long error = -ENOMEM;
+> >  
+> > +	memalloc_use_memcg(parent);
+> >  	memcg = mem_cgroup_alloc();
+> > +	memalloc_unuse_memcg();
+> 
+> The disconnect between 1) requesting accounting and 2) which cgroup to
+> charge is making me uneasy. It makes mem_cgroup_alloc() a bit of a
+> handgrenade, because accounting to the current task is almost
+> guaranteed to be wrong if the use_memcg() annotation were to get lost
+> in a refactor or not make it to a new caller of the function.
+> 
+> The saving grace is that mem_cgroup_alloc() is pretty unlikely to be
+> used elsewhere. And pretending it's an independent interface would be
+> overengineering. But how about the following in mem_cgroup_alloc() and
+> alloc_mem_cgroup_per_node_info() to document that caller relationship:
+> 
+> 	/* We charge the parent cgroup, never the current task */
+> 	WARN_ON_ONCE(!current->active_memcg);
 
-A static list of devices that you constantly walk?  Why?  This isn't the
-1990's anymore, that should not be needed anywhere at all.
+I have nothing against.
 
-> +
-> +static struct class *dlb2_class;
-> +static dev_t dlb2_dev_number_base;
+Andrew, can you, please, squash the following diff into the patch?
 
-static dev_t my_major; perhaps?
+Thanks!
 
-Why have "dlb2_" as a prefix for static variables?
+--
 
-> +
-> +/*****************************/
-> +/****** Devfs callbacks ******/
-
-there is nothing in the kernel called "devfs", and has not been for 16+
-years I think.  Where did you get that term from???
-
-> +/*****************************/
-> +
-> +static int dlb2_open(struct inode *i, struct file *f)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int dlb2_close(struct inode *i, struct file *f)
-> +{
-> +	return 0;
-
-If you do not need an open/close function, do not include it.
-
-> +}
-> +
-> +static const struct file_operations dlb2_fops = {
-> +	.owner   = THIS_MODULE,
-> +	.open    = dlb2_open,
-> +	.release = dlb2_close,
-> +};
-
-You never use this structure in this patch :(
-
-> +
-> +/**********************************/
-> +/****** PCI driver callbacks ******/
-> +/**********************************/
-> +
-> +static DEFINE_IDA(dlb2_ids);
-
-This is not a pci driver callback :)
-
-Why have comments if they instantly are wrong? :(
-
-> +
-> +static int dlb2_alloc_id(void)
-> +{
-> +	return ida_alloc_max(&dlb2_ids, DLB2_MAX_NUM_DEVICES - 1, GFP_KERNEL);
-> +}
-> +
-> +static void dlb2_free_id(int id)
-> +{
-> +	ida_free(&dlb2_ids, id);
-
-No locking needed for accessing the ida?
-
-> +}
-> +
-> +static int dlb2_probe(struct pci_dev *pdev,
-> +		      const struct pci_device_id *pdev_id)
-> +{
-> +	struct dlb2_dev *dlb2_dev;
-> +	int ret;
-> +
-> +	dlb2_dev = devm_kzalloc(&pdev->dev, sizeof(*dlb2_dev), GFP_KERNEL);
-
-Why are you calling devm_kzalloc() if you manually call devm_kfree() for
-this chunk of memory?  Either rely on the devm api or don't use it at
-all.
-
-> +	if (!dlb2_dev)
-> +		return -ENOMEM;
-> +
-> +	pci_set_drvdata(pdev, dlb2_dev);
-> +
-> +	dlb2_dev->pdev = pdev;
-> +
-> +	dlb2_dev->id = dlb2_alloc_id();
-> +	if (dlb2_dev->id < 0) {
-> +		dev_err(&pdev->dev, "probe: device ID allocation failed\n");
-> +
-> +		ret = dlb2_dev->id;
-> +		goto alloc_id_fail;
-> +	}
-> +
-> +	ret = pci_enable_device(pdev);
-> +	if (ret != 0) {
-> +		dev_err(&pdev->dev, "pci_enable_device() returned %d\n", ret);
-> +
-> +		goto pci_enable_device_fail;
-> +	}
-> +
-> +	ret = pci_request_regions(pdev, dlb2_driver_name);
-> +	if (ret != 0) {
-> +		dev_err(&pdev->dev,
-> +			"pci_request_regions(): returned %d\n", ret);
-> +
-> +		goto pci_request_regions_fail;
-> +	}
-> +
-> +	pci_set_master(pdev);
-> +
-> +	if (pci_enable_pcie_error_reporting(pdev))
-> +		dev_info(&pdev->dev, "[%s()] Failed to enable AER\n", __func__);
-> +
-> +	mutex_lock(&dlb2_driver_lock);
-> +	list_add(&dlb2_dev->list, &dlb2_dev_list);
-> +	mutex_unlock(&dlb2_driver_lock);
-> +
-> +	return 0;
-> +
-> +pci_request_regions_fail:
-> +	pci_disable_device(pdev);
-> +pci_enable_device_fail:
-> +	dlb2_free_id(dlb2_dev->id);
-> +alloc_id_fail:
-> +	devm_kfree(&pdev->dev, dlb2_dev);
-> +	return ret;
-> +}
-> +
-> +static void dlb2_remove(struct pci_dev *pdev)
-> +{
-> +	struct dlb2_dev *dlb2_dev;
-> +
-> +	/* Undo all the dlb2_probe() operations */
-> +	dlb2_dev = pci_get_drvdata(pdev);
-> +
-> +	mutex_lock(&dlb2_driver_lock);
-> +	list_del(&dlb2_dev->list);
-> +	mutex_unlock(&dlb2_driver_lock);
-> +
-> +	pci_disable_pcie_error_reporting(pdev);
-> +
-> +	pci_release_regions(pdev);
-> +
-> +	pci_disable_device(pdev);
-> +
-> +	dlb2_free_id(dlb2_dev->id);
-> +
-> +	devm_kfree(&pdev->dev, dlb2_dev);
-> +}
-> +
-> +static struct pci_device_id dlb2_id_table[] = {
-> +	{ PCI_DEVICE_DATA(INTEL, DLB2_PF, NULL) },
-> +	{ 0 }
-> +};
-> +MODULE_DEVICE_TABLE(pci, dlb2_id_table);
-> +
-> +static struct pci_driver dlb2_pci_driver = {
-> +	.name		 = (char *)dlb2_driver_name,
-
-Why is this cast needed?  That's a hint that something is wrong...
-
-> +	.id_table	 = dlb2_id_table,
-> +	.probe		 = dlb2_probe,
-> +	.remove		 = dlb2_remove,
-> +};
-> +
-> +static int __init dlb2_init_module(void)
-> +{
-> +	int err;
-> +
-> +	dlb2_class = class_create(THIS_MODULE, dlb2_driver_name);
-> +
-> +	if (IS_ERR(dlb2_class)) {
-
-blank line was not needed.
-
-> +		pr_err("%s: class_create() returned %ld\n",
-> +		       dlb2_driver_name, PTR_ERR(dlb2_class));
-> +
-> +		return PTR_ERR(dlb2_class);
-> +	}
-> +
-> +	/* Allocate one minor number per domain */
-> +	err = alloc_chrdev_region(&dlb2_dev_number_base,
-> +				  0,
-> +				  DLB2_MAX_NUM_DEVICES,
-> +				  dlb2_driver_name);
-> +
-> +	if (err < 0) {
-> +		pr_err("%s: alloc_chrdev_region() returned %d\n",
-> +		       dlb2_driver_name, err);
-> +
-> +		return err;
-> +	}
-> +
-> +	err = pci_register_driver(&dlb2_pci_driver);
-> +	if (err < 0) {
-> +		pr_err("%s: pci_register_driver() returned %d\n",
-> +		       dlb2_driver_name, err);
-> +		return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void __exit dlb2_exit_module(void)
-> +{
-> +	pci_unregister_driver(&dlb2_pci_driver);
-> +
-> +	unregister_chrdev_region(dlb2_dev_number_base,
-> +				 DLB2_MAX_NUM_DEVICES);
-> +
-> +	if (dlb2_class) {
-> +		class_destroy(dlb2_class);
-> +		dlb2_class = NULL;
-
-Why set this?
-
-> +	}
-
-No freeing of allocated ida structures?  Or is that not needed anymore,
-I can never remember...
-
-> +}
-> +
-> +module_init(dlb2_init_module);
-> +module_exit(dlb2_exit_module);
-> diff --git a/drivers/misc/dlb2/dlb2_main.h b/drivers/misc/dlb2/dlb2_main.h
-> new file mode 100644
-> index 000000000000..cc05546fba13
-> --- /dev/null
-> +++ b/drivers/misc/dlb2/dlb2_main.h
-> @@ -0,0 +1,37 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only
-> + * Copyright(c) 2017-2020 Intel Corporation
-> + */
-> +
-> +#ifndef __DLB2_MAIN_H
-> +#define __DLB2_MAIN_H
-> +
-> +#include <linux/cdev.h>
-> +#include <linux/device.h>
-> +#include <linux/ktime.h>
-> +#include <linux/list.h>
-> +#include <linux/mutex.h>
-> +#include <linux/pci.h>
-> +#include <linux/types.h>
-> +
-> +#include "dlb2_hw_types.h"
-> +
-> +static const char dlb2_driver_name[] = KBUILD_MODNAME;
-> +
-> +/*
-> + * The dlb2 driver uses a different minor number for each device file, of which
-> + * there are:
-> + * - 33 per device (PF or VF/VDEV): 1 for the device, 32 for scheduling domains
-> + * - Up to 17 devices per PF: 1 PF and up to 16 VFs/VDEVs
-> + * - Up to 16 PFs per system
-> + */
-> +#define DLB2_MAX_NUM_PFS	  16
-> +#define DLB2_NUM_FUNCS_PER_DEVICE (1 + DLB2_MAX_NUM_VDEVS)
-> +#define DLB2_MAX_NUM_DEVICES	  (DLB2_MAX_NUM_PFS * DLB2_NUM_FUNCS_PER_DEVICE)
-> +
-> +struct dlb2_dev {
-> +	struct pci_dev *pdev;
-> +	struct list_head list;
-
-Why is list needed?
-
-> +	int id;
-
-u32?  u64?  u8?  Pick something :)
-
-> +};
-> +
-> +#endif /* __DLB2_MAIN_H */
-> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-> index 5c709a1450b1..eb865b4eb900 100644
-> --- a/include/linux/pci_ids.h
-> +++ b/include/linux/pci_ids.h
-> @@ -2809,6 +2809,8 @@
->  #define PCI_DEVICE_ID_INTEL_ESB2_14	0x2698
->  #define PCI_DEVICE_ID_INTEL_ESB2_17	0x269b
->  #define PCI_DEVICE_ID_INTEL_ESB2_18	0x269e
-> +#define PCI_DEVICE_ID_INTEL_DLB2_PF	0x2710
-> +#define PCI_DEVICE_ID_INTEL_DLB2_VF	0x2711
-
-Did you read the top of this file?  How does this patch justify the
-request there?
-
-{sigh}
-
-I'm not reviewing beyond this patch, sorry.
-
-greg k-h
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 130093bdf74b..e25f2db7e61c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5137,6 +5137,9 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+        if (!pn)
+                return 1;
+ 
++       /* We charge the parent cgroup, never the current task */
++       WARN_ON_ONCE(!current->active_memcg);
++
+        pn->lruvec_stat_local = alloc_percpu_gfp(struct lruvec_stat,
+                                                 GFP_KERNEL_ACCOUNT);
+        if (!pn->lruvec_stat_local) {
+@@ -5219,6 +5222,9 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
+                goto fail;
+        }
+ 
++       /* We charge the parent cgroup, never the current task */
++       WARN_ON_ONCE(!current->active_memcg);
++
+        memcg->vmstats_local = alloc_percpu_gfp(struct memcg_vmstats_percpu,
+                                                GFP_KERNEL_ACCOUNT);
+        if (!memcg->vmstats_local)
