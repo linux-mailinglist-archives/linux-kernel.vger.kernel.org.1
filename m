@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2840824146C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 03:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3403524146A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 03:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728131AbgHKBIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 21:08:06 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:48026 "EHLO rere.qmqm.pl"
+        id S1728092AbgHKBHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 21:07:54 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:23492 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727978AbgHKBHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727979AbgHKBHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 Aug 2020 21:07:43 -0400
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BQZSY2hWzzL3;
-        Tue, 11 Aug 2020 03:07:41 +0200 (CEST)
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BQZSZ0zymzLn;
+        Tue, 11 Aug 2020 03:07:42 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1597108061; bh=XBigUQcy+V9cJkV3vEIxp3zZ8VW9N8bjjMb3WXILdFs=;
+        t=1597108062; bh=gYTKXUJutik2+Fs5P1UBl/jeqdfUWT0Kq6EVMrvv6U0=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=jWElF0wWl0RXfF9CyawDJe+2SCeIiU4od9RBi/GJMtx1NzFe+rGY+IfvH9vXBOWwq
-         urMnQRHRNnxT8YXWziMVy8ABSkkwIAYMoOAgV+8a75epbaXxvR2o018Xd/KnNrgisj
-         BjPKvzFwktqF4CqzocFPKJz+hQD1uQ8a47tBkrN5/sh1mLqqJ74z5UFe65L/QKg2Ar
-         mDlWM4w5+zfAwVlcmQ8oIb0FRI2gp/Jn2msvm/rgGchPaY2HbWC2LA89uBH/pCPN8K
-         f0ucJ219nZHjQYFpLXRWYK2DK7zl2Y5sSJljhpq6vTEFv4Kz6PYsJAgQ2oRtLagS9A
-         3dsuk9EJgaEMg==
+        b=CbPBKH1/HAGPGR2UqFXWoat9fIdTQCxfT38z++7jQytdFuepdoUUgDgECL4JxWVb5
+         AtpeYKLvWigemKU8rorlVkL8EbYmRuz8idqJrAecH1KcmqgPOH3xGXDPul8uyYEei8
+         XPoYK8tM0w+8cdVPTokmP+PBbC8wYLF31dIWmjSX2aW3f9L9+o9OFNqTv/YjB4pKq1
+         b39g7xajRl0EeKfaUe/zQH6kkUGgflbKyysbKZg4VHkKHL2LOA5R08oNtczhRfuzCB
+         4iHb3FMDj7gsZ2fCuTMYpeLOjMwdOrLHqLaYQJhK2s29HWs0QJSJ4k/vdMKzyZItfB
+         j5XuyDwIGGn/A==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Tue, 11 Aug 2020 03:07:40 +0200
-Message-Id: <eb061133ecd1dd856ddff2dfe7a891e00a56e3f0.1597107682.git.mirq-linux@rere.qmqm.pl>
+Date:   Tue, 11 Aug 2020 03:07:41 +0200
+Message-Id: <169f98e7a2064a184167abc0f206f3a92513b8d8.1597107682.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1597107682.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1597107682.git.mirq-linux@rere.qmqm.pl>
 From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 6/7] regulator: cleanup regulator_ena_gpio_free()
+Subject: [PATCH 7/7] regulator: remove superfluous lock in
+ regulator_resolve_coupling()
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,52 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since only regulator_ena_gpio_request() allocates rdev->ena_pin, and it
-guarantees that same gpiod gets same pin structure, it is enough to
-compare just the pointers. Also we know there can be only one matching
-entry on the list. Rework the code take advantage of the facts.
+The code modifies rdev, but locks c_rdev instead. The bug remains:
+stored c_rdev could be freed just after unlock anyway. This doesn't blow
+up because regulator_list_mutex taken outside holds it together.
 
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/regulator/core.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/regulator/core.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index a9ff2ad55ee7..b85ec974944e 100644
+index b85ec974944e..f8834559a2fb 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -2260,19 +2260,19 @@ static void regulator_ena_gpio_free(struct regulator_dev *rdev)
+@@ -4942,13 +4942,9 @@ static void regulator_resolve_coupling(struct regulator_dev *rdev)
+ 			return;
+ 		}
  
- 	/* Free the GPIO only in case of no use */
- 	list_for_each_entry_safe(pin, n, &regulator_ena_gpio_list, list) {
--		if (pin->gpiod == rdev->ena_pin->gpiod) {
--			if (pin->request_count <= 1) {
--				pin->request_count = 0;
--				gpiod_put(pin->gpiod);
--				list_del(&pin->list);
--				kfree(pin);
--				rdev->ena_pin = NULL;
--				return;
--			} else {
--				pin->request_count--;
--			}
--		}
-+		if (pin != rdev->ena_pin)
-+			continue;
-+
-+		if (--pin->request_count)
-+			break;
-+
-+		gpiod_put(pin->gpiod);
-+		list_del(&pin->list);
-+		kfree(pin);
-+		break;
+-		regulator_lock(c_rdev);
+-
+ 		c_desc->coupled_rdevs[i] = c_rdev;
+ 		c_desc->n_resolved++;
+ 
+-		regulator_unlock(c_rdev);
+-
+ 		regulator_resolve_coupling(c_rdev);
  	}
-+
-+	rdev->ena_pin = NULL;
  }
- 
- /**
 -- 
 2.20.1
 
