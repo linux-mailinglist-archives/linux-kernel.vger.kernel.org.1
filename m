@@ -2,154 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA7324202C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2424242023
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgHKTSW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 Aug 2020 15:18:22 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:50036 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgHKTSV (ORCPT
+        id S1726310AbgHKTO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 15:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725889AbgHKTO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 15:18:21 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k5Zmk-009h5q-P1; Tue, 11 Aug 2020 13:18:10 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k5Zmj-0008Qv-TU; Tue, 11 Aug 2020 13:18:10 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Philippe =?utf-8?Q?Tr=C3=A9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20200723171227.446711-1-mic@digikod.net>
-        <20200723171227.446711-2-mic@digikod.net>
-        <87eeodnh3v.fsf@x220.int.ebiederm.org>
-Date:   Tue, 11 Aug 2020 14:14:43 -0500
-In-Reply-To: <87eeodnh3v.fsf@x220.int.ebiederm.org> (Eric W. Biederman's
-        message of "Tue, 11 Aug 2020 13:59:48 -0500")
-Message-ID: <874kp9ngf0.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 11 Aug 2020 15:14:57 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1102EC06174A;
+        Tue, 11 Aug 2020 12:14:57 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id a65so10986365otc.8;
+        Tue, 11 Aug 2020 12:14:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OA8tghEF0M+1mPo3kQfRuuxmiSjkrfyHvTqZ6Feg5XQ=;
+        b=Q1KyhRsFb0H2aoNJ5Fktl5NeI+ShyIo9oMHA22Ad6/dGMW1qrdh2oZv+3s/FOk9JE0
+         WTmqhThYIp8hqsPYteIjnAJ1ZTyHhMxfZgO98xjoZgCCSHXI6+IYiZSehuCTfFbMV9Ba
+         kr2pPYYwtC27qMNTnRaM8CagxEo+5wVl1pMhjze0dEQliaLgkGq25c66cnnc8F7E0oXw
+         9ZWij8okN1ReNC6m5YrjO21Xv7o78DrnoWR51pt/KrD/KCVJVU8kKdBp/apaiS8/lieQ
+         qcqqP5gbnDrvmUs94F1wSYChpIW1rtTpMobjxqTAA2kVX1QTKJmBFEnVi1CppfPKv5La
+         2cbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OA8tghEF0M+1mPo3kQfRuuxmiSjkrfyHvTqZ6Feg5XQ=;
+        b=oSLdZgYvkDazuXumCM9WvqleauANb0D+jUFMPKLNPvBmUvo/uFFOrjwJlFecCOerHK
+         tS5RZVa9wUONlY+3fb2lf+n9E2hYf81afT2yT9sPEhc9MKDQ2kMZ1Dt6w//DdnsYKHtb
+         4YWNBPZfpoqEZKpeYwgIK5fmmQESiwS1kmd0mVE0Ev7Q+bIbsPZtVlsSn6ZkXvumzlnj
+         KjvR5+v772cXU/IsJGIOCKkdqd2tE6ZAp2K4CghtETb+u7H+pnL60qXixbyqqrEo6uKc
+         W3fgAiElXvYtA1ZpA3Imi4euk6huhOVOvwf8aMc3DJU9bU0fhVTI/H1jdT05tQASd180
+         dgfg==
+X-Gm-Message-State: AOAM533Y9GZeKe4Zv1Hhgo+5EjLOmOA8Zy/N6/DEea70tWGuYESV57Ol
+        ten4ZxeLh63FotpbvXa9C1Ls06Fz
+X-Google-Smtp-Source: ABdhPJxMeHkDpk50vazkCw4XAFfZSGJAR6O000Qnp/a4JJChj1c+dEs4sE1AW1EEMmeoXcgIWyIxFQ==
+X-Received: by 2002:a9d:5a8e:: with SMTP id w14mr6025994oth.214.1597173296308;
+        Tue, 11 Aug 2020 12:14:56 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:1c6:4d6a:d533:5f8b])
+        by smtp.googlemail.com with ESMTPSA id z189sm4543913oia.33.2020.08.11.12.14.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Aug 2020 12:14:55 -0700 (PDT)
+Subject: Re: [PATCH] selftests: Add VRF icmp error route lookup test
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Michael Jeanson <mjeanson@efficios.com>,
+        David Ahern <dsahern@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+References: <42cb74c8-9391-cf4c-9e57-7a1d464f8706@gmail.com>
+ <20200806185121.19688-1-mjeanson@efficios.com>
+ <20200811.102856.864544731521589077.davem@davemloft.net>
+ <f43a9397-c506-9270-b423-efaf6f520a80@gmail.com>
+ <699475546.4794.1597173063863.JavaMail.zimbra@efficios.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <511074db-a005-9b64-9b5a-6367d1ac0af6@gmail.com>
+Date:   Tue, 11 Aug 2020 13:14:54 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <699475546.4794.1597173063863.JavaMail.zimbra@efficios.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-XM-SPF: eid=1k5Zmj-0008Qv-TU;;;mid=<874kp9ngf0.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19nTKA3mnL/oyWdDp6PD6Bdr/fgnKMbcEc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,
-        T_TooManySym_01,T_TooManySym_02,T_TooManySym_03,XMSubLong,
-        XM_B_SpammyWords,XM_B_Unicode autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4916]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: =?ISO-8859-1?Q?**;Micka=c3=abl Sala=c3=bcn <mic@digikod.net>?=
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 466 ms - load_scoreonly_sql: 0.13 (0.0%),
-        signal_user_changed: 11 (2.4%), b_tie_ro: 9 (2.0%), parse: 1.53 (0.3%),
-         extract_message_metadata: 20 (4.4%), get_uri_detail_list: 1.41 (0.3%),
-         tests_pri_-1000: 20 (4.3%), tests_pri_-950: 1.31 (0.3%),
-        tests_pri_-900: 1.15 (0.2%), tests_pri_-90: 131 (28.0%), check_bayes:
-        120 (25.6%), b_tokenize: 12 (2.6%), b_tok_get_all: 10 (2.0%),
-        b_comp_prob: 2.6 (0.6%), b_tok_touch_all: 92 (19.6%), b_finish: 0.95
-        (0.2%), tests_pri_0: 259 (55.4%), check_dkim_signature: 0.65 (0.1%),
-        check_dkim_adsp: 3.7 (0.8%), poll_dns_idle: 0.42 (0.1%), tests_pri_10:
-        2.9 (0.6%), tests_pri_500: 14 (3.0%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v7 1/7] exec: Change uselib(2) IS_SREG() failure to EACCES
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ebiederm@xmission.com (Eric W. Biederman) writes:
+On 8/11/20 1:11 PM, Mathieu Desnoyers wrote:
+> One thing I am missing before this series can be considered for upstreaming
+> is an Acked-by of the 2 fixes for ipv4 and ipv6 from you, as maintainer
+> of l3mdev, if you think the approach I am taking with those fixes makes sense.
 
-> Mickaël Salaün <mic@digikod.net> writes:
->
->> From: Kees Cook <keescook@chromium.org>
->>
->> Change uselib(2)' S_ISREG() error return to EACCES instead of EINVAL so
->> the behavior matches execve(2), and the seemingly documented value.
->> The "not a regular file" failure mode of execve(2) is explicitly
->> documented[1], but it is not mentioned in uselib(2)[2] which does,
->> however, say that open(2) and mmap(2) errors may apply. The documentation
->> for open(2) does not include a "not a regular file" error[3], but mmap(2)
->> does[4], and it is EACCES.
->
-> Do you have enough visibility into uselib to be certain this will change
-> will not cause regressions?
->
-> My sense of uselib is that it would be easier to remove the system call
-> entirely (I think it's last use was in libc5) than to validate that a
-> change like this won't cause problems for the users of uselib.
->
-> For the kernel what is important are real world users and the manpages
-> are only important as far as they suggest what the real world users
-> do.
-
-Hmm.
-
-My apologies. After reading the next patch I see that what really makes
-this safe is: 73601ea5b7b1 ("fs/open.c: allow opening only regular files
-during execve()").
-
-As in practice this change has already been made and uselib simply
-can not reach the !S_ISREG test.
-
-It might make sense to drop this patch or include that reference
-in the next posting of this patch.
-
-Eric
+Send the set, and I will review as vrf/l3mdev maintainer. I need working
+tests and patches to see the before and after.
