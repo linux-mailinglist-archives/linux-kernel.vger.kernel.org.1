@@ -2,89 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B09241620
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 07:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FD924162A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 08:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbgHKFtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 01:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726592AbgHKFtV (ORCPT
+        id S1728242AbgHKGAZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 Aug 2020 02:00:25 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59931 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726592AbgHKGAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 01:49:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D439C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 22:49:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NOsh3G65hi+TCssaL7yrhoL+bIInJnFblszFK9D0Cnk=; b=CM1WTlXJnA0Ff0vX6lk6G+dxyf
-        cCVYNx3G+b/Nbr9wSNLsns16xKIum5ESAdhhuKkWNC1H85zh3M5nZCuLNyM965OV7+jrBCZYC5XxH
-        QGjwjKhBXdMG0F5G2eb83NN/oGKi6+Ch9YfHTClJ2C3PMKLtFiXH6y8CzB64j+lf0xHbcf20Hj/6A
-        GGxWQr1NhzhVKFpxRgUnNd/h8vBY12TfYnpR9XFS1AFST0qF47oAgT3tErGxW32WsY18iiNaVMd8E
-        CXrTk6tme1Ld0D7wCD5RtcVe4suSo/OQE/zbhLwXJdw+Zj3J4qylWOzO0/Htz0We00BT4EZi+h8go
-        QGb5ad4g==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k5N9s-00006Q-LF; Tue, 11 Aug 2020 05:49:12 +0000
-Date:   Tue, 11 Aug 2020 06:49:12 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Ajay Kumar <ajaykumar.rs@samsung.com>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        mark.rutland@arm.com, will@kernel.org, joro@8bytes.org,
-        nleeder@codeaurora.org, robin.murphy@arm.com, hch@infradead.org
-Subject: Re: [RFC V2 PATCH] dma-iommu: allow devices to set IOVA range
- dynamically
-Message-ID: <20200811054912.GA301@infradead.org>
-References: <CGME20200810182328epcas5p2d5ffb5a5850a641fe7d31aa945c6c835@epcas5p2.samsung.com>
- <20200810175812.29100-1-ajaykumar.rs@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200810175812.29100-1-ajaykumar.rs@samsung.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        Tue, 11 Aug 2020 02:00:23 -0400
+Received: from mail-pj1-f69.google.com ([209.85.216.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1k5NKe-0002lL-Ox
+        for linux-kernel@vger.kernel.org; Tue, 11 Aug 2020 06:00:21 +0000
+Received: by mail-pj1-f69.google.com with SMTP id l22so1378169pjt.8
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 23:00:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=mGtWVW52fjaWvs3IfcD5BRSmGck3KpJYwMz2AjjH5iY=;
+        b=nN+XFgmsNJbz1y7vcIQpbF36MKS9DJtdTz9gUUoAmdzX01YC6gPtqjtLSgARCYLczJ
+         RosVpsVhI2ndvB/Ne2KhhA5QvpB0NbxsCXV+eZPRpWuP63fhbfWxEZFFKLb5p7jIX0sF
+         6ZzUBZxHNb9pJVmAoGyX9kXgOxtac9870GTahqUbqMgrqmavqIQjKD//aq7JBdS2TdrA
+         chAbeXtXux7sAA4APmyfiAlpI72Qtml3S0IrO8yaP8+QGInUduA7c2yXi2kIWM5UA5n2
+         KREHUY1B9zIG/xZsjAEzfEeGLahm8+GuWqJ7B8ACeM2eUcd//+BxokHEGOxwSiqIFb7o
+         ocLw==
+X-Gm-Message-State: AOAM530UqWpLiZlR2Ux/7PrOICeEvIzWDaEAWOECtNbLD57713Bou5Vw
+        peysPIP+75BQR6ISD1CUxvu9Uy4EB0PRYY7jt3jJBEJR7lQr4U0DRMDrDQUr0XyVEbfq+AJsCoe
+        sS9B3edavRTiBv2IYj6gl+rl3kdDQk1c5zBwRXredcg==
+X-Received: by 2002:a62:6142:: with SMTP id v63mr4784442pfb.179.1597125619141;
+        Mon, 10 Aug 2020 23:00:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwXdidy/n4Gh2I26Qgbu/jJNNWm1OZi4zBw9rDh1yu1KQknUXh4p/J6JbXSUDM8OuMF+2Vh3g==
+X-Received: by 2002:a62:6142:: with SMTP id v63mr4784416pfb.179.1597125618746;
+        Mon, 10 Aug 2020 23:00:18 -0700 (PDT)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id y72sm25257936pfg.58.2020.08.10.23.00.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 10 Aug 2020 23:00:18 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH] HID: i2c-hid: Add 60ms delay after SET_POWER ON
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <bbe5fde3-e0df-053e-a30a-a55c780b1f69@redhat.com>
+Date:   Tue, 11 Aug 2020 14:00:14 +0800
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Pavel Balan <admin@kryma.net>,
+        Daniel Playfair Cal <daniel.playfair.cal@gmail.com>,
+        HungNien Chen <hn.chen@weidahitech.com>,
+        You-Sheng Yang <vicamo.yang@canonical.com>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <869337EE-BA79-4C83-B7AA-9CA76885D5D3@canonical.com>
+References: <20200810142928.12552-1-kai.heng.feng@canonical.com>
+ <bbe5fde3-e0df-053e-a30a-a55c780b1f69@redhat.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 11:28:12PM +0530, Ajay Kumar wrote:
-> Currently, there is no other option to change the lower limit of
-> IOVA for any device than calling iova_init_domain(), but the
-> said function will re-init whole domain and also doesn't track
-> the previously allocated IOVA before re-initing the domain.
-> 
-> There are cases where the device might not support continuous
-> range of addresses, and can also have dependency among buffers
-> allocated for firmware, image manipulation, etc and all of the
-> address requests pass through IOMMU. In such cases, we can allocate
-> buffers stage by stage by setting address limit, and also keep
-> track the of same.
-> 
-> Bit of background can be found here:
-> IOVA allocation dependency between firmware buffer and remaining buffers
-> https://www.spinics.net/lists/iommu/msg43586.html
-> 
-> This patch allows devices to limit the IOVA space they want
-> during allocation at any given point of time. We shall allow
-> the same only if the device owns the corresponding iommu_domain,
-> that is the device is the only master attached to the domain.
-> 
-> The lower limit of IOVA space is marked by start_pfn, and the upper
-> limit is marked by dma_mask and this patch honors the same.
-> Since changing dma_mask can extend the addressable region beyond
-> current cached node, we do a reset of current cached nodes as well.
-> 
-> User drivers can make call sequence like below:
-> ============================================================
-> When they want to limit IOVA for allocated buffers in range
-> 0x0 to 0x1000000:
-> iommu_set_iova_range(dev, 0x0, 0x1000000 - 1);
-> 
-> When they want to limit IOVA for allocated buffers in range
-> 0x1000000 to 0xC0000000:
-> iommu_set_iova_range(dev, 0x1000000, 0xC0000000 - 0x1000000);
-> =============================================================
+Hi Hans,
 
-This still seems to be missing an actual user of the functionality.
+> On Aug 11, 2020, at 00:13, Hans de Goede <hdegoede@redhat.com> wrote:
+> 
+> Hi,
+> 
+> On 10-08-2020 16:29, Kai-Heng Feng wrote:
+>> Goodix touchpad fails to operate in I2C mode after system suspend.
+>> According to the vendor, Windows is more forgiving and there's a 60ms
+>> delay after SET_POWER ON command.
+>> So let's do the same here, to workaround for the touchpads that depend
+>> on the delay.
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> 
+> Interesting I send a very similar patch a couple of days ago,
+> after debugging some touchpads issues on a BMAX Y13 laptop:
+> 
+> https://patchwork.kernel.org/patch/11701541/
+> 
+> If you look at that patch you will see that if we add a
+> sleep on power-on to i2c_hid_set_power(), we can remove
+> an existing sleep after power-on from i2c_hid_hwreset().
+> 
+> And there is an interesting comment there which should
+> probably be moved (as my patch does) and corrected for the
+> new knowledge so that people reading the code in the future
+> now why the sleep is there.
+
+Thanks for the info.
+Can you please update your patch with 60ms to supersede mine?
+
+> 
+> Other then that we've come to the same conclusion, but
+> your sleep is much longer. I guess that is ok though,
+> are you sure we need 60ms as a minimum?
+> Is that what goodix
+> said?
+
+Yes, I was told by Goodix that the 60ms delay is needed.
+
+Kai-Heng
+
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+>> ---
+>>  drivers/hid/i2c-hid/i2c-hid-core.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+>> index 294c84e136d7..7b24a27fad95 100644
+>> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+>> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+>> @@ -419,6 +419,9 @@ static int i2c_hid_set_power(struct i2c_client *client, int power_state)
+>>  	if (ret)
+>>  		dev_err(&client->dev, "failed to change power setting.\n");
+>>  +	if (!ret && power_state == I2C_HID_PWR_ON)
+>> +		msleep(60);
+>> +
+>>  set_pwr_exit:
+>>  	return ret;
+>>  }
+> 
+
