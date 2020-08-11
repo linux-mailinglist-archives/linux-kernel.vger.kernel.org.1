@@ -2,91 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F62242028
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 029C6242032
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgHKTRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 15:17:11 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:39568 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbgHKTRK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 15:17:10 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id A092620023;
-        Tue, 11 Aug 2020 21:17:05 +0200 (CEST)
-Date:   Tue, 11 Aug 2020 21:17:04 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vinay Simha B N <simhavcs@gmail.com>
-Cc:     Vinay Simha B N <simhavcs@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        David Airlie <airlied@linux.ie>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>
-Subject: Re: [PATCH v8 2/2] display/drm/bridge: TC358775 DSI/LVDS driver
-Message-ID: <20200811191704.GA524675@ravnborg.org>
-References: <1594388491-15129-1-git-send-email-simhavcs@gmail.com>
- <1594388491-15129-2-git-send-email-simhavcs@gmail.com>
- <CAGWqDJ4P9dKzGngkiEtL_X1HRjjtU17WqNFM-qiv16tXwQNZTg@mail.gmail.com>
- <CAGWqDJ4s3x5M7dGMTxYMpDbM4NBS7kfTb6-+7Fdx8Pe=CE58fA@mail.gmail.com>
- <20200808213022.GW6186@pendragon.ideasonboard.com>
- <20200810175440.GC292825@ravnborg.org>
- <20200811101942.GB6054@pendragon.ideasonboard.com>
+        id S1726355AbgHKTVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 15:21:54 -0400
+Received: from mga03.intel.com ([134.134.136.65]:29015 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725987AbgHKTVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 15:21:53 -0400
+IronPort-SDR: 1QKtpfpgFufbNt9gba/8vEdFerlq9T7dD4N0M++xAdfD2U0CRwNNeQu+REKFSLbOqM9qP7QVdj
+ Z7KyyN/aehYw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9710"; a="153789917"
+X-IronPort-AV: E=Sophos;i="5.76,301,1592895600"; 
+   d="scan'208";a="153789917"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2020 12:21:52 -0700
+IronPort-SDR: T2glGAwi/JsIJlV9BSkNjgkh4DJil+vf2k/n66DBeYvnSm4+hAGv3XtrwXvLcCzYiYjI6/xHE+
+ 7c9kWyYFrtDg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,301,1592895600"; 
+   d="scan'208";a="494786074"
+Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.252.41.60]) ([10.252.41.60])
+  by fmsmga006.fm.intel.com with ESMTP; 11 Aug 2020 12:21:50 -0700
+Subject: Re: [PATCH] genirq/PM: Always unlock IRQ descriptor in rearm_wake_irq
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>,
+        linux-acpi <linux-acpi@intel.com>, rafael@kernel.org
+References: <20200811180001.80203-1-linux@roeck-us.net>
+From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
+ 173, 80-298 Gdansk
+Message-ID: <a009f2e5-8bf9-fc7d-ece6-0ee2e4381cc1@intel.com>
+Date:   Tue, 11 Aug 2020 21:21:49 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200811101942.GB6054@pendragon.ideasonboard.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=WC5eoWgHUSoulA4aEAAA:9 a=CjuIK1q_8ugA:10
+In-Reply-To: <20200811180001.80203-1-linux@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinay.
+On 8/11/2020 8:00 PM, Guenter Roeck wrote:
+> rearm_wake_irq() does not unlock the irq descriptor if the interrupt
+> is not suspended or if wakeup is not enabled on it. Fix it.
+>
+> Fixes: 3a79bc63d9075 ("PCI: irq: Introduce rearm_wake_irq()")
+> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-> > 
-> > If Laurent or others identify further things to improve we can take
-> > it in-tree.
-> 
-> Just one thing, please see below.
-> 
-> > > > >> +       d2l_write(tc->i2c, VTIM1, vtime1);
-> > > > >> +       d2l_write(tc->i2c, HTIM2, htime2);
-> > > > >> +       d2l_write(tc->i2c, VTIM2, vtime2);
-> > > > >> +
-> > > > >> +       d2l_write(tc->i2c, VFUEN, VFUEN_EN);
-> > > > >> +       d2l_write(tc->i2c, SYSRST, SYS_RST_LCD);
-> > > > >> +       d2l_write(tc->i2c, LVPHY0, LV_PHY0_PRBS_ON(4) | LV_PHY0_ND(6));
-> > > > >> +
-> > > > >> +       dev_dbg(tc->dev, "bus_formats %04x bpc %d\n",
-> > > > >> +               connector->display_info.bus_formats[0],
-> > > > >> +               tc->bpc);
-> > > > >> +       /*
-> > > > >> +        * Default hardware register settings of tc358775 configured
-> > > > >> +        * with MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA jeida-24 format
-> > > > >> +        */
-> > > > >> +       if (connector->display_info.bus_formats[0] ==
-> > > > >> +               MEDIA_BUS_FMT_RGB888_1X7X4_SPWG) {
-> 
-> This shouldn't come from the connector, but from the
-> drm_bridge_state.output_bus_cfg.format. The drm_bridge_funcs
-> .atomic_get_input_bus_fmts() operation likely needs to be implemented.
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I trust you will look into this and submit a patch on top of
-drm-misc-next.
-Please add a proper "Fixes:" tag identifying the commit that introduced
-this bug - in this case the commit introducing the driver.
+And it needs to go to -stable (even though the bug is latent now, 
+because this function is called for suspended IRQs only AFAICS).
 
-Do not hesitate to reply to all if you have any questions.
-We will help you if we can.
+Or I can apply this as the mistake was in my commit.  Please let me know 
+what you prefer.
 
-	Sam
+
+> ---
+>   kernel/irq/pm.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/irq/pm.c b/kernel/irq/pm.c
+> index 8f557fa1f4fe..c6c7e187ae74 100644
+> --- a/kernel/irq/pm.c
+> +++ b/kernel/irq/pm.c
+> @@ -185,14 +185,18 @@ void rearm_wake_irq(unsigned int irq)
+>   	unsigned long flags;
+>   	struct irq_desc *desc = irq_get_desc_buslock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
+>   
+> -	if (!desc || !(desc->istate & IRQS_SUSPENDED) ||
+> -	    !irqd_is_wakeup_set(&desc->irq_data))
+> +	if (!desc)
+>   		return;
+>   
+> +	if (!(desc->istate & IRQS_SUSPENDED) ||
+> +	    !irqd_is_wakeup_set(&desc->irq_data))
+> +		goto unlock;
+> +
+>   	desc->istate &= ~IRQS_SUSPENDED;
+>   	irqd_set(&desc->irq_data, IRQD_WAKEUP_ARMED);
+>   	__enable_irq(desc);
+>   
+> +unlock:
+>   	irq_put_desc_busunlock(desc, flags);
+>   }
+>   
+
+
