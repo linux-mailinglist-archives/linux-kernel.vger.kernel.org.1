@@ -2,221 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E35F2417A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C55A24179D
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728223AbgHKHyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 03:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728133AbgHKHyd (ORCPT
+        id S1728101AbgHKHyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 03:54:24 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:58167 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726397AbgHKHyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 03:54:33 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB02C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 00:54:33 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id y18so9786949ilp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 00:54:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=melexis.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z5wWPMoezqlPQW+XdXx9xDErG0vZ5Ug+GxrnTbtmQ7M=;
-        b=AWg5Or5YERYKPYus/eM6Psz/6DB+ozbeyIgm5BdkcNrz+qaXydnw5C9h2yoNvdDN5L
-         BVwNYvfnGupyhB3fNudXRx17vToJsrp/WuFz7OccXouv5EOMlCDhKyQf7arOLvEgKskr
-         CHcdKTyQDaZXTITMAdPG1+EqwrysS4FjRXFq250kG9RyuPLfOcHhaxHzbop867temC91
-         HgjqFt4KcdcPJmq7FOCUhWbGmRQXhBFFXtn4eYrvOXDDrYHUFDdiCo79izc/XOb+Nm1G
-         ZvIkJlOL1BHQdPwPAOneQ41ySPYmks5pmre/t7gxMA0veF6Q25TcnXlzhJ/O5GfmhkfZ
-         IhAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z5wWPMoezqlPQW+XdXx9xDErG0vZ5Ug+GxrnTbtmQ7M=;
-        b=cN4CxCTp38xdDKWDcLWuKj0OKrJrb2/o61KBmhtnDFBUI3ryfCaSCfRcWB5UNOpibK
-         YfTv8PcORPcD2r1HTMUHpWt3Y05QM5y2P8nlcXgZX+atRLeYumxZtcVsQDlpZgzR5ziS
-         yYtNEQ58420iwdExA5gpVgM7WIkAWo61elwC1ytbzYxcll/Tsx2Ey2d2lIE+VYHsJl1Y
-         WaYfKXzTVpiALi+qJx10cBZ36KkXRNhVCLPgg5iaWLzl18CAJJ9LkkUwR1NF10hi0pzQ
-         A4HzPQ49K/cnOm/kRr4NyZlALw7M/9nbk2vtaebHEdL5zBfDvqMmogwnOBC1wL/8LpqG
-         pkzQ==
-X-Gm-Message-State: AOAM5334F54viOpSpAlyNyAlv6w5RT8CoC103Mh/tcNb2W9p+OhFL6+k
-        xQ33QhFWuIi6CA0Ih6NNHl51BRLPnZB9kUt0BFmAMw==
-X-Google-Smtp-Source: ABdhPJxwBM5O2lPH+oGFjeL1pKcmpnayR8cPQmg3NDuJvttcswQ8j93D3BnivaApSCPbShY8CtutkgmYHtHlOc5nIKM=
-X-Received: by 2002:a92:cb12:: with SMTP id s18mr5277285ilo.13.1597132470806;
- Tue, 11 Aug 2020 00:54:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200808121026.1300375-1-cmo@melexis.com> <20200808121026.1300375-3-cmo@melexis.com>
- <CAHp75VfWk7pCy4Osv0uY0UH4yFS=PRGbE1CNCakuRFTE33SDJg@mail.gmail.com>
- <CAKv63uv-+r6M=G2rviSedgdCUd_0nzHKWXK363bJNERTQHRYXA@mail.gmail.com>
- <20200809143222.4e19ea38@archlinux> <CAKv63uu1cRVCujM0nR5BstDYLZnCuGQTeFxhyUF0QK0mr0hvkQ@mail.gmail.com>
-In-Reply-To: <CAKv63uu1cRVCujM0nR5BstDYLZnCuGQTeFxhyUF0QK0mr0hvkQ@mail.gmail.com>
-From:   Crt Mori <cmo@melexis.com>
-Date:   Tue, 11 Aug 2020 09:53:55 +0200
-Message-ID: <CAKv63uuVYS5isAnhBzcqOJEJWhD5muSDBJzvYoJk1KkucrRnDA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] iio:temperature:mlx90632: Adding extended
- calibration option
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 11 Aug 2020 03:54:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597132462;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=2TA1qUQTA106lCApZkYqx4DJzgphPi5RyaFz/tNYgI8=;
+        b=NLa7yMoF3GcVBE+sKncQaMdMq1rl2q89gJNdYyaWSh0neF5DdQhpn5jkxepe72DosSX5XU
+        YmLoHVAJCzvdRORr1b9MrJ+T7vGSLe/jI+qYHjDtGIvXV+B5/+nqcZV/8B1PUkdubnk/Nn
+        qeMtGzn2FnoywfHXxK/7Z2tLlxG9aUQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-382-fTfFC_9GOue5LbbqOdFu8Q-1; Tue, 11 Aug 2020 03:54:21 -0400
+X-MC-Unique: fTfFC_9GOue5LbbqOdFu8Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E62B7E919;
+        Tue, 11 Aug 2020 07:54:19 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (ovpn-13-96.pek2.redhat.com [10.72.13.96])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E34855D9DD;
+        Tue, 11 Aug 2020 07:54:15 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        sonnyrao@chromium.org, yuzhao@google.com, rientjes@google.com,
+        bhe@redhat.com
+Subject: [PATCH] Revert "mm/vmstat.c: do not show lowmem reserve protection information of empty zone"
+Date:   Tue, 11 Aug 2020 15:54:12 +0800
+Message-Id: <20200811075412.12872-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 9 Aug 2020 at 23:05, Crt Mori <cmo@melexis.com> wrote:
->
-> On Sun, 9 Aug 2020 at 15:32, Jonathan Cameron <jic23@kernel.org> wrote:
-> >
-> > On Sat, 8 Aug 2020 23:57:59 +0200
-> > Crt Mori <cmo@melexis.com> wrote:
-> >
-> > > Hi,
-> > > I am very sorry you missed them, I thought you saw it (reply on v3 of
-> > > the patch). Maybe something happened to that mail, as it contained
-> > > link to datasheet, so I will omit it now.
-> > >
-> > > Except for the order, only the remarks below are still open (did you
-> > > get the polling trail I did?)
-> > >
-> > > On Sat, 8 Aug 2020 at 22:04, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > >
-> > > > On Sat, Aug 8, 2020 at 3:11 PM Crt Mori <cmo@melexis.com> wrote:
-> > > > >
-> > > > > For some time the market wants medical grade accuracy in medical range,
-> > > > > while still retaining the declared accuracy outside of the medical range
-> > > > > within the same sensor. That is why we created extended calibration
-> > > > > which is automatically switched to when object temperature is too high.
-> > > > >
-> > > > > This patch also introduces the object_ambient_temperature variable which
-> > > > > is needed for more accurate calculation of the object infra-red
-> > > > > footprint as sensor's ambient temperature might be totally different
-> > > > > than what the ambient temperature is at object and that is why we can
-> > > > > have some more errors which can be eliminated. Currently this temperature
-> > > > > is fixed at 25, but the interface to adjust it by user (with external
-> > > > > sensor or just IR measurement of the other object which acts as ambient),
-> > > > > will be introduced in another commit.
-> > > >
-> > > > The kernel doc patch should go before this patch.
-> > > >
-> > > > ...
-> > > >
-> > > > > +       *ambient_new_raw = (s16)read_tmp;
-> > > >
-> > > > > +       *ambient_old_raw = (s16)read_tmp;
-> > > >
-> > > > Sorry, did I miss your answer about these castings all over the patch?
-> > > >
-> > >
-> > > These castings are in fact needed. You read unsigned integer, but the
-> > > return value is signed integer. Without the cast it did not extend the
-> > > signed bit, but just wrote the value to signed. Also I find it more
-> > > obvious with casts, that I did not "accidentally" convert to signed.
-> >
-> > Should we perhaps be making this explicit for the cases where we
-> > are sign extending?  That doesn't include these two as the lvalue
-> > is s16, but does include some of the others.
-> >
-> > sign_extend32(read_tmp, 15)
-> >
->
-> So for you lines like
-> s32 read;
-> read = (read + (s16)read_tmp) / 2;
->
-> would actually be better as:
-> read = (read + sign_extend32(read_tmp, 15)) / 2;
->
-> Hm, strange. I would read that more align the read_tmp to 32 bit than
-> the value you have in read_tmp is actually a signed 16 bit integer...
->
+This reverts commit 26e7deadaae1755faf1f6d1a68988c4b8348df59.
 
-OK, I did some trails without the casts and had deja-vu from the first
-series of patches I submitted.  I noticed that without a cast the
-value that ends up in variable is not extended to signed, but it is
-unsigned value truncated. This same finding leads to have these casts
-already in current ambient and object raw read functions.
+Sonny reported that one of their tests started failing on the latest
+kernel on their Chrome OS platform. The root cause is that the above
+commit removed the protection line of empty zone, while the parser used
+in the test relies on the protection line to mark the end of each zone.
 
-So now only debate is if sign_extend32 is useful in this case, as read
-in the current case is 32 bit (before it was also 16 bit).
+Let's revert it to avoid breaking userspace testing or applications.
 
-My preference is to leave unified across the driver.
+Cc: <stable@vger.kernel.org> # 5.8.x
+Reported-by: Sonny Rao <sonnyrao@chromium.org>
+Signed-off-by: Baoquan He <bhe@redhat.com>
+---
+ mm/vmstat.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-> > >
-> > > > ...
-> > > >
-> > > > > +       ret = regmap_read(regmap, MLX90632_RAM_1(17), &read_tmp);
-> > > > > +       ret = regmap_read(regmap, MLX90632_RAM_2(17), &read_tmp);
-> > > > > +       ret = regmap_read(regmap, MLX90632_RAM_1(18), &read_tmp);
-> > > > > +       ret = regmap_read(regmap, MLX90632_RAM_2(18), &read_tmp);
-> > > > > +       ret = regmap_read(regmap, MLX90632_RAM_1(19), &read_tmp);
-> > > > > +       ret = regmap_read(regmap, MLX90632_RAM_2(19), &read_tmp);
-> > > >
-> > > > What so special about these magic 17, 18, 19? Can you provide definitions?
-> > > >
-> > > When we started 0 to 19 were all open for access, from userspace, then
-> > > only 1 and 2 were used with calculations, and now we use 17, 18 and
-> > > 19. Matter of fact is, I can't provide a descriptive name as it
-> > > depends on DSP version and as you can see now within the same DSP
-> > > version, also on the ID part. While RAM3 vs RAM1 and RAM2 could be
-> > > named RAM_OBJECT1, RAM_OBJECT2, RAM_AMBIENT, knowing our development
-> > > that might not be true in the next configuration, so I rather keep the
-> > > naming as in the datasheet.
-> > Normal solution for that is to version the defines as well.
-> >
-> > MLX90632_FW3_RAM_1_AMBIENT etc
-> > When a new version changes this, then you introduced new defines to
-> > support that firmware.
-> >
->
-> OK will add those, but it is ending up as:
-> MLX90632_RAM_DSP5_AMBIENT
-> MLX90632_RAM_DSP5_EXTENDED_AMBIENT
-> MLX90632_RAM_DSP5_OBJECT_1
-> MLX90632_RAM_DSP5_EXTENDED_OBJECT_1
-> MLX90632_RAM_DSP5_OBJECT_2
-> MLX90632_RAM_DSP5_EXTENDED_OBJECT_2
->
-> ok?
-> > >
-> > > > ...
-> > > >
-> > > > > +       int tries = 4;
-> > > >
-> > > > > +       while (tries-- > 0) {
-> > > > > +               ret = mlx90632_perform_measurement(data);
-> > > > > +               if (ret < 0)
-> > > > > +                       goto read_unlock;
-> > > > > +
-> > > > > +               if (ret == 19)
-> > > > > +                       break;
-> > > > > +       }
-> > > > > +       if (tries < 0) {
-> > > > > +               ret = -ETIMEDOUT;
-> > > > > +               goto read_unlock;
-> > > > > +       }
-> > > >
-> > > > Please avoid ping-pong type of changes in the same series (similar way
-> > > > as for kernel doc), which means don't introduce something you are
-> > > > going to change later on. Patch to move to do {} while () should go
-> > > > before this one.
-> > >
-> > > OK, will fix that ordering in v5, but will wait till we solve also
-> > > above discussions to avoid adding new versions.
-> > >
-> > > >
-> > > > --
-> > > > With Best Regards,
-> > > > Andy Shevchenko
-> > >
-> > > And about that voodoo stuff with numbers:
-> > >
-> > > Honestly, the equation is in the datasheet[1] and this is just making
-> > > floating point to fixed point with proper intermediate scaling
-> > > (initially I had defines of TENTOX, but that was not desired). There
-> > > is no better explanation of this voodoo.
-> >
-> > We all love fixed point arithmetic :)
-> >
-> > Jonathan
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 5b35c0eb8c57..62376dc66ec0 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1644,12 +1644,6 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+ 		   zone->present_pages,
+ 		   zone_managed_pages(zone));
+ 
+-	/* If unpopulated, no other information is useful */
+-	if (!populated_zone(zone)) {
+-		seq_putc(m, '\n');
+-		return;
+-	}
+-
+ 	seq_printf(m,
+ 		   "\n        protection: (%ld",
+ 		   zone->lowmem_reserve[0]);
+@@ -1657,6 +1651,12 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+ 		seq_printf(m, ", %ld", zone->lowmem_reserve[i]);
+ 	seq_putc(m, ')');
+ 
++	/* If unpopulated, no other information is useful */
++	if (!populated_zone(zone)) {
++		seq_putc(m, '\n');
++		return;
++	}
++
+ 	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
+ 		seq_printf(m, "\n      %-12s %lu", zone_stat_name(i),
+ 			   zone_page_state(zone, i));
+-- 
+2.17.2
+
