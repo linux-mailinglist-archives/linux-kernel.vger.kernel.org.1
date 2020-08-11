@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286BB24210F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 22:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D46972420F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 22:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727014AbgHKUHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 16:07:05 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:40325 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727001AbgHKUHC (ORCPT
+        id S1726749AbgHKUG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 16:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbgHKUGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 16:07:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597176421;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0PGG//CtuoOTYv2p77D8V5k7E6MAMYxPO8Vv8577Zp8=;
-        b=bFvbcCMguCjvU111njve4CvT0OxiEz38KcIOnviM4Cy1Rc67fycIM/sNuAqgCKPkg2eT0z
-        iail5LYKthbWIeOFnPbEEHpBqLdePuSqLjhqusF/HWQCRNN5RZ3sb86ySjWza1AMSiN53P
-        iYlWIP6XugPyJrWurMWpQBxACfF1ZWU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-VKygY5HSMxeH3V02zJJllw-1; Tue, 11 Aug 2020 16:06:58 -0400
-X-MC-Unique: VKygY5HSMxeH3V02zJJllw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 383BA1DE1;
-        Tue, 11 Aug 2020 20:06:57 +0000 (UTC)
-Received: from Ruby.redhat.com (ovpn-119-184.rdu2.redhat.com [10.10.119.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 44FEA5D9D7;
-        Tue, 11 Aug 2020 20:06:56 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [RFC 20/20] drm/nouveau/kms: Start using drm_dp_read_dpcd_caps()
-Date:   Tue, 11 Aug 2020 16:04:57 -0400
-Message-Id: <20200811200457.134743-21-lyude@redhat.com>
-In-Reply-To: <20200811200457.134743-1-lyude@redhat.com>
-References: <20200811200457.134743-1-lyude@redhat.com>
+        Tue, 11 Aug 2020 16:06:24 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D62C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 13:06:24 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id z6so85804iow.6
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 13:06:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x9Z56G7Sq+yoxF26YYsaVBF/VyvZNYi0ExatDmNcea8=;
+        b=CmHP/prH5/FP2ejP8hzk1TIK0ioM1mTElZ2Xxat1dgv6XbaDed3rUDQIZjKALmYmYW
+         M2Wpi1pa2zNkpS0Il8/Tlx3hEW8wDBHDDMl9j+p7tY795MeaYQkirp7mw2hLYW098fYa
+         mvwBVOUXNuGA+5s9y1TTFETU57MNRjCYyagQo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x9Z56G7Sq+yoxF26YYsaVBF/VyvZNYi0ExatDmNcea8=;
+        b=DaIQEeQJnEMcsYY76U2/rNRBh0N81mrDO8GqvN/ETefX8fw8KjECJKuIYuQgXmIH2w
+         q8hWUhMF+Kg7W3BOIx+34ReK+wsDuRxOWIyg2m3qOubk0EMYI22CDZheeZofj+oNzLYb
+         fGcWbiJ8wGQudrWTKCcbVqk8FXQDF04+5qvxo+mLXduZw8dRSX3wlPwGgBfpGhMhUWuB
+         KMZ1li+E5CQEgXI6/qFvZjjzNU9HrENXyfcjVdWglbPh78bCEOGYDmZOSqZDhErYwf6v
+         Jh+pH7eUEXG5wkx2ZCpMFMKRcEtFMfjmEmrQ0yuOEdmhWh/fa/gjGHK/CPALVyYFKM7C
+         nJWQ==
+X-Gm-Message-State: AOAM532dn3mxRuFVqprsJVz0x03ezB8Np5wEez2w2m0Jgr4eFZCzA+tv
+        tUT+Gg9IzhXdEIXyFPOcl5THb6i9x3o=
+X-Google-Smtp-Source: ABdhPJxt7J4Yz+saDja0hs4hbbCY2wxkcPJTzkfMm3klrxtA/5R73fQ8qccYz0C7xutctQijFvlhyw==
+X-Received: by 2002:a05:6602:2d43:: with SMTP id d3mr24043574iow.39.1597176383128;
+        Tue, 11 Aug 2020 13:06:23 -0700 (PDT)
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com. [209.85.166.49])
+        by smtp.gmail.com with ESMTPSA id t26sm7007850ilb.80.2020.08.11.13.06.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Aug 2020 13:06:21 -0700 (PDT)
+Received: by mail-io1-f49.google.com with SMTP id z6so85527iow.6
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 13:06:21 -0700 (PDT)
+X-Received: by 2002:a02:9247:: with SMTP id y7mr26798836jag.140.1597176381447;
+ Tue, 11 Aug 2020 13:06:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200811183950.10603-1-peterx@redhat.com> <CAHk-=whQM=m5td5tfbuxh1f_Gxjsa74XV962BYkjrbeDMAhBpA@mail.gmail.com>
+In-Reply-To: <CAHk-=whQM=m5td5tfbuxh1f_Gxjsa74XV962BYkjrbeDMAhBpA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 11 Aug 2020 13:06:04 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wit7LDr0tA2eVn7yHHEH76oK=Lfm3tTs8_JxO8XEED4_g@mail.gmail.com>
+Message-ID: <CAHk-=wit7LDr0tA2eVn7yHHEH76oK=Lfm3tTs8_JxO8XEED4_g@mail.gmail.com>
+Subject: Re: [PATCH v3] mm/gup: Allow real explicit breaking of COW
+To:     Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Jann Horn <jannh@google.com>, Christoph Hellwig <hch@lst.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kirill Shutemov <kirill@shutemov.name>, Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we've extracted i915's code for reading both the normal DPCD
-caps and extended DPCD caps into a shared helper, let's start using this
-in nouveau to enable us to start checking extended DPCD caps for free.
+;
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/nouveau/nouveau_dp.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+On Tue, Aug 11, 2020 at 12:24 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Now I wonder if there's any other case of FOLL_WRITE that is missing.
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
-index f41fa513023fd..a4e07d116972f 100644
---- a/drivers/gpu/drm/nouveau/nouveau_dp.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
-@@ -55,15 +55,13 @@ nouveau_dp_probe_dpcd(struct nouveau_connector *nv_connector,
- 	int ret;
- 	u8 *dpcd = outp->dp.dpcd;
- 
--	ret = drm_dp_dpcd_read(aux, DP_DPCD_REV, dpcd, DP_RECEIVER_CAP_SIZE);
--	if (ret == DP_RECEIVER_CAP_SIZE && dpcd[DP_DPCD_REV]) {
--		ret = drm_dp_read_desc(aux, &outp->dp.desc,
--				       drm_dp_is_branch(dpcd));
--		if (ret < 0)
--			goto out;
--	} else {
-+	ret = drm_dp_read_dpcd_caps(aux, dpcd);
-+	if (ret < 0)
-+		goto out;
-+
-+	ret = drm_dp_read_desc(aux, &outp->dp.desc, drm_dp_is_branch(dpcd));
-+	if (ret < 0)
- 		goto out;
--	}
- 
- 	if (nouveau_mst) {
- 		mstm = outp->dp.mstm;
--- 
-2.26.2
+Actually, now I wonder if we really should have tried to handle the
+wrong-way cow reuse case some other way entirely.
 
+When discussing this wrong-way-COW issue originally I looked at just doing
+
+        struct page *page = vmf->page;
+
+        if (page_count(page) != 1)
+                goto copy;
+        if (!trylock_page(page))
+                goto copy;
+        if (page_mapcount(page) != 1 && page_count(page) != 1) {
+                unlock_page(page);
+                goto copy;
+        }
+        /* Ok, we've got the only map reference, and the only
+         *  page count reference, and the page is locked,
+         * it's dark out, and we're wearing sunglasses. Hit it.
+         */
+        wp_page_reuse(vmf);
+        unlock_page(page);
+        return VM_FAULT_WRITE
+
+at the top of the PageAnon() case in do_wp_page(), and be entirely done with it.
+
+Make the rule be that we *only* re-use the page if there is no
+question what-so-ever that we're the only possible owner of it.
+Anything else at all - whether they be GUP users, other processes,
+KSM, hughepage collapsing, whatever: don't even try.
+
+That would possibly cause a lot of extra copies, but our rules for
+"can we re-use this page" are just crazy complicated. And now the
+"minimal" thing of just always breaking COW ends up causing
+complications of its own.
+
+IOW, maybe all of this falls under "yeah, we have historical reasons
+for all of it, but it's just not worth the pain".
+
+We do a _lot_ of complex stuff just to check whether we could possibly
+share the page.
+
+Maybe trying to reuse the page just isn't worth it?
+
+Adding Andrea to the cc (although he probably sees this through
+linux-mm anyway). Maybe he can go "naah, that will be horribly bad,
+because..."
+
+Then we could get rid of all the FAULT_FORCE_COW games again entirely,
+and people can point fingers at me and laugh behind my back because of
+what a bad idea it was.
+
+                    Linus
