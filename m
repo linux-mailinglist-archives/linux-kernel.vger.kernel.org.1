@@ -2,155 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AFC241B6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 15:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51027241B72
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 15:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728685AbgHKNM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 09:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38906 "EHLO
+        id S1728717AbgHKNNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 09:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728566AbgHKNM0 (ORCPT
+        with ESMTP id S1728557AbgHKNNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 09:12:26 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2530BC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 06:12:26 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id j21so6690460pgi.9
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 06:12:25 -0700 (PDT)
+        Tue, 11 Aug 2020 09:13:36 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9FCC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 06:13:36 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id i92so1508433pje.0
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 06:13:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qZ9iduntohOD5MRWKGXE3NQwDvKnC/BQdlgFzYDcVCg=;
-        b=TE8F4eu3B0uTZCmWX+baJY9caqGEcgZS9Ibz77pNiep8D7kqZbmgpJ8fRsP68Mq2A6
-         P7tgGes4ixKX83YBlw2LTNVBHeu3Wl0wUZXhkUY5a32krwLV9jKWr+XDkjwm5U1Eap/k
-         d3KY7FpiFKXGj3V/xHU8UWZpXutQkg8iw/ZTCqi38StguxoL38Aw1o8WmcGTArrJHL11
-         9Bfs1J1r8fFgvuPljJTt1sqmAgAYIeWrS/9eqvq06C1rkXEh/eDCmWZBbaKT61/EHVqR
-         CkfvKzcjTxi05D7nEq6teN+SHyvN4mfjgQboJmTkMLlYav8X2wBgFYKsFHimQTdpb5s3
-         aFxA==
+        bh=xHu6dqtx6dKHdWpQM9ecfqF6ipS8+Ftc0J6RvgUhGFo=;
+        b=jdu0KZuJGN7BSi/GvbU8wDgSr5m6NHgobmXY0Qa1UBkL9hhJdh1tM2Mx4P2/3dVILb
+         JoF/CaxgNxTO5fYriU7q2WXbHY81dQTzL3qkVbxu9CSNR9bTc3h3CZBdIoJCholq/cPJ
+         JbLEmEqnnFP8eK740tBfhUFK/G1xlAAvI9pXJNVS5UJaOQ6I7cqkvOmXmlEIVBvJWVuV
+         ASLxte1F5dhJdr+bjcvf3xh1jNQh2tRI7rhlFZg/jeqZ9DdjDtQaZm7I9uQ63uy+tpyL
+         oOiiywQjZbLvS4l79qQLLu7Ty6KBAZHSaxxhh+1CmwEfdTtaQeHpNV6MQ7toYOR2kOli
+         Y8Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=qZ9iduntohOD5MRWKGXE3NQwDvKnC/BQdlgFzYDcVCg=;
-        b=FQ4Zv8WKPJzyL/W5pUsGC/U0ouwbhiMV9gD6icjFCXd+w+F+jXymNOBE9CQFOhkluf
-         b9sOWSRhPooRc7shGtYJW0XDm0gfOKq8P6DiNnlKItenGcWAYPSfIaKed8E8iVKooo1i
-         7pRKyAmy3V53BI9EiYSUrJuTLGFJTJzHMQcWtZbfEPcX94b3xLXS0VNYgmqGm9qSOJ2j
-         XIARfA2zl0mtk1GPr/XkcESaTg1vledYpq4CsE82QmbOCNL+f9dKOP8oooufJcTVUZs/
-         BLpU+HaJGz8G6dzEz3T3EECLHmJLasuBHIufCcx9786DotSFMYqnqANXsxBnZXsFxZWk
-         e4Lg==
-X-Gm-Message-State: AOAM5331Zm9B+k4pP1QLp7/5yDYTNfGuEhELADaWnQsoQQwfF10YiN9r
-        s0qGCZneFvdH2GEKtvgQvVjTSY8X
-X-Google-Smtp-Source: ABdhPJzag+6WSRDNu7ZNw4sns8gGX08sBi+Z9IMfaz/uThKA+RP5nIlholb6XTT8dwmceBQlzKmC6g==
-X-Received: by 2002:aa7:8608:: with SMTP id p8mr5978330pfn.62.1597151545250;
-        Tue, 11 Aug 2020 06:12:25 -0700 (PDT)
-Received: from [0.0.0.0] ([108.61.186.250])
-        by smtp.gmail.com with ESMTPSA id w82sm26414844pff.7.2020.08.11.06.12.21
+        bh=xHu6dqtx6dKHdWpQM9ecfqF6ipS8+Ftc0J6RvgUhGFo=;
+        b=RbMClCgVxWiA9vfzEiAwzmWHDb/HnEKRup/Xhl/FVDpgDwPkyy4eJ+PSoL8CsNZxAk
+         iraeefi0Yb7YYjwSCEiKCtq1pL9A+8reTWkgZzTN9NlARBDTleo1GlpmbMOfVcUwCBwx
+         Ovm97L251t8QrwzMGB97IVLo+1A9SUBt0cxVly6EgABbPMtlTOR5jKM9AaRgmBdH9lGy
+         tpgawMgtXMP24Cze9E4GuO5bSOHrHrKEasujrmLOUGkH8HBXjhZsgc2LQyRZvK70Y625
+         iY1foV6GeXTp3rtQ7q29IRDQAWLNam73yXnAsCI+XJvkdxbfvdseOE5lGKGA/j4IqCkr
+         Fbxw==
+X-Gm-Message-State: AOAM532IfPADgqNzV6KDzz7HhgbDqOSZSmRJPXDEz7xZtkVzWelTu4K7
+        52gesEilvB10DpU7gnZYQF4rgg==
+X-Google-Smtp-Source: ABdhPJyU3533URMKEqcSoptMV2jIwg9UZB5n6VGkbS3uedpDRui2yjCE/cx+ISI1udiICS8cHioC6g==
+X-Received: by 2002:a17:90a:bf04:: with SMTP id c4mr944279pjs.149.1597151616039;
+        Tue, 11 Aug 2020 06:13:36 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id s125sm17541177pfb.125.2020.08.11.06.13.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Aug 2020 06:12:24 -0700 (PDT)
-Subject: Re: [PATCH] sched/fair: Remove the duplicate check from
- group_has_capacity()
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org
-References: <20200810010009.92758-1-arch0.zheng@gmail.com>
- <jhjwo26gxlb.mognet@arm.com> <9425382c-2a42-57ca-512d-c93c589dc701@gmail.com>
- <jhjv9hph3h7.mognet@arm.com> <01fe6a9b-fd3a-9b36-b2fa-6cea58415670@gmail.com>
- <jhjtux9gxh2.mognet@arm.com>
-From:   Qi Zheng <arch0.zheng@gmail.com>
-Message-ID: <905d8887-e79c-daf6-cbce-80fd0509e37d@gmail.com>
-Date:   Tue, 11 Aug 2020 21:12:17 +0800
+        Tue, 11 Aug 2020 06:13:35 -0700 (PDT)
+Subject: Re: [PATCH v2] loop: unset GENHD_FL_NO_PART_SCAN on LOOP_CONFIGURE
+To:     Martijn Coenen <maco@android.com>,
+        Lennart Poettering <mzxreary@0pointer.de>
+Cc:     linux-block <linux-block@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Yang Xu <xuyang2018.jy@cn.fujitsu.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20200810171632.GA226564@gardel-login>
+ <CAB0TPYE-_ErKTqveFW-3Gpb8=ayoy3okyhkeScKi7r5rmLzp8A@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <9679c065-85c5-ad06-ddf0-a4c81158ebe5@kernel.dk>
+Date:   Tue, 11 Aug 2020 07:13:33 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <jhjtux9gxh2.mognet@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAB0TPYE-_ErKTqveFW-3Gpb8=ayoy3okyhkeScKi7r5rmLzp8A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/8/11 下午8:48, Valentin Schneider wrote:
-> 
-> On 11/08/20 12:44, Qi Zheng wrote:
->> On 2020/8/11 下午6:38, Valentin Schneider wrote:
->>>
->>> On 11/08/20 04:39, Qi Zheng wrote:
->>>> On 2020/8/11 上午2:33, Valentin Schneider wrote:
->>>>>
->>>>> On 10/08/20 02:00, Qi Zheng wrote:
->>>>>> 1. The group_has_capacity() function is only called in
->>>>>>       group_classify().
->>>>>> 2. The following inequality has already been checked in
->>>>>>       group_is_overloaded() which was also called in
->>>>>>       group_classify().
->>>>>>
->>>>>>          (sgs->group_capacity * imbalance_pct) <
->>>>>>                            (sgs->group_runnable * 100)
->>>>>>
->>>>>
->>>>> Consider group_is_overloaded() returns false because of the first
->>>>> condition:
->>>>>
->>>>>            if (sgs->sum_nr_running <= sgs->group_weight)
->>>>>                    return false;
->>>>>
->>>>> then group_has_capacity() would be the first place where the group_runnable
->>>>> vs group_capacity comparison would be done.
->>>>>
->>>>> Now in that specific case we'll actually only check it if
->>>>>
->>>>>      sgs->sum_nr_running == sgs->group_weight
->>>>>
->>>>> and the only case where the runnable vs capacity check can fail here is if
->>>>> there's significant capacity pressure going on. TBH this capacity pressure
->>>>> could be happening even when there are fewer tasks than CPUs, so I'm not
->>>>> sure how intentional that corner case is.
->>>>
->>>> Maybe some cpus in sg->cpumask are no longer active at the == case,
->>>> which causes the significant capacity pressure?
->>>>
->>>
->>> That can only happen in that short window between deactivating a CPU and
->>> not having rebuilt the sched_domains yet, which sounds quite elusive.
->>>
+On 8/11/20 12:49 AM, Martijn Coenen wrote:
+> On Mon, Aug 10, 2020 at 7:16 PM Lennart Poettering <mzxreary@0pointer.de> wrote:
 >>
->> In fact, at the beginning, I added unlikely() here to hint the compiler:
+>> When LOOP_CONFIGURE is used with LO_FLAGS_PARTSCAN we need to propagate
+>> this into the GENHD_FL_NO_PART_SCAN. LOOP_SETSTATUS does this,
+>> LOOP_CONFIGURE doesn't so far. Effect is that setting up a loopback
+>> device with partition scanning doesn't actually work when LOOP_CONFIGURE
+>> is issued, though it works fine with LOOP_SETSTATUS.
 >>
->> -	if ((sgs->group_capacity * imbalance_pct) <
->> -			(sgs->group_runnable * 100))
->> +	if (unlikely((sgs->group_capacity * imbalance_pct) <
->> +			(sgs->group_runnable * 100)))
+>> Let's correct that and propagate the flag in LOOP_CONFIGURE too.
 >>
->> The corresponding patch is as follows:
+>> Fixes: 3448914e8cc5("loop: Add LOOP_CONFIGURE ioctl")
 >>
->>        [PATCH]sched/core: add unlikely in group_has_capacity()
->>
->> Do you think it is necessary?
+>> Signed-off-by: Lennart Poettering <lennart@poettering.net>
+>> Acked-by: Martijn Coenen <maco@android.com>
 > 
-> The "unlikely" approach has the benefit of keeping all corner cases in
-> place. I was tempted to say it could still make sense to get rid of the
-> extra check entirely, given that it has an impact only when:
-> 
-> - sum_nr_running == group_weight
-> - group capacity has been noticeably reduced
-> 
-> If sum_nr_running < group_weight, we won't evaluate it.
-> If sum_nr_running > group_weight, we either won't call into
->    group_has_capacity() or we'll have checked it already in
->    group_overloaded().
-> 
-> That said, it does make very much sense to check it in that ==
-> case. Vincent might have a different take on this, but right now I'd say
-> the unlikely approach is the safest one of the two.
-> 
+> Thanks, still looks good to me.
 
-So what should I do next? Do I resubmit a patch with unlikely() or
-add your email to the old patch([PATCH]sched/core: add unlikely in
-group_has_capacity())? Or continue to wait for suggestions from
-other maintainers?
+Applied.
+
+-- 
+Jens Axboe
+
