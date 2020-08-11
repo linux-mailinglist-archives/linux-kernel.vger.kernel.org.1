@@ -2,100 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B14241A37
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 13:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D84E241A3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 13:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728693AbgHKLRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 07:17:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728469AbgHKLRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 07:17:18 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F284420716;
-        Tue, 11 Aug 2020 11:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597144638;
-        bh=xJBqLG+s8HgG35QAutrjsfzZx63gQyfWw2+EJ8gZfGA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GCfZ5e9x8+yULjtJSP/dEV/zOu2rVdRZ9nNa9NgPOVpb9I4a1tlr5i7itGO2IWc8B
-         wgYP0Byeb0eWLz1jF5XrkJCZckYqbu4Ez107PLs7Gw4DroGOxwdlBuEdbA8gUqSONc
-         1Qe/B6DDLWp4R68YWcF0ylL6oS90PNJViKf3GA3A=
-Date:   Tue, 11 Aug 2020 12:17:13 +0100
-From:   Will Deacon <will@kernel.org>
-To:     peterz@infradead.org
-Cc:     linux@armlinux.org.uk, gregkh@linuxfoundation.org,
-        andre.przywara@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: lockdep splat ("possible circular locking dependency detected")
- with PL011 on 5.8
-Message-ID: <20200811111713.GA7203@willie-the-truck>
-References: <20200811101313.GA6970@willie-the-truck>
- <20200811103841.GC2674@hirez.programming.kicks-ass.net>
+        id S1728709AbgHKLS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 07:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728469AbgHKLSz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 07:18:55 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E9DC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 04:18:55 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id k8so2463007wma.2
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 04:18:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WhMlMR0rWuSfJKIPPo9mAojnhHNWUY4zWDVzFeeHjaY=;
+        b=Jz+aoNkIcFDY6nGZZsPqisGocV5D1HD4hNhlDzRzcadvtZ56+uD7mYRpbzlO1RgNuD
+         UVvnCfwAGTtGwlnAE3kl2NJbWOoBS/+F9gGWz26ruptiARES3F6KsanO7nMWQ1iwT/jB
+         TQkZIYgtxn3zms7KAb1qOqESycn3YzMQLHOQpeBtgnK/ynLY5wdtwTGMywNCsE/LL6GH
+         QN9R2XV80pwRjRJ2RA2WP7mgP9ZJhq4CmrOxfyf7EZYZKIDlURJYWhsXcRv9cYqwcZ0Q
+         PboD5Kf8J5hrbCxANqp/ZnV0lVcLRK0LPo5WcPcV2ISTe9JHfFQ/HTQHWVumtrw+s4HP
+         aN1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WhMlMR0rWuSfJKIPPo9mAojnhHNWUY4zWDVzFeeHjaY=;
+        b=MvetusAOlTAArWjLZym63bJhqTEVxI/bpCPwYIt9yFaW+heTtwwZgprBoB300PLLmM
+         1MyRWqcZ3YRm09JDjo+VYoDrRboO7U+aIULX+4aW/QTwtmRpFaj9VFdMF0LjuEo0VKBU
+         SzdUK/1x50fa1EFM/SM8kaVMWIpXsnVrjAVb0N4TsAAd6Dt2Ww5EFa6cBKZIAb/lLs4Q
+         tWbzxW0yLdo8BzE7paQusBSZh8amv/NFR0HHKOs+0OBNad4c8Y54QLP6Y5953MpM/UqB
+         aQ3qQiMkjASXhs5m0Qg853AJCqpuyqgvtB3mgoCh6HllaK04mewMtsPqGABFsRzSTn7w
+         Gvdw==
+X-Gm-Message-State: AOAM53140fJDQXdnlKsyH8c7dUk65cMrowqClE86+tQa++8P8aeDvz9F
+        fZfhJlygK3SEZWAmd8H9iBZvF3qK
+X-Google-Smtp-Source: ABdhPJwBz0QXOIsjFl8fTDXDwU6V3q5VDdVsjTjA4lHmld5TpMebvTdgNMLcWqtfmJW6sn22ji8TbA==
+X-Received: by 2002:a1c:750f:: with SMTP id o15mr3737321wmc.182.1597144734158;
+        Tue, 11 Aug 2020 04:18:54 -0700 (PDT)
+Received: from laptop.fritz.box ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id t14sm29172064wrg.38.2020.08.11.04.18.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Aug 2020 04:18:53 -0700 (PDT)
+From:   "=?UTF-8?q?Christian=20K=C3=B6nig?=" 
+        <ckoenig.leichtzumerken@gmail.com>
+X-Google-Original-From: =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH] locking/rwsem: remove redundant semicolon of down_write_nest_lock
+Date:   Tue, 11 Aug 2020 13:18:52 +0200
+Message-Id: <20200811111852.190209-1-christian.koenig@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200811103841.GC2674@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 12:38:41PM +0200, peterz@infradead.org wrote:
-> On Tue, Aug 11, 2020 at 11:13:13AM +0100, Will Deacon wrote:
-> > Using magic-sysrq via a keyboard interrupt over the serial console results in
-> > the following lockdep splat with the PL011 UART driver on v5.8. I can reproduce
-> > the issue under QEMU with arm64 defconfig + PROVE_LOCKING.
-> > 
-> > Any chance somebody could take a look, please? It's a little annoying,
-> > because it means when I uses magic-sysrq to increase the loglevel prior
-> > to testing something else, lockdep gets disabled as a result.
-> > 
-> 
-> Going by msm_serial, the thing to do is something like this:
-> 
-> diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-> index 8efd7c2a34fe..1717790ece2b 100644
-> --- a/drivers/tty/serial/amba-pl011.c
-> +++ b/drivers/tty/serial/amba-pl011.c
-> @@ -308,8 +308,9 @@ static void pl011_write(unsigned int val, const struct uart_amba_port *uap,
->   */
->  static int pl011_fifo_to_tty(struct uart_amba_port *uap)
->  {
-> -	u16 status;
->  	unsigned int ch, flag, fifotaken;
-> +	int sysrq;
-> +	u16 status;
->  
->  	for (fifotaken = 0; fifotaken != 256; fifotaken++) {
->  		status = pl011_read(uap, REG_FR);
-> @@ -344,10 +345,12 @@ static int pl011_fifo_to_tty(struct uart_amba_port *uap)
->  				flag = TTY_FRAME;
->  		}
->  
-> -		if (uart_handle_sysrq_char(&uap->port, ch & 255))
-> -			continue;
-> +		spin_unlock(&uap->port.lock);
-> +		sysrq = uart_handle_sysrq_char(&uap->port, ch & 255);
-> +		spin_lock(&uap->port.lock);
->  
-> -		uart_insert_char(&uap->port, ch, UART011_DR_OE, ch, flag);
-> +		if (!sysrq)
-> +			uart_insert_char(&uap->port, ch, UART011_DR_OE, ch, flag);
->  	}
->  
->  	return fifotaken;
+From: Guchun Chen <guchun.chen@amd.com>
 
-Cheers, that seems to do the trick:
+Otherwise, braces are needed when using it.
 
-Tested-by: Will Deacon <will@kernel.org>
+Signed-off-by: Guchun Chen <guchun.chen@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+---
+ include/linux/rwsem.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-but what I don't understand is why I haven't run into this before, and why
-nobody else seems to be reporting it!
+diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
+index 7e5b2a4eb560..7a5bf5d50489 100644
+--- a/include/linux/rwsem.h
++++ b/include/linux/rwsem.h
+@@ -179,7 +179,7 @@ extern void _down_write_nest_lock(struct rw_semaphore *sem, struct lockdep_map *
+ do {								\
+ 	typecheck(struct lockdep_map *, &(nest_lock)->dep_map);	\
+ 	_down_write_nest_lock(sem, &(nest_lock)->dep_map);	\
+-} while (0);
++} while (0)
+ 
+ /*
+  * Take/release a lock when not the owner will release it.
+-- 
+2.25.1
 
-I'll try some older kernels to see if it ever worked.
-
-Will
