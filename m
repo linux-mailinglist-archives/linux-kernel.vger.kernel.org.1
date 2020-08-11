@@ -2,123 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CDD2415C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 06:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AD52415CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 06:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgHKElq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 00:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbgHKElq (ORCPT
+        id S1728115AbgHKEo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 00:44:57 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:30302 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725942AbgHKEox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 00:41:46 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC282C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 21:41:45 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id z20so6210695plo.6
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 21:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mE27Q38brRQJRQFHecs3wbVF5vyzIo0pA5YfBnjEd0M=;
-        b=dcwuxobTOVwsVWMExcu2c1u07wvKJPkUNKWxbz91PgELKLP2CMXHd9hz3m4ZbgJa5d
-         GfEb1wxg9eB7K2iGnUeYoYysBiatdmXrfGk5jMCRb9mmSjHTWPXxzCwJ07UyVtdYbq1e
-         9t/o5JoiiJ2/YZbnx6q9FOg3jOGLyeyB0jsCo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mE27Q38brRQJRQFHecs3wbVF5vyzIo0pA5YfBnjEd0M=;
-        b=HLPetaAOzevxgs/w/XKSm5YLKzqwvveRM9ui/sgziVafjX5h5DyNjMuydxRXgjetK5
-         6EZlKOSIkiuay5+S5nMoIguGeN2lGv/9HA0UN0HCRJrqmSl/ro9p+Tl/wGaeYjrbW3io
-         lakbpUNP9IzeD6gFKZaRxBNmkZ0sCYPOFQPGvz4Q/begvVrI3CJWTgoBT4KGlZAOB/vJ
-         6EYe4ZvmoAUpp55aVx8rm46S40fVVkAc8xiYIV8Teb47QDbPgPfxje72qA6YE1K7jNWB
-         C/+51mh7QddXX75B40n34+AQOQWurjQsGU4wBrHnX2ee9LQWenRbZCfJELNMMV4qKNWP
-         YVVQ==
-X-Gm-Message-State: AOAM531Pcq9TA9EZ0nJZ5zarcMONpA7FvEDLlj963qXy2HQtKWU3JrGO
-        Ls5zgk+B/XaTAuMBqbA1Ifsb5A==
-X-Google-Smtp-Source: ABdhPJypsimlIf0acj5/URTgwmBaduezmnRYRZrOC4WalSD0JGGMmZCrBV+sKMLyABO4swKCTXQ+OQ==
-X-Received: by 2002:a17:90a:b386:: with SMTP id e6mr2826993pjr.57.1597120905375;
-        Mon, 10 Aug 2020 21:41:45 -0700 (PDT)
-Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
-        by smtp.gmail.com with ESMTPSA id l78sm445671pfd.130.2020.08.10.21.41.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2020 21:41:44 -0700 (PDT)
-From:   Ikjoon Jang <ikjn@chromium.org>
-To:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Ikjoon Jang <ikjn@chromium.org>
-Subject: [PATCH v2] power: supply: sbs-battery: remove unused enable_detection flags
-Date:   Tue, 11 Aug 2020 12:41:41 +0800
-Message-Id: <20200811044141.1821281-1-ikjn@chromium.org>
-X-Mailer: git-send-email 2.28.0.236.gb10cc79966-goog
+        Tue, 11 Aug 2020 00:44:53 -0400
+X-UUID: 8eb802f3faa042e88534f1e099ec2a97-20200811
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=xMfOcxXPIjQ8x1RL6vb8f9fzkRGTsMOc4csNnJ7zcjY=;
+        b=RAjKmqsTF+iGUBIcVHptes79Gmi09FbSYfNTRJFAHvWBkJznx9a6QgKe23gpILz/WoOz+UVM99xSmoLzbqGBkyQSQdFPQjSXibLIry+cJuvf1nKm3iVX3QQ9IfKYbaIfPrHYp4GPxz/++GdTn1quJoJ5JSEQ1yIhwgOIbZGwYZc=;
+X-UUID: 8eb802f3faa042e88534f1e099ec2a97-20200811
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <chinwen.chang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1932061379; Tue, 11 Aug 2020 12:44:48 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 11 Aug 2020 12:44:46 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 11 Aug 2020 12:44:46 +0800
+From:   Chinwen Chang <chinwen.chang@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Michel Lespinasse <walken@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Steven Price <steven.price@arm.com>,
+        Song Liu <songliubraving@fb.com>,
+        Jimmy Assarsson <jimmyassarsson@gmail.com>,
+        Huang Ying <ying.huang@intel.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-fsdevel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Subject: [PATCH 0/2] Try to release mmap_lock temporarily in smaps_rollup
+Date:   Tue, 11 Aug 2020 12:42:33 +0800
+Message-ID: <1597120955-16495-1-git-send-email-chinwen.chang@mediatek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: FECB1C8FBBC3155D664B844BB8EA23BAF81A4309A9540D60EDA9FF345C03F1222000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused enable_detection flag which is always true after
-the device is proved.
-
-Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
----
-v2: initialize work queue before registering power supply
----
- drivers/power/supply/sbs-battery.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sbs-battery.c
-index 83b9924033bd..1b706adc8d43 100644
---- a/drivers/power/supply/sbs-battery.c
-+++ b/drivers/power/supply/sbs-battery.c
-@@ -185,7 +185,6 @@ struct sbs_info {
- 	struct power_supply		*power_supply;
- 	bool				is_present;
- 	struct gpio_desc		*gpio_detect;
--	bool				enable_detection;
- 	bool				charger_broadcasts;
- 	int				last_state;
- 	int				poll_time;
-@@ -876,9 +875,6 @@ static int sbs_get_property(struct power_supply *psy,
- 		return -EINVAL;
- 	}
- 
--	if (!chip->enable_detection)
--		goto done;
--
- 	if (!chip->gpio_detect &&
- 		chip->is_present != (ret >= 0)) {
- 		sbs_update_presence(chip, (ret >= 0));
-@@ -1007,7 +1003,6 @@ static int sbs_probe(struct i2c_client *client)
- 
- 	chip->flags = (u32)(uintptr_t)device_get_match_data(&client->dev);
- 	chip->client = client;
--	chip->enable_detection = false;
- 	psy_cfg.of_node = client->dev.of_node;
- 	psy_cfg.drv_data = chip;
- 	chip->last_state = POWER_SUPPLY_STATUS_UNKNOWN;
-@@ -1077,6 +1072,8 @@ static int sbs_probe(struct i2c_client *client)
- 		}
- 	}
- 
-+	INIT_DELAYED_WORK(&chip->work, sbs_delayed_work);
-+
- 	chip->power_supply = devm_power_supply_register(&client->dev, sbs_desc,
- 						   &psy_cfg);
- 	if (IS_ERR(chip->power_supply)) {
-@@ -1089,10 +1086,6 @@ static int sbs_probe(struct i2c_client *client)
- 	dev_info(&client->dev,
- 		"%s: battery gas gauge device registered\n", client->name);
- 
--	INIT_DELAYED_WORK(&chip->work, sbs_delayed_work);
--
--	chip->enable_detection = true;
--
- 	return 0;
- 
- exit_psupply:
--- 
-2.28.0.236.gb10cc79966-goog
+UmVjZW50bHksIHdlIGhhdmUgb2JzZXJ2ZWQgc29tZSBqYW5reSBpc3N1ZXMgY2F1c2VkIGJ5IHVu
+cGxlYXNhbnRseSBsb25nDQpjb250ZW50aW9uIG9uIG1tYXBfbG9jayB3aGljaCBpcyBoZWxkIGJ5
+IHNtYXBzX3JvbGx1cCB3aGVuIHByb2JpbmcgbGFyZ2UNCnByb2Nlc3Nlcy4gVG8gYWRkcmVzcyB0
+aGUgcHJvYmxlbSwgd2UgbGV0IHNtYXBzX3JvbGx1cCBkZXRlY3QgaWYgYW55b25lDQp3YW50cyB0
+byBhY3F1aXJlIG1tYXBfbG9jayBmb3Igd3JpdGUgYXR0ZW1wdHMuIElmIHllcywganVzdCByZWxl
+YXNlIHRoZQ0KbG9jayB0ZW1wb3JhcmlseSB0byBlYXNlIHRoZSBjb250ZW50aW9uLg0KDQpzbWFw
+c19yb2xsdXAgaXMgYSBwcm9jZnMgaW50ZXJmYWNlIHdoaWNoIGFsbG93cyB1c2VycyB0byBzdW1t
+YXJpemUgdGhlDQpwcm9jZXNzJ3MgbWVtb3J5IHVzYWdlIHdpdGhvdXQgdGhlIG92ZXJoZWFkIG9m
+IHNlcV8qIGNhbGxzLiBBbmRyb2lkIHVzZXMNCml0IHRvIHNhbXBsZSB0aGUgbWVtb3J5IHVzYWdl
+IG9mIHZhcmlvdXMgcHJvY2Vzc2VzIHRvIGJhbGFuY2UgaXRzIG1lbW9yeQ0KcG9vbCBzaXplcy4g
+SWYgbm8gb25lIHdhbnRzIHRvIHRha2UgdGhlIGxvY2sgZm9yIHdyaXRlIHJlcXVlc3RzLCBzbWFw
+c19yb2xsdXANCndpdGggdGhpcyBwYXRjaCB3aWxsIGJlaGF2ZSBsaWtlIHRoZSBvcmlnaW5hbCBv
+bmUuDQoNCkFsdGhvdWdoIHRoZXJlIGFyZSBvbi1nb2luZyBtbWFwX2xvY2sgb3B0aW1pemF0aW9u
+cyBsaWtlIHJhbmdlLWJhc2VkIGxvY2tzLA0KdGhlIGxvY2sgYXBwbGllZCB0byBzbWFwc19yb2xs
+dXAgd291bGQgYmUgdGhlIGNvYXJzZSBvbmUsIHdoaWNoIGlzIGhhcmQgdG8NCmF2b2lkIHRoZSBv
+Y2N1cnJlbmNlIG9mIGFmb3JlbWVudGlvbmVkIGlzc3Vlcy4gU28gdGhlIGRldGVjdGlvbiBhbmQg
+dGVtcG9yYXJ5DQpyZWxlYXNlIGZvciB3cml0ZSBhdHRlbXB0cyBvbiBtbWFwX2xvY2sgaW4gc21h
+cHNfcm9sbHVwIGlzIHN0aWxsIG5lY2Vzc2FyeS4NCg0KDQpDaGlud2VuIENoYW5nICgyKToNCiAg
+bW1hcCBsb2NraW5nIEFQSTogYWRkIG1tYXBfbG9ja19pc19jb250ZW5kZWQoKQ0KICBtbTogcHJv
+Yzogc21hcHNfcm9sbHVwOiBkbyBub3Qgc3RhbGwgd3JpdGUgYXR0ZW1wdHMgb24gbW1hcF9sb2Nr
+DQoNCiBmcy9wcm9jL3Rhc2tfbW11LmMgICAgICAgIHwgMjEgKysrKysrKysrKysrKysrKysrKysr
+DQogaW5jbHVkZS9saW51eC9tbWFwX2xvY2suaCB8ICA1ICsrKysrDQogMiBmaWxlcyBjaGFuZ2Vk
+LCAyNiBpbnNlcnRpb25zKCsp
 
