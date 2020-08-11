@@ -2,101 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E396241EEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 19:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772E8241EF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 19:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729323AbgHKRHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 13:07:21 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:50410 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728862AbgHKRHP (ORCPT
+        id S1729363AbgHKRHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 13:07:43 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:47488 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729103AbgHKRHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 13:07:15 -0400
-Received: by mail-il1-f198.google.com with SMTP id t20so11021476ill.17
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 10:07:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=tTCIDG0AiF6unYAgKKJgpZv2a64bzMEnVSBadd7xH6E=;
-        b=emYM+ufdwveJX2YHHTeb+9Y2w0lN7plHAssjwoZu4UqzD2JlU435O/wbx67bHC3hXs
-         CeK+ozJXTav30KkugYTn/mW8EVYJSCdVGH7Kx882BZiqgzJWnxOVG/TIbYWAENo2I8OV
-         rfTNjBkAQQ/2POUjqolvbKkEbDRlRNcSdz+f4+CIU9QrNA6Ra4HY1xd2pyq4uzrugsKm
-         CN/0XF1Fe8g7KxaGbYfK30lbBAms6dKEGpKCBmQWqpjVCKto5g+syW6P+1xsQw3Z/e2I
-         j7gw/na03qK5wbta/vFDEj+SBxecvD/JflfUxHxxN7NXC8bvvc4l7k6+os0NRx1FE9An
-         JfSw==
-X-Gm-Message-State: AOAM532wf8ckXe5zPBy+7LBGk7rTXcDMLQfpH5XupfToivVGqILhz0OS
-        KWx3+EaJSaeVvg5l9nbob5yaEWckP/2sKd/znUlyUCq1BOLf
-X-Google-Smtp-Source: ABdhPJx7Vx1z7scE2ykU5jH6nuSd2PdvkivGiBLvX8VgbucyGqMmUlqDCX4ftVLuZof7Hs3H7j+mXHhv31UjjwaAFX3QDRKNF/uI
+        Tue, 11 Aug 2020 13:07:42 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07BH7JbR038660;
+        Tue, 11 Aug 2020 12:07:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1597165639;
+        bh=0Uod0ZsKogiy0hAZ1QvXFWCmrhC6bXLrN4FQiX676XY=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Tyan8PK9D4AkYSrOMQdfT/LbHRMOR8DHwioYL58bbUdjapkmaOnV+0NGhCemu8u+x
+         Ji6lH/Tp4aWKwqGXzGuqGmDpJC3duRB6MLCodSlnZBP8iH9ieiLD21+42Wv8Xi/Ry/
+         V1vdAw9EiK3j5vZNBS7KG1lPhoqDZ8L3FdTSaTSA=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07BH7JUb008455;
+        Tue, 11 Aug 2020 12:07:19 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 11
+ Aug 2020 12:07:19 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 11 Aug 2020 12:07:19 -0500
+Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07BH7JpU080863;
+        Tue, 11 Aug 2020 12:07:19 -0500
+Subject: Re: [PATCH v32 1/6] dt: bindings: lp50xx: Introduce the lp50xx family
+ of RGB drivers
+To:     Pavel Machek <pavel@ucw.cz>
+CC:     <jacek.anaszewski@gmail.com>, <robh@kernel.org>,
+        <marek.behun@nic.cz>, <devicetree@vger.kernel.org>,
+        <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20200722153146.8767-1-dmurphy@ti.com>
+ <20200722153146.8767-2-dmurphy@ti.com>
+ <20200811102028.tjea7oqbzb5jjqip@duo.ucw.cz>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <92d1448f-8b17-0ce6-0464-b60ff6a6eb16@ti.com>
+Date:   Tue, 11 Aug 2020 12:07:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:dcc:: with SMTP id l12mr22902511ilj.282.1597165634112;
- Tue, 11 Aug 2020 10:07:14 -0700 (PDT)
-Date:   Tue, 11 Aug 2020 10:07:14 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000044d3c705ac9d1a39@google.com>
-Subject: memory leak in nf_tables_addchain
-From:   syzbot <syzbot+c99868fde67014f7e9f5@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200811102028.tjea7oqbzb5jjqip@duo.ucw.cz>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Pavel
 
-syzbot found the following issue on:
+On 8/11/20 5:20 AM, Pavel Machek wrote:
+> Hi!
+> On Wed 2020-07-22 10:31:41, Dan Murphy wrote:
+>> Introduce the bindings for the Texas Instruments LP5036, LP5030, LP5024,
+>> LP5018, LP5012 and LP5009 RGB LED device driver.  The LP5036/30/24/18/12/9
+>> can control RGB LEDs individually or as part of a control bank group.
+>> These devices have the ability to adjust the mixing control for the RGB
+>> LEDs to obtain different colors independent of the overall brightness of
+>> the LED grouping.
+>>
+>> Datasheet:
+>> http://www.ti.com/lit/ds/symlink/lp5012.pdf
+>> http://www.ti.com/lit/ds/symlink/lp5024.pdf
+>> http://www.ti.com/lit/ds/symlink/lp5036.pdf
+>>
+>> Reviewed-by: Rob Herring <robh@kernel.org>
+>> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> Acked-by: Pavel Machek <pavel@ucw.cz>
+>
+>> +           multi-led@1 {
+>> +               #address-cells = <1>;
+>> +               #size-cells = <0>;
+>> +               reg = <0x1>;
+>> +               color = <LED_COLOR_ID_MULTI>;
+>> +               function = LED_FUNCTION_CHARGING;
+> These are just examples, but we should really separate "MULTI" colors
+> and "RGB".
 
-HEAD commit:    449dc8c9 Merge tag 'for-v5.9' of git://git.kernel.org/pub/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14f87006900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4810fa4a53b3aa2c
-dashboard link: https://syzkaller.appspot.com/bug?extid=c99868fde67014f7e9f5
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17fbf6e6900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12781652900000
+If we do then the LP55xx was not updated when the change was made.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c99868fde67014f7e9f5@syzkaller.appspotmail.com
+I will change it to RGB since I have to touch this file and probably 
+submit the LP55xx patch as well.
 
-executing program
-BUG: memory leak
-unreferenced object 0xffff888119189f80 (size 128):
-  comm "syz-executor071", pid 6469, jiffies 4294944001 (age 12.440s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    90 9f 18 19 81 88 ff ff 90 9f 18 19 81 88 ff ff  ................
-  backtrace:
-    [<0000000004286457>] kmalloc include/linux/slab.h:554 [inline]
-    [<0000000004286457>] kzalloc include/linux/slab.h:666 [inline]
-    [<0000000004286457>] nf_tables_addchain.constprop.0+0x414/0x720 net/netfilter/nf_tables_api.c:2006
-    [<0000000064582dc8>] nf_tables_newchain+0x74c/0x9d0 net/netfilter/nf_tables_api.c:2316
-    [<000000009af54f85>] nfnetlink_rcv_batch+0x2fb/0x9e0 net/netfilter/nfnetlink.c:434
-    [<000000000edcf8ff>] nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:544 [inline]
-    [<000000000edcf8ff>] nfnetlink_rcv+0x182/0x1b0 net/netfilter/nfnetlink.c:562
-    [<00000000d8cb87ba>] netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
-    [<00000000d8cb87ba>] netlink_unicast+0x2b6/0x3c0 net/netlink/af_netlink.c:1330
-    [<00000000e133d3d8>] netlink_sendmsg+0x2ba/0x570 net/netlink/af_netlink.c:1919
-    [<000000003f4dae42>] sock_sendmsg_nosec net/socket.c:651 [inline]
-    [<000000003f4dae42>] sock_sendmsg+0x4c/0x60 net/socket.c:671
-    [<00000000a38aa29c>] ____sys_sendmsg+0x2c4/0x2f0 net/socket.c:2359
-    [<00000000a06b2c98>] ___sys_sendmsg+0x81/0xc0 net/socket.c:2413
-    [<00000000b3d1da45>] __sys_sendmsg+0x77/0xe0 net/socket.c:2446
-    [<00000000e1124972>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000f18a8a31>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Dan
 
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> Best regards,
+> 									Pavel
