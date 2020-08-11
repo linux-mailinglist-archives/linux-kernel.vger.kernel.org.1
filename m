@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEFC241467
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 03:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EB0241468
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 03:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728034AbgHKBHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 21:07:49 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:53765 "EHLO rere.qmqm.pl"
+        id S1728056AbgHKBHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 21:07:50 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:23898 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727873AbgHKBHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727879AbgHKBHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 Aug 2020 21:07:41 -0400
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BQZSV2fmhzMK;
-        Tue, 11 Aug 2020 03:07:38 +0200 (CEST)
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BQZSW07gnzNH;
+        Tue, 11 Aug 2020 03:07:39 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1597108058; bh=dCmMvGwnirw/nbsi+GiAhZpwcSKaH0onmesD6dcdOvY=;
+        t=1597108059; bh=I1YYHRYByEQpnexzWJYpaabhHYOB7QOBwttBNq6vd6s=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=ZTCDisn2aiLlavqfKoX5RJX5V/CLlB1t4iosWAMbc+jOT4Xc7aiYSfiZFMhvT+sND
-         SCKEFzo0WoCqY/zXYtFc85uyiNoLwX8qRq3LOe/bkEv23y0Ht0GQdltir4koJLXP5X
-         0VWnFpfEjL/UrQlwLKUxMOrS5UPMv5MswdJvVDFNotsDB33SHCcAeHTYkMRumqRCSm
-         pqmsFT+rvtvv8xjGUoVIbRlcBnmKHC3BpQuyFhfKvjAu9iinLnaYzYLoeeBIhQWQ2G
-         6YKrcLsD4sCdNm2Qs+H1c3fwRlWcOYXOREOrXp65vu/wroYfi9gRhaEbYFO5Fe/8QQ
-         7EPWA+H+5BKyg==
+        b=qhrHgMxz4Gd4zo3MkDQbWk9eWkD7Tc1gqPwLmq/JTXpD9KzUBxmmB4Zv4LULBrqGv
+         L6XLMqQmtS+Tw9ZKMejhyqeYzcnfdlp+hKDv3c0MyUdGoyhdmwtvqtETpda+djRYhT
+         InqwQLXHq+cC+2e+Rg4Cb/xo9sOylDNDXpxdBdBHcjQUOlwqJOoMFm8ORDdZI9AhGn
+         RpVrrTLr5yMZKmnjQBNxrmnkUw0AB7E1ynoVqyxuw8dWRuTkst2sI1QYadGkmdFQ3N
+         1slcCsbSk74W0VyV7fXIwixZD95qPFgrbRKRqDiOGkfHg8yvyizVI1jl95Z0w3PjFj
+         4to8VZKNPuE4Q==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.102.4 at mail
 Date:   Tue, 11 Aug 2020 03:07:38 +0200
-Message-Id: <a45e2e0715171228f140a0a01cc5924c5379bfa3.1597107682.git.mirq-linux@rere.qmqm.pl>
+Message-Id: <d03a02be142741644276758d71925862f82ed090.1597107682.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1597107682.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1597107682.git.mirq-linux@rere.qmqm.pl>
 From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 2/7] regulator: push allocation in
- regulator_ena_gpio_request() out of lock
+Subject: [PATCH 3/7] regulator: push allocations in create_regulator() outside
+ of lock
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,114 +44,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move another allocation out of regulator_list_mutex-protected region, as
-reclaim might want to take the same lock.
+Move all allocations outside of the regulator_lock()ed section.
 
+======================================================
 WARNING: possible circular locking dependency detected
-5.7.13+ #534 Not tainted
+5.7.13+ #535 Not tainted
 ------------------------------------------------------
-kswapd0/383 is trying to acquire lock:
+f2fs_discard-179:7/702 is trying to acquire lock:
 c0e5d920 (regulator_list_mutex){+.+.}-{3:3}, at: regulator_lock_dependent+0x54/0x2c0
 
 but task is already holding lock:
-c0e38518 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x50
+cb95b080 (&dcc->cmd_lock){+.+.}-{3:3}, at: __issue_discard_cmd+0xec/0x5f8
 
 which lock already depends on the new lock.
 
 the existing dependency chain (in reverse order) is:
 
--> #1 (fs_reclaim){+.+.}-{0:0}:
+[...]
+
+-> #3 (fs_reclaim){+.+.}-{0:0}:
        fs_reclaim_acquire.part.11+0x40/0x50
        fs_reclaim_acquire+0x24/0x28
-       kmem_cache_alloc_trace+0x40/0x1e8
-       regulator_register+0x384/0x1630
-       devm_regulator_register+0x50/0x84
-       reg_fixed_voltage_probe+0x248/0x35c
+       __kmalloc_track_caller+0x54/0x218
+       kstrdup+0x40/0x5c
+       create_regulator+0xf4/0x368
+       regulator_resolve_supply+0x1a0/0x200
+       regulator_register+0x9c8/0x163c
+
 [...]
+
 other info that might help us debug this:
 
- Possible unsafe locking scenario:
+Chain exists of:
+  regulator_list_mutex --> &sit_i->sentry_lock --> &dcc->cmd_lock
 
-       CPU0                    CPU1
-       ----                    ----
-  lock(fs_reclaim);
-                               lock(regulator_list_mutex);
-                               lock(fs_reclaim);
-  lock(regulator_list_mutex);
-
- *** DEADLOCK ***
-[...]
-2 locks held by kswapd0/383:
- #0: c0e38518 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x50
- #1: cb70e5e0 (hctx->srcu){....}-{0:0}, at: hctx_lock+0x60/0xb8
 [...]
 
-Fixes: 541d052d7215 ("regulator: core: Only support passing enable GPIO descriptors")
-[this commit only changes context]
+Cc: stable@vger.kernel.org
 Fixes: f8702f9e4aa7 ("regulator: core: Use ww_mutex for regulators locking")
-[this is when the regulator_list_mutex was introduced in reclaim locking path]
-
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/regulator/core.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ drivers/regulator/core.c | 53 +++++++++++++++++++++-------------------
+ 1 file changed, 28 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 510d234f6c46..3dd4d4914075 100644
+index 3dd4d4914075..c95397798275 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -2203,10 +2203,13 @@ EXPORT_SYMBOL_GPL(regulator_bulk_unregister_supply_alias);
- static int regulator_ena_gpio_request(struct regulator_dev *rdev,
- 				const struct regulator_config *config)
+@@ -1553,44 +1553,53 @@ static struct regulator *create_regulator(struct regulator_dev *rdev,
+ 					  const char *supply_name)
  {
--	struct regulator_enable_gpio *pin;
-+	struct regulator_enable_gpio *pin, *new_pin;
- 	struct gpio_desc *gpiod;
- 
- 	gpiod = config->ena_gpiod;
-+	new_pin = kzalloc(sizeof(*new_pin), GFP_KERNEL);
+ 	struct regulator *regulator;
+-	char buf[REG_STR_SIZE];
+-	int err, size;
++	int err;
 +
-+	mutex_lock(&regulator_list_mutex);
++	if (dev) {
++		char buf[REG_STR_SIZE];
++		int size;
++
++		size = snprintf(buf, REG_STR_SIZE, "%s-%s",
++				dev->kobj.name, supply_name);
++		if (size >= REG_STR_SIZE)
++			return NULL;
++
++		supply_name = kstrdup(buf, GFP_KERNEL);
++		if (supply_name == NULL)
++			return NULL;
++	} else {
++		supply_name = kstrdup_const(supply_name, GFP_KERNEL);
++		if (supply_name == NULL)
++			return NULL;
++	}
  
- 	list_for_each_entry(pin, &regulator_ena_gpio_list, list) {
- 		if (pin->gpiod == gpiod) {
-@@ -2215,9 +2218,13 @@ static int regulator_ena_gpio_request(struct regulator_dev *rdev,
+ 	regulator = kzalloc(sizeof(*regulator), GFP_KERNEL);
+-	if (regulator == NULL)
++	if (regulator == NULL) {
++		kfree(supply_name);
+ 		return NULL;
++	}
+ 
+-	regulator_lock(rdev);
+ 	regulator->rdev = rdev;
++	regulator->supply_name = supply_name;
++
++	regulator_lock(rdev);
+ 	list_add(&regulator->list, &rdev->consumer_list);
++	regulator_unlock(rdev);
+ 
+ 	if (dev) {
+ 		regulator->dev = dev;
+ 
+ 		/* Add a link to the device sysfs entry */
+-		size = snprintf(buf, REG_STR_SIZE, "%s-%s",
+-				dev->kobj.name, supply_name);
+-		if (size >= REG_STR_SIZE)
+-			goto overflow_err;
+-
+-		regulator->supply_name = kstrdup(buf, GFP_KERNEL);
+-		if (regulator->supply_name == NULL)
+-			goto overflow_err;
+-
+ 		err = sysfs_create_link_nowarn(&rdev->dev.kobj, &dev->kobj,
+-					buf);
++					       supply_name);
+ 		if (err) {
+ 			rdev_dbg(rdev, "could not add device link %s err %d\n",
+ 				  dev->kobj.name, err);
+ 			/* non-fatal */
  		}
+-	} else {
+-		regulator->supply_name = kstrdup_const(supply_name, GFP_KERNEL);
+-		if (regulator->supply_name == NULL)
+-			goto overflow_err;
  	}
  
--	pin = kzalloc(sizeof(struct regulator_enable_gpio), GFP_KERNEL);
--	if (pin == NULL)
-+	if (new_pin == NULL) {
-+		mutex_unlock(&regulator_list_mutex);
- 		return -ENOMEM;
-+	}
-+
-+	pin = new_pin;
-+	new_pin = NULL;
+-	regulator->debugfs = debugfs_create_dir(regulator->supply_name,
++	regulator->debugfs = debugfs_create_dir(supply_name,
+ 						rdev->debugfs);
+ 	if (!regulator->debugfs) {
+ 		rdev_dbg(rdev, "Failed to create debugfs directory\n");
+@@ -1615,13 +1624,7 @@ static struct regulator *create_regulator(struct regulator_dev *rdev,
+ 	    _regulator_is_enabled(rdev))
+ 		regulator->always_on = true;
  
- 	pin->gpiod = gpiod;
- 	list_add(&pin->list, &regulator_ena_gpio_list);
-@@ -2225,6 +2232,10 @@ static int regulator_ena_gpio_request(struct regulator_dev *rdev,
- update_ena_gpio_to_rdev:
- 	pin->request_count++;
- 	rdev->ena_pin = pin;
-+
-+	mutex_unlock(&regulator_list_mutex);
-+	kfree(new_pin);
-+
- 	return 0;
+-	regulator_unlock(rdev);
+ 	return regulator;
+-overflow_err:
+-	list_del(&regulator->list);
+-	kfree(regulator);
+-	regulator_unlock(rdev);
+-	return NULL;
  }
  
-@@ -5179,9 +5190,7 @@ regulator_register(const struct regulator_desc *regulator_desc,
- 	}
- 
- 	if (config->ena_gpiod) {
--		mutex_lock(&regulator_list_mutex);
- 		ret = regulator_ena_gpio_request(rdev, config);
--		mutex_unlock(&regulator_list_mutex);
- 		if (ret != 0) {
- 			rdev_err(rdev, "Failed to request enable GPIO: %d\n",
- 				 ret);
+ static int _regulator_get_enable_time(struct regulator_dev *rdev)
 -- 
 2.20.1
 
