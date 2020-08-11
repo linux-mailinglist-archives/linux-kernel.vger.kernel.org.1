@@ -2,80 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D1B241CC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 16:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7290241CCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 16:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728873AbgHKOyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 10:54:22 -0400
-Received: from mga07.intel.com ([134.134.136.100]:2519 "EHLO mga07.intel.com"
+        id S1728841AbgHKO6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 10:58:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728782AbgHKOyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 10:54:22 -0400
-IronPort-SDR: XTGlnp38V0h8qVuF+6ImYXoIDCKWjkOU7llLohBjwjLeKnFt0+mhg3AWiVHwDdDchSU3HvFHWJ
- F3Q1zYNCLZOg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9710"; a="218086088"
-X-IronPort-AV: E=Sophos;i="5.76,300,1592895600"; 
-   d="scan'208";a="218086088"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2020 07:54:21 -0700
-IronPort-SDR: 1cnu5xRtZE2IK/CTJ8kWdwVLTqJVQGNU5sRO3yamEKzU/MEHgviA18IszQ45Qs4M/AASVC7nAk
- j9+Ju6sBtC5Q==
-X-IronPort-AV: E=Sophos;i="5.76,300,1592895600"; 
-   d="scan'208";a="326871090"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2020 07:54:20 -0700
-Date:   Tue, 11 Aug 2020 07:54:19 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Jethro Beekman <jethro@fortanix.com>
-Cc:     Nathaniel McCallum <npmccallum@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>, kai.huang@intel.com,
-        "Svahn, Kai" <kai.svahn@intel.com>, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org,
-        Neil Horman <nhorman@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v36 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-Message-ID: <20200811145419.GC20623@linux.intel.com>
-References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
- <20200716135303.276442-22-jarkko.sakkinen@linux.intel.com>
- <CAOASepOqRfUafSv_qjUv-jW_6n8G7kZ9yh-2z_Z9sjL_2zqNCg@mail.gmail.com>
- <20200810222317.GG14724@linux.intel.com>
- <78ba0baf-8ffa-7221-4ac1-007dd9e7eb20@fortanix.com>
+        id S1728788AbgHKO6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 10:58:08 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5D872076C;
+        Tue, 11 Aug 2020 14:58:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597157887;
+        bh=rpjJYDNyUBJye/pKJy8+A0p0IjypBh/1eTDNkuQVops=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HKhalOQMVaEdBkBATPK3DlaVPy3dsufQphPHD8qF1tXlhOeoUlrWjyw9RvLs3Yqx/
+         R8vgpRuviQTFGJZ8KVdnpRtGlNtOIwsirOSFeDfIFXshjHzDVq1nnHrOnpg5FaCE3C
+         7jfYOkaLBoTQBGGebtEeUf1liV8Q3b7Ld5r1gPzs=
+Date:   Tue, 11 Aug 2020 16:58:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-serial@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
+        Jiri Slaby <jslaby@suse.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC 0/5] Introduce NMI aware serial drivers
+Message-ID: <20200811145816.GA424033@kroah.com>
+References: <1595333413-30052-1-git-send-email-sumit.garg@linaro.org>
+ <CAFA6WYMN=na4Pxnu1LYRVAAZRdV==5EwU-Vcq-QkRb_jaLiPmw@mail.gmail.com>
+ <20200811135801.GA416071@kroah.com>
+ <CAFA6WYMN8i96rEZuHLnskB+4k0o=K9vF1_we83P04h2BSoGjmQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <78ba0baf-8ffa-7221-4ac1-007dd9e7eb20@fortanix.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAFA6WYMN8i96rEZuHLnskB+4k0o=K9vF1_we83P04h2BSoGjmQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 09:16:28AM +0200, Jethro Beekman wrote:
-> On 2020-08-11 00:23, Sean Christopherson wrote:
-> > Another thought would be to wrap sgx_enclave_exception in a struct to give
-> > room for supporting additional exit information (if such a thing ever pops
-> > up) and to allow the caller to opt in to select behavior, e.g. Jethro's
-> > request to invoke the exit handler on IRQ exits.  This is basically the
-> > equivalent of "struct kvm_run", minus the vCPU/enclave state.
+On Tue, Aug 11, 2020 at 07:59:24PM +0530, Sumit Garg wrote:
+> Hi Greg,
 > 
-> Actually, the flag I need is “return from the vdso on IRQ exits” (See Andy's
-> email about preferring returns over callbacks). But maybe the flag should be
-> “interpret IRQ exit as a normal exit” and let it be handled the same as any
-> other exit based on whether an exit handler fnptr was passed or not.
+> Thanks for your comments.
+> 
+> On Tue, 11 Aug 2020 at 19:27, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Tue, Aug 11, 2020 at 07:20:26PM +0530, Sumit Garg wrote:
+> > > On Tue, 21 Jul 2020 at 17:40, Sumit Garg <sumit.garg@linaro.org> wrote:
+> > > >
+> > > > Make it possible for UARTs to trigger magic sysrq from an NMI. With the
+> > > > advent of pseudo NMIs on arm64 it became quite generic to request serial
+> > > > device interrupt as an NMI rather than IRQ. And having NMI driven serial
+> > > > RX will allow us to trigger magic sysrq as an NMI and hence drop into
+> > > > kernel debugger in NMI context.
+> > > >
+> > > > The major use-case is to add NMI debugging capabilities to the kernel
+> > > > in order to debug scenarios such as:
+> > > > - Primary CPU is stuck in deadlock with interrupts disabled and hence
+> > > >   doesn't honor serial device interrupt. So having magic sysrq triggered
+> > > >   as an NMI is helpful for debugging.
+> > > > - Always enabled NMI based magic sysrq irrespective of whether the serial
+> > > >   TTY port is active or not.
+> > > >
+> > > > Currently there is an existing kgdb NMI serial driver which provides
+> > > > partial implementation in upstream to have a separate ttyNMI0 port but
+> > > > that remained in silos with the serial core/drivers which made it a bit
+> > > > odd to enable using serial device interrupt and hence remained unused. It
+> > > > seems to be clearly intended to avoid almost all custom NMI changes to
+> > > > the UART driver.
+> > > >
+> > > > But this patch-set allows the serial core/drivers to be NMI aware which
+> > > > in turn provides NMI debugging capabilities via magic sysrq and hence
+> > > > there is no specific reason to keep this special driver. So remove it
+> > > > instead.
+> > > >
+> > > > Approach:
+> > > > ---------
+> > > >
+> > > > The overall idea is to intercept serial RX characters in NMI context, if
+> > > > those are specific to magic sysrq then allow corresponding handler to run
+> > > > in NMI context. Otherwise, defer all other RX and TX operations onto IRQ
+> > > > work queue in order to run those in normal interrupt context.
+> > > >
+> > > > This approach is demonstrated using amba-pl011 driver.
+> > > >
+> > > > Patch-wise description:
+> > > > -----------------------
+> > > >
+> > > > Patch #1 prepares magic sysrq handler to be NMI aware.
+> > > > Patch #2 adds NMI framework to serial core.
+> > > > Patch #3 and #4 demonstrates NMI aware uart port using amba-pl011 driver.
+> > > > Patch #5 removes kgdb NMI serial driver.
+> > > >
+> > > > Goal of this RFC:
+> > > > -----------------
+> > > >
+> > > > My main reason for sharing this as an RFC is to help decide whether or
+> > > > not to continue with this approach. The next step for me would to port
+> > > > the work to a system with an 8250 UART.
+> > > >
+> > >
+> > > A gentle reminder to seek feedback on this series.
+> >
+> > It's the middle of the merge window, and I can't do anything.
+> >
+> > Also, I almost never review RFC patches as I have have way too many
+> > patches that people think are "right" to review first...
+> >
+> 
+> Okay, I understand and I can definitely wait for your feedback.
 
-Ya, slip of the tongue, the behavior would apply to both paths.
+My feedback here is this:
+
+> > I suggest you work to flesh this out first and submit something that you
+> > feels works properly.
+
+:)
+
+> IIUC, in order to make this approach substantial I need to make it
+> work with 8250 UART (major serial driver), correct? As currently it
+> works properly for amba-pl011 driver.
+
+Yes, try to do that, or better yet, make it work with all serial drivers
+automatically.
+
+thanks,
+
+greg k-h
