@@ -2,283 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2770B241839
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 10:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFA524183C
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 10:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbgHKI2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 04:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728224AbgHKI2R (ORCPT
+        id S1728368AbgHKI3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 04:29:35 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:41468 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728224AbgHKI3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 04:28:17 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F433C061787
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 01:28:17 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id a5so11755708ioa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 01:28:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=eo2L93RRdI84FxyH7GVcLy69tN4zbbbp3YsbGWN8W5I=;
-        b=ovrImObt5hFzeUHg8X9Ivfh3lAA7VBIl9LCNEjyZ+T5wLui90H+gv3jxG8DHDLkPAx
-         DLytiwMEw7Vw7kbtHS6SocODZ1+imZr/4PHHlykhwsMFBIWV+Z6O3upXU2haehmDs93k
-         VGvY3om8WRG/bqfYQfYwMa6bHJGlvNOT/BjTp1JNnEmdzryc+MreDyBkDt5FMYrrsk1d
-         b4bKf3fqedm6Ff0LUtd6FYjdXBNa/+LnSFZ6nfwuXAtCxuSJOaBrfILnL5d/9xoVoV1/
-         j4YoVgvW6ioUJwSYNHYPEVuoDJBLFLE7SNIxvCBC5zulRQGg24R5jahQ4ghMbLL8I8sU
-         y64g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=eo2L93RRdI84FxyH7GVcLy69tN4zbbbp3YsbGWN8W5I=;
-        b=ctE/thhuW0rVR58wxlV5Mn263bg2q2NTgkosnA8Zs4mI8J9NmmYFiyBYQ13abK9o84
-         Zh9npIQp2bgxXDbMSHJeNzNixITmeHmDMIDvAf8fTUYoBJ+sBWzKsOdv3JyKrxA4aDX5
-         0H7i1OjLpFKfRNIo47Lh5MTSEb858i1rSp3WBh+og/YcV8O6vL0z2Xgpss+3SgXDgQZf
-         E4KcQ9JVZ+1wNr0Z2G1LoHPjefW+TW+kAN2ZuRb0aau//vjpbCwC3GFG46Klm/I774am
-         pTiNZYH9ztWkaszfri1nxvbPzZ3rrnM9Ty/qjrl7zmsavrOHYkcTxs0ZAbEdmGrPA/15
-         qscg==
-X-Gm-Message-State: AOAM532vkq8deoOtLQ6zj361bgQoXwykxS6Q1OH81pFJiLUSOBxzNHe+
-        fKpg/61mMgbg8+JcUtUzT8/TU4lUP+SSF+FwU7D26ZJHJuERBw==
-X-Google-Smtp-Source: ABdhPJw8lJUpnFEPPL5OFUHqYYnO3+VCUnRb4InhMNNIoUVe4NPoNSm8G+RDmsolpVU/P08BFJzLbidP1QTMOjqgN5s=
-X-Received: by 2002:a6b:144d:: with SMTP id 74mr21503920iou.49.1597134496103;
- Tue, 11 Aug 2020 01:28:16 -0700 (PDT)
+        Tue, 11 Aug 2020 04:29:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597134572;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=hL3b/x+5usbKy2qmca+K6mtRuzhP4jyFM+OjPZrElQQ=;
+        b=Q+/4sf64fN0iNkKEP7vWpjPt55Z+0s17MlQJe1O8z1GcZZyw0KSqpfYX3C1owwc69yNDOP
+        mjhUE/MoQ5+Dpp8okCZENmeEPYl+i+CRwEvQ/EoOLXOS2Z9XDZn/att/09fQO9kUQUCK4V
+        zhD8didPAFgXT9dvfrB9aJjXzcNSaq8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-9YMN5odyPpKYFm0ygPpdog-1; Tue, 11 Aug 2020 04:29:28 -0400
+X-MC-Unique: 9YMN5odyPpKYFm0ygPpdog-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43DB71902EA1;
+        Tue, 11 Aug 2020 08:29:27 +0000 (UTC)
+Received: from [10.36.113.73] (ovpn-113-73.ams2.redhat.com [10.36.113.73])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6CAD66111F;
+        Tue, 11 Aug 2020 08:29:25 +0000 (UTC)
+Subject: Re: [PATCH] mm, page_alloc: fix core hung in free_pcppages_bulk()
+To:     Charan Teja Reddy <charante@codeaurora.org>,
+        akpm@linux-foundation.org, mhocko@suse.com, vbabka@suse.cz,
+        linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, vinmenon@codeaurora.org
+References: <1597075833-16736-1-git-send-email-charante@codeaurora.org>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <3b07d2a6-8ce7-5957-8ca5-a8d977852e14@redhat.com>
+Date:   Tue, 11 Aug 2020 10:29:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200810151804.199494191@linuxfoundation.org>
-In-Reply-To: <20200810151804.199494191@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 11 Aug 2020 13:58:04 +0530
-Message-ID: <CA+G9fYsZs6u8LH6gJ=bnc8UWrNzLZXnaq2oMY+psNCQPzyPxdQ@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/48] 4.19.139-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>, zanussi@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1597075833-16736-1-git-send-email-charante@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 Aug 2020 at 21:00, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.139 release.
-> There are 48 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 12 Aug 2020 15:17:47 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.139-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 10.08.20 18:10, Charan Teja Reddy wrote:
+> The following race is observed with the repeated online, offline and a
+> delay between two successive online of memory blocks of movable zone.
+> 
+> P1						P2
+> 
+> Online the first memory block in
+> the movable zone. The pcp struct
+> values are initialized to default
+> values,i.e., pcp->high = 0 &
+> pcp->batch = 1.
+> 
+> 					Allocate the pages from the
+> 					movable zone.
+> 
+> Try to Online the second memory
+> block in the movable zone thus it
+> entered the online_pages() but yet
+> to call zone_pcp_update().
+> 					This process is entered into
+> 					the exit path thus it tries
+> 					to release the order-0 pages
+> 					to pcp lists through
+> 					free_unref_page_commit().
+> 					As pcp->high = 0, pcp->count = 1
+> 					proceed to call the function
+> 					free_pcppages_bulk().
+> Update the pcp values thus the
+> new pcp values are like, say,
+> pcp->high = 378, pcp->batch = 63.
+> 					Read the pcp's batch value using
+> 					READ_ONCE() and pass the same to
+> 					free_pcppages_bulk(), pcp values
+> 					passed here are, batch = 63,
+> 					count = 1.
+> 
+> 					Since num of pages in the pcp
+> 					lists are less than ->batch,
+> 					then it will stuck in
+> 					while(list_empty(list)) loop
+> 					with interrupts disabled thus
+> 					a core hung.
+> 
+> Avoid this by ensuring free_pcppages_bulk() called with proper count of
+> pcp list pages.
+> 
+> The mentioned race is some what easily reproducible without [1] because
+> pcp's are not updated for the first memory block online and thus there
+> is a enough race window for P2 between alloc+free and pcp struct values
+> update through onlining of second memory block.
+> 
+> With [1], the race is still exists but it is very much narrow as we
+> update the pcp struct values for the first memory block online itself.
+> 
+> [1]: https://patchwork.kernel.org/patch/11696389/
+> 
+> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+> ---
+>  mm/page_alloc.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index e4896e6..25e7e12 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -3106,6 +3106,7 @@ static void free_unref_page_commit(struct page *page, unsigned long pfn)
+>  	struct zone *zone = page_zone(page);
+>  	struct per_cpu_pages *pcp;
+>  	int migratetype;
+> +	int high;
+>  
+>  	migratetype = get_pcppage_migratetype(page);
+>  	__count_vm_event(PGFREE);
+> @@ -3128,8 +3129,19 @@ static void free_unref_page_commit(struct page *page, unsigned long pfn)
+>  	pcp = &this_cpu_ptr(zone->pageset)->pcp;
+>  	list_add(&page->lru, &pcp->lists[migratetype]);
+>  	pcp->count++;
+> -	if (pcp->count >= pcp->high) {
+> -		unsigned long batch = READ_ONCE(pcp->batch);
+> +	high = READ_ONCE(pcp->high);
+> +	if (pcp->count >= high) {
+> +		int batch;
+> +
+> +		batch = READ_ONCE(pcp->batch);
+> +		/*
+> +		 * For non-default pcp struct values, high is always
+> +		 * greater than the batch. If high < batch then pass
+> +		 * proper count to free the pcp's list pages.
+> +		 */
+> +		if (unlikely(high < batch))
+> +			batch = min(pcp->count, batch);
+> +
+>  		free_pcppages_bulk(zone, batch, pcp);
+>  	}
+>  }
+> 
 
-Results from Linaro=E2=80=99s test farm.
-Regressions on x86_64.
+I was wondering if we should rather set all pageblocks to
+MIGRATE_ISOLATE in online_pages() before doing the online_pages_range()
+call, and do undo_isolate_page_range() after onlining is done.
 
-We have added LTP tracing test suite this week and started noticing
-kernel BUG on x86_64 KASAN enabled kernel. Which means this issue might not=
- be
-specific to this release candidate.
+move_pfn_range_to_zone()->memmap_init_zone() marks all pageblocks
+MIGRATE_MOVABLE, and as that function is used also during boot, we could
+supply a parameter to configure this.
 
-[   90.134426] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[   90.141651] BUG: KASAN: use-after-free in trace_stack_print+0x133/0x150
-[   90.148264] Read of size 8 at addr ffff888228015ffc by task cat/3569
-[   90.154613]
-[   90.156106] CPU: 3 PID: 3569 Comm: cat Not tainted 4.19.139-rc1 #1
-[   90.162278] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.2 05/23/2018
-[   90.169669] Call Trace:
-[   90.172115]  dump_stack+0x7d/0xaa
-[   90.175463]  print_address_description+0x67/0x229
-[   90.180165]  ? trace_stack_print+0x133/0x150
-[   90.184460]  kasan_report.cold+0xae/0x2fe
-[   90.188469]  __asan_load8+0x54/0x90
-[   90.191959]  trace_stack_print+0x133/0x150
-[   90.196051]  print_trace_line+0x3c7/0x930
-[   90.200063]  ? tracing_buffers_read+0x310/0x310
-[   90.204589]  tracing_read_pipe+0x2db/0x530
-[   90.208687]  __vfs_read+0xe5/0x3c0
-[   90.212093]  ? __x64_sys_copy_file_range+0x360/0x360
-[   90.217059]  ? fsnotify+0x7cb/0x7f0
-[   90.220550]  ? _cond_resched+0x14/0x30
-[   90.224296]  ? __inode_security_revalidate+0x5d/0x70
-[   90.229262]  ? avc_policy_seqno+0x21/0x30
-[   90.233273]  ? security_file_permission+0xc6/0xf0
-[   90.237970]  ? security_file_permission+0xc6/0xf0
-[   90.242667]  ? rw_verify_area+0x73/0x140
-[   90.246584]  vfs_read+0xc8/0x1d0
-[   90.249808]  ksys_read+0xbb/0x170
-[   90.253120]  ? kernel_write+0xa0/0xa0
-[   90.256786]  ? __audit_syscall_exit+0x3bb/0x430
-[   90.261320]  __x64_sys_read+0x3e/0x50
-[   90.264985]  do_syscall_64+0x63/0x160
-[   90.268649]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   90.273693] RIP: 0033:0x7f9596d9e071
-[   90.277266] Code: fe ff ff 48 8d 3d 3f 71 09 00 48 83 ec 08 e8 26
-ee 01 00 66 0f 1f 44 00 00 48 8d 05 91 e8 2c 00 8b 00 85 c0 75 13 31
-c0 0f 05 <48> 3d 00 f0 ff ff 77 57 c3 66 0f 1f 44 00 00 41 54 49 89 d4
-55 48
-[   90.296011] RSP: 002b:00007ffee5028688 EFLAGS: 00000246 ORIG_RAX:
-0000000000000000
-[   90.303575] RAX: ffffffffffffffda RBX: 0000000000020000 RCX: 00007f9596d=
-9e071
-[   90.310699] RDX: 0000000000020000 RSI: 00007f9597269000 RDI: 00000000000=
-00006
-[   90.317823] RBP: 0000000000020000 R08: 00000000ffffffff R09: 00000000000=
-00000
-[   90.324947] R10: 00000000000008c6 R11: 0000000000000246 R12: 00007f95972=
-69000
-[   90.332071] R13: 0000000000000006 R14: 0000000000000f8e R15: 00000000000=
-20000
-[   90.339194]
-[   90.340684] The buggy address belongs to the page:
-[   90.345470] page:ffffea0008a00540 count:1 mapcount:0
-mapping:0000000000000000 index:0x0
-[   90.353461] flags: 0x200000000000000()
-[   90.357215] raw: 0200000000000000 dead000000000100 dead000000000200
-0000000000000000
-[   90.364952] raw: 0000000000000000 0000000000000000 00000001ffffffff
-0000000000000000
-[   90.372681] page dumped because: kasan: bad access detected
-[   90.378245]
-[   90.379736] Memory state around the buggy address:
-[   90.384523]  ffff888228015f00: 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00
-[   90.391741]  ffff888228015f80: 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00
-[   90.398951] >ffff888228016000: fb fb fb fb fb fb fb fb fb fb fb fb
-fb fb fb fb
-[   90.406161]                    ^
-[   90.409407]  ffff888228016080: fc fc fc fc fc fc fc fc fb fb fb fb
-fb fb fb fb
-[   90.416665]  ffff888228016100: fb fb fb fb fb fb fb fb fc fc fc fc
-fc fc fc fc
-[   90.423876] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[   90.431095] Disabling lock debugging due to kernel taint
+This would prevent another race from happening: Having pages exposed to
+the buddy ready for allocation in online_pages_range() before the
+sections are marked online.
 
+This would avoid any pages from getting allocated before we're
+completely done onlining.
 
-steps to reproduce:
-- boot x86_64 with kasan enabled 4.19 stable kernel
-- cd /opt/ltp
-- ./runltp -f tracing
+We would need MIGRATE_ISOLATE/CONFIG_MEMORY_ISOLATION also for
+CONFIG_MEMORY_HOTPLUG.
 
-Full test log link,
-https://qa-reports.linaro.org/lkft/linux-stable-rc-4.19-oe/build/v4.19.138-=
-49-gb0e1bc72f7dd/testrun/3050053/suite/linux-log-parser/test/check-kernel-b=
-ug-1656536/log
+-- 
+Thanks,
 
-kernel-config link,
-https://builds.tuxbuild.com/BDfU1nbOpLG7hFIf-nv5dQ/kernel.config
+David / dhildenb
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.19.139-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.19.y
-git commit: b0e1bc72f7ddff40c7c5b68313d3ac76495d678d
-git describe: v4.19.138-49-gb0e1bc72f7dd
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.19-oe/bu=
-ild/v4.19.138-49-gb0e1bc72f7dd
-
-No fixes (compared to build v4.19.138)
-
-
-Ran 34683 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* kselftest/net
-* kvm-unit-tests
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-ipc-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* v4l2-compliance
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-math-tests
-* network-basic-tests
-* perf
-* libhugetlbfs
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* ltp-open-posix-tests
-* ssuite
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-native/drivers
-* kselftest-vsyscall-mode-native/filesystems
-* kselftest-vsyscall-mode-native/net
-* kselftest-vsyscall-mode-none
-* kselftest-vsyscall-mode-none/drivers
-* kselftest-vsyscall-mode-none/filesystems
-* kselftest-vsyscall-mode-none/net
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
