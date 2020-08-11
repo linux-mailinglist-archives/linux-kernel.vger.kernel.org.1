@@ -2,194 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE73241798
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E35F2417A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728386AbgHKHuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 03:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45974 "EHLO
+        id S1728223AbgHKHyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 03:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728000AbgHKHux (ORCPT
+        with ESMTP id S1728133AbgHKHyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 03:50:53 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4C2C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 00:50:53 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z18so10520921wrm.12
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 00:50:53 -0700 (PDT)
+        Tue, 11 Aug 2020 03:54:33 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB02C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 00:54:33 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id y18so9786949ilp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 00:54:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=vkHpnMLl55IQCqrb8fLSJH4E3mUf4XGT4PJFbROHx0c=;
-        b=cYGkMCTFb3l7m/RSXtJswRy6I0IK6VIYCJemOL3kzBTJAkvJ1cqavAsGeNdWwmNZbF
-         TTet/jR6LVfz1vS/q1ywciRaOCTmruQtAEWcLyOv+Jkz1NNegKd5ELFywMtpr82v/761
-         0y/G4NBcS5Q7XMxd8oeS+xJtT72OWUUI4Vvl3V+5jRoo3qP2SX149xcwKOpflw4PN8JE
-         taF0GwFuy6AxcvCcWbqIOk5hU2V1xW7LlJ2gK3EFozQW0miWEE7shBrS7dVTPdDcvrwp
-         a8E7jlZTmGs6Ctn2dlAT3R+G+ekzb/h7gnsc+VuEKyR/3tN7NMExkIy8Zfp2EM1fhVEL
-         sYlw==
+        d=melexis.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z5wWPMoezqlPQW+XdXx9xDErG0vZ5Ug+GxrnTbtmQ7M=;
+        b=AWg5Or5YERYKPYus/eM6Psz/6DB+ozbeyIgm5BdkcNrz+qaXydnw5C9h2yoNvdDN5L
+         BVwNYvfnGupyhB3fNudXRx17vToJsrp/WuFz7OccXouv5EOMlCDhKyQf7arOLvEgKskr
+         CHcdKTyQDaZXTITMAdPG1+EqwrysS4FjRXFq250kG9RyuPLfOcHhaxHzbop867temC91
+         HgjqFt4KcdcPJmq7FOCUhWbGmRQXhBFFXtn4eYrvOXDDrYHUFDdiCo79izc/XOb+Nm1G
+         ZvIkJlOL1BHQdPwPAOneQ41ySPYmks5pmre/t7gxMA0veF6Q25TcnXlzhJ/O5GfmhkfZ
+         IhAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=vkHpnMLl55IQCqrb8fLSJH4E3mUf4XGT4PJFbROHx0c=;
-        b=nWt7VfADiPdCW8RKH+3LGm5TPtoy3yLcW5bUl0lEeHqneLj0C2EdOrjGJXhNfBcJko
-         wJC+fsluQMn/OHedBxMzM49uik1HwNMRMRibhCxEOTb43M4UgntZwDoNkBYso7EknYCp
-         uwmauKfUPQ5mgKoMvtNtXDZ+hQd09FRm7xKQdCcPMrU8Dn/qkMRnN4xZFlRSooccmOCg
-         H3K3jZKYS8ITQviBUfYx3ov7t66LXzY4PJFVZ8Sw7oJNufZbtfuRk0V3lzI7m5jo3VR+
-         r3c9E2K2Uz0XHp/MZ9SP1bHrJENa10khok42fyJ36VzHgjJzpTzN4tsfJg0PCs0Q+rUG
-         skPQ==
-X-Gm-Message-State: AOAM531CuwpkjCQYxsJt9sSmHEW8OOcFUXnWKxU83/6L9443jlvsKkmr
-        HuvVb+8YDre1mxC2GLjZmin/6w==
-X-Google-Smtp-Source: ABdhPJwxxmUk3MOp0EQI39PKVL7QrnKW3cUWN07eIEEHOV+8uwU/yROrag3CMgpSv8KmtrmBnYYIqw==
-X-Received: by 2002:a5d:514e:: with SMTP id u14mr4790624wrt.20.1597132251934;
-        Tue, 11 Aug 2020 00:50:51 -0700 (PDT)
-Received: from dell ([2.27.167.73])
-        by smtp.gmail.com with ESMTPSA id y203sm3949739wmc.29.2020.08.11.00.50.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Aug 2020 00:50:51 -0700 (PDT)
-Date:   Tue, 11 Aug 2020 08:50:49 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Backlight for v5.9
-Message-ID: <20200811075049.GH4411@dell>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z5wWPMoezqlPQW+XdXx9xDErG0vZ5Ug+GxrnTbtmQ7M=;
+        b=cN4CxCTp38xdDKWDcLWuKj0OKrJrb2/o61KBmhtnDFBUI3ryfCaSCfRcWB5UNOpibK
+         YfTv8PcORPcD2r1HTMUHpWt3Y05QM5y2P8nlcXgZX+atRLeYumxZtcVsQDlpZgzR5ziS
+         yYtNEQ58420iwdExA5gpVgM7WIkAWo61elwC1ytbzYxcll/Tsx2Ey2d2lIE+VYHsJl1Y
+         WaYfKXzTVpiALi+qJx10cBZ36KkXRNhVCLPgg5iaWLzl18CAJJ9LkkUwR1NF10hi0pzQ
+         A4HzPQ49K/cnOm/kRr4NyZlALw7M/9nbk2vtaebHEdL5zBfDvqMmogwnOBC1wL/8LpqG
+         pkzQ==
+X-Gm-Message-State: AOAM5334F54viOpSpAlyNyAlv6w5RT8CoC103Mh/tcNb2W9p+OhFL6+k
+        xQ33QhFWuIi6CA0Ih6NNHl51BRLPnZB9kUt0BFmAMw==
+X-Google-Smtp-Source: ABdhPJxwBM5O2lPH+oGFjeL1pKcmpnayR8cPQmg3NDuJvttcswQ8j93D3BnivaApSCPbShY8CtutkgmYHtHlOc5nIKM=
+X-Received: by 2002:a92:cb12:: with SMTP id s18mr5277285ilo.13.1597132470806;
+ Tue, 11 Aug 2020 00:54:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20200808121026.1300375-1-cmo@melexis.com> <20200808121026.1300375-3-cmo@melexis.com>
+ <CAHp75VfWk7pCy4Osv0uY0UH4yFS=PRGbE1CNCakuRFTE33SDJg@mail.gmail.com>
+ <CAKv63uv-+r6M=G2rviSedgdCUd_0nzHKWXK363bJNERTQHRYXA@mail.gmail.com>
+ <20200809143222.4e19ea38@archlinux> <CAKv63uu1cRVCujM0nR5BstDYLZnCuGQTeFxhyUF0QK0mr0hvkQ@mail.gmail.com>
+In-Reply-To: <CAKv63uu1cRVCujM0nR5BstDYLZnCuGQTeFxhyUF0QK0mr0hvkQ@mail.gmail.com>
+From:   Crt Mori <cmo@melexis.com>
+Date:   Tue, 11 Aug 2020 09:53:55 +0200
+Message-ID: <CAKv63uuVYS5isAnhBzcqOJEJWhD5muSDBJzvYoJk1KkucrRnDA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] iio:temperature:mlx90632: Adding extended
+ calibration option
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good morning Linus,
+On Sun, 9 Aug 2020 at 23:05, Crt Mori <cmo@melexis.com> wrote:
+>
+> On Sun, 9 Aug 2020 at 15:32, Jonathan Cameron <jic23@kernel.org> wrote:
+> >
+> > On Sat, 8 Aug 2020 23:57:59 +0200
+> > Crt Mori <cmo@melexis.com> wrote:
+> >
+> > > Hi,
+> > > I am very sorry you missed them, I thought you saw it (reply on v3 of
+> > > the patch). Maybe something happened to that mail, as it contained
+> > > link to datasheet, so I will omit it now.
+> > >
+> > > Except for the order, only the remarks below are still open (did you
+> > > get the polling trail I did?)
+> > >
+> > > On Sat, 8 Aug 2020 at 22:04, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > >
+> > > > On Sat, Aug 8, 2020 at 3:11 PM Crt Mori <cmo@melexis.com> wrote:
+> > > > >
+> > > > > For some time the market wants medical grade accuracy in medical range,
+> > > > > while still retaining the declared accuracy outside of the medical range
+> > > > > within the same sensor. That is why we created extended calibration
+> > > > > which is automatically switched to when object temperature is too high.
+> > > > >
+> > > > > This patch also introduces the object_ambient_temperature variable which
+> > > > > is needed for more accurate calculation of the object infra-red
+> > > > > footprint as sensor's ambient temperature might be totally different
+> > > > > than what the ambient temperature is at object and that is why we can
+> > > > > have some more errors which can be eliminated. Currently this temperature
+> > > > > is fixed at 25, but the interface to adjust it by user (with external
+> > > > > sensor or just IR measurement of the other object which acts as ambient),
+> > > > > will be introduced in another commit.
+> > > >
+> > > > The kernel doc patch should go before this patch.
+> > > >
+> > > > ...
+> > > >
+> > > > > +       *ambient_new_raw = (s16)read_tmp;
+> > > >
+> > > > > +       *ambient_old_raw = (s16)read_tmp;
+> > > >
+> > > > Sorry, did I miss your answer about these castings all over the patch?
+> > > >
+> > >
+> > > These castings are in fact needed. You read unsigned integer, but the
+> > > return value is signed integer. Without the cast it did not extend the
+> > > signed bit, but just wrote the value to signed. Also I find it more
+> > > obvious with casts, that I did not "accidentally" convert to signed.
+> >
+> > Should we perhaps be making this explicit for the cases where we
+> > are sign extending?  That doesn't include these two as the lvalue
+> > is s16, but does include some of the others.
+> >
+> > sign_extend32(read_tmp, 15)
+> >
+>
+> So for you lines like
+> s32 read;
+> read = (read + (s16)read_tmp) / 2;
+>
+> would actually be better as:
+> read = (read + sign_extend32(read_tmp, 15)) / 2;
+>
+> Hm, strange. I would read that more align the read_tmp to 32 bit than
+> the value you have in read_tmp is actually a signed 16 bit integer...
+>
 
-Enjoy!
+OK, I did some trails without the casts and had deja-vu from the first
+series of patches I submitted.  I noticed that without a cast the
+value that ends up in variable is not extended to signed, but it is
+unsigned value truncated. This same finding leads to have these casts
+already in current ambient and object raw read functions.
 
-The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
+So now only debate is if sign_extend32 is useful in this case, as read
+in the current case is 32 bit (before it was also 16 bit).
 
-  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
+My preference is to leave unified across the driver.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git backlight-next-5.9
-
-for you to fetch changes up to 7eb99a39ef767644bbfd2b3f12f139d13e3ee8b3:
-
-  video: backlight: cr_bllcd: Remove unused variable 'intensity' (2020-07-21 15:45:45 +0100)
-
-----------------------------------------------------------------
- - Core Frameworks
-   - Trivial: Code refactoring
-   - New API backlight_is_blank()
-   - New API backlight_get_brightness()
-   - Additional/reworked documentation
-   - Remove 'extern' labels from prototypes
-   - Drop backlight_put()
-   - Staticify of_find_backlight()
-
- - Driver Removal
-   - Removal of unused OT200 driver
-   - Removal of unused Generic Backlight driver
-
- - Fix-ups
-   - Bunch of W=1 warning fixes
-   - Convert to GPIO descriptors; sky81452
-   - Move platform data handling into driver; sky81452
-   - Remove superfluous code; lms501kf03
-   - Many instances of using new APIs
-
-----------------------------------------------------------------
-Lee Jones (10):
-      backlight: lms501kf03: Remove unused const variables
-      backlight: lcd: Add missing kerneldoc entry for 'struct device parent'
-      backlight: ili922x: Add missing kerneldoc descriptions for CHECK_FREQ_REG() args
-      backlight: ili922x: Remove invalid use of kerneldoc syntax
-      backlight: ili922x: Add missing kerneldoc description for ili922x_reg_dump()'s arg
-      backlight: backlight: Supply description for function args in existing Kerneldocs
-      backlight: lm3630a_bl: Remove invalid checks for unsigned int < 0
-      backlight: qcom-wled: Remove unused configs for LED3 and LED4
-      video: backlight: sky81452-backlight: Fix some kerneldoc issues
-      video: backlight: cr_bllcd: Remove unused variable 'intensity'
-
-Linus Walleij (4):
-      backlight: sky81452: Convert to GPIO descriptors
-      backlight: sky81452: Privatize platform data
-      backlight: Delete the OT200 backlight driver
-      backlight: lms501kf03: Drop unused include
-
-Sam Ravnborg (19):
-      backlight: backlight: Refactor fb_notifier_callback()
-      backlight: backlight: Add backlight_is_blank()
-      backlight: backlight: Improve backlight_ops documentation
-      backlight: backlight: Improve backlight_properties documentation
-      backlight: backlight: Improve backlight_device documentation
-      backlight: backlight: Document inline functions in backlight.h
-      backlight: backlight: Document enums in backlight.h
-      backlight: generic_bl: Remove this driver as it is unused
-      backlight: backlight: Drop extern from prototypes
-      backlight: backlight: Add overview and update existing doc
-      doc-rst: Wire-up Backlight kernel-doc documentation
-      backlight: backlight: Introduce backlight_get_brightness()
-      backlight: as3711_bl: Simplify update_status
-      backlight: cr_bllcd: Introduce gpio-backlight semantics
-      backlight: gpio_backlight: Simplify update_status()
-      backlight: jornada720_bl: Introduce backlight_is_blank()
-      backlight: Use backlight_get_brightness() throughout
-      backlight: backlight: Drop backlight_put()
-      backlight: backlight: Make of_find_backlight static
-
-Wang Qing (1):
-      backlight: lm3533_bl: Use kobj_to_dev() instead
-
- Documentation/gpu/backlight.rst                  |  12 +
- Documentation/gpu/index.rst                      |   1 +
- drivers/mfd/sky81452.c                           |   2 -
- drivers/video/backlight/88pm860x_bl.c            |  13 +-
- drivers/video/backlight/Kconfig                  |  15 -
- drivers/video/backlight/Makefile                 |   2 -
- drivers/video/backlight/adp5520_bl.c             |  10 +-
- drivers/video/backlight/adp8860_bl.c             |  10 +-
- drivers/video/backlight/adp8870_bl.c             |  10 +-
- drivers/video/backlight/as3711_bl.c              |  11 +-
- drivers/video/backlight/backlight.c              | 206 +++++++-----
- drivers/video/backlight/bd6107.c                 |   7 +-
- drivers/video/backlight/corgi_lcd.c              |   8 +-
- drivers/video/backlight/cr_bllcd.c               |  26 +-
- drivers/video/backlight/da903x_bl.c              |  13 +-
- drivers/video/backlight/ep93xx_bl.c              |   8 +-
- drivers/video/backlight/generic_bl.c             | 110 -------
- drivers/video/backlight/gpio_backlight.c         |  17 +-
- drivers/video/backlight/hp680_bl.c               |   6 +-
- drivers/video/backlight/ili922x.c                |   8 +-
- drivers/video/backlight/jornada720_bl.c          |   2 +-
- drivers/video/backlight/kb3886_bl.c              |   6 +-
- drivers/video/backlight/lcd.c                    |   1 +
- drivers/video/backlight/led_bl.c                 |   7 +-
- drivers/video/backlight/lm3533_bl.c              |  10 +-
- drivers/video/backlight/lm3630a_bl.c             |   4 +-
- drivers/video/backlight/lms501kf03.c             |   9 -
- drivers/video/backlight/locomolcd.c              |   6 +-
- drivers/video/backlight/lv5207lp.c               |   7 +-
- drivers/video/backlight/max8925_bl.c             |  13 +-
- drivers/video/backlight/ot200_bl.c               | 162 ---------
- drivers/video/backlight/pwm_bl.c                 |   7 +-
- drivers/video/backlight/qcom-wled.c              |  15 +-
- drivers/video/backlight/sky81452-backlight.c     |  52 +--
- drivers/video/backlight/tps65217_bl.c            |  10 +-
- drivers/video/backlight/wm831x_bl.c              |  13 +-
- include/linux/backlight.h                        | 399 ++++++++++++++++++-----
- include/linux/mfd/sky81452.h                     |   2 -
- include/linux/platform_data/sky81452-backlight.h |  35 --
- 39 files changed, 538 insertions(+), 717 deletions(-)
- create mode 100644 Documentation/gpu/backlight.rst
- delete mode 100644 drivers/video/backlight/generic_bl.c
- delete mode 100644 drivers/video/backlight/ot200_bl.c
- delete mode 100644 include/linux/platform_data/sky81452-backlight.h
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> > >
+> > > > ...
+> > > >
+> > > > > +       ret = regmap_read(regmap, MLX90632_RAM_1(17), &read_tmp);
+> > > > > +       ret = regmap_read(regmap, MLX90632_RAM_2(17), &read_tmp);
+> > > > > +       ret = regmap_read(regmap, MLX90632_RAM_1(18), &read_tmp);
+> > > > > +       ret = regmap_read(regmap, MLX90632_RAM_2(18), &read_tmp);
+> > > > > +       ret = regmap_read(regmap, MLX90632_RAM_1(19), &read_tmp);
+> > > > > +       ret = regmap_read(regmap, MLX90632_RAM_2(19), &read_tmp);
+> > > >
+> > > > What so special about these magic 17, 18, 19? Can you provide definitions?
+> > > >
+> > > When we started 0 to 19 were all open for access, from userspace, then
+> > > only 1 and 2 were used with calculations, and now we use 17, 18 and
+> > > 19. Matter of fact is, I can't provide a descriptive name as it
+> > > depends on DSP version and as you can see now within the same DSP
+> > > version, also on the ID part. While RAM3 vs RAM1 and RAM2 could be
+> > > named RAM_OBJECT1, RAM_OBJECT2, RAM_AMBIENT, knowing our development
+> > > that might not be true in the next configuration, so I rather keep the
+> > > naming as in the datasheet.
+> > Normal solution for that is to version the defines as well.
+> >
+> > MLX90632_FW3_RAM_1_AMBIENT etc
+> > When a new version changes this, then you introduced new defines to
+> > support that firmware.
+> >
+>
+> OK will add those, but it is ending up as:
+> MLX90632_RAM_DSP5_AMBIENT
+> MLX90632_RAM_DSP5_EXTENDED_AMBIENT
+> MLX90632_RAM_DSP5_OBJECT_1
+> MLX90632_RAM_DSP5_EXTENDED_OBJECT_1
+> MLX90632_RAM_DSP5_OBJECT_2
+> MLX90632_RAM_DSP5_EXTENDED_OBJECT_2
+>
+> ok?
+> > >
+> > > > ...
+> > > >
+> > > > > +       int tries = 4;
+> > > >
+> > > > > +       while (tries-- > 0) {
+> > > > > +               ret = mlx90632_perform_measurement(data);
+> > > > > +               if (ret < 0)
+> > > > > +                       goto read_unlock;
+> > > > > +
+> > > > > +               if (ret == 19)
+> > > > > +                       break;
+> > > > > +       }
+> > > > > +       if (tries < 0) {
+> > > > > +               ret = -ETIMEDOUT;
+> > > > > +               goto read_unlock;
+> > > > > +       }
+> > > >
+> > > > Please avoid ping-pong type of changes in the same series (similar way
+> > > > as for kernel doc), which means don't introduce something you are
+> > > > going to change later on. Patch to move to do {} while () should go
+> > > > before this one.
+> > >
+> > > OK, will fix that ordering in v5, but will wait till we solve also
+> > > above discussions to avoid adding new versions.
+> > >
+> > > >
+> > > > --
+> > > > With Best Regards,
+> > > > Andy Shevchenko
+> > >
+> > > And about that voodoo stuff with numbers:
+> > >
+> > > Honestly, the equation is in the datasheet[1] and this is just making
+> > > floating point to fixed point with proper intermediate scaling
+> > > (initially I had defines of TENTOX, but that was not desired). There
+> > > is no better explanation of this voodoo.
+> >
+> > We all love fixed point arithmetic :)
+> >
+> > Jonathan
