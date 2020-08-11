@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C5B2416CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A9D2416C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728372AbgHKHBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 03:01:25 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55145 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728142AbgHKHBT (ORCPT
+        id S1728337AbgHKHBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 03:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728170AbgHKHAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 03:01:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597129278;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=TEG2fDTMrT9CyNXx3j58WMIBzVoaSf9PoptkoEoE8fA=;
-        b=fxy7bKRch+AtDqFCDMFZw1TB1p0a+nGTBvCV1OQ9SXj2DBjXBIFBCS708hpH9nSkmtEbcu
-        8vOk7GnYvBI3AtAW2qz7QXI1vGF1r/nNo8ooyywgCpnm4/8l8lGP09Z/xTQX7mNuIEWioQ
-        4cLRnhTOqBCV6Mq2/pWfJmgO2XtQ9LE=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-Gag3b5agPze19uFDepiZGw-1; Tue, 11 Aug 2020 03:01:14 -0400
-X-MC-Unique: Gag3b5agPze19uFDepiZGw-1
-Received: by mail-pl1-f198.google.com with SMTP id b11so8420671plx.21
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 00:01:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=TEG2fDTMrT9CyNXx3j58WMIBzVoaSf9PoptkoEoE8fA=;
-        b=uLgt6XawWonTMt74uUtf/O4XOrBrwCJ8LlnS1SJEpY2yEpHGtjpCejX6euj9PbHryi
-         wCAzmQMvwLPpdzu4DOzBAnWUdmTX4y+gIehyE2NHRvqRlaEAdc3NsNbyrvCEypAwPm5G
-         tT+iZyMiN5uGWQWjwhqRSUmz1hM6L3OwnN/oxlL2gqfC2H4SAJ/lcH+hi1tHZEDqBYk8
-         EqPIAdH1lyO+PrY/8AG4ZIUbPxc7SO0Pk/eeoWtAf/Sh5CuYWh4WeoKW1oPg27jow2JW
-         jAdYcrAnOtL3FfJm1xhHz3DDYWspFAp5RCnWIqOe9CeSPSISTwHKVVc18QCuKeSGSQ5f
-         IsAA==
-X-Gm-Message-State: AOAM530QLVVqBX6eTWosH2GehsnaE7ZDOtz0z8Dt3BLi06uvSCCVBdbp
-        qlg2RWb/REwMZ4jexvtcK0LEXI8WGRs1kw7OI/Sjk85DDRdMXp7smjmEJokac5xY14ik4ObVn8W
-        QAubSmsqPZZzwdS1Abr/7eb8S
-X-Received: by 2002:a17:902:b417:: with SMTP id x23mr25968237plr.231.1597129273223;
-        Tue, 11 Aug 2020 00:01:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy/PxAh0tVI6Za7raz5oYvg/ytWr1qauzk4b41fv1H/5Mxa/CRU1ZHv8AgkFi0j4qdCop3bmw==
-X-Received: by 2002:a17:902:b417:: with SMTP id x23mr25968217plr.231.1597129272976;
-        Tue, 11 Aug 2020 00:01:12 -0700 (PDT)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id y19sm24098541pfn.77.2020.08.11.00.01.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Aug 2020 00:01:12 -0700 (PDT)
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     linux-erofs@lists.ozlabs.org, Chao Yu <yuchao0@huawei.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>,
-        Hongyu Jin <hongyu.jin@unisoc.com>,
-        Gao Xiang <hsiangkao@redhat.com>, stable@vger.kernel.org
-Subject: [PATCH] erofs: avoid duplicated permission check for "trusted." xattrs
-Date:   Tue, 11 Aug 2020 15:00:20 +0800
-Message-Id: <20200811070020.6339-1-hsiangkao@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Tue, 11 Aug 2020 03:00:53 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431FEC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 00:00:27 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1k5OGk-0003Q1-JB; Tue, 11 Aug 2020 09:00:22 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1k5OGk-0007OT-7C; Tue, 11 Aug 2020 09:00:22 +0200
+Date:   Tue, 11 Aug 2020 09:00:22 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-pwm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux-imx@nxp.com
+Subject: Re: [PATCH V2 2/3] pwm: imx27: Use dev_err_probe() to simplify error
+ handling
+Message-ID: <20200811070022.l6buhlwxkq4pjseo@pengutronix.de>
+References: <1597127072-26365-1-git-send-email-Anson.Huang@nxp.com>
+ <1597127072-26365-2-git-send-email-Anson.Huang@nxp.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2k36bqrjpgk6rise"
+Content-Disposition: inline
+In-Reply-To: <1597127072-26365-2-git-send-email-Anson.Huang@nxp.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't recheck it since xattr_permission() already
-checks CAP_SYS_ADMIN capability.
 
-Just follow 5d3ce4f70172 ("f2fs: avoid duplicated permission check for "trusted." xattrs")
+--2k36bqrjpgk6rise
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Hongyu Jin <hongyu.jin@unisoc.com>
-[ Gao Xiang: since it could cause some complex Android overlay
-  permission issue as well on android-5.4+, so it'd be better to
-  backport to 5.4+ rather than pure cleanup on mainline. ]
-Cc: <stable@vger.kernel.org> # 5.4+
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
----
-related commit:
-https://android-review.googlesource.com/c/kernel/common/+/1121623/6/fs/xattr.c#b284
+On Tue, Aug 11, 2020 at 02:24:31PM +0800, Anson Huang wrote:
+> dev_err_probe() can reduce code size, uniform error handling and record t=
+he
+> defer probe reason etc., use it to simplify the code.
+>=20
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
- fs/erofs/xattr.c | 2 --
- 1 file changed, 2 deletions(-)
+Best regards
+Uwe
 
-diff --git a/fs/erofs/xattr.c b/fs/erofs/xattr.c
-index 87e437e7b34f..f86e3247febc 100644
---- a/fs/erofs/xattr.c
-+++ b/fs/erofs/xattr.c
-@@ -473,8 +473,6 @@ static int erofs_xattr_generic_get(const struct xattr_handler *handler,
- 			return -EOPNOTSUPP;
- 		break;
- 	case EROFS_XATTR_INDEX_TRUSTED:
--		if (!capable(CAP_SYS_ADMIN))
--			return -EPERM;
- 		break;
- 	case EROFS_XATTR_INDEX_SECURITY:
- 		break;
--- 
-2.18.1
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
+--2k36bqrjpgk6rise
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8yQgMACgkQwfwUeK3K
+7Am8dwgAgl4D7gpaE2zxYdJeqrplNb6EZDJK+hf+j2oZo1gK4Qosc/3m+8fjW0BO
+HjnzddEx9nL9mKygQDJro1oZozW9NciWiKkNSVpPgQHZYKW84fChlv1gQR42d4qf
+cWDGmZT2gOB3lJHiXFLruDLWsK5BcF/z9JEYQ/tcnzoi92PQquQ0g9vnBnEB9bYg
+VDnwUu/oBJWXXHPLlFW3qKxps22CiQyy5Ee4c1ovbiWpi9lCJOCsiJyMHGT9Zu4L
+bOKW3RZUIzXswHQXJ3lWZ4E1VPmmYWZsX/mBZs5YMUrW38bbl0HjKzHEv0Q3mWPN
+xsAaVjgmEPTUmlgSsOc3SIZKz6LeQg==
+=405E
+-----END PGP SIGNATURE-----
+
+--2k36bqrjpgk6rise--
