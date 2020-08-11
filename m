@@ -2,89 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AF52419F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9779A2419E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgHKKup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 06:50:45 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:39375 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728464AbgHKKuj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 06:50:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597143038;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nmyx2UdRvq7Iu84Oic8xZ8d1B/WpUnFI8Ebnoq7B4AY=;
-        b=O/Glpljmg/uf81j0Rm8bATWHMUw5R1J3QZ4jxRJZ3/q1EliDPcYKIvowoHp7r63FiKwrOz
-        vpfTEcY6pSa+fkNtUqd+mwK9tfe+qdIarucJTNI7ObO9ObcAQSkY0LmtczGycdQl+nRpVf
-        jxXhAK2ZSbTGLlFs60BpxMcZiXAHhrc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-C1RI_Y4bOHGUZiHwZUK3Jg-1; Tue, 11 Aug 2020 06:50:34 -0400
-X-MC-Unique: C1RI_Y4bOHGUZiHwZUK3Jg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A704106B249;
-        Tue, 11 Aug 2020 10:50:32 +0000 (UTC)
-Received: from krava (unknown [10.40.195.156])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C8F001001281;
-        Tue, 11 Aug 2020 10:50:28 +0000 (UTC)
-Date:   Tue, 11 Aug 2020 12:50:27 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [RFC] libperf: Add support for user space counter access
-Message-ID: <20200811105027.GD699846@krava>
-References: <20200807230517.57114-1-robh@kernel.org>
- <20200808102208.GA619980@krava>
- <CAL_Jsq+gfqyqCx3Yuc6TsbXjYSLfJQhhPUnwRVjpJgwL24v1Qg@mail.gmail.com>
+        id S1728557AbgHKKrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 06:47:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:36648 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728280AbgHKKrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 06:47:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1BC0931B;
+        Tue, 11 Aug 2020 03:47:46 -0700 (PDT)
+Received: from [10.37.12.74] (unknown [10.37.12.74])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C7CEC3F22E;
+        Tue, 11 Aug 2020 03:47:42 -0700 (PDT)
+Subject: Re: [PATCH 2/2] KVM: arm64: Only reschedule if
+ MMU_NOTIFIER_RANGE_BLOCKABLE is not set
+To:     will@kernel.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     maz@kernel.org, james.morse@arm.com, tsbogend@alpha.franken.de,
+        paulus@ozlabs.org, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, stable@vger.kernel.org
+References: <20200811102725.7121-1-will@kernel.org>
+ <20200811102725.7121-3-will@kernel.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <1b326944-c4aa-eb52-b7dc-a77f9eecae63@arm.com>
+Date:   Tue, 11 Aug 2020 11:52:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_Jsq+gfqyqCx3Yuc6TsbXjYSLfJQhhPUnwRVjpJgwL24v1Qg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20200811102725.7121-3-will@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 12:11:23PM -0600, Rob Herring wrote:
-> On Sat, Aug 8, 2020 at 4:22 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Fri, Aug 07, 2020 at 05:05:17PM -0600, Rob Herring wrote:
-> > > x86 and arm64 can both support direct access of event counters in
-> > > userspace. The access sequence is less than trivial and currently exists
-> > > in perf test code (tools/perf/arch/x86/tests/rdpmc.c) with copies in
-> > > projects such as PAPI and libpfm4.
-> > >
-> > > Patches to add arm64 userspace support are pending[1].
-> > >
-> > > For this RFC, looking for a yes, seems like a good idea, or no, go away we
-> > > don't want this in libperf.
-> >
-> > hi,
-> > looks great!
-> >
-> > I wanted to add this for very long time.. so yes, we want this ;-)
+On 08/11/2020 11:27 AM, Will Deacon wrote:
+> When an MMU notifier call results in unmapping a range that spans multiple
+> PGDs, we end up calling into cond_resched_lock() when crossing a PGD boundary,
+> since this avoids running into RCU stalls during VM teardown. Unfortunately,
+> if the VM is destroyed as a result of OOM, then blocking is not permitted
+> and the call to the scheduler triggers the following BUG():
 > 
-> Thanks for the quick feedback. Would this be better implemented as a
-> fast path for perf_evsel__read()? If so, how to get the mmap data
+>   | BUG: sleeping function called from invalid context at arch/arm64/kvm/mmu.c:394
+>   | in_atomic(): 1, irqs_disabled(): 0, non_block: 1, pid: 36, name: oom_reaper
+>   | INFO: lockdep is turned off.
+>   | CPU: 3 PID: 36 Comm: oom_reaper Not tainted 5.8.0 #1
+>   | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+>   | Call trace:
+>   |  dump_backtrace+0x0/0x284
+>   |  show_stack+0x1c/0x28
+>   |  dump_stack+0xf0/0x1a4
+>   |  ___might_sleep+0x2bc/0x2cc
+>   |  unmap_stage2_range+0x160/0x1ac
+>   |  kvm_unmap_hva_range+0x1a0/0x1c8
+>   |  kvm_mmu_notifier_invalidate_range_start+0x8c/0xf8
+>   |  __mmu_notifier_invalidate_range_start+0x218/0x31c
+>   |  mmu_notifier_invalidate_range_start_nonblock+0x78/0xb0
+>   |  __oom_reap_task_mm+0x128/0x268
+>   |  oom_reap_task+0xac/0x298
+>   |  oom_reaper+0x178/0x17c
+>   |  kthread+0x1e4/0x1fc
+>   |  ret_from_fork+0x10/0x30
+> 
+> Use the new 'flags' argument to kvm_unmap_hva_range() to ensure that we
+> only reschedule if MMU_NOTIFIER_RANGE_BLOCKABLE is set in the notifier
+> flags.
+> 
+> Cc: <stable@vger.kernel.org>
+> Fixes: 8b3405e345b5 ("kvm: arm/arm64: Fix locking for kvm_free_stage2_pgd")
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: James Morse <james.morse@arm.com>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
 
-if it works for all events, which I'm not sure of
-
-> which is associated with a evlist rather than a evsel?
-
-not sure what you mean, you can mmap evsel, not evlist
-
-jirka
-
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
