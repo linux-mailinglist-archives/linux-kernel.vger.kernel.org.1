@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAD0241574
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 05:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5607724157C
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 05:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728257AbgHKD5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 23:57:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728196AbgHKD5b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 23:57:31 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A22C06174A;
-        Mon, 10 Aug 2020 20:57:31 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id 77so9445547ilc.5;
-        Mon, 10 Aug 2020 20:57:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/Ej3O/P5forMr7lkh8Irj0X/aIJv290wNqPXSY+K8SQ=;
-        b=Dy6m6mzpsrA6AiUFbCE/bSjm0Ha27RRY29MhbJd/pIkrgoNaBTwHAWHseayvDnrnCA
-         HwxjeaxYINZHazGU3LyZTfhUmoxozHW8eUuuTVJ2bChVO3S4jc5gnpGqdixrngOjOvZb
-         pT0JrlO6rdHNLUXHOw+rGQRqzehZQ2t0HR9Ie3vLxrt+zMZ3FFs1DyT/jBuUMxkJfg6h
-         cMxGGUnbb16zLxzIVzIFBfrt08riVQ01vqyYYEiqsVUQRbTPP4a+aQTdOpE7Um4t77vW
-         SGhixNnowuHWYLNeYCXspG6tRjf8su5CFtSR4DePU5Ta+mGtOJLAs6rjesqLj0qHV7qj
-         PU3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/Ej3O/P5forMr7lkh8Irj0X/aIJv290wNqPXSY+K8SQ=;
-        b=T6WOTko7kXd2VZjt6DMoCG1kWM1ouXj1agzkqwbYfTHj/FPvG+a++w+38KVMsFyRiT
-         tAw/v4nKiA5i0SqLNvaD053ffwN4YlyyofJYBFmYYHzzUpTnRU31EV7BavzKauzlSM+6
-         JlKZ+ktVGYOFpUIrnrc1Wg/xqJQ/CplWCxrAITweQiQYWiu8jZ3w4OunjEgnzeCtscIw
-         9+6CJxVTMopMOzEyovkSCl7D7TRhsty4FWyAhdO3htpTauHpSdS2xNJYG0WgBqFaGJ4X
-         Tz0bvSvQTOVlXhemsVXA1hsyKyG2NmTfplMn6AWrNLsgt/CNfZcu0fThXQ051HmMYkJj
-         QtVQ==
-X-Gm-Message-State: AOAM533Cxt3ntDeLP2DK2LoZ8GEqoA0/4xtAUNJ/NSbBxl7H+yDurM2Z
-        bDf9kI2vxKMWl1sPvsR1TKnRX0KEc+2dcZ8AHtY=
-X-Google-Smtp-Source: ABdhPJxJs7CjX3vzQq4fwm46ZTzG5HJ9oYGcb02FW6eIoE2VtGxgiQ6jHAgG+NKiJD5eiy2VkBGZYzjktmLVzpEwS1A=
-X-Received: by 2002:a92:bad5:: with SMTP id t82mr3521374ill.22.1597118250579;
- Mon, 10 Aug 2020 20:57:30 -0700 (PDT)
+        id S1728348AbgHKD6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 23:58:13 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:33164 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728196AbgHKD6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 23:58:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597118290; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=DWvh/xe4da4kqEIchXLMEtV/mjQkWQ1/j/n7f+uAWvc=; b=sklO6kPsfXTMW871DxRXcU5Ooe7+FaBPglpVzfoW5g6oaChTd3RiZwJFZI/DdJ8Q7fUREb3R
+ LTlxUfuiwO9eCLYVx1z5G5KQYkS6yfgE9mQHlExxouvvJ8WGt3yPZBO/jj/OgmnA67Jkopkg
+ +/oRabbkCxkl5RnVvC9o2e0XYVo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n16.prod.us-east-1.postgun.com with SMTP id
+ 5f32173391f8def8b200a48b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 11 Aug 2020 03:57:39
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B2C05C433AD; Tue, 11 Aug 2020 03:57:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from tingweiz-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tingwei)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 024C6C433C9;
+        Tue, 11 Aug 2020 03:57:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 024C6C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tingwei@codeaurora.org
+From:   Tingwei Zhang <tingwei@codeaurora.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Tingwei Zhang <tingwei@codeaurora.org>, tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        linux-kernel@vger.kernel.org, coresight@lists.linaro.org
+Subject: [PATCH v3 0/6] tracing: export event trace and trace_marker
+Date:   Tue, 11 Aug 2020 11:57:20 +0800
+Message-Id: <20200811035726.10379-1-tingwei@codeaurora.org>
+X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
-References: <20200810220703.796718-1-yepeilin.cs@gmail.com>
-In-Reply-To: <20200810220703.796718-1-yepeilin.cs@gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 10 Aug 2020 20:57:19 -0700
-Message-ID: <CAM_iQpWsQubVJ-AYaLHujHwz68+nsHBcbgbf8XPMEPD=Vu+zaA@mail.gmail.com>
-Subject: Re: [Linux-kernel-mentees] [PATCH net] ipvs: Fix uninit-value in do_ip_vs_set_ctl()
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Wensong Zhang <wensong@linux-vs.org>,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        lvs-devel@vger.kernel.org,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        coreteam@netfilter.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 3:10 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
->
-> do_ip_vs_set_ctl() is referencing uninitialized stack value when `len` is
-> zero. Fix it.
+Ftrace has ability to export trace packets to other destination.
+Currently, only function trace can be exported. This series extends the
+support to event trace and trace_maker. STM is one possible destination to
+export ftrace. Use separate channel for each CPU to avoid mixing up packets
+from different CPUs together.
 
-Which exact 'cmd' is it here?
+Change from v2:
+Change flag definition to BIT(). (Steven)
+Add comment in stm_ftrace_write() to clarify it's safe to use 
+smp_processor_id() here since preempt is disabled. (Steven) 
 
-I _guess_ it is one of those uninitialized in set_arglen[], which is 0.
-But if that is the case, should it be initialized to
-sizeof(struct ip_vs_service_user) instead because ip_vs_copy_usvc_compat()
-is called anyway. Or, maybe we should just ban len==0 case.
+Change from v1:
+All changes are suggested by Steven Rostedt.
+User separate flag to control function trace, event trace and trace mark.
+Allocate channels according to num_possible_cpu() dynamically.
+Move ftrace_exports routines up so all ftrace can use them.
 
-In either case, it does not look like you fix it correctly.
+Tingwei Zhang (6):
+  stm class: ftrace: change dependency to TRACING
+  tracing: add flag to control different traces
+  tracing: add trace_export support for event trace
+  tracing: add trace_export support for trace_marker
+  stm class: ftrace: enable supported trace export flag
+  stm class: ftrace: use different channel accroding to CPU
 
-Thanks.
+ drivers/hwtracing/stm/Kconfig  |   2 +-
+ drivers/hwtracing/stm/ftrace.c |   7 +-
+ include/linux/trace.h          |   7 +
+ kernel/trace/trace.c           | 270 ++++++++++++++++++---------------
+ 4 files changed, 159 insertions(+), 127 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
