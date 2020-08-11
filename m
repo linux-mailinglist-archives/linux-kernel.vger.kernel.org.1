@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9E32416E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC0E2416DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbgHKHG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 03:06:29 -0400
-Received: from ja.ssi.bg ([178.16.129.10]:33622 "EHLO ja.ssi.bg"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727846AbgHKHG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 03:06:28 -0400
-X-Greylist: delayed 395 seconds by postgrey-1.27 at vger.kernel.org; Tue, 11 Aug 2020 03:06:28 EDT
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id 07B6wk1t005940;
-        Tue, 11 Aug 2020 09:58:46 +0300
-Date:   Tue, 11 Aug 2020 09:58:46 +0300 (EEST)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-cc:     Cong Wang <xiyou.wangcong@gmail.com>,
-        Wensong Zhang <wensong@linux-vs.org>,
-        Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        lvs-devel@vger.kernel.org,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        coreteam@netfilter.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [Linux-kernel-mentees] [PATCH net] ipvs: Fix uninit-value in
- do_ip_vs_set_ctl()
-In-Reply-To: <20200811050929.GA821443@PWN>
-Message-ID: <alpine.LFD.2.23.451.2008110936570.3707@ja.home.ssi.bg>
-References: <20200810220703.796718-1-yepeilin.cs@gmail.com> <CAM_iQpWsQubVJ-AYaLHujHwz68+nsHBcbgbf8XPMEPD=Vu+zaA@mail.gmail.com> <20200811050929.GA821443@PWN>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1728254AbgHKHEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 03:04:45 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:41798 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727871AbgHKHEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 03:04:44 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2CCDE1A1E73;
+        Tue, 11 Aug 2020 09:04:43 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B1DC91A1E6D;
+        Tue, 11 Aug 2020 09:04:38 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E4A8240243;
+        Tue, 11 Aug 2020 09:04:32 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2 1/2] thermal: imx: Use dev_err_probe() to simplify error handling
+Date:   Tue, 11 Aug 2020 14:59:44 +0800
+Message-Id: <1597129185-8460-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+dev_err_probe() can reduce code size, uniform error handling and record the
+defer probe reason etc., use it to simplify the code.
 
-	Hello,
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+changes since V1:
+	- remove redundant return value print.
+---
+ drivers/thermal/imx_thermal.c | 22 ++++++----------------
+ 1 file changed, 6 insertions(+), 16 deletions(-)
 
-On Tue, 11 Aug 2020, Peilin Ye wrote:
+diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
+index 3f74ab4..2c7473d 100644
+--- a/drivers/thermal/imx_thermal.c
++++ b/drivers/thermal/imx_thermal.c
+@@ -716,14 +716,9 @@ static int imx_thermal_probe(struct platform_device *pdev)
+ 
+ 	if (of_find_property(pdev->dev.of_node, "nvmem-cells", NULL)) {
+ 		ret = imx_init_from_nvmem_cells(pdev);
+-		if (ret) {
+-			if (ret == -EPROBE_DEFER)
+-				return ret;
+-
+-			dev_err(&pdev->dev, "failed to init from nvmem: %d\n",
+-				ret);
+-			return ret;
+-		}
++		if (ret)
++			return dev_err_probe(&pdev->dev, ret,
++					     "failed to init from nvmem\n");
+ 	} else {
+ 		ret = imx_init_from_tempmon_data(pdev);
+ 		if (ret) {
+@@ -746,14 +741,9 @@ static int imx_thermal_probe(struct platform_device *pdev)
+ 		     data->socdata->power_down_mask);
+ 
+ 	ret = imx_thermal_register_legacy_cooling(data);
+-	if (ret) {
+-		if (ret == -EPROBE_DEFER)
+-			return ret;
+-
+-		dev_err(&pdev->dev,
+-			"failed to register cpufreq cooling device: %d\n", ret);
+-		return ret;
+-	}
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret,
++				     "failed to register cpufreq cooling device\n");
+ 
+ 	data->thermal_clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(data->thermal_clk)) {
+-- 
+2.7.4
 
-> On Mon, Aug 10, 2020 at 08:57:19PM -0700, Cong Wang wrote:
-> > On Mon, Aug 10, 2020 at 3:10 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
-> > >
-> > > do_ip_vs_set_ctl() is referencing uninitialized stack value when `len` is
-> > > zero. Fix it.
-> > 
-> > Which exact 'cmd' is it here?
-> > 
-> > I _guess_ it is one of those uninitialized in set_arglen[], which is 0.
-> 
-> Yes, it was `IP_VS_SO_SET_NONE`, implicitly initialized to zero.
-> 
-> > But if that is the case, should it be initialized to
-> > sizeof(struct ip_vs_service_user) instead because ip_vs_copy_usvc_compat()
-> > is called anyway. Or, maybe we should just ban len==0 case.
-> 
-> I see. I think the latter would be easier, but we cannot ban all of
-> them, since the function does something with `IP_VS_SO_SET_FLUSH`, which
-> is a `len == 0` case.
-> 
-> Maybe we do something like this?
-
-	Yes, only IP_VS_SO_SET_FLUSH uses len 0. We can go with
-this change but you do not need to target net tree, as the
-problem is not fatal net-next works too. What happens is
-that we may lookup services with random search keys which
-is harmless.
-
-	Another option is to add new block after this one:
-
-        } else if (cmd == IP_VS_SO_SET_TIMEOUT) {
-                /* Set timeout values for (tcp tcpfin udp) */
-                ret = ip_vs_set_timeout(ipvs, (struct ip_vs_timeout_user *)arg);
-                goto out_unlock;
-        }
-
-	such as:
-
-	} else if (!len) {
-		/* No more commands with len=0 below */
-		ret = -EINVAL;
-		goto out_unlock;
-	}
-
-	It give more chance for future commands to use len=0
-but the drawback is that the check happens under mutex. So, I'm
-fine with both versions, it is up to you to decide :)
-
-> @@ -2432,6 +2432,8 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
-> 
->  	if (cmd < IP_VS_BASE_CTL || cmd > IP_VS_SO_SET_MAX)
->  		return -EINVAL;
-> +	if (len == 0 && cmd != IP_VS_SO_SET_FLUSH)
-> +		return -EINVAL;
->  	if (len != set_arglen[CMDID(cmd)]) {
->  		IP_VS_DBG(1, "set_ctl: len %u != %u\n",
->  			  len, set_arglen[CMDID(cmd)]);
-> @@ -2547,9 +2549,6 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
->  		break;
->  	case IP_VS_SO_SET_DELDEST:
->  		ret = ip_vs_del_dest(svc, &udest);
-> -		break;
-> -	default:
-> -		ret = -EINVAL;
->  	}
-> 
->    out_unlock:
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
