@@ -2,77 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30512241DC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600D6241DC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729039AbgHKQDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 12:03:49 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:37653 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1728797AbgHKQDt (ORCPT
+        id S1729088AbgHKQFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 12:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729008AbgHKQFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 12:03:49 -0400
-Received: (qmail 337967 invoked by uid 1000); 11 Aug 2020 12:03:48 -0400
-Date:   Tue, 11 Aug 2020 12:03:48 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     trix@redhat.com
-Cc:     gregkh@linuxfoundation.org, acozzette@cs.hmc.edu,
-        linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: realtek_cr: fix return check for dma functions
-Message-ID: <20200811160348.GD335280@rowland.harvard.edu>
-References: <20200811151505.12222-1-trix@redhat.com>
+        Tue, 11 Aug 2020 12:05:42 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE3EC061787
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 09:05:41 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id f26so12716253ljc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 09:05:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LM4jBsQMzRRDK/34QKUyfcJDWJhksJw26XHd2o7K/hw=;
+        b=h5REYG6BLAhcl7YCtx2yrw4ToGBDJU4uXkvyEjPSm/S5Qgt/fykHaqSq3JywpXVzhk
+         cx/W8MOJkg0ndiBLZgviuz2vr1RU763vUQcJdmRoZ6xko8AzSyxIh/lsVnNs/b3a8lQl
+         8o4utRdytVjQvpDmIMQfxUgnL+ljmt3Z+u/5I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LM4jBsQMzRRDK/34QKUyfcJDWJhksJw26XHd2o7K/hw=;
+        b=qIXAp3AvfBPF2DQVK1ADmiWwB+9YWf1jwIyYoOc2CDt/GFx4OYwrqnG3JeFyPVfdxs
+         7TtUVu+OFaOsvVmXvt0D6zXHY+n8B48PjYxYintVtc1cvUAS/1K2chlbocCGieFgBA7C
+         N2LQ8n8nzSVzWYSUz4LAqH/Z/rW2yoQw+tZ43EP/k7BJ+JNF6Ti363fYjkBRvyT6nkYZ
+         3HzoUftZ8gQGepfBZ81QQLh8c7DdGJPv2Mv111mFKJKmvcq9dHv2PzTQoAd0az2BePW5
+         ym6sbXMNaFTCcYuYvNfCf7NN4ngVAprmee7F+8epXBNF4WM9FIcfvfdwiHflFoVtL1at
+         nAgQ==
+X-Gm-Message-State: AOAM531/TobHwNf58B5GhoO2qYTCXOTYIfvu9rudF/ppkaiX3WLTyTU4
+        AcUOFHMaab+Z5YafcPpyIGEpSmK9aes=
+X-Google-Smtp-Source: ABdhPJzEKSHL6r/re60xgiJ3NzqQ9qMl4mOQcpJKbeeP49WCgUGpbz3rDFLArJfxtugcvP79VZmULA==
+X-Received: by 2002:a2e:2a86:: with SMTP id q128mr3039629ljq.116.1597161939440;
+        Tue, 11 Aug 2020 09:05:39 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id u9sm11728760lfl.75.2020.08.11.09.05.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Aug 2020 09:05:39 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id 185so14118080ljj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 09:05:38 -0700 (PDT)
+X-Received: by 2002:a2e:2e04:: with SMTP id u4mr3184107lju.102.1597161938384;
+ Tue, 11 Aug 2020 09:05:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200811151505.12222-1-trix@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1842689.1596468469@warthog.procyon.org.uk> <1845353.1596469795@warthog.procyon.org.uk>
+ <CAJfpegunY3fuxh486x9ysKtXbhTE0745ZCVHcaqs9Gww9RV2CQ@mail.gmail.com>
+ <ac1f5e3406abc0af4cd08d818fe920a202a67586.camel@themaw.net>
+ <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com>
+ <CAJfpegtNP8rQSS4Z14Ja4x-TOnejdhDRTsmmDD-Cccy2pkfVVw@mail.gmail.com>
+ <20200811135419.GA1263716@miu.piliscsaba.redhat.com> <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
+ <CAJfpegtWai+5Tzxi1_G+R2wEZz0q66uaOFndNE0YEQSDjq0f_A@mail.gmail.com>
+In-Reply-To: <CAJfpegtWai+5Tzxi1_G+R2wEZz0q66uaOFndNE0YEQSDjq0f_A@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 11 Aug 2020 09:05:22 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg_bfVf5eazwH2uXTG-auCYZUpq-xb1kDeNjY7yaXS7bw@mail.gmail.com>
+Message-ID: <CAHk-=wg_bfVf5eazwH2uXTG-auCYZUpq-xb1kDeNjY7yaXS7bw@mail.gmail.com>
+Subject: Re: file metadata via fs API (was: [GIT PULL] Filesystem Information)
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Karel Zak <kzak@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 08:15:05AM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> clang static analysis reports this representative problem
-> 
-> realtek_cr.c:639:3: warning: The left expression of the compound
->   assignment is an uninitialized value. The computed value will
->   also be garbage
->     SET_BIT(value, 2);
->     ^~~~~~~~~~~~~~~~~
-> 
-> value is set by a successful call to rts51x_read_mem()
-> 
-> 	retval = rts51x_read_mem(us, 0xFE77, &value, 1);
-> 	if (retval < 0)
-> 		return -EIO;
-> 
-> A successful call to rts51x_read_mem returns 0, failure can
-> return positive and negative values.  This check is wrong
-> for a number of functions.  Fix the retval check.
-> 
-> Fixes: 065e60964e29 ("ums_realtek: do not use stack memory for DMA")
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/usb/storage/realtek_cr.c | 36 ++++++++++++++++----------------
->  1 file changed, 18 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/usb/storage/realtek_cr.c b/drivers/usb/storage/realtek_cr.c
-> index 3789698d9d3c..b983753e2368 100644
-> --- a/drivers/usb/storage/realtek_cr.c
-> +++ b/drivers/usb/storage/realtek_cr.c
-> @@ -481,16 +481,16 @@ static int enable_oscillator(struct us_data *us)
->  	u8 value;
->  
->  	retval = rts51x_read_mem(us, 0xFE77, &value, 1);
-> -	if (retval < 0)
-> +	if (retval != STATUS_SUCCESS)
->  		return -EIO;
+On Tue, Aug 11, 2020 at 8:30 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> What's the disadvantage of doing it with a single lookup WITH an enabling flag?
+>
+> It's definitely not going to break anything, so no backward
+> compatibility issues whatsoever.
 
-Instead of changing all these call sites, wouldn't it be a lot easier 
-just to change rts51x_read_mem() to make it always return a negative 
-value (such as -EIO) when there's an error?
+No backwards compatibility issues for existing programs, no.
 
-Alan Stern
+But your suggestion is fundamentally ambiguous, and you most
+definitely *can* hit that if people start using this in new programs.
+
+Where does that "unified" pathname come from? It will be generated
+from "base filename + metadata name" in user space, and
+
+ (a) the base filename might have double or triple slashes in it for
+whatever reasons.
+
+This is not some "made-up gotcha" thing - I see double slashes *all*
+the time when we have things like Makefiles doing
+
+    srctree=../../src/
+
+and then people do "$(srctree)/". If you haven't seen that kind of
+pattern where the pathname has two (or sometimes more!) slashes in the
+middle, you've led a very sheltered life.
+
+ (b) even if the new user space were to think about that, and remove
+those (hah! when have you ever seen user space do that?), as Al
+mentioned, the user *filesystem* might have pathnames with double
+slashes as part of symlinks.
+
+So now we'd have to make sure that when we traverse symlinks, that
+O_ALT gets cleared. Which means that it's not a unified namespace
+after all, because you can't make symlinks point to metadata.
+
+Or we'd retroactively change the semantics of a symlink, and that _is_
+a backwards compatibility issue. Not with old software, no, but it
+changes the meaning of old symlinks!
+
+So no, I don't think a unified namespace ends up working.
+
+And I say that as somebody who actually loves the concept. Ask Al: I
+have a few times pushed for "let's allow directory behavior on regular
+files", so that you could do things like a tar-filesystem, and access
+the contents of a tar-file by just doing
+
+    cat my-file.tar/inside/the/archive.c
+
+or similar.
+
+Al has convinced me it's a horrible idea (and there you have a
+non-ambiguous marker: the slash at the end of a pathname that
+otherwise looks and acts as a non-directory)
+
+               Linus
