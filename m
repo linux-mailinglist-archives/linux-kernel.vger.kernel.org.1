@@ -2,70 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 163F12416D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E21D2416D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727995AbgHKHCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 03:02:09 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:44938 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728208AbgHKHCG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 03:02:06 -0400
-Received: by mail-io1-f72.google.com with SMTP id m12so9030007iov.11
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 00:02:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=TCO+CRsxJrzBCsKOBMk3YisLrnkYLPAHpyx6MjWmV2I=;
-        b=H/tJ7Ec3Vk/IImvb0plMhBv0u5JCgoHZs4u1rpI2oR1So3nR8H3ttkZt4uZfaFUxf+
-         3ZJcQ7FouWauUCvQ8K2OKeW/u5rUKbMmrKG/hDDASIFSbAvhO20pVBoPhdnTdvRcTRjk
-         bo3SUyVd7S9Fn3PZfbHcpPxAOX9/gF1HbK9dMBq4+d119RAsDTU28pyTCYr0MBq5E+wA
-         U9L0eqcNI1VnTuQdrEZ8+gWs/jGbJvK/pnPjxtHPl24YHJj31zarkRWe4OJIP7fzfpSw
-         i82CGyFQf2WR2pNzu9ZtZsHRpbm99pw1ioo6T2tdmMrW2VFh8SmvTPTYnMftVIPcGaPE
-         7XJA==
-X-Gm-Message-State: AOAM531xK6hJPqjNdO1DS42Syabz732M47QsarOb0cP6W3RPBAkWawZ3
-        ULYGO6oCicYuOO32iCtbaJv8z1UGaHzXLcFfM0oULG27y24Z
-X-Google-Smtp-Source: ABdhPJyIOSFerfWVR1Xo+/AxlOPWMpkrbzwv7jfTrQQsSCTPmQrSRvQ8Qgc2g4nydi3v0jjeKq2dBeLk3CJlnTSTNsYyiHQh6z0f
+        id S1728160AbgHKHDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 03:03:13 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:35078 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726792AbgHKHDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 03:03:13 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 5ECC3FB03;
+        Tue, 11 Aug 2020 09:03:10 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 76SNf614j2F1; Tue, 11 Aug 2020 09:03:08 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 42C0445637; Tue, 11 Aug 2020 09:03:08 +0200 (CEST)
+Date:   Tue, 11 Aug 2020 09:03:08 +0200
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, daniel.baluta@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux-imx@nxp.com
+Subject: Re: [PATCH] soc: imx: gpcv2: Use dev_err_probe() to simplify error
+ handling
+Message-ID: <20200811070308.GB2904@bogon.m.sigxcpu.org>
+References: <1597115082-20328-1-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:db51:: with SMTP id w17mr1349732ilq.105.1597129325132;
- Tue, 11 Aug 2020 00:02:05 -0700 (PDT)
-Date:   Tue, 11 Aug 2020 00:02:05 -0700
-In-Reply-To: <00000000000079a77705a8ce6da7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000015bfd405ac94a6c0@google.com>
-Subject: Re: general protection fault in qrtr_endpoint_post
-From:   syzbot <syzbot+03e343dbccf82a5242a2@syzkaller.appspotmail.com>
-To:     bjorn.andersson@linaro.org, bkkarthik@pesu.pes.edu,
-        dan.carpenter@oracle.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1597115082-20328-1-git-send-email-Anson.Huang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Hi,
+On Tue, Aug 11, 2020 at 11:04:42AM +0800, Anson Huang wrote:
+> dev_err_probe() can reduce code size, uniform error handling and record the
+> defer probe reason etc., use it to simplify the code.
+> 
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
+>  drivers/soc/imx/gpcv2.c | 15 +++++----------
+>  1 file changed, 5 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
+> index 6cf8a7a..db7e7fc 100644
+> --- a/drivers/soc/imx/gpcv2.c
+> +++ b/drivers/soc/imx/gpcv2.c
+> @@ -487,22 +487,17 @@ static int imx_pgc_domain_probe(struct platform_device *pdev)
+>  
+>  	domain->regulator = devm_regulator_get_optional(domain->dev, "power");
+>  	if (IS_ERR(domain->regulator)) {
+> -		if (PTR_ERR(domain->regulator) != -ENODEV) {
+> -			if (PTR_ERR(domain->regulator) != -EPROBE_DEFER)
+> -				dev_err(domain->dev, "Failed to get domain's regulator\n");
+> -			return PTR_ERR(domain->regulator);
+> -		}
+> +		if (PTR_ERR(domain->regulator) != -ENODEV)
+> +			return dev_err_probe(domain->dev, PTR_ERR(domain->regulator),
+> +					     "Failed to get domain's regulator\n");
+>  	} else if (domain->voltage) {
+>  		regulator_set_voltage(domain->regulator,
+>  				      domain->voltage, domain->voltage);
+>  	}
+>  
+>  	ret = imx_pgc_get_clocks(domain);
+> -	if (ret) {
+> -		if (ret != -EPROBE_DEFER)
+> -			dev_err(domain->dev, "Failed to get domain's clocks\n");
+> -		return ret;
+> -	}
+> +	if (ret)
+> +		return dev_err_probe(domain->dev, ret, "Failed to get domain's clocks\n");
+>  
+>  	ret = pm_genpd_init(&domain->genpd, NULL, true);
+>  	if (ret) {
 
-commit 8ff41cc21714704ef0158a546c3c4d07fae2c952
-Author: Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Tue Jun 30 11:46:15 2020 +0000
+Reviewed-by: Guido Günther <agx@sigxcpu.org>
+ -- Guido
 
-    net: qrtr: Fix an out of bounds read qrtr_endpoint_post()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10f1cfe6900000
-start commit:   1590a2e1 Merge tag 'acpi-5.8-rc3' of git://git.kernel.org/..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=20c907630cbdbe5
-dashboard link: https://syzkaller.appspot.com/bug?extid=03e343dbccf82a5242a2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1496f9f9100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1692523d100000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: net: qrtr: Fix an out of bounds read qrtr_endpoint_post()
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> -- 
+> 2.7.4
+> 
