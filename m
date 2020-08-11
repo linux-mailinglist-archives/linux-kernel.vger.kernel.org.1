@@ -2,81 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4238A24212F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 22:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E08A242138
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 22:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgHKUQb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 Aug 2020 16:16:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:40006 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725889AbgHKUQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 16:16:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6377D6E;
-        Tue, 11 Aug 2020 13:16:29 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8EA423F6CF;
-        Tue, 11 Aug 2020 13:16:28 -0700 (PDT)
-References: <20200810010009.92758-1-arch0.zheng@gmail.com> <jhjwo26gxlb.mognet@arm.com> <9425382c-2a42-57ca-512d-c93c589dc701@gmail.com> <jhjv9hph3h7.mognet@arm.com> <01fe6a9b-fd3a-9b36-b2fa-6cea58415670@gmail.com> <jhjtux9gxh2.mognet@arm.com> <905d8887-e79c-daf6-cbce-80fd0509e37d@gmail.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Qi Zheng <arch0.zheng@gmail.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/fair: Remove the duplicate check from group_has_capacity()
-In-reply-to: <905d8887-e79c-daf6-cbce-80fd0509e37d@gmail.com>
-Date:   Tue, 11 Aug 2020 21:16:26 +0100
-Message-ID: <jhjv9hp546d.mognet@arm.com>
+        id S1726529AbgHKUSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 16:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725889AbgHKUS3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 16:18:29 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 675E9C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 13:18:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LQfBOeOjjqS/nBAqElZF8KgMdzWHn+FKx6prXkYnbW4=; b=zULSQsAh02JS664sm85VUUbGih
+        cK0gSoPEAcgmphhHuR6xfQKwwNeiaSPzZdVm8c0+NmHKrfBNMnDj4DH1ek/yhguOrGGiokFTIb59N
+        cDFnYJIMPY9OSMCNQe/9MuJQ2ktHe4yJoJW20pHNXzsOVZL3TZkyEi7f5Ks/Zni6WVZa64xBjd6Hk
+        GdlX1s4Rl2UFmitejGXIaSdHmReyFQAqWyS2FfKRe+bs21IRTe694scXMKUdKyoENFiGwG96ZkAU9
+        9S+gC2u7Ic/MBCLGFHPOMB4lGVw2DLP/dhRz4p42OeQj/saxo1Zm/22ZmHRqOCWjelmGh1Vob0W8x
+        z+BvRtPg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k5aid-0001H9-J1; Tue, 11 Aug 2020 20:17:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 916843012C3;
+        Tue, 11 Aug 2020 22:17:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 76B9D2B05AEA1; Tue, 11 Aug 2020 22:17:55 +0200 (CEST)
+Date:   Tue, 11 Aug 2020 22:17:55 +0200
+From:   peterz@infradead.org
+To:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>
+Cc:     Marco Elver <elver@google.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        fenghua.yu@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        yu-cheng.yu@intel.com, sdeep@vmware.com,
+        virtualization@lists.linux-foundation.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Wei Liu <wei.liu@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*()
+ helpers
+Message-ID: <20200811201755.GI35926@hirez.programming.kicks-ass.net>
+References: <20200807113838.GA3547125@elver.google.com>
+ <e5bf3e6a-efff-7170-5ee6-1798008393a2@suse.com>
+ <CANpmjNPau_DEYadey9OL+iFZKEaUTqnFnyFs1dU12o00mg7ofA@mail.gmail.com>
+ <20200807151903.GA1263469@elver.google.com>
+ <20200811074127.GR3982@worktop.programming.kicks-ass.net>
+ <a2dffeeb-04f0-8042-b39a-b839c4800d6f@suse.com>
+ <20200811081205.GV3982@worktop.programming.kicks-ass.net>
+ <07f61573-fef1-e07c-03f2-a415c88dec6f@suse.com>
+ <20200811092054.GB2674@hirez.programming.kicks-ass.net>
+ <20200811094651.GH35926@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200811094651.GH35926@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 11, 2020 at 11:46:51AM +0200, peterz@infradead.org wrote:
 
-On 11/08/20 14:12, Qi Zheng wrote:
-> On 2020/8/11 下午8:48, Valentin Schneider wrote:
->> On 11/08/20 12:44, Qi Zheng wrote:
->>> In fact, at the beginning, I added unlikely() here to hint the compiler:
->>>
->>> -	if ((sgs->group_capacity * imbalance_pct) <
->>> -			(sgs->group_runnable * 100))
->>> +	if (unlikely((sgs->group_capacity * imbalance_pct) <
->>> +			(sgs->group_runnable * 100)))
->>>
->>> The corresponding patch is as follows:
->>>
->>>        [PATCH]sched/core: add unlikely in group_has_capacity()
->>>
->>> Do you think it is necessary?
->>
->> The "unlikely" approach has the benefit of keeping all corner cases in
->> place. I was tempted to say it could still make sense to get rid of the
->> extra check entirely, given that it has an impact only when:
->>
->> - sum_nr_running == group_weight
->> - group capacity has been noticeably reduced
->>
->> If sum_nr_running < group_weight, we won't evaluate it.
->> If sum_nr_running > group_weight, we either won't call into
->>    group_has_capacity() or we'll have checked it already in
->>    group_overloaded().
->>
->> That said, it does make very much sense to check it in that ==
->> case. Vincent might have a different take on this, but right now I'd say
->> the unlikely approach is the safest one of the two.
->>
->
-> So what should I do next? Do I resubmit a patch with unlikely() or
-> add your email to the old patch([PATCH]sched/core: add unlikely in
-> group_has_capacity())? Or continue to wait for suggestions from
-> other maintainers?
+> So let me once again see if I can't find a better solution for this all.
+> Clearly it needs one :/
 
-I guess you can add a reply to the original thread where you had the
-unlikely() to point out *removing* the check isn't 100% harmless.
+So the below boots without triggering the debug code from Marco -- it
+should allow nesting local_irq_save/restore under raw_local_irq_*().
 
-Vincent might want to have a look at it, but AFAIA he's on holidays ATM.
+I tried unconditional counting, but there's some _reallly_ wonky /
+asymmetric code that wrecks that and I've not been able to come up with
+anything useful.
+
+This one starts counting when local_irq_save() finds it didn't disable
+IRQs while lockdep though it did. At that point, local_irq_restore()
+will decrement and enable things again when it reaches 0.
+
+This assumes local_irq_save()/local_irq_restore() are nested sane, which
+is mostly true.
+
+This leaves #PF, which I fixed in these other patches, but I realized it
+needs fixing for all architectures :-( No bright ideas there yet.
+
+---
+ arch/x86/entry/thunk_32.S       |  5 ----
+ include/linux/irqflags.h        | 45 +++++++++++++++++++-------------
+ init/main.c                     | 16 ++++++++++++
+ kernel/locking/lockdep.c        | 58 +++++++++++++++++++++++++++++++++++++++++
+ kernel/trace/trace_preemptirq.c | 33 +++++++++++++++++++++++
+ 5 files changed, 134 insertions(+), 23 deletions(-)
+
+diff --git a/arch/x86/entry/thunk_32.S b/arch/x86/entry/thunk_32.S
+index 3a07ce3ec70b..f1f96d4d8cd6 100644
+--- a/arch/x86/entry/thunk_32.S
++++ b/arch/x86/entry/thunk_32.S
+@@ -29,11 +29,6 @@ SYM_CODE_START_NOALIGN(\name)
+ SYM_CODE_END(\name)
+ 	.endm
+ 
+-#ifdef CONFIG_TRACE_IRQFLAGS
+-	THUNK trace_hardirqs_on_thunk,trace_hardirqs_on_caller,1
+-	THUNK trace_hardirqs_off_thunk,trace_hardirqs_off_caller,1
+-#endif
+-
+ #ifdef CONFIG_PREEMPTION
+ 	THUNK preempt_schedule_thunk, preempt_schedule
+ 	THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
+diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
+index bd5c55755447..67e2a16d3846 100644
+--- a/include/linux/irqflags.h
++++ b/include/linux/irqflags.h
+@@ -23,12 +23,16 @@
+   extern void lockdep_hardirqs_on_prepare(unsigned long ip);
+   extern void lockdep_hardirqs_on(unsigned long ip);
+   extern void lockdep_hardirqs_off(unsigned long ip);
++  extern void lockdep_hardirqs_save(unsigned long ip, unsigned long flags);
++  extern void lockdep_hardirqs_restore(unsigned long ip, unsigned long flags);
+ #else
+   static inline void lockdep_softirqs_on(unsigned long ip) { }
+   static inline void lockdep_softirqs_off(unsigned long ip) { }
+   static inline void lockdep_hardirqs_on_prepare(unsigned long ip) { }
+   static inline void lockdep_hardirqs_on(unsigned long ip) { }
+   static inline void lockdep_hardirqs_off(unsigned long ip) { }
++  static inline void lockdep_hardirqs_save(unsigned long ip, unsigned long flags) { }
++  static inline void lockdep_hardirqs_restore(unsigned long ip, unsigned long flags) { }
+ #endif
+ 
+ #ifdef CONFIG_TRACE_IRQFLAGS
+@@ -49,10 +53,13 @@ struct irqtrace_events {
+ DECLARE_PER_CPU(int, hardirqs_enabled);
+ DECLARE_PER_CPU(int, hardirq_context);
+ 
+-  extern void trace_hardirqs_on_prepare(void);
+-  extern void trace_hardirqs_off_finish(void);
+-  extern void trace_hardirqs_on(void);
+-  extern void trace_hardirqs_off(void);
++extern void trace_hardirqs_on_prepare(void);
++extern void trace_hardirqs_off_finish(void);
++extern void trace_hardirqs_on(void);
++extern void trace_hardirqs_off(void);
++extern void trace_hardirqs_save(unsigned long flags);
++extern void trace_hardirqs_restore(unsigned long flags);
++
+ # define lockdep_hardirq_context()	(this_cpu_read(hardirq_context))
+ # define lockdep_softirq_context(p)	((p)->softirq_context)
+ # define lockdep_hardirqs_enabled()	(this_cpu_read(hardirqs_enabled))
+@@ -120,17 +127,19 @@ do {						\
+ #else
+ # define trace_hardirqs_on_prepare()		do { } while (0)
+ # define trace_hardirqs_off_finish()		do { } while (0)
+-# define trace_hardirqs_on()		do { } while (0)
+-# define trace_hardirqs_off()		do { } while (0)
+-# define lockdep_hardirq_context()	0
+-# define lockdep_softirq_context(p)	0
+-# define lockdep_hardirqs_enabled()	0
+-# define lockdep_softirqs_enabled(p)	0
+-# define lockdep_hardirq_enter()	do { } while (0)
+-# define lockdep_hardirq_threaded()	do { } while (0)
+-# define lockdep_hardirq_exit()		do { } while (0)
+-# define lockdep_softirq_enter()	do { } while (0)
+-# define lockdep_softirq_exit()		do { } while (0)
++# define trace_hardirqs_on()			do { } while (0)
++# define trace_hardirqs_off()			do { } while (0)
++# define trace_hardirqs_save(flags)		do { } while (0)
++# define trace_hardirqs_restore(flags)		do { } while (0)
++# define lockdep_hardirq_context()		0
++# define lockdep_softirq_context(p)		0
++# define lockdep_hardirqs_enabled()		0
++# define lockdep_softirqs_enabled(p)		0
++# define lockdep_hardirq_enter()		do { } while (0)
++# define lockdep_hardirq_threaded()		do { } while (0)
++# define lockdep_hardirq_exit()			do { } while (0)
++# define lockdep_softirq_enter()		do { } while (0)
++# define lockdep_softirq_exit()			do { } while (0)
+ # define lockdep_hrtimer_enter(__hrtimer)	false
+ # define lockdep_hrtimer_exit(__context)	do { } while (0)
+ # define lockdep_posixtimer_enter()		do { } while (0)
+@@ -185,18 +194,18 @@ do {						\
+ 	do { trace_hardirqs_on(); raw_local_irq_enable(); } while (0)
+ #define local_irq_disable() \
+ 	do { raw_local_irq_disable(); trace_hardirqs_off(); } while (0)
++
+ #define local_irq_save(flags)				\
+ 	do {						\
+ 		raw_local_irq_save(flags);		\
+-		trace_hardirqs_off();			\
++		trace_hardirqs_save(flags);		\
+ 	} while (0)
+ 
+-
+ #define local_irq_restore(flags)			\
+ 	do {						\
+ 		if (raw_irqs_disabled_flags(flags)) {	\
+ 			raw_local_irq_restore(flags);	\
+-			trace_hardirqs_off();		\
++			trace_hardirqs_restore(flags);	\
+ 		} else {				\
+ 			trace_hardirqs_on();		\
+ 			raw_local_irq_restore(flags);	\
+diff --git a/init/main.c b/init/main.c
+index 15bd0efff3df..0873319dcff4 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -1041,6 +1041,22 @@ asmlinkage __visible void __init start_kernel(void)
+ 	sfi_init_late();
+ 	kcsan_init();
+ 
++	/* DEBUG CODE */
++	lockdep_assert_irqs_enabled(); /* Pass. */
++	{
++		unsigned long flags1;
++		raw_local_irq_save(flags1);
++		{
++			unsigned long flags2;
++			lockdep_assert_irqs_enabled(); /* Pass - expectedly blind. */
++			local_irq_save(flags2);
++			lockdep_assert_irqs_disabled(); /* Pass. */
++			local_irq_restore(flags2);
++		}
++		raw_local_irq_restore(flags1);
++	}
++	lockdep_assert_irqs_enabled(); /* FAIL! */
++
+ 	/* Do the rest non-__init'ed, we're now alive */
+ 	arch_call_rest_init();
+ 
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 3617abb08e31..2c88574b817c 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -3763,6 +3763,30 @@ void noinstr lockdep_hardirqs_on(unsigned long ip)
+ }
+ EXPORT_SYMBOL_GPL(lockdep_hardirqs_on);
+ 
++static DEFINE_PER_CPU(int, hardirqs_disabled);
++
++void lockdep_hardirqs_restore(unsigned long ip, unsigned long flags)
++{
++	if (unlikely(!debug_locks))
++		return;
++
++	if (in_nmi()) {
++		if (!IS_ENABLED(CONFIG_TRACE_IRQFLAGS_NMI))
++			return;
++	} else if (current->lockdep_recursion & LOCKDEP_RECURSION_MASK)
++		return;
++
++	if (__this_cpu_read(hardirqs_disabled) &&
++	    __this_cpu_dec_return(hardirqs_disabled) == 0) {
++
++		lockdep_hardirqs_on_prepare(ip);
++		lockdep_hardirqs_on(ip);
++	} else {
++		lockdep_hardirqs_off(ip);
++	}
++}
++EXPORT_SYMBOL_GPL(lockdep_hardirqs_restore);
++
+ /*
+  * Hardirqs were disabled:
+  */
+@@ -3805,6 +3829,40 @@ void noinstr lockdep_hardirqs_off(unsigned long ip)
+ }
+ EXPORT_SYMBOL_GPL(lockdep_hardirqs_off);
+ 
++void lockdep_hardirqs_save(unsigned long ip, unsigned long flags)
++{
++	if (unlikely(!debug_locks))
++		return;
++
++	/*
++	 * Matching lockdep_hardirqs_on(), allow NMIs in the middle of lockdep;
++	 * they will restore the software state. This ensures the software
++	 * state is consistent inside NMIs as well.
++	 */
++	if (in_nmi()) {
++		if (!IS_ENABLED(CONFIG_TRACE_IRQFLAGS_NMI))
++			return;
++	} else if (current->lockdep_recursion & LOCKDEP_RECURSION_MASK)
++		return;
++
++	/*
++	 * If IRQs were disabled, but IRQ tracking state said enabled we
++	 * 'missed' an update (or are nested inside raw_local_irq_*()) and
++	 * cannot rely on IRQ state to tell us when we should enable again.
++	 *
++	 * Count our way through this.
++	 */
++	if (raw_irqs_disabled_flags(flags)) {
++		if (__this_cpu_read(hardirqs_enabled)) {
++			WARN_ON_ONCE(__this_cpu_read(hardirqs_disabled) != 0);
++			__this_cpu_write(hardirqs_disabled, 1);
++		} else if (__this_cpu_read(hardirqs_disabled))
++			__this_cpu_inc(hardirqs_disabled);
++	}
++	lockdep_hardirqs_off(ip);
++}
++EXPORT_SYMBOL_GPL(lockdep_hardirqs_save);
++
+ /*
+  * Softirqs will be enabled:
+  */
+diff --git a/kernel/trace/trace_preemptirq.c b/kernel/trace/trace_preemptirq.c
+index f10073e62603..080deaa1d9c9 100644
+--- a/kernel/trace/trace_preemptirq.c
++++ b/kernel/trace/trace_preemptirq.c
+@@ -85,6 +85,36 @@ void trace_hardirqs_off(void)
+ EXPORT_SYMBOL(trace_hardirqs_off);
+ NOKPROBE_SYMBOL(trace_hardirqs_off);
+ 
++void trace_hardirqs_save(unsigned long flags)
++{
++	lockdep_hardirqs_save(CALLER_ADDR0, flags);
++
++	if (!this_cpu_read(tracing_irq_cpu)) {
++		this_cpu_write(tracing_irq_cpu, 1);
++		tracer_hardirqs_off(CALLER_ADDR0, CALLER_ADDR1);
++		if (!in_nmi())
++			trace_irq_disable_rcuidle(CALLER_ADDR0, CALLER_ADDR1);
++	}
++}
++EXPORT_SYMBOL(trace_hardirqs_save);
++NOKPROBE_SYMBOL(trace_hardirqs_save);
++
++void trace_hardirqs_restore(unsigned long flags)
++{
++	if (this_cpu_read(tracing_irq_cpu)) {
++		if (!in_nmi())
++			trace_irq_enable_rcuidle(CALLER_ADDR0, CALLER_ADDR1);
++		tracer_hardirqs_on(CALLER_ADDR0, CALLER_ADDR1);
++		this_cpu_write(tracing_irq_cpu, 0);
++	}
++
++	lockdep_hardirqs_restore(CALLER_ADDR0, flags);
++}
++EXPORT_SYMBOL(trace_hardirqs_restore);
++NOKPROBE_SYMBOL(trace_hardirqs_restore);
++
++#ifdef __s390__
++
+ __visible void trace_hardirqs_on_caller(unsigned long caller_addr)
+ {
+ 	if (this_cpu_read(tracing_irq_cpu)) {
+@@ -113,6 +143,9 @@ __visible void trace_hardirqs_off_caller(unsigned long caller_addr)
+ }
+ EXPORT_SYMBOL(trace_hardirqs_off_caller);
+ NOKPROBE_SYMBOL(trace_hardirqs_off_caller);
++
++#endif /* __s390__ */
++
+ #endif /* CONFIG_TRACE_IRQFLAGS */
+ 
+ #ifdef CONFIG_TRACE_PREEMPT_TOGGLE
