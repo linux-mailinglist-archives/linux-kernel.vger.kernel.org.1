@@ -2,185 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36562241528
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 05:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648A924152D
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 05:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbgHKDGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 23:06:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727066AbgHKDGL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 23:06:11 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC6C8C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 20:06:10 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id m15so5840321lfp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 20:06:10 -0700 (PDT)
+        id S1727951AbgHKDLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 23:11:44 -0400
+Received: from mail-eopbgr1410048.outbound.protection.outlook.com ([40.107.141.48]:64000
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726981AbgHKDLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 Aug 2020 23:11:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lJ6gETDiGwTPJI+4KS2uFrRMr9NiFixar+k02L1AKayMD3o/LGFGDDKXwY//C9vy1DRMpcDER4CzV1jVobzyMFUv/DCDLgT8fAFWMC288k7+EvLTPBL9XrEh7BYCuquQVpP03UgsMFx0xdxmsprtTZPqk27Z+bQzF+xeXtM4hf6LPyn63pDzimSDshAmljXVrI3782bww+u6pHpzO2QtRzszYWpjde9Z+qNEK0BvbkfEeTo03QsToSY36vrzbuKDKywsUW9y+Opt6BCg/ZZ3O3jR3XIo03o+zN3ZnQBKnhbV0RUmRkGc6Tr7rCr9evoJrKcfMTAVO732wMZTU49PUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Me3dk6tzEbJMXBBRyR3SlqF8kuWjc4BSqDBn+TumMDQ=;
+ b=OR44U0RwLrQ3FlbnRxZjFl+rCIvqNZRIiZLX0zBI+I3LlntmKQWnh71fVeTjxwEX5USVHVNLMXtwc3VkKmN4GD9jkCd0fDrhJn4NvffB38vDKonMPnBFo01yjLKxeuoVfNqnsuzMv+6zvGeK5PpwyeIvzYTkh3/OW6b0JX9YYWhi6lSI22ACK6BUQ9zTg4ffu+2NjdwYP/Wff9D8sa2xNPKKsuXGgaUfSSlwyUYWAoErGziFDwIce+ki0rkRTb9Tz++6+eodWOgJ5nn8xTJAqqA5gQ38EAhvEuKGfrHfQUmafw451TwunIY7K4aKDw1SS8Eqk2rtWpG2F6Z1T2sRWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lAgPe7LYxrHND6axLhyzWgoGWJo7W6UM/7KYKZFAicY=;
-        b=Vt/xx+6qknXNsAC24DXedJ+8lw2kZx476DKnzqwxqQHYmJ/b+vSOJ6uzjOOga0I6Pr
-         9KJ8nvtVaX/cYg14ek3e5Prb2+LHlU5eogRzmyaTtuSoIydVzMVTUSVQWLYvUV6XSFCF
-         gTQaoglRLjuiQYYad1i7Ky+S6jrDOMpFBu0XZspeQyMFPfMtSHSPL3J6j63TuSbtHa37
-         +L4QJvsOShc6cHCqwJubi8QLmUtIbE3+iA9jtZvfyfWCtZeIA0tUsZ5FrGt8bCCgA0u2
-         Oq+Id6wDp61B1gJ0CKJntpsULkprxmjKMo5RN2SmtSQFISDi+GEDmKNI6p/WnG6lwjAY
-         MZ1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lAgPe7LYxrHND6axLhyzWgoGWJo7W6UM/7KYKZFAicY=;
-        b=pb/QHXwCI+BJouEabzW6bEtDI10H88gE+SVDENxvBuNWOijheh6dAt7X2Z82HfTYsL
-         xapWxHvJvTg7zfzeTJyeJqeOLaKzhX0++81G+tspqzTxHRXZl40dQxia/DnIEM1ZTDl0
-         l1MJd0T0VBJWXVVa+vzCQQIl2zkQ20xDpRry3+ajOqPwnicNDZcqNBZN+imVxmWSH5hJ
-         MslULeZoVH8c3T+zamBg+CakTASk40rMg2FQZtFba0ziJjfrm8O546TgjPx1MZTwwHQE
-         3VUBOoqqnkCHdpnMyKcVVwcew2bPAkT76u0fuUeWLS+I/2lIIepRmyqvKPo1jKSUqWPn
-         +ryQ==
-X-Gm-Message-State: AOAM530foduI9I7yvLGWILLZ+PZbUhk2Dh8h0C/kUqHfZqTHeN3T7Ec8
-        b44MHAYcFeYzG1zQwTeNP7VagInVoa5jD7Wc+E5KlQN27pU=
-X-Google-Smtp-Source: ABdhPJwmgkeAByVMl8IHzTNel+UQSvrkal3Iy/3KmtsWbDWQJpZEQt6WukV/7ph1+nZ7ZkmIlZpzPGBYM79Tc1xCHnA=
-X-Received: by 2002:ac2:5f48:: with SMTP id 8mr2044815lfz.157.1597115168800;
- Mon, 10 Aug 2020 20:06:08 -0700 (PDT)
+ d=necglobal.onmicrosoft.com; s=selector1-necglobal-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Me3dk6tzEbJMXBBRyR3SlqF8kuWjc4BSqDBn+TumMDQ=;
+ b=azkdk1LIyAjeoyg3AxGqsGpulHJFFp2tcVz3w/tMZWax5KOQSSTzxNKcyRhjWxpUb53Yr+4qA2WV6JcOHztJKlrbWkVKM1ZIxLEoR38Kf+PfzERVGW6TrxaTUeWniYvUHr+mbDMBIP8yhVOJtVHxojcCIfM0yGDXqTbhojC9ZVs=
+Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com (2603:1096:404:74::14)
+ by TYBPR01MB5486.jpnprd01.prod.outlook.com (2603:1096:404:802d::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.18; Tue, 11 Aug
+ 2020 03:11:40 +0000
+Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com
+ ([fe80::21d2:e51a:a880:2042]) by TY2PR01MB3210.jpnprd01.prod.outlook.com
+ ([fe80::21d2:e51a:a880:2042%7]) with mapi id 15.20.3261.025; Tue, 11 Aug 2020
+ 03:11:40 +0000
+From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
+        <naoya.horiguchi@nec.com>
+To:     Qian Cai <cai@lca.pw>
+CC:     "nao.horiguchi@gmail.com" <nao.horiguchi@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "aneesh.kumar@linux.vnet.ibm.com" <aneesh.kumar@linux.vnet.ibm.com>,
+        "zeil@yandex-team.ru" <zeil@yandex-team.ru>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>
+Subject: Re: [PATCH v6 00/12] HWPOISON: soft offline rework
+Thread-Topic: [PATCH v6 00/12] HWPOISON: soft offline rework
+Thread-Index: AQHWbyom92sGRlXQfk+BXW7m7bWNQ6kyO+2A
+Date:   Tue, 11 Aug 2020 03:11:40 +0000
+Message-ID: <20200811031139.GA7145@hori.linux.bs1.fc.nec.co.jp>
+References: <20200806184923.7007-1-nao.horiguchi@gmail.com>
+ <20200810152254.GC5307@lca.pw>
+In-Reply-To: <20200810152254.GC5307@lca.pw>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lca.pw; dkim=none (message not signed)
+ header.d=none;lca.pw; dmarc=none action=none header.from=nec.com;
+x-originating-ip: [165.225.110.205]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 958eb7c0-e420-4f57-39a5-08d83da44457
+x-ms-traffictypediagnostic: TYBPR01MB5486:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TYBPR01MB5486AA2FA38742C6F8839CF7E7450@TYBPR01MB5486.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2958;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oXyoRUM4kan+9iXw9360Dsluv2S2h5IF3olg3DI3H2tcsmYbmPyickUc9yWaY6Kw+t4Ec8rMhs+WjdRfDAhhv8UL16EqyVvmZsB975WR6wG8CKDWGKQqScZBGEmJdqnFCcoLKyADHqRe9ZYejaeZ4R4Rl2j5NTC+wkQ2wf4Nr5tXPTMTpOmVRD3OkGDg2FgwriNeT7rySu+4LxKh9QbflXPUDQv45DNlfwvhStC+ZzALpaA6nwI1areu5kgbC8dP0Oh7qoJ9r0mKKUh/qsm9JNdr6McQ9NYnL68uJ83+54eVJJ6IEMkQAqcG+3C7uJW8I3CG0D7BjNdw/QmeA0i0T1wqKMhtLEmmWLpjUZRyCqLsX8BzsbuqM/y2Ncf/14hw/wAUDeWFEYEyXEA8yqbyOA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3210.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(346002)(376002)(366004)(136003)(8676002)(9686003)(966005)(55236004)(8936002)(33656002)(6506007)(71200400001)(86362001)(186003)(26005)(2906002)(83380400001)(64756008)(66446008)(5660300002)(6486002)(6916009)(54906003)(66556008)(85182001)(66946007)(66476007)(6512007)(76116006)(478600001)(7416002)(316002)(4326008)(1076003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: bO4zbS0u6+TqBuy1mDyR2dwSF8TkGkx8HaxwYQnVrSTrdDbm5rij4ZQN6xgVaumhjMKqwQFR2NCJgAevEmkspUyjQFd9/WgLLXZ1YAUdVQ0vxsHuR25D6AkqOPCQBOgr4T5I0e/LiM7ie+NbU3fEAXLDt3Imm7FgpCPLVaHaCTvgukx+6ak261LxARXKaGYRZBytux4KAbIbH1vsQhN1MABZIbjKCLsAdh5zNECmoWUhWwh/bDM7EqjDF852cmlEQR93bVjW0jPsyryF62tkSjhuIWq31KggoN9KFejR81RWJ8IpLV7iLzvOO/y5wsL1BRAwsVqyNnW6Xb4rR7cDl39wdfJ7m66LJS4YyxZ6chTA5JVaDPRo8/UcQkbCN9A3jTk4oGhvxZNUaKWccZmu+shRZHKgpBRIZqFyk2va3C8blUXdX6FSaxmKP63bHUGjg7h5RLfpK0QDBgzGUKSozYR/0YRSM9EKBqmsW/TZ9eu1xoyvCnvIiJ7yj1Fi0F7IhCqEp7nlaROZy2hJ0USUql3b2SqQoLW2iVk1xjtLcHGvRZ/9z6HJL9LRdqEvAJIRVWr4Tkbtb3iLmqD6EXGlc7IUej0CPiR2L8apTaqqOT7qNcqYClB1Ui4IflpS4Bj8dwrju4EzkZp+5gDNtEGhYQ==
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-ID: <0E671F1123F4F14E8A06168884936EE9@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200429214954.44866-1-jannh@google.com> <20200429214954.44866-2-jannh@google.com>
- <20200505104805.GA17400@lst.de> <CAG48ez3F70-UXwdHmO4CnR0bAForn-SBtstW5WAYjcrLFwS_9A@mail.gmail.com>
- <20200505121557.GA24052@lst.de>
-In-Reply-To: <20200505121557.GA24052@lst.de>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 11 Aug 2020 05:05:42 +0200
-Message-ID: <CAG48ez3ssZLqGC_Jy1su93wieCtvaxEtVw43skiXcKFHEMhp5A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] binfmt_elf_fdpic: Stop using dump_emit() on user
- pointers on !MMU
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
-        linux-c6x-dev@linux-c6x.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3210.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 958eb7c0-e420-4f57-39a5-08d83da44457
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Aug 2020 03:11:40.2583
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ld/99Nys2kf0faOYCY+FZpXBcYFuACUADmsDrbBI7S1zV3v28EEqn3QZKx083vZpyvxrp1+JuFonL37VfITfGA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYBPR01MB5486
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 2:15 PM Christoph Hellwig <hch@lst.de> wrote:
-> On Tue, May 05, 2020 at 01:42:12PM +0200, Jann Horn wrote:
-> > On Tue, May 5, 2020 at 12:48 PM Christoph Hellwig <hch@lst.de> wrote:
-> > > On Wed, Apr 29, 2020 at 11:49:50PM +0200, Jann Horn wrote:
-> > > > dump_emit() is for kernel pointers, and VMAs describe userspace memory.
-> > > > Let's be tidy here and avoid accessing userspace pointers under KERNEL_DS,
-> > > > even if it probably doesn't matter much on !MMU systems - especially given
-> > > > that it looks like we can just use the same get_dump_page() as on MMU if
-> > > > we move it out of the CONFIG_MMU block.
-> > >
-> > > Looks sensible.  Did you get a chance to test this with a nommu setup?
-> >
-> > Nope. Do you happen to have a recommendation for a convenient
-> > environment I can use with QEMU, or something like that? I'm guessing
-> > that just running a standard armel Debian userspace with a !mmu ARM
-> > kernel wouldn't work so well?
->
-> Nommu generally needs special userspace either using uclibc-ng or musl.
-> When I did the RISC-V nommu work I used buildroot for my root file
-> systems.  We haven't gotten elffdpic to work on RISC-V yet, so I can't
-> use that setup for testing, but it should support ARM as well.
+On Mon, Aug 10, 2020 at 11:22:55AM -0400, Qian Cai wrote:
+> On Thu, Aug 06, 2020 at 06:49:11PM +0000, nao.horiguchi@gmail.com wrote:
+> > Hi,
+> >=20
+> > This patchset is the latest version of soft offline rework patchset
+> > targetted for v5.9.
+> >=20
+> > Since v5, I dropped some patches which tweak refcount handling in
+> > madvise_inject_error() to avoid the "unknown refcount page" error.
+> > I don't confirm the fix (that didn't reproduce with v5 in my environmen=
+t),
+> > but this change surely call soft_offline_page() after holding refcount,
+> > so the error should not happen any more.
+>=20
+> With this patchset, arm64 is still suffering from premature 512M-size hug=
+epages
+> allocation failures.
+>=20
+> # git clone https://gitlab.com/cailca/linux-mm
+> # cd linux-mm; make
+> # ./random 1
+> - start: migrate_huge_offline
+> - use NUMA nodes 0,1.
+> - mmap and free 2147483648 bytes hugepages on node 0
+> - mmap and free 2147483648 bytes hugepages on node 1
+> madvise: Cannot allocate memory
+>=20
+> [  292.456538][ T3685] soft offline: 0x8a000: hugepage isolation failed: =
+0, page count 2, type 7ffff80001000e (referenced|uptodate|dirty|head)
+> [  292.469113][ T3685] Soft offlining pfn 0x8c000 at process virtual addr=
+ess 0xffff60000000
+> [  292.983855][ T3685] Soft offlining pfn 0x88000 at process virtual addr=
+ess 0xffff40000000
+> [  293.271369][ T3685] Soft offlining pfn 0x8a000 at process virtual addr=
+ess 0xffff60000000
+> [  293.834030][ T3685] Soft offlining pfn 0xa000 at process virtual addre=
+ss 0xffff40000000
+> [  293.851378][ T3685] soft offline: 0xa000: hugepage migration failed -1=
+2, type 7ffff80001000e (referenced|uptodate|dirty|head)
+>=20
+> The fresh-booted system still had 40G+ memory free before running the tes=
+t.
 
-I've finally gotten around to testing this, and discovered that I
-actually had to change something in the patch - thanks for asking me
-to test this.
+As I commented over v5, this failure is expected and it doesn't mean kernel
+issue.  Once we successfully soft offline a hugepage, the memory range
+covering the hugepage will never participate in hugepage because one of the
+subpages is removed from buddy.  So if you iterate soft offlining hugepages=
+,
+all memory range are "holed" finally, and no hugepage will be available in
+the system.
 
+Please fix your test program to properly determine nubmer of loop (NR_LOOP)
+so that you can assume that you can always allocate hugepage during testing=
+.
+For example, if you can use 40G memory and hugepage size is 512MB, NR_LOOP
+should not be larger than 80.
 
+>=20
+> Reverting the following commits allowed the test to run succesfully over =
+and over again.
+>=20
+> "mm, hwpoison: remove recalculating hpage"
+> "mm,hwpoison-inject: don't pin for hwpoison_filter"
+> "mm,hwpoison: Un-export get_hwpoison_page and make it static"
+> "mm,hwpoison: kill put_hwpoison_page"
+> "mm,hwpoison: unify THP handling for hard and soft offline"
+> "mm,hwpoison: rework soft offline for free pages"
+> "mm,hwpoison: rework soft offline for in-use pages"
+> "mm,hwpoison: refactor soft_offline_huge_page and __soft_offline_page"
 
-Some notes on running ARM nommu testing:
+I'm still not sure why the test succeeded by reverting these because
+current mainline kernel provides similar mechanism to prevent reuse of
+soft offlined page. So this success seems to me something suspicious.
 
-I ended up running QEMU with "-machine versatilepb". To make that
-work, I applied this patch:
-<https://github.com/buildroot/buildroot/blob/master/board/qemu/arm-versatile/patches/linux/versatile-nommu.patch>
-A couple of directories up, there are also a README and a kernel
-config for that.
+To investigate more, I want to have additional info about the page states
+of the relevant pages after soft offlining.  Could you collect it by the
+following steps?
 
-Note that the emulated harddrive of this board doesn't seem to work,
-because it's connected via PCI, and nommu generally can't use PCI; but
-you can boot from initramfs, and you can copy files from/to the host
-with netcat, since the emulated network card does work. (To avoid
-having to bring up the interface from userspace, you can use
-"ip=10.0.2.1::10.0.2.2:255.255.255.0" on the kernel cmdline if the
-corresponding feature is enabled in the kernel config.)
+  - modify random.c not to run hotplug_memory() in migrate_huge_hotplug_mem=
+ory(),
+  - compile it and run "./random 1" once,
+  - to collect page state with hwpoisoned pages, run "./page-types -Nlr -b =
+hwpoison",
+    where page-types is available under tools/vm in kernel source tree.
+  - choose a few pfns of soft offlined pages from kernel message
+    "Soft offlining pfn ...", and run "./page-types -Nlr -a <pfn>".
 
-The first trouble I ran into with trying to run FDPIC userspace (based
-on musl) was that Linux has support for running ARM userspace in
-"26-bit mode", which is some ARM feature from the dark ages, with no
-support in QEMU; and while normally Linux only tries to enable that
-thing when the binary explicitly requires it, the FDPIC path isn't
-wired up to the appropriate personality logic properly, and so you get
-a spectacular explosion, where eventually the kernel oopses with a
-message about how it's trying to load an invalid value into CPSR
-because first the kernel tries to return to 26-bit mode, and then,
-through some mysterious spooky action at a distance, the kernel
-(AFAICS) ends up trying to do a syscall return with the stack pointer
-pointing somewhere in the middle of the kernel stack (and not where
-the entry register frame is).
+Thanks,
+Naoya Horiguchi
 
-Anyway, my hacky workaround for that is:
-
-diff --git a/arch/arm/include/asm/processor.h b/arch/arm/include/asm/processor.h
-index b9241051e5cb..d5aa409e366c 100644
---- a/arch/arm/include/asm/processor.h
-+++ b/arch/arm/include/asm/processor.h
-@@ -70,7 +70,7 @@ static inline void
-arch_thread_struct_whitelist(unsigned long *offset,
-        if (current->personality & ADDR_LIMIT_32BIT)                    \
-                regs->ARM_cpsr = USR_MODE;                              \
-        else                                                            \
--               regs->ARM_cpsr = USR26_MODE;                            \
-+               { WARN(1, "setting USR26_MODE"); regs->ARM_cpsr = USR_MODE; } \
-        if (elf_hwcap & HWCAP_THUMB && pc & 1)                          \
-                regs->ARM_cpsr |= PSR_T_BIT;                            \
-        regs->ARM_cpsr |= PSR_ENDSTATE;                                 \
-
-
-Next up: Early on in the libc startup code, musl aborts execution by
-intentionally executing an undefined instruction in
-__set_thread_area(), because it can't figure out any working
-implementation of atomic cmpxchg. For the MMU case, there is a kuser
-helper (what x86 would call vsyscall); but for NOMMU ARM, no working
-implementation exists. So I gave up on musl and went with uclibc-ng
-(built via buildroot) instead, since uclibc-ng has support for
-compiling out thread support.
-
-
-Annoyingly, buildroot doesn't support FDPIC (at least not for nommu
-ARM). So I ended up telling it to build a small FLAT userspace, and
-used a standard ARM toolchain to build a tiny static PIE ELF binary
-with no reliance on libc (the FDPIC loader can actually load normal
-ELF mostly fine as long as it's PIE, at the cost of having to
-duplicate the text section for every instance) - luckily I didn't need
-the ELF binary to actually do anything complicated, and so working
-without any libc was tolerable:
-
-arm-linux-gnueabi-gcc-10 -fPIC -c -o test_crash.o test_crash.c
-arm-linux-gnueabi-ld -pie --no-dynamic-linker -o test_crash test_crash.o
-
-
-Next fun part: gdb-multiarch doesn't seem to be able to open FDPIC
-core dumps properly - none of the register status is available. I took
-apart the core dump before and after the patch in a hex editor,
-though, and it seems to have all the expected stuff in it. I'm
-guessing that maybe GDB got thrown off by struct elf_prstatus having a
-different layout if the core dump was generated on nommu? GDB's
-elf32_arm_nabi_grok_prstatus() seems to only handle the struct size
-for the non-FDPIC struct.
+>=20
+> i.e., it is not enough to only revert,
+>=20
+> mm,hwpoison: double-check page count in __get_any_page()
+> mm,hwpoison: introduce MF_MSG_UNSPLIT_THP
+> mm,hwpoison: return 0 if the page is already poisoned in soft-offline
+> =
