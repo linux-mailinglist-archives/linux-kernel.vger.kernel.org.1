@@ -2,114 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DB5241A6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 13:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B58241A71
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 13:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728789AbgHKLcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 07:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728454AbgHKLcU (ORCPT
+        id S1728755AbgHKLdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 07:33:51 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:36941 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728681AbgHKLdt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 07:32:20 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C729C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 04:32:20 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ep8so1729444pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 04:32:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BctG/qaJdDXtKFvw6lMKacsPfVSKQtLH7iFF3+pMRlM=;
-        b=QjpUqioRorxWY/SVtxtGIFTNjlh0OzsQjd3uNqVUz9BeP9g85qFpx8SNmQh3YN/95u
-         o8q2jQDvEBwNfpt5hMuoyD40Jbhvz2cBYJn6MLrwDYKktxExxhYGri8iJdkiG/E8m/iE
-         2l7Doo6GamuB0cqn6JTzc2DXX89X9qloxT3m5stn5KJc3muyGEM559SNtvqTWfaH5Ex1
-         NBLyxEsHuS3AgcUI5cnRf4JHYG6JiIfnrCmzQQk1nGEBim7a0fENx4SbqthDQrB0zSx6
-         WWFVsSDoL1usG2DBA29U+tN/xLJ5kml3j6epX4R96177MoDCbJPUOVNf8Fzl43sB+vMW
-         bjBQ==
+        Tue, 11 Aug 2020 07:33:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597145628;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GiCPzZPtpDgWrMbwVo68Gc9UUX4p+0NK8qKoCf+Lg2k=;
+        b=gI/FeK23M41k5meXY2J3IjYS42tHdB/K+Q1SVuMTLjw/wOcxZKxrHCBl5TYqCEDw3L38MC
+        vOvtkbvH0nJ7WoGChrB5viI0Sqm8a6EcILU1BhptpSKGVDYxRKVdGHZoKy0wL5MbqRxTLb
+        0b6Duxx1rjRItchpsi4zA7l+V2aYmWk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-dHyKlMmDMjy9IUCaWdNOQQ-1; Tue, 11 Aug 2020 07:33:46 -0400
+X-MC-Unique: dHyKlMmDMjy9IUCaWdNOQQ-1
+Received: by mail-wm1-f72.google.com with SMTP id v8so867072wma.6
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 04:33:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BctG/qaJdDXtKFvw6lMKacsPfVSKQtLH7iFF3+pMRlM=;
-        b=jYkB1MLjAlyrEyFJUReXNAeyDjGdWTPg+ZOB6zjPkp8drqtsGZsZ1K8qozAuliBbtN
-         6nhahchVN+o4hWLAbgu7xdPIfdRYfBKGHQcsnKQGHYvdeafPuAdYwTq+J0qj3d2kdvye
-         tbiTeTsTQGbilcH41VAl472foQOaevOEYuSqPYsgWj4hWIj/r7TOBnh7GXwW7htupq0k
-         REhewiOzME5UbLd3rhIC21aOMwxHsj47LoQlJj5YjfWm4+8uTaws089e1Pc9kJC61Qk1
-         yyxOtEnZXxnTdymYjXFbNrhAu6CU5Nn+jNu9rbVEjQe68YoMAPPzqXj/OQtfNSj80IYg
-         0d2w==
-X-Gm-Message-State: AOAM532BMDuomvZwoFZA20ihIlZS/7cq9atTo/14W2OUkMYG7wHBxggr
-        MkS+1kljFhMdgmzSY/P/i8dHG3Hpv/U=
-X-Google-Smtp-Source: ABdhPJx68lUG8OjUmXnQuo1LfXpp0gcnhDvKm3bO8qvqXsjH0lkNvqIoHDCIidrvXBAlqjIbZI8xDg==
-X-Received: by 2002:a17:902:8509:: with SMTP id bj9mr473545plb.179.1597145539827;
-        Tue, 11 Aug 2020 04:32:19 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.7])
-        by smtp.gmail.com with ESMTPSA id e125sm25462835pfh.69.2020.08.11.04.32.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 11 Aug 2020 04:32:18 -0700 (PDT)
-From:   Jiang Biao <benbjiang@gmail.com>
-X-Google-Original-From: Jiang Biao <benbjiang@tencent.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org
-Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org,
-        Jiang Biao <benbjiang@tencent.com>
-Subject: [PATCH v3] sched/fair: simplfy the work when reweighting entity
-Date:   Tue, 11 Aug 2020 19:32:09 +0800
-Message-Id: <20200811113209.34057-1-benbjiang@tencent.com>
-X-Mailer: git-send-email 2.21.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GiCPzZPtpDgWrMbwVo68Gc9UUX4p+0NK8qKoCf+Lg2k=;
+        b=fouaew8Nw2fV4S9YkfArMg8WkcisQYxH1GTsbLo6yb1n233MKJLFxs1rVM3SmsrJgP
+         1v0WFwzQPS/guY4Br9XONX9x0+bjd85kgQCeuaXG/vfBqThpAfxczYycu4oatx5cPgIw
+         YTGURwwC5fNs8FE35KBVgTU3QhSZZVr7WV87cXtnzJSfUv6Ii5y+oxpIGkj8Eg9/Pp8j
+         EsHE+ctsDY8GxpBLz9HhZcIvefJO1hIIWHc+1Mml/OVG3Ylm7SLXNwfrLB5jZmH0fYn3
+         cCYJXsrMAP3n4FYojScOr3FEraNdFj5BAa2LN6dgVl0z3y7EWb0d0iOMZ1ijZTdSsPXc
+         64Hg==
+X-Gm-Message-State: AOAM531WW3HuxOPzVFAgcutG2bU4h6DEwZafmeA+WjFzA8Xi1Wtlp/13
+        D5ltwfb2jEEn9ZMBHF7DOkLSOdl8V30UatE47LJIisYYqOzb2Yha8R0y7KE3rYy3X+XO8Gg/Lo1
+        JIDwBAVBCBmFlqigzErJOjmXV
+X-Received: by 2002:a1c:2dcb:: with SMTP id t194mr3499780wmt.94.1597145625675;
+        Tue, 11 Aug 2020 04:33:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzEaIvjLTJL/NIBPByzAEwifrGXrzHsoFwTXAZoU9RkSJbGkn6bslOVl7J4dDyoTVHhx7FazQ==
+X-Received: by 2002:a1c:2dcb:: with SMTP id t194mr3499766wmt.94.1597145625527;
+        Tue, 11 Aug 2020 04:33:45 -0700 (PDT)
+Received: from redhat.com ([147.161.8.240])
+        by smtp.gmail.com with ESMTPSA id 32sm27064327wrn.86.2020.08.11.04.33.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Aug 2020 04:33:44 -0700 (PDT)
+Date:   Tue, 11 Aug 2020 07:33:26 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "eli@mellanox.com" <eli@mellanox.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        Majd Dibbiny <majd@nvidia.com>,
+        Maor Dickman <maord@nvidia.com>,
+        Shahaf Shuler <shahafs@mellanox.com>
+Subject: Re: VDPA Debug/Statistics
+Message-ID: <20200811073144-mutt-send-email-mst@kernel.org>
+References: <BN8PR12MB342559414BE03DFC992AD03DAB450@BN8PR12MB3425.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN8PR12MB342559414BE03DFC992AD03DAB450@BN8PR12MB3425.namprd12.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiang Biao <benbjiang@tencent.com>
+On Tue, Aug 11, 2020 at 11:26:20AM +0000, Eli Cohen wrote:
+> Hi All
+> 
+> Currently, the only statistics we get for a VDPA instance comes from the virtio_net device instance. Since VDPA involves hardware acceleration, there can be quite a lot of information that can be fetched from the underlying device. Currently there is no generic method to fetch this information.
+> 
+> One way of doing this can be to create a the host, a net device for each VDPA instance, and use it to get this information or do some configuration. Ethtool can be used in such a case
+> 
+> I would like to hear what you think about this or maybe you have some other ideas to address this topic.
+> 
+> Thanks,
+> Eli
 
-The code in reweight_entity() can be simplified.
+Something I'm not sure I understand is how are vdpa instances created
+on mellanox cards? There's a devlink command for that, is that right?
+Can that be extended for stats?
 
-For a sched entity on the rq, the entity accounting can be replaced by
-cfs_rq instantaneous load updates currently called from within the
-entity accounting.
-
-Even though an entity on the rq can't represent a task in
-reweight_entity() (a task is always dequeued before calling this
-function) and so the numa task accounting and the rq->cfs_tasks list
-management of the entity accounting are never called, the redundant
-cfs_rq->nr_running decrement/increment will be avoided.
-
-Signed-off-by: Jiang Biao <benbjiang@tencent.com>
----
-v3<-v2: Amend commit log taking Dietmar's advice. Thx.
-v2<-v1: Amend the commit log
-
- kernel/sched/fair.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 04fa8dbcfa4d..18a8fc7bd0de 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3086,7 +3086,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
- 		/* commit outstanding execution time */
- 		if (cfs_rq->curr == se)
- 			update_curr(cfs_rq);
--		account_entity_dequeue(cfs_rq, se);
-+		update_load_sub(&cfs_rq->load, se->load.weight);
- 	}
- 	dequeue_load_avg(cfs_rq, se);
- 
-@@ -3102,7 +3102,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
- 
- 	enqueue_load_avg(cfs_rq, se);
- 	if (se->on_rq)
--		account_entity_enqueue(cfs_rq, se);
-+		update_load_add(&cfs_rq->load, se->load.weight);
- 
- }
- 
 -- 
-2.21.0
+MST
 
