@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6BE241EE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 19:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1DE241EE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 19:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729224AbgHKRGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 13:06:34 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:56271 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729163AbgHKRGT (ORCPT
+        id S1729273AbgHKRGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 13:06:22 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:49019 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729181AbgHKRGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 Aug 2020 13:06:19 -0400
-Received: by mail-il1-f197.google.com with SMTP id q17so6135589ile.22
+Received: by mail-io1-f72.google.com with SMTP id k10so10216528iow.15
         for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 10:06:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=G++ky09F079bG+vggjBA6cynULCbu9QPjUKnei+ThwM=;
-        b=V7qWAkjCz8dALX7HpXPKZzTLSrfk2JXUjx9v1HERuOadkJveNuiQZSR5JSki7Gr2Pg
-         qlRk4bJvwZ8owc8N2D5tFtga47gWSX9aBkycC3yMxyw3Aq31E9q2JjiL/kF4wRym8VLx
-         LPfNHB3Ldtwv14Al0QsmzC6scTT3bnRkMIxHMpwaMMk1y+GofuDRWAxPpJXEaAMbreMH
-         4Cs8s2cL1UqmaJvg0wVOpQ7NUosPmNNEvGl7ia2E1NUTmtls1pemYaaqH3dhEFs1efzm
-         +Yh1qKQVHumiw7CaO1RnnZtm3UkNiObcMpbS6D8TB2Dnng8OGMdcHDFctrow1a4H6AZa
-         xf5w==
-X-Gm-Message-State: AOAM5315lJlBnlfxEHLAldHa1CE6H0L5dl6+Vh5euKAAkHhVSJx8Hu51
-        NxFaPwcd/hmAg9NvrdpTR/lVDjdp+8sTp968abG65MFLymvW
-X-Google-Smtp-Source: ABdhPJzWBiD1vV1YIUh0HYvGBuu3An+mPYfzSYNhPPiYSJfIV8BjkblrqGdLukLkNfo6FlbhlL9D4pK1povrcfZt6+rGgzCBvUSm
+        bh=RxnDrZAgrm5qTZ0RPNFz6huceHpzuDNxWd8B/TcZ13s=;
+        b=Wl2qXoVCyNL2TT3y/og8o4avAZG0CpPX4rkucRVVJ9HhLW0kJKU9PUTiFSzInl/Kps
+         S7bejF/vs0y8nLdDTPin8gyA3MgJIUr74Ww9YfJDHKrlbw0sVYJwVVyaSbvl0H4dAPZR
+         e8nVQ/aRDofS7HajIcAvzD+DtiVyo31DuRqm2QeX70mvhnhHLULSwoYKpeKhxHCTouJn
+         xz2gSufeJUO1tFm0KO5vGJTGX9Fsja3fMkmG+cG/YbsqyimxxdAcJ+URvuwKhK72SHcL
+         FFW/4PpNQGQ8AZLSPKu9xS9nUj21+Mik5B/ACiQZ9UcJ6zd47FP6Ykw0oLCdNRf0yvwn
+         I2Og==
+X-Gm-Message-State: AOAM530KVNDUkJh6FK/e+ZwuK2y2ys1rUrBKvdQmW2A/e8ELIqjHzsP0
+        8hfyKZv9zEQbUEheLoa9wiEcLaNEttDCkCY/BibtVrxGxNn/
+X-Google-Smtp-Source: ABdhPJyVzuOJqFeDPOWCQIBGIxE4BphWmAyddfJ97xQeXPlpEfycHfskkE1R39zcSbsSr1S84/rXvf2wvQ705g2Cbs483WLzwZiC
 MIME-Version: 1.0
-X-Received: by 2002:a02:29ca:: with SMTP id p193mr27622294jap.131.1597165577931;
- Tue, 11 Aug 2020 10:06:17 -0700 (PDT)
-Date:   Tue, 11 Aug 2020 10:06:17 -0700
+X-Received: by 2002:a92:cb12:: with SMTP id s18mr7589772ilo.13.1597165578180;
+ Tue, 11 Aug 2020 10:06:18 -0700 (PDT)
+Date:   Tue, 11 Aug 2020 10:06:18 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000eb931405ac9d164f@google.com>
-Subject: KMSAN: uninit-value in joydev_connect
-From:   syzbot <syzbot+6a1bb5a33a0b128085bc@syzkaller.appspotmail.com>
-To:     dmitry.torokhov@gmail.com, glider@google.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000ef601705ac9d161b@google.com>
+Subject: KMSAN: kernel-usb-infoleak in hif_usb_send
+From:   syzbot <syzbot+f83a1df1ed4f67e8d8ad@syzkaller.appspotmail.com>
+To:     glider@google.com, gregkh@linuxfoundation.org,
+        ingrassia@epigenesys.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -51,142 +51,68 @@ syzbot found the following issue on:
 
 HEAD commit:    ce8056d1 wip: changed copy_from_user where instrumented
 git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=14b5da2c900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=124d453c900000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=3afe005fb99591f
-dashboard link: https://syzkaller.appspot.com/bug?extid=6a1bb5a33a0b128085bc
+dashboard link: https://syzkaller.appspot.com/bug?extid=f83a1df1ed4f67e8d8ad
 compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 userspace arch: i386
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6a1bb5a33a0b128085bc@syzkaller.appspotmail.com
+Reported-by: syzbot+f83a1df1ed4f67e8d8ad@syzkaller.appspotmail.com
 
-gtco 4-1:0.219: Collection level already at zero
-gtco 4-1:0.219: Not enough data (need 130, have 129)
-input: GTCO_CalComp as /devices/platform/dummy_hcd.3/usb4/4-1/4-1:0.219/input/input5
+usb 4-1: ath9k_htc: Transferred FW: ath9k_htc/htc_9271-1.4.0.fw, size: 51008
 =====================================================
-BUG: KMSAN: uninit-value in joydev_connect+0x10c0/0x1920 drivers/input/joydev.c:958
-CPU: 1 PID: 8715 Comm: kworker/1:3 Not tainted 5.8.0-rc5-syzkaller #0
+BUG: KMSAN: kernel-usb-infoleak in kmsan_handle_urb+0x28/0x40 mm/kmsan/kmsan_hooks.c:307
+CPU: 1 PID: 13012 Comm: kworker/1:6 Not tainted 5.8.0-rc5-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
+Workqueue: events request_firmware_work_func
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
  dump_stack+0x21c/0x280 lib/dump_stack.c:118
  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- joydev_connect+0x10c0/0x1920 drivers/input/joydev.c:958
- input_attach_handler drivers/input/input.c:1031 [inline]
- input_register_device+0x1d7b/0x21c0 drivers/input/input.c:2229
- gtco_probe+0x32ce/0x39b0 drivers/input/tablet/gtco.c:990
- usb_probe_interface+0xece/0x1550 drivers/usb/core/driver.c:374
- really_probe+0xf20/0x20b0 drivers/base/dd.c:529
- driver_probe_device+0x293/0x390 drivers/base/dd.c:701
- __device_attach_driver+0x63f/0x830 drivers/base/dd.c:807
- bus_for_each_drv+0x2ca/0x3f0 drivers/base/bus.c:431
- __device_attach+0x4e2/0x7f0 drivers/base/dd.c:873
- device_initial_probe+0x4a/0x60 drivers/base/dd.c:920
- bus_probe_device+0x177/0x3d0 drivers/base/bus.c:491
- device_add+0x3b0e/0x40d0 drivers/base/core.c:2680
- usb_set_configuration+0x380f/0x3f10 drivers/usb/core/message.c:2032
- usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:241
- usb_probe_device+0x311/0x490 drivers/usb/core/driver.c:272
- really_probe+0xf20/0x20b0 drivers/base/dd.c:529
- driver_probe_device+0x293/0x390 drivers/base/dd.c:701
- __device_attach_driver+0x63f/0x830 drivers/base/dd.c:807
- bus_for_each_drv+0x2ca/0x3f0 drivers/base/bus.c:431
- __device_attach+0x4e2/0x7f0 drivers/base/dd.c:873
- device_initial_probe+0x4a/0x60 drivers/base/dd.c:920
- bus_probe_device+0x177/0x3d0 drivers/base/bus.c:491
- device_add+0x3b0e/0x40d0 drivers/base/core.c:2680
- usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2554
- hub_port_connect drivers/usb/core/hub.c:5208 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x5e7b/0x8a70 drivers/usb/core/hub.c:5576
+ kmsan_internal_check_memory+0x238/0x3d0 mm/kmsan/kmsan.c:423
+ kmsan_handle_urb+0x28/0x40 mm/kmsan/kmsan_hooks.c:307
+ usb_submit_urb+0x861/0x2470 drivers/usb/core/urb.c:406
+ hif_usb_send_regout drivers/net/wireless/ath/ath9k/hif_usb.c:127 [inline]
+ hif_usb_send+0x633/0x1790 drivers/net/wireless/ath/ath9k/hif_usb.c:470
+ htc_issue_send drivers/net/wireless/ath/ath9k/htc_hst.c:34 [inline]
+ htc_connect_service+0x14b4/0x19f0 drivers/net/wireless/ath/ath9k/htc_hst.c:275
+ ath9k_wmi_connect+0x178/0x2c0 drivers/net/wireless/ath/ath9k/wmi.c:268
+ ath9k_init_htc_services+0xf3/0x11f0 drivers/net/wireless/ath/ath9k/htc_drv_init.c:146
+ ath9k_htc_probe_device+0x4dc/0x3ed0 drivers/net/wireless/ath/ath9k/htc_drv_init.c:962
+ ath9k_htc_hw_init+0xdf/0x190 drivers/net/wireless/ath/ath9k/htc_hst.c:501
+ ath9k_hif_usb_firmware_cb+0x42e/0xab0 drivers/net/wireless/ath/ath9k/hif_usb.c:1218
+ request_firmware_work_func+0x1aa/0x2d0 drivers/base/firmware_loader/main.c:1001
  process_one_work+0x1688/0x2140 kernel/workqueue.c:2269
  worker_thread+0x10bc/0x2730 kernel/workqueue.c:2415
  kthread+0x551/0x590 kernel/kthread.c:292
  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
 
-Uninit was stored to memory at:
+Uninit was created at:
  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
- kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
- __msan_chain_origin+0x50/0x90 mm/kmsan/kmsan_instr.c:165
- input_set_abs_params+0x331/0x540 drivers/input/input.c:514
- gtco_setup_caps drivers/input/tablet/gtco.c:598 [inline]
- gtco_probe+0x2800/0x39b0 drivers/input/tablet/gtco.c:966
- usb_probe_interface+0xece/0x1550 drivers/usb/core/driver.c:374
- really_probe+0xf20/0x20b0 drivers/base/dd.c:529
- driver_probe_device+0x293/0x390 drivers/base/dd.c:701
- __device_attach_driver+0x63f/0x830 drivers/base/dd.c:807
- bus_for_each_drv+0x2ca/0x3f0 drivers/base/bus.c:431
- __device_attach+0x4e2/0x7f0 drivers/base/dd.c:873
- device_initial_probe+0x4a/0x60 drivers/base/dd.c:920
- bus_probe_device+0x177/0x3d0 drivers/base/bus.c:491
- device_add+0x3b0e/0x40d0 drivers/base/core.c:2680
- usb_set_configuration+0x380f/0x3f10 drivers/usb/core/message.c:2032
- usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:241
- usb_probe_device+0x311/0x490 drivers/usb/core/driver.c:272
- really_probe+0xf20/0x20b0 drivers/base/dd.c:529
- driver_probe_device+0x293/0x390 drivers/base/dd.c:701
- __device_attach_driver+0x63f/0x830 drivers/base/dd.c:807
- bus_for_each_drv+0x2ca/0x3f0 drivers/base/bus.c:431
- __device_attach+0x4e2/0x7f0 drivers/base/dd.c:873
- device_initial_probe+0x4a/0x60 drivers/base/dd.c:920
- bus_probe_device+0x177/0x3d0 drivers/base/bus.c:491
- device_add+0x3b0e/0x40d0 drivers/base/core.c:2680
- usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2554
- hub_port_connect drivers/usb/core/hub.c:5208 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x5e7b/0x8a70 drivers/usb/core/hub.c:5576
+ kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
+ kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
+ slab_alloc_node mm/slub.c:2839 [inline]
+ __kmalloc_node_track_caller+0xeab/0x12e0 mm/slub.c:4478
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0x35f/0xb30 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1083 [inline]
+ htc_connect_service+0x1057/0x19f0 drivers/net/wireless/ath/ath9k/htc_hst.c:258
+ ath9k_wmi_connect+0x178/0x2c0 drivers/net/wireless/ath/ath9k/wmi.c:268
+ ath9k_init_htc_services+0xf3/0x11f0 drivers/net/wireless/ath/ath9k/htc_drv_init.c:146
+ ath9k_htc_probe_device+0x4dc/0x3ed0 drivers/net/wireless/ath/ath9k/htc_drv_init.c:962
+ ath9k_htc_hw_init+0xdf/0x190 drivers/net/wireless/ath/ath9k/htc_hst.c:501
+ ath9k_hif_usb_firmware_cb+0x42e/0xab0 drivers/net/wireless/ath/ath9k/hif_usb.c:1218
+ request_firmware_work_func+0x1aa/0x2d0 drivers/base/firmware_loader/main.c:1001
  process_one_work+0x1688/0x2140 kernel/workqueue.c:2269
  worker_thread+0x10bc/0x2730 kernel/workqueue.c:2415
  kthread+0x551/0x590 kernel/kthread.c:292
  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
 
-Uninit was stored to memory at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
- kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
- __msan_chain_origin+0x50/0x90 mm/kmsan/kmsan_instr.c:165
- parse_hid_report_descriptor drivers/input/tablet/gtco.c:330 [inline]
- gtco_probe+0x1e56/0x39b0 drivers/input/tablet/gtco.c:935
- usb_probe_interface+0xece/0x1550 drivers/usb/core/driver.c:374
- really_probe+0xf20/0x20b0 drivers/base/dd.c:529
- driver_probe_device+0x293/0x390 drivers/base/dd.c:701
- __device_attach_driver+0x63f/0x830 drivers/base/dd.c:807
- bus_for_each_drv+0x2ca/0x3f0 drivers/base/bus.c:431
- __device_attach+0x4e2/0x7f0 drivers/base/dd.c:873
- device_initial_probe+0x4a/0x60 drivers/base/dd.c:920
- bus_probe_device+0x177/0x3d0 drivers/base/bus.c:491
- device_add+0x3b0e/0x40d0 drivers/base/core.c:2680
- usb_set_configuration+0x380f/0x3f10 drivers/usb/core/message.c:2032
- usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:241
- usb_probe_device+0x311/0x490 drivers/usb/core/driver.c:272
- really_probe+0xf20/0x20b0 drivers/base/dd.c:529
- driver_probe_device+0x293/0x390 drivers/base/dd.c:701
- __device_attach_driver+0x63f/0x830 drivers/base/dd.c:807
- bus_for_each_drv+0x2ca/0x3f0 drivers/base/bus.c:431
- __device_attach+0x4e2/0x7f0 drivers/base/dd.c:873
- device_initial_probe+0x4a/0x60 drivers/base/dd.c:920
- bus_probe_device+0x177/0x3d0 drivers/base/bus.c:491
- device_add+0x3b0e/0x40d0 drivers/base/core.c:2680
- usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2554
- hub_port_connect drivers/usb/core/hub.c:5208 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x5e7b/0x8a70 drivers/usb/core/hub.c:5576
- process_one_work+0x1688/0x2140 kernel/workqueue.c:2269
- worker_thread+0x10bc/0x2730 kernel/workqueue.c:2415
- kthread+0x551/0x590 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-
-Local variable ----globalval.i@gtco_probe created at:
- parse_hid_report_descriptor drivers/input/tablet/gtco.c:221 [inline]
- gtco_probe+0xda0/0x39b0 drivers/input/tablet/gtco.c:935
- parse_hid_report_descriptor drivers/input/tablet/gtco.c:221 [inline]
- gtco_probe+0xda0/0x39b0 drivers/input/tablet/gtco.c:935
+Bytes 4-7 of 18 are uninitialized
+Memory access of size 18 starts at ffff8881d24f1000
 =====================================================
 
 
