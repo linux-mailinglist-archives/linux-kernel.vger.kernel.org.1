@@ -2,69 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8E12422E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 01:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7098A2422EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 01:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726355AbgHKXrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 19:47:40 -0400
-Received: from smtprelay0143.hostedemail.com ([216.40.44.143]:59418 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726143AbgHKXrj (ORCPT
+        id S1726402AbgHKXvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 19:51:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgHKXvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 19:47:39 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id E6ABC18027463;
-        Tue, 11 Aug 2020 23:47:38 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:800:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3867:3870:3871:3872:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4184:4321:4605:5007:8985:9025:10004:10400:10481:10848:11026:11232:11658:11914:12043:12291:12296:12297:12555:12679:12683:12740:12760:12895:12986:13069:13311:13357:13439:14095:14096:14180:14181:14659:14721:19900:21060:21080:21451:21627:21749:21811:30054:30055:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: hose67_3c0d1e026fe6
-X-Filterd-Recvd-Size: 1725
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 11 Aug 2020 23:47:37 +0000 (UTC)
-Message-ID: <98383342041c87a8d50fe9cef486a687c50af248.camel@perches.com>
-Subject: Re: [PATCH 0/3] mtd: lpddr: Fix bad logic bug in print_drs_error
-From:   Joe Perches <joe@perches.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org
-Date:   Tue, 11 Aug 2020 16:47:36 -0700
-In-Reply-To: <cover.1588013366.git.gustavo@embeddedor.com>
-References: <cover.1588013366.git.gustavo@embeddedor.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Tue, 11 Aug 2020 19:51:36 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B509C061787
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 16:51:36 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id y6so283873plt.3
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 16:51:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y1qDjAS8ZPDC4LMj3s+e938rgxLp1azn8ZYiupGKT1A=;
+        b=LSyGz2XPxyFM3a7EELo0+9cZruahgSS3Xdj43kI3SsqFLqLvmHR+4jQZUM4MlywVGs
+         ejzocF7Unh99hy/ZX0lwkFBotZ5g2ke1cdra15udZNChK/2h4QNfEjKvQcJeh4JHuWq8
+         YuOyhdvE4oeumVeErrDAroO4irfdR/E7I1U4J2oNcLp/qv4kO7d0TJ7wi57BuLY8vjnp
+         ExLi2Vt3JYjlRDAGLR27Bi4ACwfIa1FcbEGIZ5zE1/eLOykhF3762DP/UR/2MhQtcVt6
+         bGEgyDKsoVooUyMnrRKxG1v8lf0B4h7lrl4Bu13FAQzlaulBqSLNvrmDn16yd7UkimTi
+         SsiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y1qDjAS8ZPDC4LMj3s+e938rgxLp1azn8ZYiupGKT1A=;
+        b=BzJKTcexXqBrLvr/Upwx+1unelcTXhXwanl1k5THWTZINctWTYrlS2TL9SDvQf9ZFy
+         6BsEeZv31lYCK+qmREZv9NKFSl6vuYV9uKujHguiz4v369OgtBS+cTU1vX78++IBPXVK
+         JRYN2ZCeptlLQKPI9qipTaBGkp5dYojXiKlL8OJlPJ833WNDa2O+vkWcsN0B0JDchZpp
+         ZazI6QZtbsudH2nBav99ynwpRcxMAgLQWor9XPp0Soc+Cj8g787Ph40aruS4MZeUnoHd
+         e9e1R0ND1PD2wmZ1AexA0/ZP7plstxmAMvymfc6Aja1akUo7oKV8LUlYmjYh7UJK+VFk
+         PJvA==
+X-Gm-Message-State: AOAM530pgIliJQUmRhXOb5iLYV7MOub+8T4JmJRX1L9MnvC1VMfPGiou
+        +aPpX8DmQXozdgnAF+mzGq4CE9B1+mc18MHCDQOQHQ==
+X-Google-Smtp-Source: ABdhPJwl83TdiqH7Wf9zH5IsdOJlr3YTPMp4gMXBUvmqE89/OQjI2H/fChrF0Q4OLTWIubwlBnkHEKn+nnBFdiEVr+A=
+X-Received: by 2002:a17:90a:fc98:: with SMTP id ci24mr3603977pjb.101.1597189895220;
+ Tue, 11 Aug 2020 16:51:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <CAKwvOd=ypa8xE-kaDa7XtzPsBH8=Xu_pZj2rnWaeawNs=3dDkw@mail.gmail.com>
+ <20200811173655.1162093-1-nivedita@alum.mit.edu> <CAKwvOdnjLfQ0fWsrFYDJ2O+qFAfEFnTEEnW-aHrPha8G3_WTrg@mail.gmail.com>
+ <20200811224436.GA1302731@rani.riverdale.lan> <CAKwvOdnvyVapAJBchivu8SxoQriKEu1bAimm8688EH=uq5YMqA@mail.gmail.com>
+ <20200811234340.GA1318440@rani.riverdale.lan>
+In-Reply-To: <20200811234340.GA1318440@rani.riverdale.lan>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 11 Aug 2020 16:51:23 -0700
+Message-ID: <CAKwvOdn5gCjcAVHZ3jHU+q=mD5rmFAHpEyHyLf7ixtdaQ3Z-PQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/boot/compressed: Disable relocation relaxation for
+ non-pie link
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Fangrui Song <maskray@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        e5ten.arch@gmail.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-04-27 at 14:00 -0500, Gustavo A. R. Silva wrote:
-> Hi,
-> 
-> This series aims to fix a bad logic bug in print_drs_error, which is
-> tagged for -stable.  The series also include some formatting fixups.
+On Tue, Aug 11, 2020 at 4:43 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> On Tue, Aug 11, 2020 at 04:04:40PM -0700, Nick Desaulniers wrote:
+> > On Tue, Aug 11, 2020 at 3:44 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> > >
+> > > On Tue, Aug 11, 2020 at 10:58:40AM -0700, Nick Desaulniers wrote:
+> > > > > Cc: stable@vger.kernel.org # 4.19.x
+> > > >
+> > > > Thanks Arvind, good write up.  Just curious about this stable tag, how
+> > > > come you picked 4.19?  I can see boot failures in our CI for x86+LLD
+> > > > back to 4.9.  Can we amend that tag to use `# 4.9`? I'd be happy to
+> > > > help submit backports should they fail to apply cleanly.
+> > > > https://travis-ci.com/github/ClangBuiltLinux/continuous-integration/builds/179237488
+> > > >
+> > >
+> > > 4.19 renamed LDFLAGS to KBUILD_LDFLAGS. For 4.4, 4.9 and 4.14 the patch
+> > > needs to be modified, KBUILD_LDFLAGS -> LDFLAGS, so I figured we should
+> > > submit backports separately. For 4.19 onwards, it should apply without
+> > > changes I think.
+> >
+> > Cool, sounds good.  I'll keep an eye out for when stable goes to pick this up.
+> >
+> > tglx, Ingo, BP, can we pretty please get this in tip/urgent for
+> > inclusion into 5.9?
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
+>
+> Another alternative is to just do this unconditionally instead of even
+> checking for the -pie flag. None of the GOTPCRELs are in the
+> decompressor, so they shouldn't be performance-sensitive at all.
+>
+> It still wouldn't apply cleanly to all the stable versions, but
+> backporting would be even simpler.
+>
+> What do you think?
+>
+> diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+> index 3962f592633d..10c2ba59d192 100644
+> --- a/arch/x86/boot/compressed/Makefile
+> +++ b/arch/x86/boot/compressed/Makefile
+> @@ -43,6 +43,7 @@ KBUILD_CFLAGS += -Wno-pointer-sign
+>  KBUILD_CFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+>  KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
+>  KBUILD_CFLAGS += -D__DISABLE_EXPORTS
+> +KBUILD_CFLAGS += $(call as-option,-Wa$(comma)-mrelax-relocations=no)
 
-AFAICT: This series is still not applied to any tree.
+We'd still want it for KBUILD_AFLAGS, too, just to be safe. Maybe a
+one line comment to the effect of `# remove me once we can link as
+-pie` would help us rip off this band-aid in the future?  It's more
+obvious that the added hunk can be reverted once -pie linkage is
+achieved with the current patch; either are fine by me.  Thanks!
 
-Can someone please apply it?
+>
+>  KBUILD_AFLAGS  := $(KBUILD_CFLAGS) -D__ASSEMBLY__
+>  GCOV_PROFILE := n
 
-https://lore.kernel.org/linux-mtd/cover.1588016644.git.gustavo@embeddedor.com/
 
-> Thanks
-> 
-> Gustavo A. R. Silva (3):
->   mtd: lpddr: Fix bad logic in print_drs_error
->   mtd: lpddr: Replace printk with pr_notice
->   mtd: lpddr: Move function print_drs_error to lpddr_cmds.c
-> 
->  drivers/mtd/lpddr/lpddr_cmds.c | 33 +++++++++++++++++++++++++++++++++
->  include/linux/mtd/pfow.h       | 32 --------------------------------
->  2 files changed, 33 insertions(+), 32 deletions(-)
-> 
 
+-- 
+Thanks,
+~Nick Desaulniers
