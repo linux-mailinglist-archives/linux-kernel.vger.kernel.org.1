@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F8B241CD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8940D241CDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbgHKPBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 11:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55682 "EHLO
+        id S1728903AbgHKPBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 11:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728801AbgHKPBA (ORCPT
+        with ESMTP id S1728801AbgHKPB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 11:01:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C1CC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 08:01:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FGKdD+w4uCqJcdN9ztuakdLj9ZaFqNDwljGtIU98P8I=; b=KMfx+i0GlfqnZ5E2yG9J6lrnZF
-        bX/g0MERGdZ/GfHGToliLqy+KErYA2Tw6gWFhadqBqwRHqnypeFqxAEGZm5OBQt2BcccNlLbLxZkr
-        lMFyVU05VWKASV32crjQh6GBL3ZF9LyrKcWkdQ2gSm8lYvODDZdZ/WJVY/es6zXAaSmPB+VruSg/h
-        TO+zoT85Qpl46lwxChrRlwXeKAmyMMqKwJwZ4hMSEo1X4T0sBsi5tA8gHde4hk1qUe2yDtj7K9+/a
-        nZVF/NHK4SHr5WG9Zld9tNDaynWZDLBxy9pTGUDnqsGmoppNdIjUoORkSnM8rXwDjj0HcRcoPTWsM
-        6ccWNK6Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k5Vlk-0004HG-Ej; Tue, 11 Aug 2020 15:00:53 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DBBC7300DAE;
-        Tue, 11 Aug 2020 16:55:24 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 37C4A2BB47D06; Tue, 11 Aug 2020 16:55:24 +0200 (CEST)
-Date:   Tue, 11 Aug 2020 16:55:24 +0200
-From:   peterz@infradead.org
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, keescook@chromium.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2] module: Harden STRICT_MODULE_RWX
-Message-ID: <20200811145524.GE2674@hirez.programming.kicks-ass.net>
-References: <20200403171303.GK20760@hirez.programming.kicks-ass.net>
- <20200808101222.5103093e@coco.lan>
- <20200810092523.GA8612@linux-8ccs>
- <20200810150647.GB8612@linux-8ccs>
- <20200811163427.6edbf343@coco.lan>
+        Tue, 11 Aug 2020 11:01:27 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02268C061787;
+        Tue, 11 Aug 2020 08:01:27 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id c80so2878553wme.0;
+        Tue, 11 Aug 2020 08:01:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q8s0DvqKHUDOgwL+41LR/o2tBL7BQpYDVvLQhOyKNmE=;
+        b=MnGiFeMtI8YJG+KhcK1nZQBYvSHiryie4h22btJkI+1ErbBDAu9T6Bi0LWr7w6UbCM
+         1OrLNjigQjPvkPQKLou7TfZdhGAnSKAzRZGc1ZxmDl+6qBj/PeyUgxcs04z1wuehrYHc
+         THc7vR5gtKjl9yIclQcCVbnuXO+l4JvuKfiLBzAHy/4heiX883plaxMkfmDI2ONVDP9t
+         o4tUOvwEnOHM96927ZAPvgDrgfCDWrB1O/R42bidsQb1IDRwXFSg+p7AwNi4YnC17ea1
+         yZD6+x9EVYYks1Qq5iTYB3hHU2gh315YlbfqdGNIxlUmGxZFibey0bxu0TGIs+Dqqtyj
+         xzvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q8s0DvqKHUDOgwL+41LR/o2tBL7BQpYDVvLQhOyKNmE=;
+        b=YWehnzDihruiVj0bQHs+zv5hHBxbkt1UFYzrFHYznl2OXTD8oCacEAPxUi9lOwFWLR
+         BMSPh3jYH9HbqK49veKe5GYdoIGS6b52ZtVjNCOvx4xboK32qzvNpQHrJq0W3LPmMe44
+         8OYPWD6mUhFP6qerxhXhlp6okMBfu6cvTL8BW/PUPwzWHmzzmuy9VMGxHTHw40sIZ+1g
+         7Tq/Iu92rEFNnO8HmWHPBH6pMoA8iMpf9nlcDz+SvoMRqwMNB6TfSi0XTLya4R98AnDR
+         PGI13ZoU1MtpLn/Jk9WMJtVM6fxGG+weuF3lkpP3xNVqsQW65hbMOwB/P/kXn7cxLRwV
+         Fy3w==
+X-Gm-Message-State: AOAM532fdhBfKZEsqOfAgN13kf2/K/9gk78pvFyW6aT/y0ojWa5yOvCu
+        fO5J6PzF905rgOmqRZanp4A=
+X-Google-Smtp-Source: ABdhPJwm++OYHVlMJdIp4ElGM7WtMsr9nZSTihomZB0DeFdy60BJb3DpEj9ZnpyPy0GA8QB0sqcIRQ==
+X-Received: by 2002:a1c:1bc4:: with SMTP id b187mr4273141wmb.175.1597158083703;
+        Tue, 11 Aug 2020 08:01:23 -0700 (PDT)
+Received: from skynet.lan (88.red-83-49-60.dynamicip.rima-tde.net. [83.49.60.88])
+        by smtp.gmail.com with ESMTPSA id 15sm5350494wmo.33.2020.08.11.08.01.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Aug 2020 08:01:23 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     tsbogend@alpha.franken.de, f.fainelli@gmail.com,
+        jonas.gorski@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH v3 0/4] MIPS: BCM63xx: board improvements
+Date:   Tue, 11 Aug 2020 17:01:13 +0200
+Message-Id: <20200811150117.254620-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200811163427.6edbf343@coco.lan>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 04:34:27PM +0200, Mauro Carvalho Chehab wrote:
->   [33] .plt              PROGBITS         0000000000000340  00035c80
->        0000000000000001  0000000000000000 WAX       0     0     1
->   [34] .init.plt         NOBITS           0000000000000341  00035c81
->        0000000000000001  0000000000000000  WA       0     0     1
->   [35] .text.ftrace[...] PROGBITS         0000000000000342  00035c81
->        0000000000000001  0000000000000000 WAX       0     0     1
+Theses patches improve BCM63xx board declarations and source code.
 
-.plt and .text.ftrace_tramplines are buggered.
+v3: Reword DWV-S0 board commit description to avoid possible confusions.
+v2: switch to SPDX license identifier.
 
-arch/arm64/kernel/module.lds even marks then as NOLOAD.
+Álvaro Fernández Rojas (4):
+  MIPS: BCM63xx: remove duplicated new lines
+  MIPS: BCM63xx: remove EHCI from BCM6348 boards
+  MIPS: BCM63xx: enable EHCI for DWV-S0 board
+  MIPS: BCM63xx: refactor board declarations
+
+ arch/mips/bcm63xx/boards/board_bcm963xx.c | 625 +++++++++++-----------
+ 1 file changed, 306 insertions(+), 319 deletions(-)
+
+-- 
+2.28.0
+
