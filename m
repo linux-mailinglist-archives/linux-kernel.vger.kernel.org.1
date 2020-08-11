@@ -2,115 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85190241A3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 13:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A3C241A41
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 13:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728718AbgHKLTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 07:19:46 -0400
-Received: from mail4.tencent.com ([183.57.53.109]:50365 "EHLO
-        mail4.tencent.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728663AbgHKLTp (ORCPT
+        id S1728758AbgHKLTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 07:19:53 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:50645 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728663AbgHKLTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 07:19:45 -0400
-Received: from EX-SZ022.tencent.com (unknown [10.28.6.88])
-        by mail4.tencent.com (Postfix) with ESMTP id 0FA26723BE;
-        Tue, 11 Aug 2020 19:19:42 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tencent.com;
-        s=s202002; t=1597144782;
-        bh=ik46Ua1t/TkaPI6X0sFrHvqZLSqTSbhSIKiPdTF69YE=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=ITglALbIeNrzi9eSOgRHjxSZRobtjudFRtHbigEMb/NF3HJBRNmXYoRhrwfLhXHzQ
-         lnWU212V9vAT4Gy7ZskXE11n+DUw3ODJmHer3Be2efYQ6JoXUAAlYAyfyaGa5hRnSQ
-         0EaJcmlmEoJtMwF7YflDXKEEBiqsCP/gvM2+7r/I=
-Received: from EX-SZ006.tencent.com (10.28.6.30) by EX-SZ022.tencent.com
- (10.28.6.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Tue, 11 Aug
- 2020 19:19:41 +0800
-Received: from EX-SZ012.tencent.com (10.28.6.36) by EX-SZ006.tencent.com
- (10.28.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Tue, 11 Aug
- 2020 19:19:41 +0800
-Received: from EX-SZ012.tencent.com ([fe80::f57b:8971:e6d4:fe6b]) by
- EX-SZ012.tencent.com ([fe80::f57b:8971:e6d4:fe6b%3]) with mapi id
- 15.01.1847.007; Tue, 11 Aug 2020 19:19:41 +0800
-From:   =?utf-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-CC:     Jiang Biao <benbjiang@gmail.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC v2] sched/fair: simplify the work when reweighting
- entity(Internet mail)
-Thread-Topic: [PATCH RFC v2] sched/fair: simplify the work when reweighting
- entity(Internet mail)
-Thread-Index: AQHWbAzE7ZT5yMr2eUuDjHbLKgkwdakyK2YAgAAZAAA=
-Date:   Tue, 11 Aug 2020 11:19:41 +0000
-Message-ID: <4E0D3766-146C-4864-984A-79B90F0B2EEF@tencent.com>
-References: <20200806161406.22629-1-benbjiang@tencent.com>
- <9149cf7c-df81-cf9d-65f7-a51d4ec76f78@arm.com>
-In-Reply-To: <9149cf7c-df81-cf9d-65f7-a51d4ec76f78@arm.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.28.2.14]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2E7D3BEAAA82B043A6B12476C2E9F629@tencent.com>
-Content-Transfer-Encoding: base64
+        Tue, 11 Aug 2020 07:19:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597144789;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E/b3MlPnS2fuBzmiz0g+4SKXMuO51LxW4Hm59pIWy/s=;
+        b=JrphKBtE+mCM54WnO6U2ii+LNIMoAGvcVEodfM3mMAlO4WKqh1bEOwkEZSXq6LPW/7ZN80
+        uZJrvJHM6zw6YfiujOJIQsxjIy5CGCZslPmjVtUy9ef8oLlEgKNZDUg/WK8LRM/5FbzeLy
+        CBH7h9vUUjnVXjnHXQgglNNyKS5TfpY=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-536-JlRBKp6ePPSKYeLhUDku4g-1; Tue, 11 Aug 2020 07:19:47 -0400
+X-MC-Unique: JlRBKp6ePPSKYeLhUDku4g-1
+Received: by mail-wm1-f70.google.com with SMTP id g72so856801wme.4
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 04:19:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E/b3MlPnS2fuBzmiz0g+4SKXMuO51LxW4Hm59pIWy/s=;
+        b=NR4QP/pIL/o8jK9bhSv71BG9/X2E5Yu8y3cZ7YyZKHqfAxrqGPTkdN8+Mw5HVQNodb
+         WnACeaHXYVgvKBXQWVquWhSOnhzpi0CVwElIW0ptjC2/nFxVgBU+7BTUGmhhMOMB3LWr
+         fvTdl1Fjysu26VIXl/37LbHzmSHTP/HhsBApryMzFYmKnhmIMnZs6EaaOPrUXAEMIHVM
+         86PlzIP6YSVNBrRDeQF/oSAGZfgSculv36lsXCW2t1vGo/MThxSFiN1Lxz2eeyRu1lfV
+         3lDeu4nE0QPikvEA2R76WrnQUpOufcU8a/ZHJt9GBhKRxPI2RK72n0gIXSYVQaHxbb1P
+         d7sQ==
+X-Gm-Message-State: AOAM530SN4t1eCWIji4EvzvbZCUHgYy0vqb72sRspbdhn7u5TwCKvqIS
+        AFJfbIabRXOF0TBORNoqNTeka+U9mNamQK7Ir2cWQbmweXapIOmLtOM+V4cHKL5ML+OenydB3td
+        shUoxKKqGipbcbWfnn6fMxUba
+X-Received: by 2002:a7b:c7d5:: with SMTP id z21mr3679295wmk.145.1597144786097;
+        Tue, 11 Aug 2020 04:19:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJycs8UIHN4QlqH2I4HQWZaGHCNRAKLSrQG2kEthrAyxd1vyOM7wNG5kQKcp+EWkaj8Ozb+JXQ==
+X-Received: by 2002:a7b:c7d5:: with SMTP id z21mr3679278wmk.145.1597144785885;
+        Tue, 11 Aug 2020 04:19:45 -0700 (PDT)
+Received: from [192.168.178.58] ([151.21.12.249])
+        by smtp.gmail.com with ESMTPSA id d11sm26253533wrw.77.2020.08.11.04.19.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Aug 2020 04:19:45 -0700 (PDT)
+Subject: Re: [PATCH RESEND] KVM: MIPS/VZ: Fix build error caused by 'kvm_run'
+ cleanup
+To:     Xingxing Su <suxingxing@loongson.cn>,
+        Huacai Chen <chenhc@lemote.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
+Cc:     kvm@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1597138297-2105-1-git-send-email-suxingxing@loongson.cn>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <bbbd9ca6-431a-26be-a9c9-18b7e6ce363c@redhat.com>
+Date:   Tue, 11 Aug 2020 13:19:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <1597138297-2105-1-git-send-email-suxingxing@loongson.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCj4gT24gQXVnIDExLCAyMDIwLCBhdCA1OjUwIFBNLCBEaWV0bWFyIEVnZ2VtYW5uIDxk
-aWV0bWFyLmVnZ2VtYW5uQGFybS5jb20+IHdyb3RlOg0KPiANCj4gT24gMDYvMDgvMjAyMCAxODox
-NCwgSmlhbmcgQmlhbyB3cm90ZToNCj4+IEZyb206IEppYW5nIEJpYW8gPGJlbmJqaWFuZ0B0ZW5j
-ZW50LmNvbT4NCj4+IA0KPj4gSWYgYSBzZSBpcyBvbl9ycSB3aGVuIHJld2VpZ2h0aW5nIGVudGl0
-eSwgYWxsIHdlIG5lZWQgc2hvdWxkIGJlDQo+PiB1cGRhdGluZyB0aGUgbG9hZCBvZiBjZnNfcnEs
-IG90aGVyIGRlcXVldWUvZW5xdWV1ZSB3b3JrIGNvdWxkIGJlDQo+PiByZWR1bmRhbnQsIHN1Y2gg
-YXMsDQo+PiAqIG5yX3J1bm5pbmctLS9ucl9ydW5uaW5nKysNCj4+IA0KPj4gRXZlbiB0aG91Z2gg
-dGhlIGZvbGxvd2luZyBkZXF1ZXVlL2VucXVldWUgcGF0aCB3b3VsZCBuZXZlciBiZSByZWFjaGVk
-DQo+PiAqIGFjY291bnRfbnVtYV9kZXF1ZXVlL2FjY291bnRfbnVtYV9lbnF1ZXVlDQo+PiAqIGxp
-c3RfZGVsL2xpc3RfYWRkIGZyb20vaW50byBjZnNfdGFza3MNCj4+IGJ1dCBpdCBjb3VsZCBiZSBh
-IGxpdHRsZSBjb25mdXNpbmcuDQo+PiANCj4+IFNpbXBsaWZ5aW5nIHRoZSBsb2dpYyBjb3VsZCBi
-ZSBoZWxwZnVsIHRvIHJlZHVjZSBhIGxpdHRlIG92ZXJoZWFkIGZvcg0KPj4gaG90IHBhdGgsIGFu
-ZCBtYWtlIGl0IGNsZWFuZXIgYW5kIG1vcmUgcmVhZGFibGUuDQo+IA0KPiBMR1RNLiBJIGd1ZXNz
-IHlvdSBoYXZlIHRvIHJlc2VuZCBpdCB3L28gdGhlIFJGQyB0YWcuDQpXaWxsIGRvIHNvb24uDQo+
-IA0KPiBNYXliZSB5b3UgY2FuIHJld29yayB0aGUgcGF0Y2ggaGVhZGVyIGEgbGl0dGxlPw0KPiAN
-Cj4gU29tZXRoaW5nIGxpa2UgdGhpczoNCj4gDQo+IFRoZSBjb2RlIGluIHJld2VpZ2h0X2VudGl0
-eSgpIGNhbiBiZSBzaW1wbGlmaWVkLg0KPiANCj4gRm9yIGEgc2NoZWQgZW50aXR5IG9uIHRoZSBy
-cSwgdGhlIGVudGl0eSBhY2NvdW50aW5nIGNhbiBiZSByZXBsYWNlZCBieQ0KPiBjZnNfcnEgaW5z
-dGFudGFuZW91cyBsb2FkIHVwZGF0ZXMgY3VycmVudGx5IGNhbGxlZCBmcm9tIHdpdGhpbiB0aGUN
-Cj4gZW50aXR5IGFjY291bnRpbmcuDQo+IA0KPiBFdmVuIHRob3VnaCBhbiBlbnRpdHkgb24gdGhl
-IHJxIGNhbid0IHJlcHJlc2VudCBhIHRhc2sgaW4NCj4gcmV3ZWlnaHRfZW50aXR5KCkgKGEgdGFz
-ayBpcyBhbHdheXMgZGVxdWV1ZWQgYmVmb3JlIGNhbGxpbmcgdGhpcw0KPiBmdW5jdGlvbikgYW5k
-IHNvIHRoZSBudW1hIHRhc2sgYWNjb3VudGluZyBhbmQgdGhlIHJxLT5jZnNfdGFza3MgbGlzdA0K
-PiBtYW5hZ2VtZW50IG9mIHRoZSBlbnRpdHkgYWNjb3VudGluZyBhcmUgbmV2ZXIgY2FsbGVkLCB0
-aGUgcmVkdW5kYW50DQo+IGNmc19ycS0+bnJfcnVubmluZyBkZWNyZW1lbnQvaW5jcmVtZW50IHdp
-bGwgYmUgYXZvaWRlZC4NClRoYXTigJlzIGEgbXVjaCBiZXR0ZXIuIEnigJlsbCBwaWNrIHRoZSBo
-ZWFkZXIgaWYgeW91IGRvbuKAmXQgbWluZC4gOikNCg0KVGhhbmtzIGEgbG90IGZvciB5b3VyIGtp
-bmRseSByZXBseSBhbmQgZGV0YWlsZWQgZXhwbGFuYXRpb24uDQoNClJlZ2FyZHMsDQpKaWFuZw0K
-PiANCj4+IA0KPj4gU2lnbmVkLW9mZi1ieTogSmlhbmcgQmlhbyA8YmVuYmppYW5nQHRlbmNlbnQu
-Y29tPg0KPj4gLS0tDQo+PiB2MjwtdjE6IA0KPj4gLSBBbWVuZCB0aGUgY29tbWl0IGxvZy4NCj4+
-IA0KPj4ga2VybmVsL3NjaGVkL2ZhaXIuYyB8IDQgKystLQ0KPj4gMSBmaWxlIGNoYW5nZWQsIDIg
-aW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4+IA0KPj4gZGlmZiAtLWdpdCBhL2tlcm5l
-bC9zY2hlZC9mYWlyLmMgYi9rZXJuZWwvc2NoZWQvZmFpci5jDQo+PiBpbmRleCAwNGZhOGRiY2Zh
-NGQuLjE4YThmYzdiZDBkZSAxMDA2NDQNCj4+IC0tLSBhL2tlcm5lbC9zY2hlZC9mYWlyLmMNCj4+
-ICsrKyBiL2tlcm5lbC9zY2hlZC9mYWlyLmMNCj4+IEBAIC0zMDg2LDcgKzMwODYsNyBAQCBzdGF0
-aWMgdm9pZCByZXdlaWdodF9lbnRpdHkoc3RydWN0IGNmc19ycSAqY2ZzX3JxLCBzdHJ1Y3Qgc2No
-ZWRfZW50aXR5ICpzZSwNCj4+IAkJLyogY29tbWl0IG91dHN0YW5kaW5nIGV4ZWN1dGlvbiB0aW1l
-ICovDQo+PiAJCWlmIChjZnNfcnEtPmN1cnIgPT0gc2UpDQo+PiAJCQl1cGRhdGVfY3VycihjZnNf
-cnEpOw0KPj4gLQkJYWNjb3VudF9lbnRpdHlfZGVxdWV1ZShjZnNfcnEsIHNlKTsNCj4+ICsJCXVw
-ZGF0ZV9sb2FkX3N1YigmY2ZzX3JxLT5sb2FkLCBzZS0+bG9hZC53ZWlnaHQpOw0KPj4gCX0NCj4+
-IAlkZXF1ZXVlX2xvYWRfYXZnKGNmc19ycSwgc2UpOw0KPj4gDQo+PiBAQCAtMzEwMiw3ICszMTAy
-LDcgQEAgc3RhdGljIHZvaWQgcmV3ZWlnaHRfZW50aXR5KHN0cnVjdCBjZnNfcnEgKmNmc19ycSwg
-c3RydWN0IHNjaGVkX2VudGl0eSAqc2UsDQo+PiANCj4+IAllbnF1ZXVlX2xvYWRfYXZnKGNmc19y
-cSwgc2UpOw0KPj4gCWlmIChzZS0+b25fcnEpDQo+PiAtCQlhY2NvdW50X2VudGl0eV9lbnF1ZXVl
-KGNmc19ycSwgc2UpOw0KPj4gKwkJdXBkYXRlX2xvYWRfYWRkKCZjZnNfcnEtPmxvYWQsIHNlLT5s
-b2FkLndlaWdodCk7DQo+PiANCj4+IH0NCg0K
+On 11/08/20 11:31, Xingxing Su wrote:
+> Commit c34b26b98caca48ec9ee9 ("KVM: MIPS: clean up redundant 'kvm_run'
+> parameters") remove the 'kvm_run' parameter in kvm_vz_gpsi_lwc2.
+> 
+> The following build error:
+> 
+> arch/mips/kvm/vz.c: In function Ã¢â‚¬Ëœkvm_trap_vz_handle_gpsiÃ¢â‚¬â„¢:
+> arch/mips/kvm/vz.c:1243:43: error: Ã¢â‚¬ËœrunÃ¢â‚¬â„¢ undeclared (first use in this function)
+>    er = kvm_vz_gpsi_lwc2(inst, opc, cause, run, vcpu);
+>                                            ^~~
+> arch/mips/kvm/vz.c:1243:43: note: each undeclared identifier is reported only 
+> once for each function it appears in
+> scripts/Makefile.build:283: recipe for target 'arch/mips/kvm/vz.o' failed
+> make[2]: *** [arch/mips/kvm/vz.o] Error 1
+> scripts/Makefile.build:500: recipe for target 'arch/mips/kvm' failed
+> make[1]: *** [arch/mips/kvm] Error 2
+> Makefile:1785: recipe for target 'arch/mips' failed
+> make: *** [arch/mips] Error 2
+> 
+> Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
+> ---
+>  +cc Paolo Bonzini <pbonzini@redhat.com> and kvm@vger.kernel.org.
+> 
+>  arch/mips/kvm/vz.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/arch/mips/kvm/vz.c b/arch/mips/kvm/vz.c
+> index 3932f76..49c6a2a 100644
+> --- a/arch/mips/kvm/vz.c
+> +++ b/arch/mips/kvm/vz.c
+> @@ -1142,7 +1142,6 @@ static enum emulation_result kvm_vz_gpsi_cache(union mips_instruction inst,
+>  #ifdef CONFIG_CPU_LOONGSON64
+>  static enum emulation_result kvm_vz_gpsi_lwc2(union mips_instruction inst,
+>  					      u32 *opc, u32 cause,
+> -					      struct kvm_run *run,
+>  					      struct kvm_vcpu *vcpu)
+>  {
+>  	unsigned int rs, rd;
+> @@ -1240,7 +1239,7 @@ static enum emulation_result kvm_trap_vz_handle_gpsi(u32 cause, u32 *opc,
+>  #endif
+>  #ifdef CONFIG_CPU_LOONGSON64
+>  	case lwc2_op:
+> -		er = kvm_vz_gpsi_lwc2(inst, opc, cause, run, vcpu);
+> +		er = kvm_vz_gpsi_lwc2(inst, opc, cause, vcpu);
+>  		break;
+>  #endif
+>  	case spec3_op:
+> 
+
+Queued, thanks.
+
+Paolo
+
