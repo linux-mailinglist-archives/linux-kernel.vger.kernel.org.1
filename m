@@ -2,160 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14CAD241A2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 13:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0358A241A33
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 13:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728703AbgHKLLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 07:11:05 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:56141 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728660AbgHKLK6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 07:10:58 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0U5TLMT5_1597144252;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U5TLMT5_1597144252)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 11 Aug 2020 19:10:54 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org
-Cc:     Wei Yang <richard.weiyang@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [Resend PATCH 6/6] mm/thp: narrow lru locking
-Date:   Tue, 11 Aug 2020 19:10:32 +0800
-Message-Id: <1597144232-11370-6-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com>
+        id S1728664AbgHKLPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 07:15:55 -0400
+Received: from verein.lst.de ([213.95.11.211]:39919 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728469AbgHKLPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 07:15:54 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 00C5C67357; Tue, 11 Aug 2020 13:15:51 +0200 (CEST)
+Date:   Tue, 11 Aug 2020 13:15:51 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Miles Chen <miles.chen@mediatek.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        wsd_upstream@mediatek.com
+Subject: Re: [PATCH] net: untag pointer in sockptr_is_kernel
+Message-ID: <20200811111551.GA3958@lst.de>
+References: <20200811102704.17875-1-miles.chen@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200811102704.17875-1-miles.chen@mediatek.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lru_lock and page cache xa_lock have no reason with current sequence,
-put them together isn't necessary. let's narrow the lru locking, but
-left the local_irq_disable to block interrupt re-entry and statistic update.
+On Tue, Aug 11, 2020 at 06:27:04PM +0800, Miles Chen wrote:
+> From: Miles Chen <miles.chen@mediatek.com>
+> 
+> sockptr_is_kernel() uses (sockptr.kernel >= TASK_SIZE) to tell
+> if the pointer is kernel space or user space. When user space uses
+> the "top byte ignored" feature such as HWAsan, we must untag
+> the pointer before checking against TASK_SIZE.
+> 
+> sockptr_is_kernel() will view a tagged user pointer as a kernel pointer
+> and use memcpy directly and causes a kernel crash.
 
-Hugh Dickins point: split_huge_page_to_list() was already silly,to be
-using the _irqsave variant: it's just been taking sleeping locks, so
-would already be broken if entered with interrupts enabled.
-so we can save passing flags argument down to __split_huge_page().
-
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Kirill A. Shutemov <kirill@shutemov.name>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
----
- mm/huge_memory.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
-
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index d55e3006c63f..e9c31d91da8c 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2399,7 +2399,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
- }
- 
- static void __split_huge_page(struct page *page, struct list_head *list,
--		pgoff_t end, unsigned long flags)
-+			      pgoff_t end)
- {
- 	struct page *head = compound_head(page);
- 	pg_data_t *pgdat = page_pgdat(head);
-@@ -2408,8 +2408,6 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 	unsigned long offset = 0;
- 	int i;
- 
--	lruvec = mem_cgroup_page_lruvec(head, pgdat);
--
- 	/* complete memcg works before add pages to LRU */
- 	mem_cgroup_split_huge_fixup(head);
- 
-@@ -2421,6 +2419,11 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 		xa_lock(&swap_cache->i_pages);
- 	}
- 
-+	/* prevent PageLRU to go away from under us, and freeze lru stats */
-+	spin_lock(&pgdat->lru_lock);
-+
-+	lruvec = mem_cgroup_page_lruvec(head, pgdat);
-+
- 	for (i = HPAGE_PMD_NR - 1; i >= 1; i--) {
- 		__split_huge_page_tail(head, i, lruvec, list);
- 		/* Some pages can be beyond i_size: drop them from page cache */
-@@ -2440,6 +2443,8 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 	}
- 
- 	ClearPageCompound(head);
-+	spin_unlock(&pgdat->lru_lock);
-+	/* Caller disabled irqs, so they are still disabled here */
- 
- 	split_page_owner(head, HPAGE_PMD_ORDER);
- 
-@@ -2457,8 +2462,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 		page_ref_add(head, 2);
- 		xa_unlock(&head->mapping->i_pages);
- 	}
--
--	spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-+	local_irq_enable();
- 
- 	remap_page(head);
- 
-@@ -2597,12 +2601,10 @@ bool can_split_huge_page(struct page *page, int *pextra_pins)
- int split_huge_page_to_list(struct page *page, struct list_head *list)
- {
- 	struct page *head = compound_head(page);
--	struct pglist_data *pgdata = NODE_DATA(page_to_nid(head));
- 	struct deferred_split *ds_queue = get_deferred_split_queue(head);
- 	struct anon_vma *anon_vma = NULL;
- 	struct address_space *mapping = NULL;
- 	int count, mapcount, extra_pins, ret;
--	unsigned long flags;
- 	pgoff_t end;
- 
- 	VM_BUG_ON_PAGE(is_huge_zero_page(head), head);
-@@ -2663,9 +2665,8 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- 	unmap_page(head);
- 	VM_BUG_ON_PAGE(compound_mapcount(head), head);
- 
--	/* prevent PageLRU to go away from under us, and freeze lru stats */
--	spin_lock_irqsave(&pgdata->lru_lock, flags);
--
-+	/* block interrupt reentry in xa_lock and spinlock */
-+	local_irq_disable();
- 	if (mapping) {
- 		XA_STATE(xas, &mapping->i_pages, page_index(head));
- 
-@@ -2695,7 +2696,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- 				__dec_node_page_state(head, NR_FILE_THPS);
- 		}
- 
--		__split_huge_page(page, list, end, flags);
-+		__split_huge_page(page, list, end);
- 		if (PageSwapCache(head)) {
- 			swp_entry_t entry = { .val = page_private(head) };
- 
-@@ -2714,7 +2715,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- 		spin_unlock(&ds_queue->split_queue_lock);
- fail:		if (mapping)
- 			xa_unlock(&mapping->i_pages);
--		spin_unlock_irqrestore(&pgdata->lru_lock, flags);
-+		local_irq_enable();
- 		remap_page(head);
- 		ret = -EBUSY;
- 	}
--- 
-1.8.3.1
-
+Dave merged a patch from me to rever the optimized sockptr
+implementation for now.  If we bring it back we should fold in your
+fix.
