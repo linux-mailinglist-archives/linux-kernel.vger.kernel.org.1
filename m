@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879AD241DD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8EFA241DD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 18:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729086AbgHKQHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 12:07:22 -0400
-Received: from sonic311-24.consmr.mail.ne1.yahoo.com ([66.163.188.205]:43648
-        "EHLO sonic311-24.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728920AbgHKQHU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 12:07:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597162039; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=bEEGNJ3vmLkhsHQjfIm1uEUxz64VIiPP2s3gWAVXGRX7xlTEOIR6qhPNQVOEProvKKg7o8NnZUA8XoGr2VasTQF0/5SmV6NKI1KJ6qidNfGtPd06ciajZn7il3ATHhkQeOeOaipADQVn34M4YYqNEfZEDYYdsjMOge//SbOKFMD2YhuMW6vy2Z76N6aNaijIVSikBKcu+vsP2epEwq9SlPeSwpCMMqPIjvK9tBH6Pwrftrg5PzCWBVur4HuB9XtOOFOCPSbNUg5pWfMzGDAuvzVcT2EpEVT8zRzUZxpqdC+V9qHejtYuWJideSPHCqkUs6PXjOaUlQIMPbAjpwtU0g==
-X-YMail-OSG: jjBtou0VM1nFMj9a7.rfVZyut6nIHbwPMVKbothMAFC20ACAxCXDleuxeLroaaB
- xwlVbsEOb3B8Nn7zXrU0QrE7PFVPAKxWYYV4HIwL2WYS975ic_q14Dg0Yn7J0c5mKwX0o_zJzIYI
- peGJaQHEEGAjOC0gvgqVq5Rk9WRs4gCimjDcdsiPmkKhA7BGMM_VfL1NFhVEHgaeLDHATmI8jBvJ
- Wo3bWTeY2BJOPHLfWpJd3P.kZ9ZylAL8khhirwps6j7rDICC4QLiJGzDS9V0sb34j_MLrDyujevU
- OhJlkTSpI5gvV4V7Yc4vveh_v_MAifSjZ7nmc7xS9CiNQFowB8J6nGFWfUNwm3CtyPfqfFVnVFpE
- afgGqxCw4hnzZ.Ajb2EGRtBtt6Bm_x7kuj_YUYulxaiZxyyFrNFmXp.K6mKnR_mE8hDyCKrDAXZ7
- F593CwO2hxkhJuiLYFluboirwSqQjkikaDIP5NEKmV0UswguyQivtHu7_v.C32ZSoRY3BOlBU6PH
- KVOUevREh5xSqR99LaNQTFLTwcmSBeFHEpjxMPmh.qTTnEasA2ivgR5alFlCKgCbI9vQ54gqZVMA
- aIoycAmYwth2sOrD265kjFuq_pCyLVZUkDmTKr7.p2VNSKV86EBj32EA.lzpeeHWP_HrbrmGsoGn
- P2VyWtilsgQykA7GhiK1B1JNyay7b6cfsVVLMJiKW_oT98E2coDdJB6NZF2_RzYFVfLqV7Vi191h
- OmUyD7e38ArF_wfYDj7r5bh6lD7AUKmE9tkwrJRmPpMUVModCDFIRyRI4GFyX88YO3fRlfPr.GHR
- m5woWBKTqcspo17tOsgy_ogy_C.NcwOnq9Cn28aFWWMpAa5oCK3t3UvYhMNbu5_Y3VNXVIFjD0EF
- LnGyHwBiSN.obe1pRpBjqj.zBBT6WL5eTg5OoKubFbWXpdq1KY.yy834OBFFONvifLSREF062yf_
- Z63Nr8xgQefKZolIkb60ulvJFisO1QfIjq3K3d4TNZ1ITxgNo0p7spQjG8bMm7meUUy_WNw_wVi9
- 131eGNRKQ_3Pq76r34jxpfwh9DeZswQ8zfLVOPWcfEXh.9HOofbBAYR7iNPD8YmlAPSd5dk72MEo
- JNdeA5rGXPvMYcMJu0rtG3yx5iRYzrDw1GoIlrmmBHzdquFvMRC.Vy8uyKLuC_..P3WLVFXO7sc8
- 9Eo_R16lwbKMsB859BBL9U0XFm4vHLoH90PFIhCsnPfdIMukUSLFJz.SSmzInOk3d.9jNn3ROpg_
- 2yNlANXOJ9ngPOsUWy3las4hy6siXFBjgS0Er05LHGXiu8zvlREJ1J0EDVjg0bLneYZ3.i5z6h7s
- 5yBsbpZXx2YPm28I4o4aPY39ff5CxzLIuP6VTAi31ACe7
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Tue, 11 Aug 2020 16:07:19 +0000
-Date:   Tue, 11 Aug 2020 16:07:16 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <brunelminaa2@gmail.com>
-Reply-To: mrsminaabrunel653@gmail.com
-Message-ID: <563867142.331124.1597162036487@mail.yahoo.com>
-Subject: My Dear in the lord
+        id S1729073AbgHKQI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 12:08:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728797AbgHKQIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 12:08:25 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9F4D206B5;
+        Tue, 11 Aug 2020 16:08:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597162104;
+        bh=YXBnDr9tWBPpWviVYK4o6ebIMUfUB+PCboBIK49UgUo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=af3H88W3v7EMMAKb7WaheEgqPqTKpQQbn3+BHd+EmRF76CyQrmvumehitO+OvC5sl
+         CQlQRCFKJQHPIQAsKNY1JWS5wF3HfvaONAvjyU5s3ixEn5aG8xmHx4AfyZyyqaYVt0
+         HfhO2cshwrvMhRGzghktPwaBCdOvz2KXeu5K/Ccs=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 866C0352308E; Tue, 11 Aug 2020 09:08:24 -0700 (PDT)
+Date:   Tue, 11 Aug 2020 09:08:24 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     peterz@infradead.org
+Cc:     Marco Elver <elver@google.com>, tglx@linutronix.de,
+        mingo@kernel.org, will@kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, rostedt@goodmis.org,
+        rjw@rjwysocki.net
+Subject: Re: [RFC][PATCH 0/3] Tracing, Idle, RCU and such goodness
+Message-ID: <20200811160824.GY4295@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200807192336.405068898@infradead.org>
+ <20200810095535.GA1597985@elver.google.com>
+ <20200810121138.GV2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <563867142.331124.1597162036487.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200810121138.GV2674@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 10, 2020 at 02:11:38PM +0200, peterz@infradead.org wrote:
+> On Mon, Aug 10, 2020 at 11:55:35AM +0200, Marco Elver wrote:
+> 
+> > Unfortunately I get LOCKDEP_DEBUG warnings, when testing with one of
+> > syzbot's configs. This appears at some point during boot (no other
+> > test):
+> > 
+> > 	DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled())
+> > 	WARNING: CPU: 0 PID: 0 at kernel/locking/lockdep.c:4875 check_flags+0x52/0x200 kernel/locking/lockdep.c:4875
+> > 	Modules linked in:
+> > 	CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.8.0+ #8
+> > 	Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
+> > 	RIP: 0010:check_flags+0x52/0x200 kernel/locking/lockdep.c:4875
+> > 	Code: c0 74 48 e8 40 f7 a5 03 85 c0 74 20 83 3d bd 33 53 05 00 75 17 48 c7 c7 ce 12 c9 85 48 c7 c6 04 8c ca 85 31 c0 e8 4e c1 f7 ff <0f> 0b 48 c7 c7 db 8b ca 85 e9 8c 01 00 00 85 c0 75 0f 65 8b 05 c5
+> > 	RSP: 0000:ffffffff86203bf0 EFLAGS: 00010046
+> > 	RAX: 1f9fa70771052a00 RBX: 0000000000000000 RCX: ffffffff8627e980
+> > 	RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+> > 	RBP: 0000000000000000 R08: ffffffff813d8494 R09: 0000000000000000
+> > 	R10: 0000000000000012 R11: ffffffff8627e980 R12: ffffffff8627e980
+> > 	R13: ffffffff862e3420 R14: 00000000ffffffff R15: 0000000000000046
+> > 	FS:  0000000000000000(0000) GS:ffff88881fa00000(0000) knlGS:0000000000000000
+> > 	CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > 	CR2: ffff88883ffff000 CR3: 0000000006275001 CR4: 0000000000770ef0
+> > 	DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > 	DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > 	PKRU: 00000000
+> > 	Call Trace:
+> > 	 lock_is_held_type+0x4d/0x110 kernel/locking/lockdep.c:5043
+> > 	 lock_is_held include/linux/lockdep.h:266 [inline]
+> > 	 rcu_read_lock_sched_held+0x41/0x90 kernel/rcu/update.c:136
+> > 	 trace_lock_acquire+0x49/0x120 include/trace/events/lock.h:13
+> > 	 lock_acquire+0x8d/0x2c0 kernel/locking/lockdep.c:5003
+> > 	 mutex_trylock+0xdd/0x120 kernel/locking/mutex.c:1420
+> 
+> *groan*, indeed! Which is the direct result of lockdep recursion because
+> we pulled that tracepoint out from under the recursion thing.
+> 
+> Let me go prod this with a sharp stick...
 
+On the other hand, the first two commits in this series did pass
+weekend rcutorture testing.
 
-My Dear in the lord
+I clearly need to make rcutorture more viscious.  ;-)
 
+But in the meantime, for the first two:
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
-u the capital city of of Burkina in West Africa. The money was from the sal=
-e of his company and death benefits payment and entitlements of my deceased=
- husband by his company.
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
+							Thanx, Paul
