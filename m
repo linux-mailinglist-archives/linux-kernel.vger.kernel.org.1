@@ -2,115 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8225F241992
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF744241988
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728566AbgHKKUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 06:20:17 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:49070 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728448AbgHKKUR (ORCPT
+        id S1728526AbgHKKSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 06:18:44 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:58874 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728346AbgHKKSn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 06:20:17 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07BACeE2145102;
-        Tue, 11 Aug 2020 10:19:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=HcDjjzqVyfcUJIc+LnJzTj0NlEAoMZO5Bzk9COQkEZM=;
- b=Yn+OBNG0P5mri8dkG+3CJNa9a7w3c9TXSS7Lx80OX1yyrbv+jMnXC1qBb2qgZomou2AU
- PksfGFHLbackgq++paNuGqKsXgdEF+ek1rZZLEzu0Z6KsyPXEC3GyzKtJZXqpL8jDMvT
- hqk4tvzWI7hdXErtss6vbfDAMc6QxwDWmRsqZOadzZrb68S8DzaHMC1h6RibhC2TEjdA
- jRvzSVuhZUUrvfNN+aS4yC2moqs7pnrRDR4tH1d7d8UO2UdIHBNg4J3BKIwla1WuoCiB
- nbQOxJ/BqfqGMYhLSp3QpMNLAV5Q5lp+smm2SO8zK3uVDmuMfy9Q1O7/u2OCvA2reMD0 dQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 32smpnbr9u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 11 Aug 2020 10:19:59 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07BACRU3160982;
-        Tue, 11 Aug 2020 10:17:58 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 32t5yyeb7g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Aug 2020 10:17:58 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07BAHtfH023548;
-        Tue, 11 Aug 2020 10:17:56 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 11 Aug 2020 10:17:55 +0000
-Date:   Tue, 11 Aug 2020 13:17:47 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     gregkh@linuxfoundation.org, sfr@canb.auug.org.au,
-        longman@redhat.com, akpm@linux-foundation.org, mhocko@suse.com,
-        hannes@cmpxchg.org, devel@driverdev.osuosl.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: ks7010: Do not use GFP_KERNEL in atomic context
-Message-ID: <20200811101746.GN1793@kadam>
-References: <20200809111846.745826-1-christophe.jaillet@wanadoo.fr>
+        Tue, 11 Aug 2020 06:18:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597141121;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dXr0v2qCKUiU33aW80QeAyd5m+K7XDsVEelwTu5R4yM=;
+        b=eCGLbFfkh9L3FWnpeJKXnke1IdTmOQWc/wkki9XnA1LYlUt6HM9K8CD7W20ltEWbm6dMcR
+        nu03DPaBGzZyz1KaoSjK+1vb4UQoz7zOzuJ+ZzQAu6alq1G3g1t2zXygTw0pORMEgKucK1
+        isVuuu6MvksvOFOCstmLe+dNzSxINqE=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-419-tBNQNTZYMWCpY11vFTwOMg-1; Tue, 11 Aug 2020 06:18:39 -0400
+X-MC-Unique: tBNQNTZYMWCpY11vFTwOMg-1
+Received: by mail-pj1-f69.google.com with SMTP id s4so1990124pjq.8
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 03:18:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=dXr0v2qCKUiU33aW80QeAyd5m+K7XDsVEelwTu5R4yM=;
+        b=E7Ah5ZMi9kmjc/QWVO9LvU0RFU48nMKLECIeta9xDr3oL7C/jtUKOorJoJJepNf7XG
+         PG2TIMQnYxAGs/LTTTWLR+VOCxyR0FqCdnQww1EAHQB7g0k7LZc3vDRTKCFHMA6QaVC/
+         n0p4LhdaFD0e8gcDnV6vIzx5+zsXe31XRsdfuj2mO2xucsBvYSGyajA7X9RH4v/k1PCP
+         +LTPBIK4glU6xGonE8H4fla9adoyCDdmJSacl6rY+p0XtKGG+MfowO2KadB5vhwrC/IS
+         0FpmEmGsJbBAAsHdfIQzdYPJJvOyeQ9uaDEX0nfbli9WMyYozZtLVVP2JhHapzW8VhLN
+         wzTw==
+X-Gm-Message-State: AOAM533TMCWTasf3Yys2cvz4EMYQ1O4Lx/opwxXGI9Lv+JoiNM9KFyWu
+        c8NhkzfpO3H0zltinzjlT9hjgeV3HbqslDfu7UhszOSrkogeOI4FpTQ7hJzdnEtm1GXZcOiOR0n
+        WP9IwRNQ5YsicPJzjM9GoyBnI
+X-Received: by 2002:a17:90b:1092:: with SMTP id gj18mr352170pjb.10.1597141118811;
+        Tue, 11 Aug 2020 03:18:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxK6UND4AXpX87GBFtSia3sjBshFyIl2h6dcdG3mZugkorVx/HwVZyuaovl/iCAB8U7+1XTWw==
+X-Received: by 2002:a17:90b:1092:: with SMTP id gj18mr352152pjb.10.1597141118495;
+        Tue, 11 Aug 2020 03:18:38 -0700 (PDT)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id k125sm22603134pga.48.2020.08.11.03.18.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Aug 2020 03:18:37 -0700 (PDT)
+Date:   Tue, 11 Aug 2020 18:18:27 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     Chao Yu <yuchao0@huawei.com>, Daeho Jeong <daehojeong@google.com>,
+        kernel-team@android.com, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH] f2fs: change virtual mapping way for
+ compression pages
+Message-ID: <20200811101827.GA7870@xiangao.remote.csb>
+References: <20200811033753.783276-1-daeho43@gmail.com>
+ <20200811071552.GA8365@xiangao.remote.csb>
+ <3059d7b0-cf50-4315-e5a9-8d9c00965a7c@huawei.com>
+ <CACOAw_yic7GF3E1zEvZ=Gea3XW4fMYdg-cNuu4wfg+uTKMcJqA@mail.gmail.com>
+ <CACOAw_wi3C0iyTVYc3075d4K27NT7BGMGzsKFDDozf=98vWMcA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8\""
 Content-Disposition: inline
-In-Reply-To: <20200809111846.745826-1-christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9709 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
- bulkscore=0 adultscore=0 spamscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008110068
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9709 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
- bulkscore=0 impostorscore=0 phishscore=0 clxscore=1011 spamscore=0
- malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008110068
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACOAw_wi3C0iyTVYc3075d4K27NT7BGMGzsKFDDozf=98vWMcA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 09, 2020 at 01:18:46PM +0200, Christophe JAILLET wrote:
-> A possible call chain is as follow:
->   ks_wlan_start_xmit                    (ks_wlan_net.c)
->     --> hostif_data_request             (ks_hostif.c)
->       --> michael_mic                   (ks_hostif.c)
+On Tue, Aug 11, 2020 at 06:33:26PM +0900, Daeho Jeong wrote:
+> Plus, when we use vmap(), vmap() normally executes in a short time
+> like vm_map_ram().
+> But, sometimes, it has a very long delay.
 > 
-> 'ks_wlan_start_xmit()' is a '.ndo_start_xmit()' function (see
-> net_device_ops structure). Such calls are guarded by the __netif_tx_lock
-> spinlock. So memory allocation must be atomic.
-> 
-> So, use GFP_ATOMIC instead of GFP_KERNEL 'in michael_mic()'
-> 
-> Fixes: ???
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> This is completely speculative. I don't know if the call chain given above
-> if possible in RL application.
-> So review carefully :)
-> 
-> If the fix is correct, it is also more the starting point of a bigger
-> change, because in 'michael_mic()' there is a call to
-> 'crypto_alloc_shash()' and this function uses GFP_KERNEL internally (in
-> 'crypto_create_tfm()')
-> Should this need to be changed, I don't know how 'ks_hostif.c' should be
-> fixed. Changing allocation in 'crypto/api.c' looks like an overkill.
-> 
-> In other word, I think that my patch is wrong, but don't know what else to
-> propose :).
+> 2020년 8월 11일 (화) 오후 6:28, Daeho Jeong <daeho43@gmail.com>님이 작성:
+> >
+> > Actually, as you can see, I use the whole zero data blocks in the test file.
+> > It can maximize the effect of changing virtual mapping.
+> > When I use normal files which can be compressed about 70% from the
+> > original file,
+> > The vm_map_ram() version is about 2x faster than vmap() version.
 
-Your patch is correct but you're also right that it's incomplete.
+What f2fs does is much similar to btrfs compression. Even if these
+blocks are all zeroed. In principle, the maximum compression ratio
+is determined (cluster sized blocks into one compressed block, e.g
+16k cluster into one compressed block).
 
-If you look at drivers/staging/rtl8192e/rtllib_crypt_tkip.c then they
-declare the shash on stack instead of using crypto_alloc_shash().
-	SHASH_DESC_ON_STACK(desc, tfm_michael);
+So it'd be better to describe your configured cluster size (16k or
+128k) and your hardware information in the commit message as well.
 
-That's probably what we should do here as well.  Although I don't know
-this code very well at all...  This is probably the sort of change where
-it would be good to have someone test it.
+Actually, I also tried with this patch as well on my x86 laptop just
+now with FIO (I didn't use zeroed block though), and I didn't notice
+much difference with turbo boost off and maxfreq.
 
-regards,
-dan carpenter
+I'm not arguing this commit, just a note about this commit message.
+> > > >> 1048576000 bytes (0.9 G) copied, 9.146217 s, 109 M/s
+> > > >> 1048576000 bytes (0.9 G) copied, 9.997542 s, 100 M/s
+> > > >> 1048576000 bytes (0.9 G) copied, 10.109727 s, 99 M/s
+
+IMHO, the above number is much like decompressing in the arm64 little cores.
+
+Thanks,
+Gao Xiang
+
+
+> >
+> > 2020년 8월 11일 (화) 오후 4:55, Chao Yu <yuchao0@huawei.com>님이 작성:
+> > >
+> > > On 2020/8/11 15:15, Gao Xiang wrote:
+> > > > On Tue, Aug 11, 2020 at 12:37:53PM +0900, Daeho Jeong wrote:
+> > > >> From: Daeho Jeong <daehojeong@google.com>
+> > > >>
+> > > >> By profiling f2fs compression works, I've found vmap() callings are
+> > > >> bottlenecks of f2fs decompression path. Changing these with
+> > > >> vm_map_ram(), we can enhance f2fs decompression speed pretty much.
+> > > >>
+> > > >> [Verification]
+> > > >> dd if=/dev/zero of=dummy bs=1m count=1000
+> > > >> echo 3 > /proc/sys/vm/drop_caches
+> > > >> dd if=dummy of=/dev/zero bs=512k
+> > > >>
+> > > >> - w/o compression -
+> > > >> 1048576000 bytes (0.9 G) copied, 1.999384 s, 500 M/s
+> > > >> 1048576000 bytes (0.9 G) copied, 2.035988 s, 491 M/s
+> > > >> 1048576000 bytes (0.9 G) copied, 2.039457 s, 490 M/s
+> > > >>
+> > > >> - before patch -
+> > > >> 1048576000 bytes (0.9 G) copied, 9.146217 s, 109 M/s
+> > > >> 1048576000 bytes (0.9 G) copied, 9.997542 s, 100 M/s
+> > > >> 1048576000 bytes (0.9 G) copied, 10.109727 s, 99 M/s
+> > > >>
+> > > >> - after patch -
+> > > >> 1048576000 bytes (0.9 G) copied, 2.253441 s, 444 M/s
+> > > >> 1048576000 bytes (0.9 G) copied, 2.739764 s, 365 M/s
+> > > >> 1048576000 bytes (0.9 G) copied, 2.185649 s, 458 M/s
+> > > >
+> > > > Indeed, vmap() approach has some impact on the whole
+> > > > workflow. But I don't think the gap is such significant,
+> > > > maybe it relates to unlocked cpufreq (and big little
+> > > > core difference if it's on some arm64 board).
+> > >
+> > > Agreed,
+> > >
+> > > I guess there should be other reason causing the large performance
+> > > gap, scheduling, frequency, or something else.
+> > >
+> > > >
+> > > >
+> > > >
+> > > > _______________________________________________
+> > > > Linux-f2fs-devel mailing list
+> > > > Linux-f2fs-devel@lists.sourceforge.net
+> > > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> > > > .
+> > > >
+> 
 
