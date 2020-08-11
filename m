@@ -2,73 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F41A2419BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533312419C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728587AbgHKK3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 06:29:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56722 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728346AbgHKK3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 06:29:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7AE00AC7C;
-        Tue, 11 Aug 2020 10:30:10 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8095DDA83C; Tue, 11 Aug 2020 12:28:48 +0200 (CEST)
-Date:   Tue, 11 Aug 2020 12:28:48 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Pavel Machek <pavel@denx.de>, clm@fb.com, jbacik@fb.com,
-        dsterba@suse.com, sashal@kernel.org, wqu@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jungyeon@gatech.edu, stable@kernel.org
-Subject: Re: [PATCH] btrfs: fix error value in btrfs_get_extent
-Message-ID: <20200811102848.GN2026@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Pavel Machek <pavel@denx.de>, clm@fb.com, jbacik@fb.com,
-        dsterba@suse.com, sashal@kernel.org, wqu@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jungyeon@gatech.edu, stable@kernel.org
-References: <20200803093506.GA19472@amd>
- <4e88eb32-ac7d-f0cb-d089-ec197595bce9@suse.com>
- <c30a0a5e-dfd5-8bee-63f6-c93af9dc7eb6@suse.com>
+        id S1728705AbgHKKaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 06:30:04 -0400
+Received: from ja.ssi.bg ([178.16.129.10]:33806 "EHLO ja.ssi.bg"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728346AbgHKKaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 06:30:01 -0400
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id 07BAT4fo009688;
+        Tue, 11 Aug 2020 13:29:04 +0300
+Date:   Tue, 11 Aug 2020 13:29:04 +0300 (EEST)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+cc:     Wensong Zhang <wensong@linux-vs.org>,
+        Simon Horman <horms@verge.net.au>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH net-next v2] ipvs: Fix uninit-value
+ in do_ip_vs_set_ctl()
+In-Reply-To: <20200811074640.841693-1-yepeilin.cs@gmail.com>
+Message-ID: <alpine.LFD.2.23.451.2008111324570.7428@ja.home.ssi.bg>
+References: <20200810220703.796718-1-yepeilin.cs@gmail.com> <20200811074640.841693-1-yepeilin.cs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c30a0a5e-dfd5-8bee-63f6-c93af9dc7eb6@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 03, 2020 at 12:50:31PM +0300, Nikolay Borisov wrote:
-> On 3.08.20 г. 12:39 ч., Nikolay Borisov wrote:
-> > On 3.08.20 г. 12:35 ч., Pavel Machek wrote:
-> >> btrfs_get_extent() sets variable ret, but out: error path expect error
-> >> to be in variable err. Fix that.
-> >>
-> >> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-> > 
-> > Good catch, this also needs:
-> > 
-> > Fixes: 6bf9e4bd6a27 ("btrfs: inode: Verify inode mode to avoid NULL
-> > pointer dereference")
-> > 
-> > Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-> 
-> Actually the reason this error got introduced in the first place and I
-> missed it during the review is that the function is doing something
-> rather counter-intuitive - it's using 'err' variable as a synonym for
-> 'ret'. A better approach would be to simply remove 'err' from that
-> function. I'm now authoring such a patch, nevertheless the issue still
-> stands.
 
-The expected pattern is to use 'ret' for function return value and add
-other temporary variables instead of the err/ret switching, which can be
-found in the oldish code still. So the cleanup is going to do the right
-thing, thanks.
+	Hello,
+
+On Tue, 11 Aug 2020, Peilin Ye wrote:
+
+> do_ip_vs_set_ctl() is referencing uninitialized stack value when `len` is
+> zero. Fix it.
+> 
+> Reported-by: syzbot+23b5f9e7caf61d9a3898@syzkaller.appspotmail.com
+> Link: https://syzkaller.appspot.com/bug?id=46ebfb92a8a812621a001ef04d90dfa459520fe2
+> Suggested-by: Julian Anastasov <ja@ssi.bg>
+> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+
+	Looks good to me, thanks!
+
+Acked-by: Julian Anastasov <ja@ssi.bg>
+
+> ---
+> Changes in v2:
+>     - Target net-next tree. (Suggested by Julian Anastasov <ja@ssi.bg>)
+>     - Reject all `len == 0` requests except `IP_VS_SO_SET_FLUSH`, instead
+>       of initializing `arg`. (Suggested by Cong Wang
+>       <xiyou.wangcong@gmail.com>, Julian Anastasov <ja@ssi.bg>)
+> 
+>  net/netfilter/ipvs/ip_vs_ctl.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+> index 412656c34f20..beeafa42aad7 100644
+> --- a/net/netfilter/ipvs/ip_vs_ctl.c
+> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+> @@ -2471,6 +2471,10 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
+>  		/* Set timeout values for (tcp tcpfin udp) */
+>  		ret = ip_vs_set_timeout(ipvs, (struct ip_vs_timeout_user *)arg);
+>  		goto out_unlock;
+> +	} else if (!len) {
+> +		/* No more commands with len == 0 below */
+> +		ret = -EINVAL;
+> +		goto out_unlock;
+>  	}
+>  
+>  	usvc_compat = (struct ip_vs_service_user *)arg;
+> @@ -2547,9 +2551,6 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
+>  		break;
+>  	case IP_VS_SO_SET_DELDEST:
+>  		ret = ip_vs_del_dest(svc, &udest);
+> -		break;
+> -	default:
+> -		ret = -EINVAL;
+>  	}
+>  
+>    out_unlock:
+> -- 
+> 2.25.1
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
