@@ -2,83 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F4A2421CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 23:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D2A2421D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 23:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgHKVSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 17:18:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726424AbgHKVSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 17:18:01 -0400
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1C72214F1
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 21:18:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597180681;
-        bh=H697I+zAaTrCDiFR/QxpngC4s+tbXs3+JE4nJBDzzfA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tK2CUSAYGJsXC5JeDzxddiaRcH9cSe3p7Fz9EbTt74CjnD60QIkwqw4vvNHVT4ACh
-         k8OJdYzfRcSknn79jqH5aZ7+zPt0lwvNeqsUB4IiILuEyl7X0VzGp5mhon5W5y90Os
-         iDR/mF3JdxH+U4oF2F+FVjl0qmG7VCiROIuzIczU=
-Received: by mail-wm1-f51.google.com with SMTP id c19so2894606wmd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 14:18:00 -0700 (PDT)
-X-Gm-Message-State: AOAM530iEZh4+QNYmbUhQAq5kilKi6Z52Lm0rsnwYKHFzJU7gIhTNy2V
-        1QXWcegFJA4W4f/tynY1+pbn+ikmOZt3ekylqK2rjg==
-X-Google-Smtp-Source: ABdhPJws+21t6FOJ6sK8kO00+QCrfmrTy0qT7N99L+sWIie61bUyPjWf7GBWU+7WzuyTe6ork3V+hpcBZbDKW738l/Y=
-X-Received: by 2002:a1c:7e02:: with SMTP id z2mr5576013wmc.138.1597180679149;
- Tue, 11 Aug 2020 14:17:59 -0700 (PDT)
+        id S1726564AbgHKVSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 17:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726420AbgHKVSo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 17:18:44 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB226C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 14:18:44 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id z17so12289013ill.6
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 14:18:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=poorly.run; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5zCJzt+BJueo1G2rs0QZq7zeuowqnIxHPn78LDh13kg=;
+        b=FlowTssUayfdaL85TriP2RcBUzG/T6vntLnxRx7DdtmcmiqIiV3bH2ED/pB1FCvjq+
+         LokfjisnXtGBAQLL+YECpUsyNdAMytoTTAZ5ztFLMVlLx+lGEPmly8iE28Klsvc7m9Nu
+         rW8uiNQz+QsV8/gNXH/owhOE1Gr3XvGLYs7sEeg4HsgRYX5YK59C4yWf/cz63g8iGHkX
+         v6N8lFRoSD5yLRGWWVCsMSLMRuQBKlHgkOanGuqLjHak4zsryiT50596J4YrA9pfpLnW
+         YixCIlT2k0xTm6BLZAwgZ2QaJYMqPvXMnsKIKrGVZYUiWFHwxbYRazU6BEIFJoP87MuW
+         JfKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5zCJzt+BJueo1G2rs0QZq7zeuowqnIxHPn78LDh13kg=;
+        b=An4BsrJOHYzMC1xHPmN19MNr6wk1JE+BwixFTsv6vVqu8LLf2YUllJLLk70Z89uk3c
+         7afDjlERMxIwViuaAsL/CCZqf7fDG7amgO7UT4vr676u9CdEJf4lkpas+B4PzG4dIp1G
+         YNogYnohP33naiciQOJE4lyJMkmbTk+tIiaWwnO1fCYgp4pgsfEdVO08DGdC9xayCOkA
+         S979CqSJebCgXlH+Ik5R2UOrUw05vuHgTcsi7w8wuiJtc3EfY1/qQrKN+3xW2btYRAVW
+         0hMCjgCLdcQYUgsHQlEsBcXIidtZyI0xhIcSLGARs/oDCia8K0PCLZVVTtx1lwDoBxhi
+         v2Pw==
+X-Gm-Message-State: AOAM533k5bjgqViUYFAEunYehxK0bQL67h9PPHCug5+WeOht8xjKi4ci
+        Tnn1Mv+DNne/3mAgEsmIh63SEoooQ3NBWimGKCoScA==
+X-Google-Smtp-Source: ABdhPJydXaSlgITmBtELkzUO4DBmCANUrr1wRTcqhyIrK8VcFT550AeHkpAKa6iE1xor3dBnDr5/Yj0olPjyteNUyc8=
+X-Received: by 2002:a92:1d1:: with SMTP id 200mr25295650ilb.71.1597180724140;
+ Tue, 11 Aug 2020 14:18:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
- <5C8E0FA8-274E-4B56-9B5A-88E768D01F3A@amacapital.net> <a6cd01ed-918a-0ed7-aa87-0585db7b6852@schaufler-ca.com>
- <CAJfpegvUBpb+C2Ab=CLAwWffOaeCedr-b7ZZKZnKvF4ph1nJrw@mail.gmail.com>
- <CAG48ez3Li+HjJ6-wJwN-A84WT2MFE131Dt+6YiU96s+7NO5wkQ@mail.gmail.com> <CAJfpeguh5VaDBdVkV3FJtRsMAvXHWUcBfEpQrYPEuX9wYzg9dA@mail.gmail.com>
-In-Reply-To: <CAJfpeguh5VaDBdVkV3FJtRsMAvXHWUcBfEpQrYPEuX9wYzg9dA@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 11 Aug 2020 14:17:46 -0700
-X-Gmail-Original-Message-ID: <CALCETrXRrMdbzcQPHQQgH3cKKhf87Piy7=gs3wVUX4z20bLyUw@mail.gmail.com>
-Message-ID: <CALCETrXRrMdbzcQPHQQgH3cKKhf87Piy7=gs3wVUX4z20bLyUw@mail.gmail.com>
-Subject: Re: file metadata via fs API (was: [GIT PULL] Filesystem Information)
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Jann Horn <jannh@google.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Karel Zak <kzak@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Christian Brauner <christian@brauner.io>,
-        Lennart Poettering <lennart@poettering.net>,
-        Linux API <linux-api@vger.kernel.org>,
-        Ian Kent <raven@themaw.net>,
-        LSM <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200811210938.552939-1-robdclark@gmail.com>
+In-Reply-To: <20200811210938.552939-1-robdclark@gmail.com>
+From:   Sean Paul <sean@poorly.run>
+Date:   Tue, 11 Aug 2020 17:18:08 -0400
+Message-ID: <CAMavQKJcRRc=K3m14A5NsFMKC-E84FL3-r7MKcpoPQ_rq7d6gw@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dpu: fix unitialized variable error
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        kernel test robot <lkp@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Drew Davenport <ddavenport@chromium.org>,
+        Bernard <bernard@vivo.com>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Hongbo Yao <yaohongbo@huawei.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 1:56 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
+On Tue, Aug 11, 2020 at 5:08 PM Rob Clark <robdclark@gmail.com> wrote:
 >
-> On Tue, Aug 11, 2020 at 10:37 PM Jann Horn <jannh@google.com> wrote:
-> > If you change the semantics of path strings, you'd have to be
-> > confident that the new semantics fit nicely with all the path
-> > validation routines that exist scattered across userspace, and don't
-> > expose new interfaces through file server software and setuid binaries
-> > and so on.
+> From: Rob Clark <robdclark@chromium.org>
 >
-> So that's where O_ALT comes in.   If the application is consenting,
-> then that should prevent exploits.   Or?
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c:817 dpu_crtc_enable() error: uninitialized symbol 'request_bandwidth'.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
 
-We're going to be at risk from libraries that want to use the new
-O_ALT mechanism but are invoked by old code that passes traditional
-Linux paths.  Each library will have to sanitize paths, and some will
-screw it up.
+Reviewed-by: Sean Paul <seanpaul@chromium.org>
 
-I much prefer Linus' variant where the final part of the extended path
-is passed as a separate parameter.
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+> index f272a8d0f95b..c2729f71e2fa 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+> @@ -827,7 +827,7 @@ static void dpu_crtc_enable(struct drm_crtc *crtc,
+>  {
+>         struct dpu_crtc *dpu_crtc;
+>         struct drm_encoder *encoder;
+> -       bool request_bandwidth;
+> +       bool request_bandwidth = false;
+>
+>         if (!crtc) {
+>                 DPU_ERROR("invalid crtc\n");
+> --
+> 2.26.2
+>
