@@ -2,95 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654B0241639
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 08:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144C4241642
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 08:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgHKGPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 02:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726154AbgHKGPY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 02:15:24 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6C5C06174A;
-        Mon, 10 Aug 2020 23:15:23 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BQjHW61Pqz9sTM;
-        Tue, 11 Aug 2020 16:15:19 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1597126520;
-        bh=vmA+U6yYordllIlIbbA0NQplZPeDri+hoiMGp1wkbEM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rVFvNdvDn+0X42UKxMtre6LFZycz0m0HXH2n0WFRWQRcQ1MZ0ga42i8Ev/4GGN8lw
-         gJDXFsgo1OwUATt9NCedr7N+sBd9p5GCHyU3O4ewmhU0wXa3kwLiLtNZgiguByjJ5P
-         b+cPlHiyw8iRsyQhnab+mX+ShF2qJW6WtWeIHZGlAJKWo3kUoe8Kq0om6YRcOoawmN
-         5YDjIz1btmZ2UNs8Nc53etiG2rshjvYlyJN0FBfcgnThzb3EWxyfONA8ny00FD0bwT
-         +tK1ZWbPukfWkvcqtUjDs8hm2wj8X94mTaSliePXUOiQPtILPMclAZwuOtexzF268L
-         ef+8mu0DXqqfg==
-Date:   Tue, 11 Aug 2020 16:15:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Trond Myklebust <trondmy@gmail.com>
-Subject: Re: Please pull NFS server updates for v5.9
-Message-ID: <20200811161518.0896c1e8@canb.auug.org.au>
-In-Reply-To: <EC1AA9E7-4AC1-49C6-B138-B6A3E4ED7A0B@oracle.com>
-References: <F9B8940D-9F7B-47F5-9946-D77C17CF959A@oracle.com>
-        <20200810090349.64bce58f@canb.auug.org.au>
-        <EC1AA9E7-4AC1-49C6-B138-B6A3E4ED7A0B@oracle.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/uT/4_Xdt=yeslqAXJ+Bf_QJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1727959AbgHKGVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 02:21:14 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:42448 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726506AbgHKGVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 02:21:14 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A8AE72007A4;
+        Tue, 11 Aug 2020 08:21:12 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 93879201DD0;
+        Tue, 11 Aug 2020 08:21:08 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 36150402A5;
+        Tue, 11 Aug 2020 08:21:03 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2 1/2] irqchip/imx-intmux: Use dev_err_probe() to simplify error handling
+Date:   Tue, 11 Aug 2020 14:16:15 +0800
+Message-Id: <1597126576-18383-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/uT/4_Xdt=yeslqAXJ+Bf_QJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+dev_err_probe() can reduce code size, uniform error handling and record the
+defer probe reason etc., use it to simplify the code.
 
-Hi Chuck,
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+changes since V1:
+	- remove redundant return value print.
+---
+ drivers/irqchip/irq-imx-intmux.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-On Mon, 10 Aug 2020 08:25:14 -0400 Chuck Lever <chuck.lever@oracle.com> wro=
-te:
->=20
-> Is there something I need to change? The public copy of the cel-testing
-> branch has had this content for the past 12 days.
+diff --git a/drivers/irqchip/irq-imx-intmux.c b/drivers/irqchip/irq-imx-intmux.c
+index e35b7b0..7709f97 100644
+--- a/drivers/irqchip/irq-imx-intmux.c
++++ b/drivers/irqchip/irq-imx-intmux.c
+@@ -226,12 +226,9 @@ static int imx_intmux_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	data->ipg_clk = devm_clk_get(&pdev->dev, "ipg");
+-	if (IS_ERR(data->ipg_clk)) {
+-		ret = PTR_ERR(data->ipg_clk);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "failed to get ipg clk: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(data->ipg_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(data->ipg_clk),
++				     "failed to get ipg clk\n");
+ 
+ 	data->channum = channum;
+ 	raw_spin_lock_init(&data->lock);
+-- 
+2.7.4
 
-You just need to keep your cel-next branch up to the top commit that is
-ready.  That is the branch you told me to fetch.  It is currently at commit
-
-  0a8e7b7d0846 ("SUNRPC: Revert 241b1f419f0e ("SUNRPC: Remove xdr_buf_trim(=
-)")")
-
-It looks like that is what Linus merged into v5.7-rc2.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/uT/4_Xdt=yeslqAXJ+Bf_QJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8yN3YACgkQAVBC80lX
-0GwXGwf/X1xza4u2L2jJX6O8CmpIPjjZeO69GKzmnyVVRoOXVzjthv1JJk+wg+7l
-7FxHlD8dqgtxuxE+A2Y4OGzpnG+phqoA15e6k5dxscbV9r7LRcweAZNeNO1E/05q
-iXJgeV32+PTsRQFLuTQyfyCQjYZDqUt9H2Uh2m4F7xOot+FY8t9PTDw4gbwoYTPT
-rZJH1myqDPB++EIWdsZhb3xJuY6I6znFLIceYia+b55DMF7nCATpjOeZxq7sSHIo
-2gZlAv7pYw/eANhL+mSn9xgnsYS/VVdEu0BhDoWgJLKWMPjM3f8ZvzuEpaIkoguD
-qscoOtH3WIqd5h1S8GFUpOkM920XTA==
-=iHxj
------END PGP SIGNATURE-----
-
---Sig_/uT/4_Xdt=yeslqAXJ+Bf_QJ--
