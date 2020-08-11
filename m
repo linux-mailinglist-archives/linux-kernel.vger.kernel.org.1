@@ -2,137 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4648E24225B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 00:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4CF1242267
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 00:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgHKWJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 18:09:51 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:44571 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726173AbgHKWJv (ORCPT
+        id S1726457AbgHKWQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 18:16:54 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39994 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgHKWQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 18:09:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597183790; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=8nVYNeSoMlj/0DZnpTkkfpxc5/vnT3kxypEjr4vqN8U=;
- b=t2K1Wp1Z8uaHGZM/Ds/ii4l57tiDZmmGN+pnAm/L4QmhHNBKNZdc7C5u3NV0qbbJtNwDOOPK
- kBNzX0wX6f7lXxjybB9DZHWJ8b/r4UEwC9K1hWjegMuD+EavhC+Bj/Hryw2QYbzJ15J776Wj
- m7QiTAhxFHNh8jIes1B5FcrA6RE=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f331729ba4c2cd367d667e7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 11 Aug 2020 22:09:45
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D10C1C4339C; Tue, 11 Aug 2020 22:09:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: tanmay)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E81ABC433C6;
-        Tue, 11 Aug 2020 22:09:43 +0000 (UTC)
+        Tue, 11 Aug 2020 18:16:53 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07BMGbgC063567;
+        Tue, 11 Aug 2020 17:16:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1597184197;
+        bh=BcWdkWNK3kpKapQgO0Xm+UzannjeCmDE1NXrFwsfTB4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ljaB4/dBwG/aLQBpo6mo2P87hLFTB+ZATdNP2lBZmqAiYqbsRLkBmZ9GZr9LW1zV3
+         u8mYH3RcQlEpvmGrZnc4/da3TBOWUVkiRoDE63824bSl7V4kx6P1sVmkaOmdm8cxQd
+         4k5QqHRZiE9iFz0jSGenhHpyEMSEWELXyk0ztnRw=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07BMGbl1057518;
+        Tue, 11 Aug 2020 17:16:37 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 11
+ Aug 2020 17:16:37 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 11 Aug 2020 17:16:37 -0500
+Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07BMGaYB054572;
+        Tue, 11 Aug 2020 17:16:36 -0500
+Subject: Re: [PATCH v32 2/6] leds: lp50xx: Add the LP50XX family of the RGB
+ LED driver
+To:     Pavel Machek <pavel@ucw.cz>
+CC:     <jacek.anaszewski@gmail.com>, <robh@kernel.org>,
+        <marek.behun@nic.cz>, <devicetree@vger.kernel.org>,
+        <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20200722153146.8767-1-dmurphy@ti.com>
+ <20200722153146.8767-3-dmurphy@ti.com>
+ <20200811105413.r2m2f7bubuz55rrt@duo.ucw.cz>
+ <935119fa-6d1f-8e99-51f9-87966b4d03ad@ti.com> <20200811220109.GA9105@amd>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <3ce38a31-a4f0-4cd7-ad09-6bdad27e6756@ti.com>
+Date:   Tue, 11 Aug 2020 17:16:36 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 11 Aug 2020 15:09:43 -0700
-From:   Tanmay Shah <tanmay@codeaurora.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Stephen Boyd <swboyd@chromium.org>, khsieh@codeaurora.org,
-        Rob Clark <robdclark@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Vara Reddy <varar@codeaurora.org>, aravindh@codeaurora.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>
-Subject: Re: [Freedreno] [PATCH v9 3/5] drm/msm/dp: add support for DP PLL
- driver
-In-Reply-To: <7222ceca-9fe2-f91b-4129-5a70952875f7@infradead.org>
-References: <20200807071718.17937-1-tanmay@codeaurora.org>
- <20200807071718.17937-4-tanmay@codeaurora.org>
- <3b0d0e49-5fe8-e217-4ddc-1ff08e65ab48@infradead.org>
- <CAF6AEGv5Yf1x7aCEauP7XtzTjpUCxJt6_GzxFhFXyf_DX_Gi+g@mail.gmail.com>
- <159683184187.1360974.15575847254880429529@swboyd.mtv.corp.google.com>
- <75acac5a-b4a5-9c5a-4404-fb936d738e46@infradead.org>
- <639438051c1b2fe1d9bec5f6343a6dec@codeaurora.org>
- <7222ceca-9fe2-f91b-4129-5a70952875f7@infradead.org>
-Message-ID: <9624e970765dc0739793612c2a5c53bc@codeaurora.org>
-X-Sender: tanmay@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <20200811220109.GA9105@amd>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-11 13:21, Randy Dunlap wrote:
-> On 8/11/20 12:49 PM, tanmay@codeaurora.org wrote:
->> On 2020-08-07 13:28, Randy Dunlap wrote:
->>> On 8/7/20 1:24 PM, Stephen Boyd wrote:
->>>> Quoting Rob Clark (2020-08-07 08:51:48)
->>>>> On Fri, Aug 7, 2020 at 8:27 AM Randy Dunlap <rdunlap@infradead.org>
->>>>> wrote:
->>>>>> 
->>>>>> On 8/7/20 12:17 AM, Tanmay Shah wrote:
->>>>>>> diff --git a/drivers/gpu/drm/msm/Kconfig 
->>>>>>> b/drivers/gpu/drm/msm/Kconfig
->>>>>>> index ea3c4d094d09..cc1392b29022 100644
->>>>>>> --- a/drivers/gpu/drm/msm/Kconfig
->>>>>>> +++ b/drivers/gpu/drm/msm/Kconfig
->>>>>>> @@ -60,6 +60,7 @@ config DRM_MSM_HDMI_HDCP
->>>>>>>  config DRM_MSM_DP
->>>>>>>       bool "Enable DP support in MSM DRM driver"
->>>>>>>       depends on DRM_MSM
->>>>>>> +     default y
->>>>>>>       help
->>>>>>>         Compile in support for DP driver in msm drm driver. DP 
->>>>>>> external
->>>>>>>         display support is enabled through this config option. It 
->>>>>>> can
->>>>>> 
->>>>>> Hi,
->>>>>> 
->>>>>> You need a very strong justification to make an optional part of a
->>>>>> driver
->>>>>> to be "default y".
->>>>> 
->>>>> My opinion is that if the driver is built, everything should be 
->>>>> built.
->>>>> This is what makes sense for distro's.  It is only the embedded 
->>>>> case
->>>>> where you want to trim down unneeded features where you might want 
->>>>> to
->>>>> disable some parts.  So 'default y' makes sense to me.
->>> 
->>> We don't set defaults for distro convenience.
->>> 
->>>> 
->>>> Maybe use 'default DRM_MSM' so that it doesn't trigger the 'default 
->>>> y'
->>>> filters people have?
->>> 
->>> Most people can figure that one out.  ;)
->>> I don't have any automated filters.
->> 
->> After after further reviews, I agree with Rob. Display Port is 
->> required module as of now so it makes sense to keep 'default y'.
-> 
-> If it is required, then you don't need to have a Kconfig entry/symbol 
-> for it.
+Pavel
 
-Kconfig makes driver flexible. Other moudles in the driver are also 
-'default y' such as DSI. I will let Rob guide us further on this as he 
-is the maintainer.
+On 8/11/20 5:01 PM, Pavel Machek wrote:
+> Hi!
+>
+>>> Actually... This is quite impressive ammount of code to
+>>> zero-initialize few registers. Could the regmap be told to set the
+>>> range to zero, or use loops to reduce ammount of code?
+>> I am not aware of any regmap calls that will set a range of registers to a
+>> certain value.
+>>
+>> Well it depends on where we want to create the default cache values.
+>>
+>> Either we run through a for..loop during driver probe and delay device start
+>> up or we keep the simple arrays and increase the driver total size.
+> for loop will be better.
+>
+> Plus, REGCACHE_RBTREE is very likely overkill.
+
+Well if I eliminate the reg_cache then I can eliminate the defaults too.
+
+Dan
+
+> Best regards,
+>
+> 									Pavel
