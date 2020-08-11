@@ -2,297 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C83D24228C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 00:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60058242291
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 00:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbgHKWjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 18:39:15 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48250 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726143AbgHKWjO (ORCPT
+        id S1726492AbgHKWjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 18:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgHKWjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 18:39:14 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597185551;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b/XIyCsraF0XDGxNSIkgMuCOFCu+n+fIBiRqibux3Wc=;
-        b=oUCmqHFSzGzni1o6gpYc6yml07aT0CEIi015tYdVAgMTHwNDT5PN7prv4h7APKms8DJiEF
-        Qn1l16O5xvmJNDeiGSWNbc2Av++opG9Ipda2xxueEgI1aa9ZO3qGMJnlS8Y71aplCnGJXr
-        apfXKVatTYXxYTZXa6N7knbFbs4BT+y2tZi4G81tq1kQdHiBX1qkbnZ2iVhGxwTuit5HJ3
-        kcJIdbxbmJF4kMVC1Z4qWf2qoPEtF0N7poTP5OsmmRLzaY2uvNtrBREkR3Ki2fvF4V0X9o
-        SwEB6l5/MJ6Be6+Q0IjRyq4r4jtSkHdVWpF1FAfwDETSckytOOeUZ0vtA/zHTQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597185551;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b/XIyCsraF0XDGxNSIkgMuCOFCu+n+fIBiRqibux3Wc=;
-        b=bwYqv+uHfJFpFgqEXz6cu4pwyFOjfsGUOz0wb8CCBhky4vKUVECRl8RVLFpMaQsOMJOfUk
-        4a+Py/p+A2duoBBw==
-To:     "Dey\, Megha" <megha.dey@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "gregkh\@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        "vkoul\@kernel.org" <vkoul@kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "rafael\@kernel.org" <rafael@kernel.org>,
-        "hpa\@zytor.com" <hpa@zytor.com>,
-        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Raj\, Ashok" <ashok.raj@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Tian\, Kevin" <kevin.tian@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "Lin\, Jing" <jing.lin@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
-        "parav\@mellanox.com" <parav@mellanox.com>,
-        "Hansen\, Dave" <dave.hansen@intel.com>,
-        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain\, Mona" <mona.hossain@intel.com>,
-        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86\@kernel.org" <x86@kernel.org>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH RFC v2 02/18] irq/dev-msi: Add support for a new DEV_MSI irq domain
-In-Reply-To: <996854e7-ab11-b76b-64dc-b760b3ad2365@intel.com>
-References: <87h7tcgbs2.fsf@nanos.tec.linutronix.de> <996854e7-ab11-b76b-64dc-b760b3ad2365@intel.com>
-Date:   Wed, 12 Aug 2020 00:39:10 +0200
-Message-ID: <878sek7qpd.fsf@nanos.tec.linutronix.de>
+        Tue, 11 Aug 2020 18:39:43 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F3EC061787
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 15:39:43 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id ha11so159721pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 15:39:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9viru1k3x0Xn7DaGxZZOLfMg9oOC92LLOqtckdZNZWY=;
+        b=mUXOZ2ZjlsNTMoqO7Ow8Px6S0/uEYSOHjvc60YBhgwttdYqhtx0sFIsYHAx5uK6ILT
+         C1LgiYS4wd7UhoAN1CdSyzlBL5xb9f6GElsixAjpHJDsPH0wznViLK0TCHAqXJ9DJbUt
+         VPxDpBiFn84pYsqDB6vyiJ/TQuBZKz7KGtlQlu62PMP5E74N7ktp2d0gMgVi9p1xUWym
+         Ge9axoSGYcw7TG2yoRZshtoQUHLqX3HfDqdkfOLYxnvM3Bn8qgXcLaKXwPNmEJEDZJAf
+         JSsMCIB9XYvX9DJdP7cBOGWe1zhjNe4yBKO0OvFTYhJ7XCwvlyzKU1ybiRehZxbBZSl4
+         hJFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9viru1k3x0Xn7DaGxZZOLfMg9oOC92LLOqtckdZNZWY=;
+        b=JhcgalBLp0j0Rr1gTPZdVAadVejrbAzTVb2CWT3uhl5kOCZNOYhQ/Xn9TO+AEMH/iJ
+         K0LEWqDDcfDYTC3AUnCaC7ZOxG5FumWKSbLZ9Ud5cSIMURXxSYfoCix0XNMAdor7fVG1
+         2lIdJ3V0oP9bemdez0EAO6yH/LG4r6xN8B6xqznUJG6ANJdWVcxpvjsm/NdaHp+EBX/R
+         kYch+4dDVHjxBn/5N5wSs/Ddr3nZFRrUH0VHXYZlQKlDMiIhS0QoSvWOewH/jgxWRDTl
+         sDXy9Hqcmln0eKhCZwAoP/UdvQIpzGdEcoordCfWLVvTUC7TifJYjaJPXTSWVFl6ikV+
+         NO5A==
+X-Gm-Message-State: AOAM5324wkdS2SEc9UKrK0JLN0oHHj1MWQczbEHuW/5xh08WLXth6rbH
+        0nYthxg73w45sjp4IB0ItU/0jQ==
+X-Google-Smtp-Source: ABdhPJzFMpFYeo7JUndMQWCpJ6udzXMr1+aj/61hWf7dkTnXcZvI+Jzt+6KOvGtQrs5nunZZ6TxRsg==
+X-Received: by 2002:a17:90a:fa92:: with SMTP id cu18mr3136405pjb.215.1597185582840;
+        Tue, 11 Aug 2020 15:39:42 -0700 (PDT)
+Received: from google.com ([2620:0:1008:1101:7220:84ff:fe09:dc21])
+        by smtp.gmail.com with ESMTPSA id a4sm30029pju.49.2020.08.11.15.39.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Aug 2020 15:39:42 -0700 (PDT)
+Date:   Tue, 11 Aug 2020 15:39:38 -0700
+From:   Tom Roeder <tmroeder@google.com>
+To:     Peter Kalauskas <peskal@google.com>
+Cc:     linux-kernel@vger.kernel.org, mka@chromium.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH] gen_compile_commands: Add support for separate kbuild
+ output directory
+Message-ID: <20200811223938.GA2475077@google.com>
+References: <20200731212141.3709716-1-peskal@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200731212141.3709716-1-peskal@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Megha.
+Adding the kbuild mailing list on CC, which owns this directory.
 
-"Dey, Megha" <megha.dey@intel.com> writes:
-> On 8/8/2020 12:47 PM, Thomas Gleixner wrote:
->>> 3. Come up with a ground up approach which adheres to the layering
->>> constraints of the IRQ subsystem
->> Yes. It's something which can be used by all devices which have:
->>
->>     1) A device specific irq chip implementation including a msi write function
->>     2) Device specific resource management (slots in the IMS case)
->>
->> The infrastructure you need is basically a wrapper around the core MSI
->> domain (similar to PCI, platform-MSI etc,) which provides the specific
->> functionality to handle the above.
+On Fri, Jul 31, 2020 at 02:21:41PM -0700, Peter Kalauskas wrote:
+>Add support for builds that use an output directory different than the
+>kernel source tree (e.g. make O=/tmp/kernel-obj). This also introduces
+>support for .cmd files that use absolute paths.
 >
-> ok, i will create a per device irq chip which will directly have the 
-> device specific callbacks instead of another layer of redirection.
+>Previously, gen_compile_commands.py only supported builds where the
+>kernel source tree and the output directory were the same:
+> $ make defconfig
+> $ make -j32
+> $ ./scripts/gen_compile_commands.py
 >
-> This way i will get rid of the 'platform_msi_ops' data structure.
+>gen_compile_commands.py had flags to support out of tree use, but the
+>generated compile_commands.json file still assumed that the source tree
+>and kbuild output directory were the same.
 >
-> I am not sure what you mean by device specific resource management, are 
-> you referring to dev_msi_alloc/free_irqs?
-
-I think I gave you a hint:
-
->>     2) Device specific resource management (slots in the IMS case)
-
-The IMS storage is an array with slots in the IDXD case and these slots
-are assigned at interrupt allocation time, right? In other cases where
-the IMS storage is in some other place, e.g. queue memory, then this
-still needs to associated to the interrupt at allocation time.
-
-But of course because you create some disconnected irqdomain you have to
-do that assignment seperately on the side and then stick this
-information into msi_desc after the fact.
-
-And as this is device specific every device driver which utilizes IMS
-has to do that which is bonkers at best.
-
->>    2) A slot allocation or association function and their 'free'
->>       counterpart (irq_domain_ops)
+>Now, the following cases are supported as well:
 >
-> This is one part I didn't understand.
+> - Absolute output path:
+>   $ mkdir /tmp/kernel-obj
+>   $ make O=/tmp/kernel-obj defconfig
+>   $ make O=/tmp/kernel-obj -j32
+>   $ ./scripts/gen_compile_commands.py -k /tmp/kernel-obj
 >
-> Currently my dev_msi_alloc_irqs is simply a wrapper over 
-> platform_msi_domain_alloc_irqs which again mostly calls 
-> msi_domain_alloc_irqs.
+> - Relative output path:
+>   $ mkdir kernel-obj
+>   $ make O=kernel-obj/ defconfig
+>   $ make O=kernel-obj/ -j32
+>   $ ./scripts/gen_compile_commands.py -k kernel-obj
 >
-> When you say add a .alloc, .free, does this mean we should add a device 
-> specific alloc/free and not use the default 
-> msi_domain_alloc/msi_domain_free?
+>The new argument, -k, is introduced in a way that makes the script
+>backward compatible with how -d was previously used.
 >
-> I don't see anything device specific to be done for IDXD atleast, can 
-> you please let me know?
-
-Each and every time I mentioned this, I explicitely mentioned "slot
-allocation (array) or slot association (IMS store is not in an
-array)".
-
-But you keep asking what's device specific over and over and where
-resource management is?
-
-The storage slot array is a resoruce which needs to be managed and it is
-device specific by specification. And it's part of the interrupt
-allocation obviously because without a place to store the MSI message
-the whole thing would not work. This slot does not come out of thin air,
-right?
-
-https://github.com/intel/idxd-driver/commit/fb9a2f4e36525a1f18d9e654d472aa87a9adcb30
-
-int vidxd_setup_ims_entries(struct vdcm_idxd *vidxd)
-{
-	struct idxd_device *idxd = vidxd->idxd;
-	struct ims_irq_entry *irq_entry;
-	struct mdev_device *mdev = vidxd->vdev.mdev;
-	struct device *dev = mdev_dev(mdev);
-	struct msi_desc *desc;
-	int err, i = 0;
-	int index;
-
-	/*
-	 * MSIX vec 0 is emulated by the vdcm and does not take up an IMS. The total MSIX vecs used
-	 * by the mdev will be total IMS + 1. vec 0 is used for misc interrupts such as command
-	 * completion, error notification, PMU, etc. The other vectors are used for descriptor
-	 * completion. Thus only the number of IMS vectors need to be allocated, which is
-	 * VIDXD_MAX_MSIX_VECS - 1.
-	 */
-	err = dev_msi_domain_alloc_irqs(dev, VIDXD_MAX_MSIX_VECS - 1, &idxd_ims_ops);
-	if (err < 0) {
-		dev_dbg(dev, "Enabling IMS entry! %d\n", err);
-		return err;
-	}
-
-	i = 0;
-	for_each_msi_entry(desc, dev) {
-		index = idxd_alloc_ims_index(idxd);
-		if (index < 0) {
-			err = index;
-			break;
-		}
-		vidxd->ims_index[i] = index;
-
-		irq_entry = &vidxd->irq_entries[i];
-		irq_entry->vidxd = vidxd;
-		irq_entry->int_src = i;
-		irq_entry->irq = desc->irq;
-		i++;
-	}
-
-	if (err)
-		vidxd_free_ims_entries(vidxd);
-
-	return 0;
-}
-
-idxd_alloc_ims_index() is an allocation, right? And the above aside of
-having 3 redundant levels of storage for exactly the same information is
-just a violation of all layering concepts at once.
-
-I just wish I've never seen that code.
-
->> Again. Look at the layering. What you created now is a pseudo shared
->> domain which needs
->>
->>     1) An indirection layer for providing device specific functions
->>
->>     2) An extra allocation layer in the device specific driver to assign
->>        IMS slots completely outside of the domain allocation mechanism.
-> hmmm, again I am not sure of which extra allocation layer you are 
-> referring to..
-
-See above.
-
->> The infrastructure itself is not more than a thin wrapper around the
->> existing msi domain infrastructure and might even share code with
->> platform-msi.
+>Signed-off-by: Peter Kalauskas <peskal@google.com>
+>---
+> scripts/gen_compile_commands.py | 112 ++++++++++++++++++++++----------
+> 1 file changed, 77 insertions(+), 35 deletions(-)
 >
->  From your explanation:
+>diff --git scripts/gen_compile_commands.py scripts/gen_compile_commands.py
+>index c458696ef3a7..cd3b80bd1942 100755
+>--- scripts/gen_compile_commands.py
+>+++ scripts/gen_compile_commands.py
+>@@ -31,16 +31,24 @@ def parse_arguments():
 >
-> In the device driver:
+>     Returns:
+>         log_level: A logging level to filter log output.
+>-        directory: The directory to search for .cmd files.
+>+        source_directory: The directory of the kernel source tree.
+>+        kbuild_output_directory: The directory to search for .cmd files.
+>         output: Where to write the compile-commands JSON file.
+>     """
+>     usage = 'Creates a compile_commands.json database from kernel .cmd files'
+>     parser = argparse.ArgumentParser(description=usage)
 >
-> static const struct irq_domain_ops idxd_irq_domain_ops = {
+>-    directory_help = ('Path to the kernel source directory to search '
+>+    directory_help = ('Path to the kernel source directory '
+>                       '(defaults to the working directory)')
+>     parser.add_argument('-d', '--directory', type=str, help=directory_help)
 >
-> .alloc= idxd_domain_alloc, //not sure what this should do
+>+    kbuild_output_directory_help = (
+>+        'Path to the kernel output directory to search for .cmd files '
+>+        '(defaults to match --directory)')
+>+    parser.add_argument(
+>+        '-k', '--kbuild-output-directory', type=str,
+>+        help=kbuild_output_directory_help)
+>+
+>     output_help = ('The location to write compile_commands.json (defaults to '
+>                    'compile_commands.json in the search directory)')
+Now that there are two directory options, I think the text here should 
+match the name of the option more closely. How about "defaults to 
+compile_commands.json in --kbuild-output-directory"?
 
-You might know by now. Also it's not necessarily the .alloc callback
-which needs to be implemented. As I said we can add ops if necessary and
-if it makes sense. This needs some thoughts to provide proper layering
-and for sharing as much code as possible.
+>     parser.add_argument('-o', '--output', type=str, help=output_help)
+>@@ -58,58 +66,91 @@ def parse_arguments():
+>     if log_level not in _VALID_LOG_LEVELS:
+>         raise ValueError('%s is not a valid log level' % log_level)
+>
+>-    directory = args.directory or os.getcwd()
+>-    output = args.output or os.path.join(directory, _DEFAULT_OUTPUT)
+>-    directory = os.path.abspath(directory)
+>+    source_directory = args.directory or os.getcwd()
+>+    kbuild_output_directory = args.kbuild_output_directory or source_directory
+>+    output = args.output or os.path.join(source_directory, _DEFAULT_OUTPUT)
+I'm not as familiar with out-of-tree options for compile_commands.json; 
+should the default be in the source tree or should it be in the object 
+tree? I assumed in my previous comment that the right place by default 
+was the object tree, but this line suggests that the default will be the 
+source tree if the two differ.
 
-> except the alloc/free irq_domain_ops, does this look fine to you?
+>+    source_directory = os.path.abspath(source_directory)
+>+    kbuild_output_directory = os.path.abspath(kbuild_output_directory)
+>
+>-    return log_level, directory, output
+>+    return log_level, source_directory, kbuild_output_directory, output
+>
+>
+>-def process_line(root_directory, file_directory, command_prefix, relative_path):
+>+def process_line(src_dir, kbuild_out_dir, file_dir, cmd_prefix, file_path):
+>     """Extracts information from a .cmd line and creates an entry from it.
+>
+>     Args:
+>-        root_directory: The directory that was searched for .cmd files. Usually
+>+        src_dir: The directory of the kernel source tree.
+>+        kbuild_out_dir: The directory that was searched for .cmd files. Usually
+>             used directly in the "directory" entry in compile_commands.json.
+>-        file_directory: The path to the directory the .cmd file was found in.
+>-        command_prefix: The extracted command line, up to the last element.
+>-        relative_path: The .c file from the end of the extracted command.
+>-            Usually relative to root_directory, but sometimes relative to
+>-            file_directory and sometimes neither.
+>+        file_dir: The path to the directory the .cmd file was found in.
+>+        cmd_prefix: The extracted command line, up to the last element.
+>+        file_path: The .c file from the end of the extracted command.
+>+            Usually relative to kbuild_out_dir, but sometimes relative to
+>+            src_dir and sometimes neither.
+>
+>     Returns:
+>         An entry to append to compile_commands.
+>
+>     Raises:
+>-        ValueError: Could not find the extracted file based on relative_path and
+>-            root_directory or file_directory.
+>+        ValueError: Could not find the extracted file.
+>     """
+>     # The .cmd files are intended to be included directly by Make, so they
+>     # escape the pound sign '#', either as '\#' or '$(pound)' (depending on the
+>-    # kernel version). The compile_commands.json file is not interepreted
+>+    # kernel version). The compile_commands.json file is not interpreted
+>     # by Make, so this code replaces the escaped version with '#'.
+>-    prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
+>-
+>-    cur_dir = root_directory
+>-    expected_path = os.path.join(cur_dir, relative_path)
+>-    if not os.path.exists(expected_path):
+>-        # Try using file_directory instead. Some of the tools have a different
+>-        # style of .cmd file than the kernel.
+>-        cur_dir = file_directory
+>-        expected_path = os.path.join(cur_dir, relative_path)
+>+    prefix = cmd_prefix.replace('\#', '#').replace('$(pound)', '#')
+>+
+>+    # Compile commands are usually run in the top level of the kbuild output
+>+    # directory
+nit: for consistency with the rest of the comments in this file, please 
+add punctuation to the end of this sentence and subsequent ones.
 
-It's at least heading into the right direction.
-
-But before we talk about the details at this level the
-device::msi_domain pointer issue wants to be resolved. It's part of the
-solution to share code at various levels and to make utilization of this
-technology as simple as possible for driver writers.
-
-We need to think about infrastructure which can be used by various types
-of IMS devices, e.g. those with storage arrays and this with storage in
-random places, like the network card Jason was talking about. And to get
-there we need to do the house cleaning first.
-
-Also if you do a proper infrastructure then you need exactly ONE
-implementation of an irqdomain and an irqchip for devices which have a
-IMS slot storage array. Every driver for a device which has this kind of
-storage can reuse that even with different array sizes.
-
-If done right then your IDXD driver needs:
-
-   idxd->domain = create_ims_array_domain(...., basepointer, max_slots);
-
-in the init function of the control block. create_ims_array_domain() is
-not part of IDXD, it's a common irq domain/irq chip implementation which
-deals with IMS slot storage arrays of arbitrary size. 
-
-And then when creating a subdevice you do:
-
-    subdevice->msi_domain = idxd->domain;
-
-and to allocate the interrupts you just do:
-
-    device_msi_alloc_irqs(subdevice, nrirqs);
-
-and device_msi_alloc_irqs() is shared infrastructure which has nothing
-to do with idxd or the ims array domain.
-
-The same can be done for devices which have their storage embedded into
-whatever other data structure on the device, e.g. queue memory, and
-share the same message storage layout.
-
-And we need to put thoughts into the shared infrastructure upfront
-because all of this can also be used on bare metal.
-
-The next thing you completely missed is to think about the ability to
-support managed interrupts which we have in PCI/MSIX today. Its just a
-matter of time that a IMS device comes along which want's it's subdevice
-interrupts managed properly when running on bare metal.
-
-Can we please just go back to proper engineering and figure out how to
-create something which is not just yet another half baken works for IDXD
-"solution"? 
-
-This means we need a proper decription of possible IMS usage scenarios
-and the foreseeable storage scenarios (arrays, queue data, ....). Along
-with requirement like managed interrupts etc. I'm sure quite some of
-this information is scattered over a wide range of mail threads, but
-it's not my job to hunt it down.
-
-Without consistent information at least to the point which is available
-today this is going to end up in a major tinkering trainwreck. I have
-zero interest in dealing with those especially if the major pain can be
-avoided by doing proper analysis and design upfront.
-
-Thanks,
-
-        tglx
+>+    working_dir = kbuild_out_dir
+>+
+>+    if os.path.isabs(file_path):
+>+        # This is the most common case when the kbuild output directory is
+>+        # outside the kernel source tree (e.g. cd src/linux;
+>+        # make O=/tmp/kernel-obj). In this case, the command is run in
+>+        # kbuild_out_dir, and file_path is an absolute path to the file being
+>+        # compiled.
+>+        if not os.path.exists(file_path):
+>+            raise ValueError('File %s does not exist' % file_path)
+>+    else:
+>+        # Otherwise, try to locate the file using its relative path.
+>+        #
+>+        # First, check for the file relative to kbuild_out_dir. This is the most
+>+        # common case when output directory is the same as the kernel source
+>+        # directory, or if the output directory is specified using a relative
+>+        # path (e.g. make, or make O=kernel-obj/)
+>+        expected_path = os.path.join(kbuild_out_dir, file_path)
+>+
+>         if not os.path.exists(expected_path):
+>-            raise ValueError('File %s not in %s or %s' %
+>-                             (relative_path, root_directory, file_directory))
+>+            # Try using file_dir instead. Some of the tools have a different
+>+            # style of .cmd file than the kernel. In this case, the command is
+>+            # run in a subdirectory of the kernel source tree. The subdirectory
+>+            # will match the directory the cmd file was found in (e.g.
+>+            # /tmp/kernel-obj/tools/objtool/.weak.o.cmd contains a command
+>+            # that's run in src/linux/tools/objtool/)
+>+
+>+            # Translate file_dir to a relative path, and use the relative path
+>+            # to locate where in the kernel source tree the command may have
+>+            # been executed.
+>+            relative_file_dir = os.path.relpath(file_dir, kbuild_out_dir)
+>+            working_dir = os.path.join(src_dir, relative_file_dir)
+>+            expected_path = os.path.join(working_dir, file_path)
+>+
+>+            if not os.path.exists(expected_path):
+>+                # At this point, failures are often from tools/objtool/
+>+                # and tools/lib/subcmd/
+>+                raise ValueError('File %s not in %s or %s' %
+>+                                 (file_path, kbuild_out_dir, file_dir))
+>     return {
+>-        'directory': cur_dir,
+>-        'file': relative_path,
+>-        'command': prefix + relative_path,
+>+        'directory': working_dir,
+>+        'file': file_path,
+>+        'command': prefix + file_path,
+>     }
+>
+>
+> def main():
+>     """Walks through the directory and finds and parses .cmd files."""
+>-    log_level, directory, output = parse_arguments()
+>+    log_level, src_dir, kbuild_out_dir, out_file = parse_arguments()
+>
+>     level = getattr(logging, log_level)
+>     logging.basicConfig(format='%(levelname)s: %(message)s', level=level)
+>@@ -118,7 +159,7 @@ def main():
+>     line_matcher = re.compile(_LINE_PATTERN)
+>
+>     compile_commands = []
+>-    for dirpath, _, filenames in os.walk(directory):
+>+    for dirpath, _, filenames in os.walk(kbuild_out_dir):
+>         for filename in filenames:
+>             if not filename_matcher.match(filename):
+>                 continue
+>@@ -131,14 +172,15 @@ def main():
+>                         continue
+>
+>                     try:
+>-                        entry = process_line(directory, dirpath,
+>-                                             result.group(1), result.group(2))
+>+                        entry = process_line(src_dir, kbuild_out_dir,
+>+                                             dirpath, result.group(1),
+>+                                             result.group(2))
+>                         compile_commands.append(entry)
+>                     except ValueError as err:
+>                         logging.info('Could not add line from %s: %s',
+>                                      filepath, err)
+>
+>-    with open(output, 'wt') as f:
+>+    with open(out_file, 'wt') as f:
+>         json.dump(compile_commands, f, indent=2, sort_keys=True)
+>
+>     count = len(compile_commands)
+>-- 
+>2.28.0.163.g6104cc2f0b6-goog
+>
