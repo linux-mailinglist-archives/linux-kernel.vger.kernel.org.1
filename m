@@ -2,140 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A794242022
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA7324202C
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbgHKTLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 15:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbgHKTLx (ORCPT
+        id S1726469AbgHKTSW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 Aug 2020 15:18:22 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:50036 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgHKTSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 15:11:53 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36051C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 12:11:53 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id j10so6513646qvo.13
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 12:11:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pLatoOn79pYJ/DuOSj6cLvAVzQZnxlbGJi91nLHmWxM=;
-        b=fbMx3780UeiwoaK7tuSdafEpSCzt2QSHEE1/+ByVUmkAE+hSHgf3oW7Kw9luwn/bGk
-         u6kcshS5/siw0+AdKcgPIXz05yzhKR/moxZm+Z53BlEZKybm6wcvZZNOb8yoDcyApwBo
-         XNuNqoGVhcajRdB5mIN1cspaFlnL2h2oBAjCV8LKG+CTr1z8rRWsdTo5Axty2xciXgdL
-         1rJKcrugyV9FCIxqVf9lrT+uHiWbkp32Y4S8zCNHg++NnG5yjflYqd+nOEpysOGYHfbD
-         Xkb7J8MdsmMB8Ccr8Mjm86xw4hmVRa7R7vej56eNeTjX123T6UDvr6lzyhrAhMx1SYdk
-         PFVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pLatoOn79pYJ/DuOSj6cLvAVzQZnxlbGJi91nLHmWxM=;
-        b=gEE2D5Wk9cB33oP/DDiszVoegH3W17JMmWmbY0RKi1nChJ3MRKOJVReI+sgn7ZS3W8
-         QlBbBkYnYPPvlJd1EVqTvDQWypop+v6/C/IwBqjSlh2fWX5DlfsnMcaBvHgYgCuEdZzS
-         QJO1SQODLYRkEnwDug7WADbDR9P1dGwdeT8G5idTmFNp7Kwi7ymM8cHUffmc/vOtEd1j
-         JoKb0neUErZn9T4BbnVsXQR9VaYXNwHGbo/1LaTcfSVdLR4/KQFift5KTLWkDfuBvSSq
-         GLz3EnuVPVk4v2+393ZIjWhf9tnGddI7MVIhiivzsyW0vGoPuEtqjXAPgCwkTBFbmK4j
-         lwlA==
-X-Gm-Message-State: AOAM530OyUaprxBxnrocO+ZalSM5SDDSEdRIUA2uiW8urRx2PeiCd3yM
-        TRiACZsCBZrVUEMhN6Bli6WCL0fYWLKCs/R+AXIepQ==
-X-Google-Smtp-Source: ABdhPJyXKG5auxbjO/56cTDqtGqYLvRX2FdO9CddQgB4MxuvJmkMvAuxZjB4zO/rAxMf67Lmgq2vQK60FVe0EGnmo8w=
-X-Received: by 2002:a0c:ff06:: with SMTP id w6mr2973554qvt.61.1597173112408;
- Tue, 11 Aug 2020 12:11:52 -0700 (PDT)
+        Tue, 11 Aug 2020 15:18:21 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k5Zmk-009h5q-P1; Tue, 11 Aug 2020 13:18:10 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k5Zmj-0008Qv-TU; Tue, 11 Aug 2020 13:18:10 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Philippe =?utf-8?Q?Tr=C3=A9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20200723171227.446711-1-mic@digikod.net>
+        <20200723171227.446711-2-mic@digikod.net>
+        <87eeodnh3v.fsf@x220.int.ebiederm.org>
+Date:   Tue, 11 Aug 2020 14:14:43 -0500
+In-Reply-To: <87eeodnh3v.fsf@x220.int.ebiederm.org> (Eric W. Biederman's
+        message of "Tue, 11 Aug 2020 13:59:48 -0500")
+Message-ID: <874kp9ngf0.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20200809132529.264312-1-warthog618@gmail.com> <20200809132529.264312-3-warthog618@gmail.com>
-In-Reply-To: <20200809132529.264312-3-warthog618@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 11 Aug 2020 21:11:41 +0200
-Message-ID: <CAMpxmJWe6Cjhwt3izuPLK-Xzvm=LqOy_nnZ7xg123+M_JgriLw@mail.gmail.com>
-Subject: Re: [PATCH v3 02/18] gpio: uapi: define uAPI v2
-To:     Kent Gibson <warthog618@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-XM-SPF: eid=1k5Zmj-0008Qv-TU;;;mid=<874kp9ngf0.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19nTKA3mnL/oyWdDp6PD6Bdr/fgnKMbcEc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,
+        T_TooManySym_01,T_TooManySym_02,T_TooManySym_03,XMSubLong,
+        XM_B_SpammyWords,XM_B_Unicode autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4916]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 TR_Symld_Words too many words that have symbols inside
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_03 6+ unique symbols in subject
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: =?ISO-8859-1?Q?**;Micka=c3=abl Sala=c3=bcn <mic@digikod.net>?=
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 466 ms - load_scoreonly_sql: 0.13 (0.0%),
+        signal_user_changed: 11 (2.4%), b_tie_ro: 9 (2.0%), parse: 1.53 (0.3%),
+         extract_message_metadata: 20 (4.4%), get_uri_detail_list: 1.41 (0.3%),
+         tests_pri_-1000: 20 (4.3%), tests_pri_-950: 1.31 (0.3%),
+        tests_pri_-900: 1.15 (0.2%), tests_pri_-90: 131 (28.0%), check_bayes:
+        120 (25.6%), b_tokenize: 12 (2.6%), b_tok_get_all: 10 (2.0%),
+        b_comp_prob: 2.6 (0.6%), b_tok_touch_all: 92 (19.6%), b_finish: 0.95
+        (0.2%), tests_pri_0: 259 (55.4%), check_dkim_signature: 0.65 (0.1%),
+        check_dkim_adsp: 3.7 (0.8%), poll_dns_idle: 0.42 (0.1%), tests_pri_10:
+        2.9 (0.6%), tests_pri_500: 14 (3.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v7 1/7] exec: Change uselib(2) IS_SREG() failure to EACCES
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 9, 2020 at 3:26 PM Kent Gibson <warthog618@gmail.com> wrote:
->
-> Add a new version of the uAPI to address existing 32/64-bit alignment
-> issues, add support for debounce and event sequence numbers, allow
-> requested lines with different configurations, and provide some future
-> proofing by adding padding reserved for future use.
->
-> The alignment issue relates to the gpioevent_data, which packs to different
-> sizes on 32-bit and 64-bit platforms. That creates problems for 32-bit apps
-> running on 64-bit kernels.  uAPI v2 addresses that particular issue, and
-> the problem more generally, by adding pad fields that explicitly pad
-> structs out to 64-bit boundaries, so they will pack to the same size now,
-> and even if some of the reserved padding is used for __u64 fields in the
-> future.
->
-> The new structs have been analysed with pahole to ensure that they
-> are sized as expected and contain no implicit padding.
->
-> The lack of future proofing in v1 makes it impossible to, for example,
-> add the debounce feature that is included in v2.
-> The future proofing is addressed by providing configurable attributes in
-> line config and reserved padding in all structs for future features.
-> Specifically, the line request, config, info, info_changed and event
-> structs receive updated versions and new ioctls.
->
-> As the majority of the structs and ioctls were being replaced, it is
-> opportune to rework some of the other aspects of the uAPI:
->
-> v1 has three different flags fields, each with their own separate
-> bit definitions.  In v2 that is collapsed to one - gpio_v2_line_flag.
->
-> The handle and event requests are merged into a single request, the line
-> request, as the two requests were mostly the same other than the edge
-> detection provided by event requests.  As a byproduct, the v2 uAPI allows
-> for multiple lines producing edge events on the same line handle.
-> This is a new capability as v1 only supports a single line in an event
-> request.
->
-> As a consequence, there are now only two types of file handle to be
-> concerned with, the chip and the line, and it is clearer which ioctls
-> apply to which type of handle.
->
-> There is also some minor renaming of fields for consistency compared to
-> their v1 counterparts, e.g. offset rather than lineoffset or line_offset,
-> and consumer rather than consumer_label.
->
-> Additionally, v1 GPIOHANDLES_MAX becomes GPIO_V2_LINES_MAX in v2 for
-> clarity, and the gpiohandle_data __u8 array becomes a bitmap in
-> gpio_v2_line_values.
->
-> The v2 uAPI is mostly a reorganisation and extension of v1, so userspace
-> code, particularly libgpiod, should readily port to it.
->
-> Signed-off-by: Kent Gibson <warthog618@gmail.com>
-> ---
+ebiederm@xmission.com (Eric W. Biederman) writes:
 
-This now looks good for me. Just a small nit below.
-
-Andy: would you mind taking a look as well?
-
+> Mickaël Salaün <mic@digikod.net> writes:
 >
-> +/*
-> + * Maximum number of requested lines.
-> + *
-> + * Must be no greater than 64 as bitmaps are limited to 64-bits, and a
-> + * multiple of 2 to ensure 32/64-bit alignment of structs.
-> + */
-> +#define GPIO_V2_LINES_MAX 64
-> +
+>> From: Kees Cook <keescook@chromium.org>
+>>
+>> Change uselib(2)' S_ISREG() error return to EACCES instead of EINVAL so
+>> the behavior matches execve(2), and the seemingly documented value.
+>> The "not a regular file" failure mode of execve(2) is explicitly
+>> documented[1], but it is not mentioned in uselib(2)[2] which does,
+>> however, say that open(2) and mmap(2) errors may apply. The documentation
+>> for open(2) does not include a "not a regular file" error[3], but mmap(2)
+>> does[4], and it is EACCES.
+>
+> Do you have enough visibility into uselib to be certain this will change
+> will not cause regressions?
+>
+> My sense of uselib is that it would be easier to remove the system call
+> entirely (I think it's last use was in libc5) than to validate that a
+> change like this won't cause problems for the users of uselib.
+>
+> For the kernel what is important are real world users and the manpages
+> are only important as far as they suggest what the real world users
+> do.
 
-If we refer to bitmaps for which helpers are defined in
-include/linux/bitmap.h then they're not limited to 64-bits. I'd just
-say here that we want to fit into 64-bit integers for simplicity.
+Hmm.
 
-[snip]
+My apologies. After reading the next patch I see that what really makes
+this safe is: 73601ea5b7b1 ("fs/open.c: allow opening only regular files
+during execve()").
 
-Bartosz
+As in practice this change has already been made and uselib simply
+can not reach the !S_ISREG test.
+
+It might make sense to drop this patch or include that reference
+in the next posting of this patch.
+
+Eric
