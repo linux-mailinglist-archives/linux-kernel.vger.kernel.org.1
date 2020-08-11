@@ -2,67 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C82241B2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 14:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D69241B36
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 14:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728614AbgHKMwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 08:52:36 -0400
-Received: from gentwo.org ([3.19.106.255]:35610 "EHLO gentwo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726829AbgHKMwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 08:52:35 -0400
-Received: by gentwo.org (Postfix, from userid 1002)
-        id 15CC43F447; Tue, 11 Aug 2020 12:52:35 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id 1310B3F043;
-        Tue, 11 Aug 2020 12:52:35 +0000 (UTC)
-Date:   Tue, 11 Aug 2020 12:52:35 +0000 (UTC)
-From:   Christopher Lameter <cl@linux.com>
-X-X-Sender: cl@www.lameter.com
-To:     Pekka Enberg <penberg@gmail.com>
-cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Xunlei Pang <xlpang@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wen Yang <wenyang@linux.alibaba.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Roman Gushchin <guro@fb.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH 1/2] mm/slub: Introduce two counters for the partial
- objects
-In-Reply-To: <CAOJsxLGqrCTgQhdOTTWKcCz0TsVfh_AxTCVWNGj6Mo4hyE5E2Q@mail.gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2008111250170.86069@www.lameter.com>
-References: <1593678728-128358-1-git-send-email-xlpang@linux.alibaba.com> <a53f9039-5cba-955b-009e-12e8c5ffb345@suse.cz> <CAOJsxLHX62P0yvHZcXdje41zm_2demzTraqvHXAvfhVPp2HKsA@mail.gmail.com> <alpine.DEB.2.22.394.2008071258020.55871@www.lameter.com>
- <CAOJsxLGqrCTgQhdOTTWKcCz0TsVfh_AxTCVWNGj6Mo4hyE5E2Q@mail.gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1728664AbgHKMy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 08:54:56 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:43536 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728081AbgHKMyv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 08:54:51 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U5U0lpc_1597150487;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U5U0lpc_1597150487)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 11 Aug 2020 20:54:48 +0800
+Subject: Re: [Resend PATCH 2/6] mm/memcg: remove useless check on
+ page->mem_cgroup
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1597144232-11370-2-git-send-email-alex.shi@linux.alibaba.com>
+ <20200811113008.GK4793@dhcp22.suse.cz>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <776b0e6f-4129-9fb9-0f66-47757cf320d5@linux.alibaba.com>
+Date:   Tue, 11 Aug 2020 20:54:18 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200811113008.GK4793@dhcp22.suse.cz>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 7 Aug 2020, Pekka Enberg wrote:
+From beeac61119ab39b1869c520c0f272fb8bab93765 Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Wed, 5 Aug 2020 21:02:30 +0800
+Subject: [PATCH 2/6] memcg: bail out early from swap accounting when memcg is
+ disabled
 
-> Why do you consider this to be a fast path? This is all partial list
-> accounting when we allocate/deallocate a slab, no? Just like
-> ___slab_alloc() says, I assumed this to be the slow path... What am I
-> missing?
+If we disabled memcg by cgroup_disable=memory, the swap charges are
+still called. Let's return from the funcs earlier.
 
-I thought these were per object counters? If you just want to count the
-number of slabs then you do not need the lock at all. We already have a
-counter for the number of slabs.
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Reviewed-by: Roman Gushchin <guro@fb.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/memcontrol.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-> No objections to alternative fixes, of course, but wrapping the
-> counters under CONFIG_DEBUG seems like just hiding the actual issue...
-
-CONFIG_DEBUG is on by default. It just compiles in the debug code and
-disables it so we can enable it with a kernel boot option. This is because
-we have had numerous issues in the past with "production" kernels that
-could not be recompiled with debug options. So just running the prod
-kernel with another option will allow you to find hard to debug issues in
-a full scale producton deployment with potentially proprietary modules
-etc.
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 299382fc55a9..419cf565f40b 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7098,6 +7098,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+ 	VM_BUG_ON_PAGE(PageLRU(page), page);
+ 	VM_BUG_ON_PAGE(page_count(page), page);
+ 
++	if (mem_cgroup_disabled())
++		return;
++
+ 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+ 		return;
+ 
+@@ -7163,6 +7166,9 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
+ 	struct mem_cgroup *memcg;
+ 	unsigned short oldid;
+ 
++	if (mem_cgroup_disabled())
++		return 0;
++
+ 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+ 		return 0;
+ 
+-- 
+1.8.3.1
 
