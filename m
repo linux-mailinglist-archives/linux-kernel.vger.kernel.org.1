@@ -2,143 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A11241D4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B660B241D5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728962AbgHKPjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 11:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728883AbgHKPj3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 11:39:29 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA87C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 08:39:28 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id r4so6998172pls.2
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 08:39:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=k5Vv6xhQn88lB15k7GWg1mV+u5XAmiBOD5QRLYqo0NY=;
-        b=nHEtCEzA+K3xCyhNyTZMcv8HcHHns+1Hk8pycDEXFieqNICHleSe+O63Dg8nrD0ywV
-         o9FxDHPVmLM0E84TppnHf8iG7S6jFvmUO80JLVLQouLtTWeM771ruHtVW5aDq9qPlFD/
-         nPvs2QyLb4JcANu1Lw9v6YsDaxc4gzzjaYoAo+A4op1aaTwKJdGjDEBtT2htvCkHP/QB
-         M2r/LMeVxfL75GbnkDd0Rr7a/6JSOT1h/M4gxH2FCh1IUGFdbam1qcqLH8k5yRdjSkoQ
-         WGIhvHaJscZeR6w7h6ionNs/EknZAEI60DlrcQnPgdDW7ZSAV7EvgtRxy0pWXvYZnNYr
-         I/wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=k5Vv6xhQn88lB15k7GWg1mV+u5XAmiBOD5QRLYqo0NY=;
-        b=I1wubIo/pR/wo181VFR+UwXIVuhKXPmPb8OKNhdrSCkCqkOFuGnmfKUqIGzBA7ev8V
-         Cf0/rlR+rLBagxLkLrss0gN+d4IxhK4RZa4J3d8k60803wh8G07VzAP3ZWJhn3iruGK2
-         Q795LRjdIV0nul0Ej214a+8oRXQuPeJS8IpxpaOJ4+lJikIUoOYK2YB2JjufwuImLKva
-         y6k6oRq9zegtiIbQKRZ/O3ABdoO4Z8+hGSbdrOSOvdrazxYffUW8yk+0TQmVrWhgaaHs
-         UnO73oDRZ4NW0euntdsuvrqIikKe/IzeG6uFb7oSTuaD+7+/m34ezZFFvrCytvy+F/2k
-         rtdw==
-X-Gm-Message-State: AOAM530GMnhHaHtPA7cnBM/5G2XyUbMAzv2diEDi+S+/K4YTmc/KmM8w
-        StAAFKzBWbEiI+sowpqC6eZ9Kw==
-X-Google-Smtp-Source: ABdhPJy0yB+Dw1/CiiHffwfE44OfK3nBhmxE+9kmrh4+Xqbf7oNah664PCqIvEwN6uoP1FczdMwiuQ==
-X-Received: by 2002:a17:902:8693:: with SMTP id g19mr1455443plo.66.1597160368219;
-        Tue, 11 Aug 2020 08:39:28 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:6127:e67c:651c:a994? ([2601:646:c200:1ef2:6127:e67c:651c:a994])
-        by smtp.gmail.com with ESMTPSA id 193sm25644247pfu.169.2020.08.11.08.39.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Aug 2020 08:39:27 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: file metadata via fs API (was: [GIT PULL] Filesystem Information)
-Date:   Tue, 11 Aug 2020 08:39:26 -0700
-Message-Id: <5C8E0FA8-274E-4B56-9B5A-88E768D01F3A@amacapital.net>
-References: <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Karel Zak <kzak@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Christian Brauner <christian@brauner.io>,
-        Lennart Poettering <lennart@poettering.net>,
-        Linux API <linux-api@vger.kernel.org>,
-        Ian Kent <raven@themaw.net>,
-        LSM <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-In-Reply-To: <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-X-Mailer: iPhone Mail (17G68)
+        id S1729067AbgHKPmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 11:42:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47226 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728898AbgHKPmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 11:42:04 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48F9320855;
+        Tue, 11 Aug 2020 15:42:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597160523;
+        bh=tPoZHhl37+KDzQsLP1jIkEQXto6BBR1hNjMIGeZz4Dw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sxHyP2EWyPs69/fjastnXyT3M2NxezbheCRHhGv0p5q1UW/5sU9Uoxn4JCbKySUBj
+         htoOMN3NKL8O4uuOPy3tswJuaSIkhy7wET8urNWHJ8huHLT48fHPmCfVZFMvAtE+4m
+         NBseGIdLi/XX9T06UZUsPK5gsst0mM4r5il+qUAg=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1k5WPZ-004bmG-5G; Tue, 11 Aug 2020 17:42:01 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-arm-msm@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>, Stephen Boyd <sboyd@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        Mayulong <mayulong1@huawei.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/33] Add driver for HiSilicon SPMI PMIC for Hikey 970
+Date:   Tue, 11 Aug 2020 17:41:26 +0200
+Message-Id: <cover.1597160086.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Hikey 970 board uses a different PMIC than the one found on Hikey 960.
+
+This PMIC uses a SPMI board.
+
+This patch series backport the OOT drivers from the Linaro's official
+tree for this board:
+
+	https://github.com/96boards-hikey/linux/tree/hikey970-v4.9
+	
+Porting them to upstream, cleaning up coding style issues, solving
+driver probing order and adding DT documentation.
+
+I opted to not fold all patches into a single one, in order to:
+
+- Preserve the authorship of the original authors;
+- Keep a history of changes.
+
+As this could be harder for people to review, I'll be replying to patch 00/32
+with all patches folded. This should help reviewers to see the current
+code after the entire series is applied.
+
+Mauro Carvalho Chehab (32):
+  spmi: get rid of a warning when built with W=1
+  spmi: hisi-spmi-controller: coding style fixup
+  mfd, regulator: get rid of unused code at HiSilicon SPMI PMIC
+  regulator: hisi_regulator_spmi: port it to upstream
+  mfd: hisi_pmic_spmi: deal with non-static functions
+  mfd: hisi_pmic_spmi: get rid of the static vars
+  spmi: hisi-spmi-controller: fix it to probe successfully
+  spmi: hisi-spmi-controller: fix a typo
+  spmi: hisi-spmi-controller: adjust whitespaces at defines
+  spmi: hisi-spmi-controller: use le32 macros where needed
+  spmi: hisi-spmi-controller: add debug when values are read/write
+  mfd, regulator: coding style fixups at the HiSilicon SPMI PMIC code
+  spmi: add hisi-spmi-controller to the building system
+  mfd: Kconfig: fix a typo
+  spmi: hisi-spmi-controller: fix the dev_foo() logic
+  mfd: pmic: add drivers for hi6421v600
+  mfd: hi6421-spmi-pmic: get rid of unused OF properties
+  spmi: hi6421-spmi-pmic: cleanup OF properties
+  regulator: hi6421v600-regulator: cleanup struct hisi_regulator
+  regulator: hi6421v600-regulator: cleanup debug messages
+  regulator: hi6421v600-regulator: use shorter names for OF properties
+  regulator: hi6421v600-regulator: better handle modes
+  regulator, mfd: change namespace for HiSilicon SPMI PMIC drivers
+  regulator: hi6421v600-regulator:  convert to use get/set voltage_sel
+  regulator: hi6421v600-regulator: don't use usleep_range for
+    off_on_delay
+  regulator: hi6421v600-regulator: add a driver-specific debug macro
+  regulator: hi6421v600-regulator: initialize ramp_delay
+  regulator: hi6421v600-regulator: cleanup DT settings
+  mfd, spmi, regulator: fix some coding style issues at HiSilicon SPMI
+    PMIC
+  dt: document HiSilicon SPMI controller and mfd/regulator properties
+  dt: hisilicon: add support for the PMIC found on Hikey 970
+  MAINTAINERS: add an entry for HiSilicon 6421v600 drivers
+
+Mayulong (1):
+  spmi, regulator, mfd: add drivers for hikey970 SPMI PMIC
+
+ .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 175 +++++++
+ .../spmi/hisilicon,hisi-spmi-controller.yaml  |  54 ++
+ MAINTAINERS                                   |   8 +
+ .../boot/dts/hisilicon/hi3670-hikey970.dts    |  16 +-
+ .../boot/dts/hisilicon/hikey970-pmic.dtsi     | 200 +++++++
+ drivers/mfd/Kconfig                           |  17 +-
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/hi6421-spmi-pmic.c                | 399 ++++++++++++++
+ drivers/regulator/Kconfig                     |   8 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/hi6421v600-regulator.c      | 493 ++++++++++++++++++
+ drivers/spmi/Kconfig                          |   9 +
+ drivers/spmi/Makefile                         |   2 +
+ drivers/spmi/hisi-spmi-controller.c           | 384 ++++++++++++++
+ drivers/spmi/spmi.c                           |  10 +-
+ include/linux/mfd/hi6421-spmi-pmic.h          |  67 +++
+ 16 files changed, 1826 insertions(+), 18 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+ create mode 100644 Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
+ create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+ create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
+ create mode 100644 drivers/regulator/hi6421v600-regulator.c
+ create mode 100644 drivers/spmi/hisi-spmi-controller.c
+ create mode 100644 include/linux/mfd/hi6421-spmi-pmic.h
+
+-- 
+2.26.2
 
 
-> On Aug 11, 2020, at 8:20 AM, Linus Torvalds <torvalds@linux-foundation.org=
-> wrote:
->=20
-> =EF=BB=BF[ I missed the beginning of this discussion, so maybe this was al=
-ready
-> suggested ]
->=20
->> On Tue, Aug 11, 2020 at 6:54 AM Miklos Szeredi <miklos@szeredi.hu> wrote:=
-
->>=20
->>>=20
->>> E.g.
->>>  openat(AT_FDCWD, "foo/bar//mnt/info", O_RDONLY | O_ALT);
->>=20
->> Proof of concept patch and test program below.
->=20
-> I don't think this works for the reasons Al says, but a slight
-> modification might.
->=20
-> IOW, if you do something more along the lines of
->=20
->       fd =3D open(""foo/bar", O_PATH);
->       metadatafd =3D openat(fd, "metadataname", O_ALT);
->=20
-> it might be workable.
->=20
-> So you couldn't do it with _one_ pathname, because that is always
-> fundamentally going to hit pathname lookup rules.
->=20
-> But if you start a new path lookup with new rules, that's fine.
->=20
-> This is what I think xattrs should always have done, because they are
-> broken garbage.
->=20
-> In fact, if we do it right, I think we could have "getxattr()" be 100%
-> equivalent to (modulo all the error handling that this doesn't do, of
-> course):
->=20
->  ssize_t getxattr(const char *path, const char *name,
->                        void *value, size_t size)
->  {
->     int fd, attrfd;
->=20
->     fd =3D open(path, O_PATH);
->     attrfd =3D openat(fd, name, O_ALT);
->     close(fd);
->     read(attrfd, value, size);
->     close(attrfd);
->  }
->=20
-> and you'd still use getxattr() and friends as a shorthand (and for
-> POSIX compatibility), but internally in the kernel we'd have a
-> interface around that "xattrs are just file handles" model.
->=20
->=20
-
-This is a lot like a less nutty version of NTFS streams, whereas the /// ide=
-a is kind of like an extra-nutty version of NTFS streams.
-
-I am personally not a fan of the in-band signaling implications of overloadi=
-ng /.  For example, there is plenty of code out there that thinks that (a + =E2=
-=80=9C/=E2=80=9C + b) concatenates paths. With /// overloaded, this stops be=
-ing true.=
