@@ -2,137 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3669241585
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 06:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D002415BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 06:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbgHKESi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 00:18:38 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:34500 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725837AbgHKESh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 00:18:37 -0400
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT98RHDJfjTcHAA--.3497S2;
-        Tue, 11 Aug 2020 12:18:26 +0800 (CST)
-From:   Youling Tang <tangyouling@loongson.cn>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] tools/objtool: Fix unnecessary jumps
-Date:   Tue, 11 Aug 2020 12:18:25 +0800
-Message-Id: <1597119505-8038-1-git-send-email-tangyouling@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxT98RHDJfjTcHAA--.3497S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFWxJF4rWF47ZrWfAF1fZwb_yoW8WrWxpF
-        sIk34UGryYqFWrG3y8JwsxGF9FkrZ3WrWxWrW7Ca4xZr4Yvws8tw1ayFnIyFWfG3yfGr4U
-        XF45GFZxCFnF9aDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyvb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCF
-        x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
-        v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
-        67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
-        IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-        wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0U8n5UUUUU==
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+        id S1726329AbgHKEaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 00:30:04 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:58008 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725837AbgHKEaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 00:30:03 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5C962201DA2;
+        Tue, 11 Aug 2020 06:30:02 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 44236201D9C;
+        Tue, 11 Aug 2020 06:29:58 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id DA64440243;
+        Tue, 11 Aug 2020 06:29:52 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH 1/2] irqchip/imx-intmux: Use dev_err_probe() to simplify error handling
+Date:   Tue, 11 Aug 2020 12:25:04 +0800
+Message-Id: <1597119905-7341-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to jump to the "out" tag when "ret < 0", just return
-directly to "ret".
+dev_err_probe() can reduce code size, uniform error handling and record the
+defer probe reason etc., use it to simplify the code.
 
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- tools/objtool/check.c | 30 ++++++++++--------------------
- 1 file changed, 10 insertions(+), 20 deletions(-)
+ drivers/irqchip/irq-imx-intmux.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e034a8f..b9bfcb5 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -2799,19 +2799,19 @@ int check(const char *_objname, bool orc)
- 
- 	ret = decode_sections(&file);
- 	if (ret < 0)
--		goto out;
-+		return ret;
- 	warnings += ret;
- 
- 	if (list_empty(&file.insn_list))
--		goto out;
-+		return ret;
- 
- 	if (vmlinux && !validate_dup) {
- 		ret = validate_vmlinux_functions(&file);
- 		if (ret < 0)
--			goto out;
-+			return ret;
- 
- 		warnings += ret;
--		goto out;
-+		return 0;
+diff --git a/drivers/irqchip/irq-imx-intmux.c b/drivers/irqchip/irq-imx-intmux.c
+index e35b7b0..2f51ec9 100644
+--- a/drivers/irqchip/irq-imx-intmux.c
++++ b/drivers/irqchip/irq-imx-intmux.c
+@@ -226,12 +226,10 @@ static int imx_intmux_probe(struct platform_device *pdev)
  	}
  
- 	if (retpoline) {
-@@ -2823,45 +2823,35 @@ int check(const char *_objname, bool orc)
- 
- 	ret = validate_functions(&file);
- 	if (ret < 0)
--		goto out;
-+		return ret;
- 	warnings += ret;
- 
- 	ret = validate_unwind_hints(&file, NULL);
- 	if (ret < 0)
--		goto out;
-+		return ret;
- 	warnings += ret;
- 
- 	if (!warnings) {
- 		ret = validate_reachable_instructions(&file);
- 		if (ret < 0)
--			goto out;
-+			return ret;
- 		warnings += ret;
- 	}
- 
- 	if (orc) {
- 		ret = create_orc(&file);
- 		if (ret < 0)
--			goto out;
-+			return ret;
- 
- 		ret = create_orc_sections(&file);
- 		if (ret < 0)
--			goto out;
-+			return ret;
- 	}
- 
- 	if (file.elf->changed) {
- 		ret = elf_write(file.elf);
- 		if (ret < 0)
--			goto out;
--	}
--
--out:
--	if (ret < 0) {
--		/*
--		 *  Fatal error.  The binary is corrupt or otherwise broken in
--		 *  some way, or objtool itself is broken.  Fail the kernel
--		 *  build.
--		 */
+ 	data->ipg_clk = devm_clk_get(&pdev->dev, "ipg");
+-	if (IS_ERR(data->ipg_clk)) {
+-		ret = PTR_ERR(data->ipg_clk);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "failed to get ipg clk: %d\n", ret);
 -		return ret;
-+			return ret;
- 	}
+-	}
++	if (IS_ERR(data->ipg_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(data->ipg_clk),
++				     "failed to get ipg clk: %ld\n",
++				     PTR_ERR(data->ipg_clk));
  
- 	return 0;
+ 	data->channum = channum;
+ 	raw_spin_lock_init(&data->lock);
 -- 
-2.1.0
+2.7.4
 
