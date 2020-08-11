@@ -2,128 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73328241520
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 05:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F888241526
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 05:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727964AbgHKDDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 Aug 2020 23:03:35 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54884 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727078AbgHKDDe (ORCPT
+        id S1728142AbgHKDEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 Aug 2020 23:04:40 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:62167 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727064AbgHKDEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 Aug 2020 23:03:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597115013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SI8Js2mxCoXbXtkZ8wg9i6tg2cNBsDPngHO6YSr8VhI=;
-        b=ffLtItTM4Jc0J0EcgfCck3F7zEqH2yn/uz82lj3bO585praH/mFEu8iyEfzVtpnAxgionJ
-        0Ibz2y7lpPC6TsST1+uJx7x3OurTE+eYAX7s2VOPG2wnE2UWcUZhj7vNDMdC0ATOjHX6WN
-        smdYtvFC83m3ut01mSBpdR2FDZbIOA8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-297-CxXmk7yAOLSi9HDjpL7OWw-1; Mon, 10 Aug 2020 23:03:19 -0400
-X-MC-Unique: CxXmk7yAOLSi9HDjpL7OWw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 10 Aug 2020 23:04:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597115079; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=72kmcwcMRmFwy2125JyAEHHi3lGljGJFChkfWzOuzJs=; b=TG4lRW1nD5N8bnmmqJLzXeLlLoKllMB7KOx8S5gTH5qWhkB4FOkyCF58W5gSWqdndm9i4JKy
+ ZHb5RGx5WoLFQUga15Cdw56aMzYFF9k611QqlzooG/RJvHXuc5Kk2R0trO3wsVih50XfM456
+ M40X8UmZQIDQwycqEWVLFwsShq4=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n13.prod.us-west-2.postgun.com with SMTP id
+ 5f320abb668ab3fef6271f34 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 11 Aug 2020 03:04:27
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 17AF0C43391; Tue, 11 Aug 2020 03:04:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 632F810059A9;
-        Tue, 11 Aug 2020 03:03:18 +0000 (UTC)
-Received: from [10.72.13.186] (ovpn-13-186.pek2.redhat.com [10.72.13.186])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BC42C7B92F;
-        Tue, 11 Aug 2020 03:03:13 +0000 (UTC)
-Subject: Re: drivers/vhost/net.c:1010 vhost_net_rx_peek_head_len() error:
- double unlocked 'sk->sk_receive_queue.lock' (orig line 1002)
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-References: <202008081502.F9nEsAf6%lkp@intel.com>
- <20200810083313-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <5b711270-1307-9c57-548c-59404984ce66@redhat.com>
-Date:   Tue, 11 Aug 2020 11:03:12 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        (Authenticated sender: tingwei)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 79DE7C433C9;
+        Tue, 11 Aug 2020 03:04:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 79DE7C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tingweiz@codeaurora.org
+Date:   Tue, 11 Aug 2020 11:04:18 +0800
+From:   Tingwei Zhang <tingweiz@codeaurora.org>
+To:     Tingwei Zhang <tingwei@codeaurora.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/6] tracing: export event trace and trace_marker
+Message-ID: <20200811030418.GA1893@codeaurora.org>
+References: <20200728013359.2326-1-tingwei@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20200810083313-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200728013359.2326-1-tingwei@codeaurora.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Steven,
+On Tue, Jul 28, 2020 at 09:33:53AM +0800, Tingwei Zhang wrote:
+> Ftrace has ability to export trace packets to other destination.
+> Currently, only function trace can be exported. This series extends the
+> support to event trace and trace_maker. STM is one possible destination to
+> export ftrace. Use separate channel for each CPU to avoid mixing up
+> packets
+> from different CPUs together.
+> 
+> Change from v2:
+> Change flag definition to BIT(). (Steven)
+> Add comment in stm_ftrace_write() to clarify it's safe to use 
+> smp_processor_id() here since preempt is disabled. (Steven) 
 
-On 2020/8/10 下午8:33, Michael S. Tsirkin wrote:
-> On Sat, Aug 08, 2020 at 03:37:07PM +0800, kernel test robot wrote:
->> Hi Jason,
->>
->> First bad commit (maybe != root cause):
->>
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   449dc8c97089a6e09fb2dac4d92b1b7ac0eb7c1e
->> commit: 20c384f1ea1a0bc7320bc445c72dd02d2970d594 vhost: refine vhost and vringh kconfig
->> date:   4 months ago
->> config: arm-randconfig-m031-20200808 (attached as .config)
->> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> New smatch warnings:
->> drivers/vhost/net.c:1010 vhost_net_rx_peek_head_len() error: double unlocked 'sk->sk_receive_queue.lock' (orig line 1002)
->> drivers/vhost/net.c:1010 vhost_net_rx_peek_head_len() error: double unlocked 'sk->sk_receive_queue.lock' (orig line 1002)
-> Weird. Can't figure out where the double unlock is ...
+Thanks for your comments, Steven.  I've addressed all your comments in v3.
+Do you have more comments on v3? Is there anything I need to do to merge
+this series to Linux Kernel?
 
-
-Yes, looks like a false positive.
-
-Thanks
-
-
->
->
->> Old smatch warnings:
->> drivers/vhost/net.c:1528 vhost_net_set_backend() warn: passing a valid pointer to 'PTR_ERR'
-> this stumped me too...
->
->> vim +1010 drivers/vhost/net.c
->>
->> 8dd014adfea6f17 David Stevens   2010-07-27   994
->> be294a51adfc1e1 Toshiaki Makita 2018-07-03   995  static int vhost_net_rx_peek_head_len(struct vhost_net *net, struct sock *sk,
->> be294a51adfc1e1 Toshiaki Makita 2018-07-03   996  				      bool *busyloop_intr)
->> 030881372460654 Jason Wang      2016-03-04   997  {
->> 28b9b33b983f4de Toshiaki Makita 2018-07-03   998  	struct vhost_net_virtqueue *rnvq = &net->vqs[VHOST_NET_VQ_RX];
->> 28b9b33b983f4de Toshiaki Makita 2018-07-03   999  	struct vhost_net_virtqueue *tnvq = &net->vqs[VHOST_NET_VQ_TX];
->> 6369fec5be0aad4 Toshiaki Makita 2018-07-03  1000  	struct vhost_virtqueue *rvq = &rnvq->vq;
->> 28b9b33b983f4de Toshiaki Makita 2018-07-03  1001  	struct vhost_virtqueue *tvq = &tnvq->vq;
->> 28b9b33b983f4de Toshiaki Makita 2018-07-03 @1002  	int len = peek_head_len(rnvq, sk);
->> 030881372460654 Jason Wang      2016-03-04  1003
->> dc151282bbdaed0 Tonghao Zhang   2018-09-25  1004  	if (!len && rvq->busyloop_timeout) {
->> f5a4941aa6d190e Jason Wang      2018-05-29  1005  		/* Flush batched heads first */
->> 09c3248938c3e3b Jason Wang      2018-07-20  1006  		vhost_net_signal_used(rnvq);
->> 030881372460654 Jason Wang      2016-03-04  1007  		/* Both tx vq and rx socket were polled here */
->> dc151282bbdaed0 Tonghao Zhang   2018-09-25  1008  		vhost_net_busy_poll(net, rvq, tvq, busyloop_intr, true);
->> 030881372460654 Jason Wang      2016-03-04  1009
->> 28b9b33b983f4de Toshiaki Makita 2018-07-03 @1010  		len = peek_head_len(rnvq, sk);
->> 030881372460654 Jason Wang      2016-03-04  1011  	}
->> 030881372460654 Jason Wang      2016-03-04  1012
->> 030881372460654 Jason Wang      2016-03-04  1013  	return len;
->> 030881372460654 Jason Wang      2016-03-04  1014  }
->> 030881372460654 Jason Wang      2016-03-04  1015
->>
->> :::::: The code at line 1010 was first introduced by commit
->> :::::: 28b9b33b983f4de3ce9e660e3efe1e08adabf779 vhost_net: Rename local variables in vhost_net_rx_peek_head_len
->>
->> :::::: TO: Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
->> :::::: CC: David S. Miller <davem@davemloft.net>
->>
->> ---
->> 0-DAY CI Kernel Test Service, Intel Corporation
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->
-
+> 
+> Change from v1:
+> All changes are suggested by Steven Rostedt.
+> User separate flag to control function trace, event trace and trace mark.
+> Allocate channels according to num_possible_cpu() dynamically.
+> Move ftrace_exports routines up so all ftrace can use them.
+> 
+> Tingwei Zhang (6):
+>   stm class: ftrace: change dependency to TRACING
+>   tracing: add flag to control different traces
+>   tracing: add trace_export support for event trace
+>   tracing: add trace_export support for trace_marker
+>   stm class: ftrace: enable supported trace export flag
+>   stm class: ftrace: use different channel accroding to CPU
+> 
+>  drivers/hwtracing/stm/Kconfig  |   2 +-
+>  drivers/hwtracing/stm/ftrace.c |   7 +-
+>  include/linux/trace.h          |   7 +
+>  kernel/trace/trace.c           | 270 ++++++++++++++++++---------------
+>  4 files changed, 159 insertions(+), 127 deletions(-)
+> 
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
