@@ -2,131 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327BA24208F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3E9242096
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgHKTuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 15:50:18 -0400
-Received: from mail.efficios.com ([167.114.26.124]:58242 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbgHKTuO (ORCPT
+        id S1726641AbgHKTug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 15:50:36 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54056 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726173AbgHKTue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 15:50:14 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B6C042CFB27;
-        Tue, 11 Aug 2020 15:50:13 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 1GnV_Lvrq8dV; Tue, 11 Aug 2020 15:50:13 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 7867C2CFA35;
-        Tue, 11 Aug 2020 15:50:13 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 7867C2CFA35
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1597175413;
-        bh=hirGB7719ENx0a4MEmZZHjARmO79aShnRe+cHp8/M/w=;
-        h=From:To:Date:Message-Id;
-        b=Sx0JsDe1+j8ij9qqcdv+jlM6j8P30aT4ypK9yRwRD2F5/Y6ZCSWQ0CtQ/6KQONjX6
-         Q7m7YQ5exvOD4DgZDkrz6Eh1aXeUrm/W5WbE8iTnxfAUh1h6gpGD7WpG8CsKkOwxn3
-         q4wqLNKBtWo5ge5ZYA1AB01IMGrJYLWEx4uUcDTquxJymo6R5/nG82fO7DLb6le0PC
-         ISSfTaosfyii+w9hQrRzTqbCmJB9qGnmycMjDD3b2MSFdF6++eWa3mdm9ln7nfRz6P
-         eWd38XCc2aRiBYnI7nr+2egpWN4YOUmiuDEHODUvPN9a11zz0TxpYKO6f1wC5bvNFv
-         qf28K1x3uFVNA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id SCAqtuGKfgP0; Tue, 11 Aug 2020 15:50:13 -0400 (EDT)
-Received: from localhost.localdomain (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
-        by mail.efficios.com (Postfix) with ESMTPSA id 28BA32CFB26;
-        Tue, 11 Aug 2020 15:50:13 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     David Ahern <dsahern@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Subject: [PATCH 3/3] ipv6/icmp: l3mdev: Perform icmp error route lookup on source device routing table
-Date:   Tue, 11 Aug 2020 15:50:03 -0400
-Message-Id: <20200811195003.1812-4-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200811195003.1812-1-mathieu.desnoyers@efficios.com>
-References: <20200811195003.1812-1-mathieu.desnoyers@efficios.com>
+        Tue, 11 Aug 2020 15:50:34 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1k5aI2-0002GB-Ig; Tue, 11 Aug 2020 19:50:30 +0000
+Date:   Tue, 11 Aug 2020 21:50:29 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Lennart Poettering <mzxreary@0pointer.de>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Karel Zak <kzak@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: file metadata via fs API (was: [GIT PULL] Filesystem Information)
+Message-ID: <20200811195029.cnowfkikr2xajhgo@wittgenstein>
+References: <CAJfpegunY3fuxh486x9ysKtXbhTE0745ZCVHcaqs9Gww9RV2CQ@mail.gmail.com>
+ <ac1f5e3406abc0af4cd08d818fe920a202a67586.camel@themaw.net>
+ <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com>
+ <CAJfpegtNP8rQSS4Z14Ja4x-TOnejdhDRTsmmDD-Cccy2pkfVVw@mail.gmail.com>
+ <20200811135419.GA1263716@miu.piliscsaba.redhat.com>
+ <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
+ <CAJfpegtWai+5Tzxi1_G+R2wEZz0q66uaOFndNE0YEQSDjq0f_A@mail.gmail.com>
+ <CAHk-=wg_bfVf5eazwH2uXTG-auCYZUpq-xb1kDeNjY7yaXS7bw@mail.gmail.com>
+ <CAJfpeguo5nAWcmduX4frknQGiRJeaj9Rdj018xUBrwqOJhVufw@mail.gmail.com>
+ <20200811193105.GA228302@gardel-login>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200811193105.GA228302@gardel-login>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per RFC4443, the destination address field for ICMPv6 error messages
-is copied from the source address field of the invoking packet.
+On Tue, Aug 11, 2020 at 09:31:05PM +0200, Lennart Poettering wrote:
+> On Di, 11.08.20 20:49, Miklos Szeredi (miklos@szeredi.hu) wrote:
+> 
+> > On Tue, Aug 11, 2020 at 6:05 PM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> >
+> > > and then people do "$(srctree)/". If you haven't seen that kind of
+> > > pattern where the pathname has two (or sometimes more!) slashes in the
+> > > middle, you've led a very sheltered life.
+> >
+> > Oh, I have.   That's why I opted for triple slashes, since that should
+> > work most of the time even in those concatenated cases.  And yes, I
+> > know, most is not always, and this might just be hiding bugs, etc...
+> > I think the pragmatic approach would be to try this and see how many
+> > triple slash hits a normal workload gets and if it's reasonably low,
+> > then hopefully that together with warnings for O_ALT would be enough.
+> 
+> There's no point. Userspace relies on the current meaning of triple
+> slashes. It really does.
+> 
+> I know many places in systemd where we might end up with a triple
+> slash. Here's a real-life example: some code wants to access the
+> cgroup attribute 'cgroup.controllers' of the root cgroup. It thus
+> generates the right path in the fs for it, which is the concatenation of
+> "/sys/fs/cgroup/" (because that's where cgroupfs is mounted), of "/"
+> (i.e. for the root cgroup) and of "/cgroup.controllers" (as that's the
+> file the attribute is exposed under).
+> 
+> And there you go:
+> 
+>    "/sys/fs/cgroup/" + "/" + "/cgroup.controllers" → "/sys/fs/cgroup///cgroup.controllers"
+> 
+> This is a real-life thing. Don't break this please.
 
-In configurations with Virtual Routing and Forwarding tables, looking up
-which routing table to use for sending ICMPv6 error messages is
-currently done by using the destination net_device.
+Taken from a log from a container:
 
-If the source and destination interfaces are within separate VRFs, or
-one in the global routing table and the other in a VRF, looking up the
-source address of the invoking packet in the destination interface's
-routing table will fail if the destination interface's routing table
-contains no route to the invoking packet's source address.
+lxc f4 20200810105815.742 TRACE    cgfsng - cgroups/cgfsng.c:cg_legacy_handle_cpuset_hierarchy:552 - "cgroup.clone_children" was already set to "1"
+lxc f4 20200810105815.742 WARN     cgfsng - cgroups/cgfsng.c:mkdir_eexist_on_last:1152 - File exists - Failed to create directory "/sys/fs/cgroup/cpuset///lxc.monitor.f4"
+lxc f4 20200810105815.743 INFO     cgfsng - cgroups/cgfsng.c:cgfsng_monitor_create:1366 - The monitor process uses "lxc.monitor.f4" as cgroup
+lxc f4 20200810105815.743 DEBUG    storage - storage/storage.c:get_storage_by_name:211 - Detected rootfs type "dir"
+lxc f4 20200810105815.743 TRACE    cgfsng - cgroups/cgfsng.c:cg_legacy_handle_cpuset_hierarchy:552 - "cgroup.clone_children" was already set to "1"
+lxc f4 20200810105815.743 WARN     cgfsng - cgroups/cgfsng.c:mkdir_eexist_on_last:1152 - File exists - Failed to create directory "/sys/fs/cgroup/cpuset///lxc.payload.f4"
+lxc f4 20200810105815.743 INFO     cgfsng - cgroups/cgfsng.c:cgfsng_payload_create:1469 - The container process uses "lxc.payload.f4" as cgroup
+lxc f4 20200810105815.744 TRACE    start - start.c:lxc_spawn:1731 - Spawned container directly into target cgroup via cgroup2 fd 17 
 
-One observable effect of this issue is that traceroute6 does not work in
-the following cases:
-
-- Route leaking between global routing table and VRF
-- Route leaking between VRFs
-
-Preferably use the source device routing table when sending ICMPv6 error
-messages. If no source device is set, fall-back on the destination
-device routing table.
-
-Link: https://tools.ietf.org/html/rfc4443
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: David Ahern <dsahern@kernel.org>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org
----
- net/ipv6/icmp.c       | 15 +++++++++++++--
- net/ipv6/ip6_output.c |  2 --
- 2 files changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/net/ipv6/icmp.c b/net/ipv6/icmp.c
-index a4e4912ad607..a971b58b0371 100644
---- a/net/ipv6/icmp.c
-+++ b/net/ipv6/icmp.c
-@@ -501,8 +501,19 @@ void icmp6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info,
- 	if (__ipv6_addr_needs_scope_id(addr_type)) {
- 		iif = icmp6_iif(skb);
- 	} else {
--		dst = skb_dst(skb);
--		iif = l3mdev_master_ifindex(dst ? dst->dev : skb->dev);
-+		struct net_device *route_lookup_dev = NULL;
-+
-+		/*
-+		 * The device used for looking up which routing table to use is
-+		 * preferably the source whenever it is set, which should
-+		 * ensure the icmp error can be sent to the source host, else
-+		 * fallback on the destination device.
-+		 */
-+		if (skb->dev)
-+			route_lookup_dev = skb->dev;
-+		else if (skb_dst(skb))
-+			route_lookup_dev = skb_dst(skb)->dev;
-+		iif = l3mdev_master_ifindex(route_lookup_dev);
- 	}
- 
- 	/*
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index c78e67d7747f..cd623068de53 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -468,8 +468,6 @@ int ip6_forward(struct sk_buff *skb)
- 	 *	check and decrement ttl
- 	 */
- 	if (hdr->hop_limit <= 1) {
--		/* Force OUTPUT device used as source address */
--		skb->dev = dst->dev;
- 		icmpv6_send(skb, ICMPV6_TIME_EXCEED, ICMPV6_EXC_HOPLIMIT, 0);
- 		__IP6_INC_STATS(net, idev, IPSTATS_MIB_INHDRERRORS);
- 
--- 
-2.17.1
-
+Christian
