@@ -2,174 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD912416D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60ECB2416DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgHKHDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 03:03:46 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:33975 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726792AbgHKHDp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 03:03:45 -0400
-X-UUID: af262d47e9f4490fb5ff86db74aec43e-20200811
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=usoA9Yokks0SP8P4YiF+O2f/8bLSWfQUxX1DlJ4XR3Y=;
-        b=XxyH5xHr58mlf7jGNCokoN4nW4g1wjU8H3hASt03AI9rDl3c9Vy/bKZ12p3d060Txk1m9z4JGejDCF9wLlwvkzgs6XkCoPsD0iZeSbOkZ03YwtlGi/2Yns8Z/AYyhAhgCdisL5GOV7t9p+BssW5UJNeuR0ElCJBK6Slu5nCp79k=;
-X-UUID: af262d47e9f4490fb5ff86db74aec43e-20200811
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1522997416; Tue, 11 Aug 2020 15:03:40 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 11 Aug 2020 15:03:38 +0800
-Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 11 Aug 2020 15:03:38 +0800
-Message-ID: <1597129418.20627.27.camel@mtksdaap41>
-Subject: Re: [PATCH v2 5/5] clk: mediatek: Add MT8192 clock support
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Enric Balletbo Serra <eballetbo@gmail.com>
-CC:     Rob Herring <robh@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Wendell Lin <wendell.lin@mediatek.com>,
-        <linux-clk@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Date:   Tue, 11 Aug 2020 15:03:38 +0800
-In-Reply-To: <CAFqH_50_xi5WkokS3WmV2Z-yAK06bpXBMgTQomwmJHcQmfX9yw@mail.gmail.com>
-References: <1596012277-8448-1-git-send-email-weiyi.lu@mediatek.com>
-         <1596012277-8448-6-git-send-email-weiyi.lu@mediatek.com>
-         <CAFqH_50_xi5WkokS3WmV2Z-yAK06bpXBMgTQomwmJHcQmfX9yw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1728342AbgHKHEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 03:04:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40336 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728271AbgHKHEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 03:04:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 588C8AC7D;
+        Tue, 11 Aug 2020 07:05:10 +0000 (UTC)
+Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*()
+ helpers
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        fenghua.yu@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        yu-cheng.yu@intel.com, sdeep@vmware.com,
+        virtualization@lists.linux-foundation.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Wei Liu <wei.liu@kernel.org>
+References: <20200806113236.GZ2674@hirez.programming.kicks-ass.net>
+ <20200806131702.GA3029162@elver.google.com>
+ <CANpmjNNqt8YrCad4WqgCoXvH47pRXtSLpnTKhD8W8+UpoYJ+jQ@mail.gmail.com>
+ <CANpmjNO860SHpNve+vaoAOgarU1SWy8o--tUWCqNhn82OLCiew@mail.gmail.com>
+ <fe2bfa7f-132f-7581-a967-d01d58be1588@suse.com>
+ <20200807095032.GA3528289@elver.google.com>
+ <16671cf3-3885-eb06-79ff-4cbfaeeaea79@suse.com>
+ <20200807113838.GA3547125@elver.google.com>
+ <e5bf3e6a-efff-7170-5ee6-1798008393a2@suse.com>
+ <CANpmjNPau_DEYadey9OL+iFZKEaUTqnFnyFs1dU12o00mg7ofA@mail.gmail.com>
+ <20200807151903.GA1263469@elver.google.com>
+ <CANpmjNM1jASqCFYZpteVrZCa2V2D_DbXaqvoCV_Ac2boYfDXnQ@mail.gmail.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <26c3214f-7d8a-7b1f-22fc-e864291f50ce@suse.com>
+Date:   Tue, 11 Aug 2020 09:04:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <CANpmjNM1jASqCFYZpteVrZCa2V2D_DbXaqvoCV_Ac2boYfDXnQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTA3LTI5IGF0IDExOjMyICswMjAwLCBFbnJpYyBCYWxsZXRibyBTZXJyYSB3
-cm90ZToNCj4gSGkgV2VpeWksDQo+IA0KPiBUaGFuayB5b3UgZm9yIHlvdXIgcGF0Y2guIFNvbWUg
-ZmV3IGNvbW1lbnQgYmVsb3csIEknbGwgZm9jdXMgb24NCj4gY2xrLW10ODE5Mi1tbSBmaWxlLCBi
-dXQgSSB0aGluayBjYW4gYXBwbHkgdG8gb3RoZXIgZmlsZXMgdG9vLg0KPiANCj4gW3NuaXBdDQo+
-IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4MTkyLW1tLmMg
-Yi9kcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4MTkyLW1tLmMNCj4gPiBuZXcgZmlsZSBtb2Rl
-IDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAuLjAyZWVmMjQNCj4gPiAtLS0gL2Rldi9udWxsDQo+
-ID4gKysrIGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ODE5Mi1tbS5jDQo+ID4gQEAgLTAs
-MCArMSwxMDggQEANCj4gPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjANCj4g
-DQo+IG5pdDogQWx0aG91Z2ggaXMgYSB2YWxpZCBsaWNlbnNlIGlkZW50aWZpZXIgZm9yIHRoZSBr
-ZXJuZWwgd291bGQgYmUNCj4gYmV0dGVyIHRvIHVzZSB0aGUgbm9uLWRlcHJlY2F0ZWQgZm9ybSBi
-eSBTUERYLCBHUEwtMi4wLW9ubHkNCj4gDQo+ID4gKy8vDQo+ID4gKy8vIENvcHlyaWdodCAoYykg
-MjAyMCBNZWRpYVRlayBJbmMuDQo+ID4gKy8vIEF1dGhvcjogV2VpeWkgTHUgPHdlaXlpLmx1QG1l
-ZGlhdGVrLmNvbT4NCj4gPiArDQo+ID4gKyNpbmNsdWRlIDxsaW51eC9jbGstcHJvdmlkZXIuaD4N
-Cj4gPiArI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPg0KPiA+ICsNCj4gPiArI2lu
-Y2x1ZGUgImNsay1tdGsuaCINCj4gPiArI2luY2x1ZGUgImNsay1nYXRlLmgiDQo+ID4gKw0KPiA+
-ICsjaW5jbHVkZSA8ZHQtYmluZGluZ3MvY2xvY2svbXQ4MTkyLWNsay5oPg0KPiA+ICsNCj4gPiAr
-c3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZ2F0ZV9yZWdzIG1tMF9jZ19yZWdzID0gew0KPiA+ICsg
-ICAgICAgLnNldF9vZnMgPSAweDEwNCwNCj4gPiArICAgICAgIC5jbHJfb2ZzID0gMHgxMDgsDQo+
-ID4gKyAgICAgICAuc3RhX29mcyA9IDB4MTAwLA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RhdGlj
-IGNvbnN0IHN0cnVjdCBtdGtfZ2F0ZV9yZWdzIG1tMV9jZ19yZWdzID0gew0KPiA+ICsgICAgICAg
-LnNldF9vZnMgPSAweDExNCwNCj4gPiArICAgICAgIC5jbHJfb2ZzID0gMHgxMTgsDQo+ID4gKyAg
-ICAgICAuc3RhX29mcyA9IDB4MTEwLA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RhdGljIGNvbnN0
-IHN0cnVjdCBtdGtfZ2F0ZV9yZWdzIG1tMl9jZ19yZWdzID0gew0KPiA+ICsgICAgICAgLnNldF9v
-ZnMgPSAweDFhNCwNCj4gPiArICAgICAgIC5jbHJfb2ZzID0gMHgxYTgsDQo+ID4gKyAgICAgICAu
-c3RhX29mcyA9IDB4MWEwLA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArI2RlZmluZSBHQVRFX01NMChf
-aWQsIF9uYW1lLCBfcGFyZW50LCBfc2hpZnQpICAgICAgICAgICAgICAgICAgXA0KPiA+ICsgICAg
-ICAgR0FURV9NVEsoX2lkLCBfbmFtZSwgX3BhcmVudCwgJm1tMF9jZ19yZWdzLCBfc2hpZnQsICAg
-ICBcDQo+ID4gKyAgICAgICAgICAgICAgICZtdGtfY2xrX2dhdGVfb3BzX3NldGNscikNCj4gDQo+
-IG5pdDogWW91IGNhbiB0YWtlIGFkdmFudGFnZSBvZiB0aGUgbmV3IGxpbmUgbGVuZ3RoIGxpbWl0
-LCB3aGljaCBpcyBub3cNCj4gMTAwIGNoYXJhY3RlcnMuDQo+IA0KDQpPSywgdGhhbmtzIGZvciBy
-ZW1pbmRpbmcuDQoNCj4gPiArDQo+ID4gKyNkZWZpbmUgR0FURV9NTTEoX2lkLCBfbmFtZSwgX3Bh
-cmVudCwgX3NoaWZ0KSAgICAgICAgICAgICAgICAgIFwNCj4gPiArICAgICAgIEdBVEVfTVRLKF9p
-ZCwgX25hbWUsIF9wYXJlbnQsICZtbTFfY2dfcmVncywgX3NoaWZ0LCAgICAgXA0KPiA+ICsgICAg
-ICAgICAgICAgICAmbXRrX2Nsa19nYXRlX29wc19zZXRjbHIpDQo+ID4gKw0KPiANCj4gZGl0dG8N
-Cj4gDQoNCkdvdCBpdC4NCg0KPiA+ICsjZGVmaW5lIEdBVEVfTU0yKF9pZCwgX25hbWUsIF9wYXJl
-bnQsIF9zaGlmdCkgICAgICAgICAgICAgICAgICBcDQo+ID4gKyAgICAgICBHQVRFX01USyhfaWQs
-IF9uYW1lLCBfcGFyZW50LCAmbW0yX2NnX3JlZ3MsIF9zaGlmdCwgICAgIFwNCj4gPiArICAgICAg
-ICAgICAgICAgJm10a19jbGtfZ2F0ZV9vcHNfc2V0Y2xyKQ0KPiA+ICsNCj4gDQo+IGRpdHRvDQo+
-IA0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG10a19nYXRlIG1tX2Nsa3NbXSA9IHsNCj4gPiAr
-ICAgICAgIC8qIE1NMCAqLw0KPiA+ICsgICAgICAgR0FURV9NTTAoQ0xLX01NX0RJU1BfTVVURVgw
-LCAibW1fZGlzcF9tdXRleDAiLCAiZGlzcF9zZWwiLCAwKSwNCj4gPiArICAgICAgIEdBVEVfTU0w
-KENMS19NTV9ESVNQX0NPTkZJRywgIm1tX2Rpc3BfY29uZmlnIiwgImRpc3Bfc2VsIiwgMSksDQo+
-ID4gKyAgICAgICBHQVRFX01NMChDTEtfTU1fRElTUF9PVkwwLCAibW1fZGlzcF9vdmwwIiwgImRp
-c3Bfc2VsIiwgMiksDQo+ID4gKyAgICAgICBHQVRFX01NMChDTEtfTU1fRElTUF9SRE1BMCwgIm1t
-X2Rpc3BfcmRtYTAiLCAiZGlzcF9zZWwiLCAzKSwNCj4gPiArICAgICAgIEdBVEVfTU0wKENMS19N
-TV9ESVNQX09WTDBfMkwsICJtbV9kaXNwX292bDBfMmwiLCAiZGlzcF9zZWwiLCA0KSwNCj4gPiAr
-ICAgICAgIEdBVEVfTU0wKENMS19NTV9ESVNQX1dETUEwLCAibW1fZGlzcF93ZG1hMCIsICJkaXNw
-X3NlbCIsIDUpLA0KPiA+ICsgICAgICAgR0FURV9NTTAoQ0xLX01NX0RJU1BfVUZCQ19XRE1BMCwg
-Im1tX2Rpc3BfdWZiY193ZG1hMCIsICJkaXNwX3NlbCIsIDYpLA0KPiA+ICsgICAgICAgR0FURV9N
-TTAoQ0xLX01NX0RJU1BfUlNaMCwgIm1tX2Rpc3BfcnN6MCIsICJkaXNwX3NlbCIsIDcpLA0KPiA+
-ICsgICAgICAgR0FURV9NTTAoQ0xLX01NX0RJU1BfQUFMMCwgIm1tX2Rpc3BfYWFsMCIsICJkaXNw
-X3NlbCIsIDgpLA0KPiA+ICsgICAgICAgR0FURV9NTTAoQ0xLX01NX0RJU1BfQ0NPUlIwLCAibW1f
-ZGlzcF9jY29ycjAiLCAiZGlzcF9zZWwiLCA5KSwNCj4gPiArICAgICAgIEdBVEVfTU0wKENMS19N
-TV9ESVNQX0RJVEhFUjAsICJtbV9kaXNwX2RpdGhlcjAiLCAiZGlzcF9zZWwiLCAxMCksDQo+ID4g
-KyAgICAgICBHQVRFX01NMChDTEtfTU1fU01JX0lORlJBLCAibW1fc21pX2luZnJhIiwgImRpc3Bf
-c2VsIiwgMTEpLA0KPiA+ICsgICAgICAgR0FURV9NTTAoQ0xLX01NX0RJU1BfR0FNTUEwLCAibW1f
-ZGlzcF9nYW1tYTAiLCAiZGlzcF9zZWwiLCAxMiksDQo+ID4gKyAgICAgICBHQVRFX01NMChDTEtf
-TU1fRElTUF9QT1NUTUFTSzAsICJtbV9kaXNwX3Bvc3RtYXNrMCIsICJkaXNwX3NlbCIsIDEzKSwN
-Cj4gPiArICAgICAgIEdBVEVfTU0wKENMS19NTV9ESVNQX0RTQ19XUkFQMCwgIm1tX2Rpc3BfZHNj
-X3dyYXAwIiwgImRpc3Bfc2VsIiwgMTQpLA0KPiA+ICsgICAgICAgR0FURV9NTTAoQ0xLX01NX0RT
-STAsICJtbV9kc2kwIiwgImRpc3Bfc2VsIiwgMTUpLA0KPiA+ICsgICAgICAgR0FURV9NTTAoQ0xL
-X01NX0RJU1BfQ09MT1IwLCAibW1fZGlzcF9jb2xvcjAiLCAiZGlzcF9zZWwiLCAxNiksDQo+ID4g
-KyAgICAgICBHQVRFX01NMChDTEtfTU1fU01JX0NPTU1PTiwgIm1tX3NtaV9jb21tb24iLCAiZGlz
-cF9zZWwiLCAxNyksDQo+ID4gKyAgICAgICBHQVRFX01NMChDTEtfTU1fRElTUF9GQUtFX0VORzAs
-ICJtbV9kaXNwX2Zha2VfZW5nMCIsICJkaXNwX3NlbCIsIDE4KSwNCj4gPiArICAgICAgIEdBVEVf
-TU0wKENMS19NTV9ESVNQX0ZBS0VfRU5HMSwgIm1tX2Rpc3BfZmFrZV9lbmcxIiwgImRpc3Bfc2Vs
-IiwgMTkpLA0KPiA+ICsgICAgICAgR0FURV9NTTAoQ0xLX01NX01EUF9URFNIUDQsICJtbV9tZHBf
-dGRzaHA0IiwgImRpc3Bfc2VsIiwgMjApLA0KPiA+ICsgICAgICAgR0FURV9NTTAoQ0xLX01NX01E
-UF9SU1o0LCAibW1fbWRwX3JzejQiLCAiZGlzcF9zZWwiLCAyMSksDQo+ID4gKyAgICAgICBHQVRF
-X01NMChDTEtfTU1fTURQX0FBTDQsICJtbV9tZHBfYWFsNCIsICJkaXNwX3NlbCIsIDIyKSwNCj4g
-PiArICAgICAgIEdBVEVfTU0wKENMS19NTV9NRFBfSERSNCwgIm1tX21kcF9oZHI0IiwgImRpc3Bf
-c2VsIiwgMjMpLA0KPiA+ICsgICAgICAgR0FURV9NTTAoQ0xLX01NX01EUF9SRE1BNCwgIm1tX21k
-cF9yZG1hNCIsICJkaXNwX3NlbCIsIDI0KSwNCj4gPiArICAgICAgIEdBVEVfTU0wKENMS19NTV9N
-RFBfQ09MT1I0LCAibW1fbWRwX2NvbG9yNCIsICJkaXNwX3NlbCIsIDI1KSwNCj4gPiArICAgICAg
-IEdBVEVfTU0wKENMS19NTV9ESVNQX1kyUjAsICJtbV9kaXNwX3kycjAiLCAiZGlzcF9zZWwiLCAy
-NiksDQo+ID4gKyAgICAgICBHQVRFX01NMChDTEtfTU1fU01JX0dBTFMsICJtbV9zbWlfZ2FscyIs
-ICJkaXNwX3NlbCIsIDI3KSwNCj4gPiArICAgICAgIEdBVEVfTU0wKENMS19NTV9ESVNQX09WTDJf
-MkwsICJtbV9kaXNwX292bDJfMmwiLCAiZGlzcF9zZWwiLCAyOCksDQo+ID4gKyAgICAgICBHQVRF
-X01NMChDTEtfTU1fRElTUF9SRE1BNCwgIm1tX2Rpc3BfcmRtYTQiLCAiZGlzcF9zZWwiLCAyOSks
-DQo+ID4gKyAgICAgICBHQVRFX01NMChDTEtfTU1fRElTUF9EUEkwLCAibW1fZGlzcF9kcGkwIiwg
-ImRpc3Bfc2VsIiwgMzApLA0KPiA+ICsgICAgICAgLyogTU0xICovDQo+ID4gKyAgICAgICBHQVRF
-X01NMShDTEtfTU1fU01JX0lPTU1VLCAibW1fc21pX2lvbW11IiwgImRpc3Bfc2VsIiwgMCksDQo+
-ID4gKyAgICAgICAvKiBNTTIgKi8NCj4gPiArICAgICAgIEdBVEVfTU0yKENMS19NTV9EU0lfRFNJ
-MCwgIm1tX2RzaV9kc2kwIiwgImRpc3Bfc2VsIiwgMCksDQo+ID4gKyAgICAgICBHQVRFX01NMihD
-TEtfTU1fRFBJX0RQSTAsICJtbV9kcGlfZHBpMCIsICJkcGlfc2VsIiwgOCksDQo+ID4gKyAgICAg
-ICBHQVRFX01NMihDTEtfTU1fMjZNSFosICJtbV8yNm1oeiIsICJjbGsyNm0iLCAyNCksDQo+ID4g
-KyAgICAgICBHQVRFX01NMihDTEtfTU1fMzJLSFosICJtbV8zMmtoeiIsICJjbGszMmsiLCAyNSks
-DQo+ID4gK307DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW50IGNsa19tdDgxOTJfbW1fcHJvYmUoc3Ry
-dWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiArew0KPiA+ICsgICAgICAgc3RydWN0IGRl
-dmljZSAqZGV2ID0gJnBkZXYtPmRldjsNCj4gPiArICAgICAgIHN0cnVjdCBkZXZpY2Vfbm9kZSAq
-bm9kZSA9IGRldi0+cGFyZW50LT5vZl9ub2RlOw0KPiA+ICsgICAgICAgc3RydWN0IGNsa19vbmVj
-ZWxsX2RhdGEgKmNsa19kYXRhOw0KPiA+ICsNCj4gPiArICAgICAgIGNsa19kYXRhID0gbXRrX2Fs
-bG9jX2Nsa19kYXRhKENMS19NTV9OUl9DTEspOw0KPiANCj4gbXRrX2FsbG9jX2Nsa19kYXRhIGNh
-biByZXR1cm4gTlVMTA0KPiANCj4gICAgICAgICAgICBpZiAoIWNsa19kYXRhKQ0KPiAgICAgICAg
-ICAgICAgIHJldHVybiAtRU5PTUVNOw0KPiANCj4gPiArDQo+ID4gKyAgICAgICBtdGtfY2xrX3Jl
-Z2lzdGVyX2dhdGVzKG5vZGUsIG1tX2Nsa3MsIEFSUkFZX1NJWkUobW1fY2xrcyksDQo+ID4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgY2xrX2RhdGEpOw0KPiA+ICsNCj4gDQo+IFRoZSBhYm92ZSBm
-dW5jdGlvbiBjYW4gZmFpbCwgYmV0dGVyIGNoZWNrIGZvciBlcnJvcg0KPiANCj4gICAgICAgICAg
-aWYgKHJldCkNCj4gICAgICAgICAgICAgIHJldHVybiByZXQ7DQo+IA0KDQpPSywgSSdsbCBmaXgg
-aW4gbmV4dCB2ZXJzaW9uLg0KDQo+ID4gKyAgICAgICByZXR1cm4gb2ZfY2xrX2FkZF9wcm92aWRl
-cihub2RlLCBvZl9jbGtfc3JjX29uZWNlbGxfZ2V0LCBjbGtfZGF0YSk7DQo+ID4gK30NCj4gPiAr
-DQo+ID4gKw0KPiANCj4gTm8gbmVlZCBmb3IgZG91YmxlIGxpbmUgc3BhY2luZy4NCj4gDQoNCkdv
-dCBpdC4NCg0KPiA+ICtzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBjbGtfbXQ4MTkyX21t
-X2RydiA9IHsNCj4gPiArICAgICAgIC5wcm9iZSA9IGNsa19tdDgxOTJfbW1fcHJvYmUsDQo+ID4g
-KyAgICAgICAuZHJpdmVyID0gew0KPiA+ICsgICAgICAgICAgICAgICAubmFtZSA9ICJjbGstbXQ4
-MTkyLW1tIiwNCj4gPiArICAgICAgIH0sDQo+ID4gK307DQo+ID4gKw0KPiA+ICtidWlsdGluX3Bs
-YXRmb3JtX2RyaXZlcihjbGtfbXQ4MTkyX21tX2Rydik7DQo+IA0KPiBbc25pcF0NCj4gDQo+IF9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+IExpbnV4LW1l
-ZGlhdGVrIG1haWxpbmcgbGlzdA0KPiBMaW51eC1tZWRpYXRla0BsaXN0cy5pbmZyYWRlYWQub3Jn
-DQo+IGh0dHBzOi8vdXJsZGVmZW5zZS5jb20vdjMvX19odHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW1lZGlhdGVrX187ISFDVFJOS0E5d01nMEFSYnchMy10
-UkdnOHBZUkJ5MHlKNEE5TGtHdXZlWFBEN2d6aVN6SHlRREV4am9VaTNpaUxvb0R1NWsyU2J4MmtX
-UVp0VyQgDQoNCg==
+On 11.08.20 09:00, Marco Elver wrote:
+> On Fri, 7 Aug 2020 at 17:19, Marco Elver <elver@google.com> wrote:
+>> On Fri, Aug 07, 2020 at 02:08PM +0200, Marco Elver wrote:
+>>> On Fri, 7 Aug 2020 at 14:04, Jürgen Groß <jgross@suse.com> wrote:
+>>>>
+>>>> On 07.08.20 13:38, Marco Elver wrote:
+>>>>> On Fri, Aug 07, 2020 at 12:35PM +0200, Jürgen Groß wrote:
+> ...
+>>>>>> I think CONFIG_PARAVIRT_XXL shouldn't matter, but I'm not completely
+>>>>>> sure about that. CONFIG_PARAVIRT_SPINLOCKS would be my primary suspect.
+>>>>>
+>>>>> Yes, PARAVIRT_XXL doesn't make a different. When disabling
+>>>>> PARAVIRT_SPINLOCKS, however, the warnings go away.
+>>>>
+>>>> Thanks for testing!
+>>>>
+>>>> I take it you are doing the tests in a KVM guest?
+>>>
+>>> Yes, correct.
+>>>
+>>>> If so I have a gut feeling that the use of local_irq_save() and
+>>>> local_irq_restore() in kvm_wait() might be fishy. I might be completely
+>>>> wrong here, though.
+>>>
+>>> Happy to help debug more, although I might need patches or pointers
+>>> what to play with.
+>>>
+>>>> BTW, I think Xen's variant of pv spinlocks is fine (no playing with IRQ
+>>>> on/off).
+>>>>
+>>>> Hyper-V seems to do the same as KVM, and kicking another vcpu could be
+>>>> problematic as well, as it is just using IPI.
+>>
+>> I experimented a bit more, and the below patch seems to solve the
+>> warnings. However, that was based on your pointer about kvm_wait(), and
+>> I can't quite tell if it is the right solution.
+>>
+>> My hypothesis here is simply that kvm_wait() may be called in a place
+>> where we get the same case I mentioned to Peter,
+>>
+>>          raw_local_irq_save(); /* or other IRQs off without tracing */
+>>          ...
+>>          kvm_wait() /* IRQ state tracing gets confused */
+>>          ...
+>>          raw_local_irq_restore();
+>>
+>> and therefore, using raw variants in kvm_wait() works. It's also safe
+>> because it doesn't call any other libraries that would result in corrupt
+>> IRQ state AFAIK.
+> 
+> Just to follow-up, it'd still be nice to fix this. Suggestions?
+> 
+> I could send the below as a patch, but can only go off my above
+> hypothesis and the fact that syzbot is happier, so not entirely
+> convincing.
+
+Peter has told me via IRC he will look soon further into this.
+
+Your finding suggests that the pv-lock implementation for Hyper-V
+needs some tweaking, too. For that purpose I'm adding Wei to Cc.
+
+
+Juergen
+
+> 
+> Thanks,
+> -- Marco
+> 
+>> ------ >8 ------
+>>
+>> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+>> index 233c77d056c9..1d412d1466f0 100644
+>> --- a/arch/x86/kernel/kvm.c
+>> +++ b/arch/x86/kernel/kvm.c
+>> @@ -797,7 +797,7 @@ static void kvm_wait(u8 *ptr, u8 val)
+>>          if (in_nmi())
+>>                  return;
+>>
+>> -       local_irq_save(flags);
+>> +       raw_local_irq_save(flags);
+>>
+>>          if (READ_ONCE(*ptr) != val)
+>>                  goto out;
+>> @@ -810,10 +810,10 @@ static void kvm_wait(u8 *ptr, u8 val)
+>>          if (arch_irqs_disabled_flags(flags))
+>>                  halt();
+>>          else
+>> -               safe_halt();
+>> +               raw_safe_halt();
+>>
+>>   out:
+>> -       local_irq_restore(flags);
+>> +       raw_local_irq_restore(flags);
+>>   }
+>>
+>>   #ifdef CONFIG_X86_32
+> 
 
