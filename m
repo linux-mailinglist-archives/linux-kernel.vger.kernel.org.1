@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2313524179F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9192417A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 09:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbgHKHyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 03:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728133AbgHKHyc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 03:54:32 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C88C061787
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 00:54:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BJ6NngLNkSYp1sT0N1/N2C51huBBRbAX2VjGCXSkBSg=; b=0i0sScr/Cr7h1kkBEKTDu101YF
-        qtTsZ2DEO1xzwMWXsvaJAH7bq3GzL2PmLIge+QKKoAfGVDsMrAsPitjkPH9vUBvFFXshSHlkROMOD
-        FoFlSItG/vqJBs/HcY2qMTDQZ+Cgtu0eRebEHbrJnpYlRErTnocI0fuPgVcKJVGCYSAslQcv4t2tF
-        10upX3tTokJhm0n8kVHY+0F05ZsLkzNH+7P62RpTeN8K7m6+CrVdh+LlHny+BQUmZSkn57NtVyzHV
-        e/QNH5AfOmd29El/b5rcKAZeAs2WHRtj33PEltpe6yRAO/y2BqaXUUszut+gBpThSosIoMWcVJ46l
-        GTVwEHfw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k5P70-000204-6o; Tue, 11 Aug 2020 07:54:22 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8D56D980C9D; Tue, 11 Aug 2020 09:54:20 +0200 (CEST)
-Date:   Tue, 11 Aug 2020 09:54:20 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Peter Oskolkov <posk@google.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel@vger.kernel.org, Paul Turner <pjt@google.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Peter Oskolkov <posk@posk.io>
-Subject: Re: [PATCH 1/2 v3] rseq/membarrier: add
- MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
-Message-ID: <20200811075420.GA5637@worktop.programming.kicks-ass.net>
-References: <20200811000959.2486636-1-posk@google.com>
- <20200811062733.GP3982@worktop.programming.kicks-ass.net>
+        id S1728252AbgHKHyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 03:54:47 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:59264 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728133AbgHKHyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 03:54:45 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 7D23CB3EBB3893400E5D;
+        Tue, 11 Aug 2020 15:54:40 +0800 (CST)
+Received: from [10.164.122.247] (10.164.122.247) by smtp.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 11 Aug
+ 2020 15:54:35 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: change virtual mapping way for
+ compression pages
+To:     Daeho Jeong <daeho43@gmail.com>
+CC:     Gao Xiang <hsiangkao@redhat.com>,
+        Daeho Jeong <daehojeong@google.com>, <kernel-team@android.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20200811033753.783276-1-daeho43@gmail.com>
+ <20200811071552.GA8365@xiangao.remote.csb>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <3059d7b0-cf50-4315-e5a9-8d9c00965a7c@huawei.com>
+Date:   Tue, 11 Aug 2020 15:54:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200811062733.GP3982@worktop.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200811071552.GA8365@xiangao.remote.csb>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.164.122.247]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 08:27:33AM +0200, Peter Zijlstra wrote:
->  SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
->  {
-> +	int cflags = 0, int cpuid = -1;
-> +
->  	if (unlikely(flags) && cmd != MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ)
->  		return -EINVAL;
-> +
-> +	if (cmd & (MEMBARRIER_CMD_PRIVATE_EXPEDITED |
-> +		   MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE |
-> +		   MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ)) {
-> +
-> +		if (cmd & MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ)
-> +			cflags |= MEMBARRIER_FLAG_RSEQ;
-> +
-> +		if (cmd & MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE) {
-> +			cflags |= MEMBARRIER_FLAG_SYNC_CORE;
-> +			cpuid = flags;
-> +		}
-> +
-> +		cmd = MEMBARRIER_CMD_PRIVATE_EXPEDITED;
-> +	}
+On 2020/8/11 15:15, Gao Xiang wrote:
+> On Tue, Aug 11, 2020 at 12:37:53PM +0900, Daeho Jeong wrote:
+>> From: Daeho Jeong <daehojeong@google.com>
+>>
+>> By profiling f2fs compression works, I've found vmap() callings are
+>> bottlenecks of f2fs decompression path. Changing these with
+>> vm_map_ram(), we can enhance f2fs decompression speed pretty much.
+>>
+>> [Verification]
+>> dd if=/dev/zero of=dummy bs=1m count=1000
+>> echo 3 > /proc/sys/vm/drop_caches
+>> dd if=dummy of=/dev/zero bs=512k
+>>
+>> - w/o compression -
+>> 1048576000 bytes (0.9 G) copied, 1.999384 s, 500 M/s
+>> 1048576000 bytes (0.9 G) copied, 2.035988 s, 491 M/s
+>> 1048576000 bytes (0.9 G) copied, 2.039457 s, 490 M/s
+>>
+>> - before patch -
+>> 1048576000 bytes (0.9 G) copied, 9.146217 s, 109 M/s
+>> 1048576000 bytes (0.9 G) copied, 9.997542 s, 100 M/s
+>> 1048576000 bytes (0.9 G) copied, 10.109727 s, 99 M/s
+>>
+>> - after patch -
+>> 1048576000 bytes (0.9 G) copied, 2.253441 s, 444 M/s
+>> 1048576000 bytes (0.9 G) copied, 2.739764 s, 365 M/s
+>> 1048576000 bytes (0.9 G) copied, 2.185649 s, 458 M/s
+> 
+> Indeed, vmap() approach has some impact on the whole
+> workflow. But I don't think the gap is such significant,
+> maybe it relates to unlocked cpufreq (and big little
+> core difference if it's on some arm64 board).
 
-This of course fails to check if other bits are set, and it goes really
-'funny' if you use cpuid != -1.
+Agreed,
 
-That all needs a little more thought.
+I guess there should be other reason causing the large performance
+gap, scheduling, frequency, or something else.
+
+> 
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> .
+> 
