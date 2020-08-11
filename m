@@ -2,236 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FDE241A40
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 13:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC48241A46
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 13:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728749AbgHKLTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 07:19:52 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17314 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728724AbgHKLTu (ORCPT
+        id S1728701AbgHKLVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 07:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728550AbgHKLVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 07:19:50 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f327e6c0000>; Tue, 11 Aug 2020 04:18:04 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 11 Aug 2020 04:19:49 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 11 Aug 2020 04:19:49 -0700
-Received: from [10.2.56.80] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 11 Aug
- 2020 11:19:48 +0000
-Subject: Re: btrfs crash in kobject_del while running xfstest
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, <linux-btrfs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <200e5b49-5c51-bbe5-de93-c6bd6339bb7f@nvidia.com>
-Message-ID: <2a3eb48d-6ca1-61c6-20cf-ba2fbda21f45@nvidia.com>
-Date:   Tue, 11 Aug 2020 04:19:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Tue, 11 Aug 2020 07:21:39 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F38C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 04:21:39 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id t6so13074410ljk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 04:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8Ct58qMIg0pwE2hoQADteqtstqL+kB4e2gL5OWh/wsI=;
+        b=HCwAvJxed5Br6kXQie/OgvDJ2NQ/z31CpHC6x5m8dKFidNdgyIKv6dZnn6b9zN09or
+         A2TQ1BI+EzXiJesGfcKPEDyjobKuOSd7nR04Ar1ric1IW5rcvSXXlpxIcIdlv1sgeKIV
+         XHjwhjziuEyxoTHwCMIXjSIH2PTVXKVc1EVz52PodX0WMS53G4DtsltjGpbxxw8SNim7
+         F9z8MyWNiV/EWU/EnnNzB0u4UmXai5Pjv+fDsIcMiWVA9KiJ12b5r32shpoivo+vMqD1
+         el9FZcy9q60ICpNPe+TQs/fB87ug5izH9ocybaYmKdwHlR+hPkoj9ywz1lj/VnC8Epaz
+         xluQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8Ct58qMIg0pwE2hoQADteqtstqL+kB4e2gL5OWh/wsI=;
+        b=GU+7vi58Wsfgj+dJnUkVN1mWlkVlNCKsAby4nMRoIQUvxphi8aesjIlHRNfEYIC542
+         42TDTzLSFu2UeEeJ+1cPxGn3f7prYz0NWmyFO4JMtalkspO+KVMbVJho5QQIptU1fflG
+         MNNJf/q4ENOw40j8DqUrMctBkl1y2nwBya1A13ntixELGZDWw0ZI/9rFDQ6k2eCtS/Gs
+         9GCa0rDhtdL3MGKbdjtLudkwec2XF6qpgPP3aJ/MYL+BpKZ/GO8/oUC3rc9tGsM9VPlh
+         nG84220mflXwERYjkpCldZAseX0rkLYIzFDqVUHsv8d3N6wZTNUn2A9yNV1Y0p3wmDnT
+         W/RQ==
+X-Gm-Message-State: AOAM530DbdwQWgOcVPlrAOhJ+OdPvnR3KrKiLM6c4jJfgNXbvq/xxsCl
+        NcbSaPBk0qj3sg0RJeX4fSruqC+eEFXIkohjZOU=
+X-Google-Smtp-Source: ABdhPJzk5Ns2umh9W9MkI6/l77QbQnjwM4eNUYg9DPae0+PlOO/EEm4ixqit0bXszbw2ZGhcAUsrRlQacJSdg/xOI5I=
+X-Received: by 2002:a2e:3615:: with SMTP id d21mr2884573lja.333.1597144894562;
+ Tue, 11 Aug 2020 04:21:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <200e5b49-5c51-bbe5-de93-c6bd6339bb7f@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+References: <20200811033753.783276-1-daeho43@gmail.com> <20200811071552.GA8365@xiangao.remote.csb>
+ <3059d7b0-cf50-4315-e5a9-8d9c00965a7c@huawei.com> <CACOAw_yic7GF3E1zEvZ=Gea3XW4fMYdg-cNuu4wfg+uTKMcJqA@mail.gmail.com>
+ <CACOAw_wi3C0iyTVYc3075d4K27NT7BGMGzsKFDDozf=98vWMcA@mail.gmail.com> <20200811101827.GA7870@xiangao.remote.csb>
+In-Reply-To: <20200811101827.GA7870@xiangao.remote.csb>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Tue, 11 Aug 2020 20:21:23 +0900
+Message-ID: <CACOAw_zRPeGzHyc_siLqBRjURWTE61G5rGCwk7bnbcOnADGRpg@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: change virtual mapping way for
+ compression pages
+To:     Gao Xiang <hsiangkao@redhat.com>
+Cc:     Chao Yu <yuchao0@huawei.com>, Daeho Jeong <daehojeong@google.com>,
+        kernel-team@android.com, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1597144684; bh=zFtAbPZdWaO97kUqdFPAa8G34TZ9heuYOs9focgzlik=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=C1+8hZ/9mJMSMaDjXyL7oLnM5ZF5aMV+xA0AXi8rsoA/pQBR8fmu095PK0f9X+1qt
-         8BNaHoSwExaDSr9/ugJYkkHWqzTYnSPcCECHe99fccgw4X8viSJvirGJQjq83l0A9m
-         Cb0X21oyiartmN61vkAoAkTOMG3Ey6oAgowsCKC2X//l58w25Aac1ZdJCh+WMX0EwX
-         7s5X2eseN6qBQkygvGSs25sfcu9NHnz7lAsRgmcwKw6HBao+E4TpSNdn/nV4u+oeB9
-         BknalryQ5Wle4l1F/aNspmakisWCqu3klNssknlznGMtrUjSz3fSrFUr2i88cFub+0
-         t0GiLhj0da2Lw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Somehow the copy-paste of Chris Mason's name failed (user error
-on my end), sorry about that Chris!
+Sure, I'll update the test condition as you said in the commit message.
+FYI, the test is done with 16kb chunk and Pixel 3 (arm64) device.
 
-On 8/11/20 4:17 AM, John Hubbard wrote:
-> Hi,
->=20
-> Here's an early warning of a possible problem.
->=20
-> I'm seeing a new btrfs crash when running xfstests, as of
-> 00e4db51259a5f936fec1424b884f029479d3981 ("Merge tag
-> 'perf-tools-2020-08-10' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux") in linux.git.
->=20
-> This doesn't crash in v5.8, so I attempted to bisect, but ended up with
-> the net-next merge commit as the offending one: commit
-> 47ec5303d73ea344e84f46660fff693c57641386 ("Merge
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next"), which
-> doesn't really help because it's 2088 files changed, of course.
->=20
-> I'm attaching the .config that I used.
->=20
-> This is easily reproducible via something like (change to match your setu=
-p,
-> of course):
->=20
->  =C2=A0=C2=A0=C2=A0 sudo TEST_DEV=3D/dev/nvme0n1p8 TEST_DIR=3D/xfstest_bt=
-rfs \
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SCRATCH_DEV=3D/dev/nvme0n1p9 SCRATCH_MNT=
-=3D/xfstest_scratch=C2=A0 ./check \
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs/002
->=20
-> which leads to:
->=20
-> [=C2=A0 586.097360] BTRFS info (device nvme0n1p8): disk space caching is =
-enabled
-> [=C2=A0 586.103232] BTRFS info (device nvme0n1p8): has skinny extents
-> [=C2=A0 586.115169] BTRFS info (device nvme0n1p8): enabling ssd optimizat=
-ions
-> [=C2=A0 586.308264] BTRFS: device fsid 5dfff89d-8f8d-42ac-8538-acb95164d0=
-be devid 1 transid 5=20
-> /dev/nvme0n1p9 scanned by mkfs.btrfs (6374)
-> [=C2=A0 586.342776] BTRFS info (device nvme0n1p9): disk space caching is =
-enabled
-> [=C2=A0 586.348585] BTRFS info (device nvme0n1p9): has skinny extents
-> [=C2=A0 586.353413] BTRFS info (device nvme0n1p9): flagging fs with big m=
-etadata feature
-> [=C2=A0 586.368129] BTRFS info (device nvme0n1p9): enabling ssd optimizat=
-ions
-> [=C2=A0 586.373996] BTRFS info (device nvme0n1p9): checking UUID tree
-> [=C2=A0 586.387449] BUG: kernel NULL pointer dereference, address: 000000=
-0000000018
-> [=C2=A0 586.393485] #PF: supervisor read access in kernel mode
-> [=C2=A0 586.397623] #PF: error_code(0x0000) - not-present page
-> [=C2=A0 586.401763] PGD 0 P4D 0
-> [=C2=A0 586.403219] Oops: 0000 [#1] SMP PTI
-> [=C2=A0 586.405650] CPU: 1 PID: 6405 Comm: umount Not tainted 5.8.0-hubba=
-rd-github+ #171
-> [=C2=A0 586.412118] Hardware name: Gigabyte Technology Co., Ltd. To be fi=
-lled by O.E.M./X99-UD3P-CF, BIOS=20
-> F1 02/10/2015
-> [=C2=A0 586.421360] RIP: 0010:kobject_del+0x1/0x20
-> [=C2=A0 586.424427] Code: 48 c7 43 18 00 00 00 00 5b 5d c3 c3 be 01 00 00=
- 00 48 89 df e8 60 1b 00 00 eb=20
-> c9 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 55 <48> 8b 6f 18 e8 86 ff ff=
- ff 48 89 ef 5d e9 cd fe ff=20
-> ff 66 66 2e 0f
-> [=C2=A0 586.442644] RSP: 0018:ffffc90009ef7e08 EFLAGS: 00010246
-> [=C2=A0 586.446914] RAX: 0000000000000000 RBX: ffff888896080000 RCX: 0000=
-000000000006
-> [=C2=A0 586.453149] RDX: ffff88888ee4b000 RSI: ffffffff82669a00 RDI: 0000=
-000000000000
-> [=C2=A0 586.459390] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000=
-000000000001
-> [=C2=A0 586.465631] R10: 0000000000000001 R11: 0000000000000000 R12: ffff=
-888896080000
-> [=C2=A0 586.471866] R13: 0000000000000000 R14: 0000000000000000 R15: 0000=
-000000000000
-> [=C2=A0 586.478106] FS:=C2=A0 00007f5595739c80(0000) GS:ffff88889fc40000(=
-0000) knlGS:0000000000000000
-> [=C2=A0 586.485325] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 000000008005003=
-3
-> [=C2=A0 586.490129] CR2: 0000000000000018 CR3: 0000000896d5a006 CR4: 0000=
-0000001706e0
-> [=C2=A0 586.496372] Call Trace:
-> [=C2=A0 586.497807]=C2=A0 btrfs_sysfs_del_qgroups+0xa5/0xe0 [btrfs]
-> [=C2=A0 586.502017]=C2=A0 close_ctree+0x1c5/0x2b6 [btrfs]
-> [=C2=A0 586.505307]=C2=A0 ? fsnotify_destroy_marks+0x24/0x124
-> [=C2=A0 586.508948]=C2=A0 generic_shutdown_super+0x67/0x100
-> [=C2=A0 586.512408]=C2=A0 kill_anon_super+0x14/0x30
-> [=C2=A0 586.515159]=C2=A0 btrfs_kill_super+0x12/0x20 [btrfs]
-> [=C2=A0 586.518704]=C2=A0 deactivate_locked_super+0x36/0x90
-> [=C2=A0 586.522159]=C2=A0 cleanup_mnt+0x12d/0x190
-> [=C2=A0 586.524720]=C2=A0 task_work_run+0x5c/0xa0
-> [=C2=A0 586.527285]=C2=A0 exit_to_user_mode_loop+0xb9/0xc0
-> [=C2=A0 586.530648]=C2=A0 exit_to_user_mode_prepare+0xab/0xe0
-> [=C2=A0 586.534276]=C2=A0 syscall_exit_to_user_mode+0x17/0x50
-> [=C2=A0 586.537908]=C2=A0 entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [=C2=A0 586.541984] RIP: 0033:0x7f55959896fb
-> [=C2=A0 586.544531] Code: 07 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3=
- 0f 1e fa 31 f6 e9 05 00 00 00=20
-> 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01=
- c3 48 8b 0d 5d 07 0c 00 f7=20
-> d8 64 89 01 48
-> [=C2=A0 586.562775] RSP: 002b:00007fffcc431228 EFLAGS: 00000246 ORIG_RAX:=
- 00000000000000a6
-> [=C2=A0 586.569485] RAX: 0000000000000000 RBX: 00007f5595ab31e4 RCX: 0000=
-7f55959896fb
-> [=C2=A0 586.575753] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000=
-5601fb16bb80
-> [=C2=A0 586.582020] RBP: 00005601fb16b970 R08: 0000000000000000 R09: 0000=
-7fffcc42ffa0
-> [=C2=A0 586.588278] R10: 00005601fb16c930 R11: 0000000000000246 R12: 0000=
-5601fb16bb80
-> [=C2=A0 586.594534] R13: 0000000000000000 R14: 00005601fb16ba68 R15: 0000=
-000000000000
-> [=C2=A0 586.600805] Modules linked in: xfs rpcsec_gss_krb5 auth_rpcgss nf=
-sv4 dns_resolver nfs lockd grace=20
-> fscache bpfilter dm_mirror dm_region_hash dm_log dm_mod iTCO_wdt iTCO_ven=
-dor_support=20
-> x86_pkg_temp_thermal coretemp crct10dif_pclmul crc32_pclmul btrfs ghash_c=
-lmulni_intel aesni_intel=20
-> blake2b_generic crypto_simd xor cryptd zstd_compress glue_helper input_le=
-ds raid6_pq libcrc32c=20
-> lpc_ich i2c_i801 mfd_core mei_me i2c_smbus mei rpcrdma sunrpc ib_isert is=
-csi_target_mod ib_iser=20
-> libiscsi ib_srpt target_core_mod ib_srp ib_ipoib rdma_ucm ib_uverbs ib_um=
-ad sr_mod cdrom sd_mod=20
-> nouveau ahci libahci nvme crc32c_intel video e1000e led_class nvme_core l=
-ibata t10_pi ttm mxm_wmi=20
-> wmi fuse
-> [=C2=A0 586.661098] CR2: 0000000000000018
-> [=C2=A0 586.663455] ---[ end trace 158f42d646f4715d ]---
->=20
-> A quick peek shows that this is crashing here:
->=20
-> void kobject_del(struct kobject *kobj)
-> {
->  =C2=A0=C2=A0=C2=A0=C2=A0struct kobject *parent =3D kobj->parent; <---- C=
-RASHES HERE with NULL kobj
->=20
->  =C2=A0=C2=A0=C2=A0=C2=A0__kobject_del(kobj);
->  =C2=A0=C2=A0=C2=A0=C2=A0kobject_put(parent);
-> }
-> EXPORT_SYMBOL(kobject_del);
->=20
-> The crash at 0x18 matches passes in a null, because that's the right offs=
-et for
-> ->parent, and the disassembly confirms that 0x18 gets offset right at kob=
-ject_del+0x1:
->=20
-> Dump of assembler code for function kobject_del:
->  =C2=A0=C2=A0 0xffffffff81534ec0 <+0>:=C2=A0=C2=A0=C2=A0=C2=A0 push=C2=A0=
-=C2=A0 %rbp
->  =C2=A0=C2=A0 0xffffffff81534ec1 <+1>:=C2=A0=C2=A0=C2=A0=C2=A0 mov=C2=A0=
-=C2=A0=C2=A0 0x18(%rdi),%rbp
->  =C2=A0=C2=A0 0xffffffff81534ec5 <+5>:=C2=A0=C2=A0=C2=A0=C2=A0 callq=C2=
-=A0 0xffffffff81534e50 <__kobject_del>
->  =C2=A0=C2=A0 0xffffffff81534eca <+10>:=C2=A0=C2=A0=C2=A0 mov=C2=A0=C2=A0=
-=C2=A0 %rbp,%rdi
->  =C2=A0=C2=A0 0xffffffff81534ecd <+13>:=C2=A0=C2=A0=C2=A0 pop=C2=A0=C2=A0=
-=C2=A0 %rbp
->  =C2=A0=C2=A0 0xffffffff81534ece <+14>:=C2=A0=C2=A0=C2=A0 jmpq=C2=A0=C2=
-=A0 0xffffffff81534da0 <kobject_put>
-> End of assembler dump.
->=20
-> But as for how we ended up with a null kobj here, that's actually hard to=
- see, at least
-> for a non-btrfs person, which is why I hoped git bisect would help more t=
-han it did here.
->=20
->=20
-> thanks,
+Thanks,
 
-thanks,
---=20
-John Hubbard
-NVIDIA
+2020=EB=85=84 8=EC=9B=94 11=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 7:18, G=
+ao Xiang <hsiangkao@redhat.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Tue, Aug 11, 2020 at 06:33:26PM +0900, Daeho Jeong wrote:
+> > Plus, when we use vmap(), vmap() normally executes in a short time
+> > like vm_map_ram().
+> > But, sometimes, it has a very long delay.
+> >
+> > 2020=C3=AB=E2=80=A6=E2=80=9E 8=C3=AC=E2=80=BA=E2=80=9D 11=C3=AC=EF=BF=
+=BD=C2=BC (=C3=AD=E2=84=A2=E2=80=9D) =C3=AC=CB=9C=C2=A4=C3=AD=E2=80=BA=E2=
+=80=9E 6:28, Daeho Jeong <daeho43@gmail.com>=C3=AB=E2=80=B9=CB=9C=C3=AC=EF=
+=BF=BD=C2=B4 =C3=AC=C5=BE=E2=80=98=C3=AC=E2=80=9E=C2=B1:
+> > >
+> > > Actually, as you can see, I use the whole zero data blocks in the tes=
+t file.
+> > > It can maximize the effect of changing virtual mapping.
+> > > When I use normal files which can be compressed about 70% from the
+> > > original file,
+> > > The vm_map_ram() version is about 2x faster than vmap() version.
+>
+> What f2fs does is much similar to btrfs compression. Even if these
+> blocks are all zeroed. In principle, the maximum compression ratio
+> is determined (cluster sized blocks into one compressed block, e.g
+> 16k cluster into one compressed block).
+>
+> So it'd be better to describe your configured cluster size (16k or
+> 128k) and your hardware information in the commit message as well.
+>
+> Actually, I also tried with this patch as well on my x86 laptop just
+> now with FIO (I didn't use zeroed block though), and I didn't notice
+> much difference with turbo boost off and maxfreq.
+>
+> I'm not arguing this commit, just a note about this commit message.
+> > > > >> 1048576000 bytes (0.9 G) copied, 9.146217 s, 109 M/s
+> > > > >> 1048576000 bytes (0.9 G) copied, 9.997542 s, 100 M/s
+> > > > >> 1048576000 bytes (0.9 G) copied, 10.109727 s, 99 M/s
+>
+> IMHO, the above number is much like decompressing in the arm64 little cor=
+es.
+>
+> Thanks,
+> Gao Xiang
+>
+>
+> > >
+> > > 2020=C3=AB=E2=80=A6=E2=80=9E 8=C3=AC=E2=80=BA=E2=80=9D 11=C3=AC=EF=BF=
+=BD=C2=BC (=C3=AD=E2=84=A2=E2=80=9D) =C3=AC=CB=9C=C2=A4=C3=AD=E2=80=BA=E2=
+=80=9E 4:55, Chao Yu <yuchao0@huawei.com>=C3=AB=E2=80=B9=CB=9C=C3=AC=EF=BF=
+=BD=C2=B4 =C3=AC=C5=BE=E2=80=98=C3=AC=E2=80=9E=C2=B1:
+> > > >
+> > > > On 2020/8/11 15:15, Gao Xiang wrote:
+> > > > > On Tue, Aug 11, 2020 at 12:37:53PM +0900, Daeho Jeong wrote:
+> > > > >> From: Daeho Jeong <daehojeong@google.com>
+> > > > >>
+> > > > >> By profiling f2fs compression works, I've found vmap() callings =
+are
+> > > > >> bottlenecks of f2fs decompression path. Changing these with
+> > > > >> vm_map_ram(), we can enhance f2fs decompression speed pretty muc=
+h.
+> > > > >>
+> > > > >> [Verification]
+> > > > >> dd if=3D/dev/zero of=3Ddummy bs=3D1m count=3D1000
+> > > > >> echo 3 > /proc/sys/vm/drop_caches
+> > > > >> dd if=3Ddummy of=3D/dev/zero bs=3D512k
+> > > > >>
+> > > > >> - w/o compression -
+> > > > >> 1048576000 bytes (0.9 G) copied, 1.999384 s, 500 M/s
+> > > > >> 1048576000 bytes (0.9 G) copied, 2.035988 s, 491 M/s
+> > > > >> 1048576000 bytes (0.9 G) copied, 2.039457 s, 490 M/s
+> > > > >>
+> > > > >> - before patch -
+> > > > >> 1048576000 bytes (0.9 G) copied, 9.146217 s, 109 M/s
+> > > > >> 1048576000 bytes (0.9 G) copied, 9.997542 s, 100 M/s
+> > > > >> 1048576000 bytes (0.9 G) copied, 10.109727 s, 99 M/s
+> > > > >>
+> > > > >> - after patch -
+> > > > >> 1048576000 bytes (0.9 G) copied, 2.253441 s, 444 M/s
+> > > > >> 1048576000 bytes (0.9 G) copied, 2.739764 s, 365 M/s
+> > > > >> 1048576000 bytes (0.9 G) copied, 2.185649 s, 458 M/s
+> > > > >
+> > > > > Indeed, vmap() approach has some impact on the whole
+> > > > > workflow. But I don't think the gap is such significant,
+> > > > > maybe it relates to unlocked cpufreq (and big little
+> > > > > core difference if it's on some arm64 board).
+> > > >
+> > > > Agreed,
+> > > >
+> > > > I guess there should be other reason causing the large performance
+> > > > gap, scheduling, frequency, or something else.
+> > > >
+> > > > >
+> > > > >
+> > > > >
+> > > > > _______________________________________________
+> > > > > Linux-f2fs-devel mailing list
+> > > > > Linux-f2fs-devel@lists.sourceforge.net
+> > > > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> > > > > .
+> > > > >
+> >
+>
