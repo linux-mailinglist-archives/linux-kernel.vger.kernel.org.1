@@ -2,170 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2D0241669
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 08:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FDF24166C
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 08:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728224AbgHKGnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 02:43:35 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:65437 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728167AbgHKGne (ORCPT
+        id S1728258AbgHKGoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 02:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727066AbgHKGoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 02:43:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1597128213; x=1628664213;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=U49r4I1lDQLUgTabmIHp8Y2JyapUHa4WpJMMFFud1Fg=;
-  b=F5nqGLyWkIUx7aTvHDVGiwQADTicsxsarVHrI06am0hZHEl9HlMf+cNx
-   VuJHhJlLFEA1KLSkkuUx1+k9imxDlRXruw7nfJdBgAf7Uc+OlHSVWtpwy
-   MlFdeklhYSYQxNoO9wq4hvHSihPiqlI/FNk1zEE4Y/BO28k8vpixosk8U
-   n/BXXRV1ECBMUHwTtaPUH68NS4Qx4iAolXh/1tI4Ue6xTcqB94JTFJJta
-   3DA/1nLvevK/l4tVBAaA9ke3FWT/NrCUdx7hmIAMcW3J6MBwBD6OYzYF/
-   TAwCnV/YqlJnttsmks5L8WdllxSkqvHhP3Ui7pB1n8z3TOHlEM3UPZrUy
-   g==;
-IronPort-SDR: 5Iw5noI7cCHmrRqvbhScvITdE11NH860KYpoOCt2o5OOWVk0PlKxQeGTLHp/6dORdECZV8ruLW
- MCUCqTSusRVdceDSelHJwk/kozWasf86NR9VGI8VG17dzPmFK/M8l4AhHkFoz+TFf+f1h8LIxg
- blOVcck+67nPv3e0xE5Ad/A1/x3nwBcyY5du2acNKsLQVKzvUHD/mzb/z7WSVnjEHdiPapS/EY
- 1eqYdFHtftT+gS/p+tbbQx6NiKgz22tG+0a3MMeYL6uz2JhGBwL5/XBbk8pSWLYubGQIMKsu4b
- Im0=
-X-IronPort-AV: E=Sophos;i="5.75,460,1589212800"; 
-   d="scan'208";a="144642963"
-Received: from mail-mw2nam10lp2100.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.100])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Aug 2020 14:43:32 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i+Hkb0DBItr1a50EpdxB4O92YYt+N9DD/pLDzgeK/7FnX4U7K9E0qZj1GNVvYbjDz8q/aim88M5SPYRB0+TQI5vh0kMNdOlb3awZZafmjF+rJ5bBxPcYADwDfc9RR9Oc8RvHKlcehS8uKTvi95RXIgqLqyUy/RvZdE0VnEEJtqu20asFh+2sO7b2eFA9K0xiwr+032Ou7BoiIjbvq2bgDfgijzSmB/OwIPzsRLRr/GPBN9e5CrfLh5KtAQoU3534q4toV1B45uiuzepfMN7DDhMkjJ3pEAfvMG918Tqu/hK94l2qsiSsDdNbnqR51QwyfTGqdE8Bsu/Q8+6HXzhkxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O4x3t0V1XMnNedfp+feQJcau03P4tzz2Yju7uSJZZTM=;
- b=dNCIROkpNmtqCFaTVM0+vlJTmwNPm9vmtqHXK362vS0AsZS7KCeYEkMbKP2TDNTlOTkLAWfuu+gumeYDssSVii14JOUpOGWiLm89lZzBEZAzfQuIpG330sq5ZcZuisM98TOAAJAS5ZaKuI8A6xITqAyAXrogRyzf35AJ8oeF7MZSz2fn6gOXxVqjLq7T/0VwcpceXjNRkHwio3IDUQqJDu58EB0gurm6gwNvQ9qVBsPWOBdu8LxKNtB8FFS8MjTueDw8tI7PcMYF2Y+7I6xESq3sY7YTUfM/vMjQlfUG8f2MVv8KYUdrl/eQ6BtQdzeOjN/zhdxqdFYFkpTQoKUqMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O4x3t0V1XMnNedfp+feQJcau03P4tzz2Yju7uSJZZTM=;
- b=k7Y8rG6uk3BiWbikkVp58brabZc4urgDBimJCjK7CGIte1+Qe/eFyTL5/97V05eEhDpGsDFt1SyReeJemvrE31MFUdbgjHQOIhbk9kJ9ZDMepZfrhNgpcaTuG2uGdV0Mm+sF0tNJ96dhiidntsOCJyxWG6idn8MbIaAtWqR/nFw=
-Received: from CY4PR04MB3751.namprd04.prod.outlook.com (10.172.142.14) by
- CY4PR04MB1257.namprd04.prod.outlook.com (10.171.245.162) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3261.19; Tue, 11 Aug 2020 06:43:31 +0000
-Received: from CY4PR04MB3751.namprd04.prod.outlook.com
- ([fe80::7d15:9936:4b3b:f8a2]) by CY4PR04MB3751.namprd04.prod.outlook.com
- ([fe80::7d15:9936:4b3b:f8a2%12]) with mapi id 15.20.3261.024; Tue, 11 Aug
- 2020 06:43:31 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Qiu Wenbo <qiuwenbo@phytium.com.cn>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
-CC:     Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Zong Li <zong.li@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] riscv: Setup exception vector for K210 properly
-Thread-Topic: [PATCH] riscv: Setup exception vector for K210 properly
-Thread-Index: AQHWb6n+97W98+gJfk6zRY9oCnz7uQ==
-Date:   Tue, 11 Aug 2020 06:43:31 +0000
-Message-ID: <CY4PR04MB3751D3007CD1C893979D6286E7450@CY4PR04MB3751.namprd04.prod.outlook.com>
-References: <20200811063659.284088-1-qiuwenbo@phytium.com.cn>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: phytium.com.cn; dkim=none (message not signed)
- header.d=none;phytium.com.cn; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [199.255.47.10]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1528fa37-38e3-43a5-2327-08d83dc1dca0
-x-ms-traffictypediagnostic: CY4PR04MB1257:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR04MB1257E58432CC3C554B08C9DAE7450@CY4PR04MB1257.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Coml2ykbNBpcGrwVngn4bsNcbGNbPMqqELyVryqsLuFcvnBlqONa14VUiMgyuTjPcxA1mkny7VJ1Epxdvt8yr2iAodGjjeS7COdmnpo3Hyk/c0dKruxKWTfocNaAs3UnETjgzHEQtn4YdaY71HjuFN1Ri1RILUExsysrZTi4ReorrJNPxSpiICUaWZmIVWqJUntxHfwpxxxysiCEZ2rYQkGSFfq4zW9rH3jMtTRYc7EirlTnFdMAILnSVw8kNdFgM2pyBY4rwB5/YHDjIHqaaMM2QagPhmOGPYQ4Wn4RygFhzj68i6Z6en8U88ypSfZ24Uf4LoqtMpYEgGG278QkkQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR04MB3751.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(346002)(366004)(396003)(376002)(186003)(9686003)(7416002)(52536014)(83380400001)(5660300002)(2906002)(8936002)(66446008)(66556008)(86362001)(64756008)(26005)(55016002)(66946007)(76116006)(66476007)(91956017)(53546011)(110136005)(33656002)(54906003)(6506007)(316002)(7696005)(478600001)(4326008)(71200400001)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: oWMV68k2aGqKsqWCdWl9pwrwJKeKhpY1NMF2g9iXhkVvk4KQV/CbRaZjWaZxrrtbxqAXlyg04krVY9pWZzg8mnVUfc8vfCah9IvEhiQSy16LTDUuuNAZaqZsJ86bi2uHodIqGBZoF1SlZjG8hmU5SC308pH3EB1duc6xJYB847e7HsY9/72+H+AXJwCCchnODgP2TmZs8MgnEjfVHkF/vyL+OXjg7scVnOZMMuWCNIje0ytjbfqY4YWzH3wqbxWxsIQpXzqnsoi6d//cseyKpxNKQiK+CjMcwTP4LoawurLUHN9IccVB3T5oXNORZTfgQssPpmPkgUTrtv/0O+6u/fAkBM8g4MthwjFWOjZnKb54ohisCB7rYstj6uLSKg8TbQBqboJhphJIgPYxGr9bRJV8LCtHNbeOF1YY0PvJrjfatCYgSwmUw/ywECyHKOI6i3HMXN5c/hsBmt0E3dOBAvny/LW5PcABvILvmtf3cOwLKbVyGUDXm9BXOZPMarYva+t7b5YG/odncxB9SNZp7efZB4sLYNIRzE9ghURRhPLO5t6CEEg3mMcr3DZWolzHlMA2u5I7YxZE4zdmGq2gABPnNfXAsNtxc+H8m8Nc50TY9US7eywOd/ySKPz/+2MV0vxNS1iwYc1kjYlczgXtqw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR04MB3751.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1528fa37-38e3-43a5-2327-08d83dc1dca0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Aug 2020 06:43:31.0870
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: V9qZlxWDGmLq511CTG7qLBRAQP70qjLYXuCEQd0/6m6rSAY0xqdcZqUuj4T+blLizwiheNJHTe+wJ91L48nwWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR04MB1257
+        Tue, 11 Aug 2020 02:44:00 -0400
+X-Greylist: delayed 83957 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 10 Aug 2020 23:44:00 PDT
+Received: from forwardcorp1p.mail.yandex.net (forwardcorp1p.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b6:217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20938C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 23:44:00 -0700 (PDT)
+Received: from sas1-ec30c78b6c5b.qloud-c.yandex.net (sas1-ec30c78b6c5b.qloud-c.yandex.net [IPv6:2a02:6b8:c14:2704:0:640:ec30:c78b])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 4441D2E1555;
+        Tue, 11 Aug 2020 09:43:55 +0300 (MSK)
+Received: from sas1-9998cec34266.qloud-c.yandex.net (sas1-9998cec34266.qloud-c.yandex.net [2a02:6b8:c14:3a0e:0:640:9998:cec3])
+        by sas1-ec30c78b6c5b.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id ej4ScSBaXq-hrvmMu3I;
+        Tue, 11 Aug 2020 09:43:55 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1597128235; bh=K3MkeTH4e7Fy7e8LzbZR6hh0itMnd/vEFicPLoQ+isk=;
+        h=Message-Id:Date:Subject:To:From:Cc;
+        b=MSMl7es5T0vO+W7PckXJ2eISWksgRL1QGFaU9Wy3/9/KTumXEn63MpWRpTRsNKu+o
+         GUZ6zPMsQ2dNH5xhsvXoA6E5Ic8UBOnWrU0u2LJ4MJXuAuwSjBiJ97a45AHrA29gfw
+         bmzcVy/FUJ07zs1TZv5qAmvD7QECEQzYOC98BmuI=
+Authentication-Results: sas1-ec30c78b6c5b.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from 95.108.174.193-red.dhcp.yndx.net (95.108.174.193-red.dhcp.yndx.net [95.108.174.193])
+        by sas1-9998cec34266.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id K1blZNuWdE-hrl8NoMW;
+        Tue, 11 Aug 2020 09:43:53 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+From:   Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-block@vger.kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, oleksandr@natalenko.name,
+        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+Subject: [PATCH] bfq: fix blkio cgroup leakage v4
+Date:   Tue, 11 Aug 2020 06:43:40 +0000
+Message-Id: <20200811064340.31284-1-dmtrmonakhov@yandex-team.ru>
+X-Mailer: git-send-email 2.18.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/08/11 15:38, Qiu Wenbo wrote:=0A=
-> Exception vector is missing on nommu platform and it is a big issue.=0A=
-> This patch is tested in Sipeed MAIX Bit Dev Board.=0A=
-> =0A=
-> Fixes: 79b1feba5455 ("RISC-V: Setup exception vector early")=0A=
-=0A=
-I think this needs a "Cc: stable@vger.kernel.org #5.8" too.=0A=
-=0A=
-> Signed-off-by: Qiu Wenbo <qiuwenbo@phytium.com.cn>=0A=
-> ---=0A=
->  arch/riscv/kernel/smpboot.c |  1 +=0A=
->  arch/riscv/kernel/traps.c   | 11 ++++++++++-=0A=
->  2 files changed, 11 insertions(+), 1 deletion(-)=0A=
-> =0A=
-> diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c=0A=
-> index 356825a57551..23cde0ceb39d 100644=0A=
-> --- a/arch/riscv/kernel/smpboot.c=0A=
-> +++ b/arch/riscv/kernel/smpboot.c=0A=
-> @@ -154,6 +154,7 @@ asmlinkage __visible void smp_callin(void)=0A=
->  	mmgrab(mm);=0A=
->  	current->active_mm =3D mm;=0A=
->  =0A=
-> +	trap_init();=0A=
->  	notify_cpu_starting(curr_cpuid);=0A=
->  	update_siblings_masks(curr_cpuid);=0A=
->  	set_cpu_online(curr_cpuid, 1);=0A=
-> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c=0A=
-> index ad14f4466d92..a390239818ae 100644=0A=
-> --- a/arch/riscv/kernel/traps.c=0A=
-> +++ b/arch/riscv/kernel/traps.c=0A=
-> @@ -174,7 +174,16 @@ int is_valid_bugaddr(unsigned long pc)=0A=
->  }=0A=
->  #endif /* CONFIG_GENERIC_BUG */=0A=
->  =0A=
-> -/* stvec & scratch is already set from head.S */=0A=
-> +/* stvec & scratch is already set from head.S when mmu is enabled */=0A=
->  void trap_init(void)=0A=
->  {=0A=
-> +#ifndef CONFIG_MMU=0A=
-> +	/*=0A=
-> +	 * Set sup0 scratch register to 0, indicating to exception vector=0A=
-> +	 * that we are presently executing in the kernel=0A=
-> +	 */=0A=
-> +	csr_write(CSR_SCRATCH, 0);=0A=
-> +	/* Set the exception vector address */=0A=
-> +	csr_write(CSR_TVEC, &handle_exception);=0A=
-> +#endif=0A=
->  }=0A=
-> =0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+Changes from v1:
+    - update commit description with proper ref-accounting justification
+
+commit db37a34c563b ("block, bfq: get a ref to a group when adding it to a service tree")
+introduce leak forbfq_group and blkcg_gq objects because of get/put
+imbalance.
+In fact whole idea of original commit is wrong because bfq_group entity
+can not dissapear under us because it is referenced by child bfq_queue's
+entities from here:
+ -> bfq_init_entity()
+    ->bfqg_and_blkg_get(bfqg);
+    ->entity->parent = bfqg->my_entity
+
+ -> bfq_put_queue(bfqq)
+    FINAL_PUT
+    ->bfqg_and_blkg_put(bfqq_group(bfqq))
+    ->kmem_cache_free(bfq_pool, bfqq);
+
+So parent entity can not disappear while child entity is in tree,
+and child entities already has proper protection.
+This patch revert commit db37a34c563b ("block, bfq: get a ref to a group when adding it to a service tree")
+
+
+bfq_group leak trace caused by bad commit:
+-> blkg_alloc
+   -> bfq_pq_alloc
+     -> bfqg_get (+1)
+->bfq_activate_bfqq
+  ->bfq_activate_requeue_entity
+    -> __bfq_activate_entity
+       ->bfq_get_entity
+         ->bfqg_and_blkg_get (+1)  <==== : Note1
+->bfq_del_bfqq_busy
+  ->bfq_deactivate_entity+0x53/0xc0 [bfq]
+    ->__bfq_deactivate_entity+0x1b8/0x210 [bfq]
+      -> bfq_forget_entity(is_in_service = true)
+	 entity->on_st_or_in_serv = false   <=== :Note2
+	 if (is_in_service)
+	     return;  ==> do not touch reference
+-> blkcg_css_offline
+ -> blkcg_destroy_blkgs
+  -> blkg_destroy
+   -> bfq_pd_offline
+    -> __bfq_deactivate_entity
+         if (!entity->on_st_or_in_serv) /* true, because (Note2)
+		return false;
+ -> bfq_pd_free
+    -> bfqg_put() (-1, byt bfqg->ref == 2) because of (Note2)
+So bfq_group and blkcg_gq  will leak forever, see test-case below.
+
+
+##TESTCASE_BEGIN:
+#!/bin/bash
+
+max_iters=${1:-100}
+#prep cgroup mounts
+mount -t tmpfs cgroup_root /sys/fs/cgroup
+mkdir /sys/fs/cgroup/blkio
+mount -t cgroup -o blkio none /sys/fs/cgroup/blkio
+
+# Prepare blkdev
+grep blkio /proc/cgroups
+truncate -s 1M img
+losetup /dev/loop0 img
+echo bfq > /sys/block/loop0/queue/scheduler
+
+grep blkio /proc/cgroups
+for ((i=0;i<max_iters;i++))
+do
+    mkdir -p /sys/fs/cgroup/blkio/a
+    echo 0 > /sys/fs/cgroup/blkio/a/cgroup.procs
+    dd if=/dev/loop0 bs=4k count=1 of=/dev/null iflag=direct 2> /dev/null
+    echo 0 > /sys/fs/cgroup/blkio/cgroup.procs
+    rmdir /sys/fs/cgroup/blkio/a
+    grep blkio /proc/cgroups
+done
+##TESTCASE_END:
+
+Signed-off-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+---
+ block/bfq-cgroup.c  |  2 +-
+ block/bfq-iosched.h |  1 -
+ block/bfq-wf2q.c    | 12 ++----------
+ 3 files changed, 3 insertions(+), 12 deletions(-)
+
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index 68882b9..b791e20 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -332,7 +332,7 @@ static void bfqg_put(struct bfq_group *bfqg)
+ 		kfree(bfqg);
+ }
+ 
+-void bfqg_and_blkg_get(struct bfq_group *bfqg)
++static void bfqg_and_blkg_get(struct bfq_group *bfqg)
+ {
+ 	/* see comments in bfq_bic_update_cgroup for why refcounting bfqg */
+ 	bfqg_get(bfqg);
+diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
+index cd224aa..7038952 100644
+--- a/block/bfq-iosched.h
++++ b/block/bfq-iosched.h
+@@ -986,7 +986,6 @@ struct bfq_group *bfq_find_set_group(struct bfq_data *bfqd,
+ struct blkcg_gq *bfqg_to_blkg(struct bfq_group *bfqg);
+ struct bfq_group *bfqq_group(struct bfq_queue *bfqq);
+ struct bfq_group *bfq_create_group_hierarchy(struct bfq_data *bfqd, int node);
+-void bfqg_and_blkg_get(struct bfq_group *bfqg);
+ void bfqg_and_blkg_put(struct bfq_group *bfqg);
+ 
+ #ifdef CONFIG_BFQ_GROUP_IOSCHED
+diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
+index eb0e2a6..26776bd 100644
+--- a/block/bfq-wf2q.c
++++ b/block/bfq-wf2q.c
+@@ -533,9 +533,7 @@ static void bfq_get_entity(struct bfq_entity *entity)
+ 		bfqq->ref++;
+ 		bfq_log_bfqq(bfqq->bfqd, bfqq, "get_entity: %p %d",
+ 			     bfqq, bfqq->ref);
+-	} else
+-		bfqg_and_blkg_get(container_of(entity, struct bfq_group,
+-					       entity));
++	}
+ }
+ 
+ /**
+@@ -649,14 +647,8 @@ static void bfq_forget_entity(struct bfq_service_tree *st,
+ 
+ 	entity->on_st_or_in_serv = false;
+ 	st->wsum -= entity->weight;
+-	if (is_in_service)
+-		return;
+-
+-	if (bfqq)
++	if (bfqq && !is_in_service)
+ 		bfq_put_queue(bfqq);
+-	else
+-		bfqg_and_blkg_put(container_of(entity, struct bfq_group,
+-					       entity));
+ }
+ 
+ /**
+-- 
+2.7.4
+
