@@ -2,108 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CB4241BDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 15:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDFC241BE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 15:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728760AbgHKN5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 09:57:19 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:39184 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728532AbgHKN5S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 09:57:18 -0400
-Received: by mail-io1-f70.google.com with SMTP id v10so9744855iot.6
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 06:57:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=+cHgg9a8eJJddqLe/oCJVSWP9J8KQvuNJEZvME5xXmA=;
-        b=kigu+aDpH7starEUmmirwWJRjnvPYhS8coKBlXM57vPajll9rZsg+eXVayZ49pRo0q
-         ePIgY7r+He28OIIfAWqtEkvGaFKYG7Tnc2gc7mKOBdHDY5whbAduTkB95tqw9N9gJBE5
-         ln/MaBVTt2fVAaqtOc5L9xIvHYBeEIayh2TT19DOXc+Lz+VJj/VLobk73/noyFleQDy6
-         xQ1jmUc0xSKNXPMk6tl7/Dhl/FZOzru7Uutf3dtxrWJcoXRCsQYT0DvDXSbR9uKxqkQW
-         dcKw9PFI6HDR00zY7m7dW5+HpmOu/pH3xwmg3rEJnk+0KhfwVchmzQrppErQX/LVsFp5
-         eUlQ==
-X-Gm-Message-State: AOAM531lPMIblSPW8nY2uBSYs899gElIMxhQ7a9N9ZvLqO18G6VMrhUF
-        k4tZXztx5IB5zsUrTK74/hySV5LeDEuyzO+ofhV7dN3NrEAA
-X-Google-Smtp-Source: ABdhPJzs9eayEdRluYFEuglfzFGulTDu+xWt1TmqdMl9GvrP3V31DsgZogEIIu9s8vdOXfBs4Z46I6DETIsQ3oOb27AArE8NQjvQ
+        id S1728795AbgHKN6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 09:58:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728638AbgHKN5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 09:57:51 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E83D7204FD;
+        Tue, 11 Aug 2020 13:57:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597154271;
+        bh=AUalpQ/F4oVEJNL3cwT0Yq/xqScgJYySpJZPuhXviZ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DjRy9cO/5e51Iv5u6EkzB0z5aEXggl0QXsYm602JCdsbHrWvMoezhNPKejp8T6hua
+         z9gMtdDiOv1b60+J0o+xxaWQ4GI2j3wBB3wKP5g6njQr3BhCAffEweqP2jzGM9M1B7
+         Lv9ZA07am5i8gsR1M9xvSTjV8uQKmk44NmK0fG+4=
+Date:   Tue, 11 Aug 2020 15:58:01 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-serial@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
+        Jiri Slaby <jslaby@suse.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC 0/5] Introduce NMI aware serial drivers
+Message-ID: <20200811135801.GA416071@kroah.com>
+References: <1595333413-30052-1-git-send-email-sumit.garg@linaro.org>
+ <CAFA6WYMN=na4Pxnu1LYRVAAZRdV==5EwU-Vcq-QkRb_jaLiPmw@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:9307:: with SMTP id d7mr17785704jah.71.1597154237154;
- Tue, 11 Aug 2020 06:57:17 -0700 (PDT)
-Date:   Tue, 11 Aug 2020 06:57:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f50fb505ac9a72c9@google.com>
-Subject: memory leak in io_submit_sqes
-From:   syzbot <syzbot+a730016dc0bdce4f6ff5@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYMN=na4Pxnu1LYRVAAZRdV==5EwU-Vcq-QkRb_jaLiPmw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Aug 11, 2020 at 07:20:26PM +0530, Sumit Garg wrote:
+> On Tue, 21 Jul 2020 at 17:40, Sumit Garg <sumit.garg@linaro.org> wrote:
+> >
+> > Make it possible for UARTs to trigger magic sysrq from an NMI. With the
+> > advent of pseudo NMIs on arm64 it became quite generic to request serial
+> > device interrupt as an NMI rather than IRQ. And having NMI driven serial
+> > RX will allow us to trigger magic sysrq as an NMI and hence drop into
+> > kernel debugger in NMI context.
+> >
+> > The major use-case is to add NMI debugging capabilities to the kernel
+> > in order to debug scenarios such as:
+> > - Primary CPU is stuck in deadlock with interrupts disabled and hence
+> >   doesn't honor serial device interrupt. So having magic sysrq triggered
+> >   as an NMI is helpful for debugging.
+> > - Always enabled NMI based magic sysrq irrespective of whether the serial
+> >   TTY port is active or not.
+> >
+> > Currently there is an existing kgdb NMI serial driver which provides
+> > partial implementation in upstream to have a separate ttyNMI0 port but
+> > that remained in silos with the serial core/drivers which made it a bit
+> > odd to enable using serial device interrupt and hence remained unused. It
+> > seems to be clearly intended to avoid almost all custom NMI changes to
+> > the UART driver.
+> >
+> > But this patch-set allows the serial core/drivers to be NMI aware which
+> > in turn provides NMI debugging capabilities via magic sysrq and hence
+> > there is no specific reason to keep this special driver. So remove it
+> > instead.
+> >
+> > Approach:
+> > ---------
+> >
+> > The overall idea is to intercept serial RX characters in NMI context, if
+> > those are specific to magic sysrq then allow corresponding handler to run
+> > in NMI context. Otherwise, defer all other RX and TX operations onto IRQ
+> > work queue in order to run those in normal interrupt context.
+> >
+> > This approach is demonstrated using amba-pl011 driver.
+> >
+> > Patch-wise description:
+> > -----------------------
+> >
+> > Patch #1 prepares magic sysrq handler to be NMI aware.
+> > Patch #2 adds NMI framework to serial core.
+> > Patch #3 and #4 demonstrates NMI aware uart port using amba-pl011 driver.
+> > Patch #5 removes kgdb NMI serial driver.
+> >
+> > Goal of this RFC:
+> > -----------------
+> >
+> > My main reason for sharing this as an RFC is to help decide whether or
+> > not to continue with this approach. The next step for me would to port
+> > the work to a system with an 8250 UART.
+> >
+> 
+> A gentle reminder to seek feedback on this series.
 
-syzbot found the following issue on:
+It's the middle of the merge window, and I can't do anything.
 
-HEAD commit:    d6efb3ac Merge tag 'tty-5.9-rc1' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13cb0762900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=42163327839348a9
-dashboard link: https://syzkaller.appspot.com/bug?extid=a730016dc0bdce4f6ff5
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16e877dc900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1608291a900000
+Also, I almost never review RFC patches as I have have way too many
+patches that people think are "right" to review first...
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a730016dc0bdce4f6ff5@syzkaller.appspotmail.com
+I suggest you work to flesh this out first and submit something that you
+feels works properly.
 
-executing program
-executing program
-executing program
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff888124949100 (size 256):
-  comm "syz-executor808", pid 6480, jiffies 4294949911 (age 33.960s)
-  hex dump (first 32 bytes):
-    00 78 74 2a 81 88 ff ff 00 00 00 00 00 00 00 00  .xt*............
-    90 b0 51 81 ff ff ff ff 00 00 00 00 00 00 00 00  ..Q.............
-  backtrace:
-    [<0000000084e46f34>] io_alloc_req fs/io_uring.c:1503 [inline]
-    [<0000000084e46f34>] io_submit_sqes+0x5dc/0xc00 fs/io_uring.c:6306
-    [<000000006d4e19eb>] __do_sys_io_uring_enter+0x582/0x830 fs/io_uring.c:8036
-    [<00000000a4116b07>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000067b2aefc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+good luck!
 
-BUG: memory leak
-unreferenced object 0xffff88811751d200 (size 96):
-  comm "syz-executor808", pid 6480, jiffies 4294949911 (age 33.960s)
-  hex dump (first 32 bytes):
-    00 78 74 2a 81 88 ff ff 00 00 00 00 00 00 00 00  .xt*............
-    0e 01 00 00 00 00 75 22 00 00 00 00 00 0f 1f 04  ......u"........
-  backtrace:
-    [<00000000073ea2ba>] kmalloc include/linux/slab.h:555 [inline]
-    [<00000000073ea2ba>] io_arm_poll_handler fs/io_uring.c:4773 [inline]
-    [<00000000073ea2ba>] __io_queue_sqe+0x445/0x6b0 fs/io_uring.c:5988
-    [<000000001551bde0>] io_queue_sqe+0x309/0x550 fs/io_uring.c:6060
-    [<000000002dfb908f>] io_submit_sqe fs/io_uring.c:6130 [inline]
-    [<000000002dfb908f>] io_submit_sqes+0x8b8/0xc00 fs/io_uring.c:6327
-    [<000000006d4e19eb>] __do_sys_io_uring_enter+0x582/0x830 fs/io_uring.c:8036
-    [<00000000a4116b07>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000067b2aefc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+greg k-h
