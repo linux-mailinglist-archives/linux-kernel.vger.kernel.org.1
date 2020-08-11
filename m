@@ -2,150 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4316241D22
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE0A241D20
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 17:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728976AbgHKP2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 11:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728859AbgHKP2n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 11:28:43 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D408C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 08:28:43 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id y11so6126369qvl.4
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 08:28:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Lgl2XWPxOkvTO1C8S88OrGJFzEG0BedRecFChwB3gY8=;
-        b=O+oz/y94S7Ot2vFCIAFHszkvovBOf36KdyrH2IEJWc4M4iGAI+0vUVeb65yAePs+57
-         DROlBFWLKmiEh+5yYPQAuZxOyCCI59rbE60yQsK/k5p+hCWZLwZuiio3saMyRdst9aN6
-         W00Raq/cnhUCgHcCrtxHXZRE6zekJg2/KMflF2aaWNHLVuSUxA1oo1s4fEWzKninscH7
-         +U1Bhx4SjBooCPa+GwTjN7sivvJ+csbnAYbo7Rsrvfg+DIRVEeLlRuCSag4yPLoeRdCG
-         FufH0Ro9lxoInq9MGfEz5Pr+bqIIzZVDkYh86LTyBcauJu8KDfKElTqTqBT5krSr8MMX
-         gq3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Lgl2XWPxOkvTO1C8S88OrGJFzEG0BedRecFChwB3gY8=;
-        b=N+fFL+f1fdgIxJO4ZEO8ipOTPh0LMqYgXNUiodz0URi5HoMa9BZYMyVBGz4hJhO0yl
-         6aAe7+66/SWCHDL3qRVBZczN/Irv03sAWvcYhEciRyaBaHHLxdNRUYCPLGH2ZS66dcbJ
-         Kw55A1+xuuymWtPbdAqR1Bef0We4/FpMAg86tJn5ioyh2gkjfVX+KxAa/AgWL6AkSVgy
-         v2ZYOjzhyZlbYYTUQIOo1vJM/wv2MiGY9j2aAqamcOA5feh8Mr3YM8AixGEd1VcrdR8t
-         kESy+TuYHyPcCtuzObn5Ahqw66jH2eG/2pe0MR/dSHjgrdVx8j7/3aA4XGEdoXfhxGCe
-         tjow==
-X-Gm-Message-State: AOAM532e01bO3jeCbV5DO0TSABSEJzQ0LDy32E0JKxmCJt2Nr2nxpXqd
-        5+lUR88vA91vbwE4jAR1uP88mQ==
-X-Google-Smtp-Source: ABdhPJwUsKgHMBfWAiaT6/HGMo7TWT1YWSQ7mkn2a8Es9KiyKcTAN0v8Enpnj6TS8l5TEuNaxVqYfA==
-X-Received: by 2002:ad4:446d:: with SMTP id s13mr1833462qvt.183.1597159722398;
-        Tue, 11 Aug 2020 08:28:42 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:2dd0])
-        by smtp.gmail.com with ESMTPSA id l189sm17003362qke.67.2020.08.11.08.28.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Aug 2020 08:28:41 -0700 (PDT)
-Date:   Tue, 11 Aug 2020 11:27:37 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/5] mm: memcg: charge memcg percpu memory to the
- parent cgroup
-Message-ID: <20200811152737.GB650506@cmpxchg.org>
-References: <20200623184515.4132564-1-guro@fb.com>
- <20200623184515.4132564-5-guro@fb.com>
+        id S1728936AbgHKP1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 11:27:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728833AbgHKP1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 11:27:43 -0400
+Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32C1F2078E;
+        Tue, 11 Aug 2020 15:27:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597159663;
+        bh=F5Au2QencG0Uq++GUgB+02riOEgxtOOIblwGIT8wvLI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VxS0aKjCXSiP7qflto20mBRjPz47NV/sdbDFuxnl6vEsEPgSRcHVKGIAwz1xESNrX
+         IftH9QhriPOjJq7XLqo3P0Asme+gtXExwDwdPpfHbRlntfDWuc/tSXUd2l1opGORGU
+         pzY5h48v6Pfm6abiD+lVDUJcBdEdYOdkk9AvLkns=
+Date:   Tue, 11 Aug 2020 17:27:38 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     peterz@infradead.org
+Cc:     Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, keescook@chromium.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2] module: Harden STRICT_MODULE_RWX
+Message-ID: <20200811172738.2d632a09@coco.lan>
+In-Reply-To: <20200811145524.GE2674@hirez.programming.kicks-ass.net>
+References: <20200403171303.GK20760@hirez.programming.kicks-ass.net>
+        <20200808101222.5103093e@coco.lan>
+        <20200810092523.GA8612@linux-8ccs>
+        <20200810150647.GB8612@linux-8ccs>
+        <20200811163427.6edbf343@coco.lan>
+        <20200811145524.GE2674@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200623184515.4132564-5-guro@fb.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 11:45:14AM -0700, Roman Gushchin wrote:
-> Memory cgroups are using large chunks of percpu memory to store vmstat
-> data.  Yet this memory is not accounted at all, so in the case when there
-> are many (dying) cgroups, it's not exactly clear where all the memory is.
+Em Tue, 11 Aug 2020 16:55:24 +0200
+peterz@infradead.org escreveu:
+
+> On Tue, Aug 11, 2020 at 04:34:27PM +0200, Mauro Carvalho Chehab wrote:
+> >   [33] .plt              PROGBITS         0000000000000340  00035c80
+> >        0000000000000001  0000000000000000 WAX       0     0     1
+> >   [34] .init.plt         NOBITS           0000000000000341  00035c81
+> >        0000000000000001  0000000000000000  WA       0     0     1
+> >   [35] .text.ftrace[...] PROGBITS         0000000000000342  00035c81
+> >        0000000000000001  0000000000000000 WAX       0     0     1  
 > 
-> Because the size of memory cgroup internal structures can dramatically
-> exceed the size of object or page which is pinning it in the memory, it's
-> not a good idea to simple ignore it.  It actually breaks the isolation
-> between cgroups.
+> .plt and .text.ftrace_tramplines are buggered.
 > 
-> Let's account the consumed percpu memory to the parent cgroup.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Dennis Zhou <dennis@kernel.org>
+> arch/arm64/kernel/module.lds even marks then as NOLOAD.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Hmm... Shouldn't the code at module_enforce_rwx_sections() or at
+load_module() ignore such sections instead of just rejecting probing
+all modules?
 
-This makes sense, and the accounting is in line with how we track and
-distribute child creation quotas (cgroup.max.descendants and
-cgroup.max.depth) up the cgroup tree.
+I mean, if the existing toolchain is not capable of excluding
+those sections, either the STRICT_MODULE_RWX hardening should be
+disabled, if a broken toolchain is detected or some runtime code 
+should handle such sections on a different way.
 
-I have one minor comment that isn't a dealbreaker for me:
-
-> @@ -5069,13 +5069,15 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
->  	if (!pn)
->  		return 1;
->  
-> -	pn->lruvec_stat_local = alloc_percpu(struct lruvec_stat);
-> +	pn->lruvec_stat_local = alloc_percpu_gfp(struct lruvec_stat,
-> +						 GFP_KERNEL_ACCOUNT);
->  	if (!pn->lruvec_stat_local) {
->  		kfree(pn);
->  		return 1;
->  	}
->  
-> -	pn->lruvec_stat_cpu = alloc_percpu(struct lruvec_stat);
-> +	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct lruvec_stat,
-> +					       GFP_KERNEL_ACCOUNT);
->  	if (!pn->lruvec_stat_cpu) {
->  		free_percpu(pn->lruvec_stat_local);
->  		kfree(pn);
-> @@ -5149,11 +5151,13 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
->  		goto fail;
->  	}
->  
-> -	memcg->vmstats_local = alloc_percpu(struct memcg_vmstats_percpu);
-> +	memcg->vmstats_local = alloc_percpu_gfp(struct memcg_vmstats_percpu,
-> +						GFP_KERNEL_ACCOUNT);
->  	if (!memcg->vmstats_local)
->  		goto fail;
->  
-> -	memcg->vmstats_percpu = alloc_percpu(struct memcg_vmstats_percpu);
-> +	memcg->vmstats_percpu = alloc_percpu_gfp(struct memcg_vmstats_percpu,
-> +						 GFP_KERNEL_ACCOUNT);
->  	if (!memcg->vmstats_percpu)
->  		goto fail;
->  
-> @@ -5202,7 +5206,9 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
->  	struct mem_cgroup *memcg;
->  	long error = -ENOMEM;
->  
-> +	memalloc_use_memcg(parent);
->  	memcg = mem_cgroup_alloc();
-> +	memalloc_unuse_memcg();
-
-The disconnect between 1) requesting accounting and 2) which cgroup to
-charge is making me uneasy. It makes mem_cgroup_alloc() a bit of a
-handgrenade, because accounting to the current task is almost
-guaranteed to be wrong if the use_memcg() annotation were to get lost
-in a refactor or not make it to a new caller of the function.
-
-The saving grace is that mem_cgroup_alloc() is pretty unlikely to be
-used elsewhere. And pretending it's an independent interface would be
-overengineering. But how about the following in mem_cgroup_alloc() and
-alloc_mem_cgroup_per_node_info() to document that caller relationship:
-
-	/* We charge the parent cgroup, never the current task */
-	WARN_ON_ONCE(!current->active_memcg);
+Thanks,
+Mauro
