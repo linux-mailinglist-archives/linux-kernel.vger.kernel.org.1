@@ -2,83 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9779A2419E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1547F2419F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 12:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728557AbgHKKrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 06:47:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:36648 "EHLO foss.arm.com"
+        id S1728570AbgHKKxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 06:53:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41820 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728280AbgHKKrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 06:47:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1BC0931B;
-        Tue, 11 Aug 2020 03:47:46 -0700 (PDT)
-Received: from [10.37.12.74] (unknown [10.37.12.74])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C7CEC3F22E;
-        Tue, 11 Aug 2020 03:47:42 -0700 (PDT)
-Subject: Re: [PATCH 2/2] KVM: arm64: Only reschedule if
- MMU_NOTIFIER_RANGE_BLOCKABLE is not set
-To:     will@kernel.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     maz@kernel.org, james.morse@arm.com, tsbogend@alpha.franken.de,
-        paulus@ozlabs.org, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, stable@vger.kernel.org
-References: <20200811102725.7121-1-will@kernel.org>
- <20200811102725.7121-3-will@kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <1b326944-c4aa-eb52-b7dc-a77f9eecae63@arm.com>
-Date:   Tue, 11 Aug 2020 11:52:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1728326AbgHKKxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 06:53:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D8A7AAB3E;
+        Tue, 11 Aug 2020 10:54:13 +0000 (UTC)
+Date:   Tue, 11 Aug 2020 12:53:52 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        John Ogness <john.ogness@linutronix.de>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-embedded@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] init/Kconfig: Increase default log buffer size
+ from 128 KB to 512 KB
+Message-ID: <20200811105352.GG6215@alley>
+References: <20200811092924.6256-1-pmenzel@molgen.mpg.de>
+ <20200811092924.6256-2-pmenzel@molgen.mpg.de>
 MIME-Version: 1.0
-In-Reply-To: <20200811102725.7121-3-will@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200811092924.6256-2-pmenzel@molgen.mpg.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/11/2020 11:27 AM, Will Deacon wrote:
-> When an MMU notifier call results in unmapping a range that spans multiple
-> PGDs, we end up calling into cond_resched_lock() when crossing a PGD boundary,
-> since this avoids running into RCU stalls during VM teardown. Unfortunately,
-> if the VM is destroyed as a result of OOM, then blocking is not permitted
-> and the call to the scheduler triggers the following BUG():
+On Tue 2020-08-11 11:29:24, Paul Menzel wrote:
+> Commit f17a32e97e (let LOG_BUF_SHIFT default to 17) from 2008 was the
+> last time, the the default log buffer size bump was increased.
 > 
->   | BUG: sleeping function called from invalid context at arch/arm64/kvm/mmu.c:394
->   | in_atomic(): 1, irqs_disabled(): 0, non_block: 1, pid: 36, name: oom_reaper
->   | INFO: lockdep is turned off.
->   | CPU: 3 PID: 36 Comm: oom_reaper Not tainted 5.8.0 #1
->   | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
->   | Call trace:
->   |  dump_backtrace+0x0/0x284
->   |  show_stack+0x1c/0x28
->   |  dump_stack+0xf0/0x1a4
->   |  ___might_sleep+0x2bc/0x2cc
->   |  unmap_stage2_range+0x160/0x1ac
->   |  kvm_unmap_hva_range+0x1a0/0x1c8
->   |  kvm_mmu_notifier_invalidate_range_start+0x8c/0xf8
->   |  __mmu_notifier_invalidate_range_start+0x218/0x31c
->   |  mmu_notifier_invalidate_range_start_nonblock+0x78/0xb0
->   |  __oom_reap_task_mm+0x128/0x268
->   |  oom_reap_task+0xac/0x298
->   |  oom_reaper+0x178/0x17c
->   |  kthread+0x1e4/0x1fc
->   |  ret_from_fork+0x10/0x30
+> Machines have evolved, and on current hardware, enough memory is
+> present, and some devices have over 200 PCI devices, like a two socket
+> Skylake-E server, resulting a lot of lines.
 > 
-> Use the new 'flags' argument to kvm_unmap_hva_range() to ensure that we
-> only reschedule if MMU_NOTIFIER_RANGE_BLOCKABLE is set in the notifier
-> flags.
+> Therefore, increase the default from 128 KB to 512 KB. Anyone, with
+> limited memory, can still lower it.
 > 
-> Cc: <stable@vger.kernel.org>
-> Fixes: 8b3405e345b5 ("kvm: arm/arm64: Fix locking for kvm_free_stage2_pgd")
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: James Morse <james.morse@arm.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -681,9 +681,9 @@ config IKHEADERS
+>  	  kheaders.ko is built which can be loaded on-demand to get access to headers.
+>  
+>  config LOG_BUF_SHIFT
+> -	int "Kernel log buffer size (16 => 64KB, 17 => 128KB)"
+> +	int "Kernel log buffer size (17 => 128KB, 19 => 512KB)"
+>  	range 12 25
+> -	default 17
+> +	default 19
+>  	depends on PRINTK
+>  	help
+>  	  Select the minimal kernel log buffer size as a power of 2.
 
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Honestly, I do not have experience with changing the defaults. People
+hacking small devices might complain. Well, this can be solved
+by increasing the default only when BASE_FULL is set.
+
+I am personally fine with increasing the default when BASE_FULL
+is set. The amount of messages is growing over time because of
+increasing complexity of both the hardware and software.
+Fortunately also the amount of available memory is growing.
+
+Well, this should get discussed in wider audience. Adding some
+people into CC.
+
+JFYI, it started with report of lost messages, see
+https://lore.kernel.org/lkml/264bfbae-122d-9c41-59ea-6413f91bd866@molgen.mpg.de/
+
+Best Regards,
+Petr
