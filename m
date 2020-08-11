@@ -2,60 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5462E241646
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 08:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF48D241649
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 08:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgHKGY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 02:24:57 -0400
-Received: from sonic306-1.consmr.mail.bf2.yahoo.com ([74.6.132.40]:37529 "EHLO
-        sonic306-1.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726154AbgHKGY5 (ORCPT
+        id S1728068AbgHKG0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 02:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726154AbgHKG0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 02:24:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597127094; bh=gH13qpDo1pe7E7DmJ6M5fxIu4YXvqPHbDbzMZhOfCDs=; h=Date:From:Reply-To:Subject:References:From:Subject; b=AyyuhT3S7v4FYQL9vVa/6HrXZWW31ojJ5ruhtyth8DS0Tit/P1fKfftX5ASwGVcPD4EYbFecLIxwUkNdnp11K0uYFMp4JpydR/DgdQLpO4Fmdj6keFv0Vi9Yij3iXZFOjVMjNgaGZJBUlQvKqSGaMyegtjdtLxoXnk01/N8F5z4otDqQRdndYlB52wiQGnAG7PqP6k4jyHXevMEuVjQd25t3ICUN+Ca9Op7JA7pMJqMqQCIQoiWIVz1U1XEwzRv727iWXAYJ3yoQVFkAMoH9H3+1whQqgp09iNwMSCO2mB8Id6FNwWraQD/ag5RW3MeSVgVH+NJkPrpQkx1UUveUdQ==
-X-YMail-OSG: 1qL5JtgVM1nQj4zZs4g_n4dYGjm6hIAk7CB17dlHV.5J1posbgn_AHvuhkF.OWU
- RG_ClopnXAeHC._1amvZhBL9yFVcYjsBrdpveetjP.YepegafLiMp5WuSn45.g1rtcjEHpuA6PMp
- SrxaneqArXsfATG2VRKOzIrKJ7ENuLfpYzlwzrOyaqX9gG19RHOQToiwE1N8MXndqkbkRUKePbtQ
- wKs_.s0H2YUU3yrlSH7o0Oy6rF_olOwh9OhEERZ7fKm_i9WUV.YZqtZY6aYoxzWwyGmhPjtC7kct
- qMK4S39L3MCDFIz.jFJs4fB5GoNEPiKY2.L2618yglOxMak5IOe72Ku2RcogNmQKWSBaGXnWE9F6
- R_0rFG_yLae7XWTvwx61CuSziY44lr5K360sJPF5QLIiz1puAyUoaqrxwpMiebmCF0vv2QLl.XFK
- .Lv_j8_GLAW8YHq6S2t3v5luTKBDW_6J2lHFjj.74W.VI8lYq7ruUNeBe4He.9r2166bSo9ai.fZ
- Bg20QwYHCx.Ju7Ro4HtUw_ynzu9pAImInaAnyrZAi644m6Zbcti7uDaqOUAyGJsWbkJ2gnZ0ajEW
- OpdYtSjSfheBnR4CzCqn8jRZhuekHMwdeIajsr4uPGyCKLmxo5ekwrpPl.OvcopVZiWZtvSMhQid
- 0FTE4VwtLS2WUgeYxoeo4uOCky1zHX0vFWVVosagIcqJIImND8bzubyVzWMAsGoWoEp8QuM4.D53
- 032tdFCcs79yL7wqsIKKbfGwlj41nCXIp7xWLSZIcP947rPtpoXnzkIgAUUXl5dSOtQosctraUJL
- XT9VtfyTr0CoVaWF0oArG6ncwv8T3Y60xElS2O5N7wqHTKenYZVRo2ytQ8MXMhxwcQpknlKGjQcA
- 0VOFkIayZRulja9rPTr8919SKzmW9Z3oPfQnvyQXOzhv5iHF5su2ibPr0_3kZnxL.jFCKAqldWM6
- x2g6t2GEThEfJT2rtq1_9YSr3QxaGE59ieHOFsQIVjOlscCGIY_tSV8fKHLAbLEvAiJHEYFUsmqL
- InJBMfKQJO3cu_JJXmzi_ETRTFA3IWMxjCBL_gatamv4lf_yukhWgVtMsb_fMKVXaRpNsD9N7NVQ
- lr3rFQNtw7jydMVbfCJp_fHZOTRwONH6OijId6Ze8y_0iTKH4Y4h9XDkCAiz9iDE6RIFpLlBHamK
- Ee07j0oPzACccDppbjqlB9bjns8WWyMsZx8qtcgW5j2Sl0CoK5kuNiytrOH9bXyoK1y62Hxs8hTi
- fO3Pv9J_SJ.Iut1aDlccZfnlgdcWVBUDRzBOXpDx_xvBXendVX2YlDS3HM9QdaAS79Sz_xySFoV0
- S3ljGDNCsSgJkkkYgOqQIeaeUy2PSi_M2i5.a3MVTU4FITR01uxMWFnGlMszDgB76tlLOz3UExvM
- .yGA-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.bf2.yahoo.com with HTTP; Tue, 11 Aug 2020 06:24:54 +0000
-Date:   Tue, 11 Aug 2020 06:24:51 +0000 (UTC)
-From:   Miss Amina Ibrahim <missaminaibrahim001@gmail.com>
-Reply-To: missaminaibra@gmail.com
-Message-ID: <1089003043.83615.1597127091053@mail.yahoo.com>
-Subject: My Name is Miss Amina Ibrahim from Libya, I am 23 years old
+        Tue, 11 Aug 2020 02:26:33 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0994C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 23:26:32 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mt12so1329161pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 10 Aug 2020 23:26:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=VJTXqvLrvMMQzRof1vfqgipc+TGVK+u9sAMmZlRXQAg=;
+        b=TagRL43FdmkJVZHHkDLuQOHpBpVjVUeBo6kA7CgyCUtd9h0IiwlOyCCJ8JYKd/sRO6
+         0G5GFEx76LsLH4gTbPLBMKX4OT/bZ8MY9Pg1ZlJXg6gvqKyEiPVP8c9gm7PBZvcpRS5k
+         j27BBdBUMKGqy90oqSfEqe9bLV2aGZNMjPkhpfi3oks1dJ7myszwKtc/XudO2ujxlQD/
+         cuA6VKgImD6dWvyDfQje9e5/vHLmNyebo4IMJeDuz7mDfU/0fw4sn25twlS5M45/0q4Z
+         lVPJUShFl2Mc7CL+LgXUydGzOAmCHlBq9TxM6mpchTMkQGmK42A81G/xYqTUwTCnRnwQ
+         +ZbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VJTXqvLrvMMQzRof1vfqgipc+TGVK+u9sAMmZlRXQAg=;
+        b=UnkSfQjvxpfmgQFOiwbzfiYISNbO4gpOJz4sblkC1XSFBNgcYxTRZa+9SNnUQth83g
+         E4Z+iUuiDM6q11aGdLQhQjpazp/+nGgvxHqWa3sB0eBHCk2qk8freckf7qwYfxGoqGZW
+         I8mztQ/XZuTKrg3ePxPr+sPQqVPbfFh+uAnLGIuJHQogJ5bW2BpGUPDo3k01Ua44N6Ou
+         I6z5mmKcRnue2xJZsGu6LiEDOpBDy/qU8tSxa9ax1qWLVbxgSd7T2/qqi9f1KsHb8bCq
+         fJLyDGDRTZmJyc8yJZ38FezKQLMhdy+BUL9SsXCx8gvGRc9+ELaqs7SA7qEOv9NuihIf
+         c0NQ==
+X-Gm-Message-State: AOAM530HvgrApnPaYBZGWX3DE0ukc9ZH1S1mktUHaLaoU28JUSirGBVN
+        gSDShNSf03WV7tHzbi+h4+Z9j8Ihsg==
+X-Google-Smtp-Source: ABdhPJzWa4+iScHbqTBVCEZxGz8oX3jdRGzQwlJy8qC9cvSt8meVn4PTHsxB0TneD/ZWVhU1qWqvJg==
+X-Received: by 2002:a17:90a:cc14:: with SMTP id b20mr3052803pju.1.1597127192084;
+        Mon, 10 Aug 2020 23:26:32 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:699:2bc7:b9eb:9a30:bf89:3f3d])
+        by smtp.gmail.com with ESMTPSA id u15sm1432169pje.42.2020.08.10.23.26.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 10 Aug 2020 23:26:31 -0700 (PDT)
+Date:   Tue, 11 Aug 2020 11:56:25 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 00/11] Introduce features and debugfs/sysfs entries
+ for MHI
+Message-ID: <20200811062625.GD2762@Mani-XPS-13-9360>
+References: <1597096865-19636-1-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1089003043.83615.1597127091053.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1597096865-19636-1-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Name is Miss Amina Ibrahim from Libya, I am 23 years old, I am in St.Christopher's Parish for refugee in Burkina Faso under United Nations High commission for Refugee, I lost my parents in the recent war in Libya, right now am in Burkina Faso, please save my life i am in danger need your help in transferring my inheritance my father left behind for me in a Bank in Burkina Faso here, I have every document for the transfer, all I need is a foreigner who will stand as the foreign partner to my father and beneficiary of the fund. The money deposited in the Bank was US10.5 MILLION UNITED STATES DOLLAR) with 15 kilo Gold I have confirmed from the bank in Burkina Faso where the Gold was deposited.
+Hi Bhaumik,
 
-Please I just need this fund to be transfer to your account so that I will come over to your country and complete my education as you know that my country have been in deep crisis due to the war in Libya and I cannot go back there again because I have nobody again all of my family were killed in the war.
+On Mon, Aug 10, 2020 at 03:00:54PM -0700, Bhaumik Bhatt wrote:
+> Save hardware information from BHI.
+> Allow reading and modifying some MHI variables for debug, test, and
+> informational purposes using debugfs.
+> Read values for device specific hardware information to be used by OEMs in
+> factory testing such as serial number and PK hash using sysfs.
+> 
+> This set of patches was tested on arm64 and x86.
+> 
 
-Please read this proposal as urgent and get to me as well.
+Sorry for stretching the review so long. Will apply the series to mhi-next
+once v5.9-rc1 is out.
 
-Yours Faithfully,
+Thanks,
+Mani
 
-Miss Amina Ibrahim.
+> v7:
+> -Added suggested-by and reviewed-by tags
+> -Fixed nitpick on removal of M3_fast counter as it was unused
+> -Updated sysfs documentation dates and intended kernel version
+> -Fixed minor debugfs formatting by removing an extra newline character
+> 
+> v6:
+> -Introduced APIs for allocating and freeing the MHI controller so as to ensure
+> that it is always zero-initialized
+> -Moved gerrits around for counter introduction
+> -Fixed documentation for sysfs
+> 
+> v5:
+> -Removed the debug entry to trigger reset and will be addressed in a seperate
+> patch
+> -Added patch bus: mhi: core: Use counters to track MHI device state transitions
+> -Updated helper API to trigger a non-blocking host resume
+> -Minor nitpicks also fixed
+> 
+> v4:
+> -Removed bus: mhi: core: Introduce independent voting mechanism patch
+> -Removed bus vote function from debugfs due to independent voting removal
+> -Added helper resume APIs to aid consolidation of spread out code
+> -Added a clean-up patch and a missing host resume in voting API
+> 
+> v3:
+> -Add patch to check for pending packets in suspend as a dependency for the
+> independent voting mechanism introduction
+> -Include register dump entry for debugfs to dump MHI, BHI, and BHIe registers
+> -Update commit message for the debugfs patch
+> -Updated Documentation/ABI with the required info for sysfs
+> -Updated debugfs patch to include a new KConfig entry and dependencies
+> -Updated reviewed-by for some patches
+> 
+> v2:
+> -Added a new debugfs.c file for specific debugfs entries and code
+> -Updated commit text and addressed some comments for voting change
+> -Made sure sysfs is only used for serial number and OEM PK hash usage
+> 
+> Bhaumik Bhatt (11):
+>   bus: mhi: core: Remove double occurrence for mhi_ctrl_ev_task()
+>     declaration
+>   bus: mhi: core: Abort suspends due to outgoing pending packets
+>   bus: mhi: core: Use helper API to trigger a non-blocking host resume
+>   bus: mhi: core: Trigger host resume if suspended during
+>     mhi_device_get()
+>   bus: mhi: core: Use generic name field for an MHI device
+>   bus: mhi: core: Introduce helper function to check device state
+>   bus: mhi: core: Introduce counters to track MHI device state
+>     transitions
+>   bus: mhi: core: Introduce debugfs entries for MHI
+>   bus: mhi: core: Read and save device hardware information from BHI
+>   bus: mhi: core: Introduce APIs to allocate and free the MHI controller
+>   bus: mhi: core: Introduce sysfs entries for MHI
+> 
+>  Documentation/ABI/stable/sysfs-bus-mhi |  21 ++
+>  MAINTAINERS                            |   1 +
+>  drivers/bus/mhi/Kconfig                |   8 +
+>  drivers/bus/mhi/core/Makefile          |   5 +-
+>  drivers/bus/mhi/core/boot.c            |  17 +-
+>  drivers/bus/mhi/core/debugfs.c         | 409 +++++++++++++++++++++++++++++++++
+>  drivers/bus/mhi/core/init.c            |  81 ++++++-
+>  drivers/bus/mhi/core/internal.h        |  37 ++-
+>  drivers/bus/mhi/core/main.c            |  27 +--
+>  drivers/bus/mhi/core/pm.c              |  26 ++-
+>  include/linux/mhi.h                    |  30 ++-
+>  11 files changed, 623 insertions(+), 39 deletions(-)
+>  create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
+>  create mode 100644 drivers/bus/mhi/core/debugfs.c
+> 
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
