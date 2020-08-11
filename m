@@ -2,84 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9106824205B
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4538D24205E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 Aug 2020 21:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgHKTcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 15:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbgHKTcG (ORCPT
+        id S1726355AbgHKTdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 15:33:10 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8170 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726068AbgHKTdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 15:32:06 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C29BC061788
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 12:32:06 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id m8so8164127pfh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 12:32:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=tA1M4j2w8ikxzsm8TqiavbfeCWghKEktBcvPRuyYdeI=;
-        b=As8qfrI4fsdQlw1YluH7CQP9RPdnbLLarMDBpBfPLtdJM6Zz9+5A7xoQef2NTzfUE/
-         +C1+3eziTtpdJnqzivpXYwXCBLOe3YSljJNFih8WyxQrvWp6asRkc6RZ6Bw0jOsnQh2g
-         pMc19VgG5f7Jp9oK3lDGsOeZmBremTkgYbNvc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=tA1M4j2w8ikxzsm8TqiavbfeCWghKEktBcvPRuyYdeI=;
-        b=FD5BZljBE0S2zUNNoG3Mlk+jBtKSqgETiLT7k/Oa2IpTT61vNVmk7h0dmS0c5jJNn+
-         QCdkKI3Xb36AKz7ocOCd7WvMciuiqmxib7AXrPqlYOyRa9DHOeOgmFNk4FCgWsT4xLkF
-         CQYeayD+mafTOdBcEKZGBY+eHxIsljhN28MWTf1yLl9cyNA0Fot7HPVZcPZZWNPiGNlj
-         bHdHMzZxMUSIaV4atzGlTxVzhhEmtvZVpvzh6C65KzGuaSGR2NVxDXd88VPE1XMozqE1
-         nZU+u34HtRBsX/tSecJtY4tK3DOI5T1hl3eoqUTkD3tv1wSO5r66UYH3pKlQlXEmnB53
-         2gww==
-X-Gm-Message-State: AOAM532Y3X1Xzkr9HvZSkY7eGQ7H2KnKw1kTuvcPyOFGsNIfujRBtmAY
-        DKSubyw0fCAC9xQOohwi/T3ORpNI0Ic=
-X-Google-Smtp-Source: ABdhPJxLgsyPl3Dbi+HYEp5MXKHxD/EOIrbVN3IARmbEfeFc7gN7kF/USAK2IJ9ZzHp+dLVfg9OamA==
-X-Received: by 2002:a63:a50e:: with SMTP id n14mr2037903pgf.234.1597174325609;
-        Tue, 11 Aug 2020 12:32:05 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id j8sm18852860pfh.90.2020.08.11.12.32.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Aug 2020 12:32:05 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 11 Aug 2020 15:33:07 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 07BJWnig007435;
+        Tue, 11 Aug 2020 12:32:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=C7HhIqKzOfHouVjJYFUIT5ZfHT1gq9Ocurb0un4DLpY=;
+ b=NdP84H1NbcYDY4lLnvPmi9TPImg9sVHAOQeywfxAOOxWtT9tB1J1PEEXIrzJ8klx4k6M
+ mDTQb9GKzNxGVq7NuP+R2oN5thr/gsCfKUBMYg3Y4D7ICEwPPdbG8HwKEPWytP9rzkvo
+ TaI6Ur5028y/R3Ez1CvUigGs5YoZ4FlKADs= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 32v0kjrbea-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 11 Aug 2020 12:32:51 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 11 Aug 2020 12:32:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oQDGhPCuT5lhwGTCWJVCaKCO3s3NdbxMYEIYlwAbleO7uOtHvj7FdGr4oVlqFv9uFUPuyFj2Iq7KlcN+AXDw8noag5bsD81t4vN6A6lq/gjHxxzkobtLxz673tBsZ8c8wCTAWmjDvfZ6tr7jIf6gku+k6Bok0XsQCMW9JXlE56MEsozB2zL5B3mpKZ8dN5/ybuHeWBdaKWFagRcqAXcbuZ4CNN2Xk4fXF9ShwE1aNiSlNwfToBPCa1bwpeqTnNNJMXkgbD5w201bp+MJMt8td1WYyewNNJ8LXNf5zWS1QOuAdUf316hJEzWNzsJ1qlm+aqzbeNOwGwLsXSjqOsmXpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C7HhIqKzOfHouVjJYFUIT5ZfHT1gq9Ocurb0un4DLpY=;
+ b=nN1VeS5orex46Ie8HcjZh3ntQu5Nv05fOEBRyRURo2uDs8CNEKXL6sCxj12HlHeJPHw0p96Ju796knq7owdAFOu0Gqi6TV3JOvy6Xily6nzP8vAJuXmAU/BlkEyvNb2ZZgAdHWH8N/nhaA/3kePwiKzgauDmO9P4COdI1HaujFwSnYPWtL00uTz49Co2PbRAc0BN6Fv9tPZXa1Rg3nVMbLwL43Ajr5cRrFWhLoCqy1v/86pJosDoXA3bP8XeCVgLA1802e9F2pz2tvH/XMZW2FJJrIdBuZ/+Xe5X0jfpTShVfCX6Bc6RTUJGBO00oGdx0W3529WrT7a8P+iAYPYqdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C7HhIqKzOfHouVjJYFUIT5ZfHT1gq9Ocurb0un4DLpY=;
+ b=kCeEAaHxBziSe1hQ0z2Tom/Qabhk9amX7wEgktSzJmJs9+lTjIyn6fLnysiv+mUMqpHRJ3ysF25Wc+w1B0/LivuYFKcS+kO3DA2XGv+xSs19Wqay9/5VAd+FPBbwUJ3sfsk9GdeIuv89PJPUQVpNDI8AMwihz9bqSxKJYM1yicE=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3351.namprd15.prod.outlook.com (2603:10b6:a03:10c::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.19; Tue, 11 Aug
+ 2020 19:32:31 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::354d:5296:6a28:f55e]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::354d:5296:6a28:f55e%6]) with mapi id 15.20.3261.025; Tue, 11 Aug 2020
+ 19:32:31 +0000
+Date:   Tue, 11 Aug 2020 12:32:28 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/5] mm: memcg: charge memcg percpu memory to the
+ parent cgroup
+Message-ID: <20200811193228.GC1507044@carbon.DHCP.thefacebook.com>
+References: <20200623184515.4132564-1-guro@fb.com>
+ <20200623184515.4132564-5-guro@fb.com>
+ <20200729171039.GA22229@blackbody.suse.cz>
+ <20200806211603.195727c03995c3a25ffc6d76@linux-foundation.org>
+ <20200807043717.GA1231562@carbon.DHCP.thefacebook.com>
+ <20200811144754.GA45201@blackbook>
+ <20200811165527.GA1507044@carbon.DHCP.thefacebook.com>
+ <20200811183225.GA62582@blackbook>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200811183225.GA62582@blackbook>
+X-ClientProxiedBy: BYAPR01CA0023.prod.exchangelabs.com (2603:10b6:a02:80::36)
+ To BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1597058460-16211-2-git-send-email-mkshah@codeaurora.org>
-References: <1597058460-16211-1-git-send-email-mkshah@codeaurora.org> <1597058460-16211-2-git-send-email-mkshah@codeaurora.org>
-Subject: Re: [PATCH v4 1/7] pinctrl: qcom: Add msmgpio irqchip flags
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, agross@kernel.org, tglx@linutronix.de,
-        jason@lakedaemon.net, dianders@chromium.org, rnayak@codeaurora.org,
-        ilina@codeaurora.org, lsrao@codeaurora.org,
-        Maulik Shah <mkshah@codeaurora.org>
-To:     Maulik Shah <mkshah@codeaurora.org>, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, linus.walleij@linaro.org, maz@kernel.org,
-        mka@chromium.org
-Date:   Tue, 11 Aug 2020 12:32:03 -0700
-Message-ID: <159717432398.1360974.1005323166939228511@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:fa33) by BYAPR01CA0023.prod.exchangelabs.com (2603:10b6:a02:80::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15 via Frontend Transport; Tue, 11 Aug 2020 19:32:31 +0000
+X-Originating-IP: [2620:10d:c090:400::5:fa33]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f7a40f3e-1b78-47f2-eebf-08d83e2d4a5a
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3351:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB335150CED6A75026B3082BC8BE450@BYAPR15MB3351.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: otREHULXhGt0HH09ACjHhsKUPJ5OORYmlQG1xUu6JGBQPLV0Fo32NsXSMpRYkC66B/DFjoXFERE/V5baDhtz1KSRilJZ0OTJj+RAcQfh6OXvG14u/MbbBOgj+OrnBeQCsAabz+ccA6qIXJLxdkeWH5gwuXdQoqzmqXK44HbgEOeglHFcaVtV4v0E7LMAEcsTKA1yLZyZHUtBtWPbPTnm1H8RsanF4ZOqtwsFYBqCORLquyJvaPQU4g9nm5nphD7VqLn/aBYN8qIX533eFIe2v0aYULtbLbrrvymcEWeSHG8B0IEcncjpIE2v1/wT96P2J/Wq604akP6F+QJEGBSZzg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(1076003)(55016002)(6666004)(4326008)(498600001)(33656002)(6506007)(9686003)(83380400001)(66946007)(2906002)(5660300002)(8676002)(7416002)(8936002)(16526019)(7696005)(66556008)(66476007)(54906003)(52116002)(86362001)(6916009)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 2cWNGU2LUUdweDvmiuRAK6dxv2qAxTqvix/ZqGc/NRsxvi3sqrts/RZxHW9EkqBF3k2R/X+GmNaOcO3q2H+84ko1nvFwpYIvqcdq1j6nuTvSafb21MtOaptzYQxrmW/r3qBzw4374h8dCZRxa3J5YIVvp5GcqiviW9Ba2DONLhhkKy8agQfqRIXdXm9mgR4qpCkK34DO8nI3bPW06MxaBVSFIfhPn4w04wwv9oWUwp8QEQpz1JjlmKyrnz8OUgbs2dfktRnMr+Fc4MFmBL/hjPgMJWjKqCnyFVspVlIeCViObCVW/pz6a2L/DgLiXp7Ea0OrEu6NN3m09Y8HaTmtQRrobm8SAOOco33uPE70jG1xFDLF7YypTLyVy/LCZ/bQ9aIsScCYyWj0bj+rcaTWZ4gDFgLqWpsndJASRyY19fFYDaSXRnqY4tQZzNEsQx1k3iwVHlJHo4xlw+JWg4Q2SAHCR0qjriCzA1mWMuMo4AERWZdm9aQp8O+rdyXuC4vLJZTjGKiDWk+K3zEeBsjY2uHkk0rkLwIn9PAREv6noozMEC+fYIm8fcm4O/yHF5aQrQ/aWop5syqd980jdENHrqtselJ7CzLOIE0mRzZ81Nr7uP3cC0lNWRZ7EUiNUuZPjV++yxLQi4yXcWC72wz/qw/cYAPV7c/he5oFZGtGQ1c=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7a40f3e-1b78-47f2-eebf-08d83e2d4a5a
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2020 19:32:31.6368
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: U2OkEO/TapiGYXtrviW+hTYPx94G9goruhMbBtcUlukoNduI2JSXq9pC4ycBjk9k
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3351
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-11_15:2020-08-11,2020-08-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 adultscore=0
+ spamscore=0 impostorscore=0 suspectscore=1 priorityscore=1501 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008110138
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Can the subject be more specific? "pinctrl: qcom: Set IRQCHIP_SET_TYPE_MASK=
-ED flag"?
+On Tue, Aug 11, 2020 at 08:32:25PM +0200, Michal Koutny wrote:
+> On Tue, Aug 11, 2020 at 09:55:27AM -0700, Roman Gushchin <guro@fb.com> wrote:
+> > As I said, there are 2 problems with charging systemd (or a similar daemon):
+> > 1) It often belongs to the root cgroup.
+> This doesn't hold for systemd (if we agree that systemd is the most
+> common case).
 
-Quoting Maulik Shah (2020-08-10 04:20:54)
-> Add irqchip specific flags for msmgpio irqchip to mask non wakeirqs
-> during suspend and mask before setting irq type.
->=20
-> Masking before changing type should make sure any spurious interrupt
-> is not detected during this operation.
->=20
-> Fixes: e35a6ae0eb3a ("pinctrl/msm: Setup GPIO chip in hierarchy")
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> ---
+Ok, it's better.
+
+> 
+> > 2) OOMing or failing some random memory allocations is a bad way
+> >    to "communicate" a memory shortage to the daemon.
+> >    What we really want is to prevent creating a huge number of cgroups
+> There's cgroup.max.descendants for that...
+
+cgroup.max.descendants limits the number of live cgroups, it can't limit
+the number of dying cgroups.
+
+> 
+> >    (including dying cgroups) in some specific sub-tree(s).
+> ...oh, so is this limiting the number of cgroups or limiting resources
+> used?
+
+My scenario is simple: there is a large machine, which has no memory
+pressure for some time (e.g. is idle or running a workload with small
+working set). Periodically running services creating a lot of cgroups,
+usually in system.slice. After some time a significant part of the whole
+memory is getting consumed by dying cgroups and their percpu data.
+Getting rid of it and reclaiming all memory is not always possible
+(percpu is getting fragmented relatively easy) and is time consuming.
+
+If we'll set memory.high on system.slice, it will create an artificial
+memory pressure once we're getting close to the limit. It will trigger
+the reclaim of user pages and slab objects, so eventually we'll be able
+to release dying cgroups as well.
+
+You might say that it would work even without charging memcg internal
+structures. The problem is that a small slab object can indirectly pin
+a lot of (percpu) memory. If don't take the indirectly pinned memory
+into account, likely we won't apply enough memory pressure.
+
+If we'll limit init.slice (where systemd seems to reside), as you suggest,
+we'll eventually create trashing in init.slice, followed by OOM.
+I struggle to see how it makes the life of a user better?
+
+> 
+> >    OOMing the daemon or returning -ENOMEM to some random syscalls
+> >    will not help us to reach the goal and likely will bring a bad
+> >    experience to a user.
+> If we reach the situation when memory for cgroup operations is tight,
+> it'll disappoint the user either way.
+> My premise is that a running workload is more valuable than the
+> accompanying manager.
+
+The problem is that OOM-killing the accompanying manager won't release
+resources and help to get rid of accumulated cgroups. So in the very
+best case it will prevent new cgroups from being created (as well
+as some other random operations from being performed). Most likely
+the only way to "fix" this for a user will be to reboot the machine.
+
+> 
+> > In a generic case I don't see how we can charge the cgroup which
+> > creates cgroups without solving these problems first.
+> In my understanding, "onbehalveness" is a concept useful for various
+> kernel threads doing deferred work. Here it's promoted to user processes
+> managing cgroups.
+> 
+> > And if there is a very special case where we have to limit it,
+> > we can just add an additional layer:
+> > 
+> > ` root or delegated root
+> >    ` manager-parent-cgroup-with-a-limit
+> >      ` manager-cgroup (systemd, docker, ...)
+> >    ` [aggregation group(s)]
+> >      ` job-group-1
+> >      ` ...
+> >      ` job-group-n
+> If the charge goes to the parent of created cgroup (job-cgroup-i here),
+> then the layer adds nothing. Am I missing something?
+
+Sorry, I was wrong here, please ignore this part.
+
+> 
+> > I'd definitely charge the parent cgroup in all similar cases.
+> (This would mandate the controllers on the unified hierarchy, which is
+> fine IMO.) Then the order of enabling controllers on a subtree (e.g.
+> cpu,memory vs memory,cpu) by the manager would yield different charging.
+> This seems wrong^W confusing to me.
+
+I agree it's confusing.
+
+Thanks!
