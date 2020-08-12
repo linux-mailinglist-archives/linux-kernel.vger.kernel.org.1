@@ -2,88 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59522242808
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 12:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6720824280E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 12:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgHLKIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 06:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726722AbgHLKIK (ORCPT
+        id S1727771AbgHLKLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 06:11:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51242 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726722AbgHLKK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 06:08:10 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A100C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 03:08:10 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id k8so1380790wma.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 03:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=S5E7KxhhfM822qxHvpB4hKk6FlzdZGmWdXUQxztWaa4=;
-        b=h7ybPSh69dl1QF+UNAG84MOzGLtlSU/DszPeVIqg/fVkZlyU52ZV+9jUKSlQyxvC7y
-         1OBv/s1MkQ0QIvd0eDkLjNsdVd/bR6Uv/yNTObTKTFu3jh0H+PYoiccKqmwTStH0KB/A
-         WOwijDQy762FkH2L/TUzzaEGGEcY5xxRjx3Z7YdQ6gXwpMvibq4h3MDFDBsmQzvUdzb9
-         FiiMDKTtTzeoMW3XH0M5Mfk36DtjnY5ErXQmNoMNBpHd4FZZiiQ52ruLJeb7m3FnUE5Z
-         qwMF09lbmjXgspErlSn6ouQMijuqbTUdZDB1+lbUJjdPrWEptvsbqk3YKr0CWN7MAsFf
-         x71A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=S5E7KxhhfM822qxHvpB4hKk6FlzdZGmWdXUQxztWaa4=;
-        b=CMvStCkMX4RDaWoq8B97kvtpZvd2vdo45g5WniBO9HBl0I38J7eYrR9OdQzNWbYaOT
-         bpU16qKg5HJkwgoumtOHoqZ+3yjxdYJSrNh5X9QyIjlH5NpqkMMNJCSGiZyuTPHtZD6T
-         d7DtAkYtyD7rKQK0HUCcudVR3pzvm6qTRH3FDKUkmazPwVS/ZesDgnsClVMj63n4kOy/
-         X43hJKykDdHCu2m7GC82VFEQcpXyBuhf/LAroVBhI4N6VpFXZlzrhoxvQ3SCV63oO6P4
-         hEGzdaWlCGKLJXXlLnK4fDpL04CFAjRUWL5vSkKOiXZyUvAwYmz+FuDy21lYDSeLuy0a
-         KS5w==
-X-Gm-Message-State: AOAM531QyImwP4qUNeikBChbfbSa4Emx/Z+wsYKBo1W59T2nc1r5RXru
-        5G+bhestJ7QrnG26oWWra06tECf9VIyWsAS2Ma0=
-X-Google-Smtp-Source: ABdhPJy7FImTAVxwBgtNyn1FPvTtl0K2vNu7BgEfhyKXbHiQLpY6XTYJ3Y9Dwizki7BE6aEMnE7pagp/ZlIovasvEt8=
-X-Received: by 2002:a1c:2dcc:: with SMTP id t195mr7056553wmt.166.1597226889132;
- Wed, 12 Aug 2020 03:08:09 -0700 (PDT)
+        Wed, 12 Aug 2020 06:10:59 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597227057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ytwwSb4p4vNvvu5wDB/51cVTcmm79nUaqk/OMkDkpOQ=;
+        b=WmcNrU3nHUhxvUAV0vvMCsCjW/O4drLyEB/NyCRHGmrDN0CCpL/KxbIP5/vsu6PO/bLKiP
+        ztrAbH9gf76Qey9C5vEgBP+H51mZP/vcLpAxiisdrYzLUSXWGC9T9oiMrE12THPGTHEsEC
+        5+XvnjTr7CJQNPaOKN8j666M6nlSq0M1gRpch+O7YBmFxSNeTbfqKx81zYX9TWhq/lYu7w
+        yhL8zfp0qdY3hq60w52u0WYdDy94C/MdY0i3yPmOA9WGPexN4hMB0XHPtdglbTUYvYvVp6
+        y6of6jVuY6JwiOK2SL5nkHHI3hG0cwccZgHA23gtTxZU3ovitjkVXo2YOEJ4WA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597227057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ytwwSb4p4vNvvu5wDB/51cVTcmm79nUaqk/OMkDkpOQ=;
+        b=eaPp95qw5oeZtYB9zOFUTirIityHYlVCJKnQQ8IPlZzg/lWrLmIRhYRbb8ow++h8yNRzy/
+        Eknjvgy38dD7BICg==
+To:     Qianli Zhao <zhaoqianligood@gmail.com>, axboe@kernel.dk,
+        akpm@linux-foundation.org, Felix.Kuehling@amd.com
+Cc:     john.stultz@linaro.org, sboyd@kernel.org,
+        ben.dooks@codethink.co.uk, bfields@redhat.com, cl@rock-chips.com,
+        linux-kernel@vger.kernel.org, zhaoqianli@xiaomi.com
+Subject: Re: [RFC V2] kthread: add object debug support
+In-Reply-To: <311159bc826dcca2848344fc277c0069cff0a164.1597207603.git.zhaoqianli@xiaomi.com>
+References: <311159bc826dcca2848344fc277c0069cff0a164.1597207603.git.zhaoqianli@xiaomi.com>
+Date:   Wed, 12 Aug 2020 12:10:56 +0200
+Message-ID: <87sgcs5g3z.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Received: by 2002:a5d:6504:0:0:0:0:0 with HTTP; Wed, 12 Aug 2020 03:08:08
- -0700 (PDT)
-Reply-To: rosemary222222@hotmail.com
-From:   "Ms. Rosemary Matthew" <belvicindustry19@gmail.com>
-Date:   Wed, 12 Aug 2020 11:08:08 +0100
-Message-ID: <CAGu3FC1CuvzAUAnM+Ak0LgpQhEu2NnEPfK4ForCREJLtx-pL4Q@mail.gmail.com>
-Subject: My record show that you have not yet reply my last message sent to
- you since last week.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend.
+Qianli,
 
-My record show that you have not yet reply my last message sent to you
-since last week. I'm writing you once again because I asked myself
-several unanswered questions today does it mean that my message was
-diverted or you disregard it intentionally. I'm Ms Rosemar Matthew.
-with both Bachelor's Degree and a Master's Degree as preferred in my
-vocation. I'm working in Lloyd's Bank London as an Accountant. In our
-anking system, I discovered that you are sharing the same Surname with
-our deceased client who left a large fund in our bank guard.
+Qianli Zhao <zhaoqianligood@gmail.com> writes:
 
-Due to the Corona-virus Outbreak all over the world which have placed
-confusion to all Financial sectors and Monitoring Pecuniary Unit, the
-Lloyd's Bank want to use this great opportunity to relocate all
-pending transfer to the right owner's which include the fund I'm
-talking about here which have been in our position. I suggest that
-your previous silent should not affect this message because of
-uncertain personal situations facing the fund I'm talking about here,
-I request that you should reply me this time at the soonest because we
-need to complete this transfer.
+> Add debugobject support to track the life time of kthread_work
+> which is used to detect reinitialization/free active object problems
+> Add kthread_init_work_onstack/kthread_init_delayed_work_onstack for
+> kthread onstack support
 
-Thank you and I=E2=80=99m sincerely looking forward to complete this fund
+s/kthread/kthread_work/ ?
 
-transfer with you.
-With Regards,
-From Ms Rosemar Matthew,
+It would also be nice to have an example output in the changelog.
+
+> +static struct debug_obj_descr kwork_debug_descr = {
+> +	.name		= "kthread_work",
+> +	.debug_hint	= kwork_debug_hint,
+> +	.is_static_object = kwork_is_static_object,
+
+Nitpick. You nicely aligned all the initializers except of this
+one. Just add another TAB to all of them and this becomes a perfect
+table.
+
+> +	.fixup_init	= kwork_fixup_init,
+> +	.fixup_free	= kwork_fixup_free,
+
+This lacks:
+
+        .fixup_assert_init	= ....
+
+which catches cases where a non static object is used uninitialized.
+
+> @@ -698,6 +786,7 @@ int kthread_worker_fn(void *worker_ptr)
+>  		work = list_first_entry(&worker->work_list,
+>  					struct kthread_work, node);
+>  		list_del_init(&work->node);
+> +		debug_kwork_deactivate(work);
+
+Please move that before the list del. Deactivate debug cannot do much
+about the wreckage as there is no fixup function, but at least you get
+the message printed _before_ the list delete can cause havoc and crashes
+something else on a different CPU which makes the whole point of being
+able to debug this kind of problems moot.
+
+> @@ -835,8 +924,11 @@ static void kthread_insert_work(struct kthread_worker *worker,
+>  
+>  	list_add_tail(&work->node, pos);
+>  	work->worker = worker;
+> -	if (!worker->current_work && likely(worker->task))
+> +
+> +	if (!worker->current_work && likely(worker->task)) {
+> +		debug_kwork_activate(work);
+
+That's misplaced as well. The work is activated with list_add_tail() and
+you really want to call debug_kwork_activate() unconditionally before
+doing the list operation:
+
+  1) If the object is active or not initialized then the list operation
+     will cause memory corruption and the fixup function will operate on
+     already wreckaged state. Debug objects is about preventing the
+     wreckaged state and keeping the system alive so the debug info goes
+     out.
+
+  2) If the worker is busy (worker->current_worker != NULL) then the
+     newly queued work is not activated in the debug object tracker and
+     the deactivation will complain or a consequent free of the object
+     will fail to detect that it's still active.
+
+>  /**
+> @@ -1054,6 +1146,7 @@ static bool __kthread_cancel_work(struct kthread_work *work, bool is_dwork,
+>  	 */
+>  	if (!list_empty(&work->node)) {
+>  		list_del_init(&work->node);
+> +		debug_kwork_deactivate(work);
+
+See above.
+
+>  		return true;
+>  	}
+>  
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 9ad9210..8355984 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -540,6 +540,16 @@ config DEBUG_OBJECTS_WORK
+>  	  work queue routines to track the life time of work objects and
+>  	  validate the work operations.
+>  
+> +config DEBUG_OBJECTS_KTHREAD
+> +	bool "Debug kthread work objects"
+
+This is about debugging kthread_work, so can you please name the
+config option accordingly? It's not about debugging KTHREAD itself.
+
+Thanks,
+
+        tglx
