@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD142429ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59850242A01
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgHLNCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 09:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726829AbgHLNC3 (ORCPT
+        id S1728058AbgHLNEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 09:04:37 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:15991 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726404AbgHLNEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 09:02:29 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0E2C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 06:02:29 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id q9so1830549oth.5
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 06:02:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/FYTOQHYFNoSSfeNhMyajUD/P2m5h59FWjXl7Kq1d4Y=;
-        b=Ejh9JhTd9LtOhtE75SjvXpQnDSp7w66jJR1NQUvefFxvJxEft/FqE/PPqVJFAh50YM
-         fsYCldXZS49D+1TpHN+1+wdEQSTLJUufRT78xZVGgjFBHtij+oq1ndEXkrCxInRnvStQ
-         oYNQP/6wSLGd7hJ/JWp4afeodmgkalQwpryZ3L6ZjUDkljJ57PvdZlVrxoI0wURUzmNN
-         264O/jK9pvqqp7CTk94vsYLmF+yS1u79QdYSg0o4wEXy8Y0a7/Cr/5NhUIZfasb/tIz1
-         VwOgGJHWcVVJj2VVOe/du7c6iRFuo0iFKN7KrOstvfcptczohpx5kflIfJM/n5n8zgJY
-         ac3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/FYTOQHYFNoSSfeNhMyajUD/P2m5h59FWjXl7Kq1d4Y=;
-        b=ixgSIERdd7q/xhoyjHeuwshaIgCwmnzGsfUQLEvKJNitr/ElS5FK252TdX8koC5+Gk
-         b9KJffMX2K/HlsH8PjzY51ZGb4doURKz2v8WzbAMJsjqJSZ1/H50kxX/SsCHzZTq39zg
-         WVKPXDaNFvdq/k5bK08r3jb5G978DIjxyC11TQUkgLxpk2OTEVzX363V0RNJP2BXIBtg
-         4yrUooXnMElIcKtZvXUsJIfvwKYqATqS0Ry+1w0LZsh252wm0p59mqnc/wTOm9ScerFL
-         T6Z0rVACIZYNecl5kqoJxjLuCe/7uOdocttzV+cdSndvXHlhTygwZMXYEFDhdFSmH9IU
-         1u6Q==
-X-Gm-Message-State: AOAM533ct4rUikxRqtp6XQC+RWW4T7HC+ktd0ByV9Xkr4uR2Ko4s93Ep
-        kxBhQRH0vW1HHlAUbadVz4j+nf3w1fr39+flJcLGRQ==
-X-Google-Smtp-Source: ABdhPJwoTEkpCpRgvslk7SPBlvFttSnZw3FOWuQBpposC+jZpNWauxHblvEM5fYuhUHQ0Uct3sFok1vM6Q6D6qyFm1M=
-X-Received: by 2002:a9d:3da1:: with SMTP id l30mr9650285otc.233.1597237346320;
- Wed, 12 Aug 2020 06:02:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200810080625.1428045-1-elver@google.com>
-In-Reply-To: <20200810080625.1428045-1-elver@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 12 Aug 2020 15:02:14 +0200
-Message-ID: <CANpmjNP5WpDyfXDc=v6cerd5=GpKyCmBKAKH+6qLT6JrBGPqnw@mail.gmail.com>
-Subject: Re: [PATCH] kcsan: Optimize debugfs stats counters
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
+        Wed, 12 Aug 2020 09:04:36 -0400
+X-UUID: 62e8e19434fb43649ef0c4e501fd66a5-20200812
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=2D2otIxOT5Y9TE/5sGqjyAubG2N6RpU+rS+XIzBvd5M=;
+        b=kLmhXN4/Tan9ZglFsXOgX+kzqXZbJbh+v1/7gyKF7l/4j5kW4PQ27hkyvmpyMat2x+aU1pszBdKY9ibRWOFfsqlZu3SDG2H5W0FiK2F7J3AeVxFx11JgdSEUjoXzMKraquRVIs6C/mtf8pOgLsthAVHSIhJKkU9jcCHl+t4Qp18=;
+X-UUID: 62e8e19434fb43649ef0c4e501fd66a5-20200812
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <wenbin.mei@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 328971815; Wed, 12 Aug 2020 21:04:27 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31DR.mediatek.inc
+ (172.27.6.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 12 Aug
+ 2020 21:04:25 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 12 Aug 2020 21:04:25 +0800
+Message-ID: <1597237413.10188.5.camel@mhfsdcap03>
+Subject: Re: [PATCH 1/3] mmc: dt-bindings: Add resets/reset-names for
+ Mediatek MMC bindings
+From:   Wenbin Mei <wenbin.mei@mediatek.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+CC:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>
+Date:   Wed, 12 Aug 2020 21:03:33 +0800
+In-Reply-To: <6e667ff6f5a1aae51b89d00e9ec5bba29852f683.camel@pengutronix.de>
+References: <20200812093726.10123-1-wenbin.mei@mediatek.com>
+         <20200812093726.10123-2-wenbin.mei@mediatek.com>
+         <6e667ff6f5a1aae51b89d00e9ec5bba29852f683.camel@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 88374733FA49679322C5DF06B0A77BFCA1834A5593A73B49D5804FC216869C7B2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 Aug 2020 at 10:06, Marco Elver <elver@google.com> wrote:
-> Remove kcsan_counter_inc/dec() functions, as they perform no other
-> logic, and are no longer needed.
->
-> This avoids several calls in kcsan_setup_watchpoint() and
-> kcsan_found_watchpoint(), as well as lets the compiler warn us about
-> potential out-of-bounds accesses as the array's size is known at all
-> usage sites at compile-time.
->
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
->  kernel/kcsan/core.c    | 22 +++++++++++-----------
->  kernel/kcsan/debugfs.c | 21 +++++----------------
->  kernel/kcsan/kcsan.h   | 12 ++++++------
->  kernel/kcsan/report.c  |  2 +-
->  4 files changed, 23 insertions(+), 34 deletions(-)
+VGhhbmtzIGZvciB5b3VyIHJlcGx5Lg0KSSBoYXZlIGNoYW5nZWQgdGhpcyBpbiB2MiBwYXRjaC4N
+Ck9uIFdlZCwgMjAyMC0wOC0xMiBhdCAxNDowMyArMDIwMCwgUGhpbGlwcCBaYWJlbCB3cm90ZToN
+Cj4gT24gV2VkLCAyMDIwLTA4LTEyIGF0IDE3OjM3ICswODAwLCBXZW5iaW4gTWVpIHdyb3RlOg0K
+PiA+IEFkZCBkZXNjcmlwdGlvbiBmb3IgcmVzZXRzL3Jlc2V0LW5hbWVzLg0KPiA+IA0KPiA+IFNp
+Z25lZC1vZmYtYnk6IFdlbmJpbiBNZWkgPHdlbmJpbi5tZWlAbWVkaWF0ZWsuY29tPg0KPiA+IC0t
+LQ0KPiA+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbW1jL210ay1zZC50eHQg
+fCAyICsrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykNCj4gPiANCj4gPiBk
+aWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21tYy9tdGstc2Qu
+dHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21tYy9tdGstc2QudHh0DQo+
+ID4gaW5kZXggOGE1MzJmNDQ1M2YyLi4zNWRhNzJkZTdhYWMgMTAwNjQ0DQo+ID4gLS0tIGEvRG9j
+dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21tYy9tdGstc2QudHh0DQo+ID4gKysrIGIv
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21tYy9tdGstc2QudHh0DQo+ID4gQEAg
+LTQ5LDYgKzQ5LDggQEAgT3B0aW9uYWwgcHJvcGVydGllczoNCj4gPiAgCQkgICAgIGVycm9yIGNh
+dXNlZCBieSBzdG9wIGNsb2NrKGZpZm8gZnVsbCkNCj4gPiAgCQkgICAgIFZhbGlkIHJhbmdlID0g
+WzA6MHg3XS4gaWYgbm90IHByZXNlbnQsIGRlZmF1bHQgdmFsdWUgaXMgMC4NCj4gPiAgCQkgICAg
+IGFwcGxpZWQgdG8gY29tcGF0aWJsZSAibWVkaWF0ZWssbXQyNzAxLW1tYyIuDQo+ID4gKy0gcmVz
+ZXRzOiBQaGFuZGxlIGFuZCByZXNldCBzcGVjaWZpZXIgcGFpciB0byBzb2Z0cmVzZXQgbGluZSBv
+ZiBNU0RDIElQLg0KPiA+ICstIHJlc2V0LW5hbWVzOiBSZXNldCBuYW1lcyBmb3IgTVNEQy4NCj4g
+DQo+IEkgdGhpbmsgdGhlIHJlc2V0LW5hbWVzIGRvY3VtZW50YXRpb24gc2hvdWxkIG1lbnRpb24g
+dGhlIGFjdHVhbCB2YWx1ZQ0KPiB0aGUgZHJpdmVyIHNob3VsZCBsb29rIGZvciwgImhyc3QiLg0K
+PiANCj4gcmVnYXJkcw0KPiBQaGlsaXBwDQoNCg==
 
-Hi Paul,
-
-I think this one is good to apply. I do not expect conflicts with current -rcu.
-
-Thanks,
--- Marco
