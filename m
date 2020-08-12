@@ -2,161 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38002426E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DEB2426CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727045AbgHLIoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 04:44:06 -0400
-Received: from lucky1.263xmail.com ([211.157.147.133]:51770 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726589AbgHLIoF (ORCPT
+        id S1726829AbgHLIgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 04:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726595AbgHLIgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 04:44:05 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 61B75C5C84;
-        Wed, 12 Aug 2020 16:36:11 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [103.29.142.67])
-        by smtp.263.net (postfix) whith ESMTP id P12148T140383488132864S1597221366062844_;
-        Wed, 12 Aug 2020 16:36:10 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <4d9e7216a08741cb642cd53bd73f90d4>
-X-RL-SENDER: algea.cao@rock-chips.com
-X-SENDER: algea.cao@rock-chips.com
-X-LOGIN-NAME: algea.cao@rock-chips.com
-X-FST-TO: a.hajda@samsung.com
-X-SENDER-IP: 103.29.142.67
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-From:   Algea Cao <algea.cao@rock-chips.com>
-To:     a.hajda@samsung.com, kuankuan.y@gmail.com, hjc@rock-chips.com,
-        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
-        sam@ravnborg.org, airlied@linux.ie, heiko@sntech.de,
-        jernej.skrabec@siol.net, algea.cao@rock-chips.com,
-        Laurent.pinchart@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com, jonas@kwiboo.se,
-        mripard@kernel.org, darekm@google.com,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, cychiang@chromium.org,
-        linux-kernel@vger.kernel.org, narmstrong@baylibre.com,
-        jbrunet@baylibre.com, maarten.lankhorst@linux.intel.com,
-        daniel@ffwll.ch
-Subject: [PATCH 5/6] drm/rockchip: dw_hdmi: Add get_output_bus_format
-Date:   Wed, 12 Aug 2020 16:36:03 +0800
-Message-Id: <20200812083603.4320-1-algea.cao@rock-chips.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200812083120.743-1-algea.cao@rock-chips.com>
-References: <20200812083120.743-1-algea.cao@rock-chips.com>
+        Wed, 12 Aug 2020 04:36:20 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB91C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 01:36:20 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id t10so1326393ejs.8
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 01:36:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=GWBpPbEU/iJqb9l6tqby6CJl7qX3Zl21wxv1zYud858=;
+        b=MkvEbeAPb5ubVtof/Jdk49xt8BXTQRhLo3IH7GhWPxeWFt3BSCuSQS7vR6EsyphPmK
+         xzolBRsmyvZZ04BXBx4ppy/afj0C9iMOY5yZWoESyWIWXKF9Avji1Pi64rBVjXaGqUkG
+         ZymOmojQwqfHVsHMshtAw2nZGEsx2XKdFk02lZDVf79lLmmcKwjDUHopRb0pNZGwPyK6
+         G25PM+oXH0o5MqCNO46GwiM0Fhvk7S5+eXTspa1fPj1wJ9iqgmqjGtbe4WingW7xEURf
+         ny5yBnvTkNnOG67SpZMMZ94pO8IGziIxHC7LYqTZVibOmS0EeJK46KCrIlrOYq0KXgWM
+         jscQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=GWBpPbEU/iJqb9l6tqby6CJl7qX3Zl21wxv1zYud858=;
+        b=c/D1L+3sdoS8D0Z17wSyQdL/wb8e5LqmfAZCszJVgQE6FSdOnUuDs+Qtv7CXzPZwoT
+         Q6rJKYbuXJXoRB2FA5Qr6HcPte/mde+axnKyGS8reG9GIAcWkx4H9RrV+bUeimm8K+Ev
+         3rkQf4g4z/M9cBDwL6FcKXazEIpgHXDfRTi5YLqRqUuvNdE7XT9dHm61gGZiME79uP4M
+         Zt3BuY0yA9DcVeYDRKGZAtLbYM2T2dRkcVCEPEF0anvJv1+oIW1mBdyJFKKkZDXk527k
+         PfHA4RrBcCvKE5h0HlyyVUE+/5+6sgBXI7O9t+dyJq/iKkHJzGAjVjH1RKk4mMSiaLW4
+         LnsQ==
+X-Gm-Message-State: AOAM531I5F7w0pf7Waohjk8QAzQWLecMCQKVw5qsMAFNbGWZbXdU++w7
+        pIBB4NrtYvgbE7eA8fPGQ0E=
+X-Google-Smtp-Source: ABdhPJz6XwqwoQZ2sET1yeizbK5XmsWn7o3q9U/n9bqEViw6u8cZIvdEfbcYlbhzB76ATmjrRrfz1w==
+X-Received: by 2002:a17:906:57ca:: with SMTP id u10mr5256932ejr.290.1597221378955;
+        Wed, 12 Aug 2020 01:36:18 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id js19sm1060322ejb.76.2020.08.12.01.36.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Aug 2020 01:36:17 -0700 (PDT)
+Reply-To: christian.koenig@amd.com
+Subject: Re: [PATCH] locking/rwsem: remove redundant semicolon of
+ down_write_nest_lock
+To:     peterz@infradead.org
+Cc:     mingo@redhat.com, will@kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20200811111852.190209-1-christian.koenig@amd.com>
+ <20200812081057.GJ2674@hirez.programming.kicks-ass.net>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <8356e96d-8732-0e2e-e962-dec671c19eb2@gmail.com>
+Date:   Wed, 12 Aug 2020 10:36:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200812081057.GJ2674@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add get_output_bus_format in dw_hdmi_plat_data to get
-hdmi output bus format. The output bus format is determined
-by color format and depth, which can be set by rockchip
-hdmi properties.
+Am 12.08.20 um 10:10 schrieb peterz@infradead.org:
+> On Tue, Aug 11, 2020 at 01:18:52PM +0200, Christian König wrote:
+>> From: Guchun Chen <guchun.chen@amd.com>
+>>
+>> Otherwise, braces are needed when using it.
+>>
+>> Signed-off-by: Guchun Chen <guchun.chen@amd.com>
+>> Reviewed-by: Christian König <christian.koenig@amd.com>
+> Thanks!
 
-Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
----
+Do you pick it up or can I push it through drm-misc-fixes?
 
- drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c | 47 +++++++++++++++++++++
- include/drm/bridge/dw_hdmi.h                |  1 +
- 2 files changed, 48 insertions(+)
+If the former please let me know when it hits Linus tree since I have a 
+driver which contains some extra {} because of this.
 
-diff --git a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
-index 8f22d9a566db..a602d25639a7 100644
---- a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
-+++ b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
-@@ -100,6 +100,7 @@ struct rockchip_hdmi {
- 
- 	unsigned int colordepth;
- 	enum drm_hdmi_output_type hdmi_output;
-+	unsigned long output_bus_format;
- };
- 
- #define to_rockchip_hdmi(x)	container_of(x, struct rockchip_hdmi, x)
-@@ -498,6 +499,50 @@ static const struct dw_hdmi_property_ops dw_hdmi_rockchip_property_ops = {
- 	.get_property		= dw_hdmi_rockchip_get_property,
- };
- 
-+static void
-+dw_hdmi_rockchip_output_bus_format_select(struct rockchip_hdmi *hdmi)
-+{
-+	unsigned long bus_format;
-+
-+	if (hdmi->hdmi_output == DRM_HDMI_OUTPUT_YCBCR420) {
-+		if (hdmi->colordepth > 8)
-+			bus_format = MEDIA_BUS_FMT_UYYVYY10_0_5X30;
-+		else
-+			bus_format = MEDIA_BUS_FMT_UYYVYY8_0_5X24;
-+	} else if (hdmi->hdmi_output == DRM_HDMI_OUTPUT_YCBCR422) {
-+		if (hdmi->colordepth == 12)
-+			bus_format = MEDIA_BUS_FMT_UYVY12_1X24;
-+		else if (hdmi->colordepth == 10)
-+			bus_format = MEDIA_BUS_FMT_UYVY10_1X20;
-+		else
-+			bus_format = MEDIA_BUS_FMT_UYVY8_1X16;
-+	} else {
-+		if (hdmi->colordepth > 8) {
-+			if (hdmi->hdmi_output != DRM_HDMI_OUTPUT_DEFAULT_RGB)
-+				bus_format = MEDIA_BUS_FMT_YUV10_1X30;
-+			else
-+				bus_format = MEDIA_BUS_FMT_RGB101010_1X30;
-+		} else {
-+			if (hdmi->hdmi_output != DRM_HDMI_OUTPUT_DEFAULT_RGB)
-+				bus_format = MEDIA_BUS_FMT_YUV8_1X24;
-+			else
-+				bus_format = MEDIA_BUS_FMT_RGB888_1X24;
-+		}
-+	}
-+
-+	hdmi->output_bus_format = bus_format;
-+}
-+
-+static unsigned long
-+dw_hdmi_rockchip_get_output_bus_format(void *data)
-+{
-+	struct rockchip_hdmi *hdmi = (struct rockchip_hdmi *)data;
-+
-+	dw_hdmi_rockchip_output_bus_format_select(hdmi);
-+
-+	return hdmi->output_bus_format;
-+}
-+
- static void dw_hdmi_rk3228_setup_hpd(struct dw_hdmi *dw_hdmi, void *data)
- {
- 	struct rockchip_hdmi *hdmi = (struct rockchip_hdmi *)data;
-@@ -685,6 +730,8 @@ static int dw_hdmi_rockchip_bind(struct device *dev, struct device *master,
- 
- 	plat_data->property_ops = &dw_hdmi_rockchip_property_ops;
- 
-+	plat_data->get_output_bus_format =
-+		dw_hdmi_rockchip_get_output_bus_format;
- 	encoder = &hdmi->encoder;
- 
- 	encoder->possible_crtcs = drm_of_find_possible_crtcs(drm, dev->of_node);
-diff --git a/include/drm/bridge/dw_hdmi.h b/include/drm/bridge/dw_hdmi.h
-index dc561ebe7a9b..13495f810328 100644
---- a/include/drm/bridge/dw_hdmi.h
-+++ b/include/drm/bridge/dw_hdmi.h
-@@ -175,6 +175,7 @@ struct dw_hdmi_plat_data {
- 	const struct dw_hdmi_phy_config *phy_config;
- 	int (*configure_phy)(struct dw_hdmi *hdmi, void *data,
- 			     unsigned long mpixelclock);
-+	unsigned long (*get_output_bus_format)(void *data);
- };
- 
- struct dw_hdmi *dw_hdmi_probe(struct platform_device *pdev,
--- 
-2.25.1
-
-
-
+Thanks,
+Christian.
