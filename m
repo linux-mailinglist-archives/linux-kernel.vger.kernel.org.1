@@ -2,236 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228CC24264B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 09:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B894242671
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 09:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgHLHvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 03:51:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbgHLHvi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 03:51:38 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F168C06174A;
-        Wed, 12 Aug 2020 00:51:38 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o5so621863pgb.2;
-        Wed, 12 Aug 2020 00:51:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9NU0scmr3kWjlrmAUXZmqrzEF6gKrvc9pr3irQHvDyo=;
-        b=DrRU/KTccW1jA5hOI0+sRPOrj574fhAzVO6xqnfsnV8Nt2qeqOTWwTQj0pS81VV0B9
-         2YWfO+VddNETI+OYzPZZFliZ5NCYpom1p6s4CPYkfxNrHa3OAFimubcRzwC2WhmqGAlQ
-         2KdwHkFrPt4VYQaMtar8ejkOyc6BDOqm/qbuDcJ71cDgO75hdvlhsAi+lOG83RE6cUYY
-         5H71EDoeriq6eAw7E9nHMnxEp5w5tIwuqUQlY+4gvU6Wp9p+qa4PTpALAtNoViDWXmKr
-         DI+rJ8uCmzC21c8pqiprGr2bG5JwyCsMuKcu0848UbT86kCh8SEqqwuhPzTYxgJ4nwGT
-         /SRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9NU0scmr3kWjlrmAUXZmqrzEF6gKrvc9pr3irQHvDyo=;
-        b=SzEahXG/1doNO0dUb+GNoplZ+VhrqVWTpU/891BRbKEj9+e8FR1zWyxjfN6I3elIjp
-         M2ZcjPn5acPW5v35P4O5VA4gC3mIDIHH/hzZZhm0WqXGWFZiA0YiG3XrHm/j9tfdUE66
-         o6yK2urpurB0e6u35P017aT3idDxT4F8/bQTPKxqwDoHBZhQF5tpIHfSCWJcpiWZxn4x
-         JbT6C1ogx2L4s/uLk1pXZzYxyOSQIFxKFoAuFX6DhUJyN4SAcCeSvJl2gmCZg1DcKnQf
-         O3hAgh5BrV3uWsGL3KhK862lWo2f2VCAR4oNPlH3A9z8As1bfdf4mxNMqZHHW3NpBUwn
-         pnFQ==
-X-Gm-Message-State: AOAM531HN1jLgbsNS+4Qp1WUz1GwCDoB80XUCtTs5PsMRWH4a3w5782A
-        uCD5DiLoiJLvDAt04/RoVeE=
-X-Google-Smtp-Source: ABdhPJyd+8rRKbNVEr9rvE2gMzKoZ+dOoB7/Yr+hiINwFC/k7O/ULtSNio+3YZcUQpQ6BMBNBr/GNg==
-X-Received: by 2002:a63:d250:: with SMTP id t16mr4014531pgi.51.1597218697914;
-        Wed, 12 Aug 2020 00:51:37 -0700 (PDT)
-Received: from gmail.com ([2601:600:9b7f:872e:a655:30fb:7373:c762])
-        by smtp.gmail.com with ESMTPSA id t10sm1379108pgp.15.2020.08.12.00.51.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Aug 2020 00:51:36 -0700 (PDT)
-Date:   Wed, 12 Aug 2020 00:51:35 -0700
-From:   Andrei Vagin <avagin@gmail.com>
-To:     Eugene Lubarsky <elubarsky.linux@gmail.com>
-Cc:     linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, adobriyan@gmail.com,
-        dsahern@gmail.com
-Subject: Re: [RFC PATCH 0/5] Introduce /proc/all/ to gather stats from all
- processes
-Message-ID: <20200812075135.GA191218@gmail.com>
-References: <20200810145852.9330-1-elubarsky.linux@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-In-Reply-To: <20200810145852.9330-1-elubarsky.linux@gmail.com>
+        id S1726962AbgHLH5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 03:57:25 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:33400 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726618AbgHLH5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 03:57:25 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 86DC9201753;
+        Wed, 12 Aug 2020 09:57:22 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 443E0201745;
+        Wed, 12 Aug 2020 09:57:18 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8A982402F3;
+        Wed, 12 Aug 2020 09:57:13 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        robh+dt@kernel.org, stefan@agner.ch, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2] dt-bindings: gpio: Convert vf610 to json-schema
+Date:   Wed, 12 Aug 2020 15:52:21 +0800
+Message-Id: <1597218741-24899-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 12:58:47AM +1000, Eugene Lubarsky wrote:
-> This is an idea for substantially reducing the number of syscalls needed
-> by monitoring tools whilst mostly re-using the existing API.
-> 
-> The proposed files in this proof-of-concept patch set are:
-> 
-> * /proc/all/stat
->       A stat line for each process in the existing format.
-> 
-> * /proc/all/statm
->       statm lines but starting with a PID column.
-> 
-> * /proc/all/status
->       status info for all processes in the existing format.
-> 
-> * /proc/all/io
->       The existing /proc/pid/io data but formatted as a single line for
->       each process, similarly to stat/statm, with a PID column added.
-> 
-> * /proc/all/statx
->       Gathers info from stat, statm and io; the purpose is actually
->       not so much to reduce syscalls but to help userspace be more
->       efficient by not having to store data in e.g. hashtables in order
->       to gather it from separate /proc/all/ files.
-> 
->       The format proposed here starts with the unchanged stat line
->       and begins the other info with a few characters, repeating for
->       each process:
-> 
->       ...
->       25 (cat) R 1 1 0 0 -1 4194304 185 0 16 0 2 0 0 0 20 ...
->       m 662 188 167 5 0 112 0
->       io 4292 0 12 0 0 0 0
->       ...
-> 
-> 
-> There has been a proposal with some overlapping goals: /proc/task-diag
-> (https://github.com/avagin/linux-task-diag), but I'm not sure about
-> its current status.
+Convert the vf610 gpio binding to DT schema format using json-schema.
 
-I rebased the task_diag patches on top of v5.8:
-https://github.com/avagin/linux-task-diag/tree/v5.8-task-diag
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+changes since V1:
+	- fix reg property to pass build;
+	- add "additionalProperties: false".
+---
+ .../devicetree/bindings/gpio/gpio-vf610.txt        | 63 -----------------
+ .../devicetree/bindings/gpio/gpio-vf610.yaml       | 81 ++++++++++++++++++++++
+ 2 files changed, 81 insertions(+), 63 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-vf610.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
 
-/proc/pid files have three major limitations:
-* Requires at least three syscalls per process per file
-  open(), read(), close()
-* Variety of formats, mostly text based
-  The kernel spent time to encode binary data into a text format and
-  then tools like top and ps spent time to decode them back to a binary
-  format.
-* Sometimes slow due to extra attributes
-  For example, /proc/PID/smaps contains a lot of useful informations
-  about memory mappings and memory consumption for each of them. But
-  even if we don't need memory consumption fields, the kernel will
-  spend time to collect this information.
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-vf610.txt b/Documentation/devicetree/bindings/gpio/gpio-vf610.txt
+deleted file mode 100644
+index ae254aa..0000000
+--- a/Documentation/devicetree/bindings/gpio/gpio-vf610.txt
++++ /dev/null
+@@ -1,63 +0,0 @@
+-* Freescale VF610 PORT/GPIO module
+-
+-The Freescale PORT/GPIO modules are two adjacent modules providing GPIO
+-functionality. Each pair serves 32 GPIOs. The VF610 has 5 instances of
+-each, and each PORT module has its own interrupt.
+-
+-Required properties for GPIO node:
+-- compatible : Should be "fsl,<soc>-gpio", below is supported list:
+-	       "fsl,vf610-gpio"
+-	       "fsl,imx7ulp-gpio"
+-- reg : The first reg tuple represents the PORT module, the second tuple
+-  the GPIO module.
+-- interrupts : Should be the port interrupt shared by all 32 pins.
+-- gpio-controller : Marks the device node as a gpio controller.
+-- #gpio-cells : Should be two. The first cell is the pin number and
+-  the second cell is used to specify the gpio polarity:
+-      0 = active high
+-      1 = active low
+-- interrupt-controller: Marks the device node as an interrupt controller.
+-- #interrupt-cells : Should be 2.  The first cell is the GPIO number.
+-  The second cell bits[3:0] is used to specify trigger type and level flags:
+-      1 = low-to-high edge triggered.
+-      2 = high-to-low edge triggered.
+-      4 = active high level-sensitive.
+-      8 = active low level-sensitive.
+-
+-Optional properties:
+--clocks:	Must contain an entry for each entry in clock-names.
+-		See common clock-bindings.txt for details.
+--clock-names:	A list of clock names. For imx7ulp, it must contain
+-		"gpio", "port".
+-
+-Note: Each GPIO port should have an alias correctly numbered in "aliases"
+-node.
+-
+-Examples:
+-
+-aliases {
+-	gpio0 = &gpio1;
+-	gpio1 = &gpio2;
+-};
+-
+-gpio1: gpio@40049000 {
+-	compatible = "fsl,vf610-gpio";
+-	reg = <0x40049000 0x1000 0x400ff000 0x40>;
+-	interrupts = <0 107 IRQ_TYPE_LEVEL_HIGH>;
+-	gpio-controller;
+-	#gpio-cells = <2>;
+-	interrupt-controller;
+-	#interrupt-cells = <2>;
+-	gpio-ranges = <&iomuxc 0 0 32>;
+-};
+-
+-gpio2: gpio@4004a000 {
+-	compatible = "fsl,vf610-gpio";
+-	reg = <0x4004a000 0x1000 0x400ff040 0x40>;
+-	interrupts = <0 108 IRQ_TYPE_LEVEL_HIGH>;
+-	gpio-controller;
+-	#gpio-cells = <2>;
+-	interrupt-controller;
+-	#interrupt-cells = <2>;
+-	gpio-ranges = <&iomuxc 0 32 32>;
+-};
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
+new file mode 100644
+index 0000000..6ac5a78
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
+@@ -0,0 +1,81 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/gpio-vf610.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale VF610 PORT/GPIO module
++
++maintainers:
++  - Stefan Agner <stefan@agner.ch>
++
++description: |
++  The Freescale PORT/GPIO modules are two adjacent modules providing GPIO
++  functionality. Each pair serves 32 GPIOs. The VF610 has 5 instances of
++  each, and each PORT module has its own interrupt.
++
++  Note: Each GPIO port should have an alias correctly numbered in "aliases"
++  node.
++
++properties:
++  compatible:
++    enum:
++      - fsl,vf610-gpio
++      - fsl,imx7ulp-gpio
++
++  reg:
++    description: The first reg tuple represents the PORT module, the second tuple
++      represents the GPIO module.
++    maxItems: 2
++
++  interrupts:
++    maxItems: 1
++
++  interrupt-controller: true
++
++  "#interrupt-cells":
++    const: 2
++
++  "#gpio-cells":
++    const: 2
++
++  gpio-controller: true
++
++  clocks:
++    items:
++      - description: SoC GPIO clock
++      - description: SoC PORT clock
++
++  clock-names:
++    items:
++      - const: gpio
++      - const: port
++
++  gpio-ranges:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-controller
++  - "#interrupt-cells"
++  - "#gpio-cells"
++  - gpio-controller
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    gpio1: gpio@40049000 {
++        compatible = "fsl,vf610-gpio";
++        reg = <0x40049000 0x1000>, <0x400ff000 0x40>;
++        interrupts = <0 107 IRQ_TYPE_LEVEL_HIGH>;
++        gpio-controller;
++        #gpio-cells = <2>;
++        interrupt-controller;
++        #interrupt-cells = <2>;
++        gpio-ranges = <&iomuxc 0 0 32>;
++    };
+-- 
+2.7.4
 
-More details and numbers are in this article:
-https://avagin.github.io/how-fast-is-procfs
-
-This new interface doesn't have only one of these limitations, but
-task_diag doesn't have all of them.
-
-And I compared how fast each of these interfaces:
-
-The test environment:
-CPU: Intel(R) Core(TM) i5-6300U CPU @ 2.40GHz
-RAM: 16GB
-kernel: v5.8 with task_diag and /proc/all patches.
-100K processes:
-$ ps ax | wc -l
-10228
-
-$ time cat /proc/all/status > /dev/null
-
-real	0m0.577s
-user	0m0.017s
-sys	0m0.559s
-
-task_proc_all is used to read /proc/pid/status for all tasks:
-https://github.com/avagin/linux-task-diag/blob/master/tools/testing/selftests/task_diag/task_proc_all.c
-
-$ time ./task_proc_all status
-tasks: 100230
-
-real	0m0.924s
-user	0m0.054s
-sys	0m0.858s
-
-
-/proc/all/status is about 40% faster than /proc/*/status.
-
-Now let's take a look at the perf output:
-
-$ time perf record -g cat /proc/all/status > /dev/null
-$ perf report
--   98.08%     1.38%  cat      [kernel.vmlinux]  [k] entry_SYSCALL_64
-   - 96.70% entry_SYSCALL_64
-      - do_syscall_64
-         - 94.97% ksys_read
-            - 94.80% vfs_read
-               - 94.58% proc_reg_read
-                  - seq_read
-                     - 87.95% proc_pid_status
-                        + 13.10% seq_put_decimal_ull_width
-                        - 11.69% task_mem
-                           + 9.48% seq_put_decimal_ull_width
-                        + 10.63% seq_printf
-                        - 10.35% cpuset_task_status_allowed
-                           + seq_printf
-                        - 9.84% render_sigset_t
-                             1.61% seq_putc
-                           + 1.61% seq_puts
-                        + 4.99% proc_task_name
-                        + 4.11% seq_puts
-                        - 3.76% render_cap_t
-                             2.38% seq_put_hex_ll
-                           + 1.25% seq_puts
-                          2.64% __task_pid_nr_ns
-                        + 1.54% get_task_mm
-                        + 1.34% __lock_task_sighand
-                        + 0.70% from_kuid_munged
-                          0.61% get_task_cred
-                          0.56% seq_putc
-                          0.52% hugetlb_report_usage
-                          0.52% from_kgid_munged
-                     + 4.30% proc_all_next
-                     + 0.82% _copy_to_user 
-
-We can see that the kernel spent more than 50% of the time to encode binary
-data into a text format.
-
-Now let's see how fast task_diag:
-
-$ time ./task_diag_all all -c -q
-
-real	0m0.087s
-user	0m0.001s
-sys	0m0.082s
-
-Maybe we need resurrect the task_diag series instead of inventing
-another less-effective interface...
-
-Thanks,
-Andrei
-
-> 
-> 
-> 
-> Best Wishes,
-> 
-> Eugene
-> 
-> 
-> Eugene Lubarsky (5):
->   fs/proc: Introduce /proc/all/stat
->   fs/proc: Introduce /proc/all/statm
->   fs/proc: Introduce /proc/all/status
->   fs/proc: Introduce /proc/all/io
->   fs/proc: Introduce /proc/all/statx
-> 
->  fs/proc/base.c     | 215 +++++++++++++++++++++++++++++++++++++++++++--
->  fs/proc/internal.h |   1 +
->  fs/proc/root.c     |   1 +
->  3 files changed, 210 insertions(+), 7 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
