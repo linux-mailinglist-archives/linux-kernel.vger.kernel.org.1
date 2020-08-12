@@ -2,102 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AE02426FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD68242714
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgHLI4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 04:56:18 -0400
-Received: from mail5.windriver.com ([192.103.53.11]:47840 "EHLO mail5.wrs.com"
+        id S1727795AbgHLI5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 04:57:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726572AbgHLI4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 04:56:18 -0400
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
-        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 07C8tDEr000485
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Wed, 12 Aug 2020 01:55:33 -0700
-Received: from pek-qzhang2-d1.wrs.com (128.224.162.183) by
- ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 12 Aug 2020 01:55:03 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <dan.j.williams@intel.com>, <vishal.l.verma@intel.com>,
-        <dave.jiang@intel.com>, <ira.weiny@intel.com>
-CC:     <linux-nvdimm@lists.01.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] libnvdimm: KASAN: global-out-of-bounds Read in internal_create_group
-Date:   Wed, 12 Aug 2020 16:55:01 +0800
-Message-ID: <20200812085501.30963-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726990AbgHLI5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 04:57:09 -0400
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6611A2083B
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 08:57:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597222628;
+        bh=OpdSJrDe6VRA6KahHe+zVXP/Gug35Hv/eCOg8dbd9DY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Mq48PKcDAKPCs4uHN1OeOkS3bDpt771NTXFrCiRP7g1tQgfAQVG5PFzRN3n+6VQBj
+         52V+BNWhpbjp/CVcMwvCMFHhgDs9sLVoZyzgfJsO8aBnnaAHBx+YAhI7PQ3nMBysb3
+         6vutoL+B2atRXi/4iKBq6fUa2PLHAx6OnQeGiPQ0=
+Received: by mail-ot1-f45.google.com with SMTP id h22so1329546otq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 01:57:08 -0700 (PDT)
+X-Gm-Message-State: AOAM531gvggMuAb7PpkIn5oTpl5JvwR3FFFf37MHLrPafFdLhjQSQTM3
+        JmkAlJFW3Jp/KxxCL4R14Pxj233dk8tIBdYAzY0=
+X-Google-Smtp-Source: ABdhPJwF0z1XdBIkc7lgzpT0TKJP7uCMbOPq4HE+7AdCj7tJjiyp1Nb5hK7VFoYBMlsVeraV9tugdkVFs+rdCdR9gxA=
+X-Received: by 2002:a9d:6251:: with SMTP id i17mr8034568otk.90.1597222627672;
+ Wed, 12 Aug 2020 01:57:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200403171303.GK20760@hirez.programming.kicks-ass.net>
+ <20200808101222.5103093e@coco.lan> <20200810092523.GA8612@linux-8ccs>
+ <20200810150647.GB8612@linux-8ccs> <20200811163427.6edbf343@coco.lan>
+ <20200811145524.GE2674@hirez.programming.kicks-ass.net> <20200811172738.2d632a09@coco.lan>
+ <20200811160134.GA13652@linux-8ccs>
+In-Reply-To: <20200811160134.GA13652@linux-8ccs>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 12 Aug 2020 10:56:56 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXF8fm=9CdQykqDbgYCJSP88ezMs3EOosCW+SDi+Lve0zg@mail.gmail.com>
+Message-ID: <CAMj1kXF8fm=9CdQykqDbgYCJSP88ezMs3EOosCW+SDi+Lve0zg@mail.gmail.com>
+Subject: Re: [PATCH v2] module: Harden STRICT_MODULE_RWX
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+On Tue, 11 Aug 2020 at 18:01, Jessica Yu <jeyu@kernel.org> wrote:
+>
+> +++ Mauro Carvalho Chehab [11/08/20 17:27 +0200]:
+> >Em Tue, 11 Aug 2020 16:55:24 +0200
+> >peterz@infradead.org escreveu:
+> >
+> >> On Tue, Aug 11, 2020 at 04:34:27PM +0200, Mauro Carvalho Chehab wrote:
+> >> >   [33] .plt              PROGBITS         0000000000000340  00035c80
+> >> >        0000000000000001  0000000000000000 WAX       0     0     1
+> >> >   [34] .init.plt         NOBITS           0000000000000341  00035c81
+> >> >        0000000000000001  0000000000000000  WA       0     0     1
+> >> >   [35] .text.ftrace[...] PROGBITS         0000000000000342  00035c81
+> >> >        0000000000000001  0000000000000000 WAX       0     0     1
+> >>
+> >> .plt and .text.ftrace_tramplines are buggered.
+> >>
+> >> arch/arm64/kernel/module.lds even marks then as NOLOAD.
+> >
+> >Hmm... Shouldn't the code at module_enforce_rwx_sections() or at
+> >load_module() ignore such sections instead of just rejecting probing
+> >all modules?
+> >
+> >I mean, if the existing toolchain is not capable of excluding
+> >those sections, either the STRICT_MODULE_RWX hardening should be
+> >disabled, if a broken toolchain is detected or some runtime code
+> >should handle such sections on a different way.
+>
+> Hi Mauro, thanks for providing the readelf output. The sections marked 'WAX'
+> are indeed the reason why the module loader is rejecting them.
+>
+> Interesting, my cross-compiled modules do not have the executable flag -
+>
+>   [38] .plt              NOBITS           0000000000000340  00038fc0
+>        0000000000000001  0000000000000000  WA       0     0     1
+>   [39] .init.plt         NOBITS           0000000000000341  00038fc0
+>        0000000000000001  0000000000000000  WA       0     0     1
+>   [40] .text.ftrace_tram NOBITS           0000000000000342  00038fc0
+>        0000000000000001  0000000000000000  WA       0     0     1
+>
+> ld version:
+>
+>     GNU ld (GNU Binutils) 2.34
+>     Copyright (C) 2020 Free Software Foundation, Inc.
+>     This program is free software; you may redistribute it under the terms of
+>     the GNU General Public License version 3 or (at your option) a later version.
+>
+> And gcc:
+>
+>     aarch64-linux-gcc (GCC) 9.3.0
+>     Copyright (C) 2019 Free Software Foundation, Inc.
+>     This is free software; see the source for copying conditions.  There is NO
+>     warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+>
+> I'm a bit confused about what NOLOAD actually implies in this context. From the
+> ld documentation - "The `(NOLOAD)' directive will mark a section to not be
+> loaded at run time." But these sections are marked SHF_ALLOC and are referenced
+> to in the module plt code. Or does it just tell the linker to not initialize it?
+>
+> Adding Ard to CC, I'm sure he'd know more about the section flag specifics.
+>
 
-Because the last member of the "nvdimm_firmware_attributes" array
-was not assigned a null ptr, when traversal of "grp->attrs" array
-is out of bounds in "create_files" func.
+The module .lds has BYTE(0) in the section contents to prevent the
+linker from pruning them entirely. The (NOLOAD) is there to ensure
+that this byte does not end up in the .ko, which is more a matter of
+principle than anything else, so we can happily drop that if it helps.
 
-func:
-	create_files:
-		->for (i = 0, attr = grp->attrs; *attr && !error; i++, attr++)
-			->....
+However, this should only affect the PROGBITS vs NOBITS designation,
+and so I am not sure whether it makes a difference.
 
-BUG: KASAN: global-out-of-bounds in create_files fs/sysfs/group.c:43 [inline]
-BUG: KASAN: global-out-of-bounds in internal_create_group+0x9d8/0xb20
-fs/sysfs/group.c:149
-Read of size 8 at addr ffffffff8a2e4cf0 by task kworker/u17:10/959
-
-CPU: 2 PID: 959 Comm: kworker/u17:10 Not tainted 5.8.0-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Workqueue: events_unbound async_run_entry_fn
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- create_files fs/sysfs/group.c:43 [inline]
- internal_create_group+0x9d8/0xb20 fs/sysfs/group.c:149
- internal_create_groups.part.0+0x90/0x140 fs/sysfs/group.c:189
- internal_create_groups fs/sysfs/group.c:185 [inline]
- sysfs_create_groups+0x25/0x50 fs/sysfs/group.c:215
- device_add_groups drivers/base/core.c:2024 [inline]
- device_add_attrs drivers/base/core.c:2178 [inline]
- device_add+0x7fd/0x1c40 drivers/base/core.c:2881
- nd_async_device_register+0x12/0x80 drivers/nvdimm/bus.c:506
- async_run_entry_fn+0x121/0x530 kernel/async.c:123
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-The buggy address belongs to the variable:
- nvdimm_firmware_attributes+0x10/0x40
-
-Reported-by: syzbot+1cf0ffe61aecf46f588f@syzkaller.appspotmail.com
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
----
- v1->v2:
- Modify the description of the error.
-
- drivers/nvdimm/dimm_devs.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/nvdimm/dimm_devs.c b/drivers/nvdimm/dimm_devs.c
-index 61374def5155..b59032e0859b 100644
---- a/drivers/nvdimm/dimm_devs.c
-+++ b/drivers/nvdimm/dimm_devs.c
-@@ -529,6 +529,7 @@ static DEVICE_ATTR_ADMIN_RW(activate);
- static struct attribute *nvdimm_firmware_attributes[] = {
- 	&dev_attr_activate.attr,
- 	&dev_attr_result.attr,
-+	NULL,
- };
- 
- static umode_t nvdimm_firmware_visible(struct kobject *kobj, struct attribute *a, int n)
--- 
-2.17.1
-
+Depending on where the w^x check occurs, we might simply override the
+permissions of these sections, and strip the writable permission if it
+is set in the PLT handling init code, which manipulates the metadata
+of all these 3 sections before the module space is vmalloc'ed.
