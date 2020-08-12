@@ -2,99 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436E3242720
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F6724276A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 11:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbgHLI7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 04:59:18 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:57430 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726572AbgHLI7R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 04:59:17 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07C8pwEP159483;
-        Wed, 12 Aug 2020 08:59:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=fX5Hq12QB3O54zKi56LfEX/5PhMYcRNizebtS1uhJZQ=;
- b=z95BENQnuCk+9ZFmipY4ugqKKVuN5wdZa3NCOnxx8GsoNTFsTNUGlUUwRGwlJl6oq0h0
- 6DZY0KCiVtzVp/Q/gGx07HLD5UDiVXf6ffX80cbrR9My/cF85N9pfEpF4cbut05WaQy8
- 5ISY+hiv86gIwjC0VbQaLZ2GKwrbQsvMxGCH2ETye018Y7Ln6V+GTtYi1XqwiZ3dFx25
- +uQzAO8NTZZxtcWvKzwvPN98rxrnnRyYhyADWJHtS8MfKQAWHZjDPE8AERycH92HoDZH
- z0RKErQKqsotkdHJk8ta3suUVlezia62jBO0WSSNFNnWp/RaH/qd/JYpIdgEtSH6gk2G iw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 32t2ydqunn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 12 Aug 2020 08:59:12 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07C8rLm8092500;
-        Wed, 12 Aug 2020 08:59:11 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 32t5y6cah2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 12 Aug 2020 08:59:11 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07C8xAgB015682;
-        Wed, 12 Aug 2020 08:59:11 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 12 Aug 2020 08:59:10 +0000
-Date:   Wed, 12 Aug 2020 11:59:04 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fsdevel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH] hfs, hfsplus: Fix NULL pointer
- dereference in hfs_find_init()
-Message-ID: <20200812085904.GA16441@kadam>
-References: <20200812065556.869508-1-yepeilin.cs@gmail.com>
- <20200812070827.GA1304640@kroah.com>
- <20200812071306.GA869606@PWN>
+        id S1727025AbgHLJYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 05:24:43 -0400
+Received: from mga14.intel.com ([192.55.52.115]:34512 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726409AbgHLJYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 05:24:42 -0400
+IronPort-SDR: MZ3hK8Y7KKdghSIaftY57W8NUS7C36LlpH/zNL5XObp5OP3Uo0N1vDKgZgT9INAeseBMeJoBxj
+ 9gV+RWvMFJ4g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9710"; a="153141205"
+X-IronPort-AV: E=Sophos;i="5.76,303,1592895600"; 
+   d="scan'208";a="153141205"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 02:24:42 -0700
+IronPort-SDR: OlSgHJrGutoTjUF2OKbQZWiX7nMYIKSUKS5+mJul17WvlApBrqmEG5LxrBAA5fxOqUt9lwV1TY
+ VACcfbcmJlfw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,303,1592895600"; 
+   d="scan'208";a="325021329"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 12 Aug 2020 02:24:40 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1k5mTw-008Aey-TZ; Wed, 12 Aug 2020 11:51:36 +0300
+Date:   Wed, 12 Aug 2020 11:51:36 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Seungil Kang <sil.kang@samsung.com>
+Cc:     bhe@redhat.com, mingo@kernel.org, akpm@linux-foundation.org,
+        gregkh@linuxfoundation.org, herbert@gondor.apana.org.au,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lib/cmdline: prevent unintented access to address
+Message-ID: <20200812085136.GH1891694@smile.fi.intel.com>
+References: <CGME20200812025432epcas1p1b810c6b94adf533d5cae3ef6a24ca9a2@epcas1p1.samsung.com>
+ <20200812025402.15695-1-sil.kang@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200812071306.GA869606@PWN>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9710 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
- suspectscore=0 mlxscore=0 adultscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008120064
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9710 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 priorityscore=1501
- malwarescore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 phishscore=0 adultscore=0 spamscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008120064
+In-Reply-To: <20200812025402.15695-1-sil.kang@samsung.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yeah, the patch doesn't work at all.  I looked at one call tree and it
-is:
+On Wed, Aug 12, 2020 at 11:54:02AM +0900, Seungil Kang wrote:
 
-hfs_mdb_get() tries to allocate HFS_SB(sb)->ext_tree.
+Thanks for the patch, my comments below.
 
-	HFS_SB(sb)->ext_tree = hfs_btree_open(sb, HFS_EXT_CNID, hfs_ext_keycmp);
-                    ^^^^^^^^
+> When args = "\"\0", "i" will be 0 and args[i-1] is used (line:238)
 
-hfs_btree_open() calls page = read_mapping_page(mapping, 0, NULL);
-read_mapping_page() calls mapping->a_ops->readpage() which leads to
-hfs_readpage() which leads to hfs_ext_read_extent() which calls
-res = hfs_find_init(HFS_SB(inode->i_sb)->ext_tree, &fd);
-                                         ^^^^^^^^
+Can you be less ambiguous with the args value? (Perhaps provide a hexdump of it
+for better understanding)
 
-So we need ->ext_tree to be non-NULL before we can set ->ext_tree to be
-non-NULL...  :/
+> Because of "i" is an unsigned int type,
+> the function will access at args[0xFFFFFFFF]
+> It can make a crash
 
-I wonder how long this has been broken and if we should just delete the
-AFS file system.
+Please, use proper punctuation, I'm lost where is the sentence and what are the
+logical parts of them.
 
-regards,
-dan carpenter
+Can you point out to the code that calls this and leads to a crash?
+
+>  lib/cmdline.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Can you provide a KUnit test module which can check the case?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
