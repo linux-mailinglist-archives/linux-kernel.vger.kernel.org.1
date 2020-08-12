@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BA1242BDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 17:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E18242BCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 17:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgHLPCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 11:02:34 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:41770 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726488AbgHLPC3 (ORCPT
+        id S1726583AbgHLPBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 11:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726660AbgHLPB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 11:02:29 -0400
-X-IronPort-AV: E=Sophos;i="5.76,304,1592838000"; 
-   d="scan'208";a="54233369"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 13 Aug 2020 00:02:28 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id AD201400492E;
-        Thu, 13 Aug 2020 00:02:25 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Chris Paterson <Chris.Paterson2@renesas.com>
-Subject: [PATCH 2/2] ARM: dts: r8a7742: Add QSPI support
-Date:   Wed, 12 Aug 2020 16:00:48 +0100
-Message-Id: <20200812150048.27721-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200812150048.27721-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20200812150048.27721-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Wed, 12 Aug 2020 11:01:28 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8D8C061384
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 08:01:27 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id c10so3026576pjn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 08:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Pn8XGjtoHNsfz8N95/akuzEI/iE/lyOm3UJwEkNX7sk=;
+        b=cRhNL8hA3p/JUNHEus1P07KCkGKROzMAENFTyHVRjDRa7NFNYaX6gO35DBHDLm4UjP
+         9HPf0zGMWfGvMtCS5X1Fs14S5Xm8DlO3vDpI1fLds3fIf9CLHUnQuCd7IRro0XIuLZ64
+         VD6WZttGj9wnnXIrBjUaMApKIGTNXBh3SbljJjZi394OLAnk10iY1H6P0halcUhrfibW
+         0rFbcLCFtEI267l4HZrSNTLMi9HRrZWhcCBVwu/pm64SUVztozXl5XTHW0C4tA4E/Etn
+         uNMYyyswL1pyn7pIJ8hLwDAOkioWxhr32B/1LdDGbunBZ4GgdWvtDonSi8QI3bqZ+9pm
+         qRBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Pn8XGjtoHNsfz8N95/akuzEI/iE/lyOm3UJwEkNX7sk=;
+        b=kNxeYMQDnZo2jEF4owptrogzNQnSoW0ZjWdfkjbKuUlLrFRD1eO66nGAoeh9HCKWMv
+         Mj8AxAo9OPg5gbcGxHU63YYARSaQchs3lm95M/UNNGyTENqLtDey92dKuP173fb01pY1
+         OAzg9pqFx4bChq/+MP1At5eZ7tJESLR07uQlWFumyD70R9MAEaP0LgVCspGTyUQ5+U4K
+         Oh6yV2/FO2tHQYgSnirqunJ6IqA+ZoC/TvnbedEC9T0ll/vsufVvOiNEApVKeFyv8z+S
+         ib97beVECEog+Ze7pY2e+RPAuF2vq8FA6i0PvdP4PaaOwYD2KUdtPtpl9kYvwBKNTz9b
+         mVTQ==
+X-Gm-Message-State: AOAM533iTemvLjweQv2Ch8ytglyADKLEY6h7p0kvGm0pTCa44hjxhVQM
+        7w5Zp/UOhVy/1gctT7kdzdxMrg==
+X-Google-Smtp-Source: ABdhPJy1vATXhNuwkrOrmHQ14GFECX0NGcPnsRyZbrGNofbP7l18Jrk9xvZ7OAjGIRX+7Y5fc07MXw==
+X-Received: by 2002:a17:90a:ca94:: with SMTP id y20mr405589pjt.137.1597244486995;
+        Wed, 12 Aug 2020 08:01:26 -0700 (PDT)
+Received: from localhost ([182.68.204.118])
+        by smtp.gmail.com with ESMTPSA id z26sm2697640pgc.44.2020.08.12.08.01.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 12 Aug 2020 08:01:25 -0700 (PDT)
+Date:   Wed, 12 Aug 2020 20:31:22 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Niklas Cassel <nks@flawful.org>
+Subject: Re: [RFC PATCH 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
+ -EPROBE_DEFER
+Message-ID: <20200812150122.dennzvxfzk4fyxm2@vireshk-mac-ubuntu>
+References: <20200727093047.8274-1-stephan@gerhold.net>
+ <CAPDyKFq9bbMZD7ifF=ipfBD3ayiLuc6RPwW8_RWZBxMGv_WZkw@mail.gmail.com>
+ <20200812105333.GA913@gerhold.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200812105333.GA913@gerhold.net>
+User-Agent: NeoMutt/20170609 (1.8.3)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add QSPI DT node to R8A7742 SoC dtsi.
+On 12-08-20, 12:53, Stephan Gerhold wrote:
+> On Wed, Aug 12, 2020 at 11:10:38AM +0200, Ulf Hansson wrote:
+> > > I wasn't sure if the changes in drivers/base/power/domain.c
+> > > should be made in a separate commit, but they need to be made together
+> > > with the other changes.
+> > 
+> > I would suggest to move the changes in drivers/base/power/domain.c
+> > into a separate patch, still part of the series, but let it preceed
+> > $subject patch.
+> > 
+> 
+> OK, will do that in v2 - thank you!
+> 
+> I have another small build fix reported by the kernel test robot,
+> but will wait with sending that out until Viresh had a chance to give
+> some feedback on the basic idea. :)
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
----
- arch/arm/boot/dts/r8a7742.dtsi | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+What was the issue that was reported ? I may end up applying V1 only
+with some of my changes.
 
-diff --git a/arch/arm/boot/dts/r8a7742.dtsi b/arch/arm/boot/dts/r8a7742.dtsi
-index 5070e2a87231..009827708bf4 100644
---- a/arch/arm/boot/dts/r8a7742.dtsi
-+++ b/arch/arm/boot/dts/r8a7742.dtsi
-@@ -701,6 +701,22 @@
- 			status = "disabled";
- 		};
- 
-+		qspi: spi@e6b10000 {
-+			compatible = "renesas,qspi-r8a7742", "renesas,qspi";
-+			reg = <0 0xe6b10000 0 0x2c>;
-+			interrupts = <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 917>;
-+			dmas = <&dmac0 0x17>, <&dmac0 0x18>,
-+			       <&dmac1 0x17>, <&dmac1 0x18>;
-+			dma-names = "tx", "rx", "tx", "rx";
-+			power-domains = <&sysc R8A7742_PD_ALWAYS_ON>;
-+			resets = <&cpg 917>;
-+			num-cs = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		scifa0: serial@e6c40000 {
- 			compatible = "renesas,scifa-r8a7742",
- 				     "renesas,rcar-gen2-scifa", "renesas,scifa";
 -- 
-2.17.1
-
+viresh
