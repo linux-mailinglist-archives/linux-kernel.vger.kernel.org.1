@@ -2,105 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3AC242D00
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 18:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F62242D0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 18:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgHLQSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 12:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbgHLQSO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 12:18:14 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5BDC061383;
-        Wed, 12 Aug 2020 09:18:13 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 704659E7;
-        Wed, 12 Aug 2020 18:18:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1597249091;
-        bh=2+qRB0EDeJKOceT4aKdTruoVhWNyj1iPb3qSiAE6P+E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oF4sLmzNmpVYuU2DgemwmQqHJOrzIjqj5WyaPjCinr3HvqAxG88mdmDT9POvzhZjm
-         vY4XOzk2KTZXFlA0mktOpM71pb99ITKrM7QycoRE+BGrJjJ30aY62f/IaSCmBi1X2R
-         iEI05bEW3Yh/N8+4WXgcxWmzZmtqdgWa8WOnx98s=
-Date:   Wed, 12 Aug 2020 19:17:57 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Marian-Cristian Rotariu 
-        <marian-cristian.rotariu.rb@bp.renesas.com>
-Subject: Re: [PATCH 4/9] dt-bindings: display: renesas,lvds: Document
- r8a774e1 bindings
-Message-ID: <20200812161757.GN6057@pendragon.ideasonboard.com>
-References: <20200812140217.24251-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200812140217.24251-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1726596AbgHLQUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 12:20:04 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2598 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726477AbgHLQUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 12:20:04 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 8DC4E9962F777C180EF8;
+        Wed, 12 Aug 2020 17:20:02 +0100 (IST)
+Received: from localhost (10.52.122.74) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 12 Aug
+ 2020 17:20:01 +0100
+Date:   Wed, 12 Aug 2020 17:18:33 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Nicholas Piggin <npiggin@gmail.com>
+CC:     <linux-arch@vger.kernel.org>, Zefan Li <lizefan@huawei.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Will Deacon <will@kernel.org>,
+        <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <linuxppc-dev@lists.ozlabs.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>
+Subject: Re: [PATCH v3 8/8] mm/vmalloc: Hugepage vmalloc mappings
+Message-ID: <20200812171833.00001570@Huawei.com>
+In-Reply-To: <20200812132524.000067a6@Huawei.com>
+References: <20200810022732.1150009-1-npiggin@gmail.com>
+        <20200810022732.1150009-9-npiggin@gmail.com>
+        <20200812132524.000067a6@Huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200812140217.24251-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.122.74]
+X-ClientProxiedBy: lhreml728-chm.china.huawei.com (10.201.108.79) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+On Wed, 12 Aug 2020 13:25:24 +0100
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 
-Thank you for the patch.
-
-On Wed, Aug 12, 2020 at 03:02:12PM +0100, Lad Prabhakar wrote:
-> From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> On Mon, 10 Aug 2020 12:27:32 +1000
+> Nicholas Piggin <npiggin@gmail.com> wrote:
 > 
-> Document the RZ/G2H (R8A774E1) LVDS bindings.
+> > On platforms that define HAVE_ARCH_HUGE_VMAP and support PMD vmaps,
+> > vmalloc will attempt to allocate PMD-sized pages first, before falling
+> > back to small pages.
+> > 
+> > Allocations which use something other than PAGE_KERNEL protections are
+> > not permitted to use huge pages yet, not all callers expect this (e.g.,
+> > module allocations vs strict module rwx).
+> > 
+> > This reduces TLB misses by nearly 30x on a `git diff` workload on a
+> > 2-node POWER9 (59,800 -> 2,100) and reduces CPU cycles by 0.54%.
+> > 
+> > This can result in more internal fragmentation and memory overhead for a
+> > given allocation, an option nohugevmap is added to disable at boot.
+> > 
+> > Signed-off-by: Nicholas Piggin <npiggin@gmail.com>  
+> Hi Nicholas,
 > 
-> Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  .../devicetree/bindings/display/bridge/renesas,lvds.txt          | 1 +
-
-This binding has been converted to YAML. I'll apply the patch manually
-as it's a one-liner.
-
-diff --git a/Documentation/devicetree/bindings/display/bridge/renesas,lvds.yaml b/Documentation/devicetree/bindings/display/bridge/renesas,lvds.yaml
-index 4ca5a904b0ea..0fe0c49403f8 100644
---- a/Documentation/devicetree/bindings/display/bridge/renesas,lvds.yaml
-+++ b/Documentation/devicetree/bindings/display/bridge/renesas,lvds.yaml
-@@ -22,6 +22,7 @@ properties:
-       - renesas,r8a774a1-lvds # for RZ/G2M compatible LVDS encoders
-       - renesas,r8a774b1-lvds # for RZ/G2N compatible LVDS encoders
-       - renesas,r8a774c0-lvds # for RZ/G2E compatible LVDS encoders
-+      - renesas,r8a774e1-lvds # for RZ/G2H compatible LVDS encoders
-       - renesas,r8a7790-lvds # for R-Car H2 compatible LVDS encoders
-       - renesas,r8a7791-lvds # for R-Car M2-W compatible LVDS encoders
-       - renesas,r8a7793-lvds # for R-Car M2-N compatible LVDS encoders
-
-If you see any issue there, please let me know.
-
->  1 file changed, 1 insertion(+)
+> Busy afternoon, but a possible point of interest in line in the meantime.
 > 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/renesas,lvds.txt b/Documentation/devicetree/bindings/display/bridge/renesas,lvds.txt
-> index c62ce2494ed9..42743d0d24b3 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/renesas,lvds.txt
-> +++ b/Documentation/devicetree/bindings/display/bridge/renesas,lvds.txt
-> @@ -12,6 +12,7 @@ Required properties:
->    - "renesas,r8a774a1-lvds" for R8A774A1 (RZ/G2M) compatible LVDS encoders
->    - "renesas,r8a774b1-lvds" for R8A774B1 (RZ/G2N) compatible LVDS encoders
->    - "renesas,r8a774c0-lvds" for R8A774C0 (RZ/G2E) compatible LVDS encoders
-> +  - "renesas,r8a774e1-lvds" for R8A774E1 (RZ/G2H) compatible LVDS encoders
->    - "renesas,r8a7790-lvds" for R8A7790 (R-Car H2) compatible LVDS encoders
->    - "renesas,r8a7791-lvds" for R8A7791 (R-Car M2-W) compatible LVDS encoders
->    - "renesas,r8a7793-lvds" for R8A7793 (R-Car M2-N) compatible LVDS encoders
 
--- 
-Regards,
+I did manage to get back to this.
 
-Laurent Pinchart
+The issue I think is that ARM64 defines THREAD_ALIGN with CONFIG_VMAP_STACK
+to be 2* THREAD SIZE.  There is comment in arch/arm64/include/asm/memory.h
+that this is to allow cheap checking of overflow.
+
+A quick grep suggests ARM64 is the only architecture to do this...
+
+Jonathan
+
+
+
+> 
+> ...
+> 
+> > @@ -2701,22 +2760,45 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+> >  			pgprot_t prot, unsigned long vm_flags, int node,
+> >  			const void *caller)
+> >  {
+> > -	struct vm_struct *area;
+> > +	struct vm_struct *area = NULL;
+> >  	void *addr;
+> >  	unsigned long real_size = size;
+> > +	unsigned long real_align = align;
+> > +	unsigned int shift = PAGE_SHIFT;
+> >  
+> >  	size = PAGE_ALIGN(size);
+> >  	if (!size || (size >> PAGE_SHIFT) > totalram_pages())
+> >  		goto fail;
+> >  
+> > -	area = __get_vm_area_node(real_size, align, VM_ALLOC | VM_UNINITIALIZED |
+> > +	if (vmap_allow_huge && (pgprot_val(prot) == pgprot_val(PAGE_KERNEL))) {
+> > +		unsigned long size_per_node;
+> > +
+> > +		/*
+> > +		 * Try huge pages. Only try for PAGE_KERNEL allocations,
+> > +		 * others like modules don't yet expect huge pages in
+> > +		 * their allocations due to apply_to_page_range not
+> > +		 * supporting them.
+> > +		 */
+> > +
+> > +		size_per_node = size;
+> > +		if (node == NUMA_NO_NODE)
+> > +			size_per_node /= num_online_nodes();
+> > +		if (size_per_node >= PMD_SIZE)
+> > +			shift = PMD_SHIFT;
+> > +	}
+> > +
+> > +again:
+> > +	align = max(real_align, 1UL << shift);
+> > +	size = ALIGN(real_size, align);  
+> 
+> So my suspicion is that the issue on arm64 is related to this.
+> In the relevant call path, align is 32K whilst the size is 16K
+> 
+> Previously I don't think we force size to be a multiple of align.
+> 
+> I think this results in nr_pages being double what it was before.
+> 
+> 
+> > +
+> > +	area = __get_vm_area_node(size, align, VM_ALLOC | VM_UNINITIALIZED |
+> >  				vm_flags, start, end, node, gfp_mask, caller);
+> >  	if (!area)
+> >  		goto fail;
+> >  
+> > -	addr = __vmalloc_area_node(area, gfp_mask, prot, node);
+> > +	addr = __vmalloc_area_node(area, gfp_mask, prot, shift, node);
+> >  	if (!addr)
+> > -		return NULL;
+> > +		goto fail;
+> >  
+> >  	/*
+> >  	 * In this function, newly allocated vm_struct has VM_UNINITIALIZED
+> > @@ -2730,8 +2812,16 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+> >  	return addr;
+> >  
+> >  fail:
+> > -	warn_alloc(gfp_mask, NULL,
+> > +	if (shift > PAGE_SHIFT) {
+> > +		shift = PAGE_SHIFT;
+> > +		goto again;
+> > +	}
+> > +
+> > +	if (!area) {
+> > +		/* Warn for area allocation, page allocations already warn */
+> > +		warn_alloc(gfp_mask, NULL,
+> >  			  "vmalloc: allocation failure: %lu bytes", real_size);
+> > +	}
+> >  	return NULL;
+> >  }
+> >    
+> 
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+
