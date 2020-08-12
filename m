@@ -2,84 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DEB242F71
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 21:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E15242F75
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 21:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726679AbgHLThK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 15:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726512AbgHLThG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 15:37:06 -0400
-Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DEAC061383;
-        Wed, 12 Aug 2020 12:37:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
-         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
-        :To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=6upE0YaOoO/ag38SB8jo+t0fs4seFaLVaVB2MuIhyRw=; b=E1kL5RqKGQWYpR7ND0VkADIj1F
-        KJCusvkNuLbJx2hVqFN46suMqIlBCzYiKjFpzUbHjcihWcoFA21KUcBy7GTNELseJwlTCwnQ5OLY2
-        1QT7giubWcyjXdRYglUT+dxmvkiamvQLk3+gQ+LmkwEr3lUMYCEtnJafqEtt4BU1PNKTDp/OWGK0x
-        LRvoHRE4I1reJ2ZbB59xxdLjZmunDwi5+SG99hOeXJB8cIDldoIGsmOdF4+zMDddsDB0e19zf4COG
-        NGXmk+g8TfPrdjgHZoFDaz10Q9+ppE9wvcXna+DLR41B/zXk7jRegdbUH2DFgy6sivsMEvFmenQbP
-        T9Y5ZOPw==;
-Received: from noodles by the.earth.li with local (Exim 4.92)
-        (envelope-from <noodles@earth.li>)
-        id 1k5wYX-0002o7-HJ; Wed, 12 Aug 2020 20:37:01 +0100
-Date:   Wed, 12 Aug 2020 20:37:01 +0100
-From:   Jonathan McDowell <noodles@earth.li>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net 1/2] net: stmmac: dwmac1000: provide multicast filter
- fallback
-Message-ID: <69708c8942a1f3717d15da861609344bd9a16bae.1597260787.git.noodles@earth.li>
-References: <cover.1597260787.git.noodles@earth.li>
-MIME-Version: 1.0
+        id S1726788AbgHLThm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 15:37:42 -0400
+Received: from gate.crashing.org ([63.228.1.57]:49757 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726512AbgHLThl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 15:37:41 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 07CJbC2A023840;
+        Wed, 12 Aug 2020 14:37:12 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 07CJbCVe023839;
+        Wed, 12 Aug 2020 14:37:12 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 12 Aug 2020 14:37:12 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] powerpc/uaccess: Add pre-update addressing to __get_user_asm() and __put_user_asm()
+Message-ID: <20200812193712.GV6753@gate.crashing.org>
+References: <c27bc4e598daf3bbb225de7a1f5c52121cf1e279.1597235091.git.christophe.leroy@csgroup.eu> <13041c7df39e89ddf574ea0cdc6dedfdd9734140.1597235091.git.christophe.leroy@csgroup.eu>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1597260787.git.noodles@earth.li>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <13041c7df39e89ddf574ea0cdc6dedfdd9734140.1597235091.git.christophe.leroy@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we don't have a hardware multicast filter available then instead of
-silently failing to listen for the requested ethernet broadcast
-addresses fall back to receiving all multicast packets, in a similar
-fashion to other drivers with no multicast filter.
+On Wed, Aug 12, 2020 at 12:25:17PM +0000, Christophe Leroy wrote:
+> Enable pre-update addressing mode in __get_user_asm() and __put_user_asm()
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+> v3: new, splited out from patch 1.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Jonathan McDowell <noodles@earth.li>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c | 3 +++
- 1 file changed, 3 insertions(+)
+It still looks fine to me, you can keep my Reviewed-by: :-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
-index efc6ec1b8027..fc8759f146c7 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
-@@ -164,6 +164,9 @@ static void dwmac1000_set_filter(struct mac_device_info *hw,
- 		value = GMAC_FRAME_FILTER_PR | GMAC_FRAME_FILTER_PCF;
- 	} else if (dev->flags & IFF_ALLMULTI) {
- 		value = GMAC_FRAME_FILTER_PM;	/* pass all multi */
-+	} else if (!netdev_mc_empty(dev) && (mcbitslog2 == 0)) {
-+		/* Fall back to all multicast if we've no filter */
-+		value = GMAC_FRAME_FILTER_PM;
- 	} else if (!netdev_mc_empty(dev)) {
- 		struct netdev_hw_addr *ha;
- 
--- 
-2.20.1
 
+Segher
