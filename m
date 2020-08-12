@@ -2,104 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2D7242A14
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3A4242A20
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbgHLNJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 09:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
+        id S1727982AbgHLNOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 09:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727050AbgHLNJm (ORCPT
+        with ESMTP id S1727936AbgHLNOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 09:09:42 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B357C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 06:09:39 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id bs17so1488188edb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 06:09:38 -0700 (PDT)
+        Wed, 12 Aug 2020 09:14:45 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4805C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 06:14:44 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id a5so2343230ioa.13
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 06:14:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dDaKIw34dbl2BS19WgtGHw4f1WrFR2cMDs9vgYrFqRA=;
-        b=f3imS+8nyoc+AeGEyfplnYFj1FbYpGqeslu9w52ddIfQ/9dI/X2nGcCAKVKStLE6Dp
-         9/bG54SxegeZiSz6ojev1zwm6xgk7bREoz2f33F4iLpDVdGYn749mq7xMDWbwNmnTo5r
-         sy2qzQIlhF5PDon4IfaUAfEgRmQOA5q+0cTuo=
+        bh=79Y+QMDHezU/5SURd8Ma018LuzReHRkJThB2i60XPmw=;
+        b=lF32krpO4NcmaJVg3GSzk3XwJJB5WCYVAl9nrA9tEULjvQDM4/2Esppyr6zdfgJuem
+         lnD6DvUPJh0ZLb3qQT+MUoIpFyTqHaNe1hv5R95tCkzAwQlaAY/1upfAbl3pDehJS9fO
+         qo8gEBztMC/SeqhIHikTr9j2H31MBu3VJ6ikQs/s/OxgWnsmBhnviI3uyFzb9KSBuTzM
+         HB+35g0tGZlRNT3M/6YZn3lkxjSaf66tqhyNIVgmSG0Ef5v4f7x0585NokvUIP0n4oIK
+         iU1XfBLzixoO3EfS4nOygsTzm8bhXAsGtB2QBp+Pd1/H+BmMqwpdPtAIbOE4xZLVPEGu
+         V2tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dDaKIw34dbl2BS19WgtGHw4f1WrFR2cMDs9vgYrFqRA=;
-        b=gm+lc7Rmatm8dKMYADMmaRDiEXHs+QKCOjQZkVRL8P+uocsIzvt4Bbk8Xg3kjdK0Y3
-         NGAvmkoBVS+CQwo7QP/Wf45umENvxNL2axH2K8silAGf2mwXN4P0janvSPFZkyQjB5Gs
-         YnkBt+Jp4rrlxB1bfR8Dccv5fcmWncSn0BKibcJ6hrS09D8rjv/qVm0DJE7Im8D+tXCc
-         rVxV2XuJRokYGh/ugLPbdud6+N7KV28EAVBEnRUxe6K67Uk4XhfHf7qbLlur6xI+EWlD
-         0jHIv0HNLD2uizRlEWfG2Svur4SxbbCl81kWz+iycN7yq1XyKVftkXBUFMHXZ5mlYCru
-         6pog==
-X-Gm-Message-State: AOAM533L5qb5vDOJ23Z/wlQirMt4aHQux4tYg8ku3wTNo5Cbx70xUp8T
-        B9pc7ycCIX0vYQtyXCPWqGiKevmmxGH0NPPTDtleeA==
-X-Google-Smtp-Source: ABdhPJy+Hr/67owQkNGvK1aBkG90FSTzz/k2k/Fp5hemfnktI3EmSZYkogSqjcd19XWiEp4n5RNRJT0KfkhES6hsxXo=
-X-Received: by 2002:a50:fb10:: with SMTP id d16mr31093480edq.134.1597237777804;
- Wed, 12 Aug 2020 06:09:37 -0700 (PDT)
+        bh=79Y+QMDHezU/5SURd8Ma018LuzReHRkJThB2i60XPmw=;
+        b=l/qeeJHoFUOyikfevf7tKy7VJ07ZeQ5qCIj7Jpzduq07RtSyFD5PM3owPvenhRxs0t
+         5bpkG6uGfe9g/hMnvd0I/VuRtLkVmrtxJI/clnH0u9e7mTvqMnbxGf0UqB7m93UbkA2g
+         7xHA8UlgpkdMOSY7FUb6KD2rz3g7TqJSS/2lIkN5k+k/mm/6dvuyzxwWUbmcEOiq7x3w
+         x6UGcCx3yd47cJd4EyScgTRFSm8YV0+zBw4CBv1G9CaPDrdzCiAB+Nd/dr5n6oN/jpSg
+         yA3NN5UButDjCNyqkLmXYONAgHQF67ffrMqvBD848n/FjzRyv0JytINJ4IMmRgxS6Rsn
+         LHzA==
+X-Gm-Message-State: AOAM5324yzzCwFMpVX0xSXnLXhwYtWM7MaoFHVocQC7TopRIXPxJ52zc
+        KCsAsHkdU7chFoI2k+0WcwhyHjZ4jYS9IO+2SzE=
+X-Google-Smtp-Source: ABdhPJzm7Ii2Y9Dh7M04BQ4c1S6/T30DEp63vJzfQBNjBxicvbkQWXd56m+UNfLzZoBCOgvokeRCjqT67GykjlZ3bsU=
+X-Received: by 2002:a02:b159:: with SMTP id s25mr31218462jah.4.1597238084132;
+ Wed, 12 Aug 2020 06:14:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <1842689.1596468469@warthog.procyon.org.uk> <1845353.1596469795@warthog.procyon.org.uk>
- <CAJfpegunY3fuxh486x9ysKtXbhTE0745ZCVHcaqs9Gww9RV2CQ@mail.gmail.com>
- <ac1f5e3406abc0af4cd08d818fe920a202a67586.camel@themaw.net>
- <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com>
- <CAJfpegtNP8rQSS4Z14Ja4x-TOnejdhDRTsmmDD-Cccy2pkfVVw@mail.gmail.com>
- <20200811135419.GA1263716@miu.piliscsaba.redhat.com> <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
- <20200812101405.brquf7xxt2q22dd3@ws.net.home>
-In-Reply-To: <20200812101405.brquf7xxt2q22dd3@ws.net.home>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 12 Aug 2020 15:09:26 +0200
-Message-ID: <CAJfpegs4gzvJMBz=su8KgXXxX41tv8tVhO88Eap9pDeHRaSDPA@mail.gmail.com>
-Subject: Re: file metadata via fs API (was: [GIT PULL] Filesystem Information)
-To:     Karel Zak <kzak@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Christian Brauner <christian@brauner.io>,
-        Lennart Poettering <lennart@poettering.net>,
-        Linux API <linux-api@vger.kernel.org>,
-        Ian Kent <raven@themaw.net>,
-        LSM <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200403171303.GK20760@hirez.programming.kicks-ass.net>
+ <20200808101222.5103093e@coco.lan> <20200810092523.GA8612@linux-8ccs>
+ <20200810150647.GB8612@linux-8ccs> <20200811163427.6edbf343@coco.lan>
+ <20200811145524.GE2674@hirez.programming.kicks-ass.net> <20200811172738.2d632a09@coco.lan>
+ <20200811160134.GA13652@linux-8ccs> <CAMj1kXF8fm=9CdQykqDbgYCJSP88ezMs3EOosCW+SDi+Lve0zg@mail.gmail.com>
+ <20200812104005.GN2674@hirez.programming.kicks-ass.net> <20200812114127.GA10824@linux-8ccs.fritz.box>
+In-Reply-To: <20200812114127.GA10824@linux-8ccs.fritz.box>
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+Date:   Wed, 12 Aug 2020 06:14:08 -0700
+Message-ID: <CAMe9rOqVbZ=TmEtPXVU_rQbvNkmzht2bxs5qWuFzS3GLSbEOLQ@mail.gmail.com>
+Subject: Re: [PATCH v2] module: Harden STRICT_MODULE_RWX
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Binutils <binutils@sourceware.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Ard Biesheuvel <ardb@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 12:14 PM Karel Zak <kzak@redhat.com> wrote:
+On Wed, Aug 12, 2020 at 4:42 AM Jessica Yu via Binutils
+<binutils@sourceware.org> wrote:
+>
+> +++ peterz@infradead.org [12/08/20 12:40 +0200]:
+> >On Wed, Aug 12, 2020 at 10:56:56AM +0200, Ard Biesheuvel wrote:
+> >> The module .lds has BYTE(0) in the section contents to prevent the
+> >> linker from pruning them entirely. The (NOLOAD) is there to ensure
+> >> that this byte does not end up in the .ko, which is more a matter of
+> >> principle than anything else, so we can happily drop that if it helps.
+> >>
+> >> However, this should only affect the PROGBITS vs NOBITS designation,
+> >> and so I am not sure whether it makes a difference.
+> >>
+> >> Depending on where the w^x check occurs, we might simply override the
+> >> permissions of these sections, and strip the writable permission if it
+> >> is set in the PLT handling init code, which manipulates the metadata
+> >> of all these 3 sections before the module space is vmalloc'ed.
+> >
+> >What's curious is that this seems the result of some recent binutils
+> >change. Every build with binutils-2.34 (or older) does not seem to
+> >generate these as WAX, but has the much more sensible WA.
+> >
+> >I suppose we can change the kernel check and 'allow' W^X for 0 sized
+> >sections, but I think we should still figure out why binutils-2.35 is
+> >now generating WAX sections all of a sudden, it might come bite us
+> >elsewhere.
+>
+> I have just tested with binutils-2.35 and am observing the same
+> behavior. Both .plt and .text.ftrace_trampoline end up with
+> SHT_PROGBITS and are marked 'WAX'. With binutils-2.34 they keep the
+> NOBITS designation.
+>
+> I had thought NOLOAD implies NOBITS, but that doesn't seem to be the
+> case anymore? I tinkered with module.lds a bit and noticed that the
+> name of the section seems to matters. So this:
+>
+>   SECTIONS {
+>       .plt (NOLOAD) : { BYTE(0) }
+>       .init.plt (NOLOAD) : { BYTE(0) }
+>       .text.ftrace_trampoline (NOLOAD) : { BYTE(0) }
+> +     .test (NOLOAD) : { BYTE(0) }
+> +     .text.test (NOLOAD) : { BYTE(0) }
+> +     .plt.test (NOLOAD) : { BYTE(0) }
+>   }
+>
+> Yielded the following:
+>
+>   [22] .plt              PROGBITS        0000000000000340 000e40 000001 00 WAX  0   0  1
+>   [23] .init.plt         NOBITS          0000000000000341 000e41 000001 00  WA  0   0  1
+>   [24] .text.ftrace_trampoline PROGBITS        0000000000000342 000e41 000001 00 WAX  0   0  1
+>   [25] .test             NOBITS          0000000000000343 000e42 000001 00  WA  0   0  1
+>   [26] .text.test        PROGBITS        0000000000000344 000e42 000001 00 WAX  0   0  1
+>   [27] .plt.test         NOBITS          0000000000000345 000e43 000001 00  WA  0   0  1
+>
+> So ".plt" and any section starting with ".text" were automatically
+> designated as SHT_PROGBITS and given the executable flag. It appears
+> the NOLOAD directive has been ignored or overridden in the case of
+> these sections. I am not sure if this is a bug in binutils or if this
+> behavior is intentional.
+>
+> I tried to grok the changelog between 2.34 and 2.35 but could not find
+> anything glaringly obvious that would cause this change. CC'ing the
+> binutils mailing list, hopefully that's the right place to ask.
+>
 
-> For example,  by fsinfo(FSINFO_ATTR_MOUNT_TOPOLOGY) you get all
-> mountpoint propagation setting and relations by one syscall,
+Please open a binutils bug with a testcase.
 
-That's just an arbitrary grouping of attributes.
 
-You said yourself, that what's really needed is e.g. consistent
-snapshot of a complete mount tree topology.  And to get the complete
-topology FSINFO_ATTR_MOUNT_TOPOLOGY and FSINFO_ATTR_MOUNT_CHILDREN are
-needed for *each* individual mount.  The topology can obviously change
-between those calls.
-
-So there's no fundamental difference between getting individual
-attributes or getting attribute groups in this respect.
-
-> It would be also nice to avoid some strings formatting and separators
-> like we use in the current mountinfo.
-
-I think quoting non-printable is okay.
-
-> I can imagine multiple values separated by binary header (like we already
-> have for watch_notification, inotify, etc):
-
-Adding a few generic binary interfaces is okay.   Adding many
-specialized binary interfaces is a PITA.
-
-Thanks,
-Miklos
+-- 
+H.J.
