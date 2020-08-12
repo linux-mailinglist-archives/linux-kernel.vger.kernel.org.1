@@ -2,118 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E56F242915
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBE0242912
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728058AbgHLMGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 08:06:48 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:52484 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727903AbgHLMGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 08:06:12 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BRT1t1V5yzB09Zw;
-        Wed, 12 Aug 2020 14:06:10 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 9wstc210Hn6S; Wed, 12 Aug 2020 14:06:10 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BRT1t0gjGzB09Zf;
-        Wed, 12 Aug 2020 14:06:10 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7FF848B826;
-        Wed, 12 Aug 2020 14:06:11 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id tFKAzvCSaZCD; Wed, 12 Aug 2020 14:06:11 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 43F658B7FC;
-        Wed, 12 Aug 2020 14:06:11 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 1595A65C34; Wed, 12 Aug 2020 12:06:11 +0000 (UTC)
-Message-Id: <6b44c78342f64e034aba3a334f4baa4094ff65f9.1597233555.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1597233555.git.christophe.leroy@csgroup.eu>
-References: <cover.1597233555.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [RFC PATCH v1 19/19] powerpc/signal32: Switch swap_context() to
- user_access_begin() logic
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, ldv@altlinux.org,
-        viro@zeniv.linux.org.uk
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed, 12 Aug 2020 12:06:11 +0000 (UTC)
+        id S1727879AbgHLMHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 08:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728113AbgHLMHB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 08:07:01 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6116C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 05:07:00 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id a14so1788388wra.5
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 05:07:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries-io.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=POFkUl/SiRnZeGnvwK+VIX8MGXoBbpIwuCiT0MLK/Mo=;
+        b=WMlGWkVEwgByM+12Cjk2V6iPaXiG9kt3R+yards51xJlxeV5vHR5O3nHEAhKFVAyCr
+         Cd4wIgeoptORGygsRDhNDQkd11LYxHBd2AcTFxQ9hUpQilPP1SE6W754vPgH641Yugcy
+         2GU7Ae5LAii32G447o/O4680YBnrVeD0xu6Eh0JtACwT4Bh1hdTjlM/kHjuLU2RTrWwj
+         aU1Bkg1RQMnvlQyXXHxsPRpMx30yeleylS3EZ3bwJFfoSJAJpCt6vv1eLi5B/0Abk/3D
+         VraWahQ5rr4CIrThhAFplxsMJ2OSqIRVDkh8BaOYYeDae8UHd28xcBLaBo4ruwhTKN0j
+         4FUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=POFkUl/SiRnZeGnvwK+VIX8MGXoBbpIwuCiT0MLK/Mo=;
+        b=TduaFV4Kyl5BYA+Bm/b8JRyTMTvK57AiZIhAhDGoPWZAUYUy7IObkPg6NqG08n6Zzp
+         JCcJEGaJJqy/kFX3WHn06Q0kpRZM2GRc7B/Yrg+eAw6LiWmeK5NAQUs5QADsTyBwf+9u
+         ezNMqwO4w5gbFn+Atf4RosxszqvW6KFBiGI7KzrEkVaoDrmiuA/S5fDqgWloeFTQBPC4
+         tC2X9g/34kk/+om/neLtg5PGNnoM3sn6Tkbtvlwx6Zr4Chuhf+aRmaBvsJ1Gfq5+awM8
+         QJFiqQ2MJwocsOwjWnwoZRB8eO9r+dQlLCEcnR22TPwVtYa8JL1SFddScQ57LaQ5n4ei
+         Y/kA==
+X-Gm-Message-State: AOAM53274KA/vA8YbkRZw47N2wKZR6Ej5p2w3jfWEZNb/YG7Vz8XAjfr
+        vP8oJDtLJ6yqtTk5iakGFzBWCg==
+X-Google-Smtp-Source: ABdhPJz7vAgfxii66jDfQ111kX46HIFNKYyiHLkoDBo408bqtgnvkv6PfOMCNjcKv/bQNZobrcxwzQ==
+X-Received: by 2002:adf:9ec1:: with SMTP id b1mr10230369wrf.171.1597234019509;
+        Wed, 12 Aug 2020 05:06:59 -0700 (PDT)
+Received: from localhost.localdomain (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
+        by smtp.gmail.com with ESMTPSA id m1sm3511526wmc.28.2020.08.12.05.06.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Aug 2020 05:06:58 -0700 (PDT)
+From:   Jorge Ramirez-Ortiz <jorge@foundries.io>
+To:     jorge@foundries.io, jens.wiklander@linaro.org
+Cc:     sumit.garg@linaro.org, ricardo@foundries.io, mike@foundries.io,
+        tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: [PATCHv8] drivers: optee: allow op-tee to access devices on the i2c bus
+Date:   Wed, 12 Aug 2020 14:06:52 +0200
+Message-Id: <20200812120652.30012-1-jorge@foundries.io>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As this was the last user of put_sigset_t(), remove it as well.
+Some secure elements like NXP's SE050 sit on I2C buses. For OP-TEE to
+control this type of cryptographic devices it needs coordinated access
+to the bus, so collisions and RUNTIME_PM dont get in the way.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+This trampoline driver allow OP-TEE to access them.
+
+Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
 ---
- arch/powerpc/kernel/signal_32.c | 24 ++++++++++--------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
 
-diff --git a/arch/powerpc/kernel/signal_32.c b/arch/powerpc/kernel/signal_32.c
-index 6cbff0293ff4..399d823782cf 100644
---- a/arch/powerpc/kernel/signal_32.c
-+++ b/arch/powerpc/kernel/signal_32.c
-@@ -82,11 +82,6 @@
-  * Functions for flipping sigsets (thanks to brain dead generic
-  * implementation that makes things simple for little endian only)
+v8: review fixes
+    fix types and add TEEC_ERROR_NOT_SUPPORTED to GP errors
+v7: add support for ten bit i2c slave addressing
+v6: compile out if CONFIG_I2C not enabled
+v5: alphabetic order of includes
+v4: remove unnecessary extra line in optee_msg.h
+v3: use from/to msg param to support all types of memory
+    modify OPTEE_MSG_RPC_CMD_I2C_TRANSFER message id
+
+ drivers/tee/optee/optee_msg.h     | 21 +++++++
+ drivers/tee/optee/optee_private.h |  1 +
+ drivers/tee/optee/rpc.c           | 96 +++++++++++++++++++++++++++++++
+ 3 files changed, 118 insertions(+)
+
+diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
+index 795bc19ae17a..7b2d919da2ac 100644
+--- a/drivers/tee/optee/optee_msg.h
++++ b/drivers/tee/optee/optee_msg.h
+@@ -419,4 +419,25 @@ struct optee_msg_arg {
   */
--static inline int put_sigset_t(compat_sigset_t __user *uset, sigset_t *set)
--{
--	return put_compat_sigset(uset, set, sizeof(*uset));
--}
--
- #define unsafe_put_sigset_t	unsafe_put_compat_sigset
+ #define OPTEE_MSG_RPC_CMD_SHM_FREE	7
  
- static inline int get_sigset_t(sigset_t *set,
-@@ -140,11 +135,6 @@ static inline int restore_general_regs(struct pt_regs *regs,
- 
- #define GP_REGS_SIZE	min(sizeof(elf_gregset_t), sizeof(struct pt_regs))
- 
--static inline int put_sigset_t(sigset_t __user *uset, sigset_t *set)
--{
--	return copy_to_user(uset, set, sizeof(*uset));
--}
--
- #define unsafe_put_sigset_t(uset, set, label) do { 			\
- 	sigset_t __user *__us = uset	;				\
- 	const sigset_t *__s = set;					\
-@@ -1012,11 +1002,13 @@ SYSCALL_DEFINE3(swapcontext, struct ucontext __user *, old_ctx,
- 		 */
- 		mctx = (struct mcontext __user *)
- 			((unsigned long) &old_ctx->uc_mcontext & ~0xfUL);
--		if (!access_ok(old_ctx, ctx_size)
--		    || save_user_regs(regs, mctx, NULL, 0, ctx_has_vsx_region)
--		    || put_sigset_t(&old_ctx->uc_sigmask, &current->blocked)
--		    || __put_user(to_user_ptr(mctx), &old_ctx->uc_regs))
-+		if (save_user_regs(regs, mctx, NULL, 0, ctx_has_vsx_region))
-+			return -EFAULT;
-+		if (!user_write_access_begin(old_ctx, ctx_size))
- 			return -EFAULT;
-+		unsafe_put_sigset_t(&old_ctx->uc_sigmask, &current->blocked, failed);
-+		unsafe_put_user(to_user_ptr(mctx), &old_ctx->uc_regs, failed);
-+		user_write_access_end();
- 	}
- 	if (new_ctx == NULL)
- 		return 0;
-@@ -1040,6 +1032,10 @@ SYSCALL_DEFINE3(swapcontext, struct ucontext __user *, old_ctx,
- 
- 	set_thread_flag(TIF_RESTOREALL);
- 	return 0;
++/*
++ * Access a device on an i2c bus
++ *
++ * [in]  param[0].u.value.a		mode: RD(0), WR(1)
++ * [in]  param[0].u.value.b		i2c adapter
++ * [in]  param[0].u.value.c		i2c chip
++ *
++ * [in]  param[1].u.value.a		i2c control flags
++ *
++ * [in/out] memref[2]			buffer to exchange the transfer data
++ *					with the secure world
++ *
++ * [out]  param[3].u.value.a		bytes transferred by the driver
++ */
++#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER 21
++/* I2C master transfer modes */
++#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD 0
++#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR 1
++/* I2C master control flags */
++#define OPTEE_MSG_RPC_CMD_I2C_FLAGS_TEN_BIT  BIT(0)
 +
-+failed:
-+	user_write_access_end();
-+	return -EFAULT;
+ #endif /* _OPTEE_MSG_H */
+diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
+index 8b71839a357e..564116d6cc58 100644
+--- a/drivers/tee/optee/optee_private.h
++++ b/drivers/tee/optee/optee_private.h
+@@ -17,6 +17,7 @@
+ /* Some Global Platform error codes used in this driver */
+ #define TEEC_SUCCESS			0x00000000
+ #define TEEC_ERROR_BAD_PARAMETERS	0xFFFF0006
++#define TEEC_ERROR_NOT_SUPPORTED        0xFFFF000A
+ #define TEEC_ERROR_COMMUNICATION	0xFFFF000E
+ #define TEEC_ERROR_OUT_OF_MEMORY	0xFFFF000C
+ #define TEEC_ERROR_SHORT_BUFFER		0xFFFF0010
+diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+index b4ade54d1f28..cc9ad4b68d40 100644
+--- a/drivers/tee/optee/rpc.c
++++ b/drivers/tee/optee/rpc.c
+@@ -7,6 +7,7 @@
+ 
+ #include <linux/delay.h>
+ #include <linux/device.h>
++#include <linux/i2c.h>
+ #include <linux/slab.h>
+ #include <linux/tee_drv.h>
+ #include "optee_private.h"
+@@ -49,6 +50,98 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
+ 	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
  }
  
- #ifdef CONFIG_PPC64
++#if IS_ENABLED(CONFIG_I2C)
++static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
++					     struct optee_msg_arg *arg)
++{
++	struct i2c_client client = { 0 };
++	struct tee_param *params;
++	size_t i;
++	int ret = -EOPNOTSUPP;
++	u8 attr[] = {
++		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
++		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
++		TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT,
++		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT,
++	};
++
++	if (arg->num_params != ARRAY_SIZE(attr)) {
++		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
++		return;
++	}
++
++	params = kmalloc_array(arg->num_params, sizeof(struct tee_param),
++			       GFP_KERNEL);
++	if (!params) {
++		arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
++		return;
++	}
++
++	if (optee_from_msg_param(params, arg->num_params, arg->params))
++		goto bad;
++
++	for (i = 0; i < arg->num_params; i++) {
++		if (params[i].attr != attr[i])
++			goto bad;
++	}
++
++	client.adapter = i2c_get_adapter(params[0].u.value.b);
++	if (!client.adapter)
++		goto bad;
++
++	if (params[1].u.value.a & OPTEE_MSG_RPC_CMD_I2C_FLAGS_TEN_BIT) {
++		if (!i2c_check_functionality(client.adapter,
++					     I2C_FUNC_10BIT_ADDR)) {
++			i2c_put_adapter(client.adapter);
++			goto bad;
++		}
++
++		client.flags = I2C_CLIENT_TEN;
++	}
++
++	client.addr = params[0].u.value.c;
++	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
++
++	switch (params[0].u.value.a) {
++	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
++		ret = i2c_master_recv(&client, params[2].u.memref.shm->kaddr,
++				      params[2].u.memref.size);
++		break;
++	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
++		ret = i2c_master_send(&client, params[2].u.memref.shm->kaddr,
++				      params[2].u.memref.size);
++		break;
++	default:
++		i2c_put_adapter(client.adapter);
++		goto bad;
++	}
++
++	if (ret < 0) {
++		arg->ret = TEEC_ERROR_COMMUNICATION;
++	} else {
++		if (optee_to_msg_param(arg->params, arg->num_params, params)) {
++			arg->ret = TEEC_ERROR_BAD_PARAMETERS;
++		} else {
++			params[3].u.value.a = ret;
++			arg->ret = TEEC_SUCCESS;
++		}
++	}
++
++	i2c_put_adapter(client.adapter);
++	kfree(params);
++	return;
++bad:
++	kfree(params);
++	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
++}
++#else
++static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
++					     struct optee_msg_arg *arg)
++{
++	arg->ret = TEEC_ERROR_NOT_SUPPORTED;
++}
++#endif
++
+ static struct wq_entry *wq_entry_get(struct optee_wait_queue *wq, u32 key)
+ {
+ 	struct wq_entry *w;
+@@ -382,6 +475,9 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
+ 	case OPTEE_MSG_RPC_CMD_SHM_FREE:
+ 		handle_rpc_func_cmd_shm_free(ctx, arg);
+ 		break;
++	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER:
++		handle_rpc_func_cmd_i2c_transfer(ctx, arg);
++		break;
+ 	default:
+ 		handle_rpc_supp_cmd(ctx, arg);
+ 	}
 -- 
-2.25.0
+2.17.1
 
