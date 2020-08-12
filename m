@@ -2,78 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB6B2428FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C131024290A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727870AbgHLMDP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 12 Aug 2020 08:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726722AbgHLMDO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 08:03:14 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD4FC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 05:03:14 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1k5pTG-0006el-Oc; Wed, 12 Aug 2020 14:03:06 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1k5pTE-0007Dr-MD; Wed, 12 Aug 2020 14:03:04 +0200
-Message-ID: <6e667ff6f5a1aae51b89d00e9ec5bba29852f683.camel@pengutronix.de>
-Subject: Re: [PATCH 1/3] mmc: dt-bindings: Add resets/reset-names for
- Mediatek MMC bindings
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Wenbin Mei <wenbin.mei@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        id S1728025AbgHLMGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 08:06:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727947AbgHLMGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 08:06:04 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E78D4207F7;
+        Wed, 12 Aug 2020 12:06:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597233964;
+        bh=MM8pmV2QgsjxdXSSM0B2DrSsgot2dM8rNva9Cu3oxH8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jT2HBedN+7Xl2ZMqfco4gYuAi3jJlp6W72K6S+ofFy1AO5aUUC1zZeI5QwXPv89S+
+         JV0aP++AnLYNFZ7uvMw85wcAQJ7QwOTYxV2wD89dpQubayYvwWjJCwntESy3xnX3r1
+         0jrjy1RRyENK1rJGcsxsZdOpUos08yVoOzHs1NG8=
+Date:   Wed, 12 Aug 2020 13:05:37 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jiaxin Yu <jiaxin.yu@mediatek.com>
+Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org, tiwai@suse.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        srv_heupstream@mediatek.com
-Date:   Wed, 12 Aug 2020 14:03:04 +0200
-In-Reply-To: <20200812093726.10123-2-wenbin.mei@mediatek.com>
-References: <20200812093726.10123-1-wenbin.mei@mediatek.com>
-         <20200812093726.10123-2-wenbin.mei@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        linux-mediatek@lists.infradead.org, howie.huang@mediatek.com,
+        tzungbi@google.com, eason.yen@mediatek.com,
+        shane.chien@mediatek.com
+Subject: Re: [PATCH v2 1/2] ASoC: mediatek: mt6359: add codec driver
+Message-ID: <20200812120537.GA5545@sirena.org.uk>
+References: <1597028754-7732-1-git-send-email-jiaxin.yu@mediatek.com>
+ <1597028754-7732-2-git-send-email-jiaxin.yu@mediatek.com>
+ <20200810185933.GI6438@sirena.org.uk>
+ <1597217353.23246.45.camel@mhfsdcap03>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
+Content-Disposition: inline
+In-Reply-To: <1597217353.23246.45.camel@mhfsdcap03>
+X-Cookie: No purchase necessary.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-08-12 at 17:37 +0800, Wenbin Mei wrote:
-> Add description for resets/reset-names.
-> 
-> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/mmc/mtk-sd.txt | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.txt b/Documentation/devicetree/bindings/mmc/mtk-sd.txt
-> index 8a532f4453f2..35da72de7aac 100644
-> --- a/Documentation/devicetree/bindings/mmc/mtk-sd.txt
-> +++ b/Documentation/devicetree/bindings/mmc/mtk-sd.txt
-> @@ -49,6 +49,8 @@ Optional properties:
->  		     error caused by stop clock(fifo full)
->  		     Valid range = [0:0x7]. if not present, default value is 0.
->  		     applied to compatible "mediatek,mt2701-mmc".
-> +- resets: Phandle and reset specifier pair to softreset line of MSDC IP.
-> +- reset-names: Reset names for MSDC.
 
-I think the reset-names documentation should mention the actual value
-the driver should look for, "hrst".
+--yrj/dFKFPuw6o+aM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-regards
-Philipp
+On Wed, Aug 12, 2020 at 03:29:13PM +0800, Jiaxin Yu wrote:
+> On Mon, 2020-08-10 at 19:59 +0100, Mark Brown wrote:
+> > On Mon, Aug 10, 2020 at 11:05:53AM +0800, Jiaxin Yu wrote:
+
+> > > +void mt6359_set_playback_gpio(struct snd_soc_component *cmpnt)
+> > > +{
+> > > +	struct mt6359_priv *priv =3D snd_soc_component_get_drvdata(cmpnt);
+
+> > What are these, should they not be managed through gpiolib and/or
+> > pinctrl?
+
+> These are the functions that control the mux of input or output
+> signal. I refer to the other codec drivers, most of them are manipulate
+> the regs in their codec drivers also. Maybe it's easier to control?
+
+These functions are exported for other drivers to use rather than
+something done internally by the driver - if this were internal to the
+driver it'd not be a big deal but when it's for use by another driver
+it'd be better to go through standard interfaces.
+
+> > > +int mt6359_mtkaif_calibration_enable(struct snd_soc_pcm_runtime *rtd)
+> > > +{
+
+> > > +EXPORT_SYMBOL_GPL(mt6359_mtkaif_calibration_enable);
+
+> > Why is this exported?
+
+> This function is exported to machine driver to do calibration when
+> registering. The interface between MT6359 and MTK SoC is a special
+> interface that named MTKAIF. Therefore, if MT6359 is to be used
+> normally, it needs to rely on the platform for calibration when
+> registering.
+
+So this needs the SoC to do something as part of callibration?
+
+> > > +	switch (event) {
+> > > +	case SND_SOC_DAPM_PRE_PMU:
+> > > +		priv->dev_counter[device]++;
+> > > +		if (priv->dev_counter[device] > 1)
+> > > +			break;	/* already enabled, do nothing */
+> > > +		else if (priv->dev_counter[device] <=3D 0)
+
+> > Why are we doing additional refcounting on top of what DAPM is doing?
+> > This seems like there should be at least one widget representing the
+> > shared bits of the audio path.
+
+> We have "HPL Mux" and "HPR Mux", there will be two paths enabled when
+> playback throuh HP. But actually they share the same control sequences.
+> So in order to prevent setting it one more time we do additional
+> refcouting.
+
+That sounds like you should just have one output path defined in DAPM
+and merge the left and right signals together rather than maintaining
+them separately.
+
+> > > +	/* hp gain ctl default choose ZCD */
+> > > +	priv->hp_gain_ctl =3D HP_GAIN_CTL_ZCD;
+> > > +	hp_gain_ctl_select(priv, priv->hp_gain_ctl);
+
+> > Why not use the hardware default?
+
+> We have two ways to control the volume, there is to select ZCD. Because
+> the other one it not often used, ZCD is used by default.=20
+
+Why not just let the user pick at runtime?
+
+> > > +	ret =3D regulator_enable(priv->avdd_reg);
+> > > +	if (ret) {
+> > > +		dev_err(priv->dev, "%s(), failed to enable regulator!\n",
+> > > +			__func__);
+> > > +		return ret;
+> > > +	}
+
+> > Perhaps make this a DAPM widget?
+
+> "vaud18" needs to be always on so we enable it when codec probe.
+
+If it is just supposed to be left on all the time it's better to do this
+in the main device model probe rather than the component probe.  The
+component probe should usually only be used for things that need the
+rest of the card to be there.
+
+--yrj/dFKFPuw6o+aM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8z2xAACgkQJNaLcl1U
+h9D7Wwf+OdwVBUD42cfqMOKbAwel1jObAQofx/ASxy8YgjsPQp8Jjkm39G6YSYyJ
+8nK3lQ1sz6qZtJ2KsZp6jG/aEOC5w7aBQdZszyRHXuneIp4KtvLG+AYHSO54DMXb
+ftsOw4EyQjzNY61qz0ZZ3H7vMObW+1o8uMEBKadB8MMz7oufbCUcV8auAps+K+L1
+si165INgJFZpfrKk/8YvNVqBAlcXMDjGpcZtO6gfEi9AuDQnZfJWte/1hOBgQynL
+84UFJWIEtkVCWadlYwBU1VcQD/3bOkpfyFMIoYII0BquCKBUqxmcLA2NxFV7Ami1
+U58UVe1qf4mt+vS7hAjBlmh6JTrUnw==
+=Fkwb
+-----END PGP SIGNATURE-----
+
+--yrj/dFKFPuw6o+aM--
