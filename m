@@ -2,130 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8800242FA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 21:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3314242FB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 21:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgHLTvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 15:51:14 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:51570 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726639AbgHLTvG (ORCPT
+        id S1726691AbgHLT5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 15:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726554AbgHLT5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 15:51:06 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07CJoque048116;
-        Wed, 12 Aug 2020 14:50:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1597261852;
-        bh=5DtYodbcELFvKoyVfWIDGdKf8jLd3lr9u9RLJrv6ZxA=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Yy0O/4F0Uv6NdHRgGj4vlQfkKThq/zImKb+p+/ZN9D7LX3e09KnHZhyjAMmcIjEQq
-         yRNocdJGGgIDknFtCaY9+XkRAGF3iYVmoUIpGzxmgOV3mYH6aGRCbj8ru5yNbEpewV
-         x4HaNNK/ofC8x1iAlkWPpqb2tyrUviczPe9kJZWs=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07CJoqeQ048977
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 12 Aug 2020 14:50:52 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 12
- Aug 2020 14:50:52 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 12 Aug 2020 14:50:52 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07CJoqJB110063;
-        Wed, 12 Aug 2020 14:50:52 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <robh@kernel.org>,
-        <marek.behun@nic.cz>
-CC:     <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v33 6/6] ARM: dts: ste-href: Add reg property to the LP5521 channel nodes
-Date:   Wed, 12 Aug 2020 14:50:20 -0500
-Message-ID: <20200812195020.13568-7-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200812195020.13568-1-dmurphy@ti.com>
-References: <20200812195020.13568-1-dmurphy@ti.com>
+        Wed, 12 Aug 2020 15:57:35 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B96C061383
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 12:57:35 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id a14so2451633edx.7
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 12:57:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l0LPNTEWbU2mq6BgRpzsioeNr4RPYOF2TnDOgMD6NIs=;
+        b=U1hdSpOUSLOjOrO72XqzG+q96d1pIF0cv/aZqt7kBp+fkvgL9591I+FRTAk0LrnIxR
+         8JT4UZPZRO/zc5YAudhwHewQ4vDe1rgRhtOdIJf44K3wQIjkVGrwuKfqWiz5aOBB7xzw
+         NmuJO1e6+UoXEurWxTmy0lrzQtpRHAgwv0Dgc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l0LPNTEWbU2mq6BgRpzsioeNr4RPYOF2TnDOgMD6NIs=;
+        b=sh5UjN0GDwTb8/pXp4+F31ymL1JhnvP3MXBNsyIzI9xubkybu2GrlPyLrwCdVddPYr
+         8e1KCj3no1IRZ4jA52kq3RH0peIr+6yKp85lPpfgZd0rGqWHYdkh+GGp0icJe2c8gSst
+         7hrYUVlrXPkeDEGe4aqF/hoi23Fqoh/ChkPA96qGrwvDO9g1kWc9D5bgWZEaJHOeVGaa
+         ebT9Km37ujHININtv2nG7F1HoGjubus7Jb9fSapy/sXuW4reOz/El5JRrPDNCbVewY8k
+         Z14CKn9lMPC7Ypgxfdvc0U+Wt8GzVyc7HheTCiSb6HXRJL6+dWzCycw/xwYG3A4FfAUc
+         8WiQ==
+X-Gm-Message-State: AOAM532t0gVoboNqrZETYBXWgZtHrxDvIwey14D0tIWNqPpeKvwTr6b/
+        FGnsj6/cEYxPthCsiMXb269ByUmmNK8=
+X-Google-Smtp-Source: ABdhPJx8lVjJ3f9S5jZzIEOQQrF6PunDC5irRIZ7TinyUPoA4eAYp0DTjT5ky/jgPQXtXCJD+Mk8Yg==
+X-Received: by 2002:a50:d697:: with SMTP id r23mr1505001edi.223.1597262253941;
+        Wed, 12 Aug 2020 12:57:33 -0700 (PDT)
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com. [209.85.221.46])
+        by smtp.gmail.com with ESMTPSA id op15sm2221666ejb.42.2020.08.12.12.57.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Aug 2020 12:57:33 -0700 (PDT)
+Received: by mail-wr1-f46.google.com with SMTP id r4so3156970wrx.9
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 12:57:33 -0700 (PDT)
+X-Received: by 2002:a05:6512:3b7:: with SMTP id v23mr500353lfp.10.1597261845653;
+ Wed, 12 Aug 2020 12:50:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <1842689.1596468469@warthog.procyon.org.uk> <1845353.1596469795@warthog.procyon.org.uk>
+ <CAJfpegunY3fuxh486x9ysKtXbhTE0745ZCVHcaqs9Gww9RV2CQ@mail.gmail.com>
+ <ac1f5e3406abc0af4cd08d818fe920a202a67586.camel@themaw.net>
+ <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com>
+ <CAJfpegtNP8rQSS4Z14Ja4x-TOnejdhDRTsmmDD-Cccy2pkfVVw@mail.gmail.com>
+ <20200811135419.GA1263716@miu.piliscsaba.redhat.com> <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
+ <52483.1597190733@warthog.procyon.org.uk> <CAHk-=wiPx0UJ6Q1X=azwz32xrSeKnTJcH8enySwuuwnGKkHoPA@mail.gmail.com>
+ <066f9aaf-ee97-46db-022f-5d007f9e6edb@redhat.com>
+In-Reply-To: <066f9aaf-ee97-46db-022f-5d007f9e6edb@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 12 Aug 2020 12:50:28 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgz5H-xYG4bOrHaEtY7rvFA1_6+mTSpjrgK8OsNbfF+Pw@mail.gmail.com>
+Message-ID: <CAHk-=wgz5H-xYG4bOrHaEtY7rvFA1_6+mTSpjrgK8OsNbfF+Pw@mail.gmail.com>
+Subject: Re: file metadata via fs API
+To:     Steven Whitehouse <swhiteho@redhat.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Karel Zak <kzak@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the reg property to each channel node.  This update is
-to accommodate the multicolor framework.  In addition to the
-accommodation this allows the LEDs to be placed on any channel
-and allow designs to skip channels as opposed to requiring
-sequential order.
+On Wed, Aug 12, 2020 at 12:34 PM Steven Whitehouse <swhiteho@redhat.com> wrote:
+>
+> The point of this is to give us the ability to monitor mounts from
+> userspace.
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-CC: Linus Walleij <linus.walleij@linaro.org>
-Acked-by: Pavel Machek <pavel@ucw.cz>
----
- arch/arm/boot/dts/ste-href.dtsi | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+We haven't had that before, I don't see why it's suddenly such a big deal.
 
-diff --git a/arch/arm/boot/dts/ste-href.dtsi b/arch/arm/boot/dts/ste-href.dtsi
-index 33e3b0b3c53d..ff47cbf6ed3b 100644
---- a/arch/arm/boot/dts/ste-href.dtsi
-+++ b/arch/arm/boot/dts/ste-href.dtsi
-@@ -58,16 +58,21 @@ lp5521@33 {
- 				reg = <0x33>;
- 				label = "lp5521_pri";
- 				clock-mode = /bits/ 8 <2>;
--				chan0 {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				chan@0 {
-+					reg = <0>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 					linux,default-trigger = "heartbeat";
- 				};
--				chan1 {
-+				chan@1 {
-+					reg = <1>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
--				chan2 {
-+				chan@2 {
-+					reg = <2>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
-@@ -77,15 +82,20 @@ lp5521@34 {
- 				reg = <0x34>;
- 				label = "lp5521_sec";
- 				clock-mode = /bits/ 8 <2>;
--				chan0 {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				chan@0 {
-+					reg = <0>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
--				chan1 {
-+				chan@1 {
-+					reg = <1>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
--				chan2 {
-+				chan@2 {
-+					reg = <2>;
- 					led-cur = /bits/ 8 <0x2f>;
- 					max-cur = /bits/ 8 <0x5f>;
- 				};
--- 
-2.28.0
+The notification side I understand. Polling /proc files is not the answer.
 
+But the whole "let's design this crazy subsystem for it" seems way
+overkill. I don't see anybody caring that deeply.
+
+It really smells like "do it because we can, not because we must".
+
+Who the hell cares about monitoring mounts at a kHz frequencies? If
+this is for MIS use, you want a nice GUI and not wasting CPU time
+polling.
+
+I'm starting to ignore the pull requests from David Howells, because
+by now they have had the same pattern for a couple of years now:
+esoteric new interfaces that seem overdesigned for corner-cases that
+I'm not seeing people clamoring for.
+
+I need (a) proof this is actualyl something real users care about and
+(b) way more open discussion and implementation from multiple parties.
+
+Because right now it looks like a small in-cabal of a couple of people
+who have wild ideas but I'm not seeing the wider use of it.
+
+Convince me otherwise. AGAIN. This is the exact same issue I had with
+the notification queues that I really wanted actual use-cases for, and
+feedback from actual outside users.
+
+I really think this is engineering for its own sake, rather than
+responding to actual user concerns.
+
+               Linus
