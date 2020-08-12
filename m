@@ -2,190 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE94242707
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A612426F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgHLI4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 04:56:39 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:53434 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727098AbgHLI4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 04:56:37 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6EF5D200040;
-        Wed, 12 Aug 2020 10:56:34 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4E534200027;
-        Wed, 12 Aug 2020 10:56:28 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id D3AE1402EB;
-        Wed, 12 Aug 2020 10:56:20 +0200 (CEST)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, gregkh@linuxfoundation.org,
-        galak@codeaurora.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V2 5/5] dt-bindings: serial: Convert NXP lpuart to json-schema
-Date:   Wed, 12 Aug 2020 16:51:24 +0800
-Message-Id: <1597222284-32609-5-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1597222284-32609-1-git-send-email-Anson.Huang@nxp.com>
-References: <1597222284-32609-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726755AbgHLIwp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 12 Aug 2020 04:52:45 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:26838 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726572AbgHLIwo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 04:52:44 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-131-PGibDhx1Ola_bVuldcp2IA-1; Wed, 12 Aug 2020 09:52:40 +0100
+X-MC-Unique: PGibDhx1Ola_bVuldcp2IA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 12 Aug 2020 09:52:39 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 12 Aug 2020 09:52:39 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Moritz Fischer' <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>
+CC:     "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>
+Subject: RE: [PATCH v4 1/4] fpga: dfl: change data type of feature id to u16
+Thread-Topic: [PATCH v4 1/4] fpga: dfl: change data type of feature id to u16
+Thread-Index: AQHWcFyE8iGJWCR9sU2N3RtiiWBxsak0Kslw
+Date:   Wed, 12 Aug 2020 08:52:39 +0000
+Message-ID: <3810fb75b42e45928a39a97449a01520@AcuMS.aculab.com>
+References: <1597027273-25288-1-git-send-email-yilun.xu@intel.com>
+ <1597027273-25288-2-git-send-email-yilun.xu@intel.com>
+ <20200812035604.GA2544@epycbox.lan>
+In-Reply-To: <20200812035604.GA2544@epycbox.lan>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the NXP lpuart binding to DT schema format using json-schema.
+From: Moritz Fischer
+> Sent: 12 August 2020 04:56
+> 
+> On Mon, Aug 10, 2020 at 10:41:10AM +0800, Xu Yilun wrote:
+> > The feature id is stored in a 12 bit field in DFH. So a u16 variable is
+> > enough for feature id.
+> >
+> > This patch changes all feature id related places to fit u16.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-no change.
----
- .../devicetree/bindings/serial/fsl-lpuart.txt      | 43 ------------
- .../devicetree/bindings/serial/fsl-lpuart.yaml     | 79 ++++++++++++++++++++++
- 2 files changed, 79 insertions(+), 43 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/serial/fsl-lpuart.txt
- create mode 100644 Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
+How much bigger does it make the kernel?
 
-diff --git a/Documentation/devicetree/bindings/serial/fsl-lpuart.txt b/Documentation/devicetree/bindings/serial/fsl-lpuart.txt
-deleted file mode 100644
-index e7448b9..0000000
---- a/Documentation/devicetree/bindings/serial/fsl-lpuart.txt
-+++ /dev/null
-@@ -1,43 +0,0 @@
--* Freescale low power universal asynchronous receiver/transmitter (lpuart)
+	David
+
 -
--Required properties:
--- compatible :
--  - "fsl,vf610-lpuart" for lpuart compatible with the one integrated
--    on Vybrid vf610 SoC with 8-bit register organization
--  - "fsl,ls1021a-lpuart" for lpuart compatible with the one integrated
--    on LS1021A SoC with 32-bit big-endian register organization
--  - "fsl,ls1028a-lpuart" for lpuart compatible with the one integrated
--    on LS1028A SoC with 32-bit little-endian register organization
--  - "fsl,imx7ulp-lpuart" for lpuart compatible with the one integrated
--    on i.MX7ULP SoC with 32-bit little-endian register organization
--  - "fsl,imx8qxp-lpuart" for lpuart compatible with the one integrated
--    on i.MX8QXP SoC with 32-bit little-endian register organization
--  - "fsl,imx8qm-lpuart" for lpuart compatible with the one integrated
--    on i.MX8QM SoC with 32-bit little-endian register organization
--- reg : Address and length of the register set for the device
--- interrupts : Should contain uart interrupt
--- clocks : phandle + clock specifier pairs, one for each entry in clock-names
--- clock-names : For vf610/ls1021a/ls1028a/imx7ulp, "ipg" clock is for uart
--  bus/baud clock. For imx8qxp lpuart, "ipg" clock is bus clock that is used
--  to access lpuart controller registers, it also requires "baud" clock for
--  module to receive/transmit data.
--
--Optional properties:
--- dmas: A list of two dma specifiers, one for each entry in dma-names.
--- dma-names: should contain "tx" and "rx".
--- rs485-rts-active-low, linux,rs485-enabled-at-boot-time: see rs485.txt
--
--Note: Optional properties for DMA support. Write them both or both not.
--
--Example:
--
--uart0: serial@40027000 {
--		compatible = "fsl,vf610-lpuart";
--		reg = <0x40027000 0x1000>;
--		interrupts = <0 61 0x00>;
--		clocks = <&clks VF610_CLK_UART0>;
--		clock-names = "ipg";
--		dmas = <&edma0 0 2>,
--			<&edma0 0 3>;
--		dma-names = "rx","tx";
--	};
-diff --git a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-new file mode 100644
-index 0000000..1b955f3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-@@ -0,0 +1,79 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/serial/fsl-lpuart.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale low power universal asynchronous receiver/transmitter (lpuart)
-+
-+maintainers:
-+  - Kumar Gala <galak@codeaurora.org>
-+
-+allOf:
-+  - $ref: "rs485.yaml"
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,vf610-lpuart
-+      - fsl,ls1021a-lpuart
-+      - fsl,ls1028a-lpuart
-+      - fsl,imx7ulp-lpuart
-+      - fsl,imx8qxp-lpuart
-+      - fsl,imx8qm-lpuart
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: ipg clock
-+      - description: baud clock
-+    minItems: 1
-+    maxItems: 2
-+
-+  clock-names:
-+    items:
-+      - const: ipg
-+      - const: baud
-+    minItems: 1
-+    maxItems: 2
-+
-+  dmas:
-+    items:
-+      - description: DMA controller phandle and request line for RX
-+      - description: DMA controller phandle and request line for TX
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+      - const: tx
-+
-+  rs485-rts-active-low: true
-+  linux,rs485-enabled-at-boot-time: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/vf610-clock.h>
-+
-+    serial@40027000 {
-+        compatible = "fsl,vf610-lpuart";
-+        reg = <0x40027000 0x1000>;
-+        interrupts = <0 61 0x00>;
-+        clocks = <&clks VF610_CLK_UART0>;
-+        clock-names = "ipg";
-+        dmas = <&edma0 0 2>, <&edma0 0 3>;
-+        dma-names = "rx","tx";
-+    };
--- 
-2.7.4
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
