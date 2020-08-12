@@ -2,79 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F6724276A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 11:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA14242727
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 11:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbgHLJYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 05:24:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:34512 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726409AbgHLJYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 05:24:42 -0400
-IronPort-SDR: MZ3hK8Y7KKdghSIaftY57W8NUS7C36LlpH/zNL5XObp5OP3Uo0N1vDKgZgT9INAeseBMeJoBxj
- 9gV+RWvMFJ4g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9710"; a="153141205"
-X-IronPort-AV: E=Sophos;i="5.76,303,1592895600"; 
-   d="scan'208";a="153141205"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 02:24:42 -0700
-IronPort-SDR: OlSgHJrGutoTjUF2OKbQZWiX7nMYIKSUKS5+mJul17WvlApBrqmEG5LxrBAA5fxOqUt9lwV1TY
- VACcfbcmJlfw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,303,1592895600"; 
-   d="scan'208";a="325021329"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 12 Aug 2020 02:24:40 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1k5mTw-008Aey-TZ; Wed, 12 Aug 2020 11:51:36 +0300
-Date:   Wed, 12 Aug 2020 11:51:36 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Seungil Kang <sil.kang@samsung.com>
-Cc:     bhe@redhat.com, mingo@kernel.org, akpm@linux-foundation.org,
-        gregkh@linuxfoundation.org, herbert@gondor.apana.org.au,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lib/cmdline: prevent unintented access to address
-Message-ID: <20200812085136.GH1891694@smile.fi.intel.com>
-References: <CGME20200812025432epcas1p1b810c6b94adf533d5cae3ef6a24ca9a2@epcas1p1.samsung.com>
- <20200812025402.15695-1-sil.kang@samsung.com>
+        id S1726946AbgHLJDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 05:03:23 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:43155 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726255AbgHLJDW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 05:03:22 -0400
+Received: by mail-ot1-f67.google.com with SMTP id r21so1349040ota.10;
+        Wed, 12 Aug 2020 02:03:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gUAKmWocimbWFJByMnP/SETTkQ6pqljqZpa74N4jY3c=;
+        b=XjNLEWlrQRZukwK8sfGRYwjeXFvlWqbdNeZOZouWhNdlsqpT32oEFHPalzuRyuFH/V
+         QEb3B2JmPzHb5I1s7e5BUyy2Cqjvgx+JuG2Pv5L85GULQaxp+fFGIwEo9mdodKy8Jqib
+         O3mZY+fp0Yqwriz09a4hHAq8G+ns1Ve3WNIq1KozfIWlkkAD7P3UhuW9hntQAyGhG9xK
+         vj3sD5cpyozsoubYxRZ/PWqhiqgaCwrIzar2piHyle6yP8kYxK9B8AQpDGS8AkLVyLfL
+         SNPwF6YdB9Q9fSzt73NQoYUrdTc6McYxcRz5+vsnbwkyelsOcbR8gpIyaVA4CgXoGlKk
+         DLag==
+X-Gm-Message-State: AOAM532AzBmkInFQeefZKsmftV70ZHT7JVlxzYHLmc7bmipMISvK3JlH
+        9cQyqPOoIQVnFFkj6KF6chM9URehFgvtUtOZbw8=
+X-Google-Smtp-Source: ABdhPJzz/L+SWk+xdR5ktmbiR9Qq6v6uAoWmIpmjcT8Qrbb1QB5w0us/LpTaAW+Q/PdpbWdBGNPRSnKICnxnB4wQDU0=
+X-Received: by 2002:a9d:7d8c:: with SMTP id j12mr8529371otn.250.1597223001253;
+ Wed, 12 Aug 2020 02:03:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200812025402.15695-1-sil.kang@samsung.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200811140357.564-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200811140357.564-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 12 Aug 2020 11:03:09 +0200
+Message-ID: <CAMuHMdWZ+NPRWvDiM8V++UPKnvPP55OzPNHDhoP_RX0fb1Lx2Q@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: defconfig: Enable R-Car PCIe endpoint driver
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 11:54:02AM +0900, Seungil Kang wrote:
+Hi Prabhakar,
 
-Thanks for the patch, my comments below.
+CC PCI endpoint people
 
-> When args = "\"\0", "i" will be 0 and args[i-1] is used (line:238)
+On Tue, Aug 11, 2020 at 4:04 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Enable R-Car PCIe endpoint driver on RZ/G2E board, including enabling
+> endpoint configurations CONFIG_PCI_ENDPOINT, CONFIG_PCI_ENDPOINT_CONFIGFS,
+> CONFIG_PCI_EPF_TEST and CONFIG_PCI_ENDPOINT_TEST required to use and test
+> the driver.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+> v1->v2
+> * Made CONFIG_PCI_EPF_TEST and CONFIG_PCI_ENDPOINT_TEST as modules
 
-Can you be less ambiguous with the args value? (Perhaps provide a hexdump of it
-for better understanding)
+Thanks for the update!
 
-> Because of "i" is an unsigned int type,
-> the function will access at args[0xFFFFFFFF]
-> It can make a crash
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.10.
 
-Please, use proper punctuation, I'm lost where is the sentence and what are the
-logical parts of them.
+However, as no core PCI code seems to depend on CONFIG_PCI_ENDPOINT, I
+would like to request the PCI endpoint people to consider making all PCI
+endpoint support tristate, so we can revisit this change to the arm64
+defconfig later.
 
-Can you point out to the code that calls this and leads to a crash?
+Thanks!
 
->  lib/cmdline.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -208,6 +208,7 @@ CONFIG_HOTPLUG_PCI_ACPI=y
+>  CONFIG_PCI_AARDVARK=y
+>  CONFIG_PCI_TEGRA=y
+>  CONFIG_PCIE_RCAR_HOST=y
+> +CONFIG_PCIE_RCAR_EP=y
+>  CONFIG_PCI_HOST_GENERIC=y
+>  CONFIG_PCI_XGENE=y
+>  CONFIG_PCIE_ALTERA=y
+> @@ -224,6 +225,9 @@ CONFIG_PCIE_ARMADA_8K=y
+>  CONFIG_PCIE_KIRIN=y
+>  CONFIG_PCIE_HISI_STB=y
+>  CONFIG_PCIE_TEGRA194_HOST=m
+> +CONFIG_PCI_ENDPOINT=y
+> +CONFIG_PCI_ENDPOINT_CONFIGFS=y
+> +CONFIG_PCI_EPF_TEST=m
+>  CONFIG_DEVTMPFS=y
+>  CONFIG_DEVTMPFS_MOUNT=y
+>  CONFIG_FW_LOADER_USER_HELPER=y
+> @@ -254,6 +258,7 @@ CONFIG_BLK_DEV_NBD=m
+>  CONFIG_VIRTIO_BLK=y
+>  CONFIG_BLK_DEV_NVME=m
+>  CONFIG_SRAM=y
+> +CONFIG_PCI_ENDPOINT_TEST=m
+>  CONFIG_EEPROM_AT24=m
+>  CONFIG_EEPROM_AT25=m
+>  CONFIG_UACCE=m
 
-Can you provide a KUnit test module which can check the case?
+Gr{oetje,eeting}s,
 
--- 
-With Best Regards,
-Andy Shevchenko
+                        Geert
 
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
