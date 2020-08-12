@@ -2,191 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E89B242387
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 02:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD516242399
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 03:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgHLAxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 20:53:54 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:53521 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726333AbgHLAxy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 20:53:54 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.west.internal (Postfix) with ESMTP id 57EADB10;
-        Tue, 11 Aug 2020 20:53:52 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 11 Aug 2020 20:53:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        cPWWSWjp5+yRqK3+DqGTMH/lSARmGj5rks/w1/txg0w=; b=TQfG91XIX1ygqwLM
-        4sfnV7xe4g4iEY5T2ZgoPGIvuSUQw+4Hf0WlavPnkJH899yiUIYsRzhXtEorXMX6
-        JAjvuuyWT1VNZIPp5VFu+F/GckYHBFLgVBBlZX3enRz9VH6EXmkGNTuYIOF+Pfie
-        N0Nc+c2F1+NDnBuqWPJZrMqWJcOSrBnnqHlWAYHiuaTQdT9c6JPPrReJyKqTh2zm
-        No2QYEQU3HDNmmEoy/TTxJT8NjkMiNy7TnYqJSxosnnLuWRdzPKhyemSRNRdWOOX
-        nJv1YGH8vIspNblClS2yjsYAnEuDv2lO8WXcUJOh1kj5w7MnPoVwFwYeRZ8fIj/K
-        bsvHPA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=cPWWSWjp5+yRqK3+DqGTMH/lSARmGj5rks/w1/txg
-        0w=; b=GKFvGOVtMQ4f6ZSR6opBfHGjXI8/Gi3A9rXrmNwm17kxUUGeU/gCtQnQb
-        wLMCvOJHSAJMdDPy/WOUoEYBESKjUUr4GrKdc2/d2uTtoVhOhqYs9EY65Xy2ZMUO
-        Y8NBx/ctIdwH0H9DpWZet46rZr13YJby/IiCTlBYIQHDMaK0zOaTBxM+mCo2bCYg
-        pHXAnI3K+nqlWKfqrESxED1CKyXKT+2gR/zo/upH3VBlDaWgQ8pUkpzGQBwWAHBH
-        hoJXrRDIKWLWCQmMI/pm4/chCHou6osTKG0Kjdttd8wEHWZlv0b9Q8cTCHl1BK7a
-        zqEnQqzoM+HB0wWq+tPKpw17f3Tdg==
-X-ME-Sender: <xms:nz0zXzjMSOgJ2xYPBvOcU-Ha_7ok9jmXV1szTmzx9oAbUQylQwt_ig>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrledugdeflecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkuffhvfffjghftggfggfgsehtjeertddtreejnecuhfhrohhmpefkrghnucfm
-    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnhepfe
-    efteetvdeguddvveefveeftedtffduudehueeihfeuvefgveehffeludeggfejnecukfhp
-    peehkedrjedrvddtfedruddugeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehrrghvvghnsehthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:nz0zXwBgD2ob41umt3OPIRxuqE-g0HsfHsGO8Ae0YGqbihrt08cUNQ>
-    <xmx:nz0zXzE4LHDsOlcxqYR__fNM67Gt9hc6dTIOMjTlpFY0PrJeOvz26A>
-    <xmx:nz0zXwRfXw2PKoUB9Y2MCwNnLb_YXNKnq7azqZl4ax9OitEysQiqTw>
-    <xmx:nz0zX1q-mYvkP_QKgcFtn6lCIncYt0j7rJdpNseI8r85f0aJ5AKup7fACM4>
-Received: from mickey.themaw.net (58-7-203-114.dyn.iinet.net.au [58.7.203.114])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4BC3F30600A6;
-        Tue, 11 Aug 2020 20:53:45 -0400 (EDT)
-Message-ID: <78ff6a85f5fc5f3e72f899728520a39b358b10c7.camel@themaw.net>
-Subject: Re: file metadata via fs API (was: [GIT PULL] Filesystem
- Information)
-From:   Ian Kent <raven@themaw.net>
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Karel Zak <kzak@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Christian Brauner <christian@brauner.io>,
-        Lennart Poettering <lennart@poettering.net>,
-        Linux API <linux-api@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 12 Aug 2020 08:53:42 +0800
-In-Reply-To: <20200811193916.zcwebstmbyvushau@wittgenstein>
-References: <1842689.1596468469@warthog.procyon.org.uk>
-         <1845353.1596469795@warthog.procyon.org.uk>
-         <CAJfpegunY3fuxh486x9ysKtXbhTE0745ZCVHcaqs9Gww9RV2CQ@mail.gmail.com>
-         <ac1f5e3406abc0af4cd08d818fe920a202a67586.camel@themaw.net>
-         <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com>
-         <CAJfpegtNP8rQSS4Z14Ja4x-TOnejdhDRTsmmDD-Cccy2pkfVVw@mail.gmail.com>
-         <20200811135419.GA1263716@miu.piliscsaba.redhat.com>
-         <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
-         <CAJfpegtWai+5Tzxi1_G+R2wEZz0q66uaOFndNE0YEQSDjq0f_A@mail.gmail.com>
-         <CAHk-=wg_bfVf5eazwH2uXTG-auCYZUpq-xb1kDeNjY7yaXS7bw@mail.gmail.com>
-         <20200811193916.zcwebstmbyvushau@wittgenstein>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1726506AbgHLBHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 21:07:14 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:44942 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726420AbgHLBHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 21:07:13 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id B4164D85BC53D551978D;
+        Wed, 12 Aug 2020 09:07:06 +0800 (CST)
+Received: from vm107-89-192.huawei.com (100.107.89.192) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 12 Aug 2020 09:06:56 +0800
+From:   Wei Li <liwei213@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>
+CC:     <liwei213@huawei.com>, <saberlily.xia@hisilicon.com>,
+        <puck.chen@hisilicon.com>, <butao@hisilicon.com>,
+        <fengbaopeng2@hisilicon.com>, <nsaenzjulienne@suse.de>,
+        <steve.capper@arm.com>, <rppt@linux.ibm.com>,
+        <song.bao.hua@hisilicon.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <sujunfei2@hisilicon.com>
+Subject: [PATCH v2] arm64: mm: free unused memmap for sparse memory model that define VMEMMAP
+Date:   Wed, 12 Aug 2020 09:06:55 +0800
+Message-ID: <20200812010655.96339-1-liwei213@huawei.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [100.107.89.192]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-08-11 at 21:39 +0200, Christian Brauner wrote:
-> On Tue, Aug 11, 2020 at 09:05:22AM -0700, Linus Torvalds wrote:
-> > On Tue, Aug 11, 2020 at 8:30 AM Miklos Szeredi <miklos@szeredi.hu>
-> > wrote:
-> > > What's the disadvantage of doing it with a single lookup WITH an
-> > > enabling flag?
-> > > 
-> > > It's definitely not going to break anything, so no backward
-> > > compatibility issues whatsoever.
-> > 
-> > No backwards compatibility issues for existing programs, no.
-> > 
-> > But your suggestion is fundamentally ambiguous, and you most
-> > definitely *can* hit that if people start using this in new
-> > programs.
-> > 
-> > Where does that "unified" pathname come from? It will be generated
-> > from "base filename + metadata name" in user space, and
-> > 
-> >  (a) the base filename might have double or triple slashes in it
-> > for
-> > whatever reasons.
-> > 
-> > This is not some "made-up gotcha" thing - I see double slashes
-> > *all*
-> > the time when we have things like Makefiles doing
-> > 
-> >     srctree=../../src/
-> > 
-> > and then people do "$(srctree)/". If you haven't seen that kind of
-> > pattern where the pathname has two (or sometimes more!) slashes in
-> > the
-> > middle, you've led a very sheltered life.
-> > 
-> >  (b) even if the new user space were to think about that, and
-> > remove
-> > those (hah! when have you ever seen user space do that?), as Al
-> > mentioned, the user *filesystem* might have pathnames with double
-> > slashes as part of symlinks.
-> > 
-> > So now we'd have to make sure that when we traverse symlinks, that
-> > O_ALT gets cleared. Which means that it's not a unified namespace
-> > after all, because you can't make symlinks point to metadata.
-> > 
-> > Or we'd retroactively change the semantics of a symlink, and that
-> > _is_
-> > a backwards compatibility issue. Not with old software, no, but it
-> > changes the meaning of old symlinks!
-> > 
-> > So no, I don't think a unified namespace ends up working.
-> > 
-> > And I say that as somebody who actually loves the concept. Ask Al:
-> > I
-> > have a few times pushed for "let's allow directory behavior on
-> > regular
-> > files", so that you could do things like a tar-filesystem, and
-> > access
-> > the contents of a tar-file by just doing
-> > 
-> >     cat my-file.tar/inside/the/archive.c
-> > 
-> > or similar.
-> > 
-> > Al has convinced me it's a horrible idea (and there you have a
-> > non-ambiguous marker: the slash at the end of a pathname that
-> > otherwise looks and acts as a non-directory)
-> > 
-> 
-> Putting my kernel hat down, putting my userspace hat on.
-> 
-> I'm looking at this from a potential user of this interface.
-> I'm not a huge fan of the metadata fd approach I'd much rather have a
-> dedicated system call rather than opening a side-channel metadata fd
-> that I can read binary data from. Maybe I'm alone in this but I was
-> under the impression that other users including Ian, Lennart, and
-> Karel
-> have said on-list in some form that they would prefer this approach.
-> There are even patches for systemd and libmount, I thought?
+For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
+do not free the reserved memory for the page map, this patch do it.
 
-Not quite sure what you mean here.
+Signed-off-by: Wei Li <liwei213@huawei.com>
+Signed-off-by: Chen Feng <puck.chen@hisilicon.com>
+Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
 
-Karel (with some contributions by me) has implemented the interfaces
-for David's mount notifications and fsinfo() call in libmount. We
-still have a little more to do on that.
+v2: fix the patch v1 compile errors that are not based on the latest mainline.
+---
+ arch/arm64/mm/init.c | 81 +++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 71 insertions(+), 10 deletions(-)
 
-I also have a systemd implementation that uses these libmount features
-for mount table handling that works quite well, with a couple more
-things to do to complete it, that Lennart has done an initial review
-for.
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 1e93cfc7c47a..600889945cd0 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -441,7 +441,48 @@ void __init bootmem_init(void)
+ 	memblock_dump_all();
+ }
 
-It's no secret that I don't like the proc file system in general
-but it is really useful for many things, that's just the way it
-is.
+-#ifndef CONFIG_SPARSEMEM_VMEMMAP
++#ifdef CONFIG_SPARSEMEM_VMEMMAP
++#define VMEMMAP_PAGE_INUSE 0xFD
++static inline void free_memmap(unsigned long start_pfn, unsigned long end_pfn)
++{
++	unsigned long addr, end;
++	unsigned long next;
++	pmd_t *pmd;
++	void *page_addr;
++	phys_addr_t phys_addr;
++
++	addr = (unsigned long)pfn_to_page(start_pfn);
++	end = (unsigned long)pfn_to_page(end_pfn);
++
++	pmd = pmd_off_k(addr);
++	for (; addr < end; addr = next, pmd++) {
++		next = pmd_addr_end(addr, end);
++
++		if (!pmd_present(*pmd))
++			continue;
++
++		if (IS_ALIGNED(addr, PMD_SIZE) &&
++			IS_ALIGNED(next, PMD_SIZE)) {
++			phys_addr = __pfn_to_phys(pmd_pfn(*pmd));
++			memblock_free(phys_addr, PMD_SIZE);
++			pmd_clear(pmd);
++		} else {
++			/* If here, we are freeing vmemmap pages. */
++			memset((void *)addr, VMEMMAP_PAGE_INUSE, next - addr);
++			page_addr = page_address(pmd_page(*pmd));
++
++			if (!memchr_inv(page_addr, VMEMMAP_PAGE_INUSE,
++				PMD_SIZE)) {
++				phys_addr = __pfn_to_phys(pmd_pfn(*pmd));
++				memblock_free(phys_addr, PMD_SIZE);
++				pmd_clear(pmd);
++			}
++		}
++	}
++
++	flush_tlb_all();
++}
++#else
+ static inline void free_memmap(unsigned long start_pfn, unsigned long end_pfn)
+ {
+ 	struct page *start_pg, *end_pg;
+@@ -468,31 +509,53 @@ static inline void free_memmap(unsigned long start_pfn, unsigned long end_pfn)
+ 		memblock_free(pg, pgend - pg);
+ }
 
-Ian
++#endif
++
+ /*
+  * The mem_map array can get very big. Free the unused area of the memory map.
+  */
+ static void __init free_unused_memmap(void)
+ {
+-	unsigned long start, prev_end = 0;
++	unsigned long start, cur_start, prev_end = 0;
+ 	struct memblock_region *reg;
+
+ 	for_each_memblock(memory, reg) {
+-		start = __phys_to_pfn(reg->base);
++		cur_start = __phys_to_pfn(reg->base);
+
+ #ifdef CONFIG_SPARSEMEM
+ 		/*
+ 		 * Take care not to free memmap entries that don't exist due
+ 		 * to SPARSEMEM sections which aren't present.
+ 		 */
+-		start = min(start, ALIGN(prev_end, PAGES_PER_SECTION));
+-#endif
++		start = min(cur_start, ALIGN(prev_end, PAGES_PER_SECTION));
++
+ 		/*
+-		 * If we had a previous bank, and there is a space between the
+-		 * current bank and the previous, free it.
++		 * Free memory in the case of:
++		 * 1. if cur_start - prev_end <= PAGES_PER_SECTION,
++		 * free pre_end ~ cur_start.
++		 * 2. if cur_start - prev_end > PAGES_PER_SECTION,
++		 * free pre_end ~ ALIGN(prev_end, PAGES_PER_SECTION).
+ 		 */
+ 		if (prev_end && prev_end < start)
+ 			free_memmap(prev_end, start);
+
++		/*
++		 * Free memory in the case of:
++		 * if cur_start - prev_end > PAGES_PER_SECTION,
++		 * free ALIGN_DOWN(cur_start, PAGES_PER_SECTION) ~ cur_start.
++		 */
++		if (cur_start > start &&
++		    !IS_ALIGNED(cur_start, PAGES_PER_SECTION))
++			free_memmap(ALIGN_DOWN(cur_start, PAGES_PER_SECTION),
++				    cur_start);
++#else
++		/*
++		 * If we had a previous bank, and there is a space between the
++		 * current bank and the previous, free it.
++		 */
++		if (prev_end && prev_end < cur_start)
++			free_memmap(prev_end, cur_start);
++#endif
+ 		/*
+ 		 * Align up here since the VM subsystem insists that the
+ 		 * memmap entries are valid from the bank end aligned to
+@@ -507,7 +570,6 @@ static void __init free_unused_memmap(void)
+ 		free_memmap(prev_end, ALIGN(prev_end, PAGES_PER_SECTION));
+ #endif
+ }
+-#endif	/* !CONFIG_SPARSEMEM_VMEMMAP */
+
+ /*
+  * mem_init() marks the free areas in the mem_map and tells us how much memory
+@@ -524,9 +586,8 @@ void __init mem_init(void)
+
+ 	set_max_mapnr(max_pfn - PHYS_PFN_OFFSET);
+
+-#ifndef CONFIG_SPARSEMEM_VMEMMAP
+ 	free_unused_memmap();
+-#endif
++
+ 	/* this will put all unused low memory onto the freelists */
+ 	memblock_free_all();
+
+--
+2.15.0
 
