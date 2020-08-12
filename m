@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE90A242C73
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 17:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42701242CB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 17:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726816AbgHLP5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 11:57:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46170 "EHLO mail.kernel.org"
+        id S1727846AbgHLP6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 11:58:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726667AbgHLP5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 11:57:02 -0400
+        id S1726676AbgHLP5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 11:57:03 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4922322D04;
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C42622D0B;
         Wed, 12 Aug 2020 15:57:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1597247820;
-        bh=Gpq5ix4ezroTt36b6Z1RuaTnByqc8WPwI1MtpDCopoQ=;
+        bh=9y3YY2uy8a9xwFvbUzX/REtb13wDHN83q+XnhOPjVT0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ecVF+S00hrK+LBZLxx3QnnwVH38ERNtt8aS/rX4YLc8RunTl0o0WHK3SLFkDRXF2A
-         hSw0e9HIAlhJo2xqrsrWtZDqXI41h/tMpaVc5rq5zM5StlJITXZmQ4lSvrxg6K0UmB
-         TY39DkVUGrQsGz/b5gzml+kyWoNr5qV+OsZPOmT8=
+        b=1+mBFr/HnxXn6Inu/uKS0tuad9MESouq0iXyaXaSprFHkIjFVjcS0OkjRrmkgUndk
+         D2E0YtCWBKnBwe/Q8L0q5HOm9hWuGEnQgbGJuOVZrX4V1Ojy1oWZgV/tXLmL/1xnIt
+         MOcLwgcvj+zfYqivLA6WyVhY1VVJNrJOC45W4DNE=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1k5t7a-005t6T-CZ; Wed, 12 Aug 2020 17:56:58 +0200
+        id 1k5t7a-005t6W-ED; Wed, 12 Aug 2020 17:56:58 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: [PATCH 20/44] staging: mfd: hi6421-spmi-pmic: fix some coding style issues
-Date:   Wed, 12 Aug 2020 17:56:30 +0200
-Message-Id: <867108ee50302f933fade56f8c25ef775ade36b3.1597247164.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
+Subject: [PATCH 21/44] staging: mfd: hi6421-spmi-pmic: add it to the building system
+Date:   Wed, 12 Aug 2020 17:56:31 +0200
+Message-Id: <f31c0eea14026f35c17e046255662c46446a9d34.1597247164.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1597247164.git.mchehab+huawei@kernel.org>
 References: <cover.1597247164.git.mchehab+huawei@kernel.org>
@@ -46,53 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Checkpatch complains about some minor issues inside this
-driver that were not addressed by the previous patch.
-
-Address them.
+Now that the driver is ready, place it at the build system.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 4 ++--
- include/linux/mfd/hi6421-spmi-pmic.h        | 3 ++-
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ drivers/staging/hikey9xx/Kconfig  | 17 +++++++++++++++++
+ drivers/staging/hikey9xx/Makefile |  3 ++-
+ 2 files changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-index 09cedfa1e4bb..d8b84d64041e 100644
---- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-+++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-@@ -189,7 +189,7 @@ static struct irq_chip hi6421_spmi_pmu_irqchip = {
- };
+diff --git a/drivers/staging/hikey9xx/Kconfig b/drivers/staging/hikey9xx/Kconfig
+index 31eb01b5ef2b..7ca083b7e94d 100644
+--- a/drivers/staging/hikey9xx/Kconfig
++++ b/drivers/staging/hikey9xx/Kconfig
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
  
- static int hi6421_spmi_irq_map(struct irq_domain *d, unsigned int virq,
--			irq_hw_number_t hw)
-+			       irq_hw_number_t hw)
- {
- 	struct hi6421_spmi_pmic *pmic = d->host_data;
- 
-@@ -350,7 +350,7 @@ static int hi6421_spmi_pmic_probe(struct spmi_device *pdev)
- 	 * The logic below will rely that the pmic is already stored at
- 	 * drvdata.
- 	 */
--	dev_dbg(&pdev->dev, "SPMI-PMIC: adding childs for %pOF\n",
-+	dev_dbg(&pdev->dev, "SPMI-PMIC: adding children for %pOF\n",
- 		pdev->dev.of_node);
- 	ret = devm_mfd_add_devices(&pdev->dev, PLATFORM_DEVID_NONE,
- 				   hi6421v600_devs, ARRAY_SIZE(hi6421v600_devs),
-diff --git a/include/linux/mfd/hi6421-spmi-pmic.h b/include/linux/mfd/hi6421-spmi-pmic.h
-index d12ad7484018..aeff96c4a37e 100644
---- a/include/linux/mfd/hi6421-spmi-pmic.h
-+++ b/include/linux/mfd/hi6421-spmi-pmic.h
-@@ -38,7 +38,8 @@ struct hi6421_spmi_pmic {
- 	unsigned int				*irqs;
- 	int					irqnum;
- 	int					irqarray;
--	struct hi6421_spmi_irq_mask_info 	irq_mask_addr;
++# to be placed at drivers/spmi
+ config SPMI_HISI3670
+ 	tristate "Hisilicon 3670 SPMI Controller"
+ 	select IRQ_DOMAIN_HIERARCHY
+@@ -8,3 +9,19 @@ config SPMI_HISI3670
+ 	  If you say yes to this option, support will be included for the
+ 	  built-in SPMI PMIC Arbiter interface on Hisilicon 3670
+ 	  processors.
 +
-+	struct hi6421_spmi_irq_mask_info	irq_mask_addr;
- 	struct hi6421_spmi_irq_info		irq_addr;
- };
++# to be placed at drivers/mfd
++config MFD_HI6421_SPMI
++	tristate "HiSilicon Hi6421v600 SPMI PMU/Codec IC"
++	depends on OF
++	select MFD_CORE
++	select REGMAP_MMIO
++	help
++	  Add support for HiSilicon Hi6421v600 SPMI PMIC. Hi6421 includes
++	  multi-functions, such as regulators, RTC, codec, Coulomb counter,
++	  etc.
++
++	  This driver includes core APIs _only_. You have to select
++	  individual components like voltage regulators under corresponding
++	  menus in order to enable them.
++	  We communicate with the Hi6421v600 via a SPMI bus.
+diff --git a/drivers/staging/hikey9xx/Makefile b/drivers/staging/hikey9xx/Makefile
+index e8085abce444..79de37da7a8f 100644
+--- a/drivers/staging/hikey9xx/Makefile
++++ b/drivers/staging/hikey9xx/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
  
+-obj-$(CONFIG_SPMI_HISI3670) += hisi-spmi-controller.o
++obj-$(CONFIG_SPMI_HISI3670)	+= hisi-spmi-controller.o
++obj-$(CONFIG_MFD_HI6421_SPMI)	+= hi6421-spmi-pmic.o
 -- 
 2.26.2
 
