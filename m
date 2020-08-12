@@ -2,175 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4932426A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E94D24269B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgHLIWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 04:22:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726517AbgHLIWB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 04:22:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB40C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 01:22:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JgBMrxFhpXh3xpWdoZXYK4da8LqJW1ikTR27jgesG/k=; b=kTn2pnqInJbU6VFHhlEzEJiFza
-        iNeM2LqgEYKHtAhuLBQ2kSWOSGQz+7gJvBNPsixA/bLKhQMxkIyfRqQkdJFEKGO0BBCPcnytjTI1l
-        21EQ6PoQdbshQxZB+vcLZicIrvMoGvJ1I/T4lHXqfqLjM32Xrj5BW+bkmvlc2ZzTkCvB4kiZTNm8D
-        Aglia5uM4vHo2WZsz/txGeq/wZkOpZ/5VLg89D1RT9K2V+7fvR6HpuQjl4tnYqiHlqhnK5SyU7jDc
-        wZZh5h5ubs1pb8xS7yAuFEQFVUBKb73IoTtIB4ovsCsnuSR5stZZJF335zM/wrE9Ub9AI8uUxltOX
-        2AN1pmRg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k5lxz-0001nH-73; Wed, 12 Aug 2020 08:18:55 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1726915AbgHLISo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 04:18:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726712AbgHLISn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 04:18:43 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7D08D300238;
-        Wed, 12 Aug 2020 10:18:32 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6679022281190; Wed, 12 Aug 2020 10:18:32 +0200 (CEST)
-Date:   Wed, 12 Aug 2020 10:18:32 +0200
-From:   peterz@infradead.org
-To:     Marco Elver <elver@google.com>
-Cc:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        fenghua.yu@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        yu-cheng.yu@intel.com, sdeep@vmware.com,
-        virtualization@lists.linux-foundation.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*()
- helpers
-Message-ID: <20200812081832.GK2674@hirez.programming.kicks-ass.net>
-References: <CANpmjNPau_DEYadey9OL+iFZKEaUTqnFnyFs1dU12o00mg7ofA@mail.gmail.com>
- <20200807151903.GA1263469@elver.google.com>
- <20200811074127.GR3982@worktop.programming.kicks-ass.net>
- <a2dffeeb-04f0-8042-b39a-b839c4800d6f@suse.com>
- <20200811081205.GV3982@worktop.programming.kicks-ass.net>
- <07f61573-fef1-e07c-03f2-a415c88dec6f@suse.com>
- <20200811092054.GB2674@hirez.programming.kicks-ass.net>
- <20200811094651.GH35926@hirez.programming.kicks-ass.net>
- <20200811201755.GI35926@hirez.programming.kicks-ass.net>
- <20200812080650.GA3894595@elver.google.com>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5255620774;
+        Wed, 12 Aug 2020 08:18:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597220322;
+        bh=DZe4rDhjzxljBRgO7VQ+ytJ53LFjK1MMm84lYaTTDBg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aoTbN6qbRHC8oLTWGWsg1IOq4qT55TJQzev+Ml+0+6WYL2d5Rr5res40LMxOW9Stk
+         h6SlHs3E9bKMCM42TIdi3JvHICDxpR9+DIqlAw1cQrvA7JDwU6hA1GtOEVR1FymycK
+         dmyF1wg1RL7LMKxfQKwABHqtuEwdM/q+lI94p+ww=
+Date:   Wed, 12 Aug 2020 10:18:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH] hfs, hfsplus: Fix NULL pointer
+ dereference in hfs_find_init()
+Message-ID: <20200812081852.GA851575@kroah.com>
+References: <20200812065556.869508-1-yepeilin.cs@gmail.com>
+ <20200812070827.GA1304640@kroah.com>
+ <20200812071306.GA869606@PWN>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200812080650.GA3894595@elver.google.com>
+In-Reply-To: <20200812071306.GA869606@PWN>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 10:06:50AM +0200, Marco Elver wrote:
-> On Tue, Aug 11, 2020 at 10:17PM +0200, peterz@infradead.org wrote:
-> > On Tue, Aug 11, 2020 at 11:46:51AM +0200, peterz@infradead.org wrote:
+On Wed, Aug 12, 2020 at 03:13:06AM -0400, Peilin Ye wrote:
+> On Wed, Aug 12, 2020 at 09:08:27AM +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Aug 12, 2020 at 02:55:56AM -0400, Peilin Ye wrote:
+> > > Prevent hfs_find_init() from dereferencing `tree` as NULL.
+> > > 
+> > > Reported-and-tested-by: syzbot+7ca256d0da4af073b2e2@syzkaller.appspotmail.com
+> > > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> > > ---
+> > >  fs/hfs/bfind.c     | 3 +++
+> > >  fs/hfsplus/bfind.c | 3 +++
+> > >  2 files changed, 6 insertions(+)
+> > > 
+> > > diff --git a/fs/hfs/bfind.c b/fs/hfs/bfind.c
+> > > index 4af318fbda77..880b7ea2c0fc 100644
+> > > --- a/fs/hfs/bfind.c
+> > > +++ b/fs/hfs/bfind.c
+> > > @@ -16,6 +16,9 @@ int hfs_find_init(struct hfs_btree *tree, struct hfs_find_data *fd)
+> > >  {
+> > >  	void *ptr;
+> > >  
+> > > +	if (!tree)
+> > > +		return -EINVAL;
+> > > +
+> > >  	fd->tree = tree;
+> > >  	fd->bnode = NULL;
+> > >  	ptr = kmalloc(tree->max_key_len * 2 + 4, GFP_KERNEL);
+> > > diff --git a/fs/hfsplus/bfind.c b/fs/hfsplus/bfind.c
+> > > index ca2ba8c9f82e..85bef3e44d7a 100644
+> > > --- a/fs/hfsplus/bfind.c
+> > > +++ b/fs/hfsplus/bfind.c
+> > > @@ -16,6 +16,9 @@ int hfs_find_init(struct hfs_btree *tree, struct hfs_find_data *fd)
+> > >  {
+> > >  	void *ptr;
+> > >  
+> > > +	if (!tree)
+> > > +		return -EINVAL;
+> > > +
 > > 
-> > > So let me once again see if I can't find a better solution for this all.
-> > > Clearly it needs one :/
-> > 
-> > So the below boots without triggering the debug code from Marco -- it
-> > should allow nesting local_irq_save/restore under raw_local_irq_*().
-> > 
-> > I tried unconditional counting, but there's some _reallly_ wonky /
-> > asymmetric code that wrecks that and I've not been able to come up with
-> > anything useful.
-> > 
-> > This one starts counting when local_irq_save() finds it didn't disable
-> > IRQs while lockdep though it did. At that point, local_irq_restore()
-> > will decrement and enable things again when it reaches 0.
-> > 
-> > This assumes local_irq_save()/local_irq_restore() are nested sane, which
-> > is mostly true.
-> > 
-> > This leaves #PF, which I fixed in these other patches, but I realized it
-> > needs fixing for all architectures :-( No bright ideas there yet.
-> > 
-> > ---
-> >  arch/x86/entry/thunk_32.S       |  5 ----
-> >  include/linux/irqflags.h        | 45 +++++++++++++++++++-------------
-> >  init/main.c                     | 16 ++++++++++++
-> >  kernel/locking/lockdep.c        | 58 +++++++++++++++++++++++++++++++++++++++++
-> >  kernel/trace/trace_preemptirq.c | 33 +++++++++++++++++++++++
-> >  5 files changed, 134 insertions(+), 23 deletions(-)
+> > How can tree ever be NULL in these calls?  Shouldn't that be fixed as
+> > the root problem here?
 > 
-> Testing this again with syzkaller produced some new reports:
-> 
-> 	BUG: stack guard page was hit in error_entry
-> 	BUG: stack guard page was hit in exc_int3
-> 	PANIC: double fault in error_entry
-> 	PANIC: double fault in exc_int3
-> 
-> Most of them have corrupted reports, but this one might be useful:
-> 
-> 	BUG: stack guard page was hit at 000000001fab0982 (stack is 00000000063f33dc..00000000bf04b0d8)
-> 	BUG: stack guard page was hit at 00000000ca97ac69 (stack is 00000000af3e6c84..000000001597e1bf)
-> 	kernel stack overflow (double-fault): 0000 [#1] PREEMPT SMP
-> 	CPU: 1 PID: 4709 Comm: kworker/1:1H Not tainted 5.8.0+ #5
-> 	Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> 	Workqueue: events_highpri snd_vmidi_output_work
-> 	RIP: 0010:exc_int3+0x5/0xf0 arch/x86/kernel/traps.c:636
-> 	Code: c9 85 4d 89 e8 31 c0 e8 a9 7d 68 fd e9 90 fe ff ff e8 0f 35 00 00 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 55 53 48 89 fb <e8> 76 0e 00 00 85 c0 74 03 5b 5d c3 f6 83 88 00 00 00 03 74 7e 48
-> 	RSP: 0018:ffffc90008114000 EFLAGS: 00010083
-> 	RAX: 0000000084e00e17 RBX: ffffc90008114018 RCX: ffffffff84e00e17
-> 	RDX: 0000000000000000 RSI: ffffffff84e00a39 RDI: ffffc90008114018
-> 	RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> 	R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> 	R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> 	FS:  0000000000000000(0000) GS:ffff88807dc80000(0000) knlGS:0000000000000000
-> 	CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> 	CR2: ffffc90008113ff8 CR3: 000000002dae4006 CR4: 0000000000770ee0
-> 	DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> 	DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> 	PKRU: 00000000
-> 	Call Trace:
-> 	 asm_exc_int3+0x31/0x40 arch/x86/include/asm/idtentry.h:537
-> 	RIP: 0010:arch_static_branch include/trace/events/preemptirq.h:40 [inline]
-> 	RIP: 0010:static_key_false include/linux/jump_label.h:200 [inline]
-> 	RIP: 0010:trace_irq_enable_rcuidle+0xd/0x120 include/trace/events/preemptirq.h:40
-> 	Code: 24 08 48 89 df e8 43 8d ef ff 48 89 df 5b e9 4a 2e 99 03 66 2e 0f 1f 84 00 00 00 00 00 55 41 56 53 48 89 fb e8 84 1a fd ff cc <1f> 44 00 00 5b 41 5e 5d c3 65 8b 05 ab 74 c3 7e 89 c0 31 f6 48 0f
-> 	RSP: 0018:ffffc900081140f8 EFLAGS: 00000093
-> 	RAX: ffffffff813d9e8c RBX: ffffffff81314dd3 RCX: ffff888076ce6000
-> 	RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff81314dd3
-> 	RBP: 0000000000000000 R08: ffffffff813da3d4 R09: 0000000000000001
-> 	R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> 	R13: 0000000000000082 R14: 0000000000000000 R15: ffff888076ce6000
-> 	 trace_hardirqs_restore+0x59/0x80 kernel/trace/trace_preemptirq.c:106
-> 	 rcu_irq_enter_irqson+0x43/0x70 kernel/rcu/tree.c:1074
-> 	 trace_irq_enable_rcuidle+0x87/0x120 include/trace/events/preemptirq.h:40
-> 	 trace_hardirqs_restore+0x59/0x80 kernel/trace/trace_preemptirq.c:106
-> 	 rcu_irq_enter_irqson+0x43/0x70 kernel/rcu/tree.c:1074
-> 	 trace_irq_enable_rcuidle+0x87/0x120 include/trace/events/preemptirq.h:40
-> 	 trace_hardirqs_restore+0x59/0x80 kernel/trace/trace_preemptirq.c:106
-> 	 rcu_irq_enter_irqson+0x43/0x70 kernel/rcu/tree.c:1074
-> 	 trace_irq_enable_rcuidle+0x87/0x120 include/trace/events/preemptirq.h:40
-> 	 trace_hardirqs_restore+0x59/0x80 kernel/trace/trace_preemptirq.c:106
-> 	 rcu_irq_enter_irqson+0x43/0x70 kernel/rcu/tree.c:1074
-> 
-> 	<... repeated many many times ...>
-> 
-> 	 trace_irq_enable_rcuidle+0x87/0x120 include/trace/events/preemptirq.h:40
-> 	 trace_hardirqs_restore+0x59/0x80 kernel/trace/trace_preemptirq.c:106
-> 	 rcu_irq_enter_irqson+0x43/0x70 kernel/rcu/tree.c:1074
-> 	Lost 500 message(s)!
-> 	BUG: stack guard page was hit at 00000000cab483ba (stack is 00000000b1442365..00000000c26f9ad3)
-> 	BUG: stack guard page was hit at 00000000318ff8d8 (stack is 00000000fd87d656..0000000058100136)
-> 	---[ end trace 4157e0bb4a65941a ]---
+> I see, I will try to figure out what is going on with the reproducer.
 
-Wheee... recursion! Let me try and see if I can make something of that.
+That's good to figure out.  Note, your patch might be the correct thing
+to do, as that might be an allowed way to call the function.  But in
+looking at all the callers, they seem to think they have a valid pointer
+at the moment, so perhaps if this check is added, some other root
+problem is papered over to be only found later on?
 
+thanks,
+
+greg k-h
