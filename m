@@ -2,145 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C93242944
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7AD24294E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgHLMZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 08:25:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727870AbgHLMZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 08:25:32 -0400
-Received: from quaco.ghostprotocols.net (179.176.8.134.dynamic.adsl.gvt.net.br [179.176.8.134])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31D5B207DA;
-        Wed, 12 Aug 2020 12:25:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597235131;
-        bh=UI6QttmYUs52ycmRXyjV+pRO3m48DPHMxikF/d/PHN4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=baKtVyheI3+muVcGZNmIRijpLcRQBw//J8dldbzDvqRSXv/D4ifQopjBwXlalKHH3
-         NAwll8c0JHtF2sS05hM/1cH+z6PzJoe7pAczOYUjiUjxoWjDLKkq42yQeRgvrqs1Ml
-         rLTBd9U/qa2Y7lXWFvZDRVlQUMBAmVrCjo7hgNMw=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 396EB403C6; Wed, 12 Aug 2020 09:25:29 -0300 (-03)
-Date:   Wed, 12 Aug 2020 09:25:29 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, kernel@axis.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf bench mem: Always memset source before memcpy
-Message-ID: <20200812122529.GH13995@kernel.org>
-References: <20200810133404.30829-1-vincent.whitchurch@axis.com>
+        id S1727957AbgHLM3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 08:29:42 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:23310 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726722AbgHLM3l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 08:29:41 -0400
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 07CCT91Y028933
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 21:29:10 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 07CCT91Y028933
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1597235350;
+        bh=B1MXvvnziEh1YoGGi3U1Pjhexr9zmM/bxzeh626e5aA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MLfPisBdA1J9LqGeNi+po7bzOrYC9SkJi7W9oyvmlO0Fixg7lqzAAfld/5eiaOa1s
+         XxxN9l9qsU25TGGXJ0wtD7OaPdxg5kgKI+VEdScdRZ4W19FOPiz7By41gms4/GeIAy
+         K+YwI2yPo3bu4blZ7SBnk3F9EJ0cx2wgKP14fgchX2/IY4OBLJ75NXhd81NjNypfyh
+         trex5WPjHfFR079DLzIM4s5YQim3OLMr/0C5yUH60XzYRJaSBeSPkRKcVApS5jkb6O
+         Q5vyBWu2v1QsKWdiNHly72bSWhryXrFHmPwTlPQX1racluTGO2aW9IxS7P5dAaGWCj
+         YqpIHe2nuU2LA==
+X-Nifty-SrcIP: [209.85.221.182]
+Received: by mail-vk1-f182.google.com with SMTP id x187so462679vkc.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 05:29:10 -0700 (PDT)
+X-Gm-Message-State: AOAM530WapSK2/k3Fi1UO69nV/dykpT27Y7a1poqTvX0fTAgOiVjrRAY
+        5v8GJaQEmLww3Ei+X5i9LEZYmcS5EpJm3oDw21c=
+X-Google-Smtp-Source: ABdhPJxO2kCrNx3bl1PukxkToFTw+//RO9B1//3tJpNs4kUPC8psjAXE5i52EAa0nvpAscYzlSuhqVNgBk+ktm254bE=
+X-Received: by 2002:a1f:eac1:: with SMTP id i184mr28490318vkh.66.1597235349085;
+ Wed, 12 Aug 2020 05:29:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200810133404.30829-1-vincent.whitchurch@axis.com>
-X-Url:  http://acmel.wordpress.com
+References: <20200731212141.3709716-1-peskal@google.com>
+In-Reply-To: <20200731212141.3709716-1-peskal@google.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 12 Aug 2020 21:28:32 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARxnLGpiHO8ovfF_+pjFw+Uo=2c9wYiWMjZRh3B4_wMUg@mail.gmail.com>
+Message-ID: <CAK7LNARxnLGpiHO8ovfF_+pjFw+Uo=2c9wYiWMjZRh3B4_wMUg@mail.gmail.com>
+Subject: Re: [PATCH] gen_compile_commands: Add support for separate kbuild
+ output directory
+To:     Peter Kalauskas <peskal@google.com>
+Cc:     Tom Roeder <tmroeder@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Aug 10, 2020 at 03:34:04PM +0200, Vincent Whitchurch escreveu:
-> For memcpy, the source pages are memset to zero only when --cycles is
-> used.  This leads to wildly different results with or without --cycles,
-> since all sources pages are likely to be mapped to the same zero page
-> without explicit writes.
+(+cc clang-built-linux)
 
-Thanks, applied.
 
-- Arnaldo
- 
-> Before this fix:
-> 
-> $ export cmd="./perf stat -e LLC-loads -- ./perf bench \
->   mem memcpy -s 1024MB -l 100 -f default"
-> $ $cmd
-> 
->          2,935,826      LLC-loads
->        3.821677452 seconds time elapsed
-> 
-> $ $cmd --cycles
-> 
->        217,533,436      LLC-loads
->        8.616725985 seconds time elapsed
-> 
-> After this fix:
-> 
-> $ $cmd
-> 
->        214,459,686      LLC-loads
->        8.674301124 seconds time elapsed
-> 
-> $ $cmd --cycles
-> 
->        214,758,651      LLC-loads
->        8.644480006 seconds time elapsed
-> 
-> Fixes: 47b5757bac03c3387c ("perf bench mem: Move boilerplate memory allocation to the infrastructure")
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+On Sat, Aug 1, 2020 at 6:21 AM Peter Kalauskas <peskal@google.com> wrote:
+>
+> Add support for builds that use an output directory different than the
+> kernel source tree (e.g. make O=/tmp/kernel-obj). This also introduces
+> support for .cmd files that use absolute paths.
+>
+> Previously, gen_compile_commands.py only supported builds where the
+> kernel source tree and the output directory were the same:
+>  $ make defconfig
+>  $ make -j32
+>  $ ./scripts/gen_compile_commands.py
+>
+> gen_compile_commands.py had flags to support out of tree use, but the
+> generated compile_commands.json file still assumed that the source tree
+> and kbuild output directory were the same.
+
+Thanks Tom for CCing Kbuild ML.
+Otherwise, I would not have noticed this patch.
+
+
+
+I think the current code _mostly_ supports the out of tree use.
+The key is to specify '-p <build-dir>'
+when you use compile_commands.json from
+clang-check, clang-tidy, etc.
+
+
+
+
+
+> Now, the following cases are supported as well:
+>
+>  - Absolute output path:
+>    $ mkdir /tmp/kernel-obj
+>    $ make O=/tmp/kernel-obj defconfig
+>    $ make O=/tmp/kernel-obj -j32
+>    $ ./scripts/gen_compile_commands.py -k /tmp/kernel-obj
+>
+>  - Relative output path:
+>    $ mkdir kernel-obj
+>    $ make O=kernel-obj/ defconfig
+>    $ make O=kernel-obj/ -j32
+>    $ ./scripts/gen_compile_commands.py -k kernel-obj
+
+
+In the current script, I would do like follows:
+
+- Absolute output path:
+$ export CC=clang
+$ make O=/tmp/kernel-obj defconfig
+$ make O=/tmp/kernel-obj -j32
+$ ./scripts/gen_compile_commands.py -d /tmp/kernel-obj
+$ clang-tidy  '--checks=linuxkernel*'  -p /tmp/kernel-obj kernel/fork.c
+
+
+- Relative output path:
+$ export CC=clang
+$ make O=kernel-obj defconfig
+$ make O=kernel-obj -j32
+$ ./scripts/gen_compile_commands.py -d kernel-obj
+$ clang-tidy  '--checks=linuxkernel*'  -p kernel-obj   kernel/fork.c
+
+
+
+With your patch and the -k option use,
+compile_commands.json is always created in the source tree
+whether O= is given or not.
+Then, you no longer need to pass '-p <build-path>'
+from clang tools.
+
+However, I like the workflow to create any build artifact
+in the output tree for O= use-case, and keep the source tree
+completely clean.
+This is because the source tree might be read-only.
+Perhaps, it is located under /usr/src/,
+or the source code might be provided by DVD-ROM, etc.
+
+
+
+
+
+In my understanding, the flaw of the -d option is,
+it cannot handle objtool.
+
+'--log_level DEBUG' emits error log for objtool.
+
+masahiro@oscar:~/ref/linux$ ./scripts/gen_compile_commands.py  -d
+/tmp/kernel-obj  --log_level  DEBUG
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.elf.o.cmd: File elf.c not in
+/tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.builtin-orc.o.cmd: File builtin-orc.c
+not in /tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.builtin-check.o.cmd: File
+builtin-check.c not in /tmp/kernel-obj or
+/tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.orc_dump.o.cmd: File orc_dump.c not in
+/tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.libstring.o.cmd: File ../lib/string.c
+not in /tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.libctype.o.cmd: File ../lib/ctype.c not
+in /tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.parse-options.o.cmd: File
+parse-options.c not in /tmp/kernel-obj or
+/tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.objtool.o.cmd: File objtool.c not in
+/tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.fixdep.o.cmd: File fixdep.c not in
+/tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.pager.o.cmd: File pager.c not in
+/tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.str_error_r.o.cmd: File
+../lib/str_error_r.c not in /tmp/kernel-obj or
+/tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.special.o.cmd: File special.c not in
+/tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.orc_gen.o.cmd: File orc_gen.c not in
+/tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.help.o.cmd: File help.c not in
+/tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.librbtree.o.cmd: File ../lib/rbtree.c
+not in /tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.run-command.o.cmd: File run-command.c
+not in /tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.exec-cmd.o.cmd: File exec-cmd.c not in
+/tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.weak.o.cmd: File weak.c not in
+/tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.subcmd-config.o.cmd: File
+subcmd-config.c not in /tmp/kernel-obj or
+/tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.check.o.cmd: File check.c not in
+/tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/.sigchain.o.cmd: File sigchain.c not in
+/tmp/kernel-obj or /tmp/kernel-obj/tools/objtool
+INFO: Could not add line from
+/tmp/kernel-obj/tools/objtool/arch/x86/.decode.o.cmd: File
+arch/x86/decode.c not in /tmp/kernel-obj or
+/tmp/kernel-obj/tools/objtool/arch/x86
+
+
+
+Your patch solves it, but I wonder if it is worth lots of code addition.
+objtool is the only unfortunate case because it did not join Kbuild.
+
+
+
+
+> The new argument, -k, is introduced in a way that makes the script
+> backward compatible with how -d was previously used.
+>
+> Signed-off-by: Peter Kalauskas <peskal@google.com>
 > ---
->  tools/perf/bench/mem-functions.c | 21 +++++++++++----------
->  1 file changed, 11 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/perf/bench/mem-functions.c b/tools/perf/bench/mem-functions.c
-> index 9235b76501be..19d45c377ac1 100644
-> --- a/tools/perf/bench/mem-functions.c
-> +++ b/tools/perf/bench/mem-functions.c
-> @@ -223,12 +223,8 @@ static int bench_mem_common(int argc, const char **argv, struct bench_mem_info *
->  	return 0;
->  }
->  
-> -static u64 do_memcpy_cycles(const struct function *r, size_t size, void *src, void *dst)
-> +static void memcpy_prefault(memcpy_t fn, size_t size, void *src, void *dst)
->  {
-> -	u64 cycle_start = 0ULL, cycle_end = 0ULL;
-> -	memcpy_t fn = r->fn.memcpy;
-> -	int i;
+
+
+
+> -def process_line(root_directory, file_directory, command_prefix, relative_path):
+> +def process_line(src_dir, kbuild_out_dir, file_dir, cmd_prefix, file_path):
+>      """Extracts information from a .cmd line and creates an entry from it.
+>
+>      Args:
+> -        root_directory: The directory that was searched for .cmd files. Usually
+> +        src_dir: The directory of the kernel source tree.
+> +        kbuild_out_dir: The directory that was searched for .cmd files. Usually
+>              used directly in the "directory" entry in compile_commands.json.
+> -        file_directory: The path to the directory the .cmd file was found in.
+> -        command_prefix: The extracted command line, up to the last element.
+> -        relative_path: The .c file from the end of the extracted command.
+> -            Usually relative to root_directory, but sometimes relative to
+> -            file_directory and sometimes neither.
+> +        file_dir: The path to the directory the .cmd file was found in.
+> +        cmd_prefix: The extracted command line, up to the last element.
+> +        file_path: The .c file from the end of the extracted command.
+> +            Usually relative to kbuild_out_dir, but sometimes relative to
+> +            src_dir and sometimes neither.
+>
+>      Returns:
+>          An entry to append to compile_commands.
+>
+>      Raises:
+> -        ValueError: Could not find the extracted file based on relative_path and
+> -            root_directory or file_directory.
+> +        ValueError: Could not find the extracted file.
+>      """
+>      # The .cmd files are intended to be included directly by Make, so they
+>      # escape the pound sign '#', either as '\#' or '$(pound)' (depending on the
+> -    # kernel version). The compile_commands.json file is not interepreted
+> +    # kernel version). The compile_commands.json file is not interpreted
+>      # by Make, so this code replaces the escaped version with '#'.
+> -    prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
 > -
->  	/* Make sure to always prefault zero pages even if MMAP_THRESH is crossed: */
->  	memset(src, 0, size);
->  
-> @@ -237,6 +233,15 @@ static u64 do_memcpy_cycles(const struct function *r, size_t size, void *src, vo
->  	 * to not measure page fault overhead:
->  	 */
->  	fn(dst, src, size);
-> +}
+> -    cur_dir = root_directory
+> -    expected_path = os.path.join(cur_dir, relative_path)
+> -    if not os.path.exists(expected_path):
+> -        # Try using file_directory instead. Some of the tools have a different
+> -        # style of .cmd file than the kernel.
+> -        cur_dir = file_directory
+> -        expected_path = os.path.join(cur_dir, relative_path)
+> +    prefix = cmd_prefix.replace('\#', '#').replace('$(pound)', '#')
 > +
-> +static u64 do_memcpy_cycles(const struct function *r, size_t size, void *src, void *dst)
-> +{
-> +	u64 cycle_start = 0ULL, cycle_end = 0ULL;
-> +	memcpy_t fn = r->fn.memcpy;
-> +	int i;
+> +    # Compile commands are usually run in the top level of the kbuild output
+> +    # directory
+> +    working_dir = kbuild_out_dir
 > +
-> +	memcpy_prefault(fn, size, src, dst);
->  
->  	cycle_start = get_cycles();
->  	for (i = 0; i < nr_loops; ++i)
-> @@ -252,11 +257,7 @@ static double do_memcpy_gettimeofday(const struct function *r, size_t size, void
->  	memcpy_t fn = r->fn.memcpy;
->  	int i;
->  
-> -	/*
-> -	 * We prefault the freshly allocated memory range here,
-> -	 * to not measure page fault overhead:
-> -	 */
-> -	fn(dst, src, size);
-> +	memcpy_prefault(fn, size, src, dst);
->  
->  	BUG_ON(gettimeofday(&tv_start, NULL));
->  	for (i = 0; i < nr_loops; ++i)
-> -- 
-> 2.25.1
-> 
+> +    if os.path.isabs(file_path):
 
--- 
+I might be misreading the code, but
+is this if-else switch needed?
 
-- Arnaldo
+
+os.path.join() returns the last parameter as-is
+if it is already absolute, right?
+
+
+This is my quick experiment:
+
+masahiro@oscar:~$ python3
+Python 3.8.2 (default, Jul 16 2020, 14:00:26)
+[GCC 9.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import os
+>>> os.path.join("/foo/bar/", "a/b/c")
+'/foo/bar/a/b/c'
+>>> os.path.join("/foo/bar/", "/a/b/c")
+'/a/b/c'
+
+
+
+
+So, the current code:
+
+   expected_path = os.path.join(cur_dir, relative_path)
+
+works whether 'relative_path' is relative or not.
+
+I was also thinking this variable name was misleading
+since 'relative_path' may be actually absolute.
+
+
+
+
+
+--
+Best Regards
+
+Masahiro Yamada
