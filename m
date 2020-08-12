@@ -2,167 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A102423D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 03:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E292423DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 03:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgHLBt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 21:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726143AbgHLBt5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 21:49:57 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B71C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 18:49:57 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ha11so336840pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 18:49:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7FL9PUCw0cmrNCErD8UvM723hdL3ytuz7zhjvic+M1I=;
-        b=FkeKTutkYedgFQum0FbHtLTusgFDEiCjRa9Lh54MC9qpgQ6QAMT77CDL9CP5hC8qKy
-         OK7GXFGHwkNONYmrxd83JzjkcuUkobC1rj9+E4IZ0mCBNEFE4C4tJjBuGQB1vV8O4ght
-         nu8/Oegdt3+HQ66o2kKLgqF2VcN/vijz3r81Y6kvMtnfvzJvBaass3BB+aMKK/T86kZx
-         2KkbqwuWJ3W4BVoRk0JLTfS0+tXmVoz0MtZJw3Y8nrO5RsMI8j3HDLFpsvAPvYf84b/D
-         snb5ndHAp4eBjEyLKogajod6+dVIvdyQdDuNB7N8+QuFO+xo/zc/TUJ4HwePhYVnI8yq
-         HgZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7FL9PUCw0cmrNCErD8UvM723hdL3ytuz7zhjvic+M1I=;
-        b=kspkkDjuymEMBB+vMeXfEbCGMIfiXDvIglwxfN/bclp27RhA7RAsTtnuCGWgliar+S
-         H00krhWllaA4JJyA0YmyxGFqMg9EjJPgqPwOQEfxb+/uvuhwgaXPcN5+4f5pGZ4mGxHk
-         VwUqNOI4BSKf/GL3+rAyW5xC6MGbmN+7Rdy0XDjbEa6v3n5x3AoIjbfiu2BaoRhX7puL
-         beKW4uaacNcPxrpD9ECj1Yt6oM2poPNTsZLWE5Om+rS6GmXaDyy+t0NnWzmD04SCj+H8
-         cdVjsRBS9DNdPSoX5SXbyoyElK6P4vZ/hSSgnc3eJLCL27p73h7cyBpeA9wZyEMLuj75
-         qn4g==
-X-Gm-Message-State: AOAM532VjM1ovxVUp1EK3TY5+ZSefnnAwwiY4mcUDRyfz3Y1l1DlHUsv
-        Mr+oirC8+dttnh8TfFYOiVWS5rIe
-X-Google-Smtp-Source: ABdhPJwxUJOLIFD6wyoP8Jt9pzcIUgQUtpbyA5zPkp6lOHEqzceLZ8zOkeeSNnPd5XcgsbNxwhbg8Q==
-X-Received: by 2002:a17:90a:6807:: with SMTP id p7mr3874803pjj.42.1597196995917;
-        Tue, 11 Aug 2020 18:49:55 -0700 (PDT)
-Received: from [0.0.0.0] ([108.61.186.250])
-        by smtp.gmail.com with ESMTPSA id gj2sm247534pjb.21.2020.08.11.18.49.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Aug 2020 18:49:55 -0700 (PDT)
-Subject: Re: [PATCH] sched/core: add unlikely in group_has_capacity()
-From:   Qi Zheng <arch0.zheng@gmail.com>
-To:     Ingo Molnar <mingo@kernel.org>, valentin.schneider@arm.com
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org
-References: <20200730135423.232776-1-arch0.zheng@gmail.com>
- <20200806144533.GA2123716@gmail.com>
- <2d271bf3-69c1-e5fd-b7a9-f766ff26ed62@gmail.com>
-Message-ID: <32e6e7dd-38cb-3317-138e-e337093e3173@gmail.com>
-Date:   Wed, 12 Aug 2020 09:49:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726507AbgHLBvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 21:51:11 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:57438 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726143AbgHLBvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 21:51:10 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 9F1BC595C8752D438AE5;
+        Wed, 12 Aug 2020 09:51:08 +0800 (CST)
+Received: from [10.164.122.247] (10.164.122.247) by smtp.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 12 Aug
+ 2020 09:51:03 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: change virtual mapping way for
+ compression pages
+To:     Daeho Jeong <daeho43@gmail.com>, Gao Xiang <hsiangkao@redhat.com>
+CC:     Daeho Jeong <daehojeong@google.com>, <kernel-team@android.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20200811033753.783276-1-daeho43@gmail.com>
+ <20200811071552.GA8365@xiangao.remote.csb>
+ <3059d7b0-cf50-4315-e5a9-8d9c00965a7c@huawei.com>
+ <CACOAw_yic7GF3E1zEvZ=Gea3XW4fMYdg-cNuu4wfg+uTKMcJqA@mail.gmail.com>
+ <CACOAw_wi3C0iyTVYc3075d4K27NT7BGMGzsKFDDozf=98vWMcA@mail.gmail.com>
+ <20200811101827.GA7870@xiangao.remote.csb>
+ <CACOAw_zRPeGzHyc_siLqBRjURWTE61G5rGCwk7bnbcOnADGRpg@mail.gmail.com>
+ <20200811112912.GB7870@xiangao.remote.csb>
+ <CACOAw_zAbTf+hEW0XVyL-aUw7oxCFTm_jRXLM8eiaOEdDWc0Qw@mail.gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <7808b204-b0a4-400c-9ccc-07bc7aea194d@huawei.com>
+Date:   Wed, 12 Aug 2020 09:51:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <2d271bf3-69c1-e5fd-b7a9-f766ff26ed62@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CACOAw_zAbTf+hEW0XVyL-aUw7oxCFTm_jRXLM8eiaOEdDWc0Qw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.164.122.247]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/8/7 上午10:47, Qi Zheng wrote:
-> Yeah, because of the following two points, I also think
-> the probability is 0%:
-> a) the sd is protected by rcu lock, and load_balance()
->     func is between rcu_read_lock() and rcu_read_unlock().
-> b) the sgs is a local variable.
+On 2020/8/11 19:31, Daeho Jeong wrote:
+> Plus, differently from your testbed, in my pixel device, there seems
+> to be much more contention in vmap() operation.
+> If it's not there, I agree that there might not be a big difference
+> between vmap() and vm_map_ram().
 > 
-> So in the group_classify(), the env->sd->imbalance_pct and
-> the sgs will not be changed. May I remove the duplicate check
-> from group_has_capacity() and resubmit a patch?
-> 
-> Yours,
-> Qi Zheng
-> 
-> On 2020/8/6 下午10:45, Ingo Molnar wrote:
+> 2020년 8월 11일 (화) 오후 8:29, Gao Xiang <hsiangkao@redhat.com>님이 작성:
 >>
->> * Qi Zheng <arch0.zheng@gmail.com> wrote:
+>> On Tue, Aug 11, 2020 at 08:21:23PM +0900, Daeho Jeong wrote:
+>>> Sure, I'll update the test condition as you said in the commit message.
+>>> FYI, the test is done with 16kb chunk and Pixel 3 (arm64) device.
 >>
->>> 1. The group_has_capacity() function is only called in
->>>     group_classify().
->>> 2. Before calling the group_has_capacity() function,
->>>     group_is_overloaded() will first judge the following
->>>     formula, if it holds, the group_classify() will directly
->>>     return the group_overloaded.
->>>
->>>     (sgs->group_capacity * imbalance_pct) <
->>>                          (sgs->group_runnable * 100)
->>>
->>> Therefore, when the group_has_capacity() is called, the
->>> probability that the above formalu holds is very small. Hint
->>> compilers about that.
->>>
->>> Signed-off-by: Qi Zheng <arch0.zheng@gmail.com>
->>> ---
->>>   kernel/sched/fair.c | 4 ++--
->>>   1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->>> index 2ba8f230feb9..9074fd5e23b2 100644
->>> --- a/kernel/sched/fair.c
->>> +++ b/kernel/sched/fair.c
->>> @@ -8234,8 +8234,8 @@ group_has_capacity(unsigned int imbalance_pct, 
->>> struct sg_lb_stats *sgs)
->>>       if (sgs->sum_nr_running < sgs->group_weight)
->>>           return true;
->>> -    if ((sgs->group_capacity * imbalance_pct) <
->>> -            (sgs->group_runnable * 100))
->>> +    if (unlikely((sgs->group_capacity * imbalance_pct) <
->>> +            (sgs->group_runnable * 100)))
->>>           return false;
+>> Yeah, anyway, it'd better to lock the freq and offline the little
+>> cores in your test as well (it'd make more sense). e.g. if 16k cluster
+
+I'm not against this commit, but could you please try to adjust cpufreq to
+fixed value and offline little or big core, so that we can supply fair test
+environment during test, I just wonder that in such environment, how much we
+can improve the performance with vm_map_ram().
+
+>> is applied, even all data is zeroed, the count of vmap/vm_map_ram
+>> isn't hugeous (and as you said, "sometimes, it has a very long delay",
+>> it's much like another scheduling concern as well).
 >>
->> Isn't the probability that this second check will match around 0%?
->>
->> I.e. wouldn't the right fix be to remove the duplicate check from
->> group_has_capacity(), because it's already been checked in
->> group_classify()? Maybe while leaving a comment in place?
+>> Anyway, I'm not against your commit but the commit message is a bit
+>> of unclear. At least, if you think that is really the case, I'm ok
+>> with that.
 >>
 >> Thanks,
+>> Gao Xiang
 >>
->>     Ingo
+>>>
+>>> Thanks,
+>>>
+>>> 2020ë…„ 8ì›” 11ì�¼ (í™”) ì˜¤í›„ 7:18, Gao Xiang <hsiangkao@redhat.com>ë‹˜ì�´ ìž‘ì„±:
+>>>>
+>>>> On Tue, Aug 11, 2020 at 06:33:26PM +0900, Daeho Jeong wrote:
+>>>>> Plus, when we use vmap(), vmap() normally executes in a short time
+>>>>> like vm_map_ram().
+>>>>> But, sometimes, it has a very long delay.
+>>>>>
+>>>>> 2020Ã«â€¦â€ž 8Ã¬â€ºâ€� 11Ã¬ï¿½Â¼ (Ã­â„¢â€�) Ã¬ËœÂ¤Ã­â€ºâ€ž 6:28, Daeho Jeong <daeho43@gmail.com>Ã«â€¹ËœÃ¬ï¿½Â´ Ã¬Å¾â€˜Ã¬â€žÂ±:
+>>>>>>
+>>>>>> Actually, as you can see, I use the whole zero data blocks in the test file.
+>>>>>> It can maximize the effect of changing virtual mapping.
+>>>>>> When I use normal files which can be compressed about 70% from the
+>>>>>> original file,
+>>>>>> The vm_map_ram() version is about 2x faster than vmap() version.
+>>>>
+>>>> What f2fs does is much similar to btrfs compression. Even if these
+>>>> blocks are all zeroed. In principle, the maximum compression ratio
+>>>> is determined (cluster sized blocks into one compressed block, e.g
+>>>> 16k cluster into one compressed block).
+>>>>
+>>>> So it'd be better to describe your configured cluster size (16k or
+>>>> 128k) and your hardware information in the commit message as well.
+>>>>
+>>>> Actually, I also tried with this patch as well on my x86 laptop just
+>>>> now with FIO (I didn't use zeroed block though), and I didn't notice
+>>>> much difference with turbo boost off and maxfreq.
+>>>>
+>>>> I'm not arguing this commit, just a note about this commit message.
+>>>>>>>>> 1048576000 bytes (0.9 G) copied, 9.146217 s, 109 M/s
+>>>>>>>>> 1048576000 bytes (0.9 G) copied, 9.997542 s, 100 M/s
+>>>>>>>>> 1048576000 bytes (0.9 G) copied, 10.109727 s, 99 M/s
+>>>>
+>>>> IMHO, the above number is much like decompressing in the arm64 little cores.
+>>>>
+>>>> Thanks,
+>>>> Gao Xiang
+>>>>
+>>>>
+>>>>>>
+>>>>>> 2020Ã«â€¦â€ž 8Ã¬â€ºâ€� 11Ã¬ï¿½Â¼ (Ã­â„¢â€�) Ã¬ËœÂ¤Ã­â€ºâ€ž 4:55, Chao Yu <yuchao0@huawei.com>Ã«â€¹ËœÃ¬ï¿½Â´ Ã¬Å¾â€˜Ã¬â€žÂ±:
+>>>>>>>
+>>>>>>> On 2020/8/11 15:15, Gao Xiang wrote:
+>>>>>>>> On Tue, Aug 11, 2020 at 12:37:53PM +0900, Daeho Jeong wrote:
+>>>>>>>>> From: Daeho Jeong <daehojeong@google.com>
+>>>>>>>>>
+>>>>>>>>> By profiling f2fs compression works, I've found vmap() callings are
+>>>>>>>>> bottlenecks of f2fs decompression path. Changing these with
+>>>>>>>>> vm_map_ram(), we can enhance f2fs decompression speed pretty much.
+>>>>>>>>>
+>>>>>>>>> [Verification]
+>>>>>>>>> dd if=/dev/zero of=dummy bs=1m count=1000
+>>>>>>>>> echo 3 > /proc/sys/vm/drop_caches
+>>>>>>>>> dd if=dummy of=/dev/zero bs=512k
+>>>>>>>>>
+>>>>>>>>> - w/o compression -
+>>>>>>>>> 1048576000 bytes (0.9 G) copied, 1.999384 s, 500 M/s
+>>>>>>>>> 1048576000 bytes (0.9 G) copied, 2.035988 s, 491 M/s
+>>>>>>>>> 1048576000 bytes (0.9 G) copied, 2.039457 s, 490 M/s
+>>>>>>>>>
+>>>>>>>>> - before patch -
+>>>>>>>>> 1048576000 bytes (0.9 G) copied, 9.146217 s, 109 M/s
+>>>>>>>>> 1048576000 bytes (0.9 G) copied, 9.997542 s, 100 M/s
+>>>>>>>>> 1048576000 bytes (0.9 G) copied, 10.109727 s, 99 M/s
+>>>>>>>>>
+>>>>>>>>> - after patch -
+>>>>>>>>> 1048576000 bytes (0.9 G) copied, 2.253441 s, 444 M/s
+>>>>>>>>> 1048576000 bytes (0.9 G) copied, 2.739764 s, 365 M/s
+>>>>>>>>> 1048576000 bytes (0.9 G) copied, 2.185649 s, 458 M/s
+>>>>>>>>
+>>>>>>>> Indeed, vmap() approach has some impact on the whole
+>>>>>>>> workflow. But I don't think the gap is such significant,
+>>>>>>>> maybe it relates to unlocked cpufreq (and big little
+>>>>>>>> core difference if it's on some arm64 board).
+>>>>>>>
+>>>>>>> Agreed,
+>>>>>>>
+>>>>>>> I guess there should be other reason causing the large performance
+>>>>>>> gap, scheduling, frequency, or something else.
+>>>>>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> _______________________________________________
+>>>>>>>> Linux-f2fs-devel mailing list
+>>>>>>>> Linux-f2fs-devel@lists.sourceforge.net
+>>>>>>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>>>>>>> .
+>>>>>>>>
+>>>>>
+>>>>
+>>>
 >>
-
-Hi,
-
-As Valentin and I discussed in the patch below, simply removing the
-check may not be completely harmless.
-
-	[PATCH]sched/fair: Remove the duplicate check from
-					group_has_capacity() :
-	-	if ((sgs->group_capacity * imbalance_pct) <
-	-			(sgs->group_runnable * 100))
-	-		return false;
-
-
-If sum_nr_running < group_weight, we won't evaluate it.
-If sum_nr_running > group_weight, we either won't call into
-   group_has_capacity() or we'll have checked it already in
-   group_overloaded().
-But in the case of sum_nr_running == group_weight, we can
-run to this check.
-
-Although I also think it is unlikely to cause the significant
-capacity pressure at the == case, but I'm not sure whether there
-are some special scenarios. such as some cpus in sg->cpumask are
-no longer active, or other scenarios?
-
-So adding the unlikely() in group_has_capacity() may be the safest
-way.
-
-Add Valentin Schneider <valentin.schneider@arm.com>.
-
-Yours,
-Qi Zheng
+> .
+> 
