@@ -2,154 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428E1242948
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C93242944
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbgHLM1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 08:27:00 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2597 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726722AbgHLM04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 08:26:56 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id DB8FA142F805B19C9470;
-        Wed, 12 Aug 2020 13:26:53 +0100 (IST)
-Received: from localhost (10.52.122.74) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 12 Aug
- 2020 13:26:53 +0100
-Date:   Wed, 12 Aug 2020 13:25:24 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Nicholas Piggin <npiggin@gmail.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arch@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "Zefan Li" <lizefan@huawei.com>
-Subject: Re: [PATCH v3 8/8] mm/vmalloc: Hugepage vmalloc mappings
-Message-ID: <20200812132524.000067a6@Huawei.com>
-In-Reply-To: <20200810022732.1150009-9-npiggin@gmail.com>
-References: <20200810022732.1150009-1-npiggin@gmail.com>
-        <20200810022732.1150009-9-npiggin@gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1727936AbgHLMZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 08:25:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727870AbgHLMZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 08:25:32 -0400
+Received: from quaco.ghostprotocols.net (179.176.8.134.dynamic.adsl.gvt.net.br [179.176.8.134])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31D5B207DA;
+        Wed, 12 Aug 2020 12:25:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597235131;
+        bh=UI6QttmYUs52ycmRXyjV+pRO3m48DPHMxikF/d/PHN4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=baKtVyheI3+muVcGZNmIRijpLcRQBw//J8dldbzDvqRSXv/D4ifQopjBwXlalKHH3
+         NAwll8c0JHtF2sS05hM/1cH+z6PzJoe7pAczOYUjiUjxoWjDLKkq42yQeRgvrqs1Ml
+         rLTBd9U/qa2Y7lXWFvZDRVlQUMBAmVrCjo7hgNMw=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 396EB403C6; Wed, 12 Aug 2020 09:25:29 -0300 (-03)
+Date:   Wed, 12 Aug 2020 09:25:29 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, kernel@axis.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf bench mem: Always memset source before memcpy
+Message-ID: <20200812122529.GH13995@kernel.org>
+References: <20200810133404.30829-1-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.122.74]
-X-ClientProxiedBy: lhreml728-chm.china.huawei.com (10.201.108.79) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200810133404.30829-1-vincent.whitchurch@axis.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 Aug 2020 12:27:32 +1000
-Nicholas Piggin <npiggin@gmail.com> wrote:
+Em Mon, Aug 10, 2020 at 03:34:04PM +0200, Vincent Whitchurch escreveu:
+> For memcpy, the source pages are memset to zero only when --cycles is
+> used.  This leads to wildly different results with or without --cycles,
+> since all sources pages are likely to be mapped to the same zero page
+> without explicit writes.
 
-> On platforms that define HAVE_ARCH_HUGE_VMAP and support PMD vmaps,
-> vmalloc will attempt to allocate PMD-sized pages first, before falling
-> back to small pages.
+Thanks, applied.
+
+- Arnaldo
+ 
+> Before this fix:
 > 
-> Allocations which use something other than PAGE_KERNEL protections are
-> not permitted to use huge pages yet, not all callers expect this (e.g.,
-> module allocations vs strict module rwx).
+> $ export cmd="./perf stat -e LLC-loads -- ./perf bench \
+>   mem memcpy -s 1024MB -l 100 -f default"
+> $ $cmd
 > 
-> This reduces TLB misses by nearly 30x on a `git diff` workload on a
-> 2-node POWER9 (59,800 -> 2,100) and reduces CPU cycles by 0.54%.
+>          2,935,826      LLC-loads
+>        3.821677452 seconds time elapsed
 > 
-> This can result in more internal fragmentation and memory overhead for a
-> given allocation, an option nohugevmap is added to disable at boot.
+> $ $cmd --cycles
 > 
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Hi Nicholas,
-
-Busy afternoon, but a possible point of interest in line in the meantime.
-
-
-...
-
-> @@ -2701,22 +2760,45 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
->  			pgprot_t prot, unsigned long vm_flags, int node,
->  			const void *caller)
->  {
-> -	struct vm_struct *area;
-> +	struct vm_struct *area = NULL;
->  	void *addr;
->  	unsigned long real_size = size;
-> +	unsigned long real_align = align;
-> +	unsigned int shift = PAGE_SHIFT;
->  
->  	size = PAGE_ALIGN(size);
->  	if (!size || (size >> PAGE_SHIFT) > totalram_pages())
->  		goto fail;
->  
-> -	area = __get_vm_area_node(real_size, align, VM_ALLOC | VM_UNINITIALIZED |
-> +	if (vmap_allow_huge && (pgprot_val(prot) == pgprot_val(PAGE_KERNEL))) {
-> +		unsigned long size_per_node;
-> +
-> +		/*
-> +		 * Try huge pages. Only try for PAGE_KERNEL allocations,
-> +		 * others like modules don't yet expect huge pages in
-> +		 * their allocations due to apply_to_page_range not
-> +		 * supporting them.
-> +		 */
-> +
-> +		size_per_node = size;
-> +		if (node == NUMA_NO_NODE)
-> +			size_per_node /= num_online_nodes();
-> +		if (size_per_node >= PMD_SIZE)
-> +			shift = PMD_SHIFT;
-> +	}
-> +
-> +again:
-> +	align = max(real_align, 1UL << shift);
-> +	size = ALIGN(real_size, align);
-
-So my suspicion is that the issue on arm64 is related to this.
-In the relevant call path, align is 32K whilst the size is 16K
-
-Previously I don't think we force size to be a multiple of align.
-
-I think this results in nr_pages being double what it was before.
-
-
-> +
-> +	area = __get_vm_area_node(size, align, VM_ALLOC | VM_UNINITIALIZED |
->  				vm_flags, start, end, node, gfp_mask, caller);
->  	if (!area)
->  		goto fail;
->  
-> -	addr = __vmalloc_area_node(area, gfp_mask, prot, node);
-> +	addr = __vmalloc_area_node(area, gfp_mask, prot, shift, node);
->  	if (!addr)
-> -		return NULL;
-> +		goto fail;
->  
->  	/*
->  	 * In this function, newly allocated vm_struct has VM_UNINITIALIZED
-> @@ -2730,8 +2812,16 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
->  	return addr;
->  
->  fail:
-> -	warn_alloc(gfp_mask, NULL,
-> +	if (shift > PAGE_SHIFT) {
-> +		shift = PAGE_SHIFT;
-> +		goto again;
-> +	}
-> +
-> +	if (!area) {
-> +		/* Warn for area allocation, page allocations already warn */
-> +		warn_alloc(gfp_mask, NULL,
->  			  "vmalloc: allocation failure: %lu bytes", real_size);
-> +	}
->  	return NULL;
+>        217,533,436      LLC-loads
+>        8.616725985 seconds time elapsed
+> 
+> After this fix:
+> 
+> $ $cmd
+> 
+>        214,459,686      LLC-loads
+>        8.674301124 seconds time elapsed
+> 
+> $ $cmd --cycles
+> 
+>        214,758,651      LLC-loads
+>        8.644480006 seconds time elapsed
+> 
+> Fixes: 47b5757bac03c3387c ("perf bench mem: Move boilerplate memory allocation to the infrastructure")
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> ---
+>  tools/perf/bench/mem-functions.c | 21 +++++++++++----------
+>  1 file changed, 11 insertions(+), 10 deletions(-)
+> 
+> diff --git a/tools/perf/bench/mem-functions.c b/tools/perf/bench/mem-functions.c
+> index 9235b76501be..19d45c377ac1 100644
+> --- a/tools/perf/bench/mem-functions.c
+> +++ b/tools/perf/bench/mem-functions.c
+> @@ -223,12 +223,8 @@ static int bench_mem_common(int argc, const char **argv, struct bench_mem_info *
+>  	return 0;
 >  }
 >  
+> -static u64 do_memcpy_cycles(const struct function *r, size_t size, void *src, void *dst)
+> +static void memcpy_prefault(memcpy_t fn, size_t size, void *src, void *dst)
+>  {
+> -	u64 cycle_start = 0ULL, cycle_end = 0ULL;
+> -	memcpy_t fn = r->fn.memcpy;
+> -	int i;
+> -
+>  	/* Make sure to always prefault zero pages even if MMAP_THRESH is crossed: */
+>  	memset(src, 0, size);
+>  
+> @@ -237,6 +233,15 @@ static u64 do_memcpy_cycles(const struct function *r, size_t size, void *src, vo
+>  	 * to not measure page fault overhead:
+>  	 */
+>  	fn(dst, src, size);
+> +}
+> +
+> +static u64 do_memcpy_cycles(const struct function *r, size_t size, void *src, void *dst)
+> +{
+> +	u64 cycle_start = 0ULL, cycle_end = 0ULL;
+> +	memcpy_t fn = r->fn.memcpy;
+> +	int i;
+> +
+> +	memcpy_prefault(fn, size, src, dst);
+>  
+>  	cycle_start = get_cycles();
+>  	for (i = 0; i < nr_loops; ++i)
+> @@ -252,11 +257,7 @@ static double do_memcpy_gettimeofday(const struct function *r, size_t size, void
+>  	memcpy_t fn = r->fn.memcpy;
+>  	int i;
+>  
+> -	/*
+> -	 * We prefault the freshly allocated memory range here,
+> -	 * to not measure page fault overhead:
+> -	 */
+> -	fn(dst, src, size);
+> +	memcpy_prefault(fn, size, src, dst);
+>  
+>  	BUG_ON(gettimeofday(&tv_start, NULL));
+>  	for (i = 0; i < nr_loops; ++i)
+> -- 
+> 2.25.1
+> 
 
+-- 
 
+- Arnaldo
