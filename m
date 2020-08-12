@@ -2,90 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDCC242B06
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7408242B0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgHLONL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 10:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbgHLONI (ORCPT
+        id S1726716AbgHLONT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 10:13:19 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:27303 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726634AbgHLONR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 10:13:08 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D25CC061383;
-        Wed, 12 Aug 2020 07:13:08 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id c15so2164800wrs.11;
-        Wed, 12 Aug 2020 07:13:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UvE1ht+RylFhXClvRKXTyvDZh96h1nFlKqOy/8yVzKg=;
-        b=JY9CLFIFB4EDUtuTzUzgEJxDFErqDCHEjfAqydSvu7gRvVzwxL4BfF+0EeP3ImQPEw
-         PfO8zd1FYGhyrTBsfEGWgnnP6/8dXXe80hY/x2bShajcr5PA/5Ha/cPev6Uyd0OsSxU0
-         Yq04hDOMF1UK/YSz8wdIHInbAK+JEGAKOumT0rUGh/NuAfV5Ge7Ywljj51itx8AdDD/3
-         gTEnt0kcpT3MluvFMR1KqsRdmjzz2dxUCtUwQbKNZijpAWk7Xl9bHenBVG7wneNeGLpQ
-         eKwGFTh5GYWjOhH+ki2zO+5YSmgFyUabHwTCVKtHDrYrEuGKpi9b65Uow4++4Q5L0NN6
-         b20A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UvE1ht+RylFhXClvRKXTyvDZh96h1nFlKqOy/8yVzKg=;
-        b=p/qXpamzJlIng28s4EY6Dk8kU3PKkM/STTaEiDz/mRJwc5tqq6fEfvrwOO30UtQyQu
-         0oALNWzzuaVoC9cUksgDnGVo8v+/qhpOM3zv/Gzbg4fFbfNdPLA8xPED23ujgZphuktn
-         4BspwXnmstydu9ixne4iSMCO0U/h1nPUzSFeyCIdz9rwpSMl0D/zTwLtK8xEkK8ZX6iN
-         1Gos05BgaD7h4f20mlD22pBu+oxGuaIVe7cxoabuYgudrKbm+eIVmbrzYFygsdCn/3gT
-         h0TFuSNJfMWElPZIhKQCFW0Y+dylWbcHpJJ/6crIMQx6E46QRO2YVFbU/mFLLsFdmqOd
-         7htA==
-X-Gm-Message-State: AOAM531nYqjU3DMuRzQUN1YAliHzbf8QgOp82U3UWckZy+6Gx2c1Cgzy
-        yGVETbRbneTpHCQ5+2yNMU8=
-X-Google-Smtp-Source: ABdhPJx90Xzz4nH94+2XW8uPv8t+WS4PUrtHnxAD8MsaUAwAUcmxhICEH0amrsPs2qdD+0QvOZ1sqQ==
-X-Received: by 2002:adf:82f6:: with SMTP id 109mr37276406wrc.25.1597241587422;
-        Wed, 12 Aug 2020 07:13:07 -0700 (PDT)
-Received: from localhost.localdomain (cpc83647-brig20-2-0-cust926.3-3.cable.virginm.net. [82.19.195.159])
-        by smtp.gmail.com with ESMTPSA id g14sm3818331wmk.37.2020.08.12.07.13.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Aug 2020 07:13:07 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-To:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Alex Dewar <alex.dewar90@gmail.com>
-Subject: [PATCH 2/2] nfsd: Fix typo in comment
-Date:   Wed, 12 Aug 2020 15:12:52 +0100
-Message-Id: <20200812141252.21059-2-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200812141252.21059-1-alex.dewar90@gmail.com>
-References: <20200812141252.21059-1-alex.dewar90@gmail.com>
+        Wed, 12 Aug 2020 10:13:17 -0400
+X-Originating-IP: 91.224.148.103
+Received: from localhost.localdomain (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 1DEAA24000C;
+        Wed, 12 Aug 2020 14:13:12 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>,
+        linux-i3c@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>
+Cc:     Nicolas Pitre <nico@fluxnic.net>,
+        Rajeev Huralikoppi <rajeev.huralikoppi@silvaco.com>,
+        Conor Culhane <conor.culhane@silvaco.com>,
+        <linux-kernel@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v2 1/4] dt-bindings: Add vendor prefix for Silvaco
+Date:   Wed, 12 Aug 2020 16:13:09 +0200
+Message-Id: <20200812141312.3331-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typos in nfs4xdr.c.
+Silvaco, Inc. is an EDA provider of software tools used for process
+and device development and for analog/mixed-signal, power IC and
+memory design [1].
 
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+[1] https://www.silvaco.com/company/profile/profile.html
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- fs/nfsd/nfs4xdr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
-index 1a0341fd80f9a..3db789139a71f 100644
---- a/fs/nfsd/nfs4xdr.c
-+++ b/fs/nfsd/nfs4xdr.c
-@@ -4828,7 +4828,7 @@ nfsd4_encode_listxattrs(struct nfsd4_compoundres *resp, __be32 nfserr,
- 		slen = strlen(sp);
- 
- 		/*
--		 * Check if this a user. attribute, skip it if not.
-+		 * Check if this is a user attribute, skip it if not.
- 		 */
- 		if (strncmp(sp, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN))
- 			goto contloop;
+Changes in v2:
+* Change the prefix 'svc,' -> 'silvaco,'.
+
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index f3d847832fdc..df780a2a5b78 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -1014,6 +1014,8 @@ patternProperties:
+     description: Shenzhen Sunchip Technology Co., Ltd
+   "^SUNW,.*":
+     description: Sun Microsystems, Inc
++  "^silvaco,.*":
++    description: Silvaco, Inc.
+   "^swir,.*":
+     description: Sierra Wireless
+   "^syna,.*":
 -- 
-2.28.0
+2.20.1
 
