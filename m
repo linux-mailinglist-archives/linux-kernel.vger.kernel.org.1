@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14292242D3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 18:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD237242D47
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 18:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgHLQaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 12:30:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48754 "EHLO mail.kernel.org"
+        id S1726922AbgHLQaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 12:30:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726777AbgHLQaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 12:30:11 -0400
+        id S1726809AbgHLQaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 12:30:13 -0400
 Received: from localhost.localdomain (unknown [194.230.155.117])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BBCC2080C;
-        Wed, 12 Aug 2020 16:30:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BAB1C20838;
+        Wed, 12 Aug 2020 16:30:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597249811;
-        bh=PYY8uXXlmytuiAxIl2R7A+XdZTSPkLshPeJXisdTWNM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YCwTRdCE2hn6nlGrHVLbyrJMJwRyiNiePioTtL7ih37L8H0uW8PKuV2y5NgcT9Hzn
-         AcDYVBigxBullrXTx+2BP7jBorEvQfGD/cCLUT61DJe3uxk/ubNZQAemmOie68MtYm
-         8rwQO8OmjCzt3cHbRptJesm6hzMiYLDv2PVWDt9w=
+        s=default; t=1597249813;
+        bh=aRNIdyFGDEVq5YbckPNv6Oi2knBVAOE2NwnDD8n86kQ=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=hckRolMk/frqldIVx8MbphEyY0rtqnyRrksVVE7bOBIdVDRfz4utioX/h7SYLWEpT
+         iXPzSwHW9dYXL3VkggOrF4FXFU2EmSbjViDAxEpzNB4BwKGZaJw5KPVQpKhRz/c2rp
+         ub+mRvN5jkbe1mzAN0A94RtUrx/zDVdNDHWinWHU=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
         Chanwoo Choi <cw00.choi@samsung.com>,
@@ -30,10 +30,9 @@ To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Vijai Kumar K <vijaikumar.kanagarajan@gmail.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: [PATCH 04/11] extcon: ptn5150: Fix usage of atomic GPIO with sleeping GPIO chips
-Date:   Wed, 12 Aug 2020 18:29:51 +0200
-Message-Id: <20200812162958.6180-4-krzk@kernel.org>
+Subject: [PATCH 05/11] extcon: ptn5150: Use generic "interrupts" property
+Date:   Wed, 12 Aug 2020 18:29:52 +0200
+Message-Id: <20200812162958.6180-5-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200812162958.6180-1-krzk@kernel.org>
 References: <20200812162958.6180-1-krzk@kernel.org>
@@ -42,52 +41,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver uses atomic version of gpiod_set_value() without any real
-reason.  It is called in a workqueue under mutex so it could sleep
-there.  Changing it to "can_sleep" flavor allows to use the driver with
-all GPIO chips.
+Interrupts do not have to be always GPIO based so instead of expecting
+"int-gpios" property and converting the GPIO to an interrupt, just
+accept any interrupt via generic "interrupts" property.
 
-Fixes: 4ed754de2d66 ("extcon: Add support for ptn5150 extcon driver")
-Cc: <stable@vger.kernel.org>
+Keep support for old "int-gpios" for backware compatibility.
+
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/extcon/extcon-ptn5150.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/extcon/extcon-ptn5150.c | 33 ++++++++++++++++++---------------
+ 1 file changed, 18 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/extcon/extcon-ptn5150.c b/drivers/extcon/extcon-ptn5150.c
-index d1c997599390..5f5252752644 100644
+index 5f5252752644..12e52ddbd77e 100644
 --- a/drivers/extcon/extcon-ptn5150.c
 +++ b/drivers/extcon/extcon-ptn5150.c
-@@ -127,7 +127,7 @@ static void ptn5150_irq_work(struct work_struct *work)
- 			case PTN5150_DFP_ATTACHED:
- 				extcon_set_state_sync(info->edev,
- 						EXTCON_USB_HOST, false);
--				gpiod_set_value(info->vbus_gpiod, 0);
-+				gpiod_set_value_cansleep(info->vbus_gpiod, 0);
- 				extcon_set_state_sync(info->edev, EXTCON_USB,
- 						true);
- 				break;
-@@ -138,9 +138,9 @@ static void ptn5150_irq_work(struct work_struct *work)
- 					PTN5150_REG_CC_VBUS_DETECTION_MASK) >>
- 					PTN5150_REG_CC_VBUS_DETECTION_SHIFT);
- 				if (vbus)
--					gpiod_set_value(info->vbus_gpiod, 0);
-+					gpiod_set_value_cansleep(info->vbus_gpiod, 0);
- 				else
--					gpiod_set_value(info->vbus_gpiod, 1);
-+					gpiod_set_value_cansleep(info->vbus_gpiod, 1);
+@@ -239,11 +239,6 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c,
  
- 				extcon_set_state_sync(info->edev,
- 						EXTCON_USB_HOST, true);
-@@ -156,7 +156,7 @@ static void ptn5150_irq_work(struct work_struct *work)
- 					EXTCON_USB_HOST, false);
- 			extcon_set_state_sync(info->edev,
- 					EXTCON_USB, false);
--			gpiod_set_value(info->vbus_gpiod, 0);
-+			gpiod_set_value_cansleep(info->vbus_gpiod, 0);
- 		}
+ 	info->dev = &i2c->dev;
+ 	info->i2c = i2c;
+-	info->int_gpiod = devm_gpiod_get(&i2c->dev, "int", GPIOD_IN);
+-	if (IS_ERR(info->int_gpiod)) {
+-		dev_err(dev, "failed to get INT GPIO\n");
+-		return PTR_ERR(info->int_gpiod);
+-	}
+ 	info->vbus_gpiod = devm_gpiod_get(&i2c->dev, "vbus", GPIOD_IN);
+ 	if (IS_ERR(info->vbus_gpiod)) {
+ 		dev_err(dev, "failed to get VBUS GPIO\n");
+@@ -267,22 +262,30 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
  	}
  
+-	if (info->int_gpiod) {
++	if (i2c->irq > 0) {
++		info->irq = i2c->irq;
++	} else {
++		info->int_gpiod = devm_gpiod_get(&i2c->dev, "int", GPIOD_IN);
++		if (IS_ERR(info->int_gpiod)) {
++			dev_err(dev, "failed to get INT GPIO\n");
++			return PTR_ERR(info->int_gpiod);
++		}
++
+ 		info->irq = gpiod_to_irq(info->int_gpiod);
+ 		if (info->irq < 0) {
+ 			dev_err(dev, "failed to get INTB IRQ\n");
+ 			return info->irq;
+ 		}
++	}
+ 
+-		ret = devm_request_threaded_irq(dev, info->irq, NULL,
+-						ptn5150_irq_handler,
+-						IRQF_TRIGGER_FALLING |
+-						IRQF_ONESHOT,
+-						i2c->name, info);
+-		if (ret < 0) {
+-			dev_err(dev, "failed to request handler for INTB IRQ\n");
+-			return ret;
+-		}
++	ret = devm_request_threaded_irq(dev, info->irq, NULL,
++					ptn5150_irq_handler,
++					IRQF_TRIGGER_FALLING |
++					IRQF_ONESHOT,
++					i2c->name, info);
++	if (ret < 0) {
++		dev_err(dev, "failed to request handler for INTB IRQ\n");
++		return ret;
+ 	}
+ 
+ 	/* Allocate extcon device */
 -- 
 2.17.1
 
