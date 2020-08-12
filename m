@@ -2,154 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D7724313A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 00:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2ADA24314C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 01:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbgHLW5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 18:57:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49024 "EHLO mail.kernel.org"
+        id S1726622AbgHLXFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 19:05:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726673AbgHLW5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 18:57:37 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        id S1726533AbgHLXFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 19:05:21 -0400
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E65E622BEA;
-        Wed, 12 Aug 2020 22:57:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B05822BF3;
+        Wed, 12 Aug 2020 23:05:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597273057;
-        bh=tdQj/IvKGyp501KGFNfZ9iZJnP8uG6XPd6pg3TN+CVQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n4xrOQ3L3QLUzlvrII896+fn+z0DDwSmuYV/YG0cT1ps86cUwhykTC2GSifVJIuc/
-         N4CwVr8Mzey4/mtIVnmAh/b4EdWb5eH6qQvH5589fjlm5h8V/ts3jKhar/Z0vmjO8h
-         pnVrvWuy60B/IeDlkaZAHtAcpGpxe9fSWZ5CSNjY=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        elver@google.com, dvyukov@google.com,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 12/12] rcu: Report QS for outermost PREEMPT=n rcu_read_unlock() for strict GPs
-Date:   Wed, 12 Aug 2020 15:57:32 -0700
-Message-Id: <20200812225732.20068-12-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200812225632.GA19759@paulmck-ThinkPad-P72>
-References: <20200812225632.GA19759@paulmck-ThinkPad-P72>
+        s=default; t=1597273520;
+        bh=6kwxpshrOlbOHxWnmXC6+dWtt2L5X/Drj58h8rpdMCA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pXDZRt76CPWxVlpilBeAf66pO/Ch1+UOaSOgdUpIGMcw2xAS2mFHBEgkKJVucyrd/
+         hFrdQmO7EEU0DOv8a5XHHMAntvFEpH8ijK+mCysryubzOS2R2XGypW54K9swm6SsIs
+         b7zU39V5JMU64Uhe2oipgDLWWHGgSe5VXnIpigps=
+Received: by mail-oi1-f170.google.com with SMTP id u63so3384377oie.5;
+        Wed, 12 Aug 2020 16:05:20 -0700 (PDT)
+X-Gm-Message-State: AOAM531IZBzkm9SW7u4Ll0dz2BzE1TEIB7GJrdP7SZFkd9Fl6578K6/D
+        TZuN3gv5Y+jYhGEA04MJz9gQHCjYIc3va2d6mQ==
+X-Google-Smtp-Source: ABdhPJx2qQebZiNBPQzgE1fpdypeYG9ycnPVX3JxYluiX5nbkNkxeZlpxpCsMAonDMWnL7JIOVI286FePABwvHucHl8=
+X-Received: by 2002:aca:bb82:: with SMTP id l124mr1235268oif.106.1597273520003;
+ Wed, 12 Aug 2020 16:05:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200812203618.2656699-1-robh@kernel.org> <f5dedf2d8d8057de3eaa2f9126f44cebb0653b09.camel@perches.com>
+In-Reply-To: <f5dedf2d8d8057de3eaa2f9126f44cebb0653b09.camel@perches.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 12 Aug 2020 17:05:08 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKBzqMHMMRwBJUjomxOpZAop_+TXBjLCb6ntwZzNMy=3Q@mail.gmail.com>
+Message-ID: <CAL_JsqKBzqMHMMRwBJUjomxOpZAop_+TXBjLCb6ntwZzNMy=3Q@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: Whitespace clean-ups in schema files
+To:     Joe Perches <joe@perches.com>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        Linux HWMON List <linux-hwmon@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        Linux Input <linux-input@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        MTD Maling List <linux-mtd@lists.infradead.org>,
+        netdev <netdev@vger.kernel.org>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Wed, Aug 12, 2020 at 4:32 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Wed, 2020-08-12 at 14:36 -0600, Rob Herring wrote:
+> > Clean-up incorrect indentation, extra spaces, long lines, and missing
+> > EOF newline in schema files. Most of the clean-ups are for list
+> > indentation which should always be 2 spaces more than the preceding
+>                                      ^
+> > keyword.
 
-The CONFIG_PREEMPT=n instance of rcu_read_unlock is even more
-aggressively than that of CONFIG_PREEMPT=y in deferring reporting
-quiescent states to the RCU core.  This is just what is wanted in normal
-use because it reduces overhead, but the resulting delay is not what
-is wanted for kernels built with CONFIG_RCU_STRICT_GRACE_PERIOD=y.
-This commit therefore adds an rcu_read_unlock_strict() function that
-checks for exceptional conditions, and reports the newly started
-quiescent state if it is safe to do so, also doing a spin-delay if
-requested via rcutree.rcu_unlock_delay.  This commit also adds a call
-to rcu_read_unlock_strict() from the CONFIG_PREEMPT=n instance of
-__rcu_read_unlock().
+keyword is the key part...
 
-[ paulmck: Fixed bug located by kernel test robot <lkp@intel.com> ]
-Reported-by Jann Horn <jannh@google.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- include/linux/rcupdate.h |  7 +++++++
- kernel/rcu/tree.c        |  6 ++++++
- kernel/rcu/tree_plugin.h | 23 +++++++++++++++++------
- 3 files changed, 30 insertions(+), 6 deletions(-)
+> []
+> > diff --git a/Documentation/devicetree/bindings/arm/arm,integrator.yaml b/Documentation/devicetree/bindings/arm/arm,integrator.yaml
+> > index 192ded470e32..f0daf990e077 100644
+> > --- a/Documentation/devicetree/bindings/arm/arm,integrator.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/arm,integrator.yaml
+> > @@ -67,9 +67,9 @@ patternProperties:
+> >        compatible:
+> >          items:
+> >            - enum:
+> > -            - arm,integrator-ap-syscon
+> > -            - arm,integrator-cp-syscon
+> > -            - arm,integrator-sp-syscon
+> > +              - arm,integrator-ap-syscon
+> > +              - arm,integrator-cp-syscon
+> > +              - arm,integrator-sp-syscon
+>
+> Confused a bit here.
+>           - enum:
+>         10 spaces to dash
+> old line:
+>             - arm,integrator-ap-syscon
+>         12 spaces to dash
+> new line:
+>               - arm,integrator-ap-syscon
+>         14 spaces to dash
+>
+> Is it supposed to be 2 spaces more than the preceding line
+> or 4 more?
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index b47d6b6..7c1ceff 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -55,6 +55,12 @@ void __rcu_read_unlock(void);
- 
- #else /* #ifdef CONFIG_PREEMPT_RCU */
- 
-+#ifdef CONFIG_TINY_RCU
-+#define rcu_read_unlock_strict() do { } while (0)
-+#else
-+void rcu_read_unlock_strict(void);
-+#endif
-+
- static inline void __rcu_read_lock(void)
- {
- 	preempt_disable();
-@@ -63,6 +69,7 @@ static inline void __rcu_read_lock(void)
- static inline void __rcu_read_unlock(void)
- {
- 	preempt_enable();
-+	rcu_read_unlock_strict();
- }
- 
- static inline int rcu_preempt_depth(void)
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index ac37343..78852ef 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -164,6 +164,12 @@ module_param(gp_init_delay, int, 0444);
- static int gp_cleanup_delay;
- module_param(gp_cleanup_delay, int, 0444);
- 
-+// Add delay to rcu_read_unlock() for strict grace periods.
-+static int rcu_unlock_delay;
-+#ifdef CONFIG_RCU_STRICT_GRACE_PERIOD
-+module_param(rcu_unlock_delay, int, 0444);
-+#endif
-+
- /*
-  * This rcu parameter is runtime-read-only. It reflects
-  * a minimum allowed number of objects which can be cached
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 25c9ee4..0881aef 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -430,12 +430,6 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp)
- 	return !list_empty(&rnp->blkd_tasks);
- }
- 
--// Add delay to rcu_read_unlock() for strict grace periods.
--static int rcu_unlock_delay;
--#ifdef CONFIG_RCU_STRICT_GRACE_PERIOD
--module_param(rcu_unlock_delay, int, 0444);
--#endif
--
- /*
-  * Report deferred quiescent states.  The deferral time can
-  * be quite short, for example, in the case of the call from
-@@ -785,6 +779,23 @@ dump_blkd_tasks(struct rcu_node *rnp, int ncheck)
- #else /* #ifdef CONFIG_PREEMPT_RCU */
- 
- /*
-+ * If strict grace periods are enabled, and if the calling
-+ * __rcu_read_unlock() marks the beginning of a quiescent state, immediately
-+ * report that quiescent state and, if requested, spin for a bit.
-+ */
-+void rcu_read_unlock_strict(void)
-+{
-+	struct rcu_data *rdp;
-+
-+	if (!IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ||
-+	   irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
-+		return;
-+	rdp = this_cpu_ptr(&rcu_data);
-+	rcu_report_qs_rdp(rdp->cpu, rdp);
-+	udelay(rcu_unlock_delay);
-+}
-+
-+/*
-  * Tell them what RCU they are running.
-  */
- static void __init rcu_bootup_announce(void)
--- 
-2.9.5
+If the preceding line is a list entry (i.e. starts with '-'), then
+it's 4 more spaces. It's always 2 more spaces than the preceding
+keyword start (aka json-schema vocabulary).
 
+Arguably, this style is a bit inconsistent in that the '-' counts
+toward as indentation of the current line, but not the preceding line.
+However, I think this style is a bit less error prone and easier to
+review. With the other style (always N more spaces) it's harder to
+distinguish lists vs. dicts. For example, you can have something like
+this:
+
+- key:
+  - foo
+  - bar
+
+- key:
+    foo
+    bar
+
+- key:
+  - foo
+    bar
+
+All 3 of these could be valid. Which one was intended? (Can't really
+tell here, but you can with actual DT schema.)
+
+Rob
