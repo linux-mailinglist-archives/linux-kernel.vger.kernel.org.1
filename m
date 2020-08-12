@@ -2,196 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB63242D77
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 18:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1363C242D7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 18:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgHLQjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 12:39:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45672 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725872AbgHLQjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 12:39:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9F277ACB0;
-        Wed, 12 Aug 2020 16:39:30 +0000 (UTC)
-Date:   Wed, 12 Aug 2020 18:39:08 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: POC: Alternative solution: Re: [PATCH 0/4] printk: reimplement
- LOG_CONT handling
-Message-ID: <20200812163908.GH12903@alley>
-References: <20200717234818.8622-1-john.ogness@linutronix.de>
- <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
- <87blkcanps.fsf@jogness.linutronix.de>
- <20200811160551.GC12903@alley>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200811160551.GC12903@alley>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726918AbgHLQkJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 12 Aug 2020 12:40:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59809 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726510AbgHLQkE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 12:40:04 -0400
+Received: from mail-pg1-f199.google.com ([209.85.215.199])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1k5tnF-0006GB-DC
+        for linux-kernel@vger.kernel.org; Wed, 12 Aug 2020 16:40:01 +0000
+Received: by mail-pg1-f199.google.com with SMTP id 36so1981300pgz.18
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 09:40:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=6Ji1lqucG/grb2OVN+O0IrjUWDOjIPmMeJi8EGBOR3U=;
+        b=Y4JbbOJK3/oI7lFKWIsUx+kIuTB6m186iEH0W3QajOttOeLQj+w0dJ5aR4lafw5BOE
+         enJ3+jbxRaJa/SBlK9hyeFPdFHeApbNrh+Gxv/XpikBRScnxZ1SVoPdCvVzOTJcLAhnK
+         mURmzvTqrWoE1Gm22vbOOFWqflUSvpAhRxn7W5iHxSp7zg36y1XjXu5eeHnKxz1xpkBW
+         auIkYC7vZo+CgQnqjGwzfq/Le8rpVFT7Zc+5vqPtqUAJn00yZvsj9MkAsrV/sSIIg4iE
+         SS/3l/XuUo4XWCXE3SEWwDbyd8+cNsii7BoN36kGjqveYNueQDY7V+fuy822NHPqSNjF
+         KPbQ==
+X-Gm-Message-State: AOAM532BKmHN1VXn7gys1p9hZX6jtE5CAZtL1feeHgY1A9fWtJl01FkP
+        ic24WmaAX2tjAHhd2QndVIOZQdVeQULvNZPfZs4GqwEts6qJP3WnLYolL78qYI6kTDc30nHYtuf
+        0tICWd2NumhDRmZFgIriYc0FFlsdCFWjJPqzfKYdpaw==
+X-Received: by 2002:a17:90b:817:: with SMTP id bk23mr886008pjb.46.1597250400073;
+        Wed, 12 Aug 2020 09:40:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw53UL6r2FJ490XaYZR/YirtLM+MEb+vxIbXVyQDwdw7BkTzweu8CBj8oB5aCzPKtgJexKnhA==
+X-Received: by 2002:a17:90b:817:: with SMTP id bk23mr885980pjb.46.1597250399735;
+        Wed, 12 Aug 2020 09:39:59 -0700 (PDT)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id p127sm2835148pfb.17.2020.08.12.09.39.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 12 Aug 2020 09:39:59 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH] ALSA: hda/hdmi: Use force connectivity quirk on another
+ HP desktop
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <s5ho8nfx3v9.wl-tiwai@suse.de>
+Date:   Thu, 13 Aug 2020 00:39:56 +0800
+Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Nikhil Mahale <nmahale@nvidia.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Aaron Plattner <aplattner@nvidia.com>,
+        Harsha Priya <harshapriya.n@intel.com>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <0466883E-8F02-4226-B153-F34558FC3A4A@canonical.com>
+References: <20200811095336.32396-1-kai.heng.feng@canonical.com>
+ <44573652-9ECF-4EC5-A234-DBB21FC90CC7@canonical.com>
+ <s5ho8nfx3v9.wl-tiwai@suse.de>
+To:     Takashi Iwai <tiwai@suse.de>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2020-08-11 18:05:51, Petr Mladek wrote:
-> On Sat 2020-07-18 16:48:55, John Ogness wrote:
-> > On 2020-07-17, Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> > > Make sure you test the case of "fast concurrent readers". The last
-> > > time we did things like this, it was a disaster, because a concurrent
-> > > reader would see and return the _incomplete_ line, and the next entry
-> > > was still being generated on another CPU.
-> > >
-> > > The reader would then decide to return that incomplete line, because
-> > > it had something.
-> > >
-> > > And while in theory this could then be handled properly in user space,
-> > > in practice it wasn't. So you'd see a lot of logging tools that would
-> > > then report all those continuations as separate log events.
-> > >
-> > > Which is the whole point of LOG_CONT - for that *not* to happen.
-> > 
-> > I expect this is handled correctly since the reader is not given any
-> > parts until a full line is ready, but I will put more focus on testing
-> > this to make sure. Thanks for the regression and testing tips.
+
+
+> On Aug 12, 2020, at 23:47, Takashi Iwai <tiwai@suse.de> wrote:
 > 
-> Hmm, the current patchset has different problem. The continuation
-> pieces are correctly passed as a single lines. But empty line is
-> printed for each unused sequence number to avoid warnings about
-> missed messages in journactl. It looks like:
+> On Wed, 12 Aug 2020 17:43:27 +0200,
+> Kai-Heng Feng wrote:
+>> 
+>> Hi,
+>> 
+>>> On Aug 11, 2020, at 17:53, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
+>>> 
+>>> There's another HP desktop has buggy BIOS which flags the Port
+>>> Connectivity bit as no connection.
+>>> 
+>>> Apply force connectivity quirk to enable DP/HDMI audio.
+>>> 
+>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>> 
+>> I guess this patch was omitted as well...
 > 
-> I am afraid that the only working solution is to store all pieces
-> in a single lockless transaction. I think that John already
-> proposed using 2nd small lockless buffer for this. The problem
-> might be how to synchronize flushing the pieces into the final
-> buffer.
+> Not omitted but applied to a wrong internal branch, sorry.
+> Now I rebased to the proper branch and pushed out.
 
-Do not panic! It might look scary. But I am less scared
-after I wrote some pieces of the pseudo code.
+Thanks a lot!
 
-So, I have one crazy idea to add one more state bit so that we
-could have:
+Kai-Heng
 
-  + committed: set when the data are written into the data ring.
-  + final: set when the data block could not longer get reopened
-  + reuse: set when the desctiptor/data block could get reused
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+>> 
+>> Kai-Heng
+>> 
+>>> ---
+>>> sound/pci/hda/patch_hdmi.c | 1 +
+>>> 1 file changed, 1 insertion(+)
+>>> 
+>>> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+>>> index 4bbd12d3b1b5..b8c8490e568b 100644
+>>> --- a/sound/pci/hda/patch_hdmi.c
+>>> +++ b/sound/pci/hda/patch_hdmi.c
+>>> @@ -1863,6 +1863,7 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
+>>> }
+>>> 
+>>> static const struct snd_pci_quirk force_connect_list[] = {
+>>> +	SND_PCI_QUIRK(0x103c, 0x870f, "HP", 1),
+>>> 	SND_PCI_QUIRK(0x103c, 0x871a, "HP", 1),
+>>> 	{}
+>>> };
+>>> -- 
+>>> 2.17.1
+>>> 
+>> 
 
-
-"final" bit will define when the descriptor could not longer
-get reopened (cleared committed bit) and the data block could
-not get extended.
-
-The logic would be the following:
-
-bool prb_reserve() {
-
-	desc = try_reopen_desc(seq);
-	if (desc) {
-		text_buf = data_alloc_continuous();
-		if (text_buf)
-			goto success;
-		else
-			/* commit the reopened desc back again */
-			prb_commit(desc);
-	}
-
-	/* Otherwise, do as before */
-	desc = desc_reserve();
-	if (!desc)
-		goto fail;
-
-	text_buf = data_alloc();
-	...
-
-where:
-
-static struct prb_desc *try_reopen_desc(seq)
-{
-	struct prb_desc *desc;
-
-	enum desc_state d_state;
-	struct prb_desc desc;
-
-	d_state = desc_read(desc_ring, seq, &desc);
-	if (d_state != committed_and_not_finalized)
-		return NULL;
-
-	if (!is_same_context(desc))
-		return NULL;
-
-	/* try to reopen only when the state is still the same */
-	if(!atomic_long_cmpxchg_relaxed(state_var,
-					val_committed_and_not_finished,
-					val_reserved))
-		return NULL;
-
-	return desc;
-}
-
-static char *data_alloc_continuous()
-{
-	/*
-	 * Same as data_alloc() with one added parameter:
-	 * unsigned long requested_begin_lpos;
-	 */
-
-	begin_lpos = atomic_long_read(&data_ring->head_lpos);
-
-	do {
-		if (begin_lpos != requested_begin_lpos)
-			return NULL;
-
-	... same as before
-
-	} while (!atomic_long_try_cmpxchg(&data_ring->head_lpos, &begin_lpos,
-					  next_lpos)); /* LMM(data_alloc:A) */
-
-	if (requested_begin_lpos) {
-		/* only update tail lpos */
-		blk_lpos->next = next_lpos;
-		/* return pointer to the new data space */
-		return &blk->data[0];
-	}
-
-	/* For completely new block do everything as before */
-	blk = to_block(data_ring, begin_lpos);
-	blk->id = id; /* LMM(data_alloc:B) */
-	...
-}
-
-void prb_commit_and_finalize()
-{
-	/* Same as prb_commit() + it will set also 'final' bit */
-}
-
-
-Addintional changes in the code:
-
-+ desc_resrved() will also set 'final' bit in the previous
-  descriptor so that the descriptor could not longer get reopended
-  once committed.
-
-+ prb_commit_and_finalize() will be called instead of prb_commit()
-  when the message ends with '\n'.
-
-+ prb_read() will allow to read the data only when
-  the state is "committed_and_finalized".
-
-+ desc_make_reusable() can be called only when the desciptor
-  is in "commited_and_finalized" state.
-
-
-I am not sure if it is everything. Also it might need some code
-refactoring.
-
-But it looks like it might work. And it should not require new barriers.
