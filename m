@@ -2,92 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407A52427C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 11:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B642427E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 11:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgHLJnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 05:43:19 -0400
-Received: from mxhk.zte.com.cn ([63.217.80.70]:37356 "EHLO mxhk.zte.com.cn"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726409AbgHLJnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 05:43:19 -0400
-Received: from mse-fl1.zte.com.cn (unknown [10.30.14.238])
-        by Forcepoint Email with ESMTPS id 68D2CE2067FFFE97BEB1;
-        Wed, 12 Aug 2020 17:43:16 +0800 (CST)
-Received: from notes_smtp.zte.com.cn (notes_smtp.zte.com.cn [10.30.1.239])
-        by mse-fl1.zte.com.cn with ESMTP id 07C9h3tN084104;
-        Wed, 12 Aug 2020 17:43:03 +0800 (GMT-8)
-        (envelope-from wang.yi59@zte.com.cn)
-Received: from fox-host8.localdomain ([10.74.120.8])
-          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
-          with ESMTP id 2020081217432418-4584713 ;
-          Wed, 12 Aug 2020 17:43:24 +0800 
-From:   Yi Wang <wang.yi59@zte.com.cn>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
-        wang.liang82@zte.com.cn, Liao Pingfang <liao.pingfang@zte.com.cn>
-Subject: [PATCH] fs: Fix some comments in open.c and read_write.c
-Date:   Wed, 12 Aug 2020 17:46:28 +0800
-Message-Id: <1597225588-7737-1-git-send-email-wang.yi59@zte.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
- 21, 2013) at 2020-08-12 17:43:24,
-        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
- 2020-08-12 17:43:06,
-        Serialize complete at 2020-08-12 17:43:06
-X-MAIL: mse-fl1.zte.com.cn 07C9h3tN084104
+        id S1727061AbgHLJss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 05:48:48 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:49997 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726572AbgHLJss (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 05:48:48 -0400
+X-Originating-IP: 90.66.108.79
+Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id DD22D60003;
+        Wed, 12 Aug 2020 09:48:44 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Bruno Thomsen <bruno.thomsen@gmail.com>,
+        Liam Beguin <lvb@xiphos.com>
+Subject: Re: [PATCH] rtc: pcf2127: fix alarm handling
+Date:   Wed, 12 Aug 2020 11:48:43 +0200
+Message-Id: <159722570960.480982.2511953599425696473.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200812085114.474903-1-alexandre.belloni@bootlin.com>
+References: <20200812085114.474903-1-alexandre.belloni@bootlin.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liao Pingfang <liao.pingfang@zte.com.cn>
+On Wed, 12 Aug 2020 10:51:14 +0200, Alexandre Belloni wrote:
+> Fix multiple issues when handling alarms:
+>  - Use threaded interrupt to avoid scheduling when atomic
+>  - Stop matching on week day as it may not be set correctly
+>  - Avoid parsing the DT interrupt and use what is provided by the i2c or
+>    spi subsystem
+>  - Avoid returning IRQ_NONE in case of error in the interrupt handler
+>  - Never write WDTF as specified in the datasheet
+>  - Set uie_unsupported, as for the pcf85063, setting alarms every seconds
+>    is not working correctly and confuses the RTC.
 
-Correct comments in open.c, since the parameter(opened/cred)
-is not used anymore. Also correct size to maxsize in
-read_write.c.
+Applied, thanks!
 
-Signed-off-by: Liao Pingfang <liao.pingfang@zte.com.cn>
-Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
----
- fs/open.c       | 2 --
- fs/read_write.c | 2 +-
- 2 files changed, 1 insertion(+), 3 deletions(-)
+[1/1] rtc: pcf2127: fix alarm handling
+      commit: 27006416be16b7887fb94b3b445f32453defb3f1
 
-diff --git a/fs/open.c b/fs/open.c
-index c80e9f497e9b..fa54a7d313e9 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -875,7 +875,6 @@ static int do_dentry_open(struct file *f,
-  * @file: file pointer
-  * @dentry: pointer to dentry
-  * @open: open callback
-- * @opened: state of open
-  *
-  * This can be used to finish opening a file passed to i_op->atomic_open().
-  *
-@@ -929,7 +928,6 @@ EXPORT_SYMBOL(file_path);
-  * vfs_open - open the file at the given path
-  * @path: path to open
-  * @file: newly allocated file with f_flag initialized
-- * @cred: credentials to use
-  */
- int vfs_open(const struct path *path, struct file *file)
- {
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 5db58b8c78d0..058563ee26fd 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -71,7 +71,7 @@ EXPORT_SYMBOL(vfs_setpos);
-  * @file:	file structure to seek on
-  * @offset:	file offset to seek to
-  * @whence:	type of seek
-- * @size:	max size of this file in file system
-+ * @maxsize:	max size of this file in file system
-  * @eof:	offset used for SEEK_END position
-  *
-  * This is a variant of generic_file_llseek that allows passing in a custom
+Best regards,
 -- 
-2.26.1
-
+Alexandre Belloni <alexandre.belloni@bootlin.com>
