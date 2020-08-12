@@ -2,174 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1ED24289C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 13:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B842428A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 13:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbgHLL1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 07:27:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727036AbgHLL1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 07:27:12 -0400
-Received: from quaco.ghostprotocols.net (179.176.8.134.dynamic.adsl.gvt.net.br [179.176.8.134])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727821AbgHLL2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 07:28:39 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39389 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726804AbgHLL2i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 07:28:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597231716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KjV6K3m7aYpDUqAWmC+w9QBoR6kWl/pmzBrtpDLCLfY=;
+        b=WTcPzYI1eRKJo1m7vvdk5jf0Bq3U2zRuUgcAd2Bn1JUnRoXFE+VdPwdNmDbOvSLr85GV7Z
+        U1ZrLVl5P/z1FaB9K4RGtkz1nOE+4Bdg8fSro6T74MIM4UFu5XNXKohLXigAfN28pLcQk/
+        QLMDDKj7NNOXiDSSG7sglUTb+O97iws=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-244-5J3rQyDiMHeKboA2VdWEqw-1; Wed, 12 Aug 2020 07:28:33 -0400
+X-MC-Unique: 5J3rQyDiMHeKboA2VdWEqw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09756207F7;
-        Wed, 12 Aug 2020 11:27:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597231631;
-        bh=014WS9rytNGQq7H8Yl5XjDfv6VMOqc3NiFeQUb5YyJo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PVaqGAzGWrljkGytCQvrI3N6xOXfhBRHIrrTrlitTDF7AEHwL3Sssf5VSafMBBp9c
-         KZLIPST+noIxIe7fNGytpqlNly5TLM7spfVcN3GKn8yF3X9/MFEJfeuVKoUeBIqi2V
-         n0SNc01jTFjkO1TjIyM0i7EUP+B5B24ccFNGASms=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6CC22403C6; Wed, 12 Aug 2020 08:27:08 -0300 (-03)
-Date:   Wed, 12 Aug 2020 08:27:08 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jin Yao <yao.jin@linux.intel.com>,
-        Thomas Richter <tmricht@linux.ibm.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        heiko.carstens@de.ibm.com
-Subject: Re: [PATCH] Fix s390x compile error on F32 utils/stat-display.c
-Message-ID: <20200812112708.GA13995@kernel.org>
-References: <20200722092053.22345-1-tmricht@linux.ibm.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 56817802B54;
+        Wed, 12 Aug 2020 11:28:31 +0000 (UTC)
+Received: from ws.net.home (unknown [10.40.193.69])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CA50710013D7;
+        Wed, 12 Aug 2020 11:28:27 +0000 (UTC)
+Date:   Wed, 12 Aug 2020 13:28:25 +0200
+From:   Karel Zak <kzak@redhat.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Steven Whitehouse <swhiteho@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: file metadata via fs API
+Message-ID: <20200812112825.b52tqeuro2lquxlw@ws.net.home>
+References: <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com>
+ <CAJfpegtNP8rQSS4Z14Ja4x-TOnejdhDRTsmmDD-Cccy2pkfVVw@mail.gmail.com>
+ <20200811135419.GA1263716@miu.piliscsaba.redhat.com>
+ <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
+ <52483.1597190733@warthog.procyon.org.uk>
+ <CAJfpegt=cQ159kEH9zCYVHV7R_08jwMxF0jKrSUV5E=uBg4Lzw@mail.gmail.com>
+ <98802.1597220949@warthog.procyon.org.uk>
+ <CAJfpegsVJo9e=pHf3YGWkE16fT0QaNGhgkUdq4KUQypXaD=OgQ@mail.gmail.com>
+ <d2d179c7-9b60-ca1a-0c9f-d308fc7af5ce@redhat.com>
+ <CAJfpeguMjU+n-JXE6aUQQGeMpCS4bsy4HQ37NHJ8aD8Aeg2qhA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200722092053.22345-1-tmricht@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAJfpeguMjU+n-JXE6aUQQGeMpCS4bsy4HQ37NHJ8aD8Aeg2qhA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jul 22, 2020 at 11:20:53AM +0200, Thomas Richter escreveu:
-> Fix a compile error on F32 and gcc version 10.1 on s390 in file
-> utils/stat-display.c.  The error does not show up with make DEBUG=y.
-> In fact the issue shows up when using both compiler options
-> -O6 and -D_FORTIFY_SOURCE=2 (which are omitted with DEBUG=Y).
+On Wed, Aug 12, 2020 at 12:04:14PM +0200, Miklos Szeredi wrote:
+> On Wed, Aug 12, 2020 at 11:43 AM Steven Whitehouse <swhiteho@redhat.com> wrote:
+> >
+> > Hi,
+> >
+> > On 12/08/2020 09:37, Miklos Szeredi wrote:
+> > [snip]
+> > >
+> > > b) The awarded performance boost is not warranted for the use cases it
+> > > is designed for.
 > 
-> This is the offending call chain:
-> print_counter_aggr()
->   printout(config, -1, 0, ...)  with 2nd parm id set to -1
->     aggr_printout(config, x, id --> -1, ...) which leads to this code:
-> 		case AGGR_NONE:
->                 if (evsel->percore && !config->percore_show_thread) {
->                         ....
->                 } else {
->                         fprintf(config->output, "CPU%*d%s",
->                                 config->csv_output ? 0 : -7,
->                                 evsel__cpus(evsel)->map[id],
-> 				                        ^^ id is -1 !!!!
->                                 config->csv_sep);
->                 }
+> >
+> > This is a key point. One of the main drivers for this work is the
+> > efficiency improvement for large numbers of mounts. Ian and Karel have
+> > already provided performance measurements showing a significant benefit
+> > compared with what we have today. If you want to propose this
+> > alternative interface then you need to show that it can sustain similar
+> > levels of performance, otherwise it doesn't solve the problem. So
+> > performance numbers here would be helpful.
 > 
-> This is a compiler inlining issue which is detected on s390 but not on
-> other plattforms.
+> Definitely.   Will measure performance with the interface which Linus proposed.
 
-What is the sequence of events that gets to this? I.e. is it valid to
-get a config->aggr_mode == AGGR_NONE, then have evsel not be percore and
-config->percore_show_thread to be false?
+The proposal is based on paths and open(), how do you plan to deal
+with mount IDs? David's fsinfo() allows to ask for mount info by mount
+ID and it works well with mount notification where you get the ID. The
+collaboration with notification interface is critical for our use-cases.
 
-I wonder if this won't be papering over some bug :-\
-
-Jin?
-
-This is where this came from:
-commit 4fc4d8dfa056dfd48afe73b9ea3b7570ceb80b9c (tag: perf-core-for-mingo-5.2-20190517)
-Author: Jin Yao <yao.jin@linux.intel.com>
-Date:   Fri Apr 12 21:59:49 2019 +0800
-
-    perf stat: Support 'percore' event qualifier
-
-    With this patch, we can use the 'percore' event qualifier in perf-stat.
-
----
-
-Also please add at least Jiri and Namhyung on the CC list, having the
-person that added that array usage also helps.
-
-[acme@quaco perf]$ scripts/get_maintainer.pl tools/perf | grep reviewer
-Mark Rutland <mark.rutland@arm.com> (reviewer:PERFORMANCE EVENTS SUBSYSTEM)
-Alexander Shishkin <alexander.shishkin@linux.intel.com> (reviewer:PERFORMANCE EVENTS SUBSYSTEM)
-Jiri Olsa <jolsa@redhat.com> (reviewer:PERFORMANCE EVENTS SUBSYSTEM)
-Namhyung Kim <namhyung@kernel.org> (reviewer:PERFORMANCE EVENTS SUBSYSTEM)
-[acme@quaco perf]$
-
-Thanks,
-
-- Arnaldo
- 
-> Output before:
->  # make util/stat-display.o
->     .....
-> 
->   util/stat-display.c: In function ‘perf_evlist__print_counters’:
->   util/stat-display.c:121:4: error: array subscript -1 is below array
->       bounds of ‘int[]’ [-Werror=array-bounds]
->   121 |    fprintf(config->output, "CPU%*d%s",
->       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   122 |     config->csv_output ? 0 : -7,
->       |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   123 |     evsel__cpus(evsel)->map[id],
->       |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   124 |     config->csv_sep);
->       |     ~~~~~~~~~~~~~~~~
->   In file included from util/evsel.h:13,
->                  from util/evlist.h:13,
->                  from util/stat-display.c:9:
->   /root/linux/tools/lib/perf/include/internal/cpumap.h:10:7:
->   note: while referencing ‘map’
->    10 |  int  map[];
->       |       ^~~
->   cc1: all warnings being treated as errors
->   mv: cannot stat 'util/.stat-display.o.tmp': No such file or directory
->   make[3]: *** [/root/linux/tools/build/Makefile.build:97: util/stat-display.o]
->   Error 1
->   make[2]: *** [Makefile.perf:716: util/stat-display.o] Error 2
->   make[1]: *** [Makefile.perf:231: sub-make] Error 2
->   make: *** [Makefile:110: util/stat-display.o] Error 2
->   [root@t35lp46 perf]#
-> 
-> Output after:
->   # make util/stat-display.o
->     .....
->   CC       util/stat-display.o
->   [root@t35lp46 perf]#
-> 
-> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-> ---
->  tools/perf/util/stat-display.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-> index 57d0706e1330..e49e544188e4 100644
-> --- a/tools/perf/util/stat-display.c
-> +++ b/tools/perf/util/stat-display.c
-> @@ -118,10 +118,11 @@ static void aggr_printout(struct perf_stat_config *config,
->  				config->csv_output ? 0 : -3,
->  				cpu_map__id_to_cpu(id), config->csv_sep);
->  		} else {
-> -			fprintf(config->output, "CPU%*d%s",
-> -				config->csv_output ? 0 : -7,
-> -				evsel__cpus(evsel)->map[id],
-> -				config->csv_sep);
-> +			if (id > -1)
-> +				fprintf(config->output, "CPU%*d%s",
-> +					config->csv_output ? 0 : -7,
-> +					evsel__cpus(evsel)->map[id],
-> +					config->csv_sep);
->  		}
->  		break;
->  	case AGGR_THREAD:
-> -- 
-> 2.26.2
-> 
+    Karel
 
 -- 
+ Karel Zak  <kzak@redhat.com>
+ http://karelzak.blogspot.com
 
-- Arnaldo
