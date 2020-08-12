@@ -2,79 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6108242D9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 18:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C5B242DA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 18:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgHLQry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 12:47:54 -0400
-Received: from mga12.intel.com ([192.55.52.136]:33856 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726816AbgHLQrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 12:47:24 -0400
-IronPort-SDR: UIARZ50YjkfBY6Vz3RZzf61/I89sGxNBxb1HQKdGm2PqAeEmjdox+CoWIHtbqPFee/kuso+rm9
- F28CXUO4xkhg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9711"; a="133538566"
-X-IronPort-AV: E=Sophos;i="5.76,305,1592895600"; 
-   d="scan'208";a="133538566"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 09:47:23 -0700
-IronPort-SDR: 7sgPFqLLhM0D6StT99Hvfk8YpH8q7PJOBXJ/iIFi941Gg5+u9AmuYZLlWJDacEuiscNW/d5c4e
- u1gvFrpItoXA==
-X-IronPort-AV: E=Sophos;i="5.76,305,1592895600"; 
-   d="scan'208";a="439442708"
-Received: from ticede-or-099.amr.corp.intel.com (HELO arch-ashland-svkelley.intel.com) ([10.254.58.97])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 09:47:21 -0700
-From:   Sean V Kelley <sean.v.kelley@intel.com>
-To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rjw@rjwysocki.net, ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: [PATCH v3 10/10] PCI/AER: Add RCEC AER error injection support
-Date:   Wed, 12 Aug 2020 09:46:59 -0700
-Message-Id: <20200812164659.1118946-11-sean.v.kelley@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200812164659.1118946-1-sean.v.kelley@intel.com>
-References: <20200812164659.1118946-1-sean.v.kelley@intel.com>
+        id S1726670AbgHLQt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 12:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgHLQt2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 12:49:28 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13FB8C061383
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 09:49:28 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id p1so1372239pls.4
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 09:49:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cpPB12VxTBo7Gag22fvUPzJVt3FtVo3U/iyGytPOFC8=;
+        b=cAW8ZxlLeFLGghZGfwil7GCsFu/Wx84qNcvTg/XVrkAbtkEOZAhlELedYvsh5OcjNn
+         68hVNp3BOqsfFvCk8/DJJZFKTQTr7taYUus7ibSRInWAkhEl5MiCNKb2gyq0b0/62Smx
+         kO5f0cjcqlxYRZ8oh0/CyYUw5Z08mZAXZ3o6hEnbpuI+LH347XjJUmNrpZYcqNd25EG6
+         KviW0R24AmlIh3cAnWjqckORbSUJgvAXEcZP3WLbP8zDa5tnoVCOajHHO+wiUvjmrIH/
+         wTWSLNRlAqEKOFpOMJ1vROmdj3yjVxUsCkSCIXJio/0OXww/VHj7q7uE2yE1vgGxivOA
+         0yNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cpPB12VxTBo7Gag22fvUPzJVt3FtVo3U/iyGytPOFC8=;
+        b=g5K3EOP3pytbDhptnDERxW/6W9IFv9a7ywKmlX3zmjM4wU2My3vkOwU4C4eJg4zkJK
+         VWNkrrB1aGkfwOyZKwXwhA2XZKL3B8+oyHWlHk8W2alDd/oNvKyFiXl6PqW0/g88oWfl
+         fjIngq9udQ/42UXVHItlIBA63+l6PDZvbmgtFkbYiqjeTe8i1OhWnJMvuj+0z4HWgYQw
+         GHGOLEhyXBCRdp/ibFbAVFOiEa0/enQtQZwkHVJfYL52Co41VOjvFWQ2muQc/fXJgA63
+         sc0g/TQcWz88NBvQFZRFydELS0nQrXBS2UGU2WsKuHK2zEhMRPrv2Y2/DlM2MHu+8hHO
+         FoOA==
+X-Gm-Message-State: AOAM530LTFRFAi9zu7dMKboPo+Znlj6ivFYH1W4L2pTMGS4SXv7jLdGD
+        ZnSVLIgm00V85LcJDf3GhX3gaw==
+X-Google-Smtp-Source: ABdhPJwO+T3uFUkBrw6Mc8DFAwiGNS0DSylwk8ov4E5dfG5nKfceh1QXYv4J7cNSK8eN1cLWjaDfWw==
+X-Received: by 2002:a17:90a:1fca:: with SMTP id z10mr864830pjz.209.1597250967508;
+        Wed, 12 Aug 2020 09:49:27 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id lk16sm2731778pjb.13.2020.08.12.09.49.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Aug 2020 09:49:26 -0700 (PDT)
+Date:   Wed, 12 Aug 2020 10:49:25 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Tingwei Zhang <tingwei@codeaurora.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        linux-kernel@vger.kernel.org, coresight@lists.linaro.org
+Subject: Re: [PATCH v3 0/6] tracing: export event trace and trace_marker
+Message-ID: <20200812164925.GA3393195@xps15>
+References: <20200811035726.10379-1-tingwei@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200811035726.10379-1-tingwei@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+On Tue, Aug 11, 2020 at 11:57:20AM +0800, Tingwei Zhang wrote:
+> Ftrace has ability to export trace packets to other destination.
+> Currently, only function trace can be exported. This series extends the
+> support to event trace and trace_maker. STM is one possible destination to
+> export ftrace. Use separate channel for each CPU to avoid mixing up packets
+> from different CPUs together.
 
-The Root Complex Event Collectors(RCEC) appear as peers to Root Ports
-and also have the AER capability. So add RCEC support to the current AER
-error injection driver.
+As the get_maintainer script points out, you are missing the maintainer of the
+system trace subsystem.
 
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
----
- drivers/pci/pcie/aer_inject.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/pcie/aer_inject.c b/drivers/pci/pcie/aer_inject.c
-index 21cc3d3387f7..8107e782546a 100644
---- a/drivers/pci/pcie/aer_inject.c
-+++ b/drivers/pci/pcie/aer_inject.c
-@@ -333,8 +333,11 @@ static int aer_inject(struct aer_error_inj *einj)
- 	if (!dev)
- 		return -ENODEV;
- 	rpdev = pcie_find_root_port(dev);
-+	/* If Root port not found, try to find an RCEC */
-+	if (!rpdev)
-+		rpdev = dev->rcec;
- 	if (!rpdev) {
--		pci_err(dev, "Root port not found\n");
-+		pci_err(dev, "Neither root port nor RCEC found\n");
- 		ret = -ENODEV;
- 		goto out_put;
- 	}
--- 
-2.28.0
-
+> 
+> Change from v2:
+> Change flag definition to BIT(). (Steven)
+> Add comment in stm_ftrace_write() to clarify it's safe to use 
+> smp_processor_id() here since preempt is disabled. (Steven) 
+> 
+> Change from v1:
+> All changes are suggested by Steven Rostedt.
+> User separate flag to control function trace, event trace and trace mark.
+> Allocate channels according to num_possible_cpu() dynamically.
+> Move ftrace_exports routines up so all ftrace can use them.
+> 
+> Tingwei Zhang (6):
+>   stm class: ftrace: change dependency to TRACING
+>   tracing: add flag to control different traces
+>   tracing: add trace_export support for event trace
+>   tracing: add trace_export support for trace_marker
+>   stm class: ftrace: enable supported trace export flag
+>   stm class: ftrace: use different channel accroding to CPU
+> 
+>  drivers/hwtracing/stm/Kconfig  |   2 +-
+>  drivers/hwtracing/stm/ftrace.c |   7 +-
+>  include/linux/trace.h          |   7 +
+>  kernel/trace/trace.c           | 270 ++++++++++++++++++---------------
+>  4 files changed, 159 insertions(+), 127 deletions(-)
+> 
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
