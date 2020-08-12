@@ -2,140 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9BE242B09
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88BA242B03
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726679AbgHLONN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 10:13:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
+        id S1726567AbgHLONF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 10:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726634AbgHLONK (ORCPT
+        with ESMTP id S1726488AbgHLONF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 10:13:10 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A672C061384
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 07:13:10 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a15so2168964wrh.10
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 07:13:10 -0700 (PDT)
+        Wed, 12 Aug 2020 10:13:05 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A03C061383;
+        Wed, 12 Aug 2020 07:13:04 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id k20so2089012wmi.5;
+        Wed, 12 Aug 2020 07:13:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BAYgOfe5stUcl69x3S7eimrTDZBSiHB9OvfmPx9Zdrw=;
-        b=iMx16CFMmDH2fRRYk1rZbM/ORr/ooYW/ce6+lp1QXcOJO7DkGjJvgbPjnQ9dpqFOcR
-         BQd9bFmrHx259fF4+pnLrDLKzHU8BN60APCkxTzh2CWJUqLCcqsalXd8riNjZXhure06
-         HoP1PAiNEs/gdPQ2RJCkMX+syFcxq6J2jDdvuRzhAZUZpeK3levdB9KTIGXns2WLSY+7
-         jeUM2TP2BBlHH7cwC28jej7YkL0SnN61RWDV1CGs+WI+4pNEn0OBcrpVWB4jvF7RazvK
-         FD7XjCicKe1WmhUCAo36zCBymfbB9PK95AKScfv0XaONkZOZKhdAptUin0T8jRh7jV7D
-         fmxA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3JSWXdvJKypcewGZSL+FLA89GNbkLI8DDuSajPdeI90=;
+        b=PDBU2thuP7mGuehMwtGHU4dcvMwcHV2wHS5Fz6ERcv+PFycF9hHs89nJnf3Ro6X4LZ
+         8CKf3LZMB+B1OK5DFcChRayeL3G+pr2+Qdrfx9nHpNm79DF33ZPufWd5bl/7aDvNW2eA
+         LdneA30b4Qb49jOsRpWSz3rMEhOJ52mRdIAIDorz6qjd2XSVXi4urt3HTbgPgtA0yP1a
+         Ekdf2g1B1V4h7b7XuD7hH5nLZ0AbO+wuU79ppJxLJ/nDy3w5ooBKMvfhv1W2DirFwGDV
+         QSKgMcUaVIhLhvRo5VID1PCfrFtTaOm9e0mRHnfQHwqjRBt0aAkIwWXJd2KyEglKw2rf
+         VoSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BAYgOfe5stUcl69x3S7eimrTDZBSiHB9OvfmPx9Zdrw=;
-        b=svvvut8/Y6nXbcngFu6L43BOpTL+iA0Zkr8nLEThBhhMBFLv4Mjm/aPukGdTDwN+l9
-         aDtzLeNtQXkeA10/u1s3xqzBzpPPVzvaPK0kYZG1XgC/sQGnqaIgW5bC5RMmd9xd+LY3
-         tPsD3Hvze1mBrhrmUd/9NM1BPjgGnxvS92VE+Qvvi0QcT84DgIjYYZKFxQv6jTBCmN82
-         Glzdk7UmWFY0sEZaGajXjjTDyPvXkkg+OETOaFJW4n/IOqEMXIY4CQcPhGNJjjeFJIJ6
-         Q2lp5KftGNkOR1M3CnplDPSYgpFfBw5SOaelFetRgc4FEdPvEfgRxkqOkEmDLpuq7bSU
-         /VUA==
-X-Gm-Message-State: AOAM531T9/Ka7waiVBa8ASRRCcc9QuuU7nfu18X/q3vv3m6oFk3gMjMg
-        hA06CMNWODPDz2wfk4ly2tH34dp1Ui+dqjby9xjnHA==
-X-Google-Smtp-Source: ABdhPJzHu2ZRSBGxhkIBggfOak2BaqrqSKgARW9ic/KPrejEq5Og+5of1oDTl5faeGNIqwjzmhEgxDeTRZCKa32paBc=
-X-Received: by 2002:adf:f248:: with SMTP id b8mr36015334wrp.247.1597241588772;
- Wed, 12 Aug 2020 07:13:08 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3JSWXdvJKypcewGZSL+FLA89GNbkLI8DDuSajPdeI90=;
+        b=mkrgBCyHgfMiw8E/kf+K7499ZVhLEToOkoqB6Vv2Ix0YQH0XlFw5tqx5xFBcfts8Dq
+         Ploa2LQu6mNbhlj5RQi4SGNUCQSDXXVTAcKv0ZOhJKSrbIWvjWkX2X2IAfa5j84Da7o7
+         cUA/KeRvn8hl9M4LNGzDFwZDlIpSUnPlPSr13L1ZlYg5Yb15EvNcbuoTJAFuRddeHZah
+         WGTgMYk01muZ3bEi1nvA82fMTWDrLOmc9dKEnvEwdpANC6Jl9CaGbItSB5NHwMRe6AK0
+         Dr7CIeNHNKB8T/NE9zmk1zP6vBPSFk/t0etgyP1N38R0xtIGMWmldDv9hKDh18S/bl/V
+         gzFQ==
+X-Gm-Message-State: AOAM530lRqgHas/deQsXt62ivtvWsaJvncq+ZL/JvQgCzm1/v2td5VpE
+        mBTmIUBwCEBQ87AAsNkwwJc=
+X-Google-Smtp-Source: ABdhPJxLI+bpIIToGSoBCnC9gRUo94x6QghuJnyl1w5jZGtqfmNYNhSgWQpHPGGpQ35ecsDKBnh62A==
+X-Received: by 2002:a1c:678b:: with SMTP id b133mr9401362wmc.117.1597241583696;
+        Wed, 12 Aug 2020 07:13:03 -0700 (PDT)
+Received: from localhost.localdomain (cpc83647-brig20-2-0-cust926.3-3.cable.virginm.net. [82.19.195.159])
+        by smtp.gmail.com with ESMTPSA id g14sm3818331wmk.37.2020.08.12.07.13.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Aug 2020 07:13:02 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+To:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Alex Dewar <alex.dewar90@gmail.com>
+Subject: [PATCH 1/2] nfsd: Remove unnecessary assignment in nfs4xdr.c
+Date:   Wed, 12 Aug 2020 15:12:51 +0100
+Message-Id: <20200812141252.21059-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200811081712.4981-1-geert+renesas@glider.be>
-In-Reply-To: <20200811081712.4981-1-geert+renesas@glider.be>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 12 Aug 2020 16:12:32 +0200
-Message-ID: <CAPDyKFpsWpvsQjG6Oh=FudUbWFUvJv_3PtzauGOckKLtOx8BRg@mail.gmail.com>
-Subject: Re: [PATCH v2] ata: sata_rcar: Fix DMA boundary mask
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        linux-ide@vger.kernel.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 Aug 2020 at 10:17, Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
->
-> Before commit 9495b7e92f716ab2 ("driver core: platform: Initialize
-> dma_parms for platform devices"), the R-Car SATA device didn't have DMA
-> parameters.  Hence the DMA boundary mask supplied by its driver was
-> silently ignored, as __scsi_init_queue() doesn't check the return value
-> of dma_set_seg_boundary(), and the default value of 0xffffffff was used.
->
-> Now the device has gained DMA parameters, the driver-supplied value is
-> used, and the following warning is printed on Salvator-XS:
->
->     DMA-API: sata_rcar ee300000.sata: mapping sg segment across boundary [start=0x00000000ffffe000] [end=0x00000000ffffefff] [boundary=0x000000001ffffffe]
->     WARNING: CPU: 5 PID: 38 at kernel/dma/debug.c:1233 debug_dma_map_sg+0x298/0x300
->
-> (the range of start/end values depend on whether IOMMU support is
->  enabled or not)
->
-> The issue here is that SATA_RCAR_DMA_BOUNDARY doesn't have bit 0 set, so
-> any typical end value, which is odd, will trigger the check.
->
-> Fix this by increasing the DMA boundary value by 1.
->
-> Fixes: 8bfbeed58665dbbf ("sata_rcar: correct 'sata_rcar_sht'")
-> Fixes: 9495b7e92f716ab2 ("driver core: platform: Initialize dma_parms for platform devices")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-> Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Cc: stable <stable@vger.kernel.org>
+In nfsd4_encode_listxattrs(), the variable p is assigned to at one point
+but this value is never used before p is reassigned. Fix this.
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ fs/nfsd/nfs4xdr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Kind regards
-Uffe
+diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
+index 259d5ad0e3f47..1a0341fd80f9a 100644
+--- a/fs/nfsd/nfs4xdr.c
++++ b/fs/nfsd/nfs4xdr.c
+@@ -4859,7 +4859,7 @@ nfsd4_encode_listxattrs(struct nfsd4_compoundres *resp, __be32 nfserr,
+ 			goto out;
+ 		}
+ 
+-		p = xdr_encode_opaque(p, sp, slen);
++		xdr_encode_opaque(p, sp, slen);
+ 
+ 		xdrleft -= xdrlen;
+ 		count++;
+-- 
+2.28.0
 
-> ---
-> v2:
->   - Add Reviewed-by, Tested-by, Cc.
->
-> This is a fix for a regression in v5.7-rc5 that fell through the cracks.
-> https://lore.kernel.org/linux-ide/20200513110426.22472-1-geert+renesas@glider.be/
->
-> As by default the DMA debug code prints the first error only, this issue
-> may be hidden on plain v5.7-rc5, where the FCP driver triggers a similar
-> warning.  Merging commit dd844fb8e50b12e6 ("media: platform: fcp: Set
-> appropriate DMA parameters", in v5.8-rc1) from the media tree fixes the
-> FCP issue, and exposes the SATA issue.
->
-> I added the second fixes tag because that commit is already being
-> backported to stable kernels, and this patch thus needs backporting,
-> too.
-> ---
->  drivers/ata/sata_rcar.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/ata/sata_rcar.c b/drivers/ata/sata_rcar.c
-> index 141ac600b64c87ef..44b0ed8f6bb8a120 100644
-> --- a/drivers/ata/sata_rcar.c
-> +++ b/drivers/ata/sata_rcar.c
-> @@ -120,7 +120,7 @@
->  /* Descriptor table word 0 bit (when DTA32M = 1) */
->  #define SATA_RCAR_DTEND                        BIT(0)
->
-> -#define SATA_RCAR_DMA_BOUNDARY         0x1FFFFFFEUL
-> +#define SATA_RCAR_DMA_BOUNDARY         0x1FFFFFFFUL
->
->  /* Gen2 Physical Layer Control Registers */
->  #define RCAR_GEN2_PHY_CTL1_REG         0x1704
-> --
-> 2.17.1
->
