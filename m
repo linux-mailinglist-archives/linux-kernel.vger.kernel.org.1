@@ -2,74 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665EA242945
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE923242942
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgHLMZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 08:25:32 -0400
-Received: from mga01.intel.com ([192.55.52.88]:55658 "EHLO mga01.intel.com"
+        id S1727854AbgHLMZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 08:25:22 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:50233 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726453AbgHLMZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 08:25:29 -0400
-IronPort-SDR: mLkhHWXda9mWsPCnYk8BXuRdokxp6Xa8iIvnDU6Hndkg/ps06y0qsyYWzh6lnqahgkmdFgVHvY
- Ubd6G80MailQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9710"; a="171981796"
-X-IronPort-AV: E=Sophos;i="5.76,304,1592895600"; 
-   d="scan'208";a="171981796"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 05:25:28 -0700
-IronPort-SDR: ywOfK2caexNoohfyuZvwPSk1dgtzJ6fZdA5v/MlqFPpcNGrWClgz2M45Tvihkln04HSWBEymfi
- TfkZqnwWzDSw==
-X-IronPort-AV: E=Sophos;i="5.76,304,1592895600"; 
-   d="scan'208";a="439376747"
-Received: from lhawrylk-desk.ger.corp.intel.com ([10.249.154.220])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 05:25:26 -0700
-From:   Lukasz Hawrylko <lukasz.hawrylko@linux.intel.com>
-To:     ning.sun@intel.com
-Cc:     Lukasz Hawrylko <lukasz.hawrylko@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Update Intel TXT maintainer
-Date:   Wed, 12 Aug 2020 14:23:44 +0200
-Message-Id: <20200812122401.1751885-1-lukasz.hawrylko@linux.intel.com>
-X-Mailer: git-send-email 2.25.4
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726453AbgHLMZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 08:25:20 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BRTRw229SzB09ZZ;
+        Wed, 12 Aug 2020 14:25:16 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id T7EViThnBBtB; Wed, 12 Aug 2020 14:25:16 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BRTRw13g7zB09ZY;
+        Wed, 12 Aug 2020 14:25:16 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 859588B826;
+        Wed, 12 Aug 2020 14:25:17 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id s0qaSf7LztKL; Wed, 12 Aug 2020 14:25:17 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 386E58B7FC;
+        Wed, 12 Aug 2020 14:25:17 +0200 (CEST)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id B584E65C3B; Wed, 12 Aug 2020 12:25:16 +0000 (UTC)
+Message-Id: <c27bc4e598daf3bbb225de7a1f5c52121cf1e279.1597235091.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v3 1/2] powerpc/uaccess: Use flexible addressing with
+ __put_user()/__get_user()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 12 Aug 2020 12:25:16 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As an effect of changes in Intel, I took resposibility for supporting
-Intel TXT in Linux from Ning Sun. This patch also replaces link to
-repository, as previous one became outdated.
+At the time being, __put_user()/__get_user() and friends only use
+D-form addressing, with 0 offset. Ex:
 
-Signed-off-by: Lukasz Hawrylko <lukasz.hawrylko@linux.intel.com>
+	lwz	reg1, 0(reg2)
+
+Give the compiler the opportunity to use other adressing modes
+whenever possible, to get more optimised code.
+
+Hereunder is a small exemple:
+
+struct test {
+	u32 item1;
+	u16 item2;
+	u8 item3;
+	u64 item4;
+};
+
+int set_test_user(struct test __user *from, struct test __user *to)
+{
+	int err;
+	u32 item1;
+	u16 item2;
+	u8 item3;
+	u64 item4;
+
+	err = __get_user(item1, &from->item1);
+	err |= __get_user(item2, &from->item2);
+	err |= __get_user(item3, &from->item3);
+	err |= __get_user(item4, &from->item4);
+
+	err |= __put_user(item1, &to->item1);
+	err |= __put_user(item2, &to->item2);
+	err |= __put_user(item3, &to->item3);
+	err |= __put_user(item4, &to->item4);
+
+	return err;
+}
+
+Before the patch:
+
+00000df0 <set_test_user>:
+ df0:	94 21 ff f0 	stwu    r1,-16(r1)
+ df4:	39 40 00 00 	li      r10,0
+ df8:	93 c1 00 08 	stw     r30,8(r1)
+ dfc:	93 e1 00 0c 	stw     r31,12(r1)
+ e00:	7d 49 53 78 	mr      r9,r10
+ e04:	80 a3 00 00 	lwz     r5,0(r3)
+ e08:	38 e3 00 04 	addi    r7,r3,4
+ e0c:	7d 46 53 78 	mr      r6,r10
+ e10:	a0 e7 00 00 	lhz     r7,0(r7)
+ e14:	7d 29 33 78 	or      r9,r9,r6
+ e18:	39 03 00 06 	addi    r8,r3,6
+ e1c:	7d 46 53 78 	mr      r6,r10
+ e20:	89 08 00 00 	lbz     r8,0(r8)
+ e24:	7d 29 33 78 	or      r9,r9,r6
+ e28:	38 63 00 08 	addi    r3,r3,8
+ e2c:	7d 46 53 78 	mr      r6,r10
+ e30:	83 c3 00 00 	lwz     r30,0(r3)
+ e34:	83 e3 00 04 	lwz     r31,4(r3)
+ e38:	7d 29 33 78 	or      r9,r9,r6
+ e3c:	7d 43 53 78 	mr      r3,r10
+ e40:	90 a4 00 00 	stw     r5,0(r4)
+ e44:	7d 29 1b 78 	or      r9,r9,r3
+ e48:	38 c4 00 04 	addi    r6,r4,4
+ e4c:	7d 43 53 78 	mr      r3,r10
+ e50:	b0 e6 00 00 	sth     r7,0(r6)
+ e54:	7d 29 1b 78 	or      r9,r9,r3
+ e58:	38 e4 00 06 	addi    r7,r4,6
+ e5c:	7d 43 53 78 	mr      r3,r10
+ e60:	99 07 00 00 	stb     r8,0(r7)
+ e64:	7d 23 1b 78 	or      r3,r9,r3
+ e68:	38 84 00 08 	addi    r4,r4,8
+ e6c:	93 c4 00 00 	stw     r30,0(r4)
+ e70:	93 e4 00 04 	stw     r31,4(r4)
+ e74:	7c 63 53 78 	or      r3,r3,r10
+ e78:	83 c1 00 08 	lwz     r30,8(r1)
+ e7c:	83 e1 00 0c 	lwz     r31,12(r1)
+ e80:	38 21 00 10 	addi    r1,r1,16
+ e84:	4e 80 00 20 	blr
+
+After the patch:
+
+00000dbc <set_test_user>:
+ dbc:	39 40 00 00 	li      r10,0
+ dc0:	7d 49 53 78 	mr      r9,r10
+ dc4:	80 03 00 00 	lwz     r0,0(r3)
+ dc8:	7d 48 53 78 	mr      r8,r10
+ dcc:	a1 63 00 04 	lhz     r11,4(r3)
+ dd0:	7d 29 43 78 	or      r9,r9,r8
+ dd4:	7d 48 53 78 	mr      r8,r10
+ dd8:	88 a3 00 06 	lbz     r5,6(r3)
+ ddc:	7d 29 43 78 	or      r9,r9,r8
+ de0:	7d 48 53 78 	mr      r8,r10
+ de4:	80 c3 00 08 	lwz     r6,8(r3)
+ de8:	80 e3 00 0c 	lwz     r7,12(r3)
+ dec:	7d 29 43 78 	or      r9,r9,r8
+ df0:	7d 43 53 78 	mr      r3,r10
+ df4:	90 04 00 00 	stw     r0,0(r4)
+ df8:	7d 29 1b 78 	or      r9,r9,r3
+ dfc:	7d 43 53 78 	mr      r3,r10
+ e00:	b1 64 00 04 	sth     r11,4(r4)
+ e04:	7d 29 1b 78 	or      r9,r9,r3
+ e08:	7d 43 53 78 	mr      r3,r10
+ e0c:	98 a4 00 06 	stb     r5,6(r4)
+ e10:	7d 23 1b 78 	or      r3,r9,r3
+ e14:	90 c4 00 08 	stw     r6,8(r4)
+ e18:	90 e4 00 0c 	stw     r7,12(r4)
+ e1c:	7c 63 53 78 	or      r3,r3,r10
+ e20:	4e 80 00 20 	blr
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Reviewed-by: Segher Boessenkool <segher@kernel.crashing.org>
 ---
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v3:
+- Removed the pre-update form and the <> modifier, because it seems
+to be problematic with some older versions of GCC (namely 4.9) and
+doesn't seems to generate much code of that form anyway. So better
+to get it merged with the pre-update form than not be merged at all.
+The pre-update form is added in a following patch that may then get
+merged later once we have cleared the issue with it.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e627ed60d75a..cc70a40bba20 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9039,11 +9039,11 @@ F:	drivers/hwtracing/intel_th/
- F:	include/linux/intel_th.h
+v2:
+- Added <> modifier in __put_user_asm() and __get_user_asm()
+- Removed %U2 in __put_user_asm2() and __get_user_asm2()
+- Reworded the commit log
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/uaccess.h | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
+index 64c04ab09112..c546fb36043d 100644
+--- a/arch/powerpc/include/asm/uaccess.h
++++ b/arch/powerpc/include/asm/uaccess.h
+@@ -159,7 +159,7 @@ extern long __put_user_bad(void);
+  */
+ #define __put_user_asm(x, addr, err, op)			\
+ 	__asm__ __volatile__(					\
+-		"1:	" op " %1,0(%2)	# put_user\n"		\
++		"1:	" op "%X2 %1,%2	# put_user\n"		\
+ 		"2:\n"						\
+ 		".section .fixup,\"ax\"\n"			\
+ 		"3:	li %0,%3\n"				\
+@@ -167,7 +167,7 @@ extern long __put_user_bad(void);
+ 		".previous\n"					\
+ 		EX_TABLE(1b, 3b)				\
+ 		: "=r" (err)					\
+-		: "r" (x), "b" (addr), "i" (-EFAULT), "0" (err))
++		: "r" (x), "m" (*addr), "i" (-EFAULT), "0" (err))
  
- INTEL(R) TRUSTED EXECUTION TECHNOLOGY (TXT)
--M:	Ning Sun <ning.sun@intel.com>
-+M:	Lukasz Hawrylko <lukasz.hawrylko@linux.intel.com>
- L:	tboot-devel@lists.sourceforge.net
- S:	Supported
- W:	http://tboot.sourceforge.net
--T:	hg http://tboot.hg.sourceforge.net:8000/hgroot/tboot/tboot
-+T:	hg http://hg.code.sf.net/p/tboot/code
- F:	Documentation/x86/intel_txt.rst
- F:	arch/x86/kernel/tboot.c
- F:	include/linux/tboot.h
+ #ifdef __powerpc64__
+ #define __put_user_asm2(x, ptr, retval)				\
+@@ -175,8 +175,8 @@ extern long __put_user_bad(void);
+ #else /* __powerpc64__ */
+ #define __put_user_asm2(x, addr, err)				\
+ 	__asm__ __volatile__(					\
+-		"1:	stw %1,0(%2)\n"				\
+-		"2:	stw %1+1,4(%2)\n"			\
++		"1:	stw%X2 %1,%2\n"			\
++		"2:	stw%X2 %L1,%L2\n"			\
+ 		"3:\n"						\
+ 		".section .fixup,\"ax\"\n"			\
+ 		"4:	li %0,%3\n"				\
+@@ -185,7 +185,7 @@ extern long __put_user_bad(void);
+ 		EX_TABLE(1b, 4b)				\
+ 		EX_TABLE(2b, 4b)				\
+ 		: "=r" (err)					\
+-		: "r" (x), "b" (addr), "i" (-EFAULT), "0" (err))
++		: "r" (x), "m" (*addr), "i" (-EFAULT), "0" (err))
+ #endif /* __powerpc64__ */
+ 
+ #define __put_user_size_allowed(x, ptr, size, retval)		\
+@@ -317,7 +317,7 @@ extern long __get_user_bad(void);
+ 
+ #define __get_user_asm(x, addr, err, op)		\
+ 	__asm__ __volatile__(				\
+-		"1:	"op" %1,0(%2)	# get_user\n"	\
++		"1:	"op"%X2 %1, %2	# get_user\n"	\
+ 		"2:\n"					\
+ 		".section .fixup,\"ax\"\n"		\
+ 		"3:	li %0,%3\n"			\
+@@ -326,7 +326,7 @@ extern long __get_user_bad(void);
+ 		".previous\n"				\
+ 		EX_TABLE(1b, 3b)			\
+ 		: "=r" (err), "=r" (x)			\
+-		: "b" (addr), "i" (-EFAULT), "0" (err))
++		: "m" (*addr), "i" (-EFAULT), "0" (err))
+ 
+ #ifdef __powerpc64__
+ #define __get_user_asm2(x, addr, err)			\
+@@ -334,8 +334,8 @@ extern long __get_user_bad(void);
+ #else /* __powerpc64__ */
+ #define __get_user_asm2(x, addr, err)			\
+ 	__asm__ __volatile__(				\
+-		"1:	lwz %1,0(%2)\n"			\
+-		"2:	lwz %1+1,4(%2)\n"		\
++		"1:	lwz%X2 %1, %2\n"			\
++		"2:	lwz%X2 %L1, %L2\n"		\
+ 		"3:\n"					\
+ 		".section .fixup,\"ax\"\n"		\
+ 		"4:	li %0,%3\n"			\
+@@ -346,7 +346,7 @@ extern long __get_user_bad(void);
+ 		EX_TABLE(1b, 4b)			\
+ 		EX_TABLE(2b, 4b)			\
+ 		: "=r" (err), "=&r" (x)			\
+-		: "b" (addr), "i" (-EFAULT), "0" (err))
++		: "m" (*addr), "i" (-EFAULT), "0" (err))
+ #endif /* __powerpc64__ */
+ 
+ #define __get_user_size_allowed(x, ptr, size, retval)		\
+@@ -356,10 +356,10 @@ do {								\
+ 	if (size > sizeof(x))					\
+ 		(x) = __get_user_bad();				\
+ 	switch (size) {						\
+-	case 1: __get_user_asm(x, ptr, retval, "lbz"); break;	\
+-	case 2: __get_user_asm(x, ptr, retval, "lhz"); break;	\
+-	case 4: __get_user_asm(x, ptr, retval, "lwz"); break;	\
+-	case 8: __get_user_asm2(x, ptr, retval);  break;	\
++	case 1: __get_user_asm(x, (u8 __user *)ptr, retval, "lbz"); break;	\
++	case 2: __get_user_asm(x, (u16 __user *)ptr, retval, "lhz"); break;	\
++	case 4: __get_user_asm(x, (u32 __user *)ptr, retval, "lwz"); break;	\
++	case 8: __get_user_asm2(x, (u64 __user *)ptr, retval);  break;	\
+ 	default: (x) = __get_user_bad();			\
+ 	}							\
+ } while (0)
 -- 
-2.25.4
+2.25.0
 
