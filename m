@@ -2,129 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0485E24245F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 05:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC02242468
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 05:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726568AbgHLDtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 23:49:19 -0400
-Received: from mga14.intel.com ([192.55.52.115]:61195 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726255AbgHLDtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 23:49:19 -0400
-IronPort-SDR: LOSgJmXI1rGPGmMW+M2QPDyaZJTsWxPM97B8kb2NbqlJnBD/E4yJ9HGmmiBrzYlUg5bVLJkYnZ
- q2JoL7SlK3iw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9710"; a="153101737"
-X-IronPort-AV: E=Sophos;i="5.76,302,1592895600"; 
-   d="scan'208";a="153101737"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2020 20:49:18 -0700
-IronPort-SDR: yqj+TjlD8G/AgumHzWcCQrb5ZE2y9lZmS1AS9z4aKP7zV/S3ygX5vcHNqLr3nX5dFZa5lKCmxD
- BHE+blLlPAiQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,302,1592895600"; 
-   d="scan'208";a="317951295"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Aug 2020 20:49:18 -0700
-Received: from [10.214.175.153] (rtanwar-MOBL.gar.corp.intel.com [10.214.175.153])
-        by linux.intel.com (Postfix) with ESMTP id 7D212580609;
-        Tue, 11 Aug 2020 20:49:15 -0700 (PDT)
-Subject: Re: [PATCH v6 1/2] Add DT bindings YAML schema for PWM fan controller
- of LGM SoC
-To:     Rob Herring <robh@kernel.org>
-Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
-        lee.jones@linaro.org, thierry.reding@gmail.com,
-        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, andriy.shevchenko@intel.com,
-        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com
-References: <cover.1595926036.git.rahul.tanwar@linux.intel.com>
- <e61e6a05353f6242f5450da130b042f195ac7620.1595926036.git.rahul.tanwar@linux.intel.com>
- <20200731181944.GB516550@bogus>
-From:   "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
-Message-ID: <e50f198d-42d4-28b1-d32c-32f4b1bbcb0b@linux.intel.com>
-Date:   Wed, 12 Aug 2020 11:49:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726667AbgHLDvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 23:51:37 -0400
+Received: from smtprelay0179.hostedemail.com ([216.40.44.179]:40552 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726635AbgHLDvh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 23:51:37 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave04.hostedemail.com (Postfix) with ESMTP id 0AAFF18005B1E;
+        Wed, 12 Aug 2020 03:51:36 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 3ED6C8378BB9;
+        Wed, 12 Aug 2020 03:51:35 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3870:3871:3872:4184:4321:5007:10004:10400:10848:11026:11232:11658:11914:12048:12297:12740:12760:12895:13069:13311:13357:13439:14096:14097:14180:14659:21060:21080:21222:21451:21627:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: crow00_520afc026fe8
+X-Filterd-Recvd-Size: 2088
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 12 Aug 2020 03:51:33 +0000 (UTC)
+Message-ID: <d5af6b286fa6c9de8d71075b657b952bf775e557.camel@perches.com>
+Subject: Re: [PATCH v2 2/3] perf/x86/rapl: Support multiple rapl unit quirks
+From:   Joe Perches <joe@perches.com>
+To:     Zhang Rui <rui.zhang@intel.com>, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org
+Cc:     linux-pm@vger.kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, linux-kernel@vger.kernel.org,
+        kan.liang@linux.intel.com, len.brown@intel.com, rafael@kernel.org
+Date:   Tue, 11 Aug 2020 20:51:31 -0700
+In-Reply-To: <d7a19f05497b4137bacd639e576b7166e4a19842.camel@intel.com>
+References: <20200811153149.12242-1-rui.zhang@intel.com>
+         <20200811153149.12242-3-rui.zhang@intel.com>
+         <445d4b9039daca40a4d937959a0bc48ffe347f7f.camel@perches.com>
+         <d7a19f05497b4137bacd639e576b7166e4a19842.camel@intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20200731181944.GB516550@bogus>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2020-08-12 at 11:29 +0800, Zhang Rui wrote:
+> Hi,
+> 
+> Thanks for reviewing.
+> 
+> On Tue, 2020-08-11 at 11:19 -0700, Joe Perches wrote:
+> > On Tue, 2020-08-11 at 23:31 +0800, Zhang Rui wrote:
+> > > There will be more platforms with different fixed energy units.
+> > > Enhance the code to support different rapl unit quirks for
+> > > different
+> > > platforms.
+> > 
+> > This seems like one quirk per platform.
+> > 
+> > Should multiple quirks on individual platforms be supported?
+> > 
+> enum rapl_unit_quirk is just used as a flag.
+> multiple quirks can be deployed with the same flag, just like what I
+> did in patch 3/3.
+> Also different platforms can either have different flags or share the
+> same flag.
 
-Hi Rob,
+Sure, but it does lead to possible code duplication in the quirks
+as enums can not be combined like bit flags.
 
-On 1/8/2020 2:19 am, Rob Herring wrote:
-> On Tue, Jul 28, 2020 at 04:52:12PM +0800, Rahul Tanwar wrote:
->> Intel's LGM(Lightning Mountain) SoC contains a PWM fan controller
->> which is only used to control the fan attached to the system. This
->> PWM controller does not have any other consumer other than fan.
->> Add DT bindings documentation for this PWM fan controller.
->>
->> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
->> ---
->>  .../devicetree/bindings/pwm/intel,lgm-pwm.yaml     | 54 ++++++++++++++++++++++
->>  1 file changed, 54 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
->> new file mode 100644
->> index 000000000000..9879972470dc
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
->> @@ -0,0 +1,54 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/pwm/intel,lgm-pwm.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: LGM SoC PWM fan controller
->> +
->> +maintainers:
->> +  - Rahul Tanwar <rahul.tanwar@intel.com>
->> +
->> +properties:
->> +  compatible:
->> +    const: intel,lgm-pwm
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  "#pwm-cells":
->> +    const: 2
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  resets:
->> +    maxItems: 1
->> +
->> +  intel,fan-wire:
->> +    $ref: '/schemas/types.yaml#/definitions/uint32'
->> +    description: Specifies fan mode. Default when unspecified is 2.
->> +
->> +  intel,max-rpm:
->> +    $ref: '/schemas/types.yaml#/definitions/uint32'
->> +    description:
->> +      Specifies maximum RPM of fan attached to the system.
->> +      Default when unspecified is 4000.
-> Again, these are properties of a fan, not the pwm controller. They 
-> belong in a fan node.
-
-Our PWM controller is actually a PWM fan controller dedicated for
-controlling fan. I am looking for some suggestions from you on how
-to handle fan related optional properties in such a scenario.
-
-Should i create a separate child node for fan with PWM node being
-the parent? Is that what you are suggesting? Thanks.
-
-Regards,
-Rahul
+No worries, your code, your choice...
 
