@@ -2,197 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D62242C0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 17:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7853242C05
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 17:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgHLPSM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 12 Aug 2020 11:18:12 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:38193 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726226AbgHLPSI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 11:18:08 -0400
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 1D0541BF20B;
-        Wed, 12 Aug 2020 15:18:03 +0000 (UTC)
-Date:   Wed, 12 Aug 2020 17:18:02 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>,
-        linux-i3c@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>
-Cc:     Nicolas Pitre <nico@fluxnic.net>,
-        Rajeev Huralikoppi <rajeev.huralikoppi@silvaco.com>,
-        Conor Culhane <conor.culhane@silvaco.com>,
-        <linux-kernel@vger.kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 3/4] i3c: master: svc: Add Silvaco I3C master driver
-Message-ID: <20200812171802.295b08d8@xps13>
-In-Reply-To: <20200812141312.3331-3-miquel.raynal@bootlin.com>
-References: <20200812141312.3331-1-miquel.raynal@bootlin.com>
-        <20200812141312.3331-3-miquel.raynal@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726606AbgHLPPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 11:15:47 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:37122 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726489AbgHLPPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 11:15:33 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 3A0CF4C8B1;
+        Wed, 12 Aug 2020 15:15:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-type:content-type:content-transfer-encoding:mime-version
+        :x-mailer:message-id:date:date:subject:subject:from:from
+        :received:received:received; s=mta-01; t=1597245330; x=
+        1599059731; bh=WwjPfLnomL2r+HVIJaHtMZVaUiKzFEyoEtIATOH76YY=; b=G
+        buEjRaUaNwzJY86BzNuWkSqAwqfLjuKUGGwhWfH6i34Jyq73OHB8FDZdWaeU5YIV
+        05PPXNliL+N6k2qyxhYeo71xxK51Iha2Tms1fWZo6zJ393ltIG90KYxRZuE6ueMe
+        dhOywejDY1fIE6lLFnFuGaHOnD5aPrnsna95U6FfQM=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id pfm51ryF4SZ1; Wed, 12 Aug 2020 18:15:30 +0300 (MSK)
+Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com [172.17.10.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 8AD5A4C89B;
+        Wed, 12 Aug 2020 18:15:29 +0300 (MSK)
+Received: from localhost.dev.yadro.com (10.199.2.34) by
+ T-EXCH-02.corp.yadro.com (172.17.10.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.669.32; Wed, 12 Aug 2020 18:15:29 +0300
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+CC:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/2] enable lock interface for macronix chips
+Date:   Wed, 12 Aug 2020 18:18:16 +0300
+Message-ID: <20200812151818.16699-1-i.mikhaylov@yadro.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.199.2.34]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-02.corp.yadro.com (172.17.10.102)
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor, Rajeev,
+TB(Top/Bottome protection bit) is not present in the status register for
+macronix chips, do not touch TB bit in status register in this case.
+Enable lock interface for most of macronix chips which are suitable for it.
 
-> +static int svc_i3c_master_handle_ibi(struct svc_i3c_master *master,
-> +				     struct i3c_dev_desc *dev)
-> +{
-> +	struct svc_i3c_i2c_dev_data *data = i3c_dev_get_master_data(dev);
-> +	struct i3c_ibi_slot *slot;
-> +	unsigned int count;
-> +	u32 mdatactrl;
-> +	int ret = 0;
-> +	u8 *buf;
-> +
-> +	spin_lock(&master->ibi.lock);
-> +
-> +	slot = i3c_generic_ibi_get_free_slot(data->ibi_pool);
-> +	if (!slot) {
-> +		ret = -ENOSPC;
-> +		goto unlock;
-> +	}
-> +
-> +	slot->len = 0;
-> +	buf = slot->data;
-> +	while (readl(master->regs + SVC_I3C_MSTATUS) & SVC_I3C_MINT_RXPEND) {
-> +		mdatactrl = readl(master->regs + SVC_I3C_MDATACTRL);
-> +		count = SVC_I3C_MDATACTRL_RXCOUNT(mdatactrl);
-> +		readsl(master->regs + SVC_I3C_MRDATAB, buf, count);
+Tested only mx25l51245g (BP0-3).
 
-After discussing with Boris, I have a question about the design: is
-there a way to differentiate, from a software point of view, from the
-data coming as "IBI" and "regular data"?
+Ivan Mikhaylov (2):
+  mtd: spi-nor: do not touch TB bit without SPI_NOR_HAS_TB
+  mtd: spi-nor: enable lock interface for macronix chips
 
-Let's say the master initiates a read.
-The moment after, an IBI is triggered.
-The hanlde_ibi() helper is called to read the IBI payload.
-While the IBI interrupted the read operation, it also interrupted the
-master dequeuing process of the bytes already in the FIFO. From a
-software perspective, we might end up reading a "regular byte" from the
-handle_ibi() helper expecting an "IBI byte".
+ drivers/mtd/spi-nor/core.c     | 22 +++++++---
+ drivers/mtd/spi-nor/macronix.c | 75 ++++++++++++++++++++++------------
+ 2 files changed, 66 insertions(+), 31 deletions(-)
 
-Is there some kind of double queue feature which I missed? Or perhaps a
-way to discriminate the origin of the data?
+-- 
+2.21.1
 
-> +		slot->len += count;
-> +		buf += count;
-> +	}
-> +
-> +	i3c_master_queue_ibi(dev, slot);
-> +
-> +unlock:
-> +	spin_unlock(&master->ibi.lock);
-> +	svc_i3c_master_emit_stop(master);
-> +	svc_i3c_master_flush_fifo(master);
-> +
-> +	return ret;
-> +}
-> +
-> +static void svc_i3c_master_ack_ibi(struct svc_i3c_master *master,
-> +				   bool mandatory_byte)
-> +{
-> +	unsigned int ibi_ack_nack;
-> +
-> +	ibi_ack_nack = SVC_I3C_MCTRL_REQUEST_IBI_ACKNACK;
-> +	if (mandatory_byte)
-> +		ibi_ack_nack |= SVC_I3C_MCTRL_IBIRESP_ACK_WITH_BYTE;
-> +	else
-> +		ibi_ack_nack |= SVC_I3C_MCTRL_IBIRESP_ACK_WITHOUT_BYTE;
-> +
-> +	writel(ibi_ack_nack, master->regs + SVC_I3C_MCTRL);
-> +}
-> +
-> +static void svc_i3c_master_nack_ibi(struct svc_i3c_master *master)
-> +{
-> +	writel(SVC_I3C_MCTRL_REQUEST_IBI_ACKNACK |
-> +	       SVC_I3C_MCTRL_IBIRESP_NACK,
-> +	       master->regs + SVC_I3C_MCTRL);
-> +}
-> +
-> +static irqreturn_t svc_i3c_master_irq_handler(int irq, void *dev_id)
-> +{
-> +	struct svc_i3c_master *master = (struct svc_i3c_master *)dev_id;
-> +	u32 active = readl(master->regs + SVC_I3C_MINTMASKED);
-> +	u32 status = readl(master->regs + SVC_I3C_MSTATUS);
-> +	unsigned int ibitype = SVC_I3C_MSTATUS_IBITYPE(status);
-> +	unsigned int ibiaddr = SVC_I3C_MSTATUS_IBIADDR(status);
-> +	struct i3c_dev_desc *dev;
-> +	bool rdata;
-> +
-> +	if (active & SVC_I3C_MINT_SLVSTART) {
-> +		writel(SVC_I3C_MINT_SLVSTART, master->regs + SVC_I3C_MSTATUS);
-> +		writel(SVC_I3C_MCTRL_REQUEST_AUTO_IBI |
-> +		       SVC_I3C_MCTRL_IBIRESP_MANUAL,
-> +		       master->regs + SVC_I3C_MCTRL);
-> +		return IRQ_HANDLED;
-> +	}
-> +
-> +	if (!(active & SVC_I3C_MINT_IBIWON))
-> +		return IRQ_NONE;
-> +
-> +	writel(SVC_I3C_MINT_IBIWON, master->regs + SVC_I3C_MSTATUS);
-> +
-> +	switch (ibitype) {
-> +	case SVC_I3C_MSTATUS_IBITYPE_IBI:
-> +		dev = svc_i3c_master_dev_from_addr(master, ibiaddr);
-> +		if (WARN_ON(!dev)) {
-> +			svc_i3c_master_nack_ibi(master);
-> +			break;
-> +		}
-> +
-> +		rdata = dev->info.bcr & I3C_BCR_IBI_PAYLOAD;
-> +		svc_i3c_master_ack_ibi(master, rdata);
-> +		if (rdata) {
-> +			svc_i3c_master_disable_interrupts(master);
-> +			return IRQ_WAKE_THREAD;
-> +		}
-> +
-> +		break;
-> +	case SVC_I3C_MSTATUS_IBITYPE_MASTER_REQUEST:
-> +		svc_i3c_master_nack_ibi(master);
-> +		break;
-> +	case SVC_I3C_MSTATUS_IBITYPE_HOT_JOIN:
-> +		svc_i3c_master_ack_ibi(master, false);
-> +		queue_work(master->base.wq, &master->hj_work);
-> +		break;
-> +	default:
-> +		return IRQ_NONE;
-> +	}
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static irqreturn_t svc_i3c_master_threaded_handler(int irq, void *dev_id)
-> +{
-> +	struct svc_i3c_master *master = (struct svc_i3c_master *)dev_id;
-> +	u32 status = readl(master->regs + SVC_I3C_MSTATUS);
-> +	unsigned int ibiaddr = SVC_I3C_MSTATUS_IBIADDR(status);
-> +	struct i3c_dev_desc *dev;
-> +
-> +	dev = svc_i3c_master_dev_from_addr(master, ibiaddr);
-> +	if (WARN_ON(!dev)) {
-> +		svc_i3c_master_emit_stop(master);
-> +		svc_i3c_master_flush_fifo(master);
-> +		return IRQ_HANDLED;
-> +	}
-> +
-> +	svc_i3c_master_handle_ibi(master, dev);
-> +	svc_i3c_master_enable_interrupts(master,
-> +					 SVC_I3C_MINT_SLVSTART |
-> +					 SVC_I3C_MINT_IBIWON);
-> +
-> +	return IRQ_HANDLED;
-> +}
-
-Thanks,
-Miquèl
