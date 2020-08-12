@@ -2,213 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC320242E81
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 20:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3614242E86
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 20:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgHLSaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 14:30:05 -0400
-Received: from mail.efficios.com ([167.114.26.124]:44340 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbgHLSaE (ORCPT
+        id S1726567AbgHLScy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 14:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726456AbgHLScx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 14:30:04 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id BA7D12D8D92;
-        Wed, 12 Aug 2020 14:30:02 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id aLaFTJWJDsWS; Wed, 12 Aug 2020 14:30:02 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 3AB3A2D8AB7;
-        Wed, 12 Aug 2020 14:30:02 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3AB3A2D8AB7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1597257002;
-        bh=wWKN0yaYQRTJWOSRXy8TRtHBowknCXyDteZ+yeYc/kI=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=VYvAT9cpOSUz95bZF+jWy2g6as+sPCaFF6eZ+mivM3GmYgJJr4JvGbDwztXO36Q7G
-         OwLfqgkcnX9pHa9whl2iWKVQIp4MlO0XsbHWYHM0Fi5An+brMqrSLjANvsLXIGwAOd
-         GOh+cioA5Bk3hY6eH5tYrKKGD6EAq6k609Wddl54ExrT0rPMUH/fUoDVC1RiqITZtU
-         U8grqhlh0zO1RaXi8UvHvDkNrN4aKdGkTq8He5t7MYxO+wpt3DZyR8nB0a9616wHiJ
-         Oe/PHunctgixEtNjs+W0V/5JHP74GAsmxVywwsPpFVCvewviijrlLScBhZKZH5xEzB
-         hgNhqj4Zy/big==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id YSQWz5Y17whP; Wed, 12 Aug 2020 14:30:02 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 1FB192D8AB6;
-        Wed, 12 Aug 2020 14:30:02 -0400 (EDT)
-Date:   Wed, 12 Aug 2020 14:30:02 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Peter Oskolkov <posk@google.com>, paulmck <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul Turner <pjt@google.com>,
-        Chris Kennelly <ckennelly@google.com>
-Message-ID: <1003774683.6088.1597257002027.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CAFTs51XK0HLwCCvXCcfE5P7a4ExANPNPw7UvNigwHZ8sZVP+nQ@mail.gmail.com>
-References: <20200811000959.2486636-1-posk@google.com> <20200811062733.GP3982@worktop.programming.kicks-ass.net> <CAFTs51XK0HLwCCvXCcfE5P7a4ExANPNPw7UvNigwHZ8sZVP+nQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2 v3] rseq/membarrier: add
- MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
+        Wed, 12 Aug 2020 14:32:53 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCBFEC061383
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 11:32:52 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id r21so2735179ota.10
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 11:32:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Iq5zcoPvcN7T8KSX0uQQrVJaYxTlpMSMBxtNsvh1wuM=;
+        b=QM7a50twcijnq4/3ZW/O+9xjvW93ebFFEyQqVRJLyIZ1P87M+G7Is4tYI1VD0ikr6u
+         0mA8d7XC8wnH+xFw6v9UgSTx6AFTQ6x+Cj0HVkaFzv1gMKXdZD/UtV/qIhPQMljzkyib
+         r3+JIXdmwd0Ii9KO7oHfZWDxU40LNTbU8dIRmN49HnESDLoEHeGphhMZz2a628D21ah+
+         WtyTpWSDy8tRo5VWoi6aAcTbDWBqBTVDiDu+5yVSC3o8utQb08yOAmDEKl1NiIVD81uC
+         3yaWwt2pGL3Exg+IJUwVHKZ41zPInA3Jj0/c1/smWfrWzTh3n8OB6be1rdzqp1HnCCbp
+         M0GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Iq5zcoPvcN7T8KSX0uQQrVJaYxTlpMSMBxtNsvh1wuM=;
+        b=dOk9y6gVdyK4dt69BCyD6XmI5mBibbqFGHumdkcSsJ8UuhG2BRmIlYJ9fpQIOk/DN3
+         aTTZY1ISuLyuNYICnJVkanVmGGsDlmvKFFPXljuzkkner0wOEupSu8Kv9BuJKTcQVCej
+         jkQxkDEp0JSgZczRXm2nkDdZtBp6N6xIm0rhBbW1qK3n+bi0lqlqyhQVavJ73uGeCoMW
+         zp8vhCn8d0we+zSWspXQmKcenD98GJjCNoTZZ+uJC6WQ2FkiUWOxHt3vi1Cppa1j0s9U
+         vDYd4uwLb5c9qhhwHlXDqX1+7AHoGE+hxGWlgWCoH6QLCuv2rRYSXZ0yPtgN8koxStDB
+         Y3IQ==
+X-Gm-Message-State: AOAM530VpUX4YBxbbX2TfiKdmlej8LvD8JUGv5POUTj5sQq57qBHXIav
+        cBJeEoDwRVTu6IOw1VZO8Xpmh1jzzrerv03tc8HJSQ==
+X-Google-Smtp-Source: ABdhPJz+lzTrWF2UOOoonvsdqjLKtgHh00A7xdKG2eO+qCNz+TiDu0I0jrDoHcVDQ8HHjErxXT8Rxhr9INaoK8a+Jns=
+X-Received: by 2002:a9d:ae9:: with SMTP id 96mr889573otq.241.1597257169977;
+ Wed, 12 Aug 2020 11:32:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3959 (ZimbraWebClient - FF79 (Linux)/8.8.15_GA_3953)
-Thread-Topic: rseq/membarrier: add MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
-Thread-Index: 5KvaIIh8ddLoPaEY5Z6fczm1Q7UhbQ==
+References: <20200807084841.7112-1-chenyi.qiang@intel.com> <20200807084841.7112-8-chenyi.qiang@intel.com>
+ <CALMp9eTAo3WO5Vk_LptTDZLzymJ_96=UhRipyzTXXLxWJRGdXg@mail.gmail.com> <20200812150017.GB6602@linux.intel.com>
+In-Reply-To: <20200812150017.GB6602@linux.intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 12 Aug 2020 11:32:38 -0700
+Message-ID: <CALMp9eTTZz+Wm-5onY2CF6VGHwtbaYtD9RZLyHZTUM2R4E6vbA@mail.gmail.com>
+Subject: Re: [RFC 7/7] KVM: VMX: Enable PKS for nested VM
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Chenyi Qiang <chenyi.qiang@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 12, 2020 at 8:00 AM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> On Mon, Aug 10, 2020 at 05:05:36PM -0700, Jim Mattson wrote:
+> > On Fri, Aug 7, 2020 at 1:47 AM Chenyi Qiang <chenyi.qiang@intel.com> wrote:
+> > >
+> > > PKS MSR passes through guest directly. Configure the MSR to match the
+> > > L0/L1 settings so that nested VM runs PKS properly.
+> > >
+> > > Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
+> > > ---
+> > >  arch/x86/kvm/vmx/nested.c | 32 ++++++++++++++++++++++++++++++++
+> > >  arch/x86/kvm/vmx/vmcs12.c |  2 ++
+> > >  arch/x86/kvm/vmx/vmcs12.h |  6 +++++-
+> > >  arch/x86/kvm/vmx/vmx.c    | 10 ++++++++++
+> > >  arch/x86/kvm/vmx/vmx.h    |  1 +
+> > >  5 files changed, 50 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > > index df2c2e733549..1f9823d21ecd 100644
+> > > --- a/arch/x86/kvm/vmx/nested.c
+> > > +++ b/arch/x86/kvm/vmx/nested.c
+> > > @@ -647,6 +647,12 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
+> > >                                         MSR_IA32_PRED_CMD,
+> > >                                         MSR_TYPE_W);
+> > >
+> > > +       if (!msr_write_intercepted_l01(vcpu, MSR_IA32_PKRS))
+> > > +               nested_vmx_disable_intercept_for_msr(
+> > > +                                       msr_bitmap_l1, msr_bitmap_l0,
+> > > +                                       MSR_IA32_PKRS,
+> > > +                                       MSR_TYPE_R | MSR_TYPE_W);
+> >
+> > What if L1 intercepts only *reads* of MSR_IA32_PKRS?
+>
+> nested_vmx_disable_intercept_for_msr() handles merging L1's desires, the
+> (MSR_TYPE_R | MSR_TYPE_W) param is effectively L0's desire for L2.
 
+I should know better than to assume that a function in kvm actually
+does anything like what its name implies, but I never seem to learn.
+:-(
 
------ On Aug 11, 2020, at 5:08 PM, Peter Oskolkov posk@posk.io wrote:
-
-> On Mon, Aug 10, 2020 at 11:27 PM Peter Zijlstra <peterz@infradead.org> wrote:
->>
->> On Mon, Aug 10, 2020 at 05:09:58PM -0700, Peter Oskolkov wrote:
->> > @@ -27,6 +35,12 @@
->> >
->> >  static void ipi_mb(void *info)
->> >  {
->>
->> The #ifdef wants to behere, otherwise you'll get a compile warning for
->> !RSEQ builds.
-> 
-> Ack. Will do in the next version - for now waiting for the rest to be
-> worked out.
-> 
-> [...]
-> 
->>
->> Mathieu did mention a few other points that I didn't see addressed:
->>
->>  - he didn't like abusing the @flags syscall argument for a CPUid;
-> 
-> @flags is not used now; maybe just rename it to something more
-> generic? @param? Or @options? Or maybe more specific, like @cpu_id?
-
-"flags" is there to allow extensibility without requiring to add new
-membarrier commands for every change. Even though it is not used now,
-I don't think re-purposing it is a good idea. What is wrong with just
-adding an additional "cpu" parameter to the system call ?
-
-A "flags" parameter is very common for system calls. I don't see why
-we should change its name, especially given it is already exposed and
-documented as "flags" in man pages.
-
-> 
->>  - he wondered if we should support SYNC_CORE + RSEQ.
-> 
-> It seems to me that CMD_PRIVATE_EXPEDITED_RSEQ is basically
-> CMD_PRIVATE_EXPEDITED_SYNC_CORE with the extra "restart RSEQ CSs"
-> behavior. Am I missing something?
-
-No. The "sync-core" is about doing context synchronization for JIts, and
-is not implemented on all architectures today. RSEQ however is available
-on a wider range of architectures.
-
-> If not, what is the point of
-> complicating the code as suggested below? Maybe just renaming
-> CMD_PRIVATE_EXPEDITED_RSEQ to CMD_PRIVATE_EXPEDITED_SYNC_CORE_RSEQ
-> will do?
-
-We basically have the following feature matrix:
-
-- private / global
-- expedited / non-expedited
-- sync-core / non-sync-core
-- rseq-fence / non-rseq-fence
-
-For a total of about 16 combinations in total if we want to support them
-all.
-
-We can continue to add separate commands for new combinations, but if we
-want to allow them to be combined, using flags rather than adding extra
-commands would have the advantage of keeping the number of commands
-manageable.
-
-However, if there is no actual use-case for combining a membarrier sync-core
-and a membarrier rseq-fence, then it limits the number of commands and maybe
-then it's acceptable to add the rseq-fence as a separate membarrier command.
-
-I prefer to have this discussion now rather than once we get to the point of
-having 40 membarrier commands for all possible combinations.
-
-Thanks,
-
-Mathieu
-
-> 
->>
->>
->> Not sure we can easily change the syscall at this point, but the latter
->> point could be addressed with something like this.
->>
->> ---
->> Index: linux-2.6/kernel/sched/membarrier.c
->> ===================================================================
->> --- linux-2.6.orig/kernel/sched/membarrier.c
->> +++ linux-2.6/kernel/sched/membarrier.c
->> @@ -374,8 +374,26 @@ static int membarrier_register_private_e
->>   */
->>  SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
->>  {
->> +       int cflags = 0, int cpuid = -1;
->> +
->>         if (unlikely(flags) && cmd != MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ)
->>                 return -EINVAL;
->> +
->> +       if (cmd & (MEMBARRIER_CMD_PRIVATE_EXPEDITED |
->> +                  MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE |
->> +                  MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ)) {
->> +
->> +               if (cmd & MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ)
->> +                       cflags |= MEMBARRIER_FLAG_RSEQ;
->> +
->> +               if (cmd & MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE) {
->> +                       cflags |= MEMBARRIER_FLAG_SYNC_CORE;
->> +                       cpuid = flags;
->> +               }
->> +
->> +               cmd = MEMBARRIER_CMD_PRIVATE_EXPEDITED;
->> +       }
->> +
->>         switch (cmd) {
->>         case MEMBARRIER_CMD_QUERY:
->>         {
->> @@ -396,18 +414,16 @@ SYSCALL_DEFINE2(membarrier, int, cmd, in
->>                 return membarrier_global_expedited();
->>         case MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED:
->>                 return membarrier_register_global_expedited();
->> -       case MEMBARRIER_CMD_PRIVATE_EXPEDITED:
->> -               return membarrier_private_expedited(0, -1);
->>         case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED:
->>                 return membarrier_register_private_expedited(0);
->> -       case MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE:
->> -               return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE,
->> -1);
->>         case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE:
->>                 return membarrier_register_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
->> -       case MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
->> -               return membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ,
->> flags);
->>         case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ:
->>                 return membarrier_register_private_expedited(MEMBARRIER_FLAG_RSEQ);
->> +
->> +       case MEMBARRIER_CMD_PRIVATE_EXPEDITED:
->> +               return membarrier_private_expedited(cflags, cpuid);
->> +
->>         default:
->>                 return -EINVAL;
->>         }
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Thanks!
