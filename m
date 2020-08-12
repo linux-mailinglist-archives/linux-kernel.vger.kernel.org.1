@@ -2,130 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C472427A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 11:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9F12427A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 11:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbgHLJcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 05:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726755AbgHLJcq (ORCPT
+        id S1727843AbgHLJdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 05:33:33 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:48410 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726618AbgHLJdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 05:32:46 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEAB8C06174A;
-        Wed, 12 Aug 2020 02:32:45 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id v9so1467136ljk.6;
-        Wed, 12 Aug 2020 02:32:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=ikRO5317g1JTomZhkPieEwMdPdc6yb7MWeGDygUVu/Y=;
-        b=vUyHDSQQkg+zffYc5aA+4vVtl6rhVC0g/fpJmdxy0gIbFlEQXiGCpnItPScFwzGAop
-         rosPSHex6qTHBb5Si00mD9g20pFu5uYcAOsOi/N7vBXOBEL4wL9XFkZkxFHmoIz2/kQ8
-         n4+OvlfzbX8kD77eWHuXrZX3CixsJd0xAdvmsgXOY4tjyG4ZhQO0gJlTWZLlcWK+twha
-         XfKf0T5D0i6RoDacqbwaA7ELtkt14WUF00/qbr+9UneI65GjixwJj3nFF4HPKkWGJm/k
-         U1isUxGpWlERfWu2wBSRlAm8D8EWBL/6ZpvZHTMSuNu5rW4oyq48FTa+FAWy1ijZbHZI
-         q/Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :date:message-id:mime-version;
-        bh=ikRO5317g1JTomZhkPieEwMdPdc6yb7MWeGDygUVu/Y=;
-        b=R4nbTdgZXLzPdpCPXpM3g4enwddY+6aG7/kH35gUZbjGG43ZK1ntswQxorYZPxGN9J
-         KD/28NMFRTxn05WdN1jjaWCa8vaQbLz/KmXEnlp56zpvYLaza/USvQ4KpGZNpCrXotnR
-         /cBdF4wK3hAXrU8Isk31NtKeAoA16+019FksUr50HOrlaDJovGLtfGLUOfeuPZ5EFelK
-         jyENR19KlulWHt3x7k6BwYM2oBnVbk1yRHtQcRahTqoUR7w5i2B2bomryUecKnFuMWj5
-         5WGf+qUGzw0zMIKKf7d1yUNpgkIFRMKITKyuh3qUBxdi7BTdYujPJEcEc8Bk+CqhiWVv
-         lGQA==
-X-Gm-Message-State: AOAM532Q7qnsy7PpopOqw6Dsr2RzZCKWgSVNkpokDr7KvOlNKyCnEwFt
-        eOGWP+h4rgkiVuXOPNaozJ0=
-X-Google-Smtp-Source: ABdhPJzr8SlpLA4gz+moz1FILxb2p8bIze9B0/QqnNBGx/GDRP+DopWHZPwBQofemKUkLLZkJBZwDA==
-X-Received: by 2002:a2e:2c18:: with SMTP id s24mr4675952ljs.260.1597224764335;
-        Wed, 12 Aug 2020 02:32:44 -0700 (PDT)
-Received: from saruman ([194.34.132.58])
-        by smtp.gmail.com with ESMTPSA id p9sm320265ljg.76.2020.08.12.02.32.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 12 Aug 2020 02:32:43 -0700 (PDT)
-From:   Felipe Balbi <balbi@kernel.org>
-To:     "Sandeep Maheswaram \(Temp\)" <sanm@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
-Subject: Re: [PATCH v11 1/2] usb: dwc3: qcom: Add interconnect support in dwc3 driver
-In-Reply-To: <322d193c-d4d2-789b-ffec-ebdee2730c1e@codeaurora.org>
-References: <1595869597-26049-1-git-send-email-sanm@codeaurora.org> <1595869597-26049-2-git-send-email-sanm@codeaurora.org> <20200727192050.GD3191083@google.com> <cd5c6c99-d8ee-da59-1abf-e64e5f7f6f8f@codeaurora.org> <87v9honyff.fsf@kernel.org> <322d193c-d4d2-789b-ffec-ebdee2730c1e@codeaurora.org>
-Date:   Wed, 12 Aug 2020 12:32:38 +0300
-Message-ID: <87sgcsnr9l.fsf@kernel.org>
+        Wed, 12 Aug 2020 05:33:33 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8190A9E7;
+        Wed, 12 Aug 2020 11:33:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1597224809;
+        bh=gW/RdlVLg2uDtxAk51NM9xVzGiDHLcaiEfWssaPGu3Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R8cuJyRViMDqhxVOSXvFGMGzwC1IKoZ0dn9N0oabm5o5Vvoj7oaA7b2c/PtstwDhV
+         d1k3LCiTYTaJGhskdZxkncwpSd52mfN1KRvpacBy00tVvaNoUL77nGO2qPCRJuckNR
+         U4fdpm0x+TR5qH7ytmnHZgltKaZxVddQvIl4tKx4=
+Date:   Wed, 12 Aug 2020 12:33:15 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Algea Cao <algea.cao@rock-chips.com>
+Cc:     a.hajda@samsung.com, kuankuan.y@gmail.com, hjc@rock-chips.com,
+        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
+        sam@ravnborg.org, airlied@linux.ie, heiko@sntech.de,
+        jernej.skrabec@siol.net, laurent.pinchart+renesas@ideasonboard.com,
+        jonas@kwiboo.se, mripard@kernel.org, darekm@google.com,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, cychiang@chromium.org,
+        linux-kernel@vger.kernel.org, narmstrong@baylibre.com,
+        jbrunet@baylibre.com, maarten.lankhorst@linux.intel.com,
+        daniel@ffwll.ch
+Subject: Re: [PATCH 4/6] drm/rockchip: dw_hdmi: Add vendor hdmi properties
+Message-ID: <20200812093315.GE6057@pendragon.ideasonboard.com>
+References: <20200812083120.743-1-algea.cao@rock-chips.com>
+ <20200812083543.4231-1-algea.cao@rock-chips.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200812083543.4231-1-algea.cao@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi Algea,
 
-"Sandeep Maheswaram (Temp)" <sanm@codeaurora.org> writes:
+Thank you for the patch.
 
-> Hi
->
-> On 8/12/2020 12:27 PM, Felipe Balbi wrote:
->> "Sandeep Maheswaram (Temp)" <sanm@codeaurora.org> writes:
->>
->>> Hi Felipe,
->>>
->>> On 7/28/2020 12:50 AM, Matthias Kaehlcke wrote:
->>>> On Mon, Jul 27, 2020 at 10:36:36PM +0530, Sandeep Maheswaram wrote:
->>>>> Add interconnect support in dwc3-qcom driver to vote for bus
->>>>> bandwidth.
->>>>>
->>>>> This requires for two different paths - from USB to
->>>>> DDR. The other is from APPS to USB.
->>>>>
->>>>> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
->>>>> Signed-off-by: Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
->>>> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
->>> Please ack if you are ok with this patch.
->> What's the plan to get this upstream? Should I take dwc3-qcom patch and
->> ignore the rest? Is there a hard-dependency on something else?
-> Yes take dwc3-qcom patch only,the dt change is already in linux-next.
+On Wed, Aug 12, 2020 at 04:35:43PM +0800, Algea Cao wrote:
+> Introduce struct dw_hdmi_property_ops in plat_data to support
+> vendor hdmi property.
+> 
+> Implement hdmi vendor properties color_depth_property and
+> hdmi_output_property to config hdmi output color depth and
+> color format.
+> 
+> The property "hdmi_output_format", the possible value
+> could be:
+>          - RGB
+>          - YCBCR 444
+>          - YCBCR 422
+>          - YCBCR 420
+> 
+> Default value of the property is set to 0 = RGB, so no changes if you
+> don't set the property.
+> 
+> The property "hdmi_output_depth" possible value could be
+>          - Automatic
+>            This indicates prefer highest color depth, it is
+>            30bit on rockcip platform.
+>          - 24bit
+>          - 30bit
+> The default value of property is 24bit.
+> 
+> Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
+> ---
+> 
+>  drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c | 174 ++++++++++++++++++++
+>  include/drm/bridge/dw_hdmi.h                |  22 +++
+>  2 files changed, 196 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+> index 23de359a1dec..8f22d9a566db 100644
+> --- a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+> +++ b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+> @@ -52,6 +52,27 @@
+>  
+>  #define HIWORD_UPDATE(val, mask)	(val | (mask) << 16)
+>  
+> +/* HDMI output pixel format */
+> +enum drm_hdmi_output_type {
+> +	DRM_HDMI_OUTPUT_DEFAULT_RGB, /* default RGB */
+> +	DRM_HDMI_OUTPUT_YCBCR444, /* YCBCR 444 */
+> +	DRM_HDMI_OUTPUT_YCBCR422, /* YCBCR 422 */
+> +	DRM_HDMI_OUTPUT_YCBCR420, /* YCBCR 420 */
+> +	DRM_HDMI_OUTPUT_YCBCR_HQ, /* Highest subsampled YUV */
+> +	DRM_HDMI_OUTPUT_YCBCR_LQ, /* Lowest subsampled YUV */
+> +	DRM_HDMI_OUTPUT_INVALID, /* Guess what ? */
+> +};
 
-Thanks for confirming :-)
+Vendor-specific properties shouldn't use names starting with drm_ or
+DRM_, that's for the DRM core. But this doesn't seem specific to
+Rockchip at all, it should be a standard property. Additionally, new
+properties need to come with a userspace implementation showing their
+usage, in X.org, Weston, the Android DRM/KMS HW composer, or another
+relevant upstream project (a test tool is usually not enough).
 
-=2D-=20
-balbi
+> +
+> +enum dw_hdmi_rockchip_color_depth {
+> +	ROCKCHIP_HDMI_DEPTH_8,
+> +	ROCKCHIP_HDMI_DEPTH_10,
+> +	ROCKCHIP_HDMI_DEPTH_12,
+> +	ROCKCHIP_HDMI_DEPTH_16,
+> +	ROCKCHIP_HDMI_DEPTH_420_10,
+> +	ROCKCHIP_HDMI_DEPTH_420_12,
+> +	ROCKCHIP_HDMI_DEPTH_420_16
+> +};
+> +
+>  /**
+>   * struct rockchip_hdmi_chip_data - splite the grf setting of kind of chips
+>   * @lcdsel_grf_reg: grf register offset of lcdc select
+> @@ -73,6 +94,12 @@ struct rockchip_hdmi {
+>  	struct clk *grf_clk;
+>  	struct dw_hdmi *hdmi;
+>  	struct phy *phy;
+> +
+> +	struct drm_property *color_depth_property;
+> +	struct drm_property *hdmi_output_property;
+> +
+> +	unsigned int colordepth;
+> +	enum drm_hdmi_output_type hdmi_output;
+>  };
+>  
+>  #define to_rockchip_hdmi(x)	container_of(x, struct rockchip_hdmi, x)
+> @@ -327,6 +354,150 @@ static void dw_hdmi_rockchip_genphy_disable(struct dw_hdmi *dw_hdmi, void *data)
+>  	phy_power_off(hdmi->phy);
+>  }
+>  
+> +static const struct drm_prop_enum_list color_depth_enum_list[] = {
+> +	{ 0, "Automatic" }, /* Prefer highest color depth */
+> +	{ 8, "24bit" },
+> +	{ 10, "30bit" },
+> +};
+> +
+> +static const struct drm_prop_enum_list drm_hdmi_output_enum_list[] = {
+> +	{ DRM_HDMI_OUTPUT_DEFAULT_RGB, "output_rgb" },
+> +	{ DRM_HDMI_OUTPUT_YCBCR444, "output_ycbcr444" },
+> +	{ DRM_HDMI_OUTPUT_YCBCR422, "output_ycbcr422" },
+> +	{ DRM_HDMI_OUTPUT_YCBCR420, "output_ycbcr420" },
+> +	{ DRM_HDMI_OUTPUT_YCBCR_HQ, "output_ycbcr_high_subsampling" },
+> +	{ DRM_HDMI_OUTPUT_YCBCR_LQ, "output_ycbcr_low_subsampling" },
+> +	{ DRM_HDMI_OUTPUT_INVALID, "invalid_output" },
+> +};
+> +
+> +static void
+> +dw_hdmi_rockchip_attach_properties(struct drm_connector *connector,
+> +				   unsigned int color, int version,
+> +				   void *data)
+> +{
+> +	struct rockchip_hdmi *hdmi = (struct rockchip_hdmi *)data;
+> +	struct drm_property *prop;
+> +
+> +	switch (color) {
+> +	case MEDIA_BUS_FMT_RGB101010_1X30:
+> +		hdmi->hdmi_output = DRM_HDMI_OUTPUT_DEFAULT_RGB;
+> +		hdmi->colordepth = 10;
+> +		break;
+> +	case MEDIA_BUS_FMT_YUV8_1X24:
+> +		hdmi->hdmi_output = DRM_HDMI_OUTPUT_YCBCR444;
+> +		hdmi->colordepth = 8;
+> +		break;
+> +	case MEDIA_BUS_FMT_YUV10_1X30:
+> +		hdmi->hdmi_output = DRM_HDMI_OUTPUT_YCBCR444;
+> +		hdmi->colordepth = 10;
+> +		break;
+> +	case MEDIA_BUS_FMT_UYVY10_1X20:
+> +		hdmi->hdmi_output = DRM_HDMI_OUTPUT_YCBCR422;
+> +		hdmi->colordepth = 10;
+> +		break;
+> +	case MEDIA_BUS_FMT_UYVY8_1X16:
+> +		hdmi->hdmi_output = DRM_HDMI_OUTPUT_YCBCR422;
+> +		hdmi->colordepth = 8;
+> +		break;
+> +	case MEDIA_BUS_FMT_UYYVYY8_0_5X24:
+> +		hdmi->hdmi_output = DRM_HDMI_OUTPUT_YCBCR420;
+> +		hdmi->colordepth = 8;
+> +		break;
+> +	case MEDIA_BUS_FMT_UYYVYY10_0_5X30:
+> +		hdmi->hdmi_output = DRM_HDMI_OUTPUT_YCBCR420;
+> +		hdmi->colordepth = 10;
+> +		break;
+> +	default:
+> +		hdmi->hdmi_output = DRM_HDMI_OUTPUT_DEFAULT_RGB;
+> +		hdmi->colordepth = 8;
+> +	}
+> +
+> +	prop = drm_property_create_enum(connector->dev, 0,
+> +					"hdmi_output_depth",
+> +					color_depth_enum_list,
+> +					ARRAY_SIZE(color_depth_enum_list));
+> +	if (prop) {
+> +		hdmi->color_depth_property = prop;
+> +		drm_object_attach_property(&connector->base, prop, 0);
+> +	}
+> +
+> +	prop = drm_property_create_enum(connector->dev, 0, "hdmi_output_format",
+> +					drm_hdmi_output_enum_list,
+> +					ARRAY_SIZE(drm_hdmi_output_enum_list));
+> +	if (prop) {
+> +		hdmi->hdmi_output_property = prop;
+> +		drm_object_attach_property(&connector->base, prop, 0);
+> +	}
+> +}
+> +
+> +static void
+> +dw_hdmi_rockchip_destroy_properties(struct drm_connector *connector,
+> +				    void *data)
+> +{
+> +	struct rockchip_hdmi *hdmi = (struct rockchip_hdmi *)data;
+> +
+> +	if (hdmi->color_depth_property) {
+> +		drm_property_destroy(connector->dev,
+> +				     hdmi->color_depth_property);
+> +		hdmi->color_depth_property = NULL;
+> +	}
+> +
+> +	if (hdmi->hdmi_output_property) {
+> +		drm_property_destroy(connector->dev,
+> +				     hdmi->hdmi_output_property);
+> +		hdmi->hdmi_output_property = NULL;
+> +	}
+> +}
+> +
+> +static int
+> +dw_hdmi_rockchip_set_property(struct drm_connector *connector,
+> +			      struct drm_connector_state *state,
+> +			      struct drm_property *property,
+> +			      u64 val,
+> +			      void *data)
+> +{
+> +	struct rockchip_hdmi *hdmi = (struct rockchip_hdmi *)data;
+> +
+> +	if (property == hdmi->color_depth_property) {
+> +		hdmi->colordepth = val;
+> +		return 0;
+> +	} else if (property == hdmi->hdmi_output_property) {
+> +		hdmi->hdmi_output = val;
+> +		return 0;
+> +	}
+> +
+> +	DRM_ERROR("failed to set rockchip hdmi connector property\n");
+> +	return -EINVAL;
+> +}
+> +
+> +static int
+> +dw_hdmi_rockchip_get_property(struct drm_connector *connector,
+> +			      const struct drm_connector_state *state,
+> +			      struct drm_property *property,
+> +			      u64 *val,
+> +			      void *data)
+> +{
+> +	struct rockchip_hdmi *hdmi = (struct rockchip_hdmi *)data;
+> +
+> +	if (property == hdmi->color_depth_property) {
+> +		*val = hdmi->colordepth;
+> +		return 0;
+> +	} else if (property == hdmi->hdmi_output_property) {
+> +		*val = hdmi->hdmi_output;
+> +		return 0;
+> +	}
+> +
+> +	DRM_ERROR("failed to get rockchip hdmi connector property\n");
+> +	return -EINVAL;
+> +}
+> +
+> +static const struct dw_hdmi_property_ops dw_hdmi_rockchip_property_ops = {
+> +	.attach_properties	= dw_hdmi_rockchip_attach_properties,
+> +	.destroy_properties	= dw_hdmi_rockchip_destroy_properties,
+> +	.set_property		= dw_hdmi_rockchip_set_property,
+> +	.get_property		= dw_hdmi_rockchip_get_property,
+> +};
+> +
+>  static void dw_hdmi_rk3228_setup_hpd(struct dw_hdmi *dw_hdmi, void *data)
+>  {
+>  	struct rockchip_hdmi *hdmi = (struct rockchip_hdmi *)data;
+> @@ -511,6 +682,9 @@ static int dw_hdmi_rockchip_bind(struct device *dev, struct device *master,
+>  	hdmi->dev = &pdev->dev;
+>  	hdmi->chip_data = plat_data->phy_data;
+>  	plat_data->phy_data = hdmi;
+> +
+> +	plat_data->property_ops = &dw_hdmi_rockchip_property_ops;
+> +
+>  	encoder = &hdmi->encoder;
+>  
+>  	encoder->possible_crtcs = drm_of_find_possible_crtcs(drm, dev->of_node);
+> diff --git a/include/drm/bridge/dw_hdmi.h b/include/drm/bridge/dw_hdmi.h
+> index ea34ca146b82..dc561ebe7a9b 100644
+> --- a/include/drm/bridge/dw_hdmi.h
+> +++ b/include/drm/bridge/dw_hdmi.h
+> @@ -6,6 +6,7 @@
+>  #ifndef __DW_HDMI__
+>  #define __DW_HDMI__
+>  
+> +#include <drm/drm_property.h>
+>  #include <sound/hdmi-codec.h>
+>  
+>  struct drm_display_info;
+> @@ -123,6 +124,24 @@ struct dw_hdmi_phy_ops {
+>  	void (*setup_hpd)(struct dw_hdmi *hdmi, void *data);
+>  };
+>  
+> +struct dw_hdmi_property_ops {
+> +	void (*attach_properties)(struct drm_connector *connector,
+> +				  unsigned int color, int version,
+> +				  void *data);
+> +	void (*destroy_properties)(struct drm_connector *connector,
+> +				   void *data);
+> +	int (*set_property)(struct drm_connector *connector,
+> +			    struct drm_connector_state *state,
+> +			    struct drm_property *property,
+> +			    u64 val,
+> +			    void *data);
+> +	int (*get_property)(struct drm_connector *connector,
+> +			    const struct drm_connector_state *state,
+> +			    struct drm_property *property,
+> +			    u64 *val,
+> +			    void *data);
+> +};
+> +
+>  struct dw_hdmi_plat_data {
+>  	struct regmap *regm;
+>  
+> @@ -141,6 +160,9 @@ struct dw_hdmi_plat_data {
+>  					   const struct drm_display_info *info,
+>  					   const struct drm_display_mode *mode);
+>  
+> +	/* Vendor Property support */
+> +	const struct dw_hdmi_property_ops *property_ops;
+> +
+>  	/* Vendor PHY support */
+>  	const struct dw_hdmi_phy_ops *phy_ops;
+>  	const char *phy_name;
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+Regards,
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl8ztzYACgkQzL64meEa
-mQZqww/+Nh/OyjjF70wAKlgxreYyvAeXNRcYmLwKx8SenVcwYn3xsDNr5zck42Of
-4ImN2g/80ArjbgxHdXKpsvkly6wy1I8FX+WZj4jzp1pRo3XCR0Nccts+t1ETt+4j
-FEmzRMlzu4KDBVixhUUC+8YNpmPcG1pdJky5usr+5OQpx8PwuhSCKp3tjWAYkgiH
-w9SaCl8V78iUYJ0XdkEfmsf77r2gw4lpbcohpWkWaTZAWsQ2JITEEsDAYxP4YVm2
-Jrl3JmTRC/gTEMyYNlf0oNv6Sb8XKQROYT7EfVDHVkMuDUbP9QphQAsVFvgGJ0ZW
-O+zjG2yraLzMmwcZ+5wpWUh/i89+aBEOJBYsXB6GYO5ut27brckPQUR992IeE7ZS
-jzdQi3bLe2t5K1Be2y9VPNkaKhu3sdVB/WvhxLf4mjrdlW76nLKwyy+tx9LeLX6Q
-G30fBJwRdk1BmKfF6slk36GEhnpb+yU6x6+CqE9Z2Yod6hLSVAVfuJVimiBp/5dy
-JWQqx6ubA6ZTskM7lgI1e3W8u1HEQPcGLdwuUJKKKjITa5OECe1h+F5hxaltF6Y5
-BJ9+0DUehwBVWCVXeByC7cOCAXpDJ8u2qBofHnLSATMMp1wo7f3yEUpETboPwbTu
-xP09hkyCTMYR1d61hhvsG897UkAalAu8sZQCRukbM0yOos2lFFM=
-=UTp+
------END PGP SIGNATURE-----
---=-=-=--
+Laurent Pinchart
