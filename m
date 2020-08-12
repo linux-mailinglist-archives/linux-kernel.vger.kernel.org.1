@@ -2,59 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9F4242FEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 22:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54DC242FEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 22:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgHLUNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 16:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726512AbgHLUNs (ORCPT
+        id S1726637AbgHLUPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 16:15:34 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:11565 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726512AbgHLUPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 16:13:48 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3690EC061383;
-        Wed, 12 Aug 2020 13:13:48 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 51A4012905D74;
-        Wed, 12 Aug 2020 12:57:01 -0700 (PDT)
-Date:   Wed, 12 Aug 2020 13:13:46 -0700 (PDT)
-Message-Id: <20200812.131346.1049273548567735486.davem@davemloft.net>
-To:     noodles@earth.li
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, kuba@kernel.org, mcoquelin.stm32@gmail.com,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 0/2] net: stmmac: Fix multicast filter on IPQ806x
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <cover.1597260787.git.noodles@earth.li>
-References: <cover.1597260787.git.noodles@earth.li>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 12 Aug 2020 12:57:01 -0700 (PDT)
+        Wed, 12 Aug 2020 16:15:34 -0400
+X-IronPort-AV: E=Sophos;i="5.76,305,1592863200"; 
+   d="scan'208";a="463289246"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 22:15:05 +0200
+Date:   Wed, 12 Aug 2020 22:15:04 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
+cc:     michal.lkml@markovi.net, Gilles.Muller@lip6.fr,
+        gregkh@linuxfoundation.org, nicolas.palix@imag.fr,
+        linux-kernel@vger.kernel.org, cocci@systeme.lip6.fr
+Subject: Re: [Cocci] [PATCH] scripts: coccicheck: Change default value for
+ parallelism
+In-Reply-To: <20200812182722.4553-1-sylphrenadin@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2008122211330.2468@hadrien>
+References: <20200812182722.4553-1-sylphrenadin@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan McDowell <noodles@earth.li>
-Date: Wed, 12 Aug 2020 20:36:54 +0100
 
-> This pair of patches are the result of discovering a failure to
-> correctly receive IPv6 multicast packets on such a device (in particular
-> DHCPv6 requests and RA solicitations). Putting the device into
-> promiscuous mode, or allmulti, both resulted in such packets correctly
-> being received. Examination of the vendor driver (nss-gmac from the
-> qsdk) shows that it does not enable the multicast filter and instead
-> falls back to allmulti.
-> 
-> Extend the base dwmac1000 driver to fall back when there's no suitable
-> hardware filter, and update the ipq806x platform to request this.
 
-Series applied, thank you.
+On Wed, 12 Aug 2020, Sumera Priyadarsini wrote:
+
+> By default, coccicheck utilizes all available threads to implement
+> parallelisation. However, when hyperthreading is enabled, this leads
+> to all threads per core being occupied resulting in longer wall-clock
+> times and higher power consumption.
+
+I have the feeling that the above sentence is not quite optimal.
+Actually, using all of the available hardware threads would not be a bad
+thing, if it was giving a benefit.  The point is that it doesn't.  It
+makes the performance worse instead.
+
+> Hence, to improve performance,
+> modify coccicheck to use only one thread per core atmost.
+
+"atmost" is not a word.  It would be clearer to say "to use at most one
+thread per core".
+
+> In the cases where the total number of threads is more than 8 and
+> hyperthreading is enabled, it was observed that optimum performance
+> is achieved around one-fourth of the total number of cores.
+> Modify the script further to accommodate this use case.
+
+It would be nice to give some performance numbers and some information
+about the machine used.
+
+thanks,
+julia
+
+>
+> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+> ---
+>  scripts/coccicheck | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/scripts/coccicheck b/scripts/coccicheck
+> index e04d328210ac..dd228dcc915e 100755
+> --- a/scripts/coccicheck
+> +++ b/scripts/coccicheck
+> @@ -75,8 +75,17 @@ else
+>          OPTIONS="--dir $KBUILD_EXTMOD $COCCIINCLUDE"
+>      fi
+>
+> +    # Use only one thread per core by default if hyperthreading is enabled
+> +    THREADS_PER_CORE=$(lscpu | grep "Thread(s) per core: " | tr -cd [:digit:])
+>      if [ -z "$J" ]; then
+>          NPROC=$(getconf _NPROCESSORS_ONLN)
+> +	if [ $THREADS_PER_CORE -gt 1 -a $NPROC -gt 2 ] ; then
+> +		if [ $NPROC -gt 8 ] ; then
+> +			NPROC=$((NPROC/4))
+> +		else
+> +			NPROC=$((NPROC/2))
+> +		fi
+> +	fi
+>      else
+>          NPROC="$J"
+>      fi
+> --
+> 2.17.1
+>
+> _______________________________________________
+> Cocci mailing list
+> Cocci@systeme.lip6.fr
+> https://systeme.lip6.fr/mailman/listinfo/cocci
+>
