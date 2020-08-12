@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE01D2427BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 11:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAAF62427C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 11:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbgHLJif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 05:38:35 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:5035 "EHLO
+        id S1727911AbgHLJio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 05:38:44 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:29638 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726942AbgHLJib (ORCPT
+        with ESMTP id S1727017AbgHLJib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 Aug 2020 05:38:31 -0400
-X-UUID: 816964cb39464f43bae2a25323e408b8-20200812
+X-UUID: 3c61768a41c345b8939f8af611591b97-20200812
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=nJC5LfTN/6T01ytb031u5VjOdx8ebwn9dtG+2//ns3g=;
-        b=lEdPDb2lT6tbgtVqTakidShlXPgybWACU6rz/tWRveWJ305LCU9p+zao+SrVO0uSuQC4zdVj148sESgr0ReUC/XI48oRWVOJ8SN7czXJtOxURRxdVc3pb7MfKMKJ+J9miruu7KERgFX6jNefj/utHjmbhi4mdJhpXvj7+C97oRs=;
-X-UUID: 816964cb39464f43bae2a25323e408b8-20200812
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=ogFDjQCtEcopOszOYsMoc/JjscsAanywEY3yR0IlUMY=;
+        b=csPrVxKCxTe5smr0IUeJCXH0eXxwjE4Gi1a0opIDhGIanfnvckAiYSEXULkadEVK2WTUB6mMl/t3CTWTrd2gZSaAHNshDpnOlLzE1mqmcslzErWAv0glO9RzBIi7maZTNyGabNB5aYVLVG2at2f2pqejHI6zZ5gX0Ixg2ZduhXs=;
+X-UUID: 3c61768a41c345b8939f8af611591b97-20200812
 Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
         (envelope-from <wenbin.mei@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1470046484; Wed, 12 Aug 2020 17:38:27 +0800
+        with ESMTP id 178852734; Wed, 12 Aug 2020 17:38:27 +0800
 Received: from mtkcas08.mediatek.inc (172.21.101.126) by
  mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 12 Aug 2020 17:38:25 +0800
+ 15.0.1497.2; Wed, 12 Aug 2020 17:38:26 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 12 Aug 2020 17:38:24 +0800
+ Transport; Wed, 12 Aug 2020 17:38:25 +0800
 From:   Wenbin Mei <wenbin.mei@mediatek.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>
@@ -38,9 +38,9 @@ CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
         <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
         Wenbin Mei <wenbin.mei@mediatek.com>
-Subject: [PATCH 1/3] mmc: dt-bindings: Add resets/reset-names for Mediatek MMC bindings
-Date:   Wed, 12 Aug 2020 17:37:24 +0800
-Message-ID: <20200812093726.10123-2-wenbin.mei@mediatek.com>
+Subject: [PATCH 2/3] arm64: dts: mt7622: add reset node for mmc device
+Date:   Wed, 12 Aug 2020 17:37:25 +0800
+Message-ID: <20200812093726.10123-3-wenbin.mei@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20200812093726.10123-1-wenbin.mei@mediatek.com>
 References: <20200812093726.10123-1-wenbin.mei@mediatek.com>
@@ -53,19 +53,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIGRlc2NyaXB0aW9uIGZvciByZXNldHMvcmVzZXQtbmFtZXMuDQoNClNpZ25lZC1vZmYtYnk6
-IFdlbmJpbiBNZWkgPHdlbmJpbi5tZWlAbWVkaWF0ZWsuY29tPg0KLS0tDQogRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL21tYy9tdGstc2QudHh0IHwgMiArKw0KIDEgZmlsZSBjaGFu
-Z2VkLCAyIGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9tbWMvbXRrLXNkLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9tbWMvbXRrLXNkLnR4dA0KaW5kZXggOGE1MzJmNDQ1M2YyLi4zNWRhNzJkZTdhYWMg
-MTAwNjQ0DQotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbW1jL210ay1z
-ZC50eHQNCisrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tbWMvbXRrLXNk
-LnR4dA0KQEAgLTQ5LDYgKzQ5LDggQEAgT3B0aW9uYWwgcHJvcGVydGllczoNCiAJCSAgICAgZXJy
-b3IgY2F1c2VkIGJ5IHN0b3AgY2xvY2soZmlmbyBmdWxsKQ0KIAkJICAgICBWYWxpZCByYW5nZSA9
-IFswOjB4N10uIGlmIG5vdCBwcmVzZW50LCBkZWZhdWx0IHZhbHVlIGlzIDAuDQogCQkgICAgIGFw
-cGxpZWQgdG8gY29tcGF0aWJsZSAibWVkaWF0ZWssbXQyNzAxLW1tYyIuDQorLSByZXNldHM6IFBo
-YW5kbGUgYW5kIHJlc2V0IHNwZWNpZmllciBwYWlyIHRvIHNvZnRyZXNldCBsaW5lIG9mIE1TREMg
-SVAuDQorLSByZXNldC1uYW1lczogUmVzZXQgbmFtZXMgZm9yIE1TREMuDQogDQogRXhhbXBsZXM6
-DQogbW1jMDogbW1jQDExMjMwMDAwIHsNCi0tIA0KMi4xOC4wDQo=
+VGhpcyBjb21taXQgYWRkcyByZXNldCBub2RlIGZvciBtbWMgZGV2aWNlLg0KDQpTaWduZWQtb2Zm
+LWJ5OiBXZW5iaW4gTWVpIDx3ZW5iaW4ubWVpQG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGFyY2gvYXJt
+NjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ3NjIyLmR0c2kgfCAyICsrDQogMSBmaWxlIGNoYW5nZWQs
+IDIgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRp
+YXRlay9tdDc2MjIuZHRzaSBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ3NjIyLmR0
+c2kNCmluZGV4IDFhMzllMGVmNzc2Yi4uNWI5ZWMwMzJjZThkIDEwMDY0NA0KLS0tIGEvYXJjaC9h
+cm02NC9ib290L2R0cy9tZWRpYXRlay9tdDc2MjIuZHRzaQ0KKysrIGIvYXJjaC9hcm02NC9ib290
+L2R0cy9tZWRpYXRlay9tdDc2MjIuZHRzaQ0KQEAgLTY4Niw2ICs2ODYsOCBAQA0KIAkJY2xvY2tz
+ID0gPCZwZXJpY2ZnIENMS19QRVJJX01TREMzMF8wX1BEPiwNCiAJCQkgPCZ0b3Bja2dlbiBDTEtf
+VE9QX01TREM1MF8wX1NFTD47DQogCQljbG9jay1uYW1lcyA9ICJzb3VyY2UiLCAiaGNsayI7DQor
+CQlyZXNldHMgPSA8JnBlcmljZmcgTVQ3NjIyX1BFUklfTVNEQzBfU1dfUlNUPjsNCisJCXJlc2V0
+LW5hbWVzID0gImhyc3QiOw0KIAkJc3RhdHVzID0gImRpc2FibGVkIjsNCiAJfTsNCiANCi0tIA0K
+Mi4xOC4wDQo=
 
