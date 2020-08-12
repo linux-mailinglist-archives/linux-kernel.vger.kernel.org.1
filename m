@@ -2,126 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D37624254A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 08:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 014A824254C
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 08:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgHLG3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 02:29:22 -0400
-Received: from mleia.com ([178.79.152.223]:36570 "EHLO mail.mleia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726255AbgHLG3V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 02:29:21 -0400
-Received: from mail.mleia.com (localhost [127.0.0.1])
-        by mail.mleia.com (Postfix) with ESMTP id 3E9D83FDFA4;
-        Wed, 12 Aug 2020 06:29:20 +0000 (UTC)
-Subject: Re: [PATCH v2 5/7] regulator: plug of_node leak in
- regulator_register()'s error path
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <cover.1597195321.git.mirq-linux@rere.qmqm.pl>
- <f5035b1b4d40745e66bacd571bbbb5e4644d21a1.1597195321.git.mirq-linux@rere.qmqm.pl>
-From:   Vladimir Zapolskiy <vz@mleia.com>
-Message-ID: <cddd3d73-8666-d64b-34f5-d82a3b31cf36@mleia.com>
-Date:   Wed, 12 Aug 2020 09:29:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <f5035b1b4d40745e66bacd571bbbb5e4644d21a1.1597195321.git.mirq-linux@rere.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-49551924 
-X-CRM114-CacheID: sfid-20200812_062920_277791_509CDCAC 
-X-CRM114-Status: GOOD (  19.19  )
+        id S1726755AbgHLGa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 02:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726255AbgHLGa4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 02:30:56 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F93C06174A;
+        Tue, 11 Aug 2020 23:30:56 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id x15so633159plr.11;
+        Tue, 11 Aug 2020 23:30:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=RZ3wedaw2pbYbDAfBKRfeJcZf90FJkT5dw1w3ok5Pjo=;
+        b=la9ApehZUj8QpjB8DNp2LZ8oh/Ftor/yarN8eTh/oOZLMZGVTMtuTthMVo3Wq+H6kV
+         GJwpfLM1Vkmq0aUotJn3WdTP/a1oocJa6Y4ZqhjFCETAYwEWVc1q3en+nFmt3IwZVXn1
+         Qy6ACeGO+IROY1zslFKC0RkqvV6BgxeP3CEx4b5oAwVhhg+C3TVV+lCSVTSR0A70/QQI
+         Sda7aq9f7nKARLqf/LiUDj84R2Iegn0y9ahFDNsobKl9So76il083ycfaaw/bPkyeiQy
+         U8xuOSHHa+VkT7msSVPYIS/+Pql3hKFm+/HaIUKAW/mCakfAQqIH0JOXO+jdtYypB+Zp
+         hQ7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=RZ3wedaw2pbYbDAfBKRfeJcZf90FJkT5dw1w3ok5Pjo=;
+        b=iLI84nKrFvjTiaRyuz9xtFkqYAF96fDmugdF6ITtctZE7tdx8HgTL0zbbAA9Na2pjP
+         jJAMcWqHijhRCQPErQ6OmQvN7nu3KodcPwPBn5mWdYhkN5XU0icY2qq47T1oLQu/iZnO
+         SNb7VRPCYvVcOIlaWxx5wmH6S4fl96V4uRD8QfY8lGZykeflpyz/V5xY8UjetM+fJlpd
+         sWhtpyjZGxkBj4qFY/q7/Z1NbXIUiy/u1fD+ISL5pQ49t0otY4mvqGaYWcfGTGSybkqZ
+         VkpY5mMDsCu6FP4Pd+dnwB7ICAMJJB7Fl3e2CYtYy7GlHSTz8CMkP/2gYAjTeC4Z/Uve
+         G7Tw==
+X-Gm-Message-State: AOAM533MQPFIJlq+g6quLCqVWEDa3Rf9KYWPMfKMA7mtr9FqKt+6S4P8
+        YMJYKmGf+UBkxLaOf9OZyp+0ie4r
+X-Google-Smtp-Source: ABdhPJz2GTHROF746HCvaeRI/8TLGO0W+B7VK9k45cU+invz7Ps5RNo40/3liUZ3jGZWrViTACDiVg==
+X-Received: by 2002:a17:902:bb82:: with SMTP id m2mr4034745pls.115.1597213854302;
+        Tue, 11 Aug 2020 23:30:54 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.6])
+        by smtp.googlemail.com with ESMTPSA id x20sm11117344pjp.3.2020.08.11.23.30.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 11 Aug 2020 23:30:53 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH v2 1/2] KVM: LAPIC: Return 0 when getting the tscdeadline timer if the lapic is hw disabled
+Date:   Wed, 12 Aug 2020 14:30:37 +0800
+Message-Id: <1597213838-8847-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michał,
+From: Wanpeng Li <wanpengli@tencent.com>
 
-On 8/12/20 4:31 AM, Michał Mirosław wrote:
-> By calling device_initialize() earlier and noting that kfree(NULL) is
-> ok, we can save a bit of code in error handling and plug of_node leak.
-> Fixed commit already did part of the work.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 9177514ce349 ("regulator: fix memory leak on error path of regulator_register()")
-> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-> Acked-by: Vladimir Zapolskiy <vz@mleia.com>
-> ---
->  drivers/regulator/core.c | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-> index 71749f48caee..448a267641df 100644
-> --- a/drivers/regulator/core.c
-> +++ b/drivers/regulator/core.c
-> @@ -5137,6 +5137,7 @@ regulator_register(const struct regulator_desc *regulator_desc,
->  		ret = -ENOMEM;
->  		goto rinse;
->  	}
-> +	device_initialize(&rdev->dev);
->  
->  	/*
->  	 * Duplicate the config so the driver could override it after
-> @@ -5144,9 +5145,8 @@ regulator_register(const struct regulator_desc *regulator_desc,
->  	 */
->  	config = kmemdup(cfg, sizeof(*cfg), GFP_KERNEL);
->  	if (config == NULL) {
-> -		kfree(rdev);
->  		ret = -ENOMEM;
-> -		goto rinse;
-> +		goto clean;
+Return 0 when getting the tscdeadline timer if the lapic is hw disabled.
 
-Here config == NULL
+Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+v1 -> v2:
+ * fix indentation
 
->  	}
->  
->  	init_data = regulator_of_get_init_data(dev, regulator_desc, config,
-> @@ -5158,10 +5158,8 @@ regulator_register(const struct regulator_desc *regulator_desc,
->  	 * from a gpio extender or something else.
->  	 */
->  	if (PTR_ERR(init_data) == -EPROBE_DEFER) {
-> -		kfree(config);
-> -		kfree(rdev);
->  		ret = -EPROBE_DEFER;
-> -		goto rinse;
-> +		goto clean;
->  	}
->  
->  	/*
-> @@ -5214,7 +5212,6 @@ regulator_register(const struct regulator_desc *regulator_desc,
->  	}
->  
->  	/* register with sysfs */
-> -	device_initialize(&rdev->dev);
->  	rdev->dev.class = &regulator_class;
->  	rdev->dev.parent = dev;
->  	dev_set_name(&rdev->dev, "regulator.%lu",
-> @@ -5292,13 +5289,11 @@ regulator_register(const struct regulator_desc *regulator_desc,
->  	mutex_lock(&regulator_list_mutex);
->  	regulator_ena_gpio_free(rdev);
->  	mutex_unlock(&regulator_list_mutex);
-> -	put_device(&rdev->dev);
-> -	rdev = NULL;
->  clean:
->  	if (dangling_of_gpiod)
->  		gpiod_put(config->ena_gpiod);
+ arch/x86/kvm/lapic.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-And above 'config' NULL pointer could be dereferenced now, right?
-
-> -	kfree(rdev);
->  	kfree(config);
-> +	put_device(&rdev->dev);
->  rinse:
->  	if (dangling_cfg_gpiod)
->  		gpiod_put(cfg->ena_gpiod);
-> 
-
---
-Best wishes,
-Vladimir
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index 5ccbee7..79599af 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -2183,8 +2183,7 @@ u64 kvm_get_lapic_tscdeadline_msr(struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_lapic *apic = vcpu->arch.apic;
+ 
+-	if (!lapic_in_kernel(vcpu) ||
+-		!apic_lvtt_tscdeadline(apic))
++	if (!kvm_apic_present(vcpu) || !apic_lvtt_tscdeadline(apic))
+ 		return 0;
+ 
+ 	return apic->lapic_timer.tscdeadline;
+-- 
+2.7.4 
