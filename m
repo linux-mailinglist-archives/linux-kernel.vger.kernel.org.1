@@ -2,147 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAEF242BA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BDC4242BB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgHLOuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 10:50:35 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46048 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726503AbgHLOuc (ORCPT
+        id S1726558AbgHLO5F convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 12 Aug 2020 10:57:05 -0400
+Received: from skedge04.snt-world.com ([91.208.41.69]:41074 "EHLO
+        skedge04.snt-world.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbgHLO5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 10:50:32 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07CEX1S6118587;
-        Wed, 12 Aug 2020 10:50:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pp1;
- bh=039f5qc7xIoBm0mLLd+ro4GakzTvU9FxjbxkKBFcWq4=;
- b=teV8h0UsYdgI4HNEedRDJddNbNxikRFFtFF1M5i2xyRxVt6mEvLDz9Q/YvHi72wCefM4
- zqVl+phDonHFY2H2vYMLaqiJ3sC8lXXi+ZwMTZOQbib64TntlGcvpPgVtA/kNsrREz8Z
- PBM/wM5IQm4t9QOLUb/FOqPwbha3meQQOElTsmdH5BXNA6EXuqjXc/Gg+1v0y6AI5DAR
- XkC3eTio3DiVpvnZBFEFZbrBlkUo/oDsDLuKmg3bRgYnck08eiFhAxfDFzn7LL4uDMQZ
- orBbQM5OPzuCLmnAGAdTc5fTvHytyN+f9mEjgwhmAYU6T0X/V6+Bq4593f4/Sif6NK97 WA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32utn91asb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 Aug 2020 10:50:30 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07CEX9pq119294;
-        Wed, 12 Aug 2020 10:50:29 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32utn91arj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 Aug 2020 10:50:29 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07CEjJVg011139;
-        Wed, 12 Aug 2020 14:50:28 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma03dal.us.ibm.com with ESMTP id 32skp9awwv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 Aug 2020 14:50:28 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07CEoR6K42795350
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 12 Aug 2020 14:50:27 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B978228058;
-        Wed, 12 Aug 2020 14:50:27 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4723828064;
-        Wed, 12 Aug 2020 14:50:25 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.163.7.238])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 12 Aug 2020 14:50:24 +0000 (GMT)
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-To:     alex.williamson@redhat.com, bhelgaas@google.com
-Cc:     schnelle@linux.ibm.com, pmorel@linux.ibm.com, mpe@ellerman.id.au,
-        oohall@gmail.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: [PATCH] PCI: Introduce flag for detached virtual functions
-Date:   Wed, 12 Aug 2020 10:50:17 -0400
-Message-Id: <1597243817-3468-2-git-send-email-mjrosato@linux.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1597243817-3468-1-git-send-email-mjrosato@linux.ibm.com>
-References: <1597243817-3468-1-git-send-email-mjrosato@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-12_06:2020-08-11,2020-08-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999
- clxscore=1015 impostorscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008120104
+        Wed, 12 Aug 2020 10:57:04 -0400
+X-Greylist: delayed 399 seconds by postgrey-1.27 at vger.kernel.org; Wed, 12 Aug 2020 10:57:03 EDT
+Received: from sntmail10s.snt-is.com (unknown [10.203.32.183])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by skedge04.snt-world.com (Postfix) with ESMTPS id 9226567A7D3;
+        Wed, 12 Aug 2020 16:50:22 +0200 (CEST)
+Received: from sntmail10s.snt-is.com (10.203.32.183) by sntmail10s.snt-is.com
+ (10.203.32.183) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 12 Aug
+ 2020 16:50:22 +0200
+Received: from sntmail10s.snt-is.com ([fe80::ad9b:dbfd:621d:166f]) by
+ sntmail10s.snt-is.com ([fe80::ad9b:dbfd:621d:166f%6]) with mapi id
+ 15.01.1913.007; Wed, 12 Aug 2020 16:50:22 +0200
+From:   Michael Brunner <Michael.Brunner@kontron.com>
+To:     "lee.jones@linaro.org" <lee.jones@linaro.org>
+CC:     "linux@roeck-us.net" <linux@roeck-us.net>,
+        "sameo@linux.intel.com" <sameo@linux.intel.com>,
+        "dvhart@linux.intel.com" <dvhart@linux.intel.com>,
+        "mibru@gmx.de" <mibru@gmx.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kevin.strasser@linux.intel.com" <kevin.strasser@linux.intel.com>
+Subject: [PATCH] mfd: Add ACPI support to Kontron PLD driver
+Thread-Topic: [PATCH] mfd: Add ACPI support to Kontron PLD driver
+Thread-Index: AQHWcLfnyQQDC2IYfEqK/svjxogCEQ==
+Date:   Wed, 12 Aug 2020 14:50:22 +0000
+Message-ID: <1e5ff295eacd5cb9eb2d888e1b0175fea62cf2ae.camel@kontron.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.3-0ubuntu1 
+x-originating-ip: [172.25.9.193]
+x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
+Content-Type: text/plain; charset="iso-8859-15"
+Content-ID: <307F3267C7C19446BAE44972F391EFB5@snt-world.com>
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-SnT-MailScanner-Information: Please contact the ISP for more information
+X-SnT-MailScanner-ID: 9226567A7D3.AAAD3
+X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service Provider for details
+X-SnT-MailScanner-SpamCheck: 
+X-SnT-MailScanner-From: michael.brunner@kontron.com
+X-SnT-MailScanner-To: dvhart@linux.intel.com, kevin.strasser@linux.intel.com,
+        lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+        linux@roeck-us.net, mibru@gmx.de, sameo@linux.intel.com
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s390x has the notion of providing VFs to the kernel in a manner
-where the associated PF is inaccessible other than via firmware.
-These are not treated as typical VFs and access to them is emulated
-by underlying firmware which can still access the PF.  After
-abafbc55 however these detached VFs were no longer able to work
-with vfio-pci as the firmware does not provide emulation of the
-PCI_COMMAND_MEMORY bit.  In this case, let's explicitly recognize
-these detached VFs so that vfio-pci can allow memory access to
-them again.
+Recent Kontron COMe modules identify the PLD device using the hardware
+id KEM0001 in the ACPI table.
+This patch adds support for probing the device using the HID and also
+retrieving the resources.
 
-Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
-Reviewed-by: Pierre Morel <pmorel@linux.ibm.com>
-Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
+As this is not available for all products, the DMI based detection still
+needs to be around for older systems. It is executed if no matching ACPI
+HID is found during registering the platform driver or no specific
+device id is forced.
+If a device is detected using ACPI and no resource information is
+available, the default io resource is used.
+
+Forcing a device id with the force_device_id parameter and therefore
+manually generating a platform device takes precedence over ACPI during
+probing.
+
+Signed-off-by: Michael Brunner <michael.brunner@kontron.com>
 ---
- arch/s390/pci/pci.c                | 8 ++++++++
- drivers/vfio/pci/vfio_pci_config.c | 3 ++-
- include/linux/pci.h                | 1 +
- 3 files changed, 11 insertions(+), 1 deletion(-)
+ drivers/mfd/kempld-core.c | 97 ++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 91 insertions(+), 6 deletions(-)
 
-diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
-index 3902c9f..04ac76d 100644
---- a/arch/s390/pci/pci.c
-+++ b/arch/s390/pci/pci.c
-@@ -581,6 +581,14 @@ int pcibios_enable_device(struct pci_dev *pdev, int mask)
+diff --git a/drivers/mfd/kempld-core.c b/drivers/mfd/kempld-core.c
+index f48e21d8b97c..408cad1958d9 100644
+--- a/drivers/mfd/kempld-core.c
++++ b/drivers/mfd/kempld-core.c
+@@ -13,6 +13,7 @@
+ #include <linux/dmi.h>
+ #include <linux/io.h>
+ #include <linux/delay.h>
++#include <linux/acpi.h>
+ 
+ #define MAX_ID_LEN 4
+ static char force_device_id[MAX_ID_LEN + 1] = "";
+@@ -132,6 +133,7 @@ static const struct kempld_platform_data kempld_platform_data_generic = {
+ };
+ 
+ static struct platform_device *kempld_pdev;
++static bool kempld_acpi_mode;
+ 
+ static int kempld_create_platform_device(const struct dmi_system_id *id)
  {
- 	struct zpci_dev *zdev = to_zpci(pdev);
- 
-+	/*
-+	 * If we have a VF on a non-multifunction bus, it must be a VF that is
-+	 * detached from its parent PF.  We rely on firmware emulation to
-+	 * provide underlying PF details.
-+	 */
-+	if (zdev->vfn && !zdev->zbus->multifunction)
-+		pdev->detached_vf = 1;
-+
- 	zpci_debug_init_device(zdev, dev_name(&pdev->dev));
- 	zpci_fmb_enable_device(zdev);
- 
-diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-index d98843f..17845fc 100644
---- a/drivers/vfio/pci/vfio_pci_config.c
-+++ b/drivers/vfio/pci/vfio_pci_config.c
-@@ -406,7 +406,8 @@ bool __vfio_pci_memory_enabled(struct vfio_pci_device *vdev)
- 	 * PF SR-IOV capability, there's therefore no need to trigger
- 	 * faults based on the virtual value.
- 	 */
--	return pdev->is_virtfn || (cmd & PCI_COMMAND_MEMORY);
-+	return pdev->is_virtfn || pdev->detached_vf ||
-+	       (cmd & PCI_COMMAND_MEMORY);
+@@ -434,13 +436,87 @@ static int kempld_detect_device(struct kempld_device_data *pld)
+ 	return ret;
  }
  
- /*
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 8355306..23a6972 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -445,6 +445,7 @@ struct pci_dev {
- 	unsigned int	is_probed:1;		/* Device probing in progress */
- 	unsigned int	link_active_reporting:1;/* Device capable of reporting link active */
- 	unsigned int	no_vf_scan:1;		/* Don't scan for VFs after IOV enablement */
-+	unsigned int	detached_vf:1;		/* VF without local PF access */
- 	pci_dev_flags_t dev_flags;
- 	atomic_t	enable_cnt;	/* pci_enable_device has been called */
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id kempld_acpi_table[] = {
++	{ "KEM0001", (kernel_ulong_t)&kempld_platform_data_generic },
++	{}
++};
++MODULE_DEVICE_TABLE(acpi, kempld_acpi_table);
++
++static int kempld_get_acpi_data(struct platform_device *pdev)
++{
++	struct list_head resource_list;
++	struct resource *resources;
++	struct resource_entry *rentry;
++	struct device *dev = &pdev->dev;
++	struct acpi_device *acpi_dev = ACPI_COMPANION(dev);
++	const struct kempld_platform_data *pdata;
++	int ret;
++	int count;
++
++	pdata = acpi_device_get_match_data(dev);
++	ret = platform_device_add_data(pdev, pdata,
++				       sizeof(struct kempld_platform_data));
++	if (ret)
++		return ret;
++
++	INIT_LIST_HEAD(&resource_list);
++	ret = acpi_dev_get_resources(acpi_dev, &resource_list, NULL, NULL);
++	if (ret < 0)
++		goto out;
++
++	count = ret;
++
++	if (count > 0) {
++		resources = devm_kcalloc(&acpi_dev->dev, count,
++					  sizeof(struct resource), GFP_KERNEL);
++		if (!resources) {
++			ret = -ENOMEM;
++			goto out;
++		}
++
++		count = 0;
++		list_for_each_entry(rentry, &resource_list, node) {
++			memcpy(&resources[count], rentry->res,
++			       sizeof(*resources));
++			count++;
++		}
++		ret = platform_device_add_resources(pdev, resources, count);
++		if (ret)
++			goto out;
++	} else
++		ret = platform_device_add_resources(pdev, pdata->ioresource, 1);
++
++out:
++	acpi_dev_free_resource_list(&resource_list);
++
++	return ret;
++}
++#else
++static int kempld_get_acpi_data(struct platform_device *pdev)
++{
++	return -ENODEV;
++}
++#endif /* CONFIG_ACPI */
++
+ static int kempld_probe(struct platform_device *pdev)
+ {
+-	const struct kempld_platform_data *pdata =
+-		dev_get_platdata(&pdev->dev);
++	const struct kempld_platform_data *pdata;
+ 	struct device *dev = &pdev->dev;
+ 	struct kempld_device_data *pld;
+ 	struct resource *ioport;
++	int ret;
++
++	if (kempld_pdev == NULL) {
++		ret = kempld_get_acpi_data(pdev);
++		if (ret < 0)
++			return ret;
++		kempld_acpi_mode = true;
++	} else if (kempld_pdev != pdev) {
++		dev_notice(dev, "platform device exists - not using ACPI\n");
++		return -ENODEV;
++	}
++	pdata = dev_get_platdata(dev);
  
+ 	pld = devm_kzalloc(dev, sizeof(*pld), GFP_KERNEL);
+ 	if (!pld)
+@@ -482,6 +558,7 @@ static int kempld_remove(struct platform_device *pdev)
+ static struct platform_driver kempld_driver = {
+ 	.driver		= {
+ 		.name	= "kempld",
++		.acpi_match_table = ACPI_PTR(kempld_acpi_table),
+ 	},
+ 	.probe		= kempld_probe,
+ 	.remove		= kempld_remove,
+@@ -800,6 +877,7 @@ MODULE_DEVICE_TABLE(dmi, kempld_dmi_table);
+ static int __init kempld_init(void)
+ {
+ 	const struct dmi_system_id *id;
++	int ret;
+ 
+ 	if (force_device_id[0]) {
+ 		for (id = kempld_dmi_table;
+@@ -809,12 +887,19 @@ static int __init kempld_init(void)
+ 					break;
+ 		if (id->matches[0].slot == DMI_NONE)
+ 			return -ENODEV;
+-	} else {
+-		if (!dmi_check_system(kempld_dmi_table))
+-			return -ENODEV;
+ 	}
+ 
+-	return platform_driver_register(&kempld_driver);
++	ret = platform_driver_register(&kempld_driver);
++	if (ret)
++		return ret;
++
++	if (!kempld_pdev && !kempld_acpi_mode)
++		if (!dmi_check_system(kempld_dmi_table)) {
++			platform_driver_unregister(&kempld_driver);
++			return -ENODEV;
++		}
++
++	return 0;
+ }
+ 
+ static void __exit kempld_exit(void)
 -- 
-1.8.3.1
+2.25.1
 
