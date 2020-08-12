@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F71242A08
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F8C242A0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728080AbgHLNFv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 12 Aug 2020 09:05:51 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:33087 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgHLNFh (ORCPT
+        id S1728028AbgHLNGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 09:06:39 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58899 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726829AbgHLNGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 09:05:37 -0400
-Received: by mail-ed1-f66.google.com with SMTP id v22so1481717edy.0;
-        Wed, 12 Aug 2020 06:05:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=86cwkh38zlQcWCjoXodryopmo7X2tpcSM5gcbscKQ0M=;
-        b=LfLWy69r5PopPySz3/upBbaClKTF1CnfmmsdaLMbobq9AdHhPsl367CeT6tGxT9wXU
-         GHz+YUh7dQOreDaY1ryyiB7xcjUaevSdkkc7Kp6WbG02PXW4r9zx8/W6Y4hcizv517uw
-         bwD+WFOISyq3mpyPt0zijzkivIq7r74CEnyVLe1F1tcmnX4eoctdmO4yXkdx5l1bJvVz
-         QNFWPy9qY//aFlXUTYhG6n65DJFjufVzit6Lddl1VofwiHhFc1411QysRjTfdFlks/v3
-         gpVLyMfKaKnTXmRZlYAzKXaTLkFnn3yyFmLB7Bnj8zI8KF3riXcuhv+Nbj4zzsapdcvc
-         kYiQ==
-X-Gm-Message-State: AOAM533qKNl+Jg3tb/eQ7+8yRxEagNRBtykAyCl/HfkPcCVlrt2Yz0jT
-        zvAysgWeIpQUYEnvXm4vWusrArjXII8S8zrINZQ=
-X-Google-Smtp-Source: ABdhPJwOHQpYOR3jt2x+RImx7BBNUDUvTJJPpjeJOh2qXkvIhVclbWE2EaUtquKhKTU4qDcmeBAA9RVGAGdRqndqVAI=
-X-Received: by 2002:aa7:dd05:: with SMTP id i5mr25655525edv.324.1597237536069;
- Wed, 12 Aug 2020 06:05:36 -0700 (PDT)
+        Wed, 12 Aug 2020 09:06:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597237593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4WKj+EyxU40YOue4LK4S3MO6lm+DalQD8muSGHaR5fw=;
+        b=aLcEqKgyd0L9T+S1WoJqHS2KLJkcR3QyAOU7Lh0tWdGa7xrm7dFuqKoEY4wI3k0PraKrsH
+        wfnw0G72tNHwH5T0BslYQxZ03Fp3/J9OUUf5xdNt2PV7LtenZ6fqUZRd5Y0qPLndC5eaL9
+        P3nmaFFsU2vSiRRnykzzxyVXRZz+lAQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-320-_TjpIsNMMFaXBv8PSKNPhg-1; Wed, 12 Aug 2020 09:06:31 -0400
+X-MC-Unique: _TjpIsNMMFaXBv8PSKNPhg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8D391E923;
+        Wed, 12 Aug 2020 13:06:29 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-127.rdu2.redhat.com [10.10.120.127])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 553C01001B07;
+        Wed, 12 Aug 2020 13:06:26 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAJfpegv4sC2zm+N5tvEmYaEFvvWJRHfdGqXUoBzbeKj81uNCvQ@mail.gmail.com>
+References: <CAJfpegv4sC2zm+N5tvEmYaEFvvWJRHfdGqXUoBzbeKj81uNCvQ@mail.gmail.com> <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com> <CAJfpegtNP8rQSS4Z14Ja4x-TOnejdhDRTsmmDD-Cccy2pkfVVw@mail.gmail.com> <20200811135419.GA1263716@miu.piliscsaba.redhat.com> <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com> <52483.1597190733@warthog.procyon.org.uk> <CAJfpegt=cQ159kEH9zCYVHV7R_08jwMxF0jKrSUV5E=uBg4Lzw@mail.gmail.com> <98802.1597220949@warthog.procyon.org.uk> <CAJfpegsVJo9e=pHf3YGWkE16fT0QaNGhgkUdq4KUQypXaD=OgQ@mail.gmail.com> <d2d179c7-9b60-ca1a-0c9f-d308fc7af5ce@redhat.com> <CAJfpeguMjU+n-JXE6aUQQGeMpCS4bsy4HQ37NHJ8aD8Aeg2qhA@mail.gmail.com> <20200812112825.b52tqeuro2lquxlw@ws.net.home>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     dhowells@redhat.com, Karel Zak <kzak@redhat.com>,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: file metadata via fs API
 MIME-Version: 1.0
-References: <20200812075235.366864-1-noltari@gmail.com> <20200812075235.366864-4-noltari@gmail.com>
-In-Reply-To: <20200812075235.366864-4-noltari@gmail.com>
-From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
-Date:   Wed, 12 Aug 2020 15:05:24 +0200
-Message-ID: <CAAdtpL6eiXff38r-e1EtKDsx34mYS2eV0fxw=tXPPCbw1S5ZAw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] MIPS: BCM63xx: enable EHCI for DWV-S0 board
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <131357.1597237585.1@warthog.procyon.org.uk>
+Date:   Wed, 12 Aug 2020 14:06:25 +0100
+Message-ID: <131358.1597237585@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 9:53 AM Álvaro Fernández Rojas
-<noltari@gmail.com> wrote:
->
-> BCM6358 SoCs have OHCI and EHCI controllers that share the same USB ports.
-> Therefore, the board should also have EHCI enabled.
->
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Miklos Szeredi <miklos@szeredi.hu> wrote:
 
-v3 already reviewed, again:
-Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
+> That presumably means the mount ID <-> mount path mapping already
+> exists, which means it's just possible to use the open(mount_path,
+> O_PATH) to obtain the base fd.
 
-> ---
->  v4: no changes.
->  v3: Reword commit description to avoid possible confusions.
->  v2: no changes.
->
->  arch/mips/bcm63xx/boards/board_bcm963xx.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> index 45f1bc437245..ac9570b66f37 100644
-> --- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> +++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> @@ -645,6 +645,7 @@ static struct board_info __initdata board_DWVS0 = {
->         },
->
->         .has_ohci0                      = 1,
-> +       .has_ehci0                      = 1,
->  };
->  #endif /* CONFIG_BCM63XX_CPU_6358 */
->
-> --
-> 2.28.0
->
+No, you can't.  A path more correspond to multiple mounts stacked on top of
+each other, e.g.:
+
+	mount -t tmpfs none /mnt
+	mount -t tmpfs none /mnt
+	mount -t tmpfs none /mnt
+
+Now you have three co-located mounts and you can't use the path to
+differentiate them.  I think this might be an issue in autofs, but Ian would
+need to comment on that.
+
+David
+
