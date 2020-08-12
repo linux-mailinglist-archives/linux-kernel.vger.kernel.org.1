@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4C2242CAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 17:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E1C242CB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 17:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbgHLP6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 11:58:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46240 "EHLO mail.kernel.org"
+        id S1727781AbgHLP63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 11:58:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726696AbgHLP5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726697AbgHLP5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 Aug 2020 11:57:04 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F25A622E01;
-        Wed, 12 Aug 2020 15:57:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0388522E02;
+        Wed, 12 Aug 2020 15:57:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1597247821;
-        bh=wNH43mWKljx0ycRWpaEYS4YesUceEtgnpEjk+gClJcQ=;
+        bh=/Uzg2tuykg7lC6MMvx9CJYJZWVruD3HfqHqckUtCNp8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LCXr7BmJSAW0zH1wneeaMcF7yPZSD+FfVY7DT/HffSLlF83lHDRg7SZY6R02PGCPt
-         MWTlQ41QiSdEqjEeELnsMeb8ui394KCoonDAd/2kYbsa8MHJphAKIvy3c2tk0D2HK9
-         b1BLAvRYKNeGNV2ndJ2mvGHo3Lsa8u5BGh/yqyZ0=
+        b=cFp/DN2DR22gySSJv+EgsJkzNvmHkz5xJ4ms7GTEzmLklC3qq34iJOYE2lZKM+6Is
+         14Wtn3DrWjePn8j5l7Uv2Dowjl7hfYIzrTQinvEG56tCAX3ifW61/JnO015vuB20Fu
+         Ja0ApwjBaZ0HR2zITWAAZZC4cXlWE6E7Dd3n7YeQ=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1k5t7b-005t77-27; Wed, 12 Aug 2020 17:56:59 +0200
+        id 1k5t7b-005t7A-40; Wed, 12 Aug 2020 17:56:59 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
-Subject: [PATCH 33/44] staging: regulator: hi6421v600-regulator: convert to use get/set voltage_sel
-Date:   Wed, 12 Aug 2020 17:56:43 +0200
-Message-Id: <a3dcad042d1a9b2f549f7c8b6d6aacc9d97c7d86.1597247164.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 34/44] staging: regulator: hi6421v600-regulator: don't use usleep_range for off_on_delay
+Date:   Wed, 12 Aug 2020 17:56:44 +0200
+Message-Id: <799fc8e9098c04c4bbdcaffc32334ca0763fc424.1597247164.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1597247164.git.mchehab+huawei@kernel.org>
 References: <cover.1597247164.git.mchehab+huawei@kernel.org>
@@ -45,124 +45,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the supported LDOs on this driver are all using a selector,
-change the implementation to use get_voltage_sel and
-set_voltage_sel ops.
+The regulator's core already handles it.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../staging/hikey9xx/hi6421v600-regulator.c   | 58 +++++++------------
- 1 file changed, 22 insertions(+), 36 deletions(-)
+ drivers/staging/hikey9xx/hi6421v600-regulator.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/drivers/staging/hikey9xx/hi6421v600-regulator.c b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-index f77ecea78597..abd1f43dd5ec 100644
+index abd1f43dd5ec..31b8ff19fd31 100644
 --- a/drivers/staging/hikey9xx/hi6421v600-regulator.c
 +++ b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-@@ -86,8 +86,8 @@ static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
- 
- 	/* set enable register */
- 	hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
--		      rdev->desc->enable_mask,
--				rdev->desc->enable_mask);
-+			     rdev->desc->enable_mask,
-+			     rdev->desc->enable_mask);
- 	dev_dbg(&rdev->dev, "%s: enable_reg=0x%x, enable_mask=0x%x\n",
- 		 __func__, rdev->desc->enable_reg,
- 		 rdev->desc->enable_mask);
-@@ -109,64 +109,49 @@ static int hi6421_spmi_regulator_disable(struct regulator_dev *rdev)
- 	return 0;
- }
- 
--static int hi6421_spmi_regulator_get_voltage(struct regulator_dev *rdev)
-+static int hi6421_spmi_regulator_get_voltage_sel(struct regulator_dev *rdev)
- {
+@@ -73,9 +73,6 @@ static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
  	struct hi6421v600_regulator *sreg = rdev_get_drvdata(rdev);
  	struct hi6421_spmi_pmic *pmic = sreg->pmic;
- 	u32 reg_val, selector;
--	int vol;
  
- 	/* get voltage selector */
- 	reg_val = hi6421_spmi_pmic_read(pmic, rdev->desc->vsel_reg);
--	selector = (reg_val & rdev->desc->vsel_mask) >>
--				(ffs(rdev->desc->vsel_mask) - 1);
- 
--	vol = rdev->desc->ops->list_voltage(rdev, selector);
-+	selector = (reg_val & rdev->desc->vsel_mask) >>	(ffs(rdev->desc->vsel_mask) - 1);
- 
- 	dev_dbg(&rdev->dev,
--		"%s: vsel_reg=0x%x, val=0x%x, entry=0x%x, voltage=%d mV\n",
--		 __func__, rdev->desc->vsel_reg, reg_val, selector, vol/ 1000);
-+		"%s: vsel_reg=0x%x, value=0x%x, entry=0x%x, voltage=%d mV\n",
-+		 __func__, rdev->desc->vsel_reg, reg_val, selector,
-+		rdev->desc->ops->list_voltage(rdev, selector) / 1000);
- 
--	return vol;
-+	return selector;
- }
- 
--static int hi6421_spmi_regulator_set_voltage(struct regulator_dev *rdev,
--				      int min_uV, int max_uV, unsigned int *selector)
-+static int hi6421_spmi_regulator_set_voltage_sel(struct regulator_dev *rdev,
-+						 unsigned int selector)
- {
- 	struct hi6421v600_regulator *sreg = rdev_get_drvdata(rdev);
- 	struct hi6421_spmi_pmic *pmic = sreg->pmic;
--	u32 vsel;
--	int uV, ret = 0;
+-	/* keep a distance of off_on_delay from last time disabled */
+-	usleep_range(rdev->desc->off_on_delay, rdev->desc->off_on_delay + 1000);
 -
--	for (vsel = 0; vsel < rdev->desc->n_voltages; vsel++) {
--		uV = rdev->desc->volt_table[vsel];
--		dev_dbg(&rdev->dev,
--			"%s: min %d, max %d, value[%u] = %d\n",
--			__func__, min_uV, max_uV, vsel, uV);
--
--		/* Break at the first in-range value */
--		if (min_uV <= uV && uV <= max_uV)
--			break;
--	}
-+	u32 reg_val;
+ 	dev_dbg(&rdev->dev, "%s: off_on_delay=%d us\n",
+ 		__func__, rdev->desc->off_on_delay);
  
- 	/* unlikely to happen. sanity test done by regulator core */
--	if (unlikely(vsel == rdev->desc->n_voltages))
-+	if (unlikely(selector >= rdev->desc->n_voltages))
- 		return -EINVAL;
- 
--	*selector = vsel;
-+	reg_val = selector << (ffs(rdev->desc->vsel_mask) - 1);
-+
- 	/* set voltage selector */
- 	hi6421_spmi_pmic_rmw(pmic, rdev->desc->vsel_reg,
--		      rdev->desc->vsel_mask,
--		      vsel << (ffs(rdev->desc->vsel_mask) - 1));
-+			     rdev->desc->vsel_mask, reg_val);
- 
- 	dev_dbg(&rdev->dev,
--		"%s: vsel_reg=0x%x, vsel_mask=0x%x, value=0x%x, voltage=%d mV\n",
-+		"%s: vsel_reg=0x%x, mask=0x%x, value=0x%x, voltage=%d mV\n",
- 		 __func__,
--		 rdev->desc->vsel_reg,
--		 rdev->desc->vsel_mask,
--		 vsel << (ffs(rdev->desc->vsel_mask) - 1), uV / 1000);
-+		 rdev->desc->vsel_reg, rdev->desc->vsel_mask, reg_val,
-+		 rdev->desc->ops->list_voltage(rdev, selector) / 1000);
- 
--	return ret;
-+	return 0;
- }
- 
- static unsigned int hi6421_spmi_regulator_get_mode(struct regulator_dev *rdev)
-@@ -315,8 +300,9 @@ static struct regulator_ops hi6421_spmi_ldo_rops = {
- 	.enable = hi6421_spmi_regulator_enable,
- 	.disable = hi6421_spmi_regulator_disable,
- 	.list_voltage = regulator_list_voltage_table,
--	.get_voltage = hi6421_spmi_regulator_get_voltage,
--	.set_voltage = hi6421_spmi_regulator_set_voltage,
-+	.map_voltage = regulator_map_voltage_iterate,
-+	.get_voltage_sel = hi6421_spmi_regulator_get_voltage_sel,
-+	.set_voltage_sel = hi6421_spmi_regulator_set_voltage_sel,
- 	.get_mode = hi6421_spmi_regulator_get_mode,
- 	.set_mode = hi6421_spmi_regulator_set_mode,
- 	.get_optimum_mode = hi6421_spmi_regulator_get_optimum_mode,
 -- 
 2.26.2
 
