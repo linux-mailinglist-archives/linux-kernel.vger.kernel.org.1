@@ -2,65 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D852A242368
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 02:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA7B242369
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 02:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgHLAep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 20:34:45 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:51256 "EHLO fornost.hmeau.com"
+        id S1726479AbgHLAe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 20:34:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726255AbgHLAeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 20:34:44 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1k5eig-0007Va-Me; Wed, 12 Aug 2020 10:34:19 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 12 Aug 2020 10:34:18 +1000
-Date:   Wed, 12 Aug 2020 10:34:18 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     richard.gong@linux.intel.com
-Cc:     davem@davemloft.net, gregkh@linuxfoundation.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dinguyen@kernel.org, richard.gong@intel.com
-Subject: Re: [PATCHv1 2/2] crypto: add Intel SoCFPGA crypto service driver
-Message-ID: <20200812003418.GA4166@gondor.apana.org.au>
-References: <1597154182-26970-1-git-send-email-richard.gong@linux.intel.com>
- <1597154182-26970-3-git-send-email-richard.gong@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1597154182-26970-3-git-send-email-richard.gong@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726255AbgHLAe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 20:34:56 -0400
+Subject: Re: [GIT PULL] chrome-platform changes for v5.9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597192496;
+        bh=U5ONr6fJPa1IfxdQumHBJaBRBzsQucQmp1M26QBhku4=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=NZ2m3NyP2+RQVlijUuDGQYbp2Uz/cqj7fCCCqPxZX2CyZBv8VZ5Qgy32LYKAHactS
+         5YszM/+/RhFkwZlmVhx7wWZtQwui/HLZ+lENLnLC8jddLDMJvpOM+UlPzyVFqxpxo9
+         ppHMYZfATsQdSSxUVbwXrwG/Ohmm64tgkdg2rlGw=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200811224201.GA4099603@google.com>
+References: <20200811224201.GA4099603@google.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200811224201.GA4099603@google.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git tags/tag-chrome-platform-for-v5.9
+X-PR-Tracked-Commit-Id: fc8cacf3fc68664e30a6df2b361ae05b9769585e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: fb893de323e2d39f7a1f6df425703a2edbdf56ea
+Message-Id: <159719249637.21709.6216007156743863374.pr-tracker-bot@kernel.org>
+Date:   Wed, 12 Aug 2020 00:34:56 +0000
+To:     Benson Leung <bleung@google.com>
+Cc:     torvalds@linux-foundation.org, bleung@chromium.org,
+        bleung@google.com, bleung@kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 08:56:22AM -0500, richard.gong@linux.intel.com wrote:
-> From: Richard Gong <richard.gong@intel.com>
-> 
-> Add Intel FPGA crypto service (FCS) driver to support new crypto services
-> on Intel SoCFPGA platforms.
-> 
-> The crypto services include security certificate, image boot validation,
-> security key cancellation, get provision data, random number generation,
-> advance encrtption standard (AES) encryption and decryption services.
-> 
-> To perform supporting crypto features on Intel SoCFPGA platforms, Linux
-> user-space application interacts with FPGA crypto service (FCS) driver via
-> structures defined in include/uapi/linux/intel_fcs-ioctl.h.
-> 
-> The application allocates spaces for IOCTL structure to hold the contents
-> or points to the data that FCS driver needs, uses IOCTL calls to passes
-> data to kernel FCS driver for processing at low level firmware and get
-> processed data or status back form the low level firmware via FCS driver.
-> 
-> The user-space application named as fcs_client is at
-> https://github.com/altera-opensource/fcs_apps/tree/fcs_client.
-> 
-> Signed-off-by: Richard Gong <richard.gong@intel.com>
+The pull request you sent on Tue, 11 Aug 2020 15:42:01 -0700:
 
-Nack.  This driver has nothing to do with the Crypto API.
+> git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git tags/tag-chrome-platform-for-v5.9
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/fb893de323e2d39f7a1f6df425703a2edbdf56ea
+
+Thank you!
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
