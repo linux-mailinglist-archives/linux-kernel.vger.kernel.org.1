@@ -2,121 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D7E242753
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 11:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E18242759
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 11:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727101AbgHLJRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 05:17:45 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:57456 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726255AbgHLJRp (ORCPT
+        id S1727805AbgHLJTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 05:19:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726618AbgHLJTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 05:17:45 -0400
-X-UUID: 25e573d41ef8423a8439bfebe68ac62f-20200812
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=UqdzDWD86OrCp6wEU2YB9Bwu97TCSXyPz6lXG6Qwo4U=;
-        b=bR8KKaZIG/GiDAYXoffnL7verGe3koQ8uq1m2yOEm9mD7Yx4TB6p5N/7qMHK/YkYtZN3ytIYzdBUgad8kH5JPBl7INF1U4C7FsI/EZ17Sgyo31ELFABOWS4BOx3gozDO8orgV/vAWBdaA9Av0FpP2/G0AR7DXmzMG/Ihvsg9U80=;
-X-UUID: 25e573d41ef8423a8439bfebe68ac62f-20200812
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1663623647; Wed, 12 Aug 2020 17:17:38 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 12 Aug 2020 17:17:29 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 12 Aug 2020 17:17:29 +0800
-Message-ID: <1597223851.5467.12.camel@mtkswgap22>
-Subject: Re: [PATCH] net: untag pointer in sockptr_is_kernel
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     kernel test robot <lkp@intel.com>
-CC:     Christoph Hellwig <hch@lst.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        <kbuild-all@lists.01.org>, <clang-built-linux@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
-Date:   Wed, 12 Aug 2020 17:17:31 +0800
-In-Reply-To: <202008112018.fpLyWmTj%lkp@intel.com>
-References: <20200811102704.17875-1-miles.chen@mediatek.com>
-         <202008112018.fpLyWmTj%lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 12 Aug 2020 05:19:36 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09026C06174A;
+        Wed, 12 Aug 2020 02:19:36 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id ep8so799372pjb.3;
+        Wed, 12 Aug 2020 02:19:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WlYNV8beXV5Vw0HrTWkAMqyzmumvTyxegzIkSbtVuJU=;
+        b=otUc5QtbHy7kSIt/M4/LTuSA7YXiAmNUh/C6x+qCsRMC+jHpMil50LbBQ66xbLUoK5
+         ANyJpms8NTqA2y2HNhSmJCPHemnYZ24bH4oL2YCG/0dfyZONk+21niOfiHqTS9Bs4Ee0
+         cuXQZx6DGGCitx0uGhzzciCgWNp6GDKlgVGoQXmjonC1E4My2mvoVq2SHFToX3IGX7/4
+         QfABa7yCRo7HRx9EaMRc5jnwjrmX8pUHfo0KlsaPP2XpHv9osdH9FaQCIDdCwIjYBr7M
+         78iEoZ1FHgbHOs8OIefPtO6gVULNk/37oTCJ6ngCJWuogz+F6QVWG9hteoTz1Iua/oWZ
+         uGCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WlYNV8beXV5Vw0HrTWkAMqyzmumvTyxegzIkSbtVuJU=;
+        b=krbOnybZkujp4g1fk25NpqaKUSwF+mT0Kzr004fUMo2TBZ78ecO+7jrPq5ZYUlp2u9
+         EAVwapnL1MrcoWptHBZA3L6+3eDCUS8+Nr2ldy7T1LfZdQby/7Cp+XNhvXqZvrds7dhl
+         +MABI/OxJlCDIzgR1avqqqnbXU1XIn24xpaCxFKeCPBbFCuBZveRnQ/7S7DVFD4rkxX5
+         gJ6HgMHQQxCWUy6yUNP+YOd2lbp+nz6gds8vpft8seqkceBkRft/5rNV+iOhr4dG+YJU
+         cU2JeSL8FdmzeLKtCE1guko1JBCOdBYCYpTe1KbDRvdDVsvXxq5pHu457OAkvrCShMlF
+         gThA==
+X-Gm-Message-State: AOAM533nCxtFa0uw+SZgVzftUkM2XUOql9XwQsXmEBvA1U2uYzzLJSv6
+        JUHCvB8o4plAV/cZJkNH7PUGvGZb
+X-Google-Smtp-Source: ABdhPJwg0+HFJ8i6X7IWQ/Zh+9/ChDwvFwCzWXvenqIcYkwbUVHcFMe5kA4mMnitN5qkPu1+crVkbQ==
+X-Received: by 2002:a17:90a:e551:: with SMTP id ei17mr5091349pjb.214.1597223975013;
+        Wed, 12 Aug 2020 02:19:35 -0700 (PDT)
+Received: from ?IPv6:2404:7a87:83e0:f800:5c24:508b:d8c0:f3b? ([2404:7a87:83e0:f800:5c24:508b:d8c0:f3b])
+        by smtp.gmail.com with ESMTPSA id 205sm1758873pfy.9.2020.08.12.02.19.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Aug 2020 02:19:34 -0700 (PDT)
+Subject: Re: [PATCH v3] exfat: remove EXFAT_SB_DIRTY flag
+To:     Sungjong Seo <sj1557.seo@samsung.com>
+Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
+        mori.takahiro@ab.mitsubishielectric.co.jp,
+        motai.hirotaka@aj.mitsubishielectric.co.jp,
+        'Namjae Jeon' <namjae.jeon@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CGME20200616021816epcas1p2bb235df44c0b6f74cdec2f12072891e3@epcas1p2.samsung.com>
+ <20200616021808.5222-1-kohada.t2@gmail.com>
+ <414101d64477$ccb661f0$662325d0$@samsung.com>
+ <aac9d6c7-1d62-a85d-9bcb-d3c0ddc8fcd6@gmail.com>
+ <500801d64572$0bdd2940$23977bc0$@samsung.com>
+ <c635e965-6b78-436a-3959-e4777e1732c1@gmail.com>
+ <000301d66dac$07b9fc00$172df400$@samsung.com>
+From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
+Message-ID: <490837eb-6765-c7be-bb80-b30fe34adb55@gmail.com>
+Date:   Wed, 12 Aug 2020 18:19:32 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <000301d66dac$07b9fc00$172df400$@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTA4LTExIGF0IDIwOjI4ICswODAwLCBrZXJuZWwgdGVzdCByb2JvdCB3cm90
-ZToNCj4gSGkgTWlsZXMsDQo+IA0KPiBUaGFuayB5b3UgZm9yIHRoZSBwYXRjaCEgWWV0IHNvbWV0
-aGluZyB0byBpbXByb3ZlOg0KPiANCj4gW2F1dG8gYnVpbGQgdGVzdCBFUlJPUiBvbiBuZXQtbmV4
-dC9tYXN0ZXJdDQo+IFthbHNvIGJ1aWxkIHRlc3QgRVJST1Igb24gbGludXMvbWFzdGVyXQ0KPiBb
-Y2Fubm90IGFwcGx5IHRvIG5ldC9tYXN0ZXIgaGNoLWNvbmZpZ2ZzL2Zvci1uZXh0IHNwYXJjLW5l
-eHQvbWFzdGVyIHY1LjggbmV4dC0yMDIwMDgxMV0NCj4gW0lmIHlvdXIgcGF0Y2ggaXMgYXBwbGll
-ZCB0byB0aGUgd3JvbmcgZ2l0IHRyZWUsIGtpbmRseSBkcm9wIHVzIGEgbm90ZS4NCj4gQW5kIHdo
-ZW4gc3VibWl0dGluZyBwYXRjaCwgd2Ugc3VnZ2VzdCB0byB1c2UgJy0tYmFzZScgYXMgZG9jdW1l
-bnRlZCBpbg0KPiBodHRwczovL2dpdC1zY20uY29tL2RvY3MvZ2l0LWZvcm1hdC1wYXRjaF0NCg0K
-aGkgdGVzdCByb2JvdCwNCg0KdGhhbmtzIGZvciB0aGUgcmVwb3J0Lg0KDQo2ZDA0ZmUxNWY3OGEg
-KCJuZXQ6IG9wdGltaXplIHRoZSBzb2NrcHRyX3QgZm9yIHVuaWZpZWQga2VybmVsL3VzZXINCmFk
-ZHJlc3Mgc3BhY2VzIikgaGFzIGJlZW4gcmV2ZXJ0ZWQsIHNvIEkgd2lsbCBub3Qgc2VudCBwYXRj
-aCB2MiBmb3IgdGhpcw0KYnVpbGQgZXJyb3IuDQoNCk1pbGVzDQoNCj4gdXJsOiAgICBodHRwczov
-L2dpdGh1Yi5jb20vMGRheS1jaS9saW51eC9jb21taXRzL01pbGVzLUNoZW4vbmV0LXVudGFnLXBv
-aW50ZXItaW4tc29ja3B0cl9pc19rZXJuZWwvMjAyMDA4MTEtMTgzMDMNCj4gYmFzZTogICBodHRw
-czovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9kYXZlbS9uZXQtbmV4
-dC5naXQgYmZkZDVhYWE1NGIwYTQ0ZDlkZjU1MGZlNGM5ZGI3ZTE0NzBhMTFiOA0KPiBjb25maWc6
-IHg4Nl82NC1yYW5kY29uZmlnLWEwMTMtMjAyMDA4MTEgKGF0dGFjaGVkIGFzIC5jb25maWcpDQo+
-IGNvbXBpbGVyOiBjbGFuZyB2ZXJzaW9uIDEyLjAuMCAoaHR0cHM6Ly9naXRodWIuY29tL2xsdm0v
-bGx2bS1wcm9qZWN0IDRmMmFkMTVkYjUzNTg3M2RkYTliZmUyNDhhMjc3MTAyM2I2NGE0M2MpDQo+
-IHJlcHJvZHVjZSAodGhpcyBpcyBhIFc9MSBidWlsZCk6DQo+ICAgICAgICAgd2dldCBodHRwczov
-L3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vaW50ZWwvbGtwLXRlc3RzL21hc3Rlci9zYmluL21h
-a2UuY3Jvc3MgLU8gfi9iaW4vbWFrZS5jcm9zcw0KPiAgICAgICAgIGNobW9kICt4IH4vYmluL21h
-a2UuY3Jvc3MNCj4gICAgICAgICAjIGluc3RhbGwgeDg2XzY0IGNyb3NzIGNvbXBpbGluZyB0b29s
-IGZvciBjbGFuZyBidWlsZA0KPiAgICAgICAgICMgYXB0LWdldCBpbnN0YWxsIGJpbnV0aWxzLXg4
-Ni02NC1saW51eC1nbnUNCj4gICAgICAgICAjIHNhdmUgdGhlIGF0dGFjaGVkIC5jb25maWcgdG8g
-bGludXggYnVpbGQgdHJlZQ0KPiAgICAgICAgIENPTVBJTEVSX0lOU1RBTExfUEFUSD0kSE9NRS8w
-ZGF5IENPTVBJTEVSPWNsYW5nIG1ha2UuY3Jvc3MgQVJDSD14ODZfNjQgDQo+IA0KPiBJZiB5b3Ug
-Zml4IHRoZSBpc3N1ZSwga2luZGx5IGFkZCBmb2xsb3dpbmcgdGFnIGFzIGFwcHJvcHJpYXRlDQo+
-IFJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT4NCj4gDQo+IEFs
-bCBlcnJvcnMgKG5ldyBvbmVzIHByZWZpeGVkIGJ5ID4+KToNCj4gDQo+ICAgIEluIGZpbGUgaW5j
-bHVkZWQgZnJvbSBuZXQvaXB2Ni9hZl9pbmV0Ni5jOjI5Og0KPiAgICBJbiBmaWxlIGluY2x1ZGVk
-IGZyb20gaW5jbHVkZS9saW51eC9uZXQuaDoyNDoNCj4gPj4gaW5jbHVkZS9saW51eC9zb2NrcHRy
-Lmg6MjM6MjQ6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiAndW50YWdn
-ZWRfYWRkcicgWy1XZXJyb3IsLVdpbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0NCj4gICAg
-ICAgICAgICByZXR1cm4gKHVuc2lnbmVkIGxvbmcpdW50YWdnZWRfYWRkcihzb2NrcHRyLmtlcm5l
-bCkgPj0gVEFTS19TSVpFOw0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeDQo+
-ICAgIDEgZXJyb3IgZ2VuZXJhdGVkLg0KPiAtLQ0KPiAgICBJbiBmaWxlIGluY2x1ZGVkIGZyb20g
-bmV0L2lwdjYvdWRwLmM6MjQ6DQo+ICAgIEluIGZpbGUgaW5jbHVkZWQgZnJvbSBpbmNsdWRlL2xp
-bnV4L25ldC5oOjI0Og0KPiA+PiBpbmNsdWRlL2xpbnV4L3NvY2twdHIuaDoyMzoyNDogZXJyb3I6
-IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uICd1bnRhZ2dlZF9hZGRyJyBbLVdlcnJv
-ciwtV2ltcGxpY2l0LWZ1bmN0aW9uLWRlY2xhcmF0aW9uXQ0KPiAgICAgICAgICAgIHJldHVybiAo
-dW5zaWduZWQgbG9uZyl1bnRhZ2dlZF9hZGRyKHNvY2twdHIua2VybmVsKSA+PSBUQVNLX1NJWkU7
-DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF4NCj4gICAgbmV0L2lwdjYvdWRw
-LmM6MTAyOTozMDogd2FybmluZzogbm8gcHJldmlvdXMgcHJvdG90eXBlIGZvciBmdW5jdGlvbiAn
-dWRwX3Y2X2Vhcmx5X2RlbXV4JyBbLVdtaXNzaW5nLXByb3RvdHlwZXNdDQo+ICAgIElORElSRUNU
-X0NBTExBQkxFX1NDT1BFIHZvaWQgdWRwX3Y2X2Vhcmx5X2RlbXV4KHN0cnVjdCBza19idWZmICpz
-a2IpDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXg0KPiAgICBuZXQvaXB2Ni91
-ZHAuYzoxMDI5OjI1OiBub3RlOiBkZWNsYXJlICdzdGF0aWMnIGlmIHRoZSBmdW5jdGlvbiBpcyBu
-b3QgaW50ZW5kZWQgdG8gYmUgdXNlZCBvdXRzaWRlIG9mIHRoaXMgdHJhbnNsYXRpb24gdW5pdA0K
-PiAgICBJTkRJUkVDVF9DQUxMQUJMRV9TQ09QRSB2b2lkIHVkcF92Nl9lYXJseV9kZW11eChzdHJ1
-Y3Qgc2tfYnVmZiAqc2tiKQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICBeDQo+ICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHN0YXRpYyANCj4gICAgbmV0L2lwdjYvdWRwLmM6MTA3MDoy
-OTogd2FybmluZzogbm8gcHJldmlvdXMgcHJvdG90eXBlIGZvciBmdW5jdGlvbiAndWRwdjZfcmN2
-JyBbLVdtaXNzaW5nLXByb3RvdHlwZXNdDQo+ICAgIElORElSRUNUX0NBTExBQkxFX1NDT1BFIGlu
-dCB1ZHB2Nl9yY3Yoc3RydWN0IHNrX2J1ZmYgKnNrYikNCj4gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIF4NCj4gICAgbmV0L2lwdjYvdWRwLmM6MTA3MDoyNTogbm90ZTogZGVjbGFyZSAn
-c3RhdGljJyBpZiB0aGUgZnVuY3Rpb24gaXMgbm90IGludGVuZGVkIHRvIGJlIHVzZWQgb3V0c2lk
-ZSBvZiB0aGlzIHRyYW5zbGF0aW9uIHVuaXQNCj4gICAgSU5ESVJFQ1RfQ0FMTEFCTEVfU0NPUEUg
-aW50IHVkcHY2X3JjdihzdHJ1Y3Qgc2tfYnVmZiAqc2tiKQ0KPiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBeDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXRpYyANCj4gICAgMiB3
-YXJuaW5ncyBhbmQgMSBlcnJvciBnZW5lcmF0ZWQuDQo+IA0KPiB2aW0gKy91bnRhZ2dlZF9hZGRy
-ICsyMyBpbmNsdWRlL2xpbnV4L3NvY2twdHIuaA0KPiANCj4gICAgIDIwCQ0KPiAgICAgMjEJc3Rh
-dGljIGlubGluZSBib29sIHNvY2twdHJfaXNfa2VybmVsKHNvY2twdHJfdCBzb2NrcHRyKQ0KPiAg
-ICAgMjIJew0KPiAgID4gMjMJCXJldHVybiAodW5zaWduZWQgbG9uZyl1bnRhZ2dlZF9hZGRyKHNv
-Y2twdHIua2VybmVsKSA+PSBUQVNLX1NJWkU7DQo+ICAgICAyNAl9DQo+ICAgICAyNQkNCj4gDQo+
-IC0tLQ0KPiAwLURBWSBDSSBLZXJuZWwgVGVzdCBTZXJ2aWNlLCBJbnRlbCBDb3Jwb3JhdGlvbg0K
-PiBodHRwczovL2xpc3RzLjAxLm9yZy9oeXBlcmtpdHR5L2xpc3Qva2J1aWxkLWFsbEBsaXN0cy4w
-MS5vcmcNCg0K
+>>
+>> When should VOL_DIRTY be cleared?
+>>
+>> The current behavior is ...
+>>
+>> Case of  mkdir, rmdir, rename:
+>>     - set VOL_DIRTY before operation
+>>     - set VOL_CLEAN after operating.
+>> In async mode, it is actually written to the media after 30 seconds.
+>>
+>> Case of  cp, touch:
+>>     - set VOL_DIRTY before operation
+>>     - however, VOL_CLEAN is not called in this context.
+>> VOL_CLEAN will call by sync_fs or unmount.
+>>
+>> I added VOL_CLEAN in last of __exfat_write_inode() and exfat_map_cluster().
+>> As a result, VOL_DIRTY is cleared with cp and touch.
+>> However, when copying a many files ...
+>>    - Async mode: VOL_DIRTY is written to the media twice every 30 seconds.
+>>    - Sync mode: Of course,  VOL_DIRTY and VOL_CLEAN to the media for each
+>> file.
+>>
+>> Frequent writing VOL_DIRTY and VOL_CLEAN  increases the risk of boot-
+>> sector curruption.
+>> If the boot-sector corrupted, it causes the following serious problems  on
+>> some OSs.
+>>    - misjudge as unformatted
+>>    - can't judge as exfat
+>>    - can't repair
+>>
+>> I want to minimize boot sector writes, to reduce these risk.
+>>
+>> I looked vfat/udf implementation, which manages similar dirty information
+>> on linux, and found that they ware mark-dirty at mount and cleared at
+>> unmount.
+>>
+>> Here are some ways to clear VOL_DIRTY.
+>>
+>> (A) VOL_CLEAN after every write operation.
+>>     :-) Ejectable at any time after a write operation.
+>>     :-( Many times write to Boot-sector.
+>>
+>> (B) dirty at mount, clear at unmount (same as vfat/udf)
+>>     :-) Write to boot-sector twice.
+>>     :-( It remains dirty unless unmounted.
+>>     :-( Write to boot-sector even if there is no write operation.
+>>
+>> (C) dirty on first write operation, clear on unmount
+>>     :-) Writing to boot-sector is minimal.
+>>     :-) Will not write to the boot-sector if there is no write operation.
+>>     :-( It remains dirty unless unmounted.
+>>
+>> (D) dirty on first write operation,  clear on sync-fs/unmount
+>>    :-) Writing to boot-sector can be reduced.
+>>    :-) Will not write to the boot-sector if there is no write operation.
+>>    :-) sync-fs makes it clean and ejectable immidiately.
+>>    :-( It remains dirty unless sync-fs or unmount.
+>>    :-( Frequent sync-fs will  increases writes to boot-sector.
+>>
+>> I think it should be (C) or(D).
+>> What do you think?
+>>
+> 
+> First of all, I'm sorry for the late reply.
+> And thank you for the suggestion.
+
+Thanks for thinking on this complicated issue.
+
+
+> Most of the NAND flash devices and HDDs have wear leveling and bad sector replacement algorithms applied.
+> So I think that the life of the boot sector will not be exhausted first.
+
+I'm not too worried about the life of the boot-sector.
+I'm worried about write failures caused by external factors.
+(power failure/system down/vibration/etc. during writing)
+They rarely occur on SD cards, but occur on many HDDs, some SSDs and USB storages by 0.1% or more.
+Especially with AFT-HDD, not only boot-sector but also the following multiple sectors become unreadable.
+It is not possible to completely solve this problem, as long as writing to the boot-sector.
+(I think it's a exFAT's specification defect)
+The only effective way to reduce this problem is to reduce writes to the boot-sector.
+
+
+> Currently the volume dirty/clean policy of exfat-fs is not perfect,
+
+Thank you for sharing the problem with you.
+
+
+> but I think it behaves similarly to the policy of MS Windows.
+
+On Windows10, the dirty flag is cleared after more than 15 seconds after all write operations are completed.
+(dirty-flag is never updated during the write operation continues)
+
+
+> Therefore,
+> I think code improvements should be made to reduce volume flag records while maintaining the current policy.
+
+Current policy is inconsistent.
+As I wrote last mail, the problem with the current implementation is that the dirty-flag may not be cleared
+after the write operation.(even if sync is enabled or disabled)
+Because, some write operations clear the dirty-flag but some don't clear.
+Unmount or sync command is the only way to ensure that the dirty-flag is cleared.
+This has no effect on clearing the dirty-flag after a write operations, it only increases risk of destroying
+the boot-sector.
+  - Clear the dirty-flag after every write operation.
+  - Never clear the dirty-flag after every write operation.
+Unless unified to either one,  I think that sync policy cannot be consistent.
+
+How do you think?
+
+
+BR
+---
+etsuhiro Kohada <kohada.t2@gmail.com>
 
