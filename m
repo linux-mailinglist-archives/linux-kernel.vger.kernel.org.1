@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8464324313C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 00:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE489243137
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 00:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgHLW5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 18:57:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48940 "EHLO mail.kernel.org"
+        id S1726705AbgHLW5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 18:57:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726627AbgHLW5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726637AbgHLW5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 Aug 2020 18:57:36 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB25A22B43;
-        Wed, 12 Aug 2020 22:57:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BC6322B45;
+        Wed, 12 Aug 2020 22:57:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597273055;
-        bh=CW/aiQFmNWSWU6f2QI56vpnzZ0xECq7LXPOVqeXxrh0=;
+        s=default; t=1597273056;
+        bh=8dX/jRRGYYoVQ4sfHAistYqVItFs5RRYfTXsC/iWNDc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CF18Bh5zZd1ef4p5C5HDp8ufrUjEmyeKyoVdapM3e1bCEUAObxp5rBWTv1jo2/oWv
-         ukvFHokvenfhcEC0SGMBzh4/JWHzYQzyMHgp4/NUl3tPFPwXlnHWAhF0cHLUnvhU/g
-         fnyIA3vfrdyiBFhSPhtHk1XIlY6e3ME39sq2UpRE=
+        b=eH9fW6h9Wp+mfejJk2PkC/aBga5X9fiV+ho31fP6NlqWsVTUx6pHesSCvRIjz0w+j
+         qeLyD1wF7BOnF+tKc2mYyQQgWKN+CwZWjiNqteII9XAM7DYNz+4imJ4A9Nil4qw1FS
+         YOY8vKYopXKqZ5dHqw6LRsbML1HE4rwbVe+hodR4=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,9 +33,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         elver@google.com, dvyukov@google.com,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 07/12] rcu: Attempt QS when CPU discovers GP for strict GPs
-Date:   Wed, 12 Aug 2020 15:57:27 -0700
-Message-Id: <20200812225732.20068-7-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 08/12] rcu: IPI all CPUs at GP start for strict GPs
+Date:   Wed, 12 Aug 2020 15:57:28 -0700
+Message-Id: <20200812225732.20068-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200812225632.GA19759@paulmck-ThinkPad-P72>
 References: <20200812225632.GA19759@paulmck-ThinkPad-P72>
@@ -46,58 +46,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-A given CPU normally notes a new grace period during one RCU_SOFTIRQ,
-but avoids reporting the corresponding quiescent state until some later
-RCU_SOFTIRQ.  This leisurly approach improves efficiency by increasing
-the number of update requests served by each grace period, but is not
-what is needed for kernels built with CONFIG_RCU_STRICT_GRACE_PERIOD=y.
-
-This commit therefore adds a new rcu_strict_gp_check_qs() function
-which, in CONFIG_RCU_STRICT_GRACE_PERIOD=y kernels, simply enters and
-immediately exist an RCU read-side critical section.  If the CPU is
-in a quiescent state, the rcu_read_unlock() will attempt to report an
-immediate quiescent state.  This rcu_strict_gp_check_qs() function is
-invoked from note_gp_changes(), so that a CPU just noticing a new grace
-period might immediately report a quiescent state for that grace period.
+Currently, each CPU discovers the beginning of a given grace period
+on its own time, which is again good for efficiency but bad for fast
+grace periods.  This commit therefore uses on_each_cpu() to IPI each
+CPU after grace-period initialization in order to inform each CPU of
+the new grace period in a timely manner, but only in kernels build with
+CONFIG_RCU_STRICT_GRACE_PERIOD=y.
 
 Reported-by Jann Horn <jannh@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ kernel/rcu/tree.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 08cc91c..4353a1a 100644
+index 4353a1a..a30d6f3 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -1557,6 +1557,19 @@ static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
+@@ -1678,6 +1678,15 @@ static void rcu_gp_torture_wait(void)
  }
  
  /*
-+ * In CONFIG_RCU_STRICT_GRACE_PERIOD=y kernels, attempt to generate a
-+ * quiescent state.  This is intended to be invoked when the CPU notices
-+ * a new grace period.
++ * Handler for on_each_cpu() to invoke the target CPU's RCU core
++ * processing.
 + */
-+static void rcu_strict_gp_check_qs(void)
++static void rcu_strict_gp_boundary(void *unused)
 +{
-+	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD)) {
-+		rcu_read_lock();
-+		rcu_read_unlock();
-+	}
++	invoke_rcu_core();
 +}
 +
 +/*
-  * Update CPU-local rcu_data state to record the beginnings and ends of
-  * grace periods.  The caller must hold the ->lock of the leaf rcu_node
-  * structure corresponding to the current CPU, and must have irqs disabled.
-@@ -1626,6 +1639,7 @@ static void note_gp_changes(struct rcu_data *rdp)
+  * Initialize a new grace period.  Return false if no grace period required.
+  */
+ static bool rcu_gp_init(void)
+@@ -1805,6 +1814,10 @@ static bool rcu_gp_init(void)
+ 		WRITE_ONCE(rcu_state.gp_activity, jiffies);
  	}
- 	needwake = __note_gp_changes(rnp, rdp);
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+	rcu_strict_gp_check_qs();
- 	if (needwake)
- 		rcu_gp_kthread_wake();
+ 
++	// If strict, make all CPUs aware of new grace period.
++	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
++		on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
++
+ 	return true;
  }
+ 
 -- 
 2.9.5
 
