@@ -2,96 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1282429F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FDB2429EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgHLNCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 09:02:50 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:4486 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727993AbgHLNCk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 09:02:40 -0400
-X-UUID: 8b45364098d8405b8e7204291d8662b9-20200812
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=CBjDMfS4ZVhji0R5jmv55ojWlHfMqOgeKR+VafpiBXg=;
-        b=mGTIkWRs28RZe81Aqxvi441JCi8aarHLLaBEiNkAVjlC/5VK6nDZhKnuK9uXQ7I/Jcf5cixUhZ04J8uvCx/rRnYKONK6PM5Uw2Ry2Ks4h8Vnt7L8PTJk/kSq9Bx9aG9sldBqsfEF4dcgYaPTi2NzwttRHxSAtSdEm3a7VeqApqk=;
-X-UUID: 8b45364098d8405b8e7204291d8662b9-20200812
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <wenbin.mei@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 303957295; Wed, 12 Aug 2020 21:02:36 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 12 Aug 2020 21:02:33 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 12 Aug 2020 21:02:32 +0800
-From:   Wenbin Mei <wenbin.mei@mediatek.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>, Wenbin Mei <wenbin.mei@mediatek.com>
-Subject: [v2,3/3] mmc: mediatek: add optional module reset property
-Date:   Wed, 12 Aug 2020 21:01:29 +0800
-Message-ID: <20200812130129.13519-4-wenbin.mei@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200812130129.13519-1-wenbin.mei@mediatek.com>
-References: <20200812130129.13519-1-wenbin.mei@mediatek.com>
+        id S1727817AbgHLNCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 09:02:20 -0400
+Received: from mga17.intel.com ([192.55.52.151]:39389 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726404AbgHLNCT (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 09:02:19 -0400
+IronPort-SDR: tSTPUCxX4Mx+lb5gQtDAXpnvnk7/EzokzeaHtPIGMGgoDAAIB9nglPd0Z41Fx+dakVzfjasoYs
+ 394vDcuk3gmw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9710"; a="133999652"
+X-IronPort-AV: E=Sophos;i="5.76,304,1592895600"; 
+   d="scan'208";a="133999652"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 06:02:18 -0700
+IronPort-SDR: /TojppMMq/iufcGRp5r0elCweGvp4iDvZC17WPVdvLLHP8gqovcGGSmvCH0FlUm9VXg0Lkyeec
+ C8VK89u8PqUw==
+X-IronPort-AV: E=Sophos;i="5.76,304,1592895600"; 
+   d="scan'208";a="469814362"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.255.29.234]) ([10.255.29.234])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 06:02:13 -0700
+Subject: Re: [PATCH] perf parse-events: Set exclude_guest for user-space
+ counting
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+References: <20200812065953.22143-1-yao.jin@linux.intel.com>
+ <20200812121504.GE13995@kernel.org>
+From:   Like Xu <like.xu@linux.intel.com>
+Organization: Intel OTC
+Message-ID: <74097816-3f36-abea-1eaa-8942aedd7322@linux.intel.com>
+Date:   Wed, 12 Aug 2020 21:02:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200812121504.GE13995@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhpcyBwYXRjaCBmaXhzIGVNTUMtQWNjZXNzIG9uIG10NzYyMi9CcGktNjQuDQpCZWZvcmUgd2Ug
-Z290IHRoZXNlIEVycm9ycyBvbiBtb3VudGluZyBlTU1DIGlvbiBSNjQ6DQpbICAgNDguNjY0OTI1
-XSBibGtfdXBkYXRlX3JlcXVlc3Q6IEkvTyBlcnJvciwgZGV2IG1tY2JsazAsIHNlY3RvciAyMDQ4
-MDAgb3AgMHgxOihXUklURSkNCmZsYWdzIDB4ODAwIHBoeXNfc2VnIDEgcHJpbyBjbGFzcyAwDQpb
-ICAgNDguNjc2MDE5XSBCdWZmZXIgSS9PIGVycm9yIG9uIGRldiBtbWNibGswcDEsIGxvZ2ljYWwg
-YmxvY2sgMCwgbG9zdCBzeW5jIHBhZ2Ugd3JpdGUNCg0KVGhpcyBwYXRjaCBhZGRzIGEgb3B0aW9u
-YWwgcmVzZXQgbWFuYWdlbWVudCBmb3IgbXNkYy4NClNvbWV0aW1lcyB0aGUgYm9vdGxvYWRlciBk
-b2VzIG5vdCBicmluZyBtc2RjIHJlZ2lzdGVyDQp0byBkZWZhdWx0IHN0YXRlLCBzbyBuZWVkIHJl
-c2V0IHRoZSBtc2RjIGNvbnRyb2xsZXIuDQoNCkZpeGVzOiA5NjY1ODBhZDIzNmUgKCJtbWM6IG1l
-ZGlhdGVrOiBhZGQgc3VwcG9ydCBmb3IgTVQ3NjIyIFNvQyIpDQpTaWduZWQtb2ZmLWJ5OiBXZW5i
-aW4gTWVpIDx3ZW5iaW4ubWVpQG1lZGlhdGVrLmNvbT4NClRlc3RlZC1ieTogRnJhbmsgV3VuZGVy
-bGljaCA8ZnJhbmstd0BwdWJsaWMtZmlsZXMuZGU+DQotLS0NCiBkcml2ZXJzL21tYy9ob3N0L210
-ay1zZC5jIHwgMTMgKysrKysrKysrKysrKw0KIDEgZmlsZSBjaGFuZ2VkLCAxMyBpbnNlcnRpb25z
-KCspDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL21tYy9ob3N0L210ay1zZC5jIGIvZHJpdmVycy9t
-bWMvaG9zdC9tdGstc2QuYw0KaW5kZXggMzllN2ZjNTRjNDM4Li4yYjI0M2MwM2M5YjIgMTAwNjQ0
-DQotLS0gYS9kcml2ZXJzL21tYy9ob3N0L210ay1zZC5jDQorKysgYi9kcml2ZXJzL21tYy9ob3N0
-L210ay1zZC5jDQpAQCAtMjIsNiArMjIsNyBAQA0KICNpbmNsdWRlIDxsaW51eC9zbGFiLmg+DQog
-I2luY2x1ZGUgPGxpbnV4L3NwaW5sb2NrLmg+DQogI2luY2x1ZGUgPGxpbnV4L2ludGVycnVwdC5o
-Pg0KKyNpbmNsdWRlIDxsaW51eC9yZXNldC5oPg0KIA0KICNpbmNsdWRlIDxsaW51eC9tbWMvY2Fy
-ZC5oPg0KICNpbmNsdWRlIDxsaW51eC9tbWMvY29yZS5oPg0KQEAgLTQzNCw2ICs0MzUsNyBAQCBz
-dHJ1Y3QgbXNkY19ob3N0IHsNCiAJc3RydWN0IG1zZGNfc2F2ZV9wYXJhIHNhdmVfcGFyYTsgLyog
-dXNlZCB3aGVuIGdhdGUgSENMSyAqLw0KIAlzdHJ1Y3QgbXNkY190dW5lX3BhcmEgZGVmX3R1bmVf
-cGFyYTsgLyogZGVmYXVsdCB0dW5lIHNldHRpbmcgKi8NCiAJc3RydWN0IG1zZGNfdHVuZV9wYXJh
-IHNhdmVkX3R1bmVfcGFyYTsgLyogdHVuZSByZXN1bHQgb2YgQ01EMjEvQ01EMTkgKi8NCisJc3Ry
-dWN0IHJlc2V0X2NvbnRyb2wgKnJlc2V0Ow0KIH07DQogDQogc3RhdGljIGNvbnN0IHN0cnVjdCBt
-dGtfbW1jX2NvbXBhdGlibGUgbXQ4MTM1X2NvbXBhdCA9IHsNCkBAIC0xNTE2LDYgKzE1MTgsMTIg
-QEAgc3RhdGljIHZvaWQgbXNkY19pbml0X2h3KHN0cnVjdCBtc2RjX2hvc3QgKmhvc3QpDQogCXUz
-MiB2YWw7DQogCXUzMiB0dW5lX3JlZyA9IGhvc3QtPmRldl9jb21wLT5wYWRfdHVuZV9yZWc7DQog
-DQorCWlmICghSVNfRVJSKGhvc3QtPnJlc2V0KSkgew0KKwkJcmVzZXRfY29udHJvbF9hc3NlcnQo
-aG9zdC0+cmVzZXQpOw0KKwkJdXNsZWVwX3JhbmdlKDEwLCA1MCk7DQorCQlyZXNldF9jb250cm9s
-X2RlYXNzZXJ0KGhvc3QtPnJlc2V0KTsNCisJfQ0KKw0KIAkvKiBDb25maWd1cmUgdG8gTU1DL1NE
-IG1vZGUsIGNsb2NrIGZyZWUgcnVubmluZyAqLw0KIAlzZHJfc2V0X2JpdHMoaG9zdC0+YmFzZSAr
-IE1TRENfQ0ZHLCBNU0RDX0NGR19NT0RFIHwgTVNEQ19DRkdfQ0tQRE4pOw0KIA0KQEAgLTIyNzMs
-NiArMjI4MSwxMSBAQCBzdGF0aWMgaW50IG1zZGNfZHJ2X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9k
-ZXZpY2UgKnBkZXYpDQogCWlmIChJU19FUlIoaG9zdC0+c3JjX2Nsa19jZykpDQogCQlob3N0LT5z
-cmNfY2xrX2NnID0gTlVMTDsNCiANCisJaG9zdC0+cmVzZXQgPSBkZXZtX3Jlc2V0X2NvbnRyb2xf
-Z2V0X29wdGlvbmFsX2V4Y2x1c2l2ZSgmcGRldi0+ZGV2LA0KKwkJCQkJCQkJImhyc3QiKTsNCisJ
-aWYgKFBUUl9FUlIoaG9zdC0+cmVzZXQpID09IC1FUFJPQkVfREVGRVIpDQorCQlyZXR1cm4gUFRS
-X0VSUihob3N0LT5yZXNldCk7DQorDQogCWhvc3QtPmlycSA9IHBsYXRmb3JtX2dldF9pcnEocGRl
-diwgMCk7DQogCWlmIChob3N0LT5pcnEgPCAwKSB7DQogCQlyZXQgPSAtRUlOVkFMOw0KLS0gDQoy
-LjE4LjANCg==
+On 2020/8/12 20:15, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Aug 12, 2020 at 02:59:53PM +0800, Jin Yao escreveu:
+>> Currently if we run 'perf record -e cycles:u', exclude_guest is 0.
+>>
+>> But it doesn't make sense that we request for user-space counting
+>> but we also get the guest report.
+>>
+
+Please hold the horse and allow this possibility.
+
+Some authorized perf users on the host may
+only want to count (KVM) guest user space events.
+
+Thanks,
+Like Xu
+
+>> To keep perf semantics consistent and clear, this patch sets
+>> exclude_guest for user-space counting.
+> 
+> Applied, and also added this, that you should consider doing in the
+> future (modulo the "Committer testing:" header :) ):
+> 
+> Committer testing:
+> 
+> Before:
+> 
+>    # perf record -e cycles:u
+>    ^C[ perf record: Woken up 1 times to write data ]
+>    [ perf record: Captured and wrote 1.231 MB perf.data (91 samples) ]
+>    #
+>    # perf evlist -v
+>    cycles:u: size: 120, { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|ID|CPU|PERIOD, read_format: ID, disabled: 1, inherit: 1, exclude_kernel: 1, exclude_hv: 1, freq: 1, sample_id_all: 1
+>    <SNIP>
+>    #
+> 
+> After:
+> 
+>    # perf record -e cycles:u
+>    ^C[ perf record: Woken up 1 times to write data ]
+>    [ perf record: Captured and wrote 1.263 MB perf.data (403 samples) ]
+>    #
+>    # perf evlist -v
+>    cycles:u: size: 120, { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|ID|CPU|PERIOD, read_format: ID, disabled: 1, inherit: 1, exclude_kernel: 1, exclude_hv: 1, freq: 1, sample_id_all: 1, exclude_guest: 1
+>    #
+> 
+> ----
+> 
+> I.e. show actual command output before and after that demonstrates the
+> problem and then the solution.
+> 
+>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>> ---
+>>   tools/perf/util/parse-events.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+>> index 9f7260e69113..4d809f1fe269 100644
+>> --- a/tools/perf/util/parse-events.c
+>> +++ b/tools/perf/util/parse-events.c
+>> @@ -1794,6 +1794,8 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+>>   		if (*str == 'u') {
+>>   			if (!exclude)
+>>   				exclude = eu = ek = eh = 1;
+>> +			if (!exclude_GH)
+>> +				eG = 1;
+>>   			eu = 0;
+>>   		} else if (*str == 'k') {
+>>   			if (!exclude)
+>> -- 
+>> 2.17.1
+>>
+> 
 
