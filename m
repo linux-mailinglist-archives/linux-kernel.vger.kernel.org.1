@@ -2,57 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE2C2423E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 04:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A17C2423EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 04:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgHLCBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 22:01:09 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:41904 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726235AbgHLCBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 22:01:09 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id B315B9617494B5F5982D;
-        Wed, 12 Aug 2020 10:01:05 +0800 (CST)
-Received: from [10.164.122.247] (10.164.122.247) by smtp.huawei.com
- (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 12 Aug
- 2020 10:01:04 +0800
-Subject: Re: [PATCH] erofs: avoid duplicated permission check for "trusted."
- xattrs
-To:     Gao Xiang <hsiangkao@redhat.com>, <linux-erofs@lists.ozlabs.org>
-CC:     LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>,
-        Hongyu Jin <hongyu.jin@unisoc.com>, <stable@vger.kernel.org>
-References: <20200811070020.6339-1-hsiangkao@redhat.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <18a6a9b7-5967-1929-920a-e34e446944ac@huawei.com>
-Date:   Wed, 12 Aug 2020 10:01:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726554AbgHLCBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 22:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726235AbgHLCBs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 22:01:48 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9F7C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 19:01:47 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id q13so315493vsn.9
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 19:01:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tFY4085plBY8G7tVD9MczcUSssYpeVWGX8Ah9xVqPOk=;
+        b=HDA4NFi9vQjtl12+Zmrjq+C3UnJr0mMBKrILh7t3fkK5hS5cNExIGL1+L1hIEprKFY
+         x+UHshB2qPRa7PC01fywLSFvj2iZvBI8hqCmFZw2kEf5oRNClRsIUrxtAvAsblH+J5zZ
+         2KMfqb4HX6ghLCBOoOUwyb66NWWlO71PVYBlukNa+PtZj04JAm3WukGJSpHHvXU83i97
+         KUshbPtCx7M+J8xGBUa0sZoKfukD3msvsdQJcyaAg0xhTazKRsXmH+VmGbgjrZRXESAv
+         00+tkEfI9xA9WQ2GwGdVUiB0Ui+CpKMCkIYXGEm/0rRQeSLupTNG+OkHlGJelIW/hVeP
+         B8sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tFY4085plBY8G7tVD9MczcUSssYpeVWGX8Ah9xVqPOk=;
+        b=AjHneJpBZjaNo1YB3/Zwzu+SJfvxFR0tm/KdfBc9cXkaSpwmltlflm2m0qdmkMnqrR
+         qHOOCMk9CzIMg2lquYsox96fC2+UVbYKFZuFKWMphiE/cxnDLCypZXODZyyHwIVdITBy
+         13IvgXz7Mg5ZjtNUpeFjyoVpuHe1CQXuI+0qHdKpVz1zxU0atALuQ1S9M2MnxuSGQt9m
+         WI8GnwO6n1ZbFFxcLWA5csh7uiFrQPEbJTwIgWixdnInRnZkXvyxqZ4EVQA6iEUI9uFf
+         AdlJlA/LQNNJNu0NLgGRcTdQ73/9mkprFsy/1Y5XmAm856o0anxLaenF0QNeow59PiT9
+         wXJQ==
+X-Gm-Message-State: AOAM533eLomwsM6Z79vNPEWdFCZqAaNc3A1OZ8GHasWFpZ9ymukSO/av
+        k9EuaaCNvpcVDCpmaGHWi6iP05w6A14VqbfW6LPIng==
+X-Google-Smtp-Source: ABdhPJw1XndaA/OYA/SoNpImfbiqj/XJo4rws0tFRMOxmiIgBDNA1xisgCnGslix67SfdNKWCiSpD/Z3IVj+nBpG8Rs=
+X-Received: by 2002:a67:f1c7:: with SMTP id v7mr10241022vsm.50.1597197706596;
+ Tue, 11 Aug 2020 19:01:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200811070020.6339-1-hsiangkao@redhat.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.164.122.247]
-X-CFilter-Loop: Reflected
+References: <20200812001439.545655-1-badhri@google.com> <20200812014319.GA116801@roeck-us.net>
+In-Reply-To: <20200812014319.GA116801@roeck-us.net>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Tue, 11 Aug 2020 19:01:10 -0700
+Message-ID: <CAPTae5Jw3ZysWnYj=s7cjU1Hnr3ib7vfCHsgV=1Qq_2EWcUNvg@mail.gmail.com>
+Subject: Re: [PATCH v2] tcpm: During PR_SWAP, source caps should be sent only
+ after tSwapSourceStart
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/8/11 15:00, Gao Xiang wrote:
-> Don't recheck it since xattr_permission() already
-> checks CAP_SYS_ADMIN capability.
-> 
-> Just follow 5d3ce4f70172 ("f2fs: avoid duplicated permission check for "trusted." xattrs")
-> 
-> Reported-by: Hongyu Jin <hongyu.jin@unisoc.com>
-> [ Gao Xiang: since it could cause some complex Android overlay
->    permission issue as well on android-5.4+, so it'd be better to
->    backport to 5.4+ rather than pure cleanup on mainline. ]
-> Cc: <stable@vger.kernel.org> # 5.4+
-> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+On Tue, Aug 11, 2020 at 6:43 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Tue, Aug 11, 2020 at 05:14:39PM -0700, Badhri Jagan Sridharan wrote:
+> > From the spec:
+> > "6.6.8.1 SwapSourceStartTimer
+> > The SwapSourceStartTimer Shall be used by the new Source, after a Power
+> > Role Swap or Fast Role Swap, to ensure that it does not send
+> > Source_Capabilities Message before the new Sink is ready to receive the
+> > Source_Capabilities Message. The new Source Shall Not send the
+> > Source_Capabilities Message earlier than tSwapSourceStart after the
+> > last bit of the EOP of GoodCRC Message sent in response to the PS_RDY
+> > Message sent by the new Source indicating that its power supply is
+> > ready."
+> >
+> > This fixes TD.PD.CP.E3, TD.PD.CP.E4, TD.PD.CP.E5 failures
+> >
+> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+>
+> Nit below, otherwise
+>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+>
+> Note that I wasn't copied on this patch and only noticed it accidentally.
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Apologies Guenter ! Error on my side while performing the git
+send-email command.
+Will make sure that I double check next time.
 
-Thanks,
+>
+> Guenter
+>
+> > ---
+> > Changes since V1:
+> > - Comment on the permissible values of tSwapSourceStart
+> > ---
+> >  drivers/usb/typec/tcpm/tcpm.c | 2 +-
+> >  include/linux/usb/pd.h        | 1 +
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> > index 3ef37202ee37..d38347bd3335 100644
+> > --- a/drivers/usb/typec/tcpm/tcpm.c
+> > +++ b/drivers/usb/typec/tcpm/tcpm.c
+> > @@ -3555,7 +3555,7 @@ static void run_state_machine(struct tcpm_port *port)
+> >                */
+> >               tcpm_set_pwr_role(port, TYPEC_SOURCE);
+> >               tcpm_pd_send_control(port, PD_CTRL_PS_RDY);
+> > -             tcpm_set_state(port, SRC_STARTUP, 0);
+> > +             tcpm_set_state(port, SRC_STARTUP, PD_T_SWAP_SRC_START);
+> >               break;
+> >
+> >       case VCONN_SWAP_ACCEPT:
+> > diff --git a/include/linux/usb/pd.h b/include/linux/usb/pd.h
+> > index b6c233e79bd4..ed5eed73ccf8 100644
+> > --- a/include/linux/usb/pd.h
+> > +++ b/include/linux/usb/pd.h
+> > @@ -473,6 +473,7 @@ static inline unsigned int rdo_max_power(u32 rdo)
+> >  #define PD_T_ERROR_RECOVERY  100     /* minimum 25 is insufficient */
+> >  #define PD_T_SRCSWAPSTDBY      625     /* Maximum of 650ms */
+> >  #define PD_T_NEWSRC            250     /* Maximum of 275ms */
+> > +#define PD_T_SWAP_SRC_START  20     /* Minimum of 20ms */
+>
+> Odd alignment. Same as with the previous two lines which don't use tabs
+> either.
+>
+> >
+> >  #define PD_T_DRP_TRY         100     /* 75 - 150 ms */
+> >  #define PD_T_DRP_TRYWAIT     600     /* 400 - 800 ms */
