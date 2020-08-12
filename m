@@ -2,203 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFAC242699
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4932426A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgHLISf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 04:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
+        id S1726786AbgHLIWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 04:22:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbgHLISf (ORCPT
+        with ESMTP id S1726517AbgHLIWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 04:18:35 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA02C06174A;
-        Wed, 12 Aug 2020 01:18:35 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ha11so736578pjb.1;
-        Wed, 12 Aug 2020 01:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=79f2Q6E1np8SG+am2XzUSjzcDBDgFqCYmgnZYDZDf0A=;
-        b=nlhfMQnM79bkE++hU9UHzfAUO66rEjOEAxexFuScCLj0xVeTisj/51Sld5gT92RraL
-         AIS1BNxrJdTMd/O/cmh0/IGywD8U+UHWRAWdJw4sn6pFNJ1aM+ZEFJykhekp8fyRlekv
-         LNTPHdU9+KOMOqB4Be8S/E5WxkWJoog5eZn7ITX+DJUEKrw0BTVVaIMiHMlJ7VXRMMwo
-         kiCYV0pib4I4ri3GTSoo9n57yoWVf8Vp7rHBmryszp5U/Rr18mZaWiOGWRmwA4iTrrCr
-         KNrv3q9Zt3T+MKIrxclD6UrzJkuhy0i1V0g7GfQb/NXC/roh2pwnOrLc4NQSycPfN/Pr
-         mMyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=79f2Q6E1np8SG+am2XzUSjzcDBDgFqCYmgnZYDZDf0A=;
-        b=jbIeel8cq2Pv6qd3hVQIjF5CUuIwdmuCeiFHWw/t7qtmYkV/WRp1rxENSZ/pE0ref6
-         QtfUIcsaxfC7EYILcnhzD8AjXs/jQr4Oi1aBZtXrQmxwX7jCiV3V0/E/6M3HnzMRDWd/
-         163hXcQjnzHBJ+XicavAK0PvFk8uAFEmpb5cKAspK9dvOdhDctCfxDbSeL7T9cIl9kqD
-         Fb/GK9OPkMdXdD0SA+ZAikZPWGxdDhXxDQKGQ5oMjQH/9fxYgZwppUsifK4NVlVZEKmE
-         uRMGOH13oL1KXsmVD9+oRHxelXVAYf54HKBdGmZ0FESHuMm1a9mg3jbByP2c8qcnqGt0
-         /QaQ==
-X-Gm-Message-State: AOAM532EcxYuWE6rfxVHpiQZ3c9n3r2P7HnMRwpyUGJ4yIVNTVqfgDMX
-        j0U1TLJ4xUn0L9fVqQi0+iQ=
-X-Google-Smtp-Source: ABdhPJxeeFrT8J1cTifNM8kGu2J2wqCIyrp58B7SlaMaeh8+s3Jr8gHNTZT1n1PHaZ/FvCH/wjcD2w==
-X-Received: by 2002:a17:90b:f09:: with SMTP id br9mr5035461pjb.11.1597220314648;
-        Wed, 12 Aug 2020 01:18:34 -0700 (PDT)
-Received: from localhost (193-116-193-175.tpgi.com.au. [193.116.193.175])
-        by smtp.gmail.com with ESMTPSA id n15sm1501361pgs.25.2020.08.12.01.18.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Aug 2020 01:18:34 -0700 (PDT)
-Date:   Wed, 12 Aug 2020 18:18:28 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 1/2] lockdep: improve current->(hard|soft)irqs_enabled
- synchronisation with actual irq state
-To:     peterz@infradead.org
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-References: <20200723105615.1268126-1-npiggin@gmail.com>
-        <20200807111126.GI2674@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200807111126.GI2674@hirez.programming.kicks-ass.net>
+        Wed, 12 Aug 2020 04:22:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB40C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 01:22:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JgBMrxFhpXh3xpWdoZXYK4da8LqJW1ikTR27jgesG/k=; b=kTn2pnqInJbU6VFHhlEzEJiFza
+        iNeM2LqgEYKHtAhuLBQ2kSWOSGQz+7gJvBNPsixA/bLKhQMxkIyfRqQkdJFEKGO0BBCPcnytjTI1l
+        21EQ6PoQdbshQxZB+vcLZicIrvMoGvJ1I/T4lHXqfqLjM32Xrj5BW+bkmvlc2ZzTkCvB4kiZTNm8D
+        Aglia5uM4vHo2WZsz/txGeq/wZkOpZ/5VLg89D1RT9K2V+7fvR6HpuQjl4tnYqiHlqhnK5SyU7jDc
+        wZZh5h5ubs1pb8xS7yAuFEQFVUBKb73IoTtIB4ovsCsnuSR5stZZJF335zM/wrE9Ub9AI8uUxltOX
+        2AN1pmRg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k5lxz-0001nH-73; Wed, 12 Aug 2020 08:18:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7D08D300238;
+        Wed, 12 Aug 2020 10:18:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6679022281190; Wed, 12 Aug 2020 10:18:32 +0200 (CEST)
+Date:   Wed, 12 Aug 2020 10:18:32 +0200
+From:   peterz@infradead.org
+To:     Marco Elver <elver@google.com>
+Cc:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        fenghua.yu@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        yu-cheng.yu@intel.com, sdeep@vmware.com,
+        virtualization@lists.linux-foundation.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Wei Liu <wei.liu@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] x86/paravirt: Add missing noinstr to arch_local*()
+ helpers
+Message-ID: <20200812081832.GK2674@hirez.programming.kicks-ass.net>
+References: <CANpmjNPau_DEYadey9OL+iFZKEaUTqnFnyFs1dU12o00mg7ofA@mail.gmail.com>
+ <20200807151903.GA1263469@elver.google.com>
+ <20200811074127.GR3982@worktop.programming.kicks-ass.net>
+ <a2dffeeb-04f0-8042-b39a-b839c4800d6f@suse.com>
+ <20200811081205.GV3982@worktop.programming.kicks-ass.net>
+ <07f61573-fef1-e07c-03f2-a415c88dec6f@suse.com>
+ <20200811092054.GB2674@hirez.programming.kicks-ass.net>
+ <20200811094651.GH35926@hirez.programming.kicks-ass.net>
+ <20200811201755.GI35926@hirez.programming.kicks-ass.net>
+ <20200812080650.GA3894595@elver.google.com>
 MIME-Version: 1.0
-Message-Id: <1597220073.mbvcty6ghk.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200812080650.GA3894595@elver.google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from peterz@infradead.org's message of August 7, 2020 9:11 pm:
->=20
-> What's wrong with something like this?
->=20
-> AFAICT there's no reason to actually try and add IRQ tracing here, it's
-> just a hand full of instructions at the most.
+On Wed, Aug 12, 2020 at 10:06:50AM +0200, Marco Elver wrote:
+> On Tue, Aug 11, 2020 at 10:17PM +0200, peterz@infradead.org wrote:
+> > On Tue, Aug 11, 2020 at 11:46:51AM +0200, peterz@infradead.org wrote:
+> > 
+> > > So let me once again see if I can't find a better solution for this all.
+> > > Clearly it needs one :/
+> > 
+> > So the below boots without triggering the debug code from Marco -- it
+> > should allow nesting local_irq_save/restore under raw_local_irq_*().
+> > 
+> > I tried unconditional counting, but there's some _reallly_ wonky /
+> > asymmetric code that wrecks that and I've not been able to come up with
+> > anything useful.
+> > 
+> > This one starts counting when local_irq_save() finds it didn't disable
+> > IRQs while lockdep though it did. At that point, local_irq_restore()
+> > will decrement and enable things again when it reaches 0.
+> > 
+> > This assumes local_irq_save()/local_irq_restore() are nested sane, which
+> > is mostly true.
+> > 
+> > This leaves #PF, which I fixed in these other patches, but I realized it
+> > needs fixing for all architectures :-( No bright ideas there yet.
+> > 
+> > ---
+> >  arch/x86/entry/thunk_32.S       |  5 ----
+> >  include/linux/irqflags.h        | 45 +++++++++++++++++++-------------
+> >  init/main.c                     | 16 ++++++++++++
+> >  kernel/locking/lockdep.c        | 58 +++++++++++++++++++++++++++++++++++++++++
+> >  kernel/trace/trace_preemptirq.c | 33 +++++++++++++++++++++++
+> >  5 files changed, 134 insertions(+), 23 deletions(-)
+> 
+> Testing this again with syzkaller produced some new reports:
+> 
+> 	BUG: stack guard page was hit in error_entry
+> 	BUG: stack guard page was hit in exc_int3
+> 	PANIC: double fault in error_entry
+> 	PANIC: double fault in exc_int3
+> 
+> Most of them have corrupted reports, but this one might be useful:
+> 
+> 	BUG: stack guard page was hit at 000000001fab0982 (stack is 00000000063f33dc..00000000bf04b0d8)
+> 	BUG: stack guard page was hit at 00000000ca97ac69 (stack is 00000000af3e6c84..000000001597e1bf)
+> 	kernel stack overflow (double-fault): 0000 [#1] PREEMPT SMP
+> 	CPU: 1 PID: 4709 Comm: kworker/1:1H Not tainted 5.8.0+ #5
+> 	Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
+> 	Workqueue: events_highpri snd_vmidi_output_work
+> 	RIP: 0010:exc_int3+0x5/0xf0 arch/x86/kernel/traps.c:636
+> 	Code: c9 85 4d 89 e8 31 c0 e8 a9 7d 68 fd e9 90 fe ff ff e8 0f 35 00 00 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 55 53 48 89 fb <e8> 76 0e 00 00 85 c0 74 03 5b 5d c3 f6 83 88 00 00 00 03 74 7e 48
+> 	RSP: 0018:ffffc90008114000 EFLAGS: 00010083
+> 	RAX: 0000000084e00e17 RBX: ffffc90008114018 RCX: ffffffff84e00e17
+> 	RDX: 0000000000000000 RSI: ffffffff84e00a39 RDI: ffffc90008114018
+> 	RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> 	R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> 	R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> 	FS:  0000000000000000(0000) GS:ffff88807dc80000(0000) knlGS:0000000000000000
+> 	CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> 	CR2: ffffc90008113ff8 CR3: 000000002dae4006 CR4: 0000000000770ee0
+> 	DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> 	DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 	PKRU: 00000000
+> 	Call Trace:
+> 	 asm_exc_int3+0x31/0x40 arch/x86/include/asm/idtentry.h:537
+> 	RIP: 0010:arch_static_branch include/trace/events/preemptirq.h:40 [inline]
+> 	RIP: 0010:static_key_false include/linux/jump_label.h:200 [inline]
+> 	RIP: 0010:trace_irq_enable_rcuidle+0xd/0x120 include/trace/events/preemptirq.h:40
+> 	Code: 24 08 48 89 df e8 43 8d ef ff 48 89 df 5b e9 4a 2e 99 03 66 2e 0f 1f 84 00 00 00 00 00 55 41 56 53 48 89 fb e8 84 1a fd ff cc <1f> 44 00 00 5b 41 5e 5d c3 65 8b 05 ab 74 c3 7e 89 c0 31 f6 48 0f
+> 	RSP: 0018:ffffc900081140f8 EFLAGS: 00000093
+> 	RAX: ffffffff813d9e8c RBX: ffffffff81314dd3 RCX: ffff888076ce6000
+> 	RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff81314dd3
+> 	RBP: 0000000000000000 R08: ffffffff813da3d4 R09: 0000000000000001
+> 	R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> 	R13: 0000000000000082 R14: 0000000000000000 R15: ffff888076ce6000
+> 	 trace_hardirqs_restore+0x59/0x80 kernel/trace/trace_preemptirq.c:106
+> 	 rcu_irq_enter_irqson+0x43/0x70 kernel/rcu/tree.c:1074
+> 	 trace_irq_enable_rcuidle+0x87/0x120 include/trace/events/preemptirq.h:40
+> 	 trace_hardirqs_restore+0x59/0x80 kernel/trace/trace_preemptirq.c:106
+> 	 rcu_irq_enter_irqson+0x43/0x70 kernel/rcu/tree.c:1074
+> 	 trace_irq_enable_rcuidle+0x87/0x120 include/trace/events/preemptirq.h:40
+> 	 trace_hardirqs_restore+0x59/0x80 kernel/trace/trace_preemptirq.c:106
+> 	 rcu_irq_enter_irqson+0x43/0x70 kernel/rcu/tree.c:1074
+> 	 trace_irq_enable_rcuidle+0x87/0x120 include/trace/events/preemptirq.h:40
+> 	 trace_hardirqs_restore+0x59/0x80 kernel/trace/trace_preemptirq.c:106
+> 	 rcu_irq_enter_irqson+0x43/0x70 kernel/rcu/tree.c:1074
+> 
+> 	<... repeated many many times ...>
+> 
+> 	 trace_irq_enable_rcuidle+0x87/0x120 include/trace/events/preemptirq.h:40
+> 	 trace_hardirqs_restore+0x59/0x80 kernel/trace/trace_preemptirq.c:106
+> 	 rcu_irq_enter_irqson+0x43/0x70 kernel/rcu/tree.c:1074
+> 	Lost 500 message(s)!
+> 	BUG: stack guard page was hit at 00000000cab483ba (stack is 00000000b1442365..00000000c26f9ad3)
+> 	BUG: stack guard page was hit at 00000000318ff8d8 (stack is 00000000fd87d656..0000000058100136)
+> 	---[ end trace 4157e0bb4a65941a ]---
 
-Because we may want to use that in other places as well, so it would
-be nice to have tracing.
+Wheee... recursion! Let me try and see if I can make something of that.
 
-Hmm... also, I thought NMI context was free to call local_irq_save/restore
-anyway so the bug would still be there in those cases?
-
-Thanks,
-Nick
-
->=20
-> ---
->=20
-> diff --git a/arch/powerpc/include/asm/hw_irq.h b/arch/powerpc/include/asm=
-/hw_irq.h
-> index 3a0db7b0b46e..6be22c1838e2 100644
-> --- a/arch/powerpc/include/asm/hw_irq.h
-> +++ b/arch/powerpc/include/asm/hw_irq.h
-> @@ -196,33 +196,6 @@ static inline bool arch_irqs_disabled(void)
->  		arch_local_irq_restore(flags);				\
->  	} while(0)
-> =20
-> -#ifdef CONFIG_TRACE_IRQFLAGS
-> -#define powerpc_local_irq_pmu_save(flags)			\
-> -	 do {							\
-> -		raw_local_irq_pmu_save(flags);			\
-> -		trace_hardirqs_off();				\
-> -	} while(0)
-> -#define powerpc_local_irq_pmu_restore(flags)			\
-> -	do {							\
-> -		if (raw_irqs_disabled_flags(flags)) {		\
-> -			raw_local_irq_pmu_restore(flags);	\
-> -			trace_hardirqs_off();			\
-> -		} else {					\
-> -			trace_hardirqs_on();			\
-> -			raw_local_irq_pmu_restore(flags);	\
-> -		}						\
-> -	} while(0)
-> -#else
-> -#define powerpc_local_irq_pmu_save(flags)			\
-> -	do {							\
-> -		raw_local_irq_pmu_save(flags);			\
-> -	} while(0)
-> -#define powerpc_local_irq_pmu_restore(flags)			\
-> -	do {							\
-> -		raw_local_irq_pmu_restore(flags);		\
-> -	} while (0)
-> -#endif  /* CONFIG_TRACE_IRQFLAGS */
-> -
->  #endif /* CONFIG_PPC_BOOK3S */
-> =20
->  #ifdef CONFIG_PPC_BOOK3E
-> diff --git a/arch/powerpc/include/asm/local.h b/arch/powerpc/include/asm/=
-local.h
-> index bc4bd19b7fc2..b357a35672b1 100644
-> --- a/arch/powerpc/include/asm/local.h
-> +++ b/arch/powerpc/include/asm/local.h
-> @@ -32,9 +32,9 @@ static __inline__ void local_##op(long i, local_t *l)		=
-	\
->  {									\
->  	unsigned long flags;						\
->  									\
-> -	powerpc_local_irq_pmu_save(flags);				\
-> +	raw_powerpc_local_irq_pmu_save(flags);				\
->  	l->v c_op i;						\
-> -	powerpc_local_irq_pmu_restore(flags);				\
-> +	raw_powerpc_local_irq_pmu_restore(flags);				\
->  }
-> =20
->  #define LOCAL_OP_RETURN(op, c_op)					\
-> @@ -43,9 +43,9 @@ static __inline__ long local_##op##_return(long a, loca=
-l_t *l)		\
->  	long t;								\
->  	unsigned long flags;						\
->  									\
-> -	powerpc_local_irq_pmu_save(flags);				\
-> +	raw_powerpc_local_irq_pmu_save(flags);				\
->  	t =3D (l->v c_op a);						\
-> -	powerpc_local_irq_pmu_restore(flags);				\
-> +	raw_powerpc_local_irq_pmu_restore(flags);				\
->  									\
->  	return t;							\
->  }
-> @@ -81,11 +81,11 @@ static __inline__ long local_cmpxchg(local_t *l, long=
- o, long n)
->  	long t;
->  	unsigned long flags;
-> =20
-> -	powerpc_local_irq_pmu_save(flags);
-> +	raw_powerpc_local_irq_pmu_save(flags);
->  	t =3D l->v;
->  	if (t =3D=3D o)
->  		l->v =3D n;
-> -	powerpc_local_irq_pmu_restore(flags);
-> +	raw_powerpc_local_irq_pmu_restore(flags);
-> =20
->  	return t;
->  }
-> @@ -95,10 +95,10 @@ static __inline__ long local_xchg(local_t *l, long n)
->  	long t;
->  	unsigned long flags;
-> =20
-> -	powerpc_local_irq_pmu_save(flags);
-> +	raw_powerpc_local_irq_pmu_save(flags);
->  	t =3D l->v;
->  	l->v =3D n;
-> -	powerpc_local_irq_pmu_restore(flags);
-> +	raw_powerpc_local_irq_pmu_restore(flags);
-> =20
->  	return t;
->  }
-> @@ -117,12 +117,12 @@ static __inline__ int local_add_unless(local_t *l, =
-long a, long u)
->  	unsigned long flags;
->  	int ret =3D 0;
-> =20
-> -	powerpc_local_irq_pmu_save(flags);
-> +	raw_powerpc_local_irq_pmu_save(flags);
->  	if (l->v !=3D u) {
->  		l->v +=3D a;
->  		ret =3D 1;
->  	}
-> -	powerpc_local_irq_pmu_restore(flags);
-> +	raw_powerpc_local_irq_pmu_restore(flags);
-> =20
->  	return ret;
->  }
->=20
