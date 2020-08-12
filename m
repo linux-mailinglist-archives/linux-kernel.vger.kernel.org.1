@@ -2,114 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DA42426C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A502426E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726971AbgHLIeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 04:34:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726601AbgHLIeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 04:34:18 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FE13206C3;
-        Wed, 12 Aug 2020 08:34:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597221257;
-        bh=QgQ9G7VgGQ5ghPCREG54hEA2WO8tzkH95nIRKSgwNAc=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=fKpC3BJ/0lmRhvm19/6bZ+8sGVhdMDVDfzrLXFfyWEb6vh8wgDVJsnAUoj5j7ZN0B
-         9u4WeQoHi3dWUXt4nFZu8MDuZPuTwslFTLE8f+Y4VhU/R20w4um6tRQvIkLorapK3M
-         FrgoYKZh1Bp5AtE3S9oxnv62Yxo59Q3sdW3P680w=
-Content-Type: text/plain; charset="utf-8"
+        id S1727020AbgHLIoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 04:44:05 -0400
+Received: from lucky1.263xmail.com ([211.157.147.133]:51812 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726565AbgHLIoE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 04:44:04 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id F163AC5ED8;
+        Wed, 12 Aug 2020 16:34:44 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [103.29.142.67])
+        by smtp.263.net (postfix) whith ESMTP id P18983T140547726436096S1597221280087704_;
+        Wed, 12 Aug 2020 16:34:44 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <aabb62171f4c56eb93f47e37d26bd229>
+X-RL-SENDER: algea.cao@rock-chips.com
+X-SENDER: algea.cao@rock-chips.com
+X-LOGIN-NAME: algea.cao@rock-chips.com
+X-FST-TO: a.hajda@samsung.com
+X-SENDER-IP: 103.29.142.67
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Algea Cao <algea.cao@rock-chips.com>
+To:     a.hajda@samsung.com, kuankuan.y@gmail.com, hjc@rock-chips.com,
+        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
+        sam@ravnborg.org, airlied@linux.ie, heiko@sntech.de,
+        jernej.skrabec@siol.net, algea.cao@rock-chips.com,
+        Laurent.pinchart@ideasonboard.com,
+        laurent.pinchart+renesas@ideasonboard.com, jonas@kwiboo.se,
+        mripard@kernel.org, darekm@google.com,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, cychiang@chromium.org,
+        linux-kernel@vger.kernel.org, narmstrong@baylibre.com,
+        jbrunet@baylibre.com, maarten.lankhorst@linux.intel.com,
+        daniel@ffwll.ch
+Subject: [PATCH 2/6] drm: bridge: dw-hdmi: Implement connector atomic_begin/atomic_flush
+Date:   Wed, 12 Aug 2020 16:34:33 +0800
+Message-Id: <20200812083433.934-1-algea.cao@rock-chips.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200812083120.743-1-algea.cao@rock-chips.com>
+References: <20200812083120.743-1-algea.cao@rock-chips.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <311159bc826dcca2848344fc277c0069cff0a164.1597207603.git.zhaoqianli@xiaomi.com>
-References: <311159bc826dcca2848344fc277c0069cff0a164.1597207603.git.zhaoqianli@xiaomi.com>
-Subject: Re: [RFC V2] kthread: add object debug support
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     john.stultz@linaro.org, ben.dooks@codethink.co.uk,
-        bfields@redhat.com, cl@rock-chips.com,
-        linux-kernel@vger.kernel.org, zhaoqianli@xiaomi.com
-To:     Felix.Kuehling@amd.com, Qianli Zhao <zhaoqianligood@gmail.com>,
-        akpm@linux-foundation.org, axboe@kernel.dk, tglx@linutronix.de
-Date:   Wed, 12 Aug 2020 01:34:15 -0700
-Message-ID: <159722125596.33733.17725649536425524344@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Qianli Zhao (2020-08-11 22:14:14)
-> @@ -115,7 +125,7 @@ struct kthread_delayed_work {
->         }
-> =20
->  #define KTHREAD_WORK_INIT(work, fn)    {                               \
-> -       .node =3D LIST_HEAD_INIT((work).node),                           =
- \
-> +       .node =3D { .next =3D KWORK_ENTRY_STATIC },                      =
-   \
->         .func =3D (fn),                                                  =
- \
->         }
-> =20
-> diff --git a/include/linux/poison.h b/include/linux/poison.h
-> index df34330..2e6a370 100644
-> --- a/include/linux/poison.h
-> +++ b/include/linux/poison.h
-> @@ -86,4 +86,7 @@
->  /********** security/ **********/
->  #define KEY_DESTROY            0xbd
-> =20
-> +/********** kernel/kthread **********/
-> +#define KWORK_ENTRY_STATIC     ((void *) 0x600 + POISON_POINTER_DELTA)
+Introduce dw_hdmi_connector_atomic_begin() and
+dw_hdmi_connector_atomic_flush() to implement connector
+atomic_begin/atomic_flush. When enc_out_bus_format or
+enc_in_bus_format changed, dw_hdmi_setup is called.
 
-Is this related to the debugobjects change here? It looks like another
-version of list poison.
+To avoid screen flash when updating bus format, it's need
+to send AVMUTE flag to make screen black, and clear flag
+after bus format updated.
 
-> +
->  #endif
-> diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index 132f84a..ca00bd2 100644
-> --- a/kernel/kthread.c
-> +++ b/kernel/kthread.c
-> @@ -698,6 +786,7 @@ int kthread_worker_fn(void *worker_ptr)
->                 work =3D list_first_entry(&worker->work_list,
->                                         struct kthread_work, node);
->                 list_del_init(&work->node);
-> +               debug_kwork_deactivate(work);
+Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
+---
 
-Shouldn't this come before the list operation so that any sort of fix
-can be made before possibly corrupting a list?
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 65 +++++++++++++++++++++++
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.h |  4 ++
+ 2 files changed, 69 insertions(+)
 
->         }
->         worker->current_work =3D work;
->         raw_spin_unlock_irq(&worker->lock);
-> @@ -835,8 +924,11 @@ static void kthread_insert_work(struct kthread_worke=
-r *worker,
-> =20
->         list_add_tail(&work->node, pos);
->         work->worker =3D worker;
-> -       if (!worker->current_work && likely(worker->task))
-> +
-> +       if (!worker->current_work && likely(worker->task)) {
-> +               debug_kwork_activate(work);
->                 wake_up_process(worker->task);
-> +       }
->  }
-> =20
->  /**
-> @@ -1054,6 +1146,7 @@ static bool __kthread_cancel_work(struct kthread_wo=
-rk *work, bool is_dwork,
->          */
->         if (!list_empty(&work->node)) {
->                 list_del_init(&work->node);
-> +               debug_kwork_deactivate(work);
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+index 6148a022569a..a1a81fc768c2 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+@@ -108,6 +108,8 @@ struct hdmi_vmode {
+ };
+ 
+ struct hdmi_data_info {
++	unsigned int prev_enc_in_bus_format;
++	unsigned int prev_enc_out_bus_format;
+ 	unsigned int enc_in_bus_format;
+ 	unsigned int enc_out_bus_format;
+ 	unsigned int enc_in_encoding;
+@@ -116,6 +118,7 @@ struct hdmi_data_info {
+ 	unsigned int hdcp_enable;
+ 	struct hdmi_vmode video_mode;
+ 	bool rgb_limited_range;
++	bool update;
+ };
+ 
+ struct dw_hdmi_i2c {
+@@ -2401,6 +2404,60 @@ static int dw_hdmi_connector_get_modes(struct drm_connector *connector)
+ 	return ret;
+ }
+ 
++static void
++dw_hdmi_connector_atomic_begin(struct drm_connector *connector,
++			       struct drm_connector_state *conn_state)
++{
++	struct dw_hdmi *hdmi = container_of(connector, struct dw_hdmi,
++					    connector);
++	unsigned int enc_in_bus_fmt = hdmi->hdmi_data.enc_in_bus_format;
++	unsigned int enc_out_bus_fmt = hdmi->hdmi_data.enc_out_bus_format;
++	unsigned int prev_enc_in_bus_fmt =
++		hdmi->hdmi_data.prev_enc_in_bus_format;
++	unsigned int prev_enc_out_bus_fmt =
++		hdmi->hdmi_data.prev_enc_out_bus_format;
++
++	if (!conn_state->crtc)
++		return;
++
++	if (!hdmi->hdmi_data.video_mode.mpixelclock)
++		return;
++
++	if (enc_in_bus_fmt != prev_enc_in_bus_fmt ||
++	    enc_out_bus_fmt != prev_enc_out_bus_fmt) {
++		hdmi->hdmi_data.update = true;
++		hdmi_writeb(hdmi, HDMI_FC_GCP_SET_AVMUTE, HDMI_FC_GCP);
++		/* Add delay to make av mute work on sink*/
++		msleep(50);
++	} else {
++		hdmi->hdmi_data.update = false;
++	}
++}
++
++static void
++dw_hdmi_connector_atomic_flush(struct drm_connector *connector,
++			       struct drm_connector_state *conn_state)
++{
++	struct dw_hdmi *hdmi = container_of(connector, struct dw_hdmi,
++					     connector);
++
++	if (!conn_state->crtc)
++		return;
++
++	DRM_DEBUG("%s\n", __func__);
++
++	if (hdmi->hdmi_data.update) {
++		dw_hdmi_setup(hdmi, hdmi->curr_conn, &hdmi->previous_mode);
++		/*
++		 * Before clear AVMUTE, delay is needed to
++		 * prevent display flash.
++		 */
++		msleep(50);
++		hdmi_writeb(hdmi, HDMI_FC_GCP_CLEAR_AVMUTE, HDMI_FC_GCP);
++		hdmi->hdmi_data.update = false;
++	}
++}
++
+ static bool hdr_metadata_equal(const struct drm_connector_state *old_state,
+ 			       const struct drm_connector_state *new_state)
+ {
+@@ -2465,6 +2522,8 @@ static const struct drm_connector_funcs dw_hdmi_connector_funcs = {
+ static const struct drm_connector_helper_funcs dw_hdmi_connector_helper_funcs = {
+ 	.get_modes = dw_hdmi_connector_get_modes,
+ 	.atomic_check = dw_hdmi_connector_atomic_check,
++	.atomic_begin = dw_hdmi_connector_atomic_begin,
++	.atomic_flush = dw_hdmi_connector_atomic_flush,
+ };
+ 
+ static int dw_hdmi_connector_create(struct dw_hdmi *hdmi)
+@@ -2778,6 +2837,12 @@ static int dw_hdmi_bridge_atomic_check(struct drm_bridge *bridge,
+ {
+ 	struct dw_hdmi *hdmi = bridge->driver_private;
+ 
++	hdmi->hdmi_data.prev_enc_out_bus_format =
++			hdmi->hdmi_data.enc_out_bus_format;
++
++	hdmi->hdmi_data.prev_enc_in_bus_format =
++			hdmi->hdmi_data.enc_in_bus_format;
++
+ 	hdmi->hdmi_data.enc_out_bus_format =
+ 			bridge_state->output_bus_cfg.format;
+ 
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.h b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.h
+index 1999db05bc3b..05182418efbb 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.h
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.h
+@@ -842,6 +842,10 @@ enum {
+ 	HDMI_FC_AVICONF3_QUANT_RANGE_LIMITED = 0x00,
+ 	HDMI_FC_AVICONF3_QUANT_RANGE_FULL = 0x04,
+ 
++/* HDMI_FC_GCP */
++	HDMI_FC_GCP_SET_AVMUTE = 0x2,
++	HDMI_FC_GCP_CLEAR_AVMUTE = 0x1,
++
+ /* FC_DBGFORCE field values */
+ 	HDMI_FC_DBGFORCE_FORCEAUDIO = 0x10,
+ 	HDMI_FC_DBGFORCE_FORCEVIDEO = 0x1,
+-- 
+2.25.1
 
-Same comment.
 
->                 return true;
->         }
+
