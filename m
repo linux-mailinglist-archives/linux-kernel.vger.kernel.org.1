@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B82024280A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 12:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59522242808
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 12:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgHLKI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 06:08:27 -0400
-Received: from mout.gmx.net ([212.227.17.21]:52737 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727066AbgHLKI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 06:08:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1597226878;
-        bh=UkqjCxKKHV1HDyi41mZtq9yMhrKx967IftYVnHuBMGo=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=CVa57jyqOd+wAZ7HXJCaZTcWrbj9dKyv+WghkaTGAXpiP2JsIvR0EQYgZWjbrGYiO
-         lsBWgX1QG8ZF82HjYytXjIkoJrHZCMtWf3yQ1+ICaGkXnM6d6nfr+pmeun5MhEhTqE
-         zqpiozDA1NGXVxf3FFncbmNurNIBF6Kx6a5QKPTs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [185.53.41.139] ([185.53.41.139]) by web-mail.gmx.net
- (3c-app-gmx-bap56.server.lan [172.19.172.126]) (via HTTP); Wed, 12 Aug 2020
- 12:07:58 +0200
+        id S1727820AbgHLKIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 06:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726722AbgHLKIK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 06:08:10 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A100C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 03:08:10 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id k8so1380790wma.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 03:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=S5E7KxhhfM822qxHvpB4hKk6FlzdZGmWdXUQxztWaa4=;
+        b=h7ybPSh69dl1QF+UNAG84MOzGLtlSU/DszPeVIqg/fVkZlyU52ZV+9jUKSlQyxvC7y
+         1OBv/s1MkQ0QIvd0eDkLjNsdVd/bR6Uv/yNTObTKTFu3jh0H+PYoiccKqmwTStH0KB/A
+         WOwijDQy762FkH2L/TUzzaEGGEcY5xxRjx3Z7YdQ6gXwpMvibq4h3MDFDBsmQzvUdzb9
+         FiiMDKTtTzeoMW3XH0M5Mfk36DtjnY5ErXQmNoMNBpHd4FZZiiQ52ruLJeb7m3FnUE5Z
+         qwMF09lbmjXgspErlSn6ouQMijuqbTUdZDB1+lbUJjdPrWEptvsbqk3YKr0CWN7MAsFf
+         x71A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=S5E7KxhhfM822qxHvpB4hKk6FlzdZGmWdXUQxztWaa4=;
+        b=CMvStCkMX4RDaWoq8B97kvtpZvd2vdo45g5WniBO9HBl0I38J7eYrR9OdQzNWbYaOT
+         bpU16qKg5HJkwgoumtOHoqZ+3yjxdYJSrNh5X9QyIjlH5NpqkMMNJCSGiZyuTPHtZD6T
+         d7DtAkYtyD7rKQK0HUCcudVR3pzvm6qTRH3FDKUkmazPwVS/ZesDgnsClVMj63n4kOy/
+         X43hJKykDdHCu2m7GC82VFEQcpXyBuhf/LAroVBhI4N6VpFXZlzrhoxvQ3SCV63oO6P4
+         hEGzdaWlCGKLJXXlLnK4fDpL04CFAjRUWL5vSkKOiXZyUvAwYmz+FuDy21lYDSeLuy0a
+         KS5w==
+X-Gm-Message-State: AOAM531QyImwP4qUNeikBChbfbSa4Emx/Z+wsYKBo1W59T2nc1r5RXru
+        5G+bhestJ7QrnG26oWWra06tECf9VIyWsAS2Ma0=
+X-Google-Smtp-Source: ABdhPJy7FImTAVxwBgtNyn1FPvTtl0K2vNu7BgEfhyKXbHiQLpY6XTYJ3Y9Dwizki7BE6aEMnE7pagp/ZlIovasvEt8=
+X-Received: by 2002:a1c:2dcc:: with SMTP id t195mr7056553wmt.166.1597226889132;
+ Wed, 12 Aug 2020 03:08:09 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <trinity-5b810acf-eb8f-452e-b08a-30e1fe46226d-1597226878715@3c-app-gmx-bap56>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Wenbin Mei <wenbin.mei@mediatek.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        srv_heupstream@mediatek.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        stable@vger.kernel.org
-Subject: Aw: [PATCH 3/3] mmc: mediatek: add optional module reset property
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 12 Aug 2020 12:07:58 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20200812093726.10123-4-wenbin.mei@mediatek.com>
-References: <20200812093726.10123-1-wenbin.mei@mediatek.com>
- <20200812093726.10123-4-wenbin.mei@mediatek.com>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:t+v+dbXvTKFePvkpJQAkYHe5HoNVIemuMfLD56cl7pscYB573WfuroyNnOcU3eKU+Ux0w
- Bzr/Ckkf3ghFKTc0HwsL4hjb7JZpcAuLKIGlYRTDdvf/jlTHtulh0AIxWzbgZD0o/QUDiCzNjkkT
- sO5kefkm7G1UW6cNByINedYydy1x5x1KSNZ4caJ/jgdEUkwBF3dN/4r2t4BJSmLaKk6FpWb6i+m/
- LIO56ZvPG/DHOzaEApF96sk+MKAwEB1GS2joHA8xJDYDQNhmgLVskiKFp++wXff8gvYfNKazeZL8
- Bo=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1lebNj6ihXA=:yKrs1mlHJa1VH4DNmWf8T7
- QJv04DKWPHCKukADg6WgoibuSsh8OqnB3RcbFU3Hime9w81JXHzcUKJZhuZcawE6T0x8wLLKD
- JiDKf7eLoturt4bAUdUxm1LFnv2JmFegH1M35dhP0jeqQbe8FxWjYrS9hg53qbKvLsipJwhnN
- 92goZdJzEhOQbDBdxP8Vtq2F62SWwzwnixojAUFr8ieyEdQAojALTxVrP6q5a8gxqhCIDeoV4
- THzEuSaCf33VF+3EIRe59nHodktmpEc42dTqERD8uQWsd0cfPmh6Ieb5eSfhGbHDoScIK7EO6
- w/ETHBOlzdCYaknwVuG9lGJu2/gdYUID21RXu0CJSmF04V/4aALKHIAu/mGfRd0ykYkIfF3Ht
- pNwVjBCIqtZriHaxV+77szPbiiWBK2xEvReXULdqZwX5X0jZkYhtheoWT2z98SDx2hAiNEOUU
- MfPblapX0RDVVZ4p0+02p4WfY2rW2t5fSwFD9AZD9vHdyBxM6LOe3k5B05lY+Ehlp/YZv7UH3
- oBgrvgJ0On8H4UXi5FKrZ0xPqu9qxwDb+Yyre98Ot4FfxvMOUbCHGbQhW4tI71aH7TeLjWBvO
- rLnf0guUcE+asNRp8rcfkVl0RIBrEgcoDSf7iW8OvwIFa4C9I8a0hWHQ9y51edL70I44SAAMB
- zLSiW3Buc5mCvDUdGE+2uhCK5m2ifvaVV4mBafLf+nGumAfwR77CEoehMf1ob2y5Za+0=
+Received: by 2002:a5d:6504:0:0:0:0:0 with HTTP; Wed, 12 Aug 2020 03:08:08
+ -0700 (PDT)
+Reply-To: rosemary222222@hotmail.com
+From:   "Ms. Rosemary Matthew" <belvicindustry19@gmail.com>
+Date:   Wed, 12 Aug 2020 11:08:08 +0100
+Message-ID: <CAGu3FC1CuvzAUAnM+Ak0LgpQhEu2NnEPfK4ForCREJLtx-pL4Q@mail.gmail.com>
+Subject: My record show that you have not yet reply my last message sent to
+ you since last week.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Gesendet: Mittwoch, 12. August 2020 um 11:37 Uhr
-> Von: "Wenbin Mei" <wenbin.mei@mediatek.com>
-> Betreff: [PATCH 3/3] mmc: mediatek: add optional module reset property
+Dear Friend.
 
-> This patch adds a optional reset management for msdc.
-> Sometimes the bootloader does not bring msdc register
-> to default state, so need reset the msdc controller.
->
-> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+My record show that you have not yet reply my last message sent to you
+since last week. I'm writing you once again because I asked myself
+several unanswered questions today does it mean that my message was
+diverted or you disregard it intentionally. I'm Ms Rosemar Matthew.
+with both Bachelor's Degree and a Master's Degree as preferred in my
+vocation. I'm working in Lloyd's Bank London as an Accountant. In our
+anking system, I discovered that you are sharing the same Surname with
+our deceased client who left a large fund in our bank guard.
 
-Thanks for posting the fix to Mainline
+Due to the Corona-virus Outbreak all over the world which have placed
+confusion to all Financial sectors and Monitoring Pecuniary Unit, the
+Lloyd's Bank want to use this great opportunity to relocate all
+pending transfer to the right owner's which include the fund I'm
+talking about here which have been in our position. I suggest that
+your previous silent should not affect this message because of
+uncertain personal situations facing the fund I'm talking about here,
+I request that you should reply me this time at the soonest because we
+need to complete this transfer.
 
-imho this should contain a fixes-Tag as it fixes eMMC-Access on mt7622/Bpi=
--R64
+Thank you and I=E2=80=99m sincerely looking forward to complete this fund
 
-before we got these Errors on mounting eMMC ion R64:
-
-[   48.664925] blk_update_request: I/O error, dev mmcblk0, sector 204800 o=
-p 0x1:(WRITE) flags 0x800 phys_seg 1 prio class 0
-[   48.676019] Buffer I/O error on dev mmcblk0p1, logical block 0, lost sy=
-nc page write
-
-Fixes: 966580ad236e ("mmc: mediatek: add support for MT7622 SoC")
-Tested-By: Frank Wunderlich <frank-w@public-files.de>
-
-and it needs to be fixed at least for 5.4+, so adding stable-CC
-
-Cc: stable@vger.kernel.org
+transfer with you.
+With Regards,
+From Ms Rosemar Matthew,
