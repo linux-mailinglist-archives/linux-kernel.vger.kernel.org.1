@@ -2,79 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC652423B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 03:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852612423BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 03:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726173AbgHLBbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 21:31:45 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:34618 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726596AbgHLBbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 21:31:40 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BRBxk5FrGzL3;
-        Wed, 12 Aug 2020 03:31:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1597195898; bh=XEoKRBZECEkyN1oihPs+gezDGNLo5+SRcrR4YW7HYzQ=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=fmcFXjbr9wFg/JR0K4IhDH2h5KldlVA2zJEsU+phi1kXNIaZW7L80SvSVfhAclV0D
-         6Mlmfpk9j2yMUv3usEuniXHQlJ3ZGQ0B5tzlRYzWH0Zpz1CjArKTHlFPLnnQsmm00t
-         I1N7t0LR36GSckVlm+zgW+X6Wmi61x16eFXcc5RnE5IdgFSbR7ITgWoYaBB9ChCe/L
-         N8N/jaVPMkhiiwyQ2dgKrZf+q5I8iUVS2fWwBa+CsVxBmyzJEuG3wH94jdeuN+DqP3
-         SWc+Agc9jLUgYkmXx0Eyf1/w1UDvA8mTbIGlHkm6h+0UCxLGA2fiNmO6F3CIq7upLr
-         C6eMx/14g+z2g==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Wed, 12 Aug 2020 03:31:38 +0200
-Message-Id: <25eb81cefb37a646f3e44eaaf1d8ae8881cfde52.1597195321.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1597195321.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1597195321.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v2 7/7] regulator: remove superfluous lock in
- regulator_resolve_coupling()
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Vladimir Zapolskiy <vz@mleia.com>
-Cc:     linux-kernel@vger.kernel.org
+        id S1726735AbgHLBcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 21:32:17 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:47554 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726564AbgHLBcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 21:32:15 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx392aRjNfgboHAA--.4254S2;
+        Wed, 12 Aug 2020 09:32:12 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
+Cc:     kvm@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: Add git tree for KVM/mips
+Date:   Wed, 12 Aug 2020 09:32:10 +0800
+Message-Id: <1597195930-13613-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx392aRjNfgboHAA--.4254S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrCr1UKr45Xr1DAryxZF43Wrg_yoWxXFb_CF
+        47JayxWryrGrZrA3yvg3ZrKFyFq3y8JF93Z3ZFqwsFyas8tryYqrZFy3s7C34DCr4kCrWD
+        Xay3Jwna9r43WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_KwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU2lksDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code modifies rdev, but locks c_rdev instead. Remove the lock
-as this is held together by regulator_list_mutex taken in the caller.
+There is no git tree for KVM/mips in MAINTAINERS, it is not
+convinent to rebase, add it.
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Fixes: f9503385b187 ("regulator: core: Mutually resolve regulators coupling")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
-v2: reword commitmsg
----
- drivers/regulator/core.c | 4 ----
- 1 file changed, 4 deletions(-)
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index bfd4114d6654..9ca89fee0d7e 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -4942,13 +4942,9 @@ static void regulator_resolve_coupling(struct regulator_dev *rdev)
- 			return;
- 		}
- 
--		regulator_lock(c_rdev);
--
- 		c_desc->coupled_rdevs[i] = c_rdev;
- 		c_desc->n_resolved++;
- 
--		regulator_unlock(c_rdev);
--
- 		regulator_resolve_coupling(c_rdev);
- 	}
- }
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e627ed6..11c82c1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9546,6 +9546,7 @@ M:	Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
+ L:	linux-mips@vger.kernel.org
+ L:	kvm@vger.kernel.org
+ S:	Maintained
++T:	git git://git.kernel.org/pub/scm/virt/kvm/kvm.git
+ F:	arch/mips/include/asm/kvm*
+ F:	arch/mips/include/uapi/asm/kvm*
+ F:	arch/mips/kvm/
 -- 
-2.20.1
+2.1.0
 
