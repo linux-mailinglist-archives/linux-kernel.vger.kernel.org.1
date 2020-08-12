@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE489243137
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 00:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCA424313B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 00:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgHLW5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 18:57:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48996 "EHLO mail.kernel.org"
+        id S1726792AbgHLW5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 18:57:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726637AbgHLW5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726505AbgHLW5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 Aug 2020 18:57:36 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BC6322B45;
+        by mail.kernel.org (Postfix) with ESMTPSA id 4122621775;
         Wed, 12 Aug 2020 22:57:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1597273056;
-        bh=8dX/jRRGYYoVQ4sfHAistYqVItFs5RRYfTXsC/iWNDc=;
+        bh=DUPTKQaPgAL9zzOR19QnDiQivFZngHJqQAG8BiElQhE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eH9fW6h9Wp+mfejJk2PkC/aBga5X9fiV+ho31fP6NlqWsVTUx6pHesSCvRIjz0w+j
-         qeLyD1wF7BOnF+tKc2mYyQQgWKN+CwZWjiNqteII9XAM7DYNz+4imJ4A9Nil4qw1FS
-         YOY8vKYopXKqZ5dHqw6LRsbML1HE4rwbVe+hodR4=
+        b=w5Gfp0qCZrg+RFxOikePKIV2+fZ++ElE3s6iWpyM1dsTxf2rhDx+t+hkeMyOGW4Ql
+         WjylTG7ZKeP+xvhxaqv87iMoAUvgjJBorDlhUEaiTiJ10jAuoU5SucN9ETW/2das7f
+         FDH8pym1Tps7mi7PxGJb0H0AVmYJjDmf6GO83t5s=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,9 +33,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         elver@google.com, dvyukov@google.com,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 08/12] rcu: IPI all CPUs at GP start for strict GPs
-Date:   Wed, 12 Aug 2020 15:57:28 -0700
-Message-Id: <20200812225732.20068-8-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 09/12] rcu: IPI all CPUs at GP end for strict GPs
+Date:   Wed, 12 Aug 2020 15:57:29 -0700
+Message-Id: <20200812225732.20068-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200812225632.GA19759@paulmck-ThinkPad-P72>
 References: <20200812225632.GA19759@paulmck-ThinkPad-P72>
@@ -46,50 +46,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Currently, each CPU discovers the beginning of a given grace period
-on its own time, which is again good for efficiency but bad for fast
-grace periods.  This commit therefore uses on_each_cpu() to IPI each
-CPU after grace-period initialization in order to inform each CPU of
-the new grace period in a timely manner, but only in kernels build with
+Currently, each CPU discovers the end of a given grace period on its
+own time, which is again good for efficiency but bad for fast grace
+periods, given that it is things like kfree() within the RCU callbacks
+that will cause trouble for pointers leaked from RCU read-side critical
+sections.  This commit therefore uses on_each_cpu() to IPI each CPU
+after grace-period cleanup in order to inform each CPU of the end of
+the old grace period in a timely manner, but only in kernels build with
 CONFIG_RCU_STRICT_GRACE_PERIOD=y.
 
 Reported-by Jann Horn <jannh@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ kernel/rcu/tree.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 4353a1a..a30d6f3 100644
+index a30d6f3..dd7af40 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -1678,6 +1678,15 @@ static void rcu_gp_torture_wait(void)
+@@ -2034,6 +2034,10 @@ static void rcu_gp_cleanup(void)
+ 			   rcu_state.gp_flags & RCU_GP_FLAG_INIT);
+ 	}
+ 	raw_spin_unlock_irq_rcu_node(rnp);
++
++	// If strict, make all CPUs aware of the end of the old grace period.
++	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
++		on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
  }
  
  /*
-+ * Handler for on_each_cpu() to invoke the target CPU's RCU core
-+ * processing.
-+ */
-+static void rcu_strict_gp_boundary(void *unused)
-+{
-+	invoke_rcu_core();
-+}
-+
-+/*
-  * Initialize a new grace period.  Return false if no grace period required.
-  */
- static bool rcu_gp_init(void)
-@@ -1805,6 +1814,10 @@ static bool rcu_gp_init(void)
- 		WRITE_ONCE(rcu_state.gp_activity, jiffies);
- 	}
- 
-+	// If strict, make all CPUs aware of new grace period.
-+	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
-+		on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
-+
- 	return true;
- }
- 
 -- 
 2.9.5
 
