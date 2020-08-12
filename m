@@ -2,150 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80752242DB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 18:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC65242DB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 18:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgHLQx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 12:53:27 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:36481 "EHLO
+        id S1726670AbgHLQzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 12:55:11 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:41874 "EHLO
         mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgHLQxM (ORCPT
+        with ESMTP id S1726477AbgHLQzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 12:53:12 -0400
-Received: by mail-io1-f67.google.com with SMTP id t15so3596511iob.3;
-        Wed, 12 Aug 2020 09:53:12 -0700 (PDT)
+        Wed, 12 Aug 2020 12:55:09 -0400
+Received: by mail-io1-f67.google.com with SMTP id g19so3535069ioh.8;
+        Wed, 12 Aug 2020 09:55:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=KrbB1lAerHD2VaQ3JRVtjguqYJiBvVxH8bz9gL6d2W4=;
-        b=C+DFNw1Uy8pS9wXvtX4y29HiOY2qbZ+4z6KzX8n8iU/fBwks7n0ea1N9TqHc/8OCSL
-         2gIWG11b8r3j7q+tmaKJGPioyQJV5dkaC39xQya2yN17XFkQgGSDyKQMoYUZ6unk6E3i
-         EPiJ6ik5TxrQBlZseNjg3JpswbW0Iqy4gHzBh3RZYZRo3KJZsisMxXtpOhNMH6AAQHW9
-         Py9PWYMEpxUNZerPsaIk9tTqYndxYETJLsbhflDl6ArhsX8nXFrKNYB1oRRQsYRg3RQD
-         nukSbVzanqaglWTftBs3WirO3H6D/TZtiSKPH5sIiC/jizwFKZjEd9C/oPbJyzlnv72p
-         O01Q==
-X-Gm-Message-State: AOAM533ulF+E4wIutxfVzsaKmN3SpW3sotIIMtpahAsKf42BMO7BaFtl
-        gqVZ2qjP9ztNOxLRbwmhGuyAfuU=
-X-Google-Smtp-Source: ABdhPJy/C8+8iSnQDUDylgIDOuZ5oe2TnqZ2fpwpG2alSZnIQpWRVRdvOCghw0KBozx+le75i8D2LA==
-X-Received: by 2002:a05:6638:1685:: with SMTP id f5mr390007jat.48.1597251191730;
-        Wed, 12 Aug 2020 09:53:11 -0700 (PDT)
+        bh=OnKPv+qr/0SKiO3J0pJxrPNLJqM+U78LQKFRagi2BS8=;
+        b=W1hYnLkSXMsfW64lgGhp2VN9bUv+079Ih4IkLphG0jJ8sV2Ie3NpXMUacYO9bgYj9w
+         glKILNvJ8ZxqjUIXQgzYfWsCUz8rZqbCT0FJaBVQ3rsO2rpMZXWMGQjkDsLWge0tdMgC
+         Txg6eczopNwOpnH2Z+SlAZJyMq1/ha3Iglct2XS++Rx6pXctFUEbFJ7R8oOxb3CYGS/B
+         XF6xZAtQ3pTq8NyOJSPFhwHdngu/7Ssw6jKoV/3PqOA54BNjxZfY7C4R3lpOAU/O3vjw
+         lhT5kMTCWeg+uaU7VdkAmtfHxEYzjZXoHf7Zw/87OgxoYNfa0bWh51U0ErrLUIaLf5Wf
+         Gq+g==
+X-Gm-Message-State: AOAM5315w+uXU/ytLKJoLSQWRqXeo3CpdFt1WT0bXWL0bP3mg4BWBW0V
+        cVqMQtafpAiqUgOk8/kIyg==
+X-Google-Smtp-Source: ABdhPJwYwyFOnVugtnOVfg8AgmEVYg3C6rf+Hwcjg8rs7FalCUYOI3v0RNnferAdv8WDFYik34UcAQ==
+X-Received: by 2002:a6b:7e41:: with SMTP id k1mr718192ioq.130.1597251308230;
+        Wed, 12 Aug 2020 09:55:08 -0700 (PDT)
 Received: from xps15 ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id n3sm1330443ilj.29.2020.08.12.09.53.10
+        by smtp.gmail.com with ESMTPSA id a9sm1236374iol.9.2020.08.12.09.55.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Aug 2020 09:53:11 -0700 (PDT)
-Received: (nullmailer pid 2361147 invoked by uid 1000);
-        Wed, 12 Aug 2020 16:53:09 -0000
-Date:   Wed, 12 Aug 2020 10:53:09 -0600
+        Wed, 12 Aug 2020 09:55:07 -0700 (PDT)
+Received: (nullmailer pid 2363799 invoked by uid 1000);
+        Wed, 12 Aug 2020 16:55:04 -0000
+Date:   Wed, 12 Aug 2020 10:55:04 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
-Cc:     Jack Lo <jack.lo@gtsys.com.hk>, devicetree@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/2] devicetree: hwmon: shtc1: add sensirion,shtc1.yaml
-Message-ID: <20200812165309.GA2357620@bogus>
-References: <20200807073143.30462-1-chris.ruehl@gtsys.com.hk>
- <20200807073143.30462-3-chris.ruehl@gtsys.com.hk>
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [RESEND v7, PATCH 1/7] dt-bindings: mediatek: add rdma_fifo_size
+ description for mt8183 display
+Message-ID: <20200812165504.GA2361465@bogus>
+References: <1596855231-5782-1-git-send-email-yongqiang.niu@mediatek.com>
+ <1596855231-5782-2-git-send-email-yongqiang.niu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200807073143.30462-3-chris.ruehl@gtsys.com.hk>
+In-Reply-To: <1596855231-5782-2-git-send-email-yongqiang.niu@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 07, 2020 at 03:31:43PM +0800, Chris Ruehl wrote:
-> Add documentation for the newly added DTS support in the shtc1 driver.
-> To align with the drivers logic to have high precision by default
-> a boolean sensirion,low_precision is used to switch to low precision.
-
-low-precision
-
+On Sat, Aug 08, 2020 at 10:53:45AM +0800, Yongqiang Niu wrote:
+> rdma fifo size may be different even in same SOC, add this
+> property to the corresponding rdma
 > 
-> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+> Change-Id: I67635ec7f3f59cf4cbc7737285e5e28ff0ab71c9
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
 > ---
->  .../bindings/hwmon/sensirion,shtc1.yaml       | 59 +++++++++++++++++++
->  1 file changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
+>  .../devicetree/bindings/display/mediatek/mediatek,disp.txt | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml b/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
-> new file mode 100644
-> index 000000000000..41cc59b0b0e3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/hwmon/sensirion,shtc1.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Sensirion SHTC1 Humidity and Temperature Sensor IC
-> +
-> +maintainers:
-> +  - chris.ruehl@gtsys.com.hk
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+> index b91e709..e6bbe32 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+> @@ -66,6 +66,11 @@ Required properties (DMA function blocks):
+>    argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
+>    for details.
+>  
+> +Optional properties (RDMA function blocks):
+> +- mediatek,rdma_fifo_size: rdma fifo size may be different even in same SOC, add this
 
-Full name too please.
+mediatek,rdma-fifo-size
 
-> +
-> +description: |
-> +  The SHTC1, SHTW1 and SHTC3 are digital humidity and temperature sensor
-> +  designed especially for battery-driven high-volume consumer electronics
-> +  applications.
-> +  For further information refere to Documentation/hwmon/shtc1.rst
-> +
-> +  This binding document describes the binding for the hardware monitor
-> +  portion of the driver.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - sensirion,shtc1
-> +      - sensirion,shtw1
-> +      - sensirion,shtc3
-> +
-> +  reg:
-> +    const: 0x70
-> +
-> +  sensirion,blocking-io:
-> +    $ref: /schemas/types.yaml#definitions/flag
-> +    description:
-> +      If set, the driver hold the i2c bus until measurement is finished.
-> +
-> +  sensirion,low-precision:
-> +    $ref: /schemas/types.yaml#definitions/flag
-> +    description:
-> +      If set, the sensor aquire data with low precision (not recommended).
-> +      The driver aquire data with high precision by default.
-> +
-> +required:
-> +  - compatible
-> +  - reg
+What's the range/set of valid values?
 
-Add:
-
-additionalProperties: false
-
+> +  property to the corresponding rdma
+> +  the value is the Max value which defined in hardware data sheet.
 > +
-> +examples:
-> +  - |
-> +    i2c1 {
-
-i2c {
-
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      clock-frequency = <400000>;
+>  Examples:
+>  
+>  mmsys: clock-controller@14000000 {
+> @@ -207,3 +212,12 @@ od@14023000 {
+>  	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>  	clocks = <&mmsys CLK_MM_DISP_OD>;
+>  };
 > +
-> +      shtc3@70 {
-> +        compatible = "sensirion,shtc3";
-> +        reg = <0x70>;
-> +        sensirion,blocking-io;
-> +      };
-> +    };
-> +...
+> +rdma1: rdma@1400c000 {
+
+Does a new property really need a whole new example?
+
+> +	compatible = "mediatek,mt8183-disp-rdma";
+> +	reg = <0 0x1400c000 0 0x1000>;
+> +	interrupts = <GIC_SPI 229 IRQ_TYPE_LEVEL_LOW>;
+> +	power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +	clocks = <&mmsys CLK_MM_DISP_RDMA1>;
+> +	mediatek,rdma_fifo_size = <2048>;
+> +};
 > -- 
-> 2.20.1
-> 
+> 1.8.1.1.dirty
