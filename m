@@ -2,45 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8132A242B51
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA58242B43
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbgHLOUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 10:20:42 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:12792 "EHLO
+        id S1726926AbgHLOUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 10:20:17 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:16666 "EHLO
         mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726809AbgHLOUL (ORCPT
+        by vger.kernel.org with ESMTP id S1726856AbgHLOUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 10:20:11 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07CEAGmH027033;
-        Wed, 12 Aug 2020 10:19:57 -0400
+        Wed, 12 Aug 2020 10:20:13 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07CECT4L020998;
+        Wed, 12 Aug 2020 10:20:00 -0400
 Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 32snw5du9g-1
+        by mx0a-00128a01.pphosted.com with ESMTP id 32sry4drtg-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 Aug 2020 10:19:57 -0400
-Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 07CEJubG013662
+        Wed, 12 Aug 2020 10:19:59 -0400
+Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 07CEJw7d013675
         (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 12 Aug 2020 10:19:56 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 12 Aug
- 2020 10:19:55 -0400
-Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Wed, 12 Aug 2020 10:19:55 -0400
+        Wed, 12 Aug 2020 10:19:58 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 12 Aug 2020 10:19:57 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 12 Aug 2020 10:19:57 -0400
+Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 12 Aug 2020 10:19:57 -0400
 Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 07CEJoSv020255;
-        Wed, 12 Aug 2020 10:19:53 -0400
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 07CEJoSw020255;
+        Wed, 12 Aug 2020 10:19:55 -0400
 From:   <alexandru.tachici@analog.com>
 To:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <devicetree@vger.kernel.org>
 CC:     <robh+dt@kernel.org>, <linux@roeck-us.net>,
         Alexandru Tachici <alexandru.tachici@analog.com>
-Subject: [PATCH v8 2/6] hwmon: pmbus: adm1266: Add Block process call
-Date:   Wed, 12 Aug 2020 17:20:51 +0300
-Message-ID: <20200812142055.9213-3-alexandru.tachici@analog.com>
+Subject: [PATCH v8 3/6] hwmon: pmbus: adm1266: Add support for GPIOs
+Date:   Wed, 12 Aug 2020 17:20:52 +0300
+Message-ID: <20200812142055.9213-4-alexandru.tachici@analog.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200812142055.9213-1-alexandru.tachici@analog.com>
 References: <20200812142055.9213-1-alexandru.tachici@analog.com>
@@ -49,9 +53,9 @@ Content-Type: text/plain
 X-ADIRoutedOnPrem: True
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-08-12_06:2020-08-11,2020-08-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- clxscore=1015 impostorscore=0 mlxscore=0 adultscore=0 suspectscore=0
- priorityscore=1501 lowpriorityscore=0 mlxlogscore=999 spamscore=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 priorityscore=1501 adultscore=0
+ phishscore=0 suspectscore=0 impostorscore=0 malwarescore=0 spamscore=0
  bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2006250000 definitions=main-2008120101
 Sender: linux-kernel-owner@vger.kernel.org
@@ -61,122 +65,252 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-PmBus devices support Block Write-Block Read Process
-Call described in SMBus specification v 2.0 with the
-exception that Block writes and reads are permitted to
-have up 255 data bytes instead of max 32 bytes (SMBus).
+Adm1266 exposes 9 GPIOs and 16 PDIOs which are currently read-only. They
+are controlled by the internal sequencing engine.
 
-This patch adds Block WR process call support for ADM1266.
+This patch makes adm1266 driver expose GPIOs and PDIOs to user-space
+using GPIO provider kernel api.
 
 Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
 ---
- drivers/hwmon/pmbus/Kconfig   |  1 +
- drivers/hwmon/pmbus/adm1266.c | 78 +++++++++++++++++++++++++++++++++++
- 2 files changed, 79 insertions(+)
+ drivers/hwmon/pmbus/Kconfig   |   1 +
+ drivers/hwmon/pmbus/adm1266.c | 204 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 205 insertions(+)
 
 diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index da34083e1ffd..c04068b665e6 100644
+index c04068b665e6..2db3a93a43ea 100644
 --- a/drivers/hwmon/pmbus/Kconfig
 +++ b/drivers/hwmon/pmbus/Kconfig
-@@ -28,6 +28,7 @@ config SENSORS_PMBUS
- 
+@@ -29,6 +29,7 @@ config SENSORS_PMBUS
  config SENSORS_ADM1266
  	tristate "Analog Devices ADM1266 Sequencer"
-+	select CRC8
+ 	select CRC8
++	depends on GPIOLIB
  	help
  	  If you say yes here you get hardware monitoring support for Analog
  	  Devices ADM1266 Cascadable Super Sequencer.
 diff --git a/drivers/hwmon/pmbus/adm1266.c b/drivers/hwmon/pmbus/adm1266.c
-index 79e8d90886b8..9db1c317029b 100644
+index 9db1c317029b..7ca5aa751b7e 100644
 --- a/drivers/hwmon/pmbus/adm1266.c
 +++ b/drivers/hwmon/pmbus/adm1266.c
-@@ -6,6 +6,7 @@
+@@ -6,18 +6,42 @@
   * Copyright 2020 Analog Devices Inc.
   */
  
-+#include <linux/crc8.h>
++#include <linux/bitfield.h>
+ #include <linux/crc8.h>
++#include <linux/debugfs.h>
++#include <linux/gpio/driver.h>
  #include <linux/i2c.h>
++#include <linux/i2c-smbus.h>
  #include <linux/init.h>
  #include <linux/kernel.h>
-@@ -13,11 +14,85 @@
+ #include <linux/module.h>
  #include "pmbus.h"
  #include <linux/slab.h>
  
-+#define ADM1266_PMBUS_BLOCK_MAX		255
++#define ADM1266_PDIO_CONFIG	0xD4
++#define ADM1266_GPIO_CONFIG	0xE1
++#define ADM1266_PDIO_STATUS	0xE9
++#define ADM1266_GPIO_STATUS	0xEA
 +
++/* ADM1266 GPIO defines */
++#define ADM1266_GPIO_NR			9
++#define ADM1266_GPIO_FUNCTIONS(x)	FIELD_GET(BIT(0), x)
++#define ADM1266_GPIO_INPUT_EN(x)	FIELD_GET(BIT(2), x)
++#define ADM1266_GPIO_OUTPUT_EN(x)	FIELD_GET(BIT(3), x)
++#define ADM1266_GPIO_OPEN_DRAIN(x)	FIELD_GET(BIT(4), x)
++
++/* ADM1266 PDIO defines */
++#define ADM1266_PDIO_NR			16
++#define ADM1266_PDIO_PIN_CFG(x)		FIELD_GET(GENMASK(15, 13), x)
++#define ADM1266_PDIO_GLITCH_FILT(x)	FIELD_GET(GENMASK(12, 9), x)
++#define ADM1266_PDIO_OUT_CFG(x)		FIELD_GET(GENMASK(2, 0), x)
++
+ #define ADM1266_PMBUS_BLOCK_MAX		255
+ 
  struct adm1266_data {
  	struct pmbus_driver_info info;
++	struct gpio_chip gc;
++	const char *gpio_names[ADM1266_GPIO_NR + ADM1266_PDIO_NR];
  	struct i2c_client *client;
-+	struct mutex buf_mutex;
-+	u8 write_buf[ADM1266_PMBUS_BLOCK_MAX + 1] ____cacheline_aligned;
-+	u8 read_buf[ADM1266_PMBUS_BLOCK_MAX + 1] ____cacheline_aligned;
- };
+ 	struct mutex buf_mutex;
+ 	u8 write_buf[ADM1266_PMBUS_BLOCK_MAX + 1] ____cacheline_aligned;
+@@ -93,9 +117,185 @@ static int adm1266_pmbus_block_xfer(struct adm1266_data *data, u8 cmd, u8 w_len,
+ 	return ret;
+ }
  
-+DECLARE_CRC8_TABLE(pmbus_crc_table);
++static const unsigned int adm1266_gpio_mapping[ADM1266_GPIO_NR][2] = {
++	{1, 0},
++	{2, 1},
++	{3, 2},
++	{4, 8},
++	{5, 9},
++	{6, 10},
++	{7, 11},
++	{8, 6},
++	{9, 7},
++};
 +
-+/*
-+ * Different from Block Read as it sends data and waits for the slave to
-+ * return a value dependent on that data. The protocol is simply a Write Block
-+ * followed by a Read Block without the Read-Block command field and the
-+ * Write-Block STOP bit.
-+ */
-+static int adm1266_pmbus_block_xfer(struct adm1266_data *data, u8 cmd, u8 w_len, u8 *data_w,
-+				    u8 *data_r)
++static const char *adm1266_names[ADM1266_GPIO_NR + ADM1266_PDIO_NR] = {
++	"GPIO1", "GPIO2", "GPIO3", "GPIO4", "GPIO5", "GPIO6", "GPIO7", "GPIO8",
++	"GPIO9", "PDIO1", "PDIO2", "PDIO3", "PDIO4", "PDIO5", "PDIO6",
++	"PDIO7", "PDIO8", "PDIO9", "PDIO10", "PDIO11", "PDIO12", "PDIO13",
++	"PDIO14", "PDIO15", "PDIO16",
++};
++
++static int adm1266_gpio_get(struct gpio_chip *chip, unsigned int offset)
 +{
-+	struct i2c_client *client = data->client;
-+	struct i2c_msg msgs[2] = {
-+		{
-+			.addr = client->addr,
-+			.flags = I2C_M_DMA_SAFE,
-+			.buf = data->write_buf,
-+			.len = w_len + 2,
-+		},
-+		{
-+			.addr = client->addr,
-+			.flags = I2C_M_RD | I2C_M_DMA_SAFE,
-+			.buf = data->read_buf,
-+			.len = ADM1266_PMBUS_BLOCK_MAX + 2,
-+		}
-+	};
-+	u8 addr;
-+	u8 crc;
++	struct adm1266_data *data = gpiochip_get_data(chip);
++	u8 read_buf[I2C_SMBUS_BLOCK_MAX + 1];
++	unsigned long pins_status;
++	unsigned int pmbus_cmd;
 +	int ret;
 +
-+	mutex_lock(&data->buf_mutex);
++	if (offset < ADM1266_GPIO_NR)
++		pmbus_cmd = ADM1266_GPIO_STATUS;
++	else
++		pmbus_cmd = ADM1266_PDIO_STATUS;
 +
-+	msgs[0].buf[0] = cmd;
-+	msgs[0].buf[1] = w_len;
-+	memcpy(&msgs[0].buf[2], data_w, w_len);
-+
-+	ret = i2c_transfer(client->adapter, msgs, 2);
-+	if (ret != 2) {
-+		if (ret >= 0)
-+			ret = -EPROTO;
-+
-+		mutex_unlock(&data->buf_mutex);
-+
++	ret = i2c_smbus_read_block_data(data->client, pmbus_cmd, read_buf);
++	if (ret < 0)
 +		return ret;
++
++	pins_status = read_buf[0] + (read_buf[1] << 8);
++	if (offset < ADM1266_GPIO_NR)
++		return test_bit(adm1266_gpio_mapping[offset][1], &pins_status);
++
++	return test_bit(offset - ADM1266_GPIO_NR, &pins_status);
++}
++
++static int adm1266_gpio_get_multiple(struct gpio_chip *chip, unsigned long *mask,
++				     unsigned long *bits)
++{
++	struct adm1266_data *data = gpiochip_get_data(chip);
++	u8 read_buf[ADM1266_PMBUS_BLOCK_MAX + 1];
++	unsigned long status;
++	unsigned int gpio_nr;
++	int ret;
++
++	ret = i2c_smbus_read_block_data(data->client, ADM1266_GPIO_STATUS, read_buf);
++	if (ret < 0)
++		return ret;
++
++	status = read_buf[0] + (read_buf[1] << 8);
++
++	*bits = 0;
++	for_each_set_bit(gpio_nr, mask, ADM1266_GPIO_NR) {
++		if (test_bit(adm1266_gpio_mapping[gpio_nr][1], &status))
++			set_bit(gpio_nr, bits);
 +	}
 +
-+	if (client->flags & I2C_CLIENT_PEC) {
-+		addr = i2c_8bit_addr_from_msg(&msgs[0]);
-+		crc = crc8(pmbus_crc_table, &addr, 1, 0);
-+		crc = crc8(pmbus_crc_table, msgs[0].buf,  msgs[0].len, crc);
++	ret = i2c_smbus_read_block_data(data->client, ADM1266_PDIO_STATUS, read_buf);
++	if (ret < 0)
++		return ret;
 +
-+		addr = i2c_8bit_addr_from_msg(&msgs[1]);
-+		crc = crc8(pmbus_crc_table, &addr, 1, crc);
-+		crc = crc8(pmbus_crc_table, msgs[1].buf,  msgs[1].buf[0] + 1, crc);
++	status = read_buf[0] + (read_buf[1] << 8);
 +
-+		if (crc != msgs[1].buf[msgs[1].buf[0] + 1]) {
-+			mutex_unlock(&data->buf_mutex);
-+			return -EBADMSG;
++	*bits = 0;
++	for_each_set_bit_from(gpio_nr, mask, ADM1266_GPIO_NR + ADM1266_PDIO_STATUS) {
++		if (test_bit(gpio_nr - ADM1266_GPIO_NR, &status))
++			set_bit(gpio_nr, bits);
++	}
++
++	return 0;
++}
++
++static void adm1266_gpio_dbg_show(struct seq_file *s, struct gpio_chip *chip)
++{
++	struct adm1266_data *data = gpiochip_get_data(chip);
++	u8 read_buf[ADM1266_PMBUS_BLOCK_MAX + 1];
++	unsigned long gpio_config;
++	unsigned long pdio_config;
++	unsigned long pin_cfg;
++	u8 write_cmd;
++	int ret;
++	int i;
++
++	for (i = 0; i < ADM1266_GPIO_NR; i++) {
++		write_cmd = adm1266_gpio_mapping[i][1];
++		ret = adm1266_pmbus_block_xfer(data, ADM1266_GPIO_CONFIG, 1, &write_cmd, read_buf);
++		if (ret != 2)
++			return;
++
++		gpio_config = read_buf[0];
++		seq_puts(s, adm1266_names[i]);
++
++		seq_puts(s, " ( ");
++		if (!ADM1266_GPIO_FUNCTIONS(gpio_config)) {
++			seq_puts(s, "high-Z )\n");
++			continue;
 +		}
++		if (ADM1266_GPIO_INPUT_EN(gpio_config))
++			seq_puts(s, "input ");
++		if (ADM1266_GPIO_OUTPUT_EN(gpio_config))
++			seq_puts(s, "output ");
++		if (ADM1266_GPIO_OPEN_DRAIN(gpio_config))
++			seq_puts(s, "open-drain )\n");
++		else
++			seq_puts(s, "push-pull )\n");
 +	}
 +
-+	memcpy(data_r, &msgs[1].buf[1], msgs[1].buf[0]);
++	write_cmd = 0xFF;
++	ret = adm1266_pmbus_block_xfer(data, ADM1266_PDIO_CONFIG, 1, &write_cmd, read_buf);
++	if (ret != 32)
++		return;
 +
-+	ret = msgs[1].buf[0];
-+	mutex_unlock(&data->buf_mutex);
++	for (i = 0; i < ADM1266_PDIO_NR; i++) {
++		seq_puts(s, adm1266_names[ADM1266_GPIO_NR + i]);
++
++		pdio_config = read_buf[2 * i];
++		pdio_config += (read_buf[2 * i + 1] << 8);
++		pin_cfg = ADM1266_PDIO_PIN_CFG(pdio_config);
++
++		seq_puts(s, " ( ");
++		if (!pin_cfg || pin_cfg > 5) {
++			seq_puts(s, "high-Z )\n");
++			continue;
++		}
++
++		if (pin_cfg & BIT(0))
++			seq_puts(s, "output ");
++
++		if (pin_cfg & BIT(1))
++			seq_puts(s, "input ");
++
++		seq_puts(s, ")\n");
++	}
++}
++
++static int adm1266_config_gpio(struct adm1266_data *data)
++{
++	const char *name = dev_name(&data->client->dev);
++	char *gpio_name;
++	int ret;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(data->gpio_names); i++) {
++		gpio_name = devm_kasprintf(&data->client->dev, GFP_KERNEL, "adm1266-%x-%s",
++					   data->client->addr, adm1266_names[i]);
++		if (!gpio_name)
++			return -ENOMEM;
++
++		data->gpio_names[i] = gpio_name;
++	}
++
++	data->gc.label = name;
++	data->gc.parent = &data->client->dev;
++	data->gc.owner = THIS_MODULE;
++	data->gc.base = -1;
++	data->gc.names = data->gpio_names;
++	data->gc.ngpio = ARRAY_SIZE(data->gpio_names);
++	data->gc.get = adm1266_gpio_get;
++	data->gc.get_multiple = adm1266_gpio_get_multiple;
++	data->gc.dbg_show = adm1266_gpio_dbg_show;
++
++	ret = devm_gpiochip_add_data(&data->client->dev, &data->gc, data);
++	if (ret)
++		dev_err(&data->client->dev, "GPIO registering failed (%d)\n", ret);
 +
 +	return ret;
 +}
@@ -184,12 +318,17 @@ index 79e8d90886b8..9db1c317029b 100644
  static int adm1266_probe(struct i2c_client *client, const struct i2c_device_id *id)
  {
  	struct adm1266_data *data;
-@@ -33,6 +108,9 @@ static int adm1266_probe(struct i2c_client *client, const struct i2c_device_id *
- 	for (i = 0; i < data->info.pages; i++)
- 		data->info.func[i] = PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT;
++	int ret;
+ 	int i;
  
-+	crc8_populate_msb(pmbus_crc_table, 0x7);
-+	mutex_init(&data->buf_mutex);
+ 	data = devm_kzalloc(&client->dev, sizeof(struct adm1266_data), GFP_KERNEL);
+@@ -111,6 +311,10 @@ static int adm1266_probe(struct i2c_client *client, const struct i2c_device_id *
+ 	crc8_populate_msb(pmbus_crc_table, 0x7);
+ 	mutex_init(&data->buf_mutex);
+ 
++	ret = adm1266_config_gpio(data);
++	if (ret < 0)
++		return ret;
 +
  	return pmbus_do_probe(client, id, &data->info);
  }
