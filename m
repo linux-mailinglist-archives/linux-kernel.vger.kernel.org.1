@@ -2,109 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F3D242A78
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D34B242A7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgHLNhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 09:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
+        id S1728092AbgHLNiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 09:38:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727050AbgHLNhQ (ORCPT
+        with ESMTP id S1726829AbgHLNiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 09:37:16 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36892C06174A;
-        Wed, 12 Aug 2020 06:37:16 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id c19so4255137wmd.1;
-        Wed, 12 Aug 2020 06:37:16 -0700 (PDT)
+        Wed, 12 Aug 2020 09:38:13 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210A0C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 06:38:13 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 9so1811718wmj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 06:38:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gh5RuQr9sYj2H72mRcnwrN7pTYUJOiAR4CgKD33yTxU=;
-        b=fRHpEzIaHPb+uHpcOClFgHp5YAmQztzS0AM0IRMXTvBzbJ8EBXYXmIWSxAzcrhZeyE
-         D9Xdy+B3J1FnVe4nkFhr6zCmaf/aII0E5MtLyH6v92N4ceCLuTFjWRH0EI82Ddee59hT
-         QodHzZ5aG9Kh44j8hDeqKHODfuOG5xo1eAYi9fz2de79SO6vrsuqOwmY95fO9qRrGuRv
-         ldoUNSskvFgrXKJpy8Gu25M74XJVfkK+CNtr7pYGbj6gxUvpietmNdtHkpzQhNHEJMbl
-         Aw0Iv87yXAyaJntDCmrUOldgom8UwayFi2Eai5jo/H/4nd8rqnDYklJ5ARq0B4XThKG+
-         Vyxw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U6a+d3dtYp0KjTU5EEF1X/oH34jCVu+NBd+4qq9Ixtw=;
+        b=yDBDdIyN79nLSMZt2ii6ECd0ccqcb4C9/zsl/VF4QcmYRhUqFZTNGn8S1O05yLbG8m
+         ubDQCxhglZD3VIDoqHNTs9nrCaRyzEAwfy56sy+jta0zY4ozoKLFQi8y/RL6LbyXtsg7
+         vPPzvQUdqo40z1n1oftLgNHQDjSWftJjjBDsQhvTEzJKLV/UljBn1O8TgzytjsFt9w8U
+         TJcSCoUGsmpvlQAouUYl2WNa4NJG9STXIifpmKWhao4D+DxMBSRLDd4A1cuJ2pp1KVzb
+         6SjO2F73k6YQ1HGycCizuxtmTBUcGfkSqURV3MFuAbgx20pDncLVyrW2c/POdaOxoRFd
+         /XpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gh5RuQr9sYj2H72mRcnwrN7pTYUJOiAR4CgKD33yTxU=;
-        b=n+b6Ms+1BUetd1c/zMQ3WzH7DU4dPqJqmzDrRMzypTOmTBYAAmlNp7/KZ2CN1Pdpm4
-         xeDd9HRv3OkARRmQgejBLt5jIRJKXuwO1t3mvu37jslMGQ3YgS4CWjkDYPKF7BkZcUUD
-         SXFzIIk8uJcraoBQYIMSzLbQzVY35x5JdNVE1OxLQU4cnc2fmOeHNjLBsVvAgT6QnHO6
-         pNFZoeuSZgYOoVPfMGoEP0BvsANSByl8C5CuGHErEbeLPF+XSRkTjsn/yt2TFiwmqaXX
-         rWVGMZ3gjqaJUft70iPN/sV3kV09lz0J6ODZ2GzBRxajBydYq3VizhLYCJMIyB3CiSZl
-         ylEQ==
-X-Gm-Message-State: AOAM5302ufB5mAI0WNCU05v45bu6OhiPk71W2K4cNVg6UyEjBJ7vpGJ1
-        A6UmtMDdp9MXD+KnkwRUpbE=
-X-Google-Smtp-Source: ABdhPJzYtGxaLfbKeJp1ezPkfrNo5tdNToPDncdlPqvlHAIYEydkF4Cn9Tf2xhmA4Je5U91R2x+L9w==
-X-Received: by 2002:a1c:9c91:: with SMTP id f139mr9084066wme.134.1597239434901;
-        Wed, 12 Aug 2020 06:37:14 -0700 (PDT)
-Received: from lenovo-laptop (cpc83647-brig20-2-0-cust926.3-3.cable.virginm.net. [82.19.195.159])
-        by smtp.gmail.com with ESMTPSA id d21sm3937182wmd.41.2020.08.12.06.37.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Aug 2020 06:37:14 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
-Date:   Wed, 12 Aug 2020 14:37:11 +0100
-To:     David Lechner <david@lechnology.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sekhar Nori <nsekhar@ti.com>,
-        Bartosz Go??aszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH] power: supply: Add dependency to lego-ev3-battery
- Kconfig options
-Message-ID: <20200812133711.ddwhxypmvr27pxdu@lenovo-laptop>
-References: <20200809185444.54247-1-alex.dewar90@gmail.com>
- <d6c98ee6-f2f3-c55a-be16-3794ccf30a28@lechnology.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U6a+d3dtYp0KjTU5EEF1X/oH34jCVu+NBd+4qq9Ixtw=;
+        b=CTJfSB6KOAio2BTcTQClh2jemuTBGD3BvqHsGBD7oSj2wjV+4F3cbW0+oy+rJSjPXd
+         2a82QkGTs2WcNP0pWcPVeY9nrI4up+P6ArRli5VLQKr5BC7sHabiEyjV4uOabY/dMZLL
+         uGHF2j56XQ4zzWMeSysQ5rVl4ckXQrkBHGjeId5HOz/EbnSMtYQzP6UOAoJELg/Lr5cE
+         /VqWNnhCxU9bBb2jUDSRpmDsAWH/4/Iox7Pd4H+LhDYIlwunG4uOZg4enP2N+0hbT9Bv
+         1++tVRXJW2nluPv3//b7qLq1JQk6aT9IGbMGZ7dLy+YI4YYFDXJOE7Wz3nmudgVZRllX
+         74bQ==
+X-Gm-Message-State: AOAM530RBwl2fOknNjfemgZGA2D8W6bf/hiLT6jTUDMl1jtE6xtUOfG7
+        +NxC5iK0gd3tqLpTqFOYIHhQ01BcjCXkc8cxRR0xLA==
+X-Google-Smtp-Source: ABdhPJwqMh6ofIFWi0PgnalLBz97O6pS4TLZaTLUZpUxWvbz7fQU77ZzO8rJnHikMk86N01F3K2+jUdwRSWt3HpDtNI=
+X-Received: by 2002:a1c:3dd6:: with SMTP id k205mr8592936wma.21.1597239491828;
+ Wed, 12 Aug 2020 06:38:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d6c98ee6-f2f3-c55a-be16-3794ccf30a28@lechnology.com>
+References: <CAMi1Hd3Dv_T7kgThLTk2QLtfS7LBvhJ5R=6C3seUYK0GvNV6eA@mail.gmail.com>
+ <20200806223134.42748-1-konradybcio@gmail.com>
+In-Reply-To: <20200806223134.42748-1-konradybcio@gmail.com>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Wed, 12 Aug 2020 19:07:35 +0530
+Message-ID: <CAMi1Hd2P47PWjnRaACE9oyxRpZZwFwTamwCCxufN6qW+8SKFrA@mail.gmail.com>
+Subject: Re:
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        dt <devicetree@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 09:24:10AM -0500, David Lechner wrote:
-> On 8/9/20 1:54 PM, Alex Dewar wrote:
-> > This battery appears only to be used by a single board (DA850), so it
-> > makes sense to add this to the Kconfig file so that users don't build
-> > the module unnecessarily. It currently seems to be built for the x86
-> > Arch Linux kernel where it's probably not doing much good.
-> 
-> It would probably also make sense to add "default n" since it only
-> applies to one board in the entire arch.
+On Fri, 7 Aug 2020 at 04:02, Konrad Dybcio <konradybcio@gmail.com> wrote:
+>
+> Subject: Re: [PATCH v4] arm64: dts: qcom: Add support for Xiaomi Poco F1 (Beryllium)
+>
+> >// This removed_region is needed to boot the device
+> >               // TODO: Find out the user of this reserved memory
+> >               removed_region: memory@88f00000 {
+>
+> This region seems to belong to the Trust Zone. When Linux tries to access it, TZ bites and shuts the device down.
 
-Ah ok. That makes sense. Would you like me to send a follow-on patch for
-this?
+That is totally possible. Plus it falls right in between TZ and QSEE
+reserved-memory regions. However, I do not find any credible source
+of information which can confirm this. So I'm hesitant to update the
+TODO item in the above comment.
 
-Alex
-
-> 
-> BATTERY_LEGO_EV3 is already explicitly set to "m" in the appropriate
-> defconfig file, so I don't think it would break anything.
-> 
-> > 
-> > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> > ---
-> >   drivers/power/supply/Kconfig | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-> > index faf2830aa1527..9f76e2f47ac6d 100644
-> > --- a/drivers/power/supply/Kconfig
-> > +++ b/drivers/power/supply/Kconfig
-> > @@ -164,7 +164,7 @@ config BATTERY_DS2782
-> >   config BATTERY_LEGO_EV3
-> >   	tristate "LEGO MINDSTORMS EV3 battery"
-> > -	depends on OF && IIO && GPIOLIB
-> > +	depends on OF && IIO && GPIOLIB && (ARCH_DAVINCI_DA850 || COMPILE_TEST)
-> >   	help
-> >   	  Say Y here to enable support for the LEGO MINDSTORMS EV3 battery.
-> > 
-> 
+>
+> Konrad
