@@ -2,112 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EBF24292D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1446A24292F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgHLMPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 08:15:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726453AbgHLMPH (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 08:15:07 -0400
-Received: from quaco.ghostprotocols.net (179.176.8.134.dynamic.adsl.gvt.net.br [179.176.8.134])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A55BA207F7;
-        Wed, 12 Aug 2020 12:15:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597234506;
-        bh=mm82WzoLjrVa6avpvteLu66NhBbfGWCUMUSbAG+RWYg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dI4uMAk1/dvf6uOjAMb7HPjOntYOGanWXwzVMoSFZDi0pEEYyPqQ2l0MH2rm5sk43
-         +wp0zeftgpQeKIgm5+bsUSa1pIdgIGUVKCMPvqyfnG7jTfLxIoPGexzAA2sNabcxyQ
-         uRXQRbJOk84Rq24Gm30d1j58fNhy9xT+4Tx2FguE=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B307E403C6; Wed, 12 Aug 2020 09:15:04 -0300 (-03)
-Date:   Wed, 12 Aug 2020 09:15:04 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
-        like.xu@linux.intel.com
-Subject: Re: [PATCH] perf parse-events: Set exclude_guest for user-space
- counting
-Message-ID: <20200812121504.GE13995@kernel.org>
-References: <20200812065953.22143-1-yao.jin@linux.intel.com>
+        id S1727822AbgHLMQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 08:16:46 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:39239 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726829AbgHLMQp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 08:16:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R751e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U5ZBL.H_1597234598;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U5ZBL.H_1597234598)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 12 Aug 2020 20:16:39 +0800
+Subject: Re: [PATCH v17 14/21] mm/compaction: do page isolation first in
+ compaction
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Rong Chen <rong.a.chen@intel.com>
+References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1595681998-19193-15-git-send-email-alex.shi@linux.alibaba.com>
+ <CAKgT0UcbBv=QBK9ErqLKXoNLYxFz52L4fiiHy4h6zKdBs=YPOg@mail.gmail.com>
+ <241ca157-104f-4f0d-7d5b-de394443788d@linux.alibaba.com>
+ <CAKgT0UdSrarC8j+G=LYRSadcaG6yNCoCfeVpFjEiHRJb4A77-g@mail.gmail.com>
+ <8dbd004e-8eba-f1ec-a5eb-5dc551978936@linux.alibaba.com>
+ <CAKgT0UdK-fy+yYGLFK=YgE+maa_0_uecq0_8S_0kM8BiVgRO7g@mail.gmail.com>
+ <d9818e06-95f1-9f21-05c0-98f29ea96d89@linux.alibaba.com>
+ <CAKgT0Ues0ShkSbb1XtA7z7EYB8NCPgLGq8zZUjrXK_jcWn8mDQ@mail.gmail.com>
+ <9581db48-cef3-788a-7f5a-8548fee56c13@linux.alibaba.com>
+Message-ID: <51249892-632b-4aaf-1f66-3bc0d5c5cbab@linux.alibaba.com>
+Date:   Wed, 12 Aug 2020 20:16:06 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200812065953.22143-1-yao.jin@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <9581db48-cef3-788a-7f5a-8548fee56c13@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Aug 12, 2020 at 02:59:53PM +0800, Jin Yao escreveu:
-> Currently if we run 'perf record -e cycles:u', exclude_guest is 0.
+
+
+在 2020/8/12 下午7:43, Alex Shi 写道:
+>>> Sorry, I still can not follow you here. Compound code part is unchanged
+>>> and follow the original logical. So would you like to pose a new code to
+>>> see if its works?
+>> No there are significant changes as you reordered all of the
+>> operations. Prior to your change the LRU bit was checked, but not
+>> cleared before testing for PageCompound. Now you are clearing it
+>> before you are testing if it is a compound page. So if compaction is
+>> running we will be seeing the pages in the LRU stay put, but the
+>> compound bit flickering off and on if the compound page is encountered
+>> with the wrong or NULL lruvec. What I was suggesting is that the
+
+> The lruvec could be wrong or NULL here, that is the base stone of whole
+> patchset.
 > 
-> But it doesn't make sense that we request for user-space counting
-> but we also get the guest report.
-> 
-> To keep perf semantics consistent and clear, this patch sets
-> exclude_guest for user-space counting.
-
-Applied, and also added this, that you should consider doing in the
-future (modulo the "Committer testing:" header :) ):
-
-Committer testing:
-
-Before:
-
-  # perf record -e cycles:u
-  ^C[ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 1.231 MB perf.data (91 samples) ]
-  #
-  # perf evlist -v
-  cycles:u: size: 120, { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|ID|CPU|PERIOD, read_format: ID, disabled: 1, inherit: 1, exclude_kernel: 1, exclude_hv: 1, freq: 1, sample_id_all: 1
-  <SNIP>
-  #
-
-After:
-
-  # perf record -e cycles:u
-  ^C[ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 1.263 MB perf.data (403 samples) ]
-  #
-  # perf evlist -v
-  cycles:u: size: 120, { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|ID|CPU|PERIOD, read_format: ID, disabled: 1, inherit: 1, exclude_kernel: 1, exclude_hv: 1, freq: 1, sample_id_all: 1, exclude_guest: 1
-  #
-
-----
-
-I.e. show actual command output before and after that demonstrates the
-problem and then the solution.
-
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> ---
->  tools/perf/util/parse-events.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index 9f7260e69113..4d809f1fe269 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -1794,6 +1794,8 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
->  		if (*str == 'u') {
->  			if (!exclude)
->  				exclude = eu = ek = eh = 1;
-> +			if (!exclude_GH)
-> +				eG = 1;
->  			eu = 0;
->  		} else if (*str == 'k') {
->  			if (!exclude)
-> -- 
-> 2.17.1
-> 
-
--- 
-
-- Arnaldo
+Sorry for typo. s/could/could not/
