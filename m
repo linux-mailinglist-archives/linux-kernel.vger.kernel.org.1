@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 320B92423B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 03:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85C02423B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 03:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgHLBbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 21:31:41 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:15661 "EHLO rere.qmqm.pl"
+        id S1726632AbgHLBbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 21:31:47 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:53628 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgHLBbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 21:31:38 -0400
+        id S1726472AbgHLBbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 21:31:39 -0400
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BRBxh4KKRzfN;
-        Wed, 12 Aug 2020 03:31:36 +0200 (CEST)
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BRBxj74SVz8r;
+        Wed, 12 Aug 2020 03:31:37 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1597195896; bh=Wca4OtYuyqeSF/EOSB2Us3m2/+3Oyu2jAs5iDA6FYUQ=;
+        t=1597195898; bh=BhbnThh734Nzl8xThcSqWlmj3ApkVzpWgsxrjxY7oqk=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=VOXAjs9cEpCe+7OHe9+WRsjxTQ6kVpVJUw10MZy7lFHvAyyG+zSEqpUM/FaawxD3l
-         +/8vBB1Ut79LIE/ZI7ev3qQXgfT9b6tJJggsl6zOW3N/9OoztgUu+3zEdcVSqJMZob
-         h2gCIZobEgwX5eOU9LOhIVp6ZlAS3Tszk8lafqaVv0cKadE5gKrn773tjDUFACfYQg
-         5BANQBcmtU6SZ2+kvodpJbSGf4qs4TTkNbEmOrlQyVBj/4xj50bF+kUH8qzhtvHn2e
-         LlM8eQAgGqMUknQZR4fQIyUS81CiF9g2oYbEJQ6ebwFjn5a+fN2oyv+wux2cds4xYU
-         6pwD/Me4VgSJA==
+        b=HmrNmlXO2SIRXrFtlbmm4i+3Z/rwAiaArpUFwwuAyJvNfCeHDf3+ccYyIu+no9H/e
+         dKHC+eRvr6IJJ8TTDLjdP1S80feC0sYMFd0+BldSofGby1+HaSe12uPzrTu+NMOAnN
+         7Dv/wFEjM1UxODytTdnC6stmhTu5SAgwMkQoXDHcpVwLoHXNXZ+zNfcKJkWFOGmQxz
+         HrpzT77hu0QBv3NsAdrRiiLTqkhONb8ePNRr02vjG4hEDIOm6ra7+dL9/OcxrG/fpA
+         qbf1dl425fO5yp1MJHOuRvDprdmotITE04S3VYvgNN9G/uGPXRkskOt+2qVXLsY/fT
+         43lZga0++l6aQ==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Wed, 12 Aug 2020 03:31:36 +0200
-Message-Id: <f0380bdb3d60aeefa9693c4e234d2dcda7e56747.1597195321.git.mirq-linux@rere.qmqm.pl>
+Date:   Wed, 12 Aug 2020 03:31:37 +0200
+Message-Id: <3ff002c7aa3bd774491af4291a9df23541fcf892.1597195321.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1597195321.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1597195321.git.mirq-linux@rere.qmqm.pl>
 From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v2 4/7] regulator: push allocation in
- set_consumer_device_supply() out of lock
+Subject: [PATCH v2 6/7] regulator: cleanup regulator_ena_gpio_free()
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,110 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pull regulator_list_mutex into set_consumer_device_supply() and keep
-allocations outside of it. Fourth of the fs_reclaim deadlock case.
+Since only regulator_ena_gpio_request() allocates rdev->ena_pin, and it
+guarantees that same gpiod gets same pin structure, it is enough to
+compare just the pointers. Also we know there can be only one matching
+entry on the list. Rework the code take advantage of the facts.
 
-Cc: stable@vger.kernel.org
-Fixes: 45389c47526d ("regulator: core: Add early supply resolution for regulators")
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
-v2: fix new node leak reported kernel test robot <lkp@intel.com>
----
- drivers/regulator/core.c | 46 +++++++++++++++++++++++-----------------
- 1 file changed, 26 insertions(+), 20 deletions(-)
+ drivers/regulator/core.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index c95397798275..71749f48caee 100644
+index 448a267641df..bfd4114d6654 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -1434,7 +1434,7 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
- 				      const char *consumer_dev_name,
- 				      const char *supply)
- {
--	struct regulator_map *node;
-+	struct regulator_map *node, *new_node;
- 	int has_dev;
+@@ -2260,19 +2260,19 @@ static void regulator_ena_gpio_free(struct regulator_dev *rdev)
  
- 	if (supply == NULL)
-@@ -1445,6 +1445,22 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
- 	else
- 		has_dev = 0;
- 
-+	new_node = kzalloc(sizeof(struct regulator_map), GFP_KERNEL);
-+	if (new_node == NULL)
-+		return -ENOMEM;
-+
-+	new_node->regulator = rdev;
-+	new_node->supply = supply;
-+
-+	if (has_dev) {
-+		new_node->dev_name = kstrdup(consumer_dev_name, GFP_KERNEL);
-+		if (new_node->dev_name == NULL) {
-+			kfree(new_node);
-+			return -ENOMEM;
-+		}
-+	}
-+
-+	mutex_lock(&regulator_list_mutex);
- 	list_for_each_entry(node, &regulator_map_list, list) {
- 		if (node->dev_name && consumer_dev_name) {
- 			if (strcmp(node->dev_name, consumer_dev_name) != 0)
-@@ -1462,26 +1478,19 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
- 			 node->regulator->desc->name,
- 			 supply,
- 			 dev_name(&rdev->dev), rdev_get_name(rdev));
--		return -EBUSY;
-+		goto fail;
- 	}
- 
--	node = kzalloc(sizeof(struct regulator_map), GFP_KERNEL);
--	if (node == NULL)
--		return -ENOMEM;
-+	list_add(&new_node->list, &regulator_map_list);
-+	mutex_unlock(&regulator_list_mutex);
- 
--	node->regulator = rdev;
--	node->supply = supply;
--
--	if (has_dev) {
--		node->dev_name = kstrdup(consumer_dev_name, GFP_KERNEL);
--		if (node->dev_name == NULL) {
--			kfree(node);
--			return -ENOMEM;
+ 	/* Free the GPIO only in case of no use */
+ 	list_for_each_entry_safe(pin, n, &regulator_ena_gpio_list, list) {
+-		if (pin->gpiod == rdev->ena_pin->gpiod) {
+-			if (pin->request_count <= 1) {
+-				pin->request_count = 0;
+-				gpiod_put(pin->gpiod);
+-				list_del(&pin->list);
+-				kfree(pin);
+-				rdev->ena_pin = NULL;
+-				return;
+-			} else {
+-				pin->request_count--;
+-			}
 -		}
--	}
--
--	list_add(&node->list, &regulator_map_list);
- 	return 0;
++		if (pin != rdev->ena_pin)
++			continue;
 +
-+fail:
-+	mutex_unlock(&regulator_list_mutex);
-+	kfree(new_node->dev_name);
-+	kfree(new_node);
-+	return -EBUSY;
++		if (--pin->request_count)
++			break;
++
++		gpiod_put(pin->gpiod);
++		list_del(&pin->list);
++		kfree(pin);
++		break;
+ 	}
++
++	rdev->ena_pin = NULL;
  }
  
- static void unset_regulator_supplies(struct regulator_dev *rdev)
-@@ -5239,19 +5248,16 @@ regulator_register(const struct regulator_desc *regulator_desc,
- 
- 	/* add consumers devices */
- 	if (init_data) {
--		mutex_lock(&regulator_list_mutex);
- 		for (i = 0; i < init_data->num_consumer_supplies; i++) {
- 			ret = set_consumer_device_supply(rdev,
- 				init_data->consumer_supplies[i].dev_name,
- 				init_data->consumer_supplies[i].supply);
- 			if (ret < 0) {
--				mutex_unlock(&regulator_list_mutex);
- 				dev_err(dev, "Failed to set supply %s\n",
- 					init_data->consumer_supplies[i].supply);
- 				goto unset_supplies;
- 			}
- 		}
--		mutex_unlock(&regulator_list_mutex);
- 	}
- 
- 	if (!rdev->desc->ops->get_voltage &&
+ /**
 -- 
 2.20.1
 
