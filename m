@@ -2,129 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F58242B6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F98242B72
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbgHLOgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 10:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47600 "EHLO
+        id S1726615AbgHLOhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 10:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726485AbgHLOgm (ORCPT
+        with ESMTP id S1726434AbgHLOhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 10:36:42 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF03C061383
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 07:36:41 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id g19so2506940ejc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 07:36:41 -0700 (PDT)
+        Wed, 12 Aug 2020 10:37:16 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C326AC061383;
+        Wed, 12 Aug 2020 07:37:15 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id kq25so2525061ejb.3;
+        Wed, 12 Aug 2020 07:37:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=oup0ovJVk0ZzLFn1WFt+Fd6kUmlpI1Q5XsgroeR5poY=;
-        b=KfP8+LStZaPc5Z+kDwKBbf3a3PVcSEbFW9YQWnzb2ElK6LQrgREOBBD0OVufN2AGhz
-         R9blIm3AcWsvYq3uhNlwIA9SARzAoMl0OSLYBYPJsDuevSTlZ5Fh0UHeTpoPIzyKi1N3
-         BsGgEYk955QLOnC0FWMjt2OCpALHYSgk3t9zM4SAZ6ujzFN2DKbcbru2Q//CssA+mIOw
-         IXfJMtg34u/gDJojAf94by279UTzeVv+LIcg4Ks2lubF0GldE/KSGNv90ATkdBkZ9EhY
-         8WoXcfEq0uCIj7xFvirx6myWruJxK276cy7pJIZYtqNESxGvsWZlCVeDgQqiJcrehcgY
-         nhaA==
+        h=from:to:cc:subject:date:message-id;
+        bh=eMsBZ/mNa/JxQKyQPdcReQp5+OXk8qYiQBle2FaJYWE=;
+        b=a7Xs8eiL9sQb5S+77grjIRHd+2a3QftR5KKYmOk2cEtBdF2hASeNP8VstAOIdPNi6o
+         a7LqDbYU+vFa+DQUeowupLv/W+x59t6uSIT0K8RFVH/ctwL19S2kwZvBpnkcSjhqGOdf
+         k00K5tsQEUN/6NArTteoAvVMZ6OlzMGsiOE3A/K4SlENEq3IDmUQJ/gifZQQBkypYERu
+         anbnaetgf33tJG4umNIvfu/+nAISsUXYOIO2g8SpsaxXUDlpXF8hZSkInHpzbAExoBAT
+         LsYTvRMnE47SXc1O8WwLBe9BbhycGbXP73A5f/grL9cIkkYbbQGgUizfGN6ct+Y0tMO2
+         1zuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=oup0ovJVk0ZzLFn1WFt+Fd6kUmlpI1Q5XsgroeR5poY=;
-        b=JEVpF++C5ROFfUVz8vPFYusyVgk2TgfwLuul4NWBldwQbLpTdD2EcbsM4N2Qa9cexq
-         wPdJpRz4EfEdQccc8BZMdeEApPqiIRHcmYsl7SETa1rufTgijBI4j915zH95vbtdxfQ6
-         t3W9dn/sietkCyWIc8NoppBYLw/KAA73HKuqAGJR0Vxd9IuHA3kSdQRT0DtVrwXW82zp
-         rDD01N/va55bivf6zuSec7GWdPJqA4NnUPDiynlVBVh4G6pkYS2YSaTYZzLF1oNOUW/v
-         Hlv/TMxnRkoEl958sIZ87aDYy9RuU8WiFc/BCTXJ30NDtu9B/804aPKBcl34YWnAW44p
-         DjRg==
-X-Gm-Message-State: AOAM532ytnniAIIjMe2k17vTB7yhhttzcYakvgY9aRLd15VvKXfGOMj8
-        Gf5yOIuNWm2ROmOicjSNCjMvMgXU
-X-Google-Smtp-Source: ABdhPJysEoEMFd2mgwOJBkeM4ZYhPcKueFh0f2ifqETzuCgD9ec1eNIUPqGaAlnjposVrUwWwh4sxw==
-X-Received: by 2002:a17:906:3ac4:: with SMTP id z4mr71162ejd.65.1597243000527;
-        Wed, 12 Aug 2020 07:36:40 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
-        by smtp.gmail.com with ESMTPSA id p16sm1681003ejd.27.2020.08.12.07.36.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Aug 2020 07:36:39 -0700 (PDT)
-Reply-To: christian.koenig@amd.com
-Subject: Re: [PATCH] drm/amdgpu: adjust the pid in the grab_id trace point
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Shashank.Sharma@amd.com,
-        daniel.vetter@ffwll.ch, alexander.deucher@amd.com
-References: <20200807133658.1866-1-christian.koenig@amd.com>
- <20200807133658.1866-2-christian.koenig@amd.com>
- <20200812141755.GA8136@home.goodmis.org>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <e48b6300-7ba7-f2fc-b7f7-a205d32607a4@gmail.com>
-Date:   Wed, 12 Aug 2020 16:36:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200812141755.GA8136@home.goodmis.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=eMsBZ/mNa/JxQKyQPdcReQp5+OXk8qYiQBle2FaJYWE=;
+        b=g8VRAwaAsMyrWpUYDcnvLLC7PsRuH+jmNTAPVZWM7xzL2CBt5GVu3fMD7ogxBA0tGe
+         0ZhxIlj0tV1pPJuQij/mlrNIbcwydsA0DWPD77meSB+gVxF8aOSmnFtjaDrJov6jvkpa
+         NQ3GA3y6dURhYiueXvUROJNCZFYDDFAj7r8IDExmML/2LGIImQtvuM7TcHXileFBayND
+         zx9AAdXbuGt39vmuZ51Pt/I9FCjECirWqgXKkf8Vu1moBuYo0pPiEmdrnLjiYKkpwcrC
+         M8341bxP0bt7Dq7u1KQ2smgClY8NTCSFIncQ8F+/S+iw2jufM2H8XVLnxoaAp/SG+XAb
+         WNKA==
+X-Gm-Message-State: AOAM530MVTPzWUBoNm25KUHUMUoLFJojOp2p+Vd7GSyAo3kEHglS8RtR
+        efyAfcBdStMGo/Gt6uFEXexJFfiB
+X-Google-Smtp-Source: ABdhPJw5PoytbQ6YlGTPiwjYLYZwLQRCn9WeP1u5MjMGQcf0z+eviTLrmL7xDCD4PBY/gove+nh6PQ==
+X-Received: by 2002:a17:906:2f17:: with SMTP id v23mr55947eji.343.1597243034601;
+        Wed, 12 Aug 2020 07:37:14 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:598:b90f:8e5c:44c:d55b:5f94:2fc4])
+        by smtp.gmail.com with ESMTPSA id d20sm1661179ejj.10.2020.08.12.07.37.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Aug 2020 07:37:14 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] make UFS dev_cmd more readable
+Date:   Wed, 12 Aug 2020 16:37:02 +0200
+Message-Id: <20200812143704.30245-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 12.08.20 um 16:17 schrieb Steven Rostedt:
-> On Fri, Aug 07, 2020 at 03:36:58PM +0200, Christian König wrote:
->> Trace something useful instead of the pid of a kernel thread here.
->>
->> Signed-off-by: Christian König <christian.koenig@amd.com>
->> ---
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h
->> index 5da20fc166d9..07f99ef69d91 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h
->> @@ -228,6 +228,7 @@ TRACE_EVENT(amdgpu_vm_grab_id,
->>   			     ),
->>   
->>   	    TP_fast_assign(
->> +			   __entry->ent.pid = vm->task_info.pid;
-> If the ent.pid is not the pid you are interested in for this trace event, just
-> add a "pid" field to the trace event and place it there. Do not modify the
-> generic pid that is recorded, as we would like that to be consistent for all
-> trace events.
+From: Bean Huo <beanhuo@micron.com>
 
-The problem my userspace guys have is that this doesn't work with 
-"trace-cmd -P $pid".
+Changelog:
+    v1 - v2:
+        1. remove original patch scsi: ufs: differentiate dev_cmd trace message
+        2. add new patch scsi: ufs: remove several redundant goto statements
 
-But I think I can teach them how filters work :)
+Bean Huo (2):
+  scsi: ufs: change ufshcd_comp_devman_upiu() to
+    ufshcd_compose_devman_upiu()
+  scsi: ufs: remove several redundant goto statements
 
-> The "ent.pid" turns into "common_pid" in the field, leaving "pid" free to use.
-> Other trace events (like sched_waking) record a pid field that is not the same
-> as the pid of the executing task.
+ drivers/scsi/ufs/ufshcd.c | 33 +++++++++------------------------
+ 1 file changed, 9 insertions(+), 24 deletions(-)
 
-Yes, we thought about this alternative as well.
-
-> The "ent.pid" should always be the pid of the task that executed the event.
-
-Why? For the case here we just execute a work item in the background for 
-an userspace process.
-
-Tracing the pid of the worker pool which executes it doesn't seem to 
-make to much sense.
-
-Thanks for the quick reply,
-Christian.
-
->
-> -- Steve
->
->
->>   			   __entry->pasid = vm->pasid;
->>   			   __assign_str(ring, ring->name)
->>   			   __entry->vmid = job->vmid;
->> -- 
->> 2.17.1
+-- 
+2.17.1
 
