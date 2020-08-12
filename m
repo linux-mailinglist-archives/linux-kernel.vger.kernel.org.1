@@ -2,147 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6973924242F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 05:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31064242432
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 05:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgHLDKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 23:10:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55140 "EHLO
+        id S1726552AbgHLDMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 23:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgHLDKL (ORCPT
+        with ESMTP id S1726255AbgHLDMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 23:10:11 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243DFC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 20:10:11 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c19so3300271wmd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 20:10:11 -0700 (PDT)
+        Tue, 11 Aug 2020 23:12:16 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECAAC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 20:12:15 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id e11so863467otk.4
+        for <linux-kernel@vger.kernel.org>; Tue, 11 Aug 2020 20:12:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3hkg0qu6P9KQ5oYfn7DTQjSamGImaGuetOUyRL9DWkY=;
-        b=ngSRzlumHkb0IDY4Pr87hg0ZwDwyroTE0Ld40lvNSNKIijgNhqQpnM6zRj84dIcXj4
-         qQ0YIrqSSAk94RpkV98/z5snP7OuL/YSL97sskrxvMAJUeecU/LwDCYHJLTkNbYY6y4S
-         ag4+ErdhG3PO6Aaz/J7vZZktVSkGJgZVvQCYE=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QvRwyqfBzSBusxVG0abxrCHTZbe0s1N2buN7nWa0Szc=;
+        b=XwJrziScHTqWx9Fqu0aY4Ltd+VHIGc9aInW0KHF02tjHpDykR7F9RT3l+pfey+BrcL
+         CZ+JWyi3mWH8jy2QrdcDsFYWCoV+FJ3ZGjOPSPqeUaaI7MVpNVw5rhOey4+FgNFN5nz3
+         W41p9wLK45Z6mxrejE73sgsub05gUF/KRvfCYu7BcNDNYOrEPiy7wZSlU2jCrjkltfb/
+         u3kM3ug6xbXTA9Cd/UuNeXZiC6z8bgwhOTpkhdFTo3RMfNprtky4Vu0dgndCLez3N9Me
+         UmvgYaKpalSCc2NDLXshPYD37THkMxL+AB+EUocm96NmdkiH42niPjOVH+aG45PLEIPl
+         5KsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3hkg0qu6P9KQ5oYfn7DTQjSamGImaGuetOUyRL9DWkY=;
-        b=WheSNRy1JvbXqd5voy3/q++qkeKWR2ATAdXfr6bCa47KEx9aGAOzw/pW28wiOfLU7v
-         MlOG+tzCpSHouzbd6niYtWiGH+MTVUO0GPPwWQYttwYrhuBSgk1vS6bMQrwDQXzaClsd
-         2di6dv5RhxMm3YVarBSngDe219sGuzLa/38ejEGjkCX/vb5vev02CKMgrDYGGmePO5m/
-         dng3cnyokxU5e3kyqv4qJbj9jQvy7u9l6LUMfPQ9gcGsniKn7aN8idipFizPRephFMMM
-         iUUH1re/fC1UhYJcCE/wFc8z71/IVx/SCRojHRo3BB+wpylC25hEskQhfkjBa0TPtY62
-         WVog==
-X-Gm-Message-State: AOAM53065SMXbA+ocuZq/QZjMGWGTSQUmXmzglbwlOUmsca6W6+sZApG
-        GtWYgSG5IJqFvwdePaaqynvB29MRUELo179JJ5wqfg==
-X-Google-Smtp-Source: ABdhPJxDOFrYjfmnL/EFseUjo4ptWPav8xuJ2FzYhPDiA/AQYuCzo4N45IBYUvbTgXJuvFyhWdUUCw3z9AyGGUry5Yc=
-X-Received: by 2002:a7b:c7c6:: with SMTP id z6mr6825647wmk.17.1597201809730;
- Tue, 11 Aug 2020 20:10:09 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QvRwyqfBzSBusxVG0abxrCHTZbe0s1N2buN7nWa0Szc=;
+        b=RNADek4hs9ErRdp8PRojrM+JNg1GWZltRGw836+WGbo/X9vUilwAtT+RpJn1feu7E2
+         8mAlxhaYdiRXjNCfXcYZElKXQRqvvFf9cE5faFBmL0z6m9iowQ4GTQKHTxAMHfa+7m5b
+         CcrP1hbXHNiMa5BnV14f56zOESI/THORs5O6wV4Sgx+HAUl3eRsWf93UjJi5/etB5c/C
+         4eONL9poDmlsn7zuE7bIeOtA/1A5GXmz8wNGrDMAFCKX09k87pJnmgCFaZ8S3kT5taHA
+         q1NV4S/aS3UxEZ2tRqbocgRQ/xbo1hXCgKJvbVB4kYqR4K15mFN8l7LVUDQuVymfjxiu
+         K9Qg==
+X-Gm-Message-State: AOAM530/exJzDt+dNG3wUIBKh7LN/IgDo+A5YFEnDfmNlGNCPW7lW5vh
+        Ivrx3LVjSbabyUjpi+NSBGU=
+X-Google-Smtp-Source: ABdhPJwpoerVRGLdzSd1HDbEVT7xeh77OeDuTdgZ8TIDWGp4KEm5FcLDTNShZUc9tmBAq0Iw6g5pJw==
+X-Received: by 2002:a9d:b82:: with SMTP id 2mr7537873oth.202.1597201935255;
+        Tue, 11 Aug 2020 20:12:15 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:c1d8:5dca:975d:16e])
+        by smtp.googlemail.com with ESMTPSA id d19sm225767oig.8.2020.08.11.20.12.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Aug 2020 20:12:14 -0700 (PDT)
+Subject: Re: [PATCH 2/2] perf sched timehist: Fix use of CPU list with summary
+ option
+To:     Namhyung Kim <namhyung@kernel.org>,
+        David Ahern <dsahern@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+References: <20200807164937.44921-1-dsahern@kernel.org>
+ <CAM9d7chXrXh1QfJfwsEJ_Tk0_EDNL9ajBE8H0QYCSn_yuLhNUA@mail.gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <47111ff4-c61a-3a12-adb6-748b98fd0be0@gmail.com>
+Date:   Tue, 11 Aug 2020 21:12:10 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <3f3baf5e-f73d-9cd6-cbfb-36746071e126@linux.intel.com>
- <CAGvk5PohOP0Yv22tb53EX=ZLB9_vOMb=iujTh64OvHmjC1d4mg@mail.gmail.com>
- <DM6PR11MB3642AC7F8EC47EB48B384D4797450@DM6PR11MB3642.namprd11.prod.outlook.com>
- <CAGvk5PogmqfEnFRA8hzby+AGgbOSvbELamh_1=eA9KTpyBMPYQ@mail.gmail.com>
- <s5htux939x1.wl-tiwai@suse.de> <CAGvk5PpcmkZ2HarqeCDaXm4id=84wYs-u4vWxJunHaf09gj66g@mail.gmail.com>
- <s5ho8nh37br.wl-tiwai@suse.de> <CAGvk5PphzkdiNfW8hiDuqX+2eQO2FvrpzA0qR3=3VvqM3GBhAA@mail.gmail.com>
- <20200811145353.GG6967@sirena.org.uk> <d78f9adc-d583-f0f2-ce38-3c9175c939b8@linux.intel.com>
- <20200811172209.GM6967@sirena.org.uk>
-In-Reply-To: <20200811172209.GM6967@sirena.org.uk>
-From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Date:   Wed, 12 Aug 2020 11:09:58 +0800
-Message-ID: <CAGvk5PqGi7cXthLHFi4NyypxFiGnoHvD9vp+5nJdH-_VkVvcKw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] ASoC: Intel: Add period size constraint on strago board
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Sam McNally <sammc@chromium.org>,
-        "yuhsuan@google.com" <yuhsuan@google.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Daniel Stuart <daniel.stuart14@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Lu, Brent" <brent.lu@intel.com>,
-        Damian van Soelen <dj.vsoelen@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAM9d7chXrXh1QfJfwsEJ_Tk0_EDNL9ajBE8H0QYCSn_yuLhNUA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark Brown <broonie@kernel.org> =E6=96=BC 2020=E5=B9=B48=E6=9C=8812=E6=97=
-=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=881:22=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Tue, Aug 11, 2020 at 11:54:38AM -0500, Pierre-Louis Bossart wrote:
->
-> > > constraint logic needs to know about this DSP limitation - it seems l=
-ike
-> > > none of this is going to change without something new going into the
-> > > mix?  We at least need a new question to ask about the DSP firmware I
-> > > think.
->
-> > I just tested aplay -Dhw: on a Cyan Chromebook with the Ubuntu kernel 5=
-.4,
-> > and I see no issues with the 240 sample period. Same with 432, 960, 960=
-0,
-> > etc.
->
-> > I also tried just for fun what happens with 256 samples, and I don't se=
-e any
-> > underflows thrown either, so I am wondering what exactly the problem is=
-?
-> > Something's not adding up. I would definitively favor multiple of 1ms
-> > periods, since it's the only case that was productized, but there's got=
- to
-> > me something a side effect of how CRAS programs the hw_params.
->
-> Is it something that goes wrong with longer playbacks possibly (eg,
-> someone watching a feature film or something)?
+On 8/11/20 12:42 AM, Namhyung Kim wrote:
+>> @@ -2575,7 +2575,8 @@ static int timehist_sched_change_event(struct perf_tool *tool,
+>>         }
+>>
+>>         if (!sched->idle_hist || thread->tid == 0) {
+>> -               timehist_update_runtime_stats(tr, t, tprev);
+>> +               if (!cpu_list || test_bit(sample->cpu, cpu_bitmap))
+>> +                       timehist_update_runtime_stats(tr, t, tprev);
+>>
+>>                 if (sched->idle_hist) {
+>>                         struct idle_thread_runtime *itr = (void *)tr;
+>> @@ -2848,6 +2849,9 @@ static void timehist_print_summary(struct perf_sched *sched,
+>>
+>>         printf("\nIdle stats:\n");
+>>         for (i = 0; i < idle_max_cpu; ++i) {
+>> +               if (!test_bit(i, cpu_bitmap))
+> 
+> Shouldn't it check cpu_list as well?
+> 
 
-Thanks for testing!
-
-After doing some experiments, I think I can identify the problem more preci=
-sely.
-1. aplay can not reproduce this issue because it writes samples
-immediately when there are some space in the buffer. However, you can
-add --test-position to see how the delay grows with period size 256.
-> aplay -Dhw:1,0 --period-size=3D256 --buffer-size=3D480 /dev/zero -d 1 -f =
-dat --test-position
-Playing raw data '/dev/zero' : Signed 16 bit Little Endian, Rate 48000
-Hz, Stereo
-Suspicious buffer position (1 total): avail =3D 0, delay =3D 2064, buffer =
-=3D 512
-Suspicious buffer position (2 total): avail =3D 0, delay =3D 2064, buffer =
-=3D 512
-Suspicious buffer position (3 total): avail =3D 0, delay =3D 2096, buffer =
-=3D 512
-...
-
-2. Since many samples are moved to DSP(delay), the measured rate of
-the ring-buffer is high. (I measured it by alsa_conformance_test,
-which only test the sampling rate in the ring buffer of kernel not
-DSP)
-
-3. Since CRAS writes samples with a fixed frequency, this behavior
-will take all samples from the ring buffer, which is seen as underrun
-by CRAS. (It seems that it is not a real underrun because that avail
-does not larger than buffer size. Maybe CRAS should also take dalay
-into account.)
-
-4. In spite of it is not a real underrun, the large delay is still a
-big problem. Can we apply the constraint to fix it? Or any better
-idea?
-
-Thanks,
-Yu-Hsuan
+oh, right. will fix.
