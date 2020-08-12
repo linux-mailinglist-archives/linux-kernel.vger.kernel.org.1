@@ -2,116 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506B0242360
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 02:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D852A242368
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 02:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgHLA3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 Aug 2020 20:29:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41306 "EHLO mail.kernel.org"
+        id S1726426AbgHLAep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 Aug 2020 20:34:45 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:51256 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726221AbgHLA3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 Aug 2020 20:29:24 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F3D1206F2;
-        Wed, 12 Aug 2020 00:29:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597192162;
-        bh=kiXRkDKP4hQ4jadvGyuR/t2yeuUqrE4Jh9tgwknMefU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MkCAIemXaUr7Ue6tLTjfClBz/vamOZ9wT2HtpItC+40tqpL99lUoPAOO4Yx8F7UCB
-         0YahAcYceYu9k+uHFL9bpeZwpUo8qHGXGUEA1A38fB+4ZSkJyYa/8S0H39/VrwHqei
-         mPQE6cYbHPHhdx/QraxdBXTjM2GsHHe5knls0rxo=
-Date:   Tue, 11 Aug 2020 17:29:20 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Alim Akhtar <alim.akhtar@samsung.com>
-Cc:     robh@kernel.org, devicetree@vger.kernel.org,
-        linux-scsi@vger.kernel.org, krzk@kernel.org, avri.altman@wdc.com,
-        martin.petersen@oracle.com, kwmad.kim@samsung.com,
-        stanley.chu@mediatek.com, cang@codeaurora.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kishon@ti.com
-Subject: Re: [RESEND PATCH v10 04/10] scsi: ufs: introduce
- UFSHCD_QUIRK_PRDT_BYTE_GRAN quirk
-Message-ID: <20200812002920.GA1352011@gmail.com>
-References: <20200613024706.27975-1-alim.akhtar@samsung.com>
- <CGME20200613030445epcas5p4428da322cd9527d1075ff0f1ccc75d23@epcas5p4.samsung.com>
- <20200613024706.27975-5-alim.akhtar@samsung.com>
+        id S1726255AbgHLAeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 Aug 2020 20:34:44 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1k5eig-0007Va-Me; Wed, 12 Aug 2020 10:34:19 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 12 Aug 2020 10:34:18 +1000
+Date:   Wed, 12 Aug 2020 10:34:18 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     richard.gong@linux.intel.com
+Cc:     davem@davemloft.net, gregkh@linuxfoundation.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dinguyen@kernel.org, richard.gong@intel.com
+Subject: Re: [PATCHv1 2/2] crypto: add Intel SoCFPGA crypto service driver
+Message-ID: <20200812003418.GA4166@gondor.apana.org.au>
+References: <1597154182-26970-1-git-send-email-richard.gong@linux.intel.com>
+ <1597154182-26970-3-git-send-email-richard.gong@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200613024706.27975-5-alim.akhtar@samsung.com>
+In-Reply-To: <1597154182-26970-3-git-send-email-richard.gong@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alim,
-
-On Sat, Jun 13, 2020 at 08:17:00AM +0530, Alim Akhtar wrote:
-> Some UFS host controllers like Exynos uses granularities of PRDT length and
-> offset as bytes, whereas others uses actual segment count.
+On Tue, Aug 11, 2020 at 08:56:22AM -0500, richard.gong@linux.intel.com wrote:
+> From: Richard Gong <richard.gong@intel.com>
 > 
-> Reviewed-by: Avri Altman <avri.altman@wdc.com>
-> Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
-> Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 30 +++++++++++++++++++++++-------
->  drivers/scsi/ufs/ufshcd.h |  6 ++++++
->  2 files changed, 29 insertions(+), 7 deletions(-)
+> Add Intel FPGA crypto service (FCS) driver to support new crypto services
+> on Intel SoCFPGA platforms.
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index ee30ed6cc805..ba093d0d0942 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -2151,8 +2151,14 @@ static int ufshcd_map_sg(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
->  		return sg_segments;
->  
->  	if (sg_segments) {
-> -		lrbp->utr_descriptor_ptr->prd_table_length =
-> -			cpu_to_le16((u16)sg_segments);
-> +
-> +		if (hba->quirks & UFSHCD_QUIRK_PRDT_BYTE_GRAN)
-> +			lrbp->utr_descriptor_ptr->prd_table_length =
-> +				cpu_to_le16((sg_segments *
-> +					sizeof(struct ufshcd_sg_entry)));
-> +		else
-> +			lrbp->utr_descriptor_ptr->prd_table_length =
-> +				cpu_to_le16((u16) (sg_segments));
->  
->  		prd_table = (struct ufshcd_sg_entry *)lrbp->ucd_prdt_ptr;
->  
-> @@ -3500,11 +3506,21 @@ static void ufshcd_host_memory_configure(struct ufs_hba *hba)
->  				cpu_to_le32(upper_32_bits(cmd_desc_element_addr));
->  
->  		/* Response upiu and prdt offset should be in double words */
-> -		utrdlp[i].response_upiu_offset =
-> -			cpu_to_le16(response_offset >> 2);
-> -		utrdlp[i].prd_table_offset = cpu_to_le16(prdt_offset >> 2);
-> -		utrdlp[i].response_upiu_length =
-> -			cpu_to_le16(ALIGNED_UPIU_SIZE >> 2);
-> +		if (hba->quirks & UFSHCD_QUIRK_PRDT_BYTE_GRAN) {
-> +			utrdlp[i].response_upiu_offset =
-> +				cpu_to_le16(response_offset);
-> +			utrdlp[i].prd_table_offset =
-> +				cpu_to_le16(prdt_offset);
-> +			utrdlp[i].response_upiu_length =
-> +				cpu_to_le16(ALIGNED_UPIU_SIZE);
-> +		} else {
-> +			utrdlp[i].response_upiu_offset =
-> +				cpu_to_le16(response_offset >> 2);
-> +			utrdlp[i].prd_table_offset =
-> +				cpu_to_le16(prdt_offset >> 2);
-> +			utrdlp[i].response_upiu_length =
-> +				cpu_to_le16(ALIGNED_UPIU_SIZE >> 2);
-> +		}
->  
->  		ufshcd_init_lrb(hba, &hba->lrb[i], i);
->  	}
+> The crypto services include security certificate, image boot validation,
+> security key cancellation, get provision data, random number generation,
+> advance encrtption standard (AES) encryption and decryption services.
+> 
+> To perform supporting crypto features on Intel SoCFPGA platforms, Linux
+> user-space application interacts with FPGA crypto service (FCS) driver via
+> structures defined in include/uapi/linux/intel_fcs-ioctl.h.
+> 
+> The application allocates spaces for IOCTL structure to hold the contents
+> or points to the data that FCS driver needs, uses IOCTL calls to passes
+> data to kernel FCS driver for processing at low level firmware and get
+> processed data or status back form the low level firmware via FCS driver.
+> 
+> The user-space application named as fcs_client is at
+> https://github.com/altera-opensource/fcs_apps/tree/fcs_client.
+> 
+> Signed-off-by: Richard Gong <richard.gong@intel.com>
 
-Isn't this patch missing an update to ufshcd_print_trs()?  It uses
-->prd_table_length as the number of segments, not the number of bytes.
-
-- Eric
+Nack.  This driver has nothing to do with the Crypto API.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
