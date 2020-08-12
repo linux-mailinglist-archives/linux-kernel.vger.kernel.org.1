@@ -2,161 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8D0242B75
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94122242B7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgHLOhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 10:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726678AbgHLOhT (ORCPT
+        id S1726577AbgHLOjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 10:39:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52610 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726492AbgHLOjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 10:37:19 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85502C061383;
-        Wed, 12 Aug 2020 07:37:18 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id kq25so2525248ejb.3;
-        Wed, 12 Aug 2020 07:37:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=k0jt6enCU+k6/1ZLIPsFzlCB9yQOeFwEasaJxWTCsu4=;
-        b=nNIGnlJ4cxzSXBBlnAdU22ZeY2sWhmhZUfKtM9/2nnn/li9/ertILnExUwm/EVvs49
-         hh/q/fu++uLyx/Ja+S57sIDuOpttKx0bRe0QiHnIBzDIQsVOfO0fcSrmCNpx6b+e8YL4
-         sqVdm/Bg3+0dtjyY/jiCan59vHfcakWNTZHQfTl0/SQOaL7TPRqzL8DHA/vrSYjtsyAa
-         lMLCr4f0S97Yxm4Nye0p5C8ZiEHcoSs91dx9TINFHH7TE/8EamhqG7Zpiy0mgzQFfPuw
-         ZU24VJRRRVRC1jHws2TWXqoLky473FUA6synd04/H7lop1nP35s/hEli0SKieJGTJBN8
-         I72A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=k0jt6enCU+k6/1ZLIPsFzlCB9yQOeFwEasaJxWTCsu4=;
-        b=a3QHIXw6wiI71e4H4zMSAeDxAXgR9HHXToebiJXbvBfM05npOmpRaqMykzixO2AhPT
-         dTw6KjgGtEVq56Ud1O2xROmxA2LDSZLNhpioqK8/mL8vVAHYxyeVYkm3Wl3q9fE/bHAd
-         ZFEYDFvcMHJZ4OH/Br+TUVMLkGBpaeO6N1+V8TWMs01v36KEE1/5aV6jDgnuH5IiTErJ
-         mK/jsJNVj3g/TjXu8XVbAJ+GLGPEGw9otzQyxtvAbCctYxVHxcqVEAdbmHBBMgLue3xW
-         v0dHMoPlp8LkekAEFrXpIU/owlONx5ibQ6FFc9JHrhlijKzJmJ5CZEY2qAVz0d06Tzvl
-         Gsiw==
-X-Gm-Message-State: AOAM532JPXQLLPiXBgtk4SDKNV9qEU1DYav+MpLy70vXiSM0EgfpX4kn
-        RpR7afXBp03JzTgUYbm4c8A=
-X-Google-Smtp-Source: ABdhPJypeCnLUIuX2FrykbNFJM6Kdp/anVO6jkBnXd6M3Oh/7cvrXbhufq6pzC/kcuxFAFjbQVElFA==
-X-Received: by 2002:a17:906:e17:: with SMTP id l23mr79692eji.13.1597243037318;
-        Wed, 12 Aug 2020 07:37:17 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:598:b90f:8e5c:44c:d55b:5f94:2fc4])
-        by smtp.gmail.com with ESMTPSA id d20sm1661179ejj.10.2020.08.12.07.37.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Aug 2020 07:37:16 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] scsi: ufs: remove several redundant goto statements
-Date:   Wed, 12 Aug 2020 16:37:04 +0200
-Message-Id: <20200812143704.30245-3-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200812143704.30245-1-huobean@gmail.com>
-References: <20200812143704.30245-1-huobean@gmail.com>
+        Wed, 12 Aug 2020 10:39:44 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597243182;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gtqjfrjk/gwIUo2z+x3Wlx6nrBpRl0eqdlnNtm5WIlE=;
+        b=wrTJs/YOqvIU6zzxlJwEc1R4Rs9XLE394co6fvG3qBwMyKh1ckhIi+W5iEMNHerTkYSpX6
+        /quBL1HAnncWZuAz7tpphQOEYxr/DDH9x1CPgx7tdNzM0dwYW5amMI66uk+9xKMl9oJEXp
+        JpuXpPOpBIA9iA7J+NAm7+7EALOIXRqC3IS3yjh7BTpVUGEG82rzSocwSXX2yPlsT2TwK8
+        vvQDtkQKQKb7KNPNWNMdH9CQz7ms5NQuVLxBUp/upCrcVkfATzu6xhfYj1ii0GCNZxOSyP
+        GLAK1VKFZPAnL7R/AVWAkIEYYbGumMqoy1WvFcdQ/CqHol1HLFMj0urDifbD/g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597243182;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gtqjfrjk/gwIUo2z+x3Wlx6nrBpRl0eqdlnNtm5WIlE=;
+        b=KQcwQp41X3nIbc8yOoAdrGFBddQ312fnDY/gkBH6XUFmsRgbMv+F5b4zyyeqTqxZON1EH1
+        mjELv/9eYyb0adAw==
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH] x86/alternatives: Let __text_poke() acquire the pte lock with enabled interrupts
+In-Reply-To: <20200706164215.2502730-1-bigeasy@linutronix.de>
+References: <20200706164215.2502730-1-bigeasy@linutronix.de>
+Date:   Wed, 12 Aug 2020 16:39:41 +0200
+Message-ID: <87eeoc53o2.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+Sebastian,
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/scsi/ufs/ufshcd.c | 26 +++++---------------------
- 1 file changed, 5 insertions(+), 21 deletions(-)
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index e3663b85e8ee..cd742c4f78b6 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -4256,10 +4256,8 @@ int ufshcd_make_hba_operational(struct ufs_hba *hba)
- 		dev_err(hba->dev,
- 			"Host controller not ready to process requests");
- 		err = -EIO;
--		goto out;
- 	}
- 
--out:
- 	return err;
- }
- EXPORT_SYMBOL_GPL(ufshcd_make_hba_operational);
-@@ -5542,10 +5540,8 @@ static bool ufshcd_quirk_dl_nac_errors(struct ufs_hba *hba)
- 			hba->saved_err &= ~UIC_ERROR;
- 		/* clear NAC error */
- 		hba->saved_uic_err &= ~UFSHCD_UIC_DL_NAC_RECEIVED_ERROR;
--		if (!hba->saved_uic_err) {
-+		if (!hba->saved_uic_err)
- 			err_handling = false;
--			goto out;
--		}
- 	}
- out:
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
-@@ -7604,12 +7600,10 @@ static int ufshcd_config_vreg(struct device *dev,
- 		if (vreg->min_uV && vreg->max_uV) {
- 			min_uV = on ? vreg->min_uV : 0;
- 			ret = regulator_set_voltage(reg, min_uV, vreg->max_uV);
--			if (ret) {
-+			if (ret)
- 				dev_err(dev,
- 					"%s: %s set voltage failed, err=%d\n",
- 					__func__, name, ret);
--				goto out;
--			}
- 		}
- 	}
- out:
-@@ -7672,8 +7666,6 @@ static int ufshcd_setup_vreg(struct ufs_hba *hba, bool on)
- 		goto out;
- 
- 	ret = ufshcd_toggle_vreg(dev, info->vccq2, on);
--	if (ret)
--		goto out;
- 
- out:
- 	if (ret) {
-@@ -7719,10 +7711,8 @@ static int ufshcd_init_vreg(struct ufs_hba *hba)
- 		goto out;
- 
- 	ret = ufshcd_get_vreg(dev, info->vccq);
--	if (ret)
--		goto out;
--
--	ret = ufshcd_get_vreg(dev, info->vccq2);
-+	if (!ret)
-+		ret = ufshcd_get_vreg(dev, info->vccq2);
- out:
- 	return ret;
- }
-@@ -7866,12 +7856,7 @@ static int ufshcd_variant_hba_init(struct ufs_hba *hba)
- 
- 	err = ufshcd_vops_setup_regulators(hba, true);
- 	if (err)
--		goto out_exit;
--
--	goto out;
--
--out_exit:
--	ufshcd_vops_exit(hba);
-+		ufshcd_vops_exit(hba);
- out:
- 	if (err)
- 		dev_err(hba->dev, "%s: variant %s init failed err %d\n",
-@@ -8036,7 +8021,6 @@ static int ufshcd_set_dev_pwr_mode(struct ufs_hba *hba,
- 	}
- 
- 	cmd[4] = pwr_mode << 4;
--
- 	/*
- 	 * Current function would be generally called from the power management
- 	 * callbacks hence set the RQF_PM flag so that it doesn't resume the
--- 
-2.17.1
+sorry this fell through the cracks ...
+
+> The pte lock is never acquired from an IRQ-off region so it does not
+> require the interrupts to be disabled.
+
+I doubt that this is true. It surely is acquired within other locks
+which might be taken with spin_lock_irq(). Which is completely fine on
+RT.
+
+But that's not the point. The point is that pte_lock() does not require
+to be taken with interrupts disabled.
+
+Please be precise about these kind of things. Handwavy descriptions
+cause more problems than they solve.
+
+> RT complains here because the spinlock_t must not be acquired with
+> disabled interrupts.
+>
+> use_temporary_mm() expects interrupts to be off because it invokes
+> switch_mm_irqs_off() and uses per-CPU (current active mm) data.
+>
+> Move local_irq_save() after the the pte lock has been acquired. Move
+> local_irq_restore() after the pte lock has been released.
+
+While part 1 is correct, part 2 is the exact opposite of what the patch
+does.
+
+  Move the PTE lock handling outside the interrupt disabled region.
+
+describes precisely what this is about without any gory details which
+can be seen in the patch itself. Hmm?
+
+Thanks,
+
+        tglx
 
