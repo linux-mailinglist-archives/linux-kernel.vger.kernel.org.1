@@ -2,121 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E67242E51
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 19:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFA6242E56
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 19:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbgHLR5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 13:57:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50306 "EHLO
+        id S1726600AbgHLR7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 13:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726394AbgHLR5b (ORCPT
+        with ESMTP id S1726276AbgHLR73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 13:57:31 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2D2C061383;
-        Wed, 12 Aug 2020 10:57:31 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id y18so2718972ilp.10;
-        Wed, 12 Aug 2020 10:57:31 -0700 (PDT)
+        Wed, 12 Aug 2020 13:59:29 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EDFDC061383
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 10:59:28 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id m22so3226236eje.10
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 10:59:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9JyibkVSiizY9YOvoSVEYhcABEVmlRGhf5ooTxC+oeU=;
-        b=DKoq/9auKpsQBGVG0od4nJPaSxjlCJn9QC5gFmfDHEQXROhaXPlKH9qxdS7cmEqjbd
-         dY2eoc8E4rzxiOSvs6DCui+4EeosVC2pHgHgg5r9eHau2oKIQiHNBDwCQRVWBlfm6hJr
-         SaLQ84D51Sh2A8Gf7HlvvC0Mbm3TPFEz3WbkU3UjrOMPHY68t28T04/y2wu0tLl+Lq3D
-         DcbcCDvI9EQUqgQHwou6ZNM63hemUegS7MqmZVjJIQ8xWgS/qOQiE5tHJWsBGzLdLIWf
-         bsL5q0XCKqSDtEylhKyduvqPIuFvlpwPkPQtU19YmYcLALAfRNYRQZreCkjRQbGad3Rr
-         1Qhg==
+        bh=1/cIJeE2yfgVM1ZrtP/9jp14hYxY3Vu0/YCadb84AWQ=;
+        b=jI3J/b3sbr7lMKeERD0GITknMh9Uxa+SplZKxUOvdDtzVOtMq4sbbMjULlVaTTjPsl
+         b6ZbrqiZvtr1sqNoBR0Z/OPksGY4OjXSaOovTptxM1hz6ZDb++D2GV0IE+GzOKqYA1mF
+         Rk5bbZ3M7f75UO+LZE8T1d84BJjKfgSc9gyZs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9JyibkVSiizY9YOvoSVEYhcABEVmlRGhf5ooTxC+oeU=;
-        b=DSEGtV4mThrMzVysFxfh3nILVStZ6UlS/8P1LcFgMQ6anuWagkKIijuy3NNzsasEfC
-         PQMF1hCyRYgwuZGgYWGDk6df4PVABGk9zsbabXy2DxJLvtatQ73duLpHVuS6rHf+9dWh
-         NmSfJjJfusyBYDcnKCeCqPNtfea0vX56nmB+RXmrlJ3GytSqB/SQ8E7IJrpdvvtaChUX
-         KK8Bs5Ns1mdbMhYR/WdIgeYUwRFDqKNugarFA1Z1NtnpFAvI6IuyXAa0C/sv5t1WUxqG
-         oyGBuNRWSKQxw7nwaqWCzub9o8kMikwLFD9PGPxY6kRbQMKBKFkkPukIspcmZADZRYuu
-         5dNg==
-X-Gm-Message-State: AOAM533KZlCCM4ggtq2apv9a0OXIzE2Iyvl3ypZg+UjlKLmAQcznVK6E
-        jJpGhhTzMDVTnSNCwMb2FXiahcA0envgS2Menv0=
-X-Google-Smtp-Source: ABdhPJycyiElaJpaN408tnwxcoSZaS8zir3jT6LbvqGvRn8QEylA02sgqrGW0m3mbSSPrR72M1OjcoTze+HbjPn0pdA=
-X-Received: by 2002:a05:6e02:f94:: with SMTP id v20mr838937ilo.268.1597255050359;
- Wed, 12 Aug 2020 10:57:30 -0700 (PDT)
+        bh=1/cIJeE2yfgVM1ZrtP/9jp14hYxY3Vu0/YCadb84AWQ=;
+        b=qz7OYEow/HR/reKI5BGOmj2Fdap+Wuy7UWGhFAWO4OshdBmEE0Sc89w7A/9SR+9SAm
+         Qqm5wSpm+FBCJGpO4mdRijRFz4dwcWEbal26uORk5btuz8553pEKcjtd9fh43NS02Svu
+         3l3wuOu0KbUE82h/XhaQEvf3KOLbv4vNBM08a3Vgy6adfESugZaKvodjlJCu3eC8Zqtt
+         RdFveiOhuTvkFXYTl0NjNujVNDQuOB1eD5sPscTC2JdgDBX+irIQeCCreHpCLDVCeZfn
+         AZG/qYUmMd/wjFCI2nYnNdzkZNEiiZ/sKel/1eY9PqDZrtBQ4EC/Yp3prgrKAiKITE+U
+         aWlw==
+X-Gm-Message-State: AOAM531ei5SxhU9oYDqUa2fEoKW4IpOaW2kHDl9d5ObsldDaAeJaTrh4
+        0Ux2S9JHqcCxheOrVi5MqnSG4GRCwicasw==
+X-Google-Smtp-Source: ABdhPJzPe5NyG0jl9WmdABKN6Aq9cHNXKcupjIZkztdQbLMRId6GTdQrq6UlPHcSaSLOJCzB8SSnzA==
+X-Received: by 2002:a17:906:bcf3:: with SMTP id op19mr944142ejb.1.1597255167034;
+        Wed, 12 Aug 2020 10:59:27 -0700 (PDT)
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
+        by smtp.gmail.com with ESMTPSA id v5sm1932917ede.13.2020.08.12.10.59.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Aug 2020 10:59:25 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id m22so3226121eje.10
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 10:59:25 -0700 (PDT)
+X-Received: by 2002:a17:906:4d4f:: with SMTP id b15mr946622ejv.534.1597255164979;
+ Wed, 12 Aug 2020 10:59:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <a139c6e194974321822b4ef3d469aefe@huawei.com>
-In-Reply-To: <a139c6e194974321822b4ef3d469aefe@huawei.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Wed, 12 Aug 2020 10:57:19 -0700
-Message-ID: <CAM_iQpXhXK3SfRmy+qLTVhQ3s0-=n6TjC8RmG3XYLr-BAenQPA@mail.gmail.com>
-Subject: Re: [PATCH] net: Fix potential memory leak in proto_register()
-To:     linmiaohe <linmiaohe@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "jakub@cloudflare.com" <jakub@cloudflare.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "zhang.lin16@zte.com.cn" <zhang.lin16@zte.com.cn>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200811222803.3224434-1-zwisler@google.com> <20200812014324.rtvlhvopifgkw4mi@yavin.dot.cyphar.com>
+In-Reply-To: <20200812014324.rtvlhvopifgkw4mi@yavin.dot.cyphar.com>
+From:   Ross Zwisler <zwisler@chromium.org>
+Date:   Wed, 12 Aug 2020 11:59:13 -0600
+X-Gmail-Original-Message-ID: <CAGRrVHwQ4EpZy73n4NTLhDZNGN4Gi_FUL4BjWw7ruEoGHENZEg@mail.gmail.com>
+Message-ID: <CAGRrVHwQ4EpZy73n4NTLhDZNGN4Gi_FUL4BjWw7ruEoGHENZEg@mail.gmail.com>
+Subject: Re: [PATCH v7] Add a "nosymfollow" mount option.
+To:     Aleksa Sarai <cyphar@cyphar.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Mattias Nissler <mnissler@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Benjamin Gordon <bmgordon@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Dmitry Torokhov <dtor@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Micah Morton <mortonm@google.com>,
+        Raul Rangel <rrangel@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 2:21 AM linmiaohe <linmiaohe@huawei.com> wrote:
->
-> Hi all:
-> David Miller <davem@davemloft.net> wrote:
-> >From: Cong Wang <xiyou.wangcong@gmail.com>
-> >Date: Tue, 11 Aug 2020 16:02:51 -0700
+On Tue, Aug 11, 2020 at 7:43 PM Aleksa Sarai <cyphar@cyphar.com> wrote:
+> On 2020-08-11, Ross Zwisler <zwisler@chromium.org> wrote:
+> > From: Mattias Nissler <mnissler@chromium.org>
 > >
-> >>> @@ -3406,6 +3406,16 @@ static void sock_inuse_add(struct net *net,
-> >>> int val)  }  #endif
-> >>>
-> >>> +static void tw_prot_cleanup(struct timewait_sock_ops *twsk_prot) {
-> >>> +       if (!twsk_prot)
-> >>> +               return;
-> >>> +       kfree(twsk_prot->twsk_slab_name);
-> >>> +       twsk_prot->twsk_slab_name = NULL;
-> >>> +       kmem_cache_destroy(twsk_prot->twsk_slab);
-> >>
-> >> Hmm, are you sure you can free the kmem cache name before
-> >> kmem_cache_destroy()? To me, it seems kmem_cache_destroy() frees the
-> >> name via slab_kmem_cache_release() via kfree_const().
-> >> With your patch, we have a double-free on the name?
-> >>
-> >> Or am I missing anything?
+> > For mounts that have the new "nosymfollow" option, don't follow symlinks
+> > when resolving paths. The new option is similar in spirit to the
+> > existing "nodev", "noexec", and "nosuid" options, as well as to the
+> > LOOKUP_NO_SYMLINKS resolve flag in the openat2(2) syscall. Various BSD
+> > variants have been supporting the "nosymfollow" mount option for a long
+> > time with equivalent implementations.
 > >
-> >Yep, there is a double free here.
+> > Note that symlinks may still be created on file systems mounted with
+> > the "nosymfollow" option present. readlink() remains functional, so
+> > user space code that is aware of symlinks can still choose to follow
+> > them explicitly.
 > >
-> >Please fix this.
+> > Setting the "nosymfollow" mount option helps prevent privileged
+> > writers from modifying files unintentionally in case there is an
+> > unexpected link along the accessed path. The "nosymfollow" option is
+> > thus useful as a defensive measure for systems that need to deal with
+> > untrusted file systems in privileged contexts.
+> >
+> > More information on the history and motivation for this patch can be
+> > found here:
+> >
+> > https://sites.google.com/a/chromium.org/dev/chromium-os/chromiumos-design-docs/hardening-against-malicious-stateful-data#TOC-Restricting-symlink-traversal
 >
-> Many thanks for both of you to point this issue out. But I'am not really understand, could you please explain it more?
-> As far as I can see, the double free path is:
-> 1. kfree(twsk_prot->twsk_slab_name)
-> 2. kmem_cache_destroy
->         --> shutdown_memcg_caches
->                 --> shutdown_cache
->                         --> slab_kmem_cache_release
->                                 --> kfree_const(s->name)
-> But twsk_prot->twsk_slab_name is allocated from kasprintf via kmalloc_track_caller while twsk_prot->twsk_slab->name is allocated
-> via kstrdup_const. So I think twsk_prot->twsk_slab_name and twsk_prot->twsk_slab->name point to different memory, and there is no double free.
->
+> Looks good. Did you plan to add an in-tree test for this (you could
+> shove it in tools/testing/selftests/mount)?
 
-You are right. Since it is duplicated, then there is no need to keep
-->twsk_slab_name, we can just use twsk_slab->name. I will send
-a patch to get rid of it.
+Sure, that sounds like a good idea.  I'll take a look.
 
-> Or am I missing anything?
->
-> By the way, req_prot_cleanup() do the same things, i.e. free the slab_name before involve kmem_cache_destroy(). If there is a double
-> free, so as here?
+> Reviewed-by: Aleksa Sarai <cyphar@cyphar.com>
 
-Ditto. Can be just removed.
-
-Thanks.
+Thank you for the review.
