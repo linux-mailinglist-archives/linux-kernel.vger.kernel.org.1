@@ -2,88 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A52D242F73
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 21:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6DD242F7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 21:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgHLTh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 15:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726512AbgHLTh2 (ORCPT
+        id S1726574AbgHLTng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 15:43:36 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:33507 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726528AbgHLTnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 15:37:28 -0400
-Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566D8C061383;
-        Wed, 12 Aug 2020 12:37:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
-         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
-        :To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=HJVJVLdIn6uscZZTWFNIQe57B5+ja3f7KFs1Tp4MMSM=; b=PsXTMwmvNI7lIcug3RhqxVVlLt
-        WMBcKEROq8WZRc63OTKT/2bz22c197pYzbazzhsOPU0yGKZNTo9heHSGia7m6rCIH8sJ/3Lfp+wUl
-        VqjPhIH5qdNruG84Lo4L72xzAiN7gpkPYz0zKvDrnPQ4qvb6RymphyNo+hJXGwTcsOWe03I+L15oQ
-        O5N4MWFkdRjcvvAlT8faZxpCwmOVgvDFFD29BI8OThjdw9UTh3d/rUzdsRMuVvbjcq0VXyeVoo96s
-        ELtD99MccVnDk2NjfYjyDVXzcB2Owe88jo6aYOv7EaRYFkcZ0+ZMR5GpqqQpFaOdGWwGciONOKExb
-        pbc1jeDw==;
-Received: from noodles by the.earth.li with local (Exim 4.92)
-        (envelope-from <noodles@earth.li>)
-        id 1k5wYt-0002pQ-Ga; Wed, 12 Aug 2020 20:37:23 +0100
-Date:   Wed, 12 Aug 2020 20:37:23 +0100
-From:   Jonathan McDowell <noodles@earth.li>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        Wed, 12 Aug 2020 15:43:35 -0400
+Received: by mail-il1-f196.google.com with SMTP id p16so3089052ile.0;
+        Wed, 12 Aug 2020 12:43:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F25zreK/uMPj1Zeh3/PKOdX/kNSOqJf1CQzVccpZong=;
+        b=ih3bdNbffP96OWOdGAjUwTnLFJFiVPQyXj9OSLdn10xvmcj2IKzOXdNo2dSwx+uw4q
+         cQxN0U4yNFJTRxlREU6tmNu9jmLAsKiRM3eiEi7RnePTMZRGwVeJAhQxNmbEHZ24DyNB
+         zuhO+UrfQxlXoHWRG1uhIjrKEq8J85nSFNR/mNaP7erHjsZgBlY78z9cjuEGnV5V4P9Q
+         D1NQVwt9/HS9iu9FbkKRfP4dXvTl2IPHQfGbWLbdrUlNNd2hYebY3OQmcPOXlZ8wLf3E
+         +BRdnSO1OTm73E9y3KO5zsTjZcrtQKfVo2pPVksTlfmLZecanlgFPNVwVICjQCzEE5Au
+         W+Wg==
+X-Gm-Message-State: AOAM53211IaQkPOfcUickkcqF1uvl2+VddEaNckfLcmJY4d/u3f/qvAt
+        VmLn6rQUz4Kb4CqsAwmKo3dOML0=
+X-Google-Smtp-Source: ABdhPJzXbKpQczi7VhkjG9X+vXDz4AATVf/LWQQxKg2HZu8cGQum7joDaIR3c56n1O/YtSkfWB1Qog==
+X-Received: by 2002:a05:6e02:1207:: with SMTP id a7mr1177891ilq.303.1597261413373;
+        Wed, 12 Aug 2020 12:43:33 -0700 (PDT)
+Received: from xps15 ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id x12sm1503060ile.14.2020.08.12.12.43.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Aug 2020 12:43:32 -0700 (PDT)
+Received: (nullmailer pid 2586064 invoked by uid 1000);
+        Wed, 12 Aug 2020 19:43:29 -0000
+Date:   Wed, 12 Aug 2020 13:43:29 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc:     broonie@kernel.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com, ludovic.desroches@microchip.com,
+        alsa-devel@alsa-project.org, robh+dt@kernel.org,
+        nicolas.ferre@microchip.com, tiwai@suse.com,
         linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net 2/2] net: ethernet: stmmac: Disable hardware multicast
- filter
-Message-ID: <dc3426bce09689ea2ba5b3a1937d6a77049089f1.1597260787.git.noodles@earth.li>
-References: <cover.1597260787.git.noodles@earth.li>
+        alexandre.belloni@bootlin.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: sound: add DT bindings for Microchip
+ S/PDIF TX Controller
+Message-ID: <20200812194329.GA2585991@bogus>
+References: <20200803081851.102570-1-codrin.ciubotariu@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1597260787.git.noodles@earth.li>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200803081851.102570-1-codrin.ciubotariu@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IPQ806x does not appear to have a functional multicast ethernet
-address filter. This was observed as a failure to correctly receive IPv6
-packets on a LAN to the all stations address. Checking the vendor driver
-shows that it does not attempt to enable the multicast filter and
-instead falls back to receiving all multicast packets, internally
-setting ALLMULTI.
+On Mon, 03 Aug 2020 11:18:50 +0300, Codrin Ciubotariu wrote:
+> This patch adds DT bindings for the new Microchip S/PDIF TX Controller
+> embedded inside sama7g5 SoCs.
+> 
+> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+> ---
+> 
+> Changes in v3:
+>  - removed 'oneOf' from 'compatible' property;
+>  - added 'maxItems: 1' to 'dmas' property;
+>  - removed pinctrl related properties;
+> 
+> Changes in v2:
+>  - replaced https with http;
+>  - reworked example, included bindings;
+> 
+>  .../bindings/sound/mchp,spdiftx.yaml          | 75 +++++++++++++++++++
+>  1 file changed, 75 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml
+> 
 
-Use the new fallback support in the dwmac1000 driver to correctly
-achieve the same with the mainline IPQ806x driver. Confirmed to fix IPv6
-functionality on an RB3011 router.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Jonathan McDowell <noodles@earth.li>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-index 02102c781a8c..bf3250e0e59c 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-@@ -351,6 +351,7 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 	plat_dat->has_gmac = true;
- 	plat_dat->bsp_priv = gmac;
- 	plat_dat->fix_mac_speed = ipq806x_gmac_fix_mac_speed;
-+	plat_dat->multicast_filter_bins = 0;
- 
- 	err = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
- 	if (err)
--- 
-2.20.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
