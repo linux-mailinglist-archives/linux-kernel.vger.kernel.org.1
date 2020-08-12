@@ -2,178 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28E72427DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 11:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407A52427C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 11:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgHLJqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 05:46:24 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:21384 "EHLO m43-7.mailgun.net"
+        id S1726984AbgHLJnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 05:43:19 -0400
+Received: from mxhk.zte.com.cn ([63.217.80.70]:37356 "EHLO mxhk.zte.com.cn"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726572AbgHLJqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 05:46:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597225582; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=duR7d8Btk5Il+cLQiUQeHoY6/Wn6vjKdiB7JeFjEOrQ=; b=I5HAaxJyjkxrxdcO8azWFdPEtLaxwTpwwzt33JJ2Crqh0+MSNX9DEg3zzfZHsIlNkUDk6NpC
- PmXTBKBZ7hBXFW5QEJf1DSqJrBi6b7W8enGTzH0NiHKxaaAQvvspkJd74LtZ/8ORcEQvLRfc
- O+MMQvJz8J4s3gnzeyEt8xR8CVo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f33ba6003528d402430b0f1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 12 Aug 2020 09:46:08
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8CD1DC433C9; Wed, 12 Aug 2020 09:46:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.103] (unknown [183.83.143.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9C1EFC433C6;
-        Wed, 12 Aug 2020 09:46:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9C1EFC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=charante@codeaurora.org
-Subject: Re: [PATCH V2] mm, page_alloc: fix core hung in free_pcppages_bulk()
-To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        mhocko@suse.com, vbabka@suse.cz, rientjes@google.com,
-        linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, vinmenon@codeaurora.org
-References: <1597150703-19003-1-git-send-email-charante@codeaurora.org>
- <fdf574c8-82be-6bde-b73b-c97055f530a8@redhat.com>
-From:   Charan Teja Kalla <charante@codeaurora.org>
-Message-ID: <848b7d60-2995-d9ae-0055-f3864dece11f@codeaurora.org>
-Date:   Wed, 12 Aug 2020 15:16:02 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <fdf574c8-82be-6bde-b73b-c97055f530a8@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726409AbgHLJnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 05:43:19 -0400
+Received: from mse-fl1.zte.com.cn (unknown [10.30.14.238])
+        by Forcepoint Email with ESMTPS id 68D2CE2067FFFE97BEB1;
+        Wed, 12 Aug 2020 17:43:16 +0800 (CST)
+Received: from notes_smtp.zte.com.cn (notes_smtp.zte.com.cn [10.30.1.239])
+        by mse-fl1.zte.com.cn with ESMTP id 07C9h3tN084104;
+        Wed, 12 Aug 2020 17:43:03 +0800 (GMT-8)
+        (envelope-from wang.yi59@zte.com.cn)
+Received: from fox-host8.localdomain ([10.74.120.8])
+          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
+          with ESMTP id 2020081217432418-4584713 ;
+          Wed, 12 Aug 2020 17:43:24 +0800 
+From:   Yi Wang <wang.yi59@zte.com.cn>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
+        wang.liang82@zte.com.cn, Liao Pingfang <liao.pingfang@zte.com.cn>
+Subject: [PATCH] fs: Fix some comments in open.c and read_write.c
+Date:   Wed, 12 Aug 2020 17:46:28 +0800
+Message-Id: <1597225588-7737-1-git-send-email-wang.yi59@zte.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
+ 21, 2013) at 2020-08-12 17:43:24,
+        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
+ 2020-08-12 17:43:06,
+        Serialize complete at 2020-08-12 17:43:06
+X-MAIL: mse-fl1.zte.com.cn 07C9h3tN084104
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Liao Pingfang <liao.pingfang@zte.com.cn>
 
-Thanks David for the inputs.
+Correct comments in open.c, since the parameter(opened/cred)
+is not used anymore. Also correct size to maxsize in
+read_write.c.
 
-On 8/12/2020 2:35 AM, David Hildenbrand wrote:
-> On 11.08.20 14:58, Charan Teja Reddy wrote:
->> The following race is observed with the repeated online, offline and a
->> delay between two successive online of memory blocks of movable zone.
->>
->> P1						P2
->>
->> Online the first memory block in
->> the movable zone. The pcp struct
->> values are initialized to default
->> values,i.e., pcp->high = 0 &
->> pcp->batch = 1.
->>
->> 					Allocate the pages from the
->> 					movable zone.
->>
->> Try to Online the second memory
->> block in the movable zone thus it
->> entered the online_pages() but yet
->> to call zone_pcp_update().
->> 					This process is entered into
->> 					the exit path thus it tries
->> 					to release the order-0 pages
->> 					to pcp lists through
->> 					free_unref_page_commit().
->> 					As pcp->high = 0, pcp->count = 1
->> 					proceed to call the function
->> 					free_pcppages_bulk().
->> Update the pcp values thus the
->> new pcp values are like, say,
->> pcp->high = 378, pcp->batch = 63.
->> 					Read the pcp's batch value using
->> 					READ_ONCE() and pass the same to
->> 					free_pcppages_bulk(), pcp values
->> 					passed here are, batch = 63,
->> 					count = 1.
->>
->> 					Since num of pages in the pcp
->> 					lists are less than ->batch,
->> 					then it will stuck in
->> 					while(list_empty(list)) loop
->> 					with interrupts disabled thus
->> 					a core hung.
->>
->> Avoid this by ensuring free_pcppages_bulk() is called with proper count
->> of pcp list pages.
->>
->> The mentioned race is some what easily reproducible without [1] because
->> pcp's are not updated for the first memory block online and thus there
->> is a enough race window for P2 between alloc+free and pcp struct values
->> update through onlining of second memory block.
->>
->> With [1], the race is still exists but it is very much narrow as we
->> update the pcp struct values for the first memory block online itself.
->>
->> [1]: https://patchwork.kernel.org/patch/11696389/
->>
-> 
-> IIUC, this is not limited to the movable zone, it could also happen in
-> corner cases with the normal zone (e.g., hotplug to a node that only has
-> DMA memory, or no other memory yet).
+Signed-off-by: Liao Pingfang <liao.pingfang@zte.com.cn>
+Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
+---
+ fs/open.c       | 2 --
+ fs/read_write.c | 2 +-
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-Yes, this is my understanding too. I explained the above race in terms
-of just movable zone for which it is observed. We can add the below line
-in the end in patch commit message:
-"This is not limited to the movable zone, it could also happen in cases
-with the normal zone (e.g., hotplug to a node that only has DMA memory,
-or no other memory yet)."
-
-Just curious, there exists such systems where just a dma zone present
-and we hot add the normal zone? I am not aware such thing in the
-embedded world.
-> 
->> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
->> ---
->>
->> v1: https://patchwork.kernel.org/patch/11707637/
->>
->>  mm/page_alloc.c | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index e4896e6..839039f 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -1304,6 +1304,11 @@ static void free_pcppages_bulk(struct zone *zone, int count,
->>  	struct page *page, *tmp;
->>  	LIST_HEAD(head);
->>  
->> +	/*
->> +	 * Ensure proper count is passed which otherwise would stuck in the
->> +	 * below while (list_empty(list)) loop.
->> +	 */
->> +	count = min(pcp->count, count);
->>  	while (count) {
->>  		struct list_head *list;
->>  
->>
-> 
-> Fixes: and Cc: stable... tags?
-
-Fixes: 5f8dcc21211a ("page-allocator: split per-cpu list into
-one-list-per-migrate-type")
-Cc: <stable@vger.kernel.org> [2.6+]
-
-I am not sure If I should have to raise V3 including these?
-> 
-
+diff --git a/fs/open.c b/fs/open.c
+index c80e9f497e9b..fa54a7d313e9 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -875,7 +875,6 @@ static int do_dentry_open(struct file *f,
+  * @file: file pointer
+  * @dentry: pointer to dentry
+  * @open: open callback
+- * @opened: state of open
+  *
+  * This can be used to finish opening a file passed to i_op->atomic_open().
+  *
+@@ -929,7 +928,6 @@ EXPORT_SYMBOL(file_path);
+  * vfs_open - open the file at the given path
+  * @path: path to open
+  * @file: newly allocated file with f_flag initialized
+- * @cred: credentials to use
+  */
+ int vfs_open(const struct path *path, struct file *file)
+ {
+diff --git a/fs/read_write.c b/fs/read_write.c
+index 5db58b8c78d0..058563ee26fd 100644
+--- a/fs/read_write.c
++++ b/fs/read_write.c
+@@ -71,7 +71,7 @@ EXPORT_SYMBOL(vfs_setpos);
+  * @file:	file structure to seek on
+  * @offset:	file offset to seek to
+  * @whence:	type of seek
+- * @size:	max size of this file in file system
++ * @maxsize:	max size of this file in file system
+  * @eof:	offset used for SEEK_END position
+  *
+  * This is a variant of generic_file_llseek that allows passing in a custom
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-Forum, a Linux Foundation Collaborative Project
+2.26.1
+
