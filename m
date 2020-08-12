@@ -2,75 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838FB242B13
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A011A242B27
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726816AbgHLONe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 10:13:34 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:62703 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726680AbgHLONT (ORCPT
+        id S1726642AbgHLORL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 10:17:11 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:42118 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726468AbgHLORK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 10:13:19 -0400
-X-Originating-IP: 91.224.148.103
-Received: from localhost.localdomain (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 46B90240008;
-        Wed, 12 Aug 2020 14:13:17 +0000 (UTC)
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>,
-        linux-i3c@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>
-Cc:     Nicolas Pitre <nico@fluxnic.net>,
-        Rajeev Huralikoppi <rajeev.huralikoppi@silvaco.com>,
-        Conor Culhane <conor.culhane@silvaco.com>,
-        <linux-kernel@vger.kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 4/4] MAINTAINERS: Add Silvaco I3C master
-Date:   Wed, 12 Aug 2020 16:13:12 +0200
-Message-Id: <20200812141312.3331-4-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200812141312.3331-1-miquel.raynal@bootlin.com>
-References: <20200812141312.3331-1-miquel.raynal@bootlin.com>
+        Wed, 12 Aug 2020 10:17:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597241830; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=LaIie0T8WfNxBF7kx8MMK1iBQQRCchKqnnmUJgmGsU8=; b=AhyHVnKR9oxnXzYJO6wWUdLGvNID37AzohT6rocRmhjIwDpxswx+MD1zCF5fuBBDfPpb2Gnl
+ 3paf+g9LJErFgvUePTELNwLAiVdfWgseSsecTJmMXg++x9SF5r/IbfgiM1X72Ap7cSDdyWsN
+ LEVjY2SZj/Z9fyGeMsJrtPiGgtw=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
+ 5f33f976d78a2e5833bbde36 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 12 Aug 2020 14:15:18
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F24A3C43391; Wed, 12 Aug 2020 14:15:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.4] (unknown [136.185.246.224])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: gkohli)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A72E6C433C9;
+        Wed, 12 Aug 2020 14:15:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A72E6C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=gkohli@codeaurora.org
+Subject: Re: [PATCH] arm64: Skip apply SSBS call for non SSBS system
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, maz@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        neeraju@codeaurora.org
+References: <1596550484-11029-1-git-send-email-gkohli@codeaurora.org>
+ <20200812133043.GA8924@willie-the-truck>
+From:   Gaurav Kohli <gkohli@codeaurora.org>
+Message-ID: <5b1ad0e0-bbe7-9869-ee19-1b62023203ed@codeaurora.org>
+Date:   Wed, 12 Aug 2020 19:45:12 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200812133043.GA8924@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Conor and myself as maintainers.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
 
-Changes in v2:
-* None.
+On 8/12/2020 7:00 PM, Will Deacon wrote:
+> On Tue, Aug 04, 2020 at 07:44:42PM +0530, Gaurav Kohli wrote:
+>> In a system where no cpu's implement SSBS, for
+>> them no need to set pstate. This might help to save
+>> few cpu cycles during context switch.
+>>
+>> Signed-off-by: Gaurav Kohli <gkohli@codeaurora.org>
+>>
+>> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+>> index 6089638..79f80f1 100644
+>> --- a/arch/arm64/kernel/process.c
+>> +++ b/arch/arm64/kernel/process.c
+>> @@ -477,6 +477,13 @@ static void ssbs_thread_switch(struct task_struct *next)
+>>   	struct pt_regs *regs = task_pt_regs(next);
+>>   
+>>   	/*
+>> +	 * For Targets which don't have SSBS support, they
+>> +	 * can return from here.
+>> +	 */
+>> +	if (!IS_ENABLED(CONFIG_ARM64_SSBD))
+>> +		return;
+> 
+> Does this actually make a measurable difference?
+> 
+> Will
+> 
 
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Hi Will,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e627ed60d75a..fedd10537723 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15764,6 +15764,14 @@ S:	Maintained
- F:	Documentation/fb/sm712fb.rst
- F:	drivers/video/fbdev/sm712*
- 
-+SILVACO I3C DUAL-ROLE MASTER
-+M:	Miquel Raynal <miquel.raynal@bootlin.com>
-+M:	Conor Culhane <conor.culhane@silvaco.com>
-+L:	linux-i3c@lists.infradead.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/i3c/svc,i3c-master.yaml
-+F:	drivers/i3c/master/svc-i3c-master.c
-+
- SIMPLE FIRMWARE INTERFACE (SFI)
- S:	Obsolete
- W:	http://simplefirmware.org/
--- 
-2.20.1
+While doing code review between older kernel and latest kernel for 
+context switch case, there i have found this and thought it is good to 
+have for non-ssbs system to return early(as this might improve).
 
+Please let me know if you want to run some tests.
+
+Regards
+Gaurav
