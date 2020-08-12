@@ -2,112 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1B92426C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903082426CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgHLIdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 04:33:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57590 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726264AbgHLIdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 04:33:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6BD8DB5E8;
-        Wed, 12 Aug 2020 08:34:12 +0000 (UTC)
-Subject: Re: [PATCH drm/hisilicon v3 0/2] hibmc clean up and code refactoring
-To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
-        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
-        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
-        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
-Cc:     linuxarm@huawei.com
-References: <1597218179-3938-1-git-send-email-tiantao6@hisilicon.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <07634d88-13a7-8767-032d-24ba9b5f5f8b@suse.de>
-Date:   Wed, 12 Aug 2020 10:33:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727019AbgHLIeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 04:34:21 -0400
+Received: from lucky1.263xmail.com ([211.157.147.134]:54602 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726264AbgHLIeT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 04:34:19 -0400
+Received: from localhost (unknown [192.168.167.209])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 1D2F4C0C54;
+        Wed, 12 Aug 2020 16:34:15 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [103.29.142.67])
+        by smtp.263.net (postfix) whith ESMTP id P31771T140662796187392S1597221250509047_;
+        Wed, 12 Aug 2020 16:34:15 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <69b1af1b415bf5000b6580fc378eeefa>
+X-RL-SENDER: algea.cao@rock-chips.com
+X-SENDER: algea.cao@rock-chips.com
+X-LOGIN-NAME: algea.cao@rock-chips.com
+X-FST-TO: a.hajda@samsung.com
+X-SENDER-IP: 103.29.142.67
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Algea Cao <algea.cao@rock-chips.com>
+To:     a.hajda@samsung.com, kuankuan.y@gmail.com, hjc@rock-chips.com,
+        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
+        sam@ravnborg.org, airlied@linux.ie, heiko@sntech.de,
+        jernej.skrabec@siol.net, algea.cao@rock-chips.com,
+        Laurent.pinchart@ideasonboard.com,
+        laurent.pinchart+renesas@ideasonboard.com, jonas@kwiboo.se,
+        mripard@kernel.org, darekm@google.com,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, cychiang@chromium.org,
+        linux-kernel@vger.kernel.org, narmstrong@baylibre.com,
+        jbrunet@baylibre.com, maarten.lankhorst@linux.intel.com,
+        daniel@ffwll.ch
+Subject: [PATCH 1/6] drm: Add connector atomic_begin/atomic_flush
+Date:   Wed, 12 Aug 2020 16:34:07 +0800
+Message-Id: <20200812083407.856-1-algea.cao@rock-chips.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200812083120.743-1-algea.cao@rock-chips.com>
+References: <20200812083120.743-1-algea.cao@rock-chips.com>
 MIME-Version: 1.0
-In-Reply-To: <1597218179-3938-1-git-send-email-tiantao6@hisilicon.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="cADU4EOi8UINnvVNbIZnML821TzzfUywE"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---cADU4EOi8UINnvVNbIZnML821TzzfUywE
-Content-Type: multipart/mixed; boundary="Mz5FlLSm8z4ugsRP0gL03sCCEZedpCSTW";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
- kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
- dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
- linux-kernel@vger.kernel.org
-Cc: linuxarm@huawei.com
-Message-ID: <07634d88-13a7-8767-032d-24ba9b5f5f8b@suse.de>
-Subject: Re: [PATCH drm/hisilicon v3 0/2] hibmc clean up and code refactoring
-References: <1597218179-3938-1-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1597218179-3938-1-git-send-email-tiantao6@hisilicon.com>
+In some situations, connector should get some work done
+when plane is updating. Such as when change output color
+format, hdmi should send AVMUTE to make screen black before
+crtc updating color format, or screen may flash. After color
+updating, hdmi should clear AVMUTE bring screen back to normal.
 
---Mz5FlLSm8z4ugsRP0gL03sCCEZedpCSTW
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+The process is as follows:
+AVMUTE -> Update CRTC -> Update HDMI -> Clear AVMUTE
 
-Merged into drm-misc-next
+So we introduce connector atomic_begin/atomic_flush.
 
-Am 12.08.20 um 09:42 schrieb Tian Tao:
-> patch #1 and #3 is clean up, patch #2 is for code refactoring
->=20
-> Changes since v1:
-> - Rewrite the commits messages and patch name in #1
-> - Rewrite the commits message in #2.
-> - Add the new patch #3
->=20
-> Changes since v2:
-> - merge patch #3 into patch #2
->=20
-> Tian Tao (2):
->   drm/hisilicon: Remove the unused include statements
->   drm/hisilicon: Code refactoring for hibmc_drv_de
->=20
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   | 58 ++++++----------=
---------
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  |  5 --
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  2 +
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  2 -
->  4 files changed, 15 insertions(+), 52 deletions(-)
->=20
+Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+---
+
+ drivers/gpu/drm/drm_atomic_helper.c      | 46 ++++++++++++++++++++++++
+ include/drm/drm_modeset_helper_vtables.h | 19 ++++++++++
+ 2 files changed, 65 insertions(+)
+
+diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+index f68c69a45752..f4abd700d2c4 100644
+--- a/drivers/gpu/drm/drm_atomic_helper.c
++++ b/drivers/gpu/drm/drm_atomic_helper.c
+@@ -2471,6 +2471,8 @@ void drm_atomic_helper_commit_planes(struct drm_device *dev,
+ 				     struct drm_atomic_state *old_state,
+ 				     uint32_t flags)
+ {
++	struct drm_connector *connector;
++	struct drm_connector_state *old_connector_state, *new_connector_state;
+ 	struct drm_crtc *crtc;
+ 	struct drm_crtc_state *old_crtc_state, *new_crtc_state;
+ 	struct drm_plane *plane;
+@@ -2479,6 +2481,28 @@ void drm_atomic_helper_commit_planes(struct drm_device *dev,
+ 	bool active_only = flags & DRM_PLANE_COMMIT_ACTIVE_ONLY;
+ 	bool no_disable = flags & DRM_PLANE_COMMIT_NO_DISABLE_AFTER_MODESET;
+ 
++	for_each_oldnew_connector_in_state(old_state, connector,
++					   old_connector_state,
++					   new_connector_state, i) {
++		const struct drm_connector_helper_funcs *funcs;
++
++		if (!connector->state->crtc)
++			continue;
++
++		if (!connector->state->crtc->state->active)
++			continue;
++
++		funcs = connector->helper_private;
++
++		if (!funcs || !funcs->atomic_begin)
++			continue;
++
++		DRM_DEBUG_ATOMIC("flush beginning [CONNECTOR:%d:%s]\n",
++				 connector->base.id, connector->name);
++
++		funcs->atomic_begin(connector, old_connector_state);
++	}
++
+ 	for_each_oldnew_crtc_in_state(old_state, crtc, old_crtc_state, new_crtc_state, i) {
+ 		const struct drm_crtc_helper_funcs *funcs;
+ 
+@@ -2550,6 +2574,28 @@ void drm_atomic_helper_commit_planes(struct drm_device *dev,
+ 
+ 		funcs->atomic_flush(crtc, old_crtc_state);
+ 	}
++
++	for_each_oldnew_connector_in_state(old_state, connector,
++					   old_connector_state,
++					   new_connector_state, i) {
++		const struct drm_connector_helper_funcs *funcs;
++
++		if (!connector->state->crtc)
++			continue;
++
++		if (!connector->state->crtc->state->active)
++			continue;
++
++		funcs = connector->helper_private;
++
++		if (!funcs || !funcs->atomic_flush)
++			continue;
++
++		DRM_DEBUG_ATOMIC("flushing [CONNECTOR:%d:%s]\n",
++				 connector->base.id, connector->name);
++
++		funcs->atomic_flush(connector, old_connector_state);
++	}
+ }
+ EXPORT_SYMBOL(drm_atomic_helper_commit_planes);
+ 
+diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
+index 421a30f08463..10f3f2e2fe28 100644
+--- a/include/drm/drm_modeset_helper_vtables.h
++++ b/include/drm/drm_modeset_helper_vtables.h
+@@ -1075,6 +1075,25 @@ struct drm_connector_helper_funcs {
+ 	void (*atomic_commit)(struct drm_connector *connector,
+ 			      struct drm_connector_state *state);
+ 
++	/**
++	 * @atomic_begin:
++	 *
++	 * flush atomic update
++	 *
++	 * This callback is used by the atomic modeset helpers but it is optional.
++	 */
++	void (*atomic_begin)(struct drm_connector *connector,
++			     struct drm_connector_state *state);
++
++	/**
++	 * @atomic_begin:
++	 *
++	 * begin atomic update
++	 *
++	 * This callback is used by the atomic modeset helpers but it is optional.
++	 */
++	void (*atomic_flush)(struct drm_connector *connector,
++			     struct drm_connector_state *state);
+ 	/**
+ 	 * @prepare_writeback_job:
+ 	 *
+-- 
+2.25.1
 
 
---Mz5FlLSm8z4ugsRP0gL03sCCEZedpCSTW--
 
---cADU4EOi8UINnvVNbIZnML821TzzfUywE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFIBAEBCAAyFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl8zqWsUHHR6aW1tZXJt
-YW5uQHN1c2UuZGUACgkQaA3BHVMLeiMmRQf+KrwSE3o3R6OiYW0liC6rO0ycoAO6
-WGP0gfJvbZ48xQUx0vu7zmUmTH9TslNfBGPRUb3S2IhPjohVEBJeIMk189EDWuzh
-TQIXkzbjAxP17WqzFUcyYpwnY4VNuQih0/l3VL4PBYskUaZYmTetxTQLv9WHLrMm
-B/44rFsPQphbvmWCxyOc7k1lBxN7sCAXCKXN5yi1MavS7iODjQCUt9L2mvZfse1S
-xcgKN+bUfctbbCjldUKV/yalBIHuZfqRsD+pENDYtecqrc7kRkSm4qTdF0S1vRuM
-HXuF6KBzbEhTjpQxeVwnZN7vdNNCTvWKgYNQjFWZ90i5wRNS2kuvb+d3LQ==
-=p+mv
------END PGP SIGNATURE-----
-
---cADU4EOi8UINnvVNbIZnML821TzzfUywE--
