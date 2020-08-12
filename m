@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEC02429D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC1C2429D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 14:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728189AbgHLMyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 08:54:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:44628 "EHLO foss.arm.com"
+        id S1728087AbgHLMxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 08:53:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:44646 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728037AbgHLMx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 08:53:26 -0400
+        id S1728052AbgHLMx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 08:53:28 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E4B2D142F;
-        Wed, 12 Aug 2020 05:53:25 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DB5531B;
+        Wed, 12 Aug 2020 05:53:27 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A7D493F70D;
-        Wed, 12 Aug 2020 05:53:24 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 269833F70D;
+        Wed, 12 Aug 2020 05:53:26 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+Cc:     Quentin Perret <qperret@google.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>, mingo@kernel.org,
-        vincent.guittot@linaro.org, morten.rasmussen@arm.com,
-        Quentin Perret <qperret@google.com>
-Subject: [PATCH v5 09/17] sched/topology: Remove SD_SERIALIZE degeneration special case
-Date:   Wed, 12 Aug 2020 13:52:52 +0100
-Message-Id: <20200812125300.11889-10-valentin.schneider@arm.com>
+        peterz@infradead.org, vincent.guittot@linaro.org,
+        morten.rasmussen@arm.com
+Subject: [PATCH v5 10/17] sched/topology: Propagate SD_ASYM_CPUCAPACITY upwards
+Date:   Wed, 12 Aug 2020 13:52:53 +0100
+Message-Id: <20200812125300.11889-11-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200812125300.11889-1-valentin.schneider@arm.com>
 References: <20200812125300.11889-1-valentin.schneider@arm.com>
@@ -36,38 +36,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If there is only a single NUMA node in the system, the only NUMA topology
-level that will be generated will be NODE (identity distance), which
-doesn't have SD_SERIALIZE.
+We currently set this flag *only* on domains whose topology level exactly
+match the level where we detect asymmetry (as returned by
+asym_cpu_capacity_level()). This is rather problematic.
 
-This means we don't need this special case in sd_parent_degenerate(), as
-having the NODE level "naturally" covers it. Thus, remove it.
+Say there are two clusters in the system, one with a lone big CPU and the
+other with a mix of big and LITTLE CPUs (as is allowed by DynamIQ):
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
+DIE [                ]
+MC  [             ][ ]
+     0   1   2   3  4
+     L   L   B   B  B
+
+asym_cpu_capacity_level() will figure out that the MC level is the one
+where all CPUs can see a CPU of max capacity, and we will thus set
+SD_ASYM_CPUCAPACITY at MC level for all CPUs.
+
+That lone big CPU will degenerate its MC domain, since it would be alone in
+there, and will end up with just a DIE domain. Since the flag was only set
+at MC, this CPU ends up not seeing any SD with the flag set, which is
+broken.
+
+Rather than clearing dflags at every topology level, clear it before
+entering the topology level loop. This will properly propagate upwards
+flags that are set starting from a certain level.
+
+Reviewed-by: Quentin Perret <qperret@google.com>
 Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- kernel/sched/topology.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ include/linux/sched/sd_flags.h | 4 +++-
+ kernel/sched/topology.c        | 3 +--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
+diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_flags.h
+index 21a43ad6f26a..4f07b405564e 100644
+--- a/include/linux/sched/sd_flags.h
++++ b/include/linux/sched/sd_flags.h
+@@ -83,9 +83,11 @@ SD_FLAG(SD_WAKE_AFFINE, SDF_SHARED_CHILD)
+ /*
+  * Domain members have different CPU capacities
+  *
++ * SHARED_PARENT: Set from the topmost domain down to the first domain where
++ *                asymmetry is detected.
+  * NEEDS_GROUPS: Per-CPU capacity is asymmetric between groups.
+  */
+-SD_FLAG(SD_ASYM_CPUCAPACITY, SDF_NEEDS_GROUPS)
++SD_FLAG(SD_ASYM_CPUCAPACITY, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
+ 
+ /*
+  * Domain members share CPU capacity (i.e. SMT)
 diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 5f2bc99ff659..00ad7cef2ec1 100644
+index 00ad7cef2ec1..02fd8db747b2 100644
 --- a/kernel/sched/topology.c
 +++ b/kernel/sched/topology.c
-@@ -183,11 +183,9 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
- 		return 0;
+@@ -1988,11 +1988,10 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
+ 	/* Set up domains for CPUs specified by the cpu_map: */
+ 	for_each_cpu(i, cpu_map) {
+ 		struct sched_domain_topology_level *tl;
++		int dflags = 0;
  
- 	/* Flags needing groups don't count if only 1 group in parent */
--	if (parent->groups == parent->groups->next) {
-+	if (parent->groups == parent->groups->next)
- 		pflags &= ~(SD_DEGENERATE_GROUPS_MASK | SD_PREFER_SIBLING);
--		if (nr_node_ids == 1)
--			pflags &= ~SD_SERIALIZE;
--	}
-+
- 	if (~cflags & pflags)
- 		return 0;
- 
+ 		sd = NULL;
+ 		for_each_sd_topology(tl) {
+-			int dflags = 0;
+-
+ 			if (tl == tl_asym) {
+ 				dflags |= SD_ASYM_CPUCAPACITY;
+ 				has_asym = true;
 -- 
 2.27.0
 
