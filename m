@@ -2,89 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC0A242E04
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 19:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187A8242E00
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 19:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgHLRXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 13:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45130 "EHLO
+        id S1726557AbgHLRXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 13:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgHLRXl (ORCPT
+        with ESMTP id S1725993AbgHLRXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 13:23:41 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3A4C061383
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 10:23:41 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id v15so1575615lfg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 10:23:40 -0700 (PDT)
+        Wed, 12 Aug 2020 13:23:38 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B060C061383;
+        Wed, 12 Aug 2020 10:23:38 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id b25so2096384qto.2;
+        Wed, 12 Aug 2020 10:23:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qrY/NxWx3/FaOMH2Zu/xiJfV6Atph/3rs8H9NXO5FQo=;
-        b=b+S2a3dv91gBN5p4hLlLS3kGrhtpEqptSqM9+j4RM42U/tjZlfA5rD7v6Z2qIU4kAn
-         NadltzA8Fkl37lUGOrDWZW2oPmMhkKva9Jy3+735PAhqC3zlJFArnTlW4T5zxWoFCWXE
-         TjA3SPWJ77pB/afeA7ZSRuw8fAxCi87MmCf9k=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=b1/lSRDVVen4Akj0ArLSHpTeWWjBzyPT/lPcsGI8nVw=;
+        b=dFJ4Hzkpz3+oD1F3BYZ++5nv2ELEguPwduttYcpO1TmDrzJuM9Ax88Q79LrVI8bY5T
+         ztlS80pGOR3RNeVGI+aJwJVw/s6i3L7vzx2gpE8EqA0TBKcfIwNMlH7RgMxGbN9W7+kl
+         0YiS7cWhlEEfudI/HDdLT8nnRL7SdDmV2bhMP2cDGc3UKjou0/0dfmbqmgdibZaO3wU0
+         9jMJ/97QpQJURODplJipq3Oo6vOsr5Fv8Sj9yJtLoTXX2i2PNpzJrU+gDXxm9o/drWMZ
+         XcVA0E1RwH8ce3jYImuE6NWeigHLURnv7ZdNqGUMQdyWYQ5Jxqkf5lil3GiOvTVlsSLA
+         kIUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qrY/NxWx3/FaOMH2Zu/xiJfV6Atph/3rs8H9NXO5FQo=;
-        b=Ys9ilEEXKpGTJwLM6XvWU2vwa7W4XooFSk6ma2mJSeC3I2Wl0vK9HHsLryavRIVhO7
-         tISDy+FmEeEvEeCPh3ere4fXj1dBdvc7nOvcTWeTkJlLv3R76HavDl3RmglkjeDL2Pb+
-         Sl/rquXSe+pZf0MR9Nm9b0Vt96EAwOj6qeGyjA5FtDXnmah7ddaJN4G9S7BOxFCZ1hy0
-         Hys7pQrcpr5znT8i/fBI0xNKBlCbrwvWTSprqVYzrgGzgG8dLVoyVGoXjr694lXKEZWK
-         766RcsqXyTUWpwGH0GrYnaAvOCI2XlX9Nf0cJIyGYABAB9/d4wET0oyapgiznOwMIPTh
-         mptQ==
-X-Gm-Message-State: AOAM530y6Qe/zCRu6OAk3XGISSDSnIqdWJsr+S8MM5rmDwh4mTARiqYU
-        Qsfs0FH1S54wxxizq5qzT2z6d9SyMjE=
-X-Google-Smtp-Source: ABdhPJy13+i6Pz89Fgfms2wsUIKTkuc8dFd/YMApunW1QNQk/ZM7KSUa3zEMrs+WSpJ61W4M2aVo9A==
-X-Received: by 2002:a19:f808:: with SMTP id a8mr232643lff.62.1597253019014;
-        Wed, 12 Aug 2020 10:23:39 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id n24sm557609lji.83.2020.08.12.10.23.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=b1/lSRDVVen4Akj0ArLSHpTeWWjBzyPT/lPcsGI8nVw=;
+        b=UhT8Xr3y4FbRhsWXfcysmEOs3sNtYIOb8Qfk4AnjfeTxojFG5DTXLqRIhVDuKGfbQP
+         ogQvJEVtnk2VQK/oZGWyz/py9o7Zn4P0QlyXhg2wt0VapThdNcC/YtxGtQnqkkcNcGGE
+         I5rrOxMRBkwJn+7qJ0T+zA7H1LcDNGce8bHvYoqTY3nbOdYDojYZqYrI09cWsKYVSaWO
+         kpY1y5arDuMPCnDq9ladrR+4RllJMmpN9yvqBKFwJd2h9JaiX9J9yptCFeGOfKUikPmC
+         IBJm+UnbroODNsA/H7hsWInmw89P0UZgM5GoLzmRVauwnJ0fTKzU/ER1yEpNTUalptEh
+         7XYQ==
+X-Gm-Message-State: AOAM533aImqqPGnoBtDkcUknHvTbpp5ovR1/g+6TjeFmP1Vv4ZW/FF/W
+        LGqN5ZxRdm38VmZ/NM26Jw==
+X-Google-Smtp-Source: ABdhPJwBXCZnKid7yfKC88qAPcPezTXpTDi6LExmqjV/8+GD1684vmXYr/g16EHecwgYqZTah22aFA==
+X-Received: by 2002:ac8:7152:: with SMTP id h18mr756292qtp.44.1597253017585;
         Wed, 12 Aug 2020 10:23:37 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id s9so1586874lfs.4
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 10:23:37 -0700 (PDT)
-X-Received: by 2002:a19:408d:: with SMTP id n135mr215699lfa.192.1597253017201;
- Wed, 12 Aug 2020 10:23:37 -0700 (PDT)
+Received: from PWN (146-115-88-66.s3894.c3-0.sbo-ubr1.sbo.ma.cable.rcncustomer.com. [146.115.88.66])
+        by smtp.gmail.com with ESMTPSA id i14sm3140849qtq.33.2020.08.12.10.23.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Aug 2020 10:23:37 -0700 (PDT)
+Date:   Wed, 12 Aug 2020 13:23:35 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fsdevel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH] hfs, hfsplus: Fix NULL pointer
+ dereference in hfs_find_init()
+Message-ID: <20200812172335.GA897567@PWN>
+References: <20200812065556.869508-1-yepeilin.cs@gmail.com>
+ <20200812070827.GA1304640@kroah.com>
+ <20200812071306.GA869606@PWN>
+ <20200812085904.GA16441@kadam>
 MIME-Version: 1.0
-References: <000000000000f0724405aca59f64@google.com> <20200812041518.GO1236603@ZenIV.linux.org.uk>
- <CAHk-=wgHZF+GbPS0=+9C7NWb1QUw4sPKL0t90yPGs07jJ0eczQ@mail.gmail.com> <20200812055558.GP1236603@ZenIV.linux.org.uk>
-In-Reply-To: <20200812055558.GP1236603@ZenIV.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 12 Aug 2020 10:23:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whkE96-0OZzAJoyJEp_J9uKuojS9K9Zo-wuU+RUOcsiKQ@mail.gmail.com>
-Message-ID: <CAHk-=whkE96-0OZzAJoyJEp_J9uKuojS9K9Zo-wuU+RUOcsiKQ@mail.gmail.com>
-Subject: Re: [PATCH] Re: KASAN: use-after-free Read in path_init (2)
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzbot <syzbot+bbeb1c88016c7db4aa24@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200812085904.GA16441@kadam>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 10:56 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Tue, Aug 11, 2020 at 09:29:47PM -0700, Linus Torvalds wrote:
-> >
-> > Do you want me to apply directly, or do you have other fixes pending
-> > and I'll get a pull request?
->
-> Not at the moment - I can throw it into #fixes and send a pull request
-> if you wish, but there won't be anything else in it...
+On Wed, Aug 12, 2020 at 11:59:04AM +0300, Dan Carpenter wrote:
+> Yeah, the patch doesn't work at all.  I looked at one call tree and it
+> is:
+> 
+> hfs_mdb_get() tries to allocate HFS_SB(sb)->ext_tree.
+> 
+> 	HFS_SB(sb)->ext_tree = hfs_btree_open(sb, HFS_EXT_CNID, hfs_ext_keycmp);
+>                     ^^^^^^^^
+> 
+> hfs_btree_open() calls page = read_mapping_page(mapping, 0, NULL);
+> read_mapping_page() calls mapping->a_ops->readpage() which leads to
+> hfs_readpage() which leads to hfs_ext_read_extent() which calls
+> res = hfs_find_init(HFS_SB(inode->i_sb)->ext_tree, &fd);
+>                                          ^^^^^^^^
 
-Ok, I applied the patch directly. Thanks,
+Thank you for pointing this out! I will try to come up with a better way
+to fix it.
 
-                Linus
+Peilin Ye
+
+> So we need ->ext_tree to be non-NULL before we can set ->ext_tree to be
+> non-NULL...  :/
+> 
+> I wonder how long this has been broken and if we should just delete the
+> AFS file system.
+> 
+> regards,
+> dan carpenter
+> 
