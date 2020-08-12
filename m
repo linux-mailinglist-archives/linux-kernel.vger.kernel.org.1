@@ -2,163 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D4E2426F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D847242701
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 10:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbgHLIvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 04:51:21 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:51089 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgHLIvU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 04:51:20 -0400
-X-Originating-IP: 90.66.108.79
-Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id B557F1C000C;
-        Wed, 12 Aug 2020 08:51:17 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     linux-rtc@vger.kernel.org
-Cc:     Liam Beguin <lvb@xiphos.com>,
-        Bruno Thomsen <bruno.thomsen@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH] rtc: pcf2127: fix alarm handling
-Date:   Wed, 12 Aug 2020 10:51:14 +0200
-Message-Id: <20200812085114.474903-1-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727036AbgHLI4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 04:56:31 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:49026 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726572AbgHLI4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 04:56:31 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A63AA1A0CAE;
+        Wed, 12 Aug 2020 10:56:28 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id CB74F1A004F;
+        Wed, 12 Aug 2020 10:56:22 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 52DD14024E;
+        Wed, 12 Aug 2020 10:56:15 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, gregkh@linuxfoundation.org,
+        galak@codeaurora.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2 1/5] dt-bindings: clock: Update i.MX28 example
+Date:   Wed, 12 Aug 2020 16:51:20 +0800
+Message-Id: <1597222284-32609-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix multiple issues when handling alarms:
- - Use threaded interrupt to avoid scheduling when atomic
- - Stop matching on week day as it may not be set correctly
- - Avoid parsing the DT interrupt and use what is provided by the i2c or
-   spi subsystem
- - Avoid returning IRQ_NONE in case of error in the interrupt handler
- - Never write WDTF as specified in the datasheet
- - Set uie_unsupported, as for the pcf85063, setting alarms every seconds
-   is not working correctly and confuses the RTC.
+Update the i.MX28 clock example to align with MXS AUART binding doc to
+avoid below build error:
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml:
+  serial@8006a000: clocks: [[4294967295, 45]] is too short
+Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml:
+  serial@8006a000: compatible: Additional items are not allowed
+  ('fsl,imx23-auart' was unexpected)
+Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml:
+  serial@8006a000: compatible: ['fsl,imx28-auart', 'fsl,imx23-auart']
+  is too long
+Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml:
+  serial@8006a000: 'dmas' is a required property
+Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml:
+  serial@8006a000: 'dma-names' is a required property
+
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- drivers/rtc/rtc-pcf2127.c | 37 +++++++++++++++++++------------------
- 1 file changed, 19 insertions(+), 18 deletions(-)
+new patch.
+---
+ Documentation/devicetree/bindings/clock/imx28-clock.yaml | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
-index 4e99c45a87d7..ed6316992cbb 100644
---- a/drivers/rtc/rtc-pcf2127.c
-+++ b/drivers/rtc/rtc-pcf2127.c
-@@ -33,6 +33,7 @@
- #define PCF2127_BIT_CTRL2_TSIE			BIT(2)
- #define PCF2127_BIT_CTRL2_AF			BIT(4)
- #define PCF2127_BIT_CTRL2_TSF2			BIT(5)
-+#define PCF2127_BIT_CTRL2_WDTF			BIT(6)
- /* Control register 3 */
- #define PCF2127_REG_CTRL3		0x02
- #define PCF2127_BIT_CTRL3_BLIE			BIT(0)
-@@ -55,6 +56,7 @@
- #define PCF2127_REG_ALARM_HR		0x0C
- #define PCF2127_REG_ALARM_DM		0x0D
- #define PCF2127_REG_ALARM_DW		0x0E
-+#define PCF2127_BIT_ALARM_AE			BIT(7)
- /* Watchdog registers */
- #define PCF2127_REG_WD_CTL		0x10
- #define PCF2127_BIT_WD_CTL_TF0			BIT(0)
-@@ -360,7 +362,6 @@ static int pcf2127_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
- 	alrm->time.tm_min = bcd2bin(buf[1] & 0x7F);
- 	alrm->time.tm_hour = bcd2bin(buf[2] & 0x3F);
- 	alrm->time.tm_mday = bcd2bin(buf[3] & 0x3F);
--	alrm->time.tm_wday = buf[4] & 0x07;
+diff --git a/Documentation/devicetree/bindings/clock/imx28-clock.yaml b/Documentation/devicetree/bindings/clock/imx28-clock.yaml
+index 72328d5..671b279 100644
+--- a/Documentation/devicetree/bindings/clock/imx28-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx28-clock.yaml
+@@ -108,8 +108,10 @@ examples:
+     };
  
- 	return 0;
- }
-@@ -398,7 +399,7 @@ static int pcf2127_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
- 	buf[1] = bin2bcd(alrm->time.tm_min);
- 	buf[2] = bin2bcd(alrm->time.tm_hour);
- 	buf[3] = bin2bcd(alrm->time.tm_mday);
--	buf[4] = (alrm->time.tm_wday & 0x07);
-+	buf[4] = PCF2127_BIT_ALARM_AE; /* Do not match on week day */
- 
- 	ret = regmap_bulk_write(pcf2127->regmap, PCF2127_REG_ALARM_SC, buf,
- 				sizeof(buf));
-@@ -418,16 +419,15 @@ static irqreturn_t pcf2127_rtc_irq(int irq, void *dev)
- 	if (ret)
- 		return IRQ_NONE;
- 
--	if (ctrl2 & PCF2127_BIT_CTRL2_AF) {
--		regmap_write(pcf2127->regmap, PCF2127_REG_CTRL2,
--			     ctrl2 & ~PCF2127_BIT_CTRL2_AF);
-+	if (!(ctrl2 & PCF2127_BIT_CTRL2_AF))
-+		return IRQ_NONE;
- 
--		rtc_update_irq(pcf2127->rtc, 1, RTC_IRQF | RTC_AF);
--	}
-+	regmap_write(pcf2127->regmap, PCF2127_REG_CTRL2,
-+		     ctrl2 & ~(PCF2127_BIT_CTRL2_AF | PCF2127_BIT_CTRL2_WDTF));
- 
--	ret = pcf2127_wdt_active_ping(&pcf2127->wdd);
--	if (ret)
--		return IRQ_NONE;
-+	rtc_update_irq(pcf2127->rtc, 1, RTC_IRQF | RTC_AF);
-+
-+	pcf2127_wdt_active_ping(&pcf2127->wdd);
- 
- 	return IRQ_HANDLED;
- }
-@@ -533,10 +533,9 @@ static const struct attribute_group pcf2127_attr_group = {
- };
- 
- static int pcf2127_probe(struct device *dev, struct regmap *regmap,
--			const char *name, bool has_nvmem)
-+			 int alarm_irq, const char *name, bool has_nvmem)
- {
- 	struct pcf2127 *pcf2127;
--	int alarm_irq = 0;
- 	u32 wdd_timeout;
- 	int ret = 0;
- 
-@@ -558,12 +557,13 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
- 	pcf2127->rtc->range_min = RTC_TIMESTAMP_BEGIN_2000;
- 	pcf2127->rtc->range_max = RTC_TIMESTAMP_END_2099;
- 	pcf2127->rtc->set_start_time = true; /* Sets actual start to 1970 */
-+	pcf2127->rtc->uie_unsupported = 1;
- 
--	alarm_irq = of_irq_get_byname(dev->of_node, "alarm");
- 	if (alarm_irq >= 0) {
--		ret = devm_request_irq(dev, alarm_irq, pcf2127_rtc_irq,
--				       IRQF_TRIGGER_LOW | IRQF_ONESHOT,
--				       dev_name(dev), dev);
-+		ret = devm_request_threaded_irq(dev, alarm_irq, NULL,
-+						pcf2127_rtc_irq,
-+						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
-+						dev_name(dev), dev);
- 		if (ret) {
- 			dev_err(dev, "failed to request alarm irq\n");
- 			return ret;
-@@ -792,7 +792,7 @@ static int pcf2127_i2c_probe(struct i2c_client *client,
- 		return PTR_ERR(regmap);
- 	}
- 
--	return pcf2127_probe(&client->dev, regmap,
-+	return pcf2127_probe(&client->dev, regmap, client->irq,
- 			     pcf2127_i2c_driver.driver.name, id->driver_data);
- }
- 
-@@ -858,7 +858,8 @@ static int pcf2127_spi_probe(struct spi_device *spi)
- 		return PTR_ERR(regmap);
- 	}
- 
--	return pcf2127_probe(&spi->dev, regmap, pcf2127_spi_driver.driver.name,
-+	return pcf2127_probe(&spi->dev, regmap, spi->irq,
-+			     pcf2127_spi_driver.driver.name,
- 			     spi_get_device_id(spi)->driver_data);
- }
- 
+     serial@8006a000 {
+-        compatible = "fsl,imx28-auart", "fsl,imx23-auart";
++        compatible = "fsl,imx28-auart";
+         reg = <0x8006a000 0x2000>;
+-        interrupts = <112 70 71>;
++        interrupts = <112>;
++        dmas = <&dma_apbx 8>, <&dma_apbx 9>;
++        dma-names = "rx", "tx";
+         clocks = <&clks 45>;
+     };
 -- 
-2.26.2
+2.7.4
 
