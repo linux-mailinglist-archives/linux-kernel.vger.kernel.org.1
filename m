@@ -2,83 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3AA242A1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A90242A26
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgHLNOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 09:14:23 -0400
-Received: from mga02.intel.com ([134.134.136.20]:34726 "EHLO mga02.intel.com"
+        id S1727936AbgHLNSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 09:18:05 -0400
+Received: from ms.lwn.net ([45.79.88.28]:35640 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726946AbgHLNOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 09:14:23 -0400
-IronPort-SDR: /44bTRQwz6tdS3e8XUEqktquuczn/OxXymDd1+JUVvIkpn2PTqZoWvyYOoO4v7wHdD5PbkLLoj
- vcOc1j7arwOA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9710"; a="141790260"
-X-IronPort-AV: E=Sophos;i="5.76,304,1592895600"; 
-   d="scan'208";a="141790260"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 06:14:22 -0700
-IronPort-SDR: t2QBoItcDOpyhDAwHn2dS6eO1YG6/F2yQ38D6pum15YIN0mXB+KkWU/yhou43v7pzetzNPpgdH
- Coe14iNeqOhA==
-X-IronPort-AV: E=Sophos;i="5.76,304,1592895600"; 
-   d="scan'208";a="469817615"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.255.29.234]) ([10.255.29.234])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 06:14:18 -0700
-Reply-To: like.xu@intel.com
-Subject: Re: [PATCH] KVM: x86/pmu: Add '.exclude_hv = 1' for guest perf_event
-To:     Paolo Bonzini <pbonzini@redhat.com>, peterz@infradead.org
-Cc:     Like Xu <like.xu@linux.intel.com>, Yao <yao.jin@linux.intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20200812050722.25824-1-like.xu@linux.intel.com>
- <5c41978e-8341-a179-b724-9aa6e7e8a073@redhat.com>
- <20200812111115.GO2674@hirez.programming.kicks-ass.net>
- <65eddd3c-c901-1c5a-681f-f0cb07b5fbb1@redhat.com>
- <b55afd09-77c8-398b-309b-6bd9f9cfc876@intel.com>
- <8bdc60d5-c9ef-4e8f-6b73-b7bd012d9d30@redhat.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Organization: Intel OTC
-Message-ID: <69bac394-f10c-c0ad-a23d-36cbbd479212@intel.com>
-Date:   Wed, 12 Aug 2020 21:14:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726404AbgHLNSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 09:18:02 -0400
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 5578377F;
+        Wed, 12 Aug 2020 13:18:02 +0000 (UTC)
+Date:   Wed, 12 Aug 2020 07:18:01 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Markus Heiser <markus.heiser@darmarit.de>
+Cc:     Salvatore Bonaccorso <carnil@debian.org>,
+        linux-doc@vger.kernel.org,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        LinuxKernel <linux-kernel@vger.kernel.org>,
+        jforbes@fedoraproject.org
+Subject: Re: Documentation: build failure with sphinx >= 3.0.0: exception:
+ cannot import name 'c_funcptr_sig_re' from 'sphinx.domains.c'
+Message-ID: <20200812071801.71d44fe2@lwn.net>
+In-Reply-To: <579fbb36-515d-5af4-f7dc-c092d29fddd8@darmarit.de>
+References: <20200408113705.GB1924@ArchLinux>
+        <20200408132505.52e595bc@lwn.net>
+        <20200408233450.GA14923@debian>
+        <20200809132327.GA145573@eldamar.local>
+        <20200812073059.GA509953@eldamar.local>
+        <579fbb36-515d-5af4-f7dc-c092d29fddd8@darmarit.de>
+Organization: LWN.net
 MIME-Version: 1.0
-In-Reply-To: <8bdc60d5-c9ef-4e8f-6b73-b7bd012d9d30@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/8/12 21:04, Paolo Bonzini wrote:
-> On 12/08/20 14:56, Xu, Like wrote:
->> My proposal is to define:
->> the "hypervisor privilege levels" events in the KVM/x86 context as
->> all the host kernel events plus /dev/kvm user space events.
-> What are "/dev/kvm user space events"?  In any case, this patch should
-> be included only in the series that adds exclude_hv support in arch/x86.
-The exclude_kernel events from the QEMU or whoever else has opened /dev/kvm.
+On Wed, 12 Aug 2020 10:21:40 +0200
+Markus Heiser <markus.heiser@darmarit.de> wrote:
 
-Do you see any (patches) gap if we map
-the exclude_host events into exclude_hv events naturally ?
+> @jon, do you have time to implement a patch?
+> .. sorry, I'am in a hurry :o
 
-Thanks,
-Like Xu
-> Paolo
->
->> If we add ".exclude_hv = 1" in the pmc_reprogram_counter(),
->> do you see any side effect to cover the above usages?
->>
->> The fact that exclude_hv has never been used in x86 does help
->> the generic perf code to handle permission checks in a more concise way.
+This is on my list ... but life is busy at the moment.  I would not be
+distressed if somebody beat me to it.
 
+jon
