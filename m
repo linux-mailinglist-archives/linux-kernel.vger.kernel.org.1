@@ -2,73 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6477B242AE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94825242AED
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 16:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgHLODf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 10:03:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:45598 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727016AbgHLODc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 10:03:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 89B3FD6E;
-        Wed, 12 Aug 2020 07:03:31 -0700 (PDT)
-Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.210.119])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6F9DF3F70D;
-        Wed, 12 Aug 2020 07:03:28 -0700 (PDT)
-From:   Jianlin Lv <Jianlin.Lv@arm.com>
-To:     bpf@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, yhs@fb.com, Song.Zhu@arm.com,
-        Jianlin.Lv@arm.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf-next] bpf: fix load XDP program error in test_xdp_vlan
-Date:   Wed, 12 Aug 2020 22:03:22 +0800
-Message-Id: <20200812140322.132844-1-Jianlin.Lv@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726554AbgHLOF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 10:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgHLOFz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 10:05:55 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948B3C061384
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 07:05:55 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id r2so2156578wrs.8
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 07:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VtilRrD53TAdMxjjX3JU/V35Hl/WvabSAv9hkR9mbIo=;
+        b=haS8XtlzDKF65bhoMUOPOYBmQNDeRR4FP8YUEZmz147Szkwx5jyNHWh/mdYZ41ycwI
+         uqSlTJO0Kn5Rpzh/SiEisSNWE5lifM7NYHue5MbbXLwrOA1OwYBYorokzGjrnd+uySHO
+         8Ct3jIDQt9BJcVlJ+yi6fuchImDf4cT1H7fejBFiwLNnmUSwiEkkNvRN1w6pAy1p+nyk
+         bcIk2OntG1j8Es3Zzw6QucVASC6RtQ1OArcoXxiOnQFndGu2e8NREIZzF5nYL2LL9hGm
+         IhTwaeYtQUjA/Sat9cebHCaFRdVGkHZjptoY1I45YdW7aDpzbXpQOWEZILCffcKjZydL
+         fkyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VtilRrD53TAdMxjjX3JU/V35Hl/WvabSAv9hkR9mbIo=;
+        b=MqRAfoHA3Xbco3KVQ52fO/aqIcPQPG0l4GAZNjKUYQsqQytpvI2eJjKKyqn1/aD8sL
+         gnwQLwu4RGrbWK7VpFMlzZBv++O65bKoqwYHOY3+bJT6DNsnmmMIKBDBJDzJDrhVsA2j
+         uQR8OH8GlzFZUSV3QABEehx0UtuPZmx9QXN8njQiqQEFiazP6TS0snYz123EoTk1VrIQ
+         sm9W0hCGI5gU59QzKJw6wkM9GUAdAtx6cI5qApzclZ/yRlKXNdtsp51fwAgkxo7UOAXr
+         lH0uaFqsrKCzek7y2EBkLmcZBbekYNvkkSojIn0cCVYg0AS5MEps7M4IavJFiEgvr5Mn
+         U6JQ==
+X-Gm-Message-State: AOAM531SMDWLxZkWkQv3mKSVqIDqDsqKHTodP8XgV2Wz8ohpcnQvrbuV
+        /GSPcFuhnV5zqsBenUVCloyz6Ae6Y4mga1DBVaLvrA==
+X-Google-Smtp-Source: ABdhPJytQgXxWxig/9l09GRJvMEY7a6NgMxWo4zz8fCCadHTu8T6hXjIQHA8VANPfPFXBXQm826jc5M8rHkK1oxIaVg=
+X-Received: by 2002:a05:6000:1203:: with SMTP id e3mr34708903wrx.324.1597241154142;
+ Wed, 12 Aug 2020 07:05:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200806181932.2253-1-krzk@kernel.org> <20200806182059.2431-2-krzk@kernel.org>
+In-Reply-To: <20200806182059.2431-2-krzk@kernel.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 12 Aug 2020 16:05:17 +0200
+Message-ID: <CAPDyKFpBYDrn9dFGSNw9vHjrvPaP5amxYdxjifLBEM2U+AdVTQ@mail.gmail.com>
+Subject: Re: [PATCH v2 02/41] mmc: s3cmci: Remove unneeded machine header include
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Ben Dooks <ben-linux@fluff.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-test_xdp_vlan.sh reports the error as below:
+On Thu, 6 Aug 2020 at 20:21, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> The s3cmci driver does not use machine header mach/dma.h.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-$ sudo ./test_xdp_vlan_mode_native.sh
-+ '[' -z xdp_vlan_mode_native ']'
-+ XDP_MODE=xdpgeneric
-……
-+ export XDP_PROG=xdp_vlan_remove_outer2
-+ XDP_PROG=xdp_vlan_remove_outer2
-+ ip netns exec ns1 ip link set veth1 xdpdrv off
-Error: XDP program already attached.
+If you want this to go through my mmc tree, then please tell me.
 
-ip will throw an error in case a XDP program is already attached to the
-networking interface, to prevent it from being overridden by accident.
-In order to replace the currently running XDP program with a new one,
-the -force option must be used.
+Otherwise:
 
-Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
----
- tools/testing/selftests/bpf/test_xdp_vlan.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-diff --git a/tools/testing/selftests/bpf/test_xdp_vlan.sh b/tools/testing/selftests/bpf/test_xdp_vlan.sh
-index bb8b0da91686..034e603aeb50 100755
---- a/tools/testing/selftests/bpf/test_xdp_vlan.sh
-+++ b/tools/testing/selftests/bpf/test_xdp_vlan.sh
-@@ -220,7 +220,7 @@ ip netns exec ns1 ping -i 0.2 -W 2 -c 2 $IPADDR2
- # ETH_P_8021Q indication, and this cause overwriting of our changes.
- #
- export XDP_PROG=xdp_vlan_remove_outer2
--ip netns exec ns1 ip link set $DEVNS1 $XDP_MODE off
-+ip netns exec ns1 ip -force link set $DEVNS1 $XDP_MODE off
- ip netns exec ns1 ip link set $DEVNS1 $XDP_MODE object $FILE section $XDP_PROG
- 
- # Now the namespaces should still be able reach each-other, test with ping:
--- 
-2.17.1
+Kind regards
+Uffe
 
+> ---
+>  drivers/mmc/host/s3cmci.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/s3cmci.c b/drivers/mmc/host/s3cmci.c
+> index b5df948f8155..60fc3fc30fb4 100644
+> --- a/drivers/mmc/host/s3cmci.c
+> +++ b/drivers/mmc/host/s3cmci.c
+> @@ -26,7 +26,6 @@
+>  #include <linux/mmc/slot-gpio.h>
+>
+>  #include <plat/gpio-cfg.h>
+> -#include <mach/dma.h>
+>  #include <mach/gpio-samsung.h>
+>
+>  #include <linux/platform_data/mmc-s3cmci.h>
+> --
+> 2.17.1
+>
