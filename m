@@ -2,178 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A86A242DE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 19:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C830242DD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 19:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgHLROZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 13:14:25 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:46926 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725872AbgHLROW (ORCPT
+        id S1726583AbgHLRHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 13:07:14 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:33702 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726459AbgHLRHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 13:14:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597252461; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=vmit0zvJ/+aQMlekx6GyOUAp2W179eJeRhhRLjR5tzE=;
- b=PrLij+UHLoor7iV0lDhNQRYKc7TyWozV3zDHlqKfI0pCvWBx/Qq1BHbYVo5dVme9VfCgo/vb
- BSl263/F1t9Adlqeu2YSJ6pVMH05JKJn+s1lmmYfZKw0IFidoHWfGVTFmTC23gUPmLpt4ojE
- 9TNZjLr6CpxTdji1W2ZuBko0ZT4=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f3420c1f2b697637a23c938 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 12 Aug 2020 17:02:57
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 010A8C433A0; Wed, 12 Aug 2020 17:02:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03288C433C9;
-        Wed, 12 Aug 2020 17:02:54 +0000 (UTC)
+        Wed, 12 Aug 2020 13:07:13 -0400
+Received: from [10.137.106.139] (unknown [131.107.174.11])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E097C20B4908;
+        Wed, 12 Aug 2020 10:07:04 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E097C20B4908
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1597252032;
+        bh=SIe2k0peitBjW17yZJXqD0TtHRPmDC1R6Lbe35xyn4c=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=PLIfautqDTtZvkV5njfOIjkAj6r6JznMM7OdDU7PlLhgZqfL4Pe2paFWOZNHYGde0
+         y2m6/Jc5+vr2IziCujXNmDEaBARiGhY57RfU99LHHeOdaXuDYd4ISc2lqnTHN222lU
+         zRHuYBYjX8OqIJoFSc8A8rzTUreTmp+o7KtpdsMg=
+Subject: Re: [dm-devel] [RFC PATCH v5 00/11] Integrity Policy Enforcement LSM
+ (IPE)
+To:     Chuck Lever <chucklever@gmail.com>,
+        James Morris <jmorris@namei.org>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>,
+        snitzer@redhat.com, dm-devel@redhat.com,
+        tyhicks@linux.microsoft.com, agk@redhat.com,
+        Paul Moore <paul@paul-moore.com>,
+        Jonathan Corbet <corbet@lwn.net>, nramas@linux.microsoft.com,
+        serge@hallyn.com, pasha.tatashin@soleen.com,
+        Jann Horn <jannh@google.com>, linux-block@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, mdsakib@microsoft.com,
+        open list <linux-kernel@vger.kernel.org>, eparis@redhat.com,
+        linux-security-module@vger.kernel.org, linux-audit@redhat.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        jaskarankhurana@linux.microsoft.com
+References: <20200728213614.586312-1-deven.desai@linux.microsoft.com>
+ <20200802115545.GA1162@bug> <20200802140300.GA2975990@sasha-vm>
+ <20200802143143.GB20261@amd> <1596386606.4087.20.camel@HansenPartnership.com>
+ <fb35a1f7-7633-a678-3f0f-17cf83032d2b@linux.microsoft.com>
+ <1596639689.3457.17.camel@HansenPartnership.com>
+ <alpine.LRH.2.21.2008050934060.28225@namei.org>
+ <b08ae82102f35936427bf138085484f75532cff1.camel@linux.ibm.com>
+ <329E8DBA-049E-4959-AFD4-9D118DEB176E@gmail.com>
+ <alpine.LRH.2.21.2008120643370.10591@namei.org>
+ <70603A4E-A548-4ECB-97D4-D3102CE77701@gmail.com>
+From:   Deven Bowers <deven.desai@linux.microsoft.com>
+Message-ID: <5edd58e3-7f12-10af-ef1c-4c1b32cf99e4@linux.microsoft.com>
+Date:   Wed, 12 Aug 2020 10:07:04 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <70603A4E-A548-4ECB-97D4-D3102CE77701@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 12 Aug 2020 22:32:54 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Gross <agross@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-kernel-owner@vger.kernel.org,
-        Kevin Hilman <khilman@kernel.org>
-Subject: Re: [PATCH 1/2] PM / Domains: Add GENPD_FLAG_SUSPEND_ON flag
-In-Reply-To: <CAPDyKFqNMEtHwcJFxYQP5H1Yjrsr1T3UUZoXes69EthSjAYs2A@mail.gmail.com>
-References: <20200811190252.10559-1-sibis@codeaurora.org>
- <CAPDyKFqNMEtHwcJFxYQP5H1Yjrsr1T3UUZoXes69EthSjAYs2A@mail.gmail.com>
-Message-ID: <1ba3e4d703dd0a52547d63fa014451eb@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Uffe,
-Thanks for taking time to review the
-series!
 
-On 2020-08-12 15:15, Ulf Hansson wrote:
-> On Tue, 11 Aug 2020 at 21:03, Sibi Sankar <sibis@codeaurora.org> wrote:
->> 
->> This is for power domains which needs to stay powered on for suspend
->> but can be powered on/off as part of runtime PM. This flag is aimed at
->> power domains coupled to remote processors which enter suspend states
->> independent to that of the application processor. Such power domains
->> are turned off only on remote processor crash/shutdown.
-> 
-> As Kevin also requested, please elaborate more on the use case.
-> 
-> Why exactly must the PM domain stay powered on during system suspend?
-> Is there a wakeup configured that needs to be managed - or is there a
-> co-processor/FW behaviour that needs to be obeyed to?
 
-Yes this is a co-processor behavior that
-needs to be obeyed. Specifically application
-processor notifies the Always on Subsystem
-(AOSS) that a particular co-processor is up
-using the power domains exposed by AOSS QMP
-driver. AOSS uses this information to wait
-for the co-processors to suspend before
-starting its sleep sequence. The application
-processor powers off these power domains only
-if the co-processor has crashed or powered
-off.
+On 8/12/2020 7:18 AM, Chuck Lever wrote:
+> 
+> 
+>> On Aug 11, 2020, at 5:03 PM, James Morris <jmorris@namei.org> wrote:
+>>
+>> On Sat, 8 Aug 2020, Chuck Lever wrote:
+>>
+>>> My interest is in code integrity enforcement for executables stored
+>>> in NFS files.
+>>>
+>>> My struggle with IPE is that due to its dependence on dm-verity, it
+>>> does not seem to able to protect content that is stored separately
+>>> from its execution environment and accessed via a file access
+>>> protocol (FUSE, SMB, NFS, etc).
+>>
+>> It's not dependent on DM-Verity, that's just one possible integrity
+>> verification mechanism, and one of two supported in this initial
+>> version. The other is 'boot_verified' for a verified or otherwise trusted
+>> rootfs. Future versions will support FS-Verity, at least.
+>>
+>> IPE was designed to be extensible in this way, with a strong separation of
+>> mechanism and policy.
+> 
+> I got that, but it looked to me like the whole system relied on having
+> access to the block device under the filesystem. That's not possible
+> for a remote filesystem like Ceph or NFS.
+
+Block device structure no, (though that's what the currently used, to be
+fair). It really has a hard dependency on the file structure,
+specifically the ability to determine whether that file structure can be 
+used to navigate back to the integrity claim provided by the mechanism.
+
+In the current world of IPE, the integrity claim is the root-hash or 
+root-hash-signature on the block device, provided by dm-verity's 
+setsecurity hooks (also introduced in this series).
 
 > 
-> Kind regards
-> Uffe
+> I'm happy to take a closer look if someone can point me the right way.
 > 
->> 
->> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> ---
->>  drivers/base/power/domain.c | 3 ++-
->>  include/linux/pm_domain.h   | 5 +++++
->>  2 files changed, 7 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
->> index 2cb5e04cf86cd..ba78ac4a450d4 100644
->> --- a/drivers/base/power/domain.c
->> +++ b/drivers/base/power/domain.c
->> @@ -129,6 +129,7 @@ static const struct genpd_lock_ops genpd_spin_ops 
->> = {
->>  #define genpd_is_active_wakeup(genpd)  (genpd->flags & 
->> GENPD_FLAG_ACTIVE_WAKEUP)
->>  #define genpd_is_cpu_domain(genpd)     (genpd->flags & 
->> GENPD_FLAG_CPU_DOMAIN)
->>  #define genpd_is_rpm_always_on(genpd)  (genpd->flags & 
->> GENPD_FLAG_RPM_ALWAYS_ON)
->> +#define genpd_is_suspend_on(genpd)     (genpd->flags & 
->> GENPD_FLAG_SUSPEND_ON)
->> 
->>  static inline bool irq_safe_dev_in_no_sleep_domain(struct device 
->> *dev,
->>                 const struct generic_pm_domain *genpd)
->> @@ -949,7 +950,7 @@ static void genpd_sync_power_off(struct 
->> generic_pm_domain *genpd, bool use_lock,
->>  {
->>         struct gpd_link *link;
->> 
->> -       if (!genpd_status_on(genpd) || genpd_is_always_on(genpd))
->> +       if (!genpd_status_on(genpd) || genpd_is_always_on(genpd) || 
->> genpd_is_suspend_on(genpd))
->>                 return;
->> 
->>         if (genpd->suspended_count != genpd->device_count
->> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
->> index ee11502a575b0..3002a2d68936a 100644
->> --- a/include/linux/pm_domain.h
->> +++ b/include/linux/pm_domain.h
->> @@ -55,6 +55,10 @@
->>   *
->>   * GENPD_FLAG_RPM_ALWAYS_ON:   Instructs genpd to always keep the PM 
->> domain
->>   *                             powered on except for system suspend.
->> + *
->> + * GENPD_FLAG_SUSPEND_ON:      Instructs genpd to keep the PM domain 
->> powered
->> + *                             on during suspend and runtime PM 
->> controlled
->> + *                             otherwise.
->>   */
->>  #define GENPD_FLAG_PM_CLK       (1U << 0)
->>  #define GENPD_FLAG_IRQ_SAFE     (1U << 1)
->> @@ -62,6 +66,7 @@
->>  #define GENPD_FLAG_ACTIVE_WAKEUP (1U << 3)
->>  #define GENPD_FLAG_CPU_DOMAIN   (1U << 4)
->>  #define GENPD_FLAG_RPM_ALWAYS_ON (1U << 5)
->> +#define GENPD_FLAG_SUSPEND_ON   (1U << 6)
->> 
->>  enum gpd_status {
->>         GPD_STATE_ACTIVE = 0,   /* PM domain is active */
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Sure, if you look at the 2nd patch, you want to look at the file 
+"security/ipe/ipe-property.h", it defines what methods are required to
+be implemented by a mechanism to work with IPE. It passes the engine
+context which is defined as:
+
+  struct ipe_engine_ctx {
+  	enum ipe_op op;
+  	enum ipe_hook hook;
+  	const struct file *file;
+  	const char *audit_pathname;
+	const struct ipe_bdev_blob *sec_bdev;
+  };
+
+Now, if the security blob existed for the block_device, it would be
+in sec_bdev, but that may be NULL, as well to be fair.
+
+If you want a more worked example of how integration works, patches 8
+and 10 introduce the dm-verity properties mentioned in this patch.
