@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B266D242D44
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 18:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8DA242D46
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 18:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbgHLQa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 12:30:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49346 "EHLO mail.kernel.org"
+        id S1726971AbgHLQaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 12:30:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726809AbgHLQaZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 12:30:25 -0400
+        id S1726962AbgHLQa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 12:30:28 -0400
 Received: from localhost.localdomain (unknown [194.230.155.117])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C3C920829;
-        Wed, 12 Aug 2020 16:30:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50ABC20771;
+        Wed, 12 Aug 2020 16:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597249824;
-        bh=eX15NLAnHkr2JM14R4rf4yZMswB6aHIybQEwZQAk2ZA=;
+        s=default; t=1597249827;
+        bh=MQR05X2smn64mi3esQ9qgy+sb0U5n0XiH+PjMJuVSKg=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=fl7YEQ/YQSEEmnyYibmoqbo6vFzWQwTstwx/FHZmPW/iIDiJXmeoSHgtID1w62JTF
-         cGqjWvU7KlqhOGBks7inBqAXRgf33tYo7BSrSJh7mq+J5mSjL00tCr3kRYZeyT0Of7
-         PEW/GwP598iIhFp+ou3BbEYYpmuNOmDnRw6KcUJA=
+        b=TecpCjzSsK1L1wUlUM8irEC4MvbLmUIc0ew/sEDkey7UrPqBnx5+JC0/G+IN8niDz
+         nAr3ivNfgoepmLesLHhU4gqxdBANPtw2XEhFQOFkDD4GknHOakp2qzXZQ9YVK4R2yL
+         bMXmQFnjZg1qY9XjoMZhfSuZxC5vQbvVqRphet4M=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
         Chanwoo Choi <cw00.choi@samsung.com>,
@@ -30,9 +30,9 @@ To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Vijai Kumar K <vijaikumar.kanagarajan@gmail.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 10/11] extcon: ptn5150: Reduce the amount of logs on deferred probe
-Date:   Wed, 12 Aug 2020 18:29:57 +0200
-Message-Id: <20200812162958.6180-10-krzk@kernel.org>
+Subject: [PATCH 11/11] MAINTAINERS: Add entry for NXP PTN5150A CC driver
+Date:   Wed, 12 Aug 2020 18:29:58 +0200
+Message-Id: <20200812162958.6180-11-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200812162958.6180-1-krzk@kernel.org>
 References: <20200812162958.6180-1-krzk@kernel.org>
@@ -41,51 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no point to print deferred probe (and its failures to get
-resources) as an error.  In case of multiple probe tries this would
-pollute the dmesg.
+Add Krzysztof Kozlowski as maintainer of NXP PTN5150A CC/extcon driver
+to provide review, feedback and testing.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/extcon/extcon-ptn5150.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/extcon/extcon-ptn5150.c b/drivers/extcon/extcon-ptn5150.c
-index 9daf45118ffd..fd9723f86d55 100644
---- a/drivers/extcon/extcon-ptn5150.c
-+++ b/drivers/extcon/extcon-ptn5150.c
-@@ -244,7 +244,7 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c,
- 			dev_info(dev, "No VBUS GPIO, ignoring VBUS control\n");
- 			info->vbus_gpiod = NULL;
- 		} else {
--			dev_err(dev, "failed to get VBUS GPIO\n");
-+			dev_err_probe(dev, ret, "failed to get VBUS GPIO\n");
- 			return ret;
- 		}
- 	}
-@@ -256,8 +256,8 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c,
- 	info->regmap = devm_regmap_init_i2c(i2c, &ptn5150_regmap_config);
- 	if (IS_ERR(info->regmap)) {
- 		ret = PTR_ERR(info->regmap);
--		dev_err(info->dev, "failed to allocate register map: %d\n",
--				   ret);
-+		dev_err_probe(info->dev, ret, "failed to allocate register map: %d\n",
-+			      ret);
- 		return ret;
- 	}
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f2eb17cd3953..48cb5162a94a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12431,6 +12431,13 @@ F:	drivers/iio/gyro/fxas21002c_core.c
+ F:	drivers/iio/gyro/fxas21002c_i2c.c
+ F:	drivers/iio/gyro/fxas21002c_spi.c
  
-@@ -266,8 +266,9 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c,
- 	} else {
- 		info->int_gpiod = devm_gpiod_get(&i2c->dev, "int", GPIOD_IN);
- 		if (IS_ERR(info->int_gpiod)) {
--			dev_err(dev, "failed to get INT GPIO\n");
--			return PTR_ERR(info->int_gpiod);
-+			ret = PTR_ERR(info->int_gpiod);
-+			dev_err_probe(dev, ret, "failed to get INT GPIO\n");
-+			return ret;
- 		}
- 
- 		info->irq = gpiod_to_irq(info->int_gpiod);
++NXP PTN5150A CC LOGIC AND EXTCON DRIVER
++M:	Krzysztof Kozlowski <krzk@kernel.org>
++L:	linux-kernel@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/extcon/extcon-ptn5150.yaml
++F:	drivers/extcon/extcon-ptn5150.c
++
+ NXP SGTL5000 DRIVER
+ M:	Fabio Estevam <festevam@gmail.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
 -- 
 2.17.1
 
