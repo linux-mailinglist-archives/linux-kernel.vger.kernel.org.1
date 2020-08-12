@@ -2,103 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD01242A05
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C337242A09
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 15:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgHLNFM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 12 Aug 2020 09:05:12 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:36556 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727872AbgHLNFL (ORCPT
+        id S1728092AbgHLNGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 09:06:00 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51898 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728028AbgHLNF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 09:05:11 -0400
-Received: by mail-ej1-f65.google.com with SMTP id kq25so2173596ejb.3;
-        Wed, 12 Aug 2020 06:05:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tdqt1zitQfmhTeO/C0ROMNC0FZsvO10tWjPhl3Xzk1s=;
-        b=ilrIAqPox+M1CfYRGxRCVut4rD6CUJM/Ev6uyjQL4Ih3in+8TSAHeCD91ut8VKjwsA
-         mp/aylAadG3L8peAGdyOpof3gs1VEpyekXqPbMpGxFA07NIgY5UgrScQLUyL2WscXZnS
-         iNClLQhiuoQT8bqPtWVNTEgAOZLx5S4Ufye3Z6UxqvefKbVwaN9NGP7u7QesdVRTy9Nt
-         e2RwJtd2TqMXda/IwzwPHwOR6qWdyk4wm5a3CfxkFytN/nfSoJvNXpZQrL4ihFYuUBC/
-         clHmSbjzgxP3+vEZXLOaKsVipGmguMS8QL7v4LDdWt+dtdJxDcpc177yZ/JyrbhhPXn3
-         JiGw==
-X-Gm-Message-State: AOAM533HnIXmnn1Fc26rAHb36XKwHS3CY1rg22YyoTEk0Dtnye4AZBmg
-        /cHFajN09Dc6ImttLh63wvpkICzsU/8BfZk/D0s=
-X-Google-Smtp-Source: ABdhPJyVm7zBQi5YIn6oTrm8D8AmCwXX9u08JvFWM1hGCm/lD3fbGNAPX2Ks72N27VzcBzyeQW2v7/ByspctqztSPvs=
-X-Received: by 2002:a17:906:f914:: with SMTP id lc20mr30748642ejb.138.1597237509350;
- Wed, 12 Aug 2020 06:05:09 -0700 (PDT)
+        Wed, 12 Aug 2020 09:05:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597237525;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+ksdIEzAumaIrjq79KXqgfvDcQg8WBIlI9c7pSMGN7s=;
+        b=cWor6SLfOdhniR9cPcxrd61s6V1szTejkXcAqbM648cxXHlgXR19lg6qzONvqxvGUIwPL/
+        VKpoA2KImVnyFatHS8s8XDtGcxGvP3Q00VGNYjb17Xhae/hM0gBwz6ioFVkHLpAD+WleEU
+        Q794966KhF6cWD/HIrDv50bFVGZjILM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-382-hr9UxgMkPhyi_FTkxI23Bg-1; Wed, 12 Aug 2020 09:05:23 -0400
+X-MC-Unique: hr9UxgMkPhyi_FTkxI23Bg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6FA1610199A7;
+        Wed, 12 Aug 2020 13:05:21 +0000 (UTC)
+Received: from krava.homenet.telecomitalia.it (unknown [10.40.192.161])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 2BDF919D7C;
+        Wed, 12 Aug 2020 13:05:18 +0000 (UTC)
+Date:   Wed, 12 Aug 2020 15:05:17 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: Re: [RFC] libperf: Add support for user space counter access
+Message-ID: <20200812130517.GB4872@krava.homenet.telecomitalia.it>
+References: <20200807230517.57114-1-robh@kernel.org>
+ <20200808102208.GA619980@krava>
+ <CAL_Jsq+gfqyqCx3Yuc6TsbXjYSLfJQhhPUnwRVjpJgwL24v1Qg@mail.gmail.com>
+ <20200811105027.GD699846@krava>
+ <CAL_Jsq+tsTrYCddSSb5d2vC7TTKUZTgjBQr4FHXBKCePo-beZQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200812075235.366864-1-noltari@gmail.com> <20200812075235.366864-3-noltari@gmail.com>
-In-Reply-To: <20200812075235.366864-3-noltari@gmail.com>
-From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
-Date:   Wed, 12 Aug 2020 15:04:57 +0200
-Message-ID: <CAAdtpL5wVqbhqDCzrJCSAsOgY7fdVAoHhk5jekF3d3N+67jY-Q@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] MIPS: BCM63xx: remove EHCI from BCM6348 boards
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_Jsq+tsTrYCddSSb5d2vC7TTKUZTgjBQr4FHXBKCePo-beZQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 9:53 AM Álvaro Fernández Rojas
-<noltari@gmail.com> wrote:
->
-> There's no EHCI controller on BCM6348.
->
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+On Tue, Aug 11, 2020 at 10:49:30AM -0600, Rob Herring wrote:
+> On Tue, Aug 11, 2020 at 4:50 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Mon, Aug 10, 2020 at 12:11:23PM -0600, Rob Herring wrote:
+> > > On Sat, Aug 8, 2020 at 4:22 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > On Fri, Aug 07, 2020 at 05:05:17PM -0600, Rob Herring wrote:
+> > > > > x86 and arm64 can both support direct access of event counters in
+> > > > > userspace. The access sequence is less than trivial and currently exists
+> > > > > in perf test code (tools/perf/arch/x86/tests/rdpmc.c) with copies in
+> > > > > projects such as PAPI and libpfm4.
+> > > > >
+> > > > > Patches to add arm64 userspace support are pending[1].
+> > > > >
+> > > > > For this RFC, looking for a yes, seems like a good idea, or no, go away we
+> > > > > don't want this in libperf.
+> > > >
+> > > > hi,
+> > > > looks great!
+> > > >
+> > > > I wanted to add this for very long time.. so yes, we want this ;-)
+> > >
+> > > Thanks for the quick feedback. Would this be better implemented as a
+> > > fast path for perf_evsel__read()? If so, how to get the mmap data
+> >
+> > if it works for all events, which I'm not sure of
+> >
+> > > which is associated with a evlist rather than a evsel?
+> >
+> > not sure what you mean, you can mmap evsel, not evlist
+> 
+> While yes the mmap is created from an evsel fd, they are ultimately
+> associated with the evlist struct and are per thread or cpu. If
+> there's more than 1 evsel, then the additional ones are set to the 1st
+> mmap with PERF_EVENT_IOC_SET_OUTPUT. Which I now realize means this
+> RFC only works for the first evsel. So I guess the API needs to work
+> something like this:
+> 
+> threads = perf_thread_map__new_dummy();
+> perf_thread_map__set_pid(threads, 0, 0);
+> 
+> evsel = perf_evsel__new(&attr);
+> perf_evsel__open(evsel, NULL, threads);
+> 
 
-v3 already reviewed, again:
-Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
+hum, I wonder we should remove maps from perf_evsel__open
+args and factor out some perf_evsel__set_map function..
 
-> ---
->  v4: no changes.
->  v3: no changes.
->  v2: no changes.
->
->  arch/mips/bcm63xx/boards/board_bcm963xx.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> index 744aa16bab12..45f1bc437245 100644
-> --- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> +++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> @@ -285,7 +285,6 @@ static struct board_info __initdata board_96348gw_10 = {
->
->         .has_ohci0                      = 1,
->         .has_pccard                     = 1,
-> -       .has_ehci0                      = 1,
->
->         .leds = {
->                 {
-> @@ -338,7 +337,6 @@ static struct board_info __initdata board_96348gw_11 = {
->
->         .has_ohci0 = 1,
->         .has_pccard = 1,
-> -       .has_ehci0 = 1,
->
->         .leds = {
->                 {
-> @@ -441,7 +439,6 @@ static struct board_info __initdata board_FAST2404 = {
->
->         .has_ohci0                      = 1,
->         .has_pccard                     = 1,
-> -       .has_ehci0                      = 1,
->  };
->
->  static struct board_info __initdata board_rta1025w_16 = {
-> --
-> 2.28.0
->
+> perf_evsel__mmap(evsel);    <--- *new*
+
+.. because you'll need those maps in here, right?
+
+> 
+> perf_evsel__read(evsel, 0, 0, &counts);  // If we have an mmap, then
+> try a direct read
+> 
+> 
+> Perhaps some refactoring of the mmap code in evlist.c will be needed,
+> but the usage seems pretty orthogonal. I'd propose that mmapping via
+> perf_evlist__mmap() behavior remain unchanged and direct access is not
+> supported in that case.
+
+seems ok to me, perf_evlist__mmap and perf_evsel__mmap would
+mean to mutually exclusive usages
+
+thanks,
+jirka
+
