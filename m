@@ -2,209 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A55D242810
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 12:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 032BB242815
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 12:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgHLKLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 06:11:18 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:51574 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726453AbgHLKLP (ORCPT
+        id S1727882AbgHLKMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 06:12:07 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:36563 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726453AbgHLKMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 06:11:15 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07CABBlo081432;
-        Wed, 12 Aug 2020 05:11:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1597227071;
-        bh=RYPEYFQZ1QFXT5zzo/sh99PaE9LQd6lVR0rqcndrkzo=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=UFfEB4pOlJDSwwYkIUgKFs10D0b4xWDTu+q9HsqeLqfAubRUdkhhNRbCfU3k1LEn1
-         PfdYZcbVSUpKaRsHBZShqxjux3yZUsWpcmEwBLN2oL6qFAAoRQ70yjsqKXe9F3Je9v
-         IMRjCJ3MkBFt+QtOp2QDb0uWrJZJ8Yj+vsHDIPrI=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07CABBsP021642
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 12 Aug 2020 05:11:11 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 12
- Aug 2020 05:11:11 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 12 Aug 2020 05:11:11 -0500
-Received: from [10.250.233.85] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07CAB6pr119158;
-        Wed, 12 Aug 2020 05:11:07 -0500
-Subject: Re: [PATCH v1 7/7] dt-bindings: phy: cadence-torrent: Update Torrent
- PHY bindings for generic use
-To:     Swapnil Jakhade <sjakhade@cadence.com>, <vkoul@kernel.org>,
-        <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-CC:     <mparab@cadence.com>, <yamonkar@cadence.com>,
-        <tomi.valkeinen@ti.com>, <jsarha@ti.com>, <nsekhar@ti.com>
-References: <1596795165-13341-1-git-send-email-sjakhade@cadence.com>
- <1596795165-13341-8-git-send-email-sjakhade@cadence.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <d7cfd890-2540-7d9e-72a9-8f2011b7b0ff@ti.com>
-Date:   Wed, 12 Aug 2020 15:41:05 +0530
+        Wed, 12 Aug 2020 06:12:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597227125; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=+5/WixljfK96eAIq+X+jLgzzz8K50lRlxjTIUy5uZoY=; b=WSNnDNT7RGYHz3nvFL6W2PVEmfYLo/IXC3rnZ08iPXFms1c2M53eyf2WVfS2BqpamezMFWf4
+ VtIkcYxF3oQA9i6chbXMt1SYdEdfvFhbRqug6BwBUMcctVhIx8wDHGkupxJy6wwK0O/PRS2l
+ o5vx7ObosnahwabDaKnYAHVu7mA=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n14.prod.us-west-2.postgun.com with SMTP id
+ 5f33c0584c787f237b8cdeaa (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 12 Aug 2020 10:11:36
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3F9A9C43395; Wed, 12 Aug 2020 10:11:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.103] (unknown [183.83.143.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DFCA4C433C6;
+        Wed, 12 Aug 2020 10:11:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DFCA4C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=charante@codeaurora.org
+Subject: Re: [PATCH V2] mm, page_alloc: fix core hung in free_pcppages_bulk()
+To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        mhocko@suse.com, vbabka@suse.cz, rientjes@google.com,
+        linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, vinmenon@codeaurora.org
+References: <1597150703-19003-1-git-send-email-charante@codeaurora.org>
+ <fdf574c8-82be-6bde-b73b-c97055f530a8@redhat.com>
+ <848b7d60-2995-d9ae-0055-f3864dece11f@codeaurora.org>
+ <db7ac714-f508-85a4-1af8-9733e680dc69@redhat.com>
+From:   Charan Teja Kalla <charante@codeaurora.org>
+Message-ID: <2a2ec65a-ad93-7adc-76a0-246b9b328155@codeaurora.org>
+Date:   Wed, 12 Aug 2020 15:41:30 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <1596795165-13341-8-git-send-email-sjakhade@cadence.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <db7ac714-f508-85a4-1af8-9733e680dc69@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Swapnil,
 
-On 8/7/2020 3:42 PM, Swapnil Jakhade wrote:
-> Torrent PHY can be used in different multi-link multi-protocol
-> configurations including protocols other than DisplayPort also,
-> such as PCIe, USB, SGMII, QSGMII etc. Update the bindings to have
-> support for these configurations.
+
+On 8/12/2020 3:30 PM, David Hildenbrand wrote:
+> On 12.08.20 11:46, Charan Teja Kalla wrote:
+>>
+>> Thanks David for the inputs.
+>>
+>> On 8/12/2020 2:35 AM, David Hildenbrand wrote:
+>>> On 11.08.20 14:58, Charan Teja Reddy wrote:
+>>>> The following race is observed with the repeated online, offline and a
+>>>> delay between two successive online of memory blocks of movable zone.
+>>>>
+>>>> P1						P2
+>>>>
+>>>> Online the first memory block in
+>>>> the movable zone. The pcp struct
+>>>> values are initialized to default
+>>>> values,i.e., pcp->high = 0 &
+>>>> pcp->batch = 1.
+>>>>
+>>>> 					Allocate the pages from the
+>>>> 					movable zone.
+>>>>
+>>>> Try to Online the second memory
+>>>> block in the movable zone thus it
+>>>> entered the online_pages() but yet
+>>>> to call zone_pcp_update().
+>>>> 					This process is entered into
+>>>> 					the exit path thus it tries
+>>>> 					to release the order-0 pages
+>>>> 					to pcp lists through
+>>>> 					free_unref_page_commit().
+>>>> 					As pcp->high = 0, pcp->count = 1
+>>>> 					proceed to call the function
+>>>> 					free_pcppages_bulk().
+>>>> Update the pcp values thus the
+>>>> new pcp values are like, say,
+>>>> pcp->high = 378, pcp->batch = 63.
+>>>> 					Read the pcp's batch value using
+>>>> 					READ_ONCE() and pass the same to
+>>>> 					free_pcppages_bulk(), pcp values
+>>>> 					passed here are, batch = 63,
+>>>> 					count = 1.
+>>>>
+>>>> 					Since num of pages in the pcp
+>>>> 					lists are less than ->batch,
+>>>> 					then it will stuck in
+>>>> 					while(list_empty(list)) loop
+>>>> 					with interrupts disabled thus
+>>>> 					a core hung.
+>>>>
+>>>> Avoid this by ensuring free_pcppages_bulk() is called with proper count
+>>>> of pcp list pages.
+>>>>
+>>>> The mentioned race is some what easily reproducible without [1] because
+>>>> pcp's are not updated for the first memory block online and thus there
+>>>> is a enough race window for P2 between alloc+free and pcp struct values
+>>>> update through onlining of second memory block.
+>>>>
+>>>> With [1], the race is still exists but it is very much narrow as we
+>>>> update the pcp struct values for the first memory block online itself.
+>>>>
+>>>> [1]: https://patchwork.kernel.org/patch/11696389/
+>>>>
+>>>
+>>> IIUC, this is not limited to the movable zone, it could also happen in
+>>> corner cases with the normal zone (e.g., hotplug to a node that only has
+>>> DMA memory, or no other memory yet).
+>>
+>> Yes, this is my understanding too. I explained the above race in terms
+>> of just movable zone for which it is observed. We can add the below line
+>> in the end in patch commit message:
+>> "This is not limited to the movable zone, it could also happen in cases
+>> with the normal zone (e.g., hotplug to a node that only has DMA memory,
+>> or no other memory yet)."
 > 
-> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
-> ---
->  .../bindings/phy/phy-cadence-torrent.yaml     | 76 ++++++++++++++-----
->  1 file changed, 58 insertions(+), 18 deletions(-)
+> Yeah, that makes sense!
 > 
-> diff --git a/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml b/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
-> index a7ee19d27c19..b2275712363d 100644
-> --- a/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
-> +++ b/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
-> @@ -4,11 +4,13 @@
->  $id: "http://devicetree.org/schemas/phy/phy-cadence-torrent.yaml#"
->  $schema: "http://devicetree.org/meta-schemas/core.yaml#"
->  
-> -title: Cadence Torrent SD0801 PHY binding for DisplayPort
-> +title: Cadence Torrent SD0801 PHY binding
->  
->  description:
->    This binding describes the Cadence SD0801 PHY (also known as Torrent PHY)
-> -  hardware included with the Cadence MHDP DisplayPort controller.
-> +  hardware included with the Cadence MHDP DisplayPort controller. Torrent
-> +  PHY also supports multilink multiprotocol combinations including protocols
-> +  such as PCIe, USB, SGMII, QSGMII etc.
->  
->  maintainers:
->    - Swapnil Jakhade <sjakhade@cadence.com>
-> @@ -49,13 +51,14 @@ properties:
->        - const: dptx_phy
->  
->    resets:
-> -    maxItems: 1
-> -    description:
-> -      Torrent PHY reset.
-> -      See Documentation/devicetree/bindings/reset/reset.txt
-> +    minItems: 1
-> +    maxItems: 2
-> +    items:
-> +      - description: Torrent PHY reset.
-> +      - description: Torrent APB reset. This is optional.
->  
->  patternProperties:
-> -  '^phy@[0-7]+$':
-> +  '^link@[0-7]+$':
-
-Wouldn't this break older device tree binding? Or are there no upstream DT
-nodes with phy sub-node?
-
-Thanks
-Kishon
-
->      type: object
->      description:
->        Each group of PHY lanes with a single master lane should be represented as a sub-node.
-> @@ -78,13 +81,13 @@ patternProperties:
->            Specifies the type of PHY for which the group of PHY lanes is used.
->            Refer include/dt-bindings/phy/phy.h. Constants from the header should be used.
->          $ref: /schemas/types.yaml#/definitions/uint32
-> -        enum: [1, 2, 3, 4, 5, 6]
-> +        enum: [1, 2, 3, 4, 5, 6, 7, 8, 9]
->  
->        cdns,num-lanes:
->          description:
-> -          Number of DisplayPort lanes.
-> +          Number of lanes.
->          $ref: /schemas/types.yaml#/definitions/uint32
-> -        enum: [1, 2, 4]
-> +        enum: [1, 2, 3, 4]
->          default: 4
->  
->        cdns,ssc-mode:
-> @@ -108,6 +111,7 @@ patternProperties:
->        - resets
->        - "#phy-cells"
->        - cdns,phy-type
-> +      - cdns,num-lanes
->  
->      additionalProperties: false
->  
-> @@ -141,15 +145,51 @@ examples:
->              clock-names = "refclk";
->              #address-cells = <1>;
->              #size-cells = <0>;
-> -            phy@0 {
-> -                      reg = <0>;
-> -                      resets = <&phyrst 1>, <&phyrst 2>,
-> -                               <&phyrst 3>, <&phyrst 4>;
-> -                      #phy-cells = <0>;
-> -                      cdns,phy-type = <PHY_TYPE_DP>;
-> -                      cdns,num-lanes = <4>;
-> -                      cdns,max-bit-rate = <8100>;
-> +            link@0 {
-> +                reg = <0>;
-> +                resets = <&phyrst 1>, <&phyrst 2>,
-> +                         <&phyrst 3>, <&phyrst 4>;
-> +                #phy-cells = <0>;
-> +                cdns,phy-type = <PHY_TYPE_DP>;
-> +                cdns,num-lanes = <4>;
-> +                cdns,max-bit-rate = <8100>;
-> +            };
-> +        };
-> +    };
-> +  - |
-> +    #include <dt-bindings/phy/phy.h>
-> +    #include <dt-bindings/phy/phy-cadence-torrent.h>
-> +
-> +    bus {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        torrent-phy@f0fb500000 {
-> +            compatible = "cdns,torrent-phy";
-> +            reg = <0xf0 0xfb500000 0x0 0x00100000>;
-> +            reg-names = "torrent_phy";
-> +            resets = <&phyrst 0>, <&phyrst 1>;
-> +            clocks = <&ref_clk>;
-> +            clock-names = "refclk";
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            link@0 {
-> +                reg = <0>;
-> +                resets = <&phyrst 2>, <&phyrst 3>;
-> +                #phy-cells = <0>;
-> +                cdns,phy-type = <PHY_TYPE_PCIE>;
-> +                cdns,num-lanes = <2>;
-> +                cdns,ssc-mode = <TORRENT_SERDES_NO_SSC>;
->              };
-> +
-> +            link@2 {
-> +                reg = <2>;
-> +                resets = <&phyrst 4>;
-> +                #phy-cells = <0>;
-> +                cdns,phy-type = <PHY_TYPE_SGMII>;
-> +                cdns,num-lanes = <1>;
-> +                cdns,ssc-mode = <TORRENT_SERDES_NO_SSC>;
-> +           };
->          };
->      };
->  ...
+>>
+>> Just curious, there exists such systems where just a dma zone present
+>> and we hot add the normal zone? I am not aware such thing in the
+>> embedded world.
 > 
+> You can easily create such setups using QEMU.
+> 
+> IIRC, just specify a QEMU guest with 2G initial memory and a single NUMA
+> node, or 4G initial memory and two NUMA nodes. Then hotplug memory.
+> 
+> (IIRC kata containers always start a VM with 2G and then hotplug memory)
+>
+I see. Thanks for letting me know this.
+
+>>>
+>>>> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+>>>> ---
+>>>>
+>>>> v1: https://patchwork.kernel.org/patch/11707637/
+>>>>
+>>>>  mm/page_alloc.c | 5 +++++
+>>>>  1 file changed, 5 insertions(+)
+>>>>
+>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>>> index e4896e6..839039f 100644
+>>>> --- a/mm/page_alloc.c
+>>>> +++ b/mm/page_alloc.c
+>>>> @@ -1304,6 +1304,11 @@ static void free_pcppages_bulk(struct zone *zone, int count,
+>>>>  	struct page *page, *tmp;
+>>>>  	LIST_HEAD(head);
+>>>>  
+>>>> +	/*
+>>>> +	 * Ensure proper count is passed which otherwise would stuck in the
+>>>> +	 * below while (list_empty(list)) loop.
+>>>> +	 */
+>>>> +	count = min(pcp->count, count);
+>>>>  	while (count) {
+>>>>  		struct list_head *list;
+>>>>  
+>>>>
+>>>
+>>> Fixes: and Cc: stable... tags?
+>>
+>> Fixes: 5f8dcc21211a ("page-allocator: split per-cpu list into
+>> one-list-per-migrate-type")
+>> Cc: <stable@vger.kernel.org> [2.6+]
+> 
+> Did we have memory hotplug support then already?
+
+Yes, it exist.
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/mm/memory_hotplug.c?h=v2.6.39
+
+> 
+>>
+>> I am not sure If I should have to raise V3 including these?
+> 
+> 
+> Maybe Andrew can fixup when applying.
+
+Okay, let Andrew decide on this. Meanwhile If you find that this patch
+looks correct, ACK from you helps here.
+
+> 
+> 
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+Forum, a Linux Foundation Collaborative Project
