@@ -2,93 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C0C242E18
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 19:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B758E242E1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Aug 2020 19:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726611AbgHLRjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 13:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
+        id S1726658AbgHLRj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 13:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgHLRj2 (ORCPT
+        with ESMTP id S1726558AbgHLRjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 13:39:28 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04CFAC061383;
-        Wed, 12 Aug 2020 10:39:26 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k5uiV-00ECnX-Nd; Wed, 12 Aug 2020 17:39:12 +0000
-Date:   Wed, 12 Aug 2020 18:39:11 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Christian Brauner <christian@brauner.io>,
-        Lennart Poettering <lennart@poettering.net>,
-        Linux API <linux-api@vger.kernel.org>,
-        Ian Kent <raven@themaw.net>,
-        LSM <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: file metadata via fs API (was: [GIT PULL] Filesystem Information)
-Message-ID: <20200812173911.GT1236603@ZenIV.linux.org.uk>
-References: <CAG48ez3Li+HjJ6-wJwN-A84WT2MFE131Dt+6YiU96s+7NO5wkQ@mail.gmail.com>
- <CAJfpeguh5VaDBdVkV3FJtRsMAvXHWUcBfEpQrYPEuX9wYzg9dA@mail.gmail.com>
- <CAHk-=whE42mFLi8CfNcdB6Jc40tXsG3sR+ThWAFihhBwfUbczA@mail.gmail.com>
- <CAJfpegtXtj2Q1wsR-3eUNA0S=_skzHF0CEmcK_Krd8dtKkWkGA@mail.gmail.com>
- <20200812143957.GQ1236603@ZenIV.linux.org.uk>
- <CAJfpegvFBdp3v9VcCp-wNDjZnQF3q6cufb-8PJieaGDz14sbBg@mail.gmail.com>
- <20200812150807.GR1236603@ZenIV.linux.org.uk>
- <CAJfpegsQF1aN4XJ_8j977rnQESxc=Kcn7Z2C+LnVDWXo4PKhTQ@mail.gmail.com>
- <20200812163347.GS1236603@ZenIV.linux.org.uk>
- <CAJfpegv8MTnO9YAiFUJPjr3ryeT82=KWHUpLFmgRNOcQfeS17w@mail.gmail.com>
+        Wed, 12 Aug 2020 13:39:54 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08B7C061383
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 10:39:53 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id a79so1370969pfa.8
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 10:39:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M+nw0tzUCelBAby2tkOpTqz2VXzgt4Q4iLKx4BxN7dk=;
+        b=aTw6NC1zqiue7pEcocQoxkus0jUNzxX+1+Pk27WWiD5wLyEtYoSJcRJPD3gC0lLKJZ
+         Ft8GDVVf/oaVtyQUSFlhGxK3/dHVH+0TR/D2UpQGsVmwZUJdMOcMIyHQtbOqM6dBwQdD
+         IRxQLQ9q0bmPqmSuWaW5FI2+6ZxsD1a3Reu42avCQPML9Y5BtyjCprJBjKr49zZDFD2r
+         EEJOFh8lsi+pyr8gjdMXD1jdeRoF063fEvmNTOLV8xBKAlGhYOWHxnDbdbGvujpuL9ka
+         mgLcZLyxbt7XU7T0X3ocNMCU7WCuiLOhzBSd2idGdOme4jGIrx03/xeUL4BLQuuTsPc1
+         bRSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M+nw0tzUCelBAby2tkOpTqz2VXzgt4Q4iLKx4BxN7dk=;
+        b=QZPz4oHsgsGGtkZ8n4Jc0uyDXBqJmeSNDz5LSfxd3YfmcWvSno+7gXgWi/L5/Rpetv
+         i/4WAtj6qem72FgTFlMZSw5nkVOumSwuq7hBmsApm4Ss77GxApKXQEH2wKG6tewAUrqa
+         uJvO3zO6VxDGugddSJPFSJsqrzBypMTdR8nq12O4dALOvYuNcNuhUaDfqwPJ+zIAK2Wz
+         zEd3IQ/hQF2WCebEi68h/qRmNKDZZcUlRnMybNWxR75qLC1t+gX8r2l5MZwAXPC+Cygy
+         82XOKo5XVlEVS4elL8b30Uub2GLc/BOjXshWDR45yb2t62kygTh1wD1eXAmYWZavynTo
+         dRrQ==
+X-Gm-Message-State: AOAM533jTKjNZKJcSkRmt9TrgwVjgtJo0DlZvxS4fCJYeVLNdpVSy6I1
+        yNtwrQTk+TWbY6Ao2M19BnRSkMEivcgFaOEBiyp3LQ==
+X-Google-Smtp-Source: ABdhPJw59+/d0Tp8l+mnAaeWltFhdcq83AFVNVn4foFtQb2tSca5FZLPrc/kTZpgroGmPzoBZQD0xOE5Bk/y+JtiSjE=
+X-Received: by 2002:a62:8303:: with SMTP id h3mr586947pfe.169.1597253992588;
+ Wed, 12 Aug 2020 10:39:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpegv8MTnO9YAiFUJPjr3ryeT82=KWHUpLFmgRNOcQfeS17w@mail.gmail.com>
+References: <CAKwvOd=ypa8xE-kaDa7XtzPsBH8=Xu_pZj2rnWaeawNs=3dDkw@mail.gmail.com>
+ <20200811173655.1162093-1-nivedita@alum.mit.edu> <CAKwvOdnjLfQ0fWsrFYDJ2O+qFAfEFnTEEnW-aHrPha8G3_WTrg@mail.gmail.com>
+ <20200811224436.GA1302731@rani.riverdale.lan> <CAKwvOdnvyVapAJBchivu8SxoQriKEu1bAimm8688EH=uq5YMqA@mail.gmail.com>
+ <20200811234340.GA1318440@rani.riverdale.lan> <CAKwvOdn5gCjcAVHZ3jHU+q=mD5rmFAHpEyHyLf7ixtdaQ3Z-PQ@mail.gmail.com>
+ <20200812004158.GA1447296@rani.riverdale.lan>
+In-Reply-To: <20200812004158.GA1447296@rani.riverdale.lan>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 12 Aug 2020 10:39:41 -0700
+Message-ID: <CAKwvOdnQu_6_NNtzFfxpjsxNzbj4JwENXntzMicOE6ZbUrBZqw@mail.gmail.com>
+Subject: Re: [PATCH] x86/boot/compressed: Disable relocation relaxation for
+ non-pie link
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Fangrui Song <maskray@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        e5ten.arch@gmail.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 07:16:37PM +0200, Miklos Szeredi wrote:
-> On Wed, Aug 12, 2020 at 6:33 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Tue, Aug 11, 2020 at 5:42 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> On Tue, Aug 11, 2020 at 04:51:23PM -0700, Nick Desaulniers wrote:
+> > On Tue, Aug 11, 2020 at 4:43 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> > >
+> > > On Tue, Aug 11, 2020 at 04:04:40PM -0700, Nick Desaulniers wrote:
+> > > > On Tue, Aug 11, 2020 at 3:44 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> > > > >
+> > > > > On Tue, Aug 11, 2020 at 10:58:40AM -0700, Nick Desaulniers wrote:
+> > > > > > > Cc: stable@vger.kernel.org # 4.19.x
+> > > > > >
+> > > > > > Thanks Arvind, good write up.  Just curious about this stable tag, how
+> > > > > > come you picked 4.19?  I can see boot failures in our CI for x86+LLD
+> > > > > > back to 4.9.  Can we amend that tag to use `# 4.9`? I'd be happy to
+> > > > > > help submit backports should they fail to apply cleanly.
+> > > > > > https://travis-ci.com/github/ClangBuiltLinux/continuous-integration/builds/179237488
+> > > > > >
+> > > > >
+> > > > > 4.19 renamed LDFLAGS to KBUILD_LDFLAGS. For 4.4, 4.9 and 4.14 the patch
+> > > > > needs to be modified, KBUILD_LDFLAGS -> LDFLAGS, so I figured we should
+> > > > > submit backports separately. For 4.19 onwards, it should apply without
+> > > > > changes I think.
+> > > >
+> > > > Cool, sounds good.  I'll keep an eye out for when stable goes to pick this up.
+> > > >
+> > > > tglx, Ingo, BP, can we pretty please get this in tip/urgent for
+> > > > inclusion into 5.9?
+> > > > --
+> > > > Thanks,
+> > > > ~Nick Desaulniers
+> > >
+> > > Another alternative is to just do this unconditionally instead of even
+> > > checking for the -pie flag. None of the GOTPCRELs are in the
+> > > decompressor, so they shouldn't be performance-sensitive at all.
+> > >
+> > > It still wouldn't apply cleanly to all the stable versions, but
+> > > backporting would be even simpler.
+> > >
+> > > What do you think?
+> > >
+> > > diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+> > > index 3962f592633d..10c2ba59d192 100644
+> > > --- a/arch/x86/boot/compressed/Makefile
+> > > +++ b/arch/x86/boot/compressed/Makefile
+> > > @@ -43,6 +43,7 @@ KBUILD_CFLAGS += -Wno-pointer-sign
+> > >  KBUILD_CFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+> > >  KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
+> > >  KBUILD_CFLAGS += -D__DISABLE_EXPORTS
+> > > +KBUILD_CFLAGS += $(call as-option,-Wa$(comma)-mrelax-relocations=no)
 > >
-> > On Wed, Aug 12, 2020 at 05:13:14PM +0200, Miklos Szeredi wrote:
-> 
-> > > Why does it have to have a struct mount?  It does not have to use
-> > > dentry/mount based path lookup.
+> > We'd still want it for KBUILD_AFLAGS, too, just to be safe. Maybe a
+>
+> KBUILD_CFLAGS gets included into KBUILD_AFLAGS, so this already does
+> that.
+
+Ah, right, just below it in the diff.
+
+>
+> > one line comment to the effect of `# remove me once we can link as
+> > -pie` would help us rip off this band-aid in the future?  It's more
+> > obvious that the added hunk can be reverted once -pie linkage is
+> > achieved with the current patch; either are fine by me.  Thanks!
 > >
-> > What the fuck?  So we suddenly get an additional class of objects
-> > serving as kinda-sorta analogues of dentries *AND* now struct file
-> > might refer to that instead of a dentry/mount pair - all on the VFS
-> > level?  And so do all the syscalls you want to allow for such "pathnames"?
-> 
-> The only syscall I'd want to allow is open, everything else would be
-> on the open files themselves.
-> 
-> file->f_path can refer to an anon mount/inode, the real object is
-> referred to by file->private_data.
-> 
-> The change to namei.c would be on the order of ~10 lines.  No other
-> parts of the VFS would be affected.
-
-If some of the things you open are directories (and you *have* said that
-directories will be among those just upthread, and used references to
-readdir() as argument in favour of your approach elsewhere in the thread),
-you will have to do something about fchdir().  And that's the least of
-the issues.
-
->   Maybe I'm optimistic; we'll
-> see...
+> > >
+> > >  KBUILD_AFLAGS  := $(KBUILD_CFLAGS) -D__ASSEMBLY__
+> > >  GCOV_PROFILE := n
+> >
+> >
+> >
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
 
 
-> Now off to something completely different.  Back on Tuesday.
 
-... after the window closes.  You know, it's really starting to look
-like rather nasty tactical games...
+-- 
+Thanks,
+~Nick Desaulniers
