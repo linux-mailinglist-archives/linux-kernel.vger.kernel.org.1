@@ -2,123 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150E42435A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 10:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2022435AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 10:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgHMIBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 04:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726072AbgHMIBI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 04:01:08 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA33C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 01:01:07 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id r2so4381054wrs.8
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 01:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=BrEukXzMOpIr1yUBLPDImeJK4OiXs06yEEaIuSegLSo=;
-        b=s4aVyCzfBYOZ9LAlRHPChpmfGo/EHoj8aY/XNJLRF6RIoELYZ2aguv0L4s/jAdO8Xl
-         tw4LypKX/MtFS6esS+D/BU4DMgck4FsMma6N1HA6ZAiek9m9qxBqI76494nFe/oVVLS1
-         u8FUiHHksaZLEVbhci3GULIlvwRKgviU5EA5+27Gi2ZozE8Vww2rMi2Yx3/Si1E09wK0
-         3ly5rbyNQYGtFEHJ+IcM75HLLSOqheB4k5WacOz1csiJkAKVhRhD7XJSKzuiLw2PVG+m
-         zcRwcLXKTDItDU6ASeExsoIdt+URWp+DivmKAz3X9hbAipLjDEzmgG58vnbcDzE+dOqQ
-         tA6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=BrEukXzMOpIr1yUBLPDImeJK4OiXs06yEEaIuSegLSo=;
-        b=tqw2WH8inzpg87N2fN5gMuSBatLyFD+m3fNTA0h6zk/KgDFzMd7b2T0Pc2tq579Yww
-         lRWVIa61k+VQqGL6pJJ2CJuzLt7gu9Qx0nH8bRVwL7gKdCM+Qq9vd83uNMnZKZACGu/d
-         8K1dOaT9FOrk1V8hHMCZZSfzlXsETE52xNcgEQvrsyAIkYyfVZq6Xro+3wZJyCduSoqS
-         HYvKEVD3/rmN9+b6tnDua71pjOiVS104hGLbD/KYJXmzdjChw8rreLRTuKxcFviUYZfb
-         poAeh9UmEWhAmCXYhULpw/2qCrhTvyRjVPWyLkGHLwayZZx/kQuGyfbSvYSFWVMMMY13
-         Y+ow==
-X-Gm-Message-State: AOAM532TKFMk8w7P1lCjOA0vOrS56nB/uZYSuFqeQcCmMylIQ8f2XI6l
-        EpSg4UDTw9B1bCp1q9GgZABX4g==
-X-Google-Smtp-Source: ABdhPJyIGqBzNsCdlYHZ0GWsNu3ze9OnsM6Dlj5GmHr4gY/tvZbdmb1zq1hUdA4DhQ0iULdnaVz5eQ==
-X-Received: by 2002:adf:ab55:: with SMTP id r21mr2670193wrc.332.1597305666249;
-        Thu, 13 Aug 2020 01:01:06 -0700 (PDT)
-Received: from dell ([2.27.167.73])
-        by smtp.gmail.com with ESMTPSA id q19sm8385438wrf.48.2020.08.13.01.01.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 01:01:05 -0700 (PDT)
-Date:   Thu, 13 Aug 2020 09:01:00 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 1/1] mfd: core: Fix memory leak of 'cell'
-Message-ID: <20200813080100.GI4354@dell>
-References: <20200716142851.1669946-1-lee.jones@linaro.org>
- <072c29cf-b842-28b7-6abb-99ff8f2f5d57@samsung.com>
- <CGME20200813072409eucas1p1dd94af95802a53a5b5f2991cd535d843@eucas1p1.samsung.com>
- <79bcd1b5-2247-5e00-7d49-2f94f9b40744@samsung.com>
+        id S1726568AbgHMIDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 04:03:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57326 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726044AbgHMIDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 04:03:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 85F89AF82;
+        Thu, 13 Aug 2020 08:03:44 +0000 (UTC)
+Subject: Re: [PATCH] drm/hisilicon: Fix build error of no type of module_init
+To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
+        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
+        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
+        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
+Cc:     linuxarm@huawei.com
+References: <1597289955-27381-1-git-send-email-tiantao6@hisilicon.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <5e7ed4d6-8961-bdd0-6698-47571066357a@suse.de>
+Date:   Thu, 13 Aug 2020 10:03:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <79bcd1b5-2247-5e00-7d49-2f94f9b40744@samsung.com>
+In-Reply-To: <1597289955-27381-1-git-send-email-tiantao6@hisilicon.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="PViowPfbaTjNTU6mKv6gbP9xhigU5xjHJ"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Aug 2020, Marek Szyprowski wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--PViowPfbaTjNTU6mKv6gbP9xhigU5xjHJ
+Content-Type: multipart/mixed; boundary="DZf0ynl3KQRcR4aueZHBhokv6F5d3B8Fx";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
+ kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
+ dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
+ linux-kernel@vger.kernel.org
+Cc: linuxarm@huawei.com
+Message-ID: <5e7ed4d6-8961-bdd0-6698-47571066357a@suse.de>
+Subject: Re: [PATCH] drm/hisilicon: Fix build error of no type of module_init
+References: <1597289955-27381-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1597289955-27381-1-git-send-email-tiantao6@hisilicon.com>
 
-> Hi All,
-> 
-> On 05.08.2020 16:26, Marek Szyprowski wrote:
-> > On 16.07.2020 16:28, Lee Jones wrote:
-> >> When creating a platform device from an MFD cell description, we
-> >> allocate some memory and make a copy which is then stored inside the
-> >> platform_device's structure.  However, care is not currently taken to
-> >> free the allocated memory when the platform device is torn down.
-> >>
-> >> This patch takes care of the leak.
-> >>
-> >> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> >
-> > This patch landed recently in linux-next as commit 126f33704d9d ("mfd: 
-> > core: Fix memory leak of 'cell'"). Sadly it causes a regression on 
-> > Samsung Exynos4412-based Trats2 board:
-> > ...
-> > Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> >
-> > I suspect that this is somehow related to the deferred probe and/or 
-> > devm_ helpers, but I didn't analyze it further yet. Reverting it on 
-> > top of current linux-next (and resolving conflict) fixes the boot. 
-> > Bisecting it was really hard because the issue is not fully 
-> > reproducible, what suggests memory trashing. Various tests of 
-> > linux-next with the reverted patch have shown at least that the issue 
-> > is gone.
-> >
-> > I've compiled the kernel from exynos_defconfig, the dts used for the 
-> > test is arch/arm/boot/dts/exynos4412-trats2.dts
-> 
-> Finally I've found some time to analyze this issue.
-> 
-> Indeed this patch is wrong it causes double free on the mfd_cell. 
-> mfd_cell is already properly freed by the platform_device_release() 
-> function when kref of the pdev goes down to zero: 
-> https://elixir.bootlin.com/linux/latest/source/drivers/base/platform.c#L426
+--DZf0ynl3KQRcR4aueZHBhokv6F5d3B8Fx
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Thank you for the explanation.
+Hi
 
-> I will send a revert with the explaination.
+Am 13.08.20 um 05:39 schrieb Tian Tao:
+> Add missing include to fix build error:
+> hibmc_drm_drv.c:385:1: warning: data definition has no type or storage
+> class [enabled by default]
+> hibmc_drm_drv.c:385:1: error: type defaults to =E2=80=98int=E2=80=99 in=
+ declaration
+> of =E2=80=98module_init=E2=80=99 [-Werror=3Dimplicit-int]
+> hibmc_drm_drv.c:385:1: warning: parameter names (without types) in func=
+tion
+> of =E2=80=98module_exit=E2=80=99 [-Werror=3Dimplicit-int]
+> hibmc_drm_drv.c:385:292:1: warning: parameter names (without types) in
+> function declaration [enabled by default]
+>=20
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> Reported-by: kernel test robot <lkp@intel.com>
 
-No need.  I remove it from my tree.  Thanks.
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I pushed the patch to drm-misc-next, but forgot to add my R-b tag. If
+anyone complains, it's my fault.
+
+Best regards
+Thomas
+
+> ---
+>  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> index 1ae360d..2b4f821 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> @@ -11,6 +11,7 @@
+>   *	Jianhua Li <lijianhua@huawei.com>
+>   */
+> =20
+> +#include <linux/module.h>
+>  #include <linux/pci.h>
+> =20
+>  #include <drm/drm_atomic_helper.h>
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--DZf0ynl3KQRcR4aueZHBhokv6F5d3B8Fx--
+
+--PViowPfbaTjNTU6mKv6gbP9xhigU5xjHJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFIBAEBCAAyFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl8088kUHHR6aW1tZXJt
+YW5uQHN1c2UuZGUACgkQaA3BHVMLeiNqzAgArHim/VrpwqUX42uX6B5W6rBex4/V
+RoHBJMg8n9IEPDN5Bc8jtambx64LixZjCGPMIudkUCpcCuXr7NMPMAEz4/00btSu
+b4MLSv6k0pZM1BoIsvaAqzetDYS3J/JFY4a53gEgWA3vMj18490rXuyqpt/wcr7N
+lFiQfx0Qaf2uCI5/xBe0y0HIvRj/JXlTUeIAlsvKvDnnNq2ElSIqpe94BrR4qQEV
+tpf2QLovX7emOFlPho0TVsQvVTlvbxykVnNIZxWSPwUy+os85gUJOxIH/YvI5mg4
+QagqAlBDsIiZd5PcdEiF+O0VSvz2JRSjq4oaxWEh7YScArmvovGaeR6XAQ==
+=7zSe
+-----END PGP SIGNATURE-----
+
+--PViowPfbaTjNTU6mKv6gbP9xhigU5xjHJ--
