@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CDC24398C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 14:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD1F24398F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 14:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgHMMBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 08:01:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726568AbgHML7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 07:59:45 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80B41208B3;
-        Thu, 13 Aug 2020 11:59:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597319979;
-        bh=lzzY6+Qcf/8rSg07fhVvKCT1rgjxgjHFEq/i2gpmSS4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KTXkQX0LNCLLJcbpSLJmay7ngasF0z/VwY1Vilw/lbDE6KX2ZqvNLnGoADA/0sbBb
-         QowOFoCQW4ZW5nwFoEliV7MDbpRrwYCFkJPaJ/+jUFqNY9oRxajKTdJJHOW+wOEKy/
-         /DV6vxXdfaz2odQKwTzcFeqfZmw0FS7iWfSlkcXU=
-Date:   Thu, 13 Aug 2020 13:59:48 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Recursive/circular locking in
- serial8250_console_write/serial8250_do_startup
-Message-ID: <20200813115948.GA3854926@kroah.com>
-References: <20200812154813.GA46894@roeck-us.net>
- <20200813050629.GA95559@roeck-us.net>
+        id S1726249AbgHMMDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 08:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbgHMMBf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 08:01:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63AE4C061757;
+        Thu, 13 Aug 2020 05:00:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=i41Yc10MxJ8SD/RmIm1p0LXK6Fe4vVxPBwR0fO9tHsU=; b=wUkEP4gznD8yhOKXfehUrg6u+p
+        4PCOcBf33WvByOdBvWwLPp6R8/WwxJlEYyQ3CY9ej+Zc55i7MERAd+5CuKACgEOMwJkJpICIjvu6D
+        4s1dRmOfQoghu7xdIO1fYpsEAEON7cEh4NTueg4+NtGD15C7xchhSji6EQqceguowmv1PUXzJ7Nts
+        a0pAqKr+kEI15dkeOFh7FsqIvbIZKziG+7HYp+GACowqL/3hO1OafqdRTUrgk5GEc79FmzQH2KoHP
+        UeKSdlIY4bl8Zozt8Pc5cSWRv3VGquq0YjgcJVVK0c7xUZQ0+VQiSFpdainJpwi+h0C1SJd8c8qzl
+        p9a5QjuA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k6Bu5-0003VD-3H; Thu, 13 Aug 2020 12:00:17 +0000
+Date:   Thu, 13 Aug 2020 13:00:17 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     peterz@infradead.org
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jacob Wen <jian.w.wen@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] block: insert a general SMP memory barrier before
+ wake_up_bit()
+Message-ID: <20200813120017.GH17456@casper.infradead.org>
+References: <20200813024438.13170-1-jian.w.wen@oracle.com>
+ <20200813073115.GA15436@infradead.org>
+ <20200813114050.GW2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200813050629.GA95559@roeck-us.net>
+In-Reply-To: <20200813114050.GW2674@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 10:06:29PM -0700, Guenter Roeck wrote:
-> On Wed, Aug 12, 2020 at 08:48:13AM -0700, Guenter Roeck wrote:
-> > Hi,
+On Thu, Aug 13, 2020 at 01:40:50PM +0200, peterz@infradead.org wrote:
+> On Thu, Aug 13, 2020 at 08:31:15AM +0100, Christoph Hellwig wrote:
+> > On Thu, Aug 13, 2020 at 10:44:38AM +0800, Jacob Wen wrote:
+> > > wake_up_bit() uses waitqueue_active() that needs the explicit smp_mb().
 > > 
-> > crbug.com/1114800 reports a hard lockup due to circular locking in the
-> > 8250 console driver. This is seen if CONFIG_PROVE_LOCKING is enabled.
-> > 
-> > Problem is as follows:
-> > - serial8250_do_startup() locks the serial (console) port.
-> > - serial8250_do_startup() then disables interrupts if interrupts are
-> >   shared, by calling disable_irq_nosync().
-> > - disable_irq_nosync() calls __irq_get_desc_lock() to lock the interrupt
-> >   descriptor.
-> > - __irq_get_desc_lock() calls lock_acquire()
-> > - If CONFIG_PROVE_LOCKING is enabled, validate_chain() and check_noncircular()
-> >   are called and identify a potential locking error.
-> > - This locking error is reported via printk, which ultimately calls
-> >   serial8250_console_write().
-> > - serial8250_console_write() tries to lock the serial console port.
-> >   Since it is already locked, the system hangs and ultimately reports
-> >   a hard lockup.
-> > 
-> > I understand we'll need to figure out and fix what lockdep complains about,
-> > and I am working on that. However, even if that is fixed, we'll need a
-> > solution for the recursive lock: Fixing the lockdep problem doesn't
-> > guarantee that a similar problem (or some other log message) won't be
-> > detected and reported sometime in the future while serial8250_do_startup()
-> > holds the console port lock.
-> > 
-> > Ideas, anyone ? Everything I came up with so far seems clumsy and hackish.
-> > 
+> > Sounds like the barrier should go into wake_up_bit then..
 > 
-> Turns out the situation is a bit worse than I thought. disable_irq_nosync(),
-> when called from serial8250_do_startup(), locks the interrupt descriptor.
-> The order of locking is
-> 	serial port lock
-> 	  interrupt descriptor lock
+> Oh, thanks for reminding me..
 > 
-> At the same time, __setup_irq() locks the interrupt descriptor as well.
-> With the descriptor locked, it may report an error message using pr_err().
-> This in turn may call serial8250_console_write(), which will try to lock
-> the console serial port. The lock sequence is
-> 	interrupt descriptor lock
-> 	  serial port lock
+> https://lkml.kernel.org/r/20190624165012.GH3436@hirez.programming.kicks-ass.net
 > 
-> I added the lockdep splat to the bug log at crbug.com/1114800.
-> 
-> Effectively, I think, this means we can't call disable_irq_nosync()
-> while holding a serial port lock, or at least not while holding a
-> serial port lock that is associated with a console.
-> 
-> The problem was introduced (or, rather, exposed) with upstream commit
-> 7febbcbc48fc ("serial: 8250: Check UPF_IRQ_SHARED in advance").
+> I'll try and get back to that.
 
-Adding Andy, who wrote the above commit :)
++++ b/drivers/bluetooth/btmtkuart.c
+@@ -340,11 +340,8 @@ static int btmtkuart_recv_event(struct hci_dev *hdev, struct sk_buff *skb)
+ 
+ 	if (hdr->evt == HCI_EV_VENDOR) {
+ 		if (test_and_clear_bit(BTMTKUART_TX_WAIT_VND_EVT,
+-				       &bdev->tx_state)) {
+-			/* Barrier to sync with other CPUs */
+-			smp_mb__after_atomic();
++				       &bdev->tx_state))
+ 			wake_up_bit(&bdev->tx_state, BTMTKUART_TX_WAIT_VND_EVT);
+-		}
+ 	}
+ 
+ 	return 0;
 
-Andy, any thoughts?
+It'd be nice to be able to write:
 
+	if (hdr->evt == HCI_EV_VENDOR)
+		test_clear_and_wake_up_bit(&bdev->tx_state,
+						BTMTKUART_TX_WAIT_VND_EVT);
+
+... maybe with a better name.
