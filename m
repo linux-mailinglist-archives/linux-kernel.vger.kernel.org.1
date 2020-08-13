@@ -2,111 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A39A243BF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 16:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D18B6243BF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 16:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgHMOxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 10:53:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50462 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726131AbgHMOxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 10:53:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2537CAE1A;
-        Thu, 13 Aug 2020 14:53:58 +0000 (UTC)
-Date:   Thu, 13 Aug 2020 16:53:35 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200813145335.GN9477@dhcp22.suse.cz>
-References: <20200811210931.GZ4295@paulmck-ThinkPad-P72>
- <874kp87mca.fsf@nanos.tec.linutronix.de>
- <20200813075027.GD9477@dhcp22.suse.cz>
- <20200813095840.GA25268@pc636>
- <874kp6llzb.fsf@nanos.tec.linutronix.de>
- <20200813133308.GK9477@dhcp22.suse.cz>
- <87sgcqty0e.fsf@nanos.tec.linutronix.de>
+        id S1726664AbgHMOzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 10:55:35 -0400
+Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:59884 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726622AbgHMOzd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 10:55:33 -0400
+Received: from mx1-us1.ppe-hosted.com (unknown [10.110.50.150])
+        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id E1DBF200C9;
+        Thu, 13 Aug 2020 14:55:31 +0000 (UTC)
+Received: from us4-mdac16-65.at1.mdlocal (unknown [10.110.50.184])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id DEBBB800A3;
+        Thu, 13 Aug 2020 14:55:31 +0000 (UTC)
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from mx1-us1.ppe-hosted.com (unknown [10.110.49.108])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 6948D100080;
+        Thu, 13 Aug 2020 14:55:31 +0000 (UTC)
+Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 2384814005B;
+        Thu, 13 Aug 2020 14:55:31 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
+ (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 13 Aug
+ 2020 15:55:25 +0100
+Subject: Re: [PATCH] sfc_ef100: Fix build failure on powerpc
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Solarflare linux maintainers" <linux-net-drivers@solarflare.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <netdev@vger.kernel.org>
+References: <44e26ec6a1bc01b5b138c29b623c83d5846718b2.1597329390.git.christophe.leroy@csgroup.eu>
+From:   Edward Cree <ecree@solarflare.com>
+Message-ID: <fe9bfb29-cef3-51e6-71ab-886e02996ec4@solarflare.com>
+Date:   Thu, 13 Aug 2020 15:55:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sgcqty0e.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <44e26ec6a1bc01b5b138c29b623c83d5846718b2.1597329390.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Originating-IP: [10.17.20.203]
+X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
+ ukex01.SolarFlarecom.com (10.17.10.4)
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.6.1012-25600.005
+X-TM-AS-Result: No-5.375500-8.000000-10
+X-TMASE-MatchedRID: 7ySqCuYCpfgZKb71Tl2YYfZvT2zYoYOwC/ExpXrHizzAlr9zf1x/lojw
+        YzF1DjNPWiR9CUpDXWeo+OAAmru7hxxtkIHKGuMRT3nBCKOvAEvpVMb1xnESMsz/SxKo9mJ4wQ3
+        t1bD9XwKRY9dCWcgj9mJwCsb/Z8alTX7PJ/OU3vKDGx/OQ1GV8vaSyLmE5Bx3+gtHj7OwNO2Ohz
+        Oa6g8KrV90guFwhBetqWzlavUblWzUlw+R3vVZXldVttIi2JlLK2TLqpu5/SM=
+X-TM-AS-User-Approved-Sender: Yes
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--5.375500-8.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.6.1012-25600.005
+X-MDID: 1597330531-ci2M3Uh6fLvl
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 13-08-20 16:34:57, Thomas Gleixner wrote:
-> Michal Hocko <mhocko@suse.com> writes:
-> > On Thu 13-08-20 15:22:00, Thomas Gleixner wrote:
-> >> It basically requires to convert the wait queue to something else. Is
-> >> the waitqueue strict single waiter?
-> >
-> > I would have to double check. From what I remember only kswapd should
-> > ever sleep on it.
-> 
-> That would make it trivial as we could simply switch it over to rcu_wait.
-> 
-> >> So that should be:
-> >> 
-> >> 	if (!preemptible() && gfp == GFP_RT_NOWAIT)
-> >> 
-> >> which is limiting the damage to those callers which hand in
-> >> GFP_RT_NOWAIT.
-> >> 
-> >> lockdep will yell at invocations with gfp != GFP_RT_NOWAIT when it hits
-> >> zone->lock in the wrong context. And we want to know about that so we
-> >> can look at the caller and figure out how to solve it.
-> >
-> > Yes, that would have to somehow need to annotate the zone_lock to be ok
-> > in those paths so that lockdep doesn't complain.
-> 
-> That opens the worst of all cans of worms. If we start this here then
-> Joe programmer and his dog will use these lockdep annotation to evade
-> warnings and when exposed to RT it will fall apart in pieces. Just that
-> at that point Joe programmer moved on to something else and the usual
-> suspects can mop up the pieces. We've seen that all over the place and
-> some people even disable lockdep temporarily because annotations don't
-> help.
-
-Hmm. I am likely missing something really important here. We have two
-problems at hand:
-1) RT will become broken as soon as this new RCU functionality which
-requires an allocation from inside of raw_spinlock hits the RT tree
-2) lockdep splats which are telling us that early because of the
-raw_spinlock-> spin_lock dependency.
-
-1) can be handled by handled by the bailing out whenever we have to use
-zone->lock inside the buddy allocator - essentially even more strict
-NOWAIT semantic than we have for RT tree - proposed (pseudo) patch is
-trying to describe that.
-
-2) would become a false positive if 1) is in place, right? RT wouldn't
-do the illegal nesting and !RT would just work fine because
-GFP_RT_NOWAIT would be simply GFP_NOWAIT & ~__GFP_KSWAPD_RECLAIM.
-Why should we limit the functionality of the allocator for something
-that is not a real problem?
-
-> PeterZ might have opinions about that too I suspect.
-> 
-> Really, if your primary lockless caches are empty then any allocation
-> which comes from deep atomic context should simply always fail. Being
-> stuck in an interrupt handler or even deeper for 200+ microseconds
-> waiting for zone lock is just bonkers IMO.
-
-That would require changing NOWAIT/ATOMIC allocations semantic quite
-drastically for !RT kernels as well. I am not sure this is something we
-can do. Or maybe I am just missing your point.
--- 
-Michal Hocko
-SUSE Labs
+On 13/08/2020 15:39, Christophe Leroy wrote:
+> ppc6xx_defconfig fails building sfc.ko module, complaining
+> about the lack of _umoddi3 symbol.
+>
+> This is due to the following test
+>
+>  		if (EFX_MIN_DMAQ_SIZE % reader->value) {
+>
+> Because reader->value is u64.
+Already fixed in net.git by 41077c990266 ("sfc: fix ef100 design-param checking").
+But thanks anyway.
