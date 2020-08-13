@@ -2,169 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC229243570
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BD124357A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgHMHvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 03:51:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37162 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726100AbgHMHvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 03:51:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C51DFAF82;
-        Thu, 13 Aug 2020 07:51:39 +0000 (UTC)
-Date:   Thu, 13 Aug 2020 09:51:17 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: POC: Alternative solution: Re: [PATCH 0/4] printk: reimplement
- LOG_CONT handling
-Message-ID: <20200813075117.GJ12903@alley>
-References: <20200717234818.8622-1-john.ogness@linutronix.de>
- <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
- <87blkcanps.fsf@jogness.linutronix.de>
- <20200811160551.GC12903@alley>
- <20200812163908.GH12903@alley>
- <87v9hn2y1p.fsf@jogness.linutronix.de>
- <20200813051853.GA510@jagdpanzerIV.localdomain>
+        id S1726642AbgHMHxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 03:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbgHMHxN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 03:53:13 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F58C061383
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 00:53:13 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id i26so3482592edv.4
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 00:53:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=melexis.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JMQG+gPDVY3OFt2LOxuYy2xvWRV/+Hl/ipweeI0yGEA=;
+        b=I0XV0l07OpHFTazOJDjoA8vG0u0p9cnmSyNO5wcXQ/QL9inGUKmPADU+WcUalfo0FN
+         eYNtX08tea3gafGqht3b90rSeph9poJ5ivuYfZaAhf7EVEv5FXjtVD4JcKs+7nX+N2mo
+         cOi/RmwUeI5vR0oiuk/liKShssFXFOI/uc93h/12us/96cTzPMbJJBJoQi7UFc8Rh+q/
+         JhAAQme0aCgsW90tglMLbE7bcusspPAzpFmdE5FOb9KYC430mLWKmlmE19S/fWbIdivx
+         Df7DQ/6Y5SwHu09PviVOpGYwFWyU+/Nv+oQjFNXQ0dYr0JYH9VhIe5PG5sqpj5AfKZHF
+         s0rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JMQG+gPDVY3OFt2LOxuYy2xvWRV/+Hl/ipweeI0yGEA=;
+        b=OE2lk7sEwjcGdw93Zh/YlhQ0P7jS9Z06A7QnBe7pnGTdFphzwTMes83lZ2XRrFghJz
+         VnGMt8q9QUli17ipMHkZhLokFIclDyJEBl6Kj3P9O093Rl5Y/WS1CdnxOoRUltrrqB9e
+         1bnCvspUDndVpzhBQtn7D9IU5BVo7v+v2jecEp4sbtvt0SuTLVEUfjvOFdGamiKWwetf
+         ElQ9AGp/bObrCH/6x2vz9ziGaI7o1l+BSd+xp/eFpARPgC84Vkiaa1T8B0oGfhzU/KKE
+         jaJED1fV0cmrrk/juteh/iuV6oc5xY+qVxBooHgt6bpniQUHiF1HbSVczGdBXLSi9QB9
+         h/mQ==
+X-Gm-Message-State: AOAM531ucpdmDSzIicCwQ+lqzAalcQlzw9/2d+eFTH+HjJ9wBjtcHNzM
+        nEAZgYi7Vs5uNitKFcE24i/aaw==
+X-Google-Smtp-Source: ABdhPJzqHGAZMCVQjzPfnf4zndzNAsrqiDkUQNTYamQYsbpGFmywFa+VGhKv00SKkT7ci+GFRVDxhw==
+X-Received: by 2002:a05:6402:304b:: with SMTP id bu11mr3480450edb.106.1597305191659;
+        Thu, 13 Aug 2020 00:53:11 -0700 (PDT)
+Received: from localhost.localdomain (ptr-4xajgyw9mz6ybkfgzn4.18120a2.ip6.access.telenet.be. [2a02:1810:a421:dd00:8d0a:592c:7d6d:8770])
+        by smtp.gmail.com with ESMTPSA id br25sm3363449ejb.25.2020.08.13.00.53.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Aug 2020 00:53:10 -0700 (PDT)
+From:   Crt Mori <cmo@melexis.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Crt Mori <cmo@melexis.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v5 0/5] iio: temperature: mlx90632: Add extended calibration calculations
+Date:   Thu, 13 Aug 2020 09:51:20 +0200
+Message-Id: <20200813075125.4949-1-cmo@melexis.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200813051853.GA510@jagdpanzerIV.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-08-13 14:18:53, Sergey Senozhatsky wrote:
-> On (20/08/13 02:30), John Ogness wrote:
-> > 2. I haven't yet figured out how to preserve calling context when a
-> > newline appears. For example:
-> > 
-> > pr_info("text");
-> > pr_cont(" 1");
-> > pr_cont(" 2\n");
-> > pr_cont("3");
-> > pr_cont(" 4\n");
-> >
-> > For "3" the calling context (info, timestamp) is lost because with "2"
-> > the record is finalized. Perhaps the above is invalid usage of LOG_CONT?
+Add extended calibration calculations for the new subversion of DSP5.
 
-If I get it correctly, the original code has the same problem.
+V5 review comments from Andy Shevchenko <andy.shevchenko@gmail.com:
+	 -  Swap order of patches to avoid re-doing the calculations
+	 - Add fixed name defines for Ambient and Object RAM temperature
+	   channels as per suggestion of the Jonathan Cameron <jic23@kernel.org>
+V5:
+	 - Add style changes patch along with current series.
 
-The cont buffer is flushed when the cont piece ends with newline:
+V4 review comments from Andy Shevchenko <andy.shevchenko@gmail.com>:
+	 - Move the function creation for Ta4 to first patch
+	 - Add kernel doc patch for documenting internal struct
+	 - Add patch to convert while loops to do-while loops for
+	   polling
 
-static bool cont_add(u32 caller_id, int facility, int level,
-		     enum log_flags flags, const char *text, size_t len)
-{
-   [...]
+V3 review comments from Andy Shevchenko <andy.shevchenko@gmail.com>:
+	 - Change commit message text to more proper English as per suggestions
+	 - Drop unneeded brackets and parentheses
+	 - Use defines from limits.h
+	 - Remove userspace typedefs as leftovers from porting
+	 - Testing of timeout loops with iopoll.h was no successful,
+	   because delay between measurements is 10ms, but we need to
+	   fill at least 3 channels, so final timeout should be 40ms
+	   which is out of scope of usleep function
+	 - Fixing some typos in comments
 
-	// The original flags come from the first line,
-	// but later continuations can add a newline.
-	if (flags & LOG_NEWLINE) {
-		cont.flags |= LOG_NEWLINE;
-		cont_flush();
-	}
+V2 review comments from Andy Shevchenko <andy.shevchenko@gmail.com>:
+	 - Convert divison back to shifts to make it more readable
 
-	return true;
-}
+Crt Mori (5):
+  iio:temperature:mlx90632: Reduce number of equal calulcations
+  iio:temperature:mlx90632: Add kerneldoc to the internal struct
+  iio:temperature:mlx90632: Convert polling while loop to do-while
+  iio:temperature:mlx90632: Adding extended calibration option
+  iio:temperature:mlx90632: Some stylefixing leftovers
 
-cont_flush sets	cont.len = 0;
+ drivers/iio/temperature/mlx90632.c | 301 +++++++++++++++++++++++++----
+ 1 file changed, 267 insertions(+), 34 deletions(-)
 
-static void cont_flush(void)
-{
-	[...]
-	cont.len = 0;
-}
+-- 
+2.25.1
 
-
-The messages is appended only when cont.len != 0 in log_output:
-
-static size_t log_output(int facility, int level, enum log_flags lflags, const char *dict, size_t dictlen, char *text, size_t text_len)
-{
-	const u32 caller_id = printk_caller_id();
-
-	/*
-	 * If an earlier line was buffered, and we're a continuation
-	 * write from the same context, try to add it to the buffer.
-	 */
-	if (cont.len) {
-		if (cont.caller_id == caller_id && (lflags & LOG_CONT)) {
-			if (cont_add(caller_id, facility, level, lflags, text, text_len))
-				return text_len;
-		}
-
-      [...]
-}
-
-
-Also the original context is overridden when the cont buffer is empty:
-
-static bool cont_add(u32 caller_id, int facility, int level,
-		     enum log_flags flags, const char *text, size_t len)
-{
-	[...]
-
-	if (!cont.len) {
-		cont.facility = facility;
-		cont.level = level;
-		cont.caller_id = caller_id;
-		cont.ts_nsec = local_clock();
-		cont.flags = flags;
-	}
-
-	[...]
-}
-
-So I would ignore this problem for now.
-
-
-> This is not an unseen pattern, I'm afraid. And the problem here can
-> be more general:
-> 
-> 	pr_info("text");
-> 	pr_cont("1");
-> 	exception/IRQ/NMI
-> 		pr_alert("text\n");
-> 	pr_cont("2");
-> 	pr_cont("\n");
-> 
-
-Good point.
-
-
-> I guess the solution would be to store "last log_level" in task_struct
-> and get current (new) timestamp for broken cont line?
-
-I think about storing the context in per-CPU and per-context array.
-It should be more memory efficient than task_struct and it should
-solve even the above problem.
-
-
-> We have this problem now. E.g. early boot messages from one of my boxes:
-> 
-> 6,173,41837,-;x86: Booting SMP configuration:
-> 6,174,41838,-;.... node  #0, CPUs:      #1 #2 #3 #4
-> 4,175,44993,-;MDS CPU bug present and SMT on, data leak possible. See https://www.kernel.org/doc/...
-> 4,176,44993,c; #5 #6 #7
-> 
-> "CPUs: #1 #2 #3 #4 #5 #6 #7" is supposed to be one cont line with
-> loglevel 6. But it gets interrupted and flushed so that "#5 #6 #7"
-> appears with the different loglevel.
-
-Nice example. It would be nice to fix this. But it should be done
-separately.
-
-Best Regards,
-Petr
