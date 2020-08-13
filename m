@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FA22439A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 14:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B99A2439A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 14:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgHMMNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 08:13:55 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58318 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgHMMNy (ORCPT
+        id S1726609AbgHMMOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 08:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgHMMOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 08:13:54 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597320831;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tQYvkqXE5EdBVdiO0ISKqxb3rBUgEsMwquDtXOKueGI=;
-        b=GHwpL9zFdxYNR/AGJIiDNIbyE8avRxZkeurRafXu2kWcZkSqLM90dTdOxJJxJsZ8GR0CSh
-        QoKjOqhN6WHbJaSDaH5yyjtJ9ZfvPyw6tmQ3RX5JhqhCAFnqPn7SEchjI6hQW953o9jYAA
-        masmnprKB/aNpB0oS6rBOBL3CfjWLMeJC3pGHvVULsfuRYm0SPa8kj5oWZQ8D9vYvOUaco
-        0qnERYUF7ST3RB9mO2M73iGWMW4cD4j3VDWcCHbrHgsgN9Dhzyltf/Iisawi1PX7HJUjNA
-        98yuKdJ0qNCIEtkD9pyhXp66DvdL7NGOpQNajKWsKtCbhsTU1/g+I3XPnDZBug==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597320831;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tQYvkqXE5EdBVdiO0ISKqxb3rBUgEsMwquDtXOKueGI=;
-        b=oNP2h9DqtdR+YQ2kEQK018T5aZHXQYYJHc4PVSs8iIXRffNBf4hwBEkf5zMpCzVqlkqAtK
-        61E86EtGA/GAg/DA==
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Adams <jwadams@google.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kvm@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [RFC PATCH 6/7] core/metricfs: expose x86-specific irq information through metricfs
-In-Reply-To: <2500b04e-a890-2621-2f19-be08dfe2e862@redhat.com>
-References: <20200807212916.2883031-1-jwadams@google.com> <20200807212916.2883031-7-jwadams@google.com> <87mu2yluso.fsf@nanos.tec.linutronix.de> <2500b04e-a890-2621-2f19-be08dfe2e862@redhat.com>
-Date:   Thu, 13 Aug 2020 14:13:50 +0200
-Message-ID: <87a6yylp4x.fsf@nanos.tec.linutronix.de>
+        Thu, 13 Aug 2020 08:14:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1747FC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 05:14:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/u7Zk4bCfLx2PXXzkWP/0h7HLrlp3BATVK4KXPDFv64=; b=g4chzfeoFqDUrpAlhFb4Qt0Egj
+        JBZbxodNdrryqRciYEEph8Q+wD4FKGduxdCB2aleaJ4CxSRzlaFKvp17NJ4iPV65HD+zy78yPwEkg
+        XOV0K1u5vV67J6nsiu26n4sMCdotaRhkFEkBEx132usMYkf/m9TGwxlQncchDK272u1Zpa1CLG+vc
+        e8rdYvFbU/zOZ2oFxz52zs9bBePN4wC8+TGLJOwFyRS6s33ZlKh0BomDEJIlKh/i9iaYNjlIx83tj
+        IQixJA/TbMgTZNJJmCPwOCEtLOAQ/qiQOwp/MiuSR53VdnGCRJbZyivOmd9Q1HNJmVx73+sRG9KTZ
+        LaeT5f+g==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k6C7P-0004Sm-92; Thu, 13 Aug 2020 12:14:03 +0000
+Date:   Thu, 13 Aug 2020 13:14:03 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 1/5] powerpc: Remove flush_instruction_cache for book3s/32
+Message-ID: <20200813121403.GB16237@infradead.org>
+References: <11a330af231af22874c006302a945388846f8112.1597313510.git.christophe.leroy@csgroup.eu>
+ <20200813121308.GA16237@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200813121308.GA16237@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
+On Thu, Aug 13, 2020 at 01:13:08PM +0100, Christoph Hellwig wrote:
+> On Thu, Aug 13, 2020 at 10:12:00AM +0000, Christophe Leroy wrote:
+> > -#ifndef CONFIG_PPC_8xx
+> > +#if !defined(CONFIG_PPC_8xx) && !defined(CONFIG_PPC_BOOK3S_32)
+> >  _GLOBAL(flush_instruction_cache)
+> >  #if defined(CONFIG_4xx)
+> >  	lis	r3, KERNELBASE@h
+> > @@ -290,18 +289,11 @@ _GLOBAL(flush_instruction_cache)
+> >  	mfspr	r3,SPRN_L1CSR1
+> >  	ori	r3,r3,L1CSR1_ICFI|L1CSR1_ICLFR
+> >  	mtspr	SPRN_L1CSR1,r3
+> > -#elif defined(CONFIG_PPC_BOOK3S_601)
+> > -	blr			/* for 601, do nothing */
+> > -#else
+> > -	/* 603/604 processor - use invalidate-all bit in HID0 */
+> > -	mfspr	r3,SPRN_HID0
+> > -	ori	r3,r3,HID0_ICFI
+> > -	mtspr	SPRN_HID0,r3
+> >  #endif /* CONFIG_4xx */
+> >  	isync
+> >  	blr
+> >  EXPORT_SYMBOL(flush_instruction_cache)
+> > -#endif /* CONFIG_PPC_8xx */
+> > +#endif /* CONFIG_PPC_8xx || CONFIG_PPC_BOOK3S_32 */
+> 
+> What about untangling this into entirely separate versions instead
+> of the ifdef mess?  Also the export does not seem to be needed at all.
 
-> On 13/08/20 12:11, Thomas Gleixner wrote:
->>> Add metricfs support for displaying percpu irq counters for x86.
->>> The top directory is /sys/kernel/debug/metricfs/irq_x86.
->>> Then there is a subdirectory for each x86-specific irq counter.
->>> For example:
->>>
->>>    cat /sys/kernel/debug/metricfs/irq_x86/TLB/values
->> What is 'TLB'? I'm not aware of any vector which is named TLB.
->
-> There's a "TLB" entry in /proc/interrupts.
-
-It's TLB shootdowns and not TLB.
-
-Thanks,
-
-        tglx
-
+Ok, I see that you do that later, sorry.
