@@ -2,111 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F85424394E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0EB243959
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgHMLYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 07:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgHMLYj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 07:24:39 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51F5C061757;
-        Thu, 13 Aug 2020 04:24:39 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id u20so2673939pfn.0;
-        Thu, 13 Aug 2020 04:24:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/zriuZjSj9xj6/8fSPTT22Tss8liWtUy8xFTyXoU7yc=;
-        b=RACy3nGsdFg0Fh3cY1pec6ZHDW/idUPIscW7C7rGAtfhfrk2GlEu8kdWw8GDTL/G/Y
-         rVdyGUPjUVFmoEhwXIr9z8/k38tx4oN6Ut4CFvLnGAh3rUh002GwkI19Nhc1qYZ+uzQy
-         kJn89akKBKKHXmtgHaW8l8/ExET1IIekAdK9+IE/abe+2LLEpIFKX8/MpUTbz0k8B60S
-         NrMBsmzNjXEYhtnK7YKITD4cptUUgXOnx70nPvxWy5yias6o2/3Al8HeoRAGD52fYVei
-         rw70CEvdwLEzp9I4hnM0ydJ+mFUgCeAZaF3AcQYspu+XRMPRbiHqfOR7pI5gX77lW5EI
-         ZBnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/zriuZjSj9xj6/8fSPTT22Tss8liWtUy8xFTyXoU7yc=;
-        b=PpKiva4s5uaHttXjXMcXZTSWLxkeW8Ju4Tsvl+YLQG7mPys/Gs2hj7U576IqD1NHYF
-         kkujU8dzADy2h9sj9+kJI+rZMxVs4NodOwtP0dF4LGL4fjsm+akt95BPbW1LlvToxz9s
-         XiN+S5pq7egbsz4pgwNmhmLdEFwSCUQXPWLJBV8ElhNYrvCgMFh06PCXMLZiWiX7MNcq
-         R9IeCtsvYadId82zwC6BWyzvSHTchJ0J8K4Bb+TAaMxZEWkmZ/6lzL+AEzj8T9NJlk7t
-         a4ZnEyyvY0pMpeUw/0x1KDNiGh7ZYkS42TxMfJPPDycz0rqkMpi1nFQnW7x8b3o4qD4d
-         W26g==
-X-Gm-Message-State: AOAM532kDnqswv3IybmSNFlWv+NOl1p2S2TfPPCIb1Rb2q8h7M1MhiZ2
-        st5Jg24YTbwPMA2n0SUg4sGdaL+V42MTTrBd9bNHQWT9zts=
-X-Google-Smtp-Source: ABdhPJzIkZApoDQ5oXbvk6Qqc/hVXxYMbJMPBQWt6vVX9AgOrIwlDctn2NxT7KNHfIDV7wXWA8f3BSG/ZvRAcfZP3j4=
-X-Received: by 2002:a63:f24a:: with SMTP id d10mr3188515pgk.4.1597317879199;
- Thu, 13 Aug 2020 04:24:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200813075125.4949-1-cmo@melexis.com> <20200813075125.4949-4-cmo@melexis.com>
- <CAHp75VfNwb5uBp=H0295LEJjXy1+=V5yvSN1PHbtMYzgg=_EAA@mail.gmail.com> <CAKv63uv=b60B9RXBJF4HEhMOowu-qbGrv7LsmJVvkkERSida-A@mail.gmail.com>
-In-Reply-To: <CAKv63uv=b60B9RXBJF4HEhMOowu-qbGrv7LsmJVvkkERSida-A@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 13 Aug 2020 14:24:23 +0300
-Message-ID: <CAHp75Vd+3SopKog6uhSKoOLn+tECsQfs7kRbJsrMZEbNRpk8bQ@mail.gmail.com>
-Subject: Re: [PATCH v5 3/5] iio:temperature:mlx90632: Convert polling while
- loop to do-while
-To:     Crt Mori <cmo@melexis.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
+        id S1726710AbgHMLai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 07:30:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39208 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726131AbgHMLah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 07:30:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0B235B6A3;
+        Thu, 13 Aug 2020 11:30:58 +0000 (UTC)
+Date:   Thu, 13 Aug 2020 13:30:35 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: POC: Alternative solution: Re: [PATCH 0/4] printk: reimplement
+ LOG_CONT handling
+Message-ID: <20200813113035.GN12903@alley>
+References: <20200717234818.8622-1-john.ogness@linutronix.de>
+ <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
+ <87blkcanps.fsf@jogness.linutronix.de>
+ <20200811160551.GC12903@alley>
+ <20200812163908.GH12903@alley>
+ <87v9hn2y1p.fsf@jogness.linutronix.de>
+ <20200813051853.GA510@jagdpanzerIV.localdomain>
+ <875z9nvvl2.fsf@jogness.linutronix.de>
+ <20200813084136.GK12903@alley>
+ <87v9hmrg84.fsf@jogness.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v9hmrg84.fsf@jogness.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 2:14 PM Crt Mori <cmo@melexis.com> wrote:
->
-> On Thu, 13 Aug 2020 at 13:03, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Thu, Aug 13, 2020 at 10:53 AM Crt Mori <cmo@melexis.com> wrote:
-> > >
-> > > Reduce number of lines and improve readability to convert polling while
-> > > loops to do-while. The iopoll.h interface was not used, because we
-> > > require more than 20ms timeout, because time for sensor to perform a
-> > > measurement is around 10ms and it needs to perform measurements for each
-> > > channel (which currently is 3).
-> >
-> > I don't see how it prevents using iopoll.h. It uses usleep_range()
-> > under the hood in the same way you did here, but open coded.
-> >
->
-> One loop is indeed 10ms and that is not the problem, the problem is
-> that timeout is at least 3 calls of this data ready (3 channels), so
-> that is at minimum 30ms of timeout, or it could even be 4 in worse
-> case scenario and that is outside of the range for usleep to measure.
-> So in case of the other loop, where we wait 200ms for channel refresh
-> it is also out of scope. Timeout should be in number of tries or in
-> msleep range if you ask me.
+On Thu 2020-08-13 12:35:47, John Ogness wrote:
+> On 2020-08-13, Petr Mladek <pmladek@suse.com> wrote:
+> > On Thu 2020-08-13 09:50:25, John Ogness wrote:
+> >> On 2020-08-13, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
+> >> > This is not an unseen pattern, I'm afraid. And the problem here can
+> >> > be more general:
+> >> >
+> >> > 	pr_info("text");
+> >> > 	pr_cont("1");
+> >> > 	exception/IRQ/NMI
+> >> > 		pr_alert("text\n");
+> >> > 	pr_cont("2");
+> >> > 	pr_cont("\n");
+> >> >
+> >> > I guess the solution would be to store "last log_level" in task_struct
+> >> > and get current (new) timestamp for broken cont line?
+> >> 
+> >> (Warning: new ideas ahead)
+> >> 
+> >> The fundamental problem is that there is no real association between
+> >> the cont parts. So any interruption results in a broken record. If we
+> >> really want to do this correctly, we need real association.
+> 
+> I believe I failed to recognize the fundamental problem. The fundamental
+> problem is that the pr_cont() semantics are very poor. I now strongly
+> believe that we need to fix those semantics by having the pr_cont() user
+> take responsibility for buffering the message. Patching the ~2000
+> pr_cont() users will be far easier than continuing to twist ourselves
+> around this madness.
 
-I still didn't buy it. You have in both cases usleep_range(). Why in
-your case it's okay and in regmap_read_poll_timeout() is not?
+Yes, this would make the API much more reliable. But it is not completely
+easy. It has been discussed several times. The most serious attempt
+is https://lore.kernel.org/lkml/1541165517-3557-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp/#t
 
-> > ...
-> >
-> > > -       while (tries-- > 0) {
-> > > +       do {
-> > >                 ret = regmap_read(data->regmap, MLX90632_REG_STATUS,
-> > >                                   &reg_status);
-> > >                 if (ret < 0)
-> > >                         return ret;
-> > > -               if (reg_status & MLX90632_STAT_DATA_RDY)
-> > > -                       break;
-> > >                 usleep_range(10000, 11000);
-> > > -       }
-> > > +       } while (!(reg_status & MLX90632_STAT_DATA_RDY) && tries--);
-> > >
-> > >         if (tries < 0) {
-> > >                 dev_err(&data->client->dev, "data not ready");
+lockdep.c is probably the most complicated pr_cont() user. The
+conversion complicated the code a bit, see
+https://lore.kernel.org/lkml/1541165517-3557-3-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp/
 
--- 
-With Best Regards,
-Andy Shevchenko
+Linus also wanted to have an API to flush part of the message
+before some action and finalize it later. It would be usable
+for things like:
+
+	pr_info("Doing something dangerous... ");
+	printk_flush();
+	do_dangerous_thing();
+	pr_cont("ok\n");
+
+Where pr_cont() would allow to flush part of the message to the
+consoles and add the end of the line later when it did not crash.
+
+It would need some support in the lockless ring buffer API anyway.
+But it is only nice to have from my POV.
+
+
+> The alloc function would need to work for any context, but that would
+> not be an issue. If the cont message started to get too large, pr_cont()
+> could do its own flushing in between, while still holding on to the
+> context information. If for some reason the alloc function could not
+> allocate a buffer, all the pr_cont() calls could fallback to logging the
+> individual cont parts.
+
+Also this was discussed several times. The most acceptable solution
+was to use "small" buffer on the stack (128 bytes or so).
+
+
+> I believe this would solve all cont-related problems while also allowing
+> the new ringbuffer to remain as it already is in linux-next.
+
+You are right. The buffering is really good step. It would make
+the API sane and reliable. It has been proposed and discussed many
+times. The main obstacle was that there was no volunteer to get this
+done. If you are able to do so, it would be amazing.
+
+I am just not sure what is more complicated. Getting lockless
+operation correctly is always tricky. But going though 2000
+callers individually is also a lot of work.
+
+Best Regards,
+Petr
