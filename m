@@ -2,97 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2072436E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 10:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C082436EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 10:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726568AbgHMIs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 04:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726082AbgHMIs1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 04:48:27 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE42C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 01:48:27 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id u128so2471429pfb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 01:48:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=tQ+XJ86Q75z7YMaMgzrVYfwbmUJG1wIysexAed3omC4=;
-        b=R0EO8jRcC3b+HX/0l95QKw8su+E0KG2JmljzjyRkm3AY86mnG11Aj1wi053m12GdNk
-         ilxSrERwKMSWBcEXaRo2P/VGtoy00QPIPiD2jln5gmu8TbKfAOVzl8OhoKUDjL3I50cF
-         L4AI7veL3ihxcTrgIk861Er16COfz4Azj9IZs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=tQ+XJ86Q75z7YMaMgzrVYfwbmUJG1wIysexAed3omC4=;
-        b=tM+1Yx8cdrNO92Pz6eInnj5g0RhV+f/jKhDZY+nWwM59h0EhVg+Vq8pp88Wlc5f/ht
-         S1Fn6JNjDg/yfep6iT3cynCBhDlRickiXh6PlWM9gAh/KbT5hpAqWudKlqlzws55J8Hr
-         XTPmM+B2qDbAvSHgwMcErEIT2eEsc1E+M8st4/eKwR1eRYVBMDgedke2HASugLMvz9qV
-         vU767aCmbC1XB2CYp3vS+bZYy6Qfd0QlCzVlRSUCJDgn+JhgP8KTIg8b3x9RQDfG6lq6
-         qYQvYBLn4cqAA8RCowZUffClJfNoPy7Zxt9z2zPhWPblLqKnyYStrdlVWYdIy0AfBc2s
-         rCAg==
-X-Gm-Message-State: AOAM533kRe66mZZBg3lY+uThw9wbohPY8BuYlWkdDhLaaLf3J1r6cHBA
-        ukLIa62DauDtOiEGVpAo9/nMHw==
-X-Google-Smtp-Source: ABdhPJwn00mgylH0fW+1CfjtqqDDYplaEK62eGDUC3ycdST3x9u88Bsm2CX7lGAsQu0GIJ2jmrxJJw==
-X-Received: by 2002:a62:7785:: with SMTP id s127mr3256200pfc.196.1597308507353;
-        Thu, 13 Aug 2020 01:48:27 -0700 (PDT)
-Received: from localhost (2001-44b8-1113-6700-b095-181e-17b3-2e29.static.ipv6.internode.on.net. [2001:44b8:1113:6700:b095:181e:17b3:2e29])
-        by smtp.gmail.com with ESMTPSA id s6sm4469130pjn.48.2020.08.13.01.48.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 01:48:26 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs/select.c: batch user writes in do_sys_poll
-In-Reply-To: <20200813073220.GB15436@infradead.org>
-References: <20200813071120.2113039-1-dja@axtens.net> <20200813073220.GB15436@infradead.org>
-Date:   Thu, 13 Aug 2020 18:48:18 +1000
-Message-ID: <87zh6zlynh.fsf@dja-thinkpad.axtens.net>
+        id S1726606AbgHMItv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 04:49:51 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9278 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726081AbgHMItv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 04:49:51 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 2A4F769E3430D62507E1;
+        Thu, 13 Aug 2020 16:49:47 +0800 (CST)
+Received: from DESKTOP-A9S207P.china.huawei.com (10.174.179.61) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 13 Aug 2020 16:49:40 +0800
+From:   <wuyun.wu@huawei.com>
+To:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        "David Rientjes" <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>
+CC:     <hewenliang4@huawei.com>, <hushiyuan@huawei.com>,
+        Abel Wu <wuyun.wu@huawei.com>,
+        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>,
+        "open list" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mm/slub: sysfs cleanup on cpu partial when !SLUB_CPU_PARTIAL
+Date:   Thu, 13 Aug 2020 16:48:54 +0800
+Message-ID: <20200813084858.1494-1-wuyun.wu@huawei.com>
+X-Mailer: git-send-email 2.28.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.61]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Hellwig <hch@infradead.org> writes:
+From: Abel Wu <wuyun.wu@huawei.com>
 
-> On Thu, Aug 13, 2020 at 05:11:20PM +1000, Daniel Axtens wrote:
->> When returning results to userspace, do_sys_poll repeatedly calls
->> put_user() - once per fd that it's watching.
->> 
->> This means that on architectures that support some form of
->> kernel-to-userspace access protection, we end up enabling and disabling
->> access once for each file descripter we're watching. This is inefficent
->> and we can improve things by batching the accesses together.
->> 
->> To make sure there's not too much happening in the window when user
->> accesses are permitted, we don't walk the linked list with accesses on.
->> This leads to some slightly messy code in the loop, unfortunately.
->> 
->> Unscientific benchmarking with the poll2_threads microbenchmark from
->> will-it-scale, run as `./poll2_threads -t 1 -s 15`:
->> 
->>  - Bare-metal Power9 with KUAP: ~48.8% speed-up
->>  - VM on amd64 laptop with SMAP: ~25.5% speed-up
->> 
->> Signed-off-by: Daniel Axtens <dja@axtens.net>
->
-> Seem like this could simply use a copy_to_user to further simplify
-> things?
+Hide cpu partial related sysfs entries when !CONFIG_SLUB_CPU_PARTIAL to
+avoid confusion.
 
-I'll benchmark it and find out.
+Signed-off-by: Abel Wu <wuyun.wu@huawei.com>
+---
+ mm/slub.c | 56 +++++++++++++++++++++++++++++++------------------------
+ 1 file changed, 32 insertions(+), 24 deletions(-)
 
-> Also please don't pointlessly add overly long lines.
+diff --git a/mm/slub.c b/mm/slub.c
+index 5d89e4064f83..4f496ae5a820 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -5071,29 +5071,6 @@ static ssize_t min_partial_store(struct kmem_cache *s, const char *buf,
+ }
+ SLAB_ATTR(min_partial);
+ 
+-static ssize_t cpu_partial_show(struct kmem_cache *s, char *buf)
+-{
+-	return sprintf(buf, "%u\n", slub_cpu_partial(s));
+-}
+-
+-static ssize_t cpu_partial_store(struct kmem_cache *s, const char *buf,
+-				 size_t length)
+-{
+-	unsigned int objects;
+-	int err;
+-
+-	err = kstrtouint(buf, 10, &objects);
+-	if (err)
+-		return err;
+-	if (objects && !kmem_cache_has_cpu_partial(s))
+-		return -EINVAL;
+-
+-	slub_set_cpu_partial(s, objects);
+-	flush_all(s);
+-	return length;
+-}
+-SLAB_ATTR(cpu_partial);
+-
+ static ssize_t ctor_show(struct kmem_cache *s, char *buf)
+ {
+ 	if (!s->ctor)
+@@ -5132,6 +5109,30 @@ static ssize_t objects_partial_show(struct kmem_cache *s, char *buf)
+ }
+ SLAB_ATTR_RO(objects_partial);
+ 
++#ifdef CONFIG_SLUB_CPU_PARTIAL
++static ssize_t cpu_partial_show(struct kmem_cache *s, char *buf)
++{
++	return sprintf(buf, "%u\n", slub_cpu_partial(s));
++}
++
++static ssize_t cpu_partial_store(struct kmem_cache *s, const char *buf,
++				 size_t length)
++{
++	unsigned int objects;
++	int err;
++
++	err = kstrtouint(buf, 10, &objects);
++	if (err)
++		return err;
++	if (objects && !kmem_cache_has_cpu_partial(s))
++		return -EINVAL;
++
++	slub_set_cpu_partial(s, objects);
++	flush_all(s);
++	return length;
++}
++SLAB_ATTR(cpu_partial);
++
+ static ssize_t slabs_cpu_partial_show(struct kmem_cache *s, char *buf)
+ {
+ 	int objects = 0;
+@@ -5166,6 +5167,7 @@ static ssize_t slabs_cpu_partial_show(struct kmem_cache *s, char *buf)
+ 	return len + sprintf(buf + len, "\n");
+ }
+ SLAB_ATTR_RO(slabs_cpu_partial);
++#endif
+ 
+ static ssize_t reclaim_account_show(struct kmem_cache *s, char *buf)
+ {
+@@ -5496,10 +5498,12 @@ STAT_ATTR(DEACTIVATE_BYPASS, deactivate_bypass);
+ STAT_ATTR(ORDER_FALLBACK, order_fallback);
+ STAT_ATTR(CMPXCHG_DOUBLE_CPU_FAIL, cmpxchg_double_cpu_fail);
+ STAT_ATTR(CMPXCHG_DOUBLE_FAIL, cmpxchg_double_fail);
++#ifdef CONFIG_SLUB_CPU_PARTIAL
+ STAT_ATTR(CPU_PARTIAL_ALLOC, cpu_partial_alloc);
+ STAT_ATTR(CPU_PARTIAL_FREE, cpu_partial_free);
+ STAT_ATTR(CPU_PARTIAL_NODE, cpu_partial_node);
+ STAT_ATTR(CPU_PARTIAL_DRAIN, cpu_partial_drain);
++#endif
+ #endif	/* CONFIG_SLUB_STATS */
+ 
+ static struct attribute *slab_attrs[] = {
+@@ -5508,7 +5512,6 @@ static struct attribute *slab_attrs[] = {
+ 	&objs_per_slab_attr.attr,
+ 	&order_attr.attr,
+ 	&min_partial_attr.attr,
+-	&cpu_partial_attr.attr,
+ 	&objects_attr.attr,
+ 	&objects_partial_attr.attr,
+ 	&partial_attr.attr,
+@@ -5520,7 +5523,10 @@ static struct attribute *slab_attrs[] = {
+ 	&reclaim_account_attr.attr,
+ 	&destroy_by_rcu_attr.attr,
+ 	&shrink_attr.attr,
++#ifdef CONFIG_SLUB_CPU_PARTIAL
++	&cpu_partial_attr.attr,
+ 	&slabs_cpu_partial_attr.attr,
++#endif
+ #ifdef CONFIG_SLUB_DEBUG
+ 	&total_objects_attr.attr,
+ 	&slabs_attr.attr,
+@@ -5562,11 +5568,13 @@ static struct attribute *slab_attrs[] = {
+ 	&order_fallback_attr.attr,
+ 	&cmpxchg_double_fail_attr.attr,
+ 	&cmpxchg_double_cpu_fail_attr.attr,
++#ifdef CONFIG_SLUB_CPU_PARTIAL
+ 	&cpu_partial_alloc_attr.attr,
+ 	&cpu_partial_free_attr.attr,
+ 	&cpu_partial_node_attr.attr,
+ 	&cpu_partial_drain_attr.attr,
+ #endif
++#endif
+ #ifdef CONFIG_FAILSLAB
+ 	&failslab_attr.attr,
+ #endif
+-- 
+2.28.0.windows.1
 
-Weird, I ran the commit through checkpatch and it didn't pick it
-up. I'll check the next version more carefully.
-
-Regards,
-Daniel
