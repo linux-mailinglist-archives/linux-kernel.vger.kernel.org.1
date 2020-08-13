@@ -2,70 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194C524397D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFB5243986
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726700AbgHMLrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 07:47:24 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35643 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726542AbgHMLoV (ORCPT
+        id S1726567AbgHML7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 07:59:09 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59980 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726570AbgHML4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 07:44:21 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1k6Be4-0007ty-85; Thu, 13 Aug 2020 11:43:44 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][V2] of/address: check for invalid range.cpu_addr
-Date:   Thu, 13 Aug 2020 12:43:44 +0100
-Message-Id: <20200813114344.67730-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 13 Aug 2020 07:56:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597319770;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EZlOhHYV75r7YTUyN5H+sCzjVVAp8wKOhPwk4M3cflE=;
+        b=ZXCH/R3Ni1eLV7dh7vzaWHGjOMKRNhwACQOoiCd+i4FjZMhLKHszWpT8E7sFKDVPYEsv8C
+        7lUYNG4QKGJEMw+l7tvXQjKg+8/uPz14dolDTHVM4GZGsp8oLzhibKnc6qcxqLWV1xQvyM
+        zGbaLkQ9WbbMgyxovQLlZ563/Fj9GCU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-580-AXUPFhH2Mhm-ywsOoBUpHA-1; Thu, 13 Aug 2020 07:48:01 -0400
+X-MC-Unique: AXUPFhH2Mhm-ywsOoBUpHA-1
+Received: by mail-wr1-f70.google.com with SMTP id z12so1988082wrl.16
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:48:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EZlOhHYV75r7YTUyN5H+sCzjVVAp8wKOhPwk4M3cflE=;
+        b=LbJXqbtSbRQQn5xknidJfBOZv0PXK27+3/H4bL7vZVt0p8w/jRblYKB/ZhdT+fMBz2
+         3CMhQQ0rrblgHoeQ2pe8bUb+Mijr8zNs8puJx3sRIWXxUaB33g40/q2pujDCoNyMXc9M
+         cTuqN1pc4plLr8VPIjaMiD44VT5T8wjY4HB8jRrPtrrbokqEHeOsaUpLLAtsTL9Ug2k5
+         h1cAJnblXEgSZOU9n4KgYZIV2h508yDcHCmzGCRC9liuwhDTVRm0BPA6BEZ4LqUomzua
+         j6Bt9vieqxPK4Wei3niHb4seNB3BtiYgzFY4Z5Dyna2rPx05rKtScQYoYaMD0GKGdqZc
+         2+Vg==
+X-Gm-Message-State: AOAM533/ARZZ+xe5gaqyPHfP0b2MnwO8rGAL7g36E67V6a75kFbXcCDV
+        azPrGggwuACBj/1UmkrfbyIZGFkhRb0xVxItVBNa6ec5zq2w5Sty/xB7OB7HTHSTIFm65cPgtqG
+        wNjgsxMPZp1zzOPq+TXw6KE3z
+X-Received: by 2002:adf:f511:: with SMTP id q17mr3637048wro.414.1597319280147;
+        Thu, 13 Aug 2020 04:48:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz8RW5csMCCrSiBHobEDZMj9QmiDMAx1geqH7u8cSNLCG6KlEWPnnMnrhh1csceZBt9Jv8I0Q==
+X-Received: by 2002:adf:f511:: with SMTP id q17mr3637032wro.414.1597319279937;
+        Thu, 13 Aug 2020 04:47:59 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:51ad:9349:1ff0:923e? ([2001:b07:6468:f312:51ad:9349:1ff0:923e])
+        by smtp.gmail.com with ESMTPSA id b14sm10751480wrj.93.2020.08.13.04.47.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Aug 2020 04:47:59 -0700 (PDT)
+Subject: Re: [RFC PATCH 6/7] core/metricfs: expose x86-specific irq
+ information through metricfs
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Adams <jwadams@google.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kvm@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>
+References: <20200807212916.2883031-1-jwadams@google.com>
+ <20200807212916.2883031-7-jwadams@google.com>
+ <87mu2yluso.fsf@nanos.tec.linutronix.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <2500b04e-a890-2621-2f19-be08dfe2e862@redhat.com>
+Date:   Thu, 13 Aug 2020 13:47:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87mu2yluso.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 13/08/20 12:11, Thomas Gleixner wrote:
+>> Add metricfs support for displaying percpu irq counters for x86.
+>> The top directory is /sys/kernel/debug/metricfs/irq_x86.
+>> Then there is a subdirectory for each x86-specific irq counter.
+>> For example:
+>>
+>>    cat /sys/kernel/debug/metricfs/irq_x86/TLB/values
+> What is 'TLB'? I'm not aware of any vector which is named TLB.
 
-Currently invalid CPU addresses are not being sanity checked resulting in
-SATA setup failure on a SynQuacer SC2A11 development machine. The original
-check was removed by and earlier commit, so add a sanity check back in
-to avoid this regression.
+There's a "TLB" entry in /proc/interrupts.
 
-Fixes: 7a8b64d17e35 ("of/address: use range parser for of_dma_get_range")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/of/address.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index 590493e04b01..6ffbf7b99e92 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -985,6 +985,10 @@ int of_dma_get_range(struct device_node *np, u64 *dma_addr, u64 *paddr, u64 *siz
- 			/* Don't error out as we'd break some existing DTs */
- 			continue;
- 		}
-+		if (range.cpu_addr == OF_BAD_ADDR) {
-+			pr_err("Translation of CPU address failed on node (%pOF)\n", node);
-+			continue;
-+		}
- 		dma_offset = range.cpu_addr - range.bus_addr;
- 
- 		/* Take lower and upper limits */
--- 
-
-V2: print message using pr_err and don't print range.cpu_addr as it's always
-    going to be OF_BAD_ADDR so the information is pointless.
---
-2.27.0
+Paolo
 
