@@ -2,82 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78D8243436
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 08:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FFF243444
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 08:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgHMGxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 02:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgHMGxP (ORCPT
+        id S1726546AbgHMG5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 02:57:11 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:41935 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725982AbgHMG5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 02:53:15 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB522C061383
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 23:53:15 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1k676l-0005EP-FS; Thu, 13 Aug 2020 08:53:03 +0200
-Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1k676j-0002oU-6l; Thu, 13 Aug 2020 08:53:01 +0200
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>, trivial@kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: ABI: iio: fix some spelling mistakes
-Date:   Thu, 13 Aug 2020 08:52:20 +0200
-Message-Id: <20200813065220.23256-1-a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
+        Thu, 13 Aug 2020 02:57:11 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U5dLrE0_1597301826;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U5dLrE0_1597301826)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 13 Aug 2020 14:57:08 +0800
+Subject: Re: [RFC PATCH 1/3] mm: Drop locked from isolate_migratepages_block
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     yang.shi@linux.alibaba.com, lkp@intel.com, rong.a.chen@intel.com,
+        khlebnikov@yandex-team.ru, kirill@shutemov.name, hughd@google.com,
+        linux-kernel@vger.kernel.org, daniel.m.jordan@oracle.com,
+        linux-mm@kvack.org, shakeelb@google.com, willy@infradead.org,
+        hannes@cmpxchg.org, tj@kernel.org, cgroups@vger.kernel.org,
+        akpm@linux-foundation.org, richard.weiyang@gmail.com,
+        mgorman@techsingularity.net, iamjoonsoo.kim@lge.com
+References: <20200813035100.13054.25671.stgit@localhost.localdomain>
+ <20200813040224.13054.96724.stgit@localhost.localdomain>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <8ea9e186-b223-fb1b-5c82-2aa43c5e9f10@linux.alibaba.com>
+Date:   Thu, 13 Aug 2020 14:56:30 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20200813040224.13054.96724.stgit@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes some typos found while browsing the documentation.
 
-Cc: trivial@kernel.org
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
----
- Documentation/ABI/testing/sysfs-bus-iio | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-index d3e53a6d8331..ef86702678c7 100644
---- a/Documentation/ABI/testing/sysfs-bus-iio
-+++ b/Documentation/ABI/testing/sysfs-bus-iio
-@@ -49,9 +49,9 @@ Description:
- 		resulting sampling frequency.  In many devices this
- 		parameter has an effect on input filters etc. rather than
- 		simply controlling when the input is sampled.  As this
--		effects data ready triggers, hardware buffers and the sysfs
-+		affects data ready triggers, hardware buffers and the sysfs
- 		direct access interfaces, it may be found in any of the
--		relevant directories.  If it effects all of the above
-+		relevant directories.  If it affects all of the above
- 		then it is to be found in the base device directory.
- 
- What:		/sys/bus/iio/devices/iio:deviceX/sampling_frequency_available
-@@ -1013,7 +1013,7 @@ What:		/sys/.../events/in_activity_running_thresh_falling_en
- KernelVersion:	3.19
- Contact:	linux-iio@vger.kernel.org
- Description:
--		Enables or disables activitity events. Depending on direction
-+		Enables or disables activity events. Depending on direction
- 		an event is generated when sensor ENTERS or LEAVES a given state.
- 
- What:		/sys/.../events/in_activity_still_thresh_rising_value
--- 
-2.28.0
+在 2020/8/13 下午12:02, Alexander Duyck 写道:
+> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> 
+> We can drop the need for the locked variable by making use of the
+> lruvec_holds_page_lru_lock function. By doing this we can avoid some rcu
+> locking ugliness for the case where the lruvec is still holding the LRU
+> lock associated with the page. Instead we can just use the lruvec and if it
+> is NULL we assume the lock was released.
+> 
+> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> ---
+>  mm/compaction.c |   45 ++++++++++++++++++++-------------------------
+>  1 file changed, 20 insertions(+), 25 deletions(-)
+
+Thanks a lot!
+Don't know if community is ok if we keep the patch following whole patchset alone?
 
