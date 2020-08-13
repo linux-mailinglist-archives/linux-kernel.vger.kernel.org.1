@@ -2,188 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3E52437AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C023B24378D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgHMJ3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 05:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52550 "EHLO
+        id S1726612AbgHMJXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 05:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbgHMJ3W (ORCPT
+        with ESMTP id S1726526AbgHMJXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 05:29:22 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8910BC061757;
-        Thu, 13 Aug 2020 02:29:21 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597310959;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c5wCQOX25aaOsWpq5c0leMLJU3ShjXx6gzZ+lkhN/m0=;
-        b=Vzk+YeoEP4LH28amktQIViJ8D9qMr/DHRfX/C89rl4+p8WIQ7HxIwKIZi1GnX9ILYvvox7
-        ikl+xVRjiDXBraLXEcZqYAKR+G0Vpg5CBw7Iskmlslxe70tBQ+95nKOHzjvpjGFagzxS4B
-        TFAKUTKl5Yt9PN9e0M7DLx2ak/iQoS6hrCwcMnsPeEhoLAYDEHYOYs19nZJUzAUcd+jVHG
-        4ypxj9WucKRV6r6CFoguKAjXQcZCZVllHyd9ZkIis4O4hUsISUcEYxXvLLW68jFPAsYpcj
-        wjgTJ6Q5/xzow0FdoX9MRoFoxAbfh1hGMftqFhkqCGRgt8evsh/XPFeHx1slgg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597310959;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c5wCQOX25aaOsWpq5c0leMLJU3ShjXx6gzZ+lkhN/m0=;
-        b=b9PXrdqWDzOqx5rZ1FfLBRohEdSAf3TXIS2lBOlq7JURbLGYkOh1eSvgitaTkmQyNf/VvX
-        bnbJBkyqO+25WDCw==
-To:     Maulik Shah <mkshah@codeaurora.org>, bjorn.andersson@linaro.org,
-        maz@kernel.org, linus.walleij@linaro.org, swboyd@chromium.org,
-        evgreen@chromium.org, mka@chromium.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, agross@kernel.org,
-        jason@lakedaemon.net, dianders@chromium.org, rnayak@codeaurora.org,
-        ilina@codeaurora.org, lsrao@codeaurora.org,
-        Maulik Shah <mkshah@codeaurora.org>
-Subject: Re: [PATCH v4 3/7] genirq: Introduce irq_suspend_one() and irq_resume_one() callbacks
-In-Reply-To: <1597058460-16211-4-git-send-email-mkshah@codeaurora.org>
-References: <1597058460-16211-1-git-send-email-mkshah@codeaurora.org> <1597058460-16211-4-git-send-email-mkshah@codeaurora.org>
-Date:   Thu, 13 Aug 2020 11:29:18 +0200
-Message-ID: <87pn7ulwr5.fsf@nanos.tec.linutronix.de>
+        Thu, 13 Aug 2020 05:23:10 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F35C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 02:23:09 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 9so4074289wmj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 02:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2K6+RoeuBQlm0IsRzXt1NhKSqZfuKNPs2u/9rtksF/A=;
+        b=sVAPWrVKkD5jUs4jNOuBnPy7I+D9RG7yw538F2is62Y0u2yYthN6Ek/slCIdbuaRnC
+         kf32QNRx3dYQ5QgN2hlbjOtA8Hh+AwFCiSEeCTZ+mhMS4CJPA+V3cFYWyJ7D/5yqJ+eh
+         hFgIj0OyRglhZcEpSk8NPsxFA+m4W0RnjEEiR8/DRRCKmvO6xXLF5KWr4zce9fLQNGJI
+         o9grRXHt8ukscKQypc1qMN4PEGxVhmpzujmfclXKOjGzsv2qKvO8hBKxAlVoxyXGzdOo
+         8p0E4aL6vee+S1ZCXX9FOrYoFxE7eSzWPM2NDpP4/emqLDP2UidnJvSWTcxAiU64k/mK
+         xm5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2K6+RoeuBQlm0IsRzXt1NhKSqZfuKNPs2u/9rtksF/A=;
+        b=QscoHTLhKf4+L5lsg9H/dXjoSTOuYwBjVVstpGZ79TDr2J8w2h3RCc8Niu0k3M07Ff
+         A3pshOSj83fuAzHRBazd1KCEkRzEn+3wBonNmsYXFffM5EZefOyPgt5g475R2iBN+ONG
+         U6QP/1S/O231UZ1qeb77HrZcEeEZZESAUh0uViWH9Ua2nHGisg16kMUnYRU9AUrUe7PB
+         EOf5lKSLoU2gZOVPyGXPOpGR/Vx6Mn/6+t8v+tvca58PUnvVWXsiL8VpiJQykJ/jDfCt
+         G1U8+XSxADIAxNvStHS6Vp3g0P5OYfooRcFyq4sUavqhmzwAIpx62wAJRbVG5eSNLxLe
+         xtAg==
+X-Gm-Message-State: AOAM531F9PNuGTVjPH1pejcwy1KeZyKmD4eu0ZkM/O9ND3jvi/Wc2gaD
+        CU8mVvfIyZAXUQiF/4SHdKHDU4tbcLfSkST61XztnMvDD0M=
+X-Google-Smtp-Source: ABdhPJySjPEnTjiiOk6CHlsZcfXBEyturRz6SwmXdk6870FMGQ6lvM5XG1n1kXgbmKFxgDkSLgEdBJNpgtRgHKFH1HE=
+X-Received: by 2002:a7b:cc8e:: with SMTP id p14mr3406688wma.111.1597310588444;
+ Thu, 13 Aug 2020 02:23:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <202008120718.VxKCVIJX%lkp@intel.com>
+In-Reply-To: <202008120718.VxKCVIJX%lkp@intel.com>
+From:   Xin Long <lucien.xin@gmail.com>
+Date:   Thu, 13 Aug 2020 17:35:23 +0800
+Message-ID: <CADvbK_fycBSAL5Xz1XjGNmEfQ6499n+4Wr01GTn-vNi0Fuj2FQ@mail.gmail.com>
+Subject: Re: net/tipc/udp_media.c:743: undefined reference to `ipv6_dev_find'
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maulik Shah <mkshah@codeaurora.org> writes:
-> From: Douglas Anderson <dianders@chromium.org>
+On Wed, Aug 12, 2020 at 7:21 AM kernel test robot <lkp@intel.com> wrote:
 >
-> The "struct irq_chip" has two callbacks in it: irq_suspend() and
-> irq_resume().  These two callbacks are interesting because sometimes
-> an irq chip needs to know about suspend/resume, but they are a bit
-> awkward because:
-> 1. They are called once for the whole irq_chip, not once per IRQ.
->    It's passed data for one of the IRQs enabled on that chip.  That
->    means it's up to the irq_chip driver to aggregate.
-> 2. They are only called if you're using "generic-chip", which not
->    everyone is.
-> 3. The implementation uses syscore ops, which apparently have problems
->    with s2idle.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   c636eef2ee3696f261a35f34989842701a107895
+> commit: 5a6f6f579178dbeb33002d93b4f646c31348fac9 tipc: set ub->ifindex for local ipv6 address
+> date:   6 days ago
+> config: ia64-randconfig-r005-20200811 (attached as .config)
+> compiler: ia64-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         git checkout 5a6f6f579178dbeb33002d93b4f646c31348fac9
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=ia64
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    ia64-linux-ld: net/tipc/udp_media.o: in function `tipc_udp_enable':
+> >> net/tipc/udp_media.c:743: undefined reference to `ipv6_dev_find'
+To use some APIs exported from ipv6 code.
+We need add this:
 
-The main point is that these callbacks are specific to generic chip and
-not used anywhere else.
+--- a/net/tipc/Kconfig
++++ b/net/tipc/Kconfig
+@@ -6,6 +6,7 @@
+ menuconfig TIPC
+        tristate "The TIPC Protocol"
+        depends on INET
++       depends on IPV6 || IPV6=n
 
-> Probably the old irq_suspend() and irq_resume() callbacks should be
-> deprecated.
-
-You need to analyze first what these callbacks actually do. :)
-
-> Let's introcuce a nicer API that works for all irq_chip devices.
-
-s/Let's intro/Intro/
-
-Let's is pretty useless in a changelog especially if you read it some
-time after the patch got applied.
-
-> This will be called by the core and is called once per IRQ.  The core
-> will call the suspend callback after doing its normal suspend
-> operations and the resume before its normal resume operations.
-
-Will be? You are adding the code which calls that unconditionally even.
-
-> +void suspend_one_irq(struct irq_desc *desc)
-> +{
-> +	struct irq_chip *chip = desc->irq_data.chip;
-> +
-> +	if (chip->irq_suspend_one)
-> +		chip->irq_suspend_one(&desc->irq_data);
-> +}
-> +
-> +void resume_one_irq(struct irq_desc *desc)
-> +{
-> +	struct irq_chip *chip = desc->irq_data.chip;
-> +
-> +	if (chip->irq_resume_one)
-> +		chip->irq_resume_one(&desc->irq_data);
-> +}
-
-There not much of a point to have these in chip.c. The functionality is
-clearly pm.c only.
-
->  static bool suspend_device_irq(struct irq_desc *desc)
->  {
-> +	bool sync = false;
-> +
->  	if (!desc->action || irq_desc_is_chained(desc) ||
->  	    desc->no_suspend_depth)
-> -		return false;
-> +		goto exit;
-
-What?
-
-If no_suspend_depth is > 0 why would you try to tell the irq chip
-that this line needs to be suspended?
-
-If there is no action, then the interrupt line is in shut down
-state. What's the point of suspending it?
-
-Chained interrupts are special and you really have to think hard whether
-calling suspend for them unconditionally is a good idea. What if a
-wakeup irq is connected to this chained thing?
-
->  	if (irqd_is_wakeup_set(&desc->irq_data)) {
->  		irqd_set(&desc->irq_data, IRQD_WAKEUP_ARMED);
-> +
->  		/*
->  		 * We return true here to force the caller to issue
->  		 * synchronize_irq(). We need to make sure that the
->  		 * IRQD_WAKEUP_ARMED is visible before we return from
->  		 * suspend_device_irqs().
->  		 */
-> -		return true;
-> +		sync = true;
-> +		goto exit;
-
-So again. This interrupt is a wakeup source. What's the point of
-suspending it unconditionally.
-
->  	}
->  
->  	desc->istate |= IRQS_SUSPENDED;
-> @@ -95,7 +99,10 @@ static bool suspend_device_irq(struct irq_desc *desc)
->  	 */
->  	if (irq_desc_get_chip(desc)->flags & IRQCHIP_MASK_ON_SUSPEND)
->  		mask_irq(desc);
-> -	return true;
-> +
-> +exit:
-> +	suspend_one_irq(desc);
-> +	return sync;
-
-So what happens in this case:
-
-   CPU0                         CPU1
-   interrupt                    suspend_device_irq()
-     handle()                     chip->suspend_one()
-       action()                 ...              
-       chip->fiddle();
-
-????
-
-What is the logic here and how is this going to work under all
-circumstances without having magic hacks in the irq chip to handle all
-the corner cases?
-
-This needs way more thoughts vs. the various states and sync
-requirements. Just adding callbacks, invoking them unconditionally, not
-giving any rationale how the whole thing is supposed to work and then
-let everyone figure out how to deal with the state and corner case
-handling at the irq chip driver level does not cut it, really.
-
-State handling is core functionality and if irq chip drivers have
-special requirements then they want to be communicated with flags and/or
-specialized callbacks.
-
-Thanks,
-
-        tglx
+>
+> vim +743 net/tipc/udp_media.c
+>
+>    642
+>    643  /**
+>    644   * tipc_udp_enable - callback to create a new udp bearer instance
+>    645   * @net:        network namespace
+>    646   * @b:          pointer to generic tipc_bearer
+>    647   * @attrs:      netlink bearer configuration
+>    648   *
+>    649   * validate the bearer parameters and initialize the udp bearer
+>    650   * rtnl_lock should be held
+>    651   */
+>    652  static int tipc_udp_enable(struct net *net, struct tipc_bearer *b,
+>    653                             struct nlattr *attrs[])
+>    654  {
+>    655          int err = -EINVAL;
+>    656          struct udp_bearer *ub;
+>    657          struct udp_media_addr remote = {0};
+>    658          struct udp_media_addr local = {0};
+>    659          struct udp_port_cfg udp_conf = {0};
+>    660          struct udp_tunnel_sock_cfg tuncfg = {NULL};
+>    661          struct nlattr *opts[TIPC_NLA_UDP_MAX + 1];
+>    662          u8 node_id[NODE_ID_LEN] = {0,};
+>    663          int rmcast = 0;
+>    664
+>    665          ub = kzalloc(sizeof(*ub), GFP_ATOMIC);
+>    666          if (!ub)
+>    667                  return -ENOMEM;
+>    668
+>    669          INIT_LIST_HEAD(&ub->rcast.list);
+>    670
+>    671          if (!attrs[TIPC_NLA_BEARER_UDP_OPTS])
+>    672                  goto err;
+>    673
+>    674          if (nla_parse_nested_deprecated(opts, TIPC_NLA_UDP_MAX, attrs[TIPC_NLA_BEARER_UDP_OPTS], tipc_nl_udp_policy, NULL))
+>    675                  goto err;
+>    676
+>    677          if (!opts[TIPC_NLA_UDP_LOCAL] || !opts[TIPC_NLA_UDP_REMOTE]) {
+>    678                  pr_err("Invalid UDP bearer configuration");
+>    679                  err = -EINVAL;
+>    680                  goto err;
+>    681          }
+>    682
+>    683          err = tipc_parse_udp_addr(opts[TIPC_NLA_UDP_LOCAL], &local,
+>    684                                    &ub->ifindex);
+>    685          if (err)
+>    686                  goto err;
+>    687
+>    688          err = tipc_parse_udp_addr(opts[TIPC_NLA_UDP_REMOTE], &remote, NULL);
+>    689          if (err)
+>    690                  goto err;
+>    691
+>    692          if (remote.proto != local.proto) {
+>    693                  err = -EINVAL;
+>    694                  goto err;
+>    695          }
+>    696
+>    697          /* Checking remote ip address */
+>    698          rmcast = tipc_udp_is_mcast_addr(&remote);
+>    699
+>    700          /* Autoconfigure own node identity if needed */
+>    701          if (!tipc_own_id(net)) {
+>    702                  memcpy(node_id, local.ipv6.in6_u.u6_addr8, 16);
+>    703                  tipc_net_init(net, node_id, 0);
+>    704          }
+>    705          if (!tipc_own_id(net)) {
+>    706                  pr_warn("Failed to set node id, please configure manually\n");
+>    707                  err = -EINVAL;
+>    708                  goto err;
+>    709          }
+>    710
+>    711          b->bcast_addr.media_id = TIPC_MEDIA_TYPE_UDP;
+>    712          b->bcast_addr.broadcast = TIPC_BROADCAST_SUPPORT;
+>    713          rcu_assign_pointer(b->media_ptr, ub);
+>    714          rcu_assign_pointer(ub->bearer, b);
+>    715          tipc_udp_media_addr_set(&b->addr, &local);
+>    716          if (local.proto == htons(ETH_P_IP)) {
+>    717                  struct net_device *dev;
+>    718
+>    719                  dev = __ip_dev_find(net, local.ipv4.s_addr, false);
+>    720                  if (!dev) {
+>    721                          err = -ENODEV;
+>    722                          goto err;
+>    723                  }
+>    724                  udp_conf.family = AF_INET;
+>    725
+>    726                  /* Switch to use ANY to receive packets from group */
+>    727                  if (rmcast)
+>    728                          udp_conf.local_ip.s_addr = htonl(INADDR_ANY);
+>    729                  else
+>    730                          udp_conf.local_ip.s_addr = local.ipv4.s_addr;
+>    731                  udp_conf.use_udp_checksums = false;
+>    732                  ub->ifindex = dev->ifindex;
+>    733                  if (tipc_mtu_bad(dev, sizeof(struct iphdr) +
+>    734                                        sizeof(struct udphdr))) {
+>    735                          err = -EINVAL;
+>    736                          goto err;
+>    737                  }
+>    738                  b->mtu = b->media->mtu;
+>    739  #if IS_ENABLED(CONFIG_IPV6)
+>    740          } else if (local.proto == htons(ETH_P_IPV6)) {
+>    741                  struct net_device *dev;
+>    742
+>  > 743                  dev = ipv6_dev_find(net, &local.ipv6);
+>    744                  if (!dev) {
+>    745                          err = -ENODEV;
+>    746                          goto err;
+>    747                  }
+>    748                  udp_conf.family = AF_INET6;
+>    749                  udp_conf.use_udp6_tx_checksums = true;
+>    750                  udp_conf.use_udp6_rx_checksums = true;
+>    751                  if (rmcast)
+>    752                          udp_conf.local_ip6 = in6addr_any;
+>    753                  else
+>    754                          udp_conf.local_ip6 = local.ipv6;
+>    755                  ub->ifindex = dev->ifindex;
+>    756                  b->mtu = 1280;
+>    757  #endif
+>    758          } else {
+>    759                  err = -EAFNOSUPPORT;
+>    760                  goto err;
+>    761          }
+>    762          udp_conf.local_udp_port = local.port;
+>    763          err = udp_sock_create(net, &udp_conf, &ub->ubsock);
+>    764          if (err)
+>    765                  goto err;
+>    766          tuncfg.sk_user_data = ub;
+>    767          tuncfg.encap_type = 1;
+>    768          tuncfg.encap_rcv = tipc_udp_recv;
+>    769          tuncfg.encap_destroy = NULL;
+>    770          setup_udp_tunnel_sock(net, ub->ubsock, &tuncfg);
+>    771
+>    772          err = dst_cache_init(&ub->rcast.dst_cache, GFP_ATOMIC);
+>    773          if (err)
+>    774                  goto free;
+>    775
+>    776          /**
+>    777           * The bcast media address port is used for all peers and the ip
+>    778           * is used if it's a multicast address.
+>    779           */
+>    780          memcpy(&b->bcast_addr.value, &remote, sizeof(remote));
+>    781          if (rmcast)
+>    782                  err = enable_mcast(ub, &remote);
+>    783          else
+>    784                  err = tipc_udp_rcast_add(b, &remote);
+>    785          if (err)
+>    786                  goto free;
+>    787
+>    788          return 0;
+>    789
+>    790  free:
+>    791          dst_cache_destroy(&ub->rcast.dst_cache);
+>    792          udp_tunnel_sock_release(ub->ubsock);
+>    793  err:
+>    794          kfree(ub);
+>    795          return err;
+>    796  }
+>    797
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
