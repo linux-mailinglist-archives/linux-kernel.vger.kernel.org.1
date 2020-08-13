@@ -2,299 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37222438DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 12:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1B62438F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 12:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgHMKrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 06:47:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:53276 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726048AbgHMKrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 06:47:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDB8231B;
-        Thu, 13 Aug 2020 03:47:20 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.38.123])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7CB6A3F70D;
-        Thu, 13 Aug 2020 03:47:19 -0700 (PDT)
-Date:   Thu, 13 Aug 2020 11:47:16 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Tuan Phan <tuanphan@os.amperecomputing.com>
-Cc:     patches@amperecomputing.com, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] driver/perf: Add PMU driver for the ARM DMC-620
- memory controller.
-Message-ID: <20200813104716.GB45195@C02TD0UTHF1T.local>
-References: <1589229894-18863-1-git-send-email-tuanphan@os.amperecomputing.com>
+        id S1726670AbgHMKvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 06:51:53 -0400
+Received: from mail-db8eur05on2095.outbound.protection.outlook.com ([40.107.20.95]:55136
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726102AbgHMKvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 06:51:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tyx3h8qin6cp5OVQlt++l7gkwHY1uPF7p/xxTd/Mpf3cGBEyfwGJev8ba8qDjr8r343xabN+HqT/LHm6BEtFoVAlv3xgXt3SejvMO/uwIhT8DS7KwWiFXL+qvtMI+WoKgPxMXxWrPQkLr3ud2WW6lSyTzkTSN5pfMCTGALyKvychf3n/ndb5hFH98WJKJ5BUvLHcW/MFDg95Z2T5vkD8FGzzf8fZuvggYIupfkb68+5hZJYJfmQzcQ9tOPyKyMcsk9Wc/M5FwxRtroMoQ/u7mg20PnIR8QZoaYXI0Yn2gFBkvnJzeZ2WbjYA2U/G41/TkG5sTPctaCslX6jL/fW9DQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cA9ae5tiaxOfGPQmbRosS4QHAJ/h2bSG0xvl0xw3oOY=;
+ b=l3VoB/xMhextL9yFm8pne1DaSfm7SmRCJsfGn58LLHQfFjC7pz19vyymlzfz36tUEGVNmsh29w7/FMDV6G52CcXjcmukkpbIKqHbG8zOSgkI2YoOzg2JcByvj2/YUXFXUu01BvKkv2TqWpd3o5f8u0c8PSdL9qeYoySAWnvfihDaBhnj7vBIg6xw66/lWke+UwJ5HmIQofqFPg6ZyQzo/HEgIRF6ArQDX1zTOoIX/wOIsG/T4FrCGJzQZ2WlQ5M5seeLW71yE5C8yp32ERP7LtCTDKoWoaZllYN6SsSY2OXjqLI4PLfQ6ONrIGseOTInC1lTF1He3tnVB6RlrHNo4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 131.228.2.8) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nokia-sbell.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nokia-sbell.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cA9ae5tiaxOfGPQmbRosS4QHAJ/h2bSG0xvl0xw3oOY=;
+ b=As9Vs7HBQ42z4EZ3lh9nPsSNQ2vC5NFVd3TmySXJcDXr/azeCyddlmUUa2c74mpo+MgMpknZkTLYJ9N2fRkJygaW/+HbGF+x/Yf7OCzruNIGkIInBlgT0jvby1M5OxBp7tMxvD4y0C1yA3yIUQK5tTAdj7plRteWco+ZOZltN4M=
+Received: from AM5PR0201CA0009.eurprd02.prod.outlook.com
+ (2603:10a6:203:3d::19) by DB6PR07MB4358.eurprd07.prod.outlook.com
+ (2603:10a6:6:4a::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.6; Thu, 13 Aug
+ 2020 10:51:45 +0000
+Received: from AM5EUR03FT028.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:203:3d:cafe::6a) by AM5PR0201CA0009.outlook.office365.com
+ (2603:10a6:203:3d::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.20 via Frontend
+ Transport; Thu, 13 Aug 2020 10:51:45 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.8)
+ smtp.mailfrom=nokia-sbell.com; vger.kernel.org; dkim=none (message not
+ signed) header.d=none;vger.kernel.org; dmarc=pass action=none
+ header.from=nokia-sbell.com;
+Received-SPF: Pass (protection.outlook.com: domain of nokia-sbell.com
+ designates 131.228.2.8 as permitted sender) receiver=protection.outlook.com;
+ client-ip=131.228.2.8; helo=fihe3nok0734.emea.nsn-net.net;
+Received: from fihe3nok0734.emea.nsn-net.net (131.228.2.8) by
+ AM5EUR03FT028.mail.protection.outlook.com (10.152.16.118) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3283.16 via Frontend Transport; Thu, 13 Aug 2020 10:51:43 +0000
+Received: from hzling45.china.nsn-net.net (hzling45.china.nsn-net.net [10.159.218.88])
+        by fihe3nok0734.emea.nsn-net.net (GMO) with ESMTP id 07DApbid011111;
+        Thu, 13 Aug 2020 10:51:37 GMT
+Received: by hzling45.china.nsn-net.net (Postfix, from userid 61462992)
+        id 818F840EBB; Thu, 13 Aug 2020 18:51:35 +0800 (CST)
+From:   Libing Zhou <libing.zhou@nokia-sbell.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Cc:     linux-kernel@vger.kernel.org, libing.zhou@nokia-sbell.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de
+Subject: [PATCH] sched: print fields name when do sched_show_task
+Date:   Thu, 13 Aug 2020 18:48:34 +0800
+Message-Id: <20200813104833.17573-1-libing.zhou@nokia-sbell.com>
+X-Mailer: git-send-email 2.19.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589229894-18863-1-git-send-email-tuanphan@os.amperecomputing.com>
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 72e0652a-32cf-46b2-618b-08d83f76de06
+X-MS-TrafficTypeDiagnostic: DB6PR07MB4358:
+X-Microsoft-Antispam-PRVS: <DB6PR07MB4358B5C8F37E6801F67A606AAF430@DB6PR07MB4358.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iKnHRn0+rAEIRqfZUiaJHuwaAB9EB46k8gUH+xwePteLtnP2BUM/tJ9aeghDCyEOX4ZrF6sRAJaxIjAzxKTig4/8L8ta6m72xaDAOSuJnSElzOQHqlJOVj6OfYvNPKcZXhimbn86N/CSbc78nJXbfdy9PbG5f7Nrd7WvkxNVAjz3UgWD8FOefLtLYJBefjUFpCtMBBqeeKoYXrIJBJPGoBqhEG87OnDo5P9c6wJDfvFefRN8wDD/S/k3jyX9cdNpFayhVoEKhcdaY2mh8xvuwiB6CXjtVr5pf5p3lsw/mpJFBvmaMj6fwmXIxkTaNCYtQFPzHdYSanL/BeNv3h3WATzyQCa6ln19DXwyzNfH4SJahtpsw4PSRnEFSFjv+ldK1u7k5eqzDZc89O1mxoYkig==
+X-Forefront-Antispam-Report: CIP:131.228.2.8;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0734.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(376002)(346002)(46966005)(83380400001)(8936002)(2906002)(5660300002)(47076004)(356005)(336012)(86362001)(82740400003)(82310400002)(81166007)(6266002)(70206006)(2616005)(4326008)(44832011)(7416002)(36756003)(8676002)(26005)(1076003)(478600001)(42186006)(316002)(186003)(70586007);DIR:OUT;SFP:1102;
+X-OriginatorOrg: nokia-sbell.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2020 10:51:43.5946
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72e0652a-32cf-46b2-618b-08d83f76de06
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.8];Helo=[fihe3nok0734.emea.nsn-net.net]
+X-MS-Exchange-CrossTenant-AuthSource: AM5EUR03FT028.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR07MB4358
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 01:44:52PM -0700, Tuan Phan wrote:
-> DMC-620 PMU supports 10 total counters that are independently
-> programmable for different events and can be individually started and
-> stopped.
-> 
-> ACPI is only supported; device tree support is welcomed to be added and
-> tested for other platforms.
-> 
-> Usage example:
->   #perf stat -e arm_dmc620_10008c000/clk_cycle_count/ -C 0
->   Get perf event for clk_cycle_count counter.
-> 
->   #perf stat -e arm_dmc620_10008c000/clkdiv2_allocate,mask=0x1f,match=0x2f,
->   incr=2,invert=1/ -C 0
->   The above example shows how to specify mask, match, incr,
->   invert parameters for clkdiv2_allocate event.
-> 
-> Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
-> ---
-> Changes in v2:
-> - Removed IRQF_SHARED flag and added support for multiple 
-> PMUs sharing the same interrupt.
-> - Fixed an interrupt handler race condition.
-> 
-> The ACPI binding spec for PMU DMC620 is under beta and located
-> in ARM server group under project "ACPI on ARM". 
+Current sysrq(t) output task fields name are not aligned with
+actual task fields value, e.g.:
 
-I'm not sure what this means. Where is this ARM server group itself
-located?
+        kernel: sysrq: SysRq : Show State
+        kernel:  task                        PC stack   pid father
+        kernel: systemd         S12456     1      0 0x00000000
+        kernel: Call Trace:
+        kernel: ? __schedule+0x240/0x740
 
-Looking at the TRM, I couldn't see where many of the register field
-values were defined, which makes it difficult to review. Which
-documentation are you looking at?
+To make it more readable, print fields name together with task fields
+value in same line, remove separate fields name print.
 
-[...]	
+Signed-off-by: Libing Zhou <libing.zhou@nokia-sbell.com>
+---
+ kernel/sched/core.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-> +#define DMC620_PA_SHIFT					12
-> +#define DMC620_CNT_MAX_PERIOD				0xffffffff
-> +#define DMC620_PMU_CLKDIV2_MAX_COUNTERS			8
-> +#define DMC620_PMU_CLK_MAX_COUNTERS			2
-> +#define DMC620_PMU_MAX_COUNTERS				\
-> +	(DMC620_PMU_CLKDIV2_MAX_COUNTERS + DMC620_PMU_CLK_MAX_COUNTERS)
-> +
-> +#define DMC620_PMU_OVERFLOW_STATUS_CLKDIV2_OFFSET	8
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index e15543cb8481..0ad554cb0bbb 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6069,10 +6069,10 @@ void sched_show_task(struct task_struct *p)
+ 	if (!try_get_task_stack(p))
+ 		return;
+ 
+-	printk(KERN_INFO "%-15.15s %c", p->comm, task_state_to_char(p));
++	pr_info("task:%-15.15s state:%c", p->comm, task_state_to_char(p));
+ 
+ 	if (p->state == TASK_RUNNING)
+-		printk(KERN_CONT "  running task    ");
++		pr_cont("  running task    ");
+ #ifdef CONFIG_DEBUG_STACK_USAGE
+ 	free = stack_not_used(p);
+ #endif
+@@ -6081,8 +6081,8 @@ void sched_show_task(struct task_struct *p)
+ 	if (pid_alive(p))
+ 		ppid = task_pid_nr(rcu_dereference(p->real_parent));
+ 	rcu_read_unlock();
+-	printk(KERN_CONT "%5lu %5d %6d 0x%08lx\n", free,
+-		task_pid_nr(p), ppid,
++	pr_cont(" stack:%5lu pid:%5d ppid:%6d flags:0x%08lx\n",
++		free, task_pid_nr(p), ppid,
+ 		(unsigned long)task_thread_info(p)->flags);
+ 
+ 	print_worker_info(KERN_INFO, p);
+@@ -6117,13 +6117,6 @@ void show_state_filter(unsigned long state_filter)
+ {
+ 	struct task_struct *g, *p;
+ 
+-#if BITS_PER_LONG == 32
+-	printk(KERN_INFO
+-		"  task                PC stack   pid father\n");
+-#else
+-	printk(KERN_INFO
+-		"  task                        PC stack   pid father\n");
+-#endif
+ 	rcu_read_lock();
+ 	for_each_process_thread(g, p) {
+ 		/*
+-- 
+2.22.0
 
-Could we please drop the '_OFFSET' suffix? I don't think it's adding
-anything, and it makes this more painful to read/write.
-
-Looking at the TRM, this is at offset 0xA08. If this is all relative to
-0xA00 there should be a comment to that effect. Similarly, the offsets
-below are relative to each counter's group of registers, and we should
-comment that.
-
-How about:
-
-/*
- * The PMU registers start at 0xA00 in the DMC-620 memory map, and these
- * offsets are relative to that base.
- *
- * Each counter has a group of control/value registers, and the
- * PMU_COUNTERx offsets are within a counter group.
- *
- * The counter registers groups start at 0xA10.
- */
-
-> +#define  DMC620_PMU_OVERFLOW_STATUS_CLKDIV2_MASK	\
-> +		(DMC620_PMU_CLKDIV2_MAX_COUNTERS - 1)
-> +#define DMC620_PMU_OVERFLOW_STATUS_CLK_OFFSET		12
-> +#define  DMC620_PMU_OVERFLOW_STATUS_CLK_MASK		\
-> +		(DMC620_PMU_CLK_MAX_COUNTERS - 1)
-> +#define DMC620_PMU_COUNTERS_BASE_OFFSET			16
-
-Can we please write the offsets in hexadecimal? That makes it much
-easier to compare with the TRM.
-
-> +#define DMC620_PMU_COUNTER_MASK_31_00_OFFSET		0
-
-As implied earlier, please use 'COUNTERx' to make it clear that this is
-a relative offset within a given counter group.
-
-> +#define DMC620_PMU_COUNTER_MASK_63_32_OFFSET		4
-> +#define DMC620_PMU_COUNTER_MATCH_31_00_OFFSET		8
-> +#define DMC620_PMU_COUNTER_MATCH_63_32_OFFSET		12
-> +#define DMC620_PMU_COUNTER_CONTROL_OFFSET		16
-> +#define  DMC620_PMU_COUNTER_CONTROL_ENABLE_MASK		BIT(0)
-> +#define  DMC620_PMU_COUNTER_CONTROL_INVERT_SHIFT	1
-> +#define  DMC620_PMU_COUNTER_CONTROL_EVENT_MUX		(((x)&0x1f)>>2)
-> +#define  DMC620_PMU_COUNTER_CONTROL_EVENT_MUX_SHIFT	2
-> +#define  DMC620_PMU_COUNTER_CONTROL_INCR		(((x)&0x1ff)>>7)
-> +#define  DMC620_PMU_COUNTER_CONTROL_INCR_SHIFT		7
-> +#define DMC620_PMU_COUNTER_SNAPSHOT_OFFSET		24
-> +#define DMC620_PMU_COUNTER_VALUE_OFFSET			32
-> +#define DMC620_PMU_COUNTER_REG_BYTE_LENGTH		40
-
-Please replace DMC620_PMU_COUNTER_REG_BYTE_LENGTH with:
-
-/* Offset of the registers for a given counter, relative to 0xA00 */
-#define DMC620_PMU_COUNTERx_OFFSET(x) \
-	(DMC620_PMU_COUNTERS_BASE_OFFSET + 0x28 * (x))
-
-... which is a bit clearer here, and will simplify the read/write
-functions later.
-
-> +#define DMC620_PMU_CLKDIV2_CYCLE_COUNT			0x0
-> +#define DMC620_PMU_CLKDIV2_ALLOCATE			0x1
-> +#define DMC620_PMU_CLKDIV2_QUEUE_DEPTH			0x2
-> +#define DMC620_PMU_CLKDIV2_WAITING_FOR_WR_DATA		0x3
-> +#define DMC620_PMU_CLKDIV2_READ_BACKLOG			0x4
-> +#define DMC620_PMU_CLKDIV2_WAITING_FOR_MI		0x5
-> +#define DMC620_PMU_CLKDIV2_HAZARD_RESOLUTION		0x6
-> +#define DMC620_PMU_CLKDIV2_ENQUEUE			0x7
-> +#define DMC620_PMU_CLKDIV2_ARBITRATE			0x8
-> +#define DMC620_PMU_CLKDIV2_LRANK_TURNAROUND_ACTIVATE	0x9
-> +#define DMC620_PMU_CLKDIV2_PRANK_TURNAROUND_ACTIVATE	0xA
-> +#define DMC620_PMU_CLKDIV2_READ_DEPTH			0xB
-> +#define DMC620_PMU_CLKDIV2_WRITE_DEPTH			0xC
-> +#define DMC620_PMU_CLKDIV2_HIGHHIGH_QOS_DEPTH		0xD
-> +#define DMC620_PMU_CLKDIV2_HIGH_QOS_DEPTH		0xE
-> +#define DMC620_PMU_CLKDIV2_MEDIUM_QOS_DEPTH		0xF
-> +#define DMC620_PMU_CLKDIV2_LOW_QOS_DEPTH		0x10
-> +#define DMC620_PMU_CLKDIV2_ACTIVATE			0x11
-> +#define DMC620_PMU_CLKDIV2_RDWR				0x12
-> +#define DMC620_PMU_CLKDIV2_REFRESH			0x13
-> +#define DMC620_PMU_CLKDIV2_TRAINING_REQUEST		0x14
-> +#define DMC620_PMU_CLKDIV2_T_MAC_TRACKER		0x15
-> +#define DMC620_PMU_CLKDIV2_BK_FSM_TRACKER		0x16
-> +#define DMC620_PMU_CLKDIV2_BK_OPEN_TRACKER		0x17
-> +#define DMC620_PMU_CLKDIV2_RANKS_IN_PWR_DOWN		0x18
-> +#define DMC620_PMU_CLKDIV2_RANKS_IN_SREF		0x19
-> +#define DMC620_PMU_CLK_CYCLE_COUNTER			0x20
-> +#define DMC620_PMU_CLK_REQUEST				0x21
-> +#define DMC620_PMU_CLK_UPLOAD_STALL			0x22
-> +#define DMC620_PMU_CLK_INDICATE_MASK			0x20
-
-Which documentation did you get these value from? I couldn't spot them
-in the TRM. Likewise for the control register bits, so I fear I'm
-missing something obvious.
-
-> +static LIST_HEAD(dmc620_pmu_affinities);
-> +static DEFINE_MUTEX(dmc620_pmu_affinity_lock);
-> +
-> +struct dmc620_pmu_affinity {
-> +	struct hlist_node node;
-> +	struct list_head affinity_list;
-> +	struct list_head instance_list;
-> +	refcount_t refcount;
-> +	unsigned int irq;
-> +	unsigned int cpu;
-> +};
-
-The 'affinity' naming is a bit cojnfusing, since this really represents
-an IRQ. Could we please rename 'affinity' to 'irq', and use 'node' to
-distinguish list entries from the list as a whole? i.e.
-
-| static LIST_HEAD(dmc620_pmu_irqs);
-| static DEFINE_MUTEX(dmc620_pmu_irqs_lock);
-| 
-| struct dmc620_pmu_irq {
-| 	struct hlist_node node;
-| 	struct list_head pmus_list;
-| 	struct list_head irqs_node;
-| 	refcount_t refcount;
-| 	unsigned int irq;
-| 	unsigned int cpu;
-| }
-
-> +
-> +struct dmc620_pmu {
-> +	struct pmu pmu;
-> +	struct platform_device *pdev;
-> +
-> +	void __iomem *base;
-> +	struct dmc620_pmu_affinity *affinity;
-> +	struct list_head affinity_list;
-
-... and similarly:
-
-|	struct dmc620_pmu_irq *irq;
-|	struct list_head pmus_node;
-
-> +
-> +	/*
-> +	 * We put all clkdiv2 and clk counters to a same array.
-> +	 * The first DMC620_PMU_CLKDIV2_MAX_COUNTERS bits belong to
-> +	 * clkdiv2 counters, the last DMC620_PMU_CLK_MAX_COUNTERS
-> +	 * belong to clk counters.
-> +	 */
-> +	DECLARE_BITMAP(used_mask, DMC620_PMU_MAX_COUNTERS);
-> +	struct perf_event *act_counter[DMC620_PMU_MAX_COUNTERS];
-
-Please rename this to 'events', to match what we do for the CPU PMU.
-It's shorter and clearer.
-
-> +};
-> +
-> +#define to_dmc620_pmu(p) (container_of(p, struct dmc620_pmu, pmu))
-> +
-> +static int cpuhp_state_num;
-
-[...]
-
-> +static inline
-> +unsigned int dmc620_pmu_creg_read(struct dmc620_pmu *dmc620_pmu,
-> +					  unsigned int idx,
-> +					  unsigned int offset)
-
-Please make this return a u32, as readl() does.
-
-> +{
-> +	return readl(dmc620_pmu->base + DMC620_PMU_COUNTERS_BASE_OFFSET +
-> +			(idx * DMC620_PMU_COUNTER_REG_BYTE_LENGTH + offset));
-> +}
-> +
-> +static inline
-> +void dmc620_pmu_creg_write(struct dmc620_pmu *dmc620_pmu,
-> +				  unsigned int idx,
-> +				  unsigned int offset,
-> +				  unsigned int val)
-
-Please make 'val' a u32, as writel() consumes.
-
-> +{
-> +	writel(val, dmc620_pmu->base + DMC620_PMU_COUNTERS_BASE_OFFSET +
-> +		(idx * DMC620_PMU_COUNTER_REG_BYTE_LENGTH + offset));
-> +}
-
-[...]
-
-> +static u64 dmc620_pmu_read_counter(struct perf_event *event)
-> +{
-> +	struct dmc620_pmu *dmc620_pmu = to_dmc620_pmu(event->pmu);
-> +
-> +	return (u64)dmc620_pmu_creg_read(dmc620_pmu,
-> +			  event->hw.idx,
-> +			  DMC620_PMU_COUNTER_VALUE_OFFSET);
-
-You shouldn't need to cast to u64 here. The compiler can figure out the
-type promotion.
-
-[...]
-
-> +static struct dmc620_pmu_affinity *__dmc620_pmu_get_affinity(int irq)
-> +{
-> +	struct dmc620_pmu_affinity *aff;
-> +	int ret;
-> +
-> +	list_for_each_entry(aff, &dmc620_pmu_affinities, affinity_list)
-> +		if (aff->irq == irq && refcount_inc_not_zero(&aff->refcount))
-> +			return aff;
-> +
-> +	aff = kzalloc(sizeof(*aff), GFP_KERNEL);
-> +	if (!aff)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	aff->instance_list.next = &aff->instance_list;
-> +	aff->instance_list.prev = &aff->instance_list;
-
-This should be:
-
-|	LIST_INIT_HEAD(&aff->instance_list);
-
-Thanks,
-Mark.
