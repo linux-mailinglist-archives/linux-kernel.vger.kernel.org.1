@@ -2,142 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE91D243B85
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 16:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECC1243B9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 16:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgHMO0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 10:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726142AbgHMO0y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 10:26:54 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B36DC061757;
-        Thu, 13 Aug 2020 07:26:54 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id g14so7574267iom.0;
-        Thu, 13 Aug 2020 07:26:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GxNk6clU3GutwGWPMQKKGMAHcko+Fcxjva5mT8vHA9w=;
-        b=EnrKUUmlZEVpPRj/draNaTL+xj7fm12tnG8YBCxdMfhuuvKGGYpBM58nXaMgwUYS0H
-         ++sLe6PMR37iRjVJ9YGOAQJhCBN6fLW9aPvhTTug1Fih0dDBe26GPD0QdmwaT6BtFe4a
-         IR2hoWGPr1QfdsTD25jx+hdDhzKDyoGGwBKR6MnET80E6XiqZvOlhSw8Qt3OsCNYdNXw
-         UocKsYWZgRJNkRil0H4DBNH8LJosbla/DxOWE8WHdpNNYpHBnAPOlsr4ynWDRMp70cgj
-         qeHsS3xjFfClcd77lQGvsREAVwdnK1hgfIQ69ar2Qj0466wbosmB6wWo8Q50unI+H5XT
-         rt/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GxNk6clU3GutwGWPMQKKGMAHcko+Fcxjva5mT8vHA9w=;
-        b=cAylxknSOudkrPm6yp5JyB9996R0ih31BhsAEYPuTIvszijZUvmqUMK94k6WAXnHB+
-         M45pL+/yjPK7MKMUzOr6F3hxr7thTVeqgF4M9CNDY5Nh+EDksXrChF8biMZekAGzT4kq
-         0L4Av5nQES7g4fXsAkf2inl5Mg0DRjb2LUD9znD26hyQg+Fx8QoG1h9R4ohBBQ2u9lTr
-         7Y+yCDkXwMdSWEksI8ivaQOWABa5Yvj70vCzO9bOG0n1U6BBB7uQe1pYrDGjCY/QUcWQ
-         2IOStSA9fN/Xgsh+vORqub32xjA+PRkJe/T8Qj3PBCjFe7ZxqE8Mpf0YV3yCC42wNBIO
-         P2kg==
-X-Gm-Message-State: AOAM532gItTju3dly+D2Qe9dTYjFwmGt7WOdHLHEiNQ1ac+OX76h0FzD
-        zlrte13aM/nqlB3Ss6fsSL9H31kC3Gg98KQlde8=
-X-Google-Smtp-Source: ABdhPJwAjcnJnLIvqD6xalBjx2poeXgpGi+ipQtmatKYko58J3jdGJCaaIQoFz6Iz8L1aALp+dfVyRczxIcfl/cFt6c=
-X-Received: by 2002:a02:3311:: with SMTP id c17mr5127932jae.114.1597328813804;
- Thu, 13 Aug 2020 07:26:53 -0700 (PDT)
+        id S1726600AbgHMOfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 10:35:47 -0400
+Received: from mga17.intel.com ([192.55.52.151]:44561 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726244AbgHMOfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 10:35:46 -0400
+IronPort-SDR: F9143Rouw6DKGlwVM54s29Ot/p2OFbAiFu/SyCUnmqBYXRAA5gNLjWBsCTeG4KFW7X9DLhJUF7
+ +Ovj5+Ey7SPQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9711"; a="134279725"
+X-IronPort-AV: E=Sophos;i="5.76,308,1592895600"; 
+   d="scan'208";a="134279725"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 07:35:46 -0700
+IronPort-SDR: sMiil9/2RLXm+J/PBnbkqew4A0wxJWaabcQ5kuwmyetPUk8ahLy6nNScw6BTLVFsiOXCl8bXIq
+ 4rEu3Nfby4cg==
+X-IronPort-AV: E=Sophos;i="5.76,308,1592895600"; 
+   d="scan'208";a="333124546"
+Received: from jsdraege-mobl1.amr.corp.intel.com (HELO [10.209.128.166]) ([10.209.128.166])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 07:35:45 -0700
+Subject: Re: [PATCH] [v2] ASoC: intel: Fix memleak in sst_media_open
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20200813084112.26205-1-dinghao.liu@zju.edu.cn>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <0add5326-d182-c456-0f8b-1d70bb67a2fc@linux.intel.com>
+Date:   Thu, 13 Aug 2020 07:52:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200813035100.13054.25671.stgit@localhost.localdomain>
- <20200813040224.13054.96724.stgit@localhost.localdomain> <4403f572-03c3-3061-6fc4-f56e3b6d7b67@linux.alibaba.com>
-In-Reply-To: <4403f572-03c3-3061-6fc4-f56e3b6d7b67@linux.alibaba.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 13 Aug 2020 07:26:42 -0700
-Message-ID: <CAKgT0UfO0j9yQCiQD+QDpNPCGncfH-+yP+qmEYGA_Fz=jmqAUQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] mm: Drop locked from isolate_migratepages_block
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Yang Shi <yang.shi@linux.alibaba.com>,
-        kbuild test robot <lkp@intel.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200813084112.26205-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 12:45 AM Alex Shi <alex.shi@linux.alibaba.com> wrot=
-e:
->
->
->
-> =E5=9C=A8 2020/8/13 =E4=B8=8B=E5=8D=8812:02, Alexander Duyck =E5=86=99=E9=
-=81=93:
-> > -             rcu_read_lock();
-> > -             lruvec =3D mem_cgroup_page_lruvec(page, pgdat);
-> > -
-> >               /* If we already hold the lock, we can skip some rechecki=
-ng */
-> > -             if (lruvec !=3D locked) {
-> > -                     if (locked)
-> > -                             unlock_page_lruvec_irqrestore(locked, fla=
-gs);
-> > +             if (!lruvec || !lruvec_holds_page_lru_lock(page, lruvec))=
- {
->
-> Ops, lruvec_holds_page_lru_lock need rcu_read_lock.
 
-How so? The reason I wrote lruvec_holds_page_lru_lock the way I did is
-that it is simply comparing the pointers held by the page and the
-lruvec. It is never actually accessing any of the values, just the
-pointers. As such we should be able to compare the two since the
-lruvec is still locked and the the memcg and pgdat held by the lruvec
-should not be changed. Likewise with the page pointers assuming the
-values match.
 
-> > +                     if (lruvec)
-> > +                             unlock_page_lruvec_irqrestore(lruvec, fla=
-gs);
-> >
-> > +                     lruvec =3D mem_cgroup_page_lruvec(page, pgdat);
-> >                       compact_lock_irqsave(&lruvec->lru_lock, &flags, c=
-c);
-> > -                     locked =3D lruvec;
-> >                       rcu_read_unlock();
-> >
->
-> and some bugs:
-> [  534.564741] CPU: 23 PID: 545 Comm: kcompactd1 Kdump: loaded Tainted: G=
- S      W         5.8.0-next-20200803-00028-g9a7ff2cd6e5c #85
-> [  534.577320] Hardware name: Alibaba Alibaba Cloud ECS/Alibaba Cloud ECS=
-, BIOS 1.0.PL.IP.P.027.02 05/29/2020
-> [  534.587693] Call Trace:
-> [  534.590522]  dump_stack+0x96/0xd0
-> [  534.594231]  ___might_sleep.cold.90+0xff/0x115
-> [  534.599102]  kcompactd+0x24b/0x370
-> [  534.602904]  ? finish_wait+0x80/0x80
-> [  534.606897]  ? kcompactd_do_work+0x3d0/0x3d0
-> [  534.611566]  kthread+0x14e/0x170
-> [  534.615182]  ? kthread_park+0x80/0x80
-> [  534.619252]  ret_from_fork+0x1f/0x30
-> [  535.629483] BUG: sleeping function called from invalid context at incl=
-ude/linux/freezer.h:57
-> [  535.638691] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 545=
-, name: kcompactd1
-> [  535.647601] INFO: lockdep is turned off.
+On 8/13/20 3:41 AM, Dinghao Liu wrote:
+> When power_up_sst() fails, stream needs to be freed
+> just like when try_module_get() fails. However, current
+> code is returning directly and ends up leaking memory.
+> 
+> Fixes: 0121327c1a68b ("ASoC: Intel: mfld-pcm: add control for powering up/down dsp")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-Ah, I see the bug now. It isn't the lruvec_holds_page_lru_lock that
-needs the LRU lock. This is an issue as a part of a merge conflict.
-There should have been an rcu_read_lock added before
-mem_cgroup_page_lruvec.
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+Thanks for spotting this!
+
+> ---
+> 
+> Changelog:
+> 
+> v2: - Add a new label 'out_power_up' to unify code style.
+> ---
+>   sound/soc/intel/atom/sst-mfld-platform-pcm.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+> index 49b9f18472bc..b1cac7abdc0a 100644
+> --- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+> +++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+> @@ -331,7 +331,7 @@ static int sst_media_open(struct snd_pcm_substream *substream,
+>   
+>   	ret_val = power_up_sst(stream);
+>   	if (ret_val < 0)
+> -		return ret_val;
+> +		goto out_power_up;
+>   
+>   	/* Make sure, that the period size is always even */
+>   	snd_pcm_hw_constraint_step(substream->runtime, 0,
+> @@ -340,8 +340,9 @@ static int sst_media_open(struct snd_pcm_substream *substream,
+>   	return snd_pcm_hw_constraint_integer(runtime,
+>   			 SNDRV_PCM_HW_PARAM_PERIODS);
+>   out_ops:
+> -	kfree(stream);
+>   	mutex_unlock(&sst_lock);
+> +out_power_up:
+> +	kfree(stream);
+>   	return ret_val;
+>   }
+>   
+> 
