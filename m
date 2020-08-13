@@ -2,131 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BC724397F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A94243995
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 14:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgHMLzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 07:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgHMLzd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 07:55:33 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554BBC061384
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:54:39 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id p37so2702092pgl.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:54:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6TUg3OqVgwPUQPxxlDPJAnVvD/b4nl9aq+UQKwnVlcQ=;
-        b=W7KGzsT1W+1I4nEf9dSr4Rb2Al6uyVtrIYFegz9QH2PUdL4l5phEMJJiXc2gDPebi1
-         1hLnaVwc52kkz0KQ6fKQNjhZOaxgHHzdw1Euip6gpxDlniZKfwq2HRwP15dqJuz54gBx
-         1U18Ei0FeO97sRofUHQjp4RfE9hHb+0dVI4sF/IdjM9tIf8RP3RSXQ+HjQt3zbt+mH8W
-         6E7s5MNKR0jfRKJhRpHd4TIyVfdWrua9gzzlm7Cst2XSe7bsvYpSb6WVWKr982wuDnVC
-         gbZWo3R1TttYbo/abE64BAybhcVecArX/SIsTfe8h7qQyaMFETOhnn6ViF7vTP3yBw35
-         3qZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6TUg3OqVgwPUQPxxlDPJAnVvD/b4nl9aq+UQKwnVlcQ=;
-        b=Y+ms7g7AD/ILb7zeTnQdANADbbmXB0ZIMbnoIfYXo7eYyDgMLy0l89mbT6xRKSdpte
-         Hy23DZuM3MKnjGDFv0ih3smh50MW63RfvaHwISIXm9cpidAcdadI79BmyfCMnh7uEE1R
-         VCPtKgYWliWbUWofVG8h4J0D/+/O1v5gvGUZ/EFHXcjJtfJga4RxJHnJwt4FOxiZ91eg
-         WLo1ly/jVtnN+kJ5m643iMxD+cXENECD+cWyepdmUzGjSlK4EFh8hphg7v5trGpMXIIQ
-         Wg15nmELEFN+ekyD4sGCTJqDhJrhOd0nzW/igUMgZot3Sc5KZRhCjo3A6dVo2WEkZeOO
-         t3YQ==
-X-Gm-Message-State: AOAM5304yQ1tYyr74lUpKYMh8WEipRu5ONU/gMJfPQr6MeiZpm69uR+L
-        J5e4PGmJm7grU/se0bSvC3P+C40T
-X-Google-Smtp-Source: ABdhPJyc89SG6w0uXT54MOk2TmujM6CGfkss+meq1shT/JfMlmW1qipWykw1LDWpkARv48b2+V4KJA==
-X-Received: by 2002:aa7:9386:: with SMTP id t6mr4153429pfe.220.1597319678782;
-        Thu, 13 Aug 2020 04:54:38 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id m23sm5035651pgv.43.2020.08.13.04.54.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 04:54:37 -0700 (PDT)
-Date:   Thu, 13 Aug 2020 20:54:35 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: POC: Alternative solution: Re: [PATCH 0/4] printk: reimplement
- LOG_CONT handling
-Message-ID: <20200813115435.GB483@jagdpanzerIV.localdomain>
-References: <20200717234818.8622-1-john.ogness@linutronix.de>
- <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
- <87blkcanps.fsf@jogness.linutronix.de>
- <20200811160551.GC12903@alley>
- <20200812163908.GH12903@alley>
- <87v9hn2y1p.fsf@jogness.linutronix.de>
- <20200813051853.GA510@jagdpanzerIV.localdomain>
- <875z9nvvl2.fsf@jogness.linutronix.de>
- <20200813084136.GK12903@alley>
+        id S1726605AbgHMMFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 08:05:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50710 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726564AbgHMMD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 08:03:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 26F8BACE3;
+        Thu, 13 Aug 2020 11:47:01 +0000 (UTC)
+Date:   Thu, 13 Aug 2020 13:46:38 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Baoquan He <bhe@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/10] mm/hugetlb: not necessary to abuse temporary page
+ to workaround the nasty free_huge_page
+Message-ID: <20200813114638.GJ9477@dhcp22.suse.cz>
+References: <20200807091251.12129-1-richard.weiyang@linux.alibaba.com>
+ <20200807091251.12129-11-richard.weiyang@linux.alibaba.com>
+ <20200810021737.GV14854@MiWiFi-R3L-srv>
+ <129cc03e-c6d5-24f8-2f3c-f5a3cc821e76@oracle.com>
+ <20200811015148.GA10792@MiWiFi-R3L-srv>
+ <20200811065406.GC4793@dhcp22.suse.cz>
+ <eb9d1e13-7455-0c4e-1f94-0c859c36c0bb@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200813084136.GK12903@alley>
+In-Reply-To: <eb9d1e13-7455-0c4e-1f94-0c859c36c0bb@oracle.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/08/13 10:41), Petr Mladek wrote:
-> > My concerns about this idea:
+On Tue 11-08-20 14:43:28, Mike Kravetz wrote:
+> On 8/10/20 11:54 PM, Michal Hocko wrote:
 > > 
-> > - What if the printk user does not correctly terminate the cont message?
-> >   There is no mechanism to allow that open record to be force-finalized
-> >   so that readers can read newer records.
+> > I have managed to forgot all the juicy details since I have made that
+> > change. All that remains is that the surplus pages accounting was quite
+> > tricky and back then I didn't figure out a simpler method that would
+> > achieve the consistent look at those counters. As mentioned above I
+> > suspect this could lead to pre-mature allocation failures while the
+> > migration is ongoing.
 > 
-> This is a real problem. And it is the reason why the cont buffer is
-> currently flushed (finalized) by the next message from another context.
+> It is likely lost in the e-mail thread, but the suggested change was to
+> alloc_surplus_huge_page().  The code which allocates the migration target
+> (alloc_migrate_huge_page) will not be changed.  So, this should not be
+> an issue.
 
-I understand that you think that this should be discussed and addressed
-later in a separate patch, but, since we are on pr_cont topic right now,
-can we slow down and maybe re-think what is actually expected from
-pr_cont()? IOW, have the "what is expect from this feature" thread?
+OK, I've missed that obviously.
 
-For instance, is missing \n the one and only reason why printk-s from
-another context flush cont buffer now? Because I can see some more reasons
-for current behaviour and I'd like to question those reasons.
+> >                       Sure quite unlikely to happen and the race window
+> > is likely very small. Maybe this is even acceptable but I would strongly
+> > recommend to have all this thinking documented in the changelog.
+> 
+> I wrote down a description of what happens in the two different approaches
+> "temporary page" vs "surplus page".  It is at the very end of this e-mail.
+> When looking at the details, I came up with what may be an even better
+> approach.  Why not just call the low level routine to free the page instead
+> of going through put_page/free_huge_page?  At the very least, it saves a
+> lock roundtrip and there is no need to worry about the counters/accounting.
+> 
+> Here is a patch to do that.  However, we are optimizing a return path in
+> a race condition that we are unlikely to ever hit.  I 'tested' it by allocating
+> an 'extra' page and freeing it via this method in alloc_surplus_huge_page.
+> 
+> >From 864c5f8ef4900c95ca3f6f2363a85f3cb25e793e Mon Sep 17 00:00:00 2001
+> From: Mike Kravetz <mike.kravetz@oracle.com>
+> Date: Tue, 11 Aug 2020 12:45:41 -0700
+> Subject: [PATCH] hugetlb: optimize race error return in
+>  alloc_surplus_huge_page
+> 
+> The routine alloc_surplus_huge_page() could race with with a pool
+> size change.  If this happens, the allocated page may not be needed.
+> To free the page, the current code will 'Abuse temporary page to
+> workaround the nasty free_huge_page codeflow'.  Instead, directly
+> call the low level routine that free_huge_page uses.  This works
+> out well because the page is new, we hold the only reference and
+> already hold the hugetlb_lock.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ---
+>  mm/hugetlb.c | 13 ++++++++-----
+>  1 file changed, 8 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 590111ea6975..ac89b91fba86 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1923,14 +1923,17 @@ static struct page *alloc_surplus_huge_page(struct hstate *h, gfp_t gfp_mask,
+>  	/*
+>  	 * We could have raced with the pool size change.
+>  	 * Double check that and simply deallocate the new page
+> -	 * if we would end up overcommiting the surpluses. Abuse
+> -	 * temporary page to workaround the nasty free_huge_page
+> -	 * codeflow
+> +	 * if we would end up overcommiting the surpluses.
+>  	 */
+>  	if (h->surplus_huge_pages >= h->nr_overcommit_huge_pages) {
+> -		SetPageHugeTemporary(page);
+> +		/*
+> +		 * Since this page is new, we hold the only reference, and
+> +		 * we already hold the hugetlb_lock call the low level free
+> +		 * page routine.  This saves at least a lock roundtrip.
+> +		 */
+> +		(void)put_page_testzero(page); /* don't call destructor */
+> +		update_and_free_page(h, page);
+>  		spin_unlock(&hugetlb_lock);
+> -		put_page(page);
+>  		return NULL;
+>  	} else {
+>  		h->surplus_huge_pages++;
 
-I think what Linus said a long time ago was that the initial purpose of
-pr_cont was
+Yes this makes sense. I would have to think about this more to be
+confident and give Acked-by but this looks sensible from a quick glance.
 
-	pr_info("Initialize feature foo...");
-	if (init_feature_foo() == 0)
-		pr_cont("ok\n");
-	else
-		pr_cont("not ok\n");
-
-	And if init_feature_foo() crashes the kernel then the first printk()
-	form panic() will flush the cont buffer.
-
-We can handle this by realizing that new printk() message has LOG_NEWLINE
-and has different log_level (not pr_cont), maybe.
-
-Let's look at the more general case:
-
-CPU0					.. CPU255
-pr_info("text");
-					pr_alert("boom\n");
-pr_cont("1);
-pr_cont("2\n");
-
-Do we really need to preliminary flush CPU0 pr_cont buffer in this
-case? There is no connection between messages from CPU0 and CPU255.
-Maybe (maybe!) what matters here is keeping the order of messages
-per-context rather than globally system-wide?
-
-	-ss
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
