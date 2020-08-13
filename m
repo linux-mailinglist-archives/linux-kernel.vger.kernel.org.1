@@ -2,179 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5368C243CD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B76A243CDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgHMPzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 11:55:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47308 "EHLO mail.kernel.org"
+        id S1726846AbgHMP4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 11:56:15 -0400
+Received: from mga01.intel.com ([192.55.52.88]:43958 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726131AbgHMPzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 11:55:31 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A63AB20771;
-        Thu, 13 Aug 2020 15:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597334129;
-        bh=f4VtwjKJr7WhsTI66Z2TOQQnMaQfTOJ9L1ZG29Tkjj0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=1agIIfmslQV3/n11Q32ZeIz+KiXpg+0gpYNfrRfeNAJNcdfTwYObEx0mWRpHdpxvD
-         nKcWS1AbnlRC30MBd4RCh2JCbYEnpXfYVYfmi6cW/qFtZkxoBPqpcizrImVG1zG8Sz
-         6vazImklhVZG5XSVs2fM/BPdoo7FUshoLM+or5h4=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 61745352279C; Thu, 13 Aug 2020 08:55:29 -0700 (PDT)
-Date:   Thu, 13 Aug 2020 08:55:29 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [rcu:dev.2020.08.11a 110/112] ERROR: modpost:
- "rcu_read_unlock_strict" undefined!
-Message-ID: <20200813155529.GU4295@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <202008131232.tDOTOabp%lkp@intel.com>
+        id S1726167AbgHMP4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 11:56:14 -0400
+IronPort-SDR: 2nQcvrtXn7w2VLb1haYZ/+vrAMjf1XLkq8s9RAd8TtHklc9BEoO2BQCmzccXk0FAx8Kn2KPTi6
+ Jtptq/vkkgsA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9712"; a="172289991"
+X-IronPort-AV: E=Sophos;i="5.76,308,1592895600"; 
+   d="scan'208";a="172289991"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 08:56:13 -0700
+IronPort-SDR: jMhzdtnjezyjVPwEYYKKvZzwo20m2IfpFCrAs5K79bc/S720i1AYqzUgJYUVsbrkQCRwjJB1M0
+ QIvFiayK2+BA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,308,1592895600"; 
+   d="scan'208";a="439818253"
+Received: from fmsmsx603-2.cps.intel.com (HELO fmsmsx603.amr.corp.intel.com) ([10.18.84.213])
+  by orsmga004.jf.intel.com with ESMTP; 13 Aug 2020 08:56:12 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 13 Aug 2020 08:56:12 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 13 Aug 2020 08:56:12 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
+ Thu, 13 Aug 2020 08:56:12 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Boris Petkov <bp@alien8.de>, Aristeu Rozanski <aris@redhat.com>
+CC:     Jason Baron <jbaron@akamai.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-edac <linux-edac@vger.kernel.org>
+Subject: RE: [PATCH] EDAC/ie31200: fallback if host bridge device is already
+ initialized
+Thread-Topic: [PATCH] EDAC/ie31200: fallback if host bridge device is already
+ initialized
+Thread-Index: AQHWW59+1jV2sks7FUC1qHiVi6FaC6k2rbkAgAADSACAAAX2AIAACrMA//+amOA=
+Date:   Thu, 13 Aug 2020 15:56:11 +0000
+Message-ID: <3d552bacd3ff464a84c743da00f1fc75@intel.com>
+References: <1594923911-10885-1-git-send-email-jbaron@akamai.com>
+ <20200813134406.23dvvsulfxend5jx@redhat.com>
+ <FE8145F7-A6A9-446F-A13F-3A14CF6E1934@alien8.de>
+ <20200813141710.ug5ei4hxoorproi4@redhat.com>
+ <31B390C9-0172-4E0D-920C-19D27CA89C4D@alien8.de>
+In-Reply-To: <31B390C9-0172-4E0D-920C-19D27CA89C4D@alien8.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202008131232.tDOTOabp%lkp@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 12:17:34PM +0800, kernel test robot wrote:
-> Hi Paul,
-> 
-> First bad commit (maybe != root cause):
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2020.08.11a
-> head:   9030fc13639a71b15466520f09ca07b80fc30ed1
-> commit: 601cd69fa4bb0127bb774cc852203fd9fdf5e269 [110/112] rcuperf: Change rcuperf to rcuscale
-> config: riscv-allmodconfig (attached as .config)
-> compiler: riscv64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         git checkout 601cd69fa4bb0127bb774cc852203fd9fdf5e269
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=riscv 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>, old ones prefixed by <<):
-
-Good catch, forgot the EXPORT_SYMBOL_GPL(), will fix, thank you!
-
-							Thanx, Paul
-
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/wireless/intel/iwlegacy/iwl4965.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/wireless/intel/iwlegacy/iwlegacy.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/wireless/ath/ath11k/ath11k.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/wireless/ath/wcn36xx/wcn36xx.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/wireless/ath/carl9170/carl9170.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/wireless/ath/ath9k/ath9k_htc.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/wireless/ath/ath9k/ath9k_hw.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/wireless/ath/ath9k/ath9k.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/wan/lapbether.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/wan/hdlc_cisco.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/hamradio/bpqether.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/via/via-velocity.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/ti/ti_cpsw_new.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/ti/ti_cpsw.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/socionext/netsec.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/sfc/sfc.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/qlogic/qede/qede.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/qlogic/netxen/netxen_nic.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/qlogic/qlcnic/qlcnic.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/netronome/nfp/nfp.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/mscc/mscc_ocelot_common.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/mellanox/mlxsw/mlxsw_spectrum.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/mellanox/mlxsw/mlxsw_core.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/mellanox/mlx4/mlx4_en.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/mellanox/mlx4/mlx4_core.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/marvell/mvneta.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/intel/fm10k/fm10k.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/intel/iavf/iavf.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/intel/i40e/i40e.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/intel/ixgbevf/ixgbevf.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/intel/ixgbe/ixgbe.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/intel/igc/igc.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/intel/igb/igb.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/chelsio/cxgb4/cxgb4.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/chelsio/cxgb3/cxgb3.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/cavium/thunder/nicvf.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/broadcom/bnxt/bnxt_en.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/broadcom/bnx2x/bnx2x.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/broadcom/cnic.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/broadcom/bnx2.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/net/ethernet/amazon/ena/ena.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/nvme/target/nvmet.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/scsi/cxgbi/cxgb3i/cxgb3i.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/scsi/cxgbi/libcxgbi.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/scsi/qedf/qedf.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/scsi/bnx2fc/bnx2fc.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/scsi/fcoe/fcoe.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/scsi/libfc/libfc.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/scsi/scsi_mod.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/scsi/device_handler/scsi_dh_alua.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/scsi/device_handler/scsi_dh_rdac.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/dma-buf/dmabuf_selftests.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/mfd/dln2.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/block/drbd/drbd.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/block/loop.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/block/brd.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/block/rnbd/rnbd-server.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/gpu/drm/panfrost/panfrost.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/gpu/drm/etnaviv/etnaviv.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/gpu/drm/qxl/qxl.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/gpu/drm/nouveau/nouveau.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/gpu/drm/ttm/ttm.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/gpu/drm/drm.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/gpu/drm/drm_kms_helper.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/dma/plx_dma.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/dma/sh/shdma.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [drivers/char/ipmi/ipmi_msghandler.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [lib/objagg.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [lib/crc-t10dif.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [lib/test_lockup.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [lib/test_meminit.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [lib/test_xarray.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [lib/test_rhashtable.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [lib/math/prime_numbers.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [block/bfq.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [crypto/af_alg.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/erofs/erofs.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/ceph/ceph.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/gfs2/gfs2.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/btrfs/btrfs.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/afs/kafs.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/xfs/xfs.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/fuse/fuse.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/autofs/autofs4.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/cifs/cifs.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/lockd/lockd.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/nfsd/nfsd.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/nfs/flexfilelayout/nfs_layout_flexfiles.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/nfs/blocklayout/blocklayoutdriver.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/nfs/nfsv4.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/nfs/nfs.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/jbd2/jbd2.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/ext4/ext4.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/fscache/fscache.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [fs/nfs_common/grace.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [kernel/rcu/refscale.ko] undefined!
-> >> ERROR: modpost: "rcu_read_unlock_strict" [kernel/rcu/rcuscale.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_strict" [kernel/rcu/rcutorture.ko] undefined!
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-
+PiA+VGVzdGVkLWJ5OiBWaXNoYWwgQWdyYXdhbCA8dmFncmF3YWxAcmVkaGF0LmNvbT4NCg0KQm9y
+aXMsDQoNCkkgYXBwbGllZCB0aGlzIHBhdGNoIHdoZW4gSmFzb24gQmFyb24gc2VudCBhIHJlbWlu
+ZGVyIGxhc3Qgd2Vlay4gSXQgaXMgc2l0dGluZyBpbiB0aGUNCmllMzEyMDAgdG9waWMgYnJhbmNo
+IG9mIHRoZSBSQVMgdHJlZSAoYW5kIGFsc28gaW4gdGhlIG5leHQgYnJhbmNoIC4uLiBzbyBoYXMg
+aGFkIGENCmNvdXBsZSBvZiBkYXlzIGluIGxpbnV4LW5leHQgdG9vKS4NCg0KVGhhdCBjb3B5IGRv
+ZXNuJ3QgaGF2ZSB0aGVzZSBBY2tlZC1ieSBhbmQgVGVzdGVkLWJ5IHRhZ3MsIGJ1dCBpcyBvdGhl
+cndpc2UgdGhlDQpzYW1lLg0KDQpJIHBsYW4gdG8gc2VuZCBhIHNlY29uZCBlZGFjIHB1bGwgcmVx
+dWVzdCB0byBMaW51cyB0b2RheS9yb21vcnJvdyB0byBwaWNrIGl0IHVwLg0KDQotVG9ueQ0KDQog
+DQo=
