@@ -2,74 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F78D2434F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7997A2434FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726167AbgHMHbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 03:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgHMHbU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 03:31:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291BCC061757;
-        Thu, 13 Aug 2020 00:31:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ajCb1YweODRt8vtNgU7fmlorkYYs90KZ1F0rpuEPtl0=; b=YGeTingr3glZ1JMMusE7MilLak
-        YI89fMIo2FLGBSdXX9JYBIDTA+JBbbgemHrKTM51+e4gaqUgQylwW6Ii779fE0k0948daKKAI2mHL
-        t6r3HKOoxdEUctwqjLGL0tdfqoa1zbfNg5gLflFt+6j9xBojWz9Eaz8PAi7S78FTGfU/1j4oNnq4j
-        jFnAjhC3driUp+OJ9ybAced0njDwxF8UujHre2BD53vEGAPhtJZqMWIfGGbF4rNFMkJOT3HsZOoUZ
-        5COFx/sIkzxvnttM7QEXRjlJ2bEI+Q+z0ic/BFsDL9J0FrBmIiXW/E1Q5beEsiq+UsD4e+wyQ1w4r
-        JIfVgb4A==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k67hj-00049n-W6; Thu, 13 Aug 2020 07:31:16 +0000
-Date:   Thu, 13 Aug 2020 08:31:15 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jacob Wen <jian.w.wen@oracle.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] block: insert a general SMP memory barrier before
- wake_up_bit()
-Message-ID: <20200813073115.GA15436@infradead.org>
-References: <20200813024438.13170-1-jian.w.wen@oracle.com>
+        id S1726526AbgHMHcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 03:32:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55544 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726072AbgHMHcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 03:32:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3F77DB1ED;
+        Thu, 13 Aug 2020 07:32:21 +0000 (UTC)
+Date:   Thu, 13 Aug 2020 09:31:58 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: POC: Alternative solution: Re: [PATCH 0/4] printk: reimplement
+ LOG_CONT handling
+Message-ID: <20200813073158.GI12903@alley>
+References: <20200717234818.8622-1-john.ogness@linutronix.de>
+ <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
+ <87blkcanps.fsf@jogness.linutronix.de>
+ <20200811160551.GC12903@alley>
+ <20200812163908.GH12903@alley>
+ <87v9hn2y1p.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200813024438.13170-1-jian.w.wen@oracle.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <87v9hn2y1p.fsf@jogness.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 10:44:38AM +0800, Jacob Wen wrote:
-> wake_up_bit() uses waitqueue_active() that needs the explicit smp_mb().
+On Thu 2020-08-13 02:30:02, John Ogness wrote:
+> On 2020-08-12, Petr Mladek <pmladek@suse.com> wrote:
+> > So, I have one crazy idea to add one more state bit so that we
+> > could have:
+> >
+> >   + committed: set when the data are written into the data ring.
+> >   + final: set when the data block could not longer get reopened
+> >   + reuse: set when the desctiptor/data block could get reused
+> >
+> > "final" bit will define when the descriptor could not longer
+> > get reopened (cleared committed bit) and the data block could
+> > not get extended.
+> 
+> I implemented this solution for myself and am currently running more
+> tests. Some things that I changed from your suggestion:
+> 
+> 1. I created a separate prb_reserve_cont() function. The reason for this
+> is because the caller needs to understand what is happening. The caller
+> is getting an existing record with existing data and must append new
+> data. The @text_len field of the info reports how long the existing data
+> is.
 
-Sounds like the barrier should go into wake_up_bit then..
+I see.
 
+> So the LOG_CONT handling code in printk.c looks something like this:
+
+Yeah, it makes sense.
+
+
+> 2. I haven't yet figured out how to preserve calling context when a
+> newline appears. For example:
 > 
-> Signed-off-by: Jacob Wen <jian.w.wen@oracle.com>
-> ---
->  fs/block_dev.c | 1 +
->  1 file changed, 1 insertion(+)
+> pr_info("text");
+> pr_cont(" 1");
+> pr_cont(" 2\n");
+> pr_cont("3");
+> pr_cont(" 4\n");
 > 
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 0ae656e022fd..e74980848a2a 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -1175,6 +1175,7 @@ static void bd_clear_claiming(struct block_device *whole, void *holder)
->  	/* tell others that we're done */
->  	BUG_ON(whole->bd_claiming != holder);
->  	whole->bd_claiming = NULL;
-> +	smp_mb();
->  	wake_up_bit(&whole->bd_claiming, 0);
->  }
->  
-> -- 
-> 2.17.1
-> 
----end quoted text---
+> For "3" the calling context (info, timestamp) is lost because with "2"
+> the record is finalized. Perhaps the above is invalid usage of LOG_CONT?
+
+I am going to answer Sergey's reply.
+
+
+> 3. There are some memory barriers introduced, but it looks like it
+> shouldn't add too much complexity.
+
+Uff. I have hooped for this.
+
+> I will continue to refine my working version and post a patch so that we
+> have something to work with. This looks to be the most promising way
+> forward. Thanks.
+
+Uff, I am happy that it seems working. Several other approaches looked
+much more complicated or they caused regressions.
+
+Best Regards,
+Petr
