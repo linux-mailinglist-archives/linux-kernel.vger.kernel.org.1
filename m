@@ -2,77 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A72244067
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 23:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72033244043
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 23:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgHMVRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 17:17:46 -0400
-Received: from 13.mo4.mail-out.ovh.net ([178.33.251.8]:35529 "EHLO
-        13.mo4.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726192AbgHMVRq (ORCPT
+        id S1726804AbgHMVEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 17:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726685AbgHMVEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 17:17:46 -0400
-Received: from player698.ha.ovh.net (unknown [10.108.57.245])
-        by mo4.mail-out.ovh.net (Postfix) with ESMTP id 981B0243ED5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 18:29:03 +0200 (CEST)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player698.ha.ovh.net (Postfix) with ESMTPSA id 19515153540A9;
-        Thu, 13 Aug 2020 16:28:57 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-104R00580418864-beec-4c1f-899a-8232179470aa,
-                    E10370F5499BCD549250CF93A1A6372B2A4BB833) smtp.auth=steve@sk2.org
-From:   Stephen Kitt <steve@sk2.org>
-To:     =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: [PATCH] drivers/hwmon/ltc2947-i2c.c: use simple i2c probe
-Date:   Thu, 13 Aug 2020 18:28:51 +0200
-Message-Id: <20200813162851.1519546-1-steve@sk2.org>
-X-Mailer: git-send-email 2.25.4
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 7660341492141739393
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrleehgdejjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheileekrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+        Thu, 13 Aug 2020 17:04:38 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B783C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 14:04:38 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id l67so8180298ybb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 14:04:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=bmdBV6Jzh5nQA31+72j4WQc5pXDxDNDeGqIRwkeUxIY=;
+        b=tyceaYhNCjgbkosiDxBZ6sGDTUHGTqefBoF+et5erMgTWEAaxYa+fbIdHRd081nOz0
+         mKU+QAr7KuRnnOOu4v0h7c+43Wa1k2FvfG/NYx3tQdLUTx5sU5DK5Rk7+Mfrh1q0emqt
+         GChZ9VnOrGxfjYtxPI6NcLrQ70YMwBYlO36zkXgd6bXWsnrL2/6njk3Zo7kaBxw1XcYx
+         t/WT2DZ+jEupxYy/i28rdZlv9AhmSrNzjYW1W0USCM4POxSYcom4dsPKQLSV7aGKaE2g
+         7VE8ejveOtcMlmvbEyGQw9EZhvBBUxfhaYmc4EtDfdSYGUvyS63eppYfnZ0EfVOlEMfJ
+         cOlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=bmdBV6Jzh5nQA31+72j4WQc5pXDxDNDeGqIRwkeUxIY=;
+        b=Z4NyJUs3eE7quIev2Wwzl6As/9CqemwFw2yTEZY28357rTGk+ORCdV01EpSYEFK9bS
+         y0lAQx4D5LTvRR36a0ZCbj4uXDKc4OUmKFJpchUHD1vXvzkE8l79k3BhL6c1XHsnDotM
+         3yiEq5Mz6PZTbmqVorJFy92CPaZDXx8jqAn8x6jAfv3bKAy1l/diRUvHh6ArSrqtSLfE
+         zEn/bFW6mnKB7DVgzpcURPCiR32qW9PJOOvHYBIHh2csTLtqwRwVnR13iuHBLw3Fjjce
+         heemHIjImwlwLOnci8KqzUxdD/CWLmDAi0MXlw1Sj4P47zPQ1j78NXLXh/EcVRe8V2xS
+         bYaA==
+X-Gm-Message-State: AOAM533Xebsj8RifjmWImZR47EkdAei/0KIYHChVHA5M25Gd4hfKWFYo
+        b1yNSA03Zh9Ugz7NOBjRD1QHujY=
+X-Google-Smtp-Source: ABdhPJzxd6MpB54ckn/22cqb7G3gVna+QODcXO+KQ/4L9yqXhcT2jsCn2hH3+FR/L9Lhyrxdi/GyKxg=
+X-Received: by 2002:a5b:308:: with SMTP id j8mr9142230ybp.185.1597352677521;
+ Thu, 13 Aug 2020 14:04:37 -0700 (PDT)
+Date:   Thu, 13 Aug 2020 14:03:57 -0700
+Message-Id: <20200813210357.146936-1-lpy@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
+Subject: [PATCH] Add power/gpu_frequency tracepoint.
+From:   Peiyong Lin <lpy@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        Peiyong Lin <lpy@google.com>
+Cc:     prahladk@google.com, android-kernel@google.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver doesn't use the id information provided by the old i2c
-probe function, so it can trivially be converted to the simple
-("probe_new") form.
+Historically there is no common trace event for GPU frequency, in
+downstream Android each different hardware vendor implements their own
+way to expose GPU frequency, for example as a debugfs node.  This patch
+standardize it as a common trace event in upstream linux kernel to help
+the ecosystem have a common implementation across hardware vendors.
+Toolings in the Linux ecosystem will benefit from this especially in the
+downstream Android, where this information is critical to graphics
+developers.
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
+Signed-off-by: Peiyong Lin <lpy@google.com>
 ---
- drivers/hwmon/ltc2947-i2c.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/gpu/Makefile                    |  1 +
+ drivers/gpu/trace/Kconfig               |  3 +++
+ drivers/gpu/trace/Makefile              |  1 +
+ drivers/gpu/trace/trace_gpu_frequency.c | 13 +++++++++++++
+ include/trace/events/power.h            | 26 +++++++++++++++++++++++++
+ 5 files changed, 44 insertions(+)
+ create mode 100644 drivers/gpu/trace/trace_gpu_frequency.c
 
-diff --git a/drivers/hwmon/ltc2947-i2c.c b/drivers/hwmon/ltc2947-i2c.c
-index cf6074b110ae..ad0dfd3efbf8 100644
---- a/drivers/hwmon/ltc2947-i2c.c
-+++ b/drivers/hwmon/ltc2947-i2c.c
-@@ -15,8 +15,7 @@ static const struct regmap_config ltc2947_regmap_config = {
- 	.val_bits = 8,
- };
+diff --git a/drivers/gpu/Makefile b/drivers/gpu/Makefile
+index 835c88318cec..f289a47eb031 100644
+--- a/drivers/gpu/Makefile
++++ b/drivers/gpu/Makefile
+@@ -6,3 +6,4 @@ obj-$(CONFIG_TEGRA_HOST1X)	+= host1x/
+ obj-y			+= drm/ vga/
+ obj-$(CONFIG_IMX_IPUV3_CORE)	+= ipu-v3/
+ obj-$(CONFIG_TRACE_GPU_MEM)		+= trace/
++obj-$(CONFIG_TRACE_GPU_FREQUENCY)		+= trace/
+diff --git a/drivers/gpu/trace/Kconfig b/drivers/gpu/trace/Kconfig
+index c24e9edd022e..ac4aec8d5845 100644
+--- a/drivers/gpu/trace/Kconfig
++++ b/drivers/gpu/trace/Kconfig
+@@ -2,3 +2,6 @@
  
--static int ltc2947_probe(struct i2c_client *i2c,
--			 const struct i2c_device_id *id)
-+static int ltc2947_probe(struct i2c_client *i2c)
- {
- 	struct regmap *map;
+ config TRACE_GPU_MEM
+ 	bool
++
++config TRACE_GPU_FREQUENCY
++	bool
+diff --git a/drivers/gpu/trace/Makefile b/drivers/gpu/trace/Makefile
+index b70fbdc5847f..2b7ae69327d6 100644
+--- a/drivers/gpu/trace/Makefile
++++ b/drivers/gpu/trace/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
  
-@@ -39,7 +38,7 @@ static struct i2c_driver ltc2947_driver = {
- 		.of_match_table = ltc2947_of_match,
- 		.pm = &ltc2947_pm_ops,
- 	},
--	.probe = ltc2947_probe,
-+	.probe_new = ltc2947_probe,
- 	.id_table = ltc2947_id,
- };
- module_i2c_driver(ltc2947_driver);
+ obj-$(CONFIG_TRACE_GPU_MEM) += trace_gpu_mem.o
++obj-$(CONFIG_TRACE_GPU_FREQUENCY) += trace_gpu_frequency.o
+diff --git a/drivers/gpu/trace/trace_gpu_frequency.c b/drivers/gpu/trace/trace_gpu_frequency.c
+new file mode 100644
+index 000000000000..f5af5800b52d
+--- /dev/null
++++ b/drivers/gpu/trace/trace_gpu_frequency.c
+@@ -0,0 +1,13 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * GPU frequency trace points
++ *
++ * Copyright (C) 2020 Google, Inc.
++ */
++
++#include <linux/module.h>
++
++#define CREATE_TRACE_POINTS
++#include <trace/events/power.h>
++
++EXPORT_TRACEPOINT_SYMBOL(gpu_frequency);
+diff --git a/include/trace/events/power.h b/include/trace/events/power.h
+index af5018aa9517..befc0157131e 100644
+--- a/include/trace/events/power.h
++++ b/include/trace/events/power.h
+@@ -500,6 +500,32 @@ DEFINE_EVENT(dev_pm_qos_request, dev_pm_qos_remove_request,
+ 
+ 	TP_ARGS(name, type, new_value)
+ );
++
++/**
++ * gpu_frequency - Reports frequency changes in GPU clock domains
++ * @state:  New frequency (in KHz)
++ * @gpu_id: GPU clock domain
++ */
++TRACE_EVENT(gpu_frequency,
++
++	TP_PROTO(unsigned int state, unsigned int gpu_id),
++
++	TP_ARGS(state, gpu_id),
++
++	TP_STRUCT__entry(
++		__field(unsigned int, state)
++		__field(unsigned int, gpu_id)
++	),
++
++	TP_fast_assign(
++		__entry->state = state;
++		__entry->gpu_id = gpu_id;
++	),
++
++	TP_printk("state=%lu gpu_id=%lu",
++		(unsigned long)__entry->state,
++		(unsigned long)__entry->gpu_id)
++);
+ #endif /* _TRACE_POWER_H */
+ 
+ /* This part must be outside protection */
 -- 
-2.25.4
+2.28.0.220.ged08abb693-goog
 
