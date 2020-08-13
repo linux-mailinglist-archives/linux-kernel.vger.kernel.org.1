@@ -2,152 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA6C243A06
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 14:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFCF8243A4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 14:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgHMMtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 08:49:18 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:45107 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726658AbgHMMtE (ORCPT
+        id S1726622AbgHMMvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 08:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726100AbgHMMvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 08:49:04 -0400
-X-UUID: f4c7400723df461b99ba43db2a1c039f-20200813
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=aaE6HcSMNBLCW8HhXQtINfxBXNzqkMSqUtGQrGAVPSM=;
-        b=BOIL1Rthkq9dh/cIjPy+2394BryYEPZfVPl/p+WsDexLcm3qgQzNuBPsL0vAbg37mWo9/dLo2BbPnRGsW8DFgSdQLfM7yeckhVTy/TqVPueTsFo02M+ubzkfdnErZR0RGBMNia4m2X8yPfKS1hN2oImOc4oPWc9W6sKsqNaEzNA=;
-X-UUID: f4c7400723df461b99ba43db2a1c039f-20200813
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 388844126; Thu, 13 Aug 2020 20:48:58 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 13 Aug 2020 20:48:55 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 13 Aug 2020 20:48:57 +0800
-Message-ID: <1597322937.9999.42.camel@mtksdccf07>
-Subject: Re: [PATCH 1/5] timer: kasan: record and print timer stack
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-CC:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        "Stephen Boyd" <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Thu, 13 Aug 2020 20:48:57 +0800
-In-Reply-To: <87d03ulqbp.fsf@nanos.tec.linutronix.de>
-References: <20200810072313.529-1-walter-zh.wu@mediatek.com>
-         <87d03ulqbp.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Thu, 13 Aug 2020 08:51:03 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7D4C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 05:51:02 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id j7so1226608vkk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 05:51:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z6U+MzbkuK7qE2zWXiIV5fubuG6u2ECbr/eqjOujnCU=;
+        b=JmZ+2cVCvH/NJLMcB8pNKwvmqjinr9zVEEkYBcwRynp3GponnTUIozTMBlSYJeFfdu
+         zD8Gr/YxyMtB/RJR/6DfEFywcsMIfSWRrl3ggZHURB/YMtF/G3hdC7TLebysrh6wtSD7
+         9ftV1qKlcsrxlYfB4KeEN5mi0vMsKes6XHx72Aedcwhs4MDLGD1juvHcouOvufrxtgS3
+         pMLyGwMmSw1uCWFgvjSZZ3LIZE7Q7sTiizR01fR8QcaawF6JfindNjLcZN8R9TPVNljU
+         TDhHRrvmqgKXeV00svNQfAoQ+RGhYBfSep1c/wkp7oP1r+c6h5wl7cX1DJCstRJVnZKK
+         z03Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z6U+MzbkuK7qE2zWXiIV5fubuG6u2ECbr/eqjOujnCU=;
+        b=tT2doD3tDpZKuHLeM4tF1lBBwEorS5JghIEVhUTZ5sQENhQEHD3eJhKSR139M0w1bJ
+         DZtOh4jh8A6XZorwUQWKr2h3bJzMc5OUjKWfcxz8D4KEg3lAZkodbPhMOkLDlig9tqJ8
+         2G5AC4cX3YVuYTOYyFuvf7CUHUDz8E1DmzvxivnhlJe0Ote2Fj+j7wc1NpW1JqtnWEXn
+         9+MXKbymTPOvlUXrRBTudUuck8Yj1wyEeeXBNgMIbutyoLuX8zJaqxA/M0GjG4vJy9W0
+         kTYE9wcznJ8EpyPaaT4DEZPDXMYPKFKrA4efNciKK3E0U5Rww7+1SECrGwZBt9rT/PLs
+         +4aQ==
+X-Gm-Message-State: AOAM531lMJIjmbmenkevY8XwXu2iQ1NbSusvYQN8IpoVZISocZbAN8zE
+        5FV1WPo7wgT1SulkbSoKCwyoWV8zaqY=
+X-Google-Smtp-Source: ABdhPJzk3fnQMuFDYWkubTIlDS60BxrccXYBFKPO9TsP75thrg4xhIcagJ7v0IZpTnEBrdVRfCk9hA==
+X-Received: by 2002:a1f:d387:: with SMTP id k129mr2995210vkg.26.1597323060929;
+        Thu, 13 Aug 2020 05:51:00 -0700 (PDT)
+Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com. [209.85.221.180])
+        by smtp.gmail.com with ESMTPSA id p16sm778739vkf.40.2020.08.13.05.50.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Aug 2020 05:51:00 -0700 (PDT)
+Received: by mail-vk1-f180.google.com with SMTP id m12so1237682vko.5
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 05:50:59 -0700 (PDT)
+X-Received: by 2002:ac5:c925:: with SMTP id u5mr3013838vkl.68.1597323059280;
+ Thu, 13 Aug 2020 05:50:59 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20200813121310.23016-1-linmiaohe@huawei.com>
+In-Reply-To: <20200813121310.23016-1-linmiaohe@huawei.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Thu, 13 Aug 2020 14:50:22 +0200
+X-Gmail-Original-Message-ID: <CA+FuTSeS9eE_1bsik-0i3qb-WXtQnb3q=mo6+iHOciQjLZ+sHQ@mail.gmail.com>
+Message-ID: <CA+FuTSeS9eE_1bsik-0i3qb-WXtQnb3q=mo6+iHOciQjLZ+sHQ@mail.gmail.com>
+Subject: Re: [PATCH] net: add missing skb_uarg refcount increment in pskb_carve_inside_header()
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Florian Westphal <fw@strlen.de>, martin.varghese@nokia.com,
+        pshelar@ovn.org, dcaratti@redhat.com,
+        Eric Dumazet <edumazet@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shmulik Ladkani <shmulik@metanetworks.com>,
+        Yadu Kishore <kyk.segfault@gmail.com>,
+        sowmini.varadhan@oracle.com,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgVGhvbWFzLA0KDQpQbGVhc2UgaWdub3JlIG15IHByZXZpb3VzIG1haWwuIFRoYW5rcy4NCg0K
-DQpPbiBUaHUsIDIwMjAtMDgtMTMgYXQgMTM6NDggKzAyMDAsIFRob21hcyBHbGVpeG5lciB3cm90
-ZToNCj4gV2FsdGVyLA0KPiANCj4gV2FsdGVyIFd1IDx3YWx0ZXItemgud3VAbWVkaWF0ZWsuY29t
-PiB3cml0ZXM6DQo+ID4gVGhpcyBwYXRjaCByZWNvcmRzIHRoZSBsYXN0IHR3byB0aW1lciBxdWV1
-ZWluZyBzdGFja3MgYW5kIHByaW50cw0KPiANCj4gIlRoaXMgcGF0Y2giIGlzIHVzZWxlc3MgaW5m
-b3JtYXRpb24gYXMgd2UgYWxyZWFkeSBrbm93IGZyb20gdGhlIHN1YmplY3QNCj4gbGluZSB0aGF0
-IHRoaXMgaXMgYSBwYXRjaC4NCj4gDQo+IGdpdCBncmVwICdUaGlzIHBhdGNoJyBEb2N1bWVudGF0
-aW9uL3Byb2Nlc3MvDQo+IA0KDQpUaGFua3MgZm9yIHlvdXIgaW5mb3JtYXRpb24uDQoNCj4gPiB1
-cCB0byAyIHRpbWVyIHN0YWNrcyBpbiBLQVNBTiByZXBvcnQuIEl0IGlzIHVzZWZ1bCBmb3IgcHJv
-Z3JhbW1lcnMNCj4gPiB0byBzb2x2ZSB1c2UtYWZ0ZXItZnJlZSBvciBkb3VibGUtZnJlZSBtZW1v
-cnkgdGltZXIgaXNzdWVzLg0KPiA+DQo+ID4gV2hlbiB0aW1lcl9zZXR1cCgpIG9yIHRpbWVyX3Nl
-dHVwX29uX3N0YWNrKCkgaXMgY2FsbGVkLCB0aGVuIGl0DQo+ID4gcHJlcGFyZXMgdG8gdXNlIHRo
-aXMgdGltZXIgYW5kIHNldHMgdGltZXIgY2FsbGJhY2ssIHdlIHN0b3JlDQo+ID4gdGhpcyBjYWxs
-IHN0YWNrIGluIG9yZGVyIHRvIHByaW50IGl0IGluIEtBU0FOIHJlcG9ydC4NCj4gDQo+IHdlIHN0
-b3JlIG5vdGhpbmcuIERvbid0IGltcGVyc29uYXRlIGNvZGUgcGxlYXNlLg0KPiANCj4gQWxzbyBw
-bGVhc2Ugc3RydWN0dXJlIHRoZSBjaGFuZ2Vsb2cgaW4gYSB3YXkgdGhhdCBpdCdzIGVhc3kgdG8N
-Cj4gdW5kZXJzdGFuZCB3aGF0IHRoaXMgaXMgYWJvdXQgaW5zdGVhZCBvZiB0ZWxsaW5nIGZpcnN0
-IHdoYXQgdGhlIHBhdGNoDQo+IGRvZXMgYW5kIHRoZW4gc29tZSBoYWxmIGJha2VuIGluZm9ybWF0
-aW9uIHdoeSB0aGlzIGlzIHVzZWZ1bCBmb2xsb3dlZCBieQ0KPiBtb3JlIGluZm9ybWF0aW9uIGFi
-b3V0IHdoYXQgaXQgZG9lcy4NCj4gDQo+IFNvbWV0aGluZyBsaWtlIHRoaXM6DQo+IA0KPiAgIEZv
-ciBhbmFseXNpbmcgdXNlIGFmdGVyIGZyZWUgb3IgZG91YmxlIGZyZWUgb2Ygb2JqZWN0cyBpdCBp
-cyBoZWxwZnVsDQo+ICAgdG8gcHJlc2VydmUgdXNhZ2UgaGlzdG9yeSB3aGljaCBwb3RlbnRpYWxs
-eSBnaXZlcyBhIGhpbnQgYWJvdXQgdGhlDQo+ICAgYWZmZWN0ZWQgY29kZS4NCj4gDQo+ICAgRm9y
-IHRpbWVycyBpdCBoYXMgdHVybmVkIG91dCB0byBiZSB1c2VmdWwgdG8gcmVjb3JkIHRoZSBzdGFj
-ayB0cmFjZQ0KPiAgIG9mIHRoZSB0aW1lciBpbml0IGNhbGwuIDxBREQgdGVjaG5pY2FsIGV4cGxh
-bmF0aW9uIHdoeSB0aGlzIGlzIHVzZWZ1bD4NCj4gIA0KPiAgIFJlY29yZCB0aGUgbW9zdCByZWNl
-bnQgdHdvIHRpbWVyIGluaXQgY2FsbHMgaW4gS0FTQU4gd2hpY2ggYXJlIHByaW50ZWQNCj4gICBv
-biBmYWlsdXJlIGluIHRoZSBLQVNBTiByZXBvcnQuDQo+IA0KPiBTZWUsIHRoaXMgZ2l2ZXMgYSBj
-bGVhciBjb250ZXh0LCBhbiBleHBsYW5hdGlvbiB3aHkgaXQgaXMgdXNlZnVsIGFuZCBhDQo+IGhp
-Z2ggbGV2ZWwgZGVzY3JpcHRpb24gb2Ygd2hhdCBpdCBkb2VzLiBUaGUgZGV0YWlscyBhcmUgaW4g
-dGhlIHBhdGNoDQo+IGlmc2VsZiBhbmQgZG8gbm90IGhhdmUgdG8gYmUgZXB4bGFpbmVkIGluIHRo
-ZSBjaGFuZ2Vsb2cuDQo+IA0KDQpUaGFua3MgZm9yIHlvdXIgZXhwbGFuYXRpb24sIE91ciBwYXRj
-aCB3aWxsIHVzZSB0aGlzIGFzIGEgdGVtcGxhdGUgZnJvbQ0Kbm93IG9uLg0KDQo+IEZvciB0aGUg
-dGVjaG5pY2FsIGV4cGxhbmF0aW9uIHdoaWNoIHlvdSBuZWVkIHRvIGFkZCwgeW91IHJlYWxseSBu
-ZWVkIHRvDQo+IHRlbGwgd2hhdCdzIHRoZSBhZHZhbnRhZ2Ugb3IgYWRkaXRpb25hbCBjb3ZlcmFn
-ZSB2cy4gZXhpc3RpbmcgZGVidWcNCj4gZmFjaWxpdGllcyBsaWtlIGRlYnVnb2JqZWN0cy4gSnVz
-dCBjbGFpbWluZyB0aGF0IGl0J3MgdXNlZnVsIGRvZXMgbm90DQo+IG1ha2UgYW4gYXJndW1lbnQu
-DQo+IA0KDQpXZSBvcmlnaW5hbGx5IHdhbnRlZCBoaW0gdG8gaGF2ZSBzaW1pbGFyIGZ1bmN0aW9u
-cy4gTWF5YmUgaGUgY2FuJ3QNCmNvbXBsZXRlbHkgcmVwbGFjZSwgYnV0IEtBU0FOIGNhbiBhdmUg
-dGhpcyBhYmlsaXR5Lg0KDQo+IFRoZSBVQUYgcHJvYmxlbSB3aXRoIHRpbWVycyBpcyBuYXN0eSBi
-ZWNhdXNlIGlmIHlvdSBmcmVlIGFuIGFjdGl2ZSB0aW1lcg0KPiB0aGVuIGVpdGhlciB0aGUgc29m
-dGlycSB3aGljaCBleHBpcmVzIHRoZSB0aW1lciB3aWxsIGNvcnJ1cHQgcG90ZW50aWFsbHkNCj4g
-cmV1c2VkIG1lbW9yeSBvciB0aGUgcmV1c2Ugd2lsbCBjb3JydXB0IHRoZSBsaW5rZWQgbGlzdCB3
-aGljaCBtYWtlcyB0aGUNCj4gc29mdGlycSBvciBzb21lIHVucmVsYXRlZCBjb2RlIHdoaWNoIGFk
-ZHMvcmVtb3ZlcyBhIGRpZmZlcmVudCB0aW1lcg0KPiBleHBsb2RlIGluIHVuZGVidWdnYWJsZSB3
-YXlzLiBkZWJ1Z29iamVjdCBwcmV2ZW50cyB0aGF0IGJlY2F1c2UgaXQNCj4gdHJhY2tzIHBlciB0
-aW1lciBzdGF0ZSBhbmQgaW52b2tlcyB0aGUgZml4dXAgZnVuY3Rpb24gd2hpY2gga2VlcHMgdGhl
-DQo+IHN5c3RlbSBhbGl2ZSBhbmQgYWxzbyB0ZWxscyB5b3UgZXhhY3RseSB3aGVyZSB0aGUgZnJl
-ZSBvZiB0aGUgYWN0aXZlDQo+IG9iamVjdCBoYXBwZW5zIHdoaWNoIGlzIHRoZSByZWFsbHkgaW50
-ZXJlc3RpbmcgcGxhY2UgdG8gbG9vayBhdC4gVGhlDQo+IGluaXQgZnVuY3Rpb24gaXMgcHJldHR5
-IHVuaW50ZXJlc3RpbmcgaW4gdGhhdCBjYXNlIGJlY2F1c2UgeW91IHJlYWxseQ0KPiB3YW50IHRv
-IGtub3cgd2hlcmUgdGhlIGZyZWVpbmcgb2YgdGhlIGFjdGl2ZSBvYmplY3QgaGFwcGVucy4NCj4g
-DQo+IFNvIGlmIEtBU0FOIGRldGVjdHMgVUFGIGluIHRoZSB0aW1lciBzb2Z0aXJxIHRoZW4gdGhl
-IGluaXQgdHJhY2UgaXMgbm90DQo+IGdpdmluZyBhbnkgaW5mb3JtYXRpb24gZXNwZWNpYWxseSBu
-b3QgaW4gY2FzZXMgd2hlcmUgdGhlIHRpbWVyIGlzIHBhcnQNCj4gb2YgYSBjb21tb24gYW5kIGZy
-ZXF1ZW50bHkgYWxsb2NhdGVkL2ZyZWVkIG90aGVyIGRhdGEgc3RydWN0dXJlLg0KPiANCg0KSSBk
-b24ndCBoYXZlIGV4cGVyaWVuY2UgdXNpbmcgdGhpcyB0b29sLCBidXQgSSB3aWxsIHN1cnZleSBp
-dC4NCg0KPiA+ICBzdGF0aWMgaW5saW5lIHZvaWQga2FzYW5fY2FjaGVfc2hyaW5rKHN0cnVjdCBr
-bWVtX2NhY2hlICpjYWNoZSkge30NCj4gPiAgc3RhdGljIGlubGluZSB2b2lkIGthc2FuX2NhY2hl
-X3NodXRkb3duKHN0cnVjdCBrbWVtX2NhY2hlICpjYWNoZSkge30NCj4gPiAgc3RhdGljIGlubGlu
-ZSB2b2lkIGthc2FuX3JlY29yZF9hdXhfc3RhY2sodm9pZCAqcHRyKSB7fQ0KPiA+ICtzdGF0aWMg
-aW5saW5lIHZvaWQga2FzYW5fcmVjb3JkX3Rtcl9zdGFjayh2b2lkICpwdHIpIHt9DQo+IA0KPiBE
-dWgsIHNvIHlvdSBhcmUgYWRkaW5nIHBlciBvYmplY3QgdHlwZSBmdW5jdGlvbnMgYW5kIHN0b3Jh
-Z2U/IFRoYXQncw0KPiBnb2luZyB0byBiZSBhIGh1Z2UgY29weSBhbmQgcGFzdGEgb3JneSBhcyBl
-dmVyeSBvYmplY3QgcmVxdWlyZXMgdGhlIHNhbWUNCj4gY29kZSBhbmQgZXh0cmEgc3RvcmFnZSBz
-cGFjZS4NCj4gDQo+IFdoeSBub3QganVzdCB1c2luZyBrYXNhbl9yZWNvcmRfYXV4X3N0YWNrKCkg
-Zm9yIGFsbCBvZiB0aGlzPw0KPiANCj4gVGhlICdjYWxsX3JjdScgJ3RpbWVyJyAnd2hhdGV2ZXIg
-bmV4dCcgcHJpbnRvdXQgaXMgbm90IHJlYWxseSByZXF1aXJlZA0KPiBiZWNhdXNlIHRoZSBzdGFj
-ayB0cmFjZSBhbHJlYWR5IHRlbGxzIHlvdSB0aGUgZnVuY3Rpb24gd2hpY2ggd2FzDQo+IGludm9r
-ZWQuIElmIFRPUyBpcyBjYWxsX3JjdSgpIG9yIGRvX3RpbWVyX2luaXQoKSB0aGVuIGl0J3MgZW50
-aXJlbHkNCj4gY2xlYXIgd2hpY2ggb2JqZWN0IGlzIGFmZmVjdGVkLiBJZiB0aGUgdHdvIGF1eCBy
-ZWNvcmRzIGFyZSBub3QgZW5vdWdoDQo+IHRoZW4gbWFraW5nIHRoZSBhcnJheSBsYXJnZXIgaXMg
-bm90IHRoZSBlbmQgb2YgdGhlIHdvcmxkLg0KPiANCg0KTXkgcHJldmlvdXMgbWFpbCBzYXkgdGhh
-dCB3ZSB3aWxsIHJlLXVzZSBrYXNhbl9yZWNvcmRfYXV4X3N0YWNrKCkgYW5kDQpvbmx5IGhhdmUg
-YXV4X3N0YWNrLg0KDQo+ID4gICNlbmRpZiAvKiBDT05GSUdfS0FTQU5fR0VORVJJQyAqLw0KPiA+
-ICANCj4gPiBkaWZmIC0tZ2l0IGEva2VybmVsL3RpbWUvdGltZXIuYyBiL2tlcm5lbC90aW1lL3Rp
-bWVyLmMNCj4gPiBpbmRleCBhNTIyMWFiYjQ1OTQuLmVmMmRhOWRkZmFjNyAxMDA2NDQNCj4gPiAt
-LS0gYS9rZXJuZWwvdGltZS90aW1lci5jDQo+ID4gKysrIGIva2VybmVsL3RpbWUvdGltZXIuYw0K
-PiA+IEBAIC03ODMsNiArNzgzLDggQEAgc3RhdGljIHZvaWQgZG9faW5pdF90aW1lcihzdHJ1Y3Qg
-dGltZXJfbGlzdCAqdGltZXIsDQo+ID4gIAl0aW1lci0+ZnVuY3Rpb24gPSBmdW5jOw0KPiA+ICAJ
-dGltZXItPmZsYWdzID0gZmxhZ3MgfCByYXdfc21wX3Byb2Nlc3Nvcl9pZCgpOw0KPiA+ICAJbG9j
-a2RlcF9pbml0X21hcCgmdGltZXItPmxvY2tkZXBfbWFwLCBuYW1lLCBrZXksIDApOw0KPiA+ICsN
-Cj4gPiArCWthc2FuX3JlY29yZF90bXJfc3RhY2sodGltZXIpOw0KPiA+ICB9DQo+IA0KPiBBcmUg
-eW91IHN1cmUgdGhpcyBpcyBjb3JyZWN0IGZvciBhbGwgdGltZXJzPw0KPiANCj4gVGhpcyBpcyBh
-bHNvIGNhbGxlZCBmb3IgdGltZXJzIHdoaWNoIGFyZSB0ZW1wb3JhcmlseSBhbGxvY2F0ZWQgb24g
-c3RhY2sNCj4gYW5kIGZvciB0aW1lcnMgd2hpY2ggYXJlIHN0YXRpY2FsbHkgYWxsb2NhdGVkIGF0
-IGNvbXBpbGUgdGltZS4gSG93IGlzDQo+IHRoYXQgc3VwcG9zZWQgdG8gd29yaz8NCj4gDQoNCklm
-IEkgdW5kZXJzdGFuZCBjb3JyZWN0bHksIEtBU0FOIHJlcG9ydCBoYXZlIHRoaXMgcmVjb3JkIG9u
-bHkgZm9yIHNsdWINCnZhcmlhYmxlLiBTbyB3aGF0IHlvdSBzYWlkIHNob3VsZG4ndCBiZSBhIHBy
-b2JsZW0uDQoNCj4gVGhlc2Uga2luZCBvZiB0aGluZ3Mgd2FudCB0byBiZSBleHBsYWluZWQgdXBm
-cm9udCBhbiBub3QgbGVmdCB0byB0aGUNCj4gcmV2aWV3ZXIgYXMgYW4gZXhlcmNpc2UuDQo+IA0K
-DQpTb3JyeSwgTXkgZmF1bHQuIExhdGVyIHdlIHdpbGwgYmUgbW9yZSBjYXV0aW91cyB0byBzZW5k
-IHBhdGNoLg0KDQo+IFRoYW5rcywNCj4gDQo+ICAgICAgICAgdGdseA0KDQo=
+On Thu, Aug 13, 2020 at 2:16 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> If the skb is zcopied, we should increase the skb_uarg refcount before we
+> involve skb_release_data(). See pskb_expand_head() as a reference.
 
+Did you manage to observe a bug through this datapath in practice?
+
+pskb_carve_inside_header is called
+  from pskb_carve
+    from pskb_extract
+      from rds_tcp_data_recv
+
+That receive path should not see any packets with zerocopy state associated.
+
+
+> Fixes: 6fa01ccd8830 ("skbuff: Add pskb_extract() helper function")
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
