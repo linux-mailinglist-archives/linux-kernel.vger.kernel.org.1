@@ -2,118 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC03243409
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 08:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07CE243412
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 08:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726053AbgHMGb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 02:31:28 -0400
-Received: from regular1.263xmail.com ([211.150.70.200]:34070 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgHMGb2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 02:31:28 -0400
-Received: from localhost (unknown [192.168.167.13])
-        by regular1.263xmail.com (Postfix) with ESMTP id 087A61177;
-        Thu, 13 Aug 2020 14:31:17 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from [172.16.12.76] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P28892T140683746662144S1597300276100784_;
-        Thu, 13 Aug 2020 14:31:17 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <649d06a57454f0e656e289273e1861b8>
-X-RL-SENDER: hjc@rock-chips.com
-X-SENDER: hjc@rock-chips.com
-X-LOGIN-NAME: hjc@rock-chips.com
-X-FST-TO: hjc@rock-chips.com
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-Subject: Re: [PATCH v2] drm/of: Consider the state in which the ep is disabled
-To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        David Airlie <airlied@linux.ie>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, huangtao@rock-chips.com,
-        andy.yan@rock-chips.com, linux-rockchip@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, kever.yang@rock-chips.com,
-        linux-kernel@vger.kernel.org
-References: <20200707112526.18438-1-hjc@rock-chips.com>
- <3361390.LkKjKlf5PX@phil>
-From:   Huang Jiachai <hjc@rock-chips.com>
-Message-ID: <12d1b648-81d1-df48-4435-b7b88dd72b30@rock-chips.com>
-Date:   Thu, 13 Aug 2020 14:31:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726131AbgHMGjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 02:39:51 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:12296 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725964AbgHMGjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 02:39:49 -0400
+Received: by ajax-webmail-mail-app2 (Coremail) ; Thu, 13 Aug 2020 14:39:19
+ +0800 (GMT+08:00)
+X-Originating-IP: [10.192.85.18]
+Date:   Thu, 13 Aug 2020 14:39:19 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Takashi Iwai" <tiwai@suse.de>
+Cc:     kjlu@umn.edu, "Jaroslav Kysela" <perex@perex.cz>,
+        "Takashi Iwai" <tiwai@suse.com>,
+        "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>,
+        "Eliot Blennerhassett" <eblennerhassett@audioscience.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] ALSA: pci/asihpi: Fix memory leak in
+ snd_card_asihpi_capture_open()
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
+ Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
+In-Reply-To: <s5h5z9r6l8e.wl-tiwai@suse.de>
+References: <20200810063957.13692-1-dinghao.liu@zju.edu.cn>
+ <s5h5z9r6l8e.wl-tiwai@suse.de>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-In-Reply-To: <3361390.LkKjKlf5PX@phil>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+Message-ID: <77ed04d7.569ba.173e68b5d88.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: by_KCgBnEJ4X4DRfsRnOAQ--.39889W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgMKBlZdtPhtIQADsF
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUblIS07vEb7Iv0x
+        C_JF4lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
+        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
+        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
+        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wCS07vE84ACjcxK6I8E87Iv67AKxVW0oV
+        Cq3wCS07vE84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DMIAIbVAS0I0E0xvYzxvE52x0
+        82IY62kv0487MIAIbVAqx4xG64xvF2IEw4CE5I8CrVC2j2WlV2xY6cIj6xIIjxv20xvE14
+        v26r1j6r18MIAIbVAv7VC2z280aVAFwI0_Jr0_Gr1lV2xY6cvjeVCFs4IE7xkEbVWUJVW8
+        JwCS07vE7I0Y64k_MIAIbVCY0x0Ix7I2Y4AK64vIr41lV2xY6xAIw28IcVCjz48v1sIEY2
+        0_GFWkJr1UJwCS07vE4x8a6x804xWlV2xY6xC20s026xCaFVCjc4AY6r1j6r4UMIAIbVC2
+        0s026c02F40E14v26r1j6r18MIAIbVC20s026x8GjcxK67AKxVWUGVWUWwCS07vEx4CE17
+        CEb7AF67AKxVWUtVW8ZwCS07vEIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCS07vEIxAIcVC0
+        I7IYx2IY6xkF7I0E14v26r1j6r4UMIAIbVCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3w
+        CS07vEIxAIcVC2z280aVAFwI0_Jr0_Gr1lV2xY6IIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_
+        GrUvcSsGvfC2KfnxnUU==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping...
-
-在 2020/7/23 3:01, Heiko Stübner 写道:
-> Am Dienstag, 7. Juli 2020, 13:25:26 CEST schrieb Sandy Huang:
->> don't mask possible_crtcs if remote-point is disabled.
->>
->> Signed-off-by: Sandy Huang <hjc@rock-chips.com>
-> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
->
-> changes in v2:
-> - drop additional of_node_put, as ep will be put with the next
->    iteration of for_each_endpoint_of_node()
->
->
-> As this touches a pretty central function is there something
-> to keep in mind in regards to other DRM drivers?
-> [question for the broader audience ;-) ]
->
-> Heiko
->
->> ---
->>   drivers/gpu/drm/drm_of.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
->> index fdb05fbf72a0..565f05f5f11b 100644
->> --- a/drivers/gpu/drm/drm_of.c
->> +++ b/drivers/gpu/drm/drm_of.c
->> @@ -66,6 +66,9 @@ uint32_t drm_of_find_possible_crtcs(struct drm_device *dev,
->>   	uint32_t possible_crtcs = 0;
->>   
->>   	for_each_endpoint_of_node(port, ep) {
->> +		if (!of_device_is_available(ep))
->> +			continue;
->> +
->>   		remote_port = of_graph_get_remote_port(ep);
->>   		if (!remote_port) {
->>   			of_node_put(ep);
->>
->
->
->
->
->
--- 
-Best Regard
-
-黄家钗
-Sandy Huang
-Addr: 福州市鼓楼区铜盘路软件大道89号福州软件园A区21号楼(350003)
-       No. 21 Building, A District, No.89,software Boulevard Fuzhou,Fujian,PRC
-Tel：+86 0591-87884919  8690
-E-mail：hjc@rock-chips.com
-
-
-
+PiBPbiBNb24sIDEwIEF1ZyAyMDIwIDA4OjM5OjU1ICswMjAwLAo+IERpbmdoYW8gTGl1IHdyb3Rl
+Ogo+ID4gCj4gPiBXaGVuIHNuZF9wY21faHdfY29uc3RyYWludF9wb3cyKCkgZmFpbHMsIGRwY20g
+c2hvdWxkIGJlIGZyZWVkCj4gPiBqdXN0IGxpa2Ugd2hlbiBocGlfaW5zdHJlYW1fb3BlbigpICBm
+YWlscy4KPiAKPiBJdCB3aWxsIGJlIGNsZWFuZWQgdXAgdmlhIHJ1bnRpbWUtPnByaXZhdGVfZnJl
+ZSBjYWxsIGluIHRoZSBjYWxsZXIKPiBzaWRlIChzbmRfcGNtX29wZW4gLT4gc25kX3BjbV9yZWxl
+YXNlX3N1YnN0cmVhbSAtPgo+IHNuZF9wY21fZGV0YWNoX3N1YnN0cmVhbSksIGhlbmNlIHRoaXMg
+d291bGQgcmVzdWx0IGluIGRvdWJsZS1mcmVlLgo+IAoKSXQncyBjbGVhciB0byBtZSwgdGhhbmtz
+IQoKUmVnYXJkcywKRGluZ2hhbw==
