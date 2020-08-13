@@ -2,113 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D1824392C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EDA243931
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgHMLOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 07:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40384 "EHLO
+        id S1726723AbgHMLOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 07:14:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbgHMLOG (ORCPT
+        with ESMTP id S1726688AbgHMLOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 07:14:06 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B59C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:14:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=3yXT+VzQeCJZerzkfhHRMOoMw3nwRNlG4Dk5QZrZdbE=; b=qcx3038HS/M6lDijnVsf34odgx
-        83NbmqtWONpNuRcNmFd01Y0egkUO7P1dJ+ug3vqkV+Uzy8ceKY64iYLeSU26xZHEskzGPqq6ideIe
-        93M9VP1xOg6wfu3L2A2QuYlc7Cpk4eIT8Z0PqBf9D55m6qXK9zT/Jj514w4eMZJOOLXLrELjpktzl
-        g5S3GkawGIhZjnMYkiGoDh8ekM9zzQyYTaWmmyDQlzXuPw2fI68Omn6GP6hCLVFqWozDvAdeg4wXS
-        LASeaCQkg7dBdY634ER0uVffD2TZwx2B1j6BOxL6qjzyEIuIDXsphDnVOli7P5dHMKS8Pr9O/k+2J
-        Q7j3DOYA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k6BBC-0000sF-He; Thu, 13 Aug 2020 11:13:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A2D973060C5;
-        Thu, 13 Aug 2020 13:13:51 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7BAFB2C1BD8B4; Thu, 13 Aug 2020 13:13:51 +0200 (CEST)
-Date:   Thu, 13 Aug 2020 13:13:51 +0200
-From:   peterz@infradead.org
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2] x86/alternatives: Let __text_poke() acquire the pte
- lock with enabled interrupts
-Message-ID: <20200813111351.GV2674@hirez.programming.kicks-ass.net>
-References: <20200706164215.2502730-1-bigeasy@linutronix.de>
- <87eeoc53o2.fsf@nanos.tec.linutronix.de>
- <20200813104707.fxydmk6ctiwjql75@linutronix.de>
- <20200813105026.bvugytmsso6muljw@linutronix.de>
+        Thu, 13 Aug 2020 07:14:31 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FDBC061383
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:14:29 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id p13so5200511ilh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=melexis.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Drw0mASaMxjwlc+v1sEJiZJDPjdekVV/QXUc/HktK+E=;
+        b=g9q7mJIbn3hrQSrv9YwGoI4XhEzdCzVWGnEUw5xoILnYYN3Ttz7J/Q62eH435j0rzE
+         n958oIBgnA7/jlXprmT92J8OOROvm+Z2jYMbl5NJonSzQILJVQ5B1JeO2JJFyTFJXVS5
+         NjPgUvdEK48UsonLlcxIxMB35ZnY+YYMa8Tci/vKsSKvMirvq/t/YdYOuQtcW9J8W8RF
+         PR4JNyv9rgtvMd6rpEaipaiK6f4h5sCCeHB4UNbItLmioP2wFoGiAT8WslEGljc8FfyZ
+         iiaYUVD7oqYxf3v4JynFgR/Zxwwx7v0GDs59u4Qein+KaBaDBp4ELWuF/Xu7N6xqIulE
+         8gOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Drw0mASaMxjwlc+v1sEJiZJDPjdekVV/QXUc/HktK+E=;
+        b=rsFomv9a2QvQs3KqOid5hoxlJJ04ZeNzPhtWRgvqYmkBYSaCqr84YVTBj5cCb7AD0M
+         WC5l1e6cAsfsFyMyykQGp/gKJT3JfV8KKb9QAnAK7W4MQlE3IqlHuKmbwR0rQcP+mKWz
+         9dkS2niVn+wDsspOyLZPgpuAjRKQZ8M8ceVRsc2U0FqokmM40JUDsLsNZcbqpbxoTlqT
+         Cr9LWht/Xx6VTw89M5482Ehtl1MUT5F+/8vMjWXKYO14dqSqzMQIl2sq7LXQ9sOIiDeP
+         6SSJW+odobHb0a6gKWyvPu1fBUI//WI6WgOJhJo5BJtbWxAc4uVDf1rkzJJVct+gqIKZ
+         vMgg==
+X-Gm-Message-State: AOAM532Gtt5B4EzwdEAq8nnTlqehEXb+cuL/gWio3lydLgqO7R/eWlfx
+        bAvPoSwQAWurpwmX6nJ5qIQr6gb25zF31TDbzS3Ckw==
+X-Google-Smtp-Source: ABdhPJxQJaTwk24Deg909+rNRs4gJtrwkVRx3wGKds6s8xZVwl91JieQoWJUaqj7PAbFGBdU34jMZlWE+yz6FKL/xug=
+X-Received: by 2002:a92:cb12:: with SMTP id s18mr4341576ilo.13.1597317268867;
+ Thu, 13 Aug 2020 04:14:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200813105026.bvugytmsso6muljw@linutronix.de>
+References: <20200813075125.4949-1-cmo@melexis.com> <20200813075125.4949-4-cmo@melexis.com>
+ <CAHp75VfNwb5uBp=H0295LEJjXy1+=V5yvSN1PHbtMYzgg=_EAA@mail.gmail.com>
+In-Reply-To: <CAHp75VfNwb5uBp=H0295LEJjXy1+=V5yvSN1PHbtMYzgg=_EAA@mail.gmail.com>
+From:   Crt Mori <cmo@melexis.com>
+Date:   Thu, 13 Aug 2020 13:13:53 +0200
+Message-ID: <CAKv63uv=b60B9RXBJF4HEhMOowu-qbGrv7LsmJVvkkERSida-A@mail.gmail.com>
+Subject: Re: [PATCH v5 3/5] iio:temperature:mlx90632: Convert polling while
+ loop to do-while
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 12:50:26PM +0200, Sebastian Andrzej Siewior wrote:
-> The pte lock is never acquired in-IRQ context so it does not require the
-> interrupts to be disabled.
-> 
-> RT complains here because the spinlock_t must not be acquired with
-> disabled interrupts.
-> 
-> use_temporary_mm() expects interrupts to be off because it invokes
-> switch_mm_irqs_off() and uses per-CPU (current active mm) data.
-> 
-> Move the PTE lock handling outside the interrupt disabled region.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On Thu, 13 Aug 2020 at 13:03, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, Aug 13, 2020 at 10:53 AM Crt Mori <cmo@melexis.com> wrote:
+> >
+> > Reduce number of lines and improve readability to convert polling while
+> > loops to do-while. The iopoll.h interface was not used, because we
+> > require more than 20ms timeout, because time for sensor to perform a
+> > measurement is around 10ms and it needs to perform measurements for each
+> > channel (which currently is 3).
+>
+> I don't see how it prevents using iopoll.h. It uses usleep_range()
+> under the hood in the same way you did here, but open coded.
+>
 
-Agreed, this should be fine.
+One loop is indeed 10ms and that is not the problem, the problem is
+that timeout is at least 3 calls of this data ready (3 channels), so
+that is at minimum 30ms of timeout, or it could even be 4 in worse
+case scenario and that is outside of the range for usleep to measure.
+So in case of the other loop, where we wait 200ms for channel refresh
+it is also out of scope. Timeout should be in number of tries or in
+msleep range if you ask me.
 
-Acked-by; Peter Zijlstra (Intel) <peterz@infradead.org>
-
-> ---
-> v1…v2: Reword the patch description.
-> 
->  arch/x86/kernel/alternative.c |    6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> --- a/arch/x86/kernel/alternative.c
-> +++ b/arch/x86/kernel/alternative.c
-> @@ -875,8 +875,6 @@ static void *__text_poke(void *addr, con
->  	 */
->  	BUG_ON(!pages[0] || (cross_page_boundary && !pages[1]));
->  
-> -	local_irq_save(flags);
-> -
->  	/*
->  	 * Map the page without the global bit, as TLB flushing is done with
->  	 * flush_tlb_mm_range(), which is intended for non-global PTEs.
-> @@ -893,6 +891,8 @@ static void *__text_poke(void *addr, con
->  	 */
->  	VM_BUG_ON(!ptep);
->  
-> +	local_irq_save(flags);
-> +
->  	pte = mk_pte(pages[0], pgprot);
->  	set_pte_at(poking_mm, poking_addr, ptep, pte);
->  
-> @@ -942,8 +942,8 @@ static void *__text_poke(void *addr, con
->  	 */
->  	BUG_ON(memcmp(addr, opcode, len));
->  
-> -	pte_unmap_unlock(ptep, ptl);
->  	local_irq_restore(flags);
-> +	pte_unmap_unlock(ptep, ptl);
->  	return addr;
->  }
->  
+> ...
+>
+> > -       while (tries-- > 0) {
+> > +       do {
+> >                 ret = regmap_read(data->regmap, MLX90632_REG_STATUS,
+> >                                   &reg_status);
+> >                 if (ret < 0)
+> >                         return ret;
+> > -               if (reg_status & MLX90632_STAT_DATA_RDY)
+> > -                       break;
+> >                 usleep_range(10000, 11000);
+> > -       }
+> > +       } while (!(reg_status & MLX90632_STAT_DATA_RDY) && tries--);
+> >
+> >         if (tries < 0) {
+> >                 dev_err(&data->client->dev, "data not ready");
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
