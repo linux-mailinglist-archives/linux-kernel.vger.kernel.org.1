@@ -2,146 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67EE42432A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 05:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E422432A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 05:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgHMDLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 23:11:50 -0400
-Received: from mga03.intel.com ([134.134.136.65]:11512 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726531AbgHMDLu (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 23:11:50 -0400
-IronPort-SDR: kSWN4xgfnJ4SeWicfjc+7ler2gzzMBJE1mAEzq1uQ5fqV9IBU/AiGjTBGbSLScIf9RomVH/gyj
- 0zH2aPU/TJnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9711"; a="154117552"
-X-IronPort-AV: E=Sophos;i="5.76,306,1592895600"; 
-   d="scan'208";a="154117552"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 20:11:49 -0700
-IronPort-SDR: Cc7HVTVAn7hMx++DeaCvM9u+iUjbiwFJyzTXJueUAd1gl526zu8Zj6dOjNNxdrrqOBnYDwZZZg
- luobUriuw9KA==
-X-IronPort-AV: E=Sophos;i="5.76,306,1592895600"; 
-   d="scan'208";a="495720985"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 20:11:46 -0700
-Subject: Re: [PATCH] perf parse-events: Set exclude_guest for user-space
- counting
-To:     Like Xu <like.xu@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-References: <20200812065953.22143-1-yao.jin@linux.intel.com>
- <20200812121504.GE13995@kernel.org>
- <74097816-3f36-abea-1eaa-8942aedd7322@linux.intel.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <ab4ae047-ba0b-fed6-36e4-d667e3437e34@linux.intel.com>
-Date:   Thu, 13 Aug 2020 11:11:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <74097816-3f36-abea-1eaa-8942aedd7322@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726707AbgHMDSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 23:18:12 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:51699 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726667AbgHMDSM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 23:18:12 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200813031803epoutp045a847351f3216f578737e20ae645210f~qtZhiJZ260563405634epoutp04c
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 03:18:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200813031803epoutp045a847351f3216f578737e20ae645210f~qtZhiJZ260563405634epoutp04c
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1597288683;
+        bh=HLhlMCrzJldkYU0pohTAFN2CsR5VsqyD7Nzjck6qsfs=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=N1re7ZinjFx7TNcq5w/zX2dUiw0FVncK65LwtCf+huXtzaY9QSyafEgJhRTg+j/hA
+         PbvQR2KNke1r6ZBOlPzAypCeFs2YRqR69NKXmKFW/zlWMYwmTMIOBXW8Y5be0S2RHr
+         F7y284za+YdZwLeb4eWKf7Va3HLjUwbIsioVQvdA=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p3.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200813031803epcas1p38673e33d4c6fdc05398577e525a77161~qtZhKun-71816918169epcas1p3j;
+        Thu, 13 Aug 2020 03:18:03 +0000 (GMT)
+Mime-Version: 1.0
+Subject: Re: [PATCH v8 3/4] scsi: ufs: L2P map management for HPB read
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <86a04d4f-bb6f-9bc8-cb64-a50b0ed2fdb7@acm.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <336371513.41597288683542.JavaMail.epsvc@epcpadp2>
+Date:   Thu, 13 Aug 2020 12:13:43 +0900
+X-CMS-MailID: 20200813031343epcms2p2dfe9192d11110a80454c6daac69ecdc7
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d
+References: <86a04d4f-bb6f-9bc8-cb64-a50b0ed2fdb7@acm.org>
+        <231786897.01596705302142.JavaMail.epsvc@epcpadp1>
+        <231786897.01596705001840.JavaMail.epsvc@epcpadp1>
+        <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
+        <336371513.41596705485601.JavaMail.epsvc@epcpadp2>
+        <CGME20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d@epcms2p2>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Like,
-
-On 8/12/2020 9:02 PM, Like Xu wrote:
-> On 2020/8/12 20:15, Arnaldo Carvalho de Melo wrote:
->> Em Wed, Aug 12, 2020 at 02:59:53PM +0800, Jin Yao escreveu:
->>> Currently if we run 'perf record -e cycles:u', exclude_guest is 0.
->>>
->>> But it doesn't make sense that we request for user-space counting
->>> but we also get the guest report.
->>>
+On 2020-08-06 02:15, Daejun Park wrote:
+> > +    req->end_io_data = (void *)map_req;
 > 
-> Please hold the horse and allow this possibility.
+> Please leave the (void *) cast out since explicit casts from a non-void
+> to a void pointer are not necessary in C.
+
+OK, I will fix it.
+ 
+> > +static inline struct
+> > +ufshpb_rsp_field *ufshpb_get_hpb_rsp(struct ufshcd_lrb *lrbp)
+> > +{
+> > +    return (struct ufshpb_rsp_field *)&lrbp->ucd_rsp_ptr->sr.sense_data_len;
+> > +}
 > 
-> Some authorized perf users on the host may
-> only want to count (KVM) guest user space events.
+> Please introduce a union in struct utp_cmd_rsp instead of using casts
+> to reinterpret a part of a data structure.
+
+OK. I will introduce a union in struct utp_cmd_rsp and use it.
+
+> > +/* routine : isr (ufs) */
 > 
-> Thanks,
-> Like Xu
+> The above comment looks very cryptic. Should it perhaps be expanded?
 > 
-
-Without this patch, if we don't set the ":u" modifier, exclude_guest = 1.
-
-perf record -e cycles ./div
-perf evlist -v
-cycles: size: 120, { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|PERIOD, 
-read_format: ID, disabled: 1, inherit: 1, mmap: 1, comm: 1, freq: 1, enable_on_exec: 1, task: 1, 
-sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-
-So this patch doesn't change perf's original behavior.
-
-Thanks
-Jin Yao
-
->>> To keep perf semantics consistent and clear, this patch sets
->>> exclude_guest for user-space counting.
->>
->> Applied, and also added this, that you should consider doing in the
->> future (modulo the "Committer testing:" header :) ):
->>
->> Committer testing:
->>
->> Before:
->>
->>    # perf record -e cycles:u
->>    ^C[ perf record: Woken up 1 times to write data ]
->>    [ perf record: Captured and wrote 1.231 MB perf.data (91 samples) ]
->>    #
->>    # perf evlist -v
->>    cycles:u: size: 120, { sample_period, sample_freq }: 4000, sample_type: 
->> IP|TID|TIME|ID|CPU|PERIOD, read_format: ID, disabled: 1, inherit: 1, exclude_kernel: 1, 
->> exclude_hv: 1, freq: 1, sample_id_all: 1
->>    <SNIP>
->>    #
->>
->> After:
->>
->>    # perf record -e cycles:u
->>    ^C[ perf record: Woken up 1 times to write data ]
->>    [ perf record: Captured and wrote 1.263 MB perf.data (403 samples) ]
->>    #
->>    # perf evlist -v
->>    cycles:u: size: 120, { sample_period, sample_freq }: 4000, sample_type: 
->> IP|TID|TIME|ID|CPU|PERIOD, read_format: ID, disabled: 1, inherit: 1, exclude_kernel: 1, 
->> exclude_hv: 1, freq: 1, sample_id_all: 1, exclude_guest: 1
->>    #
->>
->> ----
->>
->> I.e. show actual command output before and after that demonstrates the
->> problem and then the solution.
->>
->>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->>> ---
->>>   tools/perf/util/parse-events.c | 2 ++
->>>   1 file changed, 2 insertions(+)
->>>
->>> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
->>> index 9f7260e69113..4d809f1fe269 100644
->>> --- a/tools/perf/util/parse-events.c
->>> +++ b/tools/perf/util/parse-events.c
->>> @@ -1794,6 +1794,8 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
->>>           if (*str == 'u') {
->>>               if (!exclude)
->>>                   exclude = eu = ek = eh = 1;
->>> +            if (!exclude_GH)
->>> +                eG = 1;
->>>               eu = 0;
->>>           } else if (*str == 'k') {
->>>               if (!exclude)
->>> -- 
->>> 2.17.1
->>>
->>
+> > +struct ufshpb_active_field {
+> > +    __be16 active_rgn;
+> > +    __be16 active_srgn;
+> > +} __packed;
 > 
+> Since "__packed" is not necessary for the above data structure, please
+> remove it. Note: a typical approach in the Linux kernel to verify that
+> the compiler has not inserted any padding bytes is to add a BUILD_BUG_ON()
+> statement in an initialization function that verifies the size of ABI data
+> structures. See also the output of the following command:
+> 
+> git grep -nH 'BUILD_BUG_ON.sizeof.*!='
+
+OK, I didn't know about it. Thanks.
+
+> > +struct ufshpb_rsp_field {
+> > +    __be16 sense_data_len;
+> > +    u8 desc_type;
+> > +    u8 additional_len;
+> > +    u8 hpb_type;
+> > +    u8 reserved;
+> > +    u8 active_rgn_cnt;
+> > +    u8 inactive_rgn_cnt;
+> > +    struct ufshpb_active_field hpb_active_field[2];
+> > +    __be16 hpb_inactive_field[2];
+> > +} __packed;
+> 
+> I think the above __packed statement should also be left out.
+
+OK, I will remove it.
+
+Thanks,
+Daejun
