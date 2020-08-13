@@ -2,104 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191FB2438EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 12:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1367E2438F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 12:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgHMKua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 06:50:30 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57868 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgHMKu3 (ORCPT
+        id S1726656AbgHMKuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 06:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgHMKuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 06:50:29 -0400
-Date:   Thu, 13 Aug 2020 12:50:26 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597315827;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=V7i1yZX8DIk+MQSTkmAin3ENIS5cbZh88bPdS9M7IIc=;
-        b=Wop42E5jWlVlSx9kb9R+JiB3JOVibb4tCFU6a4HpAzC3fFREfzwuo+fNDfcUl7PYOifKAc
-        y/B0YCZQmjTM32EdEPLWmurCWUqgc7nK/q63TIDM663CN1UJHE6NGwAPhfaxQyWQHmnwpV
-        R2LD7rYDAcfHlFxasq8wxofP7atBfy0rFuCH+l6+LvhdPV6DdlhUvJL5RLkaMrfHQ0Y/JH
-        p0caVVvExlqr2nr6M/0yDlccnB+eAjn1/jLQ57vkDBsaUuJjpL63DzhD3siZYv3YPstEYj
-        vmCDu6pjGS5R+WNbNjaswC6mZaaQP4vH9RvtUCBnne1eb73+0qWNGpOVvocQTA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597315827;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=V7i1yZX8DIk+MQSTkmAin3ENIS5cbZh88bPdS9M7IIc=;
-        b=L3mjj02s95CVz8uisHiDXqScGCDBqsLNqdsDzxAzUBfjjeEBhsAFwHdbGZwqpuwJ7hkppy
-        sC0HnltNFpaLMVBQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH v2] x86/alternatives: Let __text_poke() acquire the pte lock
- with enabled interrupts
-Message-ID: <20200813105026.bvugytmsso6muljw@linutronix.de>
-References: <20200706164215.2502730-1-bigeasy@linutronix.de>
- <87eeoc53o2.fsf@nanos.tec.linutronix.de>
- <20200813104707.fxydmk6ctiwjql75@linutronix.de>
+        Thu, 13 Aug 2020 06:50:39 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50999C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 03:50:39 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id d6so5659568ejr.5
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 03:50:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=qcyruWIWWcmfLDNbpjSRYIBi7KcZ3Dlhc3qTgAMX4r0=;
+        b=pbQ6mlhklx3JcpdRVvdNzMKiIvnYuoNNA3Yez+V2iBq/U4HyAdcVgqOyuePj4xhukq
+         e0qj0VBeeWoqNWbb/62tuHbak0J6oAf8Kk++rD6LevfGnvinsjoiJ4AlN3v6plD8Skn0
+         P7457O03Nf9vy6swQrOCiPFY4msf2YrEBj5qRzcLKW5W8XrKx3Mx/lN6tn0S82A9l18W
+         q7GLiT8qPM7w5j6uRJyoP80rNPXeP4Lu92UvGSHd+U2/TESwyi4dEEIJZUHBluzMvpgD
+         7k5RIXP2WZ3tU/7BIEGkpFq9D2FqGFC2nONT+6oMFklAiVr0H4ScytQeCw6f6Ii536ph
+         NzEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=qcyruWIWWcmfLDNbpjSRYIBi7KcZ3Dlhc3qTgAMX4r0=;
+        b=f32ocQa684V+jGSjadhb/GyK6P3e7mUGHhkP+lHdj9/pFgywY/krw0+DG1cgqJzcp9
+         eo3onxfINmVUwgfqd5blVGHfntnlqbOSIAMFCqdn+WR5fNBcbD8AEcs8GgYdPf6fJxTK
+         u3cx0vAb/FsqVDyUs/C6B14DCe8Nkzxaqde/VlUeLBgbKLxwtIECDdLbGWtFv/DIuqS8
+         go/EmemkmF/r63kU3kUKo5YxLXEAJvzLBAE2j3MkSjQBKVRG68oSC50YdnNkn2xPqfYb
+         PCHEwga6qlddaHjzq3SMKeCEv6MN7E90Jk2Ptiaq5+gZs4H341sEZaPAmrEpDcWhgwvC
+         7BrQ==
+X-Gm-Message-State: AOAM532lbgI6YSidoymLH/dvcCNl2HV7t6lvAWLkbcoGUrl6QjmVFPQS
+        njGk1pujcmcdLIGDAU32pHRqbBuUmwxZ+lVOX34=
+X-Google-Smtp-Source: ABdhPJxA7vHLnLV68TeeYjReB50PSRAqKferRn17ZZCMnOa8FgW/ArZUH313vzrhQIbB2+CLx+Zpxn6oSxx+gZgNKiE=
+X-Received: by 2002:a17:906:e10e:: with SMTP id gj14mr4339477ejb.218.1597315838066;
+ Thu, 13 Aug 2020 03:50:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200813104707.fxydmk6ctiwjql75@linutronix.de>
+Received: by 2002:a05:6402:b21:0:0:0:0 with HTTP; Thu, 13 Aug 2020 03:50:37
+ -0700 (PDT)
+Reply-To: delivery.postoffice@post.com
+From:   "Ms. Rana Salatt " <maoils80@gmail.com>
+Date:   Thu, 13 Aug 2020 11:50:37 +0100
+Message-ID: <CAPGqKUzCZzoEYrcq7OAa0gHkkbBeC9PVUQ=SpwxK6qM6soWH7A@mail.gmail.com>
+Subject: Dear Valued Customer,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pte lock is never acquired in-IRQ context so it does not require the
-interrupts to be disabled.
+ATTN; DEAR,
 
-RT complains here because the spinlock_t must not be acquired with
-disabled interrupts.
+This is Ms. Rana Salatt ,I have registered your ATM CARD to the POST
+OFFICE BENIN REPUBLIC so that they will Post it to your home address
+and I believe your current address is still the same. Your total
+amount in the envelope is $3.2 Million USD and the POST OFFICE assured
+me that there will be no stoppage until it get to your hand. I want
+you to contact them and re- confirm your address where to Post it.
 
-use_temporary_mm() expects interrupts to be off because it invokes
-switch_mm_irqs_off() and uses per-CPU (current active mm) data.
+Contact Dr.Hameed Alsarraf,
+03 BP 1000,COTONOU
+BENIN REPUBLIC.
+E-mail: (delivery.postoffice@post.com)
+Your full information for the Postal.
+PHONE NUMBER;00229-99837251
+FULL NAME: ==============
+COUNTRY: ==============
+CITY: ==============
+CURRENT HOME ADDRESS: ===========
+TELEPHONE/CELL PHONE NUMBER.=========
+AGE/OCCUPATION: =============
+SEX/A COPY OF YOUR IDENTIFICATION: ===============
 
-Move the PTE lock handling outside the interrupt disabled region.
+The manager, informed me that it will take good 3 days to get to your
+house and your Envelope accumulate. Your Current address has to be
+reconfirmed when contacting the post office.
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
-v1=E2=80=A6v2: Reword the patch description.
-
- arch/x86/kernel/alternative.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -875,8 +875,6 @@ static void *__text_poke(void *addr, con
- 	 */
- 	BUG_ON(!pages[0] || (cross_page_boundary && !pages[1]));
-=20
--	local_irq_save(flags);
--
- 	/*
- 	 * Map the page without the global bit, as TLB flushing is done with
- 	 * flush_tlb_mm_range(), which is intended for non-global PTEs.
-@@ -893,6 +891,8 @@ static void *__text_poke(void *addr, con
- 	 */
- 	VM_BUG_ON(!ptep);
-=20
-+	local_irq_save(flags);
-+
- 	pte =3D mk_pte(pages[0], pgprot);
- 	set_pte_at(poking_mm, poking_addr, ptep, pte);
-=20
-@@ -942,8 +942,8 @@ static void *__text_poke(void *addr, con
- 	 */
- 	BUG_ON(memcmp(addr, opcode, len));
-=20
--	pte_unmap_unlock(ptep, ptl);
- 	local_irq_restore(flags);
-+	pte_unmap_unlock(ptep, ptl);
- 	return addr;
- }
-=20
+Thanks & remain blessed.
+Ms. Rana Salatt
