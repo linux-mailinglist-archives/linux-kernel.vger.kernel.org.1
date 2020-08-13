@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A702E244034
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 23:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A72244067
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 23:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgHMVAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 17:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726192AbgHMVAF (ORCPT
+        id S1726604AbgHMVRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 17:17:46 -0400
+Received: from 13.mo4.mail-out.ovh.net ([178.33.251.8]:35529 "EHLO
+        13.mo4.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726192AbgHMVRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 17:00:05 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2DBC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 14:00:04 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id y206so3427800pfb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 14:00:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UoqEFQFA+F2osxU/9euekhAQaDalb1swCejrkv3klN8=;
-        b=pi5IglisWWNCVXf4cCgnmoGQBiskzf1aYbQ0rxrmGz2yJGuQ/SI5lIAFLPEKT0t3uO
-         TjUBXgpbbAJmuFxr+EFWIN/uOp7LcgkL7D+PgwrD3R4B+snypEOYUbirw3RiD7UeWY/9
-         w86xtDvCNFUqh+sF7o2dJU7iodtUtPu0EL+cQlIpCyvEMEqYuSyZAFhpCgoYaqvwQkcO
-         HEo7FnebR/FkrKD+2/vq6Q+drp+7/c6BD07wSUo5RE1O/9kBSKcLD2GYySsjzGaXspck
-         TKGozWfVOFqgqzfvgR9aREUIidixDyvOOlYWPno6VNSBVkMuQ8+HxuFFrJNQ7ZQT6E8i
-         WAog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UoqEFQFA+F2osxU/9euekhAQaDalb1swCejrkv3klN8=;
-        b=Dvglvc5jZtUwUvAmpR7yF/mV+glI5jHWAbXuxJ7eBELd/iBGqIRak4YTsioIH4rjaR
-         MB9PYOrBE+OJkv1d4p+4sscVr1VSSF6IPxHxz8HhkBoNzHyiDpjDM2bUO8zNAvKzOBYu
-         gCEiWyBpyp8SW07jFmEuvxbwx83U7wM/Vj7PEBCmzH8CrY4AAYxh+NbunfEu/6i/J/39
-         Lu1wV2vH/gn/8RMe1lszizsjFL0vsmtyfZEVMWG0/IWmwQf4nKZHm6WBb2Wb8XXpVNjk
-         VF29qn2ffFv9+z0qs2KB0S7ZKm8cbNEdXCdwSoDKlSNKVP4ypHbgzGeuunVMkoe5Ts/o
-         MiCQ==
-X-Gm-Message-State: AOAM532TThEaCRI5V1Ht09/2kyTBeyJcFEwzcndHE5pDE7fz/gq5sDAc
-        Gbp8BcUA1MVIjKDQjio0sYH+qw==
-X-Google-Smtp-Source: ABdhPJyful70oodpga5zr1qvGs774nq0cEJpOpB8JP7Fu7pSipQq6C+Yol3ZyBVODGjyvDn9q8ubgA==
-X-Received: by 2002:a62:7acb:: with SMTP id v194mr5865361pfc.302.1597352403601;
-        Thu, 13 Aug 2020 14:00:03 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id f18sm6963800pfj.35.2020.08.13.14.00.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 14:00:02 -0700 (PDT)
-Date:   Thu, 13 Aug 2020 15:00:00 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Qi Liu <liuqi115@huawei.com>
-Cc:     gregkh@linuxfoundation.org, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com
-Subject: Re: [PATCH v2] coresight: etm4x: Add Support for HiSilicon ETM device
-Message-ID: <20200813210000.GO3393195@xps15>
-References: <1597323562-3706-1-git-send-email-liuqi115@huawei.com>
+        Thu, 13 Aug 2020 17:17:46 -0400
+Received: from player698.ha.ovh.net (unknown [10.108.57.245])
+        by mo4.mail-out.ovh.net (Postfix) with ESMTP id 981B0243ED5
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 18:29:03 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player698.ha.ovh.net (Postfix) with ESMTPSA id 19515153540A9;
+        Thu, 13 Aug 2020 16:28:57 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-104R00580418864-beec-4c1f-899a-8232179470aa,
+                    E10370F5499BCD549250CF93A1A6372B2A4BB833) smtp.auth=steve@sk2.org
+From:   Stephen Kitt <steve@sk2.org>
+To:     =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
+Subject: [PATCH] drivers/hwmon/ltc2947-i2c.c: use simple i2c probe
+Date:   Thu, 13 Aug 2020 18:28:51 +0200
+Message-Id: <20200813162851.1519546-1-steve@sk2.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1597323562-3706-1-git-send-email-liuqi115@huawei.com>
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 7660341492141739393
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrleehgdejjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheileekrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 08:59:22PM +0800, Qi Liu wrote:
-> Add ETMv4 periperhal ID for HiSilicon Hip08 and Hip09 platform. Hip08
-> contains ETMv4.2 device and Hip09 contains ETMv4.5 device.
-> 
-> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+This driver doesn't use the id information provided by the old i2c
+probe function, so it can trivially be converted to the simple
+("probe_new") form.
 
-I have applied your patch to my local branch - it will be published on Monday
-with the release of the v5.9-rc1 kernel.
+Signed-off-by: Stephen Kitt <steve@sk2.org>
+---
+ drivers/hwmon/ltc2947-i2c.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Thanks,
-Mathieu
+diff --git a/drivers/hwmon/ltc2947-i2c.c b/drivers/hwmon/ltc2947-i2c.c
+index cf6074b110ae..ad0dfd3efbf8 100644
+--- a/drivers/hwmon/ltc2947-i2c.c
++++ b/drivers/hwmon/ltc2947-i2c.c
+@@ -15,8 +15,7 @@ static const struct regmap_config ltc2947_regmap_config = {
+ 	.val_bits = 8,
+ };
+ 
+-static int ltc2947_probe(struct i2c_client *i2c,
+-			 const struct i2c_device_id *id)
++static int ltc2947_probe(struct i2c_client *i2c)
+ {
+ 	struct regmap *map;
+ 
+@@ -39,7 +38,7 @@ static struct i2c_driver ltc2947_driver = {
+ 		.of_match_table = ltc2947_of_match,
+ 		.pm = &ltc2947_pm_ops,
+ 	},
+-	.probe = ltc2947_probe,
++	.probe_new = ltc2947_probe,
+ 	.id_table = ltc2947_id,
+ };
+ module_i2c_driver(ltc2947_driver);
+-- 
+2.25.4
 
-> ---
->  drivers/hwtracing/coresight/coresight-etm4x.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
-> index 6d7d216..7797a57 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x.c
-> @@ -1587,6 +1587,8 @@ static const struct amba_id etm4_ids[] = {
->  	CS_AMBA_UCI_ID(0x000bb805, uci_id_etm4),/* Qualcomm Kryo 4XX Cortex-A55 */
->  	CS_AMBA_UCI_ID(0x000bb804, uci_id_etm4),/* Qualcomm Kryo 4XX Cortex-A76 */
->  	CS_AMBA_UCI_ID(0x000cc0af, uci_id_etm4),/* Marvell ThunderX2 */
-> +	CS_AMBA_UCI_ID(0x000b6d01, uci_id_etm4),/* HiSilicon-Hip08 */
-> +	CS_AMBA_UCI_ID(0x000b6d02, uci_id_etm4),/* HiSilicon-Hip09 */
->  	{},
->  };
-> 
-> --
-> 2.8.1
-> 
