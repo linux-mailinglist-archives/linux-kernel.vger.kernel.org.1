@@ -2,187 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2B7243585
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567B0243576
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgHMHxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 03:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37818 "EHLO
+        id S1726627AbgHMHwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 03:52:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgHMHxh (ORCPT
+        with ESMTP id S1726144AbgHMHwR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 03:53:37 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA18C061383
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 00:53:36 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id o18so5154984eje.7
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 00:53:36 -0700 (PDT)
+        Thu, 13 Aug 2020 03:52:17 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34223C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 00:52:17 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id o22so3632176qtt.13
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 00:52:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=melexis.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iLtk0FyRSsg4NjQXnsWcSYnmcbd4LI7Xy7HwQ4PY8ek=;
-        b=qE9eBPtxzunYqjd4M9pnFOEaOq15YPauise+mixIGTj6WkaqwpD7QSnlcb71UfYHmy
-         g9ADFXR+FG8B/sWwLtlhHdey57JYE8Xwovt/GjUh0zoyw84bzh3woXvxjWZuTx+O6WRM
-         00IOu+qdBMFBGOlUm4/Czr5Jk6qc1tKpmXOKRiT5sUIXEWlqbxOFi3abQDgYsekMLjD7
-         7jNPeKATAQBVzBDcF/DcZrbGCv5Dsi7f/S+Lr8HjFU3im8WpB7KgMdupd5M2dq+GssKF
-         NW81neRciEx3r0wV1lZxv0cTamsfrvaB7VaDWH5+97KrU77goBjqCbwPPoet0epU2nBg
-         NH+w==
+        d=lca.pw; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=kbfJFqw0BUIJ5TzLMuAPa26O83MFMfq45p0iJLXoQ24=;
+        b=ZAQkkNengTyFVITiU/IeQgQ8HUcxvR/qUzlEP1RkhZ4iS/OOOs5MyjOL3nQ9ZPHooL
+         2Lm+rlX360bQxFPcvK+ssLbn55/ZstUNPA/IZ46mxJz660/HZNdYyR1dOgo4ohnvMnnB
+         FM7Fk7t4lTwEdO8ewUfwXcSV8fzdb0Q+1cStpUJmN6rjCCECvD05//W62XGFcP5Gt2t5
+         7/3/h3cAUMoxSh5DXwYOH4jHbFuLuUIpKk5KUxrZox9QeYctu7eizH7U7PvqsVHSX5+p
+         9lQjmDIlIHqGjLXUQuJQ8nYrrWwq2vjQwsjqY0pG7M/1LYgcCxrtqvNNfZI0rq3HxnJw
+         zZAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iLtk0FyRSsg4NjQXnsWcSYnmcbd4LI7Xy7HwQ4PY8ek=;
-        b=ZT+B4woJRot1drX+SyDXqdqefkv5TltIuwakE2eKD42ZqVHk3z+SW8cqZFbrVvublv
-         2if9YnsVLmRHR1qrPq2OptuzP/jMKkVlMg+2Af/SR+s/UnJkd8zAVReHWw2Mg3ovRZGM
-         8rmSqN1RJU8OhwCT8LMMVlFbl2dmP5FqD4sCk2LDZA4kBsBdUcZeQ5Q1mcXDy26WMfso
-         CyoPG2KQsIb4ktrW/OE0oTazaJvPaQX3WfZZsg2aryOGJ7+l2C3R/SQnewzoqVo/WMg/
-         wzHev8oybC419ccjNdux6T435nPKWwSYJSiC504ks6eofX5g5sQQHwlBfVLT78F6POyc
-         Kj4A==
-X-Gm-Message-State: AOAM532uehdGfG+qUIKyLHgk8hg1VNoHNt3btNXGF3PKalY19cGklhFM
-        CeOMvr2Z3dfIMD9JM8PS2zeH8g==
-X-Google-Smtp-Source: ABdhPJxRzjgRLqcxiZFzApJ+2X0+6tigHOg/DNggzZMRsm4PyZBDw4h26zP7RPyF3gU2j7L8jqQAeg==
-X-Received: by 2002:a17:906:3a85:: with SMTP id y5mr3495576ejd.507.1597305215332;
-        Thu, 13 Aug 2020 00:53:35 -0700 (PDT)
-Received: from localhost.localdomain (ptr-4xajgyw9mz6ybkfgzn4.18120a2.ip6.access.telenet.be. [2a02:1810:a421:dd00:8d0a:592c:7d6d:8770])
-        by smtp.gmail.com with ESMTPSA id br25sm3363449ejb.25.2020.08.13.00.53.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 00:53:34 -0700 (PDT)
-From:   Crt Mori <cmo@melexis.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Crt Mori <cmo@melexis.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v5 5/5] iio:temperature:mlx90632: Some stylefixing leftovers
-Date:   Thu, 13 Aug 2020 09:51:25 +0200
-Message-Id: <20200813075125.4949-6-cmo@melexis.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200813075125.4949-1-cmo@melexis.com>
-References: <20200813075125.4949-1-cmo@melexis.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=kbfJFqw0BUIJ5TzLMuAPa26O83MFMfq45p0iJLXoQ24=;
+        b=Dfs+ZUdLsWi4KiaQF8CKvqmAFLdlSvO5px0hPst4Wx3iV2tVCXgbjqD923OQSZ65oG
+         uwX6t6HWuxnPDyfUQ270wrpxg1kMexpqBKeovqJBDTq1Ic9ZLsK6bEd2hd23IQKuDMjb
+         glmkF888mZ0TTvxahDGLN+d0RbX2+Y1BHqrkLW3uW6F2eAGnzMEOJY+Zy/Bu1ZtureMq
+         ruQH203Z6mfAiOjVCJNMQ0fIFX5QwcIg+DueV54vZy8xIUZLE9JqWkydGqZUD1ZMsckn
+         WL0DNW7Z7O1CgPINyuzbCaEu8il9z5GPZw2jSLa/uXD2TEjM0TqyaJJ1TCH2Kbt0ZVzU
+         XzQg==
+X-Gm-Message-State: AOAM533xR2708BA9aY0fs89GeImwtEqShuZyTbs1j8rbe9fkRVd7brXU
+        JA3yO/OIfg7P1FjGSPk2CKpDoEbgXhUP8A==
+X-Google-Smtp-Source: ABdhPJwXBjdbY+cfEn3nH6Dvsv9NW6v8lfVVdt+gfD3Khr2STj2r4zFVVUFuWHwQj4GikY9LLremaw==
+X-Received: by 2002:aed:3e45:: with SMTP id m5mr3655774qtf.210.1597305134863;
+        Thu, 13 Aug 2020 00:52:14 -0700 (PDT)
+Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id y26sm5348981qto.75.2020.08.13.00.52.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Aug 2020 00:52:14 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Qian Cai <cai@lca.pw>
+Mime-Version: 1.0 (1.0)
+Subject: Re: WARN_ON_ONCE(1) in iomap_dio_actor()
+Date:   Thu, 13 Aug 2020 03:52:13 -0400
+Message-Id: <B409CB60-3A36-480D-964B-90043490B7B9@lca.pw>
+References: <20200813054418.GB3339@dread.disaster.area>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>, darrick.wong@oracle.com,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, khlebnikov@yandex-team.ru
+In-Reply-To: <20200813054418.GB3339@dread.disaster.area>
+To:     Dave Chinner <david@fromorbit.com>
+X-Mailer: iPhone Mail (17G68)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is some inconsistency and whitespace cleanup performed in this
-patch. It was done on top of my other patches, but I can rebase to head
-of the togreg branch if it would go in sooner.
 
-Signed-off-by: Crt Mori <cmo@melexis.com>
----
- drivers/iio/temperature/mlx90632.c | 41 ++++++++++++++++--------------
- 1 file changed, 22 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/iio/temperature/mlx90632.c b/drivers/iio/temperature/mlx90632.c
-index 9fa8c078c037..4ef13509fb0f 100644
---- a/drivers/iio/temperature/mlx90632.c
-+++ b/drivers/iio/temperature/mlx90632.c
-@@ -94,6 +94,9 @@
- #define MLX90632_RAM_3(meas_num)	(MLX90632_ADDR_RAM + 3 * meas_num + 2)
- 
- /* Name important RAM_MEAS channels */
-+#define MLX90632_RAM_DSP5_AMBIENT_1 MLX90632_RAM_3(1)
-+#define MLX90632_RAM_DSP5_AMBIENT_2 MLX90632_RAM_3(2)
-+
- #define MLX90632_RAM_DSP5_EXTENDED_AMBIENT_1 MLX90632_RAM_3(17)
- #define MLX90632_RAM_DSP5_EXTENDED_AMBIENT_2 MLX90632_RAM_3(18)
- #define MLX90632_RAM_DSP5_EXTENDED_OBJECT_1 MLX90632_RAM_1(17)
-@@ -111,10 +114,10 @@
- #define MLX90632_DSP_VERSION	5 /* DSP version */
- #define MLX90632_DSP_MASK	GENMASK(7, 0) /* DSP version in EE_VERSION */
- #define MLX90632_RESET_CMD	0x0006 /* Reset sensor (address or global) */
--#define MLX90632_REF_12		12LL /**< ResCtrlRef value of Ch 1 or Ch 2 */
--#define MLX90632_REF_3		12LL /**< ResCtrlRef value of Channel 3 */
--#define MLX90632_MAX_MEAS_NUM	31 /**< Maximum measurements in list */
--#define MLX90632_SLEEP_DELAY_MS 3000 /**< Autosleep delay */
-+#define MLX90632_REF_12 	12LL /* ResCtrlRef value of Ch 1 or Ch 2 */
-+#define MLX90632_REF_3		12LL /* ResCtrlRef value of Channel 3 */
-+#define MLX90632_MAX_MEAS_NUM	31 /* Maximum measurements in list */
-+#define MLX90632_SLEEP_DELAY_MS 3000 /* Autosleep delay */
- #define MLX90632_EXTENDED_LIMIT 27000 /* Extended mode raw value limit */
- 
- /**
-@@ -285,12 +288,12 @@ static int mlx90632_read_ambient_raw(struct regmap *regmap,
- 	int ret;
- 	unsigned int read_tmp;
- 
--	ret = regmap_read(regmap, MLX90632_RAM_3(1), &read_tmp);
-+	ret = regmap_read(regmap, MLX90632_RAM_DSP5_AMBIENT_1, &read_tmp);
- 	if (ret < 0)
- 		return ret;
- 	*ambient_new_raw = (s16)read_tmp;
- 
--	ret = regmap_read(regmap, MLX90632_RAM_3(2), &read_tmp);
-+	ret = regmap_read(regmap, MLX90632_RAM_DSP5_AMBIENT_2, &read_tmp);
- 	if (ret < 0)
- 		return ret;
- 	*ambient_old_raw = (s16)read_tmp;
-@@ -488,11 +491,11 @@ static s64 mlx90632_preprocess_temp_amb(s16 ambient_new_raw,
- 
- 	kGb = ((s64)Gb * 1000LL) >> 10ULL;
- 	VR_Ta = (s64)ambient_old_raw * 1000000LL +
--		kGb * div64_s64(((s64)ambient_new_raw * 1000LL),
--			(MLX90632_REF_3));
-+		kGb * div64_s64((s64)ambient_new_raw * 1000LL,
-+			MLX90632_REF_3);
- 	tmp = div64_s64(
--			 div64_s64(((s64)ambient_new_raw * 1000000000000LL),
--				   (MLX90632_REF_3)), VR_Ta);
-+			 div64_s64((s64)ambient_new_raw * 1000000000000LL,
-+				   MLX90632_REF_3), VR_Ta);
- 	return div64_s64(tmp << 19ULL, 1000LL);
- }
- 
-@@ -504,13 +507,13 @@ static s64 mlx90632_preprocess_temp_obj(s16 object_new_raw, s16 object_old_raw,
- 
- 	kKa = ((s64)Ka * 1000LL) >> 10ULL;
- 	VR_IR = (s64)ambient_old_raw * 1000000LL +
--		kKa * div64_s64(((s64)ambient_new_raw * 1000LL),
--			(MLX90632_REF_3));
-+		kKa * div64_s64((s64)ambient_new_raw * 1000LL,
-+			MLX90632_REF_3);
- 	tmp = div64_s64(
--			div64_s64(((s64)((object_new_raw + object_old_raw) / 2)
--				   * 1000000000000LL), (MLX90632_REF_12)),
-+			div64_s64((s64)((object_new_raw + object_old_raw) / 2)
-+				   * 1000000000000LL, MLX90632_REF_12),
- 			VR_IR);
--	return div64_s64((tmp << 19ULL), 1000LL);
-+	return div64_s64(tmp << 19ULL, 1000LL);
- }
- 
- static s64 mlx90632_preprocess_temp_obj_extended(s16 object_new_raw, s16 ambient_new_raw,
-@@ -560,8 +563,8 @@ static s32 mlx90632_calc_temp_object_iteration(s32 prev_object_temp, s64 object,
- 	calcedKsTO = ((s64)((s64)Ga * (prev_object_temp - 25 * 1000LL)
- 			     * 1000LL)) >> 36LL;
- 	calcedKsTA = ((s64)(Fb * (TAdut - 25 * 1000000LL))) >> 36LL;
--	Alpha_corr = div64_s64((((s64)(Fa * 10000000000LL) >> 46LL)
--				* Ha_customer), 1000LL);
-+	Alpha_corr = div64_s64(((s64)(Fa * 10000000000LL) >> 46LL)
-+				* Ha_customer, 1000LL);
- 	Alpha_corr *= ((s64)(1 * 1000000LL + calcedKsTO + calcedKsTA));
- 	Alpha_corr = emissivity * div64_s64(Alpha_corr, 100000LL);
- 	Alpha_corr = div64_s64(Alpha_corr, 1000LL);
-@@ -589,7 +592,7 @@ static s32 mlx90632_calc_temp_object(s64 object, s64 ambient, s32 Ea, s32 Eb,
- 
- 	kTA = (Ea * 1000LL) >> 16LL;
- 	kTA0 = (Eb * 1000LL) >> 8LL;
--	TAdut = div64_s64(((ambient - kTA0) * 1000000LL), kTA) + 25 * 1000000LL;
-+	TAdut = div64_s64((ambient - kTA0) * 1000000LL, kTA) + 25 * 1000000LL;
- 	TAdut4 = mlx90632_calc_ta4(TAdut, 10000LL);
- 
- 	/* Iterations of calculation as described in datasheet */
-@@ -899,7 +902,7 @@ static int mlx90632_probe(struct i2c_client *client,
- 		mlx90632->mtyp = MLX90632_MTYP_EXTENDED;
- 	} else if ((read & MLX90632_DSP_MASK) == MLX90632_DSP_VERSION) {
- 		dev_dbg(&client->dev,
--			"Detected Unknown EEPROM calibration %x\n", read);	
-+			"Detected Unknown EEPROM calibration %x\n", read);
- 	} else {
- 		dev_err(&client->dev,
- 			"Wrong DSP version %x (expected %x)\n",
--- 
-2.25.1
+> On Aug 13, 2020, at 1:44 AM, Dave Chinner <david@fromorbit.com> wrote:
+>=20
+> Ok:
+>=20
+> file.fd_write =3D safe_open("./testfile", O_RDWR|O_CREAT);
+> ....
+> file.fd_read =3D safe_open("./testfile", O_RDWR|O_CREAT|O_DIRECT);
+> ....
+> file.ptr =3D safe_mmap(NULL, fsize, PROT_READ|PROT_WRITE, MAP_SHARED,
+>            file.fd_write, 0);
+>=20
+> So this is all IO to the same inode....
+>=20
+> and you loop
+>=20
+> while !done {
+>=20
+>    do {
+>        rc =3D pread(file.fd_read, file.ptr + read, fsize - read,
+>            read);
+>        if (rc > 0)
+>            read +=3D rc;
+>    } while (rc > 0);
+>=20
+>    rc =3D safe_fallocate(file.fd_write,
+>            FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
+>            0, fsize);
+> }
+>=20
+> On two threads at once?
+>=20
+> So, essentially, you do a DIO read into a mmap()d range from the
+> same file, with DIO read ascending and the mmap() range descending,
+> then once that is done you hole punch the file and do it again?
+>=20
+> IOWs, this is a racing page_mkwrite()/DIO read workload, and the
+> moment the two threads hit the same block of the file with a
+> DIO read and a page_mkwrite at the same time, it throws a warning.
+>=20
+> Well, that's completely expected behaviour. DIO is not serialised
+> against mmap() access at all, and so if the page_mkwrite occurs
+> between the writeback and the iomap_apply() call in the dio path,
+> then it will see the delalloc block taht the page-mkwrite allocated.
+>=20
+> No sane application would ever do this, it's behaviour as expected,
+> so I don't think there's anything to care about here.
 
+It looks me the kernel warning is trivial to trigger by an non-root user. Sh=
+ouldn=E2=80=99t we worry a bit because this could be a DoS for systems which=
+ set panic_on_warn?=
