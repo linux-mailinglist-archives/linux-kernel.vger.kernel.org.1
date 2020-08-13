@@ -2,189 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DB424379B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D75C2437A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgHMJZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 05:25:25 -0400
-Received: from mail-db8eur05on2066.outbound.protection.outlook.com ([40.107.20.66]:15602
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726072AbgHMJZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 05:25:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DRX5u38IUv4oADks2rEn5TVaz778o4t9yH0r0uG/zRQbhF97YHC//1pSFt/bgdvmYQcY8g2L8cZ6X/CVWWFbprTzrSHyunbfkeKwmfOoyXmVkyQFRSDk0HPgiThAa+ZdSmBp24TL3OTJhpNDR9FKryDPLo0si21jOEi0RncNYf2AnEL8iwZR/RT1JSsaZjBSowM7XxkW8Y+twuW4Z93u9W+40OmwUZE2Rhe40/6UwnHx48nHobml03mY5ja4fJ86rCSXkL/ARLujvEffRNxtoQ6GEqNI6fAHz1mVoR2fVXrNNhV2AcMoct50mTPeUdRiPDUg6ATFdQQHqlpPkbrbKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n/nor7Ae7qwD7yTZm6g3LFn2ToCW1DvVnc/UzgwVSQo=;
- b=ExIUFyzA3+bCqm3Qc4oJ2Nn2zRlFQ332xi0dJgbjq8cC8fT3gGI+K+kKil3Z3FQaij8+zsf50a+KqVaXZewrGnuzBODAPJ3GWICDxArQDjIKmM40Rq2Lwqk0gkS+nP7kBIJqpY5ovLGM7VEpzxDsQaVbxdKlC79+sN+Ev8GbcXictlbKKRbuh6asdFtQhzbWQZCq5+fFrajO17rs6TpfNayzi7kshurnhT5LbFtb5DSVjqlWpPff2/y/6HYd5w0Hmr0tyxa+EyqWsnDQjLZYHOG7MxQ3cuRh0jpAc6u6d97SD0/SfOOYvTLn8SvHs2DGPL4yp+wpCkBMp91OOvxsRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n/nor7Ae7qwD7yTZm6g3LFn2ToCW1DvVnc/UzgwVSQo=;
- b=BpIXhj0wJx+V/FBYSDGWe+KvMZAMxIjAGszC7tRDwStvsrZK7+XAYCn/8YcIUCpNnNCq4d8duIPahrZFlrYbxLBATqtgERh2r1z7O6Vf6ybYchjW5v1iyt2ee9OH5X8g0i5Hx6avszoC9t4v1jt5AQrM3F4BwRq1AJ52LDrzDKY=
-Received: from AM7PR04MB7157.eurprd04.prod.outlook.com (2603:10a6:20b:118::20)
- by AM6PR04MB4166.eurprd04.prod.outlook.com (2603:10a6:209:4b::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15; Thu, 13 Aug
- 2020 09:25:21 +0000
-Received: from AM7PR04MB7157.eurprd04.prod.outlook.com
- ([fe80::ed7f:8755:5994:7fcf]) by AM7PR04MB7157.eurprd04.prod.outlook.com
- ([fe80::ed7f:8755:5994:7fcf%5]) with mapi id 15.20.3261.026; Thu, 13 Aug 2020
- 09:25:21 +0000
-From:   Peter Chen <peter.chen@nxp.com>
-To:     Pawel Laszczak <pawell@cadence.com>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "rogerq@ti.com" <rogerq@ti.com>,
-        "weiyongjun1@huawei.com" <weiyongjun1@huawei.com>,
-        "jpawar@cadence.com" <jpawar@cadence.com>,
-        "kurahul@cadence.com" <kurahul@cadence.com>,
-        "sparmar@cadence.com" <sparmar@cadence.com>
-Subject: Re: [PATCH] usb: cdns3: Removes duplicated call to the
- cdns3_exit_roles function
-Thread-Topic: [PATCH] usb: cdns3: Removes duplicated call to the
- cdns3_exit_roles function
-Thread-Index: AQHWcUEJ2HYKtjM4M0WllTS952Uv86k1xJSA
-Date:   Thu, 13 Aug 2020 09:25:20 +0000
-Message-ID: <20200813092429.GA22195@b29397-desktop>
-References: <20200813071054.25837-1-pawell@cadence.com>
-In-Reply-To: <20200813071054.25837-1-pawell@cadence.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: cadence.com; dkim=none (message not signed)
- header.d=none;cadence.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 2e0dc348-d883-4042-d89c-08d83f6acd02
-x-ms-traffictypediagnostic: AM6PR04MB4166:
-x-microsoft-antispam-prvs: <AM6PR04MB4166FEE4F0A15D448621E4A38B430@AM6PR04MB4166.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MhQ/cwmRskIfKf5qJ1FgjvbnWzIoERErsJOe0sXuWs6+q/IrCXsMceDsQ74q4GZr4TS27BBHGlwBY/sEPCnHxifMzo7TSK7U/IvtYmZWDDbHsaqlWHFhtYI7LQRPFr+UCTRFJrfswl2W0QL5gM/6OJ+koVFDfMFSyrEiju8pxPuz+/poRPG3yGZ1cjOyiNFX1BCi+R0HJQZCkk/QEgCBvHQVWNRggRaDhVaL+p92chKRuFcXh103zpkxRTBZyqjrIGKPJ7YqbAplCRwwcxNr8sWIt24cWUsvdsdSwSJ9VRlLoj6/GSR5rsaUxNaVQvkSpJivmtoUeWLEqBs4bVRAJQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7157.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(396003)(136003)(39860400002)(346002)(376002)(366004)(8936002)(8676002)(44832011)(6506007)(6512007)(71200400001)(7416002)(54906003)(33656002)(9686003)(316002)(53546011)(26005)(6916009)(186003)(66946007)(33716001)(66446008)(478600001)(91956017)(76116006)(83380400001)(6486002)(86362001)(66476007)(2906002)(66556008)(64756008)(5660300002)(4326008)(1076003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: Vl6RF+7bOXsJTwiAnKY5YsTqScZn1UiBnsu8PFPWqpAJzmgtNUQBOyvpz6zOr4EwNxqiX8VYpfNGwYSMNe4WpmGb48JV7IdrtOOHTSMvy4YxHVGf1OmkiIhJDBgL2TOI+hnaJminlwN7gYiQbmYpkXe+0UFaUGrV28zpgl13xNfmEcTGvPOChqvn++AZVPwB7nDiXObTy7r+DYmrzuH0Gf/40TyTNVzA1WHBlkMjEo8GNoMMwBFwrrgyInPrO6b/ruM2X0s0YpvHd7NT+S26at2QOOECZsvr7Zt/Q19LYeJa15kYmZkb0dmenbBdmzhCUe9mvzozre2emy3Q6HYIh60V7SzZsFwWjjKGmvsZGz0FLjL3YQ8kJCvSAhpnxus/u1/Zh64lXAqLVzqZ9zl9xPWyyodWOl3oVuascUagl8uKUDAKpFq8Rj1mwYpp9xwF8bbpY+Uk/iYAWm8/ruWaHL0Rc8tzi/hfEtomrIegX8rKg3+j16JFeMQLCVx8WIcsrJD3m4UZCctJiLjxlHExJ5BAMr4pxdC8LQMgMw9cz8UzswIb+EU0bWT73T15owymoYQbSn+xpapD4J4nIDNzfzpvEJ0nilqjaP2DjckBa3EyMUgzjIQ5qX8ZeGb/zPx6ZAozNsS/NdBqh0KSnUC4yA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <949C84F919CAF14486D9A3FA45AC3F01@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726419AbgHMJ1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 05:27:55 -0400
+Received: from mout.gmx.net ([212.227.17.20]:48673 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726048AbgHMJ1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 05:27:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1597310848;
+        bh=QQgcAqFsQMdctRYRQQkFM4/FaAdJSbAly6eNGHWh7JY=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=XU2DRv/M7Qr/SvQ4xb30m4g28JCoCIPLm6mmgWJQR0UE8+iK6wvgOkE9T31svAh8K
+         RCM9gAi7SG7BudQpY4+Hx3Ya6rgtF4G/3PewRpJ3m/6UDmlrxu1hWkgpRfK0RXpV+Q
+         Qg73xMfvZy9980EHBipZMpFjdr6MaV+TdayPqbMk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [185.75.75.198] ([185.75.75.198]) by web-mail.gmx.net
+ (3c-app-gmx-bap04.server.lan [172.19.172.74]) (via HTTP); Thu, 13 Aug 2020
+ 11:27:28 +0200
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7157.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e0dc348-d883-4042-d89c-08d83f6acd02
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Aug 2020 09:25:20.9990
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ndbY2lE+kdWY/k+esyRkxarNwBkuMyi5Z4dbldMhd4hj166K58eDPP31Xr9WJnN1KtSsrPiguljE9uXGTs2hgw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4166
+Message-ID: <trinity-ba9f3a8a-4588-48d3-8131-ce2a7ab5403e-1597310848667@3c-app-gmx-bap04>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        srv_heupstream@mediatek.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>
+Subject: Aw: [v4, 0/3] mmc: mediatek: add optional reset property mmc:
+ mediatek: add optional module reset property arm64: dts: mt7622: add reset
+ node for mmc device Documentation/devicetree/bindings/mmc/mtk-sd.txt | 2 ++
+ arch/arm64/boot/dts/mediatek/mt7622.d
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 13 Aug 2020 11:27:28 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <20200813090618.28009-1-wenbin.mei@mediatek.com>
+References: <20200813090618.28009-1-wenbin.mei@mediatek.com>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:mXGJHHF88bG10JaMCy6eru/9VAgIE4rI2I0CB2gNmVZ1v9dYAOF3QLGE1FofnG1OstrvN
+ KvylGzK5GMDiyOno6TRQVoetCMIsdujumuFaURvjxwPLw8J7eEtyRWW3TZU9CuRo/nCSWvDCvfnQ
+ sXHdssRZ8ti/DhpGRn4ubmTmP/ocOwo5VUKfORmwt0Qt1Em77zg2+Q2YV39v0nL5niPDaUFYr4Lz
+ K54oLCH6eOWM5iwr+NTcggvyefPblhKiFYN7HZRzUbTXTbgax995RoUe60r5+xPg/qFizEKdpO5Q
+ iQ=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Vw33wiRjJGk=:p++MCWCwlhii3JRTH6pCA8
+ 8WIzt/TEIBJ4unZ8aragxwA2U3wg1XZGiKYnR3e8b5VPNV9nl9lmhde0bBDjMUj4DTYCU5bs6
+ qXoBZzlmOem/1Vf3EGxPlO7vxCPlomiH6fbc7U1XmRHSB/NQvCSXqRfcjIqW5AVPBxmX1hqie
+ x0zo8kAjNmj8AbHm/kxvLTCfrn4/YaaHl70652fQ10Me84Bmn5sCjB5c8zFrALc+xInNN4JN2
+ su1uyZTasOqQKH3/VZWJVOBuiOpM7Kqo1WXaxZXWfcDUWiCKf1sGDd9IdG0GRFWT0BOF78dPZ
+ Y8qE3JrkBuPgwccKNEIki/hgqALwb/ecmyONQ3HRRbv7PHexLQBrtX1CsgjHYFw3OSsdNIMOw
+ fdSDZw0b3vaJlJ66fe82fQKsbp4TI29F1JphoESRDJXL5uLQllHTpu7OowVRxirjcFgi1Tk4C
+ wOrOdyDkLjxLGuAMm4t5bYmg7sJjlMq2MMb4siJDaExN+tcQckr3daXZY27FJ1OaiBseKY0A/
+ laQy6hITzbHX/QgdJvIrTXRp/CR7MqPiuH5sm45RmDycUtJGWhK2mDfaaPH3yfp2fUspmKwPj
+ 3gYuoFUdOKkI4+QxUpdzrMK1fKMHYpsNTN154qKFFAIfmnvTeUj8seEb/qeEUylk0h+KEX7ov
+ XTaLna95HIosfil7jXgStJ0WRVqvgX3II4ftvv0azxnR9cI+U37ORAN+MQxiJoi3MGVg=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-08-13 09:10:54, Pawel Laszczak wrote:
-> To avoid double calling of function cdns3_exit_roles when initialization
-> failed
-need ","
+Hi,
 
-> patch removes invoking this function from cdns3_core_init_role.
-> This function is invoked again from cdns3_probe when
-> cdns3_core_init_role returns error code.
+it looks like you still miss a blank line between subject and your text in cover-letter
 
-If you delete the cdns3_exit_roles here, where it will be called again?
-I only see cdns3_exit_roles is called at .remove callback.
+regards Frank
 
-Peter
->=20
-> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-> ---
->  drivers/usb/cdns3/core.c | 20 ++++++++------------
->  1 file changed, 8 insertions(+), 12 deletions(-)
->=20
-> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
-> index 5c1586ec7824..c22c7224642a 100644
-> --- a/drivers/usb/cdns3/core.c
-> +++ b/drivers/usb/cdns3/core.c
-> @@ -132,7 +132,7 @@ static int cdns3_core_init_role(struct cdns3 *cdns)
->  		if (ret) {
->  			dev_err(dev, "Host initialization failed with %d\n",
->  				ret);
-> -			goto err;
-> +			return ret;
->  		}
->  	}
-> =20
-> @@ -141,7 +141,7 @@ static int cdns3_core_init_role(struct cdns3 *cdns)
->  		if (ret) {
->  			dev_err(dev, "Device initialization failed with %d\n",
->  				ret);
-> -			goto err;
-> +			return ret;
->  		}
->  	}
-> =20
-> @@ -149,38 +149,34 @@ static int cdns3_core_init_role(struct cdns3 *cdns)
-> =20
->  	ret =3D cdns3_drd_update_mode(cdns);
->  	if (ret)
-> -		goto err;
-> +		return ret;
-> =20
->  	/* Initialize idle role to start with */
->  	ret =3D cdns3_role_start(cdns, USB_ROLE_NONE);
->  	if (ret)
-> -		goto err;
-> +		return ret;
-> =20
->  	switch (cdns->dr_mode) {
->  	case USB_DR_MODE_OTG:
->  		ret =3D cdns3_hw_role_switch(cdns);
->  		if (ret)
-> -			goto err;
-> +			return ret;
->  		break;
->  	case USB_DR_MODE_PERIPHERAL:
->  		ret =3D cdns3_role_start(cdns, USB_ROLE_DEVICE);
->  		if (ret)
-> -			goto err;
-> +			return ret;
->  		break;
->  	case USB_DR_MODE_HOST:
->  		ret =3D cdns3_role_start(cdns, USB_ROLE_HOST);
->  		if (ret)
-> -			goto err;
-> +			return ret;
->  		break;
->  	default:
-> -		ret =3D -EINVAL;
-> -		goto err;
-> +		return -EINVAL;
->  	}
-> =20
->  	return 0;
-> -err:
-> -	cdns3_exit_roles(cdns);
-> -	return ret;
->  }
-> =20
->  /**
-> --=20
-> 2.17.1
->=20
+> Betreff: [v4, 0/3] mmc: mediatek: add optional reset property mmc: mediatek: add optional module reset property arm64: dts: mt7622: add reset node for mmc device Documentation/devicetree/bindings/mmc/mtk-sd.txt | 2 ++ arch/arm64/boot/dts/mediatek/mt7622.dtsi | 2 ++ drivers/mmc/host/mtk-sd.c | 13 +++++++++++++ 3 files changed, 17 insertions(+)
+>
+> --
+> 2.18.0
 
---=20
-
-Thanks,
-Peter Chen=
