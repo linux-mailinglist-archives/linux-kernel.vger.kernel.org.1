@@ -2,88 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C27243D54
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 18:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06CA243D27
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 18:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgHMQ0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 12:26:14 -0400
-Received: from 17.mo5.mail-out.ovh.net ([46.105.56.132]:39152 "EHLO
-        17.mo5.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbgHMQ0N (ORCPT
+        id S1726568AbgHMQU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 12:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726167AbgHMQUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 12:26:13 -0400
-X-Greylist: delayed 335 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Aug 2020 12:26:13 EDT
-Received: from player737.ha.ovh.net (unknown [10.108.35.124])
-        by mo5.mail-out.ovh.net (Postfix) with ESMTP id 7575E28EB84
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 18:20:36 +0200 (CEST)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player737.ha.ovh.net (Postfix) with ESMTPSA id 21D02BC5348D;
-        Thu, 13 Aug 2020 16:20:31 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-106R006f1c74461-ce2b-407c-839a-3d80edbb9b02,
-                    E10370F5499BCD549250CF93A1A6372B2A4BB833) smtp.auth=steve@sk2.org
-From:   Stephen Kitt <steve@sk2.org>
-To:     Marc Hulsman <m.hulsman@tudelft.nl>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: [PATCH] drivers/hwmon/w83791d.c: use simple i2c probe
-Date:   Thu, 13 Aug 2020 18:20:26 +0200
-Message-Id: <20200813162026.1512242-1-steve@sk2.org>
-X-Mailer: git-send-email 2.25.4
+        Thu, 13 Aug 2020 12:20:52 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5410DC061757;
+        Thu, 13 Aug 2020 09:20:52 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id x24so3323862lfe.11;
+        Thu, 13 Aug 2020 09:20:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XLc5ACtHDNI1+gaIDyPYbQaiPo0Jso/dYMhGyI7vp20=;
+        b=QOWRTRjtg3u/3Wy+Kci93qh6P1EtMgRTSJnljlmP5tCtpuKTbaP/KkxpbpkRJVUH2r
+         wWwUiEV3agQ7JS3NSSyDaJ+v5KqA3mu37NuamXUkYObMW1QSwReaQt9em8AGO893lrKn
+         sl3lJCvF+FqrVVcBnyZVydN+43YmNz5ALtc3LeMEB31Hke+sV9jyrEKRyC64edBubM7O
+         LyDllvTMJSkWOE9boDmbhnWx0LEBX+XL7z/eA0xLTAqvPACKd8PuxWTHRxlpKqUwTez1
+         u/Qm5Zrg2zaDNZPrKPZF3QwakhLx05Ol1S70gxzc4DLJslZ7wmxihAswcn09yBOgQFk0
+         5+OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XLc5ACtHDNI1+gaIDyPYbQaiPo0Jso/dYMhGyI7vp20=;
+        b=uaX98mtB4BqiwVPWQJMPqQhApBpMY84tlI6V9sV/aLAzi0A8Ql0jULkZxmh73RTDap
+         YTW9nKp6HteV8g3GWp8oxJ8LQOALW96NZ4dVspjArL83b/MYJvKuGy5Rj8RMps1v4t73
+         OtYHN+gC2/ovQuje+xzLQwd0Zai6qn3HAGo6NOIWjmCvB+Ipm67gsepQC9JAH/kCnfGm
+         etxlWScAJAJez28ecEKQhO8R8FHm+PwuOdILthZNQz+GcoQEMjza6Fequ3dztYY/BxP0
+         yq8VtTXr3Qe/66sb/7CAJ+QhNgoNMiJizRouchyU0KBU6AZK/2I7lje5kraUMjZiB4Xk
+         OKXA==
+X-Gm-Message-State: AOAM5330gJhChf22otzvMmtjMOYAA+3Eje5GCl1e3zLnmBfco1+ybjrf
+        v3+/AgLrm/ufvCXq7cb7DXQ=
+X-Google-Smtp-Source: ABdhPJzYsq0GidJ/ACXDbFMvNq6cm4z8BzXzaeTaI8v0eg6CSLvXG55dQ/8r6+vGOhgNg/9IsAvLug==
+X-Received: by 2002:a19:c806:: with SMTP id y6mr2661386lff.156.1597335650761;
+        Thu, 13 Aug 2020 09:20:50 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id r19sm1190460ljc.59.2020.08.13.09.20.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Aug 2020 09:20:50 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 13 Aug 2020 18:20:47 +0200
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200813162047.GA27774@pc636>
+References: <20200811210931.GZ4295@paulmck-ThinkPad-P72>
+ <874kp87mca.fsf@nanos.tec.linutronix.de>
+ <20200813075027.GD9477@dhcp22.suse.cz>
+ <20200813095840.GA25268@pc636>
+ <874kp6llzb.fsf@nanos.tec.linutronix.de>
+ <20200813133308.GK9477@dhcp22.suse.cz>
+ <87sgcqty0e.fsf@nanos.tec.linutronix.de>
+ <20200813145335.GN9477@dhcp22.suse.cz>
+ <20200813154159.GR4295@paulmck-ThinkPad-P72>
+ <20200813155412.GP9477@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 7517633679366245843
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrleehgdejhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejfeejrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200813155412.GP9477@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver doesn't use the id information provided by the old i2c
-probe function, so it can trivially be converted to the simple
-("probe_new") form.
+> On Thu 13-08-20 08:41:59, Paul E. McKenney wrote:
+> > On Thu, Aug 13, 2020 at 04:53:35PM +0200, Michal Hocko wrote:
+> > > On Thu 13-08-20 16:34:57, Thomas Gleixner wrote:
+> > > > Michal Hocko <mhocko@suse.com> writes:
+> > > > > On Thu 13-08-20 15:22:00, Thomas Gleixner wrote:
+> > > > >> It basically requires to convert the wait queue to something else. Is
+> > > > >> the waitqueue strict single waiter?
+> > > > >
+> > > > > I would have to double check. From what I remember only kswapd should
+> > > > > ever sleep on it.
+> > > > 
+> > > > That would make it trivial as we could simply switch it over to rcu_wait.
+> > > > 
+> > > > >> So that should be:
+> > > > >> 
+> > > > >> 	if (!preemptible() && gfp == GFP_RT_NOWAIT)
+> > > > >> 
+> > > > >> which is limiting the damage to those callers which hand in
+> > > > >> GFP_RT_NOWAIT.
+> > > > >> 
+> > > > >> lockdep will yell at invocations with gfp != GFP_RT_NOWAIT when it hits
+> > > > >> zone->lock in the wrong context. And we want to know about that so we
+> > > > >> can look at the caller and figure out how to solve it.
+> > > > >
+> > > > > Yes, that would have to somehow need to annotate the zone_lock to be ok
+> > > > > in those paths so that lockdep doesn't complain.
+> > > > 
+> > > > That opens the worst of all cans of worms. If we start this here then
+> > > > Joe programmer and his dog will use these lockdep annotation to evade
+> > > > warnings and when exposed to RT it will fall apart in pieces. Just that
+> > > > at that point Joe programmer moved on to something else and the usual
+> > > > suspects can mop up the pieces. We've seen that all over the place and
+> > > > some people even disable lockdep temporarily because annotations don't
+> > > > help.
+> > > 
+> > > Hmm. I am likely missing something really important here. We have two
+> > > problems at hand:
+> > > 1) RT will become broken as soon as this new RCU functionality which
+> > > requires an allocation from inside of raw_spinlock hits the RT tree
+> > > 2) lockdep splats which are telling us that early because of the
+> > > raw_spinlock-> spin_lock dependency.
+> > 
+> > That is a reasonable high-level summary.
+> > 
+> > > 1) can be handled by handled by the bailing out whenever we have to use
+> > > zone->lock inside the buddy allocator - essentially even more strict
+> > > NOWAIT semantic than we have for RT tree - proposed (pseudo) patch is
+> > > trying to describe that.
+> > 
+> > Unless I am missing something subtle, the problem with this approach
+> > is that in production-environment CONFIG_PREEMPT_NONE=y kernels, there
+> > is no way at runtime to distinguish between holding a spinlock on the
+> > one hand and holding a raw spinlock on the other.  Therefore, without
+> > some sort of indication from the caller, this approach will not make
+> > CONFIG_PREEMPT_NONE=y users happy.
+> 
+> If the whole bailout is guarded by CONFIG_PREEMPT_RT specific atomicity
+> check then there is no functional problem - GFP_RT_SAFE would still be
+> GFP_NOWAIT so functional wise the allocator will still do the right
+> thing.
+> 
+> [...]
+> 
+> > > That would require changing NOWAIT/ATOMIC allocations semantic quite
+> > > drastically for !RT kernels as well. I am not sure this is something we
+> > > can do. Or maybe I am just missing your point.
+> > 
+> > Exactly, and avoiding changing this semantic for current users is
+> > precisely why we are proposing some sort of indication to be passed
+> > into the allocation request.  In Uladzislau's patch, this was the
+> > __GFP_NO_LOCKS flag, but whatever works.
+> 
+> As I've tried to explain already, I would really hope we can do without
+> any new gfp flags. We are running out of them and they tend to generate
+> a lot of maintenance burden. There is a lot of abuse etc. We should also
+> not expose such an implementation detail of the allocator to callers
+> because that would make future changes even harder. The alias, on the
+> othere hand already builds on top of existing NOWAIT semantic and it
+> just helps the allocator to complain about a wrong usage while it
+> doesn't expose any internals.
+> 
+I know that Matthew and me raised it. We do can handle it without
+introducing any flag. I mean just use 0 as argument to the page_alloc(gfp_flags = 0) 
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
----
- drivers/hwmon/w83791d.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+i.e. #define __GFP_NO_LOCKS 0
 
-diff --git a/drivers/hwmon/w83791d.c b/drivers/hwmon/w83791d.c
-index aad8d4da5802..37b25a1474c4 100644
---- a/drivers/hwmon/w83791d.c
-+++ b/drivers/hwmon/w83791d.c
-@@ -315,8 +315,7 @@ struct w83791d_data {
- 	u8 vrm;			/* hwmon-vid */
- };
- 
--static int w83791d_probe(struct i2c_client *client,
--			 const struct i2c_device_id *id);
-+static int w83791d_probe(struct i2c_client *client);
- static int w83791d_detect(struct i2c_client *client,
- 			  struct i2c_board_info *info);
- static int w83791d_remove(struct i2c_client *client);
-@@ -342,7 +341,7 @@ static struct i2c_driver w83791d_driver = {
- 	.driver = {
- 		.name = "w83791d",
- 	},
--	.probe		= w83791d_probe,
-+	.probe_new	= w83791d_probe,
- 	.remove		= w83791d_remove,
- 	.id_table	= w83791d_id,
- 	.detect		= w83791d_detect,
-@@ -1346,8 +1345,7 @@ static int w83791d_detect(struct i2c_client *client,
- 	return 0;
- }
- 
--static int w83791d_probe(struct i2c_client *client,
--			 const struct i2c_device_id *id)
-+static int w83791d_probe(struct i2c_client *client)
- {
- 	struct w83791d_data *data;
- 	struct device *dev = &client->dev;
--- 
-2.25.4
+so it will be handled same way how it is done in the "mm: Add __GFP_NO_LOCKS flag"
+I can re-spin the RFC patch and send it out for better understanding.
 
+Does it work for you, Michal? Or it is better just to drop the patch here?
+
+--
+Vlad Rezki
