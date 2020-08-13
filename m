@@ -2,151 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F50E243B12
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 15:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B83C2243B3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 16:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgHMN5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 09:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgHMN5J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 09:57:09 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459FFC061757;
-        Thu, 13 Aug 2020 06:57:09 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id 184so5148260wmb.0;
-        Thu, 13 Aug 2020 06:57:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZL42NDAwRyqFSgHd9+LPNZsn853QbpqMscEZvhiYWzM=;
-        b=DZc9ySxOXmzqhLq8wmbQNIP8qC3GDOlMAZXwH7T9qCDObVYdxITsnlnU7bMMNL0I2v
-         8lwS7+qRhmzNhfUwwC0kNFVA8VZtzhOKjDROTB3vtPBcNcTcYjxuoURPglFJn45b2mgn
-         dnUGwPgc6LU4AEVPxf/jffEers4VwtF2ItE5gO9UUBy6QeE3kRF9mgP8QaLA6zi5aNj8
-         qbn1Q9yNmgEcfilN2hl4qfiHdQKqYejDnn/EhxGdOJL6+bOTWQiKbknzYBcjQnLzS6Vp
-         Q1q+E+nufJFqn8GO5egocKKELypeNx1wr8X2QMpEra5OR1Ndc0rUl/zoTuqIXLLdF5fN
-         V51g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZL42NDAwRyqFSgHd9+LPNZsn853QbpqMscEZvhiYWzM=;
-        b=gSrlB0FcPa1fsKpSv/CD+cuX/ebAK6DdP946YBlkY0WpjxML6rDS3UKFBKhvSsC98R
-         cSebHRYpjjFbSNOnakJ54Xl2NUz74ZnHFYEEv4dl/sLHDh4uMP5UyunLAW4V1Fm/zENb
-         gd+u/xg2h6pBSdh/dDR2UctDnv415FCAri9k1lKfFmzx/iG8uGYdh3B6GIZMWi+wN87w
-         VQQ3NtF1C647zoChBiRuLK3XtbL9gCyzLgoIurS4z2pGTw9THuK9giSYqULXCjvrAHzB
-         +dTAJ3G0YYgqNhYfnJC0UZwQ8FzBohS3WlLULSwSgtl8gBbCWHSOxH8PyXBMurKVGvzj
-         VO5A==
-X-Gm-Message-State: AOAM5335jSLV/EhsHbyoYcdhAMjHA4qU4tT/hcRZUoyG/ELD2xQHY0F6
-        lDK9QYrIh6EKRquhFp1mSg2apLn2QRs=
-X-Google-Smtp-Source: ABdhPJxZvSJM5CEE+rwyY2plMtVpFbesLgpk5SnfITkTmQSlBIrtVpTBoa601/n+g2520vvERC4vGw==
-X-Received: by 2002:a1c:1b93:: with SMTP id b141mr4598606wmb.150.1597327027636;
-        Thu, 13 Aug 2020 06:57:07 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.117.232])
-        by smtp.gmail.com with ESMTPSA id n11sm5016409wmi.15.2020.08.13.06.57.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Aug 2020 06:57:06 -0700 (PDT)
-Subject: Re: [RESEND,v4,3/3] mmc: mediatek: add optional module reset property
-To:     Wenbin Mei <wenbin.mei@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        srv_heupstream@mediatek.com, stable@vger.kernel.org
-References: <20200813093811.28606-1-wenbin.mei@mediatek.com>
- <20200813093811.28606-4-wenbin.mei@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <7337a174-169d-2dd1-ed91-f05291d4f3a6@gmail.com>
-Date:   Thu, 13 Aug 2020 15:57:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726622AbgHMOJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 10:09:01 -0400
+Received: from mga03.intel.com ([134.134.136.65]:13846 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726102AbgHMOI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 10:08:57 -0400
+IronPort-SDR: sHShGv06QUvYIugrdHcjVDwrIkhNjW1RErZg669+25WpmAthoFmV5Qb2z5UHMXJzSEqtyO1+MI
+ IiPSaUtn+Qwg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9711"; a="154185340"
+X-IronPort-AV: E=Sophos;i="5.76,308,1592895600"; 
+   d="scan'208";a="154185340"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 07:08:56 -0700
+IronPort-SDR: o0MhVUkf4xPzEwR7h5E3yQ59OcocB9KOzuxf7ng3Ug8K5sl+Cj+JJ+tAo2jwUPoy/mLQte8mva
+ Q2GA2O+HUFrw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,308,1592895600"; 
+   d="scan'208";a="325420663"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 13 Aug 2020 07:08:54 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1k6Dm5-008SAB-PZ; Thu, 13 Aug 2020 17:00:09 +0300
+Date:   Thu, 13 Aug 2020 17:00:09 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Seungil Kang <sil.kang@samsung.com>
+Cc:     bhe@redhat.com, mingo@kernel.org, akpm@linux-foundation.org,
+        gregkh@linuxfoundation.org, herbert@gondor.apana.org.au,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] lib/cmdline: prevent unintented access to address
+Message-ID: <20200813140009.GX1891694@smile.fi.intel.com>
+References: <CGME20200813030810epcas1p39ad56c069ab4fa41312f91f994c17cac@epcas1p3.samsung.com>
+ <20200813030741.6896-1-sil.kang@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20200813093811.28606-4-wenbin.mei@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200813030741.6896-1-sil.kang@samsung.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 13, 2020 at 12:07:41PM +0900, Seungil Kang wrote:
+> When args = "\"\0", "i" will be 0 and args[i-1] is used. (*lib/cmdline.c +238)
 
+What I meant is to put hex dump of the args here in the parentheses, something like
 
-On 13/08/2020 11:38, Wenbin Mei wrote:
-> This patch fixs eMMC-Access on mt7622/Bpi-64.
-> Before we got these Errors on mounting eMMC ion R64:
-> [   48.664925] blk_update_request: I/O error, dev mmcblk0, sector 204800 op 0x1:(WRITE)
-> flags 0x800 phys_seg 1 prio class 0
-> [   48.676019] Buffer I/O error on dev mmcblk0p1, logical block 0, lost sync page write
+"When args = "... \"\0" (... 0x22 0x00), 'i' will be..."
+
+> Because of "i" is an unsigned int type, the function will access at args[0xFFFFFFFF].
+> It can make a crash.
+
+...
+
+> > Can you point out to the code that calls this and leads to a crash?
 > 
-> This patch adds a optional reset management for msdc.
-> Sometimes the bootloader does not bring msdc register
-> to default state, so need reset the msdc controller.
+>  *lib/cmdlinc + 201 ~, next_arg function with args = "\"\0"
+
+Not the next_arg() code :-) The code which calls here...
+
+...
+
+> > Can you provide a KUnit test module which can check the case?
 > 
-> Cc: <stable@vger.kernel.org> # v5.4+
-> Fixes: 966580ad236e ("mmc: mediatek: add support for MT7622 SoC")
-> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-> Tested-by: Frank Wunderlich <frank-w@public-files.de>
+>  If necessary, I will make it and share it.
 
-I think you missed to add Philipp Zabels Reviewed-by tag.
+Please, do as a separate patch in the series.
 
-Regards,
-Matthias
+...
+
+> --- a/lib/cmdline.c
+> +++ b/lib/cmdline.c
+> @@ -200,7 +200,7 @@ bool parse_option_str(const char *str, const char *option)
+>   */
+>  char *next_arg(char *args, char **param, char **val)
+>  {
+> -	unsigned int i, equals = 0;
+> +	int i, equals = 0;
+>  	int in_quote = 0, quoted = 0;
+>  	char *next;
+
+At the first glance this is not correct fix for it: 0 - 1 is always 'all 1:s'
+independently on signedness, but I need to think about.
+
+And your test case / module would help a lot, if present.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-> ---
->   drivers/mmc/host/mtk-sd.c | 13 +++++++++++++
->   1 file changed, 13 insertions(+)
-> 
-> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-> index 39e7fc54c438..fc97d5bf3a20 100644
-> --- a/drivers/mmc/host/mtk-sd.c
-> +++ b/drivers/mmc/host/mtk-sd.c
-> @@ -22,6 +22,7 @@
->   #include <linux/slab.h>
->   #include <linux/spinlock.h>
->   #include <linux/interrupt.h>
-> +#include <linux/reset.h>
->   
->   #include <linux/mmc/card.h>
->   #include <linux/mmc/core.h>
-> @@ -434,6 +435,7 @@ struct msdc_host {
->   	struct msdc_save_para save_para; /* used when gate HCLK */
->   	struct msdc_tune_para def_tune_para; /* default tune setting */
->   	struct msdc_tune_para saved_tune_para; /* tune result of CMD21/CMD19 */
-> +	struct reset_control *reset;
->   };
->   
->   static const struct mtk_mmc_compatible mt8135_compat = {
-> @@ -1516,6 +1518,12 @@ static void msdc_init_hw(struct msdc_host *host)
->   	u32 val;
->   	u32 tune_reg = host->dev_comp->pad_tune_reg;
->   
-> +	if (host->reset) {
-> +		reset_control_assert(host->reset);
-> +		usleep_range(10, 50);
-> +		reset_control_deassert(host->reset);
-> +	}
-> +
->   	/* Configure to MMC/SD mode, clock free running */
->   	sdr_set_bits(host->base + MSDC_CFG, MSDC_CFG_MODE | MSDC_CFG_CKPDN);
->   
-> @@ -2273,6 +2281,11 @@ static int msdc_drv_probe(struct platform_device *pdev)
->   	if (IS_ERR(host->src_clk_cg))
->   		host->src_clk_cg = NULL;
->   
-> +	host->reset = devm_reset_control_get_optional_exclusive(&pdev->dev,
-> +								"hrst");
-> +	if (IS_ERR(host->reset))
-> +		return PTR_ERR(host->reset);
-> +
->   	host->irq = platform_get_irq(pdev, 0);
->   	if (host->irq < 0) {
->   		ret = -EINVAL;
-> 
