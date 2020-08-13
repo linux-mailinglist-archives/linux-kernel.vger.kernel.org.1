@@ -2,369 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DC524379C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DA8243799
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgHMJZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 05:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726072AbgHMJZ0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 05:25:26 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A760C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 02:25:25 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id t6so5388006ljk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 02:25:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=77hxUNMDXx1TkOETyYbeW1D4qmhSIYpoh1BsirngSVQ=;
-        b=yu+SbLupDZq0IXwtevl1p7b23YCume+VhpFVbBTYcNZv/vlx287qpNSmWjR8LHhuAe
-         zpgPXzPweDDJmlIogq6S6xphPDuAvuKNDqi+r4N0uzlSK/MwiuGJ+/h9T5GiVisMayGd
-         OrJvmjH8SVAZ47k+/Bf+HVbS3x6qYt9xspTwfpJyrt6YAqVPIPrYLZh+KfDwksV0gufd
-         bfiIpvHDcPBObpbt+50b0zr495HlbcH31LQ4alFHyUENdNvVIHlW7SJOed29HBnx/t/l
-         h9PyZ5CNnBIm+V+9XYZGbz0iqt0sewlAjCe/Th72gVgX87ODr8QCo+5r0fHWqw8m40Oh
-         VAxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=77hxUNMDXx1TkOETyYbeW1D4qmhSIYpoh1BsirngSVQ=;
-        b=hgC9PmJeWaXwt1CD+WZ8iuz2jLUYwFlWP3B3Py6f8FG0rSnqNKK3X2kRNpkGPPuEDZ
-         jngfJgIx1hScgBC8S5YE+6i+MXOYcL+bDV7oaErN9gA84m5Tdp5LXd5Nx3MDzN7koiCH
-         b1utSLclJ3nMkzYfP2Ro4LhedmYa3IX+s/NkRftQeyBEKG+rIHfqnInOI/9oQ/wAfZ6K
-         LFdkBzXRqabHMVHp0UdBTOQdxq8SYUbLTUdZlO7z0FcFuo76y6JuLG3bOe+uCghQyfy7
-         4wa/+OdGnqCVwJQRvkDd6zJcSeekPtPc02UBlmnKeh/5yIWye7QQ0chW6ZtRJJr4UgYF
-         +kvg==
-X-Gm-Message-State: AOAM533WM+eI92rxewmhcnflXbcp7Gs8P3uIPyYtblVMY3w4IAwn8Mr4
-        8FSDJA0191KgioSraF/62dUqSOxq1hvuG/dE/dbsBA==
-X-Google-Smtp-Source: ABdhPJyPK4DPHHD55S2xANgp+3FYQtyR1zzh/60AtAFyGOvgRV/WpDgK6NeD1rHR65oNWCNxdQz25TacXvWjM8amVpA=
-X-Received: by 2002:a2e:9550:: with SMTP id t16mr1503400ljh.372.1597310724016;
- Thu, 13 Aug 2020 02:25:24 -0700 (PDT)
+        id S1726204AbgHMJZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 05:25:18 -0400
+Received: from mga14.intel.com ([192.55.52.115]:59195 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726144AbgHMJZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 05:25:17 -0400
+IronPort-SDR: p8WMDZw7LL89qWeLEEQr6k4uxkVp13uIgjzv1PPmEJ+2NQ/JUM91pMkBuZxGKzEc9hBXrUyBcm
+ 9oFqXBOqvkTQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9711"; a="153414095"
+X-IronPort-AV: E=Sophos;i="5.76,307,1592895600"; 
+   d="scan'208";a="153414095"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 02:25:14 -0700
+IronPort-SDR: LeADvFXm5zLKutfPhDC4QHnz/W0BdFUYdCwAVndgw1ojJtLVncCxi04eTtHT2f+6L4EglBvtaP
+ EWh8KZMWlY8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,307,1592895600"; 
+   d="scan'208";a="439718431"
+Received: from orsmsx603-2.jf.intel.com (HELO ORSMSX603.amr.corp.intel.com) ([10.22.229.83])
+  by orsmga004.jf.intel.com with ESMTP; 13 Aug 2020 02:25:14 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 13 Aug 2020 02:25:14 -0700
+Received: from orsmsx116.amr.corp.intel.com (10.22.240.14) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 13 Aug 2020 02:25:14 -0700
+Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
+ ORSMSX116.amr.corp.intel.com (10.22.240.14) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 13 Aug 2020 02:25:13 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.173)
+ by edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 13 Aug 2020 02:25:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WNUT9Tq6XdzzoOvkZCJ5G53ihX+ZwrNwhstMKw9dwG1J2hiipQiwnYPzovNFisSen+rQKCxvKiNjucdTv9kf7UgOdgy2Gqw7l8pOpIOD21ieRwQEQezhhGygpttvvZqD7HLLjvhnM2b9DCU09PSfwXfpXlFE9B3L7D+fTcJSrNDBg1y2qGjpZRpqmjoTo43rNZrgRT2PKJ39LOsMsv8zrst+GLHSjWATKDm9bVloHPbd4x3okYP8lia8yECOPfX7ou9IPGkUFkSbUYZsl/GBgkgHHZMaLiyndRHHY4jpBjvpoEBOt9KETh+wNsOn7uCT0Aeur4xrQh9EmfWQez3ZjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pgjgbef4Km15SjAgB4qe2y74KfDq4/KuG7K45VvDCMU=;
+ b=S6kEooPi6hO3y6gexKhhLYbnknfJkAKkpyh0SfPHojRsRp5lTCqkj0p8ZvVHf+OKmXKU79qvzhhyIMaYEp+ETjgKoshU5DeNhSUTwTGXyKzwAwWy0FShcbZKsXyaIGaZIU9FUBtsboWhbET81EZdKxtbJoaFw9qNapXwchPW9+24iugMg6ys2+7D6BUocZ+gHteuhl98mci5ADIbaDRp0022NPI43hs0WM7kQv2NsPFxSwqfurD9LFvJ1B+0l5LqJFw4N/HW1YAVkCuM/oHfI8JqVWEETX7MakYpJ/G3lDF+KJAweAS5UnkHIFxP/CfXJa6IpPtx8nLXLf2WCeQv1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pgjgbef4Km15SjAgB4qe2y74KfDq4/KuG7K45VvDCMU=;
+ b=dovawevllv/B6tCp+G/naKut1Z/Qx5urIwWoBi0bNRi0ZoapQ/sBgRiwND8qhEmfbgOlPei+fVYDeIXP5Pq/TfxgquooQ+QjnhCs73prM3zOAqmJtExujG9Np9GcSAloe0UAKvM5VV+Og3VmR4Ib9rq0y+L9TJoGrYrqEG0RkAM=
+Received: from DM5PR11MB1435.namprd11.prod.outlook.com (2603:10b6:4:7::18) by
+ DM6PR11MB2539.namprd11.prod.outlook.com (2603:10b6:5:bf::30) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3261.15; Thu, 13 Aug 2020 09:25:12 +0000
+Received: from DM5PR11MB1435.namprd11.prod.outlook.com
+ ([fe80::9002:97a2:d8c0:8364]) by DM5PR11MB1435.namprd11.prod.outlook.com
+ ([fe80::9002:97a2:d8c0:8364%10]) with mapi id 15.20.3261.026; Thu, 13 Aug
+ 2020 09:25:12 +0000
+From:   "Liu, Yi L" <yi.l.liu@intel.com>
+To:     Auger Eric <eric.auger@redhat.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+CC:     Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: RE: [PATCH v7 6/7] iommu/uapi: Handle data and argsz filled by users
+Thread-Topic: [PATCH v7 6/7] iommu/uapi: Handle data and argsz filled by users
+Thread-Index: AQHWcVHR6nRtyLJ8mkqF35ykXhEOrak1w2qQ
+Date:   Thu, 13 Aug 2020 09:25:12 +0000
+Message-ID: <DM5PR11MB14358D98D56B22307F712D47C3430@DM5PR11MB1435.namprd11.prod.outlook.com>
+References: <1596068467-49322-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1596068467-49322-7-git-send-email-jacob.jun.pan@linux.intel.com>
+ <ee61f1d1-f581-e35f-c50a-80e10b1dd06c@redhat.com>
+In-Reply-To: <ee61f1d1-f581-e35f-c50a-80e10b1dd06c@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.220]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4f0214aa-123a-48fa-67ca-08d83f6ac7bf
+x-ms-traffictypediagnostic: DM6PR11MB2539:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB2539E38C4F8534AA3633C56FC3430@DM6PR11MB2539.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4vr3hwJKbMA7PD75KCyam3ifjQr43IfpSJNNyIW7kg6S2AVtLpTFvUEYXkHN8DPdmJ8vWsGA1s9oe40/m62XrbW/ZiRNTs49BYHzwr7DcO4Z+hfZ5ZBbFWwOt8VYAYaFoErBULrtVVtXACvFfB4jYMk9BRBayioTcZq23PDBdhzJrBeawXEnYmdYQ2Kj1xXGSWnylsOcH9DUnDwh/nOgz8paj7cdn5tJrl5HiQhCQ2syxtwO76IUwQzHvSzIvvX+35LNeDKZUHSNURv5pf6RC7shbUzLYFlZoE16Adt/IVRnR15Kcfh4nOmpLHNUq9dm1oj6kYT6WlJn/NO40HmLlObbtJ4hfwJhlAtDM9UEVVJzIeTCWYVSfcc/OIFkdWRPKCRMnITZTtWYhUbWgYq7PpP9haCyUcoe8MnwhcIyyyrrLNbGcQRlEF7af2gF6OMdmRG/CuY2VeWOEvli7F9wDIbunXTrQhPiUeDSFQjWe/VCuSaYIcXrrM27YUUcdzGa
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1435.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(136003)(376002)(346002)(366004)(396003)(52536014)(66476007)(66946007)(64756008)(66556008)(83380400001)(4326008)(8936002)(76116006)(33656002)(66446008)(5660300002)(186003)(55016002)(30864003)(86362001)(966005)(7416002)(7696005)(54906003)(26005)(53546011)(9686003)(316002)(8676002)(2906002)(110136005)(6506007)(478600001)(71200400001)(26730200005)(19860200003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: +7pwMikmtJWD6erwP7NonA3OigaeFs1q8HomdOHYwXNArl9b/CQDgK7TVkFkuWSp4ZfdGw1qCu9Q2AWBVHuVIxWFIfC87HL4IQIMtfU9Ty91GxQCrCW64siCGPo2LX6WWT8BdkVtbA1fha0uO22znLgsRawX9d8n2SZy3THgOdg6OShnlXG30sxAFtpHgOt3oa46JREPFqiw4pPpLFpNZ5/ohv5JbTjVdQ8YcIxIF7jHXuFAtdojCo944JEybN1yQn+k1s/pxi6dNOksNOadnushDmMvEMFovBViwkk5XySbJQpgj34eNv55vXU9YLhT19yK9KnOAyjZs58syAsVxYUFioR13XQ67dWrQBweR3hfxSb0+cqZ6laEnRtbRURCieElLH0a/LdfH6R68IPTOwAJEm9j1TQeUGHiFY/GDzdlg7aBCYmp4kSwHzWzSmi1WhV5XeoE72Dy+Bje4kPE+iKIah0qOl3Lrk+PqLkpT7MMTg670Le/+DwEdtV3slTwxWH7kicmO3gf1hjvnachoJ7L6pCnS4NZZEZxFwulqy6NI7TSkRxy7ODalB329uxa38gXKSzVjZ+fIR2MZxjbDfeyBGDwcgMdi4J4YlK08pYF4MoVkspEtggAbpHBBHVB5PbEQES1drkFdzaNFKTehQ==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <1595333413-30052-1-git-send-email-sumit.garg@linaro.org>
- <CAFA6WYMN=na4Pxnu1LYRVAAZRdV==5EwU-Vcq-QkRb_jaLiPmw@mail.gmail.com>
- <20200811135801.GA416071@kroah.com> <CAFA6WYMN8i96rEZuHLnskB+4k0o=K9vF1_we83P04h2BSoGjmQ@mail.gmail.com>
- <20200811145816.GA424033@kroah.com> <CAD=FV=UD=cTn6jwpYS-C-=1ORd-4azZ8ZiBR6om++2sMS1nmMg@mail.gmail.com>
- <CAFA6WYPBdOiVsKR_hSLpigN_1b9jimXKaqyRZjvKSx3xpAmLjA@mail.gmail.com>
- <CAD=FV=WccmFRkV4UUTLSYR9+7210h00Si=nG4tRs3BBuweA6ng@mail.gmail.com> <CAD=FV=V8UhQVQvcAp6XCmT3=6FYM=_zPELy4FTj4kMKUswaR8Q@mail.gmail.com>
-In-Reply-To: <CAD=FV=V8UhQVQvcAp6XCmT3=6FYM=_zPELy4FTj4kMKUswaR8Q@mail.gmail.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Thu, 13 Aug 2020 14:55:12 +0530
-Message-ID: <CAFA6WYPxieH6ZTa_BFdaLuiwbqAs6r7eKmxG7ci4XtyRONGN7g@mail.gmail.com>
-Subject: Re: [RFC 0/5] Introduce NMI aware serial drivers
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-serial@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
-        Jiri Slaby <jslaby@suse.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1435.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f0214aa-123a-48fa-67ca-08d83f6ac7bf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Aug 2020 09:25:12.1998
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ThhXDi+OrBlowzAEMhf/gEAvM7euRg8aTNk/+OrCaUV7C0HfQf9aGyuOs0N8kCaJ4icXQnxhYJOuMl+sgtciKQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2539
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Aug 2020 at 05:38, Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
->
-> On Wed, Aug 12, 2020 at 8:27 AM Doug Anderson <dianders@chromium.org> wrote:
-> >
-> > Hi,
-> >
-> > On Wed, Aug 12, 2020 at 7:53 AM Sumit Garg <sumit.garg@linaro.org> wrote:
-> > >
-> > > Hi Doug,
-> > >
-> > > On Tue, 11 Aug 2020 at 22:46, Doug Anderson <dianders@chromium.org> wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > On Tue, Aug 11, 2020 at 7:58 AM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Tue, Aug 11, 2020 at 07:59:24PM +0530, Sumit Garg wrote:
-> > > > > > Hi Greg,
-> > > > > >
-> > > > > > Thanks for your comments.
-> > > > > >
-> > > > > > On Tue, 11 Aug 2020 at 19:27, Greg Kroah-Hartman
-> > > > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > > >
-> > > > > > > On Tue, Aug 11, 2020 at 07:20:26PM +0530, Sumit Garg wrote:
-> > > > > > > > On Tue, 21 Jul 2020 at 17:40, Sumit Garg <sumit.garg@linaro.org> wrote:
-> > > > > > > > >
-> > > > > > > > > Make it possible for UARTs to trigger magic sysrq from an NMI. With the
-> > > > > > > > > advent of pseudo NMIs on arm64 it became quite generic to request serial
-> > > > > > > > > device interrupt as an NMI rather than IRQ. And having NMI driven serial
-> > > > > > > > > RX will allow us to trigger magic sysrq as an NMI and hence drop into
-> > > > > > > > > kernel debugger in NMI context.
-> > > > > > > > >
-> > > > > > > > > The major use-case is to add NMI debugging capabilities to the kernel
-> > > > > > > > > in order to debug scenarios such as:
-> > > > > > > > > - Primary CPU is stuck in deadlock with interrupts disabled and hence
-> > > > > > > > >   doesn't honor serial device interrupt. So having magic sysrq triggered
-> > > > > > > > >   as an NMI is helpful for debugging.
-> > > > > > > > > - Always enabled NMI based magic sysrq irrespective of whether the serial
-> > > > > > > > >   TTY port is active or not.
-> > > > > > > > >
-> > > > > > > > > Currently there is an existing kgdb NMI serial driver which provides
-> > > > > > > > > partial implementation in upstream to have a separate ttyNMI0 port but
-> > > > > > > > > that remained in silos with the serial core/drivers which made it a bit
-> > > > > > > > > odd to enable using serial device interrupt and hence remained unused. It
-> > > > > > > > > seems to be clearly intended to avoid almost all custom NMI changes to
-> > > > > > > > > the UART driver.
-> > > > > > > > >
-> > > > > > > > > But this patch-set allows the serial core/drivers to be NMI aware which
-> > > > > > > > > in turn provides NMI debugging capabilities via magic sysrq and hence
-> > > > > > > > > there is no specific reason to keep this special driver. So remove it
-> > > > > > > > > instead.
-> > > > > > > > >
-> > > > > > > > > Approach:
-> > > > > > > > > ---------
-> > > > > > > > >
-> > > > > > > > > The overall idea is to intercept serial RX characters in NMI context, if
-> > > > > > > > > those are specific to magic sysrq then allow corresponding handler to run
-> > > > > > > > > in NMI context. Otherwise, defer all other RX and TX operations onto IRQ
-> > > > > > > > > work queue in order to run those in normal interrupt context.
-> > > > > > > > >
-> > > > > > > > > This approach is demonstrated using amba-pl011 driver.
-> > > > > > > > >
-> > > > > > > > > Patch-wise description:
-> > > > > > > > > -----------------------
-> > > > > > > > >
-> > > > > > > > > Patch #1 prepares magic sysrq handler to be NMI aware.
-> > > > > > > > > Patch #2 adds NMI framework to serial core.
-> > > > > > > > > Patch #3 and #4 demonstrates NMI aware uart port using amba-pl011 driver.
-> > > > > > > > > Patch #5 removes kgdb NMI serial driver.
-> > > > > > > > >
-> > > > > > > > > Goal of this RFC:
-> > > > > > > > > -----------------
-> > > > > > > > >
-> > > > > > > > > My main reason for sharing this as an RFC is to help decide whether or
-> > > > > > > > > not to continue with this approach. The next step for me would to port
-> > > > > > > > > the work to a system with an 8250 UART.
-> > > > > > > > >
-> > > > > > > >
-> > > > > > > > A gentle reminder to seek feedback on this series.
-> > > >
-> > > > It's been on my list for a while.  I started it Friday but ran out of
-> > > > time.  This week hasn't been going as smoothly as I hoped but I'll
-> > > > prioritize this since it's been too long.
-> > > >
-> > >
-> > > No worries and thanks for your feedback.
-> > >
-> > > >
-> > > > > > > It's the middle of the merge window, and I can't do anything.
-> > > > > > >
-> > > > > > > Also, I almost never review RFC patches as I have have way too many
-> > > > > > > patches that people think are "right" to review first...
-> > > > > > >
-> > > > > >
-> > > > > > Okay, I understand and I can definitely wait for your feedback.
-> > > > >
-> > > > > My feedback here is this:
-> > > > >
-> > > > > > > I suggest you work to flesh this out first and submit something that you
-> > > > > > > feels works properly.
-> > > > >
-> > > > > :)
-> > > > >
-> > > > > > IIUC, in order to make this approach substantial I need to make it
-> > > > > > work with 8250 UART (major serial driver), correct? As currently it
-> > > > > > works properly for amba-pl011 driver.
-> > > > >
-> > > > > Yes, try to do that, or better yet, make it work with all serial drivers
-> > > > > automatically.
-> > > >
-> > > > A bit of early feedback...
-> > > >
-> > > > Although I'm not sure we can do Greg's "make it work everywhere
-> > > > automatically", it's possible you could get half of your patch done
-> > > > automatically.  Specifically, your patch really does two things:
-> > > >
-> > > > a) It leaves the serial port "active" all the time to look for sysrq.
-> > > > In other words even if there is no serial client it's always reading
-> > > > the port looking for characters.  IMO this concept should be separated
-> > > > out from the NMI concept and _could_ automatically work for all serial
-> > > > drivers.  You'd just need something in the serial core that acted like
-> > > > a default client if nobody else opened the serial port.  The nice
-> > > > thing here is that we go through all the normal code paths and don't
-> > > > need special cases in the driver.
-> > >
-> > > Okay, will try to explore this option to have default serial port
-> > > client. Would this client be active in normal serial operation or only
-> > > active when we have kgdb active? One drawback I see for normal
-> > > operation could be power management as if user is not using serial
-> > > port and would like to disable corresponding clock in order to reduce
-> > > power consumption.
-> >
-> > If I could pick the ideal, I'd say we'd do it any time the console is
-> > configured for that port and magic sysrq is enabled.  Presumably if
-> > they're already choosing to output kernel log messages to the serial
-> > port and they've enabled magic sysrq they're in a state where they'd
-> > be OK with the extra power of also listening for characters?
-> >
-
-Okay, sounds reasonable to me.
-
-> >
-> > > > b) It enables NMI for your particular serial driver.  This seems like
-> > > > it'd be hard to do automatically because you can't do the same things
-> > > > at NMI that you could do in a normal interrupt handler.
-> > >
-> > > Agree.
-> > >
-> > > >
-> > > > NOTE: to me, a) is more important than b) (though it'd be nice to have
-> > > > both).  This would be especially true the earlier you could make a)
-> > > > work since the main time when an "agetty" isn't running on my serial
-> > > > port to read characters is during bootup.
-> > > >
-> > > > Why is b) less important to me? Sure, it would let you drop into the
-> > > > debugger in the case where the CPU handling serial port interrupts is
-> > > > hung with IRQs disabled, but it _woudln't_ let you drop into the
-> > > > debugger in the case where a different CPU is hung with IRQs disabled.
-> > > > To get that we need NMI roundup (which, I know, you are also working
-> > > > on for arm64).  ...and, if we've got NMI roundup, presumably we can
-> > > > find our way into the debugger by either moving the serial interrupt
-> > > > to a different CPU ahead of time or using some type of lockup detector
-> > > > (which I know you are also working on for arm64).
-> > > >
-> > >
-> > > Thanks for sharing your preferences. I will try to get a) sorted out first.
-> > >
-> > > Overall I agree with your approaches to debug hard-lockup scenarios
-> > > but they might not be so trivial for kernel engineers who doesn't
-> > > posses kernel debugging experience as you do. :)
-> > >
-> > > And I still think NMI aware magic sysrq is useful for scenarios such as:
-> > > - Try to get system information during hard-lockup rather than just
-> > > panic via hard-lockup detection.
-> > > - Do normal start/stop debugger activity on a core which was stuck in
-> > > hard-lockup.
-> > > - Random boot freezes which are not easily reproducible.
-> >
-> > Don't get me wrong.  Having sysrq from NMI seems like a good feature
-> > to me.
-
-Yeah I understand what you meant but I was just trying to highlight
-additional benefits that sysrq from NMI provides.
-
-> > That being said, it will require non-trivial changes to each
-> > serial driver to support it and that means that not all serial drivers
-> > will support it.  It also starts requiring knowledge of how NMIs work
-> > (what's allowed in NMI mode / not allowed / how to avoid races) for
-> > authors of serial drivers.  I have a bit of a worry that the benefit
-> > won't outweigh the extra complexity, but I guess time will tell.
-
-Yes I understand these concerns as well. That's why I have tried to
-defer almost all of the work to the IRQ work queue apart from
-essential parsing of RX chars in NMI mode. Also, I tried to keep most
-of this code common in serial core.
-
-> > One
-> > last worry is that I assume that most people testing (and even
-> > automated testing labs) will either always enable NMI or won't enable
-> > NMI.  That means that everyone will be only testing one codepath or
-> > the other and (given the complexity) the non-tested codepath will
-> > break.
-> >
-
-The current patch-set only makes this NMI to work when debugger (kgdb)
-is enabled which I think is mostly suitable for development
-environments. So most people testing will involve existing IRQ mode
-only.
-
-However, it's very much possible to make NMI mode as default for a
-particular serial driver if the underlying irqchip supports it but it
-depends if we really see any production level usage of NMI debug
-feature.
-
-> > Hrm.  Along the lines of the above, though: almost no modern systems
-> > are uniprocessor.  That means that even if one CPU is stuck with IRQs
-> > off it's fairly likely that some other CPU is OK.  Presumably you'd
-> > get almost as much benefit as your patch but with more done
-> > automatically if you could figure out how to detect that the serial
-> > interrupt isn't being serviced and re-route it to a different CPU.
-> > ...or possibly you could use some variant of the hard lockup detector
-> > and move all interrupts off a locked up CPU?  You could make this an
-> > option that's "default Y" when kgdb is turned on or something?
-
-Yes we can reroute serial interrupts but what I meant to say is that
-we can at most get a backtrace of CPU stuck in hard-lockup whereas
-with NMI debugger entry on hard-lockup CPU, we can do normal
-start/stop/single-step debugging on that CPU.
-
->
-> One other idea occurred to me that's maybe simpler.  You could in
-> theory just poll the serial port periodically to accomplish.  It would
-> actually probably even work to call the normal serial port interrupt
-> routine from any random CPU.  On many serial drivers the entire
-> interrupt handler is wrapped with:
->
-> spin_lock_irqsave(&uap->port.lock, flags);
-> ...
-> spin_unlock_irqrestore(&uap->port.lock, flags);
->
-> And a few (the ones I was involved in fixing) have the similar pattern
-> of using uart_unlock_and_check_sysrq().
->
-> Any serial drivers following this pattern could have their interrupt
-> routine called periodically just to poll for characters and it'd be
-> fine, right?  ...and having it take a second before a sysrq comes in
-> this case is probably not the end of the world?
->
-
-Are you proposing to have complete RX operation in polling mode with
-RX interrupt disabled (eg. using a kernel thread)?
-
->
-> One nice benefit of this is that it would actually work _better_ on
-> SMP systems for any sysrqs that aren't NMI safe.  Specifically with
-> your patch series those would be queued with irq_work_queue() which
-> means they'd be blocked if the CPU processing the NMI is stuck with
-> IRQs disabled.
-
-Yes, the sysrq handlers which aren't NMI safe will behave similarly to
-existing IRQ based sysrq handlers.
-
-> With the polling mechanism they'd nicely just run on a
-> different CPU.
-
-It looks like polling would cause much CPU overhead. So I am not sure
-if that is the preferred approach.
-
--Sumit
-
->
->
-> > > > One last bit of feedback is that I noticed that you didn't try to
-> > > > implement the old "knock" functionality of the old NMI driver that's
-> > > > being deleted.  That is: your new patches don't provide an alternate
-> > > > way to drop into the debugger for systems where BREAK isn't hooked up.
-> > > > That's not a hard requirement, but I was kinda hoping for it since I
-> > > > have some systems that haven't routed BREAK properly.  ;-)
-> > > >
-> > >
-> > > Yeah, this is on my TODO list to have a kgdb "knock" functionality to
-> > > be implemented via a common hook in serial core.
-> > >
-> > > >
-> > > > I'll try to get some more detailed feedback in the next few days.
-> > >
-> > > Thanks. I do look forward to your feedback.
-> > >
-> > > -Sumit
-> > >
-> > > >
-> > > > -Doug
+SGkgRXJpYywNCg0KDQo+IEZyb206IEF1Z2VyIEVyaWMgPGVyaWMuYXVnZXJAcmVkaGF0LmNvbT4N
+Cj4gU2VudDogVGh1cnNkYXksIEF1Z3VzdCAxMywgMjAyMCA1OjEyIFBNDQo+IA0KPiBIaSBKYWNv
+YiwNCj4gDQo+IE9uIDcvMzAvMjAgMjoyMSBBTSwgSmFjb2IgUGFuIHdyb3RlOg0KPiA+IElPTU1V
+IHVzZXIgQVBJcyBhcmUgcmVzcG9uc2libGUgZm9yIHByb2Nlc3NpbmcgdXNlciBkYXRhLiBUaGlz
+IHBhdGNoDQo+ID4gY2hhbmdlcyB0aGUgaW50ZXJmYWNlIHN1Y2ggdGhhdCB1c2VyIHBvaW50ZXJz
+IGNhbiBiZSBwYXNzZWQgaW50byBJT01NVQ0KPiA+IGNvZGUgZGlyZWN0bHkuIFNlcGFyYXRlIGtl
+cm5lbCBBUElzIHdpdGhvdXQgdXNlciBwb2ludGVycyBhcmUgaW50cm9kdWNlZA0KPiA+IGZvciBp
+bi1rZXJuZWwgdXNlcnMgb2YgdGhlIFVBUEkgZnVuY3Rpb25hbGl0eS4NCj4gVGhpcyBpcyBqdXN0
+IGRvbmUgZm9yIGEgc2luZ2xlIGZ1bmN0aW9uLCBpZS4gaW9tbXVfc3ZhX3VuYmluZF9ncGFzaWQu
+DQo+IA0KPiBJZiBJIGFtIG5vdCB3cm9uZyB0aGVyZSBpcyBubyB1c2VyIG9mIHRoaXMgbGF0dGVy
+IGFmdGVyIGFwcGx5aW5nIHRoZQ0KPiB3aG9sZSBzZXJpZXM/IElmIGNvcnJlY3QgeW91IG1heSBy
+ZW1vdmUgaXQgYXQgdGhpcyBzdGFnZT8NCg0KdGhlIHVzZXIgb2YgdGhpcyBmdW5jdGlvbiBpcyBp
+biB2ZmlvLiBBbmQgaXQgaXMgdGhlIHNhbWUgd2l0aA0KaW9tbXVfdWFwaV9zdmFfYmluZC91bmJp
+bmRfZ3Bhc2lkKCkgYW5kIGlvbW11X3VhcGlfY2FjaGVfaW52YWxpZGF0ZSgpLg0KDQpodHRwczov
+L2xvcmUua2VybmVsLm9yZy9rdm0vMTU5NTkxNzY2NC0zMzI3Ni0xMS1naXQtc2VuZC1lbWFpbC15
+aS5sLmxpdUBpbnRlbC5jb20vDQpodHRwczovL2xvcmUua2VybmVsLm9yZy9rdm0vMTU5NTkxNzY2
+NC0zMzI3Ni0xMi1naXQtc2VuZC1lbWFpbC15aS5sLmxpdUBpbnRlbC5jb20vDQoNClJlZ2FyZHMs
+DQpZaSBMaXUNCg0KPiA+DQo+ID4gSU9NTVUgVUFQSSBkYXRhIGhhcyBhIHVzZXIgZmlsbGVkIGFy
+Z3N6IGZpZWxkIHdoaWNoIGluZGljYXRlcyB0aGUgZGF0YQ0KPiA+IGxlbmd0aCBvZiB0aGUgc3Ry
+dWN0dXJlLiBVc2VyIGRhdGEgaXMgbm90IHRydXN0ZWQsIGFyZ3N6IG11c3QgYmUNCj4gPiB2YWxp
+ZGF0ZWQgYmFzZWQgb24gdGhlIGN1cnJlbnQga2VybmVsIGRhdGEgc2l6ZSwgbWFuZGF0b3J5IGRh
+dGEgc2l6ZSwNCj4gPiBhbmQgZmVhdHVyZSBmbGFncy4NCj4gPg0KPiA+IFVzZXIgZGF0YSBtYXkg
+YWxzbyBiZSBleHRlbmRlZCwgcmVzdWx0aW5nIGluIHBvc3NpYmxlIGFyZ3N6IGluY3JlYXNlLg0K
+PiA+IEJhY2t3YXJkIGNvbXBhdGliaWxpdHkgaXMgZW5zdXJlZCBiYXNlZCBvbiBzaXplIGFuZCBm
+bGFncyAob3INCj4gPiB0aGUgZnVuY3Rpb25hbCBlcXVpdmFsZW50IGZpZWxkcykgY2hlY2tpbmcu
+DQo+ID4NCj4gPiBUaGlzIHBhdGNoIGFkZHMgc2FuaXR5IGNoZWNrcyBpbiB0aGUgSU9NTVUgbGF5
+ZXIuIEluIGFkZGl0aW9uIHRvIGFyZ3N6LA0KPiA+IHJlc2VydmVkL3VudXNlZCBmaWVsZHMgaW4g
+cGFkZGluZywgZmxhZ3MsIGFuZCB2ZXJzaW9uIGFyZSBhbHNvIGNoZWNrZWQuDQo+ID4gRGV0YWls
+cyBhcmUgZG9jdW1lbnRlZCBpbiBEb2N1bWVudGF0aW9uL3VzZXJzcGFjZS1hcGkvaW9tbXUucnN0
+DQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBMaXUgWWkgTCA8eWkubC5saXVAaW50ZWwuY29tPg0K
+PiA+IFNpZ25lZC1vZmYtYnk6IEphY29iIFBhbiA8amFjb2IuanVuLnBhbkBsaW51eC5pbnRlbC5j
+b20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvaW9tbXUvaW9tbXUuYyB8IDIwMQ0KPiArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLQ0KPiA+ICBpbmNsdWRl
+L2xpbnV4L2lvbW11LmggfCAgMjggKysrKy0tLQ0KPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDIxMiBp
+bnNlcnRpb25zKCspLCAxNyBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL2lvbW11L2lvbW11LmMgYi9kcml2ZXJzL2lvbW11L2lvbW11LmMNCj4gPiBpbmRleCAzYTkx
+M2NlOTRhM2QuLjFlZTU1YzRiM2EzYSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2lvbW11L2lv
+bW11LmMNCj4gPiArKysgYi9kcml2ZXJzL2lvbW11L2lvbW11LmMNCj4gPiBAQCAtMTk1MCwzMyAr
+MTk1MCwyMTggQEAgaW50IGlvbW11X2F0dGFjaF9kZXZpY2Uoc3RydWN0IGlvbW11X2RvbWFpbg0K
+PiAqZG9tYWluLCBzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4gIH0NCj4gPiAgRVhQT1JUX1NZTUJP
+TF9HUEwoaW9tbXVfYXR0YWNoX2RldmljZSk7DQo+ID4NCj4gPiArLyoNCj4gPiArICogQ2hlY2sg
+ZmxhZ3MgYW5kIG90aGVyIHVzZXIgcHJvdmlkZWQgZGF0YSBmb3IgdmFsaWQgY29tYmluYXRpb25z
+LiBXZSBhbHNvDQo+ID4gKyAqIG1ha2Ugc3VyZSBubyByZXNlcnZlZCBmaWVsZHMgb3IgdW51c2Vk
+IGZsYWdzIGFyZSBzZXQuIFRoaXMgaXMgdG8gZW5zdXJlDQo+ID4gKyAqIG5vdCBicmVha2luZyB1
+c2Vyc3BhY2UgaW4gdGhlIGZ1dHVyZSB3aGVuIHRoZXNlIGZpZWxkcyBvciBmbGFncyBhcmUgdXNl
+ZC4NCj4gPiArICovDQo+ID4gK3N0YXRpYyBpbnQgaW9tbXVfY2hlY2tfY2FjaGVfaW52bF9kYXRh
+KHN0cnVjdCBpb21tdV9jYWNoZV9pbnZhbGlkYXRlX2luZm8NCj4gKmluZm8pDQo+ID4gK3sNCj4g
+PiArCXUzMiBtYXNrOw0KPiA+ICsJaW50IGk7DQo+ID4gKw0KPiA+ICsJaWYgKGluZm8tPnZlcnNp
+b24gIT0gSU9NTVVfQ0FDSEVfSU5WQUxJREFURV9JTkZPX1ZFUlNJT05fMSkNCj4gPiArCQlyZXR1
+cm4gLUVJTlZBTDsNCj4gPiArDQo+ID4gKwltYXNrID0gKDEgPDwgSU9NTVVfQ0FDSEVfSU5WX1RZ
+UEVfTlIpIC0gMTsNCj4gPiArCWlmIChpbmZvLT5jYWNoZSAmIH5tYXNrKQ0KPiA+ICsJCXJldHVy
+biAtRUlOVkFMOw0KPiA+ICsNCj4gPiArCWlmIChpbmZvLT5ncmFudWxhcml0eSA+PSBJT01NVV9J
+TlZfR1JBTlVfTlIpDQo+ID4gKwkJcmV0dXJuIC1FSU5WQUw7DQo+ID4gKw0KPiA+ICsJc3dpdGNo
+IChpbmZvLT5ncmFudWxhcml0eSkgew0KPiA+ICsJY2FzZSBJT01NVV9JTlZfR1JBTlVfQUREUjoN
+Cj4gPiArCQlpZiAoaW5mby0+Y2FjaGUgJiBJT01NVV9DQUNIRV9JTlZfVFlQRV9QQVNJRCkNCj4g
+PiArCQkJcmV0dXJuIC1FSU5WQUw7DQo+ID4gKw0KPiA+ICsJCW1hc2sgPSBJT01NVV9JTlZfQURE
+Ul9GTEFHU19QQVNJRCB8DQo+ID4gKwkJCUlPTU1VX0lOVl9BRERSX0ZMQUdTX0FSQ0hJRCB8DQo+
+ID4gKwkJCUlPTU1VX0lOVl9BRERSX0ZMQUdTX0xFQUY7DQo+ID4gKw0KPiA+ICsJCWlmIChpbmZv
+LT5ncmFudS5hZGRyX2luZm8uZmxhZ3MgJiB+bWFzaykNCj4gPiArCQkJcmV0dXJuIC1FSU5WQUw7
+DQo+ID4gKwkJYnJlYWs7DQo+ID4gKwljYXNlIElPTU1VX0lOVl9HUkFOVV9QQVNJRDoNCj4gPiAr
+CQltYXNrID0gSU9NTVVfSU5WX1BBU0lEX0ZMQUdTX1BBU0lEIHwNCj4gPiArCQkJSU9NTVVfSU5W
+X1BBU0lEX0ZMQUdTX0FSQ0hJRDsNCj4gPiArCQlpZiAoaW5mby0+Z3JhbnUucGFzaWRfaW5mby5m
+bGFncyAmIH5tYXNrKQ0KPiA+ICsJCQlyZXR1cm4gLUVJTlZBTDsNCj4gPiArDQo+ID4gKwkJYnJl
+YWs7DQo+ID4gKwljYXNlIElPTU1VX0lOVl9HUkFOVV9ET01BSU46DQo+ID4gKwkJaWYgKGluZm8t
+PmNhY2hlICYgSU9NTVVfQ0FDSEVfSU5WX1RZUEVfREVWX0lPVExCKQ0KPiA+ICsJCQlyZXR1cm4g
+LUVJTlZBTDsNCj4gPiArCQlicmVhazsNCj4gPiArCWRlZmF1bHQ6DQo+ID4gKwkJcmV0dXJuIC1F
+SU5WQUw7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJLyogQ2hlY2sgcmVzZXJ2ZWQgcGFkZGluZyBm
+aWVsZHMgKi8NCj4gPiArCWZvciAoaSA9IDA7IGkgPCBzaXplb2YoaW5mby0+cGFkZGluZyk7IGkr
+Kykgew0KPiA+ICsJCWlmIChpbmZvLT5wYWRkaW5nW2ldKQ0KPiA+ICsJCQlyZXR1cm4gLUVJTlZB
+TDsNCj4gPiArCX0NCj4gPiArDQo+ID4gKwlyZXR1cm4gMDsNCj4gPiArfQ0KPiA+ICsNCj4gPiAg
+aW50IGlvbW11X3VhcGlfY2FjaGVfaW52YWxpZGF0ZShzdHJ1Y3QgaW9tbXVfZG9tYWluICpkb21h
+aW4sIHN0cnVjdCBkZXZpY2UNCj4gKmRldiwNCj4gPiAtCQkJCXN0cnVjdCBpb21tdV9jYWNoZV9p
+bnZhbGlkYXRlX2luZm8gKmludl9pbmZvKQ0KPiA+ICsJCQkJdm9pZCBfX3VzZXIgKnVpbmZvKQ0K
+PiA+ICB7DQo+ID4gKwlzdHJ1Y3QgaW9tbXVfY2FjaGVfaW52YWxpZGF0ZV9pbmZvIGludl9pbmZv
+ID0geyAwIH07DQo+ID4gKwl1MzIgbWluc3o7DQo+ID4gKwlpbnQgcmV0ID0gMDsNCj4gPiArDQo+
+ID4gIAlpZiAodW5saWtlbHkoIWRvbWFpbi0+b3BzLT5jYWNoZV9pbnZhbGlkYXRlKSkNCj4gPiAg
+CQlyZXR1cm4gLUVOT0RFVjsNCj4gPiAgPiAtCXJldHVybiBkb21haW4tPm9wcy0+Y2FjaGVfaW52
+YWxpZGF0ZShkb21haW4sIGRldiwgaW52X2luZm8pOw0KPiA+ICsJLyoNCj4gPiArCSAqIE5vIG5l
+dyBzcGFjZXMgY2FuIGJlIGFkZGVkIGJlZm9yZSB0aGUgdmFyaWFibGUgc2l6ZWQgdW5pb24sIHRo
+ZQ0KPiA+ICsJICogbWluaW11bSBzaXplIGlzIHRoZSBvZmZzZXQgdG8gdGhlIHVuaW9uLg0KPiA+
+ICsJICovDQo+ID4gKwltaW5zeiA9IG9mZnNldG9mKHN0cnVjdCBpb21tdV9jYWNoZV9pbnZhbGlk
+YXRlX2luZm8sIGdyYW51KTsNCj4gPiArDQo+ID4gKwkvKiBDb3B5IG1pbnN6IGZyb20gdXNlciB0
+byBnZXQgZmxhZ3MgYW5kIGFyZ3N6ICovDQo+ID4gKwlpZiAoY29weV9mcm9tX3VzZXIoJmludl9p
+bmZvLCB1aW5mbywgbWluc3opKQ0KPiA+ICsJCXJldHVybiAtRUZBVUxUOw0KPiA+ICsNCj4gPiAr
+CS8qIEZpZWxkcyBiZWZvcmUgdmFyaWFibGUgc2l6ZSB1bmlvbiBpcyBtYW5kYXRvcnkgKi8NCj4g
+PiArCWlmIChpbnZfaW5mby5hcmdzeiA8IG1pbnN6KQ0KPiA+ICsJCXJldHVybiAtRUlOVkFMOw0K
+PiA+ICsNCj4gPiArCS8qIFBBU0lEIGFuZCBhZGRyZXNzIGdyYW51IHJlcXVpcmUgYWRkaXRpb25h
+bCBpbmZvIGJleW9uZCBtaW5zeiAqLw0KPiA+ICsJaWYgKGludl9pbmZvLmFyZ3N6ID09IG1pbnN6
+ICYmDQo+ID4gKwkgICAgKChpbnZfaW5mby5ncmFudWxhcml0eSA9PSBJT01NVV9JTlZfR1JBTlVf
+UEFTSUQpIHx8DQo+ID4gKwkJICAgIChpbnZfaW5mby5ncmFudWxhcml0eSA9PSBJT01NVV9JTlZf
+R1JBTlVfQUREUikpKQ0KPiA+ICsJCXJldHVybiAtRUlOVkFMOw0KPiA+ICsNCj4gPiArCWlmIChp
+bnZfaW5mby5ncmFudWxhcml0eSA9PSBJT01NVV9JTlZfR1JBTlVfUEFTSUQgJiYNCj4gPiArCSAg
+ICBpbnZfaW5mby5hcmdzeiA8IG9mZnNldG9mZW5kKHN0cnVjdCBpb21tdV9jYWNoZV9pbnZhbGlk
+YXRlX2luZm8sDQo+IGdyYW51LnBhc2lkX2luZm8pKQ0KPiA+ICsJCXJldHVybiAtRUlOVkFMOw0K
+PiA+ICsNCj4gPiArCWlmIChpbnZfaW5mby5ncmFudWxhcml0eSA9PSBJT01NVV9JTlZfR1JBTlVf
+QUREUiAmJg0KPiA+ICsJICAgIGludl9pbmZvLmFyZ3N6IDwgb2Zmc2V0b2ZlbmQoc3RydWN0IGlv
+bW11X2NhY2hlX2ludmFsaWRhdGVfaW5mbywNCj4gZ3JhbnUuYWRkcl9pbmZvKSkNCj4gPiArCQly
+ZXR1cm4gLUVJTlZBTDsNCj4gPiArDQo+ID4gKwkvKg0KPiA+ICsJICogVXNlciBtaWdodCBiZSB1
+c2luZyBhIG5ld2VyIFVBUEkgaGVhZGVyIHdoaWNoIGhhcyBhIGxhcmdlciBkYXRhDQo+ID4gKwkg
+KiBzaXplLCB3ZSBzaGFsbCBzdXBwb3J0IHRoZSBleGlzdGluZyBmbGFncyB3aXRoaW4gdGhlIGN1
+cnJlbnQNCj4gPiArCSAqIHNpemUuIENvcHkgdGhlIHJlbWFpbmluZyB1c2VyIGRhdGEgX2FmdGVy
+XyBtaW5zeiBidXQgbm90IG1vcmUNCj4gPiArCSAqIHRoYW4gdGhlIGN1cnJlbnQga2VybmVsIHN1
+cHBvcnRlZCBzaXplLg0KPiA+ICsJICovDQo+ID4gKwlpZiAoY29weV9mcm9tX3VzZXIoKHZvaWQg
+KikmaW52X2luZm8gKyBtaW5zeiwgdWluZm8gKyBtaW5zeiwNCj4gPiArCQkJICAgbWluX3QodTMy
+LCBpbnZfaW5mby5hcmdzeiwgc2l6ZW9mKGludl9pbmZvKSkgLSBtaW5zeikpDQo+ID4gKwkJcmV0
+dXJuIC1FRkFVTFQ7DQo+ID4gKw0KPiA+ICsJLyogTm93IHRoZSBhcmdzeiBpcyB2YWxpZGF0ZWQs
+IGNoZWNrIHRoZSBjb250ZW50ICovDQo+ID4gKwlyZXQgPSBpb21tdV9jaGVja19jYWNoZV9pbnZs
+X2RhdGEoJmludl9pbmZvKTsNCj4gPiArCWlmIChyZXQpDQo+ID4gKwkJcmV0dXJuIHJldDsNCj4g
+PiArDQo+ID4gKwlyZXR1cm4gZG9tYWluLT5vcHMtPmNhY2hlX2ludmFsaWRhdGUoZG9tYWluLCBk
+ZXYsICZpbnZfaW5mbyk7DQo+ID4gIH0NCj4gPiAgRVhQT1JUX1NZTUJPTF9HUEwoaW9tbXVfdWFw
+aV9jYWNoZV9pbnZhbGlkYXRlKTsNCj4gPg0KPiA+IC1pbnQgaW9tbXVfdWFwaV9zdmFfYmluZF9n
+cGFzaWQoc3RydWN0IGlvbW11X2RvbWFpbiAqZG9tYWluLA0KPiA+IC0JCQkgICAgICAgc3RydWN0
+IGRldmljZSAqZGV2LCBzdHJ1Y3QgaW9tbXVfZ3Bhc2lkX2JpbmRfZGF0YQ0KPiAqZGF0YSkNCj4g
+PiArc3RhdGljIGludCBpb21tdV9jaGVja19iaW5kX2RhdGEoc3RydWN0IGlvbW11X2dwYXNpZF9i
+aW5kX2RhdGEgKmRhdGEpDQo+ID4gK3sNCj4gPiArCXUzMiBtYXNrOw0KPiA+ICsJaW50IGk7DQo+
+ID4gKw0KPiA+ICsJaWYgKGRhdGEtPnZlcnNpb24gIT0gSU9NTVVfR1BBU0lEX0JJTkRfVkVSU0lP
+Tl8xKQ0KPiA+ICsJCXJldHVybiAtRUlOVkFMOw0KPiA+ICsNCj4gPiArCS8qIENoZWNrIHRoZSBy
+YW5nZSBvZiBzdXBwb3J0ZWQgZm9ybWF0cyAqLw0KPiA+ICsJaWYgKGRhdGEtPmZvcm1hdCA+PSBJ
+T01NVV9QQVNJRF9GT1JNQVRfTEFTVCkNCj4gPiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gPiArDQo+
+ID4gKwkvKiBDaGVjayBhbGwgZmxhZ3MgKi8NCj4gPiArCW1hc2sgPSBJT01NVV9TVkFfR1BBU0lE
+X1ZBTDsNCj4gPiArCWlmIChkYXRhLT5mbGFncyAmIH5tYXNrKQ0KPiA+ICsJCXJldHVybiAtRUlO
+VkFMOw0KPiA+ICsNCj4gPiArCS8qIENoZWNrIHJlc2VydmVkIHBhZGRpbmcgZmllbGRzICovDQo+
+ID4gKwlmb3IgKGkgPSAwOyBpIDwgc2l6ZW9mKGRhdGEtPnBhZGRpbmcpOyBpKyspIHsNCj4gPiAr
+CQlpZiAoZGF0YS0+cGFkZGluZ1tpXSkNCj4gPiArCQkJcmV0dXJuIC1FSU5WQUw7DQo+ID4gKwl9
+DQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBpbnQg
+aW9tbXVfc3ZhX3ByZXBhcmVfYmluZF9kYXRhKHZvaWQgX191c2VyICp1ZGF0YSwNCj4gPiArCQkJ
+CSAgICAgICBzdHJ1Y3QgaW9tbXVfZ3Bhc2lkX2JpbmRfZGF0YSAqZGF0YSkNCj4gPiAgew0KPiA+
+ICsJdTMyIG1pbnN6Ow0KPiA+ICsNCj4gPiArCS8qDQo+ID4gKwkgKiBObyBuZXcgc3BhY2VzIGNh
+biBiZSBhZGRlZCBiZWZvcmUgdGhlIHZhcmlhYmxlIHNpemVkIHVuaW9uLCB0aGUNCj4gPiArCSAq
+IG1pbmltdW0gc2l6ZSBpcyB0aGUgb2Zmc2V0IHRvIHRoZSB1bmlvbi4NCj4gPiArCSAqLw0KPiA+
+ICsJbWluc3ogPSBvZmZzZXRvZihzdHJ1Y3QgaW9tbXVfZ3Bhc2lkX2JpbmRfZGF0YSwgdmVuZG9y
+KTsNCj4gPiArDQo+ID4gKwkvKiBDb3B5IG1pbnN6IGZyb20gdXNlciB0byBnZXQgZmxhZ3MgYW5k
+IGFyZ3N6ICovDQo+ID4gKwlpZiAoY29weV9mcm9tX3VzZXIoZGF0YSwgdWRhdGEsIG1pbnN6KSkN
+Cj4gPiArCQlyZXR1cm4gLUVGQVVMVDsNCj4gPiArDQo+ID4gKwkvKiBGaWVsZHMgYmVmb3JlIHZh
+cmlhYmxlIHNpemUgdW5pb24gaXMgbWFuZGF0b3J5ICovDQo+ID4gKwlpZiAoZGF0YS0+YXJnc3og
+PCBtaW5zeikNCj4gPiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gPiArCS8qDQo+ID4gKwkgKiBVc2Vy
+IG1pZ2h0IGJlIHVzaW5nIGEgbmV3ZXIgVUFQSSBoZWFkZXIsIHdlIHNoYWxsIGxldCBJT01NVSB2
+ZW5kb3INCj4gPiArCSAqIGRyaXZlciBkZWNpZGUgb24gd2hhdCBzaXplIGl0IG5lZWRzLiBTaW5j
+ZSB0aGUgZ3Vlc3QgUEFTSUQgYmluZCBkYXRhDQo+ID4gKwkgKiBjYW4gYmUgdmVuZG9yIHNwZWNp
+ZmljLCBsYXJnZXIgYXJnc3ogY291bGQgYmUgdGhlIHJlc3VsdCBvZiBleHRlbnNpb24NCj4gPiAr
+CSAqIGZvciBvbmUgdmVuZG9yIGJ1dCBpdCBzaG91bGQgbm90IGFmZmVjdCBhbm90aGVyIHZlbmRv
+ci4NCj4gPiArCSAqIENvcHkgdGhlIHJlbWFpbmluZyB1c2VyIGRhdGEgX2FmdGVyXyBtaW5zeg0K
+PiA+ICsJICovDQo+ID4gKwlpZiAoY29weV9mcm9tX3VzZXIoKHZvaWQgKilkYXRhICsgbWluc3os
+IHVkYXRhICsgbWluc3osDQo+ID4gKwkJCSAgIG1pbl90KHUzMiwgZGF0YS0+YXJnc3osIHNpemVv
+ZigqZGF0YSkpIC0gbWluc3opKQ0KPiA+ICsJCXJldHVybiAtRUZBVUxUOw0KPiA+ICsNCj4gPiAr
+CXJldHVybiBpb21tdV9jaGVja19iaW5kX2RhdGEoZGF0YSk7DQo+ID4gK30NCj4gPiArDQo+ID4g
+K2ludCBpb21tdV91YXBpX3N2YV9iaW5kX2dwYXNpZChzdHJ1Y3QgaW9tbXVfZG9tYWluICpkb21h
+aW4sIHN0cnVjdCBkZXZpY2UNCj4gKmRldiwNCj4gPiArCQkJICAgICAgIHZvaWQgX191c2VyICp1
+ZGF0YSkNCj4gPiArew0KPiA+ICsJc3RydWN0IGlvbW11X2dwYXNpZF9iaW5kX2RhdGEgZGF0YSA9
+IHsgMCB9Ow0KPiA+ICsJaW50IHJldDsNCj4gPiArDQo+ID4gIAlpZiAodW5saWtlbHkoIWRvbWFp
+bi0+b3BzLT5zdmFfYmluZF9ncGFzaWQpKQ0KPiA+ICAJCXJldHVybiAtRU5PREVWOw0KPiA+DQo+
+ID4gLQlyZXR1cm4gZG9tYWluLT5vcHMtPnN2YV9iaW5kX2dwYXNpZChkb21haW4sIGRldiwgZGF0
+YSk7DQo+ID4gKwlyZXQgPSBpb21tdV9zdmFfcHJlcGFyZV9iaW5kX2RhdGEodWRhdGEsICZkYXRh
+KTsNCj4gPiArCWlmIChyZXQpDQo+ID4gKwkJcmV0dXJuIHJldDsNCj4gPiArDQo+ID4gKwlyZXR1
+cm4gZG9tYWluLT5vcHMtPnN2YV9iaW5kX2dwYXNpZChkb21haW4sIGRldiwgJmRhdGEpOw0KPiA+
+ICB9DQo+ID4gIEVYUE9SVF9TWU1CT0xfR1BMKGlvbW11X3VhcGlfc3ZhX2JpbmRfZ3Bhc2lkKTsN
+Cj4gPg0KPiA+IC1pbnQgaW9tbXVfdWFwaV9zdmFfdW5iaW5kX2dwYXNpZChzdHJ1Y3QgaW9tbXVf
+ZG9tYWluICpkb21haW4sIHN0cnVjdCBkZXZpY2UNCj4gKmRldiwNCj4gPiAtCQkJCSBpb2FzaWRf
+dCBwYXNpZCkNCj4gPiAraW50IGlvbW11X3N2YV91bmJpbmRfZ3Bhc2lkKHN0cnVjdCBpb21tdV9k
+b21haW4gKmRvbWFpbiwgc3RydWN0IGRldmljZSAqZGV2LA0KPiA+ICsJCQkgICAgc3RydWN0IGlv
+bW11X2dwYXNpZF9iaW5kX2RhdGEgKmRhdGEpDQo+ID4gIHsNCj4gPiAgCWlmICh1bmxpa2VseSgh
+ZG9tYWluLT5vcHMtPnN2YV91bmJpbmRfZ3Bhc2lkKSkNCj4gPiAgCQlyZXR1cm4gLUVOT0RFVjsN
+Cj4gPg0KPiA+IC0JcmV0dXJuIGRvbWFpbi0+b3BzLT5zdmFfdW5iaW5kX2dwYXNpZChkZXYsIHBh
+c2lkKTsNCj4gPiArCXJldHVybiBkb21haW4tPm9wcy0+c3ZhX3VuYmluZF9ncGFzaWQoZGV2LCBk
+YXRhLT5ocGFzaWQpOw0KPiA+ICt9DQo+ID4gK0VYUE9SVF9TWU1CT0xfR1BMKGlvbW11X3N2YV91
+bmJpbmRfZ3Bhc2lkKTsNCj4gPiArDQo+ID4gK2ludCBpb21tdV91YXBpX3N2YV91bmJpbmRfZ3Bh
+c2lkKHN0cnVjdCBpb21tdV9kb21haW4gKmRvbWFpbiwgc3RydWN0IGRldmljZQ0KPiAqZGV2LA0K
+PiA+ICsJCQkJIHZvaWQgX191c2VyICp1ZGF0YSkNCj4gPiArew0KPiA+ICsJc3RydWN0IGlvbW11
+X2dwYXNpZF9iaW5kX2RhdGEgZGF0YSA9IHsgMCB9Ow0KPiA+ICsJaW50IHJldDsNCj4gPiArDQo+
+ID4gKwlpZiAodW5saWtlbHkoIWRvbWFpbi0+b3BzLT5zdmFfYmluZF9ncGFzaWQpKQ0KPiA+ICsJ
+CXJldHVybiAtRU5PREVWOw0KPiA+ICsNCj4gPiArCXJldCA9IGlvbW11X3N2YV9wcmVwYXJlX2Jp
+bmRfZGF0YSh1ZGF0YSwgJmRhdGEpOw0KPiA+ICsJaWYgKHJldCkNCj4gPiArCQlyZXR1cm4gcmV0
+Ow0KPiA+ICsNCj4gPiArCXJldHVybiBpb21tdV9zdmFfdW5iaW5kX2dwYXNpZChkb21haW4sIGRl
+diwgJmRhdGEpOw0KPiA+ICB9DQo+ID4gIEVYUE9SVF9TWU1CT0xfR1BMKGlvbW11X3VhcGlfc3Zh
+X3VuYmluZF9ncGFzaWQpOw0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvaW9t
+bXUuaCBiL2luY2x1ZGUvbGludXgvaW9tbXUuaA0KPiA+IGluZGV4IDJkY2MxYTMzZjZkYy4uNGEw
+MmM5ZTA5MDQ4IDEwMDY0NA0KPiA+IC0tLSBhL2luY2x1ZGUvbGludXgvaW9tbXUuaA0KPiA+ICsr
+KyBiL2luY2x1ZGUvbGludXgvaW9tbXUuaA0KPiA+IEBAIC00MzIsMTEgKzQzMiwxNCBAQCBleHRl
+cm4gdm9pZCBpb21tdV9kZXRhY2hfZGV2aWNlKHN0cnVjdA0KPiBpb21tdV9kb21haW4gKmRvbWFp
+biwNCj4gPiAgCQkJCXN0cnVjdCBkZXZpY2UgKmRldik7DQo+ID4gIGV4dGVybiBpbnQgaW9tbXVf
+dWFwaV9jYWNoZV9pbnZhbGlkYXRlKHN0cnVjdCBpb21tdV9kb21haW4gKmRvbWFpbiwNCj4gPiAg
+CQkJCSAgICAgICBzdHJ1Y3QgZGV2aWNlICpkZXYsDQo+ID4gLQkJCQkgICAgICAgc3RydWN0IGlv
+bW11X2NhY2hlX2ludmFsaWRhdGVfaW5mbyAqaW52X2luZm8pOw0KPiA+ICsJCQkJICAgICAgIHZv
+aWQgX191c2VyICp1aW5mbyk7DQo+ID4gKw0KPiA+ICBleHRlcm4gaW50IGlvbW11X3VhcGlfc3Zh
+X2JpbmRfZ3Bhc2lkKHN0cnVjdCBpb21tdV9kb21haW4gKmRvbWFpbiwNCj4gPiAtCQkJCSAgICAg
+IHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0DQo+IGlvbW11X2dwYXNpZF9iaW5kX2RhdGEgKmRh
+dGEpOw0KPiA+ICsJCQkJICAgICAgc3RydWN0IGRldmljZSAqZGV2LCB2b2lkIF9fdXNlciAqdWRh
+dGEpOw0KPiA+ICBleHRlcm4gaW50IGlvbW11X3VhcGlfc3ZhX3VuYmluZF9ncGFzaWQoc3RydWN0
+IGlvbW11X2RvbWFpbiAqZG9tYWluLA0KPiA+IC0JCQkJCXN0cnVjdCBkZXZpY2UgKmRldiwgaW9h
+c2lkX3QgcGFzaWQpOw0KPiA+ICsJCQkJCXN0cnVjdCBkZXZpY2UgKmRldiwgdm9pZCBfX3VzZXIg
+KnVkYXRhKTsNCj4gPiArZXh0ZXJuIGludCBpb21tdV9zdmFfdW5iaW5kX2dwYXNpZChzdHJ1Y3Qg
+aW9tbXVfZG9tYWluICpkb21haW4sDQo+ID4gKwkJCQkgICBzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0
+cnVjdA0KPiBpb21tdV9ncGFzaWRfYmluZF9kYXRhICpkYXRhKTsNCj4gPiAgZXh0ZXJuIHN0cnVj
+dCBpb21tdV9kb21haW4gKmlvbW11X2dldF9kb21haW5fZm9yX2RldihzdHJ1Y3QgZGV2aWNlICpk
+ZXYpOw0KPiA+ICBleHRlcm4gc3RydWN0IGlvbW11X2RvbWFpbiAqaW9tbXVfZ2V0X2RtYV9kb21h
+aW4oc3RydWN0IGRldmljZSAqZGV2KTsNCj4gPiAgZXh0ZXJuIGludCBpb21tdV9tYXAoc3RydWN0
+IGlvbW11X2RvbWFpbiAqZG9tYWluLCB1bnNpZ25lZCBsb25nIGlvdmEsDQo+ID4gQEAgLTEwNTQs
+MjIgKzEwNTcsMjkgQEAgc3RhdGljIGlubGluZSBpbnQgaW9tbXVfc3ZhX2dldF9wYXNpZChzdHJ1
+Y3QNCj4gaW9tbXVfc3ZhICpoYW5kbGUpDQo+ID4gIAlyZXR1cm4gSU9NTVVfUEFTSURfSU5WQUxJ
+RDsNCj4gPiAgfQ0KPiA+DQo+ID4gLXN0YXRpYyBpbmxpbmUgaW50IGlvbW11X3VhcGlfY2FjaGVf
+aW52YWxpZGF0ZShzdHJ1Y3QgaW9tbXVfZG9tYWluICpkb21haW4sDQo+ID4gLQkJCQkJICAgICAg
+c3RydWN0IGRldmljZSAqZGV2LA0KPiA+IC0JCQkJCSAgICAgIHN0cnVjdCBpb21tdV9jYWNoZV9p
+bnZhbGlkYXRlX2luZm8NCj4gKmludl9pbmZvKQ0KPiA+ICtzdGF0aWMgaW5saW5lIGludA0KPiA+
+ICtpb21tdV91YXBpX2NhY2hlX2ludmFsaWRhdGUoc3RydWN0IGlvbW11X2RvbWFpbiAqZG9tYWlu
+LA0KPiA+ICsJCQkgICAgc3RydWN0IGRldmljZSAqZGV2LA0KPiA+ICsJCQkgICAgc3RydWN0IGlv
+bW11X2NhY2hlX2ludmFsaWRhdGVfaW5mbyAqaW52X2luZm8pDQo+ID4gIHsNCj4gPiAgCXJldHVy
+biAtRU5PREVWOw0KPiA+ICB9DQo+ID4NCj4gPiAgc3RhdGljIGlubGluZSBpbnQgaW9tbXVfdWFw
+aV9zdmFfYmluZF9ncGFzaWQoc3RydWN0IGlvbW11X2RvbWFpbiAqZG9tYWluLA0KPiA+IC0JCQkJ
+CSAgICAgc3RydWN0IGRldmljZSAqZGV2LA0KPiA+IC0JCQkJCSAgICAgc3RydWN0IGlvbW11X2dw
+YXNpZF9iaW5kX2RhdGEgKmRhdGEpDQo+ID4gKwkJCQkJICAgICBzdHJ1Y3QgZGV2aWNlICpkZXYs
+IHZvaWQgX191c2VyICp1ZGF0YSkNCj4gPiAgew0KPiA+ICAJcmV0dXJuIC1FTk9ERVY7DQo+ID4g
+IH0NCj4gPg0KPiA+ICBzdGF0aWMgaW5saW5lIGludCBpb21tdV91YXBpX3N2YV91bmJpbmRfZ3Bh
+c2lkKHN0cnVjdCBpb21tdV9kb21haW4gKmRvbWFpbiwNCj4gPiAtCQkJCQkgICAgICAgc3RydWN0
+IGRldmljZSAqZGV2LCBpbnQgcGFzaWQpDQo+ID4gKwkJCQkJICAgICAgIHN0cnVjdCBkZXZpY2Ug
+KmRldiwgdm9pZCBfX3VzZXIgKnVkYXRhKQ0KPiA+ICt7DQo+ID4gKwlyZXR1cm4gLUVOT0RFVjsN
+Cj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIGlubGluZSBpbnQgaW9tbXVfc3ZhX3VuYmluZF9n
+cGFzaWQoc3RydWN0IGlvbW11X2RvbWFpbiAqZG9tYWluLA0KPiA+ICsJCQkJCSAgc3RydWN0IGRl
+dmljZSAqZGV2LA0KPiA+ICsJCQkJCSAgc3RydWN0IGlvbW11X2dwYXNpZF9iaW5kX2RhdGEgKmRh
+dGEpDQo+ID4gIHsNCj4gPiAgCXJldHVybiAtRU5PREVWOw0KPiA+ICB9DQo+ID4NCj4gT3RoZXJ3
+aXNlIGxvb2tzIGdvb2QgdG8gbWUNCj4gUmV2aWV3ZWQtYnk6IEVyaWMgQXVnZXIgPGVyaWMuYXVn
+ZXJAcmVkaGF0LmNvbT4NCj4gDQo+IFRoYW5rcw0KPiANCj4gRXJpYw0KDQo=
