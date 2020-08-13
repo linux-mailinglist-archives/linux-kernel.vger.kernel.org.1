@@ -2,111 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED092431D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 02:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E245F2431E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 02:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgHMA5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 20:57:09 -0400
-Received: from mga17.intel.com ([192.55.52.151]:22625 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726574AbgHMA5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 20:57:06 -0400
-IronPort-SDR: k8QbWiKsX4f+Z0/SywXUlPlbIkIbvLKgA0y2iFCORx0ufmyVzDWFQAmcPEMrlYnGu6N951hblr
- xgc5V+fcG5UA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9711"; a="134187941"
-X-IronPort-AV: E=Sophos;i="5.76,306,1592895600"; 
-   d="scan'208";a="134187941"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2020 17:57:05 -0700
-IronPort-SDR: N8WknwYBhVYVYxyPM4dGFRkynYOOKCseddCByMvJs370fQ002BU4h9YH+RYj5TVi6MDvyAvz5D
- JHy9qYi40Qag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,306,1592895600"; 
-   d="scan'208";a="308897167"
-Received: from lkp-server01.sh.intel.com (HELO 7f1ebb311643) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 12 Aug 2020 17:57:04 -0700
-Received: from kbuild by 7f1ebb311643 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k61YF-0000Lc-CE; Thu, 13 Aug 2020 00:57:03 +0000
-Date:   Thu, 13 Aug 2020 08:56:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Denis Efremov <efremov@linux.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Julia Lawall <Julia.Lawall@lip6.fr>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org
-Subject: [PATCH] coccinelle: api: fix device_attr_show.cocci warnings
-Message-ID: <20200813005614.GA85482@8851f5375e5a>
-References: <202008130840.TWLDLwLA%lkp@intel.com>
+        id S1726606AbgHMA6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 20:58:45 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:28434 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgHMA6o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 Aug 2020 20:58:44 -0400
+Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com [209.85.217.46]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 07D0wC5e031519;
+        Thu, 13 Aug 2020 09:58:12 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 07D0wC5e031519
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1597280293;
+        bh=KJEXsGT7cf1jNK7EqEJcxc2sDM3WPtp8flA8NDzcZDY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uqfwHqWIDE1ch9B0SjW0K+io0UM3zgUY5ozBHWZa2/mqAeW7bnqQxAGKcLq5qnSDv
+         8kOZ50oXAFU9DgIuka8JTgNnh+dKKmxSQJf5eJhUgaKhy/WG28pgB9i2haknY51Qta
+         r1aCzOD3fokyGP8jRdIPivZM8/QRfsX/kybRZ6Q14XJNEJl7eyXQVEy2sPfWYMZAwb
+         N/kgeleQYjM32Cy/KMwYOTfoOUJa7tKUQXYVL5UlpRj8e5/uww2FPJoyrUioC9o72w
+         HldqC6NOliKleHHr5w5tejX7xopL8UiKdba+/Qzu1wlY/KWwDAC5AZ4j45Ft9MIf+a
+         q+l9ikoJi5cAA==
+X-Nifty-SrcIP: [209.85.217.46]
+Received: by mail-vs1-f46.google.com with SMTP id p8so2058751vsm.12;
+        Wed, 12 Aug 2020 17:58:12 -0700 (PDT)
+X-Gm-Message-State: AOAM530ZhiCac51hy4QBFZ6mef9ZwIrO53f7reKRqTXeQ0XqtZue0FI2
+        rI2ZNEvybWG3PwgZKmY/YztXM3ug2xS+CK7HxyE=
+X-Google-Smtp-Source: ABdhPJwvLTQwspsgXxlDcg9bHgvFDjwX/VfzFXBdx/iGob1VdxKEQSv511K45i7CSCFXXex+QzKgAc8qNzi6QJaeuok=
+X-Received: by 2002:a67:bb06:: with SMTP id m6mr1570844vsn.54.1597280291357;
+ Wed, 12 Aug 2020 17:58:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202008130840.TWLDLwLA%lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200812173958.2307251-1-masahiroy@kernel.org>
+ <CAJkfWY6vhW9kNK-t+2vZQ7Rhn3HedykvT2du7AfO0_9oUAXvjw@mail.gmail.com>
+ <CAKwvOdm3VTZ2QXXxf9pjM6n87UE=Lc-9Cx=V70sNsYGmHCb-hA@mail.gmail.com> <20200813005045.GA3726321@ubuntu-n2-xlarge-x86>
+In-Reply-To: <20200813005045.GA3726321@ubuntu-n2-xlarge-x86>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 13 Aug 2020 09:57:34 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT+zOT78s6e2z4DWbL87hzySt+_xDwpO3sWY5j0uL1egA@mail.gmail.com>
+Message-ID: <CAK7LNAT+zOT78s6e2z4DWbL87hzySt+_xDwpO3sWY5j0uL1egA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] kbuild: clang-tidy
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Huckleberry <nhuck@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Tom Roeder <tmroeder@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Rob Herring <robh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Thu, Aug 13, 2020 at 9:50 AM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Wed, Aug 12, 2020 at 03:52:54PM -0700, 'Nick Desaulniers' via Clang Built Linux wrote:
+> > On Wed, Aug 12, 2020 at 12:56 PM Nathan Huckleberry <nhuck@google.com> wrote:
+> > >
+> > > On Wed, Aug 12, 2020 at 12:40 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > > >
+> > > >
+> > > > I improved gen_compile_commands.py in the first two patches,
+> > > > then rebased Nathan's v7 [1] on top of them.
+> > > > To save time, I modified the Makefile part.
+> > > > No change for run-clang-tools.py
+> > > >
+> > > > I am not sure if the new directory, scripts/clang-tools/,
+> > > > is worth creating only for 2 files, but I do not have
+> > > > a strong opinion about it.
+> > > >
+> > > > "make clang-tidy" should work in-tree build,
+> > > > out-of-tree build (O=), and external module build (M=).
+> > > > Tests and reviews are appreciated.
+> > > >
+> > > > "make clang-tidy" worked for me.
+> > > >
+> > > > masahiro@oscar:~/workspace/linux-kbuild$ make -j24 CC=clang clang-tidy
+> > > >   DESCEND  objtool
+> > > >   CALL    scripts/atomic/check-atomics.sh
+> > > >   CALL    scripts/checksyscalls.sh
+> > > >   CHK     include/generated/compile.h
+> > > >   GEN     compile_commands.json
+> > > >   CHECK   compile_commands.json
+> > > >
+> > > > But "make clang-analyzer" just sprinkled the following error:
+> > > >
+> > > >   Error: no checks enabled.
+> > > >   USAGE: clang-tidy [options] <source0> [... <sourceN>]
+> >
+> > I wasn't able to reproduce Masahiro's reported failure, but seeing as
+> > he has `GEN` for compile_commands.json and I have `CHK`, I wonder if
+> > that's from a run when the series was still under development?
+> >
+> > I can reproduce if I run:
+> > $ clang-tidy '-checks='
+> > so maybe was string quoting problem?
+> >
+> > > >
+> > > > I built clang-tidy from the latest source.
+> > > > I had no idea how to make it work...
+> > >
+> > > How are you building clang-tidy? The clang static-analyzer may not
+> > > have been built.
+> > > I believe the static analyzer is built as a part of clang, not as a
+> > > part of clang-tools-extra.
+> > >
+> > > I use this command to build.
+> > > cmake -DCMAKE_BUILD_TYPE="release"
+> > > -DLLVM_TARGETS_TO_BUILD="X86;AArch64;ARM;RISCV"
+> > > -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld;llvm-as"
+> > > -DLLVM_ENABLE_LLD=1 -G "Ninja" ../llvm
+> > >
+> > > Adding clang to the list of -DLLVM_ENABLE_PROJECTS will build the
+> > > static analyzer.
+> > > -DCLANG_ENABLE_STATIC_ANALYZER=1 might also work, but I haven't tested it.
+> > >
+> > > I tested the patchset and both clang-tidy and clang-analyzer work for me.
+> >
+> > If you rename clang-tidy in your build dir, and ensure you don't have
+> > a `clang-tidy` in your $PATH (`which clang-tidy`), maybe there's more
+> > we can do to politely inform the user they're missing a dependency to
+> > execute the make target?  Not sure if we could could test that
+> > clang-tidy supports the clang-analyzer-* checks.  Isn't there an
+> > invocation that prints the supported checks? `clang-tidy '-checks=*'
+> > --list-checks` is in my shell history.  Maybe grepping that and
+> > informing the user how to fix the problem might solve a "papercut?"
+> >
+> > If I remove clang-tidy with this series applied, I get (the failure is
+> > obvious to me, but...):
+> > ```
+> > $ make LLVM=1 -j71 clang-tidy
+> > ...
+> > multiprocessing.pool.RemoteTraceback:
+> > """
+> > Traceback (most recent call last):
+> >   File "/usr/lib/python3.8/multiprocessing/pool.py", line 125, in worker
+> >     result = (True, func(*args, **kwds))
+> >   File "/usr/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
+> >     return list(map(*args))
+> >   File "./scripts/clang-tools/run-clang-tools.py", line 54, in run_analysis
+> >     p = subprocess.run(["clang-tidy", "-p", args.path, checks, entry["file"]],
+> >   File "/usr/lib/python3.8/subprocess.py", line 489, in run
+> >     with Popen(*popenargs, **kwargs) as process:
+> >   File "/usr/lib/python3.8/subprocess.py", line 854, in __init__
+> >     self._execute_child(args, executable, preexec_fn, close_fds,
+> >   File "/usr/lib/python3.8/subprocess.py", line 1702, in _execute_child
+> >     raise child_exception_type(errno_num, err_msg, err_filename)
+> > FileNotFoundError: [Errno 2] No such file or directory: 'clang-tidy'
+> > """
+> >
+> > The above exception was the direct cause of the following exception:
+> >
+> > Traceback (most recent call last):
+> >   File "./scripts/clang-tools/run-clang-tools.py", line 74, in <module>
+> >     main()
+> >   File "./scripts/clang-tools/run-clang-tools.py", line 70, in main
+> >     pool.map(run_analysis, datastore)
+> >   File "/usr/lib/python3.8/multiprocessing/pool.py", line 364, in map
+> >     return self._map_async(func, iterable, mapstar, chunksize).get()
+> >   File "/usr/lib/python3.8/multiprocessing/pool.py", line 771, in get
+> >     raise self._value
+> > FileNotFoundError: [Errno 2] No such file or directory: 'clang-tidy'
+> > make: *** [Makefile:1861: clang-tidy] Error 1
+> > ```
+> > $ clang-tidy '-checks=*' --list-checks | grep clang-analyzer | wc -l
+> > 111
+> >
+> > And I'm not sure you can even build clang or clang-tidy but not the analyzer.
+>
+> I think that is the point of '-DCLANG_ENABLE_STATIC_ANALYZER=OFF'.
+> clang-tools-extra/clang-tidy/CMakeLists.txt has some checks for
+> CLANG_ENABLE_STATIC_ANALYZER to link in certain libraries related to
+> the analyzer.
+>
+> For the record, tc-build adds that cmake define:
+>
+> https://github.com/ClangBuiltLinux/tc-build/blob/071eeefd2e201d3f24468cc06ed6a5860161437d/build-llvm.py#L610-L613
+>
+> $ ../build-llvm.py --build-stage1-only --projects "clang;clang-tools-extra" --targets X86
+> ...
+>
+> $ ../build/llvm/stage1/bin/clang-tidy '-checks=*' --list-checks | grep clang-analyzer | wc -l
+> 0
+>
+> If I remove that define and rebuild:
+>
+> $ ../build-llvm.py --build-stage1-only --projects "clang;clang-tools-extra" --targets X86
+> ...
+>
+> $ ../build/llvm/stage1/bin/clang-tidy '-checks=*' --list-checks | grep clang-analyzer | wc -l
+> 111
+>
+> I suppose if this series depends on it, we can remove that from the base
+> defines and either add a flag to enable/disable it depending on people's
+> preferences.
 
-drivers/hid/hid-sony.c:611:8-16: WARNING: use scnprintf or sprintf
-drivers/hid/hid-sony.c:648:8-16: WARNING: use scnprintf or sprintf
-drivers/hid/hid-sony.c:660:8-16: WARNING: use scnprintf or sprintf
+
+Ah, right.
+
+I used tc-build to build clang, clang-tools-extra.
 
 
- From Documentation/filesystems/sysfs.txt:
-  show() must not use snprintf() when formatting the value to be
-  returned to user space. If you can guarantee that an overflow
-  will never happen you can use sprintf() otherwise you must use
-  scnprintf().
+I will remove   'CLANG_ENABLE_STATIC_ANALYZER': 'OFF',
+and rebuild clang-tools-extra.
+Thanks.
 
-Generated by: scripts/coccinelle/api/device_attr_show.cocci
 
-Fixes: abfc19ff202d ("coccinelle: api: add device_attr_show script")
-CC: Denis Efremov <efremov@linux.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   7c2a69f610e64c8dec6a06a66e721f4ce1dd783a
-commit: abfc19ff202d287742483e15fd478ddd6ada2187 coccinelle: api: add device_attr_show script
-
-Please take the patch only if it's a positive warning. Thanks!
-
- hid-sony.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
---- a/drivers/hid/hid-sony.c
-+++ b/drivers/hid/hid-sony.c
-@@ -608,7 +608,7 @@ static ssize_t ds4_show_poll_interval(st
- 	struct hid_device *hdev = to_hid_device(dev);
- 	struct sony_sc *sc = hid_get_drvdata(hdev);
- 
--	return snprintf(buf, PAGE_SIZE, "%i\n", sc->ds4_bt_poll_interval);
-+	return scnprintf(buf, PAGE_SIZE, "%i\n", sc->ds4_bt_poll_interval);
- }
- 
- static ssize_t ds4_store_poll_interval(struct device *dev,
-@@ -645,7 +645,7 @@ static ssize_t sony_show_firmware_versio
- 	struct hid_device *hdev = to_hid_device(dev);
- 	struct sony_sc *sc = hid_get_drvdata(hdev);
- 
--	return snprintf(buf, PAGE_SIZE, "0x%04x\n", sc->fw_version);
-+	return scnprintf(buf, PAGE_SIZE, "0x%04x\n", sc->fw_version);
- }
- 
- static DEVICE_ATTR(firmware_version, 0444, sony_show_firmware_version, NULL);
-@@ -657,7 +657,7 @@ static ssize_t sony_show_hardware_versio
- 	struct hid_device *hdev = to_hid_device(dev);
- 	struct sony_sc *sc = hid_get_drvdata(hdev);
- 
--	return snprintf(buf, PAGE_SIZE, "0x%04x\n", sc->hw_version);
-+	return scnprintf(buf, PAGE_SIZE, "0x%04x\n", sc->hw_version);
- }
- 
- static DEVICE_ATTR(hardware_version, 0444, sony_show_hardware_version, NULL);
+-- 
+Best Regards
+Masahiro Yamada
