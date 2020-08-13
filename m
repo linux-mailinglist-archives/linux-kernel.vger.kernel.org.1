@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A28243E39
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 19:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D480243E40
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 19:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbgHMRWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 13:22:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35918 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726174AbgHMRWj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 13:22:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 83168B676;
-        Thu, 13 Aug 2020 17:23:00 +0000 (UTC)
-Date:   Thu, 13 Aug 2020 19:22:37 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200813172237.GU9477@dhcp22.suse.cz>
-References: <20200811210931.GZ4295@paulmck-ThinkPad-P72>
- <874kp87mca.fsf@nanos.tec.linutronix.de>
- <20200813075027.GD9477@dhcp22.suse.cz>
- <20200813095840.GA25268@pc636>
- <874kp6llzb.fsf@nanos.tec.linutronix.de>
- <20200813133308.GK9477@dhcp22.suse.cz>
- <87sgcqty0e.fsf@nanos.tec.linutronix.de>
- <20200813145335.GN9477@dhcp22.suse.cz>
- <87lfiitquu.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lfiitquu.fsf@nanos.tec.linutronix.de>
+        id S1726597AbgHMRZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 13:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726192AbgHMRZD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 13:25:03 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5EEAC061757;
+        Thu, 13 Aug 2020 10:25:00 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id v22so4805843edy.0;
+        Thu, 13 Aug 2020 10:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=rSB8VVTvzJbQ2bhhJZj7hUI5mv93QDUUshAlmirOUtA=;
+        b=c+x3NSPqjwWvDSgs3rLRPS/myd6Ky3FgX8yuOwAPAlleEeiEqEEE2tzOl7fzjJdE0s
+         ssTQzwyAAb/RTFFgEMmqaFKMCO0NUfqOd8PyxwW1BGvOkxKw1Xg/BMarEPevtrCgoTjG
+         9xLki6fJBLkST2VXBNEGooWW+HkDoBg8z12yDZ1/oy2hhxZxLGfIM1fNzAW6u0l/lY1q
+         E8fjSh7idIZSivlQ+rotSlpY9Noh2AV1JD9muDoBsHv96F6rNVy8Z0w7jDj2tLxezKnl
+         Lc7kCFAO+/F7qi8rXbXyeOKPKAeFrrMZrVms4BW5RfUB9R51Tasq78gG82x/UEhPBUqK
+         YYHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=rSB8VVTvzJbQ2bhhJZj7hUI5mv93QDUUshAlmirOUtA=;
+        b=gul+f4AcuZYSeeBTQoRXsam7OkdEeALQoUbnKSkp5hrpAx7Fvi4uuDMmfpqFRSCYmm
+         3RlXfPvUOdJ/7ikC+sIlp0tCUQ85MhZgxfG+52DDPSkGGj+Z7WANY200ZAYJPfOMsM2h
+         od/aLJN/Kj0aIFr4dm+OF1m1GRp0wbg+nUPODcAUEhMTJ+6es9eqOxoChEdj/iJVy3Kl
+         Acu2dAmoM/4VpoD+GLBb3mSbtuO9s4l87viXDQdAaFk80+bZXneeUu5ymCLx3poVa48h
+         Pb63fKLBLxF7KctFK4K1eqZOAGf3HhuIXIVUNLR1zEcXWG+3BSG9l8tFQ3idmTZAHYfA
+         i9Qg==
+X-Gm-Message-State: AOAM530yVNIHqHwZrDN9ZVGWY5MIsvuPrAyX2cimNXslka9QfpvVSLRI
+        davbxWFVzJq/nhLj8jTcdvA=
+X-Google-Smtp-Source: ABdhPJwUpMviHhcDaq2Pfp/b+cSasXXDYlD4c2EJfbiFFCF9FcIzkMU6r1RZW7EUcBCrymI+g2F1TQ==
+X-Received: by 2002:aa7:cdc4:: with SMTP id h4mr5532080edw.252.1597339499335;
+        Thu, 13 Aug 2020 10:24:59 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id u4sm4369408edy.18.2020.08.13.10.24.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 13 Aug 2020 10:24:58 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] ARM: dts: rockchip: rk3066a: add label to cpu@1
+Date:   Thu, 13 Aug 2020 19:24:50 +0200
+Message-Id: <20200813172451.13754-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 13-08-20 19:09:29, Thomas Gleixner wrote:
-> Michal Hocko <mhocko@suse.com> writes:
-> > On Thu 13-08-20 16:34:57, Thomas Gleixner wrote:
-[...]
+Add label to cpu@1 for later use.
 
-I will go though the rest of the email tomorrow.
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ arch/arm/boot/dts/rk3066a.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> >> Really, if your primary lockless caches are empty then any allocation
-> >> which comes from deep atomic context should simply always fail. Being
-> >> stuck in an interrupt handler or even deeper for 200+ microseconds
-> >> waiting for zone lock is just bonkers IMO.
-> >
-> > That would require changing NOWAIT/ATOMIC allocations semantic quite
-> > drastically for !RT kernels as well. I am not sure this is something we
-> > can do. Or maybe I am just missing your point.
-> 
-> I really do not understand why you think that it affects everything. 
-
-We are likely not on the same page here. Are you talking about the
-original proposal in this thread (aka a new flag) or a way to reuse
-existing gfp space (http://lkml.kernel.org/r/20200813075027.GD9477@dhcp22.suse.cz)
-with a modification that would both silence the lockdep and keep the
-existing NOWAIT semantic?
-
-Sorry bear with me but I am getting lost in this thread.
+diff --git a/arch/arm/boot/dts/rk3066a.dtsi b/arch/arm/boot/dts/rk3066a.dtsi
+index b599394d1..252750c97 100644
+--- a/arch/arm/boot/dts/rk3066a.dtsi
++++ b/arch/arm/boot/dts/rk3066a.dtsi
+@@ -36,7 +36,7 @@
+ 			clock-latency = <40000>;
+ 			clocks = <&cru ARMCLK>;
+ 		};
+-		cpu@1 {
++		cpu1: cpu@1 {
+ 			device_type = "cpu";
+ 			compatible = "arm,cortex-a9";
+ 			next-level-cache = <&L2>;
 -- 
-Michal Hocko
-SUSE Labs
+2.11.0
+
