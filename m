@@ -2,120 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C6F243AAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 15:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBCC243AB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 15:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgHMNPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 09:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgHMNPn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 09:15:43 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551F4C061383
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 06:15:42 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id u63so4977684oie.5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 06:15:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=amVDbDf/cLsaykKYWF9FuSxMbm/nBOZt2H1uNX9eFZ8=;
-        b=dx3NyCqigtr2t3jtQ/IMwtuMBkhILVT1UmzPUtb4b2jCYAr+ZYn7BPmv3+YmijhshN
-         P4khHU8jeFGpytrXSxxCyJfspnPyk4/VdLTgIcIsger4AhcutPrQvLAM8wc9ap3KfvTq
-         IQ8RmnmQUQa+qA12npIau3fVNGq7AvSlTXJx/+Td8fIPUPs9ozva718Ag2JmCk/WuvHz
-         ji+vVofQrr44BpY19X/RvLQnuTMbhVKh0Dm92Ld47aX6xHuMfh3Sj5t6ePFGP/iDQ9O5
-         tRQjb11AI+GERSlmpHzmfTiYD6VUxTaB6cvV2gqu4Kw49IlrE39YWiDFUq8PGA8j/yBw
-         f+Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=amVDbDf/cLsaykKYWF9FuSxMbm/nBOZt2H1uNX9eFZ8=;
-        b=GihnAeAkBN+x96OYMqIG8pyYJwAOZVz3KLd7MmaVIOasPgshJp6OmiN5OHiNjwL0Hl
-         tYJbn51XHdFCpL2T7at07uP7C/gEObjL8oezzJtkgPkMqaba45yBmCW8ZW20xLxaEn3B
-         N/8QL6SmIwbY6yT8rcWkUloX7ocBKsT+9bdX2lVwNfcVQq7/CnzqZbK3Ln5zCrNX3BJn
-         thJ357pb6JS4Q1aXBftthLUM3qzL0cet5syLVBIh065AO2+lzKYJ2LgkWbJd4ptNvV9O
-         vVcKd0c+Zj+JUf7icVVupoDfZKUAfuKHUzrxd1tZr9+a/gM0swjUDOgccI3X7dQP6NXX
-         E2Cw==
-X-Gm-Message-State: AOAM531nRqXOMwHbH/nh7kXA/z72XQwEcs6kfRA6mOfnl3npW7wq8R2B
-        WPdc7kRr7xdv9TUzbS9nDEPPdSuuh0y/NcyePyf4Mg==
-X-Google-Smtp-Source: ABdhPJzT91SoRH9TzoDHHDkZs8acikukFVst91Z+8KqgqXM6PYEOrqrEbVPQF8tqWyPsnWaufHxMCs0RUWuUOwzHLqk=
-X-Received: by 2002:a54:480c:: with SMTP id j12mr3393250oij.85.1597324538126;
- Thu, 13 Aug 2020 06:15:38 -0700 (PDT)
+        id S1726533AbgHMNTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 09:19:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726053AbgHMNTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 09:19:43 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D15620774;
+        Thu, 13 Aug 2020 13:19:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597324782;
+        bh=SknD/q4aQWNYq5Nk/fIPKkA97wOWHoR/XOtsWCarsUg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KyQtPDjjhE0RUI+jOnEFEBNw/+u3ZIzQvrcfs2bqJcSclzMEqquyp5iHRtp1RNgLN
+         0GHvoyF53tu5IMoeKYfshHf8pzTzkTlYFu4UrJiZttWR4h8heT83viHSVM3LlABhmz
+         fUatW3ekpHN47Oz+hbzPT5iwPkIrwjnHUHdfpCyU=
+Date:   Thu, 13 Aug 2020 14:19:33 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Jordan Crouse <jcrouse@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        iommu@lists.linux-foundation.org, freedreno@lists.freedesktop.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Brian Masney <masneyb@onstation.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Douglas Anderson <dianders@chromium.org>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Eric Anholt <eric@anholt.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hanna Hawa <hannah@marvell.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Pritesh Raithatha <praithatha@nvidia.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v12 00/13] iommu/arm-smmu: Add Adreno SMMU specific
+ implementation
+Message-ID: <20200813131933.GC10256@willie-the-truck>
+References: <20200810222657.1841322-1-jcrouse@codeaurora.org>
 MIME-Version: 1.0
-References: <20200812193332.954395-1-urielguajardojr@gmail.com> <20200813103615.GT2674@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200813103615.GT2674@hirez.programming.kicks-ass.net>
-From:   Uriel Guajardo <urielguajardo@google.com>
-Date:   Thu, 13 Aug 2020 08:15:27 -0500
-Message-ID: <CAG30Eec2w1zG7CEd=TVGoNssCZu49TBF+1xXPKrKh+d7hJZfsg@mail.gmail.com>
-Subject: Re: [PATCH v2] kunit: added lockdep support
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Uriel Guajardo <urielguajardojr@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>, mingo@redhat.com,
-        will@kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, kunit-dev@googlegroups.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200810222657.1841322-1-jcrouse@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 5:36 AM <peterz@infradead.org> wrote:
->
-> On Wed, Aug 12, 2020 at 07:33:32PM +0000, Uriel Guajardo wrote:
-> > KUnit will fail tests upon observing a lockdep failure. Because lockdep
-> > turns itself off after its first failure, only fail the first test and
-> > warn users to not expect any future failures from lockdep.
-> >
-> > Similar to lib/locking-selftest [1], we check if the status of
-> > debug_locks has changed after the execution of a test case. However, we
-> > do not reset lockdep afterwards.
-> >
-> > Like the locking selftests, we also fix possible preemption count
-> > corruption from lock bugs.
->
-> > +static void kunit_check_locking_bugs(struct kunit *test,
-> > +                                  unsigned long saved_preempt_count,
-> > +                                  bool saved_debug_locks)
-> > +{
-> > +     preempt_count_set(saved_preempt_count);
-> > +#ifdef CONFIG_TRACE_IRQFLAGS
-> > +     if (softirq_count())
-> > +             current->softirqs_enabled = 0;
-> > +     else
-> > +             current->softirqs_enabled = 1;
-> > +#endif
->
-> Urgh, don't silently change these... if they're off that's a hard fail.
->
->         if (DEBUG_LOCKS_WARN_ON(preempt_count() != saved_preempt_count))
->                 preempt_count_set(saved_preempt_count);
->
-> And by using DEBUG_LOCKS_WARN_ON() it will kill IRQ tracing and trigger
-> the below fail.
+On Mon, Aug 10, 2020 at 04:26:44PM -0600, Jordan Crouse wrote:
+> This series adds an Adreno SMMU implementation to arm-smmu to allow GPU hardware
+> pagetable switching.
+> 
+> The Adreno GPU has built in capabilities to switch the TTBR0 pagetable during
+> runtime to allow each individual instance or application to have its own
+> pagetable.  In order to take advantage of the HW capabilities there are certain
+> requirements needed of the SMMU hardware.
 
-Hmm, I see. My original assumption was that lock related bugs that
-could corrupt preempt_count would always be intervened by lockdep
-(resulting in debug_locks already being off). Is this not always true?
-In any case, I think it's better to explicitly show the failure
-associated with preemption count as you have done, but I'm still
-curious.
+"capabilities" is a polite way of putting it ;)
 
-Also, for further clarification: the check you have made on
-preempt_count also covers softirq_count, right? My understanding is
-that softirqs are re-{enabled/disabled} due to the corruption of the
-preemption count, so no changes should occur if the preemption count
-remains the same. If it does change, we've already failed from
-DEBUG_LOCKS_WARN_ON.
+Anyway, modulo two design comments, I think this is about as nice as we're
+going to get this. Thanks for persevering, and sorry that you have to deal
+with such dreadful hardware.
 
->
-> > +     if (saved_debug_locks && !debug_locks) {
-> > +             kunit_set_failure(test);
-> > +             kunit_warn(test, "Dynamic analysis tool failure from LOCKDEP.");
-> > +             kunit_warn(test, "Further tests will have LOCKDEP disabled.");
-> > +     }
-> > +}
+Hopefully the next version will be the one, although I'd like Robin to take
+a quick look as well if he gets a chance.
+
+Will
