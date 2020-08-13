@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9373F2436D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 10:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368572436DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 10:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgHMIoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 04:44:44 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:25941 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726081AbgHMIoo (ORCPT
+        id S1726747AbgHMIo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 04:44:56 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48450 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726081AbgHMIoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 04:44:44 -0400
-X-UUID: 48f7b7df88504e19851c9459faa44a64-20200813
+        Thu, 13 Aug 2020 04:44:46 -0400
+X-UUID: 84138e09abdd45d8bac8f0f5cc1cd53e-20200813
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=xVTG3i3NZ+1cOXWR7yCUvveG4pS/BEjPy1kRWzM1V+Y=;
-        b=gQgNOIKUV634mhXdI8ViLjtLHo6VxPvLTSOjjyZwAgvx3SKdff7EuszeWSEW7pIJMkJ29Wz/gcQJAIy8Zf9LHQuTXuWf3LSHSVY5DcRB62VOlaFAwQ14otMGSMbPGwxCQk7TMoYPN1Qt6B6vfHAZX/oXRarZoKer7UOHCLNFytQ=;
-X-UUID: 48f7b7df88504e19851c9459faa44a64-20200813
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=UiYITuOicKAGf3efIhr1L/4MAUvnnb66uoIfzUsZtVU=;
+        b=oxHBhMF8vD5OcchOWcI/sOHZbfwKWbIyM0UJodoScWRy4STTC1kQMGROEN1fYDvtcubJ05a3wyp4uIsYW96CdNHato4/JBVQ5L7TYJMzTy6z1DlfRgJNir1QK7NxI9G/mRngoywoS2XQBYXweA2CT0R/GMikO6YjZcoUj8h62lw=;
+X-UUID: 84138e09abdd45d8bac8f0f5cc1cd53e-20200813
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
         (envelope-from <wenbin.mei@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 369335559; Thu, 13 Aug 2020 16:44:40 +0800
+        with ESMTP id 881965504; Thu, 13 Aug 2020 16:44:41 +0800
 Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 13 Aug 2020 16:44:38 +0800
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 13 Aug 2020 16:44:39 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 13 Aug 2020 16:44:37 +0800
+ Transport; Thu, 13 Aug 2020 16:44:38 +0800
 From:   Wenbin Mei <wenbin.mei@mediatek.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>
@@ -36,11 +36,14 @@ CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
         <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>
-Subject: [v3,0/3] mmc: mediatek: add optional reset property mmc: mediatek: add optional module reset property  arm64: dts: mt7622: add reset node for mmc device Documentation/devicetree/bindings/mmc/mtk-sd.txt |  2 ++ arch/arm64/boot/dts/mediatek/mt7622.dtsi         |  2 ++ drivers/mmc/host/mtk-sd.c                        | 13 +++++++++++++ 3 files changed, 17 insertions(+)
-Date:   Thu, 13 Aug 2020 16:43:37 +0800
-Message-ID: <20200813084340.27292-1-wenbin.mei@mediatek.com>
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>, <stable@vger.kernel.org>
+Subject: [v3,1/3] mmc: dt-bindings: Add resets/reset-names for Mediatek MMC bindings
+Date:   Thu, 13 Aug 2020 16:43:38 +0800
+Message-ID: <20200813084340.27292-2-wenbin.mei@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20200813084340.27292-1-wenbin.mei@mediatek.com>
+References: <20200813084340.27292-1-wenbin.mei@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK:  N
@@ -50,5 +53,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LS0NCjIuMTguMA0K
+QWRkIGRlc2NyaXB0aW9uIGZvciByZXNldHMvcmVzZXQtbmFtZXMuDQoNCkNjOiA8c3RhYmxlQHZn
+ZXIua2VybmVsLm9yZz4gIyB2NS40Kw0KRml4ZXM6IDk2NjU4MGFkMjM2ZSAoIm1tYzogbWVkaWF0
+ZWs6IGFkZCBzdXBwb3J0IGZvciBNVDc2MjIgU29DIikNClNpZ25lZC1vZmYtYnk6IFdlbmJpbiBN
+ZWkgPHdlbmJpbi5tZWlAbWVkaWF0ZWsuY29tPg0KVGVzdGVkLWJ5OiBGcmFuayBXdW5kZXJsaWNo
+IDxmcmFuay13QHB1YmxpYy1maWxlcy5kZT4NCi0tLQ0KIERvY3VtZW50YXRpb24vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9tbWMvbXRrLXNkLnR4dCB8IDIgKysNCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNl
+cnRpb25zKCspDQoNCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
+Z3MvbW1jL210ay1zZC50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbW1j
+L210ay1zZC50eHQNCmluZGV4IDhhNTMyZjQ0NTNmMi4uMDlhZWNlYzQ3MDAzIDEwMDY0NA0KLS0t
+IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21tYy9tdGstc2QudHh0DQorKysg
+Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbW1jL210ay1zZC50eHQNCkBAIC00
+OSw2ICs0OSw4IEBAIE9wdGlvbmFsIHByb3BlcnRpZXM6DQogCQkgICAgIGVycm9yIGNhdXNlZCBi
+eSBzdG9wIGNsb2NrKGZpZm8gZnVsbCkNCiAJCSAgICAgVmFsaWQgcmFuZ2UgPSBbMDoweDddLiBp
+ZiBub3QgcHJlc2VudCwgZGVmYXVsdCB2YWx1ZSBpcyAwLg0KIAkJICAgICBhcHBsaWVkIHRvIGNv
+bXBhdGlibGUgIm1lZGlhdGVrLG10MjcwMS1tbWMiLg0KKy0gcmVzZXRzOiBQaGFuZGxlIGFuZCBy
+ZXNldCBzcGVjaWZpZXIgcGFpciB0byBzb2Z0cmVzZXQgbGluZSBvZiBNU0RDIElQLg0KKy0gcmVz
+ZXQtbmFtZXM6IFNob3VsZCBiZSAiaHJzdCIuDQogDQogRXhhbXBsZXM6DQogbW1jMDogbW1jQDEx
+MjMwMDAwIHsNCi0tIA0KMi4xOC4wDQo=
 
