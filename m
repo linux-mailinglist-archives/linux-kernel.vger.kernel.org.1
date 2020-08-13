@@ -2,83 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 322F52436CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 10:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D792436E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 10:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726467AbgHMIoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 04:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726082AbgHMIoP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 04:44:15 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A231C061383
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 01:44:15 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id g6so5257217ljn.11
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 01:44:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MpKzKk8wGOFjAtVPa17BCRqwuTJzgLU2zdpuBahdHkQ=;
-        b=dbgrU/KM6aDeln0roA20eNSMNbs20svp5M5CrJPMou5qqcaQfIJ4aesc+Xz6dS1pMQ
-         DJjgZONExrMDWOIQWQif48Sv7B60WSZCHxT4JxKpLm/xepaxLPrmBDZorzowV4CunqZa
-         qEnL5JMCZrXcWq9plACMPwx8lxABB8einuGfVVtg0q4WVq7jh/wfj6dcokW9oc1FL4z6
-         lHednhWKbqcH0L6kH9DYiBdU6FX4AXhrxOzrbacsDlOFxft46GuFyqwRyswY82WVMv4j
-         W2hMZInhkBBYRe0BSzJdr5gR/XSXS8xJbaCDISQDD/ujwnyO20ZDeK47ETuiZQiWCt7T
-         GTRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MpKzKk8wGOFjAtVPa17BCRqwuTJzgLU2zdpuBahdHkQ=;
-        b=kSzhKii+PSTz5t2pAZAFUK8pTY6rsFbR4eTZHSYWuk7RMIvPCcEZouZIdAx/6lnHZw
-         ZpH3eAG7pmzmoBPQcu3k6YMZP+Ez4jlm4ap0ODq5yHStMdVCqZ9J2sckp27uFJkES5Xm
-         acPfn5t1wHAXjV5DJl2zqVJk5yDeP/dNNnJrUJZRNRSvTn+M2u7oOzhCWEODnbE2W8/A
-         dfTJt8EL+d5hiXlWpPduOo/ev0Q8roW/THu4GmwCZRyTRIfbm70JCx52qvr3iVZbxgVI
-         3apXdfWIvWmPBbcAUnCoWt79EGBgsXzgf66+N12zhbo4IvNoslutDfIdj5h8TONPkDih
-         6Ppg==
-X-Gm-Message-State: AOAM532ko4xnxgDVp8lHVjwLGgrZDytesUKEaIy63NMAr3jDK3CiFKAL
-        0YIyqiKeu6jyw8vNaaO01dNXxCBfjYQwLyVwdsoCcA==
-X-Google-Smtp-Source: ABdhPJxql5a3MUGD32ehFulTJWCwyKdiNDcsY3MR98fi6tYpCu3pQ6oJYcPd4vs8uKqQBrc/5eML6TkOvAtC6lipKPI=
-X-Received: by 2002:a2e:90e:: with SMTP id 14mr1554489ljj.293.1597308253729;
- Thu, 13 Aug 2020 01:44:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200724132457.7094-1-pali@kernel.org>
-In-Reply-To: <20200724132457.7094-1-pali@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 13 Aug 2020 10:44:02 +0200
-Message-ID: <CACRpkdbUtG1vfqu=XViLGqirk2-yvBGsM4VOsA9Kymnauqv+QQ@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: armada-37xx: Add comment for pcie1_reset pin group
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
+        id S1726750AbgHMIpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 04:45:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37448 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726107AbgHMIpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 04:45:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 86D17B5EC;
+        Thu, 13 Aug 2020 08:45:34 +0000 (UTC)
+Date:   Thu, 13 Aug 2020 10:45:11 +0200
+Message-ID: <s5h8sejvsrs.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Cc:     "Lu, Brent" <brent.lu@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Sam McNally <sammc@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Stuart <daniel.stuart14@gmail.com>,
+        "yuhsuan@google.com" <yuhsuan@google.com>,
+        Damian van Soelen <dj.vsoelen@gmail.com>
+Subject: Re: [PATCH v3 2/2] ASoC: Intel: Add period size constraint on strago board
+In-Reply-To: <CAGvk5PpvhjyvETcGS0212XnLPaL71A8D2qMW55rSQZxseOffmw@mail.gmail.com>
+References: <3f3baf5e-f73d-9cd6-cbfb-36746071e126@linux.intel.com>
+        <CAGvk5PogmqfEnFRA8hzby+AGgbOSvbELamh_1=eA9KTpyBMPYQ@mail.gmail.com>
+        <s5htux939x1.wl-tiwai@suse.de>
+        <CAGvk5PpcmkZ2HarqeCDaXm4id=84wYs-u4vWxJunHaf09gj66g@mail.gmail.com>
+        <s5ho8nh37br.wl-tiwai@suse.de>
+        <CAGvk5PphzkdiNfW8hiDuqX+2eQO2FvrpzA0qR3=3VvqM3GBhAA@mail.gmail.com>
+        <20200811145353.GG6967@sirena.org.uk>
+        <d78f9adc-d583-f0f2-ce38-3c9175c939b8@linux.intel.com>
+        <20200811172209.GM6967@sirena.org.uk>
+        <CAGvk5PqGi7cXthLHFi4NyypxFiGnoHvD9vp+5nJdH-_VkVvcKw@mail.gmail.com>
+        <s5hr1scz908.wl-tiwai@suse.de>
+        <CAGvk5Pp+Gk5Uk-iLdhVPWuCL0FiL9OhsaAtwkotay5JAYUNxdQ@mail.gmail.com>
+        <s5hlfikz6y8.wl-tiwai@suse.de>
+        <CAGvk5Pq3rEGJX=WjriPfWg_sEAVWHGZ9S=4iySNfYaHX7Xcw0g@mail.gmail.com>
+        <s5h8sekz4ox.wl-tiwai@suse.de>
+        <e4cc6231-8b19-c145-1b18-91d3a00131d3@linux.intel.com>
+        <s5hv9hnx6am.wl-tiwai@suse.de>
+        <be45d821-57c6-6ca5-0864-ac3aa521d82e@linux.intel.com>
+        <DM6PR11MB364242D3652EDC2F9B8B214897420@DM6PR11MB3642.namprd11.prod.outlook.com>
+        <0714b222-d3fc-5744-1147-bfac7df2651e@linux.intel.com>
+        <CAGvk5Pqg000SnrRhVD+8cOtAVokomRSa6MLdaKKnY2P6R_ruGA@mail.gmail.com>
+        <DM6PR11MB364285D8B21B723EB88915CB97430@DM6PR11MB3642.namprd11.prod.outlook.com>
+        <CAGvk5PpvhjyvETcGS0212XnLPaL71A8D2qMW55rSQZxseOffmw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 3:25 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+On Thu, 13 Aug 2020 10:36:57 +0200,
+Yu-Hsuan Hsu wrote:
+> 
+> Lu, Brent <brent.lu@intel.com> 於 2020年8月13日 週四 下午3:55寫道：
+> >
+> > > > >
+> > > > > CRAS calls snd_pcm_hw_params_set_buffer_size_max() to use as large
+> > > > > buffer as possible. So the period size is an arbitrary number in
+> > > > > different platforms. Atom SST platform happens to be 256, and CML
+> > > > > SOF platform is 1056 for example.
+> > > >
+> > > > ok, but earlier in this thread it was mentioned that values such as
+> > > > 432 are not suitable. the statement above seems to mean the period
+> > > > actual value is a "don't care", so I don't quite see why this specific
+> > > > patch2 restricting the value to 240 is necessary. Patch1 is needed for
+> > > > sure,
+> > > > Patch2 is where Takashi and I are not convinced.
+> > >
+> > > I have downloaded the patch1 but it does not work. After applying patch1,
+> > > the default period size changes to 320. However, it also has the same issue
+> > > with period size 320. (It can be verified by aplay.)
+> >
+> > The period_size is related to the audio latency so it's decided by application
+> > according to the use case it's running. That's why there are concerns about
+> > patch 2 and also you cannot find similar constraints in other machine driver.
+> You're right. However, the problem here is the provided period size
+> does not work. Like 256, setting the period size to 320 also makes
+> users have big latency in the DSP ring buffer.
+> 
+> localhost ~ # aplay -Dhw:1,0 --period-size=320 --buffer-size=640
+> /dev/zero -d 1 -f dat --test-position
+> Playing raw data '/dev/zero' : Signed 16 bit Little Endian, Rate 48000
+> Hz, Stereo
+> Suspicious buffer position (1 total): avail = 0, delay = 2640, buffer = 640
+> Suspicious buffer position (2 total): avail = 0, delay = 2640, buffer = 640
+> Suspicious buffer position (3 total): avail = 0, delay = 2720, buffer = 640
+> ...
 
-> Group name 'pcie1' is misleading as it controls only PCIe reset pin. Like
-> other PCIe groups it should have been called 'pcie1_reset'. But due to
-> backward compatibility it is not possible to change existing group name.
-> So just add comment describing this PCIe reset functionality.
->
-> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
+It means that the delay value returned from the driver is bogus.
+I suppose it comes pcm_delay value calculated in sst_calc_tstamp(),
+but haven't followed the code closely yet.  Maybe checking the debug
+outputs can help to trace what's going wrong.
 
-No reaction from the maintainers and looks good to me,
-so patch applied!
 
-Yours,
-Linus Walleij
+Takashi
+
+> 
+> >
+> > Another problem is the buffer size. Too large buffer is not just wasting memories.
+> > It also creates problems to memory allocator since continuous pages are not
+> > always there. Using a small period_count like 2 or 4 should be sufficient for audio
+> > data transfer.
+> >
+> > buffer_size = period_size * period_count * 1000000 / sample_rate;
+> > snd_pcm_hw_params_set_buffer_time_near(mPcmDevice, params, &buffer_size, NULL);
+> >
+> > And one more problem here: you need to decide period_size and period_count
+> > first in order to calculate the buffer size...
+> It's a good point. I will bring it up to our team and see whether we
+> can use the smaller buffer size. Thanks!
+> >
+> >
+> > Regards,
+> > Brent
+> 
+> Thanks,
+> Yu-Hsuan
+> 
