@@ -2,116 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC86243F1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 21:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D2B243F27
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 21:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgHMTDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 15:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgHMTDC (ORCPT
+        id S1726663AbgHMTF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 15:05:27 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46012 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726174AbgHMTF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 15:03:02 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B908C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 12:03:02 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id 185so7359662ljj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 12:03:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=exAlskjzIFOE1QMe0saylZOMoEP4iKWyM0PCmNmV2iE=;
-        b=D+KqO8DxYbapI0GwZR2nNjGv6dp+d+eVYzQHwg5OMjCbe3Q6SGne/SURb84sC+W4Bf
-         WlFabSyY/QeiyaXTbQEFykeACFf5RZkc3ed28jFSDCVYw1jr/QDpijkI6yyaYHoDWcFI
-         MCFoMmJ6MPdGoGJ2OI3Xt9c/mIbtsjp3OvXv8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=exAlskjzIFOE1QMe0saylZOMoEP4iKWyM0PCmNmV2iE=;
-        b=iI01lESinfGnj9jI9cX2VxX5CBrnuy2vWmDvW3HjcWcTCqCgfRXhNjqc3iVaNEIruA
-         MFauCQ2ZjrLA7/uz6mV87MsxionuW6Xkz5q4ARuVWH/Qrxe5Xh2MNj1LjivMoY/4rovt
-         HXK7dRdLWQKzoeWSU0C+wOGVCZYrGbqTk14SrqN+3egY6kuPJdGgblc9iLE2itj4x/Ys
-         ZFS2vyG/ilGgS4IK9oled+EVwsOwbhcy7rpN6QsHwoho39fZ936ILhVAsa3A0abQ6ZzR
-         QD9r3boet/0NkQCcKdaYjq9FrfAD18KkJ4wcAsZBGtjzMb3Hq9Nk0KYjHnf4cGut0V2y
-         9YrA==
-X-Gm-Message-State: AOAM532Z+ogQBOPybtN6ODeQpz708gF+SbYclWe0GYkjOdoi2RNRaQQK
-        oFG04ZarWmfEN7W655ZxDSIxxOZnjVE=
-X-Google-Smtp-Source: ABdhPJxs9rOexXsLTxldXxEPZhBanPJia1/22fHhHNOpjzca1aFmXnl96hh+o2lbIpaqPkq/FpxTKA==
-X-Received: by 2002:a2e:9595:: with SMTP id w21mr2793567ljh.334.1597345379648;
-        Thu, 13 Aug 2020 12:02:59 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id c21sm1354603lfh.38.2020.08.13.12.02.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Aug 2020 12:02:58 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id w25so7342674ljo.12
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 12:02:58 -0700 (PDT)
-X-Received: by 2002:a2e:9a11:: with SMTP id o17mr2566294lji.314.1597345377681;
- Thu, 13 Aug 2020 12:02:57 -0700 (PDT)
+        Thu, 13 Aug 2020 15:05:26 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07DJ5OMp013355
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 12:05:25 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=GNih2j3ESRfeoRwPAnR3qqb1b7HSoqwKZbqqay1L3wk=;
+ b=ObWFK6Bt4aH+67+3l0KseY92Gs3MZMoiEMruq5dxbtMCBFFDbqXMTN8P/njQq8sysfhe
+ YRHTyOyUP/psFw3/xcmOq6ItEh2QqzBlT5tGSm54IYfJ7ArHVL/vi1ZcTGAbDAqzdlWl
+ 8H46mPuISzUw5RDpbUdTibBTpe2RotIGGys= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32w2yejj73-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 12:05:25 -0700
+Received: from intmgw004.06.prn3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 13 Aug 2020 12:04:46 -0700
+Received: by devvm4117.prn2.facebook.com (Postfix, from userid 167582)
+        id 0844D4EFB4C25; Thu, 13 Aug 2020 12:04:39 -0700 (PDT)
+Smtp-Origin-Hostprefix: devvm
+From:   Vijay Khemka <vijaykhemka@fb.com>
+Smtp-Origin-Hostname: devvm4117.prn2.facebook.com
+To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+CC:     <vijaykhemka@fb.com>, Sai Dasari <sdasari@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH] ARM: dts: aspeed: tiogapass: Remove vuart
+Date:   Thu, 13 Aug 2020 12:04:30 -0700
+Message-ID: <20200813190431.3331026-1-vijaykhemka@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <alpine.LSU.2.11.2008122005240.11996@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2008122005240.11996@eggly.anvils>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 13 Aug 2020 12:02:41 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whYLHtbeF6BFmoiik9PTjP2+pnpWxXLE9f0ccnT0LAd5A@mail.gmail.com>
-Message-ID: <CAHk-=whYLHtbeF6BFmoiik9PTjP2+pnpWxXLE9f0ccnT0LAd5A@mail.gmail.com>
-Subject: Re: [PATCH] dma-debug: fix debug_dma_assert_idle(), use rcu_read_lock()
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        iommu <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-13_16:2020-08-13,2020-08-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxscore=0 mlxlogscore=718 spamscore=0 priorityscore=1501 adultscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 clxscore=1011 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008130134
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 8:17 PM Hugh Dickins <hughd@google.com> wrote:
->
-> Since commit 2a9127fcf229 ("mm: rewrite wait_on_page_bit_common() logic")
-> improved unlock_page(), it has become more noticeable how cow_user_page()
-> in a kernel with CONFIG_DMA_API_DEBUG=y can create and suffer from heavy
-> contention on DMA debug's radix_lock in debug_dma_assert_idle().
+Removed vuart for facebook tiogapass platform as it uses uart2 and
+uart3 pin with aspeed uart routing feature.
 
-Ooh.
+Signed-off-by: Vijay Khemka <vijaykhemka@fb.com>
+---
+ arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Yeah, that's ridiculously expensive, and serializes things for no good reason.
+diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts b/arch/a=
+rm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
+index 2d44d9ad4e40..e6ad821a8635 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
+@@ -82,11 +82,6 @@ &lpc_ctrl {
+ 	status =3D "okay";
+ };
+=20
+-&vuart {
+-	// VUART Host Console
+-	status =3D "okay";
+-};
+-
+ &uart1 {
+ 	// Host Console
+ 	status =3D "okay";
+--=20
+2.24.1
 
-Your patch looks obviously correct to me (Christoph?), but it also
-makes me go "why are we doing this in the first place"?
-
-Because it looks to me like
- (a) the debug check is wrong
- (b) this is left-over from early debugging
-
-In particular, I don't see why we couldn't do a COW on a page that is
-under writeback at the same time. We're not changing the page that is
-doing DMA.
-
-In fact, the whole "COW with DMA" makes me feel like the real bug may
-have been due that whole "ambiguous COW" thing, which was fixed in
-17839856fd58 ("gup: document and work around "COW can break either
-way" issue")
-
-That debug thing goes back almost 7 years, and I don't think it has
-caught anything in those seven years, but I could be wrong.
-
-The commit that adds it does talk about a bug, but that code was
-removed entirely eventually. And google shows no hits for
-debug_dma_assert_idle() since - until your email.
-
-So my gut feel is that we should remove the check entirely, although
-your patch does seem like a big improvement.
-
-Christoph?
-
-(And Dan too, of course, in case he happens to be relaxing in front of
-the computer away from a newborn baby ;)
-
-               Linus
