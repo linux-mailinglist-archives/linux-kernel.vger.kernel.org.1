@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A8D244014
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 22:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22023244020
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 22:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgHMUuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 16:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726623AbgHMUuD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 16:50:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507DFC061757;
-        Thu, 13 Aug 2020 13:50:03 -0700 (PDT)
-Date:   Thu, 13 Aug 2020 20:50:00 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597351801;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nWGVZ3Mpr3AqRCpLX8dy3EPmnqq4O3gEfxHcMXgcFMY=;
-        b=tlw5RoRj1/2TbwxvnaEIRfrpr24lIM3If3j9YPT3FSTIu8gFn2n0NRnWpvDV5zecja5u1W
-        KksyJtZzplLK7IPcdloH3SjgD2OSFJn66oYxmWRhhkU2aD5AhY2XYc/7pHvE+1TSv5CmYx
-        co5IfbkvkATUx6TA0yACT+SWclHQ6kaRBah8oZKyxeozpTleCFpxbD0bTam5Ejqy7eDa39
-        mDc2Ndhgs8hJsxveT9jWq8zB4vIa76lcApbw3ycswgnzKYY9FnHolMI+7Hw5o3iDP2PYfG
-        arttBDbZFsrOybxYqCyk3HJawEHemWfBZsSUllLA/Pk45SmOc09QaGwpNVNqhg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597351801;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nWGVZ3Mpr3AqRCpLX8dy3EPmnqq4O3gEfxHcMXgcFMY=;
-        b=9APNVVop/JOjBjiYCTPpYuNMvv79WCGUcCto6+h9nf4lvAQf7dwUjlea7qsSs6rQmgxRDk
-        SH4Bj2Y34XavqEAQ==
-From:   "tip-bot2 for Huang Shijie" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] Documentation/locking/locktypes: Fix a typo
-Cc:     Huang Shijie <sjhuang@iluvatar.ai>, Ingo Molnar <mingo@kernel.org>,
-        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200813060220.18199-1-sjhuang@iluvatar.ai>
-References: <20200813060220.18199-1-sjhuang@iluvatar.ai>
+        id S1726622AbgHMUwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 16:52:10 -0400
+Received: from ms.lwn.net ([45.79.88.28]:49068 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726192AbgHMUwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 16:52:09 -0400
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 9E85D559;
+        Thu, 13 Aug 2020 20:52:08 +0000 (UTC)
+Date:   Thu, 13 Aug 2020 14:52:07 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org
+Subject: [GIT PULL] Documentation fixes for 5.9
+Message-ID: <20200813145207.0a4a3078@lwn.net>
+Organization: LWN.net
 MIME-Version: 1.0
-Message-ID: <159735180052.3192.8696596314516068127.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+The following changes since commit
+2c12c8103d8f15790cf880f1545dafa36acb004a:
 
-Commit-ID:     cb75c95c5262328bd4da3dd334f6826a3a34a979
-Gitweb:        https://git.kernel.org/tip/cb75c95c5262328bd4da3dd334f6826a3a34a979
-Author:        Huang Shijie <sjhuang@iluvatar.ai>
-AuthorDate:    Thu, 13 Aug 2020 14:02:20 +08:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 13 Aug 2020 20:59:06 +02:00
+  scripts/kernel-doc: optionally treat warnings as errors (2020-07-31 11:11:17 -0600)
 
-Documentation/locking/locktypes: Fix a typo
+are available in the Git repository at:
 
-We have three categories locks, not two.
+  git://git.lwn.net/linux.git tags/docs-5.9-2
 
-Signed-off-by: Huang Shijie <sjhuang@iluvatar.ai>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/20200813060220.18199-1-sjhuang@iluvatar.ai
----
- Documentation/locking/locktypes.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+for you to fetch changes up to 1edcd4675e44dc0e6e3b34e8e29000d8a05f998c:
 
-diff --git a/Documentation/locking/locktypes.rst b/Documentation/locking/locktypes.rst
-index 1b577a8..4cefed8 100644
---- a/Documentation/locking/locktypes.rst
-+++ b/Documentation/locking/locktypes.rst
-@@ -10,7 +10,7 @@ Introduction
- ============
- 
- The kernel provides a variety of locking primitives which can be divided
--into two categories:
-+into three categories:
- 
-  - Sleeping locks
-  - CPU local locks
+  Documentation/locking/locktypes: fix the typo (2020-08-13 14:47:38 -0600)
+
+----------------------------------------------------------------
+A handful of obvious fixes that wandered in during the merge window.
+
+----------------------------------------------------------------
+Billy Wilson (1):
+      docs: Correct the release date of 5.2 stable
+
+Bryan Brattlof (1):
+      docs: trace: fix a typo
+
+Huang Shijie (1):
+      Documentation/locking/locktypes: fix the typo
+
+Kees Cook (1):
+      mailmap: Update comments for with format and more detalis
+
+Lukas Bulwahn (2):
+      doc/zh_CN: fix title heading markup in admin-guide cpu-load
+      doc/zh_CN: resolve undefined label warning in admin-guide index
+
+Puranjay Mohan (3):
+      Filesystems: Documentation: Replace deprecated :c:func: Usage
+      Dev-tools: Documentation: Replace deprecated :c:func: Usage
+      Core-api: Documentation: Replace deprecated :c:func: Usage
+
+Randy Dunlap (1):
+      Doc: admin-guide: use correct legends in kernel-parameters.txt
+
+Remi Andruccioli (1):
+      docs: cdrom: Fix a typo and rst markup
+
+Stephen Kitt (1):
+      docs: remove the 2.6 "Upgrading I2C Drivers" guide
+
+Sumera Priyadarsini (1):
+      documentation: coccinelle: Improve command example for make C={1,2}
+
+Tobias Klauser (1):
+      Documentation/features: refresh RISC-V arch support files
+
+ .mailmap                                           |   9 +-
+ Documentation/admin-guide/kernel-parameters.txt    |  36 +--
+ Documentation/cdrom/cdrom-standard.rst             |   4 +-
+ Documentation/core-api/idr.rst                     |  32 +--
+ Documentation/dev-tools/coccinelle.rst             |  15 +-
+ Documentation/dev-tools/kgdb.rst                   |  16 +-
+ .../features/debug/kmemleak/arch-support.txt       |   2 +-
+ .../features/debug/stackprotector/arch-support.txt |   2 +-
+ .../features/locking/lockdep/arch-support.txt      |   2 +-
+ .../time/context-tracking/arch-support.txt         |   2 +-
+ Documentation/filesystems/journalling.rst          |  66 ++---
+ Documentation/i2c/index.rst                        |   1 -
+ Documentation/i2c/upgrading-clients.rst            | 285 ---------------------
+ Documentation/locking/locktypes.rst                |   2 +-
+ Documentation/process/2.Process.rst                |   2 +-
+ Documentation/trace/intel_th.rst                   |   2 +-
+ .../translations/zh_CN/admin-guide/cpu-load.rst    |   4 +-
+ .../translations/zh_CN/admin-guide/index.rst       |   2 +-
+ 18 files changed, 105 insertions(+), 379 deletions(-)
+ delete mode 100644 Documentation/i2c/upgrading-clients.rst
