@@ -2,205 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA86243469
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9197C24346E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbgHMHIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 03:08:30 -0400
-Received: from mga12.intel.com ([192.55.52.136]:63473 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726639AbgHMHI2 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 03:08:28 -0400
-IronPort-SDR: gzgyN83ils9xFzdlYoT4zk0nSIfuq3QHvxfAblhEcRqcBQu441icEZlsaNeD0uS+V35oDvNVxA
- 7Jii1IOxzbTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9711"; a="133701753"
-X-IronPort-AV: E=Sophos;i="5.76,307,1592895600"; 
-   d="scan'208";a="133701753"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 00:08:27 -0700
-IronPort-SDR: KKrJjfLfaYLtu3wmR2BrzkrhyRJSqVGwTP88BWOaZg7K2Y6PJzTxW5viobH/4F3l0N8KDPv1wN
- iFY5P5IYSrXQ==
-X-IronPort-AV: E=Sophos;i="5.76,307,1592895600"; 
-   d="scan'208";a="470116018"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 00:08:24 -0700
-Subject: Re: [PATCH] perf parse-events: Set exclude_guest for user-space
- counting
-To:     Like Xu <like.xu@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-References: <20200812065953.22143-1-yao.jin@linux.intel.com>
- <20200812121504.GE13995@kernel.org>
- <74097816-3f36-abea-1eaa-8942aedd7322@linux.intel.com>
- <ab4ae047-ba0b-fed6-36e4-d667e3437e34@linux.intel.com>
- <75360db6-0574-aef5-8c90-6eb8f2a6afb3@linux.intel.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <3341af83-c9f3-49c4-d54b-bf4d2a68e639@linux.intel.com>
-Date:   Thu, 13 Aug 2020 15:08:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726690AbgHMHJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 03:09:38 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:35267 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgHMHJh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 03:09:37 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 07D798Jb8012557, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 07D798Jb8012557
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 13 Aug 2020 15:09:08 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 13 Aug 2020 15:09:08 +0800
+Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 13 Aug 2020 15:09:08 +0800
+Received: from RTEXMB04.realtek.com.tw ([fe80::941:6388:7d34:5c44]) by
+ RTEXMB04.realtek.com.tw ([fe80::941:6388:7d34:5c44%3]) with mapi id
+ 15.01.1779.005; Thu, 13 Aug 2020 15:09:08 +0800
+From:   =?big5?B?VFlfQ2hhbmdbsWmkbLZoXQ==?= <tychang@realtek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "linux-realtek-soc@lists.infradead.org" 
+        <linux-realtek-soc@lists.infradead.org>,
+        "afaerber@suse.de" <afaerber@suse.de>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 4/8] dt-bindings: pinctrl: realtek: Add Realtek DHC SoC rtd1195
+Thread-Topic: [PATCH v2 4/8] dt-bindings: pinctrl: realtek: Add Realtek DHC
+ SoC rtd1195
+Thread-Index: AQHWW6sA2D84X/x43EmLwrf4QwIbEKk1xoaQ
+Date:   Thu, 13 Aug 2020 07:09:07 +0000
+Message-ID: <a85ea28815c74b1282cb762073e43c6e@realtek.com>
+References: <20200716023338.14922-1-tychang@realtek.com>
+ <20200716023338.14922-5-tychang@realtek.com> <20200716195458.GA2739358@bogus>
+In-Reply-To: <20200716195458.GA2739358@bogus>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.181.134]
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <75360db6-0574-aef5-8c90-6eb8f2a6afb3@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/13/2020 2:57 PM, Like Xu wrote:
-> Hi Yao,
-> 
-> On 2020/8/13 11:11, Jin, Yao wrote:
->> Hi Like,
->>
->> On 8/12/2020 9:02 PM, Like Xu wrote:
->>> On 2020/8/12 20:15, Arnaldo Carvalho de Melo wrote:
->>>> Em Wed, Aug 12, 2020 at 02:59:53PM +0800, Jin Yao escreveu:
->>>>> Currently if we run 'perf record -e cycles:u', exclude_guest is 0.
->>>>>
->>>>> But it doesn't make sense that we request for user-space counting
->>>>> but we also get the guest report.
->>>>>
->>>
->>> Please hold the horse and allow this possibility.
->>>
->>> Some authorized perf users on the host may
->>> only want to count (KVM) guest user space events.
->>>
->>> Thanks,
->>> Like Xu
->>>
->>
->> Without this patch, if we don't set the ":u" modifier, exclude_guest = 1.
-> 
-> It's true for the non ":u" case.
-> 
->>
->> perf record -e cycles ./div
->> perf evlist -v
->> cycles: size: 120, { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|PERIOD, 
->> read_format: ID, disabled: 1, inherit: 1, mmap: 1, comm: 1, freq: 1, enable_on_exec: 1, task: 1, 
->> sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
->>
->> So this patch doesn't change perf's original behavior.
-> 
-> The patch changes the "perf kvm" original behavior.
-> 
-> Testcase: perf kvm --host --guest --guestkallsyms=guest-kallsyms \
-> --guestmodules=guest-modules record -e cycles:u ...
-> 
-> From:
-> 
-> cycles:u: size: 120, { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|ID|CPU|PERIOD, 
-> read_format: ID, disabled: 1, inherit: 1, exclude_kernel: 1, exclude_hv: 1, freq: 1, sample_id_all: 1
-> dummy:HG: type: 1, size: 120, config: 0x9, { sample_period, sample_freq }: 4000, sample_type: 
-> IP|TID|TIME|ID|CPU|PERIOD, read_format: ID, inherit: 1, mmap: 1, comm: 1, freq: 1, task: 1, 
-> sample_id_all: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-> 
-> To:
-> 
-> cycles:u: size: 120, { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|ID|CPU|PERIOD, 
-> read_format: ID, disabled: 1, inherit: 1, exclude_kernel: 1, exclude_hv: 1, freq: 1, sample_id_all: 1,
-> 
-> exclude_guest: 1
-> 
-> dummy:HG: type: 1, size: 120, config: 0x9, { sample_period, sample_freq }: 4000, sample_type: 
-> IP|TID|TIME|ID|CPU|PERIOD, read_format: ID, inherit: 1, mmap: 1, comm: 1, freq: 1, task: 1, 
-> sample_id_all: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-> 
-> Thanks,
-> Like Xu
-
-The behavior is similar as native kernel. The change of exclude_guest (0 -> 1) is expected.
-
-On native kernel,
-
-Before:
-
-   perf record -e cycles:u ./div
-   perf evlist -v
-   cycles:u: ..., exclude_kernel: 1, exclude_hv: 1, ...
-
-After:
-
-   perf record -e cycles:u ./div
-   perf evlist -v
-   cycles:u: ..., exclude_kernel: 1, exclude_hv: 1,  exclude_guest: 1, ...
-
-Thanks
-Jin Yao
-
->>
->> Thanks
->> Jin Yao
->>
->>>>> To keep perf semantics consistent and clear, this patch sets
->>>>> exclude_guest for user-space counting.
->>>>
->>>> Applied, and also added this, that you should consider doing in the
->>>> future (modulo the "Committer testing:" header :) ):
->>>>
->>>> Committer testing:
->>>>
->>>> Before:
->>>>
->>>>    # perf record -e cycles:u
->>>>    ^C[ perf record: Woken up 1 times to write data ]
->>>>    [ perf record: Captured and wrote 1.231 MB perf.data (91 samples) ]
->>>>    #
->>>>    # perf evlist -v
->>>>    cycles:u: size: 120, { sample_period, sample_freq }: 4000, sample_type: 
->>>> IP|TID|TIME|ID|CPU|PERIOD, read_format: ID, disabled: 1, inherit: 1, exclude_kernel: 1, 
->>>> exclude_hv: 1, freq: 1, sample_id_all: 1
->>>>    <SNIP>
->>>>    #
->>>>
->>>> After:
->>>>
->>>>    # perf record -e cycles:u
->>>>    ^C[ perf record: Woken up 1 times to write data ]
->>>>    [ perf record: Captured and wrote 1.263 MB perf.data (403 samples) ]
->>>>    #
->>>>    # perf evlist -v
->>>>    cycles:u: size: 120, { sample_period, sample_freq }: 4000, sample_type: 
->>>> IP|TID|TIME|ID|CPU|PERIOD, read_format: ID, disabled: 1, inherit: 1, exclude_kernel: 1, 
->>>> exclude_hv: 1, freq: 1, sample_id_all: 1, exclude_guest: 1
->>>>    #
->>>>
->>>> ----
->>>>
->>>> I.e. show actual command output before and after that demonstrates the
->>>> problem and then the solution.
->>>>
->>>>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->>>>> ---
->>>>>   tools/perf/util/parse-events.c | 2 ++
->>>>>   1 file changed, 2 insertions(+)
->>>>>
->>>>> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
->>>>> index 9f7260e69113..4d809f1fe269 100644
->>>>> --- a/tools/perf/util/parse-events.c
->>>>> +++ b/tools/perf/util/parse-events.c
->>>>> @@ -1794,6 +1794,8 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
->>>>>           if (*str == 'u') {
->>>>>               if (!exclude)
->>>>>                   exclude = eu = ek = eh = 1;
->>>>> +            if (!exclude_GH)
->>>>> +                eG = 1;
->>>>>               eu = 0;
->>>>>           } else if (*str == 'k') {
->>>>>               if (!exclude)
->>>>> -- 
->>>>> 2.17.1
->>>>>
->>>>
->>>
-> 
+SGkgUm9iLA0KDQpUaGFuayB5b3UgZm9yIHRoZSByZXZpZXcuDQoNCj4gLS0tLS1PcmlnaW5hbCBN
+ZXNzYWdlLS0tLS0NCj4gRnJvbTogUm9iIEhlcnJpbmcgPHJvYmhAa2VybmVsLm9yZz4NCj4gU2Vu
+dDogRnJpZGF5LCBKdWx5IDE3LCAyMDIwIDM6NTUgQU0NCj4gVG86IFRZX0NoYW5nW7FppGy2aF0g
+PHR5Y2hhbmdAcmVhbHRlay5jb20+DQo+IENjOiBsaW51eC1yZWFsdGVrLXNvY0BsaXN0cy5pbmZy
+YWRlYWQub3JnOyBhZmFlcmJlckBzdXNlLmRlOw0KPiBsaW51cy53YWxsZWlqQGxpbmFyby5vcmc7
+IGxpbnV4LWdwaW9Admdlci5rZXJuZWwub3JnOw0KPiBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9y
+ZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHYy
+IDQvOF0gZHQtYmluZGluZ3M6IHBpbmN0cmw6IHJlYWx0ZWs6IEFkZCBSZWFsdGVrIERIQyBTb0MN
+Cj4gcnRkMTE5NQ0KPiANCj4gT24gVGh1LCBKdWwgMTYsIDIwMjAgYXQgMTA6MzM6MzRBTSArMDgw
+MCwgVFkgQ2hhbmcgd3JvdGU6DQo+ID4gQWRkIGRldmljZSB0cmVlIGJpbmRpbmcgRG9jdW1lbnRh
+dGlvbiBmb3IgcnRkMTE5NSBwaW5jdHJsIGRyaXZlci4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6
+IFRZIENoYW5nIDx0eWNoYW5nQHJlYWx0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAuLi4vcGluY3Ry
+bC9yZWFsdGVrLHJ0ZDExOTUtcGluY3RybC55YW1sICAgICAgfCAxMDQgKysrKysrKysrKysrKysr
+KysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxMDQgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVhdGUg
+bW9kZSAxMDA2NDQNCj4gPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGluY3Ry
+bC9yZWFsdGVrLHJ0ZDExOTUtcGluY3RybC55YW1sDQo+ID4NCj4gPiBkaWZmIC0tZ2l0DQo+ID4g
+YS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGluY3RybC9yZWFsdGVrLHJ0ZDEx
+OTUtcGluY3RybC55YQ0KPiA+IG1sDQo+ID4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3MvcGluY3RybC9yZWFsdGVrLHJ0ZDExOTUtcGluY3RybC55YQ0KPiA+IG1sDQo+ID4gbmV3
+IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwMDAwMDAuLjUwYTk1YmM0NmUyYg0K
+PiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3MvcGluY3RybC9yZWFsdGVrLHJ0ZDExOTUtcGluY3RyDQo+ID4gKysrIGwueWFtbA0KPiA+
+IEBAIC0wLDAgKzEsMTA0IEBADQo+ID4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwt
+Mi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlKSAlWUFNTCAxLjINCj4gPiArLS0tDQo+ID4gKyRpZDoN
+Cj4gPiAraHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvcGluY3RybC9yZWFsdGVrLHJ0ZDEx
+OTUtcGluY3RybC55YW1sIw0KPiA+ICskc2NoZW1hOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvbWV0
+YS1zY2hlbWFzL2NvcmUueWFtbCMNCj4gPiArDQo+ID4gK3RpdGxlOiBSZWFsdGVrIERIQyBSVEQx
+MTk1IHBpbiBjb250cm9sDQo+ID4gKw0KPiA+ICttYWludGFpbmVyczoNCj4gPiArICAtIEFuZHJl
+YXMgRmFyYmVyIDxhZmFlcmJlckBzdXNlLmRlPg0KPiA+ICsNCj4gPiArcHJvcGVydGllczoNCj4g
+PiArICBjb21wYXRpYmxlOg0KPiA+ICsgICAgZW51bToNCj4gPiArICAgICAgLSByZWFsdGVrLHJ0
+ZDExOTUtaXNvLXBpbmN0cmwNCj4gPiArICAgICAgLSByZWFsdGVrLHJ0ZDExOTUtY3J0LXBpbmN0
+cmwNCj4gPiArICByZWc6DQo+ID4gKyAgICBtYXhJdGVtczogMQ0KPiA+ICsNCj4gPiArcmVxdWly
+ZWQ6DQo+ID4gKyAgLSBjb21wYXRpYmxlDQo+ID4gKyAgLSByZWcNCj4gPiArDQo+ID4gKyNQSU4g
+Q09ORklHVVJBVElPTiBOT0RFUw0KPiA+ICtwYXR0ZXJuUHJvcGVydGllczoNCj4gPiArICAnLXBp
+bnMkJzoNCj4gPiArICAgIHR5cGU6IG9iamVjdA0KPiA+ICsgICAgZGVzY3JpcHRpb246DQo+ID4g
+KyAgICAgIFBpbmN0cmwgbm9kZSdzIGNsaWVudCBkZXZpY2VzIHVzZSBzdWJub2RlcyBmb3IgZGVz
+aXJlZCBwaW4NCj4gY29uZmlndXJhdGlvbi4NCj4gPiArICAgICAgQ2xpZW50IGRldmljZSBzdWJu
+b2RlcyB1c2UgYmVsb3cgc3RhbmRhcmQgcHJvcGVydGllcy4NCj4gPiArICAgIGFsbE9mOg0KPiA+
+ICsgICAgICAtICRyZWY6ICIvc2NoZW1hcy9waW5jdHJsL3BpbmNmZy1ub2RlLnlhbWwiDQo+ID4g
+Kw0KPiA+ICsgICAgcHJvcGVydGllczoNCj4gPiArICAgICAgZ3JvdXBzOg0KPiA+ICsgICAgICAg
+IGl0ZW1zOg0KPiA+ICsgICAgICAgICAgZW51bTogWyBpc29fZ3Bpb18wLCBpc29fZ3Bpb18xLCB1
+c2IwLCB1c2IxLCB2ZmRfY3NfbiwNCj4gPiArICAgICAgICAgIHZmZF9jbGssIHZmZF9kLCBpcl9y
+eCwgaXJfdHgsIHVyMF9yeCwgdXIwX3R4LA0KPiA+ICsgICAgICAgICAgdXIxX3J4LCB1cjFfdHgs
+IHVyMV9jdHNfbiwgdXIxX3J0c19uLCBpMmNfc2NsXzAsDQo+ID4gKyAgICAgICAgICBpMmNfc2Rh
+XzAsIGV0bl9sZWRfbGluaywgZXRuX2xlZF9yeHR4LA0KPiA+ICsgICAgICAgICAgaTJjX3NjbF82
+LCBpMmNfc2RhXzYsIGFpX2xvYywgZWp0YWdfYXZjcHVfbG9jLA0KPiA+ICsgICAgICAgICAgdXIx
+X2xvYywgcHdtXzAxX29wZW5fZHJhaW4sIHB3bV8yM19vcGVuX2RyYWluLA0KPiA+ICsgICAgICAg
+ICAgZ3Bpb18wLCBncGlvXzEsIGdwaW9fMiwgZ3Bpb18zLCBncGlvXzQsIGdwaW9fNSwNCj4gPiAr
+ICAgICAgICAgIGdwaW9fNiwgZ3Bpb183LCBncGlvXzgsIG5mX2RkXzAsIG5mX2RkXzEsDQo+ID4g
+KyAgICAgICAgICBuZl9kZF8yLCBuZl9kZF8zLCBuZl9kZF80LCBuZl9kZF81LCBuZl9kZF82LA0K
+PiA+ICsgICAgICAgICAgbmZfZGRfNywgbmZfcmR5LCBuZl9yZF9uLCBuZl93cl9uLCBuZl9hbGUs
+DQo+ID4gKyAgICAgICAgICBuZl9jbGUsIG5mX2NlX25fMCwgbmZfY2Vfbl8xLCBtbWNfZGF0YV8w
+LA0KPiA+ICsgICAgICAgICAgbW1jX2RhdGFfMSwgbW1jX2RhdGFfMiwgbW1jX2RhdGFfMywgbW1j
+X2NsaywNCj4gPiArICAgICAgICAgIG1tY19jbWQsIG1tY193cCwgbW1jX2NkLCBzZGlvX2Nsaywg
+c2Rpb19kYXRhXzAsDQo+ID4gKyAgICAgICAgICBzZGlvX2RhdGFfMSwgc2Rpb19kYXRhXzIsIHNk
+aW9fZGF0YV8zLCBzZGlvX2NtZCwNCj4gPiArICAgICAgICAgIGkyY19zY2xfNSwgaTJjX3NkYV81
+LCB0cDFfZGF0YSwgdHAxX2NsaywNCj4gPiArICAgICAgICAgIHRwMV92YWxpZCwgdHAxX3N5bmMs
+IHRwMF9kYXRhLCB0cDBfY2xrLA0KPiA+ICsgICAgICAgICAgdHAwX3ZhbGlkLCB0cDBfc3luYywg
+dXNiX2lkLCBoZG1pX2hwZCwgc3BkaWYsDQo+ID4gKyAgICAgICAgICBpMmNfc2NsXzEsIGkyY19z
+ZGFfMSwgaTJjX3NjbF80LCBpMmNfc2RhXzQsDQo+ID4gKyAgICAgICAgICBzZW5zb3JfY2tvXzAs
+IHNlbnNvcl9ja29fMSwgc2Vuc29yX3JzdCwNCj4gPiArICAgICAgICAgIHNlbnNvcl9zdGJfMCwg
+c2Vuc29yX3N0Yl8xLCBlanRhZ19zY3B1X2xvYywNCj4gPiArICAgICAgICAgIGhpZl9sb2MsIGFv
+X2xvYyBdDQo+ID4gKyAgICAgICAgbWluSXRlbXM6IDENCj4gPiArDQo+ID4gKyAgICAgIGZ1bmN0
+aW9uOg0KPiA+ICsgICAgICAgIGVudW06IFsgZ3BpbywgYWlfdXIxLCBhaV92ZmQsIGF2Y3B1X2Vq
+dGFnX2lzbywNCj4gPiArICAgICAgICBhdmNwdV9lanRhZ19taXNjX2xvYywgZXRuX2xlZCwgaTJj
+MCwgaTJjMiwNCj4gPiArICAgICAgICBpMmMzLCBpMmM2LCBpcl9yeCwgaXJfdHgsIHB3bSwgc3Rh
+bmRieV9kYmcsDQo+ID4gKyAgICAgICAgdWFydDAsIHVhcnQxLCB1cjFfbWlzYywgdmZkLCBwd21f
+MDFfbm9ybWFsLA0KPiA+ICsgICAgICAgIHB3bV8yM19ub3JtYWwsIHB3bV8wMV9vcGVuX2RyYWlu
+LCBwd21fMjNfb3Blbl9kcmFpbiwNCj4gPiArICAgICAgICBhb190cDAsIGFvX2dwaW8sIGF2Y3B1
+X2VqdGFnX21pc2MsIGNwdV9sb29wLCBlbW1jLA0KPiA+ICsgICAgICAgIGdzcGksIGhpZl9taXNj
+LCBoaWZfbmYsIGkyYzEsIGkyYzIsIGkyYzMsDQo+ID4gKyAgICAgICAgaTJjNCwgaTJjNSwgbW1j
+LCBuYW5kLCBzY3B1X2VqdGFnX2dwaW8sDQo+ID4gKyAgICAgICAgc2NwdV9lanRhZ19jciwgc2Rp
+bywgc2Vuc29yLCBzcGRpZiwgdHAwLCB0cDEsDQo+ID4gKyAgICAgICAgdWFydDEsIHVzYiBdDQo+
+ID4gKw0KPiA+ICsgICAgICBkcml2ZS1zdHJlbmd0aDoNCj4gPiArICAgICAgICBlbnVtOiBbMiwg
+NCwgOF0NCj4gPiArDQo+ID4gKyAgICAgIGJpYXMtcHVsbC1kb3duOiB0cnVlDQo+ID4gKw0KPiA+
+ICsgICAgICBiaWFzLXB1bGwtdXA6IHRydWUNCj4gPiArDQo+ID4gKyAgICAgIGJpYXMtZGlzYWJs
+ZTogdHJ1ZQ0KPiA+ICsNCj4gPiArICAgICAgaW5wdXQtc2NobWl0dC1kaXNhYmxlOiB0cnVlDQo+
+ID4gKw0KPiA+ICsgICAgICBpbnB1dC1zY2htaXR0LWVuYWJsZTogdHJ1ZQ0KPiA+ICsNCj4gPiAr
+ICAgIHJlcXVpcmVkOg0KPiA+ICsgICAgICAtIGdyb3Vwcw0KPiA+ICsgICAgICAtIGZ1bmN0aW9u
+DQo+ID4gKw0KPiA+ICsgICAgYWRkaXRpb25hbFByb3BlcnRpZXM6IGZhbHNlDQo+IA0KPiBBbHNv
+IG5lZWQgYSB0b3AtbGV2ZWwgJ2FkZGl0aW9uYWxQcm9wZXJ0aWVzOiBmYWxzZScNCg0KSSB3aWxs
+IGFkZCB0aGlzIGluIHBhdGNoIHYzLg0KDQo+IA0KPiBXaXRoIHRoYXQsDQo+IA0KPiBSZXZpZXdl
+ZC1ieTogUm9iIEhlcnJpbmcgPHJvYmhAa2VybmVsLm9yZz4NCj4gDQoNCkJlc3QgUmVnYXJkcywN
+ClRZQ2hhbmcNCg0KPiAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9y
+ZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCg==
