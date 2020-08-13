@@ -2,121 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A820243844
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 12:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCB624384D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 12:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgHMKMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 06:12:09 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:24032 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726542AbgHMKMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 06:12:07 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BS2Rl2n3cz9vD3t;
-        Thu, 13 Aug 2020 12:12:03 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id zEDO2OUN0i-8; Thu, 13 Aug 2020 12:12:03 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BS2Rl21lfz9vD3r;
-        Thu, 13 Aug 2020 12:12:03 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 957E28B788;
-        Thu, 13 Aug 2020 12:12:04 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id f4zrRYUIq4JE; Thu, 13 Aug 2020 12:12:04 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.104])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 72A3A8B783;
-        Thu, 13 Aug 2020 12:12:04 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 463AD65C54; Thu, 13 Aug 2020 10:12:04 +0000 (UTC)
-Message-Id: <c71f337cc66f6faa05fd3e1495b04b037b716213.1597313510.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <11a330af231af22874c006302a945388846f8112.1597313510.git.christophe.leroy@csgroup.eu>
-References: <11a330af231af22874c006302a945388846f8112.1597313510.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 5/5] powerpc: Rewrite 4xx flush_cache_instruction() in C
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 13 Aug 2020 10:12:04 +0000 (UTC)
+        id S1726174AbgHMKRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 06:17:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726053AbgHMKRJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 06:17:09 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62589C061383
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 03:17:08 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id f7so4780400wrw.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 03:17:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2Jksw957ApTEUdNh+WJ+SMHxYZwMIbppobCvjvmWoFY=;
+        b=QN4Bkr8TeVYbJBa6MMwSkHdWx/riEzXkTnXVWpsIjsobcal0reicM/9cElmteR8CUR
+         /EeCa6G2bsbzJPjwoeml1DGIKdysExzQTvmpAO3tJxEadzy07Kyl0OrWt34BveGxpbIa
+         pJxzcHfIRsTVkG1AeW+Vxmp4nCikq3LLySOcccSgz2yn7d30CAQsRcq8i01d4yWQ8U80
+         h3DABNX66w5Kmr8cPnnwVn9nHK2hAjSE335SQ8hbx1k4xN57qxfTqt3H2PwK2waeOFQO
+         zyWA7aeBEYDhqELGCny4UBg58sTufYumo6cRL7pFiNZLNVueGYZunkoYIX1iD90FWO+7
+         6L0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2Jksw957ApTEUdNh+WJ+SMHxYZwMIbppobCvjvmWoFY=;
+        b=G99WMczolQRB+Ct803isKs8wUdDcBA4Bt+4ODOJ2vtEd/bp6GUBCNPqs09FthT7NQd
+         7IVeKSOJljN5Caxon5Ej5x7RxRJMj+ThinVkiUyEpJVHbzKZAvq4rmLjXjcIewp9l1K2
+         U0FkV4G7uwHaC8yFYLG+Mvm/9L6k7A9RWCM/cqyu1ORzSSi7Rca//yZsNzVrVrJugE92
+         6kVrhcxMDj3QjGNIaJaQN2QjGKYrLyEHNBIGzc1Q2YOQcSlnpCpmbbQHcwEJO7vt+7+c
+         UTFfv8dNK0o7px5qHCGANBk/DdHvmRAteg6BofjPgwiRf44tR89XRNTpNuvDiuIHTsgb
+         iKpw==
+X-Gm-Message-State: AOAM530EEbRGWPFUz8yPhBSOeC8X/vvx0ZgKAM/1t3KR3d/HLkSu/IDm
+        B4mXlzm+8xuLpP/YYC5Q+1iNkw==
+X-Google-Smtp-Source: ABdhPJz31vqukdsdocXiZ3R5woRV0W54AJOsLQCkCk6VzoTnkJcBkq16BiBZJAsfLjdST1/6ACkqhg==
+X-Received: by 2002:a5d:51c3:: with SMTP id n3mr3220762wrv.387.1597313826743;
+        Thu, 13 Aug 2020 03:17:06 -0700 (PDT)
+Received: from holly.lan (82-132-221-219.dab.02.net. [82.132.221.219])
+        by smtp.gmail.com with ESMTPSA id m1sm8647311wmc.28.2020.08.13.03.17.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Aug 2020 03:17:06 -0700 (PDT)
+Date:   Thu, 13 Aug 2020 11:17:03 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
+        Jiri Slaby <jslaby@suse.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC 0/5] Introduce NMI aware serial drivers
+Message-ID: <20200813101703.566thqmnc2d7cb3n@holly.lan>
+References: <1595333413-30052-1-git-send-email-sumit.garg@linaro.org>
+ <CAFA6WYMN=na4Pxnu1LYRVAAZRdV==5EwU-Vcq-QkRb_jaLiPmw@mail.gmail.com>
+ <20200811135801.GA416071@kroah.com>
+ <CAFA6WYMN8i96rEZuHLnskB+4k0o=K9vF1_we83P04h2BSoGjmQ@mail.gmail.com>
+ <20200811145816.GA424033@kroah.com>
+ <CAD=FV=UD=cTn6jwpYS-C-=1ORd-4azZ8ZiBR6om++2sMS1nmMg@mail.gmail.com>
+ <CAFA6WYPBdOiVsKR_hSLpigN_1b9jimXKaqyRZjvKSx3xpAmLjA@mail.gmail.com>
+ <CAD=FV=WccmFRkV4UUTLSYR9+7210h00Si=nG4tRs3BBuweA6ng@mail.gmail.com>
+ <CAD=FV=V8UhQVQvcAp6XCmT3=6FYM=_zPELy4FTj4kMKUswaR8Q@mail.gmail.com>
+ <CAFA6WYPxieH6ZTa_BFdaLuiwbqAs6r7eKmxG7ci4XtyRONGN7g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYPxieH6ZTa_BFdaLuiwbqAs6r7eKmxG7ci4XtyRONGN7g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nothing prevent flush_cache_instruction() from behing writen in C.
+On Thu, Aug 13, 2020 at 02:55:12PM +0530, Sumit Garg wrote:
+> On Thu, 13 Aug 2020 at 05:38, Doug Anderson <dianders@chromium.org> wrote:
+> > On Wed, Aug 12, 2020 at 8:27 AM Doug Anderson <dianders@chromium.org> wrote:
+> > > One
+> > > last worry is that I assume that most people testing (and even
+> > > automated testing labs) will either always enable NMI or won't enable
+> > > NMI.  That means that everyone will be only testing one codepath or
+> > > the other and (given the complexity) the non-tested codepath will
+> > > break.
+> > >
+> 
+> The current patch-set only makes this NMI to work when debugger (kgdb)
+> is enabled which I think is mostly suitable for development
+> environments. So most people testing will involve existing IRQ mode
+> only.
+> 
+> However, it's very much possible to make NMI mode as default for a
+> particular serial driver if the underlying irqchip supports it but it
+> depends if we really see any production level usage of NMI debug
+> feature.
 
-Do it to improve readability and maintainability.
+The effect of this patch is not to make kgdb work from NMI it is to make
+(some) SysRqs work from NMI. I think that only allowing it to deploy for
+kgdb users is a mistake.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/misc_32.S   | 13 -------------
- arch/powerpc/mm/nohash/4xx.c    | 15 +++++++++++++++
- arch/powerpc/mm/nohash/Makefile |  1 +
- 3 files changed, 16 insertions(+), 13 deletions(-)
- create mode 100644 arch/powerpc/mm/nohash/4xx.c
+Having it deploy automatically for kgdb users might be OK but it seems
+sensible to make this feature available for other users too.
 
-diff --git a/arch/powerpc/kernel/misc_32.S b/arch/powerpc/kernel/misc_32.S
-index 4f4a31d9fdd0..87717966f5cd 100644
---- a/arch/powerpc/kernel/misc_32.S
-+++ b/arch/powerpc/kernel/misc_32.S
-@@ -268,19 +268,6 @@ _ASM_NOKPROBE_SYMBOL(real_writeb)
- 
- #endif /* CONFIG_40x */
- 
--
--/*
-- * Flush instruction cache.
-- */
--#ifdef CONFIG_4xx
--_GLOBAL(flush_instruction_cache)
--	lis	r3, KERNELBASE@h
--	iccci	0,r3
--	isync
--	blr
--EXPORT_SYMBOL(flush_instruction_cache)
--#endif
--
- /*
-  * Copy a whole page.  We use the dcbz instruction on the destination
-  * to reduce memory traffic (it eliminates the unnecessary reads of
-diff --git a/arch/powerpc/mm/nohash/4xx.c b/arch/powerpc/mm/nohash/4xx.c
-new file mode 100644
-index 000000000000..954c8aa42a32
---- /dev/null
-+++ b/arch/powerpc/mm/nohash/4xx.c
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * This file contains the routines for initializing the MMU
-+ * on the 4xx series of chips.
-+ */
-+
-+#include <asm/processor.h>
-+#include <asm/page.h>
-+#include <asm/cache.h>
-+
-+void flush_instruction_cache(void)
-+{
-+	iccci((void*)KERNELBASE);
-+	isync();
-+}
-diff --git a/arch/powerpc/mm/nohash/Makefile b/arch/powerpc/mm/nohash/Makefile
-index 0424f6ce5bd8..a7f7211b6373 100644
---- a/arch/powerpc/mm/nohash/Makefile
-+++ b/arch/powerpc/mm/nohash/Makefile
-@@ -4,6 +4,7 @@ ccflags-$(CONFIG_PPC64)	:= $(NO_MINIMAL_TOC)
- 
- obj-y				+= mmu_context.o tlb.o tlb_low.o
- obj-$(CONFIG_PPC_BOOK3E_64)  	+= tlb_low_64e.o book3e_pgtable.o
-+obj-$(CONFIG_4xx)		+= 4xx.o
- obj-$(CONFIG_40x)		+= 40x.o
- obj-$(CONFIG_44x)		+= 44x.o
- obj-$(CONFIG_PPC_8xx)		+= 8xx.o
--- 
-2.25.0
-
+Daniel.
