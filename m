@@ -2,167 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A2624327A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 04:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E91A243261
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 04:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgHMCZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 22:25:09 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:20081 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgHMCZH (ORCPT
+        id S1726658AbgHMCNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 22:13:51 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48592 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726605AbgHMCNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 22:25:07 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200813022504epoutp0420dc90287d97cc2f7b7dade922b75335~qsrQGNz2i2335623356epoutp04c
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 02:25:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200813022504epoutp0420dc90287d97cc2f7b7dade922b75335~qsrQGNz2i2335623356epoutp04c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1597285504;
-        bh=bBoSIYfYUVBe91z7Hl3yBvlXhwhzlVC2LnJY5UtikfE=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=s9iB4hk7yXizxTQtC9T5ImjEwFr9TW4T2/lS/JSMaBdzdD5eOBD9xlGIrt1BJ8zqV
-         p2Jfh2rCP8flZAu1TCPibyLeG4lxsl9S/DYn6o7UQ6lJTAONAldAFartLdm4zDKWZ4
-         fMuF2k11XzVUzUOxpfO1rkPVmVRlOvgAg1wv14PU=
-Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p1.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200813022503epcas1p1d9386e2dfbde1e0d35e9c397f0670723~qsrPo9Klz3219232192epcas1p1K;
-        Thu, 13 Aug 2020 02:25:03 +0000 (GMT)
-Mime-Version: 1.0
-Subject: Re: [PATCH v8 2/4] scsi: ufs: Introduce HPB feature
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <4a91d02c-488c-86cd-325c-5e0ad9addd0b@acm.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1239183618.61597285503620.JavaMail.epsvc@epcpadp1>
-Date:   Thu, 13 Aug 2020 11:13:09 +0900
-X-CMS-MailID: 20200813021309epcms2p3d87ce0c4c54389cc3d30b876684936d0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d
-References: <4a91d02c-488c-86cd-325c-5e0ad9addd0b@acm.org>
-        <231786897.01596705001840.JavaMail.epsvc@epcpadp1>
-        <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
-        <231786897.01596705302142.JavaMail.epsvc@epcpadp1>
-        <CGME20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d@epcms2p3>
+        Wed, 12 Aug 2020 22:13:50 -0400
+X-UUID: dfad2300fe9a44c3b23ad3781c03596b-20200813
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=aF1D+BCyiRCtqB/9T1GyAsWkEq1ttG2TVqo5h3JEkxo=;
+        b=lhd/2RrY8T0f6YKQIjm4brzBv6gAsEKFXZ5XX0tHceBMZOLPU0+mNhyrtBsWIxCc9HfwvRXRm3hOogf+C4nB6RInkLlfK3bYVsaFyv87lrTFFeMy30OU8Nugdgyhd/NvPD1pgLYQlfxJL9QvSYFkdrefIKPNBE8Q7SIb66tY8K4=;
+X-UUID: dfad2300fe9a44c3b23ad3781c03596b-20200813
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <chinwen.chang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 631092834; Thu, 13 Aug 2020 10:13:46 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 13 Aug 2020 10:13:45 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 13 Aug 2020 10:13:45 +0800
+From:   Chinwen Chang <chinwen.chang@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Michel Lespinasse <walken@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Steven Price <steven.price@arm.com>,
+        Song Liu <songliubraving@fb.com>,
+        Jimmy Assarsson <jimmyassarsson@gmail.com>,
+        Huang Ying <ying.huang@intel.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-fsdevel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Subject: [PATCH v2 0/2] Try to release mmap_lock temporarily in smaps_rollup
+Date:   Thu, 13 Aug 2020 10:13:28 +0800
+Message-ID: <1597284810-17454-1-git-send-email-chinwen.chang@mediatek.com>
+X-Mailer: git-send-email 1.9.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
+UmVjZW50bHksIHdlIGhhdmUgb2JzZXJ2ZWQgc29tZSBqYW5reSBpc3N1ZXMgY2F1c2VkIGJ5IHVu
+cGxlYXNhbnRseSBsb25nDQpjb250ZW50aW9uIG9uIG1tYXBfbG9jayB3aGljaCBpcyBoZWxkIGJ5
+IHNtYXBzX3JvbGx1cCB3aGVuIHByb2JpbmcgbGFyZ2UNCnByb2Nlc3Nlcy4gVG8gYWRkcmVzcyB0
+aGUgcHJvYmxlbSwgd2UgbGV0IHNtYXBzX3JvbGx1cCBkZXRlY3QgaWYgYW55b25lDQp3YW50cyB0
+byBhY3F1aXJlIG1tYXBfbG9jayBmb3Igd3JpdGUgYXR0ZW1wdHMuIElmIHllcywganVzdCByZWxl
+YXNlIHRoZQ0KbG9jayB0ZW1wb3JhcmlseSB0byBlYXNlIHRoZSBjb250ZW50aW9uLg0KDQpzbWFw
+c19yb2xsdXAgaXMgYSBwcm9jZnMgaW50ZXJmYWNlIHdoaWNoIGFsbG93cyB1c2VycyB0byBzdW1t
+YXJpemUgdGhlDQpwcm9jZXNzJ3MgbWVtb3J5IHVzYWdlIHdpdGhvdXQgdGhlIG92ZXJoZWFkIG9m
+IHNlcV8qIGNhbGxzLiBBbmRyb2lkIHVzZXMgaXQNCnRvIHNhbXBsZSB0aGUgbWVtb3J5IHVzYWdl
+IG9mIHZhcmlvdXMgcHJvY2Vzc2VzIHRvIGJhbGFuY2UgaXRzIG1lbW9yeSBwb29sDQpzaXplcy4g
+SWYgbm8gb25lIHdhbnRzIHRvIHRha2UgdGhlIGxvY2sgZm9yIHdyaXRlIHJlcXVlc3RzLCBzbWFw
+c19yb2xsdXANCndpdGggdGhpcyBwYXRjaCB3aWxsIGJlaGF2ZSBsaWtlIHRoZSBvcmlnaW5hbCBv
+bmUuDQoNCkFsdGhvdWdoIHRoZXJlIGFyZSBvbi1nb2luZyBtbWFwX2xvY2sgb3B0aW1pemF0aW9u
+cyBsaWtlIHJhbmdlLWJhc2VkIGxvY2tzLA0KdGhlIGxvY2sgYXBwbGllZCB0byBzbWFwc19yb2xs
+dXAgd291bGQgYmUgdGhlIGNvYXJzZSBvbmUsIHdoaWNoIGlzIGhhcmQgdG8NCmF2b2lkIHRoZSBv
+Y2N1cnJlbmNlIG9mIGFmb3JlbWVudGlvbmVkIGlzc3Vlcy4gU28gdGhlIGRldGVjdGlvbiBhbmQN
+CnRlbXBvcmFyeSByZWxlYXNlIGZvciB3cml0ZSBhdHRlbXB0cyBvbiBtbWFwX2xvY2sgaW4gc21h
+cHNfcm9sbHVwIGlzIHN0aWxsDQpuZWNlc3NhcnkuDQoNCkNoYW5nZSBzaW5jZSB2MToNCi0gSWYg
+Y3VycmVudCBWTUEgaXMgZnJlZWQgYWZ0ZXIgZHJvcHBpbmcgdGhlIGxvY2ssIGl0IHdpbGwgcmV0
+dXJuDQotIGluY29tcGxldGUgcmVzdWx0LiBUbyBmaXggdGhpcyBpc3N1ZSwgcmVmaW5lIHRoZSBj
+b2RlIGZsb3cgYXMNCi0gc3VnZ2VzdGVkIGJ5IFN0ZXZlLiBbMV0NCg0KWzFdIGh0dHBzOi8vbG9y
+ZS5rZXJuZWwub3JnL2xrbWwvYmY0MDY3NmUtYjE0Yi00NGNkLTc1Y2UtNDE5YzcwMTk0NzgzQGFy
+bS5jb20vDQoNCg0KQ2hpbndlbiBDaGFuZyAoMik6DQogIG1tYXAgbG9ja2luZyBBUEk6IGFkZCBt
+bWFwX2xvY2tfaXNfY29udGVuZGVkKCkNCiAgbW06IHByb2M6IHNtYXBzX3JvbGx1cDogZG8gbm90
+IHN0YWxsIHdyaXRlIGF0dGVtcHRzIG9uIG1tYXBfbG9jaw0KDQogZnMvcHJvYy90YXNrX21tdS5j
+ICAgICAgICB8IDU3ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLQ0KIGlu
+Y2x1ZGUvbGludXgvbW1hcF9sb2NrLmggfCAgNSArKysrDQogMiBmaWxlcyBjaGFuZ2VkLCA2MSBp
+bnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0p
 
-On 2020-08-06 02:11, Daejun Park wrote:
-> > +static void ufshpb_issue_hpb_reset_query(struct ufs_hba *hba)
-> > +{
-> > +    int err;
-> > +    int retries;
-> > +
-> > +    for (retries = 0; retries < HPB_RESET_REQ_RETRIES; retries++) {
-> > +        err = ufshcd_query_flag(hba, UPIU_QUERY_OPCODE_SET_FLAG,
-> > +                QUERY_FLAG_IDN_HPB_RESET, 0, NULL);
-> > +        if (err)
-> > +            dev_dbg(hba->dev,
-> > +                "%s: failed with error %d, retries %d\n",
-> > +                __func__, err, retries);
-> > +        else
-> > +            break;
-> > +    }
-> > +
-> > +    if (err) {
-> > +        dev_err(hba->dev,
-> > +            "%s setting fHpbReset flag failed with error %d\n",
-> > +            __func__, err);
-> > +        return;
-> > +    }
-> > +}
-> 
-> Please change the "break" into an early return, remove the last
-> occurrence "if (err)" and remove the final return statement.
-
-OK, I will.
-
-> 
-> > +static void ufshpb_check_hpb_reset_query(struct ufs_hba *hba)
-> > +{
-> > +    int err;
-> > +    bool flag_res = true;
-> > +    int try = 0;
-> > +
-> > +    /* wait for the device to complete HPB reset query */
-> > +    do {
-> > +        if (++try == HPB_RESET_REQ_RETRIES)
-> > +            break;
-> > +
-> > +        dev_info(hba->dev,
-> > +            "%s start flag reset polling %d times\n",
-> > +            __func__, try);
-> > +
-> > +        /* Poll fHpbReset flag to be cleared */
-> > +        err = ufshcd_query_flag(hba, UPIU_QUERY_OPCODE_READ_FLAG,
-> > +                QUERY_FLAG_IDN_HPB_RESET, 0, &flag_res);
-> > +        usleep_range(1000, 1100);
-> > +    } while (flag_res);
-> > +
-> > +    if (err) {
-> > +        dev_err(hba->dev,
-> > +            "%s reading fHpbReset flag failed with error %d\n",
-> > +            __func__, err);
-> > +        return;
-> > +    }
-> > +
-> > +    if (flag_res) {
-> > +        dev_err(hba->dev,
-> > +            "%s fHpbReset was not cleared by the device\n",
-> > +            __func__);
-> > +    }
-> > +}
-> 
-> Should "polling %d times" perhaps be changed into "attempt %d"?
-
-I will change it.
-
-> The "if (err)" statement may be reached without "err" having been
-> initialized. Please fix.
-
-OK, I will initialize err to 0.
-
-> Additionally, please change the do-while loop into a for-loop, e.g. as
-> follows:
-> 
->     for (try = 0; try < HPB_RESET_REQ_RETRIES; try++)
->         ...
-
-OK, I will change do-while to for-loop.
-
-Thanks,
-
-Daejun
