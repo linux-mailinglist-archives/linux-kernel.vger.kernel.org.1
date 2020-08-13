@@ -2,139 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E68E2438D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 12:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721F32438D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 12:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgHMKpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 06:45:40 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:37616 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726048AbgHMKpj (ORCPT
+        id S1726637AbgHMKqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 06:46:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726621AbgHMKqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 06:45:39 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2FE6B551;
-        Thu, 13 Aug 2020 12:45:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1597315536;
-        bh=uW9VG8L7uohIKIDyQFErTa9Bom9c0JitTWJGHjrtMBg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f4LKtUcfI19KJrA+6t0w9g7GZzxoDtN+AoYGLifVjEnd6+QVHofMU65o12GsHvWr4
-         pWNFBQQDoN5XWn9tkEDgWaT5RRU8cn6inf9/O3VY49f6lSYx1p0kLGwBsquqGT9VNk
-         BPgfZc4ZtUL/JGzGN0l0y0S9M/5yz1nCC6BJDQq8=
-Date:   Thu, 13 Aug 2020 13:45:22 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     crj <algea.cao@rock-chips.com>, jernej.skrabec@siol.net,
-        laurent.pinchart+renesas@ideasonboard.com, jonas@kwiboo.se,
-        airlied@linux.ie, kuankuan.y@gmail.com, narmstrong@baylibre.com,
-        hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, a.hajda@samsung.com,
-        tzimmermann@suse.de, jbrunet@baylibre.com,
-        linux-rockchip@lists.infradead.org, darekm@google.com,
-        sam@ravnborg.org, linux-arm-kernel@lists.infradead.org,
-        cychiang@chromium.org
-Subject: Re: [PATCH 4/6] drm/rockchip: dw_hdmi: Add vendor hdmi properties
-Message-ID: <20200813104522.GA6057@pendragon.ideasonboard.com>
-References: <20200812083120.743-1-algea.cao@rock-chips.com>
- <20200812083543.4231-1-algea.cao@rock-chips.com>
- <20200812093315.GE6057@pendragon.ideasonboard.com>
- <52cca26d-b2b3-22b2-f371-a8086f2e6336@rock-chips.com>
- <20200812133017.GJ6057@pendragon.ideasonboard.com>
- <20200813104228.096179e7@eldfell>
+        Thu, 13 Aug 2020 06:46:07 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AACC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 03:46:07 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597315565;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HCg1ZdtTl1KhAjawebiFvNnjllljAIdwgNvbFA5RkDM=;
+        b=bEywIbIK22XdO0ai4D1Bx5DPlNeBk5voSqr1vXsP7AVobytK6wgdxdlRVmMkzuluT+WZVx
+        MDloLbbbkcCw5CYBGSqNJnqOP8wLSBb/i1z9Pu72J2vywDadD+M24YBHPspCFrFRlvPekG
+        ht4wyZ3kWRvi0+eoeLZPIX9yFEn9oNmFg9L3tgIkYe3TwlyIkQYXx7vohIewPzrZjxYvMK
+        1RtPof3s4s5hVkx1bniz52OVM69jGptBpmwKGm0OwFJfTd8dfefh2BJbR9fZlgOsbGbDZw
+        tajT9V9wYYJLv6pX3PxRuB1fBjHLbFL268WOHVjZ5sHYR7LW6WcoSseCUxgGTw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597315565;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HCg1ZdtTl1KhAjawebiFvNnjllljAIdwgNvbFA5RkDM=;
+        b=XEDJQTTrOA+Ajl0PYX6L2bHeRYagwpHbpMD6GjEmX5RnhID6Q16IBfPaZLonVzbv8Bm8QM
+        1oIdgPsL0mAp4JDA==
+To:     Qianli Zhao <zhaoqianligood@gmail.com>, john.stultz@linaro.org,
+        sboyd@kernel.org
+Cc:     linux-kernel@vger.kernel.org, zhaoqianli@xiaomi.com
+Subject: Re: [PATCH] timer: mask unnecessary set of flags in do_init_timer
+In-Reply-To: <1596767378-27241-1-git-send-email-zhaoqianligood@gmail.com>
+References: <1596767378-27241-1-git-send-email-zhaoqianligood@gmail.com>
+Date:   Thu, 13 Aug 2020 12:46:05 +0200
+Message-ID: <87h7t6lt76.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200813104228.096179e7@eldfell>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 10:42:28AM +0300, Pekka Paalanen wrote:
-> On Wed, 12 Aug 2020 16:30:17 +0300 Laurent Pinchart wrote:
-> > On Wed, Aug 12, 2020 at 07:08:10PM +0800, crj wrote:
-> > > 在 2020/8/12 17:33, Laurent Pinchart 写道:  
-> > > > On Wed, Aug 12, 2020 at 04:35:43PM +0800, Algea Cao wrote:  
-> > > >> Introduce struct dw_hdmi_property_ops in plat_data to support
-> > > >> vendor hdmi property.
-> > > >>
-> > > >> Implement hdmi vendor properties color_depth_property and
-> > > >> hdmi_output_property to config hdmi output color depth and
-> > > >> color format.
-> > > >>
-> > > >> The property "hdmi_output_format", the possible value
-> > > >> could be:
-> > > >>           - RGB
-> > > >>           - YCBCR 444
-> > > >>           - YCBCR 422
-> > > >>           - YCBCR 420
-> > > >>
-> > > >> Default value of the property is set to 0 = RGB, so no changes if you
-> > > >> don't set the property.
-> > > >>
-> > > >> The property "hdmi_output_depth" possible value could be
-> > > >>           - Automatic
-> > > >>             This indicates prefer highest color depth, it is
-> > > >>             30bit on rockcip platform.
-> > > >>           - 24bit
-> > > >>           - 30bit
-> > > >> The default value of property is 24bit.
-> > > >>
-> > > >> Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
-> > > >> ---
-> > > >>
-> > > >>   drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c | 174 ++++++++++++++++++++
-> > > >>   include/drm/bridge/dw_hdmi.h                |  22 +++
-> > > >>   2 files changed, 196 insertions(+)
-> > > >>
-> > > >> diff --git a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
-> > > >> index 23de359a1dec..8f22d9a566db 100644
-> > > >> --- a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
-> > > >> +++ b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
-> > > >> @@ -52,6 +52,27 @@
-> > > >>   
-> > > >>   #define HIWORD_UPDATE(val, mask)	(val | (mask) << 16)
-> > > >>   
-> > > >> +/* HDMI output pixel format */
-> > > >> +enum drm_hdmi_output_type {
-> > > >> +	DRM_HDMI_OUTPUT_DEFAULT_RGB, /* default RGB */
-> > > >> +	DRM_HDMI_OUTPUT_YCBCR444, /* YCBCR 444 */
-> > > >> +	DRM_HDMI_OUTPUT_YCBCR422, /* YCBCR 422 */
-> > > >> +	DRM_HDMI_OUTPUT_YCBCR420, /* YCBCR 420 */
-> > > >> +	DRM_HDMI_OUTPUT_YCBCR_HQ, /* Highest subsampled YUV */
-> > > >> +	DRM_HDMI_OUTPUT_YCBCR_LQ, /* Lowest subsampled YUV */
-> > > >> +	DRM_HDMI_OUTPUT_INVALID, /* Guess what ? */
-> > > >> +};  
-> > > >
-> > > > Vendor-specific properties shouldn't use names starting with drm_ or
-> > > > DRM_, that's for the DRM core. But this doesn't seem specific to
-> > > > Rockchip at all, it should be a standard property. Additionally, new
-> > > > properties need to come with a userspace implementation showing their
-> > > > usage, in X.org, Weston, the Android DRM/KMS HW composer, or another
-> > > > relevant upstream project (a test tool is usually not enough).  
-> > > 
-> > > We use these properties only in Android HW composer, But we can't upstream
-> > > 
-> > > our HW composer code right now.  Can we use this properties as private 
-> > > property
-> > > 
-> > > and do not upstream HW composer for the time being?  
-> > 
-> > It's not my decision, it's a policy of the DRM subsystem to require an
-> > open implementation in userspace to validate all API additions.
-> 
-> Also read
-> https://www.kernel.org/doc/html/latest/gpu/drm-uapi.html#open-source-userspace-requirements
-> very carefully: it calls for a FOSS userspace project's proper upstream
-> to have reviewed and accepted the patches to use the new UAPI, but
-> those patches must NOT be MERGED at that time yet.
+Qianli Zhao <zhaoqianligood@gmail.com> writes:
 
-Correct. Many userspace projects wouldn't merge a patch before the
-kernel API is merged, so that would create a chicken and egg problem :-)
+Please start the first word after the colon with an upper case letter.
 
--- 
-Regards,
+> do_init_timer can specify flags of timer_list,
 
-Laurent Pinchart
+Please write do_init_timer() so it's entirely clear that this is about a
+function.
+
+> but this function does not expect to specify the CPU or idx.
+
+or idx does not mean anything unless someone looks at the
+code. Changelogs want to explain things so they can be understood
+without staring at the code.
+
+> If user invoking do_init_timer and specify CPU,
+> The result may not what we expected.
+
+Right. And which caller exactly hands in crappy flags?
+
+> E.g:
+> do_init_timer invoked in core2,and specify flags 0x1
+> final result flags is 0x3.If the specified CPU number
+> exceeds the actual number,more serious problems will happen
+
+More serious problems is not a really helpful technical explanation and
+0x3 does not make sense for a changelog reader either because it again
+requires to look up the code.
+
+>  	timer->entry.pprev = NULL;
+>  	timer->function = func;
+> -	timer->flags = flags | raw_smp_processor_id();
+> +	timer->flags = (flags & ~TIMER_BASEMASK & ~TIMER_ARRAYMASK) |
+> raw_smp_processor_id();
+
+If the caller hands in invalid flags then silently fixing them up is
+fundamentally wrong. So this wants to be:
+
+   if (WARN_ON(flags & ~TIMER_INIT_FLAGS))
+   	flags &= TIMER_INIT_FLAGS;
+
+and TIMER_INIT_FLAGS wants to be exactly the set of flags which are
+valid for being handed in by a caller, i.e.:
+
+      TIMER_DEFFERABLE, TIMER_PINNED, TIMER_IRQSAFE
+
+Guess what happens when the caller hands in TIMER_MIGRATING?
+
+If we do sanity checking then we do it correct and not just silently
+papering over the particular problem which you ran into.
+
+Thanks,
+
+        tglx
