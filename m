@@ -2,116 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19EC243CAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB93243CB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgHMPkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 11:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbgHMPkD (ORCPT
+        id S1726531AbgHMPlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 11:41:14 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:32258 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726835AbgHMPlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 11:40:03 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89F2C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 08:40:03 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id d14so5515466qke.13
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 08:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=K6SkAOrGKcjRY+yhyH0qCJ6Gsotdol6Tl8RV+rGqmCQ=;
-        b=mhfJ083GRlJUkPiwVXMO9T1daKwgJ43+ouGmjEel2lLAE5cShfg6XTgVErn12vdSgi
-         Pti3KERJIgMLjXfNqmJIJ5JkY36zA6jPoeIx6TDWSCDpRpVfw4r5KZOv+AvpMU/9PiNC
-         T3aMkbTbky8P02pmTRD6kPjG4gHDeOscNuo4johMQe84MbUfiNPx2Gfuuqmns1+fGtHN
-         O4DJzQ/VK/EmHkD7YOHM5RoLzhIejlHD7dJn2TgD0JkWDTBYDz/m4UEbv21Kb0l5fAM9
-         YXAvhZRSXrGz+SKlsvsf+s4JRjnLi7K86irYNkB8Rb70C9L+lIt+qPY9m6voSTbou2TB
-         exYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=K6SkAOrGKcjRY+yhyH0qCJ6Gsotdol6Tl8RV+rGqmCQ=;
-        b=KHQaJ2GaUQYIawt/Cmnp8kfiho2nmexuyc6xC06zHWCxC09ry2mdwv84kntZNm40CI
-         kMXWNSc2edwX4wqj3qV9WsIgK8HMr+2vYIY9R410II6mIqvdv0I1D1cmdXHiFAUi2hhK
-         f4LVsCZ+NnlA2GGJfUqpm5+7bMjkBgh8leKckzI2Iq6MnZ8RKRT7DBiDJJPOByIWc8fb
-         CRsB83akY4IBaql20hR+QgnrHf9DRrTrVi/w0iO2GZqB6LbBZyACsWbYc5CQZFVSgy5z
-         kF+T0lvNJiaMrVPXoX7VlMh28KrUUQSl3RovDmEQnkrnf9Vfq3yY8/Ms2kJM3rVXCwu5
-         wsiQ==
-X-Gm-Message-State: AOAM531N3TkwIe8UgA2pSWfqFv5ywvRARYUUKsnVlbswT2ENOkb7NvPv
-        gfslUpr8eL72bOLv8fZzodpWTA==
-X-Google-Smtp-Source: ABdhPJzO7FfjFRSvgKU9zDx0wbHBiRPRxQpL1y0Z0l7g0EYvAarRoJ7G+2qB0t4ccDiGe3UcWAo+xw==
-X-Received: by 2002:a05:620a:8c4:: with SMTP id z4mr5505141qkz.146.1597333202826;
-        Thu, 13 Aug 2020 08:40:02 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11d9::10a7? ([2620:10d:c091:480::1:8f88])
-        by smtp.gmail.com with ESMTPSA id w2sm5557765qkf.6.2020.08.13.08.40.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Aug 2020 08:40:01 -0700 (PDT)
-Subject: Re: [PATCH][v2] proc: use vmalloc for our kernel buffer
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     viro@ZenIV.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, kernel-team@fb.com,
-        willy@infradead.org
-References: <20200813145305.805730-1-josef@toxicpanda.com>
- <20200813153356.857625-1-josef@toxicpanda.com>
- <20200813153722.GA13844@lst.de>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <974e469e-e73d-6c3e-9167-fad003f1dfb9@toxicpanda.com>
-Date:   Thu, 13 Aug 2020 11:40:00 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        Thu, 13 Aug 2020 11:41:09 -0400
+X-UUID: b0b1ed1018204c9e9818be952cc602c3-20200813
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=OI2w0zxGU/a5MT+qrXCuXuPIjQEDPCiyv0ctdmKpaHw=;
+        b=kp1AtVkyCMTzGUlxGE4L9ySB9d6uSPYV+7jhuhZyHYlav46UoxZD4rY16TrodrEBIvtELm2lu6y5ODc2y/SS5fYkrk+AwfpeJTGQUjtQnJIiMDXZ2LmHWyfaRvczKUTsfJ1rvV2tCRJkcFL3VwLWgHnv1PXxJYWoarWNbr3HVq0=;
+X-UUID: b0b1ed1018204c9e9818be952cc602c3-20200813
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <jiaxin.yu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 1030081908; Thu, 13 Aug 2020 23:40:57 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31DR.mediatek.inc
+ (172.27.6.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 13 Aug
+ 2020 23:40:56 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 13 Aug 2020 23:40:56 +0800
+Message-ID: <1597333200.23246.68.camel@mhfsdcap03>
+Subject: Re: [PATCH v2 1/2] ASoC: mediatek: mt6359: add codec driver
+From:   Jiaxin Yu <jiaxin.yu@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     <matthias.bgg@gmail.com>, <robh+dt@kernel.org>, <tiwai@suse.com>,
+        <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <howie.huang@mediatek.com>,
+        <tzungbi@google.com>, <eason.yen@mediatek.com>,
+        <shane.chien@mediatek.com>
+Date:   Thu, 13 Aug 2020 23:40:00 +0800
+In-Reply-To: <20200812120537.GA5545@sirena.org.uk>
+References: <1597028754-7732-1-git-send-email-jiaxin.yu@mediatek.com>
+         <1597028754-7732-2-git-send-email-jiaxin.yu@mediatek.com>
+         <20200810185933.GI6438@sirena.org.uk>
+         <1597217353.23246.45.camel@mhfsdcap03>
+         <20200812120537.GA5545@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20200813153722.GA13844@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-TM-SNTS-SMTP: D514158544447E00469B94A50FFBB32CA73ED07B5A7FB226AF2A86D1D56A22B42000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/20 11:37 AM, Christoph Hellwig wrote:
-> On Thu, Aug 13, 2020 at 11:33:56AM -0400, Josef Bacik wrote:
->> Since
->>
->>    sysctl: pass kernel pointers to ->proc_handler
->>
->> we have been pre-allocating a buffer to copy the data from the proc
->> handlers into, and then copying that to userspace.  The problem is this
->> just blind kmalloc()'s the buffer size passed in from the read, which in
->> the case of our 'cat' binary was 64kib.  Order-4 allocations are not
->> awesome, and since we can potentially allocate up to our maximum order,
->> use vmalloc for these buffers.
->>
->> Fixes: 32927393dc1c ("sysctl: pass kernel pointers to ->proc_handler")
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->> ---
->> v1->v2:
->> - Make vmemdup_user_nul actually do the right thing...sorry about that.
->>
->>   fs/proc/proc_sysctl.c  |  6 +++---
->>   include/linux/string.h |  1 +
->>   mm/util.c              | 27 +++++++++++++++++++++++++++
->>   3 files changed, 31 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
->> index 6c1166ccdaea..207ac6e6e028 100644
->> --- a/fs/proc/proc_sysctl.c
->> +++ b/fs/proc/proc_sysctl.c
->> @@ -571,13 +571,13 @@ static ssize_t proc_sys_call_handler(struct file *filp, void __user *ubuf,
->>   		goto out;
->>   
->>   	if (write) {
->> -		kbuf = memdup_user_nul(ubuf, count);
->> +		kbuf = vmemdup_user_nul(ubuf, count);
-> 
-> Given that this can also do a kmalloc and thus needs to be paired
-> with kvfree shouldn't it be kvmemdup_user_nul?
-> 
+T24gV2VkLCAyMDIwLTA4LTEyIGF0IDEzOjA1ICswMTAwLCBNYXJrIEJyb3duIHdyb3RlOg0KPiBP
+biBXZWQsIEF1ZyAxMiwgMjAyMCBhdCAwMzoyOToxM1BNICswODAwLCBKaWF4aW4gWXUgd3JvdGU6
+DQo+ID4gT24gTW9uLCAyMDIwLTA4LTEwIGF0IDE5OjU5ICswMTAwLCBNYXJrIEJyb3duIHdyb3Rl
+Og0KPiA+ID4gT24gTW9uLCBBdWcgMTAsIDIwMjAgYXQgMTE6MDU6NTNBTSArMDgwMCwgSmlheGlu
+IFl1IHdyb3RlOg0KPiANCj4gPiA+ID4gK3ZvaWQgbXQ2MzU5X3NldF9wbGF5YmFja19ncGlvKHN0
+cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY21wbnQpDQo+ID4gPiA+ICt7DQo+ID4gPiA+ICsJc3Ry
+dWN0IG10NjM1OV9wcml2ICpwcml2ID0gc25kX3NvY19jb21wb25lbnRfZ2V0X2RydmRhdGEoY21w
+bnQpOw0KPiANCj4gPiA+IFdoYXQgYXJlIHRoZXNlLCBzaG91bGQgdGhleSBub3QgYmUgbWFuYWdl
+ZCB0aHJvdWdoIGdwaW9saWIgYW5kL29yDQo+ID4gPiBwaW5jdHJsPw0KPiANCj4gPiBUaGVzZSBh
+cmUgdGhlIGZ1bmN0aW9ucyB0aGF0IGNvbnRyb2wgdGhlIG11eCBvZiBpbnB1dCBvciBvdXRwdXQN
+Cj4gPiBzaWduYWwuIEkgcmVmZXIgdG8gdGhlIG90aGVyIGNvZGVjIGRyaXZlcnMsIG1vc3Qgb2Yg
+dGhlbSBhcmUgbWFuaXB1bGF0ZQ0KPiA+IHRoZSByZWdzIGluIHRoZWlyIGNvZGVjIGRyaXZlcnMg
+YWxzby4gTWF5YmUgaXQncyBlYXNpZXIgdG8gY29udHJvbD8NCj4gDQo+IFRoZXNlIGZ1bmN0aW9u
+cyBhcmUgZXhwb3J0ZWQgZm9yIG90aGVyIGRyaXZlcnMgdG8gdXNlIHJhdGhlciB0aGFuDQo+IHNv
+bWV0aGluZyBkb25lIGludGVybmFsbHkgYnkgdGhlIGRyaXZlciAtIGlmIHRoaXMgd2VyZSBpbnRl
+cm5hbCB0byB0aGUNCj4gZHJpdmVyIGl0J2Qgbm90IGJlIGEgYmlnIGRlYWwgYnV0IHdoZW4gaXQn
+cyBmb3IgdXNlIGJ5IGFub3RoZXIgZHJpdmVyDQo+IGl0J2QgYmUgYmV0dGVyIHRvIGdvIHRocm91
+Z2ggc3RhbmRhcmQgaW50ZXJmYWNlcy4NCj4gDQoNCkNhbiB3ZSBtb3ZlIHRoaXMgcGFydCBvZiB0
+aGUgb3BlcmF0aW9uIHRvIHRoZSBjb2RlYyBkYWkgZHJpdmVyIG9wcywgc3VjaA0KYXMgLnN0YXJ0
+dXAgYW5kIC5zaHV0ZG93bj8gQmVjYXVzZSBvcmlnaW5hbGx5IHRoZXNlIGZ1bmN0aW9ucyBhcmUN
+CmV4cG9ydGVkIHRvIG1hY2hpbmUgZHJpdmVyJ3MgZGFpX2xpbmsgLnN0YXJ0dXAgYW5kIC5zaHV0
+ZG93biBvcHMuDQoNCj4gPiA+ID4gK2ludCBtdDYzNTlfbXRrYWlmX2NhbGlicmF0aW9uX2VuYWJs
+ZShzdHJ1Y3Qgc25kX3NvY19wY21fcnVudGltZSAqcnRkKQ0KPiA+ID4gPiArew0KPiANCj4gPiA+
+ID4gK0VYUE9SVF9TWU1CT0xfR1BMKG10NjM1OV9tdGthaWZfY2FsaWJyYXRpb25fZW5hYmxlKTsN
+Cj4gDQo+ID4gPiBXaHkgaXMgdGhpcyBleHBvcnRlZD8NCj4gDQo+ID4gVGhpcyBmdW5jdGlvbiBp
+cyBleHBvcnRlZCB0byBtYWNoaW5lIGRyaXZlciB0byBkbyBjYWxpYnJhdGlvbiB3aGVuDQo+ID4g
+cmVnaXN0ZXJpbmcuIFRoZSBpbnRlcmZhY2UgYmV0d2VlbiBNVDYzNTkgYW5kIE1USyBTb0MgaXMg
+YSBzcGVjaWFsDQo+ID4gaW50ZXJmYWNlIHRoYXQgbmFtZWQgTVRLQUlGLiBUaGVyZWZvcmUsIGlm
+IE1UNjM1OSBpcyB0byBiZSB1c2VkDQo+ID4gbm9ybWFsbHksIGl0IG5lZWRzIHRvIHJlbHkgb24g
+dGhlIHBsYXRmb3JtIGZvciBjYWxpYnJhdGlvbiB3aGVuDQo+ID4gcmVnaXN0ZXJpbmcuDQo+IA0K
+PiBTbyB0aGlzIG5lZWRzIHRoZSBTb0MgdG8gZG8gc29tZXRoaW5nIGFzIHBhcnQgb2YgY2FsbGli
+cmF0aW9uPw0KPiANCg0KWWVzLCB0aGUgc2lkZSBvZiBNVEtBSUYgaW4gU29DIHBhcnQgbmFtZWQg
+YWRkYSwgd2UgbmVlZCBjb25maWcgaXQgYmVmb3JlDQpjYWxpYnJhdGlvbi4gV2Ugd2lsbCBhbHNv
+IHVwc3RyZWFtIG1hY2hpbmUvcGxhdGZvcm0gZHJpdmVyIHRoYXQgdXNlIHRoaXMNCmNvZGVjIGRy
+aXZlciBsYXRlci4NCg0KPiA+ID4gPiArCXN3aXRjaCAoZXZlbnQpIHsNCj4gPiA+ID4gKwljYXNl
+IFNORF9TT0NfREFQTV9QUkVfUE1VOg0KPiA+ID4gPiArCQlwcml2LT5kZXZfY291bnRlcltkZXZp
+Y2VdKys7DQo+ID4gPiA+ICsJCWlmIChwcml2LT5kZXZfY291bnRlcltkZXZpY2VdID4gMSkNCj4g
+PiA+ID4gKwkJCWJyZWFrOwkvKiBhbHJlYWR5IGVuYWJsZWQsIGRvIG5vdGhpbmcgKi8NCj4gPiA+
+ID4gKwkJZWxzZSBpZiAocHJpdi0+ZGV2X2NvdW50ZXJbZGV2aWNlXSA8PSAwKQ0KPiANCj4gPiA+
+IFdoeSBhcmUgd2UgZG9pbmcgYWRkaXRpb25hbCByZWZjb3VudGluZyBvbiB0b3Agb2Ygd2hhdCBE
+QVBNIGlzIGRvaW5nPw0KPiA+ID4gVGhpcyBzZWVtcyBsaWtlIHRoZXJlIHNob3VsZCBiZSBhdCBs
+ZWFzdCBvbmUgd2lkZ2V0IHJlcHJlc2VudGluZyB0aGUNCj4gPiA+IHNoYXJlZCBiaXRzIG9mIHRo
+ZSBhdWRpbyBwYXRoLg0KPiANCj4gPiBXZSBoYXZlICJIUEwgTXV4IiBhbmQgIkhQUiBNdXgiLCB0
+aGVyZSB3aWxsIGJlIHR3byBwYXRocyBlbmFibGVkIHdoZW4NCj4gPiBwbGF5YmFjayB0aHJvdWgg
+SFAuIEJ1dCBhY3R1YWxseSB0aGV5IHNoYXJlIHRoZSBzYW1lIGNvbnRyb2wgc2VxdWVuY2VzLg0K
+PiA+IFNvIGluIG9yZGVyIHRvIHByZXZlbnQgc2V0dGluZyBpdCBvbmUgbW9yZSB0aW1lIHdlIGRv
+IGFkZGl0aW9uYWwNCj4gPiByZWZjb3V0aW5nLg0KPiANCj4gVGhhdCBzb3VuZHMgbGlrZSB5b3Ug
+c2hvdWxkIGp1c3QgaGF2ZSBvbmUgb3V0cHV0IHBhdGggZGVmaW5lZCBpbiBEQVBNDQo+IGFuZCBt
+ZXJnZSB0aGUgbGVmdCBhbmQgcmlnaHQgc2lnbmFscyB0b2dldGhlciByYXRoZXIgdGhhbiBtYWlu
+dGFpbmluZw0KPiB0aGVtIHNlcGFyYXRlbHkuDQo+IA0KDQpZZXMsIGl0J3Mgd291bGQgYmV0dGVy
+IGlmIHRoZXkgYXJlIGNvbWJpbmVkIGludG8gb25lIG1peGVyIGNvbnRyb2wgdGhhdA0KbmFtZWQg
+IkhQIE11eCIuDQoNCj4gPiA+ID4gKwkvKiBocCBnYWluIGN0bCBkZWZhdWx0IGNob29zZSBaQ0Qg
+Ki8NCj4gPiA+ID4gKwlwcml2LT5ocF9nYWluX2N0bCA9IEhQX0dBSU5fQ1RMX1pDRDsNCj4gPiA+
+ID4gKwlocF9nYWluX2N0bF9zZWxlY3QocHJpdiwgcHJpdi0+aHBfZ2Fpbl9jdGwpOw0KPiANCj4g
+PiA+IFdoeSBub3QgdXNlIHRoZSBoYXJkd2FyZSBkZWZhdWx0Pw0KPiANCj4gPiBXZSBoYXZlIHR3
+byB3YXlzIHRvIGNvbnRyb2wgdGhlIHZvbHVtZSwgdGhlcmUgaXMgdG8gc2VsZWN0IFpDRC4gQmVj
+YXVzZQ0KPiA+IHRoZSBvdGhlciBvbmUgaXQgbm90IG9mdGVuIHVzZWQsIFpDRCBpcyB1c2VkIGJ5
+IGRlZmF1bHQuIA0KPiANCj4gV2h5IG5vdCBqdXN0IGxldCB0aGUgdXNlciBwaWNrIGF0IHJ1bnRp
+bWU/DQo+IA0KDQpGb3IgYW5vdGhlciBhZGp1c3RtZW50IG1ldGhvZCwgd2UgZGlkbid0IHVwc3Ry
+ZWFtIGl0LCBzbyBvbmx5IFpDRA0KcmVzZXJ2ZWQuIEFuZCB0aGUgaGFyZHdhcmUgZGVmYXVsdCBz
+ZXR0aW5nIGlzIFpDRCwgc28gd2UgY2FuIHJlbW92ZWQNCnRoZXNlIGxpbmVzLg0KDQo+ID4gPiA+
+ICsJcmV0ID0gcmVndWxhdG9yX2VuYWJsZShwcml2LT5hdmRkX3JlZyk7DQo+ID4gPiA+ICsJaWYg
+KHJldCkgew0KPiA+ID4gPiArCQlkZXZfZXJyKHByaXYtPmRldiwgIiVzKCksIGZhaWxlZCB0byBl
+bmFibGUgcmVndWxhdG9yIVxuIiwNCj4gPiA+ID4gKwkJCV9fZnVuY19fKTsNCj4gPiA+ID4gKwkJ
+cmV0dXJuIHJldDsNCj4gPiA+ID4gKwl9DQo+IA0KPiA+ID4gUGVyaGFwcyBtYWtlIHRoaXMgYSBE
+QVBNIHdpZGdldD8NCj4gDQo+ID4gInZhdWQxOCIgbmVlZHMgdG8gYmUgYWx3YXlzIG9uIHNvIHdl
+IGVuYWJsZSBpdCB3aGVuIGNvZGVjIHByb2JlLg0KPiANCj4gSWYgaXQgaXMganVzdCBzdXBwb3Nl
+ZCB0byBiZSBsZWZ0IG9uIGFsbCB0aGUgdGltZSBpdCdzIGJldHRlciB0byBkbyB0aGlzDQo+IGlu
+IHRoZSBtYWluIGRldmljZSBtb2RlbCBwcm9iZSByYXRoZXIgdGhhbiB0aGUgY29tcG9uZW50IHBy
+b2JlLiAgVGhlDQo+IGNvbXBvbmVudCBwcm9iZSBzaG91bGQgdXN1YWxseSBvbmx5IGJlIHVzZWQg
+Zm9yIHRoaW5ncyB0aGF0IG5lZWQgdGhlDQo+IHJlc3Qgb2YgdGhlIGNhcmQgdG8gYmUgdGhlcmUu
+DQoNCk9rLCBJIHdpbGwgY29ycmVjdCBpdC4NCg0K
 
-There's an existing vmemdup_user that does kvmalloc, so I followed the existing 
-naming convention.  Do you want me to change them both?  Thanks,
-
-Josef
