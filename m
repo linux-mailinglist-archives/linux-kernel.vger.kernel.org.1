@@ -2,60 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C370243AE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 15:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54912243AF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 15:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726224AbgHMNj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 09:39:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:54718 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726053AbgHMNj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 09:39:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81F211063;
-        Thu, 13 Aug 2020 06:39:55 -0700 (PDT)
-Received: from [10.37.8.11] (unknown [10.37.8.11])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA7B63F6CF;
-        Thu, 13 Aug 2020 06:39:53 -0700 (PDT)
-Subject: Re: [PATCH v2] coresight: etm4x: Add Support for HiSilicon ETM device
-To:     liuqi115@huawei.com, gregkh@linuxfoundation.org,
-        mathieu.poirier@linaro.org, mike.leach@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com
-References: <1597323562-3706-1-git-send-email-liuqi115@huawei.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <aa4ac117-c378-5b2c-c685-6ed3d1c6ffb9@arm.com>
-Date:   Thu, 13 Aug 2020 14:44:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1726564AbgHMNqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 09:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgHMNqB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 09:46:01 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC002C061383
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 06:46:00 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id 88so5356944wrh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 06:46:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+mDarYxBbq/J7Ixc+CG3XEZjLyzyzKfnJvqheYjMPSo=;
+        b=XYEFqrb5M5fB90DCMr82s6xu+3kUi6clBH3J28tKhMKeygyzSyUtxHNkRA/aXIPrip
+         /KqR/1taagrKL2diCV5inDH2lOvvXlLdeLhm3SxNslPAp9BnkdXdUkeaPxLrV07LMk8F
+         vnJEQrP2qAqie3vzkghqQtRDLvf8N2RATLMESMuSYNxOAendWUG/PVRbBlTNmYpRunj2
+         NqA9kyuj7qTxop4DFEjiMJUfkzt8sIEUFt/eCzfIzJYShJ8cI35gx4jmzRgqBK4FEbgP
+         nb9ccd1ky7aEbw2chQw5x5eD/J1I23/yWnTg2P0J1tgAo2d2umAFUtxPbYPA9gWBniYm
+         b7hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+mDarYxBbq/J7Ixc+CG3XEZjLyzyzKfnJvqheYjMPSo=;
+        b=ki2svpj227/M4yldmladXo4Ta07DIPRPzbZi0HbcH7OJGFlZRq8YRIUENjOG5rshZZ
+         Ts4FYzg4kW/gj7R5vyKzttabo5XfeKmOYYCuX+kuiDIxQUO/7s/iGETtT0O91SgzuNvr
+         NdkNtI0U4jQyuiD7/8YrRCFLw92L7C0ZJnlFvCsUZBImsJgMUxWx/93VIkf8ovdKv4Nu
+         grbRhTMi2hI7nDGboO1HSnObTGbe0mUQgFZpEaf4SveG2dnfQt6Ghw6jXnvWvMjRO4KQ
+         XZuqdI/+Ge8pbQamaQjDnOUYY91mX4S4wqfPM9seoid6sN/WBu9AGeSiATD1KZWdBVjU
+         zKXA==
+X-Gm-Message-State: AOAM532zmOr/i1fLFOY0d0t0cBeec9NOZpRsdMu2QUpNicwNPoUj398P
+        pfl/YUZXOwYiNE9znzc/EC6btA==
+X-Google-Smtp-Source: ABdhPJx7xfjEhBxs/ZAYptGT+NyxCdP60vku9IappFsc1k/bm/potYSblfH9oTAcEG9YnIt13D4dGw==
+X-Received: by 2002:adf:ab46:: with SMTP id r6mr4167024wrc.260.1597326359282;
+        Thu, 13 Aug 2020 06:45:59 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id d14sm10603833wre.44.2020.08.13.06.45.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Aug 2020 06:45:57 -0700 (PDT)
+Date:   Thu, 13 Aug 2020 14:45:53 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Alexandru Stan <amstan@chromium.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-pwm@vger.kernel.org,
+        linux-fbdev@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: Re: [PATCH 2/3] backlight: pwm_bl: Artificially add 0% during
+ interpolation
+Message-ID: <20200813134553.2hykfvqjtgr4e2pl@holly.lan>
+References: <20200721042522.2403410-1-amstan@chromium.org>
+ <20200720212502.2.Iab4d2192e4cf50226e0a58d58df7d90ef92713ce@changeid>
+ <20200807082113.GI6419@phenom.ffwll.local>
 MIME-Version: 1.0
-In-Reply-To: <1597323562-3706-1-git-send-email-liuqi115@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200807082113.GI6419@phenom.ffwll.local>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/13/2020 01:59 PM, Qi Liu wrote:
-> Add ETMv4 periperhal ID for HiSilicon Hip08 and Hip09 platform. Hip08
-> contains ETMv4.2 device and Hip09 contains ETMv4.5 device.
+On Fri, Aug 07, 2020 at 10:21:13AM +0200, daniel@ffwll.ch wrote:
+> On Mon, Jul 20, 2020 at 09:25:21PM -0700, Alexandru Stan wrote:
+> > Some displays need the low end of the curve cropped in order to make
+> > them happy. In that case we still want to have the 0% point, even though
+> > anything between 0% and 5%(example) would be skipped.
+> > 
+> > Signed-off-by: Alexandru Stan <amstan@chromium.org>
+> > ---
+> > 
+> >  drivers/video/backlight/pwm_bl.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/drivers/video/backlight/pwm_bl.c b/drivers/video/backlight/pwm_bl.c
+> > index 5193a72305a2..b24711ddf504 100644
+> > --- a/drivers/video/backlight/pwm_bl.c
+> > +++ b/drivers/video/backlight/pwm_bl.c
+> > @@ -349,6 +349,14 @@ static int pwm_backlight_parse_dt(struct device *dev,
+> >  			/* Fill in the last point, since no line starts here. */
+> >  			table[x2] = y2;
+> >  
+> > +			/*
+> > +			 * If we don't start at 0 yet we're increasing, assume
+> > +			 * the dts wanted to crop the low end of the range, so
+> > +			 * insert a 0 to provide a display off mode.
+> > +			 */
+> > +			if (table[0] > 0 && table[0] < table[num_levels - 1])
+> > +				table[0] = 0;
 > 
-> Signed-off-by: Qi Liu <liuqi115@huawei.com>
-> ---
->   drivers/hwtracing/coresight/coresight-etm4x.c | 2 ++
->   1 file changed, 2 insertions(+)
+> Isn't that what the enable/disable switch in backlights are for? There's
+> lots of backligh drivers (mostly the firmware variety) where setting the
+> backlight to 0 does not shut it off, it's just the lowest setting.
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
-> index 6d7d216..7797a57 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x.c
-> @@ -1587,6 +1587,8 @@ static const struct amba_id etm4_ids[] = {
->   	CS_AMBA_UCI_ID(0x000bb805, uci_id_etm4),/* Qualcomm Kryo 4XX Cortex-A55 */
->   	CS_AMBA_UCI_ID(0x000bb804, uci_id_etm4),/* Qualcomm Kryo 4XX Cortex-A76 */
->   	CS_AMBA_UCI_ID(0x000cc0af, uci_id_etm4),/* Marvell ThunderX2 */
-> +	CS_AMBA_UCI_ID(0x000b6d01, uci_id_etm4),/* HiSilicon-Hip08 */
-> +	CS_AMBA_UCI_ID(0x000b6d02, uci_id_etm4),/* HiSilicon-Hip09 */
+> But I've not been involved in the details of these discussions.
 
-Acked-by: Suzuki K Poulose <suzuki.oulose@arm.com>
+It's been a long standing complaint that the backlight drivers are not
+consistent w.r.t. whether 0 means off or lowest. The most commonly used
+backlights (ACPI in particular) do not adopt 0 means off but lots of
+specific drivers do.
+
+IMHO what is "right" depends on the display technology. For displays
+that are essentially black when the backlight is off and become
+difficult or impossible to read I'm a little dubious about standardizing
+on zero means off. There are situations when zero means off
+does make sense however. For example front-lit or transflexive displays
+are readable when the "backlight" is off and on these displays it would
+make sense.
+
+
+Daniel.
