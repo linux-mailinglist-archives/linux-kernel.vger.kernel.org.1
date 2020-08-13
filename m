@@ -2,72 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF10A243930
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B6D243933
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbgHMLOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 07:14:35 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:2831 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726568AbgHMLO3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 07:14:29 -0400
-X-UUID: 5e35a78db22944ffbaf6613ebd1cd735-20200813
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=+eK+7a9oUt+gCi+OClb3sCo/w04UAPvGt6ggiOIBy5Y=;
-        b=VnEuwXkh79pfUlcx6QEk2FIj88mSm5hdziv6mkeygQiB9bXlCyXME1pJMWX5Bqj7+lvioWeZoJTzQ4jV2u9qfnpBL21qZd6omRiraFQt9+UYUIRLnKRUkFIHlP3m1c8OBRltSC2z+R/A/tvSMfdEo8s7yFOBDC4IyLKBdbbs9XU=;
-X-UUID: 5e35a78db22944ffbaf6613ebd1cd735-20200813
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
-        (envelope-from <hanks.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1151618276; Thu, 13 Aug 2020 19:14:25 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 13 Aug 2020 19:14:22 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 13 Aug 2020 19:14:23 +0800
-From:   Hanks Chen <hanks.chen@mediatek.com>
-To:     Sean Wang <sean.wang@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, CC Hwang <cc.hwang@mediatek.com>,
-        sin_jieyang <sin_jieyang@mediatek.com>,
-        Hanks Chen <hanks.chen@mediatek.com>
-Subject: [PATCH] pinctrl: mediatek: check mtk_is_virt_gpio input parameter
-Date:   Thu, 13 Aug 2020 19:14:20 +0800
-Message-ID: <1597317260-24348-1-git-send-email-hanks.chen@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
+        id S1726735AbgHMLPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 07:15:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60822 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726100AbgHMLPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 07:15:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C4035B700;
+        Thu, 13 Aug 2020 11:15:28 +0000 (UTC)
+Date:   Thu, 13 Aug 2020 13:15:05 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, paulmck@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200813111505.GG9477@dhcp22.suse.cz>
+References: <20200811210931.GZ4295@paulmck-ThinkPad-P72>
+ <874kp87mca.fsf@nanos.tec.linutronix.de>
+ <20200813075027.GD9477@dhcp22.suse.cz>
+ <20200813095840.GA25268@pc636>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200813095840.GA25268@pc636>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Y2hlY2sgbXRrX2lzX3ZpcnRfZ3BpbyBpbnB1dCBwYXJhbWV0ZXIsDQp2aXJ0dWFsIGdwaW8gbmVl
-ZCB0byBzdXBwb3J0IGVpbnQgbW9kZS4NCg0KYWRkIGVycm9yIGhhbmRsZXIgZm9yIHRoZSBrbyBj
-YXNlDQp0byBmaXggdGhpcyBib290IGZhaWw6DQpwYyA6IG10a19pc192aXJ0X2dwaW8rMHgyMC8w
-eDM4IFtwaW5jdHJsX210a19jb21tb25fdjJdDQpsciA6IG10a19ncGlvX2dldF9kaXJlY3Rpb24r
-MHg0NC8weGIwIFtwaW5jdHJsX3BhcmlzXQ0KDQpGaXhlczogZWRkNTQ2NDY1MDAyICgicGluY3Ry
-bDogbWVkaWF0ZWs6IGF2b2lkIHZpcnR1YWwgZ3BpbyB0cnlpbmcgdG8gc2V0IHJlZyIpDQpTaW5n
-ZWQtb2ZmLWJ5OiBzaW5famlleWFuZyA8c2luX2ppZXlhbmdAbWVkaWF0ZWsuY29tPg0KU2lnbmVk
-LW9mZi1ieTogSGFua3MgQ2hlbiA8aGFua3MuY2hlbkBtZWRpYXRlay5jb20+DQotLS0NCiBkcml2
-ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvcGluY3RybC1tdGstY29tbW9uLXYyLmMgfCA0ICsrKysNCiAx
-IGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3Bp
-bmN0cmwvbWVkaWF0ZWsvcGluY3RybC1tdGstY29tbW9uLXYyLmMgYi9kcml2ZXJzL3BpbmN0cmwv
-bWVkaWF0ZWsvcGluY3RybC1tdGstY29tbW9uLXYyLmMNCmluZGV4IGM1M2UyYzM5MWUzMi4uMjdh
-YjljNTEyYWUxIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9waW5jdHJsL21lZGlhdGVrL3BpbmN0cmwt
-bXRrLWNvbW1vbi12Mi5jDQorKysgYi9kcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvcGluY3RybC1t
-dGstY29tbW9uLXYyLmMNCkBAIC0yNTksNiArMjU5LDEwIEBAIGJvb2wgbXRrX2lzX3ZpcnRfZ3Bp
-byhzdHJ1Y3QgbXRrX3BpbmN0cmwgKmh3LCB1bnNpZ25lZCBpbnQgZ3Bpb19uKQ0KIA0KIAlkZXNj
-ID0gKGNvbnN0IHN0cnVjdCBtdGtfcGluX2Rlc2MgKikmaHctPnNvYy0+cGluc1tncGlvX25dOw0K
-IA0KKwkvKiBpZiB0aGUgR1BJTyBpcyBub3Qgc3VwcG9ydGVkIGZvciBlaW50IG1vZGUgKi8NCisJ
-aWYgKGRlc2MtPmVpbnQuZWludF9tID09IEVJTlRfTkEpDQorCQlyZXR1cm4gdmlydF9ncGlvOw0K
-Kw0KIAlpZiAoZGVzYy0+ZnVuY3MgJiYgIWRlc2MtPmZ1bmNzW2Rlc2MtPmVpbnQuZWludF9tXS5u
-YW1lKQ0KIAkJdmlydF9ncGlvID0gdHJ1ZTsNCiANCi0tIA0KMi4xOC4wDQo=
+On Thu 13-08-20 11:58:40, Uladzislau Rezki wrote:
+[...]
+> Sorry for jumping in. We can rely on preemptable() for sure, if CONFIG_PREEMPT_RT
+> is enabled, something like below:
+> 
+> if (IS_ENABLED_RT && preemptebale())
 
+Sure. I thought this was an RT specific thing that would be noop
+otherwise.
+
+> Also i have a question about pcp-lists. Can we introduce and use all allowed 
+> MIGRATE_PCPTYPES? If called with GFP_RT_SAFE? If not please elaborate.
+
+Yes we can. This depends on the provided gfp_mask. Many gfp flags will
+be meaningless for such a context but essentially all we care about is
+that ((gfp_mask & __GFP_RECLAIM) == GFP_RT_SAFE) for the checking
+purpose. We can sort out all these details if this is decided to be the
+right way to do. My (pseudo) patch was mostly to show the direction I've
+had in mind for easier further discussion.
+
+-- 
+Michal Hocko
+SUSE Labs
