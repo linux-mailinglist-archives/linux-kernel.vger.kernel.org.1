@@ -2,129 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3448F243967
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D399B243968
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgHMLeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 07:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43468 "EHLO
+        id S1726531AbgHMLhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 07:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgHMLd7 (ORCPT
+        with ESMTP id S1726131AbgHMLg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 07:33:59 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C05C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:33:58 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id g3so3134384ybc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:33:58 -0700 (PDT)
+        Thu, 13 Aug 2020 07:36:59 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDFEC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:36:58 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id t6so2640453pjr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:36:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=/KnIiWMvMcdCBpsG+OVuDQeKNXTaq/KhRb7ZPYMTP80=;
-        b=Vf6WmdVo9zG7yGrlKF40wtwYk4eTslKjZ7p/nOFAetZQf7iuQTFAaX2OFPpvIpdpn3
-         dRk5v4MGi1HIpfpt4kSCm/DxvzfsHpQXJ0VEWU1dRF+Xh3iQQ7B6CgjsChoiCGs6HUI/
-         BVx2qn2Y1gzEW9S1mXsFyi+n8nkSY1Fct+1OzOKzWdswJf++FXiwPDkPSvULYniqRZTk
-         YHdmT/M8gQzorJhKg7a6LSKtFM09fCx7PFedAY2EtI5BPJdFIpr8/vWVzbiRfKTTpOIg
-         SvG6/PfzOimDZ93CRylVkbYf5T7gobjVc/6vVgwEl1r8n8UhO0ZpsALcWOmTzPw5yEK7
-         K8tA==
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=cq63KBO13gundOWm0DnnKR0w6Etgxfdr2x+dttCqZq8=;
+        b=m/ksBGzHrOcc4NZUkxtAB+W7PtLWrdjKHFGT9qrB2dB+WN3dhp7ywc2GU7e2bkI37b
+         4qCaYOjM1lN52lSOUYBFrFYEH2cRBVfBD+rHbDsvUtfEu3qifAqhhkhoOSjOPXrmOZgs
+         H0j1aYlcnVM0TlZLKkwS4GDmQsVRHtZccQInA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=/KnIiWMvMcdCBpsG+OVuDQeKNXTaq/KhRb7ZPYMTP80=;
-        b=WMaLhNer3FREJMedXChJMejHBXgTOHjvCiAWDNSDWc9vbXeR61c26CyKMGFyFZhbzX
-         bop1bs0L4QJlHH8mT4/+ecovf90qTeH0ekj0OkXtdwxRQaM2SIVQvy5xUFr7SDzXUkI4
-         Be53Vf1R2egUq5Cy4DydSZyaPvi5i9jtI4oXVgQLb1UVnuwtpHijVALYny05rrpq0P6h
-         hP488Rie+fQCjIWuCXhx/vcdMGauVkGJ3myWNDD/XLDBEsLm1lrLznOHYjz8HE2dtTcA
-         H2pynn/P5KLT5+2cCSw/8q0YcNCk0GrqUD99rsGa8ujCHIOfKxVp6ANU4zBhBTJk7XSy
-         yNig==
-X-Gm-Message-State: AOAM530b+VPEuoZb1lNkbyHaWEZ77uip2qpyB8RrTzCu9LMPaQqlIqKn
-        qTv1YPq9uDjs/NkPLplWirBMy3Xk/i0LS5GQ7JE=
-X-Google-Smtp-Source: ABdhPJx1g4i4yUdmwZUSraMAigMi+NN36fAyXQOQ4QwSYDFWoBmUCMxYjtWbv1yrCcn6CmgfUs2mppMJ/OW9494nnFM=
-X-Received: by 2002:a25:9904:: with SMTP id z4mr6062407ybn.150.1597318438043;
- Thu, 13 Aug 2020 04:33:58 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=cq63KBO13gundOWm0DnnKR0w6Etgxfdr2x+dttCqZq8=;
+        b=jAFbSR5pJsQe/ixS2ozlTrrt6XKH9C4Zcg+dzbC5rD+dlfirMTIEJWFA5xK81HSiCI
+         NCIX7tw2SjMW6n94m5OSdUCARTa2lYssW1l8cOdGm7j/0ruoK5dLbWhaEsmaQ7g7yq5a
+         U1jmqAUGWKa/GrR4B68W8enAH4Ypumr6UjfGD4ib7VWNDA2yY3MyPA3/V/34peQURaHg
+         qcLsNty2pbaLdqXptWghD2uFByk6C7VNCH5rPZLBPHvEto9QvhW88LNdfuMy8CDfK24X
+         k0a9h2+xLtpsg99XhjM9TodF1WbzlazbV84fQor4rBPYLCk4Z4CIL0Bdyd6l7fJimsMg
+         C7Aw==
+X-Gm-Message-State: AOAM533Vxrl2XhnPIZiSUQH4MqW7s2UG93BThK1rnsRZewyK6qu2oks0
+        tafNoiesWBeDlnv+53mXBuOE3w==
+X-Google-Smtp-Source: ABdhPJy5+80qlcCMq9FvxHy8z+LAo9AbUMF1RvOWi5pRXnGx/+RRPk90VO5kJNou+WT43cdQiiWkDA==
+X-Received: by 2002:a17:902:ed4a:: with SMTP id y10mr3578373plb.106.1597318615882;
+        Thu, 13 Aug 2020 04:36:55 -0700 (PDT)
+Received: from localhost (2001-44b8-1113-6700-4dc5-3664-a3ed-1364.static.ipv6.internode.on.net. [2001:44b8:1113:6700:4dc5:3664:a3ed:1364])
+        by smtp.gmail.com with ESMTPSA id h5sm5647204pfq.146.2020.08.13.04.36.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Aug 2020 04:36:55 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs/select.c: batch user writes in do_sys_poll
+In-Reply-To: <87zh6zlynh.fsf@dja-thinkpad.axtens.net>
+References: <20200813071120.2113039-1-dja@axtens.net> <20200813073220.GB15436@infradead.org> <87zh6zlynh.fsf@dja-thinkpad.axtens.net>
+Date:   Thu, 13 Aug 2020 21:36:52 +1000
+Message-ID: <87wo22n5ez.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-Received: by 2002:a81:7813:0:0:0:0:0 with HTTP; Thu, 13 Aug 2020 04:33:57
- -0700 (PDT)
-Reply-To: ambrosecooker389@gmail.com
-From:   Ambrose Cooker <anera67ousbil@gmail.com>
-Date:   Thu, 13 Aug 2020 04:33:57 -0700
-Message-ID: <CAOg8yBAVOZ9TAS_rzzODx2tMCbsYHwvty=dG=LP_S3jP1TSdLA@mail.gmail.com>
-Subject: ATTENTION PLEASE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings My Dear Friend,
+Hi,
 
-Please reply to my private email ambrosecooker389@gmail.com
+>> Seem like this could simply use a copy_to_user to further simplify
+>> things?
+>
+> I'll benchmark it and find out.
 
-Before I introduce myself, I wish to inform you that this letter is
-not a hoax mail and I urge you to treat it serious.This letter must
-come to you as a big surprise, but I believe it is only a day that
-people meet and become great friends and business partners. Please I
-want you to read this letter very carefully and I must apologize for
-barging this message into your mail box without any formal
-introduction due to the urgency and confidentiality of this business.
-I make this contact with you as I believe that you can be of great
-assistance to me. My name is Mr.Ambrose Cooker, from Burkina Faso,
-West Africa. I work in African Development Bank (ADB) as Telex
-manager, please see this as a confidential message and do not reveal
-it to another person and let me know whether you can be of assistance
-regarding my proposal below because it is top secret.
+I tried this:
 
-I am about to retire from active Banking service to start a new life
-but I am skeptical to reveal this particular secret to a stranger. You
-must assure me that everything will be handled confidentially because
-we are not going to suffer again in life. It has been 10 years now
-that most of the greedy African Politicians used our bank to launder
-money overseas through the help of their Political advisers. Most of
-the funds which they transferred out of the shores of Africa were gold
-and oil money that was supposed to have been used to develop the
-continent. T heir Political advisers always inflated the amounts
-before
-transferring to foreign accounts, so I also used the opportunity to
-divert part of the funds hence I am aware that there is no official
-trace of how much was transferred as all the accounts used for such
-transfers were being closed after transfer. I acted as the Bank
-Officer to most of the politicians and when I discovered that they
-were using me to succeed in their greedy act; I also cleaned some of
-their banking records from the Bank files and no one cared to ask me
-because the money was too much for them to control. They laundered
-over $5billion Dollars during the process.
+        for (walk = head; walk; walk = walk->next) {
+-               struct pollfd *fds = walk->entries;
+-               int j;
+-
+-               for (j = 0; j < walk->len; j++, ufds++)
+-                       if (__put_user(fds[j].revents, &ufds->revents))
+-                               goto out_fds;
++               if (copy_to_user(ufds, walk->entries,
++                                sizeof(struct pollfd) * walk->len))
++                       goto out_fds;
++               ufds += walk->len;
+        }
 
-Before I send this message to you, I have already diverted
-($10.5million Dollars) to an escrow account belonging to no one in the
-bank. The bank is anxious now to know who the beneficiary to the funds
-because they have made a lot of profits with the funds. It is more
-than Eight years now and most of the politicians are no longer using
-our bank to transfer funds overseas. The ($10.5million Dollars) has
-been laying waste in our bank and I don't want to retire from the bank
-without transferring the funds to a foreign account to enable me share
-the proceeds with the receiver (a foreigner). The money will be shared
-60% for me and 40% for you. There is no one coming to ask you about
-the funds because I secured everything. I only want you to assist me
-by providing a reliable bank account where the funds can be
-transferred.
+With that approach, the poll2 microbenchmark (which polls 128 fds) is
+about as fast as v1.
 
-You are not to face any difficulties or legal implications as I am
-going to handle the transfer personally. If you are capable of
-receiving the funds, do let me know immediately to enable me give you
-a detailed information on what to do. For me, I have not stolen the
-money from anyone because the other people that took the whole money
-did not face any problems. This is my chance to grab my own life
-opportunity but you must keep the details of the funds secret to avoid
-any leakages as no one in the bank knows about my plans.Please get
-back to me if you are interested and capable to handle this project, I
-am looking forward to hear from you immediately for further
-information.Please reply to my private email
-ambrosecooker389@gmail.com
+However, the poll1 microbenchmark, which polls just 1 fd, regresses a
+touch (<1% - ~2%) compared to the current code, although it's largely
+within the noise. Thoughts?
 
-Thanks with my best regards.
-Mr.Ambrose Cooker.
-Telex Manager
-African Development Bank (ADB)
-Burkina Faso.
+Kind regards,
+Daniel
+
+>> Also please don't pointlessly add overly long lines.
+>
+> Weird, I ran the commit through checkpatch and it didn't pick it
+> up. I'll check the next version more carefully.
+>
+> Regards,
+> Daniel
