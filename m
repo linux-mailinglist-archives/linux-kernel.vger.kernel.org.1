@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44453243997
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 14:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE52824398E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 14:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgHMMGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 08:06:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726623AbgHMMF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 08:05:59 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B452120866;
-        Thu, 13 Aug 2020 11:47:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597319237;
-        bh=st+ZZPEZNLMRcB4dWVw2s7KfAWhEwQAt4jahZwwVrZ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CP/ObbMctMPM3r9rVqSbqkqy4LHRQVBbqKV1BxOr9spCYysSMcmVJrxLzyjkFNWvA
-         P/ccRpJBmfKeZuLE+Wwle5uIOAZrPcmzMeigqVgnTh3ZUtJ8ocVgr8mIWRbhwW7Wkc
-         Py30Ty4Z3yBW1lvJJZ2VKdfgUdPyPCEP+ioOchtc=
-Date:   Thu, 13 Aug 2020 13:47:26 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Gutson <daniel@eclypsium.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alex Bazhaniuk <alex@eclypsium.com>,
-        Richard Hughes <hughsient@gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Do not try to make the SPI
- flash chip writable
-Message-ID: <20200813114726.GA3852402@kroah.com>
-References: <20200804135817.5495-1-daniel.gutson@eclypsium.com>
- <CAK8P3a0_fJ0BfD5Qvxdo0s7CbjPWaGA8QTgYhbXR=omafOHH4Q@mail.gmail.com>
- <CAFmMkTHEm8k+5GZkVJbDZMEhMwpsqVKRb-hGskSpBstdLRuFyA@mail.gmail.com>
- <CAK8P3a27bTYyn3N+tX=i_6f4KrQkOmkUA1zUQfvCW7qw6smSkQ@mail.gmail.com>
- <CAFmMkTF9eVm0tpOKEy2rzdX=Scr3RwqHDFy_i24R3F5ok-4=eA@mail.gmail.com>
- <CAK8P3a3mf8_Y4DWe3WuBO-Xo0N4Jj=-rrtFzD6w0TriGZPu1_g@mail.gmail.com>
- <CAFmMkTFzmC=aY0gR6urLu-8Oq8aeHBUWi-TodG8XhXKCcC057A@mail.gmail.com>
- <CAFmMkTE+2Qxo43bZkwCszEYbXFV22YdpLJD40gB6LgvnPbvdSA@mail.gmail.com>
- <20200813090105.GC3452881@kroah.com>
- <CAFmMkTFgjW+9gNfx=2SU7B0foww=SLiiyVi+P-hZpEFDbMTf2Q@mail.gmail.com>
+        id S1726615AbgHMMCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 08:02:40 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:33922 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726570AbgHML7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 07:59:19 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 43880746B97B89570544;
+        Thu, 13 Aug 2020 19:59:10 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Thu, 13 Aug 2020
+ 19:59:04 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <davem@davemloft.net>, <kuznet@ms2.inr.ac.ru>,
+        <yoshfuji@linux-ipv6.org>, <kuba@kernel.org>, <willemb@google.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] net: correct zerocopy refcnt with newly allocated UDP or RAW uarg
+Date:   Thu, 13 Aug 2020 07:58:00 -0400
+Message-ID: <20200813115800.4546-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFmMkTFgjW+9gNfx=2SU7B0foww=SLiiyVi+P-hZpEFDbMTf2Q@mail.gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 08:42:57AM -0300, Daniel Gutson wrote:
-> El jue., 13 ago. 2020 6:00 a. m., Greg Kroah-Hartman <
-> gregkh@linuxfoundation.org> escribió:
-> 
-> > On Wed, Aug 12, 2020 at 12:41:35PM -0300, Daniel Gutson wrote:
-> > > ping
-> >
-> > What does that mean here?
-> >
-> 
-> I didn't get an answer from Arnd Bergman who expressed concerns. I want to
-> know if my answer was enough or there are more potential changes I have to
-> do.
+The var extra_uref is introduced to pass the initial reference taken in
+sock_zerocopy_alloc to the first generated skb. But now we may fail to pass
+the initial reference with newly allocated UDP or RAW uarg when the skb is
+zcopied.
 
-No need to wait for anyone, it's not our job to always respond :)
+If the skb is zcopied, we always set extra_uref to false. This is fine with
+reallocted uarg because no extra ref is taken by UDP and RAW zerocopy. But
+if uarg is newly allocated via sock_zerocopy_alloc(), we lost the initial
+reference because extra_uref is false and we missed to pass it to the first
+generated skb.
 
-Take what you feel is correct, fix up your patch along those lines, and
-resubmit, that's all you can do.
+To fix this, we should set extra_uref to true if UDP or RAW uarg is newly
+allocated when the skb is zcopied.
 
-good luck!
+Fixes: 522924b58308 ("net: correct udp zerocopy refcnt also when zerocopy only on append")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ net/ipv4/ip_output.c  | 4 +++-
+ net/ipv6/ip6_output.c | 4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-greg k-h
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 61f802d5350c..78d3b5d48617 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -1019,7 +1019,9 @@ static int __ip_append_data(struct sock *sk,
+ 		uarg = sock_zerocopy_realloc(sk, length, skb_zcopy(skb));
+ 		if (!uarg)
+ 			return -ENOBUFS;
+-		extra_uref = !skb_zcopy(skb);	/* only ref on new uarg */
++		/* Only ref on newly allocated uarg. */
++		if (!skb_zcopy(skb) || (sk->sk_type != SOCK_STREAM && skb_zcopy(skb) != uarg))
++			extra_uref = true;
+ 		if (rt->dst.dev->features & NETIF_F_SG &&
+ 		    csummode == CHECKSUM_PARTIAL) {
+ 			paged = true;
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index c78e67d7747f..0f82923239a9 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -1476,7 +1476,9 @@ static int __ip6_append_data(struct sock *sk,
+ 		uarg = sock_zerocopy_realloc(sk, length, skb_zcopy(skb));
+ 		if (!uarg)
+ 			return -ENOBUFS;
+-		extra_uref = !skb_zcopy(skb);	/* only ref on new uarg */
++		/* Only ref on newly allocated uarg. */
++		if (!skb_zcopy(skb) || (sk->sk_type != SOCK_STREAM && skb_zcopy(skb) != uarg))
++			extra_uref = true;
+ 		if (rt->dst.dev->features & NETIF_F_SG &&
+ 		    csummode == CHECKSUM_PARTIAL) {
+ 			paged = true;
+-- 
+2.19.1
+
