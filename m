@@ -2,278 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2503F2432F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 05:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5882432FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 05:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgHMDxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 23:53:16 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:37965 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726334AbgHMDxQ (ORCPT
+        id S1726734AbgHMD4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 23:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726609AbgHMD4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 23:53:16 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U5c8daw_1597290787;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U5c8daw_1597290787)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 13 Aug 2020 11:53:08 +0800
-Subject: Re: [PATCH v17 14/21] mm/compaction: do page isolation first in
- compaction
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Rong Chen <rong.a.chen@intel.com>
-References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
- <1595681998-19193-15-git-send-email-alex.shi@linux.alibaba.com>
- <CAKgT0UcbBv=QBK9ErqLKXoNLYxFz52L4fiiHy4h6zKdBs=YPOg@mail.gmail.com>
- <241ca157-104f-4f0d-7d5b-de394443788d@linux.alibaba.com>
- <CAKgT0UdSrarC8j+G=LYRSadcaG6yNCoCfeVpFjEiHRJb4A77-g@mail.gmail.com>
- <8dbd004e-8eba-f1ec-a5eb-5dc551978936@linux.alibaba.com>
- <CAKgT0UdK-fy+yYGLFK=YgE+maa_0_uecq0_8S_0kM8BiVgRO7g@mail.gmail.com>
- <d9818e06-95f1-9f21-05c0-98f29ea96d89@linux.alibaba.com>
- <CAKgT0Ues0ShkSbb1XtA7z7EYB8NCPgLGq8zZUjrXK_jcWn8mDQ@mail.gmail.com>
- <9581db48-cef3-788a-7f5a-8548fee56c13@linux.alibaba.com>
- <CAKgT0UeuuQqpYRXXAs_YurWyDOtqx4y3sx7e4Xi2TE6s_7++Fg@mail.gmail.com>
- <3828d045-17e4-16aa-f0e6-d5dda7ad6b1b@linux.alibaba.com>
- <CAKgT0Ud6ZQ4ZTm1cAUKCdb8FMu0fk9vXgf-bnmb0aY5ndDHwyA@mail.gmail.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <3d224c35-a53d-3daa-4c76-026d1f2b2656@linux.alibaba.com>
-Date:   Thu, 13 Aug 2020 11:52:31 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Wed, 12 Aug 2020 23:56:54 -0400
+X-Greylist: delayed 195 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 12 Aug 2020 20:56:53 PDT
+Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.secure-endpoints.com [IPv6:2001:470:1f07:f77:70f5:c082:a96a:5685])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE50C061385
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 20:56:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
+        d=auristor.com; s=MDaemon; r=y; t=1597290815; x=1597895615;
+        i=jaltman@auristor.com; q=dns/txt; h=Subject:To:Cc:References:
+        From:Organization:Message-ID:Date:User-Agent:MIME-Version:
+        In-Reply-To:Content-Type; bh=f/2tRTr1rkMkK3sJkfGwbrfQnYXmjf4qRYg
+        ajsFn738=; b=VQHo/vvN6e3EOThSX1H6VAUS78dZrl8IC83QKFQW0rtnZmWCdms
+        x6N4sANXTlzlu00MNWdGDGpl9AMvrzVFG9pQ9FzXWFYMTqInghm6teybeia/mp2l
+        KjZP62holfKQr8l8URBwM6+2NUUA8DHCG1nGjsL5NXbFYRC/zpiQaOe0=
+X-MDAV-Result: clean
+X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Wed, 12 Aug 2020 23:53:35 -0400
+Received: from [IPv6:2604:2000:1741:8407:386c:2342:327a:af43] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v20.0.1) 
+        with ESMTPSA id md5001002622305.msg; Wed, 12 Aug 2020 23:53:34 -0400
+X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Wed, 12 Aug 2020 23:53:34 -0400
+        (not processed: message from trusted or authenticated source)
+X-MDRemoteIP: 2604:2000:1741:8407:386c:2342:327a:af43
+X-MDHelo: [IPv6:2604:2000:1741:8407:386c:2342:327a:af43]
+X-MDArrival-Date: Wed, 12 Aug 2020 23:53:34 -0400
+X-MDOrigin-Country: United States, North America
+X-Authenticated-Sender: jaltman@auristor.com
+X-Return-Path: prvs=14943734bf=jaltman@auristor.com
+X-Envelope-From: jaltman@auristor.com
+X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
+Subject: Re: file metadata via fs API (was: [GIT PULL] Filesystem Information)
+To:     "Linus Torvalds (torvalds@linux-foundation.org)" 
+        <torvalds@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Karel Zak <kzak@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1842689.1596468469@warthog.procyon.org.uk>
+ <1845353.1596469795@warthog.procyon.org.uk>
+ <CAJfpegunY3fuxh486x9ysKtXbhTE0745ZCVHcaqs9Gww9RV2CQ@mail.gmail.com>
+ <ac1f5e3406abc0af4cd08d818fe920a202a67586.camel@themaw.net>
+ <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com>
+ <CAJfpegtNP8rQSS4Z14Ja4x-TOnejdhDRTsmmDD-Cccy2pkfVVw@mail.gmail.com>
+ <20200811135419.GA1263716@miu.piliscsaba.redhat.com>
+ <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
+ <52483.1597190733@warthog.procyon.org.uk>
+ <CAHk-=wiPx0UJ6Q1X=azwz32xrSeKnTJcH8enySwuuwnGKkHoPA@mail.gmail.com>
+From:   Jeffrey E Altman <jaltman@auristor.com>
+Organization: AuriStor, Inc.
+Message-ID: <679456f1-5867-4017-b1d6-95197d2fa81b@auristor.com>
+Date:   Wed, 12 Aug 2020 23:53:26 -0400
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0Ud6ZQ4ZTm1cAUKCdb8FMu0fk9vXgf-bnmb0aY5ndDHwyA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wiPx0UJ6Q1X=azwz32xrSeKnTJcH8enySwuuwnGKkHoPA@mail.gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms080403000101050505020307"
+X-MDCFSigsAdded: auristor.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a cryptographically signed message in MIME format.
+
+--------------ms080403000101050505020307
+Content-Type: multipart/mixed;
+ boundary="------------3526248CBE805C34880B7D77"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------3526248CBE805C34880B7D77
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 8/12/2020 2:18 PM, Linus Torvalds (torvalds@linux-foundation.org) wrot=
+e:
+> What's wrong with fstatfs()? All the extra magic metadata seems to not
+> really be anything people really care about.
+>=20
+> What people are actually asking for seems to be some unique mount ID,
+> and we have 16 bytes of spare information in 'struct statfs64'.
+>=20
+> All the other fancy fsinfo stuff seems to be "just because", and like
+> complete overdesign.
+
+Hi Linus,
+
+Is there any existing method by which userland applications can
+determine the properties of the filesystem in which a directory or file
+is stored in a filesystem agnostic manner?
+
+Over the past year I've observed the opendev/openstack community
+struggle with performance issues caused by rsync's inability to
+determine if the source and destination object's last update time have
+the same resolution and valid time range.  If the source file system
+supports 100 nanosecond granularity and the destination file system
+supports one second granularity, any source file with a non-zero
+fractional seconds timestamp will appear to have changed compared to the
+copy in the destination filesystem which discarded the fractional
+seconds during the last sync.  Sure, the end user could use the
+--modify-window=3D1 option to inform rsync to add fuzz to the comparisons=
+,
+but that introduces the possibility that a file updated a fraction of a
+second after an rsync execution would not synchronize the file on the
+next run when both source and target have fine grained timestamps.  If
+the userland sync processes have access to the source and destination
+filesystem time capabilities, they can make more intelligent decisions
+without explicit user input.  At a minimum, the timestamp properties
+that are important to know include the range of valid timestamps and the
+resolution.  Some filesystems support unsigned 32-bit time starting with
+UNIX epoch.  Others signed 32-bit time with UNIX epoch.  Still others
+FAT, NTFS, etc use alternative epochs and range and resolutions.
+
+Another case where lack of filesystem properties is problematic is "df
+--local" which currently relies upon string comparisons of file system
+name strings to determine if the underlying file system is local or
+remote.  This requires that the gnulib maintainers have knowledge of all
+file systems implementations, their published names, and which category
+they belong to.  Patches have been accepted in the past year to add
+"smb3", "afs", and "gpfs" to the list of remote file systems.  There are
+many more remote filesystems that have yet to be added including
+"cephfs", "lustre", "gluster", etc.
+
+In many cases, the filesystem properties cannot be inferred from the
+filesystem name.  For network file systems, these properties might
+depend upon the remote server capabilities or even the properties
+associated with a particular volume or share.  Consider the case of a
+remote file server that supports 64-bit 100ns time but which for
+backward compatibility exports certain volumes or shares with more
+restrictive capabilities. Or the case of a network file system protocol
+that has evolved over time and gained new capabilities.
+
+For the AFS community, fsinfo offers a method of exposing some server
+and volume properties that are obtained via "path ioctls" in OpenAFS and
+AuriStorFS.  Some example of properties that might be exposed include
+answers to questions such as:
+
+ * what is the volume cell id? perhaps a uuid.
+ * what is the volume id in the cell? unsigned 64-bit integer
+ * where is a mounted volume hosted? which fileservers, named by uuid
+ * what is the block size? 1K, 4K, ...
+ * how many blocks are in use or available?
+ * what is the quota (thin provisioning), if any?
+ * what is the reserved space (fat provisioning), if any?
+ * how many vnodes are present?
+ * what is the vnode count limit, if any?
+ * when was the volume created and last updated?
+ * what is the file size limit?
+ * are byte range locks supported?
+ * are mandatory locks supported?
+ * how many entries can be created within a directory?
+ * are cross-directory hard links supported?
+ * are directories just-send-8, case-sensitive, case-preserving, or
+   case-insensitive?
+ * if not just-send-8, what character set is used?
+ * if Unicode, what normalization rules? etc.
+ * are per-object acls supported?
+ * what volume maximum acl is assigned, if any?
+ * what volume security policy (authn, integ, priv) is assigned, if any?
+ * what is the replication policy, if any?
+ * what is the volume encryption policy, if any?
+ * what is the volume compression policy, if any?
+ * are server-to-server copies supported?
+ * which of atime, ctime and mtime does the volume support?
+ * what is the permitted timestamp range and resolution?
+ * are xattrs supported?
+ * what is the xattr maximum name length?
+ * what is the xattr maximum object size?
+ * is the volume currently reachable?
+ * is the volume immutable?
+ * etc ...
+
+Its true that there isn't widespread use of these filesystem properties
+by today's userland applications but that might be due to the lack of
+standard interfaces necessary to acquire the information.  For example,
+userland frameworks for parallel i/o HPC applications such as HDF5,
+PnetCDF and ROMIO require each supported filesystem to provide its own
+proprietary "driver" which does little more than expose the filesystem
+properties necessary to optimize the layout of file stream data
+structures.  With something like "fsinfo" it would be much easier to
+develop these HPC frameworks in a filesystem agnostic manner.  This
+would permit applications built upon these frameworks to use the best
+Linux filesystem available for the workload and not simply the ones for
+which proprietary "drivers" have been published.
+
+Although I am sympathetic to the voices in the community that would
+prefer to start over with a different architectural approach, David's
+fsinfo has been under development for more than two years.  It has not
+been developed in a vacuum but in parallel with other kernel components
+that have been merged during that time frame.  From my reading of this
+thread and those that preceded it, fsinfo has also been developed with
+input from significant userland development communities that intend to
+leverage the syscall interface as soon as it becomes available.  The
+March 2020 discussion of fsinfo received positive feedback not only from
+within Red Hat but from other parties as well.
+
+Since no one stepped up to provide an alternative approach in the last
+five months, how long should those that desire access to the
+functionality be expected to wait for it?
+
+What is the likelihood that an alternative robust solution will be
+available in the next merge window or two?
+
+Is the design so horrid that it is better to go without the
+functionality than to live with the imperfections?
+
+I for one would like to see this functionality be made available sooner
+rather than later.  I know my end users would benefit from the
+availability of fsinfo.
+
+Thank you for listening.  Stay healthy and safe, and please wear a mask.
+
+Jeffrey Altman
 
 
-在 2020/8/13 上午10:17, Alexander Duyck 写道:
->> zone lock is probability better. you can try and test.
-> So I spent a good chunk of today looking the code over and what I
-> realized is that we probably don't even really need to have this code
-> protected by the zone lock since the LRU bit in the pageblock should
-> do most of the work for us. In addition we can get rid of the test
-> portion of this and just make it a set only operation if I am not
-> mistaken.
-> 
->>>>> the LRU flag is cleared then you are creating a situation where
->>>>> multiple processes will be stomping all over each other as you can
->>>>> have each thread essentially take a page via the LRU flag, but only
->>>>> one thread will process a page and it could skip over all other pages
->>>>> that preemptively had their LRU flag cleared.
->>>> It increase a bit crowd here, but lru_lock do reduce some them, and skip_bit
->>>> could stop each other in a array check(bitmap). So compare to whole node
->>>> lru_lock, the net profit is clear in patch 17.
->>> My concern is that what you can end up with is multiple threads all
->>> working over the same pageblock for isolation. With the old code the
->>> LRU lock was used to make certain that test_and_set_skip was being
->>> synchronized on the first page in the pageblock so you would only have
->>> one thread going through and working a single pageblock. However after
->>> your changes it doesn't seem like the test_and_set_skip has that
->>> protection since only one thread will ever be able to successfully
->>> call it for the first page in the pageblock assuming that the LRU flag
->>> is set on the first page in the pageblock block.
->>>
->>>>> If you take a look at the test_and_set_skip the function only acts on
->>>>> the pageblock aligned PFN for a given range. WIth the changes you have
->>>>> in place now that would mean that only one thread would ever actually
->>>>> call this function anyway since the first PFN would take the LRU flag
->>>>> so no other thread could follow through and test or set the bit as
->>>> Is this good for only one process could do test_and_set_skip? is that
->>>> the 'skip' meaning to be?
->>> So only one thread really getting to fully use test_and_set_skip is
->>> good, however the issue is that there is nothing to synchronize the
->>> testing from the other threads. As a result the other threads could
->>> have isolated other pages within the pageblock before the thread that
->>> is calling test_and_set_skip will get to complete the setting of the
->>> skip bit. This will result in isolation failures for the thread that
->>> set the skip bit which may be undesirable behavior.
->>>
->>> With the old code the threads were all synchronized on testing the
->>> first PFN in the pageblock while holding the LRU lock and that is what
->>> we lost. My concern is the cases where skip_on_failure == true are
->>> going to fail much more often now as the threads can easily interfere
->>> with each other.
->> I have a patch to fix this, which is on
->>         https://github.com/alexshi/linux.git lrunext
-> I don't think that patch helps to address anything. You are now
-> failing to set the bit in the case that something modifies the
-> pageblock flags while you are attempting to do so. I think it would be
-> better to just leave the cmpxchg loop as it is.
+--------------3526248CBE805C34880B7D77
+Content-Type: text/x-vcard; charset=utf-8;
+ name="jaltman.vcf"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="jaltman.vcf"
 
-It do increae the case-lru-file-mmap-read in vm-scalibity about 3% performance.
-Yes, I am glad to see it can be make better.
+begin:vcard
+fn:Jeffrey Altman
+n:Altman;Jeffrey
+org:AuriStor, Inc.
+adr:;;255 W 94TH ST STE 6B;New York;NY;10025-6985;United States
+email;internet:jaltman@auristor.com
+title:CEO
+tel;work:+1-212-769-9018
+url:https://www.linkedin.com/in/jeffreyaltman/
+version:2.1
+end:vcard
 
 
-> 
->>>>> well. The expectation before was that all threads would encounter this
->>>>> test and either proceed after setting the bit for the first PFN or
->>>>> abort after testing the first PFN. With you changes only the first
->>>>> thread actually runs this test and then it and the others will likely
->>>>> encounter multiple failures as they are all clearing LRU bits
->>>>> simultaneously and tripping each other up. That is why the skip bit
->>>>> must have a test and set done before you even get to the point of
->>>>> clearing the LRU flag.
->>>> It make the things warse in my machine, would you like to have a try by yourself?
->>> I plan to do that. I have already been working on a few things to
->>> clean up and optimize your patch set further. I will try to submit an
->>> RFC this evening so we can discuss.
->>>
->> Glad to see your new code soon. Would you like do it base on
->>                 https://github.com/alexshi/linux.git lrunext
-> I can rebase off of that tree. It may add another half hour or so. I
-> have barely had any time to test my code. When I enabled some of the
-> debugging features in the kernel related to using the vm-scalability
-> tests the boot time became incredibly slow so I may just make certain
-> I can boot and not mess the system up before submitting my patches as
-> an RFC. I can probably try testing them more tomorrow.
-> 
->>>>>>> The point I was getting at with the PageCompound check is that instead
->>>>>>> of needing the LRU lock you should be able to look at PageCompound as
->>>>>>> soon as you call get_page_unless_zero() and preempt the need to set
->>>>>>> the LRU bit again. Instead of trying to rely on the LRU lock to
->>>>>>> guarantee that the page hasn't been merged you could just rely on the
->>>>>>> fact that you are holding a reference to it so it isn't going to
->>>>>>> switch between being compound or order 0 since it cannot be freed. It
->>>>>>> spoils the idea I originally had of combining the logic for
->>>>>>> get_page_unless_zero and TestClearPageLRU into a single function, but
->>>>>>> the advantage is you aren't clearing the LRU flag unless you are
->>>>>>> actually going to pull the page from the LRU list.
->>>>>> Sorry, I still can not follow you here. Compound code part is unchanged
->>>>>> and follow the original logical. So would you like to pose a new code to
->>>>>> see if its works?
->>>>> No there are significant changes as you reordered all of the
->>>>> operations. Prior to your change the LRU bit was checked, but not
->>>>> cleared before testing for PageCompound. Now you are clearing it
->>>>> before you are testing if it is a compound page. So if compaction is
->>>>> running we will be seeing the pages in the LRU stay put, but the
->>>>> compound bit flickering off and on if the compound page is encountered
->>>>> with the wrong or NULL lruvec. What I was suggesting is that the
->>>> The lruvec could be wrong or NULL here, that is the base stone of whole
->>>> patchset.
->>> Sorry I had a typo in my comment as well as it is the LRU bit that
->>> will be flickering, not the compound. The goal here is to avoid
->>> clearing the LRU bit unless we are sure we are going to take the
->>> lruvec lock and pull the page from the list.
->>>
->>>>> PageCompound test probably doesn't need to be concerned with the lock
->>>>> after your changes. You could test it after you call
->>>>> get_page_unless_zero() and before you call
->>>>> __isolate_lru_page_prepare(). Instead of relying on the LRU lock to
->>>>> protect us from the page switching between compound and not we would
->>>>> be relying on the fact that we are holding a reference to the page so
->>>>> it should not be freed and transition between compound or not.
->>>>>
->>>> I have tried the patch as your suggested, it has no clear help on performance
->>>> on above vm-scaliblity case. Maybe it's due to we checked the same thing
->>>> before lock already.
->>>>
->>>> diff --git a/mm/compaction.c b/mm/compaction.c
->>>> index b99c96c4862d..cf2ac5148001 100644
->>>> --- a/mm/compaction.c
->>>> +++ b/mm/compaction.c
->>>> @@ -985,6 +985,16 @@ static bool too_many_isolated(pg_data_t *pgdat)
->>>>                 if (unlikely(!get_page_unless_zero(page)))
->>>>                         goto isolate_fail;
->>>>
->>>> +                       /*
->>>> +                        * Page become compound since the non-locked check,
->>>> +                        * and it's on LRU. It can only be a THP so the order
->>>> +                        * is safe to read and it's 0 for tail pages.
->>>> +                        */
->>>> +                       if (unlikely(PageCompound(page) && !cc->alloc_contig)) {
->>>> +                               low_pfn += compound_nr(page) - 1;
->>>> +                               goto isolate_fail_put;
->>>> +                       }
->>>> +
->>>>                 if (__isolate_lru_page_prepare(page, isolate_mode) != 0)
->>>>                         goto isolate_fail_put;
->>>>
->>>> @@ -1013,16 +1023,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
->>>>                                         goto isolate_abort;
->>>>                         }
->>>>
->>>> -                       /*
->>>> -                        * Page become compound since the non-locked check,
->>>> -                        * and it's on LRU. It can only be a THP so the order
->>>> -                        * is safe to read and it's 0 for tail pages.
->>>> -                        */
->>>> -                       if (unlikely(PageCompound(page) && !cc->alloc_contig)) {
->>>> -                               low_pfn += compound_nr(page) - 1;
->>>> -                               SetPageLRU(page);
->>>> -                               goto isolate_fail_put;
->>>> -                       }
->>>>                 } else
->>>>                         rcu_read_unlock();
->>>>
->>> So actually there is more we could do than just this. Specifically a
->>> few lines below the rcu_read_lock there is yet another PageCompound
->>> check that sets low_pfn yet again. So in theory we could combine both
->>> of those and modify the code so you end up with something more like:
->>> @@ -968,6 +974,16 @@ isolate_migratepages_block(struct compact_control
->>> *cc, unsigned long low_pfn,
->>>                 if (unlikely(!get_page_unless_zero(page)))
->>>                         goto isolate_fail;
->>>
->>> +               if (PageCompound(page)) {
->>> +                       const unsigned int order = compound_order(page);
->>> +
->>> +                       if (likely(order < MAX_ORDER))
->>> +                               low_pfn += (1UL << order) - 1;
->>> +
->>> +                       if (unlikely(!cc->alloc_contig))
->>> +                               goto isolate_fail_put;
->>>
->> The current don't check this unless locked changed. But anyway check it
->> every page may have no performance impact.
-> Yes and no. The same code is also ran outside the lock and that is why
-> I suggested merging the two and creating this block of logic. It will
-> be clearer once I have done some initial smoke testing and submitted
-> my patch.
-> 
->> +               }
->>> +
->>>                 if (__isolate_lru_page_prepare(page, isolate_mode) != 0)
->>>                         goto isolate_fail_put;
->>>
->>> Doing this you would be more likely to skip over the entire compound
->>> page in a single jump should you not be able to either take the LRU
->>> bit or encounter a busy page in __isolate_Lru_page_prepare. I had
->>> copied this bit from an earlier check and modified it as I was not
->>> sure I can guarantee that this is a THP since we haven't taken the LRU
->>> lock yet. However I believe the page cannot be split up while we are
->>> holding the extra reference so the PageCompound flag and order should
->>> not change until we call put_page.
->>>
->> It looks like the lock_page protect this instead of get_page that just works
->> after split func called.
-> So I thought that the call to page_ref_freeze that is used in
-> functions like split_huge_page_to_list is meant to address this case.
-> What it is essentially doing is setting the reference count to zero if
-> the count is at the expected value. So with the get_page_unless_zero
-> it would either fail because the value is already zero, or the
-> page_ref_freeze would fail because the count would be one higher than
-> the expected value. Either that or I am still missing another piece in
-> the understanding of this.
+--------------3526248CBE805C34880B7D77--
 
-Uh, the front xa_lock or anon_vma lock guard the -refcount, so long locking path...
+--------------ms080403000101050505020307
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Thanks
-Alex
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+DGswggXSMIIEuqADAgECAhBAAW0B1qVVQ32wvx2EXYU6MA0GCSqGSIb3DQEBCwUAMDoxCzAJ
+BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEy
+MB4XDTE5MDkwNTE0MzE0N1oXDTIyMTEwMTE0MzE0N1owcDEvMC0GCgmSJomT8ixkAQETH0Ew
+MTQxMEMwMDAwMDE2RDAxRDZBNTQwMDAwMDQ0NDcxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
+YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQCY1TC9QeWnUgEoJ81FcAVnhGn/AWuzvkYRUG5/ZyXDdaM212e8
+ybCklgSmZweqNdrfaaHXk9vwjpvpD4YWgb07nJ1QBwlvRV/VPAaDdneIygJJWBCzaMVLttKO
+0VimH/I/HUwFBQT2mrktucCEf2qogdi2P+p5nuhnhIUiyZ71Fo43gF6cuXIMV/1rBNIJDuwM
+Q3H8zi6GL0p4mZFZDDKtbYq2l8+MNxFvMrYcLaJqejQNQRBuZVfv0Fq9pOGwNLAk19baIw3U
+xdwx+bGpTtS63Py1/57MQ0W/ZXE/Ocnt1qoDLpJeZIuEBKgMcn5/iN9+Ro5zAuOBEKg34wBS
+8QCTAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
+BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
+BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
+Mi5wN2MwHwYDVR0jBBgwFoAUpHPa72k1inXMoBl7CDL4a4nkQuwwCQYDVR0TBAIwADCCASsG
+A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
+L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
+bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
+aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
+YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
+ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
+dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTIuY3JsMB8GA1UdEQQY
+MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBR7pHsvL4H5GdzNToI9e5BuzV19
+bzAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAFlm
+JYk4Ff1v/n0foZkv661W4LCRtroBaVykOXetrDDOQNK2N6JdTa146uIZVgBeU+S/0DLvJBKY
+tkUHQ9ovjXJTsuCBmhIIw3YlHoFxbku0wHEpXMdFUHV3tUodFJJKF3MbC8j7dOMkag59/Mdz
+Sjszdvit0av9nTxWs/tRKKtSQQlxtH34TouIke2UgP/Nn901QLOrJYJmtjzVz8DW3IYVxfci
+SBHhbhJTdley5cuEzphELo5NR4gFjBNlxH7G57Hno9+EWILpx302FJMwTgodIBJbXLbPMHou
+xQbOL2anOTUMKO8oH0QdQHCtC7hpgoQa7UJYJxDBI+PRaQ/HObkwggaRMIIEeaADAgECAhEA
++d5Wf8lNDHdw+WAbUtoVOzANBgkqhkiG9w0BAQsFADBKMQswCQYDVQQGEwJVUzESMBAGA1UE
+ChMJSWRlblRydXN0MScwJQYDVQQDEx5JZGVuVHJ1c3QgQ29tbWVyY2lhbCBSb290IENBIDEw
+HhcNMTUwMjE4MjIyNTE5WhcNMjMwMjE4MjIyNTE5WjA6MQswCQYDVQQGEwJVUzESMBAGA1UE
+ChMJSWRlblRydXN0MRcwFQYDVQQDEw5UcnVzdElEIENBIEExMjCCASIwDQYJKoZIhvcNAQEB
+BQADggEPADCCAQoCggEBANGRTTzPCic0kq5L6ZrUJWt5LE/n6tbPXPhGt2Egv7plJMoEpvVJ
+JDqGqDYymaAsd8Hn9ZMAuKUEFdlx5PgCkfu7jL5zgiMNnAFVD9PyrsuF+poqmlxhlQ06sFY2
+hbhQkVVQ00KCNgUzKcBUIvjv04w+fhNPkwGW5M7Ae5K5OGFGwOoRck9GG6MUVKvTNkBw2/vN
+MOd29VGVTtR0tjH5PS5yDXss48Yl1P4hDStO2L4wTsW2P37QGD27//XGN8K6amWB6F2XOgff
+/PmlQjQOORT95PmLkwwvma5nj0AS0CVp8kv0K2RHV7GonllKpFDMT0CkxMQKwoj+tWEWJTiD
+KSsCAwEAAaOCAoAwggJ8MIGJBggrBgEFBQcBAQR9MHswMAYIKwYBBQUHMAGGJGh0dHA6Ly9j
+b21tZXJjaWFsLm9jc3AuaWRlbnRydXN0LmNvbTBHBggrBgEFBQcwAoY7aHR0cDovL3ZhbGlk
+YXRpb24uaWRlbnRydXN0LmNvbS9yb290cy9jb21tZXJjaWFscm9vdGNhMS5wN2MwHwYDVR0j
+BBgwFoAU7UQZwNPwBovupHu+QucmVMiONnYwDwYDVR0TAQH/BAUwAwEB/zCCASAGA1UdIASC
+ARcwggETMIIBDwYEVR0gADCCAQUwggEBBggrBgEFBQcCAjCB9DBFFj5odHRwczovL3NlY3Vy
+ZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDADAgEB
+GoGqVGhpcyBUcnVzdElEIENlcnRpZmljYXRlIGhhcyBiZWVuIGlzc3VlZCBpbiBhY2NvcmRh
+bmNlIHdpdGggSWRlblRydXN0J3MgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBQb2xpY3kgZm91bmQg
+YXQgaHR0cHM6Ly9zZWN1cmUuaWRlbnRydXN0LmNvbS9jZXJ0aWZpY2F0ZXMvcG9saWN5L3Rz
+L2luZGV4Lmh0bWwwSgYDVR0fBEMwQTA/oD2gO4Y5aHR0cDovL3ZhbGlkYXRpb24uaWRlbnRy
+dXN0LmNvbS9jcmwvY29tbWVyY2lhbHJvb3RjYTEuY3JsMB0GA1UdJQQWMBQGCCsGAQUFBwMC
+BggrBgEFBQcDBDAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0OBBYEFKRz2u9pNYp1zKAZewgy+GuJ
+5ELsMA0GCSqGSIb3DQEBCwUAA4ICAQAN4YKu0vv062MZfg+xMSNUXYKvHwvZIk+6H1pUmivy
+DI4I6A3wWzxlr83ZJm0oGIF6PBsbgKJ/fhyyIzb+vAYFJmyI8I/0mGlc+nIQNuV2XY8cypPo
+VJKgpnzp/7cECXkX8R4NyPtEn8KecbNdGBdEaG4a7AkZ3ujlJofZqYdHxN29tZPdDlZ8fR36
+/mAFeCEq0wOtOOc0Eyhs29+9MIZYjyxaPoTS+l8xLcuYX3RWlirRyH6RPfeAi5kySOEhG1qu
+NHe06QIwpigjyFT6v/vRqoIBr7WpDOSt1VzXPVbSj1PcWBgkwyGKHlQUOuSbHbHcjOD8w8wH
+SDbL+L2he8hNN54doy1e1wJHKmnfb0uBAeISoxRbJnMMWvgAlH5FVrQWlgajeH/6NbYbBSRx
+ALuEOqEQepmJM6qz4oD2sxdq4GMN5adAdYEswkY/o0bRKyFXTD3mdqeRXce0jYQbWm7oapqS
+ZBccFvUgYOrB78tB6c1bxIgaQKRShtWR1zMM0JfqUfD9u8Fg7G5SVO0IG/GcxkSvZeRjhYcb
+TfqF2eAgprpyzLWmdr0mou3bv1Sq4OuBhmTQCnqxAXr4yVTRYHkp5lCvRgeJAme1OTVpVPth
+/O7HJ7VuEP9GOr6kCXCXmjB4P3UJ2oU0NqfoQdcSSSt9hliALnExTEjii20B2nSDojGCAxQw
+ggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUGA1UEAxMO
+VHJ1c3RJRCBDQSBBMTICEEABbQHWpVVDfbC/HYRdhTowDQYJYIZIAWUDBAIBBQCgggGXMBgG
+CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIwMDgxMzAzNTMyN1ow
+LwYJKoZIhvcNAQkEMSIEIEBk6RtolrAjcAhdqSia+2IVgAkurgTuWSaqerOmZQzvMF0GCSsG
+AQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUGA1UE
+AxMOVHJ1c3RJRCBDQSBBMTICEEABbQHWpVVDfbC/HYRdhTowXwYLKoZIhvcNAQkQAgsxUKBO
+MDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQg
+Q0EgQTEyAhBAAW0B1qVVQ32wvx2EXYU6MGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEq
+MAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwIC
+AUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAiKGKE6jKQ8Wz
+3ISR4ZZtZqR1bxSxg0bAl1P4PSlw+h2yJvHIpU/edNGag4gxbtfgcmxDfbDB9s+jyS+kTaZK
+1WKGvYLvBMVuMjO+A2Xn8IxibQRDtH8Ptou5bo7m3UMArRe5mV8u0ruQVDa0K1AleWj+p1rC
+B15Uw4x+UKaNOjhVNxH2XQ4ys0X08aBDIn6fbJ92KqHvNnU66Qn5UC0IZt9LpcET4iMcyjkw
+rZ/f0K6X5mWS6AKDQ1biXqI9x8h1daTqKwIW6oMjF8sVQcmHnzbOn7bQxRWpYw6ET9Io1DrQ
+i+igEqJK5JBRBPF7+aa1FqPGtbN/GTpiCSn3FgzGmAAAAAAAAA==
+--------------ms080403000101050505020307--
+
