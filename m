@@ -2,86 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BC32436EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 10:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB822436ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 10:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726591AbgHMItT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 04:49:19 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:58470 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726081AbgHMItS (ORCPT
+        id S1726636AbgHMIt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 04:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726081AbgHMIt6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 04:49:18 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-19-JfTwuwKtO8GLLsCk8sIa-w-1; Thu, 13 Aug 2020 09:49:15 +0100
-X-MC-Unique: JfTwuwKtO8GLLsCk8sIa-w-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 13 Aug 2020 09:49:14 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 13 Aug 2020 09:49:14 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Nick Desaulniers' <ndesaulniers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>
-CC:     Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zhenzhong Duan <zhenzhong.duan@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        "Andy Lutomirski" <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: RE: [PATCH] x86: work around clang IAS bug referencing __force_order
-Thread-Topic: [PATCH] x86: work around clang IAS bug referencing __force_order
-Thread-Index: AQHWcQZ7ykBaYOhpGEiJ4Y1LlTTd7qk1uosg
-Date:   Thu, 13 Aug 2020 08:49:14 +0000
-Message-ID: <016a02d1019f4d0eba67e37d3be2d74d@AcuMS.aculab.com>
-References: <20200527135329.1172644-1-arnd@arndb.de>
- <878serh1b9.fsf@nanos.tec.linutronix.de>
- <CAKwvOdnOh3H3ga2qpTktywvcgfXW5QJaB7r4XMhigmDzLhDNeA@mail.gmail.com>
-In-Reply-To: <CAKwvOdnOh3H3ga2qpTktywvcgfXW5QJaB7r4XMhigmDzLhDNeA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 13 Aug 2020 04:49:58 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA87C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 01:49:57 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z18so4489519wrm.12
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 01:49:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gA5BB/+6xQCvX9+gmlnfVRPEcDMzoMSPM6EjTizB38A=;
+        b=Ad03R5Saypn6P9X1Gr8J7GfoCKcFVoej6TsnRSjGxd8U5Rb4uTQzTPkd2xMUsQ4B/4
+         cGfkleKDShOLTjij8QNOz6l/eTLDiOW7q4MbS9NzEHqQrVMO3jxSN9d2FnZPmTH18HHt
+         PoYaCyaGChM2zHe9Mrt2JYvs18uJTD0vQm3dsVJg2+7lZ2g7DH1XwAf53jE8TJS6OXZ5
+         mRL7xgMNinPPWL8xTtd7Pu9+Gl4xBZvBp+eZ2HSI9Twh1TtF2EYflORFuhGTi1ucT4LZ
+         jpxhIWNex1+8aKVw/jNtVKafF1ogzF/Yg08k9X7fa0SAS85DxQggL5YeaHvmG0DnwRxj
+         Rmrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gA5BB/+6xQCvX9+gmlnfVRPEcDMzoMSPM6EjTizB38A=;
+        b=i5A1q/uPZ/YS19cZShSg4UmDtdpCoRlE8Y4LiLUmEkqOHqNMKlyQxKckAv+0xGP0fz
+         T/1pYBY9xCAMdnsXR7krQQxdsvWkEjPy9TVtJgivAaOqh98yBtbQITLg3EiX/SIU3NAV
+         vlsERzeLePpUsoySiDflv647oe/9qutR7HlbtDl97utLB2ZhZQKB5h5T+BHZALcrNUzA
+         R5oDZc2zFFftvE2ePQffUTDsOVS1Njekgn01zNbq0yKS9HDvsVYXPUXywnddrQ3C3vNj
+         aCY/LkAEOMFfZPWBA0m03SDBdhhig4Ac2DYjDOFl/CGvOSmAoEEHPDthCyQxtAbjJrn2
+         duWg==
+X-Gm-Message-State: AOAM533L3h/VMq0RTX5y/kO5FPFicC9sTFEKbE6gsdzzzN/exefyPmG7
+        Tpmt25hnua8KP67vOl9ijX9EXl0HsivJqNWOtDhjhw==
+X-Google-Smtp-Source: ABdhPJxe9m0zrVq6TFy9qvEwk+3us03Rs+PvTuX4Rhtblh9UKM18MT2x1MkvcTf3UnJJL0vy7PaKOK69M0GNn/+fsp8=
+X-Received: by 2002:adf:f247:: with SMTP id b7mr3217109wrp.128.1597308596480;
+ Thu, 13 Aug 2020 01:49:56 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20200813033807.19556-1-qiuwenbo@phytium.com.cn>
+In-Reply-To: <20200813033807.19556-1-qiuwenbo@phytium.com.cn>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 13 Aug 2020 14:19:44 +0530
+Message-ID: <CAAhSdy1hLAVEHohtuZ6XYxOjWgUmZPXah=tJFrb6tWoRyEiRgA@mail.gmail.com>
+Subject: Re: [PATCH v2] riscv: Setup exception vector for nommu platform
+To:     Qiu Wenbo <qiuwenbo@phytium.com.cn>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTmljayBEZXNhdWxuaWVycw0KPiBTZW50OiAxMyBBdWd1c3QgMjAyMCAwMToxMw0KPiAN
-Cj4gT24gVGh1LCBBdWcgNiwgMjAyMCBhdCAzOjExIFBNIFRob21hcyBHbGVpeG5lciA8dGdseEBs
-aW51dHJvbml4LmRlPiB3cm90ZToNCj4gPg0KPiA+IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIu
-ZGU+IHdyaXRlczoNCj4gPiA+IFdoZW4gdXNpbmcgdGhlIGNsYW5nIGludGVncmF0ZWQgYXNzZW1i
-bGVyLCB3ZSBnZXQgYSByZWZlcmVuY2UNCj4gPiA+IHRvIF9fZm9yY2Vfb3JkZXIgdGhhdCBzaG91
-bGQgbm9ybWFsbHkgZ2V0IGlnbm9yZWQgaW4gYSBmZXcNCj4gPiA+IHJhcmUgY2FzZXM6DQo+ID4g
-Pg0KPiA+ID4gRVJST1I6IG1vZHBvc3Q6ICJfX2ZvcmNlX29yZGVyIiBbZHJpdmVycy9jcHVmcmVx
-L3Bvd2Vybm93LWs2LmtvXSB1bmRlZmluZWQhDQo+ID4gPg0KPiA+ID4gQWRkIGEgJ3N0YXRpYycg
-ZGVmaW5pdGlvbiBzbyBhbnkgZmlsZSBpbiB3aGljaCB0aGlzIGhhcHBlbnMgY2FuDQo+ID4gPiBo
-YXZlIGEgbG9jYWwgY29weS4NCj4gPg0KPiA+IFRoYXQncyBhIGhvcnJpYmxlIGhhY2suDQo+IA0K
-PiBBZ3JlZWQuICBBbmQgc3RhdGljIG1lYW5zIGV2ZXJ5b25lIGdldHMgdGhlaXIgb3duIGNvcHks
-IHJhdGhlciB0aGFuDQo+IHNoYXJpbmcgb25lIG1lbW9yeSBhZGRyZXNzLiAgSSBndWVzcyBubyBv
-bmUgYWN0dWFsbHkgd3JpdGVzIHRvIGl0LCBzbw0KPiBpdCBkb2Vzbid0IHJlYWxseSBtYXR0ZXIs
-IGJ1dCBfX2ZvcmNlX29yZGVyIGp1c3Qgc2VlbXMgc28gc3RyYW5nZSB0bw0KPiBtZS4NCg0KSXQg
-Y291bGQgYmUgY2hhbmdlZCB0byB1c2UgYSBzeW1ib2wgdGhhdCB0aGUgbGlua2VyIHNjcmlwdCBh
-bHJlYWR5IGRlZmluZXMuDQpIb3dldmVyIGl0IGRvZXMgbG9vayBsaWtlIGEgd29ya2Fyb3VuZCBm
-b3IgYSBicm9rZW4gdmVyc2lvbiBvZiBnY2MuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFk
-ZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywg
-TUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Thu, Aug 13, 2020 at 9:10 AM Qiu Wenbo <qiuwenbo@phytium.com.cn> wrote:
+>
+> Exception vector is missing on nommu platform and that is an issue.
+> This patch is tested in Sipeed Maix Bit Dev Board.
+>
+> Fixes: 79b1feba5455 ("RISC-V: Setup exception vector early")
+> Suggested-by: Anup Patel <anup@brainfault.org>
+> Suggested-by: Atish Patra <atishp@atishpatra.org>
+> Signed-off-by: Qiu Wenbo <qiuwenbo@phytium.com.cn>
+> ---
+>  arch/riscv/kernel/head.S | 25 +++++++++++++++++--------
+>  1 file changed, 17 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+> index d0c5c316e9bb..0a4e81b8dc79 100644
+> --- a/arch/riscv/kernel/head.S
+> +++ b/arch/riscv/kernel/head.S
+> @@ -77,16 +77,10 @@ relocate:
+>         csrw CSR_SATP, a0
+>  .align 2
+>  1:
+> -       /* Set trap vector to exception handler */
+> -       la a0, handle_exception
+> +       /* Set trap vector to spin forever to help debug */
+> +       la a0, .Lsecondary_park
+>         csrw CSR_TVEC, a0
+>
+> -       /*
+> -        * Set sup0 scratch register to 0, indicating to exception vector that
+> -        * we are presently executing in kernel.
+> -        */
+> -       csrw CSR_SCRATCH, zero
+> -
+>         /* Reload the global pointer */
+>  .option push
+>  .option norelax
+> @@ -144,9 +138,23 @@ secondary_start_common:
+>         la a0, swapper_pg_dir
+>         call relocate
+>  #endif
+> +       call setup_trap_vector
+>         tail smp_callin
+>  #endif /* CONFIG_SMP */
+>
+> +.align 2
+> +setup_trap_vector:
+> +       /* Set trap vector to exception handler */
+> +       la a0, handle_exception
+> +       csrw CSR_TVEC, a0
+> +
+> +       /*
+> +        * Set sup0 scratch register to 0, indicating to exception vector that
+> +        * we are presently executing in kernel.
+> +        */
+> +       csrw CSR_SCRATCH, zero
+> +       ret
+> +
+>  .Lsecondary_park:
+>         /* We lack SMP support or have too many harts, so park this hart */
+>         wfi
+> @@ -240,6 +248,7 @@ clear_bss_done:
+>         call relocate
+>  #endif /* CONFIG_MMU */
+>
+> +       call setup_trap_vector
+>         /* Restore C environment */
+>         la tp, init_task
+>         sw zero, TASK_TI_CPU(tp)
+> --
+> 2.28.0
+>
 
+Looks good to me.
+
+Reviewed-by: Anup Patel <anup@brainfault.org>
+
+Regards,
+Anup
