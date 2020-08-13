@@ -2,169 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC43243C61
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AC2243C5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgHMPTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 11:19:55 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:36947 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726334AbgHMPTs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 11:19:48 -0400
-Received: by mail-wm1-f66.google.com with SMTP id k8so5397500wma.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 08:19:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sWVYbnLUoQh2/bQ8PJoxS/2ocrG/gYbDVzBuksdzAMQ=;
-        b=fwKa9tq/kj43Esimh7kXdizIyHU8WFQoxI5LEVmwhsM8T+okPPcxDoBUWDFd8PnkKE
-         lrLi6bhISXpzEKhTHOZjGRywZqwBQHyP7pWmw4Ys5EST/0/lcp7n2XuVZ4JGO3WubagH
-         VRQ5UbylkLGDUAJRllUPkXxoyGLKnCw9/jTip1H7GHLt+xh6j/Up+xKzTOU+fq4s3AkH
-         QlTTjO0+aL0tb8sfDVzwW4tg4+FE02vWEGXxvL9LjLsdafnyohy93PsxQT7uvmbqYBkG
-         yZ/n9BCrWcUpcgnLOkdGjhi+vykx+iwdhYIi7ZXTJGXp6P6DGy1azdeW4YzQq9aoXlLY
-         VnLw==
-X-Gm-Message-State: AOAM531QMYOLSZ1R0qKO4VeaFq2mtqYLBdBLxnRxS9vNNS0TkKyLRsNH
-        wKCFz/Kt50Sqthuf8JJ8aE4=
-X-Google-Smtp-Source: ABdhPJwKxFGbrbkYgxZpXwjaDbyI5I0M4/6XBG+VYoGVV0KtiAQ9ydy+etzJBWJI2Bu24vC6GiUcYw==
-X-Received: by 2002:a1c:de88:: with SMTP id v130mr4675656wmg.98.1597331986347;
-        Thu, 13 Aug 2020 08:19:46 -0700 (PDT)
-Received: from localhost.localdomain ([185.248.161.177])
-        by smtp.gmail.com with ESMTPSA id d23sm10394044wmd.27.2020.08.13.08.19.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 08:19:45 -0700 (PDT)
-From:   Alexander Popov <alex.popov@linux.com>
-To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        David Howells <dhowells@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
-        Alexander Popov <alex.popov@linux.com>
-Cc:     notify@kernel.org
-Subject: [PATCH RFC 2/2] lkdtm: Add heap spraying test
-Date:   Thu, 13 Aug 2020 18:19:22 +0300
-Message-Id: <20200813151922.1093791-3-alex.popov@linux.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200813151922.1093791-1-alex.popov@linux.com>
-References: <20200813151922.1093791-1-alex.popov@linux.com>
+        id S1726780AbgHMPTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 11:19:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726334AbgHMPTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 11:19:41 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 026FC2078D;
+        Thu, 13 Aug 2020 15:19:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597331980;
+        bh=GUc3HeAnqqqqlsdI+PNr6Cgi6V9dzbFIkHuID4DZjzI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DIiIBqmnUPBmVeIvv4yjwhCDacHmHrEQHVUbgeg0ZB6vwx9bcaF4avc9PMhdS9tg4
+         wmCpHDJVgeI8xWGlbAsKPNVAc5v0lwU9azqZ/Cj7xf41op7j3POQ+qqgoptGJcOgzS
+         EkqphfYghJlApnHGgR4tE/oV7hq+0yoT9qJoTrJI=
+Date:   Thu, 13 Aug 2020 16:19:35 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Jordan Crouse <jcrouse@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [Freedreno] [PATCH v12 04/13] iommu: Add a domain attribute to
+ get/set a pagetable configuration
+Message-ID: <20200813151934.GA10534@willie-the-truck>
+References: <20200810222657.1841322-1-jcrouse@codeaurora.org>
+ <20200810222657.1841322-5-jcrouse@codeaurora.org>
+ <20200813131412.GB10256@willie-the-truck>
+ <CAF6AEGuCubnXu7FKuCHPx0Bow4O7M8NSBThHDusev7xX6v2zQQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGuCubnXu7FKuCHPx0Bow4O7M8NSBThHDusev7xX6v2zQQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a simple test for CONFIG_SLAB_QUARANTINE.
+On Thu, Aug 13, 2020 at 08:11:02AM -0700, Rob Clark wrote:
+> On Thu, Aug 13, 2020 at 6:14 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Mon, Aug 10, 2020 at 04:26:48PM -0600, Jordan Crouse wrote:
+> > > Add domain attribute DOMAIN_ATTR_PGTABLE_CFG. This will be used by
+> > > arm-smmu to share the current pagetable configuration with the
+> > > leaf driver and to allow the leaf driver to set up a new pagetable
+> > > configuration under certain circumstances.
+> > >
+> > > Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> > > ---
+> > >
+> > >  include/linux/iommu.h | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> > > index fee209efb756..995ab8c47ef2 100644
+> > > --- a/include/linux/iommu.h
+> > > +++ b/include/linux/iommu.h
+> > > @@ -118,6 +118,7 @@ enum iommu_attr {
+> > >       DOMAIN_ATTR_FSL_PAMUV1,
+> > >       DOMAIN_ATTR_NESTING,    /* two stages of translation */
+> > >       DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE,
+> > > +     DOMAIN_ATTR_PGTABLE_CFG,
+> > >       DOMAIN_ATTR_MAX,
+> > >  };
+> >
+> > Nobody other than the adreno gpu uses this, so can we avoid exposing it
+> > in the IOMMU API, please? Given that you have a reference to the adreno
+> > GPU device in the SMMU implementation code thanks to .alloc_context_bank(),
+> > can you squirrel some function pointers away in the driver data (i.e. with
+> > dev_set_drvdata()) instead?
+> >
+> 
+> Hmm, we are already using drvdata on the gpu side, and it looks like
+> arm-smmu is also using it.  Could we get away with stashing an extra
+> 'void *' in iommu_domain itself?
 
-It performs heap spraying that aims to reallocate the recently freed heap
-object. This technique is used for exploiting use-after-free
-vulnerabilities in the kernel code.
+What I meant was, expose the type of whatever you put in there on the GPU
+side so that the SMMU impl can install its function pointers into a field of
+that structure. As far as I'm concerned, the SMMU impl code and the GPU
+driver are the same entity and we should keep their communication private,
+rather than expose it up the stack. After all, the GPU writes to the SMMU
+registers!
 
-This test shows that CONFIG_SLAB_QUARANTINE breaks heap spraying
-exploitation technique.
+If you really don't want to expose all of your gubbins, I suppose you
+could have a structure just for the SMMU view and container_of() out of
+that on the GPU side.
 
-Signed-off-by: Alexander Popov <alex.popov@linux.com>
----
- drivers/misc/lkdtm/core.c  |  1 +
- drivers/misc/lkdtm/heap.c  | 40 ++++++++++++++++++++++++++++++++++++++
- drivers/misc/lkdtm/lkdtm.h |  1 +
- 3 files changed, 42 insertions(+)
-
-diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
-index a5e344df9166..78b7669c35eb 100644
---- a/drivers/misc/lkdtm/core.c
-+++ b/drivers/misc/lkdtm/core.c
-@@ -126,6 +126,7 @@ static const struct crashtype crashtypes[] = {
- 	CRASHTYPE(SLAB_FREE_DOUBLE),
- 	CRASHTYPE(SLAB_FREE_CROSS),
- 	CRASHTYPE(SLAB_FREE_PAGE),
-+	CRASHTYPE(HEAP_SPRAY),
- 	CRASHTYPE(SOFTLOCKUP),
- 	CRASHTYPE(HARDLOCKUP),
- 	CRASHTYPE(SPINLOCKUP),
-diff --git a/drivers/misc/lkdtm/heap.c b/drivers/misc/lkdtm/heap.c
-index 1323bc16f113..a72a241e314a 100644
---- a/drivers/misc/lkdtm/heap.c
-+++ b/drivers/misc/lkdtm/heap.c
-@@ -205,6 +205,46 @@ static void ctor_a(void *region)
- static void ctor_b(void *region)
- { }
- 
-+#define HEAP_SPRAY_SIZE 128
-+
-+void lkdtm_HEAP_SPRAY(void)
-+{
-+	int *addr;
-+	int *spray_addrs[HEAP_SPRAY_SIZE] = { 0 };
-+	unsigned long i = 0;
-+
-+	addr = kmem_cache_alloc(a_cache, GFP_KERNEL);
-+	if (!addr) {
-+		pr_info("Unable to allocate memory in lkdtm-heap-a cache\n");
-+		return;
-+	}
-+
-+	*addr = 0x31337;
-+	kmem_cache_free(a_cache, addr);
-+
-+	pr_info("Performing heap spraying...\n");
-+	for (i = 0; i < HEAP_SPRAY_SIZE; i++) {
-+		spray_addrs[i] = kmem_cache_alloc(a_cache, GFP_KERNEL);
-+		*spray_addrs[i] = 0x31337;
-+		pr_info("attempt %lu: spray alloc addr %p vs freed addr %p\n",
-+						i, spray_addrs[i], addr);
-+		if (spray_addrs[i] == addr) {
-+			pr_info("freed addr is reallocated!\n");
-+			break;
-+		}
-+	}
-+
-+	if (i < HEAP_SPRAY_SIZE)
-+		pr_info("FAIL! Heap spraying succeed :(\n");
-+	else
-+		pr_info("OK! Heap spraying hasn't succeed :)\n");
-+
-+	for (i = 0; i < HEAP_SPRAY_SIZE; i++) {
-+		if (spray_addrs[i])
-+			kmem_cache_free(a_cache, spray_addrs[i]);
-+	}
-+}
-+
- void __init lkdtm_heap_init(void)
- {
- 	double_free_cache = kmem_cache_create("lkdtm-heap-double_free",
-diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
-index 8878538b2c13..dfafb4ae6f3a 100644
---- a/drivers/misc/lkdtm/lkdtm.h
-+++ b/drivers/misc/lkdtm/lkdtm.h
-@@ -45,6 +45,7 @@ void lkdtm_READ_BUDDY_AFTER_FREE(void);
- void lkdtm_SLAB_FREE_DOUBLE(void);
- void lkdtm_SLAB_FREE_CROSS(void);
- void lkdtm_SLAB_FREE_PAGE(void);
-+void lkdtm_HEAP_SPRAY(void);
- 
- /* lkdtm_perms.c */
- void __init lkdtm_perms_init(void);
--- 
-2.26.2
-
+Will
