@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7340924352D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E4E243533
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgHMHqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 03:46:33 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:40902 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726048AbgHMHqc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 03:46:32 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07D7g8vu134750;
-        Thu, 13 Aug 2020 07:46:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=1MX3Zx2lAV/2UR78cqQ4np2FmrbW68MrXye6TvNF6z8=;
- b=XEX2+JsCOP1FjleAxNmKy6cPA1aTpr1Z4OyqsAMbOpR1U9kQf9by8BeNhbZvc4kqcFh1
- 4vOjOyd1fjK+72rPNgPcGr+w9e6JIvZqfpk1NXgiK/iBlJlYd4uEsL7FlWNqC511EBOT
- xB2P0g4XD5gqZi/e57oxndVb122DQ/laY4yuIa+q135HAHhJ5QhW3LI5MnqW3hTr53Lp
- b8OU0Y99hecJjRiOEyM3kB3bp0r96UTrvj0VFCmf87qZZ/0aP5D+ufUdI0t0EhAzHZYu
- m29xKqSo1KFjftHQC3jKk8j1fAbWwRmi1zD/0kidNxc00WfTUU4NvCO0TFHhNCKdG1hK vA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 32t2ydwdn0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 13 Aug 2020 07:46:23 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07D7bZUY014534;
-        Thu, 13 Aug 2020 07:46:23 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 32u3h4vbse-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 Aug 2020 07:46:23 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07D7kKTL008965;
-        Thu, 13 Aug 2020 07:46:22 GMT
-Received: from [10.191.2.179] (/10.191.2.179)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 13 Aug 2020 07:46:20 +0000
-Subject: Re: [PATCH] block: insert a general SMP memory barrier before
- wake_up_bit()
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20200813024438.13170-1-jian.w.wen@oracle.com>
- <20200813073115.GA15436@infradead.org>
-From:   Jacob Wen <jian.w.wen@oracle.com>
-Message-ID: <0a1d9db5-dc5f-5718-048d-861385ce2832@oracle.com>
-Date:   Thu, 13 Aug 2020 15:46:15 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200813073115.GA15436@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9711 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 spamscore=0 suspectscore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008130058
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9711 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 priorityscore=1501
- malwarescore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 phishscore=0 adultscore=0 spamscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008130058
+        id S1726606AbgHMHri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 03:47:38 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:21106 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726048AbgHMHrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 03:47:37 -0400
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app2 (Coremail) with SMTP id by_KCgCHj+fd7zRfB4jOAQ--.60727S4;
+        Thu, 13 Aug 2020 15:46:41 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Mark Hills <mark@xwax.org>,
+        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Giuliano Pochini <pochini@shiny.it>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] ALSA: echoaudio: Fix potential Oops in snd_echo_resume()
+Date:   Thu, 13 Aug 2020 15:46:30 +0800
+Message-Id: <20200813074632.17022-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgCHj+fd7zRfB4jOAQ--.60727S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7JrWDuw4rArWkZF45tr4xWFg_yoWkWrX_Gw
+        48urn5Cay5tr95C34DJrW8WryDJ3Za9r1xA39xtF47JasxJas2qr97Xrs3AryxurW09r98
+        KrWrXryjkrn0kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbV8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoLBlZdtPic1gABsJ
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Freeing chip on error may lead to an Oops at the next time
+the system goes to resume. Fix this by removing all
+snd_echo_free() calls on error.
 
-On 8/13/20 3:31 PM, Christoph Hellwig wrote:
-> On Thu, Aug 13, 2020 at 10:44:38AM +0800, Jacob Wen wrote:
->> wake_up_bit() uses waitqueue_active() that needs the explicit smp_mb().
-> Sounds like the barrier should go into wake_up_bit then..
+Fixes: 47b5d028fdce8 ("ALSA: Echoaudio - Add suspend support #2")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
 
-wake_up_bit() doesn't know which one to chose: smp_mb__after_atomic() or 
-smp_mb().
+Changelog:
 
->
->> Signed-off-by: Jacob Wen <jian.w.wen@oracle.com>
->> ---
->>   fs/block_dev.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/fs/block_dev.c b/fs/block_dev.c
->> index 0ae656e022fd..e74980848a2a 100644
->> --- a/fs/block_dev.c
->> +++ b/fs/block_dev.c
->> @@ -1175,6 +1175,7 @@ static void bd_clear_claiming(struct block_device *whole, void *holder)
->>   	/* tell others that we're done */
->>   	BUG_ON(whole->bd_claiming != holder);
->>   	whole->bd_claiming = NULL;
->> +	smp_mb();
->>   	wake_up_bit(&whole->bd_claiming, 0);
->>   }
->>   
->> -- 
->> 2.17.1
->>
-> ---end quoted text---
+v2: - Remove snd_echo_free() calls in all error paths.
+---
+ sound/pci/echoaudio/echoaudio.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+index 6aeb99aa2414..868f1dcd27d6 100644
+--- a/sound/pci/echoaudio/echoaudio.c
++++ b/sound/pci/echoaudio/echoaudio.c
+@@ -2213,7 +2213,6 @@ static int snd_echo_resume(struct device *dev)
+ 	if (err < 0) {
+ 		kfree(commpage_bak);
+ 		dev_err(dev, "resume init_hw err=%d\n", err);
+-		snd_echo_free(chip);
+ 		return err;
+ 	}
+ 
+@@ -2240,7 +2239,6 @@ static int snd_echo_resume(struct device *dev)
+ 	if (request_irq(pci->irq, snd_echo_interrupt, IRQF_SHARED,
+ 			KBUILD_MODNAME, chip)) {
+ 		dev_err(chip->card->dev, "cannot grab irq\n");
+-		snd_echo_free(chip);
+ 		return -EBUSY;
+ 	}
+ 	chip->irq = pci->irq;
+-- 
+2.17.1
+
