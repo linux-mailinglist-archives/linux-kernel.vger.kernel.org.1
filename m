@@ -2,142 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40698243946
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34597243958
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgHMLV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 07:21:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgHMLVZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 07:21:25 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44291C061383;
-        Thu, 13 Aug 2020 04:21:25 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id e14so3122038ybf.4;
-        Thu, 13 Aug 2020 04:21:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0SrbfwtjCL+Ch70ZV12lTDvT9PgGCIle5pOe2njGh38=;
-        b=uqSSJl1QBhCjyTIGGHPmllHzdNyHwp5crRG08NLkDMIuGqMzYtAS9sZ9UmerNqbuC8
-         RoVhDM8VWhxNtjfUpiP1IJs09F00r59FavT3pGpMyD0stSqPf5tuZ2Sqp55V7YMz7/k/
-         fMrtqojnocJHva2BoZ/XPyQXoSI3DnuL383sQhJhO+ehsq0xQlS7ZTJIfID6quVv8KPo
-         JBX+FSPxQwb1qeD0jnC1k96eXtgIGnXv4YnnYUcy48Qq64qLQedxvBaVZnBGEftXhQoj
-         RmeEz+SnUkpI6Ful0FLbfd0ugGEirEBWRPIgTvV7f/0NmNLGaxjV+a/uupC9fWTwrvaJ
-         0xnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0SrbfwtjCL+Ch70ZV12lTDvT9PgGCIle5pOe2njGh38=;
-        b=Tv78kA6FEBegQ/JtteKmLI4iZuTL+dU6laAgmx9ZNRijkzrNEOHsqkrcRQitlaf+0n
-         IFGQ6pA21FP4sVzAhHWA9TlOOC/09Z1IgbPOLO5PBLGrtYZ9d0BzoljbKQ92xlidCAuO
-         LlpdwZcXMrSLQpflm6lE/9g78qXtuZ9QxHroz0BjWuKqDlrJ5nx3Sve5EYaAcymJx9H7
-         bHwQLJ+eKrpgVwepneYXfxdM81jzMVrW0C4npdSPUGTwhPmgegN2F771S5nToVXKFdVC
-         NC921g14vhv0qvY6urskyz6TMMGaQwsRgCeZY2cPtlU4c9GeVKnaOavlOee49HqkaqBS
-         LeJQ==
-X-Gm-Message-State: AOAM5317o7iUJbZ/3QZfUfom0znBjxAKXvp3mulF99xl6za7Oe3+pcQ2
-        PflkzKMzeYhijAqbVG9SeFDU2GKwnYmjT49/lG4=
-X-Google-Smtp-Source: ABdhPJxx5+KUKPX1w0oAy96kpCKRHE3RSshStqR59IK1IKnc/G77Uin05ciyk051/7IYQ6oWt+QgwrIFPasAmhFEqe4=
-X-Received: by 2002:a25:c743:: with SMTP id w64mr5638674ybe.127.1597317684356;
- Thu, 13 Aug 2020 04:21:24 -0700 (PDT)
+        id S1726689AbgHMLaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 07:30:16 -0400
+Received: from mail2.skidata.com ([91.230.2.91]:34726 "EHLO mail2.skidata.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726100AbgHMLaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 07:30:14 -0400
+X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Aug 2020 07:30:12 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=skidata.com; i=@skidata.com; q=dns/txt; s=selector1;
+  t=1597318212; x=1628854212;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=89bAGdQq58IWsLtFPLh9wpw9ICJ6Mc83yC/h2CpVF7Y=;
+  b=gmiIs9xB40mH5A5EZR2XIW6s9njJ+NmW1Jbq8TKZrHpuAX42r+Qo2ETa
+   MEkO42ZuX6gv+G+6Dt7Zk68YEc836Z4GbWXRS8+7emfWPQKZ54ThPsLBL
+   cNORA9GoL4kI1YtlLLMEl8KS4d82vdXrwZiRSt6uOJSgAknvzTBHDgzeQ
+   GlXOrV2WmuYbi+UNI/BrybRyWROEvHqKzGIjdfCJRe9vPHiPvgVhtqwYQ
+   xS64s8kIFaZZOAmNcXl01Ewkci2pB5eZcsSYk/KOsJ/1eRuxK4iKQyfr1
+   H/XLIFePptK55urI2+7zpSuugKYtVo0GjQpw9Cx0zzyVhu1Xd9caC+SMn
+   w==;
+IronPort-SDR: g2o/GJDhU0h+zjPmQsuKI9ODAT/nVkeCiipCpG2uwpWm3Ae9iIIdcYGq0fMra8Ta3DFaRKw9EN
+ QHBiww9oRQd1JARQBabv+Mtm/liFgUXSvJNk1lVA4Sn+BgZlk68O6Yp7I/qdZbSH89QuUn4G8p
+ bHRgOEaC8nffSuA5+pzf4rHSs7uX7mvkRpbaWzW3tNAD61xzP6sUICpmgLgiQ3BHpmpR4MGc0n
+ Z3a5yxwqqljYiuMXgJWpi4RtTZw/LJi7D9uHi++qB7ptZ6mu0pQJA9I0ZlmGWFaIjYC/4aIRDr
+ TJ4=
+X-IronPort-AV: E=Sophos;i="5.76,308,1592863200"; 
+   d="scan'208";a="2640424"
+Date:   Thu, 13 Aug 2020 13:22:58 +0200
+From:   Richard Leitner <richard.leitner@skidata.com>
+To:     <dmaengine@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <timur@kernel.org>, <nicoleotsuka@gmail.com>, <vkoul@kernel.org>,
+        <dan.j.williams@intel.com>, <linux-imx@nxp.com>,
+        <shawnguo@kernel.org>, <kernel@pengutronix.de>,
+        Benjamin Bara <benjamin.bara@skidata.com>
+Subject: pcm|dmaengine|imx-sdma race condition on i.MX6
+Message-ID: <20200813112258.GA327172@pcleri>
 MIME-Version: 1.0
-References: <20200812140217.24251-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200812140217.24251-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdV4Tp=kz57pAJk0u5hVpbiEdVzTWDvK+F1AZ5TjGmLbMQ@mail.gmail.com>
- <CA+V-a8svAuDx51vuTCH4w5g0oF9qf8sWAEjMDMm+0+9u-UQhQw@mail.gmail.com>
- <20200813105910.GB6057@pendragon.ideasonboard.com> <CA+V-a8sRQ_R4UGkSjrZ7Rq5nUqTwPtbvuuT0t69mM8M8ZeTkRQ@mail.gmail.com>
- <20200813111123.GD6057@pendragon.ideasonboard.com>
-In-Reply-To: <20200813111123.GD6057@pendragon.ideasonboard.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Thu, 13 Aug 2020 12:20:58 +0100
-Message-ID: <CA+V-a8toVwB+_=RmQ4DjhRaTyHoMOPHW2a42NTEUqW+FSv1tmg@mail.gmail.com>
-Subject: Re: [PATCH 1/9] dt-bindings: display: renesas,du: Document r8a774e1 bindings
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-Originating-IP: [192.168.111.252]
+X-ClientProxiedBy: sdex6srv.skidata.net (192.168.111.84) To
+ sdex5srv.skidata.net (192.168.111.83)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+Hi,
+we've found a race condition with the PCM on the i.MX6 which results in
+an -EIO for the SNDRV_PCM_IOCTL_READI_FRAMES ioctl after an -EPIPE (XRUN).
 
-On Thu, Aug 13, 2020 at 12:11 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Prabhakar,
->
-> On Thu, Aug 13, 2020 at 12:08:58PM +0100, Lad, Prabhakar wrote:
-> > On Thu, Aug 13, 2020 at 11:59 AM Laurent Pinchart wrote:
-> > > On Thu, Aug 13, 2020 at 11:38:03AM +0100, Lad, Prabhakar wrote:
-> > >> On Thu, Aug 13, 2020 at 10:05 AM Geert Uytterhoeven wrote:
-> > >>> On Wed, Aug 12, 2020 at 4:02 PM Lad Prabhakar wrote:
-> > >>>> From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-> > >>>>
-> > >>>> Document the RZ/G2H (a.k.a. r8a774e1) SoC in the R-Car DU bindings.
-> > >>>>
-> > >>>> Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-> > >>>> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > >>>> ---
-> > >>>>  Documentation/devicetree/bindings/display/renesas,du.txt | 2 ++
-> > >>>>  1 file changed, 2 insertions(+)
-> > >>>>
-> > >>>> diff --git a/Documentation/devicetree/bindings/display/renesas,du.txt b/Documentation/devicetree/bindings/display/renesas,du.txt
-> > >>>> index 51cd4d162770..67cded5ad827 100644
-> > >>>> --- a/Documentation/devicetree/bindings/display/renesas,du.txt
-> > >>>> +++ b/Documentation/devicetree/bindings/display/renesas,du.txt
-> > >>>> @@ -10,6 +10,7 @@ Required Properties:
-> > >>>>      - "renesas,du-r8a774a1" for R8A774A1 (RZ/G2M) compatible DU
-> > >>>>      - "renesas,du-r8a774b1" for R8A774B1 (RZ/G2N) compatible DU
-> > >>>>      - "renesas,du-r8a774c0" for R8A774C0 (RZ/G2E) compatible DU
-> > >>>> +    - "renesas,du-r8a774e1" for R8A774E1 (RZ/G2H) compatible DU
-> > >>>>      - "renesas,du-r8a7779" for R8A7779 (R-Car H1) compatible DU
-> > >>>>      - "renesas,du-r8a7790" for R8A7790 (R-Car H2) compatible DU
-> > >>>>      - "renesas,du-r8a7791" for R8A7791 (R-Car M2-W) compatible DU
-> > >>>> @@ -75,6 +76,7 @@ corresponding to each DU output.
-> > >>>>   R8A774A1 (RZ/G2M)      DPAD 0         HDMI 0         LVDS 0         -
-> > >>>>   R8A774B1 (RZ/G2N)      DPAD 0         HDMI 0         LVDS 0         -
-> > >>>>   R8A774C0 (RZ/G2E)      DPAD 0         LVDS 0         LVDS 1         -
-> > >>>> + R8A774E1 (RZ/G2H)      DPAD 0         HDMI 0         LVDS 0         -
-> > >>>
-> > >>> As LVDS 0 is the fourth channel (DU3), should it be listed under port 3
-> > >>> instead of port 2?
-> > >>>
-> > >>> I know we did it the same for R-Car M3-N and RZ/G2N.
-> > >>> But my main worry is adding support for R-Car H3-N later.
-> > >
-> > > Why should we do so ? The port number here isn't tied to the DU channel
-> > > number. It only identifies the output port. Many DUs can route DU
-> > > channel outputs to different output ports.
-> > >
-> > The binding document (renesas,du.txt) does state that "The following
-> > table lists for each supported model the port number corresponding to
-> > each DU output.", hence the confusion.
->
-> It can be a bit confusing indeed. "DU output" here refers to the output
-> of the whoel DU, made of individual DU channels. Each DU channel is
-> listed as a DU device in the datasheet, and collectively they are the DU
-> device that Linux handles.
->
-Thanks for the clarification, that clears up the confusion.
+A possible reproduction may look like the following reduced call graph
+during a PCM capture:
 
-Cheers,
-Prabhakar
+us -> ioctl(SNDRV_PCM_IOCTL_READI_FRAMES)
+      - wait_for_avail()
+        - schedule_timeout()
+   -> snd_pcm_update_hw_ptr0()
+      - snd_pcm_update_state: EPIPE (XRUN)
+      - sdma_disable_channel_async() # get's scheduled away due to sleep
+us <- ioctl(SNDRV_PCM_IOCTL_READI_FRAMES) returns -EPIPE
+us -> ioctl(SNDRV_PCM_IOCTL_PREPARE) # as reaction to the EPIPE (XRUN)
+us -> ioctl(SNDRV_PCM_IOCTL_READI_FRAMES) # next try to capture frames
+      - sdma_prep_dma_cyclic()
+        - sdma_load_context() # not loaded as context_loaded is 1
+      - wait_for_avail()
+        - schedule_timeout()
+# now the sdma_channel_terminate_work() comes back and sets
+# context_loaded = false and frees in vchan_dma_desc_free_list().
+us <- ioctl returns -EIO (capture write error (DMA or IRQ trouble?))
+
+
+What we have found out, based on our understanding:
+The dmaengine docu states that a dmaengine_terminate_async() must be
+followed by a dmaengine_synchronize().
+However, in the pcm_dmaengine.c, only dmaengine_terminate_async() is
+called (for performance reasons and because it might be called from an
+interrupt handler).
+
+In our tests, we saw that the user-space immediately calls
+ioctl(SNDRV_PCM_IOCTL_PREPARE) as a handler for the happened xrun
+(previous ioctl(SNDRV_PCM_IOCTL_READI_FRAMES) returns with -EPIPE). In
+our case (imx-sdma.c), the terminate really happens asynchronously with
+a worker thread which is not awaited/synchronized by the
+ioctl(SNDRV_PCM_IOCTL_PREPARE) call.
+
+Since the syscall immediately enters an atomic context
+(snd_pcm_stream_lock_irq()), we are not able to flush the work of the
+termination worker from within the DMA context. This leads to an
+unterminated DMA getting re-initialized and then terminated.
+
+On the i.MX6 platform the problem is (if I got it correctly) that the
+sdma_channel_terminate_work() called after the -EPIPE gets scheduled
+away (for the 1-2ms sleep [1]). During that time the userspace already
+sends in the ioctl(SNDRV_PCM_IOCTL_PREPARE) and
+ioctl(SNDRV_PCM_IOCTL_READI_FRAMES).
+As none of them are anyhow synchronized to the terminate_worker the
+vchan_dma_desc_free_list() [2] and "sdmac->context_loaded = false;" [3]
+are executed during the wait_for_avail() [4] of the
+ioctl(SNDRV_PCM_IOCTL_READI_FRAMES).
+
+To make sure we identified the problem correctly we've tested to add a
+"dmaengine_synchronize()" before the snd_pcm_prepare() in [5]. This
+fixed the race condition in all our tests. (Before we were able to
+reproduce it in 100% of the test runs).
+
+Based on our understanding, there are two different points to ensure
+the termination:
+Either ensure that the termination is finished within the previous
+SNDRV_PCM_IOCTL_READI_FRAMES call (inside the DMA context) or finishing
+it in the SNDRV_PCM_IOCTL_PREPARE call (and all other applicable ioclts)
+before entering the atomic context (from the PCM context).
+
+We initially thought about implementing the first approach, basically
+splitting up the dma_device terminate_all operation into a sync
+(busy-wait) and a async one. This would align the operations with the
+DMAengine interface and would enable a sync termination variant from
+atomic contexts.
+However, we saw that the dma_free_attrs() function has a WARN_ON on irqs
+disabled, which would be the case for the sync variant.
+
+Side note: We found this issue on the current v5.4.y LTS branch,
+but it also affects v5.8.y.
+
+Any feedback or pointers how we may fix the problem are warmly welcome!
+If anything is unclear please just ask :-)
+
+regards;
+Richard Leitner
+Benjamin Bara
+
+[1]https://elixir.bootlin.com/linux/v5.8/source/drivers/dma/imx-sdma.c#L1066
+[2]https://elixir.bootlin.com/linux/v5.8/source/drivers/dma/imx-sdma.c#L1071
+[3]https://elixir.bootlin.com/linux/v5.8/source/drivers/dma/imx-sdma.c#L1072
+[4]https://elixir.bootlin.com/linux/v5.8/source/sound/core/pcm_lib.c#L1825
+[5]https://elixir.bootlin.com/linux/v5.8/source/sound/core/pcm_native.c#L3226
