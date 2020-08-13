@@ -2,151 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C177243902
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 12:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE1124390E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgHMK7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 06:59:39 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:37856 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726072AbgHMK71 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 06:59:27 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 83D07551;
-        Thu, 13 Aug 2020 12:59:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1597316364;
-        bh=MkCO5WRnwp35q3JzVhLn32/9iCBNr/ShuvAxpwbx+0w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OEs+ZoQnEGKW2rKPrLo5ZB2ySsOpJ9yrxXrpapBX+kUbnKBvv70r3Vpd7R6fRFpsS
-         QJKuhIM+9V/ZzqJ1LP/wkLMTGhx8/NE9nz9F6nLZA5BuiHnSkavsxaC8VJvulh8ppE
-         /tEeOHeoESQX91aKUCO0J5nm9nRkgCTmbsdI3aTw=
-Date:   Thu, 13 Aug 2020 13:59:10 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
+        id S1726682AbgHMLCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 07:02:39 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2599 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726072AbgHMLCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 07:02:36 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 9BF02BCB56C4161DE76E;
+        Thu, 13 Aug 2020 12:02:34 +0100 (IST)
+Received: from [127.0.0.1] (10.210.169.159) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 13 Aug
+ 2020 12:02:34 +0100
+Subject: nvme crash - Re: linux-next: Tree for Aug 13
+To:     linux-nvme <linux-nvme@lists.infradead.org>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/9] dt-bindings: display: renesas,du: Document r8a774e1
- bindings
-Message-ID: <20200813105910.GB6057@pendragon.ideasonboard.com>
-References: <20200812140217.24251-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200812140217.24251-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdV4Tp=kz57pAJk0u5hVpbiEdVzTWDvK+F1AZ5TjGmLbMQ@mail.gmail.com>
- <CA+V-a8svAuDx51vuTCH4w5g0oF9qf8sWAEjMDMm+0+9u-UQhQw@mail.gmail.com>
+References: <20200813165846.27887669@canb.auug.org.au>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <454c65b1-872a-a48c-662d-690044662772@huawei.com>
+Date:   Thu, 13 Aug 2020 12:00:19 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CA+V-a8svAuDx51vuTCH4w5g0oF9qf8sWAEjMDMm+0+9u-UQhQw@mail.gmail.com>
+In-Reply-To: <20200813165846.27887669@canb.auug.org.au>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.169.159]
+X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 13/08/2020 07:58, Stephen Rothwell wrote:
+> Hi all,
 
-On Thu, Aug 13, 2020 at 11:38:03AM +0100, Lad, Prabhakar wrote:
-> On Thu, Aug 13, 2020 at 10:05 AM Geert Uytterhoeven wrote:
-> > On Wed, Aug 12, 2020 at 4:02 PM Lad Prabhakar wrote:
-> > > From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-> > >
-> > > Document the RZ/G2H (a.k.a. r8a774e1) SoC in the R-Car DU bindings.
-> > >
-> > > Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > ---
-> > >  Documentation/devicetree/bindings/display/renesas,du.txt | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/display/renesas,du.txt b/Documentation/devicetree/bindings/display/renesas,du.txt
-> > > index 51cd4d162770..67cded5ad827 100644
-> > > --- a/Documentation/devicetree/bindings/display/renesas,du.txt
-> > > +++ b/Documentation/devicetree/bindings/display/renesas,du.txt
-> > > @@ -10,6 +10,7 @@ Required Properties:
-> > >      - "renesas,du-r8a774a1" for R8A774A1 (RZ/G2M) compatible DU
-> > >      - "renesas,du-r8a774b1" for R8A774B1 (RZ/G2N) compatible DU
-> > >      - "renesas,du-r8a774c0" for R8A774C0 (RZ/G2E) compatible DU
-> > > +    - "renesas,du-r8a774e1" for R8A774E1 (RZ/G2H) compatible DU
-> > >      - "renesas,du-r8a7779" for R8A7779 (R-Car H1) compatible DU
-> > >      - "renesas,du-r8a7790" for R8A7790 (R-Car H2) compatible DU
-> > >      - "renesas,du-r8a7791" for R8A7791 (R-Car M2-W) compatible DU
-> > > @@ -75,6 +76,7 @@ corresponding to each DU output.
-> > >   R8A774A1 (RZ/G2M)      DPAD 0         HDMI 0         LVDS 0         -
-> > >   R8A774B1 (RZ/G2N)      DPAD 0         HDMI 0         LVDS 0         -
-> > >   R8A774C0 (RZ/G2E)      DPAD 0         LVDS 0         LVDS 1         -
-> > > + R8A774E1 (RZ/G2H)      DPAD 0         HDMI 0         LVDS 0         -
-> >
-> > As LVDS 0 is the fourth channel (DU3), should it be listed under port 3
-> > instead of port 2?
-> >
-> > I know we did it the same for R-Car M3-N and RZ/G2N.
-> > But my main worry is adding support for R-Car H3-N later.
+Hi guys,
 
-Why should we do so ? The port number here isn't tied to the DU channel
-number. It only identifies the output port. Many DUs can route DU
-channel outputs to different output ports.
+I have experienced this this crash below on linux-next for the last few 
+days on my arm64 system. Linus' master branch today also has it.
 
-> I do agree too, with the below diff I tested the LVDS output on RZ/G2N
-> Rev2 board and things work fine. But only thing it doesn't explain is
-> why does LVDS work on DU2 for G2[H/N] boards :D
+root@ubuntu:/home/john# insmod nvme.ko
+[148.254564] nvme 0000:81:00.0: Adding to iommu group 21
+[148.260973] nvme nvme0: pci function 0000:81:00.0
+root@ubuntu:/home/john# [148.272996] Unable to handle kernel NULL 
+pointer dereference at virtual address 0000000000000010
+[148.281784] Mem abort info:
+[148.284584] ESR = 0x96000004
+[148.287641] EC = 0x25: DABT (current EL), IL = 32 bits
+[148.292950] SET = 0, FnV = 0
+[148.295998] EA = 0, S1PTW = 0
+[148.299126] Data abort info:
+[148.302003] ISV = 0, ISS = 0x00000004
+[148.305832] CM = 0, WnR = 0
+[148.308794] user pgtable: 4k pages, 48-bit VAs, pgdp=00000a27bf3c9000
+[148.315229] [0000000000000010] pgd=0000000000000000, p4d=0000000000000000
+[148.322016] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[148.327577] Modules linked in: nvme nvme_core
+[148.331927] CPU: 56 PID: 256 Comm: kworker/u195:0 Not tainted 
+5.8.0-next-20200812 #27
+[148.339744] Hardware name: Huawei D06 /D06, BIOS Hisilicon D06 UEFI RC0 
+- V1.16.01 03/15/2019
+[148.348260] Workqueue: nvme-reset-wq nvme_reset_work [nvme]
+[148.353822] pstate: 80c00009 (Nzcv daif +PAN +UAO BTYPE=--)
+[148.359390] pc : __sg_alloc_table_from_pages+0xec/0x238
+[148.364604] lr : __sg_alloc_table_from_pages+0xc8/0x238
+[148.369815] sp : ffff800013ccbad0
+[148.373116] x29: ffff800013ccbad0 x28: ffff0a27b3d380a8
+[148.378417] x27: 0000000000000000 x26: 0000000000002dc2
+[148.383718] x25: 0000000000000dc0 x24: 0000000000000000
+[148.389019] x23: 0000000000000000 x22: ffff800013ccbbe8
+[148.394320] x21: 0000000000000010 x20: 0000000000000000
+[148.399621] x19: 00000000fffff000 x18: ffffffffffffffff
+[148.404922] x17: 00000000000000c0 x16: fffffe289eaf6380
+[148.410223] x15: ffff800011b59948 x14: ffff002bc8fe98f8
+[148.415523] x13: ff00000000000000 x12: ffff8000114ca000
+[148.420824] x11: 0000000000000000 x10: ffffffffffffffff
+[148.426124] x9 : ffffffffffffffc0 x8 : ffff0a27b5f9b6a0
+[148.431425] x7 : 0000000000000000 x6 : 0000000000000001
+[148.436726] x5 : ffff0a27b5f9b680 x4 : 0000000000000000
+[148.442027] x3 : ffff0a27b5f9b680 x2 : 0000000000000000
+[148.447328] x1 : 0000000000000001 x0 : 0000000000000000
+[148.452629] Call trace:
+[148.455065]__sg_alloc_table_from_pages+0xec/0x238
+[148.459931]sg_alloc_table_from_pages+0x18/0x28
+[148.464541]iommu_dma_alloc+0x474/0x678
+[148.468455]dma_alloc_attrs+0xd8/0xf0
+[148.472193]nvme_alloc_queue+0x114/0x160 [nvme]
+[148.476798]nvme_reset_work+0xb34/0x14b4 [nvme]
+[148.481407]process_one_work+0x1e8/0x360
+[148.485405]worker_thread+0x44/0x478
+[148.489055]kthread+0x150/0x158
+[148.492273]ret_from_fork+0x10/0x34
+[148.495838] Code: f94002c3 6b01017f 540007c2 11000486 (f8645aa5)
+[148.501921] ---[ end trace 89bb2b72d59bf925 ]---
+
+Anything to worry about? I guess not since we're in the merge window, 
+but mentioning just in case ...
+
+Thanks,
+john
+
 > 
-> Geert, Laurent, Kieran If you agree with the below changes I shall
-> post a proper patch fixing it for RZ/G2[HN]
+> News: The merge window has opened, so please do not add any v5.10
+> related material to your linux-next included branches until after the
+> merge window closes again.
 > 
-> diff --git a/arch/arm64/boot/dts/renesas/r8a774b1.dtsi
-> b/arch/arm64/boot/dts/renesas/r8a774b1.dtsi
-> index d661724fc28a..0b087d287202 100644
-> --- a/arch/arm64/boot/dts/renesas/r8a774b1.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/r8a774b1.dtsi
-> @@ -2540,8 +2540,8 @@
->                                                 remote-endpoint =
-> <&dw_hdmi0_in>;
->                                         };
->                                 };
-> -                               port@2 {
-> -                                       reg = <2>;
-> +                               port@3 {
-> +                                       reg = <3>;
->                                         du_out_lvds0: endpoint {
->                                                 remote-endpoint = <&lvds0_in>;
->                                         };
-> diff --git a/drivers/gpu/drm/rcar-du/rcar_du_drv.c
-> b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
-> index 3e67cf70f040..419d81c7763e 100644
-> --- a/drivers/gpu/drm/rcar-du/rcar_du_drv.c
-> +++ b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
-> @@ -153,7 +153,7 @@ static const struct rcar_du_device_info
-> rcar_du_r8a774b1_info = {
->                 },
->                 [RCAR_DU_OUTPUT_LVDS0] = {
->                         .possible_crtcs = BIT(0),
-> -                       .port = 2,
-> +                       .port = 3,
->                 },
->         },
->         .num_lvds = 1,
+> Changes since 20200812:
 > 
-> > >   R8A7779 (R-Car H1)     DPAD 0         DPAD 1         -              -
-> > >   R8A7790 (R-Car H2)     DPAD 0         LVDS 0         LVDS 1         -
-> > >   R8A7791 (R-Car M2-W)   DPAD 0         LVDS 0         -              -
-> >
-> > Apart from that:
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> My fixes tree contains:
+> 
+>    73c7adb54169 ("device_cgroup: Fix RCU list debugging warning")
+> 
+> Linus' tree produces a WARNING in my qemu testing (see
+> https://lore.kernel.org/lkml/20200813164654.061dbbd3@canb.auug.org.au/).
+> 
+> Non-merge commits (relative to Linus' tree): 946
+>   1083 files changed, 28405 insertions(+), 9953 deletions(-)
+> 
+> ----------------------------------------------------------------------------
+> 
+> I have created today's linux-next tree at
+> git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> (patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+> are tracking the linux-next tree using git, you should not use "git pull"
+> to do so as that will try to merge the new linux-next release with the
+> old one.  You should use "git fetch" and checkout or reset to the new
+> master.
+> 
+> You can see which trees have been included by looking in the Next/Trees
+> file in the source.  There are also quilt-import.log and merge.log
+> files in the Next directory.  Between each merge, the tree was built
+> with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
+> multi_v7_defconfig for arm and a native build of tools/perf. After
+> the final fixups (if any), I do an x86_64 modules_install followed by
+> builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
+> ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
+> and sparc64 defconfig and htmldocs. And finally, a simple boot test
+> of the powerpc pseries_le_defconfig kernel in qemu (with and without
+> kvm enabled).
+> 
+> Below is a summary of the state of the merge.
+> 
+> I am currently merging 327 trees (counting Linus' and 85 trees of bug
+> fix patches pending for the current merge release).
+> 
+> Stats about the size of the tree over time can be seen at
+> http://neuling.org/linux-next-size.html .
+> 
+> Status of my local build tests will be at
+> http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+> advice about cross compilers/configs that work, we are always open to add
+> more builds.
+> 
+> Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+> Gortmaker for triage and bug fixes.
+> 
 
--- 
-Regards,
-
-Laurent Pinchart
