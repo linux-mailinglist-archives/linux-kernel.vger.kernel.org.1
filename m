@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8741724413C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 00:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B846F24414F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 00:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgHMW1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 18:27:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:57480 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726467AbgHMW1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 18:27:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0E5E1063;
-        Thu, 13 Aug 2020 15:27:14 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6BD903F22E;
-        Thu, 13 Aug 2020 15:27:13 -0700 (PDT)
-References: <20200812125300.11889-1-valentin.schneider@arm.com> <20200812125300.11889-3-valentin.schneider@arm.com> <20200813191614.GB2337490@gmail.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Russell King <linux@armlinux.org.uk>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        peterz@infradead.org, vincent.guittot@linaro.org,
-        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>
-Subject: Re: [PATCH v5 02/17] ARM: Revert back to default scheduler topology.
-In-reply-to: <20200813191614.GB2337490@gmail.com>
-Date:   Thu, 13 Aug 2020 23:27:05 +0100
-Message-ID: <jhjzh6ydvwm.mognet@arm.com>
+        id S1726600AbgHMWea convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Aug 2020 18:34:30 -0400
+Received: from [186.47.21.114] ([186.47.21.114]:34696 "EHLO mail.hmvi.gob.ec"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726205AbgHMWe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 18:34:29 -0400
+X-Greylist: delayed 12996 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Aug 2020 18:34:29 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.hmvi.gob.ec (Postfix) with ESMTP id 45F7AC0302CE4;
+        Thu, 13 Aug 2020 12:27:27 -0500 (-05)
+Received: from mail.hmvi.gob.ec ([127.0.0.1])
+        by localhost (mail.hmvi.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id p_cOAQvDaxkN; Thu, 13 Aug 2020 12:27:26 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.hmvi.gob.ec (Postfix) with ESMTP id 5A51AC036AA1E;
+        Thu, 13 Aug 2020 12:13:28 -0500 (-05)
+X-Virus-Scanned: amavisd-new at hmvi.gob.ec
+Received: from mail.hmvi.gob.ec ([127.0.0.1])
+        by localhost (mail.hmvi.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id tQyUCjw9lEPQ; Thu, 13 Aug 2020 12:13:28 -0500 (-05)
+Received: from [10.73.80.190] (unknown [105.8.3.183])
+        by mail.hmvi.gob.ec (Postfix) with ESMTPSA id 3ABA6C03281BC;
+        Thu, 13 Aug 2020 12:01:54 -0500 (-05)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Covid_19_Wohlt=C3=A4tigkeitsfonds?=
+To:     Recipients <danny.puetate@mail.hmvi.gob.ec>
+From:   ''Tayeb Souami'' <danny.puetate@mail.hmvi.gob.ec>
+Date:   Thu, 13 Aug 2020 19:01:34 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20200813170155.3ABA6C03281BC@mail.hmvi.gob.ec>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Lieber Freund,
 
-On 13/08/20 20:16, Ingo Molnar wrote:
-> * Valentin Schneider <valentin.schneider@arm.com> wrote:
->
->> The ARM-specific GMC level is meant to be built using the thread sibling
->> mask, but no devicetree in arch/arm/boot/dts uses the 'thread' cpu-map
->> binding. With SD_SHARE_POWERDOMAIN gone, this topology level can be
->> removed, at which point ARM no longer benefits from having a custom defined
->> topology table.
->>
->> Delete the GMC topology level by making ARM use the default scheduler
->> topology table. This essentially reverts commit
->>
->>   fb2aa85564f4 ("sched, ARM: Create a dedicated scheduler topology table")
->>
->> Cc: Russell King <linux@armlinux.org.uk>
->> Suggested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
->> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
->> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
->
-> Minor changelog nit, it's helpful to add this final sentence:
->
->     No change in functionality is expected.
->
-> ( If indeed no change in functionality is expected. ;-)
->
+Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika,
+der Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich
+an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre
+E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines
+Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und
+Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die
+Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden,
+um meine Gewinne zu überprüfen, sehen Sie bitte meine You Tube Seite
+unten.
 
-Right, that's indeed the case here given the GMC domain would always be
-degenerated anyway.
 
-> Thanks,
->
->       Ingo
+UHR MICH HIER: https://www.youtube.com/watch?v=Z6ui8ZDQ6Ks
+
+
+Das ist dein Spendencode: [TS530342018]
+
+
+Antworten Sie mit dem SPENDE-CODE an diese
+
+E-Mail:Tayebsouam.spende@gmail.com
+
+
+Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+
+
+Grüße
+
+Herr Tayeb Souami
