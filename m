@@ -2,85 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFDA243462
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2609924345A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgHMHIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 03:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726600AbgHMHIR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 03:08:17 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54021C061383
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 00:08:17 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id a79so2334161pfa.8
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 00:08:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oXHNkcnjdKbtST/Cm72EMU54y/enkmsrbD67DAs+07Q=;
-        b=Fklxr+GNMBRv9AdOmZve+uLJ4LVS10Wd3Efz0ihbZTLMTOPOgReJJykQoZcjwpyjjS
-         d4rRk8uWKwlA8L0irHe9fQ+OspRENYO6F/zcD9N/Mlxe4qKRj4EGAhNVUA8nl1b9969x
-         tjZWGCjF6mJmHcYf5Y5y3Jb2zwct9S+zg1BSwNwGmOjkHim50IkRMlgAhdmJqNqCjlqO
-         VME/tlWH6CN8XMVXFHBLEBlJGUVmRPf5nIVitK+qSrEW+YLa2AdGrWldO53L2xn6d3a6
-         hx9/RDRBygqotoV08G4c9S8WQs00HkQy9YbiChcAzlnvXkACAF33vSzFNnJCojz62lJU
-         ZqyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oXHNkcnjdKbtST/Cm72EMU54y/enkmsrbD67DAs+07Q=;
-        b=GlEG4HNBHQ62ePJvmL+0oSNCDMkHv6qaL5vxdKpggjb5Rez3JsPlfFhvGXPnvht4sH
-         V7GQpBoPfn+izuu41qVGC/8xtDFDmYsU0r28RVOCZhbR/QJCsBQjc6/3Pd7ud/Bp4k4p
-         fPTdQFbFLjifPqV5YxQOq3CSAz4RUAe+cF1HzxzHAaXxVnRKwUjX1hlWX4ElktlChINB
-         UYh9xTTnhmod8DzfFj4IGRqjUDoLLnc2Npnzfcx0rBRr6iA/3OEjOy5L7ss/7gRttK21
-         UF8XvQsrtTiOG9YpWdpuxgYg7G+ImVaV2smcRslJy6xrybE6ph+L43X+dVISGZlWMmLP
-         Hq9Q==
-X-Gm-Message-State: AOAM530BZuBuzP76zZ+CeikCtl4miahaMUl/DqmOnmcBYABivG8XZcPu
-        5QHpqWz1Sgc2/yVQnrhvyaw6GQ==
-X-Google-Smtp-Source: ABdhPJy5mTa6bjpMvZNEqyus64np+Q1hqEXWGxyB6FdFHAaKwxpJXm138hVyyVcESnvJqC/jue2U6g==
-X-Received: by 2002:a62:2e45:: with SMTP id u66mr3107106pfu.121.1597302496590;
-        Thu, 13 Aug 2020 00:08:16 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id t10sm4260202pgp.15.2020.08.13.00.08.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 00:08:15 -0700 (PDT)
-Date:   Thu, 13 Aug 2020 00:04:48 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konradybcio@gmail.com>
-Cc:     amit.pundir@linaro.org, agross@kernel.org,
-        devicetree@vger.kernel.org, john.stultz@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, sumit.semwal@linaro.org
-Subject: Re: your mail
-Message-ID: <20200813070448.GA499758@builder.lan>
-References: <CAMi1Hd3Dv_T7kgThLTk2QLtfS7LBvhJ5R=6C3seUYK0GvNV6eA@mail.gmail.com>
- <20200806223134.42748-1-konradybcio@gmail.com>
+        id S1726564AbgHMHFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 03:05:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40818 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725982AbgHMHFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 03:05:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A22C1B163;
+        Thu, 13 Aug 2020 07:05:50 +0000 (UTC)
+Subject: Re: [PATCH v2 0/5] Fixes and improvements for Xen pvdrm
+To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>
+Cc:     Oleksandr Andrushchenko <andr2000@gmail.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+References: <20200813062113.11030-1-andr2000@gmail.com>
+ <7c8cb6e9-8270-d27a-6480-793ef5599d09@epam.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <231ee1e7-c2fa-3c2a-f444-f9f813fc906d@suse.com>
+Date:   Thu, 13 Aug 2020 09:05:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200806223134.42748-1-konradybcio@gmail.com>
+In-Reply-To: <7c8cb6e9-8270-d27a-6480-793ef5599d09@epam.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 06 Aug 15:31 PDT 2020, Konrad Dybcio wrote:
-
-> Subject: Re: [PATCH v4] arm64: dts: qcom: Add support for Xiaomi Poco F1 (Beryllium)
+On 13.08.20 08:32, Oleksandr Andrushchenko wrote:
+> Juergen, Boris,
 > 
-> >// This removed_region is needed to boot the device
-> >               // TODO: Find out the user of this reserved memory
-> >               removed_region: memory@88f00000 {
+> can we please merge these via Xen Linux tree as I have collected enough Ack/R-b?
 > 
-> This region seems to belong to the Trust Zone. When Linux tries to access it, TZ bites and shuts the device down.
+> The series has DRM patches, but those anyway are Xen related, so I think
+> 
+> this should be fine from DRI point of view.
+
+Yes, fine with me.
+
+
+Juergen
+
+> 
+> Thank you,
+> 
+> Oleksandr
+> 
+> On 8/13/20 9:21 AM, Oleksandr Andrushchenko wrote:
+>> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>>
+>> Hello,
+>>
+>> This series contains an assorted set of fixes and improvements for
+>> the Xen para-virtualized display driver and grant device driver which
+>> I have collected over the last couple of months:
+>>
+>> 1. Minor fixes to grant device driver and drm/xen-front.
+>>
+>> 2. New format (YUYV) added to the list of the PV DRM supported formats
+>> which allows the driver to be used in zero-copying use-cases when
+>> a camera device is the source of the dma-bufs.
+>>
+>> 3. Synchronization with the latest para-virtualized protocol definition
+>> in Xen [1].
+>>
+>> 4. SGT offset is now propagated to the backend: while importing a dmabuf
+>> it is possible that the data of the buffer is put with offset which is
+>> indicated by the SGT offset. This is needed for some GPUs which have
+>> non-zero offset.
+>>
+>> Thank you,
+>> Oleksandr Andrushchenko
+>>
+>> [1] https://urldefense.com/v3/__https://xenbits.xen.org/gitweb/?p=xen.git;a=commit;h=c27a184225eab54d20435c8cab5ad0ef384dc2c0__;!!GF_29dbcQIUBPA!iAHOdk4M167VNM1AypMGVmyKJu-iqC9e5cXyu6N595Np3iyIZDnZl0MIBX3IROJSD1GSMX_GfQ$ [xenbits[.]xen[.]org]
+>>
+>> Changes since v1:
+>> =================
+>>
+>> 1. Removed patch which adds EDID to PV DRM as it needs more time for review:
+>> "5. Version 2 of the Xen displif protocol adds XENDISPL_OP_GET_EDID
+>> request which allows frontends to request EDID structure per
+>> connector. This request is optional and if not supported by the
+>> backend then visible area is still defined by the relevant
+>> XenStore's "resolution" property.
+>> If backend provides EDID with XENDISPL_OP_GET_EDID request then
+>> its values must take precedence over the resolutions defined in
+>> XenStore."
+>> I will send this as a dedicated patch.
+>>
+>> 2. Added missing CC stable for the patches with fixes
+>>
+>> Oleksandr Andrushchenko (5):
+>>     xen/gntdev: Fix dmabuf import with non-zero sgt offset
+>>     drm/xen-front: Fix misused IS_ERR_OR_NULL checks
+>>     drm/xen-front: Add YUYV to supported formats
+>>     xen: Sync up with the canonical protocol definition in Xen
+>>     drm/xen-front: Pass dumb buffer data offset to the backend
+>>
+>>    drivers/gpu/drm/xen/xen_drm_front.c      | 10 +--
+>>    drivers/gpu/drm/xen/xen_drm_front.h      |  2 +-
+>>    drivers/gpu/drm/xen/xen_drm_front_conn.c |  1 +
+>>    drivers/gpu/drm/xen/xen_drm_front_gem.c  | 11 +--
+>>    drivers/gpu/drm/xen/xen_drm_front_kms.c  |  2 +-
+>>    drivers/xen/gntdev-dmabuf.c              |  8 +++
+>>    include/xen/interface/io/displif.h       | 91 +++++++++++++++++++++++-
+>>    7 files changed, 111 insertions(+), 14 deletions(-)
+>>
 > 
 
-This is in line with what the documentation indicates and then it would
-be better to just bump &tz_mem to a size of 0x4900000.
-
-Regards,
-Bjorn
