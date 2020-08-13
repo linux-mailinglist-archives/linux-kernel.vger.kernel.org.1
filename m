@@ -2,68 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7DA243F0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 20:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4259B243F10
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 20:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726591AbgHMSzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 14:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726359AbgHMSzL (ORCPT
+        id S1726641AbgHMS6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 14:58:17 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:36157 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726522AbgHMS6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 14:55:11 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B9FDC061383
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 11:55:11 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id o22so5145272qtt.13
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 11:55:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+Jgraj+114QRBzFXPeF3FuYfVHOWKZNgIZ9aTNenrPE=;
-        b=K5ZUHZoTVkZ0tY5PKep0FfWqPe292MdYUK7XrGfQT5bPLzimznrpCsHYK7epjlHC1i
-         xXd7fNIrqvF8K/M1sfQ6jyqPzwslt0B3Bhwb3q3FK+qBiYQjOk/3kdnaLrq5qlsdroFs
-         fWiJWg9CRP/lrcvc4QOg8w5q5NCJzb1qqdFsgGhM3jmgGBMWerAeW8B+uXBhXF3qHHn5
-         Vcr0kS3wh8MN9ZCjiI+FPVOtUIcllhV4748X8W50DajAZ5duXbgS1buXOExgWl8aY9eQ
-         lOj5Y5M+FGSlVFkyntXue9hSAx9OlmmTv8dHjt1lUn8MHgV7guNNProl0yGA34GMCbGP
-         30Yw==
+        Thu, 13 Aug 2020 14:58:14 -0400
+Received: by mail-qt1-f194.google.com with SMTP id t23so5198599qto.3;
+        Thu, 13 Aug 2020 11:58:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+Jgraj+114QRBzFXPeF3FuYfVHOWKZNgIZ9aTNenrPE=;
-        b=tB+dSauKmC41nwbizrB8rEQWLCzgiBEOvi0xY/HBbVY2rH6WVU7TMdhQJ7sBwGeTxx
-         8CpOxzYl2JfGvPp+JbmN9Gkr5EK42BympVRCG9/6RgvELfaWiuzSenptH1QW4ZgziZoY
-         hwvMU8NnMsQV4MBdCE6rUsW1Ck7NIWY6nKXOZb3G9dabnZuyaYryrxpwrT2AlJgKEwUb
-         znbzHXa/MjVPlPT7Q4bact08lcJ2VksUqUiCYee3aHNszl4ePzH9oyWkh23Nlo4VtV0d
-         kbrDzOKd1i9lH+MnSMN+8lhX1txq2/4Jpl+slOZ5MwgKSGE9TKjqnpBZtMpMUKljCi79
-         kTLA==
-X-Gm-Message-State: AOAM532Afomw3FBHvnpcxbG1aha6Lsws4bZmlCfChAhWxqzuadM5KHtl
-        ydPHKpESIctrqRH+cUde25brPg==
-X-Google-Smtp-Source: ABdhPJzq+Dlcltn9G2WI66j6mqaoOepwS8++0OsOncRBWUC+uPv29ltLhNqGOeIkEg8DOqa3CRYt/g==
-X-Received: by 2002:ac8:4e51:: with SMTP id e17mr6954689qtw.173.1597344910414;
-        Thu, 13 Aug 2020 11:55:10 -0700 (PDT)
-Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id l64sm5816733qkc.21.2020.08.13.11.55.09
+        bh=0q3h4FnF2RC6T414mC+my3MOjYepZBJcgOxm130Jlyw=;
+        b=GTRFuZVwKk3A5hZ/QKK8V1PDGTaMzo8ww2pg1dDVLI11y2PFKKnigWBi1VPrhvO4wg
+         ftVKUuW8fkuHQ7XOAcnMe1uInEtpGJyXgXn4ThgSzSLTcgvFsNhtZbhQBOb/BBTWwAIo
+         8HVtxWIypXjpcpWsOUidFZAfQLypnl8t/Dogj4tIhCJlvFvjuftBYR2yO8KRfdHW08RF
+         EqI19wLuXM8zBRvbM0Yqjli8mAF5/0o/3fRqx/f2tmQeCnFEPrjdC+vW++yY0bxQ/pVd
+         idMZ8Q8SQUDDKsC33jJZK700+fYLZDe0KoZ4dbLZXgLiKYM0KqwWvBy23oVK722YeZfQ
+         umOQ==
+X-Gm-Message-State: AOAM533ozMozGA5YFMI+v8L1ZiHNQpH11LLLzqJgcRxeUoJyNZJyy90q
+        PSavTHC4VzUCtBIMcF7CL7A=
+X-Google-Smtp-Source: ABdhPJzP5fxOtzw2g+vN0oAwM7Y5ZqerxhEVMvQL/p3WECh/bp6faRUp1kTnlT43Cjl0GKzBzRjWIA==
+X-Received: by 2002:ac8:7152:: with SMTP id h18mr6674265qtp.44.1597345092079;
+        Thu, 13 Aug 2020 11:58:12 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id c9sm5994563qkm.44.2020.08.13.11.58.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 11:55:09 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     freedreno@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [RESEND PATCH] drm/msm/a6xx: fix frequency not always being restored on GMU resume
-Date:   Thu, 13 Aug 2020 14:54:48 -0400
-Message-Id: <20200813185450.19387-1-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
+        Thu, 13 Aug 2020 11:58:11 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+To:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] Three small fixes to cmdline parsing
+Date:   Thu, 13 Aug 2020 14:58:08 -0400
+Message-Id: <20200813185811.554051-1-nivedita@alum.mit.edu>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -71,32 +48,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch reorganizing the set_freq function made it so the gmu resume
-doesn't always set the frequency, because a6xx_gmu_set_freq() exits early
-when the frequency hasn't been changed. Note this always happens when
-resuming GMU after recovering from a hang.
+First 2 are resends:
+https://lore.kernel.org/linux-efi/20200725155916.1376773-1-nivedita@alum.mit.edu/
+https://lore.kernel.org/linux-efi/20200729193300.598448-1-nivedita@alum.mit.edu/
 
-Use a simple workaround to prevent this from happening.
+Arvind Sankar (3):
+  efi/libstub: Stop parsing arguments at "--"
+  efi/libstub: Handle NULL cmdline
+  efi/libstub: Handle unterminated cmdline
 
-Fixes: 1f60d11423db ("drm: msm: a6xx: send opp instead of a frequency")
+ drivers/firmware/efi/libstub/efi-stub-helper.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-index b67b38c8fadf..bbbd00020f92 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-@@ -845,6 +845,7 @@ static void a6xx_gmu_set_initial_freq(struct msm_gpu *gpu, struct a6xx_gmu *gmu)
- 	if (IS_ERR_OR_NULL(gpu_opp))
- 		return;
- 
-+	gmu->freq = 0; /* so a6xx_gmu_set_freq() doesn't exit early */
- 	a6xx_gmu_set_freq(gpu, gpu_opp);
- 	dev_pm_opp_put(gpu_opp);
- }
 -- 
-2.26.1
+2.26.2
 
