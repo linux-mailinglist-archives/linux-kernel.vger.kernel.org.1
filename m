@@ -2,98 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528DB243F38
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 21:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACADD243F3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 21:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbgHMTQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 15:16:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726244AbgHMTQS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 15:16:18 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FDAC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 12:16:18 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id a14so5027775edx.7
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 12:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ex0l1wXymD5ywnIvCajw3qddPqP7h4+eXBBmwahiauQ=;
-        b=HaIHoNz/xwtoyjOp72VVGhI3bKayl/oFVvKWhxs8rn1OxXnmXj0xpPHcjp1EfqKIAH
-         6kDCxd37bpVobOWetig0pWZ1K9sMlW6OC9bGIWa+6/CWNzeCchd9FTmWgke69+CFpzAw
-         Ere7pRVH4K0DlAH0pc6sZWX8hmF9a3L+bt8HdYvwWme7mdkLKRoL/B7NDRPF39XSln+G
-         p3knj+k7qWKwlJOb57LBSc5MbPMOViiLzvjKbgg2NHg8d+vteAIfPg2QLg0gYuk/60pp
-         AbA14KER7lTQ0zqMUQZo99QNNQbop9ue7D/kX5DAtqeqneIKN8tsEP2E1d5mowb0QD6c
-         +uug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ex0l1wXymD5ywnIvCajw3qddPqP7h4+eXBBmwahiauQ=;
-        b=Fawnxo+GfOTFalMZMH7iAg8o2kOP978bicjuPyw2/+pFHaTYrCJIHSV8Ti1cD5Wd8e
-         g29yHydz6b5jW/QTnm67Fihr4doZX6LT+ZQW7C1D74/X6Yht7lMDHCgMkkaJmifL6mtM
-         Xng/gIw5FDFXOLMmHVLHPuztTLuksEZBP9L3TPpVhv2YpfNr6PKGhs9NkGG4VrfVBJuP
-         dRxTw2oqjd4rUM1FHo+xdx/KAfomCu/uH5hAWkDwLjkky9sapcShqC5Ta+VEebWI26es
-         /OijV5pGHSxvsO5Vt7IJOy6oBDd4C0pk2VI9BvRJZkclIAPgiEj3aPOasGZWwnnwGJe3
-         6i0Q==
-X-Gm-Message-State: AOAM532XyHjFRx9LAcEiH6vBwDBl5/4H0RfPBI3DHtWMdeQSKsfI47Mo
-        uUmooEWt5ss1i2/qgN3BWeLeGSq4
-X-Google-Smtp-Source: ABdhPJzlj7ysRvPRWENtG9v6S762mxLHu00pUXf+v26xRtgEc+x8Tzq3FIr0VdeGIOop9jmJ3qUldA==
-X-Received: by 2002:a50:ee93:: with SMTP id f19mr6066374edr.31.1597346176838;
-        Thu, 13 Aug 2020 12:16:16 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id h8sm5093707ejj.104.2020.08.13.12.16.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 12:16:16 -0700 (PDT)
-Date:   Thu, 13 Aug 2020 21:16:14 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Russell King <linux@armlinux.org.uk>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        peterz@infradead.org, vincent.guittot@linaro.org,
-        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>
-Subject: Re: [PATCH v5 02/17] ARM: Revert back to default scheduler topology.
-Message-ID: <20200813191614.GB2337490@gmail.com>
-References: <20200812125300.11889-1-valentin.schneider@arm.com>
- <20200812125300.11889-3-valentin.schneider@arm.com>
+        id S1726631AbgHMTQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 15:16:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726167AbgHMTQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 15:16:49 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D03C20774;
+        Thu, 13 Aug 2020 19:16:48 +0000 (UTC)
+Date:   Thu, 13 Aug 2020 15:16:46 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     peter enderborg <peter.enderborg@sony.com>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        =?UTF-8?B?VGhpw6liYXVk?= Weksteen <tweek@google.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Nick Kralevich <nnk@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] selinux: add basic filtering for audit trace
+ events
+Message-ID: <20200813151646.513423a3@oasis.local.home>
+In-Reply-To: <c1f8c9a9-d123-df96-4918-890355db0301@sony.com>
+References: <20200813144914.737306-1-tweek@google.com>
+        <20200813144914.737306-2-tweek@google.com>
+        <02c193e4-008a-5c3d-75e8-9be7bbcb941c@schaufler-ca.com>
+        <a82d50bd-a0ec-bd06-7a3a-c2696398c4c3@sony.com>
+        <c4424850-645f-5788-fb35-922c81eace6b@gmail.com>
+        <1b40226f-d182-7ba7-a6f6-15520c3e3516@sony.com>
+        <20200813133842.655aff65@oasis.local.home>
+        <c1f8c9a9-d123-df96-4918-890355db0301@sony.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200812125300.11889-3-valentin.schneider@arm.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 13 Aug 2020 20:18:55 +0200
+peter enderborg <peter.enderborg@sony.com> wrote:
 
-* Valentin Schneider <valentin.schneider@arm.com> wrote:
-
-> The ARM-specific GMC level is meant to be built using the thread sibling
-> mask, but no devicetree in arch/arm/boot/dts uses the 'thread' cpu-map
-> binding. With SD_SHARE_POWERDOMAIN gone, this topology level can be
-> removed, at which point ARM no longer benefits from having a custom defined
-> topology table.
+> > The "%p" gets obfuscated when printed from the trace file by default
+> > now. But they are consistent (where the same pointer shows up as the
+> > same hash).
+> >
+> > It's used mainly to map together events. For example, if you print the
+> > address of a skb in the networking events, it's good to know what
+> > events reference the same skb, and the pointer is used for that.  
 > 
-> Delete the GMC topology level by making ARM use the default scheduler
-> topology table. This essentially reverts commit
-> 
->   fb2aa85564f4 ("sched, ARM: Create a dedicated scheduler topology table")
-> 
-> Cc: Russell King <linux@armlinux.org.uk>
-> Suggested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> So what is your opinion on ssid? I dont mind removing them
+> now since people dont like it and the strong use-case is not
+> strong (yet). Is there any problem to put getting them back
+> later if useful? And then before the strings so the evaluation
+> of filter first come on number before stings Or is there already
+> some mechanism that optimize for that?
 
-Minor changelog nit, it's helpful to add this final sentence:
+It's up to the owner of the trace event. I only replied to why pointers
+in general are useful, but they are mostly just "ids" to map to other
+trace events.
 
-    No change in functionality is expected.
+We have the libtraceevent that should be used for parsing raw trace
+events in binary form. The library (which currently lives in the
+kernel's tools/lib/traceeevnt directory) I'm trying to get to have its
+own home that distros can package. It should never be an issue adding
+another field to an event, as the library gives the tools the ability
+to find a field of an event regardless of where it is positioned, and
+also let the tools know if the field exists or not.
 
-( If indeed no change in functionality is expected. ;-)
+If that's what you are asking.
 
-Thanks,
-
-	Ingo
+-- Steve
