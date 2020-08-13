@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A50D24322E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 03:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1494C24322B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 03:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgHMBqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 21:46:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33196 "EHLO mail.kernel.org"
+        id S1726716AbgHMBqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 21:46:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726484AbgHMBp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726603AbgHMBp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 Aug 2020 21:45:57 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 164BA2177B;
+        by mail.kernel.org (Postfix) with ESMTPSA id 40089221E2;
         Thu, 13 Aug 2020 01:45:57 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1k62JY-00751e-3P; Wed, 12 Aug 2020 21:45:56 -0400
-Message-ID: <20200813014555.980104906@goodmis.org>
+        id 1k62JY-007528-8P; Wed, 12 Aug 2020 21:45:56 -0400
+Message-ID: <20200813014556.138121932@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 12 Aug 2020 21:45:39 -0400
+Date:   Wed, 12 Aug 2020 21:45:40 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org,
         linux-rt-users <linux-rt-users@vger.kernel.org>
@@ -31,7 +31,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
         Tom Zanussi <zanussi@kernel.org>,
         "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Subject: [PATCH RT 5/6] rwsem: Provide down_read_non_owner() and up_read_non_owner() for -RT
+Subject: [PATCH RT 6/6] Linux 5.4.54-rt33-rc1
 References: <20200813014534.833107526@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,57 +45,19 @@ If anyone has any objections, please let me know.
 
 ------------------
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-The rwsem implementation on -RT allows multiple reader and there is no
-owner tracking anymore.
-We can provide down_read_non_owner() and up_read_non_owner() by skipping
-the owner check bits which are only available in the !RT implementation.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/locking/rwsem.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ localversion-rt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index 0d11ba11a32a..0325c721f9b3 100644
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -1616,15 +1616,15 @@ void _down_write_nest_lock(struct rw_semaphore *sem, struct lockdep_map *nest)
- }
- EXPORT_SYMBOL(_down_write_nest_lock);
- 
--#ifndef CONFIG_PREEMPT_RT
- void down_read_non_owner(struct rw_semaphore *sem)
- {
- 	might_sleep();
- 	__down_read(sem);
-+#ifndef CONFIG_PREEMPT_RT
- 	__rwsem_set_reader_owned(sem, NULL);
-+#endif
- }
- EXPORT_SYMBOL(down_read_non_owner);
--#endif
- 
- void down_write_nested(struct rw_semaphore *sem, int subclass)
- {
-@@ -1649,13 +1649,13 @@ int __sched down_write_killable_nested(struct rw_semaphore *sem, int subclass)
- }
- EXPORT_SYMBOL(down_write_killable_nested);
- 
--#ifndef CONFIG_PREEMPT_RT
- void up_read_non_owner(struct rw_semaphore *sem)
- {
-+#ifndef CONFIG_PREEMPT_RT
- 	DEBUG_RWSEMS_WARN_ON(!is_rwsem_reader_owned(sem), sem);
-+#endif
- 	__up_read(sem);
- }
- EXPORT_SYMBOL(up_read_non_owner);
--#endif
- 
- #endif
+diff --git a/localversion-rt b/localversion-rt
+index ce6a482618d5..c8c4d2166008 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt32
++-rt33-rc1
 -- 
 2.28.0
 
