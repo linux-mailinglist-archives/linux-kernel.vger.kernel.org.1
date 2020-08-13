@@ -2,104 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AC2243C5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A53243C67
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgHMPTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 11:19:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726334AbgHMPTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 11:19:41 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 026FC2078D;
-        Thu, 13 Aug 2020 15:19:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597331980;
-        bh=GUc3HeAnqqqqlsdI+PNr6Cgi6V9dzbFIkHuID4DZjzI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DIiIBqmnUPBmVeIvv4yjwhCDacHmHrEQHVUbgeg0ZB6vwx9bcaF4avc9PMhdS9tg4
-         wmCpHDJVgeI8xWGlbAsKPNVAc5v0lwU9azqZ/Cj7xf41op7j3POQ+qqgoptGJcOgzS
-         EkqphfYghJlApnHGgR4tE/oV7hq+0yoT9qJoTrJI=
-Date:   Thu, 13 Aug 2020 16:19:35 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Jordan Crouse <jcrouse@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [Freedreno] [PATCH v12 04/13] iommu: Add a domain attribute to
- get/set a pagetable configuration
-Message-ID: <20200813151934.GA10534@willie-the-truck>
-References: <20200810222657.1841322-1-jcrouse@codeaurora.org>
- <20200810222657.1841322-5-jcrouse@codeaurora.org>
- <20200813131412.GB10256@willie-the-truck>
- <CAF6AEGuCubnXu7FKuCHPx0Bow4O7M8NSBThHDusev7xX6v2zQQ@mail.gmail.com>
+        id S1726830AbgHMPVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 11:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726253AbgHMPVk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 11:21:40 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189C0C061383
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 08:21:40 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id o2so2788559qvk.6
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 08:21:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=n/syx/SxqBMIN8ss9hWSXJCFp7S96a9yWlWgF3+Kl+k=;
+        b=PrhS4mcu2hfVQsLaHZyu7reWP52+80bEpr3vIdaYtjzU2OjSOSD6QAQ7i3hJ3BPu4z
+         cgOxlbXhAceN/NmLdD8AYiVjuLNCj1nqxHVQNh8Sz2dvUFfbuJPzBrGfRMlhPP0d5ghs
+         pqd9OuaVSlDW8LHsvb17Da7dJ0l0jJNLwEx3wdMLPQwofhEgJbv/yFnFasqnhDaco0l7
+         cFKBUdfylUQ9RYdzl6ol+edQL6e98nhj30oaBObAvGWBfsyTGtZnWcbf0tcvmtUSA/KG
+         C5bNdu1R7pNNaaUVInN2NA4FASGvjDO8qqR1LdlyNgtmear5iJYDlxYpPxG2mSVnQO/m
+         ZNRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n/syx/SxqBMIN8ss9hWSXJCFp7S96a9yWlWgF3+Kl+k=;
+        b=tJBWKW4FThw3LoSYusULpJ6Jy3guiR+izAIGiMQlqU/jWks+D0UEpNHxTWkXwKtrAh
+         fvwAy5WXwyafXpvQuFeKFkoid3abBY9hJNZxHA4Lo6PI18SkGEyCC1HHGdY72d8c/cMe
+         2cXA50taDLCIiOECA4igSOrmrBxWXs+br9E3LdmOVt5HemrctyOv8+3l1K1bNgm/iu+T
+         HiX0Pr4WnVsRFxyCjaa5JZ3BYS9LHzbo7JaPJ/ilL3NwRfQNyX8IlKXgjzNnNGaLsqt7
+         OS6LZDfV/Ghcb77moCJ4UmR5ZcNkadVgYD2DIEEJwgTlMfkmBBi9eC4st7iN6dlobhR4
+         HPVA==
+X-Gm-Message-State: AOAM531hyouzUH4HinvuQwp7XqJ8v9wEOnOpf5dgzmkAJv/39Bhs7v74
+        GhCAigzazekftLVUIYVIC/0eiQ==
+X-Google-Smtp-Source: ABdhPJxCU9Ovi/VEY5bhb4Sb/ACyGJnhVNPlFcm7mFJy+eh7NPXN/xx0ecvRLhxirwsDvaK0iacGUg==
+X-Received: by 2002:ad4:4cc3:: with SMTP id i3mr5126808qvz.17.1597332099064;
+        Thu, 13 Aug 2020 08:21:39 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:7cdc])
+        by smtp.gmail.com with ESMTPSA id j16sm5459722qke.87.2020.08.13.08.21.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Aug 2020 08:21:38 -0700 (PDT)
+Date:   Thu, 13 Aug 2020 11:20:33 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PowerPC Mailing List <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: linux-next: runtime warning in Linus' tree
+Message-ID: <20200813152033.GA701678@cmpxchg.org>
+References: <20200813164654.061dbbd3@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAF6AEGuCubnXu7FKuCHPx0Bow4O7M8NSBThHDusev7xX6v2zQQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200813164654.061dbbd3@canb.auug.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 08:11:02AM -0700, Rob Clark wrote:
-> On Thu, Aug 13, 2020 at 6:14 AM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Mon, Aug 10, 2020 at 04:26:48PM -0600, Jordan Crouse wrote:
-> > > Add domain attribute DOMAIN_ATTR_PGTABLE_CFG. This will be used by
-> > > arm-smmu to share the current pagetable configuration with the
-> > > leaf driver and to allow the leaf driver to set up a new pagetable
-> > > configuration under certain circumstances.
-> > >
-> > > Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> > > ---
-> > >
-> > >  include/linux/iommu.h | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> > > index fee209efb756..995ab8c47ef2 100644
-> > > --- a/include/linux/iommu.h
-> > > +++ b/include/linux/iommu.h
-> > > @@ -118,6 +118,7 @@ enum iommu_attr {
-> > >       DOMAIN_ATTR_FSL_PAMUV1,
-> > >       DOMAIN_ATTR_NESTING,    /* two stages of translation */
-> > >       DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE,
-> > > +     DOMAIN_ATTR_PGTABLE_CFG,
-> > >       DOMAIN_ATTR_MAX,
-> > >  };
-> >
-> > Nobody other than the adreno gpu uses this, so can we avoid exposing it
-> > in the IOMMU API, please? Given that you have a reference to the adreno
-> > GPU device in the SMMU implementation code thanks to .alloc_context_bank(),
-> > can you squirrel some function pointers away in the driver data (i.e. with
-> > dev_set_drvdata()) instead?
-> >
+On Thu, Aug 13, 2020 at 04:46:54PM +1000, Stephen Rothwell wrote:
+> [    0.055220][    T0] WARNING: CPU: 0 PID: 0 at mm/memcontrol.c:5220 mem_cgroup_css_alloc+0x350/0x904
+
+> [The line numbers in the final linux next are 5226 and 5141 due to
+> later patches.]
 > 
-> Hmm, we are already using drvdata on the gpu side, and it looks like
-> arm-smmu is also using it.  Could we get away with stashing an extra
-> 'void *' in iommu_domain itself?
+> Introduced (or exposed) by commit
+> 
+>   3e38e0aaca9e ("mm: memcg: charge memcg percpu memory to the parent cgroup")
+> 
+> This commit actually adds the WARN_ON, so it either adds the bug that
+> sets it off, or the bug already existed.
+> 
+> Unfotunately, the version of this patch in linux-next up tuntil today
+> is different.  :-(
 
-What I meant was, expose the type of whatever you put in there on the GPU
-side so that the SMMU impl can install its function pointers into a field of
-that structure. As far as I'm concerned, the SMMU impl code and the GPU
-driver are the same entity and we should keep their communication private,
-rather than expose it up the stack. After all, the GPU writes to the SMMU
-registers!
+Sorry, I made a last-minute request to include these checks in that
+patch to make the code a bit more robust, but they trigger a false
+positive here. Let's remove them.
 
-If you really don't want to expose all of your gubbins, I suppose you
-could have a structure just for the SMMU view and container_of() out of
-that on the GPU side.
+---
 
-Will
+From de8ea7c96c056c3cbe7b93995029986a158fb9cd Mon Sep 17 00:00:00 2001
+From: Johannes Weiner <hannes@cmpxchg.org>
+Date: Thu, 13 Aug 2020 10:40:54 -0400
+Subject: [PATCH] mm: memcontrol: fix warning when allocating the root cgroup
+
+Commit 3e38e0aaca9e ("mm: memcg: charge memcg percpu memory to the
+parent cgroup") adds memory tracking to the memcg kernel structures
+themselves to make cgroups liable for the memory they are consuming
+through the allocation of child groups (which can be significant).
+
+This code is a bit awkward as it's spread out through several
+functions: The outermost function does memalloc_use_memcg(parent) to
+set up current->active_memcg, which designates which cgroup to charge,
+and the inner functions pass GFP_ACCOUNT to request charging for
+specific allocations. To make sure this dependency is satisfied at all
+times - to make sure we don't randomly charge whoever is calling the
+functions - the inner functions warn on !current->active_memcg.
+
+However, this triggers a false warning when the root memcg itself is
+allocated. No parent exists in this case, and so current->active_memcg
+is rightfully NULL. It's a false positive, not indicative of a bug.
+
+Delete the warnings for now, we can revisit this later.
+
+Fixes: 3e38e0aaca9e ("mm: memcg: charge memcg percpu memory to the parent cgroup")
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/memcontrol.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d59fd9af6e63..9d87082e64aa 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5137,9 +5137,6 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+ 	if (!pn)
+ 		return 1;
+ 
+-	/* We charge the parent cgroup, never the current task */
+-	WARN_ON_ONCE(!current->active_memcg);
+-
+ 	pn->lruvec_stat_local = alloc_percpu_gfp(struct lruvec_stat,
+ 						 GFP_KERNEL_ACCOUNT);
+ 	if (!pn->lruvec_stat_local) {
+@@ -5222,9 +5219,6 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
+ 		goto fail;
+ 	}
+ 
+-	/* We charge the parent cgroup, never the current task */
+-	WARN_ON_ONCE(!current->active_memcg);
+-
+ 	memcg->vmstats_local = alloc_percpu_gfp(struct memcg_vmstats_percpu,
+ 						GFP_KERNEL_ACCOUNT);
+ 	if (!memcg->vmstats_local)
+-- 
+2.28.0
+
