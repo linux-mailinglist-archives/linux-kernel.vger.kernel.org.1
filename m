@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52CB243D6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 18:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79CF9243D66
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 18:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgHMQbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 12:31:53 -0400
-Received: from 3.mo2.mail-out.ovh.net ([46.105.58.226]:33175 "EHLO
-        3.mo2.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726142AbgHMQbw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 12:31:52 -0400
-X-Greylist: delayed 353 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Aug 2020 12:31:51 EDT
-Received: from player688.ha.ovh.net (unknown [10.110.208.202])
-        by mo2.mail-out.ovh.net (Postfix) with ESMTP id 7C94E1E2FCF
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 18:25:57 +0200 (CEST)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player688.ha.ovh.net (Postfix) with ESMTPSA id 1C07A1526A913;
-        Thu, 13 Aug 2020 16:25:52 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-103G005a681ebc9-4fce-49de-94fb-dc3a2d2e09ad,
-                    E10370F5499BCD549250CF93A1A6372B2A4BB833) smtp.auth=steve@sk2.org
-From:   Stephen Kitt <steve@sk2.org>
-To:     George Joseph <george.joseph@fairview5.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: [PATCH] drivers/hwmon/asc7621.c: use simple i2c probe
-Date:   Thu, 13 Aug 2020 18:25:44 +0200
-Message-Id: <20200813162544.1516647-1-steve@sk2.org>
-X-Mailer: git-send-email 2.25.4
+        id S1726578AbgHMQbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 12:31:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47484 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726142AbgHMQa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 12:30:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8B28CAD63;
+        Thu, 13 Aug 2020 16:31:17 +0000 (UTC)
+Date:   Thu, 13 Aug 2020 18:30:54 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Charan Teja Kalla <charante@codeaurora.org>
+Cc:     akpm@linux-foundation.org, vbabka@suse.cz, david@redhat.com,
+        rientjes@google.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, vinmenon@codeaurora.org
+Subject: Re: [PATCH V2] mm, page_alloc: fix core hung in free_pcppages_bulk()
+Message-ID: <20200813163054.GR9477@dhcp22.suse.cz>
+References: <1597150703-19003-1-git-send-email-charante@codeaurora.org>
+ <20200813114105.GI9477@dhcp22.suse.cz>
+ <9ca76893-dfe8-9a46-f2ec-6b3c663e848e@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 7607987149653036303
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrleehgdejiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheikeekrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ca76893-dfe8-9a46-f2ec-6b3c663e848e@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver doesn't use the id information provided by the old i2c
-probe function, so it can trivially be converted to the simple
-("probe_new") form.
+On Thu 13-08-20 21:51:29, Charan Teja Kalla wrote:
+> Thanks Michal for comments.
+> 
+> On 8/13/2020 5:11 PM, Michal Hocko wrote:
+> > On Tue 11-08-20 18:28:23, Charan Teja Reddy wrote:
+> > [...]
+> >> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> >> index e4896e6..839039f 100644
+> >> --- a/mm/page_alloc.c
+> >> +++ b/mm/page_alloc.c
+> >> @@ -1304,6 +1304,11 @@ static void free_pcppages_bulk(struct zone *zone, int count,
+> >>  	struct page *page, *tmp;
+> >>  	LIST_HEAD(head);
+> >>  
+> >> +	/*
+> >> +	 * Ensure proper count is passed which otherwise would stuck in the
+> >> +	 * below while (list_empty(list)) loop.
+> >> +	 */
+> >> +	count = min(pcp->count, count);
+> >>  	while (count) {
+> >>  		struct list_head *list;
+> > 
+> > 
+> > How does this prevent the race actually?
+> 
+> This doesn't prevent the race. This only fixes the core hung(as this is
+> called with spin_lock_irq()) caused by the race condition. This core
+> hung is because of incorrect count value is passed to the
+> free_pcppages_bulk() function.
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
----
- drivers/hwmon/asc7621.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Let me ask differently. What does enforce that the count and lists do
+not get out of sync in the loop. Your changelog says that the fix is to
+use the proper value without any specifics.
 
-diff --git a/drivers/hwmon/asc7621.c b/drivers/hwmon/asc7621.c
-index 9e14e2829ee9..600ffc7e1900 100644
---- a/drivers/hwmon/asc7621.c
-+++ b/drivers/hwmon/asc7621.c
-@@ -1087,7 +1087,7 @@ static void asc7621_init_client(struct i2c_client *client)
- }
- 
- static int
--asc7621_probe(struct i2c_client *client, const struct i2c_device_id *id)
-+asc7621_probe(struct i2c_client *client)
- {
- 	struct asc7621_data *data;
- 	int i, err;
-@@ -1193,7 +1193,7 @@ static struct i2c_driver asc7621_driver = {
- 	.driver = {
- 		.name = "asc7621",
- 	},
--	.probe = asc7621_probe,
-+	.probe_new = asc7621_probe,
- 	.remove = asc7621_remove,
- 	.id_table = asc7621_id,
- 	.detect = asc7621_detect,
 -- 
-2.25.4
-
+Michal Hocko
+SUSE Labs
