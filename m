@@ -2,63 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1BD24370E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3820F243710
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgHMJA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 05:00:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726637AbgHMJAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 05:00:55 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C849D2074D;
-        Thu, 13 Aug 2020 09:00:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597309255;
-        bh=qFqm7RI57Z11EUPH/Kh3a95i9oP3+JD5lchmy0LAfjo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H8E6H9FpSb1gF9RmPNc7lAGjFiWOLNCCspFJB0pm/jza6QbJLCTsduRDe08S0Bi9E
-         DeSfDAPYdkgxVUK88dNUQBpE0HoYn6PoPtIuIIQGJ5CxPTFVZ8bDi8XWA5M3vJPEU+
-         RQ79nyqJA5+aAzrJ61DSuAIU3bAl8+zA9BxvvGA4=
-Date:   Thu, 13 Aug 2020 11:01:05 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Gutson <daniel@eclypsium.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alex Bazhaniuk <alex@eclypsium.com>,
-        Richard Hughes <hughsient@gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Do not try to make the SPI
- flash chip writable
-Message-ID: <20200813090105.GC3452881@kroah.com>
-References: <20200804135817.5495-1-daniel.gutson@eclypsium.com>
- <CAK8P3a0_fJ0BfD5Qvxdo0s7CbjPWaGA8QTgYhbXR=omafOHH4Q@mail.gmail.com>
- <CAFmMkTHEm8k+5GZkVJbDZMEhMwpsqVKRb-hGskSpBstdLRuFyA@mail.gmail.com>
- <CAK8P3a27bTYyn3N+tX=i_6f4KrQkOmkUA1zUQfvCW7qw6smSkQ@mail.gmail.com>
- <CAFmMkTF9eVm0tpOKEy2rzdX=Scr3RwqHDFy_i24R3F5ok-4=eA@mail.gmail.com>
- <CAK8P3a3mf8_Y4DWe3WuBO-Xo0N4Jj=-rrtFzD6w0TriGZPu1_g@mail.gmail.com>
- <CAFmMkTFzmC=aY0gR6urLu-8Oq8aeHBUWi-TodG8XhXKCcC057A@mail.gmail.com>
- <CAFmMkTE+2Qxo43bZkwCszEYbXFV22YdpLJD40gB6LgvnPbvdSA@mail.gmail.com>
+        id S1726533AbgHMJBw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Aug 2020 05:01:52 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:30339 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726131AbgHMJBw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 05:01:52 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-138-e8H63y_oORuTtNJUDzGgeQ-1; Thu, 13 Aug 2020 10:01:48 +0100
+X-MC-Unique: e8H63y_oORuTtNJUDzGgeQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 13 Aug 2020 10:01:48 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 13 Aug 2020 10:01:48 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@infradead.org>,
+        Daniel Axtens <dja@axtens.net>
+CC:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] fs/select.c: batch user writes in do_sys_poll
+Thread-Topic: [PATCH] fs/select.c: batch user writes in do_sys_poll
+Thread-Index: AQHWcUPllYrYWDsW9k2hVZh5/SyFEKk1vNpg
+Date:   Thu, 13 Aug 2020 09:01:48 +0000
+Message-ID: <edb8988b36b44ef392b2948c7ee1a8e9@AcuMS.aculab.com>
+References: <20200813071120.2113039-1-dja@axtens.net>
+ <20200813073220.GB15436@infradead.org>
+In-Reply-To: <20200813073220.GB15436@infradead.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFmMkTE+2Qxo43bZkwCszEYbXFV22YdpLJD40gB6LgvnPbvdSA@mail.gmail.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 12:41:35PM -0300, Daniel Gutson wrote:
-> ping
+From: Christoph Hellwig
+> Sent: 13 August 2020 08:32
+> 
+> On Thu, Aug 13, 2020 at 05:11:20PM +1000, Daniel Axtens wrote:
+> > When returning results to userspace, do_sys_poll repeatedly calls
+> > put_user() - once per fd that it's watching.
+> >
+> > This means that on architectures that support some form of
+> > kernel-to-userspace access protection, we end up enabling and disabling
+> > access once for each file descripter we're watching. This is inefficent
+> > and we can improve things by batching the accesses together.
+> >
+> > To make sure there's not too much happening in the window when user
+> > accesses are permitted, we don't walk the linked list with accesses on.
+> > This leads to some slightly messy code in the loop, unfortunately.
+> >
+> > Unscientific benchmarking with the poll2_threads microbenchmark from
+> > will-it-scale, run as `./poll2_threads -t 1 -s 15`:
+> >
+> >  - Bare-metal Power9 with KUAP: ~48.8% speed-up
+> >  - VM on amd64 laptop with SMAP: ~25.5% speed-up
+> >
+> > Signed-off-by: Daniel Axtens <dja@axtens.net>
+> 
+> Seem like this could simply use a copy_to_user to further simplify
+> things?
 
-What does that mean here?
+That would copy out 8 bytes/fd instead of 2.
+So a slight change for 32bit kernels.
+However the 'user copy hardening' checks that copy_to_user()
+does probably make a measurable difference.
+
+> Also please don't pointlessly add overly long lines.
+
+Shorten the error label?
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
