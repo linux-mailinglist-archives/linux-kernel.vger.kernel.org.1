@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF024243F72
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 21:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 848E2243F74
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 21:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgHMTrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 15:47:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36724 "EHLO mail.kernel.org"
+        id S1726615AbgHMTrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 15:47:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726305AbgHMTrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 15:47:06 -0400
-Subject: Re: [GIT PULL] Btrfs updates for 5.9, part 2
+        id S1726305AbgHMTrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 15:47:16 -0400
+Subject: Re: [GIT PULL] xfs: small fixes for 5.9-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597348025;
-        bh=MqGI7BVaytxO8TFlnO4oNLiLpBRGWrzNeO+UdRVW2rY=;
+        s=default; t=1597348036;
+        bh=vL0TQpwe3Znt0DCJf/5W/eGvAGLnfTNV1hDhp2Dib9U=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=1kiCxWgznFypqWGW7OXOEdu+VvybEIexlnfnD5RwkAsOJSQXa7ls4+g6nPMWQDgG/
-         5m1fXfkupkJpnVrstE9YhGOTNpNXmaGCsPGXpV6k3Rf1LNAf3JQfgQDfwL4AGwNEYR
-         3Msbd65ximX3V5sd4UWcGVdsupiYCyAidKzBCTTU=
+        b=db7WFkktX/FcTNC7t9tOJeq470KonxWcBbl26H09MJYEgoe7fDCpcXAmcyAjpNbB5
+         qt46osmSBOdEEqSdkD+MnO7F1DXZSeqs6khhTf6/tn+bSH8ObE2RDfEA+hHE2drqN9
+         4TJ/+0+Uz/I5pHaMOM9HbDkKmJP90VKgV0j/Rdks=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1597326304.git.dsterba@suse.com>
-References: <cover.1597326304.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1597326304.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-tag
-X-PR-Tracked-Commit-Id: c57dd1f2f6a7cd1bb61802344f59ccdc5278c983
+In-Reply-To: <20200813021624.GH6096@magnolia>
+References: <20200813021624.GH6096@magnolia>
+X-PR-Tracked-List-Id: <linux-xfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200813021624.GH6096@magnolia>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.9-merge-8
+X-PR-Tracked-Commit-Id: 96cf2a2c75567ff56195fe3126d497a2e7e4379f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 23c2c8c6fa325939f95d840f54bfdec3cb76906c
-Message-Id: <159734802572.27850.2787554778682149297.pr-tracker-bot@kernel.org>
-Date:   Thu, 13 Aug 2020 19:47:05 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: 69307ade14de7d9e9b14961ae7a6168e7165b6ab
+Message-Id: <159734803613.27850.16512962923874411071.pr-tracker-bot@kernel.org>
+Date:   Thu, 13 Aug 2020 19:47:16 +0000
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 13 Aug 2020 15:52:05 +0200:
+The pull request you sent on Wed, 12 Aug 2020 19:16:24 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-tag
+> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.9-merge-8
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/23c2c8c6fa325939f95d840f54bfdec3cb76906c
+https://git.kernel.org/torvalds/c/69307ade14de7d9e9b14961ae7a6168e7165b6ab
 
 Thank you!
 
