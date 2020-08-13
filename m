@@ -2,96 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C53102437D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59FE2437D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgHMJkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 05:40:25 -0400
-Received: from sonic312-20.consmr.mail.bf2.yahoo.com ([74.6.128.82]:46451 "EHLO
-        sonic312-20.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726102AbgHMJkY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 05:40:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597311623; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=EFKwxRSQX32g+H2lMRRMihuC0lO2s4dTK0vqxKDrUB+r26NxuY+zaAkRo7IzVP70SsOcAfCZRQxHGrIxAFA/xJVV20kOa8h5K+QjhzjGmKnulyJVovZapG91HQeQetayhpBdVNo5HreDNvHOFV5qhxAHhx7anLCmAR8cpUcG+/hWyNcBe9Gn+v74/T1JLzRIJehEkmkeQAV5OA00U2ySjf6nvcJFFiY2bCPIBgGBWslZTUXFBRcSZaHqNYT6CSYmnSIzPL+jRz68iqkQE6rFwdl+VbK74aOu28tE83WBikp+ORgIY1xUep2vqLjOq3POtH/582ECAr4lEA3HqX4ncg==
-X-YMail-OSG: XotM3AkVM1m1ElWgdc9yLaVgq0lhszQd83TG9UEMjbq4K3J5FXKO1Y51emd_ayP
- gF1yHoPg5qUAcDtIN0A7WEA_BR.tcsFKcL3993d5sru7JjTwsaZpc8oIMdNQh6wMbFJorg0qCqjq
- 3GLhmlS5vRTzAblFlYaEOCk_rUtIT7QdFljuzq1jRmNELh5UjjvC0bsfxCkRn95zl6Dzf8jVWGZ1
- Dzu_A7p07oANXNr3_m.OL30v8qhfgE6Nh5WGSa.yE8YCJKX0EUyJXlIW7TG5pul1C9eenfY_tl5S
- hJweAgX0XOJPfwj2mulMRr7ChusF.Yik3LPltXV.Td_pYmeTG0gJ4JaGu0hfVn83F_XRYKGStpK7
- booaY5_xkttO3taZtruoTkSgmwL9caL2ZVlorbuNa00kk_wbXyEsL.HGtjKe.x4osMBr51oqXVdA
- 5m_yagRG0VwX3CUGTiINXPOx8ijbpF0eGKj8K._Mj_EW9R1QasuipO.H0mpU9YuAdFbiBEpcN9_k
- fA8M7V7QkEz3Cot4Y67MJYKy8PRZgqeMP7_wv7quVG5sKBrfkN9pcyn94glniLXzLbgGasm9J4wl
- rBAixY4pdYSEWi47UZ3chp3gmgQVJKwnovmxEgb_gRiK7kKjolUYZCwyisXVhCivcO3PSwWoNZey
- lIBLKwglszmLvPGLtT5CmKE74XrcbDZqeH3GjtoB3C8DpEv3xtgOrurf19MJrNT_vW5Ymi.8FOOh
- L7kGwsT7pexazWKXutkOrz1SVke_roeffAvU.XLur.8HYDYhWXHakz7HTy_E4aXRSrLr0pRRl4zU
- TsHIJHU_ZxZLgaulxZwFclgLXk8e6D5jYEiW96flLypj3v7b5v8NQvfFlLphRBqKCZxjOWX7brxW
- p4XjFMzESPz_Y93QdV3Szy39J.UXd.n5qQRb4nx._DyVML1G5fSu6r8W0z9eBpC6PoOciFhZufWV
- FAE.i5PCLYOykxAX54DFQj5WWROslo0NOHmMAiptuDucKLRG5ec6P1SdC.DKlBbGJ2MkPZhymNr1
- AgRvCKO0YqOWaaqPYlTOobyKr.KwKLO4i0rkFVFRHBe.Iu6dWMetjFBw6DGyEf1u5VCvD4RhKSzJ
- ZISTVIysNmVczJWSTVxg_3Xi.Zlc9sy1JtSwtkPeqkf3yl76Y1qmIuH.jNXLGlw0Tb_dBdBC2Ju4
- lvrsO5FaSVoPRyYsKcKC45qC8VzGwylsjxdIucurHIGGpQTt0psPGwPwYOslvaLftkHub2w5DeJZ
- 0Wujr2GBDTOU7rM.JBOm9rLLzbS8N4tjShQr8PnIy8GqT456FYSVljR5J5iaE.u8c2M7AeCzqnry
- WUu7GQsPSOY8t3gwspJ2xHvxavEKoV89G7xrUKhxGZI63.p4amnaS
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Thu, 13 Aug 2020 09:40:23 +0000
-Date:   Thu, 13 Aug 2020 09:40:19 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <mrs.mainaabrunel126@gmail.com>
-Reply-To: mrsminaaaliyahbrunel1@gmail.com
-Message-ID: <865643431.1001377.1597311619872@mail.yahoo.com>
-Subject: My Dear in the lord
+        id S1726647AbgHMJkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 05:40:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726102AbgHMJkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 05:40:47 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1535720838;
+        Thu, 13 Aug 2020 09:40:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597311646;
+        bh=J2qpgmDlKiBX/8QUBIioI6so3fG2ARNlz1VQm3iYxCY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yVT9gmJmbDLy0XDhlHgruGUGbpJBSsAodgp/Z55IegV431ultwY/+5gLtbPScjsHI
+         uqnitTbkBVSN6TGRjz21DL/+j0+AonuSGsfeOku4N5z+v6EwrLWLZT9O/uXyg8PW5Z
+         pMrdKmUdOBbToNw896kXokp+/O0tWJx5+/aKq2VY=
+Date:   Thu, 13 Aug 2020 10:40:42 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] arm64: Add KRYO4XX gold CPU core to spectre-v2 safe list
+Message-ID: <20200813094041.GA9894@willie-the-truck>
+References: <20200813081834.13576-1-saiprakash.ranjan@codeaurora.org>
+ <20200813090324.GB9829@willie-the-truck>
+ <89f0f41514e547533c3fa66364e5a2ac@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <865643431.1001377.1597311619872.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <89f0f41514e547533c3fa66364e5a2ac@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 13, 2020 at 02:49:37PM +0530, Sai Prakash Ranjan wrote:
+> On 2020-08-13 14:33, Will Deacon wrote:
+> > On Thu, Aug 13, 2020 at 01:48:34PM +0530, Sai Prakash Ranjan wrote:
+> > > KRYO4XX gold/big CPU cores are based on Cortex-A76 which has CSV2
+> > > bits set and are spectre-v2 safe. But on big.LITTLE systems where
+> > > they are coupled with other CPU cores such as the KRYO4XX silver
+> > > based on Cortex-A55 which are spectre-v2 safe but do not have CSV2
+> > > bits set, the system wide safe value will be set to the lowest value
+> > > of CSV2 bits as per FTR_LOWER_SAFE defined for CSV2 bits of register
+> > > ID_AA64PFR0_EL1.
+> > > 
+> > > This is a problem when booting a guest kernel on gold CPU cores
+> > > where it will incorrectly report ARM_SMCCC_ARCH_WORKAROUND_1 warning
+> > > and consider them as vulnerable for Spectre variant 2 due to system
+> > > wide safe value which is used in kvm emulation code when reading id
+> > > registers. One wrong way of fixing this is to set the FTR_HIGHER_SAFE
+> > > for CSV2 bits, so instead add the KRYO4XX gold CPU core to the safe
+> > > list which will be consulted even when the sanitised read reports
+> > > that CSV2 bits are not set for KRYO4XX gold cores.
+> > > 
+> > > Reported-by: Stephen Boyd <swboyd@chromium.org>
+> > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> > > ---
+> > >  arch/arm64/kernel/cpu_errata.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > > 
+> > > diff --git a/arch/arm64/kernel/cpu_errata.c
+> > > b/arch/arm64/kernel/cpu_errata.c
+> > > index 6bd1d3ad037a..6cbdd2d98a2a 100644
+> > > --- a/arch/arm64/kernel/cpu_errata.c
+> > > +++ b/arch/arm64/kernel/cpu_errata.c
+> > > @@ -545,6 +545,7 @@ static const struct midr_range
+> > > spectre_v2_safe_list[] = {
+> > >  	MIDR_ALL_VERSIONS(MIDR_HISI_TSV110),
+> > >  	MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_3XX_SILVER),
+> > >  	MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_4XX_SILVER),
+> > > +	MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_4XX_GOLD),
+> > 
+> > We shouldn't be putting CPUs in the safe list when they have CSV2
+> > reporting
+> > that they are mitigated in hardware, so I don't think this is the right
+> > approach.
+> > 
+> 
+> Ok but the only thing I find wrong in this approach is that it is a
+> redundant
+> information because CSV2 is already advertising the mitigation, but again
+> CSV2 check is done first so it doesn't really hurt to add it to the safe
+> list because we already know that it is safe.
 
+It simply doesn't scale. That's why CSV2 exists in the first place, so we
+don't have to modify the kernel everytime a new CPU is invented.
 
-My Dear in the lord
+> > Sounds more like KVM should advertise CSV2 for the vCPUs if all of the
+> > physical CPUs without CSV2 set are on the safe list. But then again, KVM
+> > has always been slightly in denial about big.LITTLE because you can't
+> > sensibly expose it to a guest if there are detectable differences...
+> > 
+> 
+> Sorry but I don't see how the guest kernel will see the CSV2 bits set for
+> gold CPU cores without actually adding them to the safe list or reading the
+> not sanitised value of ID_AA64PFR0_EL1 ?
 
+Well that's for somebody to figure out in the patch. I'm just saying that
+adding cores to the safe list when they already have a CSV2 field conveying
+the same information is the wrong approach. The right appproach is for KVM
+to expose CSV2 as set when the system is not affected by the erratum.
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
-gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
-February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
-llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
-ugou the capital city of Burkina Faso in West Africa. The money was from th=
-e sale of his company and death benefits payment and entitlements of my dec=
-eased husband by his company.
+FWIW, I'll be sending some patches soon to clean a lot of this up, so maybe
+it will become clearer after that.
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
+Will
