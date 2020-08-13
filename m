@@ -2,141 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A36E2432A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 05:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E282432B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 05:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgHMDRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 23:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726390AbgHMDRQ (ORCPT
+        id S1726596AbgHMDWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 23:22:53 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:40896 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726131AbgHMDWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 23:17:16 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3362CC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 20:17:16 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id r6so930240oon.13
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Aug 2020 20:17:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
-        bh=d5gM963jXgjoG9xSkVthzNFdGJ4ytytBPjGpdNfGwQE=;
-        b=j/2W25yrTTTJa0lxgxJG+ghzhZ7OSp8SEds1Qz1gC1lDAfGWdRKzSnU9ZDd0tlVpg1
-         dwF3sBJmqO0/UhaKTXEsXbsKrcXcGZDjqBaWEMWp40j4ryEIGBzDxyOO8nlQZNq+zLK7
-         TKx2rkqUEMRF6hQsjmnfxlXDK/iMFAhbsexlq2lYgjCMvl3giIXtf3mIwnQb0x4eHS1b
-         U2sHqoTUa3RzXlOzKz9HkcxjDEEL22k+w++oTqxtGWddSuDC5h+6Y/8DO64Owyi4htmJ
-         ZMeR+G/d4jk+nXOcz3by/QX77MMpF6NvnZptI6Mi1kVQdLZNZl3N0yFzcZXAQ2+HK8By
-         YRJw==
+        Wed, 12 Aug 2020 23:22:53 -0400
+Received: by mail-pj1-f66.google.com with SMTP id d4so2094859pjx.5;
+        Wed, 12 Aug 2020 20:22:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
-         :mime-version;
-        bh=d5gM963jXgjoG9xSkVthzNFdGJ4ytytBPjGpdNfGwQE=;
-        b=C3ULY7VgCRPxEjz/UOkRhha4U8NRTSIgJ2j/KNf0yJ3HZUvNszYLVhrDpVw9fz3mE+
-         DpiWsxikBYECySD4SI7jdqAZp/NJI6IayAwL/vBMHIZV25o83S7gzI5XaN0mqH6VJJYM
-         CeMpei+/LwHTtRLnevT5ZDnD0WxpJFVzMV/BSxnK+0Z9ySImfkIV8wqLuHScVn7iHuDW
-         wpjHjxAlcLFcbVemDPe1ALg2BZeZqWUe3Pzojcz0nC6I5p5nzCXn8+3vhk2KnajU21XL
-         Knm6iqbiGN6fBBFD+S18RpIxDG39YC79s6Wsy/dPMnakslhb6emhJZZlM1A4r7cBr/zj
-         Iwsg==
-X-Gm-Message-State: AOAM53301QoeX4xeNF6c0OH17Lsy6qTALkIpnCwJqWdHdHAdtWkMDCTj
-        Z2fMKSzCXyFRh/NZ1RXLhIQS1w==
-X-Google-Smtp-Source: ABdhPJz3Ahiq/PDZ7De+xF095uaVH1Vh3EB/+6umE8wxr7Ev1HWhGWS6bGlZEUajwVigJFocX+Qi2A==
-X-Received: by 2002:a4a:ac0e:: with SMTP id p14mr2860150oon.26.1597288635333;
-        Wed, 12 Aug 2020 20:17:15 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id p9sm861601oti.22.2020.08.12.20.17.13
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 12 Aug 2020 20:17:14 -0700 (PDT)
-Date:   Wed, 12 Aug 2020 20:17:00 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Christoph Hellwig <hch@lst.de>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH] dma-debug: fix debug_dma_assert_idle(), use
- rcu_read_lock()
-Message-ID: <alpine.LSU.2.11.2008122005240.11996@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=gOeWB/fFQX8TFgcsqSgEvvRAYNi8MuzmPzQBJ7DPQtM=;
+        b=atGvLhvb8+pb6ts7fJk8/5M+d5zYXf0xSnsClWDsA+84HEnhTGWkS5oZuErOUR+FAT
+         GkCtsIXIbdQ/G03fGabhn2PrliLbvvpkUT43IzbKPUNrDMNIbUbnuGMsuNdFDwVibBbf
+         R7DzjqfTsuTEZ4ZPksDtWiA1/6tvS1OOx+rziS/K6P9ookrinNgZUBuS+EIJ/2yXzRCT
+         lujZh/ZqzECXL75fVbxhiMhALY2fgBFlbOHSQgs1b0dACvAquIr+SK/lMJBXrzeecu54
+         zKXOHwjSBbtMpMRhRDhWclZRPlh9mxIC7ljLGRU34zRU9iGhYfV6J2KIMB3r1xCKA/SQ
+         VrLg==
+X-Gm-Message-State: AOAM532swuwwn79XvHfzdxf3Xt1kwgjOwCNXAWwrEgK64FBz0tBF8MKu
+        7hLh0qR5NgDpH+fVdfXKglk=
+X-Google-Smtp-Source: ABdhPJw0Vet94i2VnEo4BrDlHg25TtG0an+p9xK5Pb7L/vDiGeB0J9UbTAbtkPdJsX73UwDwQIJvHQ==
+X-Received: by 2002:a17:90b:138a:: with SMTP id hr10mr2918610pjb.161.1597288971581;
+        Wed, 12 Aug 2020 20:22:51 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id h18sm3900116pfo.21.2020.08.12.20.22.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Aug 2020 20:22:50 -0700 (PDT)
+Subject: Re: [PATCH v8 2/4] scsi: ufs: Introduce HPB feature
+To:     daejun7.park@samsung.com,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+References: <2154d9c6-4b29-7d24-0261-26d2aa05caef@acm.org>
+ <231786897.01596705001840.JavaMail.epsvc@epcpadp1>
+ <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
+ <231786897.01596705302142.JavaMail.epsvc@epcpadp1>
+ <CGME20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d@epcms2p3>
+ <231786897.01597287781957.JavaMail.epsvc@epcpadp2>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <842c51c6-320f-a096-d9ea-b9d411ac6e3a@acm.org>
+Date:   Wed, 12 Aug 2020 20:22:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <231786897.01597287781957.JavaMail.epsvc@epcpadp2>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 2a9127fcf229 ("mm: rewrite wait_on_page_bit_common() logic")
-improved unlock_page(), it has become more noticeable how cow_user_page()
-in a kernel with CONFIG_DMA_API_DEBUG=y can create and suffer from heavy
-contention on DMA debug's radix_lock in debug_dma_assert_idle().
+On 2020-08-12 20:00, Daejun Park wrote:
+> On 2020-08-06 02:11, Daejun Park wrote:
+>>> +static int ufshpb_create_sysfs(struct ufs_hba *hba, struct ufshpb_lu *hpb)
+>>> +{
+>>> +    int ret;
+>>> +
+>>> +    ufshpb_stat_init(hpb);
+>>> +
+>>> +    kobject_init(&hpb->kobj, &ufshpb_ktype);
+>>> +    mutex_init(&hpb->sysfs_lock);
+>>> +
+>>> +    ret = kobject_add(&hpb->kobj, kobject_get(&hba->dev->kobj),
+>>> +              "ufshpb_lu%d", hpb->lun);
+>>> +
+>>> +    if (ret)
+>>> +        return ret;
+>>> +
+>>> +    ret = sysfs_create_group(&hpb->kobj, &ufshpb_sysfs_group);
+>>> +
+>>> +    if (ret) {
+>>> +        dev_err(hba->dev, "ufshpb_lu%d create file error\n", hpb->lun);
+>>> +        return ret;
+>>> +    }
+>>> +
+>>> +    dev_info(hba->dev, "ufshpb_lu%d sysfs adds uevent", hpb->lun);
+>>> +    kobject_uevent(&hpb->kobj, KOBJ_ADD);
+>>> +
+>>> +    return 0;
+>>> +}
+>>
+>> Please attach these sysfs attributes to /sys/class/scsi_device/*/device
+>> instead of creating a new kobject. Consider using the following
+>> scsi_host_template member to define LUN sysfs attributes:
+> 
+> I am not rejecting your comment. But I added kobject for distinguishing 
+> between other attributes and attributes related to HPB feature.
+> If you think it's pointless, I'll fix it.
 
-It is only doing a lookup: use rcu_read_lock() and rcu_read_unlock()
-instead; though that does require the static ents[] to be moved onstack...
+Hi Daejun,
 
-...but, hold on, isn't that radix_tree_gang_lookup() and loop doing quite
-the wrong thing: searching CACHELINES_PER_PAGE entries for an exact match
-with the first cacheline of the page in question?  radix_tree_gang_lookup()
-is the right tool for the job, but we need nothing more than to check the
-first entry it can find, reporting if that falls anywhere within the page.
+I see two reasons to add these sysfs attributes under
+/sys/class/scsi_device/*/device:
+- This makes the behavior of the UFS driver similar to that of other Linux
+  SCSI LLD drivers.
+- This makes it easier for people who want to write udev rules that read
+  from these attributes. Since ufshpb_lu%d is attached to the UFS controller
+  it is not clear to me which attributes will appear first in sysfs - the
+  SCSI device attributes or the ufshpb_lu%d attributes. If there are only
+  SCSI device attributes there is no such ambiguity and hence authors of
+  udev rules won't have to worry about this race condition.
 
-(Is RCU safe here?  As safe as using the spinlock was.  The entries are
-never freed, so don't need to be freed by RCU.  They may be reused, and
-there is a faint chance of a race, with an offending entry reused while
-printing its error info; but the spinlock did not prevent that either,
-and I agree that it's not worth worrying about.)
+>>> +void ufshpb_remove(struct ufs_hba *hba)
+>>> +{
+>>> +    struct ufshpb_lu *hpb, *n_hpb;
+>>> +    struct ufsf_feature_info *ufsf;
+>>> +    struct scsi_device *sdev;
+>>> +
+>>> +    ufsf = &hba->ufsf;
+>>> +
+>>> +    list_for_each_entry_safe(hpb, n_hpb, &lh_hpb_lu, list_hpb_lu) {
+>>> +        ufshpb_set_state(hpb, HPB_FAILED);
+>>> +
+>>> +        sdev = hpb->sdev_ufs_lu;
+>>> +        sdev->hostdata = NULL;
+>>> +
+>>> +        ufshpb_destroy_region_tbl(hpb);
+>>> +
+>>> +        list_del_init(&hpb->list_hpb_lu);
+>>> +        ufshpb_remove_sysfs(hpb);
+>>> +
+>>> +        kfree(hpb);
+>>> +    }
+>>> +
+>>> +    dev_info(hba->dev, "ufshpb: remove success\n");
+>>> +}
+>>
+>> Should the code in the body of the above loop perhaps be called from inside
+>> ufshcd_slave_destroy()?
+> 
+> Moving other stuffs in the loop is good idea, but removing attributes is problem.
+> To avoid adding new kobject, I will try to use sysfs_merge_group() 
+> for adding attributes. To delete merged attributes, sysfs_unmerge_group() 
+> should be called. But sysfs_remove_groups() is called before calling ufshcd_slave_destroy().
 
-Fixes: 3b7a6418c749 ("dma debug: account for cachelines and read-only mappings in overlap tracking")
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
+Hmm ... I don't see why the sdev_groups host template attribute can't be used?
 
- kernel/dma/debug.c |   27 +++++++++------------------
- 1 file changed, 9 insertions(+), 18 deletions(-)
+Please don't use sysfs_merge_group() and sysfs_unmerge_group() because that
+would create a race condition against udev rules if these functions are called
+after the device core has emitted a KOBJ_ADD event.
 
---- v5.9-rc/kernel/dma/debug.c	2020-08-05 18:17:57.544203766 -0700
-+++ linux/kernel/dma/debug.c	2020-08-12 19:53:33.159070245 -0700
-@@ -565,11 +565,8 @@ static void active_cacheline_remove(stru
-  */
- void debug_dma_assert_idle(struct page *page)
- {
--	static struct dma_debug_entry *ents[CACHELINES_PER_PAGE];
--	struct dma_debug_entry *entry = NULL;
--	void **results = (void **) &ents;
--	unsigned int nents, i;
--	unsigned long flags;
-+	struct dma_debug_entry *entry;
-+	unsigned long pfn;
- 	phys_addr_t cln;
- 
- 	if (dma_debug_disabled())
-@@ -578,20 +575,14 @@ void debug_dma_assert_idle(struct page *
- 	if (!page)
- 		return;
- 
--	cln = (phys_addr_t) page_to_pfn(page) << CACHELINE_PER_PAGE_SHIFT;
--	spin_lock_irqsave(&radix_lock, flags);
--	nents = radix_tree_gang_lookup(&dma_active_cacheline, results, cln,
--				       CACHELINES_PER_PAGE);
--	for (i = 0; i < nents; i++) {
--		phys_addr_t ent_cln = to_cacheline_number(ents[i]);
-+	pfn = page_to_pfn(page);
-+	cln = (phys_addr_t) pfn << CACHELINE_PER_PAGE_SHIFT;
- 
--		if (ent_cln == cln) {
--			entry = ents[i];
--			break;
--		} else if (ent_cln >= cln + CACHELINES_PER_PAGE)
--			break;
--	}
--	spin_unlock_irqrestore(&radix_lock, flags);
-+	rcu_read_lock();
-+	if (!radix_tree_gang_lookup(&dma_active_cacheline, (void **) &entry,
-+				    cln, 1) || entry->pfn != pfn)
-+		entry = NULL;
-+	rcu_read_unlock();
- 
- 	if (!entry)
- 		return;
+Thanks,
+
+Bart.
