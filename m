@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F31824322A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 03:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB9124322C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 03:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgHMBp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 21:45:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33128 "EHLO mail.kernel.org"
+        id S1726699AbgHMBqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 21:46:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbgHMBp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726576AbgHMBp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 Aug 2020 21:45:57 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C38A7208A9;
+        by mail.kernel.org (Postfix) with ESMTPSA id E191521744;
         Thu, 13 Aug 2020 01:45:56 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1k62JX-00750f-QF; Wed, 12 Aug 2020 21:45:55 -0400
-Message-ID: <20200813014555.694818878@goodmis.org>
+        id 1k62JX-00751A-Uo; Wed, 12 Aug 2020 21:45:55 -0400
+Message-ID: <20200813014555.844225670@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 12 Aug 2020 21:45:37 -0400
+Date:   Wed, 12 Aug 2020 21:45:38 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org,
         linux-rt-users <linux-rt-users@vger.kernel.org>
@@ -31,10 +31,10 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
         Tom Zanussi <zanussi@kernel.org>,
         "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        stable-rt@vger.kernel.org,
-        "Luis Claudio R. Goncalves" <lclaudio@uudg.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH RT 3/6] Bluetooth: Acquire sk_lock.slock without disabling interrupts
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH RT 4/6] net: phy: fixed_phy: Remove unused seqcount
 References: <20200813014534.833107526@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,65 +48,89 @@ If anyone has any objections, please let me know.
 
 ------------------
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: "Ahmed S. Darwish" <a.darwish@linutronix.de>
 
-[ Upstream commit e6da0edc24eecef2f6964d92fa9044e1821deace ]
+Commit bf7afb29d545 ("phy: improve safety of fixed-phy MII register
+reading") protected the fixed PHY status with a sequence counter.
 
-There was a lockdep which led to commit
-   fad003b6c8e3d ("Bluetooth: Fix inconsistent lock state with RFCOMM")
+Two years later, commit d2b977939b18 ("net: phy: fixed-phy: remove
+fixed_phy_update_state()") removed the sequence counter's write side
+critical section -- neutralizing its read side retry loop.
 
-Lockdep noticed that `sk->sk_lock.slock' was acquired without disabling
-the softirq while the lock was also used in softirq context.
-Unfortunately the solution back then was to disable interrupts before
-acquiring the lock which however made lockdep happy.
-It would have been enough to simply disable the softirq. Disabling
-interrupts before acquiring a spinlock_t is not allowed on PREEMPT_RT
-because these locks are converted to 'sleeping' spinlocks.
+Remove the unused seqcount.
 
-Use spin_lock_bh() in order to acquire the `sk_lock.slock'.
-
-Cc: stable-rt@vger.kernel.org
-Reported-by: Luis Claudio R. Goncalves <lclaudio@uudg.org>
-Reported-by: kbuild test robot <lkp@intel.com> [missing unlock]
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+(cherry picked from v5.8-rc1 commit 79cbb6bc3332da7162c2581e151659ab8ebaa528)
+Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- net/bluetooth/rfcomm/sock.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/net/phy/fixed_phy.c | 28 +++++++++++-----------------
+ 1 file changed, 11 insertions(+), 17 deletions(-)
 
-diff --git a/net/bluetooth/rfcomm/sock.c b/net/bluetooth/rfcomm/sock.c
-index 90bb53aa4bee..2c27aa2acf1c 100644
---- a/net/bluetooth/rfcomm/sock.c
-+++ b/net/bluetooth/rfcomm/sock.c
-@@ -64,15 +64,13 @@ static void rfcomm_sk_data_ready(struct rfcomm_dlc *d, struct sk_buff *skb)
- static void rfcomm_sk_state_change(struct rfcomm_dlc *d, int err)
- {
- 	struct sock *sk = d->owner, *parent;
--	unsigned long flags;
+diff --git a/drivers/net/phy/fixed_phy.c b/drivers/net/phy/fixed_phy.c
+index 4190f9ed5313..9ed715e9be40 100644
+--- a/drivers/net/phy/fixed_phy.c
++++ b/drivers/net/phy/fixed_phy.c
+@@ -19,7 +19,6 @@
+ #include <linux/slab.h>
+ #include <linux/of.h>
+ #include <linux/gpio/consumer.h>
+-#include <linux/seqlock.h>
+ #include <linux/idr.h>
+ #include <linux/netdevice.h>
+ #include <linux/linkmode.h>
+@@ -34,7 +33,6 @@ struct fixed_mdio_bus {
+ struct fixed_phy {
+ 	int addr;
+ 	struct phy_device *phydev;
+-	seqcount_t seqcount;
+ 	struct fixed_phy_status status;
+ 	bool no_carrier;
+ 	int (*link_update)(struct net_device *, struct fixed_phy_status *);
+@@ -80,19 +78,17 @@ static int fixed_mdio_read(struct mii_bus *bus, int phy_addr, int reg_num)
+ 	list_for_each_entry(fp, &fmb->phys, node) {
+ 		if (fp->addr == phy_addr) {
+ 			struct fixed_phy_status state;
+-			int s;
+-
+-			do {
+-				s = read_seqcount_begin(&fp->seqcount);
+-				fp->status.link = !fp->no_carrier;
+-				/* Issue callback if user registered it. */
+-				if (fp->link_update)
+-					fp->link_update(fp->phydev->attached_dev,
+-							&fp->status);
+-				/* Check the GPIO for change in status */
+-				fixed_phy_update(fp);
+-				state = fp->status;
+-			} while (read_seqcount_retry(&fp->seqcount, s));
++
++			fp->status.link = !fp->no_carrier;
++
++			/* Issue callback if user registered it. */
++			if (fp->link_update)
++				fp->link_update(fp->phydev->attached_dev,
++						&fp->status);
++
++			/* Check the GPIO for change in status */
++			fixed_phy_update(fp);
++			state = fp->status;
  
- 	if (!sk)
- 		return;
+ 			return swphy_read_reg(reg_num, &state);
+ 		}
+@@ -150,8 +146,6 @@ static int fixed_phy_add_gpiod(unsigned int irq, int phy_addr,
+ 	if (!fp)
+ 		return -ENOMEM;
  
- 	BT_DBG("dlc %p state %ld err %d", d, d->state, err);
+-	seqcount_init(&fp->seqcount);
+-
+ 	if (irq != PHY_POLL)
+ 		fmb->mii_bus->irq[phy_addr] = irq;
  
--	local_irq_save(flags);
--	bh_lock_sock(sk);
-+	spin_lock_bh(&sk->sk_lock.slock);
- 
- 	if (err)
- 		sk->sk_err = err;
-@@ -93,8 +91,7 @@ static void rfcomm_sk_state_change(struct rfcomm_dlc *d, int err)
- 		sk->sk_state_change(sk);
- 	}
- 
--	bh_unlock_sock(sk);
--	local_irq_restore(flags);
-+	spin_unlock_bh(&sk->sk_lock.slock);
- 
- 	if (parent && sock_flag(sk, SOCK_ZAPPED)) {
- 		/* We have to drop DLC lock here, otherwise
 -- 
 2.28.0
 
