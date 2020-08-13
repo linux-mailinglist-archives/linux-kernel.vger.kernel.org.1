@@ -2,147 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D20243254
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 03:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A2624327A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 04:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbgHMB7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 21:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgHMB7w (ORCPT
+        id S1726698AbgHMCZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 22:25:09 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:20081 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgHMCZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 21:59:52 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E247DC061383;
-        Wed, 12 Aug 2020 18:59:51 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id g19so5644375ioh.8;
-        Wed, 12 Aug 2020 18:59:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AWlgNe2+Iuz2XZY+IWyCSEAywNgsaZh/vBUAUBWEudE=;
-        b=Qea7J4MdsvRPrHK6vTNWamS8TgqAEQ6cKstvXGPzmsMiUHwANlkDob7c9pZbOtmMYw
-         ZwFbcxqH4sPVaixbvycEnZk5pasYJl1YY9RbUy9OPesAHl4PfkcvvfWQbY0/0oFxc0DC
-         HmzVWYyUrTOlIZBtm7mt+Em+7pZ3e/NRvy09Zv3bK37DizNvYxT3npc+CaL/WzUMIg8w
-         BvMJ0mJBOc6IpxJCV1SanMXijeM7gVs0JVM98GYV3wcZOVpLgCviSf5rCDKoqWXNpBkD
-         2twh1f5Ui4A5Wo4cY9JUKY7wWaVZcjeEklH91fStzkysVrmhietZ+hGYc62Lp1aN55RJ
-         O96g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AWlgNe2+Iuz2XZY+IWyCSEAywNgsaZh/vBUAUBWEudE=;
-        b=muD7aJPLAYcDt9MfF0ddEja+yUB3d4dew2+sL2oI7RVo45gRA8P90+IrytnFM9b7GI
-         +miEPvX3Eu7Gy4Z9u/QA0mUIwSY7Of8bCAb4O5GE46zYTBiwPpqlnlFLT7bpGLC+vZ6M
-         v5Gzp0xBc/O9vyyFM8PfFDvDwdiKVHggEFX4eUMEkXKapwsR7D48ds/Tv9WXdMRohDmA
-         EkDX3Ikqj091TLCyZNw7SGYjqfLx6fNOa85PpasEeU1oGs1hYQJ7rhN318XWy4mj1DsF
-         oBxXFhgdHCiJ1/VyMJYoFOl5EZRRZ1T2fhA2Wo6NhUyJv576rpZUqSQkXqIrGIzTBGyy
-         vWBw==
-X-Gm-Message-State: AOAM533enrEdVFs457UzqcVNOLPVBA1lxd80q85egp9UGt/1UFsjesQW
-        Aw1CPGSU3N63kva4Zm867jcI+6uU3bV4/Fe9SJQ=
-X-Google-Smtp-Source: ABdhPJwiyW9N2P4bEdzpAt0SnW2GcUA7DC9arjWeKmn0pLfqFHuvzaNC3wHKUia8DJmWLIkGq1LuuNacL7O0TGkylMs=
-X-Received: by 2002:a5e:db0d:: with SMTP id q13mr2552009iop.87.1597283991322;
- Wed, 12 Aug 2020 18:59:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <1597260071-2219-1-git-send-email-mjrosato@linux.ibm.com>
- <1597260071-2219-2-git-send-email-mjrosato@linux.ibm.com> <20200812143254.2f080c38@x1.home>
-In-Reply-To: <20200812143254.2f080c38@x1.home>
-From:   "Oliver O'Halloran" <oohall@gmail.com>
-Date:   Thu, 13 Aug 2020 11:59:40 +1000
-Message-ID: <CAOSf1CFh4ygZeeqpjpbWFWxJJEpDjHD+Q_L4dUaU_3wx7_35pg@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI: Introduce flag for detached virtual functions
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Matthew Rosato <mjrosato@linux.ibm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, schnelle@linux.ibm.com,
-        pmorel@linux.ibm.com, Michael Ellerman <mpe@ellerman.id.au>,
-        linux-s390@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 12 Aug 2020 22:25:07 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200813022504epoutp0420dc90287d97cc2f7b7dade922b75335~qsrQGNz2i2335623356epoutp04c
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 02:25:04 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200813022504epoutp0420dc90287d97cc2f7b7dade922b75335~qsrQGNz2i2335623356epoutp04c
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1597285504;
+        bh=bBoSIYfYUVBe91z7Hl3yBvlXhwhzlVC2LnJY5UtikfE=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=s9iB4hk7yXizxTQtC9T5ImjEwFr9TW4T2/lS/JSMaBdzdD5eOBD9xlGIrt1BJ8zqV
+         p2Jfh2rCP8flZAu1TCPibyLeG4lxsl9S/DYn6o7UQ6lJTAONAldAFartLdm4zDKWZ4
+         fMuF2k11XzVUzUOxpfO1rkPVmVRlOvgAg1wv14PU=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p1.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200813022503epcas1p1d9386e2dfbde1e0d35e9c397f0670723~qsrPo9Klz3219232192epcas1p1K;
+        Thu, 13 Aug 2020 02:25:03 +0000 (GMT)
+Mime-Version: 1.0
+Subject: Re: [PATCH v8 2/4] scsi: ufs: Introduce HPB feature
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <4a91d02c-488c-86cd-325c-5e0ad9addd0b@acm.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1239183618.61597285503620.JavaMail.epsvc@epcpadp1>
+Date:   Thu, 13 Aug 2020 11:13:09 +0900
+X-CMS-MailID: 20200813021309epcms2p3d87ce0c4c54389cc3d30b876684936d0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d
+References: <4a91d02c-488c-86cd-325c-5e0ad9addd0b@acm.org>
+        <231786897.01596705001840.JavaMail.epsvc@epcpadp1>
+        <231786897.01596704281715.JavaMail.epsvc@epcpadp2>
+        <231786897.01596705302142.JavaMail.epsvc@epcpadp1>
+        <CGME20200806073257epcms2p61564ed62e02fc42fc3c2b18fa92a038d@epcms2p3>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 6:33 AM Alex Williamson
-<alex.williamson@redhat.com> wrote:
->
-> On Wed, 12 Aug 2020 15:21:11 -0400
-> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
->
-> > @@ -521,7 +522,8 @@ static int vfio_basic_config_read(struct vfio_pci_device *vdev, int pos,
-> >       count = vfio_default_config_read(vdev, pos, count, perm, offset, val);
-> >
-> >       /* Mask in virtual memory enable for SR-IOV devices */
-> > -     if (offset == PCI_COMMAND && vdev->pdev->is_virtfn) {
-> > +     if ((offset == PCI_COMMAND) &&
-> > +         (vdev->pdev->is_virtfn || vdev->pdev->detached_vf)) {
-> >               u16 cmd = le16_to_cpu(*(__le16 *)&vdev->vconfig[PCI_COMMAND]);
-> >               u32 tmp_val = le32_to_cpu(*val);
-> >
-> > @@ -1734,7 +1736,8 @@ int vfio_config_init(struct vfio_pci_device *vdev)
-> >                                vconfig[PCI_INTERRUPT_PIN]);
-> >
-> >               vconfig[PCI_INTERRUPT_PIN] = 0; /* Gratuitous for good VFs */
-> > -
-> > +     }
-> > +     if (pdev->is_virtfn || pdev->detached_vf) {
-> >               /*
-> >                * VFs do no implement the memory enable bit of the COMMAND
-> >                * register therefore we'll not have it set in our initial
-> > diff --git a/include/linux/pci.h b/include/linux/pci.h
-> > index 8355306..23a6972 100644
-> > --- a/include/linux/pci.h
-> > +++ b/include/linux/pci.h
-> > @@ -445,6 +445,7 @@ struct pci_dev {
-> >       unsigned int    is_probed:1;            /* Device probing in progress */
-> >       unsigned int    link_active_reporting:1;/* Device capable of reporting link active */
-> >       unsigned int    no_vf_scan:1;           /* Don't scan for VFs after IOV enablement */
-> > +     unsigned int    detached_vf:1;          /* VF without local PF access */
->
-> Is there too much implicit knowledge in defining a "detached VF"?  For
-> example, why do we know that we can skip the portion of
-> vfio_config_init() that copies the vendor and device IDs from the
-> struct pci_dev into the virtual config space?  It's true on s390x, but
-> I think that's because we know that firmware emulates those registers
-> for us.
->
-> We also skip the INTx pin register sanity checking.  Do we do
-> that because we haven't installed the broken device into an s390x
-> system?  Because we know firmware manages that for us too?  Or simply
-> because s390x doesn't support INTx anyway, and therefore it's another
-> architecture implicit decision?
+Hi Bart,
 
-Agreed. Any hacks we put in for normal VFs are going to be needed for
-the passed-though VF case. Only applying the memory space enable
-workaround doesn't make sense to me either.
+On 2020-08-06 02:11, Daejun Park wrote:
+> > +static void ufshpb_issue_hpb_reset_query(struct ufs_hba *hba)
+> > +{
+> > +    int err;
+> > +    int retries;
+> > +
+> > +    for (retries = 0; retries < HPB_RESET_REQ_RETRIES; retries++) {
+> > +        err = ufshcd_query_flag(hba, UPIU_QUERY_OPCODE_SET_FLAG,
+> > +                QUERY_FLAG_IDN_HPB_RESET, 0, NULL);
+> > +        if (err)
+> > +            dev_dbg(hba->dev,
+> > +                "%s: failed with error %d, retries %d\n",
+> > +                __func__, err, retries);
+> > +        else
+> > +            break;
+> > +    }
+> > +
+> > +    if (err) {
+> > +        dev_err(hba->dev,
+> > +            "%s setting fHpbReset flag failed with error %d\n",
+> > +            __func__, err);
+> > +        return;
+> > +    }
+> > +}
+> 
+> Please change the "break" into an early return, remove the last
+> occurrence "if (err)" and remove the final return statement.
 
-> If detached_vf is really equivalent to is_virtfn for all cases that
-> don't care about referencing physfn on the pci_dev, then we should
-> probably have a macro to that effect.
+OK, I will.
 
-A pci_is_virtfn() helper would be better than open coding both checks
-everywhere. That said, it might be solving the wrong problem. The
-union between ->physfn and ->sriov has always seemed like a footgun to
-me so we might be better off switching the users who want a physfn to
-a helper instead. i.e.
+> 
+> > +static void ufshpb_check_hpb_reset_query(struct ufs_hba *hba)
+> > +{
+> > +    int err;
+> > +    bool flag_res = true;
+> > +    int try = 0;
+> > +
+> > +    /* wait for the device to complete HPB reset query */
+> > +    do {
+> > +        if (++try == HPB_RESET_REQ_RETRIES)
+> > +            break;
+> > +
+> > +        dev_info(hba->dev,
+> > +            "%s start flag reset polling %d times\n",
+> > +            __func__, try);
+> > +
+> > +        /* Poll fHpbReset flag to be cleared */
+> > +        err = ufshcd_query_flag(hba, UPIU_QUERY_OPCODE_READ_FLAG,
+> > +                QUERY_FLAG_IDN_HPB_RESET, 0, &flag_res);
+> > +        usleep_range(1000, 1100);
+> > +    } while (flag_res);
+> > +
+> > +    if (err) {
+> > +        dev_err(hba->dev,
+> > +            "%s reading fHpbReset flag failed with error %d\n",
+> > +            __func__, err);
+> > +        return;
+> > +    }
+> > +
+> > +    if (flag_res) {
+> > +        dev_err(hba->dev,
+> > +            "%s fHpbReset was not cleared by the device\n",
+> > +            __func__);
+> > +    }
+> > +}
+> 
+> Should "polling %d times" perhaps be changed into "attempt %d"?
 
-struct pci_dev *pci_get_vf_physfn(struct pci_dev *vf)
-{
-        if (!vf->is_virtfn)
-                return NULL;
+I will change it.
 
-        return vf->physfn;
-}
+> The "if (err)" statement may be reached without "err" having been
+> initialized. Please fix.
 
-...
+OK, I will initialize err to 0.
 
-pf = pci_get_vf_physfn(vf)
-if (pf)
-    /* do pf things */
+> Additionally, please change the do-while loop into a for-loop, e.g. as
+> follows:
+> 
+>     for (try = 0; try < HPB_RESET_REQ_RETRIES; try++)
+>         ...
 
-Then we can just use ->is_virtfn for the normal and detached cases.
+OK, I will change do-while to for-loop.
 
-Oliver
+Thanks,
+
+Daejun
