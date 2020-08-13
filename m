@@ -2,78 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B99A2439A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 14:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3642439AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 14:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgHMMOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 08:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbgHMMOR (ORCPT
+        id S1726651AbgHMMPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 08:15:21 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58334 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726053AbgHMMPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 08:14:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1747FC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 05:14:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/u7Zk4bCfLx2PXXzkWP/0h7HLrlp3BATVK4KXPDFv64=; b=g4chzfeoFqDUrpAlhFb4Qt0Egj
-        JBZbxodNdrryqRciYEEph8Q+wD4FKGduxdCB2aleaJ4CxSRzlaFKvp17NJ4iPV65HD+zy78yPwEkg
-        XOV0K1u5vV67J6nsiu26n4sMCdotaRhkFEkBEx132usMYkf/m9TGwxlQncchDK272u1Zpa1CLG+vc
-        e8rdYvFbU/zOZ2oFxz52zs9bBePN4wC8+TGLJOwFyRS6s33ZlKh0BomDEJIlKh/i9iaYNjlIx83tj
-        IQixJA/TbMgTZNJJmCPwOCEtLOAQ/qiQOwp/MiuSR53VdnGCRJbZyivOmd9Q1HNJmVx73+sRG9KTZ
-        LaeT5f+g==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k6C7P-0004Sm-92; Thu, 13 Aug 2020 12:14:03 +0000
-Date:   Thu, 13 Aug 2020 13:14:03 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 1/5] powerpc: Remove flush_instruction_cache for book3s/32
-Message-ID: <20200813121403.GB16237@infradead.org>
-References: <11a330af231af22874c006302a945388846f8112.1597313510.git.christophe.leroy@csgroup.eu>
- <20200813121308.GA16237@infradead.org>
+        Thu, 13 Aug 2020 08:15:18 -0400
+Date:   Thu, 13 Aug 2020 12:15:15 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597320916;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MKkEG/5K5y7F2Yw2IcGjRVzdQIU/oD6i7aVmBszFYnA=;
+        b=xCWRXRnXiOoWcHAZcgC3/FjAuA1dycfTMIhZasTk/qcBKwmMxH7nI1DZXkefX3QX/TdCXZ
+        2IMmjMZ5aZzMP5qr6jCzy6f+207Yk/97fhZTuSqo+To2FSKrwkAOYvwCPfPvdT7X1DWMNs
+        r+UZBGfWpBPKLpSfmSBcvlqUEjEBfRXw+tsKw6z/HG1CZtLmbShA68BEjrj8idBI6DGbU2
+        j1g2qQaaY/WcnhT8MaPW2bvAaFJsixNWjKmzdnIjwaBBztn2y7xeZchqXUCZ4B390cZbys
+        tpKh4si6sQ+GoKXjkbb1Z2pxEFRka2z6ZUU0pG94nYLT6NEmJDPfb1MN95Q6TQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597320916;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MKkEG/5K5y7F2Yw2IcGjRVzdQIU/oD6i7aVmBszFYnA=;
+        b=q2GiVcQNMFken73bLIu8FQGR6L9R1cSiqjRyel5CyzEUDzb1HDaMhyJeqJqej35ZZSF6eu
+        OaM5nwrNmy2MxADQ==
+From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/alternatives: Acquire pte lock with interrupts enabled
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200813105026.bvugytmsso6muljw@linutronix.de>
+References: <20200813105026.bvugytmsso6muljw@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200813121308.GA16237@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Message-ID: <159732091559.3192.7404769548939834518.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 01:13:08PM +0100, Christoph Hellwig wrote:
-> On Thu, Aug 13, 2020 at 10:12:00AM +0000, Christophe Leroy wrote:
-> > -#ifndef CONFIG_PPC_8xx
-> > +#if !defined(CONFIG_PPC_8xx) && !defined(CONFIG_PPC_BOOK3S_32)
-> >  _GLOBAL(flush_instruction_cache)
-> >  #if defined(CONFIG_4xx)
-> >  	lis	r3, KERNELBASE@h
-> > @@ -290,18 +289,11 @@ _GLOBAL(flush_instruction_cache)
-> >  	mfspr	r3,SPRN_L1CSR1
-> >  	ori	r3,r3,L1CSR1_ICFI|L1CSR1_ICLFR
-> >  	mtspr	SPRN_L1CSR1,r3
-> > -#elif defined(CONFIG_PPC_BOOK3S_601)
-> > -	blr			/* for 601, do nothing */
-> > -#else
-> > -	/* 603/604 processor - use invalidate-all bit in HID0 */
-> > -	mfspr	r3,SPRN_HID0
-> > -	ori	r3,r3,HID0_ICFI
-> > -	mtspr	SPRN_HID0,r3
-> >  #endif /* CONFIG_4xx */
-> >  	isync
-> >  	blr
-> >  EXPORT_SYMBOL(flush_instruction_cache)
-> > -#endif /* CONFIG_PPC_8xx */
-> > +#endif /* CONFIG_PPC_8xx || CONFIG_PPC_BOOK3S_32 */
-> 
-> What about untangling this into entirely separate versions instead
-> of the ifdef mess?  Also the export does not seem to be needed at all.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Ok, I see that you do that later, sorry.
+Commit-ID:     a6d996cbd38b42341ad3fce74506b9fdc280e395
+Gitweb:        https://git.kernel.org/tip/a6d996cbd38b42341ad3fce74506b9fdc280e395
+Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+AuthorDate:    Thu, 13 Aug 2020 12:50:26 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 13 Aug 2020 14:11:54 +02:00
+
+x86/alternatives: Acquire pte lock with interrupts enabled
+
+pte lock is never acquired in-IRQ context so it does not require interrupts
+to be disabled. The lock is a regular spinlock which cannot be acquired
+with interrupts disabled on RT.
+
+RT complains about pte_lock() in __text_poke() because it's invoked after
+disabling interrupts.
+
+__text_poke() has to disable interrupts as use_temporary_mm() expects
+interrupts to be off because it invokes switch_mm_irqs_off() and uses
+per-CPU (current active mm) data.
+
+Move the PTE lock handling outside the interrupt disabled region.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by; Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20200813105026.bvugytmsso6muljw@linutronix.de
+
+---
+ arch/x86/kernel/alternative.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index c826cdd..34a1b85 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -874,8 +874,6 @@ static void *__text_poke(void *addr, const void *opcode, size_t len)
+ 	 */
+ 	BUG_ON(!pages[0] || (cross_page_boundary && !pages[1]));
+ 
+-	local_irq_save(flags);
+-
+ 	/*
+ 	 * Map the page without the global bit, as TLB flushing is done with
+ 	 * flush_tlb_mm_range(), which is intended for non-global PTEs.
+@@ -892,6 +890,8 @@ static void *__text_poke(void *addr, const void *opcode, size_t len)
+ 	 */
+ 	VM_BUG_ON(!ptep);
+ 
++	local_irq_save(flags);
++
+ 	pte = mk_pte(pages[0], pgprot);
+ 	set_pte_at(poking_mm, poking_addr, ptep, pte);
+ 
+@@ -941,8 +941,8 @@ static void *__text_poke(void *addr, const void *opcode, size_t len)
+ 	 */
+ 	BUG_ON(memcmp(addr, opcode, len));
+ 
+-	pte_unmap_unlock(ptep, ptl);
+ 	local_irq_restore(flags);
++	pte_unmap_unlock(ptep, ptl);
+ 	return addr;
+ }
+ 
