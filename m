@@ -2,153 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E0A2436F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 10:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A3C2436FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 10:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgHMIz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 04:55:59 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:15113 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726048AbgHMIz6 (ORCPT
+        id S1726174AbgHMI6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 04:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726053AbgHMI6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 04:55:58 -0400
-X-UUID: 17945b564e3f4c9f8b41d1d22b2252e9-20200813
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=xNEibFjIE0xUhw/eSSimln7Sb1lNhA3Oq/fLa0kDVp8=;
-        b=MnE2VtzBUVklNS1vxAEKEWLbGpgXm0DIeHn7NkmILyjM50fOe+kYopxylDn1jR7MHptnRkdlHpqxyAylGOnHhZgiD/wiOKy3xNlKe8YZFa5Ex+Tvs5cDaXUCJ6ovdJY/tIOuSzc9OcsrKEUlpmO0GSlsH8upFhQT4NFMCcuAMEI=;
-X-UUID: 17945b564e3f4c9f8b41d1d22b2252e9-20200813
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 369550968; Thu, 13 Aug 2020 16:55:52 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 13 Aug 2020 16:55:49 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 13 Aug 2020 16:55:49 +0800
-Message-ID: <1597308950.26065.25.camel@mtkswgap22>
-Subject: Re: [PATCH v7] scsi: ufs: Quiesce all scsi devices before shutdown
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kuohong Wang =?UTF-8?Q?=28=E7=8E=8B=E5=9C=8B=E9=B4=BB=29?= 
-        <kuohong.wang@mediatek.com>,
-        Peter Wang =?UTF-8?Q?=28=E7=8E=8B=E4=BF=A1=E5=8F=8B=29?= 
-        <peter.wang@mediatek.com>,
-        Chun-Hung Wu =?UTF-8?Q?=28=E5=B7=AB=E9=A7=BF=E5=AE=8F=29?= 
-        <Chun-hung.Wu@mediatek.com>,
-        Andy Teng =?UTF-8?Q?=28=E9=84=A7=E5=A6=82=E5=AE=8F=29?= 
-        <Andy.Teng@mediatek.com>,
-        Chaotian Jing =?UTF-8?Q?=28=E4=BA=95=E6=9C=9D=E5=A4=A9=29?= 
-        <Chaotian.Jing@mediatek.com>,
-        CC Chou =?UTF-8?Q?=28=E5=91=A8=E5=BF=97=E6=9D=B0=29?= 
-        <cc.chou@mediatek.com>,
-        Jiajie Hao =?UTF-8?Q?=28=E9=83=9D=E5=8A=A0=E8=8A=82=29?= 
-        <jiajie.hao@mediatek.com>
-Date:   Thu, 13 Aug 2020 16:55:50 +0800
-In-Reply-To: <f40ad9e1-2e45-f21c-d067-eff579982cc7@acm.org>
-References: <20200803100448.2738-1-stanley.chu@mediatek.com>
-         <f40ad9e1-2e45-f21c-d067-eff579982cc7@acm.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Thu, 13 Aug 2020 04:58:17 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A79DC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 01:58:16 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id g8so4015881wmk.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 01:58:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7ejOXH1LQTXrGTOxhVaMU2TYELrccVatdEWcGAK3Sjw=;
+        b=P0vxc039Nc76V/6Rh0lKYHO+QHOD59pM77+iDKGJHEdV1gXadGYcNlamm6GJok7Lcx
+         erNEgkh194Mu2P90joK7JlyIHPQxnUZW8mDcF2HS6T+L45gkx1fqoPO/GvKZ3D2yFBSc
+         kBnDZh31uDw6IJCEf9aP89Ee6TwK0F7xVcrUWFWeHGmk7BibunPOcqRp7ddlTdcbsEPp
+         uWeYrjGmuC3umaZYRvPVjAmViw67Fs8d1CUOuZnpGVyCZD8Po+bcK9HV7xqyAEATcXFy
+         HOTJ7a+qFjtIE3/Ldo5+Z1Yox4Y5EFnDve9qnTUVQ54+7jO7PfJHuhI4cb0dQn/Y7Aic
+         3qOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ejOXH1LQTXrGTOxhVaMU2TYELrccVatdEWcGAK3Sjw=;
+        b=TacbtGe1Vh42zseciWnDEB6US7v6c9Atn9idK+5y2zXcDfEtoWoeKewe47MAzhIcPo
+         +pe4eFRf5oMEI8AsANVbyNwlVXQFn/yCVJqtFMJpOu3k/x29hRCwCK178xpW5sc7edZn
+         dGLfXxSQ8/VwShl4HqxZtW+t/68B8PdSPAuZRU7G5smXlQubGR5ah7Vzi8qRrAraZzMx
+         b+qZJeFZDPg2qTutDofxWm5gt+U6YFWzY6ksYz9rYheNkNFLjH/38CD2rSst7NHFHm7z
+         vUBFE2qzAaRkNmF4hkPC/CEqJ96GHwjDeUsb9W6jP6mLK/IREqI8LgqTS3tW60Hhs+X4
+         YV3w==
+X-Gm-Message-State: AOAM531+9sOEx3LNZjjkUS6Sqm0NExkK7LcrjYpgyY34+1++IWbghrzS
+        iHnQkXUDNVq9hEC3kFCVMFGegt5J7/9j+Ibq+Y4ZBA==
+X-Google-Smtp-Source: ABdhPJydHDppTz/E+mk7vmLwdcwMEGXhikXzJOI8CfN3YTccGMRBhG08jWr2bhSuzMpdsnC0rgQs2DRZ3VOpfnSt+N0=
+X-Received: by 2002:a7b:c4d5:: with SMTP id g21mr3596831wmk.185.1597309095228;
+ Thu, 13 Aug 2020 01:58:15 -0700 (PDT)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: D839A85286D21DB220A7566B75E9C29412EA56B227F2D207F45821E187AD12D42000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20200812234758.3563-1-atish.patra@wdc.com> <20200812234758.3563-4-atish.patra@wdc.com>
+In-Reply-To: <20200812234758.3563-4-atish.patra@wdc.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 13 Aug 2020 14:28:03 +0530
+Message-ID: <CAAhSdy3AuDi=JZN9beo5rhNnUD+bng+7t9qVTNNLZY8Yr2+Qhg@mail.gmail.com>
+Subject: Re: [PATCH v5 3/9] RISC-V: Implement late mapping page table
+ allocation functions
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@suse.de>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        fwts-devel@lists.ubuntu.com, Mao Han <han_mao@c-sky.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Steven Price <steven.price@arm.com>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Daniel Schaefer <daniel.schaefer@hpe.com>,
+        "abner.chang@hpe.com" <abner.chang@hpe.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQmFydCwgQ2FuLCBDaGFvdGlhbiwNCg0KVmVyeSBhcHByZWNpYXRlIHlvdXIgY29tbWVudHMg
-YW5kIHN1Z2dlc3Rpb25zLCBwbGVhc2Ugc2VlIHVwZGF0ZSBiZWxvdywNCg0KT24gVHVlLCAyMDIw
-LTA4LTA0IGF0IDAwOjA0ICswODAwLCBCYXJ0IFZhbiBBc3NjaGUgd3JvdGU6DQo+IE9uIDIwMjAt
-MDgtMDMgMDM6MDQsIFN0YW5sZXkgQ2h1IHdyb3RlOg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJz
-L3Njc2kvdWZzL3Vmc2hjZC5jIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KPiA+IGluZGV4
-IDMwNzYyMjI4NDIzOS4uN2NiMjIwYjNmZGUwIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvc2Nz
-aS91ZnMvdWZzaGNkLmMNCj4gPiArKysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+ID4g
-QEAgLTg2NDAsNiArODY0MCw3IEBAIEVYUE9SVF9TWU1CT0wodWZzaGNkX3J1bnRpbWVfaWRsZSk7
-DQo+ID4gIGludCB1ZnNoY2Rfc2h1dGRvd24oc3RydWN0IHVmc19oYmEgKmhiYSkNCj4gPiAgew0K
-PiA+ICAJaW50IHJldCA9IDA7DQo+ID4gKwlzdHJ1Y3Qgc2NzaV90YXJnZXQgKnN0YXJnZXQ7DQo+
-ID4gIA0KPiA+ICAJaWYgKCFoYmEtPmlzX3Bvd2VyZWQpDQo+ID4gIAkJZ290byBvdXQ7DQo+ID4g
-QEAgLTg2NDcsMTEgKzg2NDgsMjcgQEAgaW50IHVmc2hjZF9zaHV0ZG93bihzdHJ1Y3QgdWZzX2hi
-YSAqaGJhKQ0KPiA+ICAJaWYgKHVmc2hjZF9pc191ZnNfZGV2X3Bvd2Vyb2ZmKGhiYSkgJiYgdWZz
-aGNkX2lzX2xpbmtfb2ZmKGhiYSkpDQo+ID4gIAkJZ290byBvdXQ7DQo+ID4gIA0KPiA+IC0JaWYg
-KHBtX3J1bnRpbWVfc3VzcGVuZGVkKGhiYS0+ZGV2KSkgew0KPiA+IC0JCXJldCA9IHVmc2hjZF9y
-dW50aW1lX3Jlc3VtZShoYmEpOw0KPiA+IC0JCWlmIChyZXQpDQo+ID4gLQkJCWdvdG8gb3V0Ow0K
-PiA+IC0JfQ0KPiA+ICsJLyoNCj4gPiArCSAqIExldCBydW50aW1lIFBNIGZyYW1ld29yayBtYW5h
-Z2UgYW5kIHByZXZlbnQgY29uY3VycmVudCBydW50aW1lDQo+ID4gKwkgKiBvcGVyYXRpb25zIHdp
-dGggc2h1dGRvd24gZmxvdy4NCj4gPiArCSAqLw0KPiA+ICsJcG1fcnVudGltZV9nZXRfc3luYyho
-YmEtPmRldik7DQo+ID4gKw0KPiA+ICsJLyoNCj4gPiArCSAqIFF1aWVzY2UgYWxsIFNDU0kgZGV2
-aWNlcyB0byBwcmV2ZW50IGFueSBub24tUE0gcmVxdWVzdHMgc2VuZGluZw0KPiA+ICsJICogZnJv
-bSBibG9jayBsYXllciBkdXJpbmcgYW5kIGFmdGVyIHNodXRkb3duLg0KPiA+ICsJICoNCj4gPiAr
-CSAqIEhlcmUgd2UgY2FuIG5vdCB1c2UgYmxrX2NsZWFudXBfcXVldWUoKSBzaW5jZSBQTSByZXF1
-ZXN0cw0KPiA+ICsJICogKHdpdGggQkxLX01RX1JFUV9QUkVFTVBUIGZsYWcpIGFyZSBzdGlsbCBy
-ZXF1aXJlZCB0byBiZSBzZW50DQo+ID4gKwkgKiB0aHJvdWdoIGJsb2NrIGxheWVyLiBUaGVyZWZv
-cmUgU0NTSSBjb21tYW5kIHF1ZXVlZCBhZnRlciB0aGUNCj4gPiArCSAqIHNjc2lfdGFyZ2V0X3F1
-aWVzY2UoKSBjYWxsIHJldHVybmVkIHdpbGwgYmxvY2sgdW50aWwNCj4gPiArCSAqIGJsa19jbGVh
-bnVwX3F1ZXVlKCkgaXMgY2FsbGVkLg0KPiA+ICsJICoNCj4gPiArCSAqIEJlc2lkZXMsIHNjc2lf
-dGFyZ2V0XyJ1biJxdWllc2NlIChlLmcuLCBzY3NpX3RhcmdldF9yZXN1bWUpIGNhbg0KPiA+ICsJ
-ICogYmUgaWdub3JlZCBzaW5jZSBzaHV0ZG93biBpcyBvbmUtd2F5IGZsb3cuDQo+ID4gKwkgKi8N
-Cj4gPiArCWxpc3RfZm9yX2VhY2hfZW50cnkoc3RhcmdldCwgJmhiYS0+aG9zdC0+X190YXJnZXRz
-LCBzaWJsaW5ncykNCj4gPiArCQlzY3NpX3RhcmdldF9xdWllc2NlKHN0YXJnZXQpOw0KPiA+ICAN
-Cj4gPiAgCXJldCA9IHVmc2hjZF9zdXNwZW5kKGhiYSwgVUZTX1NIVVRET1dOX1BNKTsNCj4gPiAg
-b3V0Og0KPiANCj4gVGhpcyBzZWVtcyB3cm9uZyB0byBtZS4gU2luY2UgdWZzaGNkX3NodXRkb3du
-KCkgc2h1dHMgZG93biB0aGUgbGluayBJIHRoaW5rDQo+IGl0IHNob3VsZCBjYWxsIHNjc2lfcmVt
-b3ZlX2RldmljZSgpIGluc3RlYWQgb2Ygc2NzaV90YXJnZXRfcXVpZXNjZSgpLg0KDQpJIHRyaWVk
-IG1hbnkgd2F5cyB0byBjb21lIG91dCB0aGUgZmluYWwgc29sdXRpb24uIEN1cnJlbnRseSB0d28g
-b3B0aW9ucw0KYXJlIGNvbnNpZGVyZWQsDQoNCj09IE9wdGlvbiAxID09DQoJcG1fcnVudGltZV9n
-ZXRfc3luYyhoYmEtPmRldik7DQoNCglzaG9zdF9mb3JfZWFjaF9kZXZpY2Uoc2RldiwgaGJhLT5o
-b3N0KSB7DQoJCXNjc2lfYXV0b3BtX2dldF9kZXZpY2Uoc2Rldik7DQoJCWlmIChzZGV2ID09IGhi
-YS0+c2Rldl91ZnNfZGV2aWNlKQ0KCQkJc2NzaV9kZXZpY2VfcXVpZXNjZShzZGV2KTsNCgkJZWxz
-ZQ0KCQkJc2NzaV9yZW1vdmVfZGV2aWNlKHNkZXYpOw0KCX0NCg0KCXJldCA9IHVmc2hjZF9zdXNw
-ZW5kKGhiYSwgVUZTX1NIVVRET1dOX1BNKTsNCg0KCXNjc2lfcmVtb3ZlX2RldmljZShoYmEtPnNk
-ZXZfdWZzX2RldmljZSk7DQoNCk5vdGUuIFVzaW5nIHNjc2lfYXV0b3BtX2dldF9kZXZpY2UoKSBp
-bnN0ZWFkIG9mIHBtX3J1bnRpbWVfZGlzYWJsZSgpDQppcyB0byBwcmV2ZW50IG5vaXN5IG1lc3Nh
-Z2UgYnkgYmVsb3cgY2hlY2tpbmcsDQoNCglXQVJOX09OX09OQ0Uoc2Rldi0+cXVpZXNjZWRfYnkg
-JiYgc2Rldi0+cXVpZXNjZWRfYnkgIT0gY3VycmVudCk7DQoNCmluDQpodHRwczovL2dpdC5rZXJu
-ZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9zdGFibGUvbGludXguZ2l0L3RyZWUvZHJp
-dmVycy9zY3NpL3Njc2lfbGliLmMjbjI1MTUNCg0KVGhpcyB3YXJuaW5nIHNob3dzIHVwIGlmIHdl
-IHRyeSB0byBxdWllc2NlIGEgcnVudGltZS1zdXNwZW5kZWQgU0NTSQ0KZGV2aWNlLiBUaGlzIGlz
-IHBvc3NpYmxlIGR1cmluZyBvdXIgbmV3IHNodXRkb3duIGZsb3cuIFVzaW5nDQpzY3NpX2F1dG9w
-bV9nZXRfZGV2aWNlKCkgdG8gcmVzdW1lIGFsbCBTQ1NJIGRldmljZXMgZmlyc3QgY2FuIHByZXZl
-bnQNCml0Lg0KDQpJbiBhZGRpdGlvbiwgbm9ybWFsbHkgc2Rfc2h1dGRvd24oKSB3b3VsZCBiZSBl
-eGVjdXRlZCBwcmlvciB0aGFuDQp1ZnNoY2Rfc2h1dGRvd24oKS4gSWYgc2NzaV9yZW1vdmVfZGV2
-aWNlKCkgaXMgaW52b2tlZCBieQ0KdWZzaGNkX3NodXRkb3duKCksIHNkX3NodXRkb3duKCkgd2ls
-bCBiZSBleGVjdXRlZCBhZ2FpbiBmb3IgYSBTQ1NJIGRpc2sNCmJ5DQoNClsgIDEzMS4zOTg5Nzdd
-ICBzZF9zaHV0ZG93bisweDQ0LzB4MTE4DQpbICAxMzEuMzk5NDE2XSAgc2RfcmVtb3ZlKzB4NWMv
-MHhjNA0KWyAgMTMxLjM5OTgyNF0gIGRldmljZV9yZWxlYXNlX2RyaXZlcl9pbnRlcm5hbCsweDFj
-NC8weDJlNA0KWyAgMTMxLjQwMDQ4MV0gIGRldmljZV9yZWxlYXNlX2RyaXZlcisweDE4LzB4MjQN
-ClsgIDEzMS40MDEwMThdICBidXNfcmVtb3ZlX2RldmljZSsweDEwOC8weDEzNA0KWyAgMTMxLjQw
-MTUzM10gIGRldmljZV9kZWwrMHgyZGMvMHg2MzANClsgIDEzMS40MDE5NzNdICBfX3Njc2lfcmVt
-b3ZlX2RldmljZSsweGMwLzB4MTc0DQpbICAxMzEuNDAyNTEwXSAgc2NzaV9yZW1vdmVfZGV2aWNl
-KzB4MzAvMHg0OA0KWyAgMTMxLjQwMzAxNF0gIHVmc2hjZF9zaHV0ZG93bisweGM4LzB4MTM4DQoN
-CkluIHRoaXMgY2FzZSwgd2UgY291bGQgc2VlIFNZTkNIUk9OSVpFX0NBQ0hFIGNvbW1hbmQgd2ls
-bCBiZSBzZW50IHRvIHRoZQ0Kc2FtZSBTQ1NJIGRldmljZSB0d2ljZS4gVGhpcyBpcyBraW5kIG9m
-IHdpcmVkIGR1cmluZyBzaHV0ZG93biBmbG93Lg0KDQpNb3Jlb3ZlciwgaW4gY29uc2lkZXJhdGlv
-biBvZiBwZXJmb3JtYW5jZSBvZiB1ZnNoY2Rfc2h1dGRvd24oKSwgT3B0aW9uIDENCm9idmlvdXNs
-eSBkZWdyYWRlcyB0aGUgbGF0ZW5jeSBhIGxvdCBieSBzY3NpX3JlbW92ZV9kZXZpY2UoKS4gUGxl
-YXNlIHNlZQ0KdGhlICJQZXJmb3JtYW5jZSBNZWFzdXJlbWVudCIgZGF0YSBiZWxvdy4NCg0KQ29t
-cGFyZWQgT3B0aW9uIDIsIHRoaXMgd2F5IGlzIHNpbXBsZXIgYW5kIGFsc28gZWZmZWN0aXZlLiBU
-aGlzIHdheSBtYXkNCmJlIGEgYmV0dGVyIGNvbXByb21pc2UuDQoNCj09IE9wdGlvbiAyICA9PQ0K
-CXBtX3J1bnRpbWVfZ2V0X3N5bmMoaGJhLT5kZXYpOw0KDQoJc2hvc3RfZm9yX2VhY2hfZGV2aWNl
-KHNkZXYsIGhiYS0+aG9zdCkgew0KCQlzY3NpX2F1dG9wbV9nZXRfZGV2aWNlKHNkZXYpOw0KCQlz
-Y3NpX2RldmljZV9xdWllc2NlKHNkZXYpOw0KCX0NCg0KPT0gUGVyZm9ybWFuY2UgTWVhc3VyZW1l
-bnQgPT0NCkFzLUlzOiA8IDUgbXMNCk9wdGlvbiAxOiA4NTAgbXMNCk9wdGlvbiAyOiA2MCBtcw0K
-DQpXaGF0IHdvdWxkIHlvdSBwcmVmZXI/IE9yIHdvdWxkIHlvdSBoYXZlIGFueSBmdXJ0aGVyIHN1
-Z2dlc3Rpb25zPw0KDQpUaGFua3MsDQoNClN0YW5sZXkgQ2h1DQoNCg==
+On Thu, Aug 13, 2020 at 5:19 AM Atish Patra <atish.patra@wdc.com> wrote:
+>
+> Currently, page table setup is done during setup_va_final where fixmap can
+> be used to create the temporary mappings. The physical frame is allocated
+> from memblock_alloc_* functions. However, this won't work if page table
+> mapping needs to be created for a different mm context (i.e. efi mm) at
+> a later point of time.
+>
+> Use generic kernel page allocation function & macros for any mapping
+> after setup_vm_final.
+>
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> ---
+>  arch/riscv/mm/init.c | 130 ++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 99 insertions(+), 31 deletions(-)
+>
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index b75ebe8e7a92..d238cdc501ee 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -32,6 +32,17 @@ extern char _start[];
+>  void *dtb_early_va __initdata;
+>  uintptr_t dtb_early_pa __initdata;
+>
+> +struct pt_alloc_ops {
+> +       pte_t *(*get_pte_virt)(phys_addr_t pa);
+> +       phys_addr_t (*alloc_pte)(uintptr_t va);
+> +#ifndef __PAGETABLE_PMD_FOLDED
+> +       pmd_t *(*get_pmd_virt)(phys_addr_t pa);
+> +       phys_addr_t (*alloc_pmd)(uintptr_t va);
+> +#endif
+> +};
+> +
+> +struct pt_alloc_ops pt_ops;
+> +
+>  static void __init zone_sizes_init(void)
+>  {
+>         unsigned long max_zone_pfns[MAX_NR_ZONES] = { 0, };
+> @@ -211,7 +222,6 @@ EXPORT_SYMBOL(pfn_base);
+>  pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>  pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>  pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+> -static bool mmu_enabled;
+>
+>  #define MAX_EARLY_MAPPING_SIZE SZ_128M
+>
+> @@ -234,27 +244,46 @@ void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
+>         }
+>  }
+>
+> -static pte_t *__init get_pte_virt(phys_addr_t pa)
+> +static inline pte_t *__init get_pte_virt_early(phys_addr_t pa)
+>  {
+> -       if (mmu_enabled) {
+> -               clear_fixmap(FIX_PTE);
+> -               return (pte_t *)set_fixmap_offset(FIX_PTE, pa);
+> -       } else {
+> -               return (pte_t *)((uintptr_t)pa);
+> -       }
+> +       return (pte_t *)((uintptr_t)pa);
+>  }
+>
+> -static phys_addr_t __init alloc_pte(uintptr_t va)
+> +static inline pte_t *__init get_pte_virt_fixmap(phys_addr_t pa)
+> +{
+> +       clear_fixmap(FIX_PTE);
+> +       return (pte_t *)set_fixmap_offset(FIX_PTE, pa);
+> +}
+> +
+> +static inline pte_t *get_pte_virt_late(phys_addr_t pa)
+> +{
+> +       return (pte_t *) __va(pa);
+> +}
+> +
+> +static inline phys_addr_t __init alloc_pte_early(uintptr_t va)
+>  {
+>         /*
+>          * We only create PMD or PGD early mappings so we
+>          * should never reach here with MMU disabled.
+>          */
+> -       BUG_ON(!mmu_enabled);
+> +       BUG();
+> +}
+>
+> +static inline phys_addr_t __init alloc_pte_fixmap(uintptr_t va)
+> +{
+>         return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+>  }
+>
+> +static phys_addr_t alloc_pte_late(uintptr_t va)
+> +{
+> +       unsigned long vaddr;
+> +
+> +       vaddr = __get_free_page(GFP_KERNEL);
+> +       if (!vaddr || !pgtable_pte_page_ctor(virt_to_page(vaddr)))
+> +               BUG();
+> +       return __pa(vaddr);
+> +}
+> +
+>  static void __init create_pte_mapping(pte_t *ptep,
+>                                       uintptr_t va, phys_addr_t pa,
+>                                       phys_addr_t sz, pgprot_t prot)
+> @@ -279,28 +308,46 @@ pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+>  #endif
+>  pmd_t early_pmd[PTRS_PER_PMD * NUM_EARLY_PMDS] __initdata __aligned(PAGE_SIZE);
+>
+> -static pmd_t *__init get_pmd_virt(phys_addr_t pa)
+> +static pmd_t *__init get_pmd_virt_early(phys_addr_t pa)
+>  {
+> -       if (mmu_enabled) {
+> -               clear_fixmap(FIX_PMD);
+> -               return (pmd_t *)set_fixmap_offset(FIX_PMD, pa);
+> -       } else {
+> -               return (pmd_t *)((uintptr_t)pa);
+> -       }
+> +       /* Before MMU is enabled */
+> +       return (pmd_t *)((uintptr_t)pa);
+>  }
+>
+> -static phys_addr_t __init alloc_pmd(uintptr_t va)
+> +static pmd_t *__init get_pmd_virt_fixmap(phys_addr_t pa)
+>  {
+> -       uintptr_t pmd_num;
+> +       clear_fixmap(FIX_PMD);
+> +       return (pmd_t *)set_fixmap_offset(FIX_PMD, pa);
+> +}
+> +
+> +static pmd_t *get_pmd_virt_late(phys_addr_t pa)
+> +{
+> +       return (pmd_t *) __va(pa);
+> +}
+>
+> -       if (mmu_enabled)
+> -               return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+> +static phys_addr_t __init alloc_pmd_early(uintptr_t va)
+> +{
+> +       uintptr_t pmd_num;
+>
+>         pmd_num = (va - PAGE_OFFSET) >> PGDIR_SHIFT;
+>         BUG_ON(pmd_num >= NUM_EARLY_PMDS);
+>         return (uintptr_t)&early_pmd[pmd_num * PTRS_PER_PMD];
+>  }
+>
+> +static phys_addr_t __init alloc_pmd_fixmap(uintptr_t va)
+> +{
+> +       return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+> +}
+> +
+> +static phys_addr_t alloc_pmd_late(uintptr_t va)
+> +{
+> +       unsigned long vaddr;
+> +
+> +       vaddr = __get_free_page(GFP_KERNEL);
+> +       BUG_ON(!vaddr);
+> +       return __pa(vaddr);
+> +}
+> +
+>  static void __init create_pmd_mapping(pmd_t *pmdp,
+>                                       uintptr_t va, phys_addr_t pa,
+>                                       phys_addr_t sz, pgprot_t prot)
+> @@ -316,28 +363,28 @@ static void __init create_pmd_mapping(pmd_t *pmdp,
+>         }
+>
+>         if (pmd_none(pmdp[pmd_idx])) {
+> -               pte_phys = alloc_pte(va);
+> +               pte_phys = pt_ops.alloc_pte(va);
+>                 pmdp[pmd_idx] = pfn_pmd(PFN_DOWN(pte_phys), PAGE_TABLE);
+> -               ptep = get_pte_virt(pte_phys);
+> +               ptep = pt_ops.get_pte_virt(pte_phys);
+>                 memset(ptep, 0, PAGE_SIZE);
+>         } else {
+>                 pte_phys = PFN_PHYS(_pmd_pfn(pmdp[pmd_idx]));
+> -               ptep = get_pte_virt(pte_phys);
+> +               ptep = pt_ops.get_pte_virt(pte_phys);
+>         }
+>
+>         create_pte_mapping(ptep, va, pa, sz, prot);
+>  }
+>
+>  #define pgd_next_t             pmd_t
+> -#define alloc_pgd_next(__va)   alloc_pmd(__va)
+> -#define get_pgd_next_virt(__pa)        get_pmd_virt(__pa)
+> +#define alloc_pgd_next(__va)   pt_ops.alloc_pmd(__va)
+> +#define get_pgd_next_virt(__pa)        pt_ops.get_pmd_virt(__pa)
+>  #define create_pgd_next_mapping(__nextp, __va, __pa, __sz, __prot)     \
+>         create_pmd_mapping(__nextp, __va, __pa, __sz, __prot)
+>  #define fixmap_pgd_next                fixmap_pmd
+>  #else
+>  #define pgd_next_t             pte_t
+> -#define alloc_pgd_next(__va)   alloc_pte(__va)
+> -#define get_pgd_next_virt(__pa)        get_pte_virt(__pa)
+> +#define alloc_pgd_next(__va)   pt_ops.alloc_pte(__va)
+> +#define get_pgd_next_virt(__pa)        pt_ops.get_pte_virt(__pa)
+>  #define create_pgd_next_mapping(__nextp, __va, __pa, __sz, __prot)     \
+>         create_pte_mapping(__nextp, __va, __pa, __sz, __prot)
+>  #define fixmap_pgd_next                fixmap_pte
+> @@ -421,6 +468,12 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>         BUG_ON((load_pa % map_size) != 0);
+>         BUG_ON(load_sz > MAX_EARLY_MAPPING_SIZE);
+>
+> +       pt_ops.alloc_pte = alloc_pte_early;
+> +       pt_ops.get_pte_virt = get_pte_virt_early;
+> +#ifndef __PAGETABLE_PMD_FOLDED
+> +       pt_ops.alloc_pmd = alloc_pmd_early;
+> +       pt_ops.get_pmd_virt = get_pmd_virt_early;
+> +#endif
+>         /* Setup early PGD for fixmap */
+>         create_pgd_mapping(early_pg_dir, FIXADDR_START,
+>                            (uintptr_t)fixmap_pgd_next, PGDIR_SIZE, PAGE_TABLE);
+> @@ -497,9 +550,16 @@ static void __init setup_vm_final(void)
+>         phys_addr_t pa, start, end;
+>         struct memblock_region *reg;
+>
+> -       /* Set mmu_enabled flag */
+> -       mmu_enabled = true;
+> -
+> +       /**
+> +        * MMU is enabled at this point. But page table setup is not complete yet.
+> +        * fixmap page table alloc functions should be used at this point
+> +        */
+> +       pt_ops.alloc_pte = alloc_pte_fixmap;
+> +       pt_ops.get_pte_virt = get_pte_virt_fixmap;
+> +#ifndef __PAGETABLE_PMD_FOLDED
+> +       pt_ops.alloc_pmd = alloc_pmd_fixmap;
+> +       pt_ops.get_pmd_virt = get_pmd_virt_fixmap;
+> +#endif
+>         /* Setup swapper PGD for fixmap */
+>         create_pgd_mapping(swapper_pg_dir, FIXADDR_START,
+>                            __pa_symbol(fixmap_pgd_next),
+> @@ -533,6 +593,14 @@ static void __init setup_vm_final(void)
+>         /* Move to swapper page table */
+>         csr_write(CSR_SATP, PFN_DOWN(__pa_symbol(swapper_pg_dir)) | SATP_MODE);
+>         local_flush_tlb_all();
+> +
+> +       /* generic page allocation functions must be used to setup page table */
+> +       pt_ops.alloc_pte = alloc_pte_late;
+> +       pt_ops.get_pte_virt = get_pte_virt_late;
+> +#ifndef __PAGETABLE_PMD_FOLDED
+> +       pt_ops.alloc_pmd = alloc_pmd_late;
+> +       pt_ops.get_pmd_virt = get_pmd_virt_late;
+> +#endif
+>  }
+>  #else
+>  asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+> --
+> 2.24.0
+>
 
+Looks good to me.
+
+Reviewed-by: Anup Patel <anup@brainfault.org>
+
+Regards,
+Anup
