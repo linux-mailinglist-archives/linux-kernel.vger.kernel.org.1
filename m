@@ -2,123 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C13B2440F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 23:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49DC244107
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 00:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgHMV4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 17:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
+        id S1726574AbgHMWCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 18:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726682AbgHMV4f (ORCPT
+        with ESMTP id S1726205AbgHMWCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 17:56:35 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0D3C061757;
-        Thu, 13 Aug 2020 14:56:35 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id b11so3812034lfe.10;
-        Thu, 13 Aug 2020 14:56:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WTkK39BlZkedB5Vph2dghueoQAO2WsRm0+GwhySEKyY=;
-        b=l0O3VVSf0dYKebIDxndlR/t/F2RLrn/zKRoOGjnGLxMx8bnX2hwymf1eZQsqys6tsD
-         AsqopKdS0kfkrtQsAu82vdMzBGR7Cv0BTspPLjqarhzMSjriKXQoCPn9Hojsj+ytQ3jR
-         iyAadB948zlIFHN0on94OvcSNqH4IWuy/TTGVrSqFfpKiDgvaib5VeB6jlEpnBuKP9o/
-         KnLLArRk61U3HdFvPqziKxw2auZnkr5X6uFnZ64CT6gIDUGmg/i6YePcFCKJm47YecUs
-         d/d2pOtRMdxHjlnZ/39/byJJz8bpiOjzw+YNWkB9KO44utPF6KV1sr5UHMz9z9phIVuI
-         wyWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WTkK39BlZkedB5Vph2dghueoQAO2WsRm0+GwhySEKyY=;
-        b=GWFS0V83VaAKrAhW/ztTUL5x6u+b+ZNctBlWs+QV9+KEtwLgZgG/LoKIGnrZd4VotS
-         6kKHXQxHz0NIbChW/jJYHk18B46+wEno8cZKnY0fGt5OGazQb9seFYwXBggMmDlM/909
-         j8g1YL4hKopPygYDPxpEi4emlBkox0tiHJfKYOoTwEGjBPx7l7luoNgMkXwWT7yH5hGQ
-         e9sXnHoQGDJQ3h+VBG2mf6g9B8tooFCFE4B6WaVXfssSAeLBZ/1cVCWnu10ymswUyKF4
-         45mOEfLYxcspMN0eGIROnJm/Je0lkHaQSejbPIqFYyxQqcHFsLIXEUMjS31seXauLUql
-         vCTA==
-X-Gm-Message-State: AOAM5302cX1hqpdEnzNcgbIo8zg9geavmXYAK0xdH1leRIWjKmn4iyBO
-        o07zkWSHae/Kq/MyFneMRd4=
-X-Google-Smtp-Source: ABdhPJwpXkbGHsxGhgR7mAcufwuWAY7AnTmGU57eUQgfeST1zhEUCzFswSyjx17Cd53DZIZBQEiSTg==
-X-Received: by 2002:a19:418a:: with SMTP id o132mr3214359lfa.63.1597355794110;
-        Thu, 13 Aug 2020 14:56:34 -0700 (PDT)
-Received: from localhost.localdomain (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.gmail.com with ESMTPSA id z20sm1349977ljk.97.2020.08.13.14.56.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 14:56:33 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Derek Basehore <dbasehore@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sean Paul <sean@poorly.run>, Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Daniel Stone <daniel@fooishbar.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v12 4/4] drm/panel-simple: Read panel orientation
-Date:   Fri, 14 Aug 2020 00:56:09 +0300
-Message-Id: <20200813215609.28643-5-digetx@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200813215609.28643-1-digetx@gmail.com>
-References: <20200813215609.28643-1-digetx@gmail.com>
+        Thu, 13 Aug 2020 18:02:33 -0400
+Received: from hillosipuli.retiisi.org.uk (hillosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::81:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD3EC061757;
+        Thu, 13 Aug 2020 15:02:33 -0700 (PDT)
+Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.org.uk (Postfix) with ESMTPS id DA3A9634C87;
+        Fri, 14 Aug 2020 01:01:47 +0300 (EEST)
+Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@retiisi.org.uk>)
+        id 1k6LIB-0001jd-Hd; Fri, 14 Aug 2020 01:01:47 +0300
+Date:   Fri, 14 Aug 2020 01:01:47 +0300
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        hverkuil@xs4all.nl, luca@lucaceresoli.net,
+        leonl@leopardimaging.com, robh+dt@kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] media: i2c: imx274: Add IMX274 power on and off
+ sequence
+Message-ID: <20200813220147.GJ840@valkosipuli.retiisi.org.uk>
+References: <1595264494-2400-1-git-send-email-skomatineni@nvidia.com>
+ <1595264494-2400-3-git-send-email-skomatineni@nvidia.com>
+ <20200731162611.GB6401@valkosipuli.retiisi.org.uk>
+ <b8819080-6585-c953-e7ad-9b0a10f1d821@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b8819080-6585-c953-e7ad-9b0a10f1d821@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The panel orientation needs to parsed from a device-tree and assigned to
-the panel's connector in order to make orientation property available to
-userspace. That's what this patch does for the panel-simple driver.
+Hi Sowjanya,
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/gpu/drm/panel/panel-simple.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+On Fri, Jul 31, 2020 at 09:34:15AM -0700, Sowjanya Komatineni wrote:
+> 
+> On 7/31/20 9:26 AM, Sakari Ailus wrote:
+> > Hi Sowjanya,
+> > 
+> > Thanks for the patch.
+> > 
+> > On Mon, Jul 20, 2020 at 10:01:34AM -0700, Sowjanya Komatineni wrote:
+> > > IMX274 has VANA analog 2.8V supply, VDIG digital core 1.8V supply,
+> > > and VDDL digital io 1.2V supply which are optional based on camera
+> > > module design.
+> > > 
+> > > IMX274 also need external 24Mhz clock and is optional based on
+> > > camera module design.
+> > The sensor appears to be able to use other frequencies, too. Could you
+> > check in the driver the frequency is correct? This should be found in DT
+> > bindings, too.
+> 
+> External input clock is not in DT. So added it as part of this series.
+> 
+> We are mostly using 24Mhz I/P with IMX274 on designs we have and also on
+> leopard module which has onboard XTAL for 24Mhz
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index cb6550d37e85..6e3e99a30d85 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -112,6 +112,8 @@ struct panel_simple {
- 	struct gpio_desc *hpd_gpio;
- 
- 	struct drm_display_mode override_mode;
-+
-+	enum drm_panel_orientation orientation;
- };
- 
- static inline struct panel_simple *to_panel_simple(struct drm_panel *panel)
-@@ -371,6 +373,9 @@ static int panel_simple_get_modes(struct drm_panel *panel,
- 	/* add hard-coded panel modes */
- 	num += panel_simple_get_non_edid_modes(p, connector);
- 
-+	/* set up connector's "panel orientation" property */
-+	drm_connector_set_panel_orientation(connector, p->orientation);
-+
- 	return num;
- }
- 
-@@ -530,6 +535,12 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
- 		return err;
- 	}
- 
-+	err = of_drm_get_panel_orientation(dev->of_node, &panel->orientation);
-+	if (err) {
-+		dev_err(dev, "failed to parse rotation property: %d\n", err);
-+		return err;
-+	}
-+
- 	ddc = of_parse_phandle(dev->of_node, "ddc-i2c-bus", 0);
- 	if (ddc) {
- 		panel->ddc = of_find_i2c_adapter_by_node(ddc);
+Yes. This information still should be found in DT as the xtal isn't part of
+the sensor.
+
+> 
+> > > This patch adds support for IMX274 power on and off to enable and
+> > > disable these supplies and external clock.
+> > > 
+> > > Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> > > ---
+> > >   drivers/media/i2c/imx274.c | 132 +++++++++++++++++++++++++++++++++++++++++++--
+> > >   1 file changed, 129 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
+> > > index 55869ff..7157b1d 100644
+> > > --- a/drivers/media/i2c/imx274.c
+> > > +++ b/drivers/media/i2c/imx274.c
+> > > @@ -19,6 +19,7 @@
+> > >   #include <linux/module.h>
+> > >   #include <linux/of_gpio.h>
+> > >   #include <linux/regmap.h>
+> > > +#include <linux/regulator/consumer.h>
+> > >   #include <linux/slab.h>
+> > >   #include <linux/v4l2-mediabus.h>
+> > >   #include <linux/videodev2.h>
+> > > @@ -131,6 +132,15 @@
+> > >   #define IMX274_TABLE_WAIT_MS			0
+> > >   #define IMX274_TABLE_END			1
+> > > +/* regulator supplies */
+> > > +static const char * const imx274_supply_names[] = {
+> > > +	"VDDL",  /* IF (1.2V) supply */
+> > > +	"VDIG",  /* Digital Core (1.8V) supply */
+> > > +	"VANA",  /* Analog (2.8V) supply */
+> > > +};
+> > > +
+> > > +#define IMX274_NUM_SUPPLIES ARRAY_SIZE(imx274_supply_names)
+> > Please use ARRAY_SIZE() directly.
+> > 
+> > > +
+> > >   /*
+> > >    * imx274 I2C operation related structure
+> > >    */
+> > > @@ -501,6 +511,8 @@ struct imx274_ctrls {
+> > >    * @frame_rate: V4L2 frame rate structure
+> > >    * @regmap: Pointer to regmap structure
+> > >    * @reset_gpio: Pointer to reset gpio
+> > > + * @supplies: imx274 analog and digital supplies
+> > > + * @inck: input clock to imx274
+> > >    * @lock: Mutex structure
+> > >    * @mode: Parameters for the selected readout mode
+> > >    */
+> > > @@ -514,6 +526,8 @@ struct stimx274 {
+> > >   	struct v4l2_fract frame_interval;
+> > >   	struct regmap *regmap;
+> > >   	struct gpio_desc *reset_gpio;
+> > > +	struct regulator *supplies[IMX274_NUM_SUPPLIES];
+> > > +	struct clk *inck;
+> > >   	struct mutex lock; /* mutex lock for operations */
+> > >   	const struct imx274_mode *mode;
+> > >   };
+> > > @@ -767,6 +781,99 @@ static void imx274_reset(struct stimx274 *priv, int rst)
+> > >   	usleep_range(IMX274_RESET_DELAY1, IMX274_RESET_DELAY2);
+> > >   }
+> > > +/*
+> > > + * imx274_power_on - Function called to power on the sensor
+> > > + * @imx274: Pointer to device structure
+> > > + */
+> > > +static int imx274_power_on(struct device *dev)
+> > > +{
+> > > +	struct i2c_client *client = to_i2c_client(dev);
+> > > +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> > > +	struct stimx274 *imx274 = to_imx274(sd);
+> > > +	int i, ret;
+> > > +
+> > > +	ret = clk_prepare_enable(imx274->inck);
+> > > +	if (ret) {
+> > > +		dev_err(&imx274->client->dev,
+> > > +			"Failed to enable input clock: %d\n", ret);
+> > > +		return ret;
+> > > +	}
+> > > +
+> > Could you use regulator_bulk_enable() instead? Same for disable.
+> 
+> Using regulator_bulk_enable() makes these regulators mandatory.
+
+How? regulator_bulk_enable() simply does call regulator_enable() on all the
+regulators.
+
 -- 
-2.27.0
-
+Sakari Ailus
