@@ -2,234 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C89E24359D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FDC2435AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 10:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbgHMH6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 03:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgHMH6c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 03:58:32 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D4EC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 00:58:31 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id x5so3898053wmi.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 00:58:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nCffN1/O4aEsIe0h4ncOW5dmW5XEiYRGz9MDUW3tvf8=;
-        b=noSnxdy7tWQADOLjLI6p/s/XwaJfmFMakXQjc8oYZdIfK9UdVAUnV8VA+ZuTkrl0ld
-         vKNKCyg9ODvaJSrrGyU6Rn9tW4pWLmdj8+IBK5mvl0GIylT9l9KLmriF/+F8TN6RM356
-         B5EQ+VxZgf0yRD2ZKTPx5RjTHjrMFT4nJDCeKZRMKLGyp7W7W0dV4LACfLVLnkqybeIo
-         BJxnDuhlwRgrtrdenFPRVksbuhzsaTEzOUKf/4+8vonVt8At7t3sVLKttbLb7SOMbu9Q
-         tNmKWsmtdW0cNsGzRBlgNuz7BKpvf8bCHyiAqoRr24e0aj02mdf3+ohWgBhQ7P9mzJVE
-         GEeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nCffN1/O4aEsIe0h4ncOW5dmW5XEiYRGz9MDUW3tvf8=;
-        b=F3Mp+vYBzejIhWXEEVDyXxgyGHZ5pX5Yqh06CtalspWvNje1oLOsgLQEyfx+Sc2C9u
-         ffbjItbVlmEbdalEnZDT8N03eVyX8AHbPHhRKuJ8RUmgjl6sbcFk9CrgESOQPwSlujXX
-         Nlmjf7kls4ONSJ8c8yb7tgloBZRHCnPXlX5pa/bJXlszA8oakuka7VQNc4HnTeCG5Q9Y
-         kx5/rWsU8GGrR2XCIRsmo8OwLfF0Nt1YQkwO9YPBvSR6xIZu9JVkpQ2RIvnDL7pZqMDs
-         Hu3eKsdwTSZQGv93oySwKMvIlxYENJEpjEliIMzC2nCuJfnK/FpyoZ62B4RCf2dSeWwh
-         mVzg==
-X-Gm-Message-State: AOAM532oFLTE054x/Fncwbt8usdQk88f130xoqSo1oCFpYi1pgyp8XUG
-        M9aS4lzQjoBogEJ7PHYJ4dxcnw==
-X-Google-Smtp-Source: ABdhPJyV6AY2xx7rwwOFCQ7bw3e71FK+Fkwy3fGO25tAeZ2PyRSgLKsdPeeqoOxndoTFWiSse347Lg==
-X-Received: by 2002:a1c:3b89:: with SMTP id i131mr3211258wma.30.1597305510518;
-        Thu, 13 Aug 2020 00:58:30 -0700 (PDT)
-Received: from dell ([2.27.167.73])
-        by smtp.gmail.com with ESMTPSA id b2sm7616298wmj.47.2020.08.13.00.58.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 00:58:29 -0700 (PDT)
-Date:   Thu, 13 Aug 2020 08:58:27 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Wei Xu <xuwei5@hisilicon.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>, devel@driverdev.osuosl.org,
-        linux-arm-msm@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH 00/44] SPMI patches needed by Hikey 970
-Message-ID: <20200813075827.GH4354@dell>
-References: <cover.1597247164.git.mchehab+huawei@kernel.org>
+        id S1726557AbgHMICY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 04:02:24 -0400
+Received: from mga17.intel.com ([192.55.52.151]:1026 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726072AbgHMICX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 04:02:23 -0400
+IronPort-SDR: FvJyKvEI+LuaPQH9GVrSHekS475EqymQ4AEuOW9554K3K9y00XkIi+ZKSNdqq/LckZVws4XDtk
+ csllVd5ghcaw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9711"; a="134233758"
+X-IronPort-AV: E=Sophos;i="5.76,307,1592895600"; 
+   d="scan'208";a="134233758"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 01:02:22 -0700
+IronPort-SDR: hJHa6EByCKTPb/7dOEd3VrOHj+BBMkOiYAJrta41XHoD6PhjJMy/hLxs4lKYdonvAHaMwNAsqi
+ A8JdD0AzJxFw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,307,1592895600"; 
+   d="scan'208";a="318434407"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Aug 2020 01:02:21 -0700
+Date:   Thu, 13 Aug 2020 15:58:43 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Moritz Fischer' <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>
+Subject: Re: [PATCH v4 1/4] fpga: dfl: change data type of feature id to u16
+Message-ID: <20200813075843.GB7383@yilunxu-OptiPlex-7050>
+References: <1597027273-25288-1-git-send-email-yilun.xu@intel.com>
+ <1597027273-25288-2-git-send-email-yilun.xu@intel.com>
+ <20200812035604.GA2544@epycbox.lan>
+ <3810fb75b42e45928a39a97449a01520@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1597247164.git.mchehab+huawei@kernel.org>
+In-Reply-To: <3810fb75b42e45928a39a97449a01520@AcuMS.aculab.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Aug 2020, Mauro Carvalho Chehab wrote:
+On Wed, Aug 12, 2020 at 08:52:39AM +0000, David Laight wrote:
+> From: Moritz Fischer
+> > Sent: 12 August 2020 04:56
+> > 
+> > On Mon, Aug 10, 2020 at 10:41:10AM +0800, Xu Yilun wrote:
+> > > The feature id is stored in a 12 bit field in DFH. So a u16 variable is
+> > > enough for feature id.
+> > >
+> > > This patch changes all feature id related places to fit u16.
+> 
+> How much bigger does it make the kernel?
 
-> Hi Greg,
-> 
-> This patch series is part of a work I'm doing in order to be able to support
-> a HiKey 970 board that I recently got on my hands.
-> 
-> I received some freedback from Mark and from Jonathan on a first
-> attempt I made to upstream this.
-> 
-> I'm opting to submit it via staging, because I had to start from the
-> patch that originally added this driver on a 4.9 Kernel tree:
-> 
-> 	https://github.com/96boards-hikey/linux/tree/hikey970-v4.9
-> 
-> In order to preserve the original SOB from the driver's author.
-> 
-> The patches following it are on the standard way: one patch per
-> logical change.
-> 
-> This is part of a bigger work whose goal is to have upstream support
-> for USB and DRM/KMS on such boards. 
-> 
-> I suspect that, maybe except for the DT part, those 3 specific drivers
-> are more or less ready to be moved from staging, but the other
-> drivers that are also part of this attempt aren't ready. Specially the
-> DRM driver has some bugs that came from the OOT version.
-> 
-> So, my current plan is to submit those drivers to staging for 5.9
-> and move the ones that are ok out of staging on Kernel 5.10.
+The patch changes the definition of feature id from u64 to u16, and will
+make the kernel slightly smaller.
 
-What a mess.  This is no way to upstream a new driver.
+Actually it is not the main purpose of this change. In the following
+patches we will put the feature_id definiton in mod_devicetable.h in
+order to support MODULE_DEVICE_TABLE(). The modpost will also use the
+definitions in mod_devicetable.h but seems it doesn't support u64 now.
+So we reduced the unnecessary bits definition in feature_id to fit
+modpost.
 
-Firstly, could you please add versioning to your submissions.  I know
-this at least version 2.  Were there previous submissions?  Is this
-the latest?
+Thanks,
+Yilun
 
-Secondly and more importantly, you have submitted what looks like a
-new driver (bearing in mind that I'm only concerning myself with the
-MFD related changes), then in the same submission you are adding and
-removing large chunks.  Please just submit the new driver, on its own
-as a single patch, complete with its associated Makefile and Kconfig
-changes.
-
-What are your reasons for submitting this via Staging?  Is it not
-ready yet?  Are the resultant components not at a high enough level of
-quality or enablement to go straight into the subsystems, which is
-more typical?  From an MFD perspective, I would be reviewing the
-driver as a whole when (if) it moves from Staging into MFD anyway, so
-why are you jumping through hoops with this additional, seemingly
-superfluous step?
-
-Finally, the subject of authorship is often a contentious one, but
-this is a problem you need to work out with the original author, not
-something that should require special handing by upstream.  You have a
-couple of choices, but bear in mind that upstreaming a non-suitable
-driver then bringing it up to standard is not one of them.
-
-1. Keep the original author's authorship and SoB, make your changes
-   and get them to review to ensure they are still happy about being
-   associated with the resultant code.  Ensure you mention all of the
-   changes you make in the commit message and follow-up by adding your
-   own SoB.
-
-2. This is the contentious bit.  If you've made enough changes, there
-   is an argument for you to adopt authorship.  You should discuss
-   with the original author whether they are happy for you to retain
-   their SoB.  My suggestion is always try to keep the SoB as a bare
-   minimum to preserve patch history and out of pure courtesy.
-
-> Mauro Carvalho Chehab (41):
->   staging: spmi: hisi-spmi-controller: coding style fixup
->   staging: spmi: hisi-spmi-controller: fix it to probe successfully
->   staging: spmi: hisi-spmi-controller: fix a typo
->   staging: spmi: hisi-spmi-controller: adjust whitespaces at defines
->   staging: spmi: hisi-spmi-controller: use le32 macros where needed
->   staging: spmi: hisi-spmi-controller: add debug when values are
->     read/write
->   staging: spmi: hisi-spmi-controller: fix the dev_foo() logic
->   staging: spmi: hisi-spmi-controller: add it to the building system
->   staging: spmi: hisi-spmi-controller: do some code cleanups
->   staging: mfd: hi6421-spmi-pmic: get rid of unused code
->   staging: mfd: hi6421-spmi-pmic: deal with non-static functions
->   staging: mfd: hi6421-spmi-pmic: get rid of the static vars
->   staging: mfd: hi6421-spmi-pmic: cleanup hi6421-spmi-pmic.h header
->   staging: mfd: hi6421-spmi-pmic: change the binding logic
->   staging: mfd: hi6421-spmi-pmic: get rid of unused OF properties
->   staging: mfd: hi6421-spmi-pmic: cleanup OF properties
->   staging: mfd: hi6421-spmi-pmic: change namespace on its functions
->   staging: mfd: hi6421-spmi-pmic: fix some coding style issues
->   staging: mfd: hi6421-spmi-pmic: add it to the building system
->   staging: mfd: hi6421-spmi-pmic: cleanup the code
->   staging: regulator: hi6421v600-regulator: get rid of unused code
->   staging: regulator: hi6421v600-regulator: port it to upstream
->   staging: regulator: hi6421v600-regulator: coding style fixups
->   staging: regulator: hi6421v600-regulator: change the binding logic
->   staging: regulator: hi6421v600-regulator: cleanup struct
->     hisi_regulator
->   staging: regulator: hi6421v600-regulator: cleanup debug messages
->   staging: regulator: hi6421v600-regulator: use shorter names for OF
->     properties
->   staging: regulator: hi6421v600-regulator: better handle modes
->   staging: regulator: hi6421v600-regulator: change namespace
->   staging: regulator: hi6421v600-regulator: convert to use get/set
->     voltage_sel
->   staging: regulator: hi6421v600-regulator: don't use usleep_range for
->     off_on_delay
->   staging: regulator: hi6421v600-regulator: add a driver-specific debug
->     macro
->   staging: regulator: hi6421v600-regulator: initialize ramp_delay
->   staging: regulator: hi6421v600-regulator: cleanup DT settings
->   staging: regulator: hi6421v600-regulator: fix some coding style issues
->   staging: regulator: hi6421v600-regulator: add it to the building
->     system
->   staging: regulator: hi6421v600-regulator: code cleanup
->   staging: hikey9xx: add a TODO list
->   MAINTAINERS: add an entry for HiSilicon 6421v600 drivers
->   dt: document HiSilicon SPMI controller and mfd/regulator properties
->   dt: hisilicon: add support for the PMIC found on Hikey 970
 > 
-> Mayulong (3):
->   staging: spmi: add Hikey 970 SPMI controller driver
->   staging: mfd: add a PMIC driver for HiSilicon 6421 SPMI version
->   staging: regulator: add a regulator driver for HiSilicon 6421v600 SPMI
->     PMIC
+> 	David
 > 
->  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 182 +++++++
->  .../spmi/hisilicon,hisi-spmi-controller.yaml  |  54 ++
->  MAINTAINERS                                   |   6 +
->  .../boot/dts/hisilicon/hi3670-hikey970.dts    |  16 +-
->  .../boot/dts/hisilicon/hikey970-pmic.dtsi     | 200 ++++++++
->  drivers/staging/Kconfig                       |   2 +
->  drivers/staging/Makefile                      |   1 +
->  drivers/staging/hikey9xx/Kconfig              |  35 ++
->  drivers/staging/hikey9xx/Makefile             |   5 +
->  drivers/staging/hikey9xx/TODO                 |   5 +
->  drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 381 ++++++++++++++
->  .../staging/hikey9xx/hi6421v600-regulator.c   | 479 ++++++++++++++++++
->  .../staging/hikey9xx/hisi-spmi-controller.c   | 351 +++++++++++++
->  include/linux/mfd/hi6421-spmi-pmic.h          |  68 +++
->  14 files changed, 1773 insertions(+), 12 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
->  create mode 100644 Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
->  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
->  create mode 100644 drivers/staging/hikey9xx/Kconfig
->  create mode 100644 drivers/staging/hikey9xx/Makefile
->  create mode 100644 drivers/staging/hikey9xx/TODO
->  create mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
->  create mode 100644 drivers/staging/hikey9xx/hi6421v600-regulator.c
->  create mode 100644 drivers/staging/hikey9xx/hisi-spmi-controller.c
->  create mode 100644 include/linux/mfd/hi6421-spmi-pmic.h
-> 
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
