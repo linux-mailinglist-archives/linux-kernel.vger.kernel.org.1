@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3ED24373A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012A3243724
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgHMJHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 05:07:49 -0400
-Received: from mga04.intel.com ([192.55.52.120]:7109 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726053AbgHMJHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 05:07:49 -0400
-IronPort-SDR: 9PcyCk15d7S+UDmSEln3MvyU1nw4FAkxi8pCCwhTBACVlG1g2w+gLo9UvIvLuCrilhujA1j/pJ
- V0v6lwIHT4HQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9711"; a="151605469"
-X-IronPort-AV: E=Sophos;i="5.76,307,1592895600"; 
-   d="scan'208";a="151605469"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 02:07:49 -0700
-IronPort-SDR: /dng0qgxe4ytvTgRYkcMNtGBMOynSwGAPVH+eX/Wk2LdOA8CuIW7OqoOQivzodL7qoLnQ7+pci
- 3UU1b2qIBySA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,307,1592895600"; 
-   d="scan'208";a="318448547"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga004.fm.intel.com with ESMTP; 13 Aug 2020 02:07:47 -0700
-Date:   Thu, 13 Aug 2020 17:04:09 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Moritz Fischer' <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>
-Subject: Re: [PATCH v4 1/4] fpga: dfl: change data type of feature id to u16
-Message-ID: <20200813090409.GA1080@yilunxu-OptiPlex-7050>
-References: <1597027273-25288-1-git-send-email-yilun.xu@intel.com>
- <1597027273-25288-2-git-send-email-yilun.xu@intel.com>
- <20200812035604.GA2544@epycbox.lan>
- <3810fb75b42e45928a39a97449a01520@AcuMS.aculab.com>
- <20200813075843.GB7383@yilunxu-OptiPlex-7050>
- <54216e492cec4f84bc43dee176130e89@AcuMS.aculab.com>
+        id S1726606AbgHMJF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 05:05:29 -0400
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:44821 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgHMJF2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 05:05:28 -0400
+Received: by mail-oo1-f65.google.com with SMTP id g1so1065809oop.11;
+        Thu, 13 Aug 2020 02:05:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2AvIhR4VMBCPleNB4MD/t7+rUWOqAWwlH0ujr1BxGlw=;
+        b=ARde/XfI66VeOmJdsynQQ/WH4TLxMDPByoINkPLaJVOhIuy/fLUcv2GYe/Vso3zGZT
+         KY3BtooINHlOXZ6JF+5wPIKq/hgMuZiWvAgxDsCjQjJVnZ5bmxe40TRTwE20e5bmaiUK
+         lalU0G+mI9nv+VgdThATprdSF1VkhYjB41IdHJqFrlEDc0OuBWBWRjShad9cDhTDke0w
+         /E9as2FbDbv7/qbIqOwUPj8S2RMMxhTktdSc5JhIGJOefnEtNspb2G1XkwvUo1Ayi6yt
+         YHZwS44PgnDypE+6akbvdgru5qGGZjSPXiKRDcOPgRi5/17ni9LGiya04NxFLfsYejnl
+         yI9g==
+X-Gm-Message-State: AOAM532gyL3ElfAzS0bdPiIMafdx24lByKofjNvH8eauj5vk3zcCJWOg
+        C+d2bPHaKgnZmzr1FubIxHB4GTBsSzbiMlEHiJk=
+X-Google-Smtp-Source: ABdhPJyUVskr8e/cEyjDxvkGzZdvsxqJxwiGe6jUX0tZXjbkklpncAUVA0TsyDuRFcZ55z9cv4D0LKrgJqG/ccdMfWs=
+X-Received: by 2002:a4a:6c13:: with SMTP id q19mr3744544ooc.11.1597309527049;
+ Thu, 13 Aug 2020 02:05:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <54216e492cec4f84bc43dee176130e89@AcuMS.aculab.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20200812140217.24251-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200812140217.24251-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200812140217.24251-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 13 Aug 2020 11:05:14 +0200
+Message-ID: <CAMuHMdV4Tp=kz57pAJk0u5hVpbiEdVzTWDvK+F1AZ5TjGmLbMQ@mail.gmail.com>
+Subject: Re: [PATCH 1/9] dt-bindings: display: renesas,du: Document r8a774e1 bindings
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Marian-Cristian Rotariu 
+        <marian-cristian.rotariu.rb@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 08:28:05AM +0000, David Laight wrote:
-> From: Xu Yilun
-> > Sent: 13 August 2020 08:59
-> > On Wed, Aug 12, 2020 at 08:52:39AM +0000, David Laight wrote:
-> > > From: Moritz Fischer
-> > > > Sent: 12 August 2020 04:56
-> > > >
-> > > > On Mon, Aug 10, 2020 at 10:41:10AM +0800, Xu Yilun wrote:
-> > > > > The feature id is stored in a 12 bit field in DFH. So a u16 variable is
-> > > > > enough for feature id.
-> > > > >
-> > > > > This patch changes all feature id related places to fit u16.
-> > >
-> > > How much bigger does it make the kernel?
-> > 
-> > The patch changes the definition of feature id from u64 to u16, and will
-> > make the kernel slightly smaller.
-> 
-> Unlikely.
-> Most of the structures will gain a 'pad' field.
-> Using u16 for function parameters and results almost certainly
-> requires instructions to mask the value.
-> Any arithmetic on u16 will require masking instructions on
-> (probably) all architectures except x86.
-> 
-> Using 'unsigned int' is probably best.
-> 
-> u16 is never a good idea unless you are defining enough
-> of them in a structure (eg as an array) to reduce the
-> structure size below some threshold.
-> (Or are matching some hardware layout.)
+Hi Prabhakar, Laurent, Kieran,
 
-I got it. Thanks for your detailed explanation. I think we may change them to
-u32. Is it the same case for u8? Think we may also change the dfl_device_id.type.
+On Wed, Aug 12, 2020 at 4:02 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+>
+> Document the RZ/G2H (a.k.a. r8a774e1) SoC in the R-Car DU bindings.
+>
+> Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>  Documentation/devicetree/bindings/display/renesas,du.txt | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/display/renesas,du.txt b/Documentation/devicetree/bindings/display/renesas,du.txt
+> index 51cd4d162770..67cded5ad827 100644
+> --- a/Documentation/devicetree/bindings/display/renesas,du.txt
+> +++ b/Documentation/devicetree/bindings/display/renesas,du.txt
+> @@ -10,6 +10,7 @@ Required Properties:
+>      - "renesas,du-r8a774a1" for R8A774A1 (RZ/G2M) compatible DU
+>      - "renesas,du-r8a774b1" for R8A774B1 (RZ/G2N) compatible DU
+>      - "renesas,du-r8a774c0" for R8A774C0 (RZ/G2E) compatible DU
+> +    - "renesas,du-r8a774e1" for R8A774E1 (RZ/G2H) compatible DU
+>      - "renesas,du-r8a7779" for R8A7779 (R-Car H1) compatible DU
+>      - "renesas,du-r8a7790" for R8A7790 (R-Car H2) compatible DU
+>      - "renesas,du-r8a7791" for R8A7791 (R-Car M2-W) compatible DU
+> @@ -75,6 +76,7 @@ corresponding to each DU output.
+>   R8A774A1 (RZ/G2M)      DPAD 0         HDMI 0         LVDS 0         -
+>   R8A774B1 (RZ/G2N)      DPAD 0         HDMI 0         LVDS 0         -
+>   R8A774C0 (RZ/G2E)      DPAD 0         LVDS 0         LVDS 1         -
+> + R8A774E1 (RZ/G2H)      DPAD 0         HDMI 0         LVDS 0         -
 
+As LVDS 0 is the fourth channel (DU3), should it be listed under port 3
+instead of port 2?
 
-Hi Moritz:
+I know we did it the same for R-Car M3-N and RZ/G2N.
+But my main worry is adding support for R-Car H3-N later.
 
-The patch is applied to for-next, is it possible we recall it, or we
-make another fix after it?
+>   R8A7779 (R-Car H1)     DPAD 0         DPAD 1         -              -
+>   R8A7790 (R-Car H2)     DPAD 0         LVDS 0         LVDS 1         -
+>   R8A7791 (R-Car M2-W)   DPAD 0         LVDS 0         -              -
 
-Thanks,
-Yilun.
+Apart from that:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
