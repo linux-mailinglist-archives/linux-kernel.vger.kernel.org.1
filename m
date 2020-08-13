@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC3A243AC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 15:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B53C243AC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 15:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgHMNXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 09:23:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726102AbgHMNXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 09:23:42 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8AA7C20768;
-        Thu, 13 Aug 2020 13:23:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597325021;
-        bh=nwBcHLQtnlfDIMhhidp3mFZTNefj9XCZxmSg2p2PeNA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K2bZ9XVlxHbkebFL8JjRdtexL55UfQMacYaxyE4tNNZt4FM2Ugk1aqNszSOgJphdf
-         lq99tGEJh98XYa0sffw9jLBkTFC5QJsGtyb64dNSjcUhMzvPVOIkyn9DPYdIYhCVO9
-         r0K3MWq6HRLkkIwcEysqu15NO+hz+8DfMz2UzrTU=
-Date:   Thu, 13 Aug 2020 14:23:36 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Jordan Crouse <jcrouse@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        iommu@lists.linux-foundation.org, freedreno@lists.freedesktop.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Hanna Hawa <hannah@marvell.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v12 05/13] iommu/arm-smmu-qcom: Add implementation for
- the adreno GPU SMMU
-Message-ID: <20200813132336.GA10359@willie-the-truck>
-References: <20200810222657.1841322-1-jcrouse@codeaurora.org>
- <20200810222657.1841322-6-jcrouse@codeaurora.org>
+        id S1726499AbgHMN1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 09:27:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726053AbgHMN1S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 09:27:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACD8C061757;
+        Thu, 13 Aug 2020 06:27:17 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597325235;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vLyLSUGNtgpJOrlFymmeq1eXF9NowSd0reO+cbW3gxk=;
+        b=XXN6iCM9IfvwUhlJiBUdZ3gFD8uaSxhzOMBhsKu/Dfw0uu90UWdvgLoOn7Y6bnNmCCsH1D
+        ShHUIaH6w0DGTWeS8LBkdcBqeVyVGaxR9snEoXvhlICmb37h/t12c/YVYIc5YPggKuAalV
+        FDrDCwa/842BgH4nEgnFUCDSAozG1oECXUiBBSSrIg6/vTJRfuHVDSX/WcULAOZJBU6DhF
+        8Z/42GuFc/UGtV2XYuzJ/L/v32aQKNBnkzvJtki4JvZRYU4UbHbf4cgCG4MpypuzvKR3TT
+        9OeORr6GB2LLBnhNJGoc1qmHOnkixLatWxkX1Lj/5t1UJJdLw89b94BxMsjn3g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597325235;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vLyLSUGNtgpJOrlFymmeq1eXF9NowSd0reO+cbW3gxk=;
+        b=cAskV80QNABzVTov1TRBknTMX6D3WbNDcEdhhj1hgOnsbOzunBse2vBp7OVAy21hhgkEbi
+        fI7dyxBdcY1kmqBQ==
+To:     Michal Hocko <mhocko@suse.com>, Uladzislau Rezki <urezki@gmail.com>
+Cc:     paulmck@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        RCU <rcu@vger.kernel.org>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+In-Reply-To: <20200813111505.GG9477@dhcp22.suse.cz>
+References: <20200811210931.GZ4295@paulmck-ThinkPad-P72> <874kp87mca.fsf@nanos.tec.linutronix.de> <20200813075027.GD9477@dhcp22.suse.cz> <20200813095840.GA25268@pc636> <20200813111505.GG9477@dhcp22.suse.cz>
+Date:   Thu, 13 Aug 2020 15:27:15 +0200
+Message-ID: <871rkallqk.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200810222657.1841322-6-jcrouse@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 04:26:49PM -0600, Jordan Crouse wrote:
-> Add a special implementation for the SMMU attached to most Adreno GPU
-> target triggered from the qcom,adreno-smmu compatible string.
-> 
-> The new Adreno SMMU implementation will enable split pagetables
-> (TTBR1) for the domain attached to the GPU device (SID 0) and
-> hard code it context bank 0 so the GPU hardware can implement
-> per-instance pagetables.
-> 
-> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> ---
-> 
->  drivers/iommu/arm/arm-smmu/arm-smmu-impl.c |   3 +
->  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 156 ++++++++++++++++++++-
->  2 files changed, 157 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-> index 88f17cc33023..d199b4bff15d 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-> @@ -223,6 +223,9 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
->  	    of_device_is_compatible(np, "qcom,sm8250-smmu-500"))
->  		return qcom_smmu_impl_init(smmu);
->  
-> +	if (of_device_is_compatible(smmu->dev->of_node, "qcom,adreno-smmu"))
-> +		return qcom_adreno_smmu_impl_init(smmu);
-> +
->  	if (of_device_is_compatible(np, "marvell,ap806-smmu-500"))
->  		smmu->impl = &mrvl_mmu500_impl;
->  
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> index be4318044f96..3be10145bf57 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> @@ -12,6 +12,138 @@ struct qcom_smmu {
->  	struct arm_smmu_device smmu;
->  };
->  
-> +#define QCOM_ADRENO_SMMU_GPU_SID 0
-> +
-> +static bool qcom_adreno_smmu_is_gpu_device(struct device *dev)
-> +{
-> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
-> +	struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
-> +	int idx, i;
-> +
-> +	/*
-> +	 * The GPU will always use SID 0 so that is a handy way to uniquely
-> +	 * identify it and configure it for per-instance pagetables
-> +	 */
-> +	for_each_cfg_sme(cfg, fwspec, i, idx) {
-> +		u16 sid = FIELD_GET(ARM_SMMU_SMR_ID, fwspec->ids[i]);
-> +
-> +		if (sid == QCOM_ADRENO_SMMU_GPU_SID)
-> +			return true;
-> +	}
+Michal Hocko <mhocko@suse.com> writes:
+> On Thu 13-08-20 11:58:40, Uladzislau Rezki wrote:
+> [...]
+>> Sorry for jumping in. We can rely on preemptable() for sure, if CONFIG_PREEMPT_RT
+>> is enabled, something like below:
+>> 
+>> if (IS_ENABLED_RT && preemptebale())
+>
+> Sure. I thought this was an RT specific thing that would be noop
+> otherwise.
 
-Is for_each_cfg_sme() really what you want here? You're not using idx for
-anything, so I guess it should really be a loop over the sids (e.g. a bog
-standard for loop from 0 to fw->num_ids - 1)?
+Well, even if RT specific it would be still something returning either
+true or false unconditionally.
 
-Will
+And guarding it with RT is not working either because then you are back
+to square one with the problem which triggered the discussion in the
+first place:
+
+raw_spin_lock()
+  alloc()
+    if (RT && !preemptible())  <- False because RT == false
+    	goto bail;
+
+    spin_lock(&zone->lock)  --> LOCKDEP complains
+
+So either you convince Paul not to do that or you need to do something
+like I suggested in my other reply.
+
+Thanks,
+
+        tglx
+
+
+    
