@@ -2,99 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BE7243963
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3448F243967
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 13:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgHMLdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 07:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43340 "EHLO
+        id S1726697AbgHMLeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 07:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgHMLdJ (ORCPT
+        with ESMTP id S1726144AbgHMLd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 07:33:09 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EDDC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:33:09 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id h19so5759662ljg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:33:09 -0700 (PDT)
+        Thu, 13 Aug 2020 07:33:59 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C05C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:33:58 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id g3so3134384ybc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 04:33:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CKBHpRq2gdYecMDnHVd5fZCbJkMkjf8ao+KHmXIXSMg=;
-        b=ejivrTcNuBz6f3oxo1Y3zzsM8DitmA3VJUE1qaeuEwlJPxUAvWFXytt/iywwB7qCGy
-         5MD82jHYBj5HiDAf7kqp4ks7+5ToBEqHq8nGc08BLB5vvo5QQS/eV3bJ4iGfykjfdDRM
-         rZvrV7fxjdhXqS6mmXipjtnrPgGvLYh5D2JQ4=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/KnIiWMvMcdCBpsG+OVuDQeKNXTaq/KhRb7ZPYMTP80=;
+        b=Vf6WmdVo9zG7yGrlKF40wtwYk4eTslKjZ7p/nOFAetZQf7iuQTFAaX2OFPpvIpdpn3
+         dRk5v4MGi1HIpfpt4kSCm/DxvzfsHpQXJ0VEWU1dRF+Xh3iQQ7B6CgjsChoiCGs6HUI/
+         BVx2qn2Y1gzEW9S1mXsFyi+n8nkSY1Fct+1OzOKzWdswJf++FXiwPDkPSvULYniqRZTk
+         YHdmT/M8gQzorJhKg7a6LSKtFM09fCx7PFedAY2EtI5BPJdFIpr8/vWVzbiRfKTTpOIg
+         SvG6/PfzOimDZ93CRylVkbYf5T7gobjVc/6vVgwEl1r8n8UhO0ZpsALcWOmTzPw5yEK7
+         K8tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CKBHpRq2gdYecMDnHVd5fZCbJkMkjf8ao+KHmXIXSMg=;
-        b=lp4n89CPRSEE7Cafn5V1Wv53VhO+CvEGith/sYCpp081Vif+bZZuwy32BKIuJBDyPW
-         fFUhwqfhvW/BV8no/7ct2qHC/Lwui+x149VKRXRGS48h+tSRNrlUVqvT91dmK4v+5Kn7
-         hzSFW2RmCXpTfzRmMtK+m8DxfKZOqR5MYWoXLYXfLcKise1hZtBk2WH+1l2RvX4YX0SK
-         12kK9Z3W0e39EOVT8GGpLOZcA+DW2K+e1Tf/h4aMDnxgbVoJhxefnmg1AWrtdxipnmiX
-         hlSOfAd5C7tLJkqnz3LijRNryFQSf8usQzRvg6kGIAkuQv0BwE2fDOOkFAMceve1byNl
-         2jww==
-X-Gm-Message-State: AOAM533Uj68UbQ3NlcSmvQZJxHH8Wcit91OZZX5JDiLV2+Bu39Sxtmf2
-        guRR/rPQCJX8N4V021c64/V0Yw==
-X-Google-Smtp-Source: ABdhPJyoUHvy/tjrCSKGg//t2kcgYLKwm9obdrTFz24GkBvRPgwiMB83dvHU/dDl+wqiLNW3FXvczg==
-X-Received: by 2002:a05:651c:314:: with SMTP id a20mr1762778ljp.434.1597318387708;
-        Thu, 13 Aug 2020 04:33:07 -0700 (PDT)
-Received: from [172.16.11.132] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id a1sm1138751lfb.10.2020.08.13.04.33.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Aug 2020 04:33:06 -0700 (PDT)
-Subject: Re: [PATCH] overflow: Add __must_check attribute to check_*() helpers
-To:     Matthew Wilcox <willy@infradead.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com
-References: <202008121450.405E4A3@keescook>
- <20200813112327.GF17456@casper.infradead.org>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <3e498585-f22f-25b8-9385-feadd55fdc7b@rasmusvillemoes.dk>
-Date:   Thu, 13 Aug 2020 13:33:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/KnIiWMvMcdCBpsG+OVuDQeKNXTaq/KhRb7ZPYMTP80=;
+        b=WMaLhNer3FREJMedXChJMejHBXgTOHjvCiAWDNSDWc9vbXeR61c26CyKMGFyFZhbzX
+         bop1bs0L4QJlHH8mT4/+ecovf90qTeH0ekj0OkXtdwxRQaM2SIVQvy5xUFr7SDzXUkI4
+         Be53Vf1R2egUq5Cy4DydSZyaPvi5i9jtI4oXVgQLb1UVnuwtpHijVALYny05rrpq0P6h
+         hP488Rie+fQCjIWuCXhx/vcdMGauVkGJ3myWNDD/XLDBEsLm1lrLznOHYjz8HE2dtTcA
+         H2pynn/P5KLT5+2cCSw/8q0YcNCk0GrqUD99rsGa8ujCHIOfKxVp6ANU4zBhBTJk7XSy
+         yNig==
+X-Gm-Message-State: AOAM530b+VPEuoZb1lNkbyHaWEZ77uip2qpyB8RrTzCu9LMPaQqlIqKn
+        qTv1YPq9uDjs/NkPLplWirBMy3Xk/i0LS5GQ7JE=
+X-Google-Smtp-Source: ABdhPJx1g4i4yUdmwZUSraMAigMi+NN36fAyXQOQ4QwSYDFWoBmUCMxYjtWbv1yrCcn6CmgfUs2mppMJ/OW9494nnFM=
+X-Received: by 2002:a25:9904:: with SMTP id z4mr6062407ybn.150.1597318438043;
+ Thu, 13 Aug 2020 04:33:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200813112327.GF17456@casper.infradead.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a81:7813:0:0:0:0:0 with HTTP; Thu, 13 Aug 2020 04:33:57
+ -0700 (PDT)
+Reply-To: ambrosecooker389@gmail.com
+From:   Ambrose Cooker <anera67ousbil@gmail.com>
+Date:   Thu, 13 Aug 2020 04:33:57 -0700
+Message-ID: <CAOg8yBAVOZ9TAS_rzzODx2tMCbsYHwvty=dG=LP_S3jP1TSdLA@mail.gmail.com>
+Subject: ATTENTION PLEASE
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/08/2020 13.23, Matthew Wilcox wrote:
-> On Wed, Aug 12, 2020 at 02:51:52PM -0700, Kees Cook wrote:
->> +/*
->> + * Allows to effectively us apply __must_check to a macro so we can have
->> + * both the type-agnostic benefits of the macros while also being able to
->> + * enforce that the return value is, in fact, checked.
->> + */
->> +static inline bool __must_check __must_check_bool(bool condition)
->> +{
->> +	return unlikely(condition);
->> +}
-> 
-> I'm fine with the concept, but this is a weirdly-generically-named
-> function that has a very specific unlikely() in it.  So I'd call
-> this __must_check_overflow() and then it's obvious that overflow is
-> unlikely(), whereas it's not obvious that __must_check_bool() is going
-> to be unlikely().
+Greetings My Dear Friend,
 
-Incidentally, __must_check_overflow was what was actually Suggested-by
-me - though I didn't think too hard about that name, I certainly agree
-with your reasoning.
+Please reply to my private email ambrosecooker389@gmail.com
 
-I still don't know if (un)likely annotations actually matter when used
-this way, but at least the same pattern is used in kernel/sched/, so
-probably.
+Before I introduce myself, I wish to inform you that this letter is
+not a hoax mail and I urge you to treat it serious.This letter must
+come to you as a big surprise, but I believe it is only a day that
+people meet and become great friends and business partners. Please I
+want you to read this letter very carefully and I must apologize for
+barging this message into your mail box without any formal
+introduction due to the urgency and confidentiality of this business.
+I make this contact with you as I believe that you can be of great
+assistance to me. My name is Mr.Ambrose Cooker, from Burkina Faso,
+West Africa. I work in African Development Bank (ADB) as Telex
+manager, please see this as a confidential message and do not reveal
+it to another person and let me know whether you can be of assistance
+regarding my proposal below because it is top secret.
 
-Rasmus
+I am about to retire from active Banking service to start a new life
+but I am skeptical to reveal this particular secret to a stranger. You
+must assure me that everything will be handled confidentially because
+we are not going to suffer again in life. It has been 10 years now
+that most of the greedy African Politicians used our bank to launder
+money overseas through the help of their Political advisers. Most of
+the funds which they transferred out of the shores of Africa were gold
+and oil money that was supposed to have been used to develop the
+continent. T heir Political advisers always inflated the amounts
+before
+transferring to foreign accounts, so I also used the opportunity to
+divert part of the funds hence I am aware that there is no official
+trace of how much was transferred as all the accounts used for such
+transfers were being closed after transfer. I acted as the Bank
+Officer to most of the politicians and when I discovered that they
+were using me to succeed in their greedy act; I also cleaned some of
+their banking records from the Bank files and no one cared to ask me
+because the money was too much for them to control. They laundered
+over $5billion Dollars during the process.
+
+Before I send this message to you, I have already diverted
+($10.5million Dollars) to an escrow account belonging to no one in the
+bank. The bank is anxious now to know who the beneficiary to the funds
+because they have made a lot of profits with the funds. It is more
+than Eight years now and most of the politicians are no longer using
+our bank to transfer funds overseas. The ($10.5million Dollars) has
+been laying waste in our bank and I don't want to retire from the bank
+without transferring the funds to a foreign account to enable me share
+the proceeds with the receiver (a foreigner). The money will be shared
+60% for me and 40% for you. There is no one coming to ask you about
+the funds because I secured everything. I only want you to assist me
+by providing a reliable bank account where the funds can be
+transferred.
+
+You are not to face any difficulties or legal implications as I am
+going to handle the transfer personally. If you are capable of
+receiving the funds, do let me know immediately to enable me give you
+a detailed information on what to do. For me, I have not stolen the
+money from anyone because the other people that took the whole money
+did not face any problems. This is my chance to grab my own life
+opportunity but you must keep the details of the funds secret to avoid
+any leakages as no one in the bank knows about my plans.Please get
+back to me if you are interested and capable to handle this project, I
+am looking forward to hear from you immediately for further
+information.Please reply to my private email
+ambrosecooker389@gmail.com
+
+Thanks with my best regards.
+Mr.Ambrose Cooker.
+Telex Manager
+African Development Bank (ADB)
+Burkina Faso.
