@@ -2,248 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EBF8243C99
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92034243C89
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgHMPeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 11:34:16 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:59879 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726798AbgHMPeO (ORCPT
+        id S1726663AbgHMPdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 11:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726253AbgHMPdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 11:34:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597332852;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xzivr37W6Sz/OFkat8WISQrphMPdi2PlV4uzOfubSgg=;
-        b=gGvfwBtkh5RtP18LZlcKA9J+cw7xGLCj5l+bfM0324WOmoi8NqG3kv8oxRLZ+MaLkSdlYo
-        hrul+0KRTn5d4EmXhB0mpW6XbB6em9FEFsya3yTDU/a1qfEQLkHfjzNShrDf1QgkiGG8AZ
-        3d1n8UU1aBoaZ4c8qoM9b9HTsyrXVhw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-391-14sqnvJ0PGe7-Ac8Ox3DLQ-1; Thu, 13 Aug 2020 11:34:10 -0400
-X-MC-Unique: 14sqnvJ0PGe7-Ac8Ox3DLQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C53A1807321;
-        Thu, 13 Aug 2020 15:34:08 +0000 (UTC)
-Received: from steredhat.redhat.com (ovpn-113-140.ams2.redhat.com [10.36.113.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6443C60C04;
-        Thu, 13 Aug 2020 15:33:49 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-fsdevel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <asarai@suse.de>,
-        io-uring@vger.kernel.org
-Subject: [PATCH v4 3/3] io_uring: allow disabling rings during the creation
-Date:   Thu, 13 Aug 2020 17:32:54 +0200
-Message-Id: <20200813153254.93731-4-sgarzare@redhat.com>
-In-Reply-To: <20200813153254.93731-1-sgarzare@redhat.com>
-References: <20200813153254.93731-1-sgarzare@redhat.com>
+        Thu, 13 Aug 2020 11:33:10 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBFBC061757;
+        Thu, 13 Aug 2020 08:33:10 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t11so2783132plr.5;
+        Thu, 13 Aug 2020 08:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OArhU0jPM5+QK34fFqHPlRX5IiZ8iKNBUnwCph78Tqo=;
+        b=h3EZ85JMSLgkBauQ1EtMZA2tXBAuVCFiJ2d4hPd0O2FottLt3bPn84dvR8PSawaxxY
+         rPufTce70wB1kidQXHwLHt+U8exEoDVGJbmjHoJq8RG7REZZ7FTlawsXmJjNZZvqKtze
+         /TiJSPIQoNz+d/vNkbu1oOF48eFPARAFoQ9/ofPjjcSv0k+jQeeczjoXYk1LVP/VQf0n
+         CEeLQL51MUc5fcxOIuU5MSU8j1fj3UbctF0pYvqO2LZLdp2tfDxnhEgrT/uHv3m/tXOv
+         PyfW+yXa/lU/OerXPTCgpqZlLuaXt7d1dj3c3zXw3Mp23t6ZtdENBJpWnF1VJYqkJ3sv
+         SNOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=OArhU0jPM5+QK34fFqHPlRX5IiZ8iKNBUnwCph78Tqo=;
+        b=YuvUfVq9j0jTD+PnCQ05iPD0JxwGhGtb5+2zRmn/TWA/jpPuYWqmGF+Ge5kPiSWkWM
+         RXQvacQQDmL4ndmrvGPPqGlOjzCBhx5+isl8YDh1xa3ukVrk9LKsjFfJY5tkwBZfghwf
+         y/R34uH46ZAr4CDyeaEwhbK1pNxw20QrFF/VNVmT13GtGIzMXBGqY51F2aoXtUbs9Afz
+         mgfHqERG6R5TagoKC1JyTPXjMEq6JonalExFm+BsQkh3xu7u2GTWyeW52NSIMGba5VRO
+         uXEa7+qstbsUfEIOKLdpAb9j5torXyWrbHCoKQug/eUQ0ssElcxSaxV5KxEWYRf9dD5M
+         485A==
+X-Gm-Message-State: AOAM533MzPsOQ+XXx186OO3dm++wRsRsBP+Iv/2I97++bUN5GEKRRw8h
+        Nu7Nozz1hzpOQVCe7+j4Yo8=
+X-Google-Smtp-Source: ABdhPJyTObLN6IKNNH1iAKnpY2BYL6Bgc9GZ+nyijzQry9phlqbTnkECNkaz3Llt4Hvz72jNo9UVFA==
+X-Received: by 2002:a17:902:aa82:: with SMTP id d2mr4430384plr.12.1597332789751;
+        Thu, 13 Aug 2020 08:33:09 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l78sm6447975pfd.130.2020.08.13.08.33.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Aug 2020 08:33:08 -0700 (PDT)
+Subject: Re: Recursive/circular locking in
+ serial8250_console_write/serial8250_do_startup
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tony Lindgren <tony@atomide.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>, kurt@linutronix.de,
+        Raul Rangel <rrangel@google.com>,
+        "S, Shirish" <Shirish.S@amd.com>
+References: <20200812154813.GA46894@roeck-us.net>
+ <20200813050629.GA95559@roeck-us.net> <20200813115948.GA3854926@kroah.com>
+ <20200813142022.GY1891694@smile.fi.intel.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <c9421d8a-7a2b-23ce-61f5-41f2136cf228@roeck-us.net>
+Date:   Thu, 13 Aug 2020 08:33:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200813142022.GY1891694@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a new IORING_SETUP_R_DISABLED flag to start the
-rings disabled, allowing the user to register restrictions,
-buffers, files, before to start processing SQEs.
+On 8/13/20 7:20 AM, Andy Shevchenko wrote:
+> On Thu, Aug 13, 2020 at 01:59:48PM +0200, Greg KH wrote:
+>> On Wed, Aug 12, 2020 at 10:06:29PM -0700, Guenter Roeck wrote:
+>>> On Wed, Aug 12, 2020 at 08:48:13AM -0700, Guenter Roeck wrote:
+>>>> Hi,
+>>>>
+>>>> crbug.com/1114800 reports a hard lockup due to circular locking in the
+>>>> 8250 console driver. This is seen if CONFIG_PROVE_LOCKING is enabled.
+>>>>
+>>>> Problem is as follows:
+>>>> - serial8250_do_startup() locks the serial (console) port.
+>>>> - serial8250_do_startup() then disables interrupts if interrupts are
+>>>>   shared, by calling disable_irq_nosync().
+>>>> - disable_irq_nosync() calls __irq_get_desc_lock() to lock the interrupt
+>>>>   descriptor.
+>>>> - __irq_get_desc_lock() calls lock_acquire()
+>>>> - If CONFIG_PROVE_LOCKING is enabled, validate_chain() and check_noncircular()
+>>>>   are called and identify a potential locking error.
+>>>> - This locking error is reported via printk, which ultimately calls
+>>>>   serial8250_console_write().
+>>>> - serial8250_console_write() tries to lock the serial console port.
+>>>>   Since it is already locked, the system hangs and ultimately reports
+>>>>   a hard lockup.
+>>>>
+>>>> I understand we'll need to figure out and fix what lockdep complains about,
+>>>> and I am working on that. However, even if that is fixed, we'll need a
+>>>> solution for the recursive lock: Fixing the lockdep problem doesn't
+>>>> guarantee that a similar problem (or some other log message) won't be
+>>>> detected and reported sometime in the future while serial8250_do_startup()
+>>>> holds the console port lock.
+>>>>
+>>>> Ideas, anyone ? Everything I came up with so far seems clumsy and hackish.
+>>>>
+>>>
+>>> Turns out the situation is a bit worse than I thought. disable_irq_nosync(),
+>>> when called from serial8250_do_startup(), locks the interrupt descriptor.
+>>> The order of locking is
+>>> 	serial port lock
+>>> 	  interrupt descriptor lock
+>>>
+>>> At the same time, __setup_irq() locks the interrupt descriptor as well.
+>>> With the descriptor locked, it may report an error message using pr_err().
+>>> This in turn may call serial8250_console_write(), which will try to lock
+>>> the console serial port. The lock sequence is
+>>> 	interrupt descriptor lock
+>>> 	  serial port lock
+>>>
+>>> I added the lockdep splat to the bug log at crbug.com/1114800.
+>>>
+>>> Effectively, I think, this means we can't call disable_irq_nosync()
+>>> while holding a serial port lock, or at least not while holding a
+>>> serial port lock that is associated with a console.
+>>>
+>>> The problem was introduced (or, rather, exposed) with upstream commit
+>>> 7febbcbc48fc ("serial: 8250: Check UPF_IRQ_SHARED in advance").
+>>
+>> Adding Andy, who wrote the above commit :)
+>>
+>> Andy, any thoughts?
+> 
+> So, we have here a problem and my commit is indeed revealed it since it's
+> basically did spread of what we used to have only in two drivers (and
+> originally reported problem was against third one, i.e. 8250_pnp) to all 8250.
+> Even if we revert that commit, we got the other problem appear, hence it's a
+> matter who to suffer until the clean solution will be provided.
+> 
+> As per earlier discussion [1] (and I Cc'ed this to people from there) it
+> appears there is another issue with RT kernels which brought initially that
+> controversial disable_irq_nosync() call. Same here, if we drop this call
+> somebody will be unsatisfied.
+> 
 
-When IORING_SETUP_R_DISABLED is set, SQE are not processed and
-SQPOLL kthread is not started.
+The lock chain in [1] is
+	console_owner --> &port_lock_key --> &irq_desc_lock_class
+and in my case ([2], comment 13) it is
+	&irq_desc_lock_class --> console_owner --> &port_lock_key
 
-The restrictions registration are allowed only when the rings
-are disable to prevent concurrency issue while processing SQEs.
+Looks like we just changed the order of locks.
 
-The rings can be enabled using IORING_REGISTER_ENABLE_RINGS
-opcode with io_uring_register(2).
+> The real fix possible to go to completely lockless printk(), but on the other
+> hand it probably won't prevent other locking corner cases (dead lock?) in 8250
+> console write callback.
+> spin_lock_irqsave
+> The fix proposed in [2] perhaps not the way to go either...
+> 
 
-Suggested-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
-v4:
- - fixed io_uring_enter() exit path when ring is disabled
+The code in [2] (Comment 10) was just a hack to prevent the hard lockup
+from happening and to be able see the lockdep splat. It wasn't supposed
+to fix anything (and it doesn't).
 
-v3:
- - enabled restrictions only when the rings start
+Can we change the order of spin_lock_irqsave / disable_irq_nosync ?
 
-RFC v2:
- - removed return value of io_sq_offload_start()
----
- fs/io_uring.c                 | 52 ++++++++++++++++++++++++++++++-----
- include/uapi/linux/io_uring.h |  2 ++
- 2 files changed, 47 insertions(+), 7 deletions(-)
+-               spin_lock_irqsave(&port->lock, flags);
+                if (up->port.irqflags & IRQF_SHARED)
+                        disable_irq_nosync(port->irq);
++               spin_lock_irqsave(&port->lock, flags);
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index cb365e6e0af7..09fedc380a41 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -226,6 +226,7 @@ struct io_restriction {
- 	DECLARE_BITMAP(sqe_op, IORING_OP_LAST);
- 	u8 sqe_flags_allowed;
- 	u8 sqe_flags_required;
-+	bool registered;
- };
- 
- struct io_ring_ctx {
-@@ -7420,8 +7421,8 @@ static int io_init_wq_offload(struct io_ring_ctx *ctx,
- 	return ret;
- }
- 
--static int io_sq_offload_start(struct io_ring_ctx *ctx,
--			       struct io_uring_params *p)
-+static int io_sq_offload_create(struct io_ring_ctx *ctx,
-+				struct io_uring_params *p)
- {
- 	int ret;
- 
-@@ -7458,7 +7459,6 @@ static int io_sq_offload_start(struct io_ring_ctx *ctx,
- 			ctx->sqo_thread = NULL;
- 			goto err;
- 		}
--		wake_up_process(ctx->sqo_thread);
- 	} else if (p->flags & IORING_SETUP_SQ_AFF) {
- 		/* Can't have SQ_AFF without SQPOLL */
- 		ret = -EINVAL;
-@@ -7479,6 +7479,12 @@ static int io_sq_offload_start(struct io_ring_ctx *ctx,
- 	return ret;
- }
- 
-+static void io_sq_offload_start(struct io_ring_ctx *ctx)
-+{
-+	if ((ctx->flags & IORING_SETUP_SQPOLL) && ctx->sqo_thread)
-+		wake_up_process(ctx->sqo_thread);
-+}
-+
- static inline void __io_unaccount_mem(struct user_struct *user,
- 				      unsigned long nr_pages)
- {
-@@ -8218,6 +8224,9 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, u32, to_submit,
- 	if (!percpu_ref_tryget(&ctx->refs))
- 		goto out_fput;
- 
-+	if (ctx->flags & IORING_SETUP_R_DISABLED)
-+		goto out_fput;
-+
- 	/*
- 	 * For SQ polling, the thread will do all submissions and completions.
- 	 * Just return the requested submit count, and wake the thread if
-@@ -8532,10 +8541,13 @@ static int io_uring_create(unsigned entries, struct io_uring_params *p,
- 	if (ret)
- 		goto err;
- 
--	ret = io_sq_offload_start(ctx, p);
-+	ret = io_sq_offload_create(ctx, p);
- 	if (ret)
- 		goto err;
- 
-+	if (!(p->flags & IORING_SETUP_R_DISABLED))
-+		io_sq_offload_start(ctx);
-+
- 	memset(&p->sq_off, 0, sizeof(p->sq_off));
- 	p->sq_off.head = offsetof(struct io_rings, sq.head);
- 	p->sq_off.tail = offsetof(struct io_rings, sq.tail);
-@@ -8598,7 +8610,8 @@ static long io_uring_setup(u32 entries, struct io_uring_params __user *params)
- 
- 	if (p.flags & ~(IORING_SETUP_IOPOLL | IORING_SETUP_SQPOLL |
- 			IORING_SETUP_SQ_AFF | IORING_SETUP_CQSIZE |
--			IORING_SETUP_CLAMP | IORING_SETUP_ATTACH_WQ))
-+			IORING_SETUP_CLAMP | IORING_SETUP_ATTACH_WQ |
-+			IORING_SETUP_R_DISABLED))
- 		return -EINVAL;
- 
- 	return  io_uring_create(entries, &p, params);
-@@ -8681,8 +8694,12 @@ static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
- 	size_t size;
- 	int i, ret;
- 
-+	/* Restrictions allowed only if rings started disabled */
-+	if (!(ctx->flags & IORING_SETUP_R_DISABLED))
-+		return -EINVAL;
-+
- 	/* We allow only a single restrictions registration */
--	if (ctx->restricted)
-+	if (ctx->restrictions.registered)
- 		return -EBUSY;
- 
- 	if (!arg || nr_args > IORING_MAX_RESTRICTIONS)
-@@ -8732,7 +8749,7 @@ static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
- 		}
- 	}
- 
--	ctx->restricted = 1;
-+	ctx->restrictions.registered = true;
- 
- 	ret = 0;
- out:
-@@ -8744,6 +8761,21 @@ static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
- 	return ret;
- }
- 
-+static int io_register_enable_rings(struct io_ring_ctx *ctx)
-+{
-+	if (!(ctx->flags & IORING_SETUP_R_DISABLED))
-+		return -EINVAL;
-+
-+	if (ctx->restrictions.registered)
-+		ctx->restricted = 1;
-+
-+	ctx->flags &= ~IORING_SETUP_R_DISABLED;
-+
-+	io_sq_offload_start(ctx);
-+
-+	return 0;
-+}
-+
- static bool io_register_op_must_quiesce(int op)
- {
- 	switch (op) {
-@@ -8865,6 +8897,12 @@ static int __io_uring_register(struct io_ring_ctx *ctx, unsigned opcode,
- 			break;
- 		ret = io_unregister_personality(ctx, nr_args);
- 		break;
-+	case IORING_REGISTER_ENABLE_RINGS:
-+		ret = -EINVAL;
-+		if (arg || nr_args)
-+			break;
-+		ret = io_register_enable_rings(ctx);
-+		break;
- 	case IORING_REGISTER_RESTRICTIONS:
- 		ret = io_register_restrictions(ctx, arg, nr_args);
- 		break;
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index be54bc3cf173..ddb30513e027 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -95,6 +95,7 @@ enum {
- #define IORING_SETUP_CQSIZE	(1U << 3)	/* app defines CQ size */
- #define IORING_SETUP_CLAMP	(1U << 4)	/* clamp SQ/CQ ring sizes */
- #define IORING_SETUP_ATTACH_WQ	(1U << 5)	/* attach to existing wq */
-+#define IORING_SETUP_R_DISABLED	(1U << 6)	/* start with ring disabled */
- 
- enum {
- 	IORING_OP_NOP,
-@@ -268,6 +269,7 @@ enum {
- 	IORING_REGISTER_PERSONALITY,
- 	IORING_UNREGISTER_PERSONALITY,
- 	IORING_REGISTER_RESTRICTIONS,
-+	IORING_REGISTER_ENABLE_RINGS,
- 
- 	/* this goes last */
- 	IORING_REGISTER_LAST
--- 
-2.26.2
+[ plus of course the same for unlock ]
+
+Thanks,
+Guenter
+
+> The idea about not allowing disabling IRQ for console port may be least
+> painful as a (temporary?) mitigation.
+> 
+> [1]: https://lore.kernel.org/lkml/CAHQZ30BnfX+gxjPm1DUd5psOTqbyDh4EJE=2=VAMW_VDafctkA@mail.gmail.com/T/#u
+> [2]: https://bugs.chromium.org/p/chromium/issues/detail?id=1114800
+> 
 
