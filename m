@@ -2,219 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB082431C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 02:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857082431CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 02:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726611AbgHMAuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Aug 2020 20:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
+        id S1726593AbgHMAzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Aug 2020 20:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgHMAuu (ORCPT
+        with ESMTP id S1726126AbgHMAzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Aug 2020 20:50:50 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E838C061383;
-        Wed, 12 Aug 2020 17:50:50 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id j187so3838689qke.11;
-        Wed, 12 Aug 2020 17:50:50 -0700 (PDT)
+        Wed, 12 Aug 2020 20:55:13 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A3EC061383;
+        Wed, 12 Aug 2020 17:55:13 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id l60so1965331pjb.3;
+        Wed, 12 Aug 2020 17:55:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=pL5MmIRVU1OdOeaSv0wRzf09T7PB0hRsMz5ga7H+m/4=;
-        b=bwfzCm0sbBP34OwcNxBaPy7//yJBaU05+1qY8DSKXwetHRowjlRs9XFkTfrDj3dph0
-         1Nukr48e/0k7h9y8Se66Q3KMfW7kAVpTmn4yiBOF9kQWKinGJAxKsKw9GXDxoLda/NVk
-         yYuGiz/sb9Erou7gCPKkIz3Pf0ngh09zNju5SrN0tLx+V0qEap7A4yc7UTgxTmwwpXc9
-         QMKjeGelhjcg/Gd+QyzQz8n5oMkl4y8u2upIbZnY210nc5+Bq1k2L/J5Iiv8ZC0Rh/fv
-         7WbelKb8t0ihgH5sEdmm+iI920L5KpTEebawX54+9URalB95DSLvb8sBTabhssMxVabt
-         u2Tw==
+        bh=L72AixCjmIL5nTmTYWBqEVGjNBVygWMA6aC5X+fGUQg=;
+        b=sZ9TH9eQbB30KGwF/1m6APTfHpivFvCrS29509/UKJ1ZyLdwwO39FO+8ZHyTLjoc2K
+         bvoEWCl/KPIB8uJl+wS4Ye6l119GxmtS/O4LGDfdfpd/YKHgIHdRExDaLPlNllgQkieK
+         2+MUHAi2kqU4x4EIptTMdIm0ZaDkfOvgcyOpBL8lwW0vTb88eSQQCQnCkxaSgT39DTB7
+         AI2iBO+3TFhvHwjflmx6zx1kTPM9FiLj/xsBS4r/4U4p8Fbl5AGQBRzdvnzzxh2jyaPA
+         Vf+H5qqmwrAMyzfq2P8rtN+VzimQbnuDvvuSWkq9K73hlXwBMFojMTQLm3FJX1dV23bd
+         8kyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=pL5MmIRVU1OdOeaSv0wRzf09T7PB0hRsMz5ga7H+m/4=;
-        b=OKsi8OpyOim7YrU52ze9vqHBjZbeCFtUu8pgFB5QfwoUxp6moVmtefb6g/K1ADLzTy
-         jP4oy0MJigxorLHGZ9+wJKvjvbH1BK4AILSNs3w7U52pjf93Pugi1cTP5AGljNk8b7JE
-         yIBuaLvYw8raymyzszOTUwbmX+YLlo0jPZhuFjbErWlIxQhb7zZqjn5j/476KcUc4xLs
-         rFxn7MAwUr1kV2bTKhDt4PkgFK9+ilb6lqyRJ0Hfm4OM/AjnxZQD2M2M7qIOi2kujw0F
-         LWgMJ3BcRcU8+FUR+woFYHVBfHoatG7sC/QsWXkW+9sFHH+LbP/daOAUyh82mE4A46BT
-         dIIg==
-X-Gm-Message-State: AOAM532XolOKZYkzaQJYscF6j6Wc6+WQvSJKXTr+FG2VZbvv0vPumxiC
-        0IeWxDkNRtLahop1/2gle4c=
-X-Google-Smtp-Source: ABdhPJyyz72U/mLeBKYblHnXZcPevNW9KuBIcqnp1tiHBAvON1+mtRh+JcN59tXFPGAIrXWiZVe9Bw==
-X-Received: by 2002:a37:2750:: with SMTP id n77mr2524751qkn.26.1597279848302;
-        Wed, 12 Aug 2020 17:50:48 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:45d1:2600::1])
-        by smtp.gmail.com with ESMTPSA id 103sm4396948qta.31.2020.08.12.17.50.47
+        bh=L72AixCjmIL5nTmTYWBqEVGjNBVygWMA6aC5X+fGUQg=;
+        b=CQkBskxnygrKzlC6uVyADRQ7NyphG3k86JOj2OGkroMLFLiup2IZ1Nkym1bX8laWTF
+         ekAvCHR/DAqPCYPNZecskiW3hvuHhY7U+GUuMPbP1HR5lW573nlPfZ68TM7JZV7zUI2L
+         Q3K787OrN2zqCfmne+hg0xucDLT8fQwbkf/DRYhhvRRRf7SN4AB/Nj53gsD8AcXmVLFW
+         94VAGmkrVo2zKItj3QWdI6/qksMKe/Re7cBg0R/YcfcHBAhH68wNsWz48tt2n6gu4Nyw
+         LoC2EC1SRqPL3ZuMpMXPuaECEWgAMZ3y7U3cAp3p4pWCtnANyU9SvNxRknxSrogQuyVC
+         VcXQ==
+X-Gm-Message-State: AOAM533I0XuThHEP5Z52jG6+7kDTjG8SvwzQltIS35mO1o9cT78G4JK0
+        sl8JqaoJj1paL4tKLrQ5S0YGqYr74DU=
+X-Google-Smtp-Source: ABdhPJw0GZ9/sb6W+cfplAXSHIBjU73nMYp8L7xjKLPlNkDwJuYwtVA8Cvx8pFGhtgSrX5IjvCN++A==
+X-Received: by 2002:a17:90a:1f8c:: with SMTP id x12mr2566640pja.186.1597280112671;
+        Wed, 12 Aug 2020 17:55:12 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id j10sm3571681pff.171.2020.08.12.17.55.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Aug 2020 17:50:47 -0700 (PDT)
-Date:   Wed, 12 Aug 2020 17:50:45 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Huckleberry <nhuck@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Tom Roeder <tmroeder@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Rob Herring <robh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] kbuild: clang-tidy
-Message-ID: <20200813005045.GA3726321@ubuntu-n2-xlarge-x86>
-References: <20200812173958.2307251-1-masahiroy@kernel.org>
- <CAJkfWY6vhW9kNK-t+2vZQ7Rhn3HedykvT2du7AfO0_9oUAXvjw@mail.gmail.com>
- <CAKwvOdm3VTZ2QXXxf9pjM6n87UE=Lc-9Cx=V70sNsYGmHCb-hA@mail.gmail.com>
+        Wed, 12 Aug 2020 17:55:12 -0700 (PDT)
+Date:   Wed, 12 Aug 2020 17:55:09 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Fengping Yu <fengping.yu@mediatek.com>
+Cc:     Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v17 2/3] drivers: input: keyboard: Add mtk keypad driver
+Message-ID: <20200813005509.GU1665100@dtor-ws>
+References: <20200810065128.3324-3-fengping.yu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKwvOdm3VTZ2QXXxf9pjM6n87UE=Lc-9Cx=V70sNsYGmHCb-hA@mail.gmail.com>
+In-Reply-To: <20200810065128.3324-3-fengping.yu@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 03:52:54PM -0700, 'Nick Desaulniers' via Clang Built Linux wrote:
-> On Wed, Aug 12, 2020 at 12:56 PM Nathan Huckleberry <nhuck@google.com> wrote:
-> >
-> > On Wed, Aug 12, 2020 at 12:40 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > >
-> > >
-> > > I improved gen_compile_commands.py in the first two patches,
-> > > then rebased Nathan's v7 [1] on top of them.
-> > > To save time, I modified the Makefile part.
-> > > No change for run-clang-tools.py
-> > >
-> > > I am not sure if the new directory, scripts/clang-tools/,
-> > > is worth creating only for 2 files, but I do not have
-> > > a strong opinion about it.
-> > >
-> > > "make clang-tidy" should work in-tree build,
-> > > out-of-tree build (O=), and external module build (M=).
-> > > Tests and reviews are appreciated.
-> > >
-> > > "make clang-tidy" worked for me.
-> > >
-> > > masahiro@oscar:~/workspace/linux-kbuild$ make -j24 CC=clang clang-tidy
-> > >   DESCEND  objtool
-> > >   CALL    scripts/atomic/check-atomics.sh
-> > >   CALL    scripts/checksyscalls.sh
-> > >   CHK     include/generated/compile.h
-> > >   GEN     compile_commands.json
-> > >   CHECK   compile_commands.json
-> > >
-> > > But "make clang-analyzer" just sprinkled the following error:
-> > >
-> > >   Error: no checks enabled.
-> > >   USAGE: clang-tidy [options] <source0> [... <sourceN>]
+On Mon, Aug 10, 2020 at 02:51:28PM +0800, Fengping Yu wrote:
+> From: "fengping.yu" <fengping.yu@mediatek.com>
 > 
-> I wasn't able to reproduce Masahiro's reported failure, but seeing as
-> he has `GEN` for compile_commands.json and I have `CHK`, I wonder if
-> that's from a run when the series was still under development?
+> This patch adds matrix keypad support for Mediatek SoCs.
 > 
-> I can reproduce if I run:
-> $ clang-tidy '-checks='
-> so maybe was string quoting problem?
+> Signed-off-by: fengping.yu <fengping.yu@mediatek.com>
+> Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+> ---
+>  drivers/input/keyboard/Kconfig   |  11 ++
+>  drivers/input/keyboard/Makefile  |   1 +
+>  drivers/input/keyboard/mtk-kpd.c | 209 +++++++++++++++++++++++++++++++
+>  3 files changed, 221 insertions(+)
+>  create mode 100644 drivers/input/keyboard/mtk-kpd.c
 > 
-> > >
-> > > I built clang-tidy from the latest source.
-> > > I had no idea how to make it work...
-> >
-> > How are you building clang-tidy? The clang static-analyzer may not
-> > have been built.
-> > I believe the static analyzer is built as a part of clang, not as a
-> > part of clang-tools-extra.
-> >
-> > I use this command to build.
-> > cmake -DCMAKE_BUILD_TYPE="release"
-> > -DLLVM_TARGETS_TO_BUILD="X86;AArch64;ARM;RISCV"
-> > -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld;llvm-as"
-> > -DLLVM_ENABLE_LLD=1 -G "Ninja" ../llvm
-> >
-> > Adding clang to the list of -DLLVM_ENABLE_PROJECTS will build the
-> > static analyzer.
-> > -DCLANG_ENABLE_STATIC_ANALYZER=1 might also work, but I haven't tested it.
-> >
-> > I tested the patchset and both clang-tidy and clang-analyzer work for me.
-> 
-> If you rename clang-tidy in your build dir, and ensure you don't have
-> a `clang-tidy` in your $PATH (`which clang-tidy`), maybe there's more
-> we can do to politely inform the user they're missing a dependency to
-> execute the make target?  Not sure if we could could test that
-> clang-tidy supports the clang-analyzer-* checks.  Isn't there an
-> invocation that prints the supported checks? `clang-tidy '-checks=*'
-> --list-checks` is in my shell history.  Maybe grepping that and
-> informing the user how to fix the problem might solve a "papercut?"
-> 
-> If I remove clang-tidy with this series applied, I get (the failure is
-> obvious to me, but...):
-> ```
-> $ make LLVM=1 -j71 clang-tidy
-> ...
-> multiprocessing.pool.RemoteTraceback:
-> """
-> Traceback (most recent call last):
->   File "/usr/lib/python3.8/multiprocessing/pool.py", line 125, in worker
->     result = (True, func(*args, **kwds))
->   File "/usr/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
->     return list(map(*args))
->   File "./scripts/clang-tools/run-clang-tools.py", line 54, in run_analysis
->     p = subprocess.run(["clang-tidy", "-p", args.path, checks, entry["file"]],
->   File "/usr/lib/python3.8/subprocess.py", line 489, in run
->     with Popen(*popenargs, **kwargs) as process:
->   File "/usr/lib/python3.8/subprocess.py", line 854, in __init__
->     self._execute_child(args, executable, preexec_fn, close_fds,
->   File "/usr/lib/python3.8/subprocess.py", line 1702, in _execute_child
->     raise child_exception_type(errno_num, err_msg, err_filename)
-> FileNotFoundError: [Errno 2] No such file or directory: 'clang-tidy'
-> """
-> 
-> The above exception was the direct cause of the following exception:
-> 
-> Traceback (most recent call last):
->   File "./scripts/clang-tools/run-clang-tools.py", line 74, in <module>
->     main()
->   File "./scripts/clang-tools/run-clang-tools.py", line 70, in main
->     pool.map(run_analysis, datastore)
->   File "/usr/lib/python3.8/multiprocessing/pool.py", line 364, in map
->     return self._map_async(func, iterable, mapstar, chunksize).get()
->   File "/usr/lib/python3.8/multiprocessing/pool.py", line 771, in get
->     raise self._value
-> FileNotFoundError: [Errno 2] No such file or directory: 'clang-tidy'
-> make: *** [Makefile:1861: clang-tidy] Error 1
-> ```
-> $ clang-tidy '-checks=*' --list-checks | grep clang-analyzer | wc -l
-> 111
-> 
-> And I'm not sure you can even build clang or clang-tidy but not the analyzer.
+> diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kconfig
+> index 793ecbbda32c..1ee845c292c6 100644
+> --- a/drivers/input/keyboard/Kconfig
+> +++ b/drivers/input/keyboard/Kconfig
+> @@ -782,6 +782,17 @@ config KEYBOARD_BCM
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called bcm-keypad.
+>  
+> +config KEYBOARD_MTK_KPD
+> +	tristate "MediaTek Keypad Support"
+> +	depends on ARCH_MEDIATEK || COMPILE_TEST
+> +	select REGMAP_MMIO
+> +	select INPUT_MATRIXKMAP
+> +	help
+> +	  Say Y here if you want to use the keypad on MediaTek SoCs.
+> +	  If unsure, say N.
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called mtk-kpd.
+> +
+>  config KEYBOARD_MTK_PMIC
+>  	tristate "MediaTek PMIC keys support"
+>  	depends on MFD_MT6397
+> diff --git a/drivers/input/keyboard/Makefile b/drivers/input/keyboard/Makefile
+> index 1d689fdd5c00..6c9d852c377e 100644
+> --- a/drivers/input/keyboard/Makefile
+> +++ b/drivers/input/keyboard/Makefile
+> @@ -43,6 +43,7 @@ obj-$(CONFIG_KEYBOARD_MATRIX)		+= matrix_keypad.o
+>  obj-$(CONFIG_KEYBOARD_MAX7359)		+= max7359_keypad.o
+>  obj-$(CONFIG_KEYBOARD_MCS)		+= mcs_touchkey.o
+>  obj-$(CONFIG_KEYBOARD_MPR121)		+= mpr121_touchkey.o
+> +obj-$(CONFIG_KEYBOARD_MTK_KPD)		+= mtk-kpd.o
+>  obj-$(CONFIG_KEYBOARD_MTK_PMIC) 	+= mtk-pmic-keys.o
+>  obj-$(CONFIG_KEYBOARD_NEWTON)		+= newtonkbd.o
+>  obj-$(CONFIG_KEYBOARD_NOMADIK)		+= nomadik-ske-keypad.o
+> diff --git a/drivers/input/keyboard/mtk-kpd.c b/drivers/input/keyboard/mtk-kpd.c
+> new file mode 100644
+> index 000000000000..451b3bc61c6f
+> --- /dev/null
+> +++ b/drivers/input/keyboard/mtk-kpd.c
+> @@ -0,0 +1,209 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2019 MediaTek Inc.
+> + * Author Fengping Yu <fengping.yu@mediatek.com>
+> + */
+> +#include <linux/bitops.h>
+> +#include <linux/clk.h>
+> +#include <linux/input/matrix_keypad.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/module.h>
+> +#include <linux/property.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +
+> +#define MTK_KPD_NAME		"mtk-kpd"
+> +#define MTK_KPD_MEM		0x0004
+> +#define MTK_KPD_DEBOUNCE	0x0018
+> +#define MTK_KPD_DEBOUNCE_MASK	GENMASK(13, 0)
+> +#define MTK_KPD_DEBOUNCE_MAX_US	256000
+> +#define MTK_KPD_NUM_MEMS	5
+> +#define MTK_KPD_NUM_BITS	136	/* 4*32+8 MEM5 only use 8 BITS */
+> +
+> +struct mtk_keypad {
+> +	struct regmap *regmap;
+> +	struct input_dev *input_dev;
+> +	struct clk *clk;
+> +	void __iomem *base;
+> +	u32 n_rows;
+> +	u32 n_cols;
+> +	DECLARE_BITMAP(keymap_state, MTK_KPD_NUM_BITS);
+> +};
+> +
+> +static const struct regmap_config keypad_regmap_cfg = {
+> +	.reg_bits = 32,
+> +	.val_bits = 32,
+> +	.reg_stride = sizeof(u32),
+> +	.max_register = 36,
+> +};
+> +
+> +static irqreturn_t kpd_irq_handler(int irq, void *dev_id)
+> +{
+> +	struct mtk_keypad *keypad = dev_id;
+> +	unsigned short *keycode = keypad->input_dev->keycode;
+> +	DECLARE_BITMAP(new_state, MTK_KPD_NUM_BITS);
+> +	DECLARE_BITMAP(change, MTK_KPD_NUM_BITS);
+> +	int bit_nr;
+> +	int pressed;
+> +	unsigned short code;
+> +
+> +	regmap_bulk_read(keypad->regmap, MTK_KPD_MEM,
+> +			new_state, MTK_KPD_NUM_MEMS);
+> +
+> +	bitmap_xor(change, new_state, keypad->keymap_state, MTK_KPD_NUM_BITS);
+> +
+> +	for_each_set_bit(bit_nr, change, MTK_KPD_NUM_BITS) {
 
-I think that is the point of '-DCLANG_ENABLE_STATIC_ANALYZER=OFF'.
-clang-tools-extra/clang-tidy/CMakeLists.txt has some checks for
-CLANG_ENABLE_STATIC_ANALYZER to link in certain libraries related to
-the analyzer.
+Should we be explicit:
 
-For the record, tc-build adds that cmake define:
+		if (bit_nr % 32 >= 16) // or "if ((bit_nr / 16) % 2)"
+			continue;
 
-https://github.com/ClangBuiltLinux/tc-build/blob/071eeefd2e201d3f24468cc06ed6a5860161437d/build-llvm.py#L610-L613
+so that we sure we do not trip over garbage (if any) in the unused
+bits?
 
-$ ../build-llvm.py --build-stage1-only --projects "clang;clang-tools-extra" --targets X86
-...
 
-$ ../build/llvm/stage1/bin/clang-tidy '-checks=*' --list-checks | grep clang-analyzer | wc -l
-0
+> +		/* 1: not pressed, 0: pressed */
+> +		pressed = !test_bit(bit_nr, new_state);
+> +		dev_dbg(&keypad->input_dev->dev, "%s",
+> +			pressed ? "pressed" : "released");
+> +
+> +		/* 32bit register only use low 16bit as keypad mem register */
+> +		code = keycode[bit_nr - 16 * (BITS_TO_U32(bit_nr) - 1)];
 
-If I remove that define and rebuild:
+This will give index of 16 for (0,0). Is this what we want? Hmm, this is
+all weird... I think we need:
 
-$ ../build-llvm.py --build-stage1-only --projects "clang;clang-tools-extra" --targets X86
-...
+		row = bit_nr / 32;
+		col = bit_nr % 32;
+		if (col > 15)
+			continue;
 
-$ ../build/llvm/stage1/bin/clang-tidy '-checks=*' --list-checks | grep clang-analyzer | wc -l
-111
+		// set row_shift in probe() as:
+		// keypad_data->row_shift =
+		//		get_count_order(keypad_data->n_cols);
+		code = keycode[MATRIX_SCAN_CODE(row, col,
+						keypad_data->row_shift)];
 
-I suppose if this series depends on it, we can remove that from the base
-defines and either add a flag to enable/disable it depending on people's
-preferences.
+This will properly unpack the keymap built by
+matrix_keypad_build_keymap().
 
-Cheers,
-Nathan
+> +
+> +		input_report_key(keypad->input_dev, code, pressed);
+> +		input_sync(keypad->input_dev);
+> +
+> +		dev_dbg(&keypad->input_dev->dev,
+> +			"report Linux keycode = %d\n", code);
+> +	}
+> +
+> +	bitmap_copy(keypad->keymap_state, new_state, MTK_KPD_NUM_BITS);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static void kpd_clk_disable(void *data)
+> +{
+> +	clk_disable_unprepare(data);
+> +}
+> +
+> +static int kpd_pdrv_probe(struct platform_device *pdev)
+> +{
+> +	struct mtk_keypad *keypad;
+> +	unsigned int irq;
+> +	u32 debounce;
+> +	bool wakeup;
+> +	int ret;
+
+Can we call this variable "error" please?
+
+> +
+> +	keypad = devm_kzalloc(&pdev->dev, sizeof(*keypad), GFP_KERNEL);
+> +	if (!keypad)
+> +		return -ENOMEM;
+> +
+> +	keypad->base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(keypad->base))
+> +		return PTR_ERR(keypad->base);
+> +
+> +	keypad->regmap = devm_regmap_init_mmio(&pdev->dev,
+> +					       keypad->base,
+> +					       &keypad_regmap_cfg);
+> +	if (IS_ERR(keypad->regmap)) {
+> +		dev_err(&pdev->dev,
+> +			"regmap init failed:%pe\n", keypad->regmap);
+> +		return PTR_ERR(keypad->regmap);
+> +	}
+> +
+> +	bitmap_fill(keypad->keymap_state, MTK_KPD_NUM_BITS);
+> +
+> +	keypad->input_dev = devm_input_allocate_device(&pdev->dev);
+> +	if (!keypad->input_dev) {
+> +		dev_err(&pdev->dev, "Failed to allocate input dev\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	keypad->input_dev->name = MTK_KPD_NAME;
+> +	keypad->input_dev->id.bustype = BUS_HOST;
+> +
+> +	ret = matrix_keypad_parse_properties(&pdev->dev, &keypad->n_rows,
+> +					     &keypad->n_cols);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Failed to parse keypad params\n");
+> +		return ret;
+> +	}
+> +
+> +	if (device_property_read_u32(&pdev->dev, "mediatek,debounce-us",
+> +				     &debounce))
+> +		debounce = 16000;
+> +
+> +	if (debounce > MTK_KPD_DEBOUNCE_MAX_US) {
+> +		dev_err(&pdev->dev, "Debounce time exceeds the maximum allowed time %dus\n",
+> +			MTK_KPD_DEBOUNCE_MAX_US);
+> +		return -EINVAL;
+> +	}
+> +
+> +	wakeup = device_property_read_bool(&pdev->dev, "wakeup-source");
+> +
+> +	dev_dbg(&pdev->dev, "n_row=%d n_col=%d debounce=%d\n",
+> +		keypad->n_rows, keypad->n_cols, debounce);
+> +
+> +	ret = matrix_keypad_build_keymap(NULL, NULL,
+> +					 keypad->n_rows,
+> +					 keypad->n_cols,
+> +					 NULL,
+> +					 keypad->input_dev);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Failed to build keymap\n");
+> +		return ret;
+> +	}
+> +
+> +	regmap_write(keypad->regmap, MTK_KPD_DEBOUNCE,
+> +		     debounce * 32 / 1000 & MTK_KPD_DEBOUNCE_MASK);
+> +
+> +	keypad->clk = devm_clk_get(&pdev->dev, "kpd");
+> +	if (IS_ERR(keypad->clk))
+> +		return PTR_ERR(keypad->clk);
+> +
+> +	ret = clk_prepare_enable(keypad->clk);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "cannot prepare/enable keypad clock\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = devm_add_action_or_reset(&pdev->dev, kpd_clk_disable, keypad->clk);
+> +	if (ret)
+> +		return ret;
+> +
+> +	irq = platform_get_irq(pdev, 0);
+> +	if (irq < 0)
+> +		return irq;
+> +
+> +	ret = devm_request_threaded_irq(&pdev->dev, irq,
+> +					NULL, kpd_irq_handler, IRQF_ONESHOT,
+> +					MTK_KPD_NAME, keypad);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Failed to request IRQ#%d:%d\n",
+> +			irq, ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = input_register_device(keypad->input_dev);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Failed to register device\n");
+> +		return ret;
+> +	}
+> +
+> +	ret =  device_init_wakeup(&pdev->dev, wakeup);
+> +	if (ret)
+> +		dev_warn(&pdev->dev, "device_init_wakeup fail\n");
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id kpd_of_match[] = {
+> +	{ .compatible = "mediatek,mt6779-keypad" },
+> +	{ .compatible = "mediatek,mt6873-keypad" },
+> +	{ /* sentinel */ }
+> +};
+> +
+> +static struct platform_driver kpd_pdrv = {
+> +	.probe = kpd_pdrv_probe,
+> +	.driver = {
+> +		   .name = MTK_KPD_NAME,
+> +		   .of_match_table = kpd_of_match,
+> +	},
+> +};
+> +module_platform_driver(kpd_pdrv);
+> +
+> +MODULE_AUTHOR("Mediatek Corporation");
+> +MODULE_DESCRIPTION("MTK Keypad (KPD) Driver");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.18.0
+
+Thanks.
+
+-- 
+Dmitry
