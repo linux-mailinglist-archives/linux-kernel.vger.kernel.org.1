@@ -2,176 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFCC2437D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CEFB2437E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgHMJqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 05:46:01 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:55693 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726053AbgHMJqA (ORCPT
+        id S1726600AbgHMJrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 05:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726570AbgHMJrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 05:46:00 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U5eFTQs_1597311955;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U5eFTQs_1597311955)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 13 Aug 2020 17:45:55 +0800
-Subject: Re: [Resend PATCH 2/6] mm/memcg: remove useless check on
- page->mem_cgroup
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     akpm@linux-foundation.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com>
- <1597144232-11370-2-git-send-email-alex.shi@linux.alibaba.com>
- <20200811113008.GK4793@dhcp22.suse.cz>
- <776b0e6f-4129-9fb9-0f66-47757cf320d5@linux.alibaba.com>
- <20200811135626.GL4793@dhcp22.suse.cz>
- <0b5e1ac3-c9c7-35e9-2661-b58430314d0a@linux.alibaba.com>
- <20200813062049.GA9477@dhcp22.suse.cz>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <abd9276b-31f8-a51d-43d6-6c8ae93237dc@linux.alibaba.com>
-Date:   Thu, 13 Aug 2020 17:45:19 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Thu, 13 Aug 2020 05:47:31 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22426C061383
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 02:47:30 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id 184so4493655wmb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 02:47:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=K76TwNOj6YPUxnu//cnGFVzxaqY2UQJNOHmvCQA8ibM=;
+        b=u3zj4eb4DbqEA0J/MuJ/2jcW8Mb5+xFtNKoX546zTcr7PUfgNM0njk9BOGlazD2GBx
+         Bk02ZKTY2ooC8GVOlkAncirs6AsBfzhaszTDjgGn5sWjIGDe6NF2ZV9IHfJRXc7vQ7ie
+         CpYi6sPvXp0c/yBeVr11wouNsaf52l39KYudoHssTwmI4ChdT6d9cbx8Fc2A2++Z2K6T
+         4klthMJN/USRp/b7v6d/KWfRKUhze7ujQV1BYerGjQvTFFhnVjVO3X5rJL/dT0PePXcS
+         bwyK6P9mTCqWGD33rs+ZQWXdgR5Zcwg8vk6GHlOlmQ3YJ9r15dbWzCWLDyCiXFm0FUwd
+         8d5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=K76TwNOj6YPUxnu//cnGFVzxaqY2UQJNOHmvCQA8ibM=;
+        b=C2mynd+8BDFK9iQwCGm723DOXDjVdzAgv2ZdJ/DU96fT3kXWYmKz4aIXX/ejsSfiOb
+         SDq/diUko0UFNhONsURTuYDq3YWYbhtN6UKlYJsSXKj1NgMtW4eqKT5rzzmKyRsHCvtO
+         OVLhkxk9i/vu7r16BckqziPTEvv0vTb6oPByEYwF4mKLcJeEhbPlFpjCg1Tdo0ywDv4y
+         a5inRiNc7mmaSdsSEizbXDHYIRuk0B9HEnQiXv3RO/sgRdLK92dFOidXCREiO/0y/wKc
+         CKKKBdvlAeCs/55hl9fK24w0oOWWQxU7Q5mVXf28Dc7xeojifpMBxwoFQaMAaBvfLSU1
+         3dCA==
+X-Gm-Message-State: AOAM532TEztbjgWZSiUnRrb820lwzVzOt8fxTLVlEm7WTcvEgvp0DNCp
+        41FPdpS+8q3+bv4hgfVMkXleNw==
+X-Google-Smtp-Source: ABdhPJwTtTJZm1Ao/8JMd5q4rRpuspz63aaSVRyUYha/ai0uABTB9aiqdz6zC8xthX+6zSRPvlaC6Q==
+X-Received: by 2002:a1c:e907:: with SMTP id q7mr3752451wmc.155.1597312048399;
+        Thu, 13 Aug 2020 02:47:28 -0700 (PDT)
+Received: from holly.lan (82-132-221-219.dab.02.net. [82.132.221.219])
+        by smtp.gmail.com with ESMTPSA id y2sm9133729wmg.25.2020.08.13.02.47.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Aug 2020 02:47:27 -0700 (PDT)
+Date:   Thu, 13 Aug 2020 10:47:24 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Akash Asthana <akashast@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, linux-serial@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        Mukesh Savaliya <msavaliy@codeaurora.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [Kgdb-bugreport] [PATCH] serial: qcom_geni_serial: Fix recent
+ kdb hang
+Message-ID: <20200813094724.di7g3irdkm6h2lul@holly.lan>
+References: <20200806221904.1.I4455ff86f0ef5281c2a0cd0a4712db614548a5ca@changeid>
+ <adaef6bf-7887-feea-fedf-d3bc5566bb9d@codeaurora.org>
+ <CAD=FV=X8tNpmkSrEjXgKPKsBOZfjt8aVQe47gzi5FvPqdOQN+A@mail.gmail.com>
+ <b4cd8daf-ef37-4cc1-546e-ba46cb19392a@codeaurora.org>
+ <CAD=FV=W=C111X2VzZaAKo8JhRGexG=crK+YJbr9FWcAzATggAQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200813062049.GA9477@dhcp22.suse.cz>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=W=C111X2VzZaAKo8JhRGexG=crK+YJbr9FWcAzATggAQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-ÔÚ 2020/8/13 ÏÂÎç2:20, Michal Hocko Ð´µÀ:
-> On Wed 12-08-20 11:25:53, Alex Shi wrote:
->> >From 999b0fe5fc65865c3b59ff28500d45572a4a9570 Mon Sep 17 00:00:00 2001
->> From: Alex Shi <alex.shi@linux.alibaba.com>
->> Date: Wed, 5 Aug 2020 21:02:30 +0800
->> Subject: [PATCH 2/6] mm/memcg: bail out early from swap accounting when memcg
->>  is disabled
->>
->> If we disabled memcg by cgroup_disable=memory, page->memcg will be NULL
->> and so the charge is skipped and that will trigger a warning like below.
->> Let's return from the funcs earlier.
->>
->>  ---[ end trace f1f34bfc3b32ed2f ]---
->>  anon flags:0x5005b48008000d(locked|uptodate|dirty|swapbacked)
->>  raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
->>  raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
->>  page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
+On Tue, Aug 11, 2020 at 09:21:22AM -0700, Doug Anderson wrote:
+> Hi,
 > 
-> Yes this is better. It would be even more informative if you added the
-> backtrace.
+> On Tue, Aug 11, 2020 at 4:54 AM Akash Asthana <akashast@codeaurora.org> wrote:
+> >
+> >
+> > On 8/11/2020 2:56 AM, Doug Anderson wrote:
+> > > Hi,
+> > >
+> > > On Mon, Aug 10, 2020 at 5:32 AM Akash Asthana <akashast@codeaurora.org> wrote:
+> > >> Hi Doug,
+> > >>
+> > >> On 8/7/2020 10:49 AM, Douglas Anderson wrote:
+> > >>> The commit e42d6c3ec0c7 ("serial: qcom_geni_serial: Make kgdb work
+> > >>> even if UART isn't console") worked pretty well and I've been doing a
+> > >>> lot of debugging with it.  However, recently I typed "dmesg" in kdb
+> > >>> and then held the space key down to scroll through the pagination.  My
+> > >>> device hung.  This was repeatable and I found that it was introduced
+> > >>> with the aforementioned commit.
+> > >>>
+> > >>> It turns out that there are some strange boundary cases in geni where
+> > >>> in some weird situations it will signal RX_LAST but then will put 0 in
+> > >>> RX_LAST_BYTE.  This means that the entire last FIFO entry is valid.
+> > >> IMO that means we received a word in RX_FIFO and it is the last word
+> > >> hence RX_LAST bit is set.
+> > > What you say would make logical sense, but it's not how I have
+> > > observed geni to work.  See below.
+> > >
+> > >
+> > >> RX_LAST_BYTE is 0 means none of the bytes are valid in the last word.
+> > > This would imply that qcom_geni_serial_handle_rx() is also broken
+> > > though, wouldn't it?  Specifically imagine that WORD_CNT is 1 and
+> > > RX_LAST is set and RX_LAST_BYTE_VALID is true.  Here's the logic from
+> > > that function:
+> > >
+> > >    total_bytes = BYTES_PER_FIFO_WORD * (word_cnt - 1);
+> > >    if (last_word_partial && last_word_byte_cnt)
+> > >      total_bytes += last_word_byte_cnt;
+> > >    else
+> > >      total_bytes += BYTES_PER_FIFO_WORD;
+> > >    port->handle_rx(uport, total_bytes, drop);
+> > >
+> > > As you can see that logic will set "total_bytes" to 4 in the case I'm
+> > > talking about.
+> >
+> > Yeah IMO as per theory this should also be corrected but since you have
+> > already pulled out few experiment to prove garbage data issue(which I
+> > was suspecting) is not seen.
+> >
+> > It's already consistent with existing logic and it behaves well
+> > practically . So the changes could be merge. Meanwhile I am checking
+> > with HW team to get clarity.
+> >
+> > >
+> > >
+> > >> In such scenario we should just read RX_FIFO buffer (to empty it),
+> > >> discard the word and return NO_POLL_CHAR. Something like below.
+> > >>
+> > >> ---------------------------------------------------------------------------------------------------------------------------------------------------------
+> > >>
+> > >>                   else
+> > >>                           private_data->poll_cached_bytes_cnt = 4;
+> > >>
+> > >>                   private_data->poll_cached_bytes =
+> > >>                           readl(uport->membase + SE_GENI_RX_FIFOn);
+> > >>           }
+> > >>
+> > >> +        if (!private_data->poll_cached_bytes_cnt)
+> > >> +              return NO_POLL_CHAR;
+> > >>           private_data->poll_cached_bytes_cnt--;
+> > >>           ret = private_data->poll_cached_bytes & 0xff;
+> > >> -------------------------------------------------------------------------------------------------------------------------------------------------------------
+> > >>
+> > >> Please let me know whether above code helps.
+> > > Your code will avoid the hang.  Yes.  ...but it will drop bytes.  I
+> > > devised a quick-n-dirty test.  Here's a test of your code:
+> > I assumed those as invalid bytes and don't wanted to read them so yeah
+> > dropping of bytes was expected.
+> > >
+> > > https://crrev.com/c/2346886
+> > >
+> > > ...and here's a test of my code:
+> > >
+> > > https://crrev.com/c/2346884
+> > >
+> > > I had to keep a buffer around since it's hard to debug the serial
+> > > driver.  In both cases I put "DOUG" into the buffer when I detect this
+> > > case.  If my theory about how geni worked was wrong then we should
+> > > expect to see some garbage in the buffer right after the DOUG, right?
+> > > ...but my code gets the alphabet in nice sequence.  Your code drops 4
+> > > bytes.
+> > Yeah I was expecting garbage data.
+> > >
+> > >
+> > > NOTE: while poking around with the above two test patches I found it
+> > > was pretty easy to get geni to drop bytes / hit overflow cases and
+> > > also to insert bogus 0 bytes in the stream (I believe these are
+> > > related).  I was able to reproduce this:
+> > > * With ${SUBJECT} patch in place.
+> > > * With your proposed patch.
+> > > * With the recent "geni" patches reverted (in other words back to 1
+> > > byte per FIFO entry).
+> > >
+> > > It's not terribly surprising that we're overflowing since I believe
+> > > kgdb isn't too keen to read characters at the same time it's writing.
+> > > That doesn't explain the weird 0-bytes that geni seemed to be
+> > > inserting, but at least it would explain the overflows.  However, even
+> > > after I fixed this I _still_ was getting problems.  Specifically geni
+> > > seemed to be hiding bytes from me until it was too late.  I put
+> > > logging in and would see this:
+> > >
+> > > 1 word in FIFO - wxyz
+> > > 1 word in FIFO (last set, last FIFO has 1 byte) - \n
+> > > Check again, still 0 bytes in FIFO
+> > > Suddenly 16 bytes are in FIFO and S_RX_FIFO_WR_ERR_EN is set.
+> >
+> > RX data first stored in RX_ASYNC_FIFO then it's transfered to RX_FIFO
+> >
+> > When get_char is called and we observe 0 bytes in RX_FIFO, most probably
+> > data is not transfered from RX_ASYNC_FIFO to RX_FIFO.
+> >
+> > BITS 27:25 of SE_GENI_RX_FIFO_STATUS register shows RX_ASYNC_FIFO word
+> > count.
+> 
+> OK, I did a tad bit more debugging and I think any problems left after
+> my patch are actually kdb's fault, though geni doesn't behave terribly
+> well with overflows (it would be better if it just dropped characters
+> rather than enqueuing garbage).  Specifically in the tests I was
+> running recently kdb would sometimes still take over 30 ms between
+> polls so it's not surprising that we'd get overflows if we're
+> spamming.  All my test code and results are at:
+> 
+> https://crrev.com/c/2348284
+> 
+> Earlier when I claimed that bytes were showing up in geni too quickly
+> I was wrong.  My timing code was broken at the time.
+> 
+> 
+> > > I spent a whole bunch of time poking at this and couldn't find any
+> > > sort of workaround.  Presumably geni is taking some time between me
+> > > reading the last word out of the FIFO from the "previous" packet and
+> > > then transitioning to the new packet.  I found a lot of references to
+> > > this process in the hardware register description (see GENI_CFG_REG69,
+> > > for instance), but I couldn't manage to make the kick to happen any
+> > > faster.  Presumably this isn't a problem for things like Bluetooth
+> > > since flow control saves them.  ...and I guess this isn't a problem in
+> > > practice because we usually _send_ a lot of data to the host for
+> > > console/kgdb and it's only the host => DUT path that has problems.
+> > >
+> > >
+> > >> I am not sure about what all scenario can leads to this behavior from
+> > >> hardware, I will try to get an answer from hardware team.
+> > >>
+> > >> Any error bit was set for SE_GENI_S_IRQ_STATUS & SE_GENI_M_IRQ_STATUS
+> > >> registers?
+> > > As per above I can see overflows in my test case and geni seems to be
+> > > behaving pretty badly.  If you have ideas on how to fix this I'd love
+> > > it.  However, it still seems like my patch is right because (at least
+> > > in the cases I tested) it avoids dropping bytes in some cases.  It
+> > > also matches how qcom_geni_serial_handle_rx() works and if that was
+> > > broken we'd have noticed by now.
+> >
+> > Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+> 
+> Thanks!  After my extra digging I now think that the weird case is
+> triggered by the overflows and the FIFO certainly does get garbage in
+> it when there are overflows, but I think my patch is still correct and
+> gets correct bytes.  The garbage that is queued up is queued up later
+> and looks like normal transfers.  ...so I think we're good to go with
+> it.
+> 
+> So summary:
+> 1. We should land my patch.
+> 2. I filed <https://crbug.com/1115125> to track trying to make kdb's
+> polling nicer.
 
-The stack is a bit long.
-I still don't know where cause the asm_exc_page_fault? And seems the vma is from
-kernel not user.
+This sort of thing could improve multi-line copy 'n paste (e.g. any case
+where we issue more output than we receive in input) but be aware the pager
+deliberately discards backlogged characters to improve latency so
+in the use case that provoked this thread it makes no difference
+whether the UART overflow machinery or the kdb core discards the backlog!
 
-From 999b0fe5fc65865c3b59ff28500d45572a4a9570 Mon Sep 17 00:00:00 2001
-From: Alex Shi <alex.shi@linux.alibaba.com>
-Date: Wed, 5 Aug 2020 21:02:30 +0800
-Subject: [PATCH 2/6] mm/memcg: bail out early from swap accounting when memcg
- is disabled
 
-If we disabled memcg by cgroup_disable=memory, page->memcg will be NULL
-and so the charge is skipped and that will trigger a warning like below.
-Let's return from the funcs earlier.
-
- anon flags:0x5005b48008000d(locked|uptodate|dirty|swapbacked)
- raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
- raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
- page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
-...
- RIP: 0010:vprintk_emit+0x1f7/0x260
- Code: 00 84 d2 74 72 0f b6 15 27 58 64 01 48 c7 c0 00 d4 72 82 84 d2 74 09 f3 90 0f b6 10 84 d2 75 f7 e8 de 0d 00 00 4c 89 e7 57 9d <0f> 1f 44 00 00 e9 62 ff ff ff 80 3d 88 c9 3a 01 00 0f 85 54 fe ff
- RSP: 0018:ffffc9000faab358 EFLAGS: 00000202
- RAX: ffffffff8272d400 RBX: 000000000000005e RCX: ffff88afd80d0040
- RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000202
- RBP: ffffc9000faab3a8 R08: ffffffff8272d440 R09: 0000000000022480
- R10: 00120c77be68bfac R11: 0000000000cd7568 R12: 0000000000000202
- R13: 0057ffffc0080005 R14: ffffffff820a0130 R15: ffffc9000faab3e8
- ? vprintk_emit+0x140/0x260
- vprintk_default+0x1a/0x20
- vprintk_func+0x4f/0xc4
- ? vprintk_func+0x4f/0xc4
- printk+0x53/0x6a
- ? xas_load+0xc/0x80
- __dump_page.cold.6+0xff/0x4ee
- ? xas_init_marks+0x23/0x50
- ? xas_store+0x30/0x40
- ? free_swap_slot+0x43/0xd0
- ? put_swap_page+0x119/0x320
- ? update_load_avg+0x82/0x580
- dump_page+0x9/0xb
- mem_cgroup_try_charge_swap+0x16e/0x1d0
- get_swap_page+0x130/0x210
- add_to_swap+0x41/0xc0
- shrink_page_list+0x99e/0xdf0
- shrink_inactive_list+0x199/0x360
- shrink_lruvec+0x40d/0x650
- ? _cond_resched+0x14/0x30
- ? _cond_resched+0x14/0x30
- shrink_node+0x226/0x6e0
- do_try_to_free_pages+0xd0/0x400
- try_to_free_pages+0xef/0x130
- __alloc_pages_slowpath.constprop.127+0x38d/0xbd0
- ? ___slab_alloc+0x31d/0x6f0
- __alloc_pages_nodemask+0x27f/0x2c0
- alloc_pages_vma+0x75/0x220
- shmem_alloc_page+0x46/0x90
- ? release_pages+0x1ae/0x410
- shmem_alloc_and_acct_page+0x77/0x1c0
- shmem_getpage_gfp+0x162/0x910
- shmem_fault+0x74/0x210
- ? filemap_map_pages+0x29c/0x410
- __do_fault+0x37/0x190
- handle_mm_fault+0x120a/0x1770
- exc_page_fault+0x251/0x450
- ? asm_exc_page_fault+0x8/0x30
- asm_exc_page_fault+0x1e/0x30
-
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Reviewed-by: Roman Gushchin <guro@fb.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: cgroups@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
----
- mm/memcontrol.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 299382fc55a9..419cf565f40b 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7098,6 +7098,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
- 	VM_BUG_ON_PAGE(PageLRU(page), page);
- 	VM_BUG_ON_PAGE(page_count(page), page);
- 
-+	if (mem_cgroup_disabled())
-+		return;
-+
- 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		return;
- 
-@@ -7163,6 +7166,9 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
- 	struct mem_cgroup *memcg;
- 	unsigned short oldid;
- 
-+	if (mem_cgroup_disabled())
-+		return 0;
-+
- 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		return 0;
- 
--- 
-1.8.3.1
-
+Daniel.
