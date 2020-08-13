@@ -2,89 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E4E243533
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BF9243531
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgHMHri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 03:47:38 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:21106 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726048AbgHMHrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 03:47:37 -0400
-Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app2 (Coremail) with SMTP id by_KCgCHj+fd7zRfB4jOAQ--.60727S4;
-        Thu, 13 Aug 2020 15:46:41 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Mark Hills <mark@xwax.org>,
-        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Giuliano Pochini <pochini@shiny.it>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] ALSA: echoaudio: Fix potential Oops in snd_echo_resume()
-Date:   Thu, 13 Aug 2020 15:46:30 +0800
-Message-Id: <20200813074632.17022-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgCHj+fd7zRfB4jOAQ--.60727S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7JrWDuw4rArWkZF45tr4xWFg_yoWkWrX_Gw
-        48urn5Cay5tr95C34DJrW8WryDJ3Za9r1xA39xtF47JasxJas2qr97Xrs3AryxurW09r98
-        KrWrXryjkrn0kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbV8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
-        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoLBlZdtPic1gABsJ
+        id S1726605AbgHMHrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 03:47:05 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57701 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726499AbgHMHrF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 03:47:05 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1k67wu-0004u4-Gj; Thu, 13 Aug 2020 07:46:56 +0000
+Date:   Thu, 13 Aug 2020 09:46:55 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     hui yang <yanghui.def@gmail.com>
+Cc:     christian@brauner.io, peterz@infradead.org, christian@kellner.me,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org, wad@chromium.org
+Subject: Re: [PATCH v2] mm: LMK, adjust oom_score_adj when fork a new process
+Message-ID: <20200813074655.vypcjscabep2cpri@wittgenstein>
+References: <1597287211-4291-1-git-send-email-yanghui.def@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1597287211-4291-1-git-send-email-yanghui.def@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Freeing chip on error may lead to an Oops at the next time
-the system goes to resume. Fix this by removing all
-snd_echo_free() calls on error.
+On Thu, Aug 13, 2020 at 10:53:31AM +0800, hui yang wrote:
+> From: YangHui <yanghui.def@gmail.com>
+> 
+> Also it rely on inheritance,But there are some things you need't inheriting
+> if all children oom_score_adj is -1000,the oom is meaningless
 
-Fixes: 47b5d028fdce8 ("ALSA: Echoaudio - Add suspend support #2")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+I can just reapeat what I said before: we will not be changing
+inheritance behavior. It will break userspace.
 
-Changelog:
+And there's more problems.
+Changing oom_score_adj is usually guarded by CAP_SYS_RESOURCE. It
+doesn't seem like the change here adresses that in the code or in the
+commit message. So from what I can tell this change here means, that a
+parent process that has a "always kill" or "never kill" oom score can
+spawn children that don't. That's at least surprising and at worst a
+potential security issue.
 
-v2: - Remove snd_echo_free() calls in all error paths.
----
- sound/pci/echoaudio/echoaudio.c | 2 --
- 1 file changed, 2 deletions(-)
+In addition, given that you assign OOM_SCORE_ADJ_MIN to
+oom_score_adj_min you also seem to basically allow the child process to
+set /proc/<pid>/oom_score_adj to whatever low value after fork the
+process sees fit without requiring CAP_SYS_RESOURCE basically enabling a
+process to set itself to never be killed even though it's parent might
+have been in "always kill" mode. See in fs/proc/base.c:
 
-diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
-index 6aeb99aa2414..868f1dcd27d6 100644
---- a/sound/pci/echoaudio/echoaudio.c
-+++ b/sound/pci/echoaudio/echoaudio.c
-@@ -2213,7 +2213,6 @@ static int snd_echo_resume(struct device *dev)
- 	if (err < 0) {
- 		kfree(commpage_bak);
- 		dev_err(dev, "resume init_hw err=%d\n", err);
--		snd_echo_free(chip);
- 		return err;
- 	}
- 
-@@ -2240,7 +2239,6 @@ static int snd_echo_resume(struct device *dev)
- 	if (request_irq(pci->irq, snd_echo_interrupt, IRQF_SHARED,
- 			KBUILD_MODNAME, chip)) {
- 		dev_err(chip->card->dev, "cannot grab irq\n");
--		snd_echo_free(chip);
- 		return -EBUSY;
- 	}
- 	chip->irq = pci->irq;
--- 
-2.17.1
+if ((short)oom_adj < task->signal->oom_score_adj_min &&
+		!capable(CAP_SYS_RESOURCE)) {
+	err = -EACCES;
+	goto err_unlock;
+}
 
+Excuse my french but that's crazy and a security issue imho.
+
+So we won't be taking this patch, sorry!
+
+For future patches, you should also explain why you need this change.
+The commit message here makes it seem you're asking for that change
+without any specific reason. That's not just against expectations but
+also problematic here because this is a uapi change where we're usually
+very strict.
+
+Christian
+
+> 
+> Signed-off-by: YangHui <yanghui.def@gmail.com>
+> ---
+>  include/uapi/linux/oom.h | 1 +
+>  kernel/fork.c            | 4 ++--
+>  2 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/uapi/linux/oom.h b/include/uapi/linux/oom.h
+> index 750b1c5..0251f23 100644
+> --- a/include/uapi/linux/oom.h
+> +++ b/include/uapi/linux/oom.h
+> @@ -8,6 +8,7 @@
+>   */
+>  #define OOM_SCORE_ADJ_MIN	(-1000)
+>  #define OOM_SCORE_ADJ_MAX	1000
+> +#define OOM_SCORE_ADJ_DEFAULT  0
+>  
+>  /*
+>   * /proc/<pid>/oom_adj set to -17 protects from the oom killer for legacy
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 4d32190..9dfa388 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -1584,8 +1584,8 @@ static int copy_signal(unsigned long clone_flags, struct task_struct *tsk)
+>  	tty_audit_fork(sig);
+>  	sched_autogroup_fork(sig);
+>  
+> -	sig->oom_score_adj = current->signal->oom_score_adj;
+> -	sig->oom_score_adj_min = current->signal->oom_score_adj_min;
+> +	sig->oom_score_adj = OOM_SCORE_ADJ_DEFAULT;
+> +	sig->oom_score_adj_min = OOM_SCORE_ADJ_MIN;
+>  
+>  	mutex_init(&sig->cred_guard_mutex);
+>  	mutex_init(&sig->exec_update_mutex);
+> -- 
+> 2.7.4
+> 
