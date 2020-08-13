@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86A9243C41
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D88243C38
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgHMPLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 11:11:16 -0400
-Received: from mx0a-0039f301.pphosted.com ([148.163.133.242]:45244 "EHLO
-        mx0a-0039f301.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726334AbgHMPLO (ORCPT
+        id S1726727AbgHMPKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 11:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726334AbgHMPKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 11:11:14 -0400
-Received: from pps.filterd (m0174679.ppops.net [127.0.0.1])
-        by mx0a-0039f301.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07DF5DcT026990;
-        Thu, 13 Aug 2020 15:11:01 GMT
-Received: from eur03-db5-obe.outbound.protection.outlook.com (mail-db5eur03lp2059.outbound.protection.outlook.com [104.47.10.59])
-        by mx0a-0039f301.pphosted.com with ESMTP id 32vh5jksw4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Aug 2020 15:11:01 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L2tpb5Q/ufwkpfOQdAJhsdxj4z0zFcKvYHyw0ceL9yLBpdmjPQL5xD+5XTIwZt80prgxt44M0RRBZiXj++H7lmqu894SvqQEKWU+63QjPwc/dWAjtcj+S/OQ4E/+hlU0KKyYrnk41ULswv7HjR25OTwQLTfbGK34CGK9LTWNILKtSCNKaG44/t1TvnanfPM8Rb8rZUETQghzr4msGxqKVOmS8CIR621yV7lPdkcIIhZKsxAgyan6SMzmvOOftFbBikYBgnV3e5TfEq2ZirfbBWs/myR1vwA1YXR8//iGAXnrM7dzDj2nTIbJaGLEIubo2/hf0V6WKaTX2XMSFNK+8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VbT7E3FnZGjpsellB1VJc0QjmMvxVvvNsgmOtXFlCtQ=;
- b=BW2OA4dtdpW9vYidmO6VPyr6E0yU1pp5kAtgQKkeFMShBcQ6AgklmXRv7WpEGQqk2HGGp5zsAlXC8zYauz4MVvfxklOsatNvDJ4Gh5XHWbrHGa+uh1tCRQXTqad/CEEKukj9lTrG5dqC2HngnEmm0tYhQyy3Pfh9ShC3oPcM+MbNaqwgx73wb/TMDkUIkxI4g2WCJQydafGn8+f+7mHRdioRB01jI/lVjJPeW9VbRLIz/LDe0JHBlxkw2arEqCYQEV0OTwUh6Q26Nxw+OrmPlaIoNNEcf0NTiTtd+OOGTQrHs4FkBDFsD93JzkDSzcUfLreVpSSvUJ/YWARoFwg2tA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
- dkim=pass header.d=epam.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VbT7E3FnZGjpsellB1VJc0QjmMvxVvvNsgmOtXFlCtQ=;
- b=t6MCFvMTEsK8ApQ2twcRHGAUlcTPwJVfF7TcP/9ttKtzeAzSuidsCaH9r60FU0RokiPloYpDKMWtjLYn0BOQhi1/3LEOBhzqp3qAEPrqfC/L+ubAC3gxWuiJGrLZG4SGrE5W8+vElcWKEhTqyvtmtdKY8upBOaP02FGiXCqm7aeQ1rvpPNTKPuzJGMkfGhwbCOo3w90MsB8x28Cv1fnn5gKR/7N0/hZLOLLwIjuTyuzHt2ubSiE7wVLyujMPRlYeez3MiQ/fopzuYu1i98ngeptSU1Q5qPjFTmQaVk0A4vDGl3R11Y5uP1/c3xNkgwXQFuHkwCE6HYTXnY2lme7CPw==
-Received: from AM7PR03MB6325.eurprd03.prod.outlook.com (2603:10a6:20b:13c::18)
- by AM6PR0302MB3239.eurprd03.prod.outlook.com (2603:10a6:209:1c::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.16; Thu, 13 Aug
- 2020 15:10:58 +0000
-Received: from AM7PR03MB6325.eurprd03.prod.outlook.com
- ([fe80::1c2:462c:58b8:7ee9]) by AM7PR03MB6325.eurprd03.prod.outlook.com
- ([fe80::1c2:462c:58b8:7ee9%7]) with mapi id 15.20.3283.018; Thu, 13 Aug 2020
- 15:10:58 +0000
-From:   Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
-To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        Oleksandr Andrushchenko <andr2000@gmail.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>
-CC:     "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
-Subject: Re: [PATCH v2 0/5] Fixes and improvements for Xen pvdrm
-Thread-Topic: [PATCH v2 0/5] Fixes and improvements for Xen pvdrm
-Thread-Index: AQHWcTn137mCP9TL7kicuRLSt2qi/qk2IyIAgAACToA=
-Date:   Thu, 13 Aug 2020 15:10:58 +0000
-Message-ID: <5a71bca8-df90-a239-6a5e-cbc9af30771e@epam.com>
-References: <20200813062113.11030-1-andr2000@gmail.com>
- <366f5998-4346-6140-b133-23c9abef6589@suse.com>
-In-Reply-To: <366f5998-4346-6140-b133-23c9abef6589@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=epam.com;
-x-originating-ip: [185.199.97.5]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3f6f3d8c-cff3-4472-e294-08d83f9b159e
-x-ms-traffictypediagnostic: AM6PR0302MB3239:
-x-microsoft-antispam-prvs: <AM6PR0302MB3239E7AA5C98D2E1D0F6F988E7430@AM6PR0302MB3239.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: s/7GZrRMyRp3x1pOd/nbYaE3oW11IM/7BmLXFYIPZPoH3o+X1KeIhi72CLJSK240actFF5fD0Y5rbc+xS3Fl6SdcppWYVihuUMQf5xT4QYOpGpk1uNvSZxB9i2UHfE15J8rHzh8A/osNCdTZ9Lug7x1k4PS+yyHX3Pni5VW0Vb/LRicqsto31papkzWhrFFzm900dQTWuuWLrf55aFfo1K954xY888ptDKhdWUgXPEb3HScAJERsgRwaXfTAVTC+HWrInRkvJZD0yru8HIY+QmOvvtsVyF4iYcSK7yeXy8rLK1ViAFtGadVPVbLCmvIMj6HSGyK5EnWef37TzGOoQuozFYsGXc6aSznlNWjpFjS9G+ngNtu4EwWp2awFMtJK
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR03MB6325.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(376002)(396003)(39860400002)(316002)(54906003)(110136005)(4326008)(8936002)(6512007)(31686004)(71200400001)(8676002)(7416002)(478600001)(64756008)(26005)(31696002)(186003)(4744005)(86362001)(6486002)(2906002)(2616005)(66946007)(36756003)(76116006)(66556008)(6506007)(53546011)(66446008)(66476007)(5660300002)(17423001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: vcvXPYC0pdIEErRqfvgFP4YjLHF0ehENmsA4/+0lbZnRNiKY2IxSkx0zG0VPiXwt17EakE8aJgmVrY0wOUhj5DEpWiTm2r9z1ToPMEOtiAcix0kMzPyh1kADstq1Hur//e89W1VX92H+UUmvUMdEq/Fv2lMX/+DkLG5zoC9/V/kNzh1Pigs9ogrYHjH3r/amXarM4sWpB8KI7yicuK0imZsPJIDpVzeiNlI6qioGzDX/FnFrzUeP0sUBEuLzcwPqJgCjiZL9gGNIusZkjIosidib7q3yxZZu31udysPOBgSkLJZVM7l9/mcg4GVBhko15YZAvpUDlE3V4TvzVXJ6aK9I07sO8gzU19L7wdSTNIIMkRtIWc8LBQx+ZqORtiGUHFmRyrNOpoTm9FZJacqXzj1cLECQyoWolWhhkpUuh1odoeU4fL0TVqdxbMRWcYun8Uur+BYvvdM9eWEr8fppzBu0mpCuUKla/QRANfGjgv5Vs2wRsG3altz7fGgo/phQPJT8f0DjTyvUPIyxYOzFsjXUzRFV9StKvjchR49aIId4G0IrpvJpYqv1F+izz3wPbO2+dXXK9IWPeKComZ8gKX6R9DFgZeaZqYnTtvCxqEr8AoW3HIruUwo18xba0BeyXoKozXFtslwk59WCyD5UVQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <67608A17853B3D4E8758991A02FB6D54@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 13 Aug 2020 11:10:18 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B34C061757;
+        Thu, 13 Aug 2020 08:10:18 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id c80so4994682wme.0;
+        Thu, 13 Aug 2020 08:10:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nuLP0ucN1jD0A5G/rbjKQ0IWTQZyFeBE7AA1MgUnySo=;
+        b=uHdjMt59zx0NWygGT00vboekxP3muBYPVwS1Set3BcG6z8f9Lx3CEiTDhCKPM9Fj7d
+         H7Zghzlo38jK3BNe6Q/V7mEVtBr96Qd6pWv5YN+FQsLmKLzb+BlOtjhpLdyO7zcNasUt
+         Py62w87WtnJ8ls6D/5boqyKOaxS1li243OWJHj/gZv6ssIWfKoSLql/plqXYDPQEamXA
+         kWGIOT1W3eFYxHLOeKNUv8Ys9xi9IEJYuFhvnN4Wt4dpfnAnzIzV6XdJXgAqHTT1liH2
+         vG81U09rx74e6TuMs+pYpJhfXRlGxsHZasQ6K4UUntka++VMsPreF97mb6jnlEVEK+lk
+         FnZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nuLP0ucN1jD0A5G/rbjKQ0IWTQZyFeBE7AA1MgUnySo=;
+        b=k22Ro+WzXPadftnW/cCISOX+LOpPAzEa51zAoV1LcN54Nw1x4tjy9Q1SBzUV2TqIcB
+         6LlGAZTMHVGXmhgDjK1R1f3VsB5qWG/hGjE6itlwbOtEK+/1yYKJ4YUM1LouaqPWLHyc
+         ff++mPoxmHcXssHZ77gL5uVT6vhfbh78xTFUb9D/viSJx2//aSzyDU22e1W2dq657rcL
+         F5keJJiBg4tFbxvywaPF7Pz4LAx+eFp4+PkI69ftUxbmQOWkZGKlyETBad4Kc54aaHaP
+         ka34KAmQPswvp3defauWXngZaDUJ1udIy73a/TKUVz1z8IKzNFkCSQFC8Phco+9frDil
+         +2Xg==
+X-Gm-Message-State: AOAM531cgzabqy1cAIAryDPUx5KXPugcoYVAw4OBUrMdNGoYvtOQ4Bc9
+        6LOlCCrh1x468VkKcr051mF/2DI7ErBtCdB0Bm4=
+X-Google-Smtp-Source: ABdhPJwyUB412yvyp91ddO2jHXQbWOlzquN4PZJB8fEibTvHbohj1VvNGz9vxVColKj4PFzWEixM2vzufgv+z0SGwwo=
+X-Received: by 2002:a1c:4c17:: with SMTP id z23mr5049269wmf.49.1597331416969;
+ Thu, 13 Aug 2020 08:10:16 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: epam.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR03MB6325.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f6f3d8c-cff3-4472-e294-08d83f9b159e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Aug 2020 15:10:58.6815
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sW7sNcl4A0S5smUsAfoJB+gTZiYSs0BOwv0FArFl7quZC8r7lJyiAhIF/bL1qX2GkMUmv5tJgslFaTB2p5IqgR/C//QkSTIic44M5b6NThiUmZ+rbfcxckWglQzrBwyg
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0302MB3239
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-13_14:2020-08-13,2020-08-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=933
- adultscore=0 priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
- suspectscore=0 mlxscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008130114
+References: <20200810222657.1841322-1-jcrouse@codeaurora.org>
+ <20200810222657.1841322-5-jcrouse@codeaurora.org> <20200813131412.GB10256@willie-the-truck>
+In-Reply-To: <20200813131412.GB10256@willie-the-truck>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 13 Aug 2020 08:11:02 -0700
+Message-ID: <CAF6AEGuCubnXu7FKuCHPx0Bow4O7M8NSBThHDusev7xX6v2zQQ@mail.gmail.com>
+Subject: Re: [Freedreno] [PATCH v12 04/13] iommu: Add a domain attribute to
+ get/set a pagetable configuration
+To:     Will Deacon <will@kernel.org>
+Cc:     Jordan Crouse <jcrouse@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiA4LzEzLzIwIDY6MDIgUE0sIErDvHJnZW4gR3Jvw58gd3JvdGU6DQo+IE9uIDEzLjA4LjIw
-IDA4OjIxLCBPbGVrc2FuZHIgQW5kcnVzaGNoZW5rbyB3cm90ZToNCj4+IEZyb206IE9sZWtzYW5k
-ciBBbmRydXNoY2hlbmtvIDxvbGVrc2FuZHJfYW5kcnVzaGNoZW5rb0BlcGFtLmNvbT4NCj4NCj4g
-U2VyaWVzIHB1c2hlZCB0bzoNCj4NCj4geGVuL3RpcC5naXQgZm9yLWxpbnVzLTUuOQ0KPg0KVGhl
-IHRvcCBwYXRjaCBoYXMgc3RyYW5nZSB0aXRsZSB0aG91Z2g6DQoNCiJTdWJqZWN0OiBbUEFUQ0gg
-djIgNS81XSBkcm0veGVuLWZyb250OiBQYXNzIGR1bWIgYnVmZmVyIGRhdGEgb2Zmc2V0IHRvIHRo
-ZSBiYWNrZW5kIg0KDQo+DQo+IEp1ZXJnZW4NCg0KVGhhbmsgeW91LA0KDQpPbGVrc2FuZHINCg==
+On Thu, Aug 13, 2020 at 6:14 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Mon, Aug 10, 2020 at 04:26:48PM -0600, Jordan Crouse wrote:
+> > Add domain attribute DOMAIN_ATTR_PGTABLE_CFG. This will be used by
+> > arm-smmu to share the current pagetable configuration with the
+> > leaf driver and to allow the leaf driver to set up a new pagetable
+> > configuration under certain circumstances.
+> >
+> > Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> > ---
+> >
+> >  include/linux/iommu.h | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> > index fee209efb756..995ab8c47ef2 100644
+> > --- a/include/linux/iommu.h
+> > +++ b/include/linux/iommu.h
+> > @@ -118,6 +118,7 @@ enum iommu_attr {
+> >       DOMAIN_ATTR_FSL_PAMUV1,
+> >       DOMAIN_ATTR_NESTING,    /* two stages of translation */
+> >       DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE,
+> > +     DOMAIN_ATTR_PGTABLE_CFG,
+> >       DOMAIN_ATTR_MAX,
+> >  };
+>
+> Nobody other than the adreno gpu uses this, so can we avoid exposing it
+> in the IOMMU API, please? Given that you have a reference to the adreno
+> GPU device in the SMMU implementation code thanks to .alloc_context_bank(),
+> can you squirrel some function pointers away in the driver data (i.e. with
+> dev_set_drvdata()) instead?
+>
+
+Hmm, we are already using drvdata on the gpu side, and it looks like
+arm-smmu is also using it.  Could we get away with stashing an extra
+'void *' in iommu_domain itself?
+
+Or alternatively, if we had a is_arm_smmu_domain(domain), then we
+could just directly call some exported private fxns with the domain
+ptr (which could then verify that the domain is actually an
+arm_smmu_domain, and then from there that the smmu is indeed
+qcom,adreno-smmu, to keep things sane)
+
+BR,
+-R
