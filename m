@@ -2,217 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F77243C85
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AAA2243C8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 17:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgHMPcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 11:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726334AbgHMPb7 (ORCPT
+        id S1726769AbgHMPdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 11:33:49 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35637 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726732AbgHMPdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 11:31:59 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C6EC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 08:31:58 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id f5so2772216plr.9
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 08:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=1LEusT9oa0L+q3BIsPrMMq4pG+6qT2ZmHiLBsZn4HGE=;
-        b=FGbnnhSH6cfKYN3u4+YOy8mBz3vPAnoWPkXX0A8ALZqSEW7UkJRXmyNT3Rey0B5EbS
-         D0wLgqb7vd7CXUxNgq0Ffv3zwFFbcyruuZNss8A+6md3fCyAZr9GZSlC+7l8RBjSuRob
-         217twVJaBLKu6evVJ1ntryGbbJJ8TXo5s+kV8DH2bT9biH7dw2KzM9/AbIAlP1QSvjdT
-         BVUByhWWjshyUXgIYvJFrWe+Txrf/CRgIzA/xQ06yPcpKSONbhQPEp2KaR5rZRczzZH4
-         Fls7ABA+AW/6Y3rB93hLkeL3CIYWEOYQJKz69AqKs6rDabIUtSsg99ZVs1ebenBEgkum
-         4sqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=1LEusT9oa0L+q3BIsPrMMq4pG+6qT2ZmHiLBsZn4HGE=;
-        b=moB1/uUCxuPanYJAVZHEDTuZz2zS59FiCsb0vn1erqv2M5m/SCm3l89n5KW3F4YfGX
-         /oHcG74vQFMdt2qbUqkNUDVJfX5/de1ol/UvpSzewvkoom2fBLtTN7UyUTK9GYV54aDh
-         I33VJTA/We6yLTJyMPeGIty/em01niYmYgxavSm4nTsAjb1Znbt2L+WKfhx6Tl0fW8Oc
-         gY0s/DJqmbQ0Ma1V9M4yDtdHfuneRhTnuqp1KDjosNz1g1ACEHD0whEqCp24eZWqPXaF
-         Cdza1153j19Su+/MvH3QtmkHu5OxKvXyD0Kogyf/8JrBuUb71MekqK0jOIn3HiLh/qQe
-         rVbg==
-X-Gm-Message-State: AOAM530zOE2YazDdi/DhBxKV1kmUcM4RIuhApc/6HP2rK6PvrSt600qy
-        +dJqMmu713X+NAytb/InejPJ84138t4=
-X-Google-Smtp-Source: ABdhPJxQDSrZyCASJdEXe4r1OePxEki+gNmooht0uyTMPChsOUS8l0VZpXPidd7yAIoUVJa9u5yf7w==
-X-Received: by 2002:a17:902:40a:: with SMTP id 10mr4553478ple.260.1597332716468;
-        Thu, 13 Aug 2020 08:31:56 -0700 (PDT)
-Received: from inforce-server-Z9PE-D8-WS.routereb3c90.com ([106.51.138.45])
-        by smtp.gmail.com with ESMTPSA id s8sm5532689pju.54.2020.08.13.08.31.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 13 Aug 2020 08:31:55 -0700 (PDT)
-From:   Vinay Simha BN <simhavcs@gmail.com>
-Cc:     Vinay Simha BN <simhavcs@gmail.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] drm/bridge/tc358775: Fixes bus formats read
-Date:   Thu, 13 Aug 2020 21:01:26 +0530
-Message-Id: <1597332687-23938-1-git-send-email-simhavcs@gmail.com>
-X-Mailer: git-send-email 2.7.4
-To:     unlisted-recipients:; (no To-header on input)
+        Thu, 13 Aug 2020 11:33:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597332825;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=U+DZxetMKI4jVQKv/cLX0z4HNCC6l+3oyJGtLYHcX8o=;
+        b=XAWewq3B9ffElLPLK8aqXEdtA0lEYNv0TEcNPEvzuPpuKkqxxXovnF9IBkamQqxqnwOH5d
+        vbaiYgvvqm0SkxTxkI0w1i/SA50l6SAEi0TPTa0z0WXMiD5c3dNd4H8VCRVQTV4MerO89+
+        qCIVor4oyVizlmurC+dje/EROwsSDUU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-381-rFiyPInxM7CpmkqnLbRD4g-1; Thu, 13 Aug 2020 11:33:19 -0400
+X-MC-Unique: rFiyPInxM7CpmkqnLbRD4g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DDC1910060C3;
+        Thu, 13 Aug 2020 15:33:17 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-113-140.ams2.redhat.com [10.36.113.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C3F4360C04;
+        Thu, 13 Aug 2020 15:33:02 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Jann Horn <jannh@google.com>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-fsdevel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <asarai@suse.de>,
+        io-uring@vger.kernel.org
+Subject: [PATCH v4 0/3] io_uring: add restrictions to support untrusted
+ applications and guests
+Date:   Thu, 13 Aug 2020 17:32:51 +0200
+Message-Id: <20200813153254.93731-1-sgarzare@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- atomic_check removed
-- video data input and output formats added
-- bus formats read from drm_bridge_state.output_bus_cfg.format
-  and .atomic_get_input_bus_fmts() instead of connector
+v4:
+ - rebased on top of io_uring-5.9
+ - fixed io_uring_enter() exit path when ring is disabled
 
-Signed-off-by: Vinay Simha BN <simhavcs@gmail.com>
+v3: https://lore.kernel.org/io-uring/20200728160101.48554-1-sgarzare@redhat.c=
+om/
+RFC v2: https://lore.kernel.org/io-uring/20200716124833.93667-1-sgarzare@redh=
+at.com
+RFC v1: https://lore.kernel.org/io-uring/20200710141945.129329-1-sgarzare@red=
+hat.com
 
----
-v1:
- * Laurent Pinchart review comments incorporated
-   drm_bridge_state.output_bus_cfg.format
-   instead of connector
-v2:
- * Laurent Pinchart review comments incorporated
-   atomic_check removed
-   video data input and output formats added
----
- drivers/gpu/drm/bridge/tc358775.c | 75 ++++++++++++++++++++++++++++++---------
- 1 file changed, 58 insertions(+), 17 deletions(-)
+Following the proposal that I send about restrictions [1], I wrote this series
+to add restrictions in io_uring.
 
-diff --git a/drivers/gpu/drm/bridge/tc358775.c b/drivers/gpu/drm/bridge/tc358775.c
-index 7da15cd..58f87ec 100644
---- a/drivers/gpu/drm/bridge/tc358775.c
-+++ b/drivers/gpu/drm/bridge/tc358775.c
-@@ -271,6 +271,20 @@ struct tc_data {
- 	struct gpio_desc	*stby_gpio;
- 	u8			lvds_link; /* single-link or dual-link */
- 	u8			bpc;
-+	u32			output_bus_fmt;
-+};
-+
-+static const u32 tc_lvds_in_bus_fmts[] = {
-+	MEDIA_BUS_FMT_RGB565_1X16,
-+	MEDIA_BUS_FMT_RGB666_1X18,
-+	MEDIA_BUS_FMT_RGB666_1X24_CPADHI,
-+	MEDIA_BUS_FMT_RBG888_1X24,
-+};
-+
-+static const u32 tc_lvds_out_bus_fmts[] = {
-+	MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA,
-+	MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
-+	MEDIA_BUS_FMT_RGB666_1X7X3_SPWG,
- };
- 
- static inline struct tc_data *bridge_to_tc(struct drm_bridge *b)
-@@ -359,19 +373,6 @@ static void d2l_write(struct i2c_client *i2c, u16 addr, u32 val)
- 			ret, addr);
- }
- 
--/* helper function to access bus_formats */
--static struct drm_connector *get_connector(struct drm_encoder *encoder)
--{
--	struct drm_device *dev = encoder->dev;
--	struct drm_connector *connector;
--
--	list_for_each_entry(connector, &dev->mode_config.connector_list, head)
--		if (connector->encoder == encoder)
--			return connector;
--
--	return NULL;
--}
--
- static void tc_bridge_enable(struct drm_bridge *bridge)
- {
- 	struct tc_data *tc = bridge_to_tc(bridge);
-@@ -380,7 +381,10 @@ static void tc_bridge_enable(struct drm_bridge *bridge)
- 	u32 val = 0;
- 	u16 dsiclk, clkdiv, byteclk, t1, t2, t3, vsdelay;
- 	struct drm_display_mode *mode;
--	struct drm_connector *connector = get_connector(bridge->encoder);
-+	struct drm_bridge_state *state =
-+			drm_priv_to_bridge_state(bridge->base.state);
-+
-+	tc->output_bus_fmt = state->output_bus_cfg.format;
- 
- 	mode = &bridge->encoder->crtc->state->adjusted_mode;
- 
-@@ -451,14 +455,13 @@ static void tc_bridge_enable(struct drm_bridge *bridge)
- 	d2l_write(tc->i2c, LVPHY0, LV_PHY0_PRBS_ON(4) | LV_PHY0_ND(6));
- 
- 	dev_dbg(tc->dev, "bus_formats %04x bpc %d\n",
--		connector->display_info.bus_formats[0],
-+		tc->output_bus_fmt,
- 		tc->bpc);
- 	/*
- 	 * Default hardware register settings of tc358775 configured
- 	 * with MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA jeida-24 format
- 	 */
--	if (connector->display_info.bus_formats[0] ==
--		MEDIA_BUS_FMT_RGB888_1X7X4_SPWG) {
-+	if (tc->output_bus_fmt == MEDIA_BUS_FMT_RGB888_1X7X4_SPWG) {
- 		/* VESA-24 */
- 		d2l_write(tc->i2c, LV_MX0003, LV_MX(LVI_R0, LVI_R1, LVI_R2, LVI_R3));
- 		d2l_write(tc->i2c, LV_MX0407, LV_MX(LVI_R4, LVI_R7, LVI_R5, LVI_G0));
-@@ -590,6 +593,40 @@ static int tc358775_parse_dt(struct device_node *np, struct tc_data *tc)
- 	return 0;
- }
- 
-+static u32 *
-+tc_bridge_get_input_bus_fmts(struct drm_bridge *bridge,
-+			     struct drm_bridge_state *bridge_state,
-+			     struct drm_crtc_state *crtc_state,
-+			     struct drm_connector_state *conn_state,
-+			     u32 output_fmt,
-+			     unsigned int *num_input_fmts)
-+{
-+	u32 *input_fmts = NULL;
-+	u8 i;
-+
-+	*num_input_fmts = 0;
-+
-+	for (i = 0 ; i < ARRAY_SIZE(tc_lvds_out_bus_fmts) ; ++i) {
-+		if (output_fmt == tc_lvds_out_bus_fmts[i])
-+			break;
-+	}
-+
-+	if (i == ARRAY_SIZE(tc_lvds_out_bus_fmts))
-+		return NULL;
-+
-+	*num_input_fmts = ARRAY_SIZE(tc_lvds_in_bus_fmts);
-+
-+	input_fmts = kcalloc(*num_input_fmts, ARRAY_SIZE(tc_lvds_in_bus_fmts),
-+			     GFP_KERNEL);
-+	if (!input_fmts)
-+		return NULL;
-+
-+	for (i = 0; i < ARRAY_SIZE(tc_lvds_in_bus_fmts); ++i)
-+		input_fmts[i] = tc_lvds_in_bus_fmts[i];
-+
-+	return input_fmts;
-+}
-+
- static int tc_bridge_attach(struct drm_bridge *bridge,
- 			    enum drm_bridge_attach_flags flags)
- {
-@@ -639,6 +676,10 @@ static int tc_bridge_attach(struct drm_bridge *bridge,
- }
- 
- static const struct drm_bridge_funcs tc_bridge_funcs = {
-+	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
-+	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
-+	.atomic_reset = drm_atomic_helper_bridge_reset,
-+	.atomic_get_input_bus_fmts = tc_bridge_get_input_bus_fmts,
- 	.attach = tc_bridge_attach,
- 	.pre_enable = tc_bridge_pre_enable,
- 	.enable = tc_bridge_enable,
--- 
-2.7.4
+I also wrote helpers in liburing and a test case (test/register-restrictions.=
+c)
+available in this repository:
+https://github.com/stefano-garzarella/liburing (branch: io_uring_restrictions)
+
+Just to recap the proposal, the idea is to add some restrictions to the
+operations (sqe opcode and flags, register opcode) to safely allow untrusted
+applications or guests to use io_uring queues.
+
+The first patch changes io_uring_register(2) opcodes into an enumeration to
+keep track of the last opcode available.
+
+The second patch adds IOURING_REGISTER_RESTRICTIONS opcode and the code to
+handle restrictions.
+
+The third patch adds IORING_SETUP_R_DISABLED flag to start the rings disabled,
+allowing the user to register restrictions, buffers, files, before to start
+processing SQEs.
+
+Comments and suggestions are very welcome.
+
+Thank you in advance,
+Stefano
+
+[1] https://lore.kernel.org/io-uring/20200609142406.upuwpfmgqjeji4lc@steredha=
+t/
+
+Stefano Garzarella (3):
+  io_uring: use an enumeration for io_uring_register(2) opcodes
+  io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
+  io_uring: allow disabling rings during the creation
+
+ fs/io_uring.c                 | 160 ++++++++++++++++++++++++++++++++--
+ include/uapi/linux/io_uring.h |  60 ++++++++++---
+ 2 files changed, 203 insertions(+), 17 deletions(-)
+
+--=20
+2.26.2
 
