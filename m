@@ -2,170 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC04243477
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE03F24347F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgHMHKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 03:10:42 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:35388 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726042AbgHMHKl (ORCPT
+        id S1726691AbgHMHMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 03:12:03 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:41382 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726144AbgHMHMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 03:10:41 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 07D7ARmtC012850, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 07D7ARmtC012850
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 13 Aug 2020 15:10:27 +0800
-Received: from RTEXMB05.realtek.com.tw (172.21.6.98) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 13 Aug 2020 15:10:27 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 13 Aug 2020 15:10:27 +0800
-Received: from RTEXMB04.realtek.com.tw ([fe80::941:6388:7d34:5c44]) by
- RTEXMB04.realtek.com.tw ([fe80::941:6388:7d34:5c44%3]) with mapi id
- 15.01.1779.005; Thu, 13 Aug 2020 15:10:27 +0800
-From:   =?big5?B?VFlfQ2hhbmdbsWmkbLZoXQ==?= <tychang@realtek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "linux-realtek-soc@lists.infradead.org" 
-        <linux-realtek-soc@lists.infradead.org>,
-        "afaerber@suse.de" <afaerber@suse.de>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 5/8] dt-bindings: pinctrl: realtek: Add Realtek DHC SoC rtd1295
-Thread-Topic: [PATCH v2 5/8] dt-bindings: pinctrl: realtek: Add Realtek DHC
- SoC rtd1295
-Thread-Index: AQHWW6s/cocTepA4Q0aQyDC7oLyp9ak1yfuA
-Date:   Thu, 13 Aug 2020 07:10:27 +0000
-Message-ID: <7208fa8fa9b4418589bf8c4aae09ca6d@realtek.com>
-References: <20200716023338.14922-1-tychang@realtek.com>
- <20200716023338.14922-6-tychang@realtek.com> <20200716195645.GA2742256@bogus>
-In-Reply-To: <20200716195645.GA2742256@bogus>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.181.134]
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        Thu, 13 Aug 2020 03:12:02 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07D78QlD004458;
+        Thu, 13 Aug 2020 00:11:45 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=NLKHHLtcHycL7y0952artV7D3TdCAL8qifpbwRHEavQ=;
+ b=iCnfxsF2Zr/SM3IMT51eio5/sL2AzVdTTdBfnvNZjoly3zbUbYl5Qk+NtN9PARs5GIj1
+ VLwQVyZgwc/WR50+NM8549Z6Zll2Z47bmmU22C4lUJVNf6vkjw/y0k0vDs5RUX7UwRvd
+ Y4QCB0w3JvOgSmUY5yITwjYYjp3WvhgyAwMAeugihjVbjQ4yAxeXLHOjxii8CyBjORkQ
+ BoVo1eCWjXh5gRfCoI6YVr2HVURL65dEthnKVHWvvxobR1UQSKGx5okiYHRpJbxMeWzw
+ 0fODZUUIWAcfyPf96I/tFsC2SD7X6KDga5OJ7SAPsbTV8J7DR9okn4Qbimev3fM18+nC 6g== 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2170.outbound.protection.outlook.com [104.47.59.170])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 32srkw8dty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Aug 2020 00:11:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cmg5AZEGlxa4nncbLfCK3Z9/2v4vCKNDJJbLpAYszlgjHdTyUi1HyDeEj6mVfdhgM3CpLrJ79CYsOuIMeqAV3YDgKdktZSDkkvCIe4DAMFjb2vbtOgFlrx0i2epUqgbFRUTc6ja2lcKpb1GjIEA1CJiEkVKMewg1fZytB//ak1rg2Nj6ORHQXKiWYNT6e/UrMwAc5vPJiOajKVOjSvXg55RLpPYmHxBw1G9jfSfXBJjNJMaGKWzzVXzcLM/r6jkTh4qAFRaia7c+RrqgiS7igGUiboTIFLclU/oF+WJD56tkap7fISeZVRh5K9TcOQanA992Bf4NCo7f4KBklrfHwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NLKHHLtcHycL7y0952artV7D3TdCAL8qifpbwRHEavQ=;
+ b=R1K4bHZVyGXd1fYX+8crnZm39ld7mJlo7+kQQ3qF63kovTtTbAdMNHTxaJlQqy4ldb8/zYwjUaGPtE96nTa14rnRcTx+0PDFVuP1s7/Kiv91grKpBrdISydPkKXo527zihKnNd43HQMbYbYqUU9DRrKqSkrqTxAxSkKgCgUOl2Ze513Nf/dRqVxVZYyObjyWayH1lYFuS2G8HGzHDMTw6+1qSCq5KOSQySWNd5lgJFVCT/ialoyViO8CzgbmB6Z/W96ayH6OyJMs2AlPISojDOnObpatgNwsqRJP5cu1aKs7avxKFe0QOuMo/lSPjYa2HV3+1FkMKiy9KX6XidmZug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 158.140.1.147) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NLKHHLtcHycL7y0952artV7D3TdCAL8qifpbwRHEavQ=;
+ b=riCPLfxNIa1q7zeRctruCdGyNsAGDtwv0uAPTSOXt2RAwa3JDuAL0Abex4YqprlZlvSnFrEFiSavAV6z6ivwILD3sOn3vgX0XlfH3hVotd0p8gNxomRiU2Fw/zbmsZUd4ueC9EYkgzicVjCjNV90LZDl9Z7koJXj3/jOHorhnJM=
+Received: from MWHPR20CA0031.namprd20.prod.outlook.com (2603:10b6:300:ed::17)
+ by BYAPR07MB6151.namprd07.prod.outlook.com (2603:10b6:a03:11f::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.19; Thu, 13 Aug
+ 2020 07:11:41 +0000
+Received: from MW2NAM12FT040.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:300:ed:cafe::c3) by MWHPR20CA0031.outlook.office365.com
+ (2603:10b6:300:ed::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15 via Frontend
+ Transport; Thu, 13 Aug 2020 07:11:41 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
+ smtp.mailfrom=cadence.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none
+ header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
+Received: from sjmaillnx1.cadence.com (158.140.1.147) by
+ MW2NAM12FT040.mail.protection.outlook.com (10.13.180.228) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3283.11 via Frontend Transport; Thu, 13 Aug 2020 07:11:40 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 07D7Bam1031745
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
+        Thu, 13 Aug 2020 00:11:38 -0700
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3; Thu, 13 Aug 2020 09:11:36 +0200
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Thu, 13 Aug 2020 09:11:36 +0200
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 07D7Bamb025936;
+        Thu, 13 Aug 2020 09:11:36 +0200
+Received: (from pawell@localhost)
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 07D7BZBO025935;
+        Thu, 13 Aug 2020 09:11:35 +0200
+From:   Pawel Laszczak <pawell@cadence.com>
+To:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <balbi@kernel.org>
+CC:     <rogerq@ti.com>, <peter.chen@nxp.com>, <weiyongjun1@huawei.com>,
+        <jpawar@cadence.com>, <kurahul@cadence.com>, <sparmar@cadence.com>,
+        Pawel Laszczak <pawell@cadence.com>
+Subject: [PATCH] usb: cdns3: Removes duplicated call to the cdns3_exit_roles function
+Date:   Thu, 13 Aug 2020 09:10:54 +0200
+Message-ID: <20200813071054.25837-1-pawell@cadence.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9e55b736-bbfd-4724-15e9-08d83f582069
+X-MS-TrafficTypeDiagnostic: BYAPR07MB6151:
+X-Microsoft-Antispam-PRVS: <BYAPR07MB6151E7FAE955D6DC997D552DDD430@BYAPR07MB6151.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:619;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JcUMacY/833DyKywzwMjEAz6BnyTpfVroPr5bEvrPSBnnrRO2eO/WQBOScHs0sIVza5lYa7bcMz6RwXfuyFpQMfcNTJDIYyH0kDlxpJerRHYDy2RbKuVxE+mcVkprBcwaoogFXjh0O3Z5/Jb2EqxstXmiT+XCiPJss8ajfc3a2lsFgLFtOacqgMlbELADnxdy3phEKbTZ5T9i+cvYT9hzN0EbcoOlQYmmT7TcdvdWL9m8AC8Njj7LPa+gBlX8BxKTYXfFjZYBSgdgFX2jCLH2wZvurLG36W6NzpwlASojEoej4FDp5Yf6fg6+qJrsBEdKmPtRIjPOKZCtJXWwqIvn6b7ndtc54WNB1D/+1WyrHz5o0Hn76rGeZJY5xeOcXHH9HCrpoB4wl6Fq9aEKTgxdrSzTC3xVSbdMUOaHAFDJgI=
+X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFTY:;SFS:(4636009)(396003)(346002)(376002)(136003)(39860400002)(36092001)(46966005)(86362001)(70586007)(8936002)(336012)(107886003)(83380400001)(36756003)(82310400002)(70206006)(2616005)(426003)(1076003)(26005)(186003)(6666004)(2906002)(316002)(47076004)(7636003)(36906005)(356005)(82740400003)(4326008)(8676002)(110136005)(5660300002)(42186006)(478600001)(54906003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2020 07:11:40.5715
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e55b736-bbfd-4724-15e9-08d83f582069
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: MW2NAM12FT040.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR07MB6151
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-13_04:2020-08-13,2020-08-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 mlxlogscore=706
+ impostorscore=0 mlxscore=0 spamscore=0 clxscore=1015 priorityscore=1501
+ malwarescore=0 lowpriorityscore=0 adultscore=0 suspectscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008130054
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUm9iLA0KDQpUaGFua3MgZm9yIHRoZSByZXZpZXcuDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNz
-YWdlLS0tLS0NCj4gRnJvbTogUm9iIEhlcnJpbmcgPHJvYmhAa2VybmVsLm9yZz4NCj4gU2VudDog
-RnJpZGF5LCBKdWx5IDE3LCAyMDIwIDM6NTcgQU0NCj4gVG86IFRZX0NoYW5nW7FppGy2aF0gPHR5
-Y2hhbmdAcmVhbHRlay5jb20+DQo+IENjOiBsaW51eC1yZWFsdGVrLXNvY0BsaXN0cy5pbmZyYWRl
-YWQub3JnOyBhZmFlcmJlckBzdXNlLmRlOw0KPiBsaW51cy53YWxsZWlqQGxpbmFyby5vcmc7IGxp
-bnV4LWdwaW9Admdlci5rZXJuZWwub3JnOw0KPiBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsg
-bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHYyIDUv
-OF0gZHQtYmluZGluZ3M6IHBpbmN0cmw6IHJlYWx0ZWs6IEFkZCBSZWFsdGVrIERIQyBTb0MNCj4g
-cnRkMTI5NQ0KPiANCj4gT24gVGh1LCBKdWwgMTYsIDIwMjAgYXQgMTA6MzM6MzVBTSArMDgwMCwg
-VFkgQ2hhbmcgd3JvdGU6DQo+ID4gQWRkIGRldmljZSB0cmVlIGJpbmRpbmcgRG9jdW1lbnRhdGlv
-biBmb3IgcnRkMTI5NSBwaW5jdHJsIGRyaXZlci4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFRZ
-IENoYW5nIDx0eWNoYW5nQHJlYWx0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAuLi4vcGluY3RybC9y
-ZWFsdGVrLHJ0ZDEyOTUtcGluY3RybC55YW1sICAgICAgfCAxMjEgKysrKysrKysrKysrKysrKysr
-DQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxMjEgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVhdGUgbW9k
-ZSAxMDA2NDQNCj4gPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGluY3RybC9y
-ZWFsdGVrLHJ0ZDEyOTUtcGluY3RybC55YW1sDQo+ID4NCj4gPiBkaWZmIC0tZ2l0DQo+ID4gYS9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGluY3RybC9yZWFsdGVrLHJ0ZDEyOTUt
-cGluY3RybC55YQ0KPiA+IG1sDQo+ID4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3MvcGluY3RybC9yZWFsdGVrLHJ0ZDEyOTUtcGluY3RybC55YQ0KPiA+IG1sDQo+ID4gbmV3IGZp
-bGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwMDAwMDAuLjhjZDZjZmEyMjgyZQ0KPiA+
-IC0tLSAvZGV2L251bGwNCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3MvcGluY3RybC9yZWFsdGVrLHJ0ZDEyOTUtcGluY3RyDQo+ID4gKysrIGwueWFtbA0KPiA+IEBA
-IC0wLDAgKzEsMTIxIEBADQo+ID4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4w
-LW9ubHkgT1IgQlNELTItQ2xhdXNlKSAlWUFNTCAxLjINCj4gPiArLS0tDQo+ID4gKyRpZDoNCj4g
-PiAraHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvcGluY3RybC9yZWFsdGVrLHJ0ZDEyOTUt
-cGluY3RybC55YW1sIw0KPiA+ICskc2NoZW1hOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvbWV0YS1z
-Y2hlbWFzL2NvcmUueWFtbCMNCj4gPiArDQo+ID4gK3RpdGxlOiBSZWFsdGVrIERIQyBSVEQxMjk1
-IHBpbiBjb250cm9sDQo+ID4gKw0KPiA+ICttYWludGFpbmVyczoNCj4gPiArICAtIEFuZHJlYXMg
-RmFyYmVyIDxhZmFlcmJlckBzdXNlLmRlPg0KPiA+ICsNCj4gPiArcHJvcGVydGllczoNCj4gPiAr
-ICBjb21wYXRpYmxlOg0KPiA+ICsgICAgZW51bToNCj4gPiArICAgICAgLSByZWFsdGVrLHJ0ZDEy
-OTUtaXNvLXBpbmN0cmwNCj4gPiArICAgICAgLSByZWFsdGVrLHJ0ZDEyOTUtc2IyLXBpbmN0cmwN
-Cj4gPiArICAgICAgLSByZWFsdGVrLHJ0ZDEyOTUtZGlzcC1waW5jdHJsDQo+ID4gKyAgICAgIC0g
-cmVhbHRlayxydGQxMjk1LWNyLXBpbmN0cmwNCj4gPiArICByZWc6DQo+ID4gKyAgICBtYXhJdGVt
-czogMQ0KPiA+ICsNCj4gPiArcmVxdWlyZWQ6DQo+ID4gKyAgLSBjb21wYXRpYmxlDQo+ID4gKyAg
-LSByZWcNCj4gPiArDQo+ID4gKyNQSU4gQ09ORklHVVJBVElPTiBOT0RFUw0KPiA+ICtwYXR0ZXJu
-UHJvcGVydGllczoNCj4gPiArICAnLXBpbnMkJzoNCj4gPiArICAgIHR5cGU6IG9iamVjdA0KPiA+
-ICsgICAgZGVzY3JpcHRpb246DQo+ID4gKyAgICAgIFBpbmN0cmwgbm9kZSdzIGNsaWVudCBkZXZp
-Y2VzIHVzZSBzdWJub2RlcyBmb3IgZGVzaXJlZCBwaW4NCj4gY29uZmlndXJhdGlvbi4NCj4gPiAr
-ICAgICAgQ2xpZW50IGRldmljZSBzdWJub2RlcyB1c2UgYmVsb3cgc3RhbmRhcmQgcHJvcGVydGll
-cy4NCj4gPiArICAgIGFsbE9mOg0KPiA+ICsgICAgICAtICRyZWY6ICIvc2NoZW1hcy9waW5jdHJs
-L3BpbmNmZy1ub2RlLnlhbWwiDQo+ID4gKw0KPiA+ICsgICAgcHJvcGVydGllczoNCj4gPiArICAg
-ICAgZ3JvdXBzOg0KPiA+ICsgICAgICAgIGl0ZW1zOg0KPiA+ICsgICAgICAgICAgZW51bTogWyBp
-c29fZ3Bpb18wLCBpc29fZ3Bpb18xLCBpc29fZ3Bpb18yLCBpc29fZ3Bpb18zLA0KPiBpc29fZ3Bp
-b180LA0KPiA+ICsgICAgICAgICAgaXNvX2dwaW9fNSwgaGRtaV9ocGQsIGlzb19ncGlvXzcsIGly
-X3J4LCBpcl90eCwgdXIwX3J4LA0KPiA+ICsgICAgICAgICAgdXIwX3R4LCB1cjFfcngsIHVyMV90
-eCwgdXIxX2N0c19uLCB1cjFfcnRzX24sIGkyY19zY2xfMCwNCj4gPiArICAgICAgICAgIGkyY19z
-ZGFfMCwgaTJjX3NjbF8xLCBpMmNfc2RhXzEsIGkyY19zY2xfNiwgaXNvX2dwaW9fMjEsDQo+ID4g
-KyAgICAgICAgICBpc29fZ3Bpb18yMiwgaXNvX2dwaW9fMjMsIGlzb19ncGlvXzI0LCBpc29fZ3Bp
-b18yNSwNCj4gPiArICAgICAgICAgIGkyY19zZGFfNiwgZXRuX2xlZF9saW5rLCBldG5fbGVkX3J4
-dHgsIG5hdF9sZWRfMCwNCj4gPiArICAgICAgICAgIG5hdF9sZWRfMSwgbmF0X2xlZF8yLCBuYXRf
-bGVkXzMsIGlzb19ncGlvXzMzLA0KPiA+ICsgICAgICAgICAgaXNvX2dwaW9fMzQsIHB3bV8yM19s
-b2MwLCBwd21fMDFfbG9jMCwgcHdtXzIzX2xvYzEsDQo+ID4gKyAgICAgICAgICBwd21fMDFfbG9j
-MSwgZWp0YWdfYXZjcHVfbG9jLCB1cjJfbG9jLCBpMmMwLCBpMmMxLA0KPiA+ICsgICAgICAgICAg
-aTJjNiwgdWFydDAsIHVhcnQxLCB1YXJ0Ml8wLCB1YXJ0Ml8xLCBncGlvXzAsIGdwaW9fMSwNCj4g
-PiArICAgICAgICAgIGdwaW9fMiwgZ3Bpb18zLCBncGlvXzQsIGdwaW9fNSwgZ3Bpb182LCBncGlv
-XzcsIGdwaW9fOCwNCj4gPiArICAgICAgICAgIGdwaW9fOSwgdHAxX3N5bmMsIGkyY19zY2xfNCwg
-aTJjX3NkYV80LCBpMmNfc2NsXzUsDQo+ID4gKyAgICAgICAgICBpMmNfc2RhXzUsIHVzYl9pZCwg
-c2Vuc29yX2Nrb18wLCBzZW5zb3JfY2tvXzEsIHNlbnNvcl9yc3QsDQo+ID4gKyAgICAgICAgICBz
-ZW5zb3Jfc3RiXzAsIHNlbnNvcl9zdGJfMSwgdHAwX2RhdGEsIHRwMF9jbGssIHRwMF92YWxpZCwN
-Cj4gPiArICAgICAgICAgIHRwMF9zeW5jLCB0cDFfZGF0YSwgdHAxX2NsaywgdHAxX3ZhbGlkLCBy
-Z21paTBfdHhjLA0KPiA+ICsgICAgICAgICAgcmdtaWkwX3R4X2N0bCxyZ21paTBfdHhkXzAsIHJn
-bWlpMF90eGRfMSwgcmdtaWkwX3R4ZF8yLA0KPiA+ICsgICAgICAgICAgcmdtaWkwX3R4ZF8zLCBy
-Z21paTBfcnhjLCByZ21paTBfcnhfY3RsLCByZ21paTBfcnhkXzAsDQo+ID4gKyAgICAgICAgICBy
-Z21paTBfcnhkXzEsIHJnbWlpMF9yeGRfMiwgcmdtaWkwX3J4ZF8zLCByZ21paTBfbWRpbywNCj4g
-PiArICAgICAgICAgIHJnbWlpMF9tZGMsIHJnbWlpMV90eGMsIHJnbWlpMV90eF9jdGwsIHJnbWlp
-MV90eGRfMCwNCj4gPiArICAgICAgICAgIHJnbWlpMV90eGRfMSwgcmdtaWkxX3R4ZF8yLCByZ21p
-aTFfdHhkXzMsIHJnbWlpMV9yeGMsDQo+ID4gKyAgICAgICAgICByZ21paTFfcnhfY3RsLCByZ21p
-aTFfcnhkXzAsIHJnbWlpMV9yeGRfMSwgcmdtaWkxX3J4ZF8yLA0KPiA+ICsgICAgICAgICAgcmdt
-aWkxX3J4ZF8zLCBoaWZfbG9jLCBlanRhZ19zY3B1X2xvYywgc2ZfZW4sIHRwMF9sb2MsDQo+ID4g
-KyAgICAgICAgICB0cDFfbG9jLCBzcGRpZiwgZG1pY19jbGssIGRtaWNfZGF0YSwgYW9fbHJjaywg
-YW9fYmNrLA0KPiA+ICsgICAgICAgICAgYW9jaywgYW9fc2RfMCwgYW9fc2RfMSwgYW9fc2RfMiwg
-YW9fc2RfMywgbmZfY2xlLA0KPiA+ICsgICAgICAgICAgbmZfYWxlLCBuZl9yZF9uLCBuZl93cl9u
-LCBuZl9yZHksIG5mX2RkXzcsIG5mX2RkXzYsDQo+ID4gKyAgICAgICAgICBuZl9kZF81LCBuZl9k
-ZF80LCBuZl9kZF8zLCBuZl9kZF8yLCBuZl9kZF8xLCBuZl9kZF8wLA0KPiA+ICsgICAgICAgICAg
-bmZfZHFzLCBuZl9jZV9uXzAsIG5mX2NlX25fMSwgZW1tY19kZF9zYiwgbW1jX2NtZCwNCj4gPiAr
-ICAgICAgICAgIG1tY19jbGssIG1tY193cCwgbW1jX2NkLCBtbWNfZGF0YV8wLCBtbWNfZGF0YV8x
-LA0KPiA+ICsgICAgICAgICAgbW1jX2RhdGFfMiwgbW1jX2RhdGFfMywgc2Rpb19jbWQsIHNkaW9f
-Y2xrLCBzZGlvX2RhdGFfMCwNCj4gPiArICAgICAgICAgIHNkaW9fZGF0YV8xLCBzZGlvX2RhdGFf
-Miwgc2Rpb19kYXRhXzMsIHBjaWVfY2xrcmVxXzAsDQo+ID4gKyAgICAgICAgICBwY2llX2Nsa3Jl
-cV8xLCBwcm9iXzAsIHByb2JfMSwgcHJvYl8yLCBwcm9iXzMsIHNkaW9fbG9jIF0NCj4gPiArICAg
-ICAgICBtaW5JdGVtczogMQ0KPiA+ICsNCj4gPiArICAgICAgZnVuY3Rpb246DQo+ID4gKyAgICAg
-ICAgZW51bTogWyBncGlvLCBhY3B1X2VqdGFnX2xvY19pc28sIGVkcF9ocGQsIGV0bl9sZWQsIGky
-YzAsIGkyYzEsDQo+IGkyYzYsDQo+ID4gKyAgICAgICAgaXJfcngsIGlyX3R4LCBuYXRfbGVkLCBw
-d21fMCwgcHdtXzEsIHJ0Yywgc2MsIHN0YW5kYnlfZGJnLA0KPiA+ICsgICAgICAgIHVhcnQwLCB1
-YXJ0MSwgdWFydDJfMCwgdWFydDJfMSwgcHdtXzAxX2xvYzBfbm9ybWFsLA0KPiA+ICsgICAgICAg
-IHB3bV8yM19sb2MwX25vcm1hbCwgcHdtXzAxX2xvYzBfb3Blbl9kcmFpbiwNCj4gcHdtXzIzX2xv
-YzBfb3Blbl9kcmFpbiwNCj4gPiArICAgICAgICBwd21fMDFfbG9jMV9ub3JtYWwsIHB3bV8yM19s
-b2MxX25vcm1hbCwNCj4gcHdtXzAxX2xvYzFfb3Blbl9kcmFpbiwNCj4gPiArICAgICAgICBwd21f
-MjNfbG9jMV9vcGVuX2RyYWluLCBhY3B1X2VqdGFnX2xvY19uZiwgYWksIGRjX2Zhbl9zZW5zb3Is
-DQo+ID4gKyAgICAgICAgZXRoX2dweSwgZ3NwaSwgaTJjMiwgaTJjMywgaTJjNCwgaTJjNSwgbmFu
-ZCwgcmdtaWksDQo+IHNjcHVfZWp0YWdfbG9jX2dwaW8sDQo+ID4gKyAgICAgICAgc2Vuc29yX2Nr
-b19vdXRwdXQsIHNwaSwgdGVzdF9sb29wX2RpcywgdHAwX2xvY19yZ21paTBfdHgsDQo+IHRwMF9s
-b2NfdHAwLA0KPiA+ICsgICAgICAgIHRwMF9sb2NfdHAxLCB0cDFfbG9jX3JnbWlpMF9yeCwgdHAx
-X2xvY190cDAsIHRwMV9sb2NfdHAxLA0KPiA+ICsgICAgICAgIHVzYl9jbG9ja19vdXRwdXQsIGhp
-Zl9sb2NfbWlzYywgaGlmX2xvY19uZiwgc2NwdV9lanRhZ19sb2NfY3IsIGFvLA0KPiA+ICsgICAg
-ICAgIGRtaWMsIHNwZGlmX291dCwgYXZjcHVfZWosIGVtbWMsIGhpZiwgbmFuZCwgcDJzLCBwY2ll
-LCBwbGxfdGVzdCwNCj4gPiArICAgICAgICBzY3B1X2VqdGFnX2xvY19jciwgc2RfY2FyZCwgc2Rp
-b18wLCBzZGlvXzEgXQ0KPiA+ICsNCj4gPiArICAgICAgZHJpdmUtc3RyZW5ndGg6DQo+ID4gKyAg
-ICAgICAgZW51bTogWzIsIDQsIDhdDQo+ID4gKw0KPiA+ICsgICAgICBiaWFzLXB1bGwtZG93bjog
-dHJ1ZQ0KPiA+ICsNCj4gPiArICAgICAgYmlhcy1wdWxsLXVwOiB0cnVlDQo+ID4gKw0KPiA+ICsg
-ICAgICBiaWFzLWRpc2FibGU6IHRydWUNCj4gPiArDQo+ID4gKyAgICAgIGlucHV0LXNjaG1pdHQt
-ZGlzYWJsZTogdHJ1ZQ0KPiA+ICsNCj4gPiArICAgICAgaW5wdXQtc2NobWl0dC1lbmFibGU6IHRy
-dWUNCj4gPiArDQo+ID4gKyAgICByZXF1aXJlZDoNCj4gPiArICAgICAgLSBncm91cHMNCj4gPiAr
-ICAgICAgLSBmdW5jdGlvbg0KPiA+ICsNCj4gPiArICAgIGFkZGl0aW9uYWxQcm9wZXJ0aWVzOiBm
-YWxzZQ0KPiANCj4gQWxzbyBuZWVkIHRvcC1sZXZlbCAnYWRkaXRpb25hbFByb3BlcnRpZXM6IGZh
-bHNlJy4NCg0KSSB3aWxsIGFkZCB0aGlzIGluIHBhdGNoIHYzLg0KDQo+IA0KPiBXaXRoIHRoYXQs
-DQo+IA0KPiBSZXZpZXdlZC1ieTogUm9iIEhlcnJpbmcgPHJvYmhAa2VybmVsLm9yZz4NCj4gDQoN
-CkJlc3QgUmVnYXJkcywNClRZQ2hhbmcNCg0KPiAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVu
-dmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCg==
+To avoid double calling of function cdns3_exit_roles when initialization
+failed patch removes invoking this function from cdns3_core_init_role.
+This function is invoked again from cdns3_probe when
+cdns3_core_init_role returns error code.
+
+Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+---
+ drivers/usb/cdns3/core.c | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
+index 5c1586ec7824..c22c7224642a 100644
+--- a/drivers/usb/cdns3/core.c
++++ b/drivers/usb/cdns3/core.c
+@@ -132,7 +132,7 @@ static int cdns3_core_init_role(struct cdns3 *cdns)
+ 		if (ret) {
+ 			dev_err(dev, "Host initialization failed with %d\n",
+ 				ret);
+-			goto err;
++			return ret;
+ 		}
+ 	}
+ 
+@@ -141,7 +141,7 @@ static int cdns3_core_init_role(struct cdns3 *cdns)
+ 		if (ret) {
+ 			dev_err(dev, "Device initialization failed with %d\n",
+ 				ret);
+-			goto err;
++			return ret;
+ 		}
+ 	}
+ 
+@@ -149,38 +149,34 @@ static int cdns3_core_init_role(struct cdns3 *cdns)
+ 
+ 	ret = cdns3_drd_update_mode(cdns);
+ 	if (ret)
+-		goto err;
++		return ret;
+ 
+ 	/* Initialize idle role to start with */
+ 	ret = cdns3_role_start(cdns, USB_ROLE_NONE);
+ 	if (ret)
+-		goto err;
++		return ret;
+ 
+ 	switch (cdns->dr_mode) {
+ 	case USB_DR_MODE_OTG:
+ 		ret = cdns3_hw_role_switch(cdns);
+ 		if (ret)
+-			goto err;
++			return ret;
+ 		break;
+ 	case USB_DR_MODE_PERIPHERAL:
+ 		ret = cdns3_role_start(cdns, USB_ROLE_DEVICE);
+ 		if (ret)
+-			goto err;
++			return ret;
+ 		break;
+ 	case USB_DR_MODE_HOST:
+ 		ret = cdns3_role_start(cdns, USB_ROLE_HOST);
+ 		if (ret)
+-			goto err;
++			return ret;
+ 		break;
+ 	default:
+-		ret = -EINVAL;
+-		goto err;
++		return -EINVAL;
+ 	}
+ 
+ 	return 0;
+-err:
+-	cdns3_exit_roles(cdns);
+-	return ret;
+ }
+ 
+ /**
+-- 
+2.17.1
+
