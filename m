@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD55243D25
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 18:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C27243D54
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 18:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgHMQUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 12:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgHMQUI (ORCPT
+        id S1726641AbgHMQ0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 12:26:14 -0400
+Received: from 17.mo5.mail-out.ovh.net ([46.105.56.132]:39152 "EHLO
+        17.mo5.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726522AbgHMQ0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 12:20:08 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4263C061757;
-        Thu, 13 Aug 2020 09:20:07 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k6FxS-00EzAD-Ij; Thu, 13 Aug 2020 16:20:02 +0000
-Date:   Thu, 13 Aug 2020 17:20:02 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, kernel-team@fb.com,
-        willy@infradead.org
-Subject: Re: [PATCH][v2] proc: use vmalloc for our kernel buffer
-Message-ID: <20200813162002.GX1236603@ZenIV.linux.org.uk>
-References: <20200813145305.805730-1-josef@toxicpanda.com>
- <20200813153356.857625-1-josef@toxicpanda.com>
- <20200813153722.GA13844@lst.de>
- <974e469e-e73d-6c3e-9167-fad003f1dfb9@toxicpanda.com>
- <20200813154117.GA14149@lst.de>
+        Thu, 13 Aug 2020 12:26:13 -0400
+X-Greylist: delayed 335 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Aug 2020 12:26:13 EDT
+Received: from player737.ha.ovh.net (unknown [10.108.35.124])
+        by mo5.mail-out.ovh.net (Postfix) with ESMTP id 7575E28EB84
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 18:20:36 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player737.ha.ovh.net (Postfix) with ESMTPSA id 21D02BC5348D;
+        Thu, 13 Aug 2020 16:20:31 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-106R006f1c74461-ce2b-407c-839a-3d80edbb9b02,
+                    E10370F5499BCD549250CF93A1A6372B2A4BB833) smtp.auth=steve@sk2.org
+From:   Stephen Kitt <steve@sk2.org>
+To:     Marc Hulsman <m.hulsman@tudelft.nl>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
+Subject: [PATCH] drivers/hwmon/w83791d.c: use simple i2c probe
+Date:   Thu, 13 Aug 2020 18:20:26 +0200
+Message-Id: <20200813162026.1512242-1-steve@sk2.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200813154117.GA14149@lst.de>
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 7517633679366245843
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrleehgdejhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejfeejrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 05:41:17PM +0200, Christoph Hellwig wrote:
-> On Thu, Aug 13, 2020 at 11:40:00AM -0400, Josef Bacik wrote:
-> > On 8/13/20 11:37 AM, Christoph Hellwig wrote:
-> >> On Thu, Aug 13, 2020 at 11:33:56AM -0400, Josef Bacik wrote:
-> >>> Since
-> >>>
-> >>>    sysctl: pass kernel pointers to ->proc_handler
-> >>>
-> >>> we have been pre-allocating a buffer to copy the data from the proc
-> >>> handlers into, and then copying that to userspace.  The problem is this
-> >>> just blind kmalloc()'s the buffer size passed in from the read, which in
-> >>> the case of our 'cat' binary was 64kib.  Order-4 allocations are not
-> >>> awesome, and since we can potentially allocate up to our maximum order,
-> >>> use vmalloc for these buffers.
-> >>>
-> >>> Fixes: 32927393dc1c ("sysctl: pass kernel pointers to ->proc_handler")
-> >>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> >>> ---
-> >>> v1->v2:
-> >>> - Make vmemdup_user_nul actually do the right thing...sorry about that.
-> >>>
-> >>>   fs/proc/proc_sysctl.c  |  6 +++---
-> >>>   include/linux/string.h |  1 +
-> >>>   mm/util.c              | 27 +++++++++++++++++++++++++++
-> >>>   3 files changed, 31 insertions(+), 3 deletions(-)
-> >>>
-> >>> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> >>> index 6c1166ccdaea..207ac6e6e028 100644
-> >>> --- a/fs/proc/proc_sysctl.c
-> >>> +++ b/fs/proc/proc_sysctl.c
-> >>> @@ -571,13 +571,13 @@ static ssize_t proc_sys_call_handler(struct file *filp, void __user *ubuf,
-> >>>   		goto out;
-> >>>     	if (write) {
-> >>> -		kbuf = memdup_user_nul(ubuf, count);
-> >>> +		kbuf = vmemdup_user_nul(ubuf, count);
-> >>
-> >> Given that this can also do a kmalloc and thus needs to be paired
-> >> with kvfree shouldn't it be kvmemdup_user_nul?
-> >>
-> >
-> > There's an existing vmemdup_user that does kvmalloc, so I followed the 
-> > existing naming convention.  Do you want me to change them both?  Thanks,
-> 
-> I personally would, and given that it only has a few users it might
-> even be feasible.
+This driver doesn't use the id information provided by the old i2c
+probe function, so it can trivially be converted to the simple
+("probe_new") form.
 
-FWIW, how about following or combining that with "allocate count + 1 bytes on
-the read side"?  Allows some nice cleanups - e.g.
-                len = sprintf(tmpbuf, "0x%04x", *(unsigned int *) table->data);
-                if (len > left)
-                        len = left;
-                memcpy(buffer, tmpbuf, len);
-                if ((left -= len) > 0) {
-                        *((char *)buffer + len) = '\n';
-                        left--;
-                }
-in sunrpc proc_dodebug() turns into
-		left -= snprintf(buffer, left, "0x%04x\n",
-				 *(unsigned int *) table->data);
-and that's not the only example.
+Signed-off-by: Stephen Kitt <steve@sk2.org>
+---
+ drivers/hwmon/w83791d.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/hwmon/w83791d.c b/drivers/hwmon/w83791d.c
+index aad8d4da5802..37b25a1474c4 100644
+--- a/drivers/hwmon/w83791d.c
++++ b/drivers/hwmon/w83791d.c
+@@ -315,8 +315,7 @@ struct w83791d_data {
+ 	u8 vrm;			/* hwmon-vid */
+ };
+ 
+-static int w83791d_probe(struct i2c_client *client,
+-			 const struct i2c_device_id *id);
++static int w83791d_probe(struct i2c_client *client);
+ static int w83791d_detect(struct i2c_client *client,
+ 			  struct i2c_board_info *info);
+ static int w83791d_remove(struct i2c_client *client);
+@@ -342,7 +341,7 @@ static struct i2c_driver w83791d_driver = {
+ 	.driver = {
+ 		.name = "w83791d",
+ 	},
+-	.probe		= w83791d_probe,
++	.probe_new	= w83791d_probe,
+ 	.remove		= w83791d_remove,
+ 	.id_table	= w83791d_id,
+ 	.detect		= w83791d_detect,
+@@ -1346,8 +1345,7 @@ static int w83791d_detect(struct i2c_client *client,
+ 	return 0;
+ }
+ 
+-static int w83791d_probe(struct i2c_client *client,
+-			 const struct i2c_device_id *id)
++static int w83791d_probe(struct i2c_client *client)
+ {
+ 	struct w83791d_data *data;
+ 	struct device *dev = &client->dev;
+-- 
+2.25.4
+
