@@ -2,213 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6FC243A53
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 14:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D227243A59
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 14:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbgHMMxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 08:53:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39666 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726244AbgHMMw7 (ORCPT
+        id S1726605AbgHMMzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 08:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726131AbgHMMzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 08:52:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597323178;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OX+Tvyp6Ot9/OnxWxmw3RBW304MjusKgZ6JDl3vpwQQ=;
-        b=OFfdbkgymAf3DWL7xtuMpISEeaPn0P7NIPaoWW3Mhe+NYjiY1jxDwcL4FoxXZ/1ZoKuU2z
-        Xz+POsXIsjtYcUA7tWoaZ7Qz+Sts08mkFGxYcbDl/bxlxdBthYkXCyX5hiDy9ObvkRMvb9
-        SBQYXPMrvDTxZ8L4ybxgzBJykcdNNj8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-B8H37G2_OPG3zjhFffx4RQ-1; Thu, 13 Aug 2020 08:52:54 -0400
-X-MC-Unique: B8H37G2_OPG3zjhFffx4RQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09D35800D53;
-        Thu, 13 Aug 2020 12:52:52 +0000 (UTC)
-Received: from [10.36.113.93] (ovpn-113-93.ams2.redhat.com [10.36.113.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A7463600E2;
-        Thu, 13 Aug 2020 12:52:42 +0000 (UTC)
-Subject: Re: [PATCH v6 02/15] iommu: Report domain nesting info
-To:     Liu Yi L <yi.l.liu@intel.com>, alex.williamson@redhat.com,
-        baolu.lu@linux.intel.com, joro@8bytes.org
-Cc:     kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
-        ashok.raj@intel.com, jun.j.tian@intel.com, yi.y.sun@intel.com,
-        jean-philippe@linaro.org, peterx@redhat.com, hao.wu@intel.com,
-        stefanha@gmail.com, iommu@lists.linux-foundation.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1595917664-33276-1-git-send-email-yi.l.liu@intel.com>
- <1595917664-33276-3-git-send-email-yi.l.liu@intel.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <5c911565-c76a-c361-845e-56a91744d504@redhat.com>
-Date:   Thu, 13 Aug 2020 14:52:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Thu, 13 Aug 2020 08:55:02 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E34C061757;
+        Thu, 13 Aug 2020 05:55:02 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id x2so3225762ybf.12;
+        Thu, 13 Aug 2020 05:55:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=75NAxvaDs5TZCdspioaGSmnreFOKWfDZk5QjErLtQWo=;
+        b=CDjvd4jRQ4l4RbEGS7kLoVz83KH2o2s7f6rdC0YEkG0f8Va0KUGU5njmNmvWD0j9O2
+         RfANcDqb2X+yWziaXZEzlqOWhHgeTL5f/SXl5lb/HJJBolKmL8PtCbAybApFYU+4oNy+
+         lnxF35PhN+5FMSGJj7yvZ7+IaMhqk+Zr8Er4UrJAtC1B6RMdi44Rt0whIC9p5hiRDI5t
+         RfaFR/cw7Y4b7tmBtWDoizH2xMs4738luDMcpqysPS53DKQksGYxvXrMEIOO6EKOPvsf
+         ii3XQiL+ZlfdLla0STQiINsAwKKJAMkoTsBMKTHQiS4jiBtGJI7vp72c0zujwo8S7HEC
+         Lxdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=75NAxvaDs5TZCdspioaGSmnreFOKWfDZk5QjErLtQWo=;
+        b=pQ3fxRiFz/MNTGAP4wzAT1dLR12EBDDoDzr1Xn13iatBmTT7Kc8N0iXbdQ/5pmxIWA
+         Q232MDbEPhWLndhwp3Hx1NVilBSzpsCgTIl2wZPP0Qut35qY1MEyCb3M3a6ilNA+jAlV
+         sqbZ4XmpNurUON0t39OBzOpBd87/16GTZqY+DCDu5LO73A5g8crgZGmD1NGhGF8toKs6
+         kEyQ0fyheNpnNPXBk8tzoZRM90YfI0AuOVjkgrjqP/h24oyVNN16ZDUocKjo6q2At/bo
+         3LTy6Q9PWyplTaAqYtAlhjK4SF11KBMxF/ieQ2huj7f9uEIyanJxf3ohYcd4XRJYnB6k
+         XrEA==
+X-Gm-Message-State: AOAM530oeceWO/0FA1vHeHY5fZT1xeIRTZfQ0XqClBt1UA6KJCTBnyRg
+        jLEx+BcX2PYRwPsTVoY2RBC82UVl36ZPrKgpisjf2krQ
+X-Google-Smtp-Source: ABdhPJyorRbchJgGCyTLDbB3eJQXWKepkgtINQSgf1E6LPJzQ0rtraBZ92Kn14p9F4+c7jW6VIEg4dj5p7BbrEEtpHs=
+X-Received: by 2002:a25:6ad6:: with SMTP id f205mr6436845ybc.76.1597323301408;
+ Thu, 13 Aug 2020 05:55:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1595917664-33276-3-git-send-email-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20200807174954.14448-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200807174954.14448-8-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200811112638.GF6054@pendragon.ideasonboard.com>
+In-Reply-To: <20200811112638.GF6054@pendragon.ideasonboard.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Thu, 13 Aug 2020 13:54:35 +0100
+Message-ID: <CA+V-a8sVA9r3_yrM6z7EX-XGp1d6Wy-6LjWsO7Td93C-236jvg@mail.gmail.com>
+Subject: Re: [PATCH 7/7] ARM: dts: r8a7742-iwg21d-q7: Add LCD support
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yi,
-On 7/28/20 8:27 AM, Liu Yi L wrote:
-> IOMMUs that support nesting translation needs report the capability info
-s/needs/need to
-> to userspace. It gives information about requirements the userspace needs
-> to implement plus other features characterizing the physical implementation.
-> 
-> This patch reports nesting info by DOMAIN_ATTR_NESTING. Caller can get
-> nesting info after setting DOMAIN_ATTR_NESTING. For VFIO, it is after
-> selecting VFIO_TYPE1_NESTING_IOMMU.
-This is not what this patch does ;-) It introduces a new IOMMU UAPI
-struct that gives information about the nesting capabilities and
-features. This struct is supposed to be returned by
-iommu_domain_get_attr() with DOMAIN_ATTR_NESTING attribute parameter,
-one a domain whose type has been set to DOMAIN_ATTR_NESTING.
+Hi Laurent,
 
-> 
-> Cc: Kevin Tian <kevin.tian@intel.com>
-> CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Cc: Alex Williamson <alex.williamson@redhat.com>
-> Cc: Eric Auger <eric.auger@redhat.com>
-> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Lu Baolu <baolu.lu@linux.intel.com>
-> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> ---
-> v5 -> v6:
-> *) rephrase the feature notes per comments from Eric Auger.
-> *) rename @size of struct iommu_nesting_info to @argsz.
-> 
-> v4 -> v5:
-> *) address comments from Eric Auger.
-> 
-> v3 -> v4:
-> *) split the SMMU driver changes to be a separate patch
-> *) move the @addr_width and @pasid_bits from vendor specific
->    part to generic part.
-> *) tweak the description for the @features field of struct
->    iommu_nesting_info.
-> *) add description on the @data[] field of struct iommu_nesting_info
-> 
-> v2 -> v3:
-> *) remvoe cap/ecap_mask in iommu_nesting_info.
-> *) reuse DOMAIN_ATTR_NESTING to get nesting info.
-> *) return an empty iommu_nesting_info for SMMU drivers per Jean'
->    suggestion.
-> ---
->  include/uapi/linux/iommu.h | 74 ++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 74 insertions(+)
-> 
-> diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
-> index 7c8e075..5e4745a 100644
-> --- a/include/uapi/linux/iommu.h
-> +++ b/include/uapi/linux/iommu.h
-> @@ -332,4 +332,78 @@ struct iommu_gpasid_bind_data {
->  	} vendor;
->  };
->  
-> +/*
-> + * struct iommu_nesting_info - Information for nesting-capable IOMMU.
-> + *			       userspace should check it before using
-> + *			       nesting capability.
-> + *
-> + * @argsz:	size of the whole structure.
-> + * @flags:	currently reserved for future extension. must set to 0.
-> + * @format:	PASID table entry format, the same definition as struct
-> + *		iommu_gpasid_bind_data @format.
-> + * @features:	supported nesting features.
-> + * @addr_width:	The output addr width of first level/stage translation
-> + * @pasid_bits:	Maximum supported PASID bits, 0 represents no PASID
-> + *		support.
-> + * @data:	vendor specific cap info. data[] structure type can be deduced
-> + *		from @format field.
-> + *
-> + * +===============+======================================================+
-> + * | feature       |  Notes                                               |
-> + * +===============+======================================================+
-> + * | SYSWIDE_PASID |  IOMMU vendor driver sets it to mandate userspace    |
-> + * |               |  to allocate PASID from kernel. All PASID allocation |
-> + * |               |  free must be mediated through the TBD API.          |
-s/TBD/IOMMU
-> + * +---------------+------------------------------------------------------+
-> + * | BIND_PGTBL    |  IOMMU vendor driver sets it to mandate userspace    |
-> + * |               |  bind the first level/stage page table to associated |
-s/bind/to bind
-> + * |               |  PASID (either the one specified in bind request or  |
-> + * |               |  the default PASID of iommu domain), through IOMMU   |
-> + * |               |  UAPI.                                               |
-> + * +---------------+------------------------------------------------------+
-> + * | CACHE_INVLD   |  IOMMU vendor driver sets it to mandate userspace    |
+Thank you for the review.
 
-> + * |               |  explicitly invalidate the IOMMU cache through IOMMU |
-to explicitly
-> + * |               |  UAPI according to vendor-specific requirement when  |
-> + * |               |  changing the 1st level/stage page table.            |
-> + * +---------------+------------------------------------------------------+
-> + *
-> + * @data[] types defined for @format:
-> + * +================================+=====================================+
-> + * | @format                        | @data[]                             |
-> + * +================================+=====================================+
-> + * | IOMMU_PASID_FORMAT_INTEL_VTD   | struct iommu_nesting_info_vtd       |
-> + * +--------------------------------+-------------------------------------+
-> + *
-> + */
-> +struct iommu_nesting_info {
-> +	__u32	argsz;
-> +	__u32	flags;
-> +	__u32	format;
-> +#define IOMMU_NESTING_FEAT_SYSWIDE_PASID	(1 << 0)
-> +#define IOMMU_NESTING_FEAT_BIND_PGTBL		(1 << 1)
-> +#define IOMMU_NESTING_FEAT_CACHE_INVLD		(1 << 2)
-> +	__u32	features;
-> +	__u16	addr_width;
-> +	__u16	pasid_bits;
-> +	__u32	padding;
-> +	__u8	data[];
-> +};
-As opposed to other IOMMU UAPI structs there is no union member at the
-end. Also this struct is not documented in [PATCH v7 1/7] docs: IOMMU
-user API. Shouldn't we align.
+On Tue, Aug 11, 2020 at 12:26 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Prabhakar,
+>
+> Thank you for the patch.
+>
+> On Fri, Aug 07, 2020 at 06:49:54PM +0100, Lad Prabhakar wrote:
+> > The iwg21d comes with a 7" capacitive touch screen, therefore
+> > add support for it.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> > ---
+> >  arch/arm/boot/dts/r8a7742-iwg21d-q7.dts | 84 +++++++++++++++++++++++++
+> >  1 file changed, 84 insertions(+)
+> >
+> > diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > index b3461a61a4bf..cf59fd61e422 100644
+> > --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > @@ -30,6 +30,7 @@
+> >
+> >  /dts-v1/;
+> >  #include "r8a7742-iwg21m.dtsi"
+> > +#include <dt-bindings/pwm/pwm.h>
+> >
+> >  / {
+> >       model = "iWave Systems RainboW-G21D-Qseven board based on RZ/G1H";
+> > @@ -52,6 +53,50 @@
+> >               clock-frequency = <26000000>;
+> >       };
+> >
+> > +     lcd_backlight: backlight {
+> > +             compatible = "pwm-backlight";
+> > +             pwms = <&tpu 2 5000000 0>;
+> > +             brightness-levels = <0 4 8 16 32 64 128 255>;
+> > +             pinctrl-0 = <&backlight_pins>;
+> > +             pinctrl-names = "default";
+> > +             default-brightness-level = <7>;
+> > +             enable-gpios = <&gpio3 11 GPIO_ACTIVE_HIGH>;
+>
+> It's actually a power supply, not an enable GPIO, but it doesn't matter
+> much, I don't think there's a need to declare a regulator just for the
+> sake of it.
+>
+Agreed will leave it as is.
 
-You may also consider to move this patch in Jacob's series for
-consistency, thoughts?
+> > +     };
+> > +
+> > +     lvds-receiver {
+> > +             compatible = "ti,ds90cf384a", "lvds-decoder";
+> > +             powerdown-gpios = <&gpio5 28 GPIO_ACTIVE_LOW>;
+>
+> This should be handled as a shared power supply, as it's also needed for
+> the touch screen. Biju has sent patches for the iwg20d that fixes a
+> probe issue due to that problem, I think you can just copy the fix.
+>
+Done.
 
-> +
-> +/*
-> + * struct iommu_nesting_info_vtd - Intel VT-d specific nesting info.
-> + *
-> + * @flags:	VT-d specific flags. Currently reserved for future
-> + *		extension. must be set to 0.
-> + * @cap_reg:	Describe basic capabilities as defined in VT-d capability
-> + *		register.
-> + * @ecap_reg:	Describe the extended capabilities as defined in VT-d
-> + *		extended capability register.
-> + */
-> +struct iommu_nesting_info_vtd {
-> +	__u32	flags;
-> +	__u32	padding;
-> +	__u64	cap_reg;
-> +	__u64	ecap_reg;
-> +};
-> +
->  #endif /* _UAPI_IOMMU_H */
-> 
+> > +
+> > +             ports {
+> > +                     #address-cells = <1>;
+> > +                     #size-cells = <0>;
+> > +
+> > +                     port@0 {
+> > +                             reg = <0>;
+> > +                             lvds_receiver_in: endpoint {
+> > +                                     remote-endpoint = <&lvds0_out>;
+> > +                             };
+> > +                     };
+> > +                     port@1 {
+> > +                             reg = <1>;
+> > +                             lvds_receiver_out: endpoint {
+> > +                                     remote-endpoint = <&panel_in>;
+> > +                             };
+> > +                     };
+> > +             };
+> > +     };
+> > +
+> > +     panel {
+> > +             compatible = "edt,etm0700g0dh6";
+> > +             backlight = <&lcd_backlight>;
+> > +
+> > +             port {
+> > +                     panel_in: endpoint {
+> > +                             remote-endpoint = <&lvds_receiver_out>;
+> > +                     };
+> > +             };
+> > +     };
+> > +
+> >       reg_1p5v: 1p5v {
+> >               compatible = "regulator-fixed";
+> >               regulator-name = "1P5V";
+> > @@ -129,12 +174,31 @@
+> >               VDDIO-supply = <&reg_3p3v>;
+> >               VDDD-supply = <&reg_1p5v>;
+> >       };
+> > +
+> > +     touch: touchpanel@38 {
+> > +             compatible = "edt,edt-ft5406";
+> > +             reg = <0x38>;
+> > +             interrupt-parent = <&gpio0>;
+> > +             interrupts = <24 IRQ_TYPE_EDGE_FALLING>;
+>
+> Should the reset GPIO also be wired ? It seems to be shared with the
+> audio codec though, which is annoying.
+>
+Done.
 
-Thanks
+> > +     };
+> >  };
+> >
+> >  &cmt0 {
+> >       status = "okay";
+> >  };
+> >
+> > +&du {
+> > +     status = "okay";
+> > +};
+> > +
+> > +&gpio0 {
+> > +     touch-interrupt {
+> > +             gpio-hog;
+> > +             gpios = <24 GPIO_ACTIVE_LOW>;
+> > +             input;
+> > +     };
+>
+> Is this needed, or does requesting the interrupt in the touch screen
+> driver configured the GPIO to an input automatically ?
+>
+Yes this is needed, the touch driver does not configure the pin as
+GPIO input without this touch doesn't work.
 
-Eric
-
-
+Cheers,
+Prabhakar
