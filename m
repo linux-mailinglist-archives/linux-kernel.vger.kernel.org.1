@@ -2,123 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59FE2437D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFCC2437D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 11:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgHMJkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 05:40:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726102AbgHMJkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 05:40:47 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1535720838;
-        Thu, 13 Aug 2020 09:40:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597311646;
-        bh=J2qpgmDlKiBX/8QUBIioI6so3fG2ARNlz1VQm3iYxCY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yVT9gmJmbDLy0XDhlHgruGUGbpJBSsAodgp/Z55IegV431ultwY/+5gLtbPScjsHI
-         uqnitTbkBVSN6TGRjz21DL/+j0+AonuSGsfeOku4N5z+v6EwrLWLZT9O/uXyg8PW5Z
-         pMrdKmUdOBbToNw896kXokp+/O0tWJx5+/aKq2VY=
-Date:   Thu, 13 Aug 2020 10:40:42 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] arm64: Add KRYO4XX gold CPU core to spectre-v2 safe list
-Message-ID: <20200813094041.GA9894@willie-the-truck>
-References: <20200813081834.13576-1-saiprakash.ranjan@codeaurora.org>
- <20200813090324.GB9829@willie-the-truck>
- <89f0f41514e547533c3fa66364e5a2ac@codeaurora.org>
+        id S1726419AbgHMJqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 05:46:01 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:55693 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726053AbgHMJqA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 05:46:00 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U5eFTQs_1597311955;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U5eFTQs_1597311955)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 13 Aug 2020 17:45:55 +0800
+Subject: Re: [Resend PATCH 2/6] mm/memcg: remove useless check on
+ page->mem_cgroup
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1597144232-11370-2-git-send-email-alex.shi@linux.alibaba.com>
+ <20200811113008.GK4793@dhcp22.suse.cz>
+ <776b0e6f-4129-9fb9-0f66-47757cf320d5@linux.alibaba.com>
+ <20200811135626.GL4793@dhcp22.suse.cz>
+ <0b5e1ac3-c9c7-35e9-2661-b58430314d0a@linux.alibaba.com>
+ <20200813062049.GA9477@dhcp22.suse.cz>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <abd9276b-31f8-a51d-43d6-6c8ae93237dc@linux.alibaba.com>
+Date:   Thu, 13 Aug 2020 17:45:19 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <89f0f41514e547533c3fa66364e5a2ac@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200813062049.GA9477@dhcp22.suse.cz>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 02:49:37PM +0530, Sai Prakash Ranjan wrote:
-> On 2020-08-13 14:33, Will Deacon wrote:
-> > On Thu, Aug 13, 2020 at 01:48:34PM +0530, Sai Prakash Ranjan wrote:
-> > > KRYO4XX gold/big CPU cores are based on Cortex-A76 which has CSV2
-> > > bits set and are spectre-v2 safe. But on big.LITTLE systems where
-> > > they are coupled with other CPU cores such as the KRYO4XX silver
-> > > based on Cortex-A55 which are spectre-v2 safe but do not have CSV2
-> > > bits set, the system wide safe value will be set to the lowest value
-> > > of CSV2 bits as per FTR_LOWER_SAFE defined for CSV2 bits of register
-> > > ID_AA64PFR0_EL1.
-> > > 
-> > > This is a problem when booting a guest kernel on gold CPU cores
-> > > where it will incorrectly report ARM_SMCCC_ARCH_WORKAROUND_1 warning
-> > > and consider them as vulnerable for Spectre variant 2 due to system
-> > > wide safe value which is used in kvm emulation code when reading id
-> > > registers. One wrong way of fixing this is to set the FTR_HIGHER_SAFE
-> > > for CSV2 bits, so instead add the KRYO4XX gold CPU core to the safe
-> > > list which will be consulted even when the sanitised read reports
-> > > that CSV2 bits are not set for KRYO4XX gold cores.
-> > > 
-> > > Reported-by: Stephen Boyd <swboyd@chromium.org>
-> > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> > > ---
-> > >  arch/arm64/kernel/cpu_errata.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/arch/arm64/kernel/cpu_errata.c
-> > > b/arch/arm64/kernel/cpu_errata.c
-> > > index 6bd1d3ad037a..6cbdd2d98a2a 100644
-> > > --- a/arch/arm64/kernel/cpu_errata.c
-> > > +++ b/arch/arm64/kernel/cpu_errata.c
-> > > @@ -545,6 +545,7 @@ static const struct midr_range
-> > > spectre_v2_safe_list[] = {
-> > >  	MIDR_ALL_VERSIONS(MIDR_HISI_TSV110),
-> > >  	MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_3XX_SILVER),
-> > >  	MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_4XX_SILVER),
-> > > +	MIDR_ALL_VERSIONS(MIDR_QCOM_KRYO_4XX_GOLD),
-> > 
-> > We shouldn't be putting CPUs in the safe list when they have CSV2
-> > reporting
-> > that they are mitigated in hardware, so I don't think this is the right
-> > approach.
-> > 
+
+
+ÔÚ 2020/8/13 ÏÂÎç2:20, Michal Hocko Ð´µÀ:
+> On Wed 12-08-20 11:25:53, Alex Shi wrote:
+>> >From 999b0fe5fc65865c3b59ff28500d45572a4a9570 Mon Sep 17 00:00:00 2001
+>> From: Alex Shi <alex.shi@linux.alibaba.com>
+>> Date: Wed, 5 Aug 2020 21:02:30 +0800
+>> Subject: [PATCH 2/6] mm/memcg: bail out early from swap accounting when memcg
+>>  is disabled
+>>
+>> If we disabled memcg by cgroup_disable=memory, page->memcg will be NULL
+>> and so the charge is skipped and that will trigger a warning like below.
+>> Let's return from the funcs earlier.
+>>
+>>  ---[ end trace f1f34bfc3b32ed2f ]---
+>>  anon flags:0x5005b48008000d(locked|uptodate|dirty|swapbacked)
+>>  raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
+>>  raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
+>>  page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
 > 
-> Ok but the only thing I find wrong in this approach is that it is a
-> redundant
-> information because CSV2 is already advertising the mitigation, but again
-> CSV2 check is done first so it doesn't really hurt to add it to the safe
-> list because we already know that it is safe.
+> Yes this is better. It would be even more informative if you added the
+> backtrace.
 
-It simply doesn't scale. That's why CSV2 exists in the first place, so we
-don't have to modify the kernel everytime a new CPU is invented.
+The stack is a bit long.
+I still don't know where cause the asm_exc_page_fault? And seems the vma is from
+kernel not user.
 
-> > Sounds more like KVM should advertise CSV2 for the vCPUs if all of the
-> > physical CPUs without CSV2 set are on the safe list. But then again, KVM
-> > has always been slightly in denial about big.LITTLE because you can't
-> > sensibly expose it to a guest if there are detectable differences...
-> > 
-> 
-> Sorry but I don't see how the guest kernel will see the CSV2 bits set for
-> gold CPU cores without actually adding them to the safe list or reading the
-> not sanitised value of ID_AA64PFR0_EL1 ?
+From 999b0fe5fc65865c3b59ff28500d45572a4a9570 Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Wed, 5 Aug 2020 21:02:30 +0800
+Subject: [PATCH 2/6] mm/memcg: bail out early from swap accounting when memcg
+ is disabled
 
-Well that's for somebody to figure out in the patch. I'm just saying that
-adding cores to the safe list when they already have a CSV2 field conveying
-the same information is the wrong approach. The right appproach is for KVM
-to expose CSV2 as set when the system is not affected by the erratum.
+If we disabled memcg by cgroup_disable=memory, page->memcg will be NULL
+and so the charge is skipped and that will trigger a warning like below.
+Let's return from the funcs earlier.
 
-FWIW, I'll be sending some patches soon to clean a lot of this up, so maybe
-it will become clearer after that.
+ anon flags:0x5005b48008000d(locked|uptodate|dirty|swapbacked)
+ raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
+ raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
+ page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
+...
+ RIP: 0010:vprintk_emit+0x1f7/0x260
+ Code: 00 84 d2 74 72 0f b6 15 27 58 64 01 48 c7 c0 00 d4 72 82 84 d2 74 09 f3 90 0f b6 10 84 d2 75 f7 e8 de 0d 00 00 4c 89 e7 57 9d <0f> 1f 44 00 00 e9 62 ff ff ff 80 3d 88 c9 3a 01 00 0f 85 54 fe ff
+ RSP: 0018:ffffc9000faab358 EFLAGS: 00000202
+ RAX: ffffffff8272d400 RBX: 000000000000005e RCX: ffff88afd80d0040
+ RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000202
+ RBP: ffffc9000faab3a8 R08: ffffffff8272d440 R09: 0000000000022480
+ R10: 00120c77be68bfac R11: 0000000000cd7568 R12: 0000000000000202
+ R13: 0057ffffc0080005 R14: ffffffff820a0130 R15: ffffc9000faab3e8
+ ? vprintk_emit+0x140/0x260
+ vprintk_default+0x1a/0x20
+ vprintk_func+0x4f/0xc4
+ ? vprintk_func+0x4f/0xc4
+ printk+0x53/0x6a
+ ? xas_load+0xc/0x80
+ __dump_page.cold.6+0xff/0x4ee
+ ? xas_init_marks+0x23/0x50
+ ? xas_store+0x30/0x40
+ ? free_swap_slot+0x43/0xd0
+ ? put_swap_page+0x119/0x320
+ ? update_load_avg+0x82/0x580
+ dump_page+0x9/0xb
+ mem_cgroup_try_charge_swap+0x16e/0x1d0
+ get_swap_page+0x130/0x210
+ add_to_swap+0x41/0xc0
+ shrink_page_list+0x99e/0xdf0
+ shrink_inactive_list+0x199/0x360
+ shrink_lruvec+0x40d/0x650
+ ? _cond_resched+0x14/0x30
+ ? _cond_resched+0x14/0x30
+ shrink_node+0x226/0x6e0
+ do_try_to_free_pages+0xd0/0x400
+ try_to_free_pages+0xef/0x130
+ __alloc_pages_slowpath.constprop.127+0x38d/0xbd0
+ ? ___slab_alloc+0x31d/0x6f0
+ __alloc_pages_nodemask+0x27f/0x2c0
+ alloc_pages_vma+0x75/0x220
+ shmem_alloc_page+0x46/0x90
+ ? release_pages+0x1ae/0x410
+ shmem_alloc_and_acct_page+0x77/0x1c0
+ shmem_getpage_gfp+0x162/0x910
+ shmem_fault+0x74/0x210
+ ? filemap_map_pages+0x29c/0x410
+ __do_fault+0x37/0x190
+ handle_mm_fault+0x120a/0x1770
+ exc_page_fault+0x251/0x450
+ ? asm_exc_page_fault+0x8/0x30
+ asm_exc_page_fault+0x1e/0x30
 
-Will
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Reviewed-by: Roman Gushchin <guro@fb.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/memcontrol.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 299382fc55a9..419cf565f40b 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7098,6 +7098,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+ 	VM_BUG_ON_PAGE(PageLRU(page), page);
+ 	VM_BUG_ON_PAGE(page_count(page), page);
+ 
++	if (mem_cgroup_disabled())
++		return;
++
+ 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+ 		return;
+ 
+@@ -7163,6 +7166,9 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
+ 	struct mem_cgroup *memcg;
+ 	unsigned short oldid;
+ 
++	if (mem_cgroup_disabled())
++		return 0;
++
+ 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+ 		return 0;
+ 
+-- 
+1.8.3.1
+
