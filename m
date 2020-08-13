@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8DD243D5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 18:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFA4243D06
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 18:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726679AbgHMQ2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 12:28:04 -0400
-Received: from 14.mo6.mail-out.ovh.net ([46.105.56.113]:36299 "EHLO
-        14.mo6.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgHMQ2E (ORCPT
+        id S1726754AbgHMQKa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Aug 2020 12:10:30 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:15302 "EHLO
+        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726252AbgHMQK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 12:28:04 -0400
-Received: from player691.ha.ovh.net (unknown [10.108.35.197])
-        by mo6.mail-out.ovh.net (Postfix) with ESMTP id A8046222F4F
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 18:10:21 +0200 (CEST)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player691.ha.ovh.net (Postfix) with ESMTPSA id 352C3155163E0;
-        Thu, 13 Aug 2020 16:10:15 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-104R0051ed08ce6-8045-4efe-9ce6-aae512e6b7fc,
-                    E10370F5499BCD549250CF93A1A6372B2A4BB833) smtp.auth=steve@sk2.org
-From:   Stephen Kitt <steve@sk2.org>
-To:     Beniamin Bia <beniamin.bia@analog.com>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: [PATCH] drivers/hwmon/adm1177.c: use simple i2c probe
-Date:   Thu, 13 Aug 2020 18:09:58 +0200
-Message-Id: <20200813160958.1506536-1-steve@sk2.org>
-X-Mailer: git-send-email 2.25.4
+        Thu, 13 Aug 2020 12:10:29 -0400
+Subject: Re: [PATCH v2 2/2] selinux: add basic filtering for audit trace
+ events
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
+        Paul Moore <paul@paul-moore.com>
+CC:     Nick Kralevich <nnk@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>
+References: <20200813144914.737306-1-tweek@google.com>
+ <20200813144914.737306-2-tweek@google.com>
+ <02c193e4-008a-5c3d-75e8-9be7bbcb941c@schaufler-ca.com>
+ <a82d50bd-a0ec-bd06-7a3a-c2696398c4c3@sony.com>
+ <c4424850-645f-5788-fb35-922c81eace6b@gmail.com>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <8386aa4a-0687-769b-235d-9e8bf34ecf90@sony.com>
+Date:   Thu, 13 Aug 2020 18:10:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 7344526571069328700
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrleehgdejvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheiledurdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+In-Reply-To: <c4424850-645f-5788-fb35-922c81eace6b@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=frmim2wf c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=IkcTkHD0fZMA:10 a=y4yBn9ojGxQA:10 a=z6gsHLkEAAAA:8 a=-He6eWZHxituxyHJLsQA:9 a=QEXdDO2ut3YA:10 a=d-OLMTCWyvARjPbQ-enb:22
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver doesn't use the id information provided by the old i2c
-probe function, so it can trivially be converted to the simple
-("probe_new") form.
-
-Signed-off-by: Stephen Kitt <steve@sk2.org>
----
- drivers/hwmon/adm1177.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/hwmon/adm1177.c b/drivers/hwmon/adm1177.c
-index d314223a404a..6e8bb661894b 100644
---- a/drivers/hwmon/adm1177.c
-+++ b/drivers/hwmon/adm1177.c
-@@ -196,8 +196,7 @@ static void adm1177_remove(void *data)
- 	regulator_disable(st->reg);
- }
- 
--static int adm1177_probe(struct i2c_client *client,
--			 const struct i2c_device_id *id)
-+static int adm1177_probe(struct i2c_client *client)
- {
- 	struct device *dev = &client->dev;
- 	struct device *hwmon_dev;
-@@ -277,7 +276,7 @@ static struct i2c_driver adm1177_driver = {
- 		.name = "adm1177",
- 		.of_match_table = adm1177_dt_ids,
- 	},
--	.probe = adm1177_probe,
-+	.probe_new = adm1177_probe,
- 	.id_table = adm1177_id,
- };
- module_i2c_driver(adm1177_driver);
--- 
-2.25.4
+On 8/13/20 5:49 PM, Stephen Smalley wrote:
+> On 8/13/20 11:35 AM, peter enderborg wrote:
+>
+>> On 8/13/20 5:05 PM, Casey Schaufler wrote:
+>>> On 8/13/2020 7:48 AM, Thiébaud Weksteen wrote:
+>>>> From: Peter Enderborg <peter.enderborg@sony.com>
+>>>>
+>>>> This patch adds further attributes to the event. These attributes are
+>>>> helpful to understand the context of the message and can be used
+>>>> to filter the events.
+>>>>
+>>>> There are three common items. Source context, target context and tclass.
+>>>> There are also items from the outcome of operation performed.
+>>>>
+>>>> An event is similar to:
+>>>>             <...>-1309  [002] ....  6346.691689: selinux_audited:
+>>>>         requested=0x4000000 denied=0x4000000 audited=0x4000000
+>>>>         result=-13 ssid=315 tsid=61
+>>> It may not be my place to ask, but *please please please* don't
+>>> externalize secids. I understand that it's easier to type "42"
+>>> than "system_r:cupsd_t:s0-s0:c0.c1023", and that it's easier for
+>>> your tools to parse and store the number. Once you start training
+>>> people that system_r:cupsd_t:s0-s0:c0.c1023 is secid 42 you'll
+>>> never be able to change it. The secid will start showing up in
+>>> scripts. Bad  Things  Will  Happen.
+>> Ok, it seems to mostly against having this performance options.
+>> Yes, it is a kernel internal data. So is most of the kernel tracing.
+>> I see it is a primary tool for kernel debugging but than can also be
+>> used for user-space debugging tools.  Hiding data for debuggers
+>> does not make any sense too me.
+>
+> To be clear, userspace tools can't use fixed secid values because secids are dynamically assigned by SELinux and thus secid 42 need not correspond to the same security context across different boots even with the same kernel and policy.  I wouldn't include them in the event unless it is common practice to include fields that can only be interpreted if you can debug the running kernel.  It would be akin to including kernel pointers in the event (albeit without the KASLR ramifications).
+>
+Yes of course. Trace debugging is about running kernel. Would i make more sense if the was a debugfs entry with the sid's? This filter are a reminisce  of the same filter used not only to catch denials. Doing a string compare
+for all syscalls keep the cpu busy.  I will do an update without it.
 
