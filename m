@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F835243F5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 21:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418A6243F5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 21:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgHMTi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 15:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgHMTi3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 15:38:29 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4231C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 12:38:28 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id g6so7443555ljn.11
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 12:38:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z9W/SZeITS+AOoA4ttv/qU5QwDchpBVv5HiBD0RqF18=;
-        b=O5r2PL0p+XpJ6S3GE9bB/rYkb8fKW6yN0yzIs6vae75h+b/I0X8VTtLjHFYb7iGfUV
-         bIHmmvMUpNy0fsJCFYb4OVkNirjORwNJhqq/rgMLA/eQUHXrFniNjpYTNDyvC/SrcnEC
-         U1QS9xuVeavWnezgmM15HeeWRVKU9tqNWH4Vk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z9W/SZeITS+AOoA4ttv/qU5QwDchpBVv5HiBD0RqF18=;
-        b=UHtX/yPNvW3BnnIU48RXcMfcUNocXwZaoAACsfAdOZM3a6nxai9XiXTlL5jFF+YH0D
-         DwiEUb7V4L1ECc/zx7HnvQGWBFKXTbEGvgDXlNcogUf7AalFRu+vVDZu/NreFva3aTkL
-         fWkR1Os4c+DkVijpAXsa55Ng1qfTzraUDeOiMwOnkzSNLrnn16T2O0JKW7BHHcDSbpfH
-         ZnC90SMuJAqJg1n2pl2qk/PsnvMRTEYZN6ao1n8oq3PYlIoBM0as9hfnCaFBwmtHU1HW
-         yOQsJlykFDiwUC9q7fGJUtoy2g9h0A7mfIRut72sa6WO00smGOnYoYOAUHZRxszGDTEj
-         I/uw==
-X-Gm-Message-State: AOAM533yEQx9DtEYMng1mQe/xP3hcxDvLDfX5eUsICcERKKSGF0YPuVU
-        8AQy+DslaN8EcIPfrLcVGMyqSvwj+fw=
-X-Google-Smtp-Source: ABdhPJzmh4Wig8dN4UkCR+ESdf5N4f6E8156HFWjRmA3Gn5B54GnPRD2bH9sGspsxT9biiio/uSQkg==
-X-Received: by 2002:a2e:3312:: with SMTP id d18mr2682223ljc.222.1597347506685;
-        Thu, 13 Aug 2020 12:38:26 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id b17sm1320761ljp.9.2020.08.13.12.38.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Aug 2020 12:38:25 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id w14so7484690ljj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 12:38:24 -0700 (PDT)
-X-Received: by 2002:a05:651c:503:: with SMTP id o3mr2937304ljp.312.1597347504250;
- Thu, 13 Aug 2020 12:38:24 -0700 (PDT)
+        id S1726636AbgHMTip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 15:38:45 -0400
+Received: from mga03.intel.com ([134.134.136.65]:49393 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726253AbgHMTio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 15:38:44 -0400
+IronPort-SDR: /8VVSEtINFwOPBsvCo9HpdrL/w64ZWmE2+6EbKs40dAKAyZGCYnGMnmgsHm3Zzv5soUlF+VoBx
+ Zd2q9QNDvSyg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9712"; a="154276590"
+X-IronPort-AV: E=Sophos;i="5.76,309,1592895600"; 
+   d="scan'208";a="154276590"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 12:38:43 -0700
+IronPort-SDR: DzrqYHtiVYVsyOU+gg7XI4CBfhv+F7ihvlSrjxRBmKV5NZwQT11lZZHyixZHyrx8Iww6683MGW
+ UZglPogzVZJA==
+X-IronPort-AV: E=Sophos;i="5.76,309,1592895600"; 
+   d="scan'208";a="470336080"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 12:38:43 -0700
+Date:   Thu, 13 Aug 2020 12:38:42 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        chenalexchen@google.com, Conrad Parker <conradparker@google.com>,
+        cyhanish@google.com, Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v36 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20200813193842.GV29439@linux.intel.com>
+References: <DD7996A6-CBA3-47CE-8DF2-9A6ADD3FE89E@amacapital.net>
+ <C107C4D3-1730-41BA-960C-C75B32DB43A0@amacapital.net>
 MIME-Version: 1.0
-References: <20200803190354.GA1293087@gmail.com> <20200805110348.GA108872@zx2c4.com>
- <CAHk-=wiq+7sW3Lk5iQ0-zY5XWES4rSxK505vXsgFY=za88+RZw@mail.gmail.com>
- <20200806131034.GA2067370@gmail.com> <20200806185723.GA24304@suse.de>
- <CAHk-=wg7PHCUMD1xY=YCCeVHspAhw0YNEhyO3CnHfRPwsf6P8A@mail.gmail.com>
- <20200806212019.GA2149204@gmail.com> <20200807084728.GA29510@suse.de> <20200813193008.GB2338781@gmail.com>
-In-Reply-To: <20200813193008.GB2338781@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 13 Aug 2020 12:38:08 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjmywKf9HZ95HZD+pv6JEmCnXaUz=Kx3=6m3jwSa4CmNQ@mail.gmail.com>
-Message-ID: <CAHk-=wjmywKf9HZ95HZD+pv6JEmCnXaUz=Kx3=6m3jwSa4CmNQ@mail.gmail.com>
-Subject: Re: [GIT PULL] x86/mm changes for v5.9
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Joerg Roedel <jroedel@suse.de>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <C107C4D3-1730-41BA-960C-C75B32DB43A0@amacapital.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 12:30 PM Ingo Molnar <mingo@kernel.org> wrote:
->
-> Would be tentatively scheduled for v5.10 though, we've had enough
-> excitement in this area for v5.9 I think. :-/
+On Tue, Aug 11, 2020 at 08:16:54AM -0700, Andy Lutomirski wrote:
+> 
+> > On Aug 10, 2020, at 5:52 PM, Andy Lutomirski <luto@amacapital.net> wrote:
+> > 
+> > ﻿
+> >>> On Aug 10, 2020, at 4:48 PM, Sean Christopherson <sean.j.christopherson@intel.com> wrote:
+> >>> 
+> >>> ﻿On Mon, Aug 10, 2020 at 04:08:46PM -0700, Andy Lutomirski wrote:
+> >>> What am I missing?  I still don't really understand why we are
+> >>> supporting this mechanism at all.  Just the asm code to invoke the
+> >>> callback seems to be about half of the entire function.
+> >> 
+> >> Because the Intel SDK (and other SDKs?) wants to use the host stack to pass
+> >> parameters out of the enclave.
+> > 
+> > Ugh, right.  I forgot about that particular abomination.
+> > 
+> > I suppose that passing a context pointer would be reasonable.
+> 
+> The alternative would be to pass in a parameter that gets put in RSP before
+> entering the enclave. The idea is that the untrusted runtime would allocate a
+> couple pages with guard pages at either end, and enclaves using the
+> regrettable arguments-on-the-stack scheme would end up using the alternative
+> stack.
+> 
+> At the end of the day, none of this really matters too much. Languages that
+> can do inline asm but can’t do container_of() can get fixed or use
+> workarounds.
 
-I think I can take it for 5.9 again if you send a pull request my way.
+So, is your "official" opinion
 
-If it causes any other problems, we'll obviously revert it again and
-at that point it's final for 5.9.
+   Go update the vDSO to allow passing an arbitrary pointer.
 
-But the one report it got was fixed early and quickly enough that I
-don't feel like things were _horribly_ broken, just a mistake that
-wasn't something horribly fundamental that needs another release to
-think about.
+or
 
-                  Linus
+   Eh, don't bother.
