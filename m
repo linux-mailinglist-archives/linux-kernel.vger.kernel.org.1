@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BF9243531
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B586324353A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Aug 2020 09:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgHMHrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 03:47:05 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57701 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726499AbgHMHrF (ORCPT
+        id S1726518AbgHMHtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 03:49:23 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:39081 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726072AbgHMHtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 03:47:05 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k67wu-0004u4-Gj; Thu, 13 Aug 2020 07:46:56 +0000
-Date:   Thu, 13 Aug 2020 09:46:55 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     hui yang <yanghui.def@gmail.com>
-Cc:     christian@brauner.io, peterz@infradead.org, christian@kellner.me,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org, wad@chromium.org
-Subject: Re: [PATCH v2] mm: LMK, adjust oom_score_adj when fork a new process
-Message-ID: <20200813074655.vypcjscabep2cpri@wittgenstein>
-References: <1597287211-4291-1-git-send-email-yanghui.def@gmail.com>
+        Thu, 13 Aug 2020 03:49:23 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 07D7n8FD1028958, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 07D7n8FD1028958
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 13 Aug 2020 15:49:08 +0800
+Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 13 Aug 2020 15:49:08 +0800
+Received: from RTEXMB05.realtek.com.tw (172.21.6.98) by
+ RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 13 Aug 2020 15:49:08 +0800
+Received: from localhost.localdomain (172.21.252.101) by
+ RTEXMB01.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server id
+ 15.1.1779.2 via Frontend Transport; Thu, 13 Aug 2020 15:49:08 +0800
+From:   TY Chang <tychang@realtek.com>
+To:     <linux-realtek-soc@lists.infradead.org>, <afaerber@suse.de>
+CC:     <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>,
+        <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/9] pinctrl: update realtek DHC pinctrl driver
+Date:   Thu, 13 Aug 2020 15:48:59 +0800
+Message-ID: <20200813074908.889-1-tychang@realtek.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1597287211-4291-1-git-send-email-yanghui.def@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 10:53:31AM +0800, hui yang wrote:
-> From: YangHui <yanghui.def@gmail.com>
-> 
-> Also it rely on inheritance,But there are some things you need't inheriting
-> if all children oom_score_adj is -1000,the oom is meaningless
+Hi Andreas,
 
-I can just reapeat what I said before: we will not be changing
-inheritance behavior. It will break userspace.
+This series update Realtek DHC pinctrl driver with the following details:
 
-And there's more problems.
-Changing oom_score_adj is usually guarded by CAP_SYS_RESOURCE. It
-doesn't seem like the change here adresses that in the code or in the
-commit message. So from what I can tell this change here means, that a
-parent process that has a "always kill" or "never kill" oom score can
-spawn children that don't. That's at least surprising and at worst a
-potential security issue.
+* add missed pins
+* add pin configuration feature
+* add realtek DHC pinctrl documentation
+* fix the warnings checked by running scripts/checkpatch.pl
+* move realtek DHC pinctrl driver to realtek directory
+* add suspend/resume callback function
 
-In addition, given that you assign OOM_SCORE_ADJ_MIN to
-oom_score_adj_min you also seem to basically allow the child process to
-set /proc/<pid>/oom_score_adj to whatever low value after fork the
-process sees fit without requiring CAP_SYS_RESOURCE basically enabling a
-process to set itself to never be killed even though it's parent might
-have been in "always kill" mode. See in fs/proc/base.c:
+Changelog:
+v3
+-add specific pin configurations for specific pins of rtd1295
+-descibe specific pin configurations in rtd1295 documentation
+-describe pins property in rtd1195 and rtd1295 documentation
+-fix pinmux function name in device tree
 
-if ((short)oom_adj < task->signal->oom_score_adj_min &&
-		!capable(CAP_SYS_RESOURCE)) {
-	err = -EACCES;
-	goto err_unlock;
-}
+v2
+-remove realtek,rtd-pinctrl.yaml documentation
+-add device tree binding rtd1195 documentation
+-add deivce tree binding rtd1295 documentation
+-fix the errors running 'make dt_binding_check'
+-document the pin settings
 
-Excuse my french but that's crazy and a security issue imho.
+Cc: Andreas Färber <afaerber@suse.de>
 
-So we won't be taking this patch, sorry!
 
-For future patches, you should also explain why you need this change.
-The commit message here makes it seem you're asking for that change
-without any specific reason. That's not just against expectations but
-also problematic here because this is a uapi change where we're usually
-very strict.
+TY Chang (9):
+  pinctrl: realtek: rtd1295: Add missed pins.
+  pinctrl: realtek: rtd1295: Add pin configs.
+  pinctrl: realtek: rtd1195: Add missed pins and pin configs.
+  dt-bindings: pinctrl: realtek: Add Realtek DHC SoC rtd1195
+  dt-bindings: pinctrl: realtek: Add Realtek DHC SoC rtd1295
+  arm64: dts: realtek: rtd129x: fix SDIO pinctrl node
+  pinctrl: realtek: DHC: Fix pinctrl driver coding style according to
+    checkpatch.pl.
+  pinctrl: realtek: DHC: Move pinctrl drivers to realtek directory and
+    rename.
+  pinctrl: realtek: DHC: Add suspend/resume callback function.
 
-Christian
+ .../pinctrl/realtek,rtd1195-pinctrl.yaml      | 133 +++
+ .../pinctrl/realtek,rtd1295-pinctrl.yaml      | 192 ++++
+ arch/arm64/boot/dts/realtek/rtd129x.dtsi      |   2 +-
+ drivers/pinctrl/Kconfig                       |  10 +-
+ drivers/pinctrl/Makefile                      |   2 +-
+ drivers/pinctrl/pinctrl-rtd119x.c             | 383 --------
+ drivers/pinctrl/realtek/Kconfig               |  14 +
+ drivers/pinctrl/realtek/Makefile              |   3 +
+ drivers/pinctrl/realtek/pinctrl-rtd.c         | 694 +++++++++++++++
+ .../pinctrl/{ => realtek}/pinctrl-rtd1195.h   | 490 +++++++---
+ .../pinctrl/{ => realtek}/pinctrl-rtd1295.h   | 840 +++++++++++++++---
+ 11 files changed, 2129 insertions(+), 634 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/realtek,rtd1195-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/realtek,rtd1295-pinctrl.yaml
+ delete mode 100644 drivers/pinctrl/pinctrl-rtd119x.c
+ create mode 100644 drivers/pinctrl/realtek/Kconfig
+ create mode 100644 drivers/pinctrl/realtek/Makefile
+ create mode 100644 drivers/pinctrl/realtek/pinctrl-rtd.c
+ rename drivers/pinctrl/{ => realtek}/pinctrl-rtd1195.h (64%)
+ rename drivers/pinctrl/{ => realtek}/pinctrl-rtd1295.h (61%)
 
-> 
-> Signed-off-by: YangHui <yanghui.def@gmail.com>
-> ---
->  include/uapi/linux/oom.h | 1 +
->  kernel/fork.c            | 4 ++--
->  2 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/uapi/linux/oom.h b/include/uapi/linux/oom.h
-> index 750b1c5..0251f23 100644
-> --- a/include/uapi/linux/oom.h
-> +++ b/include/uapi/linux/oom.h
-> @@ -8,6 +8,7 @@
->   */
->  #define OOM_SCORE_ADJ_MIN	(-1000)
->  #define OOM_SCORE_ADJ_MAX	1000
-> +#define OOM_SCORE_ADJ_DEFAULT  0
->  
->  /*
->   * /proc/<pid>/oom_adj set to -17 protects from the oom killer for legacy
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 4d32190..9dfa388 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1584,8 +1584,8 @@ static int copy_signal(unsigned long clone_flags, struct task_struct *tsk)
->  	tty_audit_fork(sig);
->  	sched_autogroup_fork(sig);
->  
-> -	sig->oom_score_adj = current->signal->oom_score_adj;
-> -	sig->oom_score_adj_min = current->signal->oom_score_adj_min;
-> +	sig->oom_score_adj = OOM_SCORE_ADJ_DEFAULT;
-> +	sig->oom_score_adj_min = OOM_SCORE_ADJ_MIN;
->  
->  	mutex_init(&sig->cred_guard_mutex);
->  	mutex_init(&sig->exec_update_mutex);
-> -- 
-> 2.7.4
-> 
+-- 
+2.28.0
+
