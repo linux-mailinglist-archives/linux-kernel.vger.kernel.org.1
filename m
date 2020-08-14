@@ -2,220 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE2E2448BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53412448C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbgHNLR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 07:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727008AbgHNLRZ (ORCPT
+        id S1727921AbgHNLY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 07:24:27 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:51662 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726578AbgHNLY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 07:17:25 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 553DCC061385
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:17:25 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id b11so4612429lfe.10
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:17:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QBokjrRyuPxSNRuukuJ5elSpQbNeU0sbZvuVGq71ROs=;
-        b=BVi+wkP/aHwJX/9qZTfOp50mf43546GYOOKWZKAKnm7qPuw5JWv3fnZKxx37/NtSEI
-         XEUFQy2ct9Dj5t1Pg7fsg+txAQ2mGMmJu0yCBCf6j/h0ixEPYTm6Kh0Hu5YNwT+HOqPN
-         MkPAdT8v1bDaAEQaikl+N8kQDvmXWVk9gP1X8Ju1oyiC1uoHlDUylfMBnmq6Kh1y/x1I
-         MdAwEKeCwJuvO+U/Be0+vLlWjih8UrJtOqfI5OPJgJzRymp/Ns+kCxYXJ1+ANZYMvwtX
-         aHCmhNOBuo+5r0iVwEdLgNafxhNQhIGWKZnuAzwoqC3Vp3bhKJLtq4JAVZMkNeQFZFiC
-         J+BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QBokjrRyuPxSNRuukuJ5elSpQbNeU0sbZvuVGq71ROs=;
-        b=b7VzN62najM6wuRovbz3VopKrJ09TFxDVC9F9O470gzcixw5rS4EYE11MKoytmzClm
-         O7tMZ8rSZUb0OI1x6sYx9s05eB9AtwnVuXze/ZFA3E79jmfyjnJtY6xQ4L8Ozr4hV052
-         5Oj9d1HoCbFbZVrzDkJJGlp1o2FLei7CtobPCdlMe931C3tCPDej8GJ4Tg2zwDhDXpJw
-         xEfd9fSH85x7RiHSbW2rwMfPa9kzIwQKBzao+10jwQyjlxaz0CBI4JqVuNhXvZqMiKcH
-         /zu4sgebqye3KQVWRfZqms0fIXUl84FqZTt+walZkq8bcQYTQXo431hhO4GuftYGchJn
-         HrTw==
-X-Gm-Message-State: AOAM531kR5QxnQndDRYB5wB1BZTeGNwuTo9Rv3bYFHhnxcuKSL/dCIqB
-        jC5kBwYemWMqDo9iqUmQ9qwQQIjrAe4BmSxoapPA0g==
-X-Google-Smtp-Source: ABdhPJyQTsEQyAN21LOFDtn5URqWlnpFaz9iA0pBPW29QcCVPWBY5pZF/JPwfIduRsjqG6CPDTYiA8RL0aN1RvuTczI=
-X-Received: by 2002:a19:bcc:: with SMTP id 195mr1009134lfl.160.1597403843391;
- Fri, 14 Aug 2020 04:17:23 -0700 (PDT)
+        Fri, 14 Aug 2020 07:24:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597404265;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T0P93oaJk+rxt8zdGycTEaWh0GUUDLaEanFlmgIvSu4=;
+        b=PgtUVPc+/ptKPEjroCETolwcymv+knbOPVC79BHOTIWq3oa/N1yjIBpbCVDvu4lnRrNh4V
+        lbYFTNuvJFpwRGpqjmaMCbc31E6aruZOE9oTab4yasxay+/XPwEUx3xhEuv5S+SFvPMBPD
+        8QUwU1BHM/hbtxYG/TtpCIRozBUTAYw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-542-TX4nKKRBN224Qxarlq2mnw-1; Fri, 14 Aug 2020 07:24:23 -0400
+X-MC-Unique: TX4nKKRBN224Qxarlq2mnw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AE3581DDE1;
+        Fri, 14 Aug 2020 11:24:21 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-12-154.pek2.redhat.com [10.72.12.154])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3D5E4100AE5E;
+        Fri, 14 Aug 2020 11:24:16 +0000 (UTC)
+Date:   Fri, 14 Aug 2020 19:24:13 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     Sang Yan <sangyan@huawei.com>
+Cc:     kexec@lists.infradead.org, ebiederm@xmission.com,
+        linux-kernel@vger.kernel.org, xiexiuqi@huawei.com,
+        guohanjun@huawei.com, luanjianhai@huawei.com, zhuling8@huawei.com,
+        luchunhua@huawei.com, pasha.tatashin@soleen.com
+Subject: Re: [PATCH 1/2] kexec: Add quick kexec support for kernel
+Message-ID: <20200814112413.GA8097@dhcp-128-65.nay.redhat.com>
+References: <20200814055239.47348-1-sangyan@huawei.com>
+ <20200814065845.GA18234@dhcp-128-65.nay.redhat.com>
+ <ad098e21-d689-f655-1e32-c93adcf0cb2d@huawei.com>
 MIME-Version: 1.0
-References: <1595333413-30052-1-git-send-email-sumit.garg@linaro.org>
- <1595333413-30052-3-git-send-email-sumit.garg@linaro.org> <CAD=FV=XUNqun3d+C_7GpgntGWRXwLSLnXKStLUz8iqZoGKu8zg@mail.gmail.com>
- <CAFA6WYNq-Z5WD=AqJn2_DEg0F6G1CYte2y5Snc964vsgCnr0Bw@mail.gmail.com> <CAD=FV=Vu3PGSUzargD-6e2XOw=Eh7CZaQ_+a09dr8SR1T8eE2g@mail.gmail.com>
-In-Reply-To: <CAD=FV=Vu3PGSUzargD-6e2XOw=Eh7CZaQ_+a09dr8SR1T8eE2g@mail.gmail.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Fri, 14 Aug 2020 16:47:11 +0530
-Message-ID: <CAFA6WYPJ_w+R15NRKK5BzZtTxKq8Gh_mGswuYbW0cYZoBYLhxw@mail.gmail.com>
-Subject: Re: [RFC 2/5] serial: core: Add framework to allow NMI aware serial drivers
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-serial@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
-        Jiri Slaby <jslaby@suse.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ad098e21-d689-f655-1e32-c93adcf0cb2d@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Aug 2020 at 20:08, Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Thu, Aug 13, 2020 at 7:19 AM Sumit Garg <sumit.garg@linaro.org> wrote:
-> >
-> > On Thu, 13 Aug 2020 at 05:29, Doug Anderson <dianders@chromium.org> wrote:
-> > >
-> > > Hi,
-> > >
-> > > On Tue, Jul 21, 2020 at 5:11 AM Sumit Garg <sumit.garg@linaro.org> wrote:
-> > > >
-> > > > Add NMI framework APIs in serial core which can be leveraged by serial
-> > > > drivers to have NMI driven serial transfers. These APIs are kept under
-> > > > CONFIG_CONSOLE_POLL as currently kgdb initializing uart in polling mode
-> > > > is the only known user to enable NMI driven serial port.
-> > > >
-> > > > The general idea is to intercept RX characters in NMI context, if those
-> > > > are specific to magic sysrq then allow corresponding handler to run in
-> > > > NMI context. Otherwise defer all other RX and TX operations to IRQ work
-> > > > queue in order to run those in normal interrupt context.
-> > > >
-> > > > Also, since magic sysrq entry APIs will need to be invoked from NMI
-> > > > context, so make those APIs NMI safe via deferring NMI unsafe work to
-> > > > IRQ work queue.
-> > > >
-> > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > > ---
-> > > >  drivers/tty/serial/serial_core.c | 120 ++++++++++++++++++++++++++++++++++++++-
-> > > >  include/linux/serial_core.h      |  67 ++++++++++++++++++++++
-> > > >  2 files changed, 185 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-> > > > index 57840cf..6342e90 100644
-> > > > --- a/drivers/tty/serial/serial_core.c
-> > > > +++ b/drivers/tty/serial/serial_core.c
-> > > > @@ -3181,8 +3181,14 @@ static bool uart_try_toggle_sysrq(struct uart_port *port, unsigned int ch)
-> > > >                 return true;
-> > > >         }
-> > > >
-> > > > +#ifdef CONFIG_CONSOLE_POLL
-> > > > +       if (in_nmi())
-> > > > +               irq_work_queue(&port->nmi_state.sysrq_toggle_work);
-> > > > +       else
-> > > > +               schedule_work(&sysrq_enable_work);
-> > > > +#else
-> > > >         schedule_work(&sysrq_enable_work);
-> > > > -
-> > > > +#endif
-> > >
-> > > It should be a very high bar to have #ifdefs inside functions.  I
-> > > don't think this meets it.  Instead maybe something like this
-> > > (untested and maybe slightly wrong syntax, but hopefully makes
-> > > sense?):
-> > >
-> > > Outside the function:
-> > >
-> > > #ifdef CONFIG_CONSOLE_POLL
-> > > #define queue_port_nmi_work(port, work_type)
-> > > irq_work_queue(&port->nmi_state.work_type)
-> > > #else
-> > > #define queue_port_nmi_work(port, work_type)
-> > > #endif
-> > >
-> > > ...and then:
-> > >
-> > > if (IS_ENABLED(CONFIG_CONSOLE_POLL) && in_nmi())
-> > >   queue_port_nmi_work(port, sysrq_toggle_work);
-> > > else
-> > >   schedule_work(&sysrq_enable_work);
-> > >
-> > > ---
-> > >
-> > > The whole double-hopping is really quite annoying.  I guess
-> > > schedule_work() can't be called from NMI context but can be called
-> > > from IRQ context?  So you need to first transition from NMI context to
-> > > IRQ context and then go and schedule the work?  Almost feels like we
-> > > should just fix schedule_work() to do this double-hop for you if
-> > > called from NMI context.  Seems like you could even re-use the list
-> > > pointers in the work_struct to keep the queue of people who need to be
-> > > scheduled from the next irq_work?  Worst case it seems like you could
-> > > add a schedule_work_nmi() that would do all the hoops for you.  ...but
-> > > I also know very little about NMI so maybe I'm being naive.
-> > >
-> >
-> > Thanks for this suggestion and yes indeed we could make
-> > schedule_work() NMI safe and in turn get rid of all this #ifdefs. Have
-> > a look at below changes:
-> >
-> > diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-> > index 26de0ca..1daf1b4 100644
-> > --- a/include/linux/workqueue.h
-> > +++ b/include/linux/workqueue.h
-> > @@ -14,6 +14,7 @@
-> >  #include <linux/atomic.h>
-> >  #include <linux/cpumask.h>
-> >  #include <linux/rcupdate.h>
-> > +#include <linux/irq_work.h>
-> >
-> >  struct workqueue_struct;
-> >
-> > @@ -106,6 +107,7 @@ struct work_struct {
-> >  #ifdef CONFIG_LOCKDEP
-> >         struct lockdep_map lockdep_map;
-> >  #endif
-> > +       struct irq_work iw;
->
-> Hrm, I was thinking you could just have a single queue per CPU then
-> you don't need to add all this extra data to every single "struct
-> work_struct".  I was thinking you could use the existing list node in
-> the "struct work_struct" to keep track of the list of things.  ...but
-> maybe my idea this isn't actually valid because the linked list might
-> be in use if we're scheduling work that's already pending / running?
->
-> In any case, I worry that people won't be happy with the extra
-> overhead per "struct work_struct".  Can we reduce it at all?  It still
-> does feel like you could get by with a single global queue and thus
-> you wouldn't need to store the function pointer and flags with every
-> "struct work_struct", right?  So all you'd need is a single pointer
-> for the linked list?  I haven't actually tried implementing this,
-> though, so I could certainly be wrong.
+Hi,
 
-Let me try to elaborate here:
+On 08/14/20 at 04:21pm, Sang Yan wrote:
+> 
+> 
+> On 08/14/20 14:58, Dave Young wrote:
+> > On 08/14/20 at 01:52am, Sang Yan wrote:
+> >> In normal kexec, relocating kernel may cost 5 ~ 10 seconds, to
+> >> copy all segments from vmalloced memory to kernel boot memory,
+> >> because of disabled mmu.
+> > 
+> > It is not the case on all archs, I assume your case is arm64, please
+> > describe it in patch log :)
+> > 
+> Yes, it's particularly obvious on arm64. I will add it to the patch log,
+> and test how long it takes on x86 and other arch.
+> 
+> > About the arm64 problem, I know Pavel Tatashin is working on a patchset
+> > to improve the performance with enabling mmu.
+> > 
+> > I added Pavel in cc, can you try his patches?
+> > 
+> Thanks for your tips, I will try these patches. @Pavel.
+> Disable mmu after finishing copying pages?
+> >>
+> >> We introduce quick kexec to save time of copying memory as above,
+> >> just like kdump(kexec on crash), by using reserved memory
+> >> "Quick Kexec".
+> > 
+> > This approach may have gain, but it also introduce extra requirements to
+> > pre-reserve a memory region.  I wonder how Eric thinks about the idea.
+> > 
+> > Anyway the "quick" name sounds not very good, I would suggest do not
+> > introduce a new param, and the code can check if pre-reserved region
+> > exist then use it, if not then fallback to old way.
+> > 
+> aha. I agree with it, but I thought it may change the old behaviors of
+> kexec_load.
+> 
+> I will update a new patch without introducing new flags and new params.
 
-Here we are dealing with 2 different layers of deferring work, one is
-irq_work (NMI safe) using "struct irq_work" and other is normal
-workqueue (NMI unsafe) using "struct work_struct".
+Frankly I'm still not sure it is worth to introduce a new interface if the
+improvement can be done in arch code like Pavel is doing.  Can you try
+that first?
 
-So when we are in NMI context, the only option is to use irq_work to
-defer work and need to pass reference to "struct irq_work". Now in
-following irq_work function:
+Thanks
+Dave
 
-+void queue_work_nmi(struct irq_work *iw)
-+{
-+       struct work_struct *work = container_of(iw, struct work_struct, iw);
-+
-+       queue_work(system_wq, work);
-+}
-+EXPORT_SYMBOL(queue_work_nmi);
-
-we can't find a reference to "struct work_struct" until there is 1:1
-mapping with "struct irq_work". So we require a way to establish this
-mapping and having "struct irq_work" as part of "struct work_struct"
-tries to achieve that. If you have any better way to achieve this, I
-can use that instead.
-
--Sumit
-
->
->
-> -Doug
