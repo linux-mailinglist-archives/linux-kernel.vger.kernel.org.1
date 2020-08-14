@@ -2,88 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECAA5244EF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 21:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27305244F01
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 21:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728473AbgHNTsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 15:48:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39730 "EHLO mail.kernel.org"
+        id S1728089AbgHNT4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 15:56:40 -0400
+Received: from mx3.wp.pl ([212.77.101.9]:25734 "EHLO mx3.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726213AbgHNTsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 15:48:37 -0400
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2720C20675;
-        Fri, 14 Aug 2020 19:48:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597434517;
-        bh=49/ymVCFq5phy1rc2KbPcsV+yZ5d4kVWmjeUsVuKKwM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Y8/6CtNT/RWvMjmzXMLlevAkc4kqUJrzX5zkk8gjW5JhvpJ1jn74alNArmaoGUwtV
-         BTjZ9v6pwhmIEORFU0lvPU4YQGGPs7aJeMb/EghGAS//amBYgvRyHv4Wog+/ny2Ozf
-         i02tv8PtaXecGpHXvZP0PZMyZYXhfHMrfssd4K1g=
-Received: by mail-ot1-f41.google.com with SMTP id k12so8517192otr.1;
-        Fri, 14 Aug 2020 12:48:37 -0700 (PDT)
-X-Gm-Message-State: AOAM530unYJ5UX9X5Kyz15gs69EIT6ECcpWz6Ykk624Rw2rtQYu0sgma
-        44y1gDkl0ruVMtWOOvsc1x9Ywo/SZaLph3GqCQ==
-X-Google-Smtp-Source: ABdhPJxrQSww6LTRkLkSM1un20zusfbbOrIU5xOzV9SZrRPaqPenXR84qBQ/ArA6cwl1NcJXao8AjghrDjG7SZuEgLo=
-X-Received: by 2002:a05:6830:1d8e:: with SMTP id y14mr3111218oti.129.1597434516538;
- Fri, 14 Aug 2020 12:48:36 -0700 (PDT)
+        id S1726297AbgHNT4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 15:56:39 -0400
+X-Greylist: delayed 405 seconds by postgrey-1.27 at vger.kernel.org; Fri, 14 Aug 2020 15:56:37 EDT
+Received: (wp-smtpd smtp.wp.pl 27067 invoked from network); 14 Aug 2020 21:49:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1597434590; bh=6hs6TPHFIz1kOVdD6LgU8CRUVT9Umoi+c/8YAc/xC4M=;
+          h=From:To:Cc:Subject;
+          b=eN8v/ZpcBq4H7jMtxIUpXjF98kThu7jSSm54P6uuEch+cVb48QelKmg460BIds1/A
+           09ptcadME72tw3bbC4ztUfVtLh4894huexGOo0favP0554YmvmDTG1OIM83ZXOlqUc
+           YrFZWYGVS6fGIh+lzVQvM1LIiY30f+Dck1J+7KTk=
+Received: from riviera.nat.student.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <linux-gpio@vger.kernel.org>; 14 Aug 2020 21:49:50 +0200
+From:   Aleksander Jan Bajkowski <olek2@wp.pl>
+To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, bgolaszewski@baylibre.com,
+        linus.walleij@linaro.org, john@phrozen.org
+Cc:     Aleksander Jan Bajkowski <olek2@wp.pl>
+Subject: [PATCH] gpio: stp-xway: automatically drive GPHY leds on ar10 and grx390
+Date:   Fri, 14 Aug 2020 21:48:47 +0200
+Message-Id: <20200814194847.3171-1-olek2@wp.pl>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200813114344.67730-1-colin.king@canonical.com>
-In-Reply-To: <20200813114344.67730-1-colin.king@canonical.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 14 Aug 2020 13:48:25 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+hBnFui6fOoY9jv4YFYX7MdiPhdA_dWHiFrMzLXJOYbw@mail.gmail.com>
-Message-ID: <CAL_Jsq+hBnFui6fOoY9jv4YFYX7MdiPhdA_dWHiFrMzLXJOYbw@mail.gmail.com>
-Subject: Re: [PATCH][V2] of/address: check for invalid range.cpu_addr
-To:     Colin King <colin.king@canonical.com>
-Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-WP-DKIM-Status: good (id: wp.pl)                                      
+X-WP-MailID: 51f58ab8618c49ec09034a6d961ab25c
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [MXMQ]                               
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 5:43 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> Currently invalid CPU addresses are not being sanity checked resulting in
-> SATA setup failure on a SynQuacer SC2A11 development machine. The original
-> check was removed by and earlier commit, so add a sanity check back in
-> to avoid this regression.
->
-> Fixes: 7a8b64d17e35 ("of/address: use range parser for of_dma_get_range")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/of/address.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/of/address.c b/drivers/of/address.c
-> index 590493e04b01..6ffbf7b99e92 100644
-> --- a/drivers/of/address.c
-> +++ b/drivers/of/address.c
-> @@ -985,6 +985,10 @@ int of_dma_get_range(struct device_node *np, u64 *dma_addr, u64 *paddr, u64 *siz
->                         /* Don't error out as we'd break some existing DTs */
->                         continue;
->                 }
-> +               if (range.cpu_addr == OF_BAD_ADDR) {
-> +                       pr_err("Translation of CPU address failed on node (%pOF)\n", node);
-> +                       continue;
-> +               }
->                 dma_offset = range.cpu_addr - range.bus_addr;
->
->                 /* Take lower and upper limits */
-> --
->
-> V2: print message using pr_err and don't print range.cpu_addr as it's always
->     going to be OF_BAD_ADDR so the information is pointless.
+Ar10 (xr300) has 3 and grx390 (xrx330) has 4 built-in GPHY. PHY LEDs are
+connected via STP. STP is a peripheral controller used to drive external
+shift register cascades. The hardware is able to allow the GPHY to drive
+some GPIO of the cascade automatically.This patch allows for this on ar10
+and grx390.
 
-Shouldn't we print the bus_addr like the original message did?
-Otherwise, we don't really know what entry is problematic.
+Tested on D-Link DWR-966 with OpenWRT.
 
-Rob
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+---
+ drivers/gpio/gpio-stp-xway.c | 54 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 48 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpio/gpio-stp-xway.c b/drivers/gpio/gpio-stp-xway.c
+index 9e23a5ae8108..0ce1543426a4 100644
+--- a/drivers/gpio/gpio-stp-xway.c
++++ b/drivers/gpio/gpio-stp-xway.c
+@@ -41,7 +41,10 @@
+ #define XWAY_STP_4HZ		BIT(23)
+ #define XWAY_STP_8HZ		BIT(24)
+ #define XWAY_STP_10HZ		(BIT(24) | BIT(23))
+-#define XWAY_STP_SPEED_MASK	(0xf << 23)
++#define XWAY_STP_SPEED_MASK	(BIT(23) | BIT(24) | BIT(25) | BIT(26) | BIT(27))
++
++#define XWAY_STP_FPIS_VALUE	BIT(21)
++#define XWAY_STP_FPIS_MASK	(BIT(20) | BIT(21))
+ 
+ /* clock source for automatic update */
+ #define XWAY_STP_UPD_FPI	BIT(31)
+@@ -54,7 +57,9 @@
+ /* 2 groups of 3 bits can be driven by the phys */
+ #define XWAY_STP_PHY_MASK	0x7
+ #define XWAY_STP_PHY1_SHIFT	27
+-#define XWAY_STP_PHY2_SHIFT	15
++#define XWAY_STP_PHY2_SHIFT	3
++#define XWAY_STP_PHY3_SHIFT	6
++#define XWAY_STP_PHY4_SHIFT	15
+ 
+ /* STP has 3 groups of 8 bits */
+ #define XWAY_STP_GROUP0		BIT(0)
+@@ -80,6 +85,8 @@ struct xway_stp {
+ 	u8 dsl;		/* the 2 LSBs can be driven by the dsl core */
+ 	u8 phy1;	/* 3 bits can be driven by phy1 */
+ 	u8 phy2;	/* 3 bits can be driven by phy2 */
++	u8 phy3;	/* 3 bits can be driven by phy3 */
++	u8 phy4;	/* 3 bits can be driven by phy4 */
+ 	u8 reserved;	/* mask out the hw driven bits in gpio_request */
+ };
+ 
+@@ -114,7 +121,8 @@ static void xway_stp_set(struct gpio_chip *gc, unsigned gpio, int val)
+ 	else
+ 		chip->shadow &= ~BIT(gpio);
+ 	xway_stp_w32(chip->virt, chip->shadow, XWAY_STP_CPU0);
+-	xway_stp_w32_mask(chip->virt, 0, XWAY_STP_CON_SWU, XWAY_STP_CON0);
++	if (!chip->reserved)
++		xway_stp_w32_mask(chip->virt, 0, XWAY_STP_CON_SWU, XWAY_STP_CON0);
+ }
+ 
+ /**
+@@ -188,16 +196,37 @@ static void xway_stp_hw_init(struct xway_stp *chip)
+ 			chip->phy2 << XWAY_STP_PHY2_SHIFT,
+ 			XWAY_STP_CON1);
+ 
++	if (of_machine_is_compatible("lantiq,grx390")
++	    || of_machine_is_compatible("lantiq,ar10")) {
++		xway_stp_w32_mask(chip->virt,
++				XWAY_STP_PHY_MASK << XWAY_STP_PHY3_SHIFT,
++				chip->phy3 << XWAY_STP_PHY3_SHIFT,
++				XWAY_STP_CON1);
++	}
++
++	if (of_machine_is_compatible("lantiq,grx390")) {
++		xway_stp_w32_mask(chip->virt,
++				XWAY_STP_PHY_MASK << XWAY_STP_PHY4_SHIFT,
++				chip->phy4 << XWAY_STP_PHY4_SHIFT,
++				XWAY_STP_CON1);
++	}
++
+ 	/* mask out the hw driven bits in gpio_request */
+-	chip->reserved = (chip->phy2 << 5) | (chip->phy1 << 2) | chip->dsl;
++	chip->reserved = (chip->phy4 << 11) | (chip->phy3 << 8) | (chip->phy2 << 5)
++		| (chip->phy1 << 2) | chip->dsl;
+ 
+ 	/*
+ 	 * if we have pins that are driven by hw, we need to tell the stp what
+ 	 * clock to use as a timer.
+ 	 */
+-	if (chip->reserved)
++	if (chip->reserved) {
+ 		xway_stp_w32_mask(chip->virt, XWAY_STP_UPD_MASK,
+ 			XWAY_STP_UPD_FPI, XWAY_STP_CON1);
++		xway_stp_w32_mask(chip->virt, XWAY_STP_SPEED_MASK,
++			XWAY_STP_10HZ, XWAY_STP_CON1);
++		xway_stp_w32_mask(chip->virt, XWAY_STP_FPIS_MASK,
++			XWAY_STP_FPIS_VALUE, XWAY_STP_CON1);
++	}
+ }
+ 
+ static int xway_stp_probe(struct platform_device *pdev)
+@@ -242,13 +271,26 @@ static int xway_stp_probe(struct platform_device *pdev)
+ 	/* find out which gpios are controlled by the phys */
+ 	if (of_machine_is_compatible("lantiq,ar9") ||
+ 			of_machine_is_compatible("lantiq,gr9") ||
+-			of_machine_is_compatible("lantiq,vr9")) {
++			of_machine_is_compatible("lantiq,vr9") ||
++			of_machine_is_compatible("lantiq,ar10") ||
++			of_machine_is_compatible("lantiq,grx390")) {
+ 		if (!of_property_read_u32(pdev->dev.of_node, "lantiq,phy1", &phy))
+ 			chip->phy1 = phy & XWAY_STP_PHY_MASK;
+ 		if (!of_property_read_u32(pdev->dev.of_node, "lantiq,phy2", &phy))
+ 			chip->phy2 = phy & XWAY_STP_PHY_MASK;
+ 	}
+ 
++	if (of_machine_is_compatible("lantiq,ar10") ||
++			of_machine_is_compatible("lantiq,grx390")) {
++		if (!of_property_read_u32(pdev->dev.of_node, "lantiq,phy3", &phy))
++			chip->phy3 = phy & XWAY_STP_PHY_MASK;
++	}
++
++	if (of_machine_is_compatible("lantiq,grx390")) {
++		if (!of_property_read_u32(pdev->dev.of_node, "lantiq,phy4", &phy))
++			chip->phy4 = phy & XWAY_STP_PHY_MASK;
++	}
++
+ 	/* check which edge trigger we should use, default to a falling edge */
+ 	if (!of_find_property(pdev->dev.of_node, "lantiq,rising", NULL))
+ 		chip->edge = XWAY_STP_FALLING;
+-- 
+2.20.1
+
