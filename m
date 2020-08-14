@@ -2,103 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A244D244A0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 14:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E79C2449FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 14:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728520AbgHNM50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 08:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
+        id S1728179AbgHNMxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 08:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728249AbgHNM5Z (ORCPT
+        with ESMTP id S1726313AbgHNMxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 08:57:25 -0400
-X-Greylist: delayed 319 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 14 Aug 2020 05:57:25 PDT
-Received: from mx2.mailbox.org (mx2a.mailbox.org [IPv6:2001:67c:2050:104:0:2:25:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA22C061384
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 05:57:24 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
-        (No client certificate requested)
-        by mx2.mailbox.org (Postfix) with ESMTPS id 08253A11F8;
-        Fri, 14 Aug 2020 14:52:01 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter02.heinlein-hosting.de (spamfilter02.heinlein-hosting.de [80.241.56.116]) (amavisd-new, port 10030)
-        with ESMTP id WAjYwPStBhZj; Fri, 14 Aug 2020 14:51:59 +0200 (CEST)
-From:   Thomas Martitz <t.martitz@avm.de>
-To:     3chas3@gmail.com
-Cc:     tsbogend@alpha.franken.de, chris@zankel.net,
-        linux-kernel@vger.kernel.org, Thomas Martitz <t.martitz@avm.de>
-Subject: [PATCH] uapi: remove a few asm/ioctl.h includes
-Date:   Fri, 14 Aug 2020 14:51:42 +0200
-Message-Id: <20200814125142.1131183-1-t.martitz@avm.de>
+        Fri, 14 Aug 2020 08:53:46 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E412BC061384;
+        Fri, 14 Aug 2020 05:53:45 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id k23so10586043iom.10;
+        Fri, 14 Aug 2020 05:53:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2Rxr2HOJk0RRDA2bOpilICbe69ukX1fuRKFSU2tquDY=;
+        b=s0qDed3uTBLS4odQuLtuuh+t8K5AWMi/mAMpAn/B5PeEjlvmrSCLCkJ6ExwisRILLU
+         7tT9mFwbrKiJF0i0uA8sbX5feTgMpCHemcs9JQ7+gRf7M6g3Pr/49BxcRKwICQsYgAKZ
+         hfoAWr65skbQpob2Uy8e7pAvstUsuNLbchRLZHk1cKfs9O/tRLE7xVVj6LwitMUAxwEK
+         C/4Q5G62XzqUZBa4dM35UusZufVZBeahMbtPtovXt2snazXl9vhbhJUndr9dVc/4MXkC
+         2Floc1JE61RI3kUcHDo3M7vKPyR6ng3nHfPvE+wOEqz0h0hX26po2VrsCuJ6mo2K10XO
+         Blcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2Rxr2HOJk0RRDA2bOpilICbe69ukX1fuRKFSU2tquDY=;
+        b=aLmXmNXwb7pZ2zDsUrSDJwtPFj+CRLFSMgZO45d2+WmNbSm5uHntefDtlONBORNRkv
+         hYlituS4lty8tS3Fdo0upsGQo6bWw48wYSZEqwbtvhG6ZSvBjBqX91u3A9QioQ4lRDOK
+         OgZQLjoYg3mzFM5ALUo0bI257L8+WLGtUxXVme3Zn9zGUfx7rfahu6o+59Yi6mK11v+J
+         yTb9gTyEqn7IbUoaxrqrb3Dqr1J5kNQHG1fNl3qIk6U9ZnML9YFqHLSA5GVrFZnq5vxL
+         TBlfDukeGOfi8ZgS+IIHYa2BvVSdta4iBHgHqyJlVWwvYBFUxrGKas1th3GO/Gs1V+W+
+         xoag==
+X-Gm-Message-State: AOAM531nJqS3LLpGwulz2lDswmkvBqj9EjG26cQyuho7hB6NvkLodurP
+        OTrqsJ3pw0AbdWkfC3CN6d2aCx0wraNZEA==
+X-Google-Smtp-Source: ABdhPJxn6SfKpF4YZCV4SR0ky34lRBEFE4/R5fTuf+UcUTdeqjiAxdAkHk5jWuJPvML/LtYCLTVLyA==
+X-Received: by 2002:a5d:9d8a:: with SMTP id 10mr2123198ion.195.1597409624729;
+        Fri, 14 Aug 2020 05:53:44 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:7d86:99d6:a568:98e8])
+        by smtp.gmail.com with ESMTPSA id u25sm4142216iob.51.2020.08.14.05.53.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Aug 2020 05:53:44 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-omap@vger.kernel.org
+Cc:     Adam Ford <aford173@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: logicpd-som-lv-baseboard: Fix broken audio
+Date:   Fri, 14 Aug 2020 07:53:38 -0500
+Message-Id: <20200814125338.2428209-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: **
-X-Rspamd-Score: 2.99 / 15.00 / 15.00
-X-Rspamd-Queue-Id: DF62E1825
-X-Rspamd-UID: 6c0594
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We found the following warnings when build userspace for our MIPS-based boards:
+Older versions of U-Boot would pinmux the whole board, but as
+the bootloader got updated, it started to only pinmux the pins
+it needed, and expected Linux to configure what it needed.
 
-include/asm-generic/ioctl.h:65: warning: "_IOC" redefined
+Unfortunately this caused an issue with the audio, because the
+mcbsp2 pins were configured in the device tree but never
+referenced by the driver. When U-Boot stopped muxing the audio
+pins, the audio died.
 
-It appears that asm/ioctl.h does not play well when compiling against musl libc.
-Since almost all other uapi headers that wrap _IOC() and friends do *not*
-include asm/ioctl.h itself, lets follow this route for sickios.h and atmioc.h.
+This patch adds the references to the associate the pin controller
+with the mcbsp2 driver which makes audio operate again.
 
-The userspace is required to include <sys/ioctl.h> anyway when it wants
-to call ioctl() for any macro provided by the affected headers.
----
- arch/mips/include/uapi/asm/sockios.h   | 2 --
- arch/xtensa/include/uapi/asm/sockios.h | 2 --
- include/uapi/linux/atmioc.h            | 3 ---
- 3 files changed, 7 deletions(-)
+Fixes: 5cb8b0fa55a9 ("ARM: dts: Move most of logicpd-som-lv-37xx-devkit.dts to logicpd-som-lv-baseboard.dtsi")
 
-diff --git a/arch/mips/include/uapi/asm/sockios.h b/arch/mips/include/uapi/asm/sockios.h
-index 66f60234f290b..a96f3ea5430f5 100644
---- a/arch/mips/include/uapi/asm/sockios.h
-+++ b/arch/mips/include/uapi/asm/sockios.h
-@@ -11,8 +11,6 @@
- #ifndef _ASM_SOCKIOS_H
- #define _ASM_SOCKIOS_H
+Signed-off-by: Adam Ford <aford173@gmail.com>
+
+diff --git a/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi b/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi
+index 79e9e24328b9..395e05f10d36 100644
+--- a/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi
++++ b/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi
+@@ -51,6 +51,8 @@
  
--#include <asm/ioctl.h>
--
- /* Socket-level I/O control calls. */
- #define FIOGETOWN	_IOR('f', 123, int)
- #define FIOSETOWN	_IOW('f', 124, int)
-diff --git a/arch/xtensa/include/uapi/asm/sockios.h b/arch/xtensa/include/uapi/asm/sockios.h
-index 1a1f58f4b75a2..71d05c88b8178 100644
---- a/arch/xtensa/include/uapi/asm/sockios.h
-+++ b/arch/xtensa/include/uapi/asm/sockios.h
-@@ -15,8 +15,6 @@
- #ifndef _XTENSA_SOCKIOS_H
- #define _XTENSA_SOCKIOS_H
+ &mcbsp2 {
+ 	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcbsp2_pins>;
+ };
  
--#include <asm/ioctl.h>
--
- /* Socket-level I/O control calls. */
- 
- #define FIOGETOWN	_IOR('f', 123, int)
-diff --git a/include/uapi/linux/atmioc.h b/include/uapi/linux/atmioc.h
-index cd7655e40c77a..36a51ca18ea3c 100644
---- a/include/uapi/linux/atmioc.h
-+++ b/include/uapi/linux/atmioc.h
-@@ -13,9 +13,6 @@
- #ifndef _LINUX_ATMIOC_H
- #define _LINUX_ATMIOC_H
- 
--#include <asm/ioctl.h>
--		/* everybody including atmioc.h will also need _IO{,R,W,WR} */
--
- #define ATMIOC_PHYCOM	  0x00 /* PHY device common ioctls, globally unique */
- #define ATMIOC_PHYCOM_END 0x0f
- #define ATMIOC_PHYTYP	  0x10 /* PHY dev type ioctls, unique per PHY type */
+ &charger {
 -- 
 2.25.1
 
