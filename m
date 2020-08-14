@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BFD244DF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2EC244DE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728513AbgHNR3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 13:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
+        id S1728814AbgHNR2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 13:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728740AbgHNR20 (ORCPT
+        with ESMTP id S1728761AbgHNR23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 13:28:26 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54698C061386
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:26 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id m13so7432471qth.16
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:26 -0700 (PDT)
+        Fri, 14 Aug 2020 13:28:29 -0400
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D932EC061384
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:28 -0700 (PDT)
+Received: by mail-wm1-x34a.google.com with SMTP id g72so3423361wme.4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=PrZ8Xx7ZOES69PjxJ7W+uco2MTpU8K38pV5r5s6HLuc=;
-        b=RoM8+KMI2h2GGKlzWuBgOR8Py0rNY7TZMU06j0CyrdWaNMgFm+s8aVx1SJGX4Gx0Yu
-         7iL0jYVGq/ZpqBnKxoozCPmzSxL5lsRQMy2MGg2ljRc0JK9qid+eJ2ca8kYM11IVazPU
-         5D7wAuSxLeuNoPDkQezSRD7cNU5Z09U4lP7ujCWlF7UV9xrPSIT3wWXn4AmlrwKCmmZ6
-         MvANSRo5c7D+PDmzdXHvWcV6sxBbvbluV5BCCH721wPS6ssCiOTdk5t/CEy4TJHFjQzX
-         YS8XRg4nwVZIqyKJ+wlb4D/ziTqK/qXt72NUwCDuxOh4M1MUX8qf3kZgQYHweBxv5nTr
-         VPGQ==
+        bh=iIfWl4J1G8iITi93NOgHDi/s/4XpKw61QWFW+N1x36I=;
+        b=K0McFcU/NW1+4TvtV86hOikuP0uc1Kbkt2X8tcu4BRVbwNsVpniTx+A+AKeGlPqG83
+         mDjfa19TeWpTVuAyrf2m4ekXSu4Ecbf1od7anACVOSDVBEjaPHpORnhAcHk92lv7DGK3
+         1KsptAncsZTva96Ki3faKev2CnXqKgjzWMgc6yLoY2DRSl7Z8Cv4ahqL0N37YEsUa/LR
+         nNj/HdX4ESnken+QG+7W+11MnJKKKb0UQ0oF5FhAbPlgMkNcuivbJXZT0/a3EYzegMap
+         ZsB1bcAemES+BlSUgzQbTWZqOcU08p0fReSogKNCW7czoDgg8kwWLFZCZ5NsU5OFQTF3
+         pLjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=PrZ8Xx7ZOES69PjxJ7W+uco2MTpU8K38pV5r5s6HLuc=;
-        b=XlSsZkrEgwq758SP3ENb0E0fgzj3DvAwreaez0jeZ2Yr2XswAWoK5s08bbkUOaLrVQ
-         KDlFdAnQ0wZOw7UuGk9Z89mS3/jG+KQ5jQLwdXyNFJ8q77r3yiBYWc0+piZWMBJTh5o6
-         l131PQJT7nVlZ735h2falKODlhWrQG7W8ev+ITx7ZFM02ZJuErCEleSwKL5A39ErbAIM
-         6+DfyuRj9tLoTzGBPvmIOxLvuletQH+s1IxwB2AdOFP7HBaA48WutWCE3WcmrzLt62NG
-         SZjY1mxTClZjrjggWVqBtugAo6MZysmv2BWAamRWezFnXxvX4OAQ9qqBCeJfHhBEjSTS
-         CyHg==
-X-Gm-Message-State: AOAM530oB4kBJFq0zpjPYPS2YuzvZC6iV4hY3iVg69Eq7hTvH+8RIxRB
-        VA9aFp3omy8snb7c3fWry9V0pe27U6hjH0AQ
-X-Google-Smtp-Source: ABdhPJyLILHteR8XQv6ASUjnKzzYpuETsrstUrOhCFHCsdKqZXOKezDHAwecoNC7DdH7utKm4OIpglyx7bKUIliq
-X-Received: by 2002:a0c:99c8:: with SMTP id y8mr3624054qve.57.1597426105434;
- Fri, 14 Aug 2020 10:28:25 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 19:27:08 +0200
+        bh=iIfWl4J1G8iITi93NOgHDi/s/4XpKw61QWFW+N1x36I=;
+        b=hNkfbd1wgAtXrZPSZnsEjS5fhzPxvU2mwMqLE3aMJqFfA87I4SXNg/eQW+E1GZuszR
+         mvn17Kewho/1c9me2Tilc1WvTKDeoF2awiDiy54pRZqeYwTmLyRiu/E9cKBkwpQBcnJT
+         lrvoH2h+YkI0e2NOJm439vHKsUZfMMOHX64SihXN2I6Jw2qZ2EEZ1YDdT0rl7CV4VrK8
+         Lrl4QuJeV/CWkvc1WqRGpgYq2+a8VcXZ6QCu4R30doI/2mPyBPumDLkAuZnGHAQjv3GJ
+         H4GErdYcr+lrZMmlkEWsPDLjMZD5o2kSXa0Ckgkz+LkC61+4dKrNJblfX3I2hpetHvay
+         WM9Q==
+X-Gm-Message-State: AOAM532bQ0NAF7KuyqKwMIlYV5qRJjKyql3rUYUjtIyQi0vZdSCxcbNy
+        AiKGNLyp0VdLaT/Crz62BXL82Bbh6MUrFCmu
+X-Google-Smtp-Source: ABdhPJy/WRGBFbHW6yzu3fXjbbh6ZfhsR5aLr+bVb6qX539D5XqF883Lkwh9f6pP5sIhJRXvKfWE1HxGbtWAPR5g
+X-Received: by 2002:a1c:8094:: with SMTP id b142mr3616367wmd.59.1597426107618;
+ Fri, 14 Aug 2020 10:28:27 -0700 (PDT)
+Date:   Fri, 14 Aug 2020 19:27:09 +0200
 In-Reply-To: <cover.1597425745.git.andreyknvl@google.com>
-Message-Id: <518da1e5169a4e343caa3c37feed5ad551b77a34.1597425745.git.andreyknvl@google.com>
+Message-Id: <4e2dea1d2163dc6f5a3ceb943f485b09cbd252e0.1597425745.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1597425745.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
-Subject: [PATCH 26/35] kasan, arm64: Enable TBI EL1
+Subject: [PATCH 27/35] kasan, arm64: align allocations for HW_TAGS
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Dmitry Vyukov <dvyukov@google.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -66,39 +66,45 @@ Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
         Will Deacon <will.deacon@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Hardware tag-based KASAN uses the memory tagging approach, which requires
+all allocations to be aligned to the memory granule size. Align the
+allocations to MTE_GRANULE_SIZE via ARCH_SLAB_MINALIGN when
+CONFIG_KASAN_HW_TAGS is enabled.
 
-Hardware tag-based KASAN relies on Memory Tagging Extension (MTE) that is
-built on top of the Top Byte Ignore (TBI) feature.
-
-Enable in-kernel TBI when CONFIG_KASAN_HW_TAGS is turned on by enabling
-the TCR_TBI1 bit in proc.S.
-
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- arch/arm64/mm/proc.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/include/asm/cache.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-index 152d74f2cc9c..6880ddaa5144 100644
---- a/arch/arm64/mm/proc.S
-+++ b/arch/arm64/mm/proc.S
-@@ -38,7 +38,7 @@
- /* PTWs cacheable, inner/outer WBWA */
- #define TCR_CACHE_FLAGS	TCR_IRGN_WBWA | TCR_ORGN_WBWA
+diff --git a/arch/arm64/include/asm/cache.h b/arch/arm64/include/asm/cache.h
+index a4d1b5f771f6..b8a0cae38470 100644
+--- a/arch/arm64/include/asm/cache.h
++++ b/arch/arm64/include/asm/cache.h
+@@ -6,6 +6,7 @@
+ #define __ASM_CACHE_H
  
--#ifdef CONFIG_KASAN_SW_TAGS
-+#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
- #define TCR_KASAN_FLAGS TCR_TBI1
- #else
- #define TCR_KASAN_FLAGS 0
+ #include <asm/cputype.h>
++#include <asm/mte_asm.h>
+ 
+ #define CTR_L1IP_SHIFT		14
+ #define CTR_L1IP_MASK		3
+@@ -50,6 +51,8 @@
+ 
+ #ifdef CONFIG_KASAN_SW_TAGS
+ #define ARCH_SLAB_MINALIGN	(1ULL << KASAN_SHADOW_SCALE_SHIFT)
++#elif defined(CONFIG_KASAN_HW_TAGS)
++#define ARCH_SLAB_MINALIGN	MTE_GRANULE_SIZE
+ #endif
+ 
+ #ifndef __ASSEMBLY__
 -- 
 2.28.0.220.ged08abb693-goog
 
