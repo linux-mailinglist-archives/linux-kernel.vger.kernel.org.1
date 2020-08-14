@@ -2,89 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18666244954
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 14:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E4024499F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 14:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgHNMEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 08:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbgHNMEb (ORCPT
+        id S1728459AbgHNMMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 08:12:25 -0400
+Received: from rcdn-iport-8.cisco.com ([173.37.86.79]:63068 "EHLO
+        rcdn-iport-8.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728072AbgHNMMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 08:04:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23294C061384;
-        Fri, 14 Aug 2020 05:04:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zcIN3o7nFZcsDHO6slakDMVz6rP7Gh3OIOKHo+4Ripk=; b=o7pOkJqix8h4n8IfLn2Y+C4bnN
-        NAS93wz3etTRWKWCkhPZYrKM0H+6XReBTPxs5I4XvfRTP7YqjYOZOz/5feL4W/hwVbHSG+Nc3sQba
-        aBdx4NgUvbBWjQhL+bVVSLe21m6KKY3iPx7/UXWq2LqsDkLGKQHuQKIM/aVwmOPvuNqbk9ecxon/A
-        KHTdlymSifqJv36Rwv5TrG7pfDzsJd7y7e/ZwawtyOmoUr6+r7Yi2OQuZfk9Wg+6M/9cqQJ7S0x2Z
-        jK9oog66MXYCVHaRUkfEphDoX8dVWOshqKi0CMQQmaXY2P2yIeQ7o5bNyCqJoR2cap9BEYD7gLNsE
-        osXH/Fcg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k6YRa-0000ck-NZ; Fri, 14 Aug 2020 12:04:22 +0000
-Date:   Fri, 14 Aug 2020 13:04:22 +0100
-From:   "hch@infradead.org" <hch@infradead.org>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     "hch@infradead.org" <hch@infradead.org>,
-        Kanchan Joshi <joshiiitr@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "bcrl@kvack.org" <bcrl@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        SelvaKumar S <selvakuma.s1@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-Subject: Re: [PATCH v4 6/6] io_uring: add support for zone-append
-Message-ID: <20200814120422.GA1872@infradead.org>
-References: <CA+1E3rLM4G4SwzD6RWsK6Ssp7NmhiPedZDjrqN3kORQr9fxCtw@mail.gmail.com>
- <MWHPR04MB375863C20C1EF2CB27E62703E74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <20200731091416.GA29634@infradead.org>
- <MWHPR04MB37586D39CA389296CE0252A4E74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <20200731094135.GA4104@infradead.org>
- <MWHPR04MB3758A4B2967DB1FABAAD9265E74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <20200731125110.GA11500@infradead.org>
- <CY4PR04MB37517D633920E4D31AC6EA0DE74B0@CY4PR04MB3751.namprd04.prod.outlook.com>
- <20200814081411.GA16943@infradead.org>
- <CY4PR04MB3751DE1ECCA4099902AABAA6E7400@CY4PR04MB3751.namprd04.prod.outlook.com>
+        Fri, 14 Aug 2020 08:12:14 -0400
+X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Fri, 14 Aug 2020 08:12:11 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=6326; q=dns/txt; s=iport;
+  t=1597407132; x=1598616732;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Sx0AGTN3wxNErboCy8QrXuEeasRN2v7iq0kZlP8Hku4=;
+  b=Wrh2Q3EJl2gr/jyy+ED5yTjDItmwS6dZ2GDZRBy8DHYHEFUy3a3pywQV
+   NoOTNwfwfzIRqyLXDpqUFIby9yc/EiL6m5Lo/bVxqKT39DVH6nVmq63Bg
+   WyDFvbhuKu3dOktBjwG5GR5jvfdkbEtT+J6jjfrDpyyCMPcROkUW7ustA
+   w=;
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BWBADkfDZf/4oNJK1fHgEBCxIMgX8?=
+ =?us-ascii?q?LgXU1gUQBMiyvcIF9CwEBAQ4vBAEBhEyCRwIkNgcOAgMBAQsBAQUBAQECAQY?=
+ =?us-ascii?q?EbYVohh8LAUaBDUSDJoJ9sWGBdTOJJoFAFIEkiCGEeRqBQT+EX4o0BJJCh0S?=
+ =?us-ascii?q?Bapo+gmyaEA8hoB4BshyBWgYtgVczGggbFTuCaVAZDY4rF45EIQMwNwIGCgE?=
+ =?us-ascii?q?BAwmRPgEB?=
+X-IronPort-AV: E=Sophos;i="5.76,312,1592870400"; 
+   d="scan'208";a="811846502"
+Received: from alln-core-5.cisco.com ([173.36.13.138])
+  by rcdn-iport-8.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 14 Aug 2020 12:05:01 +0000
+Received: from sjc-ads-9103.cisco.com (sjc-ads-9103.cisco.com [10.30.208.113])
+        by alln-core-5.cisco.com (8.15.2/8.15.2) with ESMTP id 07EC50DL007126;
+        Fri, 14 Aug 2020 12:05:01 GMT
+Received: by sjc-ads-9103.cisco.com (Postfix, from userid 487941)
+        id C60701588; Fri, 14 Aug 2020 05:05:00 -0700 (PDT)
+From:   Denys Zagorui <dzagorui@cisco.com>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, xe-linux-external@cisco.com,
+        xiyou.wangcong@gmail.com, ap420073@gmail.com,
+        richardcochran@gmail.com, f.fainelli@gmail.com, andrew@lunn.ch,
+        mkubecek@suse.cz, linux-kernel@vger.kernel.org
+Subject: [RFC][PATCH] net: core: SIOCADDMULTI/SIOCDELMULTI distinguish between uc and mc
+Date:   Fri, 14 Aug 2020 05:05:00 -0700
+Message-Id: <20200814120500.46875-1-dzagorui@cisco.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY4PR04MB3751DE1ECCA4099902AABAA6E7400@CY4PR04MB3751.namprd04.prod.outlook.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 10.30.208.113, sjc-ads-9103.cisco.com
+X-Outbound-Node: alln-core-5.cisco.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 08:27:13AM +0000, Damien Le Moal wrote:
-> > 
-> > O_APPEND pretty much implies out of order, as there is no way for an
-> > application to know which thread wins the race to write the next chunk.
-> 
-> Yes and no. If the application threads do not synchronize their calls to
-> io_submit(), then yes indeed, things can get out of order. But if the
-> application threads are synchronized, then the offset set for each append AIO
-> will be in sequence of submission, so the user will not see its writes
-> completing at different write offsets than this implied offsets.
+SIOCADDMULTI API allows adding multicast/unicast mac addresses but
+doesn't deferentiate them so if someone tries to add secondary
+unicast mac addr it will be added to multicast netdev list which is
+confusing. There is at least one user that allows adding secondary
+unicast through this API.
+(2f41f3358672 i40e/i40evf: fix unicast mac address add)
 
-Nothing gurantees any kind of ordering for two separate io_submit calls.
-The kernel may delay one of them for any reason.
+This patch adds check whether passed mac addr is uc or mc and adds
+this mac addr to the corresponding list. Add 'global' variant for
+adding/removing uc addresses similarly to mc.
 
-Now if you are doing two fully synchronous write calls on an
-O_APPEND fd, yes they are serialized.  But using Zone Append won't
-change that.
+Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
+---
+ include/linux/netdevice.h    |  2 +
+ include/uapi/linux/sockios.h |  2 +-
+ net/core/dev_addr_lists.c    | 75 +++++++++++++++++++++++++++---------
+ net/core/dev_ioctl.c         | 10 ++++-
+ 4 files changed, 68 insertions(+), 21 deletions(-)
+
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index b0e303f6603f..9394f369be33 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -4345,8 +4345,10 @@ int dev_addr_init(struct net_device *dev);
+ 
+ /* Functions used for unicast addresses handling */
+ int dev_uc_add(struct net_device *dev, const unsigned char *addr);
++int dev_uc_add_global(struct net_device *dev, const unsigned char *addr);
+ int dev_uc_add_excl(struct net_device *dev, const unsigned char *addr);
+ int dev_uc_del(struct net_device *dev, const unsigned char *addr);
++int dev_uc_del_global(struct net_device *dev, const unsigned char *addr);
+ int dev_uc_sync(struct net_device *to, struct net_device *from);
+ int dev_uc_sync_multiple(struct net_device *to, struct net_device *from);
+ void dev_uc_unsync(struct net_device *to, struct net_device *from);
+diff --git a/include/uapi/linux/sockios.h b/include/uapi/linux/sockios.h
+index 7d1bccbbef78..f41b152b0268 100644
+--- a/include/uapi/linux/sockios.h
++++ b/include/uapi/linux/sockios.h
+@@ -80,7 +80,7 @@
+ #define SIOCGIFHWADDR	0x8927		/* Get hardware address		*/
+ #define SIOCGIFSLAVE	0x8929		/* Driver slaving support	*/
+ #define SIOCSIFSLAVE	0x8930
+-#define SIOCADDMULTI	0x8931		/* Multicast address lists	*/
++#define SIOCADDMULTI	0x8931		/* Mac address lists	*/
+ #define SIOCDELMULTI	0x8932
+ #define SIOCGIFINDEX	0x8933		/* name -> if_index mapping	*/
+ #define SIOGIFINDEX	SIOCGIFINDEX	/* misprint compatibility :-)	*/
+diff --git a/net/core/dev_addr_lists.c b/net/core/dev_addr_lists.c
+index 54cd568e7c2f..d150c2d84df4 100644
+--- a/net/core/dev_addr_lists.c
++++ b/net/core/dev_addr_lists.c
+@@ -573,6 +573,20 @@ int dev_uc_add_excl(struct net_device *dev, const unsigned char *addr)
+ }
+ EXPORT_SYMBOL(dev_uc_add_excl);
+ 
++static int __dev_uc_add(struct net_device *dev, const unsigned char *addr,
++			bool global)
++{
++	int err;
++
++	netif_addr_lock_bh(dev);
++	err = __hw_addr_add_ex(&dev->uc, addr, dev->addr_len,
++			       NETDEV_HW_ADDR_T_UNICAST, global, false, 0);
++	if (!err)
++		__dev_set_rx_mode(dev);
++	netif_addr_unlock_bh(dev);
++	return err;
++}
++
+ /**
+  *	dev_uc_add - Add a secondary unicast address
+  *	@dev: device
+@@ -583,18 +597,37 @@ EXPORT_SYMBOL(dev_uc_add_excl);
+  */
+ int dev_uc_add(struct net_device *dev, const unsigned char *addr)
+ {
+-	int err;
+-
+-	netif_addr_lock_bh(dev);
+-	err = __hw_addr_add(&dev->uc, addr, dev->addr_len,
+-			    NETDEV_HW_ADDR_T_UNICAST);
+-	if (!err)
+-		__dev_set_rx_mode(dev);
+-	netif_addr_unlock_bh(dev);
+-	return err;
++	return __dev_uc_add(dev, addr, false);
+ }
+ EXPORT_SYMBOL(dev_uc_add);
+ 
++/**
++ *	dev_uc_add_global - Add a global unicast address
++ *	@dev: device
++ *	@addr: address to add
++ *
++ *	Add a global unicast address to the device.
++ */
++int dev_uc_add_global(struct net_device *dev, const unsigned char *addr)
++{
++	return __dev_uc_add(dev, addr, true);
++}
++EXPORT_SYMBOL(dev_uc_add_global);
++
++static int __dev_uc_del(struct net_device *dev, const unsigned char *addr,
++			bool global)
++{
++	int err;
++
++	netif_addr_lock_bh(dev);
++	err = __hw_addr_del_ex(&dev->uc, addr, dev->addr_len,
++			       NETDEV_HW_ADDR_T_UNICAST, global, false);
++	if (!err)
++		__dev_set_rx_mode(dev);
++	netif_addr_unlock_bh(dev);
++	return err;
++}
++
+ /**
+  *	dev_uc_del - Release secondary unicast address.
+  *	@dev: device
+@@ -605,18 +638,24 @@ EXPORT_SYMBOL(dev_uc_add);
+  */
+ int dev_uc_del(struct net_device *dev, const unsigned char *addr)
+ {
+-	int err;
+-
+-	netif_addr_lock_bh(dev);
+-	err = __hw_addr_del(&dev->uc, addr, dev->addr_len,
+-			    NETDEV_HW_ADDR_T_UNICAST);
+-	if (!err)
+-		__dev_set_rx_mode(dev);
+-	netif_addr_unlock_bh(dev);
+-	return err;
++	return __dev_uc_del(dev, addr, false);
+ }
+ EXPORT_SYMBOL(dev_uc_del);
+ 
++/**
++ *	dev_uc_del_global - Delete a global unicast address.
++ *	@dev: device
++ *	@addr: address to delete
++ *
++ *	Release reference to a unicast address and remove it
++ *	from the device if the reference count drops to zero.
++ */
++int dev_uc_del_global(struct net_device *dev, const unsigned char *addr)
++{
++	return __dev_uc_del(dev, addr, true);
++}
++EXPORT_SYMBOL(dev_uc_del_global);
++
+ /**
+  *	dev_uc_sync - Synchronize device's unicast list to another device
+  *	@to: destination device
+diff --git a/net/core/dev_ioctl.c b/net/core/dev_ioctl.c
+index b2cf9b7bb7b8..774418f64c05 100644
+--- a/net/core/dev_ioctl.c
++++ b/net/core/dev_ioctl.c
+@@ -299,7 +299,10 @@ static int dev_ifsioc(struct net *net, struct ifreq *ifr, unsigned int cmd)
+ 			return -EINVAL;
+ 		if (!netif_device_present(dev))
+ 			return -ENODEV;
+-		return dev_mc_add_global(dev, ifr->ifr_hwaddr.sa_data);
++		if (is_multicast_ether_addr(ifr->ifr_hwaddr.sa_data))
++			return dev_mc_add_global(dev, ifr->ifr_hwaddr.sa_data);
++		else
++			return dev_uc_add_global(dev, ifr->ifr_hwaddr.sa_data);
+ 
+ 	case SIOCDELMULTI:
+ 		if (!ops->ndo_set_rx_mode ||
+@@ -307,7 +310,10 @@ static int dev_ifsioc(struct net *net, struct ifreq *ifr, unsigned int cmd)
+ 			return -EINVAL;
+ 		if (!netif_device_present(dev))
+ 			return -ENODEV;
+-		return dev_mc_del_global(dev, ifr->ifr_hwaddr.sa_data);
++		if (is_multicast_ether_addr(ifr->ifr_hwaddr.sa_data))
++			return dev_mc_del_global(dev, ifr->ifr_hwaddr.sa_data);
++		else
++			return dev_uc_del_global(dev, ifr->ifr_hwaddr.sa_data);
+ 
+ 	case SIOCSIFTXQLEN:
+ 		if (ifr->ifr_qlen < 0)
+-- 
+2.19.1
+
