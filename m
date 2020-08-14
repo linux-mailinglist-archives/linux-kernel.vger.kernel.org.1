@@ -2,70 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A872448E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC31244932
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728128AbgHNLjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 07:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
+        id S1726752AbgHNLpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 07:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728060AbgHNLjp (ORCPT
+        with ESMTP id S1728080AbgHNLjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 07:39:45 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCE1C061387
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:39:44 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id c15so8037209wrs.11
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:39:44 -0700 (PDT)
+        Fri, 14 Aug 2020 07:39:46 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36F4C061385
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:39:45 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a15so8047533wrh.10
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:39:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hkxne9wZTlAVbAAYNmpFWLXf7r4C/SN/Gq+uNhys7UA=;
-        b=A2CVs4qxFTnXi4JQ4bVs4AIscTO7tdyd0Y7OF/MjFR4l5/KzuytVtCzuwG0uMy1YhR
-         DUCeyZjBaqB/vwjoz0z1VSI/Px1LMQmWIwfl6jpcAFavd+m4XCXkwdeQ7HwjDQPDG9bO
-         GY+fqeWNegJlFO86lIvjBLHy5oIc1tgzzJKq361YEBP8mdl1S0+yOdkr07LRGXMD9Ssk
-         gAGj8iYy3g5kWrBJ+xDi/RPn0IhOgFVIFMb/1cJgruW1nOHYdRx2KCASsrSSR2oA3c6h
-         LgYnaHN4GtwF8UBmS8EksivSmqKxeJ9rQ1H9ZlXQWhp9s63+0+sUmC3NRrynKgnKzMs7
-         4v/w==
+        bh=Y77AtHzguUcJCUMjPrpTvjpVQ3AGTioiQPnppwV8VKc=;
+        b=iFWqnNShFxm/D8776BXHu/qVGwFhwXQ+8rfUFDSN73HTnVGrhjwoT90p1MDlIfUelr
+         4u5AzjJC7607Eg0uQQQH5twyO0MQz0DNNC4vZ/3VLlLRboWX+XlyFs04QvCJ7lv/HAb/
+         O71kBtX1paMcjGcapsvpmQJL3lS57YAx1xLl6qEiFielydjRTzc6DLCoP7sU21grqzGO
+         fvp3qnjdaBwwnF3Xl9p4MQpF6U4WSieWI4Ta2lJCCqQShezjah9feA0i6wVahmIWiVIV
+         1PcdyBRtW88tORF12WPdEw244Xm6tUELNaiz5HfmsnpjpxY0m8jhUFgL1ekx1ZZp5VnC
+         BPmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hkxne9wZTlAVbAAYNmpFWLXf7r4C/SN/Gq+uNhys7UA=;
-        b=AdHDDB0LkmCdEqy7lB2JRHZCaEYXbJFT0n/zybipbP10FVMJR5Yq0bB9DAqMgtT2tC
-         nsx2/5kBk8Wzq89+HXjL0qwsjciljMPW2w7xHKGXY5NXdOgrHSkJihwrhCG4KMYDncl2
-         hM4YSHoQr+EJZYWC2bjcbinuQFCVGdSByVo1RNs2E1WsmFwZVakZcFYzwyeu2g344dDS
-         KFI0+dGGrmIvIZM/eBB4agSk2TAYq3f3FzMzvZA4m0SWI374NsRthLVPnF4xVur2ZmYG
-         RTmdn9In62XSsnEoTVybnSYevYDnNY17kMj45vp3hIYVHcQ8X6jspr4iDAIPSHy3en4q
-         DPNg==
-X-Gm-Message-State: AOAM533B+BoaXTPBkLeiCDlRBjgwo9FoLPVbYnKXYVKrPaK1ke7JL5sr
-        2dfkFTf1dPq0saUJiGRRufF2qQ==
-X-Google-Smtp-Source: ABdhPJwLmOXhCjKwnbD4sN+QT/fUjAaEM4Cn4FQbAWshbJyzZUGynsmCSNUg5tiuz3J2GoPw9JFdQQ==
-X-Received: by 2002:a5d:6a09:: with SMTP id m9mr470749wru.383.1597405183375;
-        Fri, 14 Aug 2020 04:39:43 -0700 (PDT)
+        bh=Y77AtHzguUcJCUMjPrpTvjpVQ3AGTioiQPnppwV8VKc=;
+        b=BaxYaIjvclZoTH3U21L4jsT0Ru9KbfiH6G/nonrFPU1OWwnMiOZb7wC1MIRyA7EltY
+         PTnA0B3I54rMsPNzLBKqx3vpwLJFjFdOJhMCNzLFTeD4XnyH0ACxwULVeRjgiyEAIp8W
+         y3sFRKxlDilwUdNT595Y1ctbx3wB9FJ2CqIFb48StgB2Y/tMlMd63q9zhtoKUurQnvOI
+         HisctWqq8OwDVAyG+g8dOeloODwvlz5i7vIGxpc5MsWT4HyEjOLqf5p5IG+Y0IqnuKT9
+         8kRnOSN3XY68nAjlNEgEqUIX8JQPI1tZHDReosphbDYlkQX7bTdheflGwFH7bKYH1oBv
+         7iZA==
+X-Gm-Message-State: AOAM533Lq8CnJxYxedPAXnL4DB58nTYDm3SWUrnXFvArJD7HCaXuvui2
+        LMsoYBGpLduZ9lZkKb9OzGm+PQ==
+X-Google-Smtp-Source: ABdhPJzOO5hb0FwyFDV+Y5ePxRrJMQlbWLrBFcALYFBIbUTV5cFeHryeDHp37n3PhcwIn4sRkgmkSQ==
+X-Received: by 2002:a05:6000:1149:: with SMTP id d9mr2276259wrx.335.1597405184635;
+        Fri, 14 Aug 2020 04:39:44 -0700 (PDT)
 Received: from dell.default ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id 32sm16409129wrh.18.2020.08.14.04.39.42
+        by smtp.gmail.com with ESMTPSA id 32sm16409129wrh.18.2020.08.14.04.39.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 04:39:42 -0700 (PDT)
+        Fri, 14 Aug 2020 04:39:44 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Shannon Nelson <snelson@pensando.io>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Donald Becker <becker@scyld.com>,
-        David Hinds <dahinds@users.sourceforge.net>,
-        netdev@vger.kernel.org
-Subject: [PATCH 03/30] net: ethernet: 3com: 3c574_cs: Remove set but unused variables 'tx' and 'rx'
-Date:   Fri, 14 Aug 2020 12:39:06 +0100
-Message-Id: <20200814113933.1903438-4-lee.jones@linaro.org>
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>, netdev@vger.kernel.org
+Subject: [PATCH 04/30] net: bonding: bond_alb: Describe alb_handle_addr_collision_on_attach()'s 'bond' and 'addr' params
+Date:   Fri, 14 Aug 2020 12:39:07 +0100
+Message-Id: <20200814113933.1903438-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200814113933.1903438-1-lee.jones@linaro.org>
 References: <20200814113933.1903438-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -74,52 +69,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/ethernet/3com/3c574_cs.c: In function ‘update_stats’:
- drivers/net/ethernet/3com/3c574_cs.c:954:9: warning: variable ‘tx’ set but not used [-Wunused-but-set-variable]
- 954 | u8 rx, tx, up;
- | ^~
- drivers/net/ethernet/3com/3c574_cs.c:954:5: warning: variable ‘rx’ set but not used [-Wunused-but-set-variable]
- 954 | u8 rx, tx, up;
- | ^~
+ drivers/net/bonding/bond_alb.c:1222: warning: Function parameter or member 'bond' not described in 'alb_set_mac_address'
 
+Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+Cc: Veaceslav Falico <vfalico@gmail.com>
+Cc: Andy Gospodarek <andy@greyhouse.net>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Shannon Nelson <snelson@pensando.io>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Martin Habets <mhabets@solarflare.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Donald Becker <becker@scyld.com>
-Cc: David Hinds <dahinds@users.sourceforge.net>
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/ethernet/3com/3c574_cs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/bonding/bond_alb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/3com/3c574_cs.c b/drivers/net/ethernet/3com/3c574_cs.c
-index ef1c3151fbb24..bd0ada4e81b0f 100644
---- a/drivers/net/ethernet/3com/3c574_cs.c
-+++ b/drivers/net/ethernet/3com/3c574_cs.c
-@@ -951,7 +951,7 @@ static struct net_device_stats *el3_get_stats(struct net_device *dev)
- static void update_stats(struct net_device *dev)
- {
- 	unsigned int ioaddr = dev->base_addr;
--	u8 rx, tx, up;
-+	u8 up;
+diff --git a/drivers/net/bonding/bond_alb.c b/drivers/net/bonding/bond_alb.c
+index 095ea51d18539..4e1b7deb724b4 100644
+--- a/drivers/net/bonding/bond_alb.c
++++ b/drivers/net/bonding/bond_alb.c
+@@ -1206,8 +1206,8 @@ static int alb_handle_addr_collision_on_attach(struct bonding *bond, struct slav
  
- 	pr_debug("%s: updating the statistics.\n", dev->name);
- 
-@@ -972,8 +972,8 @@ static void update_stats(struct net_device *dev)
- 	dev->stats.tx_packets			+= (up&0x30) << 4;
- 	/* Rx packets   */			   inb(ioaddr + 7);
- 	/* Tx deferrals */			   inb(ioaddr + 8);
--	rx		 			 = inw(ioaddr + 10);
--	tx					 = inw(ioaddr + 12);
-+	/* rx */				   inw(ioaddr + 10);
-+	/* tx */				   inw(ioaddr + 12);
- 
- 	EL3WINDOW(4);
- 	/* BadSSD */				   inb(ioaddr + 12);
+ /**
+  * alb_set_mac_address
+- * @bond:
+- * @addr:
++ * @bond: bonding we're working on
++ * @addr: MAC address to set
+  *
+  * In TLB mode all slaves are configured to the bond's hw address, but set
+  * their dev_addr field to different addresses (based on their permanent hw
 -- 
 2.25.1
 
