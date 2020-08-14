@@ -2,20 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118B9244BFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 17:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2146244BF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 17:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728042AbgHNPYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 11:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727880AbgHNPXk (ORCPT
+        id S1727947AbgHNPXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 11:23:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37412 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727879AbgHNPXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 11:23:40 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7749C061384;
-        Fri, 14 Aug 2020 08:23:39 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 15:23:37 -0000
+        Fri, 14 Aug 2020 11:23:41 -0400
+Date:   Fri, 14 Aug 2020 15:23:38 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1597418618;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tcGLjrKK2s7jARi/YghJPIhdOTU9H0AJVDfTuaQSh64=;
-        b=0GLIesgrdMPcHOC3PXjzJP259aT9K+hAEjf2XJdAJG7SAcZqxyntvasVV3dcRb5edGb/Ow
-        snt5LOpUflOrzyFkldpiJ0E2GgZRvhFHedjqCmuMkFN95H+3m4W2Ut73gnCZC0UaatUCPT
-        30JL5bS+U6KJtRb4CIBlcrEWOCQPlKltxICVMcvWxTW3RajWcj42otzZhVVLPsV/Nj4R4E
-        dp9hWYPxUa/9dLNLYthBmqLJvSsaHYKNrUvJJYAj0RZuYz2aMXZPjqy8THMb46ikdrV9E0
-        Cdb+X2EQV98xH4h1r/MpNYH23tDQrWOgfLy6Q9kGzmE/t1eNuXPt6Xsm0M/mqg==
+        bh=nmtdFfauGiznSlg8o2ZnjV2IVRXngrz1eioIF3iGN7U=;
+        b=O8v/a9gZP+3KWJVABUsIXl5eghmXJZDHckOkvQOoreBbC5vLjGipQe3tmC+SzhbwIJR46c
+        EOfHpt9TeZxp+NLF5F1hW9QbkZRuaWAonNY4EsEOymC6nLvU5UIQkswpg8hVst9RURrRx7
+        UVS0beX4usmMaPfIabWRhHoE+PWUnO4s5kGDCoPoHOjJFEaaOo7fxfBYhpzFa8T+ZPoQNZ
+        1oDIQaeVVUWKeM40RoZDNoEWa/X0kRNm4G68bSD/XsBwXHu6WTD+u06FmwKeaYZrovnsnq
+        8mh7hftQ5cgP+XpTRl1TSZRICKLu7UU3b7oO7nPJKXHyvy5wpqrMEUdG5/QRtg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1597418618;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,13 +33,13 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tcGLjrKK2s7jARi/YghJPIhdOTU9H0AJVDfTuaQSh64=;
-        b=vqhMjCWYamyyAEIxZYQcZjBvi5jM9KYc+fcggvfB+cpbcnsLMvKX8mJuU1wlYL8mcFUeta
-        TdRrmAt8kQFFrZAw==
+        bh=nmtdFfauGiznSlg8o2ZnjV2IVRXngrz1eioIF3iGN7U=;
+        b=J+aw+GAn3J/+pMr9D0zHCaNthX5JsPnPHkMxscLtcBT+gMhfuYAwOS7urwwdUvCZ92PXg3
+        QRr65BW+Er6DZHBQ==
 From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/boot] x86/boot: Check that there are no run-time relocations
+Subject: [tip: x86/boot] x86/boot: Remove run-time relocations from head_{32,64}.S
 Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
         Kees Cook <keescook@chromium.org>,
         Ingo Molnar <mingo@kernel.org>,
@@ -51,10 +48,10 @@ Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
         Ard Biesheuvel <ardb@kernel.org>,
         Fangrui Song <maskray@google.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200731230820.1742553-8-keescook@chromium.org>
-References: <20200731230820.1742553-8-keescook@chromium.org>
+In-Reply-To: <20200731230820.1742553-7-keescook@chromium.org>
+References: <20200731230820.1742553-7-keescook@chromium.org>
 MIME-Version: 1.0
-Message-ID: <159741861758.3192.8517866921187234201.tip-bot2@tip-bot2>
+Message-ID: <159741861819.3192.15659330144869548929.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,22 +63,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/boot branch of tip:
 
-Commit-ID:     527afc212231ea9d585b7709c0ab73263ecf0c85
-Gitweb:        https://git.kernel.org/tip/527afc212231ea9d585b7709c0ab73263ecf0c85
+Commit-ID:     3f086189cd3641d212949ff044d8e4486c93d55e
+Gitweb:        https://git.kernel.org/tip/3f086189cd3641d212949ff044d8e4486c93d55e
 Author:        Arvind Sankar <nivedita@alum.mit.edu>
-AuthorDate:    Fri, 31 Jul 2020 16:07:51 -07:00
+AuthorDate:    Fri, 31 Jul 2020 16:07:50 -07:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Fri, 14 Aug 2020 12:52:35 +02:00
 
-x86/boot: Check that there are no run-time relocations
+x86/boot: Remove run-time relocations from head_{32,64}.S
 
-Add a linker script check that there are no run-time relocations, and
-remove the old one that tries to check via looking for specially-named
-sections in the object files.
+The BFD linker generates run-time relocations for z_input_len and
+z_output_len, even though they are absolute symbols.
 
-Drop the tests for -fPIE compiler option and -pie linker option, as they
-are available in all supported gcc and binutils versions (as well as
-clang and lld).
+This is fixed for binutils-2.35 [1]. Work around this for earlier
+versions by defining two variables input_len and output_len in addition
+to the symbols, and use them via position-independent references.
+
+This eliminates the last two run-time relocations in the head code and
+allows us to drop the -z noreloc-overflow flag to the linker.
+
+Move the -pie and --no-dynamic-linker LDFLAGS to LDFLAGS_vmlinux instead
+of KBUILD_LDFLAGS. There shouldn't be anything else getting linked, but
+this is the more logical location for these flags, and modversions might
+call the linker if an EXPORT_SYMBOL is left over accidentally in one of
+the decompressors.
+
+[1] https://sourceware.org/bugzilla/show_bug.cgi?id=25754
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 Signed-off-by: Kees Cook <keescook@chromium.org>
@@ -91,87 +98,98 @@ Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
 Reviewed-by: Kees Cook <keescook@chromium.org>
 Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 Reviewed-by: Fangrui Song <maskray@google.com>
-Reviewed-by: Sedat Dilek <sedat.dilek@gmail.com>
-Link: https://lore.kernel.org/r/20200731230820.1742553-8-keescook@chromium.org
+Link: https://lore.kernel.org/r/20200731230820.1742553-7-keescook@chromium.org
 ---
- arch/x86/boot/compressed/Makefile      | 28 ++-----------------------
- arch/x86/boot/compressed/vmlinux.lds.S |  8 +++++++-
- 2 files changed, 11 insertions(+), 25 deletions(-)
+ arch/x86/boot/compressed/Makefile  | 12 ++----------
+ arch/x86/boot/compressed/head_32.S | 17 ++++++++---------
+ arch/x86/boot/compressed/head_64.S |  4 ++--
+ arch/x86/boot/compressed/mkpiggy.c |  6 ++++++
+ 4 files changed, 18 insertions(+), 21 deletions(-)
 
 diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-index 7d25089..753d572 100644
+index 7c687a7..7d25089 100644
 --- a/arch/x86/boot/compressed/Makefile
 +++ b/arch/x86/boot/compressed/Makefile
-@@ -29,7 +29,7 @@ targets := vmlinux vmlinux.bin vmlinux.bin.gz vmlinux.bin.bz2 vmlinux.bin.lzma \
- 	vmlinux.bin.xz vmlinux.bin.lzo vmlinux.bin.lz4 vmlinux.bin.zst
- 
- KBUILD_CFLAGS := -m$(BITS) -O2
--KBUILD_CFLAGS += -fno-strict-aliasing $(call cc-option, -fPIE, -fPIC)
-+KBUILD_CFLAGS += -fno-strict-aliasing -fPIE
- KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
- cflags-$(CONFIG_X86_32) := -march=i386
- cflags-$(CONFIG_X86_64) := -mcmodel=small
-@@ -52,7 +52,7 @@ UBSAN_SANITIZE :=n
+@@ -52,16 +52,8 @@ UBSAN_SANITIZE :=n
  KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
  # Compressed kernel should be built as PIE since it may be loaded at any
  # address by the bootloader.
--LDFLAGS_vmlinux := $(call ld-option, -pie) $(call ld-option, --no-dynamic-linker)
-+LDFLAGS_vmlinux := -pie $(call ld-option, --no-dynamic-linker)
- LDFLAGS_vmlinux += -T
+-ifeq ($(CONFIG_X86_32),y)
+-KBUILD_LDFLAGS += $(call ld-option, -pie) $(call ld-option, --no-dynamic-linker)
+-else
+-# To build 64-bit compressed kernel as PIE, we disable relocation
+-# overflow check to avoid relocation overflow error with a new linker
+-# command-line option, -z noreloc-overflow.
+-KBUILD_LDFLAGS += $(shell $(LD) --help 2>&1 | grep -q "\-z noreloc-overflow" \
+-	&& echo "-z noreloc-overflow -pie --no-dynamic-linker")
+-endif
+-LDFLAGS_vmlinux := -T
++LDFLAGS_vmlinux := $(call ld-option, -pie) $(call ld-option, --no-dynamic-linker)
++LDFLAGS_vmlinux += -T
  
  hostprogs	:= mkpiggy
-@@ -87,30 +87,8 @@ vmlinux-objs-$(CONFIG_ACPI) += $(obj)/acpi.o
- vmlinux-objs-$(CONFIG_EFI_MIXED) += $(obj)/efi_thunk_$(BITS).o
- efi-obj-$(CONFIG_EFI_STUB) = $(objtree)/drivers/firmware/efi/libstub/lib.a
+ HOST_EXTRACFLAGS += -I$(srctree)/tools/include
+diff --git a/arch/x86/boot/compressed/head_32.S b/arch/x86/boot/compressed/head_32.S
+index 8c1a4f5..659fad5 100644
+--- a/arch/x86/boot/compressed/head_32.S
++++ b/arch/x86/boot/compressed/head_32.S
+@@ -178,18 +178,17 @@ SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
+ /*
+  * Do the extraction, and jump to the new kernel..
+  */
+-				/* push arguments for extract_kernel: */
+-	pushl	$z_output_len	/* decompressed length, end of relocs */
++	/* push arguments for extract_kernel: */
  
--# The compressed kernel is built with -fPIC/-fPIE so that a boot loader
--# can place it anywhere in memory and it will still run. However, since
--# it is executed as-is without any ELF relocation processing performed
--# (and has already had all relocation sections stripped from the binary),
--# none of the code can use data relocations (e.g. static assignments of
--# pointer values), since they will be meaningless at runtime. This check
--# will refuse to link the vmlinux if any of these relocations are found.
--quiet_cmd_check_data_rel = DATAREL $@
--define cmd_check_data_rel
--	for obj in $(filter %.o,$^); do \
--		$(READELF) -S $$obj | grep -qF .rel.local && { \
--			echo "error: $$obj has data relocations!" >&2; \
--			exit 1; \
--		} || true; \
--	done
--endef
+-	pushl	%ebp		/* output address */
 -
--# We need to run two commands under "if_changed", so merge them into a
--# single invocation.
--quiet_cmd_check-and-link-vmlinux = LD      $@
--      cmd_check-and-link-vmlinux = $(cmd_check_data_rel); $(cmd_ld)
--
- $(obj)/vmlinux: $(vmlinux-objs-y) $(efi-obj-y) FORCE
--	$(call if_changed,check-and-link-vmlinux)
-+	$(call if_changed,ld)
+-	pushl	$z_input_len	/* input_len */
++	pushl	output_len@GOTOFF(%ebx)	/* decompressed length, end of relocs */
++	pushl	%ebp			/* output address */
++	pushl	input_len@GOTOFF(%ebx)	/* input_len */
+ 	leal	input_data@GOTOFF(%ebx), %eax
+-	pushl	%eax		/* input_data */
++	pushl	%eax			/* input_data */
+ 	leal	boot_heap@GOTOFF(%ebx), %eax
+-	pushl	%eax		/* heap area */
+-	pushl	%esi		/* real mode pointer */
+-	call	extract_kernel	/* returns kernel location in %eax */
++	pushl	%eax			/* heap area */
++	pushl	%esi			/* real mode pointer */
++	call	extract_kernel		/* returns kernel location in %eax */
+ 	addl	$24, %esp
  
- OBJCOPYFLAGS_vmlinux.bin :=  -R .comment -S
- $(obj)/vmlinux.bin: vmlinux FORCE
-diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-index a4a4a59..29df99b 100644
---- a/arch/x86/boot/compressed/vmlinux.lds.S
-+++ b/arch/x86/boot/compressed/vmlinux.lds.S
-@@ -42,6 +42,12 @@ SECTIONS
- 		*(.rodata.*)
- 		_erodata = . ;
- 	}
-+	.rel.dyn : {
-+		*(.rel.*)
-+	}
-+	.rela.dyn : {
-+		*(.rela.*)
-+	}
- 	.got : {
- 		*(.got)
- 	}
-@@ -85,3 +91,5 @@ ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18, "Unexpected GOT/PLT en
- #else
- ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0xc, "Unexpected GOT/PLT entries detected!")
- #endif
+ /*
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index 1142909..9e46729 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -534,9 +534,9 @@ SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
+ 	movq	%rsi, %rdi		/* real mode address */
+ 	leaq	boot_heap(%rip), %rsi	/* malloc area for uncompression */
+ 	leaq	input_data(%rip), %rdx  /* input_data */
+-	movl	$z_input_len, %ecx	/* input_len */
++	movl	input_len(%rip), %ecx	/* input_len */
+ 	movq	%rbp, %r8		/* output target address */
+-	movl	$z_output_len, %r9d	/* decompressed length, end of relocs */
++	movl	output_len(%rip), %r9d	/* decompressed length, end of relocs */
+ 	call	extract_kernel		/* returns kernel location in %rax */
+ 	popq	%rsi
+ 
+diff --git a/arch/x86/boot/compressed/mkpiggy.c b/arch/x86/boot/compressed/mkpiggy.c
+index 7e01248..52aa56c 100644
+--- a/arch/x86/boot/compressed/mkpiggy.c
++++ b/arch/x86/boot/compressed/mkpiggy.c
+@@ -60,6 +60,12 @@ int main(int argc, char *argv[])
+ 	printf(".incbin \"%s\"\n", argv[1]);
+ 	printf("input_data_end:\n");
+ 
++	printf(".section \".rodata\",\"a\",@progbits\n");
++	printf(".globl input_len\n");
++	printf("input_len:\n\t.long %lu\n", ilen);
++	printf(".globl output_len\n");
++	printf("output_len:\n\t.long %lu\n", (unsigned long)olen);
 +
-+ASSERT(SIZEOF(.rel.dyn) == 0 && SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations detected!")
+ 	retval = 0;
+ bail:
+ 	if (f)
