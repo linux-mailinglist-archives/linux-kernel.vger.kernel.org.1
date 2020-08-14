@@ -2,40 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9E2244BD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 17:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C2D244BDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 17:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgHNPUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 11:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45490 "EHLO
+        id S1727074AbgHNPWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 11:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbgHNPUH (ORCPT
+        with ESMTP id S1726444AbgHNPWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 11:20:07 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02BD2C061385
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 08:20:06 -0700 (PDT)
-Received: from cap.home.8bytes.org (p4ff2bb8d.dip0.t-ipconnect.de [79.242.187.141])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 7BDA74D6;
-        Fri, 14 Aug 2020 17:20:02 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>, Mike Rapoport <rppt@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, hpa@zytor.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jason@zx2c4.com, Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, kirill.shutemov@intel.com,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 2/2] x86/mm/64: Update comment in preallocate_vmalloc_pages()
-Date:   Fri, 14 Aug 2020 17:19:47 +0200
-Message-Id: <20200814151947.26229-3-joro@8bytes.org>
+        Fri, 14 Aug 2020 11:22:06 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F0CC061384;
+        Fri, 14 Aug 2020 08:22:06 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id i6so7096488edy.5;
+        Fri, 14 Aug 2020 08:22:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fQmCXjIJLm4FOxf1HtQwARu0AkrMVdJ4Csr5yAIm0vc=;
+        b=E/t/2SEODb0FlrlwFdSy8mvqOSQ+hxjDltw15BEagw1Pc5SFcB3E5mKO32U9sQ/SMA
+         OGh5sBaVu4MVPBSD0qcSxykJDVd2KOoMKD+v6zw5Ct3sbclbEiMUK2Yq3d/ovECIp/76
+         JZsf4kFkoF7pgwtE6/HTJOffvD/8S4uKB24wSIJggfnuoKxiXOt16mWNUKYYBrNJCm+A
+         5kuUXMdsIS72j/MqkfkBzCUQsp9BZvI90MV5CkABPE4jXRecOzc5pat5o8cN/ilgMl3q
+         f+gY5nmc6Khm/FcmvRk1n7Yrx2vOO6lVGBbhLD0wVnKP8Y0faITGnAXnbhE6wZXn3z25
+         rqZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fQmCXjIJLm4FOxf1HtQwARu0AkrMVdJ4Csr5yAIm0vc=;
+        b=i2l8H0+2M8wQPD0s4Rcc1O2xIuMkmLDJQ6IBqB6L9jyUyIM446e8mXqUTa1gTECmTk
+         FblWqMo7XOb9zVz70paTTnpK4pXe2xVPn+EfxQ5xpc07Pi8bDz+C4r1D96QZSQGIP3x6
+         8PKiYfx51kD8g54CF5Vpd+WUGRQp5H3urlpEVU+21zIKvsjRxAdFl1JkhHVDbVG8hG+w
+         IuOyVYof965mavQQXpO5Sc+14D6MHj6WlhBY721+1LrZAo4hFQ+fgqHSeL+L2s8G6ZIu
+         dMAXkSoIlqdXCFE58Cd6bcVEnfsBSuR9ybcwHQfSQXO6IbCvt8yxY74YZvZv52x5rdNW
+         RxvQ==
+X-Gm-Message-State: AOAM532f71dn7OPxtUgBN9uRMOUByrkSr5VB9BED/BNiHgDdzJGhmUCG
+        hsYG3/Bs9J82Ez0Xw1JVOmg=
+X-Google-Smtp-Source: ABdhPJyIyTb9/qHX42b92RxbUctP0qmUWK2msIV5OUMivkT40jOjszH4t2eA5MNELxhzAmTXQbDFCw==
+X-Received: by 2002:a05:6402:1282:: with SMTP id w2mr2593059edv.183.1597418525094;
+        Fri, 14 Aug 2020 08:22:05 -0700 (PDT)
+Received: from localhost.localdomain (abag79.neoplus.adsl.tpnet.pl. [83.6.170.79])
+        by smtp.googlemail.com with ESMTPSA id e8sm6087974edy.68.2020.08.14.08.22.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Aug 2020 08:22:04 -0700 (PDT)
+From:   Konrad Dybcio <konradybcio@gmail.com>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     Konrad Dybcio <konradybcio@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: [PATCH 1/2] [-next] mmc: host: msm: Add optional full power cycle property.
+Date:   Fri, 14 Aug 2020 17:21:59 +0200
+Message-Id: <20200814152201.254010-1-konradybcio@gmail.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200814151947.26229-1-joro@8bytes.org>
-References: <20200814151947.26229-1-joro@8bytes.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -43,46 +69,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+On some eMMCs (at least the ones used on Sony msm8994 boards)
+enabling full power cycle is required to prevent permanent damage
+to the flash memory, whereas on others it results in better performance.
 
-The comment explaining why 4-level systems only need to allocate on
-the P4D level caused some confustion. Update it to better explain why
-on 4-level systems the allocation on PUD level is necessary.
-
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
 ---
- arch/x86/mm/init_64.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ Documentation/devicetree/bindings/mmc/sdhci-msm.txt | 4 ++++
+ drivers/mmc/host/sdhci-msm.c                        | 6 ++++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index 777d83546764..124e63795ac9 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -1252,14 +1252,19 @@ static void __init preallocate_vmalloc_pages(void)
- 		if (!p4d)
- 			goto failed;
+diff --git a/Documentation/devicetree/bindings/mmc/sdhci-msm.txt b/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
+index 3b602fd6180b..939c8df2a25c 100644
+--- a/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
++++ b/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
+@@ -54,6 +54,10 @@ Required properties:
+ - qcom,dll-config: Chipset and Platform specific value. Use this field to
+ 	specify the DLL_CONFIG register value as per Hardware Programming Guide.
  
--		/*
--		 * With 5-level paging the P4D level is not folded. So the PGDs
--		 * are now populated and there is no need to walk down to the
--		 * PUD level.
--		 */
- 		if (pgtable_l5_enabled())
- 			continue;
++- qcom,full-pwr-cycle: Enable full power cycle CAP2. This is required for optimal
++	performance on some eMMCs, whereas others need it to prevent permanent
++	damage to the flash memory.
++
+ Optional Properties:
+ * Following bus parameters are required for interconnect bandwidth scaling:
+ - interconnects: Pairs of phandles and interconnect provider specifier
+diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+index 5a33389037cd..8d5c65e13dca 100644
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -2242,6 +2242,12 @@ static int sdhci_msm_probe(struct platform_device *pdev)
  
-+		/*
-+		 * The goal here is to allocate all possibly required
-+		 * hardware page tables pointed to by the top hardware
-+		 * level.
-+		 *
-+		 * On 4-level systems, the p4d layer is folded away and
-+		 * the above code does no preallocation.  Below, go down
-+		 * to the pud _software_ level to ensure the second
-+		 * hardware level is allocated on 4-level systems too.
-+		 */
- 		lvl = "pud";
- 		pud = pud_alloc(&init_mm, p4d, addr);
- 		if (!pud)
+ 	msm_host->saved_tuning_phase = INVALID_TUNING_PHASE;
+ 
++	if (of_find_property(pdev->dev.of_node, "qcom,full-pwr-cycle", NULL))
++		msm_host->mmc->caps2 |= MMC_CAP2_FULL_PWR_CYCLE;
++
++	else
++		dev_info(&pdev->dev, "MMC full power cycle is not enabled. This might result in subpar performance or permanent damage on some devices.\n");
++
+ 	/* Setup SDCC bus voter clock. */
+ 	msm_host->bus_clk = devm_clk_get(&pdev->dev, "bus");
+ 	if (!IS_ERR(msm_host->bus_clk)) {
 -- 
 2.28.0
 
