@@ -2,204 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0727B2448DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437392448E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgHNLfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 07:35:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726185AbgHNLfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 07:35:37 -0400
-Received: from quaco.ghostprotocols.net (177.207.136.251.dynamic.adsl.gvt.net.br [177.207.136.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 688A320771;
-        Fri, 14 Aug 2020 11:35:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597404937;
-        bh=+SScuk5qKesicxoXWFToSaNdAgaR48N+FzRr69hLNUI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0F5u6IEWSPAtra/Ni8o34VKtJ2v8tUrF+3882Ir3HYULk1ap8G1+qPhlQODEay0cm
-         szuRKEm2y+mXi/wU0G3qjGBrnAiKN28fv89YTxJ/tYe/0rPr1aR6ZX4xQs3ExZagyO
-         hMmnqZ0DMB27PdStrUngtiXoHVsn1fqN2QugX4Ak=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7F2FD4097F; Fri, 14 Aug 2020 08:35:35 -0300 (-03)
-Date:   Fri, 14 Aug 2020 08:35:35 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 02/18] perf ftrace: add option '-F/--funcs' to list
- available functions
-Message-ID: <20200814113535.GS13995@kernel.org>
-References: <20200808023141.14227-1-changbin.du@gmail.com>
- <20200808023141.14227-3-changbin.du@gmail.com>
+        id S1728053AbgHNLjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 07:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbgHNLjl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 07:39:41 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D92C061384
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:39:41 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id c80so7223471wme.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:39:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hP0+g3hzGLFq3eU/85gRdetBqlzSS17WzsjFbG7aymI=;
+        b=YNAgtHPgPcTyIvU9nrHfyMyqVccvoQTMBvdeTuPHp1b9h3ZZSMDFR7cSOe+EgNlXtz
+         R5tLNN+iyGDSoQcjB2pIv1TZyH59dRy+ReMKoAD37n/8yrmVCWtQ9fYJwfP6o8KGR/LE
+         BisBGc9F+TxM4dKoRQ7HkBRPXIGi70XueC71jd0qSlyMPrIFRPBpnfe9PwncMrta4s+j
+         EeO42rEtWBCemy0X6YEGFn1MOXcHEAFm8mVBxbtVmBil/xthUX1BAfhGSBrsNRCQOqzZ
+         bcYTtVADdhai+9fss/tsmD0v/GWElOF4QLAAxs5BSuFsTQfiDmmbp0kjp2YbEEH7pITm
+         6MuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hP0+g3hzGLFq3eU/85gRdetBqlzSS17WzsjFbG7aymI=;
+        b=uYPmGYSC51S6zUzxHxUpfuycaO68RdYJ9Pf2uHkGmUTfmHbeqow9B9oiqxPIjARwYs
+         HtGb9yRkDy1gzyDol56+KsXacdt+tC3nhP9+UPv7CGRGH/yDv0dZAMdtx5lNyxccXPFi
+         picyyXmbgAZW1ciTbfuFPsNIV2uW6JuwlnM5mVBDsOAUMGHvdt5GY3KVnusng9x9HBdM
+         D/rpQcoF3/29zwgJ126F7BbXQID/oeDdMH0C+AXUdt234qlzwmu3uPeo4Ctzz9OjB8Ed
+         E0VkidPINWI7Hz9AuM6ca95Ly5kT+uynDVm0vqmIjJMcHXcAISRO+m97bTTFBNuO/BVr
+         YbOg==
+X-Gm-Message-State: AOAM530Ek10wuhjNugjiFYSr0pOgcVqPBcAmXFVt6tudZ99bruon2XK+
+        aNCKUoIfd2V9dBt8Hzt+XWyoyg==
+X-Google-Smtp-Source: ABdhPJxe1U/K+xwNSBB5x0F2H8VUberthodPixZrpd/rPCPotPKsvqPYIVe7VwNr6BusmC8/Kn8Zxw==
+X-Received: by 2002:a1c:48c2:: with SMTP id v185mr2165855wma.5.1597405179660;
+        Fri, 14 Aug 2020 04:39:39 -0700 (PDT)
+Received: from dell.default ([95.149.164.62])
+        by smtp.gmail.com with ESMTPSA id 32sm16409129wrh.18.2020.08.14.04.39.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Aug 2020 04:39:38 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 00/30] Rid W=1 warnings in Networking
+Date:   Fri, 14 Aug 2020 12:39:03 +0100
+Message-Id: <20200814113933.1903438-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200808023141.14227-3-changbin.du@gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Aug 08, 2020 at 10:31:25AM +0800, Changbin Du escreveu:
-> This adds an option '-F/--funcs' to list all available functions to trace,
-> which is read from tracing file 'available_filter_functions'.
-> 
-> $ sudo ./perf ftrace -F | head
-> trace_initcall_finish_cb
-> initcall_blacklisted
-> do_one_initcall
-> do_one_initcall
-> trace_initcall_start_cb
-> run_init_process
-> try_to_run_init_process
-> match_dev_by_label
-> match_dev_by_uuid
-> rootfs_init_fs_context
-> 
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> 
-> ---
-> v3: fix return value issue.
-> v2: option name '-l/--list-functions' -> '-F/--funcs'
-> ---
->  tools/perf/Documentation/perf-ftrace.txt |  4 +++
->  tools/perf/builtin-ftrace.c              | 46 ++++++++++++++++++++++++
->  2 files changed, 50 insertions(+)
-> 
-> diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-> index 821d4d334a09..4f5628445a63 100644
-> --- a/tools/perf/Documentation/perf-ftrace.txt
-> +++ b/tools/perf/Documentation/perf-ftrace.txt
-> @@ -31,6 +31,10 @@ OPTIONS
->  --verbose=::
->          Verbosity level.
->  
-> +-F::
-> +--funcs::
-> +        List all available functions to trace.
-> +
->  -p::
->  --pid=::
->  	Trace on existing process id (comma separated list).
-> diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-> index 048a11192b59..1ebf71ecc1a8 100644
-> --- a/tools/perf/builtin-ftrace.c
-> +++ b/tools/perf/builtin-ftrace.c
-> @@ -33,6 +33,7 @@ struct perf_ftrace {
->  	struct evlist		*evlist;
->  	struct target		target;
->  	const char		*tracer;
-> +	bool			list_avail_functions;
->  	struct list_head	filters;
->  	struct list_head	notrace;
->  	struct list_head	graph_funcs;
-> @@ -128,6 +129,46 @@ static int append_tracing_file(const char *name, const char *val)
->  	return __write_tracing_file(name, val, true);
->  }
->  
-> +static int read_tracing_file_to_stdout(const char *name)
-> +{
-> +	char buf[4096];
-> +	char *file;
-> +	int fd;
-> +	int ret = -1;
-> +
-> +	file = get_tracing_file(name);
-> +	if (!file) {
-> +		pr_debug("cannot get tracing file: %s\n", name);
-> +		return -1;
-> +	}
-> +
-> +	fd = open(file, O_RDONLY);
-> +	if (fd < 0) {
-> +		pr_debug("cannot open tracing file: %s: %s\n",
-> +			 name, str_error_r(errno, buf, sizeof(buf)));
-> +		goto out;
-> +	}
-> +
-> +	/* read contents to stdout */
-> +	while (true) {
-> +		int n = read(fd, buf, sizeof(buf));
-> +		if (n == 0)
-> +			break;
-> +		else if (n < 0)
-> +			goto out_close;
-> +
-> +		if (fwrite(buf, n, 1, stdout) != 1)
-> +			goto out_close;
-> +	}
-> +	ret = 0;
-> +
-> +out_close:
-> +	close(fd);
-> +out:
-> +	put_tracing_file(file);
-> +	return ret;
-> +}
-> +
->  static int reset_tracing_cpu(void);
->  static void reset_tracing_filters(void);
->  
-> @@ -302,6 +343,9 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
->  	signal(SIGCHLD, sig_handler);
->  	signal(SIGPIPE, sig_handler);
->  
-> +	if (ftrace->list_avail_functions)
-> +		return read_tracing_file_to_stdout("available_filter_functions");
-> +
->  	if (reset_tracing_files(ftrace) < 0) {
->  		pr_err("failed to reset ftrace\n");
->  		goto out;
-> @@ -487,6 +531,8 @@ int cmd_ftrace(int argc, const char **argv)
->  	const struct option ftrace_options[] = {
->  	OPT_STRING('t', "tracer", &ftrace.tracer, "tracer",
->  		   "tracer to use: function_graph(default) or function"),
-> +	OPT_BOOLEAN('F', "funcs", &ftrace.list_avail_functions,
-> +		    "Show available functions to filter"),
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-A boolean? I guess this can be a first step, but why not do it like
-'perf probe' and accept a patterna? Allows for less typing:
+There are quite a few W=1 warnings in the Networking code.  My
+plan is to work through all of them over the next few weeks.
+Hopefully it won't be too long before drivers/net builds clean
+with W=1 enabled.
 
-  # perf probe -h -F
+Lee Jones (30):
+  net: bonding: bond_3ad: Fix a bunch of kerneldoc parameter issues
+  net: bonding: bond_main: Document 'proto' and rename 'new_active'
+    parameters
+  net: ethernet: 3com: 3c574_cs: Remove set but unused variables 'tx'
+    and 'rx'
+  net: bonding: bond_alb: Describe
+    alb_handle_addr_collision_on_attach()'s 'bond' and 'addr' params
+  net: wireless: atmel: atmel: Demote non-kerneldoc header to standard
+    comment block
+  net: ethernet: 8390: axnet_cs: Document unused parameter 'txqueue'
+  net: wireless: broadcom: b43: main: Add braces around empty statements
+  net: wireless: ath: carl9170: Mark 'ar9170_qmap' as __maybe_unused
+  net: wireless: ath: ath5k: pcu: Add a description for 'band' remove
+    one for 'mode'
+  net: wan: dlci: Remove set but not used variable 'err'
+  net: wireless: cisco: airo: Place brackets around empty statement
+  net: wireless: cisco: airo: Fix a myriad of coding style issues
+  net: wireless: ath: wil6210: cfg80211: Demote non-kerneldoc headers to
+    standard comment blocks
+  net: wireless: intel: iwlegacy: common: Remove set but not used
+    variable 'len'
+  net: wireless: intel: iwlegacy: common: Demote kerneldoc headers to
+    standard comment blocks
+  net: wireless: intel: ipw2200: Remove set but unused variables 'rc'
+    and 'w'
+  net: wireless: broadcom: b43legacy: main: Provide braces around empty
+    'if' body
+  net: fddi: skfp: hwmtm: Remove seemingly unused variable 'ID_sccs'
+  net: fddi: skfp: fplustm: Remove seemingly unused variable 'ID_sccs'
+  net: wireless: ath: ath5k: base: Fix kerneldoc formatting issue
+  net: fddi: skfp: smt: Place definition of 'smt_pdef' under same
+    stipulations as its use
+  net: wireless: broadcom: brcm80211: brcmfmac: fweh: Remove set but
+    unused variable 'err'
+  net: wireless: broadcom: brcm80211: brcmfmac: fweh: Fix docrot related
+    function documentation issues
+  net: wireless: broadcom: brcm80211: brcmsmac: mac80211_if: Demote a
+    few non-conformant kerneldoc headers
+  net: wireless: intel: ipw2x00: ipw2200: Demote lots of nonconformant
+    kerneldoc comments
+  net: wireless: broadcom: b43: phy_common: Demote non-conformant
+    kerneldoc header
+  net: fddi: skfp: smt: Remove seemingly unused variable 'ID_sccs'
+  net: fddi: skfp: cfm: Remove set but unused variable 'oldstate'
+  net: fddi: skfp: cfm: Remove seemingly unused variable 'ID_sccs'
+  net: wireless: broadcom: b43: phy_n: Add empty braces around empty
+    statements
 
-    -F, --funcs <[FILTER]>
-                          Show potential probe-able functions.
-
-[root@quaco ~]#
-
-# perf probe -F '*btf_parse*'
-btf_parse_hdr
-btf_parse_str_sec
-btf_parse_vmlinux
-#
-# perf ftrace -F | grep btf_parse
-btf_parse_str_sec
-btf_parse_hdr
-btf_parse_vmlinux
-#
-
-I'm applying this to make progress, but please consider sending a patch
-to make this behave in the same way as 'perf probe'.
-
-- Arnaldo
-
-
->  	OPT_STRING('p', "pid", &ftrace.target.pid, "pid",
->  		   "trace on existing process id"),
->  	OPT_INCR('v', "verbose", &verbose,
-> -- 
-> 2.25.1
-> 
+ drivers/net/bonding/bond_3ad.c                |  15 +-
+ drivers/net/bonding/bond_alb.c                |   4 +-
+ drivers/net/bonding/bond_main.c               |   4 +-
+ drivers/net/ethernet/3com/3c574_cs.c          |   6 +-
+ drivers/net/ethernet/8390/axnet_cs.c          |   1 +
+ drivers/net/fddi/skfp/cfm.c                   |  17 +-
+ drivers/net/fddi/skfp/fplustm.c               |   4 -
+ drivers/net/fddi/skfp/hwmtm.c                 |   4 -
+ drivers/net/fddi/skfp/smt.c                   |   7 +-
+ drivers/net/wan/dlci.c                        |   3 +-
+ drivers/net/wireless/ath/ath5k/base.c         |   2 +-
+ drivers/net/wireless/ath/ath5k/pcu.c          |   2 +-
+ drivers/net/wireless/ath/carl9170/carl9170.h  |   2 +-
+ drivers/net/wireless/ath/wil6210/cfg80211.c   |   4 +-
+ drivers/net/wireless/atmel/atmel.c            |   2 +-
+ drivers/net/wireless/broadcom/b43/main.c      |   6 +-
+ .../net/wireless/broadcom/b43/phy_common.c    |   2 +-
+ drivers/net/wireless/broadcom/b43/phy_n.c     |  19 +-
+ .../net/wireless/broadcom/b43legacy/main.c    |   3 +-
+ .../broadcom/brcm80211/brcmfmac/fweh.c        |  13 +-
+ .../broadcom/brcm80211/brcmsmac/mac80211_if.c |  11 +-
+ drivers/net/wireless/cisco/airo.c             | 898 +++++++++---------
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c  |  45 +-
+ drivers/net/wireless/intel/iwlegacy/common.c  |  72 +-
+ 24 files changed, 582 insertions(+), 564 deletions(-)
 
 -- 
+2.25.1
 
-- Arnaldo
