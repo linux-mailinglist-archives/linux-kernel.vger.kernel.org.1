@@ -2,134 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBE7244A6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44C6244A72
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728529AbgHNNci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 09:32:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726237AbgHNNch (ORCPT
+        id S1728572AbgHNNel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 09:34:41 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16822 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726196AbgHNNek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 09:32:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09694C061384
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 06:32:36 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597411955;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WZojXpF4CtFVHLmarhLq1h1iKcdgxc2RpfZdaP2LUC8=;
-        b=4hTwEsgl4HcRIxSII5/fwGY8GDZ+WrKb+QiRIB95G4B6ixEAbwfJG+dOxycUIN4bFB2vKo
-        TS5klI4Yh6uw4dSkjjyI2mn7/Sn8orOjYGewGYm6fr3T+7S63HBDN9ZJaWUQJZmSEA9ZNe
-        IIZ6+h89d7ACBO8/WZB4lzrWBqdz6lSIsDUyblT4Kt+QzrgMZySm9F5LdDenFPfE/HnIfU
-        Ff+eE7GC0YOkxK865WapnnLYDfFaStTU47hj7xRDtwSCU7so+lTleqczoN1Lbyget2pldW
-        EqzYt5OKRC1IiJf7BpruQd3zNVkV0gjGPbFY8KK1wJmzDKAjzau3yzTlqBTdsQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597411955;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WZojXpF4CtFVHLmarhLq1h1iKcdgxc2RpfZdaP2LUC8=;
-        b=kDeKObwQFo5U/wxKAaE1swO/ff/4Gw8C5nGHWBCJCPiOyEqPYR9VJGuoaXpmfhXI71CMWT
-        HGitrbMtHddq2jDA==
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Julia Lawall <Julia.Lawall@lip6.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>
-Subject: Re: fs/ocfs2/suballoc.c:2430:2-8: preceding lock on line 2413
-In-Reply-To: <202008141412.mP88ccpD%lkp@intel.com>
-References: <202008141412.mP88ccpD%lkp@intel.com>
-Date:   Fri, 14 Aug 2020 15:32:35 +0200
-Message-ID: <878sehl5e4.fsf@nanos.tec.linutronix.de>
+        Fri, 14 Aug 2020 09:34:40 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07EDXQ1S042718;
+        Fri, 14 Aug 2020 09:34:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=PK+K/zrJwJJiiva50zj5pMJeHrNKrjTAzX2kE46/Fok=;
+ b=HpL1ED54G7rpWyxM115TzOJNoxoCePA6dglz6kH3tG20LR8sMssoHAiZrVHeR0R/NVPZ
+ eY53RfrmfkEfFUmI0mSn2R8YOnArHUyOREBlpnUc0Jku/yBKGhVCqZVelkdlRFWZa61E
+ xT0hXio9W5V4bedORHGNZc0Dj5OJhgCEqdEiHAhXj3UND4V/KIgwJZO/6j8KhYqYHRUu
+ Ydw41u4B0ISDLlQUswPrMfC11/K37y2aeI9/5/Qt95aB6+Ftq630rIC1YxG/vlmgOwOM
+ X9YvEeC2FTgpJSQGGTo3y4fvL+4EzFYlUQr+fh5qNjtzF4u35/NQ+5EfUMI+d3GHZX7/ rA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32srauuxgh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Aug 2020 09:34:10 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07EDLdOD032624;
+        Fri, 14 Aug 2020 13:34:06 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 32skahenw5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Aug 2020 13:34:05 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07EDY2GB21758434
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 Aug 2020 13:34:02 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BE7D352050;
+        Fri, 14 Aug 2020 13:34:02 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.79.212.27])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 5C78352051;
+        Fri, 14 Aug 2020 13:33:58 +0000 (GMT)
+From:   Balamuruhan S <bala24@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     tglx@linutronix.de, peterz@infradead.org,
+        Jisheng.Zhang@synaptics.com, rdna@fb.com, viro@zeniv.linux.org.uk,
+        gpiccoli@canonical.com, pmladek@suse.com,
+        naveen.n.rao@linux.vnet.ibm.com, ravi.bangoria@linux.ibm.com,
+        sandipan@linux.ibm.com, mpe@ellerman.id.au,
+        linuxppc-dev@lists.ozlabs.org, Balamuruhan S <bala24@linux.ibm.com>
+Subject: [PATCH] kernel/watchdog: fix warning -Wunused-variable for watchdog_allowed_mask in ppc64
+Date:   Fri, 14 Aug 2020 19:03:30 +0530
+Message-Id: <20200814133330.210093-1-bala24@linux.ibm.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-14_07:2020-08-14,2020-08-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
+ suspectscore=1 priorityscore=1501 impostorscore=0 bulkscore=0 adultscore=0
+ malwarescore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008140099
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14 2020 at 14:11, kernel test robot wrote:
->
-> coccinelle warnings: (new ones prefixed by >>)
->
->>> fs/ocfs2/suballoc.c:2430:2-8: preceding lock on line 2413
->
-> vim +2430 fs/ocfs2/suballoc.c
->
-> 415cb800375cc4 Mark Fasheh     2007-09-16  2379  
-> b4414eea0e7b9c Mark Fasheh     2010-03-11  2380  static int ocfs2_block_group_clear_bits(handle_t *handle,
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2381  					struct inode *alloc_inode,
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2382  					struct ocfs2_group_desc *bg,
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2383  					struct buffer_head *group_bh,
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2384  					unsigned int bit_off,
-> b4414eea0e7b9c Mark Fasheh     2010-03-11  2385  					unsigned int num_bits,
-> b4414eea0e7b9c Mark Fasheh     2010-03-11  2386  					void (*undo_fn)(unsigned int bit,
-> b4414eea0e7b9c Mark Fasheh     2010-03-11  2387  							unsigned long *bmap))
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2388  {
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2389  	int status;
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2390  	unsigned int tmp;
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2391  	struct ocfs2_group_desc *undo_bg = NULL;
-> 464170647b5648 Thomas Gleixner 2019-08-09  2392  	struct journal_head *jh;
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2393  
-> 42035306132802 Joel Becker     2008-11-13  2394  	/* The caller got this descriptor from
-> 42035306132802 Joel Becker     2008-11-13  2395  	 * ocfs2_read_group_descriptor().  Any corruption is a code bug. */
-> 42035306132802 Joel Becker     2008-11-13  2396  	BUG_ON(!OCFS2_IS_VALID_GROUP_DESC(bg));
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2397  
-> 2f73e135b83c50 Tao Ma          2011-02-22  2398  	trace_ocfs2_block_group_clear_bits(bit_off, num_bits);
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2399  
-> b4414eea0e7b9c Mark Fasheh     2010-03-11  2400  	BUG_ON(undo_fn && !ocfs2_is_cluster_bitmap(alloc_inode));
-> 0cf2f7632b1789 Joel Becker     2009-02-12  2401  	status = ocfs2_journal_access_gd(handle, INODE_CACHE(alloc_inode),
-> b4414eea0e7b9c Mark Fasheh     2010-03-11  2402  					 group_bh,
-> b4414eea0e7b9c Mark Fasheh     2010-03-11  2403  					 undo_fn ?
-> b4414eea0e7b9c Mark Fasheh     2010-03-11  2404  					 OCFS2_JOURNAL_ACCESS_UNDO :
-> b4414eea0e7b9c Mark Fasheh     2010-03-11  2405  					 OCFS2_JOURNAL_ACCESS_WRITE);
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2406  	if (status < 0) {
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2407  		mlog_errno(status);
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2408  		goto bail;
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2409  	}
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2410  
-> 464170647b5648 Thomas Gleixner 2019-08-09  2411  	jh = bh2jh(group_bh);
-> b4414eea0e7b9c Mark Fasheh     2010-03-11  2412  	if (undo_fn) {
-> 464170647b5648 Thomas Gleixner 2019-08-09 @2413  		spin_lock(&jh->b_state_lock);
-> 464170647b5648 Thomas Gleixner 2019-08-09  2414  		undo_bg = (struct ocfs2_group_desc *) jh->b_committed_data;
-> 94e41ecfe0f202 Sunil Mushran   2009-06-19  2415  		BUG_ON(!undo_bg);
-> 94e41ecfe0f202 Sunil Mushran   2009-06-19  2416  	}
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2417  
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2418  	tmp = num_bits;
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2419  	while(tmp--) {
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2420  		ocfs2_clear_bit((bit_off + tmp),
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2421  				(unsigned long *) bg->bg_bitmap);
-> b4414eea0e7b9c Mark Fasheh     2010-03-11  2422  		if (undo_fn)
-> b4414eea0e7b9c Mark Fasheh     2010-03-11  2423  			undo_fn(bit_off + tmp,
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2424  				(unsigned long *) undo_bg->bg_bitmap);
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2425  	}
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2426  	le16_add_cpu(&bg->bg_free_bits_count, num_bits);
-> 9b5cd10e4c14a1 Srinivas Eeda   2010-10-05  2427  	if (le16_to_cpu(bg->bg_free_bits_count) > le16_to_cpu(bg->bg_bits)) {
-> e75ed71be4f2f7 Changwei Ge     2018-01-31  2428  		if (undo_fn)
-> 464170647b5648 Thomas Gleixner 2019-08-09  2429  			spin_unlock(&jh->b_state_lock);
-> 7ecef14ab1db96 Joe Perches     2015-09-04 @2430  		return ocfs2_error(alloc_inode->i_sb, "Group descriptor # %llu has bit count %u but claims %u are freed. num_bits %d\n",
-> 9b5cd10e4c14a1 Srinivas Eeda   2010-10-05  2431  				   (unsigned long long)le64_to_cpu(bg->bg_blkno),
-> 9b5cd10e4c14a1 Srinivas Eeda   2010-10-05  2432  				   le16_to_cpu(bg->bg_bits),
-> 7ecef14ab1db96 Joe Perches     2015-09-04  2433  				   le16_to_cpu(bg->bg_free_bits_count),
-> 7ecef14ab1db96 Joe Perches     2015-09-04  2434  				   num_bits);
-> 9b5cd10e4c14a1 Srinivas Eeda   2010-10-05  2435  	}
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2436  
-> b4414eea0e7b9c Mark Fasheh     2010-03-11  2437  	if (undo_fn)
-> 464170647b5648 Thomas Gleixner 2019-08-09  2438  		spin_unlock(&jh->b_state_lock);
-> 94e41ecfe0f202 Sunil Mushran   2009-06-19  2439  
-> ec20cec7a35158 Joel Becker     2010-03-19  2440  	ocfs2_journal_dirty(handle, group_bh);
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2441  bail:
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2442  	return status;
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2443  }
-> ccd979bdbce9fb Mark Fasheh     2005-12-15  2444  
+In ppc64 config if `CONFIG_SOFTLOCKUP_DETECTOR` is not set then it
+warns for unused declaration of `watchdog_allowed_mask` while building,
+move the declaration inside ifdef later in the code.
 
-That's clearly a false positive. Is there anything what can be done to
-help that cocci script here?
+```
+kernel/watchdog.c:47:23: warning: ‘watchdog_allowed_mask’ defined but not used [-Wunused-variable]
+ static struct cpumask watchdog_allowed_mask __read_mostly;
+```
 
-Thanks,
+Signed-off-by: Balamuruhan S <bala24@linux.ibm.com>
+---
+ kernel/watchdog.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-        tglx
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 5abb5b22ad13..33c9b8a3d51b 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -44,7 +44,6 @@ int __read_mostly soft_watchdog_user_enabled = 1;
+ int __read_mostly watchdog_thresh = 10;
+ static int __read_mostly nmi_watchdog_available;
+ 
+-static struct cpumask watchdog_allowed_mask __read_mostly;
+ 
+ struct cpumask watchdog_cpumask __read_mostly;
+ unsigned long *watchdog_cpumask_bits = cpumask_bits(&watchdog_cpumask);
+@@ -166,6 +165,7 @@ int __read_mostly sysctl_softlockup_all_cpu_backtrace;
+ unsigned int __read_mostly softlockup_panic =
+ 			CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE;
+ 
++static struct cpumask watchdog_allowed_mask __read_mostly;
+ static bool softlockup_initialized __read_mostly;
+ static u64 __read_mostly sample_period;
+ 
+
+base-commit: a3a28c4451dff698d0c7ef5a3e80423aa5774e2b
+-- 
+2.24.1
+
