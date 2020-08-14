@@ -2,154 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0595C2448B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F49C244892
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726842AbgHNLIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 07:08:16 -0400
-Received: from mga11.intel.com ([192.55.52.93]:61392 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726362AbgHNLIO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 07:08:14 -0400
-IronPort-SDR: GVTN5bk79L1YRvpCnXBXZciaw/t/fwytbHPldYqM5m688D1xLWBuVWzCz0GZ0Bdc3gAA0JFxKG
- 1vN1vE8Z7pHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9712"; a="152032476"
-X-IronPort-AV: E=Sophos;i="5.76,312,1592895600"; 
-   d="scan'208";a="152032476"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2020 04:08:13 -0700
-IronPort-SDR: 3z9XMhjtuie34GKt6M2+xFCpANpAacs8df7P6eMDN0O/TiilgvNqKkzm4SOdiQRZ/9h5a/xXv2
- /RTRWXQkFLjg==
-X-IronPort-AV: E=Sophos;i="5.76,312,1592895600"; 
-   d="scan'208";a="470555463"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2020 04:08:09 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH] soundwire: SDCA: detect sdca_cascade interrupt
-Date:   Fri, 14 Aug 2020 07:14:21 +0800
-Message-Id: <20200813231421.26252-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727876AbgHNLBk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Aug 2020 07:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727074AbgHNLBZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 07:01:25 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7561BC061385
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:01:24 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1k6XST-0003Z0-ON; Fri, 14 Aug 2020 13:01:13 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1k6XSM-0007pB-22; Fri, 14 Aug 2020 13:01:06 +0200
+Date:   Fri, 14 Aug 2020 13:01:06 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     robin@protonic.nl, linux@rempel-privat.de, kernel@pengutronix.de,
+        socketcan@hartkopp.net, mkl@pengutronix.de, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
+Subject: Re: [PATCH net 0/4] support multipacket broadcast message
+Message-ID: <20200814110106.y3kn5sjvidx5ar34@pengutronix.de>
+References: <1596599425-5534-1-git-send-email-zhangchangzhong@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <1596599425-5534-1-git-send-email-zhangchangzhong@huawei.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 12:59:34 up 273 days,  2:18, 260 users,  load average: 0.04, 0.08,
+ 0.02
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Hello,
 
-The SoundWire 1.2 specification defines an "SDCA cascade" bit which
-handles a logical OR of all SDCA interrupt sources (up to 30 defined).
+On Wed, Aug 05, 2020 at 11:50:21AM +0800, Zhang Changzhong wrote:
+> Zhang Changzhong (4):
+>   can: j1939: fix support for multipacket broadcast message
+>   can: j1939: cancel rxtimer on multipacket broadcast session complete
+>   can: j1939: abort multipacket broadcast session when timeout occurs
+>   can: j1939: add rxtimer for multipacket broadcast session
+> 
+>  net/can/j1939/transport.c | 48 +++++++++++++++++++++++++++++++++++------------
+>  1 file changed, 36 insertions(+), 12 deletions(-)
 
-Due to limitations of the addressing space, this bit is located in the
-SDW_DP0_INT register when DP0 is used, or alternatively in the
-DP0_SDCA_Support_INTSTAT register when DP0 is not used.
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-To allow for both cases to be handled, this bit will be checked in the
-main device-level interrupt handling code. This will result in the
-register being read twice if DP0 is enabled, but it's not clear how to
-optimize this case. It's also more logical to deal with this interrupt
-at the device than the port level, this bit is really not DP0 specific
-and its location in the DP0_INTSTAT bit is only due to the lack of
-free space in SCP_INTSTAT_1.
+Thank you for your work!
 
-The SDCA_Cascade bit cannot be masked or cleared, so the interrupt
-handling only forwards the detection to the Slave driver, which will
-deal with reading the relevant SDCA status bits and clearing them. The
-bus driver only signals the detection.
-
-The communication with the Slave driver is based on the same interrupt
-callback, with only an extension to provide the status of the
-sdca_cascade bit.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/bus.c       | 14 ++++++++++++++
- include/linux/soundwire/sdw.h |  4 ++++
- 2 files changed, 18 insertions(+)
-
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index e6e0fb9a81b4..17c697f5ad78 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1361,6 +1361,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 	int port_num, stat, ret, count = 0;
- 	unsigned long port;
- 	bool slave_notify = false;
-+	bool sdca_cascade = false;
- 	u8 buf, buf2[2], _buf, _buf2[2];
- 
- 	sdw_modify_slave_status(slave, SDW_SLAVE_ALERT);
-@@ -1388,6 +1389,18 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		goto io_err;
- 	}
- 
-+	if (slave->prop.is_sdca) {
-+		ret = sdw_read(slave, SDW_DP0_INT);
-+		if (ret < 0) {
-+			dev_err(slave->bus->dev,
-+				"SDW_DP0_INT read failed:%d\n", ret);
-+			goto io_err;
-+		}
-+		sdca_cascade = ret & SDW_DP0_SDCA_CASCADE;
-+		if (sdca_cascade)
-+			slave_notify = true;
-+	}
-+
- 	do {
- 		/*
- 		 * Check parity, bus clash and Slave (impl defined)
-@@ -1453,6 +1466,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		/* Update the Slave driver */
- 		if (slave_notify && slave->ops &&
- 		    slave->ops->interrupt_callback) {
-+			slave_intr.sdca_cascade = sdca_cascade;
- 			slave_intr.control_port = clear;
- 			memcpy(slave_intr.port, &port_status,
- 			       sizeof(slave_intr.port));
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 76052f12c9f7..a51494646a2c 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -355,6 +355,7 @@ struct sdw_dpn_prop {
-  * @dp0_prop: Data Port 0 properties
-  * @src_dpn_prop: Source Data Port N properties
-  * @sink_dpn_prop: Sink Data Port N properties
-+ * @is_sdca: the Slave supports the SDCA specification
-  */
- struct sdw_slave_prop {
- 	u32 mipi_revision;
-@@ -376,6 +377,7 @@ struct sdw_slave_prop {
- 	struct sdw_dp0_prop *dp0_prop;
- 	struct sdw_dpn_prop *src_dpn_prop;
- 	struct sdw_dpn_prop *sink_dpn_prop;
-+	bool is_sdca;
- };
- 
- /**
-@@ -465,10 +467,12 @@ struct sdw_slave_id {
- 
- /**
-  * struct sdw_slave_intr_status - Slave interrupt status
-+ * @sdca_cascade: set if the Slave device reports an SDCA interrupt
-  * @control_port: control port status
-  * @port: data port status
-  */
- struct sdw_slave_intr_status {
-+	bool sdca_cascade;
- 	u8 control_port;
- 	u8 port[15];
- };
+Regards,
+Oleksij
 -- 
-2.17.1
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
