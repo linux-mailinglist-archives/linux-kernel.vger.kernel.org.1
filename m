@@ -2,142 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527CE244783
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 11:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0498244779
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 11:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgHNJ45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 05:56:57 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:55261 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726679AbgHNJ4z (ORCPT
+        id S1726925AbgHNJ4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 05:56:40 -0400
+Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:22809 "EHLO
+        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726603AbgHNJ4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 05:56:55 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 14 Aug 2020 02:56:54 -0700
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 14 Aug 2020 02:56:52 -0700
-Received: from c-rojay-linux.qualcomm.com ([10.206.21.80])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 14 Aug 2020 15:26:33 +0530
-Received: by c-rojay-linux.qualcomm.com (Postfix, from userid 88981)
-        id 477501AC8; Fri, 14 Aug 2020 15:26:32 +0530 (IST)
-From:   Roja Rani Yarubandi <rojay@codeaurora.org>
-To:     wsa@kernel.org
-Cc:     swboyd@chromium.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
-        mka@chromium.org, akashast@codeaurora.org,
-        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
-        rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-Subject: [PATCH 2/2] i2c: i2c-qcom-geni: Add shutdown callback for i2c
-Date:   Fri, 14 Aug 2020 15:25:40 +0530
-Message-Id: <20200814095540.32115-3-rojay@codeaurora.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200814095540.32115-1-rojay@codeaurora.org>
-References: <20200814095540.32115-1-rojay@codeaurora.org>
+        Fri, 14 Aug 2020 05:56:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1597398999;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=M2heJ5UJIi6VeX83HdtsuKbDz3J1W8I/My2z+YBPJbc=;
+  b=VMUPhAunCPJYS7U/d4AcTWAUNCTlkb+q/8skt/OUmXKQ4MaqEQAeVgXX
+   BMInVCYqVOYrPRmN/H/+cbHAa9l6X4TmLr6fbLeMioVvrAo49N1rgzyyD
+   Wym+QZ5mrVnxXlmY+vv1umCugWKy7RBV5iFubSq01LEZGm70YZ8432AjK
+   o=;
+Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: LSUv+nx7tcMiKh/86la0ov2CD6bm0s6I0CZ/3c8oZ8SKd5FBsD9NTk6X+etvRWHGxjQoN4ifLc
+ WZkEtigJTsHGqnWNv9UJ60WQsP5kEKf5sFfIOA6zvU9VIklNrxh92Vbu7Lw/zOteb+Zprr9bcz
+ EDqmXPpuivFanGkQt/96ZKFaN0KdR0AoyWD2zxgECUj3l8VTghEId76fKUoi3SYFO8M2Otk1Pf
+ CYzZj5rDqfvUJsn9+hgY+6CFXoxaN6UM05eSlIPALUijsytQzL+vRPNV5LDNkQ09XoNxVizA79
+ cjQ=
+X-SBRS: 2.7
+X-MesageID: 24845878
+X-Ironport-Server: esa6.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.76,311,1592884800"; 
+   d="scan'208";a="24845878"
+Date:   Fri, 14 Aug 2020 11:56:29 +0200
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        David Airlie <airlied@linux.ie>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>, Wei Liu <wl@xen.org>,
+        "Yan Yankovskyi" <yyankovskyi@gmail.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <xen-devel@lists.xenproject.org>, <linux-mm@kvack.org>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v4 2/2] xen: add helpers to allocate unpopulated memory
+Message-ID: <20200814095629.GJ975@Air-de-Roger>
+References: <20200811094447.31208-1-roger.pau@citrix.com>
+ <20200811094447.31208-3-roger.pau@citrix.com>
+ <20200813073337.GA16160@infradead.org>
+ <20200813075420.GC975@Air-de-Roger>
+ <20200814072920.GA6126@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20200814072920.GA6126@infradead.org>
+X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
+ AMSPEX02CL02.citrite.net (10.69.22.126)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the hardware is still accessing memory after SMMU translation
-is disabled(as part of smmu shutdown callback), then the
-IOVAs(I/O virtual address) which it was using will go on the bus
-as the physical addresses which will result in unknown crashes
-like NoC/interconnect errors.
+On Fri, Aug 14, 2020 at 08:29:20AM +0100, Christoph Hellwig wrote:
+> On Thu, Aug 13, 2020 at 09:54:20AM +0200, Roger Pau Monn?? wrote:
+> > On Thu, Aug 13, 2020 at 08:33:37AM +0100, Christoph Hellwig wrote:
+> > > On Tue, Aug 11, 2020 at 11:44:47AM +0200, Roger Pau Monne wrote:
+> > > > If enabled (because ZONE_DEVICE is supported) the usage of the new
+> > > > functionality untangles Xen balloon and RAM hotplug from the usage of
+> > > > unpopulated physical memory ranges to map foreign pages, which is the
+> > > > correct thing to do in order to avoid mappings of foreign pages depend
+> > > > on memory hotplug.
+> > > 
+> > > So please just select ZONE_DEVICE if this is so much better rather
+> > > than maintaining two variants.
+> > 
+> > We still need to other variant for Arm at least, so both need to be
+> > maintained anyway, even if we force ZONE_DEVICE on x86.
+> 
+> Well, it still really helps reproducability if you stick to one
+> implementation of x86.
+> 
+> The alternative would be an explicit config option to opt into it,
+> but just getting a different implementation based on a random
+> kernel option is strange.
 
-So, adding shutdown callback to i2c driver to unmap DMA mappings
-during system "reboot" or "shutdown".
+Would adding something like the chunk below to the patch be OK?
 
-Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
----
- drivers/i2c/busses/i2c-qcom-geni.c | 36 ++++++++++++++++++++++++++++++
- include/linux/qcom-geni-se.h       |  5 +++++
- 2 files changed, 41 insertions(+)
-
-diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-index 53ca41f76080..749c225f95c4 100644
---- a/drivers/i2c/busses/i2c-qcom-geni.c
-+++ b/drivers/i2c/busses/i2c-qcom-geni.c
-@@ -613,6 +613,41 @@ static int geni_i2c_remove(struct platform_device *pdev)
- 	return 0;
- }
+---8<---
+diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
+index 018020b91baa..5f321a1319e6 100644
+--- a/drivers/xen/Kconfig
++++ b/drivers/xen/Kconfig
+@@ -328,7 +328,14 @@ config XEN_FRONT_PGDIR_SHBUF
+ 	tristate
  
-+static void geni_i2c_shutdown(struct platform_device *pdev)
-+{
-+	int ret;
-+	struct geni_i2c_dev *gi2c = platform_get_drvdata(pdev);
-+	struct geni_se *se = &gi2c->se;
-+	u32 dma;
-+	u32 dma_dbg_reg;
-+
-+	ret = pm_runtime_get_sync(gi2c->se.dev);
-+	if (ret < 0) {
-+		dev_err(gi2c->se.dev, "Failed to resume device:%d\n", ret);
-+		return;
-+	}
-+
-+	dma = readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
-+	if (dma) {
-+		dma_dbg_reg = readl_relaxed(gi2c->se.base + SE_DMA_DEBUG_REG0);
-+		if (dma_dbg_reg & DMA_TX_ACTIVE) {
-+			geni_i2c_abort_xfer(gi2c);
-+			gi2c->cur_wr = 0;
-+			if (gi2c->err)
-+				geni_i2c_tx_fsm_rst(gi2c);
-+			geni_se_tx_dma_unprep(se, gi2c->tx_dma, gi2c->xfer_len);
-+		}
-+		if (dma_dbg_reg & DMA_RX_ACTIVE) {
-+			geni_i2c_abort_xfer(gi2c);
-+			gi2c->cur_rd = 0;
-+			if (gi2c->err)
-+				geni_i2c_rx_fsm_rst(gi2c);
-+			geni_se_rx_dma_unprep(se, gi2c->rx_dma, gi2c->xfer_len);
-+		}
-+	}
-+	pm_runtime_put_sync_suspend(gi2c->se.dev);
-+}
-+
- static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
- {
- 	int ret;
-@@ -673,6 +708,7 @@ MODULE_DEVICE_TABLE(of, geni_i2c_dt_match);
- static struct platform_driver geni_i2c_driver = {
- 	.probe  = geni_i2c_probe,
- 	.remove = geni_i2c_remove,
-+	.shutdown = geni_i2c_shutdown,
- 	.driver = {
- 		.name = "geni_i2c",
- 		.pm = &geni_i2c_pm_ops,
-diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
-index dd464943f717..acad69be747d 100644
---- a/include/linux/qcom-geni-se.h
-+++ b/include/linux/qcom-geni-se.h
-@@ -77,6 +77,7 @@ struct geni_se {
- #define SE_DMA_RX_FSM_RST		0xd58
- #define SE_HW_PARAM_0			0xe24
- #define SE_HW_PARAM_1			0xe28
-+#define SE_DMA_DEBUG_REG0		0xe40
+ config XEN_UNPOPULATED_ALLOC
+-	bool
+-	default y if ZONE_DEVICE && !ARM && !ARM64
++	bool "Use unpopulated memory ranges for guest mappings"
++	depends on X86
++	select ZONE_DEVICE
++	default y
++	help
++	  Use unpopulated memory ranges in order to create mappings for guest
++	  memory regions, including grants maps and foreign pages. This avoids
++	  having to balloon out RAM regions in order to obtain physical memory
++	  space to create such mappings.
  
- /* GENI_FORCE_DEFAULT_REG fields */
- #define FORCE_DEFAULT	BIT(0)
-@@ -207,6 +208,10 @@ struct geni_se {
- #define RX_GENI_CANCEL_IRQ		BIT(11)
- #define RX_GENI_GP_IRQ_EXT		GENMASK(13, 12)
- 
-+/* DMA DEBUG Register fields */
-+#define DMA_TX_ACTIVE			BIT(0)
-+#define DMA_RX_ACTIVE			BIT(1)
-+
- /* SE_HW_PARAM_0 fields */
- #define TX_FIFO_WIDTH_MSK		GENMASK(29, 24)
- #define TX_FIFO_WIDTH_SHFT		24
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+ endmenu
 
