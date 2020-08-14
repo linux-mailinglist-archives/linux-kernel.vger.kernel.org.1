@@ -2,126 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5222F2444B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 07:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4752444B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 07:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgHNF4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 01:56:32 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:2226 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgHNF4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 01:56:31 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BSXkM4750z9vD37;
-        Fri, 14 Aug 2020 07:56:27 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id lBzcTAIqbjXx; Fri, 14 Aug 2020 07:56:27 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BSXkM338qz9vD2y;
-        Fri, 14 Aug 2020 07:56:27 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5E3638B775;
-        Fri, 14 Aug 2020 07:56:28 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id LuR78-u6rgOW; Fri, 14 Aug 2020 07:56:28 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2B6288B767;
-        Fri, 14 Aug 2020 07:56:28 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id C155965C93; Fri, 14 Aug 2020 05:56:27 +0000 (UTC)
-Message-Id: <f989eff8296800c427622c0985384148404e4f0b.1597384512.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <50098f49877cea0f46730a9df82dcabf84160e4b.1597384512.git.christophe.leroy@csgroup.eu>
-References: <50098f49877cea0f46730a9df82dcabf84160e4b.1597384512.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 4/4] powerpc: Rewrite FSL_BOOKE flush_cache_instruction()
- in C
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, hch@infradead.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri, 14 Aug 2020 05:56:27 +0000 (UTC)
+        id S1726620AbgHNF7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 01:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgHNF7P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 01:59:15 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3D9C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 22:59:15 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id v13so7227351oiv.13
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 22:59:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6ek1Xj7F+p5V5QHuUBuug/aAxVgWdWkwQ14dvtLIgIA=;
+        b=u/d3+AkOSH0ZAUrREdpKK1K7+3ubxoyTo9I05t6URCCnVPUTye+E+pdV9V2a3+ccif
+         jWmpaZGdH4f5C8gDoW6VBuNLHhE1+5zuMQeQxEUtLt583MPJeaDnuM4ZIjXApLZMDldZ
+         cI8sNWvgt7TJWl02eoF2qITSBjQxL+K9NrXJ8TrvklB+qqHO5k48Y90zZ/69fX0WrF/R
+         MA6niyBPxhu67sI+tFb0PnUtTD7MV1RvC4LgKGWOvhWzCj7wmC5lwJYbKFKeXstgY9eL
+         z2qErVVTp3z2vziasizR4KHWl5qtoCFKMNuPyd+OX+cHRRC8SRlXrsEWvZfxOz/SYkje
+         AWzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6ek1Xj7F+p5V5QHuUBuug/aAxVgWdWkwQ14dvtLIgIA=;
+        b=qAneFAbBrWF3Az0hb310EybRtvGN68ZYTap9yc80Y5hhBR5gsy70XYVIWNalCtl2Xa
+         9PxdwybN4F86/qLSv+DuE8ia+qQalT5+wHVaUdatapGXlml5USJJTBJJOUcvDTurOpxN
+         5jHC2TJ8Q9H+hzFZygTFn272AqBcmC5ywcqp6c6bGMe3Ks9M2mm8DQN8lBe5rm5ODc8E
+         a2/sTRXIHTWS+ZFTaRPyyHEjK6yKRWC/hzUAOpC7pvvXN1D0GqQSIpK2O7XITpM3banY
+         z6KQ1vfE/KliNLTfjR95UN/uR2bWXeV+/9/f/MQDfD+LTLErAT8MPj7JKg67TgR2NB0q
+         fwWA==
+X-Gm-Message-State: AOAM533+XOP077pcTcHCDMiw5l7xYq6elLQBOSI3RxHB64rLMnzt+MIJ
+        NLuTNf7WedzkHc7WD+oPFtMpRNRpjynOSrW2XDNPow==
+X-Google-Smtp-Source: ABdhPJygjIyHSKquccaPWBOnwk40OPCWOWVkacRMrzSamBOp7G/opmXIa+Evw20OaDL+Y6ykmzsGN0rJzm1g8bL1p74=
+X-Received: by 2002:aca:dc85:: with SMTP id t127mr588618oig.169.1597384754309;
+ Thu, 13 Aug 2020 22:59:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200729051632.66040-1-john.stultz@linaro.org>
+ <20200729051632.66040-2-john.stultz@linaro.org> <3aabe118-929d-6ada-b317-dfa72d180717@arm.com>
+In-Reply-To: <3aabe118-929d-6ada-b317-dfa72d180717@arm.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Thu, 13 Aug 2020 22:59:02 -0700
+Message-ID: <CALAqxLWjbhD3LN7phqPW_PrvXFeGd3aFHzAU0AAjVcNJNOTVoA@mail.gmail.com>
+Subject: Re: [RFC][PATCH 2/2] dma-heap: Add a system-uncached heap
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        "Andrew F . Davis" <afd@ti.com>, Laura Abbott <labbott@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nothing prevents flush_cache_instruction() from being writen in C.
+On Mon, Aug 3, 2020 at 4:06 AM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2020-07-29 06:16, John Stultz wrote:
+> > This adds a heap that allocates non-contiguous buffers that are
+> > marked as writecombined, so they are not cached by the CPU.
+> >
+...
+> > +     ret = sg_alloc_table(new_table, table->nents, GFP_KERNEL);
+> > +     if (ret) {
+> > +             kfree(new_table);
+> > +             return ERR_PTR(-ENOMEM);
+> > +     }
+> > +
+> > +     new_sg = new_table->sgl;
+> > +     for_each_sg(table->sgl, sg, table->nents, i) {
+>
+> Consider using the new sgtable helpers that are just about to land - in
+> this case, for_each_sgtable_sg().
 
-Do it to improve readability and maintainability.
+Ack! Thanks for the suggestion!
 
-This function is only use by low level callers, it is not
-intended to be used by module. Don't export it.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/misc_32.S      | 22 ----------------------
- arch/powerpc/mm/nohash/fsl_booke.c | 16 ++++++++++++++++
- 2 files changed, 16 insertions(+), 22 deletions(-)
+> > +             memcpy(new_sg, sg, sizeof(*sg));
+> > +             new_sg->dma_address = 0;
+>
+> This seems a little bit hairy, as in theory a consumer could still treat
+> a nonzero DMA length as the address being valid. Rather than copying the
+> whole entry then trying to undo parts of that, maybe just:
+>
+>         sg_set_page(new_sg, sg_page(sg), sg->len, sg->offset);
+>
+> ?
 
-diff --git a/arch/powerpc/kernel/misc_32.S b/arch/powerpc/kernel/misc_32.S
-index 1bda207459a8..87717966f5cd 100644
---- a/arch/powerpc/kernel/misc_32.S
-+++ b/arch/powerpc/kernel/misc_32.S
-@@ -268,28 +268,6 @@ _ASM_NOKPROBE_SYMBOL(real_writeb)
- 
- #endif /* CONFIG_40x */
- 
--
--/*
-- * Flush instruction cache.
-- */
--#ifdef CONFIG_FSL_BOOKE
--_GLOBAL(flush_instruction_cache)
--#ifdef CONFIG_E200
--	mfspr   r3,SPRN_L1CSR0
--	ori     r3,r3,L1CSR0_CFI|L1CSR0_CLFC
--	/* msync; isync recommended here */
--	mtspr   SPRN_L1CSR0,r3
--	isync
--	blr
--#endif
--	mfspr	r3,SPRN_L1CSR1
--	ori	r3,r3,L1CSR1_ICFI|L1CSR1_ICLFR
--	mtspr	SPRN_L1CSR1,r3
--	isync
--	blr
--EXPORT_SYMBOL(flush_instruction_cache)
--#endif
--
- /*
-  * Copy a whole page.  We use the dcbz instruction on the destination
-  * to reduce memory traffic (it eliminates the unnecessary reads of
-diff --git a/arch/powerpc/mm/nohash/fsl_booke.c b/arch/powerpc/mm/nohash/fsl_booke.c
-index 0c294827d6e5..36bda962d3b3 100644
---- a/arch/powerpc/mm/nohash/fsl_booke.c
-+++ b/arch/powerpc/mm/nohash/fsl_booke.c
-@@ -219,6 +219,22 @@ unsigned long __init mmu_mapin_ram(unsigned long base, unsigned long top)
- 	return tlbcam_addrs[tlbcam_index - 1].limit - PAGE_OFFSET + 1;
- }
- 
-+void flush_instruction_cache(void)
-+{
-+	unsigned long tmp;
-+
-+	if (IS_ENABLED(CONFIG_E200)) {
-+		tmp = mfspr(SPRN_L1CSR0);
-+		tmp |= L1CSR0_CFI | L1CSR0_CLFC;
-+		mtspr(SPRN_L1CSR0, tmp);
-+	} else {
-+		tmp = mfspr(SPRN_L1CSR1);
-+		tmp |= L1CSR1_ICFI | L1CSR1_ICLFR;
-+		mtspr(SPRN_L1CSR1, tmp);
-+	}
-+	isync();
-+}
-+
- /*
-  * MMU_init_hw does the chip-specific initialization of the MMU hardware.
-  */
--- 
-2.25.0
+Sounds good.
 
+
+> > +static struct sg_table *dma_heap_map_dma_buf(struct dma_buf_attachment *attachment,
+> > +                                          enum dma_data_direction direction)
+> > +{
+> > +     struct dma_heap_attachment *a = attachment->priv;
+> > +     struct sg_table *table = a->table;
+> > +
+> > +     if (!dma_map_sg_attrs(attachment->dev, table->sgl, table->nents, direction,
+> > +                           DMA_ATTR_SKIP_CPU_SYNC | DMA_ATTR_WRITE_COMBINE))
+>
+> dma_map_sgtable()
+>
+> Also, DMA_ATTR_WRITE_COMBINE is meaningless for streaming DMA.
+>
+
+Hrm. Ok, my grasp of "streaming" vs "consistent" definitions are maybe
+slightly off, since while we are mapping and unmapping buffers, the
+point of this heap is that the allocated memory is uncached/coherent,
+so we avoid the cache sync overhead on each mapping/unmapping, which I
+thought was closer to the "consistent" definition.
+
+But maybe if the mapping and unmapping part is really the key
+difference, then ok.
+
+Either way, from my testing, you seem to be right that the
+ATTR_WRITE_COMBINE doesn't seem to make any difference in behavior.
+
+> > +     pgprot = pgprot_writecombine(PAGE_KERNEL);
+> > +
+> > +     for_each_sg(table->sgl, sg, table->nents, i) {
+>
+> for_each_sg_page()
+
+Ack.
+
+> > +     /*
+> > +      * XXX This is hackish. While the buffer will be uncached, we need
+> > +      * to initially flush cpu cache, since the the __GFP_ZERO on the
+> > +      * allocation means the zeroing was done by the cpu and thus it is likely
+> > +      * cached. Map & flush it out now so we don't get corruption later on.
+> > +      *
+> > +      * Ideally we could do this without using the heap device as a dummy dev.
+> > +      */
+> > +     dma_map_sg_attrs(dma_heap_get_dev(heap), table->sgl, table->nents,
+> > +                      DMA_BIDIRECTIONAL, DMA_ATTR_WRITE_COMBINE);
+>
+> Again, DMA_ATTR_WRITE_COMBINE is meaningless here.
+>
+> > +     dma_sync_sg_for_device(dma_heap_get_dev(heap), table->sgl, table->nents,
+> > +                            DMA_BIDIRECTIONAL);
+>
+> This doesn't do anything that the map hasn't already just done.
+
+Good point!
+
+> > +     }
+> > +     dma_heap_get_dev(heap->heap)->dma_mask = &dummy_mask;
+> > +     dma_set_mask(dma_heap_get_dev(heap->heap), DMA_BIT_MASK(64));
+>
+> Much as I'd hate to encourage using dma_coerce_mask_and_coherent(), I'm
+> not sure this is really any better :/
+
+Sounds fair.
+
+Thanks so much for the review, I really appreciate the feedback!
+(Sorry I was a little slow to respond. The merge window has really
+been something this cycle.. :P)
+
+I'll get this all integrated and resend the patch here shortly.
+
+thanks
+-john
