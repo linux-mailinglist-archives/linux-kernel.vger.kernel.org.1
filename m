@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A491244BC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 17:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDB3244BD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 17:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbgHNPP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 11:15:59 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:20212 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726362AbgHNPP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 11:15:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597418155; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=DMWgRHrRRjTDJXLtrLvtw3sk3LVQOvR9zSjiVrGpUPE=; b=NuPdsvc3k3mdu0oTViLZo8h7+4ea7fHIrbXadqe+jfEYKK022r4WYcOB91w3fSutZR8UAe0s
- sK+t3uBj9ACvc8tsImn9eN3D3cF6pNU89H72F8B/1LxFcr9sq7D7YkGDiFNbBRiQOMcT3j6F
- Ciz8SDRt5IRQBqWX2tZgTAYbGdI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f36aaa01e4d3989d47fc515 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 14 Aug 2020 15:15:44
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7B6E7C43391; Fri, 14 Aug 2020 15:15:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 410CFC433C6;
-        Fri, 14 Aug 2020 15:15:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 410CFC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        Benjamin Reed <breed@users.sourceforge.net>,
-        Javier Achirica <achirica@users.sourceforge.net>,
-        Jean Tourrilhes <jt@hpl.hp.com>,
-        Fabrice Bellet <fabrice@bellet.info>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 12/30] net: wireless: cisco: airo: Fix a myriad of coding style issues
-References: <20200814113933.1903438-1-lee.jones@linaro.org>
-        <20200814113933.1903438-13-lee.jones@linaro.org>
-Date:   Fri, 14 Aug 2020 18:15:39 +0300
-In-Reply-To: <20200814113933.1903438-13-lee.jones@linaro.org> (Lee Jones's
-        message of "Fri, 14 Aug 2020 12:39:15 +0100")
-Message-ID: <87r1s9l0mc.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1727012AbgHNPUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 11:20:36 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:51498 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726270AbgHNPUf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 11:20:35 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k6bVR-00H01D-G4; Fri, 14 Aug 2020 09:20:33 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k6bVQ-0001vZ-PO; Fri, 14 Aug 2020 09:20:33 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Sang Yan <sangyan@huawei.com>
+Cc:     <kexec@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <xiexiuqi@huawei.com>, <guohanjun@huawei.com>,
+        <zhuling8@huawei.com>, <luanjianhai@huawei.com>,
+        <luchunhua@huawei.com>
+References: <20200814055239.47348-1-sangyan@huawei.com>
+Date:   Fri, 14 Aug 2020 10:17:06 -0500
+In-Reply-To: <20200814055239.47348-1-sangyan@huawei.com> (Sang Yan's message
+        of "Fri, 14 Aug 2020 01:52:38 -0400")
+Message-ID: <87tux5i7f1.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
+X-XM-SPF: eid=1k6bVQ-0001vZ-PO;;;mid=<87tux5i7f1.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/U8iQDvUHSg0k7Zv0nFYBoIQGMmYLEEDU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4795]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Sang Yan <sangyan@huawei.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 362 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 11 (3.1%), b_tie_ro: 10 (2.7%), parse: 0.89
+        (0.2%), extract_message_metadata: 18 (5.0%), get_uri_detail_list: 1.18
+        (0.3%), tests_pri_-1000: 19 (5.1%), tests_pri_-950: 1.65 (0.5%),
+        tests_pri_-900: 1.45 (0.4%), tests_pri_-90: 102 (28.1%), check_bayes:
+        100 (27.7%), b_tokenize: 4.6 (1.3%), b_tok_get_all: 4.7 (1.3%),
+        b_comp_prob: 1.72 (0.5%), b_tok_touch_all: 85 (23.5%), b_finish: 1.12
+        (0.3%), tests_pri_0: 194 (53.6%), check_dkim_signature: 0.63 (0.2%),
+        check_dkim_adsp: 2.5 (0.7%), poll_dns_idle: 0.69 (0.2%), tests_pri_10:
+        2.2 (0.6%), tests_pri_500: 7 (1.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 1/2] kexec: Add quick kexec support for kernel
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> writes:
+Sang Yan <sangyan@huawei.com> writes:
 
->  - Ensure spaces appear after {for, if, while, etc}
->  - Ensure spaces to not appear after '('
->  - Ensure spaces to not appear before ')'
->  - Ensure spaces appear between ')' and '{'
->  - Ensure spaces appear after ','
->  - Ensure spaces do not appear before ','
->  - Ensure spaces appear either side of '='
->  - Ensure '{'s which open functions are on a new line
->  - Remove trailing whitespace
->
-> There are still a whole host of issues with this file, but this
-> patch certainly breaks the back of them.
->
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Benjamin Reed <breed@users.sourceforge.net>
-> Cc: Javier Achirica <achirica@users.sourceforge.net>
-> Cc: Jean Tourrilhes <jt@hpl.hp.com>
-> Cc: Fabrice Bellet <fabrice@bellet.info>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/net/wireless/cisco/airo.c | 897 ++++++++++++++++--------------
->  1 file changed, 467 insertions(+), 430 deletions(-)
+> In normal kexec, relocating kernel may cost 5 ~ 10 seconds, to
+> copy all segments from vmalloced memory to kernel boot memory,
+> because of disabled mmu.
 
-This is a driver for ancient hardware, I'm not sure if it's worth trying
-to fix any style issues. Is anyone even using it? Should we instead just
-remove the driver?
+I haven't seen kexec that slow since I tested on my 16Mhz 386.
 
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+That machine has an excuse it really is slow.  Anything else
+that takes seconds is almost certainly slow because someone
+has misconfigured things to not cache the data copied by kexec.
+
+I humbly suggest that you fix the arm64 code so that the data gets
+cached.
+
+Eric
