@@ -2,230 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0525A24468F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 10:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D39244695
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 10:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgHNIpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 04:45:23 -0400
-Received: from mail-eopbgr10050.outbound.protection.outlook.com ([40.107.1.50]:51145
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726669AbgHNIpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 04:45:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TKHKFqHc3/g5pAeee1raTaoWB+4ady3OQIWnL26c2dVm5r/RzZuFJgripcbb/+dOjasYhAkDw7wJ5vyztn0UvpKU0AMToNH3HBdQBb8ZR0gqItL7RIxuFu7QCwYEJL0EXZjUTIkKWDIFeQ8wEMdMON9WU8+sSTKzIDL1WR90UtlFXdElch45IexzS5MLdtcYwyztkxzcYC+dVYoYh+hOVeMbPBtcNWcHP9RfwaMB+p6yzdQod/8IFk6M9W0bluzAjke/uZPMy6/NHVkBUPBXGbtUUvDLfYPxCtwzsmDMj9oAkI3VO12//w0VoUX0SZ5zjMj/8vB8y606WElqf6DQKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OT7gVHa83ywzYJSFGQ/gYZyrQfv4p5BGZSmbyQCrhS4=;
- b=WjMZnAzs7B8dsFeXa8OnlAMkexVG4fJ2EfUsGtIOPoU6Im42S2+Lf96diA5bo/6i3Mckpp+7TMdixkdl3EsHqEyPOSs8J52DiELkqKX/XD8zOkiGCuFoqE29k0ulzCKMa/Ojr827h4VrcTMNl2qvc/PgAVTRhEtrB9MYLM/NRGqbExFLZ7JNvf7yOeYPCb4s+xub3NSmarBZIE0/F5LLTMesF0KSjkqd+PKY/G2YwjaApl+n2MAC1lmO/MqySx594lEWnOJqqFZzXDjywEiRmlRgHHPOTrTMvxTYj3JEdJyolLnRSY2ACKP0nG8aIq/qHULvHT6TI1/+26/UhWSEew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OT7gVHa83ywzYJSFGQ/gYZyrQfv4p5BGZSmbyQCrhS4=;
- b=X06XmTAxiAj9NxDHaIFd0qsIxymmjHLk9QtCyN+bNC/6ea8UUUNu+oMgUstBZD+RJ07ORuue7r41um+1nrtxsvpZ5MSokR8vvtptTSDxAKrPoqmuM/u+9xXRbJqxUIq18wAm1aNiURToFLJJH4Z9aOO32J2RH8BQZQ1rpSG6uBc=
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
- by VI1PR04MB5502.eurprd04.prod.outlook.com (2603:10a6:803:c9::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15; Fri, 14 Aug
- 2020 08:45:18 +0000
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::ad7f:d95a:5413:a950]) by VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::ad7f:d95a:5413:a950%3]) with mapi id 15.20.3283.020; Fri, 14 Aug 2020
- 08:45:17 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     Richard Leitner <richard.leitner@skidata.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "timur@kernel.org" <timur@kernel.org>,
-        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        Benjamin Bara <benjamin.bara@skidata.com>
-Subject: RE: pcm|dmaengine|imx-sdma race condition on i.MX6
-Thread-Topic: pcm|dmaengine|imx-sdma race condition on i.MX6
-Thread-Index: AQHWcWQbD9eqMlwY2U27XyctTVPmVak3Rd/w
-Date:   Fri, 14 Aug 2020 08:45:17 +0000
-Message-ID: <VE1PR04MB6638EE5BDBE2C65FF50B7DB889400@VE1PR04MB6638.eurprd04.prod.outlook.com>
-References: <20200813112258.GA327172@pcleri>
-In-Reply-To: <20200813112258.GA327172@pcleri>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: skidata.com; dkim=none (message not signed)
- header.d=none;skidata.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 7990903c-ebe7-49c1-0208-08d8402e5f06
-x-ms-traffictypediagnostic: VI1PR04MB5502:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB55022CAB67DD43B8A5BE81F989400@VI1PR04MB5502.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rJLHQuDk+RXddueGGDO64rqAdXRSzEoMPnAcpi69T9uM4MRaTM65JDWLdU9O9fc69CI6My6VlFpqLpMd7wwRjwCHWMpU4GcPDUU6vDrKr+INDIZcQRpOGHzRZg7F9rOd9ctRScasCM1RVMTF1JgyDa98Bt3ScYYXCP14zvL+ba2o08tH0fHJ/9VdfbsDQrZtlYIRUPXMO8dWV5Nex1O38j07aOLL2g7LLmZStFskEcHe0gjabFp5cEuZqvZV7iuTZZUk10jB6g4pRJiTFoxznC256unSYD1PpBkB6UbDZZIrwuCiBXwJ7UktRfSVFsybSWhFlW+G5MSAZenJ6bnekDJFUaK6ZuTwp5/PyyrwLhct3tO7plnIVhXCfBGiTSyIpLXuD3NWaLxaWKeTLCeHnQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(366004)(136003)(346002)(376002)(2906002)(8676002)(7416002)(316002)(110136005)(8936002)(71200400001)(33656002)(54906003)(6506007)(55016002)(26005)(7696005)(186003)(9686003)(66476007)(4326008)(86362001)(966005)(478600001)(76116006)(66946007)(66556008)(45080400002)(52536014)(5660300002)(83380400001)(83080400001)(64756008)(66446008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: k2OhU4goLA1npSdTfmq/W8qnlwelM1WGwVX+XeN1W/P1US1o6Y4Jl0w1W8kAUoI+O8hLbz0sLdkk9kE51M4TB/q24oJZnGKVdJyRRQe4yTXCYuULNhNdc6/M2hgTdXDQ6TDjbusQHuXnFM95D71BPfYdiQMPKGTpJ/+E/0WTgfGYbbafR2gEM8SWLSztkwlCGhEhpzEZcItm4XRev3CQ8xI4HyTWEDXDfM29O9SKr2DDPN0rbvC6+lWy8hon9aJ9l6FmQGRuofAELLCsrNuTHHtGfrToEC81W56GfBSGndRr4aVf73R5rDIO63wNaZogNNwpb8s8GhT2IBfOzbP5SM8N6xnc/jBkjvwGTsCbZiBNSfKiic+p0lh591GohnVCUbvc/s/CNE+A2e4S4cmOfVLE0ohkbR2B4sOVv79GDwX8aZbCYrkgfKHbfT5z88g/+SLHFFmd2PbBQvSDW0HSz00DLmXHkhEmskfeLrhz8bFfBeVGGRuXfifie8Vi33drWRaaucQDYEeaIE6Q2qVUO6eJQP2O85rUV2aeeQXc8Yny0gwEFI/k0rerKBTX4GTZ5gV8J9izyIMzYfwwFkagOI3LPZUomX+A+5BF4vTIs55oZe2g1uFVkCN3Q7gA3s9QAAiK2jOQW1VRjX/ySSrnHg==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726789AbgHNIsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 04:48:18 -0400
+Received: from mga03.intel.com ([134.134.136.65]:51646 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726050AbgHNIsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 04:48:17 -0400
+IronPort-SDR: vzMscWVC+53qCeFb6xXgAoM9iibjrNsb2wdR5nZVzkNbruBrcYRtEHC1Xm2o9UM3+5OIzRYb8W
+ G2jNmtfZZpJA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9712"; a="154339110"
+X-IronPort-AV: E=Sophos;i="5.76,311,1592895600"; 
+   d="scan'208";a="154339110"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2020 01:48:15 -0700
+IronPort-SDR: cVSBszhNIPMGS4G5YZvTK9Wd6YmjoCnQVqbrzNvw+SmOfAlRYC15zYK0BBhcItFMSCNwyn830/
+ /Z37AJ47TV+g==
+X-IronPort-AV: E=Sophos;i="5.76,311,1592895600"; 
+   d="scan'208";a="470525084"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.128]) ([10.238.4.128])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2020 01:48:13 -0700
+Reply-To: like.xu@intel.com
+Subject: Re: [PATCH v13 00/10] Guest Last Branch Recording Enabling (KVM part)
+To:     Like Xu <like.xu@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org
+References: <20200726153229.27149-1-like.xu@linux.intel.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Organization: Intel OTC
+Message-ID: <6d4d7b00-cbca-9875-24bd-e6c4efaf0586@intel.com>
+Date:   Fri, 14 Aug 2020 16:48:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6638.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7990903c-ebe7-49c1-0208-08d8402e5f06
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Aug 2020 08:45:17.8318
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OQzQH/uOEsV0ohV4aLU07OGYFTxWp/SopCQE+PSZfJVN1DUguIAnzhoYIoa4UIROIdepE2XdwL21rQz2LbjOiQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5502
+In-Reply-To: <20200726153229.27149-1-like.xu@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/08/13 19:23: Richard Leitner <richard.leitner@skidata.com> wrote:
-> Hi,
-> we've found a race condition with the PCM on the i.MX6 which results in a=
-n
-> -EIO for the SNDRV_PCM_IOCTL_READI_FRAMES ioctl after an -EPIPE (XRUN).
->=20
-> A possible reproduction may look like the following reduced call graph du=
-ring a
-> PCM capture:
->=20
-> us -> ioctl(SNDRV_PCM_IOCTL_READI_FRAMES)
->       - wait_for_avail()
->         - schedule_timeout()
->    -> snd_pcm_update_hw_ptr0()
->       - snd_pcm_update_state: EPIPE (XRUN)
->       - sdma_disable_channel_async() # get's scheduled away due to sleep =
-us
-> <- ioctl(SNDRV_PCM_IOCTL_READI_FRAMES) returns -EPIPE us ->
-> ioctl(SNDRV_PCM_IOCTL_PREPARE) # as reaction to the EPIPE (XRUN) us ->
-> ioctl(SNDRV_PCM_IOCTL_READI_FRAMES) # next try to capture frames
->       - sdma_prep_dma_cyclic()
->         - sdma_load_context() # not loaded as context_loaded is 1
->       - wait_for_avail()
->         - schedule_timeout()
-> # now the sdma_channel_terminate_work() comes back and sets #
-> context_loaded =3D false and frees in vchan_dma_desc_free_list().
-> us <- ioctl returns -EIO (capture write error (DMA or IRQ trouble?))
-Seems the write error caused by context_loaded not set to false before
-next transfer start? If yes, please have a try with the 03/04 of the below
-patch set, anyway, could you post your failure log?
-https://lkml.org/lkml/2020/8/11/111
+Are there no interested reviewers or users?
 
->=20
->=20
-> What we have found out, based on our understanding:
-> The dmaengine docu states that a dmaengine_terminate_async() must be
-> followed by a dmaengine_synchronize().
-> However, in the pcm_dmaengine.c, only dmaengine_terminate_async() is
-> called (for performance reasons and because it might be called from an
-> interrupt handler).
->=20
-> In our tests, we saw that the user-space immediately calls
-> ioctl(SNDRV_PCM_IOCTL_PREPARE) as a handler for the happened xrun
-> (previous ioctl(SNDRV_PCM_IOCTL_READI_FRAMES) returns with -EPIPE). In
-> our case (imx-sdma.c), the terminate really happens asynchronously with a
-> worker thread which is not awaited/synchronized by the
-> ioctl(SNDRV_PCM_IOCTL_PREPARE) call.
->=20
-> Since the syscall immediately enters an atomic context
-> (snd_pcm_stream_lock_irq()), we are not able to flush the work of the
-> termination worker from within the DMA context. This leads to an
-> unterminated DMA getting re-initialized and then terminated.
->=20
-> On the i.MX6 platform the problem is (if I got it correctly) that the
-> sdma_channel_terminate_work() called after the -EPIPE gets scheduled away
-> (for the 1-2ms sleep [1]). During that time the userspace already sends i=
-n the
-> ioctl(SNDRV_PCM_IOCTL_PREPARE) and
-> ioctl(SNDRV_PCM_IOCTL_READI_FRAMES).
-> As none of them are anyhow synchronized to the terminate_worker the
-> vchan_dma_desc_free_list() [2] and "sdmac->context_loaded =3D false;" [3]=
- are
-> executed during the wait_for_avail() [4] of the
-> ioctl(SNDRV_PCM_IOCTL_READI_FRAMES).
->=20
-> To make sure we identified the problem correctly we've tested to add a
-> "dmaengine_synchronize()" before the snd_pcm_prepare() in [5]. This fixed=
- the
-> race condition in all our tests. (Before we were able to reproduce it in =
-100% of
-> the test runs).
->=20
-> Based on our understanding, there are two different points to ensure the
-> termination:
-> Either ensure that the termination is finished within the previous
-> SNDRV_PCM_IOCTL_READI_FRAMES call (inside the DMA context) or finishing
-> it in the SNDRV_PCM_IOCTL_PREPARE call (and all other applicable ioclts)
-> before entering the atomic context (from the PCM context).
->=20
-> We initially thought about implementing the first approach, basically spl=
-itting
-> up the dma_device terminate_all operation into a sync
-> (busy-wait) and a async one. This would align the operations with the
-> DMAengine interface and would enable a sync termination variant from atom=
-ic
-> contexts.
-> However, we saw that the dma_free_attrs() function has a WARN_ON on irqs
-> disabled, which would be the case for the sync variant.=20
-> Side note: We found this issue on the current v5.4.y LTS branch, but it a=
-lso
-> affects v5.8.y.
->=20
-> Any feedback or pointers how we may fix the problem are warmly welcome!
-> If anything is unclear please just ask :-)
->=20
-> regards;
-> Richard Leitner
-> Benjamin Bara
->=20
-> [1]https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fel=
-ixir.
-> bootlin.com%2Flinux%2Fv5.8%2Fsource%2Fdrivers%2Fdma%2Fimx-sdma.c%23
-> L1066&amp;data=3D02%7C01%7Cyibin.gong%40nxp.com%7C79ad115b01ef453f7
-> e7408d83f7b3c4d%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637
-> 329145824068928&amp;sdata=3DD9F%2FRUG27xv9nv8J1KtrLtld2eaI6gsXiWIAIgk
-> Avjw%3D&amp;reserved=3D0
-> [2]https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fel=
-ixir.
-> bootlin.com%2Flinux%2Fv5.8%2Fsource%2Fdrivers%2Fdma%2Fimx-sdma.c%23
-> L1071&amp;data=3D02%7C01%7Cyibin.gong%40nxp.com%7C79ad115b01ef453f7
-> e7408d83f7b3c4d%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637
-> 329145824068928&amp;sdata=3D0EKDVgzOZzL7TpX4ykhqjvpz5ryUHUpWw7frRe
-> cksBU%3D&amp;reserved=3D0
-> [3]https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fel=
-ixir.
-> bootlin.com%2Flinux%2Fv5.8%2Fsource%2Fdrivers%2Fdma%2Fimx-sdma.c%23
-> L1072&amp;data=3D02%7C01%7Cyibin.gong%40nxp.com%7C79ad115b01ef453f7
-> e7408d83f7b3c4d%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637
-> 329145824068928&amp;sdata=3DaIhatvb1ocQqyYCVFEg71LgJlRBoVusbDFPIxnte
-> PuY%3D&amp;reserved=3D0
-> [4]https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fel=
-ixir.
-> bootlin.com%2Flinux%2Fv5.8%2Fsource%2Fsound%2Fcore%2Fpcm_lib.c%23L1
-> 825&amp;data=3D02%7C01%7Cyibin.gong%40nxp.com%7C79ad115b01ef453f7e
-> 7408d83f7b3c4d%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C6373
-> 29145824073919&amp;sdata=3Dy0Udbd%2FKGaVgqLrcp6fNOlMlFCGHCMfojkpp
-> B4HzUuE%3D&amp;reserved=3D0
-> [5]https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fel=
-ixir.
-> bootlin.com%2Flinux%2Fv5.8%2Fsource%2Fsound%2Fcore%2Fpcm_native.c%2
-> 3L3226&amp;data=3D02%7C01%7Cyibin.gong%40nxp.com%7C79ad115b01ef453f
-> 7e7408d83f7b3c4d%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C63
-> 7329145824073919&amp;sdata=3Dch3BQ5DDGU5HWXqIZSvUeFnBoRoP%2BMM
-> HEpnk8mIfWj8%3D&amp;reserved=3D0
+Just a kindly ping.
+
+On 2020/7/26 23:32, Like Xu wrote:
+> Hi Paolo,
+>
+> Please review this new version for the Kernel 5.9 release, and
+> Sean may not review them as he said in the previous email
+> https://lore.kernel.org/kvm/20200710162819.GF1749@linux.intel.com/
+>
+> You may cherry-pick the perf patches "3cb9d5464c1c..e1ad1ac2deb8"
+> from the branch "tip/perf/core" of scm/linux/kernel/git/tip/tip.git
+> as PeterZ said in the previous email
+> https://lore.kernel.org/kvm/20200703075646.GJ117543@hirez.programming.kicks-ass.net/
+>
+> We may also apply the qemu-devel patch to the upstream qemu and try
+> the QEMU command lines with '-cpu host' or '-cpu host,pmu=true,lbr=true'.
+>
+> The following error will be gone forever with the patchset:
+>
+>    $ perf record -b lbr ${WORKLOAD}
+>    or $ perf record --call-graph lbr ${WORKLOAD}
+>    Error:
+>    cycles: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'
+>
+> Please check more details in each commit and feel free to test.
+>
+> v12->v13 Changelog:
+> - remove perf patches since they're queued in the tip/perf/core;
+> - add a minor patch to refactor MSR_IA32_DEBUGCTLMSR set/get handler;
+> - add a minor patch to expose vmx_set_intercept_for_msr();
+> - add a minor patch to initialize perf_capabilities in the intel_pmu_init();
+> - spilt the big patch to three pieces (0004-0006) for better understanding and review
+> - make the LBR_FMT exposure patch as the last step to enable guest LBR;
+>
+> Previous:
+> https://lore.kernel.org/kvm/20200613080958.132489-1-like.xu@linux.intel.com/
+>
+> ---
+>
+> The last branch recording (LBR) is a performance monitor unit (PMU)
+> feature on Intel processors that records a running trace of the most
+> recent branches taken by the processor in the LBR stack. This patch
+> series is going to enable this feature for plenty of KVM guests.
+>
+> The user space could configure whether it's enabled or not for each
+> guest via MSR_IA32_PERF_CAPABILITIES msr. As a first step, a guest
+> could only enable LBR feature if its cpu model is the same as the
+> host since the LBR feature is still one of model specific features.
+>
+> If it's enabled on the guest, the guest LBR driver would accesses the
+> LBR MSR (including IA32_DEBUGCTLMSR and records MSRs) as host does.
+> The first guest access on the LBR related MSRs is always interceptible.
+> The KVM trap would create a special LBR event (called guest LBR event)
+> which enables the callstack mode and none of hardware counter is assigned.
+> The host perf would enable and schedule this event as usual.
+>
+> Guest's first access to a LBR registers gets trapped to KVM, which
+> creates a guest LBR perf event. It's a regular LBR perf event which gets
+> the LBR facility assigned from the perf subsystem. Once that succeeds,
+> the LBR stack msrs are passed through to the guest for efficient accesses.
+> However, if another host LBR event comes in and takes over the LBR
+> facility, the LBR msrs will be made interceptible, and guest following
+> accesses to the LBR msrs will be trapped and meaningless.
+>
+> Because saving/restoring tens of LBR MSRs (e.g. 32 LBR stack entries) in
+> VMX transition brings too excessive overhead to frequent vmx transition
+> itself, the guest LBR event would help save/restore the LBR stack msrs
+> during the context switching with the help of native LBR event callstack
+> mechanism, including LBR_SELECT msr.
+>
+> If the guest no longer accesses the LBR-related MSRs within a scheduling
+> time slice and the LBR enable bit is unset, vPMU would release its guest
+> LBR event as a normal event of a unused vPMC and the pass-through
+> state of the LBR stack msrs would be canceled.
+>
+> ---
+>
+> LBR testcase:
+> echo 1 > /proc/sys/kernel/watchdog
+> echo 25 > /proc/sys/kernel/perf_cpu_time_max_percent
+> echo 5000 > /proc/sys/kernel/perf_event_max_sample_rate
+> echo 0 > /proc/sys/kernel/perf_cpu_time_max_percent
+> ./perf record -b ./br_instr a
+>
+> - Perf report on the host:
+> Samples: 72K of event 'cycles', Event count (approx.): 72512
+> Overhead  Command   Source Shared Object           Source Symbol                           Target Symbol                           Basic Block Cycles
+>    12.12%  br_instr  br_instr                       [.] cmp_end                             [.] lfsr_cond                           1
+>    11.05%  br_instr  br_instr                       [.] lfsr_cond                           [.] cmp_end                             5
+>     8.81%  br_instr  br_instr                       [.] lfsr_cond                           [.] cmp_end                             4
+>     5.04%  br_instr  br_instr                       [.] cmp_end                             [.] lfsr_cond                           20
+>     4.92%  br_instr  br_instr                       [.] lfsr_cond                           [.] cmp_end                             6
+>     4.88%  br_instr  br_instr                       [.] cmp_end                             [.] lfsr_cond                           6
+>     4.58%  br_instr  br_instr                       [.] cmp_end                             [.] lfsr_cond                           5
+>
+> - Perf report on the guest:
+> Samples: 92K of event 'cycles', Event count (approx.): 92544
+> Overhead  Command   Source Shared Object  Source Symbol                                   Target Symbol                                   Basic Block Cycles
+>    12.03%  br_instr  br_instr              [.] cmp_end                                     [.] lfsr_cond                                   1
+>    11.09%  br_instr  br_instr              [.] lfsr_cond                                   [.] cmp_end                                     5
+>     8.57%  br_instr  br_instr              [.] lfsr_cond                                   [.] cmp_end                                     4
+>     5.08%  br_instr  br_instr              [.] lfsr_cond                                   [.] cmp_end                                     6
+>     5.06%  br_instr  br_instr              [.] cmp_end                                     [.] lfsr_cond                                   20
+>     4.87%  br_instr  br_instr              [.] cmp_end                                     [.] lfsr_cond                                   6
+>     4.70%  br_instr  br_instr              [.] cmp_end                                     [.] lfsr_cond                                   5
+>
+> Conclusion: the profiling results on the guest are similar to that on the host.
+>
+> Like Xu (10):
+>    KVM: x86: Move common set/get handler of MSR_IA32_DEBUGCTLMSR to VMX
+>    KVM: x86/vmx: Make vmx_set_intercept_for_msr() non-static and expose it
+>    KVM: vmx/pmu: Initialize vcpu perf_capabilities once in intel_pmu_init()
+>    KVM: vmx/pmu: Clear PMU_CAP_LBR_FMT when guest LBR is disabled
+>    KVM: vmx/pmu: Create a guest LBR event when vcpu sets DEBUGCTLMSR_LBR
+>    KVM: vmx/pmu: Pass-through LBR msrs to when the guest LBR event is ACTIVE
+>    KVM: vmx/pmu: Reduce the overhead of LBR pass-through or cancellation
+>    KVM: vmx/pmu: Emulate legacy freezing LBRs on virtual PMI
+>    KVM: vmx/pmu: Expose LBR_FMT in the MSR_IA32_PERF_CAPABILITIES
+>    KVM: vmx/pmu: Release guest LBR event via lazy release mechanism
+>
+>   arch/x86/kvm/pmu.c              |  12 +-
+>   arch/x86/kvm/pmu.h              |   5 +
+>   arch/x86/kvm/vmx/capabilities.h |  22 ++-
+>   arch/x86/kvm/vmx/pmu_intel.c    | 296 +++++++++++++++++++++++++++++++-
+>   arch/x86/kvm/vmx/vmx.c          |  44 ++++-
+>   arch/x86/kvm/vmx/vmx.h          |  28 +++
+>   arch/x86/kvm/x86.c              |  15 +-
+>   7 files changed, 395 insertions(+), 27 deletions(-)
+>
+
