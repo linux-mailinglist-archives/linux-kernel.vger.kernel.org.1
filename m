@@ -2,260 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E939E244693
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 10:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C10244685
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 10:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgHNIqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 04:46:45 -0400
-Received: from mga12.intel.com ([192.55.52.136]:24196 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726669AbgHNIqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 04:46:44 -0400
-IronPort-SDR: WCXVbP3qtXG0lXoiHLDGPT/PEL7cXN7NLlxlElXyZxyqSSzdF2hFj9DNifcBEkW4DkWsEFgcnq
- X97y1QTWYXUg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9712"; a="133897305"
-X-IronPort-AV: E=Sophos;i="5.76,311,1592895600"; 
-   d="scan'208";a="133897305"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2020 01:46:42 -0700
-IronPort-SDR: 7SUjLnKdtkf6mm5php99netnUFQYhe5d3szIy6e3H89YsXzBJU9rK2Y+SUoHsiXPGga/vkIg80
- 56Qz9/kj1T5Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,311,1592895600"; 
-   d="scan'208";a="291678153"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
-  by orsmga003.jf.intel.com with ESMTP; 14 Aug 2020 01:46:40 -0700
-From:   Brent Lu <brent.lu@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Brent Lu <brent.lu@intel.com>,
-        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: hdac_hdmi: support 'ELD' mixer
-Date:   Fri, 14 Aug 2020 16:34:36 +0800
-Message-Id: <20200814083436.19845-1-brent.lu@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726979AbgHNIfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 04:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726050AbgHNIfw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 04:35:52 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC32EC061383
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 01:35:50 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id e14so4820212ybf.4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 01:35:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AdqxtBBzE8zkm3kxwd6M5EQuKDKvTyliTVOnv4Gy5lw=;
+        b=oqVy0fpsXt6mcaf8A0SC3B/hbz8tbu1sLp+p2pRxvv8AbXvXwBHIFsfkMCRqNri3GF
+         qJ5LaxL7IMvfVknso37KHelMIw8Dd2z7cxXhdshfuODzyH2Xseg89iJdaKUlQjvHq7Hq
+         lhVM/0EfF59L/acBDsdGpzOFVzg978mH+5YR0Xnus5a+hauEXlwXVyH0k/uzyUQXeOV+
+         GoD9sItD5ZTLV2cb+jVfv+1qVPtgrDmNyETiLEcVRayEQDHThAdY1wjwZE3Exe3WMAGf
+         B0CMyWrcmpON8PTov2dXTjRTU6wL6B8HVQWcoUhp+BuAHQUBWllyB0qzr6niC+D7+S2F
+         fxHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AdqxtBBzE8zkm3kxwd6M5EQuKDKvTyliTVOnv4Gy5lw=;
+        b=HjLoSOJTQfwseycxreI59sUFE6mUunqnrzkGCDcqmkpsW7Ae8tIfAI9StYCBdPnyed
+         FlUBUQvrsUcrzegxFoKnDLt5KcE89gC+rJh2gN+b/BopN0Kl5jLyNi7YNhvkQer6byYm
+         ZY/kPFzrYaebs3ulVKwH9L8y3SB6JSUykJ2F7ZmHlQcEGwZcz01v1HSM/gNLvTKCseoe
+         A3hECLbphA8f0g0rEY9x8ErmccbrZKweszKQ4JpsHJ3/8zCekrUGBj9zsdGZ9JcTUy+m
+         Ob0PBod9CEsC99ufdMsnpJk11qGTiz95uB9549mP6kOIbFUJjmNMQIx+Y75XjzCbD7pq
+         AJyw==
+X-Gm-Message-State: AOAM533P+dHZ0yj/tYZjjMxEBxbPrcw52ztdQN0/M9zdJg+ID25oxj8V
+        vKfwR3igW3WmaucpoFvQhYaBS0wRR9FdVB2MJxD3Hw==
+X-Google-Smtp-Source: ABdhPJy4hZxzSJG2zp9/9fyOvZB1bpfPoOKRLt/YSmrRg6wSBSlJmdqUtSRvhcYGxO1/TjNY1yNIgU0oMFRVQUhfajs=
+X-Received: by 2002:a25:7455:: with SMTP id p82mr2121422ybc.287.1597394149918;
+ Fri, 14 Aug 2020 01:35:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <1597284810-17454-1-git-send-email-chinwen.chang@mediatek.com> <1597284810-17454-3-git-send-email-chinwen.chang@mediatek.com>
+In-Reply-To: <1597284810-17454-3-git-send-email-chinwen.chang@mediatek.com>
+From:   Michel Lespinasse <walken@google.com>
+Date:   Fri, 14 Aug 2020 01:35:37 -0700
+Message-ID: <CANN689FtCsC71cjAjs0GPspOhgo_HRj+diWsoU1wr98YPktgWg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] mm: proc: smaps_rollup: do not stall write
+ attempts on mmap_lock
+To:     Chinwen Chang <chinwen.chang@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Steven Price <steven.price@arm.com>,
+        Song Liu <songliubraving@fb.com>,
+        Jimmy Assarsson <jimmyassarsson@gmail.com>,
+        Huang Ying <ying.huang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        wsd_upstream@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an binary mixer 'ELD' to each HDMI PCM device so user space
-could read the ELD data of external HDMI display.
+On Wed, Aug 12, 2020 at 7:13 PM Chinwen Chang
+<chinwen.chang@mediatek.com> wrote:
+> smaps_rollup will try to grab mmap_lock and go through the whole vma
+> list until it finishes the iterating. When encountering large processes,
+> the mmap_lock will be held for a longer time, which may block other
+> write requests like mmap and munmap from progressing smoothly.
+>
+> There are upcoming mmap_lock optimizations like range-based locks, but
+> the lock applied to smaps_rollup would be the coarse type, which doesn't
+> avoid the occurrence of unpleasant contention.
+>
+> To solve aforementioned issue, we add a check which detects whether
+> anyone wants to grab mmap_lock for write attempts.
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c | 139 +++++++++++++++++++++++++++++++++++
- 1 file changed, 139 insertions(+)
-
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index f26b77faed59..83656bbf22a7 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -9,6 +9,7 @@
-  *
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
-+
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/module.h>
-@@ -107,6 +108,7 @@ struct hdac_hdmi_pcm {
- 	unsigned char chmap[8]; /* ALSA API channel-map */
- 	struct mutex lock;
- 	int jack_event;
-+	struct snd_kcontrol *eld_ctl;
- };
- 
- struct hdac_hdmi_dai_port_map {
-@@ -1248,6 +1250,7 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 	struct hdac_hdmi_pcm *pcm;
- 	int size = 0;
- 	int port_id = -1;
-+	bool eld_valid, eld_changed;
- 
- 	if (!hdmi)
- 		return;
-@@ -1273,6 +1276,8 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 			size = -EINVAL;
- 	}
- 
-+	eld_valid = port->eld.eld_valid;
-+
- 	if (size > 0) {
- 		port->eld.eld_valid = true;
- 		port->eld.eld_size = size;
-@@ -1281,6 +1286,8 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 		port->eld.eld_size = 0;
- 	}
- 
-+	eld_changed = (eld_valid != port->eld.eld_valid);
-+
- 	pcm = hdac_hdmi_get_pcm(hdev, port);
- 
- 	if (!port->eld.monitor_present || !port->eld.eld_valid) {
-@@ -1313,6 +1320,12 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 
- 	}
- 	mutex_unlock(&hdmi->pin_mutex);
-+
-+	if (eld_changed && pcm)
-+		snd_ctl_notify(hdmi->card,
-+			       SNDRV_CTL_EVENT_MASK_VALUE |
-+			       SNDRV_CTL_EVENT_MASK_INFO,
-+			       &pcm->eld_ctl->id);
- }
- 
- static int hdac_hdmi_add_ports(struct hdac_device *hdev,
-@@ -1411,6 +1424,122 @@ static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdev)
- 
- }
- 
-+static int hdac_hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_info *uinfo)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
-+	struct hdac_hdmi_pcm *pcm;
-+	struct hdac_hdmi_port *port;
-+	struct hdac_hdmi_eld *eld;
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-+	uinfo->count = 0;
-+
-+	pcm = get_hdmi_pcm_from_id(hdmi, kcontrol->id.device);
-+	if (!pcm) {
-+		dev_dbg(component->dev, "%s: no pcm, device %d\n", __func__,
-+			kcontrol->id.device);
-+		return 0;
-+	}
-+
-+	if (list_empty(&pcm->port_list)) {
-+		dev_dbg(component->dev, "%s: empty port list, device %d\n",
-+			__func__, kcontrol->id.device);
-+		return 0;
-+	}
-+
-+	mutex_lock(&hdmi->pin_mutex);
-+
-+	list_for_each_entry(port, &pcm->port_list, head) {
-+		eld = &port->eld;
-+
-+		if (eld->eld_valid) {
-+			uinfo->count = eld->eld_size;
-+			break;
-+		}
-+	}
-+
-+	mutex_unlock(&hdmi->pin_mutex);
-+
-+	return 0;
-+}
-+
-+static int hdac_hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
-+	struct hdac_hdmi_pcm *pcm;
-+	struct hdac_hdmi_port *port;
-+	struct hdac_hdmi_eld *eld;
-+
-+	memset(ucontrol->value.bytes.data, 0, ARRAY_SIZE(ucontrol->value.bytes.data));
-+
-+	pcm = get_hdmi_pcm_from_id(hdmi, kcontrol->id.device);
-+	if (!pcm) {
-+		dev_dbg(component->dev, "%s: no pcm, device %d\n", __func__,
-+			kcontrol->id.device);
-+		return 0;
-+	}
-+
-+	if (list_empty(&pcm->port_list)) {
-+		dev_dbg(component->dev, "%s: empty port list, device %d\n",
-+			__func__, kcontrol->id.device);
-+		return 0;
-+	}
-+
-+	mutex_lock(&hdmi->pin_mutex);
-+
-+	list_for_each_entry(port, &pcm->port_list, head) {
-+		eld = &port->eld;
-+
-+		if (!eld->eld_valid)
-+			continue;
-+
-+		if (eld->eld_size > ARRAY_SIZE(ucontrol->value.bytes.data) ||
-+		    eld->eld_size > ELD_MAX_SIZE) {
-+			mutex_unlock(&hdmi->pin_mutex);
-+
-+			dev_err(component->dev, "%s: buffer too small, device %d eld_size %d\n",
-+				__func__, kcontrol->id.device, eld->eld_size);
-+			snd_BUG();
-+			return -EINVAL;
-+		}
-+
-+		memcpy(ucontrol->value.bytes.data, eld->eld_buffer,
-+		       eld->eld_size);
-+		break;
-+	}
-+
-+	mutex_unlock(&hdmi->pin_mutex);
-+
-+	return 0;
-+}
-+
-+static int hdac_hdmi_create_eld_ctl(struct snd_soc_component *component, struct hdac_hdmi_pcm *pcm)
-+{
-+	struct snd_kcontrol *kctl;
-+	struct snd_kcontrol_new hdmi_eld_ctl = {
-+		.access	= SNDRV_CTL_ELEM_ACCESS_READ |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.iface	= SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name	= "ELD",
-+		.info	= hdac_hdmi_eld_ctl_info,
-+		.get	= hdac_hdmi_eld_ctl_get,
-+		.device	= pcm->pcm_id,
-+	};
-+
-+	/* add ELD ctl with the device number corresponding to the PCM stream */
-+	kctl = snd_ctl_new1(&hdmi_eld_ctl, component);
-+	if (!kctl)
-+		return -ENOMEM;
-+
-+	pcm->eld_ctl = kctl;
-+
-+	return snd_ctl_add(component->card->snd_card, kctl);
-+}
-+
- static const struct snd_soc_dai_ops hdmi_dai_ops = {
- 	.startup = hdac_hdmi_pcm_open,
- 	.shutdown = hdac_hdmi_pcm_close,
-@@ -1784,6 +1913,16 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device,
- 		}
- 	}
- 
-+	/* add control for ELD Bytes */
-+	err = hdac_hdmi_create_eld_ctl(component, pcm);
-+	if (err < 0) {
-+		dev_err(&hdev->dev,
-+			"eld control add failed with err: %d for pcm: %d\n",
-+			err, device);
-+		kfree(pcm);
-+		return err;
-+	}
-+
- 	list_add_tail(&pcm->head, &hdmi->pcm_list);
- 
- 	return 0;
--- 
-2.17.1
-
+I think your retry mechanism still doesn't handle all cases. When you
+get back the mmap lock, the address where you stopped last time could
+now be in the middle of a vma. I think the consistent thing to do in
+that case would be to retry scanning from the address you stopped at,
+even if it's not on a vma boundary anymore. You may have to change
+smap_gather_stats to support that, though.
