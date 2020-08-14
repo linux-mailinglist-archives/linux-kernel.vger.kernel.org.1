@@ -2,99 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342EF244465
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 06:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FA124446C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 07:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbgHNE4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 00:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgHNE4d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 00:56:33 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078F1C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 21:56:32 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id t6so3830654pjr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 21:56:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Nbug31lN9jTiy04cDRYxBAFaW8MOaMvF7G1bnEdzpf4=;
-        b=fUtZYnKTR5F5TSTQrQ1ymVxVV/pdp4XiWx4hFYmpNGCizfHWjGczqxUFJS/fCoCOEc
-         iRFU7psHMyltWgLQbh1apal0ImbIKnJm5m/iM/lPaxx3NRfuvhg265i1FdyYihTm+XVr
-         16CLK0WVr0IdJKpdMEBGR6apEcCR7xodi8oqJTWF1b7Z0Q4A12OQ2Xwe5sWwM66j5Lz1
-         jPW+cY9xzIwzKnhyKkENCTlF0K4Rad3/7ObGy7FbLnQE9NG0TULsU9wIyi1rn+BI7p3T
-         9wvFF9oV8QS/O1GtPJ8RLEMnOk5x2tc2BTLRBAgdHNrpzb+o3teE5dadZ5GGpWYuVvZ0
-         5P7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Nbug31lN9jTiy04cDRYxBAFaW8MOaMvF7G1bnEdzpf4=;
-        b=NGHk7C2LC9oXoGeE3dZ4ISWPrl2XlVkQGP9Faaoo0QVDAmXoaXQctd6qjGDAK/0K9E
-         wX5Y1zMxniQpDYpvWyljeHeyeIkSw+aqJAiC4o7tdPVoFpwtsxASg42cf2odvmO2WWnS
-         BS8bPcPo1pVmZzFz0SjK6zanI+jIPaH19tPfK9ygXOJl+fW9v3D64AlRmiC7JVhTBnWl
-         POusB+HWwUkhJGGx5CFsUulAx8JMYohrx6kDtBSInzkR/WVsm7bZ1rYd8ScN9N4J4x5c
-         8FrBXlwCkW1KkhMY266fjdNjkjstNFHex7ZAUJnh2ieXIKdLae1BxdJ9rhXNwx9SuVHa
-         gbgA==
-X-Gm-Message-State: AOAM530VuG1n/vdoqV0E1XJr/Oi15M61WKDQmVQLW0qFpPQ3z12jq/iS
-        T290XtZWbYMhF9ztumg3QZg=
-X-Google-Smtp-Source: ABdhPJyl4/Kw7t3X4OfxBWCLaueJJNizRweNvCNuKWlWS7F/ol7wjGBr6qJQT3Bt12aEFakzbS4/Rg==
-X-Received: by 2002:a17:90b:4c46:: with SMTP id np6mr862057pjb.201.1597380992467;
-        Thu, 13 Aug 2020 21:56:32 -0700 (PDT)
-Received: from localhost.localdomain (68-123-15-75.lightspeed.sntcca.sbcglobal.net. [68.123.15.75])
-        by smtp.googlemail.com with ESMTPSA id gl9sm6886790pjb.41.2020.08.13.21.56.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 21:56:31 -0700 (PDT)
-From:   Mike Pozulp <pozulp.kernel@gmail.com>
-Cc:     Mike Pozulp <pozulp.kernel@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kailang Yang <kailang@realtek.com>,
-        Jian-Hong Pan <jian-hong@endlessm.com>,
-        Hui Wang <hui.wang@canonical.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Thomas Hebb <tommyhebb@gmail.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        alsa-devel@alsa-project.org (moderated list:SOUND),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for Samsung Galaxy Flex Book
-Date:   Thu, 13 Aug 2020 21:53:44 -0700
-Message-Id: <20200814045346.645367-1-pozulp.kernel@gmail.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        id S1726408AbgHNFDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 01:03:01 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:55214 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726116AbgHNFDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 01:03:01 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9D0C61A018C;
+        Fri, 14 Aug 2020 07:02:58 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C7E931A01FB;
+        Fri, 14 Aug 2020 07:02:53 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id DCDA2402C9;
+        Fri, 14 Aug 2020 07:02:47 +0200 (CEST)
+From:   Jiafei Pan <Jiafei.Pan@nxp.com>
+To:     peterz@infradead.org, mingo@kernel.org, tglx@linutronix.de,
+        rostedt@goodmis.org, romain.perier@gmail.com, will@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        jiafei.pan@nxp.com, leoyang.li@nxp.com, vladimir.oltean@nxp.com,
+        Jiafei Pan <Jiafei.Pan@nxp.com>
+Subject: [PATCH v2] softirq: add irq off checking for __raise_softirq_irqoff
+Date:   Fri, 14 Aug 2020 12:55:22 +0800
+Message-Id: <20200814045522.45719-1-Jiafei.Pan@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Flex Book uses the same ALC298 codec as other Samsung laptops which
-have the no headphone sound bug, like my Samsung Notebook. The Flex Book
-owner used Early Patching to confirm that this quirk fixes the bug.
+__raise_softirq_irqoff() will update per-CPU mask of pending softirqs,
+it need to be called in irq disabled context in order to keep it atomic
+operation, otherwise it will be interrupted by hardware interrupt,
+and per-CPU softirqs pending mask will be corrupted, the result is
+there will be unexpected issue, for example hrtimer soft irq will
+be losed and soft hrtimer will never be expire and handled.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207423
-Signed-off-by: Mike Pozulp <pozulp.kernel@gmail.com>
+Enable CONFIG_PROVE_LOCKING to use lockdep_assert_irqs_disabled() to
+check hardirqs and softirqs status, and provide warning in irqs enabled
+context.
+
+Signed-off-by: Jiafei Pan <Jiafei.Pan@nxp.com>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
+Changes in v2:
+- use lockdep_assert_irqs_disabled()
+- removed extra comments
+- changed commit message
+
+ kernel/softirq.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 2477f3ed7237..449ea64919ec 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7688,6 +7688,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x144d, 0xc109, "Samsung Ativ book 9 (NP900X3G)", ALC269_FIXUP_INV_DMIC),
- 	SND_PCI_QUIRK(0x144d, 0xc169, "Samsung Notebook 9 Pen (NP930SBE-K01US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
- 	SND_PCI_QUIRK(0x144d, 0xc176, "Samsung Notebook 9 Pro (NP930MBE-K04US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
-+	SND_PCI_QUIRK(0x144d, 0xc189, "Samsung Galaxy Flex Book (NT950QCG-X716)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
- 	SND_PCI_QUIRK(0x144d, 0xc740, "Samsung Ativ book 8 (NP870Z5G)", ALC269_FIXUP_ATIV_BOOK_8),
- 	SND_PCI_QUIRK(0x144d, 0xc812, "Samsung Notebook Pen S (NT950SBE-X58)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
- 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_HEADSET_MIC),
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index bf88d7f62433..09229ad82209 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -481,6 +481,7 @@ void raise_softirq(unsigned int nr)
+ 
+ void __raise_softirq_irqoff(unsigned int nr)
+ {
++	lockdep_assert_irqs_disabled();
+ 	trace_softirq_raise(nr);
+ 	or_softirq_pending(1UL << nr);
+ }
 -- 
-2.26.2
+2.17.1
 
