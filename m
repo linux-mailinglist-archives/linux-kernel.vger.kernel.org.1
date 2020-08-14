@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A4F244DEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8FB244DF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728746AbgHNR22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 13:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37548 "EHLO
+        id S1728901AbgHNRaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 13:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728706AbgHNR2P (ORCPT
+        with ESMTP id S1728709AbgHNR2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 13:28:15 -0400
+        Fri, 14 Aug 2020 13:28:17 -0400
 Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EE3C061386
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:14 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id l18so6471301qvq.16
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D06C061384
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:16 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id c4so6503331qvq.15
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=E0RrGh1M0jqaaDoEOkU8MvQi4g07cx9su4pS9IT1SWw=;
-        b=J0yRjS8wAi98SLl40BtGkKwGJXb87bHWptPKQUee0Z7i8RnowmsAsnTsSSGI/mRVKG
-         /jBE+O/OM0IlfTDa5WKWGDVszoGwgZAxqhir2+UYOvzVv0T0kxYGs89EIVE3j7zvDcQP
-         GPQ1zisFX3ghoL4cEwaGUe+RAIqE8fE978O2GWSaMwrA6JP4uyHCDH6oudvPU+qzrFnK
-         s/DztyfYwRhXAGuuuDUHlU5qU/ik0sNsoQCOVLC2aU7SaX6rXyrlmEfq6jLz9760Mo/W
-         YzyxoAF7tuNY/jCOHcxGNwqQSk8KoNiASEdIQr3iycLeHaTqYkXL/Uqo8uXoj1mabJku
-         9Q2Q==
+        bh=LewkbAtBTS3fxa2ioFCrxocMUQLUBlN7d9swTrdmfVk=;
+        b=VBd8Y8/0sCJNp9OLxtpbP3YFD0V7v4ivH9Cj8L45fMKAxsbpM/7wFGcDUQeyy72z7+
+         0+83oUrkvXL/wVWdOLiGRPDkN9cxYy25dwFuY6WlobJRoBw5Hv9a+2zjxhhnyquGKy9S
+         2EZU9tkO5wLg8/RgIx9m7DsZYXR3314Znfr6vJ3MNxMoELwXKZlF+NlGBiOEjdt+YbH/
+         M8jvnzzivlTluFx2uqs4r137zk+fAgcIbSEWAReQBWWz/UFUwoH8b3I68Z73ieYmMigU
+         ntrskJrbnmV1HFKyooD68AjgyDl3B/zvkVc8r7dyFNQz5HrEOh+GjWU5ZP9+NGOy7Czk
+         g76Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=E0RrGh1M0jqaaDoEOkU8MvQi4g07cx9su4pS9IT1SWw=;
-        b=pOgMdZf0rxAYThQcinx/6bM0wIlz8gfs8hLWdt3g0tDwrlyhvxrXWSjDA5cJtZMHsk
-         UL5H5C8k2Vm3a+LykSSh2glOI+AdvGeRyyDjp+zuKU0zf4L2P/Z1CpSQn8iWNvueu1aV
-         cLfgVrXSRxm7Kv/Zarf0HHLCPfTzirxArEvUV9GKUPWyZDRZGgmLKglhUhNrz9axJdY/
-         EIGwvvD0Zj30KUXMRN0dFtv8a367bfVXGatOVCdRbkeHtTN9OG6uRzeGx/llJ5YdQCuu
-         XNRIJxyRyWe5Xzs+K82rSMVvEpwXIvHjWwMd/uzKHvBYUrQntst0hDAeHavEPjQ7oxSj
-         ugig==
-X-Gm-Message-State: AOAM532SpGHnoX93dUHcCI6hQ3pLYe8BSX0ldHeDWADjIt0AvjPtvNC9
-        Z4H2dQh4Lwg0bAv6LjWfpctlgBbnv9CwM4JO
-X-Google-Smtp-Source: ABdhPJy3SdR9WMFOSxqndhovcLxyBqUrrg3mnD1AcV1Kt+RAUKx381UmFBB5e6t6uAgctFxBWyRwguDJG3EOOPOZ
-X-Received: by 2002:a0c:9a0c:: with SMTP id p12mr3610073qvd.75.1597426093874;
- Fri, 14 Aug 2020 10:28:13 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 19:27:03 +0200
+        bh=LewkbAtBTS3fxa2ioFCrxocMUQLUBlN7d9swTrdmfVk=;
+        b=gYxEsHaW+Xpx6kJFcTftc9XOLR16gbdvBw66t8gMw0CYH0OTTatYNv658YtmTNtfJB
+         QbiUm0hlnS53ppfg/WQ6uAS0HluJPUqKL9MjiLzFBhXG9Ipnkx+A/pRS9UVe6pPuYhaG
+         iOT3WHdF6ZOoBSXei3Y5a1vhxbLlLxu2O6JJ+61JJqqP4DRUFdLayOXqVOhcpIj3oB4D
+         Ga0toLUw4uMupDMMnWK3EmfdsteONX5mNui3FqrOvpcSyVXUM3LuiZr0k1BLkvZGwAyV
+         n49gvIm1sQkyxdAB9HfzrJdH/T9C74mbdwIylFDv4qCX7l31QNLqF5s4OnTJKTOFyfXP
+         G0mw==
+X-Gm-Message-State: AOAM530k1YCZvHiGYiHgwZ5CexoH33THsTRkCiVMB/mRRkSdNIBtlFlN
+        H5I5XAEzdkuU3bA3XsL1rXI+HdRWAUuQn7xo
+X-Google-Smtp-Source: ABdhPJwkBrAQ8GyLssKpf9q7VKymTxaofLqPPbiLmDAQiv3UZOFrLINHymedM0M36JyCRp99bnQq9F+T3nsH6DvR
+X-Received: by 2002:ad4:4b0b:: with SMTP id r11mr3633062qvw.94.1597426095910;
+ Fri, 14 Aug 2020 10:28:15 -0700 (PDT)
+Date:   Fri, 14 Aug 2020 19:27:04 +0200
 In-Reply-To: <cover.1597425745.git.andreyknvl@google.com>
-Message-Id: <f173aacd755e4644485c551198549ac52d1eb650.1597425745.git.andreyknvl@google.com>
+Message-Id: <6a83a47d9954935d37a654978e96c951cc56a2f6.1597425745.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1597425745.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
-Subject: [PATCH 21/35] arm64: mte: Add in-kernel tag fault handler
+Subject: [PATCH 22/35] arm64: mte: Enable in-kernel MTE
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Dmitry Vyukov <dvyukov@google.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -66,8 +66,7 @@ Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
         Will Deacon <will.deacon@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -76,121 +75,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-Add the implementation of the in-kernel fault handler.
+The Tag Checking operation causes a synchronous data abort as
+a consequence of a tag check fault when MTE is configured in
+synchronous mode.
 
-When a tag fault happens on a kernel address:
-* a warning is logged,
-* the faulting instruction is skipped,
-* the execution continues.
+Enable MTE in Synchronous mode in EL1 to provide a more immediate
+way of tag check failure detection in the kernel.
 
-When a tag fault happens on a user address:
-* the kernel executes do_bad_area() and panics.
+As part of this change enable match-all tag for EL1 to allow the
+kernel to access user pages without faulting. This is required because
+the kernel does not have knowledge of the tags set by the user in a
+page.
+
+Note: For MTE, the TCF bit field in SCTLR_EL1 affects only EL1 in a
+similar way as TCF0 affects EL0.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Co-developed-by: Andrey Konovalov <andreyknvl@google.com>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- arch/arm64/mm/fault.c | 50 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 49 insertions(+), 1 deletion(-)
+ arch/arm64/kernel/cpufeature.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-index 5e832b3387f1..c62c8ba85c0e 100644
---- a/arch/arm64/mm/fault.c
-+++ b/arch/arm64/mm/fault.c
-@@ -33,6 +33,7 @@
- #include <asm/debug-monitors.h>
- #include <asm/esr.h>
- #include <asm/kprobes.h>
-+#include <asm/mte.h>
- #include <asm/processor.h>
- #include <asm/sysreg.h>
- #include <asm/system_misc.h>
-@@ -222,6 +223,20 @@ int ptep_set_access_flags(struct vm_area_struct *vma,
- 	return 1;
- }
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 4d3abb51f7d4..4d94af19d8f6 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -1670,6 +1670,9 @@ static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
+ 	write_sysreg_s(0, SYS_TFSR_EL1);
+ 	write_sysreg_s(0, SYS_TFSRE0_EL1);
  
-+static bool is_el1_mte_sync_tag_check_fault(unsigned int esr)
-+{
-+	unsigned int ec = ESR_ELx_EC(esr);
-+	unsigned int fsc = esr & ESR_ELx_FSC;
++	/* Enable Match-All at EL1 */
++	sysreg_clear_set(tcr_el1, 0, SYS_TCR_EL1_TCMA1);
 +
-+	if (ec != ESR_ELx_EC_DABT_CUR)
-+		return false;
+ 	/*
+ 	 * CnP must be enabled only after the MAIR_EL1 register has been set
+ 	 * up. Inconsistent MAIR_EL1 between CPUs sharing the same TLB may
+@@ -1687,6 +1690,9 @@ static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
+ 	mair &= ~MAIR_ATTRIDX(MAIR_ATTR_MASK, MT_NORMAL_TAGGED);
+ 	mair |= MAIR_ATTRIDX(MAIR_ATTR_NORMAL_TAGGED, MT_NORMAL_TAGGED);
+ 	write_sysreg_s(mair, SYS_MAIR_EL1);
 +
-+	if (fsc == ESR_ELx_FSC_MTE)
-+		return true;
-+
-+	return false;
-+}
-+
- static bool is_el1_instruction_abort(unsigned int esr)
- {
- 	return ESR_ELx_EC(esr) == ESR_ELx_EC_IABT_CUR;
-@@ -294,6 +309,18 @@ static void die_kernel_fault(const char *msg, unsigned long addr,
- 	do_exit(SIGKILL);
- }
++	/* Enable MTE Sync Mode for EL1 */
++	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
+ 	isb();
  
-+static void report_tag_fault(unsigned long addr, unsigned int esr,
-+			     struct pt_regs *regs)
-+{
-+	bool is_write = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
-+
-+	pr_alert("Memory Tagging Extension Fault in %pS\n", (void *)regs->pc);
-+	pr_alert("  %s at address %lx\n", is_write ? "Write" : "Read", addr);
-+	pr_alert("  Pointer tag: [%02x], memory tag: [%02x]\n",
-+			mte_get_ptr_tag(addr),
-+			mte_get_mem_tag((void *)addr));
-+}
-+
- static void __do_kernel_fault(unsigned long addr, unsigned int esr,
- 			      struct pt_regs *regs)
- {
-@@ -317,12 +344,16 @@ static void __do_kernel_fault(unsigned long addr, unsigned int esr,
- 			msg = "execute from non-executable memory";
- 		else
- 			msg = "read from unreadable memory";
-+	} else if (is_el1_mte_sync_tag_check_fault(esr)) {
-+		report_tag_fault(addr, esr, regs);
-+		msg = "memory tagging extension fault";
- 	} else if (addr < PAGE_SIZE) {
- 		msg = "NULL pointer dereference";
- 	} else {
- 		msg = "paging request";
- 	}
- 
-+
- 	die_kernel_fault(msg, addr, esr, regs);
- }
- 
-@@ -658,10 +689,27 @@ static int do_sea(unsigned long addr, unsigned int esr, struct pt_regs *regs)
- 	return 0;
- }
- 
-+static int do_tag_recovery(unsigned long addr, unsigned int esr,
-+			   struct pt_regs *regs)
-+{
-+	report_tag_fault(addr, esr, regs);
-+
-+	/* Skip over the faulting instruction and continue: */
-+	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
-+
-+	return 0;
-+}
-+
-+
- static int do_tag_check_fault(unsigned long addr, unsigned int esr,
- 			      struct pt_regs *regs)
- {
--	do_bad_area(addr, esr, regs);
-+	/* The tag check fault (TCF) is per TTBR */
-+	if (is_ttbr0_addr(addr))
-+		do_bad_area(addr, esr, regs);
-+	else
-+		do_tag_recovery(addr, esr, regs);
-+
- 	return 0;
- }
- 
+ 	local_flush_tlb_all();
 -- 
 2.28.0.220.ged08abb693-goog
 
