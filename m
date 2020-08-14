@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C5E24475C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 11:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319DD244761
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 11:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgHNJuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 05:50:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33078 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726064AbgHNJue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 05:50:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DD077AD1B;
-        Fri, 14 Aug 2020 09:50:55 +0000 (UTC)
-Date:   Fri, 14 Aug 2020 11:50:31 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, zhang.lyra@gmail.com,
-        ruifeng.zhang1@unisoc.com, cixi.geng1@unisoc.com,
-        Orson Zhai <orson.zhai@unisoc.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Steven Sistare <steven.sistare@oracle.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jon DeVree <nuxi@vault24.org>,
-        Salvatore Bonaccorso <carnil@debian.org>,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: [RFC PATCH] printk: Change timestamp to triplet as mono, boot
- and real
-Message-ID: <20200814095031.GM6215@alley>
-References: <1597120822-11999-1-git-send-email-orsonzhai@gmail.com>
- <20200811094413.GA12903@alley>
- <87zh7175hj.fsf@nanos.tec.linutronix.de>
- <20200811130218.GI6215@alley>
- <20200813015500.GC2020879@jagdpanzerIV.localdomain>
- <20200813102258.GL12903@alley>
- <20200813113155.GA483@jagdpanzerIV.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200813113155.GA483@jagdpanzerIV.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727004AbgHNJuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 05:50:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgHNJux (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 05:50:53 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6FAC061383;
+        Fri, 14 Aug 2020 02:50:48 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id g19so9274671ejc.9;
+        Fri, 14 Aug 2020 02:50:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=WNpAdv9km1uSVUV1TKQfr3pXz8plMWVKyzdHM2lXuHY=;
+        b=Zid6xstjNEJ+Ojy+Igat6s986EPti2Cz6985+CrUNIi7PcZEEA5B+Ya3t2ua139C7o
+         b17KIoWB/odbinp1GSSIFVQIicrZDOBuRXqTT0OXBgh2OI1DrwQSPFQ/evUlrPxhQSpK
+         ceVY+XQuZA1zLFzR9WG6yDNxhSWOMSWgA4D4KLp1uIP2vMmSvihVwHmcvPEga5we3g9G
+         2n46Vv46jyuy5biQrJK/eDcLN/SHbRNol0ikB2M/18YuuxYx0BRcejW1UPCFfLMypQ3P
+         pNzZFuAE28FsckdNF52uIPu4T7oo6lsiHY1pFjoI8+F0/ix3Tfka9bgXOQ+7n0N3uVkJ
+         0bRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=WNpAdv9km1uSVUV1TKQfr3pXz8plMWVKyzdHM2lXuHY=;
+        b=nLaULnjE8r3VK/3UyR35F4BvvFFcQIPXN7+Exgs4SU1uv9GbMkkymqFZSWqBs96MVK
+         Ho21cKGfEGK4MEnx4fGb+13UzFhfc55j4SjW9xPqnjQR6xC1fOk3PGMfZ/wuUUXK66Ub
+         jXRi8DP2lKIBhs5V3Y/dLHwvWevg5H8BC2FYX4FoogqWgbSyHbJgAfIAjnFc3e7AQEkA
+         Dos+szGPEYORTNcyn58zbS+f88wNYsf3b/brXcDKDe2EVSYwgvXHPRsVFQCnlgblM+Ra
+         /xJgtSEwCJ5RLgtI6S0RD7bkgcnqbGX4Te7Ai+Rs7jHWUchHLXKt50FUF5qK838nUUHu
+         0pIA==
+X-Gm-Message-State: AOAM530yXsYP8Obm4sIBjILsl59ujICoxbAYMbHhb5d03JLBbogHCT1f
+        vEbPnqLAS/fS0QELjYak6Tw=
+X-Google-Smtp-Source: ABdhPJz5afr+WO4b9EAN0zTaUv4SE/i3JW36quSgxaxMqvfcGFAh6jLGNNfcoc1hTVreL5QIlt79sw==
+X-Received: by 2002:a17:906:8490:: with SMTP id m16mr1606355ejx.132.1597398647222;
+        Fri, 14 Aug 2020 02:50:47 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:598:8980:3d37:44c:d55b:5f94:2fc4])
+        by smtp.gmail.com with ESMTPSA id r25sm6016448edy.93.2020.08.14.02.50.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Aug 2020 02:50:46 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] make UFS dev_cmd more readable
+Date:   Fri, 14 Aug 2020 11:50:32 +0200
+Message-Id: <20200814095034.20709-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-08-13 20:31:55, Sergey Senozhatsky wrote:
-> On (20/08/13 12:22), Petr Mladek wrote:
-> >
-> >   + would take more space (prefix + text vs. binary representation)
-> 
-> Dict buffer is allocated regardless of how we use it, and only printks
-> from drivers/* (dev_printk*) add dict payload. It might be the case
-> that on some (if not most) systems dict pages are not used 90% of times
-> (if not 99%).
-> 
-> >   + not reliable because dict is currently dropped when no space
-> 
-> Well, in the perfect world this is a problem, but "maybe not having
-> alternative timestamps sometimes" can be OK approach for people who
-> wants to use those triplet timestamps.
+From: Bean Huo <beanhuo@micron.com>
 
-I am afraid the people would see missing timestamps as a bug.
-They want it because they want to corelate kernel and userspace logs.
-The timestamps from realtime clock are supposed to make it
-straightforward.
+Changelog:
+    v2 -v3:
+        1. fix a coding style issue in [2/2] (Asutosh Das)
 
-More importantly. I do not see a reasonable way how to handle it.
-No timestamp is worse than timestamps from non-synchronized clock.
-Mixing timestamps from different clocks (as fallback) would cause
-a lot of confusion (more harm than good).
+    v1 - v2:
+        1. remove original patch scsi: ufs: differentiate dev_cmd trace message
+        2. add new patch scsi: ufs: remove several redundant goto statements
 
-> But, in general, how real this problem is? What I sae so far (on my boxes)
-> was that printk messages are longer than dict payload.
+Bean Huo (2):
+  scsi: ufs: change ufshcd_comp_devman_upiu() to
+    ufshcd_compose_devman_upiu()
+  scsi: ufs: remove several redundant goto statements
 
-Yeah, I think that dict are less used on normal systems. But it might
-be very different when a driver gets more verbose during debugging
-and the amount of dev_printk() calls is much higher.
+ drivers/scsi/ufs/ufshcd.c | 32 +++++++++-----------------------
+ 1 file changed, 9 insertions(+), 23 deletions(-)
 
-Best Regards,
-Petr
+-- 
+2.17.1
+
