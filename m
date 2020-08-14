@@ -2,88 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D50E2442B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 03:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727BC2442B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 03:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgHNBaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 21:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbgHNBaY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 21:30:24 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727F5C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 18:30:20 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id z20so3459590plo.6
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 18:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=E05mkCqzXxrSsimqBbaoP3O/M0O9dQBUk8zaG5pF28Y=;
-        b=tGgYDeILxzeZgEplMAMIclLaIGMqeG9VZ1gaOPf4CISzJaXUJoa25zj/V4opuoBoQx
-         QIIrmdYNoKirdiD9xKafJWUJNZKx/EWdm8v/wVZCr8hqyEIB5JFG8sw9vI3zHK3eaTvZ
-         i5uQIkrgq7B6ChUy1zPK6CiRQTUctvUL/eNUvubMgY5WbeFATBuQ/ZDopXtZG0XIw7OS
-         bKm64zx+RtZ5rdxbAaSaeHLTMidEYj8yzxHln4DNGcH+Qo0BKFd/MI5iJZSQJzIm/wVf
-         65PwYrv8ECwADSOqYlyEIDKDsVwi3AO6MZon78UId5jiCmeMzUdePVrOlDATWQr4sD/5
-         bgJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=E05mkCqzXxrSsimqBbaoP3O/M0O9dQBUk8zaG5pF28Y=;
-        b=hVMuYdoBhRf2PHorJ/u1yFlH7j6M/mJOP8qCX8ZHcUzpsRLXD01JwRHR3Cs+2/qLXz
-         kx/9Zb8b+3zqI4N2LLwNGdSnwk4h2vZcxqHDmZsLlhcTmuzMVpuKRMYs+i4p5mss2bwS
-         cMh0ir4wSJwzha8Al6HmLPUkp4Hyw0CygQBoZvnVa8tmylBZiM8UECAokWm7NZJ2AEtO
-         yraak2SS3iYh5Y2SJ8iFcjkZbHUGxUZ7fwPcHp4jZi2N4DvExDUz7KFiP5b20K05dqit
-         8WCb7HMH9DfYKNcsjDT3uanjoCs5ma7Djk1bkYm8LoZDNw4v2VOb2HD0zkNLNVf6Q41j
-         soFg==
-X-Gm-Message-State: AOAM532K7LLCZnurk4ZmU0oiGCYZKBd2tmudsz097JOhl7ch9+qOUfu3
-        83IpIDdg4Pu0rSfVy8gZI8dyOYHfi2I=
-X-Google-Smtp-Source: ABdhPJwB0uG7rEidLNItw2kLQW5Ky+a0fQhuoWyBq9WMhF5fu2gziV9lR4WxbhmjaiSo+C427KKnpA==
-X-Received: by 2002:a17:90b:1985:: with SMTP id mv5mr334455pjb.43.1597368619205;
-        Thu, 13 Aug 2020 18:30:19 -0700 (PDT)
-Received: from bj03382pcu.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id u1sm6398306pgf.69.2020.08.13.18.30.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 13 Aug 2020 18:30:18 -0700 (PDT)
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-X-Google-Original-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-To:     Roman Gushchin <klamm@yandex-team.ru>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm : update ra->ra_pages if it's NOT equal to bdi->ra_pages
-Date:   Fri, 14 Aug 2020 09:30:11 +0800
-Message-Id: <1597368611-7631-1-git-send-email-zhaoyang.huang@unisoc.com>
-X-Mailer: git-send-email 1.7.9.5
+        id S1726596AbgHNBg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 21:36:29 -0400
+Received: from mga04.intel.com ([192.55.52.120]:46692 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726546AbgHNBg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 21:36:29 -0400
+IronPort-SDR: SWEXMVFwTrVhTfOn2yELP+G+wRC1lepQqqW+X816L4o17VZ4SCeVaO/6WEnuAAoUuTC+QLB6VT
+ NlXNy2DyXDZg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9712"; a="151759767"
+X-IronPort-AV: E=Sophos;i="5.76,310,1592895600"; 
+   d="scan'208";a="151759767"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 18:36:30 -0700
+IronPort-SDR: RnjJdHjxXUEuoIsx4JPCo3Gi6lPtlB//y4TB5EWDyRF6ScrmQVCiHocTI00gAkTNaS8+4q5wxH
+ 4aDjCDHNigFA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,310,1592895600"; 
+   d="scan'208";a="318725240"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.135]) ([10.239.161.135])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Aug 2020 18:36:23 -0700
+Subject: Re: [RFC PATCH 00/16] Core scheduling v6(Internet mail)
+To:     =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Glexiner <tglx@linutronix.de>,
+        Paul Turner <pjt@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Subhra Mazumdar <subhra.mazumdar@oracle.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vineeth Pillai <vineethrp@gmail.com>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Ning, Hongyu" <hongyu.ning@linux.intel.com>
+References: <cover.1593530334.git.vpillai@digitalocean.com>
+ <6d0f9fc0-2e34-f559-29bc-4143e6d3f751@linux.intel.com>
+ <CAEXW_YS6oW_AAkmOuXNMCj_N5763aG9SXEcWz_onPhQQU2TZ0g@mail.gmail.com>
+ <f986f5a9-5c97-10ed-1e44-84bbd929e605@linux.intel.com>
+ <20200809164408.GA342447@google.com>
+ <162a03cc-66c3-1999-83a2-deaad5aa04c8@linux.intel.com>
+ <20200812230850.GA3511387@google.com>
+ <5a39735d-dfd8-bdec-f068-81895799640e@linux.intel.com>
+ <FAC73DE7-BAE0-42D3-BE9A-227C12275C34@tencent.com>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <89d973d1-1302-17a6-c647-ea7c538c2747@linux.intel.com>
+Date:   Fri, 14 Aug 2020 09:36:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <FAC73DE7-BAE0-42D3-BE9A-227C12275C34@tencent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-file->f_ra->ra_pages will remain the initialized value since it opend, which may
-be NOT equal to bdi->ra_pages as the latter one is updated somehow(etc,
-echo xxx > /sys/block/dm/queue/read_ahead_kb).So sync ra->ra_pages to the
-updated value when sync read.
+On 2020/8/14 8:26, benbjiang(蒋彪) wrote:
+> 
+> 
+>> On Aug 13, 2020, at 12:28 PM, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
+>>
+>> On 2020/8/13 7:08, Joel Fernandes wrote:
+>>> On Wed, Aug 12, 2020 at 10:01:24AM +0800, Li, Aubrey wrote:
+>>>> Hi Joel,
+>>>>
+>>>> On 2020/8/10 0:44, Joel Fernandes wrote:
+>>>>> Hi Aubrey,
+>>>>>
+>>>>> Apologies for replying late as I was still looking into the details.
+>>>>>
+>>>>> On Wed, Aug 05, 2020 at 11:57:20AM +0800, Li, Aubrey wrote:
+>>>>> [...]
+>>>>>> +/*
+>>>>>> + * Core scheduling policy:
+>>>>>> + * - CORE_SCHED_DISABLED: core scheduling is disabled.
+>>>>>> + * - CORE_COOKIE_MATCH: tasks with same cookie can run
+>>>>>> + *                     on the same core concurrently.
+>>>>>> + * - CORE_COOKIE_TRUST: trusted task can run with kernel
+>>>>>> 			thread on the same core concurrently. 
+>>>>>> + * - CORE_COOKIE_LONELY: tasks with cookie can run only
+>>>>>> + *                     with idle thread on the same core.
+>>>>>> + */
+>>>>>> +enum coresched_policy {
+>>>>>> +       CORE_SCHED_DISABLED,
+>>>>>> +       CORE_SCHED_COOKIE_MATCH,
+>>>>>> +	CORE_SCHED_COOKIE_TRUST,
+>>>>>> +       CORE_SCHED_COOKIE_LONELY,
+>>>>>> +};
+>>>>>>
+>>>>>> We can set policy to CORE_COOKIE_TRUST of uperf cgroup and fix this kind
+>>>>>> of performance regression. Not sure if this sounds attractive?
+>>>>>
+>>>>> Instead of this, I think it can be something simpler IMHO:
+>>>>>
+>>>>> 1. Consider all cookie-0 task as trusted. (Even right now, if you apply the
+>>>>>   core-scheduling patchset, such tasks will share a core and sniff on each
+>>>>>   other. So let us not pretend that such tasks are not trusted).
+>>>>>
+>>>>> 2. All kernel threads and idle task would have a cookie 0 (so that will cover
+>>>>>   ksoftirqd reported in your original issue).
+>>>>>
+>>>>> 3. Add a config option (CONFIG_SCHED_CORE_DEFAULT_TASKS_UNTRUSTED). Default
+>>>>>   enable it. Setting this option would tag all tasks that are forked from a
+>>>>>   cookie-0 task with their own cookie. Later on, such tasks can be added to
+>>>>>   a group. This cover's PeterZ's ask about having 'default untrusted').
+>>>>>   (Users like ChromeOS that don't want to userspace system processes to be
+>>>>>   tagged can disable this option so such tasks will be cookie-0).
+>>>>>
+>>>>> 4. Allow prctl/cgroup interfaces to create groups of tasks and override the
+>>>>>   above behaviors.
+>>>>
+>>>> How does uperf in a cgroup work with ksoftirqd? Are you suggesting I set uperf's
+>>>> cookie to be cookie-0 via prctl?
+>>>
+>>> Yes, but let me try to understand better. There are 2 problems here I think:
+>>>
+>>> 1. ksoftirqd getting idled when HT is turned on, because uperf is sharing a
+>>> core with it: This should not be any worse than SMT OFF, because even SMT OFF
+>>> would also reduce ksoftirqd's CPU time just core sched is doing. Sure
+>>> core-scheduling adds some overhead with IPIs but such a huge drop of perf is
+>>> strange. Peter any thoughts on that?
+>>>
+>>> 2. Interface: To solve the performance problem, you are saying you want uperf
+>>> to share a core with ksoftirqd so that it is not forced into idle.  Why not
+>>> just keep uperf out of the cgroup?
+>>
+>> I guess this is unacceptable for who runs their apps in container and vm.
+> IMHO,  just as Joel proposed, 
+> 1. Consider all cookie-0 task as trusted.
+> 2. All kernel threads and idle task would have a cookie 0 
+> In that way, all tasks with cookies(including uperf in a cgroup) could run
+> concurrently with kernel threads.
+> That could be a good solution for the issue. :)
 
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
----
- mm/filemap.c | 2 ++
- 1 file changed, 2 insertions(+)
+From uperf point of review, it can trust cookie-0(I assume we still need
+some modifications to change cookie-match to cookie-compatible to allow
+ZERO and NONZERO run together).
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index d78f577..5c2d7cc 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2470,6 +2470,8 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
- 	struct file *fpin = NULL;
- 	pgoff_t offset = vmf->pgoff;
- 
-+	if (ra->ra_pages != inode_to_bdi(mapping->host)->ra_pages)
-+		ra->ra_pages = inode_to_bdi(mapping->host)->ra_pages;
- 	/* If we don't want any read-ahead, don't bother */
- 	if (vmf->vma->vm_flags & VM_RAND_READ)
- 		return fpin;
--- 
-1.9.1
+But from kernel thread point of review, it can NOT trust uperf, unless
+we set uperf's cookie to 0.
 
+Thanks,
+-Aubrey
