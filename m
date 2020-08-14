@@ -2,69 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A810F2449D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 14:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79212449E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 14:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728376AbgHNMjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 08:39:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52376 "EHLO mail.kernel.org"
+        id S1728207AbgHNMlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 08:41:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728323AbgHNMjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 08:39:16 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726362AbgHNMle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 08:41:34 -0400
+Received: from oasis.local.home (unknown [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E7B120866;
-        Fri, 14 Aug 2020 12:39:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597408756;
-        bh=EegKnqHRZMQsA/pGucdJ5ay2rhbxOu1GzsIX8DvXDXc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ECovbeo3YzEdHHFQby9dOpfrt3TtOdR4UCCK+HKYcMfeP8aNX3AH3IRBlCICJVu53
-         E3gQ5Md3Mb8l07clI/dOgEbYlIEmn6k6NLXOOPFy8GvDDYQa6t8B0bN0QOpJt+6e3H
-         qupz6y/jE409fwQG8/WDAtrEqfPuobn2D9914f+k=
-From:   Sasha Levin <sashal@kernel.org>
-To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org
-Cc:     gregkh@linuxfoundation.org, iourit@microsoft.com,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4/4] drivers: hv: dxgkrnl: create a MAINTAINERS entry
-Date:   Fri, 14 Aug 2020 08:38:56 -0400
-Message-Id: <20200814123856.3880009-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200814123856.3880009-1-sashal@kernel.org>
-References: <20200814123856.3880009-1-sashal@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 7518A20866;
+        Fri, 14 Aug 2020 12:41:33 +0000 (UTC)
+Date:   Fri, 14 Aug 2020 08:41:23 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Sean Paul <sean@poorly.run>, lkft-triage@lists.linaro.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: WARNING: at kernel/trace/trace.c:1727
+ update_max_tr_single.part.0+0xa8/0x148
+Message-ID: <20200814084123.5b64c0cf@oasis.local.home>
+In-Reply-To: <CA+G9fYvVEhs_HROaXaW70mWrp_z6N4mJ-3rfFs0iAcT9Kg3A1A@mail.gmail.com>
+References: <CA+G9fYvVEhs_HROaXaW70mWrp_z6N4mJ-3rfFs0iAcT9Kg3A1A@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+On Fri, 14 Aug 2020 14:53:36 +0530
+Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4e2698cc7e23..1e725a9e6335 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8003,6 +8003,13 @@ F:	Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
- F:	drivers/mtd/hyperbus/
- F:	include/linux/mtd/hyperbus.h
- 
-+Hyper-V vGPU DRIVER
-+M:	Sasha Levin <sashal@kernel.org>
-+M:	Iouri Tarassov <iourit@microsoft.com>
-+L:	linux-hyperv@vger.kernel.org
-+S:	Supported
-+F:	drivers/hv/dxgkrnl/
-+
- HYPERVISOR VIRTUAL CONSOLE DRIVER
- L:	linuxppc-dev@lists.ozlabs.org
- S:	Odd Fixes
--- 
-2.25.1
+> steps to reproduce:
+> # Boot qemu arm64 with trace configs enabled ^.
+> # cd /opt/ltp
+> # ./runltp -f tracing
 
+I don't run ltp, what  exactly is this doing?
+
+-- Steve
