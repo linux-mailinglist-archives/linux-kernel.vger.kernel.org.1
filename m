@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD667244AB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78EB8244AC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgHNNjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 09:39:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42600 "EHLO mx2.suse.de"
+        id S1727118AbgHNNmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 09:42:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43210 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726237AbgHNNjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 09:39:42 -0400
+        id S1726139AbgHNNmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 09:42:02 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4BAC8B02A;
-        Fri, 14 Aug 2020 13:40:03 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        boris.ostrovsky@oracle.com
-Subject: [GIT PULL] xen: branch for v5.9-rc1b
-Date:   Fri, 14 Aug 2020 15:39:39 +0200
-Message-Id: <20200814133939.21185-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        by mx2.suse.de (Postfix) with ESMTP id 7BB76AFBF;
+        Fri, 14 Aug 2020 13:42:23 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 7C143DA6EF; Fri, 14 Aug 2020 15:40:57 +0200 (CEST)
+Date:   Fri, 14 Aug 2020 15:40:57 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
+ Software.
+Message-ID: <20200814134056.GV2026@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Fri, Aug 14, 2020 at 12:29:01PM +0000, Konstantin Komarov wrote:
+> This patch adds NTFS Read-Write driver to fs/ntfs3.
+> 
+> Having decades of expertise in commercial file systems development and huge
+> test coverage, we at Paragon Software GmbH want to make our contribution to
+> the Open Source Community by providing implementation of NTFS Read-Write
+> driver for the Linux Kernel.
+> 
+> This is fully functional NTFS Read-Write driver. Current version works with
+> NTFS(including v3.1) normal/compressed/sparse files and supports journal replaying.
+> 
+> We plan to support this version after the codebase once merged, and add new
+> features and fix bugs. For example, full journaling support over JBD will be
+> added in later updates.
+> 
+> The patch is too big to handle it within an e-mail body, so it is available to download 
+> on our server: https://dl.paragon-software.com/ntfs3/ntfs3.patch
+> 
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
-Please git pull the following tag:
+In case somebody wants to compile it, this fixup is needed to let 'make
+fs/ntfs3/' actually work, besides enabling it in the config.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.9-rc1b-tag
-
-xen: branch for v5.9-rc1, 2nd batch
-
-It contains 2 series:
-
-- Removal of support for running as 32-bit Xen PV-guest. 32-bit PV
-  guests are rarely used, are lacking security fixes for Meltdown, and
-  can be easily replaced by PVH mode. Another series for doing more
-  cleanup will follow soon (removal of 32-bit-only pvops functionality).
-
-- Fixes and additional features for the Xen display frontend driver.
-
-
-Thanks.
-
-Juergen
-
- arch/x86/entry/entry_32.S                | 109 +------
- arch/x86/entry/vdso/vdso32/note.S        |  30 --
- arch/x86/include/asm/proto.h             |   2 +-
- arch/x86/include/asm/segment.h           |   2 +-
- arch/x86/kernel/head_32.S                |  31 --
- arch/x86/xen/Kconfig                     |   3 +-
- arch/x86/xen/Makefile                    |   3 +-
- arch/x86/xen/apic.c                      |  17 --
- arch/x86/xen/enlighten_pv.c              |  78 +----
- arch/x86/xen/mmu_pv.c                    | 492 ++++++-------------------------
- arch/x86/xen/p2m.c                       |   6 +-
- arch/x86/xen/setup.c                     |  36 +--
- arch/x86/xen/smp_pv.c                    |  18 --
- arch/x86/xen/vdso.h                      |   6 -
- arch/x86/xen/xen-asm.S                   | 194 +++++++++++-
- arch/x86/xen/xen-asm_32.S                | 185 ------------
- arch/x86/xen/xen-asm_64.S                | 192 ------------
- arch/x86/xen/xen-head.S                  |   6 -
- arch/x86/xen/xen-ops.h                   |   1 -
- drivers/gpu/drm/xen/xen_drm_front.c      |  10 +-
- drivers/gpu/drm/xen/xen_drm_front.h      |   2 +-
- drivers/gpu/drm/xen/xen_drm_front_conn.c |   1 +
- drivers/gpu/drm/xen/xen_drm_front_gem.c  |  11 +-
- drivers/gpu/drm/xen/xen_drm_front_kms.c  |   2 +-
- drivers/xen/Kconfig                      |   4 +-
- drivers/xen/gntdev-dmabuf.c              |   8 +
- include/xen/interface/io/displif.h       |  91 +++++-
- 27 files changed, 397 insertions(+), 1143 deletions(-)
-
-Juergen Gross (3):
-      x86/xen: remove 32-bit Xen PV guest support
-      x86/xen: eliminate xen-asm_64.S
-      x86/xen: drop tests for highmem in pv code
-
-Oleksandr Andrushchenko (5):
-      xen/gntdev: Fix dmabuf import with non-zero sgt offset
-      drm/xen-front: Fix misused IS_ERR_OR_NULL checks
-      drm/xen-front: Add YUYV to supported formats
-      xen: Sync up with the canonical protocol definition in Xen
-      drm/xen-front: Pass dumb buffer data offset to the backend
+diff --git a/fs/Makefile b/fs/Makefile
+index 1c7b0e3f6daa..b0b4ad8affa0 100644
+--- a/fs/Makefile
++++ b/fs/Makefile
+@@ -100,6 +100,7 @@ obj-$(CONFIG_SYSV_FS)		+= sysv/
+ obj-$(CONFIG_CIFS)		+= cifs/
+ obj-$(CONFIG_HPFS_FS)		+= hpfs/
+ obj-$(CONFIG_NTFS_FS)		+= ntfs/
++obj-$(CONFIG_NTFS3_FS)		+= ntfs3/
+ obj-$(CONFIG_UFS_FS)		+= ufs/
+ obj-$(CONFIG_EFS_FS)		+= efs/
+ obj-$(CONFIG_JFFS2_FS)		+= jffs2/
+diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
+index 4d4fe198b8b8..d99dd1af43aa 100644
+--- a/fs/ntfs3/Makefile
++++ b/fs/ntfs3/Makefile
+@@ -5,7 +5,7 @@
+ 
+ obj-$(CONFIG_NTFS3_FS) += ntfs3.o
+ 
+-ntfs3-objs := bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
++ntfs3-y := bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
+ 	    index.o attrlist.o record.o attrib.o run.o xattr.o\
+ 	    upcase.o super.o file.o dir.o namei.o lznt.o\
+ 	    fslog.o
+---
