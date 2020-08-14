@@ -2,82 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16EF124456A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 09:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE49244590
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 09:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgHNHOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 03:14:01 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:41476 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726798AbgHNHOA (ORCPT
+        id S1727120AbgHNHPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 03:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726674AbgHNHO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 03:14:00 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07E7DdSD034276;
-        Fri, 14 Aug 2020 02:13:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1597389219;
-        bh=6HpcResJMgUsplZKJl9InYJFIkGZ0vKUjGDdIgYfgCs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=azmpoUWWOIKErTnQ7IQEMPyjuqShMOVh5rLf2IFmCQPUE4uF5C8Ki6IjMvGl6nKD6
-         syJ7Jo7EnMyftV676QxAGcObgWgR6VBrJw2eWVZES6Tw5/IQa9IDVYiwtpaB3O4Qor
-         aXvquofpqpRU5tqK0A9BqoCsPuZyQ3pspVF14m9A=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07E7DdGw019060
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 14 Aug 2020 02:13:39 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 14
- Aug 2020 02:13:39 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 14 Aug 2020 02:13:39 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07E7DZDS073565;
-        Fri, 14 Aug 2020 02:13:36 -0500
-Subject: Re: [PATCH v8 1/3] dt-bindings: drm/bridge: Document Cadence MHDP
- bridge bindings
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Swapnil Jakhade <sjakhade@cadence.com>
-CC:     <airlied@linux.ie>, <daniel@ffwll.ch>, <robh+dt@kernel.org>,
-        <a.hajda@samsung.com>, <narmstrong@baylibre.com>,
-        <jonas@kwiboo.se>, <jernej.skrabec@siol.net>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <mparab@cadence.com>,
-        <yamonkar@cadence.com>, <jsarha@ti.com>, <nsekhar@ti.com>,
-        <praneeth@ti.com>
-References: <1596713672-8146-1-git-send-email-sjakhade@cadence.com>
- <1596713672-8146-2-git-send-email-sjakhade@cadence.com>
- <20200811003638.GB13513@pendragon.ideasonboard.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <89942101-52c4-e1bb-3605-569b311da89f@ti.com>
-Date:   Fri, 14 Aug 2020 10:13:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 14 Aug 2020 03:14:58 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E98C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 00:14:58 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id dd12so3904082qvb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 00:14:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eiKBjoHwzZVPO4s4ceJ5CB9mmdKrk3Ejc2xNEUfWLkg=;
+        b=fGbdQFjUCr6CknxF0q4P81+nfe8zmq5kcTc++86QauQ3730AeAxwy/v2sj8/JHrFtB
+         keAvSFUEGcPpgJHBVrPjwjFuZTTn+5VewGnrp5RNkl0XlhvjzlthgtPZuV2e8NkPfaEr
+         7u9+qQLt9RBbwiIcrCVoyZ83711N/fj5rCtOhUFzLSlvaVuEcsQWfgy04wAFeRLbuIPq
+         FPyhDCvuZbPHNdhCwmiDdho9/7g+0UyAv0m6WcCasbB8dnHd3q9ogqAxUlI8ogFWidr6
+         GMYpbHMV37yX0nbzSARNt85UkQA+RKLXJKuTLnSPFEyMufOHprpg6VbodH7Guzw2TvTZ
+         J6rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eiKBjoHwzZVPO4s4ceJ5CB9mmdKrk3Ejc2xNEUfWLkg=;
+        b=njxm4R/2HJWBUZkyelKri11okl9kfmINbdBFLW5F2FLomhnrYAJVqKZY/BxUTgZX7y
+         do/kZbEo0gflsyv0X1xMzaLNxVjrkjavtgNUGTDJZnefgrcy3qvNAN8nJ3DKFJYUzQ+R
+         UgYgR+2I25LQZKfl18/YyCv/4PYJXXK7HgRwiVsHTtfFRQ/cs1SfKsv/ADEQo0zNI9y8
+         sKeX3Shpey0PSsU1uJmwcDOE6cNnSBH4oW3OnVfkTqUM5qSWO/KIGxDMzfasaTEVot0m
+         I4X5WCPUUPnD5nvdbHSekocxsKAadKEbhfnOsO+rXT79rWzDrq7tIFjTmHF/tYbKR7U1
+         J4Rg==
+X-Gm-Message-State: AOAM5303yahkMgKyHdYL+ROsV9SH7vUdBqQq12TcnIqP1EQMCUmD4tDv
+        hUCWh1mK1e24fU1VKW6DZHKk0wEOo6KNQeC9
+X-Google-Smtp-Source: ABdhPJzwmNBz1UGymW9PS5iILy4SgdHz+gCyovlgZQL8SOiVz3b70RkVDuP3ocekO8kYdPlkDyIoOw==
+X-Received: by 2002:a0c:ec86:: with SMTP id u6mr1479368qvo.58.1597389297055;
+        Fri, 14 Aug 2020 00:14:57 -0700 (PDT)
+Received: from tong-desktop.local ([2601:5c0:c100:b9d:f97d:7425:b422:9d95])
+        by smtp.googlemail.com with ESMTPSA id j61sm9123235qtd.52.2020.08.14.00.14.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Aug 2020 00:14:56 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me
+Cc:     ztong0001@gmail.com
+Subject: [PATCH] nvme-pci: cancel nvme device request before disabling
+Date:   Fri, 14 Aug 2020 03:14:31 -0400
+Message-Id: <20200814071431.201400-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200811003638.GB13513@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/08/2020 03:36, Laurent Pinchart wrote:
+  This patch addresses an irq free warning and null pointer dereference
+  error problem when nvme devices got timeout error during initialization.
+  This problem happens when nvme_timeout() function is called while
+  nvme_reset_work() is still in execution. This patch fixed the problem by
+  setting flag of the problematic request to NVME_REQ_CANCELLED before
+  calling nvme_dev_disable() to make sure __nvme_submit_sync_cmd() returns
+  an error code and let nvme_submit_sync_cmd() fail gracefully.
+  The following is console output.
 
-> I've got a chance to study the J721E datasheet, and it shows the DP
-> bridge has 4 inputs, to support MST. Shouldn't this already be reflected
-> in the DT bindings ? I think it should be as simple as having 4 input
-> ports (port@0 to port@3) and one output port (port@4).
+  [   62.472097] nvme nvme0: I/O 13 QID 0 timeout, disable controller
+  [   62.488796] nvme nvme0: could not set timestamp (881)
+  [   62.494888] ------------[ cut here ]------------
+  [   62.495142] Trying to free already-free IRQ 11
+  [   62.495366] WARNING: CPU: 0 PID: 7 at kernel/irq/manage.c:1751 free_irq+0x1f7/0x370
+  [   62.495742] Modules linked in:
+  [   62.495902] CPU: 0 PID: 7 Comm: kworker/u4:0 Not tainted 5.8.0+ #8
+  [   62.496206] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812dda519-p4
+  [   62.496772] Workqueue: nvme-reset-wq nvme_reset_work
+  [   62.497019] RIP: 0010:free_irq+0x1f7/0x370
+  [   62.497223] Code: e8 ce 49 11 00 48 83 c4 08 4c 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 44 89 f6 48 c70
+  [   62.498133] RSP: 0000:ffffa96800043d40 EFLAGS: 00010086
+  [   62.498391] RAX: 0000000000000000 RBX: ffff9b87fc458400 RCX: 0000000000000000
+  [   62.498741] RDX: 0000000000000001 RSI: 0000000000000096 RDI: ffffffff9693d72c
+  [   62.499091] RBP: ffff9b87fd4c8f60 R08: ffffa96800043bfd R09: 0000000000000163
+  [   62.499440] R10: ffffa96800043bf8 R11: ffffa96800043bfd R12: ffff9b87fd4c8e00
+  [   62.499790] R13: ffff9b87fd4c8ea4 R14: 000000000000000b R15: ffff9b87fd76b000
+  [   62.500140] FS:  0000000000000000(0000) GS:ffff9b87fdc00000(0000) knlGS:0000000000000000
+  [   62.500534] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [   62.500816] CR2: 0000000000000000 CR3: 000000003aa0a000 CR4: 00000000000006f0
+  [   62.501165] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  [   62.501515] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  [   62.501864] Call Trace:
+  [   62.501993]  pci_free_irq+0x13/0x20
+  [   62.502167]  nvme_reset_work+0x5d0/0x12a0
+  [   62.502369]  ? update_load_avg+0x59/0x580
+  [   62.502569]  ? ttwu_queue_wakelist+0xa8/0xc0
+  [   62.502780]  ? try_to_wake_up+0x1a2/0x450
+  [   62.502979]  process_one_work+0x1d2/0x390
+  [   62.503179]  worker_thread+0x45/0x3b0
+  [   62.503361]  ? process_one_work+0x390/0x390
+  [   62.503568]  kthread+0xf9/0x130
+  [   62.503726]  ? kthread_park+0x80/0x80
+  [   62.503911]  ret_from_fork+0x22/0x30
+  [   62.504090] ---[ end trace de9ed4a70f8d71e2 ]---
+  [  123.912275] nvme nvme0: I/O 12 QID 0 timeout, disable controller
+  [  123.914670] nvme nvme0: 1/0/0 default/read/poll queues
+  [  123.916310] BUG: kernel NULL pointer dereference, address: 0000000000000000
+  [  123.917469] #PF: supervisor write access in kernel mode
+  [  123.917725] #PF: error_code(0x0002) - not-present page
+  [  123.917976] PGD 0 P4D 0
+  [  123.918109] Oops: 0002 [#1] SMP PTI
+  [  123.918283] CPU: 0 PID: 7 Comm: kworker/u4:0 Tainted: G        W         5.8.0+ #8
+  [  123.918650] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812dda519-p4
+  [  123.919219] Workqueue: nvme-reset-wq nvme_reset_work
+  [  123.919469] RIP: 0010:__blk_mq_alloc_map_and_request+0x21/0x80
+  [  123.919757] Code: 66 0f 1f 84 00 00 00 00 00 41 55 41 54 55 48 63 ee 53 48 8b 47 68 89 ee 48 89 fb 8b4
+  [  123.920657] RSP: 0000:ffffa96800043d40 EFLAGS: 00010286
+  [  123.920912] RAX: ffff9b87fc4fee40 RBX: ffff9b87fc8cb008 RCX: 0000000000000000
+  [  123.921258] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff9b87fc618000
+  [  123.921602] RBP: 0000000000000000 R08: ffff9b87fdc2c4a0 R09: ffff9b87fc616000
+  [  123.921949] R10: 0000000000000000 R11: ffff9b87fffd1500 R12: 0000000000000000
+  [  123.922295] R13: 0000000000000000 R14: ffff9b87fc8cb200 R15: ffff9b87fc8cb000
+  [  123.922641] FS:  0000000000000000(0000) GS:ffff9b87fdc00000(0000) knlGS:0000000000000000
+  [  123.923032] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [  123.923312] CR2: 0000000000000000 CR3: 000000003aa0a000 CR4: 00000000000006f0
+  [  123.923660] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  [  123.924007] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  [  123.924353] Call Trace:
+  [  123.924479]  blk_mq_alloc_tag_set+0x137/0x2a0
+  [  123.924694]  nvme_reset_work+0xed6/0x12a0
+  [  123.924898]  process_one_work+0x1d2/0x390
+  [  123.925099]  worker_thread+0x45/0x3b0
+  [  123.925280]  ? process_one_work+0x390/0x390
+  [  123.925486]  kthread+0xf9/0x130
+  [  123.925642]  ? kthread_park+0x80/0x80
+  [  123.925825]  ret_from_fork+0x22/0x30
+  [  123.926004] Modules linked in:
+  [  123.926158] CR2: 0000000000000000
+  [  123.926322] ---[ end trace de9ed4a70f8d71e3 ]---
+  [  123.926549] RIP: 0010:__blk_mq_alloc_map_and_request+0x21/0x80
+  [  123.926832] Code: 66 0f 1f 84 00 00 00 00 00 41 55 41 54 55 48 63 ee 53 48 8b 47 68 89 ee 48 89 fb 8b4
+  [  123.927734] RSP: 0000:ffffa96800043d40 EFLAGS: 00010286
+  [  123.927989] RAX: ffff9b87fc4fee40 RBX: ffff9b87fc8cb008 RCX: 0000000000000000
+  [  123.928336] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff9b87fc618000
+  [  123.928679] RBP: 0000000000000000 R08: ffff9b87fdc2c4a0 R09: ffff9b87fc616000
+  [  123.929025] R10: 0000000000000000 R11: ffff9b87fffd1500 R12: 0000000000000000
+  [  123.929370] R13: 0000000000000000 R14: ffff9b87fc8cb200 R15: ffff9b87fc8cb000
+  [  123.929715] FS:  0000000000000000(0000) GS:ffff9b87fdc00000(0000) knlGS:0000000000000000
+  [  123.930106] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [  123.930384] CR2: 0000000000000000 CR3: 000000003aa0a000 CR4: 00000000000006f0
+  [  123.930731] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  [  123.931077] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-I think this is a good point, mhdp has 4 input streams.
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+ drivers/nvme/host/pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- Tomi
-
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index ba725ae47305..c4f1ce0ee1e3 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -1249,8 +1249,8 @@ static enum blk_eh_timer_return nvme_timeout(struct request *req, bool reserved)
+ 		dev_warn_ratelimited(dev->ctrl.device,
+ 			 "I/O %d QID %d timeout, disable controller\n",
+ 			 req->tag, nvmeq->qid);
+-		nvme_dev_disable(dev, true);
+ 		nvme_req(req)->flags |= NVME_REQ_CANCELLED;
++		nvme_dev_disable(dev, true);
+ 		return BLK_EH_DONE;
+ 	case NVME_CTRL_RESETTING:
+ 		return BLK_EH_RESET_TIMER;
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+2.25.1
+
