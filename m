@@ -2,144 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64BF4244A89
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13089244A9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728672AbgHNNgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 09:36:40 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:43846 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728629AbgHNNgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 09:36:33 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id BCE07FB04;
-        Fri, 14 Aug 2020 15:36:30 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id zK71oykmh5Vx; Fri, 14 Aug 2020 15:36:28 +0200 (CEST)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 098AA457CD; Fri, 14 Aug 2020 15:36:24 +0200 (CEST)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] dt-bindings: Add Mantix MLAF057WE51-X panel bindings
-Date:   Fri, 14 Aug 2020 15:36:22 +0200
-Message-Id: <9345739df02b8b8630e7dccb61a80a7a7f692526.1597412076.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1597412076.git.agx@sigxcpu.org>
-References: <cover.1597412076.git.agx@sigxcpu.org>
+        id S1728811AbgHNNhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 09:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728723AbgHNNhV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 09:37:21 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7667AC061384;
+        Fri, 14 Aug 2020 06:37:21 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 61B5129A825
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH v3 08/19] media: uapi: h264: Drop SLICE_PARAMS 'size' field
+Date:   Fri, 14 Aug 2020 10:36:23 -0300
+Message-Id: <20200814133634.95665-9-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200814133634.95665-1-ezequiel@collabora.com>
+References: <20200814133634.95665-1-ezequiel@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The panel uses a Focaltech FT8006p, the touch part is handled by the
-already existing edt-ft5x06.
+The SLICE_PARAMS control is intended for slice-based
+devices. In this mode, the OUTPUT buffer contains
+a single slice, and so the buffer's plane payload size
+can be used to query the slice size.
 
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
+To reduce the API surface drop the size from the
+SLICE_PARAMS control.
+
+A follow-up change will remove other members in SLICE_PARAMS
+so we don't need to add padding fields here.
+
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
 ---
- .../display/panel/mantix,mlaf057we51-x.yaml   | 73 +++++++++++++++++++
- 1 file changed, 73 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+ Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 3 ---
+ drivers/staging/media/sunxi/cedrus/cedrus_h264.c          | 7 +++----
+ include/media/h264-ctrls.h                                | 3 ---
+ 3 files changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
-new file mode 100644
-index 0000000000000..349f3380ac940
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
-@@ -0,0 +1,73 @@
-+# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/panel/mantix,mlaf057we51-x.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Mantix MLAF057WE51-X 5.7" 720x1440 TFT LCD panel
-+
-+maintainers:
-+  - Guido Günther <agx@sigxcpu.org>
-+
-+description: |
-+             Mantix MLAF057WE51 X is a 720x1440 TFT LCD panel
-+             connected using a MIPI-DSI video interface.
-+
-+allOf:
-+  - $ref: panel-common.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - mantix,mlaf057we51-x
-+
-+  port: true
-+  reg:
-+    maxItems: 1
-+    description: DSI virtual channel
-+
-+  avdd-supply:
-+    description: Positive analog power supply
-+
-+  avee-supply:
-+    description: Negative analog power supply
-+
-+  vddi-supply:
-+    description: 1.8V I/O voltage supply
-+
-+  reset-gpios:
-+    description: GPIO used for the reset pin
-+    maxItems: 1
-+
-+  backlight:
-+    description: Backlight used by the panel
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+
-+required:
-+  - compatible
-+  - reg
-+  - avdd-supply
-+  - avee-supply
-+  - vddi-supply
-+  - reset-gpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    dsi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      panel@0 {
-+        compatible = "mantix,mlaf057we51-x";
-+        reg = <0>;
-+        avdd-supply = <&reg_avdd>;
-+        avee-supply = <&reg_avee>;
-+        vddi-supply = <&reg_1v8_p>;
-+        reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
-+        backlight = <&backlight>;
-+      };
-+    };
-+...
+diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+index c0ae7fda803e..e88c207d945b 100644
+--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
++++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+@@ -1760,9 +1760,6 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+     :stub-columns: 0
+     :widths:       1 1 2
+ 
+-    * - __u32
+-      - ``size``
+-      -
+     * - __u32
+       - ``start_byte_offset``
+         Offset (in bytes) from the beginning of the OUTPUT buffer to the start
+diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+index d5636dbbb622..7d9bd5860a1b 100644
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+@@ -324,17 +324,16 @@ static void cedrus_set_params(struct cedrus_ctx *ctx,
+ 	struct vb2_buffer *src_buf = &run->src->vb2_buf;
+ 	struct cedrus_dev *dev = ctx->dev;
+ 	dma_addr_t src_buf_addr;
+-	u32 len = slice->size * 8;
++	size_t slice_bytes = vb2_get_plane_payload(src_buf, 0);
+ 	unsigned int pic_width_in_mbs;
+ 	bool mbaff_pic;
+ 	u32 reg;
+ 
+-	cedrus_write(dev, VE_H264_VLD_LEN, len);
++	cedrus_write(dev, VE_H264_VLD_LEN, slice_bytes * 8);
+ 	cedrus_write(dev, VE_H264_VLD_OFFSET, 0);
+ 
+ 	src_buf_addr = vb2_dma_contig_plane_dma_addr(src_buf, 0);
+-	cedrus_write(dev, VE_H264_VLD_END,
+-		     src_buf_addr + vb2_get_plane_payload(src_buf, 0));
++	cedrus_write(dev, VE_H264_VLD_END, src_buf_addr + slice_bytes);
+ 	cedrus_write(dev, VE_H264_VLD_ADDR,
+ 		     VE_H264_VLD_ADDR_VAL(src_buf_addr) |
+ 		     VE_H264_VLD_ADDR_FIRST | VE_H264_VLD_ADDR_VALID |
+diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+index d178d7ad53b6..afcae3052085 100644
+--- a/include/media/h264-ctrls.h
++++ b/include/media/h264-ctrls.h
+@@ -165,9 +165,6 @@ struct v4l2_h264_reference {
+ };
+ 
+ struct v4l2_ctrl_h264_slice_params {
+-	/* Size in bytes, including header */
+-	__u32 size;
+-
+ 	/* Offset in bytes to the start of slice in the OUTPUT buffer. */
+ 	__u32 start_byte_offset;
+ 
 -- 
-2.26.2
+2.27.0
 
