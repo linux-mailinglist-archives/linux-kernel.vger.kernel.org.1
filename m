@@ -2,84 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B380244656
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 10:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6C124465C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 10:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727788AbgHNIRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 04:17:19 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:60450 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726641AbgHNIRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 04:17:19 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.57])
-        by Forcepoint Email with ESMTP id AFDC018AF1808F92AB83;
-        Fri, 14 Aug 2020 16:17:16 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Fri, 14 Aug 2020 16:17:16 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Fri, 14 Aug 2020 16:17:16 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-CC:     David Miller <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net: correct zerocopy refcnt with newly allocated UDP or
- RAW uarg
-Thread-Topic: [PATCH] net: correct zerocopy refcnt with newly allocated UDP or
- RAW uarg
-Thread-Index: AdZyCsRRYMjrdzIZQKySmFdoNa8vFQ==
-Date:   Fri, 14 Aug 2020 08:17:16 +0000
-Message-ID: <84f3ed74e9de4422933bc6a642890697@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.252]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727807AbgHNIR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 04:17:59 -0400
+Received: from mail-m17613.qiye.163.com ([59.111.176.13]:33459 "EHLO
+        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726124AbgHNIR6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 04:17:58 -0400
+Received: from ubuntu.localdomain (unknown [157.0.31.125])
+        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id DAA47482392;
+        Fri, 14 Aug 2020 16:17:54 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Bernard Zhao <bernard@vivo.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+Subject: [PATCH] drm/msm/adreno: remove return value of function XX_print
+Date:   Fri, 14 Aug 2020 01:17:44 -0700
+Message-Id: <20200814081747.8624-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHhpDHRoYT05CQh5PVkpOQkxIQkhLTE5JSE9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVKS0tZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NSo6Fhw6Aj8qAjoQIiIOLSlN
+        EwwaFExVSlVKTkJMSEJIS0xOTUxOVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSU5ZV1kIAVlBT0pPQzcG
+X-HM-Tid: 0a73ec0bfb9193bakuwsdaa47482392
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V2lsbGVtIGRlIEJydWlqbiA8d2lsbGVtZGVicnVpam4ua2VybmVsQGdtYWlsLmNvbT4gd3JvdGU6
-DQo+T24gVGh1LCBBdWcgMTMsIDIwMjAgYXQgMTo1OSBQTSBNaWFvaGUgTGluIDxsaW5taWFvaGVA
-aHVhd2VpLmNvbT4gd3JvdGU6DQo+Pg0KPj4gVGhlIHZhciBleHRyYV91cmVmIGlzIGludHJvZHVj
-ZWQgdG8gcGFzcyB0aGUgaW5pdGlhbCByZWZlcmVuY2UgdGFrZW4gDQo+PiBpbiBzb2NrX3plcm9j
-b3B5X2FsbG9jIHRvIHRoZSBmaXJzdCBnZW5lcmF0ZWQgc2tiLiBCdXQgbm93IHdlIG1heSBmYWls
-IA0KPj4gdG8gcGFzcyB0aGUgaW5pdGlhbCByZWZlcmVuY2Ugd2l0aCBuZXdseSBhbGxvY2F0ZWQg
-VURQIG9yIFJBVyB1YXJnIA0KPj4gd2hlbiB0aGUgc2tiIGlzIHpjb3BpZWQuDQo+DQo+ZXh0cmFf
-dXJlZiBpcyB0cnVlIGlmIHRoZXJlIGlzIG5vIHByZXZpb3VzIHNrYiB0byBhcHBlbmQgdG8gb3Ig
-dGhlcmUgaXMgYSBwcmV2aW91cyBza2IsIGJ1dCB0aGF0IGRvZXMgbm90IGhhdmUgemVyb2NvcHkg
-ZGF0YSBhc3NvY2lhdGVkIHlldCAoYmVjYXVzZSB0aGUgcHJldmlvdXMgY2FsbChzKSBkaWQgbm90
-IHNldCBNU0dfWkVST0NPUFkpLg0KPg0KPkluIG90aGVyIHdvcmRzLCB3aGVuIGZpcnN0IChhbGxv
-Y2F0aW5nIGFuZCkgYXNzb2NpYXRpbmcgYSB6ZXJvY29weSBzdHJ1Y3Qgd2l0aCB0aGUgc2tiLg0K
-DQpNYW55IHRoYW5rcyBmb3IgeW91ciBleHBsYWluYXRpb24uIFRoZSB2YXIgZXh0cmFfdXJlZiBw
-bGF5cyB0aGUgcm9sZSBhcyB5b3Ugc2F5LiBJIGp1c3QgYm9ycm93ZWQgdGhlIGRlc2NyaXB0aW9u
-IG9mIHZhciBleHRyYV91cmVmIGZyb20gcHJldmlvdXMgY29tbWl0IGxvZyBoZXJlLg0KDQo+DQo+
-PiAtICAgICAgICAgICAgICAgZXh0cmFfdXJlZiA9ICFza2JfemNvcHkoc2tiKTsgICAvKiBvbmx5
-IHJlZiBvbiBuZXcgdWFyZyAqLw0KPj4gKyAgICAgICAgICAgICAgIC8qIE9ubHkgcmVmIG9uIG5l
-d2x5IGFsbG9jYXRlZCB1YXJnLiAqLw0KPj4gKyAgICAgICAgICAgICAgIGlmICghc2tiX3pjb3B5
-KHNrYikgfHwgKHNrLT5za190eXBlICE9IFNPQ0tfU1RSRUFNICYmIHNrYl96Y29weShza2IpICE9
-IHVhcmcpKQ0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgZXh0cmFfdXJlZiA9IHRydWU7DQo+
-DQo+U09DS19TVFJFQU0gZG9lcyBub3QgdXNlIF9faXBfYXBwZW5kX2RhdGEuDQo+DQo+VGhpcyBs
-ZWF2ZXMgYXMgbmV3IGJyYW5jaCBza2JfemNvcHkoc2tiKSAmJiBza2JfemNvcHkoc2tiKSAhPSB1
-YXJnLg0KPg0KPlRoaXMgZnVuY3Rpb24gY2FuIG9ubHkgYWNxdWlyZSBhIHVhcmcgdGhyb3VnaCBz
-b2NrX3plcm9jb3B5X3JlYWxsb2MsIHdoaWNoIG9uIHNrYl96Y29weShza2IpIG9ubHkgcmV0dXJu
-cyB0aGUgZXhpc3RpbmcgdWFyZyBvciBOVUxMIChmb3Igbm90IFNPQ0tfU1RSRUFNKS4NCj4NCj5T
-byBJIGRvbid0IHNlZSB3aGVuIHRoYXQgY29uZGl0aW9uIGNhbiBoYXBwZW4uDQo+DQoNCk9uIHNr
-Yl96Y29weShza2IpLCB3ZSByZXR1cm5zIHRoZSBleGlzdGluZyB1YXJnIGlmZiAodWFyZy0+aWQg
-KyB1YXJnLT5sZW4gPT0gYXRvbWljX3JlYWQoJnNrLT5za196Y2tleSkpIGluIHNvY2tfemVyb2Nv
-cHlfcmVhbGxvYy4gU28gd2UgbWF5IGdldCBhIG5ld2x5IGFsbG9jYXRlZA0KdWFyZyB2aWEgc29j
-a196ZXJvY29weV9hbGxvYygpLiBUaG91Z2ggd2UgbWF5IG5vdCB0cmlnZ2VyIHRoaXMgY29kZXBh
-dGggbm93LCBpdCdzIHN0aWxsIGEgcG90ZW50aWFsIHByb2JsZW0gdGhhdCB3ZSBtYXkgbWlzc2Vk
-IHRoZSByaWdodCB0cmFjZSB0byB1YXJnLg0KDQpPciBhbSBJIHN0aWxsIG1pc3MgYW55dGhpbmc/
-IFRoYW5rcy4NCg0K
+XX_print like pfp_print/me_print/meq_print/roq_print are just
+used in file a5xx_debugfs.c. And these function always return
+0, this return value is meaningless.
+This change is to make the code a bit more readable.
+
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+---
+ drivers/gpu/drm/msm/adreno/a5xx_debugfs.c | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c b/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
+index 68eddac7771c..fc2c905b6c9e 100644
+--- a/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
++++ b/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
+@@ -11,7 +11,7 @@
+ 
+ #include "a5xx_gpu.h"
+ 
+-static int pfp_print(struct msm_gpu *gpu, struct drm_printer *p)
++static void pfp_print(struct msm_gpu *gpu, struct drm_printer *p)
+ {
+ 	int i;
+ 
+@@ -22,11 +22,9 @@ static int pfp_print(struct msm_gpu *gpu, struct drm_printer *p)
+ 		drm_printf(p, "  %02x: %08x\n", i,
+ 			gpu_read(gpu, REG_A5XX_CP_PFP_STAT_DATA));
+ 	}
+-
+-	return 0;
+ }
+ 
+-static int me_print(struct msm_gpu *gpu, struct drm_printer *p)
++static void me_print(struct msm_gpu *gpu, struct drm_printer *p)
+ {
+ 	int i;
+ 
+@@ -37,11 +35,9 @@ static int me_print(struct msm_gpu *gpu, struct drm_printer *p)
+ 		drm_printf(p, "  %02x: %08x\n", i,
+ 			gpu_read(gpu, REG_A5XX_CP_ME_STAT_DATA));
+ 	}
+-
+-	return 0;
+ }
+ 
+-static int meq_print(struct msm_gpu *gpu, struct drm_printer *p)
++static void meq_print(struct msm_gpu *gpu, struct drm_printer *p)
+ {
+ 	int i;
+ 
+@@ -52,11 +48,9 @@ static int meq_print(struct msm_gpu *gpu, struct drm_printer *p)
+ 		drm_printf(p, "  %02x: %08x\n", i,
+ 			gpu_read(gpu, REG_A5XX_CP_MEQ_DBG_DATA));
+ 	}
+-
+-	return 0;
+ }
+ 
+-static int roq_print(struct msm_gpu *gpu, struct drm_printer *p)
++static void roq_print(struct msm_gpu *gpu, struct drm_printer *p)
+ {
+ 	int i;
+ 
+@@ -71,8 +65,6 @@ static int roq_print(struct msm_gpu *gpu, struct drm_printer *p)
+ 		drm_printf(p, "  %02x: %08x %08x %08x %08x\n", i,
+ 			val[0], val[1], val[2], val[3]);
+ 	}
+-
+-	return 0;
+ }
+ 
+ static int show(struct seq_file *m, void *arg)
+@@ -81,10 +73,11 @@ static int show(struct seq_file *m, void *arg)
+ 	struct drm_device *dev = node->minor->dev;
+ 	struct msm_drm_private *priv = dev->dev_private;
+ 	struct drm_printer p = drm_seq_file_printer(m);
+-	int (*show)(struct msm_gpu *gpu, struct drm_printer *p) =
++	void (*show)(struct msm_gpu *gpu, struct drm_printer *p) =
+ 		node->info_ent->data;
+ 
+-	return show(priv->gpu, &p);
++	show(priv->gpu, &p);
++	return 0;
+ }
+ 
+ #define ENT(n) { .name = #n, .show = show, .data = n ##_print }
+-- 
+2.26.2
+
