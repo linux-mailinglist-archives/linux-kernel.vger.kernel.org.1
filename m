@@ -2,104 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A510244A41
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2581F244A58
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728431AbgHNNRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 09:17:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33502 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728253AbgHNNRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 09:17:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C15D9AF21;
-        Fri, 14 Aug 2020 13:17:31 +0000 (UTC)
-Subject: Re: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
- Software.
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <5cbcf469-a448-06a0-ae7b-be6da54679d8@suse.com>
-Date:   Fri, 14 Aug 2020 16:17:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726717AbgHNNXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 09:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgHNNXx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 09:23:53 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722A1C061384
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 06:23:52 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id t10so9902701ejs.8
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 06:23:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PJVMgjHP6gnp0mjaxlRSS4/pgm74X7VzDgM85iATqFQ=;
+        b=lcPg0MJN52u2w8bKn3vXx5YumuLzvS88Y8QDNdQmUluO/C6RRpq77tK1Xdjlr8sO4g
+         U0MrYKPh3k1/kYr2wvIjvtqhmwNBrYYYjIxqwMpeB9viturwBe70V7hgWfv6B1zU0ogo
+         l8it6e5ob+p2mAFjdDFkDTofZXSN5iBvshjsU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PJVMgjHP6gnp0mjaxlRSS4/pgm74X7VzDgM85iATqFQ=;
+        b=KQ3hCCTlClLk4trOoi37rQIy7+eBkKKWdyx9AnFWnVJrgOL9JTukRM/m4eqdgy+V+T
+         JmBVaxIpkheYFbOtsDpJcf/vBgH1CdGtDRYjxf74GMI6vbtIX2Fe5uIm+RDTj/O0VxXL
+         9fN3EQ0VBDP+hmW2udtlGjqWgaF3HNkJ50VqKM93MYCrMXbaZ554cRb6NrogLNW3TS7F
+         tzDnUFf3gqTk9VvKbRoPTbHj6nH9tmqxxgeRhkLt2lyrgWAEaVCW+PnsaoKdWKlRZaEP
+         uMggYxMNuViPaLgS96GIVIh6yGJfCHXzIiD+uCBU6ZAqXQWMpOgxQWbm+yxi4SnH7hbY
+         zF4g==
+X-Gm-Message-State: AOAM533zjn/HL6x0KoGKzywfcUqPH2lPbZpnBGKIlwOUUod/aLQk4p0D
+        kLWfzX1nxSmMvqKvNt3OoRKAaZr3fiGUeA==
+X-Google-Smtp-Source: ABdhPJwa43iB56BCuhn93X1xBokxsp7wDPcVMSi7ULlHsQEnWtYX5QvNFg9NCCAIgxri0yDKcYxLBw==
+X-Received: by 2002:a17:906:cc48:: with SMTP id mm8mr2486558ejb.292.1597411430955;
+        Fri, 14 Aug 2020 06:23:50 -0700 (PDT)
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
+        by smtp.gmail.com with ESMTPSA id k10sm6635626ejj.108.2020.08.14.06.23.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Aug 2020 06:23:50 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id a5so8342261wrm.6
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 06:23:50 -0700 (PDT)
+X-Received: by 2002:a5d:6744:: with SMTP id l4mr2915962wrw.105.1597411089399;
+ Fri, 14 Aug 2020 06:18:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200810142747.12400-1-sakari.ailus@linux.intel.com> <5353041e-850f-05ad-3b20-35e91fc9501e@linux.intel.com>
+In-Reply-To: <5353041e-850f-05ad-3b20-35e91fc9501e@linux.intel.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Fri, 14 Aug 2020 15:17:58 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5DbMMsxkJAkLm4kQ+cQ0ePG4ME492MxM3vwXws3H_bsTQ@mail.gmail.com>
+Message-ID: <CAAFQd5DbMMsxkJAkLm4kQ+cQ0ePG4ME492MxM3vwXws3H_bsTQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/6] Support running driver's probe for a device
+ powered off
+To:     Bingbu Cao <bingbu.cao@linux.intel.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, Bingbu Cao <bingbu.cao@intel.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Mani, Rajmohan" <rajmohan.mani@intel.com>,
+        "Qiu, Tian Shu" <tian.shu.qiu@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 14, 2020 at 6:12 AM Bingbu Cao <bingbu.cao@linux.intel.com> wro=
+te:
+>
+>
+>
+> On 8/10/20 10:27 PM, Sakari Ailus wrote:
+> > Hi all,
+> >
+> ...snip...
+> >
+> > The use case is such that there is a privacy LED next to an integrated
+> > user-facing laptop camera, and this LED is there to signal the user tha=
+t
+> > the camera is recording a video or capturing images. That LED also happ=
+ens
+> > to be wired to one of the power supplies of the camera, so whenever you
+> > power on the camera, the LED will be lit, whether images are captured f=
+rom
+> > the camera --- or not. There's no way to implement this differently
+> > without additional software control (allowing of which is itself a
+> > hardware design decision) on most CSI-2-connected camera sensors as the=
+y
+> > simply have no pin to signal the camera streaming state.
+> >
+> > This is also what happens during driver probe: the camera will be power=
+ed
+> > on by the I=C2=B2C subsystem calling dev_pm_domain_attach() and the dev=
+ice is
+> > already powered on when the driver's own probe function is called. To t=
+he
+> > user this visible during the boot process as a blink of the privacy LED=
+,
+> > suggesting that the camera is recording without the user having used an
+> > application to do that. From the end user's point of view the behaviour=
+ is
+> > not expected and for someone unfamiliar with internal workings of a
+> > computer surely seems quite suspicious --- even if images are not being
+> > actually captured.
+> >
+> > I've tested these on linux-next master. They also apply to Wolfram's
+> > i2c/for-next branch, there's a patch that affects the I=C2=B2C core cha=
+nges
+> > here (see below). The patches apart from that apply to Bartosz's
+> > at24/for-next as well as Mauro's linux-media master branch.
+>
+> Sakari, we meet one issue - once the vcm sub-device registered, the user =
+space
+> will try to open the VCM (I have not figure out who did that), it will al=
+so
+> trigger the acpi pm resume/suspend, as the VCM always shares same power r=
+ail
+> with camera sensor, so the privacy LED still has a blink.
 
+It's not always the case, as on some designs there are multiple power
+rails to the sensor and one drives the LED, while the other drives the
+VCM. That said, it would be still good to solve it in either case.
 
-On 14.08.20 г. 15:29 ч., Konstantin Komarov wrote:
-> This patch adds NTFS Read-Write driver to fs/ntfs3.
-> 
-> Having decades of expertise in commercial file systems development and huge
-> test coverage, we at Paragon Software GmbH want to make our contribution to
-> the Open Source Community by providing implementation of NTFS Read-Write
-> driver for the Linux Kernel.
-> 
-> This is fully functional NTFS Read-Write driver. Current version works with
-> NTFS(including v3.1) normal/compressed/sparse files and supports journal replaying.
-> 
-> We plan to support this version after the codebase once merged, and add new
-> features and fix bugs. For example, full journaling support over JBD will be
-> added in later updates.
-> 
-> The patch is too big to handle it within an e-mail body, so it is available to download 
-> on our server: https://dl.paragon-software.com/ntfs3/ntfs3.patch
-> 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> 
+Perhaps we need some more general discussion on the side effects of
+simply opening and querying a device. Most of V4L2 drivers these days
+are designed to avoid powering up the hardware until it's absolutely
+needed to do so. However, for non-streaming subdevs that are directly
+controlled by the userspace, like VCM, it's a common practice to power
+up on open and down on release. This is because they don't have a
+"streaming" state, so the driver has no way to determine when the
+power is needed. I wonder if there is a way to improve this.
 
-So how exactly do you expect someone to review this monstrosity ?
+Best regards,
+Tomasz
