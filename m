@@ -2,129 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21CD244501
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 08:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829862444BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 08:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726228AbgHNG2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 02:28:10 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9803 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726116AbgHNG2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 02:28:07 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 0E26B9E5115403E9F7E9;
-        Fri, 14 Aug 2020 14:28:03 +0800 (CST)
-Received: from huawei.com (10.44.142.101) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Fri, 14 Aug 2020
- 14:27:54 +0800
-From:   Sang Yan <sangyan@huawei.com>
-To:     <kexec@lists.infradead.org>, <ebiederm@xmission.com>,
-        <linux-kernel@vger.kernel.org>, <xiexiuqi@huawei.com>,
-        <guohanjun@huawei.com>
-CC:     <zhuling8@huawei.com>, <luanjianhai@huawei.com>,
-        <luchunhua@huawei.com>
-Subject: [PATCH 2/2] arm64: Reserve memory for quick kexec
-Date:   Fri, 14 Aug 2020 01:52:39 -0400
-Message-ID: <20200814055239.47348-2-sangyan@huawei.com>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200814055239.47348-1-sangyan@huawei.com>
-References: <20200814055239.47348-1-sangyan@huawei.com>
+        id S1726679AbgHNGBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 02:01:21 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:44637 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726297AbgHNGBU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 02:01:20 -0400
+Received: by mail-io1-f69.google.com with SMTP id m12so5623352iov.11
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 23:01:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=sCmDfjgeHQU2XqasYC2w9/9D2xVFH6ihBv/kfF+e3jw=;
+        b=hDqC6lpSshEv0GCmfSTNNUQ/BB2O0rq/Tzv7W9l8iP21vCE3D/Gc5sKqsJMKYXidgO
+         lc4WtRnGP/yIVdYIxVzWe8MiMZEUGa1WKroptsY2TrJM4YcMVmwWCDeFt6HbTQ8ZLRPG
+         1YlwTWaaCW0x5ESFdka6VhbRgjJPaUlq7BMe0E6bo8jfpnnp1YxIjdRm5lL58JByYfya
+         qgHomMGjM3/rJij5FDZBoWf9V85KMzUeA3JamNMMxFbT21U7a3mTUENJ/9nXm1lfsMyh
+         31THpt0mUuumU4dzPx9vSwwMRbmbhchwnRPbsV6p8QyEIxach33WnVZtkgra+n3KIfTs
+         2VqQ==
+X-Gm-Message-State: AOAM530Ip3ePam9BSPhljsoK460+g4L42rZEYbCdp6KbIkG6x6hZvuQY
+        GKCKPQLDm2iBuAJ8gGY1abePFEGF+NIBeUYqQM4BYOprmm7w
+X-Google-Smtp-Source: ABdhPJxIBN6j/ZMeKyaWqmCi1FaCp4RvYhD+TKcut9djsRe8PAAgfRTsBpUH9s8I3/LT/c0SXsjPTloEZFBbUzf4VQep43bHcnFr
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.44.142.101]
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a6b:591a:: with SMTP id n26mr941583iob.122.1597384879879;
+ Thu, 13 Aug 2020 23:01:19 -0700 (PDT)
+Date:   Thu, 13 Aug 2020 23:01:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000055c63705acd02676@google.com>
+Subject: BUG: corrupted list in hci_chan_del
+From:   syzbot <syzbot+21e61af4106356a893be@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reserve memory for quick kexec on arm64
-with cmdline "quickkexec=".
+Hello,
 
-Signed-off-by: Sang Yan <sangyan@huawei.com>
+syzbot found the following issue on:
+
+HEAD commit:    990f2273 Merge tag 's390-5.9-2' of git://git.kernel.org/pu..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16311491900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9c89856ae5fc8b6
+dashboard link: https://syzkaller.appspot.com/bug?extid=21e61af4106356a893be
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+21e61af4106356a893be@syzkaller.appspotmail.com
+
+list_del corruption. prev->next should be ffff8880a2c52c00, but was 0000000000000000
+------------[ cut here ]------------
+kernel BUG at lib/list_debug.c:51!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 11221 Comm: syz-executor.0 Not tainted 5.8.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__list_del_entry_valid.cold+0xf/0x55 lib/list_debug.c:51
+Code: e8 0a af bf fd 0f 0b 48 89 f1 48 c7 c7 60 fe 93 88 4c 89 e6 e8 f6 ae bf fd 0f 0b 48 89 ee 48 c7 c7 00 00 94 88 e8 e5 ae bf fd <0f> 0b 4c 89 ea 48 89 ee 48 c7 c7 40 ff 93 88 e8 d1 ae bf fd 0f 0b
+RSP: 0018:ffffc90008907828 EFLAGS: 00010282
+RAX: 0000000000000054 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88805eb3a5c0 RSI: ffffffff815dbc57 RDI: fffff52001120ef7
+RBP: ffff8880a2c52c00 R08: 0000000000000054 R09: ffff8880ae7318e7
+R10: 0000000000000000 R11: 000000000004e618 R12: ffff88809421fe00
+R13: ffffffff8920ff20 R14: fffffbfff1522378 R15: ffff888097af65d8
+FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 00007f0f6a6c5000 CR3: 0000000009a8d000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __list_del_entry include/linux/list.h:132 [inline]
+ list_del_rcu include/linux/rculist.h:158 [inline]
+ hci_chan_del+0x3f/0x190 net/bluetooth/hci_conn.c:1733
+ l2cap_conn_del+0x61b/0x9e0 net/bluetooth/l2cap_core.c:1900
+ l2cap_disconn_cfm net/bluetooth/l2cap_core.c:8160 [inline]
+ l2cap_disconn_cfm+0x85/0xa0 net/bluetooth/l2cap_core.c:8153
+ hci_disconn_cfm include/net/bluetooth/hci_core.h:1438 [inline]
+ hci_conn_hash_flush+0x114/0x220 net/bluetooth/hci_conn.c:1557
+ hci_dev_do_close+0x5c6/0x1080 net/bluetooth/hci_core.c:1770
+ hci_unregister_dev+0x1bd/0xe30 net/bluetooth/hci_core.c:3790
+ vhci_release+0x70/0xe0 drivers/bluetooth/hci_vhci.c:340
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:135
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb7d/0x29f0 kernel/exit.c:806
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ get_signal+0x40b/0x1ee0 kernel/signal.c:2743
+ arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:135 [inline]
+ exit_to_user_mode_prepare+0x15d/0x1c0 kernel/entry/common.c:166
+ syscall_exit_to_user_mode+0x59/0x2b0 kernel/entry/common.c:241
+ __do_fast_syscall_32+0x63/0x80 arch/x86/entry/common.c:127
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:149
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f33569
+Code: Bad RIP value.
+RSP: 002b:00000000f550c12c EFLAGS: 00000292 ORIG_RAX: 00000000000000f0
+RAX: fffffffffffffe00 RBX: 0000000008b9c014 RCX: 0000000000000080
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000008b9c018
+RBP: 00000000f550c228 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+
+
 ---
- arch/arm64/kernel/setup.c |  6 ++++++
- arch/arm64/mm/init.c      | 43 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 49 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 77c4c9bad1b8..2a5dc032d95e 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -369,6 +369,12 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
- 	 */
- 	init_task.thread_info.ttbr0 = __pa_symbol(empty_zero_page);
- #endif
-+#ifdef CONFIG_QUICK_KEXEC
-+		if (quick_kexec_res.end &&
-+		    quick_kexec_res.start >= res->start &&
-+		    quick_kexec_res.end <= res->end)
-+			request_resource(res, &quick_kexec_res);
-+#endif
- 
- 	if (boot_args[1] || boot_args[2] || boot_args[3]) {
- 		pr_err("WARNING: x1-x3 nonzero in violation of boot protocol:\n"
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 481d22c32a2e..579acb93728f 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -130,6 +130,45 @@ static void __init reserve_crashkernel(void)
- }
- #endif /* CONFIG_KEXEC_CORE */
- 
-+#ifdef CONFIG_QUICK_KEXEC
-+static int __init parse_quick_kexec(char *p)
-+{
-+	if (!p)
-+		return 0;
-+
-+	quick_kexec_res.end = PAGE_ALIGN(memparse(p, NULL));
-+
-+	return 0;
-+}
-+early_param("quickkexec", parse_quick_kexec);
-+
-+static void __init reserve_quick_kexec(void)
-+{
-+	unsigned long long mem_start, mem_len;
-+
-+	mem_len = quick_kexec_res.end;
-+	if (mem_len == 0)
-+		return;
-+
-+	/* Current arm64 boot protocol requires 2MB alignment */
-+	mem_start = memblock_find_in_range(0, ARCH_LOW_ADDRESS_LIMIT,
-+			mem_len, CRASH_ALIGN);
-+	if (mem_start == 0) {
-+		pr_warn("cannot allocate quick kexec mem (size:0x%llx)\n",
-+			mem_len);
-+		quick_kexec_res.end = 0;
-+		return;
-+	}
-+
-+	memblock_reserve(mem_start, mem_len);
-+	pr_info("quick kexec mem reserved: 0x%016llx - 0x%016llx (%lld MB)\n",
-+		mem_start, mem_start + mem_len,	mem_len >> 20);
-+
-+	quick_kexec_res.start = mem_start;
-+	quick_kexec_res.end = mem_start + mem_len - 1;
-+}
-+#endif
-+
- #ifdef CONFIG_CRASH_DUMP
- static int __init early_init_dt_scan_elfcorehdr(unsigned long node,
- 		const char *uname, int depth, void *data)
-@@ -399,6 +438,10 @@ void __init arm64_memblock_init(void)
- 
- 	reserve_crashkernel();
- 
-+#ifdef CONFIG_QUICK_KEXEC
-+	reserve_quick_kexec();
-+#endif
-+
- 	reserve_elfcorehdr();
- 
- 	high_memory = __va(memblock_end_of_DRAM() - 1) + 1;
--- 
-2.19.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
