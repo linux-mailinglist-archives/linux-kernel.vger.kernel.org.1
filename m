@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C77C5244B8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 17:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68EF1244B8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 17:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgHNPCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 11:02:50 -0400
-Received: from mga17.intel.com ([192.55.52.151]:52475 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726185AbgHNPCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 11:02:49 -0400
-IronPort-SDR: yTc4oJMMs6T19H2dus9sE7/mtRCz+kIaVflaS11oa6I2WiskHHlVL20m4MQjEyUXZcJ61oSVSR
- sUh8LgCGaquA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9713"; a="134479554"
-X-IronPort-AV: E=Sophos;i="5.76,312,1592895600"; 
-   d="scan'208";a="134479554"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2020 08:02:48 -0700
-IronPort-SDR: G1mapDLae7K3C4DCu34RXjDxFZBentlIK6vniD71UBaPUSrwbX5APZifwfzLDDuAgotNAWOHaA
- uLY73rPw+UJw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,312,1592895600"; 
-   d="scan'208";a="278414598"
-Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by fmsmga008.fm.intel.com with ESMTP; 14 Aug 2020 08:02:48 -0700
-Subject: [PATCH] [v2] Documentation: clarify driver licensing rules
-To:     linux-kernel@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        dan.j.williams@intel.com, h.peter.anvin@intel.com,
-        tglx@linutronix.de, gregkh@linuxfoundation.org, corbet@lwn.net,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org
-From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Fri, 14 Aug 2020 07:56:25 -0700
-Message-Id: <20200814145625.8B708079@viggo.jf.intel.com>
+        id S1728332AbgHNPFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 11:05:14 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:55623 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728132AbgHNPFK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 11:05:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597417510; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=3h/en/nwSu152PeS5ycUKm35wp0er9Vci4CuflOQWT4=;
+ b=RTlXT+ozSE/liZhC/OXSsbiyoyi83OIpK8LCYVuJ8CMquKQ2dBLz5q7u5dJkZqZlNKAGnU9C
+ m16GSZdlE4SjFD3dkmPD03kP23v6r8+211k/a8uT7PSuw7th4eufhRoBc1aCIz7t+RcFFX57
+ r6fLxcsIACFZzajdg54/iaOHW/Q=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f36a7f4d48d4625cae4255d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 14 Aug 2020 15:04:20
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 78DB9C433CA; Fri, 14 Aug 2020 15:04:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7AB20C433C6;
+        Fri, 14 Aug 2020 15:04:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7AB20C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH][next] ath9k: Use fallthrough pseudo-keyword
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200727193520.GA832@embeddedor>
+References: <20200727193520.GA832@embeddedor>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200814150419.78DB9C433CA@smtp.codeaurora.org>
+Date:   Fri, 14 Aug 2020 15:04:19 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+> Replace the existing /* fall through */ comments and its variants with
+> the new pseudo-keyword macro fallthrough[1].
+> 
+> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Greg has challenged some recent driver submitters on their license
-choices. He was correct to do so, as the choices in these instances
-did not always advance the aims of the submitters.
+Patch applied to ath-next branch of ath.git, thanks.
 
-But, this left submitters (and the folks who help them pick licenses)
-a bit confused. They have read things like
-Documentation/process/license-rules.rst which says:
+221af8135478 ath9k: Use fallthrough pseudo-keyword
 
-	individual source files can have a different license
-	which is required to be compatible with the GPL-2.0
+-- 
+https://patchwork.kernel.org/patch/11687449/
 
-and Documentation/process/submitting-drivers.rst:
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-	We don't insist on any kind of exclusive GPL licensing,
-	and if you wish ... you may well wish to release under
-	multiple licenses.
-
-As written, these appear a _bit_ more laissez faire than we've been in
-practice lately. It sounds like we at least expect submitters to make
-a well-reasoned license choice and to explain their rationale. It does
-not appear that we blindly accept anything that is simply
-GPLv2-compatible.
-
-Drivers appear to be the most acute source of misunderstanding, so fix
-the driver documentation first. Update it to clarify expectations.
-
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: H. Peter Anvin <h.peter.anvin@intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-spdx@vger.kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-
---
-
-Changes from v1:
- * Remove mention of maintainers enforcing particular license
-   choices.
- * Change the wording to ensure that folks understand that the
-   trigger that requires an explanation is not multiple
-   licenses per se, but non-GPL licenses.  You could argue that
-   GPLv2-or-later is multiple liceses, for instance.
----
-
- b/Documentation/process/submitting-drivers.rst |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff -puN Documentation/process/submitting-drivers.rst~clarify-dual-licensing Documentation/process/submitting-drivers.rst
---- a/Documentation/process/submitting-drivers.rst~clarify-dual-licensing	2020-08-14 07:42:06.300480229 -0700
-+++ b/Documentation/process/submitting-drivers.rst	2020-08-14 07:53:10.373478573 -0700
-@@ -60,10 +60,11 @@ What Criteria Determine Acceptance
- 
- Licensing:
- 		The code must be released to us under the
--		GNU General Public License. We don't insist on any kind
--		of exclusive GPL licensing, and if you wish the driver
--		to be useful to other communities such as BSD you may well
--		wish to release under multiple licenses.
-+		GNU General Public License. If you wish the driver to be
-+		useful to other communities such as BSD you may release
-+		under multiple licenses. If you choose to release under
-+		licenses other than the GPL, you should include your
-+		rationale for your license choices in your cover letter.
- 		See accepted licenses at include/linux/module.h
- 
- Copyright:
-_
