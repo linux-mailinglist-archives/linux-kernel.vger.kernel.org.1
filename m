@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1430F244E14
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA69244E1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728753AbgHNReR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 13:34:17 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:6977 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726241AbgHNReP (ORCPT
+        id S1728796AbgHNRe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 13:34:27 -0400
+Received: from mail-io1-f48.google.com ([209.85.166.48]:41607 "EHLO
+        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726241AbgHNReU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 13:34:15 -0400
-X-IronPort-AV: E=Sophos;i="5.76,313,1592838000"; 
-   d="scan'208";a="54383380"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 15 Aug 2020 02:34:14 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id F3F5540062AC;
-        Sat, 15 Aug 2020 02:34:10 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: [PATCH 5/5] arm64: dts: renesas: r8a774c0: Add PCIe EP node
-Date:   Fri, 14 Aug 2020 18:30:37 +0100
-Message-Id: <20200814173037.17822-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200814173037.17822-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20200814173037.17822-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Fri, 14 Aug 2020 13:34:20 -0400
+Received: by mail-io1-f48.google.com with SMTP id g19so11509153ioh.8;
+        Fri, 14 Aug 2020 10:34:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HRLUQXT1FjeDUoDxrxVid7a8LubFJ4oZ02ezybrYxg4=;
+        b=dG/QbddHpusCjE7yQUPHaFYljR7NxS4gPwgJ/jXFDmlsq0VfyERxNrXL+a3hwY/8jo
+         3uaIDnB2XsrqvYLPlnt4oDKJsyqr9Rfu2RZmZixvIeRf40WdCCxBUWk3fs//jmeZkDfx
+         06tfsrOsF5rRpZDtMUig9ejyCn/Mlhsv7b2QhGLSmXVbDqTKrSdVqaYN+AVvB5MP9Njn
+         +pZ6SMsuih2LLCFNn614XVCJ6969q974BazSpIurAsrCkydc1WpUSt0K6yoXKf0FOZSW
+         skjALzH03VOhjC96IlDDT+pAzvWzOuEf+GG5uQU7kPFTTJqIm4lS/HjxRYAdD2Y5Q2eM
+         wbhQ==
+X-Gm-Message-State: AOAM532qPYlBgtfHViNSO8q+GF9swneYJSIcVlJcJB3xKLfHczhve2Ca
+        Uss/BJwVZWEXoyqilFx/ax/EyMb1zw==
+X-Google-Smtp-Source: ABdhPJzF09ie4qqybp5M2WwpWzXEM1ABAQT6ujc2ahD2sHd9PZDZ93rPchRaX4zjJPhtADyu0He4yg==
+X-Received: by 2002:a02:852c:: with SMTP id g41mr3723855jai.58.1597426459238;
+        Fri, 14 Aug 2020 10:34:19 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.249])
+        by smtp.googlemail.com with ESMTPSA id x185sm4637575iof.41.2020.08.14.10.34.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Aug 2020 10:34:18 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Andrei Ziureaev <andrei.ziureaev@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 0/3] DT validation time improvements
+Date:   Fri, 14 Aug 2020 11:34:14 -0600
+Message-Id: <20200814173417.2322509-1-robh@kernel.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PCIe EP node to R8A774C0 (RZ/G2E) SoC dtsi.
+The time to run dt_binding_check and dtbs_check has gotten
+significantly slower as the number of schemas has increased. There's 2 
+main factors causing validation time on each file to be slow. 
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- arch/arm64/boot/dts/renesas/r8a774c0.dtsi | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+The first is python start-up time. This is a common problem for python 
+without much of a solution other than minimizing module imports. 
+Eliminating some imports was possible for dt-extract-example, but not 
+the other tools. Validating multiple files in a single call is the 
+simplest solution. The downside of processing multiple files in one call 
+is losing make dependency handling. This is not too important for 
+dt-doc-validate as the validation time is <10 sec. 
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a774c0.dtsi b/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
-index 5c72a7efbb03..81f218539688 100644
---- a/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
-@@ -1698,6 +1698,25 @@
- 			status = "disabled";
- 		};
- 
-+		pciec0_ep: pcie_ep@fe000000 {
-+			compatible = "renesas,r8a774c0-pcie-ep",
-+				     "renesas,rcar-gen3-pcie-ep";
-+			reg = <0x0 0xfe000000 0 0x80000>,
-+			      <0x0 0xfe100000 0 0x100000>,
-+			      <0x0 0xfe200000 0 0x200000>,
-+			      <0x0 0x30000000 0 0x8000000>,
-+			      <0x0 0x38000000 0 0x8000000>;
-+			reg-names = "apb-base", "memory0", "memory1", "memory2", "memory3";
-+			interrupts = <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 319>;
-+			clock-names = "pcie";
-+			resets = <&cpg 319>;
-+			power-domains = <&sysc R8A774C0_PD_ALWAYS_ON>;
-+			status = "disabled";
-+		};
-+
- 		vspb0: vsp@fe960000 {
- 			compatible = "renesas,vsp2";
- 			reg = <0 0xfe960000 0 0x8000>;
+The 2nd factor is processed-schema*.yaml is now ~2MB and around 2 sec to 
+parse (which is done for every .dts and example). Switching 
+processed-schema*.yaml to JSON is much faster to parse 
+
+The overall result of these changes is a 2x improvement to dtbs_check 
+and a 4-5x improvement to dt_binding_check.
+
+Rob
+
+Andrei Ziureaev (1):
+  dt-bindings: Use json for processed-schema*
+
+Rob Herring (2):
+  dt-bindings: Bump minimum version of dtschema to 2020.8
+  dt-bindings: Validate DT binding schema in a single call
+
+ Documentation/devicetree/bindings/.gitignore |  1 +
+ Documentation/devicetree/bindings/Makefile   | 45 ++++++++++++--------
+ scripts/Makefile.lib                         |  2 +-
+ 3 files changed, 29 insertions(+), 19 deletions(-)
+
 -- 
-2.17.1
+2.25.1
 
