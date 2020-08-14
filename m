@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8FB244DF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96713244DE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728901AbgHNRaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 13:30:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
+        id S1728779AbgHNR23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 13:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728709AbgHNR2R (ORCPT
+        with ESMTP id S1728590AbgHNR2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 13:28:17 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D06C061384
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:16 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id c4so6503331qvq.15
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:16 -0700 (PDT)
+        Fri, 14 Aug 2020 13:28:20 -0400
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF86EC061385
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:19 -0700 (PDT)
+Received: by mail-wr1-x44a.google.com with SMTP id s23so3593846wrb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=LewkbAtBTS3fxa2ioFCrxocMUQLUBlN7d9swTrdmfVk=;
-        b=VBd8Y8/0sCJNp9OLxtpbP3YFD0V7v4ivH9Cj8L45fMKAxsbpM/7wFGcDUQeyy72z7+
-         0+83oUrkvXL/wVWdOLiGRPDkN9cxYy25dwFuY6WlobJRoBw5Hv9a+2zjxhhnyquGKy9S
-         2EZU9tkO5wLg8/RgIx9m7DsZYXR3314Znfr6vJ3MNxMoELwXKZlF+NlGBiOEjdt+YbH/
-         M8jvnzzivlTluFx2uqs4r137zk+fAgcIbSEWAReQBWWz/UFUwoH8b3I68Z73ieYmMigU
-         ntrskJrbnmV1HFKyooD68AjgyDl3B/zvkVc8r7dyFNQz5HrEOh+GjWU5ZP9+NGOy7Czk
-         g76Q==
+        bh=ZkzH9bOmKLetwfTAc91nMyZnzSTKk7nABhSXX08ok80=;
+        b=wLdpPUJww5Ou2gUNuObrOdFaQJnwk0f2wflLug0UxXjjB+JUFXEgy0pH9EJA0zc2Sa
+         SV/JD6gXxYc8wagutHbT1eUXJ9ZAuMFvhoOliuhpaoQLHOz/NNoYpBIB4Na0gKA8ML/9
+         1IygqyNxrVi5xO4HBEfdG9bBZQt2GIQr9oN+HYuAyHMXgprw4bxZWFeJoyOjRVvNxO5T
+         xY06EZ2RFKc4m+QOjEBnFNnkS47Tv3wDXKIY+t5vcT7jIKe5RGeipEE/Je9CVTeGOKPX
+         4tpGn5ZtbfVXXOeirPojx390N6o1GbaZYW/Pa2alwkhzB6IopgXoC2j5AIc8GQcYVYLi
+         XytQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=LewkbAtBTS3fxa2ioFCrxocMUQLUBlN7d9swTrdmfVk=;
-        b=gYxEsHaW+Xpx6kJFcTftc9XOLR16gbdvBw66t8gMw0CYH0OTTatYNv658YtmTNtfJB
-         QbiUm0hlnS53ppfg/WQ6uAS0HluJPUqKL9MjiLzFBhXG9Ipnkx+A/pRS9UVe6pPuYhaG
-         iOT3WHdF6ZOoBSXei3Y5a1vhxbLlLxu2O6JJ+61JJqqP4DRUFdLayOXqVOhcpIj3oB4D
-         Ga0toLUw4uMupDMMnWK3EmfdsteONX5mNui3FqrOvpcSyVXUM3LuiZr0k1BLkvZGwAyV
-         n49gvIm1sQkyxdAB9HfzrJdH/T9C74mbdwIylFDv4qCX7l31QNLqF5s4OnTJKTOFyfXP
-         G0mw==
-X-Gm-Message-State: AOAM530k1YCZvHiGYiHgwZ5CexoH33THsTRkCiVMB/mRRkSdNIBtlFlN
-        H5I5XAEzdkuU3bA3XsL1rXI+HdRWAUuQn7xo
-X-Google-Smtp-Source: ABdhPJwkBrAQ8GyLssKpf9q7VKymTxaofLqPPbiLmDAQiv3UZOFrLINHymedM0M36JyCRp99bnQq9F+T3nsH6DvR
-X-Received: by 2002:ad4:4b0b:: with SMTP id r11mr3633062qvw.94.1597426095910;
- Fri, 14 Aug 2020 10:28:15 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 19:27:04 +0200
+        bh=ZkzH9bOmKLetwfTAc91nMyZnzSTKk7nABhSXX08ok80=;
+        b=r7YzURaRN8/e/umRlfg8mTtoRw8IlzYDU4yxd6SrQ4/qnrHO+s0xp/NcgDCoUV1QFV
+         +jQ4tEeR85aWmf6UzAucmAmx/vdzZcEYINM9VUzB9LBdv/Tr4iWbKAxnfHmp4Kx/epT4
+         pNIzkfo7v8BgQG4S5pnTPP5pp1fTJRCwsjj1IXbN95UqO00EJTvdThc+OvFNhRoVJclL
+         xbR963wiP7wpoF2RauOCZJt4kSk1F/S8UZ2Mx6YxY8veOvOeu1w4xQf1OPT0Mk/EjvMv
+         75l06FdU57EOhcb3zBStcIH6WXZScUt6Why/o0b5/W45rgogwVMC/yjrTbqb4GeWBXur
+         aWmQ==
+X-Gm-Message-State: AOAM533KOcBdMjvkstHIPhPFVoXZG3NjBXRzQYXwx8jCNVfLOCL5IQ+v
+        /H395bZk4wh5HF4BdcJnXfrJezpCxvWs1Qbz
+X-Google-Smtp-Source: ABdhPJx5Ck5Wm3Z23U/jQ6DdPc0XSBI9kJNP63nW1NBupfmsFurN9ES0UHSW0KHc3wLY01k6oB2+DKHrQsXny6lv
+X-Received: by 2002:a05:6000:1085:: with SMTP id y5mr3627507wrw.100.1597426098448;
+ Fri, 14 Aug 2020 10:28:18 -0700 (PDT)
+Date:   Fri, 14 Aug 2020 19:27:05 +0200
 In-Reply-To: <cover.1597425745.git.andreyknvl@google.com>
-Message-Id: <6a83a47d9954935d37a654978e96c951cc56a2f6.1597425745.git.andreyknvl@google.com>
+Message-Id: <bf88a783f1c9b6643a96648dac88b4edc8d464d2.1597425745.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1597425745.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
-Subject: [PATCH 22/35] arm64: mte: Enable in-kernel MTE
+Subject: [PATCH 23/35] arm64: mte: Convert gcr_user into an exclude mask
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Dmitry Vyukov <dvyukov@google.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -75,50 +75,136 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-The Tag Checking operation causes a synchronous data abort as
-a consequence of a tag check fault when MTE is configured in
-synchronous mode.
+The gcr_user mask is a per thread mask that represents the tags that are
+excluded from random generation when the Memory Tagging Extension is
+present and an 'irg' instruction is invoked.
 
-Enable MTE in Synchronous mode in EL1 to provide a more immediate
-way of tag check failure detection in the kernel.
+gcr_user affects the behavior on EL0 only.
 
-As part of this change enable match-all tag for EL1 to allow the
-kernel to access user pages without faulting. This is required because
-the kernel does not have knowledge of the tags set by the user in a
-page.
+Currently that mask is an include mask and it is controlled by the user
+via prctl() while GCR_EL1 accepts an exclude mask.
 
-Note: For MTE, the TCF bit field in SCTLR_EL1 affects only EL1 in a
-similar way as TCF0 affects EL0.
+Convert the include mask into an exclude one to make it easier the
+register setting.
+
+Note: This change will affect gcr_kernel (for EL1) introduced with a
+future patch.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/arm64/kernel/cpufeature.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm64/include/asm/processor.h |  2 +-
+ arch/arm64/kernel/mte.c            | 29 +++++++++++++++--------------
+ 2 files changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 4d3abb51f7d4..4d94af19d8f6 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1670,6 +1670,9 @@ static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
- 	write_sysreg_s(0, SYS_TFSR_EL1);
- 	write_sysreg_s(0, SYS_TFSRE0_EL1);
+diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
+index fec204d28fce..ed9efa5be8eb 100644
+--- a/arch/arm64/include/asm/processor.h
++++ b/arch/arm64/include/asm/processor.h
+@@ -153,7 +153,7 @@ struct thread_struct {
+ #endif
+ #ifdef CONFIG_ARM64_MTE
+ 	u64			sctlr_tcf0;
+-	u64			gcr_user_incl;
++	u64			gcr_user_excl;
+ #endif
+ };
  
-+	/* Enable Match-All at EL1 */
-+	sysreg_clear_set(tcr_el1, 0, SYS_TCR_EL1_TCMA1);
-+
+diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+index e2d708b4583d..7717ea9bc2a7 100644
+--- a/arch/arm64/kernel/mte.c
++++ b/arch/arm64/kernel/mte.c
+@@ -135,23 +135,22 @@ static void set_sctlr_el1_tcf0(u64 tcf0)
+ 	preempt_enable();
+ }
+ 
+-static void update_gcr_el1_excl(u64 incl)
++static void update_gcr_el1_excl(u64 excl)
+ {
+-	u64 excl = ~incl & SYS_GCR_EL1_EXCL_MASK;
+ 
  	/*
- 	 * CnP must be enabled only after the MAIR_EL1 register has been set
- 	 * up. Inconsistent MAIR_EL1 between CPUs sharing the same TLB may
-@@ -1687,6 +1690,9 @@ static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
- 	mair &= ~MAIR_ATTRIDX(MAIR_ATTR_MASK, MT_NORMAL_TAGGED);
- 	mair |= MAIR_ATTRIDX(MAIR_ATTR_NORMAL_TAGGED, MT_NORMAL_TAGGED);
- 	write_sysreg_s(mair, SYS_MAIR_EL1);
-+
-+	/* Enable MTE Sync Mode for EL1 */
-+	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
- 	isb();
+-	 * Note that 'incl' is an include mask (controlled by the user via
+-	 * prctl()) while GCR_EL1 accepts an exclude mask.
++	 * Note that the mask controlled by the user via prctl() is an
++	 * include while GCR_EL1 accepts an exclude mask.
+ 	 * No need for ISB since this only affects EL0 currently, implicit
+ 	 * with ERET.
+ 	 */
+ 	sysreg_clear_set_s(SYS_GCR_EL1, SYS_GCR_EL1_EXCL_MASK, excl);
+ }
  
- 	local_flush_tlb_all();
+-static void set_gcr_el1_excl(u64 incl)
++static void set_gcr_el1_excl(u64 excl)
+ {
+-	current->thread.gcr_user_incl = incl;
+-	update_gcr_el1_excl(incl);
++	current->thread.gcr_user_excl = excl;
++	update_gcr_el1_excl(excl);
+ }
+ 
+ void flush_mte_state(void)
+@@ -166,7 +165,7 @@ void flush_mte_state(void)
+ 	/* disable tag checking */
+ 	set_sctlr_el1_tcf0(SCTLR_EL1_TCF0_NONE);
+ 	/* reset tag generation mask */
+-	set_gcr_el1_excl(0);
++	set_gcr_el1_excl(SYS_GCR_EL1_EXCL_MASK);
+ }
+ 
+ void mte_thread_switch(struct task_struct *next)
+@@ -177,7 +176,7 @@ void mte_thread_switch(struct task_struct *next)
+ 	/* avoid expensive SCTLR_EL1 accesses if no change */
+ 	if (current->thread.sctlr_tcf0 != next->thread.sctlr_tcf0)
+ 		update_sctlr_el1_tcf0(next->thread.sctlr_tcf0);
+-	update_gcr_el1_excl(next->thread.gcr_user_incl);
++	update_gcr_el1_excl(next->thread.gcr_user_excl);
+ }
+ 
+ void mte_suspend_exit(void)
+@@ -185,13 +184,14 @@ void mte_suspend_exit(void)
+ 	if (!system_supports_mte())
+ 		return;
+ 
+-	update_gcr_el1_excl(current->thread.gcr_user_incl);
++	update_gcr_el1_excl(current->thread.gcr_user_excl);
+ }
+ 
+ long set_mte_ctrl(struct task_struct *task, unsigned long arg)
+ {
+ 	u64 tcf0;
+-	u64 gcr_incl = (arg & PR_MTE_TAG_MASK) >> PR_MTE_TAG_SHIFT;
++	u64 gcr_excl = ~((arg & PR_MTE_TAG_MASK) >> PR_MTE_TAG_SHIFT) &
++		       SYS_GCR_EL1_EXCL_MASK;
+ 
+ 	if (!system_supports_mte())
+ 		return 0;
+@@ -212,10 +212,10 @@ long set_mte_ctrl(struct task_struct *task, unsigned long arg)
+ 
+ 	if (task != current) {
+ 		task->thread.sctlr_tcf0 = tcf0;
+-		task->thread.gcr_user_incl = gcr_incl;
++		task->thread.gcr_user_excl = gcr_excl;
+ 	} else {
+ 		set_sctlr_el1_tcf0(tcf0);
+-		set_gcr_el1_excl(gcr_incl);
++		set_gcr_el1_excl(gcr_excl);
+ 	}
+ 
+ 	return 0;
+@@ -224,11 +224,12 @@ long set_mte_ctrl(struct task_struct *task, unsigned long arg)
+ long get_mte_ctrl(struct task_struct *task)
+ {
+ 	unsigned long ret;
++	u64 incl = ~task->thread.gcr_user_excl & SYS_GCR_EL1_EXCL_MASK;
+ 
+ 	if (!system_supports_mte())
+ 		return 0;
+ 
+-	ret = task->thread.gcr_user_incl << PR_MTE_TAG_SHIFT;
++	ret = incl << PR_MTE_TAG_SHIFT;
+ 
+ 	switch (task->thread.sctlr_tcf0) {
+ 	case SCTLR_EL1_TCF0_NONE:
 -- 
 2.28.0.220.ged08abb693-goog
 
