@@ -2,161 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8B22442FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 04:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1D12442FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 04:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgHNCZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 22:25:48 -0400
-Received: from mga14.intel.com ([192.55.52.115]:37241 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726522AbgHNCZq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 22:25:46 -0400
-IronPort-SDR: loe7R+yQA1cJk34r4tBTcCjCOXdG/dzXamCGyYjes0vWdqHRaoa+aVN0TfIITxLxeLNensvMZO
- X0a6r/50w6EQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9712"; a="153576020"
-X-IronPort-AV: E=Sophos;i="5.76,310,1592895600"; 
-   d="scan'208";a="153576020"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 19:25:45 -0700
-IronPort-SDR: C0XQXzUEe9qasbYbqTSW1APNek6shQ6g+sLC7ON+zyug+AEMvGiP8jnFMZOZtbG3c32a/q4v1/
- F8S866UhRGRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,310,1592895600"; 
-   d="scan'208";a="369782211"
-Received: from pnp1.jf.intel.com ([10.23.15.21])
-  by orsmga001.jf.intel.com with ESMTP; 13 Aug 2020 19:25:45 -0700
-From:   vaibhav.shankar@intel.com
-To:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, bp@alien8.de, x86@kernel.org, hpa@zytor.com
-Cc:     vaibhav.shankar@intel.com
-Subject: [PATCH] perf/x86/intel/uncore: Add BW counters for GT, IA and IO breakdown
-Date:   Thu, 13 Aug 2020 19:22:34 -0700
-Message-Id: <20200814022234.23605-1-vaibhav.shankar@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726669AbgHNCWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 22:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726522AbgHNCWu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 22:22:50 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8953EC061757;
+        Thu, 13 Aug 2020 19:22:50 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id mw10so3685885pjb.2;
+        Thu, 13 Aug 2020 19:22:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=B+pntnVo3xNQlG6KGrAyxLXpLyOgixbesPmFmGDwe1Q=;
+        b=kwq3CcVcB7K3oUwV3SnUP41NFYmYKoqU2EemBPk7+ZgEE2/YgWMpnvl348mV+5Nx9Q
+         RHTS9nVW1CH2Sp+6ZyVHZrnxdNlM+eQLkJO6ou7FtJdUozBvH4ZTja/y7cRxnr2sNlhf
+         PynIxNFLOpoQutCNrZjOjUdwPpk0/H8ROTPHhs9S5XoaEYFFnDVdMm1o934AMtDpTq7M
+         bpVtgog2JUldz22+yr/I85hWEAT4fBuwdIC7SkZ6FRcQU6fAroXHQGeBMjqf3Pdkefb6
+         Fw7BOZjghIau1sy5OVngnwu3pyEdyn8TAcstyxpS+9zRUSWQIXeZJ3/0rUM2swY1+B3n
+         A0Pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=B+pntnVo3xNQlG6KGrAyxLXpLyOgixbesPmFmGDwe1Q=;
+        b=oJsLU//L3El+gpyJVfjA+YjE9EtHPO1zvLAQdm4mfmidPasOMY5lVuZs0Zhg8JdBLk
+         iX3NDDzEzlkphSvBblEZSzZEcD97EYJOg3y5QQyRX6S7CyuNIeZc13f19SX3Oo6JauBb
+         3XkC22r/ci/KN1crwwUBlhg6yVIOACGw3ul8rH1/+jHLH3ydLiw9/A7k3aCLAmo5NonM
+         FMStHF9LeYfPc38UVfAYhR0vIpM1eWAK0UZB4DPg+j8gDfyj7hgbdeemmemNtvNKR2Gf
+         frs8YPL2TkZln12AKTbG+DlbscTpGEm/KVS0s/mLxQFeAqD6KLLAM1On11dci9G/fleF
+         Vm7w==
+X-Gm-Message-State: AOAM532p3ib0VQP9oLzX19dvK0QHOqTgmxmVT+3AG8OzmAmRBLQMXwIK
+        jy+DDkmt50g6vDPlCWM8snbTGIMe
+X-Google-Smtp-Source: ABdhPJxGOH93+2h/+JBa/vBGhyJvJlTIS4OVwbfK7k96Mh22vEmFdczY3ocPqCqeeHfywKVCESz67A==
+X-Received: by 2002:a17:90b:f11:: with SMTP id br17mr505406pjb.68.1597371769462;
+        Thu, 13 Aug 2020 19:22:49 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id u1sm6466395pgf.69.2020.08.13.19.22.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Aug 2020 19:22:48 -0700 (PDT)
+Subject: Re: [PATCH] MIPS: ftrace: Remove redundant #ifdef
+ CONFIG_DYNAMIC_FTRAC
+To:     Zejiang Tang <tangzejiang@loongson.cn>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1597370895-5412-1-git-send-email-tangzejiang@loongson.cn>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <6db80fad-1ace-70b6-080b-c06ac9c07d22@gmail.com>
+Date:   Thu, 13 Aug 2020 19:22:42 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.1.1
+MIME-Version: 1.0
+In-Reply-To: <1597370895-5412-1-git-send-email-tangzejiang@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vaibhav Shankar <vaibhav.shankar@intel.com>
 
-Linux only has support to read total DDR reads and writes. Here we
-add support to enable bandwidth breakdown-GT, IA and IO. Breakdown
-of BW is impotant to debug and optimize memory access. This can also
-be used for telemetry and improving the system software.The offsets for
-GT, IA and IO are added and these free running counters can be accessed
-via MMIO space.
 
-The BW breakdown can be meaured using the following cmd:-
-perf stat -e uncore_imc/gt_requests/,uncore_imc/ia_requests/,
-             uncore_imc/io_requests/
+On 8/13/2020 7:08 PM, Zejiang Tang wrote:
+> There exists redundant #ifdef CONFIG_DYNAMIC_FTRAC in ftrace.c, remove it.
 
-             30.57 MiB  uncore_imc/gt_requests/
-           1346.13 MiB  uncore_imc/ia_requests/
-            190.97 MiB  uncore_imc/io_requests/
-
-       5.984572733 seconds time elapsed
-
-     BW/s = <gt,ia,io>_requests/time elapsed
-
-Signed-off-by: Vaibhav Shankar <vaibhav.shankar@intel.com>
----
- arch/x86/events/intel/uncore_snb.c | 52 ++++++++++++++++++++++++++++--
- 1 file changed, 49 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
-index cb94ba86efd2..6a4ca27b2c9e 100644
---- a/arch/x86/events/intel/uncore_snb.c
-+++ b/arch/x86/events/intel/uncore_snb.c
-@@ -390,6 +390,18 @@ static struct uncore_event_desc snb_uncore_imc_events[] = {
- 	INTEL_UNCORE_EVENT_DESC(data_writes.scale, "6.103515625e-5"),
- 	INTEL_UNCORE_EVENT_DESC(data_writes.unit, "MiB"),
- 
-+	INTEL_UNCORE_EVENT_DESC(gt_requests, "event=0x03"),
-+	INTEL_UNCORE_EVENT_DESC(gt_requests.scale, "6.103515625e-5"),
-+	INTEL_UNCORE_EVENT_DESC(gt_requests.unit, "MiB"),
-+
-+	INTEL_UNCORE_EVENT_DESC(ia_requests, "event=0x04"),
-+	INTEL_UNCORE_EVENT_DESC(ia_requests.scale, "6.103515625e-5"),
-+	INTEL_UNCORE_EVENT_DESC(ia_requests.unit, "MiB"),
-+
-+	INTEL_UNCORE_EVENT_DESC(io_requests, "event=0x05"),
-+	INTEL_UNCORE_EVENT_DESC(io_requests.scale, "6.103515625e-5"),
-+	INTEL_UNCORE_EVENT_DESC(io_requests.unit, "MiB"),
-+
- 	{ /* end: all zeroes */ },
- };
- 
-@@ -405,13 +417,35 @@ static struct uncore_event_desc snb_uncore_imc_events[] = {
- #define SNB_UNCORE_PCI_IMC_DATA_WRITES_BASE	0x5054
- #define SNB_UNCORE_PCI_IMC_CTR_BASE		SNB_UNCORE_PCI_IMC_DATA_READS_BASE
- 
-+/* BW break down- legacy counters */
-+#define SNB_UNCORE_PCI_IMC_GT_REQUESTS		0x3
-+#define SNB_UNCORE_PCI_IMC_GT_REQUESTS_BASE	0x5040
-+#define SNB_UNCORE_PCI_IMC_IA_REQUESTS		0x4
-+#define SNB_UNCORE_PCI_IMC_IA_REQUESTS_BASE	0x5044
-+#define SNB_UNCORE_PCI_IMC_IO_REQUESTS		0x5
-+#define SNB_UNCORE_PCI_IMC_IO_REQUESTS_BASE	0x5048
-+
- enum perf_snb_uncore_imc_freerunning_types {
--	SNB_PCI_UNCORE_IMC_DATA		= 0,
-+	SNB_PCI_UNCORE_IMC_DATA_READS		= 0,
-+	SNB_PCI_UNCORE_IMC_DATA_WRITES,
-+	SNB_PCI_UNCORE_IMC_GT_REQUESTS,
-+	SNB_PCI_UNCORE_IMC_IA_REQUESTS,
-+	SNB_PCI_UNCORE_IMC_IO_REQUESTS,
-+
- 	SNB_PCI_UNCORE_IMC_FREERUNNING_TYPE_MAX,
- };
- 
- static struct freerunning_counters snb_uncore_imc_freerunning[] = {
--	[SNB_PCI_UNCORE_IMC_DATA]     = { SNB_UNCORE_PCI_IMC_DATA_READS_BASE, 0x4, 0x0, 2, 32 },
-+	[SNB_PCI_UNCORE_IMC_DATA_READS]		= { SNB_UNCORE_PCI_IMC_DATA_READS_BASE,
-+							0x0, 0x0, 1, 32 },
-+	[SNB_PCI_UNCORE_IMC_DATA_READS]		= { SNB_UNCORE_PCI_IMC_DATA_WRITES_BASE,
-+							0x0, 0x0, 1, 32 },
-+	[SNB_PCI_UNCORE_IMC_GT_REQUESTS]	= { SNB_UNCORE_PCI_IMC_GT_REQUESTS_BASE,
-+							0x0, 0x0, 1, 32 },
-+	[SNB_PCI_UNCORE_IMC_IA_REQUESTS]	= { SNB_UNCORE_PCI_IMC_IA_REQUESTS_BASE,
-+							0x0, 0x0, 1, 32 },
-+	[SNB_PCI_UNCORE_IMC_IO_REQUESTS]	= { SNB_UNCORE_PCI_IMC_IO_REQUESTS_BASE,
-+							0x0, 0x0, 1, 32 },
- };
- 
- static struct attribute *snb_uncore_imc_formats_attr[] = {
-@@ -525,6 +559,18 @@ static int snb_uncore_imc_event_init(struct perf_event *event)
- 		base = SNB_UNCORE_PCI_IMC_DATA_WRITES_BASE;
- 		idx = UNCORE_PMC_IDX_FREERUNNING;
- 		break;
-+	case SNB_UNCORE_PCI_IMC_GT_REQUESTS:
-+		base = SNB_UNCORE_PCI_IMC_GT_REQUESTS_BASE;
-+		idx = UNCORE_PMC_IDX_FREERUNNING;
-+		break;
-+	case SNB_UNCORE_PCI_IMC_IA_REQUESTS:
-+		base = SNB_UNCORE_PCI_IMC_IA_REQUESTS_BASE;
-+		idx = UNCORE_PMC_IDX_FREERUNNING;
-+		break;
-+	case SNB_UNCORE_PCI_IMC_IO_REQUESTS:
-+		base = SNB_UNCORE_PCI_IMC_IO_REQUESTS_BASE;
-+		idx = UNCORE_PMC_IDX_FREERUNNING;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -598,7 +644,7 @@ static struct intel_uncore_ops snb_uncore_imc_ops = {
- 
- static struct intel_uncore_type snb_uncore_imc = {
- 	.name		= "imc",
--	.num_counters   = 2,
-+	.num_counters   = 5,
- 	.num_boxes	= 1,
- 	.num_freerunning_types	= SNB_PCI_UNCORE_IMC_FREERUNNING_TYPE_MAX,
- 	.mmio_map_size	= SNB_UNCORE_PCI_IMC_MAP_SIZE,
+There is a missing E at the end of CONFIG_DYNAMIC_FTRAC in your subject 
+FWIWW.
 -- 
-2.17.1
-
+Florian
