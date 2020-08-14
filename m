@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C719E2448D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70022448D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727996AbgHNL3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 07:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726647AbgHNL3n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 07:29:43 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD329C061384;
-        Fri, 14 Aug 2020 04:29:43 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d22so4429329pfn.5;
-        Fri, 14 Aug 2020 04:29:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fXOinOaTouuyiTu5KQ5LuIo8RHDIe9EoPbZlWHPA1JU=;
-        b=rlhTnBiZ8K2eBbck5IB3aNnAR5FTPR0KAiW+6tR9Im9zHxo+6GlmB5fjSp1V7+Pj6S
-         J2osKBlMlu44c79JAYMheyH+o5Go2q8xjFrEqgapm23dQeIXe/r6mdnCW3fC/1A68gnA
-         Dq9dQTs5mfjueofG2+JZasPg70UY2SjR4AB0KMsVs30CWyNs949vyllcQIxGAcZwZzJ1
-         ndvJHpSgCy7hZZSvfLeivmCyu5h57E+MoCEoSGoUo+J2FRJtfzbPQkUXEvHApMVgEOV2
-         /FpKhhLFLNYK/VBiQx08st4iBlciCwlZFPj1hMU+S4laOVufJMNzljOoiya84WKyjVOQ
-         gTpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fXOinOaTouuyiTu5KQ5LuIo8RHDIe9EoPbZlWHPA1JU=;
-        b=Vokh9IR6eF+gmngYfrHabczKy6n7qI9Md0waR0WaqJKeaqRRpHLPgqcWHDv9jA478E
-         uOc4EM7ZF0HqbIVaHu1DND0pTwHL9Z7VoGO7LOiIO0M8zGn6GLsWYIB6qqkw7x9pFTNw
-         XObX6kadedGJNpBdaykKV3aakFGrPkEK9EWK8AB6Aoenb6AunXQiMvhPlKkwUg3PwabY
-         lKOIxbPqwFjePzSONYT+IjUfcVhVfQjqV0JsKeFcfDHCTEdXdkM8+ZGo85tzJD/SkQG7
-         ILaOnCV2Ez0Py2/L9e/YutWyRsHOS1ZY8ghF01TJUGN2a4gxNEAac405Jh80EnVb+3Qi
-         d+Vw==
-X-Gm-Message-State: AOAM533FKs/VZoTpgD0GEMa/N91ACVIiJRi92uoD1Yw63wDlmK8sa72o
-        JPNFvfXq3jpPVduEG4dvNQ0=
-X-Google-Smtp-Source: ABdhPJzn9QLZpKp4csa5TzJLh8t2TQR9+PJQAkQl7G2w8uBxX2ZL2hYKEud9Pj0mESc9RQHy3lTomQ==
-X-Received: by 2002:a63:1a51:: with SMTP id a17mr1409425pgm.309.1597404583242;
-        Fri, 14 Aug 2020 04:29:43 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id o192sm9642743pfg.81.2020.08.14.04.29.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 04:29:42 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 20:29:40 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Tony Lindgren <tony@atomide.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Raul Rangel <rrangel@google.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH] uart:8250: change lock order in serial8250_do_startup()
-Message-ID: <20200814112940.GB582@jagdpanzerIV.localdomain>
-References: <20200814013802.357412-1-sergey.senozhatsky@gmail.com>
- <20200814095928.GK1891694@smile.fi.intel.com>
+        id S1728004AbgHNLaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 07:30:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726647AbgHNLaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 07:30:21 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE5F720708;
+        Fri, 14 Aug 2020 11:30:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597404621;
+        bh=2ZcProTPztj1mqGDcB3GcIKDFcA67IHT7VtxSattYz8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MyBJKuNRU0n8Xf6rS6b4Dfrus9IG+nkcLyBNrJ42+5nYnrxM4+TqNKlObGEmsaMyB
+         CsRQSuF1UMf9jeYzIEPr2Vge9KiDmYJo7UBcdX0E5V34aHOrrRkxMLTSwipm09Frzx
+         vze7kTpmRqlrnUYFQBsZKQ2nmkUwfTgTUcbuTk4c=
+Date:   Fri, 14 Aug 2020 12:29:52 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     lgirdwood@gmail.com, robh+dt@kernel.org, cy_huang@richtek.com,
+        gene_chen@richtek.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] regulator: Add support for RT4801 Display Bias regulator
+ driver
+Message-ID: <20200814112952.GA4783@sirena.org.uk>
+References: <1597384773-18078-1-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FL5UXtIhxfXey3p5"
 Content-Disposition: inline
-In-Reply-To: <20200814095928.GK1891694@smile.fi.intel.com>
+In-Reply-To: <1597384773-18078-1-git-send-email-u0084500@gmail.com>
+X-Cookie: Non-sequiturs make me eat lampshades.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/08/14 12:59), Andy Shevchenko wrote:
-> > ---
-> >  drivers/tty/serial/8250/8250_port.c | 11 +++++++----
-> >  1 file changed, 7 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-> > index 09475695effd..67f1a4f31093 100644
-> > --- a/drivers/tty/serial/8250/8250_port.c
-> > +++ b/drivers/tty/serial/8250/8250_port.c
-> > @@ -2275,6 +2275,11 @@ int serial8250_do_startup(struct uart_port *port)
-> >  
-> >  	if (port->irq && !(up->port.flags & UPF_NO_THRE_TEST)) {
-> >  		unsigned char iir1;
-> 
-> > +		bool irq_shared = up->port.irqflags & IRQF_SHARED;
-> 
-> I'm wondering why we need a temporary variable? This flag is not supposed to be
-> changed in between, can we leave original conditionals?
 
-No particular reason. We can keep the original (long) ones, I guess.
+--FL5UXtIhxfXey3p5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Nevertheless I noticed an inconsistency of the dereference of the flags which
-> seems to be brough by dfe42443ea1d ("serial: reduce number of indirections in
-> 8250 code").
->
-> I think we can stick with newer:
->
-> 		if (port->irqflags & IRQF_SHARED)
+On Fri, Aug 14, 2020 at 01:59:33PM +0800, cy_huang wrote:
+> From: ChiYuan Huang <cy_huang@richtek.com>
+>=20
+> Adds support for the RT4801 DSV. It has two regulators (DSVP/DSVN) with a=
+n I2C
+> interface. DSVP/DSVN can provide the display panel module for the positiv=
+e/negative
+> voltage range from (+/-)4V to (+/-)6V.
+> ---
 
-I'll take a look.
+You need to provide a Signed-off-by - see submitting-patches.rst for
+details on what that is and why it is important.  I can't do anything
+with this without one.
 
-	-ss
+>  .../regulator/richtek,rt4801-regulator.yaml        |  80 ++++++++
+>  drivers/regulator/Kconfig                          |   7 +
+
+The DT bindings should be in a separate patch.
+
+--FL5UXtIhxfXey3p5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl82da8ACgkQJNaLcl1U
+h9DuKAf+I610U2U0dt5tHT7uwKK7XguyPYO5a/4/mjZ2KXiFjSURo6VQ67JybCHk
+d9IWM8c1i639s0aVQjBFKn0sLE0MiMA7TT4PyPWgAufWjcPPl5a6bJEqYXiw7uhb
+SqGL7kwdtwKjz6qgfAhE3rYhZdljmPDpY4y1wi04GI2JIVFv/hMFN/jQtmVZB9ot
+iTdX5eK+XG+1IR6jbVHj/CjWdfSoo7dL4jTMYCGbm5yC53ksZ2OcdZjKy3oes/iB
+1dHfsBTkpG7HXE2pcLoZYOLWx07D3dhmnlhmGpjUf8CRDSaCeBLZp+X23oZKnP/T
+XEk6gfXrAuZWMIJyhSvrlbq/g2H70A==
+=FWmV
+-----END PGP SIGNATURE-----
+
+--FL5UXtIhxfXey3p5--
