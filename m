@@ -2,95 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 103ED244BE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 17:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EDB7244BED
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 17:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgHNPWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 11:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726270AbgHNPWI (ORCPT
+        id S1727840AbgHNPXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 11:23:35 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37360 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726270AbgHNPXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 11:22:08 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42799C061384;
-        Fri, 14 Aug 2020 08:22:08 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id v22so7115889edy.0;
-        Fri, 14 Aug 2020 08:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/ih4Rf1fys+3V3bYHR06uQQ/6JimIUcju77eK2mx+a8=;
-        b=apTCCIIRtZJe2OdaK+cQWlkqeq7lOBkdmQTPxItcxLC6M+Vo5BLbKn6pZ9e+jaQsqa
-         8CDuxHy5HatIbPaA3sCOEBU9t7p/tw/EENH+l3aweoCdjEJk1ql/ftuS3TC/uHGugyab
-         gDHiF/+J46W5IhqopoYvXMKepADIyPp6BtDu9wL+OcU5pT4oR6x2RqLwnOuCuleJQYK5
-         d4I6OQ8TgFP45auoSFoojgG9O1ESDEJrV50lDb2pxTnpk8mLU/sphA71i4+nRQmrPuqm
-         NRDmHjz8aiZhJubhHLLNKE2M2F/bJ1qFMGckEzPLiYdzWbbXA/2wBc5pn1s8rsiZg0lz
-         fswg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/ih4Rf1fys+3V3bYHR06uQQ/6JimIUcju77eK2mx+a8=;
-        b=J1Q3aFUgCqNKIu2DU1aifDAC6NJPBZ5y/5xy6aAxOh8IXgO9d2wg014pazFE60qLN5
-         PC/HqUk5S94SkouJ3nuYvU0yTg/ES5xaZ9BDfo6MDODZLIT7qQ6CWt/UgttND5e5yYc5
-         xszCY7ouT8AwUc70RDxnqAZHCSDvbTYN5kwFHVxti9RzNGSaDQgb9giQ8P1W2m21dNvj
-         Wh85F+CAAAzThQbZgTyafyaSVItDw9XaCOnR7QdKdmNBnDOxK5hm1InMzXIttMyj6GWg
-         KBQ6zHjrgmWz76DLAtMDNWhCdGNBuZ7uKHLHIZlx5Cws+r8zeds0I+mJ1CJDNGnOt1Ed
-         TKXw==
-X-Gm-Message-State: AOAM532K8ypgRxmFra9yXD1ANHeJCWRNMaqZBZ57VnFKDXY370cVBsEy
-        TKhGaXpcy6OETcFIiLSlOqU=
-X-Google-Smtp-Source: ABdhPJw2WN3FXSBnT1ya0PnsO1C+XaduTRHZBOS2jAUmuI6LT40u+WhxoEh+VkXqMPZKMZpAA6mvqg==
-X-Received: by 2002:a05:6402:1c09:: with SMTP id ck9mr2807701edb.74.1597418527065;
-        Fri, 14 Aug 2020 08:22:07 -0700 (PDT)
-Received: from localhost.localdomain (abag79.neoplus.adsl.tpnet.pl. [83.6.170.79])
-        by smtp.googlemail.com with ESMTPSA id e8sm6087974edy.68.2020.08.14.08.22.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 08:22:06 -0700 (PDT)
-From:   Konrad Dybcio <konradybcio@gmail.com>
-To:     ~postmarketos/upstreaming@lists.sr.ht
-Cc:     Konrad Dybcio <konradybcio@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: [PATCH 2/2] [-next] arm64: dts: qcom: kitakami: Enable qcom,full-pwr-cycle on SDHCI1
-Date:   Fri, 14 Aug 2020 17:22:00 +0200
-Message-Id: <20200814152201.254010-2-konradybcio@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200814152201.254010-1-konradybcio@gmail.com>
-References: <20200814152201.254010-1-konradybcio@gmail.com>
+        Fri, 14 Aug 2020 11:23:32 -0400
+Date:   Fri, 14 Aug 2020 15:23:28 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597418609;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yGQQf07hrYbBnbd1/0pfdoSYassUGL+600WBlA+0nqs=;
+        b=qwnpl8yvajaFgURpO54wZC6nSBMe9H8pxbXSa6/4d3GO3Gyzht03WSmaNttejdVp8iHydX
+        FsC3MoIbgxE61t0Fd5thIUELSKJrmF41FKcJjHRWif+0697CoV2OpgS2d6tYDggxM5OlbH
+        gMsY+hYhOXHE98nTNBhJlHIt5/7T9RDeGfZzyBrTonzgvWI/sSjFPSjkrN0zQXgrShRoii
+        vQpiuzERO6Ivh91fdHOvrVJfSGzOUgbxOBMPi2IUrFsesyJEd27NASsrFq82iI3wc/QLeE
+        td0nhuvYJgnGcYmVx67PE5dspYCP20beGG6MGetiYSyGeo0LVbyOu7MDtcPpPg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597418609;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yGQQf07hrYbBnbd1/0pfdoSYassUGL+600WBlA+0nqs=;
+        b=NqAVw616379XXt5/Bgiw/EcYFhoHXzywKNJdzyW9kNnBfVSVTPUZXCSUCa33JmUjqoV+W3
+        mjEzYaB19SO2rkCA==
+From:   "tip-bot2 for Zhang Rui" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/urgent] perf/x86/rapl: Add support for Intel SPR platform
+Cc:     Zhang Rui <rui.zhang@intel.com>, Ingo Molnar <mingo@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Len Brown <len.brown@intel.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200811153149.12242-4-rui.zhang@intel.com>
+References: <20200811153149.12242-4-rui.zhang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <159741860874.3192.8459468822006053326.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is required to prevent permanent eMMC damage.
+The following commit has been merged into the perf/urgent branch of tip:
 
-Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
+Commit-ID:     bcfd218b66790243ef303c1b35ce59f786ded225
+Gitweb:        https://git.kernel.org/tip/bcfd218b66790243ef303c1b35ce59f786ded225
+Author:        Zhang Rui <rui.zhang@intel.com>
+AuthorDate:    Tue, 11 Aug 2020 23:31:49 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 14 Aug 2020 12:35:12 +02:00
+
+perf/x86/rapl: Add support for Intel SPR platform
+
+Intel SPR platform uses fixed 16 bit energy unit for DRAM RAPL domain,
+and fixed 0 bit energy unit for Psys RAPL domain.
+After this, on SPR platform the energy counters appear in perf list.
+
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Acked-by: Len Brown <len.brown@intel.com>
+Link: https://lore.kernel.org/r/20200811153149.12242-4-rui.zhang@intel.com
 ---
- arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/events/rapl.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi b/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
-index 30cb3aa7d734..eb806d1e4454 100644
---- a/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
-@@ -439,6 +439,8 @@ &sdhc1 {
- 	 * vmmc-supply = <&pm8994_l20>;
- 	 * vqmmc-supply = <&pm8994_s4>;
- 	 */
-+
-+	qcom,full-pwr-cycle;
+diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+index d0002eb..67b411f 100644
+--- a/arch/x86/events/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -133,6 +133,7 @@ struct rapl_pmus {
+ enum rapl_unit_quirk {
+ 	RAPL_UNIT_QUIRK_NONE,
+ 	RAPL_UNIT_QUIRK_INTEL_HSW,
++	RAPL_UNIT_QUIRK_INTEL_SPR,
  };
  
- &sdhc2 {
--- 
-2.28.0
-
+ struct rapl_model {
+@@ -627,6 +628,14 @@ static int rapl_check_hw_unit(struct rapl_model *rm)
+ 	case RAPL_UNIT_QUIRK_INTEL_HSW:
+ 		rapl_hw_unit[PERF_RAPL_RAM] = 16;
+ 		break;
++	/*
++	 * SPR shares the same DRAM domain energy unit as HSW, plus it
++	 * also has a fixed energy unit for Psys domain.
++	 */
++	case RAPL_UNIT_QUIRK_INTEL_SPR:
++		rapl_hw_unit[PERF_RAPL_RAM] = 16;
++		rapl_hw_unit[PERF_RAPL_PSYS] = 0;
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -757,6 +766,16 @@ static struct rapl_model model_skl = {
+ 	.rapl_msrs      = intel_rapl_msrs,
+ };
+ 
++static struct rapl_model model_spr = {
++	.events		= BIT(PERF_RAPL_PP0) |
++			  BIT(PERF_RAPL_PKG) |
++			  BIT(PERF_RAPL_RAM) |
++			  BIT(PERF_RAPL_PSYS),
++	.unit_quirk	= RAPL_UNIT_QUIRK_INTEL_SPR,
++	.msr_power_unit = MSR_RAPL_POWER_UNIT,
++	.rapl_msrs      = intel_rapl_msrs,
++};
++
+ static struct rapl_model model_amd_fam17h = {
+ 	.events		= BIT(PERF_RAPL_PKG),
+ 	.msr_power_unit = MSR_AMD_RAPL_POWER_UNIT,
+@@ -793,6 +812,7 @@ static const struct x86_cpu_id rapl_model_match[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&model_hsx),
+ 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,		&model_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,		&model_skl),
++	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&model_spr),
+ 	X86_MATCH_VENDOR_FAM(AMD,	0x17,		&model_amd_fam17h),
+ 	X86_MATCH_VENDOR_FAM(HYGON,	0x18,		&model_amd_fam17h),
+ 	{},
