@@ -2,71 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED005244A4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2C2244A52
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728550AbgHNNSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 09:18:35 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:59326 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726283AbgHNNSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 09:18:34 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1k6Zb8-0000zF-4P; Fri, 14 Aug 2020 23:18:19 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Aug 2020 23:18:18 +1000
-Date:   Fri, 14 Aug 2020 23:18:18 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [GIT PULL] Crypto Fixes for 5.9
-Message-ID: <20200814131817.GA8147@gondor.apana.org.au>
-References: <20190916084901.GA20338@gondor.apana.org.au>
- <20190923050515.GA6980@gondor.apana.org.au>
- <20191202062017.ge4rz72ki3vczhgb@gondor.apana.org.au>
- <20191214084749.jt5ekav5o5pd2dcp@gondor.apana.org.au>
- <20200115150812.mo2eycc53lbsgvue@gondor.apana.org.au>
- <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
- <20200408061513.GA23636@gondor.apana.org.au>
- <20200611040544.GA27603@gondor.apana.org.au>
+        id S1728568AbgHNNTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 09:19:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726283AbgHNNTN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 09:19:13 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56777C061384
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 06:19:13 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id a5so8329289wrm.6
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 06:19:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tyacguIGHHXsED289fd39lR1bWbtVfQPtH3fTepckZY=;
+        b=cpZwP2g/7XZePuqzXyIT+2dWS2vatxuYvpS40kBioWQMZ54CsBv4sHxJuWQwK6YamD
+         6+58laePhHIUrnObzWrJ5p89hNnDfHxQ3dyOLaPJ+xCRzg1YMRDWqjA0rJJ4cbtyWWE9
+         bmgXfUsCj8+xTBU6Wr5iKXtvh81gkZI4rf8PqE2j5lZtcWwN8g9Mevd6/IXyyobmsR54
+         nMSaZFb+mWB5HUejbbZKThI/vCt+0XwU3riqdJpswvU9Sa4vq6C+C1JNXTR057dk7osL
+         YnuQoAGsKoPPhvcphq3K+VH9ZvFJ+bIiFCtftVAbPKCcQK46KZEZA51HoKyuJqEbpiUr
+         uZ7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tyacguIGHHXsED289fd39lR1bWbtVfQPtH3fTepckZY=;
+        b=E0J8ZSc5s8mMGzY6fgPNB0Dh6Jz+G14A2uaGCkvy+oGZDKYuz8rsnzad1RPafbWkAV
+         piEbfrWyAhvpG9eSe1cAXmhBK509h28eamorvArSxLdsYv554e8D/BsdF05ne7l9eyhP
+         zYNpiefqiR2RNfoMCMso+D633CavUS93hH9rIKoFi7ZjzvhssDuXDDSlKvuAniDiflSR
+         nM0LtRpUrM6oHsn1BjKVnoxmnxQiVllrxccLPf3l5ZR5jRsQP1kP5J5TBecOU061HWNi
+         2ckoYdiJYNqe3INap2INoOjPZJmFDYJjarHLKZEK+cL52YQelbgmzEKTUK4NnqmXJ5yk
+         In3A==
+X-Gm-Message-State: AOAM530Co2+5dml/XgyLQmmENGFz88bs6kgRFag48s8GapLGozmW0zA3
+        rJKq1vCld8tMmONjXH/ZkJNujKWHv6nDLCZNkmvsMw==
+X-Google-Smtp-Source: ABdhPJw5Yy1Vffms01Njx5oCbd4CYLl2ai89zPD4KhUODy+zk//A9mZYsRdg5wgrh0cBp+Jjn1J3NcPEufy4cQQGF9s=
+X-Received: by 2002:adf:d84f:: with SMTP id k15mr2603518wrl.176.1597411152041;
+ Fri, 14 Aug 2020 06:19:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200611040544.GA27603@gondor.apana.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200814102625.25599-1-nsaenzjulienne@suse.de>
+In-Reply-To: <20200814102625.25599-1-nsaenzjulienne@suse.de>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Fri, 14 Aug 2020 18:48:35 +0530
+Message-ID: <CAMi1Hd1DzJmqehvxkJ91vr_M_kzdujiHmgyuwUgQYei7VocgZg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] dma-pool fixes
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>, jeremy.linton@arm.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu <iommu@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus:
+On Fri, 14 Aug 2020 at 15:56, Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> Now that we have an explanation to Amir's issue, we can re-spin this
+> series.
 
-This push fixes a regression in af_alg.
+Hi, Smoke tested (boots AOSP to UI with Touch/WiFi/BT working) on my
+Poco F1 phone, with upstream commit 00e4db51259a (+ 30 odd out of
+tree patches [1]) and I see no obvious regressions.
 
-The following changes since commit 3cbfe80737c18ac6e635421ab676716a393d3074:
+For both the patches in the series:
 
-  crypto: sa2ul - Fix inconsistent IS_ERR and PTR_ERR (2020-07-31 18:25:29 +1000)
+Tested-by: Amit Pundir <amit.pundir@linaro.org>
 
-are available in the Git repository at:
+[1] https://github.com/pundiramit/linux/commits/beryllium-mainline-display
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus 
 
-for you to fetch changes up to 21dfbcd1f5cbff9cf2f9e7e43475aed8d072b0dd:
-
-  crypto: algif_aead - fix uninitialized ctx->init (2020-08-13 17:09:32 +1000)
-
-----------------------------------------------------------------
-Ondrej Mosnacek (1):
-      crypto: algif_aead - fix uninitialized ctx->init
-
- crypto/algif_aead.c     | 6 ------
- crypto/algif_skcipher.c | 7 +------
- 2 files changed, 1 insertion(+), 12 deletions(-)
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+>
+> ---
+> Changes since v3:
+>  - Do not use memblock_start_of_DRAM()
+>
+> Changes since v2:
+>  - Go back to v1's behavior for patch #2
+>
+> Changes since v1:
+>  - Make cma_in_zone() more strict, GFP_KERNEL doesn't default to true
+>    now
+>
+>  - Check if phys_addr_ok() exists prior calling it
+>
+> Christoph Hellwig (1):
+>   dma-pool: fix coherent pool allocations for IOMMU mappings
+>
+> Nicolas Saenz Julienne (1):
+>   dma-pool: Only allocate from CMA when in same memory zone
+>
+>  drivers/iommu/dma-iommu.c   |   4 +-
+>  include/linux/dma-direct.h  |   3 -
+>  include/linux/dma-mapping.h |   5 +-
+>  kernel/dma/direct.c         |  13 +++-
+>  kernel/dma/pool.c           | 145 +++++++++++++++++++-----------------
+>  5 files changed, 92 insertions(+), 78 deletions(-)
+>
+> --
+> 2.28.0
+>
