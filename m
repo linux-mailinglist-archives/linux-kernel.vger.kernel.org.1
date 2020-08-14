@@ -2,118 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0498244779
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 11:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36982447A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 12:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbgHNJ4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 05:56:40 -0400
-Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:22809 "EHLO
-        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726603AbgHNJ4j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 05:56:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1597398999;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=M2heJ5UJIi6VeX83HdtsuKbDz3J1W8I/My2z+YBPJbc=;
-  b=VMUPhAunCPJYS7U/d4AcTWAUNCTlkb+q/8skt/OUmXKQ4MaqEQAeVgXX
-   BMInVCYqVOYrPRmN/H/+cbHAa9l6X4TmLr6fbLeMioVvrAo49N1rgzyyD
-   Wym+QZ5mrVnxXlmY+vv1umCugWKy7RBV5iFubSq01LEZGm70YZ8432AjK
-   o=;
-Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: LSUv+nx7tcMiKh/86la0ov2CD6bm0s6I0CZ/3c8oZ8SKd5FBsD9NTk6X+etvRWHGxjQoN4ifLc
- WZkEtigJTsHGqnWNv9UJ60WQsP5kEKf5sFfIOA6zvU9VIklNrxh92Vbu7Lw/zOteb+Zprr9bcz
- EDqmXPpuivFanGkQt/96ZKFaN0KdR0AoyWD2zxgECUj3l8VTghEId76fKUoi3SYFO8M2Otk1Pf
- CYzZj5rDqfvUJsn9+hgY+6CFXoxaN6UM05eSlIPALUijsytQzL+vRPNV5LDNkQ09XoNxVizA79
- cjQ=
-X-SBRS: 2.7
-X-MesageID: 24845878
-X-Ironport-Server: esa6.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.76,311,1592884800"; 
-   d="scan'208";a="24845878"
-Date:   Fri, 14 Aug 2020 11:56:29 +0200
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        David Airlie <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>, Wei Liu <wl@xen.org>,
-        "Yan Yankovskyi" <yyankovskyi@gmail.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <xen-devel@lists.xenproject.org>, <linux-mm@kvack.org>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH v4 2/2] xen: add helpers to allocate unpopulated memory
-Message-ID: <20200814095629.GJ975@Air-de-Roger>
-References: <20200811094447.31208-1-roger.pau@citrix.com>
- <20200811094447.31208-3-roger.pau@citrix.com>
- <20200813073337.GA16160@infradead.org>
- <20200813075420.GC975@Air-de-Roger>
- <20200814072920.GA6126@infradead.org>
+        id S1727775AbgHNKDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 06:03:55 -0400
+Received: from mga18.intel.com ([134.134.136.126]:61105 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726012AbgHNKDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 06:03:55 -0400
+IronPort-SDR: D+DrS/+Q3A1GuC68RpLvTN4h7LcqU/UrDV3paufmzMoKT55WduWv0Sh7sQqudW/d6BIkIY87b1
+ jj0kggth9tGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9712"; a="142007196"
+X-IronPort-AV: E=Sophos;i="5.76,311,1592895600"; 
+   d="scan'208";a="142007196"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2020 03:03:53 -0700
+IronPort-SDR: bQocZAeykEUzScGIOud3UzAhCJsAwIkZKhtpP/nPUEf5Zv15xX7Rkh2EPfTXWizdsvwCKMkzoE
+ ECklPdKFdNHw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,311,1592895600"; 
+   d="scan'208";a="325686581"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 14 Aug 2020 03:03:50 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1k6WUi-008cyr-FQ; Fri, 14 Aug 2020 12:59:28 +0300
+Date:   Fri, 14 Aug 2020 12:59:28 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Tony Lindgren <tony@atomide.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Raul Rangel <rrangel@google.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-serial@vger.kernel.org
+Subject: Re: [PATCH] uart:8250: change lock order in serial8250_do_startup()
+Message-ID: <20200814095928.GK1891694@smile.fi.intel.com>
+References: <20200814013802.357412-1-sergey.senozhatsky@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200814072920.GA6126@infradead.org>
-X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
- AMSPEX02CL02.citrite.net (10.69.22.126)
+In-Reply-To: <20200814013802.357412-1-sergey.senozhatsky@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 08:29:20AM +0100, Christoph Hellwig wrote:
-> On Thu, Aug 13, 2020 at 09:54:20AM +0200, Roger Pau Monn?? wrote:
-> > On Thu, Aug 13, 2020 at 08:33:37AM +0100, Christoph Hellwig wrote:
-> > > On Tue, Aug 11, 2020 at 11:44:47AM +0200, Roger Pau Monne wrote:
-> > > > If enabled (because ZONE_DEVICE is supported) the usage of the new
-> > > > functionality untangles Xen balloon and RAM hotplug from the usage of
-> > > > unpopulated physical memory ranges to map foreign pages, which is the
-> > > > correct thing to do in order to avoid mappings of foreign pages depend
-> > > > on memory hotplug.
-> > > 
-> > > So please just select ZONE_DEVICE if this is so much better rather
-> > > than maintaining two variants.
-> > 
-> > We still need to other variant for Arm at least, so both need to be
-> > maintained anyway, even if we force ZONE_DEVICE on x86.
+On Fri, Aug 14, 2020 at 10:38:02AM +0900, Sergey Senozhatsky wrote:
+> We have a number of "uart.port->desc.lock vs desc.lock->uart.port"
+> lockdep reports coming from 8250 driver; this causes a bit of trouble
+> to people, so let's fix it.
 > 
-> Well, it still really helps reproducability if you stick to one
-> implementation of x86.
+> The problem is reverse lock order in two different call paths:
 > 
-> The alternative would be an explicit config option to opt into it,
-> but just getting a different implementation based on a random
-> kernel option is strange.
+> chain #1:
+> 
+>  serial8250_do_startup()
+>   spin_lock_irqsave(&port->lock);
+>    disable_irq_nosync(port->irq);
+>     raw_spin_lock_irqsave(&desc->lock)
+> 
+> chain #2:
+> 
+>   __report_bad_irq()
+>    raw_spin_lock_irqsave(&desc->lock)
+>     for_each_action_of_desc()
+>      printk()
+>       spin_lock_irqsave(&port->lock);
+> 
+> Fix this by changing the order of locks in serial8250_do_startup():
+>  do disable_irq_nosync() first, which grabs desc->lock, and grab
+>  uart->port after that, so that chain #1 and chain #2 have same lock
+>  order.
+> 
+> Full lockdep splat:
+> 
+>  ======================================================
+>  WARNING: possible circular locking dependency detected
+>  5.4.39 #55 Not tainted
+>  ------------------------------------------------------
+>  swapper/0/0 is trying to acquire lock:
+>  ffffffffab65b6c0 (console_owner){-...}, at: console_lock_spinning_enable+0x31/0x57
+> 
+>  but task is already holding lock:
+>  ffff88810a8e34c0 (&irq_desc_lock_class){-.-.}, at: __report_bad_irq+0x5b/0xba
+> 
+>  which lock already depends on the new lock.
+> 
+>  the existing dependency chain (in reverse order) is:
+> 
+>  -> #2 (&irq_desc_lock_class){-.-.}:
+>         _raw_spin_lock_irqsave+0x61/0x8d
+>         __irq_get_desc_lock+0x65/0x89
+>         __disable_irq_nosync+0x3b/0x93
+>         serial8250_do_startup+0x451/0x75c
+>         uart_startup+0x1b4/0x2ff
+>         uart_port_activate+0x73/0xa0
+>         tty_port_open+0xae/0x10a
+>         uart_open+0x1b/0x26
+>         tty_open+0x24d/0x3a0
+>         chrdev_open+0xd5/0x1cc
+>         do_dentry_open+0x299/0x3c8
+>         path_openat+0x434/0x1100
+>         do_filp_open+0x9b/0x10a
+>         do_sys_open+0x15f/0x3d7
+>         kernel_init_freeable+0x157/0x1dd
+>         kernel_init+0xe/0x105
+>         ret_from_fork+0x27/0x50
+> 
+>  -> #1 (&port_lock_key){-.-.}:
+>         _raw_spin_lock_irqsave+0x61/0x8d
+>         serial8250_console_write+0xa7/0x2a0
+>         console_unlock+0x3b7/0x528
+>         vprintk_emit+0x111/0x17f
+>         printk+0x59/0x73
+>         register_console+0x336/0x3a4
+>         uart_add_one_port+0x51b/0x5be
+>         serial8250_register_8250_port+0x454/0x55e
+>         dw8250_probe+0x4dc/0x5b9
+>         platform_drv_probe+0x67/0x8b
+>         really_probe+0x14a/0x422
+>         driver_probe_device+0x66/0x130
+>         device_driver_attach+0x42/0x5b
+>         __driver_attach+0xca/0x139
+>         bus_for_each_dev+0x97/0xc9
+>         bus_add_driver+0x12b/0x228
+>         driver_register+0x64/0xed
+>         do_one_initcall+0x20c/0x4a6
+>         do_initcall_level+0xb5/0xc5
+>         do_basic_setup+0x4c/0x58
+>         kernel_init_freeable+0x13f/0x1dd
+>         kernel_init+0xe/0x105
+>         ret_from_fork+0x27/0x50
+> 
+>  -> #0 (console_owner){-...}:
+>         __lock_acquire+0x118d/0x2714
+>         lock_acquire+0x203/0x258
+>         console_lock_spinning_enable+0x51/0x57
+>         console_unlock+0x25d/0x528
+>         vprintk_emit+0x111/0x17f
+>         printk+0x59/0x73
+>         __report_bad_irq+0xa3/0xba
+>         note_interrupt+0x19a/0x1d6
+>         handle_irq_event_percpu+0x57/0x79
+>         handle_irq_event+0x36/0x55
+>         handle_fasteoi_irq+0xc2/0x18a
+>         do_IRQ+0xb3/0x157
+>         ret_from_intr+0x0/0x1d
+>         cpuidle_enter_state+0x12f/0x1fd
+>         cpuidle_enter+0x2e/0x3d
+>         do_idle+0x1ce/0x2ce
+>         cpu_startup_entry+0x1d/0x1f
+>         start_kernel+0x406/0x46a
+>         secondary_startup_64+0xa4/0xb0
+> 
+>  other info that might help us debug this:
+> 
+>  Chain exists of:
+>    console_owner --> &port_lock_key --> &irq_desc_lock_class
+> 
+>   Possible unsafe locking scenario:
+> 
+>         CPU0                    CPU1
+>         ----                    ----
+>    lock(&irq_desc_lock_class);
+>                                 lock(&port_lock_key);
+>                                 lock(&irq_desc_lock_class);
+>    lock(console_owner);
+> 
+>   *** DEADLOCK ***
+> 
+>  2 locks held by swapper/0/0:
+>   #0: ffff88810a8e34c0 (&irq_desc_lock_class){-.-.}, at: __report_bad_irq+0x5b/0xba
+>   #1: ffffffffab65b5c0 (console_lock){+.+.}, at: console_trylock_spinning+0x20/0x181
+> 
+>  stack backtrace:
+>  CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.4.39 #55
+>  Hardware name: XXXXXX
+>  Call Trace:
+>   <IRQ>
+>   dump_stack+0xbf/0x133
+>   ? print_circular_bug+0xd6/0xe9
+>   check_noncircular+0x1b9/0x1c3
+>   __lock_acquire+0x118d/0x2714
+>   lock_acquire+0x203/0x258
+>   ? console_lock_spinning_enable+0x31/0x57
+>   console_lock_spinning_enable+0x51/0x57
+>   ? console_lock_spinning_enable+0x31/0x57
+>   console_unlock+0x25d/0x528
+>   ? console_trylock+0x18/0x4e
+>   vprintk_emit+0x111/0x17f
+>   ? lock_acquire+0x203/0x258
+>   printk+0x59/0x73
+>   __report_bad_irq+0xa3/0xba
+>   note_interrupt+0x19a/0x1d6
+>   handle_irq_event_percpu+0x57/0x79
+>   handle_irq_event+0x36/0x55
+>   handle_fasteoi_irq+0xc2/0x18a
+>   do_IRQ+0xb3/0x157
+>   common_interrupt+0xf/0xf
+>   </IRQ>
 
-Would adding something like the chunk below to the patch be OK?
+I guess we may add some tags here
 
----8<---
-diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
-index 018020b91baa..5f321a1319e6 100644
---- a/drivers/xen/Kconfig
-+++ b/drivers/xen/Kconfig
-@@ -328,7 +328,14 @@ config XEN_FRONT_PGDIR_SHBUF
- 	tristate
- 
- config XEN_UNPOPULATED_ALLOC
--	bool
--	default y if ZONE_DEVICE && !ARM && !ARM64
-+	bool "Use unpopulated memory ranges for guest mappings"
-+	depends on X86
-+	select ZONE_DEVICE
-+	default y
-+	help
-+	  Use unpopulated memory ranges in order to create mappings for guest
-+	  memory regions, including grants maps and foreign pages. This avoids
-+	  having to balloon out RAM regions in order to obtain physical memory
-+	  space to create such mappings.
- 
- endmenu
+Fixes: 768aec0b5bcc ("serial: 8250: fix shared interrupts issues with SMP and RT kernels")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Reported-by: Raul Rangel <rrangel@google.com>
+BugLink: https://bugs.chromium.org/p/chromium/issues/detail?id=1114800
+Link: https://lore.kernel.org/lkml/CAHQZ30BnfX+gxjPm1DUd5psOTqbyDh4EJE=2=VAMW_VDafctkA@mail.gmail.com/T/#u
+
+Since above below a nit-pick after addressing these,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Thanks!
+
+> Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> ---
+>  drivers/tty/serial/8250/8250_port.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+> index 09475695effd..67f1a4f31093 100644
+> --- a/drivers/tty/serial/8250/8250_port.c
+> +++ b/drivers/tty/serial/8250/8250_port.c
+> @@ -2275,6 +2275,11 @@ int serial8250_do_startup(struct uart_port *port)
+>  
+>  	if (port->irq && !(up->port.flags & UPF_NO_THRE_TEST)) {
+>  		unsigned char iir1;
+
+> +		bool irq_shared = up->port.irqflags & IRQF_SHARED;
+
+I'm wondering why we need a temporary variable? This flag is not supposed to be
+changed in between, can we leave original conditionals?
+
+Nevertheless I noticed an inconsistency of the dereference of the flags which
+seems to be brough by dfe42443ea1d ("serial: reduce number of indirections in
+8250 code").
+
+I think we can stick with newer:
+
+		if (port->irqflags & IRQF_SHARED)
+
+> +
+> +		if (irq_shared)
+> +			disable_irq_nosync(port->irq);
+> +
+>  		/*
+>  		 * Test for UARTs that do not reassert THRE when the
+>  		 * transmitter is idle and the interrupt has already
+> @@ -2284,8 +2289,6 @@ int serial8250_do_startup(struct uart_port *port)
+>  		 * allow register changes to become visible.
+>  		 */
+>  		spin_lock_irqsave(&port->lock, flags);
+> -		if (up->port.irqflags & IRQF_SHARED)
+> -			disable_irq_nosync(port->irq);
+>  
+>  		wait_for_xmitr(up, UART_LSR_THRE);
+>  		serial_port_out_sync(port, UART_IER, UART_IER_THRI);
+> @@ -2297,9 +2300,9 @@ int serial8250_do_startup(struct uart_port *port)
+>  		iir = serial_port_in(port, UART_IIR);
+>  		serial_port_out(port, UART_IER, 0);
+>  
+> -		if (port->irqflags & IRQF_SHARED)
+> -			enable_irq(port->irq);
+>  		spin_unlock_irqrestore(&port->lock, flags);
+> +		if (irq_shared)
+> +			enable_irq(port->irq);
+>  
+>  		/*
+>  		 * If the interrupt is not reasserted, or we otherwise
+> -- 
+> 2.28.0
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
