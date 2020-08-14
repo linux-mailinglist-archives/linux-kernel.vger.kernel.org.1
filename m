@@ -2,94 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4F1245015
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 01:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1EC245016
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 01:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgHNXUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 19:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726213AbgHNXUC (ORCPT
+        id S1728118AbgHNXUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 19:20:52 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39674 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726213AbgHNXUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 19:20:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7C8C061385;
-        Fri, 14 Aug 2020 16:20:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=/k+FCjWU06VGb2159RBI2JE7ici1nTwl6uGEUcvW8u8=; b=duCnFkXKHIs9RUqJo10Z/9LP6f
-        kHPvfdSST7h1NCcFpY5ySDUPo3g0vY2bpH3A56OvTGU1LDVT3T4FXY5AggTQmUznP3FyyVh8+sUxX
-        m3CjcwehIAA6UcUrrEDU3+MFrCwox9hnSBUuJSwSHpVIHbYCw9+is3FeOqe3xN7a6b/4ht95PrydZ
-        iyuZlh3txnvSFXxeaWP0dOwcXyyFk3/aOhRCMKXNkycUrt+mq2mHLJlAn2HDCN9IJ53quej40LTDz
-        1MxgS3T3C3ycfhDdyrysm9QBxQ/ogQXHwJSc6z6eywFjNDjzGqEBmf95qbiUvNHc6Oxj+cYVI6rrx
-        RGhUjLyA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k6izE-0003Yk-MW; Fri, 14 Aug 2020 23:19:49 +0000
-Subject: Re: [RFC/RFT PATCH 1/6] numa: Move numa implementation to common code
-To:     Atish Patra <atish.patra@wdc.com>, linux-kernel@vger.kernel.org
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Anup Patel <Anup.Patel@wdc.com>, Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arch@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Will Deacon <will@kernel.org>, Zong Li <zong.li@sifive.com>,
-        Ganapatrao Kulkarni <gkulkarni@cavium.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20200814214725.28818-1-atish.patra@wdc.com>
- <20200814214725.28818-2-atish.patra@wdc.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <abc3e4de-f58e-98c9-b289-477663f64997@infradead.org>
-Date:   Fri, 14 Aug 2020 16:19:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 14 Aug 2020 19:20:52 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597447250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6LX7oqtOI6mdc7zsr/58CbF56Ijm4R7j+15Yb+EoC2s=;
+        b=Yr1gxaM+cUiqwc8M3Lwa5stilhaPXijnRIEOE6RFJjZP14Obi0x0dSOhosUmM8PtcbNjij
+        8/uKq9iH/n0y9Se/qHf1U5eRiRT7wQYzfIiv9SwezoQKTf9fr89VHl4mtypuRQzGI6G/4v
+        3xBOOkeoxcmftBNiM2FcOxJhw2/Ks3imCBMdSwINykZDmpKhH7Yrg51rhQBCAvIpweuiDK
+        CJVXKRIZToq0Y68DetLoludyD5RSoD9GygmiuaeL3SZqT5X0T4V898hyeuO0k54yzTKkQA
+        HgEKp7m/SKeIc1vvx1H6aQdo0QYpO/sBaNkGgXYsXhVc/liq9lv2OXm+vVEybQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597447250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6LX7oqtOI6mdc7zsr/58CbF56Ijm4R7j+15Yb+EoC2s=;
+        b=MyXKn9VeXVyBnDpyGcQ0p7G5un8hj01qIURm0jqLpQ0vLeQ7wMa5X+pU+n03aNeYU2J+mk
+        Qf1KlHDHxJvrEFBQ==
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] irq/urgent for v5.9-rc1
+In-Reply-To: <CAHk-=wjUx-DOx8kL91PmPwCbA6K7-9LXZ_+bkoa4SuQ6_zbaPA@mail.gmail.com>
+References: <159742071192.30851.2328227964586183297.tglx@nanos> <CAHk-=wjUx-DOx8kL91PmPwCbA6K7-9LXZ_+bkoa4SuQ6_zbaPA@mail.gmail.com>
+Date:   Sat, 15 Aug 2020 01:20:49 +0200
+Message-ID: <87r1s8ke5q.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200814214725.28818-2-atish.patra@wdc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/20 2:47 PM, Atish Patra wrote:
-> diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
-> index 8d7001712062..73c2151de194 100644
-> --- a/drivers/base/Kconfig
-> +++ b/drivers/base/Kconfig
-> @@ -210,4 +210,10 @@ config GENERIC_ARCH_TOPOLOGY
->  	  appropriate scaling, sysfs interface for reading capacity values at
->  	  runtime.
->  
-> +config GENERIC_ARCH_NUMA
-> +	bool
-> +	help
-> +	  Enable support for generic numa implementation. Currently, RISC-V
+On Fri, Aug 14 2020 at 14:14, Linus Torvalds wrote:
+> On Fri, Aug 14, 2020 at 9:00 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>>
+>> Two fixes in the core interrupt code which ensure that all error exits
+>> unlock the descriptor lock.
+>
+> No diffstat?
+>
+> I've pulled it, but please check what went wrong..
 
-	                             NUMA
+Duh, incomplete restore of environment after replacing the worn out
+SSD. Fixed.
 
-> +	  and ARM64 uses it.
+Thanks,
 
-	            use it.
-
-> +
->  endmenu
-
-thanks.
--- 
-~Randy
+        tglx
 
