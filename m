@@ -2,56 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9558A2442C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 03:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8297C2442CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 03:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgHNBoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 21:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726564AbgHNBoM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 21:44:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493DEC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Aug 2020 18:44:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9iILY5y1o8sySmM5jW1ocYlCz9cV5k1VWj6M394hPzY=; b=chRbBMNE3S+gAyKkHqVo802ERf
-        JRJUzKQpBYv1LlDyK1YjXUNC8TizkJtZ6frMOfHhz4GltFUa1OPhjbc0VvM/FYDSn8YlL361v9Yo+
-        98hGjM184iXjjDz+SFBtomElAuD1P7GhabTpNX/5SLITEjPMVsoVhS3WTO6qCiNHKraJPNAZl/7Lk
-        tdTq3Ckv4RadQiBqbhYKJf0E2T8TKXlag1QUc/ZyosWRETetIAVmwCg3dpGDPgT2FBbuYxlCxPOAw
-        Rf+aI333+Nu8ZX+jgLKTrpQaWYgs4mOUEtAzitkl44bcuAp335/siqm2CaJz5NQBi2K9qNFEQ7HoF
-        EuJP1SSg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k6Ol9-0008JE-BB; Fri, 14 Aug 2020 01:43:55 +0000
-Date:   Fri, 14 Aug 2020 02:43:55 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Roman Gushchin <klamm@yandex-team.ru>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm : update ra->ra_pages if it's NOT equal to
- bdi->ra_pages
-Message-ID: <20200814014355.GS17456@casper.infradead.org>
-References: <1597368611-7631-1-git-send-email-zhaoyang.huang@unisoc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1597368611-7631-1-git-send-email-zhaoyang.huang@unisoc.com>
+        id S1726623AbgHNBoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 21:44:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726564AbgHNBoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 21:44:19 -0400
+Subject: Re: [PULL REQUEST] i2c for 5.9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597369459;
+        bh=aRbm11SZ+ak0VAOoWsO3Wzb88MmOnMnrD8Re5MaDRJk=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=Pn653ROdWt8JL/fxzOsV+qciDg4/5r60bVMqRw+obvP4t5EYjXbtEXnh24r/ohewQ
+         +WmUmUitD+wHAQqpCt8BAQDjM6/qEskkCP3JNhNszG0WHANmYWWzgbUpJ6GuHVpU44
+         ERq3+OnaS36aec5GRzlRz+eoQ+i3JdqxL5fQyMkA=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200813210906.GA4855@kunai>
+References: <20200813210906.GA4855@kunai>
+X-PR-Tracked-List-Id: <linux-i2c.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200813210906.GA4855@kunai>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-5.9
+X-PR-Tracked-Commit-Id: b1eef236f50ba6afea680da039ef3a2ca9c43d11
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e764a1e32337aaf325fc5b14a5bbd06eabba4699
+Message-Id: <159736945956.20401.2970445735817036786.pr-tracker-bot@kernel.org>
+Date:   Fri, 14 Aug 2020 01:44:19 +0000
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 09:30:11AM +0800, Zhaoyang Huang wrote:
-> file->f_ra->ra_pages will remain the initialized value since it opend, which may
-> be NOT equal to bdi->ra_pages as the latter one is updated somehow(etc,
-> echo xxx > /sys/block/dm/queue/read_ahead_kb).So sync ra->ra_pages to the
-> updated value when sync read.
+The pull request you sent on Thu, 13 Aug 2020 23:09:06 +0200:
 
-It still ignores the work done by shrink_readahead_size_eio()
-and fadvise(POSIX_FADV_SEQUENTIAL).
+> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-5.9
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e764a1e32337aaf325fc5b14a5bbd06eabba4699
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
