@@ -2,108 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968652448E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70ECB2448FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgHNLjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 07:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39596 "EHLO
+        id S1728331AbgHNLlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 07:41:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgHNLja (ORCPT
+        with ESMTP id S1726760AbgHNLkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 07:39:30 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C73C061384;
-        Fri, 14 Aug 2020 04:39:30 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id t14so7660047wmi.3;
-        Fri, 14 Aug 2020 04:39:30 -0700 (PDT)
+        Fri, 14 Aug 2020 07:40:23 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4112C06135C
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:40:20 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f7so8096650wrw.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:40:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PvaE6Xvjdl4FATqRBfh8A95bTlKRTVItk5/IF9Iibaw=;
-        b=C2+cpT2T5s3PRdb1iX1gNsVRN7+bzUvaFphsG2v4A4+u/IgKs/5MzA0CITX++JzJcA
-         ARxviUnSCDMZxWnYKfWsqJISab18SwV0zGWnoF9dmGH90QIb2oT5ru4T37dTkC97Utv9
-         MY8ZpHnR+dFTb2ykAzedOFZheMFAAn4iCEwvWZ6XYpN+HTN4i9v+YqJsAEfX9Kd/eQo0
-         11VZ+PJ+xuZK34tzxYeHm4LZxZL8vXxkWs0DHsYPFs++eVXi+wsdPkIrwu0QLRhl/0bj
-         hkyPEopNYgun6Zui5DIgfn2N7H6VaxP0yJVCaRrxHqpW6Y6DUA8tWaLzkYw6DLl+hLxa
-         On7A==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BETUm1VsjAHaE9mSTvIErHbihrcPaijwVnn2xiQgls0=;
+        b=K8YakLwQXGOsqfx28gwRQ+anspeFLdTWsKZ6Hb88B6w5tU+DE5CK/TOOil0CWNCXAu
+         ffYdufP1kx1qwkJ9ouyEhwkIbzXcRkmsDWQzq8/XqtLXPy+y2Z/XVOEFa6gMxPEDeVkQ
+         EQwSXEVmpKzK+GkwMptcX26ANSi3nFbr9aVTK5wZQCsCDzE2+QL9xl89zjqrAg4YsvIa
+         sTUNe6XZMX14B4JRRT+6QRuodGaw/82z76iu5tYITweWAhbl/2R7Z3F2od1mKqeyRL1Z
+         N+onSwvPoF7x4ZQ+YvnZKM+HsR5b5nGc24k7RD5a30ek24EIU4pOHZ1eag5gc52ATru8
+         gvLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PvaE6Xvjdl4FATqRBfh8A95bTlKRTVItk5/IF9Iibaw=;
-        b=rMr0RCYYYuV/QnFOCzeV9RbAgjnAgRflwmUPc3ubiiqv7KWrX2ZyuzLs9tTQmp2f0D
-         KR4hhehC35oMqJIKOa8tdoweMviESld6qay2XVfrku5gyWyrmyb0EAbvWKoh6xLHHJ1u
-         twlQHc+HJytujpKMfhhZua4/y/OBx/xmdI/AzTDtVLwGNzcsOt2OCM4pqPnB/PVJT8Ee
-         KBSMCHOxSoUMXBQJhTlJO5uaDGkyus10DikttVoqmleM2xFExb/bLpow8rGUl35UEnxi
-         ESuLIYyC2HsoHdM7j73ldkoWZoHHC6u0KPwLKsfAbrXVP0yN7MvIzjZaPrBjleLHECHh
-         TKLA==
-X-Gm-Message-State: AOAM530dqFfewse/Ba4fHgPDbnXV9oslDweRbnoozgVsCo01F4Sew47t
-        XyHOHwkarXbzyyfJ6i5r/844kmEN2Jk=
-X-Google-Smtp-Source: ABdhPJxfBdi37/yRj31u/1yVwVd6B4rPFoZNcM/71Em90ApUpFePmeHl8qrPizZJGJzVOdZ9+Ez4rA==
-X-Received: by 2002:a7b:c38e:: with SMTP id s14mr2172037wmj.124.1597405169330;
-        Fri, 14 Aug 2020 04:39:29 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id o7sm15093033wrv.50.2020.08.14.04.39.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BETUm1VsjAHaE9mSTvIErHbihrcPaijwVnn2xiQgls0=;
+        b=b4mS67Rc0xTu9GddXNXZpHdOZ4LUJEk/MIpsIQLnQYkdiyE4JgHZ1riysG+Qhh4eYR
+         aZ2gG2QXrrxHRY/bCGV4f7c6Q1CX/ddb178m9fDV3LOFYCJZYZ7s0K2Nvkg1/qqbH3Oj
+         8ZEghVvXmE7bYrX4BHUPOiqvo4UsS4b3NcYLc3JAfcYtrsKYci5trWJMw0GOxHr3Yi7z
+         K1qQTXWd9MQBcFupC4P8Cl5w3HI8QpAQDCMxDSggBX1AivIzF/Sy+hkLo74CvsoVKNuY
+         ZcgxCQbXkLgTtW2HfSfhUoL9IIUcBcF1qT1HEFBdBA6mur/n3SCkIR8Mu4GmBvzs39R8
+         A2xQ==
+X-Gm-Message-State: AOAM531uivoNQBJoICi/yR/ycsIhwQw+9rZzspMHJ/0jC5h491PplPrx
+        FdZMsYYXDZu6jj7Gkp9lpGv1Xg==
+X-Google-Smtp-Source: ABdhPJxIxjXAMbNxjAnHnCJBk/QJ0q8XoyiBfmFbg2rseOQ463H3p0d/reKBasOyl/LNP6JUO29kqQ==
+X-Received: by 2002:a5d:4b11:: with SMTP id v17mr2343043wrq.224.1597405219704;
+        Fri, 14 Aug 2020 04:40:19 -0700 (PDT)
+Received: from dell.default ([95.149.164.62])
+        by smtp.gmail.com with ESMTPSA id 32sm16409129wrh.18.2020.08.14.04.40.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 04:39:28 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 13:39:27 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Stephen Kitt <steve@sk2.org>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/hwmon/adm1029.c: use simple i2c probe
-Message-ID: <20200814113927.GA15832@Red>
-References: <20200813161129.1507599-1-steve@sk2.org>
+        Fri, 14 Aug 2020 04:40:18 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Gerald Combs <gerald@ethereal.com>,
+        Linux Wireless <ilw@linux.intel.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 25/30] net: wireless: intel: ipw2x00: ipw2200: Demote lots of nonconformant kerneldoc comments
+Date:   Fri, 14 Aug 2020 12:39:28 +0100
+Message-Id: <20200814113933.1903438-26-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200814113933.1903438-1-lee.jones@linaro.org>
+References: <20200814113933.1903438-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200813161129.1507599-1-steve@sk2.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 06:11:29PM +0200, Stephen Kitt wrote:
-> This driver doesn't use the id information provided by the old i2c
-> probe function, so it can trivially be converted to the simple
-> ("probe_new") form.
-> 
-> Signed-off-by: Stephen Kitt <steve@sk2.org>
-> ---
->  drivers/hwmon/adm1029.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/hwmon/adm1029.c b/drivers/hwmon/adm1029.c
-> index f7752a5bef31..50b1df7b008c 100644
-> --- a/drivers/hwmon/adm1029.c
-> +++ b/drivers/hwmon/adm1029.c
-> @@ -352,8 +352,7 @@ static int adm1029_init_client(struct i2c_client *client)
->  	return 1;
->  }
->  
-> -static int adm1029_probe(struct i2c_client *client,
-> -			 const struct i2c_device_id *id)
-> +static int adm1029_probe(struct i2c_client *client)
->  {
->  	struct device *dev = &client->dev;
->  	struct adm1029_data *data;
-> @@ -390,7 +389,7 @@ static struct i2c_driver adm1029_driver = {
->  	.driver = {
->  		.name = "adm1029",
->  	},
-> -	.probe		= adm1029_probe,
-> +	.probe_new	= adm1029_probe,
->  	.id_table	= adm1029_id,
->  	.detect		= adm1029_detect,
->  	.address_list	= normal_i2c,
-> -- 
-> 2.25.4
-> 
-Hello
+Lots of these are either completely wrong or do not even attempt to
+document any of the parameters.  Others use an incorrect/dated format
+which is not recognised by the kernel (... and are also wrong and
+suffering from docrot).
 
-Acked-by: Corentin LABBE <clabbe.montjoie@gmail.com>
+Fixes the following W=1 kernel build warning(s):
 
-But please give me a few day to test it.
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3011: warning: Function parameter or member 'priv' not described in 'ipw_alive'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3693: warning: Incorrect use of kernel-doc format:  * Driver allocates buffers of this size for Rx
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3697: warning: Incorrect use of kernel-doc format:  * ipw_rx_queue_space - Return number of free slots available in queue.
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3700: warning: Function parameter or member 'q' not described in 'ipw_rx_queue_space'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3743: warning: Function parameter or member 'priv' not described in 'ipw_queue_init'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3743: warning: Function parameter or member 'q' not described in 'ipw_queue_init'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3743: warning: Function parameter or member 'count' not described in 'ipw_queue_init'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3743: warning: Function parameter or member 'read' not described in 'ipw_queue_init'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3743: warning: Function parameter or member 'write' not described in 'ipw_queue_init'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3743: warning: Function parameter or member 'base' not described in 'ipw_queue_init'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3743: warning: Function parameter or member 'size' not described in 'ipw_queue_init'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3800: warning: Function parameter or member 'priv' not described in 'ipw_queue_tx_free_tfd'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3800: warning: Function parameter or member 'txq' not described in 'ipw_queue_tx_free_tfd'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3841: warning: Function parameter or member 'priv' not described in 'ipw_queue_tx_free'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3841: warning: Function parameter or member 'txq' not described in 'ipw_queue_tx_free'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:3869: warning: Function parameter or member 'priv' not described in 'ipw_tx_queue_free'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:4474: warning: Function parameter or member 'priv' not described in 'ipw_rx_notification'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:4474: warning: Function parameter or member 'notif' not described in 'ipw_rx_notification'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:4935: warning: Function parameter or member 'priv' not described in 'ipw_queue_reset'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:5008: warning: Function parameter or member 'priv' not described in 'ipw_queue_tx_reclaim'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:5008: warning: Function parameter or member 'txq' not described in 'ipw_queue_tx_reclaim'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:5008: warning: Function parameter or member 'qindex' not described in 'ipw_queue_tx_reclaim'
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c:8456: warning: Function parameter or member 'priv' not described in 'ipw_sw_reset'
+
+Cc: Stanislav Yakovlev <stas.yakovlev@gmail.com>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Gerald Combs <gerald@ethereal.com>
+Cc: Linux Wireless <ilw@linux.intel.com>
+Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c | 30 ++++++++++----------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/net/wireless/intel/ipw2x00/ipw2200.c b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
+index 5345f90837f5f..e7680702e1602 100644
+--- a/drivers/net/wireless/intel/ipw2x00/ipw2200.c
++++ b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
+@@ -2998,7 +2998,7 @@ static void ipw_remove_current_network(struct ipw_priv *priv)
+ 	spin_unlock_irqrestore(&priv->ieee->lock, flags);
+ }
+ 
+-/**
++/*
+  * Check that card is still alive.
+  * Reads debug register from domain0.
+  * If card is present, pre-defined value should
+@@ -3113,7 +3113,7 @@ static int ipw_load_ucode(struct ipw_priv *priv, u8 * data, size_t len)
+ 	mdelay(1);
+ 
+ 	/* write ucode */
+-	/**
++	/*
+ 	 * @bug
+ 	 * Do NOT set indirect address register once and then
+ 	 * store data to indirect data register in the loop.
+@@ -3666,7 +3666,7 @@ static int ipw_load(struct ipw_priv *priv)
+ 	return rc;
+ }
+ 
+-/**
++/*
+  * DMA services
+  *
+  * Theory of operation
+@@ -3689,11 +3689,11 @@ static int ipw_load(struct ipw_priv *priv)
+  * we only utilize the first data transmit queue (queue1).
+  */
+ 
+-/**
++/*
+  * Driver allocates buffers of this size for Rx
+  */
+ 
+-/**
++/*
+  * ipw_rx_queue_space - Return number of free slots available in queue.
+  */
+ static int ipw_rx_queue_space(const struct ipw_rx_queue *q)
+@@ -3724,7 +3724,7 @@ static inline int ipw_queue_inc_wrap(int index, int n_bd)
+ 	return (++index == n_bd) ? 0 : index;
+ }
+ 
+-/**
++/*
+  * Initialize common DMA queue structure
+  *
+  * @param q                queue to init
+@@ -3788,7 +3788,7 @@ static int ipw_queue_tx_init(struct ipw_priv *priv,
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * Free one TFD, those at index [txq->q.last_used].
+  * Do NOT advance any indexes
+  *
+@@ -3811,7 +3811,7 @@ static void ipw_queue_tx_free_tfd(struct ipw_priv *priv,
+ 	if (le32_to_cpu(bd->u.data.num_chunks) > NUM_TFD_CHUNKS) {
+ 		IPW_ERROR("Too many chunks: %i\n",
+ 			  le32_to_cpu(bd->u.data.num_chunks));
+-		/** @todo issue fatal error, it is quite serious situation */
++		/* @todo issue fatal error, it is quite serious situation */
+ 		return;
+ 	}
+ 
+@@ -3828,7 +3828,7 @@ static void ipw_queue_tx_free_tfd(struct ipw_priv *priv,
+ 	}
+ }
+ 
+-/**
++/*
+  * Deallocate DMA queue.
+  *
+  * Empty queue by removing and destroying all BD's.
+@@ -3860,7 +3860,7 @@ static void ipw_queue_tx_free(struct ipw_priv *priv, struct clx2_tx_queue *txq)
+ 	memset(txq, 0, sizeof(*txq));
+ }
+ 
+-/**
++/*
+  * Destroy all DMA queues and structures
+  *
+  * @param priv
+@@ -4465,7 +4465,7 @@ static void handle_scan_event(struct ipw_priv *priv)
+ 	}
+ }
+ 
+-/**
++/*
+  * Handle host notification packet.
+  * Called from interrupt routine
+  */
+@@ -4925,7 +4925,7 @@ static void ipw_rx_notification(struct ipw_priv *priv,
+ 	}
+ }
+ 
+-/**
++/*
+  * Destroys all DMA structures and initialise them again
+  *
+  * @param priv
+@@ -4934,7 +4934,7 @@ static void ipw_rx_notification(struct ipw_priv *priv,
+ static int ipw_queue_reset(struct ipw_priv *priv)
+ {
+ 	int rc = 0;
+-	/** @todo customize queue sizes */
++	/* @todo customize queue sizes */
+ 	int nTx = 64, nTxCmd = 8;
+ 	ipw_tx_queue_free(priv);
+ 	/* Tx CMD queue */
+@@ -4990,7 +4990,7 @@ static int ipw_queue_reset(struct ipw_priv *priv)
+ 	return rc;
+ }
+ 
+-/**
++/*
+  * Reclaim Tx queue entries no more used by NIC.
+  *
+  * When FW advances 'R' index, all entries between old and
+@@ -8445,7 +8445,7 @@ static void ipw_rx(struct ipw_priv *priv)
+ #define	DEFAULT_SHORT_RETRY_LIMIT 7U
+ #define	DEFAULT_LONG_RETRY_LIMIT  4U
+ 
+-/**
++/*
+  * ipw_sw_reset
+  * @option: options to control different reset behaviour
+  * 	    0 = reset everything except the 'disable' module_param
+-- 
+2.25.1
+
