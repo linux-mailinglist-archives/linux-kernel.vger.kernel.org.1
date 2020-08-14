@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00453244CEA
+	by mail.lfdr.de (Postfix) with ESMTP id 6D60A244CEB
 	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 18:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728346AbgHNQoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 12:44:10 -0400
-Received: from mail.efficios.com ([167.114.26.124]:58836 "EHLO
+        id S1728360AbgHNQoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 12:44:15 -0400
+Received: from mail.efficios.com ([167.114.26.124]:58854 "EHLO
         mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727808AbgHNQoG (ORCPT
+        with ESMTP id S1726268AbgHNQoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 12:44:06 -0400
+        Fri, 14 Aug 2020 12:44:07 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id AE70D299088;
+        by mail.efficios.com (Postfix) with ESMTP id F39612988F0;
         Fri, 14 Aug 2020 12:44:05 -0400 (EDT)
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id BFOfRERqXhtU; Fri, 14 Aug 2020 12:44:05 -0400 (EDT)
+        with ESMTP id DvwGpdRrY-ES; Fri, 14 Aug 2020 12:44:05 -0400 (EDT)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 5FB0C298CCE;
+        by mail.efficios.com (Postfix) with ESMTP id 96CAC298C63;
         Fri, 14 Aug 2020 12:44:05 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 5FB0C298CCE
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 96CAC298C63
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
         s=default; t=1597423445;
-        bh=NkqDdJp8PO8nPX/KH3ycWn+baA3Z5NS7pIwCnjiLdJw=;
+        bh=oM5wTB4JJqdlh0JAEKSv9wpzL7LPTjpfby30ulsdAbc=;
         h=From:To:Date:Message-Id;
-        b=iqDnAcGcHDFCpZFFElOytW5YRYB72UJUnZV3O3H1hW9cOsY7+YMLuWigW+GHtHEqc
-         1q54n7HBB289l0BKFzVx1TUi8bsr+VnBTxSQjasbwyBDuoS9Ae/jroTE0tNyCCQLUN
-         uJAu2YTM7FfPpsMjCY12g0siTXyM7fLdI4/xRSsyXRq9BdmuMUGluoJU1zMiyDkMt9
-         4o9NIFNi2Qc/n18tYLY8HIJ5IFQUB7kQ6oKbRK2FKJTzhdoRbw13G9PnmB6mpg+cwX
-         GOMeo2EN23m0K1bLbtSp9LwoyDL88R2VfhShvux7NtKEbX+srsMtgRXN9QZz+fhniV
-         jWxSoyT4xQa0Q==
+        b=cusLa7+K6DKY0rYoNOo6gepM5NoFw4RmQQ8jzE6x3BkPseqa7Od7sRP0MV7Mptfvc
+         yuygBAPbbxn9s9vxpdrbrYdtongnmmm2YNqP6DKyYlkzW4sEvww6PxIUpyFe5d+Hq7
+         yRJmAgkvgKWcVjhRsncLC7eFrF4hBqRFZLjkS7EItKDXQQ0FWPdRP7JD5+YWHss2j9
+         EDqxmQLwN6vEmCIVqlcC3aKfj7eXJAzyMuV7th3N9zorZCtOr8F3djIoNkVNR9qYVH
+         4gFDImLXQxOoPktuAq5P8Km62BXjVLmose5OwOG9spwvCxKXGcclqb8GJnLp55mGEY
+         S5vbDUthmScqA==
 X-Virus-Scanned: amavisd-new at efficios.com
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ptlH-j_94tAF; Fri, 14 Aug 2020 12:44:05 -0400 (EDT)
+        with ESMTP id 50iriB8CUg77; Fri, 14 Aug 2020 12:44:05 -0400 (EDT)
 Received: from thinkos.internal.efficios.com (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
-        by mail.efficios.com (Postfix) with ESMTPSA id 2EA80298F09;
+        by mail.efficios.com (Postfix) with ESMTPSA id 657B4298A7F;
         Fri, 14 Aug 2020 12:44:05 -0400 (EDT)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To:     Peter Zijlstra <peterz@infradead.org>
@@ -48,9 +48,9 @@ Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
         Alan Stern <stern@rowland.harvard.edu>,
         Nicholas Piggin <npiggin@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [RFC PATCH 2/3] sched: membarrier: cover kthread_use_mm (v2)
-Date:   Fri, 14 Aug 2020 12:43:57 -0400
-Message-Id: <20200814164358.4783-3-mathieu.desnoyers@efficios.com>
+Subject: [RFC PATCH 3/3] sched: membarrier: document memory ordering scenarios
+Date:   Fri, 14 Aug 2020 12:43:58 -0400
+Message-Id: <20200814164358.4783-4-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20200814164358.4783-1-mathieu.desnoyers@efficios.com>
 References: <20200814164358.4783-1-mathieu.desnoyers@efficios.com>
@@ -59,15 +59,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add comments and memory barrier to kthread_use_mm and kthread_unuse_mm
-to allow the effect of membarrier(2) to apply to kthreads accessing
-user-space memory as well.
-
-Given that no prior kthread use this guarantee and that it only affects
-kthreads, adding this guarantee does not affect user-space ABI.
-
-Refine the check in membarrier_global_expedited to exclude runqueues
-running the idle thread rather than all kthreads from the IPI cpumask.
+Document membarrier ordering scenarios in membarrier.c. Thanks to Alan
+Stern for refreshing my memory. Now that I have those in mind, it seems
+appropriate to serialize them to comments for posterity.
 
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
@@ -76,87 +70,150 @@ Cc: Paul E. McKenney <paulmck@kernel.org>
 Cc: Nicholas Piggin <npiggin@gmail.com>
 Cc: Andy Lutomirski <luto@amacapital.net>
 Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alan Stern <stern@rowland.harvard.edu>
 ---
-Changes since v1:
-- Add WARN_ON_ONCE(current->mm) in play_idle_precise (PeterZ),
-- Use smp_mb__after_spinlock rather than smp_mb after task_lock.
----
- kernel/kthread.c          | 19 +++++++++++++++++++
- kernel/sched/idle.c       |  1 +
- kernel/sched/membarrier.c |  8 ++------
- 3 files changed, 22 insertions(+), 6 deletions(-)
+ kernel/sched/membarrier.c | 128 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 128 insertions(+)
 
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 3edaa380dc7b..77aaaa7bc8d9 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -1255,8 +1255,19 @@ void kthread_use_mm(struct mm_struct *mm)
- 	finish_arch_post_lock_switch();
- #endif
- 
-+	/*
-+	 * When a kthread starts operating on an address space, the loop
-+	 * in membarrier_{private,global}_expedited() may not observe
-+	 * that tsk->mm, and not issue an IPI. Membarrier requires a
-+	 * memory barrier after storing to tsk->mm, before accessing
-+	 * user-space memory. A full memory barrier for membarrier
-+	 * {PRIVATE,GLOBAL}_EXPEDITED is implicitly provided by
-+	 * mmdrop(), or explicitly with smp_mb().
-+	 */
- 	if (active_mm != mm)
- 		mmdrop(active_mm);
-+	else
-+		smp_mb();
- 
- 	to_kthread(tsk)->oldfs = force_uaccess_begin();
- }
-@@ -1276,6 +1287,14 @@ void kthread_unuse_mm(struct mm_struct *mm)
- 	force_uaccess_end(to_kthread(tsk)->oldfs);
- 
- 	task_lock(tsk);
-+	/*
-+	 * When a kthread stops operating on an address space, the loop
-+	 * in membarrier_{private,global}_expedited() may not observe
-+	 * that tsk->mm, and not issue an IPI. Membarrier requires a
-+	 * memory barrier after accessing user-space memory, before
-+	 * clearing tsk->mm.
-+	 */
-+	smp_mb__after_spinlock();
- 	sync_mm_rss(mm);
- 	local_irq_disable();
- 	tsk->mm = NULL;
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 6bf34986f45c..3443ee8335d0 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -341,6 +341,7 @@ void play_idle_precise(u64 duration_ns, u64 latency_ns)
- 	WARN_ON_ONCE(!(current->flags & PF_KTHREAD));
- 	WARN_ON_ONCE(!(current->flags & PF_NO_SETAFFINITY));
- 	WARN_ON_ONCE(!duration_ns);
-+	WARN_ON_ONCE(current->mm);
- 
- 	rcu_sleep_check();
- 	preempt_disable();
 diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
-index 168479a7d61b..8a294483074d 100644
+index 8a294483074d..103f5edb8ba5 100644
 --- a/kernel/sched/membarrier.c
 +++ b/kernel/sched/membarrier.c
-@@ -100,13 +100,9 @@ static int membarrier_global_expedited(void)
- 		    MEMBARRIER_STATE_GLOBAL_EXPEDITED))
- 			continue;
+@@ -7,6 +7,134 @@
+ #include "sched.h"
  
--		/*
--		 * Skip the CPU if it runs a kernel thread. The scheduler
--		 * leaves the prior task mm in place as an optimization when
--		 * scheduling a kthread.
--		 */
-+		/* Skip the CPU if it runs the idle thread. */
- 		p = rcu_dereference(cpu_rq(cpu)->curr);
--		if (p->flags & PF_KTHREAD)
-+		if (is_idle_task(p))
- 			continue;
- 
- 		__cpumask_set_cpu(cpu, tmpmask);
+ /*
++ * For documentation purposes, here are some membarrier ordering
++ * scenarios to keep in mind:
++ *
++ * A) Userspace thread execution after IPI vs membarrier's memory
++ *    barrier before sending the IPI
++ *
++ * Userspace variables:
++ *
++ * int x = 0, y = 0;
++ *
++ * The memory barrier at the start of membarrier() on CPU0 is necessary in
++ * order to enforce the guarantee that any writes occurring on CPU0 before
++ * the membarrier() is executed will be visible to any code executing on
++ * CPU1 after the IPI-induced memory barrier:
++ *
++ *         CPU0                              CPU1
++ *
++ *         x = 1
++ *         membarrier():
++ *           a: smp_mb()
++ *           b: send IPI                       IPI-induced mb
++ *           c: smp_mb()
++ *         r2 = y
++ *                                           y = 1
++ *                                           barrier()
++ *                                           r1 = x
++ *
++ *                     BUG_ON(r1 == 0 && r2 == 0)
++ *
++ * The write to y and load from x by CPU1 are unordered by the hardware,
++ * so it's possible to have "r1 = x" reordered before "y = 1" at any
++ * point after (b).  If the memory barrier at (a) is omitted, then "x = 1"
++ * can be reordered after (a) (although not after (c)), so we get r1 == 0
++ * and r2 == 0.  This violates the guarantee that membarrier() is
++ * supposed by provide.
++ *
++ * The timing of the memory barrier at (a) has to ensure that it executes
++ * before the IPI-induced memory barrier on CPU1.
++ *
++ * B) Userspace thread execution before IPI vs membarrier's memory
++ *    barrier after completing the IPI
++ *
++ * Userspace variables:
++ *
++ * int x = 0, y = 0;
++ *
++ * The memory barrier at the end of membarrier() on CPU0 is necessary in
++ * order to enforce the guarantee that any writes occurring on CPU1 before
++ * the membarrier() is executed will be visible to any code executing on
++ * CPU0 after the membarrier():
++ *
++ *         CPU0                              CPU1
++ *
++ *                                           x = 1
++ *                                           barrier()
++ *                                           y = 1
++ *         r2 = y
++ *         membarrier():
++ *           a: smp_mb()
++ *           b: send IPI                       IPI-induced mb
++ *           c: smp_mb()
++ *         r1 = x
++ *         BUG_ON(r1 == 0 && r2 == 1)
++ *
++ * The writes to x and y are unordered by the hardware, so it's possible to
++ * have "r2 = 1" even though the write to x doesn't execute until (b).  If
++ * the memory barrier at (c) is omitted then "r1 = x" can be reordered
++ * before (b) (although not before (a)), so we get "r1 = 0".  This violates
++ * the guarantee that membarrier() is supposed to provide.
++ *
++ * The timing of the memory barrier at (c) has to ensure that it executes
++ * after the IPI-induced memory barrier on CPU1.
++ *
++ * C) Scheduling userspace thread -> kthread -> userspace thread vs membarrier
++ *
++ *           CPU0                            CPU1
++ *
++ *           membarrier():
++ *           a: smp_mb()
++ *                                           d: switch to kthread (includes mb)
++ *           b: read rq->curr->mm == NULL
++ *                                           e: switch to user (includes mb)
++ *           c: smp_mb()
++ *
++ * Using the scenario from (A), we can show that (a) needs to be paired
++ * with (e). Using the scenario from (B), we can show that (c) needs to
++ * be paired with (d).
++ *
++ * D) exit_mm vs membarrier
++ *
++ * Two thread groups are created, A and B.  Thread group B is created by
++ * issuing clone from group A with flag CLONE_VM set, but not CLONE_THREAD.
++ * Let's assume we have a single thread within each thread group (Thread A
++ * and Thread B).  Thread A runs on CPU0, Thread B runs on CPU1.
++ *
++ *           CPU0                            CPU1
++ *
++ *           membarrier():
++ *             a: smp_mb()
++ *                                           exit_mm():
++ *                                             d: smp_mb()
++ *                                             e: current->mm = NULL
++ *             b: read rq->curr->mm == NULL
++ *             c: smp_mb()
++ *
++ * Using scenario (B), we can show that (c) needs to be paired with (d).
++ *
++ * E) kthread_{use,unuse}_mm vs membarrier
++ *
++ *           CPU0                            CPU1
++ *
++ *           membarrier():
++ *           a: smp_mb()
++ *                                           kthread_unuse_mm()
++ *                                             d: smp_mb()
++ *                                             e: current->mm = NULL
++ *           b: read rq->curr->mm == NULL
++ *                                           kthread_use_mm()
++ *                                             f: current->mm = mm
++ *                                             g: smp_mb()
++ *           c: smp_mb()
++ *
++ * Using the scenario from (A), we can show that (a) needs to be paired
++ * with (g). Using the scenario from (B), we can show that (c) needs to
++ * be paired with (d).
++ */
++
++/*
+  * Bitmask made from a "or" of all commands within enum membarrier_cmd,
+  * except MEMBARRIER_CMD_QUERY.
+  */
 -- 
 2.11.0
 
