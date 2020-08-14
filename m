@@ -2,102 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB77244FDE
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 00:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB05C244FE0
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 00:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727986AbgHNWgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 18:36:10 -0400
-Received: from mail.manjaro.org ([176.9.38.148]:39094 "EHLO mail.manjaro.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726320AbgHNWgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 18:36:08 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.manjaro.org (Postfix) with ESMTP id 86B65E1124;
-        Sat, 15 Aug 2020 00:36:06 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at manjaro.org
-Received: from mail.manjaro.org ([127.0.0.1])
-        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id tO3t8igeQngG; Sat, 15 Aug 2020 00:36:04 +0200 (CEST)
-From:   Tobias Schramm <t.schramm@manjaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tobias Schramm <t.schramm@manjaro.org>
-Subject: [PATCH] ARM: dts: stm32: add resets property to spi device nodes on stm32h743
-Date:   Sat, 15 Aug 2020 00:35:43 +0200
-Message-Id: <20200814223543.3420540-1-t.schramm@manjaro.org>
-MIME-Version: 1.0
+        id S1728071AbgHNWgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 18:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727957AbgHNWgJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 18:36:09 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D604EC061388
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 15:36:08 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 128so5200350pgd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 15:36:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1Gm4DBq2aKiHPSTyt1FIj1F/+D7DhQ4fc8VI2sz0rsI=;
+        b=lJ/o+2Nt05U5e0lpQPxqMtSE2E7+/KYFBl+vbHoFZ2b2zxLWZnJaieenezGM3PFgTq
+         WS2o0XYtew02RQO3Fd3ntzN3idtpMBg32SI8dHA0ztqWw69TIOjST2gfSC8jAUJorrTJ
+         Yv9s0ID87nAT1oQeJlbkb94alXD2B7X3/r31NItPQ6CRyvJo3ldLKYRYnLfgcF4j8O1f
+         dDNlzXtKLL+W5OA2dV8LS14ife/GCS6TNLWHktTsZnc7Qust4yLgCt2iMZUHD8FTMNMi
+         9arAaxIiI44nVNEMtTQexxiWc4GxwcBIonig4orLKuXGeyBIHvx2FvE8ilEYTpWG8I5e
+         a3PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=1Gm4DBq2aKiHPSTyt1FIj1F/+D7DhQ4fc8VI2sz0rsI=;
+        b=bFWRhj6rdkdC610+WFgn5njCXhMtkIDq2V0LMXj5fbs/bWev3kl9S63MRLKOLWkRx5
+         v/8EF9yVfeaMGZBQmdGV5dS9+tluuD/RzCJN2BB2AQM8fRK+hxtQ97vNK/cuBqhrPdys
+         /6V4ckJ8TE5eIRR22IsdqC+Tak+08UnOMmJxJ2aaXTZnyOCELwJBt+vYRI4J6GCT/dHy
+         iDtnkaTlEJleoFLjryHohhJCpPVgHNwfz/VphlsYMQhx6mNP1nzd6MR1KD5YL5vTu1M1
+         6GlAxSFx21oXsyUl4KbyyJDg8t3MhzIgE3VU5wrdrNt47OElrZ3bcoUOnTCiDuq+NySA
+         BP6g==
+X-Gm-Message-State: AOAM531rcq0n82Wfi5T9GiWuv+UpoI0NpaTsQ1T4kUiRyuZPDsE6DJ9F
+        rXMuxyd+0S865kIioAhXR6CGKw==
+X-Google-Smtp-Source: ABdhPJxSggPlmWg3KIB8rUnjcpOCqr5iuQ37qtyRCNb+C/Wl89zCMHW8/n9UhEL046/uVKT0MxbZQQ==
+X-Received: by 2002:a63:1e65:: with SMTP id p37mr3058000pgm.58.1597444567189;
+        Fri, 14 Aug 2020 15:36:07 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id w6sm8540368pgr.82.2020.08.14.15.36.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Aug 2020 15:36:06 -0700 (PDT)
+Date:   Fri, 14 Aug 2020 15:36:06 -0700 (PDT)
+X-Google-Original-Date: Fri, 14 Aug 2020 15:34:49 PDT (-0700)
+Subject:     Re: [PATCH v3 3/7] riscv: Fixup kprobes handler couldn't change pc
+In-Reply-To: <1594683562-68149-4-git-send-email-guoren@kernel.org>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, mhiramat@kernel.org,
+        oleg@redhat.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, anup@brainfault.org,
+        linux-csky@vger.kernel.org, greentime.hu@sifive.com,
+        zong.li@sifive.com, guoren@kernel.org, me@packi.ch,
+        Bjorn Topel <bjorn.topel@gmail.com>, guoren@linux.alibaba.com
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     guoren@kernel.org
+Message-ID: <mhng-296dd63e-71de-4d30-acfb-df374d12388d@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The stm32 spi driver tries to determine the fifo size of spi devices
-dynamically. However, if the spi was already configured by the bootloader
-the fifo size check can become an endless loop, because the driver
-expects the spi to be in its initial "after device reset" state. The
-driver does already support resetting the spi device at probe, thus this
-patch adds only the required device tree properties
+On Mon, 13 Jul 2020 16:39:18 PDT (-0700), guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+>
+> The "Changing Execution Path" section in the Documentation/kprobes.txt
+> said:
+>
+> Since kprobes can probe into a running kernel code, it can change the
+> register set, including instruction pointer.
+>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> ---
+>  arch/riscv/kernel/mcount-dyn.S | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/kernel/mcount-dyn.S b/arch/riscv/kernel/mcount-dyn.S
+> index 35a6ed7..4b58b54 100644
+> --- a/arch/riscv/kernel/mcount-dyn.S
+> +++ b/arch/riscv/kernel/mcount-dyn.S
+> @@ -123,6 +123,7 @@ ENDPROC(ftrace_caller)
+>  	sd	ra, (PT_SIZE_ON_STACK+8)(sp)
+>  	addi	s0, sp, (PT_SIZE_ON_STACK+16)
+>
+> +	sd ra,  PT_EPC(sp)
+>  	sd x1,  PT_RA(sp)
+>  	sd x2,  PT_SP(sp)
+>  	sd x3,  PT_GP(sp)
 
-Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
----
- arch/arm/boot/dts/stm32h743.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+So that's definately not going to be EPC any more.  I'm not sure that field is
+sanely named, though, as it's really just the PC when it comes to other ptrace
+stuff.
 
-diff --git a/arch/arm/boot/dts/stm32h743.dtsi b/arch/arm/boot/dts/stm32h743.dtsi
-index 9dd58974bf8d..7c612db9efcf 100644
---- a/arch/arm/boot/dts/stm32h743.dtsi
-+++ b/arch/arm/boot/dts/stm32h743.dtsi
-@@ -110,6 +110,7 @@ spi2: spi@40003800 {
- 			compatible = "st,stm32h7-spi";
- 			reg = <0x40003800 0x400>;
- 			interrupts = <36>;
-+			resets = <&rcc STM32H7_APB1L_RESET(SPI2)>;
- 			clocks = <&rcc SPI2_CK>;
- 			status = "disabled";
- 
-@@ -121,6 +122,7 @@ spi3: spi@40003c00 {
- 			compatible = "st,stm32h7-spi";
- 			reg = <0x40003c00 0x400>;
- 			interrupts = <51>;
-+			resets = <&rcc STM32H7_APB1L_RESET(SPI3)>;
- 			clocks = <&rcc SPI3_CK>;
- 			status = "disabled";
- 		};
-@@ -207,6 +209,7 @@ spi1: spi@40013000 {
- 			compatible = "st,stm32h7-spi";
- 			reg = <0x40013000 0x400>;
- 			interrupts = <35>;
-+			resets = <&rcc STM32H7_APB2_RESET(SPI1)>;
- 			clocks = <&rcc SPI1_CK>;
- 			status = "disabled";
- 		};
-@@ -217,6 +220,7 @@ spi4: spi@40013400 {
- 			compatible = "st,stm32h7-spi";
- 			reg = <0x40013400 0x400>;
- 			interrupts = <84>;
-+			resets = <&rcc STM32H7_APB2_RESET(SPI4)>;
- 			clocks = <&rcc SPI4_CK>;
- 			status = "disabled";
- 		};
-@@ -227,6 +231,7 @@ spi5: spi@40015000 {
- 			compatible = "st,stm32h7-spi";
- 			reg = <0x40015000 0x400>;
- 			interrupts = <85>;
-+			resets = <&rcc STM32H7_APB2_RESET(SPI5)>;
- 			clocks = <&rcc SPI5_CK>;
- 			status = "disabled";
- 		};
-@@ -372,6 +377,7 @@ spi6: spi@58001400 {
- 			compatible = "st,stm32h7-spi";
- 			reg = <0x58001400 0x400>;
- 			interrupts = <86>;
-+			resets = <&rcc STM32H7_APB4_RESET(SPI6)>;
- 			clocks = <&rcc SPI6_CK>;
- 			status = "disabled";
- 		};
--- 
-2.28.0
+> @@ -157,6 +158,7 @@ ENDPROC(ftrace_caller)
+>  	.endm
+>
+>  	.macro RESTORE_ALL
+> +	ld ra,  PT_EPC(sp)
+>  	ld x1,  PT_RA(sp)
 
+x1 is ra, so loading it twice doesn't seem reasonable.
+
+>  	ld x2,  PT_SP(sp)
+>  	ld x3,  PT_GP(sp)
+> @@ -190,7 +192,6 @@ ENDPROC(ftrace_caller)
+>  	ld x31, PT_T6(sp)
+>
+>  	ld	s0, (PT_SIZE_ON_STACK)(sp)
+> -	ld	ra, (PT_SIZE_ON_STACK+8)(sp)
+>  	addi	sp, sp, (PT_SIZE_ON_STACK+16)
+>  	.endm
+
+If you're dropping the load you should drop the store above as well.  In
+general this seems kind of mixed up, both before and after this patch.
