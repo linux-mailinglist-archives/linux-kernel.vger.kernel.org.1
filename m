@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4C3244DE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3034244DEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728795AbgHNR2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 13:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37602 "EHLO
+        id S1728878AbgHNR3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 13:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728590AbgHNR2b (ORCPT
+        with ESMTP id S1728419AbgHNR2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 13:28:31 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC466C061384
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:30 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id d9so6485986qvl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:30 -0700 (PDT)
+        Fri, 14 Aug 2020 13:28:33 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF1DC061384
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:33 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id d6so6500996qkg.6
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=Aq2upZC9S5Ys9XP2AH7I4ISIryYXBDc2x7o0GoeV4Tk=;
-        b=LuGw15Zke5Ae/pDbTgYTpYfh2zw7zg1gh8rl6NeN4AGUiGtOgQrWlvhHdiP01WtjeF
-         gPbZdiTHKtVlNBMURMqJKH70HLuFDCcyY7K63iFcHcfiTqAy72YPVXO2s7tj6WUdasie
-         LSNN56Qt2JsZQI6RoEJ6bqi8ZSk+tbIUZAyB0NyWM5Q+cWE4kks5klNCVCuWUA2AwdED
-         Iiogfds/x//LanybCwaVx43Gg8FX0gPl+FenU8VBpe3VwGcqyx6IKKwcLN4CjN2/b8lW
-         ezTn1x2aDEYLo2sh3zAh2430UJfQVAECwvvHTa7cQAdEt7xYMD1jNBIJBb2Z5DxWQroL
-         oNww==
+        bh=lhqV5mQvN7E+6IRby7TSffIB2FjRKGUNLHJKKPPYQHw=;
+        b=B++G553D5YRfzBibD52/YbmLsetWRzAA+mz8eYde400Dt3AEX/vseByvilgBu/RIty
+         m11Xpzhzd4fCTyIgDM3Aczj2BOJayGGNmGHctNqvXNTkecsq8v3oeABP2jnHSM5Sy/oT
+         TRlXjAJ0TBbepqTIGEs3YLtgZQZ77lzQJPQ/C8eCHyjGN8okRpzyZYmC+oSiUmjgSH8d
+         GO69c6LHJqVmLxayxM0kpmxCGfm+uXZCCzh2zdglLXW4JcO9BNFJdnkCs9ihI/YbjeUt
+         PY221wPX7nEb3zD22xIzTFeLGFYldtf8rkWyhu3EMaLFbGQb1pdI0FM0lUdnMNysOTrI
+         Ochg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Aq2upZC9S5Ys9XP2AH7I4ISIryYXBDc2x7o0GoeV4Tk=;
-        b=daYM8q+A1pKUbEKazmDEb/58GpRuW4M8Q0IhKDpfNDZEzCtvLTFNr8BWnPVWo8z+1U
-         8Ta3uaYRyXCOSukBUZMaqvetQbdZKXKE//dmz2H55AgDiq9XhbFsk9CIleQ08wnlLOV7
-         S5c5Qm2pP4puAptyZU4VJTXCntBbWHpxIG92Az8tpqeIj6DlJyZ8sZl7cCJZTP7hYFQH
-         nuspJqR0oxMxTHSZS7SkoS4+Xp9DubBuwTKSVghg7Rg9lBorFwja7FbZM6kReVdyumVQ
-         ZXfk9aEQRDrSkRxjejKtF5Ud09I6jhJx9QiyRsqXYTlNmND2Ld4j5UTdF02l1uIaY+pJ
-         NMzg==
-X-Gm-Message-State: AOAM532Q0R+qYVQHcPkRa+zRl3JZbTOHDy9Kyxsek+j+SamTAAGxKKHc
-        N4e8GJoTWupERy0dWtpRTWwbeU3HuR/7E1On
-X-Google-Smtp-Source: ABdhPJztNAgwVlYKdx1N8aglSzF1FROrdQbV1VPur/Gdjkp6gFX4cRqk46lqcix5COecb/sqk/aIJq04YlccAYyo
-X-Received: by 2002:a0c:e883:: with SMTP id b3mr3537357qvo.133.1597426109995;
- Fri, 14 Aug 2020 10:28:29 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 19:27:10 +0200
+        bh=lhqV5mQvN7E+6IRby7TSffIB2FjRKGUNLHJKKPPYQHw=;
+        b=b8LtOg2MUewVr4yzM12Pz4VlVSAsiXx3tQ+J9OvbwoYkoambJXpUCGw9Lj9qQOKRsk
+         2DVpNC9GmPKOTOin7lLJnO3H/37SteNyzxSJtAvu2J3wXVigZW8hHYnaNhUYP3Zb7yve
+         xt7DmU0NRv6CN88sM+6Qs2EQeapyRSC+GDCUTk1HaLJ3118KM1xPM6Kj3JdN3ai16Y3z
+         f/tWKzDkoePI72TLnXzn145hLL/mOQCf1PGbaOiwV9Gwl9RAlrow75pwSNu/C5IP+PhQ
+         ZaLxEWRrr1QJq4ae2n/PdEta1pb29ZB2QAoiGJ9JVJ9NKrS3GABjfiplvTT6mTyExnJ/
+         d6Mg==
+X-Gm-Message-State: AOAM530cYDKvB7w2Kqrwphf+55tlQlTzcW5eOfav1rOpscHnlzAkbSeH
+        DQY1E5pQ4d1IS5NmdMqFDyJ08VcLna/9C9/L
+X-Google-Smtp-Source: ABdhPJyEB6r3EZb1/dD1PV8DgiQHfViC9Gw1KcFHaQCLBJDygARswv1n+YYRwOw9Yas1PVhHZwOIsetdUJwayE9i
+X-Received: by 2002:a0c:e00c:: with SMTP id j12mr3697232qvk.127.1597426112116;
+ Fri, 14 Aug 2020 10:28:32 -0700 (PDT)
+Date:   Fri, 14 Aug 2020 19:27:11 +0200
 In-Reply-To: <cover.1597425745.git.andreyknvl@google.com>
-Message-Id: <07455abaab13824579c1b8e50cc038cf8a0f3369.1597425745.git.andreyknvl@google.com>
+Message-Id: <042119d239d929be8d4b479825091fb088c7543a.1597425745.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1597425745.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
-Subject: [PATCH 28/35] kasan: define KASAN_GRANULE_SIZE for HW_TAGS
+Subject: [PATCH 29/35] kasan, x86, s390: update undef CONFIG_KASAN
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Dmitry Vyukov <dvyukov@google.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -74,32 +74,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hardware tag-based KASAN has granules of MTE_GRANULE_SIZE. Define
-KASAN_GRANULE_SIZE to MTE_GRANULE_SIZE for CONFIG_KASAN_HW_TAGS.
+With the intoduction of hardware tag-based KASAN some kernel checks of
+this kind:
+
+  ifdef CONFIG_KASAN
+
+will be updated to:
+
+  if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+
+x86 and s390 use a trick to #undef CONFIG_KASAN for some of the code
+that isn't linked with KASAN runtime and shouldn't have any KASAN
+annotations.
+
+Also #undef CONFIG_KASAN_GENERIC with CONFIG_KASAN.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- mm/kasan/kasan.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/s390/boot/string.c         | 1 +
+ arch/x86/boot/compressed/misc.h | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 1d3c7c6ce771..4d8e229f8e01 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -5,7 +5,13 @@
- #include <linux/kasan.h>
- #include <linux/stackdepot.h>
+diff --git a/arch/s390/boot/string.c b/arch/s390/boot/string.c
+index b11e8108773a..faccb33b462c 100644
+--- a/arch/s390/boot/string.c
++++ b/arch/s390/boot/string.c
+@@ -3,6 +3,7 @@
+ #include <linux/kernel.h>
+ #include <linux/errno.h>
+ #undef CONFIG_KASAN
++#undef CONFIG_KASAN_GENERIC
+ #include "../lib/string.c"
  
-+#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
- #define KASAN_GRANULE_SIZE	(1UL << KASAN_SHADOW_SCALE_SHIFT)
-+#else
-+#include <asm/mte.h>
-+#define KASAN_GRANULE_SIZE	(MTE_GRANULE_SIZE)
-+#endif
-+
- #define KASAN_GRANULE_MASK	(KASAN_GRANULE_SIZE - 1)
+ int strncmp(const char *cs, const char *ct, size_t count)
+diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
+index 726e264410ff..2ac973983a8e 100644
+--- a/arch/x86/boot/compressed/misc.h
++++ b/arch/x86/boot/compressed/misc.h
+@@ -12,6 +12,7 @@
+ #undef CONFIG_PARAVIRT_XXL
+ #undef CONFIG_PARAVIRT_SPINLOCKS
+ #undef CONFIG_KASAN
++#undef CONFIG_KASAN_GENERIC
  
- #define KASAN_TAG_KERNEL	0xFF /* native kernel pointers tag */
+ /* cpu_feature_enabled() cannot be used this early */
+ #define USE_EARLY_PGTABLE_L5
 -- 
 2.28.0.220.ged08abb693-goog
 
