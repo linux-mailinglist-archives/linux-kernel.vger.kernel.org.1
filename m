@@ -2,145 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28542244A98
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BF4244A89
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728794AbgHNNhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 09:37:20 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:43260 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728723AbgHNNhR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 09:37:17 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id ADDCF29A823
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH v3 07/19] media: uapi: h264: Increase size of DPB entry pic_num
-Date:   Fri, 14 Aug 2020 10:36:22 -0300
-Message-Id: <20200814133634.95665-8-ezequiel@collabora.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200814133634.95665-1-ezequiel@collabora.com>
-References: <20200814133634.95665-1-ezequiel@collabora.com>
+        id S1728672AbgHNNgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 09:36:40 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:43846 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728629AbgHNNgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 09:36:33 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id BCE07FB04;
+        Fri, 14 Aug 2020 15:36:30 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id zK71oykmh5Vx; Fri, 14 Aug 2020 15:36:28 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 098AA457CD; Fri, 14 Aug 2020 15:36:24 +0200 (CEST)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 2/3] dt-bindings: Add Mantix MLAF057WE51-X panel bindings
+Date:   Fri, 14 Aug 2020 15:36:22 +0200
+Message-Id: <9345739df02b8b8630e7dccb61a80a7a7f692526.1597412076.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1597412076.git.agx@sigxcpu.org>
+References: <cover.1597412076.git.agx@sigxcpu.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DPB entry PicNum maximum value is 2*MaxFrameNum for interlaced
-content (field_pic_flag=1).
+The panel uses a Focaltech FT8006p, the touch part is handled by the
+already existing edt-ft5x06.
 
-As specified, MaxFrameNum is 2^(log2_max_frame_num_minus4 + 4)
-and log2_max_frame_num_minus4 is in the range of 0 to 12,
-which means pic_num should be a 32-bit field.
-
-The v4l2_h264_dpb_entry struct needs to be padded to avoid a hole,
-which might be also useful to allow future uAPI extensions.
-
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+Signed-off-by: Guido Günther <agx@sigxcpu.org>
 ---
- .../userspace-api/media/v4l/ext-ctrls-codec.rst     |  5 ++++-
- drivers/media/v4l2-core/v4l2-ctrls.c                | 13 +++++++++++++
- include/media/h264-ctrls.h                          |  3 ++-
- include/media/v4l2-h264.h                           |  2 +-
- 4 files changed, 20 insertions(+), 3 deletions(-)
+ .../display/panel/mantix,mlaf057we51-x.yaml   | 73 +++++++++++++++++++
+ 1 file changed, 73 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index d14da8325382..c0ae7fda803e 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -2054,7 +2054,10 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
-     * - __u16
-       - ``frame_num``
-       -
--    * - __u16
-+    * - __u8
-+      - ``reserved[2]``
-+      - Applications and drivers must set this to zero.
-+    * - __u32
-       - ``pic_num``
-       -
-     * - __s32
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-index 76c8dc8fb31c..b9457789fa55 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-@@ -1725,6 +1725,8 @@ static void std_log(const struct v4l2_ctrl *ctrl)
- 
- #define zero_padding(s) \
- 	memset(&(s).padding, 0, sizeof((s).padding))
-+#define zero_reserved(s) \
-+	memset(&(s).reserved, 0, sizeof((s).reserved))
- 
- /*
-  * Compound controls validation requires setting unused fields/flags to zero
-@@ -1735,6 +1737,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
- {
- 	struct v4l2_ctrl_mpeg2_slice_params *p_mpeg2_slice_params;
- 	struct v4l2_ctrl_vp8_frame_header *p_vp8_frame_header;
-+	struct v4l2_ctrl_h264_decode_params *p_h264_dec_params;
- 	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
- 	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
- 	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
-@@ -1796,7 +1799,17 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
- 	case V4L2_CTRL_TYPE_H264_SCALING_MATRIX:
- 	case V4L2_CTRL_TYPE_H264_PRED_WEIGHTS:
- 	case V4L2_CTRL_TYPE_H264_SLICE_PARAMS:
-+		break;
+diff --git a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+new file mode 100644
+index 0000000000000..349f3380ac940
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+@@ -0,0 +1,73 @@
++# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/panel/mantix,mlaf057we51-x.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	case V4L2_CTRL_TYPE_H264_DECODE_PARAMS:
-+		p_h264_dec_params = p;
++title: Mantix MLAF057WE51-X 5.7" 720x1440 TFT LCD panel
 +
-+		for (i = 0; i < V4L2_H264_NUM_DPB_ENTRIES; i++) {
-+			struct v4l2_h264_dpb_entry *dpb_entry =
-+				&p_h264_dec_params->dpb[i];
++maintainers:
++  - Guido Günther <agx@sigxcpu.org>
 +
-+			zero_reserved(*dpb_entry);
-+		}
- 		break;
- 
- 	case V4L2_CTRL_TYPE_VP8_FRAME_HEADER:
-diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
-index 4447697e9465..d178d7ad53b6 100644
---- a/include/media/h264-ctrls.h
-+++ b/include/media/h264-ctrls.h
-@@ -216,7 +216,8 @@ struct v4l2_ctrl_h264_slice_params {
- struct v4l2_h264_dpb_entry {
- 	__u64 reference_ts;
- 	__u16 frame_num;
--	__u16 pic_num;
-+	__u8 reserved[2];
-+	__u32 pic_num;
- 	/* Note that field is indicated by v4l2_buffer.field */
- 	__s32 top_field_order_cnt;
- 	__s32 bottom_field_order_cnt;
-diff --git a/include/media/v4l2-h264.h b/include/media/v4l2-h264.h
-index bc9ebb560ccf..1a5f26fc2a9a 100644
---- a/include/media/v4l2-h264.h
-+++ b/include/media/v4l2-h264.h
-@@ -33,7 +33,7 @@ struct v4l2_h264_reflist_builder {
- 	struct {
- 		s32 pic_order_count;
- 		int frame_num;
--		u16 pic_num;
-+		u32 pic_num;
- 		u16 longterm : 1;
- 	} refs[V4L2_H264_NUM_DPB_ENTRIES];
- 	s32 cur_pic_order_count;
++description: |
++             Mantix MLAF057WE51 X is a 720x1440 TFT LCD panel
++             connected using a MIPI-DSI video interface.
++
++allOf:
++  - $ref: panel-common.yaml#
++
++properties:
++  compatible:
++    enum:
++      - mantix,mlaf057we51-x
++
++  port: true
++  reg:
++    maxItems: 1
++    description: DSI virtual channel
++
++  avdd-supply:
++    description: Positive analog power supply
++
++  avee-supply:
++    description: Negative analog power supply
++
++  vddi-supply:
++    description: 1.8V I/O voltage supply
++
++  reset-gpios:
++    description: GPIO used for the reset pin
++    maxItems: 1
++
++  backlight:
++    description: Backlight used by the panel
++    $ref: "/schemas/types.yaml#/definitions/phandle"
++
++required:
++  - compatible
++  - reg
++  - avdd-supply
++  - avee-supply
++  - vddi-supply
++  - reset-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    dsi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      panel@0 {
++        compatible = "mantix,mlaf057we51-x";
++        reg = <0>;
++        avdd-supply = <&reg_avdd>;
++        avee-supply = <&reg_avee>;
++        vddi-supply = <&reg_1v8_p>;
++        reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
++        backlight = <&backlight>;
++      };
++    };
++...
 -- 
-2.27.0
+2.26.2
 
