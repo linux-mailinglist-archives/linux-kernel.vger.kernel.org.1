@@ -2,193 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB128244292
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 02:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE63624429E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 03:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgHNAsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 20:48:52 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:50822 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbgHNAsw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 20:48:52 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200814004847epoutp04a03873b0b5d7a358f762aad9a02841a9~q-Ae7Jykm1585915859epoutp04f
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 00:48:47 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200814004847epoutp04a03873b0b5d7a358f762aad9a02841a9~q-Ae7Jykm1585915859epoutp04f
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1597366128;
-        bh=e4Xon6lpxSkKHbuO67+S1JkH0bpnqs6utJMAst9eaWQ=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=V83dDb2d69JHn7xuocrwp79il8KJhEnIrV4IBGMh+3b4LTwSgO27VDHzODIIaDAM/
-         tCQK0IJrXJMxp0mwO5pAb5ikB2W3disLYVyoXAB1YdRiykRvC3UI3KEa3KSFPeAKDm
-         v/pLJtm9xY632E5wBJaIFXGajG6Y2vrB8Yb2ivIg=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200814004847epcas1p202f4fea01ce691ab260db05de02f09b2~q-AedKpw52393723937epcas1p2v;
-        Fri, 14 Aug 2020 00:48:47 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.152]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4BSPvK1nW3zMqYkY; Fri, 14 Aug
-        2020 00:48:45 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        96.06.29173.D6FD53F5; Fri, 14 Aug 2020 09:48:45 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200814004844epcas1p1b1a40e6e5106231df3abc92e5e5d5158~q-Ab9aMUX2057120571epcas1p1Y;
-        Fri, 14 Aug 2020 00:48:44 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200814004844epsmtrp1d8e5fc0929ed11503a5c137a56580896~q-Ab8g-tE1694616946epsmtrp1C;
-        Fri, 14 Aug 2020 00:48:44 +0000 (GMT)
-X-AuditID: b6c32a37-9cdff700000071f5-ca-5f35df6d4f8f
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B7.47.08303.C6FD53F5; Fri, 14 Aug 2020 09:48:44 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200814004844epsmtip2e3561dec68fbdd0d219f8de608946601~q-AbqMUbS0941709417epsmtip2a;
-        Fri, 14 Aug 2020 00:48:44 +0000 (GMT)
-Subject: Re: [PATCH v5 12/36] PM / devfreq: tegra20: Use MC timings for
- building OPP table
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <784f000f-17fd-550d-382c-1f9c11ce808b@samsung.com>
-Date:   Fri, 14 Aug 2020 10:00:45 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        id S1726593AbgHNBBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 21:01:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726522AbgHNBBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 21:01:02 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 141912078D;
+        Fri, 14 Aug 2020 01:01:01 +0000 (UTC)
+Date:   Thu, 13 Aug 2020 21:01:00 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH 4/6] tools/bootconfig: Add a script to generate ftrace
+ shell-command from bootconfig
+Message-ID: <20200813210100.23a706ab@oasis.local.home>
+In-Reply-To: <159704851101.175360.15119132351139842345.stgit@devnote2>
+References: <159704847064.175360.3292152056631660862.stgit@devnote2>
+        <159704851101.175360.15119132351139842345.stgit@devnote2>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200814000621.8415-13-digetx@gmail.com>
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrJJsWRmVeSWpSXmKPExsWy7bCmvm7ufdN4g3eTOCzefXrKajH/yDlW
-        i9UfHzNaXPn6ns1i+t5NbBYtsxaxWJxtesNucXnXHDaLz71HGC06v8xis7h4ytXiduMKNotJ
-        a6cyWrTuPcJu8e/aRhaLn7vmsTgIeLy/0crusXPWXXaPS+f+MHtsWtXJ5nHn2h42j/vdx5k8
-        epvfsXn0bVnF6PF5k1wAZ1S2TUZqYkpqkUJqXnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5i
-        bqqtkotPgK5bZg7QG0oKZYk5pUChgMTiYiV9O5ui/NKSVIWM/OISW6XUgpScAssCveLE3OLS
-        vHS95PxcK0MDAyNToMKE7IwVV54xFfQLVfyac5mpgfEkXxcjJ4eEgInEh/MTWLoYuTiEBHYw
-        SsyZ2cUE4XxilNi5qgkq85lRYtbsD0wwLc9v7WeHSOxilJjYeB+q5T2jxPsVG9hAqoQFYiS2
-        L9jPCpIQETjCLLG68zgjSIJZYAajxJ09yiA2m4CWxP4XN8Aa+AUUJa7+eAxWwytgJ7G7+zsz
-        iM0ioCrx9vYrsBpRgTCJk9taoGoEJU7OfMICYnMKmEk839fOBjFfXOLWk/lMELa8xPa3c5gh
-        zv7PIdH0IhjCdpFYt2EPC4QtLPHq+BZ2CFtK4mV/G5RdLbHy5BE2kAckBDoYJbbsv8AKkTCW
-        2L90MtACDqAFmhLrd+lDhBUldv6eC/Ujn8S7rz2sICUSArwSHW1CECXKEpcf3IWGoqTE4vZO
-        tgmMSrOQfDMLyQezkHwwC2HZAkaWVYxiqQXFuempxYYFxsjRvYkRnMa1zHcwTnv7Qe8QIxMH
-        4yFGCQ5mJRFe5svG8UK8KYmVValF+fFFpTmpxYcYTYHhO5FZSjQ5H5hJ8kriDU2NjI2NLUwM
-        zUwNDZXEeR/eUogXEkhPLEnNTk0tSC2C6WPi4JRqYOKW2qRwNUCq8/XZJSvl7c+tWSi6XWDB
-        8rtXKtI2ehUV7N9yuvPPf3nf5JWiP1+3f85d5ZV1eltVOcNbqVCfKQ9PHJUqTIx6myTswLgx
-        uLH1DuvHp5leMhOf16lxHJue1qEj+Oh/o9uNfVuvrM+ez7zVf4vPPeaOztV556SPL/mcUPmn
-        1rQ8Y/ZzTubaDJ3/brJscjxT17+cYrKS2d83z7bMwe/+zsuPvPijZlg8Yk9hnJD2ITdlVnHG
-        2oqHdrJbys6Inbc8dXTruUtiR8QuiRkvLjW0+Pzs7K6o92t9101hauG2NljHVCag/NpwTtH0
-        ZepSzFKH3Z7dfnT1x7PAfrezSh+2+XzKvlrW8nirXpASS3FGoqEWc1FxIgC+/a0abAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCIsWRmVeSWpSXmKPExsWy7bCSvG7OfdN4g7nnNS3efXrKajH/yDlW
-        i9UfHzNaXPn6ns1i+t5NbBYtsxaxWJxtesNucXnXHDaLz71HGC06v8xis7h4ytXiduMKNotJ
-        a6cyWrTuPcJu8e/aRhaLn7vmsTgIeLy/0crusXPWXXaPS+f+MHtsWtXJ5nHn2h42j/vdx5k8
-        epvfsXn0bVnF6PF5k1wAZxSXTUpqTmZZapG+XQJXxoorz5gK+oUqfs25zNTAeJKvi5GTQ0LA
-        ROL5rf3sXYxcHEICOxglZt8+zAKRkJSYdvEocxcjB5AtLHH4cDFEzVtGid4jm5hBaoQFYiS2
-        L9jPCpIQETjGLLHp9GkmEIdZYAajxJ8NG9lBqoQEtjBKdD5jA7HZBLQk9r+4AWbzCyhKXP3x
-        mBHE5hWwk9jd/R1sKouAqsTb26/AakQFwiR2LnnMBFEjKHFy5hOw6zgFzCSe72sHq2EWUJf4
-        M+8SM4QtLnHryXwmCFteYvvbOcwTGIVnIWmfhaRlFpKWWUhaFjCyrGKUTC0ozk3PLTYsMMpL
-        LdcrTswtLs1L10vOz93ECI5oLa0djHtWfdA7xMjEwXiIUYKDWUmEl/mycbwQb0piZVVqUX58
-        UWlOavEhRmkOFiVx3q+zFsYJCaQnlqRmp6YWpBbBZJk4OKUamDYIzTkUVrH0YNyv26VXfJ+F
-        hiw3kkhZ7vZHTieDY3bSGt5Wu3cHDHhTHIxCjx19/135YfyRBflBzV+178u+Ebx1MPLa8q9N
-        bU9PLntbHXpvvV5i+W4tFc/fMwOE7zg2Mpkd+Rq1n8njC6flRb3r3AuXz9mVkOUqXPP11Zzs
-        j1/MzLYGRtyZv8vo4K/tOe/u+T488P5HVkGS3JPjJR0FQUGxnzf/WqLPzsJRxXV0zZ+X12/X
-        RUcYLHxssd6trf6SWvuaSZFsjWcmioYpR2zT/q4W18tkVp/g9Uq/WDF89hxl+7/BU9JzpHq7
-        eRcsDmOJ1XisYf1PqHvOGrVpf/dsVk54VNOZozlrotCroqxpZ5VYijMSDbWYi4oTAUv9ZlFX
-        AwAA
-X-CMS-MailID: 20200814004844epcas1p1b1a40e6e5106231df3abc92e5e5d5158
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200814000944epcas1p4da08e1a6b03c80013a997fdc856a9486
-References: <20200814000621.8415-1-digetx@gmail.com>
-        <CGME20200814000944epcas1p4da08e1a6b03c80013a997fdc856a9486@epcas1p4.samsung.com>
-        <20200814000621.8415-13-digetx@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+On Mon, 10 Aug 2020 17:35:11 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-On 8/14/20 9:05 AM, Dmitry Osipenko wrote:
-> The clk_round_rate() won't be usable for building OPP table once
-> interconnect support will be added to the EMC driver because that CLK API
-> function limits the rounded rate based on the clk rate that is imposed by
-> active clk-users, and thus, the rounding won't work as expected if
-> interconnect will set the minimum EMC clock rate before devfreq driver is
-> loaded. The struct tegra_mc contains memory timings which could be used by
-> the devfreq driver for building up OPP table instead of rounding clock
-> rate, this patch implements this idea.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/devfreq/tegra20-devfreq.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/devfreq/tegra20-devfreq.c b/drivers/devfreq/tegra20-devfreq.c
-> index 6469dc69c5e0..a985f24098f5 100644
-> --- a/drivers/devfreq/tegra20-devfreq.c
-> +++ b/drivers/devfreq/tegra20-devfreq.c
-> @@ -123,8 +123,7 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->  {
->  	struct tegra_devfreq *tegra;
->  	struct tegra_mc *mc;
-> -	unsigned long max_rate;
-> -	unsigned long rate;
-> +	unsigned int i;
->  	int err;
->  
->  	mc = tegra_get_memory_controller();
-> @@ -135,6 +134,11 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->  		return err;
->  	}
->  
-> +	if (!mc->num_timings) {
-> +		dev_info(&pdev->dev, "memory controller has no timings\n");
-> +		return -ENODEV;
-> +	}
+
+> --- /dev/null
+> +++ b/tools/bootconfig/scripts/xbc.sh
+> @@ -0,0 +1,56 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-only
 > +
->  	tegra = devm_kzalloc(&pdev->dev, sizeof(*tegra), GFP_KERNEL);
->  	if (!tegra)
->  		return -ENOMEM;
-> @@ -151,12 +155,8 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->  
->  	tegra->regs = mc->regs;
->  
-> -	max_rate = clk_round_rate(tegra->emc_clock, ULONG_MAX);
-> -
-> -	for (rate = 0; rate <= max_rate; rate++) {
-> -		rate = clk_round_rate(tegra->emc_clock, rate);
-> -
-> -		err = dev_pm_opp_add(&pdev->dev, rate, 0);
-> +	for (i = 0; i < mc->num_timings; i++) {
-> +		err = dev_pm_opp_add(&pdev->dev, mc->timings[i].rate, 0);
->  		if (err) {
->  			dev_err(&pdev->dev, "failed to add opp: %d\n", err);
->  			goto remove_opps;
-> 
+> +# bootconfig utility functions
+> +
+> +XBC_TMPFILE=
+> +XBC_BASEDIR=`dirname $0`
+> +BOOTCONFIG=${BOOTCONFIG:=$XBC_BASEDIR/../bootconfig}
+> +if [ ! -x "$BOOTCONFIG" ]; then
+> +	BOOTCONFIG=`which bootconfig`
+> +	if [ -z "$BOOTCONFIG" ]; then
+> +		echo "Erorr: bootconfig command is not found" 1>&2
+> +		exit 1
+> +	fi
+> +fi
+> +
+> +xbc_cleanup() {
+> +	if [ "$XBC_TMPFILE" ]; then
 
-Ackded-by: Chanwoo Choi <cw00.choi@samsung.com>
+Should the above be:
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+	if [ -f "$XBC_TMPFILE" ]; then
+?
+
+
+-- Steve
+
+> +		rm -f "$XBC_TMPFILE"
+> +	fi
+> +}
+> +
+> +xbc_init() { # bootconfig-file
+> +	xbc_cleanup
+> +	XBC_TMPFILE=`mktemp bconf-XXXX`
+> +	trap xbc_cleanup EXIT TERM
+> +
+> +	$BOOTCONFIG -l $1 > $XBC_TMPFILE || exit 1
+> +}
+> +
+> +nr_args() { # args
+> +	echo $#
+> +}
+> +
+> +xbc_get_val() { # key [maxnum]
+> +	if [ "$2" ]; then
+> +		MAXOPT="-L $2"
+> +	fi
+> +	grep "^$1 =" $XBC_TMPFILE | cut -d= -f2- | \
+> +		sed -e 's/", /" /g' -e "s/',/' /g" | \
+> +		xargs $MAXOPT -n 1 echo
+> +}
+> +
+> +xbc_has_key() { # key
+> +	grep -q "^$1 =" $XBC_TMPFILE
+> +}
+> +
+> +xbc_has_branch() { # prefix-key
+> +	grep -q "^$1" $XBC_TMPFILE
+> +}
+> +
+> +xbc_subkeys() { # prefix-key depth
+> +	__keys=`echo $1 | sed "s/\./ /g"`
+> +	__s=`nr_args $__keys`
+> +	grep "^$1" $XBC_TMPFILE | cut -d= -f1| cut -d. -f$((__s + 1))-$((__s + $2)) | uniq
+> +}
+
