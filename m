@@ -2,143 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0732244EFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 21:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4100244F02
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 21:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727949AbgHNT4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 15:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60280 "EHLO
+        id S1728165AbgHNT5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 15:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726297AbgHNT4R (ORCPT
+        with ESMTP id S1726297AbgHNT5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 15:56:17 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416D3C061385;
-        Fri, 14 Aug 2020 12:56:16 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id h22so8483275otq.11;
-        Fri, 14 Aug 2020 12:56:16 -0700 (PDT)
+        Fri, 14 Aug 2020 15:57:34 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8969C061385
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 12:57:34 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id t7so8530116otp.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 12:57:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sD1hZF2WdFP1115pTPAq+FgT6KZuW8nyCloT6zbSfds=;
-        b=OFSJI9uLzODA4OcY1hVAe6WHCPZQZoKwaxcAlkY3h7E+FIVyKNBc+LitG0bJce7GM9
-         MI8t2RVPG1bPqQYEhRkPl1B+ZisQwqamhVZY4Ugayj54oXPxzK2O+cNz9fGv6nNdkDUP
-         KuiJInYJstOMsOVbUgEOlknsCJUzx3pYpBMpRGc6JCryU79HxqGybFK8Tm1xNlAYhgZ6
-         gy6LCOMb1V1bv1NyGvwCvuMzCVGXDq+xt1yH5R2lvCLiMIrImA5MFQT2ZOiBBknFfHLI
-         JgupdGsIcdpLUlGfmyFxvVPXrb//GWhVPfCJAsUt1fX/ngEu3//rAr2eUBRUSxIraJgy
-         x1sQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=/HUkdNM84ljYVpfdQwsu/yQY6q4YRBxXm3BX9/rPigE=;
+        b=GAvytVLoP1qHrSPjrY7AvPriL14EDS2LCXNorZdppdkMv6K/LZxo1h/EuzLi3SXVNi
+         M6CS7DnFvAbtqX+J63O3C1V6T9+yKxrKLzx/qaF9zojFvtZ8gB2P5UK68H33Hph3w1cP
+         dr0yOx7Q3ZzaJoXZYJrk8JcCCA9mJ1SGOKUITcQlZtslndFbmIqY5xDddbNqu0KwQmHn
+         g7lYfVLtQMLwcrAPGlizolRKf6l8oAHACQ+K7IqCHagXujF9UeIYMDCY+YvAWGTADUPH
+         YDzE5+swXhEtYXl2xOwaJ2MLIJ1aXEFutNfWQSZTIwGLAoDuMWsi8fyNc7BLEg2HknkV
+         xG9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sD1hZF2WdFP1115pTPAq+FgT6KZuW8nyCloT6zbSfds=;
-        b=Tlqk1UT5RWSvffk2oZ23mchyfhuXwP2RJVYpQipoikXRBhhXLzcbjNR8mEOqHkxEKs
-         M4C0Kw4VRDnMnM2OYWzuVF0BunJuHn992AtfMqyEKJ8Dyve+WOeo6luvDqKzCHey2KdC
-         KxzZWJDWbXXEk/+nYVakQ46rEB4A2TzLnPiCKoVULRv8mD+W/ZIgi1krhN+mYrUiwAvU
-         LQxrmlymmqIYEgD1T1Mvav6KabVEidPe9yCRFVlnJgpm3khJV800hmh5Z0LCFXaDBJeB
-         HvgHz5TXb3Mvtx7PnulPkZ6juwM+8CzZE40AlMNT/4s4iOjCOULGiCLEYb4zdj3AJ1CE
-         5WHw==
-X-Gm-Message-State: AOAM532vXKp9yoauLdxlxdKBtsbdY7UDY/+LsOHiZTYyFuD70Rn72NCP
-        bUUmVZYAiuy+N+U/yji1tVWKlrdEBCU25gRQyg8=
-X-Google-Smtp-Source: ABdhPJy6y8VniNbwmMIOoU7RwRwYzrIN3Z8PfE0Fq+Prr4D1B0V/OsFpi82tLiD5BIDc6eUrhcwgYOzjKVvfaC/2Ms0=
-X-Received: by 2002:a9d:6053:: with SMTP id v19mr2981691otj.362.1597434976086;
- Fri, 14 Aug 2020 12:56:16 -0700 (PDT)
+         :message-id:subject:to;
+        bh=/HUkdNM84ljYVpfdQwsu/yQY6q4YRBxXm3BX9/rPigE=;
+        b=Btv8WeHlV49f35LAUZfBQID+L4YJQQdMrpK1vfwXsLT2yK5Wn2/GF5yMcGE9PdCNv2
+         374IoQYdXBRJrQ1Pn/nx3UakkLuED06uC6iFuqwtBMu55AW9fDzZJNGDm+hGVKvq6Xik
+         fGVT6K2KXoHkhCd1SFKKDb2KWKTX4HvUgn9y68iDX0FcZj+r1XmLq3Brb7OhtWZXlWQ0
+         0GmX3eVOtjxb3xfpNFjwxAIa5VCdxwHUiGwfjJ9+lorWIFT3RZbZ+6eAWUMtd1TPoCeT
+         LFbXbVmZzptVTtTkAsdotBdCPREOPn3EYXqYzBTDJGTF1G0taF8krWR3+tguhPG076Fp
+         0yXA==
+X-Gm-Message-State: AOAM533zSAtoz655RcMEAiU1v5ZCzsPRqt1TGADDwNih/XntSrcj7qr4
+        yWizJv3SOdev4+QUwhbGHi9hTjfLOzHDMwAtAqgR/A==
+X-Google-Smtp-Source: ABdhPJzaxdfMlB6Bm1WN+v5lpzzD5kVu7pW83mo4jMtukonjI/VP7GLaCaH0UsUwHhBd8Q1OWNYhXdAlBVPuN5eETs4=
+X-Received: by 2002:a05:6830:3196:: with SMTP id p22mr3306479ots.102.1597435054060;
+ Fri, 14 Aug 2020 12:57:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200813084129.332730-1-josephsih@chromium.org> <20200813164059.v1.2.I03247d3813c6dcbcdbeab26d068f9fd765edb1f5@changeid>
-In-Reply-To: <20200813164059.v1.2.I03247d3813c6dcbcdbeab26d068f9fd765edb1f5@changeid>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Fri, 14 Aug 2020 12:56:05 -0700
-Message-ID: <CABBYNZJ-nBXeujF2WkMEPYPQhXAphqKCV39gr-QYFdTC3GvjXg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] Bluetooth: sco: expose WBS packet length in socket option
-To:     Joseph Hwang <josephsih@chromium.org>
-Cc:     "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Joseph Hwang <josephsih@google.com>,
-        ChromeOS Bluetooth Upstreaming 
-        <chromeos-bluetooth-upstreaming@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+References: <20200814062458.53049-1-john.stultz@linaro.org>
+ <20200814062458.53049-2-john.stultz@linaro.org> <20200814091713.GO2352366@phenom.ffwll.local>
+In-Reply-To: <20200814091713.GO2352366@phenom.ffwll.local>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Fri, 14 Aug 2020 12:57:22 -0700
+Message-ID: <CALAqxLV6pRJRrZOZm0iMxNxCua2+_YQM9YC91UkQboRagRb98g@mail.gmail.com>
+Subject: Re: [RFC][PATCH v2 2/2] dma-heap: Add a system-uncached heap
+To:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        "Andrew F . Davis" <afd@ti.com>, Laura Abbott <labbott@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-media@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joseph,
+On Fri, Aug 14, 2020 at 2:17 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Fri, Aug 14, 2020 at 06:24:58AM +0000, John Stultz wrote:
+> > This adds a heap that allocates non-contiguous buffers that are
+> > marked as writecombined, so they are not cached by the CPU.
+> >
+> > This is useful, as most graphics buffers are usually not touched
+> > by the CPU or only written into once by the CPU. So when mapping
+> > the buffer over and over between devices, we can skip the CPU
+> > syncing, which saves a lot of cache management overhead, greatly
+> > improving performance.
+> >
+> > For folk using ION, there was a ION_FLAG_CACHED flag, which
+> > signaled if the returned buffer should be CPU cacheable or not.
+> > With DMA-BUF heaps, we have no such flag, and by default the
+> > current heaps (system and cma) produce CPU cachable buffers.
+> > So for folks transitioning from ION to DMA-BUF Heaps, this fills
+> > in some of that missing functionality.
+> >
+> > This does have a few "ugly" bits that were required to get
+> > the buffer properly flushed out initially which I'd like to
+> > improve. So feedback would be very welcome!
+> >
+> > Many thanks to Liam Mark for his help to get this working.
+> >
+> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> > Cc: Andrew F. Davis <afd@ti.com>
+> > Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+> > Cc: Liam Mark <lmark@codeaurora.org>
+> > Cc: Laura Abbott <labbott@kernel.org>
+> > Cc: Brian Starkey <Brian.Starkey@arm.com>
+> > Cc: Hridya Valsaraju <hridya@google.com>
+> > Cc: Robin Murphy <robin.murphy@arm.com>
+> > Cc: linux-media@vger.kernel.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: John Stultz <john.stultz@linaro.org>
+> > ---
+> > v2:
+> > * Fix build issue on sh reported-by: kernel test robot <lkp@intel.com>
+> > * Rework to use for_each_sgtable_sg(), dma_map_sgtable(), and
+> >   for_each_sg_page() along with numerous other cleanups suggested
+> >   by Robin Murphy
+>
+> Mildly annoying me, but where's the userspace for this? Do we have a
+> gralloc somewhere that works with open driver stacks and uses this?
 
-On Thu, Aug 13, 2020 at 1:42 AM Joseph Hwang <josephsih@chromium.org> wrote:
->
-> It is desirable to expose the wideband speech packet length via
-> a socket option to the user space so that the user space can set
-> the value correctly in configuring the sco connection.
->
-> Reviewed-by: Alain Michaud <alainm@chromium.org>
-> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> Signed-off-by: Joseph Hwang <josephsih@chromium.org>
-> ---
->
->  include/net/bluetooth/bluetooth.h | 2 ++
->  net/bluetooth/sco.c               | 8 ++++++++
->  2 files changed, 10 insertions(+)
->
-> diff --git a/include/net/bluetooth/bluetooth.h b/include/net/bluetooth/bluetooth.h
-> index 9125effbf4483d..922cc03143def4 100644
-> --- a/include/net/bluetooth/bluetooth.h
-> +++ b/include/net/bluetooth/bluetooth.h
-> @@ -153,6 +153,8 @@ struct bt_voice {
->
->  #define BT_SCM_PKT_STATUS      0x03
->
-> +#define BT_SCO_PKT_LEN         17
-> +
->  __printf(1, 2)
->  void bt_info(const char *fmt, ...);
->  __printf(1, 2)
-> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-> index dcf7f96ff417e6..97e4e7c7b8cf62 100644
-> --- a/net/bluetooth/sco.c
-> +++ b/net/bluetooth/sco.c
-> @@ -67,6 +67,7 @@ struct sco_pinfo {
->         __u32           flags;
->         __u16           setting;
->         __u8            cmsg_mask;
-> +       __u32           pkt_len;
->         struct sco_conn *conn;
->  };
->
-> @@ -267,6 +268,8 @@ static int sco_connect(struct sock *sk)
->                 sco_sock_set_timer(sk, sk->sk_sndtimeo);
->         }
->
-> +       sco_pi(sk)->pkt_len = hdev->sco_pkt_len;
-> +
->  done:
->         hci_dev_unlock(hdev);
->         hci_dev_put(hdev);
-> @@ -1001,6 +1004,11 @@ static int sco_sock_getsockopt(struct socket *sock, int level, int optname,
->                         err = -EFAULT;
->                 break;
->
-> +       case BT_SCO_PKT_LEN:
-> +               if (put_user(sco_pi(sk)->pkt_len, (u32 __user *)optval))
-> +                       err = -EFAULT;
-> +               break;
+So this is still early RFC, but I've added support to the HiKey960
+gralloc, and have pending patches (following DRM rules) I pushed here:
+  https://android-review.googlesource.com/c/device/linaro/hikey/+/1399519
 
-Couldn't we expose this via BT_SNDMTU/BT_RCVMTU?
+And avoiding the cache syncing overhead improves performance nicely on
+that board.
 
->         default:
->                 err = -ENOPROTOOPT;
->                 break;
-> --
-> 2.28.0.236.gb10cc79966-goog
->
+There is also work in progress to change the codec2 implementation in
+AOSP (which uses ion directly), to move over to DMA BUF heaps and as
+it used the !ION_FLAG_CACHED case there this heap would be useful to
+match ION's functionality.
 
+The latest patches for that are here:
+https://android-review.googlesource.com/c/platform/frameworks/av/+/1360640
+(though I'm expecting a deeper rework on those)
 
--- 
-Luiz Augusto von Dentz
+thanks
+-john
