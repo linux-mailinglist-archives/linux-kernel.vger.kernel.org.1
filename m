@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4545D24496E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 14:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD68424498A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 14:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728165AbgHNMKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 08:10:12 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:55164 "EHLO inva021.nxp.com"
+        id S1728373AbgHNMLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 08:11:04 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:38344 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728129AbgHNMJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 08:09:57 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D83B0200CF2;
-        Fri, 14 Aug 2020 14:09:55 +0200 (CEST)
+        id S1728132AbgHNMJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 08:09:58 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9BC271A04C3;
+        Fri, 14 Aug 2020 14:09:56 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CB851200251;
-        Fri, 14 Aug 2020 14:09:55 +0200 (CEST)
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8C7C01A0446;
+        Fri, 14 Aug 2020 14:09:56 +0200 (CEST)
 Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 1E0CD203B6;
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id DB6522030E;
         Fri, 14 Aug 2020 14:09:55 +0200 (CEST)
 From:   Abel Vesa <abel.vesa@nxp.com>
 To:     Mike Turquette <mturquette@baylibre.com>,
@@ -35,9 +35,9 @@ Cc:     NXP Linux Team <linux-imx@nxp.com>,
         linux-arm-kernel@lists.infradead.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-clk@vger.kernel.org, Abel Vesa <abel.vesa@nxp.com>
-Subject: [PATCH v2 09/17] arm64: dts: Remove imx-hdmimix-reset header file
-Date:   Fri, 14 Aug 2020 15:09:18 +0300
-Message-Id: <1597406966-13740-10-git-send-email-abel.vesa@nxp.com>
+Subject: [PATCH v2 10/17] Documentation: bindings: clk: Add bindings for i.MX BLK_CTRL
+Date:   Fri, 14 Aug 2020 15:09:19 +0300
+Message-Id: <1597406966-13740-11-git-send-email-abel.vesa@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1597406966-13740-1-git-send-email-abel.vesa@nxp.com>
 References: <1597406966-13740-1-git-send-email-abel.vesa@nxp.com>
@@ -47,25 +47,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hdmi BLK_CTRL ids have been moved to imx8mp-reset.h
+Document the i.MX BLK_CTRL with its devicetree properties.
 
 Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mp.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ .../bindings/clock/fsl,imx-blk-ctrl.yaml           | 60 ++++++++++++++++++++++
+ 1 file changed, 60 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/fsl,imx-blk-ctrl.yaml
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index 9de2aa1..daa1769 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -4,6 +4,7 @@
-  */
- 
- #include <dt-bindings/clock/imx8mp-clock.h>
-+#include <dt-bindings/reset/imx8mp-reset.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
+diff --git a/Documentation/devicetree/bindings/clock/fsl,imx-blk-ctrl.yaml b/Documentation/devicetree/bindings/clock/fsl,imx-blk-ctrl.yaml
+new file mode 100644
+index 00000000..b47590c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/fsl,imx-blk-ctrl.yaml
+@@ -0,0 +1,60 @@
++# SPDX-License-Identifier: (GPL-2.0-only)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/fsl,imx-blk-ctrl.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP i.MX BLK_CTRL
++
++maintainers:
++  - Abel Vesa <abel.vesa@nxp.com>
++
++description:
++  i.MX BLK_CTRL is a conglomerate of different GPRs that are
++  dedicated to a specific subsystem. Because it usually contains
++  clocks amongst other things, it needs access to the i.MX clocks
++  API. All the other functionalities it provides can work just fine
++  from the clock subsystem tree.
++
++properties:
++  compatible:
++    items:
++      - enum:
++         - fsl,imx8mp-audio-blk-ctrl
++         - fsl,imx8mp-hdmi-blk-ctrl
++         - fsl,imx8mp-media-blk-ctrl
++      - const: syscon
++
++  reg:
++    maxItems: 1
++
++  power-domains:
++    maxItems: 1
++
++  '#clock-cells':
++    const: 1
++
++  '#reset-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - power-domains
++  - '#clock-cells'
++  - '#reset-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx8mp-clock.h>
++
++    audio_blk_ctrl: clock-controller@30e20000 {
++       compatible = "fsl,imx8mp-audio-blk-ctrl", "syscon";
++       reg = <0x30e20000 0x10000>;
++       power-domains = <&audiomix_pd>;
++
++       #clock-cells = <1>;
++       #reset-cells = <1>;
++    };
 -- 
 2.7.4
 
