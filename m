@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D705E24492D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19AED24492B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728175AbgHNLox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 07:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39656 "EHLO
+        id S1728087AbgHNLoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 07:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728092AbgHNLjr (ORCPT
+        with ESMTP id S1728108AbgHNLjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 07:39:47 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C676C061385
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:39:47 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id f18so8228325wmc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:39:47 -0700 (PDT)
+        Fri, 14 Aug 2020 07:39:49 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC38C061388
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:39:48 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id c19so8216120wmd.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:39:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=j3TFuBWvx6taUPZUro4+v5BkkgVZieDFqQLYKGmsIgM=;
-        b=bvKIMDsMikcPYW96Fn3utXtu9dLMKak+fKSEqcxJ2kfKkauaLTlDoFJ7kUu1BATx8u
-         caauFpS9nW9cKPOH+hxpBo0zdLH59ujrwjn2WIQBdnNTtEozhc61dYrIT5+Z6/PwyRZF
-         ug7L/HOwoB+qsPTilK5uOl4XwTvHS8Q9k2Abp8srA2CKV3UW4LGcjKNZLUC10BPa8P1F
-         ERKSRj0rE+4+aMzld1AgI2LMDjGJxoB78sFjSB3/G1ekMVIubuYTwtjqM0TmvuaMUstN
-         igPecR1wuJ7WU5qJnxQ4EUPxQU5WBqgI0CtS7mS4jZWnTi8ECakaQSMtun3+wqjmpi2s
-         Cj2Q==
+        bh=Jmvmk4Q+PrpP0fEH57Cf6D9tPKOf5EojpThDuxlUrjQ=;
+        b=lNAS2xDiXBRodT3zZ1ho7xTZfJLW0acXN9AiflPjRb4vW9teDq0sMQJkO9MYu2GBxS
+         ntbuP4119uVsgffokOm2NXa2u1DErGaUo46E7ArfoMQ45/h9eiNYSBSWs6YHMYf6326v
+         szNBfkDOdLfXIXVc56AzHvh9PmIUuK/FtoeyXv60KPRJx/OHem49ax6sF4Zoxw4Jp0HX
+         4XTiroXKVnqtDgCbFW9UMti3Ba15Jc+IOLVu21J3f2ParAy4/9fBFYozDa17nU69147n
+         5ZRUzrvA4a0SLD39Kuzxe9OrBrx+cY4GT5ggzRWIBxQkAGzwbKGyGe9qTc4DKH1hX0zY
+         /cyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=j3TFuBWvx6taUPZUro4+v5BkkgVZieDFqQLYKGmsIgM=;
-        b=TcQkECfDrAVSojwiAdkqRc4LSl3XsPfD8LzH2DbEgesUCkixHGcMzmqc72HWzzAWba
-         PIxieealCtLHRjAyoWMiVsKXZKJx0ZtG37uCLN1m7eqpN2Q0KnZjOcemmC8hn5bkwQHy
-         4uV6pCYC8mIfTTtKkG7X7S4E7eEbC5HTGSG7/WBoZEw5W6q1fhnQkSxhe6SY2LkJxYJ7
-         7dgaHchij8bKLYcrmkENUMZTOwyEFvBUs13uhOWMKiLnaJ1N8WLWdF+UARYXiTA40Zv7
-         RiWrE9inti9I01dh3Kvbx+ZmKk+MNdxm4JlQGgRsQQaDGCC/xhjiKTtGSJ8bglzC+VuT
-         ZwNA==
-X-Gm-Message-State: AOAM5320XnOGsF3R67mlYF5QmZ7dBM2j9j8Fa8Ukb0DQjYjpEH7ZKNdP
-        PtD/Vd4Vd5LrHLPizHBS2zMeXA==
-X-Google-Smtp-Source: ABdhPJy2P0Di40BugpsK0J8/j2MpwLD0+3D1Hh0XMB1MSchU/UDiuDWLC8amz/EV2MYcASC/3IfBgQ==
-X-Received: by 2002:a05:600c:2302:: with SMTP id 2mr2262779wmo.151.1597405186025;
-        Fri, 14 Aug 2020 04:39:46 -0700 (PDT)
+        bh=Jmvmk4Q+PrpP0fEH57Cf6D9tPKOf5EojpThDuxlUrjQ=;
+        b=IyZCv37w2GO1W90TEqr+vhqLMKAplNcgy3E8rxLZSOExIo7OT6dHtTd/x0/yRwNlD/
+         pVAGFdJRWnmt/4AezXT6t4b3o8X6gCNg+9Ty+8/ra5oU+/Fy1Zz58XRymW+/igVC84dD
+         LjO1LH420zcQkVc9w4aybNAJyOedCvZYZU2+DxT1ZLQtwy24DGH2zDIDksICf2KPeHnY
+         uZeUWx3Oa8A8kkArk4EZsy391zd4Sub8hJ2WlNk3lvYsoUW3iPZj3Vw3i3FGCxhfN8B9
+         bg8kNHIEg7/WEc3W+ir8tNLRfiXSWLKB895S4S9JL6UwHIvQWdK10WcYMn5bzBNfDuNX
+         hTRQ==
+X-Gm-Message-State: AOAM530k8KokNi1neC7Bz9LpcRvn37aY9+vLkTn0diI7jEXYQBXOyyCd
+        CatEVjtjqqABO12/p/i9hyPfKw==
+X-Google-Smtp-Source: ABdhPJy95B9JCQ17J8ciJby1aFSQ7We3ewp78KTdZreaF35CI0bjsdZqnLQGEGuzSVEvTUVXKxgxKA==
+X-Received: by 2002:a1c:f605:: with SMTP id w5mr2184556wmc.26.1597405187342;
+        Fri, 14 Aug 2020 04:39:47 -0700 (PDT)
 Received: from dell.default ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id 32sm16409129wrh.18.2020.08.14.04.39.44
+        by smtp.gmail.com with ESMTPSA id 32sm16409129wrh.18.2020.08.14.04.39.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 04:39:45 -0700 (PDT)
+        Fri, 14 Aug 2020 04:39:46 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Simon Kelley <simon@thekelleys.org.uk>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH 05/30] net: wireless: atmel: atmel: Demote non-kerneldoc header to standard comment block
-Date:   Fri, 14 Aug 2020 12:39:08 +0100
-Message-Id: <20200814113933.1903438-6-lee.jones@linaro.org>
+        Martin Habets <mhabets@solarflare.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        William Lee <william@asix.com.tw>,
+        "A. Hinds --" <dahinds@users.sourceforge.net>,
+        reached at <becker@scyld.com>, netdev@vger.kernel.org
+Subject: [PATCH 06/30] net: ethernet: 8390: axnet_cs: Document unused parameter 'txqueue'
+Date:   Fri, 14 Aug 2020 12:39:09 +0100
+Message-Id: <20200814113933.1903438-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200814113933.1903438-1-lee.jones@linaro.org>
 References: <20200814113933.1903438-1-lee.jones@linaro.org>
@@ -69,32 +72,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/atmel/atmel.c:4232: warning: Cannot understand     This file is part of net.russotto.AtmelMACFW, hereto referred to
+ drivers/net/ethernet/8390/axnet_cs.c:907: warning: Function parameter or member 'txqueue' not described in 'axnet_tx_timeout'
 
-Cc: Simon Kelley <simon@thekelleys.org.uk>
-Cc: Kalle Valo <kvalo@codeaurora.org>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-wireless@vger.kernel.org
+Cc: Martin Habets <mhabets@solarflare.com>
+Cc: Shannon Nelson <snelson@pensando.io>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: William Lee <william@asix.com.tw>
+Cc: "A. Hinds --" <dahinds@users.sourceforge.net>
+Cc: reached at <becker@scyld.com>
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/atmel/atmel.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/8390/axnet_cs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/atmel/atmel.c b/drivers/net/wireless/atmel/atmel.c
-index d5875836068c0..7d51f18c3b5c6 100644
---- a/drivers/net/wireless/atmel/atmel.c
-+++ b/drivers/net/wireless/atmel/atmel.c
-@@ -4228,7 +4228,7 @@ static void atmel_wmem32(struct atmel_private *priv, u16 pos, u32 data)
- /* Copyright 2003 Matthew T. Russotto                                      */
- /* But derived from the Atmel 76C502 firmware written by Atmel and         */
- /* included in "atmel wireless lan drivers" package                        */
--/**
-+/*
-     This file is part of net.russotto.AtmelMACFW, hereto referred to
-     as AtmelMACFW
- 
+diff --git a/drivers/net/ethernet/8390/axnet_cs.c b/drivers/net/ethernet/8390/axnet_cs.c
+index aeae7966a082f..08db4c9da2fa8 100644
+--- a/drivers/net/ethernet/8390/axnet_cs.c
++++ b/drivers/net/ethernet/8390/axnet_cs.c
+@@ -898,6 +898,7 @@ static int ax_close(struct net_device *dev)
+ /**
+  * axnet_tx_timeout - handle transmit time out condition
+  * @dev: network device which has apparently fallen asleep
++ * @txqueue: unused
+  *
+  * Called by kernel when device never acknowledges a transmit has
+  * completed (or failed) - i.e. never posted a Tx related interrupt.
 -- 
 2.25.1
 
