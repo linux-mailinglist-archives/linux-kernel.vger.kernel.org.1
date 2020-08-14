@@ -2,60 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22FD244B8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 17:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81867244B94
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 17:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728099AbgHNPEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 11:04:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45588 "EHLO mail.kernel.org"
+        id S1728603AbgHNPFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 11:05:41 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:40688 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgHNPEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 11:04:36 -0400
-Received: from dhcp-10-100-145-180.wdl.wdc.com (unknown [199.255.45.60])
+        id S1728347AbgHNPFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 11:05:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597417536; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=7FCVfLxxmii9ov0dCHs81K5wnCBYwV2wRwZYNb84Q9E=;
+ b=Q+k/cLCC5QtV2zhxJq7yjef/8EDcvnswMDLr0EtWcA+2iVXQLgEgWtfAwl1n6J64TtzoVDTT
+ yGN+j1FHNu5xyYWKc06ouUr0bUBrhEbfJOgnWE6tY1uQAhWLA4K9BOBIiiqoUuBaIyAZVK9U
+ wOEP4W4TuC0dc7zU/2qvYSTFahE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f36a8331e4d3989d476e079 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 14 Aug 2020 15:05:23
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C0936C43391; Fri, 14 Aug 2020 15:05:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9396A20774;
-        Fri, 14 Aug 2020 15:04:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597417476;
-        bh=oisErVD0u+lyl37V1wBsI8bt6Y7+p7CbVMU/YvPDXtQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CrTxXsd1uArNVJnUs+ss6N08rc0GDHeyOnV/HaAHn0kjrRVBpJKfhpX7Q848Unzxm
-         HTMX/XkrnvZztSYLgOghV6i4G0XxInbW0Gg6mYtsoc6uIKXUG2I9aVJwYa4o1dryRi
-         fnPEdxXyrqpHLX83WXeO7t0EDMYe3WmxhPba1lyw=
-Date:   Fri, 14 Aug 2020 08:04:33 -0700
-From:   Keith Busch <kbusch@kernel.org>
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        axboe@fb.com, hch@lst.de, sagi@grimberg.me
-Subject: Re: [PATCH] nvme-pci: cancel nvme device request before disabling
-Message-ID: <20200814150433.GA3498391@dhcp-10-100-145-180.wdl.wdc.com>
-References: <20200814071431.201400-1-ztong0001@gmail.com>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 78CDAC433C9;
+        Fri, 14 Aug 2020 15:05:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 78CDAC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200814071431.201400-1-ztong0001@gmail.com>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 7/7] ath: drop unnecessary list_empty
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1595761112-11003-8-git-send-email-Julia.Lawall@inria.fr>
+References: <1595761112-11003-8-git-send-email-Julia.Lawall@inria.fr>
+To:     Julia Lawall <Julia.Lawall@inria.fr>
+Cc:     kernel-janitors@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200814150522.C0936C43391@smtp.codeaurora.org>
+Date:   Fri, 14 Aug 2020 15:05:22 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 03:14:31AM -0400, Tong Zhang wrote:
-> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-> index ba725ae47305..c4f1ce0ee1e3 100644
-> --- a/drivers/nvme/host/pci.c
-> +++ b/drivers/nvme/host/pci.c
-> @@ -1249,8 +1249,8 @@ static enum blk_eh_timer_return nvme_timeout(struct request *req, bool reserved)
->  		dev_warn_ratelimited(dev->ctrl.device,
->  			 "I/O %d QID %d timeout, disable controller\n",
->  			 req->tag, nvmeq->qid);
-> -		nvme_dev_disable(dev, true);
->  		nvme_req(req)->flags |= NVME_REQ_CANCELLED;
-> +		nvme_dev_disable(dev, true);
->  		return BLK_EH_DONE;
+Julia Lawall <Julia.Lawall@inria.fr> wrote:
 
-Shouldn't this flag have been set in nvme_cancel_request()?  It's not
-like the timeout out command is the only command to have been cancelled
-by this action, nor is it guaranteed that getting here will mean the
-request was in fact cancelled. The controller could still provide a real
-completion.
+> list_for_each_entry{_safe} is able to handle an empty list.
+> The only effect of avoiding the loop is not initializing the
+> index variable.
+> Drop list_empty tests in cases where these variables are not
+> used.
+> 
+> Note that list_for_each_entry{_safe} is defined in terms of
+> list_first_entry, which indicates that it should not be used on an
+> empty list.  But in list_for_each_entry{_safe}, the element obtained
+> by list_first_entry is not really accessed, only the address of its
+> list_head field is compared to the address of the list head, so the
+> list_first_entry is safe.
+> 
+> The semantic patch that makes this change for the list_for_each_entry
+> case is as follows: (http://coccinelle.lip6.fr/)
+> 
+> <smpl>
+> @@
+> expression x,e;
+> statement S;
+> identifier i;
+> @@
+> 
+> -if (!(list_empty(x)))
+>    list_for_each_entry(i,x,...) S
+>  ... when != i
+> ? i = e
+> </smpl>
+> 
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+Patch applied to ath-next branch of ath.git, thanks.
+
+18c25b4019ca ath: drop unnecessary list_empty
+
+-- 
+https://patchwork.kernel.org/patch/11685677/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
