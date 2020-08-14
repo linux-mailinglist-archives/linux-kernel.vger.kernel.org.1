@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83283244E5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 20:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB43244E60
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 20:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728597AbgHNSIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 14:08:36 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:38896 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726297AbgHNSIg (ORCPT
+        id S1728655AbgHNSJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 14:09:53 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:33373 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726297AbgHNSJw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 14:08:36 -0400
-Received: by mail-oo1-f65.google.com with SMTP id z11so2097859oon.5;
-        Fri, 14 Aug 2020 11:08:35 -0700 (PDT)
+        Fri, 14 Aug 2020 14:09:52 -0400
+Received: by mail-ot1-f67.google.com with SMTP id t7so8284498otp.0;
+        Fri, 14 Aug 2020 11:09:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=emIdfFsixl10m0M5c840U75hx82p0eU8c30F0GRjyEs=;
-        b=G8rQbKMNESZv3A0bItNXTG1sGgezFvNE1i8SrawBID6lUYFSyg4d/WZfUAVU+yXKcL
-         cWGTteMXBotRm+PmpOMCdh88uahQOJ2SpnHDbacgWk9u4udoSfNebRUszM4cKRBK7glt
-         zcawF1YiYgABAp6hSq0Zz09zJ85nrhZmUzGtZ74G0Wi4Pi3d65kj5Q2zRbr8jZPsFqF/
-         gMeryverEF5301AfMXPxdqg5be9zfdxhE++ne9uRcbYmCpcBh0S9UJlhS3t09SaKkNoG
-         0pAp4PMsj9yIXYHqZgQ4IZhdNvrXMqVcCUn3uXixKLg11r0yEILWRYAdrsvKvEYeBlcR
-         7M6Q==
-X-Gm-Message-State: AOAM530GgKnobSrPz6bCUVPSF//c8uCV8oqzS6UuoJKtLBniyH4tzlVX
-        1Y7N6sIk8jTcG1qxrzv+20E2TGFLq5HCg3lghxezrepVQQ4=
-X-Google-Smtp-Source: ABdhPJzKc++kR41IO5hzPDOT+ysOunMaS02XKpKOdv59xPu4JCqos/htNCsvhhXnfJVLIodkSJr0Ys+lGfP7zM2y9vE=
-X-Received: by 2002:a4a:e618:: with SMTP id f24mr2549592oot.75.1597428515436;
- Fri, 14 Aug 2020 11:08:35 -0700 (PDT)
+        bh=FWpki59Yt66zh3jh8q/OcbPj2ya0dDjDcuiyjVjlaFs=;
+        b=D+Li9jXvh/uUoE9O3gGJS1SMYm4CUGGGrMawk5O54GDADps3DTtcLfgFH83LGBYgLe
+         V7wVM2b7Nvqf9AVnfIL7zjaCGaRSyir34KudDRu3eIBVRf5SRPBgM/+v2/+uHJmZzMUK
+         CVBgm99+jSCj61SoteMAcNFt9+zZIj9GTS2RQ9WHmm83MD1KNtutVlkXfiYlWaMltzJt
+         UeObn/zwOqW0kzfnPYtexhelO1GXvTdZrmWlqkkgt+uoecxtSyed6WnjXOONJG8uLH9O
+         mnEwAsYaclTLV7fWozF38ZgZxCaZ4IeyfEu05D7zTszOuKBc+ON7sWXEOb8VOo/18RA8
+         NJTA==
+X-Gm-Message-State: AOAM531RwkM+G5JHFCXw6Zf8C7KDObQab5Rw0cTtYrWPeIHu1FUdxFHC
+        FqRAyKid+Qo0OheXFUb7hePQJrALhNv/00PpBnZ/bBiiyRE=
+X-Google-Smtp-Source: ABdhPJzZCUjOjz3+qUDbyYxT24ltsOM+ORo5EAMg7K5+43lWHZtaKlAF/HxuPOTFxNJGjVpIrlOdWqB9zE2LSfZmvQE=
+X-Received: by 2002:a9d:5c06:: with SMTP id o6mr1655235otk.262.1597428591566;
+ Fri, 14 Aug 2020 11:09:51 -0700 (PDT)
 MIME-Version: 1.0
 From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 14 Aug 2020 20:08:24 +0200
-Message-ID: <CAJZ5v0g42_UymEznQCjyaQMaDbO5txyDncAaGXogpSA9R8MZwQ@mail.gmail.com>
-Subject: [GIT PULL] One more power management update for v5.9-rc1
+Date:   Fri, 14 Aug 2020 20:09:40 +0200
+Message-ID: <CAJZ5v0iA_PSMf9gpXsmymS8t2ctMeyJ3FJE_v1LqbFu+fF_R6g@mail.gmail.com>
+Subject: [GIT PULL] More ACPI updates for v5.9-rc1
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
@@ -48,34 +48,43 @@ Hi Linus,
 Please pull from the tag
 
  git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.9-rc1-3
+ acpi-5.9-rc1-2
 
-with top-most commit f3db6de55e95eee6457a14912dd382a6cfc98edd
+with top-most commit 19fe87fd854a92c746ac73cb91a0bebac07a4618
 
- Merge branch 'pm-cpufreq'
+ clk: x86: Support RV architecture
 
-on top of commit f6235eb189706bf38c82b5fa5f2db0d21bc1dcef
+on top of commit 2baa85d6927d11b8d946da2e4ad00dddca5b8da2
 
- Merge tag 'pm-5.9-rc1-2' of
+ Merge tag 'acpi-5.9-rc1' of
 git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
 
-to receive one more power management update for 5.9-rc1.
+to receive additional ACPI updates for 5.9-rc1.
 
-This modifies the intel_pstate driver to allow it to work in the
-passive mode with hardware-managed P-states (HWP) enabled.
+These add new hardware support to the ACPI driver for AMD SoCs,
+the x86 clk driver and the Designware i2c driver (changes from
+Akshu Agrawal and Pu Wen).
 
 Thanks!
 
 
 ---------------
 
-Rafael J. Wysocki (1):
-      cpufreq: intel_pstate: Implement passive mode with HWP enabled
+Akshu Agrawal (4):
+      ACPI: APD: Change name from ST to FCH
+      clk: x86: Change name from ST to FCH
+      ACPI: APD: Add a fmw property is_raven
+      clk: x86: Support RV architecture
+
+Pu Wen (1):
+      i2c: designware: Add device HID for Hygon I2C controller
 
 ---------------
 
- Documentation/admin-guide/pm/intel_pstate.rst |  89 +++++-----
- drivers/cpufreq/cpufreq.c                     |   6 +-
- drivers/cpufreq/intel_pstate.c                | 245 +++++++++++++++++++-------
- include/linux/cpufreq.h                       |   2 +
- 4 files changed, 229 insertions(+), 113 deletions(-)
+ drivers/acpi/acpi_apd.c                            |  19 ++--
+ drivers/clk/x86/Makefile                           |   2 +-
+ drivers/clk/x86/clk-fch.c                          | 101 +++++++++++++++++++++
+ drivers/clk/x86/clk-st.c                           |  78 ----------------
+ drivers/i2c/busses/i2c-designware-platdrv.c        |   1 +
+ .../linux/platform_data/{clk-st.h => clk-fch.h}    |  11 ++-
+ 6 files changed, 121 insertions(+), 91 deletions(-)
