@@ -2,202 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F162244943
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F630244948
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgHNLyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 07:54:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgHNLyJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 07:54:09 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5E4C061384;
-        Fri, 14 Aug 2020 04:54:09 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id i80so4649453lfi.13;
-        Fri, 14 Aug 2020 04:54:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UJJl1olZSgHT/Jhiu6r/OOA+3riqNMH1SSNROcXwYmY=;
-        b=CMcuY81HMluGkYb/1C+u09CWQgmE09tMSaY7GvDq/pR3QhI33pkKgujynl/hZ9jBgH
-         /dvaWJleyujfPgspa9NoiYoflc4BN5vTUK4uUGk1Mue8ZYHH2oHtPRRM/43/l/D5CJoA
-         +HchcxtK+gM7Xij45NiX7hKf0exAfIrcImhIIoyidWiD6nZWr+jhsq9QjyTbS15QbLZZ
-         EmtTjQ1deErpdhPlafFvf0U9lc9kr8RZON5Yse9k6axM6HWEeYDl1Uv1+4EIR2bn2Us8
-         EYK3a6tXOOK8MjYgWPycMtM8hiIOr6yR0x5ihFDeFSW6fApE7IP/b/oaF7tT9eaIu5Qm
-         6TWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UJJl1olZSgHT/Jhiu6r/OOA+3riqNMH1SSNROcXwYmY=;
-        b=YC0qD+u1Vh/47e5sCA68m5A55APDEggOW1B1A0FTuj+wMt3GJG9wswNQom2L590jRH
-         JJeQY/9BwozjjkwQCHfhcKJ/07RU7psS3D+NqoX4qqmwnG3CAUTO/J3B+sVidpkwWj0k
-         G7V8rzSl/IOFvrcVpy3pnX3bLhF/Y1OwJp6+A67MetoXw51CUMCmdboN52vNvAZGit0p
-         3Vh6kUXnE5RAtPQLQjO+9ZXacbn3FaoD6lN5c14hPI5HAC93AdAr/BD0t7LF5JErQIpH
-         KeBBKxJRiJmefzEg5MtB+EuCNqOsG9/cv/tIV1VkYIm3lVcEv7v3Wx/1e3Ih3CKQSXG/
-         czbQ==
-X-Gm-Message-State: AOAM532CciedioDWHc214T0g/Wn7n4hkwFSiS08X/2vJceg//tI3O0Lm
-        bXuUoUe1IzahM8c3Fop/OB0=
-X-Google-Smtp-Source: ABdhPJzFYPbeNuK90JNB8ioSCS9m02KhJ8SDU8+0y3pJ0/R7Ht2Usjmqvx4nizWqMB5TGAVcqH/4og==
-X-Received: by 2002:a19:c894:: with SMTP id y142mr1002056lff.74.1597406047359;
-        Fri, 14 Aug 2020 04:54:07 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id p13sm1879876lfc.63.2020.08.14.04.54.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 04:54:06 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Fri, 14 Aug 2020 13:54:04 +0200
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200814115404.GA28229@pc636>
-References: <20200813075027.GD9477@dhcp22.suse.cz>
- <20200813095840.GA25268@pc636>
- <874kp6llzb.fsf@nanos.tec.linutronix.de>
- <20200813133308.GK9477@dhcp22.suse.cz>
- <87sgcqty0e.fsf@nanos.tec.linutronix.de>
- <20200813145335.GN9477@dhcp22.suse.cz>
- <20200813154159.GR4295@paulmck-ThinkPad-P72>
- <20200813155412.GP9477@dhcp22.suse.cz>
- <20200813162047.GA27774@pc636>
- <20200813163617.GS9477@dhcp22.suse.cz>
-MIME-Version: 1.0
+        id S1727886AbgHNL47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 07:56:59 -0400
+Received: from mail-vi1eur05on2107.outbound.protection.outlook.com ([40.107.21.107]:48986
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726185AbgHNL45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 07:56:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jzWL8k002HxzSFOlRe67mUTHBMRq5yEgzBywoJiSvzqYfjZ5pcyKqYRI/Eo4JONMMeY+yIlsU4Aes63Z+egqNFypdR0zQb6BniSxBzt6C0SCv32fEcfJPngPF5Em3Ur+OTvjod1+Ll6OmRVlyGnFgq5orlZcBishKWhYlTNe3vDhF3NqKQjCObTg+VMfOVzcvl4gtXnUpXE31qOSLgyetmRJrXApTIPJpqBX2nH/nZD2UWQa+H29dT1jeRyh91v/WuUor7AdxfBHKMZtue6ZzIf1IfkEas7OkTTzPYm5ZYOFd1vnP57TpET8INw7XCqbX1MM0SPJ+p2iKiDQZqBW+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GFUyassX0b4UZaVJEB/lmLG+G53Bdx79rn/Kd9756ng=;
+ b=Lz11LiU1TOz5/8voI7rmweOQpJO8PLAGEVv9myGR0oHxv8CulYmRoHWwDlbWxPT7ax73MAoqBAC67piWCsgkz+wFWZQfPTdXevwm29+d2fMDlMu9/wsx8hcraszX2WMUqfW0DJavqVGWfCVOpMouZBoMougBWpuOe2uRwf3danNC4hS6KPXL7C/dJ75CLUkwEzKxI/i4Y7HrNH0j5BRGj2Gm7SQI91LdU0v0fVzcLyEQzcqClCJUqKSow0mNPX6PZrS84DJW6DQM7NrlTqvEc1xU87dvwlfxkm0yhdGjRpR0KeLXM9bYxdPpAqJvefYwBx2Ai+XWDY2YGepuNIFH7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GFUyassX0b4UZaVJEB/lmLG+G53Bdx79rn/Kd9756ng=;
+ b=YHDuDjSOrZyjggd7TyUhKsw5KvsuabIJl6MH0n+fWVfGDf//t25UK/MVSeHrPmQY4jOoy5r7CrMcHvtIgBObS8fBJRGx6X1+X+aoHZ8ODQ6UUm/WH95v+d0hmU+gEZ2a/K/P/oT921kYp20c+2MVfvn6oDYQUmpvFo3q9qs+QOk=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=plvision.eu;
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
+ HE1P190MB0332.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:62::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3261.19; Fri, 14 Aug 2020 11:56:53 +0000
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::b1a4:e5e3:a12b:1305]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::b1a4:e5e3:a12b:1305%6]) with mapi id 15.20.3283.018; Fri, 14 Aug 2020
+ 11:56:53 +0000
+Date:   Fri, 14 Aug 2020 14:56:50 +0300
+From:   Vadym Kochan <vadym.kochan@plvision.eu>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Taras Chornyi <taras.chornyi@plvision.eu>
+Subject: Re: [PATCH v2 2/2] nvmem: add ONIE NVMEM cells support
+Message-ID: <20200814115650.GE17795@plvision.eu>
+References: <20200529230451.21337-1-vadym.kochan@plvision.eu>
+ <20200529230451.21337-3-vadym.kochan@plvision.eu>
+ <8a8653c5-b112-4042-cbdf-8498e38d14ee@linaro.org>
+ <20200601090300.GA21928@plvision.eu>
+ <0d664272-4ef9-fe2c-02f4-60e9ecb41e20@linaro.org>
+ <20200601102749.GA25323@plvision.eu>
+ <20200605105351.GA1118@plvision.eu>
+ <9f73d7ea-1f1f-9820-a9d1-55baa984873e@linaro.org>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200813163617.GS9477@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <9f73d7ea-1f1f-9820-a9d1-55baa984873e@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: AM6P194CA0068.EURP194.PROD.OUTLOOK.COM
+ (2603:10a6:209:84::45) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:7:56::28)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from plvision.eu (217.20.186.93) by AM6P194CA0068.EURP194.PROD.OUTLOOK.COM (2603:10a6:209:84::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.16 via Frontend Transport; Fri, 14 Aug 2020 11:56:52 +0000
+X-Originating-IP: [217.20.186.93]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 62d7e0b4-b20a-4107-00e1-08d8404922bd
+X-MS-TrafficTypeDiagnostic: HE1P190MB0332:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1P190MB0332FB03ADB16923EB51F6EE95400@HE1P190MB0332.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xS1vaIoyX2O3YbjVFPzdAdSdzQGc/HaoFKunqAcW9aS+emjU7CVBaCFcd5zmPy7EVjPKSHupRC9WSTgNW1oBfgRzB1251QayWHxti8LLnKXU6yhZBkvIaIxb6LLaCJDlFEZTE35PJplgt3TIa3ut9ZFPfWwlRmbqSvoAFMj28lCn36hmiTUfo3DLW1NXGlwqinAcj1khIhGLDf9pHvDT6rKEZ3dCZh42s5b2FNqDqkPVwwDTuaAtDjCuUf2Y1oNqxePm8hCOxa5N+IphMoj7280rEuW8WqTWaj/E9pIpaFIq+K5kZsa+/SulR/eThjOPccb7RvXhcll5jLirIm5qNw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(366004)(39830400003)(376002)(346002)(396003)(136003)(86362001)(54906003)(55016002)(2906002)(1076003)(36756003)(186003)(16526019)(7696005)(8886007)(6916009)(33656002)(66476007)(2616005)(66556008)(956004)(508600001)(66946007)(5660300002)(26005)(53546011)(52116002)(316002)(107886003)(4326008)(44832011)(8936002)(8676002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: yiHjSD7VIlmcMrXzGmCHxPB3u9nktcOQaFpqGzVdZhnAdUz47rhbfqMp65YokAYCxvMw1KMCueqPOWaIo3q/Rhi18UkB9d8keC50LSmgLupSZj+rO0qkKOQdfmYiATmtOKg9EPgWKo52Dgegg2yg12cztIsuDk6/OAS3edCXwcCMLW7KkYbDPouEPI3CPGloPR3f9dYEPq9QLHbnZoHDgbxqUl1zKAh8BzdvDp9/A43FohCBaP3XUDTbZ5jn6f2h6vZtngXkMJzs7d3O+sDI2Vc9RnQ8LylAXRkbBcom9yScUJGdmgLGpcAsXFwGJPXI1MWmOy3wXJ0vb5PqB0iB1RlDMAcCwWaSsaxcVWXTYeD2/gzLh2n4dLsY9Kb/ZAKYJ12eoHOkKWr8APsMo39WF79hQNMxujwPWZ8XahUDmIs9v4/NxkjdXgaI3CIt4Y/0maA6jnlhQrFbhtRTCiV5RWrhkTP1Mwo1cPO7+Vzf0KHwrlLyKhJ0kH5eR4hfaDVzloglEoroAm2j6xV+P7s93RayILXUzXZHnnRPInw+Vw4SbPoAy84F7d5xCmo1mwdPAoIN47SoA/8aijhysNCT5eq1R6LOm1gSVViUqNZ5gz04xcko0GZjYR9jWFkUApP55/rW0iv03i0IG8WIH0lAiQ==
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 62d7e0b4-b20a-4107-00e1-08d8404922bd
+X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2020 11:56:53.7464
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: M1PohuwzGZtCECJqWKuh664qFm70smNLvQUglhDCShremxIOtwjul9a0l3sG428ZX25rSRjIg8tgQwlW1nV1VBhdQbQKVkUyKppvmk3bEpU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0332
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 06:36:17PM +0200, Michal Hocko wrote:
-> On Thu 13-08-20 18:20:47, Uladzislau Rezki wrote:
-> > > On Thu 13-08-20 08:41:59, Paul E. McKenney wrote:
-> > > > On Thu, Aug 13, 2020 at 04:53:35PM +0200, Michal Hocko wrote:
-> > > > > On Thu 13-08-20 16:34:57, Thomas Gleixner wrote:
-> > > > > > Michal Hocko <mhocko@suse.com> writes:
-> > > > > > > On Thu 13-08-20 15:22:00, Thomas Gleixner wrote:
-> > > > > > >> It basically requires to convert the wait queue to something else. Is
-> > > > > > >> the waitqueue strict single waiter?
-> > > > > > >
-> > > > > > > I would have to double check. From what I remember only kswapd should
-> > > > > > > ever sleep on it.
-> > > > > > 
-> > > > > > That would make it trivial as we could simply switch it over to rcu_wait.
-> > > > > > 
-> > > > > > >> So that should be:
-> > > > > > >> 
-> > > > > > >> 	if (!preemptible() && gfp == GFP_RT_NOWAIT)
-> > > > > > >> 
-> > > > > > >> which is limiting the damage to those callers which hand in
-> > > > > > >> GFP_RT_NOWAIT.
-> > > > > > >> 
-> > > > > > >> lockdep will yell at invocations with gfp != GFP_RT_NOWAIT when it hits
-> > > > > > >> zone->lock in the wrong context. And we want to know about that so we
-> > > > > > >> can look at the caller and figure out how to solve it.
-> > > > > > >
-> > > > > > > Yes, that would have to somehow need to annotate the zone_lock to be ok
-> > > > > > > in those paths so that lockdep doesn't complain.
-> > > > > > 
-> > > > > > That opens the worst of all cans of worms. If we start this here then
-> > > > > > Joe programmer and his dog will use these lockdep annotation to evade
-> > > > > > warnings and when exposed to RT it will fall apart in pieces. Just that
-> > > > > > at that point Joe programmer moved on to something else and the usual
-> > > > > > suspects can mop up the pieces. We've seen that all over the place and
-> > > > > > some people even disable lockdep temporarily because annotations don't
-> > > > > > help.
-> > > > > 
-> > > > > Hmm. I am likely missing something really important here. We have two
-> > > > > problems at hand:
-> > > > > 1) RT will become broken as soon as this new RCU functionality which
-> > > > > requires an allocation from inside of raw_spinlock hits the RT tree
-> > > > > 2) lockdep splats which are telling us that early because of the
-> > > > > raw_spinlock-> spin_lock dependency.
-> > > > 
-> > > > That is a reasonable high-level summary.
-> > > > 
-> > > > > 1) can be handled by handled by the bailing out whenever we have to use
-> > > > > zone->lock inside the buddy allocator - essentially even more strict
-> > > > > NOWAIT semantic than we have for RT tree - proposed (pseudo) patch is
-> > > > > trying to describe that.
-> > > > 
-> > > > Unless I am missing something subtle, the problem with this approach
-> > > > is that in production-environment CONFIG_PREEMPT_NONE=y kernels, there
-> > > > is no way at runtime to distinguish between holding a spinlock on the
-> > > > one hand and holding a raw spinlock on the other.  Therefore, without
-> > > > some sort of indication from the caller, this approach will not make
-> > > > CONFIG_PREEMPT_NONE=y users happy.
-> > > 
-> > > If the whole bailout is guarded by CONFIG_PREEMPT_RT specific atomicity
-> > > check then there is no functional problem - GFP_RT_SAFE would still be
-> > > GFP_NOWAIT so functional wise the allocator will still do the right
-> > > thing.
-> > > 
-> > > [...]
-> > > 
-> > > > > That would require changing NOWAIT/ATOMIC allocations semantic quite
-> > > > > drastically for !RT kernels as well. I am not sure this is something we
-> > > > > can do. Or maybe I am just missing your point.
-> > > > 
-> > > > Exactly, and avoiding changing this semantic for current users is
-> > > > precisely why we are proposing some sort of indication to be passed
-> > > > into the allocation request.  In Uladzislau's patch, this was the
-> > > > __GFP_NO_LOCKS flag, but whatever works.
-> > > 
-> > > As I've tried to explain already, I would really hope we can do without
-> > > any new gfp flags. We are running out of them and they tend to generate
-> > > a lot of maintenance burden. There is a lot of abuse etc. We should also
-> > > not expose such an implementation detail of the allocator to callers
-> > > because that would make future changes even harder. The alias, on the
-> > > othere hand already builds on top of existing NOWAIT semantic and it
-> > > just helps the allocator to complain about a wrong usage while it
-> > > doesn't expose any internals.
-> > > 
-> > I know that Matthew and me raised it. We do can handle it without
-> > introducing any flag. I mean just use 0 as argument to the page_alloc(gfp_flags = 0) 
-> > 
-> > i.e. #define __GFP_NO_LOCKS 0
-> > 
-> > so it will be handled same way how it is done in the "mm: Add __GFP_NO_LOCKS flag"
-> > I can re-spin the RFC patch and send it out for better understanding.
-> > 
-> > Does it work for you, Michal? Or it is better just to drop the patch here?
+Hi Srinivas,
+
+On Mon, Jun 15, 2020 at 12:06:11PM +0100, Srinivas Kandagatla wrote:
 > 
-> That would change the semantic for GFP_NOWAIT users who decided to drop
-> __GFP_KSWAPD_RECLAIM or even use 0 gfp mask right away, right? The point
->
-I see your point. Doing GFP_NOWAIT & ~__GFP_KSWAPD_RECLAIM will do something
-different what people expect. Right you are.
+> 
+> On 05/06/2020 11:53, Vadym Kochan wrote:
+> > > One of the example is atmel eeprom (at24), but there might be different
+> > > devices.
+> > > 
+> > > But can you please explain what is the technical/conceptual issue with
+> > > this approach ?
+> > > 
+> > > Thanks,
+> > I just I'd like to clarify if there is a way it can be acceptable. The
+> > problem is that there is TLV format which  might be used on any nvmem
+> > device which contains for example mac address which needs to be exposed
+> > as nvmem cell. If to populate cells via nvmem_config then anyway I need
+> > to parse these cells from the "target" nvmem device.
+> 
+> 
+> 
+> As a first step this need to be part of the provider logic to parse this
+> before nvmem provider is registered. If there are more users for such
+> parsing, we can think of adding some level of parsing to nvmem core itself.
+> 
+> Hope this answers your query.
+> 
+> Thanks,
+> srini
 
->
-> I am trying to make is that an alias is good for RT because it doesn't
-> have any users (because there is no RT atomic user of the allocator)
-> currently.
->
-Now I see your view. So we can handle RT case by using "RT && !preemptible()",
-based on that we can bail out. GFP_ATOMIC and NOWAIT at least will keep same
-semantic.
+Thank you for suggestion, I did not answered because I was not sure
+about the way how to provide this cell parser registering, still
+I am not sure about the preferred way. What about the following way:
 
-Second, if the CONFIG_PROVE_RAW_LOCK_NESTING is fixed for PREEMPT_COUNT=n,
-then it would work. But i am lost here a bit if it is discussable or not.
+    1) nvmem provides API for registering cell-parser.
 
-Thanks!
+       Looks like it might be similar to the API for adding the
+       cell-table by using device's name.
 
---
-Vlad Rezki
+    2) cell-parser driver registers itself using API from above
+       (I am not sure on which initcall stage better to perform
+       registration to be registered before the nvmem drivers probe)
+
+    3) during nvmem_register() (before adding cells from table) core
+       tries to find parser by matching on device's name.
+       
+       If parser is found - then core calls the callback with passing the pointer to
+       nvmem device.
+
+    4) cell-driver is called via on-parse callback.
+
+       During this callback the cell-parser driver can parse the nvmem
+       device and register cell table.
+
+    5) core adds cells from registered tables.
+
+
+Thank you,
