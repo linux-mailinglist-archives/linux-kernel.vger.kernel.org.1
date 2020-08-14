@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F14B244DE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A4F244DEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728758AbgHNR23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 13:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37546 "EHLO
+        id S1728746AbgHNR22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 13:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728018AbgHNR2O (ORCPT
+        with ESMTP id S1728706AbgHNR2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 13:28:14 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A4EC061384
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:13 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id d6so3591552wrv.23
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:13 -0700 (PDT)
+        Fri, 14 Aug 2020 13:28:15 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EE3C061386
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:14 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id l18so6471301qvq.16
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:28:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=Riwx46dUdQZCUBoIKFQK30aeY6nxibjjbFZQvhGTSVk=;
-        b=r3Pq4Nw/CaoWG6G6om2TkSeS2q3clDVrI1jCJZUuPgJWrFW56RmBaxQJTKiw8RDwkv
-         SXknHXxNubQ/xsH4JUduXI8P7Ao0rNKHTmxWSLd6+rR3L+eMVGvfYsQZCNJcqno+0SvU
-         tQTCc0IaZnYqxsGgZIWb6dR600zBkz4ATNFlZXN0oodOskMVMbwApFhSiSS8Hc5kEo1o
-         2keQXF4RswsJN9aziL4F/HMIxE1tLyJyZehyXq70N4BsfEQC2/qJApII530XcFa6vDo9
-         umF+SAHHeQEUyeUJl91ZaJnkzhY9dZLQUxwtVJNYU4o96vxe2Ib/F+vtqvgmZyDaI9I/
-         HVjQ==
+        bh=E0RrGh1M0jqaaDoEOkU8MvQi4g07cx9su4pS9IT1SWw=;
+        b=J0yRjS8wAi98SLl40BtGkKwGJXb87bHWptPKQUee0Z7i8RnowmsAsnTsSSGI/mRVKG
+         /jBE+O/OM0IlfTDa5WKWGDVszoGwgZAxqhir2+UYOvzVv0T0kxYGs89EIVE3j7zvDcQP
+         GPQ1zisFX3ghoL4cEwaGUe+RAIqE8fE978O2GWSaMwrA6JP4uyHCDH6oudvPU+qzrFnK
+         s/DztyfYwRhXAGuuuDUHlU5qU/ik0sNsoQCOVLC2aU7SaX6rXyrlmEfq6jLz9760Mo/W
+         YzyxoAF7tuNY/jCOHcxGNwqQSk8KoNiASEdIQr3iycLeHaTqYkXL/Uqo8uXoj1mabJku
+         9Q2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Riwx46dUdQZCUBoIKFQK30aeY6nxibjjbFZQvhGTSVk=;
-        b=RHYRnOWPv/lY25tY+4Z9k28BaQUUOXI4TFdI3dun4QhGj5noI+OcmUClF80sCCZbDz
-         tFjy0vm69PQ7z88vbQeokxa9/eBAzDsiF6oId9ha3SFaep9QHLB3Bz9NrNxSUypKGavv
-         6dXuiz4WxdpcOMdkwc4impOCf/V1hK95yDxWFUBaQWUupPxE5hwfesQJErSxmYrKKDp/
-         +fp2nlSHv89uA53oFsfWjJZXctYQWQ/VW7EOAnBXEEqDFo51yjm7JIzuFBq9wPl72sXJ
-         kV7C1sTPdbOxvDM5PSTrb+gmlT4mYjTmrcyGA1+6xmfM0Yzu1oaBAy6lDj0FHBH3/Utl
-         jjOg==
-X-Gm-Message-State: AOAM5324p9/R0FRHfSuomuGpvbUGZRxxwPn6Bt6Ug7xcWxepDFcxb3pk
-        /hdAqzZqTADNN652nS249uewzQ55EzSyiXHr
-X-Google-Smtp-Source: ABdhPJw/jNH9QPIZc2t+4rbadjLlOE44b7TKGySp7yNB+Ni/K8pn2eaB/l/BXc2r60vcjhzOsBbB8v3UAMZ+9JJW
-X-Received: by 2002:a05:600c:c3:: with SMTP id u3mr424057wmm.1.1597426091488;
- Fri, 14 Aug 2020 10:28:11 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 19:27:02 +0200
+        bh=E0RrGh1M0jqaaDoEOkU8MvQi4g07cx9su4pS9IT1SWw=;
+        b=pOgMdZf0rxAYThQcinx/6bM0wIlz8gfs8hLWdt3g0tDwrlyhvxrXWSjDA5cJtZMHsk
+         UL5H5C8k2Vm3a+LykSSh2glOI+AdvGeRyyDjp+zuKU0zf4L2P/Z1CpSQn8iWNvueu1aV
+         cLfgVrXSRxm7Kv/Zarf0HHLCPfTzirxArEvUV9GKUPWyZDRZGgmLKglhUhNrz9axJdY/
+         EIGwvvD0Zj30KUXMRN0dFtv8a367bfVXGatOVCdRbkeHtTN9OG6uRzeGx/llJ5YdQCuu
+         XNRIJxyRyWe5Xzs+K82rSMVvEpwXIvHjWwMd/uzKHvBYUrQntst0hDAeHavEPjQ7oxSj
+         ugig==
+X-Gm-Message-State: AOAM532SpGHnoX93dUHcCI6hQ3pLYe8BSX0ldHeDWADjIt0AvjPtvNC9
+        Z4H2dQh4Lwg0bAv6LjWfpctlgBbnv9CwM4JO
+X-Google-Smtp-Source: ABdhPJy3SdR9WMFOSxqndhovcLxyBqUrrg3mnD1AcV1Kt+RAUKx381UmFBB5e6t6uAgctFxBWyRwguDJG3EOOPOZ
+X-Received: by 2002:a0c:9a0c:: with SMTP id p12mr3610073qvd.75.1597426093874;
+ Fri, 14 Aug 2020 10:28:13 -0700 (PDT)
+Date:   Fri, 14 Aug 2020 19:27:03 +0200
 In-Reply-To: <cover.1597425745.git.andreyknvl@google.com>
-Message-Id: <2cf260bdc20793419e32240d2a3e692b0adf1f80.1597425745.git.andreyknvl@google.com>
+Message-Id: <f173aacd755e4644485c551198549ac52d1eb650.1597425745.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1597425745.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
-Subject: [PATCH 20/35] arm64: mte: Add in-kernel MTE helpers
+Subject: [PATCH 21/35] arm64: mte: Add in-kernel tag fault handler
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Dmitry Vyukov <dvyukov@google.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -76,247 +76,121 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-Provide helper functions to manipulate allocation and pointer tags for
-kernel addresses.
+Add the implementation of the in-kernel fault handler.
 
-Low-level helper functions (mte_assign_*, written in assembly) operate
-tag values from the [0x0, 0xF] range. High-level helper functions
-(mte_get/set_*) use the [0xF0, 0xFF] range to preserve compatibility
-with normal kernel pointers that have 0xFF in their top byte.
+When a tag fault happens on a kernel address:
+* a warning is logged,
+* the faulting instruction is skipped,
+* the execution continues.
 
-MTE_GRANULE_SIZE definition is moved to mte_asm.h header that doesn't
-have any dependencies and is safe to include into any low-level header.
+When a tag fault happens on a user address:
+* the kernel executes do_bad_area() and panics.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Co-developed-by: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- arch/arm64/include/asm/esr.h     |  1 +
- arch/arm64/include/asm/mte.h     | 46 +++++++++++++++++++++++++++++---
- arch/arm64/include/asm/mte_asm.h | 10 +++++++
- arch/arm64/kernel/mte.c          | 43 +++++++++++++++++++++++++++++
- arch/arm64/lib/mte.S             | 41 ++++++++++++++++++++++++++++
- 5 files changed, 138 insertions(+), 3 deletions(-)
- create mode 100644 arch/arm64/include/asm/mte_asm.h
+ arch/arm64/mm/fault.c | 50 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 49 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/esr.h b/arch/arm64/include/asm/esr.h
-index 035003acfa87..bc0dc66a6a27 100644
---- a/arch/arm64/include/asm/esr.h
-+++ b/arch/arm64/include/asm/esr.h
-@@ -103,6 +103,7 @@
- #define ESR_ELx_FSC		(0x3F)
- #define ESR_ELx_FSC_TYPE	(0x3C)
- #define ESR_ELx_FSC_EXTABT	(0x10)
-+#define ESR_ELx_FSC_MTE		(0x11)
- #define ESR_ELx_FSC_SERROR	(0x11)
- #define ESR_ELx_FSC_ACCESS	(0x08)
- #define ESR_ELx_FSC_FAULT	(0x04)
-diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-index 1c99fcadb58c..733be1cb5c95 100644
---- a/arch/arm64/include/asm/mte.h
-+++ b/arch/arm64/include/asm/mte.h
-@@ -5,14 +5,19 @@
- #ifndef __ASM_MTE_H
- #define __ASM_MTE_H
- 
--#define MTE_GRANULE_SIZE	UL(16)
-+#include <asm/mte_asm.h>
-+
- #define MTE_GRANULE_MASK	(~(MTE_GRANULE_SIZE - 1))
- #define MTE_TAG_SHIFT		56
- #define MTE_TAG_SIZE		4
-+#define MTE_TAG_MASK		GENMASK((MTE_TAG_SHIFT + (MTE_TAG_SIZE - 1)), MTE_TAG_SHIFT)
-+#define MTE_TAG_MAX		(MTE_TAG_MASK >> MTE_TAG_SHIFT)
- 
- #ifndef __ASSEMBLY__
- 
-+#include <linux/bitfield.h>
- #include <linux/page-flags.h>
-+#include <linux/types.h>
- 
- #include <asm/pgtable-types.h>
- 
-@@ -45,7 +50,16 @@ long get_mte_ctrl(struct task_struct *task);
- int mte_ptrace_copy_tags(struct task_struct *child, long request,
- 			 unsigned long addr, unsigned long data);
- 
--#else
-+void *mte_assign_valid_ptr_tag(void *ptr);
-+void *mte_assign_random_ptr_tag(void *ptr);
-+void mte_assign_mem_tag_range(void *addr, size_t size);
-+
-+#define mte_get_ptr_tag(ptr)	((u8)(((u64)(ptr)) >> MTE_TAG_SHIFT))
-+u8 mte_get_mem_tag(void *addr);
-+u8 mte_get_random_tag(void);
-+void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag);
-+
-+#else /* CONFIG_ARM64_MTE */
- 
- /* unused if !CONFIG_ARM64_MTE, silence the compiler */
- #define PG_mte_tagged	0
-@@ -80,7 +94,33 @@ static inline int mte_ptrace_copy_tags(struct task_struct *child,
- 	return -EIO;
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index 5e832b3387f1..c62c8ba85c0e 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -33,6 +33,7 @@
+ #include <asm/debug-monitors.h>
+ #include <asm/esr.h>
+ #include <asm/kprobes.h>
++#include <asm/mte.h>
+ #include <asm/processor.h>
+ #include <asm/sysreg.h>
+ #include <asm/system_misc.h>
+@@ -222,6 +223,20 @@ int ptep_set_access_flags(struct vm_area_struct *vma,
+ 	return 1;
  }
  
--#endif
-+static inline void *mte_assign_valid_ptr_tag(void *ptr)
++static bool is_el1_mte_sync_tag_check_fault(unsigned int esr)
 +{
-+	return ptr;
-+}
-+static inline void *mte_assign_random_ptr_tag(void *ptr)
-+{
-+	return ptr;
-+}
-+static inline void mte_assign_mem_tag_range(void *addr, size_t size)
-+{
-+}
++	unsigned int ec = ESR_ELx_EC(esr);
++	unsigned int fsc = esr & ESR_ELx_FSC;
 +
-+#define mte_get_ptr_tag(ptr)	0xFF
-+static inline u8 mte_get_mem_tag(void *addr)
-+{
-+	return 0xFF;
-+}
-+static inline u8 mte_get_random_tag(void)
-+{
-+	return 0xFF;
-+}
-+static inline void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
-+{
-+	return addr;
++	if (ec != ESR_ELx_EC_DABT_CUR)
++		return false;
++
++	if (fsc == ESR_ELx_FSC_MTE)
++		return true;
++
++	return false;
 +}
 +
-+#endif /* CONFIG_ARM64_MTE */
- 
- #endif /* __ASSEMBLY__ */
- #endif /* __ASM_MTE_H  */
-diff --git a/arch/arm64/include/asm/mte_asm.h b/arch/arm64/include/asm/mte_asm.h
-new file mode 100644
-index 000000000000..aa532c1851e1
---- /dev/null
-+++ b/arch/arm64/include/asm/mte_asm.h
-@@ -0,0 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2020 ARM Ltd.
-+ */
-+#ifndef __ASM_MTE_ASM_H
-+#define __ASM_MTE_ASM_H
-+
-+#define MTE_GRANULE_SIZE	UL(16)
-+
-+#endif /* __ASM_MTE_ASM_H  */
-diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index eb39504e390a..e2d708b4583d 100644
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -13,8 +13,10 @@
- #include <linux/swap.h>
- #include <linux/swapops.h>
- #include <linux/thread_info.h>
-+#include <linux/types.h>
- #include <linux/uio.h>
- 
-+#include <asm/barrier.h>
- #include <asm/cpufeature.h>
- #include <asm/mte.h>
- #include <asm/ptrace.h>
-@@ -72,6 +74,47 @@ int memcmp_pages(struct page *page1, struct page *page2)
- 	return ret;
- }
- 
-+u8 mte_get_mem_tag(void *addr)
-+{
-+	if (system_supports_mte())
-+		addr = mte_assign_valid_ptr_tag(addr);
-+
-+	return 0xF0 | mte_get_ptr_tag(addr);
-+}
-+
-+u8 mte_get_random_tag(void)
-+{
-+	u8 tag = 0xF;
-+
-+	if (system_supports_mte())
-+		tag = mte_get_ptr_tag(mte_assign_random_ptr_tag(NULL));
-+
-+	return 0xF0 | tag;
-+}
-+
-+void * __must_check mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
-+{
-+	void *ptr = addr;
-+
-+	if ((!system_supports_mte()) || (size == 0))
-+		return addr;
-+
-+	tag = 0xF0 | (tag & 0xF);
-+	ptr = (void *)__tag_set(ptr, tag);
-+	size = ALIGN(size, MTE_GRANULE_SIZE);
-+
-+	mte_assign_mem_tag_range(ptr, size);
-+
-+	/*
-+	 * mte_assign_mem_tag_range() can be invoked in a multi-threaded
-+	 * context, ensure that tags are written in memory before the
-+	 * reference is used.
-+	 */
-+	smp_wmb();
-+
-+	return ptr;
-+}
-+
- static void update_sctlr_el1_tcf0(u64 tcf0)
+ static bool is_el1_instruction_abort(unsigned int esr)
  {
- 	/* ISB required for the kernel uaccess routines */
-diff --git a/arch/arm64/lib/mte.S b/arch/arm64/lib/mte.S
-index 03ca6d8b8670..8c743540e32c 100644
---- a/arch/arm64/lib/mte.S
-+++ b/arch/arm64/lib/mte.S
-@@ -149,3 +149,44 @@ SYM_FUNC_START(mte_restore_page_tags)
+ 	return ESR_ELx_EC(esr) == ESR_ELx_EC_IABT_CUR;
+@@ -294,6 +309,18 @@ static void die_kernel_fault(const char *msg, unsigned long addr,
+ 	do_exit(SIGKILL);
+ }
  
- 	ret
- SYM_FUNC_END(mte_restore_page_tags)
++static void report_tag_fault(unsigned long addr, unsigned int esr,
++			     struct pt_regs *regs)
++{
++	bool is_write = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
 +
-+/*
-+ * Assign pointer tag based on the allocation tag
-+ *   x0 - source pointer
-+ * Returns:
-+ *   x0 - pointer with the correct tag to access memory
-+ */
-+SYM_FUNC_START(mte_assign_valid_ptr_tag)
-+	ldg	x0, [x0]
-+	ret
-+SYM_FUNC_END(mte_assign_valid_ptr_tag)
++	pr_alert("Memory Tagging Extension Fault in %pS\n", (void *)regs->pc);
++	pr_alert("  %s at address %lx\n", is_write ? "Write" : "Read", addr);
++	pr_alert("  Pointer tag: [%02x], memory tag: [%02x]\n",
++			mte_get_ptr_tag(addr),
++			mte_get_mem_tag((void *)addr));
++}
 +
-+/*
-+ * Assign random pointer tag
-+ *   x0 - source pointer
-+ * Returns:
-+ *   x0 - pointer with a random tag
-+ */
-+SYM_FUNC_START(mte_assign_random_ptr_tag)
-+	irg	x0, x0
-+	ret
-+SYM_FUNC_END(mte_assign_random_ptr_tag)
+ static void __do_kernel_fault(unsigned long addr, unsigned int esr,
+ 			      struct pt_regs *regs)
+ {
+@@ -317,12 +344,16 @@ static void __do_kernel_fault(unsigned long addr, unsigned int esr,
+ 			msg = "execute from non-executable memory";
+ 		else
+ 			msg = "read from unreadable memory";
++	} else if (is_el1_mte_sync_tag_check_fault(esr)) {
++		report_tag_fault(addr, esr, regs);
++		msg = "memory tagging extension fault";
+ 	} else if (addr < PAGE_SIZE) {
+ 		msg = "NULL pointer dereference";
+ 	} else {
+ 		msg = "paging request";
+ 	}
+ 
 +
-+/*
-+ * Assign allocation tags for a region of memory based on the pointer tag
-+ *   x0 - source pointer
-+ *   x1 - size
-+ *
-+ * Note: size is expected to be MTE_GRANULE_SIZE aligned
-+ */
-+SYM_FUNC_START(mte_assign_mem_tag_range)
-+	/* if (src == NULL) return; */
-+	cbz	x0, 2f
-+	/* if (size == 0) return; */
-+	cbz	x1, 2f
-+1:	stg	x0, [x0]
-+	add	x0, x0, #MTE_GRANULE_SIZE
-+	sub	x1, x1, #MTE_GRANULE_SIZE
-+	cbnz	x1, 1b
-+2:	ret
-+SYM_FUNC_END(mte_assign_mem_tag_range)
+ 	die_kernel_fault(msg, addr, esr, regs);
+ }
+ 
+@@ -658,10 +689,27 @@ static int do_sea(unsigned long addr, unsigned int esr, struct pt_regs *regs)
+ 	return 0;
+ }
+ 
++static int do_tag_recovery(unsigned long addr, unsigned int esr,
++			   struct pt_regs *regs)
++{
++	report_tag_fault(addr, esr, regs);
++
++	/* Skip over the faulting instruction and continue: */
++	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
++
++	return 0;
++}
++
++
+ static int do_tag_check_fault(unsigned long addr, unsigned int esr,
+ 			      struct pt_regs *regs)
+ {
+-	do_bad_area(addr, esr, regs);
++	/* The tag check fault (TCF) is per TTBR */
++	if (is_ttbr0_addr(addr))
++		do_bad_area(addr, esr, regs);
++	else
++		do_tag_recovery(addr, esr, regs);
++
+ 	return 0;
+ }
+ 
 -- 
 2.28.0.220.ged08abb693-goog
 
