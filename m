@@ -2,93 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4B8244645
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 10:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3E324464A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 10:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727064AbgHNIPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 04:15:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726050AbgHNIPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 04:15:19 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BEA292068E;
-        Fri, 14 Aug 2020 08:15:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597392918;
-        bh=O/CKn70poXMC1eVo5v8wL30+8uUO0oPYHL7wCqph7yE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=K+zev1q6hZX5b62eLIKBQ5eJ4ayAbwZwLoTFP2d7lJZyOtRgaQCG6IA5wQ53RyI5F
-         O6QoK0BbfFr0YQoHNTDyXRcPHGFbaiVWEf5hP9Gc4t4vglCqz3ev9X5ewZdYHtuaj0
-         iUkee5DVG4dzrUTIoGjzK7ruGyR8Ym7nNmg8Z0sI=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k6Urt-0026tv-Ac; Fri, 14 Aug 2020 09:15:17 +0100
+        id S1727108AbgHNIPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 04:15:36 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:36111 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726669AbgHNIPd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 04:15:33 -0400
+X-Originating-IP: 90.66.108.79
+Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id E896F1BF204;
+        Fri, 14 Aug 2020 08:15:30 +0000 (UTC)
+Date:   Fri, 14 Aug 2020 10:15:30 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Victor Ding <victording@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH] rtc: cmos: initialize rtc time when reading alarm
+Message-ID: <20200814081530.GA6530@piout.net>
+References: <20200813154020.1.Iaf7638a2f2a87ff68d85fcb8dec615e41340c97f@changeid>
+ <20200813073325.GK3480@piout.net>
+ <CANqTbdZhZL--JebFhZPkf2+VuCUs2b=Me-BoBHgAtt_MvQBX3A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 14 Aug 2020 09:15:17 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 1/2] exec: Restore EACCES of S_ISDIR execve()
-In-Reply-To: <20200813231723.2725102-2-keescook@chromium.org>
-References: <20200813231723.2725102-1-keescook@chromium.org>
- <20200813231723.2725102-2-keescook@chromium.org>
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <5ea68dd13fc8d5568b69f42fa384b8d3@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: keescook@chromium.org, akpm@linux-foundation.org, shuah@kernel.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANqTbdZhZL--JebFhZPkf2+VuCUs2b=Me-BoBHgAtt_MvQBX3A@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-14 00:17, Kees Cook wrote:
-> The return code for attempting to execute a directory has always been
-> EACCES. Adjust the S_ISDIR exec test to reflect the old errno instead
-> of the general EISDIR for other kinds of "open" attempts on 
-> directories.
+On 14/08/2020 16:10:13+1000, Victor Ding wrote:
+> Hi Alexandre,
 > 
-> Reported-by: Marc Zyngier <maz@kernel.org>
-> Link: https://lore.kernel.org/lkml/20200813151305.6191993b@why
-> Fixes: 633fb6ac3980 ("exec: move S_ISREG() check earlier")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  fs/namei.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> On Thu, Aug 13, 2020 at 5:33 PM Alexandre Belloni
+> <alexandre.belloni@bootlin.com> wrote:
+> >
+> > Hi,
+> >
+> > On 13/08/2020 15:41:34+1000, Victor Ding wrote:
+> > > cmos_read_alarm() may leave certain fields of a struct rtc_time
+> > > untouched; therefore, these fields contain garbage if not properly
+> > > initialized, leading to inconsistent values when converting into
+> > > time64_t.
+> > > This patch to set all fields of a struct rtc_time to -1 before calling
+> > > cmos_read_alarm().
+> > >
+> >
+> > I don't think this actually helps with the conversion as mktime64
+> > is taking unsigned int so I would think you need the whole logic that is
+> > in __rtc_read_alarm
 > 
-> diff --git a/fs/namei.c b/fs/namei.c
-> index 2112e578dccc..e99e2a9da0f7 100644
-> --- a/fs/namei.c
-> +++ b/fs/namei.c
-> @@ -2849,8 +2849,10 @@ static int may_open(const struct path *path,
-> int acc_mode, int flag)
->  	case S_IFLNK:
->  		return -ELOOP;
->  	case S_IFDIR:
-> -		if (acc_mode & (MAY_WRITE | MAY_EXEC))
-> +		if (acc_mode & MAY_WRITE)
->  			return -EISDIR;
-> +		if (acc_mode & MAY_EXEC)
-> +			return -EACCES;
->  		break;
->  	case S_IFBLK:
->  	case S_IFCHR:
+> It's true that this change does not produce a correct time64_t; however,
+> it isn't the intention either. The proposed change only produces a
+> consistent value: calling obtaining identical struct rtc_time if the CMOS
+> wakealarm is unchanged. In the case of suspend/resume, a correct value
+> time64_t is not necessary; a consistent value is sufficient to correctly
+> perform an equality test for `t_current_expires` and `t_saved_expires`.
+> Logic to deduce a correct time64_t is expensive and hence I would like to
+> avoid __rtc_read_alarm's logic here.
+> 
+> Prior to this patch, the struct rtc_time is uninitialized. After calling
+> cmos_read_alarm(), the tm_year field is always left untouched and hence
+> contains only garbage. On platforms without enhanced RTC timers, the
+> tm_mon and tm_mday fields are left with garbage as well. Therefore,
+> `t_current_expires` and `t_saved_expires` from garbage data, which leads
+> to incorrect equality test results.
+> 
 
-Reviewed-by: Marc Zyngier <maz@kernel.org>
+Seeing that saved_wkalrm is initialized to zero, wouldn't it be
+sufficient to initialize current_alarm to 0? This can be done simply at
+the declaration. I personally find the -1 to be confusing especially
+since the result ends up being architecture dependent.
 
-         M.
+> >
+> > > Signed-off-by: Victor Ding <victording@google.com>
+> > > ---
+> > >
+> > >  drivers/rtc/rtc-cmos.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/drivers/rtc/rtc-cmos.c b/drivers/rtc/rtc-cmos.c
+> > > index bcc96ab7793f..c99af567780d 100644
+> > > --- a/drivers/rtc/rtc-cmos.c
+> > > +++ b/drivers/rtc/rtc-cmos.c
+> > > @@ -1006,6 +1006,7 @@ static int cmos_suspend(struct device *dev)
+> > >                       enable_irq_wake(cmos->irq);
+> > >       }
+> > >
+> > > +     memset(&cmos->saved_wkalrm.time, -1, sizeof(struct rtc_time));
+> > >       cmos_read_alarm(dev, &cmos->saved_wkalrm);
+> > >
+> > >       dev_dbg(dev, "suspend%s, ctrl %02x\n",
+> > > @@ -1054,6 +1055,7 @@ static void cmos_check_wkalrm(struct device *dev)
+> > >               return;
+> > >       }
+> > >
+> > > +     memset(&current_alarm.time, -1, sizeof(struct rtc_time));
+> > >       cmos_read_alarm(dev, &current_alarm);
+> > >       t_current_expires = rtc_tm_to_time64(&current_alarm.time);
+> > >       t_saved_expires = rtc_tm_to_time64(&cmos->saved_wkalrm.time);
+> > > --
+> > > 2.28.0.236.gb10cc79966-goog
+> > >
+> >
+> > --
+> > Alexandre Belloni, Bootlin
+> > Embedded Linux and Kernel engineering
+> > https://bootlin.com
+> 
+> Best regards,
+> Victor Ding
+
 -- 
-Jazz is not dead. It just smells funny...
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
