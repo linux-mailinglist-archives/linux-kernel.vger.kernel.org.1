@@ -2,91 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A632445DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 09:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0EE82445DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 09:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726599AbgHNHba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 03:31:30 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:34602 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726455AbgHNHba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 03:31:30 -0400
-Received: from [10.130.0.75] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxCMXHPTZf+tIIAA--.125S3;
-        Fri, 14 Aug 2020 15:31:21 +0800 (CST)
-Subject: Re: [PATCH] MIPS: Loongson: Set CONFIG_FRAME_WARN=2048 in
- loongson3_defconfig to fix build warning
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1597373793-8482-1-git-send-email-yangtiezhu@loongson.cn>
- <20200814065310.GA4751@alpha.franken.de>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <be055bef-e731-7242-78ca-e1844389c791@loongson.cn>
-Date:   Fri, 14 Aug 2020 15:31:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1726631AbgHNHdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 03:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726212AbgHNHdW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 03:33:22 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AD6C061383
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 00:33:21 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id b16so9939816ioj.4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 00:33:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=melexis.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P0QNUADYgOn/C/m3nQ6Y5G9JAzArzh2nTxmJSP8VeEc=;
+        b=F02m6Db+bn1IYiEMLwRmkwBmNHsUDL69Su3uR7D6wPUjYyekdJ2OdpB5LNiRNFplCI
+         N4Y06rHa5Oz0P+GDzULkqcJ8BTWxuh5DIJ/9zitlUFE14XPSWRPplKQXlAjCkkowoCQm
+         xp1YMzD2Efau1+2DVcsFgGTCkfiu/z3HBRC1lNWxygPRNIZHBsS8FJBrzknX4Nl/C4cL
+         C8ApAiyOEkspIrd8MTeqeollAxgrXFMaAMh2pCU+9anHjE81lYAOzXNd0tJyemg5AjtZ
+         La6rs8+EfmZ+0HH5UYvpXhCrR7pdznxhZpXcnlfz/LhM9glHxr87smK2Jn3joeTR46I2
+         NOEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P0QNUADYgOn/C/m3nQ6Y5G9JAzArzh2nTxmJSP8VeEc=;
+        b=pFELjgN1W97q8ZVxMgC4Vpc9BKtuH8pzou5nrHDq9Oj+Jm1M+rdS2ZFsv1iFTaWRLP
+         PAyxk3Vfq+Fd0vfQZyCXowvTyJiDICDH4866tlWC7+HdaBHSH0DacrQrdwVPUQY6LkXS
+         hsTdtb8AWvs8BgRaR/k0dYPCXG6gvDIAyVQhTuk4O2ZZtZCx1TMw9FYOqqnl2N6oaEAl
+         2WGzMPtWjG6UrYyPMEIU7dkSUyOwdFiN0C8Ji/flAqdChRT/P4qZRY4JcwLGrFsFsIdm
+         iOp57DkCsD4b6fxJUwadUr2rIUdhfEwBVte3on9L6/EavxeRBBCpDCW+kPjM3dD43HCO
+         5qLg==
+X-Gm-Message-State: AOAM533kE9IItXwAa/7cMjB2TrPFf4pRwB+LBc6xrA+ivq26qITNHn6a
+        hnEkYsxDBMeQ3YZ05FA6JRyLsTmXRT6zZt16+udx8w==
+X-Google-Smtp-Source: ABdhPJw1TGYdJE6viPoHF/fq98yJWPlG5/W+SzRg1+zNI/JE5qYMT9Y9X6wH9ta4mk7G4xrhP4Mw7x2BUEwvhKVypEc=
+X-Received: by 2002:a5d:8cce:: with SMTP id k14mr1184502iot.13.1597390401084;
+ Fri, 14 Aug 2020 00:33:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200814065310.GA4751@alpha.franken.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9DxCMXHPTZf+tIIAA--.125S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7JF1UAr1DXF4DXFy5Wr45KFg_yoWkWwb_Wr
-        yUGaykurW5ArykuFZ7Wws5C392ya4UZw1rAr15Xr13Xas3trnxtw4kJrn8CFn8X3Zrtrsx
-        Z3y8A3sFkF1IqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbV8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxkIecxEwVAFwVW8CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUMMKZUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+References: <20200813075125.4949-1-cmo@melexis.com> <20200813075125.4949-4-cmo@melexis.com>
+ <CAHp75VfNwb5uBp=H0295LEJjXy1+=V5yvSN1PHbtMYzgg=_EAA@mail.gmail.com>
+ <CAKv63uv=b60B9RXBJF4HEhMOowu-qbGrv7LsmJVvkkERSida-A@mail.gmail.com>
+ <CAHp75Vd+3SopKog6uhSKoOLn+tECsQfs7kRbJsrMZEbNRpk8bQ@mail.gmail.com>
+ <CAKv63usrjEHTmYtahedqULnqu-fM3TFC8HJ=S4h+w=UTv5sd-Q@mail.gmail.com> <CAHp75VeH5SA2KeiTSN__8ndj1v_SEb7mEWPG1p2Lz-tATDWi8A@mail.gmail.com>
+In-Reply-To: <CAHp75VeH5SA2KeiTSN__8ndj1v_SEb7mEWPG1p2Lz-tATDWi8A@mail.gmail.com>
+From:   Crt Mori <cmo@melexis.com>
+Date:   Fri, 14 Aug 2020 09:32:45 +0200
+Message-ID: <CAKv63uvQBoD=a2ADG7XBoQd2JRt6ggK0UB-g6cSuWLE7EV+qww@mail.gmail.com>
+Subject: Re: [PATCH v5 3/5] iio:temperature:mlx90632: Convert polling while
+ loop to do-while
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/14/2020 02:53 PM, Thomas Bogendoerfer wrote:
-> On Fri, Aug 14, 2020 at 10:56:33AM +0800, Tiezhu Yang wrote:
->> Fixes: 70b838292bef ("MIPS: Update default config file for Loongson-3")
-> I'm not so sure whether this warrants a fixes tag.
-
-I use git bisect to find it is the first bad commit. Please let me know
-if it is not necessary and then I will remove the Fixes tag.
-
+On Thu, 13 Aug 2020 at 21:41, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 >
->>   arch/mips/configs/loongson3_defconfig | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
->> index a65b08d..2b356d9 100644
->> --- a/arch/mips/configs/loongson3_defconfig
->> +++ b/arch/mips/configs/loongson3_defconfig
->> @@ -403,7 +403,7 @@ CONFIG_CRYPTO_TEA=m
->>   CONFIG_CRYPTO_TWOFISH=m
->>   CONFIG_CRYPTO_DEFLATE=m
->>   CONFIG_PRINTK_TIME=y
->> -CONFIG_FRAME_WARN=1024
->> +CONFIG_FRAME_WARN=2048
-> what about just dropping it ? Default for 64bit is 2048. Leaving it out
-> of the config has the advantage that you will get a change of the default
-> for free.
-
-OK, looks good to me, I will send v2.
-
-Thanks,
-Tiezhu
-
+> On Thu, Aug 13, 2020 at 4:04 PM Crt Mori <cmo@melexis.com> wrote:
+> > On Thu, 13 Aug 2020 at 13:24, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > On Thu, Aug 13, 2020 at 2:14 PM Crt Mori <cmo@melexis.com> wrote:
+> > > > On Thu, 13 Aug 2020 at 13:03, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > On Thu, Aug 13, 2020 at 10:53 AM Crt Mori <cmo@melexis.com> wrote:
 >
-> Thomas.
+> ...
+>
+> > > > > I don't see how it prevents using iopoll.h. It uses usleep_range()
+> > > > > under the hood in the same way you did here, but open coded.
+> > > > >
+> > > >
+> > > > One loop is indeed 10ms and that is not the problem, the problem is
+> > > > that timeout is at least 3 calls of this data ready (3 channels), so
+> > > > that is at minimum 30ms of timeout, or it could even be 4 in worse
+> > > > case scenario and that is outside of the range for usleep to measure.
+> > > > So in case of the other loop, where we wait 200ms for channel refresh
+> > > > it is also out of scope. Timeout should be in number of tries or in
+> > > > msleep range if you ask me.
+> > >
+> > > I still didn't buy it. You have in both cases usleep_range(). Why in
+> > > your case it's okay and in regmap_read_poll_timeout() is not?
+> > >
+> >
+> > I tried and it did not work, so then I read the manual. Looking into
+> >
+> > * regmap_read_poll_timeout_atomic - Poll until a condition is met or a
+> > timeout occurs
+>
+> Why _atomic?!
+
+I just pasted something, it is the same as for non _atomic
+>
+> > ...
+> >  * @delay_us: Time to udelay between reads in us (0 tight-loops).
+> >  *            Should be less than ~10us since udelay is used
+> >  *            (see Documentation/timers/timers-howto.rst).
+> >  * @timeout_us: Timeout in us, 0 means never timeout
+> >
+> >
+> > So I went to read Documentation/timers/timers-howto.rst
+> >
+> > SLEEPING FOR ~USECS OR SMALL MSECS ( 10us - 20ms):
+> > * Use usleep_range
+> >
+> > - Why not msleep for (1ms - 20ms)?
+> > Explained originally here:
+> > http://lkml.org/lkml/2007/8/3/250
+> >
+> > msleep(1~20) may not do what the caller intends, and
+> > will often sleep longer (~20 ms actual sleep for any
+> > value given in the 1~20ms range). In many cases this
+> > is not the desired behavior.
+> >
+> > Since I am above the 20ms range, it is too much for usleep_range and
+> > that proved to be a case as I got -ETIMEOUT and the desired channels
+> > were not read.
+> > > > > ...
+> > > > >
+> > > > > > -       while (tries-- > 0) {
+> > > > > > +       do {
+> > > > > >                 ret = regmap_read(data->regmap, MLX90632_REG_STATUS,
+> > > > > >                                   &reg_status);
+> > > > > >                 if (ret < 0)
+> > > > > >                         return ret;
+> > > > > > -               if (reg_status & MLX90632_STAT_DATA_RDY)
+> > > > > > -                       break;
+> > > > > >                 usleep_range(10000, 11000);
+>
+> You use here usleep_range(). The same is used for
+> regmap_read_poll_timeout(). What's the difference?
+>
+> Since it uses 1/4 of the range you probably need to update tries and
+> timeout_us to make it work.
 >
 
+Timeout_us here needs to be in one case 100 * 10ms (maybe not
+realistic as we could live with number of around 40 * 10ms), but this
+is a lot more than proposed range of usleep which Is up to 20ms. Even
+in best case this timeout should be 40 ms to give enough time to
+measure 2 channels for sure. So with the current timeout_us
+requirement we are outside of the range of the udelay timer and that
+is why I would need a macro with number of tries, not with the timeout
+value (or timeout value of ms).
+
+
+> > > > > > -       }
+> > > > > > +       } while (!(reg_status & MLX90632_STAT_DATA_RDY) && tries--);
+> > > > > >
+> > > > > >         if (tries < 0) {
+> > > > > >                 dev_err(&data->client->dev, "data not ready");
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
