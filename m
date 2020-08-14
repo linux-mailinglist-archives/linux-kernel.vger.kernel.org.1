@@ -2,422 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47BF2444BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 07:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244BD244502
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 08:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726639AbgHNF7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 01:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbgHNF7q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 01:59:46 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81141C061757;
-        Thu, 13 Aug 2020 22:59:46 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id h12so4014869pgm.7;
-        Thu, 13 Aug 2020 22:59:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=yBh7JXw5U5KElYsot0BAZzrnYx4dukEbYVm0UZ65a4E=;
-        b=paU2l5VPOs4rLBeGhabzWkt53NgsHsooyZyomoMg6uKUmrRiOtjYQje7rdaSIV0pRE
-         rGD3L1rQCa1cVODn6FPLo2+ceAl84NdQl0B94alBMB1ftf3c9Jt0A7GDpjE9VJa4iJ+J
-         pu/3wh50fCzS0OeJbGCvN1682neKD0tCt13bjWdVgaGoN/Xuvh4CtG+25jFp0zaYtgJT
-         YkguiPcACn9PWRN9qMeL/107Khxy9WBI10lrlmmWR+Rx1hr3nK6nw4AY8Nh/VKttI+Ws
-         RMaX719I5JvRbg9MeQnDwlE83vxYuk05LGMJjChYZ7wBNz4Ub6mkFFjtF0BXR0LfzmSF
-         BDSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=yBh7JXw5U5KElYsot0BAZzrnYx4dukEbYVm0UZ65a4E=;
-        b=JL6jrOFwM5orNDsMLGYkrFVJ/HcgIOTdZJUriGFdue4aQs6oWbqu22xktKoR/9chCA
-         i4MUBNX834JLN2ssADzpZ1bW+AAY4zN/o0lZjj9EVEYGKmz2UESCIi0oeCLBAXbWf7Ks
-         pNzLwPNJSf1RTw6usmyiPDHgEb8lz3JGCwCSIasZ/ZQ0xDfp0iNpM1gLhgIXi9GzdTrn
-         fEA6qicFWhqtG1amZ3b9ZKws/0kiqfi4RUtu3FNIEyO7fGrko3chcmVG3PXPXSjuTny/
-         6GcrmONi4u78eDbQdtDFXZLziNq2EAavQ0+AVVVZB9N1KQDShdhcU4BmWN2tEsnbpqaP
-         xYEQ==
-X-Gm-Message-State: AOAM530KCD8/UduppKxdRMIt346mepc26DnGiebRdOP6GD0iSPLuTxu+
-        zrK1Sff0l230p9kKtnQ1jqsMN3QNRw5tiQ==
-X-Google-Smtp-Source: ABdhPJz6hB0ldJA1h3n87SMU6jZRSFAeZkYEfAZHrmzKMu8sO6ho3YoBBOKBZXkhXwXFhFjSSJHzxg==
-X-Received: by 2002:aa7:9386:: with SMTP id t6mr743339pfe.220.1597384785953;
-        Thu, 13 Aug 2020 22:59:45 -0700 (PDT)
-Received: from localhost.localdomain ([2402:7500:57b:d972:9074:cd57:5c25:5ca2])
-        by smtp.gmail.com with ESMTPSA id l8sm7005708pjb.14.2020.08.13.22.59.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 13 Aug 2020 22:59:45 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org
-Cc:     cy_huang@richtek.com, gene_chen@richtek.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH] regulator: Add support for RT4801 Display Bias regulator driver
-Date:   Fri, 14 Aug 2020 13:59:33 +0800
-Message-Id: <1597384773-18078-1-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726285AbgHNG2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 02:28:13 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9804 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726006AbgHNG2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 02:28:12 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 12BF994CB70F7B40688F;
+        Fri, 14 Aug 2020 14:28:03 +0800 (CST)
+Received: from huawei.com (10.44.142.101) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Fri, 14 Aug 2020
+ 14:27:54 +0800
+From:   Sang Yan <sangyan@huawei.com>
+To:     <kexec@lists.infradead.org>, <ebiederm@xmission.com>,
+        <linux-kernel@vger.kernel.org>, <xiexiuqi@huawei.com>,
+        <guohanjun@huawei.com>
+CC:     <zhuling8@huawei.com>, <luanjianhai@huawei.com>,
+        <luchunhua@huawei.com>
+Subject: [PATCH 1/2] kexec: Add quick kexec support for kernel
+Date:   Fri, 14 Aug 2020 01:52:38 -0400
+Message-ID: <20200814055239.47348-1-sangyan@huawei.com>
+X-Mailer: git-send-email 2.9.5
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.44.142.101]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+In normal kexec, relocating kernel may cost 5 ~ 10 seconds, to
+copy all segments from vmalloced memory to kernel boot memory,
+because of disabled mmu.
 
-Adds support for the RT4801 DSV. It has two regulators (DSVP/DSVN) with an I2C
-interface. DSVP/DSVN can provide the display panel module for the positive/negative
-voltage range from (+/-)4V to (+/-)6V.
+We introduce quick kexec to save time of copying memory as above,
+just like kdump(kexec on crash), by using reserved memory
+"Quick Kexec".
+
+Constructing quick kimage as the same as crash kernel,
+then simply copy all segments of kimage to reserved memroy.
+
+We also add this support in syscall kexec_load using flags
+of KEXEC_QUICK.
+
+Signed-off-by: Sang Yan <sangyan@huawei.com>
 ---
- .../regulator/richtek,rt4801-regulator.yaml        |  80 ++++++++
- drivers/regulator/Kconfig                          |   7 +
- drivers/regulator/Makefile                         |   1 +
- drivers/regulator/rt4801-regulator.c               | 223 +++++++++++++++++++++
- 4 files changed, 311 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rt4801-regulator.yaml
- create mode 100644 drivers/regulator/rt4801-regulator.c
+ arch/Kconfig               | 10 ++++++++++
+ include/linux/ioport.h     |  3 +++
+ include/linux/kexec.h      | 13 +++++++++++-
+ include/uapi/linux/kexec.h |  3 +++
+ kernel/kexec.c             | 10 ++++++++++
+ kernel/kexec_core.c        | 41 +++++++++++++++++++++++++++++---------
+ 6 files changed, 70 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/regulator/richtek,rt4801-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rt4801-regulator.yaml
-new file mode 100644
-index 00000000..28d30e2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/richtek,rt4801-regulator.yaml
-@@ -0,0 +1,80 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/richtek,rt4801-regulator.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Richtek RT4801 Display Bias regulators
-+
-+maintainers:
-+  - ChiYuan Huang <cy_huang@richtek.com>
-+
-+description: |
-+  Regulator nodes should be named to DSVP and DSVN. The
-+  definition for each of these nodes is defined using the standard
-+  binding for regulators at
-+  Documentation/devicetree/bindings/regulator/regulator.txt.
-+  Datasheet is available at
-+  https://www.richtek.com/assets/product_file/RT4801H/DS4801H-00.pdf
-+
-+#The valid names for RT4801 regulator nodes are:
-+#DSVP, DSVN
-+
-+properties:
-+  compatible:
-+    enum:
-+      - richtek,rt4801
-+
-+  reg:
-+    maxItems: 1
-+
-+  enable-gpios:
-+    description: GPIOs to use to enable DSVP/DSVN regulator.
-+      The first one is ENP to enable DSVP, and second one is ENM to enable DSVN.
-+      Number of GPIO in the array list could be 1 or 2.
-+      If only one gpio is specified, only one gpio used to control ENP/ENM.
-+      Else both are spefied, DSVP/DSVN could be controlled individually.
-+      Othersie, this property not specified. treat both as always-on regulator.
-+    minItems: 1
-+    maxItems: 2
-+
-+patternProperties:
-+  "^DSV(P|N)$":
-+    type: object
-+    $ref: regulator.yaml#
-+    description:
-+      Properties for single display bias regulator.
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties:
-+  - enable-gpios
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        rt4801@73 {
-+            compatible = "richtek,rt4801";
-+            reg = <0x73>;
-+            enable-gpios = <&gpio26 2 0>, <&gpio26 3 0>;
-+
-+            dsvp: DSVP {
-+                regulator-name = "rt4801,dsvp";
-+                regulator-min-microvolt = <4000000>;
-+                regulator-max-microvolt = <6000000>;
-+                regulator-boot-on;
-+            };
-+            dsvn: DSVN {
-+                regulator-name = "rt4801,dsvn";
-+                regulator-min-microvolt = <4000000>;
-+                regulator-max-microvolt = <6000000>;
-+                regulator-boot-on;
-+            };
-+
-+        };
-+    };
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index de17ef7..2786f11 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -894,6 +894,13 @@ config REGULATOR_RN5T618
- config REGULATOR_ROHM
- 	tristate
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 3329fa143637..eca782cb8e29 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -21,6 +21,16 @@ config KEXEC_CORE
+ config KEXEC_ELF
+ 	bool
  
-+config REGULATOR_RT4801
-+	tristate "Richtek RT4801 Regulators"
-+	depends on I2C
++config QUICK_KEXEC
++	bool "Support for quick kexec"
++	depends on KEXEC_CORE
 +	help
-+	  This adds support for voltage regulators in Richtek RT4801 Display Bias IC.
-+	  The device supports two regulators (DSVP/DSVN).
++	  Say y here to enable this feature.
++	  It use reserved memory to accelerate kexec, just like crash
++	  kexec, load new kernel and initrd to reserved memory, and
++	  boot new kernel on that memory. It will save the time of
++	  relocating kernel.
 +
- config REGULATOR_RT5033
- 	tristate "Richtek RT5033 Regulators"
- 	depends on MFD_RT5033
-diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index d8d3ecf..d091e52d 100644
---- a/drivers/regulator/Makefile
-+++ b/drivers/regulator/Makefile
-@@ -111,6 +111,7 @@ obj-$(CONFIG_REGULATOR_RC5T583)  += rc5t583-regulator.o
- obj-$(CONFIG_REGULATOR_RK808)   += rk808-regulator.o
- obj-$(CONFIG_REGULATOR_RN5T618) += rn5t618-regulator.o
- obj-$(CONFIG_REGULATOR_ROHM)	+= rohm-regulator.o
-+obj-$(CONFIG_REGULATOR_RT4801)	+= rt4801-regulator.o
- obj-$(CONFIG_REGULATOR_RT5033)	+= rt5033-regulator.o
- obj-$(CONFIG_REGULATOR_S2MPA01) += s2mpa01.o
- obj-$(CONFIG_REGULATOR_S2MPS11) += s2mps11.o
-diff --git a/drivers/regulator/rt4801-regulator.c b/drivers/regulator/rt4801-regulator.c
-new file mode 100644
-index 00000000..0ddc670
---- /dev/null
-+++ b/drivers/regulator/rt4801-regulator.c
-@@ -0,0 +1,223 @@
-+// SPDX-License-Identifier: GPL-2.0+
+ config HAVE_IMA_KEXEC
+ 	bool
+ 
+diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+index 6c2b06fe8beb..f37c632accbe 100644
+--- a/include/linux/ioport.h
++++ b/include/linux/ioport.h
+@@ -136,6 +136,9 @@ enum {
+ 	IORES_DESC_DEVICE_PRIVATE_MEMORY	= 6,
+ 	IORES_DESC_RESERVED			= 7,
+ 	IORES_DESC_SOFT_RESERVED		= 8,
++#ifdef CONFIG_QUICK_KEXEC
++	IORES_DESC_QUICK_KEXEC			= 9,
++#endif
+ };
+ 
+ /*
+diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+index 9e93bef52968..976bf9631070 100644
+--- a/include/linux/kexec.h
++++ b/include/linux/kexec.h
+@@ -269,9 +269,12 @@ struct kimage {
+ 	unsigned long control_page;
+ 
+ 	/* Flags to indicate special processing */
+-	unsigned int type : 1;
++	unsigned int type : 2;
+ #define KEXEC_TYPE_DEFAULT 0
+ #define KEXEC_TYPE_CRASH   1
++#ifdef CONFIG_QUICK_KEXEC
++#define KEXEC_TYPE_QUICK   2
++#endif
+ 	unsigned int preserve_context : 1;
+ 	/* If set, we are using file mode kexec syscall */
+ 	unsigned int file_mode:1;
+@@ -331,6 +334,11 @@ extern int kexec_load_disabled;
+ #define KEXEC_FLAGS    (KEXEC_ON_CRASH | KEXEC_PRESERVE_CONTEXT)
+ #endif
+ 
++#ifdef CONFIG_QUICK_KEXEC
++#undef KEXEC_FLAGS
++#define KEXEC_FLAGS    (KEXEC_ON_CRASH | KEXEC_QUICK)
++#endif
 +
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/driver.h>
-+
-+#define RT4801_REG_VOP	0x00
-+#define RT4801_REG_VON	0x01
-+#define RT4801_REG_APPS	0x03
-+
-+#define VOUT_MASK	0x1F
-+
-+#define MIN_UV		4000000
-+#define STEP_UV		100000
-+#define MAX_UV		6000000
-+#define N_VOLTAGES	((MAX_UV - MIN_UV) / STEP_UV + 1)
-+
-+#define DSV_OUT_POS	0
-+#define DSV_OUT_NEG	1
-+#define DSV_OUT_MAX	2
-+
-+#define DSVP_ENABLE	BIT(0)
-+#define DSVN_ENABLE	BIT(1)
-+#define DSVALL_ENABLE	(DSVP_ENABLE | DSVN_ENABLE)
-+
-+struct rt4801_priv {
-+	struct device *dev;
-+	struct gpio_descs *enable_gpios;
-+	unsigned int enable_flag;
-+	unsigned int volt_sel[DSV_OUT_MAX];
-+};
-+
-+static int rt4801_set_voltage_sel(struct regulator_dev *rdev, unsigned int selector)
-+{
-+	struct rt4801_priv *priv = rdev_get_drvdata(rdev);
-+	int id = rdev_get_id(rdev), ret;
-+
-+	if (priv->enable_flag & BIT(id)) {
-+		ret = regulator_set_voltage_sel_regmap(rdev, selector);
-+		if (ret)
-+			return ret;
+ /* List of defined/legal kexec file flags */
+ #define KEXEC_FILE_FLAGS	(KEXEC_FILE_UNLOAD | KEXEC_FILE_ON_CRASH | \
+ 				 KEXEC_FILE_NO_INITRAMFS)
+@@ -340,6 +348,9 @@ extern int kexec_load_disabled;
+ extern struct resource crashk_res;
+ extern struct resource crashk_low_res;
+ extern note_buf_t __percpu *crash_notes;
++#ifdef CONFIG_QUICK_KEXEC
++extern struct resource quick_kexec_res;
++#endif
+ 
+ /* flag to track if kexec reboot is in progress */
+ extern bool kexec_in_progress;
+diff --git a/include/uapi/linux/kexec.h b/include/uapi/linux/kexec.h
+index 05669c87a0af..e3213614b713 100644
+--- a/include/uapi/linux/kexec.h
++++ b/include/uapi/linux/kexec.h
+@@ -12,6 +12,9 @@
+ /* kexec flags for different usage scenarios */
+ #define KEXEC_ON_CRASH		0x00000001
+ #define KEXEC_PRESERVE_CONTEXT	0x00000002
++#ifdef CONFIG_QUICK_KEXEC
++#define KEXEC_QUICK		0x00000004
++#endif
+ #define KEXEC_ARCH_MASK		0xffff0000
+ 
+ /*
+diff --git a/kernel/kexec.c b/kernel/kexec.c
+index f977786fe498..428af4cd3e1a 100644
+--- a/kernel/kexec.c
++++ b/kernel/kexec.c
+@@ -44,6 +44,9 @@ static int kimage_alloc_init(struct kimage **rimage, unsigned long entry,
+ 	int ret;
+ 	struct kimage *image;
+ 	bool kexec_on_panic = flags & KEXEC_ON_CRASH;
++#ifdef CONFIG_QUICK_KEXEC
++	bool kexec_on_quick = flags & KEXEC_QUICK;
++#endif
+ 
+ 	if (kexec_on_panic) {
+ 		/* Verify we have a valid entry point */
+@@ -69,6 +72,13 @@ static int kimage_alloc_init(struct kimage **rimage, unsigned long entry,
+ 		image->type = KEXEC_TYPE_CRASH;
+ 	}
+ 
++#ifdef CONFIG_QUICK_KEXEC
++	if (kexec_on_quick) {
++		image->control_page = quick_kexec_res.start;
++		image->type = KEXEC_TYPE_QUICK;
 +	}
++#endif
 +
-+	priv->volt_sel[id] = selector;
-+	return 0;
-+}
-+
-+static int rt4801_get_voltage_sel(struct regulator_dev *rdev)
-+{
-+	struct rt4801_priv *priv = rdev_get_drvdata(rdev);
-+	int id = rdev_get_id(rdev);
-+
-+	if (priv->enable_flag & BIT(id))
-+		return regulator_get_voltage_sel_regmap(rdev);
-+
-+	return priv->volt_sel[id];
-+}
-+
-+static int rt4801_enable(struct regulator_dev *rdev)
-+{
-+	struct rt4801_priv *priv = rdev_get_drvdata(rdev);
-+	struct gpio_descs *gpios = priv->enable_gpios;
-+	int id = rdev_get_id(rdev), ret;
-+
-+	if (gpios->ndescs <= id) {
-+		dev_warn(&rdev->dev, "no dedicated gpio can control\n");
-+		goto bypass_gpio;
-+	}
-+
-+	gpiod_set_value(gpios->desc[id], 1);
-+
-+bypass_gpio:
-+	ret = regmap_write(rdev->regmap, rdev->desc->vsel_reg, priv->volt_sel[id]);
-+	if (ret)
-+		return ret;
-+
-+	priv->enable_flag |= BIT(id);
-+	return 0;
-+}
-+
-+static int rt4801_disable(struct regulator_dev *rdev)
-+{
-+	struct rt4801_priv *priv = rdev_get_drvdata(rdev);
-+	struct gpio_descs *gpios = priv->enable_gpios;
-+	int id = rdev_get_id(rdev);
-+
-+	if (gpios->ndescs <= id) {
-+		dev_warn(&rdev->dev, "no dedicated gpio can control\n");
-+		goto bypass_gpio;
-+	}
-+
-+	gpiod_set_value(gpios->desc[id], 0);
-+
-+bypass_gpio:
-+	priv->enable_flag &= ~BIT(id);
-+	return 0;
-+}
-+
-+static int rt4801_is_enabled(struct regulator_dev *rdev)
-+{
-+	struct rt4801_priv *priv = rdev_get_drvdata(rdev);
-+	int id = rdev_get_id(rdev);
-+
-+	return !!(priv->enable_flag & BIT(id));
-+}
-+
-+static const struct regulator_ops rt4801_regulator_ops = {
-+	.list_voltage = regulator_list_voltage_linear,
-+	.set_voltage_sel = rt4801_set_voltage_sel,
-+	.get_voltage_sel = rt4801_get_voltage_sel,
-+	.enable = rt4801_enable,
-+	.disable = rt4801_disable,
-+	.is_enabled = rt4801_is_enabled,
+ 	ret = sanity_check_segment_list(image);
+ 	if (ret)
+ 		goto out_free_image;
+diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+index c19c0dad1ebe..b73dd749368b 100644
+--- a/kernel/kexec_core.c
++++ b/kernel/kexec_core.c
+@@ -70,6 +70,16 @@ struct resource crashk_low_res = {
+ 	.desc  = IORES_DESC_CRASH_KERNEL
+ };
+ 
++#ifdef CONFIG_QUICK_KEXEC
++struct resource quick_kexec_res = {
++	.name  = "Quick kexec",
++	.start = 0,
++	.end   = 0,
++	.flags = IORESOURCE_BUSY | IORESOURCE_SYSTEM_RAM,
++	.desc  = IORES_DESC_QUICK_KEXEC
 +};
++#endif
 +
-+static const struct regulator_desc rt4801_regulator_descs[] = {
-+	{
-+		.name = "DSVP",
-+		.ops = &rt4801_regulator_ops,
-+		.of_match = of_match_ptr("DSVP"),
-+		.type = REGULATOR_VOLTAGE,
-+		.id = DSV_OUT_POS,
-+		.min_uV = MIN_UV,
-+		.uV_step = STEP_UV,
-+		.n_voltages = N_VOLTAGES,
-+		.owner = THIS_MODULE,
-+		.vsel_reg = RT4801_REG_VOP,
-+		.vsel_mask = VOUT_MASK,
-+	},
-+	{
-+		.name = "DSVN",
-+		.ops = &rt4801_regulator_ops,
-+		.of_match = of_match_ptr("DSVN"),
-+		.type = REGULATOR_VOLTAGE,
-+		.id = DSV_OUT_NEG,
-+		.min_uV = MIN_UV,
-+		.uV_step = STEP_UV,
-+		.n_voltages = N_VOLTAGES,
-+		.owner = THIS_MODULE,
-+		.vsel_reg = RT4801_REG_VON,
-+		.vsel_mask = VOUT_MASK,
-+	},
-+};
+ int kexec_should_crash(struct task_struct *p)
+ {
+ 	/*
+@@ -413,8 +423,10 @@ static struct page *kimage_alloc_normal_control_pages(struct kimage *image,
+ 	return pages;
+ }
+ 
+-static struct page *kimage_alloc_crash_control_pages(struct kimage *image,
+-						      unsigned int order)
 +
-+static const struct regmap_config rt4801_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.max_register = RT4801_REG_APPS,
-+};
-+
-+static int rt4801_probe(struct i2c_client *i2c)
-+{
-+	struct rt4801_priv *priv;
-+	struct regmap *regmap;
-+	int i;
-+
-+	priv = devm_kzalloc(&i2c->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->dev = &i2c->dev;
-+	/* bootloader will on, driver only reconfigure enable to all output high */
-+	priv->enable_flag = DSVALL_ENABLE;
-+
-+	regmap = devm_regmap_init_i2c(i2c, &rt4801_regmap_config);
-+	if (IS_ERR(regmap)) {
-+		dev_err(&i2c->dev, "Failed to init regmap\n");
-+		return PTR_ERR(regmap);
-+	}
-+
-+	priv->enable_gpios = devm_gpiod_get_array_optional(&i2c->dev, "enable", GPIOD_OUT_HIGH);
-+	if (IS_ERR(priv->enable_gpios)) {
-+		dev_err(&i2c->dev, "Failed to get gpios\n");
-+		return PTR_ERR(priv->enable_gpios);
-+	}
-+
-+	for (i = 0; i < DSV_OUT_MAX; i++) {
-+		const struct regulator_desc *desc = rt4801_regulator_descs + i;
-+		struct regulator_config config = { .dev = &i2c->dev, .driver_data = priv,
-+						   .regmap = regmap, };
-+		struct regulator_dev *rdev;
-+		unsigned int val;
-+		int ret;
-+
-+		/* initialize volt_sel variable */
-+		ret = regmap_read(regmap, desc->vsel_reg, &val);
-+		if (ret)
-+			return ret;
-+
-+		priv->volt_sel[i] = val & desc->vsel_mask;
-+
-+		rdev = devm_regulator_register(&i2c->dev, desc, &config);
-+		if (IS_ERR(rdev)) {
-+			dev_err(&i2c->dev, "Failed to register [%d] regulator\n", i);
-+			return PTR_ERR(rdev);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id rt4801_of_id[] = {
-+	{ .compatible = "richtek,rt4801", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, rt4801_of_id);
-+
-+static struct i2c_driver rt4801_driver = {
-+	.driver = {
-+		.name = "rt4801",
-+		.of_match_table = of_match_ptr(rt4801_of_id),
-+	},
-+	.probe_new = rt4801_probe,
-+};
-+module_i2c_driver(rt4801_driver);
-+
-+MODULE_AUTHOR("ChiYuan Hwang <cy_huang@richtek.com>");
-+MODULE_DESCRIPTION("Richtek RT4801 Display Bias Driver");
-+MODULE_LICENSE("GPL v2");
++static struct page *kimage_alloc_special_control_pages(struct kimage *image,
++						       unsigned int order,
++						       unsigned long end)
+ {
+ 	/* Control pages are special, they are the intermediaries
+ 	 * that are needed while we copy the rest of the pages
+@@ -444,7 +456,7 @@ static struct page *kimage_alloc_crash_control_pages(struct kimage *image,
+ 	size = (1 << order) << PAGE_SHIFT;
+ 	hole_start = (image->control_page + (size - 1)) & ~(size - 1);
+ 	hole_end   = hole_start + size - 1;
+-	while (hole_end <= crashk_res.end) {
++	while (hole_end <= end) {
+ 		unsigned long i;
+ 
+ 		cond_resched();
+@@ -479,7 +491,6 @@ static struct page *kimage_alloc_crash_control_pages(struct kimage *image,
+ 	return pages;
+ }
+ 
+-
+ struct page *kimage_alloc_control_pages(struct kimage *image,
+ 					 unsigned int order)
+ {
+@@ -490,8 +501,15 @@ struct page *kimage_alloc_control_pages(struct kimage *image,
+ 		pages = kimage_alloc_normal_control_pages(image, order);
+ 		break;
+ 	case KEXEC_TYPE_CRASH:
+-		pages = kimage_alloc_crash_control_pages(image, order);
++		pages = kimage_alloc_special_control_pages(image, order,
++							   crashk_res.end);
++		break;
++#ifdef CONFIG_QUICK_KEXEC
++	case KEXEC_TYPE_QUICK:
++		pages = kimage_alloc_special_control_pages(image, order,
++							   quick_kexec_res.end);
+ 		break;
++#endif
+ 	}
+ 
+ 	return pages;
+@@ -847,11 +865,11 @@ static int kimage_load_normal_segment(struct kimage *image,
+ 	return result;
+ }
+ 
+-static int kimage_load_crash_segment(struct kimage *image,
++static int kimage_load_special_segment(struct kimage *image,
+ 					struct kexec_segment *segment)
+ {
+-	/* For crash dumps kernels we simply copy the data from
+-	 * user space to it's destination.
++	/* For crash dumps kernels and quick kexec kernels
++	 * we simply copy the data from user space to it's destination.
+ 	 * We do things a page at a time for the sake of kmap.
+ 	 */
+ 	unsigned long maddr;
+@@ -925,8 +943,13 @@ int kimage_load_segment(struct kimage *image,
+ 		result = kimage_load_normal_segment(image, segment);
+ 		break;
+ 	case KEXEC_TYPE_CRASH:
+-		result = kimage_load_crash_segment(image, segment);
++		result = kimage_load_special_segment(image, segment);
++		break;
++#ifdef CONFIG_QUICK_KEXEC
++	case KEXEC_TYPE_QUICK:
++		result = kimage_load_special_segment(image, segment);
+ 		break;
++#endif
+ 	}
+ 
+ 	return result;
 -- 
-2.7.4
+2.19.1
 
