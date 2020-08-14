@@ -2,87 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70022448D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71831244944
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgHNLaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 07:30:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726647AbgHNLaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 07:30:21 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE5F720708;
-        Fri, 14 Aug 2020 11:30:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597404621;
-        bh=2ZcProTPztj1mqGDcB3GcIKDFcA67IHT7VtxSattYz8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MyBJKuNRU0n8Xf6rS6b4Dfrus9IG+nkcLyBNrJ42+5nYnrxM4+TqNKlObGEmsaMyB
-         CsRQSuF1UMf9jeYzIEPr2Vge9KiDmYJo7UBcdX0E5V34aHOrrRkxMLTSwipm09Frzx
-         vze7kTpmRqlrnUYFQBsZKQ2nmkUwfTgTUcbuTk4c=
-Date:   Fri, 14 Aug 2020 12:29:52 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     cy_huang <u0084500@gmail.com>
-Cc:     lgirdwood@gmail.com, robh+dt@kernel.org, cy_huang@richtek.com,
-        gene_chen@richtek.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] regulator: Add support for RT4801 Display Bias regulator
- driver
-Message-ID: <20200814112952.GA4783@sirena.org.uk>
-References: <1597384773-18078-1-git-send-email-u0084500@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FL5UXtIhxfXey3p5"
-Content-Disposition: inline
-In-Reply-To: <1597384773-18078-1-git-send-email-u0084500@gmail.com>
-X-Cookie: Non-sequiturs make me eat lampshades.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726699AbgHNL4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 07:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726193AbgHNL4Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 07:56:24 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D3D2C061384
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:56:23 -0700 (PDT)
+Message-Id: <20200814101933.574326079@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597406181;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-transfer-encoding:content-transfer-encoding;
+        bh=Vg1F9ZHbEUn2ExotEwu5Pprj3knGPkgwMJo72vYiC8I=;
+        b=C//CjU4u8e306CDxSW4FHbTNzCzvPhW911AcAgwm4b3gbqEjBtYyL+O3OtpnP5U8GKtFc7
+        9yOMmhQVIwtnxDO0jX4Rgfp8hKcHAsunjdPyD+Mms+06kYVmjJkqA+OCIb4ncYaMElVTOI
+        LRNwO8PJApnM9iXnEDJ4Wq6rmI9XOf0iwZVkDTsFjV9/QnGJ17TrW/sbaCY44bSm1Tclpl
+        myCcvNEXKJFxZckr19FQLdnPxn2plzklPSY2cSpoOcW0h47cnmIQhgIFHTENN7oDAA1iVM
+        SieujuS0VMCaCDQv23F1TVivkEttQIMqXrIkupnPRgabQI06l7PYJFXfUG6XOQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597406181;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-transfer-encoding:content-transfer-encoding;
+        bh=Vg1F9ZHbEUn2ExotEwu5Pprj3knGPkgwMJo72vYiC8I=;
+        b=3m6G5N79xheu48zAQO6/Z31zK1LYc16wuFqLmkkpd/OGwmp5h3Jur0gD1OSBnKTqdPAhu9
+        NyZ2M2JboDbZc4Dw==
+Date:   Fri, 14 Aug 2020 12:19:33 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, kexec@lists.infradead.org
+Subject: [patch 0/2] timekeeping: NMI safe timekeeper enhancements
+Content-transfer-encoding: 8-bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+printk intends to store various timestamps (MONOTONIC, REALTIME, BOOTTIME)
+to make correlation of dmesg accross different machines easier.
 
---FL5UXtIhxfXey3p5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The NMI safe timekeeper allows to retrieve these timestamps from any
+context, but it lacks a few things:
 
-On Fri, Aug 14, 2020 at 01:59:33PM +0800, cy_huang wrote:
-> From: ChiYuan Huang <cy_huang@richtek.com>
->=20
-> Adds support for the RT4801 DSV. It has two regulators (DSVP/DSVN) with a=
-n I2C
-> interface. DSVP/DSVN can provide the display panel module for the positiv=
-e/negative
-> voltage range from (+/-)4V to (+/-)6V.
-> ---
+  1) The nmi safe accessors are not providing time stamps until timekeeping
+     is initialized during early boot.
 
-You need to provide a Signed-off-by - see submitting-patches.rst for
-details on what that is and why it is important.  I can't do anything
-with this without one.
+     This can be mitigated by using sched clock up to the point where time-
+     keeping becomes available. This has no side effects because clock
+     monotonic takes sched clock into account at initialization time
+     anyway. So no random time jumps are possible.
 
->  .../regulator/richtek,rt4801-regulator.yaml        |  80 ++++++++
->  drivers/regulator/Kconfig                          |   7 +
+     If early sched clock is not available then there is no difference
+     either, obviously. Both return 0.
 
-The DT bindings should be in a separate patch.
+  2) It requires a new accessor which allows to retrieve all three clock
+     timestamps in one go.
 
---FL5UXtIhxfXey3p5
-Content-Type: application/pgp-signature; name="signature.asc"
+     Trivial excercise. But there are a few twists:
 
------BEGIN PGP SIGNATURE-----
+     A) Access to boot time can be racy if the sleep time offset on resume
+     	is injected after timekeeping resume. That's the case when the RTC
+     	or whatever is used to calculate sleep time is not availble when
+	the timekeeping core is resumed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl82da8ACgkQJNaLcl1U
-h9DuKAf+I610U2U0dt5tHT7uwKK7XguyPYO5a/4/mjZ2KXiFjSURo6VQ67JybCHk
-d9IWM8c1i639s0aVQjBFKn0sLE0MiMA7TT4PyPWgAufWjcPPl5a6bJEqYXiw7uhb
-SqGL7kwdtwKjz6qgfAhE3rYhZdljmPDpY4y1wi04GI2JIVFv/hMFN/jQtmVZB9ot
-iTdX5eK+XG+1IR6jbVHj/CjWdfSoo7dL4jTMYCGbm5yC53ksZ2OcdZjKy3oes/iB
-1dHfsBTkpG7HXE2pcLoZYOLWx07D3dhmnlhmGpjUf8CRDSaCeBLZp+X23oZKnP/T
-XEk6gfXrAuZWMIJyhSvrlbq/g2H70A==
-=FWmV
------END PGP SIGNATURE-----
+     B) Timestamps are frozen accross the very inner low level
+     	suspend/resume path. Not a big problem, but might affect the
+     	developer debug printks.
 
---FL5UXtIhxfXey3p5--
+     A detailed description of these two points is in the changelog of
+     patch 2.
+
+Thanks,
+
+	tglx
