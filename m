@@ -2,162 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C582E2448FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 968652448E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 13:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbgHNLlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 07:41:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
+        id S1728032AbgHNLjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 07:39:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728230AbgHNLkW (ORCPT
+        with ESMTP id S1726185AbgHNLja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 07:40:22 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64271C061342
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:40:19 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id l2so8062261wrc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 04:40:19 -0700 (PDT)
+        Fri, 14 Aug 2020 07:39:30 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C73C061384;
+        Fri, 14 Aug 2020 04:39:30 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id t14so7660047wmi.3;
+        Fri, 14 Aug 2020 04:39:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YFgXjYQQ0+xg2jvt5uv0D8nLYp5jF/FJWwM+q4+R5DE=;
-        b=GFwPVGLxXf/mpStDrwQbhZhhGdubhcLGe+9QBE3auyMrhgHAOnfF9/382XpY9WzAAy
-         erGIGgYbUKa0VY9jyzkDnooZ6tWkoEPH3xTCvwbUgzwtQFCfVUMsdD2xluztnlnPHvPk
-         Wj4O4gMCgAcc6ALZu71VEc8S4IQ8s/EONoLx4Y9Fs3Vy8yIAaRcJBYmeiVyQ6GUffrlz
-         TPa7yzxScLbZHbr9ozFnhXH0Kf/XqZHFzqZSosAFH3TrtyEWg4/ZPY3GopviOpzQoUln
-         DBDzrWxAlV0KS4t0N5dOKAnzYmh2hN8EI/wPGmyITJ1kTzwUkB9iwLfiNipfsuCEf+W4
-         dWVw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PvaE6Xvjdl4FATqRBfh8A95bTlKRTVItk5/IF9Iibaw=;
+        b=C2+cpT2T5s3PRdb1iX1gNsVRN7+bzUvaFphsG2v4A4+u/IgKs/5MzA0CITX++JzJcA
+         ARxviUnSCDMZxWnYKfWsqJISab18SwV0zGWnoF9dmGH90QIb2oT5ru4T37dTkC97Utv9
+         MY8ZpHnR+dFTb2ykAzedOFZheMFAAn4iCEwvWZ6XYpN+HTN4i9v+YqJsAEfX9Kd/eQo0
+         11VZ+PJ+xuZK34tzxYeHm4LZxZL8vXxkWs0DHsYPFs++eVXi+wsdPkIrwu0QLRhl/0bj
+         hkyPEopNYgun6Zui5DIgfn2N7H6VaxP0yJVCaRrxHqpW6Y6DUA8tWaLzkYw6DLl+hLxa
+         On7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YFgXjYQQ0+xg2jvt5uv0D8nLYp5jF/FJWwM+q4+R5DE=;
-        b=ZdKcapGOd4eXLrfFsSajC0KsL3oTP2Shgm1la1dPVVfwSio6oabubShvX1FkvGo/Lv
-         FLBW8qZLAGOI9BSKJzFrAKwe1EMKUK9ugkkCER+qowsmzhJp9LoZJhrjNFM0WxVvygNv
-         Tr+tY1fMZ5hpXYFyUJKhDFS/M7KO/CZ+51uTHYxM0RRKYzM/44k6gwTIPbJucr35flZl
-         FniMu+MVN0EANf3EDSvGZ55LwPtCdZTjUiwQxxxqwT1mxfsJ7s+r5qOiQkLr7df54ore
-         YN71FqrHKh74fb8Vq8U4MbjQntmiEIkChj4IxIyTW0DTYpuD4FcK2NMzKOaHDZW1J6Us
-         DEqg==
-X-Gm-Message-State: AOAM532MnfW46VPBfh4w0UNqXED1ASmn3gL/Ekrh2AOKTt1qR1Cl6bhY
-        AuC5o4wI2YXKfCHUHb9paW708w==
-X-Google-Smtp-Source: ABdhPJyYbghJq3Vbytc+37vzZWS3PlyxtAiIzUiiOcVh5+jOzFITVoKVkNX94BOY56UhZmaJvfCDEw==
-X-Received: by 2002:a5d:5746:: with SMTP id q6mr2377308wrw.59.1597405218092;
-        Fri, 14 Aug 2020 04:40:18 -0700 (PDT)
-Received: from dell.default ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id 32sm16409129wrh.18.2020.08.14.04.40.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PvaE6Xvjdl4FATqRBfh8A95bTlKRTVItk5/IF9Iibaw=;
+        b=rMr0RCYYYuV/QnFOCzeV9RbAgjnAgRflwmUPc3ubiiqv7KWrX2ZyuzLs9tTQmp2f0D
+         KR4hhehC35oMqJIKOa8tdoweMviESld6qay2XVfrku5gyWyrmyb0EAbvWKoh6xLHHJ1u
+         twlQHc+HJytujpKMfhhZua4/y/OBx/xmdI/AzTDtVLwGNzcsOt2OCM4pqPnB/PVJT8Ee
+         KBSMCHOxSoUMXBQJhTlJO5uaDGkyus10DikttVoqmleM2xFExb/bLpow8rGUl35UEnxi
+         ESuLIYyC2HsoHdM7j73ldkoWZoHHC6u0KPwLKsfAbrXVP0yN7MvIzjZaPrBjleLHECHh
+         TKLA==
+X-Gm-Message-State: AOAM530dqFfewse/Ba4fHgPDbnXV9oslDweRbnoozgVsCo01F4Sew47t
+        XyHOHwkarXbzyyfJ6i5r/844kmEN2Jk=
+X-Google-Smtp-Source: ABdhPJxfBdi37/yRj31u/1yVwVd6B4rPFoZNcM/71Em90ApUpFePmeHl8qrPizZJGJzVOdZ9+Ez4rA==
+X-Received: by 2002:a7b:c38e:: with SMTP id s14mr2172037wmj.124.1597405169330;
+        Fri, 14 Aug 2020 04:39:29 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id o7sm15093033wrv.50.2020.08.14.04.39.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 04:40:17 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org
-Subject: [PATCH 24/30] net: wireless: broadcom: brcm80211: brcmsmac: mac80211_if: Demote a few non-conformant kerneldoc headers
-Date:   Fri, 14 Aug 2020 12:39:27 +0100
-Message-Id: <20200814113933.1903438-25-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200814113933.1903438-1-lee.jones@linaro.org>
-References: <20200814113933.1903438-1-lee.jones@linaro.org>
+        Fri, 14 Aug 2020 04:39:28 -0700 (PDT)
+Date:   Fri, 14 Aug 2020 13:39:27 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Stephen Kitt <steve@sk2.org>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers/hwmon/adm1029.c: use simple i2c probe
+Message-ID: <20200814113927.GA15832@Red>
+References: <20200813161129.1507599-1-steve@sk2.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200813161129.1507599-1-steve@sk2.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Thu, Aug 13, 2020 at 06:11:29PM +0200, Stephen Kitt wrote:
+> This driver doesn't use the id information provided by the old i2c
+> probe function, so it can trivially be converted to the simple
+> ("probe_new") form.
+> 
+> Signed-off-by: Stephen Kitt <steve@sk2.org>
+> ---
+>  drivers/hwmon/adm1029.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwmon/adm1029.c b/drivers/hwmon/adm1029.c
+> index f7752a5bef31..50b1df7b008c 100644
+> --- a/drivers/hwmon/adm1029.c
+> +++ b/drivers/hwmon/adm1029.c
+> @@ -352,8 +352,7 @@ static int adm1029_init_client(struct i2c_client *client)
+>  	return 1;
+>  }
+>  
+> -static int adm1029_probe(struct i2c_client *client,
+> -			 const struct i2c_device_id *id)
+> +static int adm1029_probe(struct i2c_client *client)
+>  {
+>  	struct device *dev = &client->dev;
+>  	struct adm1029_data *data;
+> @@ -390,7 +389,7 @@ static struct i2c_driver adm1029_driver = {
+>  	.driver = {
+>  		.name = "adm1029",
+>  	},
+> -	.probe		= adm1029_probe,
+> +	.probe_new	= adm1029_probe,
+>  	.id_table	= adm1029_id,
+>  	.detect		= adm1029_detect,
+>  	.address_list	= normal_i2c,
+> -- 
+> 2.25.4
+> 
+Hello
 
- In file included from drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c:30:
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c:288: warning: Function parameter or member 'wl' not described in 'brcms_free'
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c:1127: warning: Function parameter or member 'pdev' not described in 'brcms_attach'
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c:1222: warning: Function parameter or member 'pdev' not described in 'brcms_bcma_probe'
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c:1301: warning: Function parameter or member 'work' not described in 'brcms_driver_init'
+Acked-by: Corentin LABBE <clabbe.montjoie@gmail.com>
 
-Cc: Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc: Franky Lin <franky.lin@broadcom.com>
-Cc: Hante Meuleman <hante.meuleman@broadcom.com>
-Cc: Chi-Hsien Lin <chi-hsien.lin@cypress.com>
-Cc: Wright Feng <wright.feng@cypress.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Johannes Berg <johannes.berg@intel.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: linux-wireless@vger.kernel.org
-Cc: brcm80211-dev-list.pdl@broadcom.com
-Cc: brcm80211-dev-list@cypress.com
-Cc: netdev@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- .../broadcom/brcm80211/brcmsmac/mac80211_if.c         | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c
-index 648efcbc819fa..29a834ea45eb8 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c
-@@ -275,14 +275,13 @@ static void brcms_set_basic_rate(struct brcm_rateset *rs, u16 rate, bool is_br)
- 	}
- }
- 
--/**
-+/*
-  * This function frees the WL per-device resources.
-  *
-  * This function frees resources owned by the WL device pointed to
-  * by the wl parameter.
-  *
-  * precondition: can both be called locked and unlocked
-- *
-  */
- static void brcms_free(struct brcms_info *wl)
- {
-@@ -1115,7 +1114,7 @@ static int ieee_hw_init(struct ieee80211_hw *hw)
- 	return ieee_hw_rate_init(hw);
- }
- 
--/**
-+/*
-  * attach to the WL device.
-  *
-  * Attach to the WL device identified by vendor and device parameters.
-@@ -1210,7 +1209,7 @@ static struct brcms_info *brcms_attach(struct bcma_device *pdev)
- 
- 
- 
--/**
-+/*
-  * determines if a device is a WL device, and if so, attaches it.
-  *
-  * This function determines if a device pointed to by pdev is a WL device,
-@@ -1290,7 +1289,7 @@ static struct bcma_driver brcms_bcma_driver = {
- 	.id_table = brcms_coreid_table,
- };
- 
--/**
-+/*
-  * This is the main entry point for the brcmsmac driver.
-  *
-  * This function is scheduled upon module initialization and
-@@ -1317,7 +1316,7 @@ static int __init brcms_module_init(void)
- 	return 0;
- }
- 
--/**
-+/*
-  * This function unloads the brcmsmac driver from the system.
-  *
-  * This function unconditionally unloads the brcmsmac driver module from the
--- 
-2.25.1
-
+But please give me a few day to test it.
