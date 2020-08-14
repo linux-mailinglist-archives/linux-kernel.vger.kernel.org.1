@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E270E244DFB
+	by mail.lfdr.de (Postfix) with ESMTP id 74101244DFA
 	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728925AbgHNRag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 13:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
+        id S1728629AbgHNRae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 13:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728575AbgHNR1q (ORCPT
+        with ESMTP id S1728576AbgHNR1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 13:27:46 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885C0C061386
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:27:45 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id c124so3433418wme.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:27:45 -0700 (PDT)
+        Fri, 14 Aug 2020 13:27:47 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8585C061384
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:27:47 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id r12so6488801qvx.20
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:27:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=np+YjQo4chu4bS0e//GH8nyclC7wFRenYBsdsyZN+zk=;
-        b=pPcBQTWcc0pB+A1Qkgyg36kQKBhw6A/0CZ5PXyKV9kUI5he4/+mJy2m/2Z2DVjNjII
-         8UZtagmk1MICeu1fM9xQeBBKEXfd3Q/Af6l1AhqGnW02K5SLJndTbN6hxWqsI5U75N/D
-         bQVQGpbGqdhv5DDR8Q8C7NbIZhVU0qqjL054jTmF2xIVXVxSE/2IRAn+gYyvT6WL8YIJ
-         HVPEqgkP1vHe3O8MQLU1DuWBLaG3kzbf0CtyRYJ4WbL1tBvFoKr0I2IWdVa5PiLx/gA4
-         3vm0svprRoNvMg/ImX3wCNl4HgPmXhS6H9WFhvChpekjkLznqiC2BXgy2tmf0g63pXLy
-         iKKw==
+        bh=e2KGLRW+d0jj4Tv+MmRAX362NCHhZR9ltOsxskRbVvg=;
+        b=ZgHPshRZ26bIOrhPnGktEcpoM4tZV4RKhQX3lqJKd1EpP9qvxqZkoQ//TjgMjABFsP
+         X4gQzs7rYpoHS2j8HMRZztH46nKFN0f8FoOm4ob/a3l2ZAjbQkoVpjfH0/yaE8dhumd5
+         0d8vZL/unnnvG/TDju1HNtgWXEaMJOg6eIp7UdcXay50olpfSsmyekAAVaugXR0dJeTn
+         e6Hn3yxKQdUb8ljAVhNKjg3fW9gUk6qdz8mWkrgF8LJzugzhP7SbGwS52yR0QKSQjGte
+         vQNf9bfUTgTroD3lX0ezS8EKcqrPggGHqoco7Cc/jgGCX2K7ESwOHrmo0C8LEp+z1fH/
+         hmxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=np+YjQo4chu4bS0e//GH8nyclC7wFRenYBsdsyZN+zk=;
-        b=QnY+k+nt8WoKkLGmEPDnZTIU4xZXjOUnlSeE2Sx1B14ZiAlW8KpyjwKIKFYR6l9ic9
-         A8aH3zLAsMJL4ki+c2GbLH3LwYffAhsnmgt+p35V8yYEsoXlt7JzINbAHb0wdB0o43du
-         sBcniE7+10KQt/jJk5o7SdyC4PDw/R8o15li7zJgTBAJrX59I7sapmgX9s+i54S0MR+q
-         RcASlGYfyS02vbYRmJ88Ii4Zh42Oo/4lEZQgLUuY6KDb0usEw9lxaix74sASBS4leF1f
-         3P7p5yb7asyqavsr1WX5Abn1ZYi36h+RJ8aEQREeKjruI5S+TGq75lRuSiamkOQqxk4b
-         EY9w==
-X-Gm-Message-State: AOAM533Mo2PymPpxcWpUAL1wGckoPaMiLK5KMXaCO2HuT6V8EmU0/Yjb
-        KLQFUGDmmaO/ohO7TjeqQ/GHWQeVK9BuQpzW
-X-Google-Smtp-Source: ABdhPJxMdFS/yNyg4MwjTnWmhaQzL0z42GnjWIS4vVb2p1bJE9xvcCYCxX7TZZq23RaIt0i+3EFX9Qy944e9OQDZ
-X-Received: by 2002:a7b:c8da:: with SMTP id f26mr3553163wml.126.1597426064102;
- Fri, 14 Aug 2020 10:27:44 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 19:26:50 +0200
+        bh=e2KGLRW+d0jj4Tv+MmRAX362NCHhZR9ltOsxskRbVvg=;
+        b=LNwsYJVUmb5ODz66h+i0y7YQFTrjzpm3VsaHd5OMMqEXhZ8b7AJy4sTpw6App3p8RS
+         A+ZHJTLXOMj559djXK0hjh/ihbzttRXOshSWDX3lFsVelJ+382T4zm5AHW449LvZ3HXK
+         /7APtG+V7/W1deL6/SeecAvjTEYqwn3Q03PekunwSPM5b81Z77Y17Df+t8140p+bSraE
+         Wx6Ltl86YVePyNcm1+1KDybxsbNtrZzSTv1S2o7ZRh2qr2RQqlC3uDCLgz/vDt2rfqWC
+         TdOb85immMbBrbIKai+EkI4TGoKNoKNd79SdvL8ohAAHwHWa48ibq9C92748BB5OsPrn
+         WdqA==
+X-Gm-Message-State: AOAM530z6InqtT0KiPTjH/BdOZJzZaOZE97k249LQu3fjDGC4zIAyoxb
+        Vo5VBlI9uLMAzucNPYt3Jvq53CKqHBtzdrPI
+X-Google-Smtp-Source: ABdhPJwvFCW71RrNBIBisU3qDI9g+D96gmQLmIYvDx+uRAkaisRTQSBeyenTGfi9SpAFmB/JOXIpogKSN0EeD35Y
+X-Received: by 2002:a05:6214:1086:: with SMTP id o6mr3450750qvr.41.1597426066233;
+ Fri, 14 Aug 2020 10:27:46 -0700 (PDT)
+Date:   Fri, 14 Aug 2020 19:26:51 +0200
 In-Reply-To: <cover.1597425745.git.andreyknvl@google.com>
-Message-Id: <c628647bade1a8f80dca858b0c0fba74cfa08271.1597425745.git.andreyknvl@google.com>
+Message-Id: <0197bbc0050e20ffdbf43eb8300af245c5c169db.1597425745.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1597425745.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
-Subject: [PATCH 08/35] kasan: rename generic/tags_report.c files
+Subject: [PATCH 09/35] kasan: don't duplicate config dependencies
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Dmitry Vyukov <dvyukov@google.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -74,81 +74,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename generic_report.c to report_generic.c and tags_report.c to
-report_tags.c, as their content is more relevant to report.c file,
-then to generic.c or tags.c.
-
-No functional changes.
+Both KASAN_GENERIC and KASAN_SW_TAGS have common dependencies, move
+those to KASAN.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- mm/kasan/Makefile                               | 12 ++++++------
- mm/kasan/report.c                               |  2 +-
- mm/kasan/{generic_report.c => report_generic.c} |  0
- mm/kasan/{tags_report.c => report_tags.c}       |  0
- 4 files changed, 7 insertions(+), 7 deletions(-)
- rename mm/kasan/{generic_report.c => report_generic.c} (100%)
- rename mm/kasan/{tags_report.c => report_tags.c} (100%)
+ lib/Kconfig.kasan | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
-index 40366d706b7c..007c824f6f43 100644
---- a/mm/kasan/Makefile
-+++ b/mm/kasan/Makefile
-@@ -6,13 +6,13 @@ KCOV_INSTRUMENT := n
- # Disable ftrace to avoid recursion.
- CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_generic.o = $(CC_FLAGS_FTRACE)
--CFLAGS_REMOVE_generic_report.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_init.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_quarantine.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_report.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_report_generic.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_report_tags.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_shadow.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_tags.o = $(CC_FLAGS_FTRACE)
--CFLAGS_REMOVE_tags_report.o = $(CC_FLAGS_FTRACE)
+diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+index e1d55331b618..b4cf6c519d71 100644
+--- a/lib/Kconfig.kasan
++++ b/lib/Kconfig.kasan
+@@ -24,6 +24,9 @@ menuconfig KASAN
+ 		   (HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS)
+ 	depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
+ 	depends on CC_HAS_WORKING_NOSANITIZE_ADDRESS
++	select SLUB_DEBUG if SLUB
++	select CONSTRUCTORS
++	select STACKDEPOT
+ 	help
+ 	  Enables KASAN (KernelAddressSANitizer) - runtime memory debugger,
+ 	  designed to find out-of-bounds accesses and use-after-free bugs.
+@@ -46,10 +49,6 @@ choice
+ config KASAN_GENERIC
+ 	bool "Generic mode"
+ 	depends on HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC
+-	depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
+-	select SLUB_DEBUG if SLUB
+-	select CONSTRUCTORS
+-	select STACKDEPOT
+ 	help
+ 	  Enables generic KASAN mode.
  
- # Function splitter causes unnecessary splits in __asan_load1/__asan_store1
- # see: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63533
-@@ -23,14 +23,14 @@ CC_FLAGS_KASAN_RUNTIME += -DDISABLE_BRANCH_PROFILING
+@@ -70,10 +69,6 @@ config KASAN_GENERIC
+ config KASAN_SW_TAGS
+ 	bool "Software tag-based mode"
+ 	depends on HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS
+-	depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
+-	select SLUB_DEBUG if SLUB
+-	select CONSTRUCTORS
+-	select STACKDEPOT
+ 	help
+ 	  Enables software tag-based KASAN mode.
  
- CFLAGS_common.o := $(CC_FLAGS_KASAN_RUNTIME)
- CFLAGS_generic.o := $(CC_FLAGS_KASAN_RUNTIME)
--CFLAGS_generic_report.o := $(CC_FLAGS_KASAN_RUNTIME)
- CFLAGS_init.o := $(CC_FLAGS_KASAN_RUNTIME)
- CFLAGS_quarantine.o := $(CC_FLAGS_KASAN_RUNTIME)
- CFLAGS_report.o := $(CC_FLAGS_KASAN_RUNTIME)
-+CFLAGS_report_generic.o := $(CC_FLAGS_KASAN_RUNTIME)
-+CFLAGS_report_tags.o := $(CC_FLAGS_KASAN_RUNTIME)
- CFLAGS_shadow.o := $(CC_FLAGS_KASAN_RUNTIME)
- CFLAGS_tags.o := $(CC_FLAGS_KASAN_RUNTIME)
--CFLAGS_tags_report.o := $(CC_FLAGS_KASAN_RUNTIME)
- 
- obj-$(CONFIG_KASAN) := common.o report.o
--obj-$(CONFIG_KASAN_GENERIC) += init.o generic.o generic_report.o shadow.o quarantine.o
--obj-$(CONFIG_KASAN_SW_TAGS) += init.o shadow.o tags.o tags_report.o
-+obj-$(CONFIG_KASAN_GENERIC) += init.o generic.o report_generic.o shadow.o quarantine.o
-+obj-$(CONFIG_KASAN_SW_TAGS) += init.o report_tags.o shadow.o tags.o
-diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index 7c025d792e2f..f16591ba9e2e 100644
---- a/mm/kasan/report.c
-+++ b/mm/kasan/report.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * This file contains common generic and tag-based KASAN error reporting code.
-+ * This file contains common KASAN error reporting code.
-  *
-  * Copyright (c) 2014 Samsung Electronics Co., Ltd.
-  * Author: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-diff --git a/mm/kasan/generic_report.c b/mm/kasan/report_generic.c
-similarity index 100%
-rename from mm/kasan/generic_report.c
-rename to mm/kasan/report_generic.c
-diff --git a/mm/kasan/tags_report.c b/mm/kasan/report_tags.c
-similarity index 100%
-rename from mm/kasan/tags_report.c
-rename to mm/kasan/report_tags.c
 -- 
 2.28.0.220.ged08abb693-goog
 
