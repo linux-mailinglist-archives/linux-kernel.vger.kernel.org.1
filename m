@@ -2,83 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8B3244A71
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED83244A73
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728539AbgHNNeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 09:34:18 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:55327 "EHLO smtp1.axis.com"
+        id S1728585AbgHNNew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 09:34:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgHNNeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 09:34:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=1058; q=dns/txt; s=axis-central1;
-  t=1597412056; x=1628948056;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YVahuulwrH51eJacyIUw/4WvPqZAzfYdmsvREBEkBDM=;
-  b=ogPWcSqSfgyYQ3d1Y/dxR+9cA1WwtOQx8jh69+8IzZxo4l29YFYc1bOl
-   OwNos06/PxATjTLlRIzRdmKxPULwc/USNzJ5tmUfrxZE9kzsKp/aoG/PJ
-   KI1ZfO9nZszZSI+BLHew9B0BSw0CyUHRiVivgpX7rnwKhHR0te9dKqL+A
-   dTntfkqJZaCLNO0VzgOAK6EhpAeAgmcaHK4oBlV6VNmJKz6+ksuROCGVY
-   l06VmcRlEbNLeaFIf8B46ZEthhB/BK+AUuy+XnlUO1Os0EusWhE6QtUkr
-   QBx7ygcDdLeiLPnsVYwcdw7+FkDAdFOD+kNJzv/ZRgWEQyzGGSoDjvKqC
-   A==;
-IronPort-SDR: 0g5mw+43X0CZ0OKp+cCyiQOJdM6VOCqRs0sO/O6HaHf6thzvuzR2/vs90+DioZY8+BTPD4cKvY
- BjqVCIm1H0bau75MJGBqqi+JuxsDBAhbU2d2rwU7UvV2b84spO3lPt+WP8Jf4dVGzB+RJkFPFq
- OrxIS8TyUrPG1k4ZXwMRh16M+lh6tDKSplJ2rM61a//zO0iF7gm+WOLuH5bwjSds6m+qX0sAPT
- a4UVdd3EeTZ2eFZmMS5rPoqgG8ADupZQTVoIX0SpGot4knK6t9PG1gdN2WY29axeD9HV/NjNf0
- NHg=
-X-IronPort-AV: E=Sophos;i="5.76,312,1592863200"; 
-   d="scan'208";a="11808915"
-Date:   Fri, 14 Aug 2020 15:34:15 +0200
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     John Ogness <john.ogness@linutronix.de>,
-        "jbaron@akamai.com" <jbaron@akamai.com>,
-        "mingo@redhat.com" <mingo@redhat.com>, kernel <kernel@axis.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: [PATCH] dynamic debug: allow printing to trace event
-Message-ID: <20200814133415.nbkehai2vp765an5@axis.com>
-References: <20200721141105.16034-1-vincent.whitchurch@axis.com>
- <20200721173045.540ae500@oasis.local.home>
- <87eep3zmg9.fsf@jogness.linutronix.de>
- <20200722144952.2mewrgebgkyr2zyf@axis.com>
- <20200722112823.3ba72d31@oasis.local.home>
- <20200723105735.mqfkfbljjda7qz7n@axis.com>
- <20200723112644.7759f82f@oasis.local.home>
+        id S1726196AbgHNNev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 09:34:51 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 340AC20791;
+        Fri, 14 Aug 2020 13:34:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597412090;
+        bh=2k7wrk2A5zGJi+fRb0tRgIS913bmaCEjSwO77FwaKMk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=YlODcCPqwINvpVojzhyjjz9MxMddRD2aNthmQFLCxvr7+MUtcFPc4z91us+eHTIZL
+         8OAsOl83Enw+lY6w5D+/XQorw3v+fsiNEbXVHM41up30924ZTOKcGKcAYTDgwjyQyO
+         rPTylFhazdcgJuUxq+EO5IuraNs79rfZrW/FBJPI=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 1485D3522A0E; Fri, 14 Aug 2020 06:34:50 -0700 (PDT)
+Date:   Fri, 14 Aug 2020 06:34:50 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200814133450.GK4295@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200813075027.GD9477@dhcp22.suse.cz>
+ <20200813095840.GA25268@pc636>
+ <874kp6llzb.fsf@nanos.tec.linutronix.de>
+ <20200813133308.GK9477@dhcp22.suse.cz>
+ <87sgcqty0e.fsf@nanos.tec.linutronix.de>
+ <20200813145335.GN9477@dhcp22.suse.cz>
+ <87lfiitquu.fsf@nanos.tec.linutronix.de>
+ <20200814071750.GZ9477@dhcp22.suse.cz>
+ <20200814121544.GA32598@pc636>
+ <20200814124832.GD9477@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200723112644.7759f82f@oasis.local.home>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20200814124832.GD9477@dhcp22.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 05:26:44PM +0200, Steven Rostedt wrote:
-> On Thu, 23 Jul 2020 12:57:35 +0200
-> Vincent Whitchurch <vincent.whitchurch@axis.com> wrote:
+On Fri, Aug 14, 2020 at 02:48:32PM +0200, Michal Hocko wrote:
+> On Fri 14-08-20 14:15:44, Uladzislau Rezki wrote:
+> > > On Thu 13-08-20 19:09:29, Thomas Gleixner wrote:
+> > > > Michal Hocko <mhocko@suse.com> writes:
+> > > [...]
+> > > > > Why should we limit the functionality of the allocator for something
+> > > > > that is not a real problem?
+> > > > 
+> > > > We'd limit the allocator for exactly ONE new user which was aware of
+> > > > this problem _before_ the code hit mainline. And that ONE user is
+> > > > prepared to handle the fail.
+> > > 
+> > > If we are to limit the functionality to this one particular user then
+> > > I would consider a dedicated gfp flag a huge overkill. It would be much
+> > > more easier to have a preallocated pool of pages and use those and
+> > > completely avoid the core allocator. That would certainly only shift the
+> > > complexity to the caller but if it is expected there would be only that
+> > > single user then it would be probably better than opening a can of worms
+> > > like allocator usable from raw spin locks.
+> > > 
+> > Vlastimil raised same question earlier, i answered, but let me answer again:
+> > 
+> > It is hard to achieve because the logic does not stick to certain static test
+> > case, i.e. it depends on how heavily kfree_rcu(single/double) are used. Based
+> > on that, "how heavily" - number of pages are formed, until the drain/reclaimer
+> > thread frees them.
 > 
-> > Would it be acceptable to just use a fixed size for the event?  At least
-> > for my own debugging use cases it's preferable to just have to increase
-> > the trace buffer size in case it's insufficient, rather than to have to
-> > restort to one-off debugging code.
-> 
-> There's two other options.
-> 
-> Option 1, is to allocate 256 bytes times 4 (in case of interruption,
-> where you have a separate buffer for every context - normal, softirq,
-> irq, nmi), and use it like I do for stack traces in the latest kernel
-> (see __ftrace_stack_trace() in kernel/trace/trace.c)
-> 
-> Option 2, would be to use trace_array_vprintk(), but you need to create
-> your own instance to do so to keep from messing with the top level buffer.
+> How many pages are talking about - ball park? 100s, 1000s?
 
-Thanks for the suggestions, I've sent out a v2 implementing option 1:
+Under normal operation, a couple of pages per CPU, which would make
+preallocation entirely reasonable.  Except that if someone does something
+that floods RCU callbacks (close(open) in a tight userspace loop, for but
+one example), then 2000 per CPU might not be enough, which on a 64-CPU
+system comes to about 500MB.  This is beyond excessive for preallocation
+on the systems I am familiar with.
 
-https://lore.kernel.org/lkml/20200814133151.7759-1-vincent.whitchurch@axis.com/
+And the flooding case is where you most want the reclamation to be
+efficient, and thus where you want the pages.
+
+This of course raises the question of how much memory the lockless caches
+contain, but fortunately these RCU callback flooding scenarios also
+involve process-context allocation of the memory that is being passed
+to kfree_rcu().  That allocation should keep the lockless caches from
+going empty in the common case, correct?
+
+Please note that we will also need to apply this same optimization to
+call_rcu(), which will have the same constraints.
+
+> > Preloading pages and keeping them for internal use, IMHO, seems not optimal
+> > from the point of resources wasting. It is better to have a fast mechanism to
+> > request a page and release it back for needs of others. As described about
+> > we do not know how much we will need.
+> 
+> It would be wasted memory but if we are talking about relatively small
+> number of pages. Note that there are not that many pages on the
+> allocator's pcp list anyway.
+
+Indeed, if we were talking a maximum of (say) 10 pages per CPU, we would
+not be having this conversation.  ;-)
+
+							Thanx, Paul
