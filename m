@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198B8244CE8
+	by mail.lfdr.de (Postfix) with ESMTP id 8717D244CE9
 	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 18:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728223AbgHNQoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 12:44:06 -0400
-Received: from mail.efficios.com ([167.114.26.124]:58780 "EHLO
+        id S1728257AbgHNQoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 12:44:07 -0400
+Received: from mail.efficios.com ([167.114.26.124]:58810 "EHLO
         mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbgHNQoG (ORCPT
+        with ESMTP id S1726667AbgHNQoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 14 Aug 2020 12:44:06 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 2CFC8298C61;
+        by mail.efficios.com (Postfix) with ESMTP id 69835298CCF;
         Fri, 14 Aug 2020 12:44:05 -0400 (EDT)
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 1aC3aBf118nC; Fri, 14 Aug 2020 12:44:05 -0400 (EDT)
+        with ESMTP id m8xIlR6s5KER; Fri, 14 Aug 2020 12:44:05 -0400 (EDT)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id E143E298A7E;
-        Fri, 14 Aug 2020 12:44:04 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com E143E298A7E
+        by mail.efficios.com (Postfix) with ESMTP id 2BA7D298F08;
+        Fri, 14 Aug 2020 12:44:05 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 2BA7D298F08
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1597423444;
-        bh=DswlVBKuKd2labIqCgEoG1MueK2NYXX+j88XAidVLtA=;
+        s=default; t=1597423445;
+        bh=gWMfYz3pTPNPAFbvbx6cVT/WalgvXWmMXDyplE97vOU=;
         h=From:To:Date:Message-Id;
-        b=Kam7TpDtW8qARJT1zHH+eX3cD6Z15F9lutypm6NieFgdM+HBUP6mxEEoolqZ6H7z+
-         HXWYJT+aEmlIX/M5fDEZBv4z/1L3GyipuLMtwNOkAsP2neL4c0fnfuTac9R+ylxrO2
-         ckH9455z5mSz3DJqtr22C8/jwSxpfHnbhqwcvi6b06uz7IBHYCTGyiQVO2/YGrTxfP
-         ZAfIbwSrtYC6lVUcCcrTgJrua+nVuSyUrUYgHjXUSIGZzmDUPXmzOso/7SzaKj8IEs
-         WHa9y9OFOTOsKWBEmYYZBGPiFq62qJ1wNyk0n0Ow7RELBGuP0l0XHIt7qPs/MY59WY
-         MeVpvl2ZkZZAQ==
+        b=R1hiTHwfeuCsuFYTexf4jJWTC+bhRFma3Qsx1ilOigYhmOOklty9mBnqtOq1c8H5T
+         iuRUc4aEU1bFCB4sNuHzwpKyuQEXUyTjiQHE4Psmukka0rQ7kcf3+kJ2AI5LPMOoRL
+         Hd0DVRB68ErLtai2I818A5SkWLB5qmB0T3Xu4TaTplTHlywhmWKy2oCvCiKfLJ58Jm
+         KbX5O/FVToG8HbP0KVBxf4mZWei1fOcd7KuFLzj4tWw1+PrzYiZ30qFy1QJV1RcdSR
+         BwbdTWMBlpgnqJFHg+6fcmEN2dcUrmVKk/2Hg3D/7PZvaXnM5oY47e3uB9yvsVslcP
+         yIv2KbKvQP5ug==
 X-Virus-Scanned: amavisd-new at efficios.com
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id hAjUmPJdomMi; Fri, 14 Aug 2020 12:44:04 -0400 (EDT)
+        with ESMTP id cLUW4hHJ8BLb; Fri, 14 Aug 2020 12:44:05 -0400 (EDT)
 Received: from thinkos.internal.efficios.com (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
-        by mail.efficios.com (Postfix) with ESMTPSA id 9FE97299002;
+        by mail.efficios.com (Postfix) with ESMTPSA id E2935298E3B;
         Fri, 14 Aug 2020 12:44:04 -0400 (EDT)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To:     Peter Zijlstra <peterz@infradead.org>
@@ -47,37 +47,95 @@ Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Alan Stern <stern@rowland.harvard.edu>,
         Nicholas Piggin <npiggin@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [RFC PATCH 0/3] sched: membarrier updates
-Date:   Fri, 14 Aug 2020 12:43:55 -0400
-Message-Id: <20200814164358.4783-1-mathieu.desnoyers@efficios.com>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org
+Subject: [RFC PATCH 1/3] sched: fix exit_mm vs membarrier (v2)
+Date:   Fri, 14 Aug 2020 12:43:56 -0400
+Message-Id: <20200814164358.4783-2-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200814164358.4783-1-mathieu.desnoyers@efficios.com>
+References: <20200814164358.4783-1-mathieu.desnoyers@efficios.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+exit_mm should issue memory barriers after user-space memory accesses,
+before clearing current->mm, to order user-space memory accesses
+performed prior to exit_mm before clearing tsk->mm, which has the
+effect of skipping the membarrier private expedited IPIs.
 
-Please find those three changes based on our recent discussions about
-interaction between membarrier and exit_mm and kthread_use_mm. I added
-documentation of memory ordering scenarios to membarrier.c as well.
+The membarrier system call can be issued concurrently with do_exit
+if we have thread groups created with CLONE_VM but not CLONE_THREAD.
 
-Thanks,
+Here is the scenario I have in mind:
 
-Mathieu
+Two thread groups are created, A and B. Thread group B is created by
+issuing clone from group A with flag CLONE_VM set, but not CLONE_THREAD.
+Let's assume we have a single thread within each thread group (Thread A
+and Thread B).
 
-Mathieu Desnoyers (3):
-  sched: fix exit_mm vs membarrier (v2)
-  sched: membarrier: cover kthread_use_mm (v2)
-  sched: membarrier: document memory ordering scenarios
+The AFAIU we can have:
 
- kernel/exit.c             |   8 +++
- kernel/kthread.c          |  19 +++++++
- kernel/sched/idle.c       |   1 +
- kernel/sched/membarrier.c | 136 ++++++++++++++++++++++++++++++++++++++++++++--
- 4 files changed, 158 insertions(+), 6 deletions(-)
+Userspace variables:
 
+int x = 0, y = 0;
+
+CPU 0                   CPU 1
+Thread A                Thread B
+(in thread group A)     (in thread group B)
+
+x = 1
+barrier()
+y = 1
+exit()
+exit_mm()
+current->mm = NULL;
+                        r1 = load y
+                        membarrier()
+                          skips CPU 0 (no IPI) because its current mm is NULL
+                        r2 = load x
+                        BUG_ON(r1 == 1 && r2 == 0)
+
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Andy Lutomirski <luto@amacapital.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: linux-mm@kvack.org
+---
+Changes since v1:
+- Use smp_mb__after_spinlock rather than smp_mb.
+- Document race scenario in commit message.
+---
+ kernel/exit.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 733e80f334e7..fe64e6e28dd5 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -475,6 +475,14 @@ static void exit_mm(void)
+ 	BUG_ON(mm != current->active_mm);
+ 	/* more a memory barrier than a real lock */
+ 	task_lock(current);
++	/*
++	 * When a thread stops operating on an address space, the loop
++	 * in membarrier_{private,global}_expedited() may not observe
++	 * that tsk->mm, and not issue an IPI. Membarrier requires a
++	 * memory barrier after accessing user-space memory, before
++	 * clearing tsk->mm.
++	 */
++	smp_mb__after_spinlock();
+ 	current->mm = NULL;
+ 	mmap_read_unlock(mm);
+ 	enter_lazy_tlb(mm, current);
 -- 
 2.11.0
 
