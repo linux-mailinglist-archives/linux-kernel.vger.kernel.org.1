@@ -2,139 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF04244E1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C29C1244E21
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728848AbgHNRef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 13:34:35 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:42603 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728419AbgHNReY (ORCPT
+        id S1728919AbgHNRes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 13:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728657AbgHNReq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 13:34:24 -0400
-Received: by mail-io1-f67.google.com with SMTP id j8so11488283ioe.9;
-        Fri, 14 Aug 2020 10:34:24 -0700 (PDT)
+        Fri, 14 Aug 2020 13:34:46 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354AFC061385
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:34:45 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id p137so2074228oop.4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:34:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BeRR5BzKObBdnK+fwz2UMgE1kYYlUJPk1LUN7o/xOdo=;
+        b=Gth4o4u+BkS4uuzbxWgDAcemzHF6oW0a+jDbxQPWhywWdFUx49bWOeLvc6PLgn90wj
+         4E7Bdbqv/daLEB0xpvYOdkpXThby+VgfCQe3UnYzRrFhXDykNwL5mVrk2U+GZKQ54ImZ
+         Yf6KRxLhyDeFkhq58rqwAmSDDkIGJQuoNXgDoT3vORVXbTtS8hrsQH7IA5thm0SUbb3A
+         c0QPfqvoHjsom0u/nNnIWhGY6GsGhsp7yZ39jLqFBxNDgz2oLrSR9KgAAw3VMoAbdnyF
+         ozpOZQOlPvK7YalbqVTpyRJd3qUjMEJGnH/paK0pON6yTCpaGy4m16p0xPch9xhCydrU
+         KbcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OBzjqYjSkJEbEHMceXH+VuiJYK8gX6oWBcQRGJhBqfE=;
-        b=G8zedPQiWnLalFbPw+D7877COMUUyC+TdqeULlSD3+LkAiM/W3Vy1TBMgLXQmRFwWs
-         /Tvy5QCM9zQ8zX3ZGugITcfu/+ZBQ06FCIIfu9mfIFTHFmwcFkr8J8Qwgvk6iiLFEw0H
-         uHGC2oftBlFXwv8BsH4fLOOQgyc0KeNsE8BeBWeR7sEo+Abd2ocFd3FQ7Rr4VqbZWndk
-         jls1mGwYII99aqXUAboa4cskARQQvwCXqbdnfkfZ1NbluQrJzTeGx2vbvDrs//me8GzE
-         Yhs5ejOm0OlhRklOvzqxD1OPKipyNFuSsAI6xOYzzhWBH9/scbxlenw2K4xiDwuLWcr+
-         JPZw==
-X-Gm-Message-State: AOAM532BWXGBl0hK1StB+o2vDNICMhFzrPE/jgaZWACRn4oyMK9Z4BBj
-        9LEkfQLNzbZXNTo93Pi1EriR0mFS0w==
-X-Google-Smtp-Source: ABdhPJw0x4lnTF3sMh1n8fbE2ZJKcxJB3/Y0HVzdg+LTtpUJGFGbBuAsXrXNZwTg81dJ5XxHY08m2Q==
-X-Received: by 2002:a02:3e11:: with SMTP id s17mr3573532jas.67.1597426463407;
-        Fri, 14 Aug 2020 10:34:23 -0700 (PDT)
-Received: from xps15.herring.priv ([64.188.179.249])
-        by smtp.googlemail.com with ESMTPSA id x185sm4637575iof.41.2020.08.14.10.34.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 10:34:22 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Andrei Ziureaev <andrei.ziureaev@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 3/3] dt-bindings: Validate DT binding schema in a single call
-Date:   Fri, 14 Aug 2020 11:34:17 -0600
-Message-Id: <20200814173417.2322509-4-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200814173417.2322509-1-robh@kernel.org>
-References: <20200814173417.2322509-1-robh@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BeRR5BzKObBdnK+fwz2UMgE1kYYlUJPk1LUN7o/xOdo=;
+        b=ndzyfVp1xt5fddRi+Vp1DvcyMo3R1+GLzzm2Bqo60qnf2G3lBEWlSKBWiQnd1Nog5Q
+         x1nk10aSslTQMZpwzX1Ahl7IVVgf8ekXJgejxJqO8V2xss5eEDoa0tu8QOfSUzU8hEAS
+         BXloGq0Ek71aElSsummTxnDsxBsGXCgRE7tMRihYcFTuBzp8q5OlRgrHtR0JA39ZhA63
+         3gzwn9Rki5I3IN7e3rLVqA5xMHAJc9gDsRYTNa7j2TDRkxMwgP1crCe+a+6pD5aYEMJy
+         FB0UHUMEtoJnOOMkEVnxaUYMFWUhjBD/Jh/5nnhY59MaI/eeltyAWssytjBYzdny8auk
+         Gx7Q==
+X-Gm-Message-State: AOAM5314/NOTQRC5CHB+mHvt7EgqOAs11g1asgFDJfPObVed51SdqgKd
+        MEI6hfF9Z22JU5xorL9oy4nD4Y9Y3UcqB8IxigeXNw==
+X-Google-Smtp-Source: ABdhPJyLWTN75DpWp2qFiCaZKdEgDOflg7ol6OkLKr1Zd+Luii22yLm5tIh0B4PTsZxpUYFSv0cqBDfdxqw2lwuqd6E=
+X-Received: by 2002:a4a:87c8:: with SMTP id c8mr2455742ooi.81.1597426484278;
+ Fri, 14 Aug 2020 10:34:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200807084841.7112-1-chenyi.qiang@intel.com> <20200807084841.7112-8-chenyi.qiang@intel.com>
+ <CALMp9eTAo3WO5Vk_LptTDZLzymJ_96=UhRipyzTXXLxWJRGdXg@mail.gmail.com>
+ <1481a482-c20b-5531-736c-de0c5d3d611c@intel.com> <CALMp9eQ5HhhXaEVKwnn6N6xxd2QOkNkE7ysiwq+3P=HB-Y1uzg@mail.gmail.com>
+ <ae2191a7-a165-3b50-2c8d-e2ddb4505455@intel.com>
+In-Reply-To: <ae2191a7-a165-3b50-2c8d-e2ddb4505455@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 14 Aug 2020 10:34:33 -0700
+Message-ID: <CALMp9eSXGjVLXBFmvyVn5RLKOMkVxvVLiR5Sy4abyMiHkeNmdA@mail.gmail.com>
+Subject: Re: [RFC 7/7] KVM: VMX: Enable PKS for nested VM
+To:     Chenyi Qiang <chenyi.qiang@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the number of binding schemas has grown, the time to run
-dt_binding_check has gotten pretty slow. A large part of this is due to
-the slow startup time of Python (a well documented problem). There's not
-currently any benefit to running dt-doc-validate one file at a time, so
-let's switch it to run a single rule. Doing this means we loose the make
-parallelism, but we can use xargs instead. This speeds up the validation
-time from several minutes to <10 sec.
+On Fri, Aug 14, 2020 at 3:09 AM Chenyi Qiang <chenyi.qiang@intel.com> wrote:
+>
+>
+>
+> On 8/14/2020 1:52 AM, Jim Mattson wrote:
+> > On Wed, Aug 12, 2020 at 9:54 PM Chenyi Qiang <chenyi.qiang@intel.com> wrote:
+> >>
+> >>
+> >>
+> >> On 8/11/2020 8:05 AM, Jim Mattson wrote:
+> >>> On Fri, Aug 7, 2020 at 1:47 AM Chenyi Qiang <chenyi.qiang@intel.com> wrote:
+> >>>>
+> >>>> PKS MSR passes through guest directly. Configure the MSR to match the
+> >>>> L0/L1 settings so that nested VM runs PKS properly.
+> >>>>
+> >>>> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
+> >>>> ---
+> >
+> >>>> +           (!vmx->nested.nested_run_pending ||
+> >>>> +            !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_IA32_PKRS)))
+> >>>> +               vmcs_write64(GUEST_IA32_PKRS, vmx->nested.vmcs01_guest_pkrs);
+> >>>
+> >>> This doesn't seem right to me. On the target of a live migration, with
+> >>> L2 active at the time the snapshot was taken (i.e.,
+> >>> vmx->nested.nested_run_pending=0), it looks like we're going to try to
+> >>> overwrite the current L2 PKRS value with L1's PKRS value (except that
+> >>> in this situation, vmx->nested.vmcs01_guest_pkrs should actually be
+> >>> 0). Am I missing something?
+> >>>
+> >>
+> >> We overwrite the L2 PKRS with L1's value when L2 doesn't support PKS.
+> >> Because the L1's VM_ENTRY_LOAD_IA32_PKRS is off, we need to migrate L1's
+> >> PKRS to L2.
+> >
+> > I'm thinking of the case where vmx->nested.nested_run_pending is
+> > false, and we are processing a KVM_SET_NESTED_STATE ioctl, yet
+> > VM_ENTRY_LOAD_IA32_PKRS *is* set in the vmcs12.
+> >
+>
+> Oh, I miss this case. What I'm still confused here is that the
+> restoration for GUEST_IA32_DEBUGCTL and GUEST_BNDCFGS have the same
+> issue, right? or I miss something.
 
-Since the validation is a single step with no output, we move running it
-as part of the processed-schema-examples.json target. We also need to
-reorder the extra-y entries so the validation is run first rather than
-after all the examples are extracted.
+I take it back. This does work, assuming that userspace calls
+KVM_SET_MSRS before calling KVM_SET_NESTED_STATE. Assuming L2 is
+active when the checkpoint is taken, the MSR values saved will be the
+L2 values. When restoring the MSRs with KVM_SET_MSRS, the L2 MSR
+values will be written into vmcs01. They don't belong there, but we're
+never going to launch vmcs01 with those MSR values. Instead, when
+userspace calls KVM_SET_NESTED_STATE, those values will be transferred
+first to the vmcs01_<msr> fields of the vmx->nested struct, and then
+to vmcs02.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/Makefile | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
-index bedc2210a2e0..d21c4c4f9eee 100644
---- a/Documentation/devicetree/bindings/Makefile
-+++ b/Documentation/devicetree/bindings/Makefile
-@@ -11,12 +11,11 @@ check_dtschema_version:
- 	$(DT_DOC_CHECKER) --version 2>/dev/null || echo 0; } | sort -VC || \
- 	{ echo "ERROR: dtschema minimum version is v$(DT_SCHEMA_MIN_VERSION)" >&2; false; }
- 
--quiet_cmd_chk_binding = CHKDT   $(patsubst $(srctree)/%,%,$<)
--      cmd_chk_binding = $(DT_DOC_CHECKER) -u $(srctree)/$(src) $< ; \
--                        $(DT_EXTRACT_EX) $< > $@
-+quiet_cmd_extract_ex = DTEX    $@
-+      cmd_extract_ex = $(DT_EXTRACT_EX) $< > $@
- 
- $(obj)/%.example.dts: $(src)/%.yaml check_dtschema_version FORCE
--	$(call if_changed,chk_binding)
-+	$(call if_changed,extract_ex)
- 
- # Use full schemas when checking %.example.dts
- DT_TMP_SCHEMA := $(obj)/processed-schema-examples.json
-@@ -25,6 +24,10 @@ find_cmd = find $(srctree)/$(src) \( -name '*.yaml' ! \
- 		-name 'processed-schema*' ! \
- 		-name '*.example.dt.yaml' \)
- 
-+quiet_cmd_chk_bindings = CHKDT   $@
-+      cmd_chk_bindings = $(find_cmd) | \
-+                         xargs -n200 -P$$(nproc) $(DT_DOC_CHECKER) -u $(srctree)/$(src)
-+
- quiet_cmd_mk_schema = SCHEMA  $@
-       cmd_mk_schema = f=$$(mktemp) ; \
-                       $(if $(DT_MK_SCHEMA_FLAGS), \
-@@ -33,6 +36,11 @@ quiet_cmd_mk_schema = SCHEMA  $@
-                       $(DT_MK_SCHEMA) -j $(DT_MK_SCHEMA_FLAGS) @$$f > $@ ; \
- 		      rm -f $$f
- 
-+define rule_chkdt
-+	$(call cmd,chk_bindings)
-+	$(call cmd,mk_schema)
-+endef
-+
- DT_DOCS = $(shell $(find_cmd) | sed -e 's|^$(srctree)/||')
- 
- override DTC_FLAGS := \
-@@ -41,7 +49,7 @@ override DTC_FLAGS := \
- 	-Wno-interrupt_provider
- 
- $(obj)/processed-schema-examples.json: $(DT_DOCS) check_dtschema_version FORCE
--	$(call if_changed,mk_schema)
-+	$(call if_changed_rule,chkdt)
- 
- ifeq ($(DT_SCHEMA_FILES),)
- 
-@@ -63,10 +71,10 @@ $(obj)/processed-schema.json: $(DT_SCHEMA_FILES) check_dtschema_version FORCE
- 
- endif
- 
--extra-$(CHECK_DT_BINDING) += $(patsubst $(src)/%.yaml,%.example.dts, $(DT_SCHEMA_FILES))
--extra-$(CHECK_DT_BINDING) += $(patsubst $(src)/%.yaml,%.example.dt.yaml, $(DT_SCHEMA_FILES))
- extra-$(CHECK_DT_BINDING) += processed-schema-examples.json
- extra-$(CHECK_DTBS) += processed-schema.json
-+extra-$(CHECK_DT_BINDING) += $(patsubst $(src)/%.yaml,%.example.dts, $(DT_SCHEMA_FILES))
-+extra-$(CHECK_DT_BINDING) += $(patsubst $(src)/%.yaml,%.example.dt.yaml, $(DT_SCHEMA_FILES))
- 
- # Hack: avoid 'Argument list too long' error for 'make clean'. Remove most of
- # build artifacts here before they are processed by scripts/Makefile.clean
--- 
-2.25.1
-
+This is subtle, and I don't think it's documented anywhere that
+KVM_SET_NESTED_STATE must be called after KVM_SET_MSRS. In fact, there
+are probably a number of dependencies among the various KVM_SET_*
+functions that aren't documented anywhere.
