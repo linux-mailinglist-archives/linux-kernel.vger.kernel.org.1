@@ -2,135 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1492443D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 05:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BB42443BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 05:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgHNDGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 23:06:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726567AbgHNDGL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 23:06:11 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53AB0C061757;
-        Thu, 13 Aug 2020 20:06:11 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id u128so3863477pfb.6;
-        Thu, 13 Aug 2020 20:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HaME3Z5uLAfT5ND31CqQyrNIC7MORGaQXez8ygNaWV4=;
-        b=jLR45Gl2DA2rRti+GMEvcjlEkZd1G7TuZhTfwWhzE3Btu5YqhkcgLUPpyCGdLywjPa
-         H8IDLJsaUlE2XRq3ZIWT8rWakHVFkOPn0PLs9w96njhg44kwwDJgM9zaN6tar1oRBdlW
-         ocoPeppftFJ1v3pzC7J89x8POwTNDrlCHoxdgJW+OzM+ctn3TgnGRZeCZWW5xIt6q7O8
-         5CyQ/U4dwcAKCHiMhFOdGssaU4sErtGYKjva1d3Q3TkspQgsQ7L186yhXL0hOLhtOLdT
-         DHqcU5nF1ZjQeRZS6f62yIAFqi7UhMmaIg0G0YFo0fa8qhGiOuLoJuiTlCIOavEX7NFh
-         P09Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HaME3Z5uLAfT5ND31CqQyrNIC7MORGaQXez8ygNaWV4=;
-        b=rv6U0CDrEgmPK9bm+XDYriq9kMT9+ZhbFToXlgxjit4JL8cOPfs9lIcGjf3oVZKqcz
-         hcyBpx/3YgRQqwvm3C3Rqdn7thP6/uakHNcKL+RHOIb6HHADekZ2eJLsgepV/FOohcD8
-         mDFsj5u4Xd3GMjy1a/Pry6+OqUUL3RxrHlSd7eOw/13ncK6/YqNvN5FiwmNhzHg7Gj6/
-         gFpa0nNwB5dtGow9MB/vbUIKv73DWx3gqy0Lk9DyGF7zQLdSa3UXxlMqt4u/zyGnLX0D
-         dGocfBR1L0pxROQ1wsrO6uwZiyqkibXjfJ4ciSx9P0dft3l6DcUmWoKuuH/MTVuUElW5
-         MQIw==
-X-Gm-Message-State: AOAM533mWDxVv/fZbhRYPETGVxlPVdaswmO2ErgJgT3h29MKkCBnROqD
-        IBH7BxSwzjuFVCnNpxg/VpJnrKpf
-X-Google-Smtp-Source: ABdhPJz8DjcUkVYhxph2GyoOQXwR3+ubl84dJguupmyyxcpV9poz45BszY08LNYRQZ4Qu3DAfqRy7g==
-X-Received: by 2002:a63:2324:: with SMTP id j36mr437494pgj.221.1597374370373;
-        Thu, 13 Aug 2020 20:06:10 -0700 (PDT)
-Received: from sol.lan (106-69-161-64.dyn.iinet.net.au. [106.69.161.64])
-        by smtp.gmail.com with ESMTPSA id z3sm6522231pgk.49.2020.08.13.20.06.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 20:06:09 -0700 (PDT)
-From:   Kent Gibson <warthog618@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        bgolaszewski@baylibre.com, linus.walleij@linaro.org
-Cc:     Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH v4 20/20] tools: gpio: add debounce support to gpio-event-mon
-Date:   Fri, 14 Aug 2020 11:02:57 +0800
-Message-Id: <20200814030257.135463-21-warthog618@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200814030257.135463-1-warthog618@gmail.com>
-References: <20200814030257.135463-1-warthog618@gmail.com>
+        id S1726834AbgHNDEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 23:04:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726564AbgHNDEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 23:04:08 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BE6B20716;
+        Fri, 14 Aug 2020 03:04:08 +0000 (UTC)
+Date:   Thu, 13 Aug 2020 23:04:06 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH] bootconfig: Fix off-by-one in
+ xbc_node_compose_key_after()
+Message-ID: <20200813230406.2e3b9246@oasis.local.home>
+In-Reply-To: <20200813193818.a44ea9afc447f57d470b2def@linux-foundation.org>
+References: <20200813183050.029a6003@oasis.local.home>
+        <20200813193818.a44ea9afc447f57d470b2def@linux-foundation.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for debouncing monitored lines to gpio-event-mon.
+On Thu, 13 Aug 2020 19:38:18 -0700
+Andrew Morton <akpm@linux-foundation.org> wrote:
 
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
----
- tools/gpio/gpio-event-mon.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+> On Thu, 13 Aug 2020 18:30:50 -0400 Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > 
+> > While reviewing some patches for bootconfig, I noticed the following
+> > code in xbc_node_compose_key_after():
+> > 
+> > 	ret = snprintf(buf, size, "%s%s", xbc_node_get_data(node),
+> > 		       depth ? "." : "");
+> > 	if (ret < 0)
+> > 		return ret;
+> > 	if (ret > size) {
+> > 		size = 0;
+> > 	} else {
+> > 		size -= ret;
+> > 		buf += ret;
+> > 	}
+> > 
+> > But snprintf() returns the number of bytes that would be written, not
+> > the number of bytes that are written (ignoring the nul terminator).
+> > This means that if the number of non null bytes written were to equal
+> > size, then the nul byte, which snprintf() always adds, will overwrite
+> > that last byte.
+> > 
+> > 	ret = snprintf(buf, 5, "hello");
+> > 	printf("buf = '%s'\n", buf);
+> > 	printf("ret = %d\n", ret);
+> > 
+> > produces:
+> > 
+> > 	buf = 'hell'
+> > 	ret = 5
+> > 
+> > The string was truncated without ret being greater than 5.
+> > Test (ret >= size) for overwrite.  
+> 
+> What are the end-user visible effects of the bug?  IOW, why cc:stable?
+> 
 
-diff --git a/tools/gpio/gpio-event-mon.c b/tools/gpio/gpio-event-mon.c
-index e50bb107ea3a..bd5ea3cc6e85 100644
---- a/tools/gpio/gpio-event-mon.c
-+++ b/tools/gpio/gpio-event-mon.c
-@@ -148,11 +148,12 @@ void print_usage(void)
- 		"  -s         Set line as open source\n"
- 		"  -r         Listen for rising edges\n"
- 		"  -f         Listen for falling edges\n"
-+		"  -b <n>     Debounce the line with period n microseconds\n"
- 		" [-c <n>]    Do <n> loops (optional, infinite loop if not stated)\n"
- 		"  -?         This helptext\n"
- 		"\n"
- 		"Example:\n"
--		"gpio-event-mon -n gpiochip0 -o 4 -r -f\n"
-+		"gpio-event-mon -n gpiochip0 -o 4 -r -f -b 10000\n"
- 	);
- }
- 
-@@ -167,11 +168,12 @@ int main(int argc, char **argv)
- 	unsigned int num_lines = 0;
- 	unsigned int loops = 0;
- 	struct gpio_v2_line_config config;
--	int c;
-+	int c, attr, i;
-+	unsigned long debounce_period = 0;
- 
- 	memset(&config, 0, sizeof(config));
- 	config.flags = GPIO_V2_LINE_FLAG_INPUT;
--	while ((c = getopt(argc, argv, "c:n:o:dsrf?")) != -1) {
-+	while ((c = getopt(argc, argv, "c:n:o:b:dsrf?")) != -1) {
- 		switch (c) {
- 		case 'c':
- 			loops = strtoul(optarg, NULL, 10);
-@@ -187,6 +189,9 @@ int main(int argc, char **argv)
- 			lines[num_lines] = strtoul(optarg, NULL, 10);
- 			num_lines++;
- 			break;
-+		case 'b':
-+			debounce_period = strtoul(optarg, NULL, 10);
-+			break;
- 		case 'd':
- 			config.flags |= GPIO_V2_LINE_FLAG_OPEN_DRAIN;
- 			break;
-@@ -205,6 +210,15 @@ int main(int argc, char **argv)
- 		}
- 	}
- 
-+	if (debounce_period) {
-+		attr = config.num_attrs;
-+		config.num_attrs++;
-+		for (i = 0; i < num_lines; i++)
-+			gpiotools_set_bit(&config.attrs[attr].mask, i);
-+		config.attrs[attr].attr.id = GPIO_V2_LINE_ATTR_ID_DEBOUNCE;
-+		config.attrs[attr].attr.debounce_period = debounce_period;
-+	}
-+
- 	if (!device_name || num_lines == 0) {
- 		print_usage();
- 		return -1;
--- 
-2.28.0
+Hmm, looking at it at a wider view, it may not be an issue. The tools
+code calls this code, and I looked to see if it was possible to corrupt
+the buffer by an incorrect size. But now that I'm looking at the else
+part of the section, it may not be a problem as it may act the same.
 
+That is, ret == size will make size = 0 with the size -= ret, and we
+get the same result.
+
+OK, you can drop the patch. Thanks for the review!
+
+Although, there's no error message if the buffer is not big enough to
+hold the fields.
+
+Masami?
+
+-- Steve
