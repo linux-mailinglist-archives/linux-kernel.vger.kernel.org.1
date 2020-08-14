@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CCA244589
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 09:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A08F52445BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 09:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgHNHOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 03:14:44 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:35438 "EHLO huawei.com"
+        id S1727829AbgHNHPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 03:15:35 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:36696 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726283AbgHNHOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 03:14:43 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.53])
-        by Forcepoint Email with ESMTP id 0A64FF16F2CD84232FF6;
-        Fri, 14 Aug 2020 15:14:40 +0800 (CST)
+        id S1727814AbgHNHPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 03:15:31 -0400
+Received: from dggeme753-chm.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 83203560D5CD59C0D5C8;
+        Fri, 14 Aug 2020 15:15:29 +0800 (CST)
 Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
+ dggeme753-chm.china.huawei.com (10.3.19.99) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Fri, 14 Aug 2020 15:14:39 +0800
+ 15.1.1913.5; Fri, 14 Aug 2020 15:15:29 +0800
 Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
  dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Fri, 14 Aug 2020 15:14:39 +0800
+ Fri, 14 Aug 2020 15:15:29 +0800
 From:   linmiaohe <linmiaohe@huawei.com>
 To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 CC:     David Miller <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        "martin.varghese@nokia.com" <martin.varghese@nokia.com>,
+        "pshelar@ovn.org" <pshelar@ovn.org>,
+        "dcaratti@redhat.com" <dcaratti@redhat.com>,
         Eric Dumazet <edumazet@google.com>,
         Steffen Klassert <steffen.klassert@secunet.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "decui@microsoft.com" <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        "jeremy@azazel.net" <jeremy@azazel.net>,
-        "mashirle@us.ibm.com" <mashirle@us.ibm.com>,
+        "Paolo Abeni" <pabeni@redhat.com>,
+        Shmulik Ladkani <shmulik@metanetworks.com>,
+        "Yadu Kishore" <kyk.segfault@gmail.com>,
+        "sowmini.varadhan@oracle.com" <sowmini.varadhan@oracle.com>,
+        Network Development <netdev@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/5] net: Fix potential deadloop in skb_copy_ubufs()
-Thread-Topic: [PATCH 1/5] net: Fix potential deadloop in skb_copy_ubufs()
-Thread-Index: AdZyCng8yL/EIjdPQ3Gs3ioJM4VpUQ==
-Date:   Fri, 14 Aug 2020 07:14:39 +0000
-Message-ID: <6e3bace9ebea4f59a567a9ab0ef85d90@huawei.com>
+Subject: Re: [PATCH] net: add missing skb_uarg refcount increment in
+ pskb_carve_inside_header()
+Thread-Topic: [PATCH] net: add missing skb_uarg refcount increment in
+ pskb_carve_inside_header()
+Thread-Index: AdZyCOwMRQ90pG27RJqKlae5o5FvkA==
+Date:   Fri, 14 Aug 2020 07:15:29 +0000
+Message-ID: <e9b280b79ba444a68f5279cea77a84bf@huawei.com>
 Accept-Language: zh-CN, en-US
 Content-Language: zh-CN
 X-MS-Has-Attach: 
@@ -56,27 +59,19 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 V2lsbGVtIGRlIEJydWlqbiA8d2lsbGVtZGVicnVpam4ua2VybmVsQGdtYWlsLmNvbT4gd3JvdGU6
-DQo+T24gVGh1LCBBdWcgNiwgMjAyMCBhdCAxOjQ4IFBNIGxpbm1pYW9oZSA8bGlubWlhb2hlQGh1
-YXdlaS5jb20+IHdyb3RlOg0KPj4NCj4+IEZyb206IE1pYW9oZSBMaW4gPGxpbm1pYW9oZUBodWF3
-ZWkuY29tPg0KPj4NCj4+IFdlIGNvdWxkIGJlIHRyYXBwZWQgaW4gZGVhZGxvb3Agd2hlbiB3ZSB0
-cnkgdG8gY29weSB1c2Vyc3BhY2Ugc2tiIA0KPj4gZnJhZ3MgYnVmZmVycyB0byBrZXJuZWwgd2l0
-aCBhIGNsb25lZCBza2I6DQo+PiBSZXByb2R1Y2UgY29kZSBzbmlwcGV0Og0KPj4gICAgICAgICBz
-a2IgPSBhbGxvY19za2IoVUJVRl9EQVRBX0xFTiwgR0ZQX0FUT01JQyk7DQo+PiAgICAgICAgIGNs
-b25lID0gc2tiX2Nsb25lKHNrYiwgR0ZQX0FUT01JQyk7DQo+PiAgICAgICAgIHNrYl96Y29weV9z
-ZXRfbm91YXJnKGNsb25lLCBOVUxMKTsNCj4+ICAgICAgICAgcHNrYl9leHBhbmRfaGVhZChza2Is
-IDAsIDAsIEdGUF9BVE9NSUMpOw0KPj4NCj4+IENhdGNoIHRoaXMgdW5leHBlY3RlZCBjYXNlIGFu
-ZCByZXR1cm4gLUVJTlZBTCBpbiBza2Jfb3JwaGFuX2ZyYWdzKCkgDQo+PiBiZWZvcmUgd2UgY2Fs
-bCBza2JfY29weV91YnVmcygpIHRvIGZpeCBpdC4NCj4NCj5JcyB0aGlzIGEgaHlwb3RoZXRpY2Fs
-IGNvZGVwYXRoPw0KPg0KPnNrYiB6ZXJvY29weSBjYXJlZnVsbHkgdHJhY2tzIGNsb25lIGNhbGxz
-IHdoZXJlIG5lY2Vzc2FyeS4gU2VlIHRoZSBjYWxsIHRvIHNrYl9vcnBoYW5fZnJhZ3MgaW4gc2ti
-X2Nsb25lLCBhbmQgdGhlIGltcGxlbWVudGF0aW9uIG9mIHRoYXQgY2FsbGVlLg0KPg0KPlRoZSBv
-bmx5IGNhbGxlciBvZiBza2IgemVyb2NvcHkgd2l0aCBub3VhcmcgaXMgdHBhY2tldF9maWxsX3Nr
-YiwgYXMgb2YgY29tbWl0IDVjZDhkNDZlYTE1NiAoInBhY2tldDogY29weSB1c2VyIGJ1ZmZlcnMg
-YmVmb3JlIG9ycGhhbiBvciBjbG9uZSIpLg0KPg0KPkFzIHRoZSBjb21taXQgc3ViamVjdCBpbmRp
-Y2F0ZXMsIHRoaXMgc2V0cyBza2JfemNvcHlfc2V0X25vdWFyZyBleGFjdGx5IHRvIGJlIHN1cmUg
-dGhhdCBhbnkgY2xvbmUgd2lsbCB0cmlnZ2VyIGEgY29weSBvZiAiemVyb2NvcHkiDQo+dXNlciBk
-YXRhIHRvIHByaXZhdGUga2VybmVsIG1lbW9yeS4NCj4NCj5ObyBjbG9uZSBtdXN0IGhhcHBlbiBi
-ZXR3ZWVuIGFsbG9jX3NrYiBhbmQgc2tiX3pjb3B5X3NldF9ub3VhcmcsIGluZGVlZC4gQnV0IEFG
-QUlLLCBub25lIGV4aXN0cy4NCg0KU2luY2Ugd2UgYWx3YXlzIGNhbGwgc2tiX29ycGhhbl9mcmFn
-cyBpbiBza2JfY2xvbmUsIGlzIGl0IHVubmVjZXNzYXJ5IHRvIGNhbGwgc2tiX29ycGhhbl9mcmFn
-cyBpbiBwc2tiX2V4cGFuZF9oZWFkIHdoZW4gc2tiIGlzIGNsb25lZCA/DQoNClRoYW5rcy4NCg0K
+DQo+T24gVGh1LCBBdWcgMTMsIDIwMjAgYXQgMjoxNiBQTSBNaWFvaGUgTGluIDxsaW5taWFvaGVA
+aHVhd2VpLmNvbT4gd3JvdGU6DQo+Pg0KPj4gSWYgdGhlIHNrYiBpcyB6Y29waWVkLCB3ZSBzaG91
+bGQgaW5jcmVhc2UgdGhlIHNrYl91YXJnIHJlZmNvdW50IGJlZm9yZSANCj4+IHdlIGludm9sdmUg
+c2tiX3JlbGVhc2VfZGF0YSgpLiBTZWUgcHNrYl9leHBhbmRfaGVhZCgpIGFzIGEgcmVmZXJlbmNl
+Lg0KPg0KPkRpZCB5b3UgbWFuYWdlIHRvIG9ic2VydmUgYSBidWcgdGhyb3VnaCB0aGlzIGRhdGFw
+YXRoIGluIHByYWN0aWNlPw0KPg0KPnBza2JfY2FydmVfaW5zaWRlX2hlYWRlciBpcyBjYWxsZWQN
+Cj4gIGZyb20gcHNrYl9jYXJ2ZQ0KPiAgICBmcm9tIHBza2JfZXh0cmFjdA0KPiAgICAgIGZyb20g
+cmRzX3RjcF9kYXRhX3JlY3YNCj4NCj5UaGF0IHJlY2VpdmUgcGF0aCBzaG91bGQgbm90IHNlZSBh
+bnkgcGFja2V0cyB3aXRoIHplcm9jb3B5IHN0YXRlIGFzc29jaWF0ZWQuDQo+DQoNClRoaXMgd29y
+a3MgZmluZSB5ZXQgYXMgaXRzIGNhbGxlciBpcyBsaW1pdGVkLiBCdXQgd2Ugc2hvdWxkIHRha2Ug
+Y2FyZSBvZiB0aGUgc2tiX3VhcmcgcmVmY291bnQgZm9yIGZ1dHVyZSB1c2UuDQpPbiB0aGUgb3Ro
+ZXIgaGFuZCwgYmVjYXVzZSB0aGlzIGNvZGVwYXRoIHNob3VsZCBub3Qgc2VlIGFueSBwYWNrZXRz
+IHdpdGggemVyb2NvcHkgc3RhdGUgYXNzb2NpYXRlZCwgdGhlbiB3ZQ0Kc2hvdWxkIG5vdCBjYWxs
+IHNrYl9vcnBoYW5fZnJhZ3MgaGVyZS4NCg0KVGhhbmtzLg0KDQo+PiBGaXhlczogNmZhMDFjY2Q4
+ODMwICgic2tidWZmOiBBZGQgcHNrYl9leHRyYWN0KCkgaGVscGVyIGZ1bmN0aW9uIikNCj4+IFNp
+Z25lZC1vZmYtYnk6IE1pYW9oZSBMaW4gPGxpbm1pYW9oZUBodWF3ZWkuY29tPg0K
