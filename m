@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78EB8244AC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AFD244ADA
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgHNNmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 09:42:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43210 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgHNNmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 09:42:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7BB76AFBF;
-        Fri, 14 Aug 2020 13:42:23 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7C143DA6EF; Fri, 14 Aug 2020 15:40:57 +0200 (CEST)
-Date:   Fri, 14 Aug 2020 15:40:57 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
- Software.
-Message-ID: <20200814134056.GV2026@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
+        id S1728268AbgHNNm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 09:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726268AbgHNNmE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 09:42:04 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC02C061384;
+        Fri, 14 Aug 2020 06:42:03 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id o18so9969627eje.7;
+        Fri, 14 Aug 2020 06:42:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7cQQ4WDJLZ/zyyhzDTf2NVjGL+CUR2rrNdCZgGLo0+Y=;
+        b=Fnog6K1MdRWWZtiu+ypFiEBOhpVW3EW05Ey5nakDXOk8IAy1f0MCrPzJZuIicFAPcY
+         MACz7l0yLcDjDVizhVO21w0pApYX7bfckrzaUn1vMxqP701Ubo0Bc3gMcLDRmEn3G2m/
+         4ZytHNfqyvZQVEhYiQMmrMbP7YE70dtGemCcsMUgrlJ3dhlyKIudAEqJc+OM4xTVFMhw
+         GOHYkt4Cle7ZWk9waEgvhj6Gbh9EYOSDrYMGFhr3viRptAGiTp+pIJXuhAXE7A2PVgGe
+         bRr6sjqeEJXL4JZqFGD2m490RmEqGZYJbZ61qstdpQBxXgiWtkBozzrxbx+ky8ngWb+f
+         dSJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7cQQ4WDJLZ/zyyhzDTf2NVjGL+CUR2rrNdCZgGLo0+Y=;
+        b=IRFrs2qsv0wLHXpdxhsejCWfCCQTz6dIYrVNb1ZoU1LbfguLWIOpzKLgF3SVBNlO+c
+         GTBNtfggEjQGQr+vHsJ6nj0pQTyCq8aMdMV6HPkwNEwlu8KJBOJz80M7HXcH/RTpChLi
+         sIop98OVgYQVPuptuSJqd7j25NbaM25UyaxOQEbuzqke05Ijm/9SvXW9JzEevlYaX+ct
+         A+Eyt+L/vAqc2Ph12uDClWhW9IDA8FI4RRWXyPH7oMlOUbjUm3Nb0tx9XR307VJPo+Wt
+         Gq81iN8mx6Q7nXaFKUzirPqN8TEz8E8g4yqM3jK6yp34G9CjXBfS9KCZiAZkFFEksszF
+         ypng==
+X-Gm-Message-State: AOAM532yUtXozgGH9JOWa9B5J2xlVf2kkMgOFlOxVQh1Pq/Tp//1lA+n
+        s5PSmInR20Gu4UDToo9IoV0=
+X-Google-Smtp-Source: ABdhPJwmx7QSSyTVXTxqs3pecv1pGcO68Xfu47xoxRvm+0c6cpjsx3ArTyeaxJ2TKDBQiKwMYroClA==
+X-Received: by 2002:a17:906:ca5a:: with SMTP id jx26mr2348450ejb.62.1597412522437;
+        Fri, 14 Aug 2020 06:42:02 -0700 (PDT)
+Received: from Ansuel-XPS.localdomain (host-87-0-192-118.retail.telecomitalia.it. [87.0.192.118])
+        by smtp.googlemail.com with ESMTPSA id s2sm6767118ejd.17.2020.08.14.06.41.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Aug 2020 06:42:01 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Amit Kucheria <amit.kucheria@linaro.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v6 0/8]  Add support for ipq8064 tsens
+Date:   Fri, 14 Aug 2020 15:41:14 +0200
+Message-Id: <20200814134123.14566-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 12:29:01PM +0000, Konstantin Komarov wrote:
-> This patch adds NTFS Read-Write driver to fs/ntfs3.
-> 
-> Having decades of expertise in commercial file systems development and huge
-> test coverage, we at Paragon Software GmbH want to make our contribution to
-> the Open Source Community by providing implementation of NTFS Read-Write
-> driver for the Linux Kernel.
-> 
-> This is fully functional NTFS Read-Write driver. Current version works with
-> NTFS(including v3.1) normal/compressed/sparse files and supports journal replaying.
-> 
-> We plan to support this version after the codebase once merged, and add new
-> features and fix bugs. For example, full journaling support over JBD will be
-> added in later updates.
-> 
-> The patch is too big to handle it within an e-mail body, so it is available to download 
-> on our server: https://dl.paragon-software.com/ntfs3/ntfs3.patch
-> 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+This patchset convert msm8960 to reg_filed, use int_common instead 
+of a custom function and fix wrong tsens get_temp function for msm8960.
+Ipq8064 SoCs tsens driver is based on 8960 tsens driver. Ipq8064 needs
+to be registered as a gcc child as the tsens regs on this platform are
+shared with the controller.
+This is based on work and code here
+https://git.linaro.org/people/amit.kucheria/kernel.git/log/?h=wrk3/tsens-8960-breakage
 
-In case somebody wants to compile it, this fixup is needed to let 'make
-fs/ntfs3/' actually work, besides enabling it in the config.
+v6:
+* Fix spelling error (can't find the problem with variable misallignment)
+* Rework big if-else
+* Remove extra comments
+* Add description about different interrupts
+v5:
+* Conver driver to use reg_fiedl
+* Use init_common 
+* Drop custom set_trip and set_interrupt
+* Use common set_trip and set_interrupt
+* Fix bad get_temp function
+* Add missing hardcoded slope
+v4:
+* Fix compilation error and warning reported by the bot
+v3:
+* Change driver to register as child instead of use phandle
+v2:
+* Fix dt-bindings problems
 
-diff --git a/fs/Makefile b/fs/Makefile
-index 1c7b0e3f6daa..b0b4ad8affa0 100644
---- a/fs/Makefile
-+++ b/fs/Makefile
-@@ -100,6 +100,7 @@ obj-$(CONFIG_SYSV_FS)		+= sysv/
- obj-$(CONFIG_CIFS)		+= cifs/
- obj-$(CONFIG_HPFS_FS)		+= hpfs/
- obj-$(CONFIG_NTFS_FS)		+= ntfs/
-+obj-$(CONFIG_NTFS3_FS)		+= ntfs3/
- obj-$(CONFIG_UFS_FS)		+= ufs/
- obj-$(CONFIG_EFS_FS)		+= efs/
- obj-$(CONFIG_JFFS2_FS)		+= jffs2/
-diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
-index 4d4fe198b8b8..d99dd1af43aa 100644
---- a/fs/ntfs3/Makefile
-+++ b/fs/ntfs3/Makefile
-@@ -5,7 +5,7 @@
- 
- obj-$(CONFIG_NTFS3_FS) += ntfs3.o
- 
--ntfs3-objs := bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
-+ntfs3-y := bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
- 	    index.o attrlist.o record.o attrib.o run.o xattr.o\
- 	    upcase.o super.o file.o dir.o namei.o lznt.o\
- 	    fslog.o
----
+Ansuel Smith (8):
+  drivers: thermal: tsens: use get_temp for tsens_valid
+  drivers: thermal: tsens: Add VER_0 tsens version
+  drivers: thermal: tsens: Convert msm8960 to reg_field
+  drivers: thermal: tsens: Use init_common for msm8960
+  drivers: thermal: tsens: Fix wrong get_temp for msm8960
+  drivers: thermal: tsens: Change calib_backup name for msm8960
+  drivers: thermal: tsens: Add support for ipq8064-tsens
+  dt-bindings: thermal: tsens: Document ipq8064 bindings
+
+ .../bindings/thermal/qcom-tsens.yaml          |  50 ++++-
+ drivers/thermal/qcom/tsens-8960.c             | 172 +++++++++++-------
+ drivers/thermal/qcom/tsens.c                  | 130 +++++++++++--
+ drivers/thermal/qcom/tsens.h                  |   7 +-
+ 4 files changed, 270 insertions(+), 89 deletions(-)
+
+-- 
+2.27.0
+
