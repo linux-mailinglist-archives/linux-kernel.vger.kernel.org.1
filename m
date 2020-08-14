@@ -2,160 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5867624420C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 02:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB9724427C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 02:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727790AbgHNAIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Aug 2020 20:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727053AbgHNAHn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Aug 2020 20:07:43 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B63DC061757;
-        Thu, 13 Aug 2020 17:07:43 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id v12so8092836ljc.10;
-        Thu, 13 Aug 2020 17:07:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5I441vpS3S5aDlVzrg/mTzQrvjnvNW+TqUcAQJ59TLM=;
-        b=Aacq3Tu5kitjooDIHTqmVcRI0PhSXKEqTTnvrZFmM5H001UFUNP9Sky0+GT1d3AZ4U
-         Nt0NQgAYFfh+mUvmV6GtZ6GzUoQiNxQd3HZJikeGjtugP02+aAxMjMec3venF3HkZqdr
-         ZS+DWN2mXcyogiUsIB8KatEHdaitiLkVmHZcW0LqyoVphj9aor0Oas9rkDzhF/oxysSg
-         ptnskfvIyA9gRArGqO1Z10ZfHiPlj/rEYT7bk30rzSI2kGETMRR11oxHdNNnCrGP/WaZ
-         nNOifEJHr+md6VGLjEzSq4Nf6jJCbNuAJY5fcH6tPNwZIujxqwDhutbEOvc4MJNzvNzk
-         oc9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5I441vpS3S5aDlVzrg/mTzQrvjnvNW+TqUcAQJ59TLM=;
-        b=c6iBvP5cFCAMLq4eGjJ5bRnLuOWXYV+22dMW85dj1SPDGDGCCrLMCT1xOJo+JPZKvZ
-         OrAT+PbZRuEa6850odHQxlwPRrCY7TmOw6TzVkhkkJHEgK801ZpH1aGFMcCHNFDWGVjE
-         mpv66eS61dZO9K3pesZrTSKB/qAf7GyhEpn4GSO5u5Wbb4JiZH2uvbFFbRTJg8ARruzI
-         cKfMgAevql8sjmHu8CR8VeFLnnLmswBiirst2CYyNC7qO96+4PSVRZpkYaPgAoOt1T+x
-         lN4bCJuC5SglW8oOkGG1RXaPHHd5aE0wxHEcfwfuVRxJaBRQuvOA3ZUIaKFAlgnsxzKM
-         CbmA==
-X-Gm-Message-State: AOAM530MJvyHtfvAmje2T08D6BF4tGm9SuSzl0dISDMeKIsqkdNQf2QC
-        mFac9hSPbVxMve0bTCDkxig=
-X-Google-Smtp-Source: ABdhPJwS3t1VhewclqFmHM7Z+G4PJRRjcKaBY9PA67owkG9Oe2NamFWEnuF0B6DZLWORmPupH2dW5w==
-X-Received: by 2002:a2e:8e28:: with SMTP id r8mr103221ljk.290.1597363661566;
-        Thu, 13 Aug 2020 17:07:41 -0700 (PDT)
-Received: from localhost.localdomain (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.gmail.com with ESMTPSA id c17sm1504450lfr.23.2020.08.13.17.07.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 17:07:41 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v5 36/36] drm/tegra: dc: Extend debug stats with total number of events
-Date:   Fri, 14 Aug 2020 03:06:21 +0300
-Message-Id: <20200814000621.8415-37-digetx@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200814000621.8415-1-digetx@gmail.com>
-References: <20200814000621.8415-1-digetx@gmail.com>
+        id S1726593AbgHNAUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Aug 2020 20:20:30 -0400
+Received: from mga05.intel.com ([192.55.52.43]:50634 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726526AbgHNAU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Aug 2020 20:20:29 -0400
+IronPort-SDR: VPW+bCF1l/feV5yn9skm7SrXd8KTiVh5JTtjt6hrfNFUW+g7uBa5vDaPpTsWPSHKH7ncSq3eeN
+ vrupzJwyzfxg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9712"; a="239170830"
+X-IronPort-AV: E=Sophos;i="5.76,310,1592895600"; 
+   d="scan'208";a="239170830"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2020 17:20:29 -0700
+IronPort-SDR: cMk4owmHfj467wayQdmksG1kA1w0lyVLyfiXLZzcEeSV7K5zmieMhvIMN/JGzE4raA8nNJnpac
+ 74OjwRuYVKbA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,310,1592895600"; 
+   d="scan'208";a="495567030"
+Received: from lkp-server01.sh.intel.com (HELO 7f1ebb311643) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 13 Aug 2020 17:20:28 -0700
+Received: from kbuild by 7f1ebb311643 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k6NSN-0000t8-Hw; Fri, 14 Aug 2020 00:20:27 +0000
+Date:   Fri, 14 Aug 2020 08:19:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ a6d996cbd38b42341ad3fce74506b9fdc280e395
+Message-ID: <5f35d896.L2Nv1aKm4j0lzhlL%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's useful to know the total number of underflow events and currently
-the debug stats are getting reset each time CRTC is being disabled. Let's
-account the overall number of events that doesn't get reset.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: a6d996cbd38b42341ad3fce74506b9fdc280e395  x86/alternatives: Acquire pte lock with interrupts enabled
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+elapsed time: 723m
+
+configs tested: 118
+configs skipped: 55
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                            xcep_defconfig
+mips                          ath25_defconfig
+sh                           se7619_defconfig
+powerpc                        cell_defconfig
+m68k                          multi_defconfig
+m68k                          atari_defconfig
+openrisc                            defconfig
+sh                        sh7763rdp_defconfig
+arm                      pxa255-idp_defconfig
+h8300                     edosk2674_defconfig
+sh                         ap325rxa_defconfig
+arm                            pleb_defconfig
+sh                           se7780_defconfig
+sh                           se7750_defconfig
+xtensa                    xip_kc705_defconfig
+csky                             alldefconfig
+m68k                       bvme6000_defconfig
+arm                            lart_defconfig
+sh                            migor_defconfig
+sh                        sh7785lcr_defconfig
+mips                malta_kvm_guest_defconfig
+sh                           se7722_defconfig
+powerpc                             defconfig
+mips                      malta_kvm_defconfig
+mips                         mpc30x_defconfig
+arm                          ixp4xx_defconfig
+sh                          landisk_defconfig
+sh                          urquell_defconfig
+mips                      pic32mzda_defconfig
+arm                           viper_defconfig
+arc                          axs101_defconfig
+arm                        shmobile_defconfig
+arm                             mxs_defconfig
+sparc64                          alldefconfig
+arm                          lpd270_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20200813
+x86_64               randconfig-a001-20200813
+x86_64               randconfig-a005-20200813
+x86_64               randconfig-a003-20200813
+x86_64               randconfig-a004-20200813
+x86_64               randconfig-a002-20200813
+i386                 randconfig-a005-20200813
+i386                 randconfig-a001-20200813
+i386                 randconfig-a002-20200813
+i386                 randconfig-a003-20200813
+i386                 randconfig-a006-20200813
+i386                 randconfig-a004-20200813
+i386                 randconfig-a005-20200812
+i386                 randconfig-a001-20200812
+i386                 randconfig-a002-20200812
+i386                 randconfig-a003-20200812
+i386                 randconfig-a006-20200812
+i386                 randconfig-a004-20200812
+i386                 randconfig-a005-20200811
+i386                 randconfig-a001-20200811
+i386                 randconfig-a002-20200811
+i386                 randconfig-a003-20200811
+i386                 randconfig-a006-20200811
+i386                 randconfig-a004-20200811
+i386                 randconfig-a016-20200813
+i386                 randconfig-a011-20200813
+i386                 randconfig-a013-20200813
+i386                 randconfig-a015-20200813
+i386                 randconfig-a012-20200813
+i386                 randconfig-a014-20200813
+i386                 randconfig-a016-20200811
+i386                 randconfig-a011-20200811
+i386                 randconfig-a015-20200811
+i386                 randconfig-a013-20200811
+i386                 randconfig-a012-20200811
+i386                 randconfig-a014-20200811
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
 ---
- drivers/gpu/drm/tegra/dc.c | 10 ++++++++++
- drivers/gpu/drm/tegra/dc.h |  5 +++++
- 2 files changed, 15 insertions(+)
-
-diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-index 4b062408467e..0692b9f0ec29 100644
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -1644,6 +1644,11 @@ static int tegra_dc_show_stats(struct seq_file *s, void *data)
- 	seq_printf(s, "underflow: %lu\n", dc->stats.underflow);
- 	seq_printf(s, "overflow: %lu\n", dc->stats.overflow);
- 
-+	seq_printf(s, "frames total: %lu\n", dc->stats.frames_total);
-+	seq_printf(s, "vblank total: %lu\n", dc->stats.vblank_total);
-+	seq_printf(s, "underflow total: %lu\n", dc->stats.underflow_total);
-+	seq_printf(s, "overflow total: %lu\n", dc->stats.overflow_total);
-+
- 	return 0;
- }
- 
-@@ -2206,6 +2211,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		/*
- 		dev_dbg(dc->dev, "%s(): frame end\n", __func__);
- 		*/
-+		dc->stats.frames_total++;
- 		dc->stats.frames++;
- 	}
- 
-@@ -2214,6 +2220,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		dev_dbg(dc->dev, "%s(): vertical blank\n", __func__);
- 		*/
- 		drm_crtc_handle_vblank(&dc->base);
-+		dc->stats.vblank_total++;
- 		dc->stats.vblank++;
- 	}
- 
-@@ -2221,6 +2228,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		/*
- 		dev_dbg(dc->dev, "%s(): underflow\n", __func__);
- 		*/
-+		dc->stats.underflow_total++;
- 		dc->stats.underflow++;
- 	}
- 
-@@ -2228,11 +2236,13 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		/*
- 		dev_dbg(dc->dev, "%s(): overflow\n", __func__);
- 		*/
-+		dc->stats.overflow_total++;
- 		dc->stats.overflow++;
- 	}
- 
- 	if (status & HEAD_UF_INT) {
- 		dev_dbg_ratelimited(dc->dev, "%s(): head underflow\n", __func__);
-+		dc->stats.underflow_total++;
- 		dc->stats.underflow++;
- 	}
- 
-diff --git a/drivers/gpu/drm/tegra/dc.h b/drivers/gpu/drm/tegra/dc.h
-index b70eeeee2033..41ca33abb84c 100644
---- a/drivers/gpu/drm/tegra/dc.h
-+++ b/drivers/gpu/drm/tegra/dc.h
-@@ -41,6 +41,11 @@ struct tegra_dc_stats {
- 	unsigned long vblank;
- 	unsigned long underflow;
- 	unsigned long overflow;
-+
-+	unsigned long frames_total;
-+	unsigned long vblank_total;
-+	unsigned long underflow_total;
-+	unsigned long overflow_total;
- };
- 
- struct tegra_windowgroup_soc {
--- 
-2.27.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
