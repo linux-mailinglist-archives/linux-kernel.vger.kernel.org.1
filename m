@@ -2,230 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE55244F90
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 23:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BBC244F96
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 23:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728418AbgHNVdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 17:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726700AbgHNVdT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 17:33:19 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E74C061385;
-        Fri, 14 Aug 2020 14:33:18 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597440796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=OwWBY4TEuHm2fQz9DnZzdQZIEjLqr3kBQSAnQO+mIdk=;
-        b=Ri6oB0rFeS/gNC8OmjvJ203za9nGNqjt8we/eB8BJYdTcDlVv8AiNuL/d5W0bZH2ZHnSM+
-        lFLv4M45OMigTIGDwZsgt6+QzC7SqaLZm49CwGz3tLnYzKXFcFqXbWybO2eQ2XodoqqZqO
-        aQOzXltl7FWLKh4IoeDx3A4q9xO4F2KC+Xizv65rTDuXFyRc+b1YnlCFc+fj4FzH/7bZ1R
-        E2QTUoq7qFfjzg7PR4WIl7ZZpm6QUy7EMBXntXk0BSNcglxWPEhcIp49gF0HM8aK9Qlbaa
-        dc6fJ/it2AlXK+sIOovOjg7Udq14HNy/SlgVvGuqXreJXsUC9pRbqopOECurcQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597440796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=OwWBY4TEuHm2fQz9DnZzdQZIEjLqr3kBQSAnQO+mIdk=;
-        b=poB4mWhwcYOKh3TENL6PbdDGc0fnsTyhWS1EzEC9xFZZQTyoPK+PdzB89DV4bFzDnvzo6o
-        i7y5adb64i0/ctCA==
-To:     Baoquan He <bhe@redhat.com>
-Cc:     Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>, kexec@lists.infradead.org,
-        linux-doc@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH][next] docs: vmcoreinfo: add lockless printk ringbuffer vmcoreinfo
-Date:   Fri, 14 Aug 2020 23:39:16 +0206
-Message-Id: <20200814213316.6394-1-john.ogness@linutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728211AbgHNViz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 17:38:55 -0400
+Received: from mga06.intel.com ([134.134.136.31]:24480 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgHNViz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 17:38:55 -0400
+IronPort-SDR: 3QlMHMzX3e3ZrdBau7hrK2KAZm6L+RlKSVg63axxZlrGBB7/v4DrjY5NXMRJcxyD3GEI6umuRE
+ DD5Fhv/HilZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9713"; a="216014790"
+X-IronPort-AV: E=Sophos;i="5.76,313,1592895600"; 
+   d="scan'208";a="216014790"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2020 14:38:52 -0700
+IronPort-SDR: m1BxrBUKmO585g+Pmj3RtcKmI9FmAd+SQNenfVmglsMbkS+66xuNfqYODuRTqIFyJuzOmAqO+9
+ wO/Vv3/AaO1w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,313,1592895600"; 
+   d="scan'208";a="470717445"
+Received: from araj-mobl1.jf.intel.com ([10.254.120.157])
+  by orsmga005.jf.intel.com with ESMTP; 14 Aug 2020 14:38:50 -0700
+From:   Ashok Raj <ashok.raj@intel.com>
+To:     linux-kernel@vger.kernel.org, tglx@linutronix.de
+Cc:     Ashok Raj <ashok.raj@intel.com>,
+        Sukumar Ghorai <sukumar.ghorai@intel.com>,
+        Srikanth Nandamuri <srikanth.nandamuri@intel.com>,
+        Evan Green <evgreen@chromium.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
+Subject: [PATCH] x86/hotplug: Silence APIC only after all irq's are migrated
+Date:   Fri, 14 Aug 2020 14:38:42 -0700
+Message-Id: <20200814213842.31151-1-ashok.raj@intel.com>
+X-Mailer: git-send-email 2.13.6
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the introduction of the lockless printk ringbuffer, the
-VMCOREINFO relating to the kernel log buffer was changed. Update the
-documentation to match those changes.
+When offlining CPU's, fixup_irqs() migrates all interrupts away from the
+outgoing CPU to an online CPU. Its always possible the device sent an
+interrupt to the previous CPU destination. Pending interrupt bit in IRR in
+lapic identifies such interrupts. apic_soft_disable() will not capture any
+new interrupts in IRR. This causes interrupts from device to be lost during
+cpu offline. The issue was found when explicitly setting MSI affinity to a
+CPU and immediately offlining it. It was simple to recreate with a USB
+ethernet device and doing I/O to it while the CPU is offlined. Lost
+interrupts happen even when Interrupt Remapping is enabled.
 
-Fixes: ("printk: use the lockless ringbuffer")
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
-Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+Current code does apic_soft_disable() before migrating interrupts.
+
+native_cpu_disable()
+{
+	...
+	apic_soft_disable();
+	cpu_disable_common();
+	  --> fixup_irqs(); // Too late to capture anything in IRR.
+}
+
+Just fliping the above call sequence seems to hit the IRR checks
+and the lost interrupt is fixed for both legacy MSI and when
+interrupt remapping is enabled.
+
+
+Fixes: 60dcaad5736f ("x86/hotplug: Silence APIC and NMI when CPU is dead")
+Link: https://lore.kernel.org/lkml/875zdarr4h.fsf@nanos.tec.linutronix.de/
+Signed-off-by: Ashok Raj <ashok.raj@intel.com>
+
+To: linux-kernel@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Sukumar Ghorai <sukumar.ghorai@intel.com>
+Cc: Srikanth Nandamuri <srikanth.nandamuri@intel.com>
+Cc: Evan Green <evgreen@chromium.org>
+Cc: Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: stable@vger.kernel.org
 ---
- based on next-20200814
+ arch/x86/kernel/smpboot.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
- .../admin-guide/kdump/vmcoreinfo.rst          | 131 ++++++++++++++----
- 1 file changed, 102 insertions(+), 29 deletions(-)
-
-diff --git a/Documentation/admin-guide/kdump/vmcoreinfo.rst b/Documentation/admin-guide/kdump/vmcoreinfo.rst
-index 2baad0bfb09d..eb116905c31c 100644
---- a/Documentation/admin-guide/kdump/vmcoreinfo.rst
-+++ b/Documentation/admin-guide/kdump/vmcoreinfo.rst
-@@ -189,50 +189,123 @@ from this.
- Free areas descriptor. User-space tools use this value to iterate the
- free_area ranges. MAX_ORDER is used by the zone buddy allocator.
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index ffbd9a3d78d8..278cc9f92f2f 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1603,13 +1603,20 @@ int native_cpu_disable(void)
+ 	if (ret)
+ 		return ret;
  
--log_first_idx
-+prb
-+---
-+
-+A pointer to the printk ringbuffer (struct printk_ringbuffer). This
-+may be pointing to the static boot ringbuffer or the dynamically
-+allocated ringbuffer, depending on when the the core dump occurred.
-+Used by user-space tools to read the active kernel log buffer.
-+
-+printk_rb_static
-+----------------
-+
-+A pointer to the static boot printk ringbuffer. If @prb has a
-+different value, this is useful for viewing the initial boot messages,
-+which may have been overwritten in the dynamically allocated
-+ringbuffer.
-+
-+clear_seq
-+---------
-+
-+The sequence number of the printk() record after the last clear
-+command. It indicates the first record after the last
-+SYSLOG_ACTION_CLEAR, like issued by 'dmesg -c'. Used by user-space
-+tools to dump a subset of the dmesg log.
-+
-+printk_ringbuffer
-+-----------------
-+
-+The size of a printk_ringbuffer structure. This structure contains all
-+information required for accessing the various components of the
-+kernel log buffer.
-+
-+(printk_ringbuffer, desc_ring|text_data_ring|dict_data_ring|fail)
-+-----------------------------------------------------------------
-+
-+Offsets for the various components of the printk ringbuffer. Used by
-+user-space tools to view the kernel log buffer without requiring the
-+declaration of the structure.
-+
-+prb_desc_ring
- -------------
++	cpu_disable_common();
+ 	/*
+ 	 * Disable the local APIC. Otherwise IPI broadcasts will reach
+ 	 * it. It still responds normally to INIT, NMI, SMI, and SIPI
+-	 * messages.
++	 * messages. Its important to do apic_soft_disable() after
++	 * fixup_irqs(), because fixup_irqs() called from cpu_disable_common()
++	 * depends on IRR being set. After apic_soft_disable() CPU preserves
++	 * currently set IRR/ISR but new interrupts will not set IRR.
++	 * This causes interrupts sent to outgoing cpu before completion
++	 * of irq migration to be lost. Check SDM Vol 3 "10.4.7.2 Local
++	 * APIC State after It Has been Software Disabled" section for more
++	 * details.
+ 	 */
+ 	apic_soft_disable();
+-	cpu_disable_common();
  
--Index of the first record stored in the buffer log_buf. Used by
--user-space tools to read the strings in the log_buf.
-+The size of the prb_desc_ring structure. This structure contains
-+information about the set of record descriptors.
- 
--log_buf
---------
-+(prb_desc_ring, count_bits|descs|head_id|tail_id)
-+-------------------------------------------------
-+
-+Offsets for the fields describing the set of record descriptors. Used
-+by user-space tools to be able to traverse the descriptors without
-+requiring the declaration of the structure.
-+
-+prb_desc
-+--------
-+
-+The size of the prb_desc structure. This structure contains
-+information about a single record descriptor.
-+
-+(prb_desc, info|state_var|text_blk_lpos|dict_blk_lpos)
-+------------------------------------------------------
-+
-+Offsets for the fields describing a record descriptors. Used by
-+user-space tools to be able to read descriptors without requiring
-+the declaration of the structure.
-+
-+prb_data_blk_lpos
-+-----------------
-+
-+The size of the prb_data_blk_lpos structure. This structure contains
-+information about where the text or dictionary data (data block) is
-+located within the respective data ring.
-+
-+(prb_data_blk_lpos, begin|next)
-+-------------------------------
- 
--Console output is written to the ring buffer log_buf at index
--log_first_idx. Used to get the kernel log.
-+Offsets for the fields describing the location of a data block. Used
-+by user-space tools to be able to locate data blocks without
-+requiring the declaration of the structure.
- 
--log_buf_len
-+printk_info
- -----------
- 
--log_buf's length.
-+The size of the printk_info structure. This structure contains all
-+the meta-data for a record.
- 
--clear_idx
-----------
-+(printk_info, seq|ts_nsec|text_len|dict_len|caller_id)
-+------------------------------------------------------
- 
--The index that the next printk() record to read after the last clear
--command. It indicates the first record after the last SYSLOG_ACTION
--_CLEAR, like issued by 'dmesg -c'. Used by user-space tools to dump
--the dmesg log.
-+Offsets for the fields providing the meta-data for a record. Used by
-+user-space tools to be able to read the information without requiring
-+the declaration of the structure.
- 
--log_next_idx
--------------
-+prb_data_ring
-+-------------
- 
--The index of the next record to store in the buffer log_buf. Used to
--compute the index of the current buffer position.
-+The size of the prb_data_ring structure. This structure contains
-+information about a set of data blocks.
- 
--printk_log
------------
-+(prb_data_ring, size_bits|data|head_lpos|tail_lpos)
-+---------------------------------------------------
- 
--The size of a structure printk_log. Used to compute the size of
--messages, and extract dmesg log. It encapsulates header information for
--log_buf, such as timestamp, syslog level, etc.
-+Offsets for the fields describing a set of data blocks. Used by
-+user-space tools to be able to access the data blocks without
-+requiring the declaration of the structure.
- 
--(printk_log, ts_nsec|len|text_len|dict_len)
---------------------------------------------
-+atomic_long_t
-+-------------
-+
-+The size of the atomic_long_t structure. Used by user-space tools to
-+be able to copy the full structure, regardless of its
-+architecture-specific implementation.
-+
-+(atomic_long_t, counter)
-+------------------------
- 
--It represents field offsets in struct printk_log. User space tools
--parse it and check whether the values of printk_log's members have been
--changed.
-+Offset for the long value of an atomic_long_t variable. Used by
-+user-space tools to access the long value without requiring the
-+architecture-specific declaration.
- 
- (free_area.free_list, MIGRATE_TYPES)
- ------------------------------------
+ 	return 0;
+ }
 -- 
-2.20.1
+2.13.6
 
