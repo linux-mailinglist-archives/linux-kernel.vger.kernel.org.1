@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79889244A92
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D14F244A7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 15:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728745AbgHNNhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 09:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728723AbgHNNhD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 09:37:03 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5994EC061384;
-        Fri, 14 Aug 2020 06:37:03 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 6B6D829A807
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH v3 04/19] media: uapi: h264: Clarify pic_order_cnt_bit_size field
-Date:   Fri, 14 Aug 2020 10:36:19 -0300
-Message-Id: <20200814133634.95665-5-ezequiel@collabora.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200814133634.95665-1-ezequiel@collabora.com>
-References: <20200814133634.95665-1-ezequiel@collabora.com>
+        id S1728623AbgHNNga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 09:36:30 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:43782 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgHNNga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Aug 2020 09:36:30 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 1E861FB07;
+        Fri, 14 Aug 2020 15:36:26 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id q6Zfzkg2jRDO; Fri, 14 Aug 2020 15:36:24 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id EC786457CC; Fri, 14 Aug 2020 15:36:23 +0200 (CEST)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] drm/panel: Add panel driver for the Mantix MLAF057WE51-X DSI panel
+Date:   Fri, 14 Aug 2020 15:36:20 +0200
+Message-Id: <cover.1597412076.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Zabel <p.zabel@pengutronix.de>
+The panel uses a Focaltech FT8006p, the touch part is handled by the already
+existing edt-ft5x06. It can be found in e.g. the Librem 5.
 
-Since pic_order_cnt_bit_size is not a syntax element itself, explicitly
-state that it is the total size in bits of the pic_order_cnt_lsb,
-delta_pic_order_cnt_bottom, delta_pic_order_cnt[0], and
-delta_pic_order_cnt[1] syntax elements contained in the slice.
+This series is against next-20200814.
 
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-[Ezequiel: rebase]
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
----
- Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Guido Günther (3):
+  dt-bindings: vendor-prefixes: Add mantix vendor prefix
+  dt-bindings: Add Mantix MLAF057WE51-X panel bindings
+  drm/panel: Add panel driver for the Mantix MLAF057WE51-X DSI panel
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index ddf9c6af7d0a..32f3cebf16e5 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -1815,7 +1815,9 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
-       - Size in bits of the dec_ref_pic_marking() syntax element.
-     * - __u32
-       - ``pic_order_cnt_bit_size``
--      -
-+      - Combined size in bits of the picture order count related syntax
-+        elements: pic_order_cnt_lsb, delta_pic_order_cnt_bottom,
-+        delta_pic_order_cnt0, and delta_pic_order_cnt1.
-     * - __u8
-       - ``cabac_init_idc``
-       -
+ .../display/panel/mantix,mlaf057we51-x.yaml   |  73 ++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |   7 +
+ drivers/gpu/drm/panel/Kconfig                 |  11 +
+ drivers/gpu/drm/panel/Makefile                |   1 +
+ .../gpu/drm/panel/panel-mantix-mlaf057we51.c  | 362 ++++++++++++++++++
+ 6 files changed, 456 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+ create mode 100644 drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
+
 -- 
-2.27.0
+2.26.2
 
