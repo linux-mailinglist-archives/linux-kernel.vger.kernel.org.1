@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCBA244DF9
+	by mail.lfdr.de (Postfix) with ESMTP id 77B31244DF8
 	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 19:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728911AbgHNRa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Aug 2020 13:30:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37480 "EHLO
+        id S1728909AbgHNRaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 13:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728597AbgHNR1y (ORCPT
+        with ESMTP id S1728646AbgHNR16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 13:27:54 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FE4C061385
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:27:54 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id w1so3611793wro.4
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:27:54 -0700 (PDT)
+        Fri, 14 Aug 2020 13:27:58 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28521C061384
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:27:58 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id c202so6488678qkg.12
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 10:27:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=gbewbhEM/mrEwI9f62OGQ1mBf+mvC6G7M7H1HOVG3uM=;
-        b=p38WSimo2cpemTGnb7ho4xiQdRAKLTT5gOfsAtwG2IJI5IW6e0rFAfadPWj7eFRGop
-         d+rTuTnYeYpjVEx//C+3vfi/7a3XuVT6VGoT/Cc0vMEPRLmWlzDrUn/zXDVrxwqZGNMp
-         Z6TsIZBuG6iydGz5PoTKMNraX8uDzql36SZEQsHuhgNlSKVp4bcKvvHWDXYvjbkIvVFF
-         V+nFIxR/wJk0bKGoF+u3bumLIrRe0GIfupVJcFJQ4/50TQ6NOEU2x2AQjy72yglzoIhC
-         5YuS544qqFRtck75v8RS7rptoaIjIUCZnmv1mBtiYJVtaNGLd//dR8xRa2vXbt4PidYs
-         kTvg==
+        bh=uzelTOrZuAbTWnllhx2uagoa2R4S00LwGFOB2texzaA=;
+        b=DrFj49N6R4eCrQJphz6+ETLQSN0RvuR+8g3jRWO5Kv9Cu3h0thzUUGYLi70G7SUsL+
+         kk40BvPcKjV4y5B+tEwCs0wOVQz3Qo6Srdv07PKEjyECoSiZoRIroE761xkoNWipUcMN
+         roNpIlNYf89LDQz/ZqjUGEJZHvbnTtlRJ0+MUIuDazMnwFSw53XRUzj07eRKXWAfZijn
+         dzNZO8q+k/fcomM5fZfG+FEMWYRiHVBFBoFFEBTlaayDyg+1daA7M4MSqNiq+43cjUm2
+         g1oHg4iWrX+S5n5/Ax9bx6fOL4mospA1TbRF8FPjvTbwcC/rp93zDPO8bpBJknFheRvr
+         RkUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=gbewbhEM/mrEwI9f62OGQ1mBf+mvC6G7M7H1HOVG3uM=;
-        b=CACQI3NHJS/2SKQmKq89wV9jRw5+6fYnEZFIiPNhLb4hSvCsinFMiI3wVSfwiKQX5c
-         u3QfD7tc7mahDL3QHS8BhSLdvsQZvkIzCtVtPQq6JlAiaZ4Xmuz1L7djvXUkf0eSEcHg
-         5bY9r+LSa4EOGFFqhvyB13ro+2mWi+4c5TxrAU7I5dtkSIpKPUxP/DrFpsIZ5WaLVwfV
-         4VRJM8UnfDSjlgLkh7ZQdgNGC10eeoPfhc+wKdrcBIJ9NRWdOcwHYWstdurzSDvVUUkM
-         R29v4RX5hgaFsfSFED/KYiSNC6AZQEW4P0TZO3LAC08u3rYjYN1peOq6Z8hSQItmzBPu
-         2BgQ==
-X-Gm-Message-State: AOAM531lrCO3Z7H/VKPBRJ5269+oxP1RtFUDR6mx99wv/mhJy/Nve7si
-        fvq1LOfujVGZUUoxcjcFQo/yELvlwoHcwtIx
-X-Google-Smtp-Source: ABdhPJyuuU97eSpS4icZpwsOHx+U2pkrSyE9d1bvaPq4xdMC1pLHfzAVpabPi/a/WtW8O3//dWoEdWo8B9DvLadS
-X-Received: by 2002:a7b:ca4b:: with SMTP id m11mr3338115wml.120.1597426072804;
- Fri, 14 Aug 2020 10:27:52 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 19:26:54 +0200
+        bh=uzelTOrZuAbTWnllhx2uagoa2R4S00LwGFOB2texzaA=;
+        b=UnQxbLuIkrDTicDQSuS9I2zZGhuUtF9zF8hRZ1JtCl8ESxSvtaTQqN3QgxB7mRNcDx
+         kZz/YFDVMnjk140V06lKMR9SitbG6J2xFITmtWWnEr9J/TuZh/621QB+uoyJ6o66CP3/
+         DKIq53ggJXdXbYCI6MgPRcsHtDVG6lSKeoRXPFP2kd1mgO31GialaBg0EtVeQi9DuGW9
+         XYHV1FfC4G9kz9F9jetJlOlXi/q3Hk5dk/8Yjg5dV9VDTOwPpDHgRrXUNWeHYsa1uX13
+         1RNFArcV9ATUipi+1CjFOD755sAtZsLJOiMJ5Nzu8BC9nyEliluUD2wxos7nEAeVScGY
+         yo4g==
+X-Gm-Message-State: AOAM531xZHPjzKBRPIqEl7a3qH8YcMpknkUU7W24catJqwt3AdRZitZ3
+        ++75XO6bEFz9DBXje+fqY27ToRVXMVygXBnZ
+X-Google-Smtp-Source: ABdhPJx9kLUufXWadY2TxpJl/SQvQjOV7v/3wKY2MxvbtkT8yluKpe6HFl7wJbjM0gRLHD3MjV79RqnFtPzqoG66
+X-Received: by 2002:a05:6214:8a:: with SMTP id n10mr3654847qvr.13.1597426077265;
+ Fri, 14 Aug 2020 10:27:57 -0700 (PDT)
+Date:   Fri, 14 Aug 2020 19:26:56 +0200
 In-Reply-To: <cover.1597425745.git.andreyknvl@google.com>
-Message-Id: <63a51e69950d6d93714a96d51165cdc332552393.1597425745.git.andreyknvl@google.com>
+Message-Id: <82cf4f8007645f8c45e6e4847a28a743dfb9cbda.1597425745.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1597425745.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
-Subject: [PATCH 12/35] kasan, arm64: only init shadow for software modes
+Subject: [PATCH 14/35] kasan: rename addr_has_shadow to addr_has_metadata
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Dmitry Vyukov <dvyukov@google.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -77,87 +77,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 This is a preparatory commit for the upcoming addition of a new hardware
 tag-based (MTE-based) KASAN mode.
 
-Hardware tag-based KASAN won't be using shadow memory. Only initialize
-it when one of the software KASAN modes are enabled.
+Hardware tag-based KASAN won't be using shadow memory, but will reuse
+this function. Rename "shadow" to implementation-neutral "metadata".
 
-No functional changes for software modes.
+No functional changes.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- arch/arm64/include/asm/kasan.h |  8 ++++++--
- arch/arm64/mm/kasan_init.c     | 15 ++++++++++++++-
- 2 files changed, 20 insertions(+), 3 deletions(-)
+ mm/kasan/kasan.h          | 2 +-
+ mm/kasan/report.c         | 6 +++---
+ mm/kasan/report_generic.c | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kasan.h b/arch/arm64/include/asm/kasan.h
-index b0dc4abc3589..f7ea70d02cab 100644
---- a/arch/arm64/include/asm/kasan.h
-+++ b/arch/arm64/include/asm/kasan.h
-@@ -13,6 +13,12 @@
- #define arch_kasan_get_tag(addr)	__tag_get(addr)
- 
- #ifdef CONFIG_KASAN
-+void kasan_init(void);
-+#else
-+static inline void kasan_init(void) { }
-+#endif
-+
-+#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
- 
- /*
-  * KASAN_SHADOW_START: beginning of the kernel virtual addresses.
-@@ -33,12 +39,10 @@
- #define _KASAN_SHADOW_START(va)	(KASAN_SHADOW_END - (1UL << ((va) - KASAN_SHADOW_SCALE_SHIFT)))
- #define KASAN_SHADOW_START      _KASAN_SHADOW_START(vabits_actual)
- 
--void kasan_init(void);
- void kasan_copy_shadow(pgd_t *pgdir);
- asmlinkage void kasan_early_init(void);
- 
- #else
--static inline void kasan_init(void) { }
- static inline void kasan_copy_shadow(pgd_t *pgdir) { }
- #endif
- 
-diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-index 7291b26ce788..4d35eaf3ec97 100644
---- a/arch/arm64/mm/kasan_init.c
-+++ b/arch/arm64/mm/kasan_init.c
-@@ -21,6 +21,8 @@
- #include <asm/sections.h>
- #include <asm/tlbflush.h>
- 
-+#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
-+
- static pgd_t tmp_pg_dir[PTRS_PER_PGD] __initdata __aligned(PGD_SIZE);
- 
- /*
-@@ -208,7 +210,7 @@ static void __init clear_pgds(unsigned long start,
- 		set_pgd(pgd_offset_k(start), __pgd(0));
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 15cf3e0018ae..38fa4c202e9a 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -145,7 +145,7 @@ static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
+ 		<< KASAN_SHADOW_SCALE_SHIFT);
  }
  
--void __init kasan_init(void)
-+static void __init kasan_init_shadow(void)
+-static inline bool addr_has_shadow(const void *addr)
++static inline bool addr_has_metadata(const void *addr)
  {
- 	u64 kimg_shadow_start, kimg_shadow_end;
- 	u64 mod_shadow_start, mod_shadow_end;
-@@ -269,6 +271,17 @@ void __init kasan_init(void)
+ 	return (addr >= kasan_shadow_to_mem((void *)KASAN_SHADOW_START));
+ }
+diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+index 8463e35b489f..ada3cfb43764 100644
+--- a/mm/kasan/report.c
++++ b/mm/kasan/report.c
+@@ -334,7 +334,7 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+ 	untagged_addr = reset_tag(tagged_addr);
  
- 	memset(kasan_early_shadow_page, KASAN_SHADOW_INIT, PAGE_SIZE);
- 	cpu_replace_ttbr1(lm_alias(swapper_pg_dir));
-+}
-+
-+#else /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) */
-+
-+static inline void __init kasan_init_shadow(void) { }
-+
-+#endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
-+
-+void __init kasan_init(void)
-+{
-+	kasan_init_shadow();
+ 	info.access_addr = tagged_addr;
+-	if (addr_has_shadow(untagged_addr))
++	if (addr_has_metadata(untagged_addr))
+ 		info.first_bad_addr = find_first_bad_addr(tagged_addr, size);
+ 	else
+ 		info.first_bad_addr = untagged_addr;
+@@ -345,11 +345,11 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+ 	start_report(&flags);
  
- 	/* At this point kasan is fully initialized. Enable error messages */
- 	init_task.kasan_depth = 0;
+ 	print_error_description(&info);
+-	if (addr_has_shadow(untagged_addr))
++	if (addr_has_metadata(untagged_addr))
+ 		print_tags(get_tag(tagged_addr), info.first_bad_addr);
+ 	pr_err("\n");
+ 
+-	if (addr_has_shadow(untagged_addr)) {
++	if (addr_has_metadata(untagged_addr)) {
+ 		print_address_description(untagged_addr, get_tag(tagged_addr));
+ 		pr_err("\n");
+ 		print_shadow_for_address(info.first_bad_addr);
+diff --git a/mm/kasan/report_generic.c b/mm/kasan/report_generic.c
+index 427f4ac80cca..29d30fae9421 100644
+--- a/mm/kasan/report_generic.c
++++ b/mm/kasan/report_generic.c
+@@ -122,7 +122,7 @@ const char *get_bug_type(struct kasan_access_info *info)
+ 	if (info->access_addr + info->access_size < info->access_addr)
+ 		return "out-of-bounds";
+ 
+-	if (addr_has_shadow(info->access_addr))
++	if (addr_has_metadata(info->access_addr))
+ 		return get_shadow_bug_type(info);
+ 	return get_wild_bug_type(info);
+ }
 -- 
 2.28.0.220.ged08abb693-goog
 
