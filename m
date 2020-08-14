@@ -2,88 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6140244769
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 11:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9752F24477F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Aug 2020 11:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgHNJwp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Aug 2020 05:52:45 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:57547 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727028AbgHNJwn (ORCPT
+        id S1727801AbgHNJ46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Aug 2020 05:56:58 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:44178 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727118AbgHNJ45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Aug 2020 05:52:43 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-236-lAlMELcPNvqeWmJZKrLkDg-1; Fri, 14 Aug 2020 10:52:39 +0100
-X-MC-Unique: lAlMELcPNvqeWmJZKrLkDg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 14 Aug 2020 10:52:38 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 14 Aug 2020 10:52:38 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Luis Henriques' <lhenriques@suse.de>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>
-CC:     "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] ceph: remove unnecessary return in switch statement
-Thread-Topic: [PATCH] ceph: remove unnecessary return in switch statement
-Thread-Index: AQHWch6rkdainQPrlU66/Hw4ZaLQ6ak3XLCA
-Date:   Fri, 14 Aug 2020 09:52:38 +0000
-Message-ID: <a1a68d9a887148ae9a80ca103d112e6b@AcuMS.aculab.com>
-References: <20200814093822.GA293898@suse.de>
-In-Reply-To: <20200814093822.GA293898@suse.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 14 Aug 2020 05:56:57 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 14 Aug 2020 02:56:56 -0700
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 14 Aug 2020 02:56:54 -0700
+Received: from c-rojay-linux.qualcomm.com ([10.206.21.80])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 14 Aug 2020 15:26:15 +0530
+Received: by c-rojay-linux.qualcomm.com (Postfix, from userid 88981)
+        id A98061AC8; Fri, 14 Aug 2020 15:26:14 +0530 (IST)
+From:   Roja Rani Yarubandi <rojay@codeaurora.org>
+To:     wsa@kernel.org
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+Subject: [PATCH 0/2] Implement Shutdown callback for i2c
+Date:   Fri, 14 Aug 2020 15:25:38 +0530
+Message-Id: <20200814095540.32115-1-rojay@codeaurora.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Henriques
-> Sent: 14 August 2020 10:38
-> 
-> Since there's a return immediately after the 'break', there's no need for
-> this extra 'return' in the S_IFDIR case.
-> 
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> ---
->  fs/ceph/file.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/fs/ceph/file.c b/fs/ceph/file.c
-> index d51c3f2fdca0..04ab99c0223a 100644
-> --- a/fs/ceph/file.c
-> +++ b/fs/ceph/file.c
-> @@ -256,8 +256,6 @@ static int ceph_init_file(struct inode *inode, struct file *file, int fmode)
->  	case S_IFDIR:
->  		ret = ceph_init_file_info(inode, file, fmode,
->  						S_ISDIR(inode->i_mode));
-> -		if (ret)
-> -			return ret;
->  		break;
-> 
->  	case S_IFLNK:
+Add tx_dma, rx_dma and xfer_len in geni_i2c_dev struct.
+Implement Shutdown callback for geni i2c driver.
 
-I'd move the other way and just do:
-		return ceph_init_file_info(...);
+Roja Rani Yarubandi (2):
+  i2c: i2c-qcom-geni: Add tx_dma, rx_dma and xfer_len to geni_i2c_dev
+    struct
+  i2c: i2c-qcom-geni: Add shutdown callback for i2c
 
-	David
+ drivers/i2c/busses/i2c-qcom-geni.c | 59 +++++++++++++++++++++++++-----
+ include/linux/qcom-geni-se.h       |  5 +++
+ 2 files changed, 54 insertions(+), 10 deletions(-)
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
