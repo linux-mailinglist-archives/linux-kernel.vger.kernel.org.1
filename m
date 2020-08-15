@@ -2,454 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9129D2451F1
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE67245215
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727869AbgHOVck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:32:40 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:52578 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725983AbgHOVcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:32:23 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 16BBCFB02;
-        Sat, 15 Aug 2020 23:16:28 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id J5RZCWaH0Sss; Sat, 15 Aug 2020 23:16:23 +0200 (CEST)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id B6C78457CF; Sat, 15 Aug 2020 23:16:22 +0200 (CEST)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
+        id S1726399AbgHOVky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726022AbgHOVkm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:40:42 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9720DC03D1C9
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 14:21:38 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id w2so5982216qvh.12
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 14:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fSOWg6njAo0BgaYAkW3ZI1XqUj8alLoYvs3NDMkiQSk=;
+        b=fNTr1AP6oXI+Z+vP9W7aopVeB8HKDdHLOWptbwzZzf+/9o4e6mmG8uiZAHNv0y6lWd
+         TKsz9faMxGXvwuzoRbAnGOoIYbSJyPMXzOYEK+lV18IhjpncKwKwQ3qgtQx489VgvIIk
+         bV8k8/td6zymhZdtoNTI/s85alwGZlxlKuuoKwfX0YLKhauRO7OAsvZGQxy4H9HiK/gF
+         om936XsMh9eYx5rV9G0o0B0JDW/Vi+f0NAamfu92QrPofwUL+C6vZgSUQrFzekLMBsX4
+         ECmKIQqHJ2Hr8gzkvG86aMVtpLDQCrCp5oL8QoB4sXL8MIRRVeRLoVQl20//6oJwB7TZ
+         Mu9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fSOWg6njAo0BgaYAkW3ZI1XqUj8alLoYvs3NDMkiQSk=;
+        b=mrXwkVhVneatA68t1t0FisZVKfhdY/8Che1J9kF9dcj5TIYVAUjZZBW7DUq/UKInR0
+         OcmjnE+druZRX7GZM1KBQKjRGdgWujDL6+lDYQt3BsOnqJMtEqDrxoUYdMwOthMjDvO9
+         PNtPxSTdt6eKQI8mngE/p8hbDlCgN4KMhzRTBfoHmbVUOomFrT4/LIFL+MZtVszZANC5
+         eyVlrMm1Y+VBw4vmN7okJQ2GrEUDnSrio5+bJ0TvMxoVvuFIJVww5cwoJ3bn57/NvLLS
+         CdHqDB5WSxH3Rp1HcGO58yhmSpwmnYJZvYSHmZw/Fidq6OmGesPirj4MTqPvGTfLfIfM
+         LH8g==
+X-Gm-Message-State: AOAM533ETR8q56Sd7Uas7LVDzddLqwYJKneRKecj6H7kURfAjmsPIq2n
+        UXZzi3/eZ5dolc8t6dKAKSSY8w==
+X-Google-Smtp-Source: ABdhPJx3XPsMq4FB0tV42kjhPB8zgg9seOaawRnu+HoLIebEV0cYDDmb+NOgtyoCPkyOwqIgewXCog==
+X-Received: by 2002:a0c:ea30:: with SMTP id t16mr8572128qvp.177.1597526497539;
+        Sat, 15 Aug 2020 14:21:37 -0700 (PDT)
+Received: from [192.168.0.189] ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id 73sm2825144qtf.74.2020.08.15.14.21.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Aug 2020 14:21:37 -0700 (PDT)
+Subject: Re: [Freedreno] [PATCH v10 3/5] drm/msm/dp: add support for DP PLL
+ driver
+To:     Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Stephen Boyd <swboyd@chromium.org>, khsieh@codeaurora.org,
+        Sean Paul <seanpaul@chromium.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] drm/panel: Add panel driver for the Mantix MLAF057WE51-X DSI panel
-Date:   Sat, 15 Aug 2020 23:16:22 +0200
-Message-Id: <d4e3f881e3d53166eea0be31a885e08679813558.1597526107.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1597526107.git.agx@sigxcpu.org>
-References: <cover.1597526107.git.agx@sigxcpu.org>
+        Vara Reddy <varar@codeaurora.org>, aravindh@codeaurora.org,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>
+References: <20200812044223.19279-1-tanmay@codeaurora.org>
+ <20200812044223.19279-4-tanmay@codeaurora.org>
+ <821b5cf9-5ca0-7026-fd99-9a32285ed030@linaro.org>
+ <CAF6AEGtcfXodN1_HSdTcH402FdwTk15Nt6p3F=QYeSRhTc+hqw@mail.gmail.com>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <1ea81fa2-1dc8-a0b9-aa32-3127e9354be2@marek.ca>
+Date:   Sat, 15 Aug 2020 17:21:49 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF6AEGtcfXodN1_HSdTcH402FdwTk15Nt6p3F=QYeSRhTc+hqw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The panel uses a Focaltech FT8006p, the touch part is handled by the
-already existing edt-ft5x06.
+On 8/15/20 4:20 PM, Rob Clark wrote:
+> On Fri, Aug 14, 2020 at 10:05 AM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+>>
+>>
+>> On 12/08/2020 07:42, Tanmay Shah wrote:
+>>   > From: Chandan Uddaraju <chandanu@codeaurora.org>
+>>   >
+>>   > Add the needed DP PLL specific files to support
+>>   > display port interface on msm targets.
+>>
+>> [skipped]
+>>
+>>   > diff --git a/drivers/gpu/drm/msm/dp/dp_pll_private.h
+>> b/drivers/gpu/drm/msm/dp/dp_pll_private.h
+>>   > new file mode 100644
+>>   > index 000000000000..475ba6ed59ab
+>>   > --- /dev/null
+>>   > +++ b/drivers/gpu/drm/msm/dp/dp_pll_private.h
+>>   > @@ -0,0 +1,98 @@
+>>   > +/* SPDX-License-Identifier: GPL-2.0-only */
+>>   > +/*
+>>   > + * Copyright (c) 2016-2020, The Linux Foundation. All rights reserved.
+>>   > + */
+>>   > +
+>>   > +#ifndef __DP_PLL_10NM_H
+>>   > +#define __DP_PLL_10NM_H
+>>   > +
+>>   > +#include "dp_pll.h"
+>>   > +#include "dp_reg.h"
+>>   > +
+>>   > +#define DP_VCO_HSCLK_RATE_1620MHZDIV1000    1620000UL
+>>   > +#define DP_VCO_HSCLK_RATE_2700MHZDIV1000    2700000UL
+>>   > +#define DP_VCO_HSCLK_RATE_5400MHZDIV1000    5400000UL
+>>   > +#define DP_VCO_HSCLK_RATE_8100MHZDIV1000    8100000UL
+>>   > +
+>>   > +#define NUM_DP_CLOCKS_MAX            6
+>>   > +
+>>   > +#define DP_PHY_PLL_POLL_SLEEP_US        500
+>>   > +#define DP_PHY_PLL_POLL_TIMEOUT_US        10000
+>>   > +
+>>   > +#define DP_VCO_RATE_8100MHZDIV1000        8100000UL
+>>   > +#define DP_VCO_RATE_9720MHZDIV1000        9720000UL
+>>   > +#define DP_VCO_RATE_10800MHZDIV1000        10800000UL
+>>   > +
+>>   > +struct dp_pll_vco_clk {
+>>   > +    struct clk_hw hw;
+>>   > +    unsigned long    rate;        /* current vco rate */
+>>   > +    u64        min_rate;    /* min vco rate */
+>>   > +    u64        max_rate;    /* max vco rate */
+>>   > +    void        *priv;
+>>   > +};
+>>   > +
+>>   > +struct dp_pll_db {
+>>
+>> This struct should probably go into dp_pll_10nm.c. dp_pll_7nm.c, for
+>> example, will use slightly different structure.
+> 
+> Note that sboyd has a WIP series to move all of the pll code out to a
+> phy driver.  If there is work already happening on 7nm support, it
+> might be better to go with the separate phy driver approach?  I'm
+> still a bit undecided about whether to land the dp code initially with
+> the pll stuff in drm, and then continue refactoring to move to
+> separate phy driver upstream, or to strip out the pll code from the
+> beginning.  If you/someone is working on 7nm support, then feedback
+> about which approach is easier is welcome.
+> 
+> https://lore.kernel.org/dri-devel/20200611091919.108018-1-swboyd@chromium.org/
+> 
 
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
----
- MAINTAINERS                                   |   7 +
- drivers/gpu/drm/panel/Kconfig                 |  11 +
- drivers/gpu/drm/panel/Makefile                |   1 +
- .../gpu/drm/panel/panel-mantix-mlaf057we51.c  | 328 ++++++++++++++++++
- 4 files changed, 347 insertions(+)
- create mode 100644 drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
+I have a sm8150/sm8250 (7nm) upstream kernel stack with DP enabled, and 
+I have done something similar, with the PLL driver in the QMP phy, 
+although not based on sboyd's series (along with some typec changes to 
+negotiate the DP alt mode and get HPD events, etc.). I don't think 
+having PLL in drm/msm makes sense, the drm/msm DP driver shouldn't need 
+to be aware of the DP PLL/PHY driver, it only needs to set the 
+link/pixel clock rates which are in dispcc (and those then have the PLL 
+clocks as a parent).
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 83ba7b62651f7..7dfe4cc3d4ec8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5474,6 +5474,13 @@ S:	Maintained
- F:	drivers/gpu/drm/panel/panel-lvds.c
- F:	Documentation/devicetree/bindings/display/panel/lvds.yaml
- 
-+DRM DRIVER FOR MANTIX MLAF057WE51 PANELS
-+M:	Guido Günther <agx@sigxcpu.org>
-+R:	Purism Kernel Team <kernel@puri.sm>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
-+F:	drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
-+
- DRM DRIVER FOR MATROX G200/G400 GRAPHICS CARDS
- S:	Orphan / Obsolete
- F:	drivers/gpu/drm/mga/
-diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index de2f2a452be55..8d97d07c58713 100644
---- a/drivers/gpu/drm/panel/Kconfig
-+++ b/drivers/gpu/drm/panel/Kconfig
-@@ -217,6 +217,17 @@ config DRM_PANEL_NOVATEK_NT39016
- 	  Say Y here if you want to enable support for the panels built
- 	  around the Novatek NT39016 display controller.
- 
-+config DRM_PANEL_MANTIX_MLAF057WE51
-+	tristate "Mantix MLAF057WE51-X MIPI-DSI LCD panel"
-+	depends on OF
-+	depends on DRM_MIPI_DSI
-+	depends on BACKLIGHT_CLASS_DEVICE
-+	help
-+	  Say Y here if you want to enable support for the Mantix
-+	  MLAF057WE51-X MIPI DSI panel as e.g. used in the Librem 5. It
-+	  has a resolution of 720x1440 pixels, a built in backlight and touch
-+	  controller.
-+
- config DRM_PANEL_OLIMEX_LCD_OLINUXINO
- 	tristate "Olimex LCD-OLinuXino panel"
- 	depends on OF
-diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-index e45ceac6286fd..15a4e77529514 100644
---- a/drivers/gpu/drm/panel/Makefile
-+++ b/drivers/gpu/drm/panel/Makefile
-@@ -20,6 +20,7 @@ obj-$(CONFIG_DRM_PANEL_LG_LG4573) += panel-lg-lg4573.o
- obj-$(CONFIG_DRM_PANEL_NEC_NL8048HL11) += panel-nec-nl8048hl11.o
- obj-$(CONFIG_DRM_PANEL_NOVATEK_NT35510) += panel-novatek-nt35510.o
- obj-$(CONFIG_DRM_PANEL_NOVATEK_NT39016) += panel-novatek-nt39016.o
-+obj-$(CONFIG_DRM_PANEL_MANTIX_MLAF057WE51) += panel-mantix-mlaf057we51.o
- obj-$(CONFIG_DRM_PANEL_OLIMEX_LCD_OLINUXINO) += panel-olimex-lcd-olinuxino.o
- obj-$(CONFIG_DRM_PANEL_ORISETECH_OTM8009A) += panel-orisetech-otm8009a.o
- obj-$(CONFIG_DRM_PANEL_OSD_OSD101T2587_53TS) += panel-osd-osd101t2587-53ts.o
-diff --git a/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c b/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
-new file mode 100644
-index 0000000000000..cd5424d5bdb63
---- /dev/null
-+++ b/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
-@@ -0,0 +1,328 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Mantix MLAF057WE51 5.7" MIPI-DSI panel driver
-+ *
-+ * Copyright (C) Purism SPC 2020
-+ */
-+
-+#include <linux/backlight.h>
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/regulator/consumer.h>
-+
-+#include <video/mipi_display.h>
-+
-+#include <drm/drm_mipi_dsi.h>
-+#include <drm/drm_modes.h>
-+#include <drm/drm_panel.h>
-+#include <drm/drm_print.h>
-+
-+#define DRV_NAME "panel-mantix-mlaf057we51"
-+
-+/* Manufacturer specific Commands send via DSI */
-+#define MANTIX_CMD_OTP_STOP_RELOAD_MIPI 0x41
-+#define MANTIX_CMD_INT_CANCEL           0x4C
-+
-+struct mantix {
-+	struct device *dev;
-+	struct drm_panel panel;
-+	struct gpio_desc *reset_gpio;
-+
-+	struct regulator *avdd;
-+	struct regulator *avee;
-+	struct regulator *vddi;
-+};
-+
-+static inline struct mantix *panel_to_mantix(struct drm_panel *panel)
-+{
-+	return container_of(panel, struct mantix, panel);
-+}
-+
-+#define dsi_generic_write_seq(dsi, seq...) do {				\
-+		static const u8 d[] = { seq };				\
-+		int ret;						\
-+		ret = mipi_dsi_generic_write(dsi, d, ARRAY_SIZE(d));	\
-+		if (ret < 0)						\
-+			return ret;					\
-+	} while (0)
-+
-+static int mantix_init_sequence(struct mantix *ctx)
-+{
-+	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
-+	struct device *dev = ctx->dev;
-+
-+	/*
-+	 * Init sequence was supplied by the panel vendor.
-+	 */
-+	dsi_generic_write_seq(dsi, MANTIX_CMD_OTP_STOP_RELOAD_MIPI, 0x5A);
-+
-+	dsi_generic_write_seq(dsi, MANTIX_CMD_INT_CANCEL, 0x03);
-+	dsi_generic_write_seq(dsi, MANTIX_CMD_OTP_STOP_RELOAD_MIPI, 0x5A, 0x03);
-+	dsi_generic_write_seq(dsi, 0x80, 0xA9, 0x00);
-+
-+	dsi_generic_write_seq(dsi, MANTIX_CMD_OTP_STOP_RELOAD_MIPI, 0x5A, 0x09);
-+	dsi_generic_write_seq(dsi, 0x80, 0x64, 0x00, 0x64, 0x00, 0x00);
-+	msleep(20);
-+
-+	dev_dbg(dev, "Panel init sequence done\n");
-+	return 0;
-+}
-+
-+static int mantix_enable(struct drm_panel *panel)
-+{
-+	struct mantix *ctx = panel_to_mantix(panel);
-+	struct device *dev = ctx->dev;
-+	struct mipi_dsi_device *dsi = to_mipi_dsi_device(dev);
-+	int ret;
-+
-+	ret = mantix_init_sequence(ctx);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Panel init sequence failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to exit sleep mode\n");
-+		return ret;
-+	}
-+	msleep(20);
-+
-+	ret = mipi_dsi_dcs_set_display_on(dsi);
-+	if (ret)
-+		return ret;
-+	usleep_range(10000, 12000);
-+
-+	ret = mipi_dsi_turn_on_peripheral(dsi);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to turn on peripheral\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mantix_disable(struct drm_panel *panel)
-+{
-+	struct mantix *ctx = panel_to_mantix(panel);
-+	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
-+	int ret;
-+
-+	ret = mipi_dsi_dcs_set_display_off(dsi);
-+	if (ret < 0)
-+		dev_err(ctx->dev, "Failed to turn off the display: %d\n", ret);
-+
-+	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
-+	if (ret < 0)
-+		dev_err(ctx->dev, "Failed to enter sleep mode: %d\n", ret);
-+
-+
-+	return 0;
-+}
-+
-+static int mantix_unprepare(struct drm_panel *panel)
-+{
-+	struct mantix *ctx = panel_to_mantix(panel);
-+
-+	regulator_disable(ctx->avee);
-+	regulator_disable(ctx->avdd);
-+	/* T11 */
-+	usleep_range(5000, 6000);
-+	regulator_disable(ctx->vddi);
-+	/* T14 */
-+	msleep(50);
-+
-+	return 0;
-+}
-+
-+static int mantix_prepare(struct drm_panel *panel)
-+{
-+	struct mantix *ctx = panel_to_mantix(panel);
-+	int ret;
-+
-+	/* Focaltech FT8006P, section 7.3.1 and 7.3.4 */
-+	dev_dbg(ctx->dev, "Resetting the panel\n");
-+	ret = regulator_enable(ctx->vddi);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to enable vddi supply: %d\n", ret);
-+		return ret;
-+	}
-+	/* T1 + T2 */
-+	usleep_range(8000, 10000);
-+
-+	ret = regulator_enable(ctx->avdd);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to enable avdd supply: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* T2d */
-+	usleep_range(3500, 4000);
-+	ret = regulator_enable(ctx->avee);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to enable avee supply: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* T3+T5 */
-+	usleep_range(10000, 12000);
-+
-+	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-+	usleep_range(5150, 7000);
-+
-+	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
-+
-+	/* T6 */
-+	msleep(50);
-+
-+	return 0;
-+}
-+
-+static const struct drm_display_mode default_mode = {
-+	.hdisplay    = 720,
-+	.hsync_start = 720 + 45,
-+	.hsync_end   = 720 + 45 + 14,
-+	.htotal	     = 720 + 45 + 14 + 25,
-+	.vdisplay    = 1440,
-+	.vsync_start = 1440 + 130,
-+	.vsync_end   = 1440 + 130 + 8,
-+	.vtotal	     = 1440 + 130 + 8 + 106,
-+	.clock	     = 85298,
-+	.flags	     = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-+	.width_mm    = 65,
-+	.height_mm   = 130,
-+};
-+
-+static int mantix_get_modes(struct drm_panel *panel,
-+			    struct drm_connector *connector)
-+{
-+	struct mantix *ctx = panel_to_mantix(panel);
-+	struct drm_display_mode *mode;
-+
-+	mode = drm_mode_duplicate(connector->dev, &default_mode);
-+	if (!mode) {
-+		dev_err(ctx->dev, "Failed to add mode %ux%u@%u\n",
-+			default_mode.hdisplay, default_mode.vdisplay,
-+			drm_mode_vrefresh(mode));
-+		return -ENOMEM;
-+	}
-+
-+	drm_mode_set_name(mode);
-+
-+	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
-+	connector->display_info.width_mm = mode->width_mm;
-+	connector->display_info.height_mm = mode->height_mm;
-+	drm_mode_probed_add(connector, mode);
-+
-+	return 1;
-+}
-+
-+static const struct drm_panel_funcs mantix_drm_funcs = {
-+	.disable   = mantix_disable,
-+	.unprepare = mantix_unprepare,
-+	.prepare   = mantix_prepare,
-+	.enable	   = mantix_enable,
-+	.get_modes = mantix_get_modes,
-+};
-+
-+static int mantix_probe(struct mipi_dsi_device *dsi)
-+{
-+	struct device *dev = &dsi->dev;
-+	struct mantix *ctx;
-+	int ret;
-+
-+	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-+	if (IS_ERR(ctx->reset_gpio)) {
-+		dev_err(dev, "cannot get reset gpio\n");
-+		return PTR_ERR(ctx->reset_gpio);
-+	}
-+
-+	mipi_dsi_set_drvdata(dsi, ctx);
-+	ctx->dev = dev;
-+
-+	dsi->lanes = 4;
-+	dsi->format = MIPI_DSI_FMT_RGB888;
-+	dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
-+		MIPI_DSI_MODE_VIDEO_BURST | MIPI_DSI_MODE_VIDEO_SYNC_PULSE;
-+
-+	ctx->avdd = devm_regulator_get(dev, "avdd");
-+	if (IS_ERR(ctx->avdd))
-+		return dev_err_probe(dev, PTR_ERR(ctx->avdd), "Failed to request avdd regulator\n");
-+
-+	ctx->avee = devm_regulator_get(dev, "avee");
-+	if (IS_ERR(ctx->avee))
-+		return dev_err_probe(dev, PTR_ERR(ctx->avee), "Failed to request avee regulator\n");
-+
-+	ctx->vddi = devm_regulator_get(dev, "vddi");
-+	if (IS_ERR(ctx->vddi))
-+		return dev_err_probe(dev, PTR_ERR(ctx->vddi), "Failed to request vddi regulator\n");
-+
-+	drm_panel_init(&ctx->panel, dev, &mantix_drm_funcs,
-+		       DRM_MODE_CONNECTOR_DSI);
-+
-+	ret = drm_panel_of_backlight(&ctx->panel);
-+	if (ret)
-+		return ret;
-+
-+	drm_panel_add(&ctx->panel);
-+
-+	ret = mipi_dsi_attach(dsi);
-+	if (ret < 0) {
-+		dev_err(dev, "mipi_dsi_attach failed (%d). Is host ready?\n", ret);
-+		drm_panel_remove(&ctx->panel);
-+		return ret;
-+	}
-+
-+	dev_info(dev, "%ux%u@%u %ubpp dsi %udl - ready\n",
-+		 default_mode.hdisplay, default_mode.vdisplay,
-+		 drm_mode_vrefresh(&default_mode),
-+		 mipi_dsi_pixel_format_to_bpp(dsi->format), dsi->lanes);
-+
-+	return 0;
-+}
-+
-+static void mantix_shutdown(struct mipi_dsi_device *dsi)
-+{
-+	struct mantix *ctx = mipi_dsi_get_drvdata(dsi);
-+
-+	drm_panel_unprepare(&ctx->panel);
-+	drm_panel_disable(&ctx->panel);
-+}
-+
-+static int mantix_remove(struct mipi_dsi_device *dsi)
-+{
-+	struct mantix *ctx = mipi_dsi_get_drvdata(dsi);
-+
-+	mantix_shutdown(dsi);
-+
-+	mipi_dsi_detach(dsi);
-+	drm_panel_remove(&ctx->panel);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id mantix_of_match[] = {
-+	{ .compatible = "mantix,mlaf057we51-x" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, mantix_of_match);
-+
-+static struct mipi_dsi_driver mantix_driver = {
-+	.probe	= mantix_probe,
-+	.remove = mantix_remove,
-+	.shutdown = mantix_shutdown,
-+	.driver = {
-+		.name = DRV_NAME,
-+		.of_match_table = mantix_of_match,
-+	},
-+};
-+module_mipi_dsi_driver(mantix_driver);
-+
-+MODULE_AUTHOR("Guido Günther <agx@sigxcpu.org>");
-+MODULE_DESCRIPTION("DRM driver for Mantix MLAF057WE51-X MIPI DSI panel");
-+MODULE_LICENSE("GPL v2");
--- 
-2.26.2
+FYI, since it sounds you are considering landing this: it is completely 
+broken, for example:
+- ioremap()'s to #define'd addresses in the PLL driver
+- main DP driver reading/writing to registers in the PHY region, but 
+getting the base address from devicetree was removed since earlier 
+revisions, so it just fails completely. Look at usb3_dp_com (for 
+example), which in dp_catalog_ctrl_usb_reset() would be used to 
+overwrite registers already being driven by the qmp phy driver - but now 
+the usb3_dp_com.base is never initialized.
 
+-Jonathan
+
+> BR,
+> -R
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
+> 
