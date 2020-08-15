@@ -2,189 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D7E2452ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40424245344
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729231AbgHOV4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
+        id S1729431AbgHOV7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728999AbgHOVwN (ORCPT
+        with ESMTP id S1728879AbgHOVvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:13 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71026C004587
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:24:08 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id 93so10274025otx.2
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:24:08 -0700 (PDT)
+        Sat, 15 Aug 2020 17:51:38 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1008C004594
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:48:54 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id l60so5841457pjb.3
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:48:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tfz-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Npmo1qy1EtVMY1f22f/XoQlkfS4jbAFUtpYwb+UPN9s=;
-        b=UGhjOy6sny6yVuAYdTV7QBCsVIFSkm8sA3y/SwYBtDKROYWCu7teCOiIZNIbFqbCYc
-         ExIJMnNURR2y62RErP89vr5vRlyCI26hAxWcIRy+YJupCpNAWZwAPEF0bvbN7jlfrNBW
-         Z6XL/zXinZFM3jz26fjeTSDd5bpJjvs/+j1Wxbfowb0CHENC0egNjqh/Gl2vPvf5J5ti
-         NYw9sRYdgG4Sm5vsHkdc0KonY3R8qwZLxvgscFYM88L8Wg+IO7UcFJd/T7ItwLGOEzEH
-         n+YiJzdL+FBqViqWHvhlG20hAgDcQPgR3M6n3cgCQkXAdj4ed4Zuo02mdBGxq+kcLpfX
-         Jr+g==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Z2xPpRoHP7BzvSX2rjf/bwJ13SQNsG5PYmvhRIAd2sU=;
+        b=BGEhN/WbxTSkRKE60J3CvxmlY0UKRwp/ZAg2U45KlXRgN/v22AODymoCybBpuELHV0
+         gJiM8R0WOAwzDxsIYSpFiIrtUl6bPq4CRMs7zzUC85FWMhbaZA6TQo5KugLzFSwFV+M5
+         DETZEEYKUO3FHXdeFU5FPCcxbslgBH1bLKQYKi+xkXMquvWPJGCrtbRidRLvonRf8XKm
+         MASkzLIGO//+pjB4BrxXuiUtW9kWXJNEd+OEeLjxyTEBRAwfC73k3K3Qn2sV0yHOFLMe
+         sd9D2+Q4fxUE0wHI7tUlUKxhmH2LM/eULQgvaVqrUXvh/U7N7SrzPaR6krKkJkazlHXj
+         7kgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Npmo1qy1EtVMY1f22f/XoQlkfS4jbAFUtpYwb+UPN9s=;
-        b=gj+IxyADHM4QfRZ8rHBpiYoYAFLOFPrgIodfok9wXJgbLzTmGn+HqpCAg+ANv4tjgk
-         EVTgz4H9seJWm+wOg0hp9IY6QbCtnwjQj6uV8zr9HCBndyLimcxpqj+Is5luxVGaTL8F
-         1o/2oLhpPKSymJ6gycDuy6e4RJVdXcc9zUXin8AGhdwIEBszsVhvwolw07MWC5PrdlFZ
-         75hmc1LyM/WozmGZDawdFrqUGQVslbXZkHd1uvQLWUaLmaoMuXwbWASr6qN9v7DM95Rk
-         ybauKrFuC+x/X3TdfClT0B6gBTXtvoM4a074fHeNE2zCp/b1vu+8FM2QQ24UNY530bsj
-         Xy/w==
-X-Gm-Message-State: AOAM533/ZGZU9ifWdSdHjF5r1LrCW8FWTeogwobpL5y6XsBUQghh04xO
-        oPVVl/WhSZSm6JbKbdSO98TT79hxKTbCdDJcKwk=
-X-Google-Smtp-Source: ABdhPJy7YkkteM56EdGdHCXuWzaeZe6zD/figZlqTYdO0AG60UZFeFBumOA4ui2QoHa8visqRWX4FA==
-X-Received: by 2002:a05:6830:605:: with SMTP id w5mr5942549oti.3.1597515847051;
-        Sat, 15 Aug 2020 11:24:07 -0700 (PDT)
-Received: from foo.attlocal.net (108-232-117-128.lightspeed.sntcca.sbcglobal.net. [108.232.117.128])
-        by smtp.gmail.com with ESMTPSA id z72sm2397820ooa.42.2020.08.15.11.24.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 11:24:06 -0700 (PDT)
-From:   Pascal Bouchareine <kalou@tfz.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Pascal Bouchareine <kalou@tfz.net>, linux-api@vger.kernel.org,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Alexey Dobriyan" <adobriyan@gmail.com>,
-        "Al Viro" <viro@zeniv.linux.org.uk>
-Subject: [PATCH 2/2] net: socket: implement SO_DESCRIPTION
-Date:   Sat, 15 Aug 2020 11:23:44 -0700
-Message-Id: <20200815182344.7469-3-kalou@tfz.net>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200815182344.7469-1-kalou@tfz.net>
-References: <20200815182344.7469-1-kalou@tfz.net>
+        h=x-gm-message-state:subject:from:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z2xPpRoHP7BzvSX2rjf/bwJ13SQNsG5PYmvhRIAd2sU=;
+        b=MdOaDqb3k+9GYRU38Mcipj9ICrAG631cePah6t8+M+nPPHy5leFclTJ/rjtYnDTsiC
+         vYIvw7r59UQHG1jTNC8TCoB+9Y8zBR/h7mBE5vPGP49Kjzlc3noJYycWj93hNu7Jgzn3
+         KzxqrVmASbcvyydp6P9NAU3sR8ry5cO8WrbD8pMwRxir1VVdAYjlD3EC+CsVejBKVbG+
+         jCP917UseeK0IT+6Q+n6S7Ro6SgwPvw1KBUIohOvAyVpYnvemm33iToIl9N31qN8wR/u
+         7vR9dhBIU5+Ub5GNOl4wSnF+Zl5Wa2uA5OSOQotsxJSBHClBleIRlJvFrf69/f7gBs95
+         foDQ==
+X-Gm-Message-State: AOAM531Hms9aNBnPWYzqxiE9oLkpek+tPuHe8Gx6vibwuRE1wMC/EHBp
+        5nREub8Riz/78lyIh2hqHBMqHA==
+X-Google-Smtp-Source: ABdhPJx2mzq8cS50/9IeaIq3A/NHdBiAOJ23/yFhnZW3jwTW9wfQhvvXukV2bvVi1sqca5xchRsk+w==
+X-Received: by 2002:a17:90a:c781:: with SMTP id gn1mr6629664pjb.151.1597517334243;
+        Sat, 15 Aug 2020 11:48:54 -0700 (PDT)
+Received: from ?IPv6:2605:e000:100e:8c61:6299:2df1:e468:6351? ([2605:e000:100e:8c61:6299:2df1:e468:6351])
+        by smtp.gmail.com with ESMTPSA id b63sm12599824pfg.43.2020.08.15.11.48.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Aug 2020 11:48:53 -0700 (PDT)
+Subject: Re: general protection fault in io_poll_double_wake
+From:   Jens Axboe <axboe@kernel.dk>
+To:     syzbot <syzbot+7f617d4a9369028b8a2c@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+References: <00000000000018f60505aced798e@google.com>
+ <fb1fe8ff-5c79-a020-f6ea-a28f974bde6b@kernel.dk>
+Message-ID: <178c8252-eb93-daaf-61fd-f0652de3b658@kernel.dk>
+Date:   Sat, 15 Aug 2020 11:48:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <fb1fe8ff-5c79-a020-f6ea-a28f974bde6b@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This command attaches the zero terminated string in optval to the
-socket for troubleshooting purposes. The free string is displayed in the
-process fdinfo file for that fd (/proc/<pid>/fdinfo/<fd>).
+On 8/15/20 11:16 AM, Jens Axboe wrote:
+> On 8/15/20 10:00 AM, syzbot wrote:
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    7fca4dee Merge tag 'powerpc-5.9-2' of git://git.kernel.org..
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=1264d116900000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=21f0d1d2df6d5fc
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=7f617d4a9369028b8a2c
+>> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f211d2900000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1721b0ce900000
+>>
+>> The issue was bisected to:
+>>
+>> commit 18bceab101adde8f38de76016bc77f3f25cf22f4
+>> Author: Jens Axboe <axboe@kernel.dk>
+>> Date:   Fri May 15 17:56:54 2020 +0000
+>>
+>>     io_uring: allow POLL_ADD with double poll_wait() users
+> 
+> I can reproduce this, I'll fix it up. Thanks!
 
-One intended usage is to allow processes to self-document sockets
-for netstat and friends to report
+This should fix it:
 
-We ignore optlen and constrain the string to a static max size
 
-Signed-off-by: Pascal Bouchareine <kalou@tfz.net>
+From 34fc8d0b76572c9fb184ab589d682dccfeb5c039 Mon Sep 17 00:00:00 2001
+From: Jens Axboe <axboe@kernel.dk>
+Date: Sat, 15 Aug 2020 11:44:50 -0700
+Subject: [PATCH] io_uring: sanitize double poll handling
+
+There's a bit of confusion on the matching pairs of poll vs double poll,
+depending on if the request is a pure poll (IORING_OP_POLL_ADD) or
+poll driven retry.
+
+Add io_poll_get_double() that returns the double poll waitqueue, if any,
+and io_poll_get_single() that returns the original poll waitqueue. With
+that, remove the argument to io_poll_remove_double().
+
+Finally ensure that wait->private is cleared once the double poll handler
+has run, so that remove knows it's already been seen.
+
+Cc: stable@vger.kernel.org # v5.8
+Reported-by: syzbot+7f617d4a9369028b8a2c@syzkaller.appspotmail.com
+Fixes: 18bceab101ad ("io_uring: allow POLL_ADD with double poll_wait() users")
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- include/net/sock.h                |  4 ++++
- include/uapi/asm-generic/socket.h |  2 ++
- net/core/sock.c                   | 23 +++++++++++++++++++++++
- net/socket.c                      |  5 +++++
- 4 files changed, 34 insertions(+)
+ fs/io_uring.c | 34 +++++++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 9 deletions(-)
 
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 1183507df95b..6b4fd1383282 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -342,6 +342,7 @@ struct bpf_sk_storage;
-   *	@sk_txtime_deadline_mode: set deadline mode for SO_TXTIME
-   *	@sk_txtime_report_errors: set report errors mode for SO_TXTIME
-   *	@sk_txtime_unused: unused txtime flags
-+  *	@sk_description: user supplied with SO_DESCRIPTION
-   */
- struct sock {
- 	/*
-@@ -519,6 +520,9 @@ struct sock {
- 	struct bpf_sk_storage __rcu	*sk_bpf_storage;
- #endif
- 	struct rcu_head		sk_rcu;
-+
-+#define	SK_MAX_DESC_SIZE	256
-+	char			*sk_description;
- };
- 
- enum sk_pacing {
-diff --git a/include/uapi/asm-generic/socket.h b/include/uapi/asm-generic/socket.h
-index 77f7c1638eb1..fb51c4bb7a12 100644
---- a/include/uapi/asm-generic/socket.h
-+++ b/include/uapi/asm-generic/socket.h
-@@ -119,6 +119,8 @@
- 
- #define SO_DETACH_REUSEPORT_BPF 68
- 
-+#define SO_DESCRIPTION		69
-+
- #if !defined(__KERNEL__)
- 
- #if __BITS_PER_LONG == 64 || (defined(__x86_64__) && defined(__ILP32__))
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 2e5b7870e5d3..2cb44a0e38b7 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -828,6 +828,24 @@ void sock_set_rcvbuf(struct sock *sk, int val)
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 7dd6df15bc49..cb030912bf5e 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4649,9 +4649,24 @@ static bool io_poll_rewait(struct io_kiocb *req, struct io_poll_iocb *poll)
+ 	return false;
  }
- EXPORT_SYMBOL(sock_set_rcvbuf);
  
-+int sock_set_description(struct sock *sk, char __user *user_desc)
-+{
-+	char *old, *desc;
-+
-+	desc = strndup_user(user_desc, SK_MAX_DESC_SIZE, GFP_KERNEL_ACCOUNT);
-+	if (IS_ERR(desc))
-+		return PTR_ERR(desc);
-+
-+	lock_sock(sk);
-+	old = sk->sk_description;
-+	sk->sk_description = desc;
-+	release_sock(sk);
-+
-+	kfree(old);
-+
-+	return 0;
+-static void io_poll_remove_double(struct io_kiocb *req, void *data)
++static struct io_poll_iocb *io_poll_get_double(struct io_kiocb *req)
+ {
+-	struct io_poll_iocb *poll = data;
++	/* pure poll stashes this in ->io, poll driven retry elsewhere */
++	if (req->opcode == IORING_OP_POLL_ADD)
++		return (struct io_poll_iocb *) req->io;
++	return req->apoll->double_poll;
 +}
 +
- /*
-  *	This is meant for all protocols to use and covers goings on
-  *	at the socket level. Everything here is generic.
-@@ -850,6 +868,9 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
- 	if (optname == SO_BINDTODEVICE)
- 		return sock_setbindtodevice(sk, optval, optlen);
- 
-+	if (optname == SO_DESCRIPTION)
-+		return sock_set_description(sk, optval);
++static struct io_poll_iocb *io_poll_get_single(struct io_kiocb *req)
++{
++	if (req->opcode == IORING_OP_POLL_ADD)
++		return &req->poll;
++	return &req->apoll->poll;
++}
 +
- 	if (optlen < sizeof(int))
- 		return -EINVAL;
++static void io_poll_remove_double(struct io_kiocb *req)
++{
++	struct io_poll_iocb *poll = io_poll_get_double(req);
  
-@@ -1792,6 +1813,8 @@ static void __sk_destruct(struct rcu_head *head)
- 		RCU_INIT_POINTER(sk->sk_filter, NULL);
- 	}
+ 	lockdep_assert_held(&req->ctx->completion_lock);
  
-+	kfree(sk->sk_description);
-+
- 	sock_disable_timestamp(sk, SK_FLAGS_TIMESTAMP);
- 
- #ifdef CONFIG_BPF_SYSCALL
-diff --git a/net/socket.c b/net/socket.c
-index 976426d03f09..4f2c1a7744b0 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -134,6 +134,11 @@ static void sock_show_fdinfo(struct seq_file *m, struct file *f)
+@@ -4671,7 +4686,7 @@ static void io_poll_complete(struct io_kiocb *req, __poll_t mask, int error)
  {
- 	struct socket *sock = f->private_data;
+ 	struct io_ring_ctx *ctx = req->ctx;
  
-+	lock_sock(sock->sk);
-+	if (sock->sk->sk_description)
-+		seq_printf(m, "desc:\t%s\n", sock->sk->sk_description);
-+	release_sock(sock->sk);
+-	io_poll_remove_double(req, req->io);
++	io_poll_remove_double(req);
+ 	req->poll.done = true;
+ 	io_cqring_fill_event(req, error ? error : mangle_poll(mask));
+ 	io_commit_cqring(ctx);
+@@ -4711,7 +4726,7 @@ static int io_poll_double_wake(struct wait_queue_entry *wait, unsigned mode,
+ 			       int sync, void *key)
+ {
+ 	struct io_kiocb *req = wait->private;
+-	struct io_poll_iocb *poll = req->apoll->double_poll;
++	struct io_poll_iocb *poll = io_poll_get_single(req);
+ 	__poll_t mask = key_to_poll(key);
+ 
+ 	/* for instances that support it check for an event match first: */
+@@ -4725,6 +4740,8 @@ static int io_poll_double_wake(struct wait_queue_entry *wait, unsigned mode,
+ 		done = list_empty(&poll->wait.entry);
+ 		if (!done)
+ 			list_del_init(&poll->wait.entry);
++		/* make sure double remove sees this as being gone */
++		wait->private = NULL;
+ 		spin_unlock(&poll->head->lock);
+ 		if (!done)
+ 			__io_async_wake(req, poll, mask, io_poll_task_func);
+@@ -4808,7 +4825,7 @@ static void io_async_task_func(struct callback_head *cb)
+ 	if (hash_hashed(&req->hash_node))
+ 		hash_del(&req->hash_node);
+ 
+-	io_poll_remove_double(req, apoll->double_poll);
++	io_poll_remove_double(req);
+ 	spin_unlock_irq(&ctx->completion_lock);
+ 
+ 	if (!READ_ONCE(apoll->poll.canceled))
+@@ -4919,7 +4936,7 @@ static bool io_arm_poll_handler(struct io_kiocb *req)
+ 	ret = __io_arm_poll_handler(req, &apoll->poll, &ipt, mask,
+ 					io_async_wake);
+ 	if (ret || ipt.error) {
+-		io_poll_remove_double(req, apoll->double_poll);
++		io_poll_remove_double(req);
+ 		spin_unlock_irq(&ctx->completion_lock);
+ 		kfree(apoll->double_poll);
+ 		kfree(apoll);
+@@ -4951,14 +4968,13 @@ static bool io_poll_remove_one(struct io_kiocb *req)
+ {
+ 	bool do_complete;
+ 
++	io_poll_remove_double(req);
 +
- 	if (sock->ops->show_fdinfo)
- 		sock->ops->show_fdinfo(m, sock);
- }
+ 	if (req->opcode == IORING_OP_POLL_ADD) {
+-		io_poll_remove_double(req, req->io);
+ 		do_complete = __io_poll_remove_one(req, &req->poll);
+ 	} else {
+ 		struct async_poll *apoll = req->apoll;
+ 
+-		io_poll_remove_double(req, apoll->double_poll);
+-
+ 		/* non-poll requests have submit ref still */
+ 		do_complete = __io_poll_remove_one(req, &apoll->poll);
+ 		if (do_complete) {
 -- 
-2.25.1
+2.28.0
+
+
+-- 
+Jens Axboe
 
