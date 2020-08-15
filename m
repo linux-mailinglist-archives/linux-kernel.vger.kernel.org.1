@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29DFD24535E
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B417A24548D
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729708AbgHOWBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728810AbgHOVvd (ORCPT
+        id S1729028AbgHOW2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:28:38 -0400
+Received: from smtprelay0035.hostedemail.com ([216.40.44.35]:48322 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726598AbgHOW2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:33 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D95C0612EF;
-        Fri, 14 Aug 2020 20:41:22 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 7D1DC127C1D1F;
-        Fri, 14 Aug 2020 20:24:36 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 20:41:21 -0700 (PDT)
-Message-Id: <20200814.204121.2301287009173291675.davem@davemloft.net>
-To:     xie.he.0141@gmail.com
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-x25@vger.kernel.org,
-        willemdebruijn.kernel@gmail.com, ms@dev.tdt.de,
-        andrew.hendry@gmail.com
-Subject: Re: [PATCH net] drivers/net/wan/hdlc_x25: Added needed_headroom
- and a skb->len check
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200813181704.62694-1-xie.he.0141@gmail.com>
-References: <20200813181704.62694-1-xie.he.0141@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+        Sat, 15 Aug 2020 18:28:38 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave03.hostedemail.com (Postfix) with ESMTP id 8175C181CB2AE;
+        Sat, 15 Aug 2020 03:42:39 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 4721B100E7B6F;
+        Sat, 15 Aug 2020 03:42:39 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6117:6742:7875:7903:10004:10400:10848:11026:11232:11473:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14093:14097:14659:21080:21451:21524:21627:21809:21939:21990:30051:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: cry93_3b1331b27002
+X-Filterd-Recvd-Size: 2703
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 15 Aug 2020 03:42:36 +0000 (UTC)
+Message-ID: <af38bf7d8e2615c2f065a2f208d67209246f7a74.camel@perches.com>
+Subject: Re: [PATCH v2] lib/string.c: implement stpcpy
+From:   Joe Perches <joe@perches.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     =?ISO-8859-1?Q?D=E1vid_Bolvansk=FD?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>, stable@vger.kernel.org,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Date:   Fri, 14 Aug 2020 20:42:35 -0700
+In-Reply-To: <20200815020946.1538085-1-ndesaulniers@google.com>
+References: <20200815014006.GB99152@rani.riverdale.lan>
+         <20200815020946.1538085-1-ndesaulniers@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 14 Aug 2020 20:24:36 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
-Date: Thu, 13 Aug 2020 11:17:04 -0700
+On Fri, 2020-08-14 at 19:09 -0700, Nick Desaulniers wrote:
+> LLVM implemented a recent "libcall optimization" that lowers calls to
+> `sprintf(dest, "%s", str)` where the return value is used to
+> `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
+> in parsing format strings.  Calling `sprintf` with overlapping arguments
+> was clarified in ISO C99 and POSIX.1-2001 to be undefined behavior.
+> 
+> `stpcpy` is just like `strcpy` except it returns the pointer to the new
+> tail of `dest`. This allows you to chain multiple calls to `stpcpy` in
+> one statement.
+[]
+> diff --git a/include/linux/string.h b/include/linux/string.h
+[]
+> @@ -31,6 +31,9 @@ size_t strlcpy(char *, const char *, size_t);
+>  #ifndef __HAVE_ARCH_STRSCPY
+>  ssize_t strscpy(char *, const char *, size_t);
+>  #endif
+> +#ifndef __HAVE_ARCH_STPCPY
+> +extern char *stpcpy(char *__restrict__, const char *__restrict__);
 
-> 1. Added a skb->len check
-> 
-> This driver expects upper layers to include a pseudo header of 1 byte
-> when passing down a skb for transmission. This driver will read this
-> 1-byte header. This patch added a skb->len check before reading the
-> header to make sure the header exists.
-> 
-> 2. Added needed_headroom and set hard_header_len to 0
-> 
-> When this driver transmits data,
->   first this driver will remove a pseudo header of 1 byte,
->   then the lapb module will prepend the LAPB header of 2 or 3 bytes.
-> So the value of needed_headroom in this driver should be 3 - 1.
-> 
-> Because this driver has no header_ops, according to the logic of
-> af_packet.c, the value of hard_header_len should be 0.
-> 
-> Reason of setting needed_headroom and hard_header_len at this place:
-> 
-> This driver is written using the API of the hdlc module, the hdlc
-> module enables this driver (the protocol driver) to run on any hardware
-> that has a driver (the hardware driver) written using the API of the
-> hdlc module.
-> 
-> Two other hdlc protocol drivers - hdlc_ppp and hdlc_raw_eth, also set
-> things like hard_header_len at this place. In hdlc_ppp, it sets
-> hard_header_len after attach_hdlc_protocol and before setting dev->type.
-> In hdlc_raw_eth, it sets hard_header_len by calling ether_setup after
-> attach_hdlc_protocol and after memcpy the settings.
-> 
-> 3. Reset needed_headroom when detaching protocols (in hdlc.c)
-> 
-> When detaching a protocol from a hardware device, the hdlc module will
-> reset various parameters of the device (including hard_header_len) to
-> the default values. We add needed_headroom here so that needed_headroom
-> will also be reset.
-> 
-> Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> Cc: Martin Schiller <ms@dev.tdt.de>
-> Cc: Andrew Hendry <andrew.hendry@gmail.com>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+If __restrict__ is used, perhaps it should follow the
+kernel style used by attributes like __iomem and __user
 
-Applied, thanks.
+extern char *stpcpy(char __restrict *dest, const char __restrict *src);
+
+(though I would lose the extern too)
+
+char *stpcpy(char __restrict *dest, const char __restrict *src);
+
+
