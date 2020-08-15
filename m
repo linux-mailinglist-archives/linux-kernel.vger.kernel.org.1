@@ -2,114 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9A0245282
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AABC02452EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729074AbgHOVwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
+        id S1729415AbgHOV4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729030AbgHOVwN (ORCPT
+        with ESMTP id S1729034AbgHOVwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 15 Aug 2020 17:52:13 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE0DC00868E
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:11:15 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id x6so5989763pgx.12
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:11:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BAVB1g/G59WljuvEwZfLgQcZGsyMrz+xF+J2CpCEONs=;
-        b=VHDocVcgp3i5hnK3JOC5n1xwowOu3PG/vmHdB2FTQmrkQIk9Vq4xClNNXpQX9xq0XU
-         SZ5C9UytWUiDuV74J9uvKS+lrRzMumsUcYw8LPFYKXG6BE40hAPeBdzFoXLVqk3X9L9+
-         dR0mb1S0fCgzBmx3RNiHRjErZue/3+FGTXB50=
+Received: from mail-il1-x148.google.com (mail-il1-x148.google.com [IPv6:2607:f8b0:4864:20::148])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BC3C0005BE
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:19:25 -0700 (PDT)
+Received: by mail-il1-x148.google.com with SMTP id u7so8813305ilj.4
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:19:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BAVB1g/G59WljuvEwZfLgQcZGsyMrz+xF+J2CpCEONs=;
-        b=BsTU9VSOGdJrMmSKmgL5/sY5xkNsnqh7uQ4GFRw72xk44kR0xC0YdnYvealE+gulJs
-         rlr9YTlQ4oqphhsPDBlrMb4hkItTM0P/CJLtOqq5XoA22ohgd7qZNU8B9E037m6uiHVg
-         rX5L6hIwfB3vKTVbeqNepCNpjULKHae8a8gWJGL8nKEH/DFnn3RRhPuvsGb4hpFhm13P
-         8sZBjrxvYS3wLTnlVf/dKL20lx1KGA/f7KbRSgXEL0TRUpiZbIfkgflDtX6cD29qj9pc
-         vVv0gyLrHWv4g9OsbDrJQ19lIKBktFAs7fmjaTf7D+WSj1y+/yg/MjsOXqbSu++jRXcs
-         /PpQ==
-X-Gm-Message-State: AOAM533JsKxuOwolmNe/OWaAwvmW2xHSeWHR+LYmRvlg+/J61Bx9XuBc
-        tJ03hs7bDhURLXqLqwNwoWEqlg==
-X-Google-Smtp-Source: ABdhPJyVSgnrgPrYWyXJv2wtFzi9lR01OEh1e48ygJ0aU1juIKmiqcLNGCA17IPGnewHz9ccm0/ehA==
-X-Received: by 2002:a62:8387:: with SMTP id h129mr5505019pfe.142.1597511474893;
-        Sat, 15 Aug 2020 10:11:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w3sm12829718pff.56.2020.08.15.10.11.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 10:11:14 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 10:11:13 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH] overflow: Add __must_check attribute to check_*() helpers
-Message-ID: <202008151009.5709750A@keescook>
-References: <202008121450.405E4A3@keescook>
- <f7b6ad2f-4b35-1ca8-0137-05b27a0eb574@rasmusvillemoes.dk>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=t8QMO3n4KROmSRkoKVG2lLOeJzzDaqBTfQOpgHU7bgA=;
+        b=SHf6E0sESl+vAuNz7DHjcfVq9cXs0vJvLvQ9E77BNpelTVkqFcq4XXXVsaBmId46UD
+         /F4Jo6+s4bQ0HGkqLpdhqk4YCb7fp0G4JP9DOZb1RRdSugx9Ycf9ou8ttcU2lTiQ7Y6s
+         F0DnEDC+TMBRf7j3Ft5AZNuUoBeMXUM33CShqTlhN8HaP/lzjy5Mz9ZSigGzXTmUZIDC
+         KJi+hIWChtJlBuSh+eAkzKetIkFOvvtlTi5X77q3U172ZirmEKiv17plDebFxPCsrKFp
+         qqef1zydh7MSmrIrTiAqAsYr497UUuGUisx81EYCcsBo26Y+P0F+17/5nbCQBGb532zR
+         fqZw==
+X-Gm-Message-State: AOAM530KsN8Uyi60lMTeoOJPPUA3kS9aAtulC6KYJtpKci5kUNEMdUCD
+        GCalpGmET3ZJ9pwtZSvdCdUvGsHiOoEOggiqSVKvjxDf2Vj/
+X-Google-Smtp-Source: ABdhPJwuiQ330unLGWYjqFD92eeYv7ieCWrxq3Aup/qHbAfQlSVCCMJLJOr7JsR076+ho+SlBCbpNUu4pGvr8oOWH/UxiyB1o8EX
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7b6ad2f-4b35-1ca8-0137-05b27a0eb574@rasmusvillemoes.dk>
+X-Received: by 2002:a02:866d:: with SMTP id e100mr7502553jai.83.1597511964807;
+ Sat, 15 Aug 2020 10:19:24 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 10:19:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002fe0e605acedbdfc@google.com>
+Subject: KMSAN: uninit-value in hci_chan_lookup_handle
+From:   syzbot <syzbot+4c14a8f574461e1c3659@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com, johan.hedberg@gmail.com,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marcel@holtmann.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 08:39:44AM +0200, Rasmus Villemoes wrote:
-> On 12/08/2020 23.51, Kees Cook wrote:
-> > Since the destination variable of the check_*_overflow() helpers will
-> > contain a wrapped value on failure, it would be best to make sure callers
-> > really did check the return result of the helper. Adjust the macros to use
-> > a bool-wrapping static inline that is marked with __must_check. This means
-> > the macros can continue to have their type-agnostic behavior while gaining
-> > the function attribute (that cannot be applied directly to macros).
-> > 
-> > Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  include/linux/overflow.h | 51 +++++++++++++++++++++++-----------------
-> >  1 file changed, 30 insertions(+), 21 deletions(-)
-> > 
-> > diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-> > index 93fcef105061..ef7d538c2d08 100644
-> > --- a/include/linux/overflow.h
-> > +++ b/include/linux/overflow.h
-> > @@ -43,6 +43,16 @@
-> >  #define is_non_negative(a) ((a) > 0 || (a) == 0)
-> >  #define is_negative(a) (!(is_non_negative(a)))
-> >  
-> > +/*
-> > + * Allows to effectively us apply __must_check to a macro so we can have
-> 
-> word ordering?
+Hello,
 
-This and the __must_check-bool() renaming now done and sent in v2.
-Thanks!
+syzbot found the following issue on:
 
-> Sorry, I meant to send this before your cooking was done but forgot
-> about it again. Not a big deal, but it occurred to me it might be better
-> to rename the existing check_*_overflow to __check_*_overflow (in both
-> branches of the COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW), and then
-> 
-> #define check_*_overflow(a, b, d)
-> __must_check_bool(__check_*_overflow(a, b, d))
+HEAD commit:    ce8056d1 wip: changed copy_from_user where instrumented
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=16c0e1e2900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3afe005fb99591f
+dashboard link: https://syzkaller.appspot.com/bug?extid=4c14a8f574461e1c3659
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16fd6aa6900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=105910ce900000
 
-At the end of the day, I'd rather not have a way to ignore the overflow
-in this way -- I'd rather have a set of wrap_mul_overflow() helpers
-instead. Then we've got proper annotation of the expectation (and a
-place for function attributes to be added to tell sanitizers to ignore
-overflow).
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4c14a8f574461e1c3659@syzkaller.appspotmail.com
 
--- 
-Kees Cook
+=====================================================
+BUG: KMSAN: uninit-value in __hci_chan_lookup_handle net/bluetooth/hci_conn.c:1741 [inline]
+BUG: KMSAN: uninit-value in hci_chan_lookup_handle+0x1e3/0x310 net/bluetooth/hci_conn.c:1757
+CPU: 0 PID: 8496 Comm: kworker/u5:2 Not tainted 5.8.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: hci0 hci_rx_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ __hci_chan_lookup_handle net/bluetooth/hci_conn.c:1741 [inline]
+ hci_chan_lookup_handle+0x1e3/0x310 net/bluetooth/hci_conn.c:1757
+ hci_disconn_loglink_complete_evt net/bluetooth/hci_event.c:4992 [inline]
+ hci_event_packet+0x14e10/0x39d30 net/bluetooth/hci_event.c:6176
+ hci_rx_work+0x6df/0xd30 net/bluetooth/hci_core.c:4705
+ process_one_work+0x1688/0x2140 kernel/workqueue.c:2269
+ worker_thread+0x10bc/0x2730 kernel/workqueue.c:2415
+ kthread+0x551/0x590 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
+ kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
+ slab_alloc_node mm/slub.c:2839 [inline]
+ __kmalloc_node_track_caller+0xeab/0x12e0 mm/slub.c:4478
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0x35f/0xb30 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1083 [inline]
+ bt_skb_alloc include/net/bluetooth/bluetooth.h:377 [inline]
+ vhci_get_user drivers/bluetooth/hci_vhci.c:165 [inline]
+ vhci_write+0x18a/0x890 drivers/bluetooth/hci_vhci.c:285
+ call_write_iter include/linux/fs.h:1908 [inline]
+ new_sync_write fs/read_write.c:503 [inline]
+ vfs_write+0xf9a/0x17c0 fs/read_write.c:578
+ ksys_write+0x275/0x500 fs/read_write.c:631
+ __do_sys_write fs/read_write.c:643 [inline]
+ __se_sys_write+0x92/0xb0 fs/read_write.c:640
+ __x64_sys_write+0x4a/0x70 fs/read_write.c:640
+ do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
