@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176E924541A
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36AB2245484
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730097AbgHOWM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:12:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729048AbgHOWK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:10:28 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S1729460AbgHOWY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:24:56 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:50980 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726598AbgHOWYz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:24:55 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDA6D20773;
-        Sat, 15 Aug 2020 12:51:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597495886;
-        bh=dwHjwC8GiChPu67IbBCb6Ypn7HuxNZ4cqMQsl04lslg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C/R4wtUnbTIYAx3BaALrwOrakrpNSuLBsmGVH2WZFIO6EmqnHDgxBjPSx5cu6vn0F
-         D4GqHDerBcH7cE1HSubCkreBnggluVbZCvEVAjCaAePCbi5PPdEbJ7tNlgeDs4UEsT
-         7+bplO4I190caNSk7lhZGj2Zv6aWWl1GiJsFNcgU=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k6vee-002Kds-BL; Sat, 15 Aug 2020 13:51:24 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Shawn Lin <shawn.lin@rock-chips.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>, kernel-team@android.com
-Subject: [PATCH 2/2] arm64: dts: rockchip: Fix PCIe DT properties
-Date:   Sat, 15 Aug 2020 13:51:12 +0100
-Message-Id: <20200815125112.462652-3-maz@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200815125112.462652-1-maz@kernel.org>
-References: <20200815125112.462652-1-maz@kernel.org>
+        by asavdk4.altibox.net (Postfix) with ESMTPS id E0DC280538;
+        Sat, 15 Aug 2020 14:55:45 +0200 (CEST)
+Date:   Sat, 15 Aug 2020 14:55:44 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+Cc:     devicetree@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Daniel Palmer <daniel@0x0f.com>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Lubomir Rintel <lkundrak@v3.sk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 3/3] drm/panel: Add panel driver for the Mantix
+ MLAF057WE51-X DSI panel
+Message-ID: <20200815125544.GA1153358@ravnborg.org>
+References: <cover.1597412076.git.agx@sigxcpu.org>
+ <0a7539135cc46eec5636ca89f52695f4a1197841.1597412076.git.agx@sigxcpu.org>
+ <20200815100230.GA1002374@ravnborg.org>
+ <20200815104022.GA5641@bogon.m.sigxcpu.org>
+ <20200815104651.GA1005928@ravnborg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, shawn.lin@rock-chips.com, lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com, heiko@sntech.de, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200815104651.GA1005928@ravnborg.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=bbTEvi9DXXvUDvUqyWQA:9 a=CjuIK1q_8ugA:10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It recently became apparent that the lack of a 'device_type = "pci"'
-in the PCIe root complex node for rk3399 is a violation of the PCI
-binding, as documented in IEEE Std 1275-1994. Changes to the kernel's
-parsing of the DT made such violation fatal, as drivers cannot
-probe the controller anymore.
+Hi Guido.
 
-Add the missing property makes the PCIe node compliant. While we
-are at it, drop the pointless linux,pci-domain property, which only
-makes sense when there are multiple host bridges.
+> > In fact I did decided against it since i was told that missing dev_* and
+> > DRM_* logging shouldn't be done. So is that o.k. nowadays?
+> s/missing/mixing/
+> 
+> I often request that logging is consistent - so I recognize the
+> argument.
+> 
+> For panel/* I have not made up my mind what I think is the best
+> approach. The DRM_DEV_* and DRM_* logging do not add much value.
+> So I have been tempted several times to convert all logging in
+> panel/ to dev_* and pr_* (when no struct device * is available).
+> That would also avoid that we mix up logging.
+> 
+> We have drm_* logging - but they require a valid drm_device * which we
+> do not have in the the panel drivers. So they are ruled out here.
+> 
+> Do you have any opinions/comments on this?
+I went ahead and dropped the DRM_ logging in drm/panel, you are copied
+on the patchset. Feedback on the patches would be nice.
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- arch/arm64/boot/dts/rockchip/rk3399.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index ada724b12f01..a80fc4d563b5 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -231,6 +231,7 @@ pcie0: pcie@f8000000 {
- 		reg = <0x0 0xf8000000 0x0 0x2000000>,
- 		      <0x0 0xfd000000 0x0 0x1000000>;
- 		reg-names = "axi-base", "apb-base";
-+		device_type = "pci";
- 		#address-cells = <3>;
- 		#size-cells = <2>;
- 		#interrupt-cells = <1>;
-@@ -249,7 +250,6 @@ pcie0: pcie@f8000000 {
- 				<0 0 0 2 &pcie0_intc 1>,
- 				<0 0 0 3 &pcie0_intc 2>,
- 				<0 0 0 4 &pcie0_intc 3>;
--		linux,pci-domain = <0>;
- 		max-link-speed = <1>;
- 		msi-map = <0x0 &its 0x0 0x1000>;
- 		phys = <&pcie_phy 0>, <&pcie_phy 1>,
--- 
-2.27.0
-
+	Sam
