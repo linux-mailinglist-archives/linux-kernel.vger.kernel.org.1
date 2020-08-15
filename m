@@ -2,175 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16FD245359
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF2D2453AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729639AbgHOWAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:00:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
+        id S1729835AbgHOWEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728829AbgHOVvf (ORCPT
+        with ESMTP id S1728571AbgHOVvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:35 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D630FC03B3CB
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 01:23:48 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id t7so9480458otp.0
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 01:23:48 -0700 (PDT)
+        Sat, 15 Aug 2020 17:51:03 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEF5C03B3CD;
+        Sat, 15 Aug 2020 01:30:33 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id a26so12338917ejc.2;
+        Sat, 15 Aug 2020 01:30:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=5ZdA3YbzFyuiBEZEvu/DHmwuAZEanF9AbrLkGxCCiGY=;
-        b=XiE/mrB9nNyL6m6Ayayjly1A/Rz+rKewJb7JYlLNaP1ST+WCAr/70G4ZKh3/NWgUUr
-         ddOiWE1MmCAw37YZR+CxBupx59x4N2hN53GkPpFvSmmZPXu1CO0yqV27scq3IKgSToum
-         /gp3utKXhE4jp4VJ6vTIyC5RVcOTfDF0McJfykHautJxpGuOdMklwG+PB1vyABAJ4INt
-         Y/zIK5JuxgwP0doj6Lob2OmS0nMDR7CCmi4ZYc6ac9hmVYrKtkcxwaEiuTcT3Pmkg5Us
-         wFBLQStuX7Z7C80zX0Vu0zsHgnbQTCKFHG4WtZrD78/XbGNOlWjHoaSoOSsqprmEmTTU
-         f0nA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OTJ5ZzXkVNOqKUVJCNQ7kjB6RDngCntbQUzOLmWGTN0=;
+        b=caMuw41FA6/kb84Gk3fDwKcDsuD8nmGCfxFXlNaV9UWoEZNpH/wB1O7lqx8Kxg6sI7
+         ZdRTp98AlcQQkG7HcxBUkVzit4fqGpViPmILFpBRCVI+Ga5JNiV+Sj0uLH4PUeX+exR4
+         QfMUOFauDXZrERTOJVfWIyipGz96BCP55mjuNLV52VTh/lha1AdXJjeqWHOBUix4sqpx
+         k/614CCAm7UTexgXk+LkejK9IHrAPq85PrLnFoMXiSvAlS9lsAIZOZ9HMpvU/bSm4H4j
+         KhEEGSW454zYWJnvTfpMV8U5qHY5TR4GM0W2YjyEfWxlgGaUTYU+bInDnBrW0SzRVq9i
+         11wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=5ZdA3YbzFyuiBEZEvu/DHmwuAZEanF9AbrLkGxCCiGY=;
-        b=JNvSCFD2c7GGK5D2S06pwnvpoZ7s5KFEe+21OqH4zhxXlCP2Ot/6oXuRbT1dpVw9iS
-         M5eATcyFOF1IXRfO4LpQdNzbuQGk2zALHqYcbUnqZImjZXH7t3WyqzEhcY59NMYhTQSo
-         OMkgy2ChkRXfUkT4uwDBm9kPEuH55AhhogFVtWVkifriC7tr9I++jo1amOMFRh055b+B
-         5j/oGn58r61djaztTEinY4r1EaTV3Vj4PkzQkABuHpn1wPo1iByjawzvxzsVTrt4FLuN
-         gsZ0vvvqHaoxiLfjV4qUAdM8wNT/QZB2JBdqepi3RvWBzMNLGp1GCTfeTvEBHlgXk415
-         gCXg==
-X-Gm-Message-State: AOAM532PSkji7h3DH3nP+02AXD8mm6P1EnJsgs7EEjkHP7w0VlhOP4tl
-        HxGD5CkBpS8HSCF8vYFed9ycWz2uJ3kg6OFM628=
-X-Google-Smtp-Source: ABdhPJxCiyEhC5G3jIT+CvyxgGvFalmOrlYAjt7DA5HbzKYB80D32aUM0mqtwbGrsYh57v/gqvmNpqlC/ZmniF50fPI=
-X-Received: by 2002:a9d:48d:: with SMTP id 13mr4914607otm.9.1597479828223;
- Sat, 15 Aug 2020 01:23:48 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=OTJ5ZzXkVNOqKUVJCNQ7kjB6RDngCntbQUzOLmWGTN0=;
+        b=pNUY2aw65/bnbLV9UQ0StlR6nH9hMWVfwWioltw+oITnN+vhFbxVBd0MrLXjoCXhpO
+         ojihCUlxBp9Uix7j5stqpaFFwlfsifvZm8bxXvrFsykfgG0CMgFbgCMcqQ8axPunpLLs
+         Ra/PFIm9PQ/Rp4pYOKhYajgvdJbYRTxVM8wR3DVEh5O2TAmVHtN13z7aA+18198RuIXm
+         TTsfKeytkspv0ouxl7fSt4DraGRf6PQPdvQesvkDREXpKqG6gNmIjVSvpNQaTJm6WYxp
+         mP+idM/rHB76E7J5vaVXfOIUcrGUEVDG/xAScLCQlTg72uRpXfxfPeNgGORXhqkO8Aaf
+         RHIw==
+X-Gm-Message-State: AOAM533fWWkTAj7R3yEViLOPlN42XLKWP5Lh218RtjkR0eG0+XGEqWKF
+        4yZSGhDqnD24/Wvc79kr3sg=
+X-Google-Smtp-Source: ABdhPJwiTPKiEV581q5AeJRHWKu0zF6t2Tdvh2SgsUODiijumjqWusU4DfnPtOT8BJbsAs9we+ODig==
+X-Received: by 2002:a17:906:eb90:: with SMTP id mh16mr5911532ejb.10.1597480232160;
+        Sat, 15 Aug 2020 01:30:32 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id e6sm8546653ejd.14.2020.08.15.01.30.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Aug 2020 01:30:30 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 10:30:29 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Uriel Guajardo <urielguajardojr@gmail.com>
+Cc:     brendanhiggins@google.com, peterz@infradead.org, mingo@redhat.com,
+        will@kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        urielguajardo@google.com, alan.maguire@oracle.com
+Subject: Re: [PATCH v3] kunit: added lockdep support
+Message-ID: <20200815083029.GA2430016@gmail.com>
+References: <20200814205527.1833459-1-urielguajardojr@gmail.com>
 MIME-Version: 1.0
-References: <20200527135329.1172644-1-arnd@arndb.de> <CAKwvOdmA29WzTd7APsQCsG_a=NVWuR53Z2h8NTLza5sisnV2PA@mail.gmail.com>
- <CA+icZUUjtu3fCNTngY52h3uRL+eUaimNJb0UNwj5v-QwKggs5A@mail.gmail.com>
- <CA+icZUWH5f4B_6eYy2_OOi45VjUkE_kN9akqvcOxxmmmM3TSrg@mail.gmail.com>
- <CAKwvOdnj6ObdpsdVYkDxWp-dVTTg=xMkBm84y419SNtLuAqfMg@mail.gmail.com>
- <CAKwvOdnahyqQQMdWhzpaYkJNi21Ux=8qyBmRnPidiT_RAn0YFw@mail.gmail.com> <CA+icZUVKBsp4cJV5V=ZtywEi=Ary5w-fNSijkNknU+U9xiKRRg@mail.gmail.com>
-In-Reply-To: <CA+icZUVKBsp4cJV5V=ZtywEi=Ary5w-fNSijkNknU+U9xiKRRg@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 15 Aug 2020 10:23:36 +0200
-Message-ID: <CA+icZUV5m+kPWpk0ovoWD+DK0Tn8=c0MdWnr2XTxStwXf_VF0g@mail.gmail.com>
-Subject: Re: [PATCH] x86: work around clang IAS bug referencing __force_order
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zhenzhong Duan <zhenzhong.duan@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200814205527.1833459-1-urielguajardojr@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 5:28 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Sat, Aug 15, 2020 at 2:27 AM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > On Fri, Aug 14, 2020 at 3:57 PM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > >
-> > > On Fri, Aug 14, 2020 at 2:19 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > >
-> > > > On Fri, Aug 14, 2020 at 7:29 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > >
-> > > > > Thanks for the proposal.
-> > > > >
-> > > > > I have adapted it to fit my patchset against Linux v5.8.
-> > > > >
-> > > > > Both Debian's GCC-10 and a snapshot version of LLVM toolchain
-> > > > > v11.0.0-rc1+ seems to be OK.
-> > > > >
-> > > >
-> > > > Yupp, OK.
-> > > >
-> > > > I was able to boot FreeDOS 1.2 VM in VirtualBox GUI.
-> > >
-> > > Hi Sedat,
-> > > Apologies, but it's not clear to me precisely which patch you tested.
-> > > Can you please confirm whether you tested:
-> > > 1. Arnd's patch that started this thread.
-> > > 2. My proposed diff adding -fno-addrsig to CFLAGS_powernow-k6.o.
-> > > 3. My proposed diff removing __force_order from the kernel.
-> > >
-> > > I'm hoping you were referring to testing 3., but it's not clear to me.
-> >
-> > Ah, sorry, I missed your comment on github:
-> > https://github.com/ClangBuiltLinux/linux/issues/1120#issuecomment-674282107
-> >
-> > Ok, I will look at more disassembly next week and hopefully have a
-> > patch ready, with your tested by tag.
-> >
->
-> Sorry for not being precise - I tested with solution (3.).
-> Later I added the diff I used as mentioned in your above comment.
->
-> See [1]:
->
-> > In a 2nd run building with a selfmade clang-11 and LLVM "bin"utils is fine, too.
->
-> I cannot say much to older versions of GCC and/or LLVM/Clang if
-> removing "__force_order" works fine.
->
-> Another (4.) solution:
-> Sami tried successfully by adding "__weak" declaration with
-> CONFIG_LKDTM=m (see [2]).
-> I am OK if this works, too.
->
-> Please, see my attachments.
->
-> - Sedat -
->
-> [1] https://github.com/ClangBuiltLinux/linux/issues/1120#issuecomment-674340760
-> [2] https://github.com/ClangBuiltLinux/linux/issues/1120#issuecomment-674182703
 
-Unfortunately, the diff from Sami does not work together with Arvind's
-patchset...
+* Uriel Guajardo <urielguajardojr@gmail.com> wrote:
 
-x86/boot: Remove run-time relocations from compressed kernel
+> From: Uriel Guajardo <urielguajardo@google.com>
+> 
+> KUnit will fail tests upon observing a lockdep failure. Because lockdep
+> turns itself off after its first failure, only fail the first test and
+> warn users to not expect any future failures from lockdep.
+> 
+> Similar to lib/locking-selftest [1], we check if the status of
+> debug_locks has changed after the execution of a test case. However, we
+> do not reset lockdep afterwards.
+> 
+> Like the locking selftests, we also fix possible preemption count
+> corruption from lock bugs.
 
-...which got included in <tip.git#x86/boot> recently.
+> --- a/lib/kunit/Makefile
+> +++ b/lib/kunit/Makefile
 
-I see the following:
+> +void kunit_check_lockdep(struct kunit *test, struct kunit_lockdep *lockdep) {
+> +	int saved_preempt_count = lockdep->preempt_count;
+> +	bool saved_debug_locks = lockdep->debug_locks;
+> +
+> +	if (DEBUG_LOCKS_WARN_ON(preempt_count() != saved_preempt_count))
+> +		preempt_count_set(saved_preempt_count);
+> +
+> +#ifdef CONFIG_TRACE_IRQFLAGS
+> +	if (softirq_count())
+> +		current->softirqs_enabled = 0;
+> +	else
+> +		current->softirqs_enabled = 1;
+> +#endif
+> +
+> +	if (saved_debug_locks && !debug_locks) {
+> +		kunit_set_failure(test);
+> +		kunit_warn(test, "Dynamic analysis tool failure from LOCKDEP.");
+> +		kunit_warn(test, "Further tests will have LOCKDEP disabled.");
+> +	}
 
-  ld.lld-11 -m elf_x86_64  -pie  --no-dynamic-linker -T
-arch/x86/boot/compressed/vmlinux.lds
-arch/x86/boot/compressed/kernel_info.o
-arch/x86/boot/compressed/head_64.o arch/x86/boot/compressed/misc.o
-arch/x86/boot/compressed/string.o arch/x86/boot/compressed/cmdline.o
-arch/x86/boot/compressed/error.o arch/x86/boot/compressed/piggy.o
-arch/x86/boot/compressed/cpuflags.o
-arch/x86/boot/compressed/early_serial_console.o
-arch/x86/boot/compressed/kaslr.o arch/x86/boot/compressed/kaslr_64.o
-arch/x86/boot/compressed/mem_encrypt.o
-arch/x86/boot/compressed/pgtable_64.o arch/x86/boot/compressed/acpi.o
-arch/x86/boot/compressed/efi_thunk_64.o
-drivers/firmware/efi/libstub/lib.a -o arch/x86/boot/compressed/vmlinux
-ld.lld-11: error: Unexpected GOT entries detected!
-ld.lld-11: error: Unexpected run-time relocations detected!
-ld.lld-11: error: Unexpected GOT entries detected!
-ld.lld-11: error: Unexpected run-time relocations detected!
-make[5]: *** [arch/x86/boot/compressed/Makefile:91:
-arch/x86/boot/compressed/vmlinux] Error 1
 
-When you need further informations, please let me know.
+So this basically duplicates what the boot-time locking self-tests do, 
+in a poor fashion?
 
-- Sedat -
+Instead of duplicating unit tests, the right solution would be to 
+generalize the locking self-tests and use them both during bootup and 
+in kunit.
 
-[1] https://github.com/ClangBuiltLinux/linux/issues/1120#issuecomment-674182703
+Thanks,
+
+	Ingo
