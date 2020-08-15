@@ -2,100 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D644F245399
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3566B2453FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbgHOWDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728675AbgHOVvK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:10 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B448C03B3F0;
-        Sat, 15 Aug 2020 02:47:08 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id t14so9834623wmi.3;
-        Sat, 15 Aug 2020 02:47:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rnjXjcdoa8K1T7AG+e8ZGPlTXdNLEjYT6VnAJIHsZSs=;
-        b=DhC5u+7IZePPcWAY6zRSVw4d9LQe/5vxNN+unplSfogo19W/gQsHWuJWnEfjYUCWZt
-         ofTFVmBSDpb39en0q7gzC9dBmnaQ7ujQ56gfikCxE/T94RZkaPyqJuPWUwzxkR5zh6RV
-         2zeJYqeeaU1Q1DSdMTqqhY/LRakzcWnmcscyAO2j2jUydkp/FfzI4OzZgNMQ1L8kw/dO
-         8TBIMCb35O/0iS3h0EHlOgoUzUUJzgbioSquIoMM8Z4pf3EJ44qo6Vvwwkz35YBAtxYe
-         yD9YOvR1WEkLodQ5GO9kGAohvxI6l1LxEt45qDPE61B6uEJ5Kk1wekFA0TDuU9cxy1kN
-         mmgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rnjXjcdoa8K1T7AG+e8ZGPlTXdNLEjYT6VnAJIHsZSs=;
-        b=NV6Hg8WtvwFk3QnAk8ys1iWczIEc+UBuJJ7GR3dkcCgOzQ7MNNYg/t4DPPieKGbo9z
-         8qNx2M0hKaelKi5zQ2JIvJGM3LpmOLHKsRWDNcAxn4VxKv/tGC8X5PuJ+Bn22FZvX41O
-         1YOd8MJOl9Em7TEfH0fAyq5YGylLGDKb2PPWdkCLWR6PvT/aRThtEVDpYIa6cKenw+OS
-         FHZHVs3WH2UZ+7lI0rlnMf1sw7tYRVechhZQ7C6UlKlqz+ssju7awXbPuaN89iNNDMWq
-         QCBuW3QjFGinJNmSYgMv2XR02QLh2CeInGxMffjIbT2KGfD8rG9QkXwHCiDNU62HfD/h
-         yGPQ==
-X-Gm-Message-State: AOAM533Fa13G66x2xjuj+aSafO70eRcQlOViu7i3pDoKkOM3YGaHgxyl
-        xY8vjm9JSBblmA69rxEDslw=
-X-Google-Smtp-Source: ABdhPJz+QzwjIVRKxXK6BWYp+z7ISU45Y8xLUoCpZCu78YaysKfb9s+pgk2lbhYn93Jdk6qPnYy7kw==
-X-Received: by 2002:a1c:448a:: with SMTP id r132mr6014057wma.158.1597484827372;
-        Sat, 15 Aug 2020 02:47:07 -0700 (PDT)
-Received: from [172.20.10.4] (mob-5-90-172-191.net.vodafone.it. [5.90.172.191])
-        by smtp.gmail.com with ESMTPSA id 31sm21346274wrj.94.2020.08.15.02.47.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 Aug 2020 02:47:06 -0700 (PDT)
-Subject: Re: [PATCH] seg6: using DSCP of inner IPv4 packets
-To:     David Miller <davem@davemloft.net>
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andrea.mayer@uniroma2.it
-References: <20200804074030.1147-1-ahabdels@gmail.com>
- <20200805.174049.1470539179902962793.davem@davemloft.net>
- <7f8b1def-0a65-d2a4-577e-5f928cee0617@gmail.com>
- <20200807.174342.2147963305722259387.davem@davemloft.net>
-From:   Ahmed Abdelsalam <ahabdels@gmail.com>
-Message-ID: <56fb26ec-f35f-a7e9-53af-2ede1104bd28@gmail.com>
-Date:   Sat, 15 Aug 2020 11:47:04 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        id S1729799AbgHOWKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:10:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729600AbgHOWKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:10:37 -0400
+Received: from coco.lan (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE6E123107;
+        Sat, 15 Aug 2020 09:55:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597485342;
+        bh=8xrqG9ujM70SVswirhjHSCM1NcB46h4TexvLpDudO2g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=yAnn6BiR5U23ij/arHHrK8eelhARFK7/EUOlF3awlMLsxkoQEG9tZYQUnutq9i7MH
+         D18q6AwLGssk9detsPija+F+N9yue+RsxWHArtljHus9HQJvE2NliGwp1XGPCRSpMw
+         n2rx5a4v/01pNOLc3N1Isl2OON8WkrUFAo3yyNtY=
+Date:   Sat, 15 Aug 2020 11:55:36 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     mauro.chehab@huawei.com, linux-kernel@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linuxarm@huawei.com,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH 43/44] dt: document HiSilicon SPMI controller and
+ mfd/regulator properties
+Message-ID: <20200815115536.6519a7f5@coco.lan>
+In-Reply-To: <20200814201708.GA2665752@bogus>
+References: <cover.1597247164.git.mchehab+huawei@kernel.org>
+        <da65a508d01aa2092999d0ce7e9c061ccfd24036.1597247164.git.mchehab+huawei@kernel.org>
+        <20200814201708.GA2665752@bogus>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200807.174342.2147963305722259387.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Hi Rob,
 
-Sorry for the late reply. I'm on PTO with limited email access.
+Em Fri, 14 Aug 2020 14:17:08 -0600
+Rob Herring <robh@kernel.org> escreveu:
 
-I will revise the patch in the next weeks and make outer IPv6 header 
-inherit Hop limit from Inner packet for the IPv6 case.
+> On Wed, 12 Aug 2020 17:56:53 +0200, Mauro Carvalho Chehab wrote:
+> > Add documentation for the properties needed by the HiSilicon
+> > 6421v600 driver, and by the SPMI controller used to access
+> > the chipset.
+> > 
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 182 ++++++++++++++++++
+> >  .../spmi/hisilicon,hisi-spmi-controller.yaml  |  54 ++++++
+> >  2 files changed, 236 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
+> >   
+> 
+> 
+> My bot found errors running 'make dt_binding_check' on your patch:
+> 
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.example.dt.yaml: example-0: spmi@fff24000:reg:0: [0, 4294066176, 0, 4096] is too long
 
-Ahmed
+I was unable to find any way to solve this one. What's the proper
+way to set the length of the root reg on some example?
 
-
-On 08/08/2020 02:43, David Miller wrote:
-> From: Ahmed Abdelsalam <ahabdels@gmail.com>
-> Date: Thu, 6 Aug 2020 08:43:06 +0200
-> 
->> SRv6 as defined in [1][2] does not mandate that the hop_limit of the
->> outer IPv6 header has to be copied from the inner packet.
-> 
-> This is not an issue of seg6 RFCs, but rather generic ip6 in ip6
-> tunnel encapsulation.
-> 
-> Therefore, what the existing ip6 tunnel encap does is our guide,
-> and it inherits from the inner header.
-> 
-> And that's what the original seg6 code almost certainly used to
-> guide the decision making in this area.
-> 
+Thanks,
+Mauro
