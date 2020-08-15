@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F06245365
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3942453EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729102AbgHOWBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
+        id S1729752AbgHOWHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgHOVvd (ORCPT
+        with ESMTP id S1728347AbgHOVus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:33 -0400
+        Sat, 15 Aug 2020 17:50:48 -0400
 Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCF3C06137B
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:34 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id p4so10241977qkf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7893C06137C
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:35 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id b14so10203621qkn.4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jOuJJ23oEouPSGg3lZDZzJM6phxa5MifEp0ZsmuPH0A=;
-        b=P3cbT+5ibY0DarOGRd8+2HzKTmoLWqb9/Qp47CMqSclIzbGT9hbhvUuTT/lH20T0vD
-         pzf2wmWRPH4Nw5sPERqFv/fkMj3kSTmYwCpzfKaz+DbnAafQBQIE4etQbvbITbT7IA5Y
-         7VOuQanq3Pq5EoJ5jgJoDluGf06TyjduSX2zM=
+        bh=i+tcxwumkRlUZ+dHGtXtIYsQuEL+Suyx+IL7hWNPqcc=;
+        b=VihnvLNvi7fm/vGqgwWniK4q9Or33o+fcFfy+4EuCI3nBUqnUwu8O3wSniZsFgcLCS
+         GY6mFAh35OeVrNRthiK7QsdLWO2TMOOhNdFi9s3S0qhKs4rv/1IOYEchKmV9ykmg7/Hv
+         SFnRliiY/Op3UGMVKaeKOw/fdaLBkJ4y/sMy8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jOuJJ23oEouPSGg3lZDZzJM6phxa5MifEp0ZsmuPH0A=;
-        b=aFh43ZOtio3w7/GsmwWphjEjyelaCbtekcpC/wYVw2RhtM1LP10mrPgtijHthBiL+P
-         ak3tu5FWrWgrfV+aIkWpzqPf816CBY+1fg/Fjotd+EvfXzgnfnShP3Od4TEm1t4YlbJq
-         nxqHQs9CUCccbw5uE9TxztNcq1yrbJ6mDha7vIWSevQFqkkCwzQ4vPY6j8CNQMe/Bh9x
-         r8Ye8Q1owm/LM0FboG+WVnmRsLrnmKXAlvWXT3L+Vfj09vyBDzjPifvJFW4/ntW55Mmr
-         /ceDqyfUfPlKH7PG5erInoNEdPrTQEfDqcOcoZYzkh2UK0P85F/BiILKzNX4sBtiDr9J
-         4eXA==
-X-Gm-Message-State: AOAM532ozqjwkV94Ax0Lb2OFslAfycOlHrLxjfKpTpcUKjXhBL9jICVS
-        Qbo3WFfeF+JcY55r/t185w0WgEb3maEDKg==
-X-Google-Smtp-Source: ABdhPJyij8tgW3i5iZqmsC/3Zvp1hPrbEHSFfhIMEYnyV4Fj7iVBzrldWwJbpxlVXcBf17ot9llazQ==
-X-Received: by 2002:a37:6583:: with SMTP id z125mr4698518qkb.297.1597461573799;
-        Fri, 14 Aug 2020 20:19:33 -0700 (PDT)
+        bh=i+tcxwumkRlUZ+dHGtXtIYsQuEL+Suyx+IL7hWNPqcc=;
+        b=g678YFPunSHOAmjoBfSOTNbrcsEykGwDhWpqHRaiLeoV2sHbHAXNAAy77m/yamdLAV
+         GsIpQkVNPtQygoK9oEGb7lPK50cVNCWIQJRVxtvi4CliZ3EZqcss0zolkIQ1r1gfIww4
+         QJR66xtt/GRfAn30lZJ63+QRSoNWxSEs4ad06uEAYXehkog+PQVIdWiQFoT9k3B18Tnz
+         75xDnKkE/4CZYbxJ6LsBVfx5DpzDYUVY5vLhIJm1Wc2nfXadDOdlKqhqCa6RyiyVrI8C
+         jIYz/s6ncYG95LqrEQrdPLr4lN51UvMYBdis+pnEkvGQV/hyWuHt79dyb0EI1oSlacey
+         m/9w==
+X-Gm-Message-State: AOAM5331eSVxW7ZndcdWwF9L83fmtPG7pqD+468vTsSD6uBIrLPKODOM
+        Z4aw/VHGIlEfUuFt5Q4ND1djU0YX8gKYqw==
+X-Google-Smtp-Source: ABdhPJzr0EEDBpbBOEXApU/v6u5K2CG1nZZpgKij0Si6BF6meTqNfC2rIq+6NLuHjNL/DOCii/AYwQ==
+X-Received: by 2002:a37:a953:: with SMTP id s80mr4511361qke.239.1597461574990;
+        Fri, 14 Aug 2020 20:19:34 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id p12sm10055199qkk.118.2020.08.14.20.19.32
+        by smtp.gmail.com with ESMTPSA id p12sm10055199qkk.118.2020.08.14.20.19.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 20:19:33 -0700 (PDT)
+        Fri, 14 Aug 2020 20:19:34 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
@@ -68,9 +68,9 @@ Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Chen Yu <yu.c.chen@intel.com>,
         Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH RFC 10/12] sched/coresched: Make core_pick_seq per run-queue
-Date:   Fri, 14 Aug 2020 23:19:06 -0400
-Message-Id: <20200815031908.1015049-11-joel@joelfernandes.org>
+Subject: [PATCH RFC 11/12] sched/coresched: Check for dynamic changes in smt_mask
+Date:   Fri, 14 Aug 2020 23:19:07 -0400
+Message-Id: <20200815031908.1015049-12-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
 In-Reply-To: <20200815031908.1015049-1-joel@joelfernandes.org>
 References: <20200815031908.1015049-1-joel@joelfernandes.org>
@@ -83,106 +83,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vineeth Pillai <viremana@linux.microsoft.com>
 
-core_pick_seq is a core wide counter to identify if a task pick has
-been made for a CPU by its sibling. But during hotplug scenarios,
-pick cannot be made for CPUs that are offline and when they come up,
-they get tricked because the counter is incremented.
+There are multiple loops in pick_next_task that iterate over CPUs in
+smt_mask. During a hotplug event, sibling could be removed from the
+smt_mask while pick_next_task is running. So we cannot trust the mask
+across the different loops. This can confuse the logic.
 
-So, make core_pick_seq per run-queue.
+Add a retry logic if smt_mask changes between the loops.
 
+Reported-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/sched/core.c  | 19 ++++++++++---------
- kernel/sched/sched.h |  2 +-
- 2 files changed, 11 insertions(+), 10 deletions(-)
+ kernel/sched/core.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3e9df8221c62..48a49168e57f 100644
+index 48a49168e57f..5da5b2317b21 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -4623,9 +4623,9 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 	 * pointers are all still valid), and we haven't scheduled the last
- 	 * pick yet, do so now.
- 	 */
--	if (rq->core->core_pick_seq == rq->core->core_task_seq &&
--	    rq->core->core_pick_seq != rq->core_sched_seq) {
--		WRITE_ONCE(rq->core_sched_seq, rq->core->core_pick_seq);
-+	if (rq->core_pick_seq == rq->core->core_task_seq &&
-+	    rq->core_pick_seq != rq->core_sched_seq) {
-+		WRITE_ONCE(rq->core_sched_seq, rq->core_pick_seq);
+@@ -4613,6 +4613,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	const struct sched_class *class;
+ 	const struct cpumask *smt_mask;
+ 	int i, j, cpu, occ = 0;
++	int smt_weight;
+ 	bool need_sync;
  
- 		next = rq->core_pick;
- 		if (next != prev) {
-@@ -4635,7 +4635,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 
- 		trace_printk("pick pre selected (%u %u %u): %s/%d %lx\n",
- 			     rq->core->core_task_seq,
--			     rq->core->core_pick_seq,
-+			     rq->core_pick_seq,
- 			     rq->core_sched_seq,
- 			     next->comm, next->pid,
- 			     next->core_cookie);
-@@ -4649,7 +4649,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	if (!sched_core_enabled(rq))
+@@ -4648,6 +4649,9 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	cpu = cpu_of(rq);
  	smt_mask = cpu_smt_mask(cpu);
  
++retry_select:
++	smt_weight = cpumask_weight(smt_mask);
++
  	/*
--	 * core->core_task_seq, core->core_pick_seq, rq->core_sched_seq
-+	 * core->core_task_seq, rq->core_pick_seq, rq->core_sched_seq
+ 	 * core->core_task_seq, rq->core_pick_seq, rq->core_sched_seq
  	 *
- 	 * @task_seq guards the task state ({en,de}queues)
- 	 * @pick_seq is the @task_seq we did a selection on
-@@ -4667,8 +4667,10 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+@@ -4691,6 +4695,14 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 			struct rq *rq_i = cpu_rq(i);
+ 			struct task_struct *p;
+ 
++			/*
++			 * During hotplug online a sibling can be added in
++			 * the smt_mask * while we are here. If so, we would
++			 * need to restart selection by resetting all over.
++			 */
++			if (unlikely(smt_weight != cpumask_weight(smt_mask)))
++				goto retry_select;
++
+ 			if (rq_i->core_pick)
+ 				continue;
+ 
+@@ -4790,7 +4802,15 @@ next_class:;
+ 	for_each_cpu_or(i, smt_mask, cpumask_of(cpu)) {
  		struct rq *rq_i = cpu_rq(i);
  
- 		trace_printk("CPU %d is in smt_mask, resetting\n", i);
--
--		rq_i->core_pick = NULL;
-+		if (rq_i->core_pick) {
-+			WRITE_ONCE(rq_i->core_sched_seq, rq_i->core_pick_seq);
-+			rq_i->core_pick = NULL;
-+		}
+-		WARN_ON_ONCE(!rq_i->core_pick);
++		WARN_ON_ONCE(smt_weight == cpumask_weight(smt_mask) && !rq->core_pick);
++
++		/*
++		 * During hotplug online a sibling can be added in the smt_mask
++		 * while we are here. We might have missed picking a task for it.
++		 * Ignore it now as a schedule on that sibling will correct itself.
++		 */
++		if (!rq_i->core_pick)
++			continue;
  
- 		if (rq_i->core_forceidle) {
- 			need_sync = true;
-@@ -4771,9 +4773,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- next_class:;
- 	}
- 
--	rq->core->core_pick_seq = rq->core->core_task_seq;
- 	next = rq->core_pick;
--	rq->core_sched_seq = rq->core->core_pick_seq;
- 
- 	/* Something should have been selected for current CPU */
- 	WARN_ON_ONCE(!next);
-@@ -4801,6 +4801,7 @@ next_class:;
- 			continue;
- 
- 		if (rq_i->curr != rq_i->core_pick) {
-+			WRITE_ONCE(rq_i->core_pick_seq, rq->core->core_task_seq);
- 			trace_printk("IPI(%d)\n", i);
- 			resched_curr(rq_i);
- 		}
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 2922e171a1f0..c7caece2df6e 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1036,6 +1036,7 @@ struct rq {
- 	/* per rq */
- 	struct rq		*core;
- 	struct task_struct	*core_pick;
-+	unsigned int		core_pick_seq;
- 	unsigned int		core_enabled;
- 	unsigned int		core_sched_seq;
- 	struct rb_root		core_tree;
-@@ -1045,7 +1046,6 @@ struct rq {
- 
- 	/* shared state */
- 	unsigned int		core_task_seq;
--	unsigned int		core_pick_seq;
- 	unsigned long		core_cookie;
- 	unsigned int		core_unsafe_nest;
- #endif
+ 		if (is_idle_task(rq_i->core_pick) && rq_i->nr_running)
+ 			rq_i->core_forceidle = true;
 -- 
 2.28.0.220.ged08abb693-goog
 
