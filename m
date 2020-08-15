@@ -2,107 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27C924529D
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6758D245314
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728954AbgHOVxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728240AbgHOVwl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:41 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ED9C061236;
-        Fri, 14 Aug 2020 22:51:41 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1c7a000c615dc96c916289.dip0.t-ipconnect.de [IPv6:2003:ec:2f1c:7a00:c61:5dc9:6c91:6289])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3913C1EC03EA;
-        Sat, 15 Aug 2020 07:51:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1597470696;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=UaHC+XYpOhT7alhor59jrB5xm8LzwHIuR+784j8TeOo=;
-        b=jYVoD/vXSYH5s+EEyEAMfZb6pLrBYCJgMbqCrB0uJ65Qhfoz03nttKbJ7T9Gzfz8CnU0GK
-        NFnKRYyadWH2wJv80ai0YnrNPPcJcRsHFR5N5KNbyLLDIgti6eydnCzykC9iJNm9fHcVTp
-        VeKJKSP2XhHU+bhSlNEy6oeJFealQT4=
-Date:   Sat, 15 Aug 2020 07:52:27 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     tony.luck@intel.com, qiuxu.zhuo@intel.com, mchehab@kernel.org,
-        james.morse@arm.com, rrichter@marvell.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: EDAC-SBRIDGE
-Message-ID: <20200815055227.GA25814@zn.tnic>
-References: <20200708113546.14135-1-grandmaster@al2klimov.de>
+        id S1729553AbgHOV6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:58:23 -0400
+Received: from mga14.intel.com ([192.55.52.115]:63150 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729164AbgHOV6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:58:15 -0400
+IronPort-SDR: chfJsoWD21AZCo8XmipsY48Gr8Xp3fPVJU5kSbNv3X3S4iNFbIXkyB8U6JWbDTnuVx9ArIdlsP
+ crfC4UdWv/cw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9713"; a="153763269"
+X-IronPort-AV: E=Sophos;i="5.76,315,1592895600"; 
+   d="scan'208";a="153763269"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2020 22:58:07 -0700
+IronPort-SDR: su0+2Bc+sf5a5AkUhAnKl1SwBt4M44H8rpqtoq3dBXweKweSiz9JoJjzqHl15/gQODauiDVSZq
+ 3jjjhZb3JdGw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,315,1592895600"; 
+   d="scan'208";a="291931077"
+Received: from araj-mobl1.jf.intel.com ([10.254.83.48])
+  by orsmga003.jf.intel.com with ESMTP; 14 Aug 2020 22:58:06 -0700
+Date:   Fri, 14 Aug 2020 22:58:06 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        Sukumar Ghorai <sukumar.ghorai@intel.com>,
+        Srikanth Nandamuri <srikanth.nandamuri@intel.com>,
+        Evan Green <evgreen@chromium.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH] x86/hotplug: Silence APIC only after all irq's are
+ migrated
+Message-ID: <20200815055806.GA3828@araj-mobl1.jf.intel.com>
+References: <20200814213842.31151-1-ashok.raj@intel.com>
+ <bb47f196-90e5-3f78-305b-122fc9192867@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200708113546.14135-1-grandmaster@al2klimov.de>
+In-Reply-To: <bb47f196-90e5-3f78-305b-122fc9192867@infradead.org>
+User-Agent: Mutt/1.9.1 (2017-09-22)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 01:35:46PM +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
+Hi Randy,
+
+
+On Fri, Aug 14, 2020 at 04:25:32PM -0700, Randy Dunlap wrote:
+> On 8/14/20 2:38 PM, Ashok Raj wrote:
+> > When offlining CPU's, fixup_irqs() migrates all interrupts away from the
 > 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
+>                  CPUs,
+
+Thanks for catching these. I'll fix all these suggested changes in my next rev
+Once i get additional feedback from Thomas.
+
+
 > 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> ---
->  Continuing my work started at 93431e0607e5.
->  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
->  (Actually letting a shell for loop submit all this stuff for me.)
+> > outgoing CPU to an online CPU. Its always possible the device sent an
 > 
->  If there are any URLs to be removed completely or at least not HTTPSified:
->  Just clearly say so and I'll *undo my change*.
->  See also: https://lkml.org/lkml/2020/6/27/64
+>                                  It's
 > 
->  If there are any valid, but yet not changed URLs:
->  See: https://lkml.org/lkml/2020/6/26/837
+> > interrupt to the previous CPU destination. Pending interrupt bit in IRR in
+> > lapic identifies such interrupts. apic_soft_disable() will not capture any
 > 
->  If you apply the patch, please let me know.
+>   LAPIC
 > 
+> > new interrupts in IRR. This causes interrupts from device to be lost during
+> > cpu offline. The issue was found when explicitly setting MSI affinity to a
 > 
->  drivers/edac/sb_edac.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   CPU
 > 
-> diff --git a/drivers/edac/sb_edac.c b/drivers/edac/sb_edac.c
-> index d414698ca324..a6704e73fcce 100644
-> --- a/drivers/edac/sb_edac.c
-> +++ b/drivers/edac/sb_edac.c
-> @@ -3552,6 +3552,6 @@ MODULE_PARM_DESC(edac_op_state, "EDAC Error Reporting state: 0=Poll,1=NMI");
->  
->  MODULE_LICENSE("GPL");
->  MODULE_AUTHOR("Mauro Carvalho Chehab");
-> -MODULE_AUTHOR("Red Hat Inc. (http://www.redhat.com)");
-> +MODULE_AUTHOR("Red Hat Inc. (https://www.redhat.com)");
->  MODULE_DESCRIPTION("MC Driver for Intel Sandy Bridge and Ivy Bridge memory controllers - "
->  		   SBRIDGE_REVISION);
+> > CPU and immediately offlining it. It was simple to recreate with a USB
+> > ethernet device and doing I/O to it while the CPU is offlined. Lost
+> > interrupts happen even when Interrupt Remapping is enabled.
+> > 
+> > Current code does apic_soft_disable() before migrating interrupts.
+> > 
+> > native_cpu_disable()
+> > {
+> > 	...
+> > 	apic_soft_disable();
+> > 	cpu_disable_common();
+> > 	  --> fixup_irqs(); // Too late to capture anything in IRR.
+> > }
+> > 
+> > Just fliping the above call sequence seems to hit the IRR checks
+> 
+>        flipping
+> 
+> > and the lost interrupt is fixed for both legacy MSI and when
+> > interrupt remapping is enabled.
+> > 
+> > 
+> > Fixes: 60dcaad5736f ("x86/hotplug: Silence APIC and NMI when CPU is dead")
+> > Link: https://lore.kernel.org/lkml/875zdarr4h.fsf@nanos.tec.linutronix.de/
+> > Signed-off-by: Ashok Raj <ashok.raj@intel.com>
+> > 
+> > To: linux-kernel@vger.kernel.org
+> > To: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Sukumar Ghorai <sukumar.ghorai@intel.com>
+> > Cc: Srikanth Nandamuri <srikanth.nandamuri@intel.com>
+> > Cc: Evan Green <evgreen@chromium.org>
+> > Cc: Mathias Nyman <mathias.nyman@linux.intel.com>
+> > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > Cc: stable@vger.kernel.org
+> > ---
+> >  arch/x86/kernel/smpboot.c | 11 +++++++++--
+> >  1 file changed, 9 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> > index ffbd9a3d78d8..278cc9f92f2f 100644
+> > --- a/arch/x86/kernel/smpboot.c
+> > +++ b/arch/x86/kernel/smpboot.c
+> > @@ -1603,13 +1603,20 @@ int native_cpu_disable(void)
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > +	cpu_disable_common();
+> >  	/*
+> >  	 * Disable the local APIC. Otherwise IPI broadcasts will reach
+> >  	 * it. It still responds normally to INIT, NMI, SMI, and SIPI
+> > -	 * messages.
+> > +	 * messages. Its important to do apic_soft_disable() after
+> 
+> 	             It's
+> 
+> > +	 * fixup_irqs(), because fixup_irqs() called from cpu_disable_common()
+> > +	 * depends on IRR being set. After apic_soft_disable() CPU preserves
+> > +	 * currently set IRR/ISR but new interrupts will not set IRR.
+> > +	 * This causes interrupts sent to outgoing cpu before completion
+> 
+> 	                                           CPU
+> 
+> > +	 * of irq migration to be lost. Check SDM Vol 3 "10.4.7.2 Local
+> 
+> 	      IRQ
+> 
+> > +	 * APIC State after It Has been Software Disabled" section for more
+> > +	 * details.
+> >  	 */
+> >  	apic_soft_disable();
+> > -	cpu_disable_common();
+> >  
+> >  	return 0;
+> >  }
+> > 
+> 
+> thanks.
 > -- 
-
-Merged all your EDAC patches into one and applied. Will push out once
--rc1 releases.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> ~Randy
+> 
