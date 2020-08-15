@@ -2,120 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4F32454A7
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A562454CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729335AbgHOWdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:33:42 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:50554 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728262AbgHOWdl (ORCPT
+        id S1729261AbgHOWp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728390AbgHOWpm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:33:41 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id CA97720022;
-        Sat, 15 Aug 2020 12:46:52 +0200 (CEST)
-Date:   Sat, 15 Aug 2020 12:46:51 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] drm/panel: Add panel driver for the Mantix
- MLAF057WE51-X DSI panel
-Message-ID: <20200815104651.GA1005928@ravnborg.org>
-References: <cover.1597412076.git.agx@sigxcpu.org>
- <0a7539135cc46eec5636ca89f52695f4a1197841.1597412076.git.agx@sigxcpu.org>
- <20200815100230.GA1002374@ravnborg.org>
- <20200815104022.GA5641@bogon.m.sigxcpu.org>
+        Sat, 15 Aug 2020 18:45:42 -0400
+X-Greylist: delayed 904 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 15 Aug 2020 12:48:12 PDT
+Received: from brightrain.aerifal.cx (unknown [IPv6:2002:d80c:560d::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19C3C0045A7
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 12:48:12 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 15:33:04 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: [GIT PULL] arch/sh updates for 5.9
+Message-ID: <20200815193255.GA23393@brightrain.aerifal.cx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200815104022.GA5641@bogon.m.sigxcpu.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=8nJEP1OIZ-IA:10 a=T4MLU0igAHpipydq7w0A:9 a=wPNLvfGTeEIA:10
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 12:40:22PM +0200, Guido Günther wrote:
-> Hi Sam,
-> On Sat, Aug 15, 2020 at 12:02:30PM +0200, Sam Ravnborg wrote:
-> > Hi Guido.
-> > 
-> > > +static int mantix_probe(struct mipi_dsi_device *dsi)
-> > > +{
-> > > +	struct device *dev = &dsi->dev;
-> > > +	struct mantix *ctx;
-> > > +	int ret;
-> > > +
-> > > +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-> > > +	if (!ctx)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-> > > +	if (IS_ERR(ctx->reset_gpio)) {
-> > > +		DRM_DEV_ERROR(dev, "cannot get reset gpio\n");
-> > > +		return PTR_ERR(ctx->reset_gpio);
-> > > +	}
-> > > +
-> > > +	mipi_dsi_set_drvdata(dsi, ctx);
-> > > +	ctx->dev = dev;
-> > > +
-> > > +	dsi->lanes = 4;
-> > > +	dsi->format = MIPI_DSI_FMT_RGB888;
-> > > +	dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
-> > > +		MIPI_DSI_MODE_VIDEO_BURST | MIPI_DSI_MODE_VIDEO_SYNC_PULSE;
-> > > +
-> > > +	ctx->avdd = devm_regulator_get(dev, "avdd");
-> > > +	if (IS_ERR(ctx->avdd)) {
-> > > +		ret = PTR_ERR(ctx->avdd);
-> > > +		if (ret != -EPROBE_DEFER)
-> > > +			DRM_DEV_ERROR(dev,
-> > > +				      "Failed to request avdd regulator: %d\n",
-> > > +				      ret);
-> > > +		return ret;
-> > > +	}
-> > 
-> > Consider to use the recently added dev_err_probe() here and below.
-> > Note: Not part of drm-misc-next yet - but hopefully after -rc1
-> > when a backmerge is done.
-> 
-> In fact I did decided against it since i was told that missing dev_* and
-> DRM_* logging shouldn't be done. So is that o.k. nowadays?
-s/missing/mixing/
+The following changes since commit bcf876870b95592b52519ed4aafcf9d95999bc9c:
 
-I often request that logging is consistent - so I recognize the
-argument.
+  Linux 5.8 (2020-08-02 14:21:45 -0700)
 
-For panel/* I have not made up my mind what I think is the best
-approach. The DRM_DEV_* and DRM_* logging do not add much value.
-So I have been tempted several times to convert all logging in
-panel/ to dev_* and pr_* (when no struct device * is available).
-That would also avoid that we mix up logging.
+are available in the Git repository at:
 
-We have drm_* logging - but they require a valid drm_device * which we
-do not have in the the panel drivers. So they are ruled out here.
+  git://git.libc.org/linux-sh tags/sh-for-5.9
 
-Do you have any opinions/comments on this?
+for you to fetch changes up to 0c64a0dce51faa9c706fdf1f957d6f19878f4b81:
 
-	Sam
+  sh: landisk: Add missing initialization of sh_io_port_base (2020-08-14 22:43:17 -0400)
+
+----------------------------------------------------------------
+Cleanup, SECCOMP_FILTER support, message printing fixes, and other
+changes to arch/sh.
+
+----------------------------------------------------------------
+Alexander A. Klimov (1):
+      sh: Replace HTTP links with HTTPS ones
+
+Chen Zhou (1):
+      sh: remove call to memset after dma_alloc_coherent
+
+Christian Brauner (1):
+      sh: switch to copy_thread_tls()
+
+Christoph Hellwig (10):
+      sh: remove -Werror from Makefiles
+      sh: sort the selects for SUPERH alphabetically
+      sh: remove __KERNEL__ ifdefs from non-UAPI headers
+      sh: move ioremap_fixed details out of <asm/io.h>
+      sh: move the ioremap implementation out of line
+      sh: don't include <asm/io_trapped.h> in <asm/io.h>
+      sh: unexport register_trapped_io and match_trapped_io_handler
+      dma-mapping: consolidate the NO_DMA definition in kernel/dma/Kconfig
+      sh: don't allow non-coherent DMA for NOMMU
+      sh: use the generic dma coherent remap allocator
+
+Flavio Suligoi (1):
+      arch: sh: smc37c93x: fix spelling mistake
+
+Geert Uytterhoeven (14):
+      Revert "sh: add missing EXPORT_SYMBOL() for __delay"
+      sh: Remove SH5-based Cayman platform
+      input: i8042 - Remove special Cayman handling
+      sh: fault: Fix duplicate printing of "PC:"
+      Revert "sh: add loglvl to printk_address()"
+      Revert "sh: remove needless printk()"
+      sh: kernel: disassemble: Fix broken lines in disassembly dumps
+      sh: dump_stack: Fix broken lines and ptrval in calltrace dumps
+      sh: process: Fix broken lines in register dumps
+      sh: sh2007: Modernize printing of kernel messages
+      sh: pci: Modernize printing of kernel messages
+      sh: machvec: Modernize printing of kernel messages
+      sh: stacktrace: Remove stacktrace_ops.stack()
+      sh: landisk: Add missing initialization of sh_io_port_base
+
+Hans Verkuil (1):
+      arch/sh/configs: remove obsolete CONFIG_SOC_CAMERA*
+
+John Paul Adrian Glaubitz (1):
+      sh: Implement __get_user_u64() required for 64-bit get_user()
+
+Matthew Wilcox (Oracle) (1):
+      sh: Fix unneeded constructor in page table allocation
+
+Michael Karcher (3):
+      sh: Rearrange blocks in entry-common.S
+      sh: Add SECCOMP_FILTER
+      sh: bring syscall_set_return_value in line with other architectures
+
+ arch/m68k/Kconfig                             |   4 +-
+ arch/m68k/Kconfig.machine                     |   1 +
+ arch/sh/Kconfig                               | 109 ++++++++--------
+ arch/sh/Makefile                              |   5 -
+ arch/sh/boards/Kconfig                        |   6 -
+ arch/sh/boards/board-sh2007.c                 |   4 +-
+ arch/sh/boards/mach-cayman/Makefile           |   5 -
+ arch/sh/boards/mach-cayman/irq.c              | 148 ---------------------
+ arch/sh/boards/mach-cayman/panic.c            |  46 -------
+ arch/sh/boards/mach-cayman/setup.c            | 181 --------------------------
+ arch/sh/boards/mach-landisk/setup.c           |   3 +
+ arch/sh/configs/ap325rxa_defconfig            |   3 -
+ arch/sh/configs/cayman_defconfig              |  66 ----------
+ arch/sh/configs/ecovec24_defconfig            |   3 -
+ arch/sh/configs/migor_defconfig               |   3 -
+ arch/sh/configs/se7724_defconfig              |   2 -
+ arch/sh/drivers/pci/Makefile                  |   1 -
+ arch/sh/drivers/pci/common.c                  |   6 +-
+ arch/sh/drivers/pci/fixups-cayman.c           |  78 -----------
+ arch/sh/drivers/pci/pci-sh7780.c              |  23 ++--
+ arch/sh/drivers/pci/pci.c                     |  11 +-
+ arch/sh/include/asm/adc.h                     |   2 -
+ arch/sh/include/asm/addrspace.h               |   3 -
+ arch/sh/include/asm/bitops.h                  |   4 -
+ arch/sh/include/asm/cache.h                   |   2 -
+ arch/sh/include/asm/cacheflush.h              |   3 -
+ arch/sh/include/asm/dma.h                     |   2 -
+ arch/sh/include/asm/elf.h                     |   2 -
+ arch/sh/include/asm/freq.h                    |   2 -
+ arch/sh/include/asm/futex.h                   |   3 -
+ arch/sh/include/asm/io.h                      | 119 ++---------------
+ arch/sh/include/asm/kdebug.h                  |   3 +-
+ arch/sh/include/asm/mmu_context.h             |   2 -
+ arch/sh/include/asm/mmzone.h                  |   3 -
+ arch/sh/include/asm/pci.h                     |   4 -
+ arch/sh/include/asm/processor_32.h            |   2 -
+ arch/sh/include/asm/smc37c93x.h               |   4 +-
+ arch/sh/include/asm/sparsemem.h               |   3 -
+ arch/sh/include/asm/stacktrace.h              |   2 -
+ arch/sh/include/asm/string_32.h               |   4 -
+ arch/sh/include/asm/syscall_32.h              |   5 +-
+ arch/sh/include/asm/syscalls_32.h             |   3 -
+ arch/sh/include/asm/thread_info.h             |   5 -
+ arch/sh/include/asm/uaccess_32.h              |  53 ++++++++
+ arch/sh/include/asm/watchdog.h                |   2 -
+ arch/sh/kernel/Makefile                       |   2 -
+ arch/sh/kernel/disassemble.c                  | 103 +++++++--------
+ arch/sh/kernel/dma-coherent.c                 |  51 +-------
+ arch/sh/kernel/dumpstack.c                    |  30 ++---
+ arch/sh/kernel/entry-common.S                 |  59 +++++----
+ arch/sh/kernel/io_trapped.c                   |   2 -
+ arch/sh/kernel/ioport.c                       |   1 +
+ arch/sh/kernel/machvec.c                      |   8 +-
+ arch/sh/kernel/perf_callchain.c               |   6 -
+ arch/sh/kernel/process_32.c                   |  44 +++----
+ arch/sh/kernel/ptrace_32.c                    |   5 +-
+ arch/sh/kernel/stacktrace.c                   |   7 -
+ arch/sh/lib/Makefile                          |   2 -
+ arch/sh/lib/delay.c                           |   1 -
+ arch/sh/mm/Makefile                           |   2 -
+ arch/sh/mm/consistent.c                       |   2 -
+ arch/sh/mm/fault.c                            |   3 +-
+ arch/sh/mm/init.c                             |   1 +
+ arch/sh/mm/ioremap.c                          |  55 ++++++++
+ arch/sh/mm/ioremap.h                          |  23 ++++
+ arch/sh/mm/ioremap_fixed.c                    |   1 +
+ arch/sh/mm/pgtable.c                          |   7 +-
+ arch/sh/oprofile/backtrace.c                  |   7 -
+ arch/sh/tools/mach-types                      |   1 -
+ arch/um/Kconfig                               |   4 +-
+ drivers/input/serio/i8042-io.h                |   2 -
+ kernel/dma/Kconfig                            |   3 +
+ tools/testing/selftests/seccomp/seccomp_bpf.c |   8 +-
+ 73 files changed, 373 insertions(+), 1012 deletions(-)
+ delete mode 100644 arch/sh/boards/mach-cayman/Makefile
+ delete mode 100644 arch/sh/boards/mach-cayman/irq.c
+ delete mode 100644 arch/sh/boards/mach-cayman/panic.c
+ delete mode 100644 arch/sh/boards/mach-cayman/setup.c
+ delete mode 100644 arch/sh/configs/cayman_defconfig
+ delete mode 100644 arch/sh/drivers/pci/fixups-cayman.c
+ create mode 100644 arch/sh/mm/ioremap.h
