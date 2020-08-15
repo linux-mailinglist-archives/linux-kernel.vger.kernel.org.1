@@ -2,144 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22D024524C
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 013D5245261
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726092AbgHOVpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgHOVpn (ORCPT
+        id S1726633AbgHOVsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:48:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34226 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726135AbgHOVsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:45:43 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA00C0045B9;
-        Sat, 15 Aug 2020 13:19:50 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 9so10130319wmj.5;
-        Sat, 15 Aug 2020 13:19:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zIzNxA4BRTbs45wz2IBTfdONSpn/S4dV1mOfjSjFesQ=;
-        b=jE3b9gKVGX5Fk2XQYlJoQ9uC/GrRVyBZX0DJDN3AJAxFJULHvvIK2ex9pvr+pWVW6X
-         LAWRom/Q6eGx5wTFkQlktCzOrPNhzZe8gzqy3MqtZPJHCAiANJNEqJ0+S5XkpNNE8wF+
-         Wj8zHZ3ogrzsnKSIzaGROnT3CG1Ex/QgqY8omexs3fKkR6brl1sorYPZBV7smPDL/i0O
-         BlTZe8jkjajnVX8J7XlB/Ba3+EXRCUisSGzot3/9ui6Qvqs1HLvdSjDqRKaz3sWe6WtU
-         lginAKDasczM0r5brn7c0fg6LVFVMjUdOMagynJngPDA9icPpat9jIBAKlyjyWpRAFDm
-         UDng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zIzNxA4BRTbs45wz2IBTfdONSpn/S4dV1mOfjSjFesQ=;
-        b=hroFIjWVC49WSCczv3jUJwcHI48AwHad776NJ/eSdYjeaTzXwewlqi6Q+513avOHez
-         6A2D0DpokAb8NiNxjIgxzAXIpvSxH2HrE8f5HvJ/dAd20vXZo9Gy2lyNLEMrjHJ4+UvN
-         lTtyFERjRmLWX8gqatz+eWSrY4B3JTDOgqDr0gZ6yPRiM+M5kUsMr9kv00aqO5E5AWbz
-         JWAuESZvE2SLlxhQCUHMBPR/83RyO41V1NKEgJ66nfXkqVYpGHudiruyzlBZtUIA5RVf
-         LDbeGw3AYZ9njmO3C1Lz6innsRaF97m2aSePOtn8vDfoW2KQ5c843hChr15iIN9CXwEO
-         KmMA==
-X-Gm-Message-State: AOAM530bbT+eQwmO2j/W0I5uSqUrytjtQplJ9NmBshEFhm8ZL5zRG3an
-        gu/ikh+kkhR+HSXOPEgTajR/5w6K6fbvfbIBUQ0=
-X-Google-Smtp-Source: ABdhPJyrGCbvhPVezyVJPPQnDejn5AGE+M7MmxTTrCOoiHRMgdeH5nxJu5TAlm48/n6OtYNzlDFZP/YcRo0XSEVEupY=
-X-Received: by 2002:a1c:e919:: with SMTP id q25mr7743939wmc.123.1597522787277;
- Sat, 15 Aug 2020 13:19:47 -0700 (PDT)
+        Sat, 15 Aug 2020 17:48:02 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07FKVt8K183318;
+        Sat, 15 Aug 2020 16:45:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=nq/Qbh6g/GV+dwSR5atT+MIapKj5ifxEpKJJbzLcppg=;
+ b=TTaUsFka0m+l9yCqajC6P02ynlwgwBNE0csV+uGoQcnE1l4mMDDE0bfC7zfar00YfKRP
+ trS/YaFY8yMWqafniM74lRpTZxeudyO7wVe0rspeWur7fqFzTEdMMDsEFoTlMvEVkYlR
+ 4s+1PQBKhxV8PVeA6jTpqBH4oFvJmVxDSerfZxnfF8jfeJddSyfyoiROMLbqfKTc2F7j
+ JoijZFaX9ZlDr8HNog1BK9bFYzL4o6zFwuVf7eHrTRSeuaN9U9c1tzIgFSM5ti456yRe
+ qjAWaZWKn4C5a+N/Y+xIHG3l4m6k4LPom+y4xjWTLNOgzkBRscQpPTPRC0iuEr3e47oe tA== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32xc75b2np-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 15 Aug 2020 16:45:59 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07FKiQuV006230;
+        Sat, 15 Aug 2020 20:45:58 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma01dal.us.ibm.com with ESMTP id 32x7b8e62w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 15 Aug 2020 20:45:58 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07FKjvqa43516236
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 15 Aug 2020 20:45:57 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F23AABE056;
+        Sat, 15 Aug 2020 20:45:56 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4E781BE04F;
+        Sat, 15 Aug 2020 20:45:54 +0000 (GMT)
+Received: from morokweng.localdomain.com (unknown [9.211.150.234])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Sat, 15 Aug 2020 20:45:53 +0000 (GMT)
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     iommu@lists.linux-foundation.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Subject: [PATCH] swiotlb: Allow allocating buffer anywhere in memory
+Date:   Sat, 15 Aug 2020 17:45:36 -0300
+Message-Id: <20200815204536.663801-1-bauerman@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200812044223.19279-1-tanmay@codeaurora.org> <20200812044223.19279-4-tanmay@codeaurora.org>
- <821b5cf9-5ca0-7026-fd99-9a32285ed030@linaro.org>
-In-Reply-To: <821b5cf9-5ca0-7026-fd99-9a32285ed030@linaro.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Sat, 15 Aug 2020 13:20:35 -0700
-Message-ID: <CAF6AEGtcfXodN1_HSdTcH402FdwTk15Nt6p3F=QYeSRhTc+hqw@mail.gmail.com>
-Subject: Re: [PATCH v10 3/5] drm/msm/dp: add support for DP PLL driver
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Tanmay Shah <tanmay@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, aravindh@codeaurora.org,
-        Abhinav Kumar <abhinavk@codeaurora.org>, khsieh@codeaurora.org,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-15_15:2020-08-14,2020-08-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 phishscore=0 bulkscore=0
+ lowpriorityscore=0 spamscore=0 suspectscore=1 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008150159
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 10:05 AM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
->
-> On 12/08/2020 07:42, Tanmay Shah wrote:
->  > From: Chandan Uddaraju <chandanu@codeaurora.org>
->  >
->  > Add the needed DP PLL specific files to support
->  > display port interface on msm targets.
->
-> [skipped]
->
->  > diff --git a/drivers/gpu/drm/msm/dp/dp_pll_private.h
-> b/drivers/gpu/drm/msm/dp/dp_pll_private.h
->  > new file mode 100644
->  > index 000000000000..475ba6ed59ab
->  > --- /dev/null
->  > +++ b/drivers/gpu/drm/msm/dp/dp_pll_private.h
->  > @@ -0,0 +1,98 @@
->  > +/* SPDX-License-Identifier: GPL-2.0-only */
->  > +/*
->  > + * Copyright (c) 2016-2020, The Linux Foundation. All rights reserved.
->  > + */
->  > +
->  > +#ifndef __DP_PLL_10NM_H
->  > +#define __DP_PLL_10NM_H
->  > +
->  > +#include "dp_pll.h"
->  > +#include "dp_reg.h"
->  > +
->  > +#define DP_VCO_HSCLK_RATE_1620MHZDIV1000    1620000UL
->  > +#define DP_VCO_HSCLK_RATE_2700MHZDIV1000    2700000UL
->  > +#define DP_VCO_HSCLK_RATE_5400MHZDIV1000    5400000UL
->  > +#define DP_VCO_HSCLK_RATE_8100MHZDIV1000    8100000UL
->  > +
->  > +#define NUM_DP_CLOCKS_MAX            6
->  > +
->  > +#define DP_PHY_PLL_POLL_SLEEP_US        500
->  > +#define DP_PHY_PLL_POLL_TIMEOUT_US        10000
->  > +
->  > +#define DP_VCO_RATE_8100MHZDIV1000        8100000UL
->  > +#define DP_VCO_RATE_9720MHZDIV1000        9720000UL
->  > +#define DP_VCO_RATE_10800MHZDIV1000        10800000UL
->  > +
->  > +struct dp_pll_vco_clk {
->  > +    struct clk_hw hw;
->  > +    unsigned long    rate;        /* current vco rate */
->  > +    u64        min_rate;    /* min vco rate */
->  > +    u64        max_rate;    /* max vco rate */
->  > +    void        *priv;
->  > +};
->  > +
->  > +struct dp_pll_db {
->
-> This struct should probably go into dp_pll_10nm.c. dp_pll_7nm.c, for
-> example, will use slightly different structure.
+POWER secure guests (i.e., guests which use the Protection Execution
+Facility) need to use SWIOTLB to be able to do I/O with the hypervisor, but
+they don't need the SWIOTLB memory to be in low addresses since the
+hypervisor doesn't have any addressing limitation.
 
-Note that sboyd has a WIP series to move all of the pll code out to a
-phy driver.  If there is work already happening on 7nm support, it
-might be better to go with the separate phy driver approach?  I'm
-still a bit undecided about whether to land the dp code initially with
-the pll stuff in drm, and then continue refactoring to move to
-separate phy driver upstream, or to strip out the pll code from the
-beginning.  If you/someone is working on 7nm support, then feedback
-about which approach is easier is welcome.
+This solves a SWIOTLB initialization problem we are seeing in secure guests
+with 128 GB of RAM: they are configured with 4 GB of crashkernel reserved
+memory, which leaves no space for SWIOTLB in low addresses.
 
-https://lore.kernel.org/dri-devel/20200611091919.108018-1-swboyd@chromium.org/
+Signed-off-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+---
+ arch/powerpc/mm/mem.c   |  7 ++++++-
+ include/linux/swiotlb.h |  8 +++++++-
+ kernel/dma/swiotlb.c    | 10 +++++++---
+ 3 files changed, 20 insertions(+), 5 deletions(-)
 
-BR,
--R
+Normally I would split changes like this into one patch touching generic
+code and another for the arch-specific part, but in this case I thought it
+would be unneeded complexity. I can split though if people prefer it that
+way.
+
+diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
+index c2c11eb8dcfc..13f2e3aff8b5 100644
+--- a/arch/powerpc/mm/mem.c
++++ b/arch/powerpc/mm/mem.c
+@@ -50,6 +50,7 @@
+ #include <asm/swiotlb.h>
+ #include <asm/rtas.h>
+ #include <asm/kasan.h>
++#include <asm/svm.h>
+ 
+ #include <mm/mmu_decl.h>
+ 
+@@ -290,7 +291,11 @@ void __init mem_init(void)
+ 	 * back to to-down.
+ 	 */
+ 	memblock_set_bottom_up(true);
+-	swiotlb_init(0);
++	/*
++	 * SVM guests can use the SWIOTLB wherever it is in memory,
++	 * even if not DMA-able.
++	 */
++	swiotlb_init_anywhere(0, is_secure_guest());
+ #endif
+ 
+ 	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index 046bb94bd4d6..433f3dbb35b5 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -29,7 +29,13 @@ enum swiotlb_force {
+  */
+ #define IO_TLB_SHIFT 11
+ 
+-extern void swiotlb_init(int verbose);
++void __init swiotlb_init_anywhere(int verbose, bool allocate_anywhere);
++
++static inline void swiotlb_init(int verbose)
++{
++	swiotlb_init_anywhere(verbose, false);
++}
++
+ int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
+ extern unsigned long swiotlb_nr_tbl(void);
+ unsigned long swiotlb_size_or_default(void);
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index c19379fabd20..27070aa59e34 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -244,7 +244,7 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+  * structures for the software IO TLB used to implement the DMA API.
+  */
+ void  __init
+-swiotlb_init(int verbose)
++swiotlb_init_anywhere(int verbose, bool allocate_anywhere)
+ {
+ 	size_t default_size = IO_TLB_DEFAULT_SIZE;
+ 	unsigned char *vstart;
+@@ -257,8 +257,12 @@ swiotlb_init(int verbose)
+ 
+ 	bytes = io_tlb_nslabs << IO_TLB_SHIFT;
+ 
+-	/* Get IO TLB memory from the low pages */
+-	vstart = memblock_alloc_low(PAGE_ALIGN(bytes), PAGE_SIZE);
++	if (allocate_anywhere)
++		vstart = memblock_alloc(PAGE_ALIGN(bytes), PAGE_SIZE);
++	else
++		/* Get IO TLB memory from the low pages */
++		vstart = memblock_alloc_low(PAGE_ALIGN(bytes), PAGE_SIZE);
++
+ 	if (vstart && !swiotlb_init_with_tbl(vstart, io_tlb_nslabs, verbose))
+ 		return;
+ 
