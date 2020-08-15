@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437402452DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8C72452B6
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729386AbgHOV4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        id S1729100AbgHOVyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:54:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729039AbgHOVwO (ORCPT
+        with ESMTP id S1729112AbgHOVwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:14 -0400
+        Sat, 15 Aug 2020 17:52:36 -0400
 Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8819C06137A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:33 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 2so10162586qkf.10
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171EFC06137D
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:37 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id 77so10195377qkm.5
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vbniwNR3aKZ0L4CoWzsSoDjZIVxcefGHSxeEpUJZ0hc=;
-        b=CLaLDaVSSaOthzY7gj1/EAO/pRnF2RWI6hfa4ynUe7KqmWc+DGlX2ACZOU1gh16HxH
-         aodTD9ByW0xt4FgXGtwGU/SD7Kn16uBl6/ThKLo2j/c6IDaMkhBwWj7k6ckY62nKCIbL
-         KRdpyOXY4T3U2n9LwDx7jNU0zXN1Zn0yFS5oc=
+        bh=FwsOWE3cvymHDK4XxTdA3wF4GOr+2WPCQ6wnKRbw/jI=;
+        b=StWlDLaq0MYdU1CWVuIg/J4GYVc+68Ndih7GA3RYvlHvpUIZIf7YgKHremE+6JTJUO
+         xexuEqSkh+h37IgJdNAHSFAgEgU12rarmHYgKhMF2OPIcgpQ0OBxq9Tb+z80eovyzwwB
+         QRRN5uoJO8eH3cecRwWPlUIGRwBTM9VQqnDQE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vbniwNR3aKZ0L4CoWzsSoDjZIVxcefGHSxeEpUJZ0hc=;
-        b=eatPwjN8X6lfIDZr9f9SqPQ377W6cyTUhLEpwjh++UuchvI9+nT0O725IYNaIXzrV/
-         vVCnfOZpMfZX9DB/f3yLnpMe1kY8bkwzvDQNp51d8RvTbmi1UENefIULDYbfb4isFWro
-         yPwM1CDhgj77Ckvrjv5SDhZ+1mywh8CG+uAaeC9Xj5ey6MLN2Nn929jv1LqJmgQrtQcL
-         srzBypTSu7lDF5ndaLpVzlTvAC3VmdrUlw8NWQvTa8oNuVlkdJJTMG4uyPK63bHnkJPX
-         HeenCisWIu0Chzx2yXJY0qVFztWhK40OYeYgnz4dSDH0SbM9kCAG0BdGTLxYnIiYngOI
-         LN3g==
-X-Gm-Message-State: AOAM532XKhFQ2ORbjmeSBxvVGMrNbRJ8fyM3fDFv1z1FJclVMV5i094d
-        JhByhSpFcaej1J40XPWGK7ymmdxPRu6kjw==
-X-Google-Smtp-Source: ABdhPJy8ThSw7e+zQhabD7gscM+Z8WPky9F7ZtlinM8kmEMwHAZW3RtkxPL4s0Cn3FOUVzK0AQ9s2w==
-X-Received: by 2002:a37:9c7:: with SMTP id 190mr4379796qkj.303.1597461572672;
-        Fri, 14 Aug 2020 20:19:32 -0700 (PDT)
+        bh=FwsOWE3cvymHDK4XxTdA3wF4GOr+2WPCQ6wnKRbw/jI=;
+        b=dWLd9od2/rQ6WpiCzTKetr+gtHypOM2rCNeLJLs/dIZbJv6HxKydsasu51LccbdYpc
+         Sed/YZIvqE5Ceu10ZChbo5rT+dtiCX+Fud7CCKd5NLt1Frq8daXWTJzXhUeqO9DeQJkm
+         cEliPBiqigIO2pFISgrL3UinnzVGDdSDZ2lrYcskxl5pmV7UPp/4+iNpB+e7VYV9zsGg
+         4gOmcn3oyLjMy0ROk5zhBGyuDDFN9NjbgAirCKhFnIefOEazXZgVS8GL1SXegNkkAqk1
+         AZV8BMr7A6eGfBVszngwOtvvSXEAo4tKZ0r7TY57vQkLY/KMtxnAqtTyO99eVNtPR6IR
+         FDtQ==
+X-Gm-Message-State: AOAM5303h16MSR6lnG1WX9HOzhEP2yd+38crig79kNPKk6aZgvsZHi3g
+        EWuyQ/wQ5ugfBcctscsIgN/vvjMFAiXoEw==
+X-Google-Smtp-Source: ABdhPJx44+TLrchsQPKRwFKQTIlzobQZ2Jz2LhMGXzrQarb2Y05Zm7y8T8+orKvYxQaBtCnZCupZhw==
+X-Received: by 2002:a05:620a:1009:: with SMTP id z9mr4628395qkj.107.1597461576169;
+        Fri, 14 Aug 2020 20:19:36 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id p12sm10055199qkk.118.2020.08.14.20.19.31
+        by smtp.gmail.com with ESMTPSA id p12sm10055199qkk.118.2020.08.14.20.19.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 20:19:32 -0700 (PDT)
+        Fri, 14 Aug 2020 20:19:35 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
@@ -68,9 +68,9 @@ Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Chen Yu <yu.c.chen@intel.com>,
         Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH RFC 09/12] sched/coresched: Use for_each_cpu(_wrap)_or for pick_next_task
-Date:   Fri, 14 Aug 2020 23:19:05 -0400
-Message-Id: <20200815031908.1015049-10-joel@joelfernandes.org>
+Subject: [PATCH RFC 12/12] sched/coresched: rq->core should be set only if not previously set
+Date:   Fri, 14 Aug 2020 23:19:08 -0400
+Message-Id: <20200815031908.1015049-13-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
 In-Reply-To: <20200815031908.1015049-1-joel@joelfernandes.org>
 References: <20200815031908.1015049-1-joel@joelfernandes.org>
@@ -83,58 +83,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vineeth Pillai <viremana@linux.microsoft.com>
 
-During a CPU hotplug event, schedule would be called with the hotplugged CPU
-not in the cpumask. So use for_each_cpu(_wrap)_or to include the current cpu in
-the task pick loop.
+During hotplug events, smt_mask would not contain all the CPUs in a core and
+this can cause reassigning of rq->core, which breaks the core-wide counters
+that are needed for tracking kernel-mode entry/exits.
+
+This patch therefore makes sure that rq->core does not change once it is set.
 
 Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
-Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/sched/core.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ kernel/sched/core.c | 28 ++++++++++++++++------------
+ 1 file changed, 16 insertions(+), 12 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index ff13254ed317..3e9df8221c62 100644
+index 5da5b2317b21..464493f3a759 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -4663,7 +4663,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+@@ -7519,21 +7519,25 @@ int sched_cpu_starting(unsigned int cpu)
+ 	struct rq *rq, *core_rq = NULL;
+ 	int i;
  
- 	/* reset state */
- 	rq->core->core_cookie = 0UL;
 -	for_each_cpu(i, smt_mask) {
-+	for_each_cpu_or(i, smt_mask, cpumask_of(cpu)) {
- 		struct rq *rq_i = cpu_rq(i);
- 
- 		trace_printk("CPU %d is in smt_mask, resetting\n", i);
-@@ -4685,7 +4685,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 	 */
- 	for_each_class(class) {
- again:
--		for_each_cpu_wrap(i, smt_mask, cpu) {
-+		for_each_cpu_wrap_or(i, smt_mask, cpumask_of(cpu), cpu) {
- 			struct rq *rq_i = cpu_rq(i);
- 			struct task_struct *p;
- 
-@@ -4774,6 +4774,9 @@ next_class:;
- 	rq->core->core_pick_seq = rq->core->core_task_seq;
- 	next = rq->core_pick;
- 	rq->core_sched_seq = rq->core->core_pick_seq;
+-		rq = cpu_rq(i);
+-		if (rq->core && rq->core == rq)
+-			core_rq = rq;
+-		init_irq_work(&rq->core_irq_work, sched_core_irq_work);
+-	}
++	core_rq = cpu_rq(cpu)->core;
 +
-+	/* Something should have been selected for current CPU */
-+	WARN_ON_ONCE(!next);
- 	trace_printk("picked: %s/%d %lx\n", next->comm, next->pid, next->core_cookie);
++	if (!core_rq) {
++		for_each_cpu(i, smt_mask) {
++			rq = cpu_rq(i);
++			if (rq->core && rq->core == rq)
++				core_rq = rq;
++			init_irq_work(&rq->core_irq_work, sched_core_irq_work);
++		}
  
- 	/*
-@@ -4784,7 +4787,7 @@ next_class:;
- 	 * their task. This ensures there is no inter-sibling overlap between
- 	 * non-matching user state.
- 	 */
+-	if (!core_rq)
+-		core_rq = cpu_rq(cpu);
++		if (!core_rq)
++			core_rq = cpu_rq(cpu);
+ 
 -	for_each_cpu(i, smt_mask) {
-+	for_each_cpu_or(i, smt_mask, cpumask_of(cpu)) {
- 		struct rq *rq_i = cpu_rq(i);
+-		rq = cpu_rq(i);
++		for_each_cpu(i, smt_mask) {
++			rq = cpu_rq(i);
  
- 		WARN_ON_ONCE(!rq_i->core_pick);
+-		WARN_ON_ONCE(rq->core && rq->core != core_rq);
+-		rq->core = core_rq;
++			WARN_ON_ONCE(rq->core && rq->core != core_rq);
++			rq->core = core_rq;
++		}
+ 	}
+ 
+ 	printk("core: %d -> %d\n", cpu, cpu_of(core_rq));
 -- 
 2.28.0.220.ged08abb693-goog
 
