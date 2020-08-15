@@ -2,60 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24680245421
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6950D245376
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730116AbgHOWMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:12:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728787AbgHOWK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:10:27 -0400
-Received: from kernel.org (unknown [104.132.0.74])
+        id S1729418AbgHOWCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728746AbgHOVvZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:51:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BB7C03B3C8
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 01:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iXjlOCGIHNl4590muhG4nkQl36u3nEfegFSDqwRjVpU=; b=kFB8skHi9vNWKiCvsN3kt+KPM0
+        NN7OD8CHZxgpSKomHZNY8Soz3e05MzRUc7kTQZZzmCO9BLfVorIyzOz7dFsnrF2d8XmdnxX5EO6jq
+        kmZjG+N1UrRh7M3WEppvunA1SpY6VHVTC8FAt6KMdZtshqypXjd7JsnSXGmRKp1gkY2oAmLqI7br3
+        V6GS9amtssMfhJCB3wI5x8bjgyMc/g1AaqAavh960njgcxxZMDBvT+EtKaz2KuQoEqxs1Ho14GLCB
+        1nfDF0eir+8hyY52z+vuIXPAekbEl8HTEWe5L4XzZqhyihUAiVipVhel2Kc5X52PXYUcKmC4q6bDD
+        GeEu7cSg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k6rJm-0000EF-EY; Sat, 15 Aug 2020 08:13:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20A4A22DBF;
-        Sat, 15 Aug 2020 08:03:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597478593;
-        bh=2YAaeXqnIxpTxcvp+gkdqr00TyuFnSBiXPvvQsS/1S8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=aTdvelhcDS6+WntNjpiJrmmTg0/fEpvpqr6npg7eBxu/5+LO+YqOhG1mdsrqX/7gs
-         nK9ebxaqXPHzYoN6LG83OIQaMCFXkZabbWZQa+D+SvWc8Q3/P1GPp5AWiefb29obck
-         4ObLJOn75w2Irkqn2mtHLriIM3G52qsge/ilfdyo=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <453b3897507838e95359d891ef967165bd167a4e.1597292833.git.viresh.kumar@linaro.org>
-References: <1597043179-17903-1-git-send-email-rnayak@codeaurora.org> <c6bba235a9a6fd777255bb4f1d16492fdcabc847.1597292833.git.viresh.kumar@linaro.org> <453b3897507838e95359d891ef967165bd167a4e.1597292833.git.viresh.kumar@linaro.org>
-Subject: Re: [PATCH 2/4] opp: Track device's resources configuration status
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9270B304D58;
+        Sat, 15 Aug 2020 10:13:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 724572C369E5F; Sat, 15 Aug 2020 10:13:30 +0200 (CEST)
+Date:   Sat, 15 Aug 2020 10:13:30 +0200
+From:   peterz@infradead.org
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, paulmck@kernel.org,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>, mka@chromium.org,
-        sibis@codeaurora.org, linux-kernel@vger.kernel.org
-To:     Nishanth Menon <nm@ti.com>, Viresh Kumar <viresh.kumar@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>
-Date:   Sat, 15 Aug 2020 01:03:11 -0700
-Message-ID: <159747859192.33733.13232258434530046392@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        fweisbec@gmail.com, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [PATCH RFC 01/12] irq_work: Add support to detect if work is
+ pending
+Message-ID: <20200815081330.GF2674@hirez.programming.kicks-ass.net>
+References: <20200815031908.1015049-1-joel@joelfernandes.org>
+ <20200815031908.1015049-2-joel@joelfernandes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200815031908.1015049-2-joel@joelfernandes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Viresh Kumar (2020-08-12 21:28:59)
-> The OPP core needs to track if the resources of devices are enabled or
-> configured or not, as it disables the resources when target_freq is set
-> to 0.
->=20
-> Handle that with a separate variable to make it easy to maintain.
->=20
-> Also note that we will unconditionally call clk_set_rate() in the case
-> where the resources are getting enabled again. This shouldn't have any
-> side effects anyway.
+On Fri, Aug 14, 2020 at 11:18:57PM -0400, Joel Fernandes (Google) wrote:
 
-Any reason to want to do that? We'll have to grab the prepare lock in
-the clk framework to figure out that there's nothing to do sometimes. If
-anything, a comment may help to indicate that we call clk_set_rate()
-again, but don't expect it to matter much.
+https://lkml.kernel.org/r/20200722153017.024407984@infradead.org
