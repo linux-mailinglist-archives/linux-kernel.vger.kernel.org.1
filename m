@@ -2,163 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03C52452B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E57924534F
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729281AbgHOVyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:54:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729114AbgHOVwg (ORCPT
+        id S1729634AbgHOWAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:00:16 -0400
+Received: from mailex.mailcore.me ([94.136.40.62]:44384 "EHLO
+        mailex.mailcore.me" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729445AbgHOWAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:36 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174EAC0612F4
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:52:32 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id c6so5295502pje.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:52:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x70ZbpZnKBRKGaABGtYI7hkwARLwGl0g0AbXbJj38qo=;
-        b=QIC8z7I2pOk9WGL3pODELePJrQrCwG3qkPanGNpky5u87PHfgSdCI0pBF+QnxTTf0g
-         iOUY7R5ymcJl5OLjfj7WpcEAAqIPJHY2WCZ08wgZ3qRPU8St2EscMsg2kiknXoUTwVlD
-         GG/Zz+L1S6z1HOXnNrFfACU+mNZ7DElHl3hLCWh2iANHKjR1jJd7QK6ga0SO0qNOKX+8
-         6+SSRO5ctwA1BUZMi0kVtarKHaLq0dRz4l8fc6hwoU6cF/R31/LaRtHi6lLuC3Fat3KW
-         4yHoaUcZOsvyT9aUiIKMbx7Xe8n9Lq65w8qaE7Pd6mOo5Id4VorhCFeDenmg1DEg2b3D
-         BdsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x70ZbpZnKBRKGaABGtYI7hkwARLwGl0g0AbXbJj38qo=;
-        b=HLgrKtG8aPwKfE5525ItGELbQ9C3oTNuLUjH4PLI4m0pKgC4/SVwI9NPSSh1aaYCBb
-         FgymRidNkBHji0dlYS6JjeXbI/1EAyZjQPtFCLVAp2GCkqS72P4tzgjn9WeY3pBo6anN
-         3hTUtgsql08loRu/VM9nzVyd7o90+JhyEl+J9o9XpjDBcd1ILEPAotazBcHld5XJk7Re
-         jZZvVZQ5gF7Gx5kK4syDw63CKkKZREhDhPvXp/gQRiEFJqdCD3EBxpNAXXEoA7ooLJzu
-         Ue6lmLL+ujd+ym72aHwiYGxhatEYjKSwWwgHQTDTDIC3+n+7+o4Pg4dWAE5W2jDUgLUp
-         k4ZQ==
-X-Gm-Message-State: AOAM533AEDwwgtBFlvtNSjTThrZ4yec27urbDbu+HTnEeqUOv+6UH5AC
-        m4OGSS8Tj6l2jh5QR6EjV6Y=
-X-Google-Smtp-Source: ABdhPJxzUv6FF/UEFlE3TNcT9qDpThU/RB7nLUhSbAswGmLPQGWY0y2IzHxVanJ7hBBeYruA/GUFdw==
-X-Received: by 2002:a17:90a:c58b:: with SMTP id l11mr4618708pjt.195.1597463551500;
-        Fri, 14 Aug 2020 20:52:31 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id x23sm10570909pfi.60.2020.08.14.20.52.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 20:52:30 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 12:52:28 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: [RFC PATCH] vsprintf: Add %pv extension replacement for
- print_vma_addr
-Message-ID: <20200815035228.GC582@jagdpanzerIV.localdomain>
-References: <09f11651f0e913e159b955ac447cd8cadf36cb0d.camel@perches.com>
+        Sat, 15 Aug 2020 18:00:13 -0400
+Received: from 82-69-79-175.dsl.in-addr.zen.co.uk ([82.69.79.175] helo=phoenix.fritz.box)
+        by smtp04.mailcore.me with esmtpa (Exim 4.92.3)
+        (envelope-from <phillip@squashfs.org.uk>)
+        id 1k6nJo-0006KR-8t; Sat, 15 Aug 2020 04:57:20 +0100
+From:   Phillip Lougher <phillip@squashfs.org.uk>
+To:     linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, pliard@google.com, hch@lst.de,
+        adrien+dev@schischi.me, groeck@chromium.org, drosen@google.com,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Nicolas Prochazka <nicolas.prochazka@gmail.com>,
+        Tomoatsu Shimada <shimada@walbrix.com>
+Subject: [PATCH] squashfs: avoid bio_alloc() failure with 1Mbyte blocks
+Date:   Sat, 15 Aug 2020 04:56:37 +0100
+Message-Id: <20200815035637.15319-1-phillip@squashfs.org.uk>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <09f11651f0e913e159b955ac447cd8cadf36cb0d.camel@perches.com>
+Content-Transfer-Encoding: 8bit
+X-Mailcore-Auth: 439913985
+X-Mailcore-Domain: 1686784
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc-ing John
+This is a regression introduced by the "migrate from ll_rw_block usage
+to BIO" patch.
 
-On (20/08/14 10:53), Joe Perches wrote:
-[..]
+Bio_alloc() is limited to 256 pages (1 Mbyte).   This can cause a
+failure when reading 1 Mbyte block filesystems.  The problem is
+a datablock can be fully (or almost uncompressed), requiring 256
+pages, but, because blocks are not aligned to page boundaries, it
+may require 257 pages to read.
 
-In general, the idea looks nice.
+Bio_kmalloc() can handle 1024 pages, and so use this for the
+edge condition.
 
-> +static noinline_for_stack
-> +char *vma_addr(char *buf, char *end, void *ip,
-> +	       struct printf_spec spec, const char *fmt)
-> +{
-> +#ifdef CONFIG_MMU
-> +	struct mm_struct *mm = current->mm;
-> +	struct vm_area_struct *vma;
-> +
-> +	/*
-> +	 * we might be running from an atomic context so we cannot sleep
-> +	 */
-> +	if (!mmap_read_trylock(mm))
-> +		return buf;
-> +
-> +	vma = find_vma(mm, (unsigned long)ip);
-> +	if (vma && vma->vm_file) {
-> +		char *p;
-> +		struct file *f = vma->vm_file;
-> +		char *page = (char *)__get_free_page(GFP_NOWAIT);
+Reported-by: Nicolas Prochazka <nicolas.prochazka@gmail.com>
+Reported-by: Tomoatsu Shimada <shimada@walbrix.com>
+Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
+---
+ fs/squashfs/block.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Hmm, this is huge. For the time being this is going to introduce lock
-inversion chains:
+diff --git a/fs/squashfs/block.c b/fs/squashfs/block.c
+index 76bb1c846845..8a19773b5a0b 100644
+--- a/fs/squashfs/block.c
++++ b/fs/squashfs/block.c
+@@ -87,7 +87,11 @@ static int squashfs_bio_read(struct super_block *sb, u64 index, int length,
+ 	int error, i;
+ 	struct bio *bio;
+ 
+-	bio = bio_alloc(GFP_NOIO, page_count);
++	if (page_count <= BIO_MAX_PAGES)
++		bio = bio_alloc(GFP_NOIO, page_count);
++	else
++		bio = bio_kmalloc(GFP_NOIO, page_count);
++
+ 	if (!bio)
+ 		return -ENOMEM;
+ 
+-- 
+2.20.1
 
-	PRINTK -> printk_locks -> MM -> mm_locks
-
-vs
-	MM -> mm_locks -> PRINTK -> printk_locks
-
-Another thing to mention is
-
-	PRINTK -> printk_locks -> MM (WANR_ON/etc) -> PRINTK
-
-we are in printk_safe, currently, but that's going to change.
-
-We might not be ready to take this as of now, but things can change
-once we drop printk_locks.
-
-> +		if (page) {
-> +			p = file_path(f, page, PAGE_SIZE);
-> +			if (IS_ERR(p))
-> +				p = "?";
-> +			buf = string(buf, end, kbasename(p), default_str_spec);
-> +			buf = string_nocheck(buf, end, "[", default_str_spec);
-> +			buf = pointer_string(buf, end,
-> +					     (void *)vma->vm_start,
-> +					     default_hex_spec);
-> +			buf = string_nocheck(buf, end, "+", default_str_spec);
-> +			buf = pointer_string(buf, end,
-> +					     (void *)(vma->vm_end - vma->vm_start),
-> +					     default_hex_spec);
-> +			buf = string_nocheck(buf, end, "]", default_str_spec);
-> +			free_page((unsigned long)page);
-> +		}
-> +	}
-> +	mmap_read_unlock(mm);
-> +#else
-> +	buf = string_nocheck(buf, end, "CONFIG_MMU=n", default_str_spec);
-
-Hmm, we don't usually do that CONFIG_FOO=n thing, I think we just need
-to skip %pv and print nothing. Otherwise on !CONFIG_MMU systems the logbuf
-may contain a number of CONFIG_MMU=n messages, which are hardly useful.
-
-> +#endif
-> +	return buf;
-> +}
-> +
->  /*
->   * Show a '%p' thing.  A kernel extension is that the '%p' is followed
->   * by an extra set of alphanumeric characters that are extended format
-> @@ -2254,6 +2304,8 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
->  		return uuid_string(buf, end, ptr, spec, fmt);
->  	case 'V':
->  		return va_format(buf, end, ptr, spec, fmt);
-
-+ #ifdef CONFIG_MMU
-> +	case 'v':
-> +		return vma_addr(buf, end, ptr, spec, fmt);
-+ #endif
-
->  	case 'K':
->  		return restricted_pointer(buf, end, ptr, spec);
->  	case 'N':
-
-	-ss
