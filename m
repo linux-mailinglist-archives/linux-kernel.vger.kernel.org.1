@@ -2,67 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D033E245353
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380F92452C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729019AbgHOWAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:00:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728838AbgHOWA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:00:28 -0400
-Subject: Re: [GIT PULL] perf tool changes for v5.9: 2nd batch
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597515739;
-        bh=vEljPOThfSbnJn88gHs4Smd9TmldHaunZhuNavYVFW4=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Vze+ZvfKm0DVLiQx6F9jCuGC4zZ42/3sh6vUSprrhTTNyiAv1Jc1QBk9w4mQI+AuA
-         yC/ELqfDzeJAecrZG57q2hgPetCH3noKhRHpDHuiq9TomeZvRWLZ7rnvUTivfGyF3D
-         2Hn02yE1OIpS65IiaU0THazwa0GUMzHgPRMEoPMM=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200814174917.2591425-1-acme@kernel.org>
-References: <20200814174917.2591425-1-acme@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200814174917.2591425-1-acme@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-2020-08-14
-X-PR-Tracked-Commit-Id: 492e4edba6e2fc0620a69266d33f29c4a1f9ac1e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 713eee84720e6525bc5b65954c5087604a15f5e8
-Message-Id: <159751573947.22808.8285651134325842958.pr-tracker-bot@kernel.org>
-Date:   Sat, 15 Aug 2020 18:22:19 +0000
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Changbin Du <changbin.du@gmail.com>,
-        Colin King <colin.king@canonical.com>,
-        =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>,
-        David Ahern <dsahern@kernel.org>,
-        "Frank Ch . Eigler" <fche@redhat.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Paul Clarke <pc@us.ibm.com>, Peng Fan <fanpeng@loongson.cn>,
-        Rob Herring <robh@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>
+        id S1729318AbgHOVzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729075AbgHOVwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:52:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF150C004582;
+        Sat, 15 Aug 2020 11:23:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XNnhqa1EUtqytFCfJSuJLhsT+WcSRC9k4ESXyMuhNTU=; b=snPX6e/0YVSp1IEqXQqMvaGXZs
+        690Ej5IRXxO8q+ekbLWln56lZObyenBEZwB9gVI+Rgh/OVCz/ZK6rZ4jpBAcJvUQINLfYnI32NB5p
+        Dl7iwSxgXobIfatecLrHb6exWfppgGaF3SGpXbQLu4fPe87kg12MUrlydN52Wf8nDfpUIrGdaWcm9
+        nEkcMn9QTO9mtJWj80Edzz618rhyeqdm1gr9hKGSjB/YVI0REbzkZAS8LG+QCittA7Tuz1kyguuP9
+        vu2LrGHht4+Mxd4hRkmteFllaPNl3oIQx7ZZSsMHMXUrA9YkY1I9D9vEraTU4PXR5N6qZ9FLEO40B
+        Y0NFTu5w==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k70pY-0004UB-36; Sat, 15 Aug 2020 18:23:00 +0000
+Date:   Sat, 15 Aug 2020 19:23:00 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-fsdevel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Coccinelle <cocci@systeme.lip6.fr>, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        Denis Efremov <efremov@linux.com>
+Subject: Re: [PATCH 2/2] tree-wide: rename vmemdup_user to kvmemdup_user
+Message-ID: <20200815182300.GZ17456@casper.infradead.org>
+References: <2e717622-22ba-9947-c8df-520bdbb2e16f@web.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e717622-22ba-9947-c8df-520bdbb2e16f@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 14 Aug 2020 14:49:17 -0300:
+On Sat, Aug 15, 2020 at 03:10:12PM +0200, Markus Elfring wrote:
+> > This helper uses kvmalloc, not vmalloc, so rename it to kvmemdup_user to
+> > make it clear we're using kvmalloc() and will need to use kvfree().
+> 
+> Can the renaming of this function name trigger software updates
+> for any more source files?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-2020-08-14
+Why don't you find out, and if there are, submit your own patch?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/713eee84720e6525bc5b65954c5087604a15f5e8
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> Example:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/coccinelle/api/memdup_user.cocci?id=c9c9735c46f589b9877b7fc00c89ef1b61a31e18#n18
+> 
+> Regards,
+> Markus
