@@ -2,102 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B6924532D
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459C324530B
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729564AbgHOV7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:59:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
+        id S1729394AbgHOV5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728933AbgHOVvy (ORCPT
+        with ESMTP id S1728983AbgHOVwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:54 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48817C0F26DB
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:39:11 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id z6so13748318iow.6
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:39:11 -0700 (PDT)
+        Sat, 15 Aug 2020 17:52:04 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33485C0F26E1
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:59:44 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id k8so10535641wma.2
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:59:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AwnENJtZcTDyRowOll9BqELCaHCpWYH0qCJCKyyi9Wk=;
-        b=G+MiGLcif5DCcsQJ7v2ioepIk6jXx5VRMkgMKoSkPKhCM4uqzvts04XWodlwFzeY5P
-         NclSMUl/w2hiXLcpbvaHWDJ3TdUG3jGO7uBwVI8lfbydMVUWKiY402fO91FHJi0vSU5c
-         WA2Yft+iACB/ch7aP/l2qYtTWJ2pIatVRYrW2gQWzarBzNE9HjmYmrToCQdlCxAITkW6
-         G9NIxIJkcTF6oR47dFXvAMZUTbFjzdtm7B/V4cLhQuz3R/HavtviwDymE0n6M1QdLSKc
-         PyXrmsGq+f8JQhJ9L4n4f1SLD8PHDuP3Ch66CLzVYWSaHT4Q4r1dhzDLQfH2MovQAowX
-         xLgQ==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references;
+        bh=yYAV3igQMmpvvFnmjUsCROUH1VHG4f/mO3o8H4VbMTk=;
+        b=WRyyO52SFPyfUOYVGJQ9KBtomPv1RxCctqbvWMXYzHmfQhL/eCOx7oJoNkm8uiAphU
+         NlK9F1xPkGGmMEsjl0vdWySLjeh/eCx27fnuZ8G7oOWHmuTjHe/8Hmn3UIqDnDxUrsrU
+         Sabwi4X9jiUwrIXrsryCsQ/9C+9N4JlVNincp+3Cr+zwrRcJdqpgX7wynuag0hP7bMCk
+         q3VXWjtuNHpnHIgVm8NBnHCPpHq7f6lssS/DQHs1qinATbmrOToFX47bJ7Uc4D2iYbTR
+         E4m3Pe1zGsgytlDIcGtA3GxxekF/REP/H6oFxJBa3p9xz6n0tM/d4rqBDK5QDe/D1Q9d
+         xNjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AwnENJtZcTDyRowOll9BqELCaHCpWYH0qCJCKyyi9Wk=;
-        b=nz9Z9vUyMsUBvbjJS/Y7jthTFOCXjojdR0z72NNZBzWQoVcrfB0xibIH7jEy9wkCEA
-         4DLw6WFTAf369M6POEORVQMR2Xmqef8gu+OJfz2f4xdrriMaX8pP/j77Ejlnllb6sf5U
-         8n+jJeVhFb2mRFYGs02jfywhbDL0s18jp1NGF+/wGNLAT5jeCGzjLB4eSPIl/tTuFZUm
-         38OHnsjeQdR39GX/UEFXiSCz95ADB7fYbLC48sroAuSUiwZJzUOoKvOPzUDqv+zebOLp
-         +rt17izw2s5JtwwWu7XSAqlx8WFrLr6c/CHQ3oqk818VJRNE0gzGqZKYHxg1S7D84ns3
-         Mytg==
-X-Gm-Message-State: AOAM530WM9Gvfob8//rwB8qDW8H5qANDO2M/LCgJtBLuYGDD8CdyWxC4
-        Y/c7q5+sRyxWP9dCenadaX0WV0lipc5cQGvUIvZcvQ==
-X-Google-Smtp-Source: ABdhPJzcRPuzpUvOUtSTbfV6H5JUuJ16ZCQDnG3mf/q7oZEvlSW4uCbycbflqCY6ehJZuh/YEjgTFlhz2kN8M+lj1NY=
-X-Received: by 2002:a5d:9d8a:: with SMTP id 10mr6650437ion.195.1597513149676;
- Sat, 15 Aug 2020 10:39:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200814181617.442787-1-edumazet@google.com> <20200815114825.GA2685004@gmail.com>
-In-Reply-To: <20200815114825.GA2685004@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Sat, 15 Aug 2020 10:38:58 -0700
-Message-ID: <CANn89i+YhDW2HRPNvfuHSDtrqGgXstgzTgcOx=A40XwJwbhSmg@mail.gmail.com>
-Subject: Re: [PATCH] x86/fsgsbase/64: Fix NULL deref in 86_fsgsbase_read_task
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Jann Horn <jannh@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Chang S . Bae" <chang.seok.bae@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Borislav Petkov <bp@alien8.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Markus T Metzger <markus.t.metzger@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ravi Shankar <ravi.v.shankar@intel.com>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references;
+        bh=yYAV3igQMmpvvFnmjUsCROUH1VHG4f/mO3o8H4VbMTk=;
+        b=eoigeCK9eQ8TN0+1urygT1ApJMj01j8H3DqsTij8DTJmbxD9VHs312J4vlo5aCjiUW
+         zrqcvEqjDTzx9OMJ5xCIZDP3kCOMW2spsY2JRiWOA9dP6fJ2QrG9z4l7tEPYy/A9aCr2
+         VhkRfo6BnSnRnCZFrl2yPbmtdzL5Yas82+7/KLVFCIEUpG+hA7zr+NKFvdk2eK67IN+B
+         nIawmq01pu4e3hGxoz0y5MyZU8mSZwTA+1ojetWY2zsmlT4Z2w79ug+CpsQAXzNuFshf
+         BwevyggxQCsp+dRUtp5hGf6ljTY+4NyWGlnChCiJPXMSkLaxwV3H104Bpbr2y5E7/x8F
+         QEbQ==
+X-Gm-Message-State: AOAM533jw6uUxYMJ15dGsamjjdbMFSJEU6k9Oo15Ou56EGEx5zaPSYa0
+        T+cXfPeNFlqpCa6Nwt5GH4Dy4mnAGdU=
+X-Google-Smtp-Source: ABdhPJwWIqgnA18r1TGBxonSpy1G+FcEGKxNuN0K06yEHbulWwOvzLCc5n3xAOtGmL0/4+iiUnGRqg==
+X-Received: by 2002:a1c:f70e:: with SMTP id v14mr7552359wmh.74.1597514382502;
+        Sat, 15 Aug 2020 10:59:42 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id e5sm24460775wrc.37.2020.08.15.10.59.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Aug 2020 10:59:41 -0700 (PDT)
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
+Subject: [PATCH 2/9] habanalabs: cast int to u32 before printing it with %u
+Date:   Sat, 15 Aug 2020 20:59:31 +0300
+Message-Id: <20200815175938.16619-2-oded.gabbay@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200815175938.16619-1-oded.gabbay@gmail.com>
+References: <20200815175938.16619-1-oded.gabbay@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 4:48 AM Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Eric Dumazet <edumazet@google.com> wrote:
->
-> > syzbot found its way in 86_fsgsbase_read_task() [1]
-> >
-> > Fix is to make sure ldt pointer is not NULL.
->
-> Thanks for this fix. Linus has picked it up (inclusive the typos to
-> the x86_fsgsbase_read_task() function name ;-), it's now upstream
-> under:
->
->   8ab49526b53d: ("x86/fsgsbase/64: Fix NULL deref in 86_fsgsbase_read_task")
->
-> By the fixes tag it looks like this should probably be backported all
-> the way back to ~v4.20 or so?
+%u is used for unsigned so we need to cast the int variable to u32 to avoid
+compiler warning.
 
-This is absolutely right, sorry about the lack of a stable tag.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+---
+ drivers/misc/habanalabs/common/device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Most of my patches usually land into David Miller trees, where the
-stable tag is not welcomed.
-We use  Fixes: tags to convey the exact information needed for stable backports.
+diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
+index 35214a186913..38895493a0ed 100644
+--- a/drivers/misc/habanalabs/common/device.c
++++ b/drivers/misc/habanalabs/common/device.c
+@@ -286,7 +286,7 @@ static int device_early_init(struct hl_device *hdev)
+ 	}
+ 
+ 	for (i = 0 ; i < hdev->asic_prop.completion_queues_count ; i++) {
+-		snprintf(workq_name, 32, "hl-free-jobs-%u", i);
++		snprintf(workq_name, 32, "hl-free-jobs-%u", (u32) i);
+ 		hdev->cq_wq[i] = create_singlethread_workqueue(workq_name);
+ 		if (hdev->cq_wq[i] == NULL) {
+ 			dev_err(hdev->dev, "Failed to allocate CQ workqueue\n");
+-- 
+2.17.1
 
-Thanks.
