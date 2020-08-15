@@ -2,163 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA662452AA
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8556A2451F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726339AbgHOVyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729128AbgHOVwg (ORCPT
+        id S1727908AbgHOVdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:33:06 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:48361 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727097AbgHOVdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:36 -0400
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF7CC09B054;
-        Sat, 15 Aug 2020 08:49:19 -0700 (PDT)
-Received: by mail-oo1-xc42.google.com with SMTP id z11so2544866oon.5;
-        Sat, 15 Aug 2020 08:49:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=CcdQzl9In/9cdITxocrz0vM3bfLjK73C35i7BkxY8gM=;
-        b=Vlkrhu7XE01MxBsrAacNDdYsgy7DOQJxJEKTLz4ony4WzKDui3OeAofloeVgkW3GlA
-         XkpULxbqd6+qu24KAR/8K3wK4uuBXOMcPegijHUdtu8UaQTIgnb6CaDMczPRQH4uikaK
-         uA9oyRnFj/XN5+dnuUHLZp1ySFHoDaCTknCaBH1o3lPTQiV+aORMTCG25/Iv7tTVkgEN
-         xrylHIrpzjxxzqO+zMGhlUlvS80mjcq24eyqaOYeK2Useweb7qoYFddTnX6ibGTGrY7d
-         UJ13HzAUQqN82UPJPdK2i1lPD8Rl18nKbcGOm0f8bvgSt/Ejd/nEChzaTe8Twg+sWOtV
-         +rlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=CcdQzl9In/9cdITxocrz0vM3bfLjK73C35i7BkxY8gM=;
-        b=LGEor5ulV5POlc9KGqEnmiyoJmwZ6tD8XfskpbLpugvENtQYNvsiGQ+OPyDIYuRF75
-         4EwWOU0nfdBoIHFucvdznbFoQg4lY0rgwUzYQ9SAoO2CdOhhFvJcSpKCymVUZkHUPGND
-         2bD7+z1IM/Ebtw1GQiiZVQ5IsKomvAiNwn3DktVZH0trAKYcde6C810zw6jc8wzpcKSB
-         QfZoRiFNJBZXJZop685ZVzuBAf/iYunlVJ2mLoEpq/c8yq25DJXtj0HjqYweKUFU8OeQ
-         rIJAAkcwiShd6gM1TbXZIqcdycR5CShTgsSxM5sDuJwpvctdkzwsSbnclL339GhbRbcV
-         IeTw==
-X-Gm-Message-State: AOAM533qV4ksuxlzb6yhwb2reP/h02klj9nFF1f2FLKOwd7zZzMAu0ml
-        ttOiCjPZiGu0zua0yVN6kUd5qwqc7vPX3fbHk6s=
-X-Google-Smtp-Source: ABdhPJz6FH8NPvgBQM4D3K801uDf1shBf80hvVksADf7wBd8t2UhIq2MzDrivyIHy2KNAla6O/Z9UjpiKj3IffF6XP4=
-X-Received: by 2002:a4a:7b4b:: with SMTP id l72mr5516085ooc.74.1597506554603;
- Sat, 15 Aug 2020 08:49:14 -0700 (PDT)
+        Sat, 15 Aug 2020 17:33:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597527181;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q1AwCIOy834J5LQ7HjcvtnvU9bzLkbyKnbei9M95+JM=;
+        b=UnRWdG1mOSpMFiQArZcqoqf6A8R97k95MnE54id0tvLzRvwtmeO3Bq5/EjCefm4LbE4UnI
+        OydqmMNOxgRG4Rn5h4mvzgjqXSgV0kZLScAGzGJJz65pyibdCVUCOSdecS65fnf2Yu0b/4
+        hoyLkYJ1zKrRId26XfRNPwuvkq1NgBw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-62-gxzOrCTnNYy5WmgF7hv9_g-1; Sat, 15 Aug 2020 12:30:54 -0400
+X-MC-Unique: gxzOrCTnNYy5WmgF7hv9_g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC2B61DDE1;
+        Sat, 15 Aug 2020 16:30:32 +0000 (UTC)
+Received: from [10.36.113.93] (ovpn-113-93.ams2.redhat.com [10.36.113.93])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B43375D9CA;
+        Sat, 15 Aug 2020 16:30:22 +0000 (UTC)
+Subject: Re: [PATCH v6 07/15] vfio/type1: Add VFIO_IOMMU_PASID_REQUEST
+ (alloc/free)
+To:     Liu Yi L <yi.l.liu@intel.com>, alex.williamson@redhat.com,
+        baolu.lu@linux.intel.com, joro@8bytes.org
+Cc:     kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
+        ashok.raj@intel.com, jun.j.tian@intel.com, yi.y.sun@intel.com,
+        jean-philippe@linaro.org, peterx@redhat.com, hao.wu@intel.com,
+        stefanha@gmail.com, iommu@lists.linux-foundation.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1595917664-33276-1-git-send-email-yi.l.liu@intel.com>
+ <1595917664-33276-8-git-send-email-yi.l.liu@intel.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <c60dd620-8cc1-6ecb-8d88-ca5c8d724c7e@redhat.com>
+Date:   Sat, 15 Aug 2020 18:30:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200812004158.GA1447296@rani.riverdale.lan> <20200812004308.1448603-1-nivedita@alum.mit.edu>
-In-Reply-To: <20200812004308.1448603-1-nivedita@alum.mit.edu>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 15 Aug 2020 17:49:03 +0200
-Message-ID: <CA+icZUVdTT1Vz8ACckj-SQyKi+HxJyttM52s6HUtCDLFCKbFgQ@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/boot/compressed: Disable relocation relaxation
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Fangrui Song <maskray@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        e5ten.arch@gmail.com,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1595917664-33276-8-git-send-email-yi.l.liu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 2:43 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
->
-> The x86-64 psABI [0] specifies special relocation types
-> (R_X86_64_[REX_]GOTPCRELX) for indirection through the Global Offset
-> Table, semantically equivalent to R_X86_64_GOTPCREL, which the linker
-> can take advantage of for optimization (relaxation) at link time. This
-> is supported by LLD and binutils versions 2.26 onwards.
->
-> The compressed kernel is position-independent code, however, when using
-> LLD or binutils versions before 2.27, it must be linked without the -pie
-> option. In this case, the linker may optimize certain instructions into
-> a non-position-independent form, by converting foo@GOTPCREL(%rip) to $foo.
->
-> This potential issue has been present with LLD and binutils-2.26 for a
-> long time, but it has never manifested itself before now:
-> - LLD and binutils-2.26 only relax
->         movq    foo@GOTPCREL(%rip), %reg
->   to
->         leaq    foo(%rip), %reg
->   which is still position-independent, rather than
->         mov     $foo, %reg
->   which is permitted by the psABI when -pie is not enabled.
-> - gcc happens to only generate GOTPCREL relocations on mov instructions.
-> - clang does generate GOTPCREL relocations on non-mov instructions, but
->   when building the compressed kernel, it uses its integrated assembler
->   (due to the redefinition of KBUILD_CFLAGS dropping -no-integrated-as),
->   which has so far defaulted to not generating the GOTPCRELX
->   relocations.
->
-> Nick Desaulniers reports [1,2]:
->   A recent change [3] to a default value of configuration variable
->   (ENABLE_X86_RELAX_RELOCATIONS OFF -> ON) in LLVM now causes Clang's
->   integrated assembler to emit R_X86_64_GOTPCRELX/R_X86_64_REX_GOTPCRELX
->   relocations. LLD will relax instructions with these relocations based
->   on whether the image is being linked as position independent or not.
->   When not, then LLD will relax these instructions to use absolute
->   addressing mode (R_RELAX_GOT_PC_NOPIC). This causes kernels built with
->   Clang and linked with LLD to fail to boot.
->
-> Patch series [4] is a solution to allow the compressed kernel to be
-> linked with -pie unconditionally, but even if merged is unlikely to be
-> backported. As a simple solution that can be applied to stable as well,
-> prevent the assembler from generating the relaxed relocation types using
-> the -mrelax-relocations=no option. For ease of backporting, do this
-> unconditionally.
->
-> [0] https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/linker-optimization.tex#L65
-> [1] https://lore.kernel.org/lkml/20200807194100.3570838-1-ndesaulniers@google.com/
-> [2] https://github.com/ClangBuiltLinux/linux/issues/1121
-> [3] https://reviews.llvm.org/rGc41a18cf61790fc898dcda1055c3efbf442c14c0
-> [4] https://lore.kernel.org/lkml/20200731202738.2577854-1-nivedita@alum.mit.edu/
->
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Yi,
 
-Thanks for the patch.
-
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-
-- Sedat -
-
-[1] https://github.com/ClangBuiltLinux/linux/issues/1120#issuecomment-674409705
-
+On 7/28/20 8:27 AM, Liu Yi L wrote:
+> This patch allows userspace to request PASID allocation/free, e.g. when
+> serving the request from the guest.
+> 
+> PASIDs that are not freed by userspace are automatically freed when the
+> IOASID set is destroyed when process exits.
+> 
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Eric Auger <eric.auger@redhat.com>
+> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Lu Baolu <baolu.lu@linux.intel.com>
+> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> Signed-off-by: Yi Sun <yi.y.sun@linux.intel.com>
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 > ---
->  arch/x86/boot/compressed/Makefile | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-> index 3962f592633d..ff7894f39e0e 100644
-> --- a/arch/x86/boot/compressed/Makefile
-> +++ b/arch/x86/boot/compressed/Makefile
-> @@ -43,6 +43,8 @@ KBUILD_CFLAGS += -Wno-pointer-sign
->  KBUILD_CFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
->  KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
->  KBUILD_CFLAGS += -D__DISABLE_EXPORTS
-> +# Disable relocation relaxation in case the link is not PIE.
-> +KBUILD_CFLAGS += $(call as-option,-Wa$(comma)-mrelax-relocations=no)
->
->  KBUILD_AFLAGS  := $(KBUILD_CFLAGS) -D__ASSEMBLY__
->  GCOV_PROFILE := n
-> --
-> 2.26.2
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200812004308.1448603-1-nivedita%40alum.mit.edu.
+> v5 -> v6:
+> *) address comments from Eric against v5. remove the alloc/free helper.
+> 
+> v4 -> v5:
+> *) address comments from Eric Auger.
+> *) the comments for the PASID_FREE request is addressed in patch 5/15 of
+>    this series.
+> 
+> v3 -> v4:
+> *) address comments from v3, except the below comment against the range
+>    of PASID_FREE request. needs more help on it.
+>     "> +if (req.range.min > req.range.max)
+> 
+>      Is it exploitable that a user can spin the kernel for a long time in
+>      the case of a free by calling this with [0, MAX_UINT] regardless of
+>      their actual allocations?"
+>     https://lore.kernel.org/linux-iommu/20200702151832.048b44d1@x1.home/
+> 
+> v1 -> v2:
+> *) move the vfio_mm related code to be a seprate module
+> *) use a single structure for alloc/free, could support a range of PASIDs
+> *) fetch vfio_mm at group_attach time instead of at iommu driver open time
+> ---
+>  drivers/vfio/Kconfig            |  1 +
+>  drivers/vfio/vfio_iommu_type1.c | 69 +++++++++++++++++++++++++++++++++++++++++
+>  drivers/vfio/vfio_pasid.c       | 10 ++++++
+>  include/linux/vfio.h            |  6 ++++
+>  include/uapi/linux/vfio.h       | 37 ++++++++++++++++++++++
+>  5 files changed, 123 insertions(+)
+> 
+> diff --git a/drivers/vfio/Kconfig b/drivers/vfio/Kconfig
+> index 3d8a108..95d90c6 100644
+> --- a/drivers/vfio/Kconfig
+> +++ b/drivers/vfio/Kconfig
+> @@ -2,6 +2,7 @@
+>  config VFIO_IOMMU_TYPE1
+>  	tristate
+>  	depends on VFIO
+> +	select VFIO_PASID if (X86)
+>  	default n
+>  
+>  config VFIO_IOMMU_SPAPR_TCE
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index 18ff0c3..ea89c7c 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -76,6 +76,7 @@ struct vfio_iommu {
+>  	bool				dirty_page_tracking;
+>  	bool				pinned_page_dirty_scope;
+>  	struct iommu_nesting_info	*nesting_info;
+> +	struct vfio_mm			*vmm;
+>  };
+>  
+>  struct vfio_domain {
+> @@ -1937,6 +1938,11 @@ static void vfio_iommu_iova_insert_copy(struct vfio_iommu *iommu,
+>  
+>  static void vfio_iommu_release_nesting_info(struct vfio_iommu *iommu)
+>  {
+> +	if (iommu->vmm) {
+> +		vfio_mm_put(iommu->vmm);
+> +		iommu->vmm = NULL;
+> +	}
+> +
+>  	kfree(iommu->nesting_info);
+>  	iommu->nesting_info = NULL;
+>  }
+> @@ -2071,6 +2077,26 @@ static int vfio_iommu_type1_attach_group(void *iommu_data,
+>  					    iommu->nesting_info);
+>  		if (ret)
+>  			goto out_detach;
+> +
+> +		if (iommu->nesting_info->features &
+> +					IOMMU_NESTING_FEAT_SYSWIDE_PASID) {
+> +			struct vfio_mm *vmm;
+> +			int sid;
+> +
+> +			vmm = vfio_mm_get_from_task(current);
+> +			if (IS_ERR(vmm)) {
+> +				ret = PTR_ERR(vmm);
+> +				goto out_detach;
+> +			}
+> +			iommu->vmm = vmm;
+> +
+> +			sid = vfio_mm_ioasid_sid(vmm);
+> +			ret = iommu_domain_set_attr(domain->domain,
+> +						    DOMAIN_ATTR_IOASID_SID,
+> +						    &sid);
+> +			if (ret)
+> +				goto out_detach;
+> +		}
+>  	}
+>  
+>  	/* Get aperture info */
+> @@ -2859,6 +2885,47 @@ static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
+>  	return -EINVAL;
+>  }
+>  
+> +static int vfio_iommu_type1_pasid_request(struct vfio_iommu *iommu,
+> +					  unsigned long arg)
+> +{
+> +	struct vfio_iommu_type1_pasid_request req;
+> +	unsigned long minsz;
+> +	int ret;
+> +
+> +	minsz = offsetofend(struct vfio_iommu_type1_pasid_request, range);
+> +
+> +	if (copy_from_user(&req, (void __user *)arg, minsz))
+> +		return -EFAULT;
+> +
+> +	if (req.argsz < minsz || (req.flags & ~VFIO_PASID_REQUEST_MASK))
+> +		return -EINVAL;
+> +
+> +	if (req.range.min > req.range.max)
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&iommu->lock);
+> +	if (!iommu->vmm) {
+> +		mutex_unlock(&iommu->lock);
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	switch (req.flags & VFIO_PASID_REQUEST_MASK) {
+> +	case VFIO_IOMMU_FLAG_ALLOC_PASID:
+> +		ret = vfio_pasid_alloc(iommu->vmm, req.range.min,
+> +				       req.range.max);
+> +		break;
+> +	case VFIO_IOMMU_FLAG_FREE_PASID:
+> +		vfio_pasid_free_range(iommu->vmm, req.range.min,
+> +				      req.range.max);
+> +		ret = 0;
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +	}
+> +	mutex_unlock(&iommu->lock);
+> +	return ret;
+> +}
+> +
+>  static long vfio_iommu_type1_ioctl(void *iommu_data,
+>  				   unsigned int cmd, unsigned long arg)
+>  {
+> @@ -2875,6 +2942,8 @@ static long vfio_iommu_type1_ioctl(void *iommu_data,
+>  		return vfio_iommu_type1_unmap_dma(iommu, arg);
+>  	case VFIO_IOMMU_DIRTY_PAGES:
+>  		return vfio_iommu_type1_dirty_pages(iommu, arg);
+> +	case VFIO_IOMMU_PASID_REQUEST:
+> +		return vfio_iommu_type1_pasid_request(iommu, arg);
+>  	default:
+>  		return -ENOTTY;
+>  	}
+> diff --git a/drivers/vfio/vfio_pasid.c b/drivers/vfio/vfio_pasid.c
+> index befcf29..8d0317f 100644
+> --- a/drivers/vfio/vfio_pasid.c
+> +++ b/drivers/vfio/vfio_pasid.c
+> @@ -61,6 +61,7 @@ void vfio_mm_put(struct vfio_mm *vmm)
+>  {
+>  	kref_put_mutex(&vmm->kref, vfio_mm_release, &vfio_mm_lock);
+>  }
+> +EXPORT_SYMBOL_GPL(vfio_mm_put);
+>  
+>  static void vfio_mm_get(struct vfio_mm *vmm)
+>  {
+> @@ -114,6 +115,13 @@ struct vfio_mm *vfio_mm_get_from_task(struct task_struct *task)
+>  	mmput(mm);
+>  	return vmm;
+>  }
+> +EXPORT_SYMBOL_GPL(vfio_mm_get_from_task);
+> +
+> +int vfio_mm_ioasid_sid(struct vfio_mm *vmm)
+> +{
+> +	return vmm->ioasid_sid;
+> +}
+> +EXPORT_SYMBOL_GPL(vfio_mm_ioasid_sid);
+>  
+>  /*
+>   * Find PASID within @min and @max
+> @@ -202,6 +210,7 @@ int vfio_pasid_alloc(struct vfio_mm *vmm, int min, int max)
+>  
+>  	return pasid;
+>  }
+> +EXPORT_SYMBOL_GPL(vfio_pasid_alloc);
+>  
+>  void vfio_pasid_free_range(struct vfio_mm *vmm,
+>  			   ioasid_t min, ioasid_t max)
+> @@ -218,6 +227,7 @@ void vfio_pasid_free_range(struct vfio_mm *vmm,
+>  		vfio_remove_pasid(vmm, vid);
+>  	mutex_unlock(&vmm->pasid_lock);
+>  }
+> +EXPORT_SYMBOL_GPL(vfio_pasid_free_range);
+>  
+>  static int __init vfio_pasid_init(void)
+>  {
+> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
+> index 31472a9..a355d01 100644
+> --- a/include/linux/vfio.h
+> +++ b/include/linux/vfio.h
+> @@ -101,6 +101,7 @@ struct vfio_mm;
+>  #if IS_ENABLED(CONFIG_VFIO_PASID)
+>  extern struct vfio_mm *vfio_mm_get_from_task(struct task_struct *task);
+>  extern void vfio_mm_put(struct vfio_mm *vmm);
+> +extern int vfio_mm_ioasid_sid(struct vfio_mm *vmm);
+>  extern int vfio_pasid_alloc(struct vfio_mm *vmm, int min, int max);
+>  extern void vfio_pasid_free_range(struct vfio_mm *vmm,
+>  				  ioasid_t min, ioasid_t max);
+> @@ -114,6 +115,11 @@ static inline void vfio_mm_put(struct vfio_mm *vmm)
+>  {
+>  }
+>  
+> +static inline int vfio_mm_ioasid_sid(struct vfio_mm *vmm)
+> +{
+> +	return -ENOTTY;
+> +}
+> +
+>  static inline int vfio_pasid_alloc(struct vfio_mm *vmm, int min, int max)
+>  {
+>  	return -ENOTTY;
+> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+> index 0cf3d6d..6d79557 100644
+> --- a/include/uapi/linux/vfio.h
+> +++ b/include/uapi/linux/vfio.h
+> @@ -1172,6 +1172,43 @@ struct vfio_iommu_type1_dirty_bitmap_get {
+>  
+>  #define VFIO_IOMMU_DIRTY_PAGES             _IO(VFIO_TYPE, VFIO_BASE + 17)
+>  
+> +/**
+> + * VFIO_IOMMU_PASID_REQUEST - _IOWR(VFIO_TYPE, VFIO_BASE + 18,
+> + *				struct vfio_iommu_type1_pasid_request)
+> + *
+> + * PASID (Processor Address Space ID) is a PCIe concept for tagging
+> + * address spaces in DMA requests. When system-wide PASID allocation
+> + * is required by the underlying iommu driver (e.g. Intel VT-d), this
+> + * provides an interface for userspace to request pasid alloc/free
+> + * for its assigned devices. Userspace should check the availability
+> + * of this API by checking VFIO_IOMMU_TYPE1_INFO_CAP_NESTING through
+> + * VFIO_IOMMU_GET_INFO.
+> + *
+> + * @flags=VFIO_IOMMU_FLAG_ALLOC_PASID, allocate a single PASID within @range.
+> + * @flags=VFIO_IOMMU_FLAG_FREE_PASID, free the PASIDs within @range.
+> + * @range is [min, max], which means both @min and @max are inclusive.
+> + * ALLOC_PASID and FREE_PASID are mutually exclusive.
+> + *
+> + * returns: allocated PASID value on success, -errno on failure for
+> + *	     ALLOC_PASID;
+> + *	     0 for FREE_PASID operation;
+> + */
+> +struct vfio_iommu_type1_pasid_request {
+> +	__u32	argsz;
+> +#define VFIO_IOMMU_FLAG_ALLOC_PASID	(1 << 0)
+> +#define VFIO_IOMMU_FLAG_FREE_PASID	(1 << 1)
+> +	__u32	flags;
+> +	struct {
+> +		__u32	min;
+> +		__u32	max;
+> +	} range;
+> +};
+> +
+> +#define VFIO_PASID_REQUEST_MASK	(VFIO_IOMMU_FLAG_ALLOC_PASID | \
+> +					 VFIO_IOMMU_FLAG_FREE_PASID)
+> +
+> +#define VFIO_IOMMU_PASID_REQUEST	_IO(VFIO_TYPE, VFIO_BASE + 18)
+> +
+>  /* -------- Additional API for SPAPR TCE (Server POWERPC) IOMMU -------- */
+>  
+>  /*
+> 
+Looks OK to me
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+
+
+Thanks
+
+Eric
+
