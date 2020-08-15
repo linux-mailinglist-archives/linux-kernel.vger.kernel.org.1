@@ -2,130 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E4E2453BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55209245495
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729865AbgHOWEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45650 "EHLO
+        id S1729399AbgHOWau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728477AbgHOVuy (ORCPT
+        with ESMTP id S1729254AbgHOWan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:50:54 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B00C00458C;
-        Sat, 15 Aug 2020 11:33:17 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1c7a00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f1c:7a00:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 56E951EC0277;
-        Sat, 15 Aug 2020 20:33:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1597516391;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=8BbZ63rk7VbMiYUQjJkYGKszCEMN5l41jgUUhvTPAOk=;
-        b=EhozzWmk+kL2/U5KxxkPgUx8K6UAmTLI1ZgR5AZbJMI0He/t8OVM5L7Ts1xYNrnz+/7MSc
-        0C4CT36Ji2ATnv3EboiqKdUzO3rBwwtyNqbKX5CQHqNvc/B1R9rOhQjFAbB9nwlgZyxNMR
-        zUQhBg+Jw9qsx/NC+CjSH9XlmeIKjbY=
-Date:   Sat, 15 Aug 2020 20:33:58 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Talel Shenhar <talel@amazon.com>
-Cc:     mchehab@kernel.org, james.morse@arm.com, davem@davemloft.net,
-        gregkh@linuxfoundation.org, nicolas.ferre@microchip.com,
-        robh+dt@kernel.org, mark.rutland@arm.com, catalin.marinas@arm.com,
-        will@kernel.org, linux-edac@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, hhhawa@amazon.com,
-        ronenk@amazon.com, jonnyc@amazon.com, hanochu@amazon.com,
-        eitan@amazon.com
-Subject: Re: [PATCH v9 2/2] EDAC: al-mc-edac: Introduce Amazon's Annapurna
- Labs Memory Controller EDAC
-Message-ID: <20200815183358.GE25814@zn.tnic>
-References: <20200728095155.18506-1-talel@amazon.com>
- <20200728095155.18506-3-talel@amazon.com>
+        Sat, 15 Aug 2020 18:30:43 -0400
+Received: from mail-io1-xd48.google.com (mail-io1-xd48.google.com [IPv6:2607:f8b0:4864:20::d48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BDBC0045B7
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 13:03:06 -0700 (PDT)
+Received: by mail-io1-xd48.google.com with SMTP id k10so7851410ioh.22
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 13:03:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=GL4DVB34UG1iqD0+jY4irCmmCEbZL1uTh6mw9vlItmk=;
+        b=K+0zPQau+AVLJdRVdghWc6Ox5tbjbIc7ve8BHAlkllkGrbCT2WLUKZfzxMMHANucgv
+         cHJ68z/3GqpUstAauB38JY7cqAR0UFP/DZ+zPMJUZnjgIxVkDYzbtkjZqe94jXQVVokP
+         v1X6vRpJPHJbny0HBHS9ATRsz8ZrJzWRxSWlk49WdL0ejNsw+R25BQtxOWeirgBljovA
+         ++XVEe1CtsPuzx51AahBxOqhLEQ3I/qRREtYnUeafjnBtl0lkGjngCDlFhAgdF60DaL4
+         n9bP2f/67bqPQBJRDbbLdumIF+3MhWUqEgLh+KE/kiaBOWAI5fo5kylHNGvai6/L+8hY
+         wXvA==
+X-Gm-Message-State: AOAM532kD/SCuPxTZIqN9pSA3jfWFkHqfnHJ3qrl6+y5JRY5VMtJCCMR
+        lUx9WjN4F+M/snyI+S+hpj/s/O5e5XsozG1XuvQmSiOhRtSO
+X-Google-Smtp-Source: ABdhPJwdTmBisU2wAY2tIbzM3sMi0k8roJATOzeZ3Cok9bb17JPYOxx0ftj7w2o6tEV0k/n7ffBFf8rJeLR+Tlx+Ol4cIbF5UNVl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200728095155.18506-3-talel@amazon.com>
+X-Received: by 2002:a92:354d:: with SMTP id c74mr7061356ila.27.1597521785710;
+ Sat, 15 Aug 2020 13:03:05 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 13:03:05 -0700
+In-Reply-To: <00000000000077346605a5a70a32@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008eef2f05acf006f8@google.com>
+Subject: Re: KASAN: out-of-bounds Read in pebs_update_state
+From:   syzbot <syzbot+45862e7027be5d590577@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com, bp@alien8.de,
+        daniel.vetter@ffwll.ch, gregkh@linuxfoundation.org, hpa@zytor.com,
+        jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        penguin-kernel@I-love.SAKURA.ne.jp,
+        penguin-kernel@i-love.sakura.ne.jp, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 12:51:55PM +0300, Talel Shenhar wrote:
-> +static void al_mc_edac_check(struct mem_ctl_info *mci)
-> +{
-> +	struct al_mc_edac *al_mc = mci->pvt_info;
-> +
-> +	if (al_mc->irq_ue <= 0)
-> +		handle_ue(mci);
-> +
-> +	if (al_mc->irq_ce <= 0)
-> +		handle_ce(mci);
-> +}
-> +
-> +static irqreturn_t al_mc_edac_irq_handler_ue(int irq, void *info)
-> +{
-> +	struct platform_device *pdev = info;
-> +	struct mem_ctl_info *mci = platform_get_drvdata(pdev);
-> +
-> +	if (handle_ue(mci))
-> +		return IRQ_HANDLED;
-> +	return IRQ_NONE;
-> +}
-> +
-> +static irqreturn_t al_mc_edac_irq_handler_ce(int irq, void *info)
-> +{
-> +	struct platform_device *pdev = info;
-> +	struct mem_ctl_info *mci = platform_get_drvdata(pdev);
-> +
-> +	if (handle_ce(mci))
-> +		return IRQ_HANDLED;
-> +	return IRQ_NONE;
-> +}
-> +
-> +static enum scrub_type al_mc_edac_get_scrub_mode(void __iomem *mmio_base)
-> +{
-> +	u32 ecccfg0;
-> +
-> +	ecccfg0 = readl(mmio_base + AL_MC_ECC_CFG);
-> +
-> +	if (FIELD_GET(AL_MC_ECC_CFG_SCRUB_DISABLED, ecccfg0))
-> +		return SCRUB_NONE;
-> +	else
-> +		return SCRUB_HW_SRC;
-> +}
-> +
-> +static void devm_al_mc_edac_free(void *data)
-> +{
-> +	edac_mc_free(data);
-> +}
-> +
-> +static void devm_al_mc_edac_del(void *data)
-> +{
-> +	edac_mc_del_mc(data);
-> +}
+syzbot suspects this issue was fixed by commit:
 
-From a previous review:
+commit 033724d6864245a11f8e04c066002e6ad22b3fd0
+Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Date:   Wed Jul 15 01:51:02 2020 +0000
 
-I said:
+    fbdev: Detect integer underflow at "struct fbcon_ops"->clear_margins.
 
-> Drop the "al_mc_edac_" prefix from most of the static functions. You can
-> leave it in the probe function or the IRQ handler so that it is visible
-> in stack traces but all those small functions don't need that prefix.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12ed4181900000
+start commit:   e99332e7 gcc-10: mark more functions __init to avoid secti..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8a96cf498e199d8b
+dashboard link: https://syzkaller.appspot.com/bug?extid=45862e7027be5d590577
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17bb1714100000
 
-You replied with:
+If the result looks correct, please mark the issue as fixed by replying with:
 
-> Shall be part of v7.
+#syz fix: fbdev: Detect integer underflow at "struct fbcon_ops"->clear_margins.
 
-and yet it ain't part of any v<num>.
-
-Why?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
