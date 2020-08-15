@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8E12452C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FD8245277
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729215AbgHOVyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
+        id S1728877AbgHOVvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:51:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729091AbgHOVw3 (ORCPT
+        with ESMTP id S1728699AbgHOVvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:29 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599A4C061232;
-        Fri, 14 Aug 2020 22:32:58 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id q75so12887456iod.1;
-        Fri, 14 Aug 2020 22:32:58 -0700 (PDT)
+        Sat, 15 Aug 2020 17:51:22 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D259C061233
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 22:41:46 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id e4so5367725pjd.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 22:41:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=+uvK5xyS2jsYMowW54FGXjWCo1ZPVzf5OQMcA+nZWjU=;
-        b=Fb8P7apwQoGsHPtaXb5dSo5RR/ByS4YqN9w1L9SLoNREnc5tUpqgRtPoF5JP1XCHKz
-         ZqS8JALkerVr1yokT29OvYe3psLKWNDDd8XlUHAgx933NWvAZZfA/iv3wLtwZ1i9UbZH
-         k4o1yUSqjAKxVSB4GliQhsirO6oOg1yfPH/cQpnvh7hRPCpAQFQ/NvzOb8hBS05AKmPI
-         YReGyPtKaxClLLwSTWzaiCJKFCvBIzT3dHL47DEcimgiEsbexRzYPI1tHdVU5LBif6pu
-         7cE/ohLMNehvoUsRmq5oTSK1XwzbGBxcRkXuZ07GbSOUNx4pnm8jKy5NFK24RiEXXXvn
-         49Ag==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=srq9xR0jTgO+mDmp3efyhBKbSnbNofpfpXcr4LilIjQ=;
+        b=nQE9ecdjegmgyaV/9aIBzopGQ2bnLLI9akMcx4qO/xGiJshCq+dHj++WehnY4Pe9fS
+         ME8Ogdd2M00zA6WGyvTCT1Y9KRwRtJsflWfM8+gNtcGzqPX0TyibVZ/TdpkVhMn1gUyo
+         6Q0frCzlGBU4Xz/D4R4KhEVHAZv809XSwaZvo06Fxk3Ln+VXEXNkCi/PINwVy9XeZ/j+
+         UzdHaGrXxegyEqXhEjMBtixhwIO1OrRK5c1HUFMLhw7qcP/k9vVdhaQe9BjzHpm35ySO
+         Y4B0GdSaWkiPrDV5yG7wRLcm/8LvExOu6h3ibIVbtpDHwSvM3KIyv3duRrFmst/b1AIU
+         yoQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=+uvK5xyS2jsYMowW54FGXjWCo1ZPVzf5OQMcA+nZWjU=;
-        b=bpid0bCuOHEOT7JeUWo7565I3ocLVxZyhYT8RxS0ehCW/uvgQb2NMM9Nwm9ttYwVeL
-         41DJqN1+W4gKbKzJ54lzgtQmpCUIjXikFC5rUlxxzmXpbgC8uhDBvgzOAiEgBK3Wft1O
-         ZuJaDUDKN7ZTFAkabrTDxkewpM/Hb4rfhQLKV1Pa1BSgkVs3V1QfzW3MoXc/pwbGK3o1
-         DWGVpHx1h2EgWtprVKxWeEADDXV/izGit+ChnAxNbRdRBszXJm9SSXI3wQfXPcWfrOFs
-         OBDu4yjTUt1T+J9GWUSYkP1g4MANrZy46zm5QWMo7ZmpyKCpPDWiEkLuG2lGzTs3Wz2d
-         diEg==
-X-Gm-Message-State: AOAM533iFFTe1YbOoDzkxM1szX7zf1QRiNd5csGr9SJqijRn+lXCUTlY
-        KBfS1Q5qm3xvF+Wc7v0gvt0d/cU9CM9j5geYJ6c0ZCYi/HJl6g==
-X-Google-Smtp-Source: ABdhPJzCQ5WCbCigax+HkCKLc4Nw6kcGYCSH3+w5/uVgttRscO15FaumbLuaks6h1UgQCOhYv9L1HF/VSxp5IBihRFU=
-X-Received: by 2002:a05:6602:2801:: with SMTP id d1mr4740187ioe.201.1597469577329;
- Fri, 14 Aug 2020 22:32:57 -0700 (PDT)
-MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Sat, 15 Aug 2020 00:32:46 -0500
-Message-ID: <CAH2r5mvJ=EZ2mC6LTnTmML5tCKpcKCOM7+nbbFSzpATBWh9Y_A@mail.gmail.com>
-Subject: [GIT PULL] SMB3 fixes
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=srq9xR0jTgO+mDmp3efyhBKbSnbNofpfpXcr4LilIjQ=;
+        b=D/5oKQC6BFzUinl0Hj18I6XmLkHpDl4/Wlavv91KpLFRfeco7DQAqMx1Kok09RbT+m
+         c7RlxF8uCXNpg9dGbFwgU+G1kuethX7SwmBFUmLNfCJTBLWyA7Fs1+1GXqF+KkNDqKai
+         W6VJ7/nCaJZm93VJgMbhKMVRONuqgSi+jfeezS3mHgyzqoKr8AjVL0QKx+wnDGrmTCla
+         G4k/n1b0NcHTQS2SVn0TjpEQDVWZuH7rc5HVPJzk9+0cR2qYMZdetk3FdVDWHwyZLx6Q
+         YkJ8Yy8wEVZ5mGuVbOduFdWULfplHCHx/OfylYYbz/x818evjIpdYfN9OZqSI93PQlkJ
+         auHg==
+X-Gm-Message-State: AOAM5317muzUV65M13gw8Y9VVUCVR0pPF1P5cq+C1sJCSxb51YQHlUrG
+        ntvJfXqpVGtWVSEOu2QY2s8=
+X-Google-Smtp-Source: ABdhPJypo3nUqYu/XuaQmwg+dbDRJot7/hBtlak1SaimaM6styJw3N6daVyaBOPJOPne5SxMuas0NA==
+X-Received: by 2002:a17:90a:70c9:: with SMTP id a9mr4519032pjm.167.1597470106338;
+        Fri, 14 Aug 2020 22:41:46 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id q7sm8704580pfu.133.2020.08.14.22.41.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Aug 2020 22:41:45 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 14:41:43 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: POC: Alternative solution: Re: [PATCH 0/4] printk: reimplement
+ LOG_CONT handling
+Message-ID: <20200815054143.GD582@jagdpanzerIV.localdomain>
+References: <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
+ <87blkcanps.fsf@jogness.linutronix.de>
+ <20200811160551.GC12903@alley>
+ <20200812163908.GH12903@alley>
+ <87v9hn2y1p.fsf@jogness.linutronix.de>
+ <20200813051853.GA510@jagdpanzerIV.localdomain>
+ <875z9nvvl2.fsf@jogness.linutronix.de>
+ <20200813084136.GK12903@alley>
+ <20200813115435.GB483@jagdpanzerIV.localdomain>
+ <CAHk-=wjoRWDAGkeevWtxR73vMimYfzJt13yFqTqv=7BGb0cuAQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjoRWDAGkeevWtxR73vMimYfzJt13yFqTqv=7BGb0cuAQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-327a8d76b1ac2037f87bf041f3bc076407284ffc:
+On (20/08/14 15:46), Linus Torvalds wrote:
+> On Thu, Aug 13, 2020 at 4:54 AM Sergey Senozhatsky
+> <sergey.senozhatsky@gmail.com> wrote:
+> >
+> > I think what Linus said a long time ago was that the initial purpose of
+> > pr_cont was
+> >
+> >         pr_info("Initialize feature foo...");
+> >         if (init_feature_foo() == 0)
+> >                 pr_cont("ok\n");
+> >         else
+> >                 pr_cont("not ok\n");
+> >
+> >         And if init_feature_foo() crashes the kernel then the first printk()
+> >         form panic() will flush the cont buffer.
+> 
+> Right.
+> 
+> This is why I think any discussion that says "people should buffer
+> their lines themselves and we should get rid if pr_cont()" is
+> fundamentally broken.
 
-  Merge tag '5.9-rc-smb3-fixes-part1' of
-git://git.samba.org/sfrench/cifs-2.6 (2020-08-06 19:21:04 -0700)
+I think what we've been talking about so far was "how do we buffer
+cont lines now", what are the problems of current buffering and what
+can we do to make that buffering SMP safe (preserving the context of
+broken cont buffer, etc. etc.). I don't think that anyone concluded
+to just "s/pr_cont/printk/g", I don't see this.
 
-are available in the Git repository at:
-
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.9-rc-smb3-fixes-part2
-
-for you to fetch changes up to c8c412f976124d85b8ded85c6ac3f760c12b63a3:
-
-  SMB3: Fix mkdir when idsfromsid configured on mount (2020-08-13
-19:41:01 -0500)
-
-----------------------------------------------------------------
-3 small cifs/smb3 fixes, one for stable fixing a mkdir path when using
-idsfromsid mount option
-
-The update for cifs.ko to use the new mount API isn't complete so
-isn't included in this set.
-
-Build verification test results:
-http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/381
-----------------------------------------------------------------
-Dan Carpenter (1):
-      cifs: Fix an error pointer dereference in cifs_mount()
-
-Miaohe Lin (1):
-      cifs: Convert to use the fallthrough macro
-
-Steve French (1):
-      SMB3: Fix mkdir when idsfromsid configured on mount
-
- fs/cifs/connect.c   | 1 +
- fs/cifs/smb2inode.c | 1 +
- fs/cifs/smb2pdu.c   | 4 ++--
- 3 files changed, 4 insertions(+), 2 deletions(-)
-
--- 
-Thanks,
-
-Steve
+	-ss
