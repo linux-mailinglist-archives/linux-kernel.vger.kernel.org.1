@@ -2,184 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE67245215
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4852451F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbgHOVky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgHOVkm (ORCPT
+        id S1727938AbgHOVdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:33:23 -0400
+Received: from smtprelay0071.hostedemail.com ([216.40.44.71]:33962 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726641AbgHOVdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:40:42 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9720DC03D1C9
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 14:21:38 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id w2so5982216qvh.12
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 14:21:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fSOWg6njAo0BgaYAkW3ZI1XqUj8alLoYvs3NDMkiQSk=;
-        b=fNTr1AP6oXI+Z+vP9W7aopVeB8HKDdHLOWptbwzZzf+/9o4e6mmG8uiZAHNv0y6lWd
-         TKsz9faMxGXvwuzoRbAnGOoIYbSJyPMXzOYEK+lV18IhjpncKwKwQ3qgtQx489VgvIIk
-         bV8k8/td6zymhZdtoNTI/s85alwGZlxlKuuoKwfX0YLKhauRO7OAsvZGQxy4H9HiK/gF
-         om936XsMh9eYx5rV9G0o0B0JDW/Vi+f0NAamfu92QrPofwUL+C6vZgSUQrFzekLMBsX4
-         ECmKIQqHJ2Hr8gzkvG86aMVtpLDQCrCp5oL8QoB4sXL8MIRRVeRLoVQl20//6oJwB7TZ
-         Mu9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fSOWg6njAo0BgaYAkW3ZI1XqUj8alLoYvs3NDMkiQSk=;
-        b=mrXwkVhVneatA68t1t0FisZVKfhdY/8Che1J9kF9dcj5TIYVAUjZZBW7DUq/UKInR0
-         OcmjnE+druZRX7GZM1KBQKjRGdgWujDL6+lDYQt3BsOnqJMtEqDrxoUYdMwOthMjDvO9
-         PNtPxSTdt6eKQI8mngE/p8hbDlCgN4KMhzRTBfoHmbVUOomFrT4/LIFL+MZtVszZANC5
-         eyVlrMm1Y+VBw4vmN7okJQ2GrEUDnSrio5+bJ0TvMxoVvuFIJVww5cwoJ3bn57/NvLLS
-         CdHqDB5WSxH3Rp1HcGO58yhmSpwmnYJZvYSHmZw/Fidq6OmGesPirj4MTqPvGTfLfIfM
-         LH8g==
-X-Gm-Message-State: AOAM533ETR8q56Sd7Uas7LVDzddLqwYJKneRKecj6H7kURfAjmsPIq2n
-        UXZzi3/eZ5dolc8t6dKAKSSY8w==
-X-Google-Smtp-Source: ABdhPJx3XPsMq4FB0tV42kjhPB8zgg9seOaawRnu+HoLIebEV0cYDDmb+NOgtyoCPkyOwqIgewXCog==
-X-Received: by 2002:a0c:ea30:: with SMTP id t16mr8572128qvp.177.1597526497539;
-        Sat, 15 Aug 2020 14:21:37 -0700 (PDT)
-Received: from [192.168.0.189] ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id 73sm2825144qtf.74.2020.08.15.14.21.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 Aug 2020 14:21:37 -0700 (PDT)
-Subject: Re: [Freedreno] [PATCH v10 3/5] drm/msm/dp: add support for DP PLL
- driver
-To:     Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Stephen Boyd <swboyd@chromium.org>, khsieh@codeaurora.org,
-        Sean Paul <seanpaul@chromium.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Vara Reddy <varar@codeaurora.org>, aravindh@codeaurora.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>
-References: <20200812044223.19279-1-tanmay@codeaurora.org>
- <20200812044223.19279-4-tanmay@codeaurora.org>
- <821b5cf9-5ca0-7026-fd99-9a32285ed030@linaro.org>
- <CAF6AEGtcfXodN1_HSdTcH402FdwTk15Nt6p3F=QYeSRhTc+hqw@mail.gmail.com>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <1ea81fa2-1dc8-a0b9-aa32-3127e9354be2@marek.ca>
-Date:   Sat, 15 Aug 2020 17:21:49 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Sat, 15 Aug 2020 17:33:23 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave05.hostedemail.com (Postfix) with ESMTP id 342A318017514;
+        Sat, 15 Aug 2020 21:24:03 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id BFB961800F594;
+        Sat, 15 Aug 2020 21:24:02 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1543:1593:1594:1605:1711:1730:1747:1777:1792:1981:2194:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:4605:5007:6117:6119:6691:6742:7875:7903:8660:10004:10400:10848:11026:11232:11473:11658:11914:12043:12291:12296:12297:12555:12663:12740:12760:12895:13148:13230:13439:14181:14659:14721:21080:21433:21451:21524:21627:21939:21990:30054:30070:30079:30089:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: wish32_1e17df327008
+X-Filterd-Recvd-Size: 5107
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 15 Aug 2020 21:23:59 +0000 (UTC)
+Message-ID: <457a91183581509abfa00575d0392be543acbe07.camel@perches.com>
+Subject: Re: [PATCH v2] lib/string.c: implement stpcpy
+From:   Joe Perches <joe@perches.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        =?ISO-8859-1?Q?D=E1vid_Bolvansk=FD?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>, Ingo Molnar <mingo@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date:   Sat, 15 Aug 2020 14:23:58 -0700
+In-Reply-To: <CAKwvOdnyHfx6ayqEoOr3pb_ibKBAG9vj31LuKE+f712W=7LFKA@mail.gmail.com>
+References: <20200815014006.GB99152@rani.riverdale.lan>
+         <20200815020946.1538085-1-ndesaulniers@google.com>
+         <202008150921.B70721A359@keescook>
+         <CAKwvOdnyHfx6ayqEoOr3pb_ibKBAG9vj31LuKE+f712W=7LFKA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <CAF6AEGtcfXodN1_HSdTcH402FdwTk15Nt6p3F=QYeSRhTc+hqw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/15/20 4:20 PM, Rob Clark wrote:
-> On Fri, Aug 14, 2020 at 10:05 AM Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
->>
->>
->> On 12/08/2020 07:42, Tanmay Shah wrote:
->>   > From: Chandan Uddaraju <chandanu@codeaurora.org>
->>   >
->>   > Add the needed DP PLL specific files to support
->>   > display port interface on msm targets.
->>
->> [skipped]
->>
->>   > diff --git a/drivers/gpu/drm/msm/dp/dp_pll_private.h
->> b/drivers/gpu/drm/msm/dp/dp_pll_private.h
->>   > new file mode 100644
->>   > index 000000000000..475ba6ed59ab
->>   > --- /dev/null
->>   > +++ b/drivers/gpu/drm/msm/dp/dp_pll_private.h
->>   > @@ -0,0 +1,98 @@
->>   > +/* SPDX-License-Identifier: GPL-2.0-only */
->>   > +/*
->>   > + * Copyright (c) 2016-2020, The Linux Foundation. All rights reserved.
->>   > + */
->>   > +
->>   > +#ifndef __DP_PLL_10NM_H
->>   > +#define __DP_PLL_10NM_H
->>   > +
->>   > +#include "dp_pll.h"
->>   > +#include "dp_reg.h"
->>   > +
->>   > +#define DP_VCO_HSCLK_RATE_1620MHZDIV1000    1620000UL
->>   > +#define DP_VCO_HSCLK_RATE_2700MHZDIV1000    2700000UL
->>   > +#define DP_VCO_HSCLK_RATE_5400MHZDIV1000    5400000UL
->>   > +#define DP_VCO_HSCLK_RATE_8100MHZDIV1000    8100000UL
->>   > +
->>   > +#define NUM_DP_CLOCKS_MAX            6
->>   > +
->>   > +#define DP_PHY_PLL_POLL_SLEEP_US        500
->>   > +#define DP_PHY_PLL_POLL_TIMEOUT_US        10000
->>   > +
->>   > +#define DP_VCO_RATE_8100MHZDIV1000        8100000UL
->>   > +#define DP_VCO_RATE_9720MHZDIV1000        9720000UL
->>   > +#define DP_VCO_RATE_10800MHZDIV1000        10800000UL
->>   > +
->>   > +struct dp_pll_vco_clk {
->>   > +    struct clk_hw hw;
->>   > +    unsigned long    rate;        /* current vco rate */
->>   > +    u64        min_rate;    /* min vco rate */
->>   > +    u64        max_rate;    /* max vco rate */
->>   > +    void        *priv;
->>   > +};
->>   > +
->>   > +struct dp_pll_db {
->>
->> This struct should probably go into dp_pll_10nm.c. dp_pll_7nm.c, for
->> example, will use slightly different structure.
+On Sat, 2020-08-15 at 13:47 -0700, Nick Desaulniers wrote:
+> On Sat, Aug 15, 2020 at 9:34 AM Kees Cook <keescook@chromium.org> wrote:
+> > On Fri, Aug 14, 2020 at 07:09:44PM -0700, Nick Desaulniers wrote:
+> > > LLVM implemented a recent "libcall optimization" that lowers calls to
+> > > `sprintf(dest, "%s", str)` where the return value is used to
+> > > `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
+> > > in parsing format strings.  Calling `sprintf` with overlapping arguments
+> > > was clarified in ISO C99 and POSIX.1-2001 to be undefined behavior.
+> > > 
+> > > `stpcpy` is just like `strcpy` except it returns the pointer to the new
+> > > tail of `dest`. This allows you to chain multiple calls to `stpcpy` in
+> > > one statement.
+> > 
+> > O_O What?
+> > 
+> > No; this is a _terrible_ API: there is no bounds checking, there are no
+> > buffer sizes. Anything using the example sprintf() pattern is _already_
+> > wrong and must be removed from the kernel. (Yes, I realize that the
+> > kernel is *filled* with this bad assumption that "I'll never write more
+> > than PAGE_SIZE bytes to this buffer", but that's both theoretically
+> > wrong ("640k is enough for anybody") and has been known to be wrong in
+> > practice too (e.g. when suddenly your writing routine is reachable by
+> > splice(2) and you may not have a PAGE_SIZE buffer).
+> > 
+> > But we cannot _add_ another dangerous string API. We're already in a
+> > terrible mess trying to remove strcpy[1], strlcpy[2], and strncpy[3]. This
+> > needs to be addressed up by removing the unbounded sprintf() uses. (And
+> > to do so without introducing bugs related to using snprintf() when
+> > scnprintf() is expected[4].)
 > 
-> Note that sboyd has a WIP series to move all of the pll code out to a
-> phy driver.  If there is work already happening on 7nm support, it
-> might be better to go with the separate phy driver approach?  I'm
-> still a bit undecided about whether to land the dp code initially with
-> the pll stuff in drm, and then continue refactoring to move to
-> separate phy driver upstream, or to strip out the pll code from the
-> beginning.  If you/someone is working on 7nm support, then feedback
-> about which approach is easier is welcome.
-> 
-> https://lore.kernel.org/dri-devel/20200611091919.108018-1-swboyd@chromium.org/
-> 
+> Well, everything (-next, mainline, stable) is broken right now (with
+> ToT Clang) without providing this symbol.  I'm not going to go clean
+> the entire kernel's use of sprintf to get our CI back to being green.
 
-I have a sm8150/sm8250 (7nm) upstream kernel stack with DP enabled, and 
-I have done something similar, with the PLL driver in the QMP phy, 
-although not based on sboyd's series (along with some typec changes to 
-negotiate the DP alt mode and get HPD events, etc.). I don't think 
-having PLL in drm/msm makes sense, the drm/msm DP driver shouldn't need 
-to be aware of the DP PLL/PHY driver, it only needs to set the 
-link/pixel clock rates which are in dispcc (and those then have the PLL 
-clocks as a parent).
+Maybe this should get place in compiler-clang.h so it isn't
+generic and public.
 
-FYI, since it sounds you are considering landing this: it is completely 
-broken, for example:
-- ioremap()'s to #define'd addresses in the PLL driver
-- main DP driver reading/writing to registers in the PHY region, but 
-getting the base address from devicetree was removed since earlier 
-revisions, so it just fails completely. Look at usb3_dp_com (for 
-example), which in dp_catalog_ctrl_usb_reset() would be used to 
-overwrite registers already being driven by the qmp phy driver - but now 
-the usb3_dp_com.base is never initialized.
+Something like:
 
--Jonathan
+---
+ include/linux/compiler-clang.h | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-> BR,
-> -R
-> _______________________________________________
-> Freedreno mailing list
-> Freedreno@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/freedreno
-> 
+diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+index cee0c728d39a..6279f1904e39 100644
+--- a/include/linux/compiler-clang.h
++++ b/include/linux/compiler-clang.h
+@@ -61,3 +61,30 @@
+ #if __has_feature(shadow_call_stack)
+ # define __noscs	__attribute__((__no_sanitize__("shadow-call-stack")))
+ #endif
++
++#ifndef __HAVE_ARCH_STPCPY
++/**
++ * stpcpy - copy a string from src to dest returning a pointer to the new end
++ *          of dest, including src's NULL terminator. May overrun dest.
++ * @dest: pointer to buffer being copied into.
++ *        Must be large enough to receive copy.
++ * @src: pointer to the beginning of string being copied from.
++ *       Must not overlap dest.
++ *
++ * This function exists _only_ to support clang's possible conversion of
++ * sprintf calls to stpcpy.
++ *
++ * stpcpy differs from strcpy in two key ways:
++ * 1. inputs must not overlap.
++ * 2. return value is dest's NUL termination character after copy.
++ *    (for strcpy, the return value is a pointer to src)
++ */
++
++static inline char *stpcpy(char __restrict *dest, const char __restrict *src)
++{
++	while ((*dest++ = *src++) != '\0') {
++		;	/* nothing */
++	}
++       return --dest;
++}
++#endif
+
+
