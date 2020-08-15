@@ -2,86 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78DA224527A
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5BAC24528B
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728937AbgHOVvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45648 "EHLO
+        id S1729179AbgHOVwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728864AbgHOVvh (ORCPT
+        with ESMTP id S1729109AbgHOVwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:37 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76F3C0F26E5
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:59:49 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id r2so11062612wrs.8
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:59:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=jst3pZBrtEx+aeP9V9ZqpXF52QEJ/qakLq4lVq6NlmY=;
-        b=Vd0d2VqTedRkkDf9Sv430Fuefubv5QJSghpasfCdtTyb7/wb4atmCCuLzuvrAIz478
-         4jCzYETid41ls04FLOhBlpNoS+MfmHWeTiOxlTW/hh0f/OFEy5Y+vTaLH3SV8iILba5B
-         6JJrPYtBQKh4Rm56sTyjpTcpi5YBVk2ru1PRYBLXGWB2BVKxd4NBngxw06QAaFwsyfN/
-         wN8XGmchc0yfGcd2kvb0zzL/hKjGkWmu3y/xaqfK70JKjLdNJNzy12Dk9FUubueb9kwL
-         zdu+gcb7dWA0mmtgK9N3M8G66lYY3Y+FIgDCNj3Rg+j+3ThU0OYu8Kj5ZG1G0bipxExE
-         uoEA==
+        Sat, 15 Aug 2020 17:52:34 -0400
+Received: from mail-il1-x147.google.com (mail-il1-x147.google.com [IPv6:2607:f8b0:4864:20::147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580DEC0F26EB
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:09:20 -0700 (PDT)
+Received: by mail-il1-x147.google.com with SMTP id e12so8853831ile.14
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:09:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references;
-        bh=jst3pZBrtEx+aeP9V9ZqpXF52QEJ/qakLq4lVq6NlmY=;
-        b=dEUmo8LRaEKWYQEKGGJlR/pePJShsh7UtqL3QQArSRRD4n2aJW1k6s2YuByLzeZ87r
-         /6dtkrlCZxL+wSdZd2MO705mOyQ/S0rbS1hjBmbYw8YlktMCkvTWZDysBY+Gpo1z/zV6
-         cWMAX/guyRRZjPKTF8F8OCgLgSBgzDFXfeZxQCEUsfCz9zkkeBBLoAqu4A8wbaMAQ4M2
-         lcp8KE0qqqe50sJScEGF6hwSrDdxUQgVJ7OPrtV6NJqChVN8Gvwk2mp+WWzYny0qrBaa
-         ojHkeNFHJ38mieOxLh5Ke5k0fxFHL9JExPgAnUxGBSNerESHjTVTfn5XbHc5lI0MPMgd
-         kZ8w==
-X-Gm-Message-State: AOAM531GeYBmGsQz5uipPELOwjDpZqUA2Q9DDZUDHwvaJU/qR5e+27Ym
-        1uXXMdAzXwYjPD9WRsydv3w8TGxENvQ=
-X-Google-Smtp-Source: ABdhPJyXl0v2jSh03zIOtOXfO6QaU6jzC+sQGwv15g/it9xmavTx5RmHIkzgBORiHbeiDUABsxXSYw==
-X-Received: by 2002:adf:ed0c:: with SMTP id a12mr7664665wro.24.1597514388281;
-        Sat, 15 Aug 2020 10:59:48 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id e5sm24460775wrc.37.2020.08.15.10.59.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 10:59:47 -0700 (PDT)
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Subject: [PATCH 6/9] habanalabs: remove redundant assignment to variable
-Date:   Sat, 15 Aug 2020 20:59:35 +0300
-Message-Id: <20200815175938.16619-6-oded.gabbay@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200815175938.16619-1-oded.gabbay@gmail.com>
-References: <20200815175938.16619-1-oded.gabbay@gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=unqY6YUA6dN15yzdjEHwLUsw603J7sn/Dlnt+ztMhZk=;
+        b=QxBxNxQ3RZGbWkGX6PFQVliJC4Gs/78cJ0bptxm/KqjAgRQGrcslww9vrozK7RAyLV
+         n5LkJ8zjPjfRDzq1LaDPPA8aM0qr3UbUc7ZqNBNF3JipyVdbvbMP0NWDhaQAapKW2bHW
+         HETMsiqJG4pap+Osm0k2oHDAB2pBQO089JBa/2R7Pm1ZSzwlLxjagGoZL+Y0N/4Gi+2T
+         hEaX5s9snTkkPuo2ICdhaDY0R9sa0S0Of9q9g+iwvaZ9p8GEwvQgQZaJ/VU8hdKbhuhf
+         KmZWvwihMr2+NRE0MXkqumUQwamtR1aMqmJb7nVXEZISw4lAW1A2wwkjt7OydopXUuTH
+         tKNQ==
+X-Gm-Message-State: AOAM531tgAedyUJHK4yKaVyUjFymKBuaxYYsT2hJRqMj33/Cv5QirlxW
+        FfK10f9FFJEV1xh//2tnJrZ8pQDbKnj9HAra5kDBmzp0WYmv
+X-Google-Smtp-Source: ABdhPJyo0N5X3Rr63x6KSCF9oemLGrgNQNTncv3rJKuvDN2i4ehbpeDid+q3ScpJ7466Pv+uSxM9s3V5J1KUjpfsGtCJJtdgE45x
+MIME-Version: 1.0
+X-Received: by 2002:a92:bf0c:: with SMTP id z12mr7149150ilh.151.1597514957600;
+ Sat, 15 Aug 2020 11:09:17 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 11:09:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000923cee05acee6f61@google.com>
+Subject: possible deadlock in io_poll_double_wake
+From:   syzbot <syzbot+0d56cfeec64f045baffc@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-new_dma_pkt->ctl is assigned a value and then is reassigned a new value
-without the first value ever being used.
+Hello,
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    c9c9735c Merge tag 'scsi-misc' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=127399f6900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=adea84f38e7bc8d
+dashboard link: https://syzkaller.appspot.com/bug?extid=0d56cfeec64f045baffc
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0d56cfeec64f045baffc@syzkaller.appspotmail.com
+
+============================================
+WARNING: possible recursive locking detected
+5.8.0-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor.1/9155 is trying to acquire lock:
+ffff8880a1fcc530 (&tty->write_wait){-.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff8880a1fcc530 (&tty->write_wait){-.-.}-{2:2}, at: io_poll_double_wake+0x108/0x360 fs/io_uring.c:4599
+
+but task is already holding lock:
+ffff8880a1fcc530 (&tty->write_wait){-.-.}-{2:2}, at: __wake_up_common_lock kernel/sched/wait.c:122 [inline]
+ffff8880a1fcc530 (&tty->write_wait){-.-.}-{2:2}, at: __wake_up+0xb8/0x150 kernel/sched/wait.c:142
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&tty->write_wait);
+  lock(&tty->write_wait);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+4 locks held by syz-executor.1/9155:
+ #0: ffff8880a1fcc098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x21/0x70 drivers/tty/tty_ldisc.c:267
+ #1: ffff8880a1fcc2e8 (&tty->termios_rwsem){++++}-{3:3}, at: tty_set_termios+0xc5/0x1510 drivers/tty/tty_ioctl.c:328
+ #2: ffff8880a1fcc098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref+0x18/0x80 drivers/tty/tty_ldisc.c:288
+ #3: ffff8880a1fcc530 (&tty->write_wait){-.-.}-{2:2}, at: __wake_up_common_lock kernel/sched/wait.c:122 [inline]
+ #3: ffff8880a1fcc530 (&tty->write_wait){-.-.}-{2:2}, at: __wake_up+0xb8/0x150 kernel/sched/wait.c:142
+
+stack backtrace:
+CPU: 0 PID: 9155 Comm: syz-executor.1 Not tainted 5.8.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1f0/0x31e lib/dump_stack.c:118
+ print_deadlock_bug kernel/locking/lockdep.c:2391 [inline]
+ check_deadlock kernel/locking/lockdep.c:2432 [inline]
+ validate_chain+0x69a4/0x88a0 kernel/locking/lockdep.c:3202
+ __lock_acquire+0x1161/0x2ab0 kernel/locking/lockdep.c:4426
+ lock_acquire+0x160/0x730 kernel/locking/lockdep.c:5005
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_poll_double_wake+0x108/0x360 fs/io_uring.c:4599
+ __wake_up_common+0x30a/0x4e0 kernel/sched/wait.c:93
+ __wake_up_common_lock kernel/sched/wait.c:123 [inline]
+ __wake_up+0xd4/0x150 kernel/sched/wait.c:142
+ n_tty_set_termios+0xa60/0x1080 drivers/tty/n_tty.c:1874
+ tty_set_termios+0xcac/0x1510 drivers/tty/tty_ioctl.c:341
+ set_termios+0x4a1/0x580 drivers/tty/tty_ioctl.c:414
+ tty_mode_ioctl+0x7b2/0xa80 drivers/tty/tty_ioctl.c:770
+ tty_ioctl+0xf81/0x15c0 drivers/tty/tty_io.c:2665
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45d239
+Code: 5d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f063db5fc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000017cc0 RCX: 000000000045d239
+RDX: 0000000020000000 RSI: 0000000000005404 RDI: 0000000000000003
+RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
+R13: 00007ffc7ff6341f R14: 00007f063db609c0 R15: 000000000118cf4c
+
+
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c | 2 --
- 1 file changed, 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index ed289a6ed622..ffd0849e8f2d 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -3944,8 +3944,6 @@ static int gaudi_patch_dma_packet(struct hl_device *hdev,
- 			}
- 		}
- 
--		new_dma_pkt->ctl = user_dma_pkt->ctl;
--
- 		ctl = le32_to_cpu(user_dma_pkt->ctl);
- 		if (likely(dma_desc_cnt))
- 			ctl &= ~GAUDI_PKT_CTL_EB_MASK;
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
