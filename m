@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FD8245277
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27C924529D
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728877AbgHOVvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
+        id S1728954AbgHOVxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728699AbgHOVvW (ORCPT
+        with ESMTP id S1728240AbgHOVwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:22 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D259C061233
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 22:41:46 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id e4so5367725pjd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 22:41:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=srq9xR0jTgO+mDmp3efyhBKbSnbNofpfpXcr4LilIjQ=;
-        b=nQE9ecdjegmgyaV/9aIBzopGQ2bnLLI9akMcx4qO/xGiJshCq+dHj++WehnY4Pe9fS
-         ME8Ogdd2M00zA6WGyvTCT1Y9KRwRtJsflWfM8+gNtcGzqPX0TyibVZ/TdpkVhMn1gUyo
-         6Q0frCzlGBU4Xz/D4R4KhEVHAZv809XSwaZvo06Fxk3Ln+VXEXNkCi/PINwVy9XeZ/j+
-         UzdHaGrXxegyEqXhEjMBtixhwIO1OrRK5c1HUFMLhw7qcP/k9vVdhaQe9BjzHpm35ySO
-         Y4B0GdSaWkiPrDV5yG7wRLcm/8LvExOu6h3ibIVbtpDHwSvM3KIyv3duRrFmst/b1AIU
-         yoQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=srq9xR0jTgO+mDmp3efyhBKbSnbNofpfpXcr4LilIjQ=;
-        b=D/5oKQC6BFzUinl0Hj18I6XmLkHpDl4/Wlavv91KpLFRfeco7DQAqMx1Kok09RbT+m
-         c7RlxF8uCXNpg9dGbFwgU+G1kuethX7SwmBFUmLNfCJTBLWyA7Fs1+1GXqF+KkNDqKai
-         W6VJ7/nCaJZm93VJgMbhKMVRONuqgSi+jfeezS3mHgyzqoKr8AjVL0QKx+wnDGrmTCla
-         G4k/n1b0NcHTQS2SVn0TjpEQDVWZuH7rc5HVPJzk9+0cR2qYMZdetk3FdVDWHwyZLx6Q
-         YkJ8Yy8wEVZ5mGuVbOduFdWULfplHCHx/OfylYYbz/x818evjIpdYfN9OZqSI93PQlkJ
-         auHg==
-X-Gm-Message-State: AOAM5317muzUV65M13gw8Y9VVUCVR0pPF1P5cq+C1sJCSxb51YQHlUrG
-        ntvJfXqpVGtWVSEOu2QY2s8=
-X-Google-Smtp-Source: ABdhPJypo3nUqYu/XuaQmwg+dbDRJot7/hBtlak1SaimaM6styJw3N6daVyaBOPJOPne5SxMuas0NA==
-X-Received: by 2002:a17:90a:70c9:: with SMTP id a9mr4519032pjm.167.1597470106338;
-        Fri, 14 Aug 2020 22:41:46 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id q7sm8704580pfu.133.2020.08.14.22.41.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 22:41:45 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 14:41:43 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: POC: Alternative solution: Re: [PATCH 0/4] printk: reimplement
- LOG_CONT handling
-Message-ID: <20200815054143.GD582@jagdpanzerIV.localdomain>
-References: <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
- <87blkcanps.fsf@jogness.linutronix.de>
- <20200811160551.GC12903@alley>
- <20200812163908.GH12903@alley>
- <87v9hn2y1p.fsf@jogness.linutronix.de>
- <20200813051853.GA510@jagdpanzerIV.localdomain>
- <875z9nvvl2.fsf@jogness.linutronix.de>
- <20200813084136.GK12903@alley>
- <20200813115435.GB483@jagdpanzerIV.localdomain>
- <CAHk-=wjoRWDAGkeevWtxR73vMimYfzJt13yFqTqv=7BGb0cuAQ@mail.gmail.com>
+        Sat, 15 Aug 2020 17:52:41 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ED9C061236;
+        Fri, 14 Aug 2020 22:51:41 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1c7a000c615dc96c916289.dip0.t-ipconnect.de [IPv6:2003:ec:2f1c:7a00:c61:5dc9:6c91:6289])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3913C1EC03EA;
+        Sat, 15 Aug 2020 07:51:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1597470696;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=UaHC+XYpOhT7alhor59jrB5xm8LzwHIuR+784j8TeOo=;
+        b=jYVoD/vXSYH5s+EEyEAMfZb6pLrBYCJgMbqCrB0uJ65Qhfoz03nttKbJ7T9Gzfz8CnU0GK
+        NFnKRYyadWH2wJv80ai0YnrNPPcJcRsHFR5N5KNbyLLDIgti6eydnCzykC9iJNm9fHcVTp
+        VeKJKSP2XhHU+bhSlNEy6oeJFealQT4=
+Date:   Sat, 15 Aug 2020 07:52:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     tony.luck@intel.com, qiuxu.zhuo@intel.com, mchehab@kernel.org,
+        james.morse@arm.com, rrichter@marvell.com,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: EDAC-SBRIDGE
+Message-ID: <20200815055227.GA25814@zn.tnic>
+References: <20200708113546.14135-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjoRWDAGkeevWtxR73vMimYfzJt13yFqTqv=7BGb0cuAQ@mail.gmail.com>
+In-Reply-To: <20200708113546.14135-1-grandmaster@al2klimov.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/08/14 15:46), Linus Torvalds wrote:
-> On Thu, Aug 13, 2020 at 4:54 AM Sergey Senozhatsky
-> <sergey.senozhatsky@gmail.com> wrote:
-> >
-> > I think what Linus said a long time ago was that the initial purpose of
-> > pr_cont was
-> >
-> >         pr_info("Initialize feature foo...");
-> >         if (init_feature_foo() == 0)
-> >                 pr_cont("ok\n");
-> >         else
-> >                 pr_cont("not ok\n");
-> >
-> >         And if init_feature_foo() crashes the kernel then the first printk()
-> >         form panic() will flush the cont buffer.
+On Wed, Jul 08, 2020 at 01:35:46PM +0200, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
 > 
-> Right.
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
 > 
-> This is why I think any discussion that says "people should buffer
-> their lines themselves and we should get rid if pr_cont()" is
-> fundamentally broken.
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>  Continuing my work started at 93431e0607e5.
+>  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>  (Actually letting a shell for loop submit all this stuff for me.)
+> 
+>  If there are any URLs to be removed completely or at least not HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also: https://lkml.org/lkml/2020/6/27/64
+> 
+>  If there are any valid, but yet not changed URLs:
+>  See: https://lkml.org/lkml/2020/6/26/837
+> 
+>  If you apply the patch, please let me know.
+> 
+> 
+>  drivers/edac/sb_edac.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/edac/sb_edac.c b/drivers/edac/sb_edac.c
+> index d414698ca324..a6704e73fcce 100644
+> --- a/drivers/edac/sb_edac.c
+> +++ b/drivers/edac/sb_edac.c
+> @@ -3552,6 +3552,6 @@ MODULE_PARM_DESC(edac_op_state, "EDAC Error Reporting state: 0=Poll,1=NMI");
+>  
+>  MODULE_LICENSE("GPL");
+>  MODULE_AUTHOR("Mauro Carvalho Chehab");
+> -MODULE_AUTHOR("Red Hat Inc. (http://www.redhat.com)");
+> +MODULE_AUTHOR("Red Hat Inc. (https://www.redhat.com)");
+>  MODULE_DESCRIPTION("MC Driver for Intel Sandy Bridge and Ivy Bridge memory controllers - "
+>  		   SBRIDGE_REVISION);
+> -- 
 
-I think what we've been talking about so far was "how do we buffer
-cont lines now", what are the problems of current buffering and what
-can we do to make that buffering SMP safe (preserving the context of
-broken cont buffer, etc. etc.). I don't think that anyone concluded
-to just "s/pr_cont/printk/g", I don't see this.
+Merged all your EDAC patches into one and applied. Will push out once
+-rc1 releases.
 
-	-ss
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
