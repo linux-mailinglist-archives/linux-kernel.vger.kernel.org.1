@@ -2,171 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013D5245261
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A217245249
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgHOVsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:48:03 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34226 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726135AbgHOVsC (ORCPT
+        id S1728043AbgHOVo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:44:57 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:47616 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgHOVo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:48:02 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07FKVt8K183318;
-        Sat, 15 Aug 2020 16:45:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=nq/Qbh6g/GV+dwSR5atT+MIapKj5ifxEpKJJbzLcppg=;
- b=TTaUsFka0m+l9yCqajC6P02ynlwgwBNE0csV+uGoQcnE1l4mMDDE0bfC7zfar00YfKRP
- trS/YaFY8yMWqafniM74lRpTZxeudyO7wVe0rspeWur7fqFzTEdMMDsEFoTlMvEVkYlR
- 4s+1PQBKhxV8PVeA6jTpqBH4oFvJmVxDSerfZxnfF8jfeJddSyfyoiROMLbqfKTc2F7j
- JoijZFaX9ZlDr8HNog1BK9bFYzL4o6zFwuVf7eHrTRSeuaN9U9c1tzIgFSM5ti456yRe
- qjAWaZWKn4C5a+N/Y+xIHG3l4m6k4LPom+y4xjWTLNOgzkBRscQpPTPRC0iuEr3e47oe tA== 
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32xc75b2np-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 15 Aug 2020 16:45:59 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07FKiQuV006230;
-        Sat, 15 Aug 2020 20:45:58 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma01dal.us.ibm.com with ESMTP id 32x7b8e62w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 15 Aug 2020 20:45:58 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07FKjvqa43516236
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 15 Aug 2020 20:45:57 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F23AABE056;
-        Sat, 15 Aug 2020 20:45:56 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E781BE04F;
-        Sat, 15 Aug 2020 20:45:54 +0000 (GMT)
-Received: from morokweng.localdomain.com (unknown [9.211.150.234])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Sat, 15 Aug 2020 20:45:53 +0000 (GMT)
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     iommu@lists.linux-foundation.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Subject: [PATCH] swiotlb: Allow allocating buffer anywhere in memory
-Date:   Sat, 15 Aug 2020 17:45:36 -0300
-Message-Id: <20200815204536.663801-1-bauerman@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
+        Sat, 15 Aug 2020 17:44:56 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 1EC0D8053D;
+        Sat, 15 Aug 2020 23:08:03 +0200 (CEST)
+Date:   Sat, 15 Aug 2020 23:08:02 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: Add Mantix MLAF057WE51-X panel bindings
+Message-ID: <20200815210802.GA1242831@ravnborg.org>
+References: <cover.1597412076.git.agx@sigxcpu.org>
+ <9345739df02b8b8630e7dccb61a80a7a7f692526.1597412076.git.agx@sigxcpu.org>
+ <20200815083917.GA993113@ravnborg.org>
+ <20200815164737.GA3640@bogon.m.sigxcpu.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-15_15:2020-08-14,2020-08-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=999 phishscore=0 bulkscore=0
- lowpriorityscore=0 spamscore=0 suspectscore=1 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008150159
+In-Reply-To: <20200815164737.GA3640@bogon.m.sigxcpu.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=8nJEP1OIZ-IA:10 a=ze386MxoAAAA:8 a=gEfo2CItAAAA:8 a=VwQbUJbxAAAA:8
+        a=6yzhs6WGAAAA:8 a=e5mUnYsNAAAA:8 a=XmuwC6Cl6KIseVqJuPgA:9
+        a=wPNLvfGTeEIA:10 a=iBZjaW-pnkserzjvUTHh:22 a=sptkURWiP4Gy88Gu7hUp:22
+        a=AjGcO6oz07-iQ99wixmX:22 a=j5F3_G_i7ziBYwdlbqZG:22
+        a=Vxmtnl_E_bksehYqCbjh:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-POWER secure guests (i.e., guests which use the Protection Execution
-Facility) need to use SWIOTLB to be able to do I/O with the hypervisor, but
-they don't need the SWIOTLB memory to be in low addresses since the
-hypervisor doesn't have any addressing limitation.
+Hi Guido.
 
-This solves a SWIOTLB initialization problem we are seeing in secure guests
-with 128 GB of RAM: they are configured with 4 GB of crashkernel reserved
-memory, which leaves no space for SWIOTLB in low addresses.
+On Sat, Aug 15, 2020 at 06:47:37PM +0200, Guido Günther wrote:
+> Hi Sam,
+> On Sat, Aug 15, 2020 at 10:39:17AM +0200, Sam Ravnborg wrote:
+> > Hi Guido.
+> > 
+> > On Fri, Aug 14, 2020 at 03:36:22PM +0200, Guido Günther wrote:
+> > > The panel uses a Focaltech FT8006p, the touch part is handled by the
+> > > already existing edt-ft5x06.
+> > > 
+> > > Signed-off-by: Guido Günther <agx@sigxcpu.org>
+> > 
+> > A few trivialities.
+> 
+> Thanks for having a look. One remark inline:
+> 
+> > 
+> > > ---
+> > >  .../display/panel/mantix,mlaf057we51-x.yaml   | 73 +++++++++++++++++++
+> > >  1 file changed, 73 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+> > > new file mode 100644
+> > > index 0000000000000..349f3380ac940
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+> > > @@ -0,0 +1,73 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/display/panel/mantix,mlaf057we51-x.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Mantix MLAF057WE51-X 5.7" 720x1440 TFT LCD panel
+> > > +
+> > > +maintainers:
+> > > +  - Guido Günther <agx@sigxcpu.org>
+> > > +
+> > > +description: |
+> > > +             Mantix MLAF057WE51 X is a 720x1440 TFT LCD panel
+> > > +             connected using a MIPI-DSI video interface.
+> > Indent text with two spaces only.
+> > And I have learned that '|' is only needed to preserve formatting - so
+> > it can be dropped.
+> > 
+> > > +
+> > > +allOf:
+> > > +  - $ref: panel-common.yaml#
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - mantix,mlaf057we51-x
+> > This is a list - so needs an extra 2 spaces indent.
+> > See https://lore.kernel.org/linux-devicetree/f1963eb9-283f-e903-2a3a-4f324d71d418@lucaceresoli.net/T/#m65900317fb948f6c40e8fb521f2201fba3c301a7
+> > for examples where Rob fixes this.
+> 
+> Doesn't this only apply if the 'outer element' is a list too so e.g.:
+> 
+>    - enum
+>      - foo
+> 
+> trips up yamllint but
+> 
+>    enum
+>      - foo
+> 
+> doesn't. Since yamllint was happy i kept it as is (looking at your
+> reference suggests that too).
 
-Signed-off-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
----
- arch/powerpc/mm/mem.c   |  7 ++++++-
- include/linux/swiotlb.h |  8 +++++++-
- kernel/dma/swiotlb.c    | 10 +++++++---
- 3 files changed, 20 insertions(+), 5 deletions(-)
+You are right, I missed that this was not a list (no '-' in front of
+enum).
+I would not be able to do this right without tool assistance.
 
-Normally I would split changes like this into one patch touching generic
-code and another for the arch-specific part, but in this case I thought it
-would be unneeded complexity. I can split though if people prefer it that
-way.
+	Sam
 
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index c2c11eb8dcfc..13f2e3aff8b5 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -50,6 +50,7 @@
- #include <asm/swiotlb.h>
- #include <asm/rtas.h>
- #include <asm/kasan.h>
-+#include <asm/svm.h>
- 
- #include <mm/mmu_decl.h>
- 
-@@ -290,7 +291,11 @@ void __init mem_init(void)
- 	 * back to to-down.
- 	 */
- 	memblock_set_bottom_up(true);
--	swiotlb_init(0);
-+	/*
-+	 * SVM guests can use the SWIOTLB wherever it is in memory,
-+	 * even if not DMA-able.
-+	 */
-+	swiotlb_init_anywhere(0, is_secure_guest());
- #endif
- 
- 	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
-diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index 046bb94bd4d6..433f3dbb35b5 100644
---- a/include/linux/swiotlb.h
-+++ b/include/linux/swiotlb.h
-@@ -29,7 +29,13 @@ enum swiotlb_force {
-  */
- #define IO_TLB_SHIFT 11
- 
--extern void swiotlb_init(int verbose);
-+void __init swiotlb_init_anywhere(int verbose, bool allocate_anywhere);
-+
-+static inline void swiotlb_init(int verbose)
-+{
-+	swiotlb_init_anywhere(verbose, false);
-+}
-+
- int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
- extern unsigned long swiotlb_nr_tbl(void);
- unsigned long swiotlb_size_or_default(void);
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index c19379fabd20..27070aa59e34 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -244,7 +244,7 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
-  * structures for the software IO TLB used to implement the DMA API.
-  */
- void  __init
--swiotlb_init(int verbose)
-+swiotlb_init_anywhere(int verbose, bool allocate_anywhere)
- {
- 	size_t default_size = IO_TLB_DEFAULT_SIZE;
- 	unsigned char *vstart;
-@@ -257,8 +257,12 @@ swiotlb_init(int verbose)
- 
- 	bytes = io_tlb_nslabs << IO_TLB_SHIFT;
- 
--	/* Get IO TLB memory from the low pages */
--	vstart = memblock_alloc_low(PAGE_ALIGN(bytes), PAGE_SIZE);
-+	if (allocate_anywhere)
-+		vstart = memblock_alloc(PAGE_ALIGN(bytes), PAGE_SIZE);
-+	else
-+		/* Get IO TLB memory from the low pages */
-+		vstart = memblock_alloc_low(PAGE_ALIGN(bytes), PAGE_SIZE);
-+
- 	if (vstart && !swiotlb_init_with_tbl(vstart, io_tlb_nslabs, verbose))
- 		return;
- 
+> 
+> All the rest made sense and i fixed that for the upcoming v2.
+> Thanks for having a look!
+>  -- Guido
+> 
+> > 
+> > > +
+> > > +  port: true
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +    description: DSI virtual channel
+> > > +
+> > > +  avdd-supply:
+> > > +    description: Positive analog power supply
+> > > +
+> > > +  avee-supply:
+> > > +    description: Negative analog power supply
+> > > +
+> > > +  vddi-supply:
+> > > +    description: 1.8V I/O voltage supply
+> > > +
+> > > +  reset-gpios:
+> > > +    description: GPIO used for the reset pin
+> > > +    maxItems: 1
+> > Use reset-gpios: true as we already have it in panel-common.yaml
+> > 
+> > > +
+> > > +  backlight:
+> > > +    description: Backlight used by the panel
+> > > +    $ref: "/schemas/types.yaml#/definitions/phandle"
+> > Use backlight from panel-common.yaml.
+> > 
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - avdd-supply
+> > > +  - avee-supply
+> > > +  - vddi-supply
+> > > +  - reset-gpios
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    #include <dt-bindings/gpio/gpio.h>
+> > > +
+> > > +    dsi {
+> > My personal preference is indent with 4 spaces in examples but there are
+> > no rules so feel free to ignore.
+> > > +      #address-cells = <1>;
+> > > +      #size-cells = <0>;
+> > > +      panel@0 {
+> > > +        compatible = "mantix,mlaf057we51-x";
+> > > +        reg = <0>;
+> > > +        avdd-supply = <&reg_avdd>;
+> > > +        avee-supply = <&reg_avee>;
+> > > +        vddi-supply = <&reg_1v8_p>;
+> > > +        reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
+> > > +        backlight = <&backlight>;
+> > > +      };
+> > > +    };
+> > I think we need an ampty line here.
+> > > +...
+> > > -- 
+> > > 2.26.2
+> > > 
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > 
