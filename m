@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B1A245470
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 263E224541F
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729424AbgHOWYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:24:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37956 "EHLO mx2.suse.de"
+        id S1729640AbgHOWMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:12:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728765AbgHOWXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:23:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E9063AC50;
-        Sat, 15 Aug 2020 12:46:45 +0000 (UTC)
-From:   colyli@suse.de
-To:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Coly Li <colyli@suse.de>, Dan Williams <dan.j.williams@intel.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH RESEND] docs: update trusted-encrypted.rst
-Date:   Sat, 15 Aug 2020 20:46:14 +0800
-Message-Id: <20200815124614.115201-1-colyli@suse.de>
-X-Mailer: git-send-email 2.26.2
+        id S1728830AbgHOWK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:10:27 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C50BF2311E;
+        Sat, 15 Aug 2020 12:51:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597495884;
+        bh=4abrb1hIgzDOMolRWfF5UG90g9XBAir7ef4PB2uBVuU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kN7OhMiT916olPv4+/4DmqTTNi0+ib9YnLbL5+XPnMEpaDmhtOeoeDG0jrr5tj5C+
+         NzsIns2VxT1xD/JLjLmXSVqijaSFkbFpjUD8l2oqhH5dTIXsf+elWnWsbbVk1NS17K
+         xzuTzTQEnSRtkrVTSLMWfhoK3Or9FDI5mvXjrYC8=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1k6vec-002Kds-Va; Sat, 15 Aug 2020 13:51:23 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Shawn Lin <shawn.lin@rock-chips.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>, kernel-team@android.com
+Subject: [PATCH 0/2] PCI: rockchip: Fix PCIe probing in 5.9
+Date:   Sat, 15 Aug 2020 13:51:10 +0100
+Message-Id: <20200815125112.462652-1-maz@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, shawn.lin@rock-chips.com, lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com, heiko@sntech.de, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coly Li <colyli@suse.de>
+Recent changes to the way PCI DT nodes are parsed are now enforcing
+the presence of a "device_type" property, which has been mandated
+since... forever. This has the unfortunate effect of breaking
+non-compliant systems, and those using the Rockchip PCIe driver are
+amongst the victims. Oh well.
 
-The parameters in tmp2 commands are outdated, people are not able to
-create trusted key by the example commands.
+In order to keep users happy as well as my own machines up and
+running, let's paper over the problem by detecting a broken DT from
+the driver itself, and inserting the missing property at runtime.
 
-This patch updates the paramerters of tpm2 commands, they are verified
-by tpm2-tools-4.1 with Linux v5.8 kernel.
+For a good measure, a second patch fixes the DT, but the chances of
+such a fix being deployed at this stage are pretty slim, so the above
+hack is in for the long run.
 
-Signed-off-by: Coly Li <colyli@suse.de>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: James Bottomley <jejb@linux.ibm.com>
-Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc: Mimi Zohar <zohar@linux.ibm.com>
-Cc: Stefan Berger <stefanb@linux.ibm.com>
----
- Documentation/security/keys/trusted-encrypted.rst | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Marc Zyngier (2):
+  PCI: rockchip: Work around missing device_type property in DT
+  arm64: dts: rockchip: Fix PCIe DT properties
 
-diff --git a/Documentation/security/keys/trusted-encrypted.rst b/Documentation/security/keys/trusted-encrypted.rst
-index 9483a7425ad5..442a2775156e 100644
---- a/Documentation/security/keys/trusted-encrypted.rst
-+++ b/Documentation/security/keys/trusted-encrypted.rst
-@@ -39,10 +39,9 @@ With the IBM TSS 2 stack::
- 
- Or with the Intel TSS 2 stack::
- 
--  #> tpm2_createprimary --hierarchy o -G rsa2048 -o key.ctxt
-+  #> tpm2_createprimary --hierarchy o -G rsa2048 key.ctxt
-   [...]
--  handle: 0x800000FF
--  #> tpm2_evictcontrol -c key.ctxt -p 0x81000001
-+  #> tpm2_evictcontrol -c key.ctxt 0x81000001
-   persistentHandle: 0x81000001
- 
- Usage::
-@@ -115,7 +114,7 @@ append 'keyhandle=0x81000001' to statements between quotes, such as
- 
- ::
- 
--    $ keyctl add trusted kmk "new 32" @u
-+    $ keyctl add trusted kmk "new 32 keyhandle=0x81000001" @u
-     440502848
- 
-     $ keyctl show
-@@ -138,7 +137,7 @@ append 'keyhandle=0x81000001' to statements between quotes, such as
- 
- Load a trusted key from the saved blob::
- 
--    $ keyctl add trusted kmk "load `cat kmk.blob`" @u
-+    $ keyctl add trusted kmk "load `cat kmk.blob` keyhandle=0x81000001" @u
-     268728824
- 
-     $ keyctl print 268728824
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi    |  2 +-
+ drivers/pci/controller/pcie-rockchip-host.c | 29 +++++++++++++++++++++
+ 2 files changed, 30 insertions(+), 1 deletion(-)
+
 -- 
-2.26.2
+2.27.0
 
