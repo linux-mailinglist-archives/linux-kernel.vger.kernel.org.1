@@ -2,144 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8295024534B
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0432452A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729619AbgHOWAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
+        id S1729126AbgHOVyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728856AbgHOVvh (ORCPT
+        with ESMTP id S1729130AbgHOVwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:37 -0400
-Received: from mail-il1-x145.google.com (mail-il1-x145.google.com [IPv6:2607:f8b0:4864:20::145])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC05BC0A88B7
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:00:23 -0700 (PDT)
-Received: by mail-il1-x145.google.com with SMTP id g6so8798851iln.2
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:00:23 -0700 (PDT)
+        Sat, 15 Aug 2020 17:52:37 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1813DC00868C
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:09:27 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id k13so5499116plk.13
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:09:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=soE2IFby27f3lT1vJqM47DLs36Y61YrsYS5+tpHeZ7Q=;
+        b=CI1KLRx+27luHuKs2XaeFptA0WMQW5Fz18CFhEPtVnkbVKV5k7fBMYmRMvP9FuTb7i
+         POd83LEdDrPoRKUNpQJZiUqmb1YMxIu3WAyCVpW3k18G+SD1Q3iGNo/NWnt2drExn+vL
+         j+P0BkgpDOAq7PVGoXtJGBjyX9cFgRCgT2DA0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Mh2vQL3nRBAlnAPp8z2LGMEgL0fvTMye3F0Sdv/V8c4=;
-        b=MiYm+v+uo+KF9mmgYjRL+U5ae+5GLjJI/7KAv+guScX3Qacu1HznWvMp8kFqbzrQrh
-         nSYxSGhtqD95YN5yDCkcKaoTwIWsdOzyR/dc94Nw0Rl4kt+9XKCWVmiClTLGueQr8HME
-         Ljy04X9UBeYy/oNZJFKk59dGK5xAf9RBDEjBiQgWH+i3UcGZyPT6Bx4QLrZTXiInqgEK
-         xRkemlLoOQ6wwz9+E1lf4L0Qan6FzDZB7KZnVx9Vr+qBuOwnouchJBqVR1oHw3Q+UWUc
-         2Sh7O4at66GuO2h1ekTkGsPyQ2VNZ+/w7AvEMzHw0aGsIYIENDPACBz1go+3YNsXPSKG
-         DskQ==
-X-Gm-Message-State: AOAM530g8bH2h/L++WwgQ1vMSLT2Z2smtQI1ukOCrsD19s+Tm8BwxEWo
-        N9HWLAiGKC9OtVhnTLe/PDeCeBixy3XjKW4BhA3cMtnos4o8
-X-Google-Smtp-Source: ABdhPJzYyX274OX+l37DAqsUHvwTM1HpTiSokWdE2OgfUedsairrIn4fwpGyYcMtJA4kqyI06NGJa+9Z4lGRakde0IBTseGBbLAO
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=soE2IFby27f3lT1vJqM47DLs36Y61YrsYS5+tpHeZ7Q=;
+        b=WwGZf7vrbixIGU9wowImrqLFQs74QRLy7kXsQP5Y2OdmpxrQWG7z0XVHEBJt+pqGsY
+         hQsx5JpWCouxDHSspdBH2lVForjeP2r+8836go2P5w+DRUjorx8bvuHmaMeGeUp426pf
+         nW866d7mI1B2e5zNr3H1+07H0ZtyRy54yNvqBW5hlGHP1Ut/7ohptnqhgLPRL9PmcsOo
+         MBFhJHF5c/mwLJRdrrC+zhwBSxYc/qmNZKGx9Y49J0bzHPQTd2V+v4+jWT6WedVg/h1f
+         UHEnHGlUmu0QNyPFbtsYgkXGrDL5YDrv51FLS8zd+/ozcQ15dkuTYBJuolCAFwSDCyhI
+         nv+Q==
+X-Gm-Message-State: AOAM530PeZCybsbTpre2VIAseDF6Mlh6COyzTAWEKZjfKKSjKPS7dbP3
+        fqXmmWCYEHg1ZnvUZi1xFrnuqA==
+X-Google-Smtp-Source: ABdhPJw++rQdsQjQ+F1CYSDJTNwjmrCJstNOaRhqVrb+4iAk5WeYCFnuaK3T5187FLXs3/JeJ8ejCw==
+X-Received: by 2002:a17:902:9a06:: with SMTP id v6mr6020983plp.57.1597511366548;
+        Sat, 15 Aug 2020 10:09:26 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id go12sm10956840pjb.2.2020.08.15.10.09.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Aug 2020 10:09:25 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 10:09:24 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com
+Subject: [PATCH v2] overflow: Add __must_check attribute to check_*() helpers
+Message-ID: <202008151007.EF679DF@keescook>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:5d05:: with SMTP id r5mr6221528iob.14.1597510822456;
- Sat, 15 Aug 2020 10:00:22 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 10:00:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000018f60505aced798e@google.com>
-Subject: general protection fault in io_poll_double_wake
-From:   syzbot <syzbot+7f617d4a9369028b8a2c@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Since the destination variable of the check_*_overflow() helpers will
+contain a wrapped value on failure, it would be best to make sure callers
+really did check the return result of the helper. Adjust the macros to use
+a bool-wrapping static inline that is marked with __must_check. This means
+the macros can continue to have their type-agnostic behavior while gaining
+the function attribute (that cannot be applied directly to macros).
 
-syzbot found the following issue on:
-
-HEAD commit:    7fca4dee Merge tag 'powerpc-5.9-2' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1264d116900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=21f0d1d2df6d5fc
-dashboard link: https://syzkaller.appspot.com/bug?extid=7f617d4a9369028b8a2c
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f211d2900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1721b0ce900000
-
-The issue was bisected to:
-
-commit 18bceab101adde8f38de76016bc77f3f25cf22f4
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Fri May 15 17:56:54 2020 +0000
-
-    io_uring: allow POLL_ADD with double poll_wait() users
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1498125e900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1698125e900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1298125e900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7f617d4a9369028b8a2c@syzkaller.appspotmail.com
-Fixes: 18bceab101ad ("io_uring: allow POLL_ADD with double poll_wait() users")
-
-general protection fault, probably for non-canonical address 0xdffffc0000000008: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000040-0x0000000000000047]
-CPU: 0 PID: 6842 Comm: syz-executor006 Not tainted 5.8.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_poll_double_wake+0x6b/0x360 fs/io_uring.c:4589
-Code: 8d 9d b8 00 00 00 48 89 d8 48 c1 e8 03 42 80 3c 20 00 74 08 48 89 df e8 53 64 de ff 48 8b 1b 48 83 c3 40 48 89 d8 48 c1 e8 03 <42> 80 3c 20 00 74 08 48 89 df e8 36 64 de ff 4c 8b 33 31 ff 44 89
-RSP: 0018:ffffc90001717b20 EFLAGS: 00010002
-RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff88809e0fe4c0
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff8880a2e7dc98
-RBP: ffff8880a2e7dc98 R08: 0000000000000000 R09: ffffc90001717be8
-R10: fffff520002e2f70 R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff88809a429e40 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000002640880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2629c956c0 CR3: 000000009e4e7000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __wake_up_common+0x30a/0x4e0 kernel/sched/wait.c:93
- __wake_up_common_lock kernel/sched/wait.c:123 [inline]
- __wake_up+0xd4/0x150 kernel/sched/wait.c:142
- n_tty_set_termios+0xa60/0x1080 drivers/tty/n_tty.c:1874
- tty_set_termios+0xcac/0x1510 drivers/tty/tty_ioctl.c:341
- set_termios+0x4a1/0x580 drivers/tty/tty_ioctl.c:414
- tty_mode_ioctl+0x7b2/0xa80 drivers/tty/tty_ioctl.c:770
- tty_ioctl+0xf81/0x15c0 drivers/tty/tty_io.c:2665
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4405d9
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe5f581ef8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000401ed0 RCX: 00000000004405d9
-RDX: 0000000020000080 RSI: 0000000000005404 RDI: 0000000000000004
-RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000003e69 R11: 0000000000000246 R12: 0000000000401e40
-R13: 0000000000401ed0 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 9d629bc7ccf35892 ]---
-RIP: 0010:io_poll_double_wake+0x6b/0x360 fs/io_uring.c:4589
-Code: 8d 9d b8 00 00 00 48 89 d8 48 c1 e8 03 42 80 3c 20 00 74 08 48 89 df e8 53 64 de ff 48 8b 1b 48 83 c3 40 48 89 d8 48 c1 e8 03 <42> 80 3c 20 00 74 08 48 89 df e8 36 64 de ff 4c 8b 33 31 ff 44 89
-RSP: 0018:ffffc90001717b20 EFLAGS: 00010002
-RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff88809e0fe4c0
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff8880a2e7dc98
-RBP: ffff8880a2e7dc98 R08: 0000000000000000 R09: ffffc90001717be8
-R10: fffff520002e2f70 R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff88809a429e40 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000002640880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2629c956c0 CR3: 000000009e4e7000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+v2:
+- de-generalized __must_check_overflow() from being named "bool" (willy)
+- fix comment typos (rasmus)
+v1: https://lore.kernel.org/lkml/202008121450.405E4A3@keescook
+---
+ include/linux/overflow.h | 39 ++++++++++++++++++++++++---------------
+ 1 file changed, 24 insertions(+), 15 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/include/linux/overflow.h b/include/linux/overflow.h
+index 93fcef105061..f1c4e7b56bd9 100644
+--- a/include/linux/overflow.h
++++ b/include/linux/overflow.h
+@@ -43,6 +43,16 @@
+ #define is_non_negative(a) ((a) > 0 || (a) == 0)
+ #define is_negative(a) (!(is_non_negative(a)))
+ 
++/*
++ * Allows for effectively applying __must_check to a macro so we can have
++ * both the type-agnostic benefits of the macros while also being able to
++ * enforce that the return value is, in fact, checked.
++ */
++static inline bool __must_check __must_check_overflow(bool overflow)
++{
++	return unlikely(overflow);
++}
++
+ #ifdef COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW
+ /*
+  * For simplicity and code hygiene, the fallback code below insists on
+@@ -52,32 +62,32 @@
+  * alias for __builtin_add_overflow, but add type checks similar to
+  * below.
+  */
+-#define check_add_overflow(a, b, d) ({		\
++#define check_add_overflow(a, b, d) __must_check_overflow(({	\
+ 	typeof(a) __a = (a);			\
+ 	typeof(b) __b = (b);			\
+ 	typeof(d) __d = (d);			\
+ 	(void) (&__a == &__b);			\
+ 	(void) (&__a == __d);			\
+ 	__builtin_add_overflow(__a, __b, __d);	\
+-})
++}))
+ 
+-#define check_sub_overflow(a, b, d) ({		\
++#define check_sub_overflow(a, b, d) __must_check_overflow(({	\
+ 	typeof(a) __a = (a);			\
+ 	typeof(b) __b = (b);			\
+ 	typeof(d) __d = (d);			\
+ 	(void) (&__a == &__b);			\
+ 	(void) (&__a == __d);			\
+ 	__builtin_sub_overflow(__a, __b, __d);	\
+-})
++}))
+ 
+-#define check_mul_overflow(a, b, d) ({		\
++#define check_mul_overflow(a, b, d) __must_check_overflow(({	\
+ 	typeof(a) __a = (a);			\
+ 	typeof(b) __b = (b);			\
+ 	typeof(d) __d = (d);			\
+ 	(void) (&__a == &__b);			\
+ 	(void) (&__a == __d);			\
+ 	__builtin_mul_overflow(__a, __b, __d);	\
+-})
++}))
+ 
+ #else
+ 
+@@ -190,21 +200,20 @@
+ })
+ 
+ 
+-#define check_add_overflow(a, b, d)					\
++#define check_add_overflow(a, b, d)	__must_check_overflow(		\
+ 	__builtin_choose_expr(is_signed_type(typeof(a)),		\
+ 			__signed_add_overflow(a, b, d),			\
+-			__unsigned_add_overflow(a, b, d))
++			__unsigned_add_overflow(a, b, d)))
+ 
+-#define check_sub_overflow(a, b, d)					\
++#define check_sub_overflow(a, b, d)	__must_check_overflow(		\
+ 	__builtin_choose_expr(is_signed_type(typeof(a)),		\
+ 			__signed_sub_overflow(a, b, d),			\
+-			__unsigned_sub_overflow(a, b, d))
++			__unsigned_sub_overflow(a, b, d)))
+ 
+-#define check_mul_overflow(a, b, d)					\
++#define check_mul_overflow(a, b, d)	__must_check_overflow(		\
+ 	__builtin_choose_expr(is_signed_type(typeof(a)),		\
+ 			__signed_mul_overflow(a, b, d),			\
+-			__unsigned_mul_overflow(a, b, d))
+-
++			__unsigned_mul_overflow(a, b, d)))
+ 
+ #endif /* COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW */
+ 
+@@ -227,7 +236,7 @@
+  * '*d' will hold the results of the attempted shift, but is not
+  * considered "safe for use" if false is returned.
+  */
+-#define check_shl_overflow(a, s, d) ({					\
++#define check_shl_overflow(a, s, d) __must_check_overflow(({		\
+ 	typeof(a) _a = a;						\
+ 	typeof(s) _s = s;						\
+ 	typeof(d) _d = d;						\
+@@ -237,7 +246,7 @@
+ 	*_d = (_a_full << _to_shift);					\
+ 	(_to_shift != _s || is_negative(*_d) || is_negative(_a) ||	\
+ 	(*_d >> _to_shift) != _a);					\
+-})
++}))
+ 
+ /**
+  * array_size() - Calculate size of 2-dimensional array.
+-- 
+2.25.1
+
+
+-- 
+Kees Cook
