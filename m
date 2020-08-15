@@ -2,190 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF3C2452CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9379245317
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729336AbgHOVzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729078AbgHOVwZ (ORCPT
+        id S1729500AbgHOV6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:58:02 -0400
+Received: from smtprelay0189.hostedemail.com ([216.40.44.189]:50018 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728964AbgHOV6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:25 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A47C061347;
-        Fri, 14 Aug 2020 17:43:53 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597452231;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0G+axppjGzFD1dQNhB/BC6HHOikgQeBJXohrz5/uf+I=;
-        b=quYqow0sv/t/SjNiTyD3L+z5nz0GeEj7daya89jKSPPryz+OVDUY5FNaW9KeUjna6pziII
-        q3Yi+KIXjxKXk5fNbVwdcMY61G/K1XDwtFyYxdmlQXIjfKX/XXPalJcTwgpbp1gLSS62SE
-        /J5thjIZMthAZTCVbsKIsk/S/0QB45mx51zHbNb1v6yLX6fzPazpPa2+Fo5AEBNIpYn+Xa
-        /9NeFoRRwdn3Hedh/y9AOevdRs3P9bd1H5RQLEz9jDMXIQuw8/0RDVhlPyzLw0Ouv8CCQg
-        +8GuPuGzxYpv+jO1NjzalC7xDjqoI3UO4CyCVQUZSg29E32CIFue6zXE/qqdXA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597452231;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0G+axppjGzFD1dQNhB/BC6HHOikgQeBJXohrz5/uf+I=;
-        b=S+JEYArJZdKGoQo+wpzbe4846cAJl157BcP2o1PIh9OAXUCuoGjDeFJpORMMo4OlFAe11J
-        LjfA/Xvu6T6II0BA==
-To:     paulmck@kernel.org
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-In-Reply-To: <20200814234152.GV4295@paulmck-ThinkPad-P72>
-References: <20200814180141.GP4295@paulmck-ThinkPad-P72> <87tux4kefm.fsf@nanos.tec.linutronix.de> <20200814234152.GV4295@paulmck-ThinkPad-P72>
-Date:   Sat, 15 Aug 2020 02:43:51 +0200
-Message-ID: <87ft8okabc.fsf@nanos.tec.linutronix.de>
+        Sat, 15 Aug 2020 17:58:00 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id 5BC0718041E63;
+        Sat, 15 Aug 2020 00:52:04 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 2CF8C18026226;
+        Sat, 15 Aug 2020 00:52:04 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3872:3874:4321:5007:6117:6119:6742:7875:10004:10400:10848:11026:11232:11473:11658:11914:12297:12346:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21451:21627:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: feast89_3216ee827001
+X-Filterd-Recvd-Size: 2404
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 15 Aug 2020 00:52:01 +0000 (UTC)
+Message-ID: <562003af51ca0b08f2108147b8d6e75cec18f3fd.camel@perches.com>
+Subject: Re: [PATCH] lib/string.c: implement stpcpy
+From:   Joe Perches <joe@perches.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     =?ISO-8859-1?Q?D=E1vid_Bolvansk=FD?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>, stable@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Date:   Fri, 14 Aug 2020 17:52:00 -0700
+In-Reply-To: <20200815002417.1512973-1-ndesaulniers@google.com>
+References: <20200815002417.1512973-1-ndesaulniers@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paul,
+On Fri, 2020-08-14 at 17:24 -0700, Nick Desaulniers wrote:
+> LLVM implemented a recent "libcall optimization" that lowers calls to
+> `sprintf(dest, "%s", str)` where the return value is used to
+> `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
+> in parsing format strings.
+[]
+> diff --git a/include/linux/string.h b/include/linux/string.h
+[]
+> @@ -31,6 +31,9 @@ size_t strlcpy(char *, const char *, size_t);
+>  #ifndef __HAVE_ARCH_STRSCPY
+>  ssize_t strscpy(char *, const char *, size_t);
+>  #endif
+> +#ifndef __HAVE_ARCH_STPCPY
+> +extern char *stpcpy(char *__restrict, const char *__restrict__);
 
-On Fri, Aug 14 2020 at 16:41, Paul E. McKenney wrote:
-> On Sat, Aug 15, 2020 at 01:14:53AM +0200, Thomas Gleixner wrote:
->> As a matter of fact I assume^Wdeclare that removing struct rcu_head which
->> provides a fallback is not an option at all. I know that you want to,
->> but it wont work ever. Dream on, but as we agreed on recently there is
->> this thing called reality which ruins everything.
->
-> For call_rcu(), agreed.  For kfree_rcu(), we know what the callback is
-> going to do, plus single-argument kfree_rcu() can only be invoked from
-> sleepable context.  (If you want to kfree_rcu() from non-sleepable
-> context, that will cost you an rcu_head in the data structure being
-> freed.)
+Why use two different forms for __restrict and __restrict__?
+Any real reason to use __restrict__ at all?
 
-kfree_rcu() as of today is just a conveniance wrapper around
-call_rcu(obj, rcu) which can be called from any context and it still
-takes TWO arguments.
+It's used nowhere else in the kernel.
 
-Icepack?
+$ git grep -w -P '__restrict_{0,2}'
+scripts/genksyms/keywords.c:    // According to rth, c99 defines "_Bool", __restrict", __restrict__", "restrict".  KAO
+scripts/genksyms/keywords.c:    { "__restrict__", RESTRICT_KEYW },
 
-So if you come up with a new kfree_rcu_magic(void *obj) single argument
-variant which can only be called from sleepable contexts then this does
-not require any of the raw lock vs. non raw hacks at all because you can
-simply allocate without holding the raw lock in the rare case that you
-run out of storage space. With four 4k pages preallocated per CPU that's
-every 2048 invocations per CPU on 64bit.
 
-So if you run into that situation then you drop the lock and then it's
-racy because you might be preempted or migrated after dropping the lock
-and you might have done a useless allocation, but that does not justify
-having a special allocator just for that? You have an extra page, so
-what?
-
-To prevent subsequent callers to add to the allocation race you simply
-can let them wait on the first allocating attempt to finish That avoids
-more pointless allocations and as a side effect prevents all of them to
-create more pressure by continuing their open/close loop naturally
-without extra work.
-
-> So if the single-argument kfree_rcu() case gets hit with a
-> memory-allocation failure, it can fall back to waiting for a grace
-> period and doing the free.  Of course, grace-period waits have horrible
-> latency, but under OOM life is hard.  If this becomes a problem in
-> non-OOM situations due to the lockless caches becoming empty, we will
-> have to allocate memory if needed before acquiring the lock with the
-> usual backout logic.  Doing that means that we can let the allocator
-> acquire locks and maybe even do a little bit of blocking, so that the
-> inline grace-period-wait would only happen if the system was well and
-> truly OOMed.
-
-No. It dropped the rcu internal lock and does a regular GFP_KENRNEL
-allocation which waits for the page to become available. Which is a good
-thing in the open/close scenario because it throttles the offender.
-
->> For normal operations a couple of pages which can be preallocated are
->> enough. What you are concerned of is the case where you run out of
->> pointer storage space.
->
-> Agreed.
->
->> There are two reasons why that can happen:
->> 
->>       1) RCU call flooding
->>       2) RCU not being able to run and mop up the backlog
->> 
->> #1 is observable by looking at the remaining storage space and the RCU
->>    call frequency
->> 
->> #2 is uninteresting because it's caused by RCU being stalled / delayed
->>    e.g. by a runaway of some sorts or a plain RCU usage bug.
->>    
->>    Allocating more memory in that case does not solve or improve anything.
->
-> Yes, #2 is instead RCU CPU stall warning territory.
->
-> If this becomes a problem, one approach is to skip the page-of-pointers
-> allocation if the grace period is more than (say) one second old.  If
-> the grace period never completes, OOM is unavoidable, but this is a way
-> of putting it off for a bit.
-
-Don't even think about optimizing your new thing for #2. It's a
-pointless exercise. If the task which runs into the 'can't allocate'
-case then is sleeps and waits. End of story.
-
->> So the interesting case is #1. Which means we need to look at the
->> potential sources of the flooding:
->> 
->>     1) User space via syscalls, e.g. open/close
->>     2) Kernel thread
->>     3) Softirq
->>     4) Device interrupt
->>     5) System interrupts, deep atomic context, NMI ...
->> 
->> #1 trivial fix is to force switching to an high prio thread or a soft
->>    interrupt which does the allocation
->> 
->> #2 Similar to #1 unless that thread loops with interrupts, softirqs or
->>    preemption disabled. If that's the case then running out of RCU
->>    storage space is the least of your worries.
->> 
->> #3 Similar to #2. The obvious candidates (e.g. NET) for monopolizing a
->>    CPU have loop limits in place already. If there is a bug which fails
->>    to care about the limit, why would RCU care and allocate more memory?
->> 
->> #4 Similar to #3. If the interrupt handler loops forever or if the
->>    interrupt is a runaway which prevents task/softirq processing then
->>    RCU free performance is the least of your worries.
->> 
->> #5 Clearly a bug and making RCU accomodate for that is beyond silly.
->> 
->> So if call_rcu() detects that the remaining storage space for pointers
->> goes below the critical point or if it observes high frequency calls
->> then it simply should force a soft interrupt which does the allocation.
->
-> Unless call_rcu() has been invoked with scheduler locks held.  But
-> eventually call_rcu() should be invoked with interrupts enabled, and at
-> that point it would be safe to raise_softirq(), wake_up(), or
-> whatever.
-
-If this atomic context corner case is hit within a problematic context
-then we talk about the RCU of today and not about the future single
-argument thing. And that oldschool RCU has a fallback. We are talking
-about pressure corner cases and you really want to squeeze out the last
-cache miss?  What for? If there is pressure then these cache misses are
-irrelevant.
-
-Thanks,
-
-        tglx
