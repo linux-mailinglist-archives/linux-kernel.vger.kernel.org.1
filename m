@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0920D2453BD
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B24245390
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729872AbgHOWEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
+        id S1729766AbgHOWDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:03:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728468AbgHOVuy (ORCPT
+        with ESMTP id S1728693AbgHOVvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:50:54 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E60C008688;
-        Sat, 15 Aug 2020 10:09:05 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id r2so10994535wrs.8;
-        Sat, 15 Aug 2020 10:09:05 -0700 (PDT)
+        Sat, 15 Aug 2020 17:51:12 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C14C0F26D5
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:37:09 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id v5so3369956plo.4
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:37:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3WYA+MRcZZtykG/q4VFvjrVuF0lixiryzbRvGctnpXg=;
+        b=pINu1a9Z8jvV2wlSAwofwgFt8WwNyI1VvRWoacqmJB81nfXEzYc2XbqMqAa9fIG6oL
+         Ig19mAbu5yJpvG5+RKlsp7BxnzlqabAtR8lK4rzDMM1pVB2NuDmqajqwD+pEtvnGS+zX
+         Phkb1Kp7BMleVC9kLnZk1QseNMQTjUIO6Po4sMJXTw+GucVmPFnIXiGHJ8v0hcsG/AqP
+         9wMFkmWd3OygzHe5XmHK+dT4lPIQFQ/g6zGqEzQigfFN2drIUiDQ9vatqX+aNsSLDuf2
+         blC0bjW8oGxpQteyJzJbaxOXi/JB/06HpzkuabuW3l9eFNdZXVJt+m3eqRxZNWSSYClg
+         igxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=029UH3B1a9Lf0jL+nGrPJWLfG2l0sqy5BcJufnEFRSo=;
-        b=kfx/scPTYqEZ17u+ZFYo/wkli9c1602Eer/O88A9MASU/rJP3AEPexy218pL0WUJH7
-         AuKP62sIMRIW+iqc9N18xUsyqZsGIwldexljmnd+06UmvCnqBqmRalou/IFBdd1iVbU3
-         WUmpF6JFMlQcq6yRIpBI4IYmvKuumYcvesugBzbe0lkvaUU/7nbJ2G2wCDtTXTAM1Xcy
-         Y6ofNi8o/VYFJKVkdycaYU1L36eAdhAlIRbVnnO3uhWwVnZqqzcXlRWNscckmajhLomo
-         gSaVVfhR25jU0jOY72zMf5SS5mtRiPJ9z8161lt3ufLf4m52IpWtln8Rb5secVxHeFMP
-         kEQA==
-X-Gm-Message-State: AOAM5316gtq6MqmCtJTzV4t6DkCK7hN5Y8shdWbJDZ2n4yXOt2FXePT+
-        lij/H4mil8J+PI+YNSOpQIc=
-X-Google-Smtp-Source: ABdhPJz7Ays+EpnOkkjlDYLn2zhH8aBQpPRgvq1Kw/IIQOZykznexU2T++RMSld9txkKP52bTQT3QQ==
-X-Received: by 2002:a5d:60c5:: with SMTP id x5mr7773149wrt.67.1597511342690;
-        Sat, 15 Aug 2020 10:09:02 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id f15sm24370989wrt.80.2020.08.15.10.09.01
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3WYA+MRcZZtykG/q4VFvjrVuF0lixiryzbRvGctnpXg=;
+        b=HwgOQr0J83OtoNm1Z4hHTqRfBjTJBP2xdlFs4Ng1vqdY3EYgtcymo7+zVuvOLT4FKW
+         39X036k/eu5BXIn1Fa2BCE7LajEYlADHoUVv0uNRx7kQzAF7CHd+rcBG7Sxob7G6iE5b
+         zTV/k4Fv+A8e+Pp6cZloMNQURo3yPKXmYYQkvJA8U1hXHqJU3Jz7UHugzIm9iHZVdkML
+         pTQtSla9JP13/1MOUxGfzD/+jIIu0flIn1/MYUP0wQ19cKBHYETiFIqxTk+jFTQLzhMa
+         6DQRCcc2xWu3ElrzlfIx2QcBlXDeBagVmX/ZwDgNyxy1MQJXx8aGUEmeDeExkGZWoKbG
+         z1YQ==
+X-Gm-Message-State: AOAM533HkXjt2huwJxjR6j9Im/RT8H7Wh4q2J+TeiLKFLveyzmkjWmFA
+        lBcKuDLER2oVkgcK9CipdfpS7IwWpvQ6xA==
+X-Google-Smtp-Source: ABdhPJwjcFvYRspFwrp4C1xN1VrebHSuOSfdaasmGzy35iSykc5pVc5aQhsFaGoLD5BvFRGA9lajCw==
+X-Received: by 2002:a17:902:aa82:: with SMTP id d2mr5833816plr.12.1597513028263;
+        Sat, 15 Aug 2020 10:37:08 -0700 (PDT)
+Received: from gnu-cfl-2.localdomain (c-69-181-90-243.hsd1.ca.comcast.net. [69.181.90.243])
+        by smtp.gmail.com with ESMTPSA id b26sm12961860pff.54.2020.08.15.10.37.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 10:09:01 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 17:09:00 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, kys@microsoft.com,
-        sthemmin@microsoft.com, wei.liu@kernel.org,
-        linux-hyperv@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, mingo@redhat.com, bp@alien8.de,
-        x86@kernel.org, hpa@zytor.com
-Subject: Re: [PATCH v2 1/1] Drivers: hv: vmbus: Add parsing of VMbus
- interrupt in ACPI DSDT
-Message-ID: <20200815170900.5hye5xdnrhwlhwyp@liuwe-devbox-debian-v2>
-References: <1597434304-40631-1-git-send-email-mikelley@microsoft.com>
+        Sat, 15 Aug 2020 10:37:07 -0700 (PDT)
+Received: from gnu-cfl-2.localdomain (localhost [IPv6:::1])
+        by gnu-cfl-2.localdomain (Postfix) with ESMTP id C5A851A0168;
+        Sat, 15 Aug 2020 10:37:06 -0700 (PDT)
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     "H . Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] x86-64: Enable x32 set_thread_area
+Date:   Sat, 15 Aug 2020 10:37:06 -0700
+Message-Id: <20200815173706.2903393-1-hjl.tools@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1597434304-40631-1-git-send-email-mikelley@microsoft.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 12:45:04PM -0700, Michael Kelley wrote:
-> On ARM64, Hyper-V now specifies the interrupt to be used by VMbus
-> in the ACPI DSDT.  This information is not used on x86 because the
-> interrupt vector must be hardcoded.  But update the generic
-> VMbus driver to do the parsing and pass the information to the
-> architecture specific code that sets up the Linux IRQ.  Update
-> consumers of the interrupt to get it from an architecture specific
-> function.
-> 
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+X32 uses the common 64-bit syscall interface for set_thread_area.  Tested
+with tools/testing/selftests/x86/sigreturn.c on x32.
 
-Applied to hyperv-next. Thanks.
+Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
+---
+ arch/x86/entry/syscalls/syscall_64.tbl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Wei.
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index 37b844f839bc..670193a73f6e 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -213,7 +213,7 @@
+ 202	common	futex			sys_futex
+ 203	common	sched_setaffinity	sys_sched_setaffinity
+ 204	common	sched_getaffinity	sys_sched_getaffinity
+-205	64	set_thread_area
++205	common	set_thread_area
+ 206	64	io_setup		sys_io_setup
+ 207	common	io_destroy		sys_io_destroy
+ 208	common	io_getevents		sys_io_getevents
+-- 
+2.26.2
+
