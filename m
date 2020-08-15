@@ -2,140 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C65245275
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0A5245264
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728727AbgHOVvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728674AbgHOVvK (ORCPT
+        id S1726655AbgHOVt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:49:57 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:48008 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726135AbgHOVt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:10 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA7AC03B3E7;
-        Sat, 15 Aug 2020 02:32:39 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1c7a00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f1c:7a00:329c:23ff:fea6:a903])
+        Sat, 15 Aug 2020 17:49:56 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A29941EC0411;
-        Sat, 15 Aug 2020 11:32:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1597483956;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=DVkFmgVppcUdysdhmCgRYqE3/zJKAH13Ppg3uAvwVP8=;
-        b=FOb5lXu7Kn7iS2NabxxkPOxoDuF/xer2Qu77aiDAYxskjdo45klK3RVJaZ0IF/ic4gaKoN
-        Grp08fbd9Jmd9ZWZk69bruMIgP72l56Pi5EiNwnsDXKMyaQbCipo+ZQVuPqjJFQR17MtQ+
-        qhuxBZcCdDOclWH+NnhAd6ZlXjsIHbs=
-Date:   Sat, 15 Aug 2020 11:33:32 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Alex Kluver <alex.kluver@hpe.com>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ardb@kernel.org, mchehab@kernel.org, russ.anderson@hpe.com,
-        dimitri.sivanich@hpe.com
-Subject: Re: [PATCH] edac,ghes,cper: Add Row Extension to Memory Error Record
-Message-ID: <20200815093332.GD25814@zn.tnic>
-References: <20200727181445.111002-1-alex.kluver@hpe.com>
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 86FA780539;
+        Sat, 15 Aug 2020 12:02:31 +0200 (CEST)
+Date:   Sat, 15 Aug 2020 12:02:30 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] drm/panel: Add panel driver for the Mantix
+ MLAF057WE51-X DSI panel
+Message-ID: <20200815100230.GA1002374@ravnborg.org>
+References: <cover.1597412076.git.agx@sigxcpu.org>
+ <0a7539135cc46eec5636ca89f52695f4a1197841.1597412076.git.agx@sigxcpu.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200727181445.111002-1-alex.kluver@hpe.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0a7539135cc46eec5636ca89f52695f4a1197841.1597412076.git.agx@sigxcpu.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=8nJEP1OIZ-IA:10 a=ze386MxoAAAA:8 a=e5mUnYsNAAAA:8
+        a=2VR2e5HfQ1QhP8mth8gA:9 a=wPNLvfGTeEIA:10 a=iBZjaW-pnkserzjvUTHh:22
+        a=Vxmtnl_E_bksehYqCbjh:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 01:14:45PM -0500, Alex Kluver wrote:
-> Memory errors could be printed with incorrect row values since the DIMM
-> size has outgrown the 16 bit row field in the CPER structure. UEFI
-> Specification Version 2.8 has increased the size of row by allowing it to
-> use the first 2 bits from a previously reserved space within the structure.
-> 
-> When needed, add the extension bits to the row value printed.
-> 
-> Based on UEFI 2.8 Table 299. Memory Error Record
-> 
-> Tested-by: Russ Anderson <russ.anderson@hpe.com>
-> Signed-off-by: Alex Kluver <alex.kluver@hpe.com>
-> ---
->  drivers/edac/ghes_edac.c    | 10 ++++++++--
->  drivers/firmware/efi/cper.c | 11 +++++++++--
->  include/linux/cper.h        |  9 +++++++--
->  3 files changed, 24 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
-> index cb3dab56a875..cfa3156300f5 100644
-> --- a/drivers/edac/ghes_edac.c
-> +++ b/drivers/edac/ghes_edac.c
-> @@ -337,8 +337,14 @@ void ghes_edac_report_mem_error(int sev, struct cper_sec_mem_err *mem_err)
->  		p += sprintf(p, "rank:%d ", mem_err->rank);
->  	if (mem_err->validation_bits & CPER_MEM_VALID_BANK)
->  		p += sprintf(p, "bank:%d ", mem_err->bank);
-> -	if (mem_err->validation_bits & CPER_MEM_VALID_ROW)
-> -		p += sprintf(p, "row:%d ", mem_err->row);
-> +	if (mem_err->validation_bits & (CPER_MEM_VALID_ROW | CPER_MEM_VALID_ROW_EXT)) {
-> +		u32 row_extended = 0;
-> +		if (mem_err->validation_bits & CPER_MEM_VALID_ROW_EXT)
-> +			row_extended = (mem_err->extended & CPER_MEM_EXT_ROW_MASK)
-> +				<<CPER_MEM_EXT_ROW_SHIFT;
-> +		row_extended |= mem_err->row;
-> +		p += sprintf(p, "row:%d ", row_extended);
+Hi Guido.
+
+> +static int mantix_probe(struct mipi_dsi_device *dsi)
+> +{
+> +	struct device *dev = &dsi->dev;
+> +	struct mantix *ctx;
+> +	int ret;
+> +
+> +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx)
+> +		return -ENOMEM;
+> +
+> +	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
+> +	if (IS_ERR(ctx->reset_gpio)) {
+> +		DRM_DEV_ERROR(dev, "cannot get reset gpio\n");
+> +		return PTR_ERR(ctx->reset_gpio);
 > +	}
->  	if (mem_err->validation_bits & CPER_MEM_VALID_COLUMN)
->  		p += sprintf(p, "col:%d ", mem_err->column);
->  	if (mem_err->validation_bits & CPER_MEM_VALID_BIT_POSITION)
-> diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-> index f564e15fbc7e..5faaf6ecd659 100644
-> --- a/drivers/firmware/efi/cper.c
-> +++ b/drivers/firmware/efi/cper.c
-> @@ -234,8 +234,14 @@ static int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg)
->  		n += scnprintf(msg + n, len - n, "bank: %d ", mem->bank);
->  	if (mem->validation_bits & CPER_MEM_VALID_DEVICE)
->  		n += scnprintf(msg + n, len - n, "device: %d ", mem->device);
-> -	if (mem->validation_bits & CPER_MEM_VALID_ROW)
-> -		n += scnprintf(msg + n, len - n, "row: %d ", mem->row);
-> +	if (mem->validation_bits & (CPER_MEM_VALID_ROW | CPER_MEM_VALID_ROW_EXT)) {
-> +		u32 row_extended = 0;
-> +		if (mem->validation_bits & CPER_MEM_VALID_ROW_EXT)
-> +			row_extended = (mem->extended & CPER_MEM_EXT_ROW_MASK)
-> +				<<CPER_MEM_EXT_ROW_SHIFT;
-
-This is not very readable.
-
-> +		row_extended |= mem->row;
-> +		n += scnprintf(msg + n, len - n, "row: %d ", row_extended);
+> +
+> +	mipi_dsi_set_drvdata(dsi, ctx);
+> +	ctx->dev = dev;
+> +
+> +	dsi->lanes = 4;
+> +	dsi->format = MIPI_DSI_FMT_RGB888;
+> +	dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
+> +		MIPI_DSI_MODE_VIDEO_BURST | MIPI_DSI_MODE_VIDEO_SYNC_PULSE;
+> +
+> +	ctx->avdd = devm_regulator_get(dev, "avdd");
+> +	if (IS_ERR(ctx->avdd)) {
+> +		ret = PTR_ERR(ctx->avdd);
+> +		if (ret != -EPROBE_DEFER)
+> +			DRM_DEV_ERROR(dev,
+> +				      "Failed to request avdd regulator: %d\n",
+> +				      ret);
+> +		return ret;
 > +	}
 
-Both those hunks contain duplicated code which kinda wants to be an
-inline function in cper.h which returns row_extended and gets called by
-both sites. And then the call site can look very simple:
+Consider to use the recently added dev_err_probe() here and below.
+Note: Not part of drm-misc-next yet - but hopefully after -rc1
+when a backmerge is done.
 
-        if (mem_err->validation_bits & CPER_MEM_VALID_ROW)
-                row = mem_err->row;
+	Sam
 
-        /* add row extension */
-        row |= cper_get_mem_extension();
-
-        p += sprintf(p, "row:%d ", row);
-
-with
-
-static inline u32 cper_get_mem_extension(void)
-{
-	if (!(mem_err->validation_bits & CPER_MEM_VALID_ROW_EXT))
-		return 0;
-
-	return (mem_err->extended & CPER_MEM_EXT_ROW_MASK) << CPER_MEM_EXT_ROW_SHIFT;
-}
-
-Something along those lines...
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> +	ctx->avee = devm_regulator_get(dev, "avee");
+> +	if (IS_ERR(ctx->avee)) {
+> +		ret = PTR_ERR(ctx->avee);
+> +		if (ret != -EPROBE_DEFER)
+> +			DRM_DEV_ERROR(dev,
+> +				      "Failed to request avee regulator: %d\n",
+> +				      ret);
+> +		return ret;
+> +	}
+> +	ctx->vddi = devm_regulator_get(dev, "vddi");
+> +	if (IS_ERR(ctx->vddi)) {
+> +		ret = PTR_ERR(ctx->vddi);
+> +		if (ret != -EPROBE_DEFER)
+> +			DRM_DEV_ERROR(dev,
+> +				      "Failed to request vddi regulator: %d\n",
+> +				      ret);
+> +		return ret;
+> +	}
+> +
+> +	drm_panel_init(&ctx->panel, dev, &mantix_drm_funcs,
+> +		       DRM_MODE_CONNECTOR_DSI);
+> +
+> +	ret = drm_panel_of_backlight(&ctx->panel);
+> +	if (ret)
+> +		return ret;
+> +	drm_panel_add(&ctx->panel);
+> +
+> +	ret = mipi_dsi_attach(dsi);
+> +	if (ret < 0) {
+> +		DRM_DEV_ERROR(dev,
+> +			      "mipi_dsi_attach failed (%d). Is host ready?\n",
+> +			      ret);
+> +		drm_panel_remove(&ctx->panel);
+> +		return ret;
+> +	}
+> +
+> +	DRM_DEV_INFO(dev, "%ux%u@%u %ubpp dsi %udl - ready\n",
+> +		     default_mode.hdisplay, default_mode.vdisplay,
+> +		     drm_mode_vrefresh(&default_mode),
+> +		     mipi_dsi_pixel_format_to_bpp(dsi->format), dsi->lanes);
+> +
+> +	return 0;
+> +}
+> +
+> +static void mantix_shutdown(struct mipi_dsi_device *dsi)
+> +{
+> +	struct mantix *ctx = mipi_dsi_get_drvdata(dsi);
+> +	int ret;
+> +
+> +	ret = drm_panel_unprepare(&ctx->panel);
+> +	if (ret < 0)
+> +		DRM_DEV_ERROR(&dsi->dev, "Failed to unprepare panel: %d\n",
+> +			      ret);
+> +
+> +	ret = drm_panel_disable(&ctx->panel);
+> +	if (ret < 0)
+> +		DRM_DEV_ERROR(&dsi->dev, "Failed to disable panel: %d\n",
+> +			      ret);
+> +}
+> +
+> +static int mantix_remove(struct mipi_dsi_device *dsi)
+> +{
+> +	struct mantix *ctx = mipi_dsi_get_drvdata(dsi);
+> +	int ret;
+> +
+> +	mantix_shutdown(dsi);
+> +
+> +	ret = mipi_dsi_detach(dsi);
+> +	if (ret < 0)
+> +		DRM_DEV_ERROR(&dsi->dev, "Failed to detach from DSI host: %d\n",
+> +			      ret);
+> +
+> +	drm_panel_remove(&ctx->panel);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id mantix_of_match[] = {
+> +	{ .compatible = "mantix,mlaf057we51-x" },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, mantix_of_match);
+> +
+> +static struct mipi_dsi_driver mantix_driver = {
+> +	.probe	= mantix_probe,
+> +	.remove = mantix_remove,
+> +	.shutdown = mantix_shutdown,
+> +	.driver = {
+> +		.name = DRV_NAME,
+> +		.of_match_table = mantix_of_match,
+> +	},
+> +};
+> +module_mipi_dsi_driver(mantix_driver);
+> +
+> +MODULE_AUTHOR("Guido Günther <agx@sigxcpu.org>");
+> +MODULE_DESCRIPTION("DRM driver for Mantix MLAF057WE51-X MIPI DSI panel");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.26.2
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
