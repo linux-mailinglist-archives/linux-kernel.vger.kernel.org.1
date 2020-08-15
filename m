@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707E624549E
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCB12454A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729499AbgHOWcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:32:35 -0400
-Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:34698 "EHLO
+        id S1729122AbgHOWce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:32:34 -0400
+Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:34694 "EHLO
         mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1728687AbgHOWcM (ORCPT
+        with ESMTP id S1728130AbgHOWcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:32:12 -0400
+        Sat, 15 Aug 2020 18:32:11 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 1DF3A20160C9;
-        Sat, 15 Aug 2020 09:22:38 +0800 (HKT)
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 0958E20160CA;
+        Sat, 15 Aug 2020 09:22:48 +0800 (HKT)
 X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
 Received: from mail.gtsys.com.hk ([127.0.0.1])
         by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id tWeB-4u6BIjR; Sat, 15 Aug 2020 09:22:38 +0800 (HKT)
+        with ESMTP id gEY7YgXJjYZX; Sat, 15 Aug 2020 09:22:47 +0800 (HKT)
 Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 0527820160B5;
-        Sat, 15 Aug 2020 09:22:38 +0800 (HKT)
+        by mail.gtsys.com.hk (Postfix) with ESMTP id E55CD20160B5;
+        Sat, 15 Aug 2020 09:22:47 +0800 (HKT)
 Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
-        by s01.gtsys.com.hk (Postfix) with ESMTP id 01C47C019F4;
-        Sat, 15 Aug 2020 09:22:38 +0800 (HKT)
+        by s01.gtsys.com.hk (Postfix) with ESMTP id DB7EBC019F4;
+        Sat, 15 Aug 2020 09:22:47 +0800 (HKT)
 Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
-        id F1D3D20046C; Sat, 15 Aug 2020 09:22:37 +0800 (HKT)
+        id D74FE20046C; Sat, 15 Aug 2020 09:22:47 +0800 (HKT)
 From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
 To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
 Cc:     Jack Lo <jack.lo@gtsys.com.hk>, devicetree@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>,
         Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v8 1/2] hwmon: shtc1: add support for device tree bindings
-Date:   Sat, 15 Aug 2020 09:22:26 +0800
-Message-Id: <20200815012227.32538-2-chris.ruehl@gtsys.com.hk>
+Subject: [PATCH v8 2/2] devicetree: hwmon: shtc1: add sensirion,shtc1.yaml
+Date:   Sat, 15 Aug 2020 09:22:27 +0800
+Message-Id: <20200815012227.32538-3-chris.ruehl@gtsys.com.hk>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200815012227.32538-1-chris.ruehl@gtsys.com.hk>
 References: <20200815012227.32538-1-chris.ruehl@gtsys.com.hk>
@@ -46,74 +47,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for DTS bindings for the sensirion shtc1,shtw1 and shtc3.
+Add documentation for the newly added DTS support in the shtc1 driver.
+To align with the drivers logic to have high precision by default
+a boolean sensirion,low-precision is used to switch to low precision.
 
 Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 ---
- v8: no change
+ .../bindings/hwmon/sensirion,shtc1.yaml       | 61 +++++++++++++++++++
+ 1 file changed, 61 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
 
- drivers/hwmon/shtc1.c | 25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/hwmon/shtc1.c b/drivers/hwmon/shtc1.c
-index a0078ccede03..7993a5ff8768 100644
---- a/drivers/hwmon/shtc1.c
-+++ b/drivers/hwmon/shtc1.c
-@@ -14,6 +14,7 @@
- #include <linux/err.h>
- #include <linux/delay.h>
- #include <linux/platform_data/shtc1.h>
-+#include <linux/of.h>
- 
- /* commands (high precision mode) */
- static const unsigned char shtc1_cmd_measure_blocking_hpm[]    = { 0x7C, 0xA2 };
-@@ -196,6 +197,7 @@ static int shtc1_probe(struct i2c_client *client,
- 	enum shtcx_chips chip = id->driver_data;
- 	struct i2c_adapter *adap = client->adapter;
- 	struct device *dev = &client->dev;
-+	struct device_node *np = dev->of_node;
- 
- 	if (!i2c_check_functionality(adap, I2C_FUNC_I2C)) {
- 		dev_err(dev, "plain i2c transactions not supported\n");
-@@ -233,8 +235,14 @@ static int shtc1_probe(struct i2c_client *client,
- 	data->client = client;
- 	data->chip = chip;
- 
--	if (client->dev.platform_data)
--		data->setup = *(struct shtc1_platform_data *)dev->platform_data;
-+	if (np) {
-+		data->setup.blocking_io = of_property_read_bool(np, "sensirion,blocking-io");
-+		data->setup.high_precision = !of_property_read_bool(np, "sensicon,low-precision");
-+	} else {
-+		if (client->dev.platform_data)
-+			data->setup = *(struct shtc1_platform_data *)dev->platform_data;
-+	}
+diff --git a/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml b/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
+new file mode 100644
+index 000000000000..c523a1beb2b7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
+@@ -0,0 +1,61 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/hwmon/sensirion,shtc1.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	shtc1_select_command(data);
- 	mutex_init(&data->update_lock);
- 
-@@ -257,8 +265,19 @@ static const struct i2c_device_id shtc1_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, shtc1_id);
- 
-+static const struct of_device_id shtc1_of_match[] = {
-+	{ .compatible = "sensirion,shtc1" },
-+	{ .compatible = "sensirion,shtw1" },
-+	{ .compatible = "sensirion,shtc3" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, shtc1_of_match);
++title: Sensirion SHTC1 Humidity and Temperature Sensor IC
 +
- static struct i2c_driver shtc1_i2c_driver = {
--	.driver.name  = "shtc1",
-+	.driver = {
-+		.name = "shtc1",
-+		.of_match_table = shtc1_of_match,
-+	},
- 	.probe        = shtc1_probe,
- 	.id_table     = shtc1_id,
- };
++maintainers:
++  - Christopher Ruehl chris.ruehl@gtsys.com.hk
++
++description: |
++  The SHTC1, SHTW1 and SHTC3 are digital humidity and temperature sensor
++  designed especially for battery-driven high-volume consumer electronics
++  applications.
++  For further information refere to Documentation/hwmon/shtc1.rst
++
++  This binding document describes the binding for the hardware monitor
++  portion of the driver.
++
++properties:
++  compatible:
++    enum:
++      - sensirion,shtc1
++      - sensirion,shtw1
++      - sensirion,shtc3
++
++  reg:
++    const: 0x70
++
++  sensirion,blocking-io:
++    $ref: /schemas/types.yaml#definitions/flag
++    description:
++      If set, the driver hold the i2c bus until measurement is finished.
++
++  sensirion,low-precision:
++    $ref: /schemas/types.yaml#definitions/flag
++    description:
++      If set, the sensor aquire data with low precision (not recommended).
++      The driver aquire data with high precision by default.
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      clock-frequency = <400000>;
++
++      shtc3@70 {
++        compatible = "sensirion,shtc3";
++        reg = <0x70>;
++        sensirion,blocking-io;
++      };
++    };
++...
 -- 
 2.20.1
 
