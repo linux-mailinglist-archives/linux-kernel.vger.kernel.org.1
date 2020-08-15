@@ -2,195 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC38A245208
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 356B524527D
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgHOVhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:37:22 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:52718 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726444AbgHOVhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:37:20 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 6788EFB05;
-        Sat, 15 Aug 2020 18:47:39 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id rYMbM5R8wXQP; Sat, 15 Aug 2020 18:47:37 +0200 (CEST)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 4A9304576F; Sat, 15 Aug 2020 18:47:37 +0200 (CEST)
-Date:   Sat, 15 Aug 2020 18:47:37 +0200
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: Add Mantix MLAF057WE51-X panel bindings
-Message-ID: <20200815164737.GA3640@bogon.m.sigxcpu.org>
-References: <cover.1597412076.git.agx@sigxcpu.org>
- <9345739df02b8b8630e7dccb61a80a7a7f692526.1597412076.git.agx@sigxcpu.org>
- <20200815083917.GA993113@ravnborg.org>
+        id S1729008AbgHOVwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728931AbgHOVvx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:51:53 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A29C0A54DA
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 09:56:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=JvLghbUswUlpt0JwASQDrmBEnasLkSkpyvZGI85Q00k=; b=P29QJOzu0baa+1b186//OqzMLC
+        iyaoiYkT7I4CXjFyF3EGi0RV7HOXpwICKD+xd0NIS2nxjArB1qO4SDzzZXDPN4TolRk3tLt5JogxW
+        WSvPphoXQU6iCad09MbfvCwoAD6QPLQ3IMmYgAs4rK2Ojz1SIQYKf2mLdHYpxeLmLDL8=;
+Received: from p200300ccff3e9c001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff3e:9c00:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1k6zTg-0007Ic-I3; Sat, 15 Aug 2020 18:56:20 +0200
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1k6zTf-0002mV-Go; Sat, 15 Aug 2020 18:56:19 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     lee.jones@linaro.org, sre@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, b.galvani@gmail.com, phh@phh.me,
+        letux-kernel@openphoenux.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH 0/2] power: supply: RN5T618/RC5T619
+Date:   Sat, 15 Aug 2020 18:56:08 +0200
+Message-Id: <20200815165610.10647-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200815083917.GA993113@ravnborg.org>
+X-Spam-Score: -1.0 (-)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam,
-On Sat, Aug 15, 2020 at 10:39:17AM +0200, Sam Ravnborg wrote:
-> Hi Guido.
-> 
-> On Fri, Aug 14, 2020 at 03:36:22PM +0200, Guido Günther wrote:
-> > The panel uses a Focaltech FT8006p, the touch part is handled by the
-> > already existing edt-ft5x06.
-> > 
-> > Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> 
-> A few trivialities.
+This series adds support for the RN5T618/RC5T619 charger and fuel gauge.
+Battery and input power status can be read.
 
-Thanks for having a look. One remark inline:
+Andreas Kemnade (2):
+  power: supply: Add support for RN5T618/RC5T619 charger and fuel gauge
+  mfd: rn5t618: Add a power supply subdevice
 
-> 
-> > ---
-> >  .../display/panel/mantix,mlaf057we51-x.yaml   | 73 +++++++++++++++++++
-> >  1 file changed, 73 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
-> > new file mode 100644
-> > index 0000000000000..349f3380ac940
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
-> > @@ -0,0 +1,73 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/display/panel/mantix,mlaf057we51-x.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Mantix MLAF057WE51-X 5.7" 720x1440 TFT LCD panel
-> > +
-> > +maintainers:
-> > +  - Guido Günther <agx@sigxcpu.org>
-> > +
-> > +description: |
-> > +             Mantix MLAF057WE51 X is a 720x1440 TFT LCD panel
-> > +             connected using a MIPI-DSI video interface.
-> Indent text with two spaces only.
-> And I have learned that '|' is only needed to preserve formatting - so
-> it can be dropped.
-> 
-> > +
-> > +allOf:
-> > +  - $ref: panel-common.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - mantix,mlaf057we51-x
-> This is a list - so needs an extra 2 spaces indent.
-> See https://lore.kernel.org/linux-devicetree/f1963eb9-283f-e903-2a3a-4f324d71d418@lucaceresoli.net/T/#m65900317fb948f6c40e8fb521f2201fba3c301a7
-> for examples where Rob fixes this.
+ drivers/mfd/rn5t618.c                |   1 +
+ drivers/power/supply/Kconfig         |   8 +
+ drivers/power/supply/Makefile        |   1 +
+ drivers/power/supply/rn5t618_power.c | 565 +++++++++++++++++++++++++++
+ 4 files changed, 575 insertions(+)
+ create mode 100644 drivers/power/supply/rn5t618_power.c
 
-Doesn't this only apply if the 'outer element' is a list too so e.g.:
+-- 
+2.20.1
 
-   - enum
-     - foo
-
-trips up yamllint but
-
-   enum
-     - foo
-
-doesn't. Since yamllint was happy i kept it as is (looking at your
-reference suggests that too).
-
-All the rest made sense and i fixed that for the upcoming v2.
-Thanks for having a look!
- -- Guido
-
-> 
-> > +
-> > +  port: true
-> > +  reg:
-> > +    maxItems: 1
-> > +    description: DSI virtual channel
-> > +
-> > +  avdd-supply:
-> > +    description: Positive analog power supply
-> > +
-> > +  avee-supply:
-> > +    description: Negative analog power supply
-> > +
-> > +  vddi-supply:
-> > +    description: 1.8V I/O voltage supply
-> > +
-> > +  reset-gpios:
-> > +    description: GPIO used for the reset pin
-> > +    maxItems: 1
-> Use reset-gpios: true as we already have it in panel-common.yaml
-> 
-> > +
-> > +  backlight:
-> > +    description: Backlight used by the panel
-> > +    $ref: "/schemas/types.yaml#/definitions/phandle"
-> Use backlight from panel-common.yaml.
-> 
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - avdd-supply
-> > +  - avee-supply
-> > +  - vddi-supply
-> > +  - reset-gpios
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +
-> > +    dsi {
-> My personal preference is indent with 4 spaces in examples but there are
-> no rules so feel free to ignore.
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +      panel@0 {
-> > +        compatible = "mantix,mlaf057we51-x";
-> > +        reg = <0>;
-> > +        avdd-supply = <&reg_avdd>;
-> > +        avee-supply = <&reg_avee>;
-> > +        vddi-supply = <&reg_1v8_p>;
-> > +        reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
-> > +        backlight = <&backlight>;
-> > +      };
-> > +    };
-> I think we need an ampty line here.
-> > +...
-> > -- 
-> > 2.26.2
-> > 
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> 
