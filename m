@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3566B2453FF
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15257245385
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729799AbgHOWKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:10:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729600AbgHOWKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:10:37 -0400
-Received: from coco.lan (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE6E123107;
-        Sat, 15 Aug 2020 09:55:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597485342;
-        bh=8xrqG9ujM70SVswirhjHSCM1NcB46h4TexvLpDudO2g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=yAnn6BiR5U23ij/arHHrK8eelhARFK7/EUOlF3awlMLsxkoQEG9tZYQUnutq9i7MH
-         D18q6AwLGssk9detsPija+F+N9yue+RsxWHArtljHus9HQJvE2NliGwp1XGPCRSpMw
-         n2rx5a4v/01pNOLc3N1Isl2OON8WkrUFAo3yyNtY=
-Date:   Sat, 15 Aug 2020 11:55:36 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     mauro.chehab@huawei.com, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linuxarm@huawei.com,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH 43/44] dt: document HiSilicon SPMI controller and
- mfd/regulator properties
-Message-ID: <20200815115536.6519a7f5@coco.lan>
-In-Reply-To: <20200814201708.GA2665752@bogus>
-References: <cover.1597247164.git.mchehab+huawei@kernel.org>
-        <da65a508d01aa2092999d0ce7e9c061ccfd24036.1597247164.git.mchehab+huawei@kernel.org>
-        <20200814201708.GA2665752@bogus>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1729748AbgHOWCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728709AbgHOVvY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:51:24 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 088F6C08E81D;
+        Sat, 15 Aug 2020 03:37:40 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id i26so8661301edv.4;
+        Sat, 15 Aug 2020 03:37:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=t1LVSuI1NRkF6KqZNtOw+yQ3crRfQObWywAHMmVLnk0=;
+        b=ZQ+fWqby9a1jtQGefwywyLe6v64QaA7Bdf4daPmvgWiGIbLp4eAxPcMCGyPipoBSvi
+         98ARS860VviTcWZfz1fuvKORtuKGa7Trz86INHn6BwleJla9nBjquiag8JY6Q8w78RPK
+         mVBhNeT9fEN1B791N8ZajEOvHDvvbdmrCA0qHxRBEaSpG7CH84FatLNY9iWd0e3qKvVp
+         vhTxji+jL1iW2BhkpIcJn1M7Xwdvcu8JGrjsbv+9b+hvuTtJ0OMMU48zjsGEHdwUDUy7
+         LXPp5ma4cqJclP4ULeVjuX7X+7/5jEt29i/sqxWtBjVrWGo+OZGpTV2hwkX3ucxPiHIR
+         Pdlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=t1LVSuI1NRkF6KqZNtOw+yQ3crRfQObWywAHMmVLnk0=;
+        b=GrfZaAf0yiyd/5I8xv/848CFIlHAGwrnUKMaoN0uns3qrw28VJgIx2ilEi2H2TRUs0
+         ROMP5o9lX7zeUwOd03j7V3tnkOr6xsH7h1SkKLUqEm2FYfw6tyNUN9FFtNg2IN5CpDhj
+         +SRSh8v4PfmeKbu9J7+efPpkW69tWZt+XMwe/U26oUE8ZJVg1wU1+IT+pV09CnIl9+2K
+         FHoX6pV8tEU/7Y27TN2RMuCnpIxzzrssp3d7xKHo2i6jBV/Cr+RR+PdI/Nr1GhJxkN5R
+         U+QlHFRDX0ebxwuJrcACbRLC/CcY5omiRE5BOkPa4e38oMUtwCEnrUs8o7gQnT26AHre
+         5q5Q==
+X-Gm-Message-State: AOAM531tTpIdGGaC/X+50DUw7MKqXamBdW7looxZXywsb6ylE2oCCDuc
+        qSDFD5OM1dWCVhogn/lHgY8=
+X-Google-Smtp-Source: ABdhPJyIebA9WqJ8aRwewHzlOukQLt+yRO56TMQId/Kwsz908PUmzImqZLLYwU6/QpBnZ3Al5OHy/A==
+X-Received: by 2002:a50:fc0a:: with SMTP id i10mr6465263edr.5.1597487859618;
+        Sat, 15 Aug 2020 03:37:39 -0700 (PDT)
+Received: from ubuntu-laptop (ip5f5bee32.dynamic.kabel-deutschland.de. [95.91.238.50])
+        by smtp.googlemail.com with ESMTPSA id g11sm8288715edv.95.2020.08.15.03.37.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 15 Aug 2020 03:37:39 -0700 (PDT)
+Message-ID: <b1081d95d115848d657bd48ca05f27ab0db01c7e.camel@gmail.com>
+Subject: Re: [PATCH v3 1/2] scsi: ufs: change ufshcd_comp_devman_upiu() to
+ ufshcd_compose_devman_upiu()
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sat, 15 Aug 2020 12:37:37 +0200
+In-Reply-To: <ca175083f887ab0204f63002b5e2c4c7@codeaurora.org>
+References: <20200814095034.20709-1-huobean@gmail.com>
+         <20200814095034.20709-2-huobean@gmail.com>
+         <ca175083f887ab0204f63002b5e2c4c7@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-Em Fri, 14 Aug 2020 14:17:08 -0600
-Rob Herring <robh@kernel.org> escreveu:
-
-> On Wed, 12 Aug 2020 17:56:53 +0200, Mauro Carvalho Chehab wrote:
-> > Add documentation for the properties needed by the HiSilicon
-> > 6421v600 driver, and by the SPMI controller used to access
-> > the chipset.
+On Sat, 2020-08-15 at 09:52 +0800, Can Guo wrote:
+> Hi Bean,
+> 
+> On 2020-08-14 17:50, Bean Huo wrote:
+> > From: Bean Huo <beanhuo@micron.com>
 > > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 182 ++++++++++++++++++
-> >  .../spmi/hisilicon,hisi-spmi-controller.yaml  |  54 ++++++
-> >  2 files changed, 236 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-> >  create mode 100644 Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
-> >   
+> > ufshcd_comp_devman_upiu() alwasy make me confuse that it is a
+> > request
+> > completion calling function. Change it to
+> > ufshcd_compose_devman_upiu().
+> > 
+> > Signed-off-by: Bean Huo <beanhuo@micron.com>
+> > Acked-by: Avri Altman <avri.altman@wdc.com>
 > 
+> I gave my reviewed by tag in previous version, you missed it. Here it
+> is
 > 
-> My bot found errors running 'make dt_binding_check' on your patch:
-> 
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.example.dt.yaml: example-0: spmi@fff24000:reg:0: [0, 4294066176, 0, 4096] is too long
+> Reviewed-by: Can Guo <cang@codeaurora.org>
 
-I was unable to find any way to solve this one. What's the proper
-way to set the length of the root reg on some example?
+Can
 
-Thanks,
-Mauro
+nice, thanks.
+
+Bean
+
