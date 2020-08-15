@@ -2,220 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B65324540F
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13AC24548E
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729273AbgHOWLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:11:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729329AbgHOWKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:10:30 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729218AbgHOW2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:28:42 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:50178 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726598AbgHOW2l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:28:41 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBB5823131;
-        Sat, 15 Aug 2020 14:01:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597500118;
-        bh=HHwsOMYRXp/2zFYaM9FuF5Q2zzb3dRLWaEJ0btmxQ9s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2MREOgeX655lWEbK4oorCWNvX2n9I4MRapmcmny7TsJ/+HRkSk0/Zs50CV458Kk/A
-         iQfx1BUBmR4ITnlqKzUp5X5s1f53lm42HLwcszU4e/nlN/2U6VmzDkNUlSGZHfuvTj
-         Tnkv3Zm9QuobhRRtdt7tyJVN9wtlZ3FTb2miNNZA=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH v2 6/6] tools/bootconfig: Add --init option for bconf2ftrace.sh
-Date:   Sat, 15 Aug 2020 23:01:55 +0900
-Message-Id: <159750011530.202708.5601308431073416960.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <159750006069.202708.12439674123720173666.stgit@devnote2>
-References: <159750006069.202708.12439674123720173666.stgit@devnote2>
-User-Agent: StGit/0.19
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 2ED4520027;
+        Sat, 15 Aug 2020 16:09:41 +0200 (CEST)
+Date:   Sat, 15 Aug 2020 16:09:39 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] drm/panel: A few cleanups and improvements
+Message-ID: <20200815140939.GA1196814@ravnborg.org>
+References: <20200811002240.55194-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200811002240.55194-1-paul@crapouillou.net>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=2LY2f65kBtWg6R36iiwA:9 a=CjuIK1q_8ugA:10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the ftrace current setting may conflict with the new setting
-from bootconfig, add the --init option to initialize ftrace before
-setting for bconf2ftrace.sh.
+Hi Paul.
 
-E.g.
- $ bconf2ftrace.sh --init boottrace.bconf
+On Tue, Aug 11, 2020 at 02:22:35AM +0200, Paul Cercueil wrote:
+> Hi list,
+> 
+> Here's a list of 5 patches that bring some cleanups and improvements.
+> 
+> Patches 1-2 clean up the novatek,nt39016 code to remove custom handling
+> of the backlight and to add the missing carriage returns on error
+> messages.
+> 
+> Patches 3-5 updates the modes list of the sharp,ls020b1dd01d panel, to
+> make it use 'struct drm_display_mode' instead of 'struct
+> display_timing', modify the timings to get a perfect 60.00 Hz rate, and
+> add a 50 Hz mode.
 
-This initialization method copied from selftests/ftrace.
+While touching logging stuff in panle/ I made the same fix adding
+newlines. Glad to see you did it so I can drop one of my patches.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- tools/bootconfig/scripts/bconf2ftrace.sh |   12 +++
- tools/bootconfig/scripts/ftrace.sh       |  109 ++++++++++++++++++++++++++++++
- 2 files changed, 120 insertions(+), 1 deletion(-)
- create mode 100644 tools/bootconfig/scripts/ftrace.sh
+All patches applied to drm-misc-next.
 
-diff --git a/tools/bootconfig/scripts/bconf2ftrace.sh b/tools/bootconfig/scripts/bconf2ftrace.sh
-index a46e984fb2ff..595e164dc352 100755
---- a/tools/bootconfig/scripts/bconf2ftrace.sh
-+++ b/tools/bootconfig/scripts/bconf2ftrace.sh
-@@ -3,8 +3,9 @@
- 
- usage() {
- 	echo "Ftrace boottime trace test tool"
--	echo "Usage: $0 [--apply] [--debug] BOOTCONFIG-FILE"
-+	echo "Usage: $0 [--apply|--init] [--debug] BOOTCONFIG-FILE"
- 	echo "    --apply: Test actual apply to tracefs (need sudo)"
-+	echo "    --init:  Initialize ftrace before applying (imply --apply)"
- 	exit 1
- }
- 
-@@ -13,12 +14,16 @@ usage() {
- BCONF=
- DEBUG=
- APPLY=
-+INIT=
- while [ x"$1" != x ]; do
- 	case "$1" in
- 	"--debug")
- 		DEBUG=$1;;
- 	"--apply")
- 		APPLY=$1;;
-+	"--init")
-+		APPLY=$1
-+		INIT=$1;;
- 	*)
- 		[ ! -f $1 ] && usage
- 		BCONF=$1;;
-@@ -57,6 +62,11 @@ if [ -z "$TRACEFS" ]; then
- 	fi
- fi
- 
-+if [ x"$INIT" != x ]; then
-+	. `dirname $0`/ftrace.sh
-+	(cd $TRACEFS; initialize_ftrace)
-+fi
-+
- . `dirname $0`/xbc.sh
- 
- ######## main #########
-diff --git a/tools/bootconfig/scripts/ftrace.sh b/tools/bootconfig/scripts/ftrace.sh
-new file mode 100644
-index 000000000000..186eed923041
---- /dev/null
-+++ b/tools/bootconfig/scripts/ftrace.sh
-@@ -0,0 +1,109 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+clear_trace() { # reset trace output
-+    echo > trace
-+}
-+
-+disable_tracing() { # stop trace recording
-+    echo 0 > tracing_on
-+}
-+
-+enable_tracing() { # start trace recording
-+    echo 1 > tracing_on
-+}
-+
-+reset_tracer() { # reset the current tracer
-+    echo nop > current_tracer
-+}
-+
-+reset_trigger_file() {
-+    # remove action triggers first
-+    grep -H ':on[^:]*(' $@ |
-+    while read line; do
-+        cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
-+	file=`echo $line | cut -f1 -d:`
-+	echo "!$cmd" >> $file
-+    done
-+    grep -Hv ^# $@ |
-+    while read line; do
-+        cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
-+	file=`echo $line | cut -f1 -d:`
-+	echo "!$cmd" > $file
-+    done
-+}
-+
-+reset_trigger() { # reset all current setting triggers
-+    if [ -d events/synthetic ]; then
-+        reset_trigger_file events/synthetic/*/trigger
-+    fi
-+    reset_trigger_file events/*/*/trigger
-+}
-+
-+reset_events_filter() { # reset all current setting filters
-+    grep -v ^none events/*/*/filter |
-+    while read line; do
-+	echo 0 > `echo $line | cut -f1 -d:`
-+    done
-+}
-+
-+reset_ftrace_filter() { # reset all triggers in set_ftrace_filter
-+    if [ ! -f set_ftrace_filter ]; then
-+      return 0
-+    fi
-+    echo > set_ftrace_filter
-+    grep -v '^#' set_ftrace_filter | while read t; do
-+	tr=`echo $t | cut -d: -f2`
-+	if [ "$tr" = "" ]; then
-+	    continue
-+	fi
-+	if ! grep -q "$t" set_ftrace_filter; then
-+		continue;
-+	fi
-+	name=`echo $t | cut -d: -f1 | cut -d' ' -f1`
-+	if [ $tr = "enable_event" -o $tr = "disable_event" ]; then
-+	    tr=`echo $t | cut -d: -f2-4`
-+	    limit=`echo $t | cut -d: -f5`
-+	else
-+	    tr=`echo $t | cut -d: -f2`
-+	    limit=`echo $t | cut -d: -f3`
-+	fi
-+	if [ "$limit" != "unlimited" ]; then
-+	    tr="$tr:$limit"
-+	fi
-+	echo "!$name:$tr" > set_ftrace_filter
-+    done
-+}
-+
-+disable_events() {
-+    echo 0 > events/enable
-+}
-+
-+clear_synthetic_events() { # reset all current synthetic events
-+    grep -v ^# synthetic_events |
-+    while read line; do
-+        echo "!$line" >> synthetic_events
-+    done
-+}
-+
-+initialize_ftrace() { # Reset ftrace to initial-state
-+# As the initial state, ftrace will be set to nop tracer,
-+# no events, no triggers, no filters, no function filters,
-+# no probes, and tracing on.
-+    disable_tracing
-+    reset_tracer
-+    reset_trigger
-+    reset_events_filter
-+    reset_ftrace_filter
-+    disable_events
-+    [ -f set_event_pid ] && echo > set_event_pid
-+    [ -f set_ftrace_pid ] && echo > set_ftrace_pid
-+    [ -f set_ftrace_notrace ] && echo > set_ftrace_notrace
-+    [ -f set_graph_function ] && echo | tee set_graph_*
-+    [ -f stack_trace_filter ] && echo > stack_trace_filter
-+    [ -f kprobe_events ] && echo > kprobe_events
-+    [ -f uprobe_events ] && echo > uprobe_events
-+    [ -f synthetic_events ] && echo > synthetic_events
-+    [ -f snapshot ] && echo 0 > snapshot
-+    clear_trace
-+    enable_tracing
-+}
+	Sam
 
+> 
+> Cheers,
+> -Paul
+> 
+> Paul Cercueil (5):
+>   drm/panel: novatek,nt39016: Handle backlight the standard way
+>   drm/panel: novatek,nt39016: Add missing CR to error messages
+>   drm/panel: simple: Convert sharp,ls020b1dd01d from timings to
+>     videomode
+>   drm/panel: simple: Tweak timings of sharp,ls020b1dd01d for perfect
+>     60Hz
+>   drm/panel: simple: Add 50Hz mode for sharp,ls020b1dd01d
+> 
+>  drivers/gpu/drm/panel/panel-novatek-nt39016.c | 34 ++++++----------
+>  drivers/gpu/drm/panel/panel-simple.c          | 40 +++++++++++++------
+>  2 files changed, 40 insertions(+), 34 deletions(-)
+> 
+> -- 
+> 2.28.0
