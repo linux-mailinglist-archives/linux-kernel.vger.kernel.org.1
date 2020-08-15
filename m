@@ -2,90 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB65245332
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E78E24520C
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728924AbgHOV7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728898AbgHOVvn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:43 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E817C02B8E9;
-        Sat, 15 Aug 2020 04:57:40 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id cq28so8738336edb.10;
-        Sat, 15 Aug 2020 04:57:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=e5WFLhWdFvLwcJo4KJClLZEF3HzHgvxjJKIXosYGPF4=;
-        b=PcfdA6dCXp/NZfoSZ2qnOycj1qJUi1htbO1eEEq90NaS1ZBNtqKKvp1yvvCT6cR1PI
-         b1AyVQY7O8k4eEUHuydvkugG0tJUjhwA2fvz5I9l6Lx++TMWojg2bObnsk5CR0wP9FiX
-         63gXciEy2Il0KmD4LFadcrKozWgYmQsQkEMWhWPX69t3mZKVxM33h3KAbNMYJEC4h5DC
-         BYe+jTdevJIvd1kD+Pfq3i8+gV9w2fbrYIVGWU6HZy8uYn2OaJ1xhDfFMVENqtOO7KEx
-         idE//vhd2D03izVfJla8QsRJsDuR0yb3IWaKmztSqs4ijrmlYeATzNHgbiQnXG8jlBLA
-         gnFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=e5WFLhWdFvLwcJo4KJClLZEF3HzHgvxjJKIXosYGPF4=;
-        b=rgAADB7dVpXGFcMOJefsjrLybXJAT5hWJS/IFoPdxlRssp8Tmj1r+AC0raC+CecvG8
-         3PcKHyytFz+5ofo436s+/O3hu3BnjMSGWXiudHvILQYJYVb6hLHNjJSXSAGUSjubJFmQ
-         asshmJxyMfgPRdOs4Q3pmViwb0TwvzK/rD36+jnSyeeP8p2DvokRvoYlkI1tv0HsODst
-         y0NOClcbLp88h5Cz/McLTzHkmC0GtYfR1ZQa4knGHyWxYs5y3WudF03RNf2eCJkVEvck
-         g5pesB26P0Ge+w2ZV9PF+vR2WTJkla37V2wjDMiLEFlGV7eEXRDkIfv6HoJfWyEPxoaH
-         7OlA==
-X-Gm-Message-State: AOAM533lJA9TsxKOYGxgGxSTeemDabiC+aqs3XBJpnbqWfA3mBcA7Xw0
-        fiU0zXUxz8rWm/ECopPb9ZY=
-X-Google-Smtp-Source: ABdhPJx3wb69o+9Gns8Ea5rU+G4bqnaPXWRFFoT1SHfqA0FUCsdviXL44mSynODzetlPyjAiXO2OyQ==
-X-Received: by 2002:a50:b701:: with SMTP id g1mr6878915ede.197.1597492657686;
-        Sat, 15 Aug 2020 04:57:37 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2d69:b900:61e5:2d94:8d77:6e0f])
-        by smtp.gmail.com with ESMTPSA id v13sm9184110ejq.59.2020.08.15.04.57.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 04:57:37 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] Documentation: add riscv entry in list of existing profiles
-Date:   Sat, 15 Aug 2020 13:57:28 +0200
-Message-Id: <20200815115728.15128-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726918AbgHOVid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:38:33 -0400
+Received: from mga07.intel.com ([134.134.136.100]:62772 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726288AbgHOVid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:38:33 -0400
+IronPort-SDR: 7aDkoqkccl2pA39I2vHozCLzR5T44O7sfwmIVDr1Tr6odwuvHZn58W67XKqWlYXU01q3M2GznO
+ oL1kUJVpV7Qg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9713"; a="218860632"
+X-IronPort-AV: E=Sophos;i="5.76,316,1592895600"; 
+   d="scan'208";a="218860632"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2020 05:55:34 -0700
+IronPort-SDR: CKSlF3hOH2ajsTjU/m9UYHYRy5AIEiRNAhByojGtC9bOGjvl44P4wgAUq1ZhZIDIP06WiJZfZl
+ CBInzwoYTaIw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,316,1592895600"; 
+   d="scan'208";a="370134267"
+Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
+  by orsmga001.jf.intel.com with ESMTP; 15 Aug 2020 05:55:32 -0700
+Date:   Sat, 15 Aug 2020 20:52:43 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jan Kara <jack@suse.cz>, Nicolas Palix <nicolas.palix@imag.fr>
+Subject: Re: [kbuild-all] Re: fs/ocfs2/suballoc.c:2430:2-8: preceding lock on
+ line 2413
+Message-ID: <20200815125243.GA21882@intel.com>
+References: <202008141412.mP88ccpD%lkp@intel.com>
+ <878sehl5e4.fsf@nanos.tec.linutronix.de>
+ <alpine.DEB.2.22.394.2008142059190.2441@hadrien>
+ <87364pkock.fsf@nanos.tec.linutronix.de>
+ <alpine.DEB.2.22.394.2008142148180.2441@hadrien>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2008142148180.2441@hadrien>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As long as there are only a few maintainer entry profiles, i.e., three
-in v5.8, continue to maintain a complete a list of entries in the
-maintainer handbook.
+On Fri, Aug 14, 2020 at 09:52:13PM +0200, Julia Lawall wrote:
+> 
+> 
+> On Fri, 14 Aug 2020, Thomas Gleixner wrote:
+> 
+> > Julia,
+> >
+> > On Fri, Aug 14 2020 at 21:00, Julia Lawall wrote:
+> > > On Fri, 14 Aug 2020, Thomas Gleixner wrote:
+> > >> That's clearly a false positive. Is there anything what can be done to
+> > >> help that cocci script here?
+> > >
+> > > I have a better version that needs to get pushed.
+> > >
+> > > But normally these pass through me.  Did you get it directly from kbuild?
+> >
+> > Yes, because I touched the affected lines last :)
+> 
+> Actually, that's not the point.  Normally, I get all the reports on this
+> case, and then I forward them if they look ok.  If I forwarded something
+> incorrect, then sorry about that.  If the policy has changed for this rule
+> to be sending the reports out directlty to the recipients, then I think it
+> should be changed back.  There are a lot of real bugs with lock usage, but
+> there are alot of false positives too.  Specifically, the rule looks for
+> the case with identical if tests, but only when the branches are identical
+> too.
+> 
+> Kbuild people, can this be adjusted?  Or have I misunderstood the
+> situation?
+Hi Julia and Thomas, pls allow us to check this further, usually all cocci
+reports will be sent to kbuild@01.org for Julia to check. But there maybe
+something wrong with this report. We will check the detail in next week as
+we have server maintainance during the weekend.
 
-Complete the list by adding the RISC-V ARCHITECTURE maintainer entry
-profile found in MAINTAINERS.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on docs-next
-
-Dan, please ack.
-Jonathan, please pick this patch.
-
- Documentation/maintainer/maintainer-entry-profile.rst | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/maintainer/maintainer-entry-profile.rst b/Documentation/maintainer/maintainer-entry-profile.rst
-index 227f427118e8..b7a627d6c97d 100644
---- a/Documentation/maintainer/maintainer-entry-profile.rst
-+++ b/Documentation/maintainer/maintainer-entry-profile.rst
-@@ -101,3 +101,4 @@ to do something different in the near future.
- 
-    ../doc-guide/maintainer-profile
-    ../nvdimm/maintainer-entry-profile
-+   ../riscv/patch-acceptance
--- 
-2.17.1
-
+> 
+> thanks,
+> julia
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
