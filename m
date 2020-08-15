@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134F02453A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540B7245418
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729702AbgHOWD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728669AbgHOVvI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:08 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A4FC0612F1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:42:43 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 03B31127C289A;
-        Fri, 14 Aug 2020 20:25:56 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 20:42:42 -0700 (PDT)
-Message-Id: <20200814.204242.2048284550886688191.davem@davemloft.net>
-To:     lee.jones@linaro.org
-Cc:     kuba@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/30] Rid W=1 warnings in Networking
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200814113933.1903438-1-lee.jones@linaro.org>
-References: <20200814113933.1903438-1-lee.jones@linaro.org>
-X-Mailer: Mew version 6.8 on Emacs 26.3
+        id S1729252AbgHOWK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:10:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728120AbgHOWKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:10:25 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C37C22D2B;
+        Sat, 15 Aug 2020 04:14:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597464899;
+        bh=FIMa12YBIxbmIJo5mkpIyQCNLan+KFvgEdkF5NlPF5Y=;
+        h=Date:From:To:Subject:In-Reply-To:References:From;
+        b=VgsexbWCry2QnQXKmEDGliFphiT40hu4/JgjYaHoAmW9k5oOECFOwHdBDHdeQjAbZ
+         vno4rCgEnXx+PinQDLJSUDb10OB+9Zz1BOkXyeHwdMO+7T7dGte/FY8LeG73BPju2Y
+         tq0JWf7U2JplIyT+Fqkv/wADobAPrpVkUDyC9UjQ=
+Date:   Fri, 14 Aug 2020 21:14:59 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>,
+        Roman Gushchin <klamm@yandex-team.ru>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm : sync ra->ra_pages with bdi->ra_pages
+Message-Id: <20200814211459.65f6db0211872e30684a630a@linux-foundation.org>
+In-Reply-To: <20200814131034.f71a91c6827904e12a629e04@linux-foundation.org>
+References: <1597395824-3325-1-git-send-email-zhaoyang.huang@unisoc.com>
+        <20200814131034.f71a91c6827904e12a629e04@linux-foundation.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 14 Aug 2020 20:25:57 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Jones <lee.jones@linaro.org>
-Date: Fri, 14 Aug 2020 12:39:03 +0100
+On Fri, 14 Aug 2020 13:10:34 -0700 Andrew Morton <akpm@linux-foundation.org> wrote:
 
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
+> On Fri, 14 Aug 2020 17:03:44 +0800 Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
 > 
-> There are quite a few W=1 warnings in the Networking code.  My
-> plan is to work through all of them over the next few weeks.
-> Hopefully it won't be too long before drivers/net builds clean
-> with W=1 enabled.
+> > Some system(like android) will turbo read during startup via expanding the
+> > readahead window and then set it back to normal(128kb as usual). However, some
+> > files in the system process context will keep to be opened since it is opened
+> > up and has no chance to sync with the updated value as it is almost impossible
+> > to change the files attached to the inode(processes are unaware of these things)
+> 
+> How about making VM_READAHEAD_PAGES a variable?
 
-I applied the non-wireless changes here to my tree.
-
-Thanks.
+Or make it settable in Kconfig?
