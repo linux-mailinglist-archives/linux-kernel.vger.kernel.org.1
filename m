@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4748324538B
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F06A2453DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729300AbgHOWCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45648 "EHLO
+        id S1730002AbgHOWGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726855AbgHOVvW (ORCPT
+        with ESMTP id S1728390AbgHOVus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:22 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BD0C061378
+        Sat, 15 Aug 2020 17:50:48 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A140C061379
         for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:32 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id 62so10193588qkj.7
+Received: by mail-qv1-xf43.google.com with SMTP id l13so5230015qvt.10
         for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ropbXLmQVQLM4HRBV4KUOHOQ9FtvbqlRpYjRFgviYHA=;
-        b=T3NVoYc8bWCtji6Ke4d8PuhZQgU5UXRz3E6yI6gJyHrCwafzlXCwOvFqlh6KWH2Sfc
-         mYWnDwj+LJkamj9/sjoaEp+OI5vvIjOpev6t1S+yYDtIaag/kFvOvDWHHKASOgzOrDCq
-         Fh7NbNuXyUHB+qoMVL2G1g+c6KsDjdaPBaI0Y=
+        bh=sz9J9n5LJAX7KClHXQuFpMY4XStGHjRFIOCICHV1+xA=;
+        b=DBYuSEfaGrHBZ6Ox30YL3/iF80Lbym84DzzCTT44BqXZbCQrCWIHiVVstkjiPp5D3D
+         0Yc0zxknsWLouhfVyupvLylPPu3mlSvCJ5Bk3JVOHGtboT8kJHczbvJJyeBgQgbt2mKm
+         OvZouILkJD+chgktd8mY35fv05p4iyQsNd3Qw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ropbXLmQVQLM4HRBV4KUOHOQ9FtvbqlRpYjRFgviYHA=;
-        b=G5pJOsgMqeI+7KghjqUnekK9BZ6c6S9KuWyz/ID9nd2HamiJMD7dAdH9dwF+dXOW+X
-         CvvNQjdD4EyTO5AeLP6vQ7Wnn6cnFltpIbAWb7dIfSSqGk1N9/rq12l7dMfKk1VzFiuD
-         Cm9lDgA1ghLhpMICxOI/FT0xKnBOSMLqqKcu7gOV9ERLeZZlsFz1LWrqsOm9l+gO9sZ+
-         UV0ZVdwi20S5wVhOBchWDI5V3jLeiy2B4RtDkxMbLCzvXsvbYr9U7ABP2BaQV64ipdQn
-         ArBvJzb0dQTEaJ5663U9L36H8Pk6sd7bMu7mY7qOhWuj7qHzNQJClKM2QPWzkL6nusFo
-         j1ew==
-X-Gm-Message-State: AOAM5307gFBfAgWSCIg9wkEhZGFrMVwCiPeoIBzRELAM2BL9OOrErpoL
-        PZJrsSzRB+hvkyB8uKUuqBTFmxXdsLuxjw==
-X-Google-Smtp-Source: ABdhPJwjPW9fxFWSLRpBGwiHQHtdcW4BU3aoBD+vhjMsZgIL9oGfFRmbWCxzCNaLbobeUfrelvxysw==
-X-Received: by 2002:a05:620a:1424:: with SMTP id k4mr4772841qkj.2.1597461570404;
-        Fri, 14 Aug 2020 20:19:30 -0700 (PDT)
+        bh=sz9J9n5LJAX7KClHXQuFpMY4XStGHjRFIOCICHV1+xA=;
+        b=gdI9z1vOdBqP2GNy5V2RKiZUK/rZOom8u4wjZ4KqYW/nGe8KRfqNr+NrfQo4s71PXX
+         anf4vx4M0clpffg2XTn1vjGYHLihomOk6CQgvQobbMUnhWjv3FE0q6bLMfkWpIreITeA
+         omQo/bvq7KHWoG22hJHyfjkl/MatXOwb/uyex51C9y93Z1wlkRPgJWHIfUWbgC7PfXQQ
+         z9KDTqF7DGUzW0B7cyQyKqGmopsNY9W7wgMMucDEkLzHMAacpNPGPAFi8SMvvAcHDGyM
+         bj8BVO56DqqBSPcN5EFVy6b00KOZFJm/orRJdVQ+tTh8gaVjig6OYX8lYzotkXBb+NaE
+         WTHw==
+X-Gm-Message-State: AOAM533aYd99z0NINb+AiRRPfpm3I1bbz529LUdkN2Lwyr4V5fuRatxm
+        6vMHuciM9KQiLgTAz+zVrku5MqF5EmLHJA==
+X-Google-Smtp-Source: ABdhPJyg1Gs1MEeJSpdLbF1HcBYbQH7Ao2UZcesb0jCMGvIW5YPYA4FBd8gsxBOrIUvIyEV3Hz58NQ==
+X-Received: by 2002:a0c:b310:: with SMTP id s16mr5320090qve.5.1597461571554;
+        Fri, 14 Aug 2020 20:19:31 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id p12sm10055199qkk.118.2020.08.14.20.19.29
+        by smtp.gmail.com with ESMTPSA id p12sm10055199qkk.118.2020.08.14.20.19.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 20:19:30 -0700 (PDT)
+        Fri, 14 Aug 2020 20:19:31 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
@@ -68,9 +68,9 @@ Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Chen Yu <yu.c.chen@intel.com>,
         Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH RFC 07/12] bitops: Introduce find_next_or_bit
-Date:   Fri, 14 Aug 2020 23:19:03 -0400
-Message-Id: <20200815031908.1015049-8-joel@joelfernandes.org>
+Subject: [PATCH RFC 08/12] cpumask: Introduce a new iterator for_each_cpu_wrap_or
+Date:   Fri, 14 Aug 2020 23:19:04 -0400
+Message-Id: <20200815031908.1015049-9-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
 In-Reply-To: <20200815031908.1015049-1-joel@joelfernandes.org>
 References: <20200815031908.1015049-1-joel@joelfernandes.org>
@@ -83,172 +83,168 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vineeth Pillai <viremana@linux.microsoft.com>
 
-Hotplug fixes to core-scheduling require a new bitops API.
-
-Introduce a new API find_next_or_bit() which returns the bit number of
-the next set bit in OR-ed bit masks of the given bit masks.
+Hotplug fixes to core-scheduling require a new cpumask iterator which iterates
+through all online cpus in both the given cpumasks. This patch introduces it.
 
 Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- include/asm-generic/bitops/find.h | 16 +++++++++
- lib/find_bit.c                    | 56 +++++++++++++++++++++++++------
- 2 files changed, 61 insertions(+), 11 deletions(-)
+ include/linux/cpumask.h | 42 ++++++++++++++++++++++++++++++++
+ lib/cpumask.c           | 53 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 95 insertions(+)
 
-diff --git a/include/asm-generic/bitops/find.h b/include/asm-generic/bitops/find.h
-index 9fdf21302fdf..0b476ca0d665 100644
---- a/include/asm-generic/bitops/find.h
-+++ b/include/asm-generic/bitops/find.h
-@@ -32,6 +32,22 @@ extern unsigned long find_next_and_bit(const unsigned long *addr1,
- 		unsigned long offset);
- #endif
- 
-+#ifndef find_next_or_bit
-+/**
-+ * find_next_or_bit - find the next set bit in any memory regions
-+ * @addr1: The first address to base the search on
-+ * @addr2: The second address to base the search on
-+ * @offset: The bitnumber to start searching at
-+ * @size: The bitmap size in bits
-+ *
-+ * Returns the bit number for the next set bit
-+ * If no bits are set, returns @size.
-+ */
-+extern unsigned long find_next_or_bit(const unsigned long *addr1,
-+		const unsigned long *addr2, unsigned long size,
-+		unsigned long offset);
-+#endif
-+
- #ifndef find_next_zero_bit
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index f0d895d6ac39..03e8c57c6ca6 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -207,6 +207,10 @@ static inline int cpumask_any_and_distribute(const struct cpumask *src1p,
+ 	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask, (void)(start))
+ #define for_each_cpu_and(cpu, mask1, mask2)	\
+ 	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask1, (void)mask2)
++#define for_each_cpu_or(cpu, mask1, mask2)	\
++	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask1, (void)mask2)
++#define for_each_cpu_wrap_or(cpu, mask1, mask2, start)	\
++	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask1, (void)mask2, (void)(start))
+ #else
  /**
-  * find_next_zero_bit - find the next cleared bit in a memory region
-diff --git a/lib/find_bit.c b/lib/find_bit.c
-index 49f875f1baf7..2eca8e2b16b1 100644
---- a/lib/find_bit.c
-+++ b/lib/find_bit.c
-@@ -19,7 +19,14 @@
+  * cpumask_first - get the first cpu in a cpumask
+@@ -248,6 +252,7 @@ static inline unsigned int cpumask_next_zero(int n, const struct cpumask *srcp)
+ }
  
- #if !defined(find_next_bit) || !defined(find_next_zero_bit) ||			\
- 	!defined(find_next_bit_le) || !defined(find_next_zero_bit_le) ||	\
--	!defined(find_next_and_bit)
-+	!defined(find_next_and_bit) || !defined(find_next_or_bit)
+ int cpumask_next_and(int n, const struct cpumask *, const struct cpumask *);
++int cpumask_next_or(int n, const struct cpumask *, const struct cpumask *);
+ int cpumask_any_but(const struct cpumask *mask, unsigned int cpu);
+ unsigned int cpumask_local_spread(unsigned int i, int node);
+ int cpumask_any_and_distribute(const struct cpumask *src1p,
+@@ -278,6 +283,8 @@ int cpumask_any_and_distribute(const struct cpumask *src1p,
+ 		(cpu) < nr_cpu_ids;)
+ 
+ extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool wrap);
++extern int cpumask_next_wrap_or(int n, const struct cpumask *mask1,
++				 const struct cpumask *mask2, int start, bool wrap);
+ 
+ /**
+  * for_each_cpu_wrap - iterate over every cpu in a mask, starting at a specified location
+@@ -294,6 +301,22 @@ extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool
+ 	     (cpu) < nr_cpumask_bits;						\
+ 	     (cpu) = cpumask_next_wrap((cpu), (mask), (start), true))
+ 
++/**
++ * for_each_cpu_wrap_or - iterate over every cpu in both masks, starting at a specified location
++ * @cpu: the (optionally unsigned) integer iterator
++ * @mask1: the first cpumask pointer
++ * @mask2: the second cpumask pointer
++ * @start: the start location
++ *
++ * The implementation does not assume any bit both masks are set (including @start).
++ *
++ * After the loop, cpu is >= nr_cpu_ids.
++ */
++#define for_each_cpu_wrap_or(cpu, mask1, mask2, start)					\
++	for ((cpu) = cpumask_next_wrap_or((start)-1, (mask1), (mask2), (start), false);	\
++	     (cpu) < nr_cpumask_bits;						\
++	     (cpu) = cpumask_next_wrap_or((cpu), (mask1), (mask2), (start), true))
 +
-+typedef enum {
-+	FNB_AND = 0,
-+	FNB_OR  = 1,
-+	FNB_MAX = 2
-+} fnb_bwops_t;
+ /**
+  * for_each_cpu_and - iterate over every cpu in both masks
+  * @cpu: the (optionally unsigned) integer iterator
+@@ -312,6 +335,25 @@ extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool
+ 	for ((cpu) = -1;						\
+ 		(cpu) = cpumask_next_and((cpu), (mask1), (mask2)),	\
+ 		(cpu) < nr_cpu_ids;)
 +
- /*
-  * This is a common helper function for find_next_bit, find_next_zero_bit, and
-  * find_next_and_bit. The differences are:
-@@ -29,7 +36,8 @@
-  */
- static unsigned long _find_next_bit(const unsigned long *addr1,
- 		const unsigned long *addr2, unsigned long nbits,
--		unsigned long start, unsigned long invert, unsigned long le)
-+		unsigned long start, unsigned long invert,
-+		fnb_bwops_t type, unsigned long le)
- {
- 	unsigned long tmp, mask;
++/**
++ * for_each_cpu_or - iterate over every cpu in both masks
++ * @cpu: the (optionally unsigned) integer iterator
++ * @mask1: the first cpumask pointer
++ * @mask2: the second cpumask pointer
++ *
++ * This saves a temporary CPU mask in many places.  It is equivalent to:
++ *	struct cpumask tmp;
++ *	cpumask_and(&tmp, &mask1, &mask2);
++ *	for_each_cpu(cpu, &tmp)
++ *		...
++ *
++ * After the loop, cpu is >= nr_cpu_ids.
++ */
++#define for_each_cpu_or(cpu, mask1, mask2)				\
++	for ((cpu) = -1;						\
++		(cpu) = cpumask_next_or((cpu), (mask1), (mask2)),	\
++		(cpu) < nr_cpu_ids;)
+ #endif /* SMP */
  
-@@ -37,8 +45,16 @@ static unsigned long _find_next_bit(const unsigned long *addr1,
- 		return nbits;
- 
- 	tmp = addr1[start / BITS_PER_LONG];
--	if (addr2)
--		tmp &= addr2[start / BITS_PER_LONG];
-+	if (addr2) {
-+		switch (type) {
-+		case FNB_AND:
-+			tmp &= addr2[start / BITS_PER_LONG];
-+			break;
-+		case FNB_OR:
-+			tmp |= addr2[start / BITS_PER_LONG];
-+			break;
-+		}
-+	}
- 	tmp ^= invert;
- 
- 	/* Handle 1st word. */
-@@ -56,8 +72,16 @@ static unsigned long _find_next_bit(const unsigned long *addr1,
- 			return nbits;
- 
- 		tmp = addr1[start / BITS_PER_LONG];
--		if (addr2)
--			tmp &= addr2[start / BITS_PER_LONG];
-+		if (addr2) {
-+			switch (type) {
-+			case FNB_AND:
-+				tmp &= addr2[start / BITS_PER_LONG];
-+				break;
-+			case FNB_OR:
-+				tmp |= addr2[start / BITS_PER_LONG];
-+				break;
-+			}
-+		}
- 		tmp ^= invert;
- 	}
- 
-@@ -75,7 +99,7 @@ static unsigned long _find_next_bit(const unsigned long *addr1,
- unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
- 			    unsigned long offset)
- {
--	return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
-+	return _find_next_bit(addr, NULL, size, offset, 0UL, FNB_AND, 0);
+ #define CPU_BITS_NONE						\
+diff --git a/lib/cpumask.c b/lib/cpumask.c
+index fb22fb266f93..0a5cdbd4eb6a 100644
+--- a/lib/cpumask.c
++++ b/lib/cpumask.c
+@@ -42,6 +42,25 @@ int cpumask_next_and(int n, const struct cpumask *src1p,
  }
- EXPORT_SYMBOL(find_next_bit);
- #endif
-@@ -84,7 +108,7 @@ EXPORT_SYMBOL(find_next_bit);
- unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
- 				 unsigned long offset)
- {
--	return _find_next_bit(addr, NULL, size, offset, ~0UL, 0);
-+	return _find_next_bit(addr, NULL, size, offset, ~0UL, FNB_AND, 0);
- }
- EXPORT_SYMBOL(find_next_zero_bit);
- #endif
-@@ -94,11 +118,21 @@ unsigned long find_next_and_bit(const unsigned long *addr1,
- 		const unsigned long *addr2, unsigned long size,
- 		unsigned long offset)
- {
--	return _find_next_bit(addr1, addr2, size, offset, 0UL, 0);
-+	return _find_next_bit(addr1, addr2, size, offset, 0UL, FNB_AND, 0);
- }
- EXPORT_SYMBOL(find_next_and_bit);
- #endif
+ EXPORT_SYMBOL(cpumask_next_and);
  
-+#if !defined(find_next_or_bit)
-+unsigned long find_next_or_bit(const unsigned long *addr1,
-+		const unsigned long *addr2, unsigned long size,
-+		unsigned long offset)
++/**
++ * cpumask_next_or - get the next cpu in *src1p | *src2p
++ * @n: the cpu prior to the place to search (ie. return will be > @n)
++ * @src1p: the first cpumask pointer
++ * @src2p: the second cpumask pointer
++ *
++ * Returns >= nr_cpu_ids if no further cpus set in both.
++ */
++int cpumask_next_or(int n, const struct cpumask *src1p,
++		    const struct cpumask *src2p)
 +{
-+	return _find_next_bit(addr1, addr2, size, offset, 0UL, FNB_OR, 0);
++	/* -1 is a legal arg here. */
++	if (n != -1)
++		cpumask_check(n);
++	return find_next_or_bit(cpumask_bits(src1p), cpumask_bits(src2p),
++		nr_cpumask_bits, n + 1);
 +}
-+EXPORT_SYMBOL(find_next_or_bit);
-+#endif
++EXPORT_SYMBOL(cpumask_next_or);
 +
- #ifndef find_first_bit
- /*
-  * Find the first set bit in a memory region.
-@@ -161,7 +195,7 @@ EXPORT_SYMBOL(find_last_bit);
- unsigned long find_next_zero_bit_le(const void *addr, unsigned
- 		long size, unsigned long offset)
- {
--	return _find_next_bit(addr, NULL, size, offset, ~0UL, 1);
-+	return _find_next_bit(addr, NULL, size, offset, ~0UL, FNB_AND, 1);
+ /**
+  * cpumask_any_but - return a "random" in a cpumask, but not this one.
+  * @mask: the cpumask to search
+@@ -94,6 +113,40 @@ int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool wrap)
  }
- EXPORT_SYMBOL(find_next_zero_bit_le);
- #endif
-@@ -170,7 +204,7 @@ EXPORT_SYMBOL(find_next_zero_bit_le);
- unsigned long find_next_bit_le(const void *addr, unsigned
- 		long size, unsigned long offset)
- {
--	return _find_next_bit(addr, NULL, size, offset, 0UL, 1);
-+	return _find_next_bit(addr, NULL, size, offset, 0UL, FNB_AND, 1);
- }
- EXPORT_SYMBOL(find_next_bit_le);
- #endif
+ EXPORT_SYMBOL(cpumask_next_wrap);
+ 
++/**
++ * cpumask_next_wrap_or - helper to implement for_each_cpu_wrap_or
++ * @n: the cpu prior to the place to search
++ * @mask1: first cpumask pointer
++ * @mask2: second cpumask pointer
++ * @start: the start point of the iteration
++ * @wrap: assume @n crossing @start terminates the iteration
++ *
++ * Returns >= nr_cpu_ids on completion
++ *
++ * Note: the @wrap argument is required for the start condition when
++ * we cannot assume @start is set in @mask.
++ */
++int cpumask_next_wrap_or(int n, const struct cpumask *mask1, const struct cpumask *mask2,
++			   int start, bool wrap)
++{
++	int next;
++
++again:
++	next = cpumask_next_or(n, mask1, mask2);
++
++	if (wrap && n < start && next >= start) {
++		return nr_cpumask_bits;
++
++	} else if (next >= nr_cpumask_bits) {
++		wrap = true;
++		n = -1;
++		goto again;
++	}
++
++	return next;
++}
++EXPORT_SYMBOL(cpumask_next_wrap_or);
++
+ /* These are not inline because of header tangles. */
+ #ifdef CONFIG_CPUMASK_OFFSTACK
+ /**
 -- 
 2.28.0.220.ged08abb693-goog
 
