@@ -2,138 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A33245315
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6AB2452A1
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729284AbgHOV6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:58:21 -0400
-Received: from smtprelay0091.hostedemail.com ([216.40.44.91]:46386 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729161AbgHOV6P (ORCPT
+        id S1729263AbgHOVxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729147AbgHOVwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:58:15 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave07.hostedemail.com (Postfix) with ESMTP id 77CD218018769
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 04:18:38 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 3B2BF1801874F;
-        Sat, 15 Aug 2020 04:18:38 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:966:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2194:2196:2199:2200:2393:2559:2562:2828:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3874:4321:4385:4605:5007:6120:10004:10400:10481:10848:11026:11232:11658:11914:12043:12296:12297:12740:12760:12895:13439:14659:14721:19900:21080:21324:21433:21627:21990:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: unit59_4e1053f27002
-X-Filterd-Recvd-Size: 3572
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 15 Aug 2020 04:18:36 +0000 (UTC)
-Message-ID: <2364837d5dcf80f3bdece75d8bfc2f9747467571.camel@perches.com>
-Subject: Re: [RFC PATCH] vsprintf: Add %pv extension replacement for
- print_vma_addr
-From:   Joe Perches <joe@perches.com>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        John Ogness <john.ogness@linutronix.de>
-Date:   Fri, 14 Aug 2020 21:18:35 -0700
-In-Reply-To: <20200815035228.GC582@jagdpanzerIV.localdomain>
-References: <09f11651f0e913e159b955ac447cd8cadf36cb0d.camel@perches.com>
-         <20200815035228.GC582@jagdpanzerIV.localdomain>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sat, 15 Aug 2020 17:52:41 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFF7C0612F9
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 21:30:45 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id m22so11967082eje.10
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 21:30:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B8hFqGgi3bQZQ1euyS6ai4tboC53ELWJOXqJtr0acco=;
+        b=mRenq4I9snynCGp0vxFPiCVDkCCQNDXc/K6ZtcuZ9aYc14T6j4LfGTSL76W2C78FHj
+         9ysuvUOmUjiz6BohSrUl1ZFUa5eGXkcM17ajneBnN2GAa8tE/1JmVhYYV003u/+TTXlB
+         5PU+3MglxIYB4bcsy4marQapECsWL/JhzjQFTsjsiIjNr+2mM/fMS3fgTZ0kx87G81nr
+         hjMVVfartF1/UQxG7+kBiDSLzNx3mQzTl7LQp/ThZ+EpXQwIC8ZZshUemWWPYxo9Lkph
+         mqfWKo204vTbKUXYyDAOADh51HQQv8HQtHAqQewO+eDfKQ2tz7ztXDxJow4nwiBB2oN+
+         R57g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B8hFqGgi3bQZQ1euyS6ai4tboC53ELWJOXqJtr0acco=;
+        b=O8SQG5kR6ECG3wV96iy5N7dwt8pUtDnPKyB5bxHQqd8T1ztGXSkT9pts34pNJWMcPp
+         +zhptZL/NbW3b+q2Ydl3LzZWzyEBcSiz2oss1lUSfrUFbBTAryY3alQUe78/8tWws7PY
+         7VIZ+odWOJdpDR0BQlyn8m23CaOigp1dUw3BlYhCP1jIypkGEkFpH8G0tIzyjFcG3wvW
+         AnGxkiQcAIB2Irbwb8+ftY0DjXS9C94cEKMb5FwFfPYx/hWQJU492Uisv4yva0Q1XoK4
+         po5NcYga8VTj0ZRdaBJuqfqCPtZTTkSL8TLnR5Fu23FCILIQFopFPAL7X5MDgU3OQu/+
+         +Adg==
+X-Gm-Message-State: AOAM533YiC4/0CahWBpcLg8i6xk7BjuNU1StVkrZqf4DJEZfhtX5msDt
+        10x5bjgb1+ZpkSR/H52o1I3O52G+0I2ny851bK7Bgc1qG8x8+A==
+X-Google-Smtp-Source: ABdhPJylzl07UeWh4gwKVqjg2TjJDuIdme0nwPFQc+XjZRIiG0e+NrtPPR3XvIZYEGtA5Fa+7F994QXhmXoARtLIYMI=
+X-Received: by 2002:a17:907:41dc:: with SMTP id og20mr5670047ejb.183.1597465844100;
+ Fri, 14 Aug 2020 21:30:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200815035637.15319-1-phillip@squashfs.org.uk>
+In-Reply-To: <20200815035637.15319-1-phillip@squashfs.org.uk>
+From:   Guenter Roeck <groeck@google.com>
+Date:   Fri, 14 Aug 2020 21:30:33 -0700
+Message-ID: <CABXOdTcJDub=ffmwn4_Xn0chxdwwu4jNFrh9o3HVVH1Mzt4iSA@mail.gmail.com>
+Subject: Re: [PATCH] squashfs: avoid bio_alloc() failure with 1Mbyte blocks
+To:     Phillip Lougher <phillip@squashfs.org.uk>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Philippe Liard <pliard@google.com>, hch@lst.de,
+        adrien+dev@schischi.me, Guenter Roeck <groeck@chromium.org>,
+        Daniel Rosenberg <drosen@google.com>,
+        Nicolas Prochazka <nicolas.prochazka@gmail.com>,
+        Tomoatsu Shimada <shimada@walbrix.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-08-15 at 12:52 +0900, Sergey Senozhatsky wrote:
-> Cc-ing John
-> 
-> On (20/08/14 10:53), Joe Perches wrote:
-> [..]
-> 
-> In general, the idea looks nice.
-> 
-> > +static noinline_for_stack
-> > +char *vma_addr(char *buf, char *end, void *ip,
-> > +	       struct printf_spec spec, const char *fmt)
-> > +{
-> > +#ifdef CONFIG_MMU
-> > +	struct mm_struct *mm = current->mm;
-> > +	struct vm_area_struct *vma;
-> > +
-> > +	/*
-> > +	 * we might be running from an atomic context so we cannot sleep
-> > +	 */
-> > +	if (!mmap_read_trylock(mm))
-> > +		return buf;
-> > +
-> > +	vma = find_vma(mm, (unsigned long)ip);
-> > +	if (vma && vma->vm_file) {
-> > +		char *p;
-> > +		struct file *f = vma->vm_file;
-> > +		char *page = (char *)__get_free_page(GFP_NOWAIT);
-> 
-> Hmm, this is huge. For the time being this is going to introduce lock
-> inversion chains:
-> 
-> 	PRINTK -> printk_locks -> MM -> mm_locks
-> 
-> vs
-> 	MM -> mm_locks -> PRINTK -> printk_locks
-> 
-> Another thing to mention is
-> 
-> 	PRINTK -> printk_locks -> MM (WANR_ON/etc) -> PRINTK
-> 
-> we are in printk_safe, currently, but that's going to change.
-> 
-> We might not be ready to take this as of now, but things can change
-> once we drop printk_locks.
-> 
-> > +		if (page) {
-> > +			p = file_path(f, page, PAGE_SIZE);
-> > +			if (IS_ERR(p))
-> > +				p = "?";
-> > +			buf = string(buf, end, kbasename(p), default_str_spec);
-> > +			buf = string_nocheck(buf, end, "[", default_str_spec);
-> > +			buf = pointer_string(buf, end,
-> > +					     (void *)vma->vm_start,
-> > +					     default_hex_spec);
-> > +			buf = string_nocheck(buf, end, "+", default_str_spec);
-> > +			buf = pointer_string(buf, end,
-> > +					     (void *)(vma->vm_end - vma->vm_start),
-> > +					     default_hex_spec);
-> > +			buf = string_nocheck(buf, end, "]", default_str_spec);
-> > +			free_page((unsigned long)page);
-> > +		}
-> > +	}
-> > +	mmap_read_unlock(mm);
-> > +#else
-> > +	buf = string_nocheck(buf, end, "CONFIG_MMU=n", default_str_spec);
-> 
-> Hmm, we don't usually do that CONFIG_FOO=n thing, I think we just need
-> to skip %pv and print nothing.
+On Fri, Aug 14, 2020 at 8:57 PM Phillip Lougher <phillip@squashfs.org.uk> wrote:
+>
+> This is a regression introduced by the "migrate from ll_rw_block usage
+> to BIO" patch.
+>
+> Bio_alloc() is limited to 256 pages (1 Mbyte).   This can cause a
+> failure when reading 1 Mbyte block filesystems.  The problem is
+> a datablock can be fully (or almost uncompressed), requiring 256
+> pages, but, because blocks are not aligned to page boundaries, it
+> may require 257 pages to read.
+>
+> Bio_kmalloc() can handle 1024 pages, and so use this for the
+> edge condition.
+>
+> Reported-by: Nicolas Prochazka <nicolas.prochazka@gmail.com>
+> Reported-by: Tomoatsu Shimada <shimada@walbrix.com>
+> Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
 
-I don't.
+Fixes: 93e72b3c612a ("squashfs: migrate from ll_rw_block usage to BIO")
+Reviewed-by: Guenter Roeck <groeck@chromium.org>
 
-Right now, include/linux/mm.h has
-
-#ifdef CONFIG_MMU
-void print_vma_addr(char *prefix, unsigned long rip);
-#else
-static inline void print_vma_addr(char *prefix, unsigned long rip)
-{
-}
-#endif
-
-and the 'v' can't be #ifdef'd in vsprintf/pointer()
-otherwise %pv would fallthrough to
-
-	return ptr_to_id(buf, end, ptr, spec);
-
-
+> ---
+>  fs/squashfs/block.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/squashfs/block.c b/fs/squashfs/block.c
+> index 76bb1c846845..8a19773b5a0b 100644
+> --- a/fs/squashfs/block.c
+> +++ b/fs/squashfs/block.c
+> @@ -87,7 +87,11 @@ static int squashfs_bio_read(struct super_block *sb, u64 index, int length,
+>         int error, i;
+>         struct bio *bio;
+>
+> -       bio = bio_alloc(GFP_NOIO, page_count);
+> +       if (page_count <= BIO_MAX_PAGES)
+> +               bio = bio_alloc(GFP_NOIO, page_count);
+> +       else
+> +               bio = bio_kmalloc(GFP_NOIO, page_count);
+> +
+>         if (!bio)
+>                 return -ENOMEM;
+>
+> --
+> 2.20.1
+>
