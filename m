@@ -2,156 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30722453DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E162453B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729805AbgHOWGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45614 "EHLO
+        id S1729840AbgHOWE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728377AbgHOVus (ORCPT
+        with ESMTP id S1728556AbgHOVvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:50:48 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C438C06134A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 17:59:24 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id i10so11762144ljn.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 17:59:24 -0700 (PDT)
+        Sat, 15 Aug 2020 17:51:02 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CCDCC06134C;
+        Fri, 14 Aug 2020 18:33:15 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id e5so8359915qth.5;
+        Fri, 14 Aug 2020 18:33:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x5V/+PBSBblwToTAxIaWCU/QUA1O6ispz0B5966qT9o=;
-        b=GViAih0/p9oLbkxsH0zRUETk2BWc6utJvJ2zieuBFpItMZ5Q/d+XoOIJE3UmtmDW9d
-         PfB7oAxIVJBUbDF/z38G7nHCI1AuDI/Wa5eZncLuwEofl1Tgh5gbUZms7q6RUinORQm5
-         atVm6Nom3LD276TzkMMR7WITDnfy6UtyUb83E=
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vJ/jVWhGTXG1e9E+PiLPXFME4LoN6xMadImJ1YD9YHU=;
+        b=bI9yTul+XenFvqeVlqilZ/1PwJ1K3UFEioFw2tHq8PaWt4T8LWxVgwRJSMMkhCUE6S
+         Mhk+1TtNGS6OWGrlFWUOTVc0gMvTT5rGsqPSPF7y7J9R5EjAKpFUxmIDn1hRIQ/wtohD
+         h7ryjmhJ5t+sRCgBkpOsNhDqwsFM230xxiBOLSfm+c/bPJD3fF/amzVpL35ZoJJDtLUI
+         yPPUOToH6zKsZZ56/pzJ3TtCqrkDl5KRjH98qkAEoQJehZkYfRWLA6mKX6g7SAAlM2p+
+         hM1RQv8oPv1ZMBB3K1KLvw53CeRFVuV+sLMvOML/8vh1qbpqShRfnoqCIec5DNVLUsfr
+         Eb2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x5V/+PBSBblwToTAxIaWCU/QUA1O6ispz0B5966qT9o=;
-        b=AwPukdKC1ppzjZpojv7SSk88WNEQGgy1xru4W7SQuKiOZSUqqh6leMJWoRGt8frPxM
-         gQZH1cogGS3li7GC9HhwYC7KGqbGcz6GKpEKJ1diwP3OERuV3PoLGQLth1eYMJtl9Iov
-         dfYwVDtuLcF0uYrNDwqN2adfnBOI75VzH5sXCbdMYCd1ul9fyKrK6/7QfceT/8QmUy2+
-         V7phEqzvdIURCkZc3J0GFJ3evF35PvfSScNVt38Q71+p+ScnkBj6nP4JzJ9oDg+ZTBMh
-         HDtY4S56VZ8lGNjGdfFBDA9ItiB2ZUjJkkVYu6SA9DZXO0ZXyH8SZNtKjYNYW7R0avMv
-         fl0w==
-X-Gm-Message-State: AOAM5308VubFkMatdYr3dZcvJekZTK3mYkrPlnB1a5d0pzAy7PAnySjG
-        L9gIEZDtgqg6V9LP/cE/7PtLSqQ1ia8bSg==
-X-Google-Smtp-Source: ABdhPJwjDPqkG3kG5xYG2PRhv/OE0UngTipyQDD2/ehogRv9G97VfCOD+Ki3yDSpbncqfoGbPzc8iQ==
-X-Received: by 2002:a2e:3019:: with SMTP id w25mr2283575ljw.291.1597453162455;
-        Fri, 14 Aug 2020 17:59:22 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id v9sm2057310ljd.125.2020.08.14.17.59.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Aug 2020 17:59:21 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id i80so5669680lfi.13
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 17:59:21 -0700 (PDT)
-X-Received: by 2002:a05:6512:3b7:: with SMTP id v23mr2382329lfp.10.1597453160630;
- Fri, 14 Aug 2020 17:59:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <alpine.LSU.2.11.2008122005240.11996@eggly.anvils>
- <CAHk-=whYLHtbeF6BFmoiik9PTjP2+pnpWxXLE9f0ccnT0LAd5A@mail.gmail.com>
- <20200814054241.GA719@lst.de> <CAHk-=wifNX6U28sjPay+1ZJ5BmxRG8Bac7W1sP_Ft1yTqLj+GA@mail.gmail.com>
- <alpine.LSU.2.11.2008141642260.18762@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2008141642260.18762@eggly.anvils>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 14 Aug 2020 17:59:04 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whw3QcceKCdYS2ktCPQ96m8Ysyek+w4ny0ygvy7z-_2rw@mail.gmail.com>
-Message-ID: <CAHk-=whw3QcceKCdYS2ktCPQ96m8Ysyek+w4ny0ygvy7z-_2rw@mail.gmail.com>
-Subject: Re: [PATCH] dma-debug: fix debug_dma_assert_idle(), use rcu_read_lock()
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=vJ/jVWhGTXG1e9E+PiLPXFME4LoN6xMadImJ1YD9YHU=;
+        b=rw635h449WWyb2LdxXwhLh6f64LaB/PGG829ylZXHG7wbg42YpTQR4jvlJDrDXhEzp
+         1SogV3Ph9t+bxew3WgQxmyt4KwUNq0fLDl92SOTzzLnj3eJ4tuwyGSZUZyz9EnFvANPK
+         fWvB8RVa63Q+WHO7l9zS/RmCbE1vnr2AFXJlvQ6hXpxc/atZh1lkrpMDYkxFMDO5wwg2
+         pkEmKCPzXZi2wqvWKwrDd78Ta/hJ9mBOwxsM3bIzeZIUKhbtYaj2ENTvqTsBWlp5XYjx
+         JpaUeN/ykWSk1vJLkYdN1rPR6ZtliiGz3BvOAcJZr9VY63vsgICUgwR0XBY7U1b0evt3
+         ROnQ==
+X-Gm-Message-State: AOAM531s2W0jywcll4pKZ6C8x19MKcPUaWOBCJ3YbP161lqYt8R9kO7B
+        jMoOuxzxD4ZoRbKVkoVg01CGxoz2IoY=
+X-Google-Smtp-Source: ABdhPJzT7OzYhDt4EGcOfivsmmvRSIEn2XltAWy/5uJNgRq1XLSKbN6URmiVpoEPnEgK3HsV7HyH9Q==
+X-Received: by 2002:ac8:7405:: with SMTP id p5mr4604950qtq.308.1597455192803;
+        Fri, 14 Aug 2020 18:33:12 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id t69sm10061523qka.73.2020.08.14.18.33.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Aug 2020 18:33:12 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Fri, 14 Aug 2020 21:33:10 -0400
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        =?utf-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>, stable@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Joe Perches <joe@perches.com>, Tony Luck <tony.luck@intel.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
         Dan Williams <dan.j.williams@intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        iommu <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] lib/string.c: implement stpcpy
+Message-ID: <20200815013310.GA99152@rani.riverdale.lan>
+References: <20200815002417.1512973-1-ndesaulniers@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200815002417.1512973-1-ndesaulniers@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 5:26 PM Hugh Dickins <hughd@google.com> wrote:
->
-> We used to rely on page count there, and on trylock_page() only; but
-> there was at least one user whose app went wrong when occasionally we
-> COWed the page, just because something else momentarily took a reference
-> to it, or locked it.  Around 2006, bug report from 2004: I did look up
-> the history a week ago, but was interrupted before taking notes.
+On Fri, Aug 14, 2020 at 05:24:15PM -0700, Nick Desaulniers wrote:
+> +#ifndef __HAVE_ARCH_STPCPY
+> +/**
+> + * stpcpy - copy a string from src to dest returning a pointer to the new end
+> + *          of dest, including src's NULL terminator. May overrun dest.
+> + * @dest: pointer to end of string being copied into. Must be large enough
+> + *        to receive copy.
+> + * @src: pointer to the beginning of string being copied from. Must not overlap
+> + *       dest.
+> + *
+> + * stpcpy differs from strcpy in two key ways:
+> + * 1. inputs must not overlap.
+> + * 2. return value is the new NULL terminated character. (for strcpy, the
+> + *    return value is a pointer to src.
+> + */
+> +#undef stpcpy
+> +char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
+> +{
+> +	while ((*dest++ = *src++) != '\0')
+> +		/* nothing */;
+> +	return dest;
+> +}
+> +#endif
+> +
 
-I actually think you may be talking about the exact problem that that
-debug patch from Dan was originally created for:
+Won't this return a pointer that's one _past_ the terminating NUL? I
+think you need the increments to be inside the loop body, rather than as
+part of the condition.
 
-  0abdd7a81b7e dma-debug: introduce debug_dma_assert_idle()
-  77873803363c net_dma: mark broken
-
-and your memory sounds exactly like that net_dma case (and the timing
-matches roughly too - the NET_DMA code was merged in 2006, but I think
-people had been playing trial games with it before that).
-
-IOW, net_dma was horribly broken, and just couldn't deal with COW
-because it did things wrong.
-
-The thing is, doing extra COW's really shouldn't matter in _any_
-half-way correct situation. There's a few cases:
-
- - user space writing to it, so we COW.
-
-   This is the "simple" case that is obvious and we've always done the
-same thing. User space will get the new copy, and there's no possible
-situation when that can be wrong.
-
- - get_user_pages() for reading.
-
-   This is the one we actually used to get wrong, and when another
-user *didn't* cow, the data that was read might not match what the
-original get_uiser_pages() case expected.
-
-    But in this case, the bug only happened when we didn't cow
-aggressively enough.
-
- - get_user_pages() for writing
-
-   This is another 'simple" case, because it does the COW at
-get_user_pages() time and gets it's own copy (which is also installed
-in the thread that does the GUP, of course, so a subsequent fork an
-danother write can obviously cause *further* COW action).
-
-But in no case should an extra COW matter. Except if somebody uses
-get_user_pages() to write to the page, and the COW "hides" that write
-by giving a new copy to whoever expected to see it, but that's exactly
-the case that Dan's patch was supposed to notice.
-
-And since it never triggered outside of that invalid net_dma case, I
-don't think any other case really ever existed.
-
-Yes, I can well imagine that some people loved the concept of that TCP
-receive copy offload, but it really was broken, and was removed
-entirely by Dan in commit 7bced397510a ("net_dma: simple removal") a
-year after being marked broken (the author date makes it look like
-it's just a couple of weeks after being marked broken, but the commit
-date for that removal is September 2014).
-
-So I don't think that the trylock and checking page counts is a
-correctness issue.
-
-It had better not be, because anybody that writes to a shared-cow page
- without breaking COW is simply broken.
-
-No, I really think that the real worry about doing more aggressive
-copying is that it doesn't steal back the KSM page or the swap cache
-page, so it will leave those pages around, and while they should then
-be really easy for the VM to reclaim, I really worry that we have a
-couple of decades of VM reclaim tuning with that swap cache reuse
-behavior (KSM, not so much).
-
-And while it works fine on my machine, I currently have 40GB or RAM
-free, because honestly, the stuff I do doesn't need all that much
-memory, and I ridiculously overspecced my new machine RAM'wise. So
-nothing I will do would show any problems.
-
-                Linus
+Nit: NUL is more correct than NULL to refer to the string terminator.
