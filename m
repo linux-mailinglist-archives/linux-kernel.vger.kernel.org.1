@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55DA245454
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422CE245467
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728752AbgHOWXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:23:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37780 "EHLO mx2.suse.de"
+        id S1729316AbgHOWYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:24:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37958 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726511AbgHOWXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:23:43 -0400
+        id S1726541AbgHOWXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:23:50 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BA693B65C;
-        Sat, 15 Aug 2020 07:48:52 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C53CFB65B;
+        Sat, 15 Aug 2020 07:52:17 +0000 (UTC)
 From:   Coly Li <colyli@suse.de>
-To:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org
-Cc:     netdev@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Coly Li <colyli@suse.de>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-Subject: [PATCH 3/3] drbd: code cleanup by using sendpage_ok() to check page for kernel_sendpage()
-Date:   Sat, 15 Aug 2020 15:48:04 +0800
-Message-Id: <20200815074804.46995-3-colyli@suse.de>
+To:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Coly Li <colyli@suse.de>, Dan Williams <dan.j.williams@intel.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH RESEND] docs: update trusted-encrypted.rst
+Date:   Sat, 15 Aug 2020 15:51:43 +0800
+Message-Id: <20200815075143.47082-1-colyli@suse.de>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200815074804.46995-1-colyli@suse.de>
-References: <20200815074804.46995-1-colyli@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -34,39 +33,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In _drbd_send_page() a page is checked by following code before sending
-it by kernel_sendpage(),
-        (page_count(page) < 1) || PageSlab(page)
-If the check is true, this page won't be send by kernel_sendpage() and
-handled by sock_no_sendpage().
+The parameters in tmp2 commands are outdated, people are not able to
+create trusted key by the example commands.
 
-This kind of check is exactly what macro sendpage_ok() does, which is
-introduced into include/linux/net.h to solve a similar send page issue
-in nvme-tcp code.
-
-This patch uses macro sendpage_ok() to replace the open coded checks to
-page type and refcount in _drbd_send_page(), as a code cleanup.
+This patch updates the paramerters of tpm2 commands, they are verified
+by tpm2-tools-4.1 with Linux v5.8 kernel.
 
 Signed-off-by: Coly Li <colyli@suse.de>
-Cc: Philipp Reisner <philipp.reisner@linbit.com>
-Cc: Sagi Grimberg <sagi@grimberg.me>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: James Bottomley <jejb@linux.ibm.com>
+Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc: Mimi Zohar <zohar@linux.ibm.com>
+Cc: Stefan Berger <stefanb@linux.ibm.com>
 ---
- drivers/block/drbd/drbd_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/security/keys/trusted-encrypted.rst | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
-index cb687ccdbd96..55dc0c91781e 100644
---- a/drivers/block/drbd/drbd_main.c
-+++ b/drivers/block/drbd/drbd_main.c
-@@ -1553,7 +1553,7 @@ static int _drbd_send_page(struct drbd_peer_device *peer_device, struct page *pa
- 	 * put_page(); and would cause either a VM_BUG directly, or
- 	 * __page_cache_release a page that would actually still be referenced
- 	 * by someone, leading to some obscure delayed Oops somewhere else. */
--	if (drbd_disable_sendpage || (page_count(page) < 1) || PageSlab(page))
-+	if (drbd_disable_sendpage || !sendpage_ok(page))
- 		return _drbd_no_send_page(peer_device, page, offset, size, msg_flags);
+diff --git a/Documentation/security/keys/trusted-encrypted.rst b/Documentation/security/keys/trusted-encrypted.rst
+index 9483a7425ad5..442a2775156e 100644
+--- a/Documentation/security/keys/trusted-encrypted.rst
++++ b/Documentation/security/keys/trusted-encrypted.rst
+@@ -39,10 +39,9 @@ With the IBM TSS 2 stack::
  
- 	msg_flags |= MSG_NOSIGNAL;
+ Or with the Intel TSS 2 stack::
+ 
+-  #> tpm2_createprimary --hierarchy o -G rsa2048 -o key.ctxt
++  #> tpm2_createprimary --hierarchy o -G rsa2048 key.ctxt
+   [...]
+-  handle: 0x800000FF
+-  #> tpm2_evictcontrol -c key.ctxt -p 0x81000001
++  #> tpm2_evictcontrol -c key.ctxt 0x81000001
+   persistentHandle: 0x81000001
+ 
+ Usage::
+@@ -115,7 +114,7 @@ append 'keyhandle=0x81000001' to statements between quotes, such as
+ 
+ ::
+ 
+-    $ keyctl add trusted kmk "new 32" @u
++    $ keyctl add trusted kmk "new 32 keyhandle=0x81000001" @u
+     440502848
+ 
+     $ keyctl show
+@@ -138,7 +137,7 @@ append 'keyhandle=0x81000001' to statements between quotes, such as
+ 
+ Load a trusted key from the saved blob::
+ 
+-    $ keyctl add trusted kmk "load `cat kmk.blob`" @u
++    $ keyctl add trusted kmk "load `cat kmk.blob` keyhandle=0x81000001" @u
+     268728824
+ 
+     $ keyctl print 268728824
 -- 
 2.26.2
 
