@@ -2,90 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA302452DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5398C245297
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729046AbgHOV4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        id S1729238AbgHOVx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:53:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729044AbgHOVwP (ORCPT
+        with ESMTP id S1729152AbgHOVwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:15 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BD5C08E817;
-        Sat, 15 Aug 2020 03:27:08 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id t15so8602811edq.13;
-        Sat, 15 Aug 2020 03:27:08 -0700 (PDT)
+        Sat, 15 Aug 2020 17:52:43 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB28C08E81C;
+        Sat, 15 Aug 2020 03:35:04 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id x2so6587041ybf.12;
+        Sat, 15 Aug 2020 03:35:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=KCvvDovVelQsjukCt54W9h2hfe/Jnwyhb4n9drmTFH8=;
-        b=VPW4OFMHG4Kn59Ky0h+BLbJKtRnd7cH9ldi2a3jWJZAuYX7qYrYFmqkryaaJockO4F
-         HANwg/RqP+w0Y2CANWp2vSHbJi3+xDZKuOeciaQaWsZIWx/GI+ulRJ89UOxW5MlWwE5E
-         324PAVMQ8vT3t9/CYSuHghs0yjyaKTTd0WXo1zYfYtTyHSvEPgkWd49YD1YkcCV1V03X
-         sad4ck/Xex73lYPuPAl2gQUICrmPU7oaXdaPbGCXMh8VA/nNIXvlgSvCSvessBH0/P9A
-         1DnAWZ90Swm9KfhVhtTCZHV9KB4lbABAW8LynMTFlwxqpbcNCCIDtQREsEp4Hgglmyds
-         9nHQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9FdBEk/PFONKRBL3ptMIHWrtdhPvwvR5FjJYMrVCgHg=;
+        b=W0+BYyOkemwI7h+hvaQAo9s1FdDmpB1n0aNtcGAEnmapUJuIHMqNKh1Gel888k+TBR
+         2rJRGW/9mDlu1hhxgiKEEQIj54ljTE2rlP6NpfoSJfDFo5URkupbE+RayKBnPF2Ui1CO
+         qhL3AFYQRU/OF7JheALPd9Xma4NxeJ7UQ35Xszq0opOlLLCDCryugaoLMyN6c8BSTJ/I
+         0GO0bJin77B3ez6SH1jCcUBFaavqNClT/nMnhuFG9bzl8nYX/+2JLdeUEOfhV3AfM1Ka
+         sTSJa8KrMmB86rmTT6dwUqw+ab6HYYxc78Vp2bhz+FWvAaegeWHjWLXI6i4isi5xTuZ5
+         orcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=KCvvDovVelQsjukCt54W9h2hfe/Jnwyhb4n9drmTFH8=;
-        b=b91dvNkrTEJiwD2rjpAMK02qNnc1TkAJUOFg4YHWiRIxoaq+LFFkzweDEDCOpT47M7
-         wDG2GvJfAtl02vHdG5g9I8gi4MmEYg3jmAdwr1NSKEp+S7vqAbjAZbhX8OlETwhWvJpe
-         Pf7oyeb9BylZZ7dnK68RXLqTuZUPs+Ntl0voMSe7JHeSQxnfAYcVfLB5uPKpEjyBd2tF
-         J8pcI8lZo99kEMLCKsrY1Jt1HIRnsGxyRwRL85NfZlABE5w1M/OtZmXj8Q31FpO1uX5I
-         JzW62He6Tgx/cLIPnLjvY4H+XZCCUcPS+YmWWE8MMga8xnl6U+8VyFJqO6nu0vJ1tqyx
-         OAVA==
-X-Gm-Message-State: AOAM5302DJ6ph7RTKRbcsheIA/A1fdzCTj1uaf1jEiFZKAEkCFi91rBA
-        H4BBYRlgCPhxqmpkcrSK00bTOtZK2L8=
-X-Google-Smtp-Source: ABdhPJyGzaUSH20/hMKrOsKocRXQn393jRF0hxbVDhfLZUpWmLpELHLDScY11/Iyc1ypX1m/6VJ8UQ==
-X-Received: by 2002:a05:6402:22d9:: with SMTP id dm25mr6225087edb.2.1597487226582;
-        Sat, 15 Aug 2020 03:27:06 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2d69:b900:61e5:2d94:8d77:6e0f])
-        by smtp.gmail.com with ESMTPSA id c2sm6351286edl.28.2020.08.15.03.27.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 03:27:06 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: mention documentation maintainer entry profile
-Date:   Sat, 15 Aug 2020 12:26:58 +0200
-Message-Id: <20200815102658.12236-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9FdBEk/PFONKRBL3ptMIHWrtdhPvwvR5FjJYMrVCgHg=;
+        b=Z/Uix5qVrF/lUlxst9LAudbpTaaSmAHsemZVUKFXzSEs1NJnTLl8u0wnqFULyPNk1h
+         aQ2fjJmaaXFbAyHW8Q4B+2p4pp65uA/FL9C6cFHK95UpnJUca/fj4mxY+5zmjuBc+nQi
+         gQv96ERrp9JRjFyZmo0kN3TcUoPgLdNu9ID0/iKMnZZ0seyxEN9zSw/7g2BcBm9mAoIz
+         o0r55GKR08oN460ufAVtpOn9NZ2Lq7RMKY0fDvdkJ/UEugGxHFzdAYgGJWDVWAvCXiQX
+         tLwKgFXUiZtVIrZno6Z0ns/Qb0CXhRsQetSe7rxqBk6hbxUCqkN0WfLkTbJrWVffxLrU
+         p7Xw==
+X-Gm-Message-State: AOAM532nyelMvqRTYjfaA+71jw77kVn7IMbgUU3L9YSllxTBl51xYo7K
+        GeSz4BJ1+TiirMaaX1xw+zNdnwDp8enGzT/He5E=
+X-Google-Smtp-Source: ABdhPJz73oqfRaOfnalXbIezKUlfuEnoM5U/cUCYFspm9g39RLuwP9rmVKplgEBHzq46yz+aGDTTKBATvPsaKi73+34=
+X-Received: by 2002:a5b:40f:: with SMTP id m15mr8401661ybp.25.1597487699922;
+ Sat, 15 Aug 2020 03:34:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <1596454753-13612-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1596454753-13612-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1596454753-13612-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Sat, 15 Aug 2020 11:34:33 +0100
+Message-ID: <CA+V-a8sjxL-rbYAti8Djj2ch2+Zf+88_wNjbZHzKVBB66aZJ0g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: media: ov772x: Document endpoint properties
+To:     Jacopo Mondi <jacopo@jmondi.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 53b7f3aa411b ("Add a maintainer entry profile for
-documentation"), the documentation "subsystem" has a maintainer entry
-profile, and it deserves to be mentioned in MAINTAINERS with a suitable
-P: entry.
+Hi Jacopo,
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on docs-next, and was checkpatch-ed.
+On Mon, Aug 3, 2020 at 12:39 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+>
+> Document endpoint properties required for parallel interface
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>  .../devicetree/bindings/media/i2c/ov772x.txt     | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+>
+I see you already have a patch for YAML conversion for OV772x binding
+[1], if you plan to post a v2 would you be OK to pick these changes as
+part of your conversion changes ?
 
-Jonathan, please pick this patch.
+[1] https://www.spinics.net/lists/linux-media/msg173201.html
 
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Cheers,
+Prabhakar
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f520202fa1ef..8aa1369d5926 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5178,6 +5178,7 @@ DOCUMENTATION
- M:	Jonathan Corbet <corbet@lwn.net>
- L:	linux-doc@vger.kernel.org
- S:	Maintained
-+P:	Documentation/doc-guide/maintainer-profile.rst
- T:	git git://git.lwn.net/linux.git docs-next
- F:	Documentation/
- F:	scripts/documentation-file-ref-check
--- 
-2.17.1
-
+> diff --git a/Documentation/devicetree/bindings/media/i2c/ov772x.txt b/Documentation/devicetree/bindings/media/i2c/ov772x.txt
+> index 0b3ede5b8e6a..1f4153484717 100644
+> --- a/Documentation/devicetree/bindings/media/i2c/ov772x.txt
+> +++ b/Documentation/devicetree/bindings/media/i2c/ov772x.txt
+> @@ -21,6 +21,22 @@ subnode for its digital output video port, in accordance with the video
+>  interface bindings defined in Documentation/devicetree/bindings/media/
+>  video-interfaces.txt.
+>
+> +Endpoint node required properties for parallel connection are:
+> +- remote-endpoint: a phandle to the bus receiver's endpoint node.
+> +- bus-width: shall be set to <8> for 8 bits parallel bus
+> +            or <10> for 10 bits parallel bus
+> +- data-shift: shall be set to <2> for 8 bits parallel bus
+> +             (lines 9:2 are used) or <0> for 10 bits parallel bus
+> +- hsync-active: active state of the HSYNC signal, 0/1 for LOW/HIGH respectively.
+> +               (Not required for bus-type equal 6)
+> +- vsync-active: active state of the VSYNC signal, 0/1 for LOW/HIGH respectively.
+> +               (Not required for bus-type equal 6)
+> +- pclk-sample: sample data on rising (1) or falling (0) edge of the pixel clock
+> +              signal. (Not required for bus-type equal 6)
+> +- bus-type: data bus type. Possible values are:
+> +           5 - Parallel
+> +           6 - Bt.656
+> +
+>  Example:
+>
+>  &i2c0 {
+> --
+> 2.17.1
+>
