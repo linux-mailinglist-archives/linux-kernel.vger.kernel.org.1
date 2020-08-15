@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD2024532E
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6871C24527C
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729566AbgHOV7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
+        id S1728975AbgHOVwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:52:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728924AbgHOVvw (ORCPT
+        with ESMTP id S1728111AbgHOVvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:52 -0400
+        Sat, 15 Aug 2020 17:51:53 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C589C09B050;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45092C09B04F;
         Sat, 15 Aug 2020 08:47:01 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 15:46:48 -0000
+Date:   Sat, 15 Aug 2020 15:46:49 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597506409;
+        s=2020; t=1597506410;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=48x4OrRtq4LeuwE5ksVTTMPn0fnAIYckmFCTxbX0hm0=;
-        b=Chky+ntOBR8DjsTzO6oxz9pH6rCJvs016SP4EC+i5J3CJLkhD6O5Nm8w/q8pywNyYaabzI
-        +myMiADzBQI/V39DQ3oUdr6xSl01lFqIhOtbsQVdHcLmTtbn1z11supr2l42UO7wByvPWo
-        T0SnHrn8U1FJmB/GDELaOdjE1AIYLXaiOwntba/Qke0Y4TzPITbNBbxvn3o0EMoWGmqaAh
-        myOFOpNlxyZ/+hly81cuoKdeyUcDQTXp6DI1kT331CmJK58zBs+yhnj1ThA5RLpL5Ot7zL
-        4p4xgBnbk8miooZs81a7BRj1pswJAqwuZSV6YA9PWIdLco279PiJngX5EJmuQw==
+        bh=hJiOU8mAJuAeFjX4cBj1OC2CmBz/7FhgRkAnQxo82Hk=;
+        b=E9kn2F4kyUoVWmQbz6l28Fm1ZIMo4c2kzD+OtlDQBq30xN6MpR98cEEa5S+0ixdZCh/f6V
+        lOBwDbTusoU9hMxiQc3yYOCNCBa8YUvDD/+fPDTYn07ALmfNPlqEtL2TDsDo+aysCdnH00
+        rAXTSNdwMoJK5EnzVp5rkSje3RIdS7q3VxKxaFC0mJsLsn32uVvmZYwkxY4sib4pzpxUsU
+        ABElAh9JG8pNO7hGa3mpmHRlgRjiFhVP6uXTMbFoefiwtlWEFTAnnZhtUemY1/sbr8VZQu
+        k91TrHspeXMM3vLmQVxPDHbh6YPv81kahBgEgMRrJM0LH0OWDsI1u7M1HIebSQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597506409;
+        s=2020e; t=1597506410;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=48x4OrRtq4LeuwE5ksVTTMPn0fnAIYckmFCTxbX0hm0=;
-        b=RAJE5s8yZhJhJ3zMNoio+lgbaPuiCxpp+mRCCPRYCJpgySynlKZEZfN8T6f/Gl6/fc0T01
-        M3d5wmwUoF06dfAQ==
-From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
+        bh=hJiOU8mAJuAeFjX4cBj1OC2CmBz/7FhgRkAnQxo82Hk=;
+        b=e9IIohao6B9Rf9caOvcab9Awg1OvRNLKPfwj54plIq4/Moo5hej7VwlTKLfKTfG6x3JKae
+        Wvv+HHwUwaNl9nAQ==
+From:   "tip-bot2 for Juergen Gross" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] x86/mm/64: Do not sync vmalloc/ioremap mappings
-Cc:     Joerg Roedel <jroedel@suse.de>, Ingo Molnar <mingo@kernel.org>,
+Subject: [tip: x86/paravirt] x86/paravirt: Avoid needless paravirt step
+ clearing page table entries
+Cc:     Juergen Gross <jgross@suse.com>, Ingo Molnar <mingo@kernel.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200814151947.26229-2-joro@8bytes.org>
-References: <20200814151947.26229-2-joro@8bytes.org>
+In-Reply-To: <20200815100641.26362-7-jgross@suse.com>
+References: <20200815100641.26362-7-jgross@suse.com>
 MIME-Version: 1.0
-Message-ID: <159750640896.3192.12080661084400860264.tip-bot2@tip-bot2>
+Message-ID: <159750640968.3192.2279401610614202728.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,70 +59,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/mm branch of tip:
+The following commit has been merged into the x86/paravirt branch of tip:
 
-Commit-ID:     58a18fe95e83b8396605154db04d73b08063f31b
-Gitweb:        https://git.kernel.org/tip/58a18fe95e83b8396605154db04d73b08063f31b
-Author:        Joerg Roedel <jroedel@suse.de>
-AuthorDate:    Fri, 14 Aug 2020 17:19:46 +02:00
+Commit-ID:     7c9f80cb76ec9f14c3b25509168b1a2f7942e418
+Gitweb:        https://git.kernel.org/tip/7c9f80cb76ec9f14c3b25509168b1a2f7942e418
+Author:        Juergen Gross <jgross@suse.com>
+AuthorDate:    Sat, 15 Aug 2020 12:06:41 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sat, 15 Aug 2020 13:56:16 +02:00
+CommitterDate: Sat, 15 Aug 2020 13:52:12 +02:00
 
-x86/mm/64: Do not sync vmalloc/ioremap mappings
+x86/paravirt: Avoid needless paravirt step clearing page table entries
 
-Remove the code to sync the vmalloc and ioremap ranges for x86-64. The
-page-table pages are all pre-allocated so that synchronization is
-no longer necessary.
+pte_clear() et al are based on two paravirt steps today: one step to
+create a page table entry with all zeroes, and one step to write this
+entry value.
 
-This is a patch that already went into the kernel as:
+Drop the first step as it is completely useless.
 
-	commit 8bb9bf242d1f ("x86/mm/64: Do not sync vmalloc/ioremap mappings")
-
-But it had to be reverted later because it unveiled a bug from:
-
-	commit 6eb82f994026 ("x86/mm: Pre-allocate P4D/PUD pages for vmalloc area")
-
-The bug in that commit causes the P4D/PUD pages not to be correctly
-allocated, making the synchronization still necessary. That issue got
-fixed meanwhile upstream:
-
-	commit 995909a4e22b ("x86/mm/64: Do not dereference non-present PGD entries")
-
-With that fix it is safe again to remove the page-table synchronization
-for vmalloc/ioremap ranges on x86-64.
-
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200814151947.26229-2-joro@8bytes.org
+Link: https://lore.kernel.org/r/20200815100641.26362-7-jgross@suse.com
 ---
- arch/x86/include/asm/pgtable_64_types.h | 2 --
- arch/x86/mm/init_64.c                   | 5 -----
- 2 files changed, 7 deletions(-)
+ arch/x86/include/asm/paravirt.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/include/asm/pgtable_64_types.h
-index 8f63efb..52e5f5f 100644
---- a/arch/x86/include/asm/pgtable_64_types.h
-+++ b/arch/x86/include/asm/pgtable_64_types.h
-@@ -159,6 +159,4 @@ extern unsigned int ptrs_per_p4d;
+diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+index f0464b8..d25cc68 100644
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -448,7 +448,7 @@ static inline pudval_t pud_val(pud_t pud)
  
- #define PGD_KERNEL_START	((PAGE_SIZE / 2) / sizeof(pgd_t))
- 
--#define ARCH_PAGE_TABLE_SYNC_MASK	(pgtable_l5_enabled() ?	PGTBL_PGD_MODIFIED : PGTBL_P4D_MODIFIED)
--
- #endif /* _ASM_X86_PGTABLE_64_DEFS_H */
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index a4ac13c..777d835 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -217,11 +217,6 @@ static void sync_global_pgds(unsigned long start, unsigned long end)
- 		sync_global_pgds_l4(start, end);
+ static inline void pud_clear(pud_t *pudp)
+ {
+-	set_pud(pudp, __pud(0));
++	set_pud(pudp, native_make_pud(0));
  }
  
--void arch_sync_kernel_mappings(unsigned long start, unsigned long end)
--{
--	sync_global_pgds(start, end);
--}
--
- /*
-  * NOTE: This function is marked __ref because it calls __init function
-  * (alloc_bootmem_pages). It's safe to do it ONLY when after_bootmem == 0.
+ static inline void set_p4d(p4d_t *p4dp, p4d_t p4d)
+@@ -485,15 +485,15 @@ static inline void __set_pgd(pgd_t *pgdp, pgd_t pgd)
+ } while (0)
+ 
+ #define pgd_clear(pgdp) do {						\
+-	if (pgtable_l5_enabled())						\
+-		set_pgd(pgdp, __pgd(0));				\
++	if (pgtable_l5_enabled())					\
++		set_pgd(pgdp, native_make_pgd(0));			\
+ } while (0)
+ 
+ #endif  /* CONFIG_PGTABLE_LEVELS == 5 */
+ 
+ static inline void p4d_clear(p4d_t *p4dp)
+ {
+-	set_p4d(p4dp, __p4d(0));
++	set_p4d(p4dp, native_make_p4d(0));
+ }
+ 
+ static inline void set_pte_atomic(pte_t *ptep, pte_t pte)
+@@ -504,12 +504,12 @@ static inline void set_pte_atomic(pte_t *ptep, pte_t pte)
+ static inline void pte_clear(struct mm_struct *mm, unsigned long addr,
+ 			     pte_t *ptep)
+ {
+-	set_pte(ptep, __pte(0));
++	set_pte(ptep, native_make_pte(0));
+ }
+ 
+ static inline void pmd_clear(pmd_t *pmdp)
+ {
+-	set_pmd(pmdp, __pmd(0));
++	set_pmd(pmdp, native_make_pmd(0));
+ }
+ 
+ #define  __HAVE_ARCH_START_CONTEXT_SWITCH
