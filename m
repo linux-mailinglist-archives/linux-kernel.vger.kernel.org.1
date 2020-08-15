@@ -2,173 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A99E124525B
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B105C245214
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbgHOVqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
+        id S1726304AbgHOVkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728071AbgHOVpq (ORCPT
+        with ESMTP id S1726063AbgHOVkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:45:46 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C97BC03D1CF
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 14:28:58 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id i10so641460pgk.1
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 14:28:58 -0700 (PDT)
+        Sat, 15 Aug 2020 17:40:42 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B9EC03D1D0
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 14:30:43 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id u128so6242998pfb.6
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 14:30:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yDB2cu8uvw5o4FJBQyga65heRe+0KnSxhoCkr4blEbk=;
-        b=LMUYZSyi+6Ij3c4IGwpY9C3syOogfNop3DuOh5j4l3mEUI0iD5lnQTNegoHqPJbDwi
-         k4Hu60HVmy/WjAS9njUGjZ2BRBWRDlAh6wLOuo5fKx/Uy0xd4IAUVx2t3LvlBG/UAAfJ
-         T8fPzNqKy0WDJ+39RxYjx79SLJGdG9ZRxXB8qxUl67GNMAujG4oQgXfbf6m5+tlVCV7j
-         yFDHJSk75k9zrc9O9bmHkTNETm5ql/1rN1V2LxRJzp+GlQs1BnQcM1BQf1Py5gZ71rW+
-         78uQEQv3doEuu4pBNdzgCl8oSl1sHt5o1I0xIMEaA76DlTrJo3pQrRwc2S4Jfo7T05Ud
-         BuPg==
+        bh=ORZYHt9ecrzKMNgyspN1PBptpkMsBZp4x/btzZwFfNw=;
+        b=lPClLCvyiXS+vZ3mRzNc/FiH6L8tgYs8RLI0q7i9kt/AQhBBuFvmlo2fEvNv5K3srP
+         YXqsA1qkuHGCHSCTZTVpyl4W/0I6/x2DLlEQkLiHpDxEyzCI4WS38s0ByD4HYRHKq0Qv
+         h4EX4r9WqELVLy5edF4ih81aLPRAzfGHeLYdo/UZfAvGc+8CyLMEnq4gppocQSECcCin
+         2IfwO8e/wWEkm0p2gbrrhY/hcZFRTxQWGLfXZodUg589SIB7cWku1A6MC4HgOyM3l1Tf
+         kUF+HQkAySqNq7taW1zeVhsajkdS/56zDKpo9YtfcRXd2SenkPtqZEgddkJmKT+/LycJ
+         Db6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yDB2cu8uvw5o4FJBQyga65heRe+0KnSxhoCkr4blEbk=;
-        b=AlQL7IpYXk5FlooDvf3hCOGE+AWp4Rc8w9Y/CiX69vbiT/FKRwkyREQgsRI/ChQtzo
-         6gIpLDb+Ie5cICH7adgHk12f5mQMO3Y2c5SdTv4LS5yhcZ3eEk9dNfWgrrS9LPiea1Qx
-         8z06XOM9JooFAvfp6iSZjsjNTKGXuCD8jk7vu6jQKaUfGN8knQTBb2uRG8LC5c4KBTPB
-         pxCBCm7LFMfaZQzLpk/8OxXPwryzsYaTuTUKI4wXFj4CTC8uIXTxzXkwfSy2wcc7P0AA
-         NBDAdb+7PQNCg/v7g+e5tL2svhLyNRH+pRwTfCET1vNeAESHjbNrz9fE0+b/s81oKkrL
-         qRVg==
-X-Gm-Message-State: AOAM530NhvG0YzLvsRuTZXol+MEyiOyqtoICms12I1Vxy0PuTtSs5+IN
-        Ev7Vn1Lh1dIpbE8Sj0qebtBEGeqBze6LK6B5a1+TIQ==
-X-Google-Smtp-Source: ABdhPJwGiLda6VueXOHB1PGNMKpexOYerFArFSN25ggacJ5cSHMqAlXCj+LSomXWh3kxgUb+FFN6EOTnhGBqohq/8Dk=
-X-Received: by 2002:a63:7d8:: with SMTP id 207mr5780004pgh.263.1597526937591;
- Sat, 15 Aug 2020 14:28:57 -0700 (PDT)
+        bh=ORZYHt9ecrzKMNgyspN1PBptpkMsBZp4x/btzZwFfNw=;
+        b=avkCV5kYBljKylBR7Wun+L6vVeFGmE2ChqevHGVtmbpEIUWKYNJx4UpgkmqfKra7/Y
+         vXe/HmuRwyLkXb03s5q474Z59hvTT0jhuFweRZI346R1YQ8gXUw+5ecPG7FxWvWxK3I1
+         96bUX3M+IEZkvi9wQWpaRoUj0CB1ib5aNYaLeC+ic0KAzJdAMK2ok+MtAR5WuBOH028V
+         zuY17L4L9Ae1HtcdiH/9yegBo4hN1rD6tgOg6TCRTG47VffeGp3srDMJSOjdkZGEg04r
+         +QWUUIAHm35fX8l9eACZYxJTe3s0T5Id6bf8ytOQt+OUwYvSUr+E2Ob3DiQDIMy57DQ9
+         2FSw==
+X-Gm-Message-State: AOAM5325COErMY2NjXaOa6hKCpKtJkWw1rl51y7AJDMSYj7jrxjoz8Zq
+        UcLuv63u5jAl+gAL4TbTQlaw9OzX9198mnS5VQYEhg==
+X-Google-Smtp-Source: ABdhPJyGVBSih5D1rMueRL34SkoQOVR4ObJ9OADrWJVIdsuwnDu2rdBGdvxWHpmI4b+0XZD1iry4j74RRH8Y8sT/Uxo=
+X-Received: by 2002:aa7:96e5:: with SMTP id i5mr3350792pfq.108.1597527043233;
+ Sat, 15 Aug 2020 14:30:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200815014006.GB99152@rani.riverdale.lan> <20200815020946.1538085-1-ndesaulniers@google.com>
- <202008150921.B70721A359@keescook> <CAKwvOdnyHfx6ayqEoOr3pb_ibKBAG9vj31LuKE+f712W=7LFKA@mail.gmail.com>
- <457a91183581509abfa00575d0392be543acbe07.camel@perches.com>
-In-Reply-To: <457a91183581509abfa00575d0392be543acbe07.camel@perches.com>
+References: <15f52e9b0e50296aba35871bc1575a684c4a258a.camel@perches.com>
+ <CAKwvOd=8C94K-9VCqdCn9FXiyfDhKxMu=4AGem1bGgp8m6z0fw@mail.gmail.com> <CAHk-=wjjHN32BXdqu1iP8WSZoqdGPDDiqVLUbBgYG+=JO3MJCw@mail.gmail.com>
+In-Reply-To: <CAHk-=wjjHN32BXdqu1iP8WSZoqdGPDDiqVLUbBgYG+=JO3MJCw@mail.gmail.com>
 From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Sat, 15 Aug 2020 14:28:46 -0700
-Message-ID: <CAKwvOdk4PRi45MXCtg4kmeN6c1AK5w9EJ1XFBJ5GyUjwEtRj1g@mail.gmail.com>
-Subject: Re: [PATCH v2] lib/string.c: implement stpcpy
-To:     Joe Perches <joe@perches.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Daniel Axtens <dja@axtens.net>, Ingo Molnar <mingo@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date:   Sat, 15 Aug 2020 14:30:32 -0700
+Message-ID: <CAKwvOdm4NfdtVs-g7CTfHJcViXpeoF80B1j1weced4T+gfKN9w@mail.gmail.com>
+Subject: Re: [PATCH] genksyms: keywords: Use __restrict not _restrict
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Joe Perches <joe@perches.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 2:24 PM Joe Perches <joe@perches.com> wrote:
+On Fri, Aug 14, 2020 at 8:06 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On Sat, 2020-08-15 at 13:47 -0700, Nick Desaulniers wrote:
-> > On Sat, Aug 15, 2020 at 9:34 AM Kees Cook <keescook@chromium.org> wrote:
-> > > On Fri, Aug 14, 2020 at 07:09:44PM -0700, Nick Desaulniers wrote:
-> > > > LLVM implemented a recent "libcall optimization" that lowers calls to
-> > > > `sprintf(dest, "%s", str)` where the return value is used to
-> > > > `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
-> > > > in parsing format strings.  Calling `sprintf` with overlapping arguments
-> > > > was clarified in ISO C99 and POSIX.1-2001 to be undefined behavior.
-> > > >
-> > > > `stpcpy` is just like `strcpy` except it returns the pointer to the new
-> > > > tail of `dest`. This allows you to chain multiple calls to `stpcpy` in
-> > > > one statement.
-> > >
-> > > O_O What?
-> > >
-> > > No; this is a _terrible_ API: there is no bounds checking, there are no
-> > > buffer sizes. Anything using the example sprintf() pattern is _already_
-> > > wrong and must be removed from the kernel. (Yes, I realize that the
-> > > kernel is *filled* with this bad assumption that "I'll never write more
-> > > than PAGE_SIZE bytes to this buffer", but that's both theoretically
-> > > wrong ("640k is enough for anybody") and has been known to be wrong in
-> > > practice too (e.g. when suddenly your writing routine is reachable by
-> > > splice(2) and you may not have a PAGE_SIZE buffer).
-> > >
-> > > But we cannot _add_ another dangerous string API. We're already in a
-> > > terrible mess trying to remove strcpy[1], strlcpy[2], and strncpy[3]. This
-> > > needs to be addressed up by removing the unbounded sprintf() uses. (And
-> > > to do so without introducing bugs related to using snprintf() when
-> > > scnprintf() is expected[4].)
-> >
-> > Well, everything (-next, mainline, stable) is broken right now (with
-> > ToT Clang) without providing this symbol.  I'm not going to go clean
-> > the entire kernel's use of sprintf to get our CI back to being green.
+> It goes back to 2003 and the original keywords.gperf file, see
 >
-> Maybe this should get place in compiler-clang.h so it isn't
-> generic and public.
+>    https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/commit/?id=46bd1da672d66ccd8a639d3c1f8a166048cca608
 
-https://bugs.llvm.org/show_bug.cgi?id=47162#c7 and
-https://bugs.llvm.org/show_bug.cgi?id=47144
-Seem to imply that Clang is not the only compiler that can lower a
-sequence of libcalls to stpcpy.  Do we want to wait until we have a
-fire drill w/ GCC to move such an implementation from
-include/linux/compiler-clang.h back in to lib/string.c?
-
->
-> Something like:
->
-> ---
->  include/linux/compiler-clang.h | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
->
-> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-> index cee0c728d39a..6279f1904e39 100644
-> --- a/include/linux/compiler-clang.h
-> +++ b/include/linux/compiler-clang.h
-> @@ -61,3 +61,30 @@
->  #if __has_feature(shadow_call_stack)
->  # define __noscs       __attribute__((__no_sanitize__("shadow-call-stack")))
->  #endif
-> +
-> +#ifndef __HAVE_ARCH_STPCPY
-> +/**
-> + * stpcpy - copy a string from src to dest returning a pointer to the new end
-> + *          of dest, including src's NULL terminator. May overrun dest.
-> + * @dest: pointer to buffer being copied into.
-> + *        Must be large enough to receive copy.
-> + * @src: pointer to the beginning of string being copied from.
-> + *       Must not overlap dest.
-> + *
-> + * This function exists _only_ to support clang's possible conversion of
-> + * sprintf calls to stpcpy.
-> + *
-> + * stpcpy differs from strcpy in two key ways:
-> + * 1. inputs must not overlap.
-> + * 2. return value is dest's NUL termination character after copy.
-> + *    (for strcpy, the return value is a pointer to src)
-> + */
-> +
-> +static inline char *stpcpy(char __restrict *dest, const char __restrict *src)
-> +{
-> +       while ((*dest++ = *src++) != '\0') {
-> +               ;       /* nothing */
-> +       }
-> +       return --dest;
-> +}
-> +#endif
->
->
-
-
+Interesting, I was wondering why upstream development on genksyms had
+stopped a long time ago.  That commit provides more context.
 -- 
 Thanks,
 ~Nick Desaulniers
