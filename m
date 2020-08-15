@@ -2,113 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B733E245296
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0FC2452D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729229AbgHOVx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
+        id S1729071AbgHOVzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:55:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729129AbgHOVwn (ORCPT
+        with ESMTP id S1729067AbgHOVwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:43 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B110AC0A3BE5
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 09:34:17 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d22so6032267pfn.5
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 09:34:17 -0700 (PDT)
+        Sat, 15 Aug 2020 17:52:25 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6D6C0A3BEB
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 09:39:07 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ha11so5707377pjb.1
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 09:39:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=zJX37WRUVbMU5pJLki7rAUhX9uBKXYYVUdVs+LildKI=;
-        b=IpPDEUCjv38MHmQCN4xlwtZPYWyGXgrzrlene0jwicF8nC6bOQLRDf6JsqAZXPcSHM
-         Ia3GGX+Ri5jyykiM54fdWTzoYRRHzlFZhHRbnarJjgroY1BTzFbBGDfFhk0imqbjsO8m
-         594cDxoJl1B4YBWdYONF4W0lkqmH+sF0aDmCA=
+        bh=4J3Q2ehkUro4Gqm1OJFrAMNOhAG6pUBKwcsUWslCw24=;
+        b=hyCX5dk0lc2fQo6AdVYPsyRwjQfIab+4kVsuGBOTS+rgoLmgvGzpAXpHdYdu25Ucxt
+         p2vFxbC2jLyIN89paD62Unq+y0/DgbwcYwsRPTW0bMKamVAtr8RXj0r7D2sTV4u9WLlh
+         ofnmietSfjV60Yd2MknF/JhR+Il9lbRkXQsjw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=zJX37WRUVbMU5pJLki7rAUhX9uBKXYYVUdVs+LildKI=;
-        b=FMVJuVstnlazQ+0BzMpfd6dj5GmnFW/grjkzfH5bpI/zgkA5aLE1vm+somh4tT0Cc9
-         Alg9XRkwliPNDtxgHPGAcEiblcnfmUKLnY8ozpSVN0oGpRtEZuwVWPECzeZoIJLdjaCR
-         T1PAwewlRa36+7f04o+hexFNYtVkK3HS3AAhpH9zW5Ugi+EnXkd/WFmzZwS7bsNKGeop
-         6tQeKC9u2hfPw3zA8t0+1ztOAiYUJLMGSv4XNzJxWwXSQ442itu3NiTowJF5wmMYOjIm
-         no9XtzZDaCBMhgi1JCPC5xpvQcW+07FEQJ/Sn/P4loj7AtR5s8XmDx1qv/J59IE9JFFg
-         XXMg==
-X-Gm-Message-State: AOAM5314GsoQkrBJVU+pM9h8s9qecKtzHV0TeRGz+qsCSO0wvoxT/T8Y
-        iIfky9trMUSAIXwH2qVHvSF14w==
-X-Google-Smtp-Source: ABdhPJwxkXH54KOfuvV0sE3T/mUrFUJnBitO40SmY2gNDM+3Db0P2007Ysnhlcqr0odkVg6XM30umg==
-X-Received: by 2002:a63:4a4c:: with SMTP id j12mr5198869pgl.115.1597509257153;
-        Sat, 15 Aug 2020 09:34:17 -0700 (PDT)
+        bh=4J3Q2ehkUro4Gqm1OJFrAMNOhAG6pUBKwcsUWslCw24=;
+        b=skP0VuvAgZAZQ2+pI4gpFUxTD0z7UJ28kpS6bUVlh7WUNb3iWXbWxHg9CtGK0Xd/xn
+         Pn8Ism/6ZbUGOb9cUcCWMI+ytiFUSnHLF+DHxN/1rLOtvRD5g2QpRk79NhmrCPsbNPR7
+         /hN4oHfIMj+N5QcS0NfG25zU7vheULQQjZezxO4XhMguBjg7UoR5u9biICQq+c06V9zB
+         jWlBu1nnxPZrk/DQLsC8kgV+f3RJXC53sIs0YxtUsjdmngsPaG8VWZhF+Y1niOz0hdJE
+         FzWBOrWT2OWfGn2m2SZoB1hRz+DcWAKvmJvEoxCANn4CMI8WvnXzALaYj4FjSwBxnvOy
+         0PFQ==
+X-Gm-Message-State: AOAM5320XVJnGpD6/9N69MLR5iTO93eKFY0zv4ifLZ1r0cLlH5fyih4W
+        nP/eH14v8xi4jUiTfhp4jFOoAg==
+X-Google-Smtp-Source: ABdhPJwQ7WFh+zuUDNylvWNHBYfJx/1UItdvutSrtmbdzkqKHZNwQsyxlZmknMcj2X+TU5UN9AI9iA==
+X-Received: by 2002:a17:90a:148:: with SMTP id z8mr6733727pje.197.1597509544802;
+        Sat, 15 Aug 2020 09:39:04 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f27sm12433808pfk.217.2020.08.15.09.34.16
+        by smtp.gmail.com with ESMTPSA id e3sm11269389pgu.40.2020.08.15.09.39.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 09:34:16 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 09:34:15 -0700
+        Sat, 15 Aug 2020 09:39:03 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 09:39:02 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        =?iso-8859-1?Q?D=E1vid_Bolvansk=FD?= <david.bolvansky@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>, stable@vger.kernel.org,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Daniel Axtens <dja@axtens.net>, Ingo Molnar <mingo@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2] lib/string.c: implement stpcpy
-Message-ID: <202008150921.B70721A359@keescook>
-References: <20200815014006.GB99152@rani.riverdale.lan>
- <20200815020946.1538085-1-ndesaulniers@google.com>
+To:     Alexander Popov <alex.popov@linux.com>
+Cc:     Jann Horn <jannh@google.com>, Will Deacon <will@kernel.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Patrick Bellasi <patrick.bellasi@arm.com>,
+        David Howells <dhowells@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
+        notify@kernel.org
+Subject: Re: [PATCH RFC 0/2] Break heap spraying needed for exploiting
+ use-after-free
+Message-ID: <202008150935.4C2F32559F@keescook>
+References: <20200813151922.1093791-1-alex.popov@linux.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200815020946.1538085-1-ndesaulniers@google.com>
+In-Reply-To: <20200813151922.1093791-1-alex.popov@linux.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 07:09:44PM -0700, Nick Desaulniers wrote:
-> LLVM implemented a recent "libcall optimization" that lowers calls to
-> `sprintf(dest, "%s", str)` where the return value is used to
-> `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
-> in parsing format strings.  Calling `sprintf` with overlapping arguments
-> was clarified in ISO C99 and POSIX.1-2001 to be undefined behavior.
+On Thu, Aug 13, 2020 at 06:19:20PM +0300, Alexander Popov wrote:
+> I've found an easy way to break heap spraying for use-after-free
+> exploitation. I simply extracted slab freelist quarantine from KASAN
+> functionality and called it CONFIG_SLAB_QUARANTINE. Please see patch 1.
+
+Ah yeah, good idea. :)
+
+> [...]
+> I did a brief performance evaluation of this feature.
 > 
-> `stpcpy` is just like `strcpy` except it returns the pointer to the new
-> tail of `dest`. This allows you to chain multiple calls to `stpcpy` in
-> one statement.
+> 1. Memory consumption. KASAN quarantine uses 1/32 of the memory.
+> CONFIG_SLAB_QUARANTINE disabled:
+>   # free -m
+>                 total        used        free      shared  buff/cache   available
+>   Mem:           1987          39        1862          10          86        1907
+>   Swap:             0           0           0
+> CONFIG_SLAB_QUARANTINE enabled:
+>   # free -m
+>                 total        used        free      shared  buff/cache   available
+>   Mem:           1987         140        1760          10          87        1805
+>   Swap:             0           0           0
 
-O_O What?
+1/32 of memory doesn't seem too bad for someone interested in this defense.
 
-No; this is a _terrible_ API: there is no bounds checking, there are no
-buffer sizes. Anything using the example sprintf() pattern is _already_
-wrong and must be removed from the kernel. (Yes, I realize that the
-kernel is *filled* with this bad assumption that "I'll never write more
-than PAGE_SIZE bytes to this buffer", but that's both theoretically
-wrong ("640k is enough for anybody") and has been known to be wrong in
-practice too (e.g. when suddenly your writing routine is reachable by
-splice(2) and you may not have a PAGE_SIZE buffer).
+> 2. Performance penalty. I used `hackbench -s 256 -l 200 -g 15 -f 25 -P`.
+> CONFIG_SLAB_QUARANTINE disabled (x86_64, CONFIG_SLUB):
+>   Times: 3.088, 3.103, 3.068, 3.103, 3.107
+>   Mean: 3.0938
+>   Standard deviation: 0.0144
+> CONFIG_SLAB_QUARANTINE enabled (x86_64, CONFIG_SLUB):
+>   Times: 3.303, 3.329, 3.356, 3.314, 3.292
+>   Mean: 3.3188 (+7.3%)
+>   Standard deviation: 0.0223
 
-But we cannot _add_ another dangerous string API. We're already in a
-terrible mess trying to remove strcpy[1], strlcpy[2], and strncpy[3]. This
-needs to be addressed up by removing the unbounded sprintf() uses. (And
-to do so without introducing bugs related to using snprintf() when
-scnprintf() is expected[4].)
+That's rather painful, but hackbench can produce some big deltas given
+it can be an unrealistic workload for most systems. I'd be curious to
+see the "building a kernel" timings, which tends to be much more
+realistic for "busy system" without hammering one particular subsystem
+(though it's a bit VFS heavy, obviously).
 
--Kees
-
-[1] https://github.com/KSPP/linux/issues/88
-[2] https://github.com/KSPP/linux/issues/89
-[3] https://github.com/KSPP/linux/issues/90
-[4] https://lore.kernel.org/lkml/20200810092100.GA42813@2f5448a72a42/
+More notes in the patches...
 
 -- 
 Kees Cook
