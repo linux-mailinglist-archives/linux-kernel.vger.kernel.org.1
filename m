@@ -2,172 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A6F2452C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D527E245302
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729138AbgHOVzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:55:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
+        id S1729487AbgHOV53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729080AbgHOVwZ (ORCPT
+        with ESMTP id S1728987AbgHOVwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:25 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8F0C06135A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 19:09:54 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id b18so6813949pge.8
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 19:09:54 -0700 (PDT)
+        Sat, 15 Aug 2020 17:52:05 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6126DC06135C
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 19:14:44 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a79so5413588pfa.8
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 19:14:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=54FL2fi4838KNUxBDYGwUIbd4eC5LfouQots9gMJMF0=;
-        b=fPvq6U6A360rPMQQfY80tv926Cd5O3nR4WPkH6JUn3SS4hp8J9vEeuVc8QeEpFMBTo
-         xXoUqxM6lxDduHfN8MJCfliJLBMFyqGypCTtDhu57I8yZD1gzmRxGPsFsc6DfyxonpwQ
-         6kCaIoeHLd7JFEftxyEAgBxGUAAjqVFsKV4936IzdButxXfd4XyOFm//dLBHTd/jc5fb
-         LYh0OmapnhdXPgays9Ex8Eqi2F/ZdVQTvlJLIGBgwpscpX8iuzHC6U3vBvl1MbMN/7fb
-         N8pn4/28tirBW60VwYTiFtv+PPo9JsuEa8A16klsOl/e5uOnISACuAIgTXSZbfn2Z4Um
-         Omjg==
+        bh=LGi2odQIN3hUlyq/NfurerxmBmMjUNFi5Q5z5tYjXXc=;
+        b=vnjOXbm9QNRABcrQnPRDRCfUC06bk96KMpSVOH8h4GP58sJglkcWcxWC4dElhH2aKx
+         iJTsEGY4mjc3+YsIbtlT4V+aVZmmFBEjkd1TvPU3aI4iSq60nfqAvLFotOFfNWeXm/G8
+         p3qbmPp+Q7WqkXwc6vTcgvYt9qw3eL5Nu0986P4mX4X/7mrLmyVw9N/AFls3lsAeHMvJ
+         rH+b7zaE467PfO1JrzF9j/VAgmTsVJB5U5+dXu6WAKp5MUNG8AlnlRUPBlanwIqKj71+
+         bMkzxaKN7f4MjjzYvXbP2oghOettizUmPM/3EdXALVOa7F42NY9YjBqOLyrZbJHu25Dv
+         8I1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=54FL2fi4838KNUxBDYGwUIbd4eC5LfouQots9gMJMF0=;
-        b=Jm4iSZ4Dn5jWLYGzPjUrKyG7n9XgxzoLXbmSChZPTC//8H0U3ndopbh12X7J38lBX1
-         nvouylL/m8S+D8uDhOpd9y6jzqup86/zrGbUQ9mkfjPfckxUPmlp9I0WNKSSMPTiQYMh
-         k3yRBrBJCM8ulRa8N6FOlvgh1fWyvBC09xgijNVKZ2iSk14Te552K06AORhjId9i2/e+
-         tioaFrAjAX9iLe5Hh7jO4cJfOAPm5zziVrs7/0COJMvlzeY61OzMUiiGToJd6LYmTkym
-         GeVeGIfxGD2LVf6fmsNnLtjtoRLvvmdBLnLJ6b2ddsYEBcyDM4xxZZ5GoF4JNZafN4gB
-         zUDA==
-X-Gm-Message-State: AOAM53293RAe5KSWaNINUmrlkMumvtdZi3OaA87u4erqOwcjr1EBCLeT
-        sEdN0AGTuYd5WqlZzxUPVSvD646U7gKo31eQ4cU=
-X-Google-Smtp-Source: ABdhPJxn7c2rM9XYQqL7VYIyJCPlruhb5XpkLIh39f2LFOz1FHt3BUVCChncetKEKYyR5pNeNBUbYTh/dt1My/lLq5w=
-X-Received: by 2002:a63:df54:: with SMTP id h20mr3416349pgj.319.1597457393328;
- Fri, 14 Aug 2020 19:09:53 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 19:09:44 -0700
-In-Reply-To: <20200815014006.GB99152@rani.riverdale.lan>
-Message-Id: <20200815020946.1538085-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20200815014006.GB99152@rani.riverdale.lan>
-X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
-Subject: [PATCH v2] lib/string.c: implement stpcpy
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LGi2odQIN3hUlyq/NfurerxmBmMjUNFi5Q5z5tYjXXc=;
+        b=HKiAicXwst+mZr0teLFqpqdlWtO01mJF4Su0LbZcx4xZztCQmk00Q3pazYPgsRr6tF
+         ynUxIaB1OXEy1GOIUPQ9rRv4okKwFjvvxETN8EVkfNN4Twwf5ktXVLXxAM3sYaPStQd2
+         oZ/JX73TPqxkEPQz9z4eCoAbWx8THX9POupPAx1E0RVtrULKSokWjmnNrmI73h+Qv2V+
+         uR25fMnJ23VjN1qXsZJhdngb8SFQqobVz2KR2/tkNBPf6w6iMwwlqo0FLT0PtRyh7DkD
+         0ptNunGhKB6lyYqj36tvIKl8vICJkwAPw0G48HSYup98LETyhF/6fnWA4+GDl8at9GED
+         ca6g==
+X-Gm-Message-State: AOAM532Kk2kiZ6zubRjdNBp974FnS8kLTFntSmqCy9MwAMU4uP9SqVBU
+        XAgFkpuTENoZEGtUGFKl5OVAwwpd3Cz4tzPAo4nOrtB1BCo=
+X-Google-Smtp-Source: ABdhPJyEyJFbbwrX/G1YzMUiose8GWSpxMM1Z0OVh7zO7HJUZVqEzpLvYwubH17RFBnJ2kLc4gnQQJpe2fFbgr2kSUc=
+X-Received: by 2002:a63:4e56:: with SMTP id o22mr3332756pgl.381.1597457683228;
+ Fri, 14 Aug 2020 19:14:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <15f52e9b0e50296aba35871bc1575a684c4a258a.camel@perches.com>
+In-Reply-To: <15f52e9b0e50296aba35871bc1575a684c4a258a.camel@perches.com>
 From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "=?UTF-8?q?D=C3=A1vid=20Bolvansk=C3=BD?=" <david.bolvansky@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Date:   Fri, 14 Aug 2020 19:14:31 -0700
+Message-ID: <CAKwvOd=8C94K-9VCqdCn9FXiyfDhKxMu=4AGem1bGgp8m6z0fw@mail.gmail.com>
+Subject: Re: [PATCH] genksyms: keywords: Use __restrict not _restrict
+To:     Joe Perches <joe@perches.com>
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LLVM implemented a recent "libcall optimization" that lowers calls to
-`sprintf(dest, "%s", str)` where the return value is used to
-`stpcpy(dest, str) - dest`. This generally avoids the machinery involved
-in parsing format strings.  Calling `sprintf` with overlapping arguments
-was clarified in ISO C99 and POSIX.1-2001 to be undefined behavior.
+On Fri, Aug 14, 2020 at 6:38 PM Joe Perches <joe@perches.com> wrote:
+>
+> Use the proper form of the RESTRICT keyword.
+>
+> Quote the comments properly too.
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-`stpcpy` is just like `strcpy` except it returns the pointer to the new
-tail of `dest`. This allows you to chain multiple calls to `stpcpy` in
-one statement.
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 
-`stpcpy` was first standardized in POSIX.1-2008.
+(Surprised what looked to me like a typo compiled).  Would a
+checkpatch warning be helpful, too? What's KAO? Urban dictionary has
+no entry. :^P
 
-Implement this so that we don't observe linkage failures due to missing
-symbol definitions for `stpcpy`.
+> ---
+>  scripts/genksyms/keywords.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/scripts/genksyms/keywords.c b/scripts/genksyms/keywords.c
+> index 7a85c4e21175..057c6cabad1d 100644
+> --- a/scripts/genksyms/keywords.c
+> +++ b/scripts/genksyms/keywords.c
+> @@ -25,9 +25,9 @@ static struct resword {
+>         { "__int128_t", BUILTIN_INT_KEYW },
+>         { "__uint128_t", BUILTIN_INT_KEYW },
+>
+> -       // According to rth, c99 defines "_Bool", __restrict", __restrict__", "restrict".  KAO
+> +       // According to rth, c99 defines "_Bool", "__restrict", "__restrict__", "restrict".  KAO
+>         { "_Bool", BOOL_KEYW },
+> -       { "_restrict", RESTRICT_KEYW },
+> +       { "__restrict", RESTRICT_KEYW },
+>         { "__restrict__", RESTRICT_KEYW },
+>         { "restrict", RESTRICT_KEYW },
+>         { "asm", ASM_KEYW },
+>
 
-Similar to last year's fire drill with:
-commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
 
-This optimization was introduced into clang-12.
-
-Cc: stable@vger.kernel.org
-Link: https://bugs.llvm.org/show_bug.cgi?id=47162
-Link: https://github.com/ClangBuiltLinux/linux/issues/1126
-Link: https://man7.org/linux/man-pages/man3/stpcpy.3.html
-Link: https://pubs.opengroup.org/onlinepubs/9699919799/functions/stpcpy.html
-Link: https://reviews.llvm.org/D85963
-Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-Suggested-by: Joe Perches <joe@perches.com>
-Reported-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes V2:
-* Added Sami's Tested by; though the patch changed implementation, the
-  missing symbol at link time was the problem Sami was observing.
-* Fix __restrict -> __restrict__ typo as per Joe.
-* Drop note about restrict from commit message as per Arvind.
-* Fix NULL -> NUL as per Arvind; NUL is ASCII '\0'. TIL
-* Fix off by one error as per Arvind; I had another off by one error in
-  my test program that was masking this.
-
- include/linux/string.h |  3 +++
- lib/string.c           | 23 +++++++++++++++++++++++
- 2 files changed, 26 insertions(+)
-
-diff --git a/include/linux/string.h b/include/linux/string.h
-index b1f3894a0a3e..7686dbca8582 100644
---- a/include/linux/string.h
-+++ b/include/linux/string.h
-@@ -31,6 +31,9 @@ size_t strlcpy(char *, const char *, size_t);
- #ifndef __HAVE_ARCH_STRSCPY
- ssize_t strscpy(char *, const char *, size_t);
- #endif
-+#ifndef __HAVE_ARCH_STPCPY
-+extern char *stpcpy(char *__restrict__, const char *__restrict__);
-+#endif
- 
- /* Wraps calls to strscpy()/memset(), no arch specific code required */
- ssize_t strscpy_pad(char *dest, const char *src, size_t count);
-diff --git a/lib/string.c b/lib/string.c
-index 6012c385fb31..68ddbffbbd58 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -272,6 +272,29 @@ ssize_t strscpy_pad(char *dest, const char *src, size_t count)
- }
- EXPORT_SYMBOL(strscpy_pad);
- 
-+#ifndef __HAVE_ARCH_STPCPY
-+/**
-+ * stpcpy - copy a string from src to dest returning a pointer to the new end
-+ *          of dest, including src's NUL terminator. May overrun dest.
-+ * @dest: pointer to end of string being copied into. Must be large enough
-+ *        to receive copy.
-+ * @src: pointer to the beginning of string being copied from. Must not overlap
-+ *       dest.
-+ *
-+ * stpcpy differs from strcpy in two key ways:
-+ * 1. inputs must not overlap.
-+ * 2. return value is the new NULL terminated character. (for strcpy, the
-+ *    return value is a pointer to src.
-+ */
-+#undef stpcpy
-+char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
-+{
-+	while ((*dest++ = *src++) != '\0')
-+		/* nothing */;
-+	return --dest;
-+}
-+#endif
-+
- #ifndef __HAVE_ARCH_STRCAT
- /**
-  * strcat - Append one %NUL-terminated string to another
 -- 
-2.28.0.220.ged08abb693-goog
-
+Thanks,
+~Nick Desaulniers
