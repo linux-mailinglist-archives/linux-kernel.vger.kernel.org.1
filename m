@@ -2,62 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85960245426
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C96F24540D
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729571AbgHOWNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:13:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41774 "EHLO mail.kernel.org"
+        id S1730003AbgHOWLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:11:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728730AbgHOWK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:10:27 -0400
-Received: from localhost (173-25-40-8.client.mchsi.com [173.25.40.8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729357AbgHOWKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:10:30 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 288FA22EBE;
-        Sat, 15 Aug 2020 13:28:01 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.14.193-rt92
-Date:   Sat, 15 Aug 2020 13:26:45 -0000
-Message-ID: <159749800552.1746232.11751078271440052247@theseus.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 48E0B23122;
+        Sat, 15 Aug 2020 14:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597500064;
+        bh=nTbooeHnOQNWyi9FSAgCRBTzajO/a6wRi+aGZk8krpg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=z6h07+JlpUWrhQFumuicQbKzh4CeaR0VYBZEkNvFfBXlHpjJbSOmHkdsfrKoENqzj
+         vzRYHO6AdXB+b/zqcH16cExNLPauiJzpzUokBSTwGMDwvRBTQlotTuU37dmLezCy7O
+         OjHwoxHGphyZrV3GXTMDAP+uwhfqOpwMGA98N0ZQ=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH v2 0/6] tools/bootconfig: Add boot-time tracing script
+Date:   Sat, 15 Aug 2020 23:01:00 +0900
+Message-Id: <159750006069.202708.12439674123720173666.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+Hi,
 
-I'm pleased to announce the 4.14.193-rt92 stable release.
+This is the 2nd version of the series to introduce scripts for the
+boot-time tracing. In this version, I just updated 4/6 according to
+Steve's comment.
 
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.14-rt
-  Head SHA1: 832a83d1bb8ce9a523aef196b40c17318f0a6e52
-
-Or to build 4.14.193-rt92 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.193.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.193-rt92.patch.xz
+Previous series is here:
+ https://lkml.kernel.org/r/159704847064.175360.3292152056631660862.stgit@devnote2
 
 
-You can also build from 4.14.192-rt91 by applying the incremental patch:
+Thank you,
 
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/incr/patch-4.14.192-rt91-rt92.patch.xz
+---
 
-Enjoy!
-Clark
+Masami Hiramatsu (6):
+      tools/bootconfig: Show bootconfig compact tree from bootconfig file
+      tools/bootconfig: Add list option
+      tools/bootconfig: Make all functions static
+      tools/bootconfig: Add a script to generate ftrace shell-command from bootconfig
+      tools/bootconfig: Add a script to generates bootconfig from ftrace
+      tools/bootconfig: Add --init option for bconf2ftrace.sh
+
+
+ MAINTAINERS                              |    1 
+ tools/bootconfig/main.c                  |  147 +++++++++++++-----
+ tools/bootconfig/scripts/bconf2ftrace.sh |  199 ++++++++++++++++++++++++
+ tools/bootconfig/scripts/ftrace.sh       |  109 +++++++++++++
+ tools/bootconfig/scripts/ftrace2bconf.sh |  244 ++++++++++++++++++++++++++++++
+ tools/bootconfig/scripts/xbc.sh          |   57 +++++++
+ 6 files changed, 715 insertions(+), 42 deletions(-)
+ create mode 100755 tools/bootconfig/scripts/bconf2ftrace.sh
+ create mode 100644 tools/bootconfig/scripts/ftrace.sh
+ create mode 100755 tools/bootconfig/scripts/ftrace2bconf.sh
+ create mode 100644 tools/bootconfig/scripts/xbc.sh
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
