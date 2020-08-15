@@ -2,130 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0FC2452D6
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC38A245208
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729071AbgHOVzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729067AbgHOVwZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:25 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6D6C0A3BEB
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 09:39:07 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ha11so5707377pjb.1
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 09:39:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4J3Q2ehkUro4Gqm1OJFrAMNOhAG6pUBKwcsUWslCw24=;
-        b=hyCX5dk0lc2fQo6AdVYPsyRwjQfIab+4kVsuGBOTS+rgoLmgvGzpAXpHdYdu25Ucxt
-         p2vFxbC2jLyIN89paD62Unq+y0/DgbwcYwsRPTW0bMKamVAtr8RXj0r7D2sTV4u9WLlh
-         ofnmietSfjV60Yd2MknF/JhR+Il9lbRkXQsjw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4J3Q2ehkUro4Gqm1OJFrAMNOhAG6pUBKwcsUWslCw24=;
-        b=skP0VuvAgZAZQ2+pI4gpFUxTD0z7UJ28kpS6bUVlh7WUNb3iWXbWxHg9CtGK0Xd/xn
-         Pn8Ism/6ZbUGOb9cUcCWMI+ytiFUSnHLF+DHxN/1rLOtvRD5g2QpRk79NhmrCPsbNPR7
-         /hN4oHfIMj+N5QcS0NfG25zU7vheULQQjZezxO4XhMguBjg7UoR5u9biICQq+c06V9zB
-         jWlBu1nnxPZrk/DQLsC8kgV+f3RJXC53sIs0YxtUsjdmngsPaG8VWZhF+Y1niOz0hdJE
-         FzWBOrWT2OWfGn2m2SZoB1hRz+DcWAKvmJvEoxCANn4CMI8WvnXzALaYj4FjSwBxnvOy
-         0PFQ==
-X-Gm-Message-State: AOAM5320XVJnGpD6/9N69MLR5iTO93eKFY0zv4ifLZ1r0cLlH5fyih4W
-        nP/eH14v8xi4jUiTfhp4jFOoAg==
-X-Google-Smtp-Source: ABdhPJwQ7WFh+zuUDNylvWNHBYfJx/1UItdvutSrtmbdzkqKHZNwQsyxlZmknMcj2X+TU5UN9AI9iA==
-X-Received: by 2002:a17:90a:148:: with SMTP id z8mr6733727pje.197.1597509544802;
-        Sat, 15 Aug 2020 09:39:04 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e3sm11269389pgu.40.2020.08.15.09.39.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 09:39:03 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 09:39:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexander Popov <alex.popov@linux.com>
-Cc:     Jann Horn <jannh@google.com>, Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        David Howells <dhowells@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Laura Abbott <labbott@redhat.com>,
+        id S1727120AbgHOVhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:37:22 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:52718 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726444AbgHOVhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:37:20 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 6788EFB05;
+        Sat, 15 Aug 2020 18:47:39 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id rYMbM5R8wXQP; Sat, 15 Aug 2020 18:47:37 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 4A9304576F; Sat, 15 Aug 2020 18:47:37 +0200 (CEST)
+Date:   Sat, 15 Aug 2020 18:47:37 +0200
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
-        notify@kernel.org
-Subject: Re: [PATCH RFC 0/2] Break heap spraying needed for exploiting
- use-after-free
-Message-ID: <202008150935.4C2F32559F@keescook>
-References: <20200813151922.1093791-1-alex.popov@linux.com>
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: Add Mantix MLAF057WE51-X panel bindings
+Message-ID: <20200815164737.GA3640@bogon.m.sigxcpu.org>
+References: <cover.1597412076.git.agx@sigxcpu.org>
+ <9345739df02b8b8630e7dccb61a80a7a7f692526.1597412076.git.agx@sigxcpu.org>
+ <20200815083917.GA993113@ravnborg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200813151922.1093791-1-alex.popov@linux.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200815083917.GA993113@ravnborg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 06:19:20PM +0300, Alexander Popov wrote:
-> I've found an easy way to break heap spraying for use-after-free
-> exploitation. I simply extracted slab freelist quarantine from KASAN
-> functionality and called it CONFIG_SLAB_QUARANTINE. Please see patch 1.
-
-Ah yeah, good idea. :)
-
-> [...]
-> I did a brief performance evaluation of this feature.
+Hi Sam,
+On Sat, Aug 15, 2020 at 10:39:17AM +0200, Sam Ravnborg wrote:
+> Hi Guido.
 > 
-> 1. Memory consumption. KASAN quarantine uses 1/32 of the memory.
-> CONFIG_SLAB_QUARANTINE disabled:
->   # free -m
->                 total        used        free      shared  buff/cache   available
->   Mem:           1987          39        1862          10          86        1907
->   Swap:             0           0           0
-> CONFIG_SLAB_QUARANTINE enabled:
->   # free -m
->                 total        used        free      shared  buff/cache   available
->   Mem:           1987         140        1760          10          87        1805
->   Swap:             0           0           0
+> On Fri, Aug 14, 2020 at 03:36:22PM +0200, Guido Günther wrote:
+> > The panel uses a Focaltech FT8006p, the touch part is handled by the
+> > already existing edt-ft5x06.
+> > 
+> > Signed-off-by: Guido Günther <agx@sigxcpu.org>
+> 
+> A few trivialities.
 
-1/32 of memory doesn't seem too bad for someone interested in this defense.
+Thanks for having a look. One remark inline:
 
-> 2. Performance penalty. I used `hackbench -s 256 -l 200 -g 15 -f 25 -P`.
-> CONFIG_SLAB_QUARANTINE disabled (x86_64, CONFIG_SLUB):
->   Times: 3.088, 3.103, 3.068, 3.103, 3.107
->   Mean: 3.0938
->   Standard deviation: 0.0144
-> CONFIG_SLAB_QUARANTINE enabled (x86_64, CONFIG_SLUB):
->   Times: 3.303, 3.329, 3.356, 3.314, 3.292
->   Mean: 3.3188 (+7.3%)
->   Standard deviation: 0.0223
+> 
+> > ---
+> >  .../display/panel/mantix,mlaf057we51-x.yaml   | 73 +++++++++++++++++++
+> >  1 file changed, 73 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+> > new file mode 100644
+> > index 0000000000000..349f3380ac940
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+> > @@ -0,0 +1,73 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/display/panel/mantix,mlaf057we51-x.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Mantix MLAF057WE51-X 5.7" 720x1440 TFT LCD panel
+> > +
+> > +maintainers:
+> > +  - Guido Günther <agx@sigxcpu.org>
+> > +
+> > +description: |
+> > +             Mantix MLAF057WE51 X is a 720x1440 TFT LCD panel
+> > +             connected using a MIPI-DSI video interface.
+> Indent text with two spaces only.
+> And I have learned that '|' is only needed to preserve formatting - so
+> it can be dropped.
+> 
+> > +
+> > +allOf:
+> > +  - $ref: panel-common.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - mantix,mlaf057we51-x
+> This is a list - so needs an extra 2 spaces indent.
+> See https://lore.kernel.org/linux-devicetree/f1963eb9-283f-e903-2a3a-4f324d71d418@lucaceresoli.net/T/#m65900317fb948f6c40e8fb521f2201fba3c301a7
+> for examples where Rob fixes this.
 
-That's rather painful, but hackbench can produce some big deltas given
-it can be an unrealistic workload for most systems. I'd be curious to
-see the "building a kernel" timings, which tends to be much more
-realistic for "busy system" without hammering one particular subsystem
-(though it's a bit VFS heavy, obviously).
+Doesn't this only apply if the 'outer element' is a list too so e.g.:
 
-More notes in the patches...
+   - enum
+     - foo
 
--- 
-Kees Cook
+trips up yamllint but
+
+   enum
+     - foo
+
+doesn't. Since yamllint was happy i kept it as is (looking at your
+reference suggests that too).
+
+All the rest made sense and i fixed that for the upcoming v2.
+Thanks for having a look!
+ -- Guido
+
+> 
+> > +
+> > +  port: true
+> > +  reg:
+> > +    maxItems: 1
+> > +    description: DSI virtual channel
+> > +
+> > +  avdd-supply:
+> > +    description: Positive analog power supply
+> > +
+> > +  avee-supply:
+> > +    description: Negative analog power supply
+> > +
+> > +  vddi-supply:
+> > +    description: 1.8V I/O voltage supply
+> > +
+> > +  reset-gpios:
+> > +    description: GPIO used for the reset pin
+> > +    maxItems: 1
+> Use reset-gpios: true as we already have it in panel-common.yaml
+> 
+> > +
+> > +  backlight:
+> > +    description: Backlight used by the panel
+> > +    $ref: "/schemas/types.yaml#/definitions/phandle"
+> Use backlight from panel-common.yaml.
+> 
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - avdd-supply
+> > +  - avee-supply
+> > +  - vddi-supply
+> > +  - reset-gpios
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +
+> > +    dsi {
+> My personal preference is indent with 4 spaces in examples but there are
+> no rules so feel free to ignore.
+> > +      #address-cells = <1>;
+> > +      #size-cells = <0>;
+> > +      panel@0 {
+> > +        compatible = "mantix,mlaf057we51-x";
+> > +        reg = <0>;
+> > +        avdd-supply = <&reg_avdd>;
+> > +        avee-supply = <&reg_avee>;
+> > +        vddi-supply = <&reg_1v8_p>;
+> > +        reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
+> > +        backlight = <&backlight>;
+> > +      };
+> > +    };
+> I think we need an ampty line here.
+> > +...
+> > -- 
+> > 2.26.2
+> > 
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
