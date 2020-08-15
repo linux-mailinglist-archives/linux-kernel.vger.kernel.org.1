@@ -2,111 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6AB2452A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C620245301
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729263AbgHOVxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
+        id S1729293AbgHOV5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729147AbgHOVwl (ORCPT
+        with ESMTP id S1728992AbgHOVwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:41 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFF7C0612F9
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 21:30:45 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id m22so11967082eje.10
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 21:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B8hFqGgi3bQZQ1euyS6ai4tboC53ELWJOXqJtr0acco=;
-        b=mRenq4I9snynCGp0vxFPiCVDkCCQNDXc/K6ZtcuZ9aYc14T6j4LfGTSL76W2C78FHj
-         9ysuvUOmUjiz6BohSrUl1ZFUa5eGXkcM17ajneBnN2GAa8tE/1JmVhYYV003u/+TTXlB
-         5PU+3MglxIYB4bcsy4marQapECsWL/JhzjQFTsjsiIjNr+2mM/fMS3fgTZ0kx87G81nr
-         hjMVVfartF1/UQxG7+kBiDSLzNx3mQzTl7LQp/ThZ+EpXQwIC8ZZshUemWWPYxo9Lkph
-         mqfWKo204vTbKUXYyDAOADh51HQQv8HQtHAqQewO+eDfKQ2tz7ztXDxJow4nwiBB2oN+
-         R57g==
+        Sat, 15 Aug 2020 17:52:06 -0400
+Received: from mail-il1-x148.google.com (mail-il1-x148.google.com [IPv6:2607:f8b0:4864:20::148])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61709C061251
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 22:23:09 -0700 (PDT)
+Received: by mail-il1-x148.google.com with SMTP id o18so7940008ill.20
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 22:23:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B8hFqGgi3bQZQ1euyS6ai4tboC53ELWJOXqJtr0acco=;
-        b=O8SQG5kR6ECG3wV96iy5N7dwt8pUtDnPKyB5bxHQqd8T1ztGXSkT9pts34pNJWMcPp
-         +zhptZL/NbW3b+q2Ydl3LzZWzyEBcSiz2oss1lUSfrUFbBTAryY3alQUe78/8tWws7PY
-         7VIZ+odWOJdpDR0BQlyn8m23CaOigp1dUw3BlYhCP1jIypkGEkFpH8G0tIzyjFcG3wvW
-         AnGxkiQcAIB2Irbwb8+ftY0DjXS9C94cEKMb5FwFfPYx/hWQJU492Uisv4yva0Q1XoK4
-         po5NcYga8VTj0ZRdaBJuqfqCPtZTTkSL8TLnR5Fu23FCILIQFopFPAL7X5MDgU3OQu/+
-         +Adg==
-X-Gm-Message-State: AOAM533YiC4/0CahWBpcLg8i6xk7BjuNU1StVkrZqf4DJEZfhtX5msDt
-        10x5bjgb1+ZpkSR/H52o1I3O52G+0I2ny851bK7Bgc1qG8x8+A==
-X-Google-Smtp-Source: ABdhPJylzl07UeWh4gwKVqjg2TjJDuIdme0nwPFQc+XjZRIiG0e+NrtPPR3XvIZYEGtA5Fa+7F994QXhmXoARtLIYMI=
-X-Received: by 2002:a17:907:41dc:: with SMTP id og20mr5670047ejb.183.1597465844100;
- Fri, 14 Aug 2020 21:30:44 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=+25FmT8dO4pWjXPGwlb17rDpAfTAbCr3FFkhBNcwuAs=;
+        b=mcTgLsr973kYPoTMt4veKSPutegxmmPLJn/w3gnlxASrDNxQQxIA5Fbu5/YkDlfMYn
+         +sL8WyOcER5IQgjTyObAhymed5tWWmMTARTWCsl8dWM+iAEph5XZn7BG+lMEO6OltLz1
+         qRYSivCFOX+v2a7oocuzWgTt6vq4/3bQxOEzPt9ZRaK7/0/vjGN01P6nEmvBps/Nqsdk
+         kyRZdAY0V4JTz5lbjsgLIcHJvT28l6LWUUKR/zSnY8Q3ZTZIdI+5PlPQ0lONQro15jpe
+         Y9hjlzUzCzgZdKEmDgdp9K9EfzgU5bKQxW80tPe+nKedDE8+t0gTL6lM0mfyYYg47m1P
+         Lpcw==
+X-Gm-Message-State: AOAM533mjsyjTBMYg4yCwhzv4DVk6NzfCtTWxTsDjcJNgJpkmkLmd6E9
+        /rQmhlkPitqQRdTUu/Jgv7cT616pi+fmJq63ZKZv8Y1lg5i0
+X-Google-Smtp-Source: ABdhPJydlCxs/36cUc4UNHPK6M0HkLjuUhkbtL2IuaVgPgv4K8a6I+NSpBzJX7MWxkS2M/6tiP8RcVV1wSXKsNQxeGt/4EVo4FU6
 MIME-Version: 1.0
-References: <20200815035637.15319-1-phillip@squashfs.org.uk>
-In-Reply-To: <20200815035637.15319-1-phillip@squashfs.org.uk>
-From:   Guenter Roeck <groeck@google.com>
-Date:   Fri, 14 Aug 2020 21:30:33 -0700
-Message-ID: <CABXOdTcJDub=ffmwn4_Xn0chxdwwu4jNFrh9o3HVVH1Mzt4iSA@mail.gmail.com>
-Subject: Re: [PATCH] squashfs: avoid bio_alloc() failure with 1Mbyte blocks
-To:     Phillip Lougher <phillip@squashfs.org.uk>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Philippe Liard <pliard@google.com>, hch@lst.de,
-        adrien+dev@schischi.me, Guenter Roeck <groeck@chromium.org>,
-        Daniel Rosenberg <drosen@google.com>,
-        Nicolas Prochazka <nicolas.prochazka@gmail.com>,
-        Tomoatsu Shimada <shimada@walbrix.com>
+X-Received: by 2002:a92:b712:: with SMTP id k18mr2432857ili.220.1597468988463;
+ Fri, 14 Aug 2020 22:23:08 -0700 (PDT)
+Date:   Fri, 14 Aug 2020 22:23:08 -0700
+In-Reply-To: <000000000000eb6a8e057ab79f82@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000098e02c05ace3bbfb@google.com>
+Subject: Re: WARNING: refcount bug in p9_req_put
+From:   syzbot <syzbot+edec7868af5997928fe9@syzkaller.appspotmail.com>
+To:     asmadeus@codewreck.org, davem@davemloft.net, ericvh@gmail.com,
+        hch@lst.de, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        lucho@ionkov.net, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        v9fs-developer@lists.sourceforge.net
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 8:57 PM Phillip Lougher <phillip@squashfs.org.uk> wrote:
->
-> This is a regression introduced by the "migrate from ll_rw_block usage
-> to BIO" patch.
->
-> Bio_alloc() is limited to 256 pages (1 Mbyte).   This can cause a
-> failure when reading 1 Mbyte block filesystems.  The problem is
-> a datablock can be fully (or almost uncompressed), requiring 256
-> pages, but, because blocks are not aligned to page boundaries, it
-> may require 257 pages to read.
->
-> Bio_kmalloc() can handle 1024 pages, and so use this for the
-> edge condition.
->
-> Reported-by: Nicolas Prochazka <nicolas.prochazka@gmail.com>
-> Reported-by: Tomoatsu Shimada <shimada@walbrix.com>
-> Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
+syzbot suspects this issue was fixed by commit:
 
-Fixes: 93e72b3c612a ("squashfs: migrate from ll_rw_block usage to BIO")
-Reviewed-by: Guenter Roeck <groeck@chromium.org>
+commit a39c46067c845a8a2d7144836e9468b7f072343e
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Fri Jul 10 08:57:22 2020 +0000
 
-> ---
->  fs/squashfs/block.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/squashfs/block.c b/fs/squashfs/block.c
-> index 76bb1c846845..8a19773b5a0b 100644
-> --- a/fs/squashfs/block.c
-> +++ b/fs/squashfs/block.c
-> @@ -87,7 +87,11 @@ static int squashfs_bio_read(struct super_block *sb, u64 index, int length,
->         int error, i;
->         struct bio *bio;
->
-> -       bio = bio_alloc(GFP_NOIO, page_count);
-> +       if (page_count <= BIO_MAX_PAGES)
-> +               bio = bio_alloc(GFP_NOIO, page_count);
-> +       else
-> +               bio = bio_kmalloc(GFP_NOIO, page_count);
-> +
->         if (!bio)
->                 return -ENOMEM;
->
-> --
-> 2.20.1
->
+    net/9p: validate fds in p9_fd_open
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1015f012900000
+start commit:   459e3a21 gcc-9: properly declare the {pv,hv}clock_page sto..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ef1b87b455c397cf
+dashboard link: https://syzkaller.appspot.com/bug?extid=edec7868af5997928fe9
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1642ee48a00000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: net/9p: validate fds in p9_fd_open
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
