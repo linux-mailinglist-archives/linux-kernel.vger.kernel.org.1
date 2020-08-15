@@ -2,99 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB6524522A
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EB1245337
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgHOVoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:44:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55000 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726710AbgHOVnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:43:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3634FB04F;
-        Sat, 15 Aug 2020 10:07:11 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH v4 6/6] x86/paravirt: avoid needless paravirt step clearing page table entries
-Date:   Sat, 15 Aug 2020 12:06:41 +0200
-Message-Id: <20200815100641.26362-7-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200815100641.26362-1-jgross@suse.com>
-References: <20200815100641.26362-1-jgross@suse.com>
+        id S1729570AbgHOV7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728897AbgHOVvm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:51:42 -0400
+Received: from mail-il1-x145.google.com (mail-il1-x145.google.com [IPv6:2607:f8b0:4864:20::145])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B612C08C5ED
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 03:18:09 -0700 (PDT)
+Received: by mail-il1-x145.google.com with SMTP id i66so8287636ile.6
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 03:18:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=aSMYatUGNqv5jWLXKfM6VYDCIDAFgzJgx/5GgNSFP4s=;
+        b=tUATX8PPYoXt7M3zDZ55qKyMQglHSBvgqDbE8wp5wrm/TZ+/Wwkx/Sgsc4w2gPDAfu
+         6Pj1LdVKYm9wk27KtAWvyxRnzyn+bVOFfwMzNZIm7dWZqTNZENgnvz+LIZnscCpvXCiU
+         l7xbWWfEZt04umeJ1EGlxHNY2RB/vtSf3CWqZtPaS+Q800G26rSVK+v1wU0RuJrLr6XZ
+         k3sUegRxUfQjR7lqjzowMYQPF89/t8huDqmuzdmlkcLXjU0+QJjGrxTFrqe1uMNpnZJV
+         JyoWwfM5184zvQddl5ilIOHFLPBS1OyR9nS/guXo92uVMZ4w4fUaERGL5zVIGVhfAlCR
+         2X8w==
+X-Gm-Message-State: AOAM533DZr5DB0cnLecEqQRlGZW91x67WCRo4bwEcMYE86tsdXukZd2b
+        MxotSzgeMJfmYzgJ33YpXByMvHAkBbJAwrifNGPG6+lDINwZ
+X-Google-Smtp-Source: ABdhPJxa9WohqkoJcux/K8+Cn7Cm1Tp8E/EBpa4BoOZW/55b+UPuL60utKTAuqde6IT36lWruGC7XaYYmAtA/9xMATE9zbYd1D+t
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:ea3:: with SMTP id u3mr5809783ilj.49.1597486685361;
+ Sat, 15 Aug 2020 03:18:05 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 03:18:05 -0700
+In-Reply-To: <000000000000ff323f05a053100c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006a1b9e05ace7da39@google.com>
+Subject: Re: general protection fault in syscall_return_slowpath
+From:   syzbot <syzbot+cd66e43794b178bb5cd6@syzkaller.appspotmail.com>
+To:     bp@alien8.de, dan.carpenter@oracle.com, daniel.vetter@ffwll.ch,
+        dvyukov@google.com, gregkh@linuxfoundation.org, hpa@zytor.com,
+        jannh@google.com, linux-kernel@vger.kernel.org, luto@kernel.org,
+        mingo@redhat.com, natechancellor@gmail.com,
+        penguin-kernel@I-love.SAKURA.ne.jp,
+        penguin-kernel@i-love.sakura.ne.jp,
+        syzkaller-bugs@googlegroups.com, syzkaller@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pte_clear() et al are based on tw0 paravirt steps today: one step to
-create a page table entry with all zeroes, and one step to write this
-entry value.
+syzbot suspects this issue was fixed by commit:
 
-Drop the first step as it is completely useless.
+commit 033724d6864245a11f8e04c066002e6ad22b3fd0
+Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Date:   Wed Jul 15 01:51:02 2020 +0000
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
- arch/x86/include/asm/paravirt.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+    fbdev: Detect integer underflow at "struct fbcon_ops"->clear_margins.
 
-diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-index f0464b88ea1e..d25cc6830e89 100644
---- a/arch/x86/include/asm/paravirt.h
-+++ b/arch/x86/include/asm/paravirt.h
-@@ -448,7 +448,7 @@ static inline pudval_t pud_val(pud_t pud)
- 
- static inline void pud_clear(pud_t *pudp)
- {
--	set_pud(pudp, __pud(0));
-+	set_pud(pudp, native_make_pud(0));
- }
- 
- static inline void set_p4d(p4d_t *p4dp, p4d_t p4d)
-@@ -485,15 +485,15 @@ static inline void __set_pgd(pgd_t *pgdp, pgd_t pgd)
- } while (0)
- 
- #define pgd_clear(pgdp) do {						\
--	if (pgtable_l5_enabled())						\
--		set_pgd(pgdp, __pgd(0));				\
-+	if (pgtable_l5_enabled())					\
-+		set_pgd(pgdp, native_make_pgd(0));			\
- } while (0)
- 
- #endif  /* CONFIG_PGTABLE_LEVELS == 5 */
- 
- static inline void p4d_clear(p4d_t *p4dp)
- {
--	set_p4d(p4dp, __p4d(0));
-+	set_p4d(p4dp, native_make_p4d(0));
- }
- 
- static inline void set_pte_atomic(pte_t *ptep, pte_t pte)
-@@ -504,12 +504,12 @@ static inline void set_pte_atomic(pte_t *ptep, pte_t pte)
- static inline void pte_clear(struct mm_struct *mm, unsigned long addr,
- 			     pte_t *ptep)
- {
--	set_pte(ptep, __pte(0));
-+	set_pte(ptep, native_make_pte(0));
- }
- 
- static inline void pmd_clear(pmd_t *pmdp)
- {
--	set_pmd(pmdp, __pmd(0));
-+	set_pmd(pmdp, native_make_pmd(0));
- }
- 
- #define  __HAVE_ARCH_START_CONTEXT_SWITCH
--- 
-2.26.2
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13f979f6900000
+start commit:   63623fd4 Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5d2e033af114153f
+dashboard link: https://syzkaller.appspot.com/bug?extid=cd66e43794b178bb5cd6
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a42329e00000
 
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fbdev: Detect integer underflow at "struct fbcon_ops"->clear_margins.
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
