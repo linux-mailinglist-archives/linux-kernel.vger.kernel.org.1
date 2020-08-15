@@ -2,139 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18434245204
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 101382452BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgHOVg2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 15 Aug 2020 17:36:28 -0400
-Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:11564 "EHLO
-        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726251AbgHOVg0 (ORCPT
+        id S1729311AbgHOVyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729093AbgHOVwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:36:26 -0400
-Subject: Re: [PATCH v2 1/2] selinux: add tracepoint on denials
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Nick Kralevich <nnk@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>
-References: <20200813144914.737306-1-tweek@google.com>
- <15e2e26d-fe4b-679c-b5c0-c96d56e09853@gmail.com>
- <CA+zpnLcf94HGmE=CGH6nT8ya0oax5orXc5nP1qToUgaca6FeQg@mail.gmail.com>
- <CAEjxPJ50vrauP7dd-ek15vwnMN1kvAyvYSc0fhR4xwCJEQSFxQ@mail.gmail.com>
- <ad64b5af-93de-e84e-17ca-40d8dd3cfe44@sony.com>
- <CAEjxPJ67G24T1a5WitmMqL4RUpjOgQFwpQ8unO1-OXSS=35V4Q@mail.gmail.com>
- <3518887d-9083-2836-a8db-c7c27a70c990@sony.com>
- <20200814134653.0ba7f64e@oasis.local.home>
-From:   peter enderborg <peter.enderborg@sony.com>
-Message-ID: <0d283b71-df19-d82b-318d-04e5816db517@sony.com>
-Date:   Sat, 15 Aug 2020 10:45:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 15 Aug 2020 17:52:32 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E39EC03B3D2;
+        Sat, 15 Aug 2020 01:45:40 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id h19so12311364ljg.13;
+        Sat, 15 Aug 2020 01:45:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Jwsjl5Yl1LFkiTpIfV4FC2pCDY0RlfTGIWFy5618czY=;
+        b=JscczZiBHiR/E30j1ODTRjEZ1J6tzdLICchjfKYD9oDq4hBTSw16cEKX38WSL3gIRR
+         xrnOqDQrO6y6nSFgZXIXzbnTdDu/52bbdqMewnXiQwAXD4xwaQ5W/NwThRCamidnVbmi
+         +OlUdBEBVMhTn2wgmOeXl6eQAS5m7c4rvBo0DLKI2UIO242DkP5o4nz2udq02GRUsqvU
+         nz5Syvq8CziHecgVZN5uKOS2Z/hKrUDqLlYS/7A+CIhHbPQO7h7h90xHiEBwYg/VpZsi
+         Hk/phvDKEAzoetTrUL85EGK3C692AW4EDjNNzVdsvul0ZuYBcZUwoFMdM1I+OhdgZN87
+         3y0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Jwsjl5Yl1LFkiTpIfV4FC2pCDY0RlfTGIWFy5618czY=;
+        b=exEXvbWnvm/975OkswMu12dF470FkJxH/W2gACT96ituYQUvo4xznEJxaPEjqcp2hw
+         e5tx9r0Tfq8goRDeO493KT4dPz77mRmVv94IAsH4kvrBUGjZggPyiyJTIx/SWt+hbZaW
+         c2hCthKcuT1hjan4ZQpXgWal4Itk0wr238qLRrGLWt0+d/cgm933emLWn7bO58CPTH3U
+         R668z6UeSHR0inuw5bc8NcwNq9YDRce618SjXSZsZggby0haXDipZzJIBwWY/JxFneUq
+         pRhrIhtoD1ol6Z4w0Kk6Xkwb+xZfEVN3N7LLUmC3I5X9WENunrc0qCFjXREWT7g+Sffh
+         a7rQ==
+X-Gm-Message-State: AOAM530KkoUDm23CgyqT30bT/mFuRIe6+IQ03RnlBOPVAlKo/bcjcqH3
+        Iqprgt57QfFq/eRVtyKcCZk=
+X-Google-Smtp-Source: ABdhPJxfJPykrCx26X5MYrFKAvPWACW5EIexq2GfCBCd7z/Z++I/TIHakOXnD8XGsq3zFFne/FcS3Q==
+X-Received: by 2002:a2e:808f:: with SMTP id i15mr3244164ljg.151.1597481138853;
+        Sat, 15 Aug 2020 01:45:38 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:6e9:851e:a10b:7957:433d:a960? ([2a00:1fa0:6e9:851e:a10b:7957:433d:a960])
+        by smtp.gmail.com with ESMTPSA id f3sm2331191ljo.81.2020.08.15.01.45.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Aug 2020 01:45:38 -0700 (PDT)
+Subject: Re: [PATCH 3/5] arm64: dts: renesas: r8a774a1: Add PCIe EP nodes
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20200814173037.17822-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200814173037.17822-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <fcabccab-54fb-8b8a-7034-9b0da9d32339@gmail.com>
+Date:   Sat, 15 Aug 2020 11:45:23 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200814134653.0ba7f64e@oasis.local.home>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-GB
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=frmim2wf c=1 sm=1 tr=0 a=Jtaq2Av1iV2Yg7i8w6AGMw==:117 a=IkcTkHD0fZMA:10 a=y4yBn9ojGxQA:10 a=z6gsHLkEAAAA:8 a=1XWaLZrsAAAA:8 a=pGLkceISAAAA:8 a=N3zAGw_37jy3WdHjj-MA:9 a=QEXdDO2ut3YA:10 a=d-OLMTCWyvARjPbQ-enb:22
-X-SEG-SpamProfiler-Score: 0
+In-Reply-To: <20200814173037.17822-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/20 7:46 PM, Steven Rostedt wrote:
-> On Fri, 14 Aug 2020 19:22:13 +0200
-> peter enderborg <peter.enderborg@sony.com> wrote:
->
->> On 8/14/20 7:08 PM, Stephen Smalley wrote:
->>> On Fri, Aug 14, 2020 at 1:07 PM peter enderborg
->>> <peter.enderborg@sony.com> wrote:  
->>>> On 8/14/20 6:51 PM, Stephen Smalley wrote:  
->>>>> On Fri, Aug 14, 2020 at 9:05 AM Thiébaud Weksteen <tweek@google.com> wrote:  
->>>>>> On Thu, Aug 13, 2020 at 5:41 PM Stephen Smalley
->>>>>> <stephen.smalley.work@gmail.com> wrote:  
->>>>>>> An explanation here of how one might go about decoding audited and
->>>>>>> tclass would be helpful to users (even better would be a script to do it
->>>>>>> for them).  Again, I know how to do that but not everyone using
->>>>>>> perf/ftrace will.  
->>>>>> What about something along those lines:
->>>>>>
->>>>>> The tclass value can be mapped to a class by searching
->>>>>> security/selinux/flask.h. The audited value is a bit field of the
->>>>>> permissions described in security/selinux/av_permissions.h for the
->>>>>> corresponding class.  
->>>>> Sure, I guess that works.  Would be nice if we just included the class
->>>>> and permission name(s) in the event itself but I guess you viewed that
->>>>> as too heavyweight?  
->>>> The class name is added in part 2. Im not sure how a proper format for permission
->>>> would look like in trace terms. It is a list, right?  
->>> Yes.  See avc_audit_pre_callback() for example code to log the permission names.  
->> I wrote about that on some of the previous sets. The problem is that trace format is quite fixed. So it is lists are not
->> that easy to handle if you want to filter in them. You can have a trace event for each of them. You can also add
->> additional trace event "selinux_audied_permission" for each permission. With that you can filter out tclass or permissions.
->>
->> But the basic thing we would like at the moment is a event that we can debug in user space.
-> We have a trace_seq p helper, that lets you create strings in
-> TP_printk(). I should document this more. Thus you can do:
->
-> extern const char *audit_perm_to_name(struct trace_seq *p, u16 class, u32 audited);
-> #define __perm_to_name(p, class, audited) audit_perm_to_name(p, class, audited)
->
-> 	TP_printk("tclass=%u audited=%x (%s)",
-> 		__entry->tclass,
-> 		__entry->audited,
-> 		__perm_to_name(__entry->tclass, __entry->audited))
->
->
-> const char *audit_perm_to_name(struct trace_seq *p, u16 tclass, u32 av)
-> {
-> 	const char *ret = trace_seq_buffer_ptr(p);
-> 	int i, perm;
->
-> 	( some check for tclass integrity here)
->
-> 	perms = secclass_map[tclass-1].perms;
->
-> 	i = 0;
-> 	perm = 1;
-> 	while (i < (sizeof(av) * 8)) {
-> 		if ((perm & av) && perms[i]) {
-> 			trace_seq_printf(p, " %s", perms[i]);
-> 			av &= ~perm;
-> 		}
-> 		i++;
-> 		perm <<= 1;
-> 	}
->
-> 	return ret;
-> }
->
-> Note, this wont work for perf and trace-cmd as it wouldn't know how to
-> parse it, but if the tclass perms are stable, you could create a plugin
-> to libtraceevent that can do the above as well.
->
-> -- Steve
+Hello!
 
-Something like:
+On 14.08.2020 20:30, Lad Prabhakar wrote:
 
-    while (i < (sizeof(av) * 8)) {
-        if ((perm & av)  && perms[i]) {
-            if (!(perm & avdenied))
-                trace_seq_printf(p, " %s", perms[i]);
-            else
-                trace_seq_printf(p, " !%s", perms[i]);
-            av &= ~perm;
+> Add PCIe EP nodes to R8A774A1 (RZ/G2M) SoC dtsi.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> ---
+>   arch/arm64/boot/dts/renesas/r8a774a1.dtsi | 38 +++++++++++++++++++++++
+>   1 file changed, 38 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
+> index a603d947970e..50e9ed16a36d 100644
+> --- a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
+> @@ -2369,6 +2369,44 @@
+>   			status = "disabled";
+>   		};
+>   
+> +		pciec0_ep: pcie_ep@fe000000 {
 
-And you get information about denied too.
+    Hyphens are preferred over underscores in the node/prop names.
 
+[...]> +		pciec1_ep: pcie_ep@ee800000 {
 
+    Ditto, should be "pci-ep@ee800000".
 
+[...]
+
+MBR, Sergei
