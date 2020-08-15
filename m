@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E162453B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F788245368
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729840AbgHOWE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
+        id S1729689AbgHOWBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728556AbgHOVvC (ORCPT
+        with ESMTP id S1728798AbgHOVva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:02 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CCDCC06134C;
-        Fri, 14 Aug 2020 18:33:15 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id e5so8359915qth.5;
-        Fri, 14 Aug 2020 18:33:15 -0700 (PDT)
+        Sat, 15 Aug 2020 17:51:30 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7835C061350
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 19:00:35 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id k13so4954243plk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 19:00:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vJ/jVWhGTXG1e9E+PiLPXFME4LoN6xMadImJ1YD9YHU=;
-        b=bI9yTul+XenFvqeVlqilZ/1PwJ1K3UFEioFw2tHq8PaWt4T8LWxVgwRJSMMkhCUE6S
-         Mhk+1TtNGS6OWGrlFWUOTVc0gMvTT5rGsqPSPF7y7J9R5EjAKpFUxmIDn1hRIQ/wtohD
-         h7ryjmhJ5t+sRCgBkpOsNhDqwsFM230xxiBOLSfm+c/bPJD3fF/amzVpL35ZoJJDtLUI
-         yPPUOToH6zKsZZ56/pzJ3TtCqrkDl5KRjH98qkAEoQJehZkYfRWLA6mKX6g7SAAlM2p+
-         hM1RQv8oPv1ZMBB3K1KLvw53CeRFVuV+sLMvOML/8vh1qbpqShRfnoqCIec5DNVLUsfr
-         Eb2A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=elMrilSLXI6b7aYlKVZpaKDCZnCipuhXfzdMESlljx4=;
+        b=PeLFqURvd92pEiF6Mj5L1v1twm8KmHeCGT5FIUueuiePqXC/2SmG8X8wnJdCAvoIMF
+         KBT1wvqHoqpL5j0WDX0ITEnjU+oLOV3CiB72ng3+Obta5Y7ld8+oYs4EO/mBUzjiyFvi
+         z0uWLCjbBqWiMYG+AQi4Vw2rbLXCjmg86TOHvoZzdgZS2eHot7znULGD970HG2GgHWTS
+         YHBgZCv60OtMpqCL+406elAO7tlZMekOZ3JwLSlD9NXsv9gftMbi/I41LKy7I7cZiloO
+         iBZ3LenMuMHyqsmaKE3teY8bEw1j3TCBYD/bdFSe3gq1So0jmDCnm44iPKDgGjeqUfxb
+         3ecw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=vJ/jVWhGTXG1e9E+PiLPXFME4LoN6xMadImJ1YD9YHU=;
-        b=rw635h449WWyb2LdxXwhLh6f64LaB/PGG829ylZXHG7wbg42YpTQR4jvlJDrDXhEzp
-         1SogV3Ph9t+bxew3WgQxmyt4KwUNq0fLDl92SOTzzLnj3eJ4tuwyGSZUZyz9EnFvANPK
-         fWvB8RVa63Q+WHO7l9zS/RmCbE1vnr2AFXJlvQ6hXpxc/atZh1lkrpMDYkxFMDO5wwg2
-         pkEmKCPzXZi2wqvWKwrDd78Ta/hJ9mBOwxsM3bIzeZIUKhbtYaj2ENTvqTsBWlp5XYjx
-         JpaUeN/ykWSk1vJLkYdN1rPR6ZtliiGz3BvOAcJZr9VY63vsgICUgwR0XBY7U1b0evt3
-         ROnQ==
-X-Gm-Message-State: AOAM531s2W0jywcll4pKZ6C8x19MKcPUaWOBCJ3YbP161lqYt8R9kO7B
-        jMoOuxzxD4ZoRbKVkoVg01CGxoz2IoY=
-X-Google-Smtp-Source: ABdhPJzT7OzYhDt4EGcOfivsmmvRSIEn2XltAWy/5uJNgRq1XLSKbN6URmiVpoEPnEgK3HsV7HyH9Q==
-X-Received: by 2002:ac8:7405:: with SMTP id p5mr4604950qtq.308.1597455192803;
-        Fri, 14 Aug 2020 18:33:12 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id t69sm10061523qka.73.2020.08.14.18.33.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 18:33:12 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Fri, 14 Aug 2020 21:33:10 -0400
-To:     Nick Desaulniers <ndesaulniers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=elMrilSLXI6b7aYlKVZpaKDCZnCipuhXfzdMESlljx4=;
+        b=UW0wRWvlfn0BquPXc4o30EgC+RhsUhIcdFz+Iy3F6EiltlnxaTfHz36CRfl/4Y+lO9
+         +ms6aBHsdNQnPenzESkX8lv9dDpZdDuTKhmpOqx7rVN2v4euRMjIqlPflQ/2uhwyVqxm
+         QMMrSMp9Dv7Arzq9RHaU4o6ZyL2mnzNC0/GErq73joF0oI1jebpEZqX1rmOHB1yTf/Oh
+         inGr9WXXWJ/3ygSspmGIVs+JpuBVWM9a+7K+IfyXu/ki/MV7e8AOHBxlOL8t+I84SDB4
+         qbT/vZbvOuBQckAvw36Rtj5ZANbKitLM+z56QF71TRSOoVxn1DIL7r6rhWx2oXJdnEZL
+         ZMOw==
+X-Gm-Message-State: AOAM531b79BPgAEiATT2kG6i2oaqFzXM7Ea2w/UEds+N7XWToblfBhZk
+        5jZ133x+ZJhoB5QpPcBEGwfIYxE2gEg2Ubhy6pj2EQ==
+X-Google-Smtp-Source: ABdhPJwaOHL0rmpbix09Dt9ThyyA5ar4WG4bAXv4Vl84QpdBQ0LTKX4e8nB5NFzkcS+KwDHRsirpMdgZVcKrmcAqpxs=
+X-Received: by 2002:a17:902:8509:: with SMTP id bj9mr3855029plb.179.1597456834421;
+ Fri, 14 Aug 2020 19:00:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200815002417.1512973-1-ndesaulniers@google.com> <562003af51ca0b08f2108147b8d6e75cec18f3fd.camel@perches.com>
+In-Reply-To: <562003af51ca0b08f2108147b8d6e75cec18f3fd.camel@perches.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 14 Aug 2020 19:00:22 -0700
+Message-ID: <CAKwvOdn8PdK-3Xhm-JFG-=1djoPPEMcANjXarGpLUTkahJoFJw@mail.gmail.com>
+Subject: Re: [PATCH] lib/string.c: implement stpcpy
+To:     Joe Perches <joe@perches.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        =?utf-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>, stable@vger.kernel.org,
+        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
         Sami Tolvanen <samitolvanen@google.com>,
-        Joe Perches <joe@perches.com>, Tony Luck <tony.luck@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
         Yury Norov <yury.norov@gmail.com>,
         Daniel Axtens <dja@axtens.net>,
         Arvind Sankar <nivedita@alum.mit.edu>,
@@ -65,46 +66,53 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Kees Cook <keescook@chromium.org>,
         Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] lib/string.c: implement stpcpy
-Message-ID: <20200815013310.GA99152@rani.riverdale.lan>
-References: <20200815002417.1512973-1-ndesaulniers@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200815002417.1512973-1-ndesaulniers@google.com>
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 05:24:15PM -0700, Nick Desaulniers wrote:
-> +#ifndef __HAVE_ARCH_STPCPY
-> +/**
-> + * stpcpy - copy a string from src to dest returning a pointer to the new end
-> + *          of dest, including src's NULL terminator. May overrun dest.
-> + * @dest: pointer to end of string being copied into. Must be large enough
-> + *        to receive copy.
-> + * @src: pointer to the beginning of string being copied from. Must not overlap
-> + *       dest.
-> + *
-> + * stpcpy differs from strcpy in two key ways:
-> + * 1. inputs must not overlap.
-> + * 2. return value is the new NULL terminated character. (for strcpy, the
-> + *    return value is a pointer to src.
-> + */
-> +#undef stpcpy
-> +char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
-> +{
-> +	while ((*dest++ = *src++) != '\0')
-> +		/* nothing */;
-> +	return dest;
-> +}
-> +#endif
-> +
+On Fri, Aug 14, 2020 at 5:52 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Fri, 2020-08-14 at 17:24 -0700, Nick Desaulniers wrote:
+> > LLVM implemented a recent "libcall optimization" that lowers calls to
+> > `sprintf(dest, "%s", str)` where the return value is used to
+> > `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
+> > in parsing format strings.
+> []
+> > diff --git a/include/linux/string.h b/include/linux/string.h
+> []
+> > @@ -31,6 +31,9 @@ size_t strlcpy(char *, const char *, size_t);
+> >  #ifndef __HAVE_ARCH_STRSCPY
+> >  ssize_t strscpy(char *, const char *, size_t);
+> >  #endif
+> > +#ifndef __HAVE_ARCH_STPCPY
+> > +extern char *stpcpy(char *__restrict, const char *__restrict__);
+>
+> Why use two different forms for __restrict and __restrict__?
+> Any real reason to use __restrict__ at all?
 
-Won't this return a pointer that's one _past_ the terminating NUL? I
-think you need the increments to be inside the loop body, rather than as
-part of the condition.
+Bah, sorry, I recently enabled some setting in my ~/.vimrc to help me
+find my cursor better:
+" highlight cursor
+set cursorline
+set cursorcolumn
 
-Nit: NUL is more correct than NULL to refer to the string terminator.
+Turns out this makes it pretty difficult to see underscores, or the
+lack thereof.  Will fix up.
+
+>
+> It's used nowhere else in the kernel.
+>
+> $ git grep -w -P '__restrict_{0,2}'
+> scripts/genksyms/keywords.c:    // According to rth, c99 defines "_Bool", __restrict", __restrict__", "restrict".  KAO
+> scripts/genksyms/keywords.c:    { "__restrict__", RESTRICT_KEYW },
+>
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
