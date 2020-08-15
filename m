@@ -2,102 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8A1245292
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34813245272
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729211AbgHOVxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
+        id S1728631AbgHOVvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729160AbgHOVwn (ORCPT
+        with ESMTP id S1728475AbgHOVuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:43 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECEEC0F26EF;
-        Sat, 15 Aug 2020 11:14:18 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id w17so9177833edt.8;
-        Sat, 15 Aug 2020 11:14:18 -0700 (PDT)
+        Sat, 15 Aug 2020 17:50:54 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89465C0F26F1;
+        Sat, 15 Aug 2020 11:15:01 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id c16so13233071ejx.12;
+        Sat, 15 Aug 2020 11:15:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uINicZ+DHLLF2gMCG0S676L3/FxAXJzjhmV0ZOtqSWw=;
-        b=Gdr6dMreL94m8umOuQw9Gnk6ALyI4bOz2J1jkX35OCYz3vZKzzenUPY7Ou4pt7B8ef
-         YJsst3uPEBlvpkwDPyewbZgJgOjgiNwSsczgytdaT+7aoMkT41HAqp+y/SVjxqTuRE0K
-         w2TcKieWe9IP4o56pK8MOrDoPjfJdTjQtaivDkmWUJGgNvm0ieiOkqHu6StyMDfph4qN
-         xpF8wCfpRrbEf5ADtrMk6uvpQsPpO2jlcaUdvc4fRSxf2A3KkfZICjMcQYaL5SYfqSsq
-         ZDtY2tMvamx8CHjoldemO2Qx+I3oPj8zYp0ulm/kGNiz+45hySJIQTTeji3rPUIAUdo/
-         r05A==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LMT9eJmgWfVnryacfbbwOLILASNGcjdBzCE+hJadmmA=;
+        b=q9OCHHcUld23QLAguCC0Mhve5atQxWPM7SOpVjzmpC4kAyptnOwgxyiFibtct6IAqR
+         JU12DoxlOseehnlDh0awrurS/BP1r2bM4doDnzN2cGOiQQEuN2sUe/DG745GoJ3z9aTT
+         vIyGtAVG9unaVsHCDQIt+vBk7AQ4qzIFltuumRB5hOFJpjnVfc8DCrH3t44Os6WiUskw
+         1TfbM3pLnf01GHPwkXRNGioRRL3BuCmo5FSRFlOt5IyrRo2cMg7T6CxyMOSBLTKNfX9p
+         7Xs7OgwZFziQedYrMrGi2D7ke5qM4z9n4ehaq+E+2uKgNfe4HcJiwrLISJBAlDS5mJcT
+         TKQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uINicZ+DHLLF2gMCG0S676L3/FxAXJzjhmV0ZOtqSWw=;
-        b=Az7zTCM8OdH5h+J79ksAyUfw1C6mQkKyx+SlJbKnbH0cgxNMEFZAB229dTOM+8f3t6
-         QbezhudbIY5J/JuOYSTf43wE/MCJmiwIQDxvOeuScxPwPav6wZsMeYvj3bWD/eYh9kSz
-         6Y9bIRKE3Zbh6PIhpe3o8efm54F1+uM3/EoEWnqym/drm6UMrgdMTMN6xH9g0sII9mQ/
-         uBg7ZcCFHLq7MIcnWQIOmqnByndo6ZFvgED1/u5E+cFuY47BxLBLTSNUjLrnNQx0NMvo
-         IOxOpp+C2fL/LTSXHUHzaZvrqEGrVspjZ/rgnBwfSaBK2fHkM+lingMn+Xo9V9nHPe45
-         NcqQ==
-X-Gm-Message-State: AOAM532JlT0yrTvbYizwv2m0u23R37susDScHf9MUuUtCdvgGDGUdpHa
-        3majkpuTt6soIOEzVKYUV4Q=
-X-Google-Smtp-Source: ABdhPJwUM4wX2FiiLD7s/Ocw/648bw8oWRk3tLISpQebRyQQAOcj3KJ3d7OnMxtmXJxUG4ZpOd+/8w==
-X-Received: by 2002:aa7:de13:: with SMTP id h19mr7587769edv.322.1597515257318;
-        Sat, 15 Aug 2020 11:14:17 -0700 (PDT)
-Received: from localhost.localdomain (p200300f1371a97000000000000000fcc.dip0.t-ipconnect.de. [2003:f1:371a:9700::fcc])
-        by smtp.googlemail.com with ESMTPSA id u13sm10353549eje.9.2020.08.15.11.14.16
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=LMT9eJmgWfVnryacfbbwOLILASNGcjdBzCE+hJadmmA=;
+        b=WTYpeFoDhBDtojYwjoBU9CXNzyTRz6N9WyRyph6LrQQTEErT1VDhplvprUB3YHM+IO
+         T1jrPh7R/5sdvtJPaVjNoP/KcVfSmmZZmoyZL4bujwoF2R5auNsXyIbNWv3EB0GaGB9M
+         t+DSOLj7twvxJY47W3V73o/C1EyqYelotq0WH+SS9+1QPx+m67oR2DyRhl9qkIsTmbEW
+         YlvY71kkEV137entn2EHWqid/mrUKtiR3SPgmsjCDw5aYnFT86gVKziw6zv6kmId1PB4
+         U8aUvQ4eT8+dCRpgB1+Ey7FZe+qyA1kSbz073H2VLr3yEpLtRY4k0QImc7xfIlwSxkKg
+         jfvA==
+X-Gm-Message-State: AOAM530mAvpNjQ/1Ca8xd8K69FhApPfUP/SdAtldHRShBBMMn7LBw+Je
+        8Wmr1TxSlYZMZburQ3l7+344QyPJuhI=
+X-Google-Smtp-Source: ABdhPJwj5ewtaPyWTr8kWSZ3yL/Ah7r877dtkQoh2EtKIdB2dgc8xl5kP3vR+5g7dSuAQ1pWvOY0gQ==
+X-Received: by 2002:a17:906:328d:: with SMTP id 13mr8088081ejw.71.1597515300339;
+        Sat, 15 Aug 2020 11:15:00 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id o25sm10278308ejm.34.2020.08.15.11.14.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 11:14:16 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     jic23@kernel.org, lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-amlogic@lists.infradead.org
-Cc:     knaack.h@gmx.de, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH for-5.9] iio: adc: meson-saradc: Use the parent device to look up the calib data
-Date:   Sat, 15 Aug 2020 20:13:55 +0200
-Message-Id: <20200815181355.407034-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.28.0
+        Sat, 15 Aug 2020 11:14:59 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 20:14:57 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: new build warnings after binutils update
+Message-ID: <20200815181457.GA2719638@gmail.com>
+References: <20200811143130.0ca95b8d@canb.auug.org.au>
+ <CAMj1kXGvfjO_e7AgurJ-81o6e4rBC8HkXi3Kkb+ZZfy-MoKcyQ@mail.gmail.com>
+ <20200814102206.GB2367157@gmail.com>
+ <202008141232.A5A5D8C7@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202008141232.A5A5D8C7@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the older-gen 32-bit SoCs the meson-saradc driver is used to read the
-SoC temperature. This requires reading calibration data from the eFuse.
 
-Looking up the calibration data nvmem-cell requires the OF device_node
-pointer to be available in the struct device which is passed to
-devm_nvmem_cell_get(). This however got lost with commit 8cb631ccbb1952
-("iio: Remove superfluous of_node assignments") from indio_dev->dev. As
-devm_nvmem_cell_get() is called in the initialization phase the
-device_node is not yet available because the NVMEM cell is looked up
-before iio_device_register() is called (which would then set the
-device_node automatically).
-Use the parent device to look up the NVMEM cell instead to fix this
-issue.
+* Kees Cook <keescook@chromium.org> wrote:
 
-Fixes: 8cb631ccbb1952 ("iio: Remove superfluous of_node assignments")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/iio/adc/meson_saradc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Fri, Aug 14, 2020 at 12:22:06PM +0200, Ingo Molnar wrote:
+> > > [0] https://lore.kernel.org/lkml/20200731202738.2577854-6-nivedita@alum.mit.edu/
+> > 
+> > It all looked good to me but was a bit late for v5.9, will pick up 
+> > after -rc1.
+> 
+> Excellent! Thank you. I'll base the orphan series on x86/boot now. Once
+> I send a v6 (there are a few more things to tweak), can you carry that
+> in -tip as well (it includes arm and arm64 as well, all of which depend
+> on several asm-generic patches).
 
-diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
-index 93c2252c0b89..1a9189ba69ae 100644
---- a/drivers/iio/adc/meson_saradc.c
-+++ b/drivers/iio/adc/meson_saradc.c
-@@ -707,7 +707,7 @@ static int meson_sar_adc_temp_sensor_init(struct iio_dev *indio_dev)
- 	size_t read_len;
- 	int ret;
- 
--	temperature_calib = devm_nvmem_cell_get(&indio_dev->dev,
-+	temperature_calib = devm_nvmem_cell_get(indio_dev->dev.parent,
- 						"temperature_calib");
- 	if (IS_ERR(temperature_calib)) {
- 		ret = PTR_ERR(temperature_calib);
--- 
-2.28.0
+Sure, that looks the most sensible, since there's so much x86 impact. 
+Might migrate the commits over into a more generic topic branch - 
+started out with x86/boot to get things going.
 
+Thanks,
+
+	Ingo
