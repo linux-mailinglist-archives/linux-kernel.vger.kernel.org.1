@@ -2,44 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AF82454D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03752454D9
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 01:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728952AbgHOWuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgHOWuN (ORCPT
+        id S1728259AbgHOXMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 19:12:44 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:57100 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727969AbgHOXMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:50:13 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0FEC061786;
-        Sat, 15 Aug 2020 15:50:13 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1k74zw-0005Tr-N6; Sun, 16 Aug 2020 00:50:01 +0200
-Date:   Sun, 16 Aug 2020 00:50:00 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net, kuba@kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] netfilter: nf_conntrack_sip: fix parsing error
-Message-ID: <20200815225000.GI1660@breakpoint.cc>
-References: <20200815165030.5849-1-ztong0001@gmail.com>
+        Sat, 15 Aug 2020 19:12:44 -0400
+Received: from localhost.localdomain ([93.22.149.115])
+        by mwinf5d71 with ME
+        id FiCf230082VdYtp03iCf2V; Sat, 15 Aug 2020 08:12:40 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 15 Aug 2020 08:12:40 +0200
+X-ME-IP: 93.22.149.115
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     sean@mess.org, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] media: mceusb: Avoid GFP_ATOMIC where it is not needed
+Date:   Sat, 15 Aug 2020 08:12:37 +0200
+Message-Id: <20200815061237.765171-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200815165030.5849-1-ztong0001@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tong Zhang <ztong0001@gmail.com> wrote:
-> ct_sip_parse_numerical_param can only return 0 or 1, but the caller is
-> checking parsing error using < 0
+There is no point in using GFP_ATOMIC here.
+It is a probe function, and GFP_KERNEL is already used the line before
+and the line after.
 
-Reviewed-by: Florian Westphal <fw@strlen.de>
+Use GFP_KERNEL instead.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/media/rc/mceusb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/rc/mceusb.c b/drivers/media/rc/mceusb.c
+index f9616158bcf4..98681ba10428 100644
+--- a/drivers/media/rc/mceusb.c
++++ b/drivers/media/rc/mceusb.c
+@@ -1726,7 +1726,7 @@ static int mceusb_dev_probe(struct usb_interface *intf,
+ 		goto mem_alloc_fail;
+ 
+ 	ir->pipe_in = pipe;
+-	ir->buf_in = usb_alloc_coherent(dev, maxp, GFP_ATOMIC, &ir->dma_in);
++	ir->buf_in = usb_alloc_coherent(dev, maxp, GFP_KERNEL, &ir->dma_in);
+ 	if (!ir->buf_in)
+ 		goto buf_in_alloc_fail;
+ 
+-- 
+2.25.1
+
