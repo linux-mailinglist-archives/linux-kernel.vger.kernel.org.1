@@ -2,150 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6270B24529C
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA0D245278
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728642AbgHOVxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
+        id S1728913AbgHOVvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729150AbgHOVwm (ORCPT
+        with ESMTP id S1728833AbgHOVvf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:42 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD08C02B8DF
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 04:27:34 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id g19so12544837ejc.9
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 04:27:34 -0700 (PDT)
+        Sat, 15 Aug 2020 17:51:35 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCBD8C02B8E5
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 04:45:27 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id i10so12592850ljn.2
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 04:45:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=qRrByY4KQxuOV2hnGF55zmpXvU8kOLgnoIcCb3ofQdQ=;
-        b=nUKfr6VM1vns/UpUyKrR5maLwqjR8W2qVBFFhKLXlFIhJZ+RiRm8jeU5dTtz0sfze4
-         Leco3IN7frWM8tbH/G6gPtkcpNjfJzpA0hsZfS/vO80msqo03G53KBuLxi8NtRC+/H5X
-         vD4nyis8Ce0QbUtp2xuxtk64W89fKpb+LP37JOJAELhm4YxMT338xeDyVe4AF0sAm6Uz
-         HWu6TUkmS38h5UVs761jUCTg+oNpLwFTKVVHh/V9UsqoUBmOg1H+e35oRkmT/9EHXH7o
-         jxY9lfQ4SJ7W5uXC2PA26katdQniWCubeP4xwvyC1HYGUugUBo+QW8NBjClypJIrAWuI
-         4eOA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5kWxC8Q2TEsOvsKTGoT0rCit1An1OvXbLIdlQ6bd9Xs=;
+        b=ZS0e8CPjP36nUfDoaFcR/gSeh9MJeNUD3mEmkDjX5vrf2ZC5SX2Nm17xCI9sns7sGO
+         fQRiNyUy5ermFlaOZxi1TsUSVDW7nLZ6oyGj6VKZ60cewZW650VGIUyhUvuYoVpFu2Hd
+         7G0C9NCqROSsIQS6uMoYtBYF3CrjL1qiVKuMo3iR0rTxUzPxSKHLcAlTjKqAnFFsepvJ
+         GLk/Dsc2y3pQ5h9H/RS3E6TLLJ6q03JFZA/vQs06i/jRe5DpH24PHLKIPyI82EosvniK
+         AS20iIrPyh4qNM+mFTzaDa+tsovJSpucty7obPIPRELyjiQloHSM/P9trWlYgmESLLQQ
+         kD2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=qRrByY4KQxuOV2hnGF55zmpXvU8kOLgnoIcCb3ofQdQ=;
-        b=lGQLWey5Vl2uGnCu/+FfJFBmrvID3fOSNKC/T3Ca3KigCeBFMX81UiOUqcMThMKmV4
-         AsxIQvi+wLZGmEFgDZ2pGbN+7chBSErxBRIlB1z4s7m8mAPprh1RCPQeOHTyratE0Zjy
-         wUi0PsTMLzhA3ZCGxFbrO/YZCLvgwRLevZa69WIckgsRVRlG10Ozxcj3McBUfr/vWaDs
-         Gu0GOy2ZAbICTD4dNBD94Kyo4YfxPyEJegdSPyiYKi+Kuv3dAay62BCp4vvTmsYQ2LMr
-         1T06NlgP+XMXajs6qMpLxv8zhXalijAayjZ03KFCLdq4KK4WKmNlP6xG3uciqBCJU0fk
-         UKIg==
-X-Gm-Message-State: AOAM531ATiDIXjZx1AUe5IHTHe2vvEkOJAv1QixS+RM9VgTh7/BD3GrN
-        XjpbX254l5E8Kz8as0uUTsc=
-X-Google-Smtp-Source: ABdhPJyhfnt5XZY/TjiCXIMaD3ynauIJkPGAT3eTXP080NGumSjvrbZGbMxS27xqITEHPUhazFoAcw==
-X-Received: by 2002:a17:906:2e0c:: with SMTP id n12mr6411505eji.35.1597490853433;
-        Sat, 15 Aug 2020 04:27:33 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id d16sm8995885ejb.8.2020.08.15.04.27.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 04:27:32 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 13:27:31 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [GIT PULL] scheduler fixes
-Message-ID: <20200815112731.GA2640991@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5kWxC8Q2TEsOvsKTGoT0rCit1An1OvXbLIdlQ6bd9Xs=;
+        b=KRMPd1kliVIvdDOkMOzwfL4jQBvz9+3pw0BlVXxywzzCoqS+mfVaS4gT4WyoAwn8Et
+         iFp867XncZ4d0KTvJ4mdpq07lCwou25AmxyL5EaJOi7sWxORWVY83TzrbR5H9jkBD8sy
+         LWkhdf3nRUuNisNmYo1oRrRV/wrpeh6/dnJ1OSs2V8ivwnj6Jk8bdFymEupjKxk7pktg
+         QY5JuJvVmcT1/C+D3CHeyQgLPz/3UhjACEeJKm44nTELEi4aZVEpsykej5sYyTDoztcE
+         xMWbpQmY9zepI++O0+v+hF7ffPMQki4k2jH1mSfeaRL7Fhq+ebHyUpcM3BELwDEH4kVM
+         yKYQ==
+X-Gm-Message-State: AOAM531u5FccAQ0BqlrnsW6vUpSw0frEqPKZvQAlgka1cxlMjEV0KDfu
+        4T0M4/+O7qZiCxHQhvS11ymzEA==
+X-Google-Smtp-Source: ABdhPJxCubHTocMX6RPP0TdHWoKCqAKVAzmoybFXXugys1W9NRplxlI5higWH1CbHPi3zmZY3Rsgow==
+X-Received: by 2002:a2e:8717:: with SMTP id m23mr3471731lji.245.1597491920894;
+        Sat, 15 Aug 2020 04:45:20 -0700 (PDT)
+Received: from [192.168.43.7] ([94.25.229.189])
+        by smtp.gmail.com with ESMTPSA id o1sm2361694ljc.3.2020.08.15.04.45.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Aug 2020 04:45:20 -0700 (PDT)
+Subject: Re: [PATCH v10 3/5] drm/msm/dp: add support for DP PLL driver
+To:     Tanmay Shah <tanmay@codeaurora.org>
+Cc:     swboyd@chromium.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        robdclark@gmail.com, linux-kernel@vger.kernel.org,
+        freedreno@lists.freedesktop.org, seanpaul@chromium.org,
+        daniel@ffwll.ch, airlied@linux.ie, aravindh@codeaurora.org,
+        abhinavk@codeaurora.org, khsieh@codeaurora.org,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Vara Reddy <varar@codeaurora.org>
+References: <20200812044223.19279-1-tanmay@codeaurora.org>
+ <20200812044223.19279-4-tanmay@codeaurora.org>
+ <821b5cf9-5ca0-7026-fd99-9a32285ed030@linaro.org>
+ <f6b330778c07abd3003da9acab4d3398@codeaurora.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <28b1f678-ab8f-cf6a-af9f-fcd79131bdc1@linaro.org>
+Date:   Sat, 15 Aug 2020 14:45:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <f6b330778c07abd3003da9acab4d3398@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 15/08/2020 02:22, Tanmay Shah wrote:
+> On 2020-08-14 10:05, Dmitry Baryshkov wrote:
+>> On 12/08/2020 07:42, Tanmay Shah wrote:
+>>> From: Chandan Uddaraju <chandanu@codeaurora.org>
+>>>
+>>> Add the needed DP PLL specific files to support
+>>> display port interface on msm targets.
+>>
+>> [skipped]
+>>
+>>> diff --git a/drivers/gpu/drm/msm/dp/dp_pll_private.h 
+>>> b/drivers/gpu/drm/msm/dp/dp_pll_private.h
+>>> new file mode 100644
+>>> index 000000000000..475ba6ed59ab
+>>> --- /dev/null
+>>> +++ b/drivers/gpu/drm/msm/dp/dp_pll_private.h
+>>> @@ -0,0 +1,98 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>>> +/*
+>>> + * Copyright (c) 2016-2020, The Linux Foundation. All rights reserved.
+>>> + */
+>>> +
+>>> +#ifndef __DP_PLL_10NM_H
+>>> +#define __DP_PLL_10NM_H
+>>> +
+>>> +#include "dp_pll.h"
+>>> +#include "dp_reg.h"
+>>> +
+>>> +#define DP_VCO_HSCLK_RATE_1620MHZDIV1000    1620000UL
+>>> +#define DP_VCO_HSCLK_RATE_2700MHZDIV1000    2700000UL
+>>> +#define DP_VCO_HSCLK_RATE_5400MHZDIV1000    5400000UL
+>>> +#define DP_VCO_HSCLK_RATE_8100MHZDIV1000    8100000UL
+>>> +
+>>> +#define NUM_DP_CLOCKS_MAX            6
+>>> +
+>>> +#define DP_PHY_PLL_POLL_SLEEP_US        500
+>>> +#define DP_PHY_PLL_POLL_TIMEOUT_US        10000
+>>> +
+>>> +#define DP_VCO_RATE_8100MHZDIV1000        8100000UL
+>>> +#define DP_VCO_RATE_9720MHZDIV1000        9720000UL
+>>> +#define DP_VCO_RATE_10800MHZDIV1000        10800000UL
+>>> +
+>>> +struct dp_pll_vco_clk {
+>>> +    struct clk_hw hw;
+>>> +    unsigned long    rate;        /* current vco rate */
+>>> +    u64        min_rate;    /* min vco rate */
+>>> +    u64        max_rate;    /* max vco rate */
+>>> +    void        *priv;
+>>> +};
+>>> +
+>>> +struct dp_pll_db {
+>>
+>> This struct should probably go into dp_pll_10nm.c. dp_pll_7nm.c, for
+>> example, will use slightly different structure.
+>>
+> 
+> Sure, it sounds good. I will give it try. Thanks!
+> 
+>>> +    struct msm_dp_pll *base;
+>>> +
+>>> +    int id;
+>>> +    struct platform_device *pdev;
+>>> +
+>>> +    /* private clocks: */
+>>> +    bool fixed_factor_clk[NUM_DP_CLOCKS_MAX];
+>>> +    struct clk_hw *hws[NUM_DP_CLOCKS_MAX];
+>>
+>> Then these two fields can use exact number of clocks rather than
+>> NUM_DP_CLOCKS_MAX.
+>>
+> 
+> I didn't get this. I think NUM_DP_CLOCKS_MAX is doing same?
 
-Please pull the latest sched/urgent git tree from:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2020-08-15
-
-   # HEAD: cc172ff301d8079e941a6eb31758951a6d764084 sched/debug: Fix the alignment of the show-state debug output
-
-Two fixes: fix a new tracepoint's output value, and fix the formatting 
-of show-state syslog printouts.
-
- Thanks,
-
-	Ingo
-
------------------->
-Libing Zhou (1):
-      sched/debug: Fix the alignment of the show-state debug output
-
-Phil Auld (1):
-      sched: Fix use of count for nr_running tracepoint
+Not exactly. We'd need fixed_factor_clk[4] for 10nm rather than 6. It's 
+not that important, just a small nitpick.
 
 
- kernel/sched/core.c  | 15 ++++-----------
- kernel/sched/sched.h |  2 +-
- 2 files changed, 5 insertions(+), 12 deletions(-)
+>>> +    u32 num_hws;
+>>> +
+>>> +    /* lane and orientation settings */
+>>> +    u8 lane_cnt;
+>>> +    u8 orientation;
+>>> +
+>>> +    /* COM PHY settings */
+>>> +    u32 hsclk_sel;
+>>> +    u32 dec_start_mode0;
+>>> +    u32 div_frac_start1_mode0;
+>>> +    u32 div_frac_start2_mode0;
+>>> +    u32 div_frac_start3_mode0;
+>>> +    u32 integloop_gain0_mode0;
+>>> +    u32 integloop_gain1_mode0;
+>>> +    u32 vco_tune_map;
+>>> +    u32 lock_cmp1_mode0;
+>>> +    u32 lock_cmp2_mode0;
+>>> +    u32 lock_cmp3_mode0;
+>>> +    u32 lock_cmp_en;
+>>> +
+>>> +    /* PHY vco divider */
+>>> +    u32 phy_vco_div;
+>>> +    /*
+>>> +     * Certain pll's needs to update the same vco rate after resume in
+>>> +     * suspend/resume scenario. Cached the vco rate for such plls.
+>>> +     */
+>>> +    unsigned long    vco_cached_rate;
+>>> +    u32        cached_cfg0;
+>>> +    u32        cached_cfg1;
+>>> +    u32        cached_outdiv;
+>>> +
+>>> +    uint32_t index;
+>>> +};
+>>> +
+>>> +static inline struct dp_pll_vco_clk *to_dp_vco_hw(struct clk_hw *hw)
+>>> +{
+>>> +    return container_of(hw, struct dp_pll_vco_clk, hw);
+>>> +}
+>>> +
+>>> +#define to_msm_dp_pll(vco) ((struct msm_dp_pll *)vco->priv)
+>>> +
+>>> +#define to_dp_pll_db(x)    ((struct dp_pll_db *)x->priv)
+>>> +
+>>> +int dp_vco_set_rate_10nm(struct clk_hw *hw, unsigned long rate,
+>>> +                unsigned long parent_rate);
+>>> +unsigned long dp_vco_recalc_rate_10nm(struct clk_hw *hw,
+>>> +                unsigned long parent_rate);
+>>> +long dp_vco_round_rate_10nm(struct clk_hw *hw, unsigned long rate,
+>>> +                unsigned long *parent_rate);
+>>> +int dp_vco_prepare_10nm(struct clk_hw *hw);
+>>> +void dp_vco_unprepare_10nm(struct clk_hw *hw);
+>>> +
+>>> +int msm_dp_pll_10nm_init(struct msm_dp_pll *dp_pll, int id);
+>>> +void msm_dp_pll_10nm_deinit(struct msm_dp_pll *dp_pll);
+>>
+>> These functions don't seem to be used outside of dp_pll_10nm. What
+>> about making them static?
+> 
+> I can't declare static to "init" and "deinit" as they are exported to 
+> dp_pll.c.
+> Rest of them I can move to dp_pll_10nm and then define static.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 4a0e7b449b88..09fd62568ba9 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6387,10 +6387,10 @@ void sched_show_task(struct task_struct *p)
- 	if (!try_get_task_stack(p))
- 		return;
- 
--	printk(KERN_INFO "%-15.15s %c", p->comm, task_state_to_char(p));
-+	pr_info("task:%-15.15s state:%c", p->comm, task_state_to_char(p));
- 
- 	if (p->state == TASK_RUNNING)
--		printk(KERN_CONT "  running task    ");
-+		pr_cont("  running task    ");
- #ifdef CONFIG_DEBUG_STACK_USAGE
- 	free = stack_not_used(p);
- #endif
-@@ -6399,8 +6399,8 @@ void sched_show_task(struct task_struct *p)
- 	if (pid_alive(p))
- 		ppid = task_pid_nr(rcu_dereference(p->real_parent));
- 	rcu_read_unlock();
--	printk(KERN_CONT "%5lu %5d %6d 0x%08lx\n", free,
--		task_pid_nr(p), ppid,
-+	pr_cont(" stack:%5lu pid:%5d ppid:%6d flags:0x%08lx\n",
-+		free, task_pid_nr(p), ppid,
- 		(unsigned long)task_thread_info(p)->flags);
- 
- 	print_worker_info(KERN_INFO, p);
-@@ -6435,13 +6435,6 @@ void show_state_filter(unsigned long state_filter)
- {
- 	struct task_struct *g, *p;
- 
--#if BITS_PER_LONG == 32
--	printk(KERN_INFO
--		"  task                PC stack   pid father\n");
--#else
--	printk(KERN_INFO
--		"  task                        PC stack   pid father\n");
--#endif
- 	rcu_read_lock();
- 	for_each_process_thread(g, p) {
- 		/*
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 3fd283892761..28709f6b0975 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1999,7 +1999,7 @@ static inline void sub_nr_running(struct rq *rq, unsigned count)
- {
- 	rq->nr_running -= count;
- 	if (trace_sched_update_nr_running_tp_enabled()) {
--		call_trace_sched_update_nr_running(rq, count);
-+		call_trace_sched_update_nr_running(rq, -count);
- 	}
- 
- 	/* Check if we still need preemption */
+Please exuse me for not being exact enough. Of course I meant 
+dp_vco_FOO_10nm() functions, not init/exit.
+
+BTW: as I'm looking onto 7nm dp pll, which naming would you prefer?
+
+We can have separate DP_PLL_10nm/DP_PLL_7nm namespaces (as DSI PLLs do) 
+or I can override only a set of constants (like downstream driver does).
+
+-- 
+With best wishes
+Dmitry
