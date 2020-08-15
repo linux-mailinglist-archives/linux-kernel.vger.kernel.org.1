@@ -2,74 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEBD245276
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F14A52452F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728832AbgHOVvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45614 "EHLO
+        id S1729452AbgHOV44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728694AbgHOVvW (ORCPT
+        with ESMTP id S1729016AbgHOVwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:22 -0400
+        Sat, 15 Aug 2020 17:52:11 -0400
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055BDC03B3D0;
-        Sat, 15 Aug 2020 01:43:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC9BC03B3D1;
+        Sat, 15 Aug 2020 01:44:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pkS7z3ao03yPLdIGYL9tG9q63NVqZ+TpW9PfCZt8oys=; b=L/7ul3MKsMrF7vWFB9Ph0PY0hg
-        +Wrv23G+mNVzExWozkDqWEcrqyDpNmp4bgihjtsFx2veXlJlN6DevE7WbJfH2I1n4oFCN0GuUpzTf
-        VY79AWM7eA+g14iycUVzXdQcho2vLxHb8xDoNgIgcLrYCaM8AcZHV8R9PZFU3X6dIZaQg1iU9NfgY
-        mBy696Lk5WsMxhVOysn+oSmps0iL/ytu7zw6Q4DJIchbCjbhHnVXc3Pq0vI4p8FPu1bdaygCdtEo1
-        ceCV9N//ZzsESLaouX4qtGOnCnQeDOAA+hTd6Bngcf7lFXG3fdh8MaBQotaqKRhlz1AOPxP8N4wXp
-        pgwrOxuA==;
+        bh=qKhiDm0m7Tdf7CCkOtiHly7+5eVkqvmSKw0X4hRAKmA=; b=tZKS8nzQ+TG+8a9eeLteyBvm+p
+        FPdK1MJo0lPr1MOckxBG+oD5jagoRLTf8wXjl7xrwwdcNgzKXG6q9n4NqnIDqSbpk+i8WHrDW5hX0
+        mW5sS1KdzFl3TTbCjuRIjkYW4TJYfPdmB2m3VynQzTpb6nLXFntaa1fBKC6bsKANrUfOIu1tfz+dq
+        uf9kQSCG1fBFIDJoXsBhOLfgpEqXgtIqu9WkKWuY97coJOAhwn8g+o2zMhqimiSGk7Te3bv9TE0TQ
+        RAy+XStU6Dz3jWln2xgvlaHh/XOtvr512uZCUsasrpXpmMrvfnQN0QG+tV5/Kb/8aWwxbU/GCEcZu
+        eco4A84w==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k6rm9-0003vH-PT; Sat, 15 Aug 2020 08:42:54 +0000
+        id 1k6rnx-0003xt-GR; Sat, 15 Aug 2020 08:44:45 +0000
 Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C9B6F980C9E; Sat, 15 Aug 2020 10:42:50 +0200 (CEST)
-Date:   Sat, 15 Aug 2020 10:42:50 +0200
+        id B02CB980C9E; Sat, 15 Aug 2020 10:44:43 +0200 (CEST)
+Date:   Sat, 15 Aug 2020 10:44:43 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     paulmck@kernel.org, Michal Hocko <mhocko@suse.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200815084250.GN3982@worktop.programming.kicks-ass.net>
-References: <20200814180141.GP4295@paulmck-ThinkPad-P72>
- <87tux4kefm.fsf@nanos.tec.linutronix.de>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Uriel Guajardo <urielguajardojr@gmail.com>,
+        brendanhiggins@google.com, mingo@redhat.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, urielguajardo@google.com,
+        alan.maguire@oracle.com
+Subject: Re: [PATCH v3] kunit: added lockdep support
+Message-ID: <20200815084443.GO3982@worktop.programming.kicks-ass.net>
+References: <20200814205527.1833459-1-urielguajardojr@gmail.com>
+ <20200815083029.GA2430016@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87tux4kefm.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20200815083029.GA2430016@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 01:14:53AM +0200, Thomas Gleixner wrote:
+On Sat, Aug 15, 2020 at 10:30:29AM +0200, Ingo Molnar wrote:
+> 
+> * Uriel Guajardo <urielguajardojr@gmail.com> wrote:
+> 
+> > From: Uriel Guajardo <urielguajardo@google.com>
+> > 
+> > KUnit will fail tests upon observing a lockdep failure. Because lockdep
+> > turns itself off after its first failure, only fail the first test and
+> > warn users to not expect any future failures from lockdep.
+> > 
+> > Similar to lib/locking-selftest [1], we check if the status of
+> > debug_locks has changed after the execution of a test case. However, we
+> > do not reset lockdep afterwards.
+> > 
+> > Like the locking selftests, we also fix possible preemption count
+> > corruption from lock bugs.
+> 
+> > --- a/lib/kunit/Makefile
+> > +++ b/lib/kunit/Makefile
+> 
+> > +void kunit_check_lockdep(struct kunit *test, struct kunit_lockdep *lockdep) {
+> > +	int saved_preempt_count = lockdep->preempt_count;
+> > +	bool saved_debug_locks = lockdep->debug_locks;
+> > +
+> > +	if (DEBUG_LOCKS_WARN_ON(preempt_count() != saved_preempt_count))
+> > +		preempt_count_set(saved_preempt_count);
+> > +
+> > +#ifdef CONFIG_TRACE_IRQFLAGS
+> > +	if (softirq_count())
+> > +		current->softirqs_enabled = 0;
+> > +	else
+> > +		current->softirqs_enabled = 1;
+> > +#endif
+> > +
+> > +	if (saved_debug_locks && !debug_locks) {
+> > +		kunit_set_failure(test);
+> > +		kunit_warn(test, "Dynamic analysis tool failure from LOCKDEP.");
+> > +		kunit_warn(test, "Further tests will have LOCKDEP disabled.");
+> > +	}
+> 
+> 
+> So this basically duplicates what the boot-time locking self-tests do, 
+> in a poor fashion?
 
-> #1 trivial fix is to force switching to an high prio thread or a soft
->    interrupt which does the allocation
-
-Yeah, push the alocation out to another context. I did consider it, but
-why bother?
-
-Also, raising a softirq can't be done from every context, that's a whole
-new problem. You can do irq_work I suppose, but not all architectures
-support the self-IPI yet.
-
-All in all, it's just more complexity than the fairly trivial
-__alloc_page_lockless().
-
-Whichever way around, we can't rely on the allocation.
+No, it makes sure that any kunit based self-test fails when it messes up
+it's locking.
