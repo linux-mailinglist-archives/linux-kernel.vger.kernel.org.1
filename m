@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7422454D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 01:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E4A2454DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 01:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgHOXHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 19:07:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59998 "EHLO mail.kernel.org"
+        id S1728435AbgHOXWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 19:22:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726357AbgHOXHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 19:07:17 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        id S1726021AbgHOXWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 19:22:30 -0400
+Received: from localhost (104.sub-72-107-126.myvzw.com [72.107.126.104])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F263A206B2;
-        Sat, 15 Aug 2020 23:07:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 739D82065C;
+        Sat, 15 Aug 2020 23:22:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597532837;
-        bh=vbDlWWWieOXnPlFIM98LP93HYAdkUHUPdDyNGIA1rkE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tILIil1E1gh1U4rHqJMpKtxCiRk+RUvOsq7ob2CxNvfn8BOMbjJBfHUXGj6ub45KF
-         grpc2EinPRBT71ti9AtpyX04YC2w4U29lRyekgF0Uj+gk6bGvwqV9aNdm3d/PcUSNe
-         QkqCc4XQ5JQsc3/W8jPUJH3hLHt/5Gj3sSSmWN+Q=
-Date:   Sat, 15 Aug 2020 19:07:15 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jim Cromie <jim.cromie@gmail.com>, jbaron@akamai.com
-Subject: Re: [PATCH AUTOSEL 5.7 52/60] dyndbg: prefer declarative init in
- caller, to memset in callee
-Message-ID: <20200815230715.GT2975990@sasha-vm>
-References: <20200810191028.3793884-1-sashal@kernel.org>
- <20200810191028.3793884-52-sashal@kernel.org>
- <20200811051332.GA1237801@kroah.com>
+        s=default; t=1597533749;
+        bh=SB9wxVHgt3m7T/tEhx/Oa+YJt9VN49b1ddeU7NMOvEk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=aVN9qcq6cqmxvD4IsLLewly56VryrzoOr3d3eGSPE1tXpVvGPQOKs97rPBlll36uG
+         7bM0cxwtJTA4bjf/rGTjcr8A0Xrcoy9KS/l92ag5S/On003FKZrPumPtta4UJtBrD7
+         ghyyujWRbGVHMF1kSphFqAtvcGhXkHRpnPPnx+L8=
+Date:   Sat, 15 Aug 2020 18:22:28 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Roh Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, kernel-team@android.com
+Subject: Re: [PATCH 1/2] PCI: rockchip: Work around missing device_type
+ property in DT
+Message-ID: <20200815232228.GA1325245@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200811051332.GA1237801@kroah.com>
+In-Reply-To: <20200815125112.462652-2-maz@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 07:13:32AM +0200, Greg Kroah-Hartman wrote:
->On Mon, Aug 10, 2020 at 03:10:20PM -0400, Sasha Levin wrote:
->> From: Jim Cromie <jim.cromie@gmail.com>
->>
->> [ Upstream commit 9c9d0acbe2793315fa6945a19685ad2a51fb281b ]
->>
->> ddebug_exec_query declares an auto var, and passes it to
->> ddebug_parse_query, which memsets it before using it.  Drop that
->> memset, instead initialize the variable in the caller; let the
->> compiler decide how to do it.
->>
->> Acked-by: <jbaron@akamai.com>
->> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
->> Link: https://lore.kernel.org/r/20200719231058.1586423-10-jim.cromie@gmail.com
->> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  lib/dynamic_debug.c | 3 +--
->>  1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
->> index e3755d1f74bd2..4f0bd560478f7 100644
->> --- a/lib/dynamic_debug.c
->> +++ b/lib/dynamic_debug.c
->> @@ -327,7 +327,6 @@ static int ddebug_parse_query(char *words[], int nwords,
->>  		pr_err("expecting pairs of match-spec <value>\n");
->>  		return -EINVAL;
->>  	}
->> -	memset(query, 0, sizeof(*query));
->>
->>  	if (modname)
->>  		/* support $modname.dyndbg=<multiple queries> */
->> @@ -445,7 +444,7 @@ static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
->>  static int ddebug_exec_query(char *query_string, const char *modname)
->>  {
->>  	unsigned int flags = 0, mask = 0;
->> -	struct ddebug_query query;
->> +	struct ddebug_query query = {};
->>  #define MAXWORDS 9
->>  	int nwords, nfound;
->>  	char *words[MAXWORDS];
->> --
->> 2.25.1
->>
->
->There's no need for this in stable kernels, please drop it from
->everywhere.
+On Sat, Aug 15, 2020 at 01:51:11PM +0100, Marc Zyngier wrote:
+> Recent changes to the DT PCI bus parsing made it mandatory for
+> device tree nodes describing a PCI controller to have the
+> 'device_type = "pci"' property for the node to be matched.
+> 
+> Although this follows the letter of the specification, it
+> breaks existing device-trees that have been working fine
+> for years.  Rockchip rk3399-based systems are a prime example
+> of such collateral damage, and have stopped discovering their
+> PCI bus.
+> 
+> In order to paper over the blunder, let's add a workaround
+> to the pcie-rockchip driver, adding the missing property when
+> none is found at boot time. A warning will hopefully nudge the
+> user into updating their DT to a fixed version if they can, but
+> the insentive is obviously pretty small.
 
-Dropped, thanks!
+s/insentive/incentive/ (Lorenzo or I can fix this up)
 
--- 
-Thanks,
-Sasha
+> Fixes: 2f96593ecc37 ("of_address: Add bus type match for pci ranges parser")
+> Suggested-by: Roh Herring <robh+dt@kernel.org>
+
+s/Roh/Rob/ (similarly)
+
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+
+This looks like a candidate for v5.9, since 2f96593ecc37 was merged
+during the v5.9 merge window, right?
+
+I wonder how many other DTs are similarly broken?  Maybe Rob's DT
+checker has already looked?
+
+> ---
+>  drivers/pci/controller/pcie-rockchip-host.c | 29 +++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/pcie-rockchip-host.c b/drivers/pci/controller/pcie-rockchip-host.c
+> index 0bb2fb3e8a0b..d7dd04430a99 100644
+> --- a/drivers/pci/controller/pcie-rockchip-host.c
+> +++ b/drivers/pci/controller/pcie-rockchip-host.c
+> @@ -949,6 +949,35 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
+>  	if (!dev->of_node)
+>  		return -ENODEV;
+>  
+> +	/*
+> +	 * Most rk3399 DTs are missing the 'device_type = "pci"' property,
+> +	 * potentially leading to PCIe probing failure. Be kind to the
+> +	 * users and fix it up for them. Upgrading is recommended.
+> +	 */
+> +	if (!of_find_property(dev->of_node, "device_type", NULL)) {
+> +		const char dtype[] = "pci";
+> +		struct property *prop;
+> +
+> +		dev_warn(dev, "Working around missing device_type property\n");
+> +
+> +		prop = kzalloc(sizeof(*prop), GFP_KERNEL);
+> +		if (!prop)
+> +			return -ENOMEM;
+> +
+> +		prop->name	= kstrdup("device_type", GFP_KERNEL);
+> +		prop->value	= kstrdup(dtype, GFP_KERNEL);
+> +		prop->length	= ARRAY_SIZE(dtype);
+> +		if (!prop->name || !prop->value) {
+> +			kfree(prop->name);
+> +			kfree(prop->value);
+> +			kfree(prop);
+> +			return -ENOMEM;
+> +		}
+> +
+> +		if (of_add_property(dev->of_node, prop))
+> +			dev_warn(dev, "Failed to add property, probing may fail");
+> +	}
+> +
+>  	bridge = devm_pci_alloc_host_bridge(dev, sizeof(*rockchip));
+>  	if (!bridge)
+>  		return -ENOMEM;
+> -- 
+> 2.27.0
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
