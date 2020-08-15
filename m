@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3232453E6
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520DB2453B2
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgHOWHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:07:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
+        id S1729845AbgHOWE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:04:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728387AbgHOVus (ORCPT
+        with ESMTP id S1728555AbgHOVvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:50:48 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84005C061373
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:25 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id t23so8490805qto.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:25 -0700 (PDT)
+        Sat, 15 Aug 2020 17:51:02 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D02EC061374
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:27 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id k18so8453649qtm.10
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=L8ebdvedIOE71xQx+NB6UqCSp41vA2Jjo0EpqbQtKMU=;
-        b=as6+iIYvWIrEGoo9b3lcWbxApBD513L3D44Wq6RnC31tsfB9Xhp3pYjQ6fCyi6qqAQ
-         ZXoAXAAfi+XFzMN+jipQ3qEHczeydx0rmMZD/oGYw+V7imHqB72erKEa2QY8+N1rg+VH
-         XwmPDZ+YYHT0TcABO2DV+B8SKUbdQdSVHi9R8=
+        bh=Sr87OpKcgqeQcj7Lut9VQ6DF03EgC9rXR/oozlPl9I0=;
+        b=a0Rw2bBSyqjyxtQEVYDJF5UDSoxnf31h9xYjxTorXrRsufS12jJhrWyPwlAQraVyu8
+         Eig+m2NceIZJfgxrM622A/TDW9fiqWVxjSN5/7SyLFyNmMcf0MOtJ79gBJCQzjMavIwi
+         FHQNEoxMgoQZZuK3w0rBVgisOjO1HcfBwhA3o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=L8ebdvedIOE71xQx+NB6UqCSp41vA2Jjo0EpqbQtKMU=;
-        b=eF/I0TYl3NVoVCIoZbSy6s0DZck6P718Y3TMzjtusNiqnRnQrBs7ZCppHHd2gWQ7qJ
-         GZOmtP33I2u5mA8lLU+RmlPAzAp8T8MBEmeprFa5+l8RN2lnIO1ZG5jnJtHikEpt6LJ6
-         NZaMY7huYTg6mhTWqq4/NCiG8u9eYInADrJDnGUebq1g20R4mT0mUnA5AitIvrCWKgSu
-         H0LFKGAFBXUaex9fb02L7zszTfleoHeQdpZDudX2OxaBt15x12hYAb2+2Jjqi5Iw+tiQ
-         lsdydxdRBB5iWTVZVTYK1zPkG2D9p8OFtW36hO2ogdJ+1X357WmRoCyoy+6kmu4RjCD1
-         5hPg==
-X-Gm-Message-State: AOAM533nOuKzaxmKXApn5yhhuVvWm+3HqM4kn6ikybDNtbIZrfCa11mp
-        N/zJn/rwY5apfAi2Q8nYv2b6DCy3Mfl6nA==
-X-Google-Smtp-Source: ABdhPJxEXPvjWqG/2R4JnUoqDPhLEmjL1XYpJrOO/Sx2vu/lWlmvx8W82TsGBVhX8LtdyDhFhDroKw==
-X-Received: by 2002:ac8:3a82:: with SMTP id x2mr4739680qte.161.1597461564540;
-        Fri, 14 Aug 2020 20:19:24 -0700 (PDT)
+        bh=Sr87OpKcgqeQcj7Lut9VQ6DF03EgC9rXR/oozlPl9I0=;
+        b=XA7dLx9g3LymuCJtEAPl6Hzg5vYNzKvChPOUPVZ1jn4ey7SQ9osW9kAzJDXb9nyMRE
+         43+Y42OZsL8qnd3MmFb7e+8HvrIpCZ4rRDSidSj8PBUO1DOZyU+tV5cj9sI+aWyv/rXq
+         sTKKiGzNooUgbkCi72O9PLDprFHTrjnYEm/1jd/Nr9OARg/a3qw2XbFGxFv8zNWamjbA
+         dYWDr+JFrifIsvo8CqxQ/uySs3/je4+taeUKNK/BOqewjJIzWInrp2SgzQ1g830nOtGx
+         cKuNJ38pCs6ueWkZrFriY+0oXgPPsejPLdOSHr0Q77/hxQ0mWBzR7XJeUDck0JIFsbMc
+         TlCQ==
+X-Gm-Message-State: AOAM530CVZBEWj9WTHU+iMt2FYz6inW51VcZhoDAwDjB1ma1RU8+ui4G
+        I1SGczaCDqKPRKdD0wK56ItTygpm8je7YA==
+X-Google-Smtp-Source: ABdhPJzfuzPtyeMnMLHksEthsmRZwJK64n9qnDfflen8t0uv+egsOcthSALyKs2aNX7pgnP3PF3LeA==
+X-Received: by 2002:aed:3b57:: with SMTP id q23mr4961944qte.150.1597461565702;
+        Fri, 14 Aug 2020 20:19:25 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id p12sm10055199qkk.118.2020.08.14.20.19.23
+        by smtp.gmail.com with ESMTPSA id p12sm10055199qkk.118.2020.08.14.20.19.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 20:19:24 -0700 (PDT)
+        Fri, 14 Aug 2020 20:19:25 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -68,9 +68,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Chen Yu <yu.c.chen@intel.com>,
         Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH RFC 02/12] entry/idle: Add a common function for activites during idle entry/exit
-Date:   Fri, 14 Aug 2020 23:18:58 -0400
-Message-Id: <20200815031908.1015049-3-joel@joelfernandes.org>
+Subject: [PATCH RFC 03/12] arch/x86: Add a new TIF flag for untrusted tasks
+Date:   Fri, 14 Aug 2020 23:18:59 -0400
+Message-Id: <20200815031908.1015049-4-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
 In-Reply-To: <20200815031908.1015049-1-joel@joelfernandes.org>
 References: <20200815031908.1015049-1-joel@joelfernandes.org>
@@ -81,122 +81,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently only RCU hooks for idle entry/exit are called. In later
-patches, kernel-entry protection functionality will be added.
+Add a new TIF flag to indicate whether the kernel needs to be careful
+and take additional steps to mitigate micro-architectural issues during
+entry into user or guest mode.
+
+This new flag will be used by the series to determine if waiting is
+needed or not, during exit to user or guest mode.
 
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- include/linux/entry-common.h | 16 ++++++++++++++++
- kernel/sched/idle.c          | 17 +++++++++--------
- 2 files changed, 25 insertions(+), 8 deletions(-)
+ arch/x86/include/asm/thread_info.h | 2 ++
+ kernel/sched/sched.h               | 6 ++++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-index efebbffcd5cc..2ea0e09b00d5 100644
---- a/include/linux/entry-common.h
-+++ b/include/linux/entry-common.h
-@@ -369,4 +369,20 @@ void irqentry_exit_cond_resched(void);
-  */
- void noinstr irqentry_exit(struct pt_regs *regs, irqentry_state_t state);
+diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
+index 267701ae3d86..42e63969acb3 100644
+--- a/arch/x86/include/asm/thread_info.h
++++ b/arch/x86/include/asm/thread_info.h
+@@ -98,6 +98,7 @@ struct thread_info {
+ #define TIF_IO_BITMAP		22	/* uses I/O bitmap */
+ #define TIF_FORCED_TF		24	/* true if TF in eflags artificially */
+ #define TIF_BLOCKSTEP		25	/* set when we want DEBUGCTLMSR_BTF */
++#define TIF_UNSAFE_RET   	26	/* On return to process/guest, perform safety checks. */
+ #define TIF_LAZY_MMU_UPDATES	27	/* task is updating the mmu lazily */
+ #define TIF_SYSCALL_TRACEPOINT	28	/* syscall tracepoint instrumentation */
+ #define TIF_ADDR32		29	/* 32-bit address space on 64 bits */
+@@ -127,6 +128,7 @@ struct thread_info {
+ #define _TIF_IO_BITMAP		(1 << TIF_IO_BITMAP)
+ #define _TIF_FORCED_TF		(1 << TIF_FORCED_TF)
+ #define _TIF_BLOCKSTEP		(1 << TIF_BLOCKSTEP)
++#define _TIF_UNSAFE_RET 	(1 << TIF_UNSAFE_RET)
+ #define _TIF_LAZY_MMU_UPDATES	(1 << TIF_LAZY_MMU_UPDATES)
+ #define _TIF_SYSCALL_TRACEPOINT	(1 << TIF_SYSCALL_TRACEPOINT)
+ #define _TIF_ADDR32		(1 << TIF_ADDR32)
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 3575edc7dc43..1901d11a6f41 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2680,3 +2680,9 @@ static inline bool is_per_cpu_kthread(struct task_struct *p)
  
-+/**
-+ * generic_idle_enter - Called during entry into idle for housekeeping.
-+ */
-+static inline void generic_idle_enter(void)
-+{
-+	rcu_idle_enter();
-+}
+ void swake_up_all_locked(struct swait_queue_head *q);
+ void __prepare_to_swait(struct swait_queue_head *q, struct swait_queue *wait);
 +
-+/**
-+ * generic_idle_enter - Called when exiting idle for housekeeping.
-+ */
-+static inline void generic_idle_exit(void)
-+{
-+	rcu_idle_exit();
-+}
-+
- #endif
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 3b03bedee280..5db5a946aa3b 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -8,6 +8,7 @@
-  */
- #include "sched.h"
- 
-+#include <linux/entry-common.h>
- #include <trace/events/power.h>
- 
- /* Linker adds these: start and end of __cpuidle functions */
-@@ -54,7 +55,7 @@ __setup("hlt", cpu_idle_nopoll_setup);
- 
- static noinline int __cpuidle cpu_idle_poll(void)
- {
--	rcu_idle_enter();
-+	generic_idle_enter();
- 	trace_cpu_idle_rcuidle(0, smp_processor_id());
- 	local_irq_enable();
- 	stop_critical_timings();
-@@ -64,7 +65,7 @@ static noinline int __cpuidle cpu_idle_poll(void)
- 		cpu_relax();
- 	start_critical_timings();
- 	trace_cpu_idle_rcuidle(PWR_EVENT_EXIT, smp_processor_id());
--	rcu_idle_exit();
-+	generic_idle_exit();
- 
- 	return 1;
- }
-@@ -158,7 +159,7 @@ static void cpuidle_idle_call(void)
- 
- 	if (cpuidle_not_available(drv, dev)) {
- 		tick_nohz_idle_stop_tick();
--		rcu_idle_enter();
-+		generic_idle_enter();
- 
- 		default_idle_call();
- 		goto exit_idle;
-@@ -178,13 +179,13 @@ static void cpuidle_idle_call(void)
- 		u64 max_latency_ns;
- 
- 		if (idle_should_enter_s2idle()) {
--			rcu_idle_enter();
-+			generic_idle_enter();
- 
- 			entered_state = call_cpuidle_s2idle(drv, dev);
- 			if (entered_state > 0)
- 				goto exit_idle;
- 
--			rcu_idle_exit();
-+			generic_idle_exit();
- 
- 			max_latency_ns = U64_MAX;
- 		} else {
-@@ -192,7 +193,7 @@ static void cpuidle_idle_call(void)
- 		}
- 
- 		tick_nohz_idle_stop_tick();
--		rcu_idle_enter();
-+		generic_idle_enter();
- 
- 		next_state = cpuidle_find_deepest_state(drv, dev, max_latency_ns);
- 		call_cpuidle(drv, dev, next_state);
-@@ -209,7 +210,7 @@ static void cpuidle_idle_call(void)
- 		else
- 			tick_nohz_idle_retain_tick();
- 
--		rcu_idle_enter();
-+		generic_idle_enter();
- 
- 		entered_state = call_cpuidle(drv, dev, next_state);
- 		/*
-@@ -227,7 +228,7 @@ static void cpuidle_idle_call(void)
- 	if (WARN_ON_ONCE(irqs_disabled()))
- 		local_irq_enable();
- 
--	rcu_idle_exit();
-+	generic_idle_exit();
- }
- 
- /*
++#ifdef CONFIG_SCHED_CORE
++#ifndef TIF_UNSAFE_RET
++#define TIF_UNSAFE_RET (0)
++#endif
++#endif
 -- 
 2.28.0.220.ged08abb693-goog
 
