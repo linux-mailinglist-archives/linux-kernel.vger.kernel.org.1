@@ -2,58 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724B924536A
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978752453A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbgHOWBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
+        id S1729811AbgHOWEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728794AbgHOVv3 (ORCPT
+        with ESMTP id S1728594AbgHOVvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:29 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C045AC061343
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 17:40:30 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id r11so5330117pfl.11
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 17:40:30 -0700 (PDT)
+        Sat, 15 Aug 2020 17:51:04 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22851C061345
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 17:40:48 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id f5so4906794plr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 17:40:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8YbwcCQRiiPv0rHg6w+CA5l3N0IrRcn3zSo0R+mj7ww=;
-        b=HkprHDs74pJz6IDXZVuwjTU0r3oPGqZI3PiHUeO/XoOHvgK5rQyuL4k5L56uRCPEtv
-         9duYQ+pnjmR7YRRCTnV50c+aHuSRgTVrIb57+wwQvhj4gwrGYVKRAdAtJbOMAU2ejAXI
-         n0LvbLb67HxDzRW0AelG9fK0p9EfEGvRHfzjA=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Gtg0Mu/abosx7cbMyjvqm3BgSpDd0rRtzMxQNPezKE=;
+        b=b3PfH/wypQHJ685ofVrtZdKKOqKYgm0iqPC0Pbe4odmP9dGa349PVYdCmd7nTWR8vR
+         xqutgbAOShitN9KXbUGkfnX2RmB6HDHK3bQHFNQ1X0f0k/murDm8wXR6ZTPUhXSoYUE6
+         dXn2GyTtSWrIHdlaeg/XasUr0caLPhjuk9rBo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8YbwcCQRiiPv0rHg6w+CA5l3N0IrRcn3zSo0R+mj7ww=;
-        b=Hhcj73gAXVy/BWeegiVwXIlFntwH4TiDYMXGrOguqPWyAT9kthDzfxXhFeU5akM1UU
-         nZAXZLfX1E9bOaR+10PLPMvMGSh6Ey/4bYYWYp4yQyqPR0evnnNucyZM3izKXVFnAEWf
-         Vgz735nJNnuchPY/ztTCMBGQVbg/Tk/FYwtswEMjNpr0OAAaBZy/SlC7AheNGLEszHe4
-         azJqc6zk74hPhnO3aQct796RUrzTelkA7Tt2cNR9Fs+S2EN0sP4ePSsivOrLWmRaz8zp
-         E40Fhte9Nf3Ud7/Kqj31dehY1inSSGLu1Yp7z/XNcjNU6tNqvn6ICniIErmKwYqcJvrj
-         aYgQ==
-X-Gm-Message-State: AOAM531/bmXI+pbn0VxwpYAh2JfXfrg6CZFK3+EwmPULOO5nu5caxxmg
-        N9m7vfTTFsfAcBQszKgVEJHLnDBXUf4xSQ==
-X-Google-Smtp-Source: ABdhPJwvYkwnBKQR8QLhUB27L2pr9oHf4MfxbH9CnPSobs6aWLp66YPwfAqQdaQ+0RUy1HMdnIoXPQ==
-X-Received: by 2002:a63:4b5c:: with SMTP id k28mr3236824pgl.356.1597452030070;
-        Fri, 14 Aug 2020 17:40:30 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id x6sm10577131pfd.53.2020.08.14.17.40.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Gtg0Mu/abosx7cbMyjvqm3BgSpDd0rRtzMxQNPezKE=;
+        b=mXIeVqRvTpwE7aSh5+PLGwbYqNltjzPF7UcFllEZ/xHdcpYa5h59re2HIA/9uM8NjF
+         x7uGFZRY42R9+2SjlHQ2GDBJ1KyCIZSvILPQa5cFb2xTumP2rkeS7aWmszyShLFL+BF4
+         dvMZdN+yLZoKTswGZAro4ik3zihrkYUvm26vnqMSo2d4zhc7uNppgutCOeQqQ+bcCcem
+         sw6QB31s+eouP7rXaAhtkPShxdtI1PXg9AN1918lBxTa0QHYsLovPOug4rbZKy2D0+Dt
+         ftaJymOGvUfM2+Bf5uzFJOqNNFZBwS8dDcPcuPwXugitm8SoAbWpZ3J0jIhxUe+TXZcp
+         XqGw==
+X-Gm-Message-State: AOAM530QJkbw5KBqxG0IuJ+tZgALlZPQV2GtIm31Ru68WRvgtndkunoL
+        x8Pl2jGydmBauAIRd9NqHzOqvQ==
+X-Google-Smtp-Source: ABdhPJyMZNGYoN3/sqk/JU4g3eewEpC+vFQpWtnhH5IY3352HMEya4rrUrGdYRs60YVUu1WzYjs8Pw==
+X-Received: by 2002:a17:902:c282:: with SMTP id i2mr3747922pld.205.1597452047421;
+        Fri, 14 Aug 2020 17:40:47 -0700 (PDT)
+Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:2b94])
+        by smtp.gmail.com with ESMTPSA id 196sm10762214pfc.178.2020.08.14.17.40.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 17:40:29 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] treewide: Make all debug_obj_descr's const
-Date:   Fri, 14 Aug 2020 17:40:27 -0700
-Message-Id: <20200815004027.2046113-3-swboyd@chromium.org>
+        Fri, 14 Aug 2020 17:40:45 -0700 (PDT)
+From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+To:     marcel@holtmann.org
+Cc:     chromeos-bluetooth-upstreaming@chromium.org,
+        linux-bluetooth@vger.kernel.org,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        Manish Mandlik <mmandlik@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH] Bluetooth: Only mark socket zapped after unlocking
+Date:   Fri, 14 Aug 2020 17:40:32 -0700
+Message-Id: <20200814173929.1.Ic1b9d93cf2d393e3efda4c2977639c095d276311@changeid>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
-In-Reply-To: <20200815004027.2046113-1-swboyd@chromium.org>
-References: <20200815004027.2046113-1-swboyd@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -61,162 +67,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This should make it harder for the kernel to corrupt the debug object
-descriptor, used to call functions to fixup state and track debug
-objects, by moving the structure to read-only memory.
+Since l2cap_sock_teardown_cb doesn't acquire the channel lock before
+setting the socket as zapped, it could potentially race with
+l2cap_sock_release which frees the socket. Thus, wait until the cleanup
+is complete before marking the socket as zapped.
 
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+This race was reproduced on a JBL GO speaker after the remote device
+rejected L2CAP connection due to resource unavailability.
+
+Here is a dmesg log with debug logs from a repro of this bug:
+[ 3465.424086] Bluetooth: hci_core.c:hci_acldata_packet() hci0 len 16 handle 0x0003 flags 0x0002
+[ 3465.424090] Bluetooth: hci_conn.c:hci_conn_enter_active_mode() hcon 00000000cfedd07d mode 0
+[ 3465.424094] Bluetooth: l2cap_core.c:l2cap_recv_acldata() conn 000000007eae8952 len 16 flags 0x2
+[ 3465.424098] Bluetooth: l2cap_core.c:l2cap_recv_frame() len 12, cid 0x0001
+[ 3465.424102] Bluetooth: l2cap_core.c:l2cap_raw_recv() conn 000000007eae8952
+[ 3465.424175] Bluetooth: l2cap_core.c:l2cap_sig_channel() code 0x03 len 8 id 0x0c
+[ 3465.424180] Bluetooth: l2cap_core.c:l2cap_connect_create_rsp() dcid 0x0045 scid 0x0000 result 0x02 status 0x00
+[ 3465.424189] Bluetooth: l2cap_core.c:l2cap_chan_put() chan 000000006acf9bff orig refcnt 4
+[ 3465.424196] Bluetooth: l2cap_core.c:l2cap_chan_del() chan 000000006acf9bff, conn 000000007eae8952, err 111, state BT_CONNECT
+[ 3465.424203] Bluetooth: l2cap_sock.c:l2cap_sock_teardown_cb() chan 000000006acf9bff state BT_CONNECT
+[ 3465.424221] Bluetooth: l2cap_core.c:l2cap_chan_put() chan 000000006acf9bff orig refcnt 3
+[ 3465.424226] Bluetooth: hci_core.h:hci_conn_drop() hcon 00000000cfedd07d orig refcnt 6
+[ 3465.424234] BUG: spinlock bad magic on CPU#2, kworker/u17:0/159
+[ 3465.425626] Bluetooth: hci_sock.c:hci_sock_sendmsg() sock 000000002bb0cb64 sk 00000000a7964053
+[ 3465.430330]  lock: 0xffffff804410aac0, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
+[ 3465.430332] Causing a watchdog bite!
+
+Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Reported-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
+Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
 ---
- drivers/gpu/drm/i915/i915_active.c   | 2 +-
- drivers/gpu/drm/i915/i915_sw_fence.c | 2 +-
- kernel/rcu/rcu.h                     | 2 +-
- kernel/rcu/update.c                  | 2 +-
- kernel/time/hrtimer.c                | 4 ++--
- kernel/time/timer.c                  | 4 ++--
- kernel/workqueue.c                   | 4 ++--
- lib/percpu_counter.c                 | 4 ++--
- 8 files changed, 12 insertions(+), 12 deletions(-)
+We had some more data available (outside of dmesg and oops) that led us
+to suspect a race between l2cap_sock_teardown_cb and l2cap_sock_release.
+I've left this out of the commit message since it's not an oops or dmesg
+logs.
 
-diff --git a/drivers/gpu/drm/i915/i915_active.c b/drivers/gpu/drm/i915/i915_active.c
-index d960d0be5bd2..839bd53df6e9 100644
---- a/drivers/gpu/drm/i915/i915_active.c
-+++ b/drivers/gpu/drm/i915/i915_active.c
-@@ -81,7 +81,7 @@ static void *active_debug_hint(void *addr)
- 	return (void *)ref->active ?: (void *)ref->retire ?: (void *)ref;
- }
+Crash stack from CPU4:
+--
+-24 |spin_bug(
+    |    [X19] lock = 0xFFFFFF810BDB1EC0,
+    |    [X20] msg = 0xFFFFFFD143FD7960)
+-25 |debug_spin_lock_before(inline)
+    |  [X19] lock = 0xFFFFFF810BDB1EC0
+-25 |do_raw_spin_lock(
+    |    [X19] lock = 0xFFFFFF810BDB1EC0)
+-26 |raw_spin_lock_irqsave(
+    |    [X19] lock = 0xFFFFFF810BDB1EC0)
+-27 |skb_peek(inline)
+-27 |__skb_dequeue(inline)
+-27 |skb_dequeue(
+    |    [X20] list = 0xFFFFFF810BDB1EA8)
+    |  [locdesc] flags = 12297829382473034410
+-28 |skb_queue_purge(
+    |    [X19] list = 0xFFFFFF810BDB1EA8 -> (
+    |      [D:0xFFFFFF810BDB1EA8] next = 0x0,
+    |      [D:0xFFFFFF810BDB1EB0] prev = 0x0,
+    |      [D:0xFFFFFF810BDB1EB8] qlen = 0,
+    |      [D:0xFFFFFF810BDB1EC0] lock = ([D:0xFFFFFF810BDB1EC0] rlock = ([D:0xFFFFFF810BDB1EC0] raw_lock
+    |  [X0] skb = ???
+-29 |l2cap_seq_list_free(inline)
+    |  [locdesc] seq_list = 0xFFFFFF810BDB1ED8 -> (
+    |    [D:0xFFFFFF810BDB1ED8] head = 0,
+    |    [D:0xFFFFFF810BDB1EDA] tail = 0,
+    |    [D:0xFFFFFF810BDB1EDC] mask = 0,
+    |    [D:0xFFFFFF810BDB1EE0] list = 0x0)
+-29 |l2cap_chan_del(
+    |    [X19] chan = 0xFFFFFF810BDB1C00,
+    |  ?)
+-30 |l2cap_chan_unlock(inline)
+-30 |l2cap_connect_create_rsp(inline)
+    |  [X20] conn = 0xFFFFFF81231F2600
+    |  [locdesc] err = 0
+    |  [X27] chan = 0xFFFFFF810BDB1C00
+-30 |l2cap_bredr_sig_cmd(inline)
+    |  [X20] conn = 0xFFFFFF81231F2600
+    |  [locdesc] err = 0
+-30 |l2cap_sig_channel(inline)
+    |  [X20] conn = 0xFFFFFF81231F2600
+    |  [X19] skb = 0xFFFFFF813DE4C040
+    |  [X28] data = 0xFFFFFF8131582014
+    |  [locdesc] cmd_len = 43690
+-30 |l2cap_recv_frame(
+    |    [X20] conn = 0xFFFFFF81231F2600,
+    |    [X19] skb = 0xFFFFFF813DE4C040)
+    |  [locdesc] psm = 43690
+-31 |l2cap_recv_acldata(
+    |  ?,
+    |    [X19] skb = 0xFFFFFF813DE4C040,
+    |  ?)
+    |  [X21] len = 16
+-32 |hci_rx_work(
+    |  ?)
+    |  [X21] hdev = 0xFFFFFF8133A02000
+-33 |__read_once_size(inline)
+    |  [locdesc] size = 4
+-33 |atomic_read(inline)
+    |  [locdesc] __u = ([locdesc] __val = -1431655766, [locdesc] __c = (170))
+-33 |static_key_count(inline)
+-33 |static_key_false(inline)
+-33 |trace_workqueue_execute_end(inline)
+    |  [X22] work = 0xFFFFFF8133A02838
+-33 |process_one_work(
+    |    [X19] worker = 0xFFFFFF8133FE4500,
+    |    [X22] work = 0xFFFFFF8133A02838)
+    |  [locdesc] work_color = -1431655766
+-34 |__read_once_size(inline)
+    |  [locdesc] size = 8
+-34 |list_empty(inline)
+    |  [locdesc] __u = ([locdesc] __val = 0xAAAAAAAAAAAAAAAA, [locdesc] __c = (170))
+-34 |worker_thread(
+    |    [X19] __worker = 0xFFFFFF8133FE4500)
+    |  [X19] worker = 0xFFFFFF8133FE4500
+-35 |kthread(
+    |    [X20] _create = 0xFFFFFF8133FB3A00)
+    |  [X20] create = 0xFFFFFF8133FB3A00
+    |  [X0] ret = ???
+-36 |ret_from_fork(asm)
+
+ net/bluetooth/l2cap_sock.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
+index e1a3e66b175402..e7cfe28140c39b 100644
+--- a/net/bluetooth/l2cap_sock.c
++++ b/net/bluetooth/l2cap_sock.c
+@@ -1521,8 +1521,6 @@ static void l2cap_sock_teardown_cb(struct l2cap_chan *chan, int err)
  
--static struct debug_obj_descr active_debug_desc = {
-+static const struct debug_obj_descr active_debug_desc = {
- 	.name = "i915_active",
- 	.debug_hint = active_debug_hint,
- };
-diff --git a/drivers/gpu/drm/i915/i915_sw_fence.c b/drivers/gpu/drm/i915/i915_sw_fence.c
-index 295b9829e2da..93a649324ce0 100644
---- a/drivers/gpu/drm/i915/i915_sw_fence.c
-+++ b/drivers/gpu/drm/i915/i915_sw_fence.c
-@@ -34,7 +34,7 @@ static void *i915_sw_fence_debug_hint(void *addr)
+ 	parent = bt_sk(sk)->parent;
  
- #ifdef CONFIG_DRM_I915_SW_FENCE_DEBUG_OBJECTS
+-	sock_set_flag(sk, SOCK_ZAPPED);
+-
+ 	switch (chan->state) {
+ 	case BT_OPEN:
+ 	case BT_BOUND:
+@@ -1549,8 +1547,11 @@ static void l2cap_sock_teardown_cb(struct l2cap_chan *chan, int err)
  
--static struct debug_obj_descr i915_sw_fence_debug_descr = {
-+static const struct debug_obj_descr i915_sw_fence_debug_descr = {
- 	.name = "i915_sw_fence",
- 	.debug_hint = i915_sw_fence_debug_hint,
- };
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index cf66a3ccd757..e01cba5e4b52 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -167,7 +167,7 @@ static inline unsigned long rcu_seq_diff(unsigned long new, unsigned long old)
- # define STATE_RCU_HEAD_READY	0
- # define STATE_RCU_HEAD_QUEUED	1
- 
--extern struct debug_obj_descr rcuhead_debug_descr;
-+extern const struct debug_obj_descr rcuhead_debug_descr;
- 
- static inline int debug_rcu_head_queue(struct rcu_head *head)
- {
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index 2de49b5d8dd2..3e0f4bcb558f 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -469,7 +469,7 @@ void destroy_rcu_head_on_stack(struct rcu_head *head)
- }
- EXPORT_SYMBOL_GPL(destroy_rcu_head_on_stack);
- 
--struct debug_obj_descr rcuhead_debug_descr = {
-+const struct debug_obj_descr rcuhead_debug_descr = {
- 	.name = "rcu_head",
- 	.is_static_object = rcuhead_is_static_object,
- };
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index c4038511d5c9..099e0447daa3 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -342,7 +342,7 @@ EXPORT_SYMBOL_GPL(ktime_add_safe);
- 
- #ifdef CONFIG_DEBUG_OBJECTS_TIMERS
- 
--static struct debug_obj_descr hrtimer_debug_descr;
-+static const struct debug_obj_descr hrtimer_debug_descr;
- 
- static void *hrtimer_debug_hint(void *addr)
- {
-@@ -401,7 +401,7 @@ static bool hrtimer_fixup_free(void *addr, enum debug_obj_state state)
+ 		break;
  	}
+-
+ 	release_sock(sk);
++
++	/* Only zap after cleanup to avoid use after free race */
++	sock_set_flag(sk, SOCK_ZAPPED);
++
  }
  
--static struct debug_obj_descr hrtimer_debug_descr = {
-+static const struct debug_obj_descr hrtimer_debug_descr = {
- 	.name		= "hrtimer",
- 	.debug_hint	= hrtimer_debug_hint,
- 	.fixup_init	= hrtimer_fixup_init,
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index a16764b0116e..2deccfb1ee5e 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -611,7 +611,7 @@ static void internal_add_timer(struct timer_base *base, struct timer_list *timer
- 
- #ifdef CONFIG_DEBUG_OBJECTS_TIMERS
- 
--static struct debug_obj_descr timer_debug_descr;
-+static const struct debug_obj_descr timer_debug_descr;
- 
- static void *timer_debug_hint(void *addr)
- {
-@@ -707,7 +707,7 @@ static bool timer_fixup_assert_init(void *addr, enum debug_obj_state state)
- 	}
- }
- 
--static struct debug_obj_descr timer_debug_descr = {
-+static const struct debug_obj_descr timer_debug_descr = {
- 	.name			= "timer_list",
- 	.debug_hint		= timer_debug_hint,
- 	.is_static_object	= timer_is_static_object,
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index c41c3c17b86a..ac088ce6059b 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -427,7 +427,7 @@ static void show_pwq(struct pool_workqueue *pwq);
- 
- #ifdef CONFIG_DEBUG_OBJECTS_WORK
- 
--static struct debug_obj_descr work_debug_descr;
-+static const struct debug_obj_descr work_debug_descr;
- 
- static void *work_debug_hint(void *addr)
- {
-@@ -477,7 +477,7 @@ static bool work_fixup_free(void *addr, enum debug_obj_state state)
- 	}
- }
- 
--static struct debug_obj_descr work_debug_descr = {
-+static const struct debug_obj_descr work_debug_descr = {
- 	.name		= "work_struct",
- 	.debug_hint	= work_debug_hint,
- 	.is_static_object = work_is_static_object,
-diff --git a/lib/percpu_counter.c b/lib/percpu_counter.c
-index a2345de90e93..f61689a96e85 100644
---- a/lib/percpu_counter.c
-+++ b/lib/percpu_counter.c
-@@ -17,7 +17,7 @@ static DEFINE_SPINLOCK(percpu_counters_lock);
- 
- #ifdef CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER
- 
--static struct debug_obj_descr percpu_counter_debug_descr;
-+static const struct debug_obj_descr percpu_counter_debug_descr;
- 
- static bool percpu_counter_fixup_free(void *addr, enum debug_obj_state state)
- {
-@@ -33,7 +33,7 @@ static bool percpu_counter_fixup_free(void *addr, enum debug_obj_state state)
- 	}
- }
- 
--static struct debug_obj_descr percpu_counter_debug_descr = {
-+static const struct debug_obj_descr percpu_counter_debug_descr = {
- 	.name		= "percpu_counter",
- 	.fixup_free	= percpu_counter_fixup_free,
- };
+ static void l2cap_sock_state_change_cb(struct l2cap_chan *chan, int state,
 -- 
-Sent by a computer, using git, on the internet
+2.28.0.220.ged08abb693-goog
 
