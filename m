@@ -2,192 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F462453AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA829245419
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729560AbgHOWEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728585AbgHOVvD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:03 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE23C02B8CF
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 03:46:53 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id t7so9621470otp.0
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 03:46:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=GRcLG1hja9nyh1fAE/jsb695u7dtTiGxHg8x1K2Uuqo=;
-        b=jiP8z+2gLo7Lpj7GIMEtNfbrUfZSS5wrDDkKNpJrLKPZUkcXHzqyz5f82N5CPLA9+W
-         /LVBVdfYI6CZkqgklcv1Op/D1oMQxfyiDmU/bY5maDH2tjNNDNTL4ZyXZ34ox75zVFXj
-         szcrVC6hSL3hlhI5vP5gRCfevuF4LI4Gw+CXiWT19pR7dmvU36Ne3Q2/mT/4OsbQREM1
-         aCguYJZQbXlrCNpjCYoMrd0HDVina2SHzf6cCRZFdEgQ9eIprGHWaYJe7O5Sx/04WYhY
-         zmBbRYU+/6D2sxb/tTQQwah5rt44KNoIdD+H+I6QYHauBUGFyd/+l74y1Z0KcKoTWZ70
-         lptA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=GRcLG1hja9nyh1fAE/jsb695u7dtTiGxHg8x1K2Uuqo=;
-        b=FlCMfPxFzimMDuJujBtdvaxMslEHrBHZyXR2LG3DYRwAqrWWjym6El2ExYrIEffEgB
-         Duzcc6EOp4lvhRdqoEQvibz2QpNsVXDsokhdRl7EJpWJqUmJFVthm/rZOf9ObbScEpIv
-         UsqiHrFskl2xIcYZONNdXgC/FKJLq2uqoFy+SDvzl6qzy3zKVHCRPJ1D8Mbde+EVViO8
-         ZhuTgw3klSaDJr5/x11oWkKIQ2S3Aa77E2nmuRMX69xbLp5wYIZFOM9198gojc74pr55
-         R87f9VL7Ot7oD0Q1vGAxFMcY+JWYX2Pp2ZvAOujQUTvXDgXTqicdaaU+sHCEyJHzIauV
-         YhyQ==
-X-Gm-Message-State: AOAM531UZTfTG/gXnSggMeOli3hDEIH2SYvg21fqXbU/CvWLB0MPFg9B
-        RwlqsZtiWFn63hK7KGsDNXAghnEcX+MuXbat01g=
-X-Google-Smtp-Source: ABdhPJxND3CQs32gJN7cmHImhkA9/nnV0T9eLjEx/cT26U16EIQbcBQinG8SUFSH+2YuXCxwER+byC/tZG+6cri+agA=
-X-Received: by 2002:a9d:7997:: with SMTP id h23mr5186659otm.28.1597488412052;
- Sat, 15 Aug 2020 03:46:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200527135329.1172644-1-arnd@arndb.de> <CAKwvOdmA29WzTd7APsQCsG_a=NVWuR53Z2h8NTLza5sisnV2PA@mail.gmail.com>
- <CA+icZUUjtu3fCNTngY52h3uRL+eUaimNJb0UNwj5v-QwKggs5A@mail.gmail.com>
- <CA+icZUWH5f4B_6eYy2_OOi45VjUkE_kN9akqvcOxxmmmM3TSrg@mail.gmail.com>
- <CAKwvOdnj6ObdpsdVYkDxWp-dVTTg=xMkBm84y419SNtLuAqfMg@mail.gmail.com>
- <CAKwvOdnahyqQQMdWhzpaYkJNi21Ux=8qyBmRnPidiT_RAn0YFw@mail.gmail.com>
- <CA+icZUVKBsp4cJV5V=ZtywEi=Ary5w-fNSijkNknU+U9xiKRRg@mail.gmail.com> <CA+icZUV5m+kPWpk0ovoWD+DK0Tn8=c0MdWnr2XTxStwXf_VF0g@mail.gmail.com>
-In-Reply-To: <CA+icZUV5m+kPWpk0ovoWD+DK0Tn8=c0MdWnr2XTxStwXf_VF0g@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 15 Aug 2020 12:46:40 +0200
-Message-ID: <CA+icZUW6vb2JgKCnWMx-yRU24benZNLizwk30HLPGwYrNDR-3A@mail.gmail.com>
-Subject: Re: [PATCH] x86: work around clang IAS bug referencing __force_order
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zhenzhong Duan <zhenzhong.duan@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730090AbgHOWMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:12:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729131AbgHOWK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:10:28 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B22123105;
+        Sat, 15 Aug 2020 10:57:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597489074;
+        bh=M/nxbLlP+D61zLzHCfsidzMMTdPbHEbfvM8bO2P5ksc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wjh/i9+MH/e9RbB9m+iuxE60TALKoWIyziVZqHh41a3WS1A6vIvxq70hWFqW77Cx3
+         kChAUAZfsj0fucSroOF/3U4WufQvjbcyLPuYCsa7yd35in7n8BFKJ8dIYyFnzGc31Z
+         QmnCAntecFcEzvPqTM1UDloVXkohVBpA3obqIWj0=
+Date:   Sat, 15 Aug 2020 19:57:49 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH 4/6] tools/bootconfig: Add a script to generate ftrace
+ shell-command from bootconfig
+Message-Id: <20200815195749.9d25395fd2f9fbcda6efc423@kernel.org>
+In-Reply-To: <20200813210100.23a706ab@oasis.local.home>
+References: <159704847064.175360.3292152056631660862.stgit@devnote2>
+        <159704851101.175360.15119132351139842345.stgit@devnote2>
+        <20200813210100.23a706ab@oasis.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 10:23 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Sat, Aug 15, 2020 at 5:28 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > On Sat, Aug 15, 2020 at 2:27 AM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > >
-> > > On Fri, Aug 14, 2020 at 3:57 PM Nick Desaulniers
-> > > <ndesaulniers@google.com> wrote:
-> > > >
-> > > > On Fri, Aug 14, 2020 at 2:19 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Aug 14, 2020 at 7:29 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > > >
-> > > > > > Thanks for the proposal.
-> > > > > >
-> > > > > > I have adapted it to fit my patchset against Linux v5.8.
-> > > > > >
-> > > > > > Both Debian's GCC-10 and a snapshot version of LLVM toolchain
-> > > > > > v11.0.0-rc1+ seems to be OK.
-> > > > > >
-> > > > >
-> > > > > Yupp, OK.
-> > > > >
-> > > > > I was able to boot FreeDOS 1.2 VM in VirtualBox GUI.
-> > > >
-> > > > Hi Sedat,
-> > > > Apologies, but it's not clear to me precisely which patch you tested.
-> > > > Can you please confirm whether you tested:
-> > > > 1. Arnd's patch that started this thread.
-> > > > 2. My proposed diff adding -fno-addrsig to CFLAGS_powernow-k6.o.
-> > > > 3. My proposed diff removing __force_order from the kernel.
-> > > >
-> > > > I'm hoping you were referring to testing 3., but it's not clear to me.
-> > >
-> > > Ah, sorry, I missed your comment on github:
-> > > https://github.com/ClangBuiltLinux/linux/issues/1120#issuecomment-674282107
-> > >
-> > > Ok, I will look at more disassembly next week and hopefully have a
-> > > patch ready, with your tested by tag.
-> > >
-> >
-> > Sorry for not being precise - I tested with solution (3.).
-> > Later I added the diff I used as mentioned in your above comment.
-> >
-> > See [1]:
-> >
-> > > In a 2nd run building with a selfmade clang-11 and LLVM "bin"utils is fine, too.
-> >
-> > I cannot say much to older versions of GCC and/or LLVM/Clang if
-> > removing "__force_order" works fine.
-> >
-> > Another (4.) solution:
-> > Sami tried successfully by adding "__weak" declaration with
-> > CONFIG_LKDTM=m (see [2]).
-> > I am OK if this works, too.
-> >
-> > Please, see my attachments.
-> >
-> > - Sedat -
-> >
-> > [1] https://github.com/ClangBuiltLinux/linux/issues/1120#issuecomment-674340760
-> > [2] https://github.com/ClangBuiltLinux/linux/issues/1120#issuecomment-674182703
->
-> Unfortunately, the diff from Sami does not work together with Arvind's
-> patchset...
->
-> x86/boot: Remove run-time relocations from compressed kernel
->
-> ...which got included in <tip.git#x86/boot> recently.
->
-> I see the following:
->
->   ld.lld-11 -m elf_x86_64  -pie  --no-dynamic-linker -T
-> arch/x86/boot/compressed/vmlinux.lds
-> arch/x86/boot/compressed/kernel_info.o
-> arch/x86/boot/compressed/head_64.o arch/x86/boot/compressed/misc.o
-> arch/x86/boot/compressed/string.o arch/x86/boot/compressed/cmdline.o
-> arch/x86/boot/compressed/error.o arch/x86/boot/compressed/piggy.o
-> arch/x86/boot/compressed/cpuflags.o
-> arch/x86/boot/compressed/early_serial_console.o
-> arch/x86/boot/compressed/kaslr.o arch/x86/boot/compressed/kaslr_64.o
-> arch/x86/boot/compressed/mem_encrypt.o
-> arch/x86/boot/compressed/pgtable_64.o arch/x86/boot/compressed/acpi.o
-> arch/x86/boot/compressed/efi_thunk_64.o
-> drivers/firmware/efi/libstub/lib.a -o arch/x86/boot/compressed/vmlinux
-> ld.lld-11: error: Unexpected GOT entries detected!
-> ld.lld-11: error: Unexpected run-time relocations detected!
-> ld.lld-11: error: Unexpected GOT entries detected!
-> ld.lld-11: error: Unexpected run-time relocations detected!
-> make[5]: *** [arch/x86/boot/compressed/Makefile:91:
-> arch/x86/boot/compressed/vmlinux] Error 1
->
-> When you need further informations, please let me know.
->
-> - Sedat -
->
-> [1] https://github.com/ClangBuiltLinux/linux/issues/1120#issuecomment-674182703
+On Thu, 13 Aug 2020 21:01:00 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-When I revert...
+> On Mon, 10 Aug 2020 17:35:11 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> 
+> > --- /dev/null
+> > +++ b/tools/bootconfig/scripts/xbc.sh
+> > @@ -0,0 +1,56 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0-only
+> > +
+> > +# bootconfig utility functions
+> > +
+> > +XBC_TMPFILE=
+> > +XBC_BASEDIR=`dirname $0`
+> > +BOOTCONFIG=${BOOTCONFIG:=$XBC_BASEDIR/../bootconfig}
+> > +if [ ! -x "$BOOTCONFIG" ]; then
+> > +	BOOTCONFIG=`which bootconfig`
+> > +	if [ -z "$BOOTCONFIG" ]; then
+> > +		echo "Erorr: bootconfig command is not found" 1>&2
+> > +		exit 1
+> > +	fi
+> > +fi
+> > +
+> > +xbc_cleanup() {
+> > +	if [ "$XBC_TMPFILE" ]; then
+> 
+> Should the above be:
+> 
+> 	if [ -f "$XBC_TMPFILE" ]; then
+> ?
 
-commit df6d4f9db79c1a5d6f48b59db35ccd1e9ff9adfc
-"x86/boot/compressed: Don't declare __force_order in kaslr_64.c"
+Ah, good catch!
+I didn't call xbc_cleanup except for the trap in bconf2ftrace,
+but for user who call xbc_cleanup explicitly, we need -f.
 
-...I can build, boot on bare metal and start FreeDOS VM in VirtualBox.
+Thank you!
 
-For more details see [2].
+> 
+> 
+> -- Steve
+> 
+> > +		rm -f "$XBC_TMPFILE"
+> > +	fi
+> > +}
+> > +
+> > +xbc_init() { # bootconfig-file
+> > +	xbc_cleanup
+> > +	XBC_TMPFILE=`mktemp bconf-XXXX`
+> > +	trap xbc_cleanup EXIT TERM
+> > +
+> > +	$BOOTCONFIG -l $1 > $XBC_TMPFILE || exit 1
+> > +}
+> > +
+> > +nr_args() { # args
+> > +	echo $#
+> > +}
+> > +
+> > +xbc_get_val() { # key [maxnum]
+> > +	if [ "$2" ]; then
+> > +		MAXOPT="-L $2"
+> > +	fi
+> > +	grep "^$1 =" $XBC_TMPFILE | cut -d= -f2- | \
+> > +		sed -e 's/", /" /g' -e "s/',/' /g" | \
+> > +		xargs $MAXOPT -n 1 echo
+> > +}
+> > +
+> > +xbc_has_key() { # key
+> > +	grep -q "^$1 =" $XBC_TMPFILE
+> > +}
+> > +
+> > +xbc_has_branch() { # prefix-key
+> > +	grep -q "^$1" $XBC_TMPFILE
+> > +}
+> > +
+> > +xbc_subkeys() { # prefix-key depth
+> > +	__keys=`echo $1 | sed "s/\./ /g"`
+> > +	__s=`nr_args $__keys`
+> > +	grep "^$1" $XBC_TMPFILE | cut -d= -f1| cut -d. -f$((__s + 1))-$((__s + $2)) | uniq
+> > +}
+> 
 
-- Sedat -
 
-[1] https://git.kernel.org/linus/df6d4f9db79c1a5d6f48b59db35ccd1e9ff9adfc
-[2] https://github.com/ClangBuiltLinux/linux/issues/1120#issuecomment-674378085
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
