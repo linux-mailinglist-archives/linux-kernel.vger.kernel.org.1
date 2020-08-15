@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202CC24552C
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 03:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC27245547
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 03:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728651AbgHPB3O convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 15 Aug 2020 21:29:14 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:45629 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726177AbgHPB3O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 21:29:14 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-83-xLw69Pq4OQiatc_ar3rOUw-1; Sat, 15 Aug 2020 10:25:17 +0100
-X-MC-Unique: xLw69Pq4OQiatc_ar3rOUw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 15 Aug 2020 10:25:17 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 15 Aug 2020 10:25:17 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Joe Perches' <joe@perches.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-CC:     Petr Mladek <pmladek@suse.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: RE: POC: Alternative solution: Re: [PATCH 0/4] printk: reimplement
- LOG_CONT handling
-Thread-Topic: POC: Alternative solution: Re: [PATCH 0/4] printk: reimplement
- LOG_CONT handling
-Thread-Index: AQHWcpX67byqAvXV2kG6Q82PT/3E2ak45Ocg
-Date:   Sat, 15 Aug 2020 09:25:16 +0000
-Message-ID: <2777285d9e224c509e10b8448844f19a@AcuMS.aculab.com>
-References: <20200717234818.8622-1-john.ogness@linutronix.de>
-         <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
-         <87blkcanps.fsf@jogness.linutronix.de> <20200811160551.GC12903@alley>
-         <20200812163908.GH12903@alley> <87v9hn2y1p.fsf@jogness.linutronix.de>
-         <20200813051853.GA510@jagdpanzerIV.localdomain>
-         <875z9nvvl2.fsf@jogness.linutronix.de> <20200813084136.GK12903@alley>
-         <20200813115435.GB483@jagdpanzerIV.localdomain>
-         <CAHk-=wjoRWDAGkeevWtxR73vMimYfzJt13yFqTqv=7BGb0cuAQ@mail.gmail.com>
- <b87a02b75c715d9a9f381fe3869612bb826a7351.camel@perches.com>
-In-Reply-To: <b87a02b75c715d9a9f381fe3869612bb826a7351.camel@perches.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1729661AbgHPBow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 21:44:52 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:33858 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729406AbgHPBoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 21:44:17 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id E75C5359DCB713A97F8F;
+        Sat, 15 Aug 2020 17:58:28 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 15 Aug 2020 17:58:22 +0800
+From:   Yang Shen <shenyang39@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
+Subject: [PATCH v5 00/10] crypto: hisilicon/qm - misc fixes
+Date:   Sat, 15 Aug 2020 17:56:07 +0800
+Message-ID: <1597485377-2678-1-git-send-email-shenyang39@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.002
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Perches
-> Sent: 15 August 2020 00:52
-...
-> > This is why I think any discussion that says "people should buffer
-> > their lines themselves and we should get rid if pr_cont()" is
-> > fundamentally broken.
-> >
-> > Don't go down that hole. I won't take it. It's wrong.
-> 
-> I don't think it's wrong per se.
-> 
-> It's reasonable to avoid pr_cont when appropriate.
-> 
-> Trivial buffering, or adding and using YA vsprintf
-> extension can avoid unnecessary message interleaving.
-> 
-> For instance, I just sent this patch to allow removal
-> of print_vma_addr and its use of pr_cont.
-> 
-> https://lore.kernel.org/lkml/09f11651f0e913e159b955ac447cd8cadf36cb0d.camel@perches.com/
+This patchset fix some qm bugs:
+patch 1: store the string address before pass to 'strsep'
+patch 2: clear 'qp_status->used' when init the 'qp'
+patch 3: use 'dev_info_ratelimited' to avoid printk flooding.
+patch 4: fix the judgement of queue is full
+patch 7: save the vf configuration space to make sure it is available
+	 after the 'PF' 'FLR'
+patch 8: register callback to 'pci_driver.shutdown'
+patch 9: wait for all working function finishs when remove the device
+patch 10: move the process of register alg to crypto in driver 'hisi_zip'
 
-ISTM that is a bit complex for a printf format.
-Even with the 'noinline_for_stack' it is going to
-use a lot of stack - and error printfs are already likely
-to be near the stack limit.
-The recursion for %pV might also cause grief.
+v5:
+ - add a error branch instead of return immediately in patch "fix wrong
+   release after using strsep"
 
-In that case formatting the data into an on-stack char[]
-before the printf is probably the simplest solution.
+v4:
+ - exchange the patch 'fix the call trace when unbind device' and
+   'fix the process of register algorithms to crypto' to make sure the
+   driver is stable.
 
-	David
+v3:
+ - add the patch 10 which is aimed to fix the call trace when remove a
+   working device
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+v2:
+ - fix the wrong email address on patch 1
+
+Hui Tang (1):
+  crypto: hisilicon/qm - fix judgement of queue is full
+
+Shukun Tan (3):
+  crypto: hisilicon/qm - clear used reference count when start qp
+  crypto: hisilicon/qm - fix event queue depth to 2048
+  crypto: hisilicon/qm - fix VF not available after PF FLR
+
+Sihang Chen (1):
+  crypto: hisilicon/qm - fix wrong release after using strsep
+
+Weili Qian (1):
+  crypto: hisilicon/qm - fix the call trace when unbind device
+
+Yang Shen (4):
+  crypto: hisilicon/qm - fix print frequence in hisi_qp_send
+  crypto: hisilicon/qm - fix no stop reason when use 'hisi_qm_stop'
+  crypto: hisilicon/qm - register callback function to
+    'pci_driver.shutdown'
+  crypto: hisilicon/qm - fix the process of register algorithms to
+    crypto
+
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c |  36 ++---
+ drivers/crypto/hisilicon/hpre/hpre_main.c   |  28 ++--
+ drivers/crypto/hisilicon/qm.c               | 224 ++++++++++++++++++++++++----
+ drivers/crypto/hisilicon/qm.h               |  27 ++--
+ drivers/crypto/hisilicon/sec2/sec_crypto.c  |  35 ++---
+ drivers/crypto/hisilicon/sec2/sec_main.c    |  34 ++---
+ drivers/crypto/hisilicon/zip/zip_crypto.c   |   2 +-
+ drivers/crypto/hisilicon/zip/zip_main.c     |  49 +++---
+ 8 files changed, 290 insertions(+), 145 deletions(-)
+
+--
+2.7.4
 
