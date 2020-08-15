@@ -2,67 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6224245554
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 03:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202CC24552C
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 03:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729322AbgHPBvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 21:51:00 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3062 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726029AbgHPBu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 21:50:59 -0400
-Received: from dggeme753-chm.china.huawei.com (unknown [172.30.72.53])
-        by Forcepoint Email with ESMTP id AE8CB6034F408C27F43B;
-        Sat, 15 Aug 2020 09:50:20 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme753-chm.china.huawei.com (10.3.19.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Sat, 15 Aug 2020 09:50:20 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Sat, 15 Aug 2020 09:50:20 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     Yonghong Song <yhs@fb.com>
-CC:     "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "andriin@fb.com" <andriin@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpf: Convert to use the preferred fallthrough macro
-Thread-Topic: [PATCH] bpf: Convert to use the preferred fallthrough macro
-Thread-Index: AdZypir53l10TT+tT3O02hA35HBVZA==
-Date:   Sat, 15 Aug 2020 01:50:20 +0000
-Message-ID: <878cef61a8c549fd92764314e7c07a95@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
+        id S1728651AbgHPB3O convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 15 Aug 2020 21:29:14 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:45629 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726177AbgHPB3O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 21:29:14 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-83-xLw69Pq4OQiatc_ar3rOUw-1; Sat, 15 Aug 2020 10:25:17 +0100
+X-MC-Unique: xLw69Pq4OQiatc_ar3rOUw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sat, 15 Aug 2020 10:25:17 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sat, 15 Aug 2020 10:25:17 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joe Perches' <joe@perches.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+CC:     Petr Mladek <pmladek@suse.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: RE: POC: Alternative solution: Re: [PATCH 0/4] printk: reimplement
+ LOG_CONT handling
+Thread-Topic: POC: Alternative solution: Re: [PATCH 0/4] printk: reimplement
+ LOG_CONT handling
+Thread-Index: AQHWcpX67byqAvXV2kG6Q82PT/3E2ak45Ocg
+Date:   Sat, 15 Aug 2020 09:25:16 +0000
+Message-ID: <2777285d9e224c509e10b8448844f19a@AcuMS.aculab.com>
+References: <20200717234818.8622-1-john.ogness@linutronix.de>
+         <CAHk-=wivdy6-i=iqJ1ZG9YrRzaS0_LHHEPwb9KJg-S8i-Wm30w@mail.gmail.com>
+         <87blkcanps.fsf@jogness.linutronix.de> <20200811160551.GC12903@alley>
+         <20200812163908.GH12903@alley> <87v9hn2y1p.fsf@jogness.linutronix.de>
+         <20200813051853.GA510@jagdpanzerIV.localdomain>
+         <875z9nvvl2.fsf@jogness.linutronix.de> <20200813084136.GK12903@alley>
+         <20200813115435.GB483@jagdpanzerIV.localdomain>
+         <CAHk-=wjoRWDAGkeevWtxR73vMimYfzJt13yFqTqv=7BGb0cuAQ@mail.gmail.com>
+ <b87a02b75c715d9a9f381fe3869612bb826a7351.camel@perches.com>
+In-Reply-To: <b87a02b75c715d9a9f381fe3869612bb826a7351.camel@perches.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.252]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.002
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-WW9uZ2hvbmcgU29uZyA8eWhzQGZiLmNvbT4gd3JvdGU6DQo+T24gOC8xNC8yMCAyOjE2IEFNLCBN
-aWFvaGUgTGluIHdyb3RlOg0KPj4gQ29udmVydCB0aGUgdXNlcyBvZiBmYWxsdGhyb3VnaCBjb21t
-ZW50cyB0byBmYWxsdGhyb3VnaCBtYWNyby4NCj4+IA0KPj4gU2lnbmVkLW9mZi1ieTogTWlhb2hl
-IExpbiA8bGlubWlhb2hlQGh1YXdlaS5jb20+DQo+DQo+VGhpcyBpcyBub3QgYSBidWcgZml4IGJ1
-dCByYXRoZXIgYW4gZW5oYW5jZW1lbnQgc28gbm90IHN1cmUgd2hldGhlciB0aGlzIHNob3VsZCBw
-dXNoIHRvIGJwZiB0cmVlIG9yIHdhaXQgdW50aWwgYnBmLW5leHQuDQo+DQo+SXQgbWF5IGJlIHdv
-cnRod2hpbGUgdG8gbWVudGlvbiBDb21taXQgMjk0ZjY5ZTY2MmQxDQo+ICgiY29tcGlsZXJfYXR0
-cmlidXRlcy5oOiBBZGQgJ2ZhbGx0aHJvdWdoJyBwc2V1ZG8ga2V5d29yZCBmb3Igc3dpdGNoL2Nh
-c2UgdXNlIikgc28gcGVvcGxlIGNhbiB1bmRlcnN0YW5kIHdoeSB0aGlzIHBhdGNoIGlzIG5lZWRl
-ZC4NCj4NCg0KV2lsbCBkby4gTWFueSB0aGFua3MuDQoNCj5XaXRoIGFib3ZlIHN1Z2dlc3Rpb25z
-LA0KPkFja2VkLWJ5OiBZb25naG9uZyBTb25nIDx5aHNAZmIuY29tPg0KPg0KDQo=
+From: Joe Perches
+> Sent: 15 August 2020 00:52
+...
+> > This is why I think any discussion that says "people should buffer
+> > their lines themselves and we should get rid if pr_cont()" is
+> > fundamentally broken.
+> >
+> > Don't go down that hole. I won't take it. It's wrong.
+> 
+> I don't think it's wrong per se.
+> 
+> It's reasonable to avoid pr_cont when appropriate.
+> 
+> Trivial buffering, or adding and using YA vsprintf
+> extension can avoid unnecessary message interleaving.
+> 
+> For instance, I just sent this patch to allow removal
+> of print_vma_addr and its use of pr_cont.
+> 
+> https://lore.kernel.org/lkml/09f11651f0e913e159b955ac447cd8cadf36cb0d.camel@perches.com/
+
+ISTM that is a bit complex for a printf format.
+Even with the 'noinline_for_stack' it is going to
+use a lot of stack - and error printfs are already likely
+to be near the stack limit.
+The recursion for %pV might also cause grief.
+
+In that case formatting the data into an on-stack char[]
+before the printf is probably the simplest solution.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
