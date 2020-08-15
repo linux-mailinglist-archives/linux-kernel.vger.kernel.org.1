@@ -2,125 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190CA24539D
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D51245415
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729802AbgHOWDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728677AbgHOVvK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:10 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E7DFC02B8D7
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 04:13:29 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id o18so12548679eje.7
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 04:13:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=4ACFDihbhurDMLYhkZetXKBIk5H6sAegYTpSfKafOUo=;
-        b=SnRnOYM3EeMhrQ2sr9Yl50V40LP3tsUHkKKwlWIK67CHT+1OihQI5m9lKA1D42aPy5
-         9kllqkgMNfCveZeq1LqrcgENzFWsDe/pV+Gmj8LLFXpaBhCLkFgD4iWXzATE7nOMHvXx
-         Q3raBFfDcuYdCw3ggQSvXWysGvlAaogozaL/YiPbmJL5fCVBQeAXrZHBO/F5/l+F7cI7
-         UPimvN0HpYOmjbHeoRM3AJoYYjeKFvoX8cnR5AUfGaaXrJlC/y6WyQlMf3MGRQnHYqDg
-         d/Y4UwG/As5CW9+8uTV2yXksJ/SLxU4y3tyszl9o2kw9ExBKTq4JYaH/yWN6kl5Re4rG
-         PwMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=4ACFDihbhurDMLYhkZetXKBIk5H6sAegYTpSfKafOUo=;
-        b=RK7hnc6FRpnhSh45oo8G686rZnHsGRI81QV2PooZnoFH9FxQypYZBOzBcQ49/YG8+J
-         2IRo5iyOZx/2gBGg9Oy1m8CvtrGNYjpD3ND2IPsqUTM8EZZupPF2Dc4dk4eCiAS6y9Bu
-         hnYAu7TR3qN7UOiom89jOEGUKEQ0+QYByNSp8zjuWTROkhP6pfswOMA9VYjETgQCLMsq
-         RwTmcvdbKi14gNoAhgd5hTTWYWHfLU0t6n7AacM0FOm2agXrhD9+t/sAPCkB1tDZlP8W
-         S0htLEejxONRMYdCch1kx5GyCg0Xe2Vu0AILorAlGz/v83KBiylt7hJ3Z5Mc2tkfn4W4
-         P2bA==
-X-Gm-Message-State: AOAM531DUgepW/B3vz1Tgp6GfvwBc5zjiztvj+uoO2soEE7QwIZFcwII
-        AVHUbjjGTAxL2NRfhFxhudw=
-X-Google-Smtp-Source: ABdhPJwQ0RWmv8xiZJM3NoutaWIzuRWqM6Xky4WihS0f4wFonyRZNgR5TY0sHxGOvjqcMRTneLWsJw==
-X-Received: by 2002:a17:906:85ce:: with SMTP id i14mr6825953ejy.318.1597490006889;
-        Sat, 15 Aug 2020 04:13:26 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id 89sm8649247ede.29.2020.08.15.04.13.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 04:13:26 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 13:13:23 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>
-Subject: [GIT PULL] locking fixes
-Message-ID: <20200815111323.GA2461929@gmail.com>
+        id S1730082AbgHOWMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:12:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729083AbgHOWK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:10:28 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3BAE22EBF;
+        Sat, 15 Aug 2020 11:22:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597490563;
+        bh=ghK4I1h/hl5658IIykG3IDEndmMPcQYGR5QUDL7wgmc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lwUj1LTiJyeXK55xV/lUtdkVTfr0DvieDUZuSLrAF6DZ8R/HA5N71MJwG7nPKua0P
+         XN8+FLgUGcXPbi6i/MCranm+bgtLtOiBUJGe3yTgOhkKtl5mGsaqmriKXBsmDx338H
+         Qk13g3UnXJjZm3sQ9qnKs5RVQDD1IGu2zN6bkado=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1k6uGn-002KBi-AX; Sat, 15 Aug 2020 12:22:41 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 15 Aug 2020 12:22:41 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH v4 1/5] of_address: Add bus type match for pci ranges
+ parser
+In-Reply-To: <CAL_JsqKVhxu_cdo_umhY_SfuDhCC0G-AdsPAZpGB3eepOVFi-g@mail.gmail.com>
+References: <20200728153708.1296374-1-jiaxun.yang@flygoat.com>
+ <20200728153708.1296374-2-jiaxun.yang@flygoat.com>
+ <889508bae5da3c55690a7adbd101a5cd@kernel.org>
+ <CAL_JsqKVhxu_cdo_umhY_SfuDhCC0G-AdsPAZpGB3eepOVFi-g@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.7
+Message-ID: <34ac2d7c0770f9aa450aaa3905c82f52@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: robh+dt@kernel.org, jiaxun.yang@flygoat.com, frowand.list@gmail.com, linux-mips@vger.kernel.org, tsbogend@alpha.franken.de, chenhc@lemote.com, paulburton@kernel.org, arnd@arndb.de, natechancellor@gmail.com, ndesaulniers@google.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 2020-08-14 23:51, Rob Herring wrote:
+> On Fri, Aug 14, 2020 at 12:21 PM Marc Zyngier <maz@kernel.org> wrote:
+>> 
+>> Hi all,
+>> 
+>> On 2020-07-28 16:36, Jiaxun Yang wrote:
+>> > So the parser can be used to parse range property of ISA bus.
+>> >
+>> > As they're all using PCI-like method of range property, there is no
+>> > need
+>> > start a new parser.
+>> >
+>> > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+>> > Reviewed-by: Rob Herring <robh@kernel.org>
+>> 
+>> This patch, although it looks correct, breaks the RK3399-based
+>> systems, as they miss the (now required) 'device_type = "pci";'
+>> property.
+> 
+> Required since 1990 something...
 
-Please pull the latest locking/urgent git tree from:
+And yet... The fact that it has been broken from day-1 (3.5 years
+ago) shows how good we are at enforcing those requirements.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2020-08-15
+> 
+>> We can fix the in-tree DT, but that's not really an option
+>> if someone relies on the DT being provided by the firmware
+>> (I for one definitely do).
+> 
+> Perhaps time to pay attention to schema errors:
+> 
+> arch/arm64/boot/dts/rockchip/rk3399-sapphire-excavator.dt.yaml:
+> pcie@f8000000: 'device_type' is a required property
 
-   # HEAD: 405fa8ac89e7aaa87282df659e525992f2639e76 futex: Convert to use the preferred 'fallthrough' macro
+As long as this isn't part of the normal build flow, these errors
+will get ignored. I don't even know how to trigger this validation,
+TBH.
 
-A documentation fix and a 'fallthrough' macro update.
+> (I thought dtc would also catch this, but there we look for
+> device_type and then do PCI checks like node name. I guess we needed
+> to check for either device_type or the node name...)
 
- Thanks,
+That would be much better. At least this *does* run at build time.
 
-	Ingo
+> 
+>> I came up with the following hack, which solves the issue for
+>> me. Definitely not my finest hour, but I really need this box
+>> to keep going. I will post a patch fixing the DT separately.
+>> 
+>> Thanks,
+>> 
+>>          M.
+>> 
+>>  From ceef5fd9c4d2005eb577505c68868ebe527c098f Mon Sep 17 00:00:00 
+>> 2001
+>>  From: Marc Zyngier <maz@kernel.org>
+>> Date: Fri, 14 Aug 2020 19:10:12 +0100
+>> Subject: [PATCH] of: address: Workaround broken DTs missing the
+>> 'device_type =
+>>   "pci"' property
+>> 
+>> Recent changes to the PCI bus parsing made it mandatory for
+>> device trees nodes describing a PCI controller to have the
+>> 'device_type = "pci"' property for the node to be matched.
+>> 
+>> Although this is compliant with the specification, it breaks
+>> existing device-trees that have been working fine for years
+>> (the Rockchip rk3399-based systems being a prime example of
+>> such breakage).
+>> 
+>> In order to paper over the blunder, let's also match nodes
+>> that have the "linux,pci-domain" property, as they are
+>> pretty likely to be PCI nodes. This fixes the issue for
+>> systems such as the above platforms.
+>> 
+>> Fixes: 2f96593ecc37 ("of_address: Add bus type match for pci ranges
+>> parser")
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> ---
+>>   drivers/of/address.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/of/address.c b/drivers/of/address.c
+>> index 590493e04b01..712e03781a2a 100644
+>> --- a/drivers/of/address.c
+>> +++ b/drivers/of/address.c
+>> @@ -134,9 +134,12 @@ static int of_bus_pci_match(struct device_node 
+>> *np)
+>>          * "pciex" is PCI Express
+>>          * "vci" is for the /chaos bridge on 1st-gen PCI powermacs
+>>          * "ht" is hypertransport
+>> +        * "linux,pci-domain" is a workaround for broken device trees
+>> +        * lacking the required "device_type" property.
+> 
+> I would suggest looking for 'pci' or 'pcie' node name instead.
+> 
+> You should remove linux,pci-domain from rk3399 as it is pointless when
+> there's a single PCI host bridge.
 
------------------->
-Huang Shijie (1):
-      Documentation/locking/locktypes: Fix a typo
+Indeed. I was clutching at straws here.
 
-Miaohe Lin (1):
-      futex: Convert to use the preferred 'fallthrough' macro
+> 
+> The other option is fixup the live tree with of_add_property() in the
+> Rockchip PCI driver. Less likely to impact anyone else.
 
+That's actually a much better solution, thanks for pointing this out.
+At least I can shout about broken DTs while fixing it up, and the
+new fix is fairly neat.
 
- Documentation/locking/locktypes.rst | 2 +-
- kernel/futex.c                      | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+I'll post new patches shortly.
 
-diff --git a/Documentation/locking/locktypes.rst b/Documentation/locking/locktypes.rst
-index 1b577a8bf982..4cefed8048ca 100644
---- a/Documentation/locking/locktypes.rst
-+++ b/Documentation/locking/locktypes.rst
-@@ -10,7 +10,7 @@ Introduction
- ============
- 
- The kernel provides a variety of locking primitives which can be divided
--into two categories:
-+into three categories:
- 
-  - Sleeping locks
-  - CPU local locks
-diff --git a/kernel/futex.c b/kernel/futex.c
-index 61e8153e6c76..a5876694a60e 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -3744,12 +3744,12 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
- 	switch (cmd) {
- 	case FUTEX_WAIT:
- 		val3 = FUTEX_BITSET_MATCH_ANY;
--		/* fall through */
-+		fallthrough;
- 	case FUTEX_WAIT_BITSET:
- 		return futex_wait(uaddr, flags, val, timeout, val3);
- 	case FUTEX_WAKE:
- 		val3 = FUTEX_BITSET_MATCH_ANY;
--		/* fall through */
-+		fallthrough;
- 	case FUTEX_WAKE_BITSET:
- 		return futex_wake(uaddr, flags, val, val3);
- 	case FUTEX_REQUEUE:
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
