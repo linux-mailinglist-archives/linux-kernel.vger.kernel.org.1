@@ -2,129 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559CF245384
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F7F2453B9
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729742AbgHOWC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:02:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45614 "EHLO
+        id S1729855AbgHOWEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728733AbgHOVvY (ORCPT
+        with ESMTP id S1728506AbgHOVuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:24 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00833C0F26E0
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:59:42 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id g75so10521161wme.4
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:59:42 -0700 (PDT)
+        Sat, 15 Aug 2020 17:50:55 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C712C0F26E6
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:59:51 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id l2so11052967wrc.7
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:59:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=WLYTnHUA0a2ryAPEW7XzbXrrbhCmTAy9T6kfpCXT3us=;
-        b=pSjpp+w4F4tENaGIN7uPFxmYe3iFUCGBDFHD972AzSRYz7sDTmDJuwmxnY5P11nVC7
-         LgDsjFjsn0AMK2Hd1uoYQfIPKVZmP8UkdJ3GtcRIrHb5Np8Bt2tQGM4dCMDUJNSmYC1x
-         BtsH/Wc5tfVm7lK5FT3scKxRwGW84JjfMlciFjozYV5CueQgWfamu7Kf8ZVoRINHdhjC
-         luvWj6w9u9WyzNqxLr9MiYDn62WbHg8g1Hy/d6J+0Vsc1e3u15N53BpPSBZ++eY6z0Nq
-         8vjvmJNHrk6gLOpqOz+Pn15yWJQtf5kOJKiadGKWlc9bWBX92TpnAEgZMegMkiCzXtjJ
-         9++A==
+        h=from:to:subject:date:message-id:in-reply-to:references;
+        bh=D1qp9Sg5Vz7dxa7BsyonZd3Kc8l+lC9M/3l1Va+2nWM=;
+        b=ewJ3JKHkqTMghk5rkiCzHfQPeZiL5378GCf2e4QX+fdrHf5zqLZay9/iat/Gb0QcPW
+         0IGBiq3pCuwD8TA/vs1MZMKwhaIvtLJffg153Jy2e60LEl8esFycaOsJWqX6BXexbGYC
+         WyfP2vWdWzLPYvz+sDayOp3edkJkzG3Lx7MRa0oDJ3OReBJ9MUf4iZz5AVsHI5dW8q8e
+         s4iunHft6TcjESOL3RnB6wwYyEI76ZQzh0B3CIjL2m18fzBMhObRVu6+W+XMfQ1lSBf7
+         SkIsfOp+g6Xk++GC1d19mvaretDliRqj0K6TDc5X1Dy5h07f2TgmrN5xSGwew3vPTZS1
+         CF0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=WLYTnHUA0a2ryAPEW7XzbXrrbhCmTAy9T6kfpCXT3us=;
-        b=kZtn+kvGWDh4TSmiXerKJVPkKV/o+RnPYRnrnaVuU6MgqN9bbOFSYhbQHZu7tbVnPz
-         RN8ybwnlptBshzSFYRUXVQhEXOCWNkYs/xe743ZGIg2/KhK9LxZo9SEvYISii0jKUbkH
-         weia6xuUOt31w4eYD5PbImVfJtyiMJ6PE8t7GENBdPgsoOTA5huPrAsUI8tJ02fbyz6t
-         X5cYEPFLytqkz7sAYJp6EM4THpARDRSLH7PcgaETlkGSGxMF4RKpsJU8t4qvt3zaxEU4
-         fzwtpodvgNCfi4ptWuvmybw97/9EtODe23g87mdfxSXgeyL/PcB9FAlXi6gm6fcyRyhp
-         koyQ==
-X-Gm-Message-State: AOAM531MFzkjW2dkPBSvc4C2JXWi8PbToGuMV4j8y13VO6hDDkVtBVcr
-        RWhJKN8bqf9eERnBReVE4kbofSl+k54=
-X-Google-Smtp-Source: ABdhPJx+/G+yMFKLcKp6RLJpp0veR74FnSRychhVjN3ctz52NJp+5Ft04WSwxH4b38nGV3o4DqnJ0w==
-X-Received: by 2002:a1c:1d52:: with SMTP id d79mr8035088wmd.82.1597514380997;
-        Sat, 15 Aug 2020 10:59:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references;
+        bh=D1qp9Sg5Vz7dxa7BsyonZd3Kc8l+lC9M/3l1Va+2nWM=;
+        b=Lc4UctOHqPLHkV/2YiNJT/brvk0W87vkGUqyxDSZbU2pDGkz+CyqDiwtsFFacC/3ud
+         veaZDU1dCHWEH7B9vCA7aXFwh+gTGOR2kDMQPovl8CFxGGr7A9ZB+7JJJMg/0nhyiUPI
+         /0FUsvTnVt+bRuA8rJS9oD93sOASBWWce0TijWVsM1/lEFvhynP/nlqVzSFzzcCtqKER
+         +o5fT6UG4gpvoTMzvj2P2lPJdgJ6n91IarSVzNZ/oB204SB+eoIZ/b1kwUXBwHmq/TId
+         0MRC0C7zgL3l/cWawcSqnYmKj4qVqwNRoNq2WynrLDzvzHCX3e763eLDbm9JUkIKmUpA
+         JV6w==
+X-Gm-Message-State: AOAM53047ap0DBlB9R8arwsoR2p4c5iBgU3HFxmj6t5AcdKbr0uZSIEA
+        Mcn3wqZOoeUTW5HLRqC+5zZuhK4I5Hg=
+X-Google-Smtp-Source: ABdhPJxAsJDNrK39Otc1xbssnuz3FFHo2LdOIqBaRvmTsBRkRX2si2FaB1F6EwWuqyWIgM6PmCzQbw==
+X-Received: by 2002:a5d:5446:: with SMTP id w6mr7600511wrv.127.1597514390069;
+        Sat, 15 Aug 2020 10:59:50 -0700 (PDT)
 Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id e5sm24460775wrc.37.2020.08.15.10.59.39
+        by smtp.gmail.com with ESMTPSA id e5sm24460775wrc.37.2020.08.15.10.59.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 10:59:39 -0700 (PDT)
+        Sat, 15 Aug 2020 10:59:48 -0700 (PDT)
 From:   Oded Gabbay <oded.gabbay@gmail.com>
 To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Subject: [PATCH 1/9] habanalabs: change CB's ID to be 64 bits
-Date:   Sat, 15 Aug 2020 20:59:30 +0300
-Message-Id: <20200815175938.16619-1-oded.gabbay@gmail.com>
+Subject: [PATCH 7/9] habanalabs: check TPC vector pipe is empty
+Date:   Sat, 15 Aug 2020 20:59:36 +0300
+Message-Id: <20200815175938.16619-7-oded.gabbay@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200815175938.16619-1-oded.gabbay@gmail.com>
+References: <20200815175938.16619-1-oded.gabbay@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although the possible values for CB's ID are only 32 bits, there are a few
-places in the code where this field is shifted and passed into a function
-which expects 64 bits.
+The driver waits for the TPC vector pipe to be empty before checking if the
+TPC kernel has finished executing, but the code doesn't validate that the
+pipe was indeed empty, it just wait for it without checking the return
+value.
 
 Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 ---
- drivers/misc/habanalabs/common/command_buffer.c | 2 +-
- drivers/misc/habanalabs/common/debugfs.c        | 2 +-
- drivers/misc/habanalabs/common/habanalabs.h     | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/misc/habanalabs/gaudi/gaudi.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/misc/habanalabs/common/command_buffer.c b/drivers/misc/habanalabs/common/command_buffer.c
-index 7c38c4f7f9c0..33aee64f37aa 100644
---- a/drivers/misc/habanalabs/common/command_buffer.c
-+++ b/drivers/misc/habanalabs/common/command_buffer.c
-@@ -173,7 +173,7 @@ int hl_cb_create(struct hl_device *hdev, struct hl_cb_mgr *mgr,
- 		goto release_cb;
- 	}
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index ffd0849e8f2d..3360c3c207a9 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -6262,6 +6262,15 @@ static int gaudi_run_tpc_kernel(struct hl_device *hdev, u64 tpc_kernel,
+ 		1000,
+ 		kernel_timeout);
  
--	cb->id = rc;
-+	cb->id = (u64) rc;
- 
- 	kref_init(&cb->refcount);
- 	spin_lock_init(&cb->lock);
-diff --git a/drivers/misc/habanalabs/common/debugfs.c b/drivers/misc/habanalabs/common/debugfs.c
-index c50c6fc9e905..25775b12139b 100644
---- a/drivers/misc/habanalabs/common/debugfs.c
-+++ b/drivers/misc/habanalabs/common/debugfs.c
-@@ -110,7 +110,7 @@ static int command_buffers_show(struct seq_file *s, void *data)
- 			seq_puts(s, "---------------------------------------------------------------\n");
- 		}
- 		seq_printf(s,
--			"   %03d        %d    0x%08x      %d          %d          %d\n",
-+			"   %03llu        %d    0x%08x      %d          %d          %d\n",
- 			cb->id, cb->ctx_id, cb->size,
- 			kref_read(&cb->refcount),
- 			cb->mmap, cb->cs_cnt);
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 52a07c8d7d7c..2decf7be3e08 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -401,11 +401,11 @@ struct hl_cb_mgr {
-  * @lock: spinlock to protect mmap/cs flows.
-  * @debugfs_list: node in debugfs list of command buffers.
-  * @pool_list: node in pool list of command buffers.
-+ * @id: the CB's ID.
-  * @kernel_address: Holds the CB's kernel virtual address.
-  * @bus_address: Holds the CB's DMA address.
-  * @mmap_size: Holds the CB's size that was mmaped.
-  * @size: holds the CB's size.
-- * @id: the CB's ID.
-  * @cs_cnt: holds number of CS that this CB participates in.
-  * @ctx_id: holds the ID of the owner's context.
-  * @mmap: true if the CB is currently mmaped to user.
-@@ -418,11 +418,11 @@ struct hl_cb {
- 	spinlock_t		lock;
- 	struct list_head	debugfs_list;
- 	struct list_head	pool_list;
-+	u64			id;
- 	u64			kernel_address;
- 	dma_addr_t		bus_address;
- 	u32			mmap_size;
- 	u32			size;
--	u32			id;
- 	u32			cs_cnt;
- 	u32			ctx_id;
- 	u8			mmap;
++	if (rc) {
++		dev_err(hdev->dev,
++			"Timeout while waiting for TPC%d vector pipe\n",
++			tpc_id);
++		hdev->asic_funcs->set_clock_gating(hdev);
++		mutex_unlock(&gaudi->clk_gate_mutex);
++		return -EIO;
++	}
++
+ 	rc = hl_poll_timeout(
+ 		hdev,
+ 		mmTPC0_CFG_WQ_INFLIGHT_CNTR + offset,
 -- 
 2.17.1
 
