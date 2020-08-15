@@ -2,125 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AC6245408
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7781B24542A
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730036AbgHOWLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:11:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41804 "EHLO mail.kernel.org"
+        id S1730126AbgHOWNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:13:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36294 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729348AbgHOWKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:10:30 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A37A623119;
-        Sat, 15 Aug 2020 11:28:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597490898;
-        bh=KfGt975NPBEP9wsbMKWVgCVnQOPVZ544VGJDmCxaib4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=N01FrX8JngsFPU42Abd/sTqdyZS1vJooKBnO6OS702Vcy2BhzsScOlw2LGBOpxcsK
-         r0ofxwr3qY2HR2PXlHyxoBEIm7y7t3fLl5+EGO2g3pbT8kyR4slibjMT1nMT1svCqo
-         MsYCDE03sR7lCMjeSIKKPuueBKk5zrfBMtEeLO6M=
-Date:   Sat, 15 Aug 2020 20:28:15 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH] bootconfig: Fix off-by-one in
- xbc_node_compose_key_after()
-Message-Id: <20200815202815.27cd58b6491028e4a3f3f540@kernel.org>
-In-Reply-To: <20200813230406.2e3b9246@oasis.local.home>
-References: <20200813183050.029a6003@oasis.local.home>
-        <20200813193818.a44ea9afc447f57d470b2def@linux-foundation.org>
-        <20200813230406.2e3b9246@oasis.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1728486AbgHOWNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:13:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 40F9AAD4B;
+        Sat, 15 Aug 2020 12:43:26 +0000 (UTC)
+From:   colyli@suse.de
+To:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Coly Li <colyli@suse.de>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Jan Kara <jack@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Vlastimil Babka <vbabka@suse.com>
+Subject: [PATCH v4 1/3] net: introduce helper sendpage_ok() in include/linux/net.h
+Date:   Sat, 15 Aug 2020 20:42:52 +0800
+Message-Id: <20200815124254.115076-1-colyli@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Aug 2020 23:04:06 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+From: Coly Li <colyli@suse.de>
 
-> On Thu, 13 Aug 2020 19:38:18 -0700
-> Andrew Morton <akpm@linux-foundation.org> wrote:
-> 
-> > On Thu, 13 Aug 2020 18:30:50 -0400 Steven Rostedt <rostedt@goodmis.org> wrote:
-> > 
-> > > From: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > > 
-> > > While reviewing some patches for bootconfig, I noticed the following
-> > > code in xbc_node_compose_key_after():
-> > > 
-> > > 	ret = snprintf(buf, size, "%s%s", xbc_node_get_data(node),
-> > > 		       depth ? "." : "");
-> > > 	if (ret < 0)
-> > > 		return ret;
-> > > 	if (ret > size) {
-> > > 		size = 0;
-> > > 	} else {
-> > > 		size -= ret;
-> > > 		buf += ret;
-> > > 	}
-> > > 
-> > > But snprintf() returns the number of bytes that would be written, not
-> > > the number of bytes that are written (ignoring the nul terminator).
-> > > This means that if the number of non null bytes written were to equal
-> > > size, then the nul byte, which snprintf() always adds, will overwrite
-> > > that last byte.
-> > > 
-> > > 	ret = snprintf(buf, 5, "hello");
-> > > 	printf("buf = '%s'\n", buf);
-> > > 	printf("ret = %d\n", ret);
-> > > 
-> > > produces:
-> > > 
-> > > 	buf = 'hell'
-> > > 	ret = 5
-> > > 
-> > > The string was truncated without ret being greater than 5.
-> > > Test (ret >= size) for overwrite.  
-> > 
-> > What are the end-user visible effects of the bug?  IOW, why cc:stable?
-> > 
-> 
-> Hmm, looking at it at a wider view, it may not be an issue. The tools
-> code calls this code, and I looked to see if it was possible to corrupt
-> the buffer by an incorrect size. But now that I'm looking at the else
-> part of the section, it may not be a problem as it may act the same.
-> 
-> That is, ret == size will make size = 0 with the size -= ret, and we
-> get the same result.
-> 
-> OK, you can drop the patch. Thanks for the review!
+The original problem was from nvme-over-tcp code, who mistakenly uses
+kernel_sendpage() to send pages allocated by __get_free_pages() without
+__GFP_COMP flag. Such pages don't have refcount (page_count is 0) on
+tail pages, sending them by kernel_sendpage() may trigger a kernel panic
+from a corrupted kernel heap, because these pages are incorrectly freed
+in network stack as page_count 0 pages.
 
-Thanks Andrew, you're right. If size == ret, then size -= ret makes
- size = 0 and after that, the loop doesn't change the size. 
+This patch introduces a helper sendpage_ok(), it returns true if the
+checking page,
+- is not slab page: PageSlab(page) is false.
+- has page refcount: page_count(page) is not zero
 
-> 
-> Although, there's no error message if the buffer is not big enough to
-> hold the fields.
-> 
-> Masami?
+All drivers who want to send page to remote end by kernel_sendpage()
+may use this helper to check whether the page is OK. If the helper does
+not return true, the driver should try other non sendpage method (e.g.
+sock_no_sendpage()) to handle the page.
 
-Ah, I think we need a patch to fix a comment of the function. It says
+Signed-off-by: Coly Li <colyli@suse.de>
+Cc: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Hannes Reinecke <hare@suse.de>
+Cc: Jan Kara <jack@suse.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>
+Cc: Philipp Reisner <philipp.reisner@linbit.com>
+Cc: Sagi Grimberg <sagi@grimberg.me>
+Cc: Vlastimil Babka <vbabka@suse.com>
+Cc: stable@vger.kernel.org
+---
+Changelog:
+v4, change sendpage_ok() as an inline helper, and post it as
+    separate patch.
+v3, introduce a more common sendpage_ok()
+v2, fix typo in patch subject
+v1, the initial version.
+ include/linux/net.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
- * Returns the total length of the key stored in @buf.
-
-But this must be
-
-  * Returns the total bytes of the key which would be written.
-
-As similar to the snprintf(), so that the user can compare the result
-with the given buffer size.
-
-Thank you,
-
+diff --git a/include/linux/net.h b/include/linux/net.h
+index d48ff1180879..97e8f1a8a427 100644
+--- a/include/linux/net.h
++++ b/include/linux/net.h
+@@ -286,6 +286,21 @@ do {									\
+ #define net_get_random_once_wait(buf, nbytes)			\
+ 	get_random_once_wait((buf), (nbytes))
+ 
++/*
++ * E.g. XFS meta- & log-data is in slab pages, or bcache meta
++ * data pages, or other high order pages allocated by
++ * __get_free_pages() without __GFP_COMP, which have a page_count
++ * of 0 and/or have PageSlab() set. We cannot use send_page for
++ * those, as that does get_page(); put_page(); and would cause
++ * either a VM_BUG directly, or __page_cache_release a page that
++ * would actually still be referenced by someone, leading to some
++ * obscure delayed Oops somewhere else.
++ */
++static inline bool sendpage_ok(struct page *page)
++{
++	return  (!PageSlab(page) && page_count(page) >= 1);
++}
++
+ int kernel_sendmsg(struct socket *sock, struct msghdr *msg, struct kvec *vec,
+ 		   size_t num, size_t len);
+ int kernel_sendmsg_locked(struct sock *sk, struct msghdr *msg,
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.26.2
+
