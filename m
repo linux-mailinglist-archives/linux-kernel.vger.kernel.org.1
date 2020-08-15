@@ -2,141 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BAC24528B
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8A1245292
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729179AbgHOVwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:52:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
+        id S1729211AbgHOVxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729109AbgHOVwe (ORCPT
+        with ESMTP id S1729160AbgHOVwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:34 -0400
-Received: from mail-il1-x147.google.com (mail-il1-x147.google.com [IPv6:2607:f8b0:4864:20::147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580DEC0F26EB
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:09:20 -0700 (PDT)
-Received: by mail-il1-x147.google.com with SMTP id e12so8853831ile.14
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:09:20 -0700 (PDT)
+        Sat, 15 Aug 2020 17:52:43 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECEEC0F26EF;
+        Sat, 15 Aug 2020 11:14:18 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id w17so9177833edt.8;
+        Sat, 15 Aug 2020 11:14:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uINicZ+DHLLF2gMCG0S676L3/FxAXJzjhmV0ZOtqSWw=;
+        b=Gdr6dMreL94m8umOuQw9Gnk6ALyI4bOz2J1jkX35OCYz3vZKzzenUPY7Ou4pt7B8ef
+         YJsst3uPEBlvpkwDPyewbZgJgOjgiNwSsczgytdaT+7aoMkT41HAqp+y/SVjxqTuRE0K
+         w2TcKieWe9IP4o56pK8MOrDoPjfJdTjQtaivDkmWUJGgNvm0ieiOkqHu6StyMDfph4qN
+         xpF8wCfpRrbEf5ADtrMk6uvpQsPpO2jlcaUdvc4fRSxf2A3KkfZICjMcQYaL5SYfqSsq
+         ZDtY2tMvamx8CHjoldemO2Qx+I3oPj8zYp0ulm/kGNiz+45hySJIQTTeji3rPUIAUdo/
+         r05A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=unqY6YUA6dN15yzdjEHwLUsw603J7sn/Dlnt+ztMhZk=;
-        b=QxBxNxQ3RZGbWkGX6PFQVliJC4Gs/78cJ0bptxm/KqjAgRQGrcslww9vrozK7RAyLV
-         n5LkJ8zjPjfRDzq1LaDPPA8aM0qr3UbUc7ZqNBNF3JipyVdbvbMP0NWDhaQAapKW2bHW
-         HETMsiqJG4pap+Osm0k2oHDAB2pBQO089JBa/2R7Pm1ZSzwlLxjagGoZL+Y0N/4Gi+2T
-         hEaX5s9snTkkPuo2ICdhaDY0R9sa0S0Of9q9g+iwvaZ9p8GEwvQgQZaJ/VU8hdKbhuhf
-         KmZWvwihMr2+NRE0MXkqumUQwamtR1aMqmJb7nVXEZISw4lAW1A2wwkjt7OydopXUuTH
-         tKNQ==
-X-Gm-Message-State: AOAM531tgAedyUJHK4yKaVyUjFymKBuaxYYsT2hJRqMj33/Cv5QirlxW
-        FfK10f9FFJEV1xh//2tnJrZ8pQDbKnj9HAra5kDBmzp0WYmv
-X-Google-Smtp-Source: ABdhPJyo0N5X3Rr63x6KSCF9oemLGrgNQNTncv3rJKuvDN2i4ehbpeDid+q3ScpJ7466Pv+uSxM9s3V5J1KUjpfsGtCJJtdgE45x
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uINicZ+DHLLF2gMCG0S676L3/FxAXJzjhmV0ZOtqSWw=;
+        b=Az7zTCM8OdH5h+J79ksAyUfw1C6mQkKyx+SlJbKnbH0cgxNMEFZAB229dTOM+8f3t6
+         QbezhudbIY5J/JuOYSTf43wE/MCJmiwIQDxvOeuScxPwPav6wZsMeYvj3bWD/eYh9kSz
+         6Y9bIRKE3Zbh6PIhpe3o8efm54F1+uM3/EoEWnqym/drm6UMrgdMTMN6xH9g0sII9mQ/
+         uBg7ZcCFHLq7MIcnWQIOmqnByndo6ZFvgED1/u5E+cFuY47BxLBLTSNUjLrnNQx0NMvo
+         IOxOpp+C2fL/LTSXHUHzaZvrqEGrVspjZ/rgnBwfSaBK2fHkM+lingMn+Xo9V9nHPe45
+         NcqQ==
+X-Gm-Message-State: AOAM532JlT0yrTvbYizwv2m0u23R37susDScHf9MUuUtCdvgGDGUdpHa
+        3majkpuTt6soIOEzVKYUV4Q=
+X-Google-Smtp-Source: ABdhPJwUM4wX2FiiLD7s/Ocw/648bw8oWRk3tLISpQebRyQQAOcj3KJ3d7OnMxtmXJxUG4ZpOd+/8w==
+X-Received: by 2002:aa7:de13:: with SMTP id h19mr7587769edv.322.1597515257318;
+        Sat, 15 Aug 2020 11:14:17 -0700 (PDT)
+Received: from localhost.localdomain (p200300f1371a97000000000000000fcc.dip0.t-ipconnect.de. [2003:f1:371a:9700::fcc])
+        by smtp.googlemail.com with ESMTPSA id u13sm10353549eje.9.2020.08.15.11.14.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Aug 2020 11:14:16 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     jic23@kernel.org, lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+Cc:     knaack.h@gmx.de, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH for-5.9] iio: adc: meson-saradc: Use the parent device to look up the calib data
+Date:   Sat, 15 Aug 2020 20:13:55 +0200
+Message-Id: <20200815181355.407034-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:bf0c:: with SMTP id z12mr7149150ilh.151.1597514957600;
- Sat, 15 Aug 2020 11:09:17 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 11:09:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000923cee05acee6f61@google.com>
-Subject: possible deadlock in io_poll_double_wake
-From:   syzbot <syzbot+0d56cfeec64f045baffc@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On the older-gen 32-bit SoCs the meson-saradc driver is used to read the
+SoC temperature. This requires reading calibration data from the eFuse.
 
-syzbot found the following issue on:
+Looking up the calibration data nvmem-cell requires the OF device_node
+pointer to be available in the struct device which is passed to
+devm_nvmem_cell_get(). This however got lost with commit 8cb631ccbb1952
+("iio: Remove superfluous of_node assignments") from indio_dev->dev. As
+devm_nvmem_cell_get() is called in the initialization phase the
+device_node is not yet available because the NVMEM cell is looked up
+before iio_device_register() is called (which would then set the
+device_node automatically).
+Use the parent device to look up the NVMEM cell instead to fix this
+issue.
 
-HEAD commit:    c9c9735c Merge tag 'scsi-misc' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=127399f6900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=adea84f38e7bc8d
-dashboard link: https://syzkaller.appspot.com/bug?extid=0d56cfeec64f045baffc
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0d56cfeec64f045baffc@syzkaller.appspotmail.com
-
-============================================
-WARNING: possible recursive locking detected
-5.8.0-syzkaller #0 Not tainted
---------------------------------------------
-syz-executor.1/9155 is trying to acquire lock:
-ffff8880a1fcc530 (&tty->write_wait){-.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
-ffff8880a1fcc530 (&tty->write_wait){-.-.}-{2:2}, at: io_poll_double_wake+0x108/0x360 fs/io_uring.c:4599
-
-but task is already holding lock:
-ffff8880a1fcc530 (&tty->write_wait){-.-.}-{2:2}, at: __wake_up_common_lock kernel/sched/wait.c:122 [inline]
-ffff8880a1fcc530 (&tty->write_wait){-.-.}-{2:2}, at: __wake_up+0xb8/0x150 kernel/sched/wait.c:142
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&tty->write_wait);
-  lock(&tty->write_wait);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-4 locks held by syz-executor.1/9155:
- #0: ffff8880a1fcc098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x21/0x70 drivers/tty/tty_ldisc.c:267
- #1: ffff8880a1fcc2e8 (&tty->termios_rwsem){++++}-{3:3}, at: tty_set_termios+0xc5/0x1510 drivers/tty/tty_ioctl.c:328
- #2: ffff8880a1fcc098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref+0x18/0x80 drivers/tty/tty_ldisc.c:288
- #3: ffff8880a1fcc530 (&tty->write_wait){-.-.}-{2:2}, at: __wake_up_common_lock kernel/sched/wait.c:122 [inline]
- #3: ffff8880a1fcc530 (&tty->write_wait){-.-.}-{2:2}, at: __wake_up+0xb8/0x150 kernel/sched/wait.c:142
-
-stack backtrace:
-CPU: 0 PID: 9155 Comm: syz-executor.1 Not tainted 5.8.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1f0/0x31e lib/dump_stack.c:118
- print_deadlock_bug kernel/locking/lockdep.c:2391 [inline]
- check_deadlock kernel/locking/lockdep.c:2432 [inline]
- validate_chain+0x69a4/0x88a0 kernel/locking/lockdep.c:3202
- __lock_acquire+0x1161/0x2ab0 kernel/locking/lockdep.c:4426
- lock_acquire+0x160/0x730 kernel/locking/lockdep.c:5005
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
- spin_lock include/linux/spinlock.h:354 [inline]
- io_poll_double_wake+0x108/0x360 fs/io_uring.c:4599
- __wake_up_common+0x30a/0x4e0 kernel/sched/wait.c:93
- __wake_up_common_lock kernel/sched/wait.c:123 [inline]
- __wake_up+0xd4/0x150 kernel/sched/wait.c:142
- n_tty_set_termios+0xa60/0x1080 drivers/tty/n_tty.c:1874
- tty_set_termios+0xcac/0x1510 drivers/tty/tty_ioctl.c:341
- set_termios+0x4a1/0x580 drivers/tty/tty_ioctl.c:414
- tty_mode_ioctl+0x7b2/0xa80 drivers/tty/tty_ioctl.c:770
- tty_ioctl+0xf81/0x15c0 drivers/tty/tty_io.c:2665
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45d239
-Code: 5d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f063db5fc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000017cc0 RCX: 000000000045d239
-RDX: 0000000020000000 RSI: 0000000000005404 RDI: 0000000000000003
-RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
-R13: 00007ffc7ff6341f R14: 00007f063db609c0 R15: 000000000118cf4c
-
-
+Fixes: 8cb631ccbb1952 ("iio: Remove superfluous of_node assignments")
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/iio/adc/meson_saradc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
+index 93c2252c0b89..1a9189ba69ae 100644
+--- a/drivers/iio/adc/meson_saradc.c
++++ b/drivers/iio/adc/meson_saradc.c
+@@ -707,7 +707,7 @@ static int meson_sar_adc_temp_sensor_init(struct iio_dev *indio_dev)
+ 	size_t read_len;
+ 	int ret;
+ 
+-	temperature_calib = devm_nvmem_cell_get(&indio_dev->dev,
++	temperature_calib = devm_nvmem_cell_get(indio_dev->dev.parent,
+ 						"temperature_calib");
+ 	if (IS_ERR(temperature_calib)) {
+ 		ret = PTR_ERR(temperature_calib);
+-- 
+2.28.0
+
