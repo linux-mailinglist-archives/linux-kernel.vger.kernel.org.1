@@ -2,189 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47D52453DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A80245409
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729990AbgHOWGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728381AbgHOVus (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:50:48 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EAC1C061367;
-        Fri, 14 Aug 2020 19:58:20 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id x6so5226155qvr.8;
-        Fri, 14 Aug 2020 19:58:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/fEGoVdDdtmlO46PesKTLAIEf8IpLdTiSt2G5gOFkkI=;
-        b=ak5n+gjxWktOhaG3EfOxzTfr2MLh+0OTCoxqLg7/D9ChzdjAZqrEtSq9K4E2AXAH4U
-         D8QKIb/Rt40mfh8OGPveRMmHNU05hLmn4D5KsXXJggq5ilU5uCj35Q/oMZOqkXHf5PlL
-         f5Y3FG67UkXHtCDxuxJk3FPnYihj+QpQ9SyOBtGw32hfkBN5GDj7agH2hTRiEvoMrmwv
-         YTUx23aisA3filv2zrS0f5RQtLH9z4JNxlzlAHs+VuPSwvDmAYiq9kNFDNGFe70btUDM
-         BewEQQ96bbfG1KqJtNpNti7aG34/0IhN27l3hg4bEP297lJmCQMsJ5xgWJhOSEVK5z61
-         f4rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/fEGoVdDdtmlO46PesKTLAIEf8IpLdTiSt2G5gOFkkI=;
-        b=NFH8MWkg9qEy3cAkiG9Hq+xVV9nxGN+CJmXp5ocChLUo40FE72ve0kNEqHmB/5pHII
-         eol/5ZbcCcs+COT8n4yiDhDstvdd0oUmZrjPfIn38axrn5u+e9fZst7wPNSS9QzVl+LF
-         t0ztTDwNhCjxqjVVz9sVda5ebBek5QyxbF4z3lEYdsvRUl2ppU4V0HtO5biN8mXHzugP
-         zcnSh1Vavd8hn5ZdhsMnqDgVPY3OFUywcqt9rumZDeXdQ8WrUhQDnCthPz2TK9YnB7Xz
-         IwxnmobUH5bf/DWB/QRgSrZKfKXHwMOQajeob2BAlyKNmvg4162lEz3IH3B1BBpz7315
-         81hg==
-X-Gm-Message-State: AOAM532jjsgCOl9wrHP//sqglJG774SjRz0xVWGiJixudKwUsG4cfl7Y
-        AddV0evK7Ya7oMMPES+wP7Q=
-X-Google-Smtp-Source: ABdhPJz4IJa9DVP0cyngnO8Zo4A7gSjgQXeL4X1dcUNiJlQGPfPvHSbi8Jgcd36sVDStuI+OMkHi3g==
-X-Received: by 2002:a05:6214:1742:: with SMTP id dc2mr5652005qvb.90.1597460299518;
-        Fri, 14 Aug 2020 19:58:19 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id c33sm12431516qtk.40.2020.08.14.19.58.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 19:58:18 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Fri, 14 Aug 2020 22:58:16 -0400
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        =?utf-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>, stable@vger.kernel.org,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2] lib/string.c: implement stpcpy
-Message-ID: <20200815025816.GA221583@rani.riverdale.lan>
-References: <20200815014006.GB99152@rani.riverdale.lan>
- <20200815020946.1538085-1-ndesaulniers@google.com>
+        id S1730044AbgHOWLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:11:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729320AbgHOWKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:10:30 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B17F922D2A;
+        Sat, 15 Aug 2020 03:01:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597460508;
+        bh=VjSy88OZdK0t+zkVLUWmLUAMv7a0kHRUqImAjbyrFIY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=SB+4IgrRRU3ZgH0KJxwNukOvD9EdB5xiOV8AHeyhZwJjn5VwTzQ6xt4TbTRgLk8sg
+         UDYYv29SK5rDcwK0m6VveCuQ0q7Bd2uGZkbFaixF1nuxWF6Y7+I3Hya/4NRTTgF1HY
+         8Pkg5JvbNAm2+Uazhf/YZf5K0ZIahsRly6aoiAjk=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 8823B3522B27; Fri, 14 Aug 2020 20:01:48 -0700 (PDT)
+Date:   Fri, 14 Aug 2020 20:01:48 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200815030148.GX4295@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200814180141.GP4295@paulmck-ThinkPad-P72>
+ <87tux4kefm.fsf@nanos.tec.linutronix.de>
+ <20200814234152.GV4295@paulmck-ThinkPad-P72>
+ <87ft8okabc.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200815020946.1538085-1-ndesaulniers@google.com>
+In-Reply-To: <87ft8okabc.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 07:09:44PM -0700, Nick Desaulniers wrote:
-> LLVM implemented a recent "libcall optimization" that lowers calls to
-> `sprintf(dest, "%s", str)` where the return value is used to
-> `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
-> in parsing format strings.  Calling `sprintf` with overlapping arguments
-> was clarified in ISO C99 and POSIX.1-2001 to be undefined behavior.
+On Sat, Aug 15, 2020 at 02:43:51AM +0200, Thomas Gleixner wrote:
+> Paul,
 > 
-> `stpcpy` is just like `strcpy` except it returns the pointer to the new
-> tail of `dest`. This allows you to chain multiple calls to `stpcpy` in
-> one statement.
+> On Fri, Aug 14 2020 at 16:41, Paul E. McKenney wrote:
+> > On Sat, Aug 15, 2020 at 01:14:53AM +0200, Thomas Gleixner wrote:
+> >> As a matter of fact I assume^Wdeclare that removing struct rcu_head which
+> >> provides a fallback is not an option at all. I know that you want to,
+> >> but it wont work ever. Dream on, but as we agreed on recently there is
+> >> this thing called reality which ruins everything.
+> >
+> > For call_rcu(), agreed.  For kfree_rcu(), we know what the callback is
+> > going to do, plus single-argument kfree_rcu() can only be invoked from
+> > sleepable context.  (If you want to kfree_rcu() from non-sleepable
+> > context, that will cost you an rcu_head in the data structure being
+> > freed.)
 > 
-> `stpcpy` was first standardized in POSIX.1-2008.
+> kfree_rcu() as of today is just a conveniance wrapper around
+> call_rcu(obj, rcu) which can be called from any context and it still
+> takes TWO arguments.
 > 
-> Implement this so that we don't observe linkage failures due to missing
-> symbol definitions for `stpcpy`.
-> 
-> Similar to last year's fire drill with:
-> commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
-> 
-> This optimization was introduced into clang-12.
-> 
-> Cc: stable@vger.kernel.org
-> Link: https://bugs.llvm.org/show_bug.cgi?id=47162
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1126
-> Link: https://man7.org/linux/man-pages/man3/stpcpy.3.html
-> Link: https://pubs.opengroup.org/onlinepubs/9699919799/functions/stpcpy.html
-> Link: https://reviews.llvm.org/D85963
-> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Suggested-by: Joe Perches <joe@perches.com>
-> Reported-by: Sami Tolvanen <samitolvanen@google.com>
-> Tested-by: Sami Tolvanen <samitolvanen@google.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> Changes V2:
-> * Added Sami's Tested by; though the patch changed implementation, the
->   missing symbol at link time was the problem Sami was observing.
-> * Fix __restrict -> __restrict__ typo as per Joe.
-> * Drop note about restrict from commit message as per Arvind.
-> * Fix NULL -> NUL as per Arvind; NUL is ASCII '\0'. TIL
-> * Fix off by one error as per Arvind; I had another off by one error in
->   my test program that was masking this.
-> 
->  include/linux/string.h |  3 +++
->  lib/string.c           | 23 +++++++++++++++++++++++
->  2 files changed, 26 insertions(+)
-> 
-> diff --git a/include/linux/string.h b/include/linux/string.h
-> index b1f3894a0a3e..7686dbca8582 100644
-> --- a/include/linux/string.h
-> +++ b/include/linux/string.h
-> @@ -31,6 +31,9 @@ size_t strlcpy(char *, const char *, size_t);
->  #ifndef __HAVE_ARCH_STRSCPY
->  ssize_t strscpy(char *, const char *, size_t);
->  #endif
-> +#ifndef __HAVE_ARCH_STPCPY
-> +extern char *stpcpy(char *__restrict__, const char *__restrict__);
-> +#endif
->  
->  /* Wraps calls to strscpy()/memset(), no arch specific code required */
->  ssize_t strscpy_pad(char *dest, const char *src, size_t count);
-> diff --git a/lib/string.c b/lib/string.c
-> index 6012c385fb31..68ddbffbbd58 100644
-> --- a/lib/string.c
-> +++ b/lib/string.c
-> @@ -272,6 +272,29 @@ ssize_t strscpy_pad(char *dest, const char *src, size_t count)
->  }
->  EXPORT_SYMBOL(strscpy_pad);
->  
-> +#ifndef __HAVE_ARCH_STPCPY
-> +/**
-> + * stpcpy - copy a string from src to dest returning a pointer to the new end
-> + *          of dest, including src's NUL terminator. May overrun dest.
-> + * @dest: pointer to end of string being copied into. Must be large enough
-> + *        to receive copy.
-> + * @src: pointer to the beginning of string being copied from. Must not overlap
-> + *       dest.
-> + *
-> + * stpcpy differs from strcpy in two key ways:
-> + * 1. inputs must not overlap.
+> Icepack?
 
-Looks like you missed my second email: strcpy also does not allow inputs
-to overlap. Couple typos below.
+Indeed.  Make that not kfree_rcu(), but rather kvfree_rcu(), which is
+in mainline.  :-/
 
-> + * 2. return value is the new NULL terminated character. (for strcpy, the
-				 ^^ NUL terminator.
-> + *    return value is a pointer to src.
-				      ^^ dest.)
-> + */
-> +#undef stpcpy
-> +char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
-> +{
-> +	while ((*dest++ = *src++) != '\0')
-> +		/* nothing */;
-> +	return --dest;
-> +}
-> +#endif
-> +
->  #ifndef __HAVE_ARCH_STRCAT
->  /**
->   * strcat - Append one %NUL-terminated string to another
-> -- 
-> 2.28.0.220.ged08abb693-goog
+> So if you come up with a new kfree_rcu_magic(void *obj) single argument
+> variant which can only be called from sleepable contexts then this does
+> not require any of the raw lock vs. non raw hacks at all because you can
+> simply allocate without holding the raw lock in the rare case that you
+> run out of storage space. With four 4k pages preallocated per CPU that's
+> every 2048 invocations per CPU on 64bit.
 > 
+> So if you run into that situation then you drop the lock and then it's
+> racy because you might be preempted or migrated after dropping the lock
+> and you might have done a useless allocation, but that does not justify
+> having a special allocator just for that? You have an extra page, so
+> what?
+> 
+> To prevent subsequent callers to add to the allocation race you simply
+> can let them wait on the first allocating attempt to finish That avoids
+> more pointless allocations and as a side effect prevents all of them to
+> create more pressure by continuing their open/close loop naturally
+> without extra work.
 
-The kernel-doc comments in string.c currently have a mix of %NUL and
-NUL, but the former seems to be more common. %NUL-terminator appears to
-be the preferred wording.
+Agreed, as I said, it is the double-argument version that is the
+challenge.
+
+> > So if the single-argument kfree_rcu() case gets hit with a
+> > memory-allocation failure, it can fall back to waiting for a grace
+> > period and doing the free.  Of course, grace-period waits have horrible
+> > latency, but under OOM life is hard.  If this becomes a problem in
+> > non-OOM situations due to the lockless caches becoming empty, we will
+> > have to allocate memory if needed before acquiring the lock with the
+> > usual backout logic.  Doing that means that we can let the allocator
+> > acquire locks and maybe even do a little bit of blocking, so that the
+> > inline grace-period-wait would only happen if the system was well and
+> > truly OOMed.
+> 
+> No. It dropped the rcu internal lock and does a regular GFP_KENRNEL
+> allocation which waits for the page to become available. Which is a good
+> thing in the open/close scenario because it throttles the offender.
+
+Understood, especially that last.  But it really doesn't want to be
+waiting in the memory allocator for more than a grace period.  But that
+was hashed out quite some time ago, and there is a combination of GFP_*
+flags that achieves the right balance for the can-sleep situation.
+
+> >> For normal operations a couple of pages which can be preallocated are
+> >> enough. What you are concerned of is the case where you run out of
+> >> pointer storage space.
+> >
+> > Agreed.
+> >
+> >> There are two reasons why that can happen:
+> >> 
+> >>       1) RCU call flooding
+> >>       2) RCU not being able to run and mop up the backlog
+> >> 
+> >> #1 is observable by looking at the remaining storage space and the RCU
+> >>    call frequency
+> >> 
+> >> #2 is uninteresting because it's caused by RCU being stalled / delayed
+> >>    e.g. by a runaway of some sorts or a plain RCU usage bug.
+> >>    
+> >>    Allocating more memory in that case does not solve or improve anything.
+> >
+> > Yes, #2 is instead RCU CPU stall warning territory.
+> >
+> > If this becomes a problem, one approach is to skip the page-of-pointers
+> > allocation if the grace period is more than (say) one second old.  If
+> > the grace period never completes, OOM is unavoidable, but this is a way
+> > of putting it off for a bit.
+> 
+> Don't even think about optimizing your new thing for #2. It's a
+> pointless exercise. If the task which runs into the 'can't allocate'
+> case then is sleeps and waits. End of story.
+
+Agreed, and hence my "If this becomes a problem".  Until such time,
+it is pointless.  For one thing, we don't yet know the failure mode.
+But it has been helpful for me to think a move or two ahead when
+playing against RCU, hence the remainder of my paragraph.
+
+> >> So the interesting case is #1. Which means we need to look at the
+> >> potential sources of the flooding:
+> >> 
+> >>     1) User space via syscalls, e.g. open/close
+> >>     2) Kernel thread
+> >>     3) Softirq
+> >>     4) Device interrupt
+> >>     5) System interrupts, deep atomic context, NMI ...
+> >> 
+> >> #1 trivial fix is to force switching to an high prio thread or a soft
+> >>    interrupt which does the allocation
+> >> 
+> >> #2 Similar to #1 unless that thread loops with interrupts, softirqs or
+> >>    preemption disabled. If that's the case then running out of RCU
+> >>    storage space is the least of your worries.
+> >> 
+> >> #3 Similar to #2. The obvious candidates (e.g. NET) for monopolizing a
+> >>    CPU have loop limits in place already. If there is a bug which fails
+> >>    to care about the limit, why would RCU care and allocate more memory?
+> >> 
+> >> #4 Similar to #3. If the interrupt handler loops forever or if the
+> >>    interrupt is a runaway which prevents task/softirq processing then
+> >>    RCU free performance is the least of your worries.
+> >> 
+> >> #5 Clearly a bug and making RCU accomodate for that is beyond silly.
+> >> 
+> >> So if call_rcu() detects that the remaining storage space for pointers
+> >> goes below the critical point or if it observes high frequency calls
+> >> then it simply should force a soft interrupt which does the allocation.
+> >
+> > Unless call_rcu() has been invoked with scheduler locks held.  But
+> > eventually call_rcu() should be invoked with interrupts enabled, and at
+> > that point it would be safe to raise_softirq(), wake_up(), or
+> > whatever.
+> 
+> If this atomic context corner case is hit within a problematic context
+> then we talk about the RCU of today and not about the future single
+> argument thing. And that oldschool RCU has a fallback. We are talking
+> about pressure corner cases and you really want to squeeze out the last
+> cache miss?  What for? If there is pressure then these cache misses are
+> irrelevant.
+
+Of course.  My point was instead that even this atomic corner case was
+likely to have escape routes in the form of occasional non-atomic calls,
+and that these could do the wakeups.
+
+Again, thank you.
+
+							Thanx, Paul
