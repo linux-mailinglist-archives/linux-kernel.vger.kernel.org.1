@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 178B1245404
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088412453D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729982AbgHOWLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:11:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729480AbgHOWKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:10:31 -0400
-Received: from kernel.org (unknown [104.132.0.74])
+        id S1729920AbgHOWGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:06:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728418AbgHOVuu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:50:50 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89947C03B3CE;
+        Sat, 15 Aug 2020 01:41:07 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1c7a00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f1c:7a00:329c:23ff:fea6:a903])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4896D22EBD;
-        Sat, 15 Aug 2020 08:37:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597480647;
-        bh=Ku0SprNe4DSbL0fK2tkhd+WpmF55XeOtbZCh6UEp9+8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=MfbojFz5eet5HSIuc5i++p49o3r2LZpQ9Ky4vvJrTDQlWVTH9JIFYtNh90GqQ29+h
-         lPChbFEFyjhk7AOzomFtyIr5CLK55PPIRFUm6bCSN4R91sIh1iHoQI1tdUp+ciaK/G
-         16EiYM8TRgNjfIWPzLKmTc/FbjCD98wPyim0X7D4=
-Content-Type: text/plain; charset="utf-8"
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AC2801EC044B;
+        Sat, 15 Aug 2020 10:41:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1597480864;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=CmqbmjtODYtlwRW7qWoQG1WqmoGu1ND+kuU+HHrBwFw=;
+        b=Enkvx3eCIzsidlS3C+nqS52FIeO7ezEcI27HINGWHsC2a3OXUawSC8iEolmV1uC8UL1Q7Q
+        nQchEb0VvZYIAzmKg9Hp5o/sU36IposP4sYm1Ay+AsgnzMWjzQ7W4vL2gG0MRSZmDNmpU8
+        2pPkjh0eUEUPuBB9+hu24EIEq+1WtT0=
+Date:   Sat, 15 Aug 2020 10:41:57 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Alison Wang <alison.wang@nxp.com>,
+        James Morse <james.morse@arm.com>
+Cc:     mchehab@kernel.org, tony.luck@intel.com, rrichter@marvell.com,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] edac: nxp: Add L1 and L2 error detection for A53 and A72
+ cores
+Message-ID: <20200815084157.GC25814@zn.tnic>
+References: <20200709082215.12829-1-alison.wang@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <87pn7w5fd4.fsf@nanos.tec.linutronix.de>
-References: <311159bc826dcca2848344fc277c0069cff0a164.1597207603.git.zhaoqianli@xiaomi.com> <159722125596.33733.17725649536425524344@swboyd.mtv.corp.google.com> <87pn7w5fd4.fsf@nanos.tec.linutronix.de>
-Subject: Re: [RFC V2] kthread: add object debug support
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     john.stultz@linaro.org, ben.dooks@codethink.co.uk,
-        bfields@redhat.com, cl@rock-chips.com,
-        linux-kernel@vger.kernel.org, zhaoqianli@xiaomi.com
-To:     Felix.Kuehling@amd.com, Qianli Zhao <zhaoqianligood@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        akpm@linux-foundation.org, axboe@kernel.dk
-Date:   Sat, 15 Aug 2020 01:37:26 -0700
-Message-ID: <159748064613.2270147.9288160745183605164@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200709082215.12829-1-alison.wang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Thomas Gleixner (2020-08-12 03:27:03)
-> Stephen,
->=20
-> Stephen Boyd <sboyd@kernel.org> writes:
-> > Quoting Qianli Zhao (2020-08-11 22:14:14)
-> >> +/********** kernel/kthread **********/
-> >> +#define KWORK_ENTRY_STATIC     ((void *) 0x600 + POISON_POINTER_DELTA)
-> >
-> > Is this related to the debugobjects change here? It looks like another
-> > version of list poison.
->=20
-> Yes, it is. We use these poison entries to mark statically allocated
-> objects. debug objects does not know about statically initialized
-> objects up to the point where they are used (activated).
->=20
-> That means the object state lookup will fail which causes debugobjects
-> to complain about using an uninitialized object. But in case of static
-> initialized ones that's a false positive. So we mark these objects in
-> their list head (or some other appropriate place) with a poison value
-> and in case of a failed lookup debug object does:
->=20
->         if (descr->is_static_object && descr->is_static_object(addr)) {
->                 /* track this static object */
->                 debug_object_init(addr, descr);
->                 debug_object_activate(addr, descr);
->         }       =20
->=20
-> The object specific is_static_object() callback will then check for the
-> magic list poison value being present:
+On Thu, Jul 09, 2020 at 04:22:15PM +0800, Alison Wang wrote:
+> Add error detection for A53 and A72 cores. Hardware error injection is
+> supported on A53. Software error injection is supported on both.
+> For hardware error injection on A53 to work, proper access to
+> L2ACTLR_EL1, CPUACTLR_EL1 needs to be granted by EL3 firmware. This is
+> done by making an SMC call in the driver. Failure to enable access
+> disables hardware error injection. For error detection to work, another
+> SMC call enables access to L2ECTLR_EL1.
+> 
+> It is for NXP's Layerscape family LS1043A, LS1046A, LS2088A and LX2160A.
+> 
+> Signed-off-by: York Sun <york.sun@nxp.com>
+> Signed-off-by: Alison Wang <alison.wang@nxp.com>
+> ---
+>  .../bindings/edac/cortex-arm64-edac.txt       |  40 +
+>  drivers/edac/Kconfig                          |   7 +
+>  drivers/edac/Makefile                         |   1 +
+>  drivers/edac/cortex_arm64_l1_l2.c             | 738 ++++++++++++++++++
+>  drivers/edac/cortex_arm64_l1_l2.h             |  54 ++
+>  5 files changed, 840 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/edac/cortex-arm64-edac.txt
+>  create mode 100644 drivers/edac/cortex_arm64_l1_l2.c
+>  create mode 100644 drivers/edac/cortex_arm64_l1_l2.h
 
-Thanks! I missed this function below.
+This needs James to have a look at.
 
->=20
-> > +static bool kwork_is_static_object(void *addr)
-> > +{
-> > +     struct kthread_work *kwork =3D addr;
-> > +
-> > +     return (kwork->node.prev =3D=3D NULL &&
-> > +             kwork->node.next =3D=3D KWORK_ENTRY_STATIC);
-> > +}
->=20
-> and if so the debug object core fixes its internal state by creating a
-> tracking object and then activating it.
->=20
-> It's not a perfect "yes this is statically initialized" check but good
-> enough. If you go and do:
->=20
->    work =3D kzalloc(sizeof(*work);
->    work->node.next =3D KWORK_ENTRY_STATIC;
->=20
->    kthread_insert_work(worker, work);
->=20
-> or any other variant of insanity which makes the check claim that this
-> is statically initialized then you rightfully can keep the pieces :)
+Thx.
 
-Makes sense. Maybe this "technique" should be documented in
-Documentation/core-api/debug-objects.rst? I can cook up a patch to add
-is_static_object() to the Fixup functions section.
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
