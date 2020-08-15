@@ -2,132 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0068E245228
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0F2245256
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727003AbgHOVn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:43:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54986 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726596AbgHOVns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:43:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A01C2B17A;
-        Sat, 15 Aug 2020 19:08:09 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5FCC0DA6EF; Sat, 15 Aug 2020 21:06:42 +0200 (CEST)
-Date:   Sat, 15 Aug 2020 21:06:42 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
- Software.
-Message-ID: <20200815190642.GZ2026@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
+        id S1728255AbgHOVqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728105AbgHOVpq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:45:46 -0400
+Received: from relay.felk.cvut.cz (relay.felk.cvut.cz [IPv6:2001:718:2:1611:0:1:0:70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 17473C0045A0;
+        Sat, 15 Aug 2020 12:36:40 -0700 (PDT)
+Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
+        by relay.felk.cvut.cz (8.15.2/8.15.2) with ESMTP id 07FJYSqw067673;
+        Sat, 15 Aug 2020 21:34:28 +0200 (CEST)
+        (envelope-from pisa@cmp.felk.cvut.cz)
+Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
+        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 07FJYSrC032346;
+        Sat, 15 Aug 2020 21:34:28 +0200
+Received: (from pisa@localhost)
+        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 07FJYRmV032345;
+        Sat, 15 Aug 2020 21:34:27 +0200
+From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
+To:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        "Marc Kleine-Budde" <mkl@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        David Miller <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>, mark.rutland@arm.com,
+        Carsten Emde <c.emde@osadl.org>, armbru@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Marin Jerabek <martin.jerabek01@gmail.com>,
+        Ondrej Ille <ondrej.ille@gmail.com>,
+        Jiri Novak <jnovak@fel.cvut.cz>,
+        Jaroslav Beran <jara.beran@gmail.com>,
+        Petr Porazil <porazil@pikron.com>,
+        Pavel Pisa <ppisa@pikron.com>
+Subject: [PATCH v5 0/6] CTU CAN FD open-source IP core SocketCAN driver, PCI, platform integration and documentation
+Date:   Sat, 15 Aug 2020 21:33:28 +0200
+Message-Id: <cover.1597518433.git.ppisa@pikron.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-FELK-MailScanner-Information: 
+X-MailScanner-ID: 07FJYSqw067673
+X-FELK-MailScanner: Found to be clean
+X-FELK-MailScanner-SpamCheck: not spam, SpamAssassin (not cached,
+        score=-0.497, required 6, autolearn=not spam, BAYES_00 -0.50,
+        KHOP_HELO_FCRDNS 0.00, SPF_HELO_NONE 0.00, SPF_NONE 0.00)
+X-FELK-MailScanner-From: pisa@cmp.felk.cvut.cz
+X-FELK-MailScanner-Watermark: 1598124869.79909@3Roq+TfEvdk0QgMZURx0pw
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 12:29:01PM +0000, Konstantin Komarov wrote:
-> This patch adds NTFS Read-Write driver to fs/ntfs3.
-> 
-> Having decades of expertise in commercial file systems development and huge
-> test coverage, we at Paragon Software GmbH want to make our contribution to
-> the Open Source Community by providing implementation of NTFS Read-Write
-> driver for the Linux Kernel.
-> 
-> This is fully functional NTFS Read-Write driver. Current version works with
-> NTFS(including v3.1) normal/compressed/sparse files and supports journal replaying.
-> 
-> We plan to support this version after the codebase once merged, and add new
-> features and fix bugs. For example, full journaling support over JBD will be
-> added in later updates.
-> 
-> The patch is too big to handle it within an e-mail body, so it is available to download 
-> on our server: https://dl.paragon-software.com/ntfs3/ntfs3.patch
+From: Pavel Pisa <ppisa@pikron.com>
 
-The way you submit the driver does not meet significant number of
-requirements documented in https://www.kernel.org/doc/html/latest/process/submitting-patches.html .
-so this may lead to ignoring the patch as this puts the burden on the
-kernel community to make the merge somehow happen. I don't see kernel
-involvement from Paragon, so let me build our half of the bridge.
+This driver adds support for the CTU CAN FD open-source IP core.
+More documentation and core sources at project page
+(https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core).
+The core integration to Xilinx Zynq system as platform driver
+is available (https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top).
+Implementation on Intel FPGA based PCI Express board is available
+from project (https://gitlab.fel.cvut.cz/canbus/pcie-ctu_can_fd).
+The CTU CAN FD core emulation send for review for QEMU mainline.
+Development repository for QEMU emulation - ctu-canfd branch of
+  https://gitlab.fel.cvut.cz/canbus/qemu-canbus
 
-As I reckon, there is interest to have NTFS implementation that's better
-than the existing FUSE based support by NTFS-3G (namely performance), so
-let me propose something that might lead to merging the patch
-eventually.
+More about CAN bus related projects used and developed at CTU FEE
+on the guidepost page http://canbus.pages.fel.cvut.cz/ .
 
-1. check existing support in kernel
+Martin Jerabek (1):
+  can: ctucanfd: add support for CTU CAN FD open-source IP core - bus
+    independent part.
 
-There is fs/ntfs with read-only support from Tuxera, last change in the
-git tree is 3 years ago. The driver lacks read-write support so there's
-not 100% functionality duplication but there's still driver for the same
-filesystem.
+Pavel Pisa (5):
+  dt-bindings: vendor-prefix: add prefix for the Czech Technical
+    University in Prague.
+  dt-bindings: net: can: binding for CTU CAN FD open-source IP core.
+  can: ctucanfd: CTU CAN FD open-source IP core - PCI bus support.
+  can: ctucanfd: CTU CAN FD open-source IP core - platform/SoC support.
+  docs: ctucanfd: CTU CAN FD open-source IP core documentation.
 
-I don't know what's the feature parity, how much the in-kernel driver is
-used (or what are business relations of Tuxera and Paragon), compared to
-the FUSE-based driver, but ideally there's just one NTFS driver in linux
-kernel.
+The version 5 changes:
+  - sent at 2020-08-15
+  - correct Kconfig formatting according to Randy Dunlap
+  - silence warnings reported by make W=1 C=1 flags.
+    Changes suggested by Jakub Kicinski
+  - big thanks for core patch review by Pavel Machek
+    resulting in more readability and formating updates
+  - fix power management errors found by Pavel Machek
+  - removed comments from d-t bindings as suggested by Rob Herring
+  - selected ctu,ctucanfd-2 as alternative name to ctu,ctucanfd
+    which allows to bind to actual major HDL core sources version 2.x
+    if for some reason driver adaptation would not work on version
+    read from the core
+  - line length limit relaxed to 100 characters on some cases
+    where it helps to readability
 
-The question I'd ask:
+The version 4 changes:
+  - sent at 2020-08-04
+  - changes summary, 169 non-merge commits, 6 driver,
+    32 IP core sources enhancements and fixes, 58 tests
+    in master and about additional 30 iso-testbench
+    preparation branch.
+  - convert device-tree binding documentation to YAML
+  - QEMU model of CTU CAN FD IP core and generic extension
+    of QEMU CAN bus emulation developed by Jan Charvat.
+  - driver tested on QEMU emulated Malta big-endian MIPS
+    platform and big endian-support fixed.
+  - checkpatch from 5.4 kernel used to cleanup driver formatting
+  - header files generated from IP core IP-Xact description
+    updated to include protocol exception (pex) field.
+    Mechanism to set it from the driver is not provided yet.
 
-- what are users of current fs/ntfs driver going to lose, if the driver
-  is going to be completely replaced by your driver
+The version 3 changes:
+  - sent at 2019-12-21
+  - adapts device tree bindings documentation according to
+    Rob Herring suggestions.
+  - the driver has been separated to individual modules for core support,
+    PCI bus integration and platform, SoC integration.
+  - the FPGA design has been cleaned up and CAN protocol FSM redesigned
+    by Ondrej Ille (the core redesign has been reason to pause attempts to driver
+    submission)
+  - the work from February 2019 on core, test framework and driver
+    1601 commits in total, 436 commits in the core sources, 144 commits
+    in the driver, 151 documentation, 502 in tests.
+  - not all continuous integration tests updated for latest design version yet
+    https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core/pipelines
+  - Zynq hardware in the loop test show no issues for after driver PCI and platform
+    separation and latest VHDL sources updates.
+  - driver code has been periodically tested on 4.18.5-rt3 and 4.19 long term
+    stable kernels.
+  - test of the patches before submission is run on 5.4 kernel
+  - the core has been integrated by Jaroslav Beran <jara.beran@gmail.com>
+    into Intel FPGA based SoC used in the tester developed for Skoda auto
+    at Department of Measurement, Faculty of Electrical Engineering,
+    Czech Technical University https://meas.fel.cvut.cz/ . He has contributed
+    feedback and fixes to the project.
 
-  If the answer is 'nothing' then, the straightfowrad plan is to just
-  replace it. Otherwise, we'll have to figure that out.
+The version 2 sent at 2019-02-27
 
-2. split the patch
+The version 1 sent at 2019-02-22
 
-One patch of 27k lines of code is way too much to anybody to look at.
+Ondrej Ille has prepared the CTU CAN IP Core sources for new release.
+We are waiting with it for the driver review, our intention
+is to release IP when driver is reviewed and mainlined.
 
-As an example, what worked for the recent EXFAT support, send each new
-file as a patch.  This will pass the mailinglist size filters and keep
-the patches logically separated, so eg. there are smaller patches
-implementing interaction with VFS (on the inode or directory level) and
-leaving out the other internal stuff of the filesystem.
+DKMS CTU CAN FD driver build by OpenBuildService to ease integration
+into Debian systems when driver is not provided by the distribution
 
-I'm counting about 20 files, that's acceptable. The last patch, or maybe
-a separate patch, adds the actual build and config-time support.
+https://build.opensuse.org/package/show/home:ppisa/ctu_can_fd
 
-The situation is a bit more complicated as there's an existing driver
-and I don't see a clear way how to do the transition from 2
-implementations (one intermediate) to just one in the final state. We
-have that already with the old VFAT and new EXFAT drivers, and it's
-solved on the module level. Just one can be loaded (AFAIK). The same
-could be done here but it puts some burden on users to know what driver
-to load to get the expected set of features.
+Jan Charvat <charvj10@fel.cvut.cz> finished work to extend already
+mainlined QEMU SJA1000 and SocketCAN support to provide even CAN FD
+support and CTU CAN FD core support.
 
-3. determine support status
+  https://gitlab.fel.cvut.cz/canbus/qemu-canbus/-/tree/ctu-canfd
 
-You state intentions to work on the driver and there's a new entry in
-MAINTAINERS file with 'Supported', so that's a good sign that it's not
-just one-time dump of code. Fixing bugs or adding functionality is
-expected.
+The patches has been sent for review to QEMU mainlining list.
 
-4. development git tree
+Thanks in advance to all who help us to deliver the project into public.
 
-Once the filesystem is merged, you'd be getting mails from people
-running eg. static checkers, build tests, sending cleanups or other
-tree-wide changes.  The entry in MAINTAINER file does not point to any
-git tree, so that's not clear to me what's the expected way to get the
-fixes to Linus' tree or where are people supposed to look for 'is this
-fixed already'.
+Thanks to all colleagues, reviewers and other providing feedback,
+infrastructure and enthusiasm and motivation for open-source work.
 
-There's maybe more I missed, but hopefully HTH.
-d.
+Build infrastructure and hardware is provided by
+  Department of Control Engineering,
+  Faculty of Electrical Engineering,
+  Czech Technical University in Prague
+  https://dce.fel.cvut.cz/en
+
+ .../bindings/net/can/ctu,ctucanfd.yaml        |   63 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ .../ctu/FSM_TXT_Buffer_user.png               |  Bin 0 -> 174807 bytes
+ .../device_drivers/ctu/ctucanfd-driver.rst    |  634 ++++++++++
+ drivers/net/can/Kconfig                       |    1 +
+ drivers/net/can/Makefile                      |    1 +
+ drivers/net/can/ctucanfd/Kconfig              |   35 +
+ drivers/net/can/ctucanfd/Makefile             |   13 +
+ drivers/net/can/ctucanfd/ctu_can_fd.c         | 1105 +++++++++++++++++
+ drivers/net/can/ctucanfd/ctu_can_fd.h         |   87 ++
+ drivers/net/can/ctucanfd/ctu_can_fd_frame.h   |  189 +++
+ drivers/net/can/ctucanfd/ctu_can_fd_hw.c      |  790 ++++++++++++
+ drivers/net/can/ctucanfd/ctu_can_fd_hw.h      |  916 ++++++++++++++
+ drivers/net/can/ctucanfd/ctu_can_fd_pci.c     |  314 +++++
+ .../net/can/ctucanfd/ctu_can_fd_platform.c    |  142 +++
+ drivers/net/can/ctucanfd/ctu_can_fd_regs.h    |  971 +++++++++++++++
+ 16 files changed, 5263 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
+ create mode 100644 Documentation/networking/device_drivers/ctu/FSM_TXT_Buffer_user.png
+ create mode 100644 Documentation/networking/device_drivers/ctu/ctucanfd-driver.rst
+ create mode 100644 drivers/net/can/ctucanfd/Kconfig
+ create mode 100644 drivers/net/can/ctucanfd/Makefile
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd.c
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd.h
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd_frame.h
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd_hw.c
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd_hw.h
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd_pci.c
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd_platform.c
+ create mode 100644 drivers/net/can/ctucanfd/ctu_can_fd_regs.h
+
+-- 
+2.20.1
+
