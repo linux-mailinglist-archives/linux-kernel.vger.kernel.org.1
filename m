@@ -2,130 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50094245394
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AC6245408
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729778AbgHOWD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728678AbgHOVvL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:11 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2351DC02B8DE;
-        Sat, 15 Aug 2020 04:24:48 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id m22so12532900eje.10;
-        Sat, 15 Aug 2020 04:24:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=vsYRcSKJo5heCkEhByxTesr3qnuVqbFBvI7V/761LSM=;
-        b=RcfBisNl6UXEMchW7A5g1HzcineDtMdGJxg8pSBUgnHND0LmggU7y/FoNRZZeVV6LN
-         kNoLIXGm2vsaptDdsioIb7Q1olsgv5yc9DZ7ZGWYs84pZGUEaSrkLHHsauzmBWiliNLJ
-         80chWYLTncWt/Jn7133ZQq7xz08lJlaVVQg+nbfazl1Bn44rEMsKTlSa9ycZI25VWsv4
-         3tKh/FXwvsoemyuyw7up/EWnbpZvXB84YUjxwzz5HccfgU5N+sgEKI25flqUq8EgAKmH
-         Ot8Ll9fuLtHmGErjcgq0T57ZyaLQZta4Af5awtIVFZs5UMtVIg5YEQBNcaGl3mzJNPTP
-         4uHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=vsYRcSKJo5heCkEhByxTesr3qnuVqbFBvI7V/761LSM=;
-        b=AegSicRr+MwK7FTSe/hOJYPJHoXzsRdHLaeTJlE1BxS6hpDzRKPHYwS/ClRuPuaImY
-         XB5oJeJn4j/7OMBEAhWYB+oXJlB5pmJWqVUYONK78w1vq5fjguu6Eu5Gz1Wlkr60LdaR
-         je3j7G1Lgnyt2WYvUSZ9Ebf9uxs9Hbkq7Dla7iqGJhvcIaiFPBFu1utZ2FjVPDlnFX5u
-         2mUNbFCnXZE+gWa1la53gv8yjoqU6ZSjvfMyiD1K1LorPBeBl76s9eDumSN+5B4QJaln
-         t40z4eQMig0BvF0sfSs3QF4Uv5LyZdGT5l4tX+x9YxRN4tlotDExYm4E727bXaFTKUaM
-         E4sQ==
-X-Gm-Message-State: AOAM533mHRsHzGSh2K4CmO48DD+o27/Lu6/T/tGk8wvbd4Uf7aItzWzw
-        mPJA/88nm1FCSsbni4fi5v0=
-X-Google-Smtp-Source: ABdhPJyxOEsEOhMyUIA4+Iz32TqEEjVTsSegFwkW+dd6LEVTbpRkB7b+vARNNelBhUeQw25VyZM0Rg==
-X-Received: by 2002:a17:906:dd5:: with SMTP id p21mr6862906eji.416.1597490686713;
-        Sat, 15 Aug 2020 04:24:46 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id g19sm9106505ejz.5.2020.08.15.04.24.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 15 Aug 2020 04:24:46 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        sugar.zhang@rock-chips.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1 2/2] arm64: dts: rockchip: change fallback string rockchip,rk3308-spdif
-Date:   Sat, 15 Aug 2020 13:24:37 +0200
-Message-Id: <20200815112437.6662-2-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200815112437.6662-1-jbx6244@gmail.com>
-References: <20200815112437.6662-1-jbx6244@gmail.com>
+        id S1730036AbgHOWLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:11:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729348AbgHOWKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:10:30 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A37A623119;
+        Sat, 15 Aug 2020 11:28:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597490898;
+        bh=KfGt975NPBEP9wsbMKWVgCVnQOPVZ544VGJDmCxaib4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=N01FrX8JngsFPU42Abd/sTqdyZS1vJooKBnO6OS702Vcy2BhzsScOlw2LGBOpxcsK
+         r0ofxwr3qY2HR2PXlHyxoBEIm7y7t3fLl5+EGO2g3pbT8kyR4slibjMT1nMT1svCqo
+         MsYCDE03sR7lCMjeSIKKPuueBKk5zrfBMtEeLO6M=
+Date:   Sat, 15 Aug 2020 20:28:15 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH] bootconfig: Fix off-by-one in
+ xbc_node_compose_key_after()
+Message-Id: <20200815202815.27cd58b6491028e4a3f3f540@kernel.org>
+In-Reply-To: <20200813230406.2e3b9246@oasis.local.home>
+References: <20200813183050.029a6003@oasis.local.home>
+        <20200813193818.a44ea9afc447f57d470b2def@linux-foundation.org>
+        <20200813230406.2e3b9246@oasis.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A test with the command below shows that the compatible string
+On Thu, 13 Aug 2020 23:04:06 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-"rockchip,rk3308-spdif", "rockchip,rk3328-spdif"
+> On Thu, 13 Aug 2020 19:38:18 -0700
+> Andrew Morton <akpm@linux-foundation.org> wrote:
+> 
+> > On Thu, 13 Aug 2020 18:30:50 -0400 Steven Rostedt <rostedt@goodmis.org> wrote:
+> > 
+> > > From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > > 
+> > > While reviewing some patches for bootconfig, I noticed the following
+> > > code in xbc_node_compose_key_after():
+> > > 
+> > > 	ret = snprintf(buf, size, "%s%s", xbc_node_get_data(node),
+> > > 		       depth ? "." : "");
+> > > 	if (ret < 0)
+> > > 		return ret;
+> > > 	if (ret > size) {
+> > > 		size = 0;
+> > > 	} else {
+> > > 		size -= ret;
+> > > 		buf += ret;
+> > > 	}
+> > > 
+> > > But snprintf() returns the number of bytes that would be written, not
+> > > the number of bytes that are written (ignoring the nul terminator).
+> > > This means that if the number of non null bytes written were to equal
+> > > size, then the nul byte, which snprintf() always adds, will overwrite
+> > > that last byte.
+> > > 
+> > > 	ret = snprintf(buf, 5, "hello");
+> > > 	printf("buf = '%s'\n", buf);
+> > > 	printf("ret = %d\n", ret);
+> > > 
+> > > produces:
+> > > 
+> > > 	buf = 'hell'
+> > > 	ret = 5
+> > > 
+> > > The string was truncated without ret being greater than 5.
+> > > Test (ret >= size) for overwrite.  
+> > 
+> > What are the end-user visible effects of the bug?  IOW, why cc:stable?
+> > 
+> 
+> Hmm, looking at it at a wider view, it may not be an issue. The tools
+> code calls this code, and I looked to see if it was possible to corrupt
+> the buffer by an incorrect size. But now that I'm looking at the else
+> part of the section, it may not be a problem as it may act the same.
+> 
+> That is, ret == size will make size = 0 with the size -= ret, and we
+> get the same result.
+> 
+> OK, you can drop the patch. Thanks for the review!
 
-is already in use, but is not added to a document.
-The current fallback string "rockchip,rk3328-spdif" points to a data
-set enum RK_SPDIF_RK3366 in rockchip_spdif.c that is not used both
-in the mainline as in the manufacturer kernel.
-(Of the enum only RK_SPDIF_RK3288 is used.)
-So if the properties don't change we might as well use the first SoC
-in line as fallback string and add the description for rk3308 as:
+Thanks Andrew, you're right. If size == ret, then size -= ret makes
+ size = 0 and after that, the loop doesn't change the size. 
 
-"rockchip,rk3308-spdif", "rockchip,rk3066-spdif"
+> 
+> Although, there's no error message if the buffer is not big enough to
+> hold the fields.
+> 
+> Masami?
 
-make ARCH=arm64 dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+Ah, I think we need a patch to fix a comment of the function. It says
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
-enum rk_spdif_type {
-	RK_SPDIF_RK3066,
-	RK_SPDIF_RK3188,
-	RK_SPDIF_RK3288,
-	RK_SPDIF_RK3366,
-};
+ * Returns the total length of the key stored in @buf.
 
-static const struct of_device_id rk_spdif_match[] = {
-	{ .compatible = "rockchip,rk3066-spdif",
-	  .data = (void *)RK_SPDIF_RK3066 },
-	{ .compatible = "rockchip,rk3188-spdif",
-	  .data = (void *)RK_SPDIF_RK3188 },
-	{ .compatible = "rockchip,rk3228-spdif",
-	  .data = (void *)RK_SPDIF_RK3366 },
-	{ .compatible = "rockchip,rk3288-spdif",
-	  .data = (void *)RK_SPDIF_RK3288 },
-	{ .compatible = "rockchip,rk3328-spdif",
-	  .data = (void *)RK_SPDIF_RK3366 },
-	{ .compatible = "rockchip,rk3366-spdif",
-	  .data = (void *)RK_SPDIF_RK3366 },
-	{ .compatible = "rockchip,rk3368-spdif",
-	  .data = (void *)RK_SPDIF_RK3366 },
-	{ .compatible = "rockchip,rk3399-spdif",
-	  .data = (void *)RK_SPDIF_RK3366 },
-	{},
-};
----
- arch/arm64/boot/dts/rockchip/rk3308.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+But this must be
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-index e8b754d41..2560b9877 100644
---- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-@@ -574,7 +574,7 @@
- 	};
- 
- 	spdif_tx: spdif-tx@ff3a0000 {
--		compatible = "rockchip,rk3308-spdif", "rockchip,rk3328-spdif";
-+		compatible = "rockchip,rk3308-spdif", "rockchip,rk3066-spdif";
- 		reg = <0x0 0xff3a0000 0x0 0x1000>;
- 		interrupts = <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru SCLK_SPDIF_TX>, <&cru HCLK_SPDIFTX>;
+  * Returns the total bytes of the key which would be written.
+
+As similar to the snprintf(), so that the user can compare the result
+with the given buffer size.
+
+Thank you,
+
 -- 
-2.11.0
-
+Masami Hiramatsu <mhiramat@kernel.org>
