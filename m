@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520DB2453B2
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4748324538B
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729845AbgHOWE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
+        id S1729300AbgHOWCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:02:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728555AbgHOVvC (ORCPT
+        with ESMTP id S1726855AbgHOVvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:02 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D02EC061374
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:27 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id k18so8453649qtm.10
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:27 -0700 (PDT)
+        Sat, 15 Aug 2020 17:51:22 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BD0C061378
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:32 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 62so10193588qkj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:19:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Sr87OpKcgqeQcj7Lut9VQ6DF03EgC9rXR/oozlPl9I0=;
-        b=a0Rw2bBSyqjyxtQEVYDJF5UDSoxnf31h9xYjxTorXrRsufS12jJhrWyPwlAQraVyu8
-         Eig+m2NceIZJfgxrM622A/TDW9fiqWVxjSN5/7SyLFyNmMcf0MOtJ79gBJCQzjMavIwi
-         FHQNEoxMgoQZZuK3w0rBVgisOjO1HcfBwhA3o=
+        bh=ropbXLmQVQLM4HRBV4KUOHOQ9FtvbqlRpYjRFgviYHA=;
+        b=T3NVoYc8bWCtji6Ke4d8PuhZQgU5UXRz3E6yI6gJyHrCwafzlXCwOvFqlh6KWH2Sfc
+         mYWnDwj+LJkamj9/sjoaEp+OI5vvIjOpev6t1S+yYDtIaag/kFvOvDWHHKASOgzOrDCq
+         Fh7NbNuXyUHB+qoMVL2G1g+c6KsDjdaPBaI0Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Sr87OpKcgqeQcj7Lut9VQ6DF03EgC9rXR/oozlPl9I0=;
-        b=XA7dLx9g3LymuCJtEAPl6Hzg5vYNzKvChPOUPVZ1jn4ey7SQ9osW9kAzJDXb9nyMRE
-         43+Y42OZsL8qnd3MmFb7e+8HvrIpCZ4rRDSidSj8PBUO1DOZyU+tV5cj9sI+aWyv/rXq
-         sTKKiGzNooUgbkCi72O9PLDprFHTrjnYEm/1jd/Nr9OARg/a3qw2XbFGxFv8zNWamjbA
-         dYWDr+JFrifIsvo8CqxQ/uySs3/je4+taeUKNK/BOqewjJIzWInrp2SgzQ1g830nOtGx
-         cKuNJ38pCs6ueWkZrFriY+0oXgPPsejPLdOSHr0Q77/hxQ0mWBzR7XJeUDck0JIFsbMc
-         TlCQ==
-X-Gm-Message-State: AOAM530CVZBEWj9WTHU+iMt2FYz6inW51VcZhoDAwDjB1ma1RU8+ui4G
-        I1SGczaCDqKPRKdD0wK56ItTygpm8je7YA==
-X-Google-Smtp-Source: ABdhPJzfuzPtyeMnMLHksEthsmRZwJK64n9qnDfflen8t0uv+egsOcthSALyKs2aNX7pgnP3PF3LeA==
-X-Received: by 2002:aed:3b57:: with SMTP id q23mr4961944qte.150.1597461565702;
-        Fri, 14 Aug 2020 20:19:25 -0700 (PDT)
+        bh=ropbXLmQVQLM4HRBV4KUOHOQ9FtvbqlRpYjRFgviYHA=;
+        b=G5pJOsgMqeI+7KghjqUnekK9BZ6c6S9KuWyz/ID9nd2HamiJMD7dAdH9dwF+dXOW+X
+         CvvNQjdD4EyTO5AeLP6vQ7Wnn6cnFltpIbAWb7dIfSSqGk1N9/rq12l7dMfKk1VzFiuD
+         Cm9lDgA1ghLhpMICxOI/FT0xKnBOSMLqqKcu7gOV9ERLeZZlsFz1LWrqsOm9l+gO9sZ+
+         UV0ZVdwi20S5wVhOBchWDI5V3jLeiy2B4RtDkxMbLCzvXsvbYr9U7ABP2BaQV64ipdQn
+         ArBvJzb0dQTEaJ5663U9L36H8Pk6sd7bMu7mY7qOhWuj7qHzNQJClKM2QPWzkL6nusFo
+         j1ew==
+X-Gm-Message-State: AOAM5307gFBfAgWSCIg9wkEhZGFrMVwCiPeoIBzRELAM2BL9OOrErpoL
+        PZJrsSzRB+hvkyB8uKUuqBTFmxXdsLuxjw==
+X-Google-Smtp-Source: ABdhPJwjPW9fxFWSLRpBGwiHQHtdcW4BU3aoBD+vhjMsZgIL9oGfFRmbWCxzCNaLbobeUfrelvxysw==
+X-Received: by 2002:a05:620a:1424:: with SMTP id k4mr4772841qkj.2.1597461570404;
+        Fri, 14 Aug 2020 20:19:30 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id p12sm10055199qkk.118.2020.08.14.20.19.24
+        by smtp.gmail.com with ESMTPSA id p12sm10055199qkk.118.2020.08.14.20.19.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 20:19:25 -0700 (PDT)
+        Fri, 14 Aug 2020 20:19:30 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Aaron Lu <aaron.lwe@gmail.com>,
         Aubrey Li <aubrey.li@linux.intel.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
@@ -60,7 +61,6 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Tim Chen <tim.c.chen@intel.com>,
         Tim Chen <tim.c.chen@linux.intel.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
         x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
         fweisbec@gmail.com, kerrnel@google.com,
         Phil Auld <pauld@redhat.com>,
@@ -68,9 +68,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Chen Yu <yu.c.chen@intel.com>,
         Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH RFC 03/12] arch/x86: Add a new TIF flag for untrusted tasks
-Date:   Fri, 14 Aug 2020 23:18:59 -0400
-Message-Id: <20200815031908.1015049-4-joel@joelfernandes.org>
+Subject: [PATCH RFC 07/12] bitops: Introduce find_next_or_bit
+Date:   Fri, 14 Aug 2020 23:19:03 -0400
+Message-Id: <20200815031908.1015049-8-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
 In-Reply-To: <20200815031908.1015049-1-joel@joelfernandes.org>
 References: <20200815031908.1015049-1-joel@joelfernandes.org>
@@ -81,53 +81,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new TIF flag to indicate whether the kernel needs to be careful
-and take additional steps to mitigate micro-architectural issues during
-entry into user or guest mode.
+From: Vineeth Pillai <viremana@linux.microsoft.com>
 
-This new flag will be used by the series to determine if waiting is
-needed or not, during exit to user or guest mode.
+Hotplug fixes to core-scheduling require a new bitops API.
 
+Introduce a new API find_next_or_bit() which returns the bit number of
+the next set bit in OR-ed bit masks of the given bit masks.
+
+Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- arch/x86/include/asm/thread_info.h | 2 ++
- kernel/sched/sched.h               | 6 ++++++
- 2 files changed, 8 insertions(+)
+ include/asm-generic/bitops/find.h | 16 +++++++++
+ lib/find_bit.c                    | 56 +++++++++++++++++++++++++------
+ 2 files changed, 61 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-index 267701ae3d86..42e63969acb3 100644
---- a/arch/x86/include/asm/thread_info.h
-+++ b/arch/x86/include/asm/thread_info.h
-@@ -98,6 +98,7 @@ struct thread_info {
- #define TIF_IO_BITMAP		22	/* uses I/O bitmap */
- #define TIF_FORCED_TF		24	/* true if TF in eflags artificially */
- #define TIF_BLOCKSTEP		25	/* set when we want DEBUGCTLMSR_BTF */
-+#define TIF_UNSAFE_RET   	26	/* On return to process/guest, perform safety checks. */
- #define TIF_LAZY_MMU_UPDATES	27	/* task is updating the mmu lazily */
- #define TIF_SYSCALL_TRACEPOINT	28	/* syscall tracepoint instrumentation */
- #define TIF_ADDR32		29	/* 32-bit address space on 64 bits */
-@@ -127,6 +128,7 @@ struct thread_info {
- #define _TIF_IO_BITMAP		(1 << TIF_IO_BITMAP)
- #define _TIF_FORCED_TF		(1 << TIF_FORCED_TF)
- #define _TIF_BLOCKSTEP		(1 << TIF_BLOCKSTEP)
-+#define _TIF_UNSAFE_RET 	(1 << TIF_UNSAFE_RET)
- #define _TIF_LAZY_MMU_UPDATES	(1 << TIF_LAZY_MMU_UPDATES)
- #define _TIF_SYSCALL_TRACEPOINT	(1 << TIF_SYSCALL_TRACEPOINT)
- #define _TIF_ADDR32		(1 << TIF_ADDR32)
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 3575edc7dc43..1901d11a6f41 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2680,3 +2680,9 @@ static inline bool is_per_cpu_kthread(struct task_struct *p)
+diff --git a/include/asm-generic/bitops/find.h b/include/asm-generic/bitops/find.h
+index 9fdf21302fdf..0b476ca0d665 100644
+--- a/include/asm-generic/bitops/find.h
++++ b/include/asm-generic/bitops/find.h
+@@ -32,6 +32,22 @@ extern unsigned long find_next_and_bit(const unsigned long *addr1,
+ 		unsigned long offset);
+ #endif
  
- void swake_up_all_locked(struct swait_queue_head *q);
- void __prepare_to_swait(struct swait_queue_head *q, struct swait_queue *wait);
++#ifndef find_next_or_bit
++/**
++ * find_next_or_bit - find the next set bit in any memory regions
++ * @addr1: The first address to base the search on
++ * @addr2: The second address to base the search on
++ * @offset: The bitnumber to start searching at
++ * @size: The bitmap size in bits
++ *
++ * Returns the bit number for the next set bit
++ * If no bits are set, returns @size.
++ */
++extern unsigned long find_next_or_bit(const unsigned long *addr1,
++		const unsigned long *addr2, unsigned long size,
++		unsigned long offset);
++#endif
 +
-+#ifdef CONFIG_SCHED_CORE
-+#ifndef TIF_UNSAFE_RET
-+#define TIF_UNSAFE_RET (0)
+ #ifndef find_next_zero_bit
+ /**
+  * find_next_zero_bit - find the next cleared bit in a memory region
+diff --git a/lib/find_bit.c b/lib/find_bit.c
+index 49f875f1baf7..2eca8e2b16b1 100644
+--- a/lib/find_bit.c
++++ b/lib/find_bit.c
+@@ -19,7 +19,14 @@
+ 
+ #if !defined(find_next_bit) || !defined(find_next_zero_bit) ||			\
+ 	!defined(find_next_bit_le) || !defined(find_next_zero_bit_le) ||	\
+-	!defined(find_next_and_bit)
++	!defined(find_next_and_bit) || !defined(find_next_or_bit)
++
++typedef enum {
++	FNB_AND = 0,
++	FNB_OR  = 1,
++	FNB_MAX = 2
++} fnb_bwops_t;
++
+ /*
+  * This is a common helper function for find_next_bit, find_next_zero_bit, and
+  * find_next_and_bit. The differences are:
+@@ -29,7 +36,8 @@
+  */
+ static unsigned long _find_next_bit(const unsigned long *addr1,
+ 		const unsigned long *addr2, unsigned long nbits,
+-		unsigned long start, unsigned long invert, unsigned long le)
++		unsigned long start, unsigned long invert,
++		fnb_bwops_t type, unsigned long le)
+ {
+ 	unsigned long tmp, mask;
+ 
+@@ -37,8 +45,16 @@ static unsigned long _find_next_bit(const unsigned long *addr1,
+ 		return nbits;
+ 
+ 	tmp = addr1[start / BITS_PER_LONG];
+-	if (addr2)
+-		tmp &= addr2[start / BITS_PER_LONG];
++	if (addr2) {
++		switch (type) {
++		case FNB_AND:
++			tmp &= addr2[start / BITS_PER_LONG];
++			break;
++		case FNB_OR:
++			tmp |= addr2[start / BITS_PER_LONG];
++			break;
++		}
++	}
+ 	tmp ^= invert;
+ 
+ 	/* Handle 1st word. */
+@@ -56,8 +72,16 @@ static unsigned long _find_next_bit(const unsigned long *addr1,
+ 			return nbits;
+ 
+ 		tmp = addr1[start / BITS_PER_LONG];
+-		if (addr2)
+-			tmp &= addr2[start / BITS_PER_LONG];
++		if (addr2) {
++			switch (type) {
++			case FNB_AND:
++				tmp &= addr2[start / BITS_PER_LONG];
++				break;
++			case FNB_OR:
++				tmp |= addr2[start / BITS_PER_LONG];
++				break;
++			}
++		}
+ 		tmp ^= invert;
+ 	}
+ 
+@@ -75,7 +99,7 @@ static unsigned long _find_next_bit(const unsigned long *addr1,
+ unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
+ 			    unsigned long offset)
+ {
+-	return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
++	return _find_next_bit(addr, NULL, size, offset, 0UL, FNB_AND, 0);
+ }
+ EXPORT_SYMBOL(find_next_bit);
+ #endif
+@@ -84,7 +108,7 @@ EXPORT_SYMBOL(find_next_bit);
+ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
+ 				 unsigned long offset)
+ {
+-	return _find_next_bit(addr, NULL, size, offset, ~0UL, 0);
++	return _find_next_bit(addr, NULL, size, offset, ~0UL, FNB_AND, 0);
+ }
+ EXPORT_SYMBOL(find_next_zero_bit);
+ #endif
+@@ -94,11 +118,21 @@ unsigned long find_next_and_bit(const unsigned long *addr1,
+ 		const unsigned long *addr2, unsigned long size,
+ 		unsigned long offset)
+ {
+-	return _find_next_bit(addr1, addr2, size, offset, 0UL, 0);
++	return _find_next_bit(addr1, addr2, size, offset, 0UL, FNB_AND, 0);
+ }
+ EXPORT_SYMBOL(find_next_and_bit);
+ #endif
+ 
++#if !defined(find_next_or_bit)
++unsigned long find_next_or_bit(const unsigned long *addr1,
++		const unsigned long *addr2, unsigned long size,
++		unsigned long offset)
++{
++	return _find_next_bit(addr1, addr2, size, offset, 0UL, FNB_OR, 0);
++}
++EXPORT_SYMBOL(find_next_or_bit);
 +#endif
-+#endif
++
+ #ifndef find_first_bit
+ /*
+  * Find the first set bit in a memory region.
+@@ -161,7 +195,7 @@ EXPORT_SYMBOL(find_last_bit);
+ unsigned long find_next_zero_bit_le(const void *addr, unsigned
+ 		long size, unsigned long offset)
+ {
+-	return _find_next_bit(addr, NULL, size, offset, ~0UL, 1);
++	return _find_next_bit(addr, NULL, size, offset, ~0UL, FNB_AND, 1);
+ }
+ EXPORT_SYMBOL(find_next_zero_bit_le);
+ #endif
+@@ -170,7 +204,7 @@ EXPORT_SYMBOL(find_next_zero_bit_le);
+ unsigned long find_next_bit_le(const void *addr, unsigned
+ 		long size, unsigned long offset)
+ {
+-	return _find_next_bit(addr, NULL, size, offset, 0UL, 1);
++	return _find_next_bit(addr, NULL, size, offset, 0UL, FNB_AND, 1);
+ }
+ EXPORT_SYMBOL(find_next_bit_le);
+ #endif
 -- 
 2.28.0.220.ged08abb693-goog
 
