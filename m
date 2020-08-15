@@ -2,93 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E78E24520C
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B7724534D
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgHOVid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:38:33 -0400
-Received: from mga07.intel.com ([134.134.136.100]:62772 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726288AbgHOVid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:38:33 -0400
-IronPort-SDR: 7aDkoqkccl2pA39I2vHozCLzR5T44O7sfwmIVDr1Tr6odwuvHZn58W67XKqWlYXU01q3M2GznO
- oL1kUJVpV7Qg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9713"; a="218860632"
-X-IronPort-AV: E=Sophos;i="5.76,316,1592895600"; 
-   d="scan'208";a="218860632"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2020 05:55:34 -0700
-IronPort-SDR: CKSlF3hOH2ajsTjU/m9UYHYRy5AIEiRNAhByojGtC9bOGjvl44P4wgAUq1ZhZIDIP06WiJZfZl
- CBInzwoYTaIw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,316,1592895600"; 
-   d="scan'208";a="370134267"
-Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
-  by orsmga001.jf.intel.com with ESMTP; 15 Aug 2020 05:55:32 -0700
-Date:   Sat, 15 Aug 2020 20:52:43 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jan Kara <jack@suse.cz>, Nicolas Palix <nicolas.palix@imag.fr>
-Subject: Re: [kbuild-all] Re: fs/ocfs2/suballoc.c:2430:2-8: preceding lock on
- line 2413
-Message-ID: <20200815125243.GA21882@intel.com>
-References: <202008141412.mP88ccpD%lkp@intel.com>
- <878sehl5e4.fsf@nanos.tec.linutronix.de>
- <alpine.DEB.2.22.394.2008142059190.2441@hadrien>
- <87364pkock.fsf@nanos.tec.linutronix.de>
- <alpine.DEB.2.22.394.2008142148180.2441@hadrien>
+        id S1729624AbgHOWAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728836AbgHOVvf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:51:35 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D325DC02B8F4;
+        Sat, 15 Aug 2020 06:05:14 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 39E75299A26
+Message-ID: <b318069fe873e456f18d07d11f5d165667c9b04a.camel@collabora.com>
+Subject: Re: [PATCH v9 00/11] Genericize DW MIPI DSI bridge and add i.MX 6
+ driver
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Philippe CORNU <philippe.cornu@st.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Yannick FERTRE <yannick.fertre@st.com>,
+        Andrzej Hajda <a.hajda@samsung.com>, linux-imx@nxp.com,
+        kernel@collabora.com, linux-stm32@st-md-mailman.stormreply.com
+Date:   Sat, 15 Aug 2020 10:05:00 -0300
+In-Reply-To: <87lfk3kaj4.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
+References: <20200609174959.955926-1-adrian.ratiu@collabora.com>
+         <c6f10db1-7f56-a156-36a1-125e764c8c1a@baylibre.com>
+         <87lfk3kaj4.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2008142148180.2441@hadrien>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 09:52:13PM +0200, Julia Lawall wrote:
-> 
-> 
-> On Fri, 14 Aug 2020, Thomas Gleixner wrote:
-> 
-> > Julia,
-> >
-> > On Fri, Aug 14 2020 at 21:00, Julia Lawall wrote:
-> > > On Fri, 14 Aug 2020, Thomas Gleixner wrote:
-> > >> That's clearly a false positive. Is there anything what can be done to
-> > >> help that cocci script here?
-> > >
-> > > I have a better version that needs to get pushed.
-> > >
-> > > But normally these pass through me.  Did you get it directly from kbuild?
-> >
-> > Yes, because I touched the affected lines last :)
-> 
-> Actually, that's not the point.  Normally, I get all the reports on this
-> case, and then I forward them if they look ok.  If I forwarded something
-> incorrect, then sorry about that.  If the policy has changed for this rule
-> to be sending the reports out directlty to the recipients, then I think it
-> should be changed back.  There are a lot of real bugs with lock usage, but
-> there are alot of false positives too.  Specifically, the rule looks for
-> the case with identical if tests, but only when the branches are identical
-> too.
-> 
-> Kbuild people, can this be adjusted?  Or have I misunderstood the
-> situation?
-Hi Julia and Thomas, pls allow us to check this further, usually all cocci
-reports will be sent to kbuild@01.org for Julia to check. But there maybe
-something wrong with this report. We will check the detail in next week as
-we have server maintainance during the weekend.
+Hi Neil,
 
+On Wed, 2020-07-01 at 09:35 +0300, Adrian Ratiu wrote:
+> Hi Neil,
 > 
-> thanks,
-> julia
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+> On Mon, 29 Jun 2020, Neil Armstrong <narmstrong@baylibre.com> 
+> wrote:
+> > Hi Adrian, 
+> > 
+> > On 09/06/2020 19:49, Adrian Ratiu wrote: 
+> > > [Re-submitting to cc dri-devel, sorry about the noise]  Hello 
+> > > all,  v9 cleanly applies on top of latest next-20200609 tree. 
+> > > v9 does not depend on other patches as the last binding doc has 
+> > > been merged.   All feedback up to this point has been 
+> > > addressed. Specific details in individual patch changelogs. 
+> > > The biggest changes are the deprecation of the Synopsys DW 
+> > > bridge bind() API in favor of of_drm_find_bridge() and .attach 
+> > > callbacks, the addition of a TODO entry which outlines future 
+> > > planned bridge driver refactorings and a reordering of some 
+> > > i.MX 6 patches to appease checkpatch.   The idea behind the 
+> > > TODO is to get this regmap and i.MX 6 driver merged and then do 
+> > > the rest of refactorings in-tree because it's easier and the 
+> > > refactorings themselves are out-of-scope of this series which 
+> > > is adding i.MX 6 support and is quite big already, so please, 
+> > > if there are more refactoring ideas, let's add them to the TODO 
+> > > doc. :) I intend to tackle those after this series is merged to 
+> > > avoid two complex inter-dependent simultaneous series. 
+> > 
+> > This has been around here for a long time and you seem to have 
+> > addressed all the reviews. 
+> > 
+> > >  As always more testing is welcome especially on Rockchip and 
+> > > STM SoCs. 
+> > 
+> > It has been tested on STM, but I'd like a feedback on RK 
+> > platform before applying the bridge parts. 
+> > 
+> > Can the imx & stm patches be applied separately ? 
+> > 
+> 
+> Yes the IMX and STM patches can be applied separately, they just 
+> both depend on the common regmap patches.
+> 
+
+It's been a month so I think it's a good idea to go forward
+applying IMX and STM patches (probably with the usual
+rebase dance).
+
+As for Rockchip...
+
+> The binding API removal change which directly touches RK can also 
+> be applied separately, but unfortunately I do not have access to a 
+> RK board with a DSI display to test it (or the bridge regmap logic 
+> on RK btw...), I just "eye-balled" the RK code based on the public 
+> docs and it LGTM.
+> 
+
+... I'll be getting some DSI hardware to help with the pending
+Rockchip issues, so we can tackle Rockchip as well. I'm quite sure
+we'll loop Heiko as well if needed :-)
+
+Cheers,
+Ezequiel
+
+> > Neil
+> > 
+> > > Big thank you to everyone who has contributed to this up to now,
+> > > Adrian
+> > > 
+> > > Adrian Ratiu (11):
+> > >   drm: bridge: dw_mipi_dsi: add initial regmap infrastructure
+> > >   drm: bridge: dw_mipi_dsi: abstract register access using reg_fields
+> > >   drm: bridge: dw_mipi_dsi: add dsi v1.01 support
+> > >   drm: bridge: dw_mipi_dsi: remove bind/unbind API
+> > >   dt-bindings: display: add i.MX6 MIPI DSI host controller doc
+> > >   ARM: dts: imx6qdl: add missing mipi dsi properties
+> > >   drm: imx: Add i.MX 6 MIPI DSI host platform driver
+> > >   drm: stm: dw-mipi-dsi: let the bridge handle the HW version check
+> > >   drm: bridge: dw-mipi-dsi: split low power cfg register into fields
+> > >   drm: bridge: dw-mipi-dsi: fix bad register field offsets
+> > >   Documentation: gpu: todo: Add dw-mipi-dsi consolidation plan
+> > > 
+> > >  .../display/imx/fsl,mipi-dsi-imx6.yaml        | 112 +++
+> > >  Documentation/gpu/todo.rst                    |  25 +
+> > >  arch/arm/boot/dts/imx6qdl.dtsi                |   8 +
+> > >  drivers/gpu/drm/bridge/synopsys/Kconfig       |   1 +
+> > >  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 713 ++++++++++++------
+> > >  drivers/gpu/drm/imx/Kconfig                   |   8 +
+> > >  drivers/gpu/drm/imx/Makefile                  |   1 +
+> > >  drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c        | 399 ++++++++++
+> > >  .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   |   7 +-
+> > >  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c         |  16 +-
+> > >  10 files changed, 1059 insertions(+), 231 deletions(-)
+> > >  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,mipi-dsi-imx6.yaml
+> > >  create mode 100644 drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c
+> > > 
+
