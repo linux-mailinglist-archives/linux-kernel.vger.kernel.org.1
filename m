@@ -2,208 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA1D2452BD
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8295024534B
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729304AbgHOVyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
+        id S1729619AbgHOWAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729108AbgHOVwd (ORCPT
+        with ESMTP id S1728856AbgHOVvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:33 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CA8C0A88B5
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 09:59:59 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id k13so5492846plk.13
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 09:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rb/IMQYAMEFrYCtyEvFVd8k7Hv2cYtIwx71PE3QM1p8=;
-        b=bp6qJV4DEhzLrf629/G+tL9EvTZVqc/ysLjd/vQMHp+0jiX1XZtLIgjqec6Lpt/AaN
-         WTq7cZUtJPMxGLrYA4iDCx3FAGjWmYa10boN5IBn8zvQ0LJy4jLy97V0yeOktIX46fym
-         j+NDd7YOcqJgHy11LHoejm8VJES3NQHihXr5g=
+        Sat, 15 Aug 2020 17:51:37 -0400
+Received: from mail-il1-x145.google.com (mail-il1-x145.google.com [IPv6:2607:f8b0:4864:20::145])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC05BC0A88B7
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:00:23 -0700 (PDT)
+Received: by mail-il1-x145.google.com with SMTP id g6so8798851iln.2
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:00:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rb/IMQYAMEFrYCtyEvFVd8k7Hv2cYtIwx71PE3QM1p8=;
-        b=XaPp4wIO8GUzD3GSNyyZw8Pbv5vMvwXN4/c8E3tjCh/FAYLEmIdGOik1wZu2sWzIqQ
-         ZhSynJXHCZujgRkm5isUjJ03ljWB9J3r9jKX3CRi0KeEmm2qyffx165ay15+xCkNVwRf
-         Jzj19dnHXFpPwjQBQhx1Nm0FFRWJKEdb24ZmQ/rQerizmpBenzR7LKxUI2Acrve9nwTL
-         GLSCDRABsVi3BZLavLWVPkIv6mNzwjhYLM29FnwUZzwH+AEzxDMMzfaEQIPtL5KRq4rd
-         mhiiMpvtTJOdRVF7mAnltqmflLJ6ta+0yMG5v/XJOgs99lwEMbcIfVlPr1xcSXWXWWq9
-         HRPw==
-X-Gm-Message-State: AOAM531dVhVQGoqQIrYpMziAqedsgrOB4V7a4aeVdMJCHgSC/cb0rEhb
-        Y3rSJpsYSToxHMr2eB9jwZQhJQ==
-X-Google-Smtp-Source: ABdhPJzCrWUNRjB+5ydtKJX7u7Wr14mIRwWEOzQPie8wMcCnFEFODVqD0y9uyzTzDe5hmkp2qfJd5A==
-X-Received: by 2002:a17:90a:e986:: with SMTP id v6mr6862878pjy.88.1597510798065;
-        Sat, 15 Aug 2020 09:59:58 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d127sm12507740pfc.175.2020.08.15.09.59.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 09:59:57 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 09:59:56 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexander Popov <alex.popov@linux.com>
-Cc:     Jann Horn <jannh@google.com>, Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        David Howells <dhowells@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
-        notify@kernel.org
-Subject: Re: [PATCH RFC 2/2] lkdtm: Add heap spraying test
-Message-ID: <202008150952.E81C4A52F@keescook>
-References: <20200813151922.1093791-1-alex.popov@linux.com>
- <20200813151922.1093791-3-alex.popov@linux.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Mh2vQL3nRBAlnAPp8z2LGMEgL0fvTMye3F0Sdv/V8c4=;
+        b=MiYm+v+uo+KF9mmgYjRL+U5ae+5GLjJI/7KAv+guScX3Qacu1HznWvMp8kFqbzrQrh
+         nSYxSGhtqD95YN5yDCkcKaoTwIWsdOzyR/dc94Nw0Rl4kt+9XKCWVmiClTLGueQr8HME
+         Ljy04X9UBeYy/oNZJFKk59dGK5xAf9RBDEjBiQgWH+i3UcGZyPT6Bx4QLrZTXiInqgEK
+         xRkemlLoOQ6wwz9+E1lf4L0Qan6FzDZB7KZnVx9Vr+qBuOwnouchJBqVR1oHw3Q+UWUc
+         2Sh7O4at66GuO2h1ekTkGsPyQ2VNZ+/w7AvEMzHw0aGsIYIENDPACBz1go+3YNsXPSKG
+         DskQ==
+X-Gm-Message-State: AOAM530g8bH2h/L++WwgQ1vMSLT2Z2smtQI1ukOCrsD19s+Tm8BwxEWo
+        N9HWLAiGKC9OtVhnTLe/PDeCeBixy3XjKW4BhA3cMtnos4o8
+X-Google-Smtp-Source: ABdhPJzYyX274OX+l37DAqsUHvwTM1HpTiSokWdE2OgfUedsairrIn4fwpGyYcMtJA4kqyI06NGJa+9Z4lGRakde0IBTseGBbLAO
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200813151922.1093791-3-alex.popov@linux.com>
+X-Received: by 2002:a6b:5d05:: with SMTP id r5mr6221528iob.14.1597510822456;
+ Sat, 15 Aug 2020 10:00:22 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 10:00:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000018f60505aced798e@google.com>
+Subject: general protection fault in io_poll_double_wake
+From:   syzbot <syzbot+7f617d4a9369028b8a2c@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 06:19:22PM +0300, Alexander Popov wrote:
-> Add a simple test for CONFIG_SLAB_QUARANTINE.
-> 
-> It performs heap spraying that aims to reallocate the recently freed heap
-> object. This technique is used for exploiting use-after-free
-> vulnerabilities in the kernel code.
-> 
-> This test shows that CONFIG_SLAB_QUARANTINE breaks heap spraying
-> exploitation technique.
+Hello,
 
-Yay tests!
+syzbot found the following issue on:
 
-> 
-> Signed-off-by: Alexander Popov <alex.popov@linux.com>
-> ---
->  drivers/misc/lkdtm/core.c  |  1 +
->  drivers/misc/lkdtm/heap.c  | 40 ++++++++++++++++++++++++++++++++++++++
->  drivers/misc/lkdtm/lkdtm.h |  1 +
->  3 files changed, 42 insertions(+)
-> 
-> diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
-> index a5e344df9166..78b7669c35eb 100644
-> --- a/drivers/misc/lkdtm/core.c
-> +++ b/drivers/misc/lkdtm/core.c
-> @@ -126,6 +126,7 @@ static const struct crashtype crashtypes[] = {
->  	CRASHTYPE(SLAB_FREE_DOUBLE),
->  	CRASHTYPE(SLAB_FREE_CROSS),
->  	CRASHTYPE(SLAB_FREE_PAGE),
-> +	CRASHTYPE(HEAP_SPRAY),
->  	CRASHTYPE(SOFTLOCKUP),
->  	CRASHTYPE(HARDLOCKUP),
->  	CRASHTYPE(SPINLOCKUP),
-> diff --git a/drivers/misc/lkdtm/heap.c b/drivers/misc/lkdtm/heap.c
-> index 1323bc16f113..a72a241e314a 100644
-> --- a/drivers/misc/lkdtm/heap.c
-> +++ b/drivers/misc/lkdtm/heap.c
-> @@ -205,6 +205,46 @@ static void ctor_a(void *region)
->  static void ctor_b(void *region)
->  { }
->  
-> +#define HEAP_SPRAY_SIZE 128
-> +
-> +void lkdtm_HEAP_SPRAY(void)
-> +{
-> +	int *addr;
-> +	int *spray_addrs[HEAP_SPRAY_SIZE] = { 0 };
+HEAD commit:    7fca4dee Merge tag 'powerpc-5.9-2' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1264d116900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=21f0d1d2df6d5fc
+dashboard link: https://syzkaller.appspot.com/bug?extid=7f617d4a9369028b8a2c
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f211d2900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1721b0ce900000
 
-(the 0 isn't needed -- and it was left there, it should be NULL)
+The issue was bisected to:
 
-> +	unsigned long i = 0;
-> +
-> +	addr = kmem_cache_alloc(a_cache, GFP_KERNEL);
+commit 18bceab101adde8f38de76016bc77f3f25cf22f4
+Author: Jens Axboe <axboe@kernel.dk>
+Date:   Fri May 15 17:56:54 2020 +0000
 
-I would prefer this test add its own cache (e.g. spray_cache), to avoid
-misbehaviors between tests. (e.g. the a and b caches already run the
-risk of getting corrupted weirdly.)
+    io_uring: allow POLL_ADD with double poll_wait() users
 
-> +	if (!addr) {
-> +		pr_info("Unable to allocate memory in lkdtm-heap-a cache\n");
-> +		return;
-> +	}
-> +
-> +	*addr = 0x31337;
-> +	kmem_cache_free(a_cache, addr);
-> +
-> +	pr_info("Performing heap spraying...\n");
-> +	for (i = 0; i < HEAP_SPRAY_SIZE; i++) {
-> +		spray_addrs[i] = kmem_cache_alloc(a_cache, GFP_KERNEL);
-> +		*spray_addrs[i] = 0x31337;
-> +		pr_info("attempt %lu: spray alloc addr %p vs freed addr %p\n",
-> +						i, spray_addrs[i], addr);
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1498125e900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1698125e900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1298125e900000
 
-That's 128 lines spewed into dmesg... I would leave this out.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7f617d4a9369028b8a2c@syzkaller.appspotmail.com
+Fixes: 18bceab101ad ("io_uring: allow POLL_ADD with double poll_wait() users")
 
-> +		if (spray_addrs[i] == addr) {
-> +			pr_info("freed addr is reallocated!\n");
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (i < HEAP_SPRAY_SIZE)
-> +		pr_info("FAIL! Heap spraying succeed :(\n");
+general protection fault, probably for non-canonical address 0xdffffc0000000008: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000040-0x0000000000000047]
+CPU: 0 PID: 6842 Comm: syz-executor006 Not tainted 5.8.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:io_poll_double_wake+0x6b/0x360 fs/io_uring.c:4589
+Code: 8d 9d b8 00 00 00 48 89 d8 48 c1 e8 03 42 80 3c 20 00 74 08 48 89 df e8 53 64 de ff 48 8b 1b 48 83 c3 40 48 89 d8 48 c1 e8 03 <42> 80 3c 20 00 74 08 48 89 df e8 36 64 de ff 4c 8b 33 31 ff 44 89
+RSP: 0018:ffffc90001717b20 EFLAGS: 00010002
+RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff88809e0fe4c0
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff8880a2e7dc98
+RBP: ffff8880a2e7dc98 R08: 0000000000000000 R09: ffffc90001717be8
+R10: fffff520002e2f70 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff88809a429e40 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000002640880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2629c956c0 CR3: 000000009e4e7000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __wake_up_common+0x30a/0x4e0 kernel/sched/wait.c:93
+ __wake_up_common_lock kernel/sched/wait.c:123 [inline]
+ __wake_up+0xd4/0x150 kernel/sched/wait.c:142
+ n_tty_set_termios+0xa60/0x1080 drivers/tty/n_tty.c:1874
+ tty_set_termios+0xcac/0x1510 drivers/tty/tty_ioctl.c:341
+ set_termios+0x4a1/0x580 drivers/tty/tty_ioctl.c:414
+ tty_mode_ioctl+0x7b2/0xa80 drivers/tty/tty_ioctl.c:770
+ tty_ioctl+0xf81/0x15c0 drivers/tty/tty_io.c:2665
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4405d9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffe5f581ef8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000401ed0 RCX: 00000000004405d9
+RDX: 0000000020000080 RSI: 0000000000005404 RDI: 0000000000000004
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000003e69 R11: 0000000000000246 R12: 0000000000401e40
+R13: 0000000000401ed0 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 9d629bc7ccf35892 ]---
+RIP: 0010:io_poll_double_wake+0x6b/0x360 fs/io_uring.c:4589
+Code: 8d 9d b8 00 00 00 48 89 d8 48 c1 e8 03 42 80 3c 20 00 74 08 48 89 df e8 53 64 de ff 48 8b 1b 48 83 c3 40 48 89 d8 48 c1 e8 03 <42> 80 3c 20 00 74 08 48 89 df e8 36 64 de ff 4c 8b 33 31 ff 44 89
+RSP: 0018:ffffc90001717b20 EFLAGS: 00010002
+RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff88809e0fe4c0
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff8880a2e7dc98
+RBP: ffff8880a2e7dc98 R08: 0000000000000000 R09: ffffc90001717be8
+R10: fffff520002e2f70 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff88809a429e40 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000002640880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2629c956c0 CR3: 000000009e4e7000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-I'd move this into the "if (spray_addrs[i] == addr)" test instead of the
-pr_info() that is there.
 
-> +	else
-> +		pr_info("OK! Heap spraying hasn't succeed :)\n");
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-And then make this an "if (i == HEAP_SPRAY_SIZE)" test
-
-> +
-> +	for (i = 0; i < HEAP_SPRAY_SIZE; i++) {
-> +		if (spray_addrs[i])
-> +			kmem_cache_free(a_cache, spray_addrs[i]);
-> +	}
-> +}
-> +
->  void __init lkdtm_heap_init(void)
->  {
->  	double_free_cache = kmem_cache_create("lkdtm-heap-double_free",
-> diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
-> index 8878538b2c13..dfafb4ae6f3a 100644
-> --- a/drivers/misc/lkdtm/lkdtm.h
-> +++ b/drivers/misc/lkdtm/lkdtm.h
-> @@ -45,6 +45,7 @@ void lkdtm_READ_BUDDY_AFTER_FREE(void);
->  void lkdtm_SLAB_FREE_DOUBLE(void);
->  void lkdtm_SLAB_FREE_CROSS(void);
->  void lkdtm_SLAB_FREE_PAGE(void);
-> +void lkdtm_HEAP_SPRAY(void);
->  
->  /* lkdtm_perms.c */
->  void __init lkdtm_perms_init(void);
-> -- 
-> 2.26.2
-> 
-
-I assume enabling the quarantine defense also ends up being seen in the
-SLAB_FREE_DOUBLE LKDTM test too, yes?
-
--- 
-Kees Cook
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
