@@ -2,73 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C620245301
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8E12452C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729293AbgHOV5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        id S1729215AbgHOVyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728992AbgHOVwG (ORCPT
+        with ESMTP id S1729091AbgHOVw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:06 -0400
-Received: from mail-il1-x148.google.com (mail-il1-x148.google.com [IPv6:2607:f8b0:4864:20::148])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61709C061251
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 22:23:09 -0700 (PDT)
-Received: by mail-il1-x148.google.com with SMTP id o18so7940008ill.20
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 22:23:09 -0700 (PDT)
+        Sat, 15 Aug 2020 17:52:29 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599A4C061232;
+        Fri, 14 Aug 2020 22:32:58 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id q75so12887456iod.1;
+        Fri, 14 Aug 2020 22:32:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=+uvK5xyS2jsYMowW54FGXjWCo1ZPVzf5OQMcA+nZWjU=;
+        b=Fb8P7apwQoGsHPtaXb5dSo5RR/ByS4YqN9w1L9SLoNREnc5tUpqgRtPoF5JP1XCHKz
+         ZqS8JALkerVr1yokT29OvYe3psLKWNDDd8XlUHAgx933NWvAZZfA/iv3wLtwZ1i9UbZH
+         k4o1yUSqjAKxVSB4GliQhsirO6oOg1yfPH/cQpnvh7hRPCpAQFQ/NvzOb8hBS05AKmPI
+         YReGyPtKaxClLLwSTWzaiCJKFCvBIzT3dHL47DEcimgiEsbexRzYPI1tHdVU5LBif6pu
+         7cE/ohLMNehvoUsRmq5oTSK1XwzbGBxcRkXuZ07GbSOUNx4pnm8jKy5NFK24RiEXXXvn
+         49Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=+25FmT8dO4pWjXPGwlb17rDpAfTAbCr3FFkhBNcwuAs=;
-        b=mcTgLsr973kYPoTMt4veKSPutegxmmPLJn/w3gnlxASrDNxQQxIA5Fbu5/YkDlfMYn
-         +sL8WyOcER5IQgjTyObAhymed5tWWmMTARTWCsl8dWM+iAEph5XZn7BG+lMEO6OltLz1
-         qRYSivCFOX+v2a7oocuzWgTt6vq4/3bQxOEzPt9ZRaK7/0/vjGN01P6nEmvBps/Nqsdk
-         kyRZdAY0V4JTz5lbjsgLIcHJvT28l6LWUUKR/zSnY8Q3ZTZIdI+5PlPQ0lONQro15jpe
-         Y9hjlzUzCzgZdKEmDgdp9K9EfzgU5bKQxW80tPe+nKedDE8+t0gTL6lM0mfyYYg47m1P
-         Lpcw==
-X-Gm-Message-State: AOAM533mjsyjTBMYg4yCwhzv4DVk6NzfCtTWxTsDjcJNgJpkmkLmd6E9
-        /rQmhlkPitqQRdTUu/Jgv7cT616pi+fmJq63ZKZv8Y1lg5i0
-X-Google-Smtp-Source: ABdhPJydlCxs/36cUc4UNHPK6M0HkLjuUhkbtL2IuaVgPgv4K8a6I+NSpBzJX7MWxkS2M/6tiP8RcVV1wSXKsNQxeGt/4EVo4FU6
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=+uvK5xyS2jsYMowW54FGXjWCo1ZPVzf5OQMcA+nZWjU=;
+        b=bpid0bCuOHEOT7JeUWo7565I3ocLVxZyhYT8RxS0ehCW/uvgQb2NMM9Nwm9ttYwVeL
+         41DJqN1+W4gKbKzJ54lzgtQmpCUIjXikFC5rUlxxzmXpbgC8uhDBvgzOAiEgBK3Wft1O
+         ZuJaDUDKN7ZTFAkabrTDxkewpM/Hb4rfhQLKV1Pa1BSgkVs3V1QfzW3MoXc/pwbGK3o1
+         DWGVpHx1h2EgWtprVKxWeEADDXV/izGit+ChnAxNbRdRBszXJm9SSXI3wQfXPcWfrOFs
+         OBDu4yjTUt1T+J9GWUSYkP1g4MANrZy46zm5QWMo7ZmpyKCpPDWiEkLuG2lGzTs3Wz2d
+         diEg==
+X-Gm-Message-State: AOAM533iFFTe1YbOoDzkxM1szX7zf1QRiNd5csGr9SJqijRn+lXCUTlY
+        KBfS1Q5qm3xvF+Wc7v0gvt0d/cU9CM9j5geYJ6c0ZCYi/HJl6g==
+X-Google-Smtp-Source: ABdhPJzCQ5WCbCigax+HkCKLc4Nw6kcGYCSH3+w5/uVgttRscO15FaumbLuaks6h1UgQCOhYv9L1HF/VSxp5IBihRFU=
+X-Received: by 2002:a05:6602:2801:: with SMTP id d1mr4740187ioe.201.1597469577329;
+ Fri, 14 Aug 2020 22:32:57 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:b712:: with SMTP id k18mr2432857ili.220.1597468988463;
- Fri, 14 Aug 2020 22:23:08 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 22:23:08 -0700
-In-Reply-To: <000000000000eb6a8e057ab79f82@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000098e02c05ace3bbfb@google.com>
-Subject: Re: WARNING: refcount bug in p9_req_put
-From:   syzbot <syzbot+edec7868af5997928fe9@syzkaller.appspotmail.com>
-To:     asmadeus@codewreck.org, davem@davemloft.net, ericvh@gmail.com,
-        hch@lst.de, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        lucho@ionkov.net, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        v9fs-developer@lists.sourceforge.net
+From:   Steve French <smfrench@gmail.com>
+Date:   Sat, 15 Aug 2020 00:32:46 -0500
+Message-ID: <CAH2r5mvJ=EZ2mC6LTnTmML5tCKpcKCOM7+nbbFSzpATBWh9Y_A@mail.gmail.com>
+Subject: [GIT PULL] SMB3 fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Please pull the following changes since commit
+327a8d76b1ac2037f87bf041f3bc076407284ffc:
 
-commit a39c46067c845a8a2d7144836e9468b7f072343e
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Fri Jul 10 08:57:22 2020 +0000
+  Merge tag '5.9-rc-smb3-fixes-part1' of
+git://git.samba.org/sfrench/cifs-2.6 (2020-08-06 19:21:04 -0700)
 
-    net/9p: validate fds in p9_fd_open
+are available in the Git repository at:
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1015f012900000
-start commit:   459e3a21 gcc-9: properly declare the {pv,hv}clock_page sto..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ef1b87b455c397cf
-dashboard link: https://syzkaller.appspot.com/bug?extid=edec7868af5997928fe9
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1642ee48a00000
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.9-rc-smb3-fixes-part2
 
-If the result looks correct, please mark the issue as fixed by replying with:
+for you to fetch changes up to c8c412f976124d85b8ded85c6ac3f760c12b63a3:
 
-#syz fix: net/9p: validate fds in p9_fd_open
+  SMB3: Fix mkdir when idsfromsid configured on mount (2020-08-13
+19:41:01 -0500)
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+----------------------------------------------------------------
+3 small cifs/smb3 fixes, one for stable fixing a mkdir path when using
+idsfromsid mount option
+
+The update for cifs.ko to use the new mount API isn't complete so
+isn't included in this set.
+
+Build verification test results:
+http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/381
+----------------------------------------------------------------
+Dan Carpenter (1):
+      cifs: Fix an error pointer dereference in cifs_mount()
+
+Miaohe Lin (1):
+      cifs: Convert to use the fallthrough macro
+
+Steve French (1):
+      SMB3: Fix mkdir when idsfromsid configured on mount
+
+ fs/cifs/connect.c   | 1 +
+ fs/cifs/smb2inode.c | 1 +
+ fs/cifs/smb2pdu.c   | 4 ++--
+ 3 files changed, 4 insertions(+), 2 deletions(-)
+
+-- 
+Thanks,
+
+Steve
