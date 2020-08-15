@@ -2,153 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110502451FB
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99E124525B
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727927AbgHOVe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:34:57 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:46896 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726541AbgHOVe4 (ORCPT
+        id S1728273AbgHOVqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728071AbgHOVpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:34:56 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 6EA3080548;
-        Sat, 15 Aug 2020 23:28:41 +0200 (CEST)
-Date:   Sat, 15 Aug 2020 23:28:40 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] dt-bindings: Add Mantix MLAF057WE51-X panel
- bindings
-Message-ID: <20200815212840.GC1244923@ravnborg.org>
-References: <cover.1597526107.git.agx@sigxcpu.org>
- <c171b488e883e26eaef7906c007a5cabcbf9e33d.1597526107.git.agx@sigxcpu.org>
+        Sat, 15 Aug 2020 17:45:46 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C97BC03D1CF
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 14:28:58 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id i10so641460pgk.1
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 14:28:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yDB2cu8uvw5o4FJBQyga65heRe+0KnSxhoCkr4blEbk=;
+        b=LMUYZSyi+6Ij3c4IGwpY9C3syOogfNop3DuOh5j4l3mEUI0iD5lnQTNegoHqPJbDwi
+         k4Hu60HVmy/WjAS9njUGjZ2BRBWRDlAh6wLOuo5fKx/Uy0xd4IAUVx2t3LvlBG/UAAfJ
+         T8fPzNqKy0WDJ+39RxYjx79SLJGdG9ZRxXB8qxUl67GNMAujG4oQgXfbf6m5+tlVCV7j
+         yFDHJSk75k9zrc9O9bmHkTNETm5ql/1rN1V2LxRJzp+GlQs1BnQcM1BQf1Py5gZ71rW+
+         78uQEQv3doEuu4pBNdzgCl8oSl1sHt5o1I0xIMEaA76DlTrJo3pQrRwc2S4Jfo7T05Ud
+         BuPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yDB2cu8uvw5o4FJBQyga65heRe+0KnSxhoCkr4blEbk=;
+        b=AlQL7IpYXk5FlooDvf3hCOGE+AWp4Rc8w9Y/CiX69vbiT/FKRwkyREQgsRI/ChQtzo
+         6gIpLDb+Ie5cICH7adgHk12f5mQMO3Y2c5SdTv4LS5yhcZ3eEk9dNfWgrrS9LPiea1Qx
+         8z06XOM9JooFAvfp6iSZjsjNTKGXuCD8jk7vu6jQKaUfGN8knQTBb2uRG8LC5c4KBTPB
+         pxCBCm7LFMfaZQzLpk/8OxXPwryzsYaTuTUKI4wXFj4CTC8uIXTxzXkwfSy2wcc7P0AA
+         NBDAdb+7PQNCg/v7g+e5tL2svhLyNRH+pRwTfCET1vNeAESHjbNrz9fE0+b/s81oKkrL
+         qRVg==
+X-Gm-Message-State: AOAM530NhvG0YzLvsRuTZXol+MEyiOyqtoICms12I1Vxy0PuTtSs5+IN
+        Ev7Vn1Lh1dIpbE8Sj0qebtBEGeqBze6LK6B5a1+TIQ==
+X-Google-Smtp-Source: ABdhPJwGiLda6VueXOHB1PGNMKpexOYerFArFSN25ggacJ5cSHMqAlXCj+LSomXWh3kxgUb+FFN6EOTnhGBqohq/8Dk=
+X-Received: by 2002:a63:7d8:: with SMTP id 207mr5780004pgh.263.1597526937591;
+ Sat, 15 Aug 2020 14:28:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c171b488e883e26eaef7906c007a5cabcbf9e33d.1597526107.git.agx@sigxcpu.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=8nJEP1OIZ-IA:10 a=ze386MxoAAAA:8 a=7gkXJVJtAAAA:8 a=gEfo2CItAAAA:8
-        a=cjlgXKyR3KIVCA3-0ZEA:9 a=wPNLvfGTeEIA:10 a=iBZjaW-pnkserzjvUTHh:22
-        a=E9Po1WZjFZOl8hwRPBS3:22 a=sptkURWiP4Gy88Gu7hUp:22
+References: <20200815014006.GB99152@rani.riverdale.lan> <20200815020946.1538085-1-ndesaulniers@google.com>
+ <202008150921.B70721A359@keescook> <CAKwvOdnyHfx6ayqEoOr3pb_ibKBAG9vj31LuKE+f712W=7LFKA@mail.gmail.com>
+ <457a91183581509abfa00575d0392be543acbe07.camel@perches.com>
+In-Reply-To: <457a91183581509abfa00575d0392be543acbe07.camel@perches.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Sat, 15 Aug 2020 14:28:46 -0700
+Message-ID: <CAKwvOdk4PRi45MXCtg4kmeN6c1AK5w9EJ1XFBJ5GyUjwEtRj1g@mail.gmail.com>
+Subject: Re: [PATCH v2] lib/string.c: implement stpcpy
+To:     Joe Perches <joe@perches.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>, Ingo Molnar <mingo@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 11:16:21PM +0200, Guido Günther wrote:
-> The panel uses a Focaltech FT8006p, the touch part is handled by the
-> already existing edt-ft5x06.
-> 
-> Signed-off-by: Guido Günther <agx@sigxcpu.org>
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+On Sat, Aug 15, 2020 at 2:24 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Sat, 2020-08-15 at 13:47 -0700, Nick Desaulniers wrote:
+> > On Sat, Aug 15, 2020 at 9:34 AM Kees Cook <keescook@chromium.org> wrote:
+> > > On Fri, Aug 14, 2020 at 07:09:44PM -0700, Nick Desaulniers wrote:
+> > > > LLVM implemented a recent "libcall optimization" that lowers calls to
+> > > > `sprintf(dest, "%s", str)` where the return value is used to
+> > > > `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
+> > > > in parsing format strings.  Calling `sprintf` with overlapping arguments
+> > > > was clarified in ISO C99 and POSIX.1-2001 to be undefined behavior.
+> > > >
+> > > > `stpcpy` is just like `strcpy` except it returns the pointer to the new
+> > > > tail of `dest`. This allows you to chain multiple calls to `stpcpy` in
+> > > > one statement.
+> > >
+> > > O_O What?
+> > >
+> > > No; this is a _terrible_ API: there is no bounds checking, there are no
+> > > buffer sizes. Anything using the example sprintf() pattern is _already_
+> > > wrong and must be removed from the kernel. (Yes, I realize that the
+> > > kernel is *filled* with this bad assumption that "I'll never write more
+> > > than PAGE_SIZE bytes to this buffer", but that's both theoretically
+> > > wrong ("640k is enough for anybody") and has been known to be wrong in
+> > > practice too (e.g. when suddenly your writing routine is reachable by
+> > > splice(2) and you may not have a PAGE_SIZE buffer).
+> > >
+> > > But we cannot _add_ another dangerous string API. We're already in a
+> > > terrible mess trying to remove strcpy[1], strlcpy[2], and strncpy[3]. This
+> > > needs to be addressed up by removing the unbounded sprintf() uses. (And
+> > > to do so without introducing bugs related to using snprintf() when
+> > > scnprintf() is expected[4].)
+> >
+> > Well, everything (-next, mainline, stable) is broken right now (with
+> > ToT Clang) without providing this symbol.  I'm not going to go clean
+> > the entire kernel's use of sprintf to get our CI back to being green.
+>
+> Maybe this should get place in compiler-clang.h so it isn't
+> generic and public.
 
-I assume you will apply yourself, otherwise I will do so when we have
-seen a backmerge.
+https://bugs.llvm.org/show_bug.cgi?id=47162#c7 and
+https://bugs.llvm.org/show_bug.cgi?id=47144
+Seem to imply that Clang is not the only compiler that can lower a
+sequence of libcalls to stpcpy.  Do we want to wait until we have a
+fire drill w/ GCC to move such an implementation from
+include/linux/compiler-clang.h back in to lib/string.c?
 
-	Sam
-
+>
+> Something like:
+>
 > ---
->  .../display/panel/mantix,mlaf057we51-x.yaml   | 70 +++++++++++++++++++
->  1 file changed, 70 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
-> new file mode 100644
-> index 0000000000000..937323cc9aaac
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
-> @@ -0,0 +1,70 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/panel/mantix,mlaf057we51-x.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>  include/linux/compiler-clang.h | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>
+> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+> index cee0c728d39a..6279f1904e39 100644
+> --- a/include/linux/compiler-clang.h
+> +++ b/include/linux/compiler-clang.h
+> @@ -61,3 +61,30 @@
+>  #if __has_feature(shadow_call_stack)
+>  # define __noscs       __attribute__((__no_sanitize__("shadow-call-stack")))
+>  #endif
 > +
-> +title: Mantix MLAF057WE51-X 5.7" 720x1440 TFT LCD panel
+> +#ifndef __HAVE_ARCH_STPCPY
+> +/**
+> + * stpcpy - copy a string from src to dest returning a pointer to the new end
+> + *          of dest, including src's NULL terminator. May overrun dest.
+> + * @dest: pointer to buffer being copied into.
+> + *        Must be large enough to receive copy.
+> + * @src: pointer to the beginning of string being copied from.
+> + *       Must not overlap dest.
+> + *
+> + * This function exists _only_ to support clang's possible conversion of
+> + * sprintf calls to stpcpy.
+> + *
+> + * stpcpy differs from strcpy in two key ways:
+> + * 1. inputs must not overlap.
+> + * 2. return value is dest's NUL termination character after copy.
+> + *    (for strcpy, the return value is a pointer to src)
+> + */
 > +
-> +maintainers:
-> +  - Guido Günther <agx@sigxcpu.org>
-> +
-> +description:
-> +  Mantix MLAF057WE51 X is a 720x1440 TFT LCD panel connected using
-> +  a MIPI-DSI video interface.
-> +
-> +allOf:
-> +  - $ref: panel-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - mantix,mlaf057we51-x
-> +
-> +  port: true
-> +  reg:
-> +    maxItems: 1
-> +    description: DSI virtual channel
-> +
-> +  avdd-supply:
-> +    description: Positive analog power supply
-> +
-> +  avee-supply:
-> +    description: Negative analog power supply
-> +
-> +  vddi-supply:
-> +    description: 1.8V I/O voltage supply
-> +
-> +  reset-gpios: true
-> +
-> +  backlight: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - avdd-supply
-> +  - avee-supply
-> +  - vddi-supply
-> +  - reset-gpios
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    dsi {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        panel@0 {
-> +            compatible = "mantix,mlaf057we51-x";
-> +            reg = <0>;
-> +            avdd-supply = <&reg_avdd>;
-> +            avee-supply = <&reg_avee>;
-> +            vddi-supply = <&reg_1v8_p>;
-> +            reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
-> +            backlight = <&backlight>;
-> +        };
-> +    };
-> +
-> +...
-> -- 
-> 2.26.2
+> +static inline char *stpcpy(char __restrict *dest, const char __restrict *src)
+> +{
+> +       while ((*dest++ = *src++) != '\0') {
+> +               ;       /* nothing */
+> +       }
+> +       return --dest;
+> +}
+> +#endif
+>
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
