@@ -2,155 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5FB2451F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1B9245279
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgHOVch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:32:37 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55049 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726901AbgHOVca (ORCPT
+        id S1728921AbgHOVvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728694AbgHOVvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:32:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597527147;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r0QF9s7ohj4aNl8eau7he4E9tQctsoC4pp/nsapCJL4=;
-        b=CT+5vwiQTLnHtPepWrbzAXpGG7+YeR8TJ4+mb+o9ykDxZI0MwUxUhWFceqGGrpSZMLhSFU
-        iR5aWZADL2p3XqFsxb33ASJMxVAV5OZm7iD2JOEWvbvDJfpZFN4yy+JTAfw3/d72KFboAA
-        UqV6yuNt1olejz3TFUv8Ozr2akC+pQI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-XMeVB9CSPX2lvLUrfoyLuA-1; Sat, 15 Aug 2020 12:30:55 -0400
-X-MC-Unique: XMeVB9CSPX2lvLUrfoyLuA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 38FBE1015DC2;
-        Sat, 15 Aug 2020 16:30:38 +0000 (UTC)
-Received: from [10.36.113.93] (ovpn-113-93.ams2.redhat.com [10.36.113.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C147E7A426;
-        Sat, 15 Aug 2020 16:30:28 +0000 (UTC)
-Subject: Re: [PATCH v6 09/15] iommu/vt-d: Check ownership for PASIDs from
- user-space
-To:     Liu Yi L <yi.l.liu@intel.com>, alex.williamson@redhat.com,
-        baolu.lu@linux.intel.com, joro@8bytes.org
-Cc:     kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
-        ashok.raj@intel.com, jun.j.tian@intel.com, yi.y.sun@intel.com,
-        jean-philippe@linaro.org, peterx@redhat.com, hao.wu@intel.com,
-        stefanha@gmail.com, iommu@lists.linux-foundation.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1595917664-33276-1-git-send-email-yi.l.liu@intel.com>
- <1595917664-33276-10-git-send-email-yi.l.liu@intel.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <0db97d4a-7c74-9fac-0763-0ed56dcc5eaa@redhat.com>
-Date:   Sat, 15 Aug 2020 18:30:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Sat, 15 Aug 2020 17:51:36 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D600FC0A3BE4;
+        Sat, 15 Aug 2020 09:33:32 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id s16so9283440qtn.7;
+        Sat, 15 Aug 2020 09:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UdXi5X9JdCDwyXidCVEz2m+8ZLjKmBUqZLTQciSb2xE=;
+        b=VeyC3/j14NqkY/CTqvegy+SlcVkPkObQSuCMJPNHGh6GOlJ9veJftRkGQKz6KX0dAg
+         8GCa9k16hpbcwcrA3S/Iu06iEPUkIza6fv4M4jYFDFr3wvRgAc+EfVs+QcsHLF2xIq0h
+         yvgdHUMc3dZod9aBh4QRs4uXGSAzRUvcOGhtx1xy8mmsQU6cjqKju41+vtxG1uMQYIlX
+         8r4BVaKyjzM9+gATHvwhVMrKqSXiJg5hybVAHxwOlDcMf2Q5Gh+qqKZGxD2N9HHl95eW
+         97HJDB8pUBwklrkKvtYRuPYz4uaU9LGil+TeuWihYkvuNVzjhbwV7wVuDBReEwoxdlNu
+         XNGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UdXi5X9JdCDwyXidCVEz2m+8ZLjKmBUqZLTQciSb2xE=;
+        b=HeE1FV3OJNDDcTtE0sDKq9jItHkZ/+VFh+o2nTfsoL9KcaKIdMyHISTVP7BJ+/x4dF
+         bqoQTphNQ29J2d9H/Hxgk5hXv8mCLOLK07O6CkU4Il+8d9dcTdDSEaJySHgIVwDtncb5
+         XtfszE9Z0LrtegGbB14hkS87HQqZmtQhDoK/JOZ/YEzdnGgYoafjkyDuVcEnABt/P1MZ
+         P46tXHm01iINGXUty46xgKWGyNvW58jei8Y49bxCfg1tdep8etCRv/yz+4CQEyiRvra6
+         wo+JZHMlBAcLRT5Cv9367n0AapSjX906+NK3XFMwVLf0lSM9XFu7P517kx1jsLargVv0
+         EsiA==
+X-Gm-Message-State: AOAM530Yz7Nl9ecIplaHlPeDIlxxK7UpD+iCJo/bgcGGrwhVYsDS/i4Q
+        obPubR5gmjdx8+lIpWcrH0o=
+X-Google-Smtp-Source: ABdhPJyas3G6c7pqXG85ao3UCV84kja33y6oh2GPi3FAyAoVakAfHZOXxJf6Mg0auBHpyf4tO4inpg==
+X-Received: by 2002:aed:3728:: with SMTP id i37mr6901689qtb.347.1597509209094;
+        Sat, 15 Aug 2020 09:33:29 -0700 (PDT)
+Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id r18sm14063798qtc.90.2020.08.15.09.33.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Aug 2020 09:33:28 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 12:33:11 -0400
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        David.Laight@ACULAB.COM
+Subject: Re: [PATCH v4 1/5] counter: Internalize sysfs interface code
+Message-ID: <20200815163255.GA6974@shinobu>
+References: <cover.1595358237.git.vilhelm.gray@gmail.com>
+ <e13d43849f68af8227c6aaa0ef672b459d47e9ab.1595358237.git.vilhelm.gray@gmail.com>
+ <7209ac3d-d1ca-1b4c-b22c-8d98b13742e2@lechnology.com>
+ <20200802210415.GA606173@shinobu>
+ <4061c9e4-775e-b7a6-14fa-446de4fae537@lechnology.com>
+ <20200809191500.GC6542@shinobu>
+ <ca6337f5-b28b-a19e-735c-3cd124570c27@lechnology.com>
 MIME-Version: 1.0
-In-Reply-To: <1595917664-33276-10-git-send-email-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/NkBOFFp2J2Af1nK"
+Content-Disposition: inline
+In-Reply-To: <ca6337f5-b28b-a19e-735c-3cd124570c27@lechnology.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yi,
 
-On 7/28/20 8:27 AM, Liu Yi L wrote:
-> When an IOMMU domain with nesting attribute is used for guest SVA, a
-> system-wide PASID is allocated for binding with the device and the domain.
-> For security reason, we need to check the PASID passed from user-space.
-> e.g. page table bind/unbind and PASID related cache invalidation.
-> 
-> Cc: Kevin Tian <kevin.tian@intel.com>
-> CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Cc: Alex Williamson <alex.williamson@redhat.com>
-> Cc: Eric Auger <eric.auger@redhat.com>
-> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Lu Baolu <baolu.lu@linux.intel.com>
-> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> ---
->  drivers/iommu/intel/iommu.c | 10 ++++++++++
->  drivers/iommu/intel/svm.c   |  7 +++++--
->  2 files changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index b2fe54e..88f4647 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -5436,6 +5436,7 @@ intel_iommu_sva_invalidate(struct iommu_domain *domain, struct device *dev,
->  		int granu = 0;
->  		u64 pasid = 0;
->  		u64 addr = 0;
-> +		void *pdata;
->  
->  		granu = to_vtd_granularity(cache_type, inv_info->granularity);
->  		if (granu == -EINVAL) {
-> @@ -5456,6 +5457,15 @@ intel_iommu_sva_invalidate(struct iommu_domain *domain, struct device *dev,
->  			 (inv_info->granu.addr_info.flags & IOMMU_INV_ADDR_FLAGS_PASID))
->  			pasid = inv_info->granu.addr_info.pasid;
->  
-> +		pdata = ioasid_find(dmar_domain->ioasid_sid, pasid, NULL);
-> +		if (!pdata) {
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		} else if (IS_ERR(pdata)) {
-> +			ret = PTR_ERR(pdata);
-> +			goto out_unlock;
-> +		}
-> +
->  		switch (BIT(cache_type)) {
->  		case IOMMU_CACHE_INV_TYPE_IOTLB:
->  			/* HW will ignore LSB bits based on address mask */
-> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-> index c85b8d5..b9b29ad 100644
-> --- a/drivers/iommu/intel/svm.c
-> +++ b/drivers/iommu/intel/svm.c
-> @@ -323,7 +323,7 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
->  	dmar_domain = to_dmar_domain(domain);
->  
->  	mutex_lock(&pasid_mutex);
-> -	svm = ioasid_find(INVALID_IOASID_SET, data->hpasid, NULL);
-> +	svm = ioasid_find(dmar_domain->ioasid_sid, data->hpasid, NULL);
-A question about the locking strategy. We don't take the
-device_domain_lock here. Could you clarify whether it is safe?
+--/NkBOFFp2J2Af1nK
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Aug 10, 2020 at 05:48:07PM -0500, David Lechner wrote:
+>=20
+> >>>>>    =20
+> >>>>>     CPMAC ETHERNET DRIVER
+> >>>>>     M:	Florian Fainelli <f.fainelli@gmail.com>
+> >>>>> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-qua=
+d-8.c
+> >>>>> index 78766b6ec271..0f20920073d6 100644
+> >>>>> --- a/drivers/counter/104-quad-8.c
+> >>>>> +++ b/drivers/counter/104-quad-8.c
+> >>>>> @@ -621,7 +621,7 @@ static const struct iio_chan_spec quad8_channel=
+s[] =3D {
+> >>>>>     };
+> >>>>>    =20
+> >>>>>     static int quad8_signal_read(struct counter_device *counter,
+> >>>>> -	struct counter_signal *signal, enum counter_signal_value *val)
+> >>>>> +			     struct counter_signal *signal, u8 *val)
+> >>>>
+> >>>> I'm not a fan of replacing enum types with u8 everywhere in this pat=
+ch.
+> >>>> But if we have to for technical reasons (e.g. causes compiler error =
+if
+> >>>> we don't) then it would be helpful to add comments giving the enum t=
+ype
+> >>>> everywhere like this instance where u8 is actually an enum value.
+> >>>>
+> >>>> If we use u32 as the generic type for enums instead of u8, I think t=
+he
+> >>>> compiler will happlily let us use enum type and u32 interchangeably =
+and
+> >>>> not complain.
+> >>>
+> >>> I switched to fixed-width types after the suggestion by David Laight:
+> >>> https://lkml.org/lkml/2020/5/3/159. I'll CC David Laight just in case=
+ he
+> >>> wants to chime in again.
+> >>>
+> >>> Enum types would be nice for making the valid values explicit, but th=
+ere
+> >>> is one benefit I have appreciated from the move to fixed-width types:
+> >>> there has been a significant reduction of duplicate code; before, we =
+had
+> >>> a different read function for each different enum type, but now we us=
+e a
+> >>> single function to handle them all.
+> >>
+> >> Yes, what I was trying to explain is that by using u32 instead of u8, I
+> >> think we can actually do both.
+> >>
+> >> The function pointers in struct counter_device *counter would use u32 =
+as a
+> >> generic enum value in the declaration, but then the actual implementat=
+ions
+> >> could still use the proper enum type.
+> >=20
+> > Oh, I see what you mean now. So for example:
+> >=20
+> >      int (*signal_read)(struct counter_device *counter,
+> >                         struct counter_signal *signal, u8 *val)
+> >=20
+> > This will become instead:
+> >=20
+> >      int (*signal_read)(struct counter_device *counter,
+> >                         struct counter_signal *signal, u32 *val)
+> >=20
+> > Then in the driver callback implementation we use the enum type we need:
+> >=20
+> >      enum counter_signal_level signal_level =3D COUNTER_SIGNAL_HIGH;
+> >      ...
+> >      *val =3D signal_level;
+> >=20
+> > Is that what you have in mind?
+> >=20
+>=20
+> Yes.
+>=20
+> Additionally, if we have...
+>=20
+>=20
+>        int (*x_write)(struct counter_device *counter,
+>                       ..., u32 val)
+>  =20
+> We should be able to define the implementation as:
+>=20
+> static int my_driver_x_write(struct counter_device *counter,
+>                               ..., enum some_type val)
+> {
+> 	...
+> }
+>=20
+> Not sure if it works if val is a pointer though. Little-
+> endian systems would probably be fine, but maybe not big-
+> endian combined with -fshort-enums compiler flag.
+>=20
+>=20
+>        int (*x_read)(struct counter_device *counter,
+>                      ..., u32 *val)
+>  =20
+>=20
+> static int my_driver_x_read(struct counter_device *counter,
+>                              ..., enum some_type *val)
+> {
+> 	...
+> }
 
->  	if (IS_ERR(svm)) {
->  		ret = PTR_ERR(svm);
->  		goto out;
-> @@ -440,6 +440,7 @@ int intel_svm_unbind_gpasid(struct iommu_domain *domain,
->  			    struct device *dev, u32 pasid)
->  {
->  	struct intel_iommu *iommu = intel_svm_device_to_iommu(dev);
-> +	struct dmar_domain *dmar_domain;
->  	struct intel_svm_dev *sdev;
->  	struct intel_svm *svm;
->  	int ret = -EINVAL;
-> @@ -447,8 +448,10 @@ int intel_svm_unbind_gpasid(struct iommu_domain *domain,
->  	if (WARN_ON(!iommu))
->  		return -EINVAL;
->  
-> +	dmar_domain = to_dmar_domain(domain);
-> +
->  	mutex_lock(&pasid_mutex);
-> -	svm = ioasid_find(INVALID_IOASID_SET, pasid, NULL);
-> +	svm = ioasid_find(dmar_domain->ioasid_sid, pasid, NULL);
-same here.
->  	if (!svm) {
->  		ret = -EINVAL;
->  		goto out;
-> 
-Thanks
+Regardless of endianness for pointers, will targets that have
+-fshort-enums enabled by default present a problem here? I imagine that
+in these cases enum some_type will have a size of unsigned char because
+that is the first type that can represent all the values:
+https://gcc.gnu.org/onlinedocs/gcc/Structures-unions-enumerations-and-bit-f=
+ields-implementation.html
 
-Eric
+What I'm worried about is whether we can gurantee u32 val can be swapped
+out with enum some_type val -- or if this is not possible because some
+architectures will be built with -fshort-enums enabled?
 
+William Breathitt Gray
+
+--/NkBOFFp2J2Af1nK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl84DkcACgkQhvpINdm7
+VJIMkxAAqCR+3cgDGKBMJ0a2SGKYclj8fhdGCxcN4vBaX7BTLdGt9uTejIBoMp4q
+1IUyEoXhgzQbwAU19ZXovtu0qVd6YZSYOIPfHcG63QgWClFbsrF1KQVcDryJkdlL
+mSap7y7MAP8XvawxmUUUQ5hYQYkgT41o1KilQYTcBe4uiyhICTA2ZIl07b1y2ZyC
+u/ZayKBLY37P2P2T07W6HU3mIIuPTiJEXFzHrrSCB6DnzhtDxzwqbaUAjM6gLpGg
+aRsUBKnbs7bxO4SiQVq1kFkm9TGRnqwXI0JZq8dZ7UdT49CqkocJKPWvBYsW2hGw
+Dx8nrlIdN6XOokcHlWhRKXg5SanuqCJqjuHvCM+/PfohLfteT6NOkDkGdUtrS5w5
+7KGn5BLGiC1trXIBsZtKThSJNniQC2GXDuTZrqHWgNW6Lb9dGQWAwaHtvv4ngd26
+n6f4kfmQGrTf/DQ8B34z3pYxVmPrSYVNYFYwRzGSkoeBc9HGIU+X68RrHnVzQY8N
+HWsluxVlBD2Zt8vK/+W2sG5gQXr1R2PFXPYsn/dm3zDYWlhqoOK1nGuJXbrwvI8f
+QBelsICf3bQcObF3kvOFV7QtWS0u36IjjsMunzUVsY6fCHomfsijIFcCmN8ui2mw
+HBZ7enuTvV7dX0u7yxvce7gRlTuGjEzRXik9kf6p+NsTKpwNgus=
+=ZYDv
+-----END PGP SIGNATURE-----
+
+--/NkBOFFp2J2Af1nK--
