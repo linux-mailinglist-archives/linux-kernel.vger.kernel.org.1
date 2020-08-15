@@ -2,64 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591F724532C
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D033E245353
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729557AbgHOV7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728934AbgHOVvy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:54 -0400
-Received: from mail-il1-x145.google.com (mail-il1-x145.google.com [IPv6:2607:f8b0:4864:20::145])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AE7C0F26F7
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:15:04 -0700 (PDT)
-Received: by mail-il1-x145.google.com with SMTP id g6so8884689iln.2
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:15:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc;
-        bh=4xpDMl3NeXZcwdAiC+yVFHrHRUJEIDgJ5ulLpZwqEjI=;
-        b=lkfdbT/Cb6ZcrGvTcg66rPyRFwgd8TaSkjF4EFqYuhK7lnRIT3m2rGxQnWBAZZy1Bt
-         Vdlp9HkD7AsDmSRcmoBADerPmgmzdly0hnlQI3oK88vhAm3u6EfxjN8BOGojIeTY4efs
-         +rBzFCF1CQOsCKzS6GLVaOlnzQbINunZGLmSwy2TuDLhrLdpnVvJ/nKkrBkiqEgtohPV
-         G8g6UY9QyHxiVeJk049NrBZXjUn4NFkR5TJjC5Grvo0qHBM+G/LpV+vikJuaHV51WUab
-         q1gMM+NaJzJRL7drxGxRmsEduqUkQxGDgrHvF7R0J/RxD44K2sXV+Erw5F9WDZr0VkxS
-         A73A==
-X-Gm-Message-State: AOAM530u+zoc5YN1aaJLqXS2OFesmfcxJQluOr3yBoaz9Sq3aSrtzRZW
-        AATvS2bLDGkJOlUwVNvs311W3RqIP/ZAWgKBmQp1rcWe4f/4
-X-Google-Smtp-Source: ABdhPJwWbQqFhbKiJRtugfK4oKOj21an5kZquR9VFiI9RweoGgikPQvFcrcRyVgyQeEnOHoeb3Up7TqAFi6Ze2gqNRsgMi9v/td7
-MIME-Version: 1.0
-X-Received: by 2002:a92:85c8:: with SMTP id f191mr7591361ilh.242.1597515302467;
- Sat, 15 Aug 2020 11:15:02 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 11:15:02 -0700
-In-Reply-To: <e3494c53-f84e-5152-42b0-f8ddd3ad4ccb@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000207e2405acee84f5@google.com>
-Subject: Re: Re: possible deadlock in io_poll_double_wake
-From:   syzbot <syzbot+0d56cfeec64f045baffc@syzkaller.appspotmail.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+        id S1729019AbgHOWAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:00:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728838AbgHOWA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:00:28 -0400
+Subject: Re: [GIT PULL] perf tool changes for v5.9: 2nd batch
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597515739;
+        bh=vEljPOThfSbnJn88gHs4Smd9TmldHaunZhuNavYVFW4=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=Vze+ZvfKm0DVLiQx6F9jCuGC4zZ42/3sh6vUSprrhTTNyiAv1Jc1QBk9w4mQI+AuA
+         yC/ELqfDzeJAecrZG57q2hgPetCH3noKhRHpDHuiq9TomeZvRWLZ7rnvUTivfGyF3D
+         2Hn02yE1OIpS65IiaU0THazwa0GUMzHgPRMEoPMM=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200814174917.2591425-1-acme@kernel.org>
+References: <20200814174917.2591425-1-acme@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200814174917.2591425-1-acme@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-2020-08-14
+X-PR-Tracked-Commit-Id: 492e4edba6e2fc0620a69266d33f29c4a1f9ac1e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 713eee84720e6525bc5b65954c5087604a15f5e8
+Message-Id: <159751573947.22808.8285651134325842958.pr-tracker-bot@kernel.org>
+Date:   Sat, 15 Aug 2020 18:22:19 +0000
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Changbin Du <changbin.du@gmail.com>,
+        Colin King <colin.king@canonical.com>,
+        =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>,
+        David Ahern <dsahern@kernel.org>,
+        "Frank Ch . Eigler" <fche@redhat.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Paul Clarke <pc@us.ibm.com>, Peng Fan <fanpeng@loongson.cn>,
+        Rob Herring <robh@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> #syz dupe general protection fault in io_poll_double_wake
+The pull request you sent on Fri, 14 Aug 2020 14:49:17 -0300:
 
-unknown command "dupe"
+> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-2020-08-14
 
->
-> -- 
-> Jens Axboe
->
-> -- 
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/e3494c53-f84e-5152-42b0-f8ddd3ad4ccb%40kernel.dk.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/713eee84720e6525bc5b65954c5087604a15f5e8
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
