@@ -2,83 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CD424538D
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8EF2453CB
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729574AbgHOWC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728130AbgHOVvW (ORCPT
+        id S1729957AbgHOWFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:05:54 -0400
+Received: from smtprelay0123.hostedemail.com ([216.40.44.123]:45948 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729955AbgHOWFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:22 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039CEC06136A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:06:04 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id m22so11902477ljj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RootNd+uaIchwNuSjJ92KshSOxN5xr+c7UxFHHSLXrA=;
-        b=Rc/RXDOQJRu669+aRSylsloBjpy+Tv0xBR5VmuM+1kM7tD+64LA8AJReywNJdxUlep
-         dw15OB9ijcVZo4KncX20axh8A7Ur5PNpcsEphZxCAi3qIjMGKs+KUtpEvkSGzhaXrqgb
-         RwltEjb8UtxJu63+neyepOK1JgvhkTg3f5goY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RootNd+uaIchwNuSjJ92KshSOxN5xr+c7UxFHHSLXrA=;
-        b=bBqsgxnISNVUnOfM9KktUSY+jr/umFXUDe0Z25J9enV6N0RDEjZnKMYxxE1w6Wd/oR
-         hsnoOh+BGP9eNtK3Y6NrdqpXg4GZFrs0Fdq0Tx8CwP+k96Oky7kY30osDDBWhHz6IAvf
-         DqCjZ2G570LqW/HNGDqQyGIe2Dsd+hT4geVOc66cmq4imMdxqAXPE0gD9vxnplZhbs2j
-         uQuJzO2UHioEjaGj26vgwD+aLAon7y0g9oJYfDDYZmnXSQK3Hkmnc0AWdKjcBUIo6KOY
-         oNWlNjTZg62cBZ3OftRaV6TKGLdqBU9M7Hx1n4kkDFIRHtEbFbTcKamrQyYa9NA159Tl
-         CW8g==
-X-Gm-Message-State: AOAM532/6DsRLq8DVML0qiWmpL5XmLNHkh8LdZXO/AqB4Ps+anUzEtcF
-        yd8wGChgrpSf1tMQ8egIkRTTJcLIC19Ekw==
-X-Google-Smtp-Source: ABdhPJyT8xTWl6LZtTb/7eNBshdSdDSdNSKC36u4Q2BJ63vJJNxAwV0H9mpcterf59yhAf3xdERMhQ==
-X-Received: by 2002:a2e:6808:: with SMTP id c8mr2767662lja.13.1597460762166;
-        Fri, 14 Aug 2020 20:06:02 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id l20sm2111070ljb.28.2020.08.14.20.06.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Aug 2020 20:06:01 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id y2so2904562ljc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:06:00 -0700 (PDT)
-X-Received: by 2002:a2e:92d0:: with SMTP id k16mr2375763ljh.70.1597460760539;
- Fri, 14 Aug 2020 20:06:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <15f52e9b0e50296aba35871bc1575a684c4a258a.camel@perches.com> <CAKwvOd=8C94K-9VCqdCn9FXiyfDhKxMu=4AGem1bGgp8m6z0fw@mail.gmail.com>
-In-Reply-To: <CAKwvOd=8C94K-9VCqdCn9FXiyfDhKxMu=4AGem1bGgp8m6z0fw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 14 Aug 2020 20:05:44 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjjHN32BXdqu1iP8WSZoqdGPDDiqVLUbBgYG+=JO3MJCw@mail.gmail.com>
-Message-ID: <CAHk-=wjjHN32BXdqu1iP8WSZoqdGPDDiqVLUbBgYG+=JO3MJCw@mail.gmail.com>
+        Sat, 15 Aug 2020 18:05:50 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave06.hostedemail.com (Postfix) with ESMTP id B2B4A80118C0
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 03:17:28 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 80CFF100E7B6F;
+        Sat, 15 Aug 2020 03:17:28 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3867:3868:3872:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:9025:10004:10400:10848:11232:11657:11658:11914:12043:12297:12346:12438:12555:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21347:21365:21433:21627:30029:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: bath02_460df3327002
+X-Filterd-Recvd-Size: 1566
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 15 Aug 2020 03:17:27 +0000 (UTC)
+Message-ID: <bc2ca9785cb7cf86c59c8922269d2dfc077ec3cc.camel@perches.com>
 Subject: Re: [PATCH] genksyms: keywords: Use __restrict not _restrict
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Joe Perches <joe@perches.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
+From:   Joe Perches <joe@perches.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
         LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Fri, 14 Aug 2020 20:17:26 -0700
+In-Reply-To: <CAHk-=wjjHN32BXdqu1iP8WSZoqdGPDDiqVLUbBgYG+=JO3MJCw@mail.gmail.com>
+References: <15f52e9b0e50296aba35871bc1575a684c4a258a.camel@perches.com>
+         <CAKwvOd=8C94K-9VCqdCn9FXiyfDhKxMu=4AGem1bGgp8m6z0fw@mail.gmail.com>
+         <CAHk-=wjjHN32BXdqu1iP8WSZoqdGPDDiqVLUbBgYG+=JO3MJCw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 7:14 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> What's KAO? Urban dictionary has no entry. :^P
+On Fri, 2020-08-14 at 20:05 -0700, Linus Torvalds wrote:
+> On Fri, Aug 14, 2020 at 7:14 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> > What's KAO? Urban dictionary has no entry. :^P
+> 
+> It goes back to 2003 and the original keywords.gperf file, see
+> 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/commit/?id=46bd1da672d66ccd8a639d3c1f8a166048cca608
+> 
+> from the BK history conversion.
+> 
+> It might be Kai Germaschewski's tagger name?
 
-It goes back to 2003 and the original keywords.gperf file, see
+I think it was Keith Owens.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/commit/?id=46bd1da672d66ccd8a639d3c1f8a166048cca608
 
-from the BK history conversion.
-
-It might be Kai Germaschewski's tagger name?
-
-              Linus
