@@ -2,82 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088412453D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CB0245423
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729920AbgHOWGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728418AbgHOVuu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:50:50 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89947C03B3CE;
-        Sat, 15 Aug 2020 01:41:07 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1c7a00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f1c:7a00:329c:23ff:fea6:a903])
+        id S1728935AbgHOWMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:12:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728864AbgHOWK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:10:27 -0400
+Received: from kernel.org (unknown [104.132.0.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AC2801EC044B;
-        Sat, 15 Aug 2020 10:41:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1597480864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=CmqbmjtODYtlwRW7qWoQG1WqmoGu1ND+kuU+HHrBwFw=;
-        b=Enkvx3eCIzsidlS3C+nqS52FIeO7ezEcI27HINGWHsC2a3OXUawSC8iEolmV1uC8UL1Q7Q
-        nQchEb0VvZYIAzmKg9Hp5o/sU36IposP4sYm1Ay+AsgnzMWjzQ7W4vL2gG0MRSZmDNmpU8
-        2pPkjh0eUEUPuBB9+hu24EIEq+1WtT0=
-Date:   Sat, 15 Aug 2020 10:41:57 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Alison Wang <alison.wang@nxp.com>,
-        James Morse <james.morse@arm.com>
-Cc:     mchehab@kernel.org, tony.luck@intel.com, rrichter@marvell.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] edac: nxp: Add L1 and L2 error detection for A53 and A72
- cores
-Message-ID: <20200815084157.GC25814@zn.tnic>
-References: <20200709082215.12829-1-alison.wang@nxp.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 29FFF23100;
+        Sat, 15 Aug 2020 08:55:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597481736;
+        bh=p9Uh66ovclGtSaOL7rnm9s19mpJBhHaFsJcGtCuvF1w=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=znm2OHPlHUDSZLVe2MaWYZjKe+WDUywDrXyKoUS9Z4MFSrLSTusNKVpXhcTbOQJeJ
+         gtXXDsnD/WHApxS0aHkRn/zrYWdVAeTPV0P92Xr4BiBKLeEyhyJQ80WQnkt1DApSAY
+         wUyFruf1TLDQ0oJT5/SbJ1+3rRKOur7UPK6ID2gs=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200709082215.12829-1-alison.wang@nxp.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <2736eaf03a5b8bf3aa4566198a98f3d2073d0070.1597236805.git.mchehab+huawei@kernel.org>
+References: <2736eaf03a5b8bf3aa4566198a98f3d2073d0070.1597236805.git.mchehab+huawei@kernel.org>
+Subject: Re: [PATCH] spmi: fix some coding style issues at the spmi core
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Date:   Sat, 15 Aug 2020 01:55:35 -0700
+Message-ID: <159748173501.2276320.8306877664488819502@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 04:22:15PM +0800, Alison Wang wrote:
-> Add error detection for A53 and A72 cores. Hardware error injection is
-> supported on A53. Software error injection is supported on both.
-> For hardware error injection on A53 to work, proper access to
-> L2ACTLR_EL1, CPUACTLR_EL1 needs to be granted by EL3 firmware. This is
-> done by making an SMC call in the driver. Failure to enable access
-> disables hardware error injection. For error detection to work, another
-> SMC call enables access to L2ECTLR_EL1.
-> 
-> It is for NXP's Layerscape family LS1043A, LS1046A, LS2088A and LX2160A.
-> 
-> Signed-off-by: York Sun <york.sun@nxp.com>
-> Signed-off-by: Alison Wang <alison.wang@nxp.com>
+Quoting Mauro Carvalho Chehab (2020-08-12 05:53:27)
+> While preparing to port the HiSilicon 6421v600 SPMI driver,
+> I noticed some coding style issues at the SPMI core.
+>=20
+> Address them.
+>=20
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  .../bindings/edac/cortex-arm64-edac.txt       |  40 +
->  drivers/edac/Kconfig                          |   7 +
->  drivers/edac/Makefile                         |   1 +
->  drivers/edac/cortex_arm64_l1_l2.c             | 738 ++++++++++++++++++
->  drivers/edac/cortex_arm64_l1_l2.h             |  54 ++
->  5 files changed, 840 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/edac/cortex-arm64-edac.txt
->  create mode 100644 drivers/edac/cortex_arm64_l1_l2.c
->  create mode 100644 drivers/edac/cortex_arm64_l1_l2.h
 
-This needs James to have a look at.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
