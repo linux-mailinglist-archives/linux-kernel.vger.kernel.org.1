@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F7F2453B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2EC245391
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729855AbgHOWEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
+        id S1729524AbgHOWDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:03:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728506AbgHOVuz (ORCPT
+        with ESMTP id S1728687AbgHOVvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:50:55 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C712C0F26E6
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:59:51 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id l2so11052967wrc.7
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 10:59:51 -0700 (PDT)
+        Sat, 15 Aug 2020 17:51:12 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2B6C0F26E8
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:01:21 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id g8so9982957wmk.3
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:01:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=D1qp9Sg5Vz7dxa7BsyonZd3Kc8l+lC9M/3l1Va+2nWM=;
-        b=ewJ3JKHkqTMghk5rkiCzHfQPeZiL5378GCf2e4QX+fdrHf5zqLZay9/iat/Gb0QcPW
-         0IGBiq3pCuwD8TA/vs1MZMKwhaIvtLJffg153Jy2e60LEl8esFycaOsJWqX6BXexbGYC
-         WyfP2vWdWzLPYvz+sDayOp3edkJkzG3Lx7MRa0oDJ3OReBJ9MUf4iZz5AVsHI5dW8q8e
-         s4iunHft6TcjESOL3RnB6wwYyEI76ZQzh0B3CIjL2m18fzBMhObRVu6+W+XMfQ1lSBf7
-         SkIsfOp+g6Xk++GC1d19mvaretDliRqj0K6TDc5X1Dy5h07f2TgmrN5xSGwew3vPTZS1
-         CF0w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=Byd6JX0u9CVtv0y1zEzjrWKsILPjQocwhfVDqHvQpP8=;
+        b=RVUfc64EUrpOjS0uUeTj6CnoZaKgjhY9NRue/r+GIWwLxpaMr05j6TAHIRiyjnTGX7
+         UbpcJsKG1QLGUzPBUG+YdAvLlEJMobaUe/Kmmq2AOU8lSBuGCqJdCuUnWWcP8DuBGKf2
+         bH5LrNBJz/IFgFvkTyUPEtTzx1GhVBbHiv1bWjQ7D6mmyuEJwbQNUyJbBe4OCp9/DFag
+         7wgSdzD3dZmzBzQw8Hdop39zn0CljLo1IS9VSSdazcq7tqnTCQDV6GhDVfFO30RGovqJ
+         EMA3GXBGH8kTkcIcmQ0WlZrydWr2UpbWYvcJB7zlbiF7JE6b+DtYhME52O+ao10oo1xE
+         gRdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=D1qp9Sg5Vz7dxa7BsyonZd3Kc8l+lC9M/3l1Va+2nWM=;
-        b=Lc4UctOHqPLHkV/2YiNJT/brvk0W87vkGUqyxDSZbU2pDGkz+CyqDiwtsFFacC/3ud
-         veaZDU1dCHWEH7B9vCA7aXFwh+gTGOR2kDMQPovl8CFxGGr7A9ZB+7JJJMg/0nhyiUPI
-         /0FUsvTnVt+bRuA8rJS9oD93sOASBWWce0TijWVsM1/lEFvhynP/nlqVzSFzzcCtqKER
-         +o5fT6UG4gpvoTMzvj2P2lPJdgJ6n91IarSVzNZ/oB204SB+eoIZ/b1kwUXBwHmq/TId
-         0MRC0C7zgL3l/cWawcSqnYmKj4qVqwNRoNq2WynrLDzvzHCX3e763eLDbm9JUkIKmUpA
-         JV6w==
-X-Gm-Message-State: AOAM53047ap0DBlB9R8arwsoR2p4c5iBgU3HFxmj6t5AcdKbr0uZSIEA
-        Mcn3wqZOoeUTW5HLRqC+5zZuhK4I5Hg=
-X-Google-Smtp-Source: ABdhPJxAsJDNrK39Otc1xbssnuz3FFHo2LdOIqBaRvmTsBRkRX2si2FaB1F6EwWuqyWIgM6PmCzQbw==
-X-Received: by 2002:a5d:5446:: with SMTP id w6mr7600511wrv.127.1597514390069;
-        Sat, 15 Aug 2020 10:59:50 -0700 (PDT)
+        bh=Byd6JX0u9CVtv0y1zEzjrWKsILPjQocwhfVDqHvQpP8=;
+        b=hkNsYP40EtvNG5KowLSKL8XZTNKDbh5m7rqtlvD0YGTOTT/BgD/oiawtfGY+lOeD+F
+         hFYs4dB7NycIiEIgZsKTQkIYNZycsW/pFf1tUQpmCQ4VOO3Qe7bpjAHNlNIkobWOaksF
+         flqPAFBbRRzMqcGc072hlVfSb1ApynjNXiV4uLuxfX3nvtrSTwjyPezn9u0tRNNAJafG
+         sDGIgeT9AESAtuSqDgupSbXWZnKcL5yI0gK7rjt9jLYX9w2mrsJJInBrwhBZClZ4tXV3
+         Lu25YkkAhYehVBcxL5q8fpiLkhNDfpOE6ISlc6rnrc9jfjeeSW0MRqkpA18blju3USUq
+         wf7Q==
+X-Gm-Message-State: AOAM533DvAXCrQw1+wgSP3Q0PTfY206C6UnlhgUdiWL+SDJFq/cNY0Oi
+        WFTeVouIHbE7UAgFwxjPBsKZ7Hu6ZqU=
+X-Google-Smtp-Source: ABdhPJxvFWoKTIJTQ4+D7HIXsGygz+/zUrJnihc+8gD094by7boTdo6kCAo3SaCOlnhiG3x6WOh7fw==
+X-Received: by 2002:a1c:678b:: with SMTP id b133mr8201129wmc.117.1597514479589;
+        Sat, 15 Aug 2020 11:01:19 -0700 (PDT)
 Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id e5sm24460775wrc.37.2020.08.15.10.59.48
+        by smtp.gmail.com with ESMTPSA id e5sm24460775wrc.37.2020.08.15.11.01.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 10:59:48 -0700 (PDT)
+        Sat, 15 Aug 2020 11:01:18 -0700 (PDT)
 From:   Oded Gabbay <oded.gabbay@gmail.com>
 To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Subject: [PATCH 7/9] habanalabs: check TPC vector pipe is empty
-Date:   Sat, 15 Aug 2020 20:59:36 +0300
-Message-Id: <20200815175938.16619-7-oded.gabbay@gmail.com>
+Cc:     farah kassabri <fkassabri@habana.ai>
+Subject: [PATCH 9/9] habanalabs: extend busy engines mask to 64 bits
+Date:   Sat, 15 Aug 2020 20:59:38 +0300
+Message-Id: <20200815175938.16619-9-oded.gabbay@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200815175938.16619-1-oded.gabbay@gmail.com>
 References: <20200815175938.16619-1-oded.gabbay@gmail.com>
@@ -60,37 +61,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver waits for the TPC vector pipe to be empty before checking if the
-TPC kernel has finished executing, but the code doesn't validate that the
-pipe was indeed empty, it just wait for it without checking the return
-value.
+From: farah kassabri <fkassabri@habana.ai>
 
-Reported-by: kernel test robot <lkp@intel.com>
+change busy engines bitmask to 64 bits in order to represent
+more engines, needed for future ASIC support.
+
+Signed-off-by: farah kassabri <fkassabri@habana.ai>
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
 Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/misc/habanalabs/common/habanalabs.h       | 2 +-
+ drivers/misc/habanalabs/common/habanalabs_ioctl.c | 2 +-
+ drivers/misc/habanalabs/gaudi/gaudi.c             | 2 +-
+ drivers/misc/habanalabs/goya/goya.c               | 2 +-
+ include/uapi/misc/habanalabs.h                    | 6 ++++++
+ 5 files changed, 10 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index 2decf7be3e08..dbf214421ae1 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -754,7 +754,7 @@ struct hl_asic_funcs {
+ 	void (*set_clock_gating)(struct hl_device *hdev);
+ 	void (*disable_clock_gating)(struct hl_device *hdev);
+ 	int (*debug_coresight)(struct hl_device *hdev, void *data);
+-	bool (*is_device_idle)(struct hl_device *hdev, u32 *mask,
++	bool (*is_device_idle)(struct hl_device *hdev, u64 *mask,
+ 				struct seq_file *s);
+ 	int (*soft_reset_late_init)(struct hl_device *hdev);
+ 	void (*hw_queues_lock)(struct hl_device *hdev);
+diff --git a/drivers/misc/habanalabs/common/habanalabs_ioctl.c b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
+index fe6c5534d378..a94800014243 100644
+--- a/drivers/misc/habanalabs/common/habanalabs_ioctl.c
++++ b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
+@@ -132,7 +132,7 @@ static int hw_idle(struct hl_device *hdev, struct hl_info_args *args)
+ 		return -EINVAL;
+ 
+ 	hw_idle.is_idle = hdev->asic_funcs->is_device_idle(hdev,
+-					&hw_idle.busy_engines_mask, NULL);
++					&hw_idle.busy_engines_mask_ext, NULL);
+ 
+ 	return copy_to_user(out, &hw_idle,
+ 		min((size_t) max_size, sizeof(hw_idle))) ? -EFAULT : 0;
 diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index ffd0849e8f2d..3360c3c207a9 100644
+index 3360c3c207a9..e56f95e6c741 100644
 --- a/drivers/misc/habanalabs/gaudi/gaudi.c
 +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -6262,6 +6262,15 @@ static int gaudi_run_tpc_kernel(struct hl_device *hdev, u64 tpc_kernel,
- 		1000,
- 		kernel_timeout);
+@@ -6041,7 +6041,7 @@ static int gaudi_armcp_info_get(struct hl_device *hdev)
+ 	return 0;
+ }
  
-+	if (rc) {
-+		dev_err(hdev->dev,
-+			"Timeout while waiting for TPC%d vector pipe\n",
-+			tpc_id);
-+		hdev->asic_funcs->set_clock_gating(hdev);
-+		mutex_unlock(&gaudi->clk_gate_mutex);
-+		return -EIO;
-+	}
+-static bool gaudi_is_device_idle(struct hl_device *hdev, u32 *mask,
++static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
+ 					struct seq_file *s)
+ {
+ 	struct gaudi_device *gaudi = hdev->asic_specific;
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index 77a5963a4d10..021cd26fb018 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -5117,7 +5117,7 @@ static void goya_disable_clock_gating(struct hl_device *hdev)
+ 	/* clock gating not supported in Goya */
+ }
+ 
+-static bool goya_is_device_idle(struct hl_device *hdev, u32 *mask,
++static bool goya_is_device_idle(struct hl_device *hdev, u64 *mask,
+ 				struct seq_file *s)
+ {
+ 	const char *fmt = "%-5d%-9s%#-14x%#-16x%#x\n";
+diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
+index ca6dc1fc250e..693081728ef3 100644
+--- a/include/uapi/misc/habanalabs.h
++++ b/include/uapi/misc/habanalabs.h
+@@ -319,6 +319,12 @@ struct hl_info_hw_idle {
+ 	 * Bits definition is according to `enum <chip>_enging_id'.
+ 	 */
+ 	__u32 busy_engines_mask;
 +
- 	rc = hl_poll_timeout(
- 		hdev,
- 		mmTPC0_CFG_WQ_INFLIGHT_CNTR + offset,
++	/*
++	 * Extended Bitmask of busy engines.
++	 * Bits definition is according to `enum <chip>_enging_id'.
++	 */
++	__u64 busy_engines_mask_ext;
+ };
+ 
+ struct hl_info_device_status {
 -- 
 2.17.1
 
