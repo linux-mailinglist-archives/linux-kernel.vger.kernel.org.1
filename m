@@ -2,66 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB19A245339
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553542452B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729396AbgHOV7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
+        id S1729289AbgHOVy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728886AbgHOVvi (ORCPT
+        with ESMTP id S1729116AbgHOVwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:38 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA73C0612EE;
-        Fri, 14 Aug 2020 20:40:25 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 7E202127C1BB6;
-        Fri, 14 Aug 2020 20:23:36 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 20:40:19 -0700 (PDT)
-Message-Id: <20200814.204019.24901697728238188.davem@davemloft.net>
-To:     jarod@redhat.com
-Cc:     linux-kernel@vger.kernel.org, j.vosburgh@gmail.com,
-        vfalico@gmail.com, andy@greyhouse.net, netdev@vger.kernel.org,
-        jay.vosburgh@canonical.com
-Subject: Re: [PATCH net v2] bonding: show saner speed for broadcast mode
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200813140900.7246-1-jarod@redhat.com>
-References: <20200813035509.739-1-jarod@redhat.com>
-        <20200813140900.7246-1-jarod@redhat.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 14 Aug 2020 20:23:36 -0700 (PDT)
+        Sat, 15 Aug 2020 17:52:36 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CB1C0612F0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:42:34 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id x6so5433632pgx.12
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 20:42:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lBylaFnUUXRauocku9vHfLkvX5ndvsgjr11eHR0amV4=;
+        b=YnsyDcw7owXVN9vY4jxT4N5Xy1n4EOPhdmwXGEgESx8vEbQLRcu9/tIN8jRaP3vlAF
+         vQCfaBxWJfFFatQMGj5q8QJvtrnY6iSicxCJnl1bZdrE1AgIP6tGm3x5a4REkqvaBkZD
+         6rrNhmwzrFOKi2Rjq2vWTBi7ti9E+CwPnybWo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lBylaFnUUXRauocku9vHfLkvX5ndvsgjr11eHR0amV4=;
+        b=iK8mgZI/J35VHcz6NHcSs9XUpdkTSB2nrHcq0qSw4AfyOIXKlQNaHBdh19Zi1ihnTl
+         XEZ9zsXWG42ed4N1uLJJEgncTd5TfJUo5JbPvq43V61Lym5bu4sYhPY1hfur3t4y8Xu3
+         Pbs7unZjyRu/aKpZ1H3DYRNOfsxarTQ+MG+p6B3xdmx7rwp+npW65IVZwTuLoBivR53m
+         1tnyz/WD2TfPYV6lnhFkzy+PiKICULFI5cx5pYAJ76IpihAJeQBh+JY/vO4D/Raqv05L
+         U1aBL9iGP2kAYOfLFMK1MfTOkNeVw90mrizXZiWWQDp5jSYoNRKc6PyOohgSgH1RbIrF
+         xSaw==
+X-Gm-Message-State: AOAM533wbwVHXkXCPornV+7to0HUU7HI362v/FG9q0McJWt4b8uupvCk
+        fRDJ/kf7+oxp0texw9Wk3l+TAw==
+X-Google-Smtp-Source: ABdhPJw/yPAd1dXWFRYZHGweFuXBD+oPrr7ZdPCJkkkb5FOQJeTUDnLQpcl/nMAuNhNP9hlXyh9eUA==
+X-Received: by 2002:a62:8c89:: with SMTP id m131mr3920519pfd.288.1597462953567;
+        Fri, 14 Aug 2020 20:42:33 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:7220:84ff:fe09:94fe])
+        by smtp.gmail.com with ESMTPSA id u15sm9567361pgm.10.2020.08.14.20.42.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Aug 2020 20:42:33 -0700 (PDT)
+From:   Gwendal Grignou <gwendal@chromium.org>
+To:     ejcaruso@chromium.org, drinkcat@chromium.org,
+        enric.balletbo@collabora.com, groeck@chromium.org
+Cc:     linux-kernel@vger.kernel.org,
+        Gwendal Grignou <gwendal@chromium.org>
+Subject: [PATCH] platform: cros_ec: Reduce ligthbar get version command
+Date:   Fri, 14 Aug 2020 20:42:29 -0700
+Message-Id: <20200815034229.3109182-1-gwendal@chromium.org>
+X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jarod Wilson <jarod@redhat.com>
-Date: Thu, 13 Aug 2020 10:09:00 -0400
+By default, the lightbar commands are set to the
+biggest lightbar command and response. That length is greater than 128
+bytes and may not work on all machines.
+But all EC are probed for lightbar by sending a get version request.
+Set that request size precisely.
 
-> Broadcast mode bonds transmit a copy of all traffic simultaneously out of
-> all interfaces, so the "speed" of the bond isn't really the aggregate of
-> all interfaces, but rather, the speed of the slowest active interface.
-> 
-> Also, the type of the speed field is u32, not unsigned long, so adjust
-> that accordingly, as required to make min() function here without
-> complaining about mismatching types.
-> 
-> Fixes: bb5b052f751b ("bond: add support to read speed and duplex via ethtool")
-> CC: Jay Vosburgh <j.vosburgh@gmail.com>
-> CC: Veaceslav Falico <vfalico@gmail.com>
-> CC: Andy Gospodarek <andy@greyhouse.net>
-> CC: "David S. Miller" <davem@davemloft.net>
-> CC: netdev@vger.kernel.org
-> Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-> Signed-off-by: Jarod Wilson <jarod@redhat.com>
-> ---
-> v2: fix description to clarify speed == that of slowest active interface
+BUG=chromium:160662061
+TEST=Before the command would be:
+cros_ec_cmd: version: 0, command: EC_CMD_LIGHTBAR_CMD, outsize: 194, insize: 128, result: 0
+Afer:
+cros_ec_cmd: version: 0, command: EC_CMD_LIGHTBAR_CMD, outsize: 1, insize: 8, result: 0
 
-Applied, thank you.
+Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+---
+ drivers/platform/chrome/cros_ec_lightbar.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/platform/chrome/cros_ec_lightbar.c b/drivers/platform/chrome/cros_ec_lightbar.c
+index b59180bff5a3e..ef61298c30bdd 100644
+--- a/drivers/platform/chrome/cros_ec_lightbar.c
++++ b/drivers/platform/chrome/cros_ec_lightbar.c
+@@ -116,6 +116,8 @@ static int get_lightbar_version(struct cros_ec_dev *ec,
+ 
+ 	param = (struct ec_params_lightbar *)msg->data;
+ 	param->cmd = LIGHTBAR_CMD_VERSION;
++	msg->outsize = sizeof(param->cmd);
++	msg->result = sizeof(resp->version);
+ 	ret = cros_ec_cmd_xfer_status(ec->ec_dev, msg);
+ 	if (ret < 0) {
+ 		ret = 0;
+-- 
+2.28.0.220.ged08abb693-goog
+
