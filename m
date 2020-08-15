@@ -2,102 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD678245400
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D3C2453C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729467AbgHOWKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:10:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729617AbgHOWKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:10:37 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC3E520729;
-        Sat, 15 Aug 2020 14:23:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597501406;
-        bh=ADnDcxQp2V8HOw/PuJLE5kvRQJ9cpSo0bvw+VQMcP6Y=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bjsTDAf6Fj18zDffLso3bADg2dt4QoLnH7wH3gCWaTfuSBwkcIu13zPUv+Mjj/xGO
-         +uEPtedw9Btk8lR0TnIvXHphtmK+xjkekv582H+gxEGzLfjT7UkpadFVoyeBbPRnji
-         uf1JvTGripiLbmcipsYfcsYGUWdmXLDSgcVzDeZg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id CDE6035230C2; Sat, 15 Aug 2020 07:23:25 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 07:23:25 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200815142325.GA32640@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200814180141.GP4295@paulmck-ThinkPad-P72>
- <87tux4kefm.fsf@nanos.tec.linutronix.de>
- <20200815084250.GN3982@worktop.programming.kicks-ass.net>
- <20200815141839.GA4295@paulmck-ThinkPad-P72>
+        id S1728340AbgHOWFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728445AbgHOVux (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:50:53 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6E9C09B044
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 08:20:02 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id i26so8995921edv.4
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 08:20:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:mime-version:content-transfer-encoding
+         :content-description:subject:to:from:date:reply-to;
+        bh=K/T8FecJRW4sfBNRS1ZsbFCHxwPDONzwnkxC5RmDkTo=;
+        b=eAjfOivCclflvS4EZBIBiwhtGPKGvWGZbnQvH2YykKSplYtKLGl+UZISkwNEX0BLVg
+         d5aDZU+toPJtSbWyL5N6gd+SVoSWEyxCU7Wr8LF1bem4AxJK1MHb7EAxH5wrUrg97jTx
+         r6GSNUgnx9WSGlu/BjDGaAN01m8V6Rm+H9mf8qG5u6tiGtEtyK8GSxejzKWDtrnPwo2y
+         xjCWXoZ3/BsHEeo/UwlIsyzER5w0uCMravpS0ilU6Dy3cnAB4Wc0p0bwRZwTEbjimJ8A
+         cGT38uBsvSOuO9H7or2h4fYZf0roErVkapbCjWjMBY8SrN5k6Dar2KPQR7r3EYGrRsWB
+         jUWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:mime-version
+         :content-transfer-encoding:content-description:subject:to:from:date
+         :reply-to;
+        bh=K/T8FecJRW4sfBNRS1ZsbFCHxwPDONzwnkxC5RmDkTo=;
+        b=E16DZXZIvH5QLnFyvHMEggycDJv65EBo/bUBD8SPKnlpsqlQ6zzt3+D7E+vzMvU6SI
+         YU97tkYPZWTsN6ftnHoQNGBY8exrRmaK0I9aPB8ADBidemmKnazQL0mxzbRe7qhm/mLK
+         WEjDQ214f+pCjyLXdkeMIleRHnJntSG5VXBk+DNBJpaW9uCfujBoIZEhE4FC6SFHkysu
+         f5syyXsF8W4uNEV1ixUE9XNsgDGoB33jCOftM7U6YXo/l32bi/emz5l4E8OXHHXYI5pf
+         lvOxSRQPqh8GaLTztKPn/OEHrRYtiXNnNIk2lmQS32zUxnbg+hnUAdkl2taZRDYnmNL8
+         rTgw==
+X-Gm-Message-State: AOAM530Wav/g8IQLg+tmfI8NuerA3ptlsSTpuB/5gE0JxHZhOjED/0vv
+        BgRhJhDVF2y9Qz3H/Sa0kMk=
+X-Google-Smtp-Source: ABdhPJxpD9cCIA+oj87uE252tS3FMzzpoOdUQRYRs1eLAg0PUEUiUZgaI2Wk81q6gx8n1QEX5r0DHg==
+X-Received: by 2002:a05:6402:1d17:: with SMTP id dg23mr7354651edb.198.1597504801226;
+        Sat, 15 Aug 2020 08:20:01 -0700 (PDT)
+Received: from [192.168.0.135] ([196.171.5.1])
+        by smtp.gmail.com with ESMTPSA id f21sm9220409edv.66.2020.08.15.08.19.56
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Sat, 15 Aug 2020 08:20:00 -0700 (PDT)
+Message-ID: <5f37fd20.1c69fb81.c66c6.4944@mx.google.com>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200815141839.GA4295@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Hello
+To:     Recipients <desouzabayi7@gmail.com>
+From:   "Sophia" <desouzabayi7@gmail.com>
+Date:   Sat, 15 Aug 2020 15:19:41 +0000
+Reply-To: sophiawillians00@gmail.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 07:18:39AM -0700, Paul E. McKenney wrote:
-> On Sat, Aug 15, 2020 at 10:42:50AM +0200, Peter Zijlstra wrote:
-> > On Sat, Aug 15, 2020 at 01:14:53AM +0200, Thomas Gleixner wrote:
-> > 
-> > > #1 trivial fix is to force switching to an high prio thread or a soft
-> > >    interrupt which does the allocation
-> > 
-> > Yeah, push the alocation out to another context. I did consider it, but
-> > why bother?
-> > 
-> > Also, raising a softirq can't be done from every context, that's a whole
-> > new problem. You can do irq_work I suppose, but not all architectures
-> > support the self-IPI yet.
-> > 
-> > All in all, it's just more complexity than the fairly trivial
-> > __alloc_page_lockless().
-> > 
-> > Whichever way around, we can't rely on the allocation.
-> 
-> One way to enforce that would be to put something like this at the
-> beginning of the __alloc_page_lockless() function:
-> 
-> 	if (IS_ENABLED(CONFIG_PROVE_LOCKING) && (prandom_u32() & 0xffff))
-> 		return NULL;
 
-Right, too early in the morning.  :-/
+Hello Dear,
 
-This "slight" variation might include a bit of usefulness along with
-the convincing:
-
-	if (IS_ENABLED(CONFIG_PROVE_LOCKING) && !(prandom_u32() & 0xff))
-		return NULL;
-
-Plus failing one out of 256 times is likely a better choice than once
-out of 65536 times, especially for the occasional caller of this
-function.
-
-							Thanx, Paul
-
-> I am sure that there is a better choice than CONFIG_PROVE_LOCKING.
-> But whatever the choice, there is nothing quite like the occasional
-> allocation failure during testing to convince people that such failure
-> really can happen.
-> 
-> 							Thanx, Paul
+How are you doing.
+i am Sophia by name, i will be more glad if we get to know each other more =
+better, thank you.=20
