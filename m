@@ -2,75 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6950D245376
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAAF245405
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729418AbgHOWCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728746AbgHOVvZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BB7C03B3C8
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 01:14:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=iXjlOCGIHNl4590muhG4nkQl36u3nEfegFSDqwRjVpU=; b=kFB8skHi9vNWKiCvsN3kt+KPM0
-        NN7OD8CHZxgpSKomHZNY8Soz3e05MzRUc7kTQZZzmCO9BLfVorIyzOz7dFsnrF2d8XmdnxX5EO6jq
-        kmZjG+N1UrRh7M3WEppvunA1SpY6VHVTC8FAt6KMdZtshqypXjd7JsnSXGmRKp1gkY2oAmLqI7br3
-        V6GS9amtssMfhJCB3wI5x8bjgyMc/g1AaqAavh960njgcxxZMDBvT+EtKaz2KuQoEqxs1Ho14GLCB
-        1nfDF0eir+8hyY52z+vuIXPAekbEl8HTEWe5L4XzZqhyihUAiVipVhel2Kc5X52PXYUcKmC4q6bDD
-        GeEu7cSg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k6rJm-0000EF-EY; Sat, 15 Aug 2020 08:13:36 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1729997AbgHOWLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:11:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729350AbgHOWKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:10:31 -0400
+Received: from kernel.org (unknown [104.132.0.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9270B304D58;
-        Sat, 15 Aug 2020 10:13:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 724572C369E5F; Sat, 15 Aug 2020 10:13:30 +0200 (CEST)
-Date:   Sat, 15 Aug 2020 10:13:30 +0200
-From:   peterz@infradead.org
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, paulmck@kernel.org,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        fweisbec@gmail.com, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH RFC 01/12] irq_work: Add support to detect if work is
- pending
-Message-ID: <20200815081330.GF2674@hirez.programming.kicks-ass.net>
-References: <20200815031908.1015049-1-joel@joelfernandes.org>
- <20200815031908.1015049-2-joel@joelfernandes.org>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A347222DD3;
+        Sat, 15 Aug 2020 08:18:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597479506;
+        bh=tRet6LIgzc2CjvdgM0gdVoNlzG0EX94JA9F2/fcwT9w=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=hyoEsIKsk9us64WCOdSWE+JsRfTtZao76Fi8LWf9k1TRMnSc6XMZGxnanUUyfgFpy
+         MgIPii/ro3p1BhNJzDnwSNGqRfIo7hx9dpbABUcdQU1o1raJUlGC/N/M58mcaa5vov
+         ecmcEhsbsyjH3NsZ8QXk50OHJx73iB+aedM1n1No=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200815031908.1015049-2-joel@joelfernandes.org>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <08985916e4bfc3835207ff87634392ae2eac698e.1597307180.git.zhaoqianli@xiaomi.com>
+References: <08985916e4bfc3835207ff87634392ae2eac698e.1597307180.git.zhaoqianli@xiaomi.com>
+Subject: Re: [PATCH v3] kthread: add objectdebug support
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     john.stultz@linaro.org, ben.dooks@codethink.co.uk,
+        bfields@redhat.com, cl@rock-chips.com,
+        linux-kernel@vger.kernel.org, zhaoqianli@xiaomi.com
+To:     Felix.Kuehling@amd.com, Qianli Zhao <zhaoqianligood@gmail.com>,
+        akpm@linux-foundation.org, axboe@kernel.dk, tglx@linutronix.de
+Date:   Sat, 15 Aug 2020 01:18:25 -0700
+Message-ID: <159747950551.33733.18397049074515181528@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 11:18:57PM -0400, Joel Fernandes (Google) wrote:
+Quoting Qianli Zhao (2020-08-13 02:55:16)
+> From: Qianli Zhao <zhaoqianli@xiaomi.com>
+>=20
+> Add debugobject support to track the life time of kthread_work
 
-https://lkml.kernel.org/r/20200722153017.024407984@infradead.org
+Subject says 'objectdebug' but then this says debugobject. Use
+debugobject throughout please.
+
+> which is used to detect reinitialization/free active object problems
+
+which is used to detect reinitialization/free active object problems.
+
+> Add kthread_init_work_onstack/kthread_init_delayed_work_onstack for
+> kthread onstack support
+
+kthread onstack support.
+
+Also, mark functions with parenthesis please.
+
+>=20
+> If we reinitialize a kthread_work that has been activated,
+> this will cause delayed_work_list/work_list corruption.
+> enable this config,there is an chance to fixup these errors
+
+Capitalize enable.
+
+> or WARNING the wrong use of kthread_work
+>=20
+> [30858.395766] list_del corruption. next->prev should be ffffffe388ebbf88=
+, but was ffffffe388ebb588
+> [30858.395788] WARNING: CPU: 2 PID: 387 at /home/work/data/codes/build_ho=
+me/kernel/msm-4.19/lib/list_debug.c:56 __list_del_entry_valid+0xc8/0xd0
+> ...
+> [30858.405951] list_add corruption. next->prev should be prev (ffffffe389=
+392620), but was ffffffe388ebbf88. (next=3Dffffffe388ebbf88).
+> [30858.405977] WARNING: CPU: 0 PID: 7721 at /home/work/data/codes/build_h=
+ome/kernel/msm-4.19/lib/list_debug.c:25 __list_add_valid+0x7c/0xc8
+>=20
+> crash> struct kthread_worker.delayed_work_list 0xffffffe3893925f0
+>  [ffffffe389392620] delayed_work_list =3D {
+>     next =3D 0xffffffe388ebbf88,
+>     prev =3D 0xffffffe388ebb588
+>   }
+> crash> list 0xffffffe388ebbf88
+> ffffffe388ebbf88
+>=20
+> Signed-off-by: Qianli Zhao <zhaoqianli@xiaomi.com>
+[...]
+> diff --git a/include/linux/poison.h b/include/linux/poison.h
+> index df34330..2e6a370 100644
+> --- a/include/linux/poison.h
+> +++ b/include/linux/poison.h
+> @@ -86,4 +86,7 @@
+>  /********** security/ **********/
+>  #define KEY_DESTROY            0xbd
+> =20
+> +/********** kernel/kthread **********/
+> +#define KWORK_ENTRY_STATIC     ((void *) 0x600 + POISON_POINTER_DELTA)
+
+Can we get a comment above this like there is for TIMER_ENTRY_STATIC?
+
+> +
+>  #endif
+> diff --git a/kernel/kthread.c b/kernel/kthread.c
+> index 132f84a..68a16cc 100644
+> --- a/kernel/kthread.c
+> +++ b/kernel/kthread.c
+> @@ -67,6 +67,118 @@ enum KTHREAD_BITS {
+>         KTHREAD_SHOULD_PARK,
+>  };
+> =20
+> +#ifdef CONFIG_DEBUG_OBJECTS_KTHREAD_WORK
+> +static struct debug_obj_descr kwork_debug_descr;
+> +
+> +static void *kwork_debug_hint(void *addr)
+> +{
+> +       return ((struct kthread_work *) addr)->func;
+> +}
+> +
+> +static bool kwork_is_static_object(void *addr)
+> +{
+> +       struct kthread_work *kwork =3D addr;
+> +
+> +       return (kwork->node.prev =3D=3D NULL &&
+> +               kwork->node.next =3D=3D KWORK_ENTRY_STATIC);
+> +}
+> +
+> +static bool kwork_fixup_init(void *addr, enum debug_obj_state state)
+> +{
+> +       struct kthread_work *kwork =3D addr;
+> +
+> +       switch (state) {
+> +       case ODEBUG_STATE_ACTIVE:
+> +               kthread_cancel_work_sync(kwork);
+> +               debug_object_init(kwork, &kwork_debug_descr);
+> +               return true;
+> +       default:
+> +               return false;
+> +       }
+> +}
+> +
+> +static bool kwork_fixup_free(void *addr, enum debug_obj_state state)
+> +{
+> +       struct kthread_work *kwork =3D addr;
+> +
+> +       switch (state) {
+> +       case ODEBUG_STATE_ACTIVE:
+> +               kthread_cancel_work_sync(kwork);
+> +               debug_object_free(kwork, &kwork_debug_descr);
+> +               return true;
+> +       default:
+> +               return false;
+> +       }
+> +}
+> +
+> +static void stub_kthread_work(struct kthread_work *unuse)
+> +{
+> +       WARN_ON(1);
+> +}
+> +
+> +static bool kwork_fixup_assert_init(void *addr, enum debug_obj_state sta=
+te)
+> +{
+> +       struct kthread_work *kwork =3D addr;
+> +       switch (state) {
+> +       case ODEBUG_STATE_NOTAVAILABLE:
+> +               kthread_init_work(kwork, stub_kthread_work);
+> +               return true;
+> +       default:
+> +               return false;
+> +       }
+> +}
+> +
+> +static struct debug_obj_descr kwork_debug_descr =3D {
+> +               .name           =3D "kthread_work",
+> +               .debug_hint     =3D kwork_debug_hint,
+> +               .is_static_object =3D kwork_is_static_object,
+> +               .fixup_init     =3D kwork_fixup_init,
+> +               .fixup_free     =3D kwork_fixup_free,
+> +               .fixup_assert_init =3D kwork_fixup_assert_init,
+
+Nitpick: This needs some formatting to deindent one tab and align the
+equals signs.
+
+> +};
+> +
+> +static inline void debug_kwork_activate(struct kthread_work *kwork)
+> +{
+> +       debug_object_activate(kwork, &kwork_debug_descr);
+> +}
+> +
+> +static inline void debug_kwork_deactivate(struct kthread_work *kwork)
+> +{
+> +       debug_object_deactivate(kwork, &kwork_debug_descr);
+> +}
+> +
+> +static inline void debug_kwork_assert_init(struct kthread_work *kwork)
+> +{
+> +       debug_object_assert_init(kwork, &kwork_debug_descr);
+> +}
+> +
+> +void __init_kwork(struct kthread_work *kwork, int onstack)
+> +{
+> +       if (onstack)
+> +               debug_object_init_on_stack(kwork, &kwork_debug_descr);
+> +       else
+> +               debug_object_init(kwork, &kwork_debug_descr);
+> +}
+> +EXPORT_SYMBOL_GPL(__init_kwork);
+> +
+> +void destroy_kwork_on_stack(struct kthread_work *kwork)
+> +{
+> +       debug_object_free(kwork, &kwork_debug_descr);
+> +}
+> +EXPORT_SYMBOL_GPL(destroy_kwork_on_stack);
+> +
+> +void destroy_delayed_kwork_on_stack(struct kthread_delayed_work *kdwork)
+> +{
+> +       destroy_timer_on_stack(&kdwork->timer);
+> +       debug_object_free(&kdwork->work, &kwork_debug_descr);
+> +}
+> +EXPORT_SYMBOL_GPL(destroy_delayed_kwork_on_stack);
+> +#else
+> +static inline void debug_kwork_activate(struct kthread_work *kwork) { }
+> +static inline void debug_kwork_deactivate(struct kthread_work *kwork) { }
+> +static inline void debug_kwork_assert_init(struct kthread_work *kwork) {=
+ }
+> +#endif
+> +
+>  static inline void set_kthread_struct(void *kthread)
+>  {
+>         /*
+> @@ -697,6 +809,7 @@ int kthread_worker_fn(void *worker_ptr)
+>         if (!list_empty(&worker->work_list)) {
+>                 work =3D list_first_entry(&worker->work_list,
+>                                         struct kthread_work, node);
+> +               debug_kwork_deactivate(work);
+>                 list_del_init(&work->node);
+>         }
+>         worker->current_work =3D work;
+> @@ -833,8 +946,10 @@ static void kthread_insert_work(struct kthread_worke=
+r *worker,
+>  {
+>         kthread_insert_work_sanity_check(worker, work);
+> =20
+> +       debug_kwork_activate(work);
+>         list_add_tail(&work->node, pos);
+>         work->worker =3D worker;
+> +
+
+Drop this newline.
+
+>         if (!worker->current_work && likely(worker->task))
+>                 wake_up_process(worker->task);
+>  }
+> @@ -857,6 +972,7 @@ bool kthread_queue_work(struct kthread_worker *worker,
+>         bool ret =3D false;
+>         unsigned long flags;
+> =20
+> +       debug_kwork_assert_init(work);
+>         raw_spin_lock_irqsave(&worker->lock, flags);
+>         if (!queuing_blocked(worker, work)) {
+>                 kthread_insert_work(worker, work, &worker->work_list);
+> @@ -895,6 +1011,7 @@ void kthread_delayed_work_timer_fn(struct timer_list=
+ *t)
+> =20
+>         /* Move the work from worker->delayed_work_list. */
+>         WARN_ON_ONCE(list_empty(&work->node));
+> +       debug_kwork_deactivate(work);
+>         list_del_init(&work->node);
+>         kthread_insert_work(worker, work, &worker->work_list);
+> =20
+> @@ -924,7 +1041,7 @@ static void __kthread_queue_delayed_work(struct kthr=
+ead_worker *worker,
+> =20
+>         /* Be paranoid and try to detect possible races already now. */
+>         kthread_insert_work_sanity_check(worker, work);
+> -
+> +       debug_kwork_activate(work);
+>         list_add(&work->node, &worker->delayed_work_list);
+>         work->worker =3D worker;
+>         timer->expires =3D jiffies + delay;
+> @@ -954,6 +1071,7 @@ bool kthread_queue_delayed_work(struct kthread_worke=
+r *worker,
+>         unsigned long flags;
+>         bool ret =3D false;
+> =20
+> +       debug_kwork_assert_init(work);
+>         raw_spin_lock_irqsave(&worker->lock, flags);
+> =20
+>         if (!queuing_blocked(worker, work)) {
+> @@ -987,15 +1105,16 @@ static void kthread_flush_work_fn(struct kthread_w=
+ork *work)
+>  void kthread_flush_work(struct kthread_work *work)
+>  {
+>         struct kthread_flush_work fwork =3D {
+> -               KTHREAD_WORK_INIT(fwork.work, kthread_flush_work_fn),
+> -               COMPLETION_INITIALIZER_ONSTACK(fwork.done),
+> +               .done =3D COMPLETION_INITIALIZER_ONSTACK(fwork.done),
+>         };
+>         struct kthread_worker *worker;
+>         bool noop =3D false;
+> =20
+> +       kthread_init_work_onstack(&fwork.work, kthread_flush_work_fn);
+> +       debug_kwork_assert_init(work);
+>         worker =3D work->worker;
+>         if (!worker)
+> -               return;
+> +               goto out;
+
+Why make the worker and init it on the stack if there isn't anything to
+do? The !worker check should be early and then bail out before doing
+anything else.
+
+> =20
+>         raw_spin_lock_irq(&worker->lock);
+>         /* Work must not be used with >1 worker, see kthread_queue_work()=
+. */
+> @@ -1013,6 +1132,9 @@ void kthread_flush_work(struct kthread_work *work)
+> =20
+>         if (!noop)
+>                 wait_for_completion(&fwork.done);
+> +
+> +out:
+
+Then this label can be dropped.
+
+> +       destroy_kwork_on_stack(&fwork.work);
+>  }
+>  EXPORT_SYMBOL_GPL(kthread_flush_work);
+>
