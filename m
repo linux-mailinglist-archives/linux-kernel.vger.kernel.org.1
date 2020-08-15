@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F3D2453A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D44245452
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728607AbgHOVvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728486AbgHOVuy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:50:54 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C22C09B052;
-        Sat, 15 Aug 2020 08:47:04 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 15:46:51 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597506412;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pu4f7XjhFcULlGOVp6eLrt6povAfc7FbC/8I3SqVmYY=;
-        b=lfnEF5dzZ75XgnRafY1H0VO2AdK2iJR8TYD8lkeaZ9D88/FyMhkj0AWwRYrLQWROasVJMZ
-        x6p3OJ4V6WIa8CjjdCe4GswOc1pzeepDZcxkx5uArP5jaIAYQ3BCJh8WhHmMXEzJxUDZRG
-        08DqYkklBkVhL8Qwlrzny6ghsLExWGCoeTnSRnXcsQLG7qldkb05+wlcD1AmO0YfaFYrB7
-        H/QZK/wFsJYN97gvKY5ghYKyoZlp2TZSXHxHFmGjUGBEJddogCHx9EPqddubuMBZUNhg3z
-        d7elTX055dRTZ4+zSaxOTaAomoy6Fu8gnr4kZ8mlZgKtXzxbke3rUi2AeiBAXQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597506412;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pu4f7XjhFcULlGOVp6eLrt6povAfc7FbC/8I3SqVmYY=;
-        b=goupLROJKx+xszbQtEWoArKYb0+Af5Nlu93cM64eo5C0vTpjWp8Xt+T0rjaVoJxtCEDRDc
-        PjxI9gTUliMNjKBA==
-From:   "tip-bot2 for Juergen Gross" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/paravirt] x86/paravirt: Use CONFIG_PARAVIRT_XXL instead of
- CONFIG_PARAVIRT
-Cc:     Juergen Gross <jgross@suse.com>, Ingo Molnar <mingo@kernel.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200815100641.26362-4-jgross@suse.com>
-References: <20200815100641.26362-4-jgross@suse.com>
+        id S1728557AbgHOWWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:22:22 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:53894 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726598AbgHOWWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:22:20 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 609DCFB04;
+        Sat, 15 Aug 2020 18:26:00 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id zdXwEJTZCE2k; Sat, 15 Aug 2020 18:25:59 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id AD998457CD; Sat, 15 Aug 2020 18:25:58 +0200 (CEST)
+Date:   Sat, 15 Aug 2020 18:25:58 +0200
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] drm/panel: Add panel driver for the Mantix
+ MLAF057WE51-X DSI panel
+Message-ID: <20200815162558.GA2744@bogon.m.sigxcpu.org>
+References: <cover.1597412076.git.agx@sigxcpu.org>
+ <0a7539135cc46eec5636ca89f52695f4a1197841.1597412076.git.agx@sigxcpu.org>
+ <20200815100230.GA1002374@ravnborg.org>
+ <20200815104022.GA5641@bogon.m.sigxcpu.org>
+ <20200815104651.GA1005928@ravnborg.org>
 MIME-Version: 1.0
-Message-ID: <159750641175.3192.2969286932741999871.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200815104651.GA1005928@ravnborg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/paravirt branch of tip:
+Hi,
+On Sat, Aug 15, 2020 at 12:46:51PM +0200, Sam Ravnborg wrote:
+> On Sat, Aug 15, 2020 at 12:40:22PM +0200, Guido Günther wrote:
+> > Hi Sam,
+> > On Sat, Aug 15, 2020 at 12:02:30PM +0200, Sam Ravnborg wrote:
+> > > Hi Guido.
+> > > 
+> > > > +static int mantix_probe(struct mipi_dsi_device *dsi)
+> > > > +{
+> > > > +	struct device *dev = &dsi->dev;
+> > > > +	struct mantix *ctx;
+> > > > +	int ret;
+> > > > +
+> > > > +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+> > > > +	if (!ctx)
+> > > > +		return -ENOMEM;
+> > > > +
+> > > > +	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
+> > > > +	if (IS_ERR(ctx->reset_gpio)) {
+> > > > +		DRM_DEV_ERROR(dev, "cannot get reset gpio\n");
+> > > > +		return PTR_ERR(ctx->reset_gpio);
+> > > > +	}
+> > > > +
+> > > > +	mipi_dsi_set_drvdata(dsi, ctx);
+> > > > +	ctx->dev = dev;
+> > > > +
+> > > > +	dsi->lanes = 4;
+> > > > +	dsi->format = MIPI_DSI_FMT_RGB888;
+> > > > +	dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
+> > > > +		MIPI_DSI_MODE_VIDEO_BURST | MIPI_DSI_MODE_VIDEO_SYNC_PULSE;
+> > > > +
+> > > > +	ctx->avdd = devm_regulator_get(dev, "avdd");
+> > > > +	if (IS_ERR(ctx->avdd)) {
+> > > > +		ret = PTR_ERR(ctx->avdd);
+> > > > +		if (ret != -EPROBE_DEFER)
+> > > > +			DRM_DEV_ERROR(dev,
+> > > > +				      "Failed to request avdd regulator: %d\n",
+> > > > +				      ret);
+> > > > +		return ret;
+> > > > +	}
+> > > 
+> > > Consider to use the recently added dev_err_probe() here and below.
+> > > Note: Not part of drm-misc-next yet - but hopefully after -rc1
+> > > when a backmerge is done.
+> > 
+> > In fact I did decided against it since i was told that missing dev_* and
+> > DRM_* logging shouldn't be done. So is that o.k. nowadays?
+> s/missing/mixing/
+> 
+> I often request that logging is consistent - so I recognize the
+> argument.
+> 
+> For panel/* I have not made up my mind what I think is the best
+> approach. The DRM_DEV_* and DRM_* logging do not add much value.
+> So I have been tempted several times to convert all logging in
+> panel/ to dev_* and pr_* (when no struct device * is available).
+> That would also avoid that we mix up logging.
+> 
+> We have drm_* logging - but they require a valid drm_device * which we
+> do not have in the the panel drivers. So they are ruled out here.
+> 
+> Do you have any opinions/comments on this?
 
-Commit-ID:     ecac71816a1829c0e54c41c5f1845f75b55dc618
-Gitweb:        https://git.kernel.org/tip/ecac71816a1829c0e54c41c5f1845f75b55dc618
-Author:        Juergen Gross <jgross@suse.com>
-AuthorDate:    Sat, 15 Aug 2020 12:06:38 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sat, 15 Aug 2020 13:52:11 +02:00
+I think for panel drivers DRM_* does not give any bonus so moving to
+{dev,pr}_* sounds good. I just wonder if other drm parts don't need
+`dev_drm_err_probe()` (or similar) anyway. But then maybe dyn_debug
+is enough nowadays to not need DRM_DEV_DEBUG_* either?
+Cheers,
+ -- Guido
 
-x86/paravirt: Use CONFIG_PARAVIRT_XXL instead of CONFIG_PARAVIRT
-
-There are some code parts using CONFIG_PARAVIRT for Xen pvops related
-issues instead of the more stringent CONFIG_PARAVIRT_XXL.
-
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200815100641.26362-4-jgross@suse.com
----
- arch/x86/entry/entry_64.S                | 4 ++--
- arch/x86/include/asm/fixmap.h            | 2 +-
- arch/x86/include/asm/required-features.h | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 70dea93..26fc9b4 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -46,13 +46,13 @@
- .code64
- .section .entry.text, "ax"
- 
--#ifdef CONFIG_PARAVIRT
-+#ifdef CONFIG_PARAVIRT_XXL
- SYM_CODE_START(native_usergs_sysret64)
- 	UNWIND_HINT_EMPTY
- 	swapgs
- 	sysretq
- SYM_CODE_END(native_usergs_sysret64)
--#endif /* CONFIG_PARAVIRT */
-+#endif /* CONFIG_PARAVIRT_XXL */
- 
- /*
-  * 64-bit SYSCALL instruction entry. Up to 6 arguments in registers.
-diff --git a/arch/x86/include/asm/fixmap.h b/arch/x86/include/asm/fixmap.h
-index 0f0dd64..77217bd 100644
---- a/arch/x86/include/asm/fixmap.h
-+++ b/arch/x86/include/asm/fixmap.h
-@@ -99,7 +99,7 @@ enum fixed_addresses {
- 	FIX_PCIE_MCFG,
- #endif
- #endif
--#ifdef CONFIG_PARAVIRT
-+#ifdef CONFIG_PARAVIRT_XXL
- 	FIX_PARAVIRT_BOOTMAP,
- #endif
- #ifdef	CONFIG_X86_INTEL_MID
-diff --git a/arch/x86/include/asm/required-features.h b/arch/x86/include/asm/required-features.h
-index 6847d85..3ff0d48 100644
---- a/arch/x86/include/asm/required-features.h
-+++ b/arch/x86/include/asm/required-features.h
-@@ -54,7 +54,7 @@
- #endif
- 
- #ifdef CONFIG_X86_64
--#ifdef CONFIG_PARAVIRT
-+#ifdef CONFIG_PARAVIRT_XXL
- /* Paravirtualized systems may not have PSE or PGE available */
- #define NEED_PSE	0
- #define NEED_PGE	0
+> 
+> 	Sam
+> 
