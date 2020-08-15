@@ -2,131 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D44245452
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2691524538F
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728557AbgHOWWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:22:22 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:53894 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726598AbgHOWWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:22:20 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 609DCFB04;
-        Sat, 15 Aug 2020 18:26:00 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id zdXwEJTZCE2k; Sat, 15 Aug 2020 18:25:59 +0200 (CEST)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id AD998457CD; Sat, 15 Aug 2020 18:25:58 +0200 (CEST)
-Date:   Sat, 15 Aug 2020 18:25:58 +0200
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] drm/panel: Add panel driver for the Mantix
- MLAF057WE51-X DSI panel
-Message-ID: <20200815162558.GA2744@bogon.m.sigxcpu.org>
-References: <cover.1597412076.git.agx@sigxcpu.org>
- <0a7539135cc46eec5636ca89f52695f4a1197841.1597412076.git.agx@sigxcpu.org>
- <20200815100230.GA1002374@ravnborg.org>
- <20200815104022.GA5641@bogon.m.sigxcpu.org>
- <20200815104651.GA1005928@ravnborg.org>
+        id S1729760AbgHOWDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728691AbgHOVvM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:51:12 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B204C0A3BFD;
+        Sat, 15 Aug 2020 09:53:45 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id l64so11223604qkb.8;
+        Sat, 15 Aug 2020 09:53:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Ub/tWuszopXYAR+w2VtlhPZQPDBBIzMElKorytVXus=;
+        b=F6YWSSf7ggwCowXQ1pd+nByIQIoaDBJq8wmld8OTn1b0OwpPdw/vTQmPQoILja/Na+
+         QZfF1yT/nart6fUcoBXIHXUnKgZsLcBMemdzihu7vI1yb6Uqw3zuQEb7R9Q7/Aa6+LLs
+         YWcC+SpeSjV6uXgisIzu+SBAr8RVJGP0kg5cT5XexUTaqEN0Pi5dH65WtO6kzFGX6jRM
+         ldC16Xl1ehtvRIXd8uOK7yZwA9vfju93tbZ+Ij8crVERvYCIBzV+YIG4pWrBTxJFyB7G
+         vl6l4sstS693sCPt58cQi8cNvQK3hrExnRKBIYrNXvjjm1oZKCGRGbSPf5UMx8051TKP
+         yicg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Ub/tWuszopXYAR+w2VtlhPZQPDBBIzMElKorytVXus=;
+        b=eCRB/JF2XKjbK0sLrh3ZDjmBpzKSPXaLWPww/UZcHiQeCftWOE7Sd+ll2bnPxltpUE
+         oDTc3PM5hl42cwe4tTBi8LWuUu7m9exbPs+vhK1UvK0axrgaProg/i5MdugPTzdLZuNh
+         BxQK7ttaeEsbgwNb+8H5IuoipZlikiGr477BXaolJRhRBpHs9g+5TDYRhFehASHicbyn
+         2GMNU23gLTMOxcmUFtw9ZnsdP6CglHn4K8Jfo7TBCgu69gaPfNqc5v5tDuG9xrIInK+i
+         YPvGUgQUp7lHYSgvWRgTa9TGSLP9LyJQ31WazEtD1PdzqtW3c1gGor3jnXVzheg4SV7L
+         xGsQ==
+X-Gm-Message-State: AOAM530ABhVV8EE1ihP83ANTwyz+shFc8ZVjQLpSt4+wTHGkqYgotF/2
+        i8LxR9umY0POiT1Q1/nQXkY=
+X-Google-Smtp-Source: ABdhPJyzw4iNpkx4ZgbYXyAK6WaxOyCQVQCZzeS/SRwW4PrZjNcFqYJDKFW3ljP6kcdjVRDaqVpptA==
+X-Received: by 2002:a37:8301:: with SMTP id f1mr6555671qkd.86.1597510424332;
+        Sat, 15 Aug 2020 09:53:44 -0700 (PDT)
+Received: from tong-desktop.local ([2601:5c0:c100:b9d:4032:a79a:238d:9f7a])
+        by smtp.googlemail.com with ESMTPSA id b37sm14584866qtk.85.2020.08.15.09.53.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Aug 2020 09:53:43 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     ztong0001@gmail.com
+Subject: [PATCH] netfilter: nf_conntrack_sip: fix parsing error
+Date:   Sat, 15 Aug 2020 12:50:30 -0400
+Message-Id: <20200815165030.5849-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200815104651.GA1005928@ravnborg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Sat, Aug 15, 2020 at 12:46:51PM +0200, Sam Ravnborg wrote:
-> On Sat, Aug 15, 2020 at 12:40:22PM +0200, Guido Günther wrote:
-> > Hi Sam,
-> > On Sat, Aug 15, 2020 at 12:02:30PM +0200, Sam Ravnborg wrote:
-> > > Hi Guido.
-> > > 
-> > > > +static int mantix_probe(struct mipi_dsi_device *dsi)
-> > > > +{
-> > > > +	struct device *dev = &dsi->dev;
-> > > > +	struct mantix *ctx;
-> > > > +	int ret;
-> > > > +
-> > > > +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-> > > > +	if (!ctx)
-> > > > +		return -ENOMEM;
-> > > > +
-> > > > +	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-> > > > +	if (IS_ERR(ctx->reset_gpio)) {
-> > > > +		DRM_DEV_ERROR(dev, "cannot get reset gpio\n");
-> > > > +		return PTR_ERR(ctx->reset_gpio);
-> > > > +	}
-> > > > +
-> > > > +	mipi_dsi_set_drvdata(dsi, ctx);
-> > > > +	ctx->dev = dev;
-> > > > +
-> > > > +	dsi->lanes = 4;
-> > > > +	dsi->format = MIPI_DSI_FMT_RGB888;
-> > > > +	dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
-> > > > +		MIPI_DSI_MODE_VIDEO_BURST | MIPI_DSI_MODE_VIDEO_SYNC_PULSE;
-> > > > +
-> > > > +	ctx->avdd = devm_regulator_get(dev, "avdd");
-> > > > +	if (IS_ERR(ctx->avdd)) {
-> > > > +		ret = PTR_ERR(ctx->avdd);
-> > > > +		if (ret != -EPROBE_DEFER)
-> > > > +			DRM_DEV_ERROR(dev,
-> > > > +				      "Failed to request avdd regulator: %d\n",
-> > > > +				      ret);
-> > > > +		return ret;
-> > > > +	}
-> > > 
-> > > Consider to use the recently added dev_err_probe() here and below.
-> > > Note: Not part of drm-misc-next yet - but hopefully after -rc1
-> > > when a backmerge is done.
-> > 
-> > In fact I did decided against it since i was told that missing dev_* and
-> > DRM_* logging shouldn't be done. So is that o.k. nowadays?
-> s/missing/mixing/
-> 
-> I often request that logging is consistent - so I recognize the
-> argument.
-> 
-> For panel/* I have not made up my mind what I think is the best
-> approach. The DRM_DEV_* and DRM_* logging do not add much value.
-> So I have been tempted several times to convert all logging in
-> panel/ to dev_* and pr_* (when no struct device * is available).
-> That would also avoid that we mix up logging.
-> 
-> We have drm_* logging - but they require a valid drm_device * which we
-> do not have in the the panel drivers. So they are ruled out here.
-> 
-> Do you have any opinions/comments on this?
+ct_sip_parse_numerical_param can only return 0 or 1, but the caller is
+checking parsing error using < 0
 
-I think for panel drivers DRM_* does not give any bonus so moving to
-{dev,pr}_* sounds good. I just wonder if other drm parts don't need
-`dev_drm_err_probe()` (or similar) anyway. But then maybe dyn_debug
-is enough nowadays to not need DRM_DEV_DEBUG_* either?
-Cheers,
- -- Guido
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+ net/netfilter/nf_conntrack_sip.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> 	Sam
-> 
+diff --git a/net/netfilter/nf_conntrack_sip.c b/net/netfilter/nf_conntrack_sip.c
+index b83dc9bf0a5d..08873694120a 100644
+--- a/net/netfilter/nf_conntrack_sip.c
++++ b/net/netfilter/nf_conntrack_sip.c
+@@ -1269,7 +1269,7 @@ static int process_register_request(struct sk_buff *skb, unsigned int protoff,
+ 
+ 	if (ct_sip_parse_numerical_param(ct, *dptr,
+ 					 matchoff + matchlen, *datalen,
+-					 "expires=", NULL, NULL, &expires) < 0) {
++					 "expires=", NULL, NULL, &expires) == 0) {
+ 		nf_ct_helper_log(skb, ct, "cannot parse expires");
+ 		return NF_DROP;
+ 	}
+@@ -1375,7 +1375,7 @@ static int process_register_response(struct sk_buff *skb, unsigned int protoff,
+ 						   matchoff + matchlen,
+ 						   *datalen, "expires=",
+ 						   NULL, NULL, &c_expires);
+-		if (ret < 0) {
++		if (ret == 0) {
+ 			nf_ct_helper_log(skb, ct, "cannot parse expires");
+ 			return NF_DROP;
+ 		}
+-- 
+2.25.1
+
