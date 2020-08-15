@@ -2,83 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13AC24548E
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C67042453FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729218AbgHOW2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:28:42 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:50178 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726598AbgHOW2l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:28:41 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
+        id S1729858AbgHOWKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:10:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729610AbgHOWKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:10:37 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 2ED4520027;
-        Sat, 15 Aug 2020 16:09:41 +0200 (CEST)
-Date:   Sat, 15 Aug 2020 16:09:39 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] drm/panel: A few cleanups and improvements
-Message-ID: <20200815140939.GA1196814@ravnborg.org>
-References: <20200811002240.55194-1-paul@crapouillou.net>
+        by mail.kernel.org (Postfix) with ESMTPSA id E246D23121;
+        Sat, 15 Aug 2020 14:18:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597501119;
+        bh=gOLVKJhS/tWnZd7SI7/SoAPUz7KoYASG6xnNwS+qeCE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=W/A1xzjEeU0SpXkwJq9Jh98nKdANsl/Uu2mJB/MVs0Q5XIy6rxxheuXxW214d0EQs
+         L0fdc/Sy2K/UVPx2xKI0PNqhuD5LcXuUHHhNG43bK+H0ZqulQKAAIoDNYNsWs9hjSF
+         rd2fJocg9nXrLneCwKwNcjHbLnX3xLm4zG2P80RQ=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C045F35230C2; Sat, 15 Aug 2020 07:18:39 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 07:18:39 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200815141839.GA4295@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200814180141.GP4295@paulmck-ThinkPad-P72>
+ <87tux4kefm.fsf@nanos.tec.linutronix.de>
+ <20200815084250.GN3982@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200811002240.55194-1-paul@crapouillou.net>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=2LY2f65kBtWg6R36iiwA:9 a=CjuIK1q_8ugA:10
+In-Reply-To: <20200815084250.GN3982@worktop.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul.
+On Sat, Aug 15, 2020 at 10:42:50AM +0200, Peter Zijlstra wrote:
+> On Sat, Aug 15, 2020 at 01:14:53AM +0200, Thomas Gleixner wrote:
+> 
+> > #1 trivial fix is to force switching to an high prio thread or a soft
+> >    interrupt which does the allocation
+> 
+> Yeah, push the alocation out to another context. I did consider it, but
+> why bother?
+> 
+> Also, raising a softirq can't be done from every context, that's a whole
+> new problem. You can do irq_work I suppose, but not all architectures
+> support the self-IPI yet.
+> 
+> All in all, it's just more complexity than the fairly trivial
+> __alloc_page_lockless().
+> 
+> Whichever way around, we can't rely on the allocation.
 
-On Tue, Aug 11, 2020 at 02:22:35AM +0200, Paul Cercueil wrote:
-> Hi list,
-> 
-> Here's a list of 5 patches that bring some cleanups and improvements.
-> 
-> Patches 1-2 clean up the novatek,nt39016 code to remove custom handling
-> of the backlight and to add the missing carriage returns on error
-> messages.
-> 
-> Patches 3-5 updates the modes list of the sharp,ls020b1dd01d panel, to
-> make it use 'struct drm_display_mode' instead of 'struct
-> display_timing', modify the timings to get a perfect 60.00 Hz rate, and
-> add a 50 Hz mode.
+One way to enforce that would be to put something like this at the
+beginning of the __alloc_page_lockless() function:
 
-While touching logging stuff in panle/ I made the same fix adding
-newlines. Glad to see you did it so I can drop one of my patches.
+	if (IS_ENABLED(CONFIG_PROVE_LOCKING) && (prandom_u32() & 0xffff))
+		return NULL;
 
-All patches applied to drm-misc-next.
+I am sure that there is a better choice than CONFIG_PROVE_LOCKING.
+But whatever the choice, there is nothing quite like the occasional
+allocation failure during testing to convince people that such failure
+really can happen.
 
-	Sam
-
-> 
-> Cheers,
-> -Paul
-> 
-> Paul Cercueil (5):
->   drm/panel: novatek,nt39016: Handle backlight the standard way
->   drm/panel: novatek,nt39016: Add missing CR to error messages
->   drm/panel: simple: Convert sharp,ls020b1dd01d from timings to
->     videomode
->   drm/panel: simple: Tweak timings of sharp,ls020b1dd01d for perfect
->     60Hz
->   drm/panel: simple: Add 50Hz mode for sharp,ls020b1dd01d
-> 
->  drivers/gpu/drm/panel/panel-novatek-nt39016.c | 34 ++++++----------
->  drivers/gpu/drm/panel/panel-simple.c          | 40 +++++++++++++------
->  2 files changed, 40 insertions(+), 34 deletions(-)
-> 
-> -- 
-> 2.28.0
+							Thanx, Paul
