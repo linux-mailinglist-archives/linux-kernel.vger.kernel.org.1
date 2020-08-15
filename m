@@ -2,161 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6758D245314
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DF22452F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729553AbgHOV6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:58:23 -0400
-Received: from mga14.intel.com ([192.55.52.115]:63150 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729164AbgHOV6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:58:15 -0400
-IronPort-SDR: chfJsoWD21AZCo8XmipsY48Gr8Xp3fPVJU5kSbNv3X3S4iNFbIXkyB8U6JWbDTnuVx9ArIdlsP
- crfC4UdWv/cw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9713"; a="153763269"
-X-IronPort-AV: E=Sophos;i="5.76,315,1592895600"; 
-   d="scan'208";a="153763269"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2020 22:58:07 -0700
-IronPort-SDR: su0+2Bc+sf5a5AkUhAnKl1SwBt4M44H8rpqtoq3dBXweKweSiz9JoJjzqHl15/gQODauiDVSZq
- 3jjjhZb3JdGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,315,1592895600"; 
-   d="scan'208";a="291931077"
-Received: from araj-mobl1.jf.intel.com ([10.254.83.48])
-  by orsmga003.jf.intel.com with ESMTP; 14 Aug 2020 22:58:06 -0700
-Date:   Fri, 14 Aug 2020 22:58:06 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        Sukumar Ghorai <sukumar.ghorai@intel.com>,
-        Srikanth Nandamuri <srikanth.nandamuri@intel.com>,
-        Evan Green <evgreen@chromium.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH] x86/hotplug: Silence APIC only after all irq's are
- migrated
-Message-ID: <20200815055806.GA3828@araj-mobl1.jf.intel.com>
-References: <20200814213842.31151-1-ashok.raj@intel.com>
- <bb47f196-90e5-3f78-305b-122fc9192867@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb47f196-90e5-3f78-305b-122fc9192867@infradead.org>
-User-Agent: Mutt/1.9.1 (2017-09-22)
+        id S1729437AbgHOV4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729015AbgHOVwL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 17:52:11 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FEA8C06123B
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 23:48:18 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id i10so30969pgk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 23:48:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=1UEjNo8FBjY3zOHNcMSpQLZ9ulspEjH4BS4O+4ISF0c=;
+        b=l+20G6uGynVVHrnnRdzNF3Fh3VpleLP+EkvjlzL6Ihoj8BrtDflhsxuQap/puPx9vx
+         Y5DS9R5phbsGF046MkBSx2YiepDjw9cXOF41ylVI1jUOP9Gg6wtjkxmap+dGxLtSTXoW
+         bmEG6PPHN43EPUmbdBQpw5+Ohgy0M2mJW1cuVjfS3MXYBWgczFmUGHkSiB9txA2jSAzB
+         jfA8oIuwNkIvDNCKP8Etl56gvVk3ERPw4fNbiKCLdnwYGJ/x6Iq00/oKsT7H3LXD9ZHi
+         xiHU5Dl3yqFQS6B+FTPHDWbGVcW8sNv6mt12xCXJzgC/oqKVvF1ImcBV5jj22cgf39hg
+         7+LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1UEjNo8FBjY3zOHNcMSpQLZ9ulspEjH4BS4O+4ISF0c=;
+        b=CiEbJENEQ1uUJ00EVGoGRWgDH8jZrgGjOe/jLkmFyzY12PiTTSi76s0AM+KlfusfiE
+         KpHDXSJLHbor6406Q1vH8drsl8Vgfe47/D/9rhCvZzwYlAqFHz30G53g8fdporbmj6eH
+         7tfKl5+aRar3tpYOEOHKiREd6I/ypXvrAa/a1VUxmf9xaNlFvIm4jnHDG94/t8XXBBiY
+         R0QGbKtsQ670ldG/SFjL17/wa1AaayFJTiuX9jiEyGw5aq8FBrQoh2/n3zlYNPVmJSrq
+         E64BvONt2zIMR9TH/k6k1EmPmrUpzR0X6eGSknUzCHCnFQFEIIrl6um7cGH+v5NqZq3Z
+         +oAQ==
+X-Gm-Message-State: AOAM531uq2MAgIY8rteyvTPcLk2FcxxASqvocpYuJaRfbVvnsGrNxOwE
+        LdiZBtoeD5Fk2i66hzAH1OI=
+X-Google-Smtp-Source: ABdhPJyDokbcNBNU6ZlOnvAx0b5d1g3l+PGfHIBTohbm9Oy6CbFfNDh9Ubt5zFfMlMd6VZd9Nc8BVw==
+X-Received: by 2002:a63:5515:: with SMTP id j21mr3870740pgb.31.1597474097506;
+        Fri, 14 Aug 2020 23:48:17 -0700 (PDT)
+Received: from Asurada-Nvidia.nvidia.com (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id f63sm10162940pjk.53.2020.08.14.23.48.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Aug 2020 23:48:17 -0700 (PDT)
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] dma-mapping: set default segment_boundary_mask to ULONG_MAX
+Date:   Fri, 14 Aug 2020 23:47:26 -0700
+Message-Id: <20200815064726.20459-1-nicoleotsuka@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+The default segment_boundary_mask was set to DMA_BIT_MAKS(32)
+a decade ago by referencing SCSI/block subsystem, as a 32-bit
+mask was good enough for most of the devices.
 
+Now more and more drivers set dma_masks above DMA_BIT_MAKS(32)
+while only a handful of them call dma_set_seg_boundary(). This
+means that most drivers have a 4GB segmention boundary because
+DMA API returns a 32-bit default value, though they might not
+really have such a limit.
 
-On Fri, Aug 14, 2020 at 04:25:32PM -0700, Randy Dunlap wrote:
-> On 8/14/20 2:38 PM, Ashok Raj wrote:
-> > When offlining CPU's, fixup_irqs() migrates all interrupts away from the
-> 
->                  CPUs,
+The default segment_boundary_mask should mean "no limit" since
+the device doesn't explicitly set the mask. But a 32-bit mask
+certainly limits those devices capable of 32+ bits addressing.
 
-Thanks for catching these. I'll fix all these suggested changes in my next rev
-Once i get additional feedback from Thomas.
+So this patch sets default segment_boundary_mask to ULONG_MAX.
 
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
 
-> 
-> > outgoing CPU to an online CPU. Its always possible the device sent an
-> 
->                                  It's
-> 
-> > interrupt to the previous CPU destination. Pending interrupt bit in IRR in
-> > lapic identifies such interrupts. apic_soft_disable() will not capture any
-> 
->   LAPIC
-> 
-> > new interrupts in IRR. This causes interrupts from device to be lost during
-> > cpu offline. The issue was found when explicitly setting MSI affinity to a
-> 
->   CPU
-> 
-> > CPU and immediately offlining it. It was simple to recreate with a USB
-> > ethernet device and doing I/O to it while the CPU is offlined. Lost
-> > interrupts happen even when Interrupt Remapping is enabled.
-> > 
-> > Current code does apic_soft_disable() before migrating interrupts.
-> > 
-> > native_cpu_disable()
-> > {
-> > 	...
-> > 	apic_soft_disable();
-> > 	cpu_disable_common();
-> > 	  --> fixup_irqs(); // Too late to capture anything in IRR.
-> > }
-> > 
-> > Just fliping the above call sequence seems to hit the IRR checks
-> 
->        flipping
-> 
-> > and the lost interrupt is fixed for both legacy MSI and when
-> > interrupt remapping is enabled.
-> > 
-> > 
-> > Fixes: 60dcaad5736f ("x86/hotplug: Silence APIC and NMI when CPU is dead")
-> > Link: https://lore.kernel.org/lkml/875zdarr4h.fsf@nanos.tec.linutronix.de/
-> > Signed-off-by: Ashok Raj <ashok.raj@intel.com>
-> > 
-> > To: linux-kernel@vger.kernel.org
-> > To: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Sukumar Ghorai <sukumar.ghorai@intel.com>
-> > Cc: Srikanth Nandamuri <srikanth.nandamuri@intel.com>
-> > Cc: Evan Green <evgreen@chromium.org>
-> > Cc: Mathias Nyman <mathias.nyman@linux.intel.com>
-> > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > Cc: stable@vger.kernel.org
-> > ---
-> >  arch/x86/kernel/smpboot.c | 11 +++++++++--
-> >  1 file changed, 9 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-> > index ffbd9a3d78d8..278cc9f92f2f 100644
-> > --- a/arch/x86/kernel/smpboot.c
-> > +++ b/arch/x86/kernel/smpboot.c
-> > @@ -1603,13 +1603,20 @@ int native_cpu_disable(void)
-> >  	if (ret)
-> >  		return ret;
-> >  
-> > +	cpu_disable_common();
-> >  	/*
-> >  	 * Disable the local APIC. Otherwise IPI broadcasts will reach
-> >  	 * it. It still responds normally to INIT, NMI, SMI, and SIPI
-> > -	 * messages.
-> > +	 * messages. Its important to do apic_soft_disable() after
-> 
-> 	             It's
-> 
-> > +	 * fixup_irqs(), because fixup_irqs() called from cpu_disable_common()
-> > +	 * depends on IRR being set. After apic_soft_disable() CPU preserves
-> > +	 * currently set IRR/ISR but new interrupts will not set IRR.
-> > +	 * This causes interrupts sent to outgoing cpu before completion
-> 
-> 	                                           CPU
-> 
-> > +	 * of irq migration to be lost. Check SDM Vol 3 "10.4.7.2 Local
-> 
-> 	      IRQ
-> 
-> > +	 * APIC State after It Has been Software Disabled" section for more
-> > +	 * details.
-> >  	 */
-> >  	apic_soft_disable();
-> > -	cpu_disable_common();
-> >  
-> >  	return 0;
-> >  }
-> > 
-> 
-> thanks.
-> -- 
-> ~Randy
-> 
+Changelog:
+v2->v3
+ * Resent -- no change
+   v2 was sent 4 months ago https://lkml.org/lkml/2020/4/6/881
+   but it has not got replied yet
+v1->v2
+ * Followed Robin's comments to revise the commit message by
+   dropping one paragraph of not-entirely-true justification
+   (no git-diff level change, so please ack if you tested v1)
+
+ include/linux/dma-mapping.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index 016b96b384bd..27df499aa041 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -628,7 +628,7 @@ static inline unsigned long dma_get_seg_boundary(struct device *dev)
+ {
+ 	if (dev->dma_parms && dev->dma_parms->segment_boundary_mask)
+ 		return dev->dma_parms->segment_boundary_mask;
+-	return DMA_BIT_MASK(32);
++	return ULONG_MAX;
+ }
+ 
+ static inline int dma_set_seg_boundary(struct device *dev, unsigned long mask)
+-- 
+2.17.1
+
