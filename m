@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A822453F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B1A245470
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728547AbgHOWKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:10:13 -0400
-Received: from mga18.intel.com ([134.134.136.126]:40989 "EHLO mga18.intel.com"
+        id S1729424AbgHOWYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:24:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37956 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728120AbgHOWKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:10:12 -0400
-IronPort-SDR: gv3mEkCv6tYwT1VdKj8/7yq+A+vzvlz1M9eKIk7XkdWPk21w+Z2qxoTzWdwnfdozSrnR5Za8cb
- TsCQ+sRuPBWg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9713"; a="142150815"
-X-IronPort-AV: E=Sophos;i="5.76,316,1592895600"; 
-   d="scan'208";a="142150815"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2020 05:48:41 -0700
-IronPort-SDR: Ida5F9v1M5Pd+SNeHkfOib7YrT84GrHz32jp6JY/tIEwC+nNhpqBKYFo9ytJTEuNjkBzUB4xEh
- 7zQlqCys45AQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,316,1592895600"; 
-   d="scan'208";a="333651251"
-Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
-  by FMSMGA003.fm.intel.com with ESMTP; 15 Aug 2020 05:48:36 -0700
-Date:   Sat, 15 Aug 2020 20:45:47 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kernel test robot <lkp@intel.com>, Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>, Tejun Heo <tj@kernel.org>,
-        "Tobin C. Harding" <tobin@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Waiman Long <longman@redhat.com>,
-        Bixuan Cui <cuibixuan@huawei.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: Re: [LKP] Re: [mm] 3e38e0aaca:
- WARNING:at_mm/memcontrol.c:#mem_cgroup_alloc
-Message-ID: <20200815124547.GA21072@intel.com>
-References: <20200814141327.GJ7488@shao2-debian>
- <CAHk-=wj8oc=wCvqcMdpKM8cceEYmicpf++rNDWC_5A6qYDP9QQ@mail.gmail.com>
+        id S1728765AbgHOWXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:23:46 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E9063AC50;
+        Sat, 15 Aug 2020 12:46:45 +0000 (UTC)
+From:   colyli@suse.de
+To:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Coly Li <colyli@suse.de>, Dan Williams <dan.j.williams@intel.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH RESEND] docs: update trusted-encrypted.rst
+Date:   Sat, 15 Aug 2020 20:46:14 +0800
+Message-Id: <20200815124614.115201-1-colyli@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wj8oc=wCvqcMdpKM8cceEYmicpf++rNDWC_5A6qYDP9QQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 10:00:44AM -0700, Linus Torvalds wrote:
-> On Fri, Aug 14, 2020 at 7:14 AM kernel test robot <lkp@intel.com> wrote:
-> >
-> > FYI, we noticed the following commit (built with gcc-9):
-> >
-> > commit: 3e38e0aaca9eafb12b1c4b731d1c10975cbe7974 ("mm: memcg: charge memcg percpu memory to the parent cgroup")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> >
-> >
-> > in testcase: boot
-> >
-> > on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
-> >
-> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> This should have already been fixed by commit 9f457179244a ("mm:
-> memcontrol: fix warning when allocating the root cgroup").
-Thanks Linus for this info, usually the test bot checks the head
-of fbc's branch to validate the bisection. If the head fixes
-the issue, the bot shall not send out such fbc report. We will
-double check this bisection process to resolve any logical issue.
+From: Coly Li <colyli@suse.de>
 
-> 
-> But I forget what the syntax is to report that to the kernel test
-> robot. Would it be possible for lkp automatically look for "Fixes:"
-> tags, perhaps?
-Got it, we will investigate this which should be quite helpful, e.g. if
-we want to check whether an upstream commit had fixes in other
-repo like linux-next.
+The parameters in tmp2 commands are outdated, people are not able to
+create trusted key by the example commands.
 
-Thanks
+This patch updates the paramerters of tpm2 commands, they are verified
+by tpm2-tools-4.1 with Linux v5.8 kernel.
 
-> 
->                  Linus
-> _______________________________________________
-> LKP mailing list -- lkp@lists.01.org
-> To unsubscribe send an email to lkp-leave@lists.01.org
+Signed-off-by: Coly Li <colyli@suse.de>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: James Bottomley <jejb@linux.ibm.com>
+Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc: Mimi Zohar <zohar@linux.ibm.com>
+Cc: Stefan Berger <stefanb@linux.ibm.com>
+---
+ Documentation/security/keys/trusted-encrypted.rst | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/security/keys/trusted-encrypted.rst b/Documentation/security/keys/trusted-encrypted.rst
+index 9483a7425ad5..442a2775156e 100644
+--- a/Documentation/security/keys/trusted-encrypted.rst
++++ b/Documentation/security/keys/trusted-encrypted.rst
+@@ -39,10 +39,9 @@ With the IBM TSS 2 stack::
+ 
+ Or with the Intel TSS 2 stack::
+ 
+-  #> tpm2_createprimary --hierarchy o -G rsa2048 -o key.ctxt
++  #> tpm2_createprimary --hierarchy o -G rsa2048 key.ctxt
+   [...]
+-  handle: 0x800000FF
+-  #> tpm2_evictcontrol -c key.ctxt -p 0x81000001
++  #> tpm2_evictcontrol -c key.ctxt 0x81000001
+   persistentHandle: 0x81000001
+ 
+ Usage::
+@@ -115,7 +114,7 @@ append 'keyhandle=0x81000001' to statements between quotes, such as
+ 
+ ::
+ 
+-    $ keyctl add trusted kmk "new 32" @u
++    $ keyctl add trusted kmk "new 32 keyhandle=0x81000001" @u
+     440502848
+ 
+     $ keyctl show
+@@ -138,7 +137,7 @@ append 'keyhandle=0x81000001' to statements between quotes, such as
+ 
+ Load a trusted key from the saved blob::
+ 
+-    $ keyctl add trusted kmk "load `cat kmk.blob`" @u
++    $ keyctl add trusted kmk "load `cat kmk.blob` keyhandle=0x81000001" @u
+     268728824
+ 
+     $ keyctl print 268728824
+-- 
+2.26.2
+
