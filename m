@@ -2,150 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2EC245391
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698392453B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729524AbgHOWDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        id S1729851AbgHOWEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 18:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728687AbgHOVvM (ORCPT
+        with ESMTP id S1728542AbgHOVvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:12 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2B6C0F26E8
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:01:21 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id g8so9982957wmk.3
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:01:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Byd6JX0u9CVtv0y1zEzjrWKsILPjQocwhfVDqHvQpP8=;
-        b=RVUfc64EUrpOjS0uUeTj6CnoZaKgjhY9NRue/r+GIWwLxpaMr05j6TAHIRiyjnTGX7
-         UbpcJsKG1QLGUzPBUG+YdAvLlEJMobaUe/Kmmq2AOU8lSBuGCqJdCuUnWWcP8DuBGKf2
-         bH5LrNBJz/IFgFvkTyUPEtTzx1GhVBbHiv1bWjQ7D6mmyuEJwbQNUyJbBe4OCp9/DFag
-         7wgSdzD3dZmzBzQw8Hdop39zn0CljLo1IS9VSSdazcq7tqnTCQDV6GhDVfFO30RGovqJ
-         EMA3GXBGH8kTkcIcmQ0WlZrydWr2UpbWYvcJB7zlbiF7JE6b+DtYhME52O+ao10oo1xE
-         gRdQ==
+        Sat, 15 Aug 2020 17:51:01 -0400
+Received: from mail-il1-x145.google.com (mail-il1-x145.google.com [IPv6:2607:f8b0:4864:20::145])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91977C0F26EC
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:14:18 -0700 (PDT)
+Received: by mail-il1-x145.google.com with SMTP id k8so5087162ili.21
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:14:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Byd6JX0u9CVtv0y1zEzjrWKsILPjQocwhfVDqHvQpP8=;
-        b=hkNsYP40EtvNG5KowLSKL8XZTNKDbh5m7rqtlvD0YGTOTT/BgD/oiawtfGY+lOeD+F
-         hFYs4dB7NycIiEIgZsKTQkIYNZycsW/pFf1tUQpmCQ4VOO3Qe7bpjAHNlNIkobWOaksF
-         flqPAFBbRRzMqcGc072hlVfSb1ApynjNXiV4uLuxfX3nvtrSTwjyPezn9u0tRNNAJafG
-         sDGIgeT9AESAtuSqDgupSbXWZnKcL5yI0gK7rjt9jLYX9w2mrsJJInBrwhBZClZ4tXV3
-         Lu25YkkAhYehVBcxL5q8fpiLkhNDfpOE6ISlc6rnrc9jfjeeSW0MRqkpA18blju3USUq
-         wf7Q==
-X-Gm-Message-State: AOAM533DvAXCrQw1+wgSP3Q0PTfY206C6UnlhgUdiWL+SDJFq/cNY0Oi
-        WFTeVouIHbE7UAgFwxjPBsKZ7Hu6ZqU=
-X-Google-Smtp-Source: ABdhPJxvFWoKTIJTQ4+D7HIXsGygz+/zUrJnihc+8gD094by7boTdo6kCAo3SaCOlnhiG3x6WOh7fw==
-X-Received: by 2002:a1c:678b:: with SMTP id b133mr8201129wmc.117.1597514479589;
-        Sat, 15 Aug 2020 11:01:19 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id e5sm24460775wrc.37.2020.08.15.11.01.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 11:01:18 -0700 (PDT)
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Cc:     farah kassabri <fkassabri@habana.ai>
-Subject: [PATCH 9/9] habanalabs: extend busy engines mask to 64 bits
-Date:   Sat, 15 Aug 2020 20:59:38 +0300
-Message-Id: <20200815175938.16619-9-oded.gabbay@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200815175938.16619-1-oded.gabbay@gmail.com>
-References: <20200815175938.16619-1-oded.gabbay@gmail.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Tsrf0W3zdR8N6Sz4q9zL/K2/kh+E+ME01i4FhEUCMRQ=;
+        b=i3LxMJMiTKAIG7E6S4gu+fqNCB6LXrGGz6QAnBx569pqjv86FYDganIhiYKxSFfXFE
+         pby5Doit1RUB3Jnu2b9cGsuHHsnVsrD6lNP0Hvmt2Ef+1zZgFodEzRK7EQkrJAjSGGJl
+         iV1FgmrdkOFt2xoAThEqPYM01yOP1JtuyznuBtE0YdPYR2qQL5VtRIgQPUMTqWn6TkkG
+         u4y7cfpazpoe9yD6TZiUXnd6cTHANftGwAzdBOw2QsHj/rvXWLFdFGVmm3UneNmruSAD
+         emDw1YgiBstNFsGEMUYaLBlmGOWXx3jkrEocRRrpC4hYKpa4sMX60qSWT4k6pae/PXDf
+         sXRQ==
+X-Gm-Message-State: AOAM531i1f4bP/hJLdGXZf94jn0nw0V9tQBcCNNAMPmsNH92FWAva/fv
+        /6+rkwHFnes0zbTYAPI+1W21Q0H0lyaCzXIMoVNt8FJ95Jt4
+X-Google-Smtp-Source: ABdhPJxYqKqeKYXpBI+HjSS1BvnO9LP/5Zfu3IqMgkk1OcFJhfjveTF2PxtjTI1vWp6rJMeM+xx5/uYZ8rnvmalXEbxnC2kMkSXi
+MIME-Version: 1.0
+X-Received: by 2002:a92:d4cc:: with SMTP id o12mr7100103ilm.90.1597515257724;
+ Sat, 15 Aug 2020 11:14:17 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 11:14:17 -0700
+In-Reply-To: <000000000000923cee05acee6f61@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000075c7e805acee8158@google.com>
+Subject: Re: possible deadlock in io_poll_double_wake
+From:   syzbot <syzbot+0d56cfeec64f045baffc@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: farah kassabri <fkassabri@habana.ai>
+syzbot has found a reproducer for the following issue on:
 
-change busy engines bitmask to 64 bits in order to represent
-more engines, needed for future ASIC support.
+HEAD commit:    c9c9735c Merge tag 'scsi-misc' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=165d3b6a900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=adea84f38e7bc8d
+dashboard link: https://syzkaller.appspot.com/bug?extid=0d56cfeec64f045baffc
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1018494a900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c8e1e2900000
 
-Signed-off-by: farah kassabri <fkassabri@habana.ai>
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
----
- drivers/misc/habanalabs/common/habanalabs.h       | 2 +-
- drivers/misc/habanalabs/common/habanalabs_ioctl.c | 2 +-
- drivers/misc/habanalabs/gaudi/gaudi.c             | 2 +-
- drivers/misc/habanalabs/goya/goya.c               | 2 +-
- include/uapi/misc/habanalabs.h                    | 6 ++++++
- 5 files changed, 10 insertions(+), 4 deletions(-)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0d56cfeec64f045baffc@syzkaller.appspotmail.com
 
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 2decf7be3e08..dbf214421ae1 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -754,7 +754,7 @@ struct hl_asic_funcs {
- 	void (*set_clock_gating)(struct hl_device *hdev);
- 	void (*disable_clock_gating)(struct hl_device *hdev);
- 	int (*debug_coresight)(struct hl_device *hdev, void *data);
--	bool (*is_device_idle)(struct hl_device *hdev, u32 *mask,
-+	bool (*is_device_idle)(struct hl_device *hdev, u64 *mask,
- 				struct seq_file *s);
- 	int (*soft_reset_late_init)(struct hl_device *hdev);
- 	void (*hw_queues_lock)(struct hl_device *hdev);
-diff --git a/drivers/misc/habanalabs/common/habanalabs_ioctl.c b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
-index fe6c5534d378..a94800014243 100644
---- a/drivers/misc/habanalabs/common/habanalabs_ioctl.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
-@@ -132,7 +132,7 @@ static int hw_idle(struct hl_device *hdev, struct hl_info_args *args)
- 		return -EINVAL;
- 
- 	hw_idle.is_idle = hdev->asic_funcs->is_device_idle(hdev,
--					&hw_idle.busy_engines_mask, NULL);
-+					&hw_idle.busy_engines_mask_ext, NULL);
- 
- 	return copy_to_user(out, &hw_idle,
- 		min((size_t) max_size, sizeof(hw_idle))) ? -EFAULT : 0;
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 3360c3c207a9..e56f95e6c741 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -6041,7 +6041,7 @@ static int gaudi_armcp_info_get(struct hl_device *hdev)
- 	return 0;
- }
- 
--static bool gaudi_is_device_idle(struct hl_device *hdev, u32 *mask,
-+static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
- 					struct seq_file *s)
- {
- 	struct gaudi_device *gaudi = hdev->asic_specific;
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 77a5963a4d10..021cd26fb018 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -5117,7 +5117,7 @@ static void goya_disable_clock_gating(struct hl_device *hdev)
- 	/* clock gating not supported in Goya */
- }
- 
--static bool goya_is_device_idle(struct hl_device *hdev, u32 *mask,
-+static bool goya_is_device_idle(struct hl_device *hdev, u64 *mask,
- 				struct seq_file *s)
- {
- 	const char *fmt = "%-5d%-9s%#-14x%#-16x%#x\n";
-diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
-index ca6dc1fc250e..693081728ef3 100644
---- a/include/uapi/misc/habanalabs.h
-+++ b/include/uapi/misc/habanalabs.h
-@@ -319,6 +319,12 @@ struct hl_info_hw_idle {
- 	 * Bits definition is according to `enum <chip>_enging_id'.
- 	 */
- 	__u32 busy_engines_mask;
-+
-+	/*
-+	 * Extended Bitmask of busy engines.
-+	 * Bits definition is according to `enum <chip>_enging_id'.
-+	 */
-+	__u64 busy_engines_mask_ext;
- };
- 
- struct hl_info_device_status {
--- 
-2.17.1
+============================================
+WARNING: possible recursive locking detected
+5.8.0-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor639/6830 is trying to acquire lock:
+ffff8880a6bc5530 (&tty->write_wait){-.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff8880a6bc5530 (&tty->write_wait){-.-.}-{2:2}, at: io_poll_double_wake+0x108/0x360 fs/io_uring.c:4599
+
+but task is already holding lock:
+ffff8880a6bc5530 (&tty->write_wait){-.-.}-{2:2}, at: __wake_up_common_lock kernel/sched/wait.c:122 [inline]
+ffff8880a6bc5530 (&tty->write_wait){-.-.}-{2:2}, at: __wake_up+0xb8/0x150 kernel/sched/wait.c:142
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&tty->write_wait);
+  lock(&tty->write_wait);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+4 locks held by syz-executor639/6830:
+ #0: ffff8880a6bc5098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x21/0x70 drivers/tty/tty_ldisc.c:267
+ #1: ffff8880a6bc52e8 (&tty->termios_rwsem){++++}-{3:3}, at: tty_set_termios+0xc5/0x1510 drivers/tty/tty_ioctl.c:328
+ #2: ffff8880a6bc5098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref+0x18/0x80 drivers/tty/tty_ldisc.c:288
+ #3: ffff8880a6bc5530 (&tty->write_wait){-.-.}-{2:2}, at: __wake_up_common_lock kernel/sched/wait.c:122 [inline]
+ #3: ffff8880a6bc5530 (&tty->write_wait){-.-.}-{2:2}, at: __wake_up+0xb8/0x150 kernel/sched/wait.c:142
+
+stack backtrace:
+CPU: 0 PID: 6830 Comm: syz-executor639 Not tainted 5.8.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1f0/0x31e lib/dump_stack.c:118
+ print_deadlock_bug kernel/locking/lockdep.c:2391 [inline]
+ check_deadlock kernel/locking/lockdep.c:2432 [inline]
+ validate_chain+0x69a4/0x88a0 kernel/locking/lockdep.c:3202
+ __lock_acquire+0x1161/0x2ab0 kernel/locking/lockdep.c:4426
+ lock_acquire+0x160/0x730 kernel/locking/lockdep.c:5005
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_poll_double_wake+0x108/0x360 fs/io_uring.c:4599
+ __wake_up_common+0x30a/0x4e0 kernel/sched/wait.c:93
+ __wake_up_common_lock kernel/sched/wait.c:123 [inline]
+ __wake_up+0xd4/0x150 kernel/sched/wait.c:142
+ n_tty_set_termios+0xa60/0x1080 drivers/tty/n_tty.c:1874
+ tty_set_termios+0xcac/0x1510 drivers/tty/tty_ioctl.c:341
+ set_termios+0x4a1/0x580 drivers/tty/tty_ioctl.c:414
+ tty_mode_ioctl+0x7b2/0xa80 drivers/tty/tty_ioctl.c:770
+ tty_ioctl+0xf81/0x15c0 drivers/tty/tty_io.c:2665
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4405b9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffdae6bfd28 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00000000004405b9
+RDX: 0000000020000000 RSI: 0000000000005404 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401e20
+R13: 0000000000401eb0 R14: 0000000000000000 R15: 0000000000000000
 
