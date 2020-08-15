@@ -2,77 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AFC2452EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAE92452B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729422AbgHOV4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45650 "EHLO
+        id S1729104AbgHOVwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:52:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729021AbgHOVwN (ORCPT
+        with ESMTP id S1729065AbgHOVwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:13 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77820C09B045
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 08:21:32 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id v4so12972624ljd.0
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 08:21:32 -0700 (PDT)
+        Sat, 15 Aug 2020 17:52:24 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41C3C09B04B;
+        Sat, 15 Aug 2020 08:28:31 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id f10so5443988plj.8;
+        Sat, 15 Aug 2020 08:28:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yoYSOcagikdOmgPviZEP2LliGHPAyUYpPZFQ5sfcSPo=;
-        b=Uv7csibiolw1CuDlu16Gy1hKMGKzL80fWUarG895vX9a1+KeDE9e1ot+4TvzccwzMR
-         7s/XPY7UZdQ9YZUx9LK4npjhhqyLxQNqNQwHgvbJ8JQtshZui0zkyL6ja2vXp8W57rPJ
-         Rzfj5yclo7NtNqAedLzGCeYsDz+hP+x+ECSmI=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rTPW4Vgi6J6sb3NDeTJ+AxP/fbIZYazNxG03Qo5ugNw=;
+        b=WXvmttykvtH6fdjtYt1TnuIlBjfutXTOyRQkbpvtBvRbapvHWJajQuEt2vYmCiNuZs
+         yfKZbyRjKMsvOGhGQra+YWXaPdT7eY7sTeDS2ZwIsCYEBZ3wf5dm0WTK4/Ov/swSkqGk
+         oVcGJSKySWigCkr5GE2+D0GTlxHxP9O+IxUlzPkTyyXn/ahZ7MXlz9gswiGk6Zo0odaX
+         TwNW/AR5BJ8WTKWTPsbohx45YC9mV26A8FylnxjjxDzbn5OJmPJtqrXO+KdvldxCUdeV
+         VGKUzr+J+B5wasUz+T6nWANs75ufIgARSM+M6v2uLlrTx+ydzTPBYhYIRMDRCX7iXGjb
+         aMyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yoYSOcagikdOmgPviZEP2LliGHPAyUYpPZFQ5sfcSPo=;
-        b=pgmvYHoRsHXx6xNhZ8AC71c14zcpeMyy+IFDxJMiYly2P53GJoAXY4XvplO7Llde24
-         6E+Uqq914CEmdBYsQHucwDXIca+bPQ6V8LWJmNwQCKWCf/THy0spceaDQasd38jl7EVz
-         okZTS4yoAcXRIzIs6hLNpPLbROqiDRRXEOt5gVeQqHI8PVc26Hf8atujPgQlXrYf37+v
-         7mo/y6djrCC/9MOuMmSiB6O6NJpvYtoyFhcdJOp2S1YHt2hgaYZheLKlVWg/xhQwn6c5
-         RH8tlYiF+/nngSi6OHyKRjhklwsDkAFM0dofunskgLpOQnDVdhtVTERVdeV0KGzsOU8T
-         1xnA==
-X-Gm-Message-State: AOAM5303bdkyjyFloRGr8a3ItkglDEPUxhsds2Y+nqVTz8jxwwRnYQqH
-        46WWTJtJZcXx5ZnUvKGJaU6wuTkL3vTlcg==
-X-Google-Smtp-Source: ABdhPJyWO5RxHfQZ398PoqPX/0VEbrLvj+cUBbBdrXRn1Cq6aTqvGZV29lpawRhrM2nLdGAan/Lwnw==
-X-Received: by 2002:a2e:9f46:: with SMTP id v6mr3431315ljk.66.1597504890738;
-        Sat, 15 Aug 2020 08:21:30 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id y21sm2630108lff.34.2020.08.15.08.21.29
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rTPW4Vgi6J6sb3NDeTJ+AxP/fbIZYazNxG03Qo5ugNw=;
+        b=PZ+j7oPPZvuqajxenEg/Cppb1mc3tJAzkRcfOSrfbRREGfzgpqTFGyT1NuWn5b0Zob
+         yowVec0jczbloZQRo1FwgtlkvnKOoD5E1RTZCv3iRKxF++SAyM7lrKJUOrT6hQqpCgO0
+         gwKQoSGz+RWAgWfQ4MmX9j7AILn018p1XP8fscnsN0b12gYKxVnZlFUOIaBkCBpho6x7
+         /9YTM2paCihWF5DodcmEZuuKJxX+l0//t1zj67XcxzheCjIJzxwKJSH6hmsafwW+X7LU
+         X8zw9KYPWpQRF4sVlMQh8luASnNlyRitJrnjLErI+eyoiQ1YZBlU2ExBhvVPxTOQMr2D
+         eIlw==
+X-Gm-Message-State: AOAM5305CPs/zF02W6RvvtQcJGuLqI6ATPLSaLTNpjJf9qoSIwkBUQrM
+        pkv5Y9O/taKYoRIieuZshSU=
+X-Google-Smtp-Source: ABdhPJyKy5EqG8dNFaxmbWpREVyRWCTdpDXJADHemeJefvOP2cfgXhiEcBNUPorWbShOHPm+DXEPzg==
+X-Received: by 2002:a17:90a:f481:: with SMTP id bx1mr6304176pjb.172.1597505311100;
+        Sat, 15 Aug 2020 08:28:31 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id js19sm11107958pjb.33.2020.08.15.08.28.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 Aug 2020 08:21:29 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id t6so12898880ljk.9
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 08:21:29 -0700 (PDT)
-X-Received: by 2002:a2e:b008:: with SMTP id y8mr3202606ljk.421.1597504889274;
- Sat, 15 Aug 2020 08:21:29 -0700 (PDT)
+        Sat, 15 Aug 2020 08:28:30 -0700 (PDT)
+Subject: Re: [PATCH] i2c: iproc: Fix checkpatch warnings by using 'BIT' macro
+To:     Ray Jui <ray.jui@broadcom.com>, Wolfram Sang <wsa@kernel.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+References: <20200814224008.107430-1-ray.jui@broadcom.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <c2c1b5e7-37a0-39fe-5bad-36ddcff9d389@gmail.com>
+Date:   Sat, 15 Aug 2020 08:28:29 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.1.1
 MIME-Version: 1.0
-References: <20200815003645.GA22594@agluck-desk2.amr.corp.intel.com>
-In-Reply-To: <20200815003645.GA22594@agluck-desk2.amr.corp.intel.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 15 Aug 2020 08:21:13 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgFg+RNU3Aa7paCPCLpUiTHGN1PuC2AGZoRSOxD=trKnQ@mail.gmail.com>
-Message-ID: <CAHk-=wgFg+RNU3Aa7paCPCLpUiTHGN1PuC2AGZoRSOxD=trKnQ@mail.gmail.com>
-Subject: Re: [GIT PULL] edac for v5.9 (part 2)
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-edac <linux-edac@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200814224008.107430-1-ray.jui@broadcom.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 5:36 PM Luck, Tony <tony.luck@intel.com> wrote:
->
-> Here's one more pull for EDAC with a driver that I let slip
-> through the cracks.
 
-Shortlog? Diffstat? Just what am I getting?
 
-                Linus
+On 8/14/2020 3:40 PM, Ray Jui wrote:
+> Fix additional checkpatch warnings in the iProc I2C driver by using
+> 'BIT' marcro.
+> 
+> Reported-by: Wolfram Sang <wsa@kernel.org>
+> Signed-off-by: Ray Jui <ray.jui@broadcom.com>
+
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
