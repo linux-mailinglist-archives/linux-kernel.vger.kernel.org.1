@@ -2,70 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E637E245201
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191BE2452CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgHOVfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:35:47 -0400
-Received: from smtprelay0165.hostedemail.com ([216.40.44.165]:60198 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726004AbgHOVfr (ORCPT
+        id S1729339AbgHOVzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:55:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729082AbgHOVwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:35:47 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave08.hostedemail.com (Postfix) with ESMTP id 60D6D182D4AEB
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 01:38:17 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 24B0718027FA1;
-        Sat, 15 Aug 2020 01:38:17 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3865:3866:3867:4250:5007:10004:10400:10848:11026:11473:11658:11914:12297:12346:12555:12760:13069:13311:13357:13439:14096:14097:14181:14394:14659:14721:21080:21627:30054:30070,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: brick56_401558527001
-X-Filterd-Recvd-Size: 1649
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf02.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 15 Aug 2020 01:38:16 +0000 (UTC)
-Message-ID: <15f52e9b0e50296aba35871bc1575a684c4a258a.camel@perches.com>
-Subject: [PATCH] genksyms: keywords: Use __restrict not _restrict
-From:   Joe Perches <joe@perches.com>
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>
+        Sat, 15 Aug 2020 17:52:25 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7C2C06134E;
+        Fri, 14 Aug 2020 18:40:10 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id s16so8363579qtn.7;
+        Fri, 14 Aug 2020 18:40:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/LJPODsukhk9ilKQ5Nhku7oJFNIdXYTCpu7/+RHvulw=;
+        b=nLw79+rmoA2nElv+xnAFz8nXs/AlqzKnFWwt843zJ3flzcKUwV86WHPBtEYbGdl5NP
+         pnqjP3u+xb17yJYfFXiutjt5y02NnTJhiiK+ZWvPo1FnjYjhvPeBe3k8ZDAidXu43QGq
+         LbWjjCzzatkcCYFiRlFEBJFcPjmZx9Fgp5T/gy4C+x8ofCMVUTXcQS2wYBKnAMzgLLDl
+         N3sNkBhDhQOg6mxoqkBrL4ooaXdjWLbuTEkNTdFlLF3gIpRqhFuBfOXvKMB+hx9XziB0
+         r1Jr4Dar9TLw3jf6AXi2DhpbsoYTRIVyi3C5kYBH4EczNGf1VF+SSu0DtQBoYNU1CoYe
+         mucQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=/LJPODsukhk9ilKQ5Nhku7oJFNIdXYTCpu7/+RHvulw=;
+        b=lstCFHrmSlFJg/onNcoL1XX4e25IpL/hmpg3514jSmxI1eSsTk/tkDDUK1Kx/foNyQ
+         lwz6Vu9XuSOcEhd7ynpEDawpzoQ1yDB+a6bcNTMIIVFR7wg6oT3mpcNZwCoXIe9wjvpZ
+         LdSRYxFO19hyZhVUy1blD6kM2RFeALJ4Soug8vW9uDeV9CaSeOZOhgztXII1/Key80g5
+         fynfYBI6APR+bBPgHO4eHh0aS7AMYRUK/GZQodrD/U6H2A9bOOmjxUI91BBiOnmrs/CX
+         2lTBBCMZWV4WT22i8rm0H7hm80LQNs2VTbikKy0UiEy1VL+/MBiT9o2zOyPDygPbbTZm
+         0cPA==
+X-Gm-Message-State: AOAM533cp/9KF5gEc5Ts+u5cTo013aK1dl+EUEuK54Ov1fbFXXaRBdOZ
+        jpn3M8HClDAcyKpvI1i15R8=
+X-Google-Smtp-Source: ABdhPJytsRGRgirZNN/jnyKlfg9rTWG21qGTYN95Pon23TrSBl+teD15V1iyGWo9t9zg5J2PXwAGEA==
+X-Received: by 2002:aed:3789:: with SMTP id j9mr4809739qtb.251.1597455608719;
+        Fri, 14 Aug 2020 18:40:08 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id d124sm9846309qkg.65.2020.08.14.18.40.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Aug 2020 18:40:08 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Fri, 14 Aug 2020 21:40:06 -0400
+To:     Arvind Sankar <nivedita@alum.mit.edu>
 Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Fri, 14 Aug 2020 18:38:15 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?utf-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>, stable@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Joe Perches <joe@perches.com>, Tony Luck <tony.luck@intel.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] lib/string.c: implement stpcpy
+Message-ID: <20200815014006.GB99152@rani.riverdale.lan>
+References: <20200815002417.1512973-1-ndesaulniers@google.com>
+ <20200815013310.GA99152@rani.riverdale.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200815013310.GA99152@rani.riverdale.lan>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the proper form of the RESTRICT keyword.
+On Fri, Aug 14, 2020 at 09:33:10PM -0400, Arvind Sankar wrote:
+> On Fri, Aug 14, 2020 at 05:24:15PM -0700, Nick Desaulniers wrote:
+> > +#ifndef __HAVE_ARCH_STPCPY
+> > +/**
+> > + * stpcpy - copy a string from src to dest returning a pointer to the new end
+> > + *          of dest, including src's NULL terminator. May overrun dest.
+> > + * @dest: pointer to end of string being copied into. Must be large enough
+> > + *        to receive copy.
+> > + * @src: pointer to the beginning of string being copied from. Must not overlap
+> > + *       dest.
+> > + *
+> > + * stpcpy differs from strcpy in two key ways:
+> > + * 1. inputs must not overlap.
+> > + * 2. return value is the new NULL terminated character. (for strcpy, the
+> > + *    return value is a pointer to src.
+> > + */
+> > +#undef stpcpy
+> > +char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
+> > +{
+> > +	while ((*dest++ = *src++) != '\0')
+> > +		/* nothing */;
+> > +	return dest;
+> > +}
+> > +#endif
+> > +
+> 
+> Won't this return a pointer that's one _past_ the terminating NUL? I
+> think you need the increments to be inside the loop body, rather than as
+> part of the condition.
+> 
+> Nit: NUL is more correct than NULL to refer to the string terminator.
 
-Quote the comments properly too.
-
-Signed-off-by: Joe Perches <joe@perches.com>
----
- scripts/genksyms/keywords.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/genksyms/keywords.c b/scripts/genksyms/keywords.c
-index 7a85c4e21175..057c6cabad1d 100644
---- a/scripts/genksyms/keywords.c
-+++ b/scripts/genksyms/keywords.c
-@@ -25,9 +25,9 @@ static struct resword {
- 	{ "__int128_t", BUILTIN_INT_KEYW },
- 	{ "__uint128_t", BUILTIN_INT_KEYW },
- 
--	// According to rth, c99 defines "_Bool", __restrict", __restrict__", "restrict".  KAO
-+	// According to rth, c99 defines "_Bool", "__restrict", "__restrict__", "restrict".  KAO
- 	{ "_Bool", BOOL_KEYW },
--	{ "_restrict", RESTRICT_KEYW },
-+	{ "__restrict", RESTRICT_KEYW },
- 	{ "__restrict__", RESTRICT_KEYW },
- 	{ "restrict", RESTRICT_KEYW },
- 	{ "asm", ASM_KEYW },
-
+Also, strcpy (at least the one in the C standard) is undefined if the
+strings overlap, so that's not really a difference.
