@@ -2,39 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9379245317
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B628245289
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729500AbgHOV6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:58:02 -0400
-Received: from smtprelay0189.hostedemail.com ([216.40.44.189]:50018 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728964AbgHOV6A (ORCPT
+        id S1729194AbgHOVwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729110AbgHOVwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:58:00 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id 5BC0718041E63;
-        Sat, 15 Aug 2020 00:52:04 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 2CF8C18026226;
-        Sat, 15 Aug 2020 00:52:04 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3872:3874:4321:5007:6117:6119:6742:7875:10004:10400:10848:11026:11232:11473:11658:11914:12297:12346:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21451:21627:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: feast89_3216ee827001
-X-Filterd-Recvd-Size: 2404
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 15 Aug 2020 00:52:01 +0000 (UTC)
-Message-ID: <562003af51ca0b08f2108147b8d6e75cec18f3fd.camel@perches.com>
+        Sat, 15 Aug 2020 17:52:35 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D79DC061348
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 17:53:41 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id m22so11679847eje.10
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Aug 2020 17:53:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cE/B8jLj1zvXZ+mvl87f60vua1FqTOB1sidvPP/WOgw=;
+        b=opWbEJLAX5qZbFpaKKZsvc/e8RNL/4tGU/5+gViPNL//IDiQoQtBlTLSzzmrl1XfSN
+         7gIxERT+8ExdXmKG1LZPDzPWMkzQTReXKx0ITYiliKFUjkIt6i85mEChVWopekn4wAGj
+         gfiBKSUqnKRTjekrpQOpCDJwSnJi5XmbQtbdar7ObT4lW8YvuI/aTPsZkMlLbGps1t2p
+         bO2tf5mNlVMAsRothforYyk+YoS5Z+5q/+DAG+Dh+tT6ki+L/aTkg+EW8W9a1CJKuB4A
+         g8ceSac41Bcdsa2UCT/3ODU+9pbD/lXNdVzCH3EyG+f9Sd7/CsWbnqwKtbPqC1BPyPJ+
+         xgvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cE/B8jLj1zvXZ+mvl87f60vua1FqTOB1sidvPP/WOgw=;
+        b=A91T7hD1+s6vpi6GyGVCvBTRTp3e/RFInT5iy+7fMh21ZSRdxRpwC6lWl+0CCsoPn+
+         tsqFig4fJNEYdN1x/TCIiGBHODju1/RraIMWpaBqqayV0HUqPcd+22bz3gmPKBuoRyTx
+         Tb3RVSQBmhEkFmKDR5oGM+NG3i0/DsYiHwbhqlTIP5lZHXKAHPXBuawrC25luPT7Mq9a
+         WDywHdHuVj0/Q6ZfedBvEFCbC5NeFIJYRn1UCyRKye6jy5KP3jmZKz129yKrWEtlal5I
+         76If48ZkPeze3W11C0Z0BBuL48XI7fWCLa866UIV2/SlZk0tNckVlcAqwHIUcp0RyWDV
+         ORWQ==
+X-Gm-Message-State: AOAM533+aUPVrsdxkTkWjx5G/69FqrMqRVVv3TATbFSFB5e02Vbi0zG2
+        +q0i30cKmZU0Zwi5DTOwzhTKsA9kgWX2SZw62EJ3EQ==
+X-Google-Smtp-Source: ABdhPJzVdWTzcJE2teGLvr5U2+nBzfXqIXCSwMxtlViqGl33Ab6EWKq2Qh8BYAtrIE7u/XqSAtchMB3OFImFW3GdQCQ=
+X-Received: by 2002:a17:906:2356:: with SMTP id m22mr4835600eja.124.1597452819358;
+ Fri, 14 Aug 2020 17:53:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200815002417.1512973-1-ndesaulniers@google.com>
+In-Reply-To: <20200815002417.1512973-1-ndesaulniers@google.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Fri, 14 Aug 2020 17:53:28 -0700
+Message-ID: <CABCJKue4ikLs9NuxkhwxZUMZzgD10mVXnwt4=_8euXer8gzOQQ@mail.gmail.com>
 Subject: Re: [PATCH] lib/string.c: implement stpcpy
-From:   Joe Perches <joe@perches.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     =?ISO-8859-1?Q?D=E1vid_Bolvansk=FD?= <david.bolvansky@gmail.com>,
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
         Eli Friedman <efriedma@quicinc.com>, stable@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Tony Luck <tony.luck@intel.com>,
+        Joe Perches <joe@perches.com>, Tony Luck <tony.luck@intel.com>,
         Yury Norov <yury.norov@gmail.com>,
         Daniel Axtens <dja@axtens.net>,
         Arvind Sankar <nivedita@alum.mit.edu>,
@@ -43,41 +64,57 @@ Cc:     =?ISO-8859-1?Q?D=E1vid_Bolvansk=FD?= <david.bolvansky@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Kees Cook <keescook@chromium.org>,
         Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Date:   Fri, 14 Aug 2020 17:52:00 -0700
-In-Reply-To: <20200815002417.1512973-1-ndesaulniers@google.com>
-References: <20200815002417.1512973-1-ndesaulniers@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-08-14 at 17:24 -0700, Nick Desaulniers wrote:
+Hi Nick,
+
+On Fri, Aug 14, 2020 at 5:24 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
 > LLVM implemented a recent "libcall optimization" that lowers calls to
 > `sprintf(dest, "%s", str)` where the return value is used to
 > `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
 > in parsing format strings.
-[]
-> diff --git a/include/linux/string.h b/include/linux/string.h
-[]
-> @@ -31,6 +31,9 @@ size_t strlcpy(char *, const char *, size_t);
->  #ifndef __HAVE_ARCH_STRSCPY
->  ssize_t strscpy(char *, const char *, size_t);
->  #endif
-> +#ifndef __HAVE_ARCH_STPCPY
-> +extern char *stpcpy(char *__restrict, const char *__restrict__);
+>
+> `stpcpy` is just like `strcpy` except:
+> 1. it returns the pointer to the new tail of `dest`. This allows you to
+>    chain multiple calls to `stpcpy` in one statement.
+> 2. it requires the parameters not to overlap.  Calling `sprintf` with
+>    overlapping arguments was clarified in ISO C99 and POSIX.1-2001 to be
+>    undefined behavior.
+>
+> `stpcpy` was first standardized in POSIX.1-2008.
+>
+> Implement this so that we don't observe linkage failures due to missing
+> symbol definitions for `stpcpy`.
+>
+> Similar to last year's fire drill with:
+> commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
+>
+> This optimization was introduced into clang-12.
+>
+> Cc: stable@vger.kernel.org
+> Link: https://bugs.llvm.org/show_bug.cgi?id=47162
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1126
+> Link: https://man7.org/linux/man-pages/man3/stpcpy.3.html
+> Link: https://pubs.opengroup.org/onlinepubs/9699919799/functions/stpcpy.html
+> Link: https://reviews.llvm.org/D85963
+> Reported-by: Sami Tolvanen <samitolvanen@google.com>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  include/linux/string.h |  3 +++
+>  lib/string.c           | 23 +++++++++++++++++++++++
+>  2 files changed, 26 insertions(+)
 
-Why use two different forms for __restrict and __restrict__?
-Any real reason to use __restrict__ at all?
+Thank you for the patch! I can confirm that this fixes the build for
+me with ToT Clang.
 
-It's used nowhere else in the kernel.
+Tested-by: Sami Tolvanen <samitolvanen@google.com>
 
-$ git grep -w -P '__restrict_{0,2}'
-scripts/genksyms/keywords.c:    // According to rth, c99 defines "_Bool", __restrict", __restrict__", "restrict".  KAO
-scripts/genksyms/keywords.c:    { "__restrict__", RESTRICT_KEYW },
-
-
+Sami
