@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8615B245398
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F3D2453A3
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 00:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgHOWDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 18:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
+        id S1728607AbgHOVvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:51:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728580AbgHOVvL (ORCPT
+        with ESMTP id S1728486AbgHOVuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:11 -0400
+        Sat, 15 Aug 2020 17:50:54 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D2EC09B04C;
-        Sat, 15 Aug 2020 08:47:01 -0700 (PDT)
-Date:   Sat, 15 Aug 2020 15:46:50 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C22C09B052;
+        Sat, 15 Aug 2020 08:47:04 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 15:46:51 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597506411;
+        s=2020; t=1597506412;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gvXsFKLYgG9imtnvQkz/GI8BrWBV6j9tKKoEh7WUZi8=;
-        b=3fCpAH8aOpeyZ6g5tLVl+0CF+ZWK4dgcai6C3dUgOMAGR93MAaZutDwT5e5PbZkg17+bga
-        NO/c460egX7I40+HH3qzaJtWHk24Y/7qfjKu/wqjrw42yDtrxErETIOyMIOsvDG942+3RX
-        +x8N2ODSD/tfpPU4wMGJ3L1BKGSlTzCZqwU7h3kloWPij5vkbYZVFnm3i4QItcD/9iqL6Y
-        vA1iu/NBnHDwme2RkfGvrNTE2sBwh2fHoHEoLigTjN+jaLIpLcpy0szilKJHUrl/4HC5b8
-        Qs13VQpoT8K0wd3+C0leRpmhGOyE0uORi+Jmyxz+U7cwWx08NAD17WuKsiBWrw==
+        bh=Pu4f7XjhFcULlGOVp6eLrt6povAfc7FbC/8I3SqVmYY=;
+        b=lfnEF5dzZ75XgnRafY1H0VO2AdK2iJR8TYD8lkeaZ9D88/FyMhkj0AWwRYrLQWROasVJMZ
+        x6p3OJ4V6WIa8CjjdCe4GswOc1pzeepDZcxkx5uArP5jaIAYQ3BCJh8WhHmMXEzJxUDZRG
+        08DqYkklBkVhL8Qwlrzny6ghsLExWGCoeTnSRnXcsQLG7qldkb05+wlcD1AmO0YfaFYrB7
+        H/QZK/wFsJYN97gvKY5ghYKyoZlp2TZSXHxHFmGjUGBEJddogCHx9EPqddubuMBZUNhg3z
+        d7elTX055dRTZ4+zSaxOTaAomoy6Fu8gnr4kZ8mlZgKtXzxbke3rUi2AeiBAXQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597506411;
+        s=2020e; t=1597506412;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gvXsFKLYgG9imtnvQkz/GI8BrWBV6j9tKKoEh7WUZi8=;
-        b=31mXZuxZXQDFE6MgKHpLllUTXBgBBI8flbw/drdHe/egma1mS8y40jS3O9aLCfWr561lVB
-        r64rdccOFyBNLtDw==
+        bh=Pu4f7XjhFcULlGOVp6eLrt6povAfc7FbC/8I3SqVmYY=;
+        b=goupLROJKx+xszbQtEWoArKYb0+Af5Nlu93cM64eo5C0vTpjWp8Xt+T0rjaVoJxtCEDRDc
+        PjxI9gTUliMNjKBA==
 From:   "tip-bot2 for Juergen Gross" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/paravirt] x86/paravirt: Remove set_pte_at() pv-op
+Subject: [tip: x86/paravirt] x86/paravirt: Use CONFIG_PARAVIRT_XXL instead of
+ CONFIG_PARAVIRT
 Cc:     Juergen Gross <jgross@suse.com>, Ingo Molnar <mingo@kernel.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200815100641.26362-6-jgross@suse.com>
-References: <20200815100641.26362-6-jgross@suse.com>
+In-Reply-To: <20200815100641.26362-4-jgross@suse.com>
+References: <20200815100641.26362-4-jgross@suse.com>
 MIME-Version: 1.0
-Message-ID: <159750641040.3192.3040793846858713127.tip-bot2@tip-bot2>
+Message-ID: <159750641175.3192.2969286932741999871.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,163 +61,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/paravirt branch of tip:
 
-Commit-ID:     e1ac3e66d301e57472f31ebee81b916e9fa8b35b
-Gitweb:        https://git.kernel.org/tip/e1ac3e66d301e57472f31ebee81b916e9fa8b35b
+Commit-ID:     ecac71816a1829c0e54c41c5f1845f75b55dc618
+Gitweb:        https://git.kernel.org/tip/ecac71816a1829c0e54c41c5f1845f75b55dc618
 Author:        Juergen Gross <jgross@suse.com>
-AuthorDate:    Sat, 15 Aug 2020 12:06:40 +02:00
+AuthorDate:    Sat, 15 Aug 2020 12:06:38 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sat, 15 Aug 2020 13:52:12 +02:00
+CommitterDate: Sat, 15 Aug 2020 13:52:11 +02:00
 
-x86/paravirt: Remove set_pte_at() pv-op
+x86/paravirt: Use CONFIG_PARAVIRT_XXL instead of CONFIG_PARAVIRT
 
-On x86 set_pte_at() is now always falling back to set_pte(). So instead
-of having this fallback after the paravirt maze just drop the
-set_pte_at paravirt operation and let set_pte_at() use the set_pte()
-function directly.
+There are some code parts using CONFIG_PARAVIRT for Xen pvops related
+issues instead of the more stringent CONFIG_PARAVIRT_XXL.
 
 Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200815100641.26362-6-jgross@suse.com
+Link: https://lore.kernel.org/r/20200815100641.26362-4-jgross@suse.com
 ---
- arch/x86/include/asm/paravirt.h       |  8 +-------
- arch/x86/include/asm/paravirt_types.h |  2 --
- arch/x86/include/asm/pgtable.h        |  7 +++----
- arch/x86/kernel/paravirt.c            |  1 -
- arch/x86/xen/mmu_pv.c                 |  8 --------
- include/trace/events/xen.h            | 20 --------------------
- 6 files changed, 4 insertions(+), 42 deletions(-)
+ arch/x86/entry/entry_64.S                | 4 ++--
+ arch/x86/include/asm/fixmap.h            | 2 +-
+ arch/x86/include/asm/required-features.h | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-index e02c409..f0464b8 100644
---- a/arch/x86/include/asm/paravirt.h
-+++ b/arch/x86/include/asm/paravirt.h
-@@ -412,12 +412,6 @@ static inline void set_pte(pte_t *ptep, pte_t pte)
- 	PVOP_VCALL2(mmu.set_pte, ptep, pte.pte);
- }
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index 70dea93..26fc9b4 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -46,13 +46,13 @@
+ .code64
+ .section .entry.text, "ax"
  
--static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
--			      pte_t *ptep, pte_t pte)
--{
--	PVOP_VCALL4(mmu.set_pte_at, mm, addr, ptep, pte.pte);
--}
--
- static inline void set_pmd(pmd_t *pmdp, pmd_t pmd)
- {
- 	PVOP_VCALL2(mmu.set_pmd, pmdp, native_pmd_val(pmd));
-@@ -510,7 +504,7 @@ static inline void set_pte_atomic(pte_t *ptep, pte_t pte)
- static inline void pte_clear(struct mm_struct *mm, unsigned long addr,
- 			     pte_t *ptep)
- {
--	set_pte_at(mm, addr, ptep, __pte(0));
-+	set_pte(ptep, __pte(0));
- }
+-#ifdef CONFIG_PARAVIRT
++#ifdef CONFIG_PARAVIRT_XXL
+ SYM_CODE_START(native_usergs_sysret64)
+ 	UNWIND_HINT_EMPTY
+ 	swapgs
+ 	sysretq
+ SYM_CODE_END(native_usergs_sysret64)
+-#endif /* CONFIG_PARAVIRT */
++#endif /* CONFIG_PARAVIRT_XXL */
  
- static inline void pmd_clear(pmd_t *pmdp)
-diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index f27c3fe..0fad9f6 100644
---- a/arch/x86/include/asm/paravirt_types.h
-+++ b/arch/x86/include/asm/paravirt_types.h
-@@ -242,8 +242,6 @@ struct pv_mmu_ops {
+ /*
+  * 64-bit SYSCALL instruction entry. Up to 6 arguments in registers.
+diff --git a/arch/x86/include/asm/fixmap.h b/arch/x86/include/asm/fixmap.h
+index 0f0dd64..77217bd 100644
+--- a/arch/x86/include/asm/fixmap.h
++++ b/arch/x86/include/asm/fixmap.h
+@@ -99,7 +99,7 @@ enum fixed_addresses {
+ 	FIX_PCIE_MCFG,
+ #endif
+ #endif
+-#ifdef CONFIG_PARAVIRT
++#ifdef CONFIG_PARAVIRT_XXL
+ 	FIX_PARAVIRT_BOOTMAP,
+ #endif
+ #ifdef	CONFIG_X86_INTEL_MID
+diff --git a/arch/x86/include/asm/required-features.h b/arch/x86/include/asm/required-features.h
+index 6847d85..3ff0d48 100644
+--- a/arch/x86/include/asm/required-features.h
++++ b/arch/x86/include/asm/required-features.h
+@@ -54,7 +54,7 @@
+ #endif
  
- 	/* Pagetable manipulation functions */
- 	void (*set_pte)(pte_t *ptep, pte_t pteval);
--	void (*set_pte_at)(struct mm_struct *mm, unsigned long addr,
--			   pte_t *ptep, pte_t pteval);
- 	void (*set_pmd)(pmd_t *pmdp, pmd_t pmdval);
- 
- 	pte_t (*ptep_modify_prot_start)(struct vm_area_struct *vma, unsigned long addr,
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index b836138..5e0dcc2 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -63,7 +63,6 @@ extern pmdval_t early_pmd_flags;
- #include <asm/paravirt.h>
- #else  /* !CONFIG_PARAVIRT_XXL */
- #define set_pte(ptep, pte)		native_set_pte(ptep, pte)
--#define set_pte_at(mm, addr, ptep, pte)	native_set_pte_at(mm, addr, ptep, pte)
- 
- #define set_pte_atomic(ptep, pte)					\
- 	native_set_pte_atomic(ptep, pte)
-@@ -1033,10 +1032,10 @@ static inline pud_t native_local_pudp_get_and_clear(pud_t *pudp)
- 	return res;
- }
- 
--static inline void native_set_pte_at(struct mm_struct *mm, unsigned long addr,
--				     pte_t *ptep , pte_t pte)
-+static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
-+			      pte_t *ptep, pte_t pte)
- {
--	native_set_pte(ptep, pte);
-+	set_pte(ptep, pte);
- }
- 
- static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index e56a144..6c3407b 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -360,7 +360,6 @@ struct paravirt_patch_template pv_ops = {
- 	.mmu.release_p4d	= paravirt_nop,
- 
- 	.mmu.set_pte		= native_set_pte,
--	.mmu.set_pte_at		= native_set_pte_at,
- 	.mmu.set_pmd		= native_set_pmd,
- 
- 	.mmu.ptep_modify_prot_start	= __ptep_modify_prot_start,
-diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
-index 3273c98..eda7814 100644
---- a/arch/x86/xen/mmu_pv.c
-+++ b/arch/x86/xen/mmu_pv.c
-@@ -285,13 +285,6 @@ static void xen_set_pte(pte_t *ptep, pte_t pteval)
- 	__xen_set_pte(ptep, pteval);
- }
- 
--static void xen_set_pte_at(struct mm_struct *mm, unsigned long addr,
--		    pte_t *ptep, pte_t pteval)
--{
--	trace_xen_mmu_set_pte_at(mm, addr, ptep, pteval);
--	__xen_set_pte(ptep, pteval);
--}
--
- pte_t xen_ptep_modify_prot_start(struct vm_area_struct *vma,
- 				 unsigned long addr, pte_t *ptep)
- {
-@@ -2105,7 +2098,6 @@ static const struct pv_mmu_ops xen_mmu_ops __initconst = {
- 	.release_pmd = xen_release_pmd_init,
- 
- 	.set_pte = xen_set_pte_init,
--	.set_pte_at = xen_set_pte_at,
- 	.set_pmd = xen_set_pmd_hyper,
- 
- 	.ptep_modify_prot_start = __ptep_modify_prot_start,
-diff --git a/include/trace/events/xen.h b/include/trace/events/xen.h
-index a5ccfa6..3b61b58 100644
---- a/include/trace/events/xen.h
-+++ b/include/trace/events/xen.h
-@@ -153,26 +153,6 @@ DECLARE_EVENT_CLASS(xen_mmu__set_pte,
- 
- DEFINE_XEN_MMU_SET_PTE(xen_mmu_set_pte);
- 
--TRACE_EVENT(xen_mmu_set_pte_at,
--	    TP_PROTO(struct mm_struct *mm, unsigned long addr,
--		     pte_t *ptep, pte_t pteval),
--	    TP_ARGS(mm, addr, ptep, pteval),
--	    TP_STRUCT__entry(
--		    __field(struct mm_struct *, mm)
--		    __field(unsigned long, addr)
--		    __field(pte_t *, ptep)
--		    __field(pteval_t, pteval)
--		    ),
--	    TP_fast_assign(__entry->mm = mm;
--			   __entry->addr = addr;
--			   __entry->ptep = ptep;
--			   __entry->pteval = pteval.pte),
--	    TP_printk("mm %p addr %lx ptep %p pteval %0*llx (raw %0*llx)",
--		      __entry->mm, __entry->addr, __entry->ptep,
--		      (int)sizeof(pteval_t) * 2, (unsigned long long)pte_val(native_make_pte(__entry->pteval)),
--		      (int)sizeof(pteval_t) * 2, (unsigned long long)__entry->pteval)
--	);
--
- TRACE_DEFINE_SIZEOF(pmdval_t);
- 
- TRACE_EVENT(xen_mmu_set_pmd,
+ #ifdef CONFIG_X86_64
+-#ifdef CONFIG_PARAVIRT
++#ifdef CONFIG_PARAVIRT_XXL
+ /* Paravirtualized systems may not have PSE or PGE available */
+ #define NEED_PSE	0
+ #define NEED_PGE	0
