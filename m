@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E3324528F
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D7E2452ED
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Aug 2020 23:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729208AbgHOVxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 17:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        id S1729231AbgHOV4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 17:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729162AbgHOVwo (ORCPT
+        with ESMTP id S1728999AbgHOVwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:52:44 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE20CC004584
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:24:02 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id u24so10053103oic.7
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:24:02 -0700 (PDT)
+        Sat, 15 Aug 2020 17:52:13 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71026C004587
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:24:08 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id 93so10274025otx.2
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Aug 2020 11:24:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=tfz-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/WD7gDl+XCmPqlIM7nO2KOimmNxRDcsCujVimXn1HcY=;
-        b=g4DTmlN0AX+cftqo1QEpMKcjQk7ZLxWak6EyvPZavjAmBIk8W1XU8uNdWZCTLi1DW6
-         DVT6Hhi6wWp4aBdUSYuGixUeEKS0TAC+Cttb3icJugW6uKVYJcwIWLbU6HY9ZpjqRk93
-         TJivnlGJ5p2LOhQabFmwvkVDTnN1kZQuXElbRNiIA5/Lq7bimj65Y2kxx92n0v/XcQzc
-         KJXsSBW1G4fZGw+G4fxmPBgSuBhW2sI2qFaeni0qQfISXO6Fpa8oJwoOnkwr2xdukwJj
-         q88RPcEN0CeiSwHbpisoTCWPyghNabqi4ZRUUqqVtogrSGbuGQKNp61Y5oEZSTC1KHEJ
-         dVXQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Npmo1qy1EtVMY1f22f/XoQlkfS4jbAFUtpYwb+UPN9s=;
+        b=UGhjOy6sny6yVuAYdTV7QBCsVIFSkm8sA3y/SwYBtDKROYWCu7teCOiIZNIbFqbCYc
+         ExIJMnNURR2y62RErP89vr5vRlyCI26hAxWcIRy+YJupCpNAWZwAPEF0bvbN7jlfrNBW
+         Z6XL/zXinZFM3jz26fjeTSDd5bpJjvs/+j1Wxbfowb0CHENC0egNjqh/Gl2vPvf5J5ti
+         NYw9sRYdgG4Sm5vsHkdc0KonY3R8qwZLxvgscFYM88L8Wg+IO7UcFJd/T7ItwLGOEzEH
+         n+YiJzdL+FBqViqWHvhlG20hAgDcQPgR3M6n3cgCQkXAdj4ed4Zuo02mdBGxq+kcLpfX
+         Jr+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/WD7gDl+XCmPqlIM7nO2KOimmNxRDcsCujVimXn1HcY=;
-        b=FR7i+DJ1hSD2AQx/LZxv7oxX1bMRyggyE5txvd52pkDVTGrYdEByJ8P6JAT0t2h6Wt
-         q9rR8Er5UsJwMyyLW01k5U90ZxY1wOptg5/2iT/4j2ZRCBnpPQQ4PUyZG0MiOABa2kAU
-         ATRN28ItrKhv9ZBsdp8QkckJW+MK5RtstI7YxEvPG1p8YFJNDsAy1DDg5sbx/vUtXQaD
-         gkGUKfqtUAZ2bv9h7Fh6cJYOPwXqIB8Zg1lAQ2euKjzbdmfit/NyRuGBygOY2W9Tc5xj
-         HcD4AqH6o4HVsKXYr8Z2eNmmM0A/h4LMHk/Orzd9HK30HIIxq2luzIxV4Gy9OxSxLZo6
-         sRzw==
-X-Gm-Message-State: AOAM533GaJnKH9sMOKY8ZK8IaaYoANwWN7qA2kMKJsbiKQ5zeO87kdGE
-        WmTp1icD06YbBQ9zKWKaI6OPEGKBBqhnZHp0lCA=
-X-Google-Smtp-Source: ABdhPJxqwP+YD3muYShKpb0m6VaIwQRrEiPMwvh26QMq87kIaKeWCvE0KzX/JwlMmukEVl0cU0TLwg==
-X-Received: by 2002:aca:e144:: with SMTP id y65mr4848449oig.101.1597515841901;
-        Sat, 15 Aug 2020 11:24:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Npmo1qy1EtVMY1f22f/XoQlkfS4jbAFUtpYwb+UPN9s=;
+        b=gj+IxyADHM4QfRZ8rHBpiYoYAFLOFPrgIodfok9wXJgbLzTmGn+HqpCAg+ANv4tjgk
+         EVTgz4H9seJWm+wOg0hp9IY6QbCtnwjQj6uV8zr9HCBndyLimcxpqj+Is5luxVGaTL8F
+         1o/2oLhpPKSymJ6gycDuy6e4RJVdXcc9zUXin8AGhdwIEBszsVhvwolw07MWC5PrdlFZ
+         75hmc1LyM/WozmGZDawdFrqUGQVslbXZkHd1uvQLWUaLmaoMuXwbWASr6qN9v7DM95Rk
+         ybauKrFuC+x/X3TdfClT0B6gBTXtvoM4a074fHeNE2zCp/b1vu+8FM2QQ24UNY530bsj
+         Xy/w==
+X-Gm-Message-State: AOAM533/ZGZU9ifWdSdHjF5r1LrCW8FWTeogwobpL5y6XsBUQghh04xO
+        oPVVl/WhSZSm6JbKbdSO98TT79hxKTbCdDJcKwk=
+X-Google-Smtp-Source: ABdhPJy7YkkteM56EdGdHCXuWzaeZe6zD/figZlqTYdO0AG60UZFeFBumOA4ui2QoHa8visqRWX4FA==
+X-Received: by 2002:a05:6830:605:: with SMTP id w5mr5942549oti.3.1597515847051;
+        Sat, 15 Aug 2020 11:24:07 -0700 (PDT)
 Received: from foo.attlocal.net (108-232-117-128.lightspeed.sntcca.sbcglobal.net. [108.232.117.128])
-        by smtp.gmail.com with ESMTPSA id z72sm2397820ooa.42.2020.08.15.11.24.00
+        by smtp.gmail.com with ESMTPSA id z72sm2397820ooa.42.2020.08.15.11.24.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 11:24:01 -0700 (PDT)
+        Sat, 15 Aug 2020 11:24:06 -0700 (PDT)
 From:   Pascal Bouchareine <kalou@tfz.net>
 To:     linux-kernel@vger.kernel.org
-Cc:     linux-api@vger.kernel.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
+Cc:     Pascal Bouchareine <kalou@tfz.net>, linux-api@vger.kernel.org,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
         "Jakub Kicinski" <kuba@kernel.org>,
         "Andrew Morton" <akpm@linux-foundation.org>,
         "Alexey Dobriyan" <adobriyan@gmail.com>,
-        "Al Viro" <viro@zeniv.linux.org.uk>,
-        "Pascal Bouchareine" <kalou@tfz.net>
-Subject: [RFC PATCH 0/2] proc,socket: attach description to sockets
-Date:   Sat, 15 Aug 2020 11:23:42 -0700
-Message-Id: <20200815182344.7469-1-kalou@tfz.net>
+        "Al Viro" <viro@zeniv.linux.org.uk>
+Subject: [PATCH 2/2] net: socket: implement SO_DESCRIPTION
+Date:   Sat, 15 Aug 2020 11:23:44 -0700
+Message-Id: <20200815182344.7469-3-kalou@tfz.net>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200815182344.7469-1-kalou@tfz.net>
+References: <20200815182344.7469-1-kalou@tfz.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -68,10 +69,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Checking to see if this could fit in struct sock.
+This command attaches the zero terminated string in optval to the
+socket for troubleshooting purposes. The free string is displayed in the
+process fdinfo file for that fd (/proc/<pid>/fdinfo/<fd>).
 
-This goes against v5.8
+One intended usage is to allow processes to self-document sockets
+for netstat and friends to report
 
-I tried to make it tl;dr in commit 2/2 but motivation is also described
-a bit in https://lore.kernel.org/linux-api/CAGbU3_nVvuzMn2wo4_ZKufWcGfmGsopVujzTWw-Bbeky=xS+GA@mail.gmail.com/
+We ignore optlen and constrain the string to a static max size
+
+Signed-off-by: Pascal Bouchareine <kalou@tfz.net>
+---
+ include/net/sock.h                |  4 ++++
+ include/uapi/asm-generic/socket.h |  2 ++
+ net/core/sock.c                   | 23 +++++++++++++++++++++++
+ net/socket.c                      |  5 +++++
+ 4 files changed, 34 insertions(+)
+
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 1183507df95b..6b4fd1383282 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -342,6 +342,7 @@ struct bpf_sk_storage;
+   *	@sk_txtime_deadline_mode: set deadline mode for SO_TXTIME
+   *	@sk_txtime_report_errors: set report errors mode for SO_TXTIME
+   *	@sk_txtime_unused: unused txtime flags
++  *	@sk_description: user supplied with SO_DESCRIPTION
+   */
+ struct sock {
+ 	/*
+@@ -519,6 +520,9 @@ struct sock {
+ 	struct bpf_sk_storage __rcu	*sk_bpf_storage;
+ #endif
+ 	struct rcu_head		sk_rcu;
++
++#define	SK_MAX_DESC_SIZE	256
++	char			*sk_description;
+ };
+ 
+ enum sk_pacing {
+diff --git a/include/uapi/asm-generic/socket.h b/include/uapi/asm-generic/socket.h
+index 77f7c1638eb1..fb51c4bb7a12 100644
+--- a/include/uapi/asm-generic/socket.h
++++ b/include/uapi/asm-generic/socket.h
+@@ -119,6 +119,8 @@
+ 
+ #define SO_DETACH_REUSEPORT_BPF 68
+ 
++#define SO_DESCRIPTION		69
++
+ #if !defined(__KERNEL__)
+ 
+ #if __BITS_PER_LONG == 64 || (defined(__x86_64__) && defined(__ILP32__))
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 2e5b7870e5d3..2cb44a0e38b7 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -828,6 +828,24 @@ void sock_set_rcvbuf(struct sock *sk, int val)
+ }
+ EXPORT_SYMBOL(sock_set_rcvbuf);
+ 
++int sock_set_description(struct sock *sk, char __user *user_desc)
++{
++	char *old, *desc;
++
++	desc = strndup_user(user_desc, SK_MAX_DESC_SIZE, GFP_KERNEL_ACCOUNT);
++	if (IS_ERR(desc))
++		return PTR_ERR(desc);
++
++	lock_sock(sk);
++	old = sk->sk_description;
++	sk->sk_description = desc;
++	release_sock(sk);
++
++	kfree(old);
++
++	return 0;
++}
++
+ /*
+  *	This is meant for all protocols to use and covers goings on
+  *	at the socket level. Everything here is generic.
+@@ -850,6 +868,9 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+ 	if (optname == SO_BINDTODEVICE)
+ 		return sock_setbindtodevice(sk, optval, optlen);
+ 
++	if (optname == SO_DESCRIPTION)
++		return sock_set_description(sk, optval);
++
+ 	if (optlen < sizeof(int))
+ 		return -EINVAL;
+ 
+@@ -1792,6 +1813,8 @@ static void __sk_destruct(struct rcu_head *head)
+ 		RCU_INIT_POINTER(sk->sk_filter, NULL);
+ 	}
+ 
++	kfree(sk->sk_description);
++
+ 	sock_disable_timestamp(sk, SK_FLAGS_TIMESTAMP);
+ 
+ #ifdef CONFIG_BPF_SYSCALL
+diff --git a/net/socket.c b/net/socket.c
+index 976426d03f09..4f2c1a7744b0 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -134,6 +134,11 @@ static void sock_show_fdinfo(struct seq_file *m, struct file *f)
+ {
+ 	struct socket *sock = f->private_data;
+ 
++	lock_sock(sock->sk);
++	if (sock->sk->sk_description)
++		seq_printf(m, "desc:\t%s\n", sock->sk->sk_description);
++	release_sock(sock->sk);
++
+ 	if (sock->ops->show_fdinfo)
+ 		sock->ops->show_fdinfo(m, sock);
+ }
+-- 
+2.25.1
 
