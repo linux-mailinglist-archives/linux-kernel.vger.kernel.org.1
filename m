@@ -2,216 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87EE2456ED
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 11:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB548245707
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 11:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgHPJJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 05:09:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726867AbgHPJJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 05:09:22 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B6B920674;
-        Sun, 16 Aug 2020 09:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597568961;
-        bh=fct5xyzao3oW1dZCCvJJ44cqqHrh1KU9u+AtYKKQKIw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=G1AD0o2JeLlgctYEm0jMVRI25A+O1ZsM4av23t4Nn7Q9qhQtEf74mJbnlhcwy8l14
-         cvoPqEBvEgr7uyVbvqj8Ooe5TQYk+HmxXABOCPkgARvzGAFjUbO2eXjDm2bAYY55dw
-         1ZN1ocNDnjwBH07Oy8eL95e4/GEr11uIde+BGk3M=
-Date:   Sun, 16 Aug 2020 10:09:17 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Crt Mori <cmo@melexis.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/4] iio:temperature:mlx90632: Adding extended
- calibration option
-Message-ID: <20200816100917.4f3308b8@archlinux>
-In-Reply-To: <CAKv63uuVYS5isAnhBzcqOJEJWhD5muSDBJzvYoJk1KkucrRnDA@mail.gmail.com>
-References: <20200808121026.1300375-1-cmo@melexis.com>
-        <20200808121026.1300375-3-cmo@melexis.com>
-        <CAHp75VfWk7pCy4Osv0uY0UH4yFS=PRGbE1CNCakuRFTE33SDJg@mail.gmail.com>
-        <CAKv63uv-+r6M=G2rviSedgdCUd_0nzHKWXK363bJNERTQHRYXA@mail.gmail.com>
-        <20200809143222.4e19ea38@archlinux>
-        <CAKv63uu1cRVCujM0nR5BstDYLZnCuGQTeFxhyUF0QK0mr0hvkQ@mail.gmail.com>
-        <CAKv63uuVYS5isAnhBzcqOJEJWhD5muSDBJzvYoJk1KkucrRnDA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728486AbgHPJRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 05:17:55 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:13505 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726022AbgHPJRw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 Aug 2020 05:17:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1597569472; x=1629105472;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=0KiFD7MKYJeA21r8+YOIjXyPutiEhZpN89Zy2Fhpttg=;
+  b=ZF60OjM5ubDRZZi+iSITPnWcBtWZw/Fv6U8o+YkaS3ujh67GNG+T74M9
+   B20vlMwbfeIlw7+g/vH6efsskSwQYACDw3m66b3jTxKi0niOLyyRpkXF6
+   +yG8ALGXUf6OU7mt285fsZB2DlTkNMWaEoqJ6vGAg6gaeKvm39FUd/FBk
+   c=;
+X-IronPort-AV: E=Sophos;i="5.76,319,1592870400"; 
+   d="scan'208";a="60062486"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-97fdccfd.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 16 Aug 2020 09:17:49 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1e-97fdccfd.us-east-1.amazon.com (Postfix) with ESMTPS id 68A39A1C5B;
+        Sun, 16 Aug 2020 09:17:45 +0000 (UTC)
+Received: from EX13D01EUB001.ant.amazon.com (10.43.166.194) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 16 Aug 2020 09:17:44 +0000
+Received: from [192.168.3.188] (10.43.162.140) by EX13D01EUB001.ant.amazon.com
+ (10.43.166.194) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 16 Aug
+ 2020 09:17:35 +0000
+Subject: Re: [PATCH v9 2/2] EDAC: al-mc-edac: Introduce Amazon's Annapurna
+ Labs Memory Controller EDAC
+To:     Borislav Petkov <bp@alien8.de>
+CC:     <mchehab@kernel.org>, <james.morse@arm.com>, <davem@davemloft.net>,
+        <gregkh@linuxfoundation.org>, <nicolas.ferre@microchip.com>,
+        <robh+dt@kernel.org>, <mark.rutland@arm.com>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <linux-edac@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <hhhawa@amazon.com>,
+        <ronenk@amazon.com>, <jonnyc@amazon.com>, <hanochu@amazon.com>,
+        <eitan@amazon.com>, <talel@amazon.com>
+References: <20200728095155.18506-1-talel@amazon.com>
+ <20200728095155.18506-3-talel@amazon.com> <20200815183358.GE25814@zn.tnic>
+From:   "Shenhar, Talel" <talel@amazon.com>
+Message-ID: <5d516c64-ecd8-6f36-5f95-6708fe0f3fd5@amazon.com>
+Date:   Sun, 16 Aug 2020 12:17:31 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200815183358.GE25814@zn.tnic>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Originating-IP: [10.43.162.140]
+X-ClientProxiedBy: EX13D32UWB004.ant.amazon.com (10.43.161.36) To
+ EX13D01EUB001.ant.amazon.com (10.43.166.194)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 Aug 2020 09:53:55 +0200
-Crt Mori <cmo@melexis.com> wrote:
 
-> On Sun, 9 Aug 2020 at 23:05, Crt Mori <cmo@melexis.com> wrote:
-> >
-> > On Sun, 9 Aug 2020 at 15:32, Jonathan Cameron <jic23@kernel.org> wrote:  
-> > >
-> > > On Sat, 8 Aug 2020 23:57:59 +0200
-> > > Crt Mori <cmo@melexis.com> wrote:
-> > >  
-> > > > Hi,
-> > > > I am very sorry you missed them, I thought you saw it (reply on v3 of
-> > > > the patch). Maybe something happened to that mail, as it contained
-> > > > link to datasheet, so I will omit it now.
-> > > >
-> > > > Except for the order, only the remarks below are still open (did you
-> > > > get the polling trail I did?)
-> > > >
-> > > > On Sat, 8 Aug 2020 at 22:04, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:  
-> > > > >
-> > > > > On Sat, Aug 8, 2020 at 3:11 PM Crt Mori <cmo@melexis.com> wrote:  
-> > > > > >
-> > > > > > For some time the market wants medical grade accuracy in medical range,
-> > > > > > while still retaining the declared accuracy outside of the medical range
-> > > > > > within the same sensor. That is why we created extended calibration
-> > > > > > which is automatically switched to when object temperature is too high.
-> > > > > >
-> > > > > > This patch also introduces the object_ambient_temperature variable which
-> > > > > > is needed for more accurate calculation of the object infra-red
-> > > > > > footprint as sensor's ambient temperature might be totally different
-> > > > > > than what the ambient temperature is at object and that is why we can
-> > > > > > have some more errors which can be eliminated. Currently this temperature
-> > > > > > is fixed at 25, but the interface to adjust it by user (with external
-> > > > > > sensor or just IR measurement of the other object which acts as ambient),
-> > > > > > will be introduced in another commit.  
-> > > > >
-> > > > > The kernel doc patch should go before this patch.
-> > > > >
-> > > > > ...
-> > > > >  
-> > > > > > +       *ambient_new_raw = (s16)read_tmp;  
-> > > > >  
-> > > > > > +       *ambient_old_raw = (s16)read_tmp;  
-> > > > >
-> > > > > Sorry, did I miss your answer about these castings all over the patch?
-> > > > >  
-> > > >
-> > > > These castings are in fact needed. You read unsigned integer, but the
-> > > > return value is signed integer. Without the cast it did not extend the
-> > > > signed bit, but just wrote the value to signed. Also I find it more
-> > > > obvious with casts, that I did not "accidentally" convert to signed.  
-> > >
-> > > Should we perhaps be making this explicit for the cases where we
-> > > are sign extending?  That doesn't include these two as the lvalue
-> > > is s16, but does include some of the others.
-> > >
-> > > sign_extend32(read_tmp, 15)
-> > >  
-> >
-> > So for you lines like
-> > s32 read;
-> > read = (read + (s16)read_tmp) / 2;
-> >
-> > would actually be better as:
-> > read = (read + sign_extend32(read_tmp, 15)) / 2;
-> >
-> > Hm, strange. I would read that more align the read_tmp to 32 bit than
-> > the value you have in read_tmp is actually a signed 16 bit integer...
-> >  
-> 
-> OK, I did some trails without the casts and had deja-vu from the first
-> series of patches I submitted.  I noticed that without a cast the
-> value that ends up in variable is not extended to signed, but it is
-> unsigned value truncated. This same finding leads to have these casts
-> already in current ambient and object raw read functions.
-> 
-> So now only debate is if sign_extend32 is useful in this case, as read
-> in the current case is 32 bit (before it was also 16 bit).
-> 
-> My preference is to leave unified across the driver.
+On 8/15/2020 9:33 PM, Borislav Petkov wrote:
+> On Tue, Jul 28, 2020 at 12:51:55PM +0300, Talel Shenhar wrote:
+>> +static void al_mc_edac_check(struct mem_ctl_info *mci)
+>> +{
+>> +     struct al_mc_edac *al_mc = mci->pvt_info;
+>> +
+>> +     if (al_mc->irq_ue <= 0)
+>> +             handle_ue(mci);
+>> +
+>> +     if (al_mc->irq_ce <= 0)
+>> +             handle_ce(mci);
+>> +}
+>> +
+>> +static irqreturn_t al_mc_edac_irq_handler_ue(int irq, void *info)
+>> +{
+>> +     struct platform_device *pdev = info;
+>> +     struct mem_ctl_info *mci = platform_get_drvdata(pdev);
+>> +
+>> +     if (handle_ue(mci))
+>> +             return IRQ_HANDLED;
+>> +     return IRQ_NONE;
+>> +}
+>> +
+>> +static irqreturn_t al_mc_edac_irq_handler_ce(int irq, void *info)
+>> +{
+>> +     struct platform_device *pdev = info;
+>> +     struct mem_ctl_info *mci = platform_get_drvdata(pdev);
+>> +
+>> +     if (handle_ce(mci))
+>> +             return IRQ_HANDLED;
+>> +     return IRQ_NONE;
+>> +}
+>> +
+>> +static enum scrub_type al_mc_edac_get_scrub_mode(void __iomem *mmio_base)
+>> +{
+>> +     u32 ecccfg0;
+>> +
+>> +     ecccfg0 = readl(mmio_base + AL_MC_ECC_CFG);
+>> +
+>> +     if (FIELD_GET(AL_MC_ECC_CFG_SCRUB_DISABLED, ecccfg0))
+>> +             return SCRUB_NONE;
+>> +     else
+>> +             return SCRUB_HW_SRC;
+>> +}
+>> +
+>> +static void devm_al_mc_edac_free(void *data)
+>> +{
+>> +     edac_mc_free(data);
+>> +}
+>> +
+>> +static void devm_al_mc_edac_del(void *data)
+>> +{
+>> +     edac_mc_del_mc(data);
+>> +}
+>  From a previous review:
+>
+> I said:
+>
+>> Drop the "al_mc_edac_" prefix from most of the static functions. You can
+>> leave it in the probe function or the IRQ handler so that it is visible
+>> in stack traces but all those small functions don't need that prefix.
+> You replied with:
+>
+>> Shall be part of v7.
+> and yet it ain't part of any v<num>.
+>
+> Why?
 
-It is fairly obvious to me what is going on as things stand, but
-if others are being confused, the sign_extend32 does make it explicit
-that this is all about sign extension.
+Thanks for taking a look.
 
-> 
-> > > >  
-> > > > > ...
-> > > > >  
-> > > > > > +       ret = regmap_read(regmap, MLX90632_RAM_1(17), &read_tmp);
-> > > > > > +       ret = regmap_read(regmap, MLX90632_RAM_2(17), &read_tmp);
-> > > > > > +       ret = regmap_read(regmap, MLX90632_RAM_1(18), &read_tmp);
-> > > > > > +       ret = regmap_read(regmap, MLX90632_RAM_2(18), &read_tmp);
-> > > > > > +       ret = regmap_read(regmap, MLX90632_RAM_1(19), &read_tmp);
-> > > > > > +       ret = regmap_read(regmap, MLX90632_RAM_2(19), &read_tmp);  
-> > > > >
-> > > > > What so special about these magic 17, 18, 19? Can you provide definitions?
-> > > > >  
-> > > > When we started 0 to 19 were all open for access, from userspace, then
-> > > > only 1 and 2 were used with calculations, and now we use 17, 18 and
-> > > > 19. Matter of fact is, I can't provide a descriptive name as it
-> > > > depends on DSP version and as you can see now within the same DSP
-> > > > version, also on the ID part. While RAM3 vs RAM1 and RAM2 could be
-> > > > named RAM_OBJECT1, RAM_OBJECT2, RAM_AMBIENT, knowing our development
-> > > > that might not be true in the next configuration, so I rather keep the
-> > > > naming as in the datasheet.  
-> > > Normal solution for that is to version the defines as well.
-> > >
-> > > MLX90632_FW3_RAM_1_AMBIENT etc
-> > > When a new version changes this, then you introduced new defines to
-> > > support that firmware.
-> > >  
-> >
-> > OK will add those, but it is ending up as:
-> > MLX90632_RAM_DSP5_AMBIENT
-> > MLX90632_RAM_DSP5_EXTENDED_AMBIENT
-> > MLX90632_RAM_DSP5_OBJECT_1
-> > MLX90632_RAM_DSP5_EXTENDED_OBJECT_1
-> > MLX90632_RAM_DSP5_OBJECT_2
-> > MLX90632_RAM_DSP5_EXTENDED_OBJECT_2
-> >
-> > ok?  
-That's fine.
+ From cover letter:
 
-> > > >  
-> > > > > ...
-> > > > >  
-> > > > > > +       int tries = 4;  
-> > > > >  
-> > > > > > +       while (tries-- > 0) {
-> > > > > > +               ret = mlx90632_perform_measurement(data);
-> > > > > > +               if (ret < 0)
-> > > > > > +                       goto read_unlock;
-> > > > > > +
-> > > > > > +               if (ret == 19)
-> > > > > > +                       break;
-> > > > > > +       }
-> > > > > > +       if (tries < 0) {
-> > > > > > +               ret = -ETIMEDOUT;
-> > > > > > +               goto read_unlock;
-> > > > > > +       }  
-> > > > >
-> > > > > Please avoid ping-pong type of changes in the same series (similar way
-> > > > > as for kernel doc), which means don't introduce something you are
-> > > > > going to change later on. Patch to move to do {} while () should go
-> > > > > before this one.  
-> > > >
-> > > > OK, will fix that ordering in v5, but will wait till we solve also
-> > > > above discussions to avoid adding new versions.
-> > > >  
-> > > > >
-> > > > > --
-> > > > > With Best Regards,
-> > > > > Andy Shevchenko  
-> > > >
-> > > > And about that voodoo stuff with numbers:
-> > > >
-> > > > Honestly, the equation is in the datasheet[1] and this is just making
-> > > > floating point to fixed point with proper intermediate scaling
-> > > > (initially I had defines of TENTOX, but that was not desired). There
-> > > > is no better explanation of this voodoo.  
-> > >
-> > > We all love fixed point arithmetic :)
-> > >
-> > > Jonathan  
+- removed static function names prefix from internal functions (external
+   used function, such as devm/interrupts-handlers/probe, left with the
+   prefix to allow stack trace visibility)
 
+As you can see, part of the functions got their prefix removed, e.g. 
+prepare_msg, handle_ce, handle_ue.
+
+I did take your advise for leaving prefix for having visibility for 
+functions being used outside. hence, some were left with the prefix.
+
+Let me know what you think.
+
+>
+> --
+> Regards/Gruss,
+>      Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
