@@ -2,66 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A9A245556
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 03:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2020D24555A
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 03:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729672AbgHPBy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 21:54:59 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:7195 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726029AbgHPBy7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 21:54:59 -0400
-X-UUID: a88aec36c69d42a0858241179003e869-20200816
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=5WQE4hm6uoTkhZXy+ZrZXgVLjPUWq85sbjRvsVgzz3Q=;
-        b=mEhHsVisNpDbDgwMZ1JwdOzQq2W08jpb8BaWSWg5FtLUXB82B7IyWdlOSq3MMSjE6dnnJsxG5m0mKW4cd+YEg7Achq6NEMGSr7TQmRlSog0oRRwizQ3mUejIHBurGm7a/qGxYlU2AYZJ/JZtua0OlmAMk4Vr3wA6d7FN/rJ5PPI=;
-X-UUID: a88aec36c69d42a0858241179003e869-20200816
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1037489703; Sun, 16 Aug 2020 09:54:55 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 16 Aug 2020 09:54:53 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by mtkcas07.mediatek.inc
- (172.21.101.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 16 Aug
- 2020 09:54:52 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 16 Aug 2020 09:54:52 +0800
-Message-ID: <1597542893.7483.3.camel@mtkswgap22>
-Subject: Re: [PATCH v2 2/2] scsi: ufs: no need to send one Abort Task TM in
- case the task in DB was cleared
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Bean Huo <huobean@gmail.com>
-CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <asutoshd@codeaurora.org>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <beanhuo@micron.com>,
-        <bvanassche@acm.org>, <tomas.winkler@intel.com>,
-        <cang@codeaurora.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Date:   Sun, 16 Aug 2020 09:54:53 +0800
-In-Reply-To: <20200811141859.27399-3-huobean@gmail.com>
-References: <20200811141859.27399-1-huobean@gmail.com>
-         <20200811141859.27399-3-huobean@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
-MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        id S1729704AbgHPBzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 21:55:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726029AbgHPBzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 21:55:10 -0400
+Subject: Re: [GIT PULL] 9p update for 5.9-rc1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597542910;
+        bh=N/bkrF+0fXTLqLT/Y//NJuCDndDV9m/xvtSF6AUgh9w=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=ShzdSZgCnl4sIbw3X2HQWkZ4z+bg+n7PXRyxUzLlV5SFCXlR2T9ef2WgoIbxODBDf
+         eEbQ+3R5cU4vjGjYz97Gggc+3FhMf97MYhdIohN+Kgh1bNGqMAXC5hU1nfKAiPxJl4
+         GAHmV81HyWZF3QxpbluUX2Pqqcw7THHHJcdABZkM=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200815055219.GA20922@nautica>
+References: <20200815055219.GA20922@nautica>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200815055219.GA20922@nautica>
+X-PR-Tracked-Remote: https://github.com/martinetd/linux tags/9p-for-5.9-rc1
+X-PR-Tracked-Commit-Id: 2ed0b7578170c3bab10cde09d4440897b305e40c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 410520d07f5c66a6c1f3eb7ef2063d9bdd3d440b
+Message-Id: <159754291013.18953.882050995366233563.pr-tracker-bot@kernel.org>
+Date:   Sun, 16 Aug 2020 01:55:10 +0000
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        netdev@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTA4LTExIGF0IDE2OjE4ICswMjAwLCBCZWFuIEh1byB3cm90ZToNCj4gRnJv
-bTogQmVhbiBIdW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCj4gDQo+IElmIHRoZSBiaXQgY29ycmVz
-cG9uZHMgdG8gYSB0YXNrIGluIHRoZSBEb29yYmVsbCByZWdpc3RlciBoYXMgYmVlbg0KPiBjbGVh
-cmVkLCBubyBuZWVkIHRvIHBvbGwgdGhlIHN0YXR1cyBvZiB0aGUgdGFzayBvbiB0aGUgZGV2aWNl
-IHNpZGUNCj4gYW5kIHRvIHNlbmQgYW4gQWJvcnQgVGFzayBUTS4gSW5zdGVhZCwgbGV0IGl0IGRp
-cmVjdGx5IGdvdG8gY2xlYW51cC4NCj4gDQo+IE1lYW53aGlsZSwgdG8ga2VlcCBvcmlnaW5hbCBk
-ZWJ1ZyBwcmludCwgbW92ZSB0aGlzIGdvdG8gYmVsb3cgdGhlIGRlYnVnDQo+IHByaW50Lg0KPiAN
-Cj4gU2lnbmVkLW9mZi1ieTogQmVhbiBIdW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCg0KUmV2aWV3
-ZWQtYnk6IFN0YW5sZXkgQ2h1IDxzdGFubGV5LmNodUBtZWRpYXRlay5jb20+DQoNCg==
+The pull request you sent on Sat, 15 Aug 2020 07:52:19 +0200:
 
+> https://github.com/martinetd/linux tags/9p-for-5.9-rc1
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/410520d07f5c66a6c1f3eb7ef2063d9bdd3d440b
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
