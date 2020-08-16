@@ -2,73 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50635245A14
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 01:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43080245A18
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 01:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726315AbgHPXjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 19:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbgHPXjs (ORCPT
+        id S1726340AbgHPXpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 19:45:18 -0400
+Received: from smtprelay0213.hostedemail.com ([216.40.44.213]:47348 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725967AbgHPXpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 19:39:48 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD732C061385;
-        Sun, 16 Aug 2020 16:39:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=hDyJ1Di9zrAXsJ7O0IestEWT/X//JS1ILYRNIJtyQ1A=; b=W3yhAN6j+71YZbrLM+VkZSG3Tg
-        3PSXNyhuTsrJIg/54aVol9EMVjywTDd1HG1XtEmlvczXTQAt5e82a6J4OXPMI2ffySREx0d8ghLpk
-        +7Xb+GAxxXMkQsW7mMggphNu3hR8igHk6DeArCF+DATR9Q2z4BnHJSY5zJ7o22lH4eEpcrweN4FH3
-        nizlIr62CIk2X69Jk/CFn3PJiX0JbQJ+Fjst+H8+Vqxyh/dy6lTW9sNTV6JIkY80ub3lVGK7gy21w
-        pO93MBBQEPXr2FOtVrCzH5DDSGTx4U+hCzIxbQ21bM8jtrEwUvSnf9wApM8bp8jiSJ6UfooYrJDPF
-        am5D+55A==;
-Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k7SFZ-0006tt-Ft; Sun, 16 Aug 2020 23:39:42 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
-        Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
-        linux-block@vger.kernel.org
-Subject: [PATCH v2] block: blk-mq.c: fix @at_head kernel-doc warning
-Date:   Sun, 16 Aug 2020 16:39:34 -0700
-Message-Id: <20200816233934.1573-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 16 Aug 2020 19:45:17 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 271DA1801BE2F;
+        Sun, 16 Aug 2020 23:45:16 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1567:1593:1594:1711:1714:1730:1747:1777:1792:1978:2393:2559:2562:2828:2895:3138:3139:3140:3141:3142:3622:3866:3867:3870:3873:4321:4605:5007:7903:9036:9040:10004:10400:10848:11232:11658:11914:12043:12297:12740:12760:12895:13069:13075:13311:13357:13439:14659:14721:21080:21451:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: dress37_0516df027012
+X-Filterd-Recvd-Size: 1419
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 16 Aug 2020 23:45:14 +0000 (UTC)
+Message-ID: <b1c625528af035cc74a8f17b903e17e5f15f4a23.camel@perches.com>
+Subject: Re: [PATCH 1/2] ceph: Use generic debugging facility
+From:   Joe Perches <joe@perches.com>
+To:     kernel test robot <lkp@intel.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>
+Cc:     kbuild-all@lists.01.org, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 16 Aug 2020 16:45:13 -0700
+In-Reply-To: <202008170710.BoRBUoeo%lkp@intel.com>
+References: <d67377660a317c826a7899e6ffcb5bf686733ddb.1597615399.git.joe@perches.com>
+         <202008170710.BoRBUoeo%lkp@intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a new kernel-doc warning in block/blk-mq.c:
+On Mon, 2020-08-17 at 07:03 +0800, kernel test robot wrote:
+> I love your patch! Yet something to improve:
+[]
+> All errors (new ones prefixed by >>):
+> 
+>    net/ceph/ceph_common.c: In function 'parse_fsid':
+> > > net/ceph/ceph_common.c:227:2: error: implicit declaration of function 'dout'; did you mean 'dput'? [-Werror=implicit-function-declaration]
+>      227 |  dout("parse_fsid '%s'\n", str);
+>          |  ^~~~
+>          |  dput
 
-../block/blk-mq.c:1844: warning: Function parameter or member 'at_head' not described in 'blk_mq_request_bypass_insert'
+Right, thanks, I didn't update net/.
 
-Fixes: 01e99aeca397 ("blk-mq: insert passthrough request into hctx->dispatch directly")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: André Almeida <andrealmeid@collabora.com>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Ming Lei <ming.lei@redhat.com>
-Cc: linux-block@vger.kernel.org
----
-v2: correct Fixes: Commit-ID + Cc: to author.
 
- block/blk-mq.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- lnx-59-rc1.orig/block/blk-mq.c
-+++ lnx-59-rc1/block/blk-mq.c
-@@ -1834,6 +1834,7 @@ void __blk_mq_insert_request(struct blk_
- /**
-  * blk_mq_request_bypass_insert - Insert a request at dispatch list.
-  * @rq: Pointer to request to be inserted.
-+ * @at_head: true if the request should be inserted at the head of the list.
-  * @run_queue: If we should run the hardware queue after inserting the request.
-  *
-  * Should only be used carefully, when the caller knows we want to
