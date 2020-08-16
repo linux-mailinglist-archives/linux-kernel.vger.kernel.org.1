@@ -2,132 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9612124E217
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 22:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B2424E23B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 22:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgHUUXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 16:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
+        id S1726611AbgHUUqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 16:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgHUUXh (ORCPT
+        with ESMTP id S1725831AbgHUUqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 16:23:37 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552B5C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 13:23:36 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id v4so3247047ljd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 13:23:36 -0700 (PDT)
+        Fri, 21 Aug 2020 16:46:50 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48209C061573;
+        Fri, 21 Aug 2020 13:46:50 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t11so1411058plr.5;
+        Fri, 21 Aug 2020 13:46:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3D+TqH2GckoXVS0G3AVPPpXHl/Ts1q0PzrQAkDG5DxU=;
-        b=Iaf2NJFcLLPjJhCFY4NPJilmEIWG1EFZPPdHf4a8cj0cg5EIjHpega0AiSsQdtW2bk
-         gfJ+fc6kt7IQS7SnbVWnC7nVl1NCVvIvAYMA+W7ZX4lygUpP1+w1ZAYWXppaTBAf8FnJ
-         HLiubgJccGNPYTJixoFrXXnbWGuO3t08zDeHSeMZCXjnotaLbkFq91VPkpSg8AOzFma2
-         6iZ7V4Oefj3vBgGenVmlNikMMYEnqUWK1a+A4pNOYTR11AA0IqAS6HeY4XIaHwSMRWmH
-         w3QNtXRLNxeUZuRdcDTgKqZ6ih6/11rJX2eAqK4u7o5a+KWL4L4g4AZjl5yls4ZEKP7/
-         G2Ow==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DE5SPmJa0Jtc878oOnDyAAxuHxQ/uszHB5NDDF1X0Zw=;
+        b=s9rfFkng/tXyb5bH4GYYZOvYrX1sZCUN2+X6sQu91WRnAJ1IUNVt6vg9A/amvnv069
+         /UDPE8sB15nJ3Xt+SG1CIhTbW6DTphdJbnIfBbrcqGN2sw35dvWGRGfW7bglE2htcnzC
+         8lrHKsu2rrIEVHv/XwqJjPZU0Wev8hCT0rGT3zL2T0pufmtuHnGa/8eSpkQVI+3YRT7x
+         dDbpIzV3pVR4RJ9ZCzW0IE92NRfVdU4hphXbv8dxhiCCjUcqNAaxTEzkdVaX8ClqVQjH
+         wfELQBxz6bd1FkZLrK68Au1qReXrT4y/fujpIhXfz44sMslex67Ia4JwqMUy2aChObst
+         sUEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3D+TqH2GckoXVS0G3AVPPpXHl/Ts1q0PzrQAkDG5DxU=;
-        b=dAiW7Ocwu1U57lhPszO3oFsaAQAvMprQ7ZamfHwlym5HQzh1kXT8pa/scbwi9po/Pa
-         PdaGC2vhhdAg4Wg8IAzJzdmKor7LH91PgD80eMAgUOisLCp4MkkNpLcrVUCxqdihkiwm
-         BeE7157/5ovtmon9xLPt6Thyf35oWSwAisT2WaZ3keblpOW48RftQ2tvOO193aWvVHYq
-         UxhtvrRMFKq3vHyjJI+ccbog7zBE7vwHnlyVO51Nwh4ziY8I5EF/qIOHfu7xECQG2caY
-         KUjFo90RZ+KL+jsvgjllzm5eLwQ90BaGTWnKujAEuehh5RD4Sz2vpT3mxPOiQtJjqcmq
-         EQRQ==
-X-Gm-Message-State: AOAM533Of5cVemjrlxIkedZqdCIXfvzEhwBgWrrTF5pLxq/TUE7r0n1p
-        V5qU+1Krjeu8SqLsoIwxL1uohBdBa8VaU/qX7290lw==
-X-Google-Smtp-Source: ABdhPJxtB3gytKgy43PrfoEOXffDzmegXgekhXTFkNzcg9j+nkrkWcOxp0q7UZtL0bR4N1sDGWoc4+ZBzIS8qEtpwWY=
-X-Received: by 2002:a05:651c:330:: with SMTP id b16mr2290021ljp.77.1598041411383;
- Fri, 21 Aug 2020 13:23:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DE5SPmJa0Jtc878oOnDyAAxuHxQ/uszHB5NDDF1X0Zw=;
+        b=h0wIyr6SXK1/KX2dGGHykjvowHYORgqAB1ae4zJwJ6sf4zVStUD55Kt5Py6hoaGEaI
+         RB3TPGTDg4WHJfHWzpM5+m2bN2yA5GpFZ3MrbSKqQmCsxMqIbiHQXpWASuj8yV5Sc+NO
+         v0x2Fh2DK6RVgdDoj9l/pExapE9q+3LoAJEmE2sSDQN8m4ow3SjSyD7j7/8KqJumuK+3
+         anscuyr0Uatuopv/5IIn1Q5dBJahZTcNEeoBkBlWLauVuBf3Fwz5z+ujP9TWpcZlgMrq
+         TFFMntTaR+lJoGgk6/rcgYQM+Jp+/ck8f873CEWM8qPYzE/K4BMm7CE0FWyuAn4Od9v9
+         Hsog==
+X-Gm-Message-State: AOAM533tM4YKfV+8/ONbUM+5RV9sHHwHaLWOnYvR7URpaOODq/XO+cff
+        r5/ybTa6+gJfzQoDQ1jWMuU=
+X-Google-Smtp-Source: ABdhPJxRYstwLNpWOZ5J3DjR1qCaSj/+573CyfsBmhuLjw9gbA8bjW7jyR5d7x1cxoscjEjYLSC4Sg==
+X-Received: by 2002:a17:902:ff0c:: with SMTP id f12mr3793627plj.326.1598042809822;
+        Fri, 21 Aug 2020 13:46:49 -0700 (PDT)
+Received: from localhost.localdomain (c-107-3-138-210.hsd1.ca.comcast.net. [107.3.138.210])
+        by smtp.gmail.com with ESMTPSA id g4sm2795816pjh.32.2020.08.21.13.46.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Aug 2020 13:46:48 -0700 (PDT)
+From:   Yang Shi <shy828301@gmail.com>
+To:     jack@suse.cz, akpm@linux-foundation.org
+Cc:     shy828301@gmail.com, stable@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: madvise: fix vma user-after-free
+Date:   Sun, 16 Aug 2020 07:12:04 -0700
+Message-Id: <20200816141204.162624-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200528135444.11508-1-schatzberg.dan@gmail.com>
- <CALvZod655MqFxmzwCf4ZLSh9QU+oLb0HL-Q_yKomh3fb-_W0Vg@mail.gmail.com>
- <20200821150405.GA4137@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
- <20200821160128.GA2233370@carbon.dhcp.thefacebook.com> <CALvZod69w5UoCjfWcqVAejpKWzRAUxX7dEPzqDUknHhUFV_XEA@mail.gmail.com>
- <20200821200530.GA2250889@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20200821200530.GA2250889@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 21 Aug 2020 13:23:20 -0700
-Message-ID: <CALvZod7mfgOab_NSBegCcJ4jL6pb98CfckUhk7QgNCLsmiB4aQ@mail.gmail.com>
-Subject: Re: [PATCH v6 0/4] Charge loop device i/o to issuing cgroup
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:FILESYSTEMS (VFS and infrastructure)" 
-        <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 1:05 PM Roman Gushchin <guro@fb.com> wrote:
->
-> On Fri, Aug 21, 2020 at 09:27:56AM -0700, Shakeel Butt wrote:
-> > On Fri, Aug 21, 2020 at 9:02 AM Roman Gushchin <guro@fb.com> wrote:
-> > >
-> > > On Fri, Aug 21, 2020 at 11:04:05AM -0400, Dan Schatzberg wrote:
-> > > > On Thu, Aug 20, 2020 at 10:06:44AM -0700, Shakeel Butt wrote:
-> > > > > On Thu, May 28, 2020 at 6:55 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
-> > > > > >
-> > > > > > Much of the discussion about this has died down. There's been a
-> > > > > > concern raised that we could generalize infrastructure across loop,
-> > > > > > md, etc. This may be possible, in the future, but it isn't clear to me
-> > > > > > how this would look like. I'm inclined to fix the existing issue with
-> > > > > > loop devices now (this is a problem we hit at FB) and address
-> > > > > > consolidation with other cases if and when those need to be addressed.
-> > > > > >
-> > > > >
-> > > > > What's the status of this series?
-> > > >
-> > > > Thanks for reminding me about this. I haven't got any further
-> > > > feedback. I'll bug Jens to take a look and see if he has any concerns
-> > > > and if not send a rebased version.
-> > >
-> > > Just as a note, I stole a patch from this series called
-> > > "mm: support nesting memalloc_use_memcg()" to use for the bpf memory accounting.
-> > > I rewrote the commit log and rebased to the tot with some trivial changes.
-> > >
-> > > I just sent it upstream:
-> > > https://lore.kernel.org/bpf/20200821150134.2581465-1-guro@fb.com/T/#md7edb6b5b940cee1c4d15e3cef17aa8b07328c2e
-> > >
-> > > It looks like we need it for two independent sub-systems, so I wonder
-> > > if we want to route it first through the mm tree as a standalone patch?
-> > >
-> >
-> > Another way is to push that patch to 5.9-rc2 linus tree, so both block
-> > and mm branches for 5.10 will have it. (Not sure if that's ok.)
->
-> Ok, it looks like the patch provides a generally useful API enhancement.
-> And we do have at least two potential use cases for it.
-> Let me send it as a standalone patch to linux-mm@.
->
-> Btw, Shakeel, what do you think of s/memalloc_use_memcg()/set_active_memcg() ?
->
+The syzbot reported the below use-after-free:
 
-I am fine with it.
+BUG: KASAN: use-after-free in madvise_willneed mm/madvise.c:293 [inline]
+BUG: KASAN: use-after-free in madvise_vma mm/madvise.c:942 [inline]
+BUG: KASAN: use-after-free in do_madvise.part.0+0x1c8b/0x1cf0 mm/madvise.c:1145
+Read of size 8 at addr ffff8880a6163eb0 by task syz-executor.0/9996
+
+CPU: 0 PID: 9996 Comm: syz-executor.0 Not tainted 5.9.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ madvise_willneed mm/madvise.c:293 [inline]
+ madvise_vma mm/madvise.c:942 [inline]
+ do_madvise.part.0+0x1c8b/0x1cf0 mm/madvise.c:1145
+ do_madvise mm/madvise.c:1169 [inline]
+ __do_sys_madvise mm/madvise.c:1171 [inline]
+ __se_sys_madvise mm/madvise.c:1169 [inline]
+ __x64_sys_madvise+0xd9/0x110 mm/madvise.c:1169
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45d4d9
+Code: 5d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f04f7464c78 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 0000000000020800 RCX: 000000000045d4d9
+RDX: 0000000000000003 RSI: 0000000000600003 RDI: 0000000020000000
+RBP: 000000000118d020 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cfec
+R13: 00007ffc579cce7f R14: 00007f04f74659c0 R15: 000000000118cfec
+
+Allocated by task 9992:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:518 [inline]
+ slab_alloc mm/slab.c:3312 [inline]
+ kmem_cache_alloc+0x138/0x3a0 mm/slab.c:3482
+ vm_area_alloc+0x1c/0x110 kernel/fork.c:347
+ mmap_region+0x8e5/0x1780 mm/mmap.c:1743
+ do_mmap+0xcf9/0x11d0 mm/mmap.c:1545
+ vm_mmap_pgoff+0x195/0x200 mm/util.c:506
+ ksys_mmap_pgoff+0x43a/0x560 mm/mmap.c:1596
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 9992:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
+ __cache_free mm/slab.c:3418 [inline]
+ kmem_cache_free.part.0+0x67/0x1f0 mm/slab.c:3693
+ remove_vma+0x132/0x170 mm/mmap.c:184
+ remove_vma_list mm/mmap.c:2613 [inline]
+ __do_munmap+0x743/0x1170 mm/mmap.c:2869
+ do_munmap mm/mmap.c:2877 [inline]
+ mmap_region+0x257/0x1780 mm/mmap.c:1716
+ do_mmap+0xcf9/0x11d0 mm/mmap.c:1545
+ vm_mmap_pgoff+0x195/0x200 mm/util.c:506
+ ksys_mmap_pgoff+0x43a/0x560 mm/mmap.c:1596
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+It is because vma is accessed after releasing mmap_sem, but someone else
+acquired the mmap_sem and the vma is gone.
+
+Releasing mmap_sem after accessing vma should fix the problem.
+
+Fixes: 692fe62433d4c ("mm: Handle MADV_WILLNEED through vfs_fadvise()")
+Reported-by: syzbot+b90df26038d1d5d85c97@syzkaller.appspotmail.com
+Cc: Jan Kara <jack@suse.cz>
+Cc: <stable@vger.kernel.org> v5.4+
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+---
+ mm/madvise.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/madvise.c b/mm/madvise.c
+index dd1d43cf026d..d4aa5f776543 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -289,9 +289,9 @@ static long madvise_willneed(struct vm_area_struct *vma,
+ 	 */
+ 	*prev = NULL;	/* tell sys_madvise we drop mmap_lock */
+ 	get_file(file);
+-	mmap_read_unlock(current->mm);
+ 	offset = (loff_t)(start - vma->vm_start)
+ 			+ ((loff_t)vma->vm_pgoff << PAGE_SHIFT);
++	mmap_read_unlock(current->mm);
+ 	vfs_fadvise(file, offset, end - start, POSIX_FADV_WILLNEED);
+ 	fput(file);
+ 	mmap_read_lock(current->mm);
+-- 
+2.26.2
+
