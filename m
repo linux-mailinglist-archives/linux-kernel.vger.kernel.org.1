@@ -2,96 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B7C245836
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 16:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D2C245839
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 16:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728120AbgHPOnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 10:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59356 "EHLO
+        id S1728172AbgHPOva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 10:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgHPOnL (ORCPT
+        with ESMTP id S1726304AbgHPOvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 10:43:11 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA19FC061786
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 07:43:10 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id d14so12795533qke.13
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 07:43:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Vruaf7lbI+HCDXiw3YIN0inMcZIOBPsbjASEGh92PYQ=;
-        b=jCAkKO9HcYLa/+BbRx+RUA/dz25FSMD9Htee6SiXaW4s7Tl2boF6bag9glynIXuYBJ
-         z/Ix/p2HqkO+k+LRLC/RX+QgeJsGUDUzpnqgedA1B7Fbfl6yO2+OgiA1pGwGABGq6Pan
-         Lk08Q7vwGY7Og/VRfML+SQH7RIQaLH5pC3sG33dyPOLrQ2nfR9XGlGwzgJYS7v1mVaCi
-         zHLtl7/3XBNiVE2CEKSTYmIXNI5TqvQ1xKS88exLNCKaHiahHdwUseZzrXL+yyNhWV33
-         8/ZP+Fap/GFHaI6x2vm30d8LNuVRCnqA7zsYy7f0ACX5NdJcFngEgwhEwQ7p8PLWX+UK
-         RCXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Vruaf7lbI+HCDXiw3YIN0inMcZIOBPsbjASEGh92PYQ=;
-        b=ul2DzNX6SrwY3gr1RCMKWTaU0AIilBfraQeXXkysR840f5JAiLJjAcqEXXsGFvYUuW
-         oamIx98pwrse/ZEK5DV4rE345ZnPydzIFaUVxKp2er/AEZbLlPP6hsl5OkBR9U+C5H+P
-         KAB+GSp+RQGUs2LSA95CqV3CP14ZIaHgg9U8GYhfCppoH2mbxB3AOqxDLLLhlZovru5U
-         qLzRZfeGbU7vOWWFdyj6kxnejumZ4oHn3unXGdGAsZF7vEC+PYu9Ljzd4s2DnVVRuGch
-         b51AR5MgGyHvvaXTBbt2vObXtzhp7VOHVU8+tHSKb8evORT8oev+gSZny84wI6O70M2x
-         s8vQ==
-X-Gm-Message-State: AOAM5308ioUE9OcLRWD74hcbaCrHx+DHU2xL++n5mkCh6IqtH0BYRo2m
-        43in967iBwILyyF3bpfCurMg3VUdSO5NHYVGaO4=
-X-Google-Smtp-Source: ABdhPJxx0p3k8kK63ZgZaSILdOo6fEqqvvdJ9eGSnBQpdUlqyPB+7AORWTLYGWEkZ3zJxHpgMuP0g9j17rSdKwt82EQ=
-X-Received: by 2002:ae9:f409:: with SMTP id y9mr9004551qkl.383.1597588989941;
- Sun, 16 Aug 2020 07:43:09 -0700 (PDT)
+        Sun, 16 Aug 2020 10:51:24 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CC1C061786;
+        Sun, 16 Aug 2020 07:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=NoN57z0LnBJygmJee85tVg4DqzTUK5uFjGWNnvay0aQ=; b=TjF4RIOtBO1h+2uQWgmd45eINO
+        itEdfM6ctmaMutKhqrRG/hOVjWBzXK6xWlyOrylVV44aIU/DHYxH7Mf2+Gfob67Jz8sCiVFqGQGV4
+        lCplVaU4fsd3IDZQSxZ3mnHF8E8EmilLTQskTeeV3sbzn7/roqlLIBNlf8Rc4PcgO9E0=;
+Received: from p200300ccff18ab001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff18:ab00:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1k7Jzv-0003bv-Pk; Sun, 16 Aug 2020 16:51:00 +0200
+Date:   Sun, 16 Aug 2020 16:50:58 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        Anson.Huang@nxp.com, marcel.ziswiler@toradex.com,
+        sebastien.szymanski@armadeus.com, rjones@gateworks.com,
+        leoyang.li@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        letux-kernel@openphoenux.org
+Subject: Re: [PATCH RFC 2/2] ARM: dts: imx: add devicetree for Tolino Shine
+ 2 HD
+Message-ID: <20200816165058.3a17d97a@aktux>
+In-Reply-To: <20200816125247.GA103070@latitude>
+References: <20200815193336.21598-1-andreas@kemnade.info>
+        <20200815193336.21598-3-andreas@kemnade.info>
+        <20200816125247.GA103070@latitude>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:ac8:4654:0:0:0:0:0 with HTTP; Sun, 16 Aug 2020 07:43:09
- -0700 (PDT)
-Reply-To: hassan_alwanali01@yahoo.com
-From:   "Mr. Hassan Alwan Ali" <atmvisacardoffii@gmail.com>
-Date:   Sun, 16 Aug 2020 15:43:09 +0100
-Message-ID: <CAAhSY_HJNB0xmnkhJpBWVuzoPiLZgbUMKdbBrts=7m26z4OD+w@mail.gmail.com>
-Subject: Dear Friend.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Score: -1.0 (-)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Dear Friend,
+Hi,
 
-I know that this mail will come to you as a surprise since we have not
-known or met before now, but please, I would like you to treat it like
-blood brother affair and with the urgency and secrecy it requires. I
-am Dr. Hassan Alwan Ali, an Audit staff of (C.B.N) Central Bank of
-Nigeria.
+Seems that we have different hardware, so the first question is
+first the most interesting thing: how much does the hw actually differ,
+especially do they require different device trees?
 
-An investor (name with-held) died without naming any next of kin to
-his fund he deposited in my bank. The amount is $10.5M ( Ten million
-five hundred united state dollars ) and banking regulation/legislation
-in Nigeria demands that I should notify the fiscal authorities after
-three years.
+Can you provide me a photo of your hardware?
+Or is it a Shine 3?
 
-The above set of facts underscores my reason to seek your permission
-to have you stand in as the next of kin to the deceased.
+Mine is at https://misc.andi.de1.cc/tolino2.jpg
 
-This fund will be approved and released in your favour as the next of
-kin if only you will adhere to my instruction and cooperate with me in
-one accord.
+On Sun, 16 Aug 2020 14:54:41 +0200
+Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net> wrote:
 
-I have all the legal and banking details of the deceased client that
-will facilitate our putting you forward as the claimant/beneficiary of
-the funds and ultimately transfer of the $10.5M plus interest to any
-bank account nominated by you.
+[...]
+> > +
+> > +&usdhc3 {
+> > +	pinctrl-names =3D "default", "state_100mhz", "state_200mhz", "sleep";
+> > +	pinctrl-0 =3D <&pinctrl_usdhc3>;
+> > +	pinctrl-1 =3D <&pinctrl_usdhc3_100mhz>;
+> > +	pinctrl-2 =3D <&pinctrl_usdhc3_200mhz>;
+> > +	pinctrl-3 =3D <&pinctrl_usdhc3_sleep>;
+> > +	vmmc-supply =3D <&reg_wifi>;
+> > +	mmc-pwrseq =3D <&wifi_pwrseq>;
+> > +	cap-power-off-card;
+> > +	non-removable;
+> > +	status =3D "okay";
+> > +
+> > +	/* CyberTan WC121 SDIO WiFi */
+> > +}; =20
+>=20
+> The HWCONFIG block from my Shine2HD reports RTL8189 as the Wifi chip
+> (value 8 at offset 4), and kernel logs from the vendor kernel appear to
+> agree that it's a realtek chip, at least (lines prefixed RTL871X).
+>=20
+Just for the readers with IMX knowledge but without knowledge of the
+vendor kernel hacks used here: That block is on a hidden partition of
+the boot medium (uSD or eMMC) describing the hardware, the kernel gets
+it from the bootloader and it is used e.g. in the board file.
 
-I am prepared to compensate you with a 35% share of the total funds
-for your efforts. The final details will be given upon receipt an
-affirmation of your desire to participate.
+My hwconfig is:
+{m_hdr =3D {cMagicNameA =3D "HW CONFIG "
+ cVersionNameA =3D "v2.6"
+ bHWConfigSize =3D 62 '>'}
+ m_val =3D {bPCB =3D 50 '2'
+ bKeyPad =3D 13 '\r'
+ bAudioCodec =3D 0 '\000'
+=20
+    bAudioAmp =3D 0 '\000'
+ bWifi =3D 7 '\a'
+ bBT =3D 0 '\000'
+ bMobile =3D 0 '\000'
+ bTouchCtrl =3D 11 '\v'
+ bTouchType =3D 4 '\004'
+ bDisplayCtrl =3D 7 '\a'
+=20
+    bDisplayPanel =3D 6 '\006'
+ bRSensor =3D 0 '\000'
+ bMicroP =3D 0 '\000'
+ bCustomer =3D 0 '\000'
+ bBattery =3D 1 '\001'
+ bLed =3D 4 '\004'
+ bRamSize =3D 3 '\003'
+=20
+    bIFlash =3D 0 '\000'
+ bExternalMem =3D 0 '\000'
+ bRootFsType =3D 2 '\002'
+ bSysPartType =3D 11 '\v'
+ bProgressXHiByte =3D 1 '\001'
+ bProgressXLoByte =3D 104 'h'
+=20
+    bProgressYHiByte =3D 2 '\002'
+ bProgressYLoByte =3D 228 '\344'
+ bProgressCnts =3D 0 '\000'
+ bContentType =3D 0 '\000'
+ bCPU =3D 5 '\005'
+ bUIStyle =3D 2 '\002'
+=20
+    bRamType =3D 5 '\005'
+ bUIConfig =3D 0 '\000'
+ bDisplayResolution =3D 5 '\005'
+ bFrontLight =3D 13 '\r'
+ bCPUFreq =3D 0 '\000'
+ bHallSensor =3D 1 '\001'
+=20
+    bDisplayBusWidth =3D 0 '\000'
+ bFrontLight_Flags =3D 4 '\004'
+ bPCB_Flags =3D 17 '\021'
+ bFrontLight_LED_Driver =3D 3 '\003'
+ bVCOM_10mV_HiByte =3D 0 '\000'
+=20
+    bVCOM_10mV_LoByte =3D 0 '\000'
+ bPCB_REV =3D 0 '\000'
+ bPCB_LVL =3D 0 '\000'
+ bHOME_LED_PWM =3D 0 '\000'
+ bPMIC =3D 1 '\001'
+ bFL_PWM =3D 0 '\000'
+ bRTC =3D 1 '\001'
+=20
+    bBootOpt =3D 0 '\000'
+ bTouch2Ctrl =3D 0 '\000'
+ bTouch2Type =3D 0 '\000'
+ bGPS =3D 0 '\000'
+ bFM =3D 0 '\000'
+ bRSensor2 =3D 0 '\000'
+ bLightSensor =3D 0 '\000'
+=20
+    bTPFWIDByte0 =3D 0 '\000'
+ bTPFWIDByte1 =3D 0 '\000'
+ bTPFWIDByte2 =3D 0 '\000'
+ bTPFWIDByte3 =3D 0 '\000'
+ bTPFWIDByte4 =3D 0 '\000'
+ bTPFWIDByte5 =3D 0 '\000'
+=20
+    bTPFWIDByte6 =3D 0 '\000'
+ bTPFWIDByte7 =3D 0 '\000'
+ bGPU =3D 0 '\000'
+ bPCB_Flags2 =3D 0 '\000'
+ bEPD_Flags =3D 0 '\000'
+ bLAN =3D 0 '\000'
+ bMobileIF =3D 0 '\000'
+=20
+    bPIR =3D 0 '\000'
+ bPanelLaminationSrc =3D 0 '\000'}
+ m_bReserveA =3D '\000' <repeats 24 times>}
 
-Please contact me immediately on ( hassan_alwanali01@yahoo.com ) if
-you are interest in my proposal to enable me not to start scouting for
-another foreign partner.
 
-Thanks,
-Dr. Hassan Alwan Ali.
+> From my experience with the CyberTan WC121, it has a Broadcom fullmac
+> chip inside. Now I wonder where this discrepancy or variability comes
+> from.
+>=20
+correct. It uses the brcmfmac driver on mainline and the .
+bcmdhd in the vendor kernel
+
+Output on the vendor kernel:
+bcmsdh_register: Linux Kernel SDIO/MMC Driver
+[bcm_wlan_get_oob_irq-43] gpio 127, irq 383
+dhd_conf_set_hw_oob_intr: Enable HW OOB for 43362
+F1 signature OK, socitype:0x1 chip:0xa962 rev:0x1 pkg:0x9
+DHD: dongle ram size is set to 245760(orig 245760) at 0x0
+dhdsdio_probe: Disable prop_txstatus
+dhd_conf_set_fw_name_by_chip: firmware_path=3D/system/lib/firmware/wc121/fw=
+_bcm40181a2.bin
+wl_create_event_handler(): thread:wl_event_handler:92d started
+tsk Enter, tsk =3D 0xdb501304
+p2p0: P2P Interface Registered
+dhd_attach(): thread:dhd_watchdog_thread:932 started
+dhd_attach(): thread:dhd_dpc:933 started
+dhd_attach(): thread:dhd_sysioc:934 started
+
+On mainline:
+[   11.686469] brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43362-s=
+dio for chip BCM43362/1
+[   12.282783] brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43362-s=
+dio for chip BCM43362/1
+[   12.387000] brcmfmac: brcmf_c_process_clm_blob: no clm_blob available (e=
+rr=3D-11), device may have limited channels available
+[   12.479403] brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM43362/1 wl0: M=
+ay 16 2018 23:42:49 version 5.90.244 FWID 01-0
+
+
+> I guess the SDIO setup can deal with different chips (like Broadcom vs.
+> Realtek) as long as the board has been designed to always use the same
+> reset/power/etc. lines. I don't see any branching based on the 'Wifi'
+> HWCONFIG entry in the vendor kernel, so I guess that's the case.
+>=20
+as long as these chips do not use oob interrupts, just sdio,
+it should be no problem. The question is just how much our devices
+differ.
+
+Regards,
+Andreas
