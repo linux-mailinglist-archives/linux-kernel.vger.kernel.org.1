@@ -2,409 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF922456FD
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 11:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87EE2456ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 11:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729034AbgHPJKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 05:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729011AbgHPJKG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 05:10:06 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632EFC061786;
-        Sun, 16 Aug 2020 02:10:06 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id s14so61060plp.4;
-        Sun, 16 Aug 2020 02:10:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9NFhkMBJW82v5R2qq0DXUlpjk/Z0vbs/aoPPNmBeGGI=;
-        b=R5qOCbE0HWQPPquvSxVOEDrtcnseyPIwuRJP6nFU9h/k9Vq94VIBHVamKYNEQcx84D
-         /4ZM2lVZZ0NRbTaCQ13VFr0BUY1/pGFoP0twisLTrZ2Nar2VbfnZYZ+qKY/9IqMPB0R+
-         7ilWcEX8R1uLjEs8tEEaFPJhkSbA+PA1yQ4X/ySQGgTDXfIIBx53ZuFXWEReFPcUHyZL
-         7Oec3jZe/0YDgjgQTE6WXGrqbhcjrGQg5DD9QiG2dcwyFGvtJhS/PXY6Dts6+Ft6/DRA
-         uOwFfYBo8T2LmcYi0HvSS0TvAd31qwPJm9lHasKK+V38tFTSS6ofy34MbUB6h/JRSbVo
-         D4Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9NFhkMBJW82v5R2qq0DXUlpjk/Z0vbs/aoPPNmBeGGI=;
-        b=LPwjPdjotEEX82EBEYohXcTh0JAv/PzzbkFS8JXnP8oAuZIMEqUKKLXxdECLZ5ac0j
-         Yy3ZSoAchQEpNk42eRQcldAP0adckblR6GKVW3WMKa6n615HkT87G0KM1UlH/yvIdKdn
-         Ioh0i2zeTeD8FC4HCeCN1qT6XlMi78Ky9Sh330V/aeKBr4IkuO17zm3eg1+BFNwnZMKv
-         osUawI589p40JssAw/Sx6+WOFh3XyXtMxUpISzSgrVeL91dgpQ9lsFzMOYj/elGsEnCf
-         ebSu6NEQdZh/D0FH1bBaiFI871CpsleObDedJMA4wsxm16BIiSjjnJdlXjc6Drmhijp7
-         VEnA==
-X-Gm-Message-State: AOAM530pc+3iFQZZ4Ba7W6DdhVgK9KcFjeVzms3g8KmFV/vMIoHTgKwr
-        KHswTCMmylGBdt8KsVT9fgk=
-X-Google-Smtp-Source: ABdhPJzYPmi5So9wweRK6VLaklObcWMLYwgxfwLsGfXoZAFZVfS3BesQaYpbzaDloikWs4g5q0sNhQ==
-X-Received: by 2002:a17:90a:e381:: with SMTP id b1mr8260896pjz.218.1597569004509;
-        Sun, 16 Aug 2020 02:10:04 -0700 (PDT)
-Received: from bobo.ozlabs.ibm.com (193-116-193-175.tpgi.com.au. [193.116.193.175])
-        by smtp.gmail.com with ESMTPSA id o19sm12768369pjs.8.2020.08.16.02.09.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Aug 2020 02:10:04 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-mm@kvack.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Zefan Li <lizefan@huawei.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Subject: [PATCH v4 8/8] mm/vmalloc: Hugepage vmalloc mappings
-Date:   Sun, 16 Aug 2020 19:09:04 +1000
-Message-Id: <20200816090904.83947-9-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20200816090904.83947-1-npiggin@gmail.com>
-References: <20200816090904.83947-1-npiggin@gmail.com>
+        id S1728669AbgHPJJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 05:09:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35532 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726867AbgHPJJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 Aug 2020 05:09:22 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B6B920674;
+        Sun, 16 Aug 2020 09:09:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597568961;
+        bh=fct5xyzao3oW1dZCCvJJ44cqqHrh1KU9u+AtYKKQKIw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=G1AD0o2JeLlgctYEm0jMVRI25A+O1ZsM4av23t4Nn7Q9qhQtEf74mJbnlhcwy8l14
+         cvoPqEBvEgr7uyVbvqj8Ooe5TQYk+HmxXABOCPkgARvzGAFjUbO2eXjDm2bAYY55dw
+         1ZN1ocNDnjwBH07Oy8eL95e4/GEr11uIde+BGk3M=
+Date:   Sun, 16 Aug 2020 10:09:17 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Crt Mori <cmo@melexis.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 2/4] iio:temperature:mlx90632: Adding extended
+ calibration option
+Message-ID: <20200816100917.4f3308b8@archlinux>
+In-Reply-To: <CAKv63uuVYS5isAnhBzcqOJEJWhD5muSDBJzvYoJk1KkucrRnDA@mail.gmail.com>
+References: <20200808121026.1300375-1-cmo@melexis.com>
+        <20200808121026.1300375-3-cmo@melexis.com>
+        <CAHp75VfWk7pCy4Osv0uY0UH4yFS=PRGbE1CNCakuRFTE33SDJg@mail.gmail.com>
+        <CAKv63uv-+r6M=G2rviSedgdCUd_0nzHKWXK363bJNERTQHRYXA@mail.gmail.com>
+        <20200809143222.4e19ea38@archlinux>
+        <CAKv63uu1cRVCujM0nR5BstDYLZnCuGQTeFxhyUF0QK0mr0hvkQ@mail.gmail.com>
+        <CAKv63uuVYS5isAnhBzcqOJEJWhD5muSDBJzvYoJk1KkucrRnDA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On platforms that define HAVE_ARCH_HUGE_VMAP and support PMD vmaps,
-vmalloc will attempt to allocate PMD-sized pages first, before falling
-back to small pages.
+On Tue, 11 Aug 2020 09:53:55 +0200
+Crt Mori <cmo@melexis.com> wrote:
 
-Allocations which use something other than PAGE_KERNEL protections are
-not permitted to use huge pages yet, not all callers expect this (e.g.,
-module allocations vs strict module rwx).
+> On Sun, 9 Aug 2020 at 23:05, Crt Mori <cmo@melexis.com> wrote:
+> >
+> > On Sun, 9 Aug 2020 at 15:32, Jonathan Cameron <jic23@kernel.org> wrote:  
+> > >
+> > > On Sat, 8 Aug 2020 23:57:59 +0200
+> > > Crt Mori <cmo@melexis.com> wrote:
+> > >  
+> > > > Hi,
+> > > > I am very sorry you missed them, I thought you saw it (reply on v3 of
+> > > > the patch). Maybe something happened to that mail, as it contained
+> > > > link to datasheet, so I will omit it now.
+> > > >
+> > > > Except for the order, only the remarks below are still open (did you
+> > > > get the polling trail I did?)
+> > > >
+> > > > On Sat, 8 Aug 2020 at 22:04, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:  
+> > > > >
+> > > > > On Sat, Aug 8, 2020 at 3:11 PM Crt Mori <cmo@melexis.com> wrote:  
+> > > > > >
+> > > > > > For some time the market wants medical grade accuracy in medical range,
+> > > > > > while still retaining the declared accuracy outside of the medical range
+> > > > > > within the same sensor. That is why we created extended calibration
+> > > > > > which is automatically switched to when object temperature is too high.
+> > > > > >
+> > > > > > This patch also introduces the object_ambient_temperature variable which
+> > > > > > is needed for more accurate calculation of the object infra-red
+> > > > > > footprint as sensor's ambient temperature might be totally different
+> > > > > > than what the ambient temperature is at object and that is why we can
+> > > > > > have some more errors which can be eliminated. Currently this temperature
+> > > > > > is fixed at 25, but the interface to adjust it by user (with external
+> > > > > > sensor or just IR measurement of the other object which acts as ambient),
+> > > > > > will be introduced in another commit.  
+> > > > >
+> > > > > The kernel doc patch should go before this patch.
+> > > > >
+> > > > > ...
+> > > > >  
+> > > > > > +       *ambient_new_raw = (s16)read_tmp;  
+> > > > >  
+> > > > > > +       *ambient_old_raw = (s16)read_tmp;  
+> > > > >
+> > > > > Sorry, did I miss your answer about these castings all over the patch?
+> > > > >  
+> > > >
+> > > > These castings are in fact needed. You read unsigned integer, but the
+> > > > return value is signed integer. Without the cast it did not extend the
+> > > > signed bit, but just wrote the value to signed. Also I find it more
+> > > > obvious with casts, that I did not "accidentally" convert to signed.  
+> > >
+> > > Should we perhaps be making this explicit for the cases where we
+> > > are sign extending?  That doesn't include these two as the lvalue
+> > > is s16, but does include some of the others.
+> > >
+> > > sign_extend32(read_tmp, 15)
+> > >  
+> >
+> > So for you lines like
+> > s32 read;
+> > read = (read + (s16)read_tmp) / 2;
+> >
+> > would actually be better as:
+> > read = (read + sign_extend32(read_tmp, 15)) / 2;
+> >
+> > Hm, strange. I would read that more align the read_tmp to 32 bit than
+> > the value you have in read_tmp is actually a signed 16 bit integer...
+> >  
+> 
+> OK, I did some trails without the casts and had deja-vu from the first
+> series of patches I submitted.  I noticed that without a cast the
+> value that ends up in variable is not extended to signed, but it is
+> unsigned value truncated. This same finding leads to have these casts
+> already in current ambient and object raw read functions.
+> 
+> So now only debate is if sign_extend32 is useful in this case, as read
+> in the current case is 32 bit (before it was also 16 bit).
+> 
+> My preference is to leave unified across the driver.
 
-This reduces TLB misses by nearly 30x on a `git diff` workload on a
-2-node POWER9 (59,800 -> 2,100) and reduces CPU cycles by 0.54%.
+It is fairly obvious to me what is going on as things stand, but
+if others are being confused, the sign_extend32 does make it explicit
+that this is all about sign extension.
 
-This can result in more internal fragmentation and memory overhead for a
-given allocation, an option nohugevmap is added to disable at boot.
+> 
+> > > >  
+> > > > > ...
+> > > > >  
+> > > > > > +       ret = regmap_read(regmap, MLX90632_RAM_1(17), &read_tmp);
+> > > > > > +       ret = regmap_read(regmap, MLX90632_RAM_2(17), &read_tmp);
+> > > > > > +       ret = regmap_read(regmap, MLX90632_RAM_1(18), &read_tmp);
+> > > > > > +       ret = regmap_read(regmap, MLX90632_RAM_2(18), &read_tmp);
+> > > > > > +       ret = regmap_read(regmap, MLX90632_RAM_1(19), &read_tmp);
+> > > > > > +       ret = regmap_read(regmap, MLX90632_RAM_2(19), &read_tmp);  
+> > > > >
+> > > > > What so special about these magic 17, 18, 19? Can you provide definitions?
+> > > > >  
+> > > > When we started 0 to 19 were all open for access, from userspace, then
+> > > > only 1 and 2 were used with calculations, and now we use 17, 18 and
+> > > > 19. Matter of fact is, I can't provide a descriptive name as it
+> > > > depends on DSP version and as you can see now within the same DSP
+> > > > version, also on the ID part. While RAM3 vs RAM1 and RAM2 could be
+> > > > named RAM_OBJECT1, RAM_OBJECT2, RAM_AMBIENT, knowing our development
+> > > > that might not be true in the next configuration, so I rather keep the
+> > > > naming as in the datasheet.  
+> > > Normal solution for that is to version the defines as well.
+> > >
+> > > MLX90632_FW3_RAM_1_AMBIENT etc
+> > > When a new version changes this, then you introduced new defines to
+> > > support that firmware.
+> > >  
+> >
+> > OK will add those, but it is ending up as:
+> > MLX90632_RAM_DSP5_AMBIENT
+> > MLX90632_RAM_DSP5_EXTENDED_AMBIENT
+> > MLX90632_RAM_DSP5_OBJECT_1
+> > MLX90632_RAM_DSP5_EXTENDED_OBJECT_1
+> > MLX90632_RAM_DSP5_OBJECT_2
+> > MLX90632_RAM_DSP5_EXTENDED_OBJECT_2
+> >
+> > ok?  
+That's fine.
 
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- .../admin-guide/kernel-parameters.txt         |   2 +
- include/linux/vmalloc.h                       |   1 +
- mm/vmalloc.c                                  | 177 +++++++++++++-----
- 3 files changed, 137 insertions(+), 43 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 98ea67f27809..eaef176c597f 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3190,6 +3190,8 @@
- 
- 	nohugeiomap	[KNL,x86,PPC] Disable kernel huge I/O mappings.
- 
-+	nohugevmap	[KNL,x86,PPC] Disable kernel huge vmalloc mappings.
-+
- 	nosmt		[KNL,S390] Disable symmetric multithreading (SMT).
- 			Equivalent to smt=1.
- 
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index e3590e93bfff..8f25dbaca0a1 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -58,6 +58,7 @@ struct vm_struct {
- 	unsigned long		size;
- 	unsigned long		flags;
- 	struct page		**pages;
-+	unsigned int		page_order;
- 	unsigned int		nr_pages;
- 	phys_addr_t		phys_addr;
- 	const void		*caller;
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 4e5cb7c7f780..c3595d87261c 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -45,6 +45,19 @@
- #include "internal.h"
- #include "pgalloc-track.h"
- 
-+#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-+static bool __ro_after_init vmap_allow_huge = true;
-+
-+static int __init set_nohugevmap(char *str)
-+{
-+	vmap_allow_huge = false;
-+	return 0;
-+}
-+early_param("nohugevmap", set_nohugevmap);
-+#else /* CONFIG_HAVE_ARCH_HUGE_VMAP */
-+static const bool vmap_allow_huge = false;
-+#endif	/* CONFIG_HAVE_ARCH_HUGE_VMAP */
-+
- bool is_vmalloc_addr(const void *x)
- {
- 	unsigned long addr = (unsigned long)x;
-@@ -468,31 +481,12 @@ static int vmap_pages_p4d_range(pgd_t *pgd, unsigned long addr, unsigned long en
- 	return 0;
- }
- 
--/**
-- * map_kernel_range_noflush - map kernel VM area with the specified pages
-- * @addr: start of the VM area to map
-- * @size: size of the VM area to map
-- * @prot: page protection flags to use
-- * @pages: pages to map
-- *
-- * Map PFN_UP(@size) pages at @addr.  The VM area @addr and @size specify should
-- * have been allocated using get_vm_area() and its friends.
-- *
-- * NOTE:
-- * This function does NOT do any cache flushing.  The caller is responsible for
-- * calling flush_cache_vmap() on to-be-mapped areas before calling this
-- * function.
-- *
-- * RETURNS:
-- * 0 on success, -errno on failure.
-- */
--int map_kernel_range_noflush(unsigned long addr, unsigned long size,
--			     pgprot_t prot, struct page **pages)
-+static int vmap_small_pages_range_noflush(unsigned long addr, unsigned long end,
-+		pgprot_t prot, struct page **pages)
- {
- 	unsigned long start = addr;
--	unsigned long end = addr + size;
--	unsigned long next;
- 	pgd_t *pgd;
-+	unsigned long next;
- 	int err = 0;
- 	int nr = 0;
- 	pgtbl_mod_mask mask = 0;
-@@ -514,6 +508,65 @@ int map_kernel_range_noflush(unsigned long addr, unsigned long size,
- 	return 0;
- }
- 
-+static int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
-+		pgprot_t prot, struct page **pages, unsigned int page_shift)
-+{
-+	WARN_ON(page_shift < PAGE_SHIFT);
-+
-+	if (page_shift == PAGE_SHIFT) {
-+		return vmap_small_pages_range_noflush(addr, end, prot, pages);
-+	} else {
-+		unsigned int i, nr = (end - addr) >> page_shift;
-+
-+		for (i = 0; i < nr; i++) {
-+			int err;
-+
-+			err = vmap_range_noflush(addr, addr + (1UL << page_shift),
-+						__pa(page_address(pages[i])), prot, page_shift);
-+			if (err)
-+				return err;
-+
-+			addr += 1UL << page_shift;
-+		}
-+
-+		return 0;
-+	}
-+}
-+
-+static int vmap_pages_range(unsigned long addr, unsigned long end,
-+		pgprot_t prot, struct page **pages, unsigned int page_shift)
-+{
-+	int err;
-+
-+	err = vmap_pages_range_noflush(addr, end, prot, pages, page_shift);
-+	flush_cache_vmap(addr, end);
-+	return err;
-+}
-+
-+/**
-+ * map_kernel_range_noflush - map kernel VM area with the specified pages
-+ * @addr: start of the VM area to map
-+ * @size: size of the VM area to map
-+ * @prot: page protection flags to use
-+ * @pages: pages to map
-+ *
-+ * Map PFN_UP(@size) pages at @addr.  The VM area @addr and @size specify should
-+ * have been allocated using get_vm_area() and its friends.
-+ *
-+ * NOTE:
-+ * This function does NOT do any cache flushing.  The caller is responsible for
-+ * calling flush_cache_vmap() on to-be-mapped areas before calling this
-+ * function.
-+ *
-+ * RETURNS:
-+ * 0 on success, -errno on failure.
-+ */
-+int map_kernel_range_noflush(unsigned long addr, unsigned long size,
-+			     pgprot_t prot, struct page **pages)
-+{
-+	return vmap_pages_range_noflush(addr, addr + size, prot, pages, PAGE_SHIFT);
-+}
-+
- int map_kernel_range(unsigned long start, unsigned long size, pgprot_t prot,
- 		struct page **pages)
- {
-@@ -2274,9 +2327,11 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
- 	if (unlikely(!size))
- 		return NULL;
- 
--	if (flags & VM_IOREMAP)
--		align = 1ul << clamp_t(int, get_count_order_long(size),
--				       PAGE_SHIFT, IOREMAP_MAX_ORDER);
-+	if (flags & VM_IOREMAP) {
-+		align = max(align,
-+			    1ul << clamp_t(int, get_count_order_long(size),
-+					   PAGE_SHIFT, IOREMAP_MAX_ORDER));
-+	}
- 
- 	area = kzalloc_node(sizeof(*area), gfp_mask & GFP_RECLAIM_MASK, node);
- 	if (unlikely(!area))
-@@ -2471,11 +2526,11 @@ static void __vunmap(const void *addr, int deallocate_pages)
- 	if (deallocate_pages) {
- 		int i;
- 
--		for (i = 0; i < area->nr_pages; i++) {
-+		for (i = 0; i < area->nr_pages; i += 1 << area->page_order) {
- 			struct page *page = area->pages[i];
- 
- 			BUG_ON(!page);
--			__free_pages(page, 0);
-+			__free_pages(page, area->page_order);
- 		}
- 		atomic_long_sub(area->nr_pages, &nr_vmalloc_pages);
- 
-@@ -2614,9 +2669,12 @@ void *vmap(struct page **pages, unsigned int count,
- EXPORT_SYMBOL(vmap);
- 
- static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
--				 pgprot_t prot, int node)
-+				 pgprot_t prot, unsigned int page_shift, int node)
- {
- 	struct page **pages;
-+	unsigned long addr = (unsigned long)area->addr;
-+	unsigned long size = get_vm_area_size(area);
-+	unsigned int page_order = page_shift - PAGE_SHIFT;
- 	unsigned int nr_pages, array_size, i;
- 	const gfp_t nested_gfp = (gfp_mask & GFP_RECLAIM_MASK) | __GFP_ZERO;
- 	const gfp_t alloc_mask = gfp_mask | __GFP_NOWARN;
-@@ -2624,7 +2682,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 					0 :
- 					__GFP_HIGHMEM;
- 
--	nr_pages = get_vm_area_size(area) >> PAGE_SHIFT;
-+	nr_pages = size >> PAGE_SHIFT;
- 	array_size = (nr_pages * sizeof(struct page *));
- 
- 	/* Please note that the recursion is strictly bounded. */
-@@ -2643,29 +2701,29 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 
- 	area->pages = pages;
- 	area->nr_pages = nr_pages;
-+	area->page_order = page_order;
- 
--	for (i = 0; i < area->nr_pages; i++) {
-+	for (i = 0; i < area->nr_pages; i += 1 << page_order) {
- 		struct page *page;
-+		int p;
- 
--		if (node == NUMA_NO_NODE)
--			page = alloc_page(alloc_mask|highmem_mask);
--		else
--			page = alloc_pages_node(node, alloc_mask|highmem_mask, 0);
--
-+		page = alloc_pages_node(node, alloc_mask|highmem_mask, page_order);
- 		if (unlikely(!page)) {
- 			/* Successfully allocated i pages, free them in __vunmap() */
- 			area->nr_pages = i;
- 			atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
- 			goto fail;
- 		}
--		area->pages[i] = page;
-+
-+		for (p = 0; p < (1 << page_order); p++)
-+			area->pages[i + p] = page + p;
-+
- 		if (gfpflags_allow_blocking(gfp_mask))
- 			cond_resched();
- 	}
- 	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
- 
--	if (map_kernel_range((unsigned long)area->addr, get_vm_area_size(area),
--			prot, pages) < 0)
-+	if (vmap_pages_range(addr, addr + size, prot, pages, page_shift) < 0)
- 		goto fail;
- 
- 	return area->addr;
-@@ -2701,22 +2759,45 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
- 			pgprot_t prot, unsigned long vm_flags, int node,
- 			const void *caller)
- {
--	struct vm_struct *area;
-+	struct vm_struct *area = NULL;
- 	void *addr;
- 	unsigned long real_size = size;
-+	unsigned long real_align = align;
-+	unsigned int shift = PAGE_SHIFT;
- 
- 	size = PAGE_ALIGN(size);
- 	if (!size || (size >> PAGE_SHIFT) > totalram_pages())
- 		goto fail;
- 
--	area = __get_vm_area_node(real_size, align, VM_ALLOC | VM_UNINITIALIZED |
-+	if (vmap_allow_huge && (pgprot_val(prot) == pgprot_val(PAGE_KERNEL))) {
-+		unsigned long size_per_node;
-+
-+		/*
-+		 * Try huge pages. Only try for PAGE_KERNEL allocations,
-+		 * others like modules don't yet expect huge pages in
-+		 * their allocations due to apply_to_page_range not
-+		 * supporting them.
-+		 */
-+
-+		size_per_node = size;
-+		if (node == NUMA_NO_NODE)
-+			size_per_node /= num_online_nodes();
-+		if (size_per_node >= PMD_SIZE) {
-+			shift = PMD_SHIFT;
-+			align = max(real_align, 1UL << shift);
-+			size = ALIGN(real_size, 1UL << shift);
-+		}
-+	}
-+
-+again:
-+	area = __get_vm_area_node(size, align, VM_ALLOC | VM_UNINITIALIZED |
- 				vm_flags, start, end, node, gfp_mask, caller);
- 	if (!area)
- 		goto fail;
- 
--	addr = __vmalloc_area_node(area, gfp_mask, prot, node);
-+	addr = __vmalloc_area_node(area, gfp_mask, prot, shift, node);
- 	if (!addr)
--		return NULL;
-+		goto fail;
- 
- 	/*
- 	 * In this function, newly allocated vm_struct has VM_UNINITIALIZED
-@@ -2730,8 +2811,18 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
- 	return addr;
- 
- fail:
--	warn_alloc(gfp_mask, NULL,
-+	if (shift > PAGE_SHIFT) {
-+		shift = PAGE_SHIFT;
-+		align = real_align;
-+		size = real_size;
-+		goto again;
-+	}
-+
-+	if (!area) {
-+		/* Warn for area allocation, page allocations already warn */
-+		warn_alloc(gfp_mask, NULL,
- 			  "vmalloc: allocation failure: %lu bytes", real_size);
-+	}
- 	return NULL;
- }
- 
--- 
-2.23.0
+> > > >  
+> > > > > ...
+> > > > >  
+> > > > > > +       int tries = 4;  
+> > > > >  
+> > > > > > +       while (tries-- > 0) {
+> > > > > > +               ret = mlx90632_perform_measurement(data);
+> > > > > > +               if (ret < 0)
+> > > > > > +                       goto read_unlock;
+> > > > > > +
+> > > > > > +               if (ret == 19)
+> > > > > > +                       break;
+> > > > > > +       }
+> > > > > > +       if (tries < 0) {
+> > > > > > +               ret = -ETIMEDOUT;
+> > > > > > +               goto read_unlock;
+> > > > > > +       }  
+> > > > >
+> > > > > Please avoid ping-pong type of changes in the same series (similar way
+> > > > > as for kernel doc), which means don't introduce something you are
+> > > > > going to change later on. Patch to move to do {} while () should go
+> > > > > before this one.  
+> > > >
+> > > > OK, will fix that ordering in v5, but will wait till we solve also
+> > > > above discussions to avoid adding new versions.
+> > > >  
+> > > > >
+> > > > > --
+> > > > > With Best Regards,
+> > > > > Andy Shevchenko  
+> > > >
+> > > > And about that voodoo stuff with numbers:
+> > > >
+> > > > Honestly, the equation is in the datasheet[1] and this is just making
+> > > > floating point to fixed point with proper intermediate scaling
+> > > > (initially I had defines of TENTOX, but that was not desired). There
+> > > > is no better explanation of this voodoo.  
+> > >
+> > > We all love fixed point arithmetic :)
+> > >
+> > > Jonathan  
 
