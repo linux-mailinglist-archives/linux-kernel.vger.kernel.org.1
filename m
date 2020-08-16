@@ -2,112 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4A4245835
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 16:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B7C245836
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 16:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727993AbgHPOmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 10:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
+        id S1728120AbgHPOnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 10:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgHPOmQ (ORCPT
+        with ESMTP id S1726304AbgHPOnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 10:42:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09FDC061786;
-        Sun, 16 Aug 2020 07:42:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Fi/5i+oI6s+PTOkb3E6yrfOZGSj+tbh+5f4ilJf9nLw=; b=UveeSUgbP1DWhLeC+lqEWp0X5j
-        ndnA52j0HtpC7YRKQ8s//PCLdf3LirmH7KwNMG9xeVo54UNw1Rw0vAY94VSGFk2epX+AoAE8xSyRa
-        OBnp6a80L7QgYMFXUlaLj4LuBvKW6KRvJhMkIT6XaKIuENs08LXVK7EELE7RyPFvXTgQCK7T9JCAZ
-        75tmkOsmmcjNV4JC4m+u+DlWoOG4sWJhuLncD1r1G0Is9usTEBabY+gwR4eVgbRRnuMxgY/daZNyZ
-        A7S9MgMb4OhAoTPTp6WekRtWoyIbhTkEcokCCOc7GaXqzslYPXfzZDW0e6Zlpt5c+eAAjx63SLHeB
-        9HQDA8kQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k7JrO-00076D-21; Sun, 16 Aug 2020 14:42:10 +0000
-Date:   Sun, 16 Aug 2020 15:42:09 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Meelis Roos <mroos@linux.ee>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH] parisc: fix PMD pages allocation by restoring
- pmd_alloc_one()
-Message-ID: <20200816144209.GH17456@casper.infradead.org>
-References: <20200816142403.15449-1-rppt@kernel.org>
+        Sun, 16 Aug 2020 10:43:11 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA19FC061786
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 07:43:10 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id d14so12795533qke.13
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 07:43:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Vruaf7lbI+HCDXiw3YIN0inMcZIOBPsbjASEGh92PYQ=;
+        b=jCAkKO9HcYLa/+BbRx+RUA/dz25FSMD9Htee6SiXaW4s7Tl2boF6bag9glynIXuYBJ
+         z/Ix/p2HqkO+k+LRLC/RX+QgeJsGUDUzpnqgedA1B7Fbfl6yO2+OgiA1pGwGABGq6Pan
+         Lk08Q7vwGY7Og/VRfML+SQH7RIQaLH5pC3sG33dyPOLrQ2nfR9XGlGwzgJYS7v1mVaCi
+         zHLtl7/3XBNiVE2CEKSTYmIXNI5TqvQ1xKS88exLNCKaHiahHdwUseZzrXL+yyNhWV33
+         8/ZP+Fap/GFHaI6x2vm30d8LNuVRCnqA7zsYy7f0ACX5NdJcFngEgwhEwQ7p8PLWX+UK
+         RCXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Vruaf7lbI+HCDXiw3YIN0inMcZIOBPsbjASEGh92PYQ=;
+        b=ul2DzNX6SrwY3gr1RCMKWTaU0AIilBfraQeXXkysR840f5JAiLJjAcqEXXsGFvYUuW
+         oamIx98pwrse/ZEK5DV4rE345ZnPydzIFaUVxKp2er/AEZbLlPP6hsl5OkBR9U+C5H+P
+         KAB+GSp+RQGUs2LSA95CqV3CP14ZIaHgg9U8GYhfCppoH2mbxB3AOqxDLLLhlZovru5U
+         qLzRZfeGbU7vOWWFdyj6kxnejumZ4oHn3unXGdGAsZF7vEC+PYu9Ljzd4s2DnVVRuGch
+         b51AR5MgGyHvvaXTBbt2vObXtzhp7VOHVU8+tHSKb8evORT8oev+gSZny84wI6O70M2x
+         s8vQ==
+X-Gm-Message-State: AOAM5308ioUE9OcLRWD74hcbaCrHx+DHU2xL++n5mkCh6IqtH0BYRo2m
+        43in967iBwILyyF3bpfCurMg3VUdSO5NHYVGaO4=
+X-Google-Smtp-Source: ABdhPJxx0p3k8kK63ZgZaSILdOo6fEqqvvdJ9eGSnBQpdUlqyPB+7AORWTLYGWEkZ3zJxHpgMuP0g9j17rSdKwt82EQ=
+X-Received: by 2002:ae9:f409:: with SMTP id y9mr9004551qkl.383.1597588989941;
+ Sun, 16 Aug 2020 07:43:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200816142403.15449-1-rppt@kernel.org>
+Received: by 2002:ac8:4654:0:0:0:0:0 with HTTP; Sun, 16 Aug 2020 07:43:09
+ -0700 (PDT)
+Reply-To: hassan_alwanali01@yahoo.com
+From:   "Mr. Hassan Alwan Ali" <atmvisacardoffii@gmail.com>
+Date:   Sun, 16 Aug 2020 15:43:09 +0100
+Message-ID: <CAAhSY_HJNB0xmnkhJpBWVuzoPiLZgbUMKdbBrts=7m26z4OD+w@mail.gmail.com>
+Subject: Dear Friend.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 16, 2020 at 05:24:03PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Commit 1355c31eeb7e ("asm-generic: pgalloc: provide generic pmd_alloc_one()
-> and pmd_free_one()") converted parisc to use generic version of
-> pmd_alloc_one() but it missed the fact that parisc uses order-1 pages for
-> PMD.
-> 
-> Restore the original version of pmd_alloc_one() for parisc, just use
-> GFP_PGTABLE_KERNEL that implies __GFP_ZERO instead of GFP_KERNEL and
-> memset.
-> 
-> Fixes: 1355c31eeb7e ("asm-generic: pgalloc: provide generic pmd_alloc_one() and pmd_free_one()")
-> Repoerted-by: Meelis Roos <mroos@linux.ee>
+-- 
+Dear Friend,
 
-typo, "Reported-by"
+I know that this mail will come to you as a surprise since we have not
+known or met before now, but please, I would like you to treat it like
+blood brother affair and with the urgency and secrecy it requires. I
+am Dr. Hassan Alwan Ali, an Audit staff of (C.B.N) Central Bank of
+Nigeria.
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+An investor (name with-held) died without naming any next of kin to
+his fund he deposited in my bank. The amount is $10.5M ( Ten million
+five hundred united state dollars ) and banking regulation/legislation
+in Nigeria demands that I should notify the fiscal authorities after
+three years.
 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Tested-by: Meelis Roos <mroos@linux.ee>
-> Link: https://lkml.kernel.org/r/9f2b5ebd-e4a4-0fa1-6cd3-4b9f6892d1ad@linux.ee 
-> ---
-> 
-> Hi,
-> 
-> I've trimmed the 'cc list relatively to the bug report and added parisc
-> maintainers.
-> 
->  arch/parisc/include/asm/pgalloc.h | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/parisc/include/asm/pgalloc.h b/arch/parisc/include/asm/pgalloc.h
-> index cc7ecc2ef55d..a6482b2ce0ea 100644
-> --- a/arch/parisc/include/asm/pgalloc.h
-> +++ b/arch/parisc/include/asm/pgalloc.h
-> @@ -10,6 +10,7 @@
->  
->  #include <asm/cache.h>
->  
-> +#define __HAVE_ARCH_PMD_ALLOC_ONE
->  #define __HAVE_ARCH_PMD_FREE
->  #define __HAVE_ARCH_PGD_FREE
->  #include <asm-generic/pgalloc.h>
-> @@ -67,6 +68,11 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
->  			(__u32)(__pa((unsigned long)pmd) >> PxD_VALUE_SHIFT)));
->  }
->  
-> +static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
-> +{
-> +	return (pmd_t *)__get_free_pages(GFP_PGTABLE_KERNEL, PMD_ORDER);
-> +}
-> +
->  static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
->  {
->  	if (pmd_flag(*pmd) & PxD_FLAG_ATTACHED) {
-> -- 
-> 2.26.2
-> 
+The above set of facts underscores my reason to seek your permission
+to have you stand in as the next of kin to the deceased.
+
+This fund will be approved and released in your favour as the next of
+kin if only you will adhere to my instruction and cooperate with me in
+one accord.
+
+I have all the legal and banking details of the deceased client that
+will facilitate our putting you forward as the claimant/beneficiary of
+the funds and ultimately transfer of the $10.5M plus interest to any
+bank account nominated by you.
+
+I am prepared to compensate you with a 35% share of the total funds
+for your efforts. The final details will be given upon receipt an
+affirmation of your desire to participate.
+
+Please contact me immediately on ( hassan_alwanali01@yahoo.com ) if
+you are interest in my proposal to enable me not to start scouting for
+another foreign partner.
+
+Thanks,
+Dr. Hassan Alwan Ali.
