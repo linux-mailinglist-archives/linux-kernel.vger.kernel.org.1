@@ -2,95 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FBF24588C
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 18:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045B8245893
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 18:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728925AbgHPQb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 12:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47690 "EHLO
+        id S1729272AbgHPQg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 12:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726847AbgHPQbx (ORCPT
+        with ESMTP id S1726407AbgHPQgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 12:31:53 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129BBC061786;
-        Sun, 16 Aug 2020 09:31:53 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id d2so7171241lfj.1;
-        Sun, 16 Aug 2020 09:31:52 -0700 (PDT)
+        Sun, 16 Aug 2020 12:36:00 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFED5C061786;
+        Sun, 16 Aug 2020 09:35:59 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id v4so14944373ljd.0;
+        Sun, 16 Aug 2020 09:35:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2wv1WZYWnZqUYuy5daGO2mFT0CBCIh8Qm4hC8CQxQFU=;
-        b=Mlurn4Y1LLKDyXimOcadPEv1DSjh3MGR0eCcaPWourEdJTuMnrEhEoWAWAwyMV7yQk
-         FLtkQzSzQsyLOjyE0R/x/8bpAjZEPyOUHRx3H3IYecS8M87qtcSjHjiAdwJ1vmCsHAIP
-         i7hoqCqfGurg2t213fkmj1KkVCQQvXdbHSsPx1AnhEJMEDQuPtt+R2dx52HvY2ClPJs4
-         mxHgItL7O/6xe3qdVIzx556ycgnPaICj5xNA/bxXrNbbSPywjlC5KDEA+FUfxk/AvpSM
-         RfskPu0+b5zoOz42I3tBlRaZgS0eNTJ+G6aUz9qie1ir1WKQLBeib00zVB9fOwl2KoKh
-         IP/w==
+        h=subject:date:from:to:cc:message-id;
+        bh=a3HvxMbJN8O8Pk372OctYtEv9DFEIGxh+0Dn03YHbM0=;
+        b=rkzxE2I9iYrjfncUm01iSPL+fpmUZTJvYvaHIh2KvkVB1FhtDnBIhvEUKtq0X++cEY
+         /63c7okbpmKmVyvbanxRpGepve2LtYQi+PkJBj9fQw+Yb5nFkcp8aV/gg3TGkHYDMeQY
+         pCIcMjPJIAb5kssi68HEaLZ7tRXVATnN+J5cCiW8/lQ2ky/4YV0aJXk+sD3Vpm2yBOqr
+         WhphYzLpxp0H5ITGS6sSViHGfSJyuHa34yXM+SkdiH1DWM+sx3MTLEqJWHq5loHWF11q
+         2FBl+uE4aZizH58x30ZIxEedy3eDbVeZWkLRE+qs37R2s304UrDXBob0FR0U/A5rOhmC
+         SyJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2wv1WZYWnZqUYuy5daGO2mFT0CBCIh8Qm4hC8CQxQFU=;
-        b=F+vthVz9Gc6jVjCDk57VpcSkilAsSHVt/syAL2ixbW7WRBA3z0cw2icInSamZiCopP
-         P49tiGyakVBGORQ6sIzMGlAQOWU9PHKDiD8tdrQbkJkrgrZ8hdZYR+4VAo1R8Swoorfb
-         b8QUcLm8jXu273JGBRS5iZ6hUfwR2rpYeZ3Pfp4jUs/fhQwWM8CEdqKbltO2U8Sp1i6o
-         vDFUDutWwN5cXSzbzlAplw9dMEyUaibFkKaJAPTt0qA3aBbrJPP/A6OS5C6hdEn1ev8X
-         II6tPBP4059T51usDa3Me5knMI/CqTRyia61nKyCerlzRNXxZShkjS8PhZWdQGf1S/l6
-         9v1A==
-X-Gm-Message-State: AOAM533w2aIoK1lsUHeQhPXHZfgcWTZhW0w6/f/ib4dOFTwl0LDO+qbr
-        zHmOmO0oed1u1YWaA3LUr9o=
-X-Google-Smtp-Source: ABdhPJxA7t5nG3a82vhuuEwlrGGq8x9c2Bcu2pzpEaWHa662axpyEXfmFQVgDkjvJM87aW+ySiWWkQ==
-X-Received: by 2002:ac2:5223:: with SMTP id i3mr5653219lfl.57.1597595511363;
-        Sun, 16 Aug 2020 09:31:51 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id z15sm4255580lfg.81.2020.08.16.09.31.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 16 Aug 2020 09:31:50 -0700 (PDT)
-Subject: Re: [PATCH 1/1] Input: atmel_mxt_ts - allow specification of firmware
- file name
-To:     "Wang, Jiada" <jiada_wang@mentor.com>,
-        "nick@shmanahar.org" <nick@shmanahar.org>,
-        "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>
-Cc:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "erosca@de.adit-jv.com" <erosca@de.adit-jv.com>,
-        "Gabbasov, Andrew" <Andrew_Gabbasov@mentor.com>
-References: <20200731075714.10608-1-jiada_wang@mentor.com>
- <e5da9e03-8156-39f6-c78b-0226c95690c6@gmail.com>
- <a0af72eb-11d9-cab1-c79a-0c42c3eb0e19@mentor.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <affa0525-2543-b121-2793-b8dc022e98f1@gmail.com>
-Date:   Sun, 16 Aug 2020 19:31:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <a0af72eb-11d9-cab1-c79a-0c42c3eb0e19@mentor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:subject:date:from:to:cc:message-id;
+        bh=a3HvxMbJN8O8Pk372OctYtEv9DFEIGxh+0Dn03YHbM0=;
+        b=kzh3++vUk5dMfbz7Pr87hlv77CJdxOB7ddeyTSRERaJbx4B/4egukk3IiNyqXEQShA
+         zURK5RqECb0yTZR6KCRqn+i3iLAY+3URlD8QrzDVATvcydSmCf79tnYnjBzunOvDpw/I
+         xR1Ix/768PgKlRewNafVGkCaJxHtvakgUJWQKpxRpr3KBeOIa8gy06hzqpBmO4hax8E5
+         HAfhndYiqgUjS6o1sGdnY7y/sx3roVq8ZYIjdcyOcJXnwoG+6PoNJZXYCNN34qRstpGY
+         c0kLiAy32MPuQ4ldug+36vLNFaPoniM1qcvQYYlnPOQrNISyFpRHJGB7AGHPJdreY7nw
+         /Cuw==
+X-Gm-Message-State: AOAM533qPld8exRGSNdD8n85njccCneyJkK/9CEKD+L0wPJYTy96osWk
+        Fa7Kvqk2zmHg5VVvEfVCB8o=
+X-Google-Smtp-Source: ABdhPJy4YAYo3KWkWAB5zZYmJDxbttk4PCRkDgp1Gljv2EaSTdVTJ+xB4blbv7P/Gy1cGrilJ8p56w==
+X-Received: by 2002:a2e:b53b:: with SMTP id z27mr5786172ljm.441.1597595753776;
+        Sun, 16 Aug 2020 09:35:53 -0700 (PDT)
+Received: from gmail.com (tor-exit-2.zbau.f3netze.de. [185.220.100.253])
+        by smtp.gmail.com with ESMTPSA id g21sm3875496ljh.103.2020.08.16.09.35.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Aug 2020 09:35:52 -0700 (PDT)
+Subject: [PATCH] Makefile: Yes. Finally remove '-Wdeclaration-after-statement'
+Date:   Sun, 16 Aug 2020 16:35:00 -0000
+From:   Michael Witten <mfwitten@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Message-ID: <c6fda26e8d134264b04fadc3386d6c32@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-12.08.2020 13:11, Wang, Jiada пишет:
->> Have you decided to abandon the patch which allowed to specify firmware
->> name in a device tree?
->>
-> In v11 patch-set, there is a patch allows user to specify config file
-> name via device-tree and sysfs, I will drop device-tree part, since
-> Dmitry Torokhov commented he would like to change the behavior of
-> firmware loading during boot time,
-> but I will keep sysfs interface part, which is similar to this patch but
-> for configuration file.
+This is not just a matter of style; this is a matter of semantics,
+especially with regard to:
 
-Okay!
+  * const Correctness.
+    A const-declared variable must be initialized when defined.
 
-BTW, looking forward to the "I2C retrying" patch, which is needed for
-the mxt1386 controller. The Acer A500 device-tree has been merged into
-upstream, but some pieces are still missing in the kernel which are
-needed to get that device fully functional, the mxt1386 controller
-support is one of those pieces.
+  * Conditional Compilation.
+    When there is complex interaction between compile-time
+    configuration options, it's essential to be able to
+    make declarations where needed; otherwise unnecessary
+    gymnastics are required to silence the compiler.
+
+Gentleman... Just let people say exactly what they mean to say.
+
+Requiring every declaration to be at the top of a block is an
+antiquated, vestigial naivete from a time when C was just a
+glorified abstraction over conventional patterns in assembly
+programming.
+
+We are not just programming anymore. We are now encoding our
+very thoughts, and thus we need this expressiveness in order
+to capture those thoughts with sufficient clarity.
+
+Therefore, this commit removes:
+
+  -Wdeclaration-after-statement
+
+Signed-off-by: Michael Witten <mfwitten@gmail.com>
+
+---
+ Makefile                          | 3 ---
+ arch/arm64/kernel/vdso32/Makefile | 1 -
+ tools/power/acpi/Makefile.config  | 1 -
+ tools/power/cpupower/Makefile     | 1 -
+ tools/scripts/Makefile.include    | 1 -
+ 5 files changed, 7 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 254e80a96b23..88ad4e430834 100644
+--- a/Makefile
++++ b/Makefile
+@@ -900,9 +900,6 @@ endif
+ # arch Makefile may override CC so keep this after arch Makefile is included
+ NOSTDINC_FLAGS += -nostdinc -isystem $(shell $(CC) -print-file-name=include)
+ 
+-# warn about C99 declaration after statement
+-KBUILD_CFLAGS += -Wdeclaration-after-statement
+-
+ # Variable Length Arrays (VLAs) should not be used anywhere in the kernel
+ KBUILD_CFLAGS += -Wvla
+ 
+diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+index 5139a5f19256..672008c735fb 100644
+--- a/arch/arm64/kernel/vdso32/Makefile
++++ b/arch/arm64/kernel/vdso32/Makefile
+@@ -88,7 +88,6 @@ VDSO_CFLAGS += -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+                -std=gnu89
+ VDSO_CFLAGS  += -O2
+ # Some useful compiler-dependent flags from top-level Makefile
+-VDSO_CFLAGS += $(call cc32-option,-Wdeclaration-after-statement,)
+ VDSO_CFLAGS += $(call cc32-option,-Wno-pointer-sign)
+ VDSO_CFLAGS += $(call cc32-option,-fno-strict-overflow)
+ VDSO_CFLAGS += $(call cc32-option,-Werror=strict-prototypes)
+diff --git a/tools/power/acpi/Makefile.config b/tools/power/acpi/Makefile.config
+index 54a2857c2510..70ac50cfd7eb 100644
+--- a/tools/power/acpi/Makefile.config
++++ b/tools/power/acpi/Makefile.config
+@@ -64,7 +64,6 @@ OPTIMIZATION := $(call cc-supports,-Os,-O2)
+ 
+ WARNINGS := -Wall
+ WARNINGS += $(call cc-supports,-Wstrict-prototypes)
+-WARNINGS += $(call cc-supports,-Wdeclaration-after-statement)
+ 
+ KERNEL_INCLUDE := $(OUTPUT)include
+ ACPICA_INCLUDE := $(srctree)/../../../drivers/acpi/acpica
+diff --git a/tools/power/cpupower/Makefile b/tools/power/cpupower/Makefile
+index c8622497ef23..d389179d4484 100644
+--- a/tools/power/cpupower/Makefile
++++ b/tools/power/cpupower/Makefile
+@@ -118,7 +118,6 @@ OPTIMIZATION := $(call cc-supports,-Os,-O2)
+ 
+ WARNINGS := -Wall -Wchar-subscripts -Wpointer-arith -Wsign-compare
+ WARNINGS += $(call cc-supports,-Wno-pointer-sign)
+-WARNINGS += $(call cc-supports,-Wdeclaration-after-statement)
+ WARNINGS += -Wshadow
+ 
+ override CFLAGS += -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" \
+diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+index a7974638561c..83c2a5a1ed15 100644
+--- a/tools/scripts/Makefile.include
++++ b/tools/scripts/Makefile.include
+@@ -21,7 +21,6 @@ endif
+ # Include saner warnings here, which can catch bugs:
+ #
+ EXTRA_WARNINGS := -Wbad-function-cast
+-EXTRA_WARNINGS += -Wdeclaration-after-statement
+ EXTRA_WARNINGS += -Wformat-security
+ EXTRA_WARNINGS += -Wformat-y2k
+ EXTRA_WARNINGS += -Winit-self
+-- 
+2.22.0
+
