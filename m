@@ -2,53 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6682458ED
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 20:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B9E2458F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 20:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbgHPSCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 14:02:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726699AbgHPSCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 14:02:07 -0400
-Subject: Re: [GIT PULL] Final io_uring changes for 5.9-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597600927;
-        bh=oDHpnhiCVU4fwXJGrQozV6xTg5w0F66Ducy5HkCWjPo=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=dix51MOkZD62plMejkN8nxE7naT7N/QdEuexG0l/8PAEHf9ySsz3F7noZiTI76sSp
-         bfKNd3IhIigvr1IsPWVXJKiUt3TtxP0hzkw3ysuxR3ydc/HsmBYMGj9U+XTJcoo90t
-         a+uOgCCMeeruXFmwRu94LkDldOGjPmnX3auEXK4s=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <32d4a5ea-514f-cb79-94ff-83b0c4e1d47b@kernel.dk>
-References: <32d4a5ea-514f-cb79-94ff-83b0c4e1d47b@kernel.dk>
-X-PR-Tracked-List-Id: <io-uring.vger.kernel.org>
-X-PR-Tracked-Message-Id: <32d4a5ea-514f-cb79-94ff-83b0c4e1d47b@kernel.dk>
-X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-08-15
-X-PR-Tracked-Commit-Id: f91daf565b0e272a33bd3fcd19eaebd331c5cffd
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2cc3c4b3c2e9c99e90aaf19cd801ff2c160f283c
-Message-Id: <159760092747.23276.15418199202357287216.pr-tracker-bot@kernel.org>
-Date:   Sun, 16 Aug 2020 18:02:07 +0000
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        id S1729190AbgHPSPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 14:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726331AbgHPSPn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 Aug 2020 14:15:43 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817F9C061786;
+        Sun, 16 Aug 2020 11:15:43 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id y6so6384372plt.3;
+        Sun, 16 Aug 2020 11:15:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7eITYE/vrrdjskd5W7C36g1IzW1kO3mM/GcgPPbFuKM=;
+        b=HyPaN9HRG0Mi2qCWoWQx2PWfgGD2dBMJy83WaE5KBS0qWZhAdue1tcVB+6k4X3wbWV
+         orTzizKZM0nOpr6g5pdNxG6X1Ai7b0ECGTNhODzbnm4fz2SbWfGMTv+4yg/VWrIk8rP+
+         ceCz3kcdSvD3j0bjsvWCGXfJzKjViIEIq4nxZgOPIgAkKc2GUSpO+lex0X94OZ0PrQxG
+         hkBB1LyvGbrtPdso3OLwC8NQ238kWFtR0S/A1hVYHeBR7JP1oUtMPViMsu313u56BYDG
+         hOZVQpAIk6OtRere0FTLbQQISXsfiEmlxZ8fyHQR/Z8zkeFk7qA0UdhgHNpwdv1x7gGk
+         qXug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7eITYE/vrrdjskd5W7C36g1IzW1kO3mM/GcgPPbFuKM=;
+        b=e6n/iw6zj9w7gGCm6JK9egMeiRqISPgw24vviIEXs2t4eiyu9ciad+OjtvhAmZyFxi
+         f4fNU4A8s5eL28AR+bqR+w6vUftCRcLkO4RiAnZfas2ndKu6LEmvD/R7epokkM+9e87b
+         CSZttHdZIjDfqawV/TYxXMhou0o80VmkomnBUCEBqaA8d2NDgMSpsWOnn0gPCd6gqEWE
+         U7q1b+A2r8Vgqo2Pw1yDJAdzgHCBRarszPwb5VmF1k/lKNPZ14wS2hxsctvcjAV6jMn4
+         aaizefBfiWiyu0hHpGX5hNuIvIjHdzTAw6C3cEIwgPVnQnVfuHcP4z7xPPxkBm2CeL+S
+         urbg==
+X-Gm-Message-State: AOAM530jIrocG3jusvxOyLseEhIf+2fqiHm7SRIuihjO5V+adlCiy4UQ
+        Eli6g3xV9dzttz8H4nTsCpz+DB8afl0=
+X-Google-Smtp-Source: ABdhPJzDVeD/HiVJO3rMb15GrpoaQIdnJhsHTB/12q5ZLb9bhTvfgDd0zzTyp6ouNffxA9p6np8XfA==
+X-Received: by 2002:a17:90a:8c8f:: with SMTP id b15mr9660930pjo.84.1597601743152;
+        Sun, 16 Aug 2020 11:15:43 -0700 (PDT)
+Received: from [10.1.10.11] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id q6sm3113098pjr.20.2020.08.16.11.15.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 Aug 2020 11:15:42 -0700 (PDT)
+Subject: Re: [PATCH 2/2] net: socket: implement SO_DESCRIPTION
+To:     Pascal Bouchareine <kalou@tfz.net>, linux-kernel@vger.kernel.org
+Cc:     linux-api@vger.kernel.org, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+References: <20200815182344.7469-1-kalou@tfz.net>
+ <20200815182344.7469-3-kalou@tfz.net>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <7c910594-b297-646e-9410-f133fd62a902@gmail.com>
+Date:   Sun, 16 Aug 2020 11:15:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20200815182344.7469-3-kalou@tfz.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 16 Aug 2020 05:22:09 -0700:
 
-> git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-08-15
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2cc3c4b3c2e9c99e90aaf19cd801ff2c160f283c
+On 8/15/20 11:23 AM, Pascal Bouchareine wrote:
+> This command attaches the zero terminated string in optval to the
+> socket for troubleshooting purposes. The free string is displayed in the
+> process fdinfo file for that fd (/proc/<pid>/fdinfo/<fd>).
+> 
+> One intended usage is to allow processes to self-document sockets
+> for netstat and friends to report
+> 
+> We ignore optlen and constrain the string to a static max size
+> 
+>
 
-Thank you!
+1) You also ignored what would happen at accept() time.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Please test your patches with ASAN.
+
+2) Also, why is that description specific to sockets ?
+
+3) When a new socket option is added, it is customary to implement both setsockopt() and getsockopt()
+  for things like CRIU.
+
