@@ -2,66 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC55245655
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 09:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD22E24565D
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 09:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730077AbgHPHNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 03:13:52 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:35662 "EHLO honk.sigxcpu.org"
+        id S1730206AbgHPHP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 03:15:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59670 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726541AbgHPHNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 03:13:51 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id D5D2EFB03;
-        Sun, 16 Aug 2020 09:13:46 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id qke4M50PDNVY; Sun, 16 Aug 2020 09:13:45 +0200 (CEST)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id DC491457CD; Sun, 16 Aug 2020 09:13:43 +0200 (CEST)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>, Ondrej Jirman <megi@xff.cz>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] dt-bindings: panel: rocktech,jh057n00900: Add myself as maintainer
-Date:   Sun, 16 Aug 2020 09:13:43 +0200
-Message-Id: <9427a9c0e6aaf9fb375f7ecee6691ba491149d52.1597561897.git.agx@sigxcpu.org>
+        id S1726025AbgHPHP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 Aug 2020 03:15:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A6283B142;
+        Sun, 16 Aug 2020 07:15:49 +0000 (UTC)
+From:   Coly Li <colyli@suse.de>
+To:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org
+Cc:     netdev@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Coly Li <colyli@suse.de>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Jan Kara <jack@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Vlastimil Babka <vbabka@suse.com>
+Subject: [PATCH v5 1/3] net: introduce helper sendpage_ok() in include/linux/net.h
+Date:   Sun, 16 Aug 2020 15:15:15 +0800
+Message-Id: <20200816071518.6964-1-colyli@suse.de>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1597561897.git.agx@sigxcpu.org>
-References: <cover.1597561897.git.agx@sigxcpu.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I maintained the txt based bindings before yaml conversion and care
-about the driver.
+The original problem was from nvme-over-tcp code, who mistakenly uses
+kernel_sendpage() to send pages allocated by __get_free_pages() without
+__GFP_COMP flag. Such pages don't have refcount (page_count is 0) on
+tail pages, sending them by kernel_sendpage() may trigger a kernel panic
+from a corrupted kernel heap, because these pages are incorrectly freed
+in network stack as page_count 0 pages.
 
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
+This patch introduces a helper sendpage_ok(), it returns true if the
+checking page,
+- is not slab page: PageSlab(page) is false.
+- has page refcount: page_count(page) is not zero
+
+All drivers who want to send page to remote end by kernel_sendpage()
+may use this helper to check whether the page is OK. If the helper does
+not return true, the driver should try other non sendpage method (e.g.
+sock_no_sendpage()) to handle the page.
+
+Signed-off-by: Coly Li <colyli@suse.de>
+Cc: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Hannes Reinecke <hare@suse.de>
+Cc: Jan Kara <jack@suse.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>
+Cc: Philipp Reisner <philipp.reisner@linbit.com>
+Cc: Sagi Grimberg <sagi@grimberg.me>
+Cc: Vlastimil Babka <vbabka@suse.com>
+Cc: stable@vger.kernel.org
 ---
- .../devicetree/bindings/display/panel/rocktech,jh057n00900.yaml  | 1 +
- 1 file changed, 1 insertion(+)
+Changelog:
+v5, include linux/mm.h in include/linux/net.h
+v4, change sendpage_ok() as an inline helper, and post it as
+    separate patch.
+v3, introduce a more common sendpage_ok()
+v2, fix typo in patch subject
+v1, the initial version.
+ include/linux/net.h | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.yaml b/Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.yaml
-index c97e89707342e..09b5eb7542f8a 100644
---- a/Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.yaml
-@@ -8,6 +8,7 @@ title: Rocktech JH057N00900 5.5" 720x1440 TFT LCD panel
+diff --git a/include/linux/net.h b/include/linux/net.h
+index d48ff1180879..a807fad31958 100644
+--- a/include/linux/net.h
++++ b/include/linux/net.h
+@@ -21,6 +21,7 @@
+ #include <linux/rcupdate.h>
+ #include <linux/once.h>
+ #include <linux/fs.h>
++#include <linux/mm.h>
+ #include <linux/sockptr.h>
  
- maintainers:
-   - Ondrej Jirman <megi@xff.cz>
-+  - Guido Gŭnther <agx@sigxcpu.org>
+ #include <uapi/linux/net.h>
+@@ -286,6 +287,21 @@ do {									\
+ #define net_get_random_once_wait(buf, nbytes)			\
+ 	get_random_once_wait((buf), (nbytes))
  
- description:
-   Rocktech JH057N00900 is a 720x1440 TFT LCD panel
++/*
++ * E.g. XFS meta- & log-data is in slab pages, or bcache meta
++ * data pages, or other high order pages allocated by
++ * __get_free_pages() without __GFP_COMP, which have a page_count
++ * of 0 and/or have PageSlab() set. We cannot use send_page for
++ * those, as that does get_page(); put_page(); and would cause
++ * either a VM_BUG directly, or __page_cache_release a page that
++ * would actually still be referenced by someone, leading to some
++ * obscure delayed Oops somewhere else.
++ */
++static inline bool sendpage_ok(struct page *page)
++{
++	return  (!PageSlab(page) && page_count(page) >= 1);
++}
++
+ int kernel_sendmsg(struct socket *sock, struct msghdr *msg, struct kvec *vec,
+ 		   size_t num, size_t len);
+ int kernel_sendmsg_locked(struct sock *sk, struct msghdr *msg,
 -- 
 2.26.2
 
