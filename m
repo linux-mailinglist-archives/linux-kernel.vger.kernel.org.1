@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2020D24555A
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 03:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6344245558
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 03:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729704AbgHPBzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 21:55:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51630 "EHLO mail.kernel.org"
+        id S1729721AbgHPBzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 21:55:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726029AbgHPBzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 21:55:10 -0400
-Subject: Re: [GIT PULL] 9p update for 5.9-rc1
+        id S1729675AbgHPBzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 Aug 2020 21:55:11 -0400
+Subject: Re: Re: [GIT PULL] edac for v5.9 (part 2)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597542910;
-        bh=N/bkrF+0fXTLqLT/Y//NJuCDndDV9m/xvtSF6AUgh9w=;
+        s=default; t=1597542911;
+        bh=DbC7qc6GK+RJwdq/aKeS5/2ik5cnH24BnA3EMdVAe2Q=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ShzdSZgCnl4sIbw3X2HQWkZ4z+bg+n7PXRyxUzLlV5SFCXlR2T9ef2WgoIbxODBDf
-         eEbQ+3R5cU4vjGjYz97Gggc+3FhMf97MYhdIohN+Kgh1bNGqMAXC5hU1nfKAiPxJl4
-         GAHmV81HyWZF3QxpbluUX2Pqqcw7THHHJcdABZkM=
+        b=Vl/LhXjIHyIAVo+tK0mQ0XOtoS43Wq/liscS40fXIEIJMNgWtKXyZkFD7WRjOGMUv
+         X6numF9vByJiBd9MG1vPP/ueO3/VA+nAo+1nesPa3P2WgQGkngyjkgfD+pMGZP4Xtz
+         AquEe+L97CfQi8pCOA1qMDhZb26V3ZKPC/nxO8Bg=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200815055219.GA20922@nautica>
-References: <20200815055219.GA20922@nautica>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200815055219.GA20922@nautica>
-X-PR-Tracked-Remote: https://github.com/martinetd/linux tags/9p-for-5.9-rc1
-X-PR-Tracked-Commit-Id: 2ed0b7578170c3bab10cde09d4440897b305e40c
+In-Reply-To: <20200815172103.GA1628@agluck-desk2.amr.corp.intel.com>
+References: <20200815003645.GA22594@agluck-desk2.amr.corp.intel.com>
+ <CAHk-=wgFg+RNU3Aa7paCPCLpUiTHGN1PuC2AGZoRSOxD=trKnQ@mail.gmail.com> <20200815172103.GA1628@agluck-desk2.amr.corp.intel.com>
+X-PR-Tracked-List-Id: <linux-edac.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200815172103.GA1628@agluck-desk2.amr.corp.intel.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_5.9_pt2
+X-PR-Tracked-Commit-Id: 709ed1bcef12398ac1a35c149f3e582db04456c2
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 410520d07f5c66a6c1f3eb7ef2063d9bdd3d440b
-Message-Id: <159754291013.18953.882050995366233563.pr-tracker-bot@kernel.org>
-Date:   Sun, 16 Aug 2020 01:55:10 +0000
-To:     Dominique Martinet <asmadeus@codewreck.org>
+X-PR-Merge-Commit-Id: 6ffdcde4ee9a20beda096dec664da89002610d7d
+Message-Id: <159754291138.18953.15694164194537387692.pr-tracker-bot@kernel.org>
+Date:   Sun, 16 Aug 2020 01:55:11 +0000
+To:     "Luck, Tony" <tony.luck@intel.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        netdev@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+        Borislav Petkov <bp@alien8.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-edac <linux-edac@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 15 Aug 2020 07:52:19 +0200:
+The pull request you sent on Sat, 15 Aug 2020 10:21:03 -0700:
 
-> https://github.com/martinetd/linux tags/9p-for-5.9-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_5.9_pt2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/410520d07f5c66a6c1f3eb7ef2063d9bdd3d440b
+https://git.kernel.org/torvalds/c/6ffdcde4ee9a20beda096dec664da89002610d7d
 
 Thank you!
 
