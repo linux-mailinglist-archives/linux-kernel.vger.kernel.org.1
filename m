@@ -2,141 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E5924593D
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 21:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F489245948
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 21:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgHPTXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 15:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45608 "EHLO
+        id S1729619AbgHPT2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 15:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725873AbgHPTXl (ORCPT
+        with ESMTP id S1725873AbgHPT2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 15:23:41 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9181AC061786;
-        Sun, 16 Aug 2020 12:23:40 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id t15so10597542edq.13;
-        Sun, 16 Aug 2020 12:23:40 -0700 (PDT)
+        Sun, 16 Aug 2020 15:28:02 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC491C061786
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 12:28:01 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id y3so12863249wrl.4
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 12:28:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OI2ilMyT/T1bEBIiLjqqyPUgBfPn1XCfDm/gphRm5kg=;
-        b=Wy7jjy9Gv9ZxM3v3dIC72o7hwek0w6VthWQA6+9Rhgr0UP6FbU6fRqt+unlz20F1Nl
-         ntLm4n3zhGJiyeQUS3OwrfN1eE5QJc/oJibwlek9/ZJrbfCv3rS7C1TyWoAC68wixtV+
-         2mO+VM2PXpe6Kx/PTnqvaw+Pi88NIAaopHQyUJQddN7fpxtPJyRUdOewpr1I8CTJXMX9
-         2Uj4Y3RpPkGK9QLSSTdWxSEGxqeW1Q95YbYYb1grTJG5NHI2253mPW5qIt+8jCrb+20V
-         vVp+/XNv+AfhZYgzTP+7yu2X6476i5Fj1qbCdA+FtmONj2OllsNzBIyaW9fzeSuQdt7I
-         lVHQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qmVZU2POW4M1NknCFfoJ+T7RKAAxlTCPnNob32YEXP4=;
+        b=FI13GFTDazrcCLiwoMFoX4rPxfeSLd+dEX0MnJIXY38KAk+OoAxDTTH/LWrrR/lQau
+         FS9gmx2OqHIFY6vjpcx/71Ym1XOkivVCVgWOjIq6kogNa/Xrb3Yho3gOGG3+vJyV4pA3
+         gckna1DsvjcCCwNrQRi7MHpB2YhIVaMgJTFQhs45G6yzC0gb0tHJZJmYOV6s6AUjjRwk
+         ZjJgWfNVcWVJSDwmbdZgh3Nm2wYQycbaUHjY7/yKO5V6pLGTTSZhU8aenemekkTvY5x0
+         xroYsQNjE1YRyIgqQ/o12hGMtV4MDX0/5oYyEdyY00pHVPSoecavdi1obsR4PjIsfEWy
+         P1KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OI2ilMyT/T1bEBIiLjqqyPUgBfPn1XCfDm/gphRm5kg=;
-        b=pDu/jf5+Scd6//TuLq8QgC5v6qhjz0NwNEnvLPfp3A7Nijl8G0/yVXZIAr4jS1on2G
-         V2eRnmyGMp6f70XoBc8klv17WKivLpHesTAk+ixD9FyIp7pi2HTiWhoDaMSFnnjUE2uZ
-         RC6yWNd1kZ2rUoAKddqKQYxRrft2yESfbKKjhnIXrfpxdNHgp+3hBKCmh4kxkfUZWD3W
-         CD1aVnq+8uaHl1KS2JJ/jvgd572zspfIaAv/spCGbf653ZNt2M++JbS3TorR+62VGVgx
-         7K2Wj02kT8zs4O6B4ZtIu13/+UIfki+mt+TEzDgBwFvUIUEJmhwIfe755Nj7sdwvPKrZ
-         Ze7A==
-X-Gm-Message-State: AOAM531iUV/ZmQrdQRZp+n4JRHV/uEqn4NH1tWvghPZhbWtJ942dSQiS
-        HD8u20o+NEC8lSH+bmNfx7g=
-X-Google-Smtp-Source: ABdhPJxKWoES0hitdZBraV7D3zk3EQ6vqSWM5VgAcaUp0prurr7PKW8o5uA2fGbnR0sfGdHRProVYw==
-X-Received: by 2002:a05:6402:7d5:: with SMTP id u21mr12493663edy.341.1597605819001;
-        Sun, 16 Aug 2020 12:23:39 -0700 (PDT)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id dr21sm13649255ejc.112.2020.08.16.12.23.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 16 Aug 2020 12:23:38 -0700 (PDT)
-Subject: Re: [PATCH 1/3] usb: dwc3: of-simple: Add compatible for rk3328
-To:     Cameron Nemo <cnemo@tutanota.com>,
-        Devicetree <devicetree@vger.kernel.org>,
-        Linux Arm Kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Rockchip <linux-rockchip@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Cc:     robh+dt@kernel.org, Heiko <heiko@sntech.de>, balbi@kernel.org,
-        gregkh@linuxfoundation.org
-References: <MEsGWB_--3-2@tutanota.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <4482f04a-d75d-6ede-acae-eb3fc7364130@gmail.com>
-Date:   Sun, 16 Aug 2020 21:23:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qmVZU2POW4M1NknCFfoJ+T7RKAAxlTCPnNob32YEXP4=;
+        b=sXS8VnmWdhpWdSQjpRPb3DzxcBx5B0uP8vAp1CeKcW42Dmw2GXgSTXxhfU4q/a1vZ+
+         Wr8wJMD7t+uhM5cr8ibq5Qrvbeqk8f+O3wvdI4svUf7dM4V6C3cGQYq4hvz78HFL3g11
+         OMWSXTRk//Zq1R0js1i8uxgnbcYPGL1jF7hocCsTlr1MBecE+hIER7kkKMy+xAOnD+Ly
+         qHwBWnVKN/nxA2rJZQVQoTUMShNMcxGyYUImC3na2+5UOlF0Ix8IM2fphRY0a+ikd3he
+         QBlvkQ6mJe5ebqZpqLrzhVsy1Vk8n6Dtj3LR4pEis+1bpkM8dbd//dsTz9At+Rn3b4R0
+         AV1A==
+X-Gm-Message-State: AOAM530wApsqXojdrZGtztMQWKsNkKzlar4f0tJ4yiNOTaR1oiLCau3L
+        UNB9mFPQkiqzY8xVBMzN/x0=
+X-Google-Smtp-Source: ABdhPJws100GEXO8VJoudjq/JU8ylyAC9G/2T2ozuekoGXQnoiSSFbbidajX0sTKjRXP8SKt9PCiIA==
+X-Received: by 2002:adf:f48d:: with SMTP id l13mr11505879wro.43.1597606080602;
+        Sun, 16 Aug 2020 12:28:00 -0700 (PDT)
+Received: from tsnow ([94.159.146.190])
+        by smtp.gmail.com with ESMTPSA id r11sm26917543wrw.78.2020.08.16.12.24.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Aug 2020 12:28:00 -0700 (PDT)
+Date:   Sun, 16 Aug 2020 22:24:22 +0300
+From:   Tomer Samara <tomersamara98@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Riley Andrews <riandrews@android.com>,
+        Laura Abbott <labbott@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        devel@driverdev.osuosl.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/4] staging: android: Add error handling to
+ ion_page_pool_shrink
+Message-ID: <73d1b8b904ae867f59e7ada14c3fb90e27f12bbb.1597602783.git.tomersamara98@gmail.com>
+References: <cover.1597602783.git.tomersamara98@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <MEsGWB_--3-2@tutanota.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1597602783.git.tomersamara98@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cameron,
+Add error check to ion_page_pool_shrink after calling
+ion_page_pool_remove, due to converting BUG_ON to WARN_ON.
 
-Use plain text mode for patches.
+Signed-off-by: Tomer Samara <tomersamara98@gmail.com>
+---
+ drivers/staging/android/ion/ion_page_pool.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Before you introduce a new compatible string, your patch serie must
-change the documents first in version 2.
-See:
-
-dwc3.txt
-rockchip,dwc3.txt
-
-(TODO but not now) Both documents are in need for a conversion to yaml.
-
-Also sort nodes without reg alphabetically in rk3328-rock64.dts.
-
-&u2phy {}
-&uart2 {}
-&usb20_otg {}
-&usbdrd3 {}
-&usbdrd_dwc3 {}
-&usb_host0_ehci {}
-&usb_host0_ohci {}
-
-On 8/16/20 7:16 PM, Cameron Nemo wrote:
-> Add a compatible to be hooked into by the Rockchip rk3328 device tree.
-> 
-> The rk3399 compatible cannot be reused because the rk3328 SoCs may
-> require a specialized driver in the future, and old device trees must
-> remain commpatible with newer kernels.
-> 
-> Signed-off-by: Cameron Nemo <cnemo@tutanota.com>
-> ---
-> drivers/usb/dwc3/dwc3-of-simple.c | 4 +++-
-> 1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-of-simple.c
-> index 7df115012935..54f38e434028 100644
-> --- a/drivers/usb/dwc3/dwc3-of-simple.c
-> +++ b/drivers/usb/dwc3/dwc3-of-simple.c
-> @@ -49,7 +49,8 @@ static int dwc3_of_simple_probe(struct platform_device *pdev)
-> * Some controllers need to toggle the usb3-otg reset before trying to
-> * initialize the PHY, otherwise the PHY times out.
-> */
-> -	if (of_device_is_compatible(np, "rockchip,rk3399-dwc3"))
-
-> +	if (of_device_is_compatible(np, "rockchip,rk3399-dwc3") ||
-> +	    of_device_is_compatible(np, "rockchip,rk3328-dwc3"))
-
-sort alphabetically.
-
-> simple->need_reset = true;
-> 
-> simple->resets = of_reset_control_array_get(np, false, true,
-> @@ -171,6 +172,7 @@ static const struct dev_pm_ops dwc3_of_simple_dev_pm_ops = {
-> };
-> 
-> static const struct of_device_id of_dwc3_simple_match[] = {
-> +	{ .compatible = "rockchip,rk3328-dwc3" },
-> { .compatible = "rockchip,rk3399-dwc3" },
-> { .compatible = "xlnx,zynqmp-dwc3" },
-> { .compatible = "cavium,octeon-7130-usb-uctl" },
-> --
-> 2.28.0
-> 
-> 
-> 
+diff --git a/drivers/staging/android/ion/ion_page_pool.c b/drivers/staging/android/ion/ion_page_pool.c
+index c1b9eda35c96..031550473000 100644
+--- a/drivers/staging/android/ion/ion_page_pool.c
++++ b/drivers/staging/android/ion/ion_page_pool.c
+@@ -128,6 +128,8 @@ int ion_page_pool_shrink(struct ion_page_pool *pool, gfp_t gfp_mask,
+ 			break;
+ 		}
+ 		mutex_unlock(&pool->mutex);
++		if (!page)
++			break;
+ 		ion_page_pool_free_pages(pool, page);
+ 		freed += (1 << pool->order);
+ 	}
+-- 
+2.25.1
 
