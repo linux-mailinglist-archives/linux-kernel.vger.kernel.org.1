@@ -2,126 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DD22457BD
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 14:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B22D2457BF
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 14:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729033AbgHPMy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 08:54:29 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:48937 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728737AbgHPMyU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 08:54:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597582458;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8nxqR9uPQACL0xkU7YbF8gHsqM4mKp3ngfuFmHvhdpc=;
-        b=iltL6dXYvDzfuq0TGdr6P2uiIemS3RHnXJC8Uqgu1FdvoH4jFQ0jNFBWuHcX+p/YUfoX+d
-        pVBnFsvkRnomBV9ju2dT+EnTduFkM4FKoq5QiBqpbtoVYL4kJJJPckEGZuC80XdGbGFjbw
-        O9drQkROq+JvgJ1/n6V52qa/+Bj2+1A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-397-YGA3H13dNmCfnHW-TTGgFw-1; Sun, 16 Aug 2020 08:54:14 -0400
-X-MC-Unique: YGA3H13dNmCfnHW-TTGgFw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A26E802B47;
-        Sun, 16 Aug 2020 12:54:12 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-112-43.ams2.redhat.com [10.36.112.43])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1EEE16E72F;
-        Sun, 16 Aug 2020 12:54:06 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Baoquan He <bhe@redhat.com>
-Subject: [PATCH v5 6/6] mm: document semantics of ZONE_MOVABLE
-Date:   Sun, 16 Aug 2020 14:53:33 +0200
-Message-Id: <20200816125333.7434-7-david@redhat.com>
-In-Reply-To: <20200816125333.7434-1-david@redhat.com>
-References: <20200816125333.7434-1-david@redhat.com>
+        id S1729031AbgHPMzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 08:55:21 -0400
+Received: from mout.gmx.net ([212.227.15.18]:49983 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726717AbgHPMzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 Aug 2020 08:55:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1597582482;
+        bh=Ia4FWP2nK5MD+2PSWX4oQICJvy6/O83E4cXk0AAg0/Y=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=gCcwTyQCDwd1/w8Pt1jq1lrJd2IjnzlZVZKfXZRpsa5S+5Km+u8P8CqhdBUdoFZJc
+         A9oFxpru3QEN5TRJxrWu71GDc11ttkOe1Qur5hfYFPT5Az7xbsm/NLaEIYnXy39bGN
+         dnSbRVIw7AKzhlTXstMN/4JxQC+k5Z07jRwdRP7c=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([5.146.195.151]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M1Ycr-1k5MVd2GSJ-0034nf; Sun, 16
+ Aug 2020 14:54:42 +0200
+Date:   Sun, 16 Aug 2020 14:54:41 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        Anson.Huang@nxp.com, marcel.ziswiler@toradex.com,
+        sebastien.szymanski@armadeus.com, rjones@gateworks.com,
+        leoyang.li@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        j.neuschaefer@gmx.net, letux-kernel@openphoenux.org
+Subject: Re: [PATCH RFC 2/2] ARM: dts: imx: add devicetree for Tolino Shine 2
+ HD
+Message-ID: <20200816125247.GA103070@latitude>
+References: <20200815193336.21598-1-andreas@kemnade.info>
+ <20200815193336.21598-3-andreas@kemnade.info>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="H+4ONPRPur6+Ovig"
+Content-Disposition: inline
+In-Reply-To: <20200815193336.21598-3-andreas@kemnade.info>
+X-Provags-ID: V03:K1:1RTQxrK+hy36BCZaHxUP0jZ+1j5TNtLnJOdYLY48Gz48YMrBHPY
+ PKcq0EtT12y6EOReemwcoHAE4ji8lLFnIj+WXyiXcN+vbww4r+tp/kDjuj8D/jR/rx1/8Nj
+ yC6nXFPMD0bk9+FWO8pedMb7hlQtpOGvbDw5BvlLRRaQI9Ib/nfMpIUltGncPvnHI6uX7cV
+ F1iOZlL6vSHye95vzG/vw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xnuX2zYEO6Q=:xHQWSUPObfA6uuyfBZmDZf
+ 2GRIGOJiKEhKICQlqYIp+5gRJqLNolQtZQoQzgcc4GsuyTmhzvPc6uneQKNoZcC0P7h7zMj6R
+ D6yySqhKWK0Z+od2cqUZa2bJmkjQO0kfIFYoq9UUYHv1WW/Wfcx7qPA24hH9Kc8+iw4iLLHDj
+ cJ86xcsvAxxSUyx5kAINTOG79W8q5+LvrXSbaw8KgP4pZraVrxqDTPOZWM3wsPNI8buKIe7i8
+ mUAV9BSf1M6GNZB1X36Kee8O5xk2KuZ66SMbApAEY8VyPHoQmbaTlubQle2pTlnoGG11Rm5Ti
+ t/P5e/SKlhw89l/Gu9pLhWFUTqq/sZ6sZRU9Q8XLPZCa1MeuRapdtUqY+F2uH34MZxCAZAVHJ
+ kwxI7JtK5yjfszptFoSUvsyitOy7A1STZ9YqSCrqq6tt/2bNC2jAG+vaZRh4wMM1xLEgJzBxe
+ aA7GbcdBpCHd/liH2PdNqHnAygnISKVNWXkmMzQZ/QYLRxtAHTM60X1m5CVyjRyVJ7+gP02VG
+ uZMVPmEnl6GJkLKgOiWFWkCbQLIaac3JMA3U0n5XNfxoBq2I9ogI4XYEPFDDrCSKfQ2owN5bs
+ ZislQc5KnDi56u6goBslQFw3v9kFATSa5aHDlxvFgdbSeUe3bSyqogXMxxY04g5gyFv75zkVs
+ li4Fye4mLxoR6ogFcY60b8nNOrfq2dxDdeiammzz8NBrP3fmpkMISyIt+eeI9+Q6LaxjM6+Ky
+ Sb7Y523GfCyXiOAWjltzU/AW/+t2gaVf1pHp+GhvxIlJg1PD6r1PTGl09GM11mLC9EJfzFsxX
+ 9zZ5noNmMkNkPmwEJVmZuprPlNsGeJBkUqOFo735m40S3COaYEMM/J7D4gf9juEK7oi/3Hp/2
+ 9E3vGX0NOxzsipVEKW+lByv1J6XaZX933WzwK6Ve3GrHIGrrtiOq8xEM2N1vFq4K6f5v2qVvp
+ 3jQYYkUHKX5GVE/sYYB6In+WLc3JjPKU3CefTZX+l4b1sXcSuUxVjV9hn2pkCtPjJwj1a8meA
+ /29gLSp9nvpg9ia+y1IGo4Sysq5pI3vqN+8Pdz/CzCQND7OX0718IY9wgBV1BhJTRTKpei3LT
+ 3EMjBYAMia/crBuRyl+kNLjHqB8o3WYxstQ14LZYUv+a9U1JqQC96nKhkBUu2pbx5giIZioVE
+ rwA/I43g+g9RlqfuYWNL5JQEeFByKrOupzSylHXWCglXLcwPvgVvzQ6nY7rDQnid22WBmAcy9
+ WKF4R4yWVS+wu5YQllt94iRCuPPJOV05bvYq/jA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's document what ZONE_MOVABLE means, how it's used, and which special
-cases we have regarding unmovable pages (memory offlining vs. migration /
-allocations).
 
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Michael S. Tsirkin <mst@redhat.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Cc: Baoquan He <bhe@redhat.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/mmzone.h | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+--H+4ONPRPur6+Ovig
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index f6f884970511d..2456fcbaba152 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -372,6 +372,41 @@ enum zone_type {
- 	 */
- 	ZONE_HIGHMEM,
- #endif
-+	/*
-+	 * ZONE_MOVABLE is similar to ZONE_NORMAL, except that it contains
-+	 * movable pages with few exceptional cases described below. Main use
-+	 * cases for ZONE_MOVABLE are to make memory offlining/unplug more
-+	 * likely to succeed, and to locally limit unmovable allocations - e.g.,
-+	 * to increase the number of THP/huge pages. Notable special cases are:
-+	 *
-+	 * 1. Pinned pages: (long-term) pinning of movable pages might
-+	 *    essentially turn such pages unmovable. Memory offlining might
-+	 *    retry a long time.
-+	 * 2. memblock allocations: kernelcore/movablecore setups might create
-+	 *    situations where ZONE_MOVABLE contains unmovable allocations
-+	 *    after boot. Memory offlining and allocations fail early.
-+	 * 3. Memory holes: kernelcore/movablecore setups might create very rare
-+	 *    situations where ZONE_MOVABLE contains memory holes after boot,
-+	 *    for example, if we have sections that are only partially
-+	 *    populated. Memory offlining and allocations fail early.
-+	 * 4. PG_hwpoison pages: while poisoned pages can be skipped during
-+	 *    memory offlining, such pages cannot be allocated.
-+	 * 5. Unmovable PG_offline pages: in paravirtualized environments,
-+	 *    hotplugged memory blocks might only partially be managed by the
-+	 *    buddy (e.g., via XEN-balloon, Hyper-V balloon, virtio-mem). The
-+	 *    parts not manged by the buddy are unmovable PG_offline pages. In
-+	 *    some cases (virtio-mem), such pages can be skipped during
-+	 *    memory offlining, however, cannot be moved/allocated. These
-+	 *    techniques might use alloc_contig_range() to hide previously
-+	 *    exposed pages from the buddy again (e.g., to implement some sort
-+	 *    of memory unplug in virtio-mem).
-+	 *
-+	 * In general, no unmovable allocations that degrade memory offlining
-+	 * should end up in ZONE_MOVABLE. Allocators (like alloc_contig_range())
-+	 * have to expect that migrating pages in ZONE_MOVABLE can fail (even
-+	 * if has_unmovable_pages() states that there are no unmovable pages,
-+	 * there can be false negatives).
-+	 */
- 	ZONE_MOVABLE,
- #ifdef CONFIG_ZONE_DEVICE
- 	ZONE_DEVICE,
--- 
-2.26.2
+On Sat, Aug 15, 2020 at 09:33:36PM +0200, Andreas Kemnade wrote:
+> This adds a devicetree for the Tolino Shine 2 HD Ebook reader. It is based
+> on boards marked with "37NB-E60QF0+4A2". It is equipped with an i.MX6SL
+> SoC.
+>=20
+> Expected to work:
+> - Buttons
+> - Wifi
+> - Touchscreen
+> - LED
+> - uSD
+> - USB
+> - RTC
+>=20
+> Not working due to missing drivers:
+> - Backlight (requires NTXEC driver)
+> - EPD
+>=20
+> Not working due to unknown reasons:
+> - deep sleep (echo standby >/sys/power/state works),
+>   wakeup fails when imx_gpc_pre_suspend(true) was called.
+>=20
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> ---
+> Reason for RFC: The suspend trouble might be caused by bad devicetree.
+> But as the devicetree is already useful I decided to submit it.
+[...]
+> +++ b/arch/arm/boot/dts/imx6sl-tolino-shine2hd.dts
+> @@ -0,0 +1,582 @@
+> +// SPDX-License-Identifier: (GPL-2.0)
 
+I don't think the parentheses are required when you don't have a logical
+operator (OR) in the SPDX expression.
+
+> +&i2c1 {
+> +	pinctrl-names =3D "default","sleep";
+> +	pinctrl-0 =3D <&pinctrl_i2c1>;
+> +	pinctrl-1 =3D <&pinctrl_i2c1_sleep>;
+> +	status =3D "okay";
+> +
+> +	/* TODO: embedded controller at 0x43 (driver missing) */
+
+Sorry for the delay, BTW. I'm still (slowly) working on v2.
+
+> +	ricoh619: pmic@32 {
+> +		compatible =3D "ricoh,rc5t619";
+> +		pinctrl-names =3D "default";
+> +		pinctrl-0 =3D <&pinctrl_ricoh_gpio>;
+> +		reg =3D <0x32>;
+> +		interrupt-parent =3D <&gpio5>;
+> +		interrupts =3D <11 IRQ_TYPE_EDGE_FALLING>;
+> +		system-power-controller;
+> +
+> +		regulators {
+
+How did you derive the regulator voltages?
+
+> +	pinctrl_hog: hoggrp {
+> +		fsl,pins =3D <
+> +			MX6SL_PAD_LCD_DAT0__GPIO2_IO20	0x79
+> +			MX6SL_PAD_LCD_DAT1__GPIO2_IO21	0x79
+> +			MX6SL_PAD_LCD_DAT2__GPIO2_IO22	0x79
+> +			MX6SL_PAD_LCD_DAT3__GPIO2_IO23	0x79
+> +			MX6SL_PAD_LCD_DAT4__GPIO2_IO24	0x79
+> +			MX6SL_PAD_LCD_DAT5__GPIO2_IO25	0x79
+> +			MX6SL_PAD_LCD_DAT6__GPIO2_IO26	0x79
+> +			MX6SL_PAD_LCD_DAT7__GPIO2_IO27	0x79
+> +			MX6SL_PAD_LCD_DAT8__GPIO2_IO28	0x79
+> +			MX6SL_PAD_LCD_DAT9__GPIO2_IO29	0x79
+> +			MX6SL_PAD_LCD_DAT10__GPIO2_IO30	0x79
+> +			MX6SL_PAD_LCD_DAT11__GPIO2_IO31	0x79
+> +			MX6SL_PAD_LCD_DAT12__GPIO3_IO00	0x79
+> +			MX6SL_PAD_LCD_DAT13__GPIO3_IO01	0x79
+> +			MX6SL_PAD_LCD_DAT14__GPIO3_IO02	0x79
+> +			MX6SL_PAD_LCD_DAT15__GPIO3_IO03	0x79
+> +			MX6SL_PAD_LCD_DAT16__GPIO3_IO04	0x79
+> +			MX6SL_PAD_LCD_DAT17__GPIO3_IO05	0x79
+> +			MX6SL_PAD_LCD_DAT18__GPIO3_IO06	0x79
+> +			MX6SL_PAD_LCD_DAT19__GPIO3_IO07	0x79
+> +			MX6SL_PAD_LCD_DAT20__GPIO3_IO08	0x79
+> +			MX6SL_PAD_LCD_DAT21__GPIO3_IO09	0x79
+> +			MX6SL_PAD_LCD_DAT22__GPIO3_IO10	0x79
+> +			MX6SL_PAD_LCD_DAT23__GPIO3_IO11	0x79
+> +			MX6SL_PAD_LCD_CLK__GPIO2_IO15		0x79
+> +			MX6SL_PAD_LCD_ENABLE__GPIO2_IO16	0x79
+> +			MX6SL_PAD_LCD_HSYNC__GPIO2_IO17	0x79
+> +			MX6SL_PAD_LCD_VSYNC__GPIO2_IO18	0x79
+> +			MX6SL_PAD_LCD_RESET__GPIO2_IO19	0x79
+> +			MX6SL_PAD_KEY_COL3__GPIO3_IO30		0x79
+> +			MX6SL_PAD_KEY_ROW7__GPIO4_IO07		0x79
+> +			MX6SL_PAD_ECSPI2_MOSI__GPIO4_IO13	0x79
+> +			MX6SL_PAD_KEY_COL5__GPIO4_IO02		0x79
+> +			MX6SL_PAD_KEY_ROW6__GPIO4_IO05		0x79
+> +		>;
+> +	};
+
+Why are there so many hogged pins? Will some of them receive a proper
+configuration once the EPDC driver is implemented?
+
+> +&snvs_rtc {
+> +	/* we are using the RTC in the PMIC, not disabled in imx6sl.dtsi */
+> +	status =3D "disabled";
+
+This comment sounds a bit ambiguous (and this potentially confusing). Perha=
+ps:
+
++	/* we are using the RTC in the PMIC, but this one is not disabled in imx6=
+sl.dtsi */
+
+Or even just:
+
++	/* we are using the RTC in the PMIC */
+
+> +&usdhc2 {
+> +	pinctrl-names =3D "default", "state_100mhz", "state_200mhz", "sleep";
+> +	pinctrl-0 =3D <&pinctrl_usdhc2>;
+> +	pinctrl-1 =3D <&pinctrl_usdhc2_100mhz>;
+> +	pinctrl-2 =3D <&pinctrl_usdhc2_200mhz>;
+> +	pinctrl-3 =3D <&pinctrl_usdhc2_sleep>;
+> +	non-removable;
+> +	status =3D "okay";
+> +};
+
+IMHO, please add a comment saying what this MMC controller is connected
+to (internal storage?).
+
+> +
+> +&usdhc3 {
+> +	pinctrl-names =3D "default", "state_100mhz", "state_200mhz", "sleep";
+> +	pinctrl-0 =3D <&pinctrl_usdhc3>;
+> +	pinctrl-1 =3D <&pinctrl_usdhc3_100mhz>;
+> +	pinctrl-2 =3D <&pinctrl_usdhc3_200mhz>;
+> +	pinctrl-3 =3D <&pinctrl_usdhc3_sleep>;
+> +	vmmc-supply =3D <&reg_wifi>;
+> +	mmc-pwrseq =3D <&wifi_pwrseq>;
+> +	cap-power-off-card;
+> +	non-removable;
+> +	status =3D "okay";
+> +
+> +	/* CyberTan WC121 SDIO WiFi */
+> +};
+
+The HWCONFIG block from my Shine2HD reports RTL8189 as the Wifi chip
+(value 8 at offset 4), and kernel logs from the vendor kernel appear to
+agree that it's a realtek chip, at least (lines prefixed RTL871X).
+
+=46rom my experience with the CyberTan WC121, it has a Broadcom fullmac
+chip inside. Now I wonder where this discrepancy or variability comes
+=66rom.
+
+I guess the SDIO setup can deal with different chips (like Broadcom vs.
+Realtek) as long as the board has been designed to always use the same
+reset/power/etc. lines. I don't see any branching based on the 'Wifi'
+HWCONFIG entry in the vendor kernel, so I guess that's the case.
+
+In any case, it might be nice to also note the chip used inside the WLAN
+package (e.g. BCM43362), to make it easier for interested users to
+choose the right drivers.
+
+
+
+Kind regards,
+Jonathan Neusch=C3=A4fer
+
+--H+4ONPRPur6+Ovig
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl85LJEACgkQCDBEmo7z
+X9uWBA/+J9BFqZGeJiMiLVaVemfQQm435xVZPl+LrogqmM/KvNHcn3WDyWDaH4yr
+NLEQvNPdoXH1OGt0DHwrSPFpQCXyebKtcmWMybSKqYGKtJIsBxUAZThugqoWAcmI
+ifsaWMV3rvFsrdc1KPooYxyqTo2Mg6i6Xt5QFRvpYzgtnyhdfkKk0ihkdn7nwSf1
+DiXaFahOkddSp/0PevI1A8ftjDpTgBTvGl/uex1+VILgyAfWJiskZqX7QxlsSZk7
+urJwlNQUF1tcmKsPa9enSQqETrajVgqhVo5qy7dSpIhYKv/SRGSftFbII0nP54mr
+ERtwyZkCf3RIO+D/DWyubT282B4q7QqQRlkrcMXNoIDiXB1fCWAkO2fG9DEYH36R
+Xpv5wAntbyx332SYwJ4/P2l/6DpywwEfKeBStu1IK1rDYexS1y0uan1hbX0HwNZs
+JQUKeN7llxo8NuCoGI/S6ktfpxTNaz2KjGGmU0DFa1LGZIUXhpoDu0QPkQSidKtM
++wVng4mI9WuzR9xyHoHK9x8Zmii7G0lfosfiloJzq2b4hOc/wmtWoV5MKsNOaT36
+Q1KREnWsAUDXAdNmck8oI78RntpWwcO4YRGyiNYwCeszg6f742Ly7BDXFrBhIRMS
+k4s0kpPw4OfYljeRH/cQZZttTF4A1U3/USOHe6Jq0dR8L0NHkgI=
+=RA6Q
+-----END PGP SIGNATURE-----
+
+--H+4ONPRPur6+Ovig--
