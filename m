@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136F2245E97
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BC4245EC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgHQH4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 03:56:30 -0400
-Received: from mga18.intel.com ([134.134.136.126]:62698 "EHLO mga18.intel.com"
+        id S1726740AbgHQIEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:04:53 -0400
+Received: from mga09.intel.com ([134.134.136.24]:25796 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726089AbgHQH42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 03:56:28 -0400
-IronPort-SDR: Q1kXtXqJdmQggvM2jQNZh21ddspQAT1gfb08JkKlFx3OLeowNxsuvsIosIYj9P6OXa9jRyHS5L
- Ayg8HJ76EdVg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9715"; a="142279040"
+        id S1725765AbgHQIEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 04:04:50 -0400
+IronPort-SDR: MIdmN3AFLOgcW6xnKsv80xa5teyLynIWGkuSf5tqcxPW2QJJ4kJZfNKZa6ZyaB+JHtWI/aXNAy
+ KdnDDJxcX9Og==
+X-IronPort-AV: E=McAfee;i="6000,8403,9715"; a="155749613"
 X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; 
-   d="scan'208";a="142279040"
+   d="scan'208";a="155749613"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 00:56:27 -0700
-IronPort-SDR: GIV0e/9tzlgXRX2LtHPbhmGQ2CMRs69Hd8rw2avnvcnBmzE/cTsA1VRPY2bJ74sbvq8ueoMHo+
- 5+7zQN0U0KLg==
-X-ExtLoop1: 1
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 01:04:50 -0700
+IronPort-SDR: 0nl6vz9Rjl4rJnPfgZ0q1hQmESMNwwmQ4oIgs8HFMGwigWSXzpstNK9Q34hrPdluEDXcYq8kQi
+ W4J/9RVgqBNw==
 X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; 
-   d="scan'208";a="440790871"
-Received: from lkp-server02.sh.intel.com (HELO 2f0d8b563e65) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 17 Aug 2020 00:56:25 -0700
-Received: from kbuild by 2f0d8b563e65 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k7a0H-0000QX-Ax; Mon, 17 Aug 2020 07:56:25 +0000
-Date:   Mon, 17 Aug 2020 15:55:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>, axboe@kernel.dk
-Cc:     kbuild-all@lists.01.org, ming.lei@redhat.com, hch@lst.de,
-        baolin.wang@linux.alibaba.com, baolin.wang7@gmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] block: fix boolconv.cocci warnings
-Message-ID: <20200817075559.GA149398@7edacc24721b>
-References: <5b932aa51fc2b46c381d7b83d591a6ddbf05b199.1597637287.git.baolin.wang@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b932aa51fc2b46c381d7b83d591a6ddbf05b199.1597637287.git.baolin.wang@linux.alibaba.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+   d="scan'208";a="471339988"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 01:04:46 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
+        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        mengdong.lin@intel.com, bard.liao@intel.com
+Subject: [PATCH v2] soundwire: SDCA: add helper macro to access controls
+Date:   Mon, 17 Aug 2020 04:10:58 +0800
+Message-Id: <20200816201058.9687-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-block/blk-mq-sched.c:404:39-44: WARNING: conversion to bool not needed here
+The upcoming SDCA (SoundWire Device Class Audio) specification defines
+a hiearchical encoding to interface with Class-defined capabilities,
+based on which audio function, entity, control and channel being used.
 
- Remove unneeded conversion to bool
+The specification is not yet accessible to the general public but this
+information is released with explicit permission from the MIPI Board
+to avoid delays with SDCA support on Linux platforms.
 
-Semantic patch information:
- Relational and logical operators evaluate to bool,
- explicit conversion is overly verbose and unneeded.
-
-Generated by: scripts/coccinelle/misc/boolconv.cocci
-
-CC: Baolin Wang <baolin.wang@linux.alibaba.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
 
-url:    https://github.com/0day-ci/linux/commits/Baolin-Wang/Some-clean-ups-for-bio-merge/20200817-121114
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
+Changelog:
 
-Please take the patch only if it's a positive warning. Thanks!
+v2:
+ - add SDW_SDCA_MBQ_CTL
 
- blk-mq-sched.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+---
+ include/linux/soundwire/sdw_registers.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/block/blk-mq-sched.c
-+++ b/block/blk-mq-sched.c
-@@ -401,7 +401,7 @@ bool blk_mq_bio_list_merge(struct reques
- 		if (merge == BIO_MERGE_NONE)
- 			continue;
+diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
+index 5d3c271af7d1..4517c0f65b4f 100644
+--- a/include/linux/soundwire/sdw_registers.h
++++ b/include/linux/soundwire/sdw_registers.h
+@@ -305,4 +305,16 @@
+ #define SDW_CASC_PORT_MASK_INTSTAT3		1
+ #define SDW_CASC_PORT_REG_OFFSET_INTSTAT3	2
  
--		return merge == BIO_MERGE_OK ? true: false;
-+		return merge == BIO_MERGE_OK;
- 	}
- 
- 	return false;
++/* v1.2 device - SDCA address mapping */
++#define SDW_SDCA_CTL(fun, ent, ctl, ch)		(BIT(30) |			\
++						 (((fun) & 0x7) << 22) |	\
++						 (((ent) & 0x40) << 15) |	\
++						 (((ent) & 0x3f) << 7) |	\
++						 (((ctl) & 0x30) << 15) |	\
++						 (((ctl) & 0x0f) << 3) |	\
++						 (((ch) & 0x38) << 12) |	\
++						 ((ch) & 0x07))
++
++#define SDW_SDCA_MBQ_CTL(reg)			((reg) | BIT(13))
++
+ #endif /* __SDW_REGISTERS_H */
+-- 
+2.17.1
+
