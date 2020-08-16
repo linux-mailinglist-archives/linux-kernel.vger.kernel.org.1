@@ -2,180 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A332456E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 11:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DFF2456EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 11:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbgHPJIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 05:08:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62622 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727913AbgHPJIC (ORCPT
+        id S1728464AbgHPJJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 05:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726867AbgHPJJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 05:08:02 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07G90wr7057133;
-        Sun, 16 Aug 2020 05:07:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=kB5yi03LeL9Hvqd24hOEuzwD4p0PDCpiYqZ6RVgK6VQ=;
- b=okcL2Dh7vF/7rer7I+UTpiyPc4iB487EdjpElsaabflMyyfVc0pYpnjSlaPmkrTes5P2
- Bf8bDyiY0fzsV7arHk2lJhoDu/G9nwiMN1Jh6ruwRN3//IaVGLcIpzTEOeb9A2zGtc6j
- ckZDq7CvFCS6wQYB25ZgLZp3oUthROXfIJnlBhuKghg+0hReLbYWy0uP5O/sjygpSLav
- VrxemF6sRqC1uW4+Y1K+Q7Ll0sb6GFc2tQmPQd5Cv/SHaTzUKvxYUTR0l6RTYQw7WE22
- kgtHks6oUE79YE+ViDYdhtFpkXtkY4YSCQ9MU8v7EtX+TwbApvt/RouArDrrTdOijfPC Yg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32xxghktp8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 16 Aug 2020 05:07:53 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07G91OYb058074;
-        Sun, 16 Aug 2020 05:07:53 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32xxghktns-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 16 Aug 2020 05:07:53 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07G96YOh026732;
-        Sun, 16 Aug 2020 09:07:51 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma05fra.de.ibm.com with ESMTP id 32x7b80nqx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 16 Aug 2020 09:07:51 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07G97ma425493998
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 16 Aug 2020 09:07:48 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0BE964C052;
-        Sun, 16 Aug 2020 09:07:48 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8410A4C040;
-        Sun, 16 Aug 2020 09:07:43 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.85.90.146])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sun, 16 Aug 2020 09:07:43 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     acme@kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, pc@us.ibm.com,
-        jolsa@redhat.com, namhyung@kernel.org, ak@linux.intel.com,
-        yao.jin@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, irogers@google.com,
-        maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
-        anju@linux.vnet.ibm.com, kan.liang@linux.intel.com,
-        nasastry@in.ibm.com, kjain@linux.ibm.com
-Subject: [PATCH v5 3/3] perf/tools/pmu_events/powerpc: Add hv_24x7 core level metric events
-Date:   Sun, 16 Aug 2020 14:37:19 +0530
-Message-Id: <20200816090719.72018-4-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200816090719.72018-1-kjain@linux.ibm.com>
-References: <20200816090719.72018-1-kjain@linux.ibm.com>
+        Sun, 16 Aug 2020 05:09:17 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A06C061756;
+        Sun, 16 Aug 2020 02:09:17 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id k18so6666966pfp.7;
+        Sun, 16 Aug 2020 02:09:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nrJg5dHzARiyIgQKcQeBmx5MsP72TzRX4UN4jKQ0FKU=;
+        b=WLvoIRIzkAfofpEParlRFy972z69/RbpgtcgqW5BIqiYhP/rvrHlxmqvSHGCq6cXxh
+         KWCKFOBQJNHewsjEkigYGaGoIeRmGo36LpOp6988mQpaJulfeI8Kn7aWXEALzOk2YgNe
+         YzrnK6UeGwiFiMy7u81dbGKyMq3cgKctsyCaY1QzU1VztYbPgmoJwOz6mYd2rCkNdExZ
+         C3kQKTj/iP7gJoam9/wSfc31fblhQsD+6XCPRM7fzCiEHYeEN6WkS3e2P1o7Gagyteey
+         61w+j3zr6jrdEKg29APNHXKmxMAIX0OP6IM5cVYB5usU2he5EXr8z3W2k7V4CFuRAOtM
+         Fz7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nrJg5dHzARiyIgQKcQeBmx5MsP72TzRX4UN4jKQ0FKU=;
+        b=OvRSCGCBSUdWhgo5fSgbMg7/LkHhS9mBNNzOPuIelnQ9NHjJDNW2yavI0xaGRxivhN
+         zr2su3MFu1hCNWhPXRx8Y6f60vtbj2mNz9aZCNpplgLY72gjrZ+WxXGigmI73zM+qz8L
+         acBiUdWXaY/3zsdorVQq+gTCGYjL5a68lrNUjf7NCQTQr8ENElavHV7RhO5ywAt75UHk
+         x+9TvY2u2OjnGPuI4qCuluxpKBB6qI3QGuN5IfZeKHqu0lVN8wbXi7MYGZhRE60Fxv45
+         Ztf41Vf6aF7knDH1MFSuS6UtZ/vT3OEEVR6yLK4ysBdkHgfyctJ1OMYe/hPkuq0bnFLx
+         HFuQ==
+X-Gm-Message-State: AOAM532Dnttc6u8dlgwo/8FgYH7XWHQK3+3JvMEhqge+fx4SqbvHzQc4
+        zYXtNzOHnRr78eyLEBJdzR0cTcK9H8Q=
+X-Google-Smtp-Source: ABdhPJyzIFpwRi/Ye1hyQXChNaeuAzQ4Swk/DOVybSf+u7iXsUyYbQPKNoluotDUjitLamCitTCoeQ==
+X-Received: by 2002:a63:cc49:: with SMTP id q9mr6397442pgi.390.1597568956323;
+        Sun, 16 Aug 2020 02:09:16 -0700 (PDT)
+Received: from bobo.ozlabs.ibm.com (193-116-193-175.tpgi.com.au. [193.116.193.175])
+        by smtp.gmail.com with ESMTPSA id o19sm12768369pjs.8.2020.08.16.02.09.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Aug 2020 02:09:15 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linux-mm@kvack.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Zefan Li <lizefan@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Subject: [PATCH v4 0/8] huge vmalloc mappings
+Date:   Sun, 16 Aug 2020 19:08:56 +1000
+Message-Id: <20200816090904.83947-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-16_02:2020-08-14,2020-08-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- malwarescore=0 impostorscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999
- spamscore=0 suspectscore=1 lowpriorityscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008160069
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds hv_24x7 core level events in nest_metric.json file
-and also add PerChip/PerCore field in metric events.
+Let's try again.
 
-Result:
+Thanks,
+Nick
 
-power9 platform:
+Since v3:
+- Fixed an off-by-one bug in a loop
+- Fix !CONFIG_HAVE_ARCH_HUGE_VMAP build fail
+- Hopefully this time fix the arm64 vmap stack bug, thanks Jonathan
+  Cameron for debugging the cause of this (hopefully).
 
-command:# ./perf stat --metric-only -M PowerBUS_Frequency -C 0 -I 1000
-     1.000070601                        1.9                        2.0
-     2.000253881                        2.0                        1.9
-     3.000364810                        2.0                        2.0
+Since v2:
+- Rebased on vmalloc cleanups, split series into simpler pieces.
+- Fixed several compile errors and warnings
+- Keep the page array and accounting in small page units because
+  struct vm_struct is an interface (this should fix x86 vmap stack debug
+  assert). [Thanks Zefan]
 
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Acked-by: Ian Rogers <irogers@google.com>
----
- .../arch/powerpc/power9/nest_metrics.json     | 35 ++++++++++++-------
- 1 file changed, 22 insertions(+), 13 deletions(-)
+Nicholas Piggin (8):
+  mm/vmalloc: fix vmalloc_to_page for huge vmap mappings
+  mm: apply_to_pte_range warn and fail if a large pte is encountered
+  mm/vmalloc: rename vmap_*_range vmap_pages_*_range
+  lib/ioremap: rename ioremap_*_range to vmap_*_range
+  mm: HUGE_VMAP arch support cleanup
+  mm: Move vmap_range from lib/ioremap.c to mm/vmalloc.c
+  mm/vmalloc: add vmap_range_noflush variant
+  mm/vmalloc: Hugepage vmalloc mappings
 
-diff --git a/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-index 8383a37647ad..7a5d1bf543f8 100644
---- a/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-+++ b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-@@ -1,37 +1,46 @@
- [
-     {
--        "MetricExpr": "(hv_24x7@PM_MCS01_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS01_128B_RD_DISP_PORT23\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT23\\,chip\\=?@)",
--        "MetricName": "Memory_RD_BW_Chip",
--        "MetricGroup": "Memory_BW",
--        "ScaleUnit": "1.6e-2MB"
-+	"MetricExpr": "(hv_24x7@PM_MCS01_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS01_128B_RD_DISP_PORT23\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT23\\,chip\\=?@)",
-+	"MetricName": "Memory_RD_BW_Chip",
-+	"MetricGroup": "Memory_BW",
-+	"ScaleUnit": "1.6e-2MB",
-+	"AggregationMode": "PerChip"
-     },
-     {
- 	"MetricExpr": "(hv_24x7@PM_MCS01_128B_WR_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS01_128B_WR_DISP_PORT23\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_WR_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_WR_DISP_PORT23\\,chip\\=?@ )",
--        "MetricName": "Memory_WR_BW_Chip",
--        "MetricGroup": "Memory_BW",
--        "ScaleUnit": "1.6e-2MB"
-+	"MetricName": "Memory_WR_BW_Chip",
-+	"MetricGroup": "Memory_BW",
-+	"ScaleUnit": "1.6e-2MB",
-+	"AggregationMode": "PerChip"
-     },
-     {
- 	"MetricExpr": "(hv_24x7@PM_PB_CYC\\,chip\\=?@ )",
--        "MetricName": "PowerBUS_Frequency",
--        "ScaleUnit": "2.5e-7GHz"
-+	"MetricName": "PowerBUS_Frequency",
-+	"ScaleUnit": "2.5e-7GHz",
-+	"AggregationMode": "PerChip"
-+    },
-+    {
-+	"MetricExpr": "(hv_24x7@CPM_CS_32MHZ_CYC\\,domain\\=3\\,core\\=?@ )",
-+	"MetricName": "CPM_CS_32MHZ_CYC",
-+	"ScaleUnit": "1MHz",
-+	"AggregationMode": "PerCore"
-     },
-     {
- 	"MetricExpr" : "nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT01@ + nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT23@",
- 	"MetricName" : "mcs01-read",
--	"MetricGroup" : "memory_bw",
-+	"MetricGroup" : "memory-bandwidth",
- 	"ScaleUnit": "6.1e-5MB"
-     },
-     {
- 	"MetricExpr" : "nest_mcs23_imc@PM_MCS23_128B_RD_DISP_PORT01@ + nest_mcs23_imc@PM_MCS23_128B_RD_DISP_PORT23@",
- 	"MetricName" : "mcs23-read",
--	"MetricGroup" : "memory_bw",
-+	"MetricGroup" : "memory-bandwidth",
- 	"ScaleUnit": "6.1e-5MB"
-     },
-     {
- 	"MetricExpr" : "nest_mcs01_imc@PM_MCS01_128B_WR_DISP_PORT01@ + nest_mcs01_imc@PM_MCS01_128B_WR_DISP_PORT23@",
- 	"MetricName" : "mcs01-write",
--	"MetricGroup" : "memory_bw",
-+	"MetricGroup" : "memory-bandwidth",
- 	"ScaleUnit": "6.1e-5MB"
-     },
-     {
-@@ -48,7 +57,7 @@
-     {
- 	"MetricExpr" : "(nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT01@ + nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT23@ + nest_mcs23_imc@PM_MCS23_128B_RD_DISP_PORT01@ + nest_mcs23_imc@PM_MCS23_128B_RD_DISP_PORT23@ + nest_mcs01_imc@PM_MCS01_128B_WR_DISP_PORT01@ + nest_mcs01_imc@PM_MCS01_128B_WR_DISP_PORT23@ + nest_mcs23_imc@PM_MCS23_128B_WR_DISP_PORT01@ + nest_mcs23_imc@PM_MCS23_128B_WR_DISP_PORT23@)",
- 	"MetricName" : "Memory-bandwidth-MCS",
--	"MetricGroup" : "memory_bw",
-+	"MetricGroup" : "memory-bandwidth",
- 	"ScaleUnit": "6.1e-5MB"
-     }
- ]
+ .../admin-guide/kernel-parameters.txt         |   2 +
+ arch/arm64/mm/mmu.c                           |  12 +-
+ arch/powerpc/mm/book3s64/radix_pgtable.c      |  10 +-
+ arch/x86/mm/ioremap.c                         |  12 +-
+ include/linux/io.h                            |   9 -
+ include/linux/vmalloc.h                       |  13 +
+ init/main.c                                   |   1 -
+ mm/ioremap.c                                  | 231 +--------
+ mm/memory.c                                   |  60 ++-
+ mm/vmalloc.c                                  | 445 +++++++++++++++---
+ 10 files changed, 461 insertions(+), 334 deletions(-)
+
 -- 
-2.26.2
+2.23.0
 
