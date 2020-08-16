@@ -2,129 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806E12457AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 14:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB7D2457B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 14:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgHPMwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 08:52:32 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:6858 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725843AbgHPMw3 (ORCPT
+        id S1728730AbgHPMx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 08:53:59 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50842 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725843AbgHPMxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 08:52:29 -0400
-X-UUID: 4a5fdee5eef341928f4ac76df0d9ce6f-20200816
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=tnCvM0ehaNufpV7eQrvwPu1Df01rjGmSfmECzsOP8Xk=;
-        b=dPd2NzNqCk06Q6vL8lwQei8ZKDIU9IxQNa8kVF4YMFyBDSPKuNmzGsABCm86ZMRD8E4EKkWEh+y9AaVNzByiKWZp11vj5LEG9irkZQKS/UCw7u9EpjvzIuLly9ooFR1fvs/YAhjI9dIN0BogUk6GWJzu3Jhtpn6QBEN2Df/1oYI=;
-X-UUID: 4a5fdee5eef341928f4ac76df0d9ce6f-20200816
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <phil.chang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 115726227; Sun, 16 Aug 2020 20:52:24 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 16 Aug 2020 20:52:23 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 16 Aug 2020 20:52:22 +0800
-From:   Phil Chang <phil.chang@mediatek.com>
-To:     <robin.murphy@arm.com>
-CC:     <alix.wu@mediatek.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <phil.chang@mediatek.com>,
-        <yj.chiang@mediatek.com>
-Subject: Re: Re: [PATCH] ARM64: Setup DMA32 zone size by bootargs
-Date:   Sun, 16 Aug 2020 20:50:34 +0800
-Message-ID: <20200816125033.4565-1-phil.chang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <db255462-7a02-f3a4-075a-5070f630e9d6@arm.com>
-References: <db255462-7a02-f3a4-075a-5070f630e9d6@arm.com>
+        Sun, 16 Aug 2020 08:53:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597582429;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XGLoJ7O+V6ZZmFm5YMkauKx8SWaJ05qtX0s9I5/GzsQ=;
+        b=Zj4/69PM/ok61cQD9hxaj0fZzbu3dunDN6+5bE4XK5eMJdoRZFJcNjamcUPCN4mqa3OPZL
+        Yyz9k+48w+w+YvlLhhvzhrY8mu3DS3+NxD8i8ruQfKxeztvCNd4EYpcdBk2IQNxLDp/ItO
+        GZouSiwmkd2Lkglx5oQsG4AxCLZHEBY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-103-kB4Cn_1BNAaaJmFGj8OAbg-1; Sun, 16 Aug 2020 08:53:44 -0400
+X-MC-Unique: kB4Cn_1BNAaaJmFGj8OAbg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36802801A9D;
+        Sun, 16 Aug 2020 12:53:43 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-112-43.ams2.redhat.com [10.36.112.43])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 108476E72F;
+        Sun, 16 Aug 2020 12:53:33 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>, Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Qian Cai <cai@lca.pw>
+Subject: [PATCH v5 0/6] mm / virtio-mem: support ZONE_MOVABLE
+Date:   Sun, 16 Aug 2020 14:53:27 +0200
+Message-Id: <20200816125333.7434-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pj4gdGhpcyBwYXRjaCBhbGxvd2luZyB0aGUgYXJtNjQgRE1BIHpvbmUgYmUgY29uZmlndXJhYmxl
-Lg0KPj4gDQo+PiBTaWduZWQtb2ZmLWJ5OiBBbGl4IFd1IDxhbGl4Lnd1QG1lZGlhdGVrLmNvbT4N
-Cj4+IFNpZ25lZC1vZmYtYnk6IFlKIENoaWFuZyA8eWouY2hpYW5nQG1lZGlhdGVrLmNvbT4NCj4+
-IFNpZ25lZC1vZmYtYnk6IFBoaWwgQ2hhbmcgPHBoaWwuY2hhbmdAbWVkaWF0ZWsuY29tPg0KPj4g
-LS0tDQo+PiBIaQ0KPj4gDQo+PiBGb3Igc29tZSBkZXZpY2VzLCB0aGUgbWFpbiBtZW1vcnkgc3Bs
-aXQgaW50byAyIHBhcnQgZHVlIHRvIHRoZSBtZW1vcnkgYXJjaGl0ZWN0dXJlLA0KPj4gdGhlIGVm
-ZmljaWVudCBhbmQgbGVzcyBpbmVmZmljaWVudCBwYXJ0Lg0KPj4gT25lIG9mIHRoZSB1c2UgY2Fz
-ZSBpcyBmaW5lLXR1bmUgdGhlIGRtYTMyIHNpemUgdG8gY29udGFpbiBhbGwgdGhlDQo+PiBlZmZp
-Y2llbnQgcGFydCBvZiBtZW1vcnkgYmxvY2sgb24gdGhpcyBraW5kIG9mIGFyY2hpdGVjdHVyZSwN
-Cj4+IGJ1dCBpbiBnZW5lcmFsLCB0aGUgRE1BMzIgem9uZSBzaXplIGlzIGhhcmRjb2RlIHRvIDRH
-Lg0KPg0KPiBUaGUgc29sZSBwb2ludCBvZiBaT05FX0RNQTMyIGlzIHRvIGNvbnRhaW4gYWxsIHRo
-ZSAzMi1iaXQgYWRkcmVzc2FibGUgDQo+IG1lbW9yeSB3aGljaCBpcyBub3QgY292ZXJlZCBieSBa
-T05FX0RNQS4gQXMgc3VjaCB0aGUgb25seSBwb3NzaWJsZSB0aGluZyANCj4gdGhhdCBjb3VsZCBi
-ZSBjb25maWd1cmVkIGlzIHRoZSBzaXplIG9mIFpPTkVfRE1BIChpZiBwcmVzZW50KSwgYW5kIHRo
-aXMgDQo+IHBhdGNoIG1ha2VzIG5vIHNlbnNlLg0KPg0KPiBJZiB5b3Ugd2FudCB0byBkZXNjcmli
-ZSBOVU1BIGNoYXJhY3RlcmlzdGljcywgdXNlIE5VTUEgcHJvcGVydGllcy4gDQo+IEdpdmluZyB1
-c2VycyBmcmVlZG9tIHRvIGJyZWFrIGZ1bmRhbWVudGFsIGFzc3VtcHRpb25zIG9mIHRoZSBETUEg
-bGF5ZXIgDQo+IGJ5IGFyYml0cmFyaWx5IGNoYW5naW5nIHRoZSBtZWFuaW5nIG9mICIzMi1iaXQi
-IGlzIG5vdCBhbiBhcHByb3ByaWF0ZSANCj4gc29sdXRpb24uDQo+DQo+IFJvYmluLg0KDQpIaSBS
-b2Jpbg0KDQpUaGFubmtzIGZvciB5b3VyIHJlcGx5LCBob3cgYWJvdXQgYWRkIGEgY29uZGljdGlv
-biB0bw0KbGltaXQgdGhlIGN1c3RvbWl6ZSBkbWEzMiB6b25lIHNpemUgdW5kZXIgNEcgPw0KDQo+
-PiAgIC4uLi9hZG1pbi1ndWlkZS9rZXJuZWwtcGFyYW1ldGVycy50eHQgICAgICAgICB8ICAzICsr
-DQo+PiAgIGFyY2gvYXJtNjQvaW5jbHVkZS9hc20vbWVtb3J5LmggICAgICAgICAgICAgICB8ICAy
-ICsrDQo+PiAgIGFyY2gvYXJtNjQvbW0vaW5pdC5jICAgICAgICAgICAgICAgICAgICAgICAgICB8
-IDMzICsrKysrKysrKysrKysrKysrLS0NCj4+ICAgMyBmaWxlcyBjaGFuZ2VkLCAzNSBpbnNlcnRp
-b25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPj4gDQo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlv
-bi9hZG1pbi1ndWlkZS9rZXJuZWwtcGFyYW1ldGVycy50eHQgYi9Eb2N1bWVudGF0aW9uL2FkbWlu
-LWd1aWRlL2tlcm5lbC1wYXJhbWV0ZXJzLnR4dA0KPj4gaW5kZXggZmI5NWZhZDgxYzc5Li40NDFh
-ZDNjYjhlZTggMTAwNjQ0DQo+PiAtLS0gYS9Eb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL2tlcm5l
-bC1wYXJhbWV0ZXJzLnR4dA0KPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9rZXJu
-ZWwtcGFyYW1ldGVycy50eHQNCj4+IEBAIC05NTYsNiArOTU2LDkgQEANCj4+ICAgCQkJVGhlIGZp
-bHRlciBjYW4gYmUgZGlzYWJsZWQgb3IgY2hhbmdlZCB0byBhbm90aGVyDQo+PiAgIAkJCWRyaXZl
-ciBsYXRlciB1c2luZyBzeXNmcy4NCj4+ICAgDQo+PiArCWRtYTMyX3pvbmU9bm4JW0tNR10gW0tO
-TCxCT09UXQ0KPj4gKwkJCUZvcmNlcyB0aGUgRE1BMzIgem9uZSBzaXplIG9mIDxubj4gaW4gbWIs
-IGFybTY0IG9ubHkuDQo+PiArDQo+PiAgIAlkcml2ZXJfYXN5bmNfcHJvYmU9ICBbS05MXQ0KPj4g
-ICAJCQlMaXN0IG9mIGRyaXZlciBuYW1lcyB0byBiZSBwcm9iZWQgYXN5bmNocm9ub3VzbHkuDQo+
-PiAgIAkJCUZvcm1hdDogPGRyaXZlcl9uYW1lMT4sPGRyaXZlcl9uYW1lMj4uLi4NCj4+IGRpZmYg
-LS1naXQgYS9hcmNoL2FybTY0L2luY2x1ZGUvYXNtL21lbW9yeS5oIGIvYXJjaC9hcm02NC9pbmNs
-dWRlL2FzbS9tZW1vcnkuaA0KPj4gaW5kZXggYTE4NzFiYjMyYmIxLi4zNzdmMjI1MjYxOGEgMTAw
-NjQ0DQo+PiAtLS0gYS9hcmNoL2FybTY0L2luY2x1ZGUvYXNtL21lbW9yeS5oDQo+PiArKysgYi9h
-cmNoL2FybTY0L2luY2x1ZGUvYXNtL21lbW9yeS5oDQo+PiBAQCAtMTc0LDYgKzE3NCw4IEBAIGV4
-dGVybiB1NjQJCQlraW1hZ2VfdmFkZHI7DQo+PiAgIC8qIHRoZSBvZmZzZXQgYmV0d2VlbiB0aGUg
-a2VybmVsIHZpcnR1YWwgYW5kIHBoeXNpY2FsIG1hcHBpbmdzICovDQo+PiAgIGV4dGVybiB1NjQJ
-CQlraW1hZ2Vfdm9mZnNldDsNCj4+ICAgDQo+PiArZXh0ZXJuIHBoeXNfYWRkcl90CQlhcm1fZG1h
-X3pvbmVfc2l6ZTsNCj4+ICsNCj4+ICAgc3RhdGljIGlubGluZSB1bnNpZ25lZCBsb25nIGthc2xy
-X29mZnNldCh2b2lkKQ0KPj4gICB7DQo+PiAgIAlyZXR1cm4ga2ltYWdlX3ZhZGRyIC0gS0lNQUdF
-X1ZBRERSOw0KPj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQvbW0vaW5pdC5jIGIvYXJjaC9hcm02
-NC9tbS9pbml0LmMNCj4+IGluZGV4IDFlOTNjZmM3YzQ3YS4uNjQyYWIzMjMzOTJjIDEwMDY0NA0K
-Pj4gLS0tIGEvYXJjaC9hcm02NC9tbS9pbml0LmMNCj4+ICsrKyBiL2FyY2gvYXJtNjQvbW0vaW5p
-dC5jDQo+PiBAQCAtNjAsNiArNjAsOSBAQCBFWFBPUlRfU1lNQk9MKHBoeXN2aXJ0X29mZnNldCk7
-DQo+PiAgIHN0cnVjdCBwYWdlICp2bWVtbWFwIF9fcm9fYWZ0ZXJfaW5pdDsNCj4+ICAgRVhQT1JU
-X1NZTUJPTCh2bWVtbWFwKTsNCj4+ICAgDQo+PiArcGh5c19hZGRyX3QgYXJtX2RtYV96b25lX3Np
-emUgX19yb19hZnRlcl9pbml0Ow0KPj4gK0VYUE9SVF9TWU1CT0woYXJtX2RtYV96b25lX3NpemUp
-Ow0KPj4gKw0KPj4gICAvKg0KPj4gICAgKiBXZSBjcmVhdGUgYm90aCBaT05FX0RNQSBhbmQgWk9O
-RV9ETUEzMi4gWk9ORV9ETUEgY292ZXJzIHRoZSBmaXJzdCAxRyBvZg0KPj4gICAgKiBtZW1vcnkg
-YXMgc29tZSBkZXZpY2VzLCBuYW1lbHkgdGhlIFJhc3BiZXJyeSBQaSA0LCBoYXZlIHBlcmlwaGVy
-YWxzIHdpdGgNCj4+IEBAIC0yNDIsNiArMjQ1LDI1IEBAIHN0YXRpYyBpbnQgX19pbml0IGVhcmx5
-X21lbShjaGFyICpwKQ0KPj4gICB9DQo+PiAgIGVhcmx5X3BhcmFtKCJtZW0iLCBlYXJseV9tZW0p
-Ow0KPj4gICANCj4+ICsvKg0KPj4gKyAqIFNldHVwIHRoZSBkbWEzMiB6b25lIHNpemUNCj4+ICsg
-Ki8NCj4+ICtzdGF0aWMgaW50IF9faW5pdCBzZXR1cF9kbWEzMl96b25lKGNoYXIgKnApDQo+PiAr
-ew0KPj4gKwlpZiAoIXApDQo+PiArCQlyZXR1cm4gLUVJTlZBTDsNCj4+ICsNCj4+ICsJaWYgKGtz
-dHJ0b3VsbChwLCAwLCAmYXJtX2RtYV96b25lX3NpemUpKQ0KPj4gKwkJcmV0dXJuIC1FSU5WQUw7
-DQo+PiArDQo+PiArCWFybV9kbWFfem9uZV9zaXplICo9IFNaXzFNOw0KPj4gKwlwcl9ub3RpY2Uo
-IlNldHVwIGRtYTMyIHpvbmUgc2l6ZSB0byAlbGx1IE1iXG4iLCBhcm1fZG1hX3pvbmVfc2l6ZSk7
-DQo+PiArDQo+PiArCXJldHVybiAwOw0KPj4gK30NCj4+ICsNCj4+ICtlYXJseV9wYXJhbSgiZG1h
-MzJfem9uZSIsIHNldHVwX2RtYTMyX3pvbmUpOw0KPj4gKw0KPj4gICBzdGF0aWMgaW50IF9faW5p
-dCBlYXJseV9pbml0X2R0X3NjYW5fdXNhYmxlbWVtKHVuc2lnbmVkIGxvbmcgbm9kZSwNCj4+ICAg
-CQljb25zdCBjaGFyICp1bmFtZSwgaW50IGRlcHRoLCB2b2lkICpkYXRhKQ0KPj4gICB7DQo+PiBA
-QCAtMzkyLDEwICs0MTQsMTUgQEAgdm9pZCBfX2luaXQgYXJtNjRfbWVtYmxvY2tfaW5pdCh2b2lk
-KQ0KPj4gICAJCWFybTY0X2RtYV9waHlzX2xpbWl0ID0gbWF4X3pvbmVfcGh5cyhBUk02NF9aT05F
-X0RNQV9CSVRTKTsNCj4+ICAgCX0NCj4+ICAgDQo+PiAtCWlmIChJU19FTkFCTEVEKENPTkZJR19a
-T05FX0RNQTMyKSkNCj4+IC0JCWFybTY0X2RtYTMyX3BoeXNfbGltaXQgPSBtYXhfem9uZV9waHlz
-KDMyKTsNCj4+IC0JZWxzZQ0KPj4gKwlpZiAoSVNfRU5BQkxFRChDT05GSUdfWk9ORV9ETUEzMikp
-IHsNCj4+ICsJCWlmIChhcm1fZG1hX3pvbmVfc2l6ZSkNCj4+ICsJCQlhcm02NF9kbWEzMl9waHlz
-X2xpbWl0ID0gYXJtX2RtYV96b25lX3NpemUgKw0KPj4gKwkJCQkJCW1lbWJsb2NrX3N0YXJ0X29m
-X0RSQU0oKTsNCj4+ICsJCWVsc2UNCj4+ICsJCQlhcm02NF9kbWEzMl9waHlzX2xpbWl0ID0gbWF4
-X3pvbmVfcGh5cygzMik7DQo+PiArCX0gZWxzZSB7DQo+PiAgIAkJYXJtNjRfZG1hMzJfcGh5c19s
-aW1pdCA9IFBIWVNfTUFTSyArIDE7DQo+PiArCX0NCj4+ICAgDQo+PiAgIAlyZXNlcnZlX2NyYXNo
-a2VybmVsKCk7DQo+PiANCj4+DQo=
+For 5.10. Patch #1-#4,#6 have RBs or ACKs, patch #5 is virtio-mem stuff
+maintained by me. This should go via the -mm tree.
+
+---
+
+When introducing virtio-mem, the semantics of ZONE_MOVABLE were rather
+unclear, which is why we special-cased ZONE_MOVABLE such that partially
+plugged blocks would never end up in ZONE_MOVABLE.
+
+Now that the semantics are much clearer (and are documented in patch #6),
+let's support partially plugged memory blocks in ZONE_MOVABLE, allowing
+partially plugged memory blocks to be online to ZONE_MOVABLE and also
+unplugging from such memory blocks. This avoids surprises when onlining
+of memory blocks suddenly fails, just because they are not completely
+populated by virtio-mem (yet).
+
+This is especially helpful for testing, but also paves the way for
+virtio-mem optimizations, allowing more memory to get reliably unplugged.
+
+Cleanup has_unmovable_pages() and set_migratetype_isolate(), providing
+better documentation of how ZONE_MOVABLE interacts with different kind of
+unmovable pages (memory offlining vs. alloc_contig_range()).
+
+v4 -> v5:
+- Rename "mm/page_isolation: don't dump_page(NULL) in
+  set_migratetype_isolate()" to "mm/page_isolation: exit early when
+  pageblock is isolated in set_migratetype_isolate()" as I was messing
+  up things while reshuffling patches (dump_page(NULL) could never happen,
+  only the WARN_ON_ONCE())
+-- Clarify in the description that this is currently a cleanup only
+- "mm: document semantics of ZONE_MOVABLE"
+-- Clarified in the memory hole case, that kernelcore/movablecore is
+   required to create such rare special cases
+
+v3 -> v4:
+- "mm/page_isolation: drop WARN_ON_ONCE() in set_migratetype_isolate()"
+-- Fix typo in description
+- "virtio-mem: don't special-case ZONE_MOVABLE"
+-- Add more details why we initialli special-cased ZONE_MOVABLE (via MST)
+- "mm: document semantics of ZONE_MOVABLE"
+-- Rephrase some parts of documentation (via Mike)
+
+v2 -> v3:
+- "mm: document semantics of ZONE_MOVABLE"
+-- Fix a typo
+
+v1 -> v2:
+- "mm/page_isolation: don't dump_page(NULL) in set_migratetype_isolate()"
+-- Move to position 1, add Fixes: tag
+-- Drop unused "out:" label
+- "mm/page_isolation: drop WARN_ON_ONCE() in set_migratetype_isolate()"
+-- Keep curly braces on "else" case
+- Replace "[PATCH v1 5/6] mm/page_alloc: restrict ZONE_MOVABLE optimization
+           in has_unmovable_pages() to memory offlining"
+  by "mm: document semantics of ZONE_MOVABLE"
+-- Brain dump of what I know about ZONE_MOVABLE
+
+David Hildenbrand (6):
+  mm/page_alloc: tweak comments in has_unmovable_pages()
+  mm/page_isolation: exit early when pageblock is isolated in
+    set_migratetype_isolate()
+  mm/page_isolation: drop WARN_ON_ONCE() in set_migratetype_isolate()
+  mm/page_isolation: cleanup set_migratetype_isolate()
+  virtio-mem: don't special-case ZONE_MOVABLE
+  mm: document semantics of ZONE_MOVABLE
+
+ drivers/virtio/virtio_mem.c | 47 +++++++------------------------------
+ include/linux/mmzone.h      | 35 +++++++++++++++++++++++++++
+ mm/page_alloc.c             | 22 +++++------------
+ mm/page_isolation.c         | 39 ++++++++++++++----------------
+ 4 files changed, 66 insertions(+), 77 deletions(-)
+
+-- 
+2.26.2
 
