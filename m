@@ -2,110 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A892457B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 14:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4CE2457B6
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 14:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728919AbgHPMyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 08:54:10 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:60744 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728558AbgHPMxy (ORCPT
+        id S1728414AbgHPMxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 08:53:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbgHPMxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 08:53:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597582433;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w9ZUZrGsZF4VfyZVqdjH6Ul9tpn6Afno+T7mgrtfMv4=;
-        b=Lyi4tuwT5xXZOvvU8RQGCxCUVHZSz0nw6kwrE+4SIVBP7toqNEuF7pppdrLjWKFSdvzQc8
-        ESJyoNujL1bClGdFZNKDlBw6u+VEDW6qArs6ElLASd2M8chEQbkPY/ZEvHOg14gZ8r98Pz
-        zHdfIOLjUhrizl/F559kiIwjr3mrPY8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-515-Fl5ZwC1-NUGhFFsaik1b7g-1; Sun, 16 Aug 2020 08:53:49 -0400
-X-MC-Unique: Fl5ZwC1-NUGhFFsaik1b7g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Sun, 16 Aug 2020 08:53:41 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B20C061786;
+        Sun, 16 Aug 2020 05:53:40 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 324E8801AAE;
-        Sun, 16 Aug 2020 12:53:48 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-112-43.ams2.redhat.com [10.36.112.43])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D72DC6E717;
-        Sun, 16 Aug 2020 12:53:45 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>,
-        Baoquan He <bhe@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>, Qian Cai <cai@lca.pw>
-Subject: [PATCH v5 2/6] mm/page_isolation: exit early when pageblock is isolated in set_migratetype_isolate()
-Date:   Sun, 16 Aug 2020 14:53:29 +0200
-Message-Id: <20200816125333.7434-3-david@redhat.com>
-In-Reply-To: <20200816125333.7434-1-david@redhat.com>
-References: <20200816125333.7434-1-david@redhat.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BTxtk1wzYz9sTR;
+        Sun, 16 Aug 2020 22:53:32 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1597582414;
+        bh=xpLVIzLpo/1ZhQwWcKA7c8rb6SmsBOgSF5mqM7GHsWY=;
+        h=From:To:Subject:In-Reply-To:References:Date:From;
+        b=fb3+potxlS9NiACHDhstC8E0WATgvYJ9izglTZ2GSFNu31rYjqsHvMT3VxJ9fg6Od
+         twnwYvGCoKrRjF7zJRv+8DnUIRRdHeBBq8NH+WFZ1q2oo8X6YmAmhM8rp6Ku5RSf9q
+         HuktcBiE54nMDMbmWUpdYcah3fBc5THqFOJ0H77+s2WA2YKyTfQvbeT1z95WeSw58l
+         brk3dL0BwZFiwYF58Cq08Mb1RLxfYAUOni1AlzkVVvSideVn8Qdn6kQP9Mo87oeOJm
+         BNFEA037TPSBKGrvSeK5CpfSMa6c/xRWS7KYVHk9eqgVIVErt50sFLkjQaaygClnOW
+         OjOMo8L55u9gg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [TECH TOPIC] Planning code obsolescence
+In-Reply-To: <CAK8P3a2PK_bC5=3wcWm43=y5xk-Dq5-fGPExJMnOrNfGfB1m1A@mail.gmail.com>
+References: <CAK8P3a2PK_bC5=3wcWm43=y5xk-Dq5-fGPExJMnOrNfGfB1m1A@mail.gmail.com>
+Date:   Sun, 16 Aug 2020 22:53:29 +1000
+Message-ID: <874kp2ah12.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now, if we have two isolations racing on a pageblock that's in the
-MOVABLE zone, we would trigger the WARN_ON_ONCE(). Let's just return
-directly, simplifying error handling.
+Arnd Bergmann <arnd@arndb.de> writes:
+> I have submitted the below as a topic for the linux/arch/* MC that Mike
+> and I run, but I suppose it also makes sense to discuss it on the
+> ksummit-discuss mailing list (cross-posted to linux-arch and lkml) as well
+> even if we don't discuss it at the main ksummit track.
+>
+>      Arnd
+>
+> 8<---
+...
+>
+> I propose adding a Documentation file that keeps track of any notable
+> kernel feature that could be classified as "obsolete", and listing
+> e.g. following properties:
+>
+> * Kconfig symbol controlling the feature
+>
+> * How long we expect to keep it as a minimum
+>
+> * Known use cases, or other reasons this needs to stay
+>
+> * Latest kernel in which it was known to have worked
+>
+> * Contact information for known users (mailing list, personal email)
+>
+> * Other features that may depend on this
+>
+> * Possible benefits of eventually removing it
+>
+> With that information, my hope is that it becomes easier to plan when
+> some code can be removed after the last users have stopped upgrading
+> their kernels, while also preventing code from being removed that is
+> actually still in active use.
+>
+> In the discussion at the linux/arch/* MC, I would hope to answer these
+> questions:
+>
+> * Do other developers find this useful to have?
 
-The change was introduced in commit 3d680bdf60a5 ("mm/page_isolation: fix
-potential warning from user"). As far as I can see, we currently don't have
-alloc_contig_range() users that use the ZONE_MOVABLE (anymore), so it's
-currently more a cleanup and a preparation for the future than a fix.
+Yes!
 
-Reviewed-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Michael S. Tsirkin <mst@redhat.com>
-Cc: Qian Cai <cai@lca.pw>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- mm/page_isolation.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+> * Where should the information be kept (Documentation/*, Kconfig,
+> MAINTAINERS, wiki.kernel.org, ...)
 
-diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-index f6d07c5f0d34d..7d7d263ce7f4b 100644
---- a/mm/page_isolation.c
-+++ b/mm/page_isolation.c
-@@ -29,10 +29,12 @@ static int set_migratetype_isolate(struct page *page, int migratetype, int isol_
- 	/*
- 	 * We assume the caller intended to SET migrate type to isolate.
- 	 * If it is already set, then someone else must have raced and
--	 * set it before us.  Return -EBUSY
-+	 * set it before us.
- 	 */
--	if (is_migrate_isolate_page(page))
--		goto out;
-+	if (is_migrate_isolate_page(page)) {
-+		spin_unlock_irqrestore(&zone->lock, flags);
-+		return -EBUSY;
-+	}
- 
- 	/*
- 	 * FIXME: Now, memory hotplug doesn't call shrink_slab() by itself.
-@@ -52,7 +54,6 @@ static int set_migratetype_isolate(struct page *page, int migratetype, int isol_
- 		ret = 0;
- 	}
- 
--out:
- 	spin_unlock_irqrestore(&zone->lock, flags);
- 	if (!ret) {
- 		drain_all_pages(zone);
--- 
-2.26.2
+Documentation/ seems like the obvious place. Possibly also somewhere on
+wiki.kernel.org or elsewhere so that people can contribute information
+without having to submit a formal patch.
 
+> * Which information should be part of an entry?
+
+Your list above is pretty good.
+
+For features that relate to specific hardware I think it would be useful
+to have some more information.
+
+For example when the hardware was last manufactured, who made it, how
+could it be purchased when it was available (eg. was it for sale to the
+public or in limited quantities or only to certain people or internal to
+a particular company).
+
+
+> * What granularity should this be applied to -- only high-level features
+> like CPU architectures and subsystems, or individual drivers and machines?
+
+I think it can make sense at many levels. It probably just depends on
+how much effort folks want to go to in order to track down the
+information.
+
+Looking at powerpc it would be useful to have that sort of info for
+individual boards, as well as each platform, CPU families and specific
+drivers.
+
+cheers
