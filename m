@@ -2,123 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4CE2457B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 14:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0492457BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 14:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbgHPMxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 08:53:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbgHPMxl (ORCPT
+        id S1728877AbgHPMyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 08:54:10 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:58576 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728440AbgHPMx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 08:53:41 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B20C061786;
-        Sun, 16 Aug 2020 05:53:40 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Sun, 16 Aug 2020 08:53:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597582436;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5/ZhqaemaIZJrodfmnF3I3t2/SfX8dozv9khOOWmeJY=;
+        b=YXanpaO2QUItGuRi+bqy4bEZ94Kwr70GOVQ/uePBHzrYXdryC+rv2S49jVB+p7K0RB5NWf
+        IIfDuisLtXNuEQB745Mgl4nlJj9YkTXmn+LXrGlb/0JMZ5txMmGzlY5w1YeyJn2MVdCp8E
+        M3zvzul/Lm9w0YJksMEPUFG3TiFvhUQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-417-k7p1B1TFNRW7MXrOOuTcsw-1; Sun, 16 Aug 2020 08:53:54 -0400
+X-MC-Unique: k7p1B1TFNRW7MXrOOuTcsw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BTxtk1wzYz9sTR;
-        Sun, 16 Aug 2020 22:53:32 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1597582414;
-        bh=xpLVIzLpo/1ZhQwWcKA7c8rb6SmsBOgSF5mqM7GHsWY=;
-        h=From:To:Subject:In-Reply-To:References:Date:From;
-        b=fb3+potxlS9NiACHDhstC8E0WATgvYJ9izglTZ2GSFNu31rYjqsHvMT3VxJ9fg6Od
-         twnwYvGCoKrRjF7zJRv+8DnUIRRdHeBBq8NH+WFZ1q2oo8X6YmAmhM8rp6Ku5RSf9q
-         HuktcBiE54nMDMbmWUpdYcah3fBc5THqFOJ0H77+s2WA2YKyTfQvbeT1z95WeSw58l
-         brk3dL0BwZFiwYF58Cq08Mb1RLxfYAUOni1AlzkVVvSideVn8Qdn6kQP9Mo87oeOJm
-         BNFEA037TPSBKGrvSeK5CpfSMa6c/xRWS7KYVHk9eqgVIVErt50sFLkjQaaygClnOW
-         OjOMo8L55u9gg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [TECH TOPIC] Planning code obsolescence
-In-Reply-To: <CAK8P3a2PK_bC5=3wcWm43=y5xk-Dq5-fGPExJMnOrNfGfB1m1A@mail.gmail.com>
-References: <CAK8P3a2PK_bC5=3wcWm43=y5xk-Dq5-fGPExJMnOrNfGfB1m1A@mail.gmail.com>
-Date:   Sun, 16 Aug 2020 22:53:29 +1000
-Message-ID: <874kp2ah12.fsf@mpe.ellerman.id.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0800F1855199;
+        Sun, 16 Aug 2020 12:53:53 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-112-43.ams2.redhat.com [10.36.112.43])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 804746E717;
+        Sun, 16 Aug 2020 12:53:48 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        David Hildenbrand <david@redhat.com>,
+        Baoquan He <bhe@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Subject: [PATCH v5 3/6] mm/page_isolation: drop WARN_ON_ONCE() in set_migratetype_isolate()
+Date:   Sun, 16 Aug 2020 14:53:30 +0200
+Message-Id: <20200816125333.7434-4-david@redhat.com>
+In-Reply-To: <20200816125333.7434-1-david@redhat.com>
+References: <20200816125333.7434-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@arndb.de> writes:
-> I have submitted the below as a topic for the linux/arch/* MC that Mike
-> and I run, but I suppose it also makes sense to discuss it on the
-> ksummit-discuss mailing list (cross-posted to linux-arch and lkml) as well
-> even if we don't discuss it at the main ksummit track.
->
->      Arnd
->
-> 8<---
-...
->
-> I propose adding a Documentation file that keeps track of any notable
-> kernel feature that could be classified as "obsolete", and listing
-> e.g. following properties:
->
-> * Kconfig symbol controlling the feature
->
-> * How long we expect to keep it as a minimum
->
-> * Known use cases, or other reasons this needs to stay
->
-> * Latest kernel in which it was known to have worked
->
-> * Contact information for known users (mailing list, personal email)
->
-> * Other features that may depend on this
->
-> * Possible benefits of eventually removing it
->
-> With that information, my hope is that it becomes easier to plan when
-> some code can be removed after the last users have stopped upgrading
-> their kernels, while also preventing code from being removed that is
-> actually still in active use.
->
-> In the discussion at the linux/arch/* MC, I would hope to answer these
-> questions:
->
-> * Do other developers find this useful to have?
+Inside has_unmovable_pages(), we have a comment describing how unmovable
+data could end up in ZONE_MOVABLE - via "movablecore". Also, besides
+checking if the first page in the pageblock is reserved, we don't
+perform any further checks in case of ZONE_MOVABLE.
 
-Yes!
+In case of memory offlining, we set REPORT_FAILURE, properly
+dump_page() the page and handle the error gracefully.
+alloc_contig_pages() users currently never allocate from ZONE_MOVABLE.
+E.g., hugetlb uses alloc_contig_pages() for the allocation of gigantic
+pages only, which will never end up on the MOVABLE zone
+(see htlb_alloc_mask()).
 
-> * Where should the information be kept (Documentation/*, Kconfig,
-> MAINTAINERS, wiki.kernel.org, ...)
+Reviewed-by: Baoquan He <bhe@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Michael S. Tsirkin <mst@redhat.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ mm/page_isolation.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-Documentation/ seems like the obvious place. Possibly also somewhere on
-wiki.kernel.org or elsewhere so that people can contribute information
-without having to submit a formal patch.
+diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+index 7d7d263ce7f4b..d099aac479601 100644
+--- a/mm/page_isolation.c
++++ b/mm/page_isolation.c
+@@ -57,15 +57,12 @@ static int set_migratetype_isolate(struct page *page, int migratetype, int isol_
+ 	spin_unlock_irqrestore(&zone->lock, flags);
+ 	if (!ret) {
+ 		drain_all_pages(zone);
+-	} else {
+-		WARN_ON_ONCE(zone_idx(zone) == ZONE_MOVABLE);
+-
+-		if ((isol_flags & REPORT_FAILURE) && unmovable)
+-			/*
+-			 * printk() with zone->lock held will likely trigger a
+-			 * lockdep splat, so defer it here.
+-			 */
+-			dump_page(unmovable, "unmovable page");
++	} else if ((isol_flags & REPORT_FAILURE) && unmovable) {
++		/*
++		 * printk() with zone->lock held will likely trigger a
++		 * lockdep splat, so defer it here.
++		 */
++		dump_page(unmovable, "unmovable page");
+ 	}
+ 
+ 	return ret;
+-- 
+2.26.2
 
-> * Which information should be part of an entry?
-
-Your list above is pretty good.
-
-For features that relate to specific hardware I think it would be useful
-to have some more information.
-
-For example when the hardware was last manufactured, who made it, how
-could it be purchased when it was available (eg. was it for sale to the
-public or in limited quantities or only to certain people or internal to
-a particular company).
-
-
-> * What granularity should this be applied to -- only high-level features
-> like CPU architectures and subsystems, or individual drivers and machines?
-
-I think it can make sense at many levels. It probably just depends on
-how much effort folks want to go to in order to track down the
-information.
-
-Looking at powerpc it would be useful to have that sort of info for
-individual boards, as well as each platform, CPU families and specific
-drivers.
-
-cheers
