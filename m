@@ -2,58 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA673245519
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 02:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B39245522
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Aug 2020 03:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729032AbgHPAnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Aug 2020 20:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgHPAnE (ORCPT
+        id S1729065AbgHPBB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Aug 2020 21:01:27 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:21921 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726177AbgHPBB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Aug 2020 20:43:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C90AC061786;
-        Sat, 15 Aug 2020 17:43:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=o+wfFvyLhA+em4AovIaNYnXy15NfLyZt8dI3Gf4MNPg=; b=GYkSt1nq2R2qXTgU+gByKs4Lmx
-        /SVnvwplK1CMF+zm7WNQ78W1OnoUzIj+m9UxcYpdOMpsLTelQoy4tOPuhVwdMDTpm5NLrq1H4LhLW
-        ffeOhEKwlV0aXDKLRSKFR+Y+5c9b4o7Wn9zz0q/KZLSIZRB3P2aw3F+kkc1vq/FCCBwTxgle4AdqC
-        jzdl5pJUCqfjjo5pfOIxpyskQ9bxtBmrZ8rGZogeHbSS0yrPF4twuJU6SenahkylKb5hRltAKaCn9
-        46R5WCHQjGsi19+pQA1RfqMgCoHSx1x6P2fcQdwsTlC2uRlx2LArhzZ6HZgejUwVERWuh4mZlhgmY
-        M74Fi/0g==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k76lH-0008J5-CY; Sun, 16 Aug 2020 00:42:59 +0000
-Date:   Sun, 16 Aug 2020 01:42:59 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     dsterba@suse.cz,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
- Software.
-Message-ID: <20200816004259.GD17456@casper.infradead.org>
-References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
- <20200815190642.GZ2026@twin.jikos.cz>
+        Sat, 15 Aug 2020 21:01:27 -0400
+X-UUID: 260dc3c3a6254acdb5b53560ea00401f-20200816
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=enWqZWxvZprgK2P17HZjxRJ//LO5boAVzAX+gXM/CZ8=;
+        b=nLOeaU1xXlrPXDztzniImhcBXwkaqttH2gaeyQi7E0Puc9Ulyimd4cwjMYXucDpDUh/UfhM1fTjcqECRHxdwAs9fhPXUvkO28y0TxEAD0ShyGxTolWtsLj3Tm02f2gU8eaY+3hFqrFNfkPniO8lZ2CTQxUhJly9xz0ktDZT6IyY=;
+X-UUID: 260dc3c3a6254acdb5b53560ea00401f-20200816
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1517930685; Sun, 16 Aug 2020 09:01:23 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 16 Aug 2020 09:01:20 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 16 Aug 2020 09:01:20 +0800
+Message-ID: <1597539680.7483.1.camel@mtkswgap22>
+Subject: Re: [PATCH v3 1/2] scsi: ufs: change ufshcd_comp_devman_upiu() to
+ ufshcd_compose_devman_upiu()
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Bean Huo <huobean@gmail.com>
+CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <asutoshd@codeaurora.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <beanhuo@micron.com>,
+        <bvanassche@acm.org>, <tomas.winkler@intel.com>,
+        <cang@codeaurora.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Date:   Sun, 16 Aug 2020 09:01:20 +0800
+In-Reply-To: <20200814095034.20709-2-huobean@gmail.com>
+References: <20200814095034.20709-1-huobean@gmail.com>
+         <20200814095034.20709-2-huobean@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200815190642.GZ2026@twin.jikos.cz>
+X-TM-SNTS-SMTP: BE5561C9627A85C7D95F4CCD228B02614F34083724DAA7C132890BF0765094472000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 09:06:42PM +0200, David Sterba wrote:
-> There's maybe more I missed, but hopefully HTH.
-
-One thing you missed is adding support to fstests
-git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
-
-If it passes that torture test, I think we can have confidence that
-this is a really good implementation of a filesystem.
+T24gRnJpLCAyMDIwLTA4LTE0IGF0IDExOjUwICswMjAwLCBCZWFuIEh1byB3cm90ZToNCj4gRnJv
+bTogQmVhbiBIdW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCj4gDQo+IHVmc2hjZF9jb21wX2Rldm1h
+bl91cGl1KCkgYWx3YXN5IG1ha2UgbWUgY29uZnVzZSB0aGF0IGl0IGlzIGEgcmVxdWVzdA0KPiBj
+b21wbGV0aW9uIGNhbGxpbmcgZnVuY3Rpb24uIENoYW5nZSBpdCB0byB1ZnNoY2RfY29tcG9zZV9k
+ZXZtYW5fdXBpdSgpLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQmVhbiBIdW8gPGJlYW5odW9AbWlj
+cm9uLmNvbT4NCj4gQWNrZWQtYnk6IEF2cmkgQWx0bWFuIDxhdnJpLmFsdG1hbkB3ZGMuY29tPg0K
+PiAtLS0NCg0KUmV2aWV3ZWQtYnk6IFN0YW5sZXkgQ2h1IDxzdGFubGV5LmNodUBtZWRpYXRlay5j
+b20+DQoNCg0K
 
