@@ -2,102 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC57267F0E
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 11:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B61267F39
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 12:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725956AbgIMJ5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 05:57:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725916AbgIMJ5K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 05:57:10 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAEEC061573;
-        Sun, 13 Sep 2020 02:57:09 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id e23so19181970eja.3;
-        Sun, 13 Sep 2020 02:57:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=Gbv3T8O0xJ0qCU1qNd8Of6YIK0SU5dp95SQ3PtDWaO0=;
-        b=Wy38gqJUeXaggqjLqI+pGJq8kU7x1t7zpokB4YzSRMZUvWco/F1t5xd0A6p8+/Hg5J
-         kD5XAcuBo3dOejieIZrIzgITWoB0bpTnOPJKAD57voEwXtlgLFTVXG0MgwIh5womWalT
-         PmN5m9gWb5QDscoT/7/9HnGnHUtqOsUHXVpvSfnO7MDrc1SFN4sYjTRPiBEVUti7+r5V
-         fFHvKVyVuqWhZH9CKUIteCsG0cByIERnHKOqxrYjtclMorDRtZ01MVdgUq9bYnH5g5EE
-         eyegwOWnCbZHhxIZzhE7ypQchJhlqVhM7OLjLBT+gP/hbgCQkoI9y2zIGRL4rw+qaMhR
-         cLNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=Gbv3T8O0xJ0qCU1qNd8Of6YIK0SU5dp95SQ3PtDWaO0=;
-        b=TSgOdrIUGTUbs5SXduFAZvMLS0g2LXw8XuysNT1TeXmd8fGN2+RTQIwdP6zAr2H0cL
-         Sg1V6Tb0GgHo4aUmuHw4wqx03IMjIh9mwJw4aayBUeMdEsjyX0S1SQcw18Dv0oT3BIBC
-         uTYwjeSD1ESKBn+Qu7mhwnWJVjrEAF1QqekAeY5HulDqPcx1zPGQAEuU5BRqQA/AparM
-         eKCbppO6t74t69GFdAtWHghc25oNcQ5rvbkzGjQZOnu3in3m3Uf15LwjA/UJYuLTuBjt
-         7/xIEg95NA9fivdhbd5fhzIgfwouszkKyeMJRnWm7iKx42GbXf+X1AqpTVoEF8e5N/Pc
-         UYSA==
-X-Gm-Message-State: AOAM531ZP9XoR8ftwOgMkivQY392B7BeFRZ3UsUqXA2KkwdgaoXWo9cL
-        /KcfIpfF082tH+Z7sT9kuB68Bu28MF2cm7cS
-X-Google-Smtp-Source: ABdhPJzOcn6Rwbu13exfp1gYWilPlEYFx3hJ/rPNokplQtCfPNYNOKopygMfJTFKWFoYi5bB4a2BHQ==
-X-Received: by 2002:a17:906:facb:: with SMTP id lu11mr10087536ejb.249.1599991028362;
-        Sun, 13 Sep 2020 02:57:08 -0700 (PDT)
-Received: from felia ([2001:16b8:2dcc:7f00:79af:10ed:f757:91c8])
-        by smtp.gmail.com with ESMTPSA id w1sm6408015eds.18.2020.09.13.02.57.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 02:57:07 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Sun, 13 Sep 2020 11:57:01 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-cc:     Joel Stanley <joel@jms.id.au>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-aspeed@lists.ozlabs.org,
-        dri-devel@lists.freedesktop.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: make linux-aspeed list remarks consistent
-In-Reply-To: <20200912183334.22683-1-lukas.bulwahn@gmail.com>
-Message-ID: <alpine.DEB.2.21.2009131156090.6163@felia>
-References: <20200912183334.22683-1-lukas.bulwahn@gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1725953AbgIMKWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 06:22:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725921AbgIMKWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 06:22:35 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20AA820709;
+        Sun, 13 Sep 2020 10:22:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599992554;
+        bh=VjtbrwFeUIaNBlmRVt0IUVaHfpAQ7vtVrZrm9A23mcY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RRzfYYSFADPgfh68uCeXXMNFRCJEs9eKGw92ImOz5696tiYATv/roGQjfhRQCznrv
+         99YeeYsO+CwRDjFNSaWC/y5Mm5wLYUi2kOIrfMDmHyJcXfNtGUVtVtTqb1TDiK/NpS
+         ZaGRW8F1MGQHS+Rnb/frJ5LeO0iqMI6N9dlqLUK8=
+Date:   Sun, 16 Aug 2020 09:58:30 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Jean-Baptiste Maneyrol <JManeyrol@invensense.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "trix@redhat.com" <trix@redhat.com>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        =?UTF-8?B?TWljaGE=?= =?UTF-8?B?xYIgTWlyb3PFgmF3?= 
+        <mirq-linux@rere.qmqm.pl>, Lee Jones <lee.jones@linaro.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: imu: inv_mpu6050: check for temp_fifo_enable
+Message-ID: <20200816095830.64650d0a@archlinux>
+In-Reply-To: <MN2PR12MB43905A48FB51A0B33198CC56C4430@MN2PR12MB4390.namprd12.prod.outlook.com>
+References: <20200809155936.16898-1-trix@redhat.com>
+        <CAHp75VdEBjxYS_4g2j=ofjFWuGyTK5Me=9mMNcy5ienUUs67Ag@mail.gmail.com>
+        <MN2PR12MB43905A48FB51A0B33198CC56C4430@MN2PR12MB4390.namprd12.prod.outlook.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 13 Aug 2020 08:04:06 +0000
+Jean-Baptiste Maneyrol <JManeyrol@invensense.com> wrote:
 
+> Hello,
+>=20
+> this is a case that should never be happening since available scan mask o=
+nly advertise Accel + Temp, Gyro + Temp, or Accel + Gyro + Temp.
+> More than that, temperature sensor is not working when MEMS engine is off=
+. (it's only purpose it to measure temperature of the MEMS to do data tempe=
+rature compensation).
+>=20
+> So I think we can let this check as it is currently, since this is not a =
+supported configuration.
+>=20
 
-On Sat, 12 Sep 2020, Lukas Bulwahn wrote:
+Perhaps a good option would be to add a suitably positioned comment to make
+this clear so we don't get further patches 'fixing' this in the future?
 
-> Commit f15a3ea80391 ("MAINTAINERS: Add ASPEED BMC GFX DRM driver entry")
-> does not mention that linux-aspeed@lists.ozlabs.org is moderated for
-> non-subscribers, but the other three entries for
-> linux-aspeed@lists.ozlabs.org do.
-> 
-> By 'majority vote' among entries, let us assume it was just missed here and
-> adjust it to be consistent with others.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> applies cleanly on master and next-20200911
-> 
-> Joel, please ack.
-> David, Daniel, please pick this minor non-urgent clean-up patch.
-> 
-> This patch submission will also show me if linux-aspeed is moderated or
-> not. I have not subscribed to linux-aspeed and if it shows up quickly in
-> the archive, the list is probably not moderated; and if it takes longer,
-> it is moderated, and hence, validating the patch.
->
+Thanks,
 
-I did quickly get back an moderation email that my email is being held 
-back. So, that response validates my patch.
+Jonathan
 
-Lukas
+> Best regards,
+> JB
+>=20
+>=20
+> From: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Sent: Monday, August 10, 2020 10:02
+> To: trix@redhat.com <trix@redhat.com>
+> Cc: Jonathan Cameron <jic23@kernel.org>; Hartmut Knaack <knaack.h@gmx.de>=
+; Lars-Peter Clausen <lars@metafoo.de>; Peter Meerwald <pmeerw@pmeerw.net>;=
+ Jean-Baptiste Maneyrol <JManeyrol@invensense.com>; Micha=C5=82 Miros=C5=82=
+aw <mirq-linux@rere.qmqm.pl>; Lee Jones <lee.jones@linaro.org>; linux-iio <=
+linux-iio@vger.kernel.org>; Linux Kernel Mailing List <linux-kernel@vger.ke=
+rnel.org>
+> Subject: Re: [PATCH] iio: imu: inv_mpu6050: check for temp_fifo_enable=20
+> =C2=A0
+> =C2=A0CAUTION: This email originated from outside of the organization. Pl=
+ease make sure the sender is who they say they are and do not click links o=
+r open attachments unless you recognize the sender and know the content is =
+safe.
+>=20
+> On Sun, Aug 9, 2020 at 7:00 PM <trix@redhat.com> wrote:
+> >
+> > From: Tom Rix <trix@redhat.com>
+> >
+> > clang static analysis reports this problem
+> >
+> > inv_mpu_ring.c:181:18: warning: Division by zero
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 nb =3D fifo_count / byt=
+es_per_datum;
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 ~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+> >
+> > This is a false positive.
+> > Dividing by 0 is protected by this check
+> >
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!(st->chip_config.a=
+ccl_fifo_enable |
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 st->chip_config.gyro_fifo_enable |
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 st->chip_config.magn_fifo_enable))
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 goto end_session;
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bytes_per_datum =3D 0;
+> >
+> > But there is another fifo, temp_fifo
+> >
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (st->chip_config.tem=
+p_fifo_enable)
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 bytes_per_datum +=3D INV_MPU6050_BYTES_PER_TEMP_SE=
+NSOR;
+> >
+> > Which would be skipped if it was the only enabled fifo.
+> > So add to the check.
+> > =20
+>=20
+> > Fixes: 2e4c0a5e2576 ("iio: imu: inv_mpu6050: add fifo temperature data =
+support")
+> >
+> > Signed-off-by: Tom Rix <trix@redhat.com> =20
+>=20
+> There shouldn't be a blank line in between.
+>=20
+> Other than that,
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>=20
+>=20
+>=20
+> > ---
+> >=C2=A0 drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c | 1 +
+> >=C2=A0 1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c b/drivers/iio/i=
+mu/inv_mpu6050/inv_mpu_ring.c
+> > index b533fa2dad0a..5240a400dcb4 100644
+> > --- a/drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c
+> > +++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c
+> > @@ -141,6 +141,7 @@ irqreturn_t inv_mpu6050_read_fifo(int irq, void *p)
+> >
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!(st->chip_config.a=
+ccl_fifo_enable |
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 st->chip_config.gyro_fifo_enable |
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 st->chip_config.temp_fifo_enable |
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 st->chip_config.magn_fifo_enable))
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 goto end_session;
+> >=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bytes_per_datum =3D 0;
+> > --
+> > 2.18.1
+> > =20
+>=20
+>=20
+> --
+> With Best Regards,
+> Andy Shevchenko
