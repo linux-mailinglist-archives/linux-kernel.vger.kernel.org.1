@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E8F0246FBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A55A246EA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388640AbgHQQLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:11:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58532 "EHLO mail.kernel.org"
+        id S2388934AbgHQQsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:48:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387545AbgHQPqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:46:42 -0400
+        id S2388153AbgHQQBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:01:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F37A32067C;
-        Mon, 17 Aug 2020 15:46:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB32720825;
+        Mon, 17 Aug 2020 16:01:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679201;
-        bh=bXOSpFUr15VAm3bVAU/GBKdHAAr5b+vERnYtChHHRIU=;
+        s=default; t=1597680096;
+        bh=3gIlWoEWZtx5pSI26Xq00M1VZE2v+Dgit7H6jsbGf28=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uxZFeGXB0kKwMqAVY2cF6xu/lQOiUnk6b8klVdyrHVb7KDoohKOUb7McAYwAWMcpn
-         a0tdZVfW/yBhJIVJaq54S/lxz+1PT0walA2U9lWvDrlIEYVKhB0OxUJf8TK7mdwptW
-         gspuaxdpiRBgulauzfKArHOc77zonkUNcpsP2pZE=
+        b=Yxru/DpoK4kD8er3GVytcFBEGNI8B83YdQBiGqobRqebD5zeVfn6a6kmfNqv1W6SV
+         V9r8dGKSMskoTXuKtcAo6tliYVpM3B5vMRVH2Jx6dBeJ6kfLebA+W0+6zzuCwMhaPv
+         lB3OHRQpZhel1mJ7mny60q08s9vpqKzBN/IHufks=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>,
-        Dejin Zheng <zhengdejin5@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 131/393] video: fbdev: sm712fb: fix an issue about iounmap for a wrong address
-Date:   Mon, 17 Aug 2020 17:13:01 +0200
-Message-Id: <20200817143825.963891853@linuxfoundation.org>
+Subject: [PATCH 5.4 050/270] fs/btrfs: Add cond_resched() for try_release_extent_mapping() stalls
+Date:   Mon, 17 Aug 2020 17:14:11 +0200
+Message-Id: <20200817143758.270446223@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
-References: <20200817143819.579311991@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,40 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dejin Zheng <zhengdejin5@gmail.com>
+From: Paul E. McKenney <paulmck@kernel.org>
 
-[ Upstream commit 98bd4f72988646c35569e1e838c0ab80d06c77f6 ]
+[ Upstream commit 9f47eb5461aaeb6cb8696f9d11503ae90e4d5cb0 ]
 
-the sfb->fb->screen_base is not save the value get by iounmap() when
-the chip id is 0x720. so iounmap() for address sfb->fb->screen_base
-is not right.
+Very large I/Os can cause the following RCU CPU stall warning:
 
-Fixes: 1461d6672864854 ("staging: sm7xxfb: merge sm712fb with fbdev")
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: Teddy Wang <teddy.wang@siliconmotion.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200422160719.27763-1-zhengdejin5@gmail.com
+RIP: 0010:rb_prev+0x8/0x50
+Code: 49 89 c0 49 89 d1 48 89 c2 48 89 f8 e9 e5 fd ff ff 4c 89 48 10 c3 4c =
+89 06 c3 4c 89 40 10 c3 0f 1f 00 48 8b 0f 48 39 cf 74 38 <48> 8b 47 10 48 85 c0 74 22 48 8b 50 08 48 85 d2 74 0c 48 89 d0 48
+RSP: 0018:ffffc9002212bab0 EFLAGS: 00000287 ORIG_RAX: ffffffffffffff13
+RAX: ffff888821f93630 RBX: ffff888821f93630 RCX: ffff888821f937e0
+RDX: 0000000000000000 RSI: 0000000000102000 RDI: ffff888821f93630
+RBP: 0000000000103000 R08: 000000000006c000 R09: 0000000000000238
+R10: 0000000000102fff R11: ffffc9002212bac8 R12: 0000000000000001
+R13: ffffffffffffffff R14: 0000000000102000 R15: ffff888821f937e0
+ __lookup_extent_mapping+0xa0/0x110
+ try_release_extent_mapping+0xdc/0x220
+ btrfs_releasepage+0x45/0x70
+ shrink_page_list+0xa39/0xb30
+ shrink_inactive_list+0x18f/0x3b0
+ shrink_lruvec+0x38e/0x6b0
+ shrink_node+0x14d/0x690
+ do_try_to_free_pages+0xc6/0x3e0
+ try_to_free_mem_cgroup_pages+0xe6/0x1e0
+ reclaim_high.constprop.73+0x87/0xc0
+ mem_cgroup_handle_over_high+0x66/0x150
+ exit_to_usermode_loop+0x82/0xd0
+ do_syscall_64+0xd4/0x100
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+On a PREEMPT=n kernel, the try_release_extent_mapping() function's
+"while" loop might run for a very long time on a large I/O.  This commit
+therefore adds a cond_resched() to this loop, providing RCU any needed
+quiescent states.
+
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/sm712fb.c | 2 ++
+ fs/btrfs/extent_io.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/video/fbdev/sm712fb.c b/drivers/video/fbdev/sm712fb.c
-index 6a1b4a853d9ee..8cd655d6d6280 100644
---- a/drivers/video/fbdev/sm712fb.c
-+++ b/drivers/video/fbdev/sm712fb.c
-@@ -1429,6 +1429,8 @@ static int smtc_map_smem(struct smtcfb_info *sfb,
- static void smtc_unmap_smem(struct smtcfb_info *sfb)
- {
- 	if (sfb && sfb->fb->screen_base) {
-+		if (sfb->chip_id == 0x720)
-+			sfb->fb->screen_base -= 0x00200000;
- 		iounmap(sfb->fb->screen_base);
- 		sfb->fb->screen_base = NULL;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 1a089a6424221..99dcb38976592 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4481,6 +4481,8 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
+ 
+ 			/* once for us */
+ 			free_extent_map(em);
++
++			cond_resched(); /* Allow large-extent preemption. */
+ 		}
  	}
+ 	return try_release_extent_state(tree, page, mask);
 -- 
 2.25.1
 
