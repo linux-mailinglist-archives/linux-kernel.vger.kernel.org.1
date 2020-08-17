@@ -2,112 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F67245EEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEEB245EEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727954AbgHQILn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
+        id S1727942AbgHQILh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727901AbgHQIL1 (ORCPT
+        with ESMTP id S1727897AbgHQILW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:11:27 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D00C061342
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:11:27 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id d4so7322959pjx.5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:11:27 -0700 (PDT)
+        Mon, 17 Aug 2020 04:11:22 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AB9C061388;
+        Mon, 17 Aug 2020 01:11:22 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id s15so7747482pgc.8;
+        Mon, 17 Aug 2020 01:11:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=2jlucAzcv0W9eM59+GUn2Gh+5IEHgp5g50ux6o6FWwQ=;
-        b=t2MQSO33f1vjbVEQeuo3aU++uKHVnUyyrTtB3geB2I08q7ydG1kWWexSrXGDcLWNdv
-         1DlHUBJ+biSN3baHJHgEWZwCeTElOGpgVYrWDI0Kt/zPqL3vkhdg3i/ZiLZdHXIFaczn
-         +F2ygDuPckoakT4oIKq67rcj8g59qwcFwR24DHvn38NgRh0fQjl8TUE4mmLnwGxszJh2
-         Np0X12q/PXnv5FYcMAJTQujiLVQdM6TsVxViUJGMM2vO8opwWf6WON7JoHHS6DMOZhKN
-         JZvHL/ffslNv006PR5pAvZ6RuLuD1L5kS+I8cwnPyQlpfEWmuAQU/MTin6aK8Hy4YNza
-         nfjg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vrc3902/LyjUToaP0T6jczt+Dazk6Byup+Z2y7wGrvo=;
+        b=ByO3yBfHuC8Oi3Go9E9JvdznzILTxNU0krXeVns4vevfXHOBzuW8RUC5nPT1Inugth
+         EkTLvMFjz9X8Y6qU1Hn2S2f2o1ZjPcTvmc/XO9CMb23IP7QMwR5ThDVv7DJR8gUym87Z
+         86TFejRu2JpzV/DNekTLCyl/dYZyduvNe2bvE2YaklYM9x/ZweDQE25z7ZVAuzZnmU3S
+         oaiF+2jKHvJvSqXj8jp2DPFVL24k9YUu2S4t5flwPCfY4YLLFWV8rPiYLIT5B+maHsfJ
+         5YHP/fNZbAvAG8dyEv+2YSMbf1Ow2mGXtNWmxoOrS8mXzxbY3mT0GE1j6xWlabFlzJcz
+         RmSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=2jlucAzcv0W9eM59+GUn2Gh+5IEHgp5g50ux6o6FWwQ=;
-        b=cV0EojC94xyti99al8ltEBdj+Kf87sM34uSENtUDq9rEdd367Et4qsd+NOH6atZqAM
-         VS24FU3dlPK7Wi4389Iin19PF1JqegI2wZ4nJvTq4lCSku7rOl3vfboiBAseUglHPhC6
-         Tk1jXdm9J5QLTIOfKHGbdfCEElULOpRc88AgzxfcP4Y8+1nbvZ7oejmqG9zqGeN7e7Xa
-         26teQQVHOjTwH6tiGs8ZSIuYQlM5U9/gy+RKcXMjMJin4qHGdA/zDy6z7qfWmLpHepI1
-         c/gsypwkVKOA7DHABQmLodvceWTi1k7I4YkHaCUna9KarM483CAQv92shaeKd+Z9ekxm
-         Xrzg==
-X-Gm-Message-State: AOAM531VWla5ATLKA68v6j3I/qahx4ZejfJkXXLZOi461E2LRghz8i3/
-        DoQqhv/OSy/cSWYQLIF/wNs=
-X-Google-Smtp-Source: ABdhPJyjoI0JkeOWbU0bb5kX5eCoqltfYh3yZoAKu+OpTQJh7RAmgYhlWJE4RsqnMrAcaumgImJMNg==
-X-Received: by 2002:a17:90a:5b:: with SMTP id 27mr10822949pjb.188.1597651886671;
-        Mon, 17 Aug 2020 01:11:26 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.202.98])
-        by smtp.gmail.com with ESMTPSA id 77sm18499751pfx.85.2020.08.17.01.11.23
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vrc3902/LyjUToaP0T6jczt+Dazk6Byup+Z2y7wGrvo=;
+        b=MjofrUaN3QLgfI4+omGjRYs7cQQQgaqqDManvmoMYqNC+zTAGuoxGb9bIsWLYnwSs4
+         McxbkH8xcrmaQQjT8ZKa1YhG22JwqwjhdGbDw2GZaCPEB1Mhu+v0S6Grl6sdUHf8i/Kb
+         9P1V5jIcvBBXLvHbnz+hJy4r5jHtRRWr0EcbTM2XCJ9gaeazbEwipJEYm0GGAHgHnKCA
+         udRW320qhNRQeCr6Z1ULe7b9Uh80m4vel4NsX6sQ0YCMvcTtI9NRWu4VAvrchCIfXVAW
+         UqOrEa28juedWiSSIC5oy/c01zLHRwgY1EwRYJYeVWrTGjwcPsc/Rz/d6JKHQZ3JlTu0
+         9Thw==
+X-Gm-Message-State: AOAM532GSvz/RMIuKLH2F8JxyB+mSckfgtdX0RCc5SW2z/uYyrJYj2Mm
+        eN/Vg/55LJ9z/YjZdkj1/ME=
+X-Google-Smtp-Source: ABdhPJz2ABg60O1CErb8rgafu1jP+kelkm+BlAsIdvNS3iUNr1AU3yojduJMCSyCTuDNrAKMq3eQ1Q==
+X-Received: by 2002:a05:6a00:790:: with SMTP id g16mr10469418pfu.312.1597651882145;
+        Mon, 17 Aug 2020 01:11:22 -0700 (PDT)
+Received: from gmail.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id g7sm16961220pjj.2.2020.08.17.01.11.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 01:11:26 -0700 (PDT)
-From:   Allen Pais <allen.lkml@gmail.com>
-To:     nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        ludovic.desroches@microchip.com, heiko@sntech.de,
-        matthias.bgg@gmail.com
-Cc:     keescook@chromium.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        inux-mediatek@lists.infradead.org,
-        Allen Pais <allen.lkml@gmail.com>
-Subject: [PATCH 19/19] crypto: octeontx: convert tasklets to use new tasklet_setup() API
-Date:   Mon, 17 Aug 2020 13:39:41 +0530
-Message-Id: <20200817080941.19227-20-allen.lkml@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200817080941.19227-1-allen.lkml@gmail.com>
-References: <20200817080941.19227-1-allen.lkml@gmail.com>
+        Mon, 17 Aug 2020 01:11:21 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 13:39:45 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v2] scsi: stex: use generic power management
+Message-ID: <20200817080945.GG5869@gmail.com>
+References: <20200730101658.576205-1-vaibhavgupta40@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200730101658.576205-1-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for unconditionally passing the
-struct tasklet_struct pointer to all tasklet
-callbacks, switch to using the new tasklet_setup()
-and from_tasklet() to pass the tasklet pointer explicitly.
-
-Signed-off-by: Allen Pais <allen.lkml@gmail.com>
----
- drivers/crypto/marvell/octeontx/otx_cptvf_main.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/crypto/marvell/octeontx/otx_cptvf_main.c b/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
-index 228fe8e47e0e..515049cca9e3 100644
---- a/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
-+++ b/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
-@@ -17,11 +17,12 @@
- #define DRV_NAME	"octeontx-cptvf"
- #define DRV_VERSION	"1.0"
- 
--static void vq_work_handler(unsigned long data)
-+static void vq_work_handler(struct tasklet_struct *t)
- {
--	struct otx_cptvf_wqe_info *cwqe_info =
--					(struct otx_cptvf_wqe_info *) data;
--
-+	struct otx_cptvf_wqe *cwqe = from_tasklet(cwqe, t, twork);
-+	struct otx_cptvf_wqe_info *cwqe_info = container_of(cwqe,
-+							typeof(*cwqe_info),
-+							vq_wqe[0]);
- 	otx_cpt_post_process(&cwqe_info->vq_wqe[0]);
- }
- 
-@@ -41,8 +42,7 @@ static int init_worker_threads(struct otx_cptvf *cptvf)
- 	}
- 
- 	for (i = 0; i < cptvf->num_queues; i++) {
--		tasklet_init(&cwqe_info->vq_wqe[i].twork, vq_work_handler,
--			     (u64)cwqe_info);
-+		tasklet_setup(&cwqe_info->vq_wqe[i].twork, vq_work_handler);
- 		cwqe_info->vq_wqe[i].cptvf = cptvf;
- 	}
- 	cptvf->wqe_info = cwqe_info;
--- 
-2.17.1
-
+On Thu, Jul 30, 2020 at 03:46:58PM +0530, Vaibhav Gupta wrote:
+> Drivers using legacy power management .suspen()/.resume() callbacks
+> have to manage PCI states and device's PM states themselves. They also
+> need to take care of standard configuration registers.
+> 
+> Switch to generic power management framework using a single
+> "struct dev_pm_ops" variable to take the unnecessary load from the driver.
+> This also avoids the need for the driver to directly call most of the PCI
+> helper functions and device power state control functions, as through
+> the generic framework PCI Core takes care of the necessary operations,
+> and drivers are required to do only device-specific jobs.
+> 
+> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> ---
+>  drivers/scsi/stex.c | 37 +++++++++++++++++++++++++++++++------
+>  1 file changed, 31 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/scsi/stex.c b/drivers/scsi/stex.c
+> index d4f10c0d813c..5ef6f3cbac11 100644
+> --- a/drivers/scsi/stex.c
+> +++ b/drivers/scsi/stex.c
+> @@ -1972,9 +1972,9 @@ static int stex_choice_sleep_mic(struct st_hba *hba, pm_message_t state)
+>  	}
+>  }
+>  
+> -static int stex_suspend(struct pci_dev *pdev, pm_message_t state)
+> +static int stex_suspend_late(struct device *dev, pm_message_t state)
+>  {
+> -	struct st_hba *hba = pci_get_drvdata(pdev);
+> +	struct st_hba *hba = dev_get_drvdata(dev);
+>  
+>  	if ((hba->cardtype == st_yel || hba->cardtype == st_P3)
+>  		&& hba->supports_pm == 1)
+> @@ -1984,9 +1984,24 @@ static int stex_suspend(struct pci_dev *pdev, pm_message_t state)
+>  	return 0;
+>  }
+>  
+> -static int stex_resume(struct pci_dev *pdev)
+> +static int __maybe_unused stex_suspend(struct device *dev)
+>  {
+> -	struct st_hba *hba = pci_get_drvdata(pdev);
+> +	return stex_suspend_late(dev, PMSG_SUSPEND);
+> +}
+> +
+> +static int __maybe_unused stex_hibernate(struct device *dev)
+> +{
+> +	return stex_suspend_late(dev, PMSG_HIBERNATE);
+> +}
+> +
+> +static int __maybe_unused stex_freeze(struct device *dev)
+> +{
+> +	return stex_suspend_late(dev, PMSG_FREEZE);
+> +}
+> +
+> +static int __maybe_unused stex_resume(struct device *dev)
+> +{
+> +	struct st_hba *hba = dev_get_drvdata(dev);
+>  
+>  	hba->mu_status = MU_STATE_STARTING;
+>  	stex_handshake(hba);
+> @@ -2000,14 +2015,24 @@ static int stex_halt(struct notifier_block *nb, unsigned long event, void *buf)
+>  }
+>  MODULE_DEVICE_TABLE(pci, stex_pci_tbl);
+>  
+> +static const struct dev_pm_ops stex_pm_ops = {
+> +#ifdef CONFIG_PM_SLEEP
+> +	.suspend	= stex_suspend,
+> +	.resume		= stex_resume,
+> +	.freeze		= stex_freeze,
+> +	.thaw		= stex_resume,
+> +	.poweroff	= stex_hibernate,
+> +	.restore	= stex_resume,
+> +#endif
+> +};
+> +
+>  static struct pci_driver stex_pci_driver = {
+>  	.name		= DRV_NAME,
+>  	.id_table	= stex_pci_tbl,
+>  	.probe		= stex_probe,
+>  	.remove		= stex_remove,
+>  	.shutdown	= stex_shutdown,
+> -	.suspend	= stex_suspend,
+> -	.resume		= stex_resume,
+> +	.driver.pm	= &stex_pm_ops,
+>  };
+>  
+>  static int __init stex_init(void)
+> -- 
+> 2.27.0
+> 
