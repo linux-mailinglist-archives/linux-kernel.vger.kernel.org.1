@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 563F9246D10
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A679246D03
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730910AbgHQQne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:43:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46462 "EHLO mail.kernel.org"
+        id S1730789AbgHQQlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:41:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730954AbgHQP7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:59:13 -0400
+        id S2388112AbgHQP6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:58:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD06920729;
-        Mon, 17 Aug 2020 15:59:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D424320729;
+        Mon, 17 Aug 2020 15:58:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679952;
-        bh=Awa9szfVnyfHhZXV0EKIVyiunFy+LWKFXGUkDfuCRVk=;
+        s=default; t=1597679888;
+        bh=adrKwjKBYwAGO2tCI25+wx390wp6p3FolWXMxPZgFos=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gB0mKpFSuvlUHhx0KTi2rVElOuXcEZ4D0NVpcoc0tUb3NM4Ar14of0CKuF6PasKeC
-         bh75QSvc1EAZIhxjZ9pILv8hGdyCFxdRkwzlHK3D8e7B5bl6Ubgil+eI3QGZ6I1pBn
-         c+dQxXgudZr2LNAL4Tf5P6ibMeeKW/gvWDzSzMxo=
+        b=TnTigaenz1Sq/Edqu8xSRp7CP7Q4C1EUVesOtcQJhokcvrwa/jZ0BpC072QmSbzw+
+         HkUsF5fQIaiAGBWnwx+Uo0OgOTbrV0+b9LGtbkW0dHg/Ub88qKdoOEyBXb8H/8Eg97
+         RD9tXpmfLPrCIcVgoGQ0/5PTrP1wj5jow1QrzWBg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Quentin Perret <qperret@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.7 360/393] cpufreq: Fix locking issues with governors
-Date:   Mon, 17 Aug 2020 17:16:50 +0200
-Message-Id: <20200817143837.065164987@linuxfoundation.org>
+        stable@vger.kernel.org, Helge Deller <deller@gmx.de>
+Subject: [PATCH 5.7 369/393] Revert "parisc: Improve interrupt handling in arch_spin_lock_flags()"
+Date:   Mon, 17 Aug 2020 17:16:59 +0200
+Message-Id: <20200817143837.504116036@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -44,136 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Viresh Kumar <viresh.kumar@linaro.org>
+From: Helge Deller <deller@gmx.de>
 
-commit 8cc46ae565c393f77417cb9530b1265eb50f5d2e upstream.
+commit 3d05b8aebc5f10ee3ab129b61100196855dd7249 upstream.
 
-The locking around governors handling isn't adequate currently.
+This reverts commit 2772f0efd5bbd5413db3d22e363b779ca0fa5310.
+It turns out that we want to implement the spinlock code differently.
 
-The list of governors should never be traversed without the locking
-in place. Also governor modules must not be removed while the code
-in them is still in use.
-
-Reported-by: Quentin Perret <qperret@google.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: All applicable <stable@vger.kernel.org>
-[ rjw: Changelog ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: <stable@vger.kernel.org> # v5.7+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/cpufreq/cpufreq.c |   58 +++++++++++++++++++++++++++-------------------
- 1 file changed, 35 insertions(+), 23 deletions(-)
+ arch/parisc/include/asm/spinlock.h |   25 ++++++++-----------------
+ 1 file changed, 8 insertions(+), 17 deletions(-)
 
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -621,6 +621,24 @@ static struct cpufreq_governor *find_gov
- 	return NULL;
+--- a/arch/parisc/include/asm/spinlock.h
++++ b/arch/parisc/include/asm/spinlock.h
+@@ -10,34 +10,25 @@
+ static inline int arch_spin_is_locked(arch_spinlock_t *x)
+ {
+ 	volatile unsigned int *a = __ldcw_align(x);
+-	smp_mb();
+ 	return *a == 0;
  }
  
-+static struct cpufreq_governor *get_governor(const char *str_governor)
-+{
-+	struct cpufreq_governor *t;
-+
-+	mutex_lock(&cpufreq_governor_mutex);
-+	t = find_governor(str_governor);
-+	if (!t)
-+		goto unlock;
-+
-+	if (!try_module_get(t->owner))
-+		t = NULL;
-+
-+unlock:
-+	mutex_unlock(&cpufreq_governor_mutex);
-+
-+	return t;
-+}
-+
- static unsigned int cpufreq_parse_policy(char *str_governor)
+-static inline void arch_spin_lock(arch_spinlock_t *x)
+-{
+-	volatile unsigned int *a;
+-
+-	a = __ldcw_align(x);
+-	while (__ldcw(a) == 0)
+-		while (*a == 0)
+-			cpu_relax();
+-}
++#define arch_spin_lock(lock) arch_spin_lock_flags(lock, 0)
+ 
+ static inline void arch_spin_lock_flags(arch_spinlock_t *x,
+ 					 unsigned long flags)
  {
- 	if (!strncasecmp(str_governor, "performance", CPUFREQ_NAME_LEN))
-@@ -640,28 +658,14 @@ static struct cpufreq_governor *cpufreq_
- {
- 	struct cpufreq_governor *t;
+ 	volatile unsigned int *a;
+-	unsigned long flags_dis;
  
--	mutex_lock(&cpufreq_governor_mutex);
--
--	t = find_governor(str_governor);
--	if (!t) {
--		int ret;
-+	t = get_governor(str_governor);
-+	if (t)
-+		return t;
- 
--		mutex_unlock(&cpufreq_governor_mutex);
-+	if (request_module("cpufreq_%s", str_governor))
-+		return NULL;
- 
--		ret = request_module("cpufreq_%s", str_governor);
--		if (ret)
--			return NULL;
--
--		mutex_lock(&cpufreq_governor_mutex);
--
--		t = find_governor(str_governor);
+ 	a = __ldcw_align(x);
+-	while (__ldcw(a) == 0) {
+-		local_save_flags(flags_dis);
+-		local_irq_restore(flags);
++	while (__ldcw(a) == 0)
+ 		while (*a == 0)
+-			cpu_relax();
+-		local_irq_restore(flags_dis);
 -	}
--	if (t && !try_module_get(t->owner))
--		t = NULL;
--
--	mutex_unlock(&cpufreq_governor_mutex);
--
--	return t;
-+	return get_governor(str_governor);
++			if (flags & PSW_SM_I) {
++				local_irq_enable();
++				cpu_relax();
++				local_irq_disable();
++			} else
++				cpu_relax();
  }
+ #define arch_spin_lock_flags arch_spin_lock_flags
  
- /**
-@@ -815,12 +819,14 @@ static ssize_t show_scaling_available_go
- 		goto out;
- 	}
- 
-+	mutex_lock(&cpufreq_governor_mutex);
- 	for_each_governor(t) {
- 		if (i >= (ssize_t) ((PAGE_SIZE / sizeof(char))
- 		    - (CPUFREQ_NAME_LEN + 2)))
--			goto out;
-+			break;
- 		i += scnprintf(&buf[i], CPUFREQ_NAME_PLEN, "%s ", t->name);
- 	}
-+	mutex_unlock(&cpufreq_governor_mutex);
- out:
- 	i += sprintf(&buf[i], "\n");
- 	return i;
-@@ -1058,15 +1064,17 @@ static int cpufreq_init_policy(struct cp
- 	struct cpufreq_governor *def_gov = cpufreq_default_governor();
- 	struct cpufreq_governor *gov = NULL;
- 	unsigned int pol = CPUFREQ_POLICY_UNKNOWN;
-+	int ret;
- 
- 	if (has_target()) {
- 		/* Update policy governor to the one used before hotplug. */
--		gov = find_governor(policy->last_governor);
-+		gov = get_governor(policy->last_governor);
- 		if (gov) {
- 			pr_debug("Restoring governor %s for cpu %d\n",
- 				 policy->governor->name, policy->cpu);
- 		} else if (def_gov) {
- 			gov = def_gov;
-+			__module_get(gov->owner);
- 		} else {
- 			return -ENODATA;
- 		}
-@@ -1089,7 +1097,11 @@ static int cpufreq_init_policy(struct cp
- 			return -ENODATA;
- 	}
- 
--	return cpufreq_set_policy(policy, gov, pol);
-+	ret = cpufreq_set_policy(policy, gov, pol);
-+	if (gov)
-+		module_put(gov->owner);
-+
-+	return ret;
- }
- 
- static int cpufreq_add_policy_cpu(struct cpufreq_policy *policy, unsigned int cpu)
 
 
