@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC162474ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432272474EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404138AbgHQTRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:17:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47280 "EHLO mail.kernel.org"
+        id S2392221AbgHQTQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:16:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387439AbgHQPjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:39:03 -0400
+        id S1730429AbgHQPjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:39:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2E8D22CB3;
-        Mon, 17 Aug 2020 15:39:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C9C422DD6;
+        Mon, 17 Aug 2020 15:39:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678742;
-        bh=j9meu59QtJZfpbeCevjf8a7s2tMKlBJtUzDL50SHWjI=;
+        s=default; t=1597678748;
+        bh=6yYRTnNR6djOLWx2A2eTDjEiDgP+loFwD6B73wRHmec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oqFeKL3x/nJiR8VNx+3K6mDsOEdpx39HLtOhHUNT6wt/WS2iwut77kdmWlUILLBSS
-         J9zEvflK4OcFLpsJAmaCKCslc5FD0KsUnl2nBpso9ko1jyA7h77msVF38YIr4pyxMR
-         pWXE/CHT9u1c6velLoF2KgSWvGbuUOJyZWkiwFmU=
+        b=xE3Cq/iXv185zCJ5SRXcb6qmucQ7xdkByNySq/gzhzOavQ1viaGNsEBtA7x7swJrJ
+         9GsLSOjRY5RWLgVsKAo2HdeWkjbrN9K5c+uUTjZN5E5f+k0cl/XzlZXWl1zLVcLL0F
+         UX2rU7SdhPxU7d4YGDY33HKqic2zFFsCIQMIlHi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH 5.8 438/464] mtd: spi-nor: intel-spi: Simulate WRDI command
-Date:   Mon, 17 Aug 2020 17:16:31 +0200
-Message-Id: <20200817143854.755252885@linuxfoundation.org>
+        stable@vger.kernel.org, Sonny Rao <sonnyrao@chromium.org>,
+        Baoquan He <bhe@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.8 440/464] Revert "mm/vmstat.c: do not show lowmem reserve protection information of empty zone"
+Date:   Mon, 17 Aug 2020 17:16:33 +0200
+Message-Id: <20200817143854.851550056@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -45,48 +47,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+From: Baoquan He <bhe@redhat.com>
 
-commit 44a80df4bfce02f5d51fe5040bdbdf10d0d78f4e upstream.
+commit a8a4b7aeaf841311cb13ff0f6c4710c7a00e68d4 upstream.
 
-After spi_nor_write_disable() return code checks were introduced in the
-spi-nor front end intel-spi backend stopped to work because WRDI was never
-supported and always failed.
+This reverts commit 26e7deadaae175.
 
-Just pretend it was sucessful and ignore the command itself. HW sequencer
-shall do the right thing automatically, while with SW sequencer we cannot
-do it anyway, because the only tool we had was preopcode and it makes no
-sense for WRDI.
+Sonny reported that one of their tests started failing on the latest
+kernel on their Chrome OS platform.  The root cause is that the above
+commit removed the protection line of empty zone, while the parser used in
+the test relies on the protection line to mark the end of each zone.
 
-Fixes: bce679e5ae3a ("mtd: spi-nor: Check for errors after each Register Operation")
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/282e1305-fd08-e446-1a22-eb4dff78cfb4@nokia.com
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Let's revert it to avoid breaking userspace testing or applications.
+
+Fixes: 26e7deadaae175 ("mm/vmstat.c: do not show lowmem reserve protection information of empty zone)"
+Reported-by: Sonny Rao <sonnyrao@chromium.org>
+Signed-off-by: Baoquan He <bhe@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Cc: <stable@vger.kernel.org>	[5.8.x]
+Link: http://lkml.kernel.org/r/20200811075412.12872-1-bhe@redhat.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/spi-nor/controllers/intel-spi.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ mm/vmstat.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-+++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-@@ -612,6 +612,15 @@ static int intel_spi_write_reg(struct sp
- 		return 0;
- 	}
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1596,12 +1596,6 @@ static void zoneinfo_show_print(struct s
+ 		   zone->present_pages,
+ 		   zone_managed_pages(zone));
  
-+	/*
-+	 * We hope that HW sequencer will do the right thing automatically and
-+	 * with the SW sequencer we cannot use preopcode anyway, so just ignore
-+	 * the Write Disable operation and pretend it was completed
-+	 * successfully.
-+	 */
-+	if (opcode == SPINOR_OP_WRDI)
-+		return 0;
+-	/* If unpopulated, no other information is useful */
+-	if (!populated_zone(zone)) {
+-		seq_putc(m, '\n');
+-		return;
+-	}
+-
+ 	seq_printf(m,
+ 		   "\n        protection: (%ld",
+ 		   zone->lowmem_reserve[0]);
+@@ -1609,6 +1603,12 @@ static void zoneinfo_show_print(struct s
+ 		seq_printf(m, ", %ld", zone->lowmem_reserve[i]);
+ 	seq_putc(m, ')');
+ 
++	/* If unpopulated, no other information is useful */
++	if (!populated_zone(zone)) {
++		seq_putc(m, '\n');
++		return;
++	}
 +
- 	writel(0, ispi->base + FADDR);
- 
- 	/* Write the value beforehand */
+ 	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
+ 		seq_printf(m, "\n      %-12s %lu", zone_stat_name(i),
+ 			   zone_page_state(zone, i));
 
 
