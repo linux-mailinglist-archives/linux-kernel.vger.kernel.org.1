@@ -2,139 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC82524788E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCA7247889
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgHQVPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 17:15:51 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:48070 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727885AbgHQVPp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 17:15:45 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k7mTk-001Bwu-Sg; Mon, 17 Aug 2020 15:15:40 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k7mTk-00074A-6O; Mon, 17 Aug 2020 15:15:40 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Witten <mfwitten@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, John Levon <john.levon@joyent.com>,
-        John Levon <levon@movementarian.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <c6fda26e8d134264b04fadc3386d6c32@gmail.com>
-        <20200816175303.GB1236603@ZenIV.linux.org.uk>
-        <20200817204223.GB12414@amd>
-Date:   Mon, 17 Aug 2020 16:12:09 -0500
-In-Reply-To: <20200817204223.GB12414@amd> (Pavel Machek's message of "Mon, 17
-        Aug 2020 22:42:24 +0200")
-Message-ID: <87lfid6kpi.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1727858AbgHQVOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 17:14:44 -0400
+Received: from mga18.intel.com ([134.134.136.126]:7106 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727789AbgHQVOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 17:14:44 -0400
+IronPort-SDR: rQZOcFoOZwbex413NN+bfzTJnTaKtUILB1WSoUdaRDMLnEPdZ+Uq266RPUgZjzL/vraxJYFm4f
+ nMj1hCe2B8iQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="142418315"
+X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
+   d="scan'208";a="142418315"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 14:14:43 -0700
+IronPort-SDR: 93bBxgHVUdBFDBPXTqCH049KLd5f1W+pOOV9QvsaqTtXyXjP231jxgbapnbPPCOTem2pKWeG3j
+ 1lQEZarRN7QQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
+   d="scan'208";a="296609612"
+Received: from bbartede-mobl.ger.corp.intel.com (HELO localhost) ([10.249.32.24])
+  by orsmga006.jf.intel.com with ESMTP; 17 Aug 2020 14:14:40 -0700
+Date:   Tue, 18 Aug 2020 00:14:40 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Masahisa Kojima <masahisa.kojima@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        ardb@kernel.org, devicetree@vger.kernel.org,
+        linux-integrity@vger.kernel.org, peterhuewe@gmx.de, jgg@ziepe.ca,
+        Rob Herring <robh+dt@kernel.org>, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v5 2/2] dt-bindings: Add SynQucer TPM MMIO as a trivial
+ device
+Message-ID: <20200817211440.GB44714@linux.intel.com>
+References: <20200728031433.3370-1-masahisa.kojima@linaro.org>
+ <20200728031433.3370-3-masahisa.kojima@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1k7mTk-00074A-6O;;;mid=<87lfid6kpi.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1//ZQ9z85heRXtRqSwjyTMi/k4mhCF2Zkk=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4986]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: ; sa02 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Pavel Machek <pavel@ucw.cz>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 330 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.7 (1.1%), b_tie_ro: 2.5 (0.7%), parse: 0.69
-        (0.2%), extract_message_metadata: 9 (2.7%), get_uri_detail_list: 1.22
-        (0.4%), tests_pri_-1000: 9 (2.8%), tests_pri_-950: 0.98 (0.3%),
-        tests_pri_-900: 0.82 (0.2%), tests_pri_-90: 64 (19.5%), check_bayes:
-        63 (19.1%), b_tokenize: 6 (1.7%), b_tok_get_all: 8 (2.5%),
-        b_comp_prob: 2.1 (0.6%), b_tok_touch_all: 44 (13.3%), b_finish: 0.68
-        (0.2%), tests_pri_0: 232 (70.3%), check_dkim_signature: 0.39 (0.1%),
-        check_dkim_adsp: 2.2 (0.7%), poll_dns_idle: 0.91 (0.3%), tests_pri_10:
-        1.71 (0.5%), tests_pri_500: 5 (1.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] Makefile: Yes. Finally remove '-Wdeclaration-after-statement'
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200728031433.3370-3-masahisa.kojima@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel Machek <pavel@ucw.cz> writes:
+On Tue, Jul 28, 2020 at 12:14:32PM +0900, Masahisa Kojima wrote:
+> Add a compatible string for the SynQuacer TPM to the binding for a
+> TPM exposed via a memory mapped TIS frame. The MMIO window behaves
+> slightly differently on this hardware, so it requires its own
+> identifier.
+> 
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
 
-> Hi!
->
->> > This is not just a matter of style; this is a matter of semantics,
->> > especially with regard to:
->> > 
->> >   * const Correctness.
->> >     A const-declared variable must be initialized when defined.
->> > 
->> >   * Conditional Compilation.
->> >     When there is complex interaction between compile-time
->> >     configuration options, it's essential to be able to
->> >     make declarations where needed; otherwise unnecessary
->> >     gymnastics are required to silence the compiler.
->> > 
->> > Gentleman... Just let people say exactly what they mean to say.
-> ..
->
->> You obviously need every bit of help in that task, judging by the amount
->> of clarity (or thoughts, for that matter) visible in the spew above...
->> 
->> NAK.  And as for letting people say exactly what they mean to say...
->> I am tempted to take you on that invitation, but that would be cruel
->> to gregkh - he would have to reply to inevitable screeds about
->> CoC-violating postings on l-k.
->
-> We should really get rid of CoC, because I'd really like to see you
-> _not_ resist that temptation.
->
-> But... he's right.
->
-> With rust-like programming style with widespread consts, this warning
-> has to go. And it is causing additional/ugly #ifdefs in some cases.
->
-> Maybe author can show examples in kernel .c where disabling the
-> warning would lead to nicer code. I believe we should give it a try.
+I applied these patches:
 
+http://git.infradead.org/users/jjs/linux-tpmdd.git/log/refs/heads/master
 
-This change came in with 535231e8252e ("[PATCH] add
--Wdeclaration-after-statement").  AKA
-https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/commit/?id=535231e8252eea14abf4f14d28f6c1c03f5e0f02
-
-Does anyone remember why we added this warning?  I had always thought
-it's purpose was to ensure we stayed within our chosen dialect of C.
-The actual commit says that it was in reaction to gcc miscompiling proc.
-Which is a far more serious thing.
-
-With all of the our bumping of our gcc version lately perhaps it is safe
-to remove this warning.
-
-Eric
+/Jarkko
