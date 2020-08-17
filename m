@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CAF247686
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA54F24767F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732482AbgHQTiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:38:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39618 "EHLO mx2.suse.de"
+        id S1732455AbgHQTi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:38:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729238AbgHQP06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:26:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AE32BAC24;
-        Mon, 17 Aug 2020 15:27:21 +0000 (UTC)
-Date:   Mon, 17 Aug 2020 17:26:55 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH 0/8] memcg: Enable fine-grained per process memory
- control
-Message-ID: <20200817152655.GE28270@dhcp22.suse.cz>
-References: <20200817140831.30260-1-longman@redhat.com>
+        id S1729458AbgHQP1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:27:08 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DC5323B31;
+        Mon, 17 Aug 2020 15:27:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597678027;
+        bh=Pzsot6q3dgWfHBZvvoYCwTxZohnjcMafvwd+AYasv8c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TKpmuevWf/H7VG7jRpvc30/GfAIYWsNtzFm4xo4LUrsczSuZmUNbu5EuHyt+jDmci
+         sTHooQocRBBliQwj0h6zf9EnJXpTgx95e0xl08MFqeUwrFx5XC7hyfQhi+QDPOggUM
+         vCvK6JyHwgPBhk6JlesuA645jbqAsvDaYcM2GkKo=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1k7h2P-003bML-ME; Mon, 17 Aug 2020 16:27:05 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817140831.30260-1-longman@redhat.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 17 Aug 2020 16:27:05 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] Revert "irqchip/mtk-sysirq: Convert to a platform driver"
+In-Reply-To: <20200817145738.986999-1-linux@fw-web.de>
+References: <20200817145738.986999-1-linux@fw-web.de>
+User-Agent: Roundcube Webmail/1.4.7
+Message-ID: <7b9c3ee73faeaf8d2e64c228047438f1@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: linux@fw-web.de, linux-mediatek@lists.infradead.org, frank-w@public-files.de, tglx@linutronix.de, jason@lakedaemon.net, matthias.bgg@gmail.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 17-08-20 10:08:23, Waiman Long wrote:
-> Memory controller can be used to control and limit the amount of
-> physical memory used by a task. When a limit is set in "memory.high" in
-> a v2 non-root memory cgroup, the memory controller will try to reclaim
-> memory if the limit has been exceeded. Normally, that will be enough
-> to keep the physical memory consumption of tasks in the memory cgroup
-> to be around or below the "memory.high" limit.
+On 2020-08-17 15:57, Frank Wunderlich wrote:
+> From: Frank Wunderlich <frank-w@public-files.de>
 > 
-> Sometimes, memory reclaim may not be able to recover memory in a rate
-> that can catch up to the physical memory allocation rate. In this case,
-> the physical memory consumption will keep on increasing.  When it reaches
-> "memory.max" for memory cgroup v2 or when the system is running out of
-> free memory, the OOM killer will be invoked to kill some tasks to free
-> up additional memory. However, one has little control of which tasks
-> are going to be killed by an OOM killer. Killing tasks that hold some
-> important resources without freeing them first can create other system
-> problems down the road.
+> This reverts commit f97dbf48ca43009e8b8bcdf07f47fc9f06149b36 which
+> breaks bootup of arm/arm64 devices like bananapi-r2/mt7623 and
+> bananapi-r64/mt7622
 > 
-> Users who do not want the OOM killer to be invoked to kill random
-> tasks in an out-of-memory situation can use the memory control
-> facility provided by this new patchset via prctl(2) to better manage
-> the mitigation action that needs to be performed to various tasks when
-> the specified memory limit is exceeded with memory cgroup v2 being used.
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+> ---
+>  drivers/irqchip/irq-mtk-sysirq.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> The currently supported mitigation actions include the followings:
-> 
->  1) Return ENOMEM for some syscalls that allocate or handle memory
->  2) Slow down the process for memory reclaim to catch up
->  3) Send a specific signal to the task
->  4) Kill the task
-> 
-> The users that want better memory control for their applicatons can
-> either modify their applications to call the prctl(2) syscall directly
-> with the new memory control command code or write the desired action to
-> the newly provided memctl procfs files of their applications provided
-> that those applications run in a non-root v2 memory cgroup.
+> diff --git a/drivers/irqchip/irq-mtk-sysirq.c 
+> b/drivers/irqchip/irq-mtk-sysirq.c
+> index 7299c5ab4d10..6ff98b87e5c0 100644
+> --- a/drivers/irqchip/irq-mtk-sysirq.c
+> +++ b/drivers/irqchip/irq-mtk-sysirq.c
+> @@ -231,6 +231,4 @@ static int __init mtk_sysirq_of_init(struct
+> device_node *node,
+>  	kfree(chip_data);
+>  	return ret;
+>  }
+> -IRQCHIP_PLATFORM_DRIVER_BEGIN(mtk_sysirq)
+> -IRQCHIP_MATCH("mediatek,mt6577-sysirq", mtk_sysirq_of_init)
+> -IRQCHIP_PLATFORM_DRIVER_END(mtk_sysirq)
+> +IRQCHIP_DECLARE(mtk_sysirq, "mediatek,mt6577-sysirq", 
+> mtk_sysirq_of_init);
 
-prctl is fundamentally about per-process control while cgroup (not only
-memcg) is about group of processes interface. How do those two interact
-together? In other words what is the semantic when different processes
-have a different views on the same underlying memcg event?
+There is already a fix queued for this.
 
-Also the above description doesn't really describe any usecase which
-struggles with the existing interface. We already do allow slow down and
-along with PSI also provide user space control over close to OOM
-situation.
-
+        M.
 -- 
-Michal Hocko
-SUSE Labs
+Jazz is not dead. It just smells funny...
