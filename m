@@ -2,63 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D212465D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314382465BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728214AbgHQL6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 07:58:15 -0400
-Received: from elvis.franken.de ([193.175.24.41]:49839 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726980AbgHQL6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 07:58:13 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1k7dmF-0004BP-00; Mon, 17 Aug 2020 13:58:11 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 6F205C0D74; Mon, 17 Aug 2020 13:53:08 +0200 (CEST)
-Date:   Mon, 17 Aug 2020 13:53:08 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-mips@linux-mips.org, Hauke Mehrtens <hauke@hauke-m.de>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        "open list:BROADCOM BCM47XX MIPS ARCHITECTURE" 
-        <linux-mips@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] firmware: bcm47xx_sprom: Fix -Wmissing-prototypes
- warnings
-Message-ID: <20200817115308.GA4796@alpha.franken.de>
-References: <20200726041521.5398-1-f.fainelli@gmail.com>
+        id S1726871AbgHQLyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 07:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726530AbgHQLyD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 07:54:03 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A11C061342
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 04:54:02 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id y206so8101681pfb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 04:54:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CPagJq8bfLV5JHleSz/YdyHxTxcPKxeM2AT318YsVDU=;
+        b=cUo2YqnIduCfkp3HRFHUsby0zIh4dQYG3sMlKf28FS6lSwIo6RgJH+LytxK18B2Xwv
+         CKGCwVlOVoB0vdx09P+hquL2g0fnLEFIl6278frwEGWyWh0wgn/FvpnULmcjwCMz4P1m
+         QvOeSCUuHTNcDLC2nwxNGjoTp1xDchiJDXN4AKsy9QdAk3z3fxrZukSimZOz1mSFoEIM
+         oenaufwaX+LZD3rAy7UYelrnzOy5gZWXAtEiJJlBEQfRb+iUgUW/mdb4BbuOnqpNqx/A
+         l6MKMdZZ/IeSpillNWWS64wACRvp7VRH+Zs+o5syOFhQFzaMuHD9BMXIMcqXebI9ga5j
+         Xmkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CPagJq8bfLV5JHleSz/YdyHxTxcPKxeM2AT318YsVDU=;
+        b=ZZlFxYa5No2o0pBKE06fI6zBfoed+TKrpZjI1pTq6rByQJodokDmG2nbuJkVLUFgcU
+         yk18E9dAvFEl9kEk+sKF+OOFhmfY4+6gykjsVEg3kv8GYm2Mw01VZ3YJrlLkyOcN9lcp
+         PzouN4OeSO2BY722Dy0QRqf9d1nIbqT+qZAZdCsRMSILl9k2twdI7AVMfA+4waVR4UXF
+         I+0IDiQr6JEHj8TPhuIQIuf0ys9AU+lyxnZraLUd5ZjtywFAF8eYB5rYYuLS2A8LB3Wj
+         lCMm/Z4mA0TtajJPPDvmZforKgRCQ6s5JgeTQUYlAL/Wc91rg1s0hq92f5Wyb0w3I373
+         2YpQ==
+X-Gm-Message-State: AOAM533+Jnf/02zNWpUPgU0e3o9bfpygKGOH8t+WvDqv9o259ydOW95h
+        kT9IDNTsms91F9q8WtZ3UgzS1UiVK6lXjcUui1zPmg==
+X-Google-Smtp-Source: ABdhPJxQsY+haVSQeWnKsAs3ixBm6FjQ0//5YkN0AYGeNZHDelu/iOrnxxlOSVO5MvjaUD8VZOIX74GJgLknb82gmsU=
+X-Received: by 2002:a65:680b:: with SMTP id l11mr3369972pgt.440.1597665241999;
+ Mon, 17 Aug 2020 04:54:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200726041521.5398-1-f.fainelli@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20200813151922.1093791-1-alex.popov@linux.com>
+ <20200813151922.1093791-2-alex.popov@linux.com> <202008150939.A994680@keescook>
+In-Reply-To: <202008150939.A994680@keescook>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 17 Aug 2020 13:53:51 +0200
+Message-ID: <CAAeHK+yPFoQZanzjXBty8rM9eY4thv+ThdHX7mz-sgeg147F7w@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/2] mm: Extract SLAB_QUARANTINE from KASAN
+To:     Kees Cook <keescook@chromium.org>,
+        Alexander Popov <alex.popov@linux.com>
+Cc:     Jann Horn <jannh@google.com>, Will Deacon <will@kernel.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Patrick Bellasi <patrick.bellasi@arm.com>,
+        David Howells <dhowells@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kernel-hardening@lists.openwall.com,
+        LKML <linux-kernel@vger.kernel.org>, notify@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 25, 2020 at 09:15:19PM -0700, Florian Fainelli wrote:
-> Hi Thomas,
-> 
-> This patch series fixes W=1 -Wmissing-prototypes warnings for the
-> bcm47xx_sprom.c firmware file.
-> 
-> Thanks!
-> 
-> Florian Fainelli (2):
->   firmware: bcm47xx_sprom: Fix -Wmissing-prototypes warnings
->   MIPS: BCM47xx: Include bcm47xx_sprom.h
-> 
->  arch/mips/include/asm/mach-bcm47xx/bcm47xx.h |  4 +---
->  drivers/firmware/broadcom/bcm47xx_sprom.c    |  1 +
->  include/linux/bcm47xx_sprom.h                | 10 ++++++++++
->  3 files changed, 12 insertions(+), 3 deletions(-)
+On Sat, Aug 15, 2020 at 6:52 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Thu, Aug 13, 2020 at 06:19:21PM +0300, Alexander Popov wrote:
+> > Heap spraying is an exploitation technique that aims to put controlled
+> > bytes at a predetermined memory location on the heap. Heap spraying for
+> > exploiting use-after-free in the Linux kernel relies on the fact that on
+> > kmalloc(), the slab allocator returns the address of the memory that was
+> > recently freed. Allocating a kernel object with the same size and
+> > controlled contents allows overwriting the vulnerable freed object.
+> >
+> > Let's extract slab freelist quarantine from KASAN functionality and
+> > call it CONFIG_SLAB_QUARANTINE. This feature breaks widespread heap
+> > spraying technique used for exploiting use-after-free vulnerabilities
+> > in the kernel code.
+> >
+> > If this feature is enabled, freed allocations are stored in the quarantine
+> > and can't be instantly reallocated and overwritten by the exploit
+> > performing heap spraying.
 
-series applied to mips-next.
+[...]
 
-Thomas.
+> In doing this extraction, I wonder if function naming should be changed?
+> If it's going to live a new life outside of KASAN proper, maybe call
+> these functions quarantine_cache_*()? But perhaps that's too much
+> churn...
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+If quarantine is to be used without the rest of KASAN, I'd prefer for
+it to be separated from KASAN completely: move to e.g. mm/quarantine.c
+and don't mention KASAN in function/config names.
