@@ -2,67 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37828246F11
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C812246EB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731529AbgHQRmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:42:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55088 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731101AbgHQQQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:16:39 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 554E720658;
-        Mon, 17 Aug 2020 16:16:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680977;
-        bh=qmXn2ePcxDGgDoZI/rAKqc3zaoL0TNCzGzLKaOLK0fM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aRwgKhUWjrCwd9uDv+ANJAH6gUxStlMD4owM5J9/JPiol4eK+RhA/NJs9yjLlH1dp
-         VL4xjbKcKHexzaohKJnatJcHKzuB9VdmwpwYw941s7tmsprSnIwZffmUt9g0k8Pff7
-         NwNK0j0seE62MAOq3/lU3Q0T/EbSRcR+GHGSIJL4=
-Date:   Mon, 17 Aug 2020 09:16:15 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Moshe Shemesh <moshe@mellanox.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v2 01/13] devlink: Add reload action option
- to devlink reload command
-Message-ID: <20200817091615.37e76ca3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1597657072-3130-2-git-send-email-moshe@mellanox.com>
-References: <1597657072-3130-1-git-send-email-moshe@mellanox.com>
-        <1597657072-3130-2-git-send-email-moshe@mellanox.com>
+        id S1730894AbgHQRfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731273AbgHQQcP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:32:15 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EF6C061342
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 09:32:14 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id j187so15482130qke.11
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 09:32:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9m4MfDUfrltprFjWsb3k3Kia0mWcTEtj+YWN//2YLSE=;
+        b=jPob0hGf8a2L4JsXcMdzEjwJAr4SK4ZI67Zl6bJCrKDXIFEuivs+1/Tf6V3WLsPcHH
+         HtyGxTc/QvBwerXGUKIpw1BkjLG/NCi95nxF5AJI18Qyg+8Or+PEZarPxnsAM8A/FWEf
+         xSnqRXeG2PuLndwdSbOlZfx8onjfDbigwLH237qO78YbIzfuiovoWXJANyulgpDQbPDu
+         j5tY7czB0BeZJxrBmF2VjVjJdB/QpEoYqL7tQB4TMVqfCWBZgtER6OJuu6+Du1ZZbdDy
+         MaLB8z3ozcD0r0BiKnrdzw4cHaRkWlR6ifUF7BZxzuU+CUhqjKO2cya32IlMbR0w0H6h
+         2tCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9m4MfDUfrltprFjWsb3k3Kia0mWcTEtj+YWN//2YLSE=;
+        b=E2bb70oiz71/t05zmkr0Pytew4+bZ471ft6CAPjX+kJ898iDv3d/7ozVaS4JJfnKyv
+         vNDI8grON/pLx785aSZQ3Z+FUB1E58ks9D2f6rtxHGBra9S87poGmlylNdkCevpUQyL+
+         i8blOfPHD8RdF7L183CQfzaxFTUFpTGn0J7hDDSdQdlRoFClI/5/gu6wxiKChWdnI4td
+         t6QSAy9jRjAgOD32mlXDhE22OpcpmILTuBuZaJ3kIcFfJXt3WywbNnBoXnb/l4SjSfmL
+         +ib+XGzMD+7gdxwQ4IoI42U/63i/6s/t9VDx9r9TWsKGwlzn96nEK2kR/6EdBj82x1Kx
+         vCfQ==
+X-Gm-Message-State: AOAM532lQ/x2N/hQhA4xafMslUUXO5ZjtMj2aL4IDtccE6S+IXL8N4Q1
+        mbh+aSpKpZXL2Mfxbrzdh2g=
+X-Google-Smtp-Source: ABdhPJzPZE5HzRjmtdIRGzVfzwZiibX8QBNrVCGwBKoEgHQZmDiPEvdnBfCVQz/pUpnG4j+W0t/wDQ==
+X-Received: by 2002:a37:8287:: with SMTP id e129mr11743166qkd.132.1597681933893;
+        Mon, 17 Aug 2020 09:32:13 -0700 (PDT)
+Received: from atris.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id j16sm17335953qke.87.2020.08.17.09.32.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 09:32:13 -0700 (PDT)
+From:   Liam Beguin <liambeguin@gmail.com>
+To:     liambeguin@gmail.com, kishon@ti.com, vkoul@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/1] phy: tusb1210: use bitmasks to set VENDOR_SPECIFIC2
+Date:   Mon, 17 Aug 2020 12:31:52 -0400
+Message-Id: <20200817163152.13468-1-liambeguin@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Aug 2020 12:37:40 +0300 Moshe Shemesh wrote:
-> Add devlink reload action to allow the user to request a specific reload
-> action. The action parameter is optional, if not specified then devlink
-> driver re-init action is used (backward compatible).
-> Note that when required to do firmware activation some drivers may need
-> to reload the driver. On the other hand some drivers may need to reset
-> the firmware to reinitialize the driver entities.
+From: Liam Beguin <lvb@xiphos.com>
 
-See, this is why I wanted to keep --live as a separate option. 
-Normally the driver is okay to satisfy more actions than requested, 
-e.g. activate FW even if only driver_reinit was requested.
+Start by reading the content of the VENDOR_SPECIFIC2 register and update
+each bit field based on device properties when defined.
 
-fw_live_patch does not have this semantics, it explicitly requires
-driver to not impact connectivity much. No "can do more resets than
-requested" here. Hence the --live part would be better off as a
-separate argument (at least in uAPI, the in-kernel interface we can
-change later if needed).
+The use of bit masks prevents fields from overriding each other and
+enables users to clear bits which are set by default, like datapolarity
+in this instance.
 
-> Reload actions supported are:
-> driver_reinit: driver entities re-initialization, applying devlink-param
->                and devlink-resource values.
-> fw_activate: firmware activate.
-> fw_live_patch: firmware live patching.
+Signed-off-by: Liam Beguin <lvb@xiphos.com>
+---
+Changes since v1:
+- use set_mask_bits
+
+Changes since v2:
+- fix missing bit shift dropped in v2
+- rebase on 5.9-rc1
+
+ drivers/phy/ti/phy-tusb1210.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/phy/ti/phy-tusb1210.c b/drivers/phy/ti/phy-tusb1210.c
+index d8d0cc11d187..358842b5790f 100644
+--- a/drivers/phy/ti/phy-tusb1210.c
++++ b/drivers/phy/ti/phy-tusb1210.c
+@@ -14,8 +14,11 @@
+ 
+ #define TUSB1210_VENDOR_SPECIFIC2		0x80
+ #define TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT	0
++#define TUSB1210_VENDOR_SPECIFIC2_IHSTX_MASK	GENMASK(3, 0)
+ #define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT	4
++#define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_MASK	GENMASK(5, 4)
+ #define TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT	6
++#define TUSB1210_VENDOR_SPECIFIC2_DP_MASK	BIT(6)
+ 
+ struct tusb1210 {
+ 	struct ulpi *ulpi;
+@@ -118,23 +121,27 @@ static int tusb1210_probe(struct ulpi *ulpi)
+ 	 * diagram optimization and DP/DM swap.
+ 	 */
+ 
++	reg = ulpi_read(ulpi, TUSB1210_VENDOR_SPECIFIC2);
++
+ 	/* High speed output drive strength configuration */
+-	device_property_read_u8(&ulpi->dev, "ihstx", &val);
+-	reg = val << TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT;
++	if (!device_property_read_u8(&ulpi->dev, "ihstx", &val))
++		reg = set_mask_bits(&reg, TUSB1210_VENDOR_SPECIFIC2_IHSTX_MASK,
++				    val << TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT);
+ 
+ 	/* High speed output impedance configuration */
+-	device_property_read_u8(&ulpi->dev, "zhsdrv", &val);
+-	reg |= val << TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT;
++	if (!device_property_read_u8(&ulpi->dev, "zhsdrv", &val))
++		reg = set_mask_bits(&reg, TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_MASK,
++				    val << TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT);
+ 
+ 	/* DP/DM swap control */
+-	device_property_read_u8(&ulpi->dev, "datapolarity", &val);
+-	reg |= val << TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT;
+-
+-	if (reg) {
+-		ulpi_write(ulpi, TUSB1210_VENDOR_SPECIFIC2, reg);
+-		tusb->vendor_specific2 = reg;
++	if (!device_property_read_u8(&ulpi->dev, "datapolarity", &val)) {
++		reg = set_mask_bits(&reg, TUSB1210_VENDOR_SPECIFIC2_DP_MASK,
++				    val << TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT);
+ 	}
+ 
++	ulpi_write(ulpi, TUSB1210_VENDOR_SPECIFIC2, reg);
++	tusb->vendor_specific2 = reg;
++
+ 	tusb->phy = ulpi_phy_create(ulpi, &phy_ops);
+ 	if (IS_ERR(tusb->phy))
+ 		return PTR_ERR(tusb->phy);
+
+base-commit: 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
+-- 
+2.27.0
+
