@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA20247727
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BA524771C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729359AbgHQPVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:21:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42004 "EHLO mail.kernel.org"
+        id S2404319AbgHQTpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:45:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729302AbgHQPUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:20:52 -0400
+        id S1729418AbgHQPWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:22:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AE9920729;
-        Mon, 17 Aug 2020 15:20:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6500422D75;
+        Mon, 17 Aug 2020 15:22:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677651;
-        bh=ZQqVU7TG/KpLcPr0o/0mZ3eI0AAOkC63u17RKU6K1lI=;
+        s=default; t=1597677727;
+        bh=pheYLl1F1b+RkUaS318nzLCRhq4G0ZZVeOC/26y6vwE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fJ9lE/uw/pVaEbSP5J41Zs2Q/K/3vwu5ea7Sm3dAL7bFsr3R//8QcYTE+6a3L/Fku
-         IcRczP5BezhIjvHinMHcq2F+Pk2eqzTiSuVcDBkaIOLLh7nkRBvEAEyGuRuUyuTM3L
-         dw+t4I4PTOywe/cs7atFcBRvu/V+kWsTHGyxjMkk=
+        b=t5aaE4TQw1AWDuvBIe8wKdWSu/0O5p8s2iG3QKpRzDAR/lEmVQGlzg1v9eT3fhLqZ
+         M51HHvcybtNFqlgGoVv1VbthDbqvlvko1LLvQb/+dY5a1sgoCQbyVX5ygbNWu3vLZX
+         CDXD31hmBtvMTl03HsBhZtmhhJM0AJN8AGzsMS6U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        Hristo Venev <hristo@venev.name>, io-uring@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 052/464] io_uring: fix sq array offset calculation
-Date:   Mon, 17 Aug 2020 17:10:05 +0200
-Message-Id: <20200817143836.252163777@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rishabh Bhatnagar <rishabhb@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 055/464] soc: qcom: pdr: Reorder the PD state indication ack
+Date:   Mon, 17 Aug 2020 17:10:08 +0200
+Message-Id: <20200817143836.397478153@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -44,49 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Vyukov <dvyukov@google.com>
+From: Sibi Sankar <sibis@codeaurora.org>
 
-[ Upstream commit b36200f543ff07a1cb346aa582349141df2c8068 ]
+[ Upstream commit 72fe996f9643043c8f84e32c0610975b01aa555b ]
 
-rings_size() sets sq_offset to the total size of the rings (the returned
-value which is used for memory allocation). This is wrong: sq array should
-be located within the rings, not after them. Set sq_offset to where it
-should be.
+The Protection Domains (PD) have a mechanism to keep its resources
+enabled until the PD down indication is acked. Reorder the PD state
+indication ack so that clients get to release the relevant resources
+before the PD goes down.
 
-Fixes: 75b28affdd6a ("io_uring: allocate the two rings together")
-Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
-Acked-by: Hristo Venev <hristo@venev.name>
-Cc: io-uring@vger.kernel.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Fixes: fbe639b44a82 ("soc: qcom: Introduce Protection Domain Restart helpers")
+Reported-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+Link: https://lore.kernel.org/r/20200701195954.9007-1-sibis@codeaurora.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/soc/qcom/pdr_interface.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 95bacab047ddb..8503aec7ea295 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -7093,6 +7093,9 @@ static unsigned long rings_size(unsigned sq_entries, unsigned cq_entries,
- 		return SIZE_MAX;
- #endif
+diff --git a/drivers/soc/qcom/pdr_interface.c b/drivers/soc/qcom/pdr_interface.c
+index bdcf16f88a97f..4c9225f15c4e6 100644
+--- a/drivers/soc/qcom/pdr_interface.c
++++ b/drivers/soc/qcom/pdr_interface.c
+@@ -278,13 +278,15 @@ static void pdr_indack_work(struct work_struct *work)
  
-+	if (sq_offset)
-+		*sq_offset = off;
+ 	list_for_each_entry_safe(ind, tmp, &pdr->indack_list, node) {
+ 		pds = ind->pds;
+-		pdr_send_indack_msg(pdr, pds, ind->transaction_id);
+ 
+ 		mutex_lock(&pdr->status_lock);
+ 		pds->state = ind->curr_state;
+ 		pdr->status(pds->state, pds->service_path, pdr->priv);
+ 		mutex_unlock(&pdr->status_lock);
+ 
++		/* Ack the indication after clients release the PD resources */
++		pdr_send_indack_msg(pdr, pds, ind->transaction_id);
 +
- 	sq_array_size = array_size(sizeof(u32), sq_entries);
- 	if (sq_array_size == SIZE_MAX)
- 		return SIZE_MAX;
-@@ -7100,9 +7103,6 @@ static unsigned long rings_size(unsigned sq_entries, unsigned cq_entries,
- 	if (check_add_overflow(off, sq_array_size, &off))
- 		return SIZE_MAX;
- 
--	if (sq_offset)
--		*sq_offset = off;
--
- 	return off;
- }
- 
+ 		mutex_lock(&pdr->list_lock);
+ 		list_del(&ind->node);
+ 		mutex_unlock(&pdr->list_lock);
 -- 
 2.25.1
 
