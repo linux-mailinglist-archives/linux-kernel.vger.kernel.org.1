@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2440B247729
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AE7247726
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404245AbgHQTqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:46:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44138 "EHLO mail.kernel.org"
+        id S2404387AbgHQTpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:45:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729373AbgHQPVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:21:41 -0400
+        id S1729392AbgHQPVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:21:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD75F20748;
-        Mon, 17 Aug 2020 15:21:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4B7820716;
+        Mon, 17 Aug 2020 15:21:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677700;
-        bh=APvDs6SRzrE3GBnZEeLG0DagUxL255mNjD/D2GdW9DY=;
+        s=default; t=1597677708;
+        bh=hA1h9wZ8IJcr0MIhQYceFwDgSJwUNP7M6s/QAIjJbUk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KwH/qp+SK/l4I6SI72VRTu4LASjdhG2QK4uOviQrvPQv1hHR5Zh78GkF9uP41wHac
-         7Iq9BHYMsJWbo8Oam8xdn2+8mrIuEP0XEbuPpxr3rxbmFOeoYS5+T7jyE2+RZ0aMME
-         vJiTHSxdRb0g6LEavA5lSxRm9+MnlPkqUS0S/8cQ=
+        b=yPCxnQ//gy4y67TqFr+t1yWdHDbCKgFCt3mk/TNVoaMxykmU0zej4+XVCZNVbQYWT
+         /P0FXtfI10Ucg/mOtEW+P+ZCgBlCkH447isQgX6lwgSwE1glyDH6ENjaeqKM5IlCPb
+         L0f9s2GpAY4adi8IECccXnisDmV3Lg8bCrN+ZtTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 076/464] block: dont do revalidate zones on invalid devices
-Date:   Mon, 17 Aug 2020 17:10:29 +0200
-Message-Id: <20200817143837.416131733@linuxfoundation.org>
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 079/464] net: mscc: ocelot: fix encoding destination ports into multicast IPv4 address
+Date:   Mon, 17 Aug 2020 17:10:32 +0200
+Message-Id: <20200817143837.564359473@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -45,103 +44,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit 1a1206dc4cf02cee4b5cbce583ee4c22368b4c28 ]
+[ Upstream commit 0897ecf7532577bda3dbcb043ce046a96948889d ]
 
-When we loose a device for whatever reason while (re)scanning zones, we
-trip over a NULL pointer in blk_revalidate_zone_cb, like in the following
-log:
+The ocelot hardware designers have made some hacks to support multicast
+IPv4 and IPv6 addresses. Normally, the MAC table matches on MAC
+addresses and the destination ports are selected through the DEST_IDX
+field of the respective MAC table entry. The DEST_IDX points to a Port
+Group ID (PGID) which contains the bit mask of ports that frames should
+be forwarded to. But there aren't a lot of PGIDs (only 80 or so) and
+there are clearly many more IP multicast addresses than that, so it
+doesn't scale to use this PGID mechanism, so something else was done.
+Since the first portion of the MAC address is known, the hack they did
+was to use a single PGID for _flooding_ unknown IPv4 multicast
+(PGID_MCIPV4 == 62), but for known IP multicast, embed the destination
+ports into the first 3 bytes of the MAC address recorded in the MAC
+table.
 
-sd 0:0:0:0: [sda] 3418095616 4096-byte logical blocks: (14.0 TB/12.7 TiB)
-sd 0:0:0:0: [sda] 52156 zones of 65536 logical blocks
-sd 0:0:0:0: [sda] Write Protect is off
-sd 0:0:0:0: [sda] Mode Sense: 37 00 00 08
-sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
-sd 0:0:0:0: [sda] REPORT ZONES start lba 1065287680 failed
-sd 0:0:0:0: [sda] REPORT ZONES: Result: hostbyte=0x00 driverbyte=0x08
-sd 0:0:0:0: [sda] Sense Key : 0xb [current]
-sd 0:0:0:0: [sda] ASC=0x0 ASCQ=0x6
-sda: failed to revalidate zones
-sd 0:0:0:0: [sda] 0 4096-byte logical blocks: (0 B/0 B)
-sda: detected capacity change from 14000519643136 to 0
-==================================================================
-BUG: KASAN: null-ptr-deref in blk_revalidate_zone_cb+0x1b7/0x550
-Write of size 8 at addr 0000000000000010 by task kworker/u4:1/58
+The VSC7514 datasheet explains it like this:
 
-CPU: 1 PID: 58 Comm: kworker/u4:1 Not tainted 5.8.0-rc1 #692
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4-rebuilt.opensuse.org 04/01/2014
-Workqueue: events_unbound async_run_entry_fn
-Call Trace:
- dump_stack+0x7d/0xb0
- ? blk_revalidate_zone_cb+0x1b7/0x550
- kasan_report.cold+0x5/0x37
- ? blk_revalidate_zone_cb+0x1b7/0x550
- check_memory_region+0x145/0x1a0
- blk_revalidate_zone_cb+0x1b7/0x550
- sd_zbc_parse_report+0x1f1/0x370
- ? blk_req_zone_write_trylock+0x200/0x200
- ? sectors_to_logical+0x60/0x60
- ? blk_req_zone_write_trylock+0x200/0x200
- ? blk_req_zone_write_trylock+0x200/0x200
- sd_zbc_report_zones+0x3c4/0x5e0
- ? sd_dif_config_host+0x500/0x500
- blk_revalidate_disk_zones+0x231/0x44d
- ? _raw_write_lock_irqsave+0xb0/0xb0
- ? blk_queue_free_zone_bitmaps+0xd0/0xd0
- sd_zbc_read_zones+0x8cf/0x11a0
- sd_revalidate_disk+0x305c/0x64e0
- ? __device_add_disk+0x776/0xf20
- ? read_capacity_16.part.0+0x1080/0x1080
- ? blk_alloc_devt+0x250/0x250
- ? create_object.isra.0+0x595/0xa20
- ? kasan_unpoison_shadow+0x33/0x40
- sd_probe+0x8dc/0xcd2
- really_probe+0x20e/0xaf0
- __driver_attach_async_helper+0x249/0x2d0
- async_run_entry_fn+0xbe/0x560
- process_one_work+0x764/0x1290
- ? _raw_read_unlock_irqrestore+0x30/0x30
- worker_thread+0x598/0x12f0
- ? __kthread_parkme+0xc6/0x1b0
- ? schedule+0xed/0x2c0
- ? process_one_work+0x1290/0x1290
- kthread+0x36b/0x440
- ? kthread_create_worker_on_cpu+0xa0/0xa0
- ret_from_fork+0x22/0x30
-==================================================================
+    3.9.1.5 IPv4 Multicast Entries
 
-When the device is already gone we end up with the following scenario:
-The device's capacity is 0 and thus the number of zones will be 0 as well. When
-allocating the bitmap for the conventional zones, we then trip over a NULL
-pointer.
+    MAC table entries with the ENTRY_TYPE = 2 settings are interpreted
+    as IPv4 multicast entries.
+    IPv4 multicasts entries match IPv4 frames, which are classified to
+    the specified VID, and which have DMAC = 0x01005Exxxxxx, where
+    xxxxxx is the lower 24 bits of the MAC address in the entry.
+    Instead of a lookup in the destination mask table (PGID), the
+    destination set is programmed as part of the entry MAC address. This
+    is shown in the following table.
 
-So if we encounter a zoned block device with a 0 capacity, don't dare to
-revalidate the zones sizes.
+    Table 78: IPv4 Multicast Destination Mask
 
-Fixes: 6c6b35491422 ("block: set the zone size in blk_revalidate_disk_zones atomically")
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+        Destination Ports            Record Bit Field
+        ---------------------------------------------
+        Ports 10-0                   MAC[34-24]
+
+    Example: All IPv4 multicast frames in VLAN 12 with MAC 01005E112233 are
+    to be forwarded to ports 3, 8, and 9. This is done by inserting the
+    following entry in the MAC table entry:
+    VALID = 1
+    VID = 12
+    MAC = 0x000308112233
+    ENTRY_TYPE = 2
+    DEST_IDX = 0
+
+But this procedure is not at all what's going on in the driver. In fact,
+the code that embeds the ports into the MAC address looks like it hasn't
+actually been tested. This patch applies the procedure described in the
+datasheet.
+
+Since there are many other fixes to be made around multicast forwarding
+until it works properly, there is no real reason for this patch to be
+backported to stable trees, or considered a real fix of something that
+should have worked.
+
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-zoned.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/mscc/ocelot.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/block/blk-zoned.c b/block/blk-zoned.c
-index 23831fa8701d8..480dfff69a00c 100644
---- a/block/blk-zoned.c
-+++ b/block/blk-zoned.c
-@@ -497,6 +497,9 @@ int blk_revalidate_disk_zones(struct gendisk *disk,
- 	if (WARN_ON_ONCE(!queue_is_mq(q)))
- 		return -EIO;
+diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
+index f17da67a4622e..d0b79cca51840 100644
+--- a/drivers/net/ethernet/mscc/ocelot.c
++++ b/drivers/net/ethernet/mscc/ocelot.c
+@@ -1605,14 +1605,14 @@ static int ocelot_port_obj_add_mdb(struct net_device *dev,
+ 	addr[0] = 0;
  
-+	if (!get_capacity(disk))
-+		return -EIO;
-+
- 	/*
- 	 * Ensure that all memory allocations in this context are done as if
- 	 * GFP_NOIO was specified.
+ 	if (!new) {
+-		addr[2] = mc->ports << 0;
+-		addr[1] = mc->ports << 8;
++		addr[1] = mc->ports >> 8;
++		addr[2] = mc->ports & 0xff;
+ 		ocelot_mact_forget(ocelot, addr, vid);
+ 	}
+ 
+ 	mc->ports |= BIT(port);
+-	addr[2] = mc->ports << 0;
+-	addr[1] = mc->ports << 8;
++	addr[1] = mc->ports >> 8;
++	addr[2] = mc->ports & 0xff;
+ 
+ 	return ocelot_mact_learn(ocelot, 0, addr, vid, ENTRYTYPE_MACv4);
+ }
+@@ -1636,9 +1636,9 @@ static int ocelot_port_obj_del_mdb(struct net_device *dev,
+ 		return -ENOENT;
+ 
+ 	memcpy(addr, mc->addr, ETH_ALEN);
+-	addr[2] = mc->ports << 0;
+-	addr[1] = mc->ports << 8;
+ 	addr[0] = 0;
++	addr[1] = mc->ports >> 8;
++	addr[2] = mc->ports & 0xff;
+ 	ocelot_mact_forget(ocelot, addr, vid);
+ 
+ 	mc->ports &= ~BIT(port);
+@@ -1648,8 +1648,8 @@ static int ocelot_port_obj_del_mdb(struct net_device *dev,
+ 		return 0;
+ 	}
+ 
+-	addr[2] = mc->ports << 0;
+-	addr[1] = mc->ports << 8;
++	addr[1] = mc->ports >> 8;
++	addr[2] = mc->ports & 0xff;
+ 
+ 	return ocelot_mact_learn(ocelot, 0, addr, vid, ENTRYTYPE_MACv4);
+ }
 -- 
 2.25.1
 
