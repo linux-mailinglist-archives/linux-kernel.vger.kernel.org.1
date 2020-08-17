@@ -2,37 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3291E246A1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFF0246A25
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730189AbgHQPaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:30:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41688 "EHLO mail.kernel.org"
+        id S1730247AbgHQPa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:30:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729989AbgHQP2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:28:06 -0400
+        id S1730019AbgHQP2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:28:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8755623AC0;
-        Mon, 17 Aug 2020 15:28:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2CAF233CF;
+        Mon, 17 Aug 2020 15:28:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678086;
-        bh=SJxSG5hjeCoBv7dI/pFgKfrBpXKRvG9S8f+X7U2EkEs=;
+        s=default; t=1597678121;
+        bh=JrYOhwWwwmrReXwB+ZeyDYHuIP3lqKqROWwbKCFhgOs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sFiK4Lb9Jyz9fjJiggtGf0eSMphLsIlZAPoV2xd8gh6CKIVbAscMn9RZQEBhdjStL
-         415GPusdhunmTQWJMFB5/A1Bie9G+P72//xE2kX/317pUQ0k+0qQiZCxmaU53mJGrY
-         LllHm7mVGE7yp0qfUbeUoiK3fdbJa1gZVirbx/CQ=
+        b=G6G3hS/yzj9jpcf5dQnbsJCcgsOFcPTAKvn9t6vVbOxL9oY8AaZDL2FggLJ+23P40
+         EmKaP7k/Y5gmHdGp8YTxNEC6vovO7qKwptBm4pE5YsLXUZq4egncZxsa3F0T+QPVF8
+         Se4r3NFyr7Wgrqto3OlFxNT8e6kne4KoPcqjBeSs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Brian Foster <bfoster@redhat.com>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        =?UTF-8?q?Yannick=20Fertr=C3=A9?= <yannick.fertre@st.com>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Vincent Abriou <vincent.abriou@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Benjamin Gaignard <benjamin.gaignard@st.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 213/464] xfs: fix reflink quota reservation accounting error
-Date:   Mon, 17 Aug 2020 17:12:46 +0200
-Message-Id: <20200817143844.015665239@linuxfoundation.org>
+Subject: [PATCH 5.8 218/464] drm/stm: repair runtime power management
+Date:   Mon, 17 Aug 2020 17:12:51 +0200
+Message-Id: <20200817143844.245721026@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -45,62 +52,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 83895227aba1ade33e81f586aa7b6b1e143096a5 ]
+[ Upstream commit ebd267b2e3c25d5f93a08528b47c036569eb8744 ]
 
-Quota reservations are supposed to account for the blocks that might be
-allocated due to a bmap btree split.  Reflink doesn't do this, so fix
-this to make the quota accounting more accurate before we start
-rearranging things.
+Add missing pm_runtime_get_sync() into ltdc_crtc_atomic_enable() to
+match pm_runtime_put_sync() in ltdc_crtc_atomic_disable(), otherwise
+the LTDC might suspend via runtime PM, disable clock, and then fail
+to resume later on.
 
-Fixes: 862bb360ef56 ("xfs: reflink extents from one file to another")
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Brian Foster <bfoster@redhat.com>
+The test which triggers it is roughly -- run qt5 application which
+uses eglfs platform and etnaviv, stop the application, sleep for 15
+minutes, run the application again. This leads to a timeout waiting
+for vsync, because the LTDC has suspended, but did not resume.
+
+Fixes: 35ab6cfbf211 ("drm/stm: support runtime power management")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Yannick Fertré <yannick.fertre@st.com>
+Cc: Philippe Cornu <philippe.cornu@st.com>
+Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Cc: Vincent Abriou <vincent.abriou@st.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@st.com>
+To: dri-devel@lists.freedesktop.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
+Cc: linux-arm-kernel@lists.infradead.org
+Acked-by: Philippe Cornu <philippe.cornu@st.com>
+Tested-by: Yannick Fertre <yannick.fertre@st.com>
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200229221649.90813-1-marex@denx.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_reflink.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/stm/ltdc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-index 107bf2a2f3448..d89201d40891f 100644
---- a/fs/xfs/xfs_reflink.c
-+++ b/fs/xfs/xfs_reflink.c
-@@ -1003,6 +1003,7 @@ xfs_reflink_remap_extent(
- 	xfs_filblks_t		rlen;
- 	xfs_filblks_t		unmap_len;
- 	xfs_off_t		newlen;
-+	int64_t			qres;
- 	int			error;
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index f894968d6e452..3f590d916e916 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -423,9 +423,12 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+ 				    struct drm_crtc_state *old_state)
+ {
+ 	struct ltdc_device *ldev = crtc_to_ltdc(crtc);
++	struct drm_device *ddev = crtc->dev;
  
- 	unmap_len = irec->br_startoff + irec->br_blockcount - destoff;
-@@ -1025,13 +1026,19 @@ xfs_reflink_remap_extent(
- 	xfs_ilock(ip, XFS_ILOCK_EXCL);
- 	xfs_trans_ijoin(tp, ip, 0);
+ 	DRM_DEBUG_DRIVER("\n");
  
--	/* If we're not just clearing space, then do we have enough quota? */
--	if (real_extent) {
--		error = xfs_trans_reserve_quota_nblks(tp, ip,
--				irec->br_blockcount, 0, XFS_QMOPT_RES_REGBLKS);
--		if (error)
--			goto out_cancel;
--	}
-+	/*
-+	 * Reserve quota for this operation.  We don't know if the first unmap
-+	 * in the dest file will cause a bmap btree split, so we always reserve
-+	 * at least enough blocks for that split.  If the extent being mapped
-+	 * in is written, we need to reserve quota for that too.
-+	 */
-+	qres = XFS_EXTENTADD_SPACE_RES(mp, XFS_DATA_FORK);
-+	if (real_extent)
-+		qres += irec->br_blockcount;
-+	error = xfs_trans_reserve_quota_nblks(tp, ip, qres, 0,
-+			XFS_QMOPT_RES_REGBLKS);
-+	if (error)
-+		goto out_cancel;
++	pm_runtime_get_sync(ddev->dev);
++
+ 	/* Sets the background color value */
+ 	reg_write(ldev->regs, LTDC_BCCR, BCCR_BCBLACK);
  
- 	trace_xfs_reflink_remap(ip, irec->br_startoff,
- 				irec->br_blockcount, irec->br_startblock);
 -- 
 2.25.1
 
