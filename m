@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1349245CD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311FD245CDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgHQHBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 03:01:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42356 "EHLO mail.kernel.org"
+        id S1726910AbgHQHCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 03:02:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726451AbgHQHAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 03:00:38 -0400
+        id S1726482AbgHQHAk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 03:00:40 -0400
 Received: from localhost.localdomain (unknown [194.230.155.242])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04DC7207FF;
-        Mon, 17 Aug 2020 07:00:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEB0620866;
+        Mon, 17 Aug 2020 07:00:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597647638;
-        bh=VLk66Gcfw65cI8H3iqrAuNUGmvgQ8gBD623S8yCZ7BA=;
+        s=default; t=1597647640;
+        bh=GUVKNPgfDB8917lWwEHA4oC9kR2I7j0v7BpHAiKdlMc=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=TMsdTpZyCmmCaNBe5kUZzOG7Kl+Pj8ROVMSo8VBf6qpyWMlqG4P1H7rsk8AAH+w2M
-         77ax78tJsIjeuEmJnMlfcxjUvFz/iiew/dNqq/D6TxVynX4hVNfb5TbjVLyKbDW0gr
-         IfbvwsLVyTmVEcROq9ZnEY33UvLmeXhLaqR/LgQA=
+        b=ERIe7+9z9OO2G1LOlISUJG631f9KT/bOz4Cn2M2bWClCTuHy2/qZWsNX/PlT/A7wF
+         ZxUU6CaORmlcq36aZv+qrxNLE31J5iGpas9HtVJEHmRJAs/ShHHCEb0rkdGKVCWJeJ
+         zhArTf43KIMjgHgr3DNgJpDyv79g/oA9nCPJZ5Yg=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
         Chanwoo Choi <cw00.choi@samsung.com>,
@@ -30,9 +30,9 @@ To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Vijai Kumar K <vijaikumar.kanagarajan@gmail.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v2 10/13] extcon: ptn5150: Reduce the amount of logs on deferred probe
-Date:   Mon, 17 Aug 2020 09:00:06 +0200
-Message-Id: <20200817070009.4631-11-krzk@kernel.org>
+Subject: [PATCH v2 11/13] extcon: ptn5150: Convert to module_i2c_driver
+Date:   Mon, 17 Aug 2020 09:00:07 +0200
+Message-Id: <20200817070009.4631-12-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200817070009.4631-1-krzk@kernel.org>
 References: <20200817070009.4631-1-krzk@kernel.org>
@@ -41,51 +41,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no point to print deferred probe (and its failures to get
-resources) as an error.  In case of multiple probe tries this would
-pollute the dmesg.
+Use module_i2c_driver() to simplify driver init boilerplate.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/extcon/extcon-ptn5150.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/extcon/extcon-ptn5150.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/drivers/extcon/extcon-ptn5150.c b/drivers/extcon/extcon-ptn5150.c
-index 008e664d8d56..c8611ff90990 100644
+index c8611ff90990..690d878c65f1 100644
 --- a/drivers/extcon/extcon-ptn5150.c
 +++ b/drivers/extcon/extcon-ptn5150.c
-@@ -243,7 +243,7 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c,
- 			dev_info(dev, "No VBUS GPIO, ignoring VBUS control\n");
- 			info->vbus_gpiod = NULL;
- 		} else {
--			dev_err(dev, "failed to get VBUS GPIO\n");
-+			dev_err_probe(dev, ret, "failed to get VBUS GPIO\n");
- 			return ret;
- 		}
- 	}
-@@ -255,8 +255,8 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c,
- 	info->regmap = devm_regmap_init_i2c(i2c, &ptn5150_regmap_config);
- 	if (IS_ERR(info->regmap)) {
- 		ret = PTR_ERR(info->regmap);
--		dev_err(info->dev, "failed to allocate register map: %d\n",
--				   ret);
-+		dev_err_probe(info->dev, ret, "failed to allocate register map: %d\n",
-+			      ret);
- 		return ret;
- 	}
+@@ -337,12 +337,7 @@ static struct i2c_driver ptn5150_i2c_driver = {
+ 	.probe	= ptn5150_i2c_probe,
+ 	.id_table = ptn5150_i2c_id,
+ };
+-
+-static int __init ptn5150_i2c_init(void)
+-{
+-	return i2c_add_driver(&ptn5150_i2c_driver);
+-}
+-subsys_initcall(ptn5150_i2c_init);
++module_i2c_driver(ptn5150_i2c_driver);
  
-@@ -265,8 +265,9 @@ static int ptn5150_i2c_probe(struct i2c_client *i2c,
- 	} else {
- 		info->int_gpiod = devm_gpiod_get(&i2c->dev, "int", GPIOD_IN);
- 		if (IS_ERR(info->int_gpiod)) {
--			dev_err(dev, "failed to get INT GPIO\n");
--			return PTR_ERR(info->int_gpiod);
-+			ret = PTR_ERR(info->int_gpiod);
-+			dev_err_probe(dev, ret, "failed to get INT GPIO\n");
-+			return ret;
- 		}
- 
- 		info->irq = gpiod_to_irq(info->int_gpiod);
+ MODULE_DESCRIPTION("NXP PTN5150 CC logic Extcon driver");
+ MODULE_AUTHOR("Vijai Kumar K <vijaikumar.kanagarajan@gmail.com>");
 -- 
 2.17.1
 
