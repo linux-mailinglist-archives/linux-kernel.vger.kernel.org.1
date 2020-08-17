@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4EC246B3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77AD5246B43
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730912AbgHQPvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:51:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48058 "EHLO mail.kernel.org"
+        id S2387747AbgHQPvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:51:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730649AbgHQPjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:39:31 -0400
+        id S1730486AbgHQPjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:39:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9C5A22DD6;
-        Mon, 17 Aug 2020 15:39:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 620DA208E4;
+        Mon, 17 Aug 2020 15:39:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678771;
-        bh=uNGWZjCsg64ckoUhe0XxFhNdO/u7Unjei4kpB/FWVdQ=;
+        s=default; t=1597678774;
+        bh=mdDePSu7eStr8QxZQkIFDAJN7NczDRXPX+oERb1uTbE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xh3Hn5U/P9qRYVAX8IJXNIT5dpw7IW2ZdMPWqgQf2tlzQqrTujMXoIKTu4fbC+aqw
-         hK8ziRrXLrvKcWVGM4YaKAXbmgqmUEgKjNnU0Oid3gkBI1lDECQTMb/Ac5WbwKXQCO
-         lGRQ7GhVr/9zVqb1AcsVos+tXQjMvgts7SJkoQY4=
+        b=zhSyKbVnIOc984eDtcCTZ524Txqjt+V8Z6iZXVUdyi/0M6iU0SFM1kZsaVMiTcJRf
+         sok6HYoGACghfcmdFf7f7CLbDuUAmrk+Ix9hSomQX7AGxGuqCzUpdhQQvAFZSJoVqU
+         MzQ7tmc4WHFOew86C4TxKv7cLwc3lCPBSZJK3NoE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
-        Helge Deller <deller@gmx.de>
-Subject: [PATCH 5.8 447/464] parisc: mask out enable and reserved bits from sba imask
-Date:   Mon, 17 Aug 2020 17:16:40 +0200
-Message-Id: <20200817143855.193232198@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 5.8 448/464] ARM: dts: exynos: Extend all Exynos5800 A15s OPPs with max voltage data
+Date:   Mon, 17 Aug 2020 17:16:41 +0200
+Message-Id: <20200817143855.233813199@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -43,33 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@stackframe.org>
+From: Marek Szyprowski <m.szyprowski@samsung.com>
 
-commit 5b24993c21cbf2de11aff077a48c5cb0505a0450 upstream.
+commit d644853ff8fcbb7a4e3757f9d8ccc39d930b7e3c upstream.
 
-When using kexec the SBA IOMMU IBASE might still have the RE
-bit set. This triggers a WARN_ON when trying to write back the
-IBASE register later, and it also makes some mask calculations fail.
+On Exynos5422/5800 the regulator supply for the A15 cores ("vdd_arm") is
+coupled with the regulator supply for the SoC internal circuits
+("vdd_int"), thus all operating points that modify one of those supplies
+have to specify a triplet of the min/target/max values to properly work
+with regulator coupling.
 
+Fixes: eaffc4de16c6 ("ARM: dts: exynos: Add missing CPU frequencies for Exynos5422/5800")
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
-Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/parisc/sba_iommu.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/exynos5800.dtsi |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -1270,7 +1270,7 @@ sba_ioc_init_pluto(struct parisc_device
- 	** (one that doesn't overlap memory or LMMIO space) in the
- 	** IBASE and IMASK registers.
- 	*/
--	ioc->ibase = READ_REG(ioc->ioc_hpa + IOC_IBASE);
-+	ioc->ibase = READ_REG(ioc->ioc_hpa + IOC_IBASE) & ~0x1fffffULL;
- 	iova_space_size = ~(READ_REG(ioc->ioc_hpa + IOC_IMASK) & 0xFFFFFFFFUL) + 1;
- 
- 	if ((ioc->ibase < 0xfed00000UL) && ((ioc->ibase + iova_space_size) > 0xfee00000UL)) {
+--- a/arch/arm/boot/dts/exynos5800.dtsi
++++ b/arch/arm/boot/dts/exynos5800.dtsi
+@@ -23,17 +23,17 @@
+ &cluster_a15_opp_table {
+ 	opp-2000000000 {
+ 		opp-hz = /bits/ 64 <2000000000>;
+-		opp-microvolt = <1312500>;
++		opp-microvolt = <1312500 1312500 1500000>;
+ 		clock-latency-ns = <140000>;
+ 	};
+ 	opp-1900000000 {
+ 		opp-hz = /bits/ 64 <1900000000>;
+-		opp-microvolt = <1262500>;
++		opp-microvolt = <1262500 1262500 1500000>;
+ 		clock-latency-ns = <140000>;
+ 	};
+ 	opp-1800000000 {
+ 		opp-hz = /bits/ 64 <1800000000>;
+-		opp-microvolt = <1237500>;
++		opp-microvolt = <1237500 1237500 1500000>;
+ 		clock-latency-ns = <140000>;
+ 	};
+ 	opp-1700000000 {
 
 
