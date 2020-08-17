@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB452246A5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2A9246A61
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730422AbgHQPeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:34:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49990 "EHLO mail.kernel.org"
+        id S1730421AbgHQPfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:35:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730151AbgHQP34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:29:56 -0400
+        id S1730174AbgHQPaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:30:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6281723D3C;
-        Mon, 17 Aug 2020 15:29:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A35BC23B21;
+        Mon, 17 Aug 2020 15:30:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678195;
-        bh=05iKHycDZmcIvSow2mGu/p3lmoFOWIEpyO5G7US79J0=;
+        s=default; t=1597678219;
+        bh=Oopa2Q4J01ZunaBcR25lClVjGsRiJotF3lTYnimf010=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u9ugcQn2mEY1TyCvBZaYUjNFo+G+l1Vh0vzgJEEcecRB/1z6haF2qa6RZ8rYeJUC3
-         T7cTuySIij8RVz0iHpKGHitRzBpqgabbR8kjhrN0fsH0+FZ/e/OIVXSe1FPfgJg7ij
-         q5jS2OPQRXh4MlQ18ysVl6Br/JBvjbgcDCKa85IA=
+        b=1cTwM4OWI8Iqyh28LWeyf8IieC7qLJ7DkH7sEJXyhsAYSE2qQ/U55+WTnblhUCumL
+         hr51qDsotWmuQa0tK2y/dG9g46rdrz5bhUQ0PN4HjmZxL/q1sl8mppNny1wDJk2iLP
+         t5VG5HRYQ8HAopoxOB4WliEofgTjdHsvTkz6duNI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Bharata B Rao <bharata@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 249/464] media: s5p-g2d: Fix a memory leak in an error handling path in g2d_probe()
-Date:   Mon, 17 Aug 2020 17:13:22 +0200
-Message-Id: <20200817143845.723289831@linuxfoundation.org>
+Subject: [PATCH 5.8 251/464] powerpc/mm/radix: Free PUD table when freeing pagetable
+Date:   Mon, 17 Aug 2020 17:13:24 +0200
+Message-Id: <20200817143845.819219557@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -46,84 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Bharata B Rao <bharata@linux.ibm.com>
 
-[ Upstream commit 94b9ce6870f9c90ac92505482689818b254312f7 ]
+[ Upstream commit 9ce8853b4a735c8115f55ac0e9c2b27a4c8f80b5 ]
 
-Memory allocated with 'v4l2_m2m_init()' must be freed by a corresponding
-call to 'v4l2_m2m_release()'
+remove_pagetable() isn't freeing PUD table. This causes memory
+leak during memory unplug. Fix this.
 
-Also reorder the code at the end of the probe function so that
-'video_register_device()' is called last.
-Update the error handling path accordingly.
-
-Fixes: 5ce60d790a24 ("[media] s5p-g2d: Add DT based discovery support")
-Fixes: 918847341af0 ("[media] v4l: add G2D driver for s5p device family")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-[hverkuil-cisco@xs4all.nl: checkpatch: align with parenthesis]
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 4b5d62ca17a1 ("powerpc/mm: add radix__remove_section_mapping()")
+Signed-off-by: Bharata B Rao <bharata@linux.ibm.com>
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200709131925.922266-3-aneesh.kumar@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/s5p-g2d/g2d.c | 28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+ arch/powerpc/mm/book3s64/radix_pgtable.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/drivers/media/platform/s5p-g2d/g2d.c b/drivers/media/platform/s5p-g2d/g2d.c
-index 6932fd47071b0..15bcb7f6e113c 100644
---- a/drivers/media/platform/s5p-g2d/g2d.c
-+++ b/drivers/media/platform/s5p-g2d/g2d.c
-@@ -695,21 +695,13 @@ static int g2d_probe(struct platform_device *pdev)
- 	vfd->lock = &dev->mutex;
- 	vfd->v4l2_dev = &dev->v4l2_dev;
- 	vfd->device_caps = V4L2_CAP_VIDEO_M2M | V4L2_CAP_STREAMING;
--	ret = video_register_device(vfd, VFL_TYPE_VIDEO, 0);
--	if (ret) {
--		v4l2_err(&dev->v4l2_dev, "Failed to register video device\n");
--		goto rel_vdev;
--	}
--	video_set_drvdata(vfd, dev);
--	dev->vfd = vfd;
--	v4l2_info(&dev->v4l2_dev, "device registered as /dev/video%d\n",
--								vfd->num);
+diff --git a/arch/powerpc/mm/book3s64/radix_pgtable.c b/arch/powerpc/mm/book3s64/radix_pgtable.c
+index bb00e0cba1195..c2989c1718839 100644
+--- a/arch/powerpc/mm/book3s64/radix_pgtable.c
++++ b/arch/powerpc/mm/book3s64/radix_pgtable.c
+@@ -700,6 +700,21 @@ static void free_pmd_table(pmd_t *pmd_start, pud_t *pud)
+ 	pud_clear(pud);
+ }
+ 
++static void free_pud_table(pud_t *pud_start, p4d_t *p4d)
++{
++	pud_t *pud;
++	int i;
 +
- 	platform_set_drvdata(pdev, dev);
- 	dev->m2m_dev = v4l2_m2m_init(&g2d_m2m_ops);
- 	if (IS_ERR(dev->m2m_dev)) {
- 		v4l2_err(&dev->v4l2_dev, "Failed to init mem2mem device\n");
- 		ret = PTR_ERR(dev->m2m_dev);
--		goto unreg_video_dev;
-+		goto rel_vdev;
- 	}
- 
- 	def_frame.stride = (def_frame.width * def_frame.fmt->depth) >> 3;
-@@ -717,14 +709,24 @@ static int g2d_probe(struct platform_device *pdev)
- 	of_id = of_match_node(exynos_g2d_match, pdev->dev.of_node);
- 	if (!of_id) {
- 		ret = -ENODEV;
--		goto unreg_video_dev;
-+		goto free_m2m;
- 	}
- 	dev->variant = (struct g2d_variant *)of_id->data;
- 
-+	ret = video_register_device(vfd, VFL_TYPE_VIDEO, 0);
-+	if (ret) {
-+		v4l2_err(&dev->v4l2_dev, "Failed to register video device\n");
-+		goto free_m2m;
++	for (i = 0; i < PTRS_PER_PUD; i++) {
++		pud = pud_start + i;
++		if (!pud_none(*pud))
++			return;
 +	}
-+	video_set_drvdata(vfd, dev);
-+	dev->vfd = vfd;
-+	v4l2_info(&dev->v4l2_dev, "device registered as /dev/video%d\n",
-+		  vfd->num);
 +
- 	return 0;
++	pud_free(&init_mm, pud_start);
++	p4d_clear(p4d);
++}
++
+ struct change_mapping_params {
+ 	pte_t *pte;
+ 	unsigned long start;
+@@ -874,6 +889,7 @@ static void __meminit remove_pagetable(unsigned long start, unsigned long end)
  
--unreg_video_dev:
--	video_unregister_device(dev->vfd);
-+free_m2m:
-+	v4l2_m2m_release(dev->m2m_dev);
- rel_vdev:
- 	video_device_release(vfd);
- unreg_v4l2_dev:
+ 		pud_base = (pud_t *)p4d_page_vaddr(*p4d);
+ 		remove_pud_table(pud_base, addr, next);
++		free_pud_table(pud_base, p4d);
+ 	}
+ 
+ 	spin_unlock(&init_mm.page_table_lock);
 -- 
 2.25.1
 
