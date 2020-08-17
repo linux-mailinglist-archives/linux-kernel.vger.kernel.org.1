@@ -2,237 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2EF246758
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 15:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A992524675E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 15:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728639AbgHQN1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 09:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728465AbgHQN1h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 09:27:37 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C85C061389;
-        Mon, 17 Aug 2020 06:27:36 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id B0C12297BA4
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-input@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        kernel@collabora.com
-Subject: [PATCH v2 2/2] tty/sysrq: Add configurable handler to execute a compound action
-Date:   Mon, 17 Aug 2020 15:27:27 +0200
-Message-Id: <20200817132727.14564-3-andrzej.p@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200817132727.14564-1-andrzej.p@collabora.com>
-References: <20200817132727.14564-1-andrzej.p@collabora.com>
+        id S1728574AbgHQN3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 09:29:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58440 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728358AbgHQN3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 09:29:14 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85F8D2072D;
+        Mon, 17 Aug 2020 13:29:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597670953;
+        bh=BymKps12XsZQl4YKZ1c0eB9rH+lInt76AzC41AOqUvE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wpv5465BkVtFkvEjq8ovwgg4Ym9eooROzit5pFuUECfQjFRTG1KLS8YItLAfTi+ad
+         V9ROkqnVpc3j67L3rgYU7thJeb9JGWCKI/JCqzkZhlRLgMjQRn3WzhRmQs5JuGHa3G
+         r+SwuGpuGeix5DRooPEVYZg8yLmPs8pz7FGFBMcc=
+Date:   Mon, 17 Aug 2020 21:29:04 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Chris Healy <cphealy@gmail.com>
+Cc:     s.hauer@pengutronix.de, stefan@agner.ch, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, festevam@gmail.com
+Subject: Re: [PATCH v2] ARM: dts: ZII: Disable HW Ethernet switch reset GPIOs
+Message-ID: <20200817132903.GG16951@dragon>
+References: <20200722203341.578651-1-cphealy@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722203341.578651-1-cphealy@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Userland might want to execute e.g. 'w' (show blocked tasks), followed
-by 's' (sync), followed by 1000 ms delay and then followed by 'c' (crash)
-upon a single magic SysRq. Or one might want to execute the famous "Raising
-Elephants Is So Utterly Boring" action. This patch adds a configurable
-handler, triggered with 'C', for this exact purpose. The user specifies the
-composition of the compound action using syntax similar to getopt, where
-each letter corresponds to an individual action and a colon followed by a
-number corresponds to a delay of that many milliseconds, e.g.:
+On Wed, Jul 22, 2020 at 01:33:41PM -0700, Chris Healy wrote:
+> From: Chris Healy <cphealy@gmail.com>
+> 
+> Disable Ethernet switch reset GPIO with ZII platforms that have it
+> enabled.  HW switch reset results in a reset of the copper PHYs
+> inside of the switch.  We want to avoid this reset of the copper PHYs
+> in the switch as this results in unnecessary broader network disruption on
+> a soft reboot of the application processor.
+> 
+> With the HW GPIO removed, the switch driver still performs a soft reset of
+> the switch core which has been shown to sufficiently meet our needs with
+> other ZII platforms that do not have the HW switch reset GPIO defined. 
+> 
+> Signed-off-by: Chris Healy <cphealy@gmail.com>
 
-ws:1000c
-
-or
-
-r:100eis:1000ub
-
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
----
- Documentation/admin-guide/sysrq.rst |  9 ++++
- drivers/tty/sysrq.c                 | 82 ++++++++++++++++++++++++++++-
- include/linux/sysrq.h               |  1 +
- 3 files changed, 91 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/admin-guide/sysrq.rst b/Documentation/admin-guide/sysrq.rst
-index 67dfa4c29093..80bdd8bf9636 100644
---- a/Documentation/admin-guide/sysrq.rst
-+++ b/Documentation/admin-guide/sysrq.rst
-@@ -32,6 +32,7 @@ to 1. Here is the list of possible values in /proc/sys/kernel/sysrq:
-          64 =  0x40 - enable signalling of processes (term, kill, oom-kill)
-         128 =  0x80 - allow reboot/poweroff
-         256 = 0x100 - allow nicing of all RT tasks
-+        512 = 0x200 - allow compound action
- 
- You can set the value in the file by the following command::
- 
-@@ -148,6 +149,14 @@ Command	    Function
- 
- ``z``	    Dump the ftrace buffer
- 
-+``C``	    Execute a predefined, compound action. The action is defined with
-+	    sysrq.sysrq_compound_action module parameter, whose value contains known
-+	    command keys (except ``C`` to prevent recursion). The command keys can
-+	    be optionally followed by a colon and a number of milliseconds to wait
-+	    after executing the last action. For example:
-+
-+	    sysrq.sysrq_compound_action=r:100eis:1000ub
-+
- ``0``-``9`` Sets the console log level, controlling which kernel messages
-             will be printed to your console. (``0``, for example would make
-             it so that only emergency messages like PANICs or OOPSes would
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index 959f9e121cc6..fec770de325b 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -20,6 +20,7 @@
- #include <linux/sched/debug.h>
- #include <linux/sched/task.h>
- #include <linux/ctype.h>
-+#include <linux/delay.h>
- #include <linux/interrupt.h>
- #include <linux/mm.h>
- #include <linux/fs.h>
-@@ -438,6 +439,15 @@ static const struct sysrq_key_op sysrq_unrt_op = {
- 	.enable_mask	= SYSRQ_ENABLE_RTNICE,
- };
- 
-+static void sysrq_action_compound(int key);
-+
-+static struct sysrq_key_op sysrq_action_compound_op = {
-+	.handler	= sysrq_action_compound,
-+	.help_msg	= "execute-compound-action(C)",
-+	.action_msg	= "Execute compound action",
-+	.enable_mask	= SYSRQ_ENABLE_COMPOUND,
-+};
-+
- /* Key Operations table and lock */
- static DEFINE_SPINLOCK(sysrq_key_table_lock);
- 
-@@ -500,7 +510,7 @@ static const struct sysrq_key_op *sysrq_key_table[62] = {
- 	&sysrq_ftrace_dump_op,		/* z */
- 	NULL,				/* A */
- 	NULL,				/* B */
--	NULL,				/* C */
-+	&sysrq_action_compound_op,	/* C */
- 	NULL,				/* D */
- 	NULL,				/* E */
- 	NULL,				/* F */
-@@ -633,6 +643,7 @@ EXPORT_SYMBOL(handle_sysrq);
- 
- #ifdef CONFIG_INPUT
- static int sysrq_reset_downtime_ms;
-+static char *sysrq_compound_action;
- 
- /* Simple translation table for the SysRq keys */
- static const unsigned char sysrq_xlate[KEY_CNT] =
-@@ -786,6 +797,62 @@ static void sysrq_of_get_keyreset_config(void)
- {
- }
- #endif
-+#define SYSRQ_COMPOUND_ACTION_VALIDATE	0
-+#define SYSRQ_COMPOUND_ACTION_RUN	1
-+
-+static int sysrq_process_compound_action(int pass)
-+{
-+	const char *action = sysrq_compound_action;
-+	const struct sysrq_key_op *op_p;
-+	int ret;
-+	unsigned int delay;
-+
-+	while (*action) {
-+		op_p = __sysrq_get_key_op(*action);
-+		if (!op_p)
-+			return -EINVAL;
-+
-+		/* Don't allow calling ourselves recursively */
-+		if (op_p == &sysrq_action_compound_op)
-+			return -EINVAL;
-+
-+		if (pass == SYSRQ_COMPOUND_ACTION_RUN)
-+			__handle_sysrq(*action, false);
-+
-+		if (*++action == ':') {
-+			ret = sscanf(action++, ":%u", &delay);
-+			if (ret < 1) /* we want at least ":[0-9]" => 1 item */
-+				return -EINVAL;
-+
-+			while (*action >= '0' && *action <= '9')
-+				++action;
-+			if (pass == SYSRQ_COMPOUND_ACTION_RUN)
-+				mdelay(delay);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void sysrq_action_compound(int key)
-+{
-+	if (!sysrq_compound_action) {
-+		pr_err("Unconfigured compound action for %s\n",
-+		       sysrq_action_compound_op.help_msg);
-+
-+		return;
-+	}
-+
-+	if (sysrq_process_compound_action(SYSRQ_COMPOUND_ACTION_VALIDATE)) {
-+		pr_err("Incorrect compound action %s for %s\n",
-+		       sysrq_compound_action,
-+		       sysrq_action_compound_op.help_msg);
-+
-+		return;
-+	}
-+
-+	sysrq_process_compound_action(SYSRQ_COMPOUND_ACTION_RUN);
-+}
- 
- static void sysrq_reinject_alt_sysrq(struct work_struct *work)
- {
-@@ -1077,8 +1144,21 @@ module_param_array_named(reset_seq, sysrq_reset_seq, sysrq_reset_seq,
- 
- module_param_named(sysrq_downtime_ms, sysrq_reset_downtime_ms, int, 0644);
- 
-+module_param(sysrq_compound_action, charp, 0644);
-+MODULE_PARM_DESC(sysrq_compound_action,
-+	"\tCompound sysrq action to be executed on Alt-Shift-SysRq-C\n"
-+	"\tThe compound action definition consists of known SysRq action letters except 'C',\n"
-+	"\teach letter can be optionally followed by a colon and a number of milliseconds to wait\n"
-+	"\tafter executing the last action.\n"
-+	"\tExample:\n"
-+	"\tTo unRaw, wait 100ms, tErminate, kIll, Sync, wait 1000ms, Unmount, Boot\n"
-+	"\tsysrq.sysrq_compound_action=r:100eis:1000ub");
- #else
- 
-+{
-+}
-+
-+static void sysrq_action_compound(int key)
- static inline void sysrq_register_handler(void)
- {
- }
-diff --git a/include/linux/sysrq.h b/include/linux/sysrq.h
-index 3a582ec7a2f1..6df4442f12a9 100644
---- a/include/linux/sysrq.h
-+++ b/include/linux/sysrq.h
-@@ -28,6 +28,7 @@
- #define SYSRQ_ENABLE_SIGNAL	0x0040
- #define SYSRQ_ENABLE_BOOT	0x0080
- #define SYSRQ_ENABLE_RTNICE	0x0100
-+#define SYSRQ_ENABLE_COMPOUND	0x0200
- 
- struct sysrq_key_op {
- 	void (* const handler)(int);
--- 
-2.17.1
-
+Applied, thanks.
