@@ -2,250 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3178B2475EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36442477AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732162AbgHQTam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:30:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58208 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730278AbgHQPcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:32:03 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 307B520709;
-        Mon, 17 Aug 2020 15:32:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678321;
-        bh=Oa7Ez3rHLkW4BGy0tuai6tw2vu2xI3kKAl26GFf0WA0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZCmtJ/PBT4dlLH4pwoE+L47YMBUnK9wYAvWM7z4UpuoxrKJhee7EmMwvHWWJ45pzV
-         UE61evSlocEV1D762vfkcw6UmcUNN1+StYt3vTrb7lEmvoZmIn0+lZn2Qw+i/RuSvE
-         vfuDeWEHvqNRv0AvxkoTddahqQlFXv/l1cLPNRAg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pedro Miraglia Franco de Carvalho <pedromfc@br.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 294/464] powerpc/watchpoint: Fix DAWR exception constraint
-Date:   Mon, 17 Aug 2020 17:14:07 +0200
-Message-Id: <20200817143847.841030507@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
-References: <20200817143833.737102804@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2404476AbgHQTvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:51:47 -0400
+Received: from mail-eopbgr750079.outbound.protection.outlook.com ([40.107.75.79]:43281
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729088AbgHQPSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:18:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JTWXBTt9ucjJPqBTliEpbBaaOtdSPwjpjWIoD1To5rhesYG1B9nGscBMgSgtNdDxJJlA3Wbw3e44fr1t3lJU+Fqtb+jQRiLqDu2x67BornAbF8tw6RNThl0s2YdlUFm7I5HBxEh3G3M4fJdsUo+lZNXXTJgK5yru6e/v5IAHp6qf/Q1tyJ4AvoxuYlIxPIG3mEUZtG6JKXPkCXJmWjWbfJgiyI7lAJt2d/4EqBdTtvda2HEkUmDOTYDiItA6esqABS2kwCksuOOtwz7t7Ngeqgl3pJPbgQZzrxhN1YZpn5N/RNm3F45t3idxhml02wNIhR+8EUjT1FH9lwNMD6TgUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gtWaFkLwatG3eoF1Vaf674r01GT6enB0ABlDnlGefhc=;
+ b=FQBlpmVP7rL5wlRlhFvxCLqA03x5YGZuCpchb1qtT5tVWWiC/CQgQxAfnOexgblIlauYpBDNF6B0Atv9C9DpBCQ5XCsaIhMGkYOneMSi2WWh8sAuKHmbfGthpJGblUhJho+GMsGzP+FbnnAG/oPcCKrNbo7bKeazcU7WH/V9bTY5qoeEqDHxnNzuOdSSbDiiBu248aVsIzHxvwvH2TyP7zS/UIyqahWMRP3FuUMi6sIczStV9xVn6KX1hZahVzmEZg9tQvaHSfu4gnvnwSFYKK/OKKOuH83Ebpxhjocd+q3IaS3Ex2PkpwCPEMGmDpbsbG3yS/F8VCROqwn0Oadj0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gtWaFkLwatG3eoF1Vaf674r01GT6enB0ABlDnlGefhc=;
+ b=l/hLxTcq+rDQnrvk3JjIZXia33OBHmKIZfPXkU9EjOU9ylcTxsxUyDmVr4XMC8/L2MMG9pSS4SXOBE0ewko5BE0GVyg1T8GldZLcTVS/T8NGH3PUCYkbthU57bvxnap2N9GN3rqQ7Pr/Nu5LmJGZzWp1ewDi4vQHl9RgGjrERF0=
+Authentication-Results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN6PR12MB1379.namprd12.prod.outlook.com (2603:10b6:404:20::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.23; Mon, 17 Aug
+ 2020 15:18:29 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::1ef:8f33:480b:e2d0]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::1ef:8f33:480b:e2d0%4]) with mapi id 15.20.3283.024; Mon, 17 Aug 2020
+ 15:18:29 +0000
+Date:   Mon, 17 Aug 2020 10:18:21 -0500
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tony.luck@intel.com, x86@kernel.org
+Subject: Re: [PATCH] x86/MCE/AMD, EDAC/mce_amd: Remove struct
+ smca_hwid.xec_bitmap
+Message-ID: <20200817151821.GA1095089@yaz-nikka.amd.com>
+References: <20200720145353.43924-1-Yazen.Ghannam@amd.com>
+ <20200817093956.GC549@zn.tnic>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200817093956.GC549@zn.tnic>
+X-ClientProxiedBy: DM3PR12CA0093.namprd12.prod.outlook.com
+ (2603:10b6:0:55::13) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from yaz-nikka.amd.com (165.204.77.1) by DM3PR12CA0093.namprd12.prod.outlook.com (2603:10b6:0:55::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15 via Frontend Transport; Mon, 17 Aug 2020 15:18:28 +0000
+X-Originating-IP: [165.204.77.1]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3f3774bf-eaea-4375-89f8-08d842c0cb6b
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1379:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB1379C655D342CC128F4DB4A3F85F0@BN6PR12MB1379.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PTWhaS/7YXuUeF6NHcVMjRcO9PW54ui/dmNMGUxA3RGPXtdsM7oLzQykmkLQRtQFI/L0tJsM3rVnSjnM2ynxkXRGp/BjDBUs6Hdn03xiobvoAiUTkZ61KF89+hKIN4pXhkS7ME2egmsvVxYgss8cLj719CJDBg3AEJt7ot95ZGNSV9mCLNqbQMq2L5tERnpH6kiP9ixBG1b+rgc0b8YWuLCuj61utqkYxjXJOxRvOjGuNAqUOGwAboIUUsNHd8mxnE7C2VC4NIzPkBsRcfCPt3eDFiyqIqKaIlKf98aLn0ObSQ5qASLGITDuJsVTMr+MhKQn3SvAFX9rGtY+iEZA5A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(366004)(136003)(346002)(39860400002)(66946007)(2906002)(66476007)(66556008)(4326008)(8676002)(52116002)(7696005)(55016002)(1076003)(4744005)(86362001)(83380400001)(44832011)(8936002)(16526019)(478600001)(316002)(5660300002)(6916009)(186003)(26005)(956004)(6666004)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: YafB6aEAbXr4KEIGNoh7V4xLMamwfm1FaaC6LMMh0fXw7HwGUxO0S8MLp7R7m/0e02Tf7Cizi0WlEmaS0dUlyCfWW0THlQY4YKIQyqhlqWqfTUE/gCNdHP3ajflauOl7FEjiNNHg/DOrqN/6yAxeRZqzuZ6jPAlv6tBFCV1YApgU4EdXQPrOXmtu5/6xxxyDMFZT11kazSgdDot9ByM5XDjsvpzBNZD9dFA81QoR2XCRqZ2t8KmeFdotj3CTKeRDOzRgZX7AJOLXALzJaSQ7HUFuSbIZlBKIIb9bpn/Jum+qaT2hhVqcwdrZeY+HUzceW3qhUvGfzGuRejsIEkikaWbkH5mH9Zfg+2e7ZE0PKDvbirc9Nh4yWWDzCNrBGy8BoiOdR2B/u/sIqGVWUd0suid7PUj7+9609LW/THpqEd+ftoHEZeRtQr6Bv2kPwaPkW/9HP4Y52ycr6dj2x2qznrOWq23UV+8rO2m8vmvUXJRSIroWQwGuT7yWL3nY4Iuw+uvZGPWt63Lzv1qftqwLtICCFxoCDFMYcAwvRnIm3ooAwm1QqxaAmv5tJuKlLRob2T6F2p55sgIuU/XkFCZbyhOXnKzQpRBPi4JSKHk8cxp0hKFE8R4z2D6cR6qkNdQqjRmd4AHNdyb/Rk3bdo1gJA==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f3774bf-eaea-4375-89f8-08d842c0cb6b
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2020 15:18:28.9100
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kTbDKjXHNMHiNaAxYm5O4w+0c80cZidks7Q48w1ZFtfCEHrBvwaGQFh/MKGABtDFhXDizCAJB4dMgmapZIi8qA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1379
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+On Mon, Aug 17, 2020 at 11:40:07AM +0200, Borislav Petkov wrote:
+> On Mon, Jul 20, 2020 at 02:53:53PM +0000, Yazen Ghannam wrote:
+> > From: Yazen Ghannam <yazen.ghannam@amd.com>
+> > 
+> > The Extended Error Code Bitmap (xec_bitmap) for a Scalable MCA bank type
+> > was intended to be used by the kernel to filter out invalid error codes
+> > on a system. However, this is unnecessary because the hardware will only
+> > report valid error codes.
+> 
+> That's a kinda bold statement. :)
+> 
 
-[ Upstream commit f6780ce619f8daa285760302d56e95892087bd1f ]
+Yeah, I'm trying to keep "may" out of my vocabulary. :)
 
-Pedro Miraglia Franco de Carvalho noticed that on p8/p9, DAR value is
-inconsistent with different type of load/store. Like for byte,word
-etc. load/stores, DAR is set to the address of the first byte of
-overlap between watch range and real access. But for quadword load/
-store it's sometime set to the address of the first byte of real
-access whereas sometime set to the address of the first byte of
-overlap. This issue has been fixed in p10. In p10(ISA 3.1), DAR is
-always set to the address of the first byte of overlap. Commit 27985b2a640e
-("powerpc/watchpoint: Don't ignore extraneous exceptions blindly")
-wrongly assumes that DAR is set to the address of the first byte of
-overlap for all load/stores on p8/p9 as well. Fix that. With the fix,
-we now rely on 'ea' provided by analyse_instr(). If analyse_instr()
-fails, generate event unconditionally on p8/p9, and on p10 generate
-event only if DAR is within a DAWR range.
+> Are you saying, you wanna trust verification and that check is totally
+> useless?
+> 
 
-Note: 8xx is not affected.
+I do. This check was added because I wasn't sure what to expect with
+this new architecural extension. But after a few product releases, it
+has been unnecessary. And I don't see a need for it with future systems.
 
-Fixes: 27985b2a640e ("powerpc/watchpoint: Don't ignore extraneous exceptions blindly")
-Fixes: 74c6881019b7 ("powerpc/watchpoint: Prepare handler to handle more than one watchpoint")
-Reported-by: Pedro Miraglia Franco de Carvalho <pedromfc@br.ibm.com>
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200723090813.303838-3-ravi.bangoria@linux.ibm.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/powerpc/kernel/hw_breakpoint.c | 72 ++++++++++++++++-------------
- 1 file changed, 41 insertions(+), 31 deletions(-)
-
-diff --git a/arch/powerpc/kernel/hw_breakpoint.c b/arch/powerpc/kernel/hw_breakpoint.c
-index 031e6defc08e6..a971e22aea819 100644
---- a/arch/powerpc/kernel/hw_breakpoint.c
-+++ b/arch/powerpc/kernel/hw_breakpoint.c
-@@ -498,11 +498,11 @@ static bool dar_in_user_range(unsigned long dar, struct arch_hw_breakpoint *info
- 	return ((info->address <= dar) && (dar - info->address < info->len));
- }
- 
--static bool dar_user_range_overlaps(unsigned long dar, int size,
--				    struct arch_hw_breakpoint *info)
-+static bool ea_user_range_overlaps(unsigned long ea, int size,
-+				   struct arch_hw_breakpoint *info)
- {
--	return ((dar < info->address + info->len) &&
--		(dar + size > info->address));
-+	return ((ea < info->address + info->len) &&
-+		(ea + size > info->address));
- }
- 
- static bool dar_in_hw_range(unsigned long dar, struct arch_hw_breakpoint *info)
-@@ -515,20 +515,22 @@ static bool dar_in_hw_range(unsigned long dar, struct arch_hw_breakpoint *info)
- 	return ((hw_start_addr <= dar) && (hw_end_addr > dar));
- }
- 
--static bool dar_hw_range_overlaps(unsigned long dar, int size,
--				  struct arch_hw_breakpoint *info)
-+static bool ea_hw_range_overlaps(unsigned long ea, int size,
-+				 struct arch_hw_breakpoint *info)
- {
- 	unsigned long hw_start_addr, hw_end_addr;
- 
- 	hw_start_addr = ALIGN_DOWN(info->address, HW_BREAKPOINT_SIZE);
- 	hw_end_addr = ALIGN(info->address + info->len, HW_BREAKPOINT_SIZE);
- 
--	return ((dar < hw_end_addr) && (dar + size > hw_start_addr));
-+	return ((ea < hw_end_addr) && (ea + size > hw_start_addr));
- }
- 
- /*
-  * If hw has multiple DAWR registers, we also need to check all
-  * dawrx constraint bits to confirm this is _really_ a valid event.
-+ * If type is UNKNOWN, but privilege level matches, consider it as
-+ * a positive match.
-  */
- static bool check_dawrx_constraints(struct pt_regs *regs, int type,
- 				    struct arch_hw_breakpoint *info)
-@@ -553,7 +555,8 @@ static bool check_dawrx_constraints(struct pt_regs *regs, int type,
-  * including extraneous exception. Otherwise return false.
-  */
- static bool check_constraints(struct pt_regs *regs, struct ppc_inst instr,
--			      int type, int size, struct arch_hw_breakpoint *info)
-+			      unsigned long ea, int type, int size,
-+			      struct arch_hw_breakpoint *info)
- {
- 	bool in_user_range = dar_in_user_range(regs->dar, info);
- 	bool dawrx_constraints;
-@@ -569,22 +572,27 @@ static bool check_constraints(struct pt_regs *regs, struct ppc_inst instr,
- 	}
- 
- 	if (unlikely(ppc_inst_equal(instr, ppc_inst(0)))) {
--		if (in_user_range)
--			return true;
-+		if (cpu_has_feature(CPU_FTR_ARCH_31) &&
-+		    !dar_in_hw_range(regs->dar, info))
-+			return false;
- 
--		if (dar_in_hw_range(regs->dar, info)) {
--			info->type |= HW_BRK_TYPE_EXTRANEOUS_IRQ;
--			return true;
--		}
--		return false;
-+		return true;
- 	}
- 
- 	dawrx_constraints = check_dawrx_constraints(regs, type, info);
- 
--	if (dar_user_range_overlaps(regs->dar, size, info))
-+	if (type == UNKNOWN) {
-+		if (cpu_has_feature(CPU_FTR_ARCH_31) &&
-+		    !dar_in_hw_range(regs->dar, info))
-+			return false;
-+
- 		return dawrx_constraints;
-+	}
- 
--	if (dar_hw_range_overlaps(regs->dar, size, info)) {
-+	if (ea_user_range_overlaps(ea, size, info))
-+		return dawrx_constraints;
-+
-+	if (ea_hw_range_overlaps(ea, size, info)) {
- 		if (dawrx_constraints) {
- 			info->type |= HW_BRK_TYPE_EXTRANEOUS_IRQ;
- 			return true;
-@@ -594,7 +602,7 @@ static bool check_constraints(struct pt_regs *regs, struct ppc_inst instr,
- }
- 
- static void get_instr_detail(struct pt_regs *regs, struct ppc_inst *instr,
--			     int *type, int *size, bool *larx_stcx)
-+			     int *type, int *size, unsigned long *ea)
- {
- 	struct instruction_op op;
- 
-@@ -602,16 +610,18 @@ static void get_instr_detail(struct pt_regs *regs, struct ppc_inst *instr,
- 		return;
- 
- 	analyse_instr(&op, regs, *instr);
--
--	/*
--	 * Set size = 8 if analyse_instr() fails. If it's a userspace
--	 * watchpoint(valid or extraneous), we can notify user about it.
--	 * If it's a kernel watchpoint, instruction  emulation will fail
--	 * in stepping_handler() and watchpoint will be disabled.
--	 */
- 	*type = GETTYPE(op.type);
--	*size = !(*type == UNKNOWN) ? GETSIZE(op.type) : 8;
--	*larx_stcx = (*type == LARX || *type == STCX);
-+	*ea = op.ea;
-+#ifdef __powerpc64__
-+	if (!(regs->msr & MSR_64BIT))
-+		*ea &= 0xffffffffUL;
-+#endif
-+	*size = GETSIZE(op.type);
-+}
-+
-+static bool is_larx_stcx_instr(int type)
-+{
-+	return type == LARX || type == STCX;
- }
- 
- /*
-@@ -678,7 +688,7 @@ int hw_breakpoint_handler(struct die_args *args)
- 	struct ppc_inst instr = ppc_inst(0);
- 	int type = 0;
- 	int size = 0;
--	bool larx_stcx = false;
-+	unsigned long ea;
- 
- 	/* Disable breakpoints during exception handling */
- 	hw_breakpoint_disable();
-@@ -692,7 +702,7 @@ int hw_breakpoint_handler(struct die_args *args)
- 	rcu_read_lock();
- 
- 	if (!IS_ENABLED(CONFIG_PPC_8xx))
--		get_instr_detail(regs, &instr, &type, &size, &larx_stcx);
-+		get_instr_detail(regs, &instr, &type, &size, &ea);
- 
- 	for (i = 0; i < nr_wp_slots(); i++) {
- 		bp[i] = __this_cpu_read(bp_per_reg[i]);
-@@ -702,7 +712,7 @@ int hw_breakpoint_handler(struct die_args *args)
- 		info[i] = counter_arch_bp(bp[i]);
- 		info[i]->type &= ~HW_BRK_TYPE_EXTRANEOUS_IRQ;
- 
--		if (check_constraints(regs, instr, type, size, info[i])) {
-+		if (check_constraints(regs, instr, ea, type, size, info[i])) {
- 			if (!IS_ENABLED(CONFIG_PPC_8xx) &&
- 			    ppc_inst_equal(instr, ppc_inst(0))) {
- 				handler_error(bp[i], info[i]);
-@@ -744,7 +754,7 @@ int hw_breakpoint_handler(struct die_args *args)
- 	}
- 
- 	if (!IS_ENABLED(CONFIG_PPC_8xx)) {
--		if (larx_stcx) {
-+		if (is_larx_stcx_instr(type)) {
- 			for (i = 0; i < nr_wp_slots(); i++) {
- 				if (!hit[i])
- 					continue;
--- 
-2.25.1
-
-
-
+Thanks,
+Yazen
