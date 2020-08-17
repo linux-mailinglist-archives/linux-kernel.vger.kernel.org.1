@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28FF4246437
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E65CE246445
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726904AbgHQKP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 06:15:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726792AbgHQKPw (ORCPT
+        id S1726889AbgHQKTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 06:19:33 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60057 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726297AbgHQKTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 06:15:52 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1193AC061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 03:15:52 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id m7so14418124qki.12
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 03:15:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xFMCooV+srfeUmENnqHRgCmMMf+HreBw4sTYYL9L8Po=;
-        b=S/hC8jiE66W4lYiSJD+JBpmqCQ1NfvjXLtgAW2YghalM2AGd/ropK2OJ5QJdgEzxiH
-         0VfSgSO/lBId1OsA+uu31pNhCaZrO04XKj3BVoYxMGceI8XB18gQx328saMF4eRJuhpi
-         wqLu1eOZmjesm4ayKqK7XFDelEm81dqVyV/68=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xFMCooV+srfeUmENnqHRgCmMMf+HreBw4sTYYL9L8Po=;
-        b=MqBNI6oX61a31S38E4U4CIzb4s+PDb7Iqwe8GOnqsXOsAH5zamQ6tPfAY8RG65TbLQ
-         xFEpoQJdY4Kz4+NYfIiCM0xoPimipy+MkkalHQSE044017VxqP+NRDQLoUlHPpyfC0Gm
-         hLeE7LPFaFWpDz7TCEUhWa07FdqC4/bTwUFOy0cZ6P/ZcBQJksGhktB2zEpQRdsEWDzF
-         asfYtbM8Wd9c+6C0lEfqogk+0Bo2oywz2semF8HkezwGqKc6bQmwhaA2MruEw/rxJqJy
-         4RsOPPE5LsWBrPRXsBIE5yNoWGzdz6BGow2vd2aJsDvbYyNk6h8Pt1ibYewq9iRtB83L
-         R0dw==
-X-Gm-Message-State: AOAM532wEb8ZJwltk5y+tCO1tWyRGXp5FvTW+wdtPjRTiXaJMeGMyyAh
-        Y2Pfyu5D/06gxxKyX60n3qZrMg==
-X-Google-Smtp-Source: ABdhPJyPDevAynADokoTMbQeVLyLhvINF5Maw120EPlX6HsYIVPaRj7K4bCyVzLV+ICE4a16V6aJTw==
-X-Received: by 2002:a05:620a:15b0:: with SMTP id f16mr12024373qkk.191.1597659344690;
-        Mon, 17 Aug 2020 03:15:44 -0700 (PDT)
-Received: from [10.230.34.187] ([192.19.248.250])
-        by smtp.gmail.com with ESMTPSA id k5sm17317588qke.18.2020.08.17.03.15.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Aug 2020 03:15:44 -0700 (PDT)
-Subject: Re: [PATCH 07/16] wireless: brcm80211: convert tasklets to use new
- tasklet_setup() API
-To:     Allen Pais <allen.cryptic@gmail.com>, kvalo@codeaurora.org,
-        kuba@kernel.org, jirislaby@kernel.org, mickflemm@gmail.com,
-        mcgrof@kernel.org, chunkeey@googlemail.com,
-        Larry.Finger@lwfinger.net, stas.yakovlev@gmail.com,
-        helmut.schaa@googlemail.com, pkshih@realtek.com,
-        yhchuang@realtek.com, dsd@gentoo.org, kune@deine-taler.de
-Cc:     keescook@chromium.org, ath11k@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, b43-dev@lists.infradead.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>
-References: <20200817090637.26887-1-allen.cryptic@gmail.com>
- <20200817090637.26887-8-allen.cryptic@gmail.com>
-From:   Arend Van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <5080db28-3112-7d0a-ec7c-f437f670cfa3@broadcom.com>
-Date:   Mon, 17 Aug 2020 12:15:39 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Mon, 17 Aug 2020 06:19:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597659571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VGbJwI3itELdK2Hji+iycRZOmACsuMM37BEJjNDZq9g=;
+        b=WXNqC8BkD1hU8+pAUAECJNd58GlEfYSrvbt8c4xqJ/RPLw+Op5AxxUnFJuXP3edUSMpTCk
+        ctzg4M4erjhT5anmJbKPqMbEhoAmRh6Bqj0bikObno32KbVPj8v81EPzTUbhSJXmJPTT79
+        JqKeMW/3uu5Pj8G8OXC8lE0tm6kpQ1s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-136-te4cdZJ8MhaRjjpNLyRBsQ-1; Mon, 17 Aug 2020 06:19:29 -0400
+X-MC-Unique: te4cdZJ8MhaRjjpNLyRBsQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8918F425E8;
+        Mon, 17 Aug 2020 10:19:27 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-112-195.ams2.redhat.com [10.36.112.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1DDE07DFC0;
+        Mon, 17 Aug 2020 10:19:26 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 251C29D8F; Mon, 17 Aug 2020 12:19:25 +0200 (CEST)
+Date:   Mon, 17 Aug 2020 12:19:25 +0200
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     dri-devel@lists.freedesktop.org, 1882851@bugs.launchpad.net,
+        David Airlie <airlied@linux.ie>, Chia-I Wu <olvaffe@gmail.com>,
+        "open list:VIRTIO GPU DRIVER" 
+        <virtualization@lists.linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/virtio: fix unblank
+Message-ID: <20200817101925.ljpfgz336zxegsup@sirius.home.kraxel.org>
+References: <20200807105429.24208-1-kraxel@redhat.com>
+ <20200807130956.GE2352366@phenom.ffwll.local>
+ <20200817090342.bemmtkvz4seayp2i@sirius.home.kraxel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200817090637.26887-8-allen.cryptic@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200817090342.bemmtkvz4seayp2i@sirius.home.kraxel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/2020 11:06 AM, Allen Pais wrote:
-> From: Allen Pais <allen.lkml@gmail.com>
+On Mon, Aug 17, 2020 at 11:03:42AM +0200, Gerd Hoffmann wrote:
+>   Hi,
 > 
-> In preparation for unconditionally passing the
-> struct tasklet_struct pointer to all tasklet
-> callbacks, switch to using the new tasklet_setup()
-> and from_tasklet() to pass the tasklet pointer explicitly.
+> > > --- a/drivers/gpu/drm/virtio/virtgpu_display.c
+> > > +++ b/drivers/gpu/drm/virtio/virtgpu_display.c
+> > > @@ -100,6 +100,7 @@ static void virtio_gpu_crtc_atomic_enable(struct drm_crtc *crtc,
+> > >  	struct virtio_gpu_output *output = drm_crtc_to_virtio_gpu_output(crtc);
+> > >  
+> > >  	output->enabled = true;
+> > > +	output->need_update = true;
+> 
+> > > --- a/drivers/gpu/drm/virtio/virtgpu_plane.c
+> > > +++ b/drivers/gpu/drm/virtio/virtgpu_plane.c
+> > > @@ -163,7 +163,8 @@ static void virtio_gpu_primary_plane_update(struct drm_plane *plane,
+> > >  	    plane->state->src_w != old_state->src_w ||
+> > >  	    plane->state->src_h != old_state->src_h ||
+> > >  	    plane->state->src_x != old_state->src_x ||
+> > > -	    plane->state->src_y != old_state->src_y) {
+> > > +	    plane->state->src_y != old_state->src_y ||
+> > > +	    output->need_update) {
+> > 
+> > Uh instead of hand-rolling what's essentially a drm_crtc_needs_modeset
+> > check, why not use that one? atomic helpers try to keep the usual suspects
+> > for state transitions already handy, to avoid every driver rolling their
+> > own. Or do I miss something here?
+> 
+> Well, the virtio-gpu virtual hardware can't do plane updates and crtc
+> updates independant from each other.  So the crtc callbacks handle
+> disable only (we don't need a fb for that) and leave the enable to the
+> plane update.
+> 
+> I suspect calling drm_atomic_crtc_needs_modeset() in plane update isn't
+> going to fly ...
 
-Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
-> ---
->   .../net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c  | 6 +++---
->   .../net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.h  | 2 +-
->   2 files changed, 4 insertions(+), 4 deletions(-)
+Digged a bit more, seems crtc_state->*_changed is cleared after modeset
+so the following plane update wouldn't see it.  Which I think means
+there is no way around tracking that in need_update.
+
+output->enabled is probably not needed though, seems I can replace that
+by either output->crtc.state->enable or ->active.  Not fully sure which
+one, probably ->active.
+
+take care,
+  Gerd
+
