@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9FC6245F00
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38004245F03
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgHQIOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:14:49 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:59762 "EHLO honk.sigxcpu.org"
+        id S1727021AbgHQIOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:14:54 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:59730 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725765AbgHQIOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726457AbgHQIOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Aug 2020 04:14:47 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 2D24CFB03;
-        Mon, 17 Aug 2020 10:14:40 +0200 (CEST)
+        by honk.sigxcpu.org (Postfix) with ESMTP id 23E91FB06;
+        Mon, 17 Aug 2020 10:14:39 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
 Received: from honk.sigxcpu.org ([127.0.0.1])
         by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id zYzW_pnXzwo0; Mon, 17 Aug 2020 10:14:37 +0200 (CEST)
+        with ESMTP id 6JoWR7m6hpnH; Mon, 17 Aug 2020 10:14:37 +0200 (CEST)
 Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 368D94576F; Mon, 17 Aug 2020 10:14:36 +0200 (CEST)
+        id 414D44017D; Mon, 17 Aug 2020 10:14:36 +0200 (CEST)
 From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Sam Ravnborg <sam@ravnborg.org>,
@@ -38,10 +38,12 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/3] drm/panel: Add panel driver for the Mantix MLAF057WE51-X DSI panel
-Date:   Mon, 17 Aug 2020 10:14:33 +0200
-Message-Id: <cover.1597652012.git.agx@sigxcpu.org>
+Subject: [PATCH v3 1/3] dt-bindings: vendor-prefixes: Add mantix vendor prefix
+Date:   Mon, 17 Aug 2020 10:14:34 +0200
+Message-Id: <b6bcfe27d9393a07a5cdd82fcf211620c774a273.1597652012.git.agx@sigxcpu.org>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1597652012.git.agx@sigxcpu.org>
+References: <cover.1597652012.git.agx@sigxcpu.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -50,53 +52,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add prefix for Mantix Display Technology Co.,Ltd.
 
-The panel uses a Focaltech FT8006p, the touch part is handled by the already
-existing edt-ft5x06. It can be found in e.g. the Librem 5.
+Signed-off-by: Guido Günther <agx@sigxcpu.org>
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Changes from v2:
-- Due to review comments by Sam Ravnborg, thanks!
-  https://lore.kernel.org/lkml/20200815212727.GA1244923@ravnborg.org/
-  - Drop unused header
-  - Use newline before comment
-- Add Reviewed/Acked-by by Sam Ravnborg, thanks!
-  https://lore.kernel.org/lkml/20200815212727.GA1244923@ravnborg.org/
-  https://lore.kernel.org/lkml/20200815212750.GB1244923@ravnborg.org/
-  https://lore.kernel.org/lkml/20200815212840.GC1244923@ravnborg.org/
-
-Changes from v1:
-- Due to review comments by Sam Ravnborg, thanks!
-  https://lore.kernel.org/dri-devel/20200815083917.GA993113@ravnborg.org/
-  - Don't preserve newlines with '|' in description
-  - Use reset-gpios and backlight from panel-common.yaml
-  - Reindent example
-  https://lore.kernel.org/dri-devel/20200815093226.GB993113@ravnborg.org/
-  - Drop unused includes
-  - Use dev_* instead of DRM_* for printing
-  - Turn off regulators in reverse order from enable
-  - Silence errors in mantix_{shutdown,remove}
-  - Drop duplicate mipi_dsi_dcs_enter_sleep_mode()
-  https://lore.kernel.org/dri-devel/20200815100230.GA1002374@ravnborg.org/
-  - Use dev_err_probe()
-- Add delays when turning off panel as suggested by the data sheet
-
-This series is against next-20200814.
-
-Guido Günther (3):
-  dt-bindings: vendor-prefixes: Add mantix vendor prefix
-  dt-bindings: Add Mantix MLAF057WE51-X panel bindings
-  drm/panel: Add panel driver for the Mantix MLAF057WE51-X DSI panel
-
- .../display/panel/mantix,mlaf057we51-x.yaml   |  70 ++++
- .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
- MAINTAINERS                                   |   7 +
- drivers/gpu/drm/panel/Kconfig                 |  11 +
- drivers/gpu/drm/panel/Makefile                |   1 +
- .../gpu/drm/panel/panel-mantix-mlaf057we51.c  | 328 ++++++++++++++++++
- 6 files changed, 419 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
- create mode 100644 drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
-
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 2baee2c817c1a..59d4c8b068c4d 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -611,6 +611,8 @@ patternProperties:
+     description: Linux Automation GmbH
+   "^macnica,.*":
+     description: Macnica Americas
++  "^mantix,.*":
++    description: Mantix Display Technology Co.,Ltd.
+   "^mapleboard,.*":
+     description: Mapleboard.org
+   "^marvell,.*":
 -- 
 2.26.2
 
