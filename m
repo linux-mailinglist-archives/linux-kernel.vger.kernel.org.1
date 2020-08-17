@@ -2,74 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B154246EBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4878F246FCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730083AbgHQRfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:35:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730062AbgHQQRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:17:45 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E88582065C;
-        Mon, 17 Aug 2020 16:17:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597681058;
-        bh=nxbijIe3mjlBYbtASARKH08UZo8+8GTitovu0fEMvmo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dZrKhEs50G4i60vSw/3+IaMqo3WBFGz7Bwyv4ixUq5qkE4pkHnqJ7hyleV4xCz2La
-         lEUosh4CaRY9eq3acCqf6QxKBbZilbIeYdgr0wZ0vPtr3fLfzhzwVVjA1awVBQJJ8g
-         prJe3XCtu7MdDgqdw0NOANcw+UK1s/hfv2GGVHaQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
-        Helge Deller <deller@gmx.de>
-Subject: [PATCH 4.19 163/168] parisc: mask out enable and reserved bits from sba imask
-Date:   Mon, 17 Aug 2020 17:18:14 +0200
-Message-Id: <20200817143741.804331328@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
-References: <20200817143733.692105228@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1731662AbgHQRxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388630AbgHQQLh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:11:37 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076BDC061342
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 09:11:35 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id 77so15439929qkm.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 09:11:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=EPZNWjTuoNbn3/0iITSmRZt5ivNwv7BWW6z1AtL/Hmc=;
+        b=Z23cJzvoZmVLpOK2aT+f4XT4iV2NnQq1w6sWZWEGLYa39+S+I66Qx1sJuEz0lgvGq1
+         9MafbfOp+fkSCLAdwkxY3sqWfa/7Ya+r03VJzdWTWGLlMGY81AwTZ2a03DaIZWFHcudU
+         YK2AWWX4x4DALRmK9f7+jCQ+8hCmXiM0ppCuA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=EPZNWjTuoNbn3/0iITSmRZt5ivNwv7BWW6z1AtL/Hmc=;
+        b=XhMGy5CHe1cKKwOxPtkYcFqmh6piC8FsfIjC/7hFktfWslr6HBouu5mOLpzRfTbgGh
+         59tcgfFIlEwFzuxQXrGyOG3HW/aVAeUUuBVzLGJ4rRNfPS0dx0eOS4mKCw4LZcCTRb7b
+         BwOZHk9cX5LBUynD2+ikIZ3QYcUrzjkQ/kdY3/GsFA2mU0aJ+q7Jb6j0uGD0p8AG9BOr
+         Ci6YpCnNm70ALJxBRTdxIDJk0wQybjS5vPo0EN0BxxbSL+rogeZUmjWnjfuwuYMcz+GO
+         u9m3MYIHeNWFRJBDwUwhN76B4o8TE3pMCHoWoc93YSikkUcYiUXRZ+aEdDp3T+JOKRAp
+         UdNw==
+X-Gm-Message-State: AOAM533mn9CU+sC/DmQvTY8zF2c2XZiscRCWqUk/mKMAFw7gO2Yb4GiC
+        R/wfJ+PM29UehldUih3cWeJqXQ==
+X-Google-Smtp-Source: ABdhPJxCfcujs7UvLmGxbMeQ2XhvVrOMYp62V16ipQ+dV/Tk0r1zxthxYII+3rcf8N5c4NDp4jS9dg==
+X-Received: by 2002:a37:9a46:: with SMTP id c67mr13909866qke.85.1597680694869;
+        Mon, 17 Aug 2020 09:11:34 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:47cc])
+        by smtp.gmail.com with ESMTPSA id z14sm19093304qtn.92.2020.08.17.09.11.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 09:11:34 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 17:11:32 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [RFC PATCH 1/8] memcg: Enable fine-grained control of over
+ memory.high action
+Message-ID: <20200817161132.GA5171@chrisdown.name>
+References: <20200817140831.30260-1-longman@redhat.com>
+ <20200817140831.30260-2-longman@redhat.com>
+ <20200817143044.GA1987@chrisdown.name>
+ <934e4bc3-bab6-b19a-49f9-6a6ae8638570@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <934e4bc3-bab6-b19a-49f9-6a6ae8638570@redhat.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@stackframe.org>
+Waiman Long writes:
+>On 8/17/20 10:30 AM, Chris Down wrote:
+>>Astractly, I think this really overcomplicates the API a lot. If 
+>>these are truly generally useful (and I think that remains to be 
+>>demonstrated), they should be additions to the existing API, rather 
+>>than a sidestep with prctl.
+>This patchset is derived from customer requests. With existing API, I 
+>suppose you mean the memory cgroup API. Right? The reason to use 
+>prctl() is that there are users out there who want some kind of 
+>per-process control instead of for a whole group of processes unless 
+>the users try to create one cgroup per process which is not very 
+>efficient.
 
-commit 5b24993c21cbf2de11aff077a48c5cb0505a0450 upstream.
+If using one cgroup per process is inefficient, then that's what needs to be 
+fixed. Making the API extremely complex to reason about for every user isn't a 
+good compromise when we're talking about an already niche use case.
 
-When using kexec the SBA IOMMU IBASE might still have the RE
-bit set. This triggers a WARN_ON when trying to write back the
-IBASE register later, and it also makes some mask calculations fail.
+>>I also worry about some other more concrete things:
+>>
+>>1. Doesn't this allow unprivileged applications to potentially 
+>>bypass    memory.high constraints set by a system administrator?
+>The memory.high constraint is for triggering memory reclaim. The new 
+>mitigation actions introduced by this patchset will only be applied if 
+>memory reclaim alone fails to limit the physical memory consumption. 
+>The current memory cgroup memory reclaim code will not be affected by 
+>this patchset.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+memory.high isn't only for triggering memory reclaim, it's also about active 
+throttling when the application fails to come under. Fundamentally it's 
+supposed to indicate the point at which we expect the application to either 
+cooperate or get forcibly descheduled -- take a look at where we call 
+schedule_timeout_killable.
 
----
- drivers/parisc/sba_iommu.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I really struggle to think about how all of those things should interact in 
+this patchset.
 
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -1291,7 +1291,7 @@ sba_ioc_init_pluto(struct parisc_device
- 	** (one that doesn't overlap memory or LMMIO space) in the
- 	** IBASE and IMASK registers.
- 	*/
--	ioc->ibase = READ_REG(ioc->ioc_hpa + IOC_IBASE);
-+	ioc->ibase = READ_REG(ioc->ioc_hpa + IOC_IBASE) & ~0x1fffffULL;
- 	iova_space_size = ~(READ_REG(ioc->ioc_hpa + IOC_IMASK) & 0xFFFFFFFFUL) + 1;
- 
- 	if ((ioc->ibase < 0xfed00000UL) && ((ioc->ibase + iova_space_size) > 0xfee00000UL)) {
+>>2. What's the purpose of PR_MEMACT_KILL, compared to memory.max?
+>A user can use this to specify which processes are less important and 
+>can be sacrificed first instead of the other more important ones in 
+>case they are really in a OOM situation. IOW, users can specify the 
+>order where OOM kills can happen.
 
-
+You can already do that with something like oomd, which has way more 
+flexibility than this. Why codify this in the kernel instead of in a userspace 
+agent?
