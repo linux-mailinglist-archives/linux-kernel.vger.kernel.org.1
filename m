@@ -2,362 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD9F246E82
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA08F246EC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388922AbgHQRcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:32:55 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:37878 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388446AbgHQRcY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 13:32:24 -0400
-Received: by mail-wr1-f66.google.com with SMTP id y3so15804884wrl.4
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:32:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=KF+Lijn2GoIDaHXMKcv5dyj265MiB5w1dhwFUWa9B/E=;
-        b=sTnFRgFs5gfAS5I/oV8jzW41Js/JZkRUUjzlhNsWb9U78qeKcEkBGr7W+D+i/IFUkG
-         GUVe6eIJg3KV25mwAkOSb7n/qFtxpJBMpFUs3hlRW17cqqs8It8knFuVLZ/Wn54ACx+w
-         a4w6riPMfxVJVETYWjAUzKsxDoWQKLftSIR+hOQfJo7VevQTRS7/omxYuorM+LTk9Z2z
-         MOZyaMMQes+ebrNpXEYIX0fYhbWnod+qJBTeSNxUOhVlqZsdBcZI1qB4g7y5+zj7HH9u
-         babwLdAGwOH8Rtff6P5+uERVn45212EvfYd8j3fJL9qYI9Q2W8FX1XIVe5fF/3zH2et5
-         mHCA==
-X-Gm-Message-State: AOAM531kZRDaa5rTFgJLgm+LQ3u4YBHDFWgR251BifjNE8nJ7VwnnWso
-        RZQw7FT4+4xQwG9ILpUJ1q4=
-X-Google-Smtp-Source: ABdhPJxx4kyfB4OB5VvM7hPY7AUBVoAfwI72XJxabVD1RD2sncUAFLIE99/Or/L07gLNi5YR7gc2gA==
-X-Received: by 2002:adf:bc45:: with SMTP id a5mr16073823wrh.215.1597685541159;
-        Mon, 17 Aug 2020 10:32:21 -0700 (PDT)
-Received: from [10.9.0.18] ([185.248.161.177])
-        by smtp.gmail.com with ESMTPSA id s2sm11849415wrr.55.2020.08.17.10.32.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Aug 2020 10:32:20 -0700 (PDT)
-Reply-To: alex.popov@linux.com
-Subject: Re: [PATCH RFC 1/2] mm: Extract SLAB_QUARANTINE from KASAN
-To:     Kees Cook <keescook@chromium.org>,
-        Andrey Konovalov <andreyknvl@google.com>
-Cc:     Jann Horn <jannh@google.com>, Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        David Howells <dhowells@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
-        notify@kernel.org
-References: <20200813151922.1093791-1-alex.popov@linux.com>
- <20200813151922.1093791-2-alex.popov@linux.com>
- <202008150939.A994680@keescook>
-From:   Alexander Popov <alex.popov@linux.com>
-Autocrypt: addr=alex.popov@linux.com; prefer-encrypt=mutual; keydata=
- mQINBFX15q4BEADZartsIW3sQ9R+9TOuCFRIW+RDCoBWNHhqDLu+Tzf2mZevVSF0D5AMJW4f
- UB1QigxOuGIeSngfmgLspdYe2Kl8+P8qyfrnBcS4hLFyLGjaP7UVGtpUl7CUxz2Hct3yhsPz
- ID/rnCSd0Q+3thrJTq44b2kIKqM1swt/F2Er5Bl0B4o5WKx4J9k6Dz7bAMjKD8pHZJnScoP4
- dzKPhrytN/iWM01eRZRc1TcIdVsRZC3hcVE6OtFoamaYmePDwWTRhmDtWYngbRDVGe3Tl8bT
- 7BYN7gv7Ikt7Nq2T2TOfXEQqr9CtidxBNsqFEaajbFvpLDpUPw692+4lUbQ7FL0B1WYLvWkG
- cVysClEyX3VBSMzIG5eTF0Dng9RqItUxpbD317ihKqYL95jk6eK6XyI8wVOCEa1V3MhtvzUo
- WGZVkwm9eMVZ05GbhzmT7KHBEBbCkihS+TpVxOgzvuV+heCEaaxIDWY/k8u4tgbrVVk+tIVG
- 99v1//kNLqd5KuwY1Y2/h2MhRrfxqGz+l/f/qghKh+1iptm6McN//1nNaIbzXQ2Ej34jeWDa
- xAN1C1OANOyV7mYuYPNDl5c9QrbcNGg3D6gOeGeGiMn11NjbjHae3ipH8MkX7/k8pH5q4Lhh
- Ra0vtJspeg77CS4b7+WC5jlK3UAKoUja3kGgkCrnfNkvKjrkEwARAQABtCZBbGV4YW5kZXIg
- UG9wb3YgPGFsZXgucG9wb3ZAbGludXguY29tPokCVwQTAQgAQQIbIwIeAQIXgAULCQgHAwUV
- CgkICwUWAgMBAAIZARYhBLl2JLAkAVM0bVvWTo4Oneu8fo+qBQJdehKcBQkLRpLuAAoJEI4O
- neu8fo+qrkgP/jS0EhDnWhIFBnWaUKYWeiwR69DPwCs/lNezOu63vg30O9BViEkWsWwXQA+c
- SVVTz5f9eB9K2me7G06A3U5AblOJKdoZeNX5GWMdrrGNLVISsa0geXNT95TRnFqE1HOZJiHT
- NFyw2nv+qQBUHBAKPlk3eL4/Yev/P8w990Aiiv6/RN3IoxqTfSu2tBKdQqdxTjEJ7KLBlQBm
- 5oMpm/P2Y/gtBiXRvBd7xgv7Y3nShPUDymjBnc+efHFqARw84VQPIG4nqVhIei8gSWps49DX
- kp6v4wUzUAqFo+eh/ErWmyBNETuufpxZnAljtnKpwmpFCcq9yfcMlyOO9/viKn14grabE7qE
- 4j3/E60wraHu8uiXJlfXmt0vG16vXb8g5a25Ck09UKkXRGkNTylXsAmRbrBrA3Moqf8QzIk9
- p+aVu/vFUs4ywQrFNvn7Qwt2hWctastQJcH3jrrLk7oGLvue5KOThip0SNicnOxVhCqstjYx
- KEnzZxtna5+rYRg22Zbfg0sCAAEGOWFXjqg3hw400oRxTW7IhiE34Kz1wHQqNif0i5Eor+TS
- 22r9iF4jUSnk1jaVeRKOXY89KxzxWhnA06m8IvW1VySHoY1ZG6xEZLmbp3OuuFCbleaW07OU
- 9L8L1Gh1rkAz0Fc9eOR8a2HLVFnemmgAYTJqBks/sB/DD0SuuQINBFX15q4BEACtxRV/pF1P
- XiGSbTNPlM9z/cElzo/ICCFX+IKg+byRvOMoEgrzQ28ah0N5RXQydBtfjSOMV1IjSb3oc23z
- oW2J9DefC5b8G1Lx2Tz6VqRFXC5OAxuElaZeoowV1VEJuN3Ittlal0+KnRYY0PqnmLzTXGA9
- GYjw/p7l7iME7gLHVOggXIk7MP+O+1tSEf23n+dopQZrkEP2BKSC6ihdU4W8928pApxrX1Lt
- tv2HOPJKHrcfiqVuFSsb/skaFf4uveAPC4AausUhXQVpXIg8ZnxTZ+MsqlwELv+Vkm/SNEWl
- n0KMd58gvG3s0bE8H2GTaIO3a0TqNKUY16WgNglRUi0WYb7+CLNrYqteYMQUqX7+bB+NEj/4
- 8dHw+xxaIHtLXOGxW6zcPGFszaYArjGaYfiTTA1+AKWHRKvD3MJTYIonphy5EuL9EACLKjEF
- v3CdK5BLkqTGhPfYtE3B/Ix3CUS1Aala0L+8EjXdclVpvHQ5qXHs229EJxfUVf2ucpWNIUdf
- lgnjyF4B3R3BFWbM4Yv8QbLBvVv1Dc4hZ70QUXy2ZZX8keza2EzPj3apMcDmmbklSwdC5kYG
- EFT4ap06R2QW+6Nw27jDtbK4QhMEUCHmoOIaS9j0VTU4fR9ZCpVT/ksc2LPMhg3YqNTrnb1v
- RVNUZvh78zQeCXC2VamSl9DMcwARAQABiQI8BBgBCAAmAhsMFiEEuXYksCQBUzRtW9ZOjg6d
- 67x+j6oFAl16ErcFCQtGkwkACgkQjg6d67x+j6q7zA/+IsjSKSJypgOImN9LYjeb++7wDjXp
- qvEpq56oAn21CvtbGus3OcC0hrRtyZ/rC5Qc+S5SPaMRFUaK8S3j1vYC0wZJ99rrmQbcbYMh
- C2o0k4pSejaINmgyCajVOhUhln4IuwvZke1CLfXe1i3ZtlaIUrxfXqfYpeijfM/JSmliPxwW
- BRnQRcgS85xpC1pBUMrraxajaVPwu7hCTke03v6bu8zSZlgA1rd9E6KHu2VNS46VzUPjbR77
- kO7u6H5PgQPKcuJwQQ+d3qa+5ZeKmoVkc2SuHVrCd1yKtAMmKBoJtSku1evXPwyBzqHFOInk
- mLMtrWuUhj+wtcnOWxaP+n4ODgUwc/uvyuamo0L2Gp3V5ItdIUDO/7ZpZ/3JxvERF3Yc1md8
- 5kfflpLzpxyl2fKaRdvxr48ZLv9XLUQ4qNuADDmJArq/+foORAX4BBFWvqZQKe8a9ZMAvGSh
- uoGUVg4Ks0uC4IeG7iNtd+csmBj5dNf91C7zV4bsKt0JjiJ9a4D85dtCOPmOeNuusK7xaDZc
- gzBW8J8RW+nUJcTpudX4TC2SGeAOyxnM5O4XJ8yZyDUY334seDRJWtS4wRHxpfYcHKTewR96
- IsP1USE+9ndu6lrMXQ3aFsd1n1m1pfa/y8hiqsSYHy7JQ9Iuo9DxysOj22UNOmOE+OYPK48D
- j3lCqPk=
-Message-ID: <82edcbac-a856-cf9e-b86d-69a4315ea8e4@linux.com>
-Date:   Mon, 17 Aug 2020 20:32:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730967AbgHQRgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:36:13 -0400
+Received: from mga05.intel.com ([192.55.52.43]:63451 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729520AbgHQRfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 13:35:52 -0400
+IronPort-SDR: iZ2pkLIWgHb+zSuTuzJMGbddugSrXX70XPqpsjqLko2eejEvPfli81J6y/rN7E6UxP3FtY0SSz
+ QVvI0H+0g4iA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="239586575"
+X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
+   d="scan'208";a="239586575"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 10:35:49 -0700
+IronPort-SDR: dvvwDmsrt5UqQV5AB+zOhs+Tfvhkis/zHiIHAJtkctXled78/ujgaUwhZDPT5n18ytZP9lc6x4
+ Z05Ok352CRRA==
+X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
+   d="scan'208";a="292499642"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 10:35:49 -0700
+Date:   Mon, 17 Aug 2020 10:35:48 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        peterx@redhat.com, Yang Weijiang <weijiang.yang@intel.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] selftests: kvm: Use a shorter encoding to clear RAX
+Message-ID: <20200817173548.GH22407@linux.intel.com>
+References: <20200817172034.26673-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <202008150939.A994680@keescook>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200817172034.26673-1-pbonzini@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.08.2020 19:52, Kees Cook wrote:
-> On Thu, Aug 13, 2020 at 06:19:21PM +0300, Alexander Popov wrote:
->> Heap spraying is an exploitation technique that aims to put controlled
->> bytes at a predetermined memory location on the heap. Heap spraying for
->> exploiting use-after-free in the Linux kernel relies on the fact that on
->> kmalloc(), the slab allocator returns the address of the memory that was
->> recently freed. Allocating a kernel object with the same size and
->> controlled contents allows overwriting the vulnerable freed object.
->>
->> Let's extract slab freelist quarantine from KASAN functionality and
->> call it CONFIG_SLAB_QUARANTINE. This feature breaks widespread heap
->> spraying technique used for exploiting use-after-free vulnerabilities
->> in the kernel code.
->>
->> If this feature is enabled, freed allocations are stored in the quarantine
->> and can't be instantly reallocated and overwritten by the exploit
->> performing heap spraying.
+On Mon, Aug 17, 2020 at 01:20:34PM -0400, Paolo Bonzini wrote:
+> From: Yang Weijiang <weijiang.yang@intel.com>
+
+This shouldn't be here without Weijiang's SOB.
+
+> If debug_regs.c is built with newer binutils, the resulting binary is "optimized"
+> by the assembler:
 > 
-> It may be worth clarifying that this is specifically only direct UAF and
-> doesn't help with spray-and-overflow-into-a-neighboring-object attacks
-> (i.e. both tend to use sprays, but the former doesn't depend on a write
-> overflow).
-
-Right, thank you.
-
->> Signed-off-by: Alexander Popov <alex.popov@linux.com>
->> ---
->>  include/linux/kasan.h      | 107 ++++++++++++++++++++-----------------
->>  include/linux/slab_def.h   |   2 +-
->>  include/linux/slub_def.h   |   2 +-
->>  init/Kconfig               |  11 ++++
->>  mm/Makefile                |   3 +-
->>  mm/kasan/Makefile          |   2 +
->>  mm/kasan/kasan.h           |  75 +++++++++++++-------------
->>  mm/kasan/quarantine.c      |   2 +
->>  mm/kasan/slab_quarantine.c |  99 ++++++++++++++++++++++++++++++++++
->>  mm/slub.c                  |   2 +-
->>  10 files changed, 216 insertions(+), 89 deletions(-)
->>  create mode 100644 mm/kasan/slab_quarantine.c
->>
->> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
->> index 087fba34b209..b837216f760c 100644
->> --- a/include/linux/kasan.h
->> +++ b/include/linux/kasan.h
-
-[...]
-
->>  #else /* CONFIG_KASAN_GENERIC */
->> +static inline void kasan_record_aux_stack(void *ptr) {}
->> +#endif /* CONFIG_KASAN_GENERIC */
->>  
->> +#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_SLAB_QUARANTINE)
->> +void kasan_cache_shrink(struct kmem_cache *cache);
->> +void kasan_cache_shutdown(struct kmem_cache *cache);
->> +#else /* CONFIG_KASAN_GENERIC || CONFIG_SLAB_QUARANTINE */
->>  static inline void kasan_cache_shrink(struct kmem_cache *cache) {}
->>  static inline void kasan_cache_shutdown(struct kmem_cache *cache) {}
->> -static inline void kasan_record_aux_stack(void *ptr) {}
->> -
->> -#endif /* CONFIG_KASAN_GENERIC */
->> +#endif /* CONFIG_KASAN_GENERIC || CONFIG_SLAB_QUARANTINE */
+> asm volatile("ss_start: "
+>              "xor %%rax,%%rax\n\t"
+>              "cpuid\n\t"
+>              "movl $0x1a0,%%ecx\n\t"
+>              "rdmsr\n\t"
+>              : : : "rax", "ecx");
 > 
-> In doing this extraction, I wonder if function naming should be changed?
-> If it's going to live a new life outside of KASAN proper, maybe call
-> these functions quarantine_cache_*()? But perhaps that's too much
-> churn...
-
-These functions are kasan handlers that are called by allocator.
-I.e. allocator calls kasan handlers, and then kasan handlers call
-quarantine_put(), quarantine_reduce() and quarantine_remove_cache() among other
-things.
-
-Andrey Konovalov wrote:
-> If quarantine is to be used without the rest of KASAN, I'd prefer for
-> it to be separated from KASAN completely: move to e.g. mm/quarantine.c
-> and don't mention KASAN in function/config names.
-
-Hmm, making quarantine completely separate from KASAN would bring troubles.
-
-Currently, in many special places the allocator calls KASAN handlers:
-  kasan_cache_create()
-  kasan_slab_free()
-  kasan_kmalloc_large()
-  kasan_krealloc()
-  kasan_slab_alloc()
-  kasan_kmalloc()
-  kasan_cache_shrink()
-  kasan_cache_shutdown()
-  and some others.
-These functions do a lot of interesting things and also work with the quarantine
-using these helpers:
-  quarantine_put()
-  quarantine_reduce()
-  quarantine_remove_cache()
-
-Making quarantine completely separate from KASAN would require to move some
-internal logic of these KASAN handlers to allocator code.
-
-In this patch I used another approach, that doesn't require changing the API
-between allocators and KASAN. I added linux/mm/kasan/slab_quarantine.c with slim
-KASAN handlers that implement the minimal functionality needed for quarantine.
-
-Do you think that it's a bad solution?
-
->>  #ifdef CONFIG_KASAN_SW_TAGS
->>  
->> diff --git a/include/linux/slab_def.h b/include/linux/slab_def.h
->> index 9eb430c163c2..fc7548f27512 100644
->> --- a/include/linux/slab_def.h
->> +++ b/include/linux/slab_def.h
->> @@ -72,7 +72,7 @@ struct kmem_cache {
->>  	int obj_offset;
->>  #endif /* CONFIG_DEBUG_SLAB */
->>  
->> -#ifdef CONFIG_KASAN
->> +#if defined(CONFIG_KASAN) || defined(CONFIG_SLAB_QUARANTINE)
->>  	struct kasan_cache kasan_info;
->>  #endif
->>  
->> diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
->> index 1be0ed5befa1..71020cee9fd2 100644
->> --- a/include/linux/slub_def.h
->> +++ b/include/linux/slub_def.h
->> @@ -124,7 +124,7 @@ struct kmem_cache {
->>  	unsigned int *random_seq;
->>  #endif
->>  
->> -#ifdef CONFIG_KASAN
->> +#if defined(CONFIG_KASAN) || defined(CONFIG_SLAB_QUARANTINE)
->>  	struct kasan_cache kasan_info;
->>  #endif
->>  
->> diff --git a/init/Kconfig b/init/Kconfig
->> index d6a0b31b13dc..de5aa061762f 100644
->> --- a/init/Kconfig
->> +++ b/init/Kconfig
->> @@ -1931,6 +1931,17 @@ config SLAB_FREELIST_HARDENED
->>  	  sanity-checking than others. This option is most effective with
->>  	  CONFIG_SLUB.
->>  
->> +config SLAB_QUARANTINE
->> +	bool "Enable slab freelist quarantine"
->> +	depends on !KASAN && (SLAB || SLUB)
->> +	help
->> +	  Enable slab freelist quarantine to break heap spraying technique
->> +	  used for exploiting use-after-free vulnerabilities in the kernel
->> +	  code. If this feature is enabled, freed allocations are stored
->> +	  in the quarantine and can't be instantly reallocated and
->> +	  overwritten by the exploit performing heap spraying.
->> +	  This feature is a part of KASAN functionality.
->> +
+> is translated to :
 > 
-> To make this available to distros, I think this needs to be more than
-> just a CONFIG. I'd love to see this CONFIG control the availability, but
-> have a boot param control a ro-after-init static branch for these
-> functions (like is done for init_on_alloc, hardened usercopy, etc). Then
-> the branch can be off by default for regular distro users, and more
-> cautious folks could enable it with a boot param without having to roll
-> their own kernels.
-
-Good point, thanks, added to TODO list.
-
->> [...]
->> +struct kasan_track {
->> +	u32 pid;
+>   000000000040194e <ss_start>:
+>   40194e:       31 c0                   xor    %eax,%eax     <----- rax->eax?
+>   401950:       0f a2                   cpuid
+>   401952:       b9 a0 01 00 00          mov    $0x1a0,%ecx
+>   401957:       0f 32                   rdmsr
 > 
-> pid_t?
-
-Ok, I can change it (here I only moved the current definition of kasan_track).
-
->> +	depot_stack_handle_t stack;
->> +};
->> [...]
->> +#if defined(CONFIG_KASAN_GENERIC) && \
->> +	(defined(CONFIG_SLAB) || defined(CONFIG_SLUB)) || \
->> +	defined(CONFIG_SLAB_QUARANTINE)
+> As you can see rax is replaced with eax in target binary code.
+> This causes a difference is the length of xor instruction (2 Byte vs 3 Byte),
+> and makes the hard-coded instruction length check fail:
 > 
-> This seems a bit messy. Perhaps an invisible CONFIG to do this logic and
-> then the files can test for that? CONFIG_USE_SLAB_QUARANTINE or
-> something?
-
-Ok, thanks, I'll try that.
-
->> [...]
->> + * Heap spraying is an exploitation technique that aims to put controlled
->> + * bytes at a predetermined memory location on the heap. Heap spraying for
->> + * exploiting use-after-free in the Linux kernel relies on the fact that on
->> + * kmalloc(), the slab allocator returns the address of the memory that was
->> + * recently freed. Allocating a kernel object with the same size and
->> + * controlled contents allows overwriting the vulnerable freed object.
->> + *
->> + * If freed allocations are stored in the quarantine, they can't be
->> + * instantly reallocated and overwritten by the exploit performing
->> + * heap spraying.
+>         /* Instruction lengths starting at ss_start */
+>         int ss_size[4] = {
+>                 3,              /* xor */   <-------- 2 or 3?
+>                 2,              /* cpuid */
+>                 5,              /* mov */
+>                 2,              /* rdmsr */
+>         };
 > 
-> I would clarify this with the details of what is actually happening:
-
-Ok.
-
-> the allocation isn't _moved_ to a quarantine, yes? It's only marked as not
-> available for allocation?
-
-The allocation is put into the quarantine queues, where all allocations wait for
-actual freeing.
-
->> + */
->> +
->> +#include <linux/kasan.h>
->> +#include <linux/bug.h>
->> +#include <linux/slab.h>
->> +#include <linux/mm.h>
->> +#include "../slab.h"
->> +#include "kasan.h"
->> +
->> +void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
->> +			slab_flags_t *flags)
->> +{
->> +	cache->kasan_info.alloc_meta_offset = 0;
->> +
->> +	if (cache->flags & SLAB_TYPESAFE_BY_RCU || cache->ctor ||
->> +	     cache->object_size < sizeof(struct kasan_free_meta)) {
->> +		cache->kasan_info.free_meta_offset = *size;
->> +		*size += sizeof(struct kasan_free_meta);
->> +		BUG_ON(*size > KMALLOC_MAX_SIZE);
+> Encode the shorter version directly and, while at it, fix the "clobbers"
+> of the asm.
 > 
-> Please don't use BUG_ON()[1].
+> Reported-by: Yang Weijiang <weijiang.yang@intel.com>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Ok!
+Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
 
-> Interesting!
+> ---
+>  tools/testing/selftests/kvm/x86_64/debug_regs.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> -Kees
+> diff --git a/tools/testing/selftests/kvm/x86_64/debug_regs.c b/tools/testing/selftests/kvm/x86_64/debug_regs.c
+> index 8162c58a1234..b8d14f9db5f9 100644
+> --- a/tools/testing/selftests/kvm/x86_64/debug_regs.c
+> +++ b/tools/testing/selftests/kvm/x86_64/debug_regs.c
+> @@ -40,11 +40,11 @@ static void guest_code(void)
+>  
+>  	/* Single step test, covers 2 basic instructions and 2 emulated */
+>  	asm volatile("ss_start: "
+> -		     "xor %%rax,%%rax\n\t"
+> +		     "xor %%eax,%%eax\n\t"
+>  		     "cpuid\n\t"
+>  		     "movl $0x1a0,%%ecx\n\t"
+>  		     "rdmsr\n\t"
+> -		     : : : "rax", "ecx");
+> +		     : : : "eax", "ebx", "ecx", "edx");
+>  
+>  	/* DR6.BD test */
+>  	asm volatile("bd_start: mov %%dr0, %%rax" : : : "rax");
+> -- 
+> 2.26.2
 > 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#bug-and-bug-on
-> 
-
