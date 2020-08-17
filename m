@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A162474A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E16B2475E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730376AbgHQPkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:40:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35600 "EHLO mail.kernel.org"
+        id S2388363AbgHQTaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:30:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729695AbgHQPdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:33:24 -0400
+        id S1730301AbgHQPcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:32:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30F4C22B49;
-        Mon, 17 Aug 2020 15:33:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1AC8F22CBE;
+        Mon, 17 Aug 2020 15:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678403;
-        bh=2HnaoUpQU7Dicbmj+xnwySE5pVovhZ3kXMTyQSvzi1E=;
+        s=default; t=1597678324;
+        bh=GkcRN+bMz+7K9z0kn8bWe7OlGo50pYckHJVciOJpBO4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XwYEERRn6eqMPP9a8/iiVmnJYUuSJW70DmGhNfTG634n0iEaFeU+mvgkgaCjnoyAO
-         BmYqEloCrzp39TZ967nr7NOpNPekOKcWhJbqlR8aL43PQU4xDZp2OpwAjbj/ARUqmd
-         0B5O2/BRo8zhTsG12OTd4XZBGe8reGS2mSMPk5uQ=
+        b=d5ZkLk7+S85OaDD/jUiUdzKnuP58cSEzscd2gM8v9JLOpA8H5tkJHnALPGFPGAF1k
+         h99TAHQwnQntLb5QPaRBDR0PBXfTGE7rUOMLWwnjNAn1s/IZvmndEMmzP7gzZVGe7/
+         Mwah7ApN6Y7pdfuRYIfw9NZFBkDtAuNPIpNksRe4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        stable@vger.kernel.org,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 292/464] bpf: Fix pos computation for bpf_iter seq_ops->start()
-Date:   Mon, 17 Aug 2020 17:14:05 +0200
-Message-Id: <20200817143847.742429900@linuxfoundation.org>
+Subject: [PATCH 5.8 295/464] powerpc/watchpoint: Fix DAWR exception for CACHEOP
+Date:   Mon, 17 Aug 2020 17:14:08 +0200
+Message-Id: <20200817143847.889929337@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -44,108 +45,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+From: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 
-[ Upstream commit 3f9969f2c040ba2ba635b6b5a7051f404bcc634d ]
+[ Upstream commit f3c832f1350bcf1e6906113ee3168066f4235dbe ]
 
-Currently, the pos pointer in bpf iterator map/task/task_file
-seq_ops->start() is always incremented.
-This is incorrect. It should be increased only if
-*pos is 0 (for SEQ_START_TOKEN) since these start()
-function actually returns the first real object.
-If *pos is not 0, it merely found the object
-based on the state in seq->private, and not really
-advancing the *pos. This patch fixed this issue
-by only incrementing *pos if it is 0.
+'ea' returned by analyse_instr() needs to be aligned down to cache
+block size for CACHEOP instructions. analyse_instr() does not set
+size for CACHEOP, thus size also needs to be calculated manually.
 
-Note that the old *pos calculation, although not
-correct, does not affect correctness of bpf_iter
-as bpf_iter seq_file->read() does not support llseek.
-
-This patch also renamed "mid" in bpf_map iterator
-seq_file private data to "map_id" for better clarity.
-
-Fixes: 6086d29def80 ("bpf: Add bpf_map iterator")
-Fixes: eaaacd23910f ("bpf: Add task and task/file iterator targets")
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20200722195156.4029817-1-yhs@fb.com
+Fixes: 27985b2a640e ("powerpc/watchpoint: Don't ignore extraneous exceptions blindly")
+Fixes: 74c6881019b7 ("powerpc/watchpoint: Prepare handler to handle more than one watchpoint")
+Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200723090813.303838-4-ravi.bangoria@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/map_iter.c  | 16 ++++++----------
- kernel/bpf/task_iter.c |  6 ++++--
- 2 files changed, 10 insertions(+), 12 deletions(-)
+ arch/powerpc/kernel/hw_breakpoint.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
-index c69071e334bf6..1a04c168563d3 100644
---- a/kernel/bpf/map_iter.c
-+++ b/kernel/bpf/map_iter.c
-@@ -6,7 +6,7 @@
- #include <linux/kernel.h>
+diff --git a/arch/powerpc/kernel/hw_breakpoint.c b/arch/powerpc/kernel/hw_breakpoint.c
+index a971e22aea819..c55e67bab2710 100644
+--- a/arch/powerpc/kernel/hw_breakpoint.c
++++ b/arch/powerpc/kernel/hw_breakpoint.c
+@@ -538,7 +538,12 @@ static bool check_dawrx_constraints(struct pt_regs *regs, int type,
+ 	if (OP_IS_LOAD(type) && !(info->type & HW_BRK_TYPE_READ))
+ 		return false;
  
- struct bpf_iter_seq_map_info {
--	u32 mid;
-+	u32 map_id;
- };
+-	if (OP_IS_STORE(type) && !(info->type & HW_BRK_TYPE_WRITE))
++	/*
++	 * The Cache Management instructions other than dcbz never
++	 * cause a match. i.e. if type is CACHEOP, the instruction
++	 * is dcbz, and dcbz is treated as Store.
++	 */
++	if ((OP_IS_STORE(type) || type == CACHEOP) && !(info->type & HW_BRK_TYPE_WRITE))
+ 		return false;
  
- static void *bpf_map_seq_start(struct seq_file *seq, loff_t *pos)
-@@ -14,27 +14,23 @@ static void *bpf_map_seq_start(struct seq_file *seq, loff_t *pos)
- 	struct bpf_iter_seq_map_info *info = seq->private;
- 	struct bpf_map *map;
- 
--	map = bpf_map_get_curr_or_next(&info->mid);
-+	map = bpf_map_get_curr_or_next(&info->map_id);
- 	if (!map)
- 		return NULL;
- 
--	++*pos;
-+	if (*pos == 0)
-+		++*pos;
- 	return map;
+ 	if (is_kernel_addr(regs->nip) && !(info->type & HW_BRK_TYPE_KERNEL))
+@@ -601,6 +606,15 @@ static bool check_constraints(struct pt_regs *regs, struct ppc_inst instr,
+ 	return false;
  }
  
- static void *bpf_map_seq_next(struct seq_file *seq, void *v, loff_t *pos)
++static int cache_op_size(void)
++{
++#ifdef __powerpc64__
++	return ppc64_caches.l1d.block_size;
++#else
++	return L1_CACHE_BYTES;
++#endif
++}
++
+ static void get_instr_detail(struct pt_regs *regs, struct ppc_inst *instr,
+ 			     int *type, int *size, unsigned long *ea)
  {
- 	struct bpf_iter_seq_map_info *info = seq->private;
--	struct bpf_map *map;
- 
- 	++*pos;
--	++info->mid;
-+	++info->map_id;
- 	bpf_map_put((struct bpf_map *)v);
--	map = bpf_map_get_curr_or_next(&info->mid);
--	if (!map)
--		return NULL;
--
--	return map;
-+	return bpf_map_get_curr_or_next(&info->map_id);
+@@ -616,7 +630,12 @@ static void get_instr_detail(struct pt_regs *regs, struct ppc_inst *instr,
+ 	if (!(regs->msr & MSR_64BIT))
+ 		*ea &= 0xffffffffUL;
+ #endif
++
+ 	*size = GETSIZE(op.type);
++	if (*type == CACHEOP) {
++		*size = cache_op_size();
++		*ea &= ~(*size - 1);
++	}
  }
  
- struct bpf_iter__bpf_map {
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index 4dbf2b6035f87..ac7869a389990 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
-@@ -50,7 +50,8 @@ static void *task_seq_start(struct seq_file *seq, loff_t *pos)
- 	if (!task)
- 		return NULL;
- 
--	++*pos;
-+	if (*pos == 0)
-+		++*pos;
- 	return task;
- }
- 
-@@ -209,7 +210,8 @@ static void *task_file_seq_start(struct seq_file *seq, loff_t *pos)
- 		return NULL;
- 	}
- 
--	++*pos;
-+	if (*pos == 0)
-+		++*pos;
- 	info->task = task;
- 	info->files = files;
- 
+ static bool is_larx_stcx_instr(int type)
 -- 
 2.25.1
 
