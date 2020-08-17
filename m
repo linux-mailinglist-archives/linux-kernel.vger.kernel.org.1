@@ -2,151 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6353246759
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 15:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919DE246751
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 15:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728650AbgHQN14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 09:27:56 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:26991 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728651AbgHQN1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 09:27:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597670873; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=INTxAt5lNz/SJ0qOc87ualrdr+KyL5wjMAo0+q1t93w=; b=cADBKzRc9s9ID4+8nkKvw7v1nEQaZ2dlXy/cyzvtEfAt8V+iuRJmN1OOzutyO5VvtpMP0R+3
- ghE/8mmRi7ukNGA1JqhW60Xc1pL+72MEfYdFzY9KpgQ7a4QtMKXA7sZSwVdA+4mRrhRF8UAs
- a/QA4WmAboTeUVn/gQIrqCx8SAo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5f3a85acf2b697637a049000 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 13:27:08
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 17D74C433AD; Mon, 17 Aug 2020 13:27:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 259DAC433CA;
-        Mon, 17 Aug 2020 13:27:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 259DAC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        Benjamin Reed <breed@users.sourceforge.net>,
-        Javier Achirica <achirica@users.sourceforge.net>,
-        Jean Tourrilhes <jt@hpl.hp.com>,
-        Fabrice Bellet <fabrice@bellet.info>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [PATCH 12/30] net: wireless: cisco: airo: Fix a myriad of coding style issues
-References: <20200814113933.1903438-1-lee.jones@linaro.org>
-        <20200814113933.1903438-13-lee.jones@linaro.org>
-        <87r1s9l0mc.fsf@codeaurora.org> <20200814163831.GN4354@dell>
-Date:   Mon, 17 Aug 2020 16:27:01 +0300
-In-Reply-To: <20200814163831.GN4354@dell> (Lee Jones's message of "Fri, 14 Aug
-        2020 17:38:31 +0100")
-Message-ID: <87a6ytmmhm.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1728574AbgHQN1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 09:27:36 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:44376 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728465AbgHQN1g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 09:27:36 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id 9DF82297B9C
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        linux-input@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        kernel@collabora.com
+Subject: [PATCH v2 0/2] Add configurable handler to execute a compound action
+Date:   Mon, 17 Aug 2020 15:27:25 +0200
+Message-Id: <20200817132727.14564-1-andrzej.p@collabora.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> writes:
+This is a follow-up of this thread:
 
-> On Fri, 14 Aug 2020, Kalle Valo wrote:
->
->> Lee Jones <lee.jones@linaro.org> writes:
->> 
->> >  - Ensure spaces appear after {for, if, while, etc}
->> >  - Ensure spaces to not appear after '('
->> >  - Ensure spaces to not appear before ')'
->> >  - Ensure spaces appear between ')' and '{'
->> >  - Ensure spaces appear after ','
->> >  - Ensure spaces do not appear before ','
->> >  - Ensure spaces appear either side of '='
->> >  - Ensure '{'s which open functions are on a new line
->> >  - Remove trailing whitespace
->> >
->> > There are still a whole host of issues with this file, but this
->> > patch certainly breaks the back of them.
->> >
->> > Cc: Kalle Valo <kvalo@codeaurora.org>
->> > Cc: "David S. Miller" <davem@davemloft.net>
->> > Cc: Jakub Kicinski <kuba@kernel.org>
->> > Cc: Benjamin Reed <breed@users.sourceforge.net>
->> > Cc: Javier Achirica <achirica@users.sourceforge.net>
->> > Cc: Jean Tourrilhes <jt@hpl.hp.com>
->> > Cc: Fabrice Bellet <fabrice@bellet.info>
->> > Cc: linux-wireless@vger.kernel.org
->> > Cc: netdev@vger.kernel.org
->> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
->> > ---
->> >  drivers/net/wireless/cisco/airo.c | 897 ++++++++++++++++--------------
->> >  1 file changed, 467 insertions(+), 430 deletions(-)
->> 
->> This is a driver for ancient hardware, I'm not sure if it's worth trying
->> to fix any style issues. Is anyone even using it? Should we instead just
->> remove the driver?
->
-> Sounds like a reasonable solution to me.
->
-> I'm also happy to do it, if there are no objections.
->
-> As it stands, it's polluting the code-base and the build-log, so
-> something should be done.
+https://www.spinics.net/lists/linux-input/msg68446.html
 
-I tried to find some comments about the driver and here's one successful
-report from 2013:
+It only touches DRM (dri-devel) in such a way that it changes the help
+message of sysrq_drm_fb_helper_restore_op, otherwise it is unrelated to DRM.
 
-https://martybugs.net/wireless/aironet4800.cgi
+Patch 2/2 adds a configurable handler to execute a compound action.
 
-And here's one commit from 2015 where Ondrej (CCed) was also testing the
-driver:
+Userland might want to execute e.g. 'w' (show blocked tasks), followed
+by 's' (sync), followed by 1000 ms delay and then followed by 'c' (crash)
+upon a single magic SysRq. Or one might want to execute the famous "Raising
+Elephants Is So Utterly Boring" action. This patch adds a configurable
+handler, triggered with 'C', for this exact purpose. The user specifies the
+composition of the compound action using syntax similar to getopt, where
+each letter corresponds to an individual action and a colon followed by a
+number corresponds to a delay of that many milliseconds, e.g.:
 
-----------------------------------------------------------------------
-commit dae0412d0caa4948da07fe4ad91352b5b61a70ec
-Author:     Ondrej Zary <linux@rainbow-software.org>
-AuthorDate: Fri Oct 16 21:04:14 2015 +0200
-Commit:     Kalle Valo <kvalo@codeaurora.org>
-CommitDate: Wed Oct 28 20:54:39 2015 +0200
+ws:1000c
 
-    airo: fix scan after SIOCSIWAP (airo_set_wap)
-    
-    SIOCSIWAP (airo_set_wap) affects scan: only the AP specified by
-    SIOCSIWAP is present in scan results.
-    
-    This makes NetworkManager work for the first time but then unable to
-    find any other APs.
-    
-    Clear APList before starting scan and set it back after scan completes
-    to work-around the problem.
-    
-    To avoid losing packets during scan, modify disable_MAC() to omit
-    netif_carrier_off() call when lock == 2.
-    
-    Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-    Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-----------------------------------------------------------------------
+or
 
-I was surprised to see that someone was using this driver in 2015, so
-I'm not sure anymore what to do. Of course we could still just remove it
-and later revert if someone steps up and claims the driver is still
-usable. Hmm. Does anyone any users of this driver?
+r:100eis:1000ub
 
+An example of userspace that wants to perform a compound action is
+Chrome OS, where SysRq-X (pressed for the second time within a certain
+time period from the first time) causes showing the locked tasks, syncing,
+waiting a 1000 ms delay and crashing the system.
+
+Since all the slots in the sysrq_key_table[] are already taken or reserved,
+patch 1/2 extends it to cover also capital letter versions.
+
+v1..v2:
+- used toupper() instead of opencoding it (Jiri Slaby)
+- updated help message of sysrq_drm_fb_helper_restore_op (Jiri Slaby)
+- used unsigned int for specifying delays (Jiri Slaby)
+- improved printed messages formatting (Jiri Slaby)
+
+Andrzej Pietrasiewicz (2):
+  tty/sysrq: Extend the sysrq_key_table to cover capital letters
+  tty/sysrq: Add configurable handler to execute a compound action
+
+ Documentation/admin-guide/sysrq.rst |  11 +++
+ drivers/gpu/drm/drm_fb_helper.c     |   2 +-
+ drivers/tty/sysrq.c                 | 129 +++++++++++++++++++++++++++-
+ include/linux/sysrq.h               |   1 +
+ 4 files changed, 140 insertions(+), 3 deletions(-)
+
+
+base-commit: 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
 -- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.17.1
+
