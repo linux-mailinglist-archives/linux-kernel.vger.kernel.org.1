@@ -2,73 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F496245C02
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 07:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4007F245C06
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 07:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgHQFoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 01:44:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgHQFoE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 01:44:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84D3C061388;
-        Sun, 16 Aug 2020 22:44:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=0XUKgy/JKgmlVLlCjIDd80V/8Du4ToG9mq9nXg/KjlE=; b=Bbpxlsh47CxT6l6eRIL9lsPdLU
-        n2/0/4VxdrREXW1hW+iPSk4SCh/vjtFF9fKKsAuVpbD35Z1HGzsaS1nUqkaWvL7KOotDrhidFAERF
-        A9Fp9JAErzhcIWaubYrgfxQDG5hZ9g9wVb1FP3YX1kY7aGtprcPIKm/ymuQNuifGxVgEbFYKn2Yo0
-        SL+KYeS55/Mg50KLVyiFXpfdckepNwCaDtp0tbAh3Kj0KaPB6dHoRDrIwfKi1RPNIW/WT8oYLbPXd
-        GUWRDRyXWajIn/o/ltnXw5h+KC8TkpDmfy+xLOL+N0Z+fXRP4PnwhxgGCTdGy6JDFmg9RMFLqlGzK
-        /eSjWGxw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k7Xw6-0002qJ-61; Mon, 17 Aug 2020 05:43:58 +0000
-Subject: Re: [PATCH] phylink: <linux/phylink.h>: fix function prototype
- kernel-doc warning
-To:     David Miller <davem@davemloft.net>
-Cc:     linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
-        netdev@vger.kernel.org
-References: <20200816222549.379-1-rdunlap@infradead.org>
- <20200816.211451.1874573780407600816.davem@davemloft.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f99bacca-0868-dff0-ff72-ebe8b8749270@infradead.org>
-Date:   Sun, 16 Aug 2020 22:43:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726638AbgHQFop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 01:44:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726267AbgHQFol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 01:44:41 -0400
+Received: from localhost (unknown [122.171.38.130])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40AA3206FA;
+        Mon, 17 Aug 2020 05:44:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597643081;
+        bh=aqIsg2MDXKpvMXXPQ5wP3TKUruW1MuQtK/g5YmaXzcE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WWK7fnFdl1g9pGQK6EXMuPWBCnLkYmVnwL0Ico816DgwJZ7qnPvYW8LeUVio3mKoq
+         GDZpoYgtXvhGAWMOb3wz5ccfFqGFCIUZB8wF7V3Zl1dcWkZyWyAcvFwlEoRjXys3s8
+         CkXd/Dq0Mu8pyinGUqt1GW7hstXXdiHteknPLIvk=
+Date:   Mon, 17 Aug 2020 11:14:35 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     dmaengine@vger.kernel.org, dan.j.williams@intel.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: of-dma: Fix of_dma_router_xlate's
+ of_dma_xlate handling
+Message-ID: <20200817054435.GK2639@vkoul-mobl>
+References: <20200806104928.25975-1-peter.ujfalusi@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20200816.211451.1874573780407600816.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200806104928.25975-1-peter.ujfalusi@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/20 9:14 PM, David Miller wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> Date: Sun, 16 Aug 2020 15:25:49 -0700
+On 06-08-20, 13:49, Peter Ujfalusi wrote:
+> of_dma_xlate callback can return ERR_PTR as well NULL in case of failure.
 > 
->> Fix a kernel-doc warning for the pcs_config() function prototype:
->>
->> ../include/linux/phylink.h:406: warning: Excess function parameter 'permit_pause_to_mac' description in 'pcs_config'
->>
->> Fixes: 7137e18f6f88 ("net: phylink: add struct phylink_pcs")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> 
-> There's no definition of this function anywhere.  Maybe just remove all of
-> this?
-> 
+> If error code is returned (not NULL) then the route should be released and
+> the router should not be registered for the channel.
 
-It's for documentation purposes...
-
-It's a "method" (callback) function.
+Applied, thanks
 
 -- 
-~Randy
-
+~Vinod
