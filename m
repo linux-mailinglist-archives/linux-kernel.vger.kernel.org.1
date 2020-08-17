@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59AD2468E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 966042468F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729208AbgHQO43 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Aug 2020 10:56:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729190AbgHQO4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 10:56:22 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 673922072E;
-        Mon, 17 Aug 2020 14:56:21 +0000 (UTC)
-Date:   Mon, 17 Aug 2020 10:56:19 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        id S1729098AbgHQPAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:00:12 -0400
+Received: from mxwww.masterlogin.de ([95.129.51.170]:60730 "EHLO
+        mxwww.masterlogin.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729078AbgHQPAE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:00:04 -0400
+Received: from mxout2.routing.net (unknown [192.168.10.82])
+        by backup.mxwww.masterlogin.de (Postfix) with ESMTPS id 592332C50B
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 14:58:01 +0000 (UTC)
+Received: from mxbox2.masterlogin.de (unknown [192.168.10.89])
+        by mxout2.routing.net (Postfix) with ESMTP id ED0345FC27;
+        Mon, 17 Aug 2020 14:57:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1597676275;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JxtKGSfzAAilxUKwLtaxmOttaDPpQe5ywMco1swezzI=;
+        b=ADVwlWEXLFA/o5NoLJkNMKH50lW4l8zhhbBqa6obXkkT6OkBY6qqFrw0sZiuGEWYVRghnI
+        3OWFLA8qEnzT2yalBF6sGWtccH+flROqPm7T/woCEeXuvmZr5djc8d1OGZ/LMflVamSoPq
+        vkF1UyjGwpFzL4B0dGOKPDPKtsdRacM=
+Received: from localhost.localdomain (fttx-pool-217.61.148.252.bambit.de [217.61.148.252])
+        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 4ACA2100474;
+        Mon, 17 Aug 2020 14:57:54 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Subject: Re: Question on 5.4.55 merge into 5.4-rt
-Message-ID: <20200817105619.6395e654@oasis.local.home>
-In-Reply-To: <20200817134109.hu73gjafbdb2n3rz@linutronix.de>
-References: <20200814185421.74b1ddc8@oasis.local.home>
-        <20200817134109.hu73gjafbdb2n3rz@linutronix.de>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] Revert "irqchip/mtk-sysirq: Convert to a platform driver"
+Date:   Mon, 17 Aug 2020 16:57:38 +0200
+Message-Id: <20200817145738.986999-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Aug 2020 15:41:09 +0200
-Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+From: Frank Wunderlich <frank-w@public-files.de>
 
-> On 2020-08-14 18:54:21 [-0400], Steven Rostedt wrote:
-> > 
-> > When merging 5.4.55 into 5.4-rt I hit the following conflict:  
-> …
-> > 
-> > Where we are doing something slightly different. Placing the skb on the
-> > sd->tofree_queue and raising NET_RX_SOFTIQ instead.
-> > 
-> > Now that the vanilla stable 5.4 kernel doesn't call kfree_skb() from
-> > irqs_disabled, can I safely revert this entire change?  
-> 
-> Not if you mean dropping skbufhead-raw-lock.patch.
+This reverts commit f97dbf48ca43009e8b8bcdf07f47fc9f06149b36 which
+breaks bootup of arm/arm64 devices like bananapi-r2/mt7623 and
+bananapi-r64/mt7622
 
-Yeah, I realized I worded that incorrectly. No, I meant only reverting
-the portion of that patch I showed:
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+---
+ drivers/irqchip/irq-mtk-sysirq.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-@@ -5229,7 +5234,7 @@ static void flush_backlog(struct work_struct *work)
-        skb_queue_walk_safe(&sd->input_pkt_queue, skb, tmp) {
-                if (skb->dev->reg_state == NETREG_UNREGISTERING) {
-                        __skb_unlink(skb, &sd->input_pkt_queue);
--                       kfree_skb(skb);
-+                       __skb_queue_tail(&sd->tofree_queue, skb);
-                        input_queue_head_incr(sd);
-                }
-        }
-@@ -5239,11 +5244,14 @@ static void flush_backlog(struct work_struct *work)
-        skb_queue_walk_safe(&sd->process_queue, skb, tmp) {
-                if (skb->dev->reg_state == NETREG_UNREGISTERING) {
-                        __skb_unlink(skb, &sd->process_queue);
--                       kfree_skb(skb);
-+                       __skb_queue_tail(&sd->tofree_queue, skb);
-                        input_queue_head_incr(sd);
-                }
-        }
-+       if (!skb_queue_empty(&sd->tofree_queue))
-+               raise_softirq_irqoff(NET_RX_SOFTIRQ);
-        local_bh_enable();
-+
+diff --git a/drivers/irqchip/irq-mtk-sysirq.c b/drivers/irqchip/irq-mtk-sysirq.c
+index 7299c5ab4d10..6ff98b87e5c0 100644
+--- a/drivers/irqchip/irq-mtk-sysirq.c
++++ b/drivers/irqchip/irq-mtk-sysirq.c
+@@ -231,6 +231,4 @@ static int __init mtk_sysirq_of_init(struct device_node *node,
+ 	kfree(chip_data);
+ 	return ret;
  }
+-IRQCHIP_PLATFORM_DRIVER_BEGIN(mtk_sysirq)
+-IRQCHIP_MATCH("mediatek,mt6577-sysirq", mtk_sysirq_of_init)
+-IRQCHIP_PLATFORM_DRIVER_END(mtk_sysirq)
++IRQCHIP_DECLARE(mtk_sysirq, "mediatek,mt6577-sysirq", mtk_sysirq_of_init);
+-- 
+2.25.1
 
-
-
-> 
-> We can drop `tofree_queue' and everything related to it. We need to
-> keep the `raw_lock' and the `rps_lock()' hunks for
-> `sd->input_pkt_queue'. The other queue, `sd->process_queue', is
-> protected by local_bh_disable() so these hunks can be dropped in the
-> more recent RT versions with the re-written softirq code
-> (v5.0.19-rt10+).
-> 
-> > Is it safe to call kfree_skb() from local_bh_disable()?  
-> 
-> of course it is.
-
-Then all looks good.
-
-Thanks, I'll push this out to the repos today.
-
--- Steve
