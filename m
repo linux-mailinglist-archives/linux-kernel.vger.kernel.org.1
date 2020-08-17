@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF0D246CE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE9C246D6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387980AbgHQQbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:31:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41992 "EHLO mail.kernel.org"
+        id S2389212AbgHQQ4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:56:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387986AbgHQPy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:54:27 -0400
+        id S2388294AbgHQQEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:04:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B5AD20657;
-        Mon, 17 Aug 2020 15:54:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0241A20748;
+        Mon, 17 Aug 2020 16:04:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679666;
-        bh=3bA66jFSyUuGfQ13Zx/hap/5xok8FbaDikQg8GCSOgc=;
+        s=default; t=1597680257;
+        bh=Og6BRER/IdheScylKyPnxC2vtten3NIln1YWxKEmPpQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iDyIyUN6S1QiPQl8bxu3AmeT4JgI4PI32hcsAaWNeSpbMYpVZLPk8kl+HCxEdCbcM
-         7wIdiGEAi92IFUZIYHei0TMDtC9plHNwDynxWZR9EQ2mmGdL8bT52IKEBiZ7XpW8wf
-         d2LDSVhRS7f/gVOb6x3KZu1uEg0RP32e7CuL9/I4=
+        b=oSNjH4Up325TXLBlza73L7RjbLsl9lB7EzKuF+ULtGG2UpN5TNNzeQLZjVsOfZ+gr
+         8ntORpEjxgZSMYZGoF7Ju8Pg2n5KgGNGwIaCZCAiAHSpZSlpPjiqDOWt4cuHGS8swA
+         pVkEi8aNHp2OwG2ESJCOZFf+J02gpJrvG3qk1IYU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
-        Mauri Sandberg <sandberg@mailfence.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Robert Chiras <robert.chiras@nxp.com>,
+        Vinay Simha BN <simhavcs@gmail.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 261/393] net: dsa: rtl8366: Fix VLAN semantics
-Date:   Mon, 17 Aug 2020 17:15:11 +0200
-Message-Id: <20200817143832.271000552@linuxfoundation.org>
+Subject: [PATCH 5.4 114/270] drm/mipi: use dcs write for mipi_dsi_dcs_set_tear_scanline
+Date:   Mon, 17 Aug 2020 17:15:15 +0200
+Message-Id: <20200817143801.451201771@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
-References: <20200817143819.579311991@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,89 +48,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Emil Velikov <emil.velikov@collabora.com>
 
-[ Upstream commit 15ab7906cc9290afb006df1bb1074907fbcc7061 ]
+[ Upstream commit 7a05c3b6d24b8460b3cec436cf1d33fac43c8450 ]
 
-The RTL8366 would not handle adding new members (ports) to
-a VLAN: the code assumed that ->port_vlan_add() was only
-called once for a single port. When intializing the
-switch with .configure_vlan_while_not_filtering set to
-true, the function is called numerous times for adding
-all ports to VLAN1, which was something the code could
-not handle.
+The helper uses the MIPI_DCS_SET_TEAR_SCANLINE, although it's currently
+using the generic write. This does not look right.
 
-Alter rtl8366_set_vlan() to just |= new members and
-untagged flags to 4k and MC VLAN table entries alike.
-This makes it possible to just add new ports to a
-VLAN.
+Perhaps some platforms don't distinguish between the two writers?
 
-Put in some helpful debug code that can be used to find
-any further bugs here.
-
-Cc: DENG Qingfang <dqfext@gmail.com>
-Cc: Mauri Sandberg <sandberg@mailfence.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Fixes: d8652956cf37 ("net: dsa: realtek-smi: Add Realtek SMI driver")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Robert Chiras <robert.chiras@nxp.com>
+Cc: Vinay Simha BN <simhavcs@gmail.com>
+Cc: Jani Nikula <jani.nikula@intel.com>
+Cc: Thierry Reding <treding@nvidia.com>
+Fixes: e83950816367 ("drm/dsi: Implement set tear scanline")
+Signed-off-by: Emil Velikov <emil.velikov@collabora.com>
+Reviewed-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200505160329.2976059-3-emil.l.velikov@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/rtl8366.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/drm_mipi_dsi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/dsa/rtl8366.c b/drivers/net/dsa/rtl8366.c
-index ac88caca5ad4d..a75dcd6698b8a 100644
---- a/drivers/net/dsa/rtl8366.c
-+++ b/drivers/net/dsa/rtl8366.c
-@@ -43,18 +43,26 @@ int rtl8366_set_vlan(struct realtek_smi *smi, int vid, u32 member,
- 	int ret;
- 	int i;
+diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
+index bd2498bbd74ac..b99f96dcc6f1e 100644
+--- a/drivers/gpu/drm/drm_mipi_dsi.c
++++ b/drivers/gpu/drm/drm_mipi_dsi.c
+@@ -1029,11 +1029,11 @@ EXPORT_SYMBOL(mipi_dsi_dcs_set_pixel_format);
+  */
+ int mipi_dsi_dcs_set_tear_scanline(struct mipi_dsi_device *dsi, u16 scanline)
+ {
+-	u8 payload[3] = { MIPI_DCS_SET_TEAR_SCANLINE, scanline >> 8,
+-			  scanline & 0xff };
++	u8 payload[2] = { scanline >> 8, scanline & 0xff };
+ 	ssize_t err;
  
-+	dev_dbg(smi->dev,
-+		"setting VLAN%d 4k members: 0x%02x, untagged: 0x%02x\n",
-+		vid, member, untag);
-+
- 	/* Update the 4K table */
- 	ret = smi->ops->get_vlan_4k(smi, vid, &vlan4k);
- 	if (ret)
- 		return ret;
+-	err = mipi_dsi_generic_write(dsi, payload, sizeof(payload));
++	err = mipi_dsi_dcs_write(dsi, MIPI_DCS_SET_TEAR_SCANLINE, payload,
++				 sizeof(payload));
+ 	if (err < 0)
+ 		return err;
  
--	vlan4k.member = member;
--	vlan4k.untag = untag;
-+	vlan4k.member |= member;
-+	vlan4k.untag |= untag;
- 	vlan4k.fid = fid;
- 	ret = smi->ops->set_vlan_4k(smi, &vlan4k);
- 	if (ret)
- 		return ret;
- 
-+	dev_dbg(smi->dev,
-+		"resulting VLAN%d 4k members: 0x%02x, untagged: 0x%02x\n",
-+		vid, vlan4k.member, vlan4k.untag);
-+
- 	/* Try to find an existing MC entry for this VID */
- 	for (i = 0; i < smi->num_vlan_mc; i++) {
- 		struct rtl8366_vlan_mc vlanmc;
-@@ -65,11 +73,16 @@ int rtl8366_set_vlan(struct realtek_smi *smi, int vid, u32 member,
- 
- 		if (vid == vlanmc.vid) {
- 			/* update the MC entry */
--			vlanmc.member = member;
--			vlanmc.untag = untag;
-+			vlanmc.member |= member;
-+			vlanmc.untag |= untag;
- 			vlanmc.fid = fid;
- 
- 			ret = smi->ops->set_vlan_mc(smi, i, &vlanmc);
-+
-+			dev_dbg(smi->dev,
-+				"resulting VLAN%d MC members: 0x%02x, untagged: 0x%02x\n",
-+				vid, vlanmc.member, vlanmc.untag);
-+
- 			break;
- 		}
- 	}
 -- 
 2.25.1
 
