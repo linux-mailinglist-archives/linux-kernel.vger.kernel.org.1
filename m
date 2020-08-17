@@ -2,164 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A37247877
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC8F24787B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbgHQVEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 17:04:06 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:40584 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbgHQVEF (ORCPT
+        id S1727772AbgHQVFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 17:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726203AbgHQVFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 17:04:05 -0400
-Received: by mail-ej1-f67.google.com with SMTP id o18so19501855eje.7
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 14:04:03 -0700 (PDT)
+        Mon, 17 Aug 2020 17:05:25 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06A7C061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 14:05:24 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id n25so9009855vsq.6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 14:05:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d9PmqgIYzOOImZZLBY3kQUVlBb5GYyirm8BR71dJiqw=;
+        b=Mu5RMyAB30MGUDbsENNdXuRiV4xyLY//ASCMKcHhT9b9pGdREc4oXNbsUG5hi805D4
+         rgj+nxZBF8TrqjPsyn+0qTpc1hJHy6OSRmvOr5sp2Wrt+vSwYI9sp+9kyolCkSWUAuCT
+         2J8ztk9CcxehsHLwobsEvxlggS0Lv/GmrU8xM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=NBhHzgcaB0DndO5Bo1sbERPDqEvBm+Tpg5B38O5FP9Y=;
-        b=Xqyawru5cVKOWvOZNZFiPFrkMLUto73QP1ZcahJvH2XRsv+pbfPfcTP2jkCtA15nPK
-         Bm8JdzUqy4FH/glZsfXck/UdIyoR9yxxNKYSm5UwbnlZR9HgxVFkOyVCsRfGMvLNm6kG
-         zAVvTgKUCuVKlG1uzxEuFICnU8IP+I1B9C3hd7u0lPOAt6anl/I45QlgiqDdFbN1sB+2
-         u7Ai6xCOOigufA/+XJAdYyBXxszsWYmzDxtDG8kSA2KkPNzxn94emcK0QqRJDXJzmWuf
-         An1H4USNquhu3E7utRxtb0ZMac6dk72L16XUAUpEDroIfw9xm5PfYZ9FyO2+ECXI0rXc
-         BMug==
-X-Gm-Message-State: AOAM530RGkIcOVjW7odxLN/MPnY/S/pYKxsU7+THeB4x3yLU5EyeWuFn
-        eO5Pv79wrtrnWdYi1k0NW0Q=
-X-Google-Smtp-Source: ABdhPJx21gsuMXwrpwIahfhha39sWslHHPIeMPjlNl7akMRvTnqOKL03z0f1lBHPX5gqtVcg5l6sIg==
-X-Received: by 2002:a17:906:4f8c:: with SMTP id o12mr17336022eju.69.1597698243014;
-        Mon, 17 Aug 2020 14:04:03 -0700 (PDT)
-Received: from [10.9.0.18] ([185.248.161.177])
-        by smtp.gmail.com with ESMTPSA id qp16sm15127035ejb.89.2020.08.17.14.03.58
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d9PmqgIYzOOImZZLBY3kQUVlBb5GYyirm8BR71dJiqw=;
+        b=H9CTErZFce13uqJv3kZOwx7eD3AGJDzyVrFBzL9hcA+469i0wW3peIF33iPNtKP2Ek
+         j0S7yD5guXpRroSxK2c/7u6FXlLV9NMqhgHKjyH8jgZtm2cr8znri/oaNKKyUAcAJgmE
+         j2g1l5nuQYyUHSGdmQR1CJVCrjxmZHVl5GGIRvzulSlgTLN9Lz42XF8xudl1cR4GaQDo
+         Ypd1ZE1k6aWDVEK6Ao0Z/4KHk5TAllvePv5c/zNxwy3NFMy3VWSLI51n3VJ8GhXNc955
+         yd2GT/7yJ9q5hWUemljDFF9sP99Dkiflxyt6/Fgur7EGHfZHROYN06kaKgZzt0v3jbO7
+         1Nqg==
+X-Gm-Message-State: AOAM531e0ovgMKygDKD2hY4OjaPMm92Z+BGpQSdzmNaefjxMzoXAvWL3
+        fqbsheMrOls8D7POow96/vvoo8WLJzCmww==
+X-Google-Smtp-Source: ABdhPJykiOcAjnfL/F5gI54Xqrt+yjuN0P8bJGJxyrOACqvu07ojpRpiQuZHiBzNBZL8C9+fcH1SOQ==
+X-Received: by 2002:a67:cd0c:: with SMTP id u12mr9426804vsl.15.1597698323155;
+        Mon, 17 Aug 2020 14:05:23 -0700 (PDT)
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
+        by smtp.gmail.com with ESMTPSA id n123sm3693375vkf.41.2020.08.17.14.05.22
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Aug 2020 14:04:02 -0700 (PDT)
-Reply-To: alex.popov@linux.com
-Subject: Re: [PATCH RFC 1/2] mm: Extract SLAB_QUARANTINE from KASAN
-To:     Pavel Machek <pavel@denx.de>, Matthew Wilcox <willy@infradead.org>
-Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        David Howells <dhowells@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
-        notify@kernel.org, Andrey Konovalov <andreyknvl@google.com>
-References: <20200813151922.1093791-1-alex.popov@linux.com>
- <20200813151922.1093791-2-alex.popov@linux.com>
- <20200815185455.GB17456@casper.infradead.org> <20200816195930.GA4155@amd>
-From:   Alexander Popov <alex.popov@linux.com>
-Autocrypt: addr=alex.popov@linux.com; prefer-encrypt=mutual; keydata=
- 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
- j3lCqPk=
-Message-ID: <c6d3b4ce-cdb1-4bc9-d899-89228b4219cd@linux.com>
-Date:   Tue, 18 Aug 2020 00:03:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 17 Aug 2020 14:05:22 -0700 (PDT)
+Received: by mail-ua1-f42.google.com with SMTP id g11so5179048ual.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 14:05:22 -0700 (PDT)
+X-Received: by 2002:a9f:2b89:: with SMTP id y9mr9057188uai.0.1597698321704;
+ Mon, 17 Aug 2020 14:05:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200816195930.GA4155@amd>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200817144722.6665-1-saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <20200817144722.6665-1-saiprakash.ranjan@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 17 Aug 2020 14:05:10 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VE6vCPjDvvP0e73tnd8u5rPuMUa-mwvDazrfUpXP+bKQ@mail.gmail.com>
+Message-ID: <CAD=FV=VE6vCPjDvvP0e73tnd8u5rPuMUa-mwvDazrfUpXP+bKQ@mail.gmail.com>
+Subject: Re: [PATCHv2] soc: qcom: llcc: Support chipsets that can write to
+ llcc registers
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Isaac J. Manjarres" <isaacm@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.08.2020 22:59, Pavel Machek wrote:
-> On Sat 2020-08-15 19:54:55, Matthew Wilcox wrote:
->> On Thu, Aug 13, 2020 at 06:19:21PM +0300, Alexander Popov wrote:
->>> +config SLAB_QUARANTINE
->>> +	bool "Enable slab freelist quarantine"
->>> +	depends on !KASAN && (SLAB || SLUB)
->>> +	help
->>> +	  Enable slab freelist quarantine to break heap spraying technique
->>> +	  used for exploiting use-after-free vulnerabilities in the kernel
->>> +	  code. If this feature is enabled, freed allocations are stored
->>> +	  in the quarantine and can't be instantly reallocated and
->>> +	  overwritten by the exploit performing heap spraying.
->>> +	  This feature is a part of KASAN functionality.
->>
->> After this patch, it isn't part of KASAN any more ;-)
->>
->> The way this is written is a bit too low level.  Let's write it in terms
->> that people who don't know the guts of the slab allocator or security
->> terminology can understand:
->>
->> 	  Delay reuse of freed slab objects.  This makes some security
->> 	  exploits harder to execute.  It reduces performance slightly
->> 	  as objects will be cache cold by the time they are reallocated,
->> 	  and it costs a small amount of memory.
-> 
-> Written this way, it invites questions:
-> 
-> Does it introduce any new deadlocks in near out-of-memory situations?
+Hi,
 
-Linux kernel with enabled KASAN is heavily tested by syzbot.
-I think Dmitry and Andrey can give good answers to your question.
+On Mon, Aug 17, 2020 at 7:47 AM Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> From: "Isaac J. Manjarres" <isaacm@codeaurora.org>
+>
+> Older chipsets may not be allowed to configure certain LLCC registers
+> as that is handled by the secure side software. However, this is not
+> the case for newer chipsets and they must configure these registers
+> according to the contents of the SCT table, while keeping in mind that
+> older targets may not have these capabilities. So add support to allow
+> such configuration of registers to enable capacity based allocation
+> and power collapse retention for capable chipsets.
 
-Some time ago I was doing Linux kernel fuzzing with syzkaller on low memory
-virtual machines (with KASAN and LOCKUP_DETECTOR enabled). I gave less than 1G
-to each debian stretch VM. I didn't get any special deadlock caused by OOM.
+I have very little idea about what the above means.  That being said,
+what's broken that this patch fixes?  Please include this in the CL
+description.  It should answer, in the very least, the following two
+questions:
 
-Best regards,
-Alexander
+a) Were existing attempts to do capacity based allocation failing, or
+is capacity based allocation a new whizbang feature that a future
+patch will add and you need this one to land first?
+
+b) Why was it bad not to enable power collapse retention?  Was this
+causing things to get corrupted after resume?  Was this causing us to
+fail to suspend?  Were we burning too little power in S3 and the
+battery vendors are looking for an excuse to sell bigger batteries?
+
+I'm not very smart and am also lacking documentation for what the heck
+all this is, so I'm looking for the "why" of your patch.
+
+
+> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+> (sai: use table instead of dt property and minor commit msg change)
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>
+> Changes in v2:
+>  * Fix build errors reported by kernel test robot.
+>
+> ---
+>  drivers/soc/qcom/llcc-qcom.c | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>
+> diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
+> index 429b5a60a1ba..865f607cf502 100644
+> --- a/drivers/soc/qcom/llcc-qcom.c
+> +++ b/drivers/soc/qcom/llcc-qcom.c
+> @@ -45,6 +45,9 @@
+>  #define LLCC_TRP_ATTR0_CFGn(n)        (0x21000 + SZ_8 * n)
+>  #define LLCC_TRP_ATTR1_CFGn(n)        (0x21004 + SZ_8 * n)
+>
+> +#define LLCC_TRP_SCID_DIS_CAP_ALLOC   0x21F00
+> +#define LLCC_TRP_PCB_ACT              0x21F04
+> +
+>  #define BANK_OFFSET_STRIDE           0x80000
+>
+>  /**
+> @@ -318,6 +321,11 @@ size_t llcc_get_slice_size(struct llcc_slice_desc *desc)
+>  }
+>  EXPORT_SYMBOL_GPL(llcc_get_slice_size);
+>
+> +static const struct of_device_id __maybe_unused qcom_llcc_configure_of_match[] = {
+> +       { .compatible = "qcom,sc7180-llcc" },
+> +       { }
+> +};
+
+Why are you introducing a whole second table?  Shouldn't you just add
+a field to "struct qcom_llcc_config" ?
+
+
+> +
+>  static int qcom_llcc_cfg_program(struct platform_device *pdev)
+>  {
+>         int i;
+> @@ -327,13 +335,17 @@ static int qcom_llcc_cfg_program(struct platform_device *pdev)
+>         u32 attr0_val;
+>         u32 max_cap_cacheline;
+>         u32 sz;
+> +       u32 disable_cap_alloc = 0, retain_pc = 0;
+
+Don't init to 0.  See below.
+
+
+>         int ret = 0;
+>         const struct llcc_slice_config *llcc_table;
+>         struct llcc_slice_desc desc;
+> +       const struct of_device_id *llcc_configure;
+>
+>         sz = drv_data->cfg_size;
+>         llcc_table = drv_data->cfg;
+>
+> +       llcc_configure = of_match_node(qcom_llcc_configure_of_match, pdev->dev.of_node);
+> +
+
+As per above, just use the existing config.
+
+
+>         for (i = 0; i < sz; i++) {
+>                 attr1_cfg = LLCC_TRP_ATTR1_CFGn(llcc_table[i].slice_id);
+>                 attr0_cfg = LLCC_TRP_ATTR0_CFGn(llcc_table[i].slice_id);
+> @@ -369,6 +381,21 @@ static int qcom_llcc_cfg_program(struct platform_device *pdev)
+>                                         attr0_val);
+>                 if (ret)
+>                         return ret;
+> +
+> +               if (llcc_configure) {
+> +                       disable_cap_alloc |= llcc_table[i].dis_cap_alloc << llcc_table[i].slice_id;
+
+Don't "|=".  You're the only place touching this variable.  Just set it.
+
+
+> +                       ret = regmap_write(drv_data->bcast_regmap,
+> +                                               LLCC_TRP_SCID_DIS_CAP_ALLOC, disable_cap_alloc);
+> +                       if (ret)
+> +                               return ret;
+> +
+> +                       retain_pc |= llcc_table[i].retain_on_pc << llcc_table[i].slice_id;
+
+Don't "|=".  You're the only place touching this variable.  Just set it.
+
+
+-Doug
