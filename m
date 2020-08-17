@@ -2,138 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B00246F85
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37828246F11
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390097AbgHQRs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:48:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46942 "EHLO mail.kernel.org"
+        id S1731529AbgHQRmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:42:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388746AbgHQQNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:13:12 -0400
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1731101AbgHQQQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:16:39 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E72C820882;
-        Mon, 17 Aug 2020 16:13:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 554E720658;
+        Mon, 17 Aug 2020 16:16:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680791;
-        bh=gOa0eYxDEsJl2GQzrDLlhSJ5bJ/ZSXUtDonvSlh0ISI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vLRATeCcDCX/WCszaMIH4H6QE5Q8qaxo+6lOPhJY3rU/qC3/KnPHOgpGDtINee7Gq
-         VcWIayKF3Q5vcKl+04xcwMH7/dbSBKTxAP7wJHZxqdCIaZTaY9H7oqkp8AkQMziwc8
-         C466cFsSL7D9DSNpN4oisiuWqbgpp5MlAwUUJYj4=
-Received: by mail-ot1-f43.google.com with SMTP id h22so13818866otq.11;
-        Mon, 17 Aug 2020 09:13:10 -0700 (PDT)
-X-Gm-Message-State: AOAM531NhY7Wt0pAoz/CGBobj3yGVukH2RMWCgIJe/MsLh2Zs4iCYRgU
-        XEGus4Y64M0JWEZhp8O1r0TWjGYLEjztDfWyJw==
-X-Google-Smtp-Source: ABdhPJyXcxsLxb+WyZgDqUvX+ZXB5O5RvpOgmleI0+UY8O6F4IJdy3paAveojUJFPRMuv9DQhsNQTGig0iW3qRkFcQI=
-X-Received: by 2002:a9d:7f84:: with SMTP id t4mr11916864otp.192.1597680790121;
- Mon, 17 Aug 2020 09:13:10 -0700 (PDT)
+        s=default; t=1597680977;
+        bh=qmXn2ePcxDGgDoZI/rAKqc3zaoL0TNCzGzLKaOLK0fM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aRwgKhUWjrCwd9uDv+ANJAH6gUxStlMD4owM5J9/JPiol4eK+RhA/NJs9yjLlH1dp
+         VL4xjbKcKHexzaohKJnatJcHKzuB9VdmwpwYw941s7tmsprSnIwZffmUt9g0k8Pff7
+         NwNK0j0seE62MAOq3/lU3Q0T/EbSRcR+GHGSIJL4=
+Date:   Mon, 17 Aug 2020 09:16:15 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next RFC v2 01/13] devlink: Add reload action option
+ to devlink reload command
+Message-ID: <20200817091615.37e76ca3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1597657072-3130-2-git-send-email-moshe@mellanox.com>
+References: <1597657072-3130-1-git-send-email-moshe@mellanox.com>
+        <1597657072-3130-2-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-References: <20200815125112.462652-2-maz@kernel.org> <20200815232228.GA1325245@bjorn-Precision-5520>
- <87pn7qnabq.wl-maz@kernel.org>
-In-Reply-To: <87pn7qnabq.wl-maz@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 17 Aug 2020 10:12:58 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+fDNa60+6+s9MwVjUFUPAuc43+uMx4Fm2nZhUgrV7LEg@mail.gmail.com>
-Message-ID: <CAL_Jsq+fDNa60+6+s9MwVjUFUPAuc43+uMx4Fm2nZhUgrV7LEg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] PCI: rockchip: Work around missing device_type
- property in DT
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 16, 2020 at 4:40 AM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Sun, 16 Aug 2020 00:22:28 +0100,
-> Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >
-> > On Sat, Aug 15, 2020 at 01:51:11PM +0100, Marc Zyngier wrote:
-> > > Recent changes to the DT PCI bus parsing made it mandatory for
-> > > device tree nodes describing a PCI controller to have the
-> > > 'device_type = "pci"' property for the node to be matched.
-> > >
-> > > Although this follows the letter of the specification, it
-> > > breaks existing device-trees that have been working fine
-> > > for years.  Rockchip rk3399-based systems are a prime example
-> > > of such collateral damage, and have stopped discovering their
-> > > PCI bus.
-> > >
-> > > In order to paper over the blunder, let's add a workaround
-> > > to the pcie-rockchip driver, adding the missing property when
-> > > none is found at boot time. A warning will hopefully nudge the
-> > > user into updating their DT to a fixed version if they can, but
-> > > the insentive is obviously pretty small.
-> >
-> > s/insentive/incentive/ (Lorenzo or I can fix this up)
-> >
-> > > Fixes: 2f96593ecc37 ("of_address: Add bus type match for pci ranges parser")
-> > > Suggested-by: Roh Herring <robh+dt@kernel.org>
-> >
-> > s/Roh/Rob/ (similarly)
->
-> Clearly not my day when it comes to proofreading commit messages.
-> Thanks for pointing this out, and in advance for fixing it up.
->
-> >
-> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> >
-> > This looks like a candidate for v5.9, since 2f96593ecc37 was merged
-> > during the v5.9 merge window, right?
->
-> Absolutely.
->
-> > I wonder how many other DTs are similarly broken?  Maybe Rob's DT
-> > checker has already looked?
->
-> I've just managed to run the checker, which comes up with all kinds of
-> goodies. Apart from the above, it also spots the following:
->
-> - arch/arm64/boot/dts/mediatek/mt7622.dtsi: Has a device_type property
->   in its main PCIe node, but not in the child nodes. It isn't obvious
->   to me whether that's a violation or not (the spec doesn't say
->   whether the property should be set on a per-port basis). Rob?
+On Mon, 17 Aug 2020 12:37:40 +0300 Moshe Shemesh wrote:
+> Add devlink reload action to allow the user to request a specific reload
+> action. The action parameter is optional, if not specified then devlink
+> driver re-init action is used (backward compatible).
+> Note that when required to do firmware activation some drivers may need
+> to reload the driver. On the other hand some drivers may need to reset
+> the firmware to reinitialize the driver entities.
 
-The rule is bridge nodes should have 'device_type = "pci"'. But what's
-needed to fix these cases is setting device_type where we are parsing
-ranges or dma-ranges which we're not doing on the child ndes.
-Otherwise, I don't think it matters in this case unless you have child
-(grandchild here) nodes for PCI devices. If you did have child nodes,
-the address translation was already broken before this change.
+See, this is why I wanted to keep --live as a separate option. 
+Normally the driver is okay to satisfy more actions than requested, 
+e.g. activate FW even if only driver_reinit was requested.
 
-> - arch/arm64/boot/dts/qcom/msm8996.dtsi: Only one out of the three
->   PCIe nodes has the device_type property, probably broken similarly
->   to rk3399.
+fw_live_patch does not have this semantics, it explicitly requires
+driver to not impact connectivity much. No "can do more resets than
+requested" here. Hence the --live part would be better off as a
+separate argument (at least in uAPI, the in-kernel interface we can
+change later if needed).
 
-The only upstream board is DB820c, so probably not as wide an impact...
-
-There are also 92 (lots of duplicates due to multiple boards) more
-cases in arch/arm/. A log is here[1].
-
-> I could move the workaround to drivers/pci/of.c, and have it called
-> from the individual drivers. I don't have the HW to test those though.
->
-> Thoughts?
-
-I think we should go with my other suggestion of looking at the node
-name. Looks like just checking 'pcie' is enough. We can skip 'pci' as
-I don't see any cases.
-
-Rob
-
-[1] https://gitlab.com/robherring/linux-dt-bindings/-/jobs/688752562
+> Reload actions supported are:
+> driver_reinit: driver entities re-initialization, applying devlink-param
+>                and devlink-resource values.
+> fw_activate: firmware activate.
+> fw_live_patch: firmware live patching.
