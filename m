@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564C22478F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805702478FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbgHQVje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 17:39:34 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:36848 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727976AbgHQVjd (ORCPT
+        id S1728619AbgHQVkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 17:40:51 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:38172 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728545AbgHQVku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 17:39:33 -0400
-Received: by mail-il1-f193.google.com with SMTP id z3so15859491ilh.3;
-        Mon, 17 Aug 2020 14:39:32 -0700 (PDT)
+        Mon, 17 Aug 2020 17:40:50 -0400
+Received: by mail-io1-f68.google.com with SMTP id h4so19160618ioe.5;
+        Mon, 17 Aug 2020 14:40:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Mw5wVwSExTMkeVX3ToMtDjg6KBaBweiQKzPEGQFQbxI=;
-        b=FRirZIULmrNh1VlmCVdWev7PGEtgYPHLeNecjGqs72zZGnexh+cn2bWp06U1PVshNg
-         ukybd+yfRNv7ek+/+OvVcuyjeCPvyWiDBKdtX0LEaRVScuQYtQBnb69tM/GK10iLj1Hb
-         Lvsc9U7SI9lq+/WmTLF7dVuvbyOpb84k4lb2OqVZCSTB9GHUe2dWHv+i5OfKvbW6lK/Q
-         EBWK2cTqsknfUHfezuNn96mI+UbvjEqlDbgw5PKAbUgelc9Nph6hYV/gPVEwupv9vKIL
-         hCx1CVzu+05hTg4X81WvP6rjMpHSjweMF0aUKTmqu+xKtZFJN8Iyh3m62amYwuv72cfG
-         dCkw==
-X-Gm-Message-State: AOAM531qJV2nEt8t92GU9eIn+n6EE2Ach9YYGr/5TKdj8rVoJ3wJE7k8
-        wZS5gNnW9H2LVHsl9L4mTKOmSU/0fA==
-X-Google-Smtp-Source: ABdhPJz4xy1sZuMoMg+yUZJPmhtdp5Jkw7yxfPY8U6JrabWfyvP6WnDM7FeHKFHOcaQfdWi4ADhMiQ==
-X-Received: by 2002:a92:dc81:: with SMTP id c1mr14028147iln.284.1597700372365;
-        Mon, 17 Aug 2020 14:39:32 -0700 (PDT)
+        bh=8bghgkTC3QVlfhz+LJ7oipPmUTJO6yuPbbxRpmVsdnE=;
+        b=eA2bfqQQntMc6WwsnzLdLl21npJHiah7AIkFlaJDzQBxRguNYpKk0wWR/epr208feX
+         P9E/xq7m9SYZAsnKekAkFcfTbRIwEuiMWwIvL2P5iMXVM+nLVYo/XZ67b0ZcJgLEnjmz
+         dbati1eCLF2IdWrcn7RCAX2KeWlXRlC3PGGzB7hi2sDuZ8SgkX80HhbL/zW77smnnry2
+         fCtnqt4UqAx7cBggnxD4pF1eHjUI2Ibh2OvVtjsCN0tJllNs3EIKYFsIGI5lzFzdffLW
+         wMmPGillphGcFbobsOntCkv94/kxUOgnu0hUmOg+MkO2mXzfSOKh67t27Harnfq6HaR5
+         eeLQ==
+X-Gm-Message-State: AOAM531WPFtytJdJI2QPOa/jd6wcImNoRiWu5pf0jR4z8UC8pIIedSHr
+        N02axcjAdjUi9hPx6nh6SQ==
+X-Google-Smtp-Source: ABdhPJwbPRE+sMzi11nxyfp7Kz1CohPc5alkqZQLcuwKI4IykUPYGiNvawIvZxvQuZ0SQN2zZhSFSw==
+X-Received: by 2002:a5d:9d8a:: with SMTP id 10mr14257463ion.195.1597700447934;
+        Mon, 17 Aug 2020 14:40:47 -0700 (PDT)
 Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id m7sm10154817ilq.45.2020.08.17.14.39.29
+        by smtp.gmail.com with ESMTPSA id u25sm9674214iob.51.2020.08.17.14.40.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 14:39:31 -0700 (PDT)
-Received: (nullmailer pid 1614839 invoked by uid 1000);
-        Mon, 17 Aug 2020 21:39:28 -0000
-Date:   Mon, 17 Aug 2020 15:39:28 -0600
+        Mon, 17 Aug 2020 14:40:47 -0700 (PDT)
+Received: (nullmailer pid 1617017 invoked by uid 1000);
+        Mon, 17 Aug 2020 21:40:45 -0000
+Date:   Mon, 17 Aug 2020 15:40:45 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     linux-crypto@vger.kernel.org, mpm@selenic.com,
-        linux-arm-kernel@lists.infradead.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, herbert@gondor.apana.org.au,
-        linux-kernel@vger.kernel.org, Linux-imx@nxp.com, vz@mleia.com,
-        horia.geanta@nxp.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, shawnguo@kernel.org,
-        kernel@pengutronix.de
-Subject: Re: [PATCH] dt-bindings: rng: Convert i.MX to json-schema
-Message-ID: <20200817213928.GA1614783@bogus>
-References: <1596608884-13205-1-git-send-email-Anson.Huang@nxp.com>
+Cc:     shawnguo@kernel.org, mark.rutland@arm.com, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, Linux-imx@nxp.com, Frank.li@nxp.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org, will@kernel.org,
+        s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+        festevam@gmail.com
+Subject: Re: [PATCH] dt-bindings: perf: Convert i.MX DDR to json-schema
+Message-ID: <20200817214045.GA1616941@bogus>
+References: <1596609387-23542-1-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1596608884-13205-1-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <1596609387-23542-1-git-send-email-Anson.Huang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 05 Aug 2020 14:28:04 +0800, Anson Huang wrote:
-> Convert the i.MX rng binding to DT schema format using json-schema.
+On Wed, 05 Aug 2020 14:36:27 +0800, Anson Huang wrote:
+> Convert the i.MX DDR perf binding to DT schema format using json-schema.
 > 
 > Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 > ---
->  Documentation/devicetree/bindings/rng/imx-rng.txt  | 23 ----------
->  Documentation/devicetree/bindings/rng/imx-rng.yaml | 50 ++++++++++++++++++++++
->  2 files changed, 50 insertions(+), 23 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/rng/imx-rng.txt
->  create mode 100644 Documentation/devicetree/bindings/rng/imx-rng.yaml
+>  .../devicetree/bindings/perf/fsl-imx-ddr.txt       | 22 ------------
+>  .../devicetree/bindings/perf/fsl-imx-ddr.yaml      | 39 ++++++++++++++++++++++
+>  2 files changed, 39 insertions(+), 22 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/perf/fsl-imx-ddr.txt
+>  create mode 100644 Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml
 > 
 
 Applied, thanks!
