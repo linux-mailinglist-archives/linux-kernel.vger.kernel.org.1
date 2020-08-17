@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B503B246CD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4018B246CCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731091AbgHQQ3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:29:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39588 "EHLO mail.kernel.org"
+        id S1731240AbgHQQ3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:29:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387789AbgHQPxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:53:33 -0400
+        id S2387879AbgHQPwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:52:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C78920729;
-        Mon, 17 Aug 2020 15:53:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8D3520657;
+        Mon, 17 Aug 2020 15:52:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679604;
-        bh=bN7E5iG/RTgo3CgEpGacs6B2YD4jqwur/wMV2RNafec=;
+        s=default; t=1597679575;
+        bh=QA7MIVp4ltQuVqhOplQfMzK4I4rRnM8iHhKZ0h1fVZ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ilxknprzeeTqAoR2L/hCdAaesDIQ+z9oQn/VPoVfn9bbjjowCMiHLe0HsxVWlcndE
-         Em1Lg2dkSYp/92WD8U2S6A7OYPAGJZXLCgPGkXsTWmYZfvnoYZOGUaCz7K2BVduw2T
-         lYA3XYUs7NPpNenlM0Dp7p0HcaO5nXCZVBHNGO0M=
+        b=WWjnUidRVR8guQhvPwaz19JWoAAlyV6yQcMd+WPzRPS/AfuMMBciiYx9uf9OgvS+t
+         gA8hAeiheqUNDxpLttKVLrSjbZ5WAcadrffTVwfoiRNeoO8QJww9rnvwMTiOdlWlSL
+         err6TGZN0sifI/rMbv8UX/lZPiJgM4ZyQ6Od/HGA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
+        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
+        Mauri Sandberg <sandberg@mailfence.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 254/393] Smack: prevent underflow in smk_set_cipso()
-Date:   Mon, 17 Aug 2020 17:15:04 +0200
-Message-Id: <20200817143831.936342216@linuxfoundation.org>
+Subject: [PATCH 5.7 262/393] net: dsa: rtl8366: Fix VLAN set-up
+Date:   Mon, 17 Aug 2020 17:15:12 +0200
+Message-Id: <20200817143832.321686927@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -44,34 +47,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit 42a2df3e829f3c5562090391b33714b2e2e5ad4a ]
+[ Upstream commit 788abc6d9d278ed6fa1fa94db2098481a04152b7 ]
 
-We have an upper bound on "maplevel" but forgot to check for negative
-values.
+Alter the rtl8366_vlan_add() to call rtl8366_set_vlan()
+inside the loop that goes over all VIDs since we now
+properly support calling that function more than once.
+Augment the loop to postincrement as this is more
+intuitive.
 
-Fixes: e114e473771c ("Smack: Simplified Mandatory Access Control Kernel")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+The loop moved past the last VID but called
+rtl8366_set_vlan() with the port number instead of
+the VID, assuming a 1-to-1 correspondence between
+ports and VIDs. This was also a bug.
+
+Cc: DENG Qingfang <dqfext@gmail.com>
+Cc: Mauri Sandberg <sandberg@mailfence.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: d8652956cf37 ("net: dsa: realtek-smi: Add Realtek SMI driver")
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/smack/smackfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/dsa/rtl8366.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
-index 2bae1fc493d16..9c4308077574c 100644
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -884,7 +884,7 @@ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
- 	}
+diff --git a/drivers/net/dsa/rtl8366.c b/drivers/net/dsa/rtl8366.c
+index a75dcd6698b8a..1368816abaed1 100644
+--- a/drivers/net/dsa/rtl8366.c
++++ b/drivers/net/dsa/rtl8366.c
+@@ -397,7 +397,7 @@ void rtl8366_vlan_add(struct dsa_switch *ds, int port,
+ 	if (dsa_is_dsa_port(ds, port) || dsa_is_cpu_port(ds, port))
+ 		dev_err(smi->dev, "port is DSA or CPU port\n");
  
- 	ret = sscanf(rule, "%d", &maplevel);
--	if (ret != 1 || maplevel > SMACK_CIPSO_MAXLEVEL)
-+	if (ret != 1 || maplevel < 0 || maplevel > SMACK_CIPSO_MAXLEVEL)
- 		goto out;
+-	for (vid = vlan->vid_begin; vid <= vlan->vid_end; ++vid) {
++	for (vid = vlan->vid_begin; vid <= vlan->vid_end; vid++) {
+ 		int pvid_val = 0;
  
- 	rule += SMK_DIGITLEN;
+ 		dev_info(smi->dev, "add VLAN %04x\n", vid);
+@@ -420,13 +420,13 @@ void rtl8366_vlan_add(struct dsa_switch *ds, int port,
+ 			if (ret < 0)
+ 				return;
+ 		}
+-	}
+ 
+-	ret = rtl8366_set_vlan(smi, port, member, untag, 0);
+-	if (ret)
+-		dev_err(smi->dev,
+-			"failed to set up VLAN %04x",
+-			vid);
++		ret = rtl8366_set_vlan(smi, vid, member, untag, 0);
++		if (ret)
++			dev_err(smi->dev,
++				"failed to set up VLAN %04x",
++				vid);
++	}
+ }
+ EXPORT_SYMBOL_GPL(rtl8366_vlan_add);
+ 
 -- 
 2.25.1
 
