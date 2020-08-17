@@ -2,107 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3DE247884
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC82524788E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgHQVMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 17:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727789AbgHQVMT (ORCPT
+        id S1727902AbgHQVPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 17:15:51 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:48070 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727885AbgHQVPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 17:12:19 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EF6C061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 14:12:18 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id s29so5175091uae.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 14:12:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ekTSKo1pbYsTe6haa619uXui/FKJjHYGUOaSFf17VjQ=;
-        b=QBOEjwUjtryHxtBvVTbC4f0ZBDkwpm75MZYBWIfR90Ktq2NgHymjo76sA9zuX1ejqT
-         gJN4UY+ePTJVNDgOSy/5RQkn7isZOpL1QmvO2HnjiETWqlotGNMX/0YDkv3IA/v66B0c
-         OLPA4KN7c42fNV2cJ/nsN1yHEiVJcWvTJlJvY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ekTSKo1pbYsTe6haa619uXui/FKJjHYGUOaSFf17VjQ=;
-        b=EsFCmQubPWiKcgyxD13ERb0XgLNVTdKwXX6nvXoYYeUM6SZU169ptTRDpbVjwDZU5r
-         D/DVcNipU8V2ORYQYYhuyHeKY++GncwuzS6cI9r5HG59RsZw62ruqZUU6XQJU36Jwpoy
-         UCUYmf9ArBzFoOBycE2d127/vWEVOcDDKh+KemO4RVb+KeD4EMIahKJfb3hPKG3qWfMb
-         sgmFOSW/Wnl7ISXBPGj5Rj6Ud79HWiovnZAgY6GRem+pnH5o1bzHmWx0DS0cZvSnKrK/
-         ymoOeBZ9an09QWMQh4AAWYrir4xQ4/k1va6fmdnbQVd6q2XGt0Ooj0w3UJKzz7Y8Xs20
-         4a5w==
-X-Gm-Message-State: AOAM532Y/zFM0/jFfYqp2qtj+dvhRTCA+YFnGQxdUiFZtkzj5uUf1CQL
-        jzztUGgfd0AnVtJGnXgWqzKHgrkZ2/WHeg==
-X-Google-Smtp-Source: ABdhPJxFStuhUXRj0xjjefqurfdw0pPRuCq62IPQbsc4EQlKAIrhfZH3wVhfRPP9nUZl6eifG8V4TQ==
-X-Received: by 2002:ab0:6253:: with SMTP id p19mr8940408uao.48.1597698737966;
-        Mon, 17 Aug 2020 14:12:17 -0700 (PDT)
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
-        by smtp.gmail.com with ESMTPSA id x187sm1220839vkg.1.2020.08.17.14.12.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Aug 2020 14:12:17 -0700 (PDT)
-Received: by mail-ua1-f52.google.com with SMTP id v20so5174467ual.4
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 14:12:17 -0700 (PDT)
-X-Received: by 2002:a9f:2b89:: with SMTP id y9mr9076116uai.0.1597698736857;
- Mon, 17 Aug 2020 14:12:16 -0700 (PDT)
+        Mon, 17 Aug 2020 17:15:45 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k7mTk-001Bwu-Sg; Mon, 17 Aug 2020 15:15:40 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k7mTk-00074A-6O; Mon, 17 Aug 2020 15:15:40 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Witten <mfwitten@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, John Levon <john.levon@joyent.com>,
+        John Levon <levon@movementarian.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <c6fda26e8d134264b04fadc3386d6c32@gmail.com>
+        <20200816175303.GB1236603@ZenIV.linux.org.uk>
+        <20200817204223.GB12414@amd>
+Date:   Mon, 17 Aug 2020 16:12:09 -0500
+In-Reply-To: <20200817204223.GB12414@amd> (Pavel Machek's message of "Mon, 17
+        Aug 2020 22:42:24 +0200")
+Message-ID: <87lfid6kpi.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20200817040417.11111-1-saiprakash.ranjan@codeaurora.org>
-In-Reply-To: <20200817040417.11111-1-saiprakash.ranjan@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 17 Aug 2020 14:12:05 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VVeoqOsVzJiCxjYTpJc8JX4Qx3vB+0evzp8oMdYsRZvQ@mail.gmail.com>
-Message-ID: <CAD=FV=VVeoqOsVzJiCxjYTpJc8JX4Qx3vB+0evzp8oMdYsRZvQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Fix the LLCC base register size
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1k7mTk-00074A-6O;;;mid=<87lfid6kpi.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1//ZQ9z85heRXtRqSwjyTMi/k4mhCF2Zkk=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4986]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: ; sa02 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Pavel Machek <pavel@ucw.cz>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 330 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.7 (1.1%), b_tie_ro: 2.5 (0.7%), parse: 0.69
+        (0.2%), extract_message_metadata: 9 (2.7%), get_uri_detail_list: 1.22
+        (0.4%), tests_pri_-1000: 9 (2.8%), tests_pri_-950: 0.98 (0.3%),
+        tests_pri_-900: 0.82 (0.2%), tests_pri_-90: 64 (19.5%), check_bayes:
+        63 (19.1%), b_tokenize: 6 (1.7%), b_tok_get_all: 8 (2.5%),
+        b_comp_prob: 2.1 (0.6%), b_tok_touch_all: 44 (13.3%), b_finish: 0.68
+        (0.2%), tests_pri_0: 232 (70.3%), check_dkim_signature: 0.39 (0.1%),
+        check_dkim_adsp: 2.2 (0.7%), poll_dns_idle: 0.91 (0.3%), tests_pri_10:
+        1.71 (0.5%), tests_pri_500: 5 (1.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] Makefile: Yes. Finally remove '-Wdeclaration-after-statement'
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Pavel Machek <pavel@ucw.cz> writes:
 
-On Sun, Aug 16, 2020 at 9:04 PM Sai Prakash Ranjan
-<saiprakash.ranjan@codeaurora.org> wrote:
+> Hi!
 >
-> There is only one LLCC logical bank on SC7180 SoC of size
-> 0x50000(320KB) not 2MB, so correct the size and fix copy
-> paste mistake from SDM845 which had 4 logical banks.
+>> > This is not just a matter of style; this is a matter of semantics,
+>> > especially with regard to:
+>> > 
+>> >   * const Correctness.
+>> >     A const-declared variable must be initialized when defined.
+>> > 
+>> >   * Conditional Compilation.
+>> >     When there is complex interaction between compile-time
+>> >     configuration options, it's essential to be able to
+>> >     make declarations where needed; otherwise unnecessary
+>> >     gymnastics are required to silence the compiler.
+>> > 
+>> > Gentleman... Just let people say exactly what they mean to say.
+> ..
+>
+>> You obviously need every bit of help in that task, judging by the amount
+>> of clarity (or thoughts, for that matter) visible in the spew above...
+>> 
+>> NAK.  And as for letting people say exactly what they mean to say...
+>> I am tempted to take you on that invitation, but that would be cruel
+>> to gregkh - he would have to reply to inevitable screeds about
+>> CoC-violating postings on l-k.
+>
+> We should really get rid of CoC, because I'd really like to see you
+> _not_ resist that temptation.
+>
+> But... he's right.
+>
+> With rust-like programming style with widespread consts, this warning
+> has to go. And it is causing additional/ugly #ifdefs in some cases.
+>
+> Maybe author can show examples in kernel .c where disabling the
+> warning would lead to nicer code. I believe we should give it a try.
 
-I guess SDM845 not only has 4 banks but each bank is bigger?  At first
-I thought "yeah, 4 banks and 4 * 0x5 = 0x20" except that's not true in
-hex.  ;-)
 
+This change came in with 535231e8252e ("[PATCH] add
+-Wdeclaration-after-statement").  AKA
+https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/commit/?id=535231e8252eea14abf4f14d28f6c1c03f5e0f02
 
-> Fixes: 7cee5c742899 ("arm64: dts: qcom: sc7180: Fix node order")
-> Fixes: c831fa299996 ("arm64: dts: qcom: sc7180: Add Last level cache controller node")
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7180.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Does anyone remember why we added this warning?  I had always thought
+it's purpose was to ensure we stayed within our chosen dialect of C.
+The actual commit says that it was in reaction to gcc miscompiling proc.
+Which is a far more serious thing.
 
-Without having any documentation ,this seems sane to me.  I guess it
-doesn't do a whole lot because the driver just reads one register from
-this whole space (at 0x0003000c bytes off).  So it's just a cleanup,
-or is it needed to actually fix something?
+With all of the our bumping of our gcc version lately perhaps it is safe
+to remove this warning.
 
-...the fact that there's a status register in the middle of this seems
-strange, though.  Your commit message makes it sound as if this range
-is describing the size of the cache itself and then I would think that
-this was the address range where you could read from the cache memory
-directly, but that doesn't seem to mesh in my mind with there being a
-status register.  Hrm.  Am I just confused as usual?
-
-
--Doug
+Eric
