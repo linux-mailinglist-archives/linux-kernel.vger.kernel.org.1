@@ -2,83 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCB4247178
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A27E3247181
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390139AbgHQS2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:28:16 -0400
-Received: from mail-ej1-f42.google.com ([209.85.218.42]:46672 "EHLO
-        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390989AbgHQS1n (ORCPT
+        id S2391002AbgHQS3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390778AbgHQS2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 14:27:43 -0400
-Received: by mail-ej1-f42.google.com with SMTP id p24so18905820ejf.13;
-        Mon, 17 Aug 2020 11:27:42 -0700 (PDT)
+        Mon, 17 Aug 2020 14:28:50 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141E6C061389;
+        Mon, 17 Aug 2020 11:28:50 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id o21so15612660oie.12;
+        Mon, 17 Aug 2020 11:28:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6X353itaXkDHqSu22DPUW9j+w4AM7wyuUFGnVJQkvAg=;
+        b=k+axQxniUoUpFPhsKqdJdzpEsffqb1QGFrUCpyDdCwhH88nu9mlsHCZCYYE0np5mJ1
+         dbQfAQOv0N8ewztEhdItGY/P5gewbqdoON3Q10CgE1iHacG6Zv5nhtgcDlFNyUtAuw9y
+         pFsARcBVw3aFJcKyR4GGr9NtzC+3TI+QD1QaRvHR31wSd140Br6Lwq2PjkqZ/H6qqlR+
+         4IAUrCjJKYl9dWdPc7TPB+KGnbtm15EZRCD6gzWjwt3PAtCWiKdbet4jaKFsvhTi85zY
+         5/62RbvsqZD27qs3mFUq9fv4Cp9hVp/CR57l1IxobdWPa7uBMXo4O7WXlwi2fVd8GPmM
+         xP4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=In/lRzRecPXlJCsCXOUKVII8Zjza+KgDgAZ3qlg6NBY=;
-        b=BiNY0ojzti9yNUev2nTtLyzk6JZBBxmgIw+89KBTyFJPtrX4kouSN9kpSTK7LkIxw2
-         j9Pz/Kg8ccOg85UkfG1JklsNWKqwEDcH9s8+uPDlQJOZHK167K1pIqFzxB2EIaHNnu/7
-         Izz4hP5YEr1K9D+smmSYDxyTr1LGSLPOCTNxeCT0GSo8fk8BhNySaDqd11UjPliaEV+W
-         W4NvxcEExhA5BhevjU8msrwXKn20Fqx8SARrPe//BecWqABRKi3H5j+Dru1/PmLoX+kN
-         dSYZGIbBYfxJJYyNJPxhrShNpqExYZzTAA/3lu70IktG29rcgmR3OSnN9XkFPUqMdKKr
-         xmxg==
-X-Gm-Message-State: AOAM530o9Q1Rio42tofLoq3ofktyTaDx9pf01Fb89irFHehNi0hx584A
-        lUqKIcjqFLpdj7UPrbvfa+g=
-X-Google-Smtp-Source: ABdhPJzlp7hrM7e8yK6q4U5Xo1UPtQg4hALTTyDbMtxYuqmsunf77TyReaLSnblPdWrAoapQvk48kw==
-X-Received: by 2002:a17:906:54d3:: with SMTP id c19mr17313272ejp.408.1597688861304;
-        Mon, 17 Aug 2020 11:27:41 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.216])
-        by smtp.googlemail.com with ESMTPSA id p12sm13037482edt.27.2020.08.17.11.27.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 17 Aug 2020 11:27:40 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 20:27:36 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Markus Mayer <mmayer@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Roger Quadros <rogerq@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [RFT v2 01/29] memory: omap-gpmc: Remove unneeded
- asm/mach-types.h inclusion
-Message-ID: <20200817182736.GA3464@kozik-lap>
-References: <20200724074038.5597-1-krzk@kernel.org>
- <20200724074038.5597-2-krzk@kernel.org>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to
+         :user-agent;
+        bh=6X353itaXkDHqSu22DPUW9j+w4AM7wyuUFGnVJQkvAg=;
+        b=bDMxlMENimA6mAykrx+zhxgj0CAO6U8pII6YfJfLiUNELN3cEhQ8brdjslOCSwKd8G
+         Qf+vySil1yWe8nUc0+ogSsBTPvQO22Xp4+EoF5sIU0h5F3SqxN+t7yBgS5Bh/yvT/ngD
+         gOdiJH40dDeul35OpDq6HEyVc2OpUKIiRQIg7qOg9FZUj4RTIl3nD49epC7lhVr/3uW+
+         PKIFYlqB9R3X416hwJ3q+Uo4n3ffMPuAH6ty7ybuigcc+wQRM9Okq/oh9pYSrbcOneOs
+         uWcOortnQmIlnRYOVxmZsN5xM9OydQ9/DKv5TgBBlwJw1z4C6FMghRpwwZbkz7b0Uy+Z
+         tt7A==
+X-Gm-Message-State: AOAM531V2HaAA/eayjywoLShzHqCCJKvuo+M6cAJuSiqehBWmTtrZmvu
+        AucjRFRvfBUi+dIBxiJcKZU1iwCEOHCt
+X-Google-Smtp-Source: ABdhPJx8V3+mgbwyP0s7nmLtLka6xMXS+0k2A0rB405LRR1V/jD5ENfDHllxosLiWTOfKm9xaxUbPw==
+X-Received: by 2002:aca:b286:: with SMTP id b128mr10608019oif.89.1597688928014;
+        Mon, 17 Aug 2020 11:28:48 -0700 (PDT)
+Received: from serve.minyard.net ([47.184.146.204])
+        by smtp.gmail.com with ESMTPSA id l17sm3547047otn.2.2020.08.17.11.28.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 11:28:46 -0700 (PDT)
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:c3f3:f502:5c4e])
+        by serve.minyard.net (Postfix) with ESMTPSA id 8C4C9180043;
+        Mon, 17 Aug 2020 18:28:45 +0000 (UTC)
+Date:   Mon, 17 Aug 2020 13:28:44 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Cc:     linux-sctp@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Oops on current Raspian when closing an SCTP connection
+Message-ID: <20200817182844.GZ2842@minyard.net>
+Reply-To: minyard@acm.org
+References: <20200816230624.GB2865@minyard.net>
+ <20200817134457.GG3399@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200724074038.5597-2-krzk@kernel.org>
+In-Reply-To: <20200817134457.GG3399@localhost.localdomain>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 09:40:10AM +0200, Krzysztof Kozlowski wrote:
-> The driver does not use macros from asm/mach-types.h (neither MACH_TYPE
-> nor machine_is_xxx()).  Removal of this include allows compile testing
-> on non-ARM architectures which lack this header.
+On Mon, Aug 17, 2020 at 10:44:57AM -0300, Marcelo Ricardo Leitner wrote:
+> On Sun, Aug 16, 2020 at 06:06:24PM -0500, Corey Minyard wrote:
+> > I'm seeing the following when an SCTP connection terminates.  This is on
+> > Raspian on a Raspberry Pi, version is Linux version 5.4.51-v7+.  That's
+> > 32-bit ARM.
+> > 
+> > I haven't looked into it yet, I thought I would report before trying to
+> > chase anything down.  I'm not seeing it on 5.4 x86_64 systems.
+> > 
+> > Aug 16 17:59:01 access kernel: [510640.438008] Hardware name: BCM2835
+> > Aug 16 17:59:01 access kernel: [510640.443823] PC is at sctp_ulpevent_free+0x38/0xa0 [sctp]
+> > Aug 16 17:59:01 access kernel: [510640.451498] LR is at sctp_queue_purge_ulpevents+0x34/0x50 [sctp]
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  drivers/memory/omap-gpmc.c | 2 --
+> Not ringing a bell here. Can you pinpoint on which line this crash
+> was? It seems, by the 0x8 offset and these function offsets, that this
+> could be when it was trying to access event->rmem_len, but if event
+> was NULL then it should have crashed earlier.
+> 
+>   Marcelo
 
-Applied to drivers/memory tree.
+I think so:
 
-Best regards,
-Krzysztof
+00015e38 <sctp_ulpevent_free>:
+   15e38:       e1a0c00d        mov     ip, sp
+   15e3c:       e92dd878        push    {r3, r4, r5, r6, fp, ip, lr, pc}
+   15e40:       e24cb004        sub     fp, ip, #4
+   15e44:       e52de004        push    {lr}            ; (str lr, [sp, #-4]!)
+   15e48:       ebfffffe        bl      0 <__gnu_mcount_nc>
 
+ulpevent.c:1102		if (sctp_ulpevent_is_notification(event))
+   15e4c:       e1d032f0        ldrsh   r3, [r0, #32]
+   15e50:       e1a05000        mov     r5, r0
+   15e54:       e3530000        cmp     r3, #0
+   15e58:       ba000011        blt     15ea4 <sctp_ulpevent_free+0x6c>
+
+This is the false branch from the above (high bit isn't set).
+
+ulpevent.c:1061		if (!skb->data_len) (just the fetch part)
+   15e5c:       e5903040        ldr     r3, [r0, #64]   ; 0x40
+
+ulpevent.c:1059		len = skb->len;
+   15e60:       e590603c        ldr     r6, [r0, #60]   ; 0x3c
+
+ulpevent.c:1061         if (!skb->data_len) (the compare part)
+   15e64:       e3530000        cmp     r3, #0
+   15e68:       0a000008        beq     15e90 <sctp_ulpevent_free+0x58>
+
+
+ulpevent.c:1065		skb_walk_frags(skb, frag) {
+skbuff.h:1395		return skb->end; (inside skb_shinfo())
+   15e6c:       e5903084        ldr     r3, [r0, #132]  ; 0x84
+
+skbuff.h:3461		iter = skb_shinfo(skb)->frag_list
+   15e70:       e5934008        ldr     r4, [r3, #8] <-- Crash occurs here
+
+   15e74:       e3540000        cmp     r4, #0
+   15e78:       0a000004        beq     15e90 <sctp_ulpevent_free+0x58>
+   15e7c:       e2840018        add     r0, r4, #24
+   15e80:       ebfffa34        bl      14758 <sctp_ulpevent_release_frag_data>
+
+
+So it appears that skb->end is NULL.
+
+-corey
