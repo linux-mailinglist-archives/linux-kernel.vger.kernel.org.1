@@ -2,59 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC6F245DEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D325A245E28
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgHQHcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 03:32:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36750 "EHLO mail.kernel.org"
+        id S1726839AbgHQHjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 03:39:49 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:40712 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725765AbgHQHcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 03:32:13 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8B5F20758;
-        Mon, 17 Aug 2020 07:32:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597649533;
-        bh=fI2xohAfSHjIqvFALJhAdlHjA2a5yEZRlwkW5jJfIC8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lbAE8R2O9jhQWgwMn5XRuoTomwPebQNLSSfjwAoxT5vd8fWHFk2ipjUi20AOLPzIa
-         9eycSu2SvcmWwyivJKQwy0uCg/2mrTGudlA70qJDh3hdnyu6qQqdC4yod6nwBZOcGE
-         NqaUvq/XL6svoTZvLhU+Kp1zzeHAXbZ0XG/PLn94=
-Date:   Mon, 17 Aug 2020 09:32:32 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linuxarm@huawei.com, Wei Xu <xuwei5@hisilicon.com>,
-        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, mauro.chehab@huawei.com,
-        Lee Jones <lee.jones@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 00/44] SPMI patches needed by Hikey 970
-Message-ID: <20200817073232.GA372202@kroah.com>
-References: <cover.1597647359.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1597647359.git.mchehab+huawei@kernel.org>
+        id S1726782AbgHQHjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 03:39:49 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 40D34200A52;
+        Mon, 17 Aug 2020 09:39:47 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 388BE200022;
+        Mon, 17 Aug 2020 09:39:44 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 1B2F740249;
+        Mon, 17 Aug 2020 09:39:40 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     kamil@wypas.org, b.zolnierkie@samsung.com, jdelvare@suse.com,
+        linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] hwmon: pwm-fan: Use dev_err_probe() to simplify error handling
+Date:   Mon, 17 Aug 2020 15:34:33 +0800
+Message-Id: <1597649673-22329-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 09:10:19AM +0200, Mauro Carvalho Chehab wrote:
-> Hi Greg,
-> 
-> This patch series is part of a work I'm doing in order to be able to support
-> a HiKey 970 board that I recently got on my hands.
+dev_err_probe() can reduce code size, uniform error handling and record the
+defer probe reason etc., use it to simplify the code.
 
-Do you feel this is good enough for me to add to my tree now?  Or do you
-want me to wait a bit?
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ drivers/hwmon/pwm-fan.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-thanks,
+diff --git a/drivers/hwmon/pwm-fan.c b/drivers/hwmon/pwm-fan.c
+index 17bb642..bdba214 100644
+--- a/drivers/hwmon/pwm-fan.c
++++ b/drivers/hwmon/pwm-fan.c
+@@ -293,14 +293,8 @@ static int pwm_fan_probe(struct platform_device *pdev)
+ 	mutex_init(&ctx->lock);
+ 
+ 	ctx->pwm = devm_of_pwm_get(dev, dev->of_node, NULL);
+-	if (IS_ERR(ctx->pwm)) {
+-		ret = PTR_ERR(ctx->pwm);
+-
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(dev, "Could not get PWM: %d\n", ret);
+-
+-		return ret;
+-	}
++	if (IS_ERR(ctx->pwm))
++		return dev_err_probe(dev, PTR_ERR(ctx->pwm), "Could not get PWM\n");
+ 
+ 	platform_set_drvdata(pdev, ctx);
+ 
+-- 
+2.7.4
 
-greg k-h
