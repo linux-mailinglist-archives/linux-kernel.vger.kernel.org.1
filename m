@@ -2,70 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500E02476C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A941724770D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404295AbgHQTld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:41:33 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:44297 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729712AbgHQTlO (ORCPT
+        id S2404254AbgHQTpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:45:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732643AbgHQToq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 15:41:14 -0400
-Received: by mail-io1-f65.google.com with SMTP id v6so18739498iow.11;
-        Mon, 17 Aug 2020 12:41:13 -0700 (PDT)
+        Mon, 17 Aug 2020 15:44:46 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FEEC061345
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:44:39 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o13so8619679pgf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:44:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RbvZkl+VFld3/SGn1wsxs528WtxH0u9kRcCVuGkaSCQ=;
+        b=eDQAepLdsvf97NBV5qq+WRJIVRJOwcaBUEQzU1Umr707qRYx4QRlzqc9mvYICR5qcE
+         Z80/4jpH1yQKaDx3y9tFLp0rKDCe3FRG43PteBr3FE3YUZWfrJNvo2A07Qed+3UcCsN9
+         s5CQ7VZkr+RU13eLsg7JqtGvKfQe5/QbQEDhtIQ/fQRAevUnbKDsU8sT+8Oir7osRYfi
+         OOsn0xCbEKjXVC3GhIKiF3HeFg0qdLk9pHusk8bhReZ06DWjOPvxxBuB+mi4tP7KMeob
+         tjizXIrZys9cTA8SqeNNSyIdKevoj4mE09Mdo+ZLYql+H9fjqeZUU2UTeTozMQghU4RV
+         02oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hLPrmS2NJ7VsWN+XXLJey6iV7KyNLRkPQhyYhJ663W8=;
-        b=ujP2ORDzxqQGOXBfuiVBseYw7S/YFGF3rL5aRdFJrZRvOLMizDyEd+myeLZZdtFtHn
-         HwWByQa+thSgaVhOeS9d3tqieUqe0mvnHoiIYj07kot0xCgbrBdSXnghvUi48PFOMuQw
-         UoFlqk/ZOto5B8dJfg2b7yohwtRSOSzrg8QUKbr1DEI70s0xdCmf72m4FsbF+hiVRx5U
-         squAIRxRYvINfJxk7+5aruJsJVAnI8W+5guj7rL4FT5Kf1LDVnA+oci4l8b0utbcGtba
-         O/zII66A5nxhZocbS4ATIXeDtP8Q4clDNwD2tZzw2/CipIjfxrqJIvDIKCYMlnlCa+rN
-         vbsA==
-X-Gm-Message-State: AOAM532NNoQ9ed7uom+d7Mjgu7HerTQzb4DMuBZ17Vn7AXDhnMINn2Zb
-        3N4D57+uXAt6cPbc3k1P0g==
-X-Google-Smtp-Source: ABdhPJzxM6ImTNHL4gOHTrB9xWUNIUlIDo7NCIfWLAKSs5BAbjVGvpKzl0Df18aazKXVcwjl5na3Ww==
-X-Received: by 2002:a02:770e:: with SMTP id g14mr15532405jac.94.1597693272622;
-        Mon, 17 Aug 2020 12:41:12 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id c1sm10322232ilk.28.2020.08.17.12.41.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 12:41:11 -0700 (PDT)
-Received: (nullmailer pid 1423992 invoked by uid 1000);
-        Mon, 17 Aug 2020 19:41:09 -0000
-Date:   Mon, 17 Aug 2020 13:41:09 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jack Lo <jack.lo@gtsys.com.hk>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v8 2/2] devicetree: hwmon: shtc1: add sensirion,shtc1.yaml
-Message-ID: <20200817194109.GA1423962@bogus>
-References: <20200815012227.32538-1-chris.ruehl@gtsys.com.hk>
- <20200815012227.32538-3-chris.ruehl@gtsys.com.hk>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RbvZkl+VFld3/SGn1wsxs528WtxH0u9kRcCVuGkaSCQ=;
+        b=hhAWUyuvPrd1BHgC9TUEJ4InbS6gsmrnURUn5dg317K43jSZJ8Z2nY7njKVaoP/u4+
+         Zg+0iZZdLpdITUlzzmFTtesu7CBjw4Yl62071wGFYOXn15W+aWtENUscTu/ulsmElObE
+         +WfH4GPig9DunOWCc5wGl5kDGQsCjP2XFjp1pJixhNwSLFs6cYpDZyzInJomq0VBbgUq
+         TgMIzjsbfEPPa9khiRaihrAUDkYNGZPNO1C5JE0u8ZmSeyrUb+vL1doyvB5H2WOyLu+r
+         pCRuMiv3lgZ69P8AgTqvGq/+evzQkC5K96jyYLMUDxh6QgUrMcoMeH2qel9R1JaQxCXx
+         xFmg==
+X-Gm-Message-State: AOAM531JoWNxbVCa0WBY8vUQyfclj5BDIyW3czgsmo1bWgvAsV96kO7v
+        Gp6nWgI6UxD/gDe8DJ7/fqXPbw==
+X-Google-Smtp-Source: ABdhPJzFEoQnnFd028Ohjr70q+LK0HAhTgnBlIVjwMDee7dOwAHF3XJdqTZIG2jx09EV04eBp8JK3g==
+X-Received: by 2002:aa7:9833:: with SMTP id q19mr5334525pfl.240.1597693478569;
+        Mon, 17 Aug 2020 12:44:38 -0700 (PDT)
+Received: from ?IPv6:2605:e000:100e:8c61:bd62:5cef:d7f8:5bff? ([2605:e000:100e:8c61:bd62:5cef:d7f8:5bff])
+        by smtp.gmail.com with ESMTPSA id y128sm21118788pfy.74.2020.08.17.12.44.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Aug 2020 12:44:37 -0700 (PDT)
+Subject: Re: [PATCH] block: convert tasklets to use new tasklet_setup() API
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Allen Pais <allen.cryptic@gmail.com>, jdike@addtoit.com,
+        richard@nod.at, anton.ivanov@cambridgegreys.com, 3chas3@gmail.com,
+        stefanr@s5r6.in-berlin.de, airlied@linux.ie, daniel@ffwll.ch,
+        sre@kernel.org, James.Bottomley@HansenPartnership.com,
+        kys@microsoft.com, deller@gmx.de, dmitry.torokhov@gmail.com,
+        jassisinghbrar@gmail.com, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, maximlevitsky@gmail.com, oakad@yahoo.com,
+        ulf.hansson@linaro.org, mporter@kernel.crashing.org,
+        alex.bou9@gmail.com, broonie@kernel.org, martyn@welchs.me.uk,
+        manohar.vanga@gmail.com, mitch@sfgoth.com, davem@davemloft.net,
+        kuba@kernel.org, linux-um@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux1394-devel@lists.sourceforge.net,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-hyperv@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-ntb@googlegroups.com, linux-s390@vger.kernel.org,
+        linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
+        Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>
+References: <20200817091617.28119-1-allen.cryptic@gmail.com>
+ <20200817091617.28119-2-allen.cryptic@gmail.com>
+ <b5508ca4-0641-7265-2939-5f03cbfab2e2@kernel.dk>
+ <202008171228.29E6B3BB@keescook>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <161b75f1-4e88-dcdf-42e8-b22504d7525c@kernel.dk>
+Date:   Mon, 17 Aug 2020 12:44:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200815012227.32538-3-chris.ruehl@gtsys.com.hk>
+In-Reply-To: <202008171228.29E6B3BB@keescook>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 15 Aug 2020 09:22:27 +0800, Chris Ruehl wrote:
-> Add documentation for the newly added DTS support in the shtc1 driver.
-> To align with the drivers logic to have high precision by default
-> a boolean sensirion,low-precision is used to switch to low precision.
+On 8/17/20 12:29 PM, Kees Cook wrote:
+> On Mon, Aug 17, 2020 at 06:56:47AM -0700, Jens Axboe wrote:
+>> On 8/17/20 2:15 AM, Allen Pais wrote:
+>>> From: Allen Pais <allen.lkml@gmail.com>
+>>>
+>>> In preparation for unconditionally passing the
+>>> struct tasklet_struct pointer to all tasklet
+>>> callbacks, switch to using the new tasklet_setup()
+>>> and from_tasklet() to pass the tasklet pointer explicitly.
+>>
+>> Who came up with the idea to add a macro 'from_tasklet' that is just
+>> container_of? container_of in the code would be _much_ more readable,
+>> and not leave anyone guessing wtf from_tasklet is doing.
+>>
+>> I'd fix that up now before everything else goes in...
 > 
-> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
-> ---
->  .../bindings/hwmon/sensirion,shtc1.yaml       | 61 +++++++++++++++++++
->  1 file changed, 61 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
-> 
+> As I mentioned in the other thread, I think this makes things much more
+> readable. It's the same thing that the timer_struct conversion did
+> (added a container_of wrapper) to avoid the ever-repeating use of
+> typeof(), long lines, etc.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+But then it should use a generic name, instead of each sub-system using
+some random name that makes people look up exactly what it does. I'm not
+huge fan of the container_of() redundancy, but adding private variants
+of this doesn't seem like the best way forward. Let's have a generic
+helper that does this, and use it everywhere.
+
+-- 
+Jens Axboe
+
