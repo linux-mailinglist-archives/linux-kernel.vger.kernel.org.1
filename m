@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8378724697A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CABA24698C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729463AbgHQPWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:22:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44804 "EHLO mail.kernel.org"
+        id S1729526AbgHQPXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:23:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729399AbgHQPVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:21:55 -0400
+        id S1729424AbgHQPWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:22:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72E942177B;
-        Mon, 17 Aug 2020 15:21:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0D17230FF;
+        Mon, 17 Aug 2020 15:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677714;
-        bh=PkKczme5tW5pmLkOMAZI0L7Dfxsl6ApuLO0C0aQmgH4=;
+        s=default; t=1597677733;
+        bh=rsrKN8/Zq2kTiieVqJx9AAitOPFHZwp5YN/wsqrv6uQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RvNAJxEnnYa0BwtmD/z7PubNUGoO9ny4PIKqTsQZcxzavxhQFbNRn2bYuKTqQv1fx
-         b5Yj+HHYb+ovGu5kbv0+HBt3vdCHvfMB1ryAtwIuabvsupYjbe85dySgA+edTkv2/U
-         SzW2hKkvCdcy3KPvboUXRsvrmlXOiXFQQqT63S/I=
+        b=okDCrXX30nGU0KlcxmNu0rTRn4cI1hF5EAW1WlVxlcG15vqgDoiFfOcHtWwplgEJo
+         rp5jE/LHBvArAdIm77dLi4sLEAefQWOSYNgYP3W4WM7nVcgj22WHBq9YtJauQ3mbV6
+         N7zwiiezSqA9grwqXfJBBYmZXcaE7eCGjOASPhfw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Kevin Hilman <khilman@baylibre.com>,
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 054/464] arm64: dts: meson: fix mmc0 tuning error on Khadas VIM3
-Date:   Mon, 17 Aug 2020 17:10:07 +0200
-Message-Id: <20200817143836.347919419@linuxfoundation.org>
+Subject: [PATCH 5.8 057/464] ARM: socfpga: PM: add missing put_device() call in socfpga_setup_ocram_self_refresh()
+Date:   Mon, 17 Aug 2020 17:10:10 +0200
+Message-Id: <20200817143836.495231253@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -45,60 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Hewitt <christianshewitt@gmail.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit f1bb924e8f5b50752a80fa5b48c43003680a7b64 ]
+[ Upstream commit 3ad7b4e8f89d6bcc9887ca701cf2745a6aedb1a0 ]
 
-Similar to other G12B devices using the W400 dtsi, I see reports of mmc0
-tuning errors on VIM3 after a few hours uptime:
+if of_find_device_by_node() succeed, socfpga_setup_ocram_self_refresh
+doesn't have a corresponding put_device(). Thus add a jump target to
+fix the exception handling for this function implementation.
 
-[12483.917391] mmc0: tuning execution failed: -5
-[30535.551221] mmc0: tuning execution failed: -5
-[35359.953671] mmc0: tuning execution failed: -5
-[35561.875332] mmc0: tuning execution failed: -5
-[61733.348709] mmc0: tuning execution failed: -5
-
-I do not see the same on VIM3L, so remove sd-uhs-sdr50 from the common dtsi
-to silence the error, then (re)add it to the VIM3L dts.
-
-Fixes: 4f26cc1c96c9 ("arm64: dts: khadas-vim3: move common nodes into meson-khadas-vim3.dtsi")
-Fixes: 700ab8d83927 ("arm64: dts: khadas-vim3: add support for the SM1 based VIM3L")
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Link: https://lore.kernel.org/r/20200721015950.11816-1-christianshewitt@gmail.com
+Fixes: 44fd8c7d4005 ("ARM: socfpga: support suspend to ram")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi     | 1 -
- arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts | 4 ++++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ arch/arm/mach-socfpga/pm.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-index 1ef1e3672b967..ff5ba85b7562e 100644
---- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-@@ -270,7 +270,6 @@ &sd_emmc_a {
+diff --git a/arch/arm/mach-socfpga/pm.c b/arch/arm/mach-socfpga/pm.c
+index 6ed887cf8dc9a..365c0428b21b6 100644
+--- a/arch/arm/mach-socfpga/pm.c
++++ b/arch/arm/mach-socfpga/pm.c
+@@ -49,14 +49,14 @@ static int socfpga_setup_ocram_self_refresh(void)
+ 	if (!ocram_pool) {
+ 		pr_warn("%s: ocram pool unavailable!\n", __func__);
+ 		ret = -ENODEV;
+-		goto put_node;
++		goto put_device;
+ 	}
  
- 	bus-width = <4>;
- 	cap-sd-highspeed;
--	sd-uhs-sdr50;
- 	max-frequency = <100000000>;
+ 	ocram_base = gen_pool_alloc(ocram_pool, socfpga_sdram_self_refresh_sz);
+ 	if (!ocram_base) {
+ 		pr_warn("%s: unable to alloc ocram!\n", __func__);
+ 		ret = -ENOMEM;
+-		goto put_node;
++		goto put_device;
+ 	}
  
- 	non-removable;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
-index dbbf29a0dbf6d..026b21708b078 100644
---- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
-@@ -88,6 +88,10 @@ &pcie {
- 	status = "okay";
- };
+ 	ocram_pbase = gen_pool_virt_to_phys(ocram_pool, ocram_base);
+@@ -67,7 +67,7 @@ static int socfpga_setup_ocram_self_refresh(void)
+ 	if (!suspend_ocram_base) {
+ 		pr_warn("%s: __arm_ioremap_exec failed!\n", __func__);
+ 		ret = -ENOMEM;
+-		goto put_node;
++		goto put_device;
+ 	}
  
-+&sd_emmc_a {
-+	sd-uhs-sdr50;
-+};
-+
- &usb {
- 	phys = <&usb2_phy0>, <&usb2_phy1>;
- 	phy-names = "usb2-phy0", "usb2-phy1";
+ 	/* Copy the code that puts DDR in self refresh to ocram */
+@@ -81,6 +81,8 @@ static int socfpga_setup_ocram_self_refresh(void)
+ 	if (!socfpga_sdram_self_refresh_in_ocram)
+ 		ret = -EFAULT;
+ 
++put_device:
++	put_device(&pdev->dev);
+ put_node:
+ 	of_node_put(np);
+ 
 -- 
 2.25.1
 
