@@ -2,180 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2444246846
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF77246835
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728852AbgHQOWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 10:22:04 -0400
-Received: from mx-ginzinger.sigmacloud.services ([185.154.235.147]:37035 "EHLO
-        mx-ginzinger.sigmacloud.services" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728465AbgHQOWD (ORCPT
+        id S1728900AbgHQOPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 10:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728899AbgHQOPg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 10:22:03 -0400
-X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 Aug 2020 10:22:02 EDT
-Received: from [31.193.165.228] (port=31326 helo=mx-ginzinger.sigmacloud.services)
-        by mx-ginzinger.sigmacloud.services with esmtps (TLSv1.2:AES256-GCM-SHA384:256)
-        (Exim 4.82_1-5b7a7c0-XX)
-        (envelope-from <Henri.Roosen@ginzinger.com>)
-        id 1k7fuu-0004b6-1u; Mon, 17 Aug 2020 16:15:16 +0200
-Received: from exc1.buero.ginzinger.com (10.1.1.204) by
- exc1.buero.ginzinger.com (10.1.1.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1466.3; Mon, 17 Aug 2020 16:15:16 +0200
-Received: from exc1.buero.ginzinger.com ([fe80::ad39:a353:4517:a5c4]) by
- exc1.buero.ginzinger.com ([fe80::ad39:a353:4517:a5c4%3]) with mapi id
- 15.01.1466.012; Mon, 17 Aug 2020 16:15:16 +0200
-X-CTCH-RefID: str=0001.0A090209.5F3A90F4.00A2,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
-From:   Roosen Henri <Henri.Roosen@ginzinger.com>
-To:     "arnd@arndb.de" <arnd@arndb.de>
-CC:     "y2038@lists.linaro.org" <y2038@lists.linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Subject: Re: y2038 backport to v5.4
-Thread-Topic: y2038 backport to v5.4
-Thread-Index: AQHWPlkSF3mzruU3kk+gCvVnHPVaZ6jQM4uAgGxv5AA=
-Date:   Mon, 17 Aug 2020 14:15:16 +0000
-Message-ID: <6c77e2a615ca01e753735e21752fe5e1b3fb636f.camel@ginzinger.com>
-References: <d159c66c6e67480ab48ac44716443358@ginzinger.com>
-         <CAK8P3a2icd72R+4Z5dLPvGuofsq3VOBYBdCnC4806V5znqrytg@mail.gmail.com>
-In-Reply-To: <CAK8P3a2icd72R+4Z5dLPvGuofsq3VOBYBdCnC4806V5znqrytg@mail.gmail.com>
-Accept-Language: en-US, de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.2.1.65]
-x-exclaimer-md-original-subject: [NOSIG][NODISC]Re: y2038 backport to v5.4
-x-exclaimer-md-config: 9dd172f7-de2e-4231-b886-ec11f46e03b3
+        Mon, 17 Aug 2020 10:15:36 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5341DC061342
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:15:36 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id di22so12365913edb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:15:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5GU+hvhFq5FTqZEE9oONoXIkAiVxgc+Oe9aNa54OoQw=;
+        b=El20VIDg2NdzHYr8IDobZ35xvin+mYvK5IfVN6E9Mz2vqJozybe5i/2Wlxsfn/Sw/y
+         f0k6vhoiwuZpjkzNSH7o+/kxhGMI3IyIdKA4L1csfLFdCS6VvpM1KpyCMatdms38ockb
+         vn6Q6r/gun8WRAuHZEgnHoD53UF7AoIaf1iQ4RKKUOFzHezYOMIPu4FjKKdkid1QrTsN
+         XYkEGMgZuM9FY7pC3oZAX3Vg3vp1JBtMrz/WWZifbhpZStXw/b3vMHLDcnShb+UIMLC4
+         o9oDwufDPJMlMN5ma80n0X1ZjkPVvlDsh9iTTR2Y6qpP13GK5L2sWymrfnPwd48VcEor
+         G8Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5GU+hvhFq5FTqZEE9oONoXIkAiVxgc+Oe9aNa54OoQw=;
+        b=jMhtnqtIZtorVGkD/zyIm0CctpSetce0wMDmF0WZANGLs5e6SIDkFq5TeHP2MEevIC
+         xA+USZizPQoydUGx5u6ftoBBcLKIaQzWpihP+RqeosgwnB9BvLXH3lZ5pGZ82x+6+4rw
+         6BRbJbRxBWNGjorTFTq9xGjiuynb6JeqgzrAvi3z5zcvggqajduLamUee+wUuC1/Qfu8
+         /u64QtyHYMDpQAbIgMnINnIJzPb8EK7TtVhtvSVjcqwWYM8NNydiuTNwmn9moy4Uv5Wp
+         s5IAnVqrpdp8UzHm/ZXyuam8SsO9vpckStV1n6WTowRkZQ5Rzapr1OYEt/djWdZDo164
+         t6FQ==
+X-Gm-Message-State: AOAM533r11Bh5EbaBHSBc4cbpK8e3iYYGX2K5VkhwpfjuzyY10tCWqSk
+        A+jx31NA4RqvvNhC5F71TmoMEQ==
+X-Google-Smtp-Source: ABdhPJzjr9ZxRXnAgQ3pOgNu0n1L4UO5JB4hdIav5PocnLg1VrC/U2k8Jix0avX3cyR6efPTsghljQ==
+X-Received: by 2002:a05:6402:3121:: with SMTP id dd1mr15268241edb.72.1597673735048;
+        Mon, 17 Aug 2020 07:15:35 -0700 (PDT)
+Received: from netronome.com ([2001:982:7ed1:403:9eeb:e8ff:fe0d:5b6a])
+        by smtp.gmail.com with ESMTPSA id g19sm14563399ejz.5.2020.08.17.07.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 07:15:34 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 16:15:33 +0200
+From:   Simon Horman <simon.horman@netronome.com>
+To:     Allen Pais <allen.lkml@gmail.com>
+Cc:     jes@trained-monkey.org, davem@davemloft.net, kuba@kernel.org,
+        kda@linux-powerpc.org, dougmill@linux.ibm.com,
+        cooldavid@cooldavid.org, mlindner@marvell.com, borisp@mellanox.com,
+        keescook@chromium.org, linux-acenic@sunsite.dk,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-rdma@vger.kernel.org,
+        oss-drivers@netronome.com, Romain Perier <romain.perier@gmail.com>
+Subject: Re: [oss-drivers] [PATCH 16/20] ethernet: netronome: convert
+ tasklets to use new tasklet_setup() API
+Message-ID: <20200817141532.GA4130@netronome.com>
+References: <20200817082434.21176-1-allen.lkml@gmail.com>
+ <20200817082434.21176-18-allen.lkml@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha-256"; boundary="----B78C6AD73F1F650EC2E3601961A17881"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200817082434.21176-18-allen.lkml@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an S/MIME signed message
+On Mon, Aug 17, 2020 at 01:54:30PM +0530, Allen Pais wrote:
+> In preparation for unconditionally passing the
+> struct tasklet_struct pointer to all tasklet
+> callbacks, switch to using the new tasklet_setup()
+> and from_tasklet() to pass the tasklet pointer explicitly.
+> 
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 
-------B78C6AD73F1F650EC2E3601961A17881
-Content-Language: de-DE
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1E80AE24CD047B409115B7A8F734D88D@ginzinger.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Reviewed-by: Simon Horman <simon.horman@netronome.com>
 
-T24gVHVlLCAyMDIwLTA2LTA5IGF0IDE2OjE4ICswMjAwLCBBcm5kIEJlcmdtYW5uIHdyb3RlOg0K
-PiBPbiBUdWUsIEp1biA5LCAyMDIwIGF0IDI6MzYgUE0gUm9vc2VuIEhlbnJpIDwNCj4gSGVucmku
-Um9vc2VuQGdpbnppbmdlci5jb20+IHdyb3RlOg0KPiA+IEhpIEFybmQsDQo+ID4gDQo+ID4gSSBo
-b3BlIHlvdSBhcmUgd2VsbCBhbmQgY291bGQgYW5zd2VyIG1lIGEgcXVpY2sgcXVlc3Rpb24uDQo+
-ID4gDQo+ID4gSSd2ZSByZWFkIG9uIHRoZSBrZXJuZWwgbWFpbGluZy1saXN0IHRoYXQgaW5pdGlh
-bGx5IHRoZXJlIHdhcyBhbg0KPiA+IGludGVudGlvbiB0byBiYWNrcG9ydCB0aGUgZmluYWwgeTIw
-MzggcGF0Y2hlcyB0byB2NS40LiBXZSdyZQ0KPiA+IGN1cnJlbnRseSB0YXJnZXRpbmcgdG8gdXNl
-IHRoZSB2NS40IExUUyBrZXJuZWwgZm9yIGEgcHJvamVjdCB3aGljaA0KPiA+IHNob3VsZCBiZSB5
-MjAzOCBjb21wbGlhbnQuDQo+ID4gDQo+ID4gSSBjb3VsZG4ndCBmaW5kIGFsbCBvZiB0aGUgeTIw
-MzgtZW5kZ2FtZSBwYXRjaGVzIGluIHRoZSBjdXJyZW50DQo+ID4gdjUuNC1zdGFibGUgYnJhbmNo
-LiBBcmUgdGhlcmUgYW55IHBhdGNoZXMgc3RpbGwgcmVxdWlyZWQgdG8gYmUNCj4gPiBiYWNrcG9y
-dGVkIGluIG9yZGVyIGZvciB2NS40IHRvIGJlIHkyMDM4IGNvbXBsaWFudCwgb3IgY2FuIHRoZQ0K
-PiA+IHJlbWFpbmluZyBwYXRjaGVzIGJlIGlnbm9yZWQgKGJlY2F1c2Ugb2Ygb25seSBjbGVhbnVw
-Pyk/IEVsc2UsIGlzDQo+ID4gdGhlcmUgc3RpbGwgYW4gaW50ZW50aW9uIHRvIGdldCB0aGUgdjUu
-NCBMVFMga2VybmVsIHkyMDM4DQo+ID4gY29tcGxpYW50Pw0KPiANCj4gSSBkb24ndCB0aGluayB0
-aGVyZSBhcmUgY3VycmVudGx5IGFueSBwbGFucyB0byBtZXJnZSBteSB5MjAzOC1lbmRnYW1lIA0K
-PiBicmFuY2gNCj4gaW50byB0aGUgb2ZmaWNpYWwgbGludXgtNS40IGx0cyBrZXJuZWwsIGJ1dCB5
-b3Ugc2hvdWxkIGJlIGFibGUgdG8NCj4ganVzdCBwdWxsIGZyb20NCj4gDQo+IGh0dHBzOi8vZ2l0
-Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2FybmQvcGxheWdyb3VuZC5naXQv
-bG9nLz9oPXkyMDM4LWVuZGdhbWUNCj4gDQo+IGFuZCBnZXQgdGhlIHNhbWUgcmVzdWx0cy4gSWYg
-eW91IHNlZSBhbnkgcHJvYmxlbXMgd2l0aCB0aGF0LCBwbGVhc2UNCj4gcmVwb3J0DQo+IHRoYXQg
-dG8gbWUgd2l0aCBDYyB0byB0aGUgbWFpbGluZyBsaXN0IGFuZCBwZXJoYXBzIGdyZWdraCwgc28g
-SSBjYW4NCj4gc2VlIGlmDQo+IEkgY2FuIHJlc29sdmUgaXQgYnkgcmViYXNpbmcgbXkgcGF0Y2hl
-cywgb3IgaWYgaGUgd291bGQgbGlrZSB0byBtZXJnZQ0KPiB0aGUNCj4gcGF0Y2hlcy4NCg0KUHVs
-bGluZyB0aGUgeTIwMzgtZW5kZ2FtZSBicmFuY2ggZG9lcyBsZWFkIHRvIHNvbWUgY29uZmxpY3Rz
-LCB3aGljaCBhcmUNCmN1cnJlbnRseSBzdGlsbCBraW5kYSBzdGFpZ2h0Zm9yd2FyZCB0byBzb2x2
-ZS4NCg0KSG93ZXZlciBJJ2QgYmUgdmVyeSBpbnRlcmVzdGVkIGluIGdldHRpbmcgdGhpcyBicmFu
-Y2ggbWVyZ2VkIHRvIHY1LjQsDQpzbyB3ZSBkb24ndCBydW4gaW50byBtb3JlIGRpZmZpY3VsdCBt
-ZXJnZSBjb25mbGljdHMgdGhlIGNvbWluZyB5ZWFycw0Kd2hlcmUgdGhlIHY1LjQtTFRTIHN0aWxs
-IGdldHMgc3RhYmxlIHVwZGF0ZXMgKERlYywgMjAyNSkgYW5kIHBvc3NpYmx5DQp0byBnZXQgYW55
-IHJlbGF0ZWQgZml4ZXMgZnJvbSB1cHN0cmVhbS4NCg0KQEdyZWc6IGFueSBjaGFuY2UgdG8gZ2V0
-IHRoZSB5MjAzOC1lbmRnYW1lIG1lcmdlZCBpbnRvIHY1LjQueT8NCg0KVGhhbmtzLA0KSGVucmkN
-Cg==
+But:
 
-------B78C6AD73F1F650EC2E3601961A17881
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
+This series should be targeted at net-next, and thus have net-next in its
+subject
 
-MIIOFAYJKoZIhvcNAQcCoIIOBTCCDgECAQExDzANBglghkgBZQMEAgEFADALBgkq
-hkiG9w0BBwGgggsYMIIF5jCCA86gAwIBAgIQapvhODv/K2ufAdXZuKdSVjANBgkq
-hkiG9w0BAQwFADCBhTELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFu
-Y2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExp
-bWl0ZWQxKzApBgNVBAMTIkNPTU9ETyBSU0EgQ2VydGlmaWNhdGlvbiBBdXRob3Jp
-dHkwHhcNMTMwMTEwMDAwMDAwWhcNMjgwMTA5MjM1OTU5WjCBlzELMAkGA1UEBhMC
-R0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9y
-ZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBS
-U0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwggEi
-MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+s55XrCh2dUAWxzgDmNPGGHYh
-UPMleQtMtaDRfTpYPpynMS6n9jR22YRq2tA9NEjk6vW7rN/5sYFLIP1of3l0NKZ6
-fLWfF2VgJ5cijKYy/qlAckY1wgOkUMgzKlWlVJGyK+UlNEQ1/5ErCsHq9x9aU/x1
-KwTdF/LCrT03Rl/FwFrf1XTCwa2QZYL55AqLPikFlgqOtzk06kb2qvGlnHJvijjI
-03BOrNpo+kZGpcHsgyO1/u1OZTaOo8wvEU17VVeP1cHWse9tGKTDyUGg2hJZjrqc
-k39UIm/nKbpDSZ0JsMoIw/JtOOg0JC56VzQgBo7ictReTQE5LFLG3yQK+xS1AgMB
-AAGjggE8MIIBODAfBgNVHSMEGDAWgBS7r34CPfqm8TyEjq3uOJjs2TIy1DAdBgNV
-HQ4EFgQUgq9sjPjF/pZhfOgfPStxSF7Ei8AwDgYDVR0PAQH/BAQDAgGGMBIGA1Ud
-EwEB/wQIMAYBAf8CAQAwEQYDVR0gBAowCDAGBgRVHSAAMEwGA1UdHwRFMEMwQaA/
-oD2GO2h0dHA6Ly9jcmwuY29tb2RvY2EuY29tL0NPTU9ET1JTQUNlcnRpZmljYXRp
-b25BdXRob3JpdHkuY3JsMHEGCCsGAQUFBwEBBGUwYzA7BggrBgEFBQcwAoYvaHR0
-cDovL2NydC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQWRkVHJ1c3RDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTANBgkqhkiG9w0BAQwF
-AAOCAgEAeFyygSg0TzzuX1bOn5dW7I+iaxf28/ZJCAbU2C81zd9A/tNx4+jsQgwR
-GiHjZrAYayZrrm78hOx7aEpkfNPQIHGG6Fvq3EzWf/Lvx7/hk6zSPwIal9v5IkDc
-ZoFD7f3iT7PdkHJY9B51csvU50rxpEg1OyOT8fk2zvvPBuM4qQNqbGWlnhMpIMwp
-WZT89RY0wpJO+2V6eXEGGHsROs3njeP9DqqqAJaBa4wBeKOdGCWn1/Jp2oY6dyNm
-NppI4ZNMUH4Tam85S1j6E95u4+1Nuru84OrMIzqvISE2HN/56ebTOWlcrurffade
-2022O/tUU1gb4jfWCcyvB8czm12FgX/y/lRjmDbEA08QJNB2729Y+io1IYO3ztve
-BdvUCIYZojTq/OCR6MvnzS6X72HP0PRLRTiOSEmIDsS5N5w/8IW1Hva5hEFy6fDA
-fd9yI+O+IMMAj1KcL/Zo9jzJ16HO5m60ttl1Enk8MQkz/W3JlHaeI5iKFn4UJu1/
-cP2YHXYPiWf2JyBzsLBrGk1II+3yL8aorYew6CQvdVifC3HtwlSam9V1niiCfOBe
-2C12TdKGu05LWIA3ZkFcWJGaNXOZ6Ggyh/TqvXG5v7zmEVDNXFnHn9tFpMpOUvxh
-csjycBtH0dZ0WrNw6gH+HF8TIhCnH3+zzWuDN0Rk6h9KVkfKehIwggUqMIIEEqAD
-AgECAhEAgK6FAFOiNDdgM5+lyjA8gTANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2Fs
-Zm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9E
-TyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0Ew
-HhcNMTgwNzE4MDAwMDAwWhcNMjEwNzE3MjM1OTU5WjArMSkwJwYJKoZIhvcNAQkB
-FhpoZW5yaS5yb29zZW5AZ2luemluZ2VyLmNvbTCCASIwDQYJKoZIhvcNAQEBBQAD
-ggEPADCCAQoCggEBAMmwBmquEWhoUH5WNJe7bQRLBAccBq0ZBVQbLAbJQwN5bg9i
-wSsPG7mveXqXYWpuHhbb7lbs3zFTS4H511nWurRqcvVceVOs5vtsbVMHjfuNmHo8
-WrMCJPFBw64uBUoGdsiwuAvA0CeFpPyA/CsAuvIbmvEF+GxMjaeQhqQ9d5K4z4I6
-w6R3wFtNJiSUMUSdgtnNPDYnUIKILR3mfbSCHWA7Pepe1dh+S9JFWhcoNv1h6D/R
-SAKVdUtC2GS0vt3nk4cEg8Z0s4/OvVDRm2jluvPK+fEeUfGahwHFrk68nYTq3v2P
-dMxHg93+Li+jYAX6R3XXGbdcjZJ3UM5MGEKq+u0CAwEAAaOCAdowggHWMB8GA1Ud
-IwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBQ9s9JCcV1JOI2I
-/oXSyF8VIj2VhTAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUE
-FjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIB
-AwUwKzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMw
-WgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2NybC5jb21vZG9jYS5jb20vQ09NT0RP
-UlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNybDCBiwYI
-KwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2NhLmNv
-bS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0Eu
-Y3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wJQYDVR0R
-BB4wHIEaaGVucmkucm9vc2VuQGdpbnppbmdlci5jb20wDQYJKoZIhvcNAQELBQAD
-ggEBAKdv6bSTLlu63Ckq7aibIwJCE0hhs83Z6Jr5G2wWrwVdFB9Dkb6l2NmdGRoq
-qbSz3Remg5qamURXec3XdEBxO1FPMcZJrHKAZuNjYdj1tzYA/rbTdYmVbno1TG5/
-O6rVb7A624UZHoucW+NpfNCrxfQY+BliMbCKJEWqQE0P6vyDenSYa76NLt1699B5
-vyHbYLrJHAjFzHe7BqSkP815C47KpJFXuGYasewJDOpvyINtn6kBlrAIanoVfDFa
-W9aUjUeNjqmcCEN4TpuSZCf1L8oWAjv5oH0R87orEAFZnSVWDIW8i7TMiFtCiF3D
-LYmN6J96LCNCs0iQIFqcnJnkHAkxggLAMIICvAIBATCBrTCBlzELMAkGA1UEBhMC
-R0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9y
-ZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBS
-U0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQCA
-roUAU6I0N2Azn6XKMDyBMA0GCWCGSAFlAwQCAQUAoIHkMBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIwMDgxNzE0MTUxOVowLwYJKoZI
-hvcNAQkEMSIEIFWLv+AmgpwtXJlBHMzgo6CtcE8ZXMvksePt87JmLnfmMHkGCSqG
-SIb3DQEJDzFsMGowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQME
-AQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcG
-BSsOAwIHMA0GCCqGSIb3DQMCAgEoMA0GCSqGSIb3DQEBAQUABIIBAKRDXn7gq7UL
-+pCIVeIFHQ6Y2Kz5akjng5d/4nNqQC2y1ZSBpgFNMqYU5Y1uBiI4PQGNZDM5m5tn
-/QKxoW/NXulaW//mbrASFPQxFQaFLFlKraHOGyizicmkJfVT+/GjkhRdHh/3rm+P
-L5jeHK75Wz+3MdPJt6MVOofZqwEmP1BsJBYfWVl2Q0vXghv2gvWbBlaVMF1Clzc1
-VE8zgUh3G4nCkhHnjrnI4QcsfwgiIr4k47+ogUZrmxZADsbGJwkQ6AF+PdXpb2AT
-JvgjZA7kucCnlpVEFz06/JJv3wlOD8l9SdE4Q4aUo2lLLtMYxdOuZZ46jMJvlR3R
-gsk6SL18+cU=
+	[PATCH net-next x/y] ...
 
-------B78C6AD73F1F650EC2E3601961A17881--
+And it should be posted when net-next is open: it is currently closed.
 
+	http://vger.kernel.org/~davem/net-next.html
+
+> ---
+>  drivers/net/ethernet/netronome/nfp/nfp_net_common.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> index 39ee23e8c0bf..1dcd24d899f5 100644
+> --- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> +++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> @@ -2287,9 +2287,9 @@ static bool nfp_ctrl_rx(struct nfp_net_r_vector *r_vec)
+>  	return budget;
+>  }
+>  
+> -static void nfp_ctrl_poll(unsigned long arg)
+> +static void nfp_ctrl_poll(struct tasklet_struct *t)
+>  {
+> -	struct nfp_net_r_vector *r_vec = (void *)arg;
+> +	struct nfp_net_r_vector *r_vec = from_tasklet(r_vec, t, tasklet);
+>  
+>  	spin_lock(&r_vec->lock);
+>  	nfp_net_tx_complete(r_vec->tx_ring, 0);
+> @@ -2337,8 +2337,7 @@ static void nfp_net_vecs_init(struct nfp_net *nn)
+>  
+>  			__skb_queue_head_init(&r_vec->queue);
+>  			spin_lock_init(&r_vec->lock);
+> -			tasklet_init(&r_vec->tasklet, nfp_ctrl_poll,
+> -				     (unsigned long)r_vec);
+> +			tasklet_setup(&r_vec->tasklet, nfp_ctrl_poll);
+>  			tasklet_disable(&r_vec->tasklet);
+>  		}
+>  
+> -- 
+> 2.17.1
+> 
