@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655FB246A01
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE22246A05
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730042AbgHQP2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:28:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35902 "EHLO mail.kernel.org"
+        id S1730061AbgHQP3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:29:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729523AbgHQP0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:26:44 -0400
+        id S1729841AbgHQP0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:26:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D91223A55;
-        Mon, 17 Aug 2020 15:26:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1B9623AC0;
+        Mon, 17 Aug 2020 15:26:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678003;
-        bh=aG6/cNzF/fLRw+msgmxCSZEjywWkqbEYBxZEW8/PZs0=;
+        s=default; t=1597678009;
+        bh=SZwoex5LQAzkkk+vKspmwpjdMUbJieW9yzVGmipuZuE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rck/4AcGwpfX5rXC3+43goO+MNuzC0wdNCfHbBTzutrvpVWpQn6HdQZtKHeM5cNU4
-         6D6K4rzLN+n+ReRY6b0FBiqzJumSOvud1bYsc1oj1kmk6pImJVYoTEY7qvMqkkN20C
-         k61YacxP/OU2CzVrsBDrbiG/595qtE4F4hp85wjA=
+        b=aJp+dwgqsGGhFOO8yhUY7EsXJYDgpfuc5Of7IA+3RpQcbCmJwuSbxTatNV8ptziN9
+         sD3aXeC3lsJtNfc/dbbE7yRCTd2Ru8BqBksRMD6t3VpxwqrwiFdLDwduXN86TN6Obw
+         nkT0EbXBYEhgA1fpyR8OqGGluonhXbdqVS2gEGcY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Len Brown <len.brown@intel.com>,
+        stable@vger.kernel.org,
+        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>,
         Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
         Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 155/464] Bluetooth: Allow suspend even when preparation has failed
-Date:   Mon, 17 Aug 2020 17:11:48 +0200
-Message-Id: <20200817143841.232914943@linuxfoundation.org>
+Subject: [PATCH 5.8 157/464] Bluetooth: hci_qca: Bug fix during SSR timeout
+Date:   Mon, 17 Aug 2020 17:11:50 +0200
+Message-Id: <20200817143841.328293948@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -45,65 +46,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+From: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
 
-[ Upstream commit a9ec8423134a54c9f0ae8d4ef59e1e833ca917c2 ]
+[ Upstream commit f98aa80ff78c34fe328eb9cd3e2cc3058e42bcfd ]
 
-It is preferable to allow suspend even when Bluetooth has problems
-preparing for sleep. When Bluetooth fails to finish preparing for
-suspend, log the error and allow the suspend notifier to continue
-instead.
+Due to race conditions between qca_hw_error and qca_controller_memdump
+during SSR timeout,the same pointer is freed twice. This results in a
+double free. Now a lock is acquired before checking the stauts of SSR
+state.
 
-To also make it clearer why suspend failed, change bt_dev_dbg to
-bt_dev_err when handling the suspend timeout.
-
-Fixes: dd522a7429b07e ("Bluetooth: Handle LE devices during suspend")
-Reported-by: Len Brown <len.brown@intel.com>
-Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Fixes: d841502c79e3 ("Bluetooth: hci_qca: Collect controller memory dump during SSR")
+Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
 Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_core.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ drivers/bluetooth/hci_qca.c | 29 +++++++++++++++++------------
+ 1 file changed, 17 insertions(+), 12 deletions(-)
 
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index dbe2d79f233fb..83ce665d3cbfb 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -3289,10 +3289,10 @@ static int hci_suspend_wait_event(struct hci_dev *hdev)
- 				     WAKE_COND, SUSPEND_NOTIFIER_TIMEOUT);
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 328919b79f7b9..74245f20a309e 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -991,8 +991,11 @@ static void qca_controller_memdump(struct work_struct *work)
+ 	while ((skb = skb_dequeue(&qca->rx_memdump_q))) {
  
- 	if (ret == 0) {
--		bt_dev_dbg(hdev, "Timed out waiting for suspend");
-+		bt_dev_err(hdev, "Timed out waiting for suspend events");
- 		for (i = 0; i < __SUSPEND_NUM_TASKS; ++i) {
- 			if (test_bit(i, hdev->suspend_tasks))
--				bt_dev_dbg(hdev, "Bit %d is set", i);
-+				bt_dev_err(hdev, "Suspend timeout bit: %d", i);
- 			clear_bit(i, hdev->suspend_tasks);
+ 		mutex_lock(&qca->hci_memdump_lock);
+-		/* Skip processing the received packets if timeout detected. */
+-		if (qca->memdump_state == QCA_MEMDUMP_TIMEOUT) {
++		/* Skip processing the received packets if timeout detected
++		 * or memdump collection completed.
++		 */
++		if (qca->memdump_state == QCA_MEMDUMP_TIMEOUT ||
++		    qca->memdump_state == QCA_MEMDUMP_COLLECTED) {
+ 			mutex_unlock(&qca->hci_memdump_lock);
+ 			return;
  		}
+@@ -1494,8 +1497,6 @@ static void qca_hw_error(struct hci_dev *hdev, u8 code)
+ {
+ 	struct hci_uart *hu = hci_get_drvdata(hdev);
+ 	struct qca_data *qca = hu->priv;
+-	struct qca_memdump_data *qca_memdump = qca->qca_memdump;
+-	char *memdump_buf = NULL;
  
-@@ -3360,12 +3360,15 @@ static int hci_suspend_notifier(struct notifier_block *nb, unsigned long action,
- 		ret = hci_change_suspend_state(hdev, BT_RUNNING);
+ 	set_bit(QCA_SSR_TRIGGERED, &qca->flags);
+ 	set_bit(QCA_HW_ERROR_EVENT, &qca->flags);
+@@ -1519,19 +1520,23 @@ static void qca_hw_error(struct hci_dev *hdev, u8 code)
+ 		qca_wait_for_dump_collection(hdev);
  	}
  
--	/* If suspend failed, restore it to running */
--	if (ret && action == PM_SUSPEND_PREPARE)
--		hci_change_suspend_state(hdev, BT_RUNNING);
--
- done:
--	return ret ? notifier_from_errno(-EBUSY) : NOTIFY_STOP;
-+	/* We always allow suspend even if suspend preparation failed and
-+	 * attempt to recover in resume.
-+	 */
-+	if (ret)
-+		bt_dev_err(hdev, "Suspend notifier action (%lu) failed: %d",
-+			   action, ret);
++	mutex_lock(&qca->hci_memdump_lock);
+ 	if (qca->memdump_state != QCA_MEMDUMP_COLLECTED) {
+ 		bt_dev_err(hu->hdev, "clearing allocated memory due to memdump timeout");
+-		mutex_lock(&qca->hci_memdump_lock);
+-		if (qca_memdump)
+-			memdump_buf = qca_memdump->memdump_buf_head;
+-		vfree(memdump_buf);
+-		kfree(qca_memdump);
+-		qca->qca_memdump = NULL;
++		if (qca->qca_memdump) {
++			vfree(qca->qca_memdump->memdump_buf_head);
++			kfree(qca->qca_memdump);
++			qca->qca_memdump = NULL;
++		}
+ 		qca->memdump_state = QCA_MEMDUMP_TIMEOUT;
+ 		cancel_delayed_work(&qca->ctrl_memdump_timeout);
+-		skb_queue_purge(&qca->rx_memdump_q);
+-		mutex_unlock(&qca->hci_memdump_lock);
++	}
++	mutex_unlock(&qca->hci_memdump_lock);
 +
-+	return NOTIFY_STOP;
- }
++	if (qca->memdump_state == QCA_MEMDUMP_TIMEOUT ||
++	    qca->memdump_state == QCA_MEMDUMP_COLLECTED) {
+ 		cancel_work_sync(&qca->ctrl_memdump_evt);
++		skb_queue_purge(&qca->rx_memdump_q);
+ 	}
  
- /* Alloc HCI device */
+ 	clear_bit(QCA_HW_ERROR_EVENT, &qca->flags);
 -- 
 2.25.1
 
