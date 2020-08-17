@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579582476DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF722476FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729625AbgHQPYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:24:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49578 "EHLO mail.kernel.org"
+        id S1732611AbgHQToH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:44:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729518AbgHQPXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:23:09 -0400
+        id S1729275AbgHQPXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:23:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E37922D3E;
-        Mon, 17 Aug 2020 15:23:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9345823136;
+        Mon, 17 Aug 2020 15:23:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677788;
-        bh=7wBE4qxQd8JzuuczTOr2/54TrG7cCXcr/aXR5tTrfzA=;
+        s=default; t=1597677794;
+        bh=sP4va8tw/LWQq1aLYu/jsNtjodsiB3MIonkDEyyS1RI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q3tYdX5WZxZBRGwzP2I/9D3BNQDQG1dSX0JsFckdHtg86mdfvkBZ4BdaG9Wou+SS2
-         kF1trSCn5K4PKZOsjwTE1gmymRlV7/SlInuqPg+mIjuRs3IMMyX/B5ihECpnAplXDj
-         3ZMJtbxkfjskCGXbZ0xrrZe0K4Q6lcnAZHU9+rbQ=
+        b=J0V1XQNPEsf/8wYjKVD7n3fWfFJuLp6S6oGOG7mpPiS+fIVkA8CiFmJxZxX+1HqYu
+         8KYxK40jRXuMgKj6c2JMxA8ZDZPY8JNk/nVPrIrec9jUUURenQ6ulWxCu8xwznSrtQ
+         xypywCF+4hkIc2jnkDo76yairrSWMh2Ys9Oe+gK4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 108/464] irqchip/irq-mtk-sysirq: Replace spinlock with raw_spinlock
-Date:   Mon, 17 Aug 2020 17:11:01 +0200
-Message-Id: <20200817143838.972680688@linuxfoundation.org>
+        stable@vger.kernel.org, Aric Cyr <aric.cyr@amd.com>,
+        Wenjing Liu <Wenjing.Liu@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Tony Cheng <Tony.Cheng@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 110/464] drm/amd/display: Improve DisplayPort monitor interop
+Date:   Mon, 17 Aug 2020 17:11:03 +0200
+Message-Id: <20200817143839.072660737@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -44,94 +47,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+From: Aric Cyr <aric.cyr@amd.com>
 
-[ Upstream commit 6eeb997ab5075e770a002c51351fa4ec2c6b5c39 ]
+[ Upstream commit eec3303de3378cdfaa0bb86f43546dbbd88f94e2 ]
 
-This driver may take a regular spinlock when a raw spinlock
-(irq_desc->lock) is already taken which results in the following
-lockdep splat:
+[Why]
+DC is very fast at link training and stream enablement
+which causes issues such as blackscreens for non-compliant
+monitors.
 
-=============================
-[ BUG: Invalid wait context ]
-5.7.0-rc7 #1 Not tainted
------------------------------
-swapper/0/0 is trying to lock:
-ffffff800303b798 (&chip_data->lock){....}-{3:3}, at: mtk_sysirq_set_type+0x48/0xc0
-other info that might help us debug this:
-context-{5:5}
-2 locks held by swapper/0/0:
- #0: ffffff800302ee68 (&desc->request_mutex){....}-{4:4}, at: __setup_irq+0xc4/0x8a0
- #1: ffffff800302ecf0 (&irq_desc_lock_class){....}-{2:2}, at: __setup_irq+0xe4/0x8a0
-stack backtrace:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.7.0-rc7 #1
-Hardware name: Pumpkin MT8516 (DT)
-Call trace:
- dump_backtrace+0x0/0x180
- show_stack+0x14/0x20
- dump_stack+0xd0/0x118
- __lock_acquire+0x8c8/0x2270
- lock_acquire+0xf8/0x470
- _raw_spin_lock_irqsave+0x50/0x78
- mtk_sysirq_set_type+0x48/0xc0
- __irq_set_trigger+0x58/0x170
- __setup_irq+0x420/0x8a0
- request_threaded_irq+0xd8/0x190
- timer_of_init+0x1e8/0x2c4
- mtk_gpt_init+0x5c/0x1dc
- timer_probe+0x74/0xf4
- time_init+0x14/0x44
- start_kernel+0x394/0x4f0
+[How]
+After debugging with scaler vendors we implement the
+minimum delays at the necessary locations to ensure
+the monitor does not hang.  Delays are generic due to
+lack of IEEE OUI information on the failing displays.
 
-Replace the spinlock_t with raw_spinlock_t to avoid this warning.
-
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20200615074445.3579-1-brgl@bgdev.pl
+Signed-off-by: Aric Cyr <aric.cyr@amd.com>
+Reviewed-by: Wenjing Liu <Wenjing.Liu@amd.com>
+Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
+Acked-by: Tony Cheng <Tony.Cheng@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-mtk-sysirq.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_link.c    |  4 +++-
+ drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 16 ++++++++++------
+ .../amd/display/dc/dce110/dce110_hw_sequencer.c  | 11 ++++++++++-
+ 3 files changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/irqchip/irq-mtk-sysirq.c b/drivers/irqchip/irq-mtk-sysirq.c
-index 73eae5966a403..6ff98b87e5c04 100644
---- a/drivers/irqchip/irq-mtk-sysirq.c
-+++ b/drivers/irqchip/irq-mtk-sysirq.c
-@@ -15,7 +15,7 @@
- #include <linux/spinlock.h>
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+index 48ab51533d5d6..841cc051b7d01 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+@@ -3298,9 +3298,11 @@ void core_link_disable_stream(struct pipe_ctx *pipe_ctx)
+ 			write_i2c_redriver_setting(pipe_ctx, false);
+ 		}
+ 	}
+-	dc->hwss.disable_stream(pipe_ctx);
  
- struct mtk_sysirq_chip_data {
--	spinlock_t lock;
-+	raw_spinlock_t lock;
- 	u32 nr_intpol_bases;
- 	void __iomem **intpol_bases;
- 	u32 *intpol_words;
-@@ -37,7 +37,7 @@ static int mtk_sysirq_set_type(struct irq_data *data, unsigned int type)
- 	reg_index = chip_data->which_word[hwirq];
- 	offset = hwirq & 0x1f;
+ 	disable_link(pipe_ctx->stream->link, pipe_ctx->stream->signal);
++
++	dc->hwss.disable_stream(pipe_ctx);
++
+ 	if (pipe_ctx->stream->timing.flags.DSC) {
+ 		if (dc_is_dp_signal(pipe_ctx->stream->signal))
+ 			dp_set_dsc_enable(pipe_ctx, false);
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+index 91cd884d6f257..6124af571bff6 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+@@ -1102,6 +1102,10 @@ static inline enum link_training_result perform_link_training_int(
+ 	dpcd_pattern.v1_4.TRAINING_PATTERN_SET = DPCD_TRAINING_PATTERN_VIDEOIDLE;
+ 	dpcd_set_training_pattern(link, dpcd_pattern);
  
--	spin_lock_irqsave(&chip_data->lock, flags);
-+	raw_spin_lock_irqsave(&chip_data->lock, flags);
- 	value = readl_relaxed(base + reg_index * 4);
- 	if (type == IRQ_TYPE_LEVEL_LOW || type == IRQ_TYPE_EDGE_FALLING) {
- 		if (type == IRQ_TYPE_LEVEL_LOW)
-@@ -53,7 +53,7 @@ static int mtk_sysirq_set_type(struct irq_data *data, unsigned int type)
++	/* delay 5ms after notifying sink of idle pattern before switching output */
++	if (link->connector_signal != SIGNAL_TYPE_EDP)
++		msleep(5);
++
+ 	/* 4. mainlink output idle pattern*/
+ 	dp_set_hw_test_pattern(link, DP_TEST_PATTERN_VIDEO_MODE, NULL, 0);
  
- 	data = data->parent_data;
- 	ret = data->chip->irq_set_type(data, type);
--	spin_unlock_irqrestore(&chip_data->lock, flags);
-+	raw_spin_unlock_irqrestore(&chip_data->lock, flags);
- 	return ret;
+@@ -1551,6 +1555,12 @@ bool perform_link_training_with_retries(
+ 	struct dc_link *link = stream->link;
+ 	enum dp_panel_mode panel_mode = dp_get_panel_mode(link);
+ 
++	/* We need to do this before the link training to ensure the idle pattern in SST
++	 * mode will be sent right after the link training
++	 */
++	link->link_enc->funcs->connect_dig_be_to_fe(link->link_enc,
++							pipe_ctx->stream_res.stream_enc->id, true);
++
+ 	for (j = 0; j < attempts; ++j) {
+ 
+ 		dp_enable_link_phy(
+@@ -1567,12 +1577,6 @@ bool perform_link_training_with_retries(
+ 
+ 		dp_set_panel_mode(link, panel_mode);
+ 
+-		/* We need to do this before the link training to ensure the idle pattern in SST
+-		 * mode will be sent right after the link training
+-		 */
+-		link->link_enc->funcs->connect_dig_be_to_fe(link->link_enc,
+-								pipe_ctx->stream_res.stream_enc->id, true);
+-
+ 		if (link->aux_access_disabled) {
+ 			dc_link_dp_perform_link_training_skip_aux(link, link_setting);
+ 			return true;
+diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
+index b77e9dc160863..2af1d74d16ad8 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
++++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
+@@ -1069,8 +1069,17 @@ void dce110_blank_stream(struct pipe_ctx *pipe_ctx)
+ 		link->dc->hwss.set_abm_immediate_disable(pipe_ctx);
+ 	}
+ 
+-	if (dc_is_dp_signal(pipe_ctx->stream->signal))
++	if (dc_is_dp_signal(pipe_ctx->stream->signal)) {
+ 		pipe_ctx->stream_res.stream_enc->funcs->dp_blank(pipe_ctx->stream_res.stream_enc);
++
++		/*
++		 * After output is idle pattern some sinks need time to recognize the stream
++		 * has changed or they enter protection state and hang.
++		 */
++		if (!dc_is_embedded_signal(pipe_ctx->stream->signal))
++			msleep(60);
++	}
++
  }
  
-@@ -212,7 +212,7 @@ static int __init mtk_sysirq_of_init(struct device_node *node,
- 		ret = -ENOMEM;
- 		goto out_free_which_word;
- 	}
--	spin_lock_init(&chip_data->lock);
-+	raw_spin_lock_init(&chip_data->lock);
- 
- 	return 0;
  
 -- 
 2.25.1
