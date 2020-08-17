@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38004245F03
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF53F245F02
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727021AbgHQIOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:14:54 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:59730 "EHLO honk.sigxcpu.org"
+        id S1726424AbgHQIOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:14:50 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:59792 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726457AbgHQIOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:14:47 -0400
+        id S1726458AbgHQIOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 04:14:48 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 23E91FB06;
-        Mon, 17 Aug 2020 10:14:39 +0200 (CEST)
+        by honk.sigxcpu.org (Postfix) with ESMTP id 92151FB02;
+        Mon, 17 Aug 2020 10:14:42 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
 Received: from honk.sigxcpu.org ([127.0.0.1])
         by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 6JoWR7m6hpnH; Mon, 17 Aug 2020 10:14:37 +0200 (CEST)
+        with ESMTP id RbB1GIar5kar; Mon, 17 Aug 2020 10:14:39 +0200 (CEST)
 Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 414D44017D; Mon, 17 Aug 2020 10:14:36 +0200 (CEST)
+        id 47AAF457CC; Mon, 17 Aug 2020 10:14:36 +0200 (CEST)
 From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Sam Ravnborg <sam@ravnborg.org>,
@@ -38,9 +38,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/3] dt-bindings: vendor-prefixes: Add mantix vendor prefix
-Date:   Mon, 17 Aug 2020 10:14:34 +0200
-Message-Id: <b6bcfe27d9393a07a5cdd82fcf211620c774a273.1597652012.git.agx@sigxcpu.org>
+Subject: [PATCH v3 2/3] dt-bindings: Add Mantix MLAF057WE51-X panel bindings
+Date:   Mon, 17 Aug 2020 10:14:35 +0200
+Message-Id: <b84c8c00ee1dcf545903a475872e1ae62b5f43ea.1597652012.git.agx@sigxcpu.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1597652012.git.agx@sigxcpu.org>
 References: <cover.1597652012.git.agx@sigxcpu.org>
@@ -52,27 +52,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add prefix for Mantix Display Technology Co.,Ltd.
+The panel uses a Focaltech FT8006p, the touch part is handled by the
+already existing edt-ft5x06.
 
 Signed-off-by: Guido Günther <agx@sigxcpu.org>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ .../display/panel/mantix,mlaf057we51-x.yaml   | 70 +++++++++++++++++++
+ 1 file changed, 70 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 2baee2c817c1a..59d4c8b068c4d 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -611,6 +611,8 @@ patternProperties:
-     description: Linux Automation GmbH
-   "^macnica,.*":
-     description: Macnica Americas
-+  "^mantix,.*":
-+    description: Mantix Display Technology Co.,Ltd.
-   "^mapleboard,.*":
-     description: Mapleboard.org
-   "^marvell,.*":
+diff --git a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+new file mode 100644
+index 0000000000000..937323cc9aaac
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+@@ -0,0 +1,70 @@
++# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/panel/mantix,mlaf057we51-x.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Mantix MLAF057WE51-X 5.7" 720x1440 TFT LCD panel
++
++maintainers:
++  - Guido Günther <agx@sigxcpu.org>
++
++description:
++  Mantix MLAF057WE51 X is a 720x1440 TFT LCD panel connected using
++  a MIPI-DSI video interface.
++
++allOf:
++  - $ref: panel-common.yaml#
++
++properties:
++  compatible:
++    enum:
++      - mantix,mlaf057we51-x
++
++  port: true
++  reg:
++    maxItems: 1
++    description: DSI virtual channel
++
++  avdd-supply:
++    description: Positive analog power supply
++
++  avee-supply:
++    description: Negative analog power supply
++
++  vddi-supply:
++    description: 1.8V I/O voltage supply
++
++  reset-gpios: true
++
++  backlight: true
++
++required:
++  - compatible
++  - reg
++  - avdd-supply
++  - avee-supply
++  - vddi-supply
++  - reset-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    dsi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        panel@0 {
++            compatible = "mantix,mlaf057we51-x";
++            reg = <0>;
++            avdd-supply = <&reg_avdd>;
++            avee-supply = <&reg_avee>;
++            vddi-supply = <&reg_1v8_p>;
++            reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
++            backlight = <&backlight>;
++        };
++    };
++
++...
 -- 
 2.26.2
 
