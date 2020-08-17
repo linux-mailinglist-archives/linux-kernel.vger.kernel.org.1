@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A57E2476D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2828247747
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729552AbgHQPXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:23:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46144 "EHLO mail.kernel.org"
+        id S1732657AbgHQTrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:47:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729219AbgHQPWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:22:21 -0400
+        id S1729303AbgHQPUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:20:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0334520888;
-        Mon, 17 Aug 2020 15:22:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9EAA92072E;
+        Mon, 17 Aug 2020 15:20:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677741;
-        bh=9SWCTvbJ98KOQ9GVIu50Cbq1XurQ6Ach9phYfuzlA6U=;
+        s=default; t=1597677655;
+        bh=UCGiZ204cxB9dbRnXHlFZB9TQWCCrxb35jvAi/jUETw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zOnfwM6p3Rv+eRL85obHIRIbwiTSRcfD9ZT5tVXm4urnKRLR1Z9TJfVUqKVIBs2hF
-         sT5uRJ0ypQy7hKoV83hh6/F1Auqm3FErOnNUt0E33DI0l5S7KqbKOg+WbHgp7w02VF
-         tDr3LTdPtWIfdpMCLOENENw1mP8oLSpRXR/Xh+fE=
+        b=Ul/fgkuWfAM1hYjHWWpPJV/LEg+8NaIc5n1fGJgkfaaGy3J9nCLoNzx7wlgR/0ljc
+         7F01Ld4+BNorfwRDOWjGOuyzaOMPxyoIxv2cO8qunHphuFx5+LWj94T+Aw82zBjNAI
+         jOSX3kyrnh09ooePSAMgqxO3NFqH6foqtT4xpr/E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Marc Zyngier <maz@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 060/464] irqchip/ti-sci-inta: Fix return value about devm_ioremap_resource()
-Date:   Mon, 17 Aug 2020 17:10:13 +0200
-Message-Id: <20200817143836.639682960@linuxfoundation.org>
+Subject: [PATCH 5.8 061/464] seccomp: Fix ioctl number for SECCOMP_IOCTL_NOTIF_ID_VALID
+Date:   Mon, 17 Aug 2020 17:10:14 +0200
+Message-Id: <20200817143836.685803210@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -45,36 +43,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 4b127a14cb1385dd355c7673d975258d5d668922 ]
+[ Upstream commit 47e33c05f9f07cac3de833e531bcac9ae052c7ca ]
 
-When call function devm_ioremap_resource(), we should use IS_ERR()
-to check the return value and return PTR_ERR() if failed.
+When SECCOMP_IOCTL_NOTIF_ID_VALID was first introduced it had the wrong
+direction flag set. While this isn't a big deal as nothing currently
+enforces these bits in the kernel, it should be defined correctly. Fix
+the define and provide support for the old command until it is no longer
+needed for backward compatibility.
 
-Fixes: 9f1463b86c13 ("irqchip/ti-sci-inta: Add support for Interrupt Aggregator driver")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Link: https://lore.kernel.org/r/1591437017-5295-2-git-send-email-yangtiezhu@loongson.cn
+Fixes: 6a21cc50f0c7 ("seccomp: add a return code to trap to userspace")
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-ti-sci-inta.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/uapi/linux/seccomp.h                  | 3 ++-
+ kernel/seccomp.c                              | 9 +++++++++
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 2 +-
+ 3 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-ti-sci-inta.c b/drivers/irqchip/irq-ti-sci-inta.c
-index 7e3ebf6ed2cd1..be0a35d917962 100644
---- a/drivers/irqchip/irq-ti-sci-inta.c
-+++ b/drivers/irqchip/irq-ti-sci-inta.c
-@@ -572,7 +572,7 @@ static int ti_sci_inta_irq_domain_probe(struct platform_device *pdev)
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	inta->base = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(inta->base))
--		return -ENODEV;
-+		return PTR_ERR(inta->base);
+diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
+index c1735455bc536..965290f7dcc28 100644
+--- a/include/uapi/linux/seccomp.h
++++ b/include/uapi/linux/seccomp.h
+@@ -123,5 +123,6 @@ struct seccomp_notif_resp {
+ #define SECCOMP_IOCTL_NOTIF_RECV	SECCOMP_IOWR(0, struct seccomp_notif)
+ #define SECCOMP_IOCTL_NOTIF_SEND	SECCOMP_IOWR(1,	\
+ 						struct seccomp_notif_resp)
+-#define SECCOMP_IOCTL_NOTIF_ID_VALID	SECCOMP_IOR(2, __u64)
++#define SECCOMP_IOCTL_NOTIF_ID_VALID	SECCOMP_IOW(2, __u64)
++
+ #endif /* _UAPI_LINUX_SECCOMP_H */
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index d653d8426de90..c461ba9925136 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -42,6 +42,14 @@
+ #include <linux/uaccess.h>
+ #include <linux/anon_inodes.h>
  
- 	domain = irq_domain_add_linear(dev_of_node(dev),
- 				       ti_sci_get_num_resources(inta->vint),
++/*
++ * When SECCOMP_IOCTL_NOTIF_ID_VALID was first introduced, it had the
++ * wrong direction flag in the ioctl number. This is the broken one,
++ * which the kernel needs to keep supporting until all userspaces stop
++ * using the wrong command number.
++ */
++#define SECCOMP_IOCTL_NOTIF_ID_VALID_WRONG_DIR	SECCOMP_IOR(2, __u64)
++
+ enum notify_state {
+ 	SECCOMP_NOTIFY_INIT,
+ 	SECCOMP_NOTIFY_SENT,
+@@ -1186,6 +1194,7 @@ static long seccomp_notify_ioctl(struct file *file, unsigned int cmd,
+ 		return seccomp_notify_recv(filter, buf);
+ 	case SECCOMP_IOCTL_NOTIF_SEND:
+ 		return seccomp_notify_send(filter, buf);
++	case SECCOMP_IOCTL_NOTIF_ID_VALID_WRONG_DIR:
+ 	case SECCOMP_IOCTL_NOTIF_ID_VALID:
+ 		return seccomp_notify_id_valid(filter, buf);
+ 	default:
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index 252140a525531..ccf276e138829 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -180,7 +180,7 @@ struct seccomp_metadata {
+ #define SECCOMP_IOCTL_NOTIF_RECV	SECCOMP_IOWR(0, struct seccomp_notif)
+ #define SECCOMP_IOCTL_NOTIF_SEND	SECCOMP_IOWR(1,	\
+ 						struct seccomp_notif_resp)
+-#define SECCOMP_IOCTL_NOTIF_ID_VALID	SECCOMP_IOR(2, __u64)
++#define SECCOMP_IOCTL_NOTIF_ID_VALID	SECCOMP_IOW(2, __u64)
+ 
+ struct seccomp_notif {
+ 	__u64 id;
 -- 
 2.25.1
 
