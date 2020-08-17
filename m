@@ -2,106 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78701247538
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB442474FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392355AbgHQTUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:20:53 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34966 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730504AbgHQPgj (ORCPT
+        id S2392251AbgHQTR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730582AbgHQPiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:36:39 -0400
-Received: from mail-qt1-f199.google.com ([209.85.160.199])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <gpiccoli@canonical.com>)
-        id 1k7hBZ-0003m7-49
-        for linux-kernel@vger.kernel.org; Mon, 17 Aug 2020 15:36:33 +0000
-Received: by mail-qt1-f199.google.com with SMTP id d2so12288415qtn.8
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 08:36:33 -0700 (PDT)
+        Mon, 17 Aug 2020 11:38:14 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E301C061389;
+        Mon, 17 Aug 2020 08:38:14 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id v6so17948263iow.11;
+        Mon, 17 Aug 2020 08:38:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4Bkdz+k72rLGRx5zfmph4t7mOQMS3PzCCK/DsnCmnNk=;
+        b=IUxAnms4s7sSclWkvmw5QiiHjkg484hwDAcSl/TapXh0pQyfDNpoGhtsiLGdSP8sI/
+         rJ3nFoUmNjxtIlAuvyzlLaT+dNCimN4koRcvtUfx34lpUMOAitgRZOoSGPR/faSU36+h
+         W5P3Fnp/zOYblyl4nLFp35Nn3FWPjieLKlt0s279lug2G5pIov2EQZ456vEhAt+0gU2P
+         UUNVf7+sJ7+D3VGcI1+FDJ0mRse6hzZ2N4+R64jBzVA5DRfFjeGhMTN8BHPrUAEyGdWU
+         WAP7k37sKE7kIjzWuy+Wk4na9F1Am+y7QYk/VIDlyxwUKIKPvwVKQYDv+2+YYuiR+89Y
+         rVTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:in-reply-to:from:subject:autocrypt
-         :message-id:date:user-agent:mime-version:content-language
-         :content-transfer-encoding;
-        bh=lX4oOpPokyQTRhoLahqmU7hqvUsW/41acop/Y5jmbvU=;
-        b=lQZg6DK5QXuk6HASQTe4gXU4atE0SswMRIqjU17EBygJtc9i5h9Ra9AUSs8ZT0B7wI
-         ihmoojEYgwDC/X8QnTe5/IvJsakmvib8AX3p3i5nczut6+iZpEnNiazg1+AViz+tEj3+
-         /XC28oGxbRrA9hGharOB38vEJx0538IO0muUvWd7vm/G9l4119s6YyUzuZH6hL6icfSJ
-         Q7tLyT71QROrniN4zYaDzC5xuTWkWHKJpXvocARNbwpUeiHrGJrd/tGl/YZ+9jAUngsY
-         gAp76C8ExgnI6aq9VETH/5Sy1MOqejUet7NFaPKj1cdz10uWUHmMsAx6YpEIKhvkAtTv
-         MApw==
-X-Gm-Message-State: AOAM533DQT2ceo/yFZQgSqd+TGC+VwnR0hfzxfLgw3l2uxKNtxOgj7dV
-        uyJCx8bB2wmpAId9Chea46uFtqF8n+T4ZFQAIDNkgPHkPaUDY+lMjLid1akkK7rLmfvzuU4y6Q3
-        0tZifW9MD2Qi15nZbr2FjSAq6FbVVqyE6d07+6hy+TQ==
-X-Received: by 2002:a05:620a:122c:: with SMTP id v12mr13770143qkj.113.1597678592181;
-        Mon, 17 Aug 2020 08:36:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzchQO2wunkBbUHR/IjckxcCFqozbIFfFvtzJjLWjYXzLfIMTg7Akjsd9tvlBZhBTWCddLYzA==
-X-Received: by 2002:a05:620a:122c:: with SMTP id v12mr13770114qkj.113.1597678591791;
-        Mon, 17 Aug 2020 08:36:31 -0700 (PDT)
-Received: from [192.168.1.75] ([191.8.4.228])
-        by smtp.gmail.com with ESMTPSA id n6sm16058624qkh.74.2020.08.17.08.36.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Aug 2020 08:36:30 -0700 (PDT)
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jan.kiszka@siemens.com, jbeulich@suse.com,
-        linux-kernel@vger.kernel.org, marc.zyngier@arm.com,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Guilherme G. Piccoli" <kernel@gpiccoli.net>,
-        gpiccoli@canonical.com, pedro.principeza@canonical.com
-In-Reply-To: 
-From:   "Guilherme G. Piccoli" <gpiccoli@canonical.com>
-Subject: Re: [PATCH 4.19 35/47] x86/irq: Seperate unused system vectors from
- spurious entry again
-Autocrypt: addr=gpiccoli@canonical.com; prefer-encrypt=mutual; keydata=
- xsBNBFpVBxcBCADPNKmu2iNKLepiv8+Ssx7+fVR8lrL7cvakMNFPXsXk+f0Bgq9NazNKWJIn
- Qxpa1iEWTZcLS8ikjatHMECJJqWlt2YcjU5MGbH1mZh+bT3RxrJRhxONz5e5YILyNp7jX+Vh
- 30rhj3J0vdrlIhPS8/bAt5tvTb3ceWEic9mWZMsosPavsKVcLIO6iZFlzXVu2WJ9cov8eQM/
- irIgzvmFEcRyiQ4K+XUhuA0ccGwgvoJv4/GWVPJFHfMX9+dat0Ev8HQEbN/mko/bUS4Wprdv
- 7HR5tP9efSLucnsVzay0O6niZ61e5c97oUa9bdqHyApkCnGgKCpg7OZqLMM9Y3EcdMIJABEB
- AAHNLUd1aWxoZXJtZSBHLiBQaWNjb2xpIDxncGljY29saUBjYW5vbmljYWwuY29tPsLAdwQT
- AQgAIQUCWmClvQIbAwULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAAKCRDOR5EF9K/7Gza3B/9d
- 5yczvEwvlh6ksYq+juyuElLvNwMFuyMPsvMfP38UslU8S3lf+ETukN1S8XVdeq9yscwtsRW/
- 4YoUwHinJGRovqy8gFlm3SAtjfdqysgJqUJwBmOtcsHkmvFXJmPPGVoH9rMCUr9s6VDPox8f
- q2W5M7XE9YpsfchS/0fMn+DenhQpV3W6pbLtuDvH/81GKrhxO8whSEkByZbbc+mqRhUSTdN3
- iMpRL0sULKPVYbVMbQEAnfJJ1LDkPqlTikAgt3peP7AaSpGs1e3pFzSEEW1VD2jIUmmDku0D
- LmTHRl4t9KpbU/H2/OPZkrm7809QovJGRAxjLLPcYOAP7DUeltvezsBNBFpVBxcBCADbxD6J
- aNw/KgiSsbx5Sv8nNqO1ObTjhDR1wJw+02Bar9DGuFvx5/qs3ArSZkl8qX0X9Vhptk8rYnkn
- pfcrtPBYLoux8zmrGPA5vRgK2ItvSc0WN31YR/6nqnMfeC4CumFa/yLl26uzHJa5RYYQ47jg
- kZPehpc7IqEQ5IKy6cCKjgAkuvM1rDP1kWQ9noVhTUFr2SYVTT/WBHqUWorjhu57/OREo+Tl
- nxI1KrnmW0DbF52tYoHLt85dK10HQrV35OEFXuz0QPSNrYJT0CZHpUprkUxrupDgkM+2F5LI
- bIcaIQ4uDMWRyHpDbczQtmTke0x41AeIND3GUc+PQ4hWGp9XABEBAAHCwF8EGAEIAAkFAlpV
- BxcCGwwACgkQzkeRBfSv+xv1wwgAj39/45O3eHN5pK0XMyiRF4ihH9p1+8JVfBoSQw7AJ6oU
- 1Hoa+sZnlag/l2GTjC8dfEGNoZd3aRxqfkTrpu2TcfT6jIAsxGjnu+fUCoRNZzmjvRziw3T8
- egSPz+GbNXrTXB8g/nc9mqHPPprOiVHDSK8aGoBqkQAPZDjUtRwVx112wtaQwArT2+bDbb/Y
- Yh6gTrYoRYHo6FuQl5YsHop/fmTahpTx11IMjuh6IJQ+lvdpdfYJ6hmAZ9kiVszDF6pGFVkY
- kHWtnE2Aa5qkxnA2HoFpqFifNWn5TyvJFpyqwVhVI8XYtXyVHub/WbXLWQwSJA4OHmqU8gDl
- X18zwLgdiQ==
-Message-ID: <c2b7a96a-122e-bdec-7368-d54700a55915@canonical.com>
-Date:   Mon, 17 Aug 2020 12:36:25 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4Bkdz+k72rLGRx5zfmph4t7mOQMS3PzCCK/DsnCmnNk=;
+        b=js90b07Gq0i+sHjsd8SIDwEsiqeV+IubNf9QCIJH78S7McP25hP4vdWhyDQlUeLvCM
+         xSNmcdAFXjx3mgXlgtu1bInk/GsqBGdL87JmW4LC9Sh+E2/MCxpvsID675c40KX4AQl/
+         Ac0z8RzGhV/Jx7z98dUordJ5osuazCfJRIzHm82hxMXdXl2Uvn1h1K0SlOTK1ep2f2NN
+         oRfmIywaYtcYjpIMBn58SvHkkVlt82IlKU2XCbrYVr3eQd+43J6+NyJNUwdCD64V0Skk
+         5cNxT34743VnAPZqh5Ewy1RO1D+eDFy0m0tR/DKHd/Qpm/6tEuAgjn3s7A/yYzKpGzkN
+         +f4g==
+X-Gm-Message-State: AOAM530K7vtnkP05ne87QQp8JIQecwu+NrINBNAEoDxdIbMQj3CwJWok
+        b1cnpSdEMvCf0+ks1XgNP4M7f7po6Slkdi7LesM=
+X-Google-Smtp-Source: ABdhPJyOwbaMmiZwnk764Naqoxki1LO6gp/dMIbwdpnsdnjdWOCh0o6U7UJnMVNK2M9r7HHawNWHPgFvpAzlUFE4fFA=
+X-Received: by 2002:a5d:9051:: with SMTP id v17mr12402353ioq.88.1597678693579;
+ Mon, 17 Aug 2020 08:38:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200813035100.13054.25671.stgit@localhost.localdomain>
+ <20200813040232.13054.82417.stgit@localhost.localdomain> <6c072332-ff16-757d-99dd-b8fbae131a0c@linux.alibaba.com>
+ <CAKgT0Uf0TbRBVsuGZ1bgh5rdFp+vARkP=+GgD4-DP3Gy6cj+pA@mail.gmail.com>
+ <CAKgT0Ue=DwVAr+dG8Ff04mUY5ZCG6cpvHCG=bP1w=HujiCp0BQ@mail.gmail.com> <650ab639-e66f-5ca6-a9a5-31e61c134ae7@linux.alibaba.com>
+In-Reply-To: <650ab639-e66f-5ca6-a9a5-31e61c134ae7@linux.alibaba.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 17 Aug 2020 08:38:02 -0700
+Message-ID: <CAKgT0Ud5D3vAtC0_+3otdqzm+hfqR9xGBacjpuh5Qze5=J1=Vw@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] mm: Drop use of test_and_set_skip in favor of
+ just setting skip
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Yang Shi <yang.shi@linux.alibaba.com>,
+        kbuild test robot <lkp@intel.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg / Thomas and all involved here. First, apologies for
-necro-bumping this thread, but I'm working a backport of this patch to
-kernel 4.15 (Ubuntu) and then I noticed we have it on stable, but only
-in 4.19+.
+On Sat, Aug 15, 2020 at 2:51 AM Alex Shi <alex.shi@linux.alibaba.com> wrote=
+:
+>
+>
+>
+> =E5=9C=A8 2020/8/15 =E4=B8=8A=E5=8D=885:15, Alexander Duyck =E5=86=99=E9=
+=81=93:
+> > On Fri, Aug 14, 2020 at 7:24 AM Alexander Duyck
+> > <alexander.duyck@gmail.com> wrote:
+> >>
+> >> On Fri, Aug 14, 2020 at 12:19 AM Alex Shi <alex.shi@linux.alibaba.com>=
+ wrote:
+> >>>
+> >>>
+> >>>
+> >>> =E5=9C=A8 2020/8/13 =E4=B8=8B=E5=8D=8812:02, Alexander Duyck =E5=86=
+=99=E9=81=93:
+> >>>>
+> >>>> Since we have dropped the late abort case we can drop the code that =
+was
+> >>>> clearing the LRU flag and calling page_put since the abort case will=
+ now
+> >>>> not be holding a reference to a page.
+> >>>>
+> >>>> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> >>>
+> >>> seems the case-lru-file-mmap-read case drop about 3% on this patch in=
+ a rough testing.
+> >>> on my 80 core machine.
+> >>
+> >> I'm not sure how it could have that much impact on the performance
+> >> since the total effect would just be dropping what should be a
+> >> redundant test since we tested the skip bit before we took the LRU
+> >> bit, so we shouldn't need to test it again after.
+> >>
+> >> I finally got my test setup working last night. I'll have to do some
+> >> testing in my environment and I can start trying to see what is going
+> >> on.
+> >
+> > So I ran the case-lru-file-mmap-read a few times and I don't see how
+> > it is supposed to be testing the compaction code. It doesn't seem like
+> > compaction is running at least on my system as a result of the test
+> > script.
+>
+> atteched my kernel config, it is used on mine machine,
 
-Since the fixes tag presents an old commit (since ~3.19), I'm curious if
-we have a special reason to not have it on long-term stables, like 4.9
-or 4.14. It's a subtle portion of arch code, so I'm afraid I didn't see
-something that prevents its backport for previous versions.
+I'm just wondering what the margin of error is on the tests you are
+running. What is the variance between runs? I'm just wondering if 3%
+falls into the range of noise or possible changes due to just code
+shifting around?
 
-Thanks in advance,
+In order for the code to have shown any change it needs to be run and
+I didn't see the tests triggering compaction on my test system. I'm
+wondering how much memory you have available in the system you were
+testing on that the test was enough to trigger compaction?
 
+> > I wonder if testing this code wouldn't be better done using
+> > something like thpscale from the
+> > mmtests(https://github.com/gormanm/mmtests)? It seems past changes to
+> > the compaction code were tested using that, and the config script for
+> > the test explains that it is designed specifically to stress the
+> > compaction code. I have the test up and running now and hope to
+> > collect results over the weekend.
+>
+> I did the testing, but a awkward is that I failed to get result,
+> maybe leak some packages.
 
-Guilherme
+So one thing I noticed is that if you have over 128GB of memory in the
+system it will fail unless you update the sysctl value
+vm.max_map_count. It defaulted to somewhere close to 64K, and I
+increased it 20X to 1280K in order for the test to run without failing
+on the mmap calls. The other edit I had to make was the config file as
+the test system I was on had about 1TB of RAM, and my home partition
+only had about 800GB to spare so I had to reduce the map size from
+8/10 to 5/8.
+
+> # ../../compare-kernels.sh
+>
+> thpscale Fault Latencies
+> Can't locate List/BinarySearch.pm in @INC (@INC contains: /root/mmtests/b=
+in/lib /usr/local/lib64/perl5 /usr/local/share/perl5 /usr/lib64/perl5/vendo=
+r_perl /usr/share/perl5/vend.
+> BEGIN failed--compilation aborted at /root/mmtests/bin/lib/MMTests/Stat.p=
+m line 13.
+> Compilation failed in require at /root/mmtests/work/log/../../bin/compare=
+-mmtests.pl line 13.
+> BEGIN failed--compilation aborted at /root/mmtests/work/log/../../bin/com=
+pare-mmtests.pl line 13.
+
+I had to install List::BinarySearch.pm. It required installing the
+cpan perl libraries.
+
+> >
+> > There is one change I will probably make to this patch and that is to
+> > place the new code that is setting skip_updated where the old code was
+> > calling test_and_set_skip_bit. By doing that we can avoid extra checks
+> > and it should help to reduce possible collisions when setting the skip
+> > bit in the pageblock flags.
+>
+> the problem maybe on cmpchxg pb flags, that may involved other blocks cha=
+nges.
+
+That is the only thing I can think of just based on code review.
+Although that would imply multiple compact threads are running, and as
+I said in my tests I never saw kcompactd wakeup so I don't think the
+tests you were mentioning were enough to stress compaction.
