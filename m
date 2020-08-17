@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4778246913
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B850246946
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729074AbgHQPIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:08:50 -0400
-Received: from mout.gmx.net ([212.227.15.19]:54295 "EHLO mout.gmx.net"
+        id S1729190AbgHQPSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:18:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728651AbgHQPIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:08:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1597676911;
-        bh=Tetm6JInZyBDPvWpZyx4Zp5MeGuNToXdO2B+0rlr2c0=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=b7Gx4SkJsN3G34LQ0lOtp/HuetKQZ3xoFOMLFewMlt2SszYYyEbiCiJ+aYgIJ9A3h
-         KeImU+Jb8whaJPVnzNWEpk22n4ws1HFruzNELLdr1YPyXOMXfKosSOmIizCZgJTmY4
-         p/LEz9UmZ6DOiKdqkds4psfXNCW9sEM63QSmSQO4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [217.61.148.252] ([217.61.148.252]) by web-mail.gmx.net
- (3c-app-gmx-bs07.server.lan [172.19.170.56]) (via HTTP); Mon, 17 Aug 2020
- 17:08:31 +0200
+        id S1729128AbgHQPSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:18:30 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CDFF62065C;
+        Mon, 17 Aug 2020 15:18:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597677509;
+        bh=3vfQKMttlM0pOTyMoFBwaEXl9k9Q1/ngIocA8s8nfjU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=VYpXIQu8ybujXfde4CPcT95hQ6lh5ivUb+KDY5+FQkB724oTUXEb93B82pnQzFWvA
+         n/pC+Vir2VZ1on2V4y99xkRCAe/1QNHRGbAwTrO5NNwdh+ybwUHVe27S5jZ5QLM4yx
+         a9VvZs3Io2+dGwazndkHtfmmGlHosooZmd7jgXQ4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Tim Murray <timmurray@google.com>,
+        Simon MacMullen <simonmacm@google.com>,
+        Greg Hackmann <ghackmann@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.8 001/464] tracepoint: Mark __tracepoint_strings __used
+Date:   Mon, 17 Aug 2020 17:09:14 +0200
+Message-Id: <20200817143833.807083399@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
+References: <20200817143833.737102804@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-Message-ID: <trinity-6aabe11a-b5c2-40ef-b51a-8ec7df0ceeab-1597676911685@3c-app-gmx-bs07>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Enric Balletbo Serra <eballetbo@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>
-Subject: Aw: Re: [BUG] 5.9-rc1 broken bootup on mt7622/mt7623
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 17 Aug 2020 17:08:31 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <CAFqH_510ykRd=79hUKbK5k8fqWzt=wri6=-Mv1zvV8inquPmPg@mail.gmail.com>
-References: <trinity-e15639c2-d077-4b70-b351-a5888543688c-1597675629284@3c-app-gmx-bs07>
- <CAFqH_510ykRd=79hUKbK5k8fqWzt=wri6=-Mv1zvV8inquPmPg@mail.gmail.com>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:HMLEtvM6sRxHZoQ2yEJ+S/HCggZRutCRqRB3gWpNs9fNkRRhnce6wVt0k1ubkP7P7J0H0
- L0UGHovEALXabrUq5hA1ErKMeGadAW4cewhQ+fJ7RpuetY0QH+5VOcszl3Z1YePqGzwaeslRjQfi
- FCQElwZxnaIpFHnMeTE9Biwzx4lVdE+WuH6THYA55Bc2xRmRM1N5k7HdJhPWtWWynXvT4l1ZnZqo
- s3eu9KU5f8+O5OtlhX28P2+ptXhFWKtRhD/ipo78Dp2LgpDXcJH5C4kJsatFQ1tS7YpagjrJ6OnW
- tQ=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wPXiVH+jU1o=:SO2j5ZAePwOK4Uxo8o0Kj8
- yUr9siyuEmJShS3Xmr6ez0fmkRkChzow26II8un7ZXMHP9HPVDBX8mhso69nNkoNPy0542i4c
- H3R8rqz1OKMSvYsQp1dV2/961VXZaSjaJ4ZDYQb6DLz7ITySwFaegO7/CLytiXbV1DwoQbdgF
- Y6yQr3PEc78lH2IiLYXbID3x3lvng06x2up7nYQlwv4vRf6HEpDWGS3B2M2VVXH1tNcApZ1WB
- 9vuLKXVSxReBayDMZ2CWyg+rtWV3Tv26KEgdqQvKb/sM/sCOsjp1ad1Ex/pZk6EcCOtrwdNMS
- 71yAkg6vjeB5GV84EvR/W6xpkX31BaLnj6GCQP+3cBbzReQpfbnIJmr/Qcv9ip5nHyoBtFS5q
- D45edwMSH+dgKIXEn4ercvfjHGUffoHEtpE6Yz59Il9IQTmssJ5pZDGbIc4VBXBZpC73e2EBm
- YZ/cgz3nFd+jzUk0UKbW/L90iFK41ONEcDReV06RbVDrE1sMqzOYSZTDQsOI2uZi7/CE0Lp8K
- UGapEvGntHAFk0G+EoBA4/q+hdI5adkzlqTs7se5naMb35nFAPwqJFL+B46lP6fOrZb2CWP/n
- 8NcAtEEu12vSPzNmLI70asolVOsrt61YQ4QLWv201H81Bb6tIYsPIoOsaWeBD31mxOzrFMjNF
- vbYm4qf2+vxKlmHadJwVfcS+7vZkZ6MlgKDDqawbLp+PGjpkyKqfnfHy6BAgwozbC90M=
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Enric
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-> Gesendet: Montag, 17. August 2020 um 16:56 Uhr
-> Von: "Enric Balletbo Serra" <eballetbo@gmail.com>
-> Looks like all Mediatek devices are broken, you should try if this [1]
-> fixes the issue for you. It fixes for me.
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.gi=
-t/commit/?h=3Dirq/irqchip-next&id=3D7828a3ef8646fb2e69ed45616c8453a037ca78=
-67
+commit f3751ad0116fb6881f2c3c957d66a9327f69cefb upstream.
 
-This seems to fix the issue on my 2 devices too
+__tracepoint_string's have their string data stored in .rodata, and an
+address to that data stored in the "__tracepoint_str" section. Functions
+that refer to those strings refer to the symbol of the address. Compiler
+optimization can replace those address references with references
+directly to the string data. If the address doesn't appear to have other
+uses, then it appears dead to the compiler and is removed. This can
+break the /tracing/printk_formats sysfs node which iterates the
+addresses stored in the "__tracepoint_str" section.
 
-Thank you
+Like other strings stored in custom sections in this header, mark these
+__used to inform the compiler that there are other non-obvious users of
+the address, so they should still be emitted.
 
-regards Frank
+Link: https://lkml.kernel.org/r/20200730224555.2142154-2-ndesaulniers@google.com
+
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: stable@vger.kernel.org
+Fixes: 102c9323c35a8 ("tracing: Add __tracepoint_string() to export string pointers")
+Reported-by: Tim Murray <timmurray@google.com>
+Reported-by: Simon MacMullen <simonmacm@google.com>
+Suggested-by: Greg Hackmann <ghackmann@google.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ include/linux/tracepoint.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -361,7 +361,7 @@ static inline struct tracepoint *tracepo
+ 		static const char *___tp_str __tracepoint_string = str; \
+ 		___tp_str;						\
+ 	})
+-#define __tracepoint_string	__attribute__((section("__tracepoint_str")))
++#define __tracepoint_string	__attribute__((section("__tracepoint_str"), used))
+ #else
+ /*
+  * tracepoint_string() is used to save the string address for userspace
+
+
