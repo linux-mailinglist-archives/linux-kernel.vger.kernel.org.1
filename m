@@ -2,150 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742C4246F87
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 306A1246FB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390100AbgHQRsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:48:33 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39198 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390094AbgHQRsU (ORCPT
+        id S1731599AbgHQRwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:52:25 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:38615 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731115AbgHQRvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 13:48:20 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k7jEY-0000AV-7b; Mon, 17 Aug 2020 17:47:46 +0000
-Date:   Mon, 17 Aug 2020 19:47:45 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrei Vagin <avagin@gmail.com>, adobriyan@gmail.com,
-        viro@zeniv.linux.org.uk, davem@davemloft.net,
-        akpm@linux-foundation.org, areber@redhat.com, serge@hallyn.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Subject: Re: [PATCH 00/23] proc: Introduce /proc/namespaces/ directory to
- expose namespaces lineary
-Message-ID: <20200817174745.jssxjdcwoqxeg5pu@wittgenstein>
-References: <2d65ca28-bcfa-b217-e201-09163640ebc2@virtuozzo.com>
- <20200810173431.GA68662@gmail.com>
- <33565447-9b97-a820-bc2c-a4ff53a7675a@virtuozzo.com>
- <20200812175338.GA596568@gmail.com>
- <8f3c9414-9efc-cc01-fb2a-4d83266e96b2@virtuozzo.com>
- <20200814011649.GA611947@gmail.com>
- <0af3f2fa-f2c3-fb7d-b57e-9c41fe94ca58@virtuozzo.com>
- <20200814192102.GA786465@gmail.com>
- <56ed1fb9-4f1f-3528-3f09-78478b9dfcf2@virtuozzo.com>
- <87d03pb7f2.fsf@x220.int.ebiederm.org>
+        Mon, 17 Aug 2020 13:51:22 -0400
+Received: by mail-io1-f69.google.com with SMTP id e73so10325014iof.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:51:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=tef9SyC/DPbeM4vGO9X8D7q/BkFTLwMgzsKkMCcRRfY=;
+        b=H/9Ocz/qjxOf3Ql62s9RIl7X61ipfu/FMsRK/FU0zU23r8h5GnuurY3O/HK8TdTIY/
+         xXQGWtA7e40mIdEJVaVoPLW3eVuGjYqO/SdiwFq3iIawIftfuGWtp56rGIedV40OsD0M
+         IfK8TqYkb7NmEH43ortETIIQPAQuHXQ0BdJg2aixJC8oLGO1j/z/vPbZXs42XY3flogQ
+         xrCr1kNz8NnqyzscGaNR2naNgopMv16u9GriQpyLYoxCBFktBVPiW1gJXzitQdtG5ddS
+         3KQ47jd8M8elkws7lyKW+ERNWJA+TxSS373z+Pf5GL5Q7bN+Q25fhJzKCUrrwyH+UenP
+         fmKQ==
+X-Gm-Message-State: AOAM533pyhB6yZKp91lysztJnSwZF+1PAxZAwxG6FfXTzLn54weAvBNj
+        TOeQAneRJhXjYIFgyZZ1CbLjVmDngpbNxDc1HwADnY7H0aXd
+X-Google-Smtp-Source: ABdhPJzsDWXHbORSENDAZjQHsVROvP425ZbcV35BXeYXiXRrUfjPOzhoidxjUoFMg+GQnjyPIe2MW/KmGPKvfyOcP727hATbvgkc
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87d03pb7f2.fsf@x220.int.ebiederm.org>
+X-Received: by 2002:a92:4414:: with SMTP id r20mr14870589ila.299.1597686681560;
+ Mon, 17 Aug 2020 10:51:21 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 10:51:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001ded4605ad166bda@google.com>
+Subject: KMSAN: uninit-value in smsc95xx_reset
+From:   syzbot <syzbot+c74c24b43c9ae534f0e0@syzkaller.appspotmail.com>
+To:     UNGLinuxDriver@microchip.com, davem@davemloft.net,
+        glider@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        steve.glendinning@shawell.net, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 10:48:01AM -0500, Eric W. Biederman wrote:
-> 
-> Creating names in the kernel for namespaces is very difficult and
-> problematic.  I have not seen anything that looks like  all of the
-> problems have been solved with restoring these new names.
-> 
-> When your filter for your list of namespaces is user namespace creating
-> a new directory in proc is highly questionable.
-> 
-> As everyone uses proc placing this functionality in proc also amplifies
-> the problem of creating names.
-> 
-> 
-> Rather than proc having a way to mount a namespace filesystem filter by
-> the user namespace of the mounter likely to have many many fewer
-> problems.  Especially as we are limiting/not allow new non-process
-> things and ideally finding a way to remove the non-process things.
-> 
-> 
-> Kirill you have a good point that taking the case where a pid namespace
-> does not exist in a user namespace is likely quite unrealistic.
-> 
-> Kirill mentioned upthread that the list of namespaces are the list that
-> can appear in a container.  Except by discipline in creating containers
-> it is not possible to know which namespaces may appear in attached to a
-> process.  It is possible to be very creative with setns, and violate any
-> constraint you may have.  Which means your filtered list of namespaces
-> may not contain all of the namespaces used by a set of processes.  This
+Hello,
 
-Indeed. We use setns() quite creatively when intercepting syscalls and
-when attaching to a container.
+syzbot found the following issue on:
 
-> further argues that attaching the list of namespaces to proc does not
-> make sense.
-> 
-> Andrei has a good point that placing the names in a hierarchy by
-> user namespace has the potential to create more freedom when
-> assigning names to namespaces, as it means the names for namespaces
-> do not need to be globally unique, and while still allowing the names
-> to stay the same.
-> 
-> 
-> To recap the possibilities for names for namespaces that I have seen
-> mentioned in this thread are:
->   - Names per mount
->   - Names per user namespace
-> 
-> I personally suspect that names per mount are likely to be so flexibly
-> they are confusing, while names per user namespace are likely to be
-> rigid, possibly too rigid to use.
-> 
-> It all depends upon how everything is used.  I have yet to see a
-> complete story of how these names will be generated and used.  So I can
-> not really judge.
+HEAD commit:    ce8056d1 wip: changed copy_from_user where instrumented
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1496679e900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3afe005fb99591f
+dashboard link: https://syzkaller.appspot.com/bug?extid=c74c24b43c9ae534f0e0
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16d8cc86900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=117e8fbe900000
 
-So I haven't fully understood either what the motivation for this
-patchset is.
-I can just speak to the use-case I had when I started prototyping
-something similar: We needed a way to get a view on all namespaces
-that exist on the system because we wanted a way to do namespace
-debugging on a live system. This interface could've easily lived in
-debugfs. The main point was that it should contain all namespaces.
-Note, that it wasn't supposed to be a hierarchical format it was only
-mean to list all namespaces and accessible to real root.
-The interface here is way more flexible/complex and I haven't yet
-figured out what exactly it is supposed to be used for.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c74c24b43c9ae534f0e0@syzkaller.appspotmail.com
 
-> 
-> 
-> Let me add another take on this idea that might give this work a path
-> forward. If I were solving this I would explore giving nsfs directories
-> per user namespace, and a way to mount it that exposed the directory of
-> the mounters current user namespace (something like btrfs snapshots).
-> 
-> Hmm.  For the user namespace directory I think I would give it a file
-> "ns" that can be opened to get a file handle on the user namespace.
-> Plus a set of subdirectories "cgroup", "ipc", "mnt", "net", "pid",
-> "user", "uts") for each type of namespace.  In each directory I think
-> I would just have a 64bit counter and each new entry I would assign the
-> next number from that counter.
-> 
-> The restore could either have the ability to rename files or simply the
-> ability to bump the counter (like we do with pids) so the names of the
-> namespaces can be restored.
-> 
-> That winds up making a user namespace the namespace of namespaces, so
-> I am not 100% about the idea. 
+smsc95xx 1-1:1.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x00000030: -32
+smsc95xx 1-1:1.0 (unnamed net_device) (uninitialized): Error reading E2P_CMD
+=====================================================
+BUG: KMSAN: uninit-value in smsc95xx_reset+0x353/0x3eb0 drivers/net/usb/smsc95xx.c:1039
+CPU: 1 PID: 27 Comm: kworker/1:1 Not tainted 5.8.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ smsc95xx_reset+0x353/0x3eb0 drivers/net/usb/smsc95xx.c:1039
+ smsc95xx_bind+0x8b3/0x1720 drivers/net/usb/smsc95xx.c:1289
+ usbnet_probe+0x1152/0x3f90 drivers/net/usb/usbnet.c:1737
+ usb_probe_interface+0xece/0x1550 drivers/usb/core/driver.c:374
+ really_probe+0xf20/0x20b0 drivers/base/dd.c:529
+ driver_probe_device+0x293/0x390 drivers/base/dd.c:701
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:807
+ bus_for_each_drv+0x2ca/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x4e2/0x7f0 drivers/base/dd.c:873
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:920
+ bus_probe_device+0x177/0x3d0 drivers/base/bus.c:491
+ device_add+0x3b0e/0x40d0 drivers/base/core.c:2680
+ usb_set_configuration+0x380f/0x3f10 drivers/usb/core/message.c:2032
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:241
+ usb_probe_device+0x311/0x490 drivers/usb/core/driver.c:272
+ 
 
-I think you're right that we need to understand better what the use-case
-is. If I understand your suggestion correctly it wouldn't allow to show
-nested user namespaces if the nsfs mount is per-user namespace.
 
-Let me throw in a crazy idea: couldn't we just make the ioctl_ns() walk
-a namespace hierarchy? For example, you could pass in a user namespace
-fd and then you'd get back a struct with handles for fds for the
-namespaces owned by that user namespace and then you could use
-NS_GET_USERNS/NS_GET_PARENT to walk upwards from the user namespace fd
-passed in initially and so on? Or something similar/simpler. This would
-also decouple this from procfs somewhat.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Christian
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
