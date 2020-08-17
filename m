@@ -2,60 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1CA245DD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9640245DC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgHQHUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 03:20:36 -0400
-Received: from sonic316-55.consmr.mail.ne1.yahoo.com ([66.163.187.181]:41340
-        "EHLO sonic316-55.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726371AbgHQHUg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 03:20:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597648835; bh=wQR2TNpnSC5+pl+9xCwBDdU8shZ+1jYIhLI8TGcKGS0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=rj/Ao4sSjyOH0l9IiWgqJn+hlur38woztj3WnZU+bYPaWFK087gNg25sCy0yH1SPnn8hQ8KXjBULFKtfh5BclmAxxbzelhRhDm/3ZbM6hekGyaYc4C5ISiQg+K+7mUpDmrlxu8+thKhFzuzqMlCDTtgPvlyAMvoEL6FMVMwPPjPvHSzyOP854ep5fJS/MoM+SIxT0vjL28YB3T3qNr6p2hDhXMrX4+Dg3OT+NyUZxIvI3dyXiBEzakAk4DkZcFjHQnqgJBU1ZVGjGfiSU5vJx5PAYygxkOnm0NjBjrxQnZiQS1Spd0NFMAmZfFrTqCnwJZUutACAAxJmkMDn69wktA==
-X-YMail-OSG: xG5Dy8UVM1lXH5YD2PpeZel9PqZYKWHci4QL49Na4g9s_cv3TmGs0SdmABXapPA
- .4.FFUWcGzQ4wA4uQBA0Le.4If3Hz_krhZo1BqtABk6_98E0mKeuHHcR9kfaUfWkL0R6a0jFa6px
- KUXlmptsbIlqRAiN3BUnspi_UbLS.mVs9g.HiC8B1j1lIq.U2mO9yuIBq0iiu1MoxLCcT0fSpVnD
- 3Gsr_IzNymuvWJTqlTdA2EumV.9_s21BAYh0SlaL5a_iRBg3H6YJAO7WE1Fqjv8WjCALCBq8iyZ_
- OGHvv81.GYgBearLG3PlkiRrhwd47w0CoQTwXzTtiDc_.A5JR9_NLx8zvu6wuUydChKdB_uusoeh
- 95YXi7bQXazVggiHbeBfG1Z10XOwclSKtm3dh6r79mCX45Bk1xdJzsqiRO9ANTxix_r0zP4jqrDD
- 2MnRvoR6zknfdGfZakYhmKGKWK7atgf9Ax64MobFOg3owElxrJU3szmSFD2xi2X1PymR0XYOJDND
- ask.GMhMh7.kjCCIY3LgCW93deLBCrPnsLzGdPaLgytkAad0J1nWjjizdpzfFJ.qWFd9HA.UHsHM
- UI17dci2LpvMlTs3PErAZaz799ckvzNJDHwgiWwiSzhVjJK3VcvbxMtW9X_QEd9Kgl2O3.woXnm.
- zb1NyjGcSpLuR_82VSwWuCVCWQOT6Tu5C.xq2uWcPnt3ncJHB.SwT2x3IPFBf82lmt36p.Yajgqr
- ejbOQekDevuwAjj9N7iQuuwlW8AZpfd3l3IhrZ7vywdUQefGWMcA4DDUTb7mBK0VPgLhFsXc1.Fz
- zji9mhwmX71rfvSzq2s10J1gty1O4xXeavjeMssvfIcySlOmXcTLb466wRa2VjZteV_ausMdnJ3v
- BTjpKUeSZaH06qs7kc_rYcdAj.W06LoiCdsyrNY0T_fRa71TrZ1wXWsy2Hm0Y4ExRRgbsHayq584
- rNx2NWLQMjYt3.Rnh1ZE6C1e09snD7E2vweBN15JB6ypUkKyfPjXl6uo.gAGhAZiMCIBy7Kf413E
- lULJ5Wd5M9hiKXWFSmRtBJWRQUg2JBZwTeBoZqozYMiE65e3GQWpRAwIyQfLihXnkjGZVlwS.lYT
- kkGihBKE3cewVJk9wea.N7KhDyfpart0W7u7QGjnV.MMi39CMt53D9sF4p7mhUHo56vPZfezgjw5
- 6l2M7pqnCksq8vc30rNeTEoFH2fgDW.9pIbtHnRKeVHm9Op9xEIxixpshes.UvSE..4248eUSzy7
- JougUGC2St0msgGwM_.ssOzSGjNzPx1kAX_ZnZEVUF5Yn9IOL9FG3_TLs4nqo9wwx2WtEQky8.D6
- 2IF4zu_pheYw6JkKs02bvScupE3s24DRr9KsqTD1OeLyMKCyGXJWQIXwp_aVmo1BEFsL5OsL9O7E
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Mon, 17 Aug 2020 07:20:35 +0000
-Date:   Mon, 17 Aug 2020 07:18:35 +0000 (UTC)
-From:   "Mrs. Maureen Hinckley" <mua39@gvsao.in>
-Reply-To: maurhinck2@gmail.com
-Message-ID: <240010608.3000878.1597648715121@mail.yahoo.com>
-Subject: RE
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <240010608.3000878.1597648715121.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+        id S1726846AbgHQHTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 03:19:22 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:48076 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725765AbgHQHTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 03:19:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597648760; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=hwlJ5WSyqLCQ3kLhAjhnixhlrCzC9z8oa3p4W6kt32o=; b=m+BtZ93P2JWpvR2Zr3iRycqR59YKEKLmkmq6qr4atHH6Peovf1oO+UhUpwioo7TBZwOPNUQI
+ TrxY6fPJyWWAVIvZSovwDrpSB4ZjNnvfa8dpJIr8b6kitFZ5cwdZY3VkzBaDlJ8C8Dfy77fW
+ ppzDn8oT2Mgyeu2HKPfCyY/NBTM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f3a2f60f2b697637a623b48 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 07:18:56
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4F96DC43387; Mon, 17 Aug 2020 07:18:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from kathirav-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kathirav)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 82022C433C6;
+        Mon, 17 Aug 2020 07:18:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 82022C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kathirav@codeaurora.org
+From:   Kathiravan T <kathirav@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, sivaprak@codeaurora.org,
+        devicetree@vger.kernel.org
+Cc:     kathirav@codeaurora.org
+Subject: [PATCH V2 0/2] Enable DVFS support for IPQ6018
+Date:   Mon, 17 Aug 2020 12:48:38 +0530
+Message-Id: <1597648720-13649-1-git-send-email-kathirav@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add A53 PLL, APCS clock, RPM Glink, RPM message RAM, cpu-opp-table,
+SMPA2 regulator to enable the cpu frequency on IPQ6018.
 
+[v2]
+	- Rebased on v5.9-rc1
+	- Picked up the Rob's Acked-by tag for mailbox YAML
+	- Regulator binding in V1 was picked by Mark and available in v5.9-rc1
 
-I am Maureen Hinckley and my foundation is donating (Five hundred and fifty=
- thousand USD) to you. Contact us via my email at (maurhinck2@gmail.com) fo=
-r further details.
+Kathiravan T (2):
+  dt-bindings: mailbox: add compatible for the IPQ6018 SoC
+  arm64: dts: ipq6018: enable DVFS support
 
-Best Regards,
-Mrs. Maureen Hinckley,
-Copyright =C2=A92020 The Maureen Hinckley Foundation All Rights Reserved.
+ .../bindings/mailbox/qcom,apcs-kpss-global.yaml    |  1 +
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi              | 96 +++++++++++++++++++++-
+ 2 files changed, 94 insertions(+), 3 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+
