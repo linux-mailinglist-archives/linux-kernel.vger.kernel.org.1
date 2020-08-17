@@ -2,86 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E270246E1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1279C246E1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389835AbgHQRWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731341AbgHQQpQ (ORCPT
+        id S2389853AbgHQRWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:22:52 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:30784 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388706AbgHQQrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:45:16 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBFEC061345
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 09:45:04 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id i19so8699839lfj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 09:45:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=BDpYbXacOYsmncSK2AxZjXV+MuH8o29BVrL5LEXIDao=;
-        b=N9mA78VSzeS1Ibf4nnKhBabPs9szpKlK8P2/V2m9CB/RgA6lo1+1nKIg3E56jLovdP
-         kkd5UK2dlxrEAoU4CZJ4rRiJ253W8vMgrneneJje+XRZKJqFUVZId44QVzMf+wKHMi24
-         Fe7LXyvTGe4AS60d/L5+Z2cb07COtm2Yx1wcg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=BDpYbXacOYsmncSK2AxZjXV+MuH8o29BVrL5LEXIDao=;
-        b=RM4XCLDsBHZ5f8izJ/67hif3R689fis5NG7zlnfe9rAWmutIG3CIM08fNFUGGFGhI5
-         pYJLxGT+NWTp2g2kfep1iaZlWJOW84vP93A8wU5I7oakUUhFzsriOELKLReGCyXek58x
-         2XB/CyB54opRtypvNxXnCpzc75ftMQWTEvzgCsFJvBrLhrb0f9GOpBlR+JJHMm4MU41C
-         cxuX8v0s9twcJzdo0YZiqiLSwYNDn+iMoKdYHcBQWorlAm0qVc6wh0TzOvOQt4k01AAV
-         OcQx5kdF+uqD7LvHoouo4D+6QPY0ZqxJnAspsffBtd3LJtMB50Q9TFgWKdv6qsjwPaJJ
-         uoDA==
-X-Gm-Message-State: AOAM533Gq+5idJ4kjJjDu4MYOUwk61pdn8VWen60ErgIYNPmtQPVQaRd
-        jkD2Ro1Isp1G8dMN9LMPgY8VEt/ELvisTw==
-X-Google-Smtp-Source: ABdhPJx6aaJiEvrvX9m1AiESlKc5B+AuP3pToAHdcrW57FAeYl+/v3SbReB3jB6A/6QMRSkujYuQqw==
-X-Received: by 2002:a19:431c:: with SMTP id q28mr7940063lfa.211.1597682702442;
-        Mon, 17 Aug 2020 09:45:02 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id r19sm5584131lfi.58.2020.08.17.09.45.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Aug 2020 09:45:01 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id m22so18202387ljj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 09:45:01 -0700 (PDT)
-X-Received: by 2002:a2e:b008:: with SMTP id y8mr6932586ljk.421.1597682701076;
- Mon, 17 Aug 2020 09:45:01 -0700 (PDT)
+        Mon, 17 Aug 2020 12:47:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597682854; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=cJGHnK9LZROPEDWmJysaGgCbhijGlhi6d8SwrJT3rM8=; b=QODXj/+1v2gMOFEiuohAxjhW9LSRiNLXjA3iQroE73o7tDUJ1i17ecUP37XP7EUGaqhNqNoK
+ JDvLPlqK+jjxSOQZecRwwL4V9/XLOyDbkgPFZCk2ECMapF42y3xVaYZzeF9lkhYdUw6m7R/L
+ VeLqeT97jFxIQGMoQkhqgeJQGQw=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f3ab49c2f4952907dfa1379 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 16:47:24
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9B1A8C433A1; Mon, 17 Aug 2020 16:47:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 11C53C433C6;
+        Mon, 17 Aug 2020 16:47:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 11C53C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 17 Aug 2020 10:47:17 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
+        iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>, freedreno@lists.freedesktop.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 16/19] drm/msm/a6xx: Add support for per-instance
+ pagetables
+Message-ID: <20200817164716.GE3221@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Akhil P Oommen <akhilpo@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
+        iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>, freedreno@lists.freedesktop.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Clark <robdclark@chromium.org>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200810222657.1841322-1-jcrouse@codeaurora.org>
+ <20200814024114.1177553-17-robdclark@gmail.com>
+ <7c130df7-c7f4-8694-c7be-ce3debe01662@codeaurora.org>
 MIME-Version: 1.0
-References: <CAHk-=wiwfkKp93C+yLqKWAU0ChBdeBDUhgOk09_=UQ8gOKbV3w@mail.gmail.com>
- <20200816225822.GA3222@debian>
-In-Reply-To: <20200816225822.GA3222@debian>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 17 Aug 2020 09:44:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgOaEmFGYhnx7XLe8AbQKYpgMAzyuHuS8dYZoB2hS3C=A@mail.gmail.com>
-Message-ID: <CAHk-=wgOaEmFGYhnx7XLe8AbQKYpgMAzyuHuS8dYZoB2hS3C=A@mail.gmail.com>
-Subject: Re: ..build stopped... Linux 5.9-rc1
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c130df7-c7f4-8694-c7be-ce3debe01662@codeaurora.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 16, 2020 at 3:58 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> w=
-rote:
->
-> I am scared that I might have missed something very obvious ...am I?? And=
- the build abort...take a peek..
->
-> ./arch/x86/include/asm/io.h:292:2: error: implicit declaration of functio=
-n =E2=80=98slow_down_io=E2=80=99 [-Werror=3Dimplicit-function-declaration]
+On Mon, Aug 17, 2020 at 09:10:46PM +0530, Akhil P Oommen wrote:
+> On 8/14/2020 8:11 AM, Rob Clark wrote:
+> >From: Jordan Crouse <jcrouse@codeaurora.org>
+> >
+> >Add support for using per-instance pagetables if all the dependencies are
+> >available.
+> >
+> >Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> >Signed-off-by: Rob Clark <robdclark@chromium.org>
+> >---
+> >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 70 +++++++++++++++++++++++++++
+> >  drivers/gpu/drm/msm/adreno/a6xx_gpu.h |  1 +
+> >  drivers/gpu/drm/msm/msm_ringbuffer.h  |  1 +
+> >  3 files changed, 72 insertions(+)
+> >
+> >diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> >index 5eabb0109577..9653ac9b3cb8 100644
+> >--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> >+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> >@@ -81,6 +81,56 @@ static void get_stats_counter(struct msm_ringbuffer *ring, u32 counter,
+> >  	OUT_RING(ring, upper_32_bits(iova));
+> >  }
+> >+static void a6xx_set_pagetable(struct a6xx_gpu *a6xx_gpu,
+> >+		struct msm_ringbuffer *ring, struct msm_file_private *ctx)
+> >+{
+> >+	phys_addr_t ttbr;
+> >+	u32 asid;
+> >+	u64 memptr = rbmemptr(ring, ttbr0);
+> >+
+> >+	if (ctx == a6xx_gpu->cur_ctx)
+> >+		return;
+> >+
+> >+	if (msm_iommu_pagetable_params(ctx->aspace->mmu, &ttbr, &asid))
+> >+		return;
+> >+
+> >+	/* Execute the table update */
+> >+	OUT_PKT7(ring, CP_SMMU_TABLE_UPDATE, 4);
+> >+	OUT_RING(ring, CP_SMMU_TABLE_UPDATE_0_TTBR0_LO(lower_32_bits(ttbr)));
+> >+
+> >+	/*
+> >+	 * For now ignore the asid since the smmu driver uses a TLBIASID to
+> >+	 * flush the TLB when we use iommu_flush_tlb_all() and the smmu driver
+> >+	 * isn't aware that the asid changed.  Instead, keep the default asid
+> >+	 * (0, same as the context bank) to make sure the TLB is properly
+> >+	 * flushed.
+> >+	 */
+> >+	OUT_RING(ring,
+> >+		CP_SMMU_TABLE_UPDATE_1_TTBR0_HI(upper_32_bits(ttbr)) |
+> >+		CP_SMMU_TABLE_UPDATE_1_ASID(0));
+> >+	OUT_RING(ring, CP_SMMU_TABLE_UPDATE_2_CONTEXTIDR(0));
+> >+	OUT_RING(ring, CP_SMMU_TABLE_UPDATE_3_CONTEXTBANK(0));
+> >+
+> >+	/*
+> >+	 * Write the new TTBR0 to the memstore. This is good for debugging.
+> >+	 */
+> >+	OUT_PKT7(ring, CP_MEM_WRITE, 4);
+> >+	OUT_RING(ring, CP_MEM_WRITE_0_ADDR_LO(lower_32_bits(memptr)));
+> >+	OUT_RING(ring, CP_MEM_WRITE_1_ADDR_HI(upper_32_bits(memptr)));
+> >+	OUT_RING(ring, lower_32_bits(ttbr));
+> >+	OUT_RING(ring, (0 << 16) | upper_32_bits(ttbr));
+> why (0 << 16) is required here?
 
-I'm not seeing how that would happen with a pristine codebase, but
-send me your config just in case.
+Because that is the ASID we are using and we would want the debug TTBR0 to match
+the hardware as closely as possible.
 
-slow_down_io() is declared not that much further up in that file (or
-in paravirt.h that gets included before for the CONFIG_PARAVIRT case).
+> >+
+> >+	/*
+> >+	 * And finally, trigger a uche flush to be sure there isn't anything
+> >+	 * lingering in that part of the GPU
+> >+	 */
+> >+
+> >+	OUT_PKT7(ring, CP_EVENT_WRITE, 1);
+> >+	OUT_RING(ring, 0x31);
+> This may be unnecessary, but no harm in keeping it. SMMU_TABLE_UPDATE is
+> supposed to do a UCHE flush.
 
-             Linus
+Correct but I think it is wise to try to match the downstream sequence as much
+as possible.
+
+Jordan
+
+> -Akhil
+> >+
+> >+	a6xx_gpu->cur_ctx = ctx;
+> >+}
+> >+
+> >  static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+> >  {
+> >  	unsigned int index = submit->seqno % MSM_GPU_SUBMIT_STATS_COUNT;
+> >@@ -90,6 +140,8 @@ static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+> >  	struct msm_ringbuffer *ring = submit->ring;
+> >  	unsigned int i;
+> >+	a6xx_set_pagetable(a6xx_gpu, ring, submit->queue->ctx);
+> >+
+> >  	get_stats_counter(ring, REG_A6XX_RBBM_PERFCTR_CP_0_LO,
+> >  		rbmemptr_stats(ring, index, cpcycles_start));
+> >@@ -696,6 +748,8 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
+> >  	/* Always come up on rb 0 */
+> >  	a6xx_gpu->cur_ring = gpu->rb[0];
+> >+	a6xx_gpu->cur_ctx = NULL;
+> >+
+> >  	/* Enable the SQE_to start the CP engine */
+> >  	gpu_write(gpu, REG_A6XX_CP_SQE_CNTL, 1);
+> >@@ -1008,6 +1062,21 @@ static unsigned long a6xx_gpu_busy(struct msm_gpu *gpu)
+> >  	return (unsigned long)busy_time;
+> >  }
+> >+static struct msm_gem_address_space *
+> >+a6xx_create_private_address_space(struct msm_gpu *gpu)
+> >+{
+> >+	struct msm_gem_address_space *aspace = NULL;
+> >+	struct msm_mmu *mmu;
+> >+
+> >+	mmu = msm_iommu_pagetable_create(gpu->aspace->mmu);
+> >+
+> >+	if (!IS_ERR(mmu))
+> >+		aspace = msm_gem_address_space_create(mmu,
+> >+			"gpu", 0x100000000ULL, 0x1ffffffffULL);
+> >+
+> >+	return aspace;
+> >+}
+> >+
+> >  static const struct adreno_gpu_funcs funcs = {
+> >  	.base = {
+> >  		.get_param = adreno_get_param,
+> >@@ -1031,6 +1100,7 @@ static const struct adreno_gpu_funcs funcs = {
+> >  		.gpu_state_put = a6xx_gpu_state_put,
+> >  #endif
+> >  		.create_address_space = adreno_iommu_create_address_space,
+> >+		.create_private_address_space = a6xx_create_private_address_space,
+> >  	},
+> >  	.get_timestamp = a6xx_get_timestamp,
+> >  };
+> >diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> >index 03ba60d5b07f..da22d7549d9b 100644
+> >--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> >+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> >@@ -19,6 +19,7 @@ struct a6xx_gpu {
+> >  	uint64_t sqe_iova;
+> >  	struct msm_ringbuffer *cur_ring;
+> >+	struct msm_file_private *cur_ctx;
+> >  	struct a6xx_gmu gmu;
+> >  };
+> >diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.h b/drivers/gpu/drm/msm/msm_ringbuffer.h
+> >index 7764373d0ed2..0987d6bf848c 100644
+> >--- a/drivers/gpu/drm/msm/msm_ringbuffer.h
+> >+++ b/drivers/gpu/drm/msm/msm_ringbuffer.h
+> >@@ -31,6 +31,7 @@ struct msm_rbmemptrs {
+> >  	volatile uint32_t fence;
+> >  	volatile struct msm_gpu_submit_stats stats[MSM_GPU_SUBMIT_STATS_COUNT];
+> >+	volatile u64 ttbr0;
+> >  };
+> >  struct msm_ringbuffer {
+> >
+> 
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
