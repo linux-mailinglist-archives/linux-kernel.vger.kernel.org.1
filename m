@@ -2,130 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E976246192
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EE024619E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728665AbgHQI5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:57:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:50902 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728037AbgHQI52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:57:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1176631B;
-        Mon, 17 Aug 2020 01:57:28 -0700 (PDT)
-Received: from [192.168.178.2] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C4EB3F6CF;
-        Mon, 17 Aug 2020 01:57:26 -0700 (PDT)
-Subject: Re: [PATCH] sched/fair: reduce preemption with IDLE tasks
- runable(Internet mail)
-To:     =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>
-Cc:     Jiang Biao <benbjiang@gmail.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200801023248.90104-1-benbjiang@gmail.com>
- <5ed0fd46-3a3d-3c1a-5d75-03a74864e640@arm.com>
- <592F24A7-BF43-457D-AC40-DC5E35279730@tencent.com>
- <8bef1f94-f9bf-08a5-2ff3-3485d7796a96@arm.com>
- <8629CB9F-AFC8-43D6-BD14-B60A0B85ADB3@tencent.com>
- <5f870781-1648-b4ac-6026-557dfc347109@arm.com>
- <CCA1D942-3669-4216-92BD-768967B1ECE5@tencent.com>
- <4964e359-afc5-a256-4950-853a9485eeff@arm.com>
- <70236E62-AA36-48C1-9382-86353649253C@tencent.com>
- <3a1047fc-a86a-014a-b17a-eae71f669da1@arm.com>
- <643B0ECE-D758-4D08-8B1B-C70F34DD9943@tencent.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <55f04582-69d6-aeb4-85be-3e46a3b15beb@arm.com>
-Date:   Mon, 17 Aug 2020 10:57:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <643B0ECE-D758-4D08-8B1B-C70F34DD9943@tencent.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1728210AbgHQI7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726385AbgHQI7S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 04:59:18 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77174C061388
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:59:18 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id 88so14171542wrh.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:59:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=Jdr7HG0I+BWc3UfIli5Unc2Xw8mJlIZM3+wr92pTL+Q=;
+        b=ggP3x2KbPgJvf3ElMuqNvM2/4ujwMxF5id0JY5GtBhqdHn9xgkL32MKe3Jpb5e5Z33
+         M8qU6uDMkQONjSiYJ4J2DPo+OS2an3lViX7IMXunQG8h3RdDDeacBn31ZfydREdry7ho
+         uPd9dkxOPFT+DWttd4BxWXEJRyG9Ph6y6JQ5pg+FLT0B/pv49RVAXZh53LnJIw8oH1PW
+         rN31FCTa/tm0Iz9kCPKYRL1y02FgGAU/yYpA3TbV2RjYeoEVIBoHQ0ZGeQEXbWShm6rq
+         XEh5KDhtvId38eD6LoILxn8+bPJTHeSaIrkn/XIvL5/la9qo8+Ld4cTyqPcES0QncyPR
+         Kbng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Jdr7HG0I+BWc3UfIli5Unc2Xw8mJlIZM3+wr92pTL+Q=;
+        b=iZbTRE1D+UzU7xp786yhQJdeG0JUjnIgksc4EuLqcffEaETADKG25SO6bWVFUs1LzU
+         WyRFlyJq41Pm6a+NNAI6n7IZvQZVt8Ctvvesmz7Akxk14Tkm1QAZ4+pSS4iRxBOwzCIJ
+         Bjyty5ecG1+YTdXa4wGB4G9apd7Dx1XLrTveGu7SQL0raV55EoAjkDWDWK76UCMcFjHO
+         vUS4NKe0/3EmZn726H7UqT4uagzuWHORTdD7ZxWxJu6XHfv+5CDi7Pd7hMJdNI7nzkwW
+         MWSEY9Z67NOr4c5EXtwQiULpXzn9g3LypCbIhwnVn0XNyiJsPjd7J3zH55a50vAMhjsu
+         9DtA==
+X-Gm-Message-State: AOAM532Az58i4YGsYf+fxvSEMAJE81JKZQp8rzBTs5WECT0VTfgAI62x
+        ErmL8wPNizysMyyCchaDizK1+A==
+X-Google-Smtp-Source: ABdhPJzVkyM8/q4NPkgLATpzzXOY7f2bMYtgtvyz2/FwWFcC+myOFqG7+SqccStg6rIjtSK9jIG2Yg==
+X-Received: by 2002:adf:c981:: with SMTP id f1mr14181945wrh.14.1597654757224;
+        Mon, 17 Aug 2020 01:59:17 -0700 (PDT)
+Received: from localhost.localdomain ([195.24.90.54])
+        by smtp.gmail.com with ESMTPSA id z127sm29439883wme.44.2020.08.17.01.59.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 01:59:16 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH v2] v4l2-ctrl: Add VP9 codec levels
+Date:   Mon, 17 Aug 2020 11:58:52 +0300
+Message-Id: <20200817085852.20415-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/08/2020 01:55, benbjiang(蒋彪) wrote:
-> Hi,
-> 
->> On Aug 13, 2020, at 2:39 AM, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->>
->> On 12/08/2020 05:19, benbjiang(蒋彪) wrote:
->>> Hi,
->>>
->>>> On Aug 11, 2020, at 11:54 PM, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->>>>
->>>> On 11/08/2020 02:41, benbjiang(蒋彪) wrote:
->>>>> Hi,
->>>>>
->>>>>> On Aug 10, 2020, at 9:24 PM, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->>>>>>
->>>>>> On 06/08/2020 17:52, benbjiang(蒋彪) wrote:
->>>>>>> Hi, 
->>>>>>>
->>>>>>>> On Aug 6, 2020, at 9:29 PM, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->>>>>>>>
->>>>>>>> On 03/08/2020 13:26, benbjiang(蒋彪) wrote:
->>>>>>>>>
->>>>>>>>>
->>>>>>>>>> On Aug 3, 2020, at 4:16 PM, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->>>>>>>>>>
->>>>>>>>>> On 01/08/2020 04:32, Jiang Biao wrote:
->>>>>>>>>>> From: Jiang Biao <benbjiang@tencent.com>
+Add menu control for VP9 codec levels. A total of 14 levels are
+defined for Profile 0 (8bit) and Profile 2 (10bit). Each level
+is a set of constrained bitstreams coded with targeted resolutions,
+frame rates, and bitrates.
 
-[...]
+The definitions have been taken from webm project [1].
 
->>> ** 2normal+1idle: idle preempt normal every 600+ms **
->>
->> During the 3.2s the 2 SCHED_OTHER tasks run, the SCHED_IDLE task is
->> switched in only once, after ~2.5s.
-> Use your config with loop increased from 200 to 2000, to observe longer,
-> 
->            <...>-37620 [002] d... 47950.446191: sched_switch: prev_comm=task_other-1 prev_pid=37620 prev_prio=120 prev_state=S ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
->            <...>-37619 [002] d... 47955.687709: sched_switch: prev_comm=task_other-0 prev_pid=37619 prev_prio=120 prev_state=R ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
-> // The first preemption interval is 5.2s.
->            <...>-37620 [002] d... 47956.375716: sched_switch: prev_comm=task_other-1 prev_pid=37620 prev_prio=120 prev_state=R ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
->            <...>-37619 [002] d... 47957.060722: sched_switch: prev_comm=task_other-0 prev_pid=37619 prev_prio=120 prev_state=R ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
->            <...>-37620 [002] d... 47957.747728: sched_switch: prev_comm=task_other-1 prev_pid=37620 prev_prio=120 prev_state=R ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
->           <...>-37620 [002] d... 47958.423734: sched_switch: prev_comm=task_other-1 prev_pid=37620 prev_prio=120 prev_state=R ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
->            <...>-37620 [002] d... 47959.119740: sched_switch: prev_comm=task_other-1 prev_pid=37620 prev_prio=120 prev_state=R ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
-> // After the first preemption, the rest preemption intervals are all about 600ms+. :)
+[1] https://www.webmproject.org/vp9/levels/
 
-Are you sure about this?
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+---
+v2: Added links to webmproject in commit message and docs.
 
-The math is telling me for the:
+ .../media/v4l/ext-ctrls-codec.rst             | 43 +++++++++++++++++++
+ drivers/media/v4l2-core/v4l2-ctrls.c          | 21 +++++++++
+ include/uapi/linux/v4l2-controls.h            | 17 ++++++++
+ 3 files changed, 81 insertions(+)
 
-idle task:      (3 / (1024 + 1024 + 3))^(-1) * 4ms = 2735ms
+diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+index d0d506a444b1..23a45172404a 100644
+--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
++++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+@@ -3316,6 +3316,49 @@ enum v4l2_mpeg_video_vp9_profile -
+     * - ``V4L2_MPEG_VIDEO_VP9_PROFILE_3``
+       - Profile 3
+ 
++.. _v4l2-mpeg-video-vp9-level:
++
++``V4L2_CID_MPEG_VIDEO_VP9_LEVEL (enum)``
++
++enum v4l2_mpeg_video_vp9_level -
++    This control allows selecting the level for VP9 encoder.
++    This is also used to enumerate supported levels by VP9 encoder or decoder.
++    More information can be found at
++    `webmproject <https://www.webmproject.org/vp9/levels/>`__. Possible values are:
++
++.. flat-table::
++    :header-rows:  0
++    :stub-columns: 0
++
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_1_0``
++      - Level 1
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_1_1``
++      - Level 1.1
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_2_0``
++      - Level 2
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_2_1``
++      - Level 2.1
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_3_0``
++      - Level 3
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_3_1``
++      - Level 3.1
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_4_0``
++      - Level 4
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_4_1``
++      - Level 4.1
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_5_0``
++      - Level 5
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_5_1``
++      - Level 5.1
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_5_2``
++      - Level 5.2
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_6_0``
++      - Level 6
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_6_1``
++      - Level 6.1
++    * - ``V4L2_MPEG_VIDEO_VP9_LEVEL_6_2``
++      - Level 6.2
++
+ 
+ High Efficiency Video Coding (HEVC/H.265) Control Reference
+ ===========================================================
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+index 3f3fbcd60cc6..359dc737053d 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+@@ -474,6 +474,23 @@ const char * const *v4l2_ctrl_get_menu(u32 id)
+ 		"3",
+ 		NULL,
+ 	};
++	static const char * const vp9_level[] = {
++		"1",
++		"1.1",
++		"2",
++		"2.1",
++		"3",
++		"3.1",
++		"4",
++		"4.1",
++		"5",
++		"5.1",
++		"5.2",
++		"6",
++		"6.1",
++		"6.2",
++		NULL,
++	};
+ 
+ 	static const char * const flash_led_mode[] = {
+ 		"Off",
+@@ -685,6 +702,8 @@ const char * const *v4l2_ctrl_get_menu(u32 id)
+ 		return vp8_profile;
+ 	case V4L2_CID_MPEG_VIDEO_VP9_PROFILE:
+ 		return vp9_profile;
++	case V4L2_CID_MPEG_VIDEO_VP9_LEVEL:
++		return vp9_level;
+ 	case V4L2_CID_JPEG_CHROMA_SUBSAMPLING:
+ 		return jpeg_chroma_subsampling;
+ 	case V4L2_CID_DV_TX_MODE:
+@@ -938,6 +957,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+ 	case V4L2_CID_MPEG_VIDEO_VPX_P_FRAME_QP:		return "VPX P-Frame QP Value";
+ 	case V4L2_CID_MPEG_VIDEO_VP8_PROFILE:			return "VP8 Profile";
+ 	case V4L2_CID_MPEG_VIDEO_VP9_PROFILE:			return "VP9 Profile";
++	case V4L2_CID_MPEG_VIDEO_VP9_LEVEL:			return "VP9 Level";
+ 	case V4L2_CID_MPEG_VIDEO_VP8_FRAME_HEADER:		return "VP8 Frame Header";
+ 
+ 	/* HEVC controls */
+@@ -1294,6 +1314,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+ 	case V4L2_CID_MPEG_VIDEO_VPX_GOLDEN_FRAME_SEL:
+ 	case V4L2_CID_MPEG_VIDEO_VP8_PROFILE:
+ 	case V4L2_CID_MPEG_VIDEO_VP9_PROFILE:
++	case V4L2_CID_MPEG_VIDEO_VP9_LEVEL:
+ 	case V4L2_CID_DETECT_MD_MODE:
+ 	case V4L2_CID_MPEG_VIDEO_HEVC_PROFILE:
+ 	case V4L2_CID_MPEG_VIDEO_HEVC_LEVEL:
+diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+index 62271418c1be..1b0bc79c1bc3 100644
+--- a/include/uapi/linux/v4l2-controls.h
++++ b/include/uapi/linux/v4l2-controls.h
+@@ -650,6 +650,23 @@ enum v4l2_mpeg_video_vp9_profile {
+ 	V4L2_MPEG_VIDEO_VP9_PROFILE_2				= 2,
+ 	V4L2_MPEG_VIDEO_VP9_PROFILE_3				= 3,
+ };
++#define V4L2_CID_MPEG_VIDEO_VP9_LEVEL			(V4L2_CID_MPEG_BASE+513)
++enum v4l2_mpeg_video_vp9_level {
++	V4L2_MPEG_VIDEO_VP9_LEVEL_1_0	= 0,
++	V4L2_MPEG_VIDEO_VP9_LEVEL_1_1	= 1,
++	V4L2_MPEG_VIDEO_VP9_LEVEL_2_0	= 2,
++	V4L2_MPEG_VIDEO_VP9_LEVEL_2_1	= 3,
++	V4L2_MPEG_VIDEO_VP9_LEVEL_3_0	= 4,
++	V4L2_MPEG_VIDEO_VP9_LEVEL_3_1	= 5,
++	V4L2_MPEG_VIDEO_VP9_LEVEL_4_0	= 6,
++	V4L2_MPEG_VIDEO_VP9_LEVEL_4_1	= 7,
++	V4L2_MPEG_VIDEO_VP9_LEVEL_5_0	= 8,
++	V4L2_MPEG_VIDEO_VP9_LEVEL_5_1	= 9,
++	V4L2_MPEG_VIDEO_VP9_LEVEL_5_2	= 10,
++	V4L2_MPEG_VIDEO_VP9_LEVEL_6_0	= 11,
++	V4L2_MPEG_VIDEO_VP9_LEVEL_6_1	= 12,
++	V4L2_MPEG_VIDEO_VP9_LEVEL_6_2	= 13,
++};
+ 
+ /* CIDs for HEVC encoding. */
+ 
+-- 
+2.17.1
 
-normal task: (1024 / (1024 + 1024 + 3))^(-1) * 4ms =    8ms
-
-(4ms - 250 Hz)
-
->>> ** 3normal+idle: idle preempt normal every 1000+ms **
->>
->> Ah, this was meant to be 3 SCHED_OTHER tasks only! To see the difference
->> in behavior.
-> With 3 SCHED_OHTER tasks only, the SCHED_OHTER task is switched in
-> Every 27ms.
-
-normal task: (1024 / (1024 + 1024 + 1024))^(-1) * 4ms = 12ms
-
->>> ** 2normal(nice 19)+1idle(nice 0): idle preempt normal every 30+ms **
->>
->> During the 3.2s the 2 SCHED_OTHER tasks run, the SCHED_IDLE task is
->> switched in every ~45ms.
-> That’s as what I expected. :)
-
-idle task:    (3 / (15 + 15 + 3))^(-1) * 4ms = 44ms
-
-normal task: (15 / (15 + 15 + 3))^(-1) * 4ms =  9ms
