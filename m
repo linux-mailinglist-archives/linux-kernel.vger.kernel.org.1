@@ -2,76 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B51245AD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 04:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB423245B06
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 05:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbgHQCy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 22:54:27 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37503 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726872AbgHQCyZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 22:54:25 -0400
-Received: from mail-lf1-f70.google.com ([209.85.167.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1k7VHz-0008Qv-Tk
-        for linux-kernel@vger.kernel.org; Mon, 17 Aug 2020 02:54:23 +0000
-Received: by mail-lf1-f70.google.com with SMTP id u26so3194448lfk.7
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 19:54:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q2jjPmQel1pxO3MR/VLtINS4dkeaCDgPDRMj2nur9GY=;
-        b=Y0dzPgWX3MTeTkdARPbBmikQ6t8CpIx/WY8aXxR8VmLBtn0miVLysIkvVd2wqYKOKo
-         euKCc+w4VPim30U4Rz9vzS61NA1RquCFpoMdVVEMjxIdvNEsY/IHladtNpW8feJNrE8y
-         TffRTf/SKNmKzb/zJoBRtD1TtNIcUa77S4kn1rLaugtn4+gMnzZUXoOdLqUu5/IZ76bJ
-         lgR/O8AB+nGcWlLnFxZENG3SkLCT8KF7rCAk4Anvd4n3EJpQbE2w6aJkBKNxJvAMy0rN
-         coAMQW8BWR7sk0/TTSFSvDPNcpbAqPpDsnIY2WpCNEOaf1tUu/01N7Gmhd9penDIXyo6
-         Hhfw==
-X-Gm-Message-State: AOAM532i+WMBqoXNxXCjgN8UaTuJ0NLhj3o94gngoAUpEOHKdlaA7Qix
-        z/erqgdkRDycTHuGytFCuIfzIOkfUYYQUnGO2xq+4lWdHaxKTr/EoyQG8gcJsCIYD7sDVaVeQOH
-        3mS+EaN6t5JUUOshcKzVcLw1Szo1yjTTPtn/Nql/rwsSJ2Ho9MUSwHuVU
-X-Received: by 2002:a2e:5852:: with SMTP id x18mr5999009ljd.132.1597632863219;
-        Sun, 16 Aug 2020 19:54:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyKXtlo/YWR4lvo0OddtBB/rs+kUFiIctf6mWJJC51t+bciEX3/ht7hX9V6E1ApK6z9Nw/nUfoKWf/ZsXlQ39Q=
-X-Received: by 2002:a2e:5852:: with SMTP id x18mr5999003ljd.132.1597632863006;
- Sun, 16 Aug 2020 19:54:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200813044422.46713-1-po-hsu.lin@canonical.com> <20200814.164354.1568500831741804705.davem@davemloft.net>
-In-Reply-To: <20200814.164354.1568500831741804705.davem@davemloft.net>
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date:   Mon, 17 Aug 2020 10:54:12 +0800
-Message-ID: <CAMy_GT8bnVCDEgDfDEbVexpV6vgmCBRPe+v6WVxnOYdCXft=nQ@mail.gmail.com>
-Subject: Re: [PATCH] selftests: rtnetlink: load fou module for kci_test_encap_fou()
-To:     David Miller <davem@davemloft.net>
-Cc:     kuba@kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1727005AbgHQDWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 23:22:21 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:48844 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726420AbgHQDWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 Aug 2020 23:22:21 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-03 (Coremail) with SMTP id rQCowACHzEjR8Dlfw6_aAg--.62973S2;
+        Mon, 17 Aug 2020 10:52:01 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     jaharkes@cs.cmu.edu, coda@cs.cmu.edu, codalist@coda.cs.cmu.edu
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] upcall: Remove unneeded variable insize
+Date:   Mon, 17 Aug 2020 02:51:45 +0000
+Message-Id: <20200817025145.10009-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowACHzEjR8Dlfw6_aAg--.62973S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYw7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87
+        Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
+        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr1j6F4UJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUk5rcUUUUU=
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAELA18J9krv4wAAsn
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 7:43 AM David Miller <davem@davemloft.net> wrote:
->
-> From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-> Date: Thu, 13 Aug 2020 12:44:22 +0800
->
-> > diff --git a/tools/testing/selftests/net/config b/tools/testing/selftests/net/config
-> > index 3b42c06b..96d2763 100644
-> > --- a/tools/testing/selftests/net/config
-> > +++ b/tools/testing/selftests/net/config
-> > @@ -31,3 +31,4 @@ CONFIG_NET_SCH_ETF=m
-> >  CONFIG_NET_SCH_NETEM=y
-> >  CONFIG_TEST_BLACKHOLE_DEV=m
-> >  CONFIG_KALLSYMS=y
-> > +CONFIG_NET_FOU
->
-> You need to assign it a value, not just add it to the file by itself.
-Oops!
-Patch re-submitted.
-Thanks for catching this.
+Remove unneeded variable insize in venus_pioctl().
+
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ fs/coda/upcall.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/fs/coda/upcall.c b/fs/coda/upcall.c
+index eb3b1898da46..903bd7a4ee16 100644
+--- a/fs/coda/upcall.c
++++ b/fs/coda/upcall.c
+@@ -477,10 +477,9 @@ int venus_pioctl(struct super_block *sb, struct CodaFid *fid,
+ {
+         union inputArgs *inp;
+         union outputArgs *outp;  
+-	int insize, outsize, error;
++	int outsize, error;
+ 	int iocsize;
+ 
+-	insize = VC_MAXMSGSIZE;
+ 	UPARG(CODA_IOCTL);
+ 
+         /* build packet for Venus */
+-- 
+2.17.1
+
