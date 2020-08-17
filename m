@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3262472E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A132472E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403845AbgHQSsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:48:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42484 "EHLO mail.kernel.org"
+        id S2391670AbgHQSso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:48:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387725AbgHQPyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:54:46 -0400
+        id S2387730AbgHQPy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:54:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C751E2072E;
-        Mon, 17 Aug 2020 15:54:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60D6720885;
+        Mon, 17 Aug 2020 15:54:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679686;
-        bh=qdbaxaqAipz0TJG72rVuGZ2oH2GletrRjHby+KTDcls=;
+        s=default; t=1597679698;
+        bh=IzTK1brHvbzYGCLGKWtVUX/++/DgFMolRIjMEhdKywU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T2sFlAzpUXd3XpM4M1xi/NH8x/hbR/jBLbCcHtZJRIOJfvzOKQTqAI1VY0TZzji6S
-         GIa3nmkNkqHTOtnubs/znO/gj+OaJ9wf2QCGyMVgfqG2b6NqKPpA0SOJ9l1FQlms/+
-         eNx4WdT5ftdpzOr1A980wbLcb9La0WkpCc/TsLwk=
+        b=KXfj7U+LtA9Ng+vnWK9p5WS83iZPJgijvicEYfZzG+H+8bia6aAwtkDN3Ys7JF9+Y
+         nog8F27w6F5+zRbZO08WLkPtkDXPwrKFhNzLMN1efyomahjGX0p1mTNT+LRVlVX4DU
+         PnnnWWGRnC6x5Af1t+L7RClj6oN4ooipkPBDO8uA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Florinel Iordache <florinel.iordache@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 300/393] fsl/fman: use 32-bit unsigned integer
-Date:   Mon, 17 Aug 2020 17:15:50 +0200
-Message-Id: <20200817143834.168239056@linuxfoundation.org>
+Subject: [PATCH 5.7 304/393] fsl/fman: fix eth hash table allocation
+Date:   Mon, 17 Aug 2020 17:15:54 +0200
+Message-Id: <20200817143834.360940257@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -47,37 +47,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Florinel Iordache <florinel.iordache@nxp.com>
 
-[ Upstream commit 99f47abd9f7bf6e365820d355dc98f6955a562df ]
+[ Upstream commit 3207f715c34317d08e798e11a10ce816feb53c0f ]
 
-Potentially overflowing expression (ts_freq << 16 and intgr << 16)
-declared as type u32 (32-bit unsigned) is evaluated using 32-bit
-arithmetic and then used in a context that expects an expression of
-type u64 (64-bit unsigned) which ultimately is used as 16-bit
-unsigned by typecasting to u16. Fixed by using an unsigned 32-bit
-integer since the value is truncated anyway in the end.
+Fix memory allocation for ethernet address hash table.
+The code was wrongly allocating an array for eth hash table which
+is incorrect because this is the main structure for eth hash table
+(struct eth_hash_t) that contains inside a number of elements.
 
-Fixes: 414fd46e7762 ("fsl/fman: Add FMan support")
+Fixes: 57ba4c9b56d8 ("fsl/fman: Add FMan MAC support")
 Signed-off-by: Florinel Iordache <florinel.iordache@nxp.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/fman/fman.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/freescale/fman/fman_mac.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/fman/fman.c b/drivers/net/ethernet/freescale/fman/fman.c
-index f151d6e111dd9..ef67e8599b393 100644
---- a/drivers/net/ethernet/freescale/fman/fman.c
-+++ b/drivers/net/ethernet/freescale/fman/fman.c
-@@ -1398,8 +1398,7 @@ static void enable_time_stamp(struct fman *fman)
- {
- 	struct fman_fpm_regs __iomem *fpm_rg = fman->fpm_regs;
- 	u16 fm_clk_freq = fman->state->fm_clk_freq;
--	u32 tmp, intgr, ts_freq;
--	u64 frac;
-+	u32 tmp, intgr, ts_freq, frac;
+diff --git a/drivers/net/ethernet/freescale/fman/fman_mac.h b/drivers/net/ethernet/freescale/fman/fman_mac.h
+index dd6d0526f6c1f..19f327efdaff3 100644
+--- a/drivers/net/ethernet/freescale/fman/fman_mac.h
++++ b/drivers/net/ethernet/freescale/fman/fman_mac.h
+@@ -252,7 +252,7 @@ static inline struct eth_hash_t *alloc_hash_table(u16 size)
+ 	struct eth_hash_t *hash;
  
- 	ts_freq = (u32)(1 << fman->state->count1_micro_bit);
- 	/* configure timestamp so that bit 8 will count 1 microsecond
+ 	/* Allocate address hash table */
+-	hash = kmalloc_array(size, sizeof(struct eth_hash_t *), GFP_KERNEL);
++	hash = kmalloc(sizeof(*hash), GFP_KERNEL);
+ 	if (!hash)
+ 		return NULL;
+ 
 -- 
 2.25.1
 
