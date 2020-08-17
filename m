@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A49246A45
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07912246A47
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730349AbgHQPdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:33:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48200 "EHLO mail.kernel.org"
+        id S1730137AbgHQPdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:33:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730096AbgHQP3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:29:31 -0400
+        id S1729778AbgHQP3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:29:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E14523110;
-        Mon, 17 Aug 2020 15:29:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8548D23C32;
+        Mon, 17 Aug 2020 15:29:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678171;
-        bh=cbANANyU/YMVkf+WiiSd6M9TsPsYv2l6Y4+7w6+2p+Y=;
+        s=default; t=1597678177;
+        bh=byHwtIwlZgL0WdEMuf+rCeZTZK2eJE6pssQD0B2LeE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HgxCLR/iRBPiinGKgXqv0PFC28BthKEfwzZRCqMU1w3RhMj8DA4MMt1mFyfcg002w
-         X+nxcw8sbo+UnoOkdeD7ZubmHcujGQEoCcN1YBs/b8UVFKOmli6XpWERFwhgeWbZ74
-         UfhaeYJAEZsF75FMmmPDF3StW7x9RX96LAmnbNVU=
+        b=o3I6CmBDJ3l4L4NjNHEEWxCOvCBldf9PcktTOmNzoR7RxE7vKTtsTcR8xawnXgsnN
+         VpBSf9zrdkhPo1Zfvg6sbacezUKTbskDMGj8KannDjWWE8eW8RBn0zkJGdEy7gGFU5
+         E2fuxJ8CrqykRD74n3XWb5dIIbvq3CODuvQ0kjjk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
         Mimi Zohar <zohar@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 242/464] ima: Fail rule parsing when buffer hook functions have an invalid action
-Date:   Mon, 17 Aug 2020 17:13:15 +0200
-Message-Id: <20200817143845.388266628@linuxfoundation.org>
+Subject: [PATCH 5.8 244/464] ima: Fail rule parsing when the KEY_CHECK hook is combined with an invalid cond
+Date:   Mon, 17 Aug 2020 17:13:17 +0200
+Message-Id: <20200817143845.485575843@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -46,92 +47,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-[ Upstream commit 712183437ebebc89cd086ef96cf9a521fd97fd09 ]
+[ Upstream commit eb624fe214a2e156ddafd9868377cf91499f789d ]
 
-Buffer based hook functions, such as KEXEC_CMDLINE and KEY_CHECK, can
-only measure. The process_buffer_measurement() function quietly ignores
-all actions except measure so make this behavior clear at the time of
-policy load.
+The KEY_CHECK function only supports the uid, pcr, and keyrings
+conditionals. Make this clear at policy load so that IMA policy authors
+don't assume that other conditionals are supported.
 
-The parsing of the keyrings conditional had a check to ensure that it
-was only specified with measure actions but the check should be on the
-hook function and not the keyrings conditional since
-"appraise func=KEY_CHECK" is not a valid rule.
-
-Fixes: b0935123a183 ("IMA: Define a new hook to measure the kexec boot command line arguments")
 Fixes: 5808611cccb2 ("IMA: Add KEY_CHECK func to measure keys")
 Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/integrity/ima/ima_policy.c | 40 +++++++++++++++++++++++++++--
- 1 file changed, 38 insertions(+), 2 deletions(-)
+ security/integrity/ima/ima_policy.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index 18271920d315d..a3d72342408ad 100644
+index a77e0b34e72f7..3e3e568c81309 100644
 --- a/security/integrity/ima/ima_policy.c
 +++ b/security/integrity/ima/ima_policy.c
-@@ -973,6 +973,43 @@ static void check_template_modsig(const struct ima_template_desc *template)
- #undef MSG
- }
+@@ -1023,6 +1023,13 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+ 		if (entry->action & ~(MEASURE | DONT_MEASURE))
+ 			return false;
  
-+static bool ima_validate_rule(struct ima_rule_entry *entry)
-+{
-+	/* Ensure that the action is set */
-+	if (entry->action == UNKNOWN)
-+		return false;
-+
-+	/*
-+	 * Ensure that the hook function is compatible with the other
-+	 * components of the rule
-+	 */
-+	switch (entry->func) {
-+	case NONE:
-+	case FILE_CHECK:
-+	case MMAP_CHECK:
-+	case BPRM_CHECK:
-+	case CREDS_CHECK:
-+	case POST_SETATTR:
-+	case MODULE_CHECK:
-+	case FIRMWARE_CHECK:
-+	case KEXEC_KERNEL_CHECK:
-+	case KEXEC_INITRAMFS_CHECK:
-+	case POLICY_CHECK:
-+		/* Validation of these hook functions is in ima_parse_rule() */
-+		break;
-+	case KEXEC_CMDLINE:
-+	case KEY_CHECK:
-+		if (entry->action & ~(MEASURE | DONT_MEASURE))
++		if (entry->flags & ~(IMA_FUNC | IMA_UID | IMA_PCR |
++				     IMA_KEYRINGS))
 +			return false;
 +
-+		break;
-+	default:
-+		return false;
-+	}
++		if (ima_rule_contains_lsm_cond(entry))
++			return false;
 +
-+	return true;
-+}
-+
- static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
- {
- 	struct audit_buffer *ab;
-@@ -1150,7 +1187,6 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
- 			keyrings_len = strlen(args[0].from) + 1;
- 
- 			if ((entry->keyrings) ||
--			    (entry->action != MEASURE) ||
- 			    (entry->func != KEY_CHECK) ||
- 			    (keyrings_len < 2)) {
- 				result = -EINVAL;
-@@ -1356,7 +1392,7 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
- 			break;
- 		}
- 	}
--	if (!result && (entry->action == UNKNOWN))
-+	if (!result && !ima_validate_rule(entry))
- 		result = -EINVAL;
- 	else if (entry->action == APPRAISE)
- 		temp_ima_appraise |= ima_appraise_flag(entry->func);
+ 		break;
+ 	default:
+ 		return false;
 -- 
 2.25.1
 
