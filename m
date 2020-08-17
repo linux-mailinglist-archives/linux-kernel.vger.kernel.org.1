@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF97246CFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C88246D81
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388869AbgHQQjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:39:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45196 "EHLO mail.kernel.org"
+        id S2388375AbgHQRAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:00:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730791AbgHQP5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:57:42 -0400
+        id S1731056AbgHQQG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:06:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EF9B21744;
-        Mon, 17 Aug 2020 15:57:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E609922B3F;
+        Mon, 17 Aug 2020 16:06:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679862;
-        bh=fj7OTwg1Q9qwuTeOWnL//T7iD24j2iceMgT8eXMLeE8=;
+        s=default; t=1597680409;
+        bh=3bA66jFSyUuGfQ13Zx/hap/5xok8FbaDikQg8GCSOgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=harGuBlWLqTd9pcxARxsNcWeF81xBqpPBG7eCF2pL1SuOiObdHHjT42VGkTjYSXeK
-         hv+rFp7TiVrcpd/KkUdAevTIHtzaAktKpyH8HJf1XAcPPHmaBBFh4gPshKXq2W+t5V
-         qKyCaVuux8N6h3f2/1LhsdOuS9v3q2kAWCyS+EJQ=
+        b=xCbhXGTHJ7zuPRJieriahyqU8rgI9JNozhMXUUw7y6gWtWH1pc7w6PQbrQI6FJv74
+         Wt5fUpWWVVisrGoACa/hAmzKUolaE5e8pmarmL0cNNboefB7GiEkr4FCSaZdzc1pKK
+         nVai7BKc92Uo0T/08w2jBPfqVBhWFDG2m6JAK76I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.7 319/393] net: Fix potential memory leak in proto_register()
-Date:   Mon, 17 Aug 2020 17:16:09 +0200
-Message-Id: <20200817143835.078988445@linuxfoundation.org>
+        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
+        Mauri Sandberg <sandberg@mailfence.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 176/270] net: dsa: rtl8366: Fix VLAN semantics
+Date:   Mon, 17 Aug 2020 17:16:17 +0200
+Message-Id: <20200817143804.581469469@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
-References: <20200817143819.579311991@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,82 +47,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit 0f5907af39137f8183ed536aaa00f322d7365130 ]
+[ Upstream commit 15ab7906cc9290afb006df1bb1074907fbcc7061 ]
 
-If we failed to assign proto idx, we free the twsk_slab_name but forget to
-free the twsk_slab. Add a helper function tw_prot_cleanup() to free these
-together and also use this helper function in proto_unregister().
+The RTL8366 would not handle adding new members (ports) to
+a VLAN: the code assumed that ->port_vlan_add() was only
+called once for a single port. When intializing the
+switch with .configure_vlan_while_not_filtering set to
+true, the function is called numerous times for adding
+all ports to VLAN1, which was something the code could
+not handle.
 
-Fixes: b45ce32135d1 ("sock: fix potential memory leak in proto_register()")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Alter rtl8366_set_vlan() to just |= new members and
+untagged flags to 4k and MC VLAN table entries alike.
+This makes it possible to just add new ports to a
+VLAN.
+
+Put in some helpful debug code that can be used to find
+any further bugs here.
+
+Cc: DENG Qingfang <dqfext@gmail.com>
+Cc: Mauri Sandberg <sandberg@mailfence.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: d8652956cf37 ("net: dsa: realtek-smi: Add Realtek SMI driver")
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/sock.c |   25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+ drivers/net/dsa/rtl8366.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -3354,6 +3354,16 @@ static void sock_inuse_add(struct net *n
- }
- #endif
+diff --git a/drivers/net/dsa/rtl8366.c b/drivers/net/dsa/rtl8366.c
+index ac88caca5ad4d..a75dcd6698b8a 100644
+--- a/drivers/net/dsa/rtl8366.c
++++ b/drivers/net/dsa/rtl8366.c
+@@ -43,18 +43,26 @@ int rtl8366_set_vlan(struct realtek_smi *smi, int vid, u32 member,
+ 	int ret;
+ 	int i;
  
-+static void tw_prot_cleanup(struct timewait_sock_ops *twsk_prot)
-+{
-+	if (!twsk_prot)
-+		return;
-+	kfree(twsk_prot->twsk_slab_name);
-+	twsk_prot->twsk_slab_name = NULL;
-+	kmem_cache_destroy(twsk_prot->twsk_slab);
-+	twsk_prot->twsk_slab = NULL;
-+}
++	dev_dbg(smi->dev,
++		"setting VLAN%d 4k members: 0x%02x, untagged: 0x%02x\n",
++		vid, member, untag);
 +
- static void req_prot_cleanup(struct request_sock_ops *rsk_prot)
- {
- 	if (!rsk_prot)
-@@ -3424,7 +3434,7 @@ int proto_register(struct proto *prot, i
- 						  prot->slab_flags,
- 						  NULL);
- 			if (prot->twsk_prot->twsk_slab == NULL)
--				goto out_free_timewait_sock_slab_name;
-+				goto out_free_timewait_sock_slab;
+ 	/* Update the 4K table */
+ 	ret = smi->ops->get_vlan_4k(smi, vid, &vlan4k);
+ 	if (ret)
+ 		return ret;
+ 
+-	vlan4k.member = member;
+-	vlan4k.untag = untag;
++	vlan4k.member |= member;
++	vlan4k.untag |= untag;
+ 	vlan4k.fid = fid;
+ 	ret = smi->ops->set_vlan_4k(smi, &vlan4k);
+ 	if (ret)
+ 		return ret;
+ 
++	dev_dbg(smi->dev,
++		"resulting VLAN%d 4k members: 0x%02x, untagged: 0x%02x\n",
++		vid, vlan4k.member, vlan4k.untag);
++
+ 	/* Try to find an existing MC entry for this VID */
+ 	for (i = 0; i < smi->num_vlan_mc; i++) {
+ 		struct rtl8366_vlan_mc vlanmc;
+@@ -65,11 +73,16 @@ int rtl8366_set_vlan(struct realtek_smi *smi, int vid, u32 member,
+ 
+ 		if (vid == vlanmc.vid) {
+ 			/* update the MC entry */
+-			vlanmc.member = member;
+-			vlanmc.untag = untag;
++			vlanmc.member |= member;
++			vlanmc.untag |= untag;
+ 			vlanmc.fid = fid;
+ 
+ 			ret = smi->ops->set_vlan_mc(smi, i, &vlanmc);
++
++			dev_dbg(smi->dev,
++				"resulting VLAN%d MC members: 0x%02x, untagged: 0x%02x\n",
++				vid, vlanmc.member, vlanmc.untag);
++
+ 			break;
  		}
  	}
- 
-@@ -3432,15 +3442,15 @@ int proto_register(struct proto *prot, i
- 	ret = assign_proto_idx(prot);
- 	if (ret) {
- 		mutex_unlock(&proto_list_mutex);
--		goto out_free_timewait_sock_slab_name;
-+		goto out_free_timewait_sock_slab;
- 	}
- 	list_add(&prot->node, &proto_list);
- 	mutex_unlock(&proto_list_mutex);
- 	return ret;
- 
--out_free_timewait_sock_slab_name:
-+out_free_timewait_sock_slab:
- 	if (alloc_slab && prot->twsk_prot)
--		kfree(prot->twsk_prot->twsk_slab_name);
-+		tw_prot_cleanup(prot->twsk_prot);
- out_free_request_sock_slab:
- 	if (alloc_slab) {
- 		req_prot_cleanup(prot->rsk_prot);
-@@ -3464,12 +3474,7 @@ void proto_unregister(struct proto *prot
- 	prot->slab = NULL;
- 
- 	req_prot_cleanup(prot->rsk_prot);
--
--	if (prot->twsk_prot != NULL && prot->twsk_prot->twsk_slab != NULL) {
--		kmem_cache_destroy(prot->twsk_prot->twsk_slab);
--		kfree(prot->twsk_prot->twsk_slab_name);
--		prot->twsk_prot->twsk_slab = NULL;
--	}
-+	tw_prot_cleanup(prot->twsk_prot);
- }
- EXPORT_SYMBOL(proto_unregister);
- 
+-- 
+2.25.1
+
 
 
