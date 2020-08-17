@@ -2,44 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A51C246C3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C89246C45
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388673AbgHQQMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:12:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58636 "EHLO mail.kernel.org"
+        id S2388687AbgHQQMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:12:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387746AbgHQPqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:46:48 -0400
+        id S2387751AbgHQPqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:46:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E7CC20885;
-        Mon, 17 Aug 2020 15:46:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B94422065D;
+        Mon, 17 Aug 2020 15:46:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679207;
-        bh=vgdOslLjnw2DeqL4RFV6A0J6tXKrRXKMdLe0JxpjvX8=;
+        s=default; t=1597679210;
+        bh=hvnd6rY9b+ciKQ1KWJkWmZnmieEZ4BnpOAOucN+yc8o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LWJt3exado68vTKEIfNbpobFts33+PNIvuEr07Yvp6SPOtLOxwbxSV5wZqlCuAutj
-         fCBX2lQjFu4A15W1QpwVOejzfuOX5v5v+moWOAmLU4JnFkYz360Eg2f5PfBRNTuMMh
-         0i+myx/B1Vk9EbwawiXggkF7MXgKlaaGLhQKC5zg=
+        b=xvILtrOjRnlYPG0hTRvQGgaG60J/fq6Utk3TShKtYsydAl/C7i+sgy78o6jZom7Ue
+         xiPKktQZ/EUZkqZgu57gZfLT+pwdGUrxDOvs0jVXrwyd8fEeQX4+D+L1JajxYbisuV
+         em4Ws/g8xtrmWmXdvAvyHRQdGX8C1GD0OnmdFmo8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Eric Miao <eric.miao@marvell.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 133/393] video: pxafb: Fix the function used to balance a dma_alloc_coherent() call
-Date:   Mon, 17 Aug 2020 17:13:03 +0200
-Message-Id: <20200817143826.060733446@linuxfoundation.org>
+Subject: [PATCH 5.7 134/393] Bluetooth: hci_qca: Fix an error pointer dereference
+Date:   Mon, 17 Aug 2020 17:13:04 +0200
+Message-Id: <20200817143826.109775509@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -52,46 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 499a2c41b954518c372873202d5e7714e22010c4 ]
+[ Upstream commit 4c07a5d7aeb39f559b29aa58ec9a8a5ab4282cb0 ]
 
-'dma_alloc_coherent()' must be balanced by a call to 'dma_free_coherent()'
-not 'dma_free_wc()'.
-The correct dma_free_ function is already used in the error handling path
-of the probe function.
+When a function like devm_clk_get_optional() function returns both error
+pointers on error and NULL then the NULL return means that the optional
+feature is deliberately disabled.  It is a special sort of success and
+should not trigger an error message.  The surrounding code should be
+written to check for NULL and not crash.
 
-Fixes: 77e196752bdd ("[ARM] pxafb: allow video memory size to be configurable")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: Jani Nikula <jani.nikula@intel.com>
-cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc: Eric Miao <eric.miao@marvell.com>
-Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200429084505.108897-1-christophe.jaillet@wanadoo.fr
+On the other hand, if we encounter an error, then the probe from should
+clean up and return a failure.
+
+In this code, if devm_clk_get_optional() returns an error pointer then
+the kernel will crash inside the call to:
+
+	clk_set_rate(qcadev->susclk, SUSCLK_RATE_32KHZ);
+
+The error handling must be updated to prevent that.
+
+Fixes: 77131dfec6af ("Bluetooth: hci_qca: Replace devm_gpiod_get() with devm_gpiod_get_optional()")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/pxafb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/bluetooth/hci_qca.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/video/fbdev/pxafb.c b/drivers/video/fbdev/pxafb.c
-index 00b96a78676ef..6f972bed410a9 100644
---- a/drivers/video/fbdev/pxafb.c
-+++ b/drivers/video/fbdev/pxafb.c
-@@ -2417,8 +2417,8 @@ static int pxafb_remove(struct platform_device *dev)
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 14e4d2eaf8959..568f7ec20b000 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -1941,17 +1941,17 @@ static int qca_serdev_probe(struct serdev_device *serdev)
+ 		}
  
- 	free_pages_exact(fbi->video_mem, fbi->video_mem_size);
+ 		qcadev->susclk = devm_clk_get_optional(&serdev->dev, NULL);
+-		if (!qcadev->susclk) {
++		if (IS_ERR(qcadev->susclk)) {
+ 			dev_warn(&serdev->dev, "failed to acquire clk\n");
+-		} else {
+-			err = clk_set_rate(qcadev->susclk, SUSCLK_RATE_32KHZ);
+-			if (err)
+-				return err;
+-
+-			err = clk_prepare_enable(qcadev->susclk);
+-			if (err)
+-				return err;
++			return PTR_ERR(qcadev->susclk);
+ 		}
++		err = clk_set_rate(qcadev->susclk, SUSCLK_RATE_32KHZ);
++		if (err)
++			return err;
++
++		err = clk_prepare_enable(qcadev->susclk);
++		if (err)
++			return err;
  
--	dma_free_wc(&dev->dev, fbi->dma_buff_size, fbi->dma_buff,
--		    fbi->dma_buff_phys);
-+	dma_free_coherent(&dev->dev, fbi->dma_buff_size, fbi->dma_buff,
-+			  fbi->dma_buff_phys);
- 
- 	return 0;
- }
+ 		err = hci_uart_register_device(&qcadev->serdev_hu, &qca_proto);
+ 		if (err) {
 -- 
 2.25.1
 
