@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA78924656A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D1924656D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbgHQLbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 07:31:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:53632 "EHLO foss.arm.com"
+        id S1728443AbgHQLbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 07:31:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:53640 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728356AbgHQLam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 07:30:42 -0400
+        id S1726203AbgHQLaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 07:30:52 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A871212FC;
-        Mon, 17 Aug 2020 04:30:36 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2AF8D13D5;
+        Mon, 17 Aug 2020 04:30:38 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6A62A3F66B;
-        Mon, 17 Aug 2020 04:30:35 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DEE213F66B;
+        Mon, 17 Aug 2020 04:30:36 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
         dietmar.eggemann@arm.com, morten.rasmussen@arm.com,
         Quentin Perret <qperret@google.com>
-Subject: [PATCH v6 16/17] sched/topology: Mark SD_NUMA as SDF_NEEDS_GROUPS
-Date:   Mon, 17 Aug 2020 12:30:02 +0100
-Message-Id: <20200817113003.20802-17-valentin.schneider@arm.com>
+Subject: [PATCH v6 17/17] sched/topology: Expand use of SD_DEGENERATE_GROUPS_MASK to flags not needing groups
+Date:   Mon, 17 Aug 2020 12:30:03 +0100
+Message-Id: <20200817113003.20802-18-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200817113003.20802-1-valentin.schneider@arm.com>
 References: <20200817113003.20802-1-valentin.schneider@arm.com>
@@ -35,26 +35,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There would be no point in preserving a sched_domain with a single group
-just because it has this flag set. Add it to SD_DEGENERATE_GROUPS_MASK.
+All SD flags requiring 2+ sched_group to have any effect are now decorated
+with the SDF_NEEDS_GROUPS metaflag. This means we can now use the bitwise
+negation of SD_DEGENERATE_MASK in sd_degenerate() instead of explicitly
+using SD_WAKE_AFFINE (IOW the only flag without SDF_NEEDS_GROUPS).
+
+From now on, any flag without SDF_NEEDS_GROUPS will be correctly accounted
+as a flag not requiring 2+ sched_groups.
 
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- include/linux/sched/sd_flags.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/sched/topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_flags.h
-index 021b909d3941..71675afa55f0 100644
---- a/include/linux/sched/sd_flags.h
-+++ b/include/linux/sched/sd_flags.h
-@@ -151,5 +151,6 @@ SD_FLAG(SD_OVERLAP, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-  * Cross-node balancing
-  *
-  * SHARED_PARENT: Set for all NUMA levels above NODE.
-+ * NEEDS_GROUPS: No point in preserving domain if it has a single group.
-  */
--SD_FLAG(SD_NUMA, SDF_SHARED_PARENT)
-+SD_FLAG(SD_NUMA, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 8064f495641b..3bb145ef5abd 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -165,7 +165,7 @@ static int sd_degenerate(struct sched_domain *sd)
+ 		return 0;
+ 
+ 	/* Following flags don't use groups */
+-	if (sd->flags & (SD_WAKE_AFFINE))
++	if (sd->flags & ~SD_DEGENERATE_GROUPS_MASK)
+ 		return 0;
+ 
+ 	return 1;
 -- 
 2.27.0
 
