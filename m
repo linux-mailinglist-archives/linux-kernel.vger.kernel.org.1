@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9B12477E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 22:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453152477E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 22:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729681AbgHQUDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 16:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48372 "EHLO
+        id S1729843AbgHQUEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 16:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729534AbgHQUCr (ORCPT
+        with ESMTP id S1729304AbgHQUEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 16:02:47 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99311C06134A;
-        Mon, 17 Aug 2020 13:02:39 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id u126so18794573iod.12;
-        Mon, 17 Aug 2020 13:02:39 -0700 (PDT)
+        Mon, 17 Aug 2020 16:04:37 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B78FEC061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 13:04:36 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id p14so14279356wmg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 13:04:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WwUrycf48TYkmEUsmwdsPhuJLiR8sk6wFEPhan5oRwY=;
-        b=sn2+pfvHDOajFSskAm9Fxm/qqS/xvSKDRlv+Nr+am6Zd0sVSR6cX7LVWLoDov8ber3
-         ce5nnc1y1Sl5ZemoRcLc074zh71xINuWQLLNszSbXYlsgJgJ38RkM2hGgvFJwOGXYpsZ
-         o5dvorhKPsFoQl+XtP0CCdb6evXVON9IYxqcnIEktO6LXfErwy5ZNcqK++1SQWA3KNP4
-         VSD2WV68j34nl7stIi0clDmhgjh/GipeiGa3AVpZQWj3AwkW7TFube9OeZ221ELOQLtH
-         c2kjOVqgPbtpcwo4g1Aa/BQQgxzvrHsfrWeqUulbwUQaLcOuLUS7mSBNAAEhAqBCdkcv
-         hguQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=tAXPgym6FtqBq+nYKNWr3Je81ziv8aLTZG6/euLwZtw=;
+        b=lD+saaoAIHgBU7RNtXaTp9L/JEsVjNP4FXN5Pvcjq2x8zuVx2+jQJtXzC2uXKUdbsq
+         qcIqAdbFScLdkdQRA+iVFhyMdANTntX7Gjcz+naJGav/gfCcGnbaiGtKKC10yBuxOoSd
+         IsosM0HXin+2Un3HW/CZ9vGmdJ0Y3jhlqQ3ogW/uxyqlboRFubaV+MmmAF6h3hK+m9dd
+         +uvMzwHLGF4JDHJ6JmgpmNC4M4X0tOVCFYO7jxvqvv71CgAhpqqEdsh7/BBcmE853Lae
+         2Duqa2kQQMzU7TtEYUNwNRtsTsc7x7WWBET0PVbEA01Gwv9K7MK0HOuRiW5QdtlLdgrj
+         ZwOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WwUrycf48TYkmEUsmwdsPhuJLiR8sk6wFEPhan5oRwY=;
-        b=kkK1G22yzevA0EJg2pyjmGTRLpOfebJObOYRvOXlo1UJ5Dd+nQLWMOq0hfTM3GqDzT
-         oIEAjxQYq28A/5BC7qa+Vg95HREKO+SXETSyy9XTyIp1S3WQdp8sI/xl+ZV1YHUdAjFv
-         PQ3c3xFrw+YzsWg6yEXxrMVCCJ3/5j3DqR7mNQsbnCnEvAVCyqXCx9guoYV/63ZyXzIq
-         oOkyIykGfM/YFy2CYoo4oOLIYob3rP8r8Bj9Jsqoe9wKlbE5iFDJ5sRePDiHGDmtnW5R
-         ZRFUx6nVq/pcogNsQo+G2zxyE1x/SyPVTH/jHAbn0uo4/81V1fVufmTGavpPiKF3COan
-         NnYQ==
-X-Gm-Message-State: AOAM531BopSGU6L5Gg215yFjkNEEfdp9lmMYr+v47Dryf2jL7+8sZ1F/
-        NGHknxicYi5LJDusgY5Sf5ySBWRa70I7Hs2rB/o=
-X-Google-Smtp-Source: ABdhPJzj+6X2ku5vJmBvnez2/FVa+qVYD9yvkbDWWfWNDJmGlYW6tYwx9XRCr4Kkh/o15zvNhmsVrj/7A7T0TUym9xE=
-X-Received: by 2002:a6b:e002:: with SMTP id z2mr13402090iog.178.1597694558727;
- Mon, 17 Aug 2020 13:02:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=tAXPgym6FtqBq+nYKNWr3Je81ziv8aLTZG6/euLwZtw=;
+        b=kaCESUv2tu2jkcVrht6yqBr3MlHArkzZ6cZWUjxp1s85b5DL7weuE2m+kA0EX+57BE
+         6Jr1RJL98F/zw2Vt1yzlbHNAIMW+hnp/fnh0qeKDXcMhj7XaCA+42HRXJF5RhAzDeVpi
+         LMNHCuFylPA4rf0infSLwVAO6fwMNUy/Kt+7rpFFg8+gVdfUv5SN8Bfd/24m3bpEc62a
+         wDkw/ISNeU6je1Ag4DvWMla5UfZRJlYbY1XjbAPqogh5t09cwlw4kfGcQ6iqiPekPswh
+         0/dkSiaMKTNZ+h1VWzhiSLTugeEWtbuJiN3Hc+fuozUgU3J6m5Mm1u8fXxlDm07KLlEy
+         ez2w==
+X-Gm-Message-State: AOAM5332GooKd9/3qRvZ/RKDU6eL1IBdcG67SzKhwfR73SubmnP3Bn/8
+        kcRe7LXH8BFsBs4BlL4OC2eB5A==
+X-Google-Smtp-Source: ABdhPJx9jpCPFTLhiIHqL/NbBIE6T9LQfyDvbVE3f4JwbB5VFQtldiBaW4XWMqL+hgencFjPhE0YIQ==
+X-Received: by 2002:a1c:6707:: with SMTP id b7mr15440235wmc.97.1597694675470;
+        Mon, 17 Aug 2020 13:04:35 -0700 (PDT)
+Received: from dell ([95.149.164.62])
+        by smtp.gmail.com with ESMTPSA id m14sm32070420wrx.76.2020.08.17.13.04.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 13:04:34 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 21:04:32 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Reed <breed@users.sourceforge.net>,
+        Javier Achirica <achirica@users.sourceforge.net>,
+        Jean Tourrilhes <jt@hpl.hp.com>,
+        Fabrice Bellet <fabrice@bellet.info>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: [PATCH 12/30] net: wireless: cisco: airo: Fix a myriad of coding
+ style issues
+Message-ID: <20200817200432.GY4354@dell>
+References: <20200814113933.1903438-1-lee.jones@linaro.org>
+ <20200814113933.1903438-13-lee.jones@linaro.org>
+ <87r1s9l0mc.fsf@codeaurora.org>
+ <20200814163831.GN4354@dell>
+ <87a6ytmmhm.fsf@codeaurora.org>
+ <20200817112706.000000f2@intel.com>
 MIME-Version: 1.0
-References: <20200817133931.11785-1-aford173@gmail.com> <20200817215953.59607c11@aktux>
-In-Reply-To: <20200817215953.59607c11@aktux>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Mon, 17 Aug 2020 15:02:27 -0500
-Message-ID: <CAHCN7x+2trMJPmg1xA_j2EUfxqtZX0da-pyzvpiZE4GanVNf4Q@mail.gmail.com>
-Subject: Re: [PATCH V2] ARM: dts: omap3: Add cpu trips and cooling map for
- omap34/36 families
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Linux-OMAP <linux-omap@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200817112706.000000f2@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 2:59 PM Andreas Kemnade <andreas@kemnade.info> wrote:
->
-> On Mon, 17 Aug 2020 08:39:31 -0500
-> Adam Ford <aford173@gmail.com> wrote:
->
-> > The OMAP3530, OMAP3630, and DM3730 all show thresholds of 90C and 105C
-> > depending on commercial or industrial temperature ratings.
-> >
-> > This patch expands the thermal information to include the limits of 90
-> > and 105C for alert and critical.  It sets the coolings-cells for the
-> > 34xx and 36xx CPU's which both point to omap3-cpu-thermal.dtsi.
-> >
-> > For boards who never use industrial temperatures, these can be
-> > changed on their respective device trees with something like:
-> >
-> > &cpu_alert0 {
-> >       temperature = <85000>; /* millicelsius */
-> > };
-> >
-> > &cpu_crit {
-> >       temperature = <90000>; /* millicelsius */
-> > };
-> >
-> > OMAP3_THERMAL will need to be enabled.  It is off by default.
-> >
-> hmm, I think the patch for idling core when OMAP3_THERMAL is enabled
-> got stuck somewhere. It still seems not to work. Shouldn't that patch
-> be applied first?
+On Mon, 17 Aug 2020, Jesse Brandeburg wrote:
 
-I rebased the idle stuff, and now I get errors, so I haven't pushed it
-yet.  I put a note that OMAP3_THERMAL is off by default, but this
-patch would at least get the framing in there.  I know at least two of
-us that use 1GHZ processors which are not supposed to run at that
-speed above 90MHz, so the idea was to tolerate the higher current for
-now, and when the idle stuff works, we'll enable the OMAP3_THERMAL by
-default.
+> On Mon, 17 Aug 2020 16:27:01 +0300
+> Kalle Valo <kvalo@codeaurora.org> wrote:
+> 
+> > I was surprised to see that someone was using this driver in 2015, so
+> > I'm not sure anymore what to do. Of course we could still just remove
+> > it and later revert if someone steps up and claims the driver is still
+> > usable. Hmm. Does anyone any users of this driver?
+> 
+> What about moving the driver over into staging, which is generally the
+> way I understood to move a driver slowly out of the kernel?
 
-adam
->
-> Regards,
-> Andreas
+I always thought Staging was used for *incoming* drivers?
+
+Either way, Staging is on my hit list.  It's actually next after Net.
+
+Is there a Kconfig symbol that can be used to not include it in the
+standard builds?  I'm aware of BROKEN.  Is there anything more
+suitable for a deprecated driver (I don't see a DEPRECATED symbol).
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
