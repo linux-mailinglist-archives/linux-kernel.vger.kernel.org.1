@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6742D2474DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854B02474BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392184AbgHQTQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:16:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48004 "EHLO mail.kernel.org"
+        id S2392102AbgHQTOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:14:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730329AbgHQPj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:39:29 -0400
+        id S2387472AbgHQPkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:40:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5718322C9F;
-        Mon, 17 Aug 2020 15:39:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B62A423121;
+        Mon, 17 Aug 2020 15:39:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678768;
-        bh=WE+uSikW384/lDpstgKl9Ks5l2pEQaqvx23IxVZjKmA=;
+        s=default; t=1597678798;
+        bh=tUyQ7JpyxQCiTaMfaKNXuEnfPYLvnXB2tbmFxJwSzBg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XShu+UjBnRi0RDaT9cTnG6XLF3xsju8C5+pyfNIzwl30bqwdRiAdUKX3PKJldxZv+
-         afyiONMAArL1ldWp4fp45/yY1/YWdWH+qFK+Kw/GzbrRvAjDSxZk/gDAa7O90YImz7
-         tynZXBl/M0A7Pw0Rvs2QKgj9EQsbbR1TBCS7k2Wk=
+        b=PhQQrwaP/hfWguynCa25WNPv5Q+NSqTzz+m4Ka+g17mh5sbekCGVNQPEOsTHEBmtZ
+         1NVe7rlao1y5zf76OEp0eKCOi/UQNpVeEq1PgTXENILrd/aHQnwSQyFcxGbMCfizSI
+         Y/3nkVt1dKM7IicOpj/c7O1IQiAZUrUKryQd7xj0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Anglin <dave.anglin@bell.net>,
-        Helge Deller <deller@gmx.de>
-Subject: [PATCH 5.8 446/464] parisc: Implement __smp_store_release and __smp_load_acquire barriers
-Date:   Mon, 17 Aug 2020 17:16:39 +0200
-Message-Id: <20200817143855.143218311@linuxfoundation.org>
+        stable@vger.kernel.org, Elliot Berman <eberman@codeaurora.org>,
+        Jonathan McDowell <noodles@earth.li>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH 5.8 450/464] firmware: qcom_scm: Fix legacy convention SCM accessors
+Date:   Mon, 17 Aug 2020 17:16:43 +0200
+Message-Id: <20200817143855.321195613@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -43,92 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John David Anglin <dave.anglin@bell.net>
+From: Jonathan McDowell <noodles@earth.li>
 
-commit e96ebd589debd9a6a793608c4ec7019c38785dea upstream.
+commit b88c28280c3f7097546db93824686db1e7dceee1 upstream.
 
-This patch implements the __smp_store_release and __smp_load_acquire barriers
-using ordered stores and loads.  This avoids the sync instruction present in
-the generic implementation.
+The move to a combined driver for the QCOM SCM hardware changed the
+io_writel and io_readl helpers to use non-atomic calls, despite the
+commit message saying that atomic was a better option. This breaks these
+helpers on hardware that uses the old legacy convention (access fails
+with a -95 return code). Switch back to using the atomic calls.
 
-Cc: <stable@vger.kernel.org> # 4.14+
-Signed-off-by: Dave Anglin <dave.anglin@bell.net>
-Signed-off-by: Helge Deller <deller@gmx.de>
+Observed as a failure routing GPIO interrupts to the Apps processor on
+an IPQ8064; fix is confirmed as correctly allowing the interrupts to be
+routed and observed.
+
+Reviewed-by: Elliot Berman <eberman@codeaurora.org>
+Fixes: 57d3b816718c ("firmware: qcom_scm: Remove thin wrappers")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jonathan McDowell <noodles@earth.li>
+Link: https://lore.kernel.org/r/20200704172334.GA759@earth.li
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/parisc/include/asm/barrier.h |   61 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+ drivers/firmware/qcom_scm.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
---- a/arch/parisc/include/asm/barrier.h
-+++ b/arch/parisc/include/asm/barrier.h
-@@ -26,6 +26,67 @@
- #define __smp_rmb()	mb()
- #define __smp_wmb()	mb()
+--- a/drivers/firmware/qcom_scm.c
++++ b/drivers/firmware/qcom_scm.c
+@@ -391,7 +391,7 @@ static int __qcom_scm_set_dload_mode(str
  
-+#define __smp_store_release(p, v)					\
-+do {									\
-+	typeof(p) __p = (p);						\
-+        union { typeof(*p) __val; char __c[1]; } __u =			\
-+                { .__val = (__force typeof(*p)) (v) };			\
-+	compiletime_assert_atomic_type(*p);				\
-+	switch (sizeof(*p)) {						\
-+	case 1:								\
-+		asm volatile("stb,ma %0,0(%1)"				\
-+				: : "r"(*(__u8 *)__u.__c), "r"(__p)	\
-+				: "memory");				\
-+		break;							\
-+	case 2:								\
-+		asm volatile("sth,ma %0,0(%1)"				\
-+				: : "r"(*(__u16 *)__u.__c), "r"(__p)	\
-+				: "memory");				\
-+		break;							\
-+	case 4:								\
-+		asm volatile("stw,ma %0,0(%1)"				\
-+				: : "r"(*(__u32 *)__u.__c), "r"(__p)	\
-+				: "memory");				\
-+		break;							\
-+	case 8:								\
-+		if (IS_ENABLED(CONFIG_64BIT))				\
-+			asm volatile("std,ma %0,0(%1)"			\
-+				: : "r"(*(__u64 *)__u.__c), "r"(__p)	\
-+				: "memory");				\
-+		break;							\
-+	}								\
-+} while (0)
-+
-+#define __smp_load_acquire(p)						\
-+({									\
-+	union { typeof(*p) __val; char __c[1]; } __u;			\
-+	typeof(p) __p = (p);						\
-+	compiletime_assert_atomic_type(*p);				\
-+	switch (sizeof(*p)) {						\
-+	case 1:								\
-+		asm volatile("ldb,ma 0(%1),%0"				\
-+				: "=r"(*(__u8 *)__u.__c) : "r"(__p)	\
-+				: "memory");				\
-+		break;							\
-+	case 2:								\
-+		asm volatile("ldh,ma 0(%1),%0"				\
-+				: "=r"(*(__u16 *)__u.__c) : "r"(__p)	\
-+				: "memory");				\
-+		break;							\
-+	case 4:								\
-+		asm volatile("ldw,ma 0(%1),%0"				\
-+				: "=r"(*(__u32 *)__u.__c) : "r"(__p)	\
-+				: "memory");				\
-+		break;							\
-+	case 8:								\
-+		if (IS_ENABLED(CONFIG_64BIT))				\
-+			asm volatile("ldd,ma 0(%1),%0"			\
-+				: "=r"(*(__u64 *)__u.__c) : "r"(__p)	\
-+				: "memory");				\
-+		break;							\
-+	}								\
-+	__u.__val;							\
-+})
- #include <asm-generic/barrier.h>
+ 	desc.args[1] = enable ? QCOM_SCM_BOOT_SET_DLOAD_MODE : 0;
  
- #endif /* !__ASSEMBLY__ */
+-	return qcom_scm_call(__scm->dev, &desc, NULL);
++	return qcom_scm_call_atomic(__scm->dev, &desc, NULL);
+ }
+ 
+ static void qcom_scm_set_download_mode(bool enable)
+@@ -650,7 +650,7 @@ int qcom_scm_io_readl(phys_addr_t addr,
+ 	int ret;
+ 
+ 
+-	ret = qcom_scm_call(__scm->dev, &desc, &res);
++	ret = qcom_scm_call_atomic(__scm->dev, &desc, &res);
+ 	if (ret >= 0)
+ 		*val = res.result[0];
+ 
+@@ -669,8 +669,7 @@ int qcom_scm_io_writel(phys_addr_t addr,
+ 		.owner = ARM_SMCCC_OWNER_SIP,
+ 	};
+ 
+-
+-	return qcom_scm_call(__scm->dev, &desc, NULL);
++	return qcom_scm_call_atomic(__scm->dev, &desc, NULL);
+ }
+ EXPORT_SYMBOL(qcom_scm_io_writel);
+ 
 
 
