@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BBE246C34
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CB9246C3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388624AbgHQQLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:11:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58472 "EHLO mail.kernel.org"
+        id S2388662AbgHQQMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:12:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387743AbgHQPqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:46:39 -0400
+        id S2387407AbgHQPqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:46:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F6252075B;
-        Mon, 17 Aug 2020 15:46:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D874020855;
+        Mon, 17 Aug 2020 15:46:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679198;
-        bh=JrnZwM8UAIuMLHP7tBDKi0C6XfjGffVEugHReXa9cHE=;
+        s=default; t=1597679204;
+        bh=vQjJ6UcD+doQVa+pDtluqxrSBvd9GD0lW9GeyRa4m7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bGAfcovCamjNFMJrhAP64ZegNjRniO4Vn9CqFVtnQ7j+UjM/2bo+gMON02SSI1Nse
-         bsRhH3D4PR/tCmSXB7asrAA9IU9Pg+hEOVJVh5Xsi0kOqdtl+vVpFntafXjH7FySBl
-         RGaBQXMgbloGOHNjnwEdCGCtYdvsacrmVNXg5aMc=
+        b=2S6T/NY6AEnXiG2Sr3MEUth05ktoKN4eJoT/HBb3SHt9OXpXHa6pZoTjVDDVhAmGH
+         TajSNOfah/0GHYvVPZFOKEDOV/KKXh/SL5FkZ1CUOY6EN+RdeXzrq9EmtrflRTMkal
+         iHXEeuZzM935Vb0TCS5EMBw1URPvcSiMfDFtfqyY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 130/393] btmrvl: Fix firmware filename for sd8997 chipset
-Date:   Mon, 17 Aug 2020 17:13:00 +0200
-Message-Id: <20200817143825.915129160@linuxfoundation.org>
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Dejin Zheng <zhengdejin5@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@osdl.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 132/393] console: newport_con: fix an issue about leak related system resources
+Date:   Mon, 17 Aug 2020 17:13:02 +0200
+Message-Id: <20200817143826.010586163@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -46,43 +47,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Dejin Zheng <zhengdejin5@gmail.com>
 
-[ Upstream commit 00eb0cb36fad53315047af12e83c643d3a2c2e49 ]
+[ Upstream commit fd4b8243877250c05bb24af7fea5567110c9720b ]
 
-Firmware for sd8997 chipset is distributed by Marvell package and also as
-part of the linux-firmware repository in filename sdsd8997_combo_v4.bin.
+A call of the function do_take_over_console() can fail here.
+The corresponding system resources were not released then.
+Thus add a call of iounmap() and release_mem_region()
+together with the check of a failure predicate. and also
+add release_mem_region() on device removal.
 
-This patch fixes mwifiex driver to load correct firmware file for sd8997.
-
-Fixes: f0ef67485f591 ("Bluetooth: btmrvl: add sd8997 chipset support")
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Acked-by: Ganapathi Bhat <ganapathi.bhat@nxp.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: e86bb8acc0fdc ("[PATCH] VT binding: Make newport_con support binding")
+Suggested-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andrew Morton <akpm@osdl.org>
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200423164251.3349-1-zhengdejin5@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/btmrvl_sdio.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/video/console/newport_con.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/bluetooth/btmrvl_sdio.c b/drivers/bluetooth/btmrvl_sdio.c
-index 7aa2c94720bc5..4c7978cb1786f 100644
---- a/drivers/bluetooth/btmrvl_sdio.c
-+++ b/drivers/bluetooth/btmrvl_sdio.c
-@@ -346,7 +346,7 @@ static const struct btmrvl_sdio_device btmrvl_sdio_sd8987 = {
+diff --git a/drivers/video/console/newport_con.c b/drivers/video/console/newport_con.c
+index 00dddf6e08b0c..2d2ee17052e83 100644
+--- a/drivers/video/console/newport_con.c
++++ b/drivers/video/console/newport_con.c
+@@ -32,6 +32,8 @@
+ #include <linux/linux_logo.h>
+ #include <linux/font.h>
  
- static const struct btmrvl_sdio_device btmrvl_sdio_sd8997 = {
- 	.helper         = NULL,
--	.firmware       = "mrvl/sd8997_uapsta.bin",
-+	.firmware       = "mrvl/sdsd8997_combo_v4.bin",
- 	.reg            = &btmrvl_reg_8997,
- 	.support_pscan_win_report = true,
- 	.sd_blksz_fw_dl = 256,
-@@ -1833,4 +1833,4 @@ MODULE_FIRMWARE("mrvl/sd8887_uapsta.bin");
- MODULE_FIRMWARE("mrvl/sd8897_uapsta.bin");
- MODULE_FIRMWARE("mrvl/sdsd8977_combo_v2.bin");
- MODULE_FIRMWARE("mrvl/sd8987_uapsta.bin");
--MODULE_FIRMWARE("mrvl/sd8997_uapsta.bin");
-+MODULE_FIRMWARE("mrvl/sdsd8997_combo_v4.bin");
++#define NEWPORT_LEN	0x10000
++
+ #define FONT_DATA ((unsigned char *)font_vga_8x16.data)
+ 
+ /* borrowed from fbcon.c */
+@@ -43,6 +45,7 @@
+ static unsigned char *font_data[MAX_NR_CONSOLES];
+ 
+ static struct newport_regs *npregs;
++static unsigned long newport_addr;
+ 
+ static int logo_active;
+ static int topscan;
+@@ -702,7 +705,6 @@ const struct consw newport_con = {
+ static int newport_probe(struct gio_device *dev,
+ 			 const struct gio_device_id *id)
+ {
+-	unsigned long newport_addr;
+ 	int err;
+ 
+ 	if (!dev->resource.start)
+@@ -712,7 +714,7 @@ static int newport_probe(struct gio_device *dev,
+ 		return -EBUSY; /* we only support one Newport as console */
+ 
+ 	newport_addr = dev->resource.start + 0xF0000;
+-	if (!request_mem_region(newport_addr, 0x10000, "Newport"))
++	if (!request_mem_region(newport_addr, NEWPORT_LEN, "Newport"))
+ 		return -ENODEV;
+ 
+ 	npregs = (struct newport_regs *)/* ioremap cannot fail */
+@@ -720,6 +722,11 @@ static int newport_probe(struct gio_device *dev,
+ 	console_lock();
+ 	err = do_take_over_console(&newport_con, 0, MAX_NR_CONSOLES - 1, 1);
+ 	console_unlock();
++
++	if (err) {
++		iounmap((void *)npregs);
++		release_mem_region(newport_addr, NEWPORT_LEN);
++	}
+ 	return err;
+ }
+ 
+@@ -727,6 +734,7 @@ static void newport_remove(struct gio_device *dev)
+ {
+ 	give_up_console(&newport_con);
+ 	iounmap((void *)npregs);
++	release_mem_region(newport_addr, NEWPORT_LEN);
+ }
+ 
+ static struct gio_device_id newport_ids[] = {
 -- 
 2.25.1
 
