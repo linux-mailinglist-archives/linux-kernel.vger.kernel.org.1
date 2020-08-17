@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01692247349
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF42247377
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731080AbgHQSxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387814AbgHQSxo (ORCPT
+        id S1731749AbgHQS4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:56:40 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:44570 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731467AbgHQS42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 14:53:44 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5D0C061389;
-        Mon, 17 Aug 2020 11:53:44 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f26be00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f26:be00:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 594151EC026E;
-        Mon, 17 Aug 2020 20:53:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1597690421;
+        Mon, 17 Aug 2020 14:56:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597690585;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=R9rpQQ3QHK65dGeiLDAY9hsv8ikqXlZFeTV49qjDFhs=;
-        b=JLyHtJuMAboC+cV46FCxtaqv6/HVYof2SrVxT377a4nEjVxBhWTBBZjvB2FWruvZeCoftT
-        oxmab1CVK7Y+XDzb2G9AU00CkuADnq9K0D8MoBmdemyZFos51X34b5zQcoYRY1jtNV0Gnn
-        wuCneV/LpbFQyLhQPohnFbuIoPkCjPA=
-Date:   Mon, 17 Aug 2020 20:54:36 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Luca Stefani <luca.stefani.ge1@gmail.com>,
-        Tony Luck <tony.luck@intel.com>, linux-edac@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] RAS/CEC: Fix cec_init prototype
-Message-ID: <20200817185436.GO549@zn.tnic>
-References: <20200805045955.GB9127@nazgul.tnic>
- <20200805095708.83939-1-luca.stefani.ge1@gmail.com>
- <20200812210909.GA3283093@google.com>
- <20200817151357.GK549@zn.tnic>
- <CABCJKuccY-wOEuQm--TQYgJvErOXu5u-jBMgCrM7JYsNqYK=gg@mail.gmail.com>
- <20200817174102.GN549@zn.tnic>
- <CABCJKud6M+u-TUZ2w5zdPPnwJQ1b7wxXwg8Rnoc=rBC6zMvRxA@mail.gmail.com>
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P+SWVW+pjg81S9WWqotQ3smvkOJqzR+CExLaQMZK0Pw=;
+        b=Q/hsqM8I1IA1A2Csj8E/CJWcCySYokbi0wnDz4vVjX7E2sELmz+D/v38jTOu6NpFPTl6pw
+        +Dsl++ULV1dc1WSoAzHbNHxmIuWR1SpFVN4ylqR5qLWRzOWgvrRfAnq5Uvz2M2dmfeo10t
+        XF7UYGArExM3gghVBStvbB6zK9q6HLg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-222-0cPwofDoP4WTQ4hZHAIp8w-1; Mon, 17 Aug 2020 14:56:23 -0400
+X-MC-Unique: 0cPwofDoP4WTQ4hZHAIp8w-1
+Received: by mail-wr1-f72.google.com with SMTP id 89so7372274wrr.15
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 11:56:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=P+SWVW+pjg81S9WWqotQ3smvkOJqzR+CExLaQMZK0Pw=;
+        b=C92iEX5AX4c4BooKs/zda9+lgNKBMIjuT9nB+mqI3DETA+J5yiEvMcWnZ8HLI46EON
+         nlzwHYWA/TxJS/aIF8j4/qG3PXiww0YVeFJUOqkF69sXtTmFayChIKeZDCIUbwwQW/lK
+         VthK7VK3UEz9wuBlHv9s99tLn/CwO6b2e/G9fMu4z949LbhzRyLe8bRiFHnhU7Kx9iiA
+         y+aepSFz6V/H6FLuBaj9SrWBH2Y2fN8mPQW9ra/2EgnEHslpIZ1pm5MKlJ15qerVv39k
+         y2nhC6/RogIJW/tqhwrSwpjtUr5ejjbMmLZRNzPpTJ7gG0kljFuD01XAcb/z+S7y0qBo
+         MjaQ==
+X-Gm-Message-State: AOAM5337wWTDlfydgbGYvUqXATSQKi9P/YWLriHJFLppqvDjIN+ZFKGX
+        OvE7fb9SlamvCbGz2VGhoRsOQubzLuEwszxCUy9uxLcsElfG54A4Mpjh6+D9dk5CFhTAtOdwM64
+        UwYlI1y7revX6EUJSJRzVR2Es
+X-Received: by 2002:a1c:7705:: with SMTP id t5mr16436381wmi.112.1597690582493;
+        Mon, 17 Aug 2020 11:56:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxV6kFCk0mELAK5UYZBHElUrR6OjmsPsIgsjsuvWmke05COroSNIAs3VHHaBHPOCPA2bimU5A==
+X-Received: by 2002:a1c:7705:: with SMTP id t5mr16436367wmi.112.1597690582208;
+        Mon, 17 Aug 2020 11:56:22 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:a0d1:fc42:c610:f977? ([2001:b07:6468:f312:a0d1:fc42:c610:f977])
+        by smtp.gmail.com with ESMTPSA id r3sm29893163wro.1.2020.08.17.11.56.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Aug 2020 11:56:21 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86: fix access code passed to gva_to_gpa
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20200817180042.32264-1-pbonzini@redhat.com>
+ <20200817184226.GJ22407@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <77e46758-4b00-9db9-13ab-329c6dad66f3@redhat.com>
+Date:   Mon, 17 Aug 2020 20:56:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <20200817184226.GJ22407@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CABCJKud6M+u-TUZ2w5zdPPnwJQ1b7wxXwg8Rnoc=rBC6zMvRxA@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 11:11:02AM -0700, Sami Tolvanen wrote:
-> Not the toolchain, the tree has patches for LTO+CFI, which tends to
-> break with type mismatches. This doesn't affect just building the
-> kernel with Clang without other changes.
+On 17/08/20 20:42, Sean Christopherson wrote:
+> 
+> Don't suppose you'd be in the mood to kill the bare 'unsigned'?
+> 
+>   WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
 
-Ok, that explains it.
+u32 is even better.
 
-As for why I'm still chasing down the exact reason for the reported
-breakage: this will determine the urgency with which this fix is handled
-and to which trees it needs to go so please be more precise next time
-when saying "it broke". :)
+> Alternatively, what about capturing the result in a new variable (instead of
+> defining the mask) to make the wrap suck less (or just overflow like the
+> current code), e.g.:
+> 
+>         u32 access = error_code &
+>                      (PFERR_WRITE_MASK | PFERR_FETCH_MASK | PFERR_USER_MASK);
+> 
+>         if (!(error_code & PFERR_PRESENT_MASK) ||
+>             vcpu->arch.walk_mmu->gva_to_gpa(vcpu, gva, access, &fault) != UNMAPPED_GVA) {
 
-Thx.
+Sure, that's better.
 
--- 
-Regards/Gruss,
-    Boris.
+Paolo
 
-https://people.kernel.org/tglx/notes-about-netiquette
