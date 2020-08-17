@@ -2,123 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74972246F2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D128F246EFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389037AbgHQRnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:43:43 -0400
-Received: from mga04.intel.com ([192.55.52.120]:15588 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389020AbgHQRng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 13:43:36 -0400
-IronPort-SDR: 7qTGAf6WCxdsON/v/hgHw5/Ruc4bSQc7PZ9i29PEWvrfqNz+I8Kkgi/dNKxVCo72h9xmm4CruZ
- 6ckFsnnnbj4w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="152171570"
-X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
-   d="scan'208";a="152171570"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 10:43:35 -0700
-IronPort-SDR: EsGJDlG2Elfx4PTVo5feMiTZDFCT7ABc4DH894/gUpMct7O9/tuNSP2eKBlobYUnIYJDzVDwcx
- ONdxB+GKxpZg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
-   d="scan'208";a="326478021"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 17 Aug 2020 10:43:32 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1k7j6C-009TgH-Dv; Mon, 17 Aug 2020 20:39:08 +0300
-Date:   Mon, 17 Aug 2020 20:39:08 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-iio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        id S1731213AbgHQRkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731336AbgHQRjc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 13:39:32 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C79FC061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:39:32 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id d190so13931008wmd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:39:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UGi7nUmnSU2AxJ3eHG2eTFsMqNAfZu9moA2MOVQZI4w=;
+        b=1KYk0y+8JsMaFBq6jYJRs0ApLLfRkYIJlOrYd4R26WriO5pVrCEeVrNH8WV2wmallB
+         NxLm00PrOYQzbSgTZNLhTJq5AMmcb8J1qcd254ez5/Drafrad0Cqh8HBLXbP8i7BuYtu
+         ndJHlIJ/3auHSGqX6LwyUNZz12S2jkRJ5w+gSv/a0htU3zpOx+O/apFbokMrjORoSXEV
+         E9Pthgcf7Dh6TxDpUQO+CyjUdwyMbolritSwpfDV6VUBOkDzDggHwiGT6VYdDdZDpA3H
+         rRaQMDQBSQgbioY1bRFfxDPFHIaaV2EmXQdOxAAswmDsjYhiMACKUioQx/AbE9esX9C0
+         hIMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UGi7nUmnSU2AxJ3eHG2eTFsMqNAfZu9moA2MOVQZI4w=;
+        b=BY7x5t/k+wPH+IKHcM+W0B60tC+4PlRc9bPTqHzgvtiCmLXVTfqjM6UXjqdW/LzbmB
+         7bXaFtHxqxjRDeO3l3+0k/MVsmwgJRNeh73SyNHzDKw+93og0TeSvlbeC/x4kVfHTD83
+         pAbX5p2W0na7fMQX2faX5LE1eIrISv8SXr7xNkunn3zKqRT8b6W8WN6B/Hvti4oZXlhC
+         6wMJDFzDXCD6xvbgCzUqcqy5TbOfhR9QfDhnrujfSnsIcnTTVEoHwxwGI6meftMQAJf7
+         t3e5w/6yRNK10WbqIFEq3ZChn9qi8airhPrF8tu0pyuFJcxQyNiKhq8CSrJZPvo8Y9Kv
+         HAAA==
+X-Gm-Message-State: AOAM532wXd3sA7pMjhkrVp9KHq9yvtpRIcKdcEjHWMLxZOQVg48aKJve
+        UJnqaCon53Xj6i/vvgeahYe5zoZjqBH1Sw==
+X-Google-Smtp-Source: ABdhPJytG3rX7acI30gpSc7TqlK9Uh77srnc9MMySIvka/xac3M3wjSRX0b+Appyv1zZLD8RNNUNgg==
+X-Received: by 2002:a05:600c:245:: with SMTP id 5mr15339803wmj.22.1597685970965;
+        Mon, 17 Aug 2020 10:39:30 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
+        by smtp.gmail.com with ESMTPSA id v20sm9659205wrd.6.2020.08.17.10.39.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 10:39:30 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v7 1/3] devres: provide devm_krealloc()
-Message-ID: <20200817173908.GS1891694@smile.fi.intel.com>
-References: <20200817170535.17041-1-brgl@bgdev.pl>
- <20200817170535.17041-2-brgl@bgdev.pl>
+Subject: [RESEND PATCH] mm: util: update the kerneldoc for kstrdup_const()
+Date:   Mon, 17 Aug 2020 19:39:27 +0200
+Message-Id: <20200817173927.23389-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817170535.17041-2-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 07:05:33PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> Implement the managed variant of krealloc(). This function works with
-> all memory allocated by devm_kmalloc() (or devres functions using it
-> implicitly like devm_kmemdup(), devm_kstrdup() etc.).
-> 
-> Managed realloc'ed chunks can be manually released with devm_kfree().
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Thanks for an update! My comments / questions below.
+Memory allocated with kstrdup_const() must not be passed to regular
+krealloc() as it is not aware of the possibility of the chunk residing
+in .rodata. Since there are no potential users of krealloc_const()
+at the moment, let's just update the doc to make it explicit.
 
-...
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ mm/util.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> +static struct devres *to_devres(void *data)
-> +{
-> +	return (struct devres *)((u8 *)data - ALIGN(sizeof(struct devres),
-> +						    ARCH_KMALLOC_MINALIGN));
-
-Do you really need both explicit castings?
-
-> +}
-
-...
-
-> +	total_old_size = ksize(to_devres(ptr));
-
-But how you can guarantee this pointer:
- - belongs to devres,
- - hasn't gone while you run a ksize()?
-
-...
-
-> +	new_dr = alloc_dr(devm_kmalloc_release,
-> +			  total_new_size, gfp, dev_to_node(dev));
-
-Can you move some parameters to the previous line?
-
-> +	if (!new_dr)
-> +		return NULL;
-
-...
-
-> +	spin_lock_irqsave(&dev->devres_lock, flags);
-> +
-> +	old_dr = find_dr(dev, devm_kmalloc_release, devm_kmalloc_match, ptr);
-> +	if (!old_dr) {
-> +		spin_unlock_irqrestore(&dev->devres_lock, flags);
-> +		devres_free(new_dr);
-> +		WARN(1, "Memory chunk not managed or managed by a different device.");
-> +		return NULL;
-> +	}
-> +
-> +	replace_dr(dev, &old_dr->node, &new_dr->node);
-> +
-> +	spin_unlock_irqrestore(&dev->devres_lock, flags);
-> +
-> +	memcpy(new_dr->data, old_dr->data, devres_data_size(total_old_size));
-
-But new_dr may concurrently gone at this point, no? It means memcpy() should be
-under spin lock.
-
+diff --git a/mm/util.c b/mm/util.c
+index 5ef378a2a038..bb902f5a6582 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -69,7 +69,8 @@ EXPORT_SYMBOL(kstrdup);
+  * @s: the string to duplicate
+  * @gfp: the GFP mask used in the kmalloc() call when allocating memory
+  *
+- * Note: Strings allocated by kstrdup_const should be freed by kfree_const.
++ * Note: Strings allocated by kstrdup_const should be freed by kfree_const and
++ * must not be passed to krealloc().
+  *
+  * Return: source string if it is in .rodata section otherwise
+  * fallback to kstrdup.
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.26.1
 
