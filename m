@@ -2,94 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0FAF24826C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D590248272
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726624AbgHRKAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 06:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726145AbgHRKAU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 06:00:20 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8502C061389;
-        Tue, 18 Aug 2020 03:00:19 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 74so9700573pfx.13;
-        Tue, 18 Aug 2020 03:00:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OOenSclepS0MABruprKXkVZk2CmkqltRlMtrV3FqKk0=;
-        b=c3C8yFsQurPTAqZp5ro2DQU9RyvdO3D6JEMGO6BND1O8fmHvaNLwU0BXpPovPyleiI
-         +vXOUOIV5DPz3DG4vLwFMIsz6T+xgq2IwLiRgPhPy4d8v9wY4s62RXr9TvMn8LmGjuTS
-         f+SrIXoOW/F3EGG9vAeSK0TtVfVl2PQJIy/QrFu2HVHmqlOjlGQJXUOskcapulDRaI5O
-         a6gAL2n/0Avbc9kKN1Zn/lYdzgZufygWn6HNwT4RXxKrxX39/OepzkCw8LKuyhlTdtGm
-         XHC5by/+f1aRJKJaqbbQrRwpDZi5tLFx1hcZsiLUBqiS3xHFUykRSDW0dj7Axmyx3f+k
-         JXOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OOenSclepS0MABruprKXkVZk2CmkqltRlMtrV3FqKk0=;
-        b=Kif4EUl0NjIj9coTGg6YFiGMuFXAp3jmp8fkgaWVYcXBMz4D75wgaq2XV7MOEOFSi7
-         4Lbly1msef+9u7fm00xxYe174PTQsCB7tNAX+S+0q3ITIE4pmJygDmB9Nme41mB3/o6p
-         +2YHjOR4Hbl1hf3BjQX5aRpjsh70BWtSERv1lxmpxuOuB66LHosbs46zIvEpkNWO2PjY
-         grzFQfolA8nk+PyShi0f4js3Ttw7rzSTUWQv4eyrXVYvi1Eyrg28jqMO2m/4XbSIHp8K
-         3VoOfJZ0iSTW7Ax2FeeN45kIkOqszWrHmWXWKSNOOrWWG7KNEoiq9Xvwrd6l9aesQYZe
-         15gg==
-X-Gm-Message-State: AOAM533A/B1B/5w6KOrDb5FWwH3LhkiZg7FGzv72P1xNzuQ52uiPKCrW
-        kCtiEwWKea/DyfvG/MdADw==
-X-Google-Smtp-Source: ABdhPJw8bM1oYpBq691mtUzOLfn8tTF4UwM50ybp3c0lFYLllJw5jJLjkMd01hKUBOnsJZw5Rm1Xig==
-X-Received: by 2002:a62:1ad0:: with SMTP id a199mr15047482pfa.56.1597744818002;
-        Tue, 18 Aug 2020 03:00:18 -0700 (PDT)
-Received: from PWN ([221.124.243.27])
-        by smtp.gmail.com with ESMTPSA id j5sm24157839pfg.80.2020.08.18.03.00.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 03:00:17 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 06:00:08 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs@googlegroups.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH v2 RESEND] usbhid: Fix
- slab-out-of-bounds write in hiddev_ioctl_usage()
-Message-ID: <20200818100008.GA2135@PWN>
-References: <20200718231218.170730-1-yepeilin.cs@gmail.com>
- <20200729113712.8097-1-yepeilin.cs@gmail.com>
- <nycvar.YFH.7.76.2008171221290.27422@cbobk.fhfr.pm>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nycvar.YFH.7.76.2008171221290.27422@cbobk.fhfr.pm>
+        id S1726476AbgHRKDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 06:03:22 -0400
+Received: from mga02.intel.com ([134.134.136.20]:49700 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726043AbgHRKDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 06:03:20 -0400
+IronPort-SDR: hnUmh0HqSIsaBxqMg1pNcd8wMCAPismRdBZBZexe/hTt3yPEB2XdOus+5IjAybj6hfHj9DhOkR
+ OrqWtsoZwBQA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="142700897"
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
+   d="scan'208";a="142700897"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 03:03:20 -0700
+IronPort-SDR: m8Ve8D5BXxeh4ID9DWVU5LTg1lzZarhd2hgU3HcA7T4DdrLbSyxj1Sq3MIx/qXwP17aQLKWYvp
+ veBRYZXln21A==
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
+   d="scan'208";a="471749319"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 03:03:16 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
+        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        mengdong.lin@intel.com, bard.liao@intel.com
+Subject: [PATCH] soundwire: bus: fix typo in comment on INTSTAT registers
+Date:   Tue, 18 Aug 2020 06:09:33 +0800
+Message-Id: <20200817220933.17492-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 12:21:41PM +0200, Jiri Kosina wrote:
-> On Wed, 29 Jul 2020, Peilin Ye wrote:
-> 
-> > `uref->usage_index` is not always being properly checked, causing
-> > hiddev_ioctl_usage() to go out of bounds under some cases. Fix it.
-> > 
-> > Reported-by: syzbot+34ee1b45d88571c2fa8b@syzkaller.appspotmail.com
-> > Link: https://syzkaller.appspot.com/bug?id=f2aebe90b8c56806b050a20b36f51ed6acabe802
-> > Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> > ---
-> > Change in v2:
-> >     - Add the same check for the `HIDIOCGUSAGE` case. (Suggested by
-> >       Dan Carpenter <dan.carpenter@oracle.com>)
-> 
-> Applied, thanks.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Thank you for reviewing the patch!
+s/Instat/Intstat/
 
-Peilin Ye
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ drivers/soundwire/bus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index e6e0fb9a81b4..da0201693c24 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -1372,7 +1372,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 		return ret;
+ 	}
+ 
+-	/* Read Instat 1, Instat 2 and Instat 3 registers */
++	/* Read Intstat 1, Intstat 2 and Intstat 3 registers */
+ 	ret = sdw_read(slave, SDW_SCP_INT1);
+ 	if (ret < 0) {
+ 		dev_err(slave->bus->dev,
+-- 
+2.17.1
+
