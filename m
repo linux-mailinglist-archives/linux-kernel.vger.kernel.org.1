@@ -2,112 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32B32461C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C47512461D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgHQJDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 05:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726837AbgHQJC7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 05:02:59 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2827C061389;
-        Mon, 17 Aug 2020 02:02:58 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id d188so7911952pfd.2;
-        Mon, 17 Aug 2020 02:02:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=xXbF1OGSfwps8eIxFqyJWCOGFrRBRoS9IAapxWYH5tU=;
-        b=UGys9s0cH3XJ7ytiyAvyHhECfx/sgE7VT+4dU+PFtuVRKYibSk4ZdfmReJ5RHeo4oB
-         cE77BSIVRi+aL2qPqpPHpFAR1LSBTrzvNNl5+1z2oukApZE2Lh0c8Y3/yCTaGn1btkI3
-         DvfBXKhyn1mhWjbBF8kHKW4euTK7Ux3RSg5XFcHWLBm6Ex4WbXmFJRsy6oz8LHIem23T
-         s/vVZgJ8dTQWc7edHye0v87zndklTmo3yTfDJa2KJhz3KKYSGaQVeY4NJka4LW2TDcnd
-         io8PK2w/yoaTYclhmldJ4rX2kkhp+HrYmndLi4PUVEPGGhD9ac4NWIc9Y4RAyWFd0HTP
-         8flQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=xXbF1OGSfwps8eIxFqyJWCOGFrRBRoS9IAapxWYH5tU=;
-        b=t/TwHd8HmtIHs+F7YY2ICaMIAyEfzGNsuk+72JWdY7gu3mxi8qbKwQ7vRc3NT4sGgm
-         5D061goswTMYEpLiwN9hPe+FZM+Pij22PBQrrmUlQj6l6gBLf8AwbHm1PGjWnCYhIw7I
-         g7UjtIj5f49Pd6q4Kuc4o+JvqXfrXh5UGX++fIB+gJ+GjwfNiL4gP8Iuuxs+jvzftucM
-         t0jcvRdPHDyCHe+4+9zAts8eYbBrPMr2ku+4cBYgVlPqjiKdXyhmM6FGEtyCOAjq9PN7
-         qnC8PD4XPtd6kHgMYA1KJ0coL8Cs/lAjAZBsY6nD3C1h8GNtbgRIL/ZYsy2NGdoVY+qL
-         ENeA==
-X-Gm-Message-State: AOAM5311USW/0l7OIp4AryyLL7dGQeSwQTlOBBkZDoARQQqWjqUqBMCP
-        qFdA6mabNDKYpkELFh0gPnw=
-X-Google-Smtp-Source: ABdhPJxAkXUAop1wEFaah3YAPnjGLxZjtihx6qYBEHA3JVTfQ+jUGc2wTge02f2yvKEBQPSGJto8nw==
-X-Received: by 2002:a62:3856:: with SMTP id f83mr10808398pfa.35.1597654978435;
-        Mon, 17 Aug 2020 02:02:58 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.202.98])
-        by smtp.gmail.com with ESMTPSA id f3sm19488238pfj.206.2020.08.17.02.02.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 02:02:57 -0700 (PDT)
-From:   Allen Pais <allen.cryptic@gmail.com>
-To:     duncan.sands@free.fr, gregkh@linuxfoundation.org,
-        jacmet@sunsite.dk, balbi@kernel.org, leoyang.li@nxp.com,
-        johan@kernel.org
-Cc:     keescook@chromium.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH 7/7] usb: mos7720: convert tasklets to use new tasklet_setup() API
-Date:   Mon, 17 Aug 2020 14:32:09 +0530
-Message-Id: <20200817090209.26351-8-allen.cryptic@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200817090209.26351-1-allen.cryptic@gmail.com>
-References: <20200817090209.26351-1-allen.cryptic@gmail.com>
+        id S1728746AbgHQJDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 05:03:50 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:58166 "EHLO mail5.wrs.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726788AbgHQJDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 05:03:46 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 07H92DgH005054
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Mon, 17 Aug 2020 02:02:55 -0700
+Received: from pek-lpggp1.wrs.com (128.224.153.74) by ALA-HCA.corp.ad.wrs.com
+ (147.11.189.40) with Microsoft SMTP Server id 14.3.487.0; Mon, 17 Aug 2020
+ 02:02:47 -0700
+From:   <yanfei.xu@windriver.com>
+To:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+CC:     <akpm@linux-foundation.org>
+Subject: [PATCH] mm/mempolicy: Remove the useless newline in policy_node()
+Date:   Mon, 17 Aug 2020 17:02:45 +0800
+Message-ID: <20200817090245.28750-1-yanfei.xu@windriver.com>
+X-Mailer: git-send-email 2.18.2
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Allen Pais <allen.lkml@gmail.com>
+From: Yanfei Xu <yanfei.xu@windriver.com>
 
-In preparation for unconditionally passing the
-struct tasklet_struct pointer to all tasklet
-callbacks, switch to using the new tasklet_setup()
-and from_tasklet() to pass the tasklet pointer explicitly.
+Remove the useless newline among policy_node parameters, that makes
+code neater.
 
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
-Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
 ---
- drivers/usb/serial/mos7720.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ mm/mempolicy.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/usb/serial/mos7720.c b/drivers/usb/serial/mos7720.c
-index 2ec4eeacebc7..5eed1078fac8 100644
---- a/drivers/usb/serial/mos7720.c
-+++ b/drivers/usb/serial/mos7720.c
-@@ -282,11 +282,12 @@ static void destroy_urbtracker(struct kref *kref)
-  * port callback had to be deferred because the disconnect mutex could not be
-  * obtained at the time.
-  */
--static void send_deferred_urbs(unsigned long _mos_parport)
-+static void send_deferred_urbs(struct tasklet_struct *t)
- {
- 	int ret_val;
- 	unsigned long flags;
--	struct mos7715_parport *mos_parport = (void *)_mos_parport;
-+	struct mos7715_parport *mos_parport = from_tasklet(mos_parport, t,
-+							   urb_tasklet);
- 	struct urbtracker *urbtrack, *tmp;
- 	struct list_head *cursor, *next;
- 	struct device *dev;
-@@ -716,8 +717,7 @@ static int mos7715_parport_init(struct usb_serial *serial)
- 	INIT_LIST_HEAD(&mos_parport->deferred_urbs);
- 	usb_set_serial_data(serial, mos_parport); /* hijack private pointer */
- 	mos_parport->serial = serial;
--	tasklet_init(&mos_parport->urb_tasklet, send_deferred_urbs,
--		     (unsigned long) mos_parport);
-+	tasklet_setup(&mos_parport->urb_tasklet, send_deferred_urbs);
- 	init_completion(&mos_parport->syncmsg_compl);
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index afaa09ff9f6c..a345ad50b86f 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -1885,8 +1885,7 @@ nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
+ }
  
- 	/* cycle parallel port reset bit */
+ /* Return the node id preferred by the given mempolicy, or the given id */
+-static int policy_node(gfp_t gfp, struct mempolicy *policy,
+-								int nd)
++static int policy_node(gfp_t gfp, struct mempolicy *policy, int nd)
+ {
+ 	if (policy->mode == MPOL_PREFERRED && !(policy->flags & MPOL_F_LOCAL))
+ 		nd = policy->v.preferred_node;
 -- 
-2.17.1
+2.18.2
 
