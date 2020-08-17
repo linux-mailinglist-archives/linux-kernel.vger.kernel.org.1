@@ -2,93 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7563246598
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE0F2465A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgHQLlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 07:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbgHQLlT (ORCPT
+        id S1726980AbgHQLsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 07:48:11 -0400
+Received: from esa2.mentor.iphmx.com ([68.232.141.98]:56203 "EHLO
+        esa2.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgHQLsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 07:41:19 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB37C061389;
-        Mon, 17 Aug 2020 04:41:18 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id w25so17051984ljo.12;
-        Mon, 17 Aug 2020 04:41:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:date:from:to:cc:message-id:in-reply-to:references;
-        bh=DSSLi1nehUTQX9TtZXEIyfRv/D0dGZ+iJs4E1Ou7Qcg=;
-        b=NideZf0rdtwhnk/2DLL2h/tN4nIJigxAXTwVunWJ/2iZlkC6iYjtZFlYqAiFOkVK3M
-         IOjCAjTf+tJ1b7GJxOon5Op8gz1jelr/6ynZs61yhv+0IR1HbPSb9KTCMwretc+uF+rs
-         BIlIrb1L3CJYzVoTo+X8HcH9qLJuIVPdG2Rm5Vm4bVZ59oiHYvovRc/vlInvxPMdfbuK
-         Z1+JqRY20CrPGwE/R+3FSGfXd26zqbEQAZUf7RCthAbqf5Id+D6sHmJkx3A0JvJFQGHB
-         hDI7056ESRegVF0RvZoibRoLBW8FNjrmJnqM3cZfVxlhqGe/wj01RKzBooicgnnwHcwR
-         OBhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:from:to:cc:message-id:in-reply-to
-         :references;
-        bh=DSSLi1nehUTQX9TtZXEIyfRv/D0dGZ+iJs4E1Ou7Qcg=;
-        b=lIpv32OtSMZ0nlw152khVh901OWp1KbVa4e5tbQBcN2KBFXZnvbEMfZ3pSOD/QEoSZ
-         tkRZQZ/043rhj8WX4jY/Vw3Dlx4SrIpXDQILYUcSAvshyKgexTgjD4ObGBsrFJPVgxna
-         wkrTeHKMGDNGsUfTxolgViS7Zyj/2FWoyCul1hr/EVlD4+sVRQl4iMj8GqGv4ri9RVt1
-         /Pm9WRGrqYjCd9O9X7xJfoE1p7EOMda/G3MKz/yp/2w2ItZhSclV3H2+1LniATXumdBp
-         8rE7XzzGlUcJoNBTYiddp+fBoscWQrfYmBQRS6Ik2uWggF7Nvul6IdW1Pg82AqVSesF0
-         w5BQ==
-X-Gm-Message-State: AOAM533DNBNyjkW146zeFTnaQSMIWIT80ks/OZHkw9hC3OrE2/6U8gqo
-        8n9LFNYUb7gXF/rvUqx4iHE=
-X-Google-Smtp-Source: ABdhPJwp39koeVrx4TtarDgGWDwWaUuSXr8IRhxum7G4BJWH5Zlqanfj105FthIkqYB0dqD6MPnmTg==
-X-Received: by 2002:a2e:71a:: with SMTP id 26mr3343239ljh.198.1597664476777;
-        Mon, 17 Aug 2020 04:41:16 -0700 (PDT)
-Received: from gmail.com ([217.170.206.146])
-        by smtp.gmail.com with ESMTPSA id u5sm5456598lfr.3.2020.08.17.04.41.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 04:41:16 -0700 (PDT)
-Subject: Re: [PATCH] Makefile: Yes. Finally remove '-Wdeclaration-after-statement'
-Date:   Mon, 17 Aug 2020 11:40:00 -0000
-From:   Michael Witten <mfwitten@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Message-ID: <04721d8183af49b793952d2d63c72add@gmail.com>
-In-Reply-To: <7d0be10602e31e334ff41299c06f537880c55bd0.camel@perches.com>
-References: <c6fda26e8d134264b04fadc3386d6c32@gmail.com>
-  <61f8da080e5fac1bc23cdd68c43f199029c0a788.camel@perches.com>
-  <23e2e6c2d3a24954bccb67a3186019b9@gmail.com>
-  <7d0be10602e31e334ff41299c06f537880c55bd0.camel@perches.com>
+        Mon, 17 Aug 2020 07:48:04 -0400
+X-Greylist: delayed 450 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 Aug 2020 07:48:03 EDT
+IronPort-SDR: 0FUq5f3wNblAwD1gNi8256kNsxk+TPqJN5kglFdoJ10MYQlu4kz1j87nE6fswv9laMUZEK9ppF
+ Kajuu9jjtgXpazBiDljB/0kT65+uv2XKCzFCKxzJ3pQ5Zxrtjzth4e+P9iScECitNfV9zOrenf
+ e6hZY+dm13lZqD1kyrBEAcVyQ1FCapmR3J7zLW7YSj5FQZMKEvh5ZvKY2mJHd0yqSmBoFcZbmT
+ wF2QggmnztCAM3Rz1AJnL7BIWbOCMI6JC+Y5iwCzbCmJdwtJOXHofSGo1fAMMl6Jg/ZkQt72FJ
+ eNA=
+X-IronPort-AV: E=Sophos;i="5.76,322,1592899200"; 
+   d="scan'208";a="51996397"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa2.mentor.iphmx.com with ESMTP; 17 Aug 2020 03:40:24 -0800
+IronPort-SDR: cwbtSVHmdpLaTlkjr/UF5ziHgd9DIztGwkD/FbAokHdQgOsK9A9gFr+lvvZdVpAQEQfXsTFzi+
+ FnQZ0jsZc7tqVsTwto2mOKyYUCBO8RtCdC/OITMdrn/CYd38sW+4/npq9YGcikhKk7lxzu5Re/
+ hn2uY/dwlXA/THkMNwTwmyzVdbfi4TDU8OKWXInys6X9wQaqhaJkru6HfC0Q9Z4xGWLZYHbi1v
+ bUAwf7H6aspVAysWJIGS4pvwuoeg8PvreNz6/5nQnNwVFxQ3rlvHBlYnnC9q0UdeyiiDZyWIrJ
+ 96s=
+To:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-usb@vger.kernel.org>
+CC:     "Resch Carsten (CM/ESO6)" <Carsten.Resch@de.bosch.com>,
+        "Rosca, Eugeniu (ADITG/ESB)" <erosca@de.adit-jv.com>
+From:   Jim Baxter <jim_baxter@mentor.com>
+Subject: PROBLEM: Long Workqueue delays.
+Message-ID: <71aafe68-7fe0-6b77-ea8e-83edd3f16c8d@mentor.com>
+Date:   Mon, 17 Aug 2020 12:40:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [137.202.0.90]
+X-ClientProxiedBy: svr-ies-mbx-06.mgc.mentorg.com (139.181.222.6) To
+ SVR-IES-MBX-03.mgc.mentorg.com (139.181.222.3)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joe Perches (Sun, 16 Aug 2020 10:56:53 -0700):
+We have issues with the workqueue of the kernel overloading the CPU 0 
+when we we disconnect a USB stick.
 
-> On Mon, 2020-08-17 at 03:37 +0000, Michael Witten wrote:
->> Matters  of style  should  probably not  be enforced  by
->> the  build infrastructure;  style  is a  matter for  the
->> maintainer to enforce:
->
-> I rather doubt style advice  should be taken from someone
-> who right justifies fixed pitch block text.
->
-> cheers, Joe
+This results in other items on the shared workqueue being delayed by
+around 6.5 seconds with a default kernel configuration and 2.3 seconds
+on a config tailored for our RCar embedded platform.
 
-Clearly, I never offered style advice.
+I am aware there will be delays on the shared workqueue, are the delays
+we are seeing considered normal?
 
-Indeed, the very first sentence I wrote in this thread was:
 
-  > This is not just a matter of style; this is a matter of
-  > semantics[.]
 
-Sincerely,
-Michael Witten
+We first noticed this issue on custom hardware and we have recreated it
+on an RCar Starter Kit using a test module [1] to replicate the
+behaviour, the test module outputs any delays of greater then 9ms.
 
-As an  aside, the  venerable 'man' program  justifies fixed
-pitch text, at least by default.
+To run the test we have a 4GB random file on a USB stick and perform
+the following test:
+
+
+- Load the Module:
+# taskset -c 0 modprobe latency-mon
+
+- Copy large amount of data from the stick:
+# dd if=/run/media/sda1/sample.txt of=/dev/zero
+[ 1437.517603] DELAY: 10
+8388607+1 records in
+8388607+1 records out
+
+
+- Disconnect the USB stick:
+[ 1551.796792] usb 2-1: USB disconnect, device number 2
+[ 1558.625517] DELAY: 6782
+
+
+The Delay output 6782 is in milliseconds.
+
+Thank you for you help.
+Jim Baxter
+
+[1] Test Module:
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Simple WQ latency monitoring
+ *
+ * Copyright (C) 2020 Advanced Driver Information Technology.
+ */
+
+#include <linux/init.h>
+#include <linux/ktime.h>
+#include <linux/module.h>
+
+#define PERIOD_MS 100
+
+static struct delayed_work wq;
+static u64 us_save;
+
+static void wq_cb(struct work_struct *work)
+{
+	u64 us = ktime_to_us(ktime_get());
+	u64 us_diff = us - us_save;
+	u64 us_print = 0;
+
+	if (!us_save)
+		goto skip_print;
+
+
+	us_print = us_diff / 1000 - PERIOD_MS;
+	if (us_print > 9)
+		pr_crit("DELAY: %lld\n", us_print);
+
+skip_print:
+	us_save = us;
+	schedule_delayed_work(&wq, msecs_to_jiffies(PERIOD_MS));
+}
+
+static int latency_mon_init(void)
+{
+	us_save = 0;
+	INIT_DELAYED_WORK(&wq, wq_cb);
+	schedule_delayed_work(&wq, msecs_to_jiffies(PERIOD_MS));
+
+	return 0;
+}
+
+static void latency_mon_exit(void)
+{
+	cancel_delayed_work_sync(&wq);
+	pr_info("%s\n", __func__);
+}
+
+module_init(latency_mon_init);
+module_exit(latency_mon_exit);
+MODULE_AUTHOR("Eugeniu Rosca <erosca@de.adit-jv.com>");
+MODULE_LICENSE("GPL");
