@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4928245EEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44C2245EF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgHQILf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
+        id S1727977AbgHQILz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:11:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727818AbgHQILM (ORCPT
+        with ESMTP id S1726817AbgHQILQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:11:12 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E257FC06138A
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:11:11 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id 2so7429959pjx.5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:11:11 -0700 (PDT)
+        Mon, 17 Aug 2020 04:11:16 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA16CC061342
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:11:15 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id r4so7124089pls.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:11:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=70PFaXHmNSmd92XMUWhul5KjsiDucw6zRMXg1MiBgH8=;
-        b=YsW5qw9NRQ980DmqR7I0AKAyBlH2mw3IDWiuDPiK5PcL9EeuX5xAwemDz4lY2v1H+P
-         PHLtHkMDF/AgpV8+UThxQF2gm9LvzcooZzOrhwy7m7/cXDLWa7fAjMjJIT0aQTY1AsfO
-         xzUZT6gI+uPaKAnyKPfueeZ6eMWqTqWJHtDTQOsluZCITK1RTA2F2ZvZ7wau4Ju0YVLS
-         XBrkbMK4FSESTy616HPAaK1DxUqvvy/pNIMOqvuFftH9+V1h+EhuNNSdDVhY2vaG1Wxj
-         Oikq55hNMBi3727bfh95NcVp5rIWsyWQ+wC8LWRXWIX9cPD/IESHUPUjsUGrC3isgP14
-         clhA==
+        bh=0I0WPdb+Lnw0T9UwVRKshyQRyAmBHfkv+OIhMK0TwCo=;
+        b=XBOxEYVLtO2d2M09e9vTXjaL+F4HowWz6DhEtXsFNUd951C+5m4MzRyoZxFJWYzrnO
+         mwikjKG2qiC1NFIgVCjXOgYdEh4rIRn2IF1R+D0Y2MOrmlsJGUFTYGGu5biSm5l4w55/
+         4O0k0A77BOI+DcVDGguCfMX+9fARyOmTI7IeL7Ecg5dpxptZdvGN6wbD5zMQJnpAe+Z9
+         BdUlPY0isvAhdgwTfc7p/ItKyKbU6aJNjROrPBeECqASpe15Nd3BED/akhjyaRaaL9V6
+         wBjZ4MrFjHybqqJljXD89sOEqWkbOUGk09/Ov6gtyBSPb5MJaObTvCMDihr0WuYVhDQW
+         1r5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=70PFaXHmNSmd92XMUWhul5KjsiDucw6zRMXg1MiBgH8=;
-        b=A1T0MJYUKnfMPblBqJkSg3TBRIqCsniP1aV/srXrOOIM2V0GduFdQ/zyKpEWyKRrf+
-         IXCacdiZhJ0CEsfVSGyUOjtzT2saZz1LhV8/AtVn7IeSwKtsPRGk/mjtxAq0o6sZezym
-         Jxrxb9CXF/XDhaU9Rm6AegBWd1xs8FgskH+JZ4dd4vw+VVvKfdCtOsdr8rtGSr0nSWhj
-         XvR/RDNFgMG2A/ddxksLRSdWiu+IP4orC/ykcCBk2dwPcDDosdSgD2ON1zsCKZ2pDKBO
-         MEpMHr88/DHDjBmnSjRnaASqqf67Jt1Wc2cfydSSTYXwjWiCD/XP2Kly0bm5Abf0jmM1
-         Y1ow==
-X-Gm-Message-State: AOAM532vczMcX+Jy/uRFDfKX81gRZUEsTClSscaxH1SyoeC2hi8nDzy/
-        mV357ry0oCehBm+2ilYwKFA=
-X-Google-Smtp-Source: ABdhPJxkJc7DyhK1mDYdyU2581enLqosMCxTakWV3V2k6PuHjYp2kxVpf+h+fHSOmD19Aql6dm5KyA==
-X-Received: by 2002:a17:90a:24e6:: with SMTP id i93mr11415482pje.231.1597651871493;
-        Mon, 17 Aug 2020 01:11:11 -0700 (PDT)
+        bh=0I0WPdb+Lnw0T9UwVRKshyQRyAmBHfkv+OIhMK0TwCo=;
+        b=r2g+WYdNZCUqYi0U4ba0zh/YotdcMvvY93tS1UKZjHwbAXVRcpZdyqFA7hjnnk5qBE
+         lkydknvucRvlWXPsABs2zUYwy4xI4YdB5WNhWQJxEm+1vYvN2+1uIWU4/qQd8GUkEedm
+         /YOVRTmAW3vCRDP1WL777TVfWw6cxeKHAD2G3ikuz8hrES4dxX7AFNFPxfcehcJNXnk+
+         RnoEkVXduf2b75ibn5fxpW/8jygh18lwTMtqh/cuxyB0wQNwKtXrDOMCAsQWoTc4XJ6A
+         dE6wVd0bWzjwfxwqk7X636gH6+UGIPUh85pWkaIVEONOf5+S/lTvdcJUCHX0jJ9kovSC
+         dUMQ==
+X-Gm-Message-State: AOAM531LHxLqOWlCLX62S1TptOyjMVJS67sQ/mOWoaZjoI8HPvOTLGjb
+        x7sw/XdRfM9sjeEOAKfUWL0=
+X-Google-Smtp-Source: ABdhPJz2yRlSGkjkyLzNCiZu5WWMgo5Ib2xo7ul7gKuWuKj/0odSFXT4lG38fkzXMXkYK2N9DxmmjA==
+X-Received: by 2002:a17:902:bb90:: with SMTP id m16mr4634935pls.144.1597651875281;
+        Mon, 17 Aug 2020 01:11:15 -0700 (PDT)
 Received: from localhost.localdomain ([49.207.202.98])
-        by smtp.gmail.com with ESMTPSA id 77sm18499751pfx.85.2020.08.17.01.11.07
+        by smtp.gmail.com with ESMTPSA id 77sm18499751pfx.85.2020.08.17.01.11.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 01:11:11 -0700 (PDT)
+        Mon, 17 Aug 2020 01:11:14 -0700 (PDT)
 From:   Allen Pais <allen.lkml@gmail.com>
 To:     nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
         ludovic.desroches@microchip.com, heiko@sntech.de,
@@ -57,9 +57,9 @@ Cc:     keescook@chromium.org, linux-kernel@vger.kernel.org,
         inux-mediatek@lists.infradead.org,
         Allen Pais <allen.lkml@gmail.com>,
         Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH 15/19] crypto: qce: convert tasklets to use new tasklet_setup() API
-Date:   Mon, 17 Aug 2020 13:39:37 +0530
-Message-Id: <20200817080941.19227-16-allen.lkml@gmail.com>
+Subject: [PATCH 16/19] crypto: rockchip: convert tasklets to use new tasklet_setup() API
+Date:   Mon, 17 Aug 2020 13:39:38 +0530
+Message-Id: <20200817080941.19227-17-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200817080941.19227-1-allen.lkml@gmail.com>
 References: <20200817080941.19227-1-allen.lkml@gmail.com>
@@ -76,35 +76,50 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/crypto/qce/core.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/crypto/rockchip/rk3288_crypto.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-index cb6d61eb7302..0b171ef9e3b7 100644
---- a/drivers/crypto/qce/core.c
-+++ b/drivers/crypto/qce/core.c
-@@ -116,9 +116,9 @@ static int qce_handle_queue(struct qce_device *qce,
+diff --git a/drivers/crypto/rockchip/rk3288_crypto.c b/drivers/crypto/rockchip/rk3288_crypto.c
+index f385587f99af..23a695f31d1d 100644
+--- a/drivers/crypto/rockchip/rk3288_crypto.c
++++ b/drivers/crypto/rockchip/rk3288_crypto.c
+@@ -200,9 +200,9 @@ static int rk_crypto_enqueue(struct rk_crypto_info *dev,
  	return ret;
  }
  
--static void qce_tasklet_req_done(unsigned long data)
-+static void qce_tasklet_req_done(struct tasklet_struct *t)
+-static void rk_crypto_queue_task_cb(unsigned long data)
++static void rk_crypto_queue_task_cb(struct tasklet_struct *T)
  {
--	struct qce_device *qce = (struct qce_device *)data;
-+	struct qce_device *qce = from_tasklet(qce, t, done_tasklet);
- 	struct crypto_async_request *req;
+-	struct rk_crypto_info *dev = (struct rk_crypto_info *)data;
++	struct rk_crypto_info *dev = from_tasklet(dev, t, queue_task);
+ 	struct crypto_async_request *async_req, *backlog;
  	unsigned long flags;
+ 	int err = 0;
+@@ -230,9 +230,9 @@ static void rk_crypto_queue_task_cb(unsigned long data)
+ 		dev->complete(dev->async_req, err);
+ }
  
-@@ -221,8 +221,7 @@ static int qce_crypto_probe(struct platform_device *pdev)
- 		goto err_clks;
+-static void rk_crypto_done_task_cb(unsigned long data)
++static void rk_crypto_done_task_cb(struct tasklet_struct *t)
+ {
+-	struct rk_crypto_info *dev = (struct rk_crypto_info *)data;
++	struct rk_crypto_info *dev = from_tasklet(dev, t, done_task);
  
- 	spin_lock_init(&qce->lock);
--	tasklet_init(&qce->done_tasklet, qce_tasklet_req_done,
--		     (unsigned long)qce);
-+	tasklet_setup(&qce->done_tasklet, qce_tasklet_req_done);
- 	crypto_init_queue(&qce->queue, QCE_QUEUE_LENGTH);
+ 	if (dev->err) {
+ 		dev->complete(dev->async_req, dev->err);
+@@ -388,10 +388,8 @@ static int rk_crypto_probe(struct platform_device *pdev)
+ 	crypto_info->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, crypto_info);
  
- 	qce->async_req_enqueue = qce_async_request_enqueue;
+-	tasklet_init(&crypto_info->queue_task,
+-		     rk_crypto_queue_task_cb, (unsigned long)crypto_info);
+-	tasklet_init(&crypto_info->done_task,
+-		     rk_crypto_done_task_cb, (unsigned long)crypto_info);
++	tasklet_setup(&crypto_info->queue_task, rk_crypto_queue_task_cb);
++	tasklet_setup(&crypto_info->done_task, rk_crypto_done_task_cb);
+ 	crypto_init_queue(&crypto_info->queue, 50);
+ 
+ 	crypto_info->enable_clk = rk_crypto_enable_clk;
 -- 
 2.17.1
 
