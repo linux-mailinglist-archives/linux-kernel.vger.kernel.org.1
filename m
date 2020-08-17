@@ -2,146 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19CC247023
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A1924705A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390237AbgHQSDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:03:50 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:52788 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390215AbgHQSC0 (ORCPT
+        id S2390326AbgHQSHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:07:07 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:51668 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390319AbgHQSHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 14:02:26 -0400
-Received: by mail-il1-f198.google.com with SMTP id q16so7186621ils.19
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 11:02:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=tdstDYSYTI5mx+wadHLvUsUrcY6mmO9LIjUm2tyK4JE=;
-        b=XlAy57fDXKLijqimAp5+qa6bX13BZVZGKYFQGJX+Ugt/gYX7OpNYI2sP3/WJsXNHUE
-         Et3monYdRPAB1VyicLYWiBG+T3/IKcezEgPAqWzzAMGGJbCO7glFxiC5nnTZ9EDSegfO
-         DuYyHZHNzEgqlPcJVfOaCgCh9t8STlplnV8iZuymiUcFNQXMXpy/c50Qx6YHICVXofCb
-         JhOIMF5giiQRt/iL+c4FOA3DbScedsTYlLuATAlilwnJZJgr7L9aHUUZbRxCzt3Cahfm
-         AHaX7rzguGJg8AUPbI2jjft2yii0DpcNwvkkyjJgXprrpbyWJfc1gVUzh1SF0h/CKZLQ
-         9WtA==
-X-Gm-Message-State: AOAM533ApaIWy/Q7ZXV36B/LWsxzSaDzKiQcyxxSLVIFtY5tQQns9akB
-        xsAPPFhqIbFOHSbALN6TN+Kr6TxI98whvfhPXjvKREwqzUC2
-X-Google-Smtp-Source: ABdhPJxEPSlkDU5ympvihcaPeuAhl+IcY8niForAvT0ZObG4abivk7xeG5W9PV/609tegxGpfi5tPf/+UB4bOtBe6EMfUuuvw5Vq
+        Mon, 17 Aug 2020 14:07:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597687622; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=9CVlP0NKFUrth4YuewySvBnW5hSLKNVeVTO5XQZN6uw=;
+ b=XeXYjxUL4+3/10pHYbAMsQJcdZq60yKx/glTHdCvYU8Ge1g2eVNxD4aX8Lr6jXVJYvOn9xaf
+ NvPNepCRouT/wJqg4L30CYON3AjIPqguEu1RYY/jQnwmI3Xtc9lHf8g+ibByXebxWd/cRqCs
+ AJR2whj+URSx79S4oOk1EsfT0+U=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f3ac73d440a07969a8172ee (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 18:06:53
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8087FC433A0; Mon, 17 Aug 2020 18:06:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: tanmay)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5E444C433CA;
+        Mon, 17 Aug 2020 18:06:51 +0000 (UTC)
 MIME-Version: 1.0
-X-Received: by 2002:a92:c709:: with SMTP id a9mr13434633ilp.183.1597687345200;
- Mon, 17 Aug 2020 11:02:25 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 11:02:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ac45c705ad169245@google.com>
-Subject: KASAN: use-after-free Write in paging32_walk_addr_generic
-From:   syzbot <syzbot+47665dbce263479409c8@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 17 Aug 2020 11:06:51 -0700
+From:   Tanmay Shah <tanmay@codeaurora.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     devicetree@vger.kernel.org, airlied@linux.ie,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, swboyd@chromium.org,
+        khsieh@codeaurora.org, seanpaul@chromium.org,
+        abhinavk@codeaurora.org, Vara Reddy <varar@codeaurora.org>,
+        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        dri-devel <dri-devel-bounces@lists.freedesktop.org>
+Subject: Re: [PATCH v10 3/5] drm/msm/dp: add support for DP PLL driver
+In-Reply-To: <28b1f678-ab8f-cf6a-af9f-fcd79131bdc1@linaro.org>
+References: <20200812044223.19279-1-tanmay@codeaurora.org>
+ <20200812044223.19279-4-tanmay@codeaurora.org>
+ <821b5cf9-5ca0-7026-fd99-9a32285ed030@linaro.org>
+ <f6b330778c07abd3003da9acab4d3398@codeaurora.org>
+ <28b1f678-ab8f-cf6a-af9f-fcd79131bdc1@linaro.org>
+Message-ID: <c5662d54073bc6d3f7ea872cb2bbbcdb@codeaurora.org>
+X-Sender: tanmay@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2020-08-15 04:45, Dmitry Baryshkov wrote:
+> On 15/08/2020 02:22, Tanmay Shah wrote:
+>> On 2020-08-14 10:05, Dmitry Baryshkov wrote:
+>>> On 12/08/2020 07:42, Tanmay Shah wrote:
+>>>> From: Chandan Uddaraju <chandanu@codeaurora.org>
+>>>> 
+>>>> Add the needed DP PLL specific files to support
+>>>> display port interface on msm targets.
+>>> 
+>>> [skipped]
+>>> 
+>>>> diff --git a/drivers/gpu/drm/msm/dp/dp_pll_private.h 
+>>>> b/drivers/gpu/drm/msm/dp/dp_pll_private.h
+>>>> new file mode 100644
+>>>> index 000000000000..475ba6ed59ab
+>>>> --- /dev/null
+>>>> +++ b/drivers/gpu/drm/msm/dp/dp_pll_private.h
+>>>> @@ -0,0 +1,98 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>>>> +/*
+>>>> + * Copyright (c) 2016-2020, The Linux Foundation. All rights 
+>>>> reserved.
+>>>> + */
+>>>> +
+>>>> +#ifndef __DP_PLL_10NM_H
+>>>> +#define __DP_PLL_10NM_H
+>>>> +
+>>>> +#include "dp_pll.h"
+>>>> +#include "dp_reg.h"
+>>>> +
+>>>> +#define DP_VCO_HSCLK_RATE_1620MHZDIV1000    1620000UL
+>>>> +#define DP_VCO_HSCLK_RATE_2700MHZDIV1000    2700000UL
+>>>> +#define DP_VCO_HSCLK_RATE_5400MHZDIV1000    5400000UL
+>>>> +#define DP_VCO_HSCLK_RATE_8100MHZDIV1000    8100000UL
+>>>> +
+>>>> +#define NUM_DP_CLOCKS_MAX            6
+>>>> +
+>>>> +#define DP_PHY_PLL_POLL_SLEEP_US        500
+>>>> +#define DP_PHY_PLL_POLL_TIMEOUT_US        10000
+>>>> +
+>>>> +#define DP_VCO_RATE_8100MHZDIV1000        8100000UL
+>>>> +#define DP_VCO_RATE_9720MHZDIV1000        9720000UL
+>>>> +#define DP_VCO_RATE_10800MHZDIV1000        10800000UL
+>>>> +
+>>>> +struct dp_pll_vco_clk {
+>>>> +    struct clk_hw hw;
+>>>> +    unsigned long    rate;        /* current vco rate */
+>>>> +    u64        min_rate;    /* min vco rate */
+>>>> +    u64        max_rate;    /* max vco rate */
+>>>> +    void        *priv;
+>>>> +};
+>>>> +
+>>>> +struct dp_pll_db {
+>>> 
+>>> This struct should probably go into dp_pll_10nm.c. dp_pll_7nm.c, for
+>>> example, will use slightly different structure.
+>>> 
+>> 
+>> Sure, it sounds good. I will give it try. Thanks!
+>> 
+>>>> +    struct msm_dp_pll *base;
+>>>> +
+>>>> +    int id;
+>>>> +    struct platform_device *pdev;
+>>>> +
+>>>> +    /* private clocks: */
+>>>> +    bool fixed_factor_clk[NUM_DP_CLOCKS_MAX];
+>>>> +    struct clk_hw *hws[NUM_DP_CLOCKS_MAX];
+>>> 
+>>> Then these two fields can use exact number of clocks rather than
+>>> NUM_DP_CLOCKS_MAX.
+>>> 
+>> 
+>> I didn't get this. I think NUM_DP_CLOCKS_MAX is doing same?
+> 
+> Not exactly. We'd need fixed_factor_clk[4] for 10nm rather than 6.
+> It's not that important, just a small nitpick.
+> 
+> 
+>>>> +    u32 num_hws;
+>>>> +
+>>>> +    /* lane and orientation settings */
+>>>> +    u8 lane_cnt;
+>>>> +    u8 orientation;
+>>>> +
+>>>> +    /* COM PHY settings */
+>>>> +    u32 hsclk_sel;
+>>>> +    u32 dec_start_mode0;
+>>>> +    u32 div_frac_start1_mode0;
+>>>> +    u32 div_frac_start2_mode0;
+>>>> +    u32 div_frac_start3_mode0;
+>>>> +    u32 integloop_gain0_mode0;
+>>>> +    u32 integloop_gain1_mode0;
+>>>> +    u32 vco_tune_map;
+>>>> +    u32 lock_cmp1_mode0;
+>>>> +    u32 lock_cmp2_mode0;
+>>>> +    u32 lock_cmp3_mode0;
+>>>> +    u32 lock_cmp_en;
+>>>> +
+>>>> +    /* PHY vco divider */
+>>>> +    u32 phy_vco_div;
+>>>> +    /*
+>>>> +     * Certain pll's needs to update the same vco rate after resume 
+>>>> in
+>>>> +     * suspend/resume scenario. Cached the vco rate for such plls.
+>>>> +     */
+>>>> +    unsigned long    vco_cached_rate;
+>>>> +    u32        cached_cfg0;
+>>>> +    u32        cached_cfg1;
+>>>> +    u32        cached_outdiv;
+>>>> +
+>>>> +    uint32_t index;
+>>>> +};
+>>>> +
+>>>> +static inline struct dp_pll_vco_clk *to_dp_vco_hw(struct clk_hw 
+>>>> *hw)
+>>>> +{
+>>>> +    return container_of(hw, struct dp_pll_vco_clk, hw);
+>>>> +}
+>>>> +
+>>>> +#define to_msm_dp_pll(vco) ((struct msm_dp_pll *)vco->priv)
+>>>> +
+>>>> +#define to_dp_pll_db(x)    ((struct dp_pll_db *)x->priv)
+>>>> +
+>>>> +int dp_vco_set_rate_10nm(struct clk_hw *hw, unsigned long rate,
+>>>> +                unsigned long parent_rate);
+>>>> +unsigned long dp_vco_recalc_rate_10nm(struct clk_hw *hw,
+>>>> +                unsigned long parent_rate);
+>>>> +long dp_vco_round_rate_10nm(struct clk_hw *hw, unsigned long rate,
+>>>> +                unsigned long *parent_rate);
+>>>> +int dp_vco_prepare_10nm(struct clk_hw *hw);
+>>>> +void dp_vco_unprepare_10nm(struct clk_hw *hw);
+>>>> +
+>>>> +int msm_dp_pll_10nm_init(struct msm_dp_pll *dp_pll, int id);
+>>>> +void msm_dp_pll_10nm_deinit(struct msm_dp_pll *dp_pll);
+>>> 
+>>> These functions don't seem to be used outside of dp_pll_10nm. What
+>>> about making them static?
+>> 
+>> I can't declare static to "init" and "deinit" as they are exported to 
+>> dp_pll.c.
+>> Rest of them I can move to dp_pll_10nm and then define static.
+> 
+> Please exuse me for not being exact enough. Of course I meant
+> dp_vco_FOO_10nm() functions, not init/exit.
+> 
+Ok got it. Sorry I didn't mean to nitpick here.
 
-syzbot found the following issue on:
+> BTW: as I'm looking onto 7nm dp pll, which naming would you prefer?
+> 
+I didn't get this. Did you mean naming convention of functions and 
+structure between
+7nm and 10 nm? Could you point me where 7nm dp pll code is posted?
 
-HEAD commit:    9123e3a7 Linux 5.9-rc1
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1355e34a900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3d400a47d1416652
-dashboard link: https://syzkaller.appspot.com/bug?extid=47665dbce263479409c8
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e059f6900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=170f8ab4900000
+> We can have separate DP_PLL_10nm/DP_PLL_7nm namespaces (as DSI PLLs
+> do) or I can override only a set of constants (like downstream driver
+> does).
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+47665dbce263479409c8@syzkaller.appspotmail.com
+Having separate namespace sounds good.
 
-L1TF CPU bug present and SMT on, data leak possible. See CVE-2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1tf.html for details.
-==================================================================
-BUG: KASAN: use-after-free in instrument_atomic_write include/linux/instrumented.h:71 [inline]
-BUG: KASAN: use-after-free in paging32_cmpxchg_gpte arch/x86/kvm/mmu/paging_tmpl.h:181 [inline]
-BUG: KASAN: use-after-free in paging32_update_accessed_dirty_bits arch/x86/kvm/mmu/paging_tmpl.h:287 [inline]
-BUG: KASAN: use-after-free in paging32_walk_addr_generic+0x155d/0x1980 arch/x86/kvm/mmu/paging_tmpl.h:457
-Write of size 4 at addr ffff888000105000 by task syz-executor735/6849
-
-CPU: 1 PID: 6849 Comm: syz-executor735 Not tainted 5.9.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- instrument_atomic_write include/linux/instrumented.h:71 [inline]
- paging32_cmpxchg_gpte arch/x86/kvm/mmu/paging_tmpl.h:181 [inline]
- paging32_update_accessed_dirty_bits arch/x86/kvm/mmu/paging_tmpl.h:287 [inline]
- paging32_walk_addr_generic+0x155d/0x1980 arch/x86/kvm/mmu/paging_tmpl.h:457
- paging32_walk_addr arch/x86/kvm/mmu/paging_tmpl.h:514 [inline]
- paging32_gva_to_gpa+0xb2/0x1d0 arch/x86/kvm/mmu/paging_tmpl.h:958
- vcpu_mmio_gva_to_gpa arch/x86/kvm/x86.c:5758 [inline]
- emulator_read_write_onepage+0x2f3/0xa70 arch/x86/kvm/x86.c:5874
- emulator_read_write+0x1c4/0x5a0 arch/x86/kvm/x86.c:5934
- emulator_write_emulated arch/x86/kvm/x86.c:5971 [inline]
- emulator_fix_hypercall+0x132/0x190 arch/x86/kvm/x86.c:7763
- em_hypercall+0x5d/0x130 arch/x86/kvm/emulate.c:3803
- x86_emulate_insn+0x5e8/0x3d20 arch/x86/kvm/emulate.c:5676
- x86_emulate_instruction+0x752/0x1e00 arch/x86/kvm/x86.c:7017
- kvm_emulate_instruction arch/x86/kvm/x86.c:7085 [inline]
- handle_ud+0xa8/0x240 arch/x86/kvm/x86.c:5718
- handle_exception_nmi+0xaf7/0x1270 arch/x86/kvm/vmx/vmx.c:4761
- vmx_handle_exit+0x293/0x14c0 arch/x86/kvm/vmx/vmx.c:6118
- vcpu_enter_guest+0x14d6/0x3b60 arch/x86/kvm/x86.c:8641
- vcpu_run arch/x86/kvm/x86.c:8706 [inline]
- kvm_arch_vcpu_ioctl_run+0x440/0x1780 arch/x86/kvm/x86.c:8923
- kvm_vcpu_ioctl+0x467/0xdf0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3229
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x443639
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 9b 0b fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffcf07dea38 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffcf07dea40 RCX: 0000000000443639
-RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000006
-RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000004011b0
-R10: 0000000000000012 R11: 0000000000000246 R12: 0000000000404660
-R13: 00000000004046f0 R14: 0000000000000000 R15: 0000000000000000
-
-The buggy address belongs to the page:
-page:000000000c451483 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x105
-flags: 0x7ffe0000000000()
-raw: 007ffe0000000000 ffffea0000004148 ffffea0000004148 0000000000000000
-raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888000104f00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888000104f80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff888000105000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                   ^
- ffff888000105080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888000105100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
