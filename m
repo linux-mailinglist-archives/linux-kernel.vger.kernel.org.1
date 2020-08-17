@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8361E246196
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D1A246198
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728692AbgHQI6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:58:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
+        id S1728699AbgHQI6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgHQI6D (ORCPT
+        with ESMTP id S1726171AbgHQI6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:58:03 -0400
+        Mon, 17 Aug 2020 04:58:08 -0400
 Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA48EC061388
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:58:03 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id t10so7163658plz.10
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:58:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111B9C061388
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:58:08 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id u10so7170561plr.7
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:58:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=jl7zq958bvyphHRDKv4nNAmR0zSknfotUpyL6Tf/wt8=;
-        b=P6IDOwP5JjvvGriwph12LdSiIuRxpIgAmAdMDNUOEdE3wlgtHweKJoc7ASfqWWFbOV
-         1SCY05N0lES3ftWwuw0qEvw3kHzrei9IGR7fosnwng703pUgzzIvRYsyvraiJ/VaIpMA
-         k71+8G+uSed3hr9W9FQlwtv/jvRlQi8TYx3lq5goJm6mW5TbZcyp5ew06Vj/0R+oHH0H
-         wL3aGoRxbVBtWnNo0LqEQPeBeLQWUXCHOBaGbAtDhANFy802MUStNt5AsT9vr7qMCxWB
-         rjEbhj3ixZnzZHJBpeZN7wkoHdNNxSDUNewjoQhY19JIehAGVzC27UkcvmMgIB59PGjG
-         s35Q==
+        bh=KccEtbXa6IlqeauaaaE7AIR0JNzfFLmA4P8zWKeg1Pc=;
+        b=M37L93SCLVOuNTd2R9Itm92ayKxRQN2wHX1NMFvm06ygZB2w44PlvNXwkJzimpR6iB
+         2lXAZrOUVBZYUTzHKKHB25qNW2hykUMYhRfnT7q8KV7f7t8YxEzhRmbvf4l81mXIx4dw
+         EPs6ufn++tfqVIgFjil8lKLw0yMOuqogI6PkT+GeHwVipcgtTdeVKXuM1PzVWiWcrfyL
+         6zWKzlQDXSZDv347qZKC4pSOvNznLe5RkWVehvvaP0bFYCd2H02PiYftk+J6+iY3wrEa
+         vfgyjW7cXLAdOZUKrSj2k0LyCFiN4QXhoyxES3u+AwweLjEaKnkftQ99c8vxeyjYjdEK
+         609w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=jl7zq958bvyphHRDKv4nNAmR0zSknfotUpyL6Tf/wt8=;
-        b=FANEE5RfKVK84qetvBXhh4v6ZBykimT8moYGnSlDTe8v2vjdmDQOH952CMupi3PiL6
-         5L8IlbavUmt6My2uzzaXcvad7HCMHt9upvFSNRH5W9S0eKmJYYs+6fT8P+3DBw438+jq
-         jsTzvBZ+fJM0CedDsNUcj/+Ex2h9lQuTsrzSToGTFczCFdeKVIPthdW32BgPEGtB9AHN
-         //f+hTGHKhYbX+YARb6SEHJJ7W+8Yu//90GvSAPWq8ca67aoqirOhkovo4HB84o1p3Lj
-         0sr5JpxCrV5MOqQM6Nl59YeGdN/fdSw0GJRPc51G8s8+Mp0yrYee0yw2oMc1Gk7zatXo
-         ktOg==
-X-Gm-Message-State: AOAM5309U3XRS7Cz/gX0uzKAmh2UF6gu9HQloaukcCTN7Vb1RQQA8hbw
-        RZIXMOLsEcgfy0LpO9Ryk/s=
-X-Google-Smtp-Source: ABdhPJzq+K7CR467KRQ31me/jHavVenQGpsdx8Y2B5GP1GWBoaBp3308lEe+K8lDR2l6eP6TZaJOjA==
-X-Received: by 2002:a17:90a:7348:: with SMTP id j8mr10509100pjs.137.1597654683313;
-        Mon, 17 Aug 2020 01:58:03 -0700 (PDT)
+        bh=KccEtbXa6IlqeauaaaE7AIR0JNzfFLmA4P8zWKeg1Pc=;
+        b=GsFPKiQfTIXZe1nSzkVMJba7eB/kLBBtryuqn2tCM/StMmXKiDjsCgf9qyP72sW7SE
+         yiao2uM98jnJBcGlQe7ztfIkxBgc+lEISLr4sJgoJ6rvUET9Fdstv6KlET0qlA4AbXN8
+         04akKMPmqnXogrBdajygDv7cdlqkv4psJzaZmRuKquItqAXRauFyY7QOmvMLB8/u0ngx
+         5LgHLFYyeQMQuDOIXypBVFvEtOaEpa3TpP8TavnGpLwm86pkmZNjmc6834pezyqFnYMp
+         0SU+T7kDbuDZZY/bdEj06q0PuQwq4RWvl3b8ERsvQ07z7MtVEsIfIgd0D4Vf3ZZBpB50
+         04Fg==
+X-Gm-Message-State: AOAM530uNsEAJ5xKwOHxBcBpZZXvirbGnByvP3ELkh9Cydu7EdYFcvsB
+        HgorrHg3NHXLXJ44NFcS/ec=
+X-Google-Smtp-Source: ABdhPJzg9Sul/hHo2S3e13LeNtREGnuHKJS0d3HSemC0SzTDZO8mUsRC3gx5jqtsol6tC19JN8YCqA==
+X-Received: by 2002:a17:90b:1949:: with SMTP id nk9mr11123870pjb.185.1597654687567;
+        Mon, 17 Aug 2020 01:58:07 -0700 (PDT)
 Received: from localhost.localdomain ([49.207.202.98])
-        by smtp.gmail.com with ESMTPSA id j5sm19057245pfg.80.2020.08.17.01.57.59
+        by smtp.gmail.com with ESMTPSA id j5sm19057245pfg.80.2020.08.17.01.58.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 01:58:02 -0700 (PDT)
+        Mon, 17 Aug 2020 01:58:07 -0700 (PDT)
 From:   Allen Pais <allen.cryptic@gmail.com>
 To:     perex@perex.cz, tiwai@suse.com, clemens@ladisch.de,
         o-takashi@sakamocchi.jp, timur@kernel.org, nicoleotsuka@gmail.com,
@@ -55,9 +55,9 @@ Cc:     keescook@chromium.org, alsa-devel@alsa-project.org,
         linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
         Allen Pais <allen.lkml@gmail.com>,
         Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH 08/10] sound/soc: txx9: convert tasklets to use new tasklet_setup() API
-Date:   Mon, 17 Aug 2020 14:27:01 +0530
-Message-Id: <20200817085703.25732-9-allen.cryptic@gmail.com>
+Subject: [PATCH 09/10] sound: midi: convert tasklets to use new tasklet_setup() API
+Date:   Mon, 17 Aug 2020 14:27:02 +0530
+Message-Id: <20200817085703.25732-10-allen.cryptic@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200817085703.25732-1-allen.cryptic@gmail.com>
 References: <20200817085703.25732-1-allen.cryptic@gmail.com>
@@ -76,35 +76,35 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- sound/soc/txx9/txx9aclc.c | 7 +++----
+ sound/usb/midi.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
-index 4b1cd4da3e36..939b33ec39f5 100644
---- a/sound/soc/txx9/txx9aclc.c
-+++ b/sound/soc/txx9/txx9aclc.c
-@@ -134,9 +134,9 @@ txx9aclc_dma_submit(struct txx9aclc_dmadata *dmadata, dma_addr_t buf_dma_addr)
- 
- #define NR_DMA_CHAIN		2
- 
--static void txx9aclc_dma_tasklet(unsigned long data)
-+static void txx9aclc_dma_tasklet(struct tasklet_struct *t)
- {
--	struct txx9aclc_dmadata *dmadata = (struct txx9aclc_dmadata *)data;
-+	struct txx9aclc_dmadata *dmadata = from_tasklet(dmadata, t, tasklet);
- 	struct dma_chan *chan = dmadata->dma_chan;
- 	struct dma_async_tx_descriptor *desc;
- 	struct snd_pcm_substream *substream = dmadata->substream;
-@@ -352,8 +352,7 @@ static int txx9aclc_dma_init(struct txx9aclc_soc_device *dev,
- 			"playback" : "capture");
- 		return -EBUSY;
- 	}
--	tasklet_init(&dmadata->tasklet, txx9aclc_dma_tasklet,
--		     (unsigned long)dmadata);
-+	tasklet_setup(&dmadata->tasklet, txx9aclc_dma_tasklet);
- 	return 0;
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index df639fe03118..e8287a05e36b 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -344,10 +344,9 @@ static void snd_usbmidi_do_output(struct snd_usb_midi_out_endpoint *ep)
+ 	spin_unlock_irqrestore(&ep->buffer_lock, flags);
  }
  
+-static void snd_usbmidi_out_tasklet(unsigned long data)
++static void snd_usbmidi_out_tasklet(struct tasklet_struct *t)
+ {
+-	struct snd_usb_midi_out_endpoint *ep =
+-		(struct snd_usb_midi_out_endpoint *) data;
++	struct snd_usb_midi_out_endpoint *ep = from_tasklet(ep, t, tasklet);
+ 
+ 	snd_usbmidi_do_output(ep);
+ }
+@@ -1441,7 +1440,7 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi *umidi,
+ 	}
+ 
+ 	spin_lock_init(&ep->buffer_lock);
+-	tasklet_init(&ep->tasklet, snd_usbmidi_out_tasklet, (unsigned long)ep);
++	tasklet_setup(&ep->tasklet, snd_usbmidi_out_tasklet);
+ 	init_waitqueue_head(&ep->drain_wait);
+ 
+ 	for (i = 0; i < 0x10; ++i)
 -- 
 2.17.1
 
