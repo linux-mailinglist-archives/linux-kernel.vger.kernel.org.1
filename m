@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2879245AC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 04:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72D0245AC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 04:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726905AbgHQCc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 22:32:56 -0400
-Received: from mga03.intel.com ([134.134.136.65]:25270 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726697AbgHQCcz (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 22:32:55 -0400
-IronPort-SDR: gGh+2HWZES1Q5wjo7EWOvdEcDjoaYG4XX5TC2KwbtgtvbyKKjKFo1Mp9I5USSkfUGUR/C97+e6
- WsmEF4jLwTog==
-X-IronPort-AV: E=McAfee;i="6000,8403,9715"; a="154601723"
-X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; 
-   d="scan'208";a="154601723"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2020 19:32:55 -0700
-IronPort-SDR: yR653rNF2cnbdtHCzlVrDuXp2u7FAbIuJ45Hw0G1vq2PBC5BBSoj4TaNdRkhDwFLk7QwDvWgn9
- gSvhf7S7IiZw==
-X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; 
-   d="scan'208";a="496858335"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2020 19:32:52 -0700
-Subject: Re: [PATCH v3] perf parse-events: Set exclude_guest=1 for user-space
- counting
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
-        like.xu@linux.intel.com
-References: <20200814012120.16647-1-yao.jin@linux.intel.com>
- <20200814124722.GG13995@kernel.org>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <b061052d-592d-67d7-045f-481974b0687a@linux.intel.com>
-Date:   Mon, 17 Aug 2020 10:32:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726945AbgHQCuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 22:50:19 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:46429 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726451AbgHQCuR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 Aug 2020 22:50:17 -0400
+X-UUID: 123f6e4c5eaa4592bfa01aface8a5e91-20200817
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=nXcU1Hc02thK0kndiWW9wjNDJvWYN5PNOdsuyKQXNMw=;
+        b=YVJsx2MkcK/1OskF3r85MZd+NidokJyZh5apF5CZHL2nHJdPbSQ3EiUpRCdCgO/j4IZmtXd7e9PkgWaMZaRPnqBL5OLgQMLFdIcWT5zboE33h4aJry6miniFuv/TD0ceJkyR8MPg2cjlOXDvS24S3dX40s+1V3Zhzf3LEMOZCW0=;
+X-UUID: 123f6e4c5eaa4592bfa01aface8a5e91-20200817
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <crystal.guo@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1442053350; Mon, 17 Aug 2020 10:50:11 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 17 Aug 2020 10:50:09 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 17 Aug 2020 10:50:08 +0800
+From:   Crystal Guo <crystal.guo@mediatek.com>
+To:     <p.zabel@pengutronix.de>, <robh+dt@kernel.org>,
+        <matthias.bgg@gmail.com>
+CC:     <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <s-anna@ti.com>, <afd@ti.com>, <seiya.wang@mediatek.com>,
+        <stanley.chu@mediatek.com>, <yingjoe.chen@mediatek.com>,
+        <fan.chen@mediatek.com>, <yong.liang@mediatek.com>
+Subject: [v3,0/6] introduce TI reset controller for MT8192 SoC
+Date:   Mon, 17 Aug 2020 10:48:38 +0800
+Message-ID: <20200817024842.5289-1-crystal.guo@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <20200814124722.GG13995@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+djM6DQoxLiByZXZlcnQgdjIgY2hhbmdlcy4NCjIuIGFkZCAncmVzZXQtZHVyYXRpb24tdXMnIHBy
+b3BlcnR5IHRvIGRlY2xhcmUgYSBtaW5pbXVtIGRlbGF5LA0Kd2hpY2ggbmVlZHMgdG8gYmUgd2Fp
+dGVkIGJldHdlZW4gYXNzZXJ0IGFuZCBkZWFzc2VydC4NCjMuIGFkZCAnbWVkaWF0ZWssaW5mcmEt
+cmVzZXQnIHRvIGNvbXBhdGlibGUuDQoNCnYyIGNoYW5nZXM6DQpodHRwczovL3BhdGNod29yay5r
+ZXJuZWwub3JnL3BhdGNoLzExNjk3MzcxLw0KMS4gYWRkICdhc3NlcnQtZGVhc3NlcnQtdG9nZXRo
+ZXInIHByb3BlcnR5IHRvIGludHJvZHVjZSBhIG5ldyByZXNldCBoYW5kbGVyLA0Kd2hpY2ggYWxs
+b3dzIGRldmljZSB0byBkbyBzZXJpYWxpemVkIGFzc2VydCBhbmQgZGVhc3NlcnQgb3BlcmF0aW9u
+cyBpbiBhIHNpbmdsZQ0Kc3RlcCBieSAncmVzZXQnIG1ldGhvZC4NCjIuIGFkZCAndXBkYXRlLWZv
+cmNlJyBwcm9wZXJ0eSB0byBpbnRyb2R1Y2UgZm9yY2UtdXBkYXRlIG1ldGhvZCwgd2hpY2ggZm9y
+Y2VzDQp0aGUgd3JpdGUgb3BlcmF0aW9uIGluIGNhc2UgdGhlIHJlYWQgYWxyZWFkeSBoYXBwZW5z
+IHRvIHJldHVybiB0aGUgY29ycmVjdCB2YWx1ZS4NCjMuIGFkZCAnZ2VuZXJpYy1yZXNldCcgdG8g
+Y29tcGF0aWJsZQ0KDQp2MSBjaGFuZ2VzOg0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9w
+YXRjaC8xMTY5MDUyMy8NCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvMTE2OTA1
+MjcvDQoNCkNyeXN0YWwgR3VvICg0KToNCiAgZHQtYmluZGluZzogcmVzZXQtY29udHJvbGxlcjog
+dGk6IGFkZCByZXNldC1kdXJhdGlvbi11cyBwcm9wZXJ0eQ0KICBkdC1iaW5kaW5nOiByZXNldC1j
+b250cm9sbGVyOiB0aTogYWRkICdtZWRpYXRlayxpbmZyYS1yZXNldCcgdG8NCiAgICBjb21wYXRp
+YmxlDQogIHJlc2V0LWNvbnRyb2xsZXI6IHRpOiBpbnRyb2R1Y2UgYSBuZXcgcmVzZXQgaGFuZGxl
+cg0KICBhcm02NDogZHRzOiBtdDgxOTI6IGFkZCBpbmZyYWNmZ19yc3Qgbm9kZQ0KDQogLi4uL2Jp
+bmRpbmdzL3Jlc2V0L3RpLXN5c2Nvbi1yZXNldC50eHQgICAgICAgIHwgIDYgKysrKysNCiBhcmNo
+L2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNpICAgICAgfCAxMSArKysrKysrLQ0K
+IGRyaXZlcnMvcmVzZXQvcmVzZXQtdGktc3lzY29uLmMgICAgICAgICAgICAgICB8IDI2ICsrKysr
+KysrKysrKysrKysrLS0NCiAzIGZpbGVzIGNoYW5nZWQsIDQwIGluc2VydGlvbnMoKyksIDMgZGVs
+ZXRpb25zKC0pDQoNCg==
 
-On 8/14/2020 8:47 PM, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Aug 14, 2020 at 09:21:20AM +0800, Jin Yao escreveu:
->> Currently if we run 'perf record -e cycles:u', exclude_guest=0.
->>
->> But it doesn't make sense in most cases that we request for
->> user-space counting but we also get the guest report.
->>
->> Of course, we also need to consider perf kvm usage case that
->> authorized perf users on the host may only want to count guest
->> user space events. For example,
->>
->> perf kvm --guest record -e cycles:u
-> Ok, probably this works, but what if I want to record guest user samples
-> without using 'perf kvm'?
-> 
-> Can we have a 'U' modifier, perhaps, for that?
-> 
-> I.e.
-> 
-> perf record -e cycles:uU would not set exclude_host not exclude_guest,
-> cycles:u excludes guest user, cycles:U excludes host user, would that be
-> possible?
-> 
-> Anyway, I think that with what we have, your patch makes sense, having a
-> way to, without using 'perf kvm' still be able to sample the guest can
-> be done on top. of this.
-> 
-> Xu, can we get your Reviewed-by if this addresses your concerns?
-> 
-> - Arnaldo
->   
-
-Do you suggest we will create a new modifier 'U' as a follow-up patch?
-
-cycles:u - Count host user space but it doesn't count the guest user space (exclude_host = 0, 
-exclude_guest = 1, exclude_kernel = 1, exclude_user = 0, exclude_hv = 1)
-
-cycles:U - Count the guest user space but it doesn't count the host user space (exclude_host = 1, 
-exclude_guest = 0, exclude_kernel = 1, exclude_user = 0, exclude_hv = 1)
-
-Is above understanding correct?
-
-Thanks
-Jin Yao
