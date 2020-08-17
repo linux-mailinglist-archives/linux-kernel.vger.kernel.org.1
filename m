@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D112471C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ACC02473A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391195AbgHQSdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:33:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47142 "EHLO mail.kernel.org"
+        id S2391820AbgHQS7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:59:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731020AbgHQQAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:00:30 -0400
+        id S1730770AbgHQPtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:49:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3006206FA;
-        Mon, 17 Aug 2020 16:00:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A9102065D;
+        Mon, 17 Aug 2020 15:48:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680030;
-        bh=671qMzywyiO9upLORWnHQgMmYgw/Iu86jshCUde0boc=;
+        s=default; t=1597679340;
+        bh=dJ/oRwwx+jniJMh75Sm69hzzChkf4XowTV+cbAgN2Gk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F1iliXh9qVKsH6Qn33vFEp6oIlC9IUt/1ng4frKwZnfSLMwmXrK9bKrGMg16KDgCr
-         oSIpPo5UL1P1lPIoakGk8V7/aB84xIy+ZLpBY+q0LGYVSyLhmBu6aDBoH2scqT10lq
-         5dJj4bIveKY+2krkk0ae8lYIhaaQMAgpYNkpm8rc=
+        b=STP584CmNyyFNaixBy9a+IdmdfaxMTI+o9K1PnaxTcpGfZONrg13L9mc7YNCis8Mk
+         9yAXZpzuuIkZPIpJyQO+KgX69t6PR3fwTB29n3tgO9J1HRxwivBGKgPa/OAe1Y3MkD
+         SSt48UfYQKcG74h5s5HjWxuYzRvYFsyc+ZntsPFQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Lu Wei <luwei32@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 025/270] platform/x86: intel-vbtn: Fix return value check in check_acpi_dev()
-Date:   Mon, 17 Aug 2020 17:13:46 +0200
-Message-Id: <20200817143757.036494552@linuxfoundation.org>
+Subject: [PATCH 5.7 177/393] scsi: eesox: Fix different dev_id between request_irq() and free_irq()
+Date:   Mon, 17 Aug 2020 17:13:47 +0200
+Message-Id: <20200817143828.202013530@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
-References: <20200817143755.807583758@linuxfoundation.org>
+In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
+References: <20200817143819.579311991@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Wei <luwei32@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 64dd4a5a7d214a07e3d9f40227ec30ac8ba8796e ]
+[ Upstream commit 86f2da1112ccf744ad9068b1d5d9843faf8ddee6 ]
 
-In the function check_acpi_dev(), if it fails to create
-platform device, the return value is ERR_PTR() or NULL.
-Thus it must use IS_ERR_OR_NULL() to check return value.
+The dev_id used in request_irq() and free_irq() should match. Use 'info' in
+both cases.
 
-Fixes: 332e081225fc ("intel-vbtn: new driver for Intel Virtual Button")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Lu Wei <luwei32@huawei.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20200626040553.944352-1-christophe.jaillet@wanadoo.fr
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel-vbtn.c | 2 +-
+ drivers/scsi/arm/eesox.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
-index cb2a80fdd8f46..3393ee95077f6 100644
---- a/drivers/platform/x86/intel-vbtn.c
-+++ b/drivers/platform/x86/intel-vbtn.c
-@@ -286,7 +286,7 @@ check_acpi_dev(acpi_handle handle, u32 lvl, void *context, void **rv)
- 		return AE_OK;
+diff --git a/drivers/scsi/arm/eesox.c b/drivers/scsi/arm/eesox.c
+index 134f040d58e26..f441ec8eb93df 100644
+--- a/drivers/scsi/arm/eesox.c
++++ b/drivers/scsi/arm/eesox.c
+@@ -571,7 +571,7 @@ static int eesoxscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
  
- 	if (acpi_match_device_ids(dev, ids) == 0)
--		if (acpi_create_platform_device(dev, NULL))
-+		if (!IS_ERR_OR_NULL(acpi_create_platform_device(dev, NULL)))
- 			dev_info(&dev->dev,
- 				 "intel-vbtn: created platform device\n");
+ 	if (info->info.scsi.dma != NO_DMA)
+ 		free_dma(info->info.scsi.dma);
+-	free_irq(ec->irq, host);
++	free_irq(ec->irq, info);
  
+  out_remove:
+ 	fas216_remove(host);
 -- 
 2.25.1
 
