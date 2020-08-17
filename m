@@ -2,116 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CFF247587
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73AD2475A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731989AbgHQTYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:24:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
+        id S1732092AbgHQTZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731970AbgHQTYc (ORCPT
+        with ESMTP id S1732083AbgHQTZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 15:24:32 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C761CC061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:24:31 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id i10so3039061pgk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:24:31 -0700 (PDT)
+        Mon, 17 Aug 2020 15:25:42 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3FEC061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:25:41 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id i20so1822920qkk.8
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:25:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n32LWoSrsD3yQ3rMPfKnibY9bI4SixyCGhqWBe/ljHM=;
-        b=kl0qMavriKg0e81CBNLz0jae/dnxJ+iW38gvYVPjCqfQaZ+mAYzLkbyiP+bHcdJX/r
-         4GaLIsElPRD0nX/WfT98jtJoPe7Y1PB20/5qoA4l7Luu2OOw/7Cf7PPJ1w11WT14NtFQ
-         1t42W+NHFHCPaxa6F7e5H3S27ECjJwNGgvJrg=
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/kXuaN4AISusMlSkk2TTILtf5athEb7HHTj/BXfUUMU=;
+        b=sef5NOnEMc5nMqLQAehSTQDhfZ46QOtS1oW9CJlK4AXP5+gkrMhCAMBEtPbqvVzKr0
+         yAjODdfU4JSnB5BKF062O+zy171oc4LMeifmp7mPMhAyJc0ylBp3d+TEKBmHRMxQari4
+         szVpFMjye/T+BFept4uUfaYCo+Hmg44nsfyBxrIA8R3yloM0ejE6Q5JtCPSwvJ1b2aLC
+         pKBFRTtOYokNbXXiKPv4yP5068Go4iUiwMTxXTcVmPoSZ5AfIi64/BdoMxmbFqHL3p5g
+         NcX2J40IBF8QKAMIcwzICyWcRYeRQ8TqkrXYO9jpCKWw9Ap5euwpwVptWMJFxzge4ndT
+         bzzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n32LWoSrsD3yQ3rMPfKnibY9bI4SixyCGhqWBe/ljHM=;
-        b=R2IDjt/H0jr6731qKtiT3GqJNAPJWz44ItDDEXGSITpjgJNgVmW6O6dgof+Wlt+xCc
-         uKM0zM60OMJU/xg0nAUHl0IXH8606FWJAXdIXz9zCMsfaGz25FZzvh7S9OW3d+YVE/qE
-         4IWSoyZ26gPW61CysO9bbjElo5ZMX94SR90gcR0MsGIP/JyIjVYUiuFMb+jjX3hBNZWg
-         twSBiwbbFULmWdTaUwc+hBxOEJ/TeO4fC15LXSgQZEbk0UI/n9RLuMVOA9R7w14EgXZm
-         hlFrQk/JBvx7JpjjJCd7NGzSMILOrJpLZloAVdPOqFl9eAVXlA9sEnrN7g8SY2ExlkAo
-         hnVA==
-X-Gm-Message-State: AOAM5301CSSP8soVWzgVL5uPMte/GE6ehdUkxGRw1tS8a2BlPp/xmqVx
-        FAIos6oc7r98cHj76FAXgl2DRA==
-X-Google-Smtp-Source: ABdhPJxCnvr7OdyyfXgIjuvAGgqlvP3yekGPuJmDIAr7WhUPsbyprRa3J1vBwlaotiAdfvEJElUFww==
-X-Received: by 2002:a62:928d:: with SMTP id o135mr9014150pfd.22.1597692271280;
-        Mon, 17 Aug 2020 12:24:31 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i1sm21321974pfo.212.2020.08.17.12.24.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 12:24:30 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 12:24:29 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Alexander Popov <alex.popov@linux.com>,
-        Jann Horn <jannh@google.com>, Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        David Howells <dhowells@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
-        notify@kernel.org, Kexec Mailing List <kexec@lists.infradead.org>
-Subject: Re: [PATCH RFC 2/2] lkdtm: Add heap spraying test
-Message-ID: <202008171222.3F206231E@keescook>
-References: <20200813151922.1093791-1-alex.popov@linux.com>
- <20200813151922.1093791-3-alex.popov@linux.com>
- <87zh6t9llm.fsf@x220.int.ebiederm.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/kXuaN4AISusMlSkk2TTILtf5athEb7HHTj/BXfUUMU=;
+        b=OaKzRw2GHQlSxo4Il7rLxZ+iSHzYUpcX4NAGMjUpSZodjUhqOi7wvICphGkXcHzYvK
+         rRUeFtQoFf68uVJnZRVFX6OhLmN9K2LvPLd0sSs1sT3Wu7eVo9HPviuTqmIcyUDb9OY8
+         OPwAaQQtFYVZBQ9di+b0DYl0vE7P58WWQGOgzrOrC0sUGcAjG3AuKd8pl+MZD00M7PI+
+         MT7vHcW4k5IGlkagDC2EToY18XvgulpTANm2MeTCEyexldPXxOyy6YY/ak4hl/y5Tbf5
+         fPQWQJptGB6pBNOaljrjPX4hhBm//7utHnRhhgmW6U+byMqD7tUMp6uNTL1cicXTeZlA
+         oPtA==
+X-Gm-Message-State: AOAM533b+r33GA1RU/CgqltQWpBBgwHWnibl150GLuzBHz1GZKEs4gxQ
+        5RaXS1j9Dqt67RgjtX/zOOT7vXAQvobP4dbYZjmSnA==
+X-Google-Smtp-Source: ABdhPJx655WoWSZf8sKCtbQuqerBJWhb5d5rkooksrvYXLljTd0tdKuq/bKTr3OTKpoHtxRX1s5CYeo/ddHv+O/tjjo=
+X-Received: by 2002:a37:a495:: with SMTP id n143mr14451570qke.330.1597692341063;
+ Mon, 17 Aug 2020 12:25:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zh6t9llm.fsf@x220.int.ebiederm.org>
+References: <20200814030257.135463-1-warthog618@gmail.com> <CAMpxmJUCwXVv6U9sE=8isRMoNd8QvM9XLu4PU2Rr454wt_FTUw@mail.gmail.com>
+ <20200817184018.GV1891694@smile.fi.intel.com>
+In-Reply-To: <20200817184018.GV1891694@smile.fi.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 17 Aug 2020 21:25:30 +0200
+Message-ID: <CAMpxmJV6k=mQaYsH_abTHhyXis+hLJkJX+M9jAtciUB=0uoEUA@mail.gmail.com>
+Subject: Re: [PATCH v4 00/20] gpio: cdev: add uAPI v2
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 01:24:37PM -0500, Eric W. Biederman wrote:
-> Alexander Popov <alex.popov@linux.com> writes:
-> 
-> > Add a simple test for CONFIG_SLAB_QUARANTINE.
+On Mon, Aug 17, 2020 at 8:40 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Mon, Aug 17, 2020 at 08:24:24PM +0200, Bartosz Golaszewski wrote:
+> > On Fri, Aug 14, 2020 at 5:03 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > >
+> > > This patchset defines and implements adds a new version of the
+> > > GPIO CDEV uAPI to address existing 32/64-bit alignment issues, add
+> > > support for debounce, event sequence numbers, and allowing for requested
+> > > lines with different configurations.
+> > > It provides some future proofing by adding optional configuration fields
+> > > and padding reserved for future use.
+> > >
+> > > The series can be partitioned into two sets; the first eleven
+> > > contain the v2 uAPI implementation, and the final seven port
+> > > the GPIO tools to the v2 uAPI and extend them to use new uAPI features.
+> > >
+> > > The more complicated patches include their own commentary where
+> > > appropriate.
+>
+> > The series looks quite good to me and I think we're on track to get it
+> > in for v5.10. I'd love to have Andy (Cc'd) take a look as well. There
+> > are some nits here and there but as long as we get the ABI right, any
+> > implementation details can be ironed out later.
 > >
-> > It performs heap spraying that aims to reallocate the recently freed heap
-> > object. This technique is used for exploiting use-after-free
-> > vulnerabilities in the kernel code.
-> >
-> > This test shows that CONFIG_SLAB_QUARANTINE breaks heap spraying
-> > exploitation technique.
-> >
-> > Signed-off-by: Alexander Popov <alex.popov@linux.com>
-> 
-> Why put this test in the linux kernel dump test module?
-> 
-> I have no problem with tests, and I may be wrong but this
-> does not look like you are testing to see if heap corruption
-> triggers a crash dump.  Which is what the rest of the tests
-> in lkdtm are about.  Seeing if the test triggers successfully
-> triggers a crash dump.
+> > I need to think about some details a bit more but I really like the
+> > current state of the patches.
+>
+> First of all, I apologize for being silent, I'm quite busy with internal
+> development / work.
+>
+> Second, I didn't hear further why we can't fix current ABI as proposed by Arnd
+> and see what we will have afterwards?
+>
 
-The scope of LKDTM has shifted a bit, and I'm fine with tests that
-don't cause crashes as long as they're part of testing system-wide
-defenses, etc. It's easier to collect similar tests together (even if
-they don't break the system).
+Sure we can get back to fixing it but it will only address a single
+bug and still not allow us to add new features and simplifications. Do
+you mind rebasing your old patch on top of v5.9-rc1?
 
--- 
-Kees Cook
+> Third, I'm not satisfied with the approach of wasting some memory for padding
+> and I think the proper solution for the ABI is to have versioning inside the
+> structures.
+>
+> What do you think?
+>
+
+Wasting a bit of memory is fine with me. As long as we're not copying
+more than a page-worth of memory between the kernel and user-space,
+the overhead is insignificant.
+
+I prefer to make structs extensible over adding new versions in the future.
+
+Bart
