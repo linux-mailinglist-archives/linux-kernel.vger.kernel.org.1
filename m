@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB423245B06
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 05:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B898245ADD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 05:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbgHQDWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 23:22:21 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:48844 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726420AbgHQDWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 23:22:21 -0400
-Received: from localhost (unknown [159.226.5.99])
-        by APP-03 (Coremail) with SMTP id rQCowACHzEjR8Dlfw6_aAg--.62973S2;
-        Mon, 17 Aug 2020 10:52:01 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     jaharkes@cs.cmu.edu, coda@cs.cmu.edu, codalist@coda.cs.cmu.edu
-Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
-Subject: [PATCH] upcall: Remove unneeded variable insize
-Date:   Mon, 17 Aug 2020 02:51:45 +0000
-Message-Id: <20200817025145.10009-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: rQCowACHzEjR8Dlfw6_aAg--.62973S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYw7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87
-        Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
-        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr1j6F4UJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUk5rcUUUUU=
-X-Originating-IP: [159.226.5.99]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAELA18J9krv4wAAsn
+        id S1726948AbgHQDEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 23:04:43 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:30617 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726424AbgHQDEm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 Aug 2020 23:04:42 -0400
+X-UUID: 10613096b3cf44528ce0a95538465e74-20200817
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=2z0RtoXOILn4N4IkKnkfphbCO4iJTa65Gx/fuN7b5FE=;
+        b=U2fujxznu0nP4YK5Ob+w8kaMWpON9iHmgJaHPPPTgRzRUzNai9dsuzORSU34+X0YL7IE3tW6c7Fv1HmozwTUGE+QJwTJRSk4sP2ne3UcTx29EE7/+vDzQxpzuNaa3zM3ZgBNaYRSMibPT1taEjRuGbSQXp3mPSFHZWlN3Yrqe7Q=;
+X-UUID: 10613096b3cf44528ce0a95538465e74-20200817
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
+        (envelope-from <crystal.guo@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 2128854509; Mon, 17 Aug 2020 11:04:40 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 17 Aug 2020 11:04:38 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 17 Aug 2020 11:04:37 +0800
+From:   Crystal Guo <crystal.guo@mediatek.com>
+To:     <p.zabel@pengutronix.de>, <robh+dt@kernel.org>,
+        <matthias.bgg@gmail.com>
+CC:     <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <s-anna@ti.com>, <afd@ti.com>, <seiya.wang@mediatek.com>,
+        <stanley.chu@mediatek.com>, <yingjoe.chen@mediatek.com>,
+        <fan.chen@mediatek.com>, <yong.liang@mediatek.com>
+Subject: [v4,0/4] introduce TI reset controller for MT8192 SoC
+Date:   Mon, 17 Aug 2020 11:03:20 +0800
+Message-ID: <20200817030324.5690-1-crystal.guo@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unneeded variable insize in venus_pioctl().
-
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- fs/coda/upcall.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/fs/coda/upcall.c b/fs/coda/upcall.c
-index eb3b1898da46..903bd7a4ee16 100644
---- a/fs/coda/upcall.c
-+++ b/fs/coda/upcall.c
-@@ -477,10 +477,9 @@ int venus_pioctl(struct super_block *sb, struct CodaFid *fid,
- {
-         union inputArgs *inp;
-         union outputArgs *outp;  
--	int insize, outsize, error;
-+	int outsize, error;
- 	int iocsize;
- 
--	insize = VC_MAXMSGSIZE;
- 	UPARG(CODA_IOCTL);
- 
-         /* build packet for Venus */
--- 
-2.17.1
+djQ6DQpmaXggdHlwb3Mgb24gdjMgY29tbWl0IG1lc3NhZ2UuDQoNCnYzOg0KMS4gcmV2ZXJ0IHYy
+IGNoYW5nZXMuDQoyLiBhZGQgJ3Jlc2V0LWR1cmF0aW9uLXVzJyBwcm9wZXJ0eSB0byBkZWNsYXJl
+IGEgbWluaW11bSBkZWxheSwNCndoaWNoIG5lZWRzIHRvIGJlIHdhaXRlZCBiZXR3ZWVuIGFzc2Vy
+dCBhbmQgZGVhc3NlcnQuDQozLiBhZGQgJ21lZGlhdGVrLGluZnJhLXJlc2V0JyB0byBjb21wYXRp
+YmxlLg0KDQoNCnYyIGNoYW5nZXM6DQpodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNo
+LzExNjk3MzcxLw0KMS4gYWRkICdhc3NlcnQtZGVhc3NlcnQtdG9nZXRoZXInIHByb3BlcnR5IHRv
+IGludHJvZHVjZSBhIG5ldyByZXNldCBoYW5kbGVyLA0Kd2hpY2ggYWxsb3dzIGRldmljZSB0byBk
+byBzZXJpYWxpemVkIGFzc2VydCBhbmQgZGVhc3NlcnQgb3BlcmF0aW9ucyBpbiBhIHNpbmdsZQ0K
+c3RlcCBieSAncmVzZXQnIG1ldGhvZC4NCjIuIGFkZCAndXBkYXRlLWZvcmNlJyBwcm9wZXJ0eSB0
+byBpbnRyb2R1Y2UgZm9yY2UtdXBkYXRlIG1ldGhvZCwgd2hpY2ggZm9yY2VzDQp0aGUgd3JpdGUg
+b3BlcmF0aW9uIGluIGNhc2UgdGhlIHJlYWQgYWxyZWFkeSBoYXBwZW5zIHRvIHJldHVybiB0aGUg
+Y29ycmVjdCB2YWx1ZS4NCjMuIGFkZCAnZ2VuZXJpYy1yZXNldCcgdG8gY29tcGF0aWJsZQ0KDQp2
+MSBjaGFuZ2VzOg0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTY5MDUyMy8N
+Cmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvMTE2OTA1MjcvDQoNCkNyeXN0YWwg
+R3VvICg0KToNCiAgZHQtYmluZGluZzogcmVzZXQtY29udHJvbGxlcjogdGk6IGFkZCByZXNldC1k
+dXJhdGlvbi11cyBwcm9wZXJ0eQ0KICBkdC1iaW5kaW5nOiByZXNldC1jb250cm9sbGVyOiB0aTog
+YWRkICdtZWRpYXRlayxpbmZyYS1yZXNldCcgdG8NCiAgICBjb21wYXRpYmxlDQogIHJlc2V0LWNv
+bnRyb2xsZXI6IHRpOiBpbnRyb2R1Y2UgYSBuZXcgcmVzZXQgaGFuZGxlcg0KICBhcm02NDogZHRz
+OiBtdDgxOTI6IGFkZCBpbmZyYWNmZ19yc3Qgbm9kZQ0KDQogLi4uL2JpbmRpbmdzL3Jlc2V0L3Rp
+LXN5c2Nvbi1yZXNldC50eHQgICAgICAgIHwgIDYgKysrKysNCiBhcmNoL2FybTY0L2Jvb3QvZHRz
+L21lZGlhdGVrL210ODE5Mi5kdHNpICAgICAgfCAxMSArKysrKysrLQ0KIGRyaXZlcnMvcmVzZXQv
+cmVzZXQtdGktc3lzY29uLmMgICAgICAgICAgICAgICB8IDI2ICsrKysrKysrKysrKysrKysrLS0N
+CiAzIGZpbGVzIGNoYW5nZWQsIDQwIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQoNCg==
 
