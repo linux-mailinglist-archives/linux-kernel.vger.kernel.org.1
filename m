@@ -2,40 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD10246DDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F3F246D8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389572AbgHQRQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:16:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48602 "EHLO mail.kernel.org"
+        id S1730179AbgHQRCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:02:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388774AbgHQQOK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:14:10 -0400
+        id S2388451AbgHQQIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:08:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 665D320772;
-        Mon, 17 Aug 2020 16:14:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 575492063A;
+        Mon, 17 Aug 2020 16:08:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680840;
-        bh=4l7MNG17BMIzhPTKb3rZXjSglBEavRFY51CPupNXRxI=;
+        s=default; t=1597680500;
+        bh=IfKN3REDauHQZ/PGl9v8EeseMIn6klqyx3/YaMFuU9k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q10emzGFaiQzDVSZ3KuZLN2GsV0F/dbY7ACgFLRNEGuK9hq5GFfw8TwJeA0PLKchW
-         9YZgjKqIyY8xmlizvOxCKnKNwkNlgOinAs+A4mdxq8z+7hhqk5jr+E/+GBfikHR6Qa
-         gqueq+WrE4wpanOyKMPgVu5Ducu5PSz6tcRNKg+E=
+        b=PvMb7Q9MmkpEn5TXV//ZWhWcOH/1TPTm0mQUL5XZ/4aQqwe6TDb8giF/ukHa3yKGn
+         naJdXUTMJaA3xJZSOmVD9YIfPEf2ulbFeSYpJFDAnw48DJSZHTJLMG6WcBPA3osX+N
+         vUtxK6SIWXCtuPEWJNztmcML4vZkv429dcZQnTGE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 079/168] leds: core: Flush scheduled work for system suspend
-Date:   Mon, 17 Aug 2020 17:16:50 +0200
-Message-Id: <20200817143737.649338980@linuxfoundation.org>
+        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
+        Jun Piao <piaojun@huawei.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 211/270] ocfs2: fix unbalanced locking
+Date:   Mon, 17 Aug 2020 17:16:52 +0200
+Message-Id: <20200817143806.292639163@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
-References: <20200817143733.692105228@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +51,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Pavel Machek <pavel@ucw.cz>
 
-[ Upstream commit 302a085c20194bfa7df52e0fe684ee0c41da02e6 ]
+[ Upstream commit 57c720d4144a9c2b88105c3e8f7b0e97e4b5cc93 ]
 
-Sometimes LED won't be turned off by LED_CORE_SUSPENDRESUME flag upon
-system suspend.
+Based on what fails, function can return with nfs_sync_rwlock either
+locked or unlocked. That can not be right.
 
-led_set_brightness_nopm() uses schedule_work() to set LED brightness.
-However, there's no guarantee that the scheduled work gets executed
-because no one flushes the work.
+Always return with lock unlocked on error.
 
-So flush the scheduled work to make sure LED gets turned off.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Fixes: 81fe8e5b73e3 ("leds: core: Add led_set_brightness_nosleep{nopm} functions")
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
+Fixes: 4cd9973f9ff6 ("ocfs2: avoid inode removal while nfsd is accessing it")
+Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Junxiao Bi <junxiao.bi@oracle.com>
+Cc: Changwei Ge <gechangwei@live.cn>
+Cc: Gang He <ghe@suse.com>
+Cc: Jun Piao <piaojun@huawei.com>
+Link: http://lkml.kernel.org/r/20200724124443.GA28164@duo.ucw.cz
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/led-class.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/ocfs2/dlmglue.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
-index 3c7e3487b373b..4e63dd2bfcf87 100644
---- a/drivers/leds/led-class.c
-+++ b/drivers/leds/led-class.c
-@@ -173,6 +173,7 @@ void led_classdev_suspend(struct led_classdev *led_cdev)
- {
- 	led_cdev->flags |= LED_SUSPENDED;
- 	led_set_brightness_nopm(led_cdev, 0);
-+	flush_work(&led_cdev->set_brightness_work);
+diff --git a/fs/ocfs2/dlmglue.c b/fs/ocfs2/dlmglue.c
+index e2c34c704185d..50a863fc17792 100644
+--- a/fs/ocfs2/dlmglue.c
++++ b/fs/ocfs2/dlmglue.c
+@@ -2871,9 +2871,15 @@ int ocfs2_nfs_sync_lock(struct ocfs2_super *osb, int ex)
+ 
+ 	status = ocfs2_cluster_lock(osb, lockres, ex ? LKM_EXMODE : LKM_PRMODE,
+ 				    0, 0);
+-	if (status < 0)
++	if (status < 0) {
+ 		mlog(ML_ERROR, "lock on nfs sync lock failed %d\n", status);
+ 
++		if (ex)
++			up_write(&osb->nfs_sync_rwlock);
++		else
++			up_read(&osb->nfs_sync_rwlock);
++	}
++
+ 	return status;
  }
- EXPORT_SYMBOL_GPL(led_classdev_suspend);
  
 -- 
 2.25.1
