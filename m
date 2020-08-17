@@ -2,83 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF0924645F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FBD246456
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgHQKWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 06:22:22 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:20844 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726369AbgHQKWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 06:22:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597659728; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=uIFRX2Hz98MiwldqLziBZAW2IvduxX6YSDYRB0RGbPk=;
- b=H2unpLvczeLUROZIMSyUzqqU2e4fY2IZKXmhNy36V+sxRYjG56dvBsZJOnQAWf3OIDza/dz2
- yLSJI3O7XGavaAno0/bSv4O9EDcqOkUAsOGqeEtukqJJCx20XGiMrJkHY8jJ+LBtcekFidak
- FVkLcupK4NbAdwTe1HCUkanULt4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f3a5a2e2b87d66049df2cd8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 10:21:34
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 39CA9C43387; Mon, 17 Aug 2020 10:21:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 51F68C433C6;
-        Mon, 17 Aug 2020 10:21:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 51F68C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1727972AbgHQKVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 06:21:49 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:60481 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727952AbgHQKVr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 06:21:47 -0400
+Received: from localhost (sto93-h02-176-184-36-142.dsl.sta.abo.bbox.fr [176.184.36.142])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id E5CC3200002;
+        Mon, 17 Aug 2020 10:21:41 +0000 (UTC)
+Date:   Mon, 17 Aug 2020 12:21:36 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Reto Schneider <code@reto-schneider.ch>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Reto Schneider <reto.schneider@husqvarnagroup.com>,
+        Stefan Roese <sr@denx.de>,
+        Michael Zimmermann <michael.zimmermann@grandcentrix.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ARM: at91: Add GARDENA smart Gateway AT91SAM board
+Message-ID: <20200817102136.GC4500@piout.net>
+References: <20200810171921.8679-1-code@reto-schneider.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH][next] ath6kl: Use fallthrough pseudo-keyword
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200727195111.GA1603@embeddedor>
-References: <20200727195111.GA1603@embeddedor>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200817102133.39CA9C43387@smtp.codeaurora.org>
-Date:   Mon, 17 Aug 2020 10:21:33 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200810171921.8679-1-code@reto-schneider.ch>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+Hello,
 
-> Replace the existing /* fall through */ comments and its variants with
-> the new pseudo-keyword macro fallthrough[1].
+Thank you for this submission.
+
+On 10/08/2020 19:19:19+0200, Reto Schneider wrote:
+> From: Reto Schneider <reto.schneider@husqvarnagroup.com>
 > 
-> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> This patch adds support for the GARDENA smart Gateway, which is based on
+> the Atmel AT91SAM9G25. It is equipped with 128 MiB of DDR2 RAM and
+> 256 MiB NAND storage.
 > 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> Please note that this gateway is not actually based on a AT91SAM9x5 EK
+> board, but is close enough to allow its DT to be used.
+> 
+> Co-developed-by: Stefan Roese <sr@denx.de>
+> Signed-off-by: Stefan Roese <sr@denx.de>
+> Co-developed-by: Michael Zimmermann <michael.zimmermann@grandcentrix.net>
+> Signed-off-by: Michael Zimmermann <michael.zimmermann@grandcentrix.net>
+> Signed-off-by: Reto Schneider <reto.schneider@husqvarnagroup.com>
+> ---
+>  arch/arm/boot/dts/Makefile                    |   1 +
+>  .../dts/at91sam9g25-gardena-smart-gateway.dts | 186 ++++++++++++++++++
+>  2 files changed, 187 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts
+> 
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 4572db3fa5ae..d38d256f59fa 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -44,6 +44,7 @@ dtb-$(CONFIG_SOC_AT91SAM9) += \
+>  	at91-wb45n.dtb \
+>  	at91sam9g15ek.dtb \
+>  	at91sam9g25ek.dtb \
+> +	at91sam9g25-gardena-smart-gateway.dtb \
+>  	at91sam9g35ek.dtb \
+>  	at91sam9x25ek.dtb \
+>  	at91sam9x35ek.dtb
+> diff --git a/arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts b/arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts
+> new file mode 100644
+> index 000000000000..19b0f67a7af6
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts
+> @@ -0,0 +1,186 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Device Tree file for the GARDENA smart Gateway (AT91SAM)
+> + *
+> + *  Copyright (C) 2020 GARDENA GmbH
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "at91sam9g25.dtsi"
+> +#include "at91sam9x5ek.dtsi"
+> +#include <dt-bindings/input/input.h>
+> +
+> +/ {
+> +	model = "GARDENA smart Gateway (AT91SAM)";
+> +	compatible = "gardena,smart-gateway-at91sam", "atmel,at91sam9g25", "atmel,at91sam9x5", "atmel,at91sam9";
 
-Patch applied to ath-next branch of ath.git, thanks.
+You should document the vendor string. And ideally,
+gardena,smart-gateway-at91sam should be documented in
+Documentation/devicetree/bindings/arm/atmel-at91.yaml
 
-8238bf0d4b67 ath6kl: Use fallthrough pseudo-keyword
+> +
+> +	aliases {
+> +		serial1 = &usart3;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+
+This is already in at91sam9x5ek.dtsi
+
+> +	};
+> +
+> +	memory {
+> +		reg = <0x20000000 0x8000000>;
+
+This is already in at91sam9x5cm.dtsi, included fromat91sam9x5ek.dtsi
+
+> +	};
+> +
+> +	gpio-keys {
+> +		compatible = "gpio-keys";
+> +
+> +		user_btn1 {
+> +			label = "USER_BTN1";
+> +			gpios = <&pioA 24 GPIO_ACTIVE_LOW>;
+> +			linux,code = <KEY_PROG1>;
+> +		};
+> +	};
+> +
+> +	1wire_cm {
+> +		status = "disabled";
+> +	};
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
+> +
+> +		power_blue {
+> +			label = "smartgw:power:blue";
+> +			gpios = <&pioC 21 GPIO_ACTIVE_HIGH>;
+> +			default-state = "off";
+> +		};
+> +
+> +		power_green {
+> +			label = "smartgw:power:green";
+> +			gpios = <&pioC 20 GPIO_ACTIVE_HIGH>;
+> +			default-state = "on";
+> +		};
+> +
+> +		power_red {
+> +			label = "smartgw:power:red";
+> +			gpios = <&pioC 19 GPIO_ACTIVE_HIGH>;
+> +			default-state = "off";
+> +		};
+> +
+> +		radio_blue {
+> +			label = "smartgw:radio:blue";
+> +			gpios = <&pioC 18 GPIO_ACTIVE_HIGH>;
+> +			default-state = "off";
+> +		};
+> +
+> +		radio_green {
+> +			label = "smartgw:radio:green";
+> +			gpios = <&pioC 17 GPIO_ACTIVE_HIGH>;
+> +			default-state = "off";
+> +		};
+> +
+> +		radio_red {
+> +			label = "smartgw:radio:red";
+> +			gpios = <&pioC 16 GPIO_ACTIVE_HIGH>;
+> +			default-state = "off";
+> +		};
+> +
+> +		internet_blue {
+> +			label = "smartgw:internet:blue";
+> +			gpios = <&pioC 15 GPIO_ACTIVE_HIGH>;
+> +			default-state = "off";
+> +		};
+> +
+> +		internet_green {
+> +			label = "smartgw:internet:green";
+> +			gpios = <&pioC 14 GPIO_ACTIVE_HIGH>;
+> +			default-state = "off";
+> +		};
+> +
+> +		internet_red {
+> +			label = "smartgw:internet:red";
+> +			gpios = <&pioC 13 GPIO_ACTIVE_HIGH>;
+> +			default-state = "off";
+> +		};
+> +
+> +		heartbeat {
+> +			label = "smartgw:heartbeat";
+> +			gpios = <&pioB 8 GPIO_ACTIVE_HIGH>;
+> +			linux,default-trigger = "heartbeat";
+> +		};
+> +
+> +		pb18 {
+> +			status = "disabled";
+> +		};
+> +
+> +		pd21 {
+> +			status = "disabled";
+> +		};
+> +	};
+> +};
+> +
+> +&dbgu {
+> +	status = "okay";
+> +};
+
+This is already in at91sam9x5ek.dtsi and is duplicated below
+
+> +
+> +&macb0 {
+> +	phy-mode = "rmii";
+> +	status = "okay";
+> +};
+> +
+> +&nand_controller {
+> +	status = "okay";
+
+This is already in at91sam9x5cm.dtsi
+
+> +};
+> +
+> +&usb0 {
+> +	status = "okay";
+> +	num-ports = <3>;
+
+This is already in at91sam9x5ek.dtsi
+
+> +};
+> +
+> +&usb1 {
+> +	status = "okay";
+This is already in at91sam9x5ek.dtsi
+> +};
+> +
+> +&usart0 {
+> +	status = "disabled";
+> +};
+> +
+> +&usart2 {
+> +	status = "disabled";
+> +};
+> +
+> +&dbgu {
+> +	status = "okay";
+> +};
+> +
+> +&usart3 {
+> +	status = "okay";
+> +
+> +	pinctrl-0 = <&pinctrl_usart3
+> +		     &pinctrl_usart3_rts
+> +		     &pinctrl_usart3_cts
+> +		    >;
+> +};
+> +
+> +&watchdog {
+> +	status = "okay";
+> +};
+> +
+> +&mmc0 {
+> +	status = "disabled";
+> +};
+> +
+> +&mmc1 {
+> +	status = "disabled";
+> +};
+> +
+> +&spi0 {
+> +	status = "disabled";
+> +};
+> +
+> +&i2c0 {
+> +	status = "disabled";
+> +};
+> +
+> +&adc0 {
+> +	status = "disabled";
+> +};
+> +
+> +&ssc0 {
+> +	status = "disabled";
+> +};
+
+Overall, I'm not convinced it is a good idea to start from
+at91sam9x5ek.dtsi as it makes you dtb bigger than necessary but if you
+want it that way, I'm fine with that.
 
 -- 
-https://patchwork.kernel.org/patch/11687483/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
