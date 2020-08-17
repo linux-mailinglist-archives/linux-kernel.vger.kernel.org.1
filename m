@@ -2,198 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3911245E96
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC72245E9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726747AbgHQH4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 03:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47978 "EHLO
+        id S1726811AbgHQH5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 03:57:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726194AbgHQH43 (ORCPT
+        with ESMTP id S1726287AbgHQH5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 03:56:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F70C061388;
-        Mon, 17 Aug 2020 00:56:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YFe2M9qNEESzBDrGBKXESj8fKVBytShtkStVuIOD0aA=; b=vso+itO36itlX33V0OujrEVXWQ
-        XWOCxai+RblU2HPFcG4y0Jc/Kkch/9519feMu5s/JjVi8kTLvzWVt8mnTUGqV4Cb0+I7Er/hrvthc
-        R5N5OM5tAoW96hS2ye5pIEl5nQyNJqrubGMtqCszVVtBspv2srl07dDEa0F0G5/gUA8aGKzpkXLYw
-        k2FAT2VzLtDegOEIEu/RnyZWL67Q6tIa0g3HdMf5fJsLoy7kJpkCWoMxdwZAeVACFh2c1TNo70QSF
-        RrBuxRTwIiQOv2qfehbS/TwK0O9StnS8IXlzcdtzsMWBP0oe9HCdG02oaTJxZC/LAuCvtA74Y4YvV
-        PaxCkggg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k7ZzV-0002Uv-HF; Mon, 17 Aug 2020 07:55:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 892D0303271;
-        Mon, 17 Aug 2020 09:55:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5DF642BFDE0AB; Mon, 17 Aug 2020 09:55:33 +0200 (CEST)
-Date:   Mon, 17 Aug 2020 09:55:33 +0200
-From:   peterz@infradead.org
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        WANG Xuerui <git@xen0n.name>,
-        =?utf-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>, Peter Xu <peterx@redhat.com>,
-        Sergey Korolev <s.korolev@ndmsystems.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Marc Zyngier <maz@kernel.org>, Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Steven Price <steven.price@arm.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 1/7] MIPS: sync-r4k: Rework to be many cores firendly
-Message-ID: <20200817075533.GI2674@hirez.programming.kicks-ass.net>
-References: <20200817034701.3515721-1-jiaxun.yang@flygoat.com>
- <20200817034701.3515721-2-jiaxun.yang@flygoat.com>
+        Mon, 17 Aug 2020 03:57:40 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C673C061388;
+        Mon, 17 Aug 2020 00:57:40 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id u128so7838406pfb.6;
+        Mon, 17 Aug 2020 00:57:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sgcMEmFz5a7sMCTpSzKDmtRdo2JPO50vEmzZ5iT3c5k=;
+        b=eX/IqmDgBKGkWhzJxWQru9Re5WUxDkYOOsxDFIY4SDAUKS+qA86iTJZZyjGKHfpDeM
+         Q1gQyQxKZXZq7ZnW/rMG2BbQ5eNZ1LmrifcBbG4wwgdbDTZWPBXO8tjhKF6YDhtR71dr
+         imypRoL2U9ri9esTtELWOWVSh28wV/JYzGam1CcNZHfpI0+DqO3pxOFXTc4uHQcAb0gF
+         69okLt6klykESSxmvVFW1KWlw3ON6FrLXN7xeKT4iaxLIHe5sMiX+P0+HbtrGlczRkQa
+         cwmUqgcMNbHSgwk7v1qCLQebZzoIJTtsoNmtq9r78fvh9imeuwgxR1PJynrU9N1Hf0s6
+         ew6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sgcMEmFz5a7sMCTpSzKDmtRdo2JPO50vEmzZ5iT3c5k=;
+        b=BDDlU2CA3ngfi1MUWUNQ9Z9YpDNOgyLFzOM1COajVhEA3Cxk9qGhxbhZY06ckxHlqH
+         jP92S6LNwmt0xJkJfc8z2/FfAZSvyVziDwrABHPJ+xMxNvrYQgAYc6OjfRDrfN5Zogs9
+         +Kib4tMuZiiNBMqbEQUvTTyRRHBUz0Bl67N6wU+Eq4cdS3RLkW9xaX4pz1Rv4DCIu2ax
+         iYi5RxEGhR7oEYE6bXowKYrrCEnJf8ahM3PPd8nZKlGJyw2aszcSMPz0s6Hrj4Dbf7t3
+         922DOM1fEk0b6l1soh0iC6M6DEuucLGSPVP+O6i7zQl6jLd2QWxIaEfE/esptIIX6Ivm
+         6CEw==
+X-Gm-Message-State: AOAM530p6SjiHVRjwOzMMVgClmyWPKPq6OPehyPCP0TrURralsQoL6FI
+        BcDehcUDzLk/jk13/ktqDhY=
+X-Google-Smtp-Source: ABdhPJxTKNYKpwRNVQy4HgazCr7RIuZmqPyOs2Iv08vRbbmKGVHfnwGU1eMmIpFh7U8yktusCBM3KQ==
+X-Received: by 2002:a63:4b21:: with SMTP id y33mr9312090pga.142.1597651059515;
+        Mon, 17 Aug 2020 00:57:39 -0700 (PDT)
+Received: from gmail.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id r186sm19781628pfr.162.2020.08.17.00.57.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 00:57:38 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 13:25:56 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Philip Kelleher <pjk1939@linux.ibm.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v3 0/3] block: use generic power management
+Message-ID: <20200817075530.GF5869@gmail.com>
+References: <ea5881cdfd4d612193feed646ce89f253a36db69.camel@wdc.com>
+ <20200722083335.50068-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200817034701.3515721-2-jiaxun.yang@flygoat.com>
+In-Reply-To: <20200722083335.50068-1-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 11:46:40AM +0800, Jiaxun Yang wrote:
-> Here we reworked the whole procdure. Now the synchronise event on CPU0
-> is triggered by smp call function, and we won't touch the count on CPU0
-> at all.
-
-Are you telling me, that in 2020 you're building chips that need
-horrible crap like this ?!?
-
-> +#define MAX_LOOPS	1000
-> +
-> +void synchronise_count_master(void *unused)
->  {
->  	unsigned long flags;
-> +	long delta;
-> +	int i;
->  
-> +	if (atomic_read(&sync_stage) != STAGE_START)
-> +		BUG();
-
-	BUG_ON(atomic_read(&sync_state) != STAGE_START);
-
->  
->  	local_irq_save(flags);
-
-That's silly, replace with: lockdep_assert_hardirqs_disabled().
-
->  
-> +	cur_count = read_c0_count();
-> +	smp_wmb();
-> +	atomic_inc(&sync_stage); /* inc to STAGE_MASTER_READY */
-
-memory barriers require a comment that describes the ordering. This
-includes at least 2 variables and at least 2 code paths (*) -- afaict
-your code does NOT have a matching barrier, see below.
-
->  
-> +	for (i = 0; i < MAX_LOOPS; i++) {
-> +		cur_count = read_c0_count();
->  		smp_wmb();
-> -		atomic_inc(&count_count_stop);
-> +		if (atomic_read(&sync_stage) == STAGE_SLAVE_SYNCED)
-> +			break;
->  	}
-> +
-> +	delta = read_c0_count() - fini_count;
->  
->  	local_irq_restore(flags);
->  
-> +	if (i == MAX_LOOPS)
-> +		pr_err("sync-r4k: Master: synchronise timeout\n");
-> +	else
-> +		pr_info("sync-r4k: Master: synchronise succeed, maximum delta: %ld\n", delta);
-> +
-> +	return;
->  }
->  
->  void synchronise_count_slave(int cpu)
->  {
->  	int i;
->  	unsigned long flags;
-> +	call_single_data_t csd;
->  
-> +	raw_spin_lock(&sync_r4k_lock);
-
-Why should this be a raw_spnilock_t ?
-
->  
-> +	/* Let variables get attention from cache */
-> +	for (i = 0; i < MAX_LOOPS; i++) {
-> +		cur_count++;
-> +		fini_count += cur_count;
-> +		cur_count += fini_count;
->  	}
-
-What does this actually do? You're going to bounce those variables
-between this CPU and CPU-0.
-
-> +
-> +	atomic_set(&sync_stage, STAGE_START);
-> +	csd.func = synchronise_count_master;
-> +
-> +	/* Master count is always CPU0 */
-> +	if (smp_call_function_single_async(0, &csd)) {
-
-This is diguisting.
-
-It also requires a comment on how the on-stack csd is correct (it is,
-but it really needs a comment).
-
-> +		pr_err("sync-r4k: Salve: Failed to call master\n");
-> +		raw_spin_unlock(&sync_r4k_lock);
-> +		return;
-> +	}
-> +
-> +	local_irq_save(flags);
-> +
-> +	/* Wait until master ready */
-> +	while (atomic_read(&sync_stage) != STAGE_MASTER_READY)
-> +		cpu_relax();
-
-This really wants to be:
-
-	atomic_cond_read_acquire(&&sync_stage, VAL == STAGE_MASTER_READY);
-
-Because, afaict the smp_wmb() (*) in synchronize_count_master() order
-against this here and we need to guarantee we read @sync_stage _before_
-@cur_count.
-
-> +
-> +	write_c0_count(cur_count);
-> +	fini_count = read_c0_count();
-> +	smp_wmb();
-> +	atomic_inc(&sync_stage); /* inc to STAGE_SLAVE_SYNCED */
->  
->  	local_irq_restore(flags);
-> +
-> +	raw_spin_unlock(&sync_r4k_lock);
->  }
-
-
-Furthermore, afaict there isn't actually any concurrency on @sync_stage,
-so atomic_t isn't required, Using smp_store_release() to change state
-might be far more natural.
+On Wed, Jul 22, 2020 at 02:03:32PM +0530, Vaibhav Gupta wrote:
+> Linux Kernel Mentee: Remove Legacy Power Management.
+> 
+> The purpose of this patch series is to upgrade power management in block
+> drivers. This has been done by upgrading .suspend() and .resume() callbacks.
+> 
+> The upgrade makes sure that the involvement of PCI Core does not change the
+> order of operations executed in a driver. Thus, does not change its behavior.
+> 
+> In general, drivers with legacy PM, .suspend() and .resume() make use of PCI
+> helper functions like pci_enable/disable_device_mem(), pci_set_power_state(),
+> pci_save/restore_state(), pci_enable/disable_device(), etc. to complete
+> their job.
+> 
+> The conversion requires the removal of those function calls, change the
+> callbacks' definition accordingly and make use of dev_pm_ops structure.
+> 
+> All patches are compile-tested only.
+> 
+> Test tools:
+>     - Compiler: gcc (GCC) 10.1.0
+>     - allmodconfig build: make -j$(nproc) W=1 all
+> 
+> v3: v2 needed some changes in commit messages.
+> 
+> Vaibhav Gupta (3):
+>   mtip32xx: use generic power management
+>   rsxx: use generic power management
+>   skd: use generic power management
+> 
+>  drivers/block/mtip32xx/mtip32xx.c | 54 +++++++------------------------
+>  drivers/block/rsxx/core.c         |  9 ++++--
+>  drivers/block/skd_main.c          | 30 +++++------------
+>  3 files changed, 27 insertions(+), 66 deletions(-)
+> 
+> -- 
+> 2.27.0
+> 
