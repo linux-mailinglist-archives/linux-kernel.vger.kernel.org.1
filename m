@@ -2,113 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EB7246E36
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC523246E3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390027AbgHQRZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:25:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56759 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731459AbgHQRUp (ORCPT
+        id S2390060AbgHQRZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:25:49 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:52660 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389850AbgHQRWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 13:20:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597684844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2KOxcTzA4HjXLrbc8Kis3OZr0Jk9r2f94fOWh6B2JtI=;
-        b=XBz6GJYEGBFwPmHH9FcPApxgQWy607NhqWJ50zudkV1ZW2b/WPsK+2jZLbLmWVJrV0i49W
-        8FO62cvmZMJ9tYkxyX5utEcPgosJ68WGLMpAh5erkbnnf0PhQbFt86/p/JyD/RVowVZ5Gp
-        71ICP6jY2xG4l341S1wXKOE6FjTYnnI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-322-VJjp-ljEPnex_p-WPMyJ0g-1; Mon, 17 Aug 2020 13:20:39 -0400
-X-MC-Unique: VJjp-ljEPnex_p-WPMyJ0g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 223CF81F001;
-        Mon, 17 Aug 2020 17:20:38 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B33FD5D9D2;
-        Mon, 17 Aug 2020 17:20:34 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        peterx@redhat.com, Yang Weijiang <weijiang.yang@intel.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] selftests: kvm: Use a shorter encoding to clear RAX
-Date:   Mon, 17 Aug 2020 13:20:34 -0400
-Message-Id: <20200817172034.26673-1-pbonzini@redhat.com>
+        Mon, 17 Aug 2020 13:22:52 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07HHLv8o048896;
+        Mon, 17 Aug 2020 12:21:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1597684917;
+        bh=LklfsQNtzEgv4Muun+dSl7Ny7j+95Ivu7/MecpZEky0=;
+        h=From:To:CC:Subject:Date;
+        b=cskJHjmSEpYEbTI8yN/aG5sv6LTSTZD8UxSG54Pmh+5Xa7F0Wuzd7WxCdp0UBzomR
+         /QsCKvJW1Tza7CmR+BrNClMInj/J7zEHDMqUKU3h3vtymBtw4417dXEWs/2B8ji4yV
+         hL/8UFY2aQSKfnxEPeP6O+rC4QeC0lT/quSAUEzE=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07HHLvbx063744
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 17 Aug 2020 12:21:57 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 17
+ Aug 2020 12:21:57 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 17 Aug 2020 12:21:57 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07HHLv4L073434;
+        Mon, 17 Aug 2020 12:21:57 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <robh@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH 1/2] dt-bindings: tas2562: Remove tas2562 text file
+Date:   Mon, 17 Aug 2020 12:21:50 -0500
+Message-ID: <20200817172151.26564-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Weijiang <weijiang.yang@intel.com>
+Remove the tas2562 text file as the tas2562.yaml is now available.
 
-If debug_regs.c is built with newer binutils, the resulting binary is "optimized"
-by the assembler:
-
-asm volatile("ss_start: "
-             "xor %%rax,%%rax\n\t"
-             "cpuid\n\t"
-             "movl $0x1a0,%%ecx\n\t"
-             "rdmsr\n\t"
-             : : : "rax", "ecx");
-
-is translated to :
-
-  000000000040194e <ss_start>:
-  40194e:       31 c0                   xor    %eax,%eax     <----- rax->eax?
-  401950:       0f a2                   cpuid
-  401952:       b9 a0 01 00 00          mov    $0x1a0,%ecx
-  401957:       0f 32                   rdmsr
-
-As you can see rax is replaced with eax in target binary code.
-This causes a difference is the length of xor instruction (2 Byte vs 3 Byte),
-and makes the hard-coded instruction length check fail:
-
-        /* Instruction lengths starting at ss_start */
-        int ss_size[4] = {
-                3,              /* xor */   <-------- 2 or 3?
-                2,              /* cpuid */
-                5,              /* mov */
-                2,              /* rdmsr */
-        };
-
-Encode the shorter version directly and, while at it, fix the "clobbers"
-of the asm.
-
-Reported-by: Yang Weijiang <weijiang.yang@intel.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- tools/testing/selftests/kvm/x86_64/debug_regs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/sound/tas2562.txt     | 37 -------------------
+ 1 file changed, 37 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/tas2562.txt
 
-diff --git a/tools/testing/selftests/kvm/x86_64/debug_regs.c b/tools/testing/selftests/kvm/x86_64/debug_regs.c
-index 8162c58a1234..b8d14f9db5f9 100644
---- a/tools/testing/selftests/kvm/x86_64/debug_regs.c
-+++ b/tools/testing/selftests/kvm/x86_64/debug_regs.c
-@@ -40,11 +40,11 @@ static void guest_code(void)
- 
- 	/* Single step test, covers 2 basic instructions and 2 emulated */
- 	asm volatile("ss_start: "
--		     "xor %%rax,%%rax\n\t"
-+		     "xor %%eax,%%eax\n\t"
- 		     "cpuid\n\t"
- 		     "movl $0x1a0,%%ecx\n\t"
- 		     "rdmsr\n\t"
--		     : : : "rax", "ecx");
-+		     : : : "eax", "ebx", "ecx", "edx");
- 
- 	/* DR6.BD test */
- 	asm volatile("bd_start: mov %%dr0, %%rax" : : : "rax");
+diff --git a/Documentation/devicetree/bindings/sound/tas2562.txt b/Documentation/devicetree/bindings/sound/tas2562.txt
+deleted file mode 100644
+index dc6d7362ded7..000000000000
+--- a/Documentation/devicetree/bindings/sound/tas2562.txt
++++ /dev/null
+@@ -1,37 +0,0 @@
+-Texas Instruments TAS2562 Smart PA
+-
+-The TAS2562 is a mono, digital input Class-D audio amplifier optimized for
+-efficiently driving high peak power into small loudspeakers.
+-Integrated speaker voltage and current sense provides for
+-real time monitoring of loudspeaker behavior.
+-
+-Required properties:
+- - #address-cells  - Should be <1>.
+- - #size-cells     - Should be <0>.
+- - compatible:	   - Should contain "ti,tas2562", "ti,tas2563".
+- - reg:		   - The i2c address. Should be 0x4c, 0x4d, 0x4e or 0x4f.
+- - ti,imon-slot-no:- TDM TX current sense time slot.
+- - ti,vmon-slot-no:- TDM TX voltage sense time slot. This slot must always be
+-		     greater then ti,imon-slot-no.
+-
+-Optional properties:
+-- interrupt-parent: phandle to the interrupt controller which provides
+-                    the interrupt.
+-- interrupts: (GPIO) interrupt to which the chip is connected.
+-- shut-down-gpio: GPIO used to control the state of the device.
+-
+-Examples:
+-tas2562@4c {
+-        #address-cells = <1>;
+-        #size-cells = <0>;
+-        compatible = "ti,tas2562";
+-        reg = <0x4c>;
+-
+-        interrupt-parent = <&gpio1>;
+-        interrupts = <14>;
+-
+-	shut-down-gpio = <&gpio1 15 0>;
+-        ti,imon-slot-no = <0>;
+-        ti,vmon-slot-no = <1>;
+-};
+-
 -- 
-2.26.2
+2.28.0
 
