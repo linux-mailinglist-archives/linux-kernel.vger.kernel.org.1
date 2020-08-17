@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B33824696D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27608246973
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729378AbgHQPVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:21:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42998 "EHLO mail.kernel.org"
+        id S1729422AbgHQPWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:22:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729314AbgHQPVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:21:04 -0400
+        id S1729370AbgHQPVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:21:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F22620716;
-        Mon, 17 Aug 2020 15:21:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FB25207DE;
+        Mon, 17 Aug 2020 15:21:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677663;
-        bh=fw0ThbpYQA6LIUcE4wTI9DtbAVDrXtiAyNGq0cTApy8=;
+        s=default; t=1597677695;
+        bh=QDAW9zoveqrWFCuC7xBLGn80jtKBU8onUkR3R7/heiM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tMow1++WzTTisx6mYEad+uooRMpEWc0midTGEELQk/OOuXa9Agw4Nw9bk0UVAN2s2
-         Y8jT2DeQvGlz9XgWFTt//xt/37A5/2y/szJ047bXHG8oMd6msu7tfWY7hLlOoi9dEe
-         sey//2a2PqRkOT8AwvOdyAPEskJPCToYyTm+mZSM=
+        b=Yzd07W+k6lILrZJomE6sjrzszDs9RhFUbyzqM2DKb/rvX45QRjTdlhVxwUWgDeGIW
+         EUR4o2OJJmAoElxn8P6xRFJxAPTjbeTxi4bgKep6n3217h8NJ556RzcwEUcqWLjkz0
+         Nrpp9jqGnK3kTd2+YFQhISgR16Ir+ITNnCh6P95U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 064/464] irqchip/loongson-htvec: Check return value of irq_domain_translate_onecell()
-Date:   Mon, 17 Aug 2020 17:10:17 +0200
-Message-Id: <20200817143836.831774252@linuxfoundation.org>
+        stable@vger.kernel.org, Martin Wilck <mwilck@suse.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 074/464] nvme-multipath: do not fall back to __nvme_find_path() for non-optimized paths
+Date:   Mon, 17 Aug 2020 17:10:27 +0200
+Message-Id: <20200817143837.319138617@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -43,42 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit dbec37048d27cee36e103e113b5f9b1852bfe997 ]
+[ Upstream commit fbd6a42d8932e172921c7de10468a2e12c34846b ]
 
-Check the return value of irq_domain_translate_onecell() due to
-it may returns -EINVAL if failed.
+When nvme_round_robin_path() finds a valid namespace we should be using it;
+falling back to __nvme_find_path() for non-optimized paths will cause the
+result from nvme_round_robin_path() to be ignored for non-optimized paths.
 
-Fixes: 818e915fbac5 ("irqchip: Add Loongson HyperTransport Vector support")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/1594087972-21715-5-git-send-email-yangtiezhu@loongson.cn
+Fixes: 75c10e732724 ("nvme-multipath: round-robin I/O policy")
+Signed-off-by: Martin Wilck <mwilck@suse.com>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-loongson-htvec.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/nvme/host/multipath.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loongson-htvec.c
-index b36d403383230..720cf96ae90ee 100644
---- a/drivers/irqchip/irq-loongson-htvec.c
-+++ b/drivers/irqchip/irq-loongson-htvec.c
-@@ -109,11 +109,14 @@ static struct irq_chip htvec_irq_chip = {
- static int htvec_domain_alloc(struct irq_domain *domain, unsigned int virq,
- 			      unsigned int nr_irqs, void *arg)
- {
-+	int ret;
- 	unsigned long hwirq;
- 	unsigned int type, i;
- 	struct htvec *priv = domain->host_data;
+diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+index fe8f7f123fac7..57d51148e71b6 100644
+--- a/drivers/nvme/host/multipath.c
++++ b/drivers/nvme/host/multipath.c
+@@ -272,10 +272,13 @@ inline struct nvme_ns *nvme_find_path(struct nvme_ns_head *head)
+ 	struct nvme_ns *ns;
  
--	irq_domain_translate_onecell(domain, arg, &hwirq, &type);
-+	ret = irq_domain_translate_onecell(domain, arg, &hwirq, &type);
-+	if (ret)
-+		return ret;
+ 	ns = srcu_dereference(head->current_path[node], &head->srcu);
+-	if (READ_ONCE(head->subsys->iopolicy) == NVME_IOPOLICY_RR && ns)
+-		ns = nvme_round_robin_path(head, node, ns);
+-	if (unlikely(!ns || !nvme_path_is_optimized(ns)))
+-		ns = __nvme_find_path(head, node);
++	if (unlikely(!ns))
++		return __nvme_find_path(head, node);
++
++	if (READ_ONCE(head->subsys->iopolicy) == NVME_IOPOLICY_RR)
++		return nvme_round_robin_path(head, node, ns);
++	if (unlikely(!nvme_path_is_optimized(ns)))
++		return __nvme_find_path(head, node);
+ 	return ns;
+ }
  
- 	for (i = 0; i < nr_irqs; i++) {
- 		irq_domain_set_info(domain, virq + i, hwirq + i, &htvec_irq_chip,
 -- 
 2.25.1
 
