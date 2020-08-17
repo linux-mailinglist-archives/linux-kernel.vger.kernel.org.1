@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D590248272
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F592482C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgHRKDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 06:03:22 -0400
-Received: from mga02.intel.com ([134.134.136.20]:49700 "EHLO mga02.intel.com"
+        id S1726727AbgHRKR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 06:17:27 -0400
+Received: from mga04.intel.com ([192.55.52.120]:39352 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726043AbgHRKDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 06:03:20 -0400
-IronPort-SDR: hnUmh0HqSIsaBxqMg1pNcd8wMCAPismRdBZBZexe/hTt3yPEB2XdOus+5IjAybj6hfHj9DhOkR
- OrqWtsoZwBQA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="142700897"
+        id S1726569AbgHRKR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 06:17:26 -0400
+IronPort-SDR: 3qVvRh29vkvtaGcoDcHJ+XWVRZCOxod4unzOSEiLPBGDX6eJehM/0Mf+SXoQG+nRWG5HHebA6+
+ A9lV/P2ahuDg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="152284286"
 X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
-   d="scan'208";a="142700897"
+   d="scan'208";a="152284286"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 03:03:20 -0700
-IronPort-SDR: m8Ve8D5BXxeh4ID9DWVU5LTg1lzZarhd2hgU3HcA7T4DdrLbSyxj1Sq3MIx/qXwP17aQLKWYvp
- veBRYZXln21A==
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 03:17:26 -0700
+IronPort-SDR: +RQdUwcKd0WpF1MV50K77ipSbXSpGk4l5pWDUHQoibQeSGg/cDyEdDflEAxvBYD4/wd4LIkt6S
+ d0ZiwUUXD3Xg==
 X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
-   d="scan'208";a="471749319"
+   d="scan'208";a="279363998"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 03:03:16 -0700
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 03:17:22 -0700
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
@@ -34,9 +34,9 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
         ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH] soundwire: bus: fix typo in comment on INTSTAT registers
-Date:   Tue, 18 Aug 2020 06:09:33 +0800
-Message-Id: <20200817220933.17492-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH] soundwire: cadence: fix race condition between suspend and Slave device alerts
+Date:   Tue, 18 Aug 2020 06:23:40 +0800
+Message-Id: <20200817222340.18042-1-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -45,28 +45,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-s/Instat/Intstat/
+In system suspend stress cases, the SOF CI reports timeouts. The root
+cause is that an alert is generated while the system suspends. The
+interrupt handling generates transactions on the bus that will never
+be handled because the interrupts are disabled in parallel.
 
+As a result, the transaction never completes and times out on resume.
+This error doesn't seem too problematic since it happens in a work
+queue, and the system recovers without issues.
+
+Nevertheless, this race condition should not happen. When doing a
+system suspend, or when disabling interrupts, we should make sure the
+current transaction can complete, and prevent new work from being
+queued.
+
+BugLink: https://github.com/thesofproject/linux/issues/2344
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/bus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/soundwire/cadence_master.c | 24 +++++++++++++++++++++++-
+ drivers/soundwire/cadence_master.h |  1 +
+ 2 files changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index e6e0fb9a81b4..da0201693c24 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1372,7 +1372,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		return ret;
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 24eafe0aa1c3..1330ffc47596 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -791,7 +791,16 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
+ 			     CDNS_MCP_INT_SLAVE_MASK, 0);
+ 
+ 		int_status &= ~CDNS_MCP_INT_SLAVE_MASK;
+-		schedule_work(&cdns->work);
++
++		/*
++		 * Deal with possible race condition between interrupt
++		 * handling and disabling interrupts on suspend.
++		 *
++		 * If the master is in the process of disabling
++		 * interrupts, don't schedule a workqueue
++		 */
++		if (cdns->interrupt_enabled)
++			schedule_work(&cdns->work);
  	}
  
--	/* Read Instat 1, Instat 2 and Instat 3 registers */
-+	/* Read Intstat 1, Intstat 2 and Intstat 3 registers */
- 	ret = sdw_read(slave, SDW_SCP_INT1);
- 	if (ret < 0) {
- 		dev_err(slave->bus->dev,
+ 	cdns_writel(cdns, CDNS_MCP_INTSTAT, int_status);
+@@ -924,6 +933,19 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns, bool state)
+ 		slave_state = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT1);
+ 		cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT1, slave_state);
+ 	}
++	cdns->interrupt_enabled = state;
++
++	/*
++	 * Complete any on-going status updates before updating masks,
++	 * and cancel queued status updates.
++	 *
++	 * There could be a race with a new interrupt thrown before
++	 * the 3 mask updates below are complete, so in the interrupt
++	 * we use the 'interrupt_enabled' status to prevent new work
++	 * from being queued.
++	 */
++	if (!state)
++		cancel_work_sync(&cdns->work);
+ 
+ 	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0, slave_intmask0);
+ 	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1, slave_intmask1);
+diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+index fdec62b912d3..4d1aab5b5ec2 100644
+--- a/drivers/soundwire/cadence_master.h
++++ b/drivers/soundwire/cadence_master.h
+@@ -133,6 +133,7 @@ struct sdw_cdns {
+ 
+ 	bool link_up;
+ 	unsigned int msg_count;
++	bool interrupt_enabled;
+ 
+ 	struct work_struct work;
+ 
 -- 
 2.17.1
 
