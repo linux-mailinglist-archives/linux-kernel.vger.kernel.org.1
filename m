@@ -2,56 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B420B246573
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52ED824659C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728495AbgHQLbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 07:31:34 -0400
-Received: from elvis.franken.de ([193.175.24.41]:49794 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728421AbgHQLbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 07:31:21 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1k7dMD-0003tH-01; Mon, 17 Aug 2020 13:31:17 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 25513C0D74; Mon, 17 Aug 2020 13:17:26 +0200 (CEST)
-Date:   Mon, 17 Aug 2020 13:17:26 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-fixes] MIPS: Loongson64: Do not override watch and
- ejtag feature
-Message-ID: <20200817111726.GB11725@alpha.franken.de>
-References: <20200808123227.2873961-1-jiaxun.yang@flygoat.com>
+        id S1726707AbgHQLmu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Aug 2020 07:42:50 -0400
+Received: from correo.yucatan.gob.mx ([187.141.74.27]:13280 "EHLO
+        antispam.yucatan.gob.mx" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726151AbgHQLmu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 07:42:50 -0400
+Received: from correo.yucatan.gob.mx ([192.168.25.101])
+        by antispam.yucatan.gob.mx  with ESMTP id 07HBKVBI013797-07HBKVBL013797
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=CAFAIL);
+        Mon, 17 Aug 2020 06:20:31 -0500
+From:   Felipe Francisco Romero Ruiz <felipe.romero@yucatan.gob.mx>
+To:     "NO-REPLY@MICROSOFT.NET" <NO-REPLY@MICROSOFT.NET>
+Subject: =?koi8-r?B?78LSwdTJ1MUg187JzcHOycUsIN7UzyDTxcrewdMgzsXPwsjPxMnNzyDT0s/e?=
+ =?koi8-r?B?zs8g0M/E1NfF0sTJ1Ngg18Hb1SDV3sXUztXAINrB0MnT2CDczMXL1NLPzs7P?=
+ =?koi8-r?B?yiDQz97U2S4=?=
+Thread-Topic: =?koi8-r?B?78LSwdTJ1MUg187JzcHOycUsIN7UzyDTxcrewdMgzsXPwsjPxMnNzyDT0s/e?=
+ =?koi8-r?B?zs8g0M/E1NfF0sTJ1Ngg18Hb1SDV3sXUztXAINrB0MnT2CDczMXL1NLPzs7P?=
+ =?koi8-r?B?yiDQz97U2S4=?=
+Thread-Index: AdZ0iGqMvFdNFEUiRJ2DImpAtxqrKw==
+Date:   Mon, 17 Aug 2020 11:20:30 +0000
+Message-ID: <9B5224426D8A9A4F8725FFD78A10E7DA4D09DB2E@SRV-MAILBOX-02.gobierno1.yucatan.gob.mx>
+Accept-Language: es-ES, es-MX, en-US
+Content-Language: es-ES
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [196.171.2.106]
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200808123227.2873961-1-jiaxun.yang@flygoat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 08, 2020 at 08:32:27PM +0800, Jiaxun Yang wrote:
-> Do not override ejtag feature to 0 as Loongson 3A1000+ do have ejtag.
-> For watch, as KVM emulated CPU doesn't have watch feature, we should
-> not enable it unconditionally.
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
-> This patch should go into mips-fixes tree as watch feature is blocking
-> KVM guest boot in some cases.
-> ---
->  arch/mips/include/asm/mach-loongson64/cpu-feature-overrides.h | 2 --
->  1 file changed, 2 deletions(-)
+СРОЧНОЕ УВЕДОМЛЕНИЕ MICROSOFT[Color de fuente]
 
-applied to mips-fixes.
 
-Thomas.
+Обратите внимание, что ваша учетная запись электронной почты нуждается в срочном подтверждении сейчас, чтобы выпустить около 20 ваших входящих сообщений, которые в настоящее время приостановлены. Нажмите кнопку подтверждения ниже, чтобы подтвердить свою учетную запись сейчас.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+
+ПРОВЕРЬТЕ<https://67guiogj.wixsite.com/mysite>
+
+
+Команда проверки Microsoft
+
+
+Авторские права © 2020 Microsoft .Inc. Все права защищены.
