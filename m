@@ -2,141 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22756245ADB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 05:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C759F245AE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 05:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726888AbgHQDEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 23:04:33 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:50029 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726424AbgHQDE3 (ORCPT
+        id S1726938AbgHQDH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 23:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726606AbgHQDH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 23:04:29 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R801e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U5wd.eG_1597633465;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U5wd.eG_1597633465)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 17 Aug 2020 11:04:26 +0800
-Date:   Mon, 17 Aug 2020 11:04:25 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Baoquan He <bhe@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/10] mm/hugetlb: not necessary to abuse temporary page
- to workaround the nasty free_huge_page
-Message-ID: <20200817030425.GA25240@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200807091251.12129-1-richard.weiyang@linux.alibaba.com>
- <20200807091251.12129-11-richard.weiyang@linux.alibaba.com>
- <20200810021737.GV14854@MiWiFi-R3L-srv>
- <129cc03e-c6d5-24f8-2f3c-f5a3cc821e76@oracle.com>
- <20200811015148.GA10792@MiWiFi-R3L-srv>
- <20200811065406.GC4793@dhcp22.suse.cz>
- <eb9d1e13-7455-0c4e-1f94-0c859c36c0bb@oracle.com>
- <20200813114638.GJ9477@dhcp22.suse.cz>
+        Sun, 16 Aug 2020 23:07:26 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A76C061388
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 20:07:25 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id d22so7528096pfn.5
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 20:07:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/y3+sIpziI5i2x/IrsZTj9dc44wN9fN2Q4/rOL2VgUc=;
+        b=BvINO9nn5tfb50yh6jKlnRihWrRMuT6XhZAD/8h6S8XRIIl93QpNwoycR/MeMYym08
+         uD0zC8BOchR0VuTWgqhI5Jto7pkZ1ZS61S+3wO4FFUe+xeufo3kHKJ1xpQAXE4oZjEOA
+         mEN5C/u75TR6ZXCF700os5SN475dlm6t7r1m3aOMVwOxY27wnIJzq9evFjUrOEWYi2Ca
+         Qw2OTr6lJ+FRAayUrxECsUmIfmYbpuiGW5ergC+OQSqVBr56FjgGVeS478gWUzyLZ95X
+         G7c7G5ic10fnKaeiLxMijuNIklPoPVtIqCO7VTX9ikSB5CfM/w2T6RA3R1DOF/yYOSWf
+         nGIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/y3+sIpziI5i2x/IrsZTj9dc44wN9fN2Q4/rOL2VgUc=;
+        b=Sx1nO+Sb/h/dlNWZAiyM+/h4yhoMfRqJj1aHohU2iOnCn/UqI3pLGUc6vPIsj8008j
+         eL7AEf/0uZ4eHUvUVs5BKNo9PxjdFndjhOnYA458a7g8bBhhq2l/3XAsPE0h0WQnmS5V
+         lkeVOAtGjGgMEGhcX4SnlOvJZxnkOuhTAjTLbWF64hT91cXfKvjmr5PzrG5Ktb4f6MGA
+         3fTseIrvY1ges62hqT2MAF1gl5AK9QHOq+053WAk36cLYdps2MzLA2b0EYMA7glbb7Or
+         RAuJpgOsyTq9NfhmgNWpbjd5hr91om3DNHlpVCKBnArhjS+NYMqvrXBXS8ftOZoxmJsF
+         NnLQ==
+X-Gm-Message-State: AOAM530sh3YfDa5hT2CALBoc7WjEL+ZXXFkm9sOfC+Xe5Oo2Z8hIvFEq
+        miS8DXZlxJscTe0JJmN2XxB318siwTO5/g==
+X-Google-Smtp-Source: ABdhPJy8AHV8k/93PskJpi0rA9JuD7vXvSvbRHrZ8o/IR6+gZ82f73n70Vt5ocBfZ+4dfTaRG0kMxg==
+X-Received: by 2002:a63:e703:: with SMTP id b3mr8596103pgi.39.1597633644187;
+        Sun, 16 Aug 2020 20:07:24 -0700 (PDT)
+Received: from ?IPv6:2605:e000:100e:8c61:ea1b:63b0:364:3a3b? ([2605:e000:100e:8c61:ea1b:63b0:364:3a3b])
+        by smtp.gmail.com with ESMTPSA id w16sm15710766pjd.50.2020.08.16.20.07.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 Aug 2020 20:07:23 -0700 (PDT)
+Subject: Re: [PATCH] bsg-lib: convert comma to semicolon
+To:     Xu Wang <vulab@iscas.ac.cn>, linux-block@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20200817021649.9922-1-vulab@iscas.ac.cn>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b17a63b2-ed72-66b9-6157-38636d4a7316@kernel.dk>
+Date:   Sun, 16 Aug 2020 20:07:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200813114638.GJ9477@dhcp22.suse.cz>
+In-Reply-To: <20200817021649.9922-1-vulab@iscas.ac.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 01:46:38PM +0200, Michal Hocko wrote:
->On Tue 11-08-20 14:43:28, Mike Kravetz wrote:
->> On 8/10/20 11:54 PM, Michal Hocko wrote:
->> > 
->> > I have managed to forgot all the juicy details since I have made that
->> > change. All that remains is that the surplus pages accounting was quite
->> > tricky and back then I didn't figure out a simpler method that would
->> > achieve the consistent look at those counters. As mentioned above I
->> > suspect this could lead to pre-mature allocation failures while the
->> > migration is ongoing.
->> 
->> It is likely lost in the e-mail thread, but the suggested change was to
->> alloc_surplus_huge_page().  The code which allocates the migration target
->> (alloc_migrate_huge_page) will not be changed.  So, this should not be
->> an issue.
->
->OK, I've missed that obviously.
->
->> >                       Sure quite unlikely to happen and the race window
->> > is likely very small. Maybe this is even acceptable but I would strongly
->> > recommend to have all this thinking documented in the changelog.
->> 
->> I wrote down a description of what happens in the two different approaches
->> "temporary page" vs "surplus page".  It is at the very end of this e-mail.
->> When looking at the details, I came up with what may be an even better
->> approach.  Why not just call the low level routine to free the page instead
->> of going through put_page/free_huge_page?  At the very least, it saves a
->> lock roundtrip and there is no need to worry about the counters/accounting.
->> 
->> Here is a patch to do that.  However, we are optimizing a return path in
->> a race condition that we are unlikely to ever hit.  I 'tested' it by allocating
->> an 'extra' page and freeing it via this method in alloc_surplus_huge_page.
->> 
->> >From 864c5f8ef4900c95ca3f6f2363a85f3cb25e793e Mon Sep 17 00:00:00 2001
->> From: Mike Kravetz <mike.kravetz@oracle.com>
->> Date: Tue, 11 Aug 2020 12:45:41 -0700
->> Subject: [PATCH] hugetlb: optimize race error return in
->>  alloc_surplus_huge_page
->> 
->> The routine alloc_surplus_huge_page() could race with with a pool
->> size change.  If this happens, the allocated page may not be needed.
->> To free the page, the current code will 'Abuse temporary page to
->> workaround the nasty free_huge_page codeflow'.  Instead, directly
->> call the low level routine that free_huge_page uses.  This works
->> out well because the page is new, we hold the only reference and
->> already hold the hugetlb_lock.
->> 
->> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->> ---
->>  mm/hugetlb.c | 13 ++++++++-----
->>  1 file changed, 8 insertions(+), 5 deletions(-)
->> 
->> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->> index 590111ea6975..ac89b91fba86 100644
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -1923,14 +1923,17 @@ static struct page *alloc_surplus_huge_page(struct hstate *h, gfp_t gfp_mask,
->>  	/*
->>  	 * We could have raced with the pool size change.
->>  	 * Double check that and simply deallocate the new page
->> -	 * if we would end up overcommiting the surpluses. Abuse
->> -	 * temporary page to workaround the nasty free_huge_page
->> -	 * codeflow
->> +	 * if we would end up overcommiting the surpluses.
->>  	 */
->>  	if (h->surplus_huge_pages >= h->nr_overcommit_huge_pages) {
->> -		SetPageHugeTemporary(page);
->> +		/*
->> +		 * Since this page is new, we hold the only reference, and
->> +		 * we already hold the hugetlb_lock call the low level free
->> +		 * page routine.  This saves at least a lock roundtrip.
->> +		 */
->> +		(void)put_page_testzero(page); /* don't call destructor */
->> +		update_and_free_page(h, page);
->>  		spin_unlock(&hugetlb_lock);
->> -		put_page(page);
->>  		return NULL;
->>  	} else {
->>  		h->surplus_huge_pages++;
->
->Yes this makes sense. I would have to think about this more to be
->confident and give Acked-by but this looks sensible from a quick glance.
->
+On 8/16/20 7:16 PM, Xu Wang wrote:
+> Replace a comma between expression statements by a semicolon.
 
-If it is ok, I would like to send v2 without this one to give more time
-for a discussion?
-
->Thanks!
->-- 
->Michal Hocko
->SUSE Labs
+Thanks, applied.
 
 -- 
-Wei Yang
-Help you, Help me
+Jens Axboe
+
