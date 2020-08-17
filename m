@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B3F2464C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 797A62464C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728071AbgHQKtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 06:49:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46760 "EHLO
+        id S1728089AbgHQKtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 06:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727972AbgHQKst (ORCPT
+        with ESMTP id S1726612AbgHQKsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 06:48:49 -0400
+        Mon, 17 Aug 2020 06:48:52 -0400
 Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE89C061343
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 03:48:49 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id v15so7929586pgh.6
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 03:48:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76686C061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 03:48:52 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id d19so7921172pgl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 03:48:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Joo9G8dpZiV+ukJjlPwDuzRh/fKHk3sZ/ezTEfq1J4w=;
-        b=cTd3pBEfcGOI0GUl+jGoJ9C1jxMlmWh9GPGRNVa87Suq21Jw1Uxy5NhHGeORvoyBdP
-         coa4aiLyM8ttF+0vS8u/nG0tFlo4IhI2APHwnMmhf1NKoXQ6JURg5aupiOxSICS8Z+kM
-         cGCi+wI8pQiigNOA7cU4sjYrvs6N3t/Zas9HmbPFD4AwAWU8jinfD3U/vC8NjF0qYhc7
-         omz0UQ/RZlNoZqGKBreomIsg7fLrHm+c93tqoVYEMtKRHGj8E3Ltbwsml+todPzuspbT
-         m1ySsGyOe+FkxH8Imm2LQQh+8fB5ihV6B6xc4g/ixK5/fY1lU9S6/F3nrC09OpkF51Fc
-         slgQ==
+        bh=t5bxP7SBsyG/FaxnJHfQjTjpWsNLjhkZMYmiwNpRv5E=;
+        b=HO7InCj5DyHxtQgmb+1KB7+pIlkzUgKfEmsbL0H0SYyo5af3rPrGCpvNyoqeBQ5r8I
+         HybpsHuOOJjfzI2HxXoypVGpBcIeuO7SsnhNX1mLlDhCHIlCPMca2sBS7kfJ1+5lkWTL
+         GZ5klR6KBdfbj+LkssigwXNmTTUo8ny+UTvblxIeKQwwBn9pmoJc8IBmb8VPROIuJHw+
+         KR4ssvdt15UtIuQsP+CU6LWmYAVtLD19UU/ZUrtMXoE0yrDX/Vy4lfSGSRrVKKddt90N
+         YlHRv//ef4GBmYcqVAwhetNxRuOly5BWordloaAq2FLxTfrdQZH4viOp/FRzJM6Jr38T
+         ntsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=Joo9G8dpZiV+ukJjlPwDuzRh/fKHk3sZ/ezTEfq1J4w=;
-        b=Mki0l7wtQKniRtDJhVQHk4SVbK4Iw+ntglCtsundJi0d8IUp7vn+qkWivHUcEKJbMX
-         YrqqskEm+B/8fpRAVxD5emL7dMkJG3uGAjWUIwZj4430YJXS4I0eeC0Pc+eazgGwFoek
-         jgZfMflWrNpkZrmg7YMLQREMx2xPCA5IQtJqqaqh+mB/7MxQ0ossmQE3pxmf3JjmBEYh
-         lrGs6ek62SepzuhEN3C+2uK+DJ5EiX4QvEcQx3AP9Rq7oF1m4DpEuhHjyrilelpH3Iiw
-         p4Qh2S9PzmTbNV6XXFvLk4gwAJ7QH6aI0vC0yWvLHn1ZZNS16GsO8HHW8hU0zNNvLmun
-         LAwA==
-X-Gm-Message-State: AOAM533k62Q2xyUhVCznH+DcC04MJvM/+rJzOhlsbLLCisy07lP/DW5Y
-        x8f/B5dr85HzTF+1CkxSKiQ=
-X-Google-Smtp-Source: ABdhPJy2wGTTsSBWFh2L/UODY4F+cIhdd/jqxANXR9mTMHpI8OyDraUX2udy2lqxjSCPNYWA92Y4rA==
-X-Received: by 2002:aa7:8b18:: with SMTP id f24mr10782555pfd.301.1597661329381;
-        Mon, 17 Aug 2020 03:48:49 -0700 (PDT)
+        bh=t5bxP7SBsyG/FaxnJHfQjTjpWsNLjhkZMYmiwNpRv5E=;
+        b=oVv0oNr7ysHomEZKQ+N6XAY7eDoCGEmcPXaYoo9ed5p1pw7VMJZbclF51ojCbv60tI
+         PR3+KWaHRzMVyX7VfvJ+R1x36RNsNbscoFGELoGT5vnGSh4Q1q0ZrTDD8T9ZPxJsXOpA
+         NEfj+PB5piwgz0Vo107SJmOSPSJ809qwTnFqegwcwik0hyUrOc/ly3NDhhxeDSqUAIoz
+         8CqTx+IJRUe7wPw9qhre3PlUYwPr+/yTKcfcAvV1n1AXojBca9hwRhEtE9NeyfNE5LC2
+         ApNl56D//2+EzUyKF1KDRO9sbfukRJq0kEMBWQiR3O496RIa42OXNBsM0nLz8j3XGdB1
+         EW1Q==
+X-Gm-Message-State: AOAM532WgxFrlfv6tIC3HsQbSCOoMw1pxMKQZ0M3YIYDQWzu02myqZeG
+        9Bq3rb+pBpZXSD4mscps0XU=
+X-Google-Smtp-Source: ABdhPJxvjPog/zcs2IZsuzELFP8q8eDDcmQE5AoBcs21M2OG72EoIcTBtviVCIpusOnygDIeHNgGFw==
+X-Received: by 2002:a63:4450:: with SMTP id t16mr9468564pgk.3.1597661332106;
+        Mon, 17 Aug 2020 03:48:52 -0700 (PDT)
 Received: from localhost.localdomain ([2402:7500:577:c217:67e6:a40c:a3bf:1945])
-        by smtp.gmail.com with ESMTPSA id k12sm16976528pjp.38.2020.08.17.03.48.46
+        by smtp.gmail.com with ESMTPSA id k12sm16976528pjp.38.2020.08.17.03.48.49
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 17 Aug 2020 03:48:48 -0700 (PDT)
+        Mon, 17 Aug 2020 03:48:51 -0700 (PDT)
 From:   Gene Chen <gene.chen.richtek@gmail.com>
 To:     lee.jones@linaro.org, matthias.bgg@gmail.com
 Cc:     linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         gene_chen@richtek.com, benjamin.chao@mediatek.com,
         shufan_lee@richtek.com, cy_huang@richtek.com
-Subject: [PATCH v4 3/9] mfd: mt6360: Indicate sub-dev compatible name by using "-"
-Date:   Mon, 17 Aug 2020 18:47:51 +0800
-Message-Id: <1597661277-27862-4-git-send-email-gene.chen.richtek@gmail.com>
+Subject: [PATCH v4 4/9] mfd: mt6360: Combine mt6360 pmic/ldo resources into mt6360 regulator resources
+Date:   Mon, 17 Aug 2020 18:47:52 +0800
+Message-Id: <1597661277-27862-5-git-send-email-gene.chen.richtek@gmail.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1597661277-27862-1-git-send-email-gene.chen.richtek@gmail.com>
 References: <1597661277-27862-1-git-send-email-gene.chen.richtek@gmail.com>
@@ -66,49 +66,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Gene Chen <gene_chen@richtek.com>
 
-Indicate sub-dev compatible name by using "-".
+Combine mt6360 pmic/ldo resources into mt6360 regulator resources
+to simplify the similar resources object.
 
 Signed-off-by: Gene Chen <gene_chen@richtek.com>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mfd/mt6360-core.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/mfd/mt6360-core.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
-index befee70..692e47b 100644
+index 692e47b..5119e51 100644
 --- a/drivers/mfd/mt6360-core.c
 +++ b/drivers/mfd/mt6360-core.c
-@@ -292,18 +292,18 @@ static const struct resource mt6360_ldo_resources[] = {
+@@ -265,7 +265,7 @@ static const struct resource mt6360_led_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(MT6360_FLED1_STRB_TO_EVT, "fled1_strb_to_evt"),
  };
  
- static const struct mfd_cell mt6360_devs[] = {
--	OF_MFD_CELL("mt6360_adc", mt6360_adc_resources,
--		    NULL, 0, 0, "mediatek,mt6360_adc"),
--	OF_MFD_CELL("mt6360_chg", mt6360_chg_resources,
--		    NULL, 0, 0, "mediatek,mt6360_chg"),
--	OF_MFD_CELL("mt6360_led", mt6360_led_resources,
--		    NULL, 0, 0, "mediatek,mt6360_led"),
--	OF_MFD_CELL("mt6360_pmic", mt6360_pmic_resources,
--		    NULL, 0, 0, "mediatek,mt6360_pmic"),
--	OF_MFD_CELL("mt6360_ldo", mt6360_ldo_resources,
--		    NULL, 0, 0, "mediatek,mt6360_ldo"),
--	OF_MFD_CELL("mt6360_tcpc", NULL,
--		    NULL, 0, 0, "mediatek,mt6360_tcpc"),
-+	OF_MFD_CELL("mt6360-adc", mt6360_adc_resources,
-+		    NULL, 0, 0, "mediatek,mt6360-adc"),
-+	OF_MFD_CELL("mt6360-chg", mt6360_chg_resources,
-+		    NULL, 0, 0, "mediatek,mt6360-chg"),
-+	OF_MFD_CELL("mt6360-led", mt6360_led_resources,
-+		    NULL, 0, 0, "mediatek,mt6360-led"),
-+	OF_MFD_CELL("mt6360-pmic", mt6360_pmic_resources,
-+		    NULL, 0, 0, "mediatek,mt6360-pmic"),
-+	OF_MFD_CELL("mt6360-ldo", mt6360_ldo_resources,
-+		    NULL, 0, 0, "mediatek,mt6360-ldo"),
-+	OF_MFD_CELL("mt6360-tcpc", NULL,
-+		    NULL, 0, 0, "mediatek,mt6360-tcpc"),
+-static const struct resource mt6360_pmic_resources[] = {
++static const struct resource mt6360_regulator_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_PGB_EVT, "buck1_pgb_evt"),
+ 	DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OC_EVT, "buck1_oc_evt"),
+ 	DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OV_EVT, "buck1_ov_evt"),
+@@ -278,9 +278,6 @@ static const struct resource mt6360_pmic_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(MT6360_LDO7_OC_EVT, "ldo7_oc_evt"),
+ 	DEFINE_RES_IRQ_NAMED(MT6360_LDO6_PGB_EVT, "ldo6_pgb_evt"),
+ 	DEFINE_RES_IRQ_NAMED(MT6360_LDO7_PGB_EVT, "ldo7_pgb_evt"),
+-};
+-
+-static const struct resource mt6360_ldo_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(MT6360_LDO1_OC_EVT, "ldo1_oc_evt"),
+ 	DEFINE_RES_IRQ_NAMED(MT6360_LDO2_OC_EVT, "ldo2_oc_evt"),
+ 	DEFINE_RES_IRQ_NAMED(MT6360_LDO3_OC_EVT, "ldo3_oc_evt"),
+@@ -298,10 +295,8 @@ static const struct mfd_cell mt6360_devs[] = {
+ 		    NULL, 0, 0, "mediatek,mt6360-chg"),
+ 	OF_MFD_CELL("mt6360-led", mt6360_led_resources,
+ 		    NULL, 0, 0, "mediatek,mt6360-led"),
+-	OF_MFD_CELL("mt6360-pmic", mt6360_pmic_resources,
+-		    NULL, 0, 0, "mediatek,mt6360-pmic"),
+-	OF_MFD_CELL("mt6360-ldo", mt6360_ldo_resources,
+-		    NULL, 0, 0, "mediatek,mt6360-ldo"),
++	OF_MFD_CELL("mt6360-regulator", mt6360_regulator_resources,
++		    NULL, 0, 0, "mediatek,mt6360-regulator"),
+ 	OF_MFD_CELL("mt6360-tcpc", NULL,
+ 		    NULL, 0, 0, "mediatek,mt6360-tcpc"),
  };
- 
- static const unsigned short mt6360_slave_addr[MT6360_SLAVE_MAX] = {
 -- 
 2.7.4
 
