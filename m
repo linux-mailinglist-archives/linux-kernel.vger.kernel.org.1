@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED52246978
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25A924697C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729453AbgHQPWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:22:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44502 "EHLO mail.kernel.org"
+        id S1729472AbgHQPWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:22:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729382AbgHQPVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:21:45 -0400
+        id S1729397AbgHQPVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:21:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C952322BF5;
-        Mon, 17 Aug 2020 15:21:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F1B920885;
+        Mon, 17 Aug 2020 15:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677705;
-        bh=VVwKLpYeuD89UFfGouxauKaEfbKlFUh+w/sVl+NZxHM=;
+        s=default; t=1597677710;
+        bh=AILpoJFYFqqiQwh8J5OFU9tSJgZo+/G+qh3xcX/ibdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nZLHGjhcu4y10JWHm2JtK9t7d3cX+WNhuQzDM7G4dHXn+14Nznyx/KvAp65uF0cE4
-         hT3kjSboYzqvvHp0CpDfg2rV53nvWmKuK6z+3HnIjOHDy4pnF+YEh5hcMBySwMQ885
-         Xg7feWFZUPPFOI0rjx/eXf/lwU5t03aag61fv5+o=
+        b=hK8BlBQ22jgqlNMMAnjDu7x0hyjFm47nXE7xpdjTYIfvt/l4XxamYlZ5znBV1j0o4
+         c22HlctllyJSRFv4YybWMHx3ySaBgv9uxR6pq7gdksxM3tv4jgu3geJU8Q/gelezhl
+         168JdU/RTucMCXwcr6tb2iKYyETkihm08MCMIZEQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, "kernelci.org bot" <bot@kernelci.org>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 078/464] soc: qcom: rpmh-rsc: Set suppress_bind_attrs flag
-Date:   Mon, 17 Aug 2020 17:10:31 +0200
-Message-Id: <20200817143837.516007275@linuxfoundation.org>
+Subject: [PATCH 5.8 080/464] ARM: exynos: clear L310_AUX_CTRL_FULL_LINE_ZERO in default l2c_aux_val
+Date:   Mon, 17 Aug 2020 17:10:33 +0200
+Message-Id: <20200817143837.613372049@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -45,39 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maulik Shah <mkshah@codeaurora.org>
+From: Guillaume Tucker <guillaume.tucker@collabora.com>
 
-[ Upstream commit 1a53ce9ab4faeb841b33d62d23283dc76c0e7c5a ]
+[ Upstream commit 5b17a04addc29201dc142c8d2c077eb7745d2e35 ]
 
-rpmh-rsc driver is fairly core to system and should not be removable
-once its probed. However it allows to unbind driver from sysfs using
-below command which results into a crash on sc7180.
+This "alert" error message can be seen on exynos4412-odroidx2:
 
-echo 18200000.rsc > /sys/bus/platform/drivers/rpmh/unbind
+    L2C: platform modifies aux control register: 0x02070000 -> 0x3e470001
+    L2C: platform provided aux values permit register corruption.
 
-Lets prevent unbind at runtime by setting suppress_bind_attrs flag.
+Followed by this plain error message:
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-Link: https://lore.kernel.org/r/1592808805-2437-1-git-send-email-mkshah@codeaurora.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+    L2C-310: enabling full line of zeros but not enabled in Cortex-A9
+
+To fix it, don't set the L310_AUX_CTRL_FULL_LINE_ZERO flag (bit 0) in
+the default value of l2c_aux_val.  It may instead be enabled when
+applicable by the logic in l2c310_enable() if the attribute
+"arm,full-line-zero-disable" was set in the device tree.
+
+The initial commit that introduced this default value was in v2.6.38
+commit 1cf0eb799759 ("ARM: S5PV310: Add L2 cache init function in
+cpu.c").
+
+However, the code to set the L310_AUX_CTRL_FULL_LINE_ZERO flag and
+manage that feature was added much later and the default value was not
+updated then.  So this seems to have been a subtle oversight
+especially since enabling it only in the cache and not in the A9 core
+doesn't actually prevent the platform from running.  According to the
+TRM, the opposite would be a real issue, if the feature was enabled in
+the A9 core but not in the cache controller.
+
+Reported-by: "kernelci.org bot" <bot@kernelci.org>
+Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/rpmh-rsc.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/mach-exynos/exynos.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-index 906778e2c1fae..ae66757825813 100644
---- a/drivers/soc/qcom/rpmh-rsc.c
-+++ b/drivers/soc/qcom/rpmh-rsc.c
-@@ -1031,6 +1031,7 @@ static struct platform_driver rpmh_driver = {
- 	.driver = {
- 		  .name = "rpmh",
- 		  .of_match_table = rpmh_drv_match,
-+		  .suppress_bind_attrs = true,
- 	},
- };
+diff --git a/arch/arm/mach-exynos/exynos.c b/arch/arm/mach-exynos/exynos.c
+index 7a8d1555db404..36c37444485a8 100644
+--- a/arch/arm/mach-exynos/exynos.c
++++ b/arch/arm/mach-exynos/exynos.c
+@@ -193,7 +193,7 @@ static void __init exynos_dt_fixup(void)
+ }
  
+ DT_MACHINE_START(EXYNOS_DT, "Samsung Exynos (Flattened Device Tree)")
+-	.l2c_aux_val	= 0x3c400001,
++	.l2c_aux_val	= 0x3c400000,
+ 	.l2c_aux_mask	= 0xc20fffff,
+ 	.smp		= smp_ops(exynos_smp_ops),
+ 	.map_io		= exynos_init_io,
 -- 
 2.25.1
 
