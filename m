@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA250247428
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8812C247425
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731846AbgHQTGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:06:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54678 "EHLO mail.kernel.org"
+        id S1731833AbgHQTF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730481AbgHQPo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:44:27 -0400
+        id S2387701AbgHQPoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:44:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 306E022CAD;
-        Mon, 17 Aug 2020 15:44:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 390DC22BF3;
+        Mon, 17 Aug 2020 15:44:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679066;
-        bh=D4uOVfmK8r16ZLtQRciHwUAqJs5/GQ9VClTO3FyuCr4=;
+        s=default; t=1597679083;
+        bh=dAoe88Mtbo9LtHCsMieDiuSyR9ZBSp9hgxYb9HLpeHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U7OikrE3RBUBZTgDG5UyRE34uKmloBIDAnbjgdjFsaMs9CuTLQtiTJ3rH0vRTbD53
-         UhJf3ZQhYF0JzBHCqyTniMugF3xbR0LqJ2XPBZPUQ3TW1b59DNI+ESy62GCAucmUGP
-         nJUZShTPHcO/7TVq5RgDzHMA+lS2iKCvSpMEkRik=
+        b=RExdoTNjmKAx4t09F5K1q9PcQ2JMaYYh1wXdyvZYXRK/0BwrD/cz6fWkeSrm7DUCA
+         6pTuqMWXgWnh1DvbWr+7erhGQTYQvl3VZsCZVOsZeE8wkRFk+/MO7liI6a/E/qtICi
+         pQc+H6bclEhdqPkCbcebTUwlLFGslD/FnZmh6qJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zenghui Yu <yuzenghui@huawei.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 057/393] irqchip/gic-v4.1: Use GFP_ATOMIC flag in allocate_vpe_l1_table()
-Date:   Mon, 17 Aug 2020 17:11:47 +0200
-Message-Id: <20200817143822.383082916@linuxfoundation.org>
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 060/393] nvme-multipath: fix logic for non-optimized paths
+Date:   Mon, 17 Aug 2020 17:11:50 +0200
+Message-Id: <20200817143822.533323614@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -43,72 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zenghui Yu <yuzenghui@huawei.com>
+From: Martin Wilck <mwilck@suse.com>
 
-[ Upstream commit d1bd7e0ba533a2a6f313579ec9b504f6614c35c4 ]
+[ Upstream commit 3f6e3246db0e6f92e784965d9d0edb8abe6c6b74 ]
 
-Booting the latest kernel with DEBUG_ATOMIC_SLEEP=y on a GICv4.1 enabled
-box, I get the following kernel splat:
+Handle the special case where we have exactly one optimized path,
+which we should keep using in this case.
 
-[    0.053766] BUG: sleeping function called from invalid context at mm/slab.h:567
-[    0.053767] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 0, name: swapper/1
-[    0.053769] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.8.0-rc3+ #23
-[    0.053770] Call trace:
-[    0.053774]  dump_backtrace+0x0/0x218
-[    0.053775]  show_stack+0x2c/0x38
-[    0.053777]  dump_stack+0xc4/0x10c
-[    0.053779]  ___might_sleep+0xfc/0x140
-[    0.053780]  __might_sleep+0x58/0x90
-[    0.053782]  slab_pre_alloc_hook+0x7c/0x90
-[    0.053783]  kmem_cache_alloc_trace+0x60/0x2f0
-[    0.053785]  its_cpu_init+0x6f4/0xe40
-[    0.053786]  gic_starting_cpu+0x24/0x38
-[    0.053788]  cpuhp_invoke_callback+0xa0/0x710
-[    0.053789]  notify_cpu_starting+0xcc/0xd8
-[    0.053790]  secondary_start_kernel+0x148/0x200
-
- # ./scripts/faddr2line vmlinux its_cpu_init+0x6f4/0xe40
-its_cpu_init+0x6f4/0xe40:
-allocate_vpe_l1_table at drivers/irqchip/irq-gic-v3-its.c:2818
-(inlined by) its_cpu_init_lpis at drivers/irqchip/irq-gic-v3-its.c:3138
-(inlined by) its_cpu_init at drivers/irqchip/irq-gic-v3-its.c:5166
-
-It turned out that we're allocating memory using GFP_KERNEL (may sleep)
-within the CPU hotplug notifier, which is indeed an atomic context. Bad
-thing may happen if we're playing on a system with more than a single
-CommonLPIAff group. Avoid it by turning this into an atomic allocation.
-
-Fixes: 5e5168461c22 ("irqchip/gic-v4.1: VPE table (aka GICR_VPROPBASER) allocation")
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20200630133746.816-1-yuzenghui@huawei.com
+Fixes: 75c10e732724 ("nvme-multipath: round-robin I/O policy")
+Signed off-by: Martin Wilck <mwilck@suse.com>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-gic-v3-its.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/nvme/host/multipath.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index b99e3105bf9fe..237c832acdd77 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -2690,7 +2690,7 @@ static int allocate_vpe_l1_table(void)
- 	if (val & GICR_VPROPBASER_4_1_VALID)
- 		goto out;
+diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+index 36db7d2e6a896..2c94e084a61b8 100644
+--- a/drivers/nvme/host/multipath.c
++++ b/drivers/nvme/host/multipath.c
+@@ -246,6 +246,12 @@ static struct nvme_ns *nvme_round_robin_path(struct nvme_ns_head *head,
+ 			fallback = ns;
+ 	}
  
--	gic_data_rdist()->vpe_table_mask = kzalloc(sizeof(cpumask_t), GFP_KERNEL);
-+	gic_data_rdist()->vpe_table_mask = kzalloc(sizeof(cpumask_t), GFP_ATOMIC);
- 	if (!gic_data_rdist()->vpe_table_mask)
- 		return -ENOMEM;
- 
-@@ -2757,7 +2757,7 @@ static int allocate_vpe_l1_table(void)
- 
- 	pr_debug("np = %d, npg = %lld, psz = %d, epp = %d, esz = %d\n",
- 		 np, npg, psz, epp, esz);
--	page = alloc_pages(GFP_KERNEL | __GFP_ZERO, get_order(np * PAGE_SIZE));
-+	page = alloc_pages(GFP_ATOMIC | __GFP_ZERO, get_order(np * PAGE_SIZE));
- 	if (!page)
- 		return -ENOMEM;
- 
++	/* No optimized path found, re-check the current path */
++	if (!nvme_path_is_disabled(old) &&
++	    old->ana_state == NVME_ANA_OPTIMIZED) {
++		found = old;
++		goto out;
++	}
+ 	if (!fallback)
+ 		return NULL;
+ 	found = fallback;
 -- 
 2.25.1
 
