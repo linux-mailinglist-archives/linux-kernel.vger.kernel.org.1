@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E9D247A40
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 00:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D00A247A50
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 00:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730386AbgHQWMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 18:12:32 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:36242 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730328AbgHQWMN (ORCPT
+        id S1730473AbgHQWN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 18:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730429AbgHQWNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 18:12:13 -0400
-Received: by mail-il1-f193.google.com with SMTP id z3so15921998ilh.3;
-        Mon, 17 Aug 2020 15:12:13 -0700 (PDT)
+        Mon, 17 Aug 2020 18:13:09 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB42DC061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 15:13:08 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id t23so19221928ljc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 15:13:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=26LrDJXqJLI6TFM10r1vs3mU6KeP0Tqlx0OGxUpHgLM=;
+        b=gBDu5V7G1HFcoj4N3yt3hf/J8px7HDGic43uxR5FXb1kXpR+lrm8bxoaAx8mEtSsmL
+         uYMYjA6rc1irgw6iTnUR6Gui0Ys8KiGgV19BjiPY8YYpbALXS7lQArBKGBEoL9zkKgfA
+         aCFG6DmlY9VUjKrDWFahAC0fBF/JADFwEWOR0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eqARiGNwhWeaZVOhEsppjcqmVGZGsngOhSrvXhX8++U=;
-        b=aYj4+6w+bM6Z/Y//E5hynvkqAfgCf4Q8KDBidX7piFagXy6eLjbFD0HTewPRPYiqFU
-         uAqdKiZ8IUCHlhVxq+mUBWlHWmyX3mJy1VtI3YdkexaX8jE+I9xnv598cpvQ7+DbSeTl
-         SBtHUry/4FUjbxGWRFEEC66qVBvxUhZ43BqtLjN7hgPLUK6qZrCK/L7T0gSVBWHoORh8
-         DNFMbjzkXBCiplU12gRTZArbaGN0wUZMO/6Thp6S1GKIMam4aiB6dxbcFjgaED41CEWf
-         iAFX8GYmLP0Cv69N2sOoII91Wvh+2kfRQKvjq+ZR/2nKaGrKqzv/htVYOxVrZPuocdyV
-         m46Q==
-X-Gm-Message-State: AOAM532rry5OIav3IadAiqtXUP16qoyg/EIunHZz0Xom7SBXMsp/y09o
-        wGgHJgEm51RuXceFucuH6w==
-X-Google-Smtp-Source: ABdhPJxaHQDdK5l+Zbg9OPKnsIxZnS0CqZGdDbP8dVEYrKCCDob0+3+2jw+s/ERzC5b99XKCqt4QQw==
-X-Received: by 2002:a92:c008:: with SMTP id q8mr10609818ild.106.1597702332693;
-        Mon, 17 Aug 2020 15:12:12 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id d125sm9693070iof.32.2020.08.17.15.12.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 15:12:12 -0700 (PDT)
-Received: (nullmailer pid 1667141 invoked by uid 1000);
-        Mon, 17 Aug 2020 22:12:09 -0000
-Date:   Mon, 17 Aug 2020 16:12:09 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Suniel Mahesh <sunil@amarulasolutions.com>,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: [PATCH v4 1/4] dt-bindings: arm: rockchip: Update ROCKPi 4
- binding
-Message-ID: <20200817221209.GA1667089@bogus>
-References: <20200807094826.12019-1-jagan@amarulasolutions.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=26LrDJXqJLI6TFM10r1vs3mU6KeP0Tqlx0OGxUpHgLM=;
+        b=kWLEVMGlBQOTXpTpuO5pxXA5W4I8zubfP8AF5quIEfPJ5XxAz6i4Iu8kIQg3cZH4lZ
+         Nr2utSyWGTArW24ebCjHhTjuDG/PhF2AgskMYCExegABKA5iz56/gL0YEb4zE/UQL4G5
+         72LR+c0D6x7MQEEI0hOJyIBTcKWgy6u64kS/4l77/uLtVv1sAh+cxPc2RDYlJcwefaHv
+         njbFyXQ1q+8CPT0bgZ4RxC4CS0AL5tfdVqexdytN7ziaQxbKGwwJiwrSyVAztPkzQHwT
+         k/4MwzqUzHQlAq1H5Z3/bavERhPOHbSDOiAnRwjfqU8qfoER53DR6hyB71YnXGETBwsL
+         kpJQ==
+X-Gm-Message-State: AOAM532AAIoh9JpEnQ252McbEfhooC/lccySeTTzzUXw3Xk2PEDf5VB/
+        MCkDMObbX107PgIGS8USinZOmRrtz+hyMA==
+X-Google-Smtp-Source: ABdhPJxQMy19ezvjI9+69a606wcQhCjRDFU2s7MSajlgCgwcpOh2clz1WlhXryPxYqXHd8eGBa0zOw==
+X-Received: by 2002:a2e:8652:: with SMTP id i18mr8038969ljj.323.1597702386713;
+        Mon, 17 Aug 2020 15:13:06 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id w19sm5282286ljd.112.2020.08.17.15.13.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Aug 2020 15:13:05 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id i80so9135932lfi.13
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 15:13:05 -0700 (PDT)
+X-Received: by 2002:a05:6512:241:: with SMTP id b1mr8253411lfo.125.1597702384913;
+ Mon, 17 Aug 2020 15:13:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200807094826.12019-1-jagan@amarulasolutions.com>
+References: <c6fda26e8d134264b04fadc3386d6c32@gmail.com> <20200816175303.GB1236603@ZenIV.linux.org.uk>
+ <20200817204223.GB12414@amd> <87lfid6kpi.fsf@x220.int.ebiederm.org>
+ <CAHk-=wj04wKCjHz6b6d7N58xoS4AftnwTUBaXsEekQ5RhfWVnw@mail.gmail.com> <20200817220908.GA3701@amd>
+In-Reply-To: <20200817220908.GA3701@amd>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 17 Aug 2020 15:12:48 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh7Rn=8mVi_KWV71ZaQ2HrCz240DbjEJMDdARTwB3CYvA@mail.gmail.com>
+Message-ID: <CAHk-=wh7Rn=8mVi_KWV71ZaQ2HrCz240DbjEJMDdARTwB3CYvA@mail.gmail.com>
+Subject: Re: [PATCH] Makefile: Yes. Finally remove '-Wdeclaration-after-statement'
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Witten <mfwitten@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        John Levon <john.levon@joyent.com>,
+        John Levon <levon@movementarian.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 07 Aug 2020 15:18:23 +0530, Jagan Teki wrote:
-> ROCKPi 4 has 3 variants of hardware platforms called
-> ROCKPi 4A, 4B, and 4C.
-> 
-> - ROCKPi 4A has no Wif/BT.
-> - ROCKPi 4B has AP6256 Wifi/BT, PoE.
-> - ROCKPi 4C has AP6256 Wifi/BT, PoE, miniDP, USB Host enabled
->   GPIO pin change compared to 4B, 4C
-> 
-> So, update the existing ROCKPi 4 binding to support
-> ROCKPi 4A/B/C hardware platforms.
-> 
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
-> Changes for v4:
-> - update binding to satisfy dt_binding_check.
-> Changes for v3:
-> - new patch
-> 
->  Documentation/devicetree/bindings/arm/rockchip.yaml | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
+On Mon, Aug 17, 2020 at 3:09 PM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Submitter believes "wild variable placement" can help with
+> #ifdefs.. and that may be actually good tradeoff.
 
-Acked-by: Rob Herring <robh@kernel.org>
+I agree that it can help in some cases.
+
+But it can also make it really hard to find the variable declarations
+in other cases. I've seen a lot of code that ends up actively
+declaring the variable close to where it's used (because people find
+that to be locally more legible) and then it just means that people
+who arent' familiar with the code have a much harder time finding it.
+
+I'd instead try to discourage people from using #ifdef's inside code.
+
+              Linus
