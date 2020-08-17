@@ -2,36 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94323246F8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7DE246F8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390110AbgHQRsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:48:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46226 "EHLO mail.kernel.org"
+        id S2390121AbgHQRsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:48:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388741AbgHQQNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:13:04 -0400
+        id S2388745AbgHQQNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:13:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 982B0207FB;
-        Mon, 17 Aug 2020 16:13:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DA2820748;
+        Mon, 17 Aug 2020 16:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680784;
-        bh=G2XizUJHfMayOcIy1/wif6i1wmQgrdBDThFngyfozWQ=;
+        s=default; t=1597680791;
+        bh=O5VLB5HlxRSKccKG8hvZ2d/JkccpA0XWcovhGW9fpqM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K0cuWiDim71stRrjmp5sWJaxND87Jg7rxBh4Gf4bEUn8F5gacDbOg+7LcCTIfBxwY
-         Ws1ZOE8w93rhqQItfcqcalAfvTLSBQWRGFWaDUvDMOEAWLv2v+XDkgwuyGnLzFsQYA
-         6sDF3XxMXEA/w5uqU2YIkee9WXV4qVA5Bgbtxyzo=
+        b=Xs7/X9FGqNVIgX8Btqw9jnSUWiw+sIU0tK9U4XSZynaRwVp4VbjJarxLAT+pXunQY
+         9cqijqv3331Lie5FyaAxC2B6xql8XjUJ7ayJgVtntpnbg2j/ltZ9JdxIN2dPs9Ja9e
+         x0ISkty0p2zXT3IGOuJSRlkQTy3JH7/VVKn0aLPQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Eric Miao <eric.miao@marvell.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 055/168] agp/intel: Fix a memory leak on module initialisation failure
-Date:   Mon, 17 Aug 2020 17:16:26 +0200
-Message-Id: <20200817143736.500580132@linuxfoundation.org>
+Subject: [PATCH 4.19 058/168] video: pxafb: Fix the function used to balance a dma_alloc_coherent() call
+Date:   Mon, 17 Aug 2020 17:16:29 +0200
+Message-Id: <20200817143736.642841519@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
 References: <20200817143733.692105228@linuxfoundation.org>
@@ -44,41 +52,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit b975abbd382fe442713a4c233549abb90e57c22b ]
+[ Upstream commit 499a2c41b954518c372873202d5e7714e22010c4 ]
 
-In intel_gtt_setup_scratch_page(), pointer "page" is not released if
-pci_dma_mapping_error() return an error, leading to a memory leak on
-module initialisation failure.  Simply fix this issue by freeing "page"
-before return.
+'dma_alloc_coherent()' must be balanced by a call to 'dma_free_coherent()'
+not 'dma_free_wc()'.
+The correct dma_free_ function is already used in the error handling path
+of the probe function.
 
-Fixes: 0e87d2b06cb46 ("intel-gtt: initialize our own scratch page")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200522083451.7448-1-chris@chris-wilson.co.uk
+Fixes: 77e196752bdd ("[ARM] pxafb: allow video memory size to be configurable")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: Jani Nikula <jani.nikula@intel.com>
+cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc: Eric Miao <eric.miao@marvell.com>
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200429084505.108897-1-christophe.jaillet@wanadoo.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/agp/intel-gtt.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/video/fbdev/pxafb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/char/agp/intel-gtt.c b/drivers/char/agp/intel-gtt.c
-index b161bdf600004..0941d38b2d32f 100644
---- a/drivers/char/agp/intel-gtt.c
-+++ b/drivers/char/agp/intel-gtt.c
-@@ -304,8 +304,10 @@ static int intel_gtt_setup_scratch_page(void)
- 	if (intel_private.needs_dmar) {
- 		dma_addr = pci_map_page(intel_private.pcidev, page, 0,
- 				    PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
--		if (pci_dma_mapping_error(intel_private.pcidev, dma_addr))
-+		if (pci_dma_mapping_error(intel_private.pcidev, dma_addr)) {
-+			__free_page(page);
- 			return -EINVAL;
-+		}
+diff --git a/drivers/video/fbdev/pxafb.c b/drivers/video/fbdev/pxafb.c
+index d59c8a59f5827..90dee3e6f8bc7 100644
+--- a/drivers/video/fbdev/pxafb.c
++++ b/drivers/video/fbdev/pxafb.c
+@@ -2446,8 +2446,8 @@ static int pxafb_remove(struct platform_device *dev)
  
- 		intel_private.scratch_page_dma = dma_addr;
- 	} else
+ 	free_pages_exact(fbi->video_mem, fbi->video_mem_size);
+ 
+-	dma_free_wc(&dev->dev, fbi->dma_buff_size, fbi->dma_buff,
+-		    fbi->dma_buff_phys);
++	dma_free_coherent(&dev->dev, fbi->dma_buff_size, fbi->dma_buff,
++			  fbi->dma_buff_phys);
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
