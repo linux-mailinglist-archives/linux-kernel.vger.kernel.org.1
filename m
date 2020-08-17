@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67229247501
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADEC24741D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392258AbgHQTSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:18:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46014 "EHLO mail.kernel.org"
+        id S2387719AbgHQPoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:44:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730378AbgHQPiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:38:10 -0400
+        id S1730578AbgHQPiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:38:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A862522CB3;
-        Mon, 17 Aug 2020 15:38:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A03E4208E4;
+        Mon, 17 Aug 2020 15:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678689;
-        bh=j9gokI0807gcfx9hcDzVT8BvWJdqUqiHwpDy1hJIToE=;
+        s=default; t=1597678692;
+        bh=XrGXVfkZGJOfgdQoFkJoVMpIOpg0//YVEswx0Gn5SG4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lR/DzyaDmimM3rA+15A0UaUI0wOkgJmjRuTt6l8YlqtNkbodQc71KwzIhq5onwNTP
-         K4/4uvuq1y03onuaaQ11B/edwdIxvbY2+8SZ3ATrfG55aVza7wEjKgBxNEDEAzPI6d
-         7RLiE4QTo3miYKv0FvB7NFoaTlfhHxM/llRRg3as=
+        b=Gi44MkZ6lHNiiWVh3ZnhNGIF2oBWzWX43zHIpjjnJYthmbFNOHDtI/lhkCZQHRUNm
+         Q+OSLQM1AwXOGEnLLSPXcI6Vx7BYBeTLXUagSwSxcQ67YugAlZYe8d6uMxJFgbxizy
+         YdPa7PWPVWzy70R03jcBHaI2rK+yNd22yL7XimWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Baron <jbaron@akamai.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: [PATCH 5.8 390/464] tcp: correct read of TFO keys on big endian systems
-Date:   Mon, 17 Aug 2020 17:15:43 +0200
-Message-Id: <20200817143852.460572048@linuxfoundation.org>
+        stable@vger.kernel.org, Ronak Doshi <doshir@vmware.com>,
+        Guolin Yang <gyang@vmware.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.8 391/464] vmxnet3: use correct tcp hdr length when packet is encapsulated
+Date:   Mon, 17 Aug 2020 17:15:44 +0200
+Message-Id: <20200817143852.508586799@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -46,147 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Baron <jbaron@akamai.com>
+From: Ronak Doshi <doshir@vmware.com>
 
-[ Upstream commit f19008e676366c44e9241af57f331b6c6edf9552 ]
+[ Upstream commit 8a7f280f29a80f6e0798f5d6e07c5dd8726620fe ]
 
-When TFO keys are read back on big endian systems either via the global
-sysctl interface or via getsockopt() using TCP_FASTOPEN_KEY, the values
-don't match what was written.
+Commit dacce2be3312 ("vmxnet3: add geneve and vxlan tunnel offload
+support") added support for encapsulation offload. However, while
+calculating tcp hdr length, it does not take into account if the
+packet is encapsulated or not.
 
-For example, on s390x:
+This patch fixes this issue by using correct reference for inner
+tcp header.
 
-# echo "1-2-3-4" > /proc/sys/net/ipv4/tcp_fastopen_key
-# cat /proc/sys/net/ipv4/tcp_fastopen_key
-02000000-01000000-04000000-03000000
-
-Instead of:
-
-# cat /proc/sys/net/ipv4/tcp_fastopen_key
-00000001-00000002-00000003-00000004
-
-Fix this by converting to the correct endianness on read. This was
-reported by Colin Ian King when running the 'tcp_fastopen_backup_key' net
-selftest on s390x, which depends on the read value matching what was
-written. I've confirmed that the test now passes on big and little endian
-systems.
-
-Signed-off-by: Jason Baron <jbaron@akamai.com>
-Fixes: 438ac88009bc ("net: fastopen: robustness and endianness fixes for SipHash")
-Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc: Eric Dumazet <edumazet@google.com>
-Reported-and-tested-by: Colin Ian King <colin.king@canonical.com>
+Fixes: dacce2be3312 ("vmxnet3: add geneve and vxlan tunnel offload support")
+Signed-off-by: Ronak Doshi <doshir@vmware.com>
+Acked-by: Guolin Yang <gyang@vmware.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/tcp.h          |    2 ++
- net/ipv4/sysctl_net_ipv4.c |   16 ++++------------
- net/ipv4/tcp.c             |   16 ++++------------
- net/ipv4/tcp_fastopen.c    |   23 +++++++++++++++++++++++
- 4 files changed, 33 insertions(+), 24 deletions(-)
+ drivers/net/vmxnet3/vmxnet3_drv.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -1664,6 +1664,8 @@ void tcp_fastopen_destroy_cipher(struct
- void tcp_fastopen_ctx_destroy(struct net *net);
- int tcp_fastopen_reset_cipher(struct net *net, struct sock *sk,
- 			      void *primary_key, void *backup_key);
-+int tcp_fastopen_get_cipher(struct net *net, struct inet_connection_sock *icsk,
-+			    u64 *key);
- void tcp_fastopen_add_skb(struct sock *sk, struct sk_buff *skb);
- struct sock *tcp_try_fastopen(struct sock *sk, struct sk_buff *skb,
- 			      struct request_sock *req,
---- a/net/ipv4/sysctl_net_ipv4.c
-+++ b/net/ipv4/sysctl_net_ipv4.c
-@@ -301,24 +301,16 @@ static int proc_tcp_fastopen_key(struct
- 	struct ctl_table tbl = { .maxlen = ((TCP_FASTOPEN_KEY_LENGTH *
- 					    2 * TCP_FASTOPEN_KEY_MAX) +
- 					    (TCP_FASTOPEN_KEY_MAX * 5)) };
--	struct tcp_fastopen_context *ctx;
--	u32 user_key[TCP_FASTOPEN_KEY_MAX * 4];
--	__le32 key[TCP_FASTOPEN_KEY_MAX * 4];
-+	u32 user_key[TCP_FASTOPEN_KEY_BUF_LENGTH / sizeof(u32)];
-+	__le32 key[TCP_FASTOPEN_KEY_BUF_LENGTH / sizeof(__le32)];
- 	char *backup_data;
--	int ret, i = 0, off = 0, n_keys = 0;
-+	int ret, i = 0, off = 0, n_keys;
+--- a/drivers/net/vmxnet3/vmxnet3_drv.c
++++ b/drivers/net/vmxnet3/vmxnet3_drv.c
+@@ -886,7 +886,8 @@ vmxnet3_parse_hdr(struct sk_buff *skb, s
  
- 	tbl.data = kmalloc(tbl.maxlen, GFP_KERNEL);
- 	if (!tbl.data)
- 		return -ENOMEM;
- 
--	rcu_read_lock();
--	ctx = rcu_dereference(net->ipv4.tcp_fastopen_ctx);
--	if (ctx) {
--		n_keys = tcp_fastopen_context_len(ctx);
--		memcpy(&key[0], &ctx->key[0], TCP_FASTOPEN_KEY_LENGTH * n_keys);
--	}
--	rcu_read_unlock();
--
-+	n_keys = tcp_fastopen_get_cipher(net, NULL, (u64 *)key);
- 	if (!n_keys) {
- 		memset(&key[0], 0, TCP_FASTOPEN_KEY_LENGTH);
- 		n_keys = 1;
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -3694,22 +3694,14 @@ static int do_tcp_getsockopt(struct sock
- 		return 0;
- 
- 	case TCP_FASTOPEN_KEY: {
--		__u8 key[TCP_FASTOPEN_KEY_BUF_LENGTH];
--		struct tcp_fastopen_context *ctx;
--		unsigned int key_len = 0;
-+		u64 key[TCP_FASTOPEN_KEY_BUF_LENGTH / sizeof(u64)];
-+		unsigned int key_len;
- 
- 		if (get_user(len, optlen))
- 			return -EFAULT;
- 
--		rcu_read_lock();
--		ctx = rcu_dereference(icsk->icsk_accept_queue.fastopenq.ctx);
--		if (ctx) {
--			key_len = tcp_fastopen_context_len(ctx) *
--					TCP_FASTOPEN_KEY_LENGTH;
--			memcpy(&key[0], &ctx->key[0], key_len);
--		}
--		rcu_read_unlock();
--
-+		key_len = tcp_fastopen_get_cipher(net, icsk, key) *
-+				TCP_FASTOPEN_KEY_LENGTH;
- 		len = min_t(unsigned int, len, key_len);
- 		if (put_user(len, optlen))
- 			return -EFAULT;
---- a/net/ipv4/tcp_fastopen.c
-+++ b/net/ipv4/tcp_fastopen.c
-@@ -108,6 +108,29 @@ out:
- 	return err;
- }
- 
-+int tcp_fastopen_get_cipher(struct net *net, struct inet_connection_sock *icsk,
-+			    u64 *key)
-+{
-+	struct tcp_fastopen_context *ctx;
-+	int n_keys = 0, i;
-+
-+	rcu_read_lock();
-+	if (icsk)
-+		ctx = rcu_dereference(icsk->icsk_accept_queue.fastopenq.ctx);
-+	else
-+		ctx = rcu_dereference(net->ipv4.tcp_fastopen_ctx);
-+	if (ctx) {
-+		n_keys = tcp_fastopen_context_len(ctx);
-+		for (i = 0; i < n_keys; i++) {
-+			put_unaligned_le64(ctx->key[i].key[0], key + (i * 2));
-+			put_unaligned_le64(ctx->key[i].key[1], key + (i * 2) + 1);
-+		}
-+	}
-+	rcu_read_unlock();
-+
-+	return n_keys;
-+}
-+
- static bool __tcp_fastopen_cookie_gen_cipher(struct request_sock *req,
- 					     struct sk_buff *syn,
- 					     const siphash_key_t *key,
+ 			switch (protocol) {
+ 			case IPPROTO_TCP:
+-				ctx->l4_hdr_size = tcp_hdrlen(skb);
++				ctx->l4_hdr_size = skb->encapsulation ? inner_tcp_hdrlen(skb) :
++						   tcp_hdrlen(skb);
+ 				break;
+ 			case IPPROTO_UDP:
+ 				ctx->l4_hdr_size = sizeof(struct udphdr);
 
 
