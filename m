@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8C02474A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0249F24749B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392119AbgHQTMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:12:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49916 "EHLO mail.kernel.org"
+        id S1731877AbgHQTMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:12:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730384AbgHQPkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:40:46 -0400
+        id S1730690AbgHQPkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:40:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA26E20760;
-        Mon, 17 Aug 2020 15:40:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8DFB20760;
+        Mon, 17 Aug 2020 15:40:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678845;
-        bh=4ZMcA9lxt25C+CH9qI2a6HgE43khl92nn/Elyq4fcy0=;
+        s=default; t=1597678851;
+        bh=sB317FLKXl8ZWzvoUjIVlaxiV8Hf9CrJJB1t9Ct1CJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZHkpE/owcQ85ZLpFEYRNJNPhKFlvV4nO9I14Zzkb5+QrsKT0L+u6oKfbbfeeqlsww
-         c4LJPRtMYdelRUESmWBgrukccYTUTsQ1zhGMEttaSZ+WtIaufl99KXgDgU2qXRU+X9
-         oLYJlG2Uu7A0MJhpQJJeHb8oIEz9RjCprYizro78=
+        b=rsj5sC+CQ1L9NAsUsl6Hw/xO8GA2iJ6ydshhDbzf5CBruwxWeQFvpJ3K5TyRBgj9e
+         GKY6agJo4vt+iGqxDrvNtf6y/Z1iLhWxkhMYR1MlFpuMWoHuAOMScNixLQSWTuBgrL
+         S/3koDIWlFF7pulfrCIFc1o9GW0c2dtL42dN6OHg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peng Liu <iwtbavbm@gmail.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 010/393] sched/fair: Fix NOHZ next idle balance
-Date:   Mon, 17 Aug 2020 17:11:00 +0200
-Message-Id: <20200817143820.097729241@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 012/393] arm64: dts: rockchip: fix rk3368-lion gmac reset gpio
+Date:   Mon, 17 Aug 2020 17:11:02 +0200
+Message-Id: <20200817143820.194373451@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -46,84 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Guittot <vincent.guittot@linaro.org>
+From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 
-[ Upstream commit 3ea2f097b17e13a8280f1f9386c331b326a3dbef ]
+[ Upstream commit 2300e6dab473e93181cf76e4fe6671aa3d24c57b ]
 
-With commit:
-  'b7031a02ec75 ("sched/fair: Add NOHZ_STATS_KICK")'
-rebalance_domains of the local cfs_rq happens before others idle cpus have
-updated nohz.next_balance and its value is overwritten.
+The lion gmac node currently uses opposite active-values for the
+gmac phy reset pin. The gpio-declaration uses active-high while the
+separate snps,reset-active-low property marks the pin as active low.
 
-Move the update of nohz.next_balance for other idles cpus before balancing
-and updating the next_balance of local cfs_rq.
+While on the kernel side this works ok, other DT users may get
+confused - as seen with uboot right now.
 
-Also, the nohz.next_balance is now updated only if all idle cpus got a
-chance to rebalance their domains and the idle balance has not been aborted
-because of new activities on the CPU. In case of need_resched, the idle
-load balance will be kick the next jiffie in order to address remaining
-ilb.
+So bring this in line and make both properties match, similar to the
+other Rockchip board.
 
-Fixes: b7031a02ec75 ("sched/fair: Add NOHZ_STATS_KICK")
-Reported-by: Peng Liu <iwtbavbm@gmail.com>
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Acked-by: Mel Gorman <mgorman@suse.de>
-Link: https://lkml.kernel.org/r/20200609123748.18636-1-vincent.guittot@linaro.org
+Fixes: d99a02bcfa81 ("arm64: dts: rockchip: add RK3368-uQ7 (Lion) SoM")
+Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Link: https://lore.kernel.org/r/20200607212909.920575-1-heiko@sntech.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/fair.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3368-lion.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 5c31875a7d9dc..e44332b829b4d 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10033,7 +10033,12 @@ static void kick_ilb(unsigned int flags)
- {
- 	int ilb_cpu;
- 
--	nohz.next_balance++;
-+	/*
-+	 * Increase nohz.next_balance only when if full ilb is triggered but
-+	 * not if we only update stats.
-+	 */
-+	if (flags & NOHZ_BALANCE_KICK)
-+		nohz.next_balance = jiffies+1;
- 
- 	ilb_cpu = find_new_ilb();
- 
-@@ -10351,6 +10356,14 @@ static bool _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 		}
- 	}
- 
-+	/*
-+	 * next_balance will be updated only when there is a need.
-+	 * When the CPU is attached to null domain for ex, it will not be
-+	 * updated.
-+	 */
-+	if (likely(update_next_balance))
-+		nohz.next_balance = next_balance;
-+
- 	/* Newly idle CPU doesn't need an update */
- 	if (idle != CPU_NEWLY_IDLE) {
- 		update_blocked_averages(this_cpu);
-@@ -10371,14 +10384,6 @@ static bool _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 	if (has_blocked_load)
- 		WRITE_ONCE(nohz.has_blocked, 1);
- 
--	/*
--	 * next_balance will be updated only when there is a need.
--	 * When the CPU is attached to null domain for ex, it will not be
--	 * updated.
--	 */
--	if (likely(update_next_balance))
--		nohz.next_balance = next_balance;
--
- 	return ret;
- }
- 
+diff --git a/arch/arm64/boot/dts/rockchip/rk3368-lion.dtsi b/arch/arm64/boot/dts/rockchip/rk3368-lion.dtsi
+index e17311e090826..216aafd90e7f1 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3368-lion.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3368-lion.dtsi
+@@ -156,7 +156,7 @@ &gmac {
+ 	pinctrl-0 = <&rgmii_pins>;
+ 	snps,reset-active-low;
+ 	snps,reset-delays-us = <0 10000 50000>;
+-	snps,reset-gpio = <&gpio3 RK_PB3 GPIO_ACTIVE_HIGH>;
++	snps,reset-gpio = <&gpio3 RK_PB3 GPIO_ACTIVE_LOW>;
+ 	tx_delay = <0x10>;
+ 	rx_delay = <0x10>;
+ 	status = "okay";
 -- 
 2.25.1
 
