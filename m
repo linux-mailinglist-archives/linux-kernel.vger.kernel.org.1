@@ -2,93 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA85245EF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1997A245ED9
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727993AbgHQIL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726976AbgHQILP (ORCPT
+        id S1727014AbgHQIIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:08:02 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:52071 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726768AbgHQIIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:11:15 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE93C061388
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:11:15 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t4so13761015iln.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:11:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lt6hzq5ZQO4HiO3QNUBUTHvgybU3ir4bEXy46hXUV98=;
-        b=rBkaeThXVt8B5nb+Cq4kDmKYVxa3SVAFiCNoqheXNihqyvUk+53LxPMfauwnzPS/Na
-         VRJpDtqSyoEubgQMwX5GaMPK2SauuRNWBft/Ll8blgxDhTDb280lDQuj3Ua1vXwiKtAL
-         5f3iuTgwO8le7b0VoFCIVgWpwHE22MTNbAZbUAF6edvZ7yUV42kD4KbloBmuHLcsa+br
-         md9pqQns95LBAeST17auuF2R08fHlmesmmfLAMjB0hmlYLVK0q/BNfJxhRHLzU14ZMIY
-         D1l+CW8LUOqZ/eYtjR+lH1FWGMbZ9SkMoSkB800k7o6EHxI711PFk/oynbxsi0OkySqw
-         SmZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lt6hzq5ZQO4HiO3QNUBUTHvgybU3ir4bEXy46hXUV98=;
-        b=s4rixW3JCUYGDX/bKjmFVakN3kOy8MsXOH8xTLZNQmznFxwubjaRWrsRznnaV5Q56W
-         m/waKOrGckKNYJFF+g0vPZbk6533Zsf+TOKMA+BG4LGn42E9oY1qL7ZMxiePqACNAKnA
-         qfUe7/dfmFxLEfCIhesaIJgq0+r5AddsZRNhTk/tkI+JHubYGAkZE3zWsImvRtOfRKNp
-         5Kd/rJMxq+QFtpqInvjvUFGN0WZ4IwytSRytccQqi5ZIoIUx2txeeJtvALXiVc/37O3h
-         ep3k+QCFEtFsNnlK09J2tac9aS9qRaXvYWpgkqU9rl543aT1f5gX2aEBksuhmtQnntqF
-         GbWw==
-X-Gm-Message-State: AOAM531tVVXJDrl9ObKZ87pUYM3Qp5XWeaerr3kYeYUIhfjidU9dX9lL
-        EYzDTAMYAy++t9cxQ3SalQ8xvRaiqZ68McyKRUJGyg==
-X-Google-Smtp-Source: ABdhPJzyL87H7xo+SFVJo6OxddJRwCf8TqTo/jG/8v4crswXEsNPG1scfuanoeHlA4HikpKT8hXnnNsJOLQbgj4Ix9w=
-X-Received: by 2002:a92:c904:: with SMTP id t4mr12816222ilp.257.1597651874349;
- Mon, 17 Aug 2020 01:11:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <1597644455-8216-1-git-send-email-jiaxin.yu@mediatek.com>
- <1597644455-8216-3-git-send-email-jiaxin.yu@mediatek.com> <CA+Px+wXSbGLb+AZnF8ETRycRUVjqk4xacm5DH6MzuMw0vh6Wzg@mail.gmail.com>
-In-Reply-To: <CA+Px+wXSbGLb+AZnF8ETRycRUVjqk4xacm5DH6MzuMw0vh6Wzg@mail.gmail.com>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Mon, 17 Aug 2020 16:11:03 +0800
-Message-ID: <CA+Px+wUMXoSL6w0wBduE7obJRWgCteeT8=_=U=8LR34JKTTGZA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] dt-bindings: mediatek: mt6359: add codec document
-To:     Jiaxin Yu <jiaxin.yu@mediatek.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mon, 17 Aug 2020 04:08:02 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id BB259FF80B;
+        Mon, 17 Aug 2020 08:07:55 +0000 (UTC)
+Date:   Mon, 17 Aug 2020 10:11:38 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ALSA development <alsa-devel@alsa-project.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, howie.huang@mediatek.com,
-        eason.yen@mediatek.com, shane.chien@mediatek.com,
-        bicycle.tsai@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: media: ov772x: Document endpoint
+ properties
+Message-ID: <20200817081138.dog5lhpmszbu2mgc@uno.localdomain>
+References: <1596454753-13612-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1596454753-13612-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CA+V-a8sjxL-rbYAti8Djj2ch2+Zf+88_wNjbZHzKVBB66aZJ0g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CA+V-a8sjxL-rbYAti8Djj2ch2+Zf+88_wNjbZHzKVBB66aZJ0g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 3:29 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
->
-> On Mon, Aug 17, 2020 at 2:08 PM Jiaxin Yu <jiaxin.yu@mediatek.com> wrote:
-> > +properties:
-> > +  compatible:
-> > +    const: mediatek,mt6359-sound
->
-> The compatible string has been removed since v3.
->
-> > +required:
-> > +  - compatible
->
-> The same here.
->
-> > +examples:
-> > +  - |
-> > +    mt6359codec: mt6359codec {
-> > +      compatible = "mediatek,mt6359-sound";
->
-> And the same here.
+Hello Prabhakar,
 
-I misunderstood.  It still needs the compatible string to match the
-corresponding driver.
+On Sat, Aug 15, 2020 at 11:34:33AM +0100, Lad, Prabhakar wrote:
+> Hi Jacopo,
+>
+> On Mon, Aug 3, 2020 at 12:39 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> >
+> > Document endpoint properties required for parallel interface
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > ---
+> >  .../devicetree/bindings/media/i2c/ov772x.txt     | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> >
+> I see you already have a patch for YAML conversion for OV772x binding
+> [1], if you plan to post a v2 would you be OK to pick these changes as
+> part of your conversion changes ?
+
+Sure thing, I'll add the following properties to the series!
+
+Thanks
+  j
+
+>
+> [1] https://www.spinics.net/lists/linux-media/msg173201.html
+>
+> Cheers,
+> Prabhakar
+>
+> > diff --git a/Documentation/devicetree/bindings/media/i2c/ov772x.txt b/Documentation/devicetree/bindings/media/i2c/ov772x.txt
+> > index 0b3ede5b8e6a..1f4153484717 100644
+> > --- a/Documentation/devicetree/bindings/media/i2c/ov772x.txt
+> > +++ b/Documentation/devicetree/bindings/media/i2c/ov772x.txt
+> > @@ -21,6 +21,22 @@ subnode for its digital output video port, in accordance with the video
+> >  interface bindings defined in Documentation/devicetree/bindings/media/
+> >  video-interfaces.txt.
+> >
+> > +Endpoint node required properties for parallel connection are:
+> > +- remote-endpoint: a phandle to the bus receiver's endpoint node.
+> > +- bus-width: shall be set to <8> for 8 bits parallel bus
+> > +            or <10> for 10 bits parallel bus
+> > +- data-shift: shall be set to <2> for 8 bits parallel bus
+> > +             (lines 9:2 are used) or <0> for 10 bits parallel bus
+> > +- hsync-active: active state of the HSYNC signal, 0/1 for LOW/HIGH respectively.
+> > +               (Not required for bus-type equal 6)
+> > +- vsync-active: active state of the VSYNC signal, 0/1 for LOW/HIGH respectively.
+> > +               (Not required for bus-type equal 6)
+> > +- pclk-sample: sample data on rising (1) or falling (0) edge of the pixel clock
+> > +              signal. (Not required for bus-type equal 6)
+> > +- bus-type: data bus type. Possible values are:
+> > +           5 - Parallel
+> > +           6 - Bt.656
+> > +
+> >  Example:
+> >
+> >  &i2c0 {
+> > --
+> > 2.17.1
+> >
