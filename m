@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18552468CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D319A2468DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbgHQOyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 10:54:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
+        id S1729156AbgHQOzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 10:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729084AbgHQOyY (ORCPT
+        with ESMTP id S1729085AbgHQOyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 10:54:24 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA24AC061342
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:54:23 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id c15so15284863wrs.11
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:54:23 -0700 (PDT)
+        Mon, 17 Aug 2020 10:54:25 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C28C061347
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:54:25 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id a15so15288243wrh.10
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:54:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=IimkwTphS8r4/JbAVEFyEhdxAiYQLhWE6LZk07S8n0M=;
-        b=KuVePcIxHIoIKal3CSA4rjljA5s+8Y+MFUm+goTkzr5b8RLGXOM7yhoBO7oZXJ0wdd
-         ynN8e5w7muDPW4Yh8amc1otqyjh7eNI98uUmjsDHEWwSZER1mupTBYKE4K5Bf5ahrIKJ
-         0JdiIhqwg9FbxhjUvSfOvns2H3PgweBdhuyHlnHtFUkZHPske/KQOYPdKg8uu3jLIxKH
-         8U0/3gK79vx3o9WxwyzbByUkKjImpUd3vIxY23wpwdBgL6bUA2s13X2MEuZWjNMCRt9W
-         cgur5JZn8YU4D4SLIetBIpL8DCTa9eU07drSxIIYeIwtj2uTPvh3Wf0szOqGaC9BwyfN
-         ROfg==
+        bh=qJhUjYD9pe9sbyMyKSKlcS+SdzILo1kQwat/pof/sCU=;
+        b=yYua5BbI5qPvjuOFAm1a5cHjPY2qnsc8cWgFyPo/YK8mzHoVumQjSCoOcuNUxFTQpd
+         8jnBJ2NBrqidUjdj/HyTwyv9B9e814KSgvQELwItilEBD8NL7NeVWp/qpN0wCLOpov3q
+         QDRjVij9Giz3m2NzjNbUoljhXwd9Ej9IpRNqwdPmIVteiMQk8hGfVTeIk1Dg3hy1Ce5M
+         pKMFp0YSBazPYlQACUX4zIO7ShnMUVUGVQHfWJeWWe5w9qKL/vODADph6dxcrup5jaSP
+         zyo3lzrAO7jIJr1Jxf16oWOEk+VdTuvYZq7drRA+zN3H42cAG9OcY9hNuFtkr9gZ2nEi
+         gdXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=IimkwTphS8r4/JbAVEFyEhdxAiYQLhWE6LZk07S8n0M=;
-        b=Guthz6t/fL1uM4U72NYcLGc/lAcv6nuR8UCiNnFL/2dNaUoznqmwDuci1Ht52L8pmy
-         9ADKo+ooeSUJAy8WshV9W1myQXRizhL3MPEHFlxaAGDMI4Tl5EInU1Iqkr+IvEsAqUn7
-         qgwe0HDnX/JgbCHlkMJ+xXtC2PlycVjEBuFwnfkxDCvmTDIbIMQPRnkX5mp2wo1R2HCI
-         atMFb5UShK+65arSwPArLmX91ChcdFzbvTc9b37Lx21UZjmUjwxjriCWLNJxgBSveKBo
-         8JwmJ9gZbN4eSyP1AIMCMcmojNRsJShz4yog0btmPlHLYO+rDD2ysrD0iKThe27DZHC1
-         QXEA==
-X-Gm-Message-State: AOAM530H4kijgq8i8be9IFiMuI8dgzLj33ZB0VIyd/1LFh8xKnG1HpS7
-        u8PAq0fcOhLjgcGKC+kaZA89qQ==
-X-Google-Smtp-Source: ABdhPJwm5ib43PcaD74e5kFQhhqM7SpAvAx5f684Jg705F011JkyNA9RyqtB4D+kIf8YaZeBzwsCfQ==
-X-Received: by 2002:adf:e911:: with SMTP id f17mr15665978wrm.397.1597676062673;
-        Mon, 17 Aug 2020 07:54:22 -0700 (PDT)
+        bh=qJhUjYD9pe9sbyMyKSKlcS+SdzILo1kQwat/pof/sCU=;
+        b=mIkYJPzNBzl0PVmW8Vb30sje0hyUAY6qWiQpVy5Gh48TmtlN3LTIjKXGBuNPplH/Ji
+         BmhOBFtITXU5TMdW1V9fCkN77jm6d5wJuHbqTHgdMos0ZEei1JLfZpG2LQkVQmmhbqpN
+         oT8o1dFjdamD7bzvIUaOcYFegMpTU21t1rJvjYavS16u/UbmDs6g0aGy84QNaHqXrknn
+         gQXCOUqtFAAeiUJjxaSFbNA9y5Q4n9fPANSb71LjIEkmMwowPURRbmyz2CuF1DqJnWm0
+         b3tHYtdF3Ekf+OCbXDTa0+dCwMVgT5VSnpVnn/+lzN/V8aD4YvA1wzoWKEaWivYrtlV1
+         U2bA==
+X-Gm-Message-State: AOAM531H4SI8n80gX+UvjcFBjtkyxhThdPxEwGoIeDhUgkGW3vVykSsu
+        50qxW9s/0z0jvfJauyUSCfVczQ==
+X-Google-Smtp-Source: ABdhPJz6JSO9rpK9jOocHFumtQi/adlnWjslm2leEhx6/qjIcdJ16AOwpQ8Qdrsiv39yoREAdDddjQ==
+X-Received: by 2002:a5d:414d:: with SMTP id c13mr10642133wrq.78.1597676063838;
+        Mon, 17 Aug 2020 07:54:23 -0700 (PDT)
 Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id r16sm35005678wrr.13.2020.08.17.07.54.21
+        by smtp.gmail.com with ESMTPSA id r16sm35005678wrr.13.2020.08.17.07.54.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 07:54:22 -0700 (PDT)
+        Mon, 17 Aug 2020 07:54:23 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         James Clark <james.clark@arm.com>,
@@ -61,9 +61,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         Mike Leach <mike.leach@linaro.org>
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH RESEND v1 08/13] perf arm-spe: Refactor counter packet handling
-Date:   Mon, 17 Aug 2020 15:53:43 +0100
-Message-Id: <20200817145348.14461-9-leo.yan@linaro.org>
+Subject: [PATCH RESEND v1 09/13] perf arm-spe: Refactor event type handling
+Date:   Mon, 17 Aug 2020 15:53:44 +0100
+Message-Id: <20200817145348.14461-10-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200817145348.14461-1-leo.yan@linaro.org>
 References: <20200817145348.14461-1-leo.yan@linaro.org>
@@ -72,70 +72,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch defines macros for counter packet header, and uses macro to
-replace hard code values for packet parsing.
+Use macros instead of the enum values for event types, this is more
+directive and without bit shifting when parse packet.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 21 +++++++++++++------
- .../arm-spe-decoder/arm-spe-pkt-decoder.h     |  8 +++++++
- 2 files changed, 23 insertions(+), 6 deletions(-)
+ .../util/arm-spe-decoder/arm-spe-decoder.c    | 16 +++++++-------
+ .../util/arm-spe-decoder/arm-spe-decoder.h    | 17 --------------
+ .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 22 +++++++++----------
+ .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 16 ++++++++++++++
+ 4 files changed, 35 insertions(+), 36 deletions(-)
 
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+index f7cda4a3cf1a..ae718e3419e3 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+@@ -168,31 +168,31 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
+ 		case ARM_SPE_OP_TYPE:
+ 			break;
+ 		case ARM_SPE_EVENTS:
+-			if (payload & BIT(EV_L1D_REFILL))
++			if (payload & SPE_EVT_PKT_L1D_REFILL)
+ 				decoder->record.type |= ARM_SPE_L1D_MISS;
+ 
+-			if (payload & BIT(EV_L1D_ACCESS))
++			if (payload & SPE_EVT_PKT_L1D_ACCESS)
+ 				decoder->record.type |= ARM_SPE_L1D_ACCESS;
+ 
+-			if (payload & BIT(EV_TLB_WALK))
++			if (payload & SPE_EVT_PKT_TLB_WALK)
+ 				decoder->record.type |= ARM_SPE_TLB_MISS;
+ 
+-			if (payload & BIT(EV_TLB_ACCESS))
++			if (payload & SPE_EVT_PKT_TLB_ACCESS)
+ 				decoder->record.type |= ARM_SPE_TLB_ACCESS;
+ 
+ 			if ((idx == 2 || idx == 4 || idx == 8) &&
+-			    (payload & BIT(EV_LLC_MISS)))
++			    (payload & SPE_EVT_PKT_LLC_MISS))
+ 				decoder->record.type |= ARM_SPE_LLC_MISS;
+ 
+ 			if ((idx == 2 || idx == 4 || idx == 8) &&
+-			    (payload & BIT(EV_LLC_ACCESS)))
++			    (payload & SPE_EVT_PKT_LLC_ACCESS))
+ 				decoder->record.type |= ARM_SPE_LLC_ACCESS;
+ 
+ 			if ((idx == 2 || idx == 4 || idx == 8) &&
+-			    (payload & BIT(EV_REMOTE_ACCESS)))
++			    (payload & SPE_EVT_PKT_REMOTE_ACCESS))
+ 				decoder->record.type |= ARM_SPE_REMOTE_ACCESS;
+ 
+-			if (payload & BIT(EV_MISPRED))
++			if (payload & SPE_EVT_PKT_MISPREDICTED)
+ 				decoder->record.type |= ARM_SPE_BRANCH_MISS;
+ 
+ 			break;
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+index a5111a8d4360..24727b8ca7ff 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+@@ -13,23 +13,6 @@
+ 
+ #include "arm-spe-pkt-decoder.h"
+ 
+-enum arm_spe_events {
+-	EV_EXCEPTION_GEN	= 0,
+-	EV_RETIRED		= 1,
+-	EV_L1D_ACCESS		= 2,
+-	EV_L1D_REFILL		= 3,
+-	EV_TLB_ACCESS		= 4,
+-	EV_TLB_WALK		= 5,
+-	EV_NOT_TAKEN		= 6,
+-	EV_MISPRED		= 7,
+-	EV_LLC_ACCESS		= 8,
+-	EV_LLC_MISS		= 9,
+-	EV_REMOTE_ACCESS	= 10,
+-	EV_ALIGNMENT		= 11,
+-	EV_PARTIAL_PREDICATE	= 17,
+-	EV_EMPTY_PREDICATE	= 18,
+-};
+-
+ enum arm_spe_sample_type {
+ 	ARM_SPE_L1D_ACCESS	= 1 << 0,
+ 	ARM_SPE_L1D_MISS	= 1 << 1,
 diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index ad8797f12d36..6cb14a2141c4 100644
+index 6cb14a2141c4..78250c8d74ca 100644
 --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
 +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -150,9 +150,10 @@ static int arm_spe_get_counter(const unsigned char *buf, size_t len,
- {
- 	packet->type = ARM_SPE_COUNTER;
- 	if (ext_hdr)
--		packet->index = ((buf[0] & 0x3) << 3) | (buf[1] & 0x7);
-+		packet->index = (((buf[0] & SPE_CNT_PKT_HDR_EXT_INDEX_MASK) << 3) |
-+				  (buf[1] & SPE_CNT_PKT_HDR_INDEX_MASK));
- 	else
--		packet->index = buf[0] & 0x7;
-+		packet->index = buf[0] & SPE_CNT_PKT_HDR_INDEX_MASK;
- 
- 	return arm_spe_get_payload(buf, len, ext_hdr, packet);
- }
-@@ -421,10 +422,18 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+@@ -264,58 +264,58 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+ 		ret = snprintf(buf, buf_len, "EV");
  		buf += ret;
  		blen -= ret;
- 		switch (idx) {
--		case 0:	ret = snprintf(buf, buf_len, "TOT"); break;
--		case 1:	ret = snprintf(buf, buf_len, "ISSUE"); break;
--		case 2:	ret = snprintf(buf, buf_len, "XLAT"); break;
--		default: ret = 0;
-+		case SPE_CNT_PKT_HDR_INDEX_TOTAL_LAT:
-+			ret = snprintf(buf, buf_len, "TOT");
-+			break;
-+		case SPE_CNT_PKT_HDR_INDEX_ISSUE_LAT:
-+			ret = snprintf(buf, buf_len, "ISSUE");
-+			break;
-+		case SPE_CNT_PKT_HDR_INDEX_TRANS_LAT:
-+			ret = snprintf(buf, buf_len, "XLAT");
-+			break;
-+		default:
-+			ret = 0;
-+			break;
+-		if (payload & 0x1) {
++		if (payload & SPE_EVT_PKT_GEN_EXCEPTION) {
+ 			ret = snprintf(buf, buf_len, " EXCEPTION-GEN");
+ 			buf += ret;
+ 			blen -= ret;
  		}
- 		if (ret < 0)
- 			return ret;
+-		if (payload & 0x2) {
++		if (payload & SPE_EVT_PKT_ARCH_RETIRED) {
+ 			ret = snprintf(buf, buf_len, " RETIRED");
+ 			buf += ret;
+ 			blen -= ret;
+ 		}
+-		if (payload & 0x4) {
++		if (payload & SPE_EVT_PKT_L1D_ACCESS) {
+ 			ret = snprintf(buf, buf_len, " L1D-ACCESS");
+ 			buf += ret;
+ 			blen -= ret;
+ 		}
+-		if (payload & 0x8) {
++		if (payload & SPE_EVT_PKT_L1D_REFILL) {
+ 			ret = snprintf(buf, buf_len, " L1D-REFILL");
+ 			buf += ret;
+ 			blen -= ret;
+ 		}
+-		if (payload & 0x10) {
++		if (payload & SPE_EVT_PKT_TLB_ACCESS) {
+ 			ret = snprintf(buf, buf_len, " TLB-ACCESS");
+ 			buf += ret;
+ 			blen -= ret;
+ 		}
+-		if (payload & 0x20) {
++		if (payload & SPE_EVT_PKT_TLB_WALK) {
+ 			ret = snprintf(buf, buf_len, " TLB-REFILL");
+ 			buf += ret;
+ 			blen -= ret;
+ 		}
+-		if (payload & 0x40) {
++		if (payload & SPE_EVT_PKT_NOT_TAKEN) {
+ 			ret = snprintf(buf, buf_len, " NOT-TAKEN");
+ 			buf += ret;
+ 			blen -= ret;
+ 		}
+-		if (payload & 0x80) {
++		if (payload & SPE_EVT_PKT_MISPREDICTED) {
+ 			ret = snprintf(buf, buf_len, " MISPRED");
+ 			buf += ret;
+ 			blen -= ret;
+ 		}
+ 		if (idx > 1) {
+-			if (payload & 0x100) {
++			if (payload & SPE_EVT_PKT_LLC_ACCESS) {
+ 				ret = snprintf(buf, buf_len, " LLC-ACCESS");
+ 				buf += ret;
+ 				blen -= ret;
+ 			}
+-			if (payload & 0x200) {
++			if (payload & SPE_EVT_PKT_LLC_MISS) {
+ 				ret = snprintf(buf, buf_len, " LLC-REFILL");
+ 				buf += ret;
+ 				blen -= ret;
+ 			}
+-			if (payload & 0x400) {
++			if (payload & SPE_EVT_PKT_REMOTE_ACCESS) {
+ 				ret = snprintf(buf, buf_len, " REMOTE-ACCESS");
+ 				buf += ret;
+ 				blen -= ret;
 diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-index db9f124fb1f4..ee2c1d5054e8 100644
+index ee2c1d5054e8..16687abffab7 100644
 --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
 +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-@@ -85,6 +85,14 @@ struct arm_spe_pkt {
- /* Context packet header */
- #define SPE_CTX_PKT_HDR_INDEX_MASK		(0x3)
+@@ -93,6 +93,22 @@ struct arm_spe_pkt {
  
-+/* Counter packet header */
-+#define SPE_CNT_PKT_HDR_INDEX_MASK		(0x7)
-+#define SPE_CNT_PKT_HDR_INDEX_TOTAL_LAT		(0x0)
-+#define SPE_CNT_PKT_HDR_INDEX_ISSUE_LAT		(0x1)
-+#define SPE_CNT_PKT_HDR_INDEX_TRANS_LAT		(0x2)
-+
-+#define SPE_CNT_PKT_HDR_EXT_INDEX_MASK		(0x3)
+ #define SPE_CNT_PKT_HDR_EXT_INDEX_MASK		(0x3)
+ 
++/* Event packet payload */
++#define SPE_EVT_PKT_SVE_EMPTY_PREDICATE		BIT(18)
++#define SPE_EVT_PKT_SVE_PARTIAL_PREDICATE	BIT(17)
++#define SPE_EVT_PKT_ALIGNMENT			BIT(11)
++#define SPE_EVT_PKT_REMOTE_ACCESS		BIT(10)
++#define SPE_EVT_PKT_LLC_MISS			BIT(9)
++#define SPE_EVT_PKT_LLC_ACCESS			BIT(8)
++#define SPE_EVT_PKT_MISPREDICTED		BIT(7)
++#define SPE_EVT_PKT_NOT_TAKEN			BIT(6)
++#define SPE_EVT_PKT_TLB_WALK			BIT(5)
++#define SPE_EVT_PKT_TLB_ACCESS			BIT(4)
++#define SPE_EVT_PKT_L1D_REFILL			BIT(3)
++#define SPE_EVT_PKT_L1D_ACCESS			BIT(2)
++#define SPE_EVT_PKT_ARCH_RETIRED		BIT(1)
++#define SPE_EVT_PKT_GEN_EXCEPTION		BIT(0)
 +
  const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
  
