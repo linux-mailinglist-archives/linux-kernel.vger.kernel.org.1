@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED0A247CAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 05:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28383247CAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 05:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726838AbgHRDXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 23:23:54 -0400
+        id S1726867AbgHRDX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 23:23:59 -0400
 Received: from mga03.intel.com ([134.134.136.65]:63987 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726820AbgHRDXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 23:23:47 -0400
-IronPort-SDR: sZPM6vjB7w7FDhU+/SJDPTwwsLjSIjyKeqS/9Tl00//rzcLv+MnzChflUoavn6r3ZnrgIsCM7z
- 6fE22Av5Snfw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154806518"
+        id S1726647AbgHRDXw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 23:23:52 -0400
+IronPort-SDR: ckU5/KZiHB7qOhz/pyl3iynWDV0ti0P1B4g7CF4LSfHut0wxh5MlPzQmP1Mq/YXa5uAFsGSjhF
+ F3cJrskIjt/Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154806520"
 X-IronPort-AV: E=Sophos;i="5.76,325,1592895600"; 
-   d="scan'208";a="154806518"
+   d="scan'208";a="154806520"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 20:23:47 -0700
-IronPort-SDR: xDqN1dgdDYDwVq+SeaUu259O1Kh52s9XmxAfAgtveXmBMi9SJcGrjrt3kAgQcxET5VTi57MJ8x
- Q0vGgDM+YHtA==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 20:23:51 -0700
+IronPort-SDR: 5gxK5uMJyT/dbvPZzsV4y+rb2f3JUG+5YMjCd/4HahUH3FK9W4h9+UMJW46WXLe+LNNgeAKz1u
+ ugjvwA1BdUnw==
 X-IronPort-AV: E=Sophos;i="5.76,325,1592895600"; 
-   d="scan'208";a="441084662"
+   d="scan'208";a="441084675"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 20:23:44 -0700
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 20:23:47 -0700
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
@@ -34,9 +34,9 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
         ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH v2 09/12] soundwire: intel: add CLK_STOP_NOT_ALLOWED support
-Date:   Mon, 17 Aug 2020 23:29:20 +0800
-Message-Id: <20200817152923.3259-10-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 10/12] soundwire: intel_init: handle power rail dependencies for clock stop mode
+Date:   Mon, 17 Aug 2020 23:29:21 +0800
+Message-Id: <20200817152923.3259-11-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200817152923.3259-1-yung-chuan.liao@linux.intel.com>
 References: <20200817152923.3259-1-yung-chuan.liao@linux.intel.com>
@@ -47,60 +47,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-In case the clock needs to keep running, we need to prevent the Master
-from entering pm_runtime suspend.
+When none of the clock stop quirks is specified, the Master IP will
+assume the context is preserved and will not reset the Bus and restart
+enumeration. Due to power rail dependencies, the HDaudio controller
+needs to remain powered and prevented from executing its pm_runtime
+suspend routine.
+
+This choice of course has a power impact, and this mode should only be
+selected when latency requirements are critical or the parent device
+can enter D0ix modes.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/soundwire/intel_init.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index ad476e9e4d25..95b14c034ea7 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1367,6 +1367,7 @@ int intel_master_startup(struct platform_device *pdev)
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
- 	struct sdw_bus *bus = &cdns->bus;
- 	int link_flags;
-+	u32 clock_stop_quirks;
- 	int ret;
- 
- 	if (bus->prop.hw_disabled) {
-@@ -1423,6 +1424,20 @@ int intel_master_startup(struct platform_device *pdev)
- 		pm_runtime_enable(dev);
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+index dd1050743dca..add46d8fc85c 100644
+--- a/drivers/soundwire/intel_init.c
++++ b/drivers/soundwire/intel_init.c
+@@ -73,6 +73,9 @@ static int sdw_intel_cleanup(struct sdw_intel_ctx *ctx)
+ 			pm_runtime_disable(&link->pdev->dev);
+ 			platform_device_unregister(link->pdev);
+ 		}
++
++		if (!link->clock_stop_quirks)
++			pm_runtime_put_noidle(link->dev);
  	}
  
-+	clock_stop_quirks = sdw->link_res->clock_stop_quirks;
-+	if (clock_stop_quirks & SDW_INTEL_CLK_STOP_NOT_ALLOWED) {
-+		/*
-+		 * To keep the clock running we need to prevent
-+		 * pm_runtime suspend from happening by increasing the
-+		 * reference count.
-+		 * This quirk is specified by the parent PCI device in
-+		 * case of specific latency requirements. It will have
-+		 * no effect if pm_runtime is disabled by the user via
-+		 * a module parameter for testing purposes.
-+		 */
-+		pm_runtime_get_noresume(dev);
-+	}
-+
- 	/*
- 	 * The runtime PM status of Slave devices is "Unsupported"
- 	 * until they report as ATTACHED. If they don't, e.g. because
-@@ -1454,6 +1469,11 @@ static int intel_master_remove(struct platform_device *pdev)
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
- 	struct sdw_bus *bus = &cdns->bus;
+ 	return 0;
+@@ -338,6 +341,16 @@ sdw_intel_startup_controller(struct sdw_intel_ctx *ctx)
+ 			continue;
  
-+	/*
-+	 * Since pm_runtime is already disabled, we don't decrease
-+	 * the refcount when the clock_stop_quirk is
-+	 * SDW_INTEL_CLK_STOP_NOT_ALLOWED
-+	 */
- 	if (!bus->prop.hw_disabled) {
- 		intel_debugfs_exit(sdw);
- 		sdw_cdns_enable_interrupt(cdns, false);
+ 		intel_master_startup(link->pdev);
++
++		if (!link->clock_stop_quirks) {
++			/*
++			 * we need to prevent the parent PCI device
++			 * from entering pm_runtime suspend, so that
++			 * power rails to the SoundWire IP are not
++			 * turned off.
++			 */
++			pm_runtime_get_noresume(link->dev);
++		}
+ 	}
+ 
+ 	return 0;
 -- 
 2.17.1
 
